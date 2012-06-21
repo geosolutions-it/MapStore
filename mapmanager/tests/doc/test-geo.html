@@ -1,0 +1,33 @@
+<html><head><script type="text/javascript">
+<!--
+
+function geoCoords( address, callback )
+{
+	var lat, lng;
+	if( address.search( "305 Harrison St" )!=-1 && address.search( "Seattle" )!=-1 && address.search( "WA" )!=-1 ) {
+		lat=46.620108;
+		lng=-122.352333;
+	}
+	window.setTimeout( function() { callback( lat, lng ); }, 1000 );
+}
+
+function test_locate_ok( t )
+{
+	t.plan( 1 );
+	geoCoords( "305 Harrison St, Seattle, WA", function( lat, lng ) {
+		t.eq( [lat, lng], [46.620108, -122.352333], "coordinates match" );
+	} );
+	t.wait_result( 1.5 );
+}
+
+function test_locate_obvious( t )
+{
+	t.plan( 1 );
+	geoCoords( "305 Harrison St, Seattle, WA", function( lat, lng ) {
+		t.eq( [lat, lng], [46.620108, -122.352333], "coordinates match" );
+	} );
+}
+
+// -->
+</script></head><body>
+</body></html>

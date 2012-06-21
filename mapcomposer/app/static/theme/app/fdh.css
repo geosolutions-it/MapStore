@@ -1,0 +1,117 @@
+#left-banner {
+	position : absolute;
+	left : 0;
+	top : 0;
+	width : 420px;
+	height : 86px;
+}
+#fdh-header {
+	position : absolute;
+	top : 0px;
+	left : 0px;
+	margin-right: 0px;
+	width : 100%;
+background: url(img/fdh/bgimg.gif) repeat-x;
+}
+#right-banner {
+	float : right;
+	display : inline;
+	top : 0;
+	width : 378px;
+	height : 86px;
+}
+
+
+/*********************************
+ Custom FDH logos
+*********************************/
+
+div#homelogos ul {
+    display: block; 
+    font-size: 11px; 
+    margin: 0px auto; 
+    list-style-type: none;
+}
+div#homelogos ul li {
+    padding-left: 10px; float: left
+}
+div#homelogos ul li a {
+    padding-right: 3px; 
+    display: block; 
+    padding-left: 3px; 
+    font-size: 12px; 
+    padding-bottom: 3px; 
+    padding-top: 3px; 
+    text-decoration: none
+}
+
+div#homelogos {
+    margin: 10px auto; 
+    width: 900px;
+    text-align: center;
+}
+div#homelogos ul li a {
+    width: 48px; height: 48px;
+    border-right: #fff 1px transparent; 
+    border-left-color: transparent; 
+    border-top-color: transparent; 
+    border-bottom: #fff 1px transparent;
+}
+div#homelogos ul li a:hover {
+    border-right: #ccc 1px solid; 
+    border-left-color: transparent; 
+    border-top-color: transparent; 
+    border-bottom: #ccc 1px solid
+}
+.logo_au {
+    background: url(img/logos/logo_au.jpg) no-repeat center 50%;
+}
+.logo_au_th {
+    background: url(img/logos/logo_au_th.jpg) no-repeat center 50%;
+}
+.logo_abn {
+    background: url(img/logos/logo_abn.jpg) no-repeat center 50%;
+}
+.logo_ciat {
+    background: url(img/logos/logo_ciat.jpg) no-repeat center 50%;
+}
+.logo_cilss {
+    background: url(img/logos/logo_cilss.jpg) no-repeat center 50%;
+}
+.logo_ecowas {
+    background: url(img/logos/logo_ecowas.jpg) no-repeat center 50%;
+}
+.logo_fao {
+    background: url(img/logos/logo_fao.jpg) no-repeat center 50%;
+}
+.logo_gef {
+    background: url(img/logos/logo_gef.png) no-repeat center 50%;
+}
+.logo_gefweb {
+    background: url(img/logos/logo_gef.png) no-repeat center 50%;
+}
+.logo_globalmechanism {
+    background: url(img/logos/logo_globalmechanism.jpg) no-repeat center 50%;
+}
+.logo_manoriverunion {
+    background: url(img/logos/logo_manoriverunion.jpg) no-repeat center 50%;
+}
+.logo_omvg {
+    background: url(img/logos/logo_omvg.jpg) no-repeat center 50%;
+}
+.logo_omvs {
+    background: url(img/logos/logo_omvs.jpg) no-repeat center 50%;
+}
+.logo_unep {
+    background: url(img/logos/logo_unep.jpg) no-repeat center 50%;
+}
+.logo_wac {
+    background: url(img/logos/logo_wac.jpg) no-repeat center 50%;
+}
+.logo_gwpao4 {
+    background: url(img/logos/logo_gwpao4.jpg) no-repeat center 50%;
+}
+
+.csw-viewer{
+    background-image: url(img/geosilk/server_table.png);
+}

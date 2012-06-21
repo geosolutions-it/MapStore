@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Test.AnotherWay: mouse recording test page</title>
+<style type="text/css">
+div { 	position: absolute; color: #fff; font-size:12pt; font-weight: bold;
+	margin: 0; width: 6em; text-align: center; }
+</style>
+<script type="text/javascript">
+<!--
+
+var object;
+var target;
+
+var dragging=false;
+var over_target=false;
+var mouse_starting_point;
+var object_starting_point;
+
+function object_coords( obj )
+{
+	return { x: parseInt( obj.style.left ), y: parseInt( obj.style.top ) };
+}
+function event_coords( e )
+{
+	if( e.pageX!=null && e.pageY!=null ) {
+		return { x: e.pageX, y: e.pageY };
+	}else if( e.clientX!=null && e.clientY!=null ) {
+		return { x: e.clientX+document.body.scrollLeft, y: e.clientY+document.body.scrollTop };
+	}
+	return { x: 0, y:0 };
+}
+function intersect( obj1, obj2 )
+{
+	var topleft1=object_coords( obj1 );
+	var topleft2=object_coords( obj2 );
+	var bottomright1={ x: topleft1.x+obj1.clientWidth, y: topleft1.y+obj1.clientHeight };
+	var bottomright2={ x: topleft2.x+obj2.clientWidth, y: topleft2.y+obj2.clientHeight };
+	return topleft1.x<bottomright2.x && topleft2.x<bottomright1.x 
+	    && topleft1.y<bottomright2.y && topleft2.y<bottomright1.y;
+}
+
+function on_mousedown( e )
+{
+	var o;
+	if( e==null ) {
+		e=window.event;
+		o=e.srcElement;
+	}else {
+		o=e.target;
+	}
+	if( object!=null && o==object ) {
+		dragging=true;
+		mouse_starting_point=event_coords( e );
+		object_starting_point=object_coords( object );
+	}else {
+		dragging=false;
+	}
+}
+function on_mousemove( e )
+{
+	if( e==null ) {
+		e=window.event;
+	}
+	if( dragging ) {
+		var point=event_coords( e );
+		point.x+=object_starting_point.x-mouse_starting_point.x;
+		point.y+=object_starting_point.y-mouse_starting_point.y;
+		object.style.left=point.x+"px";
+		object.style.top=point.y+"px";
+		if( intersect( object, target ) ) {
+			target.style.border="3px solid #c08";
+			over_target=true;
+		}else {
+			target.style.border="";
+			over_target=false;
+		}
+	}
+}
+function on_mouseup( e )
+{
+	if( over_target ) {
+		object.style.display="none";
+		object=null;
+		target.innerHTML="done";
+		target.style.border="3px solid #082";
+	}
+	dragging=false;
+}
+
+onload=function()
+{
+	object=document.getElementById( "object" );
+	target=document.getElementById( "target" );
+	document.body.onmousemove=on_mousemove;
+	document.body.onmousedown=on_mousedown;
+	document.body.onmouseup=on_mouseup;
+}
+// -->
+</script>
+</head>
+<body>
+<div id="object" style="top:100px; left:50px; z-index: 3; padding: 50px 10px; background-color: #082;">
+drag me
+</div>
+<div id="target" style="top:50px; left:300px; z-index: 2; padding: 120px 70px; background-color: #20a;">
+and drop here
+</div>
+</body>

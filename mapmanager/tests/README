@@ -1,0 +1,14 @@
+
+Test.AnotherWay is a single web page that uses simple convention 
+for writing and running tests, has nice UI, and has handy methods
+for testing web pages, testing asyncronous code, recording and
+replaying mouse input, and tracing test execution.
+
+See doc/doc.html for complete documentation with examples.
+
+It can also run tests written for Test.Simple framework, 
+and there is an adapter, lib/Test/AnotherWay.js, useful as 
+drop-in replacement for Test.Builder, Test.Harness and Test.Simple.
+
+See lib/Test/README.jsan for more information on Test.Simple compatibility.
+

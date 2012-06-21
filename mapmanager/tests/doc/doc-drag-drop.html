@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Test.AnotherWay: drag-drop page source</title>
+<link rel="stylesheet" type="text/css" href="doc.css"></link>
+<link rel="stylesheet" type="text/css" href="syntax.css"></link>
+</head>
+<body>
+
+<h3>The source for drag-drop.html</h3>
+
+<div class="example"><pre>
+<span class="def_Directive">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01//EN&quot; &quot;<span class="def_URL">http://www.w3.org/TR/html4/strict.dtd</span>&quot;&gt;</span>
+<span class="def_Tag">&lt;html&gt;</span>
+<span class="def_Tag">&lt;head&gt;</span>
+<span class="def_Tag">&lt;title&gt;</span>Test.AnotherWay: mouse recording test page<span class="def_Tag">&lt;/title&gt;</span>
+<span class="def_Tag">&lt;style type=&quot;text/css&quot;&gt;</span>
+div { 	position: absolute; color: #fff; font-size:12pt; font-weight: bold;
+	margin: 0; width: 6em; text-align: center; }
+<span class="def_Tag">&lt;/style&gt;</span>
+<span class="def_Tag">&lt;script type=&quot;text/javascript&quot;&gt;</span>
+<span class="def_Comment">&lt;!--</span>
+
+<span class="def_Keyword">var</span> object<span class="def_Symbol">;</span>
+<span class="def_Keyword">var</span> target<span class="def_Symbol">;</span>
+
+<span class="def_Keyword">var</span> dragging<span class="def_Symbol">=</span><span class="def_Constant">false</span><span class="def_Symbol">;</span>
+<span class="def_Keyword">var</span> over_target<span class="def_Symbol">=</span><span class="def_Constant">false</span><span class="def_Symbol">;</span>
+<span class="def_Keyword">var</span> mouse_starting_point<span class="def_Symbol">;</span>
+<span class="def_Keyword">var</span> object_starting_point<span class="def_Symbol">;</span>
+
+<span class="def_Keyword">function</span> <span class="def_Function">object_coords</span><span class="def_Symbol">(</span> obj <span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+	<span class="def_Keyword">return</span> <span class="def_Symbol">{</span> x<span class="def_Symbol">:</span> <span class="def_Keyword">parseInt</span><span class="def_Symbol">(</span> obj<span class="def_Symbol">.</span>style<span class="def_Symbol">.</span>left <span class="def_Symbol">)</span><span class="def_Symbol">,</span> y<span class="def_Symbol">:</span> <span class="def_Keyword">parseInt</span><span class="def_Symbol">(</span> obj<span class="def_Symbol">.</span>style<span class="def_Symbol">.</span>top <span class="def_Symbol">)</span> <span class="def_Symbol">}</span><span class="def_Symbol">;</span>
+<span class="def_Symbol">}</span>
+<span class="def_Keyword">function</span> <span class="def_Function">event_coords</span><span class="def_Symbol">(</span> e <span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+	<span class="def_Keyword">if</span><span class="def_Symbol">(</span> e<span class="def_Symbol">.</span>pageX<span class="def_Symbol">!=</span><span class="def_Constant">null</span> <span class="def_Symbol">&amp;&amp;</span> e<span class="def_Symbol">.</span>pageY<span class="def_Symbol">!=</span><span class="def_Constant">null</span> <span class="def_Symbol">)</span> <span class="def_Symbol">{</span>
+		<span class="def_Keyword">return</span> <span class="def_Symbol">{</span> x<span class="def_Symbol">:</span> e<span class="def_Symbol">.</span>pageX<span class="def_Symbol">,</span> y<span class="def_Symbol">:</span> e<span class="def_Symbol">.</span>pageY <span class="def_Symbol">}</span><span class="def_Symbol">;</span>
+	<span class="def_Symbol">}</span><span class="def_Keyword">else</span> <span class="def_Keyword">if</span><span class="def_Symbol">(</span> e<span class="def_Symbol">.</span>clientX<span class="def_Symbol">!=</span><span class="def_Constant">null</span> <span class="def_Symbol">&amp;&amp;</span> e<span class="def_Symbol">.</span>clientY<span class="def_Symbol">!=</span><span class="def_Constant">null</span> <span class="def_Symbol">)</span> <span class="def_Symbol">{</span>
+		<span class="def_Keyword">return</span> <span class="def_Symbol">{</span> x<span class="def_Symbol">:</span> e<span class="def_Symbol">.</span>clientX<span class="def_Symbol">+</span>document<span class="def_Symbol">.</span>body<span class="def_Symbol">.</span>scrollLeft<span class="def_Symbol">,</span> y<span class="def_Symbol">:</span> e<span class="def_Symbol">.</span>clientY<span class="def_Symbol">+</span>document<span class="def_Symbol">.</span>body<span class="def_Symbol">.</span>scrollTop <span class="def_Symbol">}</span><span class="def_Symbol">;</span>
+	<span class="def_Symbol">}</span>
+	<span class="def_Keyword">return</span> <span class="def_Symbol">{</span> x<span class="def_Symbol">:</span> <span class="def_Number">0</span><span class="def_Symbol">,</span> y<span class="def_Symbol">:</span><span class="def_Number">0</span> <span class="def_Symbol">}</span><span class="def_Symbol">;</span>
+<span class="def_Symbol">}</span>
+<span class="def_Keyword">function</span> <span class="def_Function">intersect</span><span class="def_Symbol">(</span> obj1<span class="def_Symbol">,</span> obj2 <span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+	<span class="def_Keyword">var</span> topleft1<span class="def_Symbol">=</span>object_coords<span class="def_Symbol">(</span> obj1 <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	<span class="def_Keyword">var</span> topleft2<span class="def_Symbol">=</span>object_coords<span class="def_Symbol">(</span> obj2 <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	<span class="def_Keyword">var</span> bottomright1<span class="def_Symbol">=</span><span class="def_Symbol">{</span> x<span class="def_Symbol">:</span> topleft1<span class="def_Symbol">.</span>x<span class="def_Symbol">+</span>obj1<span class="def_Symbol">.</span>clientWidth<span class="def_Symbol">,</span> y<span class="def_Symbol">:</span> topleft1<span class="def_Symbol">.</span>y<span class="def_Symbol">+</span>obj1<span class="def_Symbol">.</span>clientHeight <span class="def_Symbol">}</span><span class="def_Symbol">;</span>
+	<span class="def_Keyword">var</span> bottomright2<span class="def_Symbol">=</span><span class="def_Symbol">{</span> x<span class="def_Symbol">:</span> topleft2<span class="def_Symbol">.</span>x<span class="def_Symbol">+</span>obj2<span class="def_Symbol">.</span>clientWidth<span class="def_Symbol">,</span> y<span class="def_Symbol">:</span> topleft2<span class="def_Symbol">.</span>y<span class="def_Symbol">+</span>obj2<span class="def_Symbol">.</span>clientHeight <span class="def_Symbol">}</span><span class="def_Symbol">;</span>
+	<span class="def_Keyword">return</span> topleft1<span class="def_Symbol">.</span>x<span class="def_Symbol">&lt;</span>bottomright2<span class="def_Symbol">.</span>x <span class="def_Symbol">&amp;&amp;</span> topleft2<span class="def_Symbol">.</span>x<span class="def_Symbol">&lt;</span>bottomright1<span class="def_Symbol">.</span>x 
+	    <span class="def_Symbol">&amp;&amp;</span> topleft1<span class="def_Symbol">.</span>y<span class="def_Symbol">&lt;</span>bottomright2<span class="def_Symbol">.</span>y <span class="def_Symbol">&amp;&amp;</span> topleft2<span class="def_Symbol">.</span>y<span class="def_Symbol">&lt;</span>bottomright1<span class="def_Symbol">.</span>y<span class="def_Symbol">;</span>
+<span class="def_Symbol">}</span>
+
+<span class="def_Keyword">function</span> <span class="def_Function">on_mousedown</span><span class="def_Symbol">(</span> e <span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+	<span class="def_Keyword">var</span> o<span class="def_Symbol">;</span>
+	<span class="def_Keyword">if</span><span class="def_Symbol">(</span> e<span class="def_Symbol">==</span><span class="def_Constant">null</span> <span class="def_Symbol">)</span> <span class="def_Symbol">{</span>
+		e<span class="def_Symbol">=</span>window<span class="def_Symbol">.</span>event<span class="def_Symbol">;</span>
+		o<span class="def_Symbol">=</span>e<span class="def_Symbol">.</span>srcElement<span class="def_Symbol">;</span>
+	<span class="def_Symbol">}</span><span class="def_Keyword">else</span> <span class="def_Symbol">{</span>
+		o<span class="def_Symbol">=</span>e<span class="def_Symbol">.</span>target<span class="def_Symbol">;</span>
+	<span class="def_Symbol">}</span>
+	<span class="def_Keyword">if</span><span class="def_Symbol">(</span> object<span class="def_Symbol">!=</span><span class="def_Constant">null</span> <span class="def_Symbol">&amp;&amp;</span> o<span class="def_Symbol">==</span>object <span class="def_Symbol">)</span> <span class="def_Symbol">{</span>
+		dragging<span class="def_Symbol">=</span><span class="def_Constant">true</span><span class="def_Symbol">;</span>
+		mouse_starting_point<span class="def_Symbol">=</span>event_coords<span class="def_Symbol">(</span> e <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+		object_starting_point<span class="def_Symbol">=</span>object_coords<span class="def_Symbol">(</span> object <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	<span class="def_Symbol">}</span><span class="def_Keyword">else</span> <span class="def_Symbol">{</span>
+		dragging<span class="def_Symbol">=</span><span class="def_Constant">false</span><span class="def_Symbol">;</span>
+	<span class="def_Symbol">}</span>
+<span class="def_Symbol">}</span>
+<span class="def_Keyword">function</span> <span class="def_Function">on_mousemove</span><span class="def_Symbol">(</span> e <span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+	<span class="def_Keyword">if</span><span class="def_Symbol">(</span> e<span class="def_Symbol">==</span><span class="def_Constant">null</span> <span class="def_Symbol">)</span> <span class="def_Symbol">{</span>
+		e<span class="def_Symbol">=</span>window<span class="def_Symbol">.</span>event<span class="def_Symbol">;</span>
+	<span class="def_Symbol">}</span>
+	<span class="def_Keyword">if</span><span class="def_Symbol">(</span> dragging <span class="def_Symbol">)</span> <span class="def_Symbol">{</span>
+		<span class="def_Keyword">var</span> point<span class="def_Symbol">=</span>event_coords<span class="def_Symbol">(</span> e <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+		point<span class="def_Symbol">.</span>x<span class="def_Symbol">+=</span>object_starting_point<span class="def_Symbol">.</span>x<span class="def_Symbol">-</span>mouse_starting_point<span class="def_Symbol">.</span>x<span class="def_Symbol">;</span>
+		point<span class="def_Symbol">.</span>y<span class="def_Symbol">+=</span>object_starting_point<span class="def_Symbol">.</span>y<span class="def_Symbol">-</span>mouse_starting_point<span class="def_Symbol">.</span>y<span class="def_Symbol">;</span>
+		object<span class="def_Symbol">.</span>style<span class="def_Symbol">.</span>left<span class="def_Symbol">=</span>point<span class="def_Symbol">.</span>x<span class="def_Symbol">+</span><span class="def_String">&quot;px&quot;</span><span class="def_Symbol">;</span>
+		object<span class="def_Symbol">.</span>style<span class="def_Symbol">.</span>top<span class="def_Symbol">=</span>point<span class="def_Symbol">.</span>y<span class="def_Symbol">+</span><span class="def_String">&quot;px&quot;</span><span class="def_Symbol">;</span>
+		<span class="def_Keyword">if</span><span class="def_Symbol">(</span> intersect<span class="def_Symbol">(</span> object<span class="def_Symbol">,</span> target <span class="def_Symbol">)</span> <span class="def_Symbol">)</span> <span class="def_Symbol">{</span>
+			target<span class="def_Symbol">.</span>style<span class="def_Symbol">.</span>border<span class="def_Symbol">=</span><span class="def_String">&quot;3px solid #c08&quot;</span><span class="def_Symbol">;</span>
+			over_target<span class="def_Symbol">=</span><span class="def_Constant">true</span><span class="def_Symbol">;</span>
+		<span class="def_Symbol">}</span><span class="def_Keyword">else</span> <span class="def_Symbol">{</span>
+			target<span class="def_Symbol">.</span>style<span class="def_Symbol">.</span>border<span class="def_Symbol">=</span><span class="def_String">&quot;&quot;</span><span class="def_Symbol">;</span>
+			over_target<span class="def_Symbol">=</span><span class="def_Constant">false</span><span class="def_Symbol">;</span>
+		<span class="def_Symbol">}</span>
+	<span class="def_Symbol">}</span>
+<span class="def_Symbol">}</span>
+<span class="def_Keyword">function</span> <span class="def_Function">on_mouseup</span><span class="def_Symbol">(</span> e <span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+	<span class="def_Keyword">if</span><span class="def_Symbol">(</span> over_target <span class="def_Symbol">)</span> <span class="def_Symbol">{</span>
+		object<span class="def_Symbol">.</span>style<span class="def_Symbol">.</span>display<span class="def_Symbol">=</span><span class="def_String">&quot;none&quot;</span><span class="def_Symbol">;</span>
+		object<span class="def_Symbol">=</span><span class="def_Constant">null</span><span class="def_Symbol">;</span>
+		target<span class="def_Symbol">.</span>innerHTML<span class="def_Symbol">=</span><span class="def_String">&quot;done&quot;</span><span class="def_Symbol">;</span>
+		target<span class="def_Symbol">.</span>style<span class="def_Symbol">.</span>border<span class="def_Symbol">=</span><span class="def_String">&quot;3px solid #082&quot;</span><span class="def_Symbol">;</span>
+	<span class="def_Symbol">}</span>
+	dragging<span class="def_Symbol">=</span><span class="def_Constant">false</span><span class="def_Symbol">;</span>
+<span class="def_Symbol">}</span>
+
+onload<span class="def_Symbol">=</span><span class="def_Keyword">function</span><span class="def_Symbol">(</span><span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+	object<span class="def_Symbol">=</span>document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;object&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	target<span class="def_Symbol">=</span>document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;target&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	document<span class="def_Symbol">.</span>body<span class="def_Symbol">.</span>onmousemove<span class="def_Symbol">=</span>on_mousemove<span class="def_Symbol">;</span>
+	document<span class="def_Symbol">.</span>body<span class="def_Symbol">.</span>onmousedown<span class="def_Symbol">=</span>on_mousedown<span class="def_Symbol">;</span>
+	document<span class="def_Symbol">.</span>body<span class="def_Symbol">.</span>onmouseup<span class="def_Symbol">=</span>on_mouseup<span class="def_Symbol">;</span>
+<span class="def_Symbol">}</span>
+<span class="def_Comment">// --&gt;</span>
+<span class="def_Tag">&lt;/script&gt;</span>
+<span class="def_Tag">&lt;/head&gt;</span>
+<span class="def_Tag">&lt;body&gt;</span>
+<span class="def_Tag">&lt;div <span class="def_Parameter">id</span><span class="def_Symbol">=</span><span class="def_String">&quot;object&quot;</span> <span class="def_Parameter">style</span><span class="def_Symbol">=</span><span class="def_String">&quot;</span>top:100px; left:50px; z-index: 1; padding: 50px 10px; background-color: #082;<span class="def_String">&quot;</span>&gt;</span>
+drag me
+<span class="def_Tag">&lt;/div&gt;</span>
+<span class="def_Tag">&lt;div <span class="def_Parameter">id</span><span class="def_Symbol">=</span><span class="def_String">&quot;target&quot;</span> <span class="def_Parameter">style</span><span class="def_Symbol">=</span><span class="def_String">&quot;</span>top:50px; left:300px; z-index: 0; padding: 120px 70px; background-color: #20a;<span class="def_String">&quot;</span>&gt;</span>
+and drop here
+<span class="def_Tag">&lt;/div&gt;</span>
+<span class="def_Tag">&lt;/body&gt;</span>
+</pre></div>
+
+</body>
+</html>
+

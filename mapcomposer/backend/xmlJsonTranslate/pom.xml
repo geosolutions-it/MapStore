@@ -1,0 +1,212 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>xmlJsonTranslate</groupId>
+	<artifactId>xmlJsonTranslate</artifactId>
+	<packaging>war</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>xmlJsonTranslate</name>
+	<url>http://maven.apache.org</url>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+
+			<!-- We skip the unit tests when building and packaging because it
+				it requires specific test set-up. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.0</version>
+				<configuration>
+					<webXml>
+						${basedir}/src/main/webapp/WEB-INF/web.xml
+					</webXml>
+					<warName>xmlJsonTranslate</warName>
+				</configuration>
+			</plugin>
+			
+		  <plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<version>6.1.19</version>
+				<configuration>
+					<contextPath>xmlJsonTranslate</contextPath>
+					<connectors>
+						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+							<port>8082</port>
+							<maxIdleTime>10000</maxIdleTime>
+						</connector>
+					</connectors>
+					<contextPath>xmlJsonTranslate</contextPath>
+					<webAppSourceDirectory>${project.build.directory}/xmlJsonTranslate-1.0-SNAPSHOT</webAppSourceDirectory>
+				</configuration>
+			</plugin>
+			
+		</plugins>
+	</build>
+	
+	<dependencies>	
+		<!-- JUnit dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- Log4J dependencies -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.14</version>
+		</dependency>
+		
+		<!-- Dom4J dependencies -->		
+	    <dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>		
+
+		<!-- Commons -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2</version>
+		</dependency>
+
+		<dependency>
+    			<groupId>commons-httpclient</groupId>
+    			<artifactId>commons-httpclient</artifactId>
+    			<version>3.1</version>
+		</dependency>
+		
+		<dependency>
+          <groupId>javax.servlet</groupId>
+          <artifactId>servlet-api</artifactId>
+          <version>2.3</version>
+    </dependency>
+    
+    <!-- Mortbay dependencies -->
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty</artifactId>
+			<version>6.1.19</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jsp-2.0</artifactId>
+			<version>6.1.19</version>
+			<type>pom</type>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+        <groupId>net.sf.json-lib</groupId>
+        <artifactId>json-lib</artifactId>
+        <version>2.3</version>
+        <type>jar</type>
+        <classifier>jdk15</classifier>
+        <scope>compile</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>1.3.2</version>
+        <type>jar</type>
+        <scope>compile</scope>
+    </dependency>
+    <dependency>
+        <groupId>xom</groupId>
+        <artifactId>xom</artifactId>
+        <version>1.1</version>
+    </dependency>
+
+
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>ibiblio</id>
+			<name>
+				Ibiblio - the public's library and digital archive
+			</name>
+			<url>http://www.ibiblio.org/maven2</url>
+		</repository>
+
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>central</id>
+			<name>Maven Repository Switchboard</name>
+			<url>http://repo1.maven.org/maven2</url>
+		</repository>
+
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>Springframework</id>
+			<name>Maven Repository Switchboard</name>
+			<url>http://repo1.maven.org/maven2</url>
+		</repository>
+
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>vividsolutions</id>
+			<name>jts Repository</name>
+			<url>http://maven.geotools.fr/repository</url>
+		</repository>
+
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>maven-restlet</id>
+			<name>Public online Restlet repository</name>
+			<url>http://maven.restlet.org</url>
+		</repository>
+
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>noelios</id>
+			<name>Public online Noelios repository</name>
+			<url>http://maven.noelios.com</url>
+		</repository>
+		
+		<repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>geotools</id>
+            <name>Geotools repository</name>
+            <url>http://maven.geotools.fr/repository</url>
+        </repository>
+	</repositories>
+
+</project>

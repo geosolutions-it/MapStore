@@ -1,0 +1,15 @@
+<html><head><script type="text/javascript">
+<!--
+
+function test_debug( t )
+{
+	t.plan( 1 ); 
+	var items=[1,2];
+	t.debug_print( items.toString() );
+	t.ok( items.length>1, "more than one item" );
+	t.debug_print( "bye" );
+}
+
+// -->
+</script></head><body>
+</body></html>

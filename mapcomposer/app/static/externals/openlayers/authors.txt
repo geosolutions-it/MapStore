@@ -1,0 +1,17 @@
+ahocevar = ahocevar <andreas.hocevar@gmail.com>
+bartvde = bartvde <bartvde@osgis.nl>
+crschmidt = crschmidt <crschmidt@crschmidt.net>
+elemoine = Éric Lemoine <eric.lemoine@camptocamp.com>
+erilem = Éric Lemoine <eric.lemoine@camptocamp.com>
+euzuro = euzuro <USER@DOMAIN>
+follower = follower <USER@DOMAIN>
+fredj = Frédéric Junod <frederic.junod@camptocamp.com>
+jrf = jrf <USER@DOMAIN>
+pagameba = Paul Spencer <pspencer@dmsolutions.ca>
+pgiraud = pgiraud <pierre.giraud@camptocamp.com>
+sderle = Schuyler Erle <schuyler@nocat.net>
+tschaub = Tim Schaub <tim.schaub@gmail.com>
+sbrunner = Stéphane Brunner <stephane.brunner@camptocamp.com>
+aabt = Antoine Abt <antoine.abt@camptocamp.com>
+bbinet = Bruno Binet <bruno.binet@camptocamp.com>
+marcjansen = Marc Jansen <jansen@terrestris.de>

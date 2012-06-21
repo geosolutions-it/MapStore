@@ -1,0 +1,70 @@
+.x-cp-rgbpicker {
+	background-image: url(../img/mask.png);
+	background-repeat: no-repeat;
+	background-color: red;
+	width: 182px;
+	height: 182px;
+	margin: 7px;
+	float: left;
+	cursor: pointer;
+	/*_margin: 7px 7px 7px 4px;
+	_cursor: hand;
+	_background-image:none;
+	_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='mask.png',sizingMethod='scale');*/
+}
+.x-cp-rgbslider {
+	position: relative;
+	left: -7px;
+	top: -7px;
+	width: 15px;
+	height: 15px;
+	background-image: url(../img/slider-rgb.gif) !important;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	/*_cursor: hand;*/
+}
+.x-cp-huepicker {
+	height: 183px;
+	width: 9px;
+	float: left;
+	margin: 7px 0 0 7px;
+	background-image: url(../img/hue.png) !important;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	/*_cursor: hand;*/
+}
+.x-cp-hueslider {
+	position: relative;
+	left: -3px;
+	top: -7px;
+	width: 15px;
+	height: 15px;
+	background-image: url(../img/slider-rgb.gif) !important;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	/*_cursor: hand;*/
+}
+.x-cp-formcontainer {
+	float: left;
+	width: 116px;
+	padding: 2px;
+	border: none;
+	margin: -24px 0 0 7px !important;
+}
+.x-cp-clearfloat {
+	clear: both;
+}
+.x-cp-colorbox {
+	margin: 2px 5px 0 5px;
+	border: 1px solid black;
+	text-align: center;
+	font-size: 10px;
+	height: 12px;
+	font-weight: bold;
+	padding: 3px 0;
+	cursor: pointer;
+	/*_cursor: hand;*/
+}
+.x-cp-formcontainer input {
+	text-align: center;
+}

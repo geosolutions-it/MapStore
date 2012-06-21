@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <script type="text/javascript" src="../../lib/Test/AnotherWay.js"></script>
+  </head>
+  <body>
+	Test written in a jsan-compatible way
+    <pre id="test"><script>
+	Test.AnotherWay.set_runner_location( "../..", "doc/jsan" );
+	// just use global functions
+	plan( {tests: 2} );
+	delay_call( function() {
+			like( "boo", /b/, "like test" );
+		}, function() {
+			open_window( "doc/geo-input.html", function( wnd ) {  // NOTE: path relative to the run-testsl.html directory
+				eq( wnd.document.getElementById( "address" ).nodeName, "INPUT", "input element found" );
+			} );
+		}
+	);
+    </script></pre>
+  </body>
+</html>

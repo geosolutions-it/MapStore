@@ -1,0 +1,73 @@
+
+AnotherWay.js allows tests written for Test.Simple framework
+to use prettier run-tests.html web page for displaying results.
+(see ../../doc/index.html or
+http://straytree.com/TestAnotherWay/doc/index.html about it).
+
+Just replace any use of Test.Simple, Test.Builder, Test.Harness
+and Test.Harness.Browser in your tests (and index.html file)
+with Test.AnotherWay, and run tests in usual JSAN way, by opening pages.
+
+There are also additional methods available for tests, besides ok and plan:
+
+fail( description );
+eq( got, expected, description ); // deep equality
+like( got, expected_regex, description );
+html_eq( got_html, expected_html, description ); // html either string or node
+debug_print( text ); // for tracing test execution
+wait_result( seconds ); // for testing asyncronous code
+delay_call( optional_delay, functions, ... ); // for testing asyncronous code
+open_window( url, function( wnd ) {...} ); // for testing html pages (beware of popup blockers!)
+replay_events( wnd, events ); // for replaying prerecorded mouse input
+
+See ../../doc/doc.html or http://straytree.com/TestAnotherWay/doc/doc.html
+for more details on these methods.
+
+
+Examples:
+
+See the ../../doc/jsan subdirectory.
+
+
+Setup:
+
+Copy run-tests.html into the directory with your test pages.
+Copy lib/Test/AnotherWay.js into the directory where it will be found by
+your tests. Replace any use of Test.Simple, Test.Builder, Test.Harness
+and Test.Harness.Browser with Test.AnotherWay.
+
+
+Limitations:
+
+All test pages, index.html and run-tests.html are assumed to be
+in the same directory. Otherwize, the first thing in tests and
+index html must be a call to Test.AnotherWay.set_runner_location
+with two arguments: relative path to the directory where run-tests.html
+is located, and relative path from there to the tests directory
+(see ../../doc/jsan for an example).
+
+When opening individual test pages (not index.html),
+the test code runs twice, the results of the first run are discarded.
+
+None of Test.More functions are supported (besides ok and plan).
+
+Browser compatibility:
+
+Opera:
+
+Test/AnotherWay.js does not work in versions of Opera prior to 8.0.
+(run-tests.html by itself works in Opera 7.5 too).
+
+It appears that jsan.use() does not work in Opera.
+For Opera compatibility you should resort to <script> tag.
+
+IE:
+
+Test/AnotherWay works in IE 6.0 only. IE6 SP2 was not tested.
+(run-tests.html by itself works in IE 5.5 too).
+
+Firefox should work.
+
+This thing was not tested in Safari/Konqueror.
+
+

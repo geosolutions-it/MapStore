@@ -1,0 +1,36 @@
+<html>
+<head>
+<title>Test.AnotherWay: interactive test page</title>
+<script type="text/javascript">
+<!--
+
+function geoCoords( address, callback ) 
+{
+	var lat, lng;
+	if( address.search( "305 Harrison St" )!=-1 && address.search( "Seattle" )!=-1 && address.search( "WA" )!=-1 ) {
+		lat=46.620108;
+		lng=-122.352333;
+	}
+	window.setTimeout( function() { callback( lat, lng ); }, 1000 );
+}
+
+function get_coords()
+{
+	var address=document.getElementById( "address" ).value;
+	geoCoords( address, function( lat, lng ) {
+		document.getElementById( "latitude" ).value=lat;
+		document.getElementById( "longitude" ).value=lng;
+	} );
+}
+
+// -->
+</script>
+</head>
+<body><table><col width="8em">
+<tr><td>address:</td><td><input type="text" id="address" /></td></tr>
+<tr><td colspan="2">
+<input type="button" value="get coords" onclick="get_coords();" id="get_coords" />
+</td></tr>
+<tr><td>latitude:</td><td><input type="text" id="latitude" /></td></tr>
+<tr><td>longitude:</td><td><input type="text" id="longitude" /></td></tr>
+</table></body>

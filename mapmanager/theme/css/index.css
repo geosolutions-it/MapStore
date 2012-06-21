@@ -1,0 +1,72 @@
+body {
+	text-align:center;
+	background: url(../home/background.jpg) #51534E;
+	background-size: 100%;
+	-moz-background-size: 100%;
+	-webkit-background-origin: 100%;
+	font-family:  Arial, Sans-serif, Helvetica;
+}
+
+.content {
+    text-align:left;
+	width: 900px;
+	margin: 45px auto 0 auto;
+	overflow: hidden;
+}
+
+.twitter a {
+	background: url(../home/twitter.png) no-repeat right;
+	padding: 0 45px 0 0;
+	height: 36px;
+	float: right;
+	line-height: 50px;
+	display: block;
+	color: #33ccff;
+	text-decoration: none;
+	text-shadow: 0 0 12px rgba(0,0,0, .9);
+}
+
+.twitter a:hover {
+	color: #eee;
+}
+
+.gplus a{
+	padding: 0 0px 0 0;
+	float: right;
+	line-height: 50px;
+	display: block;
+	color: #33ccff;
+	text-decoration: none;
+	text-shadow: 0 0 12px rgba(0,0,0, .9);
+}
+
+.mail a {
+	padding: 0 10px 0 50px;
+	float: right;
+	line-height: 50px;
+	display: block;
+	color: #33ccff;
+	text-decoration: none;
+	text-shadow: 0 0 12px rgba(0,0,0, .9);
+}
+
+.mail a:hover {
+	color: #eee;
+}
+
+.middle a {
+	color: #33ccff;
+}
+
+.middle a:hover {
+	color: #eee;
+}
+
+.middle p {
+	display: block;
+	color: #ddd;
+	text-shadow: 0 0 12px rgba(0,0,0, .9);
+	line-height: 50px;
+	padding: 0 0 0 55px;
+	overflow: hidden;
+}

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	
+	<display-name>xmlJsonTranslate</display-name>
+
+  <!-- Save Servlet -->
+  <servlet>
+    <servlet-name>HTTPWebGISSave</servlet-name>
+    <servlet-class>it.geosolutions.xmlJsonTranslate.HTTPWebGISSave</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>HTTPWebGISSave</servlet-name>
+    <url-pattern>/HTTPWebGISSave/*</url-pattern>
+  </servlet-mapping>
+  
+  <!-- File Upload Servlet -->
+  <servlet>
+    <servlet-name>HTTPWebGISFileUpload</servlet-name>
+    <servlet-class>it.geosolutions.xmlJsonTranslate.HTTPWebGISFileUpload</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>HTTPWebGISFileUpload</servlet-name>
+    <url-pattern>/HTTPWebGISFileUpload/*</url-pattern>
+  </servlet-mapping>
+
+  <!-- XML Upload Servlet -->
+  <servlet>
+    <servlet-name>HTTPWebGISXmlUpload</servlet-name>
+    <servlet-class>it.geosolutions.xmlJsonTranslate.HTTPWebGISXmlUpload</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>HTTPWebGISXmlUpload</servlet-name>
+    <url-pattern>/HTTPWebGISXmlUpload/*</url-pattern>
+  </servlet-mapping>
+  
+  <!-- File Download Servlet -->
+  <servlet>
+    <servlet-name>HTTPWebGISFileDownload</servlet-name>
+    <servlet-class>it.geosolutions.xmlJsonTranslate.HTTPWebGISFileDownload</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>HTTPWebGISFileDownload</servlet-name>
+    <url-pattern>/HTTPWebGISFileDownload/*</url-pattern>
+  </servlet-mapping>
+  
+</web-app>

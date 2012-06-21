@@ -1,0 +1,18 @@
+<html>
+<head>
+    <script type="text/javascript" src="../../lib/Test/AnotherWay.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+  
+  Test.AnotherWay.set_runner_location( "../..", "doc/jsan" );
+  
+  var t = new Test.Harness.Browser();
+  
+  t.runTests(
+    "one.t.html",
+    "two.t.html"
+  );
+</script>
+</body>
+</html>

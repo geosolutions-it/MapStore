@@ -1,0 +1,16 @@
+2006-07-20      v0.52
+  - Applied fix for a bug in waiting for complete page load in Firefox, contributed by Ben Nolan - thanks!
+
+2005-09-22      v0.51
+
+  - Changed (visuals): removed highlighting of HTML element under mouse cursor while recording,
+    changed highlight style when replaying.
+  - Fixed: mouse events recorded in Opera did not always replayed properly in Firefox and vice versa.
+    Format for recorded events has changed, you might need to redo your recordings.
+  - Fixed: time countdown displayed wrongly for replay_events
+  - Fixed: jsan tests loaded via AnotherWay.js with set_runner_location do not run on "run" buttons in Opera and Firefox
+  - Fixed: most controls on run-tests.html page non-functional in Opera
+
+2005-09-06      v0.5
+
+  - Initial public release, with five major features implemented.

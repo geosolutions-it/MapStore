@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <script type="text/javascript" src="../../lib/Test/AnotherWay.js"></script>
+  </head>
+  <body>
+	Test written in a jsan-compatible way
+    <pre id="test"><script>
+	Test.AnotherWay.set_runner_location( "../..", "doc/jsan" );
+	var test = new Test.Builder();
+	test.plan( {tests: 5} );
+	test.ok( true, "this is ok" );
+	eq( typeof( test.fail ), "function", "fail implemented" );
+	eq( typeof( test.debug_print ), "function", "debug_print implemented" );
+	eq( typeof( test.delay_call ), "function", "delay_call implemented" );
+	eq( typeof( test.replay_events ), "function", "replay_events implemented" );
+    </script></pre>
+  </body>
+</html>

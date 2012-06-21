@@ -1,0 +1,8 @@
+---
+name: Test.AnotherWay
+abstract: better replacement for Test.Simple 
+author:
+  - Artem Khodush <greenkaa@gmail.com>
+license: BSD
+version: 0.52
+generated_by: hand-made

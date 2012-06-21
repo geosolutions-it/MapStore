@@ -1,0 +1,23 @@
+<html><head><script type="text/javascript">
+<!--
+
+function test_geo_input( t )
+{
+	t.plan( 2 );
+	t.open_window( "doc/geo-input.html", function( wnd ) {
+		var address=wnd.document.getElementById( "address" );
+		address.value="305 Harrison St, Seattle, WA";
+		var button=wnd.document.getElementById( "get_coords" );
+		button.click();
+		t.delay_call( 1.5, function() {
+			var latitude=wnd.document.getElementById( "latitude" );
+			t.eq( latitude.value, "46.620108", "latitude match" );
+			var longitude=wnd.document.getElementById( "longitude" );
+			t.eq( longitude.value, "-122.352333", "longitude match" );
+		} );
+	} );
+}
+
+// -->
+</script></head><body>
+</body></html>

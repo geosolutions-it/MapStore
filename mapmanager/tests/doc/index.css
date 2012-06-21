@@ -1,0 +1,45 @@
+body {
+	background-color: white;
+	color: #222;
+	font-family: verdana, sans-serif;
+	margin: 0.3em 1em;
+	line-height: 140%;
+	width: 80%;
+}
+h1, h2, h3 {
+	font-family: arial, verdana, sans-serif;
+	color: #338;
+}
+h1 {
+	font-size: 1.5em;
+}
+h1.title {
+	padding: 0.5em 0.2em;
+	background-color: #338;
+	color: #fff;
+}
+h1.notitle {
+	margin-top: 2em;
+	font-size: normal;
+	font-weight: normal;
+	color: #222;
+	line-height: 100%;
+}
+.section {
+	margin-top: 1.4em;
+	clear: both;
+}
+.section h2 {
+	margin: 0.3em 1em 0 0;
+	float: left;
+	font-size: 1.2em;
+	height: 100%;
+}
+.section p {
+	padding-top: 0.4em;
+	padding-left: 2em;
+}
+.contents li {
+	margin-left: 3em;
+	margin-top: 0.2em;
+}

@@ -1,0 +1,19 @@
+.def_Number {	color: #008800; }
+.def_String {	color: #00aa00; font-weight: normal; }
+.def_Comment {color: #bb3333;}
+.def_Symbol {	color: #226699; font-weight: bold;}
+.def_Operator {	color: #2266aa; font-weight: bold;}
+.def_Keyword {	color: 333399; font-weight: bold;font-weight: bold;}
+.def_Constant {	color: #007722;}
+.def_Var {	color: #007997;}
+.def_Identifier {	color: #005fd2;}
+.def_Directive {	color: #004a43;}
+.def_Parameter {	color: #074726;}
+.def_Tag {	color: #663399; font-weight:bold;}
+.def_Insertion {	color: #000000;	background-color: #ffffe8;}
+.def_Path {	color: #40015a;}
+.def_URL {	color: #5555DD;}
+.def_EMail {	color: #7144c4;}
+.def_Date {	color: #009797;}
+.def_Time {	color: #8745a0;}
+

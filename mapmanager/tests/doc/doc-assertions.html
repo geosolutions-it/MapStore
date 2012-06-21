@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Test.AnotherWay: assertions example</title>
+<link rel="stylesheet" type="text/css" href="doc.css"></link>
+<link rel="stylesheet" type="text/css" href="syntax.css"></link>
+</head>
+<body>
+
+<h3>Show it all</h3>
+<p>
+This example demonstrates the usage of each assertion method. Scroll below if you want to run it and see its result.
+</p>
+
+<div class="example"><pre>
+<span class="def_Tag">&lt;html&gt;</span><span class="def_Tag">&lt;head&gt;</span><span class="def_Tag">&lt;script type=&quot;text/javascript&quot;&gt;</span>
+<span class="def_Comment">&lt;!--</span>
+<span class="def_Comment">// this test page has four test functions, each makes two assertions.</span>
+<span class="def_Comment">// in each test function, the first assertion is ok, the second fails.</span>
+
+<span class="def_Keyword">function</span> <span class="def_Function">test_ok</span><span class="def_Symbol">(</span> t <span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+	t<span class="def_Symbol">.</span>plan<span class="def_Symbol">(</span> <span class="def_Number">2</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	<span class="def_Keyword">var</span> items<span class="def_Symbol">=</span><span class="def_Symbol">[</span><span class="def_Number">1</span><span class="def_Symbol">,</span><span class="def_Number">2</span><span class="def_Symbol">]</span><span class="def_Symbol">;</span>
+	t<span class="def_Symbol">.</span>ok<span class="def_Symbol">(</span> items<span class="def_Symbol">.</span>length<span class="def_Symbol">&gt;</span><span class="def_Number">1</span><span class="def_Symbol">,</span> <span class="def_String">&quot;more than one item&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	t<span class="def_Symbol">.</span>fail<span class="def_Symbol">(</span> <span class="def_String">&quot;no good&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+<span class="def_Symbol">}</span>
+
+<span class="def_Keyword">function</span> <span class="def_Function">test_eq</span><span class="def_Symbol">(</span> t <span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+	t<span class="def_Symbol">.</span>plan<span class="def_Symbol">(</span> <span class="def_Number">2</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	t<span class="def_Symbol">.</span>eq<span class="def_Symbol">(</span> <span class="def_Number">2</span><span class="def_Symbol">+</span><span class="def_Number">2</span><span class="def_Symbol">,</span> <span class="def_Number">4</span><span class="def_Symbol">,</span> <span class="def_String">&quot;addition test&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	t<span class="def_Symbol">.</span>eq<span class="def_Symbol">(</span>  <span class="def_Symbol">[</span><span class="def_Number">1</span><span class="def_Symbol">,</span><span class="def_String">&quot;got z&quot;</span><span class="def_Symbol">]</span><span class="def_Symbol">,</span><span class="def_Symbol">[</span><span class="def_Number">1</span><span class="def_Symbol">,</span><span class="def_Number">2</span><span class="def_Symbol">]</span><span class="def_Symbol">,</span> <span class="def_String">&quot;arrays differ&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+<span class="def_Symbol">}</span>
+
+<span class="def_Keyword">function</span> <span class="def_Function">test_like</span><span class="def_Symbol">(</span> t <span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+	t<span class="def_Symbol">.</span>plan<span class="def_Symbol">(</span> <span class="def_Number">2</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	t<span class="def_Symbol">.</span>like<span class="def_Symbol">(</span> <span class="def_String">&quot;15&quot;</span><span class="def_String"><span class="def_Symbol">,</span> <span class="def_StringEdge">/</span><span class="def_Symbol">^</span><span class="def_Symbol"><span class="def_PairStart">[</span></span><span class="def_Var">\d</span><span class="def_Symbol"><span class="def_PairEnd">]</span></span><span class="def_Symbol">+</span><span class="def_StringEdge">/</span></span><span class="def_Symbol">,</span> <span class="def_String">&quot;numbers match&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	t<span class="def_Symbol">.</span>like<span class="def_Symbol">(</span> <span class="def_String">&quot;z15&quot;</span><span class="def_String"><span class="def_Symbol">,</span> <span class="def_StringEdge">/</span><span class="def_Symbol">^</span><span class="def_Symbol"><span class="def_PairStart">[</span></span><span class="def_Var">\d</span><span class="def_Symbol"><span class="def_PairEnd">]</span></span><span class="def_Symbol">+</span><span class="def_StringEdge">/</span></span><span class="def_Symbol">,</span> <span class="def_String">&quot;numbers do not match&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+<span class="def_Symbol">}</span>
+
+<span class="def_Keyword">function</span> <span class="def_Function">test_html_eq</span><span class="def_Symbol">(</span> t <span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+	t<span class="def_Symbol">.</span>plan<span class="def_Symbol">(</span> <span class="def_Number">2</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	t<span class="def_Symbol">.</span>html_eq<span class="def_Symbol">(</span>  document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;sample_id&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">,</span>
+			<span class="def_String">&quot;&lt;div id=\&quot;sample_id\&quot; class=\&quot;sample\&quot;&gt;some text&lt;/div&gt;&quot;</span><span class="def_Symbol">,</span>
+			<span class="def_String">&quot;compare sample_id div&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	t<span class="def_Symbol">.</span>html_eq<span class="def_Symbol">(</span> document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;sample_id2&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">,</span>
+			<span class="def_String">&quot;&lt;div id=\&quot;sample_id2\&quot; class=\&quot;sample\&quot;&gt;some text&lt;/div&gt;&quot;</span><span class="def_Symbol">,</span>
+			<span class="def_String">&quot;html differs: extra node&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+<span class="def_Symbol">}</span>
+
+<span class="def_Comment">// --&gt;</span>
+<span class="def_Tag">&lt;/script&gt;</span><span class="def_Tag">&lt;/head&gt;</span><span class="def_Tag">&lt;body&gt;</span>
+<span class="def_Tag">&lt;div <span class="def_Parameter">id</span><span class="def_Symbol">=</span><span class="def_String">&quot;sample_id&quot;</span> <span class="def_Parameter">class</span><span class="def_Symbol">=</span><span class="def_String">&quot;sample&quot;</span>&gt;</span>some text<span class="def_Tag">&lt;/div&gt;</span>
+<span class="def_Tag">&lt;div <span class="def_Parameter">id</span><span class="def_Symbol">=</span><span class="def_String">&quot;sample_id2&quot;</span> <span class="def_Parameter">class</span><span class="def_Symbol">=</span><span class="def_String">&quot;sample&quot;</span>&gt;</span>some <span class="def_Tag">&lt;em&gt;</span>text<span class="def_Tag">&lt;/em&gt;</span><span class="def_Tag">&lt;/div&gt;</span>
+<span class="def_Tag">&lt;/body&gt;</span><span class="def_Tag">&lt;/html&gt;</span>
+</pre></div>
+
+<p>
+You can see how the results look for all these assertions by running the test here:
+</p>
+<iframe src="../run-tests.html?testpage=doc/test-assertions.html" class="screenshot"></iframe>
+
+</body>
+</html>
+

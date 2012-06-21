@@ -1,0 +1,43 @@
+<html><head><script type="text/javascript">
+<!--
+// this test page has four test functions, each makes two assertions.
+// in each test function, the first assertion is ok, the second fails.
+
+function test_ok( t )
+{
+	t.plan( 2 );
+	var items=[1,2];
+	t.ok( items.length>1, "more than one item" );
+	t.fail( "no good" );
+}
+
+function test_eq( t )
+{
+	t.plan( 2 );
+	t.eq( 2+2, 4, "addition test" );
+	t.eq(  [1,"got z"],[1,2], "arrays differ" );
+}
+
+function test_like( t )
+{
+	t.plan( 2 );
+	t.like( "15", /^[\d]+/, "numbers match" );
+	t.like( "z15", /^[\d]+/, "numbers do not match" );
+}
+
+function test_html_eq( t )
+{
+	t.plan( 2 );
+	t.html_eq(  document.getElementById( "sample_id" ),
+			"<div id=\"sample_id\" class=\"sample\">some text</div>",
+			"compare sample_id div" );
+	t.html_eq( document.getElementById( "sample_id2" ),
+			"<div id=\"sample_id2\" class=\"sample\">some text</div>",
+			"html differs: extra node" );
+}
+
+// -->
+</script></head><body>
+<div id="sample_id" class="sample">some text</div>
+<div id="sample_id2" class="sample">some <em>text</em></div>
+</body></html>

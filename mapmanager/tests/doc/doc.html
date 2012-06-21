@@ -1,0 +1,679 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Test.AnotherWay documentation</title>
+<link rel="stylesheet" type="text/css" href="doc.css"></link>
+<link rel="stylesheet" type="text/css" href="syntax.css"></link>
+</head>
+<body>
+<!--
+Copyright (c) 2005 Artem Khodush, http://straytree.org
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
+<h1><a name="chapter1" />Test.AnotherWay: what's it?</h1>
+<p>
+It's a way to write tests for javascript code and html pages, run that tests and view results.
+It's modeled after Test::Simple from perl, like <a href="http://www.openjsan.org/src/t/th/theory/Test.Simple-0.11/doc/html/Test/Simple.html">Test.Simple</a>,
+but with prettier user interface. It is almost, but not quite, entirely unlike <a href="http://www.edwardh.com/jsunit/">JsUnit</a>.
+Test.AnotherWay main design goal is effortless setup and use.
+It has other features that may be of interest:
+<ul>
+<li>It allows to test code that makes asyncronous calls</li>
+<li>It allows to test html pages, without adding test code to those pages</li>
+<li>It has an easy method for comparing HTML, to test whether it is as it should be</li>
+<li>It allows to test user interface: it can record mouse input events and replay them when test is running</li>
+<li>It can log and display debug messages from tests</li>
+</ul>
+It should work in the browsers: IE 5.5 and 6.0,  Mozilla/Firefox, Opera 7.5 and 8. Input events recording is not available in IE and versions of Opera prior to 8.0.
+IE 6 SP2 was not tested.
+</p>
+
+<p>
+<a href="index.html">Back</a> to its home page, with table of contents.
+</p>
+
+<h1><a name="chapter2" />Setup</h1>
+<p>It consists of a single web page: <strong>run-tests.html</strong>. You open it in the browser, run tests and view results.
+<br />It looks like this (try it out here):
+</p>
+<iframe src="../run-tests.html?testpage=doc/test-page-1.html;testpage=doc/test-page-2.html" class="screenshot"></iframe>
+<div class="note">If you have run some tests here, you may note that results for successful test pages are collapsed,
+and results for failed test pages are expanded by default, making it easy to spot the exact place of failure. You can expand or collapse results of each test page by clicking
+on the name of a page in the results pane.
+</div>
+<a name="testpage" />
+<p>You should provide a list of pages that contain tests. There are three ways to do it:
+</p>
+<ul>
+<li>You can specify each page as a parameter to run-tests.html. Here is URL from the example above (it opens in a new window):
+<div class="example">
+<a target="_blank" href="../run-tests.html?testpage=doc/test-page-1.html;testpage=doc/test-page-2.html">
+<pre><span class="def_URL">run-tests.html<span class="def_Symbol">?</span>testpage<span class="def_Symbol">=</span>doc/test-page-1.html<span class="def_Symbol">;</span>testpage=doc/test-page-2.html</span></pre>
+</a>
+</div>
+</li>
+<li>If you do not specify anything, the default list of test pages is loaded from the <strong>list-tests.html</strong> file, which should be
+in the same directory as run-tests.html. The list-tests.html file should contain a list of test pages, and that list should have an id <strong>testlist</strong>.
+In short, the file may look like this:
+<div class="example"><pre>
+<span class="def_Tag">&lt;ul <span class="def_Parameter">id</span><span class="def_Symbol">=</span><span class="def_String">&quot;testlist&quot;</span>&gt;</span>
+<span class="def_Tag">&lt;li&gt;</span><a href="doc-test-1.html">test-page-1.html</a><span class="def_Tag">&lt;/li&gt;</span>
+<span class="def_Tag">&lt;li&gt;</span><a href="doc-test-2.html">test-page-2.html</a><span class="def_Tag">&lt;/li&gt;</span>
+<span class="def_Tag">&lt;/ul&gt;</span>
+</pre></div>
+</li>
+<li>Or, at last, you can specify a file with a list of test pages as a parameter to run-tests.html
+<div class="example">
+<a target="_blank" href="../run-tests.html?testlist=doc/sample-list.html">
+<pre><span class="def_URL">run-tests.html<span class="def_Symbol">?</span>testlist<span class="def_Symbol">=</span>doc/sample-list.html</span></pre>
+</a>
+</div>
+</li>
+</ul>
+<h3> The test page</h3>
+<p>
+Each test page should contain one or more <strong>test functions</strong>, with names beginning with <strong>test_</strong>.
+When you press the <em>run</em> buttons, the test page is loaded, and each test function in it is called.
+Each test function receives a parameter, <strong>test object</strong>, and you can call its methods to check the <strong>assertions</strong> and record the results.
+To illustrate this, here is contents of <em>test-page-1.html</em> from the example above:
+</p>
+<div class="example"><pre>
+<span class="def_Tag">&lt;html&gt;</span><span class="def_Tag">&lt;head&gt;</span><span class="def_Tag">&lt;script type=&quot;text/javascript&quot;&gt;</span>
+<span class="def_Comment">&lt;!--</span>
+<span class="def_Keyword">function</span> <span class="def_Function">test_1</span><span class="def_Symbol">(</span> t <span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+    t<span class="def_Symbol">.</span>plan<span class="def_Symbol">(</span> <span class="def_Number">1</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span> <span class="def_Comment">// we will make one assertion</span>
+    t<span class="def_Symbol">.</span>ok<span class="def_Symbol">(</span> <span class="def_Constant">true</span><span class="def_Symbol">,</span> <span class="def_String">&quot;this is ok&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span> <span class="def_Comment">// that's it</span>
+<span class="def_Symbol">}</span>
+
+<span class="def_Comment">// --&gt;</span>
+<span class="def_Tag">&lt;/script&gt;</span><span class="def_Tag">&lt;/head&gt;</span><span class="def_Tag">&lt;body&gt;</span><span class="def_Tag">&lt;/body&gt;</span><span class="def_Tag">&lt;/html&gt;</span>
+</pre></div>
+
+
+<h1><a name="chapter3" />Plans and assertions</h1>
+
+<p>
+Each test function can make any number of assertions. Quite naturally, if all the assertions hold true, the test pass. If any of the assertions is false, the test fails.
+A testing plan declares how many assertions your test function is going to make. This is required to detect premature exit from the test, and prevent situation
+when some of the assertions are left unchecked, causing the test to pass while in fact it fails.
+You tell how many assertions are in the test function by calling <em>plan</em> method:
+</p>
+<pre><span class="shortexample">    t<span class="def_Symbol">.</span>plan<span class="def_Symbol">(</span> <span class="def_Number">42</span> <span class="def_Symbol">);</span> </span></pre>
+<p>
+If you can't tell in advance how many assertions your test function is going to make, or if you are too lazy to count,
+you may omit the <em>plan</em> method call. This weakens your tests, so such tests are
+marked with &quot;<span class="warning">no plan</span>&quot; warning in the results pane.
+</p>
+<p>
+You make assertions by calling the following methods of the test object:
+<em><a href="#ok">ok</a></em>,
+<em><a href="#fail">fail</a></em>,
+<em><a href="#eq">eq</a></em>,
+<em><a href="#like">like</a></em>,
+<em><a href="#html_eq">html_eq</a></em>.
+You can pass the descriptive string identifying the assertion as the last argument to each of those methods. It will be printed next to the result of the asserion in the
+results pane. This description argument is optional, but it is the <em>only</em> thing that identifies each assertion in a test function. So if it's omitted, and the test fails,
+someone will have a hard time trying to figure out which assertion in a function is to blame.
+</p>
+
+<h3><a name="ok" />ok</h3>
+<p>
+The simplest assertion is <strong>ok</strong>. It takes two arguments: boolean value that gives the assertion result, and description.
+</p>
+<pre><span class="shortexample">    t<span class="def_Symbol">.</span>ok<span class="def_Symbol">(</span> items<span class="def_Symbol">.</span>length<span class="def_Symbol">&gt;</span><span class="def_Number">1</span><span class="def_Symbol">,</span> <span class="def_String">&quot;more than one item&quot;</span> <span class="def_Symbol">);</span> </span></pre>
+
+<h3><a name="fail" />fail</h3>
+<p>
+Sometimes you just know that the test must fail. In such cases, use the <strong>fail</strong> method. It takes single argument - a description.
+</p>
+<pre><span class="shortexample">    t<span class="def_Symbol">.</span>fail<span class="def_Symbol">(</span> <span class="def_String">&quot;no good&quot;</span> <span class="def_Symbol">);</span> </span></pre>
+
+<h3><a name="eq" />eq</h3>
+<p>
+To test whether two values are equal, use the <strong>eq</strong> method. It takes three arguments: the value you want to test, the expected (known) value, and description.
+</p>
+<pre><span class="shortexample">    t<span class="def_Symbol">.</span>eq<span class="def_Symbol">(</span> <span class="def_Number">2</span><span class="def_Symbol">+</span><span class="def_Number">2</span><span class="def_Symbol">,</span> <span class="def_Number">4</span><span class="def_Symbol">,</span> <span class="def_String">&quot;addition test&quot;</span> <span class="def_Symbol">);</span> </span></pre>
+<p>
+Values may be arbitrary data structures: arrays and objects nested to any level. Compound structures are considered equal if all their corresponding components
+(array elements, object members) are equal. This definition is recursive, and <em>eq</em> follows it naively, so if your data structure is circular (that is, it contains
+an object that refers to a part of that same structure), the <em>eq</em> method will blow up.  Due to this, <em>eq</em> is unsuitable for comparing
+DOM trees - use <em><a href="#html_eq">html_eq</a></em> instead.
+</p>
+<p>
+If the values differ, the test fails and values are printed in the results pane. If the values are complex structures, diagnostics identifying where they start differing is printed.
+</p>
+
+<h3><a name="like" />like</h3>
+<p>
+The <strong>like</strong> method allows to check whether a string matches given regular expression. It takes three arguments: the string to test, the regular expression, and description.
+</p>
+<pre><span class="shortexample">    t<span class="def_Symbol">.</span>like<span class="def_Symbol">(</span> <span class="def_String">&quot;15&quot;</span><span class="def_Symbol">,</span> <span class="def_String">/[\d]+/</span><span class="def_Symbol">,</span> <span class="def_String">&quot;numbers match&quot;</span> <span class="def_Symbol">);</span> </span></pre>
+
+<h3><a name="html_eq" />html_eq</h3>
+<p>
+Use <strong>html_eq</strong> to test whether two chunks of HTML content is the same. <em>html_eq</em> takes three arguments: the HTML to test, the expected (known) HTML,
+and description. Each HTML value may be a DOM HTML node, or a string.
+</p>
+<pre><span class="shortexample">    t<span class="def_Symbol">.</span>html_eq<span class="def_Symbol">(</span> document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;sample_id&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">,</span>
+               <span class="def_String">&quot;&lt;div id=\&quot;sample_id\&quot; class=\&quot;sample\&quot;&gt;some text&lt;/div&gt;&quot;</span><span class="def_Symbol">,</span>
+               <span class="def_String">&quot;compare sample_id div&quot;</span> <span class="def_Symbol">);</span> </span></pre>
+<p>
+<em>html_eq</em> ignores whitespace when doing comparison. It expects string HTML arguments to be well-formed, if they are not, the result of assertion will be of little use (inside <em>html_eq</em>, HTML strings are assigned to some innerHTML to convert them to nodes before comparison).
+If the HTML content differ, the test fails, and diagnostics pointing to the HTML fragment that differ is printed in the results pane.
+Also, the stringified HTML values are printed in the case of failure.
+</p>
+
+<div class="note">
+Open <a href="doc-assertions.html">this page</a> if you want to see the source and run an example test that uses each assertion mentioned above.
+</div>
+
+<h1><a name="chapter4" />How to see what's going on</h1>
+<p>
+Sometimes it may be hard to figure out why some test fails. <strong>debug_print</strong> is primitive, but useful tool for tracing test execution and
+displaying variables. It takes one argument, a string that will be displayed in the run-tests.html page. Besides this string, it also will show
+the name of currently running test function and current time.
+</p>
+<p>
+When the first <em>debug_print</em> call is made, two tabs appear on the run-tests.html page above the resuts pane,
+allowing to switch between debug messages and results. You can see the output of <em>debug_print</em> by running this test:
+</p>
+<div class="example"><pre>
+<span class="def_Tag">&lt;html&gt;</span><span class="def_Tag">&lt;head&gt;</span><span class="def_Tag">&lt;script type=&quot;text/javascript&quot;&gt;</span>
+<span class="def_Comment">&lt;!--</span>
+
+<span class="def_Keyword">function</span> <span class="def_Function">test_debug</span><span class="def_Symbol">(</span> t <span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+    t<span class="def_Symbol">.</span>plan<span class="def_Symbol">(</span> <span class="def_Number">1</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+    <span class="def_Keyword">var</span> items<span class="def_Symbol">=</span><span class="def_Symbol">[</span><span class="def_Number">1</span><span class="def_Symbol">,</span><span class="def_Number">2</span><span class="def_Symbol">]</span><span class="def_Symbol">;</span>
+    t<span class="def_Symbol">.</span>debug_print<span class="def_Symbol">(</span> items<span class="def_Symbol">.</span><span class="def_Keyword">toString</span><span class="def_Symbol">(</span><span class="def_Symbol">)</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+    t<span class="def_Symbol">.</span>ok<span class="def_Symbol">(</span> items<span class="def_Symbol">.</span>length<span class="def_Symbol">&gt;</span><span class="def_Number">1</span><span class="def_Symbol">,</span> <span class="def_String">&quot;more than one item&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+    t<span class="def_Symbol">.</span>debug_print<span class="def_Symbol">(</span> <span class="def_String">&quot;bye&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+<span class="def_Symbol">}</span>
+
+<span class="def_Comment">// --&gt;</span>
+<span class="def_Tag">&lt;/script&gt;</span><span class="def_Tag">&lt;/head&gt;</span><span class="def_Tag">&lt;body&gt;</span>
+<span class="def_Tag">&lt;/body&gt;</span><span class="def_Tag">&lt;/html&gt;</span>
+</pre></div>
+<iframe src="../run-tests.html?testpage=doc/test-debug.html" class="screenshot"></iframe>
+
+<h1><a name="chapter5" />Testing asyncronous code</h1>
+
+<p>
+Suppose you want to test geocoding service - it should return latitude and longitude for any given street address, so that later it can be displayed on the map.
+Suppose also that this service uses asyncronous calling convention, returning results as an argument to callback function, in this way:
+</p>
+
+<pre><span class="shortexample">    geoCoords<span class="def_Symbol">(</span> address<span class="def_Symbol">,</span> <span class="def_Keyword">function</span><span class="def_Symbol">(</span> lat<span class="def_Symbol">,</span> lng <span class="def_Symbol">)</span> <span class="def_Symbol">{</span>  <span class="def_Comment">/* do something here */</span> <span class="def_Symbol">}</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span></span></pre>
+
+<p>
+For illustration purposes, I will use completely bogus implementation of geoCoords just for this test:
+</p>
+
+<div class="example"><pre>
+<span class="def_Keyword">function</span> <span class="def_Function">geoCoords</span><span class="def_Symbol">(</span> address<span class="def_Symbol">,</span> callback <span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+    <span class="def_Keyword">var</span> lat<span class="def_Symbol">,</span> lng<span class="def_Symbol">;</span>
+    <span class="def_Keyword">if</span><span class="def_Symbol">(</span> address<span class="def_Symbol">.</span><span class="def_Keyword">search</span><span class="def_Symbol">(</span> <span class="def_String">&quot;305 Harrison St&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">!=</span><span class="def_Symbol">-</span><span class="def_Number">1</span>
+     <span class="def_Symbol">&amp;&amp;</span> address<span class="def_Symbol">.</span><span class="def_Keyword">search</span><span class="def_Symbol">(</span> <span class="def_String">&quot;Seattle&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">!=</span><span class="def_Symbol">-</span><span class="def_Number">1</span>
+     <span class="def_Symbol">&amp;&amp;</span> address<span class="def_Symbol">.</span><span class="def_Keyword">search</span><span class="def_Symbol">(</span> <span class="def_String">&quot;WA&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">!=</span><span class="def_Symbol">-</span><span class="def_Number">1</span> <span class="def_Symbol">)</span> <span class="def_Symbol">{</span>
+        lat<span class="def_Symbol">=</span><span class="def_Number">46.620108</span><span class="def_Symbol">;</span>
+        lng<span class="def_Symbol">=</span><span class="def_Symbol">-</span><span class="def_Number">122.352333</span><span class="def_Symbol">;</span>
+    <span class="def_Symbol">}</span>
+    window<span class="def_Symbol">.</span>setTimeout<span class="def_Symbol">(</span> <span class="def_Keyword">function</span><span class="def_Symbol">(</span><span class="def_Symbol">)</span> <span class="def_Symbol">{</span> callback<span class="def_Symbol">(</span> lat<span class="def_Symbol">,</span> lng <span class="def_Symbol">)</span><span class="def_Symbol">;</span> <span class="def_Symbol">}</span><span class="def_Symbol">,</span> <span class="def_Number">1000</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+<span class="def_Symbol">}</span>
+</pre></div>
+
+<p>
+Let's write the test for geoCoords in an obvious way:
+</p>
+
+<div class="example"><pre>
+<span class="def_Keyword">function</span> <span class="def_Function">test_locate_obvious</span><span class="def_Symbol">(</span> t <span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+    t<span class="def_Symbol">.</span>plan<span class="def_Symbol">(</span> <span class="def_Number">1</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+    geoCoords<span class="def_Symbol">(</span> <span class="def_String">&quot;305 Harrison St, Seattle, WA&quot;</span><span class="def_Symbol">,</span> <span class="def_Keyword">function</span><span class="def_Symbol">(</span> lat<span class="def_Symbol">,</span> lng <span class="def_Symbol">)</span> <span class="def_Symbol">{</span>
+        t<span class="def_Symbol">.</span>eq<span class="def_Symbol">(</span> <span class="def_Symbol">[</span><span class="def_Number">46.620108</span><span class="def_Symbol">,</span> <span class="def_Symbol">-</span><span class="def_Number">122.352333</span><span class="def_Symbol">]</span><span class="def_Symbol">,</span> <span class="def_Symbol">[</span>lat<span class="def_Symbol">,</span> lng<span class="def_Symbol">]</span><span class="def_Symbol">,</span> <span class="def_String">&quot;coordinates match&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+    <span class="def_Symbol">}</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+<span class="def_Symbol">}</span>
+</pre></div>
+
+<p>
+If you run it (in the frame below) it will fail, saying that it expected to see one assertion in the test function, but got none.
+The thing is, the results of test function are expected immediately after it returns, and assertion in the callback function is made too late.
+You can request that the counting of results be delayed for specified amount of time, allowing for such late assertions
+to be checked and recorded, by calling <strong>wait_result</strong> method:
+</p>
+
+<pre><span class="shortexample">    t<span class="def_Symbol">.</span>wait_result<span class="def_Symbol">(</span> <span class="def_Number">3</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span> <span class="def_Comment">// seconds to wait </span></span></pre>
+
+<p>
+After adding one line with <em>wait_result</em> call, the test becomes ok:
+</p>
+
+<div class="example"><pre>
+<span class="def_Keyword">function</span> <span class="def_Function">test_locate_ok</span><span class="def_Symbol">(</span> t <span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+    t<span class="def_Symbol">.</span>plan<span class="def_Symbol">(</span> <span class="def_Number">1</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+    geoCoords<span class="def_Symbol">(</span> <span class="def_String">&quot;305 Harrison St, Seattle, WA&quot;</span><span class="def_Symbol">,</span> <span class="def_Keyword">function</span><span class="def_Symbol">(</span> lat<span class="def_Symbol">,</span> lng <span class="def_Symbol">)</span> <span class="def_Symbol">{</span>
+        t<span class="def_Symbol">.</span>eq<span class="def_Symbol">(</span> <span class="def_Symbol">[</span><span class="def_Number">46.620108</span><span class="def_Symbol">,</span> <span class="def_Symbol">-</span><span class="def_Number">122.352333</span><span class="def_Symbol">]</span><span class="def_Symbol">,</span> <span class="def_Symbol">[</span>lat<span class="def_Symbol">,</span> lng<span class="def_Symbol">]</span><span class="def_Symbol">,</span> <span class="def_String">&quot;coordinates match&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+    <span class="def_Symbol">}</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+    t<span class="def_Symbol">.</span>wait_result<span class="def_Symbol">(</span> <span class="def_Number">1.5</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+<span class="def_Symbol">}</span>
+</pre></div>
+
+<p>
+Here is this example ready to run:
+</p>
+
+<iframe src="../run-tests.html?testpage=doc/test-geo.html" class="screenshot"></iframe>
+
+<h3>Waiting for things, in sequence</h3>
+
+<p>
+Another useful method for testing asyncronous code is <strong>delay_call</strong>. It takes any number of arguments,
+each of which may be a function or a delay (in seconds). Every function given to <em>delay_call</em> will be called, with the specified
+delay between subsequent calls. The default delay is 0.2 seconds. No arguments will be passed to each function.
+</p>
+
+<p>
+<em>delay_call</em> is especially handy for testing web pages (see <em><a href="#open_window">open_window</a></em> below), when you
+initiate some action in web page and want to check that the page reacted accordingly. In some browsers, the time required for page objects to reflect
+the new state will be longer than the time required for javascript code to reach the assertion check. So if you try to check the state of the page objects immediately
+after the action, the test will fail. You may use the following pattern for introducing necessary delays:
+</p>
+
+<div class="example"><pre>
+    <span class="def_Keyword">var</span> button1<span class="def_Symbol">=</span>some_wnd<span class="def_Symbol">.</span>document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;button1&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+    button1<span class="def_Symbol">.</span>click<span class="def_Symbol">(</span><span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+    t<span class="def_Symbol">.</span>delay_call<span class="def_Symbol">(</span> <span class="def_Keyword">function</span><span class="def_Symbol">(</span><span class="def_Symbol">)</span> <span class="def_Symbol">{</span>
+            <span class="def_Comment">/* check effects of button1 click here*/</span>
+            <span class="def_Symbol">.</span><span class="def_Symbol">.</span><span class="def_Symbol">.</span>
+            <span class="def_Comment">/* go on */</span>
+            <span class="def_Keyword">var</span> input1<span class="def_Symbol">=</span>some_wnd<span class="def_Symbol">.</span>document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;input1&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+            input1<span class="def_Symbol">.</span>value<span class="def_Symbol">=</span><span class="def_String">&quot;some value&quot;</span><span class="def_Symbol">;</span>
+            <span class="def_Keyword">var</span> button2<span class="def_Symbol">=</span>some_wnd<span class="def_Symbol">.</span>document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;button2&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+            button2<span class="def_Symbol">.</span>click<span class="def_Symbol">(</span><span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+        <span class="def_Symbol">}</span><span class="def_Symbol">,</span> <span class="def_Keyword">function</span><span class="def_Symbol">(</span><span class="def_Symbol">)</span> <span class="def_Symbol">{</span>
+            <span class="def_Comment">/* check effects of button2 here */</span>
+        <span class="def_Symbol">}</span>
+    <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+</pre></div>
+
+<h1><a name="chapter6" />Testing web pages</h1>
+
+<p>
+Suppose you have a web page that allows to use the above geocode service interactively. It has an input box for an address and a button, clicking on which
+displays latitude and longitude for given address. The source of this page is:
+</p>
+
+<div class="example"><pre>
+<span class="def_Tag">&lt;html&gt;</span>
+<span class="def_Tag">&lt;head&gt;</span>
+<span class="def_Tag">&lt;title&gt;</span>Test.AnotherWay: interactive test page<span class="def_Tag">&lt;/title&gt;</span>
+<span class="def_Tag">&lt;script type=&quot;text/javascript&quot;&gt;</span>
+<span class="def_Comment">&lt;!--</span>
+
+<span class="def_Keyword">function</span> <span class="def_Function">geoCoords</span><span class="def_Symbol">(</span> address<span class="def_Symbol">,</span> callback <span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+	<span class="def_Keyword">var</span> lat<span class="def_Symbol">,</span> lng<span class="def_Symbol">;</span>
+	<span class="def_Keyword">if</span><span class="def_Symbol">(</span> address<span class="def_Symbol">.</span><span class="def_Keyword">search</span><span class="def_Symbol">(</span> <span class="def_String">&quot;305 Harrison St&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">!=</span><span class="def_Symbol">-</span><span class="def_Number">1</span> <span class="def_Symbol">&amp;&amp;</span> address<span class="def_Symbol">.</span><span class="def_Keyword">search</span><span class="def_Symbol">(</span> <span class="def_String">&quot;Seattle&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">!=</span><span class="def_Symbol">-</span><span class="def_Number">1</span> <span class="def_Symbol">&amp;&amp;</span> address<span class="def_Symbol">.</span><span class="def_Keyword">search</span><span class="def_Symbol">(</span> <span class="def_String">&quot;WA&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">!=</span><span class="def_Symbol">-</span><span class="def_Number">1</span> <span class="def_Symbol">)</span> <span class="def_Symbol">{</span>
+		lat<span class="def_Symbol">=</span><span class="def_Number">46.620108</span><span class="def_Symbol">;</span>
+		lng<span class="def_Symbol">=</span><span class="def_Symbol">-</span><span class="def_Number">122.352333</span><span class="def_Symbol">;</span>
+	<span class="def_Symbol">}</span>
+	window<span class="def_Symbol">.</span>setTimeout<span class="def_Symbol">(</span> <span class="def_Keyword">function</span><span class="def_Symbol">(</span><span class="def_Symbol">)</span> <span class="def_Symbol">{</span> callback<span class="def_Symbol">(</span> lat<span class="def_Symbol">,</span> lng <span class="def_Symbol">)</span><span class="def_Symbol">;</span> <span class="def_Symbol">}</span><span class="def_Symbol">,</span> <span class="def_Number">1000</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+<span class="def_Symbol">}</span>
+
+<span class="def_Keyword">function</span> <span class="def_Function">get_coords</span><span class="def_Symbol">(</span><span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+	<span class="def_Keyword">var</span> address<span class="def_Symbol">=</span>document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;address&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">.</span>value<span class="def_Symbol">;</span>
+	geoCoords<span class="def_Symbol">(</span> address<span class="def_Symbol">,</span> <span class="def_Keyword">function</span><span class="def_Symbol">(</span> lat<span class="def_Symbol">,</span> lng <span class="def_Symbol">)</span> <span class="def_Symbol">{</span>
+		document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;latitude&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">.</span>value<span class="def_Symbol">=</span>lat<span class="def_Symbol">;</span>
+		document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;longitude&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">.</span>value<span class="def_Symbol">=</span>lng<span class="def_Symbol">;</span>
+	<span class="def_Symbol">}</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+<span class="def_Symbol">}</span>
+
+<span class="def_Comment">// --&gt;</span>
+<span class="def_Tag">&lt;/script&gt;</span>
+<span class="def_Tag">&lt;/head&gt;</span>
+<span class="def_Tag">&lt;body&gt;</span><span class="def_Tag">&lt;table&gt;</span><span class="def_Tag">&lt;col <span class="def_Parameter">width</span><span class="def_Symbol">=</span><span class="def_String">&quot;8em&quot;</span>&gt;</span>
+<span class="def_Tag">&lt;tr&gt;</span><span class="def_Tag">&lt;td&gt;</span>address:<span class="def_Tag">&lt;/td&gt;</span><span class="def_Tag">&lt;td&gt;</span><span class="def_Tag">&lt;input <span class="def_Parameter">type</span><span class="def_Symbol">=</span><span class="def_String">&quot;text&quot;</span> <span class="def_Parameter">id</span><span class="def_Symbol">=</span><span class="def_String">&quot;address&quot;</span> /&gt;</span><span class="def_Tag">&lt;/td&gt;</span><span class="def_Tag">&lt;/tr&gt;</span>
+<span class="def_Tag">&lt;tr&gt;</span><span class="def_Tag">&lt;td <span class="def_Parameter">colspan</span><span class="def_Symbol">=</span><span class="def_String">&quot;2&quot;</span>&gt;</span>
+<span class="def_Tag">&lt;input <span class="def_Parameter">type</span><span class="def_Symbol">=</span><span class="def_String">&quot;button&quot;</span> <span class="def_Parameter">value</span><span class="def_Symbol">=</span><span class="def_String">&quot;get coords&quot;</span> <span class="def_Parameter">onclick</span><span class="def_Symbol">=</span><span class="def_String">&quot;get_coords();&quot;</span> <span class="def_Parameter">id</span><span class="def_Symbol">=</span><span class="def_String">&quot;get_coords&quot;</span> /&gt;</span>
+<span class="def_Tag">&lt;/td&gt;</span><span class="def_Tag">&lt;/tr&gt;</span>
+<span class="def_Tag">&lt;tr&gt;</span><span class="def_Tag">&lt;td&gt;</span>latitude:<span class="def_Tag">&lt;/td&gt;</span><span class="def_Tag">&lt;td&gt;</span><span class="def_Tag">&lt;input <span class="def_Parameter">type</span><span class="def_Symbol">=</span><span class="def_String">&quot;text&quot;</span> <span class="def_Parameter">id</span><span class="def_Symbol">=</span><span class="def_String">&quot;latitude&quot;</span> /&gt;</span><span class="def_Tag">&lt;/td&gt;</span><span class="def_Tag">&lt;/tr&gt;</span>
+<span class="def_Tag">&lt;tr&gt;</span><span class="def_Tag">&lt;td&gt;</span>longitude:<span class="def_Tag">&lt;/td&gt;</span><span class="def_Tag">&lt;td&gt;</span><span class="def_Tag">&lt;input <span class="def_Parameter">type</span><span class="def_Symbol">=</span><span class="def_String">&quot;text&quot;</span> <span class="def_Parameter">id</span><span class="def_Symbol">=</span><span class="def_String">&quot;longitude&quot;</span> /&gt;</span><span class="def_Tag">&lt;/td&gt;</span><span class="def_Tag">&lt;/tr&gt;</span>
+<span class="def_Tag">&lt;/table&gt;</span><span class="def_Tag">&lt;/body&gt;</span>
+</pre></div>
+
+<p>
+Here is how it looks:
+</p>
+
+<iframe src="geo-input.html"></iframe>
+
+<p>
+You can test this page using <a name="open_window" /><strong>open_window</strong> method. It takes three arguments: url of a web page to open in a new window,
+a callback function to call when that window is opened, and optional timeout. If the window does not open before the timeout ends, the test fails. The default timeout is two seconds.
+Callback function receives one argument - window object for the new window. If the url for opened page has the same origin (protocol and host) as the run-tests.html, you
+can access document object of that window and initiate actions and query values of objects in that document.
+</p>
+<p>
+Let's write a test for this interactive geocoding page (it is accessible from run-tests.html as doc/geo-input.html):
+</p>
+
+<div class="example"><pre>
+<span class="def_Tag">&lt;html&gt;</span><span class="def_Tag">&lt;head&gt;</span><span class="def_Tag">&lt;script type=&quot;text/javascript&quot;&gt;</span>
+<span class="def_Comment">&lt;!--</span>
+
+<span class="def_Keyword">function</span> <span class="def_Function">test_geo_input</span><span class="def_Symbol">(</span> t <span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+    t<span class="def_Symbol">.</span>plan<span class="def_Symbol">(</span> <span class="def_Number">2</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+    t<span class="def_Symbol">.</span>open_window<span class="def_Symbol">(</span> <span class="def_String">&quot;doc/geo-input.html&quot;</span><span class="def_Symbol">,</span> <span class="def_Keyword">function</span><span class="def_Symbol">(</span> wnd <span class="def_Symbol">)</span> <span class="def_Symbol">{</span>
+        <span class="def_Keyword">var</span> address<span class="def_Symbol">=</span>wnd<span class="def_Symbol">.</span>document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;address&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+        address<span class="def_Symbol">.</span>value<span class="def_Symbol">=</span><span class="def_String">&quot;305 Harrison St, Seattle, WA&quot;</span><span class="def_Symbol">;</span>
+        <span class="def_Keyword">var</span> button<span class="def_Symbol">=</span>wnd<span class="def_Symbol">.</span>document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;get_coords&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+        button<span class="def_Symbol">.</span>click<span class="def_Symbol">(</span><span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+        t<span class="def_Symbol">.</span>delay_call<span class="def_Symbol">(</span> <span class="def_Number">1.5</span><span class="def_Symbol">,</span> <span class="def_Keyword">function</span><span class="def_Symbol">(</span><span class="def_Symbol">)</span> <span class="def_Symbol">{</span>
+            <span class="def_Keyword">var</span> latitude<span class="def_Symbol">=</span>wnd<span class="def_Symbol">.</span>document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;latitude&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+            t<span class="def_Symbol">.</span>eq<span class="def_Symbol">(</span> <span class="def_String">&quot;46.620108&quot;</span><span class="def_Symbol">,</span> latitude<span class="def_Symbol">.</span>value<span class="def_Symbol">,</span> <span class="def_String">&quot;latitude match&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+            <span class="def_Keyword">var</span> longitude<span class="def_Symbol">=</span>wnd<span class="def_Symbol">.</span>document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;longitude&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+            t<span class="def_Symbol">.</span>eq<span class="def_Symbol">(</span> <span class="def_String">&quot;-122.352333&quot;</span><span class="def_Symbol">,</span> longitude<span class="def_Symbol">.</span>value<span class="def_Symbol">,</span> <span class="def_String">&quot;longitude match&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+        <span class="def_Symbol">}</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+    <span class="def_Symbol">}</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+<span class="def_Symbol">}</span>
+
+<span class="def_Comment">// --&gt;</span>
+<span class="def_Tag">&lt;/script&gt;</span><span class="def_Tag">&lt;/head&gt;</span><span class="def_Tag">&lt;body&gt;</span>
+<span class="def_Tag">&lt;/body&gt;</span><span class="def_Tag">&lt;/html&gt;</span>
+</pre></div>
+
+<p>
+Now you can run the test here:
+</p>
+
+<iframe src="../run-tests.html?testpage=doc/test-geo-input.html" class="screenshot"></iframe>
+
+<div class="note">
+Note that open_window may fail with misleading error message, if there is active popup blocker preventing scripts from opening windows. To run tests that use open_window
+you should disable popup blocker for the host where run-tests.html resides.
+</div>
+
+<p>
+All windows opened by open_window are closed when the test finishes, unless you have checked the &quot;do not close windows opened by tests&quot; checkbox.
+This allows you to inspect what your test did to the windows, which may give some help in finding why the test failed.
+</p>
+
+<p>
+You can simulate any action in the window opened by open_window, including clicking on links and moving back and forth in the history. Beware that window
+document object will be reloaded each time you initiate such an action, so there is no point in keeping references to that document or its subobjects across such actions.
+By the way, mozilla/firefox does not have a click method for links, but you can make your own that will work just fine, as shown in <a href="http://forums.devshed.com/t64830/s34f4cd4f2a357a671ff04195258d59ba.html">this article</a>.
+</p>
+
+
+<h1><a name="chapter7" />Simulating mouse input</h1>
+
+<p>
+Test.AnotherWay can record mouse input (movement and clicks) and replay it while
+the test is running, allowing to check whether the web page reacts to the user input properly.
+</p>
+
+<p>
+Recording and replay does not work in Microsoft Internet Explorer and versions of Opera prior to 8.0.
+It is known to work in Firefox and Opera 8.0. Only mouse input is recorded, since no browser yet supports creation
+and dispatch of keyboard events in a DOM-compliant way. Recording works for single page only, if while recording
+you click on a link that opens another page, the recorder gets lost.
+</p>
+
+<h3>Recording</h3>
+
+<p>
+Recording is initiated from the same <em>run-tests.html</em> web page.
+You can choose the page for which the input will be recorded either by selecting
+it from the pull-down list of test pages, or by entering that page url, if it's not on the list.
+When you click <strong>&quot;record&quot;</strong> button on the <em>run-tests.html</em>,
+the selected page is opened, with yellow recording control box overlaid over it. The recording control indicates
+which object of the page has mouse over it, and lists available commands. All commands
+are triggered by the keyboard, by pressing Ctrl-Shift-letter combination.
+</p>
+
+<p>
+You can start/stop recording by pressing Ctrl-Shift-s, pause/continue it by pressing Ctrl-Shift-p,
+and hide/show control box by Ctr-Shift-h.
+</p>
+
+<p>
+By default, mousemove events are not recorded, since for many pages mouseover/mouseout
+events will suffice, and recording mousemove events causes the size of recorded data to grow immensely.
+You can enable/disable recording of mousemove events by Ctrl-Shift-m.
+</p>
+
+<p>
+The only command not mentioned yet is Ctrl-Shift-c, with 'c' standing for 'checkpoint'. Now, what
+a checkpoint is good for requires some explanation.
+</p>
+
+<p>
+The whole point of recording is to check that page reacts to the input properly. For that, you should
+specify two things: what to check, and when to perform those checks. The code that does
+the check may be written later, after the recording. But you should decide at which moments
+of time you will make those checks before you start the recording.
+When recording, you press Ctrl-Shift-c at those moments to insert checkpoints
+into the recorded sequence of events.
+</p>
+
+<p>
+When you stop recording by pressing Ctrl-Shift-s, a new browser window automatically
+opens filled with javascript data structure. The structure looks like this:
+</p>
+
+<div class="example"><pre>
+<span class="def_Symbol">{</span> checkpoints<span class="def_Symbol">:</span> <span class="def_Symbol">[</span>
+ <span class="def_Keyword">function</span><span class="def_Symbol">(</span> tst<span class="def_Symbol">,</span> wnd <span class="def_Symbol">)</span> <span class="def_Symbol">{</span> <span class="def_Comment">// #0 time 3s. cursor was over HTML [0], BODY [2], UL [11], LI [1]</span>
+<span class="def_Symbol">}</span><span class="def_Symbol">,</span> <span class="def_Keyword">function</span><span class="def_Symbol">(</span> tst<span class="def_Symbol">,</span> wnd <span class="def_Symbol">)</span> <span class="def_Symbol">{</span> <span class="def_Comment">// #1 time 8s. cursor was over I #i</span>
+<span class="def_Symbol">}</span>
+<span class="def_Symbol">]</span><span class="def_Symbol">,</span> events<span class="def_Symbol">:</span> <span class="def_Symbol">[</span>
+<span class="def_Symbol">{</span>target<span class="def_Symbol">:</span><span class="def_String">&quot;0 HTML,2 BODY&quot;</span><span class="def_Symbol">,</span> relatedTarget<span class="def_Symbol">:</span><span class="def_String">&quot;0 HTML,2 BODY,11 UL,5 LI&quot;</span><span class="def_Symbol">,</span> which<span class="def_Symbol">:</span><span class="def_String">&quot;19&quot;</span>....<span class="def_Symbol">}</span><span class="def_Symbol">,</span>
+<span class="def_Symbol">{</span>target<span class="def_Symbol">:</span><span class="def_String">&quot;0 HTML,2 BODY,11 UL,5 LI&quot;</span><span class="def_Symbol">,</span> relatedTarget<span class="def_Symbol">:</span><span class="def_String">&quot;0 HTML,2 BODY&quot;</span><span class="def_Symbol">,</span> which<span class="def_Symbol">:</span><span class="def_String">&quot;19&quot;</span>....<span class="def_Symbol">}</span><span class="def_Symbol">,</span>
+<span class="def_Symbol">]</span> <span class="def_Symbol">}</span>
+<span class="def_Symbol">;</span>
+</div></span>
+
+<p>
+It has two members: <strong>checkpoints</strong>
+and <strong>events</strong>. The latter is better left untouched. The <em>checkpoints</em>
+section contains empty functions, each function corresponds to one checkpoint. You should fill those functions with
+code asserting that the page indeed reacted properly to the input. Each checkpoint function receives two arguments: a test object
+suitable for calling its assertion methods, and window object with a page for which input events are replayed.
+To assist somehow in remembering what to test at which checkpoint,
+each function has a comment indicating the object on the page that had mouse over it, and the time in seconds from the beginning of the recording
+when the checkpoint was inserted.
+</p>
+
+<p>
+To replay recorded events, you should copy that data structure, paste it into your test page, and pass it to the <strong>replay_events</strong> method.
+</p>
+
+<h3>replay_events</h3>
+
+<p>
+<em>replay_events</em> method takes two arguments: a window with web page for which to simulate events, and events data structure that was recorded earlier.
+Window should be opened by you prior to calling replay_event, possibly by <em><a href="#open_window">open_window</a></em> method.
+When replaying, the checkpoint functions written by you to make assertions about the page are called at appropriate moments. The arguments that each
+checkpoint function receives are: test object for which the <em>replay_event</em> was called, and the window object that was passed to it.
+</p>
+
+<p>
+Let's do an example for replay_events, using it for testing how drag and drop works on this page:
+</p>
+
+<iframe src="drag-drop.html" class="screenshot"></iframe>
+
+<p>
+This page is in doc/drag-drop.html file, and test for it is in doc/test-drag-drop.html.
+</p>
+
+<p>
+It should work in this way: when you drag green rectangle over the blue one, the blue rectangle is highlighted with pink border, and when you
+drop the green rectangle over blue, it disappears, and the blue rectangle receives green border and its text changes to &quot;done&quot;. You can see
+the full source of this page <a href="doc-drag-drop.html">here</a> (drag-drop is implemented in a quickly poor non-reusable way,
+good for this example only).
+</p>
+
+<p>
+The input for this example is prerecorded, with mousemove recording turned on, and with three checkpoints: the first one before everything begins,
+the second one when the green rectangle is over the blue one, and the final one after the green rectangle is dropped. The source code of the test is:
+</p>
+
+<div class="example"><pre>
+<span class="def_Tag">&lt;html&gt;</span><span class="def_Tag">&lt;head&gt;</span><span class="def_Tag">&lt;script type=&quot;text/javascript&quot;&gt;</span>
+<span class="def_Comment">&lt;!--</span>
+
+<span class="def_Keyword">var</span> drag_drop_events<span class="def_Symbol">=</span>
+<span class="def_Symbol">{</span> checkpoints<span class="def_Symbol">:</span> <span class="def_Symbol">[</span>
+<span class="def_Keyword">function</span><span class="def_Symbol">(</span> tst<span class="def_Symbol">,</span> wnd <span class="def_Symbol">)</span> <span class="def_Symbol">{</span> <span class="def_Comment">// #0 time 1s. cursor was over DIV #record_control434</span>
+	<span class="def_Keyword">var</span> target<span class="def_Symbol">=</span>wnd<span class="def_Symbol">.</span>document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;target&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	tst<span class="def_Symbol">.</span>eq<span class="def_Symbol">(</span> <span class="def_String">&quot;&quot;</span><span class="def_Symbol">,</span> target<span class="def_Symbol">.</span>style<span class="def_Symbol">.</span>border<span class="def_Symbol">,</span> <span class="def_String">&quot;inital target border&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	tst<span class="def_Symbol">.</span>like<span class="def_Symbol">(</span><span class="def_String"> <span class="def_StringEdge">/</span>and drop here<span class="def_StringEdge">/</span></span><span class="def_Symbol">,</span> target<span class="def_Symbol">.</span>innerHTML<span class="def_Symbol">,</span> <span class="def_String">&quot;initial target text&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+
+<span class="def_Symbol">}</span><span class="def_Symbol">,</span> <span class="def_Keyword">function</span><span class="def_Symbol">(</span> tst<span class="def_Symbol">,</span> wnd <span class="def_Symbol">)</span> <span class="def_Symbol">{</span> <span class="def_Comment">// #1 time 5s. cursor was over DIV #object</span>
+	<span class="def_Keyword">var</span> target<span class="def_Symbol">=</span>wnd<span class="def_Symbol">.</span>document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;target&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	<span class="def_Comment">// browsers report border color in different ways</span>
+	tst<span class="def_Symbol">.</span>like<span class="def_Symbol">(</span><span class="def_String"> <span class="def_StringEdge">/</span>3px solid <span class="def_Symbol"><span class="def_PairStart">(</span></span>#cc0088<span class="def_Symbol"><span class="def_PairEnd">)</span></span><span class="def_SymbolStrong">|</span><span class="def_Symbol"><span class="def_PairStart">(</span></span>rgb<span class="def_StringContent">\(</span>204, 0, 136<span class="def_StringContent">\)</span><span class="def_Symbol"><span class="def_PairEnd">)</span></span><span class="def_StringEdge">/</span></span><span class="def_Symbol">,</span> target<span class="def_Symbol">.</span>style<span class="def_Symbol">.</span>border<span class="def_Symbol">,</span>
+		<span class="def_String">&quot;object over target border&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+
+<span class="def_Symbol">}</span><span class="def_Symbol">,</span> <span class="def_Keyword">function</span><span class="def_Symbol">(</span> tst<span class="def_Symbol">,</span> wnd <span class="def_Symbol">)</span> <span class="def_Symbol">{</span> <span class="def_Comment">// #2 time 9s. cursor was over DIV #target</span>
+	<span class="def_Keyword">var</span> object<span class="def_Symbol">=</span>wnd<span class="def_Symbol">.</span>document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;object&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	<span class="def_Keyword">var</span> target<span class="def_Symbol">=</span>wnd<span class="def_Symbol">.</span>document<span class="def_Symbol">.</span>getElementById<span class="def_Symbol">(</span> <span class="def_String">&quot;target&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	tst<span class="def_Symbol">.</span>eq<span class="def_Symbol">(</span> <span class="def_String">&quot;none&quot;</span><span class="def_Symbol">,</span> object<span class="def_Symbol">.</span>style<span class="def_Symbol">.</span>display<span class="def_Symbol">,</span> <span class="def_String">&quot;final object display&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	tst<span class="def_Symbol">.</span>like<span class="def_Symbol">(</span><span class="def_String"> <span class="def_StringEdge">/</span>3px solid <span class="def_Symbol"><span class="def_PairStart">(</span></span>#008822<span class="def_Symbol"><span class="def_PairEnd">)</span></span><span class="def_SymbolStrong">|</span><span class="def_Symbol"><span class="def_PairStart">(</span></span>rgb<span class="def_StringContent">\(</span>0, 136, 34<span class="def_StringContent">\)</span><span class="def_Symbol"><span class="def_PairEnd">)</span></span><span class="def_StringEdge">/</span></span><span class="def_Symbol">,</span> target<span class="def_Symbol">.</span>style<span class="def_Symbol">.</span>border<span class="def_Symbol">,</span>
+		<span class="def_String">&quot;final target border&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	tst<span class="def_Symbol">.</span>eq<span class="def_Symbol">(</span> <span class="def_String">&quot;done&quot;</span><span class="def_Symbol">,</span> target<span class="def_Symbol">.</span>innerHTML<span class="def_Symbol">,</span> <span class="def_String">&quot;final target text&quot;</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+<span class="def_Symbol">}</span>
+<span class="def_Symbol">]</span><span class="def_Symbol">,</span> events<span class="def_Symbol">:</span> <span class="def_Symbol">[</span>
+<span class="def_Symbol">{</span>type<span class="def_Symbol">:</span><span class="def_String">&quot;_checkpoint&quot;</span><span class="def_Symbol">,</span> time<span class="def_Symbol">:</span><span class="def_String">&quot;1833&quot;</span><span class="def_Symbol">,</span> which<span class="def_Symbol">:</span><span class="def_String">&quot;0&quot;</span><span class="def_Symbol">,</span> target<span class="def_Symbol">:</span><span class="def_String">&quot;#record_control434 DIV&quot;</span><span class="def_Symbol">}</span><span class="def_Symbol">,</span>
+<span class="def_Symbol">{</span>which<span class="def_Symbol">:</span><span class="def_String">&quot;19&quot;</span><span class="def_Symbol">,</span> target<span class="def_Symbol">:</span><span class="def_String">&quot;#object DIV&quot;</span><span class="def_Symbol">,</span> type<span class="def_Symbol">:</span><span class="def_String">&quot;mouseover&quot;</span><span class="def_Symbol">,</span> <span class="def_Symbol">.</span><span class="def_Symbol">.</span><span class="def_Symbol">.</span><span class="def_Symbol">.</span><span class="def_Symbol">}</span><span class="def_Symbol">,</span>
+<span class="def_Comment">// .... skipped a whole slew of lines like these. </span>
+<span class="def_Comment">// View the source of doc/test-drag-drop.html for the completeness.</span>
+<span class="def_Symbol">{</span>which<span class="def_Symbol">:</span><span class="def_String">&quot;19&quot;</span><span class="def_Symbol">,</span> target<span class="def_Symbol">:</span><span class="def_String">&quot;#target DIV&quot;</span><span class="def_Symbol">,</span> type<span class="def_Symbol">:</span><span class="def_String">&quot;mousemove&quot;</span><span class="def_Symbol">,</span><span class="def_Symbol">.</span><span class="def_Symbol">.</span><span class="def_Symbol">.</span><span class="def_Symbol">.</span> <span class="def_Symbol">}</span>
+<span class="def_Symbol">]</span> <span class="def_Symbol">}</span>
+<span class="def_Symbol">;</span>
+
+<span class="def_Keyword">function</span> <span class="def_Function">test_drag_drop</span><span class="def_Symbol">(</span> t <span class="def_Symbol">)</span>
+<span class="def_Symbol">{</span>
+	t<span class="def_Symbol">.</span>plan<span class="def_Symbol">(</span> <span class="def_Number">6</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	t<span class="def_Symbol">.</span>open_window<span class="def_Symbol">(</span> <span class="def_String">&quot;doc/drag-drop.html&quot;</span><span class="def_Symbol">,</span> <span class="def_Keyword">function</span><span class="def_Symbol">(</span> wnd <span class="def_Symbol">)</span> <span class="def_Symbol">{</span>
+		t<span class="def_Symbol">.</span>replay_events<span class="def_Symbol">(</span> wnd<span class="def_Symbol">,</span> drag_drop_events <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+	<span class="def_Symbol">}</span> <span class="def_Symbol">)</span><span class="def_Symbol">;</span>
+<span class="def_Symbol">}</span>
+
+<span class="def_Comment">// --&gt;</span>
+<span class="def_Tag">&lt;/script&gt;</span><span class="def_Tag">&lt;/head&gt;</span><span class="def_Tag">&lt;body&gt;</span>
+<span class="def_Tag">&lt;/body&gt;</span><span class="def_Tag">&lt;/html&gt;</span>
+</pre></div>
+
+<p>
+You can run it here:
+</p>
+
+<iframe src="../run-tests.html?testpage=doc/test-drag-drop.html" class="screenshot"></iframe>
+
+<div class="note">
+Note that while the browser replays events, mouse cursor does not move. To visualize mouse movements while replaying,
+purple dot is drawn at the point where the mouse was when the test was recorded.  After each call to checkpoint functions
+the dot flashes with green or red, depending on the outcome of the assertions in the checkpoint.
+Also note that if you move the mouse while the test is being replayed, it will interfere with replayed sequence of events.
+</div>
+
+<h1><a name="chapter8" /a>Extra parameters for run-tests.html</h1>
+
+<h3>run</h3>
+
+<p>
+If you want to run tests automatically immediately after the run-tests.html page is loaded, give it <strong>run</strong> parameter.
+It can take two forms: if you want to run all test pages, specify
+</p>
+<pre><span class="shortexample"><span class="def_URL">run<span class="def_Symbol">=</span>all</span></span></pre>
+
+<p>
+Or if you want to run specific pages, give
+</p>
+
+<pre><span class="shortexample"><span class="def_URL">run<span class="def_Symbol">=</span>page1.html<span class="def_Symbol">,</span>page2.html</span></span></pre>
+
+<p>
+Note that the page names given for <em>run</em> parameter should be spelled exactly in the same way (for example, with a path) as they appear in the testlist.html file
+or in <em>testpage</em> parameters.
+</p>
+
+<h3>testframe</h3>
+
+<p>
+By default, run-tests.html loads test page in a hidden iframe. Sometimes this can interfere with the test page workings, for example, in mozilla
+buttons ignore click() call when they are in the hidden iframe. To overcome this, you can open another instance of test page from itself by open_window,
+and perform tests on that instance. Such arrangement is not very convenient, so there is another way. You may load run-tests.html in a frame (or iframe) and
+tell it to use another visible frame for loading test pages. For this, you pass <strong>testframe</strong> query parameter to it:
+</p>
+
+<pre><span class="shortexample"><span class="def_URL">run-tests.html<span class="def_Symbol">?</span>testframe<span class="def_Symbol">=</span>some_iframe_name</span></span></pre>
+
+<p>
+The value of testframe parameter should be a name of the frame for loading test pages, as accessible from top. The name may contain dots, if it is not a direct child of a top.
+</p>
+
+
+<h3>testframe_no_clear</h3>
+
+<p>
+This is handy in combination with <em>testframe</em>, it tells run-tests.html not to clear the test page frame when tests finish,
+so the last test page remain visible. It is useful when you want to inspect a test page and do something in it interactively.
+</p>
+
+<pre><span class="shortexample"><span class="def_URL">run-tests.html<span class="def_Symbol">?</span>testframe<span class="def_Symbol">=</span>some_iframe_name<span class="def_Symbol">;</span>testframe_no_clear</span></span></pre>
+
+<h3>jsantestpage</h3>
+
+<p>
+Same as <a href="#testpage">testpage</a>, but specifies that the test page adheres to <a href="http://www.openjsan.org/src/t/th/theory/Test.Simple-0.11/doc/html/Test/Simple.html">Test.Simple</a> test writing convention from <a href="http://www.openjsan.org">jsan</a>.
+</p>
+
+<pre><span class="shortexample"><span class="def_URL">run-tests.html<span class="def_Symbol">?</span>jsantestpage<span class="def_Symbol">=</span>doc/jsan/one.t.html</span></span></pre>
+
+<p>
+You can also specify jsan calling convention for a page in the <em>testlist.html</em> file, by assigning &quot;jsan&quot; class name to its list item:
+</p>
+
+<div class="example"><pre>
+<span class="def_Tag">&lt;ul <span class="def_Parameter">id</span><span class="def_Symbol">=</span><span class="def_String">&quot;testlist&quot;</span>&gt;</span>
+<span class="def_Tag">&lt;li <span class="def_Parameter">class</span><span class="def_Symbol">=</span><span class="def_String">&quot;jsan&quot;</span>&gt;</span>one.t.html<span class="def_Tag">&lt;/li&gt;</span>
+<span class="def_Tag">&lt;li <span class="def_Parameter">class</span><span class="def_Symbol">=</span><span class="def_String">&quot;jsan&quot;</span>&gt;</span>two.t.html<span class="def_Tag">&lt;/li&gt;</span>
+<span class="def_Tag">&lt;/ul&gt;</span>
+</pre></div>
+
+<p>
+See the file lib/Test/README.jsan and lib/Test/AnotherWay.js on how to run jsan module tests with Test.AnotherWay. Example tests written for jsan calling convention are in
+the doc/jsan subdirectory, you can run them by clicking <a href="jsan/index.html">here</a>.
+</p>
+
+</body>
+</html>
+
