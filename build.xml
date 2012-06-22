@@ -5,7 +5,7 @@
         GeoExplorer Build File
     </description>
 
-    <property name="build" location="build"/>
+    <property name="build" location="mapcomposer/build"/>
     <property name="app.proxy.geoserver" value=""/>
     <property name="app.port" value="8081"/>
 
@@ -23,7 +23,7 @@
         </exec>
 
         <echo message="building ringo jars"/>
-        <ant dir="externals/ringojs" target="jar"/>
+        <ant dir="mapcomposer/externals/ringojs" target="jar"/>
         <!--copy todir="externals/ringojs/lib" flatten="true" includeEmptyDirs="false">
             <fileset dir="lib"/>
         </copy-->
@@ -33,9 +33,9 @@
     <target name="buildjs">
 
         <mkdir dir="${build}/${ant.project.name}/WEB-INF/app/static/script"/>
-        <java jar="externals/ringojs/run.jar" fork="true" failonerror="true">
-            <sysproperty key="ringo.home" path="externals/ringojs"/>
-            <arg path="externals/buildkit/lib/buildkit/build.js"/>
+        <java jar="mapcomposer/externals/ringojs/run.jar" fork="true" failonerror="true">
+            <sysproperty key="ringo.home" path="mapcomposer/externals/ringojs"/>
+            <arg path="mapcomposer/externals/buildkit/lib/buildkit/build.js"/>
             <arg line="-o ${build}/${ant.project.name}/WEB-INF/app/static/script buildjs.cfg"/>
         </java>
 
@@ -48,58 +48,58 @@
         <mkdir dir="${build}/${ant.project.name}"/>
         
         <copy todir="${build}/${ant.project.name}">
-            <fileset dir="src/main/webapp/">
+            <fileset dir="mapcomposer/src/main/webapp/">
             </fileset>
         </copy>
         <copy todir="${build}/${ant.project.name}/WEB-INF/lib" flatten="true" includeEmptyDirs="false">
-            <fileset dir="externals/ringojs/lib"/>
+            <fileset dir="mapcomposer/externals/ringojs/lib"/>
         </copy>
         <copy todir="${build}/${ant.project.name}/WEB-INF/app">
-            <fileset dir="app">
+            <fileset dir="mapcomposer/app">
                 <exclude name="**/externals/**"/>
                 <exclude name="**/script/**"/>
             </fileset>
         </copy>
         <!-- copy Ext resources -->
         <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/ext">
-            <fileset dir="app/static/externals/ext"/>
+            <fileset dir="mapcomposer/app/static/externals/ext"/>
         </copy>
         <!-- copy OpenLayers resources -->
         <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/openlayers/theme">
-            <fileset dir="app/static/externals/openlayers/theme"/>
+            <fileset dir="mapcomposer/app/static/externals/openlayers/theme"/>
         </copy>
         <!-- copy GeoExt resources -->
         <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/GeoExt/resources">
-            <fileset dir="app/static/externals/GeoExt/resources"/>
+            <fileset dir="mapcomposer/app/static/externals/GeoExt/resources"/>
         </copy>
         <!-- copy gxp resources -->
         <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/gxp/src/theme">
-            <fileset dir="app/static/externals/gxp/src/theme"/>
+            <fileset dir="mapcomposer/app/static/externals/gxp/src/theme"/>
         </copy>
         <!-- copy PrintPreview resources -->
         <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/PrintPreview/resources">
-            <fileset dir="app/static/externals/PrintPreview/resources"/>
+            <fileset dir="mapcomposer/app/static/externals/PrintPreview/resources"/>
         </copy>
-        <!-- copy CSWViewer css -->
-        <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/csw/CSWViewer/css">
-            <fileset dir="app/static/externals/csw/CSWViewer/css"/>
+        <!-- copy metadataexplorer css  -->
+        <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/csw/css">
+            <fileset dir="mapcomposer/app/static/externals/csw/css"/>
         </copy>
-        <!-- copy CSWViewer img -->
-        <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/csw/CSWViewer/img">
-            <fileset dir="app/static/externals/csw/CSWViewer/img"/>
+        <!-- copy metadataexplorer img -->
+        <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/csw/img">
+            <fileset dir="mapcomposer/app/static/externals/csw/img"/>
         </copy>
-        <!-- copy CSWViewer i18n -->
-        <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/csw/CSWViewer/i18n">
-            <fileset dir="app/static/externals/csw/CSWViewer/i18n"/>
+        <!-- copy metadataexplorer i18n -->
+        <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/csw/i18n">
+            <fileset dir="mapcomposer/app/static/externals/csw/i18n"/>
         </copy>
-		<!-- copy colorpicker img 
+		<!-- copy colorpicker img -->
         <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/colorpicker/img">
-            <fileset dir="app/static/externals/colorpicker/img"/>
-        </copy> -->
-	    <!-- copy colorpicker css 
+            <fileset dir="mapcomposer/app/static/externals/colorpicker/img"/>
+        </copy>
+	    <!-- copy colorpicker css -->
         <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/colorpicker/css">
-            <fileset dir="app/static/externals/colorpicker/css"/>
-        </copy> -->
+            <fileset dir="mapcomposer/app/static/externals/colorpicker/css"/>
+        </copy> 
     </target>
 
     <target name="war" depends="dist">
@@ -109,29 +109,29 @@
     </target>
 
     <target name="debug">
-        <java jar="externals/ringojs/run.jar" fork="true">
+        <java jar="mapcomposer/externals/ringojs/run.jar" fork="true">
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
-            <sysproperty key="ringo.home" path="externals/ringojs"/>
+            <sysproperty key="ringo.home" path="mapcomposer/externals/ringojs"/>
             <!-- <jvmarg value="-XX:+HeapDumpOnOutOfMemoryError"/> -->
-            <arg path="app/main.js"/>
+            <arg path="mapcomposer/app/main.js"/>
             <arg line="-p ${app.port}"/>
         </java>
     </target>
 
     <target name="debugall">
-        <java jar="externals/ringojs/run.jar" fork="true">
+        <java jar="mapcomposer/externals/ringojs/run.jar" fork="true">
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
-            <sysproperty key="ringo.home" path="externals/ringojs"/>
+            <sysproperty key="ringo.home" path="mapcomposer/externals/ringojs"/>
             <arg value="-d"/>
-            <arg path="app/main.js"/>
+            <arg path="mapcomposer/app/main.js"/>
             <arg line="-p ${app.port}"/>
         </java>
     </target>
 
     <target name="test">
-        <java jar="externals/ringojs/run.jar" fork="true" failonerror="yes">
-            <sysproperty key="ringo.home" path="externals/ringojs"/>
-            <arg path="tests/all.js"/>
+        <java jar="mapcomposer/externals/ringojs/run.jar" fork="true" failonerror="yes">
+            <sysproperty key="ringo.home" path="mapcomposer/externals/ringojs"/>
+            <arg path="mapcomposer/tests/all.js"/>
         </java>
     </target>
 

@@ -22,7 +22,7 @@
 
     <!-- GeoExplorer resources -->
     <link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
-    <link rel="stylesheet" type="text/css" href="theme/app/fdh.css" />
+    <link rel="stylesheet" type="text/css" href="theme/app/mapstore.css" />
     <!--[if IE]><link rel="stylesheet" type="text/css" href="theme/app/ie.css"/><![endif]-->        
 
     <script type="text/javascript" src="script/GeoExplorer.js"></script>
@@ -33,9 +33,9 @@
     <script type="text/javascript" src="script/PrintPreview.js"></script> -->
     
     <!-- csw resources -->
-    <link rel="stylesheet" type="text/css" href="externals/csw/CSWViewer/css/csw.css">
+    <link rel="stylesheet" type="text/css" href="externals/csw/css/csw.css">
     <script type="text/javascript" src="auth/base64.js"></script>
-    <script type="text/javascript" src="script/CSWViewer.js"></script>
+    <script type="text/javascript" src="script/metadataexplorer.js"></script>
     
     <!-- geocoding data  -->
     <script type="text/javascript" src="data/georeferences.js"></script>
@@ -447,7 +447,7 @@
 	    };			
 			
 	    Ext.Ajax.request({
-			  url: location.host.indexOf('localhost:8081') != -1 ? "/urlConfig.js" : "/MapComposer/urlConfig.js",
+			  url: location.host.indexOf('localhost:8081') != -1 ? "/urlConfig.js" : "/mapcomposer/urlConfig.js",
 			  method: 'GET',
 			  success: function(response, opts){      
 				  var serverConfig;    
@@ -464,7 +464,7 @@
 				  }
 				  
 				  if(serverConfig){
-					  proxy = serverConfig.proxy; 
+					  proxy = location.host.indexOf('localhost:8081') != -1 ? "/proxy/?url=" : serverConfig.proxy; 
 					  geoStoreBaseURL = serverConfig.geoStoreBase;                  
 					  customSources = serverConfig.gsSources;
 

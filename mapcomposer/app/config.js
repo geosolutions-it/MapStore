@@ -13,7 +13,7 @@ var urls = [
 // debug mode loads unminified scripts
 if (java.lang.System.getProperty("app.debug")) {
     var FS = require("fs");
-    var config = FS.normal(FS.join(module.directory, "..", "buildjs.cfg"));
+    var config = FS.normal(FS.join(module.directory, "../..", "buildjs.cfg"));
     urls.push(
         [(/^\/script(\/.*)/), require("./autoloader").App(config)]
     );

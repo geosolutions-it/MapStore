@@ -210,10 +210,23 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 
                       var viewer = this;
                       
+					  // //////////////////////////////////////////////////////////////////////////
+					  // Retrieve the language code to initialize the metadata explorer i18n.
+					  // //////////////////////////////////////////////////////////////////////////
+                      var query = location.search;        
+					  if(query && query.substr(0,1) === "?"){
+						query = query.substring(1);
+					  }
+					
+					  var url = Ext.urlDecode(query);        
+					  var code = url.locale || 'en';	
+                      
+					  // //////////////////////////////////
                       // Loads bundle for i18n messages
+					  // //////////////////////////////////
                       i18n = new Ext.i18n.Bundle({
                         bundle : "CSWViewer",
-                        path : "externals/csw/CSWViewer/i18n",
+                        path : "externals/csw/i18n",
                         lang : code == 'en' ? "en-EN" : (code == 'it' ? "it-IT" : "fr-FR")
                       });
                       
