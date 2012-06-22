@@ -47,7 +47,7 @@
  * 
  */
 var config = {
-    mcUrl: 'http://localhost:8080/MapComposer/',
+    mcUrl: 'http://localhost:8080/mapcomposer/',
     
     userUrl: 'http://localhost:8080/geostore/rest/users/user/details/',
     
