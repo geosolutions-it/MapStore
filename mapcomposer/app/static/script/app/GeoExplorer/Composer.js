@@ -124,7 +124,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 actionTarget: {target: "paneltbar", index: 22}
             }, {
                 ptype: "gxp_saveDefaultContext",
-                actionTarget: {target: "paneltbar", index: 23},
+                actionTarget: {target: "paneltbar", index: 25},
 				needsAuthorization: true
             },/*{
                 ptype: "gxp_googleearth",
@@ -136,7 +136,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     emptyText:"Google GeoCoder"
                 },
                 outputTarget:"paneltbar",
-                index: 25
+                index: 24
             }/*,{
                 ptype: "gxp_print",
                 customParams: {outputFilename: 'mapstore-print'},
