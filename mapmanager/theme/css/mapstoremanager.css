@@ -96,6 +96,9 @@ display:block;
 .map_edit .x-btn-text-icon {
     background-image: url(../img/map_edit.png);
 }
+.table_edit {
+    background-image: url(../img/table_edit.png);
+}
 
 .row_expand {
     background-image: url(../img/add.png) !important;
