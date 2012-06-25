@@ -80,7 +80,7 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                     }
                 }
              }
-        }]);
+        },'-']);
         var infoButton = this.actions[0].items[0];
 
         var info = {controls: []};

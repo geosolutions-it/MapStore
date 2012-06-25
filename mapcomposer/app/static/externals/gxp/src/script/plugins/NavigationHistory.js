@@ -77,7 +77,7 @@ gxp.plugins.NavigationHistory = Ext.extend(gxp.plugins.Tool, {
             tooltip: this.nextTooltip,
             disabled: true,
             control: historyControl.next
-        })];
+        }),'-'];
         return gxp.plugins.NavigationHistory.superclass.addActions.apply(this, [actions]);
     }
         
