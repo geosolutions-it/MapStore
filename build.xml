@@ -24,7 +24,7 @@
         </exec-->
 
         <echo message="building ringo jars"/>
-        <ant dir="mapcomposer/externals/ringojs" target="jar"/>
+        <ant dir="externals/ringojs" target="jar"/>
         <!--copy todir="externals/ringojs/lib" flatten="true" includeEmptyDirs="false">
             <fileset dir="lib"/>
         </copy-->

@@ -451,95 +451,97 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             tools.push('-');
         }
 
-        tools.push(new Ext.Button({
-            tooltip: this.saveMapText,
-            handler: function() {
-                this.save(this.showUrl);
-            },
-            scope: this,
-            iconCls: "icon-save"
-        }));        
+		if(this.xmlJsonTranslateService){
+			tools.push(new Ext.Button({
+				tooltip: this.saveMapText,
+				handler: function() {
+					this.save(this.showUrl);
+				},
+				scope: this,
+				iconCls: "icon-save"
+			}));        
 
-        tools.push(new Ext.Button({
-            tooltip: this.loadMapText,
-            handler: function() {    
-                var composer = this; 
-                var win;  
-                  
-                var fp = new Ext.FormPanel({
-                    fileUpload: true,
-                    autoWidth: true,
-                    autoHeight: true,
-                    frame: true,
-                    bodyStyle: 'padding: 10px 10px 0 10px;',
-                    labelWidth: 50,
-                    defaults: {
-                        anchor: '95%',
-                        allowBlank: false,
-                        msgTarget: 'side'
-                    },
-                    items: [{
-                        xtype: 'fileuploadfield',
-                        id: 'form-file',
-                        emptyText: this.uploadEmptyText,
-                        fieldLabel: 'File',
-                        name: 'file-path',
-                        buttonText: '',
-                        buttonCfg: {
-                            iconCls: 'upload-icon'
-                        }
-                    }],
-                    buttons: [{
-                        text: this.uploadButtonText,
-                        handler: function(){
-                            if(fp.getForm().isValid()){
-                              fp.getForm().submit({
-                                  //url: app.xmlJsonTranslateService + 'HTTPWebGISFileUpload',
-                                  url: proxy + app.xmlJsonTranslateService + 'HTTPWebGISFileUpload',
-                                  waitMsg: this.uploadWaitMsg,
-                                  success: function(fp, o){
-                                      win.hide();
-                                      var json_str = unescape(o.result.result);
-                                      json_str = json_str.replace(/\+/g, ' ');
-                                      
-                                      composer.loadUserConfig(json_str);  
-                                      
-                                      //app.modified = true;
-                                      modified = true;                                    
-                                  },                                    
-                                  failure: function(fp, o){
-                                      win.hide();
-                                      win.destroy();
-                                      
-                                      Ext.Msg.show({
-                                         title: this.uploadErrorTitle,
-                                         msg: o.result.errorMessage,
-                                         buttons: Ext.Msg.OK,
-                                         icon: Ext.MessageBox.ERROR
-                                      });
-                                  }
-                              });
-                            }
-                        }
-                    }]
-                });
-                
-                win = new Ext.Window({
-                    title: this.uploadWinTitle,
-                    id: 'upload-win',
-                    layout: 'form',
-                    labelAlign: 'top',
-                    modal: true,
-                    bodyStyle: "padding: 5px",
-                    width: 380,
-                    items: [fp]
-                });
-                
-                win.show();
-            },
-            scope: this,
-            iconCls: "icon-load"
-        }));
+			tools.push(new Ext.Button({
+				tooltip: this.loadMapText,
+				handler: function() {    
+					var composer = this; 
+					var win;  
+					  
+					var fp = new Ext.FormPanel({
+						fileUpload: true,
+						autoWidth: true,
+						autoHeight: true,
+						frame: true,
+						bodyStyle: 'padding: 10px 10px 0 10px;',
+						labelWidth: 50,
+						defaults: {
+							anchor: '95%',
+							allowBlank: false,
+							msgTarget: 'side'
+						},
+						items: [{
+							xtype: 'fileuploadfield',
+							id: 'form-file',
+							emptyText: this.uploadEmptyText,
+							fieldLabel: 'File',
+							name: 'file-path',
+							buttonText: '',
+							buttonCfg: {
+								iconCls: 'upload-icon'
+							}
+						}],
+						buttons: [{
+							text: this.uploadButtonText,
+							handler: function(){
+								if(fp.getForm().isValid()){
+								  fp.getForm().submit({
+									  //url: this.xmlJsonTranslateService + 'HTTPWebGISFileUpload',
+									  url: this.proxy + this.xmlJsonTranslateService + 'HTTPWebGISFileUpload',
+									  waitMsg: this.uploadWaitMsg,
+									  success: function(fp, o){
+										  win.hide();
+										  var json_str = unescape(o.result.result);
+										  json_str = json_str.replace(/\+/g, ' ');
+										  
+										  composer.loadUserConfig(json_str);  
+										  
+										  //app.modified = true;
+										  modified = true;                                    
+									  },                                    
+									  failure: function(fp, o){
+										  win.hide();
+										  win.destroy();
+										  
+										  Ext.Msg.show({
+											 title: this.uploadErrorTitle,
+											 msg: o.result.errorMessage,
+											 buttons: Ext.Msg.OK,
+											 icon: Ext.MessageBox.ERROR
+										  });
+									  }
+								  });
+								}
+							}
+						}]
+					});
+					
+					win = new Ext.Window({
+						title: this.uploadWinTitle,
+						id: 'upload-win',
+						layout: 'form',
+						labelAlign: 'top',
+						modal: true,
+						bodyStyle: "padding: 5px",
+						width: 380,
+						items: [fp]
+					});
+					
+					win.show();
+				},
+				scope: this,
+				iconCls: "icon-load"
+			}));
+		}
 
         tools.push(new Ext.Button({
             tooltip: this.exportMapText,
