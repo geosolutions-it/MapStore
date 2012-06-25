@@ -241,6 +241,48 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     */
     tooltipDeleteMap: 'Delete Map',
     /**
+    * Property: textEditMetadata
+    * {string} string to add in EditMetadata button
+    * 
+    */
+    textEditMetadata: 'Edit Metadata',
+    /**
+    * Property: tooltipEditMetadata
+    * {string} string to add in EditMetadata tooltip
+    * 
+    */
+    tooltipEditMetadata: 'Edit Metadata',
+    /**
+    * Property: textSubmitEditMetadata
+    * {string} string to add in EditMetadata button
+    * 
+    */
+    textSubmitEditMetadata: 'Update',
+    /**
+    * Property: tooltipSubmitEditMetadata
+    * {string} string to add in EditMetadata tooltip
+    * 
+    */
+    tooltipSubmitEditMetadata: 'Update Metadata',
+    /**
+    * Property: metadataSaveSuccessTitle
+    * {string} string to add in metadataSaveSuccess
+    * 
+    */
+    metadataSaveSuccessTitle: "Success",
+    /**
+    * Property: metadataSaveSuccessMsg
+    * {string} string to add in metadataSaveSuccess
+    * 
+    */
+    metadataSaveSuccessMsg: "Metadata saved succesfully",
+    /**
+    * Property: metadataSaveFailString
+    * {string} string to add in metadataSaveFail
+    * 
+    */
+    metadataSaveFailTitle: "Metadata not saved succesfully",
+    /**
     * Property: textClose
     * {string} string to add in close MapComposer iFrame button
     * 
@@ -404,7 +446,116 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     this.collapseRow(i);
                 }
             },
-            
+            /**
+             * Private: metadataEdit Change the name and description of the map
+             * 
+             * name - {string} name of the Map
+             * mapId - {number} id of Map
+             * desc - {string} description of the Map
+             * 
+             */
+            metadataEdit: function(mapId,name,desc){
+                var win = new Ext.Window({
+                    width: 415,
+                    height: 200,
+                    resizable: false,
+                    modal: true,
+                    items: [
+                        new Ext.form.FormPanel({
+                            width: 400,
+                            height: 150,
+                            items: [
+                                {
+                                  xtype: 'fieldset',
+                                  id: 'name-field-set',
+                                  title: grid.textEditMetadata,
+                                  items: [
+                                      {
+                                            xtype: 'textfield',
+                                            width: 120,
+                                            id: 'diag-text-field',
+                                            fieldLabel: grid.gridName,
+                                            value: name
+                                      },
+                                      {
+                                            xtype: 'textarea',
+                                            width: 200,
+                                            id: 'diag-text-description',
+                                            fieldLabel: grid.gridDescription,
+                                            value: desc                
+                                      }
+                                  ]
+                                }
+                            ]
+                        })
+                    ],
+                    bbar: new Ext.Toolbar({
+                        items:[
+                            '->',
+                            {
+                                text: grid.textSubmitEditMetadata,
+                                tooltip: grid.tooltipSubmitEditMetadata,
+                                iconCls: "accept",
+                                id: "resource-addbutton",
+                                scope: this,
+                                handler: function(){      
+                                    win.hide(); 
+                                    
+                                    var mapName = Ext.getCmp("diag-text-field").getValue();        
+                                    var mapDescription = Ext.getCmp("diag-text-description").getValue();
+                                    
+                                    var resourceXML = 
+                                        '<Resource>' +
+                                            '<description>' + mapDescription + '</description>' +
+                                            '<name>' + mapName + '</name>' +
+                                        '</Resource>';
+                                        
+                                    Ext.Ajax.request({
+                                       url: purldel + mapId,
+                                       method: 'PUT',
+                                       headers:{
+                                          'Content-Type' : 'text/xml',
+                                          'Accept' : 'application/json, text/plain, text/xml'
+                                       },
+                                       params: resourceXML,
+                                       scope: this,
+                                       success: function(response, opts){
+
+                                          var reload = function(){
+                                                grid.getBottomToolbar().bindStore(grid.store, true);
+                                                grid.getBottomToolbar().doRefresh();
+                                                expander.collapseAll();
+                                          };
+                                          
+                                          Ext.Msg.show({
+                                               title: grid.metadataSaveSuccessTitle,
+                                               msg: response.statusText + " - " + grid.metadataSaveSuccessMsg,
+                                               buttons: Ext.Msg.OK,
+                                               fn: reload,
+                                               icon: Ext.MessageBox.OK,
+                                               scope: this
+                                          });
+                                          
+                                       },
+                                       failure:  function(response, opts){
+                                          Ext.Msg.show({
+                                             title: grid.metadataFailSuccessTitle,
+                                             msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+                                             buttons: Ext.Msg.OK,
+                                             icon: Ext.MessageBox.ERROR
+                                          });
+                                       }
+                                    }); 
+                                    
+                                    win.destroy(); 
+                                }
+                            }
+                        ]
+                    })
+                });
+                
+                win.show();
+            },
             /**
              * Private: openMapComposer 
              * 
@@ -512,8 +663,46 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     '<table class="expander-button-table" align="right" cellspacing="5" cellpadding="5" border="0" style="table-layout:auto">'+
                         '<tr>'+
                             '<td >'+
+                                '<tpl if="canEdit==true">'+
+                                    '<table class="x-btn x-btn-text-icon" cellspacing="0" style="width:100px" >' +
+                                    '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonERId(values,\'_editMetadataBtn\')]}\'>' +
+                                    '<tr>'+
+                                    '<td class="x-btn-tl">' +
+                                    '<i>&nbsp;</i>' +
+                                    '</td>' +
+                                    '<td class="x-btn-tc"></td>' +
+                                    '<td class="x-btn-tr">' +
+                                    '<i>&nbsp;</i>' +
+                                    '</td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<td class="x-btn-ml">' +
+                                    '<i>&nbsp;</i>' +
+                                    '</td>' +
+                                    '<td class="x-btn-mc">' +
+                                    '<em unselectable="on" class="">'+
+                                    '<button type="button"  class=" x-btn-text table_edit" title="' + grid.tooltipEditMetadata + '" >' + grid.textEditMetadata + '</button></em>'+
+                                    '</td>'+
+                                    '<td class="x-btn-mr">'+
+                                    '<i>&nbsp;</i>'+
+                                    '</td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '<td class="x-btn-bl">' +
+                                    '<i>&nbsp;</i>' +
+                                    '</td>' +
+                                    '<td class="x-btn-bc"></td>' +
+                                    '<td class="x-btn-br">' +
+                                    '<i>&nbsp;</i>' +
+                                    '</td>' +
+                                    '</tr>' +
+                                    '</tbody>' +
+                                    '</table>' +
+                                '</tpl>'+
+                            '</td>'+
+                            '<td >'+
                                 '<tpl if="canDelete==true">'+
-                                    '<table class="x-btn x-btn-text-icon" cellspacing="0" style="width:130px" >' +
+                                    '<table class="x-btn x-btn-text-icon" cellspacing="0" style="width:100px" >' +
                                     '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonDMId(values,\'_deleteBtn\')]}\'>' +
                                     '<tr>'+
                                     '<td class="x-btn-tl">' +
@@ -551,7 +740,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             '</td>'+
                             '<td >'+
                                 '<tpl if="canEdit==true">'+
-                                    '<table class="x-btn x-btn-text-icon" cellspacing="0" style="width:130px" >' +
+                                    '<table class="x-btn x-btn-text-icon" cellspacing="0" style="width:100px" >' +
                                     '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonVMId(values,\'_editBtn\',\'&auth=true\')]}\'>' +
                                     '<tr>'+
                                     '<td class="x-btn-tl">' +
@@ -588,7 +777,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                 '</tpl>'+
                             '</td>'+
                             '<td >'+
-                                '<table class="x-btn x-btn-text-icon" cellspacing="0" style="width:130px">'+
+                                '<table class="x-btn x-btn-text-icon" cellspacing="0" style="width:110px">'+
                                 '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonVMId(values,\'_viewBtn\',\'&auth=false&fullScreen=true\')]}\'>'+
                                 '<tr >'+
                                 '<td class="x-btn-tl">' +
@@ -628,6 +817,19 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     '</table>'+
                 '</div>', {
                     /**
+                    * Private: getButtonERId
+                    * 
+                    * values - {array} fields of the column grid
+                    * button - {string} name button
+                    * 
+                    */
+                    getButtonERId: function(values,button) {
+                        var result = Ext.id()+button;
+                        //adds listener for edit resource (Name and Description)
+                        this.MapComposerER.defer(1,this, [result,values]);
+                        return result;
+                    },
+                    /**
                     * Private: getButtonVMId
                     * 
                     * values - {array} fields of the column grid
@@ -652,6 +854,22 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         //Adds listener for delete map
                         this.MapComposerDM.defer(1,this, [result,values]);
                         return result;
+                    },
+                    /**
+                    * Private: MapComposerER 
+                    * 
+                    * id - {number} button id
+                    * values - {array} fields of the column grid
+                    * userProfile - {string} define if users are in edit or in view mode
+                    * 
+                    */
+                    MapComposerER : function(id,values,userProfile){
+                        Ext.get(id).on('click', function(e){
+                            var mapId = values.id;
+                            var name = values.name;
+                            var desc = values.description;
+                            expander.metadataEdit(mapId,name,desc);
+                        })
                     },
                     /**
                     * Private: MapComposerVM 
