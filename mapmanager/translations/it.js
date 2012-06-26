@@ -31,7 +31,7 @@ GeoExt.Lang.add("it", {
         textSubmitEditMetadata: "Aggiorna",
         tooltipSubmitEditMetadata: "Aggiorna Metadati",
         metadataSaveSuccessTitle: "Success",
-        metadataSaveSuccessMsg: "Metadati salvato correttamente",
+        metadataSaveSuccessMsg: "Metadati salvati correttamente",
         metadataSaveFailTitle: "Errore nel salvataggio del metadati",
         textClose: "Chiudi",
         msgSaveAlertTitle: "Attenzione, la mappa non è stata salvata!",
