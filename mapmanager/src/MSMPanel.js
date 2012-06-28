@@ -70,6 +70,11 @@ MSMPanel = Ext.extend(Ext.Panel, {
      * 
      */ 
     lang: null,
+    /**
+     * Property: langSelector
+     * {object} combo to select a locale parameter
+     * 
+     */ 
     langSelector: null,
     /**
      * Method: initComponent

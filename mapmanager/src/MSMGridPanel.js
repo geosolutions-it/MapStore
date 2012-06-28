@@ -283,12 +283,6 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     */
     metadataSaveFailTitle: "Metadata not saved succesfully",
     /**
-    * Property: textClose
-    * {string} string to add in close MapComposer iFrame button
-    * 
-    */
-    textClose: 'Close',
-    /**
     * Property: msgSaveAlertTitle
     * {string} string to add in confirm Title message when user closes map without save
     * 
@@ -300,12 +294,6 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * 
     */
     msgSaveAlertBody: 'Do you really want to quit without saving it?',
-    /**
-    * Property: tooltipClose
-    * {string} string to add in close tooltip MapComposer iFrame button
-    * 
-    */
-    tooltipClose: 'Close Map',
     /**
     * Property: msgDeleteMapTitle
     * {string} string to add in confirm Title message when user deletes map
@@ -643,17 +631,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                     return true;
                                 }
                             }
-                        }/*,
-                        bbar: ['->',{
-                            id: 'id_ifClose',
-                            text: grid.textClose,
-                            tooltip: grid.tooltipClose,
-                            iconCls: 'close',
-                            scope: this,
-                            handler: function(){
-                                iframe.close();
-                            }
-                        }]*/
+                        }
                     });
                 iframe.show();
             },
@@ -863,7 +841,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     * userProfile - {string} define if users are in edit or in view mode
                     * 
                     */
-                    MapComposerER : function(id,values,userProfile){
+                    MapComposerER : function(id,values){
                         Ext.get(id).on('click', function(e){
                             var mapId = values.id;
                             var name = values.name;
