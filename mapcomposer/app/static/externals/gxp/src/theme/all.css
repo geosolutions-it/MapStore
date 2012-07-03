@@ -209,6 +209,11 @@
     background-image: url(img/geosilk/disk.png);
 }
 
+/* gxp-icon-graticule */
+.x-btn .gxp-icon-graticule, .x-menu-item .gxp-icon-graticule, .x-tree-node .gxp-icon-graticule {
+    background-image: url(img/geosilk/raster_add.png);
+}
+
 /* gxp_zoomtodataextent, gxp_zoomtoselectedfeatures, gxp_zoomtolayerextent */
 .x-btn .gxp-icon-zoom-to, .x-menu-item .gxp-icon-zoom-to, .x-tree-node .gxp-icon-zoom-to { 
     background-image: url(img/silk/magnifier.png);
