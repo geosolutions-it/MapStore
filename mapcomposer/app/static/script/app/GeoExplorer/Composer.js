@@ -105,27 +105,39 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 ptype: "gxp_navigation", toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 16}
             }, {
+                actions: ["-"], actionTarget: "paneltbar"
+            }, {
                 ptype: "gxp_zoombox", toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 17}
             }, {
                 ptype: "gxp_zoom",
                 actionTarget: {target: "paneltbar", index: 18}
             }, {
+                actions: ["-"], actionTarget: "paneltbar"
+            }, {
                 ptype: "gxp_navigationhistory",
                 actionTarget: {target: "paneltbar", index: 19}
+            }, {
+                actions: ["-"], actionTarget: "paneltbar"
             }, {
                 ptype: "gxp_wmsgetfeatureinfo", toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 20}
             }, {
+                actions: ["-"], actionTarget: "paneltbar"
+            }, {
                 ptype: "gxp_measure", toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 21}
             }, {
+                actions: ["-"], actionTarget: "paneltbar"
+            }, {
                 ptype: "gxp_georeferences",
-                actionTarget: {target: "paneltbar", index: 22}
+                actionTarget: {target: "paneltbar", index: 23}
             }, {
                 ptype: "gxp_saveDefaultContext",
-                actionTarget: {target: "paneltbar", index: 25},
+                actionTarget: {target: "paneltbar", index: 26},
 				needsAuthorization: true
+            }, {
+                actions: ["->"], actionTarget: "paneltbar"
             },/*{
                 ptype: "gxp_googleearth",
                 actionTarget: {target: "paneltbar", index: 24}
@@ -136,7 +148,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     emptyText:"Google GeoCoder"
                 },
                 outputTarget:"paneltbar",
-                index: 24
+                index: 25
             }/*,{
                 ptype: "gxp_print",
                 customParams: {outputFilename: 'mapstore-print'},
@@ -145,7 +157,14 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 actionTarget: {target: "paneltbar", index: 4}
             }*/
         ];
-
+        
+        if (config.showGraticule == true){
+            config.tools.push({
+                ptype: "gxp_graticule",
+                actionTarget: {target: "paneltbar", index: config.xmlJsonTranslateService ? 24 : 22}
+            })
+        }
+        
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);
     },
 
@@ -492,11 +511,15 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 						}],
 						buttons: [{
 							text: this.uploadButtonText,
+                            scope: this,
 							handler: function(){
 								if(fp.getForm().isValid()){
+                                  var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
+                                  var mHost=pattern.exec(this.xmlJsonTranslateService);
+
+                                  var mUrl = this.xmlJsonTranslateService + 'HTTPWebGISFileUpload';
 								  fp.getForm().submit({
-									  //url: this.xmlJsonTranslateService + 'HTTPWebGISFileUpload',
-									  url: this.proxy + this.xmlJsonTranslateService + 'HTTPWebGISFileUpload',
+									  url: mHost[2] == location.host ? mUrl : this.proxy + mUrl,
 									  waitMsg: this.uploadWaitMsg,
 									  success: function(fp, o){
 										  win.hide();

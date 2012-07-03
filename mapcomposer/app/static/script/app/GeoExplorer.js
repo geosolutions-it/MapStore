@@ -176,6 +176,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 ptype: "gxp_navigation", 
                 toggleGroup: this.toggleGroup
             }, {
+                actions: ["-"], checked: true
+            }, {
                 leaf: true, 
                 text: gxp.plugins.ZoomBox.prototype.zoomInTooltip + " / " + gxp.plugins.ZoomBox.prototype.zoomOutTooltip, 
                 checked: true, 
@@ -191,6 +193,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 numberOfButtons: 2,
                 ptype: "gxp_zoom"
             }, {
+                actions: ["-"], checked: true
+            }, {
                 leaf: true, 
                 text: gxp.plugins.NavigationHistory.prototype.previousTooltip + " / " + gxp.plugins.NavigationHistory.prototype.nextTooltip, 
                 checked: true, 
@@ -198,12 +202,16 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 numberOfButtons: 2,
                 ptype: "gxp_navigationhistory"
             }, {
+                actions: ["-"], checked: true
+            }, {
                 leaf: true, 
                 text: gxp.plugins.WMSGetFeatureInfo.prototype.infoActionTip, 
                 checked: true, 
                 iconCls: "gxp-icon-getfeatureinfo",
                 ptype: "gxp_wmsgetfeatureinfo", 
                 toggleGroup: this.toggleGroup
+            }, {
+                actions: ["-"], checked: true
             }, {
                 leaf: true, 
                 text: gxp.plugins.Measure.prototype.measureTooltip, 
@@ -213,11 +221,13 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 controlOptions: {immediate: true},
                 toggleGroup: this.toggleGroup
             }, {
+                actions: ["-"], checked: true
+            }, {
                 leaf: true, 
                 text: gxp.plugins.GeoReferences.prototype.tooltip, 
                 checked: true, 
                 ptype: "gxp_georeferences"
-            }, {
+            }/*, {
                 leaf: true,
                 text: "Google Geocoder",
                 checked: true,
@@ -227,7 +237,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                     emptyText:"Google GeoCoder"
                 },
                 outputTarget:"paneltbar"
-            }/*, {
+            }*//*, {
                 leaf: true,
                 text: gxp.plugins.GoogleEarth.prototype.tooltip,
                 checked: true,
@@ -236,7 +246,31 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 actionTarget: {target: "paneltbar", index: 12}
             }*/
         ];
+        
+        if (config.showGraticule == true){
+            config.viewerTools.push({
+                leaf: true,
+                text: gxp.plugins.Graticule.prototype.tooltip,
+                checked: true,
+                iconCls: "gxp-icon-graticule",
+                ptype: "gxp_graticule"
+            })
+        }
 
+        config.viewerTools.push({
+            hidden: true, actions: ["->"], checked: true
+            }, {
+            leaf: true,
+            text: "Google Geocoder",
+            checked: true,
+            iconCls: "gxp-icon-googleearth",
+            ptype: "gxp_googlegeocoder",
+            outputConfig:{
+                emptyText:"Google GeoCoder"
+            },
+            outputTarget:"paneltbar"
+        })
+            
         GeoExplorer.superclass.constructor.apply(this, arguments);
     }, 
 
@@ -245,9 +279,14 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         if(config.isLoadedFromConfigFile){
           this.applyConfig(config);
         } else {
+            
+            var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
+            var mHost=pattern.exec(geoStoreBaseURL);
+
+            var mUrl = geoStoreBaseURL + "data/" + this.mapId;
+
             Ext.Ajax.request({
-               url: proxy + geoStoreBaseURL + "data/" + this.mapId,
-               //url: geoStoreBaseURL + "data/" + this.mapId,
+               url: mHost[2] == location.host ? mUrl : proxy + mUrl,
                method: 'GET',
                scope: this,
                headers:{
@@ -437,8 +476,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     save: function(callback, scope) {
         var configStr = Ext.util.JSON.encode(this.getState());        
         var method = "POST";
-        var url = proxy + app.xmlJsonTranslateService + "HTTPWebGISSave";
-        //var url = app.xmlJsonTranslateService + "HTTPWebGISSave";
+        var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
+        var mHost=pattern.exec(app.xmlJsonTranslateService);
+
+        var mUrl = app.xmlJsonTranslateService + 'HTTPWebGISSave';
+        var url = mHost[2] == location.host ? mUrl : proxy + mUrl;
         OpenLayers.Request.issue({
             method: method,
             url: url,
@@ -515,8 +557,12 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     /** private: method[showUrl]
      */
     showUrl: function() {
+        var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
+        var mHost=pattern.exec(app.xmlJsonTranslateService);
+
+        var mUrl = app.xmlJsonTranslateService + 'HTTPWebGISFileDownload';
         OpenLayers.Request.POST({
-            url: proxy + app.xmlJsonTranslateService + "HTTPWebGISFileDownload",
+            url: mHost[2] == location.host ? mUrl : proxy + mUrl,
             data: this.xmlContext,
             callback: function(request) {
 
@@ -534,7 +580,12 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                     //
                     var elemIF = document.createElement("iframe"); 
                     elemIF.setAttribute("id","downloadIFrame");
-                    elemIF.src = proxy + encodeURIComponent(app.xmlJsonTranslateService + "HTTPWebGISFileDownload?file="+request.responseText); 
+                    var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
+                    var mHost=pattern.exec(app.xmlJsonTranslateService);
+
+                    var mUrlEncoded = encodeURIComponent(app.xmlJsonTranslateService + "HTTPWebGISFileDownload?file="+request.responseText);
+                    var mUrl = app.xmlJsonTranslateService + "HTTPWebGISFileDownload?file="+request.responseText;
+                    elemIF.src = mHost[2] == location.host ? mUrl : proxy + mUrlEncoded; 
                     elemIF.style.display = "none"; 
                     document.body.appendChild(elemIF); 
                 }else{
