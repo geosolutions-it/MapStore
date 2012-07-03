@@ -210,6 +210,7 @@
                 "OpenLayers/Control/Graticule.js",
                 "OpenLayers/Control/TransformFeature.js",
                 "OpenLayers/Control/SLDSelect.js",
+                "OpenLayers/Control/LoadingPanel.js",
                 "OpenLayers/Geometry.js",
                 "OpenLayers/Geometry/Rectangle.js",
                 "OpenLayers/Geometry/Collection.js",
