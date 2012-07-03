@@ -68,7 +68,10 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
     /** api: method[addActions]
      */
     addActions: function() {
-		
+        
+        var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
+        var mHost=pattern.exec(geoStoreBaseURL);
+        
 		var saveContext = new Ext.Button({
 		    id: "save-context-button",
             menuText: this.saveDefaultContextMenuText,
@@ -87,9 +90,9 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
 					  }else{
 						  //
 						  // UPDATE MAP
-						  // 
-						  var url = this.target.proxy + geoStoreBaseURL + "data/" + this.target.mapId;
-						  //var url = geoStoreBaseURL + "data/" + this.target.mapId;
+						  //
+                          var mUrl = geoStoreBaseURL + "data/" + this.target.mapId;
+						  var url = mHost[2] == location.host ? mUrl : this.target.proxy + mUrl;
 						  var method = 'PUT';
 						  var contentType = 'application/json';
 						  var auth = this.auth;
@@ -120,9 +123,9 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
 						  }else{
 							  //
 							  // UPDATE MAP
-							  // 
-							  var url = this.target.proxy + geoStoreBaseURL + "data/" + thisObj.target.mapId;
-							  //var url = geoStoreBaseURL + "data/" + thisObj.target.mapId;
+							  //
+                              var mUrl = geoStoreBaseURL + "data/" + thisObj.target.mapId;
+							  var url = mHost[2] == location.host ? mUrl : this.target.proxy + mUrl;
 							  var method = 'PUT';
 							  var contentType = 'application/json';
 							  
@@ -325,9 +328,13 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
 										'<data><![CDATA[ ' + configStr + ' ]]></data>' +
 									'</store>' +
 								'</Resource>';
+                                
+                            var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
+                            var mHost=pattern.exec(geoStoreBaseURL);
+
+                            var mUrl = geoStoreBaseURL + "resources";
                             
-                            var url = this.target.proxy + geoStoreBaseURL + "resources";
-                            //var url = geoStoreBaseURL + "resources";
+                            var url = mHost[2] == location.host ? mUrl : this.target.proxy + mUrl;
                             var method = 'POST';
                             var contentType = 'text/xml';              
                             
