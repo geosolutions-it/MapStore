@@ -88,7 +88,7 @@ gxp.plugins.GeoReferences = Ext.extend(gxp.plugins.Tool, {
             }
         });
         
-        var actions = ['-',georeferencesSelector];
+        var actions = [georeferencesSelector];
         return gxp.plugins.GeoReferences.superclass.addActions.apply(this, [actions]);
     }
         

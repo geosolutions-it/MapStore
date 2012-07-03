@@ -79,7 +79,7 @@ gxp.plugins.Zoom = Ext.extend(gxp.plugins.Tool, {
                 this.target.mapPanel.map.zoomOut();
             },
             scope: this
-        },'-'];
+        }];
         return gxp.plugins.Zoom.superclass.addActions.apply(this, [actions]);
     }
         

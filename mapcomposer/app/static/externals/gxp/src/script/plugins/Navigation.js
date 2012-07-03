@@ -63,7 +63,7 @@ gxp.plugins.Navigation = Ext.extend(gxp.plugins.Tool, {
             allowDepress: false,
             control: new OpenLayers.Control.Navigation(this.controlOptions),
             map: this.target.mapPanel.map,
-            toggleGroup: this.toggleGroup}),'-'];
+            toggleGroup: this.toggleGroup})];
         return gxp.plugins.Navigation.superclass.addActions.apply(this, [actions]);
     }
         
