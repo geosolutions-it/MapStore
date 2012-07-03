@@ -424,7 +424,8 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
                     new OpenLayers.Control.Navigation({zoomWheelOptions: {interval: 250}}),
                     new OpenLayers.Control.PanPanel(),
                     new OpenLayers.Control.ZoomPanel(),
-                    new OpenLayers.Control.Attribution()
+                    new OpenLayers.Control.Attribution(),
+                    new OpenLayers.Control.LoadingPanel()
                 ],
                 maxExtent: mapConfig.maxExtent && OpenLayers.Bounds.fromArray(mapConfig.maxExtent),
                 restrictedExtent: mapConfig.restrictedExtent && OpenLayers.Bounds.fromArray(mapConfig.restrictedExtent),
