@@ -1046,7 +1046,13 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
             pageSize : (config.limit)?(config.limit):(this.limit),
             store : this.store,
             grid: this,
-            displayInfo: true
+            displayInfo: true,
+            listeners: {
+                scope: this,
+                change: function(){
+                    expander.collapseAll();
+                } 
+            }
         });
        
 
