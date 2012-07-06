@@ -186,3 +186,15 @@ display:block;
     color: #15428B;
     text-align:right;
 }
+
+
+.fb_edge_widget_with_comment span.fb_edge_comment_widget iframe.fb_ltr {
+    position: relative;
+    z-index: 999999;
+    /*display: none !important;*/
+}
+
+.fb_edge_widget_with_comment span.fb_edge_comment_widget {
+left: 80px !important;
+
+}

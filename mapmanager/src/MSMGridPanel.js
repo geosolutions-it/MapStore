@@ -447,6 +447,44 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     this.collapseRow(i);
                 }
             },
+            listeners: {
+                 scope: this,
+                 expand: function(){
+
+                    //I will assume that if we have one type of button we have them all
+                    //If not we'll just exit
+                    //if ($(".twitter-share-button").length == 0) return;
+
+                    //Twitter
+                    if (typeof (twttr) != 'undefined') {
+                        twttr.widgets.load();
+                    } else {
+                        //$.getScript('http://platform.twitter.com/widgets.js');
+                        Ext.Loader.load('http://platform.twitter.com/widgets.js');
+                    }
+
+                    //Facebook
+                    if (typeof (FB) != 'undefined') {
+                        FB.XFBML.parse();
+                    } else {
+                        var langFB = grid.lang == "en" ? "en_US" : "it_IT";;
+                        
+                        //var element = document.getElementById('facebook-jssdk');
+                        //if(!element){
+                            var fun = function(d, s, id) {
+                                var js, fjs = d.getElementsByTagName(s)[0];
+                                if (d.getElementById(id)) return;
+                                js = d.createElement(s); js.id = id;
+                                js.src = "//connect.facebook.net/" + langFB + "/all.js#xfbml=1";
+                                fjs.parentNode.insertBefore(js, fjs);
+                            }
+                            fun(document, 'script', 'facebook-jssdk');
+                        //}
+                        //Ext.Loader.load("http://connect.facebook.net/it_IT/all.js#xfbml=1&cookie=1&status=1&channelUrl='http://localhost:8080/MapStoreManager'");
+                    }
+
+                }                
+            },
             /**
              * Private: metadataEdit Change the name and description of the map
              * 
@@ -854,7 +892,17 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             '</td>'+
                         '</tr>'+
                     '</table>'+
-                '</div>', {
+                '</div>' +
+                    '<table align="left" cellspacing="5" cellpadding="5" border="0" style="table-layout:auto">'+
+                        '<tr>'+
+                            '<td align="left">'+
+                                '<span> <div class="fb-like" data-href="' + murl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId={id}" data-send="false" data-layout="button_count" data-width="100" data-show-faces="true"></div></span>'+
+                            '</td>'+
+                            '<td align="left">'+
+                                '<a href="http://opensdi.geo-solutions.it/" class="twitter-share-button" data-url="' + murl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId={id}" data-text="MapComposer" data-count="horizontal" data-via="geosolutions_it" data-lang="' + grid.lang + '"></a>'+
+                            '</td>'+
+                        '</tr>'+
+                    '</table>', {
                     /**
                     * Private: getButtonERId
                     * 
