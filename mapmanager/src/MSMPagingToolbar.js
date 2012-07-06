@@ -75,6 +75,20 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
     * 
     */  
     tooltipNewMap: "Create New Map",
+
+    /**
+    * Property: textUserManager
+    * {string} text for User Manager button
+    * 
+    */  
+    textUserManager: "User Manager",
+    /**
+    * Property: tooltipNewMap
+    * {string} text for New Map tooltip
+    * 
+    */  
+    tooltipUserManager: "Open User Manager",
+
     /**
     * Property: textExpandAll
     * {string} text for Expand All button
@@ -165,6 +179,19 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
         
         MSMPagingToolbar.superclass.initComponent.call(this, arguments);
         
+		// add admin user button
+        this.openUserManager = this.addButton({
+            id: 'id_openUserManager_button',
+            text: this.textUserManager,
+            scope: this,
+            disabled: true,
+            iconCls: 'map_add',
+            tooltip: this.tooltipUserManager,
+            handler: function(){
+                this.grid.plugins.openMapComposer(this.mcUrl,userProfile,idMap,this.desc);
+            }
+        });
+
         //add openMapComposer button
         this.openMapComposer = this.addButton({
             id: 'id_openMapComposer_button',

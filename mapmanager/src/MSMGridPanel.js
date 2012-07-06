@@ -217,6 +217,18 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     */
     tooltipViewMap: 'Open Map to read only',
     /**
+    * Property: textCopyMap
+    * {string} string to add in CopyMap button
+    * 
+    */
+    textCopyMap: 'Clone Map',
+    /**
+    * Property: tooltipCopyMap
+    * {string} string to add in CloneMap tooltip
+    * 
+    */
+    tooltipCopyMap: 'Make a copy of this map',
+    /**
     * Property: textEditMap
     * {string} string to add in EditMap button
     * 
@@ -373,6 +385,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
         this.login = new MSMLogin({
             grid: this
         });
+
 
         //An object that contains the string to search the resource
         this.inputSearch = new Ext.form.TextField({
@@ -544,6 +557,17 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 
                 win.show();
             },
+
+			/**
+             * Private: cloneMap 
+             *
+             *   mapId - {string} id of the map to be cloned
+             *  make a copy of the selected map
+             */
+			cloneMap: function(mapId){
+				console.log('clone map ' + mapId);
+			},
+
             /**
              * Private: openMapComposer 
              * 
@@ -791,6 +815,43 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                 '</tbody>' +
                                 '</table>' +
                             '</td>'+
+							'<td >'+
+                                '<table class="x-btn x-btn-text-icon" cellspacing="0" style="width:110px">'+
+                                '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getCloneButton(values)]}\'>'+
+                                '<tr >'+
+                                '<td class="x-btn-tl">' +
+                                '<i>&nbsp;</i>' +
+                                '</td>' +
+                                '<td class="x-btn-tc"></td>' +
+                                '<td class="x-btn-tr">' +
+                                '<i>&nbsp;</i>' +
+                                '</td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td class="x-btn-ml">' +
+                                '<i>&nbsp;</i>' +
+                                '</td>' +
+                                '<td class="x-btn-mc">' +
+                                '<em class="" unselectable="on">' +
+                                '<button type="button"  class="x-btn-text icon-layers" title="' + grid.tooltipCopyMap + '">' + grid.textCopyMap + '</button>'+
+                                '</em>'+
+                                '</td>'+
+                                '<td class="x-btn-mr">'+
+                                '<i>&nbsp;</i>'+
+                                '</td>'+
+                                '</tr>'+
+                                '<tr>' +
+                                '<td class="x-btn-bl">' +
+                                '<i>&nbsp;</i>' +
+                                '</td>' +
+                                '<td class="x-btn-bc"></td>' +
+                                '<td class="x-btn-br">' +
+                                '<i>&nbsp;</i>' +
+                                '</td>' +
+                                '</tr>' +
+                                '</tbody>' +
+                                '</table>' +
+                            '</td>'+
                         '</tr>'+
                     '</table>'+
                 '</div>', {
@@ -806,6 +867,21 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         //adds listener for edit resource (Name and Description)
                         this.MapComposerER.defer(1,this, [result,values]);
                         return result;
+                    },
+                    /**
+                    * Private: getCloneButton
+                    * 
+                    * values - {array} fields of the column grid
+                    * 
+                    */
+                    getCloneButton: function(values) {
+						console.log('clone button');
+						// create a unique id for the clone button
+                        var uniqueId = Ext.id()+'_cloneBtn';
+                        //adds listener for clone map
+                        this.bindCloneMapButton.defer(1,this, [uniqueId,values]);
+						// return the button id
+                        return uniqueId;
                     },
                     /**
                     * Private: getButtonVMId
@@ -833,6 +909,18 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         this.MapComposerDM.defer(1,this, [result,values]);
                         return result;
                     },
+
+					/**
+					 * Private: bindCloneMapButton
+					 * id - {string} button id
+					 * values - {array} fields of the column grid
+					 */
+					bindCloneMapButton: function(id, values){
+						Ext.get(id).on('click', function(e){
+								var mapId = values.id;
+	                            expander.cloneMap(mapId);
+	                    });
+					},
                     /**
                     * Private: MapComposerER 
                     * 
