@@ -23,7 +23,7 @@
  * {object} object for configuring the component. See <config.js>
  *
  */
-config : null,
+// config : null,
 /**
  * Function: init.js
  * Initializes the component MSMPanel

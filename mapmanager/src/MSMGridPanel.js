@@ -91,6 +91,12 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     */
     purl: null,
     /**
+    * Property: geoBaseUrl
+    * {url} rest/resources URL
+    * 
+    */
+    geoBaseUrl: null,
+    /**
     * Property: purldel
     * {url} rest/resources/resource URL
     * 
@@ -209,7 +215,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * {string} string to add in ViewMap button
     * 
     */
-    textViewMap: 'View Map',
+    textViewMap: '', //'View Map',
     /**
     * Property: tooltipViewMap
     * {string} string to add in ViewMap tooltip
@@ -221,7 +227,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * {string} string to add in CopyMap button
     * 
     */
-    textCopyMap: 'Clone Map',
+    textCopyMap: '', //'Clone Map',
     /**
     * Property: tooltipCopyMap
     * {string} string to add in CloneMap tooltip
@@ -233,7 +239,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * {string} string to add in EditMap button
     * 
     */
-    textEditMap: 'Edit Map',
+    textEditMap: '', //'Edit Map',
     /**
     * Property: tooltipEditMap
     * {string} string to add in EditMap tooltip
@@ -245,7 +251,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * {string} string to add in DeleteMap button
     * 
     */
-    textDeleteMap: 'Delete Map',
+    textDeleteMap: '', //'Delete Map',
     /**
     * Property: tooltipDeleteMap
     * {string} string to add in DeleteMap tooltip
@@ -257,7 +263,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * {string} string to add in EditMetadata button
     * 
     */
-    textEditMetadata: 'Edit Metadata',
+    textEditMetadata: '', //'Edit Metadata',
     /**
     * Property: tooltipEditMetadata
     * {string} string to add in EditMetadata tooltip
@@ -269,7 +275,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * {string} string to add in EditMetadata button
     * 
     */
-    textSubmitEditMetadata: 'Update',
+    textSubmitEditMetadata: '', //'Update',
     /**
     * Property: tooltipSubmitEditMetadata
     * {string} string to add in EditMetadata tooltip
@@ -360,6 +366,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
      * 
      */ 
     langSelector: null,
+
+
+
+	
     /**
     * Constructor: initComponent 
     * Initializes the component
@@ -369,6 +379,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
         var searchString = '*';
     
+		console.log(config);
+
         if (config.mcUrl){
             var murl = config.mcUrl;
         }
@@ -380,6 +392,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
         if(config.geoDelUrl){
             var purldel = config.geoDelUrl;
         }
+
+		if(config.geoBaseUrl){
+			var geoBaseUrl = config.geoBaseUrl;
+		}
         
         //inizialization of MSMLogin class
         this.login = new MSMLogin({
@@ -413,6 +429,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
         });
         
         var grid = this;
+
 
         var expander = new Ext.ux.grid.RowExpander({
             /**
@@ -550,6 +567,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                         '</Resource>';
                                         
                                     Ext.Ajax.request({
+										/////// save metadata
                                        url: purldel + mapId,
                                        method: 'PUT',
                                        headers:{
@@ -603,7 +621,49 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
              *  make a copy of the selected map
              */
 			cloneMap: function(mapId){
-				console.log('clone map ' + mapId);
+				
+				// TODO refactoring!
+				// this code is repeated several times within this file
+				 var reload = function(){
+                        grid.getBottomToolbar().bindStore(grid.store, true);
+                        grid.getBottomToolbar().doRefresh();
+                        expander.collapseAll();
+                  };
+			
+			
+			  	// get info about logged user if any
+			    var auth = grid.login.getToken();
+				// fetch base url
+				var url =  config.geoBaseMapsUrl; // 'http://localhost:8080/geostore/rest/resources';
+	
+				// get the api for GeoStore
+				var geostore = new GeoStore.Maps(
+										{ authorization: auth,
+										  url: url,
+										 }).failure( function(data){ console.error(data); } );
+				geostore.findByPk(mapId, function(data){
+					geostore.create(data, function(data){
+						reload();
+					});
+				}, {full:true});
+				
+			},
+			
+			openUserManager: function(){
+				var view = new UserManagerView( {
+							auth: grid.login.getToken(),
+							url: config.geoBaseUsersUrl, // 'http://localhost:8080/geostore/rest/users',
+				});
+
+				var win = new Ext.Window({
+					   title: "User Manager",
+					   iconCls: "open_usermanager",
+				       width: 415, height: 200, resizable: true, modal: true,
+				       items: [ view ],
+				});				
+				
+				// show window
+				win.show();
 			},
 
             /**
@@ -698,13 +758,13 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 iframe.show();
             },
 
-            tpl : new Ext.XTemplate(
+            tpl : new Ext.XTemplate( // expander-button-table
                 '<div style="background-color: #f9f9f9; text-align: left">&nbsp;&nbsp;&nbsp;&nbsp;<b>Description:</b> {description}<br/>'+
-                    '<table class="expander-button-table" align="right" cellspacing="5" cellpadding="5" border="0" style="table-layout:auto">'+
+                    '<table class="x-btn x-btn-text-icon" align="right" cellspacing="5" cellpadding="5" border="0" style="table-layout:auto">'+
                         '<tr>'+
                             '<td >'+
                                 '<tpl if="canEdit==true">'+
-                                    '<table class="x-btn x-btn-text-icon" cellspacing="0" style="width:100px" >' +
+                                    '<table class="x-btn x-btn-text-icon" cellspacing="0"  >' +
                                     '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonERId(values,\'_editMetadataBtn\')]}\'>' +
                                     '<tr>'+
                                     '<td class="x-btn-tl">' +
@@ -742,7 +802,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             '</td>'+
                             '<td >'+
                                 '<tpl if="canDelete==true">'+
-                                    '<table class="x-btn x-btn-text-icon" cellspacing="0" style="width:100px" >' +
+                                    '<table class="x-btn x-btn-text-icon" cellspacing="0"  >' +
                                     '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonDMId(values,\'_deleteBtn\')]}\'>' +
                                     '<tr>'+
                                     '<td class="x-btn-tl">' +
@@ -780,7 +840,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             '</td>'+
                             '<td >'+
                                 '<tpl if="canEdit==true">'+
-                                    '<table class="x-btn x-btn-text-icon" cellspacing="0" style="width:100px" >' +
+                                    '<table class="x-btn x-btn-text-icon" cellspacing="0"  >' +
                                     '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonVMId(values,\'_editBtn\',\'&auth=true\')]}\'>' +
                                     '<tr>'+
                                     '<td class="x-btn-tl">' +
@@ -817,7 +877,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                 '</tpl>'+
                             '</td>'+
                             '<td >'+
-                                '<table class="x-btn x-btn-text-icon" cellspacing="0" style="width:110px">'+
+                                '<table class="x-btn x-btn-text-icon" cellspacing="0" >'+
                                 '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonVMId(values,\'_viewBtn\',\'&auth=false&fullScreen=true\')]}\'>'+
                                 '<tr >'+
                                 '<td class="x-btn-tl">' +
@@ -854,7 +914,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                 '</table>' +
                             '</td>'+
 							'<td >'+
-                                '<table class="x-btn x-btn-text-icon" cellspacing="0" style="width:110px">'+
+                                '<table class="x-btn x-btn-text-icon" cellspacing="0" >'+
                                 '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getCloneButton(values)]}\'>'+
                                 '<tr >'+
                                 '<td class="x-btn-tl">' +
@@ -871,7 +931,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                 '</td>' +
                                 '<td class="x-btn-mc">' +
                                 '<em class="" unselectable="on">' +
-                                '<button type="button"  class="x-btn-text icon-layers" title="' + grid.tooltipCopyMap + '">' + grid.textCopyMap + '</button>'+
+                                '<button type="button" id="'+ Ext.id() +'" class="x-btn-text clone_map" title="' + grid.tooltipCopyMap + '">' + grid.textCopyMap + '</button>'+
                                 '</em>'+
                                 '</td>'+
                                 '<td class="x-btn-mr">'+
@@ -923,7 +983,6 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     * 
                     */
                     getCloneButton: function(values) {
-						console.log('clone button');
 						// create a unique id for the clone button
                         var uniqueId = Ext.id()+'_cloneBtn';
                         //adds listener for clone map
@@ -1191,7 +1250,17 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
             }
         });
        
-
+		this.openUserManagerButton = new Ext.Button({
+	            id: 'id_openUserManager_button',
+	            text: this.textUserManager,
+	            scope: this,
+	            disabled: true,
+	            iconCls: 'open_usermanager',
+	            tooltip: this.tooltipUserManager,
+	            handler: function(){
+	                this.plugins.openUserManager();
+	            }
+	        });
         
         this.tbar = [grid.inputSearch,{
             id: 'searchBtn',
@@ -1223,7 +1292,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     grid.getBottomToolbar().doRefresh();
                     expander.collapseAll();
                 } 
-            },'->',this.login.userLabel,'-',this.login.loginButton,'-',this.langSelector,'-'
+            },'->',
+			this.openUserManagerButton,
+
+			this.login.userLabel,'-',this.login.loginButton,'-',this.langSelector,'-'
         ];
         
         // initializes the store with the parameters set in <config.js> otherwise uses the default

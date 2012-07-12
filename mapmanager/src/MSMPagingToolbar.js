@@ -180,17 +180,17 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
         MSMPagingToolbar.superclass.initComponent.call(this, arguments);
         
 		// add admin user button
-        this.openUserManager = this.addButton({
+       /* this.openUserManager = this.addButton({
             id: 'id_openUserManager_button',
             text: this.textUserManager,
             scope: this,
             disabled: true,
-            iconCls: 'map_add',
+            iconCls: 'open_usermanager',
             tooltip: this.tooltipUserManager,
             handler: function(){
-                this.grid.plugins.openMapComposer(this.mcUrl,userProfile,idMap,this.desc);
+                this.grid.plugins.openUserManager();
             }
-        });
+        }); */
 
         //add openMapComposer button
         this.openMapComposer = this.addButton({

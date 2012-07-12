@@ -209,13 +209,20 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      *  Log out the current user from the application.
      */
     logout: function() {
+	    // invalidate token
+	    this.token = null;
         this.grid.store.proxy.getConnection().defaultHeaders = {'Accept': 'application/json'};
         this.grid.getBottomToolbar().bindStore(this.grid.store, true);
         this.grid.getBottomToolbar().doRefresh();
         this.grid.plugins.collapseAll()
         this.grid.getBottomToolbar().openMapComposer.disable();
+ 		this.grid.openUserManagerButton.disable();
         this.showLogin();
     },
+
+	getToken: function(){
+		return this.token;
+	},
 
     /** 
      * api: method[submitLogin]
@@ -241,11 +248,14 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 this.getForm().reset();
                 var user = Ext.util.JSON.decode(response.responseText);
                 this.showLogout(user.User.name);
+				// save auth info
+				this.token = auth;
                 this.grid.store.proxy.getConnection().defaultHeaders = {'Accept': 'application/json', "Authorization": auth};                
                 this.grid.getBottomToolbar().bindStore(this.grid.store, true);
                 this.grid.getBottomToolbar().doRefresh();
                 this.grid.plugins.collapseAll();
                 this.grid.getBottomToolbar().openMapComposer.enable();
+				this.grid.openUserManagerButton.enable();
             },
             failure: function(response, form, action) {
                 Ext.MessageBox.show({

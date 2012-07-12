@@ -54,6 +54,11 @@ var config = {
     geoSearchUrl: 'http://localhost:8080/geostore/rest/extjs/search/',
 
     geoDelUrl: 'http://localhost:8080/geostore/rest/resources/resource/',
+
+	geoBaseUrl: 'http://localhost:8080/geostore/rest/resources',
+	
+	geoBaseUsersUrl: 'http://localhost:8080/geostore/rest/users',
+	geoBaseMapsUrl:'http://localhost:8080/geostore/rest/resources',
     
     start: 0,
     

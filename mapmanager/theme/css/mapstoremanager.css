@@ -81,8 +81,23 @@ display:block;
 .clear .x-btn-text {
     background-image: url(../img/Textfield.png);
 }
+.map_edit {
+    background-image: url(../img/map_edit.png) !important;
+}
 .map_add {
     background-image: url(../img/map_add.png) !important;
+}
+.clone_map{
+	background-image:url(../img/arrow_divide.png) !important;
+}
+.open_usermanager{
+	background-image:url(../img/user.png) !important;
+}
+.user_add{
+	background-image:url(../img/user_add.png) !important;
+}
+.user_delete{
+	background-image:url(../img/user_delete.png) !important;
 }
 .map_delete {
     background-image: url(../img/map_delete.png) !important;
