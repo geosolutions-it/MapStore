@@ -259,6 +259,7 @@ UserManagerView = Ext.extend(
 					                                            xtype: 'combo',
 																displayField:'role',
 																width: 150,
+																allowBlank: false,
 																valueField:'role',
 																emptyText: userManager.textSelectRole,
 																allowBlank: false,
@@ -376,7 +377,15 @@ UserManagerView = Ext.extend(
 				this.users = new GeoStore.Users(
 								{ authorization: userManager.auth,
 								  url: userManager.url,
-								}).failure( function(data){ console.error(data); } );
+								}).failure( function(response){ 
+									console.error(response); 
+									  Ext.Msg.show({
+                                       title: userManager.failSuccessTitle,
+                                       msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+                                       buttons: Ext.Msg.OK,
+                                       icon: Ext.MessageBox.ERROR
+                                    });
+								} );
 
 				this.loadData = function(){
 					// get all users

@@ -635,7 +635,15 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				var geostore = new GeoStore.Maps(
 										{ authorization: auth,
 										  url: url
-										 }).failure( function(data){ console.error(data); } );
+										 }).failure( function(response){ 
+											console.error(response); 
+											  Ext.Msg.show({
+	                                             title: grid.metadataFailSuccessTitle,
+	                                             msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+	                                             buttons: Ext.Msg.OK,
+	                                             icon: Ext.MessageBox.ERROR
+	                                          });	
+										});
 				geostore.findByPk(mapId, function(data){
 					geostore.create(data, function(data){
 						reload();
@@ -658,7 +666,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				       items: new UserManagerView( {
 								auth: grid.login.getToken(),
 								url: config.geoBaseUsersUrl, 
-							}),
+							})
 				});				
 				
 				// show window

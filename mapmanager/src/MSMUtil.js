@@ -38,8 +38,10 @@
 	// version for the API client
 	GeoStore.VERSION = '0.1';
 	
-	/*
-	 * utility class to manage uri
+	/**
+	 * Class: Uri
+	 * this class represents an uri http://host:port/path/id
+	 *
 	 */
 	var Uri = root.Uri = function(options){
 		this.SEPARATOR = '/';
@@ -116,7 +118,9 @@
 	};
 
 	/**
-	 *  abstract away GeoStore rest api
+	 * Class: GeoStore.ContentProvider
+	 * this class abstract away GeoStore APIs
+	 *
 	 */
 	var ContentProvider = GeoStore.ContentProvider = function(options){
 		this.authorization_ = options.authorization ;
@@ -435,9 +439,14 @@
 	
    // init some content providers used in the application
 
-   /* 
-    *  allows user to access maps on GeoStores
-    */
+/**
+ * Class: GeoStore.Maps
+ *
+ * CRUD methods for maps in GeoStore
+ * Inherits from:
+ *  - <GeoStore.ContentProvider>
+ *
+ */
    var Maps = GeoStore.Maps = ContentProvider.extend({
 	initialize: function(){
 		this.resourceNamePrefix_ = 'resource';
@@ -488,9 +497,14 @@
 	},
    } );
 
-  /*
-   *  allows admin users to access user information
-   */
+/**
+ * Class: GeoStore.Users
+ *
+ * CRUD methods for users in GeoStore
+ * Inherits from:
+ *  - <GeoStore.ContentProvider>
+ *
+ */
   var Users = GeoStore.Users = ContentProvider.extend({
 	initialize: function(){
 		this.resourceNamePrefix_ = 'user';

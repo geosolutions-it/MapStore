@@ -45,7 +45,7 @@ GeoExt.Lang.add("en", {
         msgSuccessDeleteMapTitle: "Success",
         msgSuccessDeleteMapBody: "Map has been deleted",
         msgFailureDeleteMapTitle: "Failed",
-        msgFailureDeleteMapBody: "Something wrong has appened",
+        msgFailureDeleteMapBody: "Something wrong has appened"
     },
     "MSMPagingToolbar.prototype": {
         desc: "New Map",
@@ -62,10 +62,10 @@ GeoExt.Lang.add("en", {
         nextText: "Next Page",
         prevText: "Previous Page",
         refreshText: "Refresh",
-        beforePageText: "Page",
+        beforePageText: "Page"
     },
     "MSMPanel.prototype": {
-        title : "Map Store Manager",
+        title : "Map Store Manager"
     },
     "MSMLogin.prototype": {
         loginText: "Login",
@@ -75,7 +75,7 @@ GeoExt.Lang.add("en", {
         loginErrorTitle: "Login failed.",
         userFieldText: "User",
         passwordFieldText: "Password",
-        loginFormTitle: "Please Login",
+        loginFormTitle: "Please Login"
     },
     "UserManagerView.prototype":{
 		textName: 'Name',
@@ -92,6 +92,6 @@ GeoExt.Lang.add("en", {
 		tooltipAddUser: 'Create a new user',
 		textTitle: 'User Manager',
 		tooltipSearch: "Search",
-		textSelectRole: 'Select a role...',
-	},
+		textSelectRole: 'Select a role...'
+	}
 });
