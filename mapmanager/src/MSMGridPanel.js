@@ -378,8 +378,6 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     initComponent : function() {
 
         var searchString = '*';
-    
-		console.log(config);
 
         if (config.mcUrl){
             var murl = config.mcUrl;
@@ -560,50 +558,44 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                     var mapName = Ext.getCmp("diag-text-field").getValue();        
                                     var mapDescription = Ext.getCmp("diag-text-description").getValue();
                                     
-                                    var resourceXML = 
-                                        '<Resource>' +
-                                            '<description>' + mapDescription + '</description>' +
-                                            '<name>' + mapName + '</name>' +
-                                        '</Resource>';
-                                        
-                                    Ext.Ajax.request({
-										/////// save metadata
-                                       url: purldel + mapId,
-                                       method: 'PUT',
-                                       headers:{
-                                          'Content-Type' : 'text/xml',
-                                          'Accept' : 'application/json, text/plain, text/xml'
-                                       },
-                                       params: resourceXML,
-                                       scope: this,
-                                       success: function(response, opts){
+									// get info about logged user if any
+									var auth = grid.login.getToken();
+									// fetch base url
+									var url =  config.geoBaseMapsUrl; // 'http://localhost:8080/geostore/rest/resources';
 
-                                          var reload = function(){
-                                                grid.getBottomToolbar().bindStore(grid.store, true);
-                                                grid.getBottomToolbar().doRefresh();
-                                                expander.collapseAll();
-                                          };
-                                          
-                                          Ext.Msg.show({
-                                               title: grid.metadataSaveSuccessTitle,
-                                               msg: response.statusText + " - " + grid.metadataSaveSuccessMsg,
-                                               buttons: Ext.Msg.OK,
-                                               fn: reload,
-                                               icon: Ext.MessageBox.OK,
-                                               scope: this
-                                          });
-                                          
-                                       },
-                                       failure:  function(response, opts){
-                                          Ext.Msg.show({
-                                             title: grid.metadataFailSuccessTitle,
-                                             msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
-                                             buttons: Ext.Msg.OK,
-                                             icon: Ext.MessageBox.ERROR
-                                          });
-                                       }
-                                    }); 
-                                    
+									// get the api for GeoStore
+									var geostore = new GeoStore.Maps(
+														{ authorization: auth,
+														  url: url,
+														 }).failure( function(data){ 
+																	  Ext.Msg.show({
+							                                             title: grid.metadataFailSuccessTitle,
+							                                             msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+							                                             buttons: Ext.Msg.OK,
+							                                             icon: Ext.MessageBox.ERROR
+							                                          });	
+														});
+									// update metadata for the selected map
+									geostore.update(
+											mapId, 
+											{name:mapName, description: mapDescription},
+											function(data){ // callback
+												 var reload = function(){
+		                                                grid.getBottomToolbar().bindStore(grid.store, true);
+		                                                grid.getBottomToolbar().doRefresh();
+		                                                expander.collapseAll();
+		                                          };
+
+		                                          Ext.Msg.show({
+		                                               title: grid.metadataSaveSuccessTitle,
+		                                               msg: data.statusText + " - " + grid.metadataSaveSuccessMsg,
+		                                               buttons: Ext.Msg.OK,
+		                                               fn: reload,
+		                                               icon: Ext.MessageBox.OK,
+		                                               scope: this
+		                                          });
+										   });
+
                                     win.destroy(); 
                                 }
                             }
@@ -649,17 +641,21 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				
 			},
 			
+			/**
+             * Private: openUserManager open the user manager window
+             * 
+             * 
+             */
 			openUserManager: function(){
-				var view = new UserManagerView( {
-							auth: grid.login.getToken(),
-							url: config.geoBaseUsersUrl, // 'http://localhost:8080/geostore/rest/users',
-				});
-
+				
 				var win = new Ext.Window({
 					   title: "User Manager",
 					   iconCls: "open_usermanager",
 				       width: 415, height: 200, resizable: true, modal: true,
-				       items: [ view ],
+				       items: new UserManagerView( {
+								auth: grid.login.getToken(),
+								url: config.geoBaseUsersUrl, 
+							}),
 				});				
 				
 				// show window
@@ -781,7 +777,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                     '</td>' +
                                     '<td class="x-btn-mc">' +
                                     '<em unselectable="on" class="">'+
-                                    '<button type="button"  class=" x-btn-text table_edit" title="' + grid.tooltipEditMetadata + '" >' + grid.textEditMetadata + '</button></em>'+
+                                    '<button type="button" style="background-position:center;" class=" x-btn-text table_edit" title="' + grid.tooltipEditMetadata + '" >' + grid.textEditMetadata + '</button></em>'+
                                     '</td>'+
                                     '<td class="x-btn-mr">'+
                                     '<i>&nbsp;</i>'+
@@ -819,7 +815,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                     '</td>' +
                                     '<td class="x-btn-mc">' +
                                     '<em unselectable="on" class="">'+
-                                    '<button type="button"  class=" x-btn-text map_delete" title="' + grid.tooltipDeleteMap + '" >' + grid.textDeleteMap + '</button></em>'+
+                                    '<button type="button" style="background-position:center;"  class=" x-btn-text map_delete" title="' + grid.tooltipDeleteMap + '" >' + grid.textDeleteMap + '</button></em>'+
                                     '</td>'+
                                     '<td class="x-btn-mr">'+
                                     '<i>&nbsp;</i>'+
@@ -857,7 +853,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                     '</td>' +
                                     '<td class="x-btn-mc">' +
                                     '<em unselectable="on" class="">'+
-                                    '<button type="button"  class=" x-btn-text map_edit" title="' + grid.tooltipEditMap + '">' + grid.textEditMap + '</button></em>'+
+                                    '<button type="button" style="background-position:center;" class=" x-btn-text map_edit" title="' + grid.tooltipEditMap + '">' + grid.textEditMap + '</button></em>'+
                                     '</td>'+
                                     '<td class="x-btn-mr">'+
                                     '<i>&nbsp;</i>'+
@@ -894,7 +890,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                 '</td>' +
                                 '<td class="x-btn-mc">' +
                                 '<em class="" unselectable="on">' +
-                                '<button type="button"  class="x-btn-text icon-layers" title="' + grid.tooltipViewMap + '">' + grid.textViewMap + '</button>'+
+                                '<button type="button" style="background-position:center;" class="x-btn-text icon-layers" title="' + grid.tooltipViewMap + '">' + grid.textViewMap + '</button>'+
                                 '</em>'+
                                 '</td>'+
                                 '<td class="x-btn-mr">'+
@@ -931,7 +927,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                 '</td>' +
                                 '<td class="x-btn-mc">' +
                                 '<em class="" unselectable="on">' +
-                                '<button type="button" id="'+ Ext.id() +'" class="x-btn-text clone_map" title="' + grid.tooltipCopyMap + '">' + grid.textCopyMap + '</button>'+
+                                '<button style="background-position:center;" type="button" id="'+ Ext.id() +'" class="x-btn-text clone_map" title="' + grid.tooltipCopyMap + '"></button>'+
                                 '</em>'+
                                 '</td>'+
                                 '<td class="x-btn-mr">'+
@@ -1293,9 +1289,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     expander.collapseAll();
                 } 
             },'->',
-			this.openUserManagerButton,
+			
 
-			this.login.userLabel,'-',this.login.loginButton,'-',this.langSelector,'-'
+			this.login.userLabel,'-',this.openUserManagerButton,'-',this.login.loginButton,'-',this.langSelector,'-'
         ];
         
         // initializes the store with the parameters set in <config.js> otherwise uses the default
