@@ -258,6 +258,7 @@ UserManagerView = Ext.extend(
 														  {
 					                                            xtype: 'combo',
 																displayField:'role',
+																width: 150,
 																valueField:'role',
 																emptyText: userManager.textSelectRole,
 																allowBlank: false,

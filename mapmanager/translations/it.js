@@ -20,6 +20,7 @@ GeoExt.Lang.add("it", {
         errorMsg_501: "Il server restituisce HTTP status code 501! </br></br>Il server non può completare la richiesta!",
         errorMsg_404: "Il server restituisce HTTP status code 404! </br></br>La risorsa che stai cercando non può essere trovata!",
         errorMsg_timeout: "Richiesta scaduta!",
+        textUserManager: 'Gestione utenti',
         textViewMap: '', // "Visualizza mappa",
         tooltipViewMap: "Apre la mappa in sola lettura",
 		textCopyMap: '', //"Clone Map",
@@ -91,6 +92,6 @@ GeoExt.Lang.add("it", {
 		tooltipAddUser: 'Crea un nuovo utente',
 		textTitle: 'User Manager',
 		tooltipSearch: "Cerca",
-		textSelectRole: 'Seleziona un ruolo...',
-	},
+		textSelectRole: 'Seleziona un ruolo...'
+	}
 });

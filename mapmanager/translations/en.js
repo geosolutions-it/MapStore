@@ -20,6 +20,7 @@ GeoExt.Lang.add("en", {
         errorMsg_501: "The server returns HTTP status code 501! </br></br>The server does not support all that is needed for the request to be completed!",
         errorMsg_404: "The server returns HTTP status code 404! </br></br>The resource you are looking for cannot be found!",
         errorMsg_timeout: "Request Timeout!",
+		textUserManager: 'User Manager',
         textViewMap: '', //"View Map",
         tooltipViewMap: "Open Map to read only",
         textCopyMap: '', //"Clone Map",
@@ -44,7 +45,7 @@ GeoExt.Lang.add("en", {
         msgSuccessDeleteMapTitle: "Success",
         msgSuccessDeleteMapBody: "Map has been deleted",
         msgFailureDeleteMapTitle: "Failed",
-        msgFailureDeleteMapBody: "Something wrong has appened"
+        msgFailureDeleteMapBody: "Something wrong has appened",
     },
     "MSMPagingToolbar.prototype": {
         desc: "New Map",
@@ -61,10 +62,10 @@ GeoExt.Lang.add("en", {
         nextText: "Next Page",
         prevText: "Previous Page",
         refreshText: "Refresh",
-        beforePageText: "Page"
+        beforePageText: "Page",
     },
     "MSMPanel.prototype": {
-        title : "Map Store Manager"
+        title : "Map Store Manager",
     },
     "MSMLogin.prototype": {
         loginText: "Login",
@@ -74,7 +75,7 @@ GeoExt.Lang.add("en", {
         loginErrorTitle: "Login failed.",
         userFieldText: "User",
         passwordFieldText: "Password",
-        loginFormTitle: "Please Login"
+        loginFormTitle: "Please Login",
     },
     "UserManagerView.prototype":{
 		textName: 'Name',

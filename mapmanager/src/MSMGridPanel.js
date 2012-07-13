@@ -258,6 +258,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * 
     */
     tooltipDeleteMap: 'Delete Map',
+
+	textUserManager: 'User Manager',
+
     /**
     * Property: textEditMetadata
     * {string} string to add in EditMetadata button
@@ -566,7 +569,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									// get the api for GeoStore
 									var geostore = new GeoStore.Maps(
 														{ authorization: auth,
-														  url: url,
+														  url: url
 														 }).failure( function(data){ 
 																	  Ext.Msg.show({
 							                                             title: grid.metadataFailSuccessTitle,
@@ -631,7 +634,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				// get the api for GeoStore
 				var geostore = new GeoStore.Maps(
 										{ authorization: auth,
-										  url: url,
+										  url: url
 										 }).failure( function(data){ console.error(data); } );
 				geostore.findByPk(mapId, function(data){
 					geostore.create(data, function(data){
@@ -649,7 +652,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			openUserManager: function(){
 				
 				var win = new Ext.Window({
-					   title: "User Manager",
+					   title: grid.textUserManager,
 					   iconCls: "open_usermanager",
 				       width: 415, height: 200, resizable: true, modal: true,
 				       items: new UserManagerView( {
