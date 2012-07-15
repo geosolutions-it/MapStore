@@ -211,6 +211,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
     logout: function() {
 	    // invalidate token
 	    this.token = null;
+	    this.username = null;
         this.grid.store.proxy.getConnection().defaultHeaders = {'Accept': 'application/json'};
         this.grid.getBottomToolbar().bindStore(this.grid.store, true);
         this.grid.getBottomToolbar().doRefresh();
@@ -220,10 +221,30 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
         this.showLogin();
     },
 
+    /** 
+     * api: method[getToken]
+     * get the auth token for this session.
+     */
 	getToken: function(){
 		return this.token;
 	},
 
+    /** 
+     * api: method[getCurrentUser]
+     * get the current user.
+     */
+	getCurrentUser: function(){
+		return this.username;
+	},
+	
+    /** 
+     * api: method[isGuest]
+     * verify if the current user is a guest.
+     */
+	isGuest: function(){
+		return (this.username===undefined ||  this.username === null );
+	},
+		
     /** 
      * api: method[submitLogin]
      * Submits the login.
@@ -250,12 +271,20 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 this.showLogout(user.User.name);
 				// save auth info
 				this.token = auth;
+				if (user.User){
+					this.username = user.User.name;
+					this.role = user.User.role;
+				}
+				this.grid.render();
                 this.grid.store.proxy.getConnection().defaultHeaders = {'Accept': 'application/json', "Authorization": auth};                
                 this.grid.getBottomToolbar().bindStore(this.grid.store, true);
                 this.grid.getBottomToolbar().doRefresh();
                 this.grid.plugins.collapseAll();
                 this.grid.getBottomToolbar().openMapComposer.enable();
-				this.grid.openUserManagerButton.enable();
+				if ( this.role === 'ADMIN' ){
+					this.grid.openUserManagerButton.enable();
+				}
+				
             },
             failure: function(response, form, action) {
                 Ext.MessageBox.show({

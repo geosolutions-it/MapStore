@@ -87,11 +87,13 @@ GeoExt.Lang.add("it", {
 		textSave: 'Salva',
 		tooltipCancel: 'Annulla',
 		textCancel: 'Annulla',
+		invalidFormMsg: 'Alcuni campi sono invalidi',
 		textAddUser: '', 
 		textAddUserTitle: 'Aggiungi utente',
 		tooltipAddUser: 'Crea un nuovo utente',
 		textTitle: 'User Manager',
 		tooltipSearch: "Cerca",
-		textSelectRole: 'Seleziona un ruolo...'
+		textSelectRole: 'Seleziona un ruolo...',
+		userAlreadyTaken: 'Nome utente presente'
 	}
 });

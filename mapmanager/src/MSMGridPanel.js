@@ -28,7 +28,6 @@
  *  - <Ext.grid.GridPanel>
  *
  */
-
 MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {    
     /**
      * Property: id
@@ -370,8 +369,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
      */ 
     langSelector: null,
 
-
-
+    /**
+     *  cache when we put short urls when they arrive from the async service
+     */
+	shortUrls: new Object(),
 	
     /**
     * Constructor: initComponent 
@@ -380,6 +381,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     */
     initComponent : function() {
 
+		
         var searchString = '*';
 
         if (config.mcUrl){
@@ -402,6 +404,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
         this.login = new MSMLogin({
             grid: this
         });
+		
 
 
         //An object that contains the string to search the resource
@@ -430,7 +433,6 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
         });
         
         var grid = this;
-
 
         var expander = new Ext.ux.grid.RowExpander({
             /**
@@ -645,7 +647,13 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	                                          });	
 										});
 				geostore.findByPk(mapId, function(data){
-					geostore.create(data, function(data){
+					// make a copy of the current object
+					var copy = new Object;
+					copy.name = data.name;
+					copy.description = data.description;
+					copy.blob = data.blob;
+					copy.owner = grid.login.getCurrentUser();
+					geostore.create(copy, function(data){
 						reload();
 					});
 				}, {full:true});
@@ -662,10 +670,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				var win = new Ext.Window({
 					   title: grid.textUserManager,
 					   iconCls: "open_usermanager",
-				       width: 415, height: 200, resizable: true, modal: true,
+				       width: 420, height: 210, resizable: true, modal: true, // autoScroll:true,
 				       items: new UserManagerView( {
 								auth: grid.login.getToken(),
-								url: config.geoBaseUsersUrl, 
+								url: config.geoBaseUsersUrl
 							})
 				});				
 				
@@ -766,210 +774,57 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
             },
 
             tpl : new Ext.XTemplate( // expander-button-table
-                '<div style="background-color: #f9f9f9; text-align: left">&nbsp;&nbsp;&nbsp;&nbsp;<b>Description:</b> {description}<br/>'+
-                    '<table class="x-btn x-btn-text-icon" align="right" cellspacing="5" cellpadding="5" border="0" style="table-layout:auto">'+
-                        '<tr>'+
-                            '<td >'+
-                                '<tpl if="canEdit==true">'+
-                                    '<table class="x-btn x-btn-text-icon" cellspacing="0"  >' +
-                                    '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonERId(values,\'_editMetadataBtn\')]}\'>' +
-                                    '<tr>'+
-                                    '<td class="x-btn-tl">' +
-                                    '<i>&nbsp;</i>' +
-                                    '</td>' +
-                                    '<td class="x-btn-tc"></td>' +
-                                    '<td class="x-btn-tr">' +
-                                    '<i>&nbsp;</i>' +
-                                    '</td>' +
-                                    '</tr>' +
-                                    '<tr>' +
-                                    '<td class="x-btn-ml">' +
-                                    '<i>&nbsp;</i>' +
-                                    '</td>' +
-                                    '<td class="x-btn-mc">' +
-                                    '<em unselectable="on" class="">'+
-                                    '<button type="button" style="background-position:center;" class=" x-btn-text table_edit" title="' + grid.tooltipEditMetadata + '" >' + grid.textEditMetadata + '</button></em>'+
-                                    '</td>'+
-                                    '<td class="x-btn-mr">'+
-                                    '<i>&nbsp;</i>'+
-                                    '</td>' +
-                                    '</tr>' +
-                                    '<tr>' +
-                                    '<td class="x-btn-bl">' +
-                                    '<i>&nbsp;</i>' +
-                                    '</td>' +
-                                    '<td class="x-btn-bc"></td>' +
-                                    '<td class="x-btn-br">' +
-                                    '<i>&nbsp;</i>' +
-                                    '</td>' +
-                                    '</tr>' +
-                                    '</tbody>' +
-                                    '</table>' +
-                                '</tpl>'+
-                            '</td>'+
-                            '<td >'+
-                                '<tpl if="canDelete==true">'+
-                                    '<table class="x-btn x-btn-text-icon" cellspacing="0"  >' +
-                                    '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonDMId(values,\'_deleteBtn\')]}\'>' +
-                                    '<tr>'+
-                                    '<td class="x-btn-tl">' +
-                                    '<i>&nbsp;</i>' +
-                                    '</td>' +
-                                    '<td class="x-btn-tc"></td>' +
-                                    '<td class="x-btn-tr">' +
-                                    '<i>&nbsp;</i>' +
-                                    '</td>' +
-                                    '</tr>' +
-                                    '<tr>' +
-                                    '<td class="x-btn-ml">' +
-                                    '<i>&nbsp;</i>' +
-                                    '</td>' +
-                                    '<td class="x-btn-mc">' +
-                                    '<em unselectable="on" class="">'+
-                                    '<button type="button" style="background-position:center;"  class=" x-btn-text map_delete" title="' + grid.tooltipDeleteMap + '" >' + grid.textDeleteMap + '</button></em>'+
-                                    '</td>'+
-                                    '<td class="x-btn-mr">'+
-                                    '<i>&nbsp;</i>'+
-                                    '</td>' +
-                                    '</tr>' +
-                                    '<tr>' +
-                                    '<td class="x-btn-bl">' +
-                                    '<i>&nbsp;</i>' +
-                                    '</td>' +
-                                    '<td class="x-btn-bc"></td>' +
-                                    '<td class="x-btn-br">' +
-                                    '<i>&nbsp;</i>' +
-                                    '</td>' +
-                                    '</tr>' +
-                                    '</tbody>' +
-                                    '</table>' +
-                                '</tpl>'+
-                            '</td>'+
-                            '<td >'+
-                                '<tpl if="canEdit==true">'+
-                                    '<table class="x-btn x-btn-text-icon" cellspacing="0"  >' +
-                                    '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonVMId(values,\'_editBtn\',\'&auth=true\')]}\'>' +
-                                    '<tr>'+
-                                    '<td class="x-btn-tl">' +
-                                    '<i>&nbsp;</i>' +
-                                    '</td>' +
-                                    '<td class="x-btn-tc"></td>' +
-                                    '<td class="x-btn-tr">' +
-                                    '<i>&nbsp;</i>' +
-                                    '</td>' +
-                                    '</tr>' +
-                                    '<tr>' +
-                                    '<td class="x-btn-ml">' +
-                                    '<i>&nbsp;</i>' +
-                                    '</td>' +
-                                    '<td class="x-btn-mc">' +
-                                    '<em unselectable="on" class="">'+
-                                    '<button type="button" style="background-position:center;" class=" x-btn-text map_edit" title="' + grid.tooltipEditMap + '">' + grid.textEditMap + '</button></em>'+
-                                    '</td>'+
-                                    '<td class="x-btn-mr">'+
-                                    '<i>&nbsp;</i>'+
-                                    '</td>' +
-                                    '</tr>' +
-                                    '<tr>' +
-                                    '<td class="x-btn-bl">' +
-                                    '<i>&nbsp;</i>' +
-                                    '</td>' +
-                                    '<td class="x-btn-bc"></td>' +
-                                    '<td class="x-btn-br">' +
-                                    '<i>&nbsp;</i>' +
-                                    '</td>' +
-                                    '</tr>' +
-                                    '</tbody>' +
-                                    '</table>' +
-                                '</tpl>'+
-                            '</td>'+
-                            '<td >'+
-                                '<table class="x-btn x-btn-text-icon" cellspacing="0" >'+
-                                '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonVMId(values,\'_viewBtn\',\'&auth=false&fullScreen=true\')]}\'>'+
-                                '<tr >'+
-                                '<td class="x-btn-tl">' +
-                                '<i>&nbsp;</i>' +
-                                '</td>' +
-                                '<td class="x-btn-tc"></td>' +
-                                '<td class="x-btn-tr">' +
-                                '<i>&nbsp;</i>' +
-                                '</td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="x-btn-ml">' +
-                                '<i>&nbsp;</i>' +
-                                '</td>' +
-                                '<td class="x-btn-mc">' +
-                                '<em class="" unselectable="on">' +
-                                '<button type="button" style="background-position:center;" class="x-btn-text icon-layers" title="' + grid.tooltipViewMap + '">' + grid.textViewMap + '</button>'+
-                                '</em>'+
-                                '</td>'+
-                                '<td class="x-btn-mr">'+
-                                '<i>&nbsp;</i>'+
-                                '</td>'+
-                                '</tr>'+
-                                '<tr>' +
-                                '<td class="x-btn-bl">' +
-                                '<i>&nbsp;</i>' +
-                                '</td>' +
-                                '<td class="x-btn-bc"></td>' +
-                                '<td class="x-btn-br">' +
-                                '<i>&nbsp;</i>' +
-                                '</td>' +
-                                '</tr>' +
-                                '</tbody>' +
-                                '</table>' +
-                            '</td>'+
-							'<td >'+
-                                '<table class="x-btn x-btn-text-icon" cellspacing="0" >'+
-                                '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getCloneButton(values)]}\'>'+
-                                '<tr >'+
-                                '<td class="x-btn-tl">' +
-                                '<i>&nbsp;</i>' +
-                                '</td>' +
-                                '<td class="x-btn-tc"></td>' +
-                                '<td class="x-btn-tr">' +
-                                '<i>&nbsp;</i>' +
-                                '</td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                '<td class="x-btn-ml">' +
-                                '<i>&nbsp;</i>' +
-                                '</td>' +
-                                '<td class="x-btn-mc">' +
-                                '<em class="" unselectable="on">' +
-                                '<button style="background-position:center;" type="button" id="'+ Ext.id() +'" class="x-btn-text clone_map" title="' + grid.tooltipCopyMap + '"></button>'+
-                                '</em>'+
-                                '</td>'+
-                                '<td class="x-btn-mr">'+
-                                '<i>&nbsp;</i>'+
-                                '</td>'+
-                                '</tr>'+
-                                '<tr>' +
-                                '<td class="x-btn-bl">' +
-                                '<i>&nbsp;</i>' +
-                                '</td>' +
-                                '<td class="x-btn-bc"></td>' +
-                                '<td class="x-btn-br">' +
-                                '<i>&nbsp;</i>' +
-                                '</td>' +
-                                '</tr>' +
-                                '</tbody>' +
-                                '</table>' +
-                            '</td>'+
-                        '</tr>'+
-                    '</table>'+
-                '</div>' +
-                    '<table align="left" cellspacing="5" cellpadding="5" border="0" style="table-layout:auto">'+
-                        '<tr>'+
-                            '<td align="left">'+
-                                '<span> <div class="fb-like" data-href="' + murl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId={id}" data-send="false" data-layout="button_count" data-width="100" data-show-faces="true"></div></span>'+
-                            '</td>'+
-                            '<td align="left">'+
-                                '<a href="http://opensdi.geo-solutions.it/" class="twitter-share-button" data-url="' + murl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId={id}" data-text="MapComposer" data-count="horizontal" data-via="geosolutions_it" data-lang="' + grid.lang + '"></a>'+
-                            '</td>'+
-                        '</tr>'+
-                    '</table>', {
+                grid.createTemplate(murl, grid.lang), 
+				{
+					
+					/**
+                    * Private: getShortLink
+                    * 
+                    * 
+                    * return - {string} get map composer short link or null if not present
+                    * 
+                    */
+					getShortLink: function(id, sendRequest){
+						console.log('looking for ' + id + ', found: ' +grid.shortUrls[id]);
+						
+						// verify if we already have this uri in cache
+						if ( grid.shortUrls[id] === undefined && sendRequest ){
+							// shorten urls for Twitter
+							var longUrl = config.mcUrl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+id;
+							var shortener = new Google.Shortener({
+										appid: config.googleApi
+							}).failure(function(response){
+								console.error(response);
+								/*Ext.Msg.show({
+						           title: grid.metadataFailSuccessTitle,
+						           msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+						           buttons: Ext.Msg.OK,
+						           icon: Ext.MessageBox.ERROR
+						        });*/
+							});
+							shortener.shorten(
+									longUrl,
+									function(response){
+										grid.shortUrls[id] = response.id;
+										console.log('created short url ' + grid.shortUrls[id] + ' for map ' + id);
+								});
+						}
+						
+						// return even if it is not ready
+						return grid.shortUrls[id];
+					},
+					
+					/**
+                    * Private: isNotGuest
+                    * 
+                    * 
+                    * return - {boolean} true if the current user is not a guest
+                    * 
+                    */
+					isNotGuest: function(){
+						return ! grid.login.isGuest();
+					},
+					
                     /**
                     * Private: getButtonERId
                     * 
@@ -1034,6 +889,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 								var mapId = values.id;
 	                            expander.cloneMap(mapId);
 	                    });
+						// if (grid.login.isGuest()){
+						//	Ext.get(id).setVisible(false);
+						// }
+						
 					},
                     /**
                     * Private: MapComposerER 
@@ -1049,7 +908,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             var name = values.name;
                             var desc = values.description;
                             expander.metadataEdit(mapId,name,desc);
-                        })
+                        });
                     },
                     /**
                     * Private: MapComposerVM 
@@ -1064,7 +923,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             var idMap = values.id;
                             var desc = values.name;
                             expander.openMapComposer(murl,userProfile,idMap,desc);
-                        })
+                        });
                     },
                     /**
                     * Private: MapComposerDM 
@@ -1078,24 +937,33 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             var id = values.id;
                             Ext.Msg.confirm(grid.msgDeleteMapTitle, grid.msgDeleteMapBody, function(btn,text){
                                 if (btn == 'yes'){
-                                    Ext.Ajax.request({
-                                        url : purldel + id ,
-                                        method: 'DELETE',
-                                        success: function (result, request) {
-                                            grid.getBottomToolbar().bindStore(grid.store, true);
-                                            grid.getBottomToolbar().doRefresh();
-                                            expander.collapseAll();
-                                        },
-                                        failure: function (result, request) { 
-                                            Ext.MessageBox.alert(grid.msgFailureDeleteMapTitle, grid.msgFailureDeleteMapBody);
-                                        } 
-                                    });
+	
+									// get info about logged user if any
+									var auth = grid.login.getToken();
+									// fetch base url
+									var url =  config.geoBaseMapsUrl; 
+
+									// get the api for GeoStore
+									var geostore = new GeoStore.Maps(
+																{ authorization: auth,
+																  url: url
+																 });
+									geostore.failure( function(response){ 
+														console.error(response); 
+														Ext.MessageBox
+														   .alert(grid.msgFailureDeleteMapTitle, grid.msgFailureDeleteMapBody);	
+													});
+									geostore.deleteByPk(id, function(response){
+										 grid.getBottomToolbar().bindStore(grid.store, true);
+                                         grid.getBottomToolbar().doRefresh();
+                                         expander.collapseAll();
+									});
                                     return true;
                                 } else {
                                     return false;
                                 }
                             });
-                        })
+                        });
                     }
                 }
             )
@@ -1162,7 +1030,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
         this.viewConfig = {
             forceFit: true
-        }
+        };
         
         this.plugins = expander;
     
@@ -1209,6 +1077,35 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 disableCaching: true,
                 timeout: (config.msmTimeout)?(config.msmTimeout):(this.msmTimeout),
                 success: function (result){
+					// hack to generate short urls
+					// it is not a good solution!
+					var maps = Ext.util.JSON.decode(result.responseText).results;
+					for (var i=0; i<maps.length; i++){
+						var map = maps[i];
+						var mapid = map.id;
+						// verify if we already have this uri in cache
+						if ( grid.shortUrls[mapid] === undefined ){
+							// send a request to shorten urls for Twitter
+							var longUrl = config.mcUrl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+mapid;
+							// console.log('sent ' + longUrl);
+							var shortener = new Google.Shortener({
+									appid: config.googleApi
+								}).failure(function(response){
+									console.error(response);
+								});
+							var infamous = 	function(num){
+									var result = function(response){
+										grid.shortUrls[ num ] = response.id;
+										console.log('created short url ' + grid.shortUrls[num] + ' for map ' + num);
+									};
+									return result;
+								};
+							shortener.shorten(
+										longUrl,
+										infamous(mapid)
+									);
+						}
+					}
                 },
                 failure: function (result) {
                     switch(result.status) {
@@ -1353,5 +1250,222 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
         Ext.getCmp('searchBtn').disable();
         Ext.getCmp('clearBtn').disable();
         this.getBottomToolbar().doRefresh();
-    }
+    },
+
+	createTemplate: function(murl, lang){
+		var tpl = '<div style="background-color: #f9f9f9; text-align: left">&nbsp;&nbsp;&nbsp;&nbsp;<b>Description:</b> {description}<br/>'+
+            '<table class="x-btn x-btn-text-icon" align="right" cellspacing="5" cellpadding="5" border="0" style="table-layout:auto">'+
+                '<tr>';
+		// in IE7 we need to set button property "padding" and table width otherwise buttons are stretched			
+        tpl +=  '<td >'+
+                        '<tpl if="canEdit==true">'+
+                            '<table class="x-btn x-btn-text-icon" style="width:30px" cellspacing="0"  >' +
+                            '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonERId(values,\'_editMetadataBtn\')]}\'>' +
+                            '<tr>'+
+                            '<td class="x-btn-tl">' +
+                            '<i>&nbsp;</i>' +
+                            '</td>' +
+                            '<td class="x-btn-tc"></td>' +
+                            '<td class="x-btn-tr">' +
+                            '<i>&nbsp;</i>' +
+                            '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '<td class="x-btn-ml">' +
+                            '<i>&nbsp;</i>' +
+                            '</td>' +
+                            '<td class="x-btn-mc">' +
+                            '<em unselectable="on" class="">'+
+                            '<button type="button" style="background-position:center;padding:10px;" class=" x-btn-text table_edit" title="' + this.tooltipEditMetadata + '" >' + this.textEditMetadata + '</button></em>'+
+                            '</td>'+
+                            '<td class="x-btn-mr">'+
+                            '<i>&nbsp;</i>'+
+                            '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '<td class="x-btn-bl">' +
+                            '<i>&nbsp;</i>' +
+                            '</td>' +
+                            '<td class="x-btn-bc"></td>' +
+                            '<td class="x-btn-br">' +
+                            '<i>&nbsp;</i>' +
+                            '</td>' +
+                            '</tr>' +
+                            '</tbody>' +
+                            '</table>' +
+                        '</tpl>'+
+                    '</td>'+
+                    '<td >'+
+                        '<tpl if="canDelete==true">'+
+                            '<table class="x-btn x-btn-text-icon"  style="width:30px" cellspacing="0"  >' +
+                            '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonDMId(values,\'_deleteBtn\')]}\'>' +
+                            '<tr>'+
+                            '<td class="x-btn-tl">' +
+                            '<i>&nbsp;</i>' +
+                            '</td>' +
+                            '<td class="x-btn-tc"></td>' +
+                            '<td class="x-btn-tr">' +
+                            '<i>&nbsp;</i>' +
+                            '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '<td class="x-btn-ml">' +
+                            '<i>&nbsp;</i>' +
+                            '</td>' +
+                            '<td class="x-btn-mc">' +
+                            '<em unselectable="on" class="">'+
+                            '<button type="button" style="background-position:center;padding:10px;"  class=" x-btn-text map_delete" title="' + this.tooltipDeleteMap + '" >' + this.textDeleteMap + '</button></em>'+
+                            '</td>'+
+                            '<td class="x-btn-mr">'+
+                            '<i>&nbsp;</i>'+
+                            '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '<td class="x-btn-bl">' +
+                            '<i>&nbsp;</i>' +
+                            '</td>' +
+                            '<td class="x-btn-bc"></td>' +
+                            '<td class="x-btn-br">' +
+                            '<i>&nbsp;</i>' +
+                            '</td>' +
+                            '</tr>' +
+                            '</tbody>' +
+                            '</table>' +
+                        '</tpl>'+
+                    '</td>'+
+                    '<td >'+
+                        '<tpl if="canEdit==true">'+
+                            '<table class="x-btn x-btn-text-icon" style="width:30px" cellspacing="0"  >' +
+                            '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonVMId(values,\'_editBtn\',\'&auth=true\')]}\'>' +
+                            '<tr>'+
+                            '<td class="x-btn-tl">' +
+                            '<i>&nbsp;</i>' +
+                            '</td>' +
+                            '<td class="x-btn-tc"></td>' +
+                            '<td class="x-btn-tr">' +
+                            '<i>&nbsp;</i>' +
+                            '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '<td class="x-btn-ml">' +
+                            '<i>&nbsp;</i>' +
+                            '</td>' +
+                            '<td class="x-btn-mc">' +
+                            '<em unselectable="on" class="">'+
+                            '<button type="button" style="background-position:center;padding:10px;" class=" x-btn-text map_edit" title="' + this.tooltipEditMap + '">' + this.textEditMap + '</button></em>'+
+                            '</td>'+
+                            '<td class="x-btn-mr">'+
+                            '<i>&nbsp;</i>'+
+                            '</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                            '<td class="x-btn-bl">' +
+                            '<i>&nbsp;</i>' +
+                            '</td>' +
+                            '<td class="x-btn-bc"></td>' +
+                            '<td class="x-btn-br">' +
+                            '<i>&nbsp;</i>' +
+                            '</td>' +
+                            '</tr>' +
+                            '</tbody>' +
+                            '</table>' +
+                        '</tpl>'+
+                    '</td>'+
+                    '<td >'+
+                        '<table class="x-btn x-btn-text-icon" style="width:30px" cellspacing="0" >'+
+                        '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonVMId(values,\'_viewBtn\',\'&auth=false&fullScreen=true\')]}\'>'+
+                        '<tr >'+
+                        '<td class="x-btn-tl">' +
+                        '<i>&nbsp;</i>' +
+                        '</td>' +
+                        '<td class="x-btn-tc"></td>' +
+                        '<td class="x-btn-tr">' +
+                        '<i>&nbsp;</i>' +
+                        '</td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td class="x-btn-ml">' +
+                        '<i>&nbsp;</i>' +
+                        '</td>' +
+                        '<td class="x-btn-mc">' +
+                        '<em class="" unselectable="on">' +
+                        '<button type="button" style="background-position:center;padding:10px;" class="x-btn-text icon-layers" title="' + this.tooltipViewMap + '">' + this.textViewMap + '</button>'+
+                        '</em>'+
+                        '</td>'+
+                        '<td class="x-btn-mr">'+
+                        '<i>&nbsp;</i>'+
+                        '</td>'+
+                        '</tr>'+
+                        '<tr>' +
+                        '<td class="x-btn-bl">' +
+                        '<i>&nbsp;</i>' +
+                        '</td>' +
+                        '<td class="x-btn-bc"></td>' +
+                        '<td class="x-btn-br">' +
+                        '<i>&nbsp;</i>' +
+                        '</td>' +
+                        '</tr>' +
+                        '</tbody>' +
+                        '</table>' +
+                    '</td>';
+
+						tpl += '<td >'+
+						 '<tpl if="this.isNotGuest()">'+
+	                        '<table class="x-btn x-btn-text-icon" style="width:30px" cellspacing="0" >'+
+	                        '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getCloneButton(values)]}\'>'+
+	                        '<tr >'+
+	                        '<td class="x-btn-tl">' +
+	                        '<i>&nbsp;</i>' +
+	                        '</td>' +
+	                        '<td class="x-btn-tc"></td>' +
+	                        '<td class="x-btn-tr">' +
+	                        '<i>&nbsp;</i>' +
+	                        '</td>' +
+	                        '</tr>' +
+	                        '<tr>' +
+	                        '<td class="x-btn-ml">' +
+	                        '<i>&nbsp;</i>' +
+	                        '</td>' +
+	                        '<td class="x-btn-mc">' +
+	                        '<em class="" unselectable="on">' +
+	                        '<button style="background-position:center;padding:10px;" type="button" id="'+ Ext.id() +'" class="x-btn-text clone_map" title="' + this.tooltipCopyMap + '"></button>'+
+	                        '</em>'+
+	                        '</td>'+
+	                        '<td class="x-btn-mr">'+
+	                        '<i>&nbsp;</i>'+
+	                        '</td>'+
+	                        '</tr>'+
+	                        '<tr>' +
+	                        '<td class="x-btn-bl">' +
+	                        '<i>&nbsp;</i>' +
+	                        '</td>' +
+	                        '<td class="x-btn-bc"></td>' +
+	                        '<td class="x-btn-br">' +
+	                        '<i>&nbsp;</i>' +
+	                        '</td>' +
+	                        '</tr>' +
+	                        '</tbody>' +
+	                        '</table>' +
+						  '</tpl>'+
+	                    '</td>';
+					
+              tpl +=  '</tr>'+
+            '</table>'+
+        '</div>' +
+		   '<tpl if="this.getShortLink(id, true)!=null">'+
+            '<table align="left" cellspacing="0" cellpadding="0" border="0" style="table-layout:auto">'+
+                '<tr>'+
+                    '<td align="left">'+
+                        '<span> <div class="fb-like" data-href=\'{[this.getShortLink(values.id, false)]}\' data-send="false" data-layout="button_count" data-width="80" data-show-faces="true"></div></span>'+
+                    '</td>'+
+                    '<td align="left">'+
+                        '<a href="http://opensdi.geo-solutions.it/" class="twitter-share-button" data-url=\'{[this.getShortLink(values.id, false)]}\' data-text="MapComposer" data-count="horizontal" data-via="geosolutions_it" data-lang="' + this.lang + '"></a>'+
+                    '</td>'+
+                '</tr>'+
+            '</table>'+
+			'</tpl>';
+		return tpl;
+	}
+
+
 });

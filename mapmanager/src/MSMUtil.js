@@ -35,6 +35,8 @@
 	var root = this;
 	// expose GeoStore to the external world
 	var GeoStore = root.GeoStore = {};
+	// espose Google Services
+	var Google = root.Google = {};
 	// version for the API client
 	GeoStore.VERSION = '0.1';
 	
@@ -261,7 +263,7 @@
 	       headers:{
 	          'Content-Type' : 'application/json',
 	          'Accept' : this.acceptTypes_,
-	          'Authorization' : this.authorization_,
+	          'Authorization' : this.authorization_
 	       },
 	       scope: this,
 	       success: function(response, opts){
@@ -270,7 +272,7 @@
 	       },
 	       failure: function(response, opts){
 				this.onFailure_(response);
-	       },
+	       }
 	    });
 	};
 	
@@ -294,7 +296,7 @@
 	       headers:{
 	          'Content-Type' : 'application/json',
 	          'Accept' : this.acceptTypes_,
-	          'Authorization' : this.authorization_,
+	          'Authorization' : this.authorization_
 	       },
 	       scope: this,
 	       success: function(response, opts){
@@ -304,7 +306,7 @@
 	       failure:  function(response, opts){
 	       		var json = Ext.util.JSON.decode(response.responseText);
 				console.log(Ext.util.JSON.decode(json));
-	       },
+	       }
 	    });		
 	};
 	
@@ -329,7 +331,7 @@
 	       headers:{
 	          'Content-Type' : 'text/xml',
 	          'Accept' : this.acceptTypes_,
-	          'Authorization' : this.authorization_,
+	          'Authorization' : this.authorization_
 	       },
 	       scope: this,
 		   params: data,
@@ -338,7 +340,7 @@
 	       },
 	       failure:  function(response, opts){
 				this.onFailure_(response);
-	       },
+	       }
 	    });		
 	};	
 	
@@ -352,7 +354,7 @@
 	 * Return:
 	 * 
 	 */
-	ContentProvider.prototype.delete = function(pk, callback){
+	ContentProvider.prototype.deleteByPk = function(pk, callback){
 		var uri = new Uri({'url':this.baseUrl_});
 		uri.appendPath( this.resourceNamePrefix_ ).appendId( pk );
 		var Request = Ext.Ajax.request({
@@ -361,7 +363,7 @@
 	       headers:{
 	          'Content-Type' : 'application/json',
 	          'Accept' : this.acceptTypes_,
-	          'Authorization' : this.authorization_,
+	          'Authorization' : this.authorization_
 	       },
 	       scope: this,
 	       success: function(response, opts){
@@ -371,7 +373,7 @@
 	       failure:  function(response, opts){
 	       		var json = Ext.util.JSON.decode(response.responseText);
 				console.log(Ext.util.JSON.decode(json));
-	       },
+	       }
 	    });		
 	};
 	
@@ -395,7 +397,7 @@
 	       headers:{
 	          'Content-Type' : 'text/xml',
 	          'Accept' : this.acceptTypes_,
-	          'Authorization' : this.authorization_,
+	          'Authorization' : this.authorization_
 	       },
 	       params: data,
 	       scope: this,
@@ -404,7 +406,7 @@
 	       },
 	       failure:  function(response, opts){
 	       		console.log(response);
-	       },
+	       }
 	    });		
 	};
 	
@@ -494,7 +496,7 @@
 			this.onFailure_('cannot parse response');
 		}
 
-	},
+	}
    } );
 
 /**
@@ -539,6 +541,86 @@
 	}
   } );
 	
+/**
+ * Class: Google.Shortener
+ *
+ * Access Google service to shorten urls
+ *
+ */	
+var Shortener = Google.Shortener = function(options){
+	this.appid_ = options.appid;
+	this.onFailure_ = Ext.emptyFn;
+};
+
+/** 
+ * Function: shorten
+ * shortens a long url in async mode
+ *
+ * Parameters:
+ * url - {String} a long url
+ *
+ * Return:
+ * 
+ * See Also:
+ *   https://developers.google.com/url-shortener/v1/getting_started
+ *
+ */
+Shortener.prototype.shorten = function( url, callback ){
+	
+	var apiKey = this.appid_;
+	gapi.client.setApiKey(apiKey);
+	var longurl = url;
+	// console.log('make short ' + longurl);
+	gapi.client.load('urlshortener', 'v1', function() {
+	    var request = gapi.client.urlshortener.url.insert({
+	        'resource': {
+	            'longUrl': longurl
+	        }
+	    });
+	    var resp = request.execute(function(resp) {
+	        if (resp.error) {
+				this.onFailure_( resp.error.message );
+	        } else {
+				callback( resp );
+	        }
+	    });
+	});
+	
+	// Works in Chrome and Firefox, but not in IE!
+	// Because of Same Origin Policy
+	/*var Request = Ext.Ajax.request({
+       url: 'https://www.googleapis.com/urlshortener/v1/url?key='+this.appid_,
+       method: 'POST',
+       withCredentials: true,
+	   useDefaultXhrHeader: false,
+       headers:{
+          'Content-Type' : 'application/json'
+       },
+       params: '{"longUrl": "'+ url +'"}',
+       scope: this,
+       success: function(response, opts){
+			var json = Ext.util.JSON.decode( response.responseText );
+			callback(json);
+       },
+       failure:  function(response, opts){
+       		this.onFailure_(response.statusText);
+       }
+    });*/
+};
+
+/** 
+ * Function: failure
+ * set a callback method for failure
+ *
+ * Parameters:
+ * callback - {Function}
+ * Return:
+ * {Shortener}
+ */
+Shortener.prototype.failure = function( callback ){
+	this.onFailure_ = callback;
+	return this;
+};
 	
 }).call(this);
 
