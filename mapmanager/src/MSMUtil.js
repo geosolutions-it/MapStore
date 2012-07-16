@@ -567,7 +567,7 @@ var Shortener = Google.Shortener = function(options){
  */
 Shortener.prototype.shorten = function( url, callback ){
 	
-	var apiKey = this.appid_;
+	/*var apiKey = this.appid_;
 	gapi.client.setApiKey(apiKey);
 	var longurl = url;
 	// console.log('make short ' + longurl);
@@ -584,15 +584,13 @@ Shortener.prototype.shorten = function( url, callback ){
 				callback( resp );
 	        }
 	    });
-	});
+	});*/
 	
 	// Works in Chrome and Firefox, but not in IE!
 	// Because of Same Origin Policy
-	/*var Request = Ext.Ajax.request({
-       url: 'https://www.googleapis.com/urlshortener/v1/url?key='+this.appid_,
+	var Request = Ext.Ajax.request({
+       url: config.proxyUrl + '?url=' + escape('https://www.googleapis.com/urlshortener/v1/url?key='+this.appid_),
        method: 'POST',
-       withCredentials: true,
-	   useDefaultXhrHeader: false,
        headers:{
           'Content-Type' : 'application/json'
        },
@@ -605,7 +603,7 @@ Shortener.prototype.shorten = function( url, callback ){
        failure:  function(response, opts){
        		this.onFailure_(response.statusText);
        }
-    });*/
+    });
 };
 
 /** 

@@ -301,6 +301,7 @@ UserManagerView = Ext.extend(
 				                },
 				                hide: function(){
 				                    form.getForm().reset();
+									win.destroy();
 				                }
 				               },
 							    bbar: new Ext.Toolbar({
@@ -429,8 +430,8 @@ UserManagerView = Ext.extend(
 
 				// data store
 				this.store = new Ext.data.JsonStore({
-							        fields: ['id', 'name', 'password', 'role'],
-									params:{start:0, limit:3}
+							        fields: ['id', 'name', 'password', 'role']
+									// params:{start:0, limit:3}
 							 });
 				// create a content provider with init options
 				this.users = new GeoStore.Users(
@@ -446,12 +447,12 @@ UserManagerView = Ext.extend(
                                     });
 								} );
 				
-				this.bbar = new Ext.PagingToolbar({
+				/*this.bbar = new Ext.PagingToolbar({
 									pageSize:3,
 									store: this.store,
 									grid: this,
 									displayInfo: true
-								});	
+								});	*/
 				
 								
 				this.loadData = function(){

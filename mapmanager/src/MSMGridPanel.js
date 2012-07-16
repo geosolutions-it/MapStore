@@ -670,7 +670,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				var win = new Ext.Window({
 					   title: grid.textUserManager,
 					   iconCls: "open_usermanager",
-				       width: 420, height: 210, resizable: true, modal: true, // autoScroll:true,
+				       width: 430, height: 215, resizable: true, modal: true, // autoScroll:true,
 				       items: new UserManagerView( {
 								auth: grid.login.getToken(),
 								url: config.geoBaseUsersUrl
@@ -777,6 +777,99 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 grid.createTemplate(murl, grid.lang), 
 				{
 					
+					getSocialLinksId: function(mapid){
+						var divid = mapid + '_social_div';
+						
+						// send request to Google
+						var longUrl = config.mcUrl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+mapid;
+						var shortener = new Google.Shortener({
+									appid: config.googleApi
+						}).failure(function(response){
+							console.error(response);
+						});
+						shortener.shorten(
+								longUrl,
+								function(response){
+									// inject social links within the div element
+									var socialDiv = document.getElementById(divid);
+									
+									// we need a table, otherwise IE7 does not display the button correctly
+									var table = document.createElement('table');
+									table.width = '200px';
+									var tbody = document.createElement('tbody');
+									var row = document.createElement('tr');
+									table.appendChild(tbody);
+									tbody.appendChild( row );
+									socialDiv.appendChild( table );
+									
+									// <div class="fb-like" data-href=\'{[this.getShortLink(values.id, false)]}\' 
+									//   data-send="false" data-layout="button_count" data-width="80" data-show-faces="true"></div>
+									var fb = document.createElement('div');
+									// IE7 problem: http://stackoverflow.com/questions/9919095/dom-element-addclass-not-working-in-ie7
+									// b.setAttribute('class', 'fb-like');
+									fb.setAttribute('data-href', response.id);
+									fb.setAttribute('data-send', 'false');
+									fb.setAttribute('data-layout', 'button_count');
+									fb.setAttribute('data-show-faces', 'true');
+									fb.setAttribute('data-width', '80');
+									
+									fb.className = 'fb-like';
+									
+									var fbcell = document.createElement('td');
+									fbcell.appendChild( fb );
+									row.appendChild( fbcell );
+									
+									
+									if (typeof (FB) != 'undefined') {
+				                        FB.XFBML.parse();
+				                    } else {
+				                        var langFB = grid.lang == "en" ? "en_US" : "it_IT";;
+
+				                            var fun = function(d, s, id) {
+				                                var js, fjs = d.getElementsByTagName(s)[0];
+				                                if (d.getElementById(id)) return;
+				                                js = d.createElement(s); js.id = id;
+				                                js.src = "//connect.facebook.net/" + langFB + "/all.js#xfbml=1";
+				                                fjs.parentNode.insertBefore(js, fjs);
+				                            }
+				                            fun(document, 'script', 'facebook-jssdk');
+				                        
+				                    }
+				
+				
+									// '<a href="http://opensdi.geo-solutions.it/" class="twitter-share-button" 
+									// data-url=\'{[this.getShortLink(values.id, false)]}\' data-text="MapComposer" 
+									// data-count="horizontal" data-via="geosolutions_it" data-lang="' + this.lang + '"></a>'+
+									var tw = document.createElement('a');
+									tw.setAttribute('href', 'http://opensdi.geo-solutions.it/');
+									// IE7 problem http://stackoverflow.com/questions/9919095/dom-element-addclass-not-working-in-ie7
+									// tw.setAttribute('class', 'twitter-share-button');
+									tw.className = 'twitter-share-button';
+									tw.setAttribute('data-url', response.id);
+									tw.setAttribute('data-text', 'MapComposer');
+									tw.setAttribute('data-count', 'horizontal');
+									tw.setAttribute('data-via', 'geosolutions_it');
+									tw.setAttribute('data-lang', grid.lang);
+									
+									var twcell = document.createElement('td');
+									twcell.appendChild( tw );
+									row.appendChild( twcell );
+									
+									 //Twitter
+					                    if (typeof (twttr) != 'undefined') {
+					                        twttr.widgets.load();
+					                    } else {
+					                        //$.getScript('http://platform.twitter.com/widgets.js');
+					                        Ext.Loader.load('http://platform.twitter.com/widgets.js');
+					                    }
+									
+									
+							});
+						
+						
+						
+						return divid;
+					},
 					/**
                     * Private: getShortLink
                     * 
@@ -1079,7 +1172,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 success: function (result){
 					// hack to generate short urls
 					// it is not a good solution!
-					var maps = Ext.util.JSON.decode(result.responseText).results;
+					/*var maps = Ext.util.JSON.decode(result.responseText).results;
 					for (var i=0; i<maps.length; i++){
 						var map = maps[i];
 						var mapid = map.id;
@@ -1105,7 +1198,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 										infamous(mapid)
 									);
 						}
-					}
+					}*/
                 },
                 failure: function (result) {
                     switch(result.status) {
@@ -1449,7 +1542,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 						  '</tpl>'+
 	                    '</td>';
 					
-              tpl +=  '</tr>'+
+             /* tpl +=  '</tr>'+
             '</table>'+
         '</div>' +
 		   '<tpl if="this.getShortLink(id, true)!=null">'+
@@ -1463,7 +1556,14 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     '</td>'+
                 '</tr>'+
             '</table>'+
-			'</tpl>';
+		  	'</tpl>';*/
+		
+			tpl +=  '</tr>'+
+            '</table>'+
+        '</div><br/>' +
+            '<div id=\'{[this.getSocialLinksId(values.id)]}\' style=\'float:left\' >'+
+            '</div>';
+		
 		return tpl;
 	}
 
