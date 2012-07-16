@@ -384,7 +384,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 		
         var searchString = '*';
 
-        if (config.mcUrl){
+        /*if (config.mcUrl){
             var murl = config.mcUrl;
         }
         
@@ -393,12 +393,18 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
         }
         
         if(config.geoDelUrl){
-            var purldel = config.geoDelUrl;
+            var geoBaseMapsUrl = config.geoDelUrl;
         }
 
 		if(config.geoBaseUrl){
 			var geoBaseUrl = config.geoBaseUrl;
-		}
+		}*/
+		
+		// init useful urls
+		this.murl = config.baseUrl + '/mapcomposer/';
+		this.geoBaseUsersUrl= config.baseUrl + '/geostore/rest/users';
+		this.geoBaseMapsUrl = config.baseUrl + '/geostore/rest/resources';
+		this.geoSearchUrl = config.baseUrl + '/geostore/rest/extjs/search/';
         
         //inizialization of MSMLogin class
         this.login = new MSMLogin({
@@ -566,7 +572,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									// get info about logged user if any
 									var auth = grid.login.getToken();
 									// fetch base url
-									var url =  config.geoBaseMapsUrl; // 'http://localhost:8080/geostore/rest/resources';
+									var url =  grid.geoBaseMapsUrl;
 
 									// get the api for GeoStore
 									var geostore = new GeoStore.Maps(
@@ -631,7 +637,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			  	// get info about logged user if any
 			    var auth = grid.login.getToken();
 				// fetch base url
-				var url =  config.geoBaseMapsUrl; // 'http://localhost:8080/geostore/rest/resources';
+				var url =  grid.geoBaseMapsUrl; // 'http://localhost:8080/geostore/rest/resources';
 	
 				// get the api for GeoStore
 				var geostore = new GeoStore.Maps(
@@ -673,7 +679,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				       width: 430, height: 215, resizable: true, modal: true, // autoScroll:true,
 				       items: new UserManagerView( {
 								auth: grid.login.getToken(),
-								url: config.geoBaseUsersUrl
+								url: grid.geoBaseUsersUrl
 							})
 				});				
 				
@@ -691,6 +697,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
              * 
              */
             openMapComposer : function(mapUrl,userProfile,idMap,desc){
+	
 					var src = mapUrl + '?locale=' + grid.lang + userProfile;
 					
 					if(idMap != -1){
@@ -774,7 +781,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
             },
 
             tpl : new Ext.XTemplate( // expander-button-table
-                grid.createTemplate(murl, grid.lang), 
+                grid.createTemplate(grid.murl, grid.lang), 
 				{
 					
 					getSocialLinksId: function(mapid){
@@ -1012,10 +1019,11 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     * 
                     */
                     MapComposerVM : function(id,values,userProfile){
+						console.log(grid.murl);
                         Ext.get(id).on('click', function(e){
                             var idMap = values.id;
                             var desc = values.name;
-                            expander.openMapComposer(murl,userProfile,idMap,desc);
+                            expander.openMapComposer(grid.murl,userProfile,idMap,desc);
                         });
                     },
                     /**
@@ -1034,7 +1042,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									// get info about logged user if any
 									var auth = grid.login.getToken();
 									// fetch base url
-									var url =  config.geoBaseMapsUrl; 
+									var url =  grid.geoBaseMapsUrl; 
 
 									// get the api for GeoStore
 									var geostore = new GeoStore.Maps(
@@ -1312,7 +1320,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * 
     */
     getUrl : function(srcStr) {
-        var r = config.geoSearchUrl +  '*' + srcStr.replace(/\s+/g,"*") + '*';
+        var r = this.geoSearchUrl +  '*' + srcStr.replace(/\s+/g,"*") + '*';
         return r;
     },
     
@@ -1558,11 +1566,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
             '</table>'+
 		  	'</tpl>';*/
 		
-			tpl +=  '</tr>'+
-            '</table>'+
-        '</div><br/>' +
-            '<div id=\'{[this.getSocialLinksId(values.id)]}\' style=\'float:left\' >'+
-            '</div>';
+			tpl +=  '</tr></table></div><br/>';
+       
+            // tpl += '<div id=\'{[this.getSocialLinksId(values.id)]}\' style=\'float:left\' ></div>';
+            
 		
 		return tpl;
 	}

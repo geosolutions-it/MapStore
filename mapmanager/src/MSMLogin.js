@@ -258,7 +258,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
         var auth= 'Basic ' + Base64.encode(user+':'+pass);
         Ext.Ajax.request({
             method: 'GET',
-            url: config.userUrl,
+            url: config.baseUrl + '/geostore/rest/users/user/details/',
             scope: this,
             headers: {
                 'Accept': 'application/json',
