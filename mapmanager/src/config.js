@@ -24,17 +24,11 @@
  * var: config
  * object for configuring the component.
  *
- * {string} url MapComposer
- * mcUrl
+ * {string} base url
+ * baseUrl
  * 
- * {string} url /geostore/rest/extjs/search/
- * geoSearchUrl
- * 
- * {string} /geostore/rest/resources/resource/
- * geoDelUrl
- * 
- * {string} geostore/rest/users/user/details/
- * userUrl
+ * {string} http proxy url
+ * proxyUrl
  * 
  * {number} start param for the first page load
  * start
@@ -44,20 +38,20 @@
  * 
  * {number} msmTimeout param for set ajax request timeout
  * msmTimeout
+ *
+ *  Examples of urls
+ *
+ *      map composer   http://localhost:8080/mapcomposer/
+ *      user details (used in login)  http://localhost:8080/geostore/rest/users/user/details/
+ *      resource (i.e. maps) search   http://localhost:8080/geostore/rest/extjs/search/
+ *      resource rest endpoint  http://localhost:8080/geostore/rest/resources
+ *      user rest endpoint  http://localhost:8080/geostore/rest/users
  * 
  */
 var config = {
 	
 	baseUrl:'http://localhost:8080',
 	proxyUrl: 'http://localhost:8080/http_proxy/proxy/',
-	
-    /*mcUrl: 'http://localhost:8080/mapcomposer/',
-    userUrl: 'http://localhost:8080/geostore/rest/users/user/details/',
-    geoSearchUrl: 'http://localhost:8080/geostore/rest/extjs/search/',
-    geoDelUrl: 'http://localhost:8080/geostore/rest/resources/resource/',
-	geoBaseUrl: 'http://localhost:8080/geostore/rest/resources',
-	geoBaseUsersUrl: 'http://localhost:8080/geostore/rest/users',
-	geoBaseMapsUrl:'http://localhost:8080/geostore/rest/resources',*/
 	
     
     start: 0,

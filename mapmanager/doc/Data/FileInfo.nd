@@ -1,12 +1,11 @@
 1.52
 JavaScript
-/Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/MSMPagingToolbar.js	1342193157	1	MSMPagingToolbar
-/Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/MSMUserManager.js	1342358718	1	UserManagerView
-/Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/MSMGridPanel.js	1342356193	1	MSMGridPanel
+/Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/MSMPanel.js	1341382915	1	MSMPanel
+/Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/MSMPagingToolbar.js	1342506546	1	MSMPagingToolbar
+/Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/MSMUserManager.js	1342375288	1	UserManagerView
+/Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/MSMUtil.js	1342440680	1	Uri
+/Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/MSMGridPanel.js	1342453620	1	MSMGridPanel
+/Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/MSMLogin.js	1342453464	1	MSMLogin
 /Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/MSMIframe.js	1341382915	1	MSMIframe
 /Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/init.js	1342105576	1	/Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/init.js
-/Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/config.js	1342275139	1	config.js
-/Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/client.js	1342280953	0	/Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/client.js
-/Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/MSMPanel.js	1341382915	1	MSMPanel
-/Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/MSMUtil.js	1342281606	1	Uri
-/Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/MSMLogin.js	1342287180	1	MSMLogin
+/Users/marco/Work/GeoSolutions/mapstore/mapmanager/src/config.js	1342513477	1	config.js
