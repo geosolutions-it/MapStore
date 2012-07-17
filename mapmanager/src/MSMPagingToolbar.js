@@ -188,7 +188,7 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
             iconCls: 'map_add',
             tooltip: this.tooltipNewMap,
             handler: function(){
-                this.grid.plugins.openMapComposer(this.mcUrl,userProfile,idMap,this.desc);
+                this.grid.plugins.openMapComposer(this.grid.murl,userProfile,idMap,this.desc);
             }
         });
         
