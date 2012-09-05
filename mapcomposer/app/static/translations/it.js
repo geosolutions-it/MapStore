@@ -124,7 +124,9 @@ GeoExt.Lang.add("it", {
         areaMenuText: "Area",
         lengthTooltip: "Misura lunghezza",
         areaTooltip: "Misura area",
-        measureTooltip: "Misura"
+        measureTooltip: "Misura",
+        bearingMenuText: "Rotta",
+        bearingTooltip: "Misura la rotta"
     },
 
     "gxp.plugins.Navigation.prototype": {

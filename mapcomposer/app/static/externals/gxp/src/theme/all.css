@@ -263,7 +263,9 @@
 .x-btn .gxp-icon-measure-area, .x-menu-item .gxp-icon-measure-area, .x-tree-node .gxp-icon-measure-area {
    background-image: url(img/geosilk/ruler_square.png) !important;
 }
-
+.x-btn .gxp-icon-measure-bearing, .x-menu-item .gxp-icon-measure-bearing, .x-tree-node .gxp-icon-measure-bearing {
+   background-image: url(img/geosilk/ruler_triangle.png) !important;
+}
 /* gxp_styler */
 .x-btn .gxp-icon-palette, .x-menu-item .gxp-icon-palette, .x-tree-node .gxp-icon-palette {
    background-image: url(img/silk/palette.png);

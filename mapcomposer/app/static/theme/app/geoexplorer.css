@@ -9,6 +9,14 @@ body {
     white-space: nowrap;
 }
 
+.x-tip .x-tip-body table tbody {
+    font-style: normal;
+font-variant: normal;
+font-weight: normal;
+font-size: 11px;
+line-height: normal;
+font-family: tahoma, arial, helvetica, sans-serif;
+}
 /* get images on buttons with text to line up with those with no text */
 .x-btn-text-icon .x-btn-center .x-btn-text {
     background-position: 0 3px;
