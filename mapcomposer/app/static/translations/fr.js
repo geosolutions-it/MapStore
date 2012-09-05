@@ -13,6 +13,7 @@ GeoExt.Lang.add("fr", {
         loadConfigErrorDefaultText: "Erreur de serveur.",
         xhrTroubleText: "Problème de communication: état",
         layersText: "Couvertures",
+		legendText: "Légende",
         titleText: "Titre",
         zoomLevelText: "Niveau de Zoom  ",
         saveErrorText: "Problème de sauvegarde",
@@ -340,5 +341,9 @@ GeoExt.Lang.add("fr", {
     },
     "gxp.plugins.GoogleGeocoder.prototype": {
         addMarkerTooltip: "Réinitialiser Marker"
-    }
+    },
+	"gxp.form.WFSSearchComboBox.prototype": {
+		emptyText:"Rechercher",
+		loadingText: "recherche..."
+	}
 });

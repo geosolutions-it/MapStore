@@ -51,6 +51,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     loadConfigErrorDefaultText: "Server Error.",
     xhrTroubleText: "Communication Trouble: Status ",
     layersText: "Layers",
+	legendText: "Legend",
     titleText: "Title",
     saveErrorText: "Trouble saving: ",
     
@@ -391,9 +392,9 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      */
     initPortal: function() {
         
-        var westPanel = new Ext.Panel({
+        var westPanel = new Ext.TabPanel({
             border: false,
-            layout: "border",
+            activeTab:0,
             id:'west',
             region: "west",
             width: 250,
@@ -402,12 +403,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             collapseMode: "mini",
             header: false,
             items: [
-                {region: 'center', autoScroll: true, tbar: [], border: false, id: 'tree', title: this.layersText}, 
+                { autoScroll: true, tbar: [], border: false, id: 'tree', title: this.layersText}, 
                 {
-                    region: 'south', xtype: "panel", layout: "fit", 
-                    collapsible : true, collapseMode:  'mini',
-                    split : true, hideCollapseTool: true,
-                    border: false, height: 200, id: 'legend'
+                    xtype: "panel", layout: "fit", 
+                    border: false, id: 'legend', title: this.legendText
                 }
             ]
         });
