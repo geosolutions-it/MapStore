@@ -14,13 +14,24 @@ div.versioninfo {
     text-align: center;
 }
 
-div.logo {
+div.mapstore_logo {
     margin-left: auto;
     margin-right: auto;
     width: 100%;
     text-align: center;
     height: 70px;
-    background: url('img/GeoExt_Logo.png') center no-repeat;
+	overflow: visible;
+    background: url('img/MapStore_logo.png') center top  no-repeat;
+}
+
+div.geoext_logo {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    text-align: center;
+    height: 70px;
+	overflow: visible;
+    background: url('img/GeoExt_logo.png') center top  no-repeat;
 }
 
 div.geosolutions_logo {
@@ -29,7 +40,7 @@ div.geosolutions_logo {
     width: 100%;
     text-align: center;
     height: 61px;
-    background: url('img/GeoSolutions_logo.png') center no-repeat;
+    background: url('img/GeoSolutions_logo.png') center  no-repeat;
 }
 
 h3 {
@@ -40,5 +51,14 @@ h3 {
 
 a {
     display: block;
+}
+
+h2 a{
+    display: inline;
+    font-weight: bold;
+    margin-bottom: 0em;
+    font-size: 14px;
+    color:black;
+
 }
 
