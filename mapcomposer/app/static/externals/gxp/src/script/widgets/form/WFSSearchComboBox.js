@@ -1,0 +1,339 @@
+/**
+ * Copyright (c) 2008-2011 The Open Planning Project
+ * 
+ * Published under the BSD license.
+ * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
+ * of the license.
+ */
+
+/** api: (define)
+ *  module = gxp.form
+ *  class = WFSSearchComboBox
+ *  base_link = `Ext.form.ComboBox <http://extjs.com/deploy/dev/docs/?class=Ext.form.ComboBox>`_
+ */
+Ext.namespace("gxp.form");
+
+/** api: constructor
+ *  .. class:: WFSSearchComboBox(config)
+ *
+ *  Creates a combo box that issues queries a WFS service.
+ *  If the user enters a valid parameters in the search box, the combo's store
+ *  will be populated with records that match the features querible attributes.
+ *  Records have fields configured in recordModel variable and Queriable attributes are
+ *  configured in queriableAttributes variable.
+ *  
+ *
+ */   
+gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
+    
+    /** api: xtype = gxp_googlegeocodercombo */
+    xtype: "gxp_searchboxcombo",
+
+    /** api: config[queryDelay]
+     *  ``Number`` Delay before the search occurs.  Default is 100ms.
+     */
+    queryDelay: 100,
+    
+	/** private: config[typeAhead]
+	 * the queryParameter for WFS
+	 */
+	queryParam : "cql_filter",
+	typeAhead: false,
+	displayInfo: false,
+	hideTrigger:true,
+	
+    /** api: config[displayField]
+	 * If a template is not defined, this is the field to show.
+	 * for the exemple below it can be "codice_ato"
+     */
+    displayField: "",
+	
+	/** api: config[url]
+     *  url to perform requests
+     */
+	url:  '',
+	/** api: config[typeName]
+     *  the tipe name to search
+     */
+	typeName: '',
+	/**
+	 * private config[root]
+	 * the root node containing feature data.
+	 */
+	root:'features',
+	/**
+	 * private config[recordId]
+	 * the id of the record.
+	 */
+	recordId: 'fid',
+	
+	/** api: config[recordModel]
+     *  ``Ext.Record | Array`` record model to create the store
+     *  for restricting search.
+	 * exemple: 
+	 * recordModel: [
+	 *	{name: 'id', mapping: 'id'},
+	 *	{name: 'geometry', mapping: 'geometry'},
+	 *	{name: 'codice_ato', mapping: 'properties.codice_ato'},
+	 *	{name: 'denominazi', mapping: 'properties.denominazi'}
+	 *	
+	 *	 ],
+     */
+	recordModel: null,
+	
+	/** api: config[queriableAttributes]
+     *  ``String | Array`` feature attributes to query
+     *  for restricting search.
+	 * for the exemple is ['codice_ato','denominazi']
+     */
+	queriableAttributes : [] ,
+	
+	/** api: config[sortBy]
+     *  ``String | Array`` sorting attribute
+     *  needed for pagination.
+     */
+	sortBy : 'codice_ato',
+    
+	/** api: config[pageSize]
+     *  ``Integer`` page size of result list.
+     *  needed for pagination. default is 10
+     */
+	pageSize:10,
+	/** api: config[loadingText]
+     *  ``String`` loading text for i18n 
+     */
+	loadingText: 'Searching...',
+	/** api: config[emptyText]
+     *  ``String`` empty text for i18n 
+     */
+	emptyText: "Search",
+	/** api: config[width]
+     *  ``int`` width of the text box. default is 200
+     */
+	width: 200,
+	
+	/** defines style for the search result item
+	 */
+	itemSelector:  'div.search-item',
+	
+	/** api: config[tpl]
+     *  ``Ext.XTemplate`` the template to show results.
+     */
+	tpl: null,
+
+    /** private: method[initComponent]
+     *  Override
+     */
+    initComponent: function() {
+		
+        this.store = new Ext.data.JsonStore({
+			combo:this,
+			root: this.root,
+			messageProperty: 'crs',
+			autoLoad: false,
+			fields:this.recordModel,
+            url: this.url,
+			
+			paramNames:{
+				start: "startindex",
+				limit: "maxfeatures",
+				sort: "sortBy"
+			},
+			baseParams:{
+				service:'WFS',
+				version:'1.1.0',
+				request:'GetFeature',
+				typeName:this.typeName ,
+				outputFormat:'json',
+				sortBy: this.sortBy
+				
+			
+			},
+			listeners:{
+				beforeload: function(store){
+					store.setBaseParam( 'srsName',app.mapPanel.map.getProjection() );
+				}
+			},
+			
+			loadRecords : function(o, options, success){
+				if (this.isDestroyed === true) {
+					return;
+				}
+				if(!o || success === false){
+					if(success !== false){
+						this.fireEvent('load', this, [], options);
+					}
+					if(options.callback){
+						options.callback.call(options.scope || this, [], options, false, o);
+					}
+					return;
+				}
+				this.combo.crs = this.reader.jsonData.crs;
+				//custom total workaround
+				var estimateTotal = function(o,options,store){
+					var current = o.totalRecords +  options.params[store.paramNames.start] ;
+					var currentCeiling = options.params[store.paramNames.start] + options.params[store.paramNames.limit];
+					if(current < currentCeiling){
+						return current;
+					}else{
+						return 100000000000000000; 
+					}
+	
+				}
+				o.totalRecords = estimateTotal(o,options,this);
+				//end of custom total workaround
+				
+				var r = o.records, t = o.totalRecords || r.length;
+				if(!options || options.add !== true){
+					if(this.pruneModifiedRecords){
+						this.modified = [];
+					}
+					for(var i = 0, len = r.length; i < len; i++){
+						r[i].join(this);
+					}
+					if(this.snapshot){
+						this.data = this.snapshot;
+						delete this.snapshot;
+					}
+					this.clearData();
+					this.data.addAll(r);
+					this.totalLength = t;
+					this.applySort();
+					this.fireEvent('datachanged', this);
+				}else{
+					this.totalLength = Math.max(t, this.data.length+r.length);
+					this.add(r);
+				}
+				this.fireEvent('load', this, r, options);
+				if(options.callback){
+					options.callback.call(options.scope || this, r, options, true);
+				}
+			}
+			
+        });
+
+        return gxp.form.WFSSearchComboBox.superclass.initComponent.apply(this, arguments);
+    },
+	listeners:{
+		focus: function() {
+			this.clearValue();
+		},
+		beforequery:function(queryEvent){
+			var queryString = queryEvent.query;
+			queryEvent.query = "";
+			for( var i = 0 ; i < this.queriableAttributes.length ; i++){
+				queryEvent.query +=  "(" + this.queriableAttributes[i] + " LIKE '%" + queryString + "%')";
+				if ( i < this.queriableAttributes.length -1) {
+					queryEvent.query += " OR ";
+				}
+			}
+		
+		}
+
+	},
+	
+	
+	//custom initList to have custom toolbar.
+	
+	initList : function(){
+        if(!this.list){
+            var cls = 'x-combo-list',
+                listParent = Ext.getDom(this.getListParent() || Ext.getBody()),
+                zindex = parseInt(Ext.fly(listParent).getStyle('z-index') ,10);
+
+            if (this.ownerCt && !zindex){
+                this.findParentBy(function(ct){
+                    zindex = parseInt(ct.getPositionEl().getStyle('z-index'), 10);
+                    return !!zindex;
+                });
+            }
+
+            this.list = new Ext.Layer({
+                parentEl: listParent,
+                shadow: this.shadow,
+                cls: [cls, this.listClass].join(' '),
+                constrain:false,
+                zindex: (zindex || 12000) + 5
+            });
+
+            var lw = this.listWidth || Math.max(this.wrap.getWidth(), this.minListWidth);
+            this.list.setSize(lw, 0);
+            this.list.swallowEvent('mousewheel');
+            this.assetHeight = 0;
+            if(this.syncFont !== false){
+                this.list.setStyle('font-size', this.el.getStyle('font-size'));
+            }
+            if(this.title){
+                this.header = this.list.createChild({cls:cls+'-hd', html: this.title});
+                this.assetHeight += this.header.getHeight();
+            }
+
+            this.innerList = this.list.createChild({cls:cls+'-inner'});
+            this.mon(this.innerList, 'mouseover', this.onViewOver, this);
+            this.mon(this.innerList, 'mousemove', this.onViewMove, this);
+            this.innerList.setWidth(lw - this.list.getFrameWidth('lr'));
+
+            if(this.pageSize){
+                this.footer = this.list.createChild({cls:cls+'-ft'});
+				
+				//
+				// custom pagin toolbar 
+				//
+                this.pageTb = new Ext.PagingToolbar({
+                    store: this.store,
+                    pageSize: this.pageSize,
+                    renderTo:this.footer,
+					afterPageText:"",
+					beforePageText:"",
+					listeners:{
+						render: function(){
+							this.last.setVisible(false);
+							//this.inputItem.disable();
+						}
+					}
+                });
+				
+                this.assetHeight += this.footer.getHeight();
+            }
+
+            if(!this.tpl){
+                this.tpl = '{' + this.displayField + '}';
+            }
+
+            this.view = new Ext.DataView({
+                applyTo: this.innerList,
+                tpl: this.tpl,
+                singleSelect: true,
+                selectedClass: this.selectedClass,
+                itemSelector: this.itemSelector || '.' + cls + '-item',
+                emptyText: this.listEmptyText,
+                deferEmptyText: false
+            });
+
+            this.mon(this.view, {
+                containerclick : this.onViewClick,
+                click : this.onViewClick,
+                scope :this
+            });
+
+            this.bindStore(this.store, true);
+
+            if(this.resizable){
+                this.resizer = new Ext.Resizable(this.list,  {
+                   pinned:true, handles:'se'
+                });
+                this.mon(this.resizer, 'resize', function(r, w, h){
+                    this.maxHeight = h-this.handleHeight-this.list.getFrameWidth('tb')-this.assetHeight;
+                    this.listWidth = w;
+                    this.innerList.setWidth(w - this.list.getFrameWidth('lr'));
+                    this.restrictHeight();
+                }, this);
+
+                this[this.pageSize?'footer':'innerList'].setStyle('margin-bottom', this.handleHeight+'px');
+            }
+        }
+    }
+
+});
+
+Ext.reg(gxp.form.WFSSearchComboBox.prototype.xtype, gxp.form.WFSSearchComboBox);

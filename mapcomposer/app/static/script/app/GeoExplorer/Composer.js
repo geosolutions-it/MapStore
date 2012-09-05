@@ -57,6 +57,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 outputTarget: 'legend',
                 outputConfig: {
                     autoScroll: true
+					
                 },
                 legendConfig : {
                     legendPanelId : 'legendPanel',
@@ -132,7 +133,37 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_georeferences",
                 actionTarget: {target: "paneltbar", index: 23}
-            }, {
+            },
+            //this is a sample configuration for wfssearchbox plugin.
+            /*{
+                ptype: "gxp_wfssearchbox",
+                outputConfig:{
+                    url:  'http://office.geo-solutions.it/acque/geoserver/SW/ows?',
+                    typeName: 'SW:search_view',
+                    recordModel:[
+                        {name: 'id', mapping: 'id'},
+                        {name: 'geometry', mapping: 'geometry'},
+                        {name: 'codice_ato', mapping: 'properties.codice_ato'},
+                        {name: 'denominazi', mapping: 'properties.denominazi'}
+                        
+                    ],
+                    sortBy : 'codice_ato',
+                    queriableAttributes : ['codice_ato','denominazi'],
+                    displayField: "codice_ato",
+                    pageSize:10,
+                    width: 250,
+                    tpl: new Ext.XTemplate( 
+                        '<tpl for="."><div class="search-item">',
+                            '<h3>{codice_ato}</span></h3>',
+                        '{denominazi}</div></tpl>'	
+                    )
+
+                },
+                updateField: "geometry",
+                outputTarget:"paneltbar",
+                index: 30
+                
+            },*/ {
                 ptype: "gxp_saveDefaultContext",
                 actionTarget: {target: "paneltbar", index: 26},
 				needsAuthorization: true
@@ -343,10 +374,10 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                                                   //
                                                   // Removing layer source from sources ?
                                                   //
-                                                  /*for (var id in app.layerSources) {
-                                                      if(id.indexOf(source.id) != -1)
-                                                          app.layerSources[id] = null;    
-                                                  }*/  
+                                                  //for (var id in app.layerSources) {
+                                                  //    if(id.indexOf(source.id) != -1)
+                                                  //        app.layerSources[id] = null;    
+                                                  //}  
                                                   
                                                   mask.hide();
                                                   
@@ -468,6 +499,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }));
             
             tools.push('-');
+			
         }
 
 		if(this.xmlJsonTranslateService){
@@ -576,9 +608,9 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             scope: this,
             iconCls: 'icon-export'
         }));
-
+		
         tools.push('-');
-        
+
         return tools;
 
     },
