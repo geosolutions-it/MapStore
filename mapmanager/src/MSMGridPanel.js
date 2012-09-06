@@ -790,13 +790,14 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 						// send request to Google
 						var longUrl = config.mcUrl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+mapid;
 						var shortener = new Google.Shortener({
-									appid: config.googleApi
+							appid: config.googleApi
 						}).failure(function(response){
 							console.error(response);
 						});
 						shortener.shorten(
 								longUrl,
 								function(response){
+
 									// inject social links within the div element
 									var socialDiv = document.getElementById(divid);
 									
@@ -1206,7 +1207,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 										infamous(mapid)
 									);
 						}
-					}*/
+					}//*/
                 },
                 failure: function (result) {
                     switch(result.status) {
@@ -1354,7 +1355,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     },
 
 	createTemplate: function(murl, lang){
-		var tpl = '<div style="background-color: #f9f9f9; text-align: left">&nbsp;&nbsp;&nbsp;&nbsp;<b>Description:</b> {description}<br/>'+
+		var tpl = 
+			'<div style="background-color: #f9f9f9; text-align: left">&nbsp;&nbsp;&nbsp;&nbsp;<b>Description:</b> {description}<br/>'+
+
             '<table class="x-btn x-btn-text-icon" align="right" cellspacing="5" cellpadding="5" border="0" style="table-layout:auto">'+
                 '<tr>';
 		// in IE7 we need to set button property "padding" and table width otherwise buttons are stretched			
@@ -1550,10 +1553,12 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 						  '</tpl>'+
 	                    '</td>';
 					
-             /* tpl +=  '</tr>'+
+              tpl +=  '</tr>'+
             '</table>'+
         '</div>' +
+        
 		   '<tpl if="this.getShortLink(id, true)!=null">'+
+		   
             '<table align="left" cellspacing="0" cellpadding="0" border="0" style="table-layout:auto">'+
                 '<tr>'+
                     '<td align="left">'+
@@ -1564,11 +1569,12 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     '</td>'+
                 '</tr>'+
             '</table>'+
-		  	'</tpl>';*/
+            
+		  	'</tpl>';//*/
 		
 			tpl +=  '</tr></table></div><br/>';
        
-            // tpl += '<div id=\'{[this.getSocialLinksId(values.id)]}\' style=\'float:left\' ></div>';
+            tpl += '<div id=\'{[this.getSocialLinksId(values.id)]}\' style=\'float:left\' ></div>';
             
 		
 		return tpl;

@@ -567,10 +567,11 @@ var Shortener = Google.Shortener = function(options){
  */
 Shortener.prototype.shorten = function( url, callback ){
 	
-	/*var apiKey = this.appid_;
+	var apiKey = this.appid_;
 	gapi.client.setApiKey(apiKey);
 	var longurl = url;
-	// console.log('make short ' + longurl);
+	console.log('make short ' + longurl);
+	
 	gapi.client.load('urlshortener', 'v1', function() {
 	    var request = gapi.client.urlshortener.url.insert({
 	        'resource': {
@@ -584,7 +585,7 @@ Shortener.prototype.shorten = function( url, callback ){
 				callback( resp );
 	        }
 	    });
-	});*/
+	});//*/
 	
 	// Works in Chrome and Firefox, but not in IE!
 	// Because of Same Origin Policy

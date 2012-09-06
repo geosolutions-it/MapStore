@@ -53,6 +53,8 @@ var config = {
 	baseUrl:'http://localhost:8080',
 	proxyUrl: 'http://localhost:8080/http_proxy/proxy/',
 	
+	googleApi: 'AIzaSyD5CsWsgMIzILGVerPpTXFqu2uZYmfSbhk',
+	//stefano.cudini@gmail.com account apikey
     
     start: 0,
     
