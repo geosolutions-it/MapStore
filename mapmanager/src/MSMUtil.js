@@ -565,46 +565,60 @@ var Shortener = Google.Shortener = function(options){
  *   https://developers.google.com/url-shortener/v1/getting_started
  *
  */
-Shortener.prototype.shorten = function( url, callback ){
+Shortener.prototype.shorten = function( url, callb ){
+
+Ext.ux.JSONP.request(config.proxyUrl + '?url=' + escape('https://www.googleapis.com/urlshortener/v1/url?key='+this.appid_), {
+    callbackKey: 'jsoncallback',
+    params: {
+        longUrl: 'json'                           
+    },
+    callback: function(resp) {
+    	console.log('JSONP:');
+    	console.log(resp);
+		callb(resp);    	
+    }
+});//not work!
+   	
+//	var apiKey = this.appid_;
+//	gapi.client.setApiKey(apiKey);
+//	var longurl = url;
+//	console.log('make short ' + longurl);
+//	
+//	gapi.client.load('urlshortener', 'v1', function() {
+//	    var request = gapi.client.urlshortener.url.insert({
+//	        'resource': {
+//	            'longUrl': longurl
+//	        }
+//	    });
+//	    var resp = request.execute(function(resp) {
+//	    console.log(arguments);
+//	    
+//	        if (resp.error) {
+//				this.onFailure_( resp.error.message );
+//	        } else {
+//				callback( resp );
+//	        }
+//	    });
+//	});//*/
 	
-	var apiKey = this.appid_;
-	gapi.client.setApiKey(apiKey);
-	var longurl = url;
-	console.log('make short ' + longurl);
-	
-	gapi.client.load('urlshortener', 'v1', function() {
-	    var request = gapi.client.urlshortener.url.insert({
-	        'resource': {
-	            'longUrl': longurl
-	        }
-	    });
-	    var resp = request.execute(function(resp) {
-	        if (resp.error) {
-				this.onFailure_( resp.error.message );
-	        } else {
-				callback( resp );
-	        }
-	    });
-	});//*/
-	
-	// Works in Chrome and Firefox, but not in IE!
-	// Because of Same Origin Policy
-	var Request = Ext.Ajax.request({
-       url: config.proxyUrl + '?url=' + escape('https://www.googleapis.com/urlshortener/v1/url?key='+this.appid_),
-       method: 'POST',
-       headers:{
-          'Content-Type' : 'application/json'
-       },
-       params: '{"longUrl": "'+ url +'"}',
-       scope: this,
-       success: function(response, opts){
-			var json = Ext.util.JSON.decode( response.responseText );
-			callback(json);
-       },
-       failure:  function(response, opts){
-       		this.onFailure_(response.statusText);
-       }
-    });
+//	// Works in Chrome and Firefox, but not in IE!
+//	// Because of Same Origin Policy
+//	var Request = Ext.Ajax.request({
+//       url: config.proxyUrl + '?url=' + escape('https://www.googleapis.com/urlshortener/v1/url?key='+this.appid_),
+//       method: 'POST',
+//       headers:{
+//          'Content-Type' : 'application/json'
+//       },
+//       params: '{"longUrl": "'+ url +'"}',
+//       scope: this,
+//       success: function(response, opts){
+//			var json = Ext.util.JSON.decode( response.responseText );
+//			callback(json);
+//       },
+//       failure:  function(response, opts){
+//       		this.onFailure_(response.statusText);
+//       }
+//    });
 };
 
 /** 

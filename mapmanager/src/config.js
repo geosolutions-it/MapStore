@@ -50,10 +50,11 @@
  */
 var config = {
 	
-	baseUrl:'http://localhost:8080',
-	proxyUrl: 'http://localhost:8080/http_proxy/proxy/',
+	baseUrl:'http://z4k.homepc.it:8080',
+	proxyUrl: 'http://z4k.homepc.it:8080/http_proxy/proxy/',
 	
-	googleApi: 'AIzaSyD5CsWsgMIzILGVerPpTXFqu2uZYmfSbhk',
+	//googleApi: 'AIzaSyD5CsWsgMIzILGVerPpTXFqu2uZYmfSbhk',
+	googleApi: 'AIzaSyD_QBAhn3reMw99VdlUhFDgNhHMxFid_C0',
 	//stefano.cudini@gmail.com account apikey
     
     start: 0,
