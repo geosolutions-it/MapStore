@@ -565,20 +565,26 @@ var Shortener = Google.Shortener = function(options){
  *   https://developers.google.com/url-shortener/v1/getting_started
  *
  */
-Shortener.prototype.shorten = function( url, callb ){
+Shortener.prototype.shorten = function( url, callback ){
 
-Ext.ux.JSONP.request(config.proxyUrl + '?url=' + escape('https://www.googleapis.com/urlshortener/v1/url?key='+this.appid_), {
-    callbackKey: 'jsoncallback',
-    params: {
-        longUrl: 'json'                           
-    },
-    callback: function(resp) {
-    	console.log('JSONP:');
-    	console.log(resp);
-		callb(resp);    	
-    }
-});//not work!
-   	
+	var config = {proxyUrl: 'http://z4k.homepc.it:8080/http_proxy/proxy/'};
+
+	var gapi_proxyUrl = 'http://z4k.homepc.it:8080/http_proxy/proxy/' + '?url=' + escape('https://www.googleapis.com/urlshortener/v1/url?key='+this.appid_);
+	//var gapi_proxyUrl = 'http://z4k.homepc.it:8080/http_proxy/proxy/' + '?url=' + escape('http://easyblog.it:8888/urlshortener/v1/url?key='+this.appid_);
+
+//	function gapiAuth() {
+//        var config = {
+//          'client_id': '385384104319.apps.googleusercontent.com',
+//          'scope': 'https://www.googleapis.com/auth/urlshortener'
+//        };
+//        gapi.auth.authorize(config, function() {
+//          console.log('gapi login, token:');
+//          console.log(gapi.auth.getToken());
+//        });
+//    }
+//http://code.google.com/p/google-api-javascript-client/wiki/Samples
+//alternative auth mode
+
 //	var apiKey = this.appid_;
 //	gapi.client.setApiKey(apiKey);
 //	var longurl = url;
@@ -591,7 +597,7 @@ Ext.ux.JSONP.request(config.proxyUrl + '?url=' + escape('https://www.googleapis.
 //	        }
 //	    });
 //	    var resp = request.execute(function(resp) {
-//	    console.log(arguments);
+//	   		console.log(arguments);
 //	    
 //	        if (resp.error) {
 //				this.onFailure_( resp.error.message );
@@ -600,25 +606,30 @@ Ext.ux.JSONP.request(config.proxyUrl + '?url=' + escape('https://www.googleapis.
 //	        }
 //	    });
 //	});//*/
+
+	// Works in Chrome and Firefox, but not in IE!
+	// Because of Same Origin Policy
 	
-//	// Works in Chrome and Firefox, but not in IE!
-//	// Because of Same Origin Policy
-//	var Request = Ext.Ajax.request({
-//       url: config.proxyUrl + '?url=' + escape('https://www.googleapis.com/urlshortener/v1/url?key='+this.appid_),
-//       method: 'POST',
-//       headers:{
-//          'Content-Type' : 'application/json'
-//       },
-//       params: '{"longUrl": "'+ url +'"}',
-//       scope: this,
-//       success: function(response, opts){
-//			var json = Ext.util.JSON.decode( response.responseText );
-//			callback(json);
-//       },
-//       failure:  function(response, opts){
-//       		this.onFailure_(response.statusText);
-//       }
-//    });
+	var jsonparams = Ext.util.JSON.encode({ longUrl: url });
+
+	var Request = Ext.Ajax.request({
+       url: gapi_proxyUrl,
+       method: 'POST',
+       headers: {
+          'Content-Type' : 'application/json'
+       },
+       params: jsonparams,//'{"longUrl": "'+ escape(url) +'"}',
+       scope: this,
+       success: function(response, opts) {
+       		console.log('Ext.Ajax.request');
+       		console.log(opts);
+			var json = Ext.util.JSON.decode( response.responseText );
+			callback(json);
+       },
+       failure:  function(response, opts) {
+       		this.onFailure_(response.statusText);
+       }
+    });
 };
 
 /** 

@@ -398,7 +398,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
 		if(config.geoBaseUrl){
 			var geoBaseUrl = config.geoBaseUrl;
-		}*/
+		}//*/
 		
 		// init useful urls
 		this.murl = config.baseUrl + '/mapcomposer/';
@@ -696,7 +696,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
              * desc - {string} description of the Map
              * 
              */
-            openMapComposer : function(mapUrl,userProfile,idMap,desc){
+            openMapComposer : function(mapUrl, userProfile, idMap, desc) {
 	
 					var src = mapUrl + '?locale=' + grid.lang + userProfile;
 					
@@ -783,20 +783,24 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
             tpl : new Ext.XTemplate( // expander-button-table
                 grid.createTemplate(grid.murl, grid.lang), 
 				{
+				
+					getSocialLinksId: function(mapid) {
 					
-					getSocialLinksId: function(mapid){
 						var divid = mapid + '_social_div';
 						
 						// send request to Google
-						var longUrl = config.mcUrl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+mapid;
+						//var longUrl = grid.murl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+mapid;
+						var longUrl = config.baseUrl + '/mapcomposer/' + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+mapid;
+						console.log('longUrl');
+						console.log(longUrl);
+						
 						var shortener = new Google.Shortener({
 							appid: config.googleApi
 						}).failure(function(response){
 							console.error(response);
 						});
-						shortener.shorten(
-								longUrl,
-								function(response){
+						
+						shortener.shorten(longUrl, function(response) {
 
 									// inject social links within the div element
 									var socialDiv = document.getElementById(divid);
@@ -889,11 +893,12 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 						console.log('looking for ' + id + ', found: ' +grid.shortUrls[id]);
 						
 						// verify if we already have this uri in cache
-						if ( grid.shortUrls[id] === undefined && sendRequest ){
+						if ( grid.shortUrls[id] === undefined && sendRequest ) {
 							// shorten urls for Twitter
-							var longUrl = config.mcUrl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+id;
+
+							var longUrl = config.baseUrl + '/mapcomposer/' + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+id;
 							var shortener = new Google.Shortener({
-										appid: config.googleApi
+								appid: config.googleApi
 							}).failure(function(response){
 								console.error(response);
 								/*Ext.Msg.show({
@@ -1019,12 +1024,13 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     * userProfile - {string} define if users are in edit or in view mode
                     * 
                     */
-                    MapComposerVM : function(id,values,userProfile){
+                    MapComposerVM : function(id, values, userProfile) {
+						console.log('MapComposerVM');
 						console.log(grid.murl);
                         Ext.get(id).on('click', function(e){
                             var idMap = values.id;
                             var desc = values.name;
-                            expander.openMapComposer(grid.murl,userProfile,idMap,desc);
+                            expander.openMapComposer(grid.murl, userProfile, idMap, desc);
                         });
                     },
                     /**
@@ -1189,6 +1195,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 						if ( grid.shortUrls[mapid] === undefined ){
 							// send a request to shorten urls for Twitter
 							var longUrl = config.mcUrl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+mapid;
+							//REPLACE config.mcUrl WITH this.murl !!!
 							// console.log('sent ' + longUrl);
 							var shortener = new Google.Shortener({
 									appid: config.googleApi
