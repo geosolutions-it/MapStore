@@ -343,5 +343,10 @@ GeoExt.Lang.add("en", {
 	"gxp.form.WFSSearchComboBox.prototype": {
 		emptyText:"Search",
 		loadingText: "Searching"
+	},
+	"gxp.form.ContextSwitcher.prototype":{
+		switchActionTip : "Switch Context",
+		switchConfirmationText : "You are sure to change context? All unsaved data will be lost"
+
 	}
 });

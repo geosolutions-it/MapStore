@@ -347,5 +347,10 @@ GeoExt.Lang.add("fr", {
 	"gxp.form.WFSSearchComboBox.prototype": {
 		emptyText:"Rechercher",
 		loadingText: "recherche..."
+	},
+	"gxp.form.ContextSwitcher.prototype":{
+		switchActionTip : "Changement de contexte",
+		switchConfirmationText : "Vous êtes certain que vous souhaitez modifier le contexte ? toutes les données non enregistrées seront a perdu"
+
 	}
 });
