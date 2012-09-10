@@ -44,7 +44,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     cswMsg: 'Loading...',
     // End i18n.
 
-    constructor: function(config) {        
+    constructor: function(config) {  
+		if(!config.tools){
         config.tools = [
             {
                 ptype: "gxp_layertree",
@@ -152,11 +153,11 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     displayField: "codice_ato",
                     pageSize:10,
                     width: 250,
-                    tpl: new Ext.XTemplate( 
-                        '<tpl for="."><div class="search-item">',
-                            '<h3>{codice_ato}</span></h3>',
-                        '{denominazi}</div></tpl>'	
-                    )
+                    tpl: 
+                        '<tpl for="."><div class="search-item">'+
+                            '<h3>{codice_ato}</span></h3>'+
+                        '{denominazi}</div></tpl>'	,
+                    
 
                 },
                 updateField: "geometry",
@@ -181,14 +182,30 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 outputTarget:"paneltbar",
                 index: 25
             }/*,{
+                ptype: "gxp_nominatimgeocoder",
+                //actionTarget: {target: "paneltbar", index: 28},
+                outputConfig:{
+                    emptyText:"Nominatim GeoCoder",
+					vendorOptions:{
+						bounded: 1,
+						countrycodes: 'it',
+						addressdetails:0
+					},
+					boundOption:"max"
+                },
+                outputTarget:"paneltbar",
+                index: 26
+            },{
                 ptype: "gxp_print",
                 customParams: {outputFilename: 'mapstore-print'},
-                printService: config.printService,
+                printService: "http://192.168.1.43:8080/acque/geoserver/pdf/",
                 legendPanelId: 'legendPanel',
                 actionTarget: {target: "paneltbar", index: 4}
             }*/
         ];
-        
+		//test: to get a json string of tools to customize
+		//document.write(Ext.util.JSON.encode(config.tools));
+        }
         if (config.showGraticule == true){
             config.tools.push({
                 ptype: "gxp_graticule",
@@ -597,7 +614,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				iconCls: "icon-load"
 			}));
 		}
-
+        /*
         tools.push(new Ext.Button({
             tooltip: this.exportMapText,
             //disabled: true,
@@ -610,7 +627,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         }));
 		
         tools.push('-');
-
+        */
         return tools;
 
     },

@@ -50,7 +50,7 @@
         var app;        
         var modified = false; var mapIdentifier; var authorization; var fullScreen;
         // ///////////////////////////////////////////////////////////////
-        // Custom variables from the urlConfig user configuration file 
+        // Custom variables from the mapStoreConfig user configuration file 
         // ///////////////////////////////////////////////////////////////
         var proxy; 
         var geoStoreBaseURL;        
@@ -84,7 +84,7 @@
 									else 
 										fullScreen = false; 
 									break;
-					case "customConfigName":	
+					case "config":	
 									customConfigName = param[1];
 									break;
 					default :       
@@ -202,7 +202,9 @@
 								
 								if(url.mapId)
 									u += '&mapId=' + url.mapId;
-								
+								if(url.config){
+									u += '&config=' + url.config;
+								}
 								location.replace(u);                                
                             }else{																
                                 if(languageSelector.prevLang && languageSelector.prevLang == 'fr'){
@@ -331,6 +333,7 @@
             app = new GeoExplorer.Composer({
                 modified: false,
                 proxy: proxy,
+				tools:serverConfig.tools,
                 //xmlJsonTranslateService: "http://demo1.geo-solutions.it/xmlJsonTranslate/",
                 defaultSourceType: "gxp_wmssource",
                 renderToTab : 'appTabs',
