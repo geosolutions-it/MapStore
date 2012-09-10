@@ -74,7 +74,7 @@ gxp.form.ContextSwitcher = Ext.extend(Ext.form.ComboBox, {
     /** private: method[initComponent]
      *  Override
      */
-    initComponent: function(arguments) {
+    initComponent: function() {
 		
         this.store = new Ext.data.ArrayStore({
 			combo:this,
@@ -84,7 +84,7 @@ gxp.form.ContextSwitcher = Ext.extend(Ext.form.ComboBox, {
 			idIndex: 0
 			
         });
-	
+		
 		 this.setValue(this.store.getById(this.currentContext).get(this.displayField));
          return gxp.form.ContextSwitcher.superclass.initComponent.apply(this, arguments);
 		 
