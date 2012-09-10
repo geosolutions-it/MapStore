@@ -547,8 +547,8 @@
  * Access Google service to shorten urls
  *
  */	
-var Shortener = Google.Shortener = function(options){
-	this.appid_ = options.appid;
+var Shortener = Google.Shortener = function(options) {
+	this.config = options.config;
 	this.onFailure_ = Ext.emptyFn;
 };
 
@@ -565,52 +565,12 @@ var Shortener = Google.Shortener = function(options){
  *   https://developers.google.com/url-shortener/v1/getting_started
  *
  */
-Shortener.prototype.shorten = function( url, callback ){
+Shortener.prototype.shorten = function( url, callback ) {
 
-	var config = {proxyUrl: 'http://z4k.homepc.it:8080/http_proxy/proxy/'};
-
-	var gapi_proxyUrl = 'http://z4k.homepc.it:8080/http_proxy/proxy/' + '?url=' + escape('https://www.googleapis.com/urlshortener/v1/url?key='+this.appid_);
-	//var gapi_proxyUrl = 'http://z4k.homepc.it:8080/http_proxy/proxy/' + '?url=' + escape('http://easyblog.it:8888/urlshortener/v1/url?key='+this.appid_);
-
-//	function gapiAuth() {
-//        var config = {
-//          'client_id': '385384104319.apps.googleusercontent.com',
-//          'scope': 'https://www.googleapis.com/auth/urlshortener'
-//        };
-//        gapi.auth.authorize(config, function() {
-//          console.log('gapi login, token:');
-//          console.log(gapi.auth.getToken());
-//        });
-//    }
-//http://code.google.com/p/google-api-javascript-client/wiki/Samples
-//alternative auth mode
-
-//	var apiKey = this.appid_;
-//	gapi.client.setApiKey(apiKey);
-//	var longurl = url;
-//	console.log('make short ' + longurl);
-//	
-//	gapi.client.load('urlshortener', 'v1', function() {
-//	    var request = gapi.client.urlshortener.url.insert({
-//	        'resource': {
-//	            'longUrl': longurl
-//	        }
-//	    });
-//	    var resp = request.execute(function(resp) {
-//	   		console.log(arguments);
-//	    
-//	        if (resp.error) {
-//				this.onFailure_( resp.error.message );
-//	        } else {
-//				callback( resp );
-//	        }
-//	    });
-//	});//*/
-
-	// Works in Chrome and Firefox, but not in IE!
-	// Because of Same Origin Policy
+	var apikey = this.config.googleApi,
+		gapi_proxyUrl = this.config.proxyUrl + '?url=' + escape('https://www.googleapis.com/urlshortener/v1/url?key='+apikey);
 	
-	var jsonparams = Ext.util.JSON.encode({ longUrl: url });
+	var jsonparams = Ext.util.JSON.encode({ longUrl: url });	//always use  Ext.util.JSON.encode() for send json!
 
 	var Request = Ext.Ajax.request({
        url: gapi_proxyUrl,
@@ -618,11 +578,10 @@ Shortener.prototype.shorten = function( url, callback ){
        headers: {
           'Content-Type' : 'application/json'
        },
-       params: jsonparams,//'{"longUrl": "'+ escape(url) +'"}',
+       params: jsonparams,
        scope: this,
        success: function(response, opts) {
-       		console.log('Ext.Ajax.request');
-       		console.log(opts);
+	       
 			var json = Ext.util.JSON.decode( response.responseText );
 			callback(json);
        },

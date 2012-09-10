@@ -31,6 +31,7 @@
  */
 
 Ext.onReady(function(){
+
     
     Ext.QuickTips.init();
     
@@ -83,7 +84,6 @@ Ext.onReady(function(){
 			   if(code == record.get('code')){
 					return false;
 			   }
-				   
 			},                    
 			select: function(cb, record, index) {         
 			   var code = record.get('code');
@@ -102,7 +102,7 @@ Ext.onReady(function(){
 			}
 		}
 	});
-    
+
     var msmPanel = new MSMPanel ({
         xtype: 'panel',
         id: 'mapManagerPanel',

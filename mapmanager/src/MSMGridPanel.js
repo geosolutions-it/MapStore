@@ -399,6 +399,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 		if(config.geoBaseUrl){
 			var geoBaseUrl = config.geoBaseUrl;
 		}//*/
+
 		
 		// init useful urls
 		this.murl = config.baseUrl + '/mapcomposer/';
@@ -780,27 +781,22 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 iframe.show();
             },
 
-            tpl : new Ext.XTemplate( // expander-button-table
+            tpl: new Ext.XTemplate( // expander-button-table
                 grid.createTemplate(grid.murl, grid.lang), 
 				{
 				
 					getSocialLinksId: function(mapid) {
 					
-						var divid = mapid + '_social_div';
-						
-						// send request to Google
-						//var longUrl = grid.murl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+mapid;
-						var longUrl = config.baseUrl + '/mapcomposer/' + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+mapid;
-						console.log('longUrl');
-						console.log(longUrl);
-						
+						var divid = mapid + '_social_div',
+							longUrl = grid.murl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+mapid;
+					
 						var shortener = new Google.Shortener({
-							appid: config.googleApi
-						}).failure(function(response){
-							console.error(response);
-						});
+								config: grid.config
+							}).failure(function(response) {
+								console.error(response);
+							});
 						
-						shortener.shorten(longUrl, function(response) {
+						shortener.shorten(longUrl, function(response) {	// send request to Google
 
 									// inject social links within the div element
 									var socialDiv = document.getElementById(divid);
@@ -845,9 +841,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				                                fjs.parentNode.insertBefore(js, fjs);
 				                            }
 				                            fun(document, 'script', 'facebook-jssdk');
-				                        
 				                    }
-				
 				
 									// '<a href="http://opensdi.geo-solutions.it/" class="twitter-share-button" 
 									// data-url=\'{[this.getShortLink(values.id, false)]}\' data-text="MapComposer" 
@@ -874,12 +868,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 					                        //$.getScript('http://platform.twitter.com/widgets.js');
 					                        Ext.Loader.load('http://platform.twitter.com/widgets.js');
 					                    }
-									
-									
 							});
-						
-						
-						
+							
 						return divid;
 					},
 					/**
@@ -896,21 +886,20 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 						if ( grid.shortUrls[id] === undefined && sendRequest ) {
 							// shorten urls for Twitter
 
-							var longUrl = config.baseUrl + '/mapcomposer/' + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+id;
+							var longUrl = grid.murl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+id;
 							var shortener = new Google.Shortener({
-								appid: config.googleApi
-							}).failure(function(response){
-								console.error(response);
-								/*Ext.Msg.show({
-						           title: grid.metadataFailSuccessTitle,
-						           msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
-						           buttons: Ext.Msg.OK,
-						           icon: Ext.MessageBox.ERROR
-						        });*/
-							});
-							shortener.shorten(
-									longUrl,
-									function(response){
+									config: grid.config
+								}).failure(function(response){
+									console.error(response);
+									/*Ext.Msg.show({
+								       title: grid.metadataFailSuccessTitle,
+								       msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+								       buttons: Ext.Msg.OK,
+								       icon: Ext.MessageBox.ERROR
+								    });*/
+								});
+
+							shortener.shorten(longUrl, function(response) {
 										grid.shortUrls[id] = response.id;
 										console.log('created short url ' + grid.shortUrls[id] + ' for map ' + id);
 								});
@@ -1025,8 +1014,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     * 
                     */
                     MapComposerVM : function(id, values, userProfile) {
-						console.log('MapComposerVM');
-						console.log(grid.murl);
+//						console.log('MapComposerVM');
+//						console.log(grid.murl);
                         Ext.get(id).on('click', function(e){
                             var idMap = values.id;
                             var desc = values.name;

@@ -53,9 +53,8 @@ var config = {
 	baseUrl: 'http://z4k.homepc.it:8080',
 	proxyUrl: 'http://z4k.homepc.it:8080/http_proxy/proxy/',
 	
-	//googleApi: 'AIzaSyD5CsWsgMIzILGVerPpTXFqu2uZYmfSbhk',
-	googleApi: 'AIzaSyBJsSL7eRdnw2H0yzCSrsgz0fjqXWElAAs',
-	//stefano.cudini@gmail.com account apikey
+	googleApi: 'AIzaSyB_2mlZxzZkXSxEApwmxn63SrdukRCkMTw',	//stefano.cudini@gmail.com account apikey
+	//update key here: https://code.google.com/apis/console/#project:385384104319:access
     
     start: 0,
     
