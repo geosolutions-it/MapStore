@@ -345,8 +345,8 @@ GeoExt.Lang.add("en", {
 		loadingText: "Searching"
 	},
 	"gxp.form.ContextSwitcher.prototype":{
-		switchActionTip : "Switch Context",
-		switchConfirmationText : "You are sure to change context? All unsaved data will be lost"
+		switchActionTip : "Switch Mappa",
+		switchConfirmationText : "You are sure to change map?"
 
 	}
 });
