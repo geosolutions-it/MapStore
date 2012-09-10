@@ -214,9 +214,10 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                             printMapPanel: {
                                 map: Ext.applyIf({
                                     controls: [
-                                        new OpenLayers.Control.Navigation(),
-                                        new OpenLayers.Control.PanPanel(),
-                                        new OpenLayers.Control.ZoomPanel(),
+										//UNCOMMENT TO ADD CONTROLS TO PRINT PREVIEW
+                                        //new OpenLayers.Control.Navigation(),
+                                        //new OpenLayers.Control.PanPanel(),
+                                        //new OpenLayers.Control.ZoomPanel(),
                                         new OpenLayers.Control.Attribution()
                                     ],
                                     eventListeners: {
@@ -224,13 +225,14 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                                             return isSupported(evt.layer);
                                         }
                                     }
-                                }, mapPanel.initialConfig.map),
-                                items: [{
+                                }, mapPanel.initialConfig.map)
+								//UNCOMMENT TO ADD ZOOM SLIDER TO PRINT PREVIEW
+                                /*items: [{
                                     xtype: "gx_zoomslider",
                                     vertical: true,
                                     height: 100,
                                     aggressive: true
-                                }]
+                                }]*/
                             },
                             printProvider: printProvider,
                             legend : Ext.getCmp(this.legendPanelId),
