@@ -58,7 +58,7 @@ gxp.form.ContextSwitcher = Ext.extend(Ext.form.ComboBox, {
 	/** api: config[width]
      *  ``int`` width of the text box. default is 200
      */
-	width: 110,
+	width: 130,
 	paramName:'config',
 	/**
 	 * eg. [["id","Default Viewer", "viewer","","descript"],
@@ -133,15 +133,18 @@ gxp.form.ContextSwitcher = Ext.extend(Ext.form.ComboBox, {
 						var rurl = record.get('base');
 						//if url present set it
 						var u =(rurl&& rurl!="") ?rurl:location.pathname;
-						if(cb.paramName && cb.paramName!=""){
+						var separator='';
+						if(cb.paramName && cb.paramName!="" && c!=""){
 							u+= '?'+cb.paramName+'=' + c;
+							separator ='&';
 						}else{
 							u+='?';
 						}
 						//TODO make it use more than one parameter
 						for(x in query) {
 							if(x!=cb.paramName){
-								u += '&'+x+'=' + query[x];
+								u += separator +x+'=' + query[x];
+								separator='&';
 							}
 						}
 
