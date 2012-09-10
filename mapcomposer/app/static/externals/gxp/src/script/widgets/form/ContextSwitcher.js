@@ -84,9 +84,11 @@ gxp.form.ContextSwitcher = Ext.extend(Ext.form.ComboBox, {
 			idIndex: 0
 			
         });
-		
-		 this.setValue(this.store.getById(this.currentContext).get(this.displayField));
-         return gxp.form.ContextSwitcher.superclass.initComponent.apply(this, arguments);
+		var record = this.store.getById(this.currentContext);
+		if(record){
+			this.setValue(record.get(this.displayField));
+			return gxp.form.ContextSwitcher.superclass.initComponent.apply(this, arguments);
+		}
 		 
 	},
 	listeners:{
