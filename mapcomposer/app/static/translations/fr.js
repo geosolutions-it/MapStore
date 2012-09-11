@@ -161,7 +161,7 @@ GeoExt.Lang.add("fr", {
         previewText: "Aperçu avant impression",
         notAllNotPrintableText: "Toutes les couvertures ne sont pas imprimables",
         nonePrintableText: "Aucune couverture n`est imprimable",
-        notPrintableLayersText: "Les couvertures suivantes ne sont pas imprimables:"
+        notPrintableLayersText: "Veuillez enlever ces couches et tous les marqueurs avant impression. Les couvertures suivantes ne sont pas imprimables:"
     },  
 
     "gxp.plugins.MapQuestSource.prototype": {

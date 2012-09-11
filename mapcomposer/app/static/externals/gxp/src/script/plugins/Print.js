@@ -59,7 +59,7 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
      *  ``String``
      *  Text for message when not all layers can be printed (i18n).
      */
-    notAllNotPrintableText: "Not All Layers Can Be Printed",
+    notAllNotPrintableText: "Not All Layers Can Be Printed. Please remove these layers and all the markers before print.",
 
     /** api: config[nonePrintableText]
      *  ``String``

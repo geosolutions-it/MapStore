@@ -160,7 +160,7 @@ GeoExt.Lang.add("en", {
         previewText: "Print Preview",
         notAllNotPrintableText: "Not All Layers Can Be Printed",
         nonePrintableText: "None of your current map layers can be printed",
-        notPrintableLayersText: "Following layers can not be printed:"
+        notPrintableLayersText: "Please remove these layers and all the markers before print. Following layers can not be printed:"
     },
 
     "gxp.plugins.MapQuestSource.prototype": {

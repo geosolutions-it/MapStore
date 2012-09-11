@@ -202,7 +202,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
 				});
                 this.printProvider.on({
                     "beforeprint": function(printProvider){
-						//this.busyMask.show();
+						this.busyMask.show();
 						
 					},
                     "print": this.busyMask.hide,

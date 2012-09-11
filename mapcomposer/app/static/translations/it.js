@@ -153,7 +153,7 @@ GeoExt.Lang.add("it", {
         previewText: "Anteprima di stampa",
         notAllNotPrintableText: "Non tutti i livelli possono essere stampati",
         nonePrintableText: "Nessuno dei tuoi attuali livelli della mappa può essere stampato",
-		notPrintableLayersText: "Di seguito i layers non stampabili:"
+		notPrintableLayersText: "Rimuovere questi livelli e tutti i marker prima di stampare. Di seguito i layers non stampabili:"
     },
 
     "gxp.plugins.MapQuestSource.prototype": {
