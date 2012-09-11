@@ -19,7 +19,7 @@ Content-Length: 81
 {"longUrl": "undefined?locale=en&amp;auth=false&amp;fullScreen=true&amp;mapId=7"}
 
 
-//////////////////////////////////right request work!
+////////////////////////////////// RIGHT REQUEST WORK!
 
 POST /urlshortener/v1/url?key=AIzaSyD_QBAhn3reMw99VdlUhFDgNhHMxFid_C0 HTTP/1.1
 connection: keep-alive
@@ -35,5 +35,28 @@ cookie: GS_FLOW_CONTROL="GS_CFLOW_58b5aed1:138944b2729:-72ca"; rg_cookie_session
 Host: easyblog.it:8888
 Content-Length: 110
 
-{"longUrl": "http://z4k.homepc.it:8080/mapcomposer/?locale=en&amp;auth=false&amp;fullScreen=true&amp;mapId=7"}^C
+{"longUrl": "http://z4k.homepc.it:8080/mapcomposer/?locale=en&amp;auth=false&amp;fullScreen=true&amp;mapId=7"}
+
+
+//////////////////////////////// HTTP_PROXY BUUUUUG!!
+//WHEN user is logged:
+// send header "authorization: Basic YWRtaW46YWRtaW4=" also to www.googleapis.com that not support http auth!!
+// then google shortener return error code, though shortener request is right
+
+POST /urlshortener/v1/url?key=AIzaSyBA_dCZOgeCflJCuq9PgdrvsE_IZ7oauHw HTTP/1.1
+connection: keep-alive
+origin: http://z4k.homepc.it:8080
+authorization: Basic YWRtaW46YWRtaW4= <<<<<<<<<<<<<<<<<<<<<<<<<<<< PROBLEM!!
+x-requested-with: XMLHttpRequest
+user-agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/536.4 (KHTML, like Gecko) Chrome/19.0.1075.0 Safari/536.4
+content-type: application/json
+accept: application/json
+referer: http://z4k.homepc.it:8080/mapstore/
+accept-language: it-IT,it;q=0.8,en-US;q=0.6,en;q=0.4
+accept-charset: ISO-8859-1,utf-8;q=0.7,*;q=0.3
+cookie: GS_FLOW_CONTROL="GS_CFLOW_58b5aed1:138944b2729:-7227"; rg_cookie_session_id=1970679026; __utma=159711350.1300124798.1347010261.1347279096.1347283071.7; __utmb=159711350.10.10.1347283071; __utmc=159711350; __utmz=159711350.1347010261.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)
+Host: localhost:8888
+Content-Length: 109
+
+{"longUrl":"http://z4k.homepc.it:8080/mapcomposer/?locale=en&amp;auth=false&amp;fullScreen=true&amp;mapId=7"}
 

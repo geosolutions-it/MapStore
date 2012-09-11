@@ -77,29 +77,48 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
             },
             "-"
         );
+        
+		var layerGroups = {};//for grouping layers menu
+		
         this.layers.each(function(record) {
-            var layer = record.getLayer();
+
+		    var group = record.get("group")==undefined ? 'Default' : record.get("group"),
+		    	layer = record.getLayer();
+            
             if(layer.displayInLayerSwitcher) {
+
                 var item = new Ext.menu.CheckItem({
                     text: record.get("title"),
                     checked: record.getLayer().getVisibility(),
-                    group: record.get("group") != 'background' ? undefined : 'background',
+					group: record.get("group") != 'background' ? undefined : 'background',
                     listeners: {
                         checkchange: function(item, checked) {
                             record.getLayer().setVisibility(checked);
                         }
                     }
                 });
-                if (this.items.getCount() > 2) {
-                    this.insert(2, item);
-                } else {
-                    this.add(item);
-                }
+//                if (this.items.getCount() > 2) {
+//                    this.insert(2, item);
+//                } else {
+//                    this.add(item);
+//                }
+
+				if(!layerGroups[group])
+					layerGroups[group]= [];
+
+				layerGroups[group].push( item );
             }
-        }, this);
-        
+        }, this);//end each
+
+        for(var g in layerGroups)	//fill menu
+        {
+        	this.add( new Ext.menu.TextItem(g) );
+			this.add( layerGroups[g] );
+			this.addSeparator();//or menu.TextItem
+        }
     }
     
 });
 
 Ext.reg('gxp_layermenu', gxp.menu.LayerMenu);
+

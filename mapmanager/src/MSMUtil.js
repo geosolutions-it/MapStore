@@ -567,8 +567,12 @@ var Shortener = Google.Shortener = function(options) {
  */
 Shortener.prototype.shorten = function( url, callback ) {
 
+//console.log('shorten config');
+//console.log(this.config);
+
 	var apikey = this.config.googleApi,
 		gapi_proxyUrl = this.config.proxyUrl + '?url=' + escape('https://www.googleapis.com/urlshortener/v1/url?key='+apikey);
+		//gapi_proxyUrl = this.config.proxyUrl + '?url=' + escape('http://localhost:8888/urlshortener/v1/url?key='+apikey);
 	
 	var jsonparams = Ext.util.JSON.encode({ longUrl: url });	//always use  Ext.util.JSON.encode() for send json!
 
