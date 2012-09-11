@@ -497,8 +497,8 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
      */
     beforeDestroy: function() {
         if (this.busyMask) {
-            this.printProvider.un("beforeprint", this.busyMask.show, this.busyMask);
-            this.printProvider.un("print", this.busyMask.hide, this.busyMask);
+            this.printProvider.mun("beforeprint", this.busyMask.show, this.busyMask);
+            this.printProvider.mun("print", this.busyMask.hide, this.busyMask);
         }
         this.printMapPanel.un("resize", this.updateSize, this);
         GeoExt.ux.PrintPreview.superclass.beforeDestroy.apply(this, arguments);
