@@ -88,6 +88,7 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
             if(layer.displayInLayerSwitcher) {
 
                 var item = new Ext.menu.CheckItem({
+                	hideOnClick: false,
                     text: record.get("title"),
                     checked: record.getLayer().getVisibility(),
 					group: record.get("group") != 'background' ? undefined : 'background',
