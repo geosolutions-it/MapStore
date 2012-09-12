@@ -432,7 +432,7 @@
 		  "customParams":{
 			 "outputFilename":"mapstore-print"
 		  },
-		  "printService":"http://192.168.1.43:8080/acque/geoserver/pdf/",
+		  "printService":"http://office.geo-solutions.it/acque/geoserver/pdf/",
 		  "legendPanelId":"legendPanel",
 		  "actionTarget":{
 			 "target":"paneltbar",
