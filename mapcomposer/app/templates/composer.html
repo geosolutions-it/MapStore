@@ -2,6 +2,7 @@
 <% subskin extrahead %>
     <!-- OpenLayers resources -->
     <link rel="stylesheet" type="text/css" href="externals/openlayers/theme/default/style.css">
+
     <script type="text/javascript" src="script/OpenLayers.js"></script>
 
 	<!-- colorpicker resources 
@@ -18,7 +19,7 @@
     <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
     <script type="text/javascript" src="script/gxp.js"></script> 
 
-    <!-- script type="text/javascript" src="script/proj4js.js"></script -->
+    <script type="text/javascript" src="script/proj4js.js"></script>
 
     <!-- GeoExplorer resources -->
     <link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
@@ -28,9 +29,9 @@
     <script type="text/javascript" src="script/GeoExplorer.js"></script>
     <script type="text/javascript" src="script/ux.js"></script>
     
-    <!-- PrintPreview resources 
+    <!-- PrintPreview resources -->
     <link rel="stylesheet" type="text/css" href="externals/PrintPreview/resources/css/printpreview.css">
-    <script type="text/javascript" src="script/PrintPreview.js"></script> -->
+    <script type="text/javascript" src="script/PrintPreview.js"></script> 
     
     <!-- csw resources -->
     <link rel="stylesheet" type="text/css" href="externals/csw/css/csw.css">
@@ -44,6 +45,23 @@
     <script type="text/javascript" src="translations/en.js"></script>
     <script type="text/javascript" src="translations/fr.js"></script>
     <script type="text/javascript" src="translations/it.js"></script>
+    <script type="text/javascript">
+    <!--
+        Ext.onReady(function() {
+          setTimeout(function(){
+            Ext.get('loading').remove();
+            Ext.get('loading-mask').fadeOut({remove:true});
+          }, 2000);
+        });
+    //-->
+    </script>
+    
+    <div id="loading-mask"></div>
+    <div id="loading">
+      <div class="loading-indicator">
+      </div>
+    </div>
+
     
     <script>
         
@@ -218,14 +236,14 @@
                         };
                         
                         var switchLangActionTip = "Switch Language";
-                        var switchLangConfirmationText = "You are sure to change language? All unsaved data will be lost";
+                        var switchLangConfirmationText = "You are sure to change language?";
                         
                         if(code === 'fr'){
                             switchLangActionTip = "Changement de langue";
-                            switchLangConfirmationText = "Vous êtes certain que vous souhaitez modifier la langue ? toutes les données non enregistrées seront a perdu";
+                            switchLangConfirmationText = "Vous êtes certain que vous souhaitez modifier la langue ?";
                         }else if(code === 'it'){
                             switchLangActionTip = "Cambiamento Lingua";
-                            switchLangConfirmationText = "Si è sicuri di voler cambiare lingua? I dati non salvati saranno persi";
+                            switchLangConfirmationText = "Si è sicuri di voler cambiare lingua?";
                         }
                         
                         Ext.Msg.show({
@@ -238,14 +256,18 @@
                     }
                 }
             });
-			
-            var appTabs = new Ext.TabPanel({
+			/* To disable tabs add layout:'fit' and change type to Ext.Panel.
+			 * You have also to comment title property in this.portal
+			 */
+            var appTabs = new Ext.Panel({
                 region: 'center',
+				layout:'fit',
+				header:false,
                 border : false,
                 id : 'appTabs',
                 enableTabScroll: true
             });         
-
+		
             var aboutButton = new Ext.Button({
                 text: GeoExplorer.prototype.appInfoText,
                 iconCls: "icon-geoexplorer",
@@ -276,7 +298,37 @@
                     window.open('http://geo-solutions.it/contact/', '_blank');
                 }
             });    
+			var bottombar =  [ poweredByGeoSol, ' ', aboutButton, '->',languageSelector ];
+
+			//context switcher
+			var contextSwitcher = new gxp.form.ContextSwitcher({
+				data:[["defaultConfiguration","Google/OST","","","public context"],["acque2","Regione Toscana","","acque2","a private context"]],
+				currentContext:customConfigName || "defaultConfiguration",
+				label:"Mappa"
 			
+			});
+			bottombar.push(contextSwitcher);
+			var headerContent = [
+					'<div id="headerbanner">',
+					'<div id="left-banner"><img src="theme/app/img/logo-mini.png"   height="86" border="0" /> </div>',
+					'<div id="right-banner"><img src="theme/app/img/banner-right.png"  style="float:right"  border="0" /></div>',
+					'</div>'
+				];
+			var header = {
+							border: false,
+							header: false,
+							html:  headerContent,
+							region: 'north',
+							collapsible: true,
+							collapseMode:  'mini',
+							hideCollapseTool: true,
+							split: true,
+							animCollapse : false,
+							minHeight: 86,
+							maxHeight: 86,
+							height: 86,
+							id : 'HeaderTopBanner'
+						}
             var appViewport = new Ext.Viewport({
                 id: 'appVieport',
                 layout:'fit',
@@ -286,10 +338,8 @@
                     layout : 'border',
                     border : false,
                     header : false,                    
-                    items : [appTabs],                            
-                    bbar : [
-                      poweredByGeoSol, ' ', aboutButton, '->',languageSelector
-                    ]
+                    items : [header,appTabs],                            
+                    bbar :bottombar
                 }]
             });
             
@@ -339,6 +389,7 @@
                 renderToTab : 'appTabs',
                 //printService:"http://localhost:8080/geoserver/pdf/",
                 //mapTitle: (code === 'en' ? 'View' : (code === 'fr' ? 'Veu' : 'Vista')),
+				mapTitle:'',
                 about: {
                     title: "Custom Map",
                     'abstract': "Custom Map",

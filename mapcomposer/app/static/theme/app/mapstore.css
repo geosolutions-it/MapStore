@@ -20,8 +20,50 @@ background: url(img/fdh/bgimg.gif) repeat-x;
 	width : 378px;
 	height : 86px;
 }
+/* START LOADING MASK */
 
+#loading-mask {
+  position: absolute;
+  background-color:white;
+  left:     0px;
+  top:      0px;
+  width:    100%;
+  height:   100%;
+  z-index:  20000;
 
+  
+  /*background-color: transparent;*/
+}
+
+#loading {
+  position: absolute;
+ 
+  left:     0px;
+  top:      0px;
+  width:    100%;
+  height:   100%;
+  padding:  2px;
+  z-index:  20001;
+  background: url(img/bgOnda.gif);
+  background-repeat: no-repeat;
+  background-position:center bottom;
+  margin:   0 0 0 0;
+}
+
+#loading .loading-indicator {
+  background: url(img/logo.gif) no-repeat;
+ 
+  background-repeat: no-repeat;
+  background-position:center center;
+  background-attachment:fixed;
+  overflow:visible;
+  
+  margin:0;
+  width:    100%;
+  height: 100%;
+  
+  text-align: center;
+}
 /*********************************
  Custom FDH logos
 *********************************/
