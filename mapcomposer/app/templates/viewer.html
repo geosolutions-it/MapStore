@@ -39,7 +39,24 @@
         <script type="text/javascript" src="translations/en.js"></script>
         <script type="text/javascript" src="translations/fr.js"></script>
         <script type="text/javascript" src="translations/it.js"></script>
-        
+		<!-- uncomment to have  welcome screen
+        <script type="text/javascript">
+		
+			Ext.onReady(function() {
+			  setTimeout(function(){
+				Ext.get('loading').remove();
+				Ext.get('loading-mask').fadeOut({remove:true});
+			  }, 2000);
+			});
+		
+		</script>
+		
+		<div id="loading-mask"></div>
+		<div id="loading">
+		  <div class="loading-indicator">
+		  </div>
+		</div>
+		-->
         <script>
             
             var app;
