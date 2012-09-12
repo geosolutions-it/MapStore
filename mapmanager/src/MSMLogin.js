@@ -271,7 +271,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 this.showLogout(user.User.name);
 				// save auth info
 				this.token = auth;
-				if (user.User){
+				if (user.User) {
 					this.username = user.User.name;
 					this.role = user.User.role;
 				}

@@ -567,32 +567,28 @@ var Shortener = Google.Shortener = function(options) {
  */
 Shortener.prototype.shorten = function( url, callback ) {
 
-//console.log('shorten config');
-//console.log(this.config);
-
 	var apikey = this.config.googleApi,
 		gapi_proxyUrl = this.config.proxyUrl + '?url=' + escape('https://www.googleapis.com/urlshortener/v1/url?key='+apikey);
-		//gapi_proxyUrl = this.config.proxyUrl + '?url=' + escape('http://localhost:8888/urlshortener/v1/url?key='+apikey);
-	
-	var jsonparams = Ext.util.JSON.encode({ longUrl: url });	//always use  Ext.util.JSON.encode() for send json!
 
-	var Request = Ext.Ajax.request({
-       url: gapi_proxyUrl,
-       method: 'POST',
-       headers: {
-          'Content-Type' : 'application/json'
-       },
-       params: jsonparams,
-       scope: this,
-       success: function(response, opts) {
-	       
+	var jsonparams = Ext.util.JSON.encode({ longUrl: url });
+
+	var myAjax = new Ext.data.Connection();
+	myAjax.request({
+		url: gapi_proxyUrl,
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		params: jsonparams,
+		scope: this,
+		success: function(response, opts) {
 			var json = Ext.util.JSON.decode( response.responseText );
 			callback(json);
-       },
-       failure:  function(response, opts) {
-       		this.onFailure_(response.statusText);
-       }
-    });
+		},
+		failure:  function(response, opts) {
+			this.onFailure_(response.statusText);
+		}
+	});
 };
 
 /** 

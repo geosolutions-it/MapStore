@@ -49,11 +49,11 @@
  * 
  */
 var config = {
-	
-	baseUrl: 'http://z4k.homepc.it:8080',
-	proxyUrl: 'http://z4k.homepc.it:8080/http_proxy/proxy/',
-	
-	googleApi: 'AIzaSyBA_dCZOgeCflJCuq9PgdrvsE_IZ7oauHw',	//stefano.cudini@gmail.com account apikey
+
+	baseUrl: 'http://localhost:8080',
+	proxyUrl: 'http://localhost:8080/http_proxy/proxy/',
+
+	googleApi: 'AIzaSyBglbky3Anh9zSecCMt909iqaLBU2f9Gy0',
 	//update key here: https://code.google.com/apis/console/#project:385384104319:access
     
     start: 0,

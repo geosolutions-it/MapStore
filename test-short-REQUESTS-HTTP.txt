@@ -60,3 +60,21 @@ Content-Length: 109
 
 {"longUrl":"http://z4k.homepc.it:8080/mapcomposer/?locale=en&amp;auth=false&amp;fullScreen=true&amp;mapId=7"}
 
+
+/////////////////////////////////// from windows browser
+
+POST /urlshortener/v1/url?key=AIzaSyBA_dCZOgeCflJCuq9PgdrvsE_IZ7oauHw HTTP/1.1
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:15.0) Gecko/20100101 Firefox/15.0.1
+accept: application/json
+accept-language: it-it,it;q=0.8,en-us;q=0.5,en;q=0.3
+connection: keep-alive
+content-type: application/json; charset=UTF-8
+x-requested-with: XMLHttpRequest
+referer: http://localhost:8080/mapstore/
+cookie: GS_FLOW_CONTROL="GS_CFLOW_58b5aed1:138944b2729:-7148"; __utma=111872281.362374401.1347439564.1347439564.1347460191.2; __utmc=111872281; __utmz=111872281.1347439564.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __utmb=111872281.4.10.1347460191
+pragma: no-cache
+cache-control: no-cache
+Host: easyblog.it:9090
+Content-Length: 105
+
+{"longUrl":"http://localhost:8080/mapcomposer/?locale=en&amp;auth=false&amp;fullScreen=true&amp;mapId=7"}

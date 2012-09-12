@@ -1173,7 +1173,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 method : 'GET',
                 disableCaching: true,
                 timeout: (config.msmTimeout)?(config.msmTimeout):(this.msmTimeout),
-                success: function (result){
+                success: function (result) {
 					// hack to generate short urls
 					// it is not a good solution!
 					/*var maps = Ext.util.JSON.decode(result.responseText).results;
