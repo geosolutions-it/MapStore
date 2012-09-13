@@ -60,7 +60,7 @@ gxp.form.ContextSwitcher = Ext.extend(Ext.form.ComboBox, {
      */
 	width: 130,
 	paramName:'config',
-	/**
+	/** api: config[data]
 	 * eg. [["id","Default Viewer", "viewer","","descript"],
 	 * ["id","Custom Viewer", "viewer","config","descript"] ,
 	 * ["id","Custom Composer", "","config","descript"] ]
