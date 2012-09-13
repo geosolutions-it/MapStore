@@ -78,7 +78,8 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
             "-"
         );
         
-		var layerGroups = {};//for grouping layers menu
+		var layerGroupsNode = {},
+			layerGroups = {};	//for grouping layers menu
 		
         this.layers.each(function(record) {
 
@@ -92,28 +93,53 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
                     text: record.get("title"),
                     checked: record.getLayer().getVisibility(),
 					group: record.get("group") != 'background' ? undefined : 'background',
+					layer: layer,
+					style: record.get("group") != 'background' ? {marginLeft:'22px', border:'none'} : {border:'none'},
                     listeners: {
                         checkchange: function(item, checked) {
-                            record.getLayer().setVisibility(checked);
+	                        //console.log(group);
+                            item.layer.setVisibility(checked);
+                            //layerGroupsNode[]//TODO setChecked() on group parent checkbox
                         }
                     }
                 });
-//                if (this.items.getCount() > 2) {
-//                    this.insert(2, item);
-//                } else {
-//                    this.add(item);
-//                }
-
+                
 				if(!layerGroups[group])
 					layerGroups[group]= [];
 
 				layerGroups[group].push( item );
             }
-        }, this);//end each
+        }, this);	//end each
 
         for(var g in layerGroups)	//fill menu
         {
-        	this.add( new Ext.menu.TextItem(g) );
+			if(g != 'background')
+			{
+				var gmenu = new Ext.menu.CheckItem({
+					hideOnClick: false,
+					text: g,
+					checked: true,
+					//group: g,
+					layers: layerGroups[g],
+					listeners: {
+						checkchange: function(item, checked) {
+							var glayers = item.layers;
+	                        console.log(item.text);
+							for(var l in glayers)
+							{
+								try{
+									glayers[l].layer.setVisibility(checked);
+									glayers[l].setChecked(checked);
+								}catch(e){
+									console.log(glayers[l]);
+								} 
+							}
+						}
+					}
+				});
+				layerGroupsNode[g]= gmenu;
+				this.add( gmenu );
+			}
 			this.add( layerGroups[g] );
 			this.addSeparator();//or menu.TextItem
         }
