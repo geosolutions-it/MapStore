@@ -67,7 +67,8 @@
 				"title": "Quadro unione",
 				"name": "idquctr10k",
 				"group": "Aree",
-                "tiled": false
+                "tiled": false,
+				"visibility": false
 			},{
 				"source": "gsrt",
 				"title": "Confini Comunali",
