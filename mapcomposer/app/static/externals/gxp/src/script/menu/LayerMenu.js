@@ -78,7 +78,7 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
             "-"
         );
         
-		var layerGroupsNode = {},
+		var layerGroupsNode = {},	//layers menu group title
 			layerGroups = {};	//for grouping layers menu
 		
         this.layers.each(function(record) {
@@ -93,13 +93,21 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
                     text: record.get("title"),
                     checked: record.getLayer().getVisibility(),
 					group: record.get("group") != 'background' ? undefined : 'background',
+					groupname: record.get("group"),
 					layer: layer,
 					style: record.get("group") != 'background' ? {marginLeft:'22px', border:'none'} : {border:'none'},
                     listeners: {
                         checkchange: function(item, checked) {
-	                        //console.log(group);
                             item.layer.setVisibility(checked);
-                            //layerGroupsNode[]//TODO setChecked() on group parent checkbox
+							var gcheck=false;
+                            for(var g in layerGroups[item.groupname])//check all items status
+                            {
+                            	if(layerGroups[item.groupname][g].checked) {
+                            		gcheck = true;
+                            		break;
+                            	}
+                            }
+                            layerGroupsNode[item.groupname].setChecked(gcheck);
                         }
                     }
                 });
@@ -124,7 +132,7 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
 					listeners: {
 						checkchange: function(item, checked) {
 							var glayers = item.layers;
-	                        console.log(item.text);
+	                        //console.log(item.text);
 							for(var l in glayers)
 							{
 								try{
