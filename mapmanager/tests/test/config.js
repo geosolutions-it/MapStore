@@ -40,20 +40,26 @@
  * limit
  * 
  */
-var config = {
+/*var config = {
     mcUrl: 'http://localhost:8080/MapComposer/',
-    
     geoSearchUrl: 'http://localhost:8080/geostore/rest/extjs/search/',
-
     geoDelUrl: 'http://localhost:8080/geostore/rest/resources/resource/',
+    start: 0,
+    limit: 100,
+    msmTimeout: 30000,
+    msmWait: 5
+};*/
+var config = {
+
+	baseUrl: 'http://localhost:8080',
+	proxyUrl: 'http://localhost:8080/http_proxy/proxy/',
+
+	googleApi: 'AIzaSyB7xuRXSoI8V5c8wD6dI8kS5ipCjLN3HQE',
+	//update key here: https://code.google.com/apis/console/#project:385384104319:access
     
     start: 0,
-    
-    limit: 100,
-    
-    msmTimeout: 30000,
-    
-    msmWait: 5
+    limit: 10,
+    msmTimeout: 30000
 };
 
 

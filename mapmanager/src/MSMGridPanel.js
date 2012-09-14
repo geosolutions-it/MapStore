@@ -381,26 +381,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     */
     initComponent : function() {
 
-		
+
         var searchString = '*';
 
-        /*if (config.mcUrl){
-            var murl = config.mcUrl;
-        }
-        
-        if (config.geoSearchUrl){
-            var purl = config.geoSearchUrl;
-        }
-        
-        if(config.geoDelUrl){
-            var geoBaseMapsUrl = config.geoDelUrl;
-        }
-
-		if(config.geoBaseUrl){
-			var geoBaseUrl = config.geoBaseUrl;
-		}//*/
-
-		
 		// init useful urls
 		this.murl = config.baseUrl + '/mapcomposer/';
 		this.geoBaseUsersUrl= config.baseUrl + '/geostore/rest/users';
@@ -412,8 +395,6 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
             grid: this
         });
 		
-
-
         //An object that contains the string to search the resource
         this.inputSearch = new Ext.form.TextField({
             id: 'id-inputSearch',
@@ -468,7 +449,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
             /**
              * Private: Collapse all rows of the grid
              * 
-             */            
+             */
             collapseAll : function() {
                 for (var i = 0; i < this.grid.store.getCount(); i++) {
                     this.collapseRow(i);
@@ -633,7 +614,6 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         grid.getBottomToolbar().doRefresh();
                         expander.collapseAll();
                   };
-			
 			
 			  	// get info about logged user if any
 			    var auth = grid.login.getToken();
@@ -825,7 +805,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									
 									var fbcell = document.createElement('td');
 									fbcell.appendChild( fb );
-									row.appendChild( fbcell );
+									
+									row.appendChild( fbcell );//Add fb button
 									
 									
 									if (typeof (FB) != 'undefined') {
@@ -859,15 +840,16 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									
 									var twcell = document.createElement('td');
 									twcell.appendChild( tw );
-									row.appendChild( twcell );
 									
-									 //Twitter
-					                    if (typeof (twttr) != 'undefined') {
-					                        twttr.widgets.load();
-					                    } else {
-					                        //$.getScript('http://platform.twitter.com/widgets.js');
-					                        Ext.Loader.load('http://platform.twitter.com/widgets.js');
-					                    }
+									row.appendChild( twcell );	//Add tw button
+									
+									//Twitter
+									if (typeof (twttr) != 'undefined') {
+										twttr.widgets.load();
+									} else {
+									//$.getScript('http://platform.twitter.com/widgets.js');
+										Ext.Loader.load('http://platform.twitter.com/widgets.js');
+									}
 							});
 							
 						return divid;
@@ -1014,8 +996,6 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     * 
                     */
                     MapComposerVM : function(id, values, userProfile) {
-//						console.log('MapComposerVM');
-//						console.log(grid.murl);
                         Ext.get(id).on('click', function(e){
                             var idMap = values.id;
                             var desc = values.name;

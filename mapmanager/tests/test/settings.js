@@ -111,6 +111,21 @@ function initStore(t) {
 }
 
 /*
+ * Test Shortener
+ */
+function initShortener(t) {
+    t.plan(1);
+    t.delay_call(config.msmWait, function () {
+        if(grid.store.storeId = 'id_geostore' && grid.store.getTotalCount()){
+            t.ok(true, "store initialized");
+        }else{
+            t.fail("store not initialized");
+        }
+    });
+}
+
+
+/*
  * Setups some test objects
  */
 function setupTest() {
