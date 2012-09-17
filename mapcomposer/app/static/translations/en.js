@@ -346,7 +346,13 @@ GeoExt.Lang.add("en", {
 	},
 	"gxp.form.ContextSwitcher.prototype":{
 		switchActionTip : "Switch Mappa",
-		switchConfirmationText : "You are sure to change map?"
+		switchSaveAlert: "All unsaved data will be lost.",
+		switchConfirmationText : "Are You sure to change map?"
+
+	},
+	"gxp.form.LanguageSwitcher.prototype":{
+		switchActionTip : "Switch Language",
+		switchConfirmationText : "Are you sure to change Language?"//Are you sure to change Language? All unsaved data will be lost
 
 	}
 });

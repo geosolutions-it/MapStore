@@ -350,7 +350,13 @@ GeoExt.Lang.add("fr", {
 	},
 	"gxp.form.ContextSwitcher.prototype":{
 		switchActionTip : "Changement de carte",
+		switchSaveAlert: " Toutes les données non enregistrées seront a perdu.",
 		switchConfirmationText : "Vous êtes certain que vous souhaitez le carte?"
+
+	},
+	"gxp.form.LanguageSwitcher.prototype":{
+		switchActionTip : "Changement de langue",
+		switchConfirmationText : "Vous êtes certain que vous souhaitez modifier la langue?"//Vous êtes certain que vous souhaitez modifier la langue? toutes les données non enregistrées seront a perdu?"
 
 	}
 });

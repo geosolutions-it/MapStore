@@ -36,9 +36,12 @@ gxp.form.ContextSwitcher = Ext.extend(Ext.form.ComboBox, {
 	forceSelection:true,
 	editable:false,
 	/** api: config[currentContext]
-	 * If a template is not defined, this is the field to show.
+	 * ``String`` The current Configuration (to set as selected).
      */
-	
+	 /** api: config[saveMessage]
+	 * ``boolean`` Add a save Message in the alert.
+     */
+	saveMessage:false,
     /** api: config[displayField]
 	 * If a template is not defined, this is the field to show.
      */
@@ -54,7 +57,8 @@ gxp.form.ContextSwitcher = Ext.extend(Ext.form.ComboBox, {
      */
 	emptyText: "Select Context",
 	switchActionTip : "Switch Context",
-	switchConfirmationText : "You are sure to change context? All unsaved data will be lost",
+	switchConfirmationText : "You are sure to change context?",
+	switchSaveAlert: "All unsaved data will be lost.",
 	/** api: config[width]
      *  ``int`` width of the text box. default is 200
      */
@@ -119,7 +123,7 @@ gxp.form.ContextSwitcher = Ext.extend(Ext.form.ComboBox, {
 			*/
 			Ext.Msg.show({
 				title: cb.switchActionTip,
-				msg: cb.switchConfirmationText,
+				msg: cb.switchConfirmationText +( cb.saveMessage ? " "+cb.switchSaveAlert : ""),
 				buttons: Ext.Msg.OKCANCEL,
 				fn: function(buttonId, text, opt){
 					var url = location.search;        

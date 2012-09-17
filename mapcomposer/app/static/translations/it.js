@@ -380,8 +380,14 @@ GeoExt.Lang.add("it", {
 		loadingText: "Sto cercando"
 	},
 	"gxp.form.ContextSwitcher.prototype":{
-		switchActionTip :"Cambiamento Mappa" ,
-		switchConfirmationText : "Si è sicuri di voler cambiare mappa?"
+		switchActionTip : "Cambiamento Mappa",
+		switchSaveAlert: " I dati non salvati saranno persi.",
+		switchConfirmationText : "Si è sicuri di voler cambiare?"
+
+	},
+	"gxp.form.LanguageSwitcher.prototype":{
+		switchActionTip :"Cambiamento Lingua" ,
+		switchConfirmationText : "Si è sicuri di voler cambiare lingua?"//Si è sicuri di voler cambiare lingua? I dati non salvati saranno persi
 
 	}
 	

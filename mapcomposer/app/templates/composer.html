@@ -160,101 +160,21 @@
             
             var url = Ext.urlDecode(query);        
             var code = url.locale || serverConfig.defaultLanguage || "en";			
-            var langData = [['en', 'English'],['fr','Français'],['it','Italiano']];
-            
-            // //////////////////////////////////////////////////        
-            // Setting the initial language for the selector
-            // //////////////////////////////////////////////////
-			var initialLanguageString;					
-			Ext.each(langData, function(rec){
-				if(rec[0] === code.toLowerCase()){
-					initialLanguageString = rec[1];
-					return;
-				}
-			});
-			
-			initialLanguageString = !initialLanguageString ? "English" : initialLanguageString;	
-			
+
 			// ////////////////////////////////////////////////////
 			// Setting the language code for the GeoExt tools
 			// ////////////////////////////////////////////////////
 			if (GeoExt.Lang) {
                 GeoExt.Lang.set(code);
             }
-            
-            var languageSelector = new Ext.form.ComboBox({
-                store: new Ext.data.ArrayStore({
-                    fields: ['code', 'name'],
-                    data :  langData
-                }),
-                displayField: 'name',
-                typeAhead: true,
-                mode: 'local',
-                forceSelection: true,
-                triggerAction: 'all',
-                emptyText: initialLanguageString,
-                selectOnFocus:false,
-                editable: false,
-                width: 100,
-                listeners: {
-                    beforeselect: function(cb, record, index){
-					   var c = record.get('code');
-                       if(c && c == code)
-                          return false; 
-					   else
-						  languageSelector.prevLang = code;
-                    },                    
-                    select: function(cb, record, index) {         
-                        
-                        var switchLang = function(buttonId, text, opt){
-                            if(buttonId === 'ok'){
-                                var c = record.get('code');
-								var u = location.pathname + '?locale=' + c;
-								
-								if(url.auth){
-									u += '&auth=' + url.auth;
-									if(url.auth == 'false')
-										u += '&fullScreen=true';
-								}
-								
-								if(url.mapId)
-									u += '&mapId=' + url.mapId;
-								if(url.config){
-									u += '&config=' + url.config;
-								}
-								location.replace(u);                                
-                            }else{																
-                                if(languageSelector.prevLang && languageSelector.prevLang == 'fr'){
-                                    cb.setValue('Français');
-                                }else if(languageSelector.prevLang && languageSelector.prevLang == 'it'){
-									cb.setValue('Italiano');
-								}else{
-                                    cb.setValue('English');
-                                }
-                            }
-                        };
-                        
-                        var switchLangActionTip = "Switch Language";
-                        var switchLangConfirmationText = "You are sure to change language? All unsaved data will be lost";
-                        
-                        if(code === 'fr'){
-                            switchLangActionTip = "Changement de langue";
-                            switchLangConfirmationText = "Vous êtes certain que vous souhaitez modifier la langue ? toutes les données non enregistrées seront a perdu";
-                        }else if(code === 'it'){
-                            switchLangActionTip = "Cambiamento Lingua";
-                            switchLangConfirmationText = "Si è sicuri di voler cambiare lingua? I dati non salvati saranno persi";
-                        }
-                        
-                        Ext.Msg.show({
-                           title: switchLangActionTip,
-                           msg: switchLangConfirmationText,
-                           buttons: Ext.Msg.OKCANCEL,
-                           fn: switchLang,
-                           icon: Ext.MessageBox.QUESTION
-                        });  
-                    }
-                }
-            });
+			// ////////////////////////////////////////////////////
+			// Setting the language selector
+			// ////////////////////////////////////////////////////
+
+			var languageSelector = new gxp.form.LanguageSwitcher({
+				currentContext:code,
+				saveMessage:authorization
+			});
 			
             var appTabs = new Ext.TabPanel({
                 region: 'center',

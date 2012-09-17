@@ -91,7 +91,7 @@
 											bbox = undefined;
 										} 
 										break;
-                        case "customConfigName":
+                        case "config":
 									customConfigName = param[1];
 									break;
 						default : 
@@ -150,63 +150,22 @@
 				var code = url.locale || serverConfig.defaultLanguage || "en";
 				var langData = [['en', 'English'],['fr','Français'],['it','Italiano']];
 				
-				// //////////////////////////////////////////////////        
-				// Setting the initial language for the selector
-				// //////////////////////////////////////////////////
-				var initialLanguageString;					
-				Ext.each(langData, function(rec){
-					if(rec[0] === code.toLowerCase()){
-						initialLanguageString = rec[1];
-						return;
-					}
-				});
-			
-				initialLanguageString = !initialLanguageString ? "English" : initialLanguageString;	
-				
+							
 				// ////////////////////////////////////////////////////
 				// Setting the language code for the GeoExt tools
 				// ////////////////////////////////////////////////////
 				if (GeoExt.Lang) {
 					GeoExt.Lang.set(code);
 				}
-            
-                var languageSelector = new Ext.form.ComboBox({
-					store: new Ext.data.ArrayStore({
-						fields: ['code', 'name'],
-						data :  langData
-					}),
-					displayField: 'name',
-					typeAhead: true,
-					mode: 'local',
-					forceSelection: true,
-					triggerAction: 'all',
-					emptyText: initialLanguageString,
-					selectOnFocus:false,
-					editable: false,
-					width: 100,
-					listeners: {
-						beforeselect: function(cb, record, index){
-						   var c = record.get('code');
-						   if(!c || c == code){
-							  return false;
-						   }else
-							  languageSelector.prevLang = code;
-						},                    
-						select: function(cb, record, index) {
-							var c = record.get('code');
-							var u = location.pathname + '?locale=' + c;
-							
-							if(url.mapId)
-								u += '&mapId=' + url.mapId;
-								
-							if(url.bbox)
-								u += '&bbox=' + url.bbox;
-							
-							location.replace(u);                                
-						}
-					}
-                });
-
+				
+				var languageSelector = new gxp.form.LanguageSwitcher({
+				currentContext:code,
+					data:[
+						['en','English','viewer','en','English language'],
+						['fr','Français','viewer','fr','Franch language'],
+						['it','Italiano','viewer','it','Italian language'] 
+					]
+				});
                 var appTabs = new Ext.TabPanel({
                     region: 'center',
                     border : false,
