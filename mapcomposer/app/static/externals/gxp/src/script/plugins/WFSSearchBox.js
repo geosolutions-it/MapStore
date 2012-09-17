@@ -42,6 +42,10 @@ Ext.namespace("gxp.plugins");
      *  to use as geometry.
      */
 	updateField: "geometry",
+	 /** api: config[zoom]level of zoom for not bbox
+     *  to use as geometry.
+     */
+	zoom: 8,
     ////////////////////////////////////////////////////////////
     // respectivily the Sizes, grafic sources and offsets of
     // the marker and it's background (typically shadow).
@@ -161,7 +165,7 @@ Ext.namespace("gxp.plugins");
 				if(location instanceof OpenLayers.Bounds){
 					map.zoomToExtent(location, true);
 				}else{
-					map.setCenter(center,18);
+					map.setCenter(center,this.zoom);
 				}
             }
         }

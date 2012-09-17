@@ -396,6 +396,7 @@
 			 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{codice_ato}</span></h3>{denominazi}</div></tpl>"
 		  },
 		  "updateField":"geometry",
+		  "zoom":8,
 		  "outputTarget":"paneltbar",
 		  "index":30
 	   },
