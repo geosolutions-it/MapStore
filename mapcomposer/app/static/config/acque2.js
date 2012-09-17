@@ -434,6 +434,7 @@
 		  "customParams":{
 			 "outputFilename":"mapstore-print"
 		  },
+		  "ignoreLayers":["WFSSearch","Marker"],
 		  "printService":"http://office.geo-solutions.it/acque/geoserver/pdf/",
 		  "legendPanelId":"legendPanel",
 		  "actionTarget":{

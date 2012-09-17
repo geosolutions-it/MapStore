@@ -427,6 +427,7 @@
 		  },
 		  "printService":"http://office.geo-solutions.it/acque/geoserver/pdf/",
 		  "legendPanelId":"legendPanel",
+		  "ignoreLayers":["WFSSearch","Marker"],
 		  "actionTarget":{
 			 "target":"paneltbar",
 			 "index":4
