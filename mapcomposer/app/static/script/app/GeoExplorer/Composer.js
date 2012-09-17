@@ -614,7 +614,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				iconCls: "icon-load"
 			}));
 		}
-        /*
+        
         tools.push(new Ext.Button({
             tooltip: this.exportMapText,
             //disabled: true,
@@ -627,7 +627,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         }));
 		
         tools.push('-');
-        */
+        
         return tools;
 
     },
