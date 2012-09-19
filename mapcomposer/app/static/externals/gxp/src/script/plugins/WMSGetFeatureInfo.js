@@ -59,7 +59,14 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
      *  Optional object with properties to be serialized as vendor specific
      *  parameters in the requests (e.g. {buffer: 10}).
      */
-     
+	 /** api: config[regex]
+     *  ``String``
+     *  if the body content of the GetFeatureInfo html response matches this
+	 *  regular expression a panel with this content will be added to the popup
+	 *  (popup appears if at least one of the GetFeatureInfo responses matches 
+	 *  this regex)
+     */
+     regex:"\\s*$",
     /** api: method[addActions]
      */
     addActions: function() {
@@ -107,7 +114,7 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                     eventListeners: {
                         getfeatureinfo: function(evt) {
                             var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
-                            if (match && !match[1].match(/^\s*$/)) {
+                            if (match && match[1].match(this.regex)) {
                                 this.displayPopup(
                                     evt, x.get("title") || x.get("name"), match[1]
                                 );

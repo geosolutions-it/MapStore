@@ -326,6 +326,7 @@
 	   },
 	   {
 		  "ptype":"gxp_wmsgetfeatureinfo",
+		  "regex":"<table[^>]*>([\\s\\S]*)<\\/table>",
 		  "toggleGroup":"toolGroup",
 		  "actionTarget":{
 			 "target":"paneltbar",
