@@ -161,7 +161,7 @@ GeoExt.Lang.add("fr", {
         previewText: "Aperçu avant impression",
         notAllNotPrintableText: "Toutes les couvertures ne sont pas imprimables",
         nonePrintableText: "Aucune couverture n`est imprimable",
-        notPrintableLayersText: "Les couvertures suivantes ne sont pas imprimables:"
+        notPrintableLayersText: "Veuillez enlever ces couches et tous les marqueurs avant impression. Les couvertures suivantes ne sont pas imprimables:"
     },  
 
     "gxp.plugins.MapQuestSource.prototype": {
@@ -347,5 +347,16 @@ GeoExt.Lang.add("fr", {
 	"gxp.form.WFSSearchComboBox.prototype": {
 		emptyText:"Rechercher",
 		loadingText: "recherche..."
+	},
+	"gxp.form.ContextSwitcher.prototype":{
+		switchActionTip : "Changement de carte",
+		switchSaveAlert: " Toutes les données non enregistrées seront a perdu.",
+		switchConfirmationText : "Vous êtes certain que vous souhaitez le carte?"
+
+	},
+	"gxp.form.LanguageSwitcher.prototype":{
+		switchActionTip : "Changement de langue",
+		switchConfirmationText : "Vous êtes certain que vous souhaitez modifier la langue?"//Vous êtes certain que vous souhaitez modifier la langue? toutes les données non enregistrées seront a perdu?"
+
 	}
 });

@@ -78,9 +78,9 @@ gxp.plugins.Measure = Ext.extend(gxp.plugins.Tool, {
     
     /**
      * api: config[enableBearingTool]
-     * set true to add the bearing tool
+     * set false to remove the bearing tool
      */
-    enableBearingTool:false,
+    enableBearingTool:true,
     /** private: method[constructor]
      */
     constructor: function(config) {

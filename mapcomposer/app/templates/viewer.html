@@ -39,12 +39,36 @@
         <script type="text/javascript" src="translations/en.js"></script>
         <script type="text/javascript" src="translations/fr.js"></script>
         <script type="text/javascript" src="translations/it.js"></script>
-        
+		<!-- uncomment to have  welcome screen
+        <script type="text/javascript">
+		
+			Ext.onReady(function() {
+			  setTimeout(function(){
+				Ext.get('loading').remove();
+				Ext.get('loading-mask').fadeOut({remove:true});
+			  }, 2000);
+			});
+		
+		</script>
+		
+		<div id="loading-mask"></div>
+		<div id="loading">
+		  <div class="loading-indicator">
+		  </div>
+		</div>
+		-->
         <script>
             
             var app;
             var modified = false; var mapIdentifier; var fullScreen = false; var bbox;
-			
+			 // ///////////////////////////////////////////////////////////////
+            // Custom variables from the mapStoreConfig user configuration file 
+            // ///////////////////////////////////////////////////////////////
+            var proxy; 
+            var geoStoreBaseURL;        
+            var customSources;
+            var serverConfig;
+            var customConfigName;
             // //////////////////////////////////////////////////
             // Parsing the request to get the parameters
             // //////////////////////////////////////////////////
@@ -67,19 +91,16 @@
 											bbox = undefined;
 										} 
 										break;
+                        case "config":
+									customConfigName = param[1];
+									break;
 						default : 
 										mapIdentifier = -1;
 					}
 				}
             }
                       
-			// ///////////////////////////////////////////////////////////////
-			// Custom variables from the urlConfig user configuration file 
-			// ///////////////////////////////////////////////////////////////					  
-            var proxy; 
-            var geoStoreBaseURL;        
-            var customSources;
-            
+			
             var onReady = function(){
 
                 Ext.BLANK_IMAGE_URL = (function() {
@@ -91,7 +112,19 @@
                 })();
 
                 OpenLayers.ImgPath = "externals/openlayers/theme/default/img/";
-
+                
+                //get Proj4js configuration 
+                if( typeof(Proj4js)!="undefined" && !(serverConfig.proj4jsDefs===undefined) ){
+                    for(var name in serverConfig.proj4jsDefs){
+                        //Proj4js.defs["EPSG:102113"]="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
+                        Proj4js.defs[name] = serverConfig.proj4jsDefs[name];
+                    
+                    }
+                }
+                //get georeferences data to override
+                if (serverConfig.georeferences_data){
+                    georeferences_data = serverConfig.georeferences_data;
+                }
                 gxp.plugins.ZoomToExtent.prototype.closest = false;
 
 				Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
@@ -114,66 +147,25 @@
 				}
 				
 				var url = Ext.urlDecode(query);        
-				var code = url.locale || 'en';			
+				var code = url.locale || serverConfig.defaultLanguage || "en";
 				var langData = [['en', 'English'],['fr','Français'],['it','Italiano']];
 				
-				// //////////////////////////////////////////////////        
-				// Setting the initial language for the selector
-				// //////////////////////////////////////////////////
-				var initialLanguageString;					
-				Ext.each(langData, function(rec){
-					if(rec[0] === code.toLowerCase()){
-						initialLanguageString = rec[1];
-						return;
-					}
-				});
-			
-				initialLanguageString = !initialLanguageString ? "English" : initialLanguageString;	
-				
+							
 				// ////////////////////////////////////////////////////
 				// Setting the language code for the GeoExt tools
 				// ////////////////////////////////////////////////////
 				if (GeoExt.Lang) {
 					GeoExt.Lang.set(code);
 				}
-            
-                var languageSelector = new Ext.form.ComboBox({
-					store: new Ext.data.ArrayStore({
-						fields: ['code', 'name'],
-						data :  langData
-					}),
-					displayField: 'name',
-					typeAhead: true,
-					mode: 'local',
-					forceSelection: true,
-					triggerAction: 'all',
-					emptyText: initialLanguageString,
-					selectOnFocus:false,
-					editable: false,
-					width: 100,
-					listeners: {
-						beforeselect: function(cb, record, index){
-						   var c = record.get('code');
-						   if(!c || c == code){
-							  return false;
-						   }else
-							  languageSelector.prevLang = code;
-						},                    
-						select: function(cb, record, index) {         							
-							var c = record.get('code');
-							var u = location.pathname + '?locale=' + c;
-							
-							if(url.mapId)
-								u += '&mapId=' + url.mapId;
-								
-							if(url.bbox)
-								u += '&bbox=' + url.bbox;
-							
-							location.replace(u);                                
-						}
-					}
-                });
-
+				
+				var languageSelector = new gxp.form.LanguageSwitcher({
+				currentContext:code,
+					data:[
+						['en','English','viewer','en','English language'],
+						['fr','Français','viewer','fr','Franch language'],
+						['it','Italiano','viewer','it','Italian language'] 
+					]
+				});
                 var appTabs = new Ext.TabPanel({
                     region: 'center',
                     border : false,
@@ -195,7 +187,7 @@
                             modal: true,
                             layout: "fit",
                             width: 340,
-                            height: 260,
+                            height: 360,
                             items: [appInfo]
                         });
                         
@@ -227,7 +219,7 @@
                         ]
                     }]
                 });
-
+                
                 app = new GeoExplorer.Viewer({
                     proxy: proxy,
                     defaultSourceType: "gxp_wmssource",
@@ -243,22 +235,7 @@
                         }
                     },
                     georeferences: georeferences_data,
-                    map: {
-                        projection: "EPSG:900913",
-                        units: "m",
-                        maxExtent: [
-                            -20037508.34, -20037508.34,
-                            20037508.34, 20037508.34
-                        ],
-                        layers: [{
-                            source: "google",
-                            title: "Google Hybrid",
-                            name: "HYBRID",
-                            group: "background"
-                        }],
-                        center: [1250000.000000, 5370000.000000],
-                        zoom: 5
-                    }
+                    map: serverConfig.map
                 }, mapIdentifier, false, fullScreen);   
                 
                 app.on({
@@ -279,10 +256,10 @@
             };			
                 
 			Ext.Ajax.request({
-			      url: location.host.indexOf('localhost:8081') != -1 ? "/urlConfig.js" : "/mapcomposer/urlConfig.js",
+			      url: customConfigName ? "config/"+customConfigName +".js"  : "config/viewerConfig.js",
 				  method: 'GET',
 				  success: function(response, opts){      
-					  var serverConfig;    
+					    
 					  
 					  try{
 						  serverConfig = Ext.util.JSON.decode(response.responseText);

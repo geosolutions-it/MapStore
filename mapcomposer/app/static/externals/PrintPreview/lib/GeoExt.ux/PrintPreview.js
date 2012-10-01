@@ -196,12 +196,13 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         });
         this.on({
             "render": function() {
+				this.updateLayout();
 				this.busyMask = new Ext.LoadMask(this.getEl(), {
 					msg: this.creatingPdfText
 				});
-                this.printProvider.on({
+                this.mon(this.printProvider,{
                     "beforeprint": function(printProvider){
-						//this.busyMask.show();
+						this.busyMask.show();
 						
 					},
                     "print": this.busyMask.hide,
@@ -323,6 +324,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 checked: this.compactLegend,
                 boxLabel: this.compactLegendText,
                 hideLabel: true,
+				hidden:true,
                 ctCls: "gx-item-nowrap",
                 handler: function(cb, checked) {
                     this.compactLegend = checked;
@@ -338,8 +340,9 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
 		if(this.legend){
 			panelElements.push({
 				xtype: "container",
-				layout: "hbox",
+				layout: "form",
 				cls: "x-form-item",
+                		style:"text-align:left",
 				items: [
 					legendCheckbox, 
 					legendOnSeparatePageCheckbox,
@@ -494,8 +497,8 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
      */
     beforeDestroy: function() {
         if (this.busyMask) {
-            this.printProvider.un("beforeprint", this.busyMask.show, this.busyMask);
-            this.printProvider.un("print", this.busyMask.hide, this.busyMask);
+            //this.printProvider.mun("beforeprint", this.busyMask.show, this.busyMask);
+            //this.printProvider.mun("print", this.busyMask.hide, this.busyMask);
         }
         this.printMapPanel.un("resize", this.updateSize, this);
         GeoExt.ux.PrintPreview.superclass.beforeDestroy.apply(this, arguments);

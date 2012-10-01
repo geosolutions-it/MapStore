@@ -35,7 +35,11 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
      *  URL of the print service.
      */
     printService: null,
-
+	/** api: config[ignoreLayers]
+	 * ``boolean`` ignore layers for print 
+	 * for print alerts.
+	 */
+	ignoreLayers:[],
     /** api: config[customParams]
      *  ``Object`` Key-value pairs of custom data to be sent to the print
      *  service. Optional. This is e.g. useful for complex layout definitions
@@ -59,7 +63,7 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
      *  ``String``
      *  Text for message when not all layers can be printed (i18n).
      */
-    notAllNotPrintableText: "Not All Layers Can Be Printed",
+    notAllNotPrintableText: "Not All Layers Can Be Printed. Please remove these layers and all the markers before print.",
 
     /** api: config[nonePrintableText]
      *  ``String``
@@ -118,7 +122,19 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                     }
                 }
             });
-
+			
+			var getNotIgnorable = function(notSupported,ignorable){
+				var length = notSupported.length;
+				var notIgnorable = new Array();
+				for (var i = 0; i< length;i++){
+					var layerName = notSupported[i];
+					if (ignorable.indexOf(layerName)<0) {
+						notIgnorable.push (notSupported[i]);
+					}
+	
+				}
+				return notIgnorable;
+			}
             var actions = gxp.plugins.Print.superclass.addActions.call(this, [{
                 menuText: this.menuText,
                 tooltip: this.tooltip,
@@ -130,11 +146,11 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                     var notSupported = layers.notSupported;
                     
                     if (supported.length > 0) {
-
-                        if(notSupported.length > 0){
+						var notIgnorable = getNotIgnorable(notSupported,this.ignoreLayers);
+                        if( notIgnorable.length >0 ){
                             Ext.Msg.alert(
                                 this.notAllNotPrintableText,
-                                this.notPrintableLayersText + '<br />' + notSupported.join(',')
+                                this.notPrintableLayersText + '<br />' + notIgnorable.join(',')
                             );
                         } else {                    
 							createPrintWindow.call(this);
@@ -196,6 +212,7 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                 return (
                     layer instanceof OpenLayers.Layer.WMS ||
                     layer instanceof OpenLayers.Layer.OSM 
+					
                     //|| layer instanceof OpenLayers.Layer.Google
                 );
             }
@@ -214,9 +231,10 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                             printMapPanel: {
                                 map: Ext.applyIf({
                                     controls: [
-                                        new OpenLayers.Control.Navigation(),
-                                        new OpenLayers.Control.PanPanel(),
-                                        new OpenLayers.Control.ZoomPanel(),
+										//UNCOMMENT TO ADD CONTROLS TO PRINT PREVIEW
+                                        //new OpenLayers.Control.Navigation(),
+                                        //new OpenLayers.Control.PanPanel(),
+                                        //new OpenLayers.Control.ZoomPanel(),
                                         new OpenLayers.Control.Attribution()
                                     ],
                                     eventListeners: {
@@ -224,13 +242,14 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                                             return isSupported(evt.layer);
                                         }
                                     }
-                                }, mapPanel.initialConfig.map),
-                                items: [{
+                                }, mapPanel.initialConfig.map)
+								//UNCOMMENT TO ADD ZOOM SLIDER TO PRINT PREVIEW
+                                /*items: [{
                                     xtype: "gx_zoomslider",
                                     vertical: true,
                                     height: 100,
                                     aggressive: true
-                                }]
+                                }]*/
                             },
                             printProvider: printProvider,
                             legend : Ext.getCmp(this.legendPanelId),
