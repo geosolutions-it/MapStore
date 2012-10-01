@@ -64,11 +64,6 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
      */
     onLayerAdd: function() {
         this.removeAll();
-        // this.getEl().addClass("gxp-layer-menu");
-        // this.getEl().applyStyles({
-        //     width: '',
-        //     height: ''
-        // });
         this.add(
             {
                 iconCls: "gxp-layer-visibility",
@@ -127,7 +122,6 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
 					hideOnClick: false,
 					text: g,
 					checked: true,
-					//group: g,
 					layers: layerGroups[g],
 					listeners: {
 						checkchange: function(item, checked) {
@@ -149,7 +143,7 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
 				this.add( gmenu );
 			}
 			this.add( layerGroups[g] );
-			this.addSeparator();//or menu.TextItem
+			this.addSeparator();
         }
     }
     
