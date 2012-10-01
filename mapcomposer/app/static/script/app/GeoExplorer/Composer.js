@@ -424,7 +424,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                                   //
                                   if(values.identifier){
                                       viewer.viewMetadata(
-                                          values.absolutePath.substring(0,values.absolutePath.length-3), 
+                                          values.metadataWebPageUrl,
                                           values.identifier, 
                                           values.title
                                       );
@@ -634,14 +634,14 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     
     /** private: method[viewMetadata]
      */
-    viewMetadata: function(gnURL, uuid, title){
+    viewMetadata: function(url, uuid, title){
         var tabPanel = Ext.getCmp(app.renderToTab);
         
         var tabs = tabPanel.find('title', title);
         if(tabs && tabs.length > 0){
             tabPanel.setActiveTab(tabs[0]); 
         }else{
-            var metaURL = gnURL + "metadata.show?uuid=" + uuid; 
+            var metaURL = url 
             
             var meta = new Ext.Panel({
                 title: title,
