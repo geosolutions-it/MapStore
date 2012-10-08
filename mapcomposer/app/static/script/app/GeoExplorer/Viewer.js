@@ -57,7 +57,11 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
             id: "paneltbar",
             items: this.createTools()
         });
-        this.on("ready", function() {this.toolbar.enable();}, this);
+        
+        this.on("ready", function() {
+        	this.toolbar.enable();
+	        console.log('initPortal READY');
+        }, this);
 
         this.mapPanelContainer = new Ext.Panel({
             layout: "card",

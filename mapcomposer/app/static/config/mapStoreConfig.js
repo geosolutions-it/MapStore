@@ -4,11 +4,11 @@
    "defaultLanguage": "en",
    "gsSources":{ 
 		"demo1": {
-                    "ptype": "gxp_wmssource",
-                    "title": "GeoSolutions server",
-                    "projection":"EPSG:900913",
-                    "url": "http://demo1.geo-solutions.it/geoserver/ows"
-                },
+            "ptype": "gxp_wmssource",
+            "title": "GeoSolutions server",
+            "projection":"EPSG:900913",
+            "url": "http://demo1.geo-solutions.it/geoserver/ows"
+        },
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
 		}, 

@@ -429,6 +429,64 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 item.disable();
             });
         });
+
+       var googleEarthPanel = new gxp.GoogleEarthPanel({
+            mapPanel: this.mapPanel,
+            listeners: {
+                beforeadd: function(record) {
+                    return record.get("group") !== "background";
+                }
+            }
+        });
+       
+        // TODO: continue making this Google Earth Panel more independent
+        // Currently, it's too tightly tied into the viewer.
+        // In the meantime, we keep track of all items that the were already
+        // disabled when the panel is shown.
+        var preGoogleDisabled = [];
+ 
+        googleEarthPanel.on("show", function() {
+            preGoogleDisabled.length = 0;
+            this.toolbar.items.each(function(item) {
+                if (item.disabled) {
+                    preGoogleDisabled.push(item);
+                }
+            });
+            this.toolbar.disable();
+            // loop over all the tools and remove their output
+            for (var key in this.tools) {
+                var tool = this.tools[key];
+                if (tool.outputTarget === "map") {
+                    tool.removeOutput();
+                }
+            }
+            var layersContainer = Ext.getCmp("tree");
+            var layersToolbar = layersContainer && layersContainer.getTopToolbar();
+            if (layersToolbar) {
+                layersToolbar.items.each(function(item) {
+                    if (item.disabled) {
+                        preGoogleDisabled.push(item);
+                    }
+                });
+                layersToolbar.disable();
+            }
+        }, this);
+ 
+        googleEarthPanel.on("hide", function() {
+            // re-enable all tools
+            this.toolbar.enable();
+           
+            var layersContainer = Ext.getCmp("tree");
+            var layersToolbar = layersContainer && layersContainer.getTopToolbar();
+            if (layersToolbar) {
+                layersToolbar.enable();
+            }
+            // now go back and disable all things that were disabled previously
+            for (var i=0, ii=preGoogleDisabled.length; i<ii; ++i) {
+                preGoogleDisabled[i].disable();
+            }
+ 
+        }, this);
         
         this.mapPanelContainer = new Ext.Panel({
             layout: "card",
@@ -438,7 +496,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             },
             items: [
                 this.mapPanel
-                //,googleEarthPanel
+                ,googleEarthPanel
             ],
             activeItem: 0,
             tbar: this.toolbar

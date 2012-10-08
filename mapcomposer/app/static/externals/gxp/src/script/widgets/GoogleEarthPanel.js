@@ -194,26 +194,34 @@ gxp.GoogleEarthPanel = Ext.extend(Ext.Panel, {
     addLayer: function(layer, order) {
         var lyr = layer.getLayer();
         var ows = (lyr && lyr.url);
+        
         if (this.earth && lyr instanceof OpenLayers.Layer.WMS && typeof ows == "string") {
             var add = this.fireEvent("beforeadd", layer);
             if (add !== false) {
                 var name = lyr.id;
                 var networkLink;
+                
                 if (this.layerCache[name]) {
                     networkLink = this.layerCache[name];
                 } else {
                     var link = this.earth.createLink('kl_' + name);
-                    ows = ows.replace(/\?.*/, '');
+                    
+                    //ows = ows.replace(/\?.*/, '');
+                    ows = ows.replace(/ows\?.*/, 'wms');
+                    
                     var params = lyr.params;
+                    
                     var kmlPath = '/kml?mode=refresh&layers=' + params.LAYERS +
                         "&styles=" + params.STYLES;
-                    link.setHref(ows + kmlPath);
+                    var khref = ows + kmlPath;
+                    
+                    link.setHref(khref);
                     networkLink = this.earth.createNetworkLink('nl_' + name);
                     networkLink.setName(name);
                     networkLink.set(link, false, false);
                     this.layerCache[name] = networkLink;
-                }
-
+               	}
+               	
                 networkLink.setVisibility(lyr.getVisibility());
 
                 if (order !== undefined && order < this.earth.getFeatures().getChildNodes().getLength()) {

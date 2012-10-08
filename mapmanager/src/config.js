@@ -50,14 +50,14 @@
  */
 var config = {
 
-	baseUrl: 'http://asus:8080',
-	proxyUrl: 'http://asus:8080/http_proxy/proxy/',
+	baseUrl: 'http://localhost:8080',
+	proxyUrl: 'http://localhost:8080/http_proxy/proxy/',
 
 	googleApi: 'AIzaSyDDluzCOQgBgWc77-YA02r5OkA6d3NZkKQ',
 	//update key here: https://code.google.com/apis/console/#project:385384104319:access
     
     start: 0,
-    
+
     limit: 10,
     
     msmTimeout: 30000

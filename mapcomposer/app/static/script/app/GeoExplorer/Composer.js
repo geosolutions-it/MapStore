@@ -135,45 +135,52 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 ptype: "gxp_georeferences",
                 actionTarget: {target: "paneltbar", index: 23}
             },
-            //this is a sample configuration for wfssearchbox plugin.
-            /*{
-                ptype: "gxp_wfssearchbox",
-                outputConfig:{
-                    url:  'http://office.geo-solutions.it/acque/geoserver/SW/ows?',
-                    typeName: 'SW:search_view',
-                    recordModel:[
-                        {name: 'id', mapping: 'id'},
-                        {name: 'geometry', mapping: 'geometry'},
-                        {name: 'codice_ato', mapping: 'properties.codice_ato'},
-                        {name: 'denominazi', mapping: 'properties.denominazi'}
-                        
-                    ],
-                    sortBy : 'codice_ato',
-                    queriableAttributes : ['codice_ato','denominazi'],
-                    displayField: "codice_ato",
-                    pageSize:10,
-                    width: 250,
-                    tpl: 
-                        '<tpl for="."><div class="search-item">'+
-                            '<h3>{codice_ato}</span></h3>'+
-                        '{denominazi}</div></tpl>'	,
-                    
+            //https://github.com/geosolutions-it/mapstore/wiki/WFS-Search
+			/*{
+			  "ptype":"gxp_wfssearchbox",
+			  "outputConfig": {
+				 "url":"http://localhost:8080/geoserver/sf/ows?",
+				 "typeName":"sf:archsites",
+				 "recordModel":[
+				    {
+				       "name":"cat",
+				       "mapping":"properties.cat"
+				    },
+				    {
+				       "name":"geometry",
+				       "mapping":"geometry"
+				    },
 
-                },
-                updateField: "geometry",
-                outputTarget:"paneltbar",
-                index: 30
-                
-            },*/ {
+				    {
+				       "name":"str1",
+				       "mapping":"properties.str1"
+				    }
+				 ],
+				 "sortBy":"cat",
+				 "queriableAttributes":[
+				    "str1",
+				    "cat"
+				 ],
+				 "displayField":"cat",
+				 "pageSize":10,
+				 "width":250,
+				 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{cat}</span></h3>{str1}</div></tpl>"
+			  },
+			  "updateField":"geometry",
+			  "zoom":18,
+			  "outputTarget":"paneltbar",
+			  "index":30
+		   },//*/
+		   {
                 ptype: "gxp_saveDefaultContext",
                 actionTarget: {target: "paneltbar", index: 26},
 				needsAuthorization: true
-            }, {
+            },{
                 actions: ["->"], actionTarget: "paneltbar"
-            },/*{
+            },{
                 ptype: "gxp_googleearth",
                 actionTarget: {target: "paneltbar", index: 24}
-            },*/{
+            },{
                 ptype: "gxp_googlegeocoder",
                 //actionTarget: {target: "paneltbar", index: 28},
                 outputConfig:{
@@ -215,6 +222,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);
     },
+    
+    
 
     /** api: method[destroy]
      */
@@ -228,6 +237,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
      * Create the toolbar configuration for the main view.
      */
     createTools: function() {
+    
         var tools = GeoExplorer.Composer.superclass.createTools.apply(this, arguments);
 
         if(!this.fScreen){
@@ -527,7 +537,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				},
 				scope: this,
 				iconCls: "icon-save"
-			}));        
+			}));
 
 			tools.push(new Ext.Button({
 				tooltip: this.loadMapText,
@@ -675,6 +685,91 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         loading.show();
         Ext.get(iframe).on('load', function() { loading.hide(); });
     },
+    
+   /* initPortal: function() {        
+    
+    	console.log('INIT_PORTAL');
+	    
+        var googleEarthPanel = new gxp.GoogleEarthPanel({
+            mapPanel: this.mapPanel,
+            listeners: {
+                beforeadd: function(record) {
+                    return record.get("group") !== "background";
+                }
+            }
+        });
+       
+        // TODO: continue making this Google Earth Panel more independent
+        // Currently, it's too tightly tied into the viewer.
+        // In the meantime, we keep track of all items that the were already
+        // disabled when the panel is shown.
+        var preGoogleDisabled = [];
+ 
+        googleEarthPanel.on("show", function() {
+            preGoogleDisabled.length = 0;
+            this.toolbar.items.each(function(item) {
+                if (item.disabled) {
+                    preGoogleDisabled.push(item);
+                }
+            });
+            this.toolbar.disable();
+            // loop over all the tools and remove their output
+            for (var key in this.tools) {
+                var tool = this.tools[key];
+                if (tool.outputTarget === "map") {
+                    tool.removeOutput();
+                }
+            }
+            var layersContainer = Ext.getCmp("tree");
+            var layersToolbar = layersContainer && layersContainer.getTopToolbar();
+            if (layersToolbar) {
+                layersToolbar.items.each(function(item) {
+                    if (item.disabled) {
+                        preGoogleDisabled.push(item);
+                    }
+                });
+                layersToolbar.disable();
+            }
+        }, this);
+ 
+        googleEarthPanel.on("hide", function() {
+            // re-enable all tools
+            this.toolbar.enable();
+           
+            var layersContainer = Ext.getCmp("tree");
+            var layersToolbar = layersContainer && layersContainer.getTopToolbar();
+            if (layersToolbar) {
+                layersToolbar.enable();
+            }
+            // now go back and disable all things that were disabled previously
+            for (var i=0, ii=preGoogleDisabled.length; i<ii; ++i) {
+                preGoogleDisabled[i].disable();
+            }
+ 
+        }, this);
+        
+        this.mapPanelContainer = new Ext.Panel({
+            layout: "card",
+            region: "center",
+            defaults: {
+                border: false
+            },
+            items: [
+                this.mapPanel,
+                new gxp.GoogleEarthPanel({
+                    mapPanel: this.mapPanel,
+                    listeners: {
+                        beforeadd: function(record) {
+                            return record.get("group") !== "background";
+                        }
+                    }
+                })
+            ],
+            activeItem: 0
+        });
+        
+        GeoExplorer.Composer.superclass.initPortal.apply(this, arguments);          
+    },*/
 
     /** private: method[showEmbedWindow]
      */
