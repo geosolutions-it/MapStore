@@ -136,7 +136,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 actionTarget: {target: "paneltbar", index: 23}
             },
             //https://github.com/geosolutions-it/mapstore/wiki/WFS-Search
-			/*{
+			{
 			  "ptype":"gxp_wfssearchbox",
 			  "outputConfig": {
 				 "url":"http://localhost:8080/geoserver/sf/ows?",
@@ -165,6 +165,37 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				 "pageSize":10,
 				 "width":250,
 				 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{cat}</span></h3>{str1}</div></tpl>"
+			  },
+			  "updateField":"geometry",
+			  "zoom":18,
+			  "outputTarget":"paneltbar",
+			  "index":30
+		   },//*/
+		   /*{//wfssearchbox example using united states populations, for testing polygons search
+			  "ptype":"gxp_wfssearchbox",
+			  "outputConfig": {
+				 "url":"http://localhost:8080/geoserver/topp/ows?",
+				 "typeName":"topp:states",
+				 "recordModel":[
+				    {
+				       "name":"geometry",
+				       "mapping":"the_geom"
+				    },
+				    {
+				       "name":"statename",
+				       "mapping":"properties.STATE_NAME"
+				    },
+				    {
+				       "name":"pop",
+				       "mapping":"properties.PERSONS"
+				    }
+				 ],
+				 "sortBy":"PERSONS",
+				 "queriableAttributes":["STATE_NAME"],
+				 "displayField":"STATE_NAME",
+				 "pageSize":10,
+				 "width":250,
+				 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{statename}</h3><span>{pop}</span></div></tpl>"
 			  },
 			  "updateField":"geometry",
 			  "zoom":18,
