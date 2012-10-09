@@ -69,7 +69,7 @@
 		]
 		
 	},
-	"cswconfig":{
+	"cswconfig": {
 		"catalogs": [
 				{"name": "Demo1GeoSolutions" , "url": "http://demo1.geo-solutions.it/geonetwork/srv/en/csw", "description": "Iternal GeoNetwork demo"},
 				{"name": "Treviso", "url": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw", "description": "Treviso Geonetwork"},

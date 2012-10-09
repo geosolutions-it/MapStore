@@ -44,206 +44,229 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     cswMsg: 'Loading...',
     // End i18n.
 
-    constructor: function(config) {  
-		if(!config.tools){
-        config.tools = [
-            {
-                ptype: "gxp_layertree",
-                outputConfig: {
-                    id: "layertree"
-                },
-                outputTarget: "tree"
-            }, {
-                ptype: "gxp_legend",
-                outputTarget: 'legend',
-                outputConfig: {
-                    autoScroll: true
-					
-                },
-                legendConfig : {
-                    legendPanelId : 'legendPanel',
-                    defaults: {
-                        style: 'padding:5px',                  
-                        baseParams: {
-                            LEGEND_OPTIONS: 'forceLabels:on;fontSize:10',
-                            WIDTH: 12, HEIGHT: 12
-                        }
-                    }
-                }
-            }, {
-                ptype: "gxp_addlayers",
-                actionTarget: "tree.tbar",
-                upload: true
-            }, {
-                ptype: "gxp_removelayer",
-                actionTarget: ["tree.tbar", "layertree.contextMenu"]
-            }, {
-                ptype: "gxp_removeoverlays",
-                actionTarget: "tree.tbar"
-            }, {
-                ptype: "gxp_addgroup",
-                actionTarget: "tree.tbar"
-            }, {
-                ptype: "gxp_removegroup",
-                actionTarget: ["tree.tbar", "layertree.contextMenu"]
-            }, {
-                ptype: "gxp_groupproperties",
-                actionTarget: ["tree.tbar", "layertree.contextMenu"]
-            }, {
-                ptype: "gxp_layerproperties",
-                actionTarget: ["tree.tbar", "layertree.contextMenu"]
-            }, {
-                ptype: "gxp_zoomtolayerextent",
-                actionTarget: {target: "layertree.contextMenu", index: 0}
-            },{
-                ptype:"gxp_geonetworksearch",
-                actionTarget:[
-                   "layertree.contextMenu"
-                ]
-            }, {
-                ptype: "gxp_zoomtoextent",
-                actionTarget: {target: "paneltbar", index: 15}
-            }, {
-                ptype: "gxp_navigation", toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 16}
-            }, {
-                actions: ["-"], actionTarget: "paneltbar"
-            }, {
-                ptype: "gxp_zoombox", toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 17}
-            }, {
-                ptype: "gxp_zoom",
-                actionTarget: {target: "paneltbar", index: 18}
-            }, {
-                actions: ["-"], actionTarget: "paneltbar"
-            }, {
-                ptype: "gxp_navigationhistory",
-                actionTarget: {target: "paneltbar", index: 19}
-            }, {
-                actions: ["-"], actionTarget: "paneltbar"
-            }, {
-                ptype: "gxp_wmsgetfeatureinfo", toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 20}
-            }, {
-                actions: ["-"], actionTarget: "paneltbar"
-            }, {
-                ptype: "gxp_measure", toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 21}
-            }, {
-                actions: ["-"], actionTarget: "paneltbar"
-            }, {
-                ptype: "gxp_georeferences",
-                actionTarget: {target: "paneltbar", index: 23}
-            },
-            //https://github.com/geosolutions-it/mapstore/wiki/WFS-Search
-			{
-			  "ptype":"gxp_wfssearchbox",
-			  "outputConfig": {
-				 "url":"http://localhost:8080/geoserver/sf/ows?",
-				 "typeName":"sf:archsites",
-				 "recordModel":[
-				    {
-				       "name":"cat",
-				       "mapping":"properties.cat"
-				    },
-				    {
-				       "name":"geometry",
-				       "mapping":"geometry"
-				    },
+    constructor: function(config) {
 
-				    {
-				       "name":"str1",
-				       "mapping":"properties.str1"
-				    }
-				 ],
-				 "sortBy":"cat",
-				 "queriableAttributes":[
-				    "str1",
-				    "cat"
-				 ],
-				 "displayField":"cat",
-				 "pageSize":10,
-				 "width":250,
-				 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{cat}</span></h3>{str1}</div></tpl>"
-			  },
-			  "updateField":"geometry",
-			  "zoom":18,
-			  "outputTarget":"paneltbar",
-			  "index":30
-		   },//*/
-		   /*{//wfssearchbox example using united states populations, for testing polygons search
-			  "ptype":"gxp_wfssearchbox",
-			  "outputConfig": {
-				 "url":"http://localhost:8080/geoserver/topp/ows?",
-				 "typeName":"topp:states",
-				 "recordModel":[
-				    {
-				       "name":"geometry",
-				       "mapping":"the_geom"
-				    },
-				    {
-				       "name":"statename",
-				       "mapping":"properties.STATE_NAME"
-				    },
-				    {
-				       "name":"pop",
-				       "mapping":"properties.PERSONS"
-				    }
-				 ],
-				 "sortBy":"PERSONS",
-				 "queriableAttributes":["STATE_NAME"],
-				 "displayField":"STATE_NAME",
-				 "pageSize":10,
-				 "width":250,
-				 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{statename}</h3><span>{pop}</span></div></tpl>"
-			  },
-			  "updateField":"geometry",
-			  "zoom":18,
-			  "outputTarget":"paneltbar",
-			  "index":30
-		   },//*/
-		   {
-                ptype: "gxp_saveDefaultContext",
-                actionTarget: {target: "paneltbar", index: 26},
-				needsAuthorization: true
-            },{
-                actions: ["->"], actionTarget: "paneltbar"
-            },{
-                ptype: "gxp_googleearth",
-                actionTarget: {target: "paneltbar", index: 24}
-            },{
-                ptype: "gxp_googlegeocoder",
-                //actionTarget: {target: "paneltbar", index: 28},
-                outputConfig:{
-                    emptyText:"Google GeoCoder"
-                },
-                outputTarget:"paneltbar",
-                index: 25
-            }/*,{
-                ptype: "gxp_nominatimgeocoder",
-                //actionTarget: {target: "paneltbar", index: 28},
-                outputConfig:{
-                    emptyText:"Nominatim GeoCoder",
-					vendorOptions:{
-						bounded: 1,
-						countrycodes: 'it',
-						addressdetails:0
-					},
-					boundOption:"max"
-                },
-                outputTarget:"paneltbar",
-                index: 26
-            },{
-                ptype: "gxp_print",
-                customParams: {outputFilename: 'mapstore-print'},
-                printService: "http://192.168.1.43:8080/acque/geoserver/pdf/",
-                legendPanelId: 'legendPanel',
-                actionTarget: {target: "paneltbar", index: 4}
-            }*/
-        ];
-		//test: to get a json string of tools to customize
-		//document.write(Ext.util.JSON.encode(config.tools));
+		if(!config.tools)
+		{
+		    config.tools = [
+		        {
+		            ptype: "gxp_layertree",
+		            outputConfig: {
+		                id: "layertree"
+		            },
+		            outputTarget: "tree"
+		        }, {
+		            ptype: "gxp_legend",
+		            outputTarget: 'legend',
+		            outputConfig: {
+		                autoScroll: true
+		            },
+		            legendConfig : {
+		                legendPanelId : 'legendPanel',
+		                defaults: {
+		                    style: 'padding:5px',                  
+		                    baseParams: {
+		                        LEGEND_OPTIONS: 'forceLabels:on;fontSize:10',
+		                        WIDTH: 12, HEIGHT: 12
+		                    }
+		                }
+		            }
+		        }, {
+		            ptype: "gxp_addlayers",
+		            actionTarget: "tree.tbar",
+		            upload: true
+		        }, {
+		            ptype: "gxp_removelayer",
+		            actionTarget: ["tree.tbar", "layertree.contextMenu"]
+		        }, {
+		            ptype: "gxp_removeoverlays",
+		            actionTarget: "tree.tbar"
+		        }, {
+		            ptype: "gxp_addgroup",
+		            actionTarget: "tree.tbar"
+		        }, {
+		            ptype: "gxp_removegroup",
+		            actionTarget: ["tree.tbar", "layertree.contextMenu"]
+		        }, {
+		            ptype: "gxp_groupproperties",
+		            actionTarget: ["tree.tbar", "layertree.contextMenu"]
+		        }, {
+		            ptype: "gxp_layerproperties",
+		            actionTarget: ["tree.tbar", "layertree.contextMenu"]
+		        }, {
+		            ptype: "gxp_zoomtolayerextent",
+		            actionTarget: {target: "layertree.contextMenu", index: 0}
+		        },{
+		            ptype:"gxp_geonetworksearch",
+		            actionTarget:[
+		               "layertree.contextMenu"
+		            ]
+		        }, {
+		            ptype: "gxp_zoomtoextent",
+		            actionTarget: {target: "paneltbar", index: 15}
+		        }, {
+		            ptype: "gxp_navigation", toggleGroup: this.toggleGroup,
+		            actionTarget: {target: "paneltbar", index: 16}
+		        }, {
+		            actions: ["-"], actionTarget: "paneltbar"
+		        }, {
+		            ptype: "gxp_zoombox", toggleGroup: this.toggleGroup,
+		            actionTarget: {target: "paneltbar", index: 17}
+		        }, {
+		            ptype: "gxp_zoom",
+		            actionTarget: {target: "paneltbar", index: 18}
+		        }, {
+		            actions: ["-"], actionTarget: "paneltbar"
+		        }, {
+		            ptype: "gxp_navigationhistory",
+		            actionTarget: {target: "paneltbar", index: 19}
+		        }, {
+		            actions: ["-"], actionTarget: "paneltbar"
+		        }, {
+		            ptype: "gxp_wmsgetfeatureinfo", toggleGroup: this.toggleGroup,
+		            actionTarget: {target: "paneltbar", index: 20}
+		        }, {
+		            actions: ["-"], actionTarget: "paneltbar"
+		        }, {
+		            ptype: "gxp_measure", toggleGroup: this.toggleGroup,
+		            actionTarget: {target: "paneltbar", index: 21}
+		        }, {
+		            actions: ["-"], actionTarget: "paneltbar"
+		        }, {
+		            ptype: "gxp_georeferences",
+		            actionTarget: {target: "paneltbar", index: 23}
+		        },
+		        //https://github.com/geosolutions-it/mapstore/wiki/WFS-Search
+				{
+				  "ptype":"gxp_wfssearchbox",
+				  "outputConfig": {
+					 "url":"http://localhost:8080/geoserver/sf/ows?",
+					 "typeName":"sf:archsites",
+					 "recordModel":[
+						{
+						   "name":"cat",
+						   "mapping":"properties.cat"
+						},
+						{
+						   "name":"geometry",
+						   "mapping":"geometry"
+						},
+						{
+						   "name":"str1",
+						   "mapping":"properties.str1"
+						}
+					 ],
+					 "sortBy":"cat",
+					 "queriableAttributes":[
+						"str1",
+						"cat"
+					 ],
+					 "displayField":"cat",
+					 "pageSize":10,
+					 "width":250,
+					 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{cat}</span></h3>{str1}</div></tpl>"
+				  },
+				  "updateField":"geometry",
+				  "zoom":18,
+				  "outputTarget":"paneltbar",
+				  "index":30
+			   },//*/
+			   /*{//wfssearchbox example using united states populations, for testing polygons search
+				  "ptype":"gxp_wfssearchbox",
+				  "outputConfig": {
+					 "url":"http://localhost:8080/geoserver/topp/ows?",
+					 "typeName":"topp:states",
+					 "recordModel":[
+						{
+						   "name":"geometry",
+						   "mapping":"the_geom"
+						},
+						{
+						   "name":"statename",
+						   "mapping":"properties.STATE_NAME"
+						},
+						{
+						   "name":"pop",
+						   "mapping":"properties.PERSONS"
+						}
+					 ],
+					 "sortBy":"PERSONS",
+					 "queriableAttributes":["STATE_NAME"],
+					 "displayField":"STATE_NAME",
+					 "pageSize":10,
+					 "width":250,
+					 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{statename}</h3><span>{pop}</span></div></tpl>"
+				  },
+				  "updateField":"geometry",
+				  "zoom":18,
+				  "outputTarget":"paneltbar",
+				  "index":30
+			   },//*/
+			   {
+		            ptype: "gxp_saveDefaultContext",
+		            actionTarget: {target: "paneltbar", index: 26},
+					needsAuthorization: true
+		        },{
+		            actions: ["->"], actionTarget: "paneltbar"
+		        },
+		        {
+		            ptype: "gxp_googleearth",
+		            actionTarget: {target: "paneltbar", index: 24}
+		        },
+		        {
+		            ptype: "gxp_googlegeocoder",
+		            //actionTarget: {target: "paneltbar", index: 28},
+		            outputConfig:{
+		                emptyText:"Google GeoCoder"
+		            },
+		            outputTarget:"paneltbar",
+		            index: 25
+		        }/*,{
+		            ptype: "gxp_nominatimgeocoder",
+		            //actionTarget: {target: "paneltbar", index: 28},
+		            outputConfig:{
+		                emptyText:"Nominatim GeoCoder",
+						vendorOptions:{
+							bounded: 1,
+							countrycodes: 'it',
+							addressdetails:0
+						},
+						boundOption:"max"
+		            },
+		            outputTarget:"paneltbar",
+		            index: 26
+		        },{
+		            ptype: "gxp_print",
+		            customParams: {outputFilename: 'mapstore-print'},
+		            printService: "http://192.168.1.43:8080/acque/geoserver/pdf/",
+		            legendPanelId: 'legendPanel',
+		            actionTarget: {target: "paneltbar", index: 4}
+		        }*/
+		    ];
+			//test: to get a json string of tools to customize
+			//document.write(Ext.util.JSON.encode(config.tools));
         }
+
+		if(config.customTools)
+		{
+			for(var c=0; c < config.customTools.length; c++)
+			{
+				var toolIsDefined = false;
+				for(var t=0; t < config.tools.length; t++)
+				{
+					if( config.tools[t].ptype && config.tools[t].ptype == config.customTools[c].ptype ) {	//plugin already defined
+						toolIsDefined = true;
+						break;
+					}
+				}
+				
+				if(!toolIsDefined)
+					config.tools.push(config.customTools[c]);
+
+				console.log(config.tools);
+			}
+		}
+        
         if (config.showGraticule == true){
             config.tools.push({
                 ptype: "gxp_graticule",
@@ -560,7 +583,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 			
         }
 
-		if(this.xmlJsonTranslateService){
+		if(this.xmlJsonTranslateService)
+		{
 			tools.push(new Ext.Button({
 				tooltip: this.saveMapText,
 				handler: function() {
@@ -682,7 +706,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         if(tabs && tabs.length > 0){
             tabPanel.setActiveTab(tabs[0]); 
         }else{
-            var metaURL = url 
+            var metaURL = url;
             
             var meta = new Ext.Panel({
                 title: title,
@@ -716,91 +740,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         loading.show();
         Ext.get(iframe).on('load', function() { loading.hide(); });
     },
-    
-   /* initPortal: function() {        
-    
-    	console.log('INIT_PORTAL');
-	    
-        var googleEarthPanel = new gxp.GoogleEarthPanel({
-            mapPanel: this.mapPanel,
-            listeners: {
-                beforeadd: function(record) {
-                    return record.get("group") !== "background";
-                }
-            }
-        });
-       
-        // TODO: continue making this Google Earth Panel more independent
-        // Currently, it's too tightly tied into the viewer.
-        // In the meantime, we keep track of all items that the were already
-        // disabled when the panel is shown.
-        var preGoogleDisabled = [];
- 
-        googleEarthPanel.on("show", function() {
-            preGoogleDisabled.length = 0;
-            this.toolbar.items.each(function(item) {
-                if (item.disabled) {
-                    preGoogleDisabled.push(item);
-                }
-            });
-            this.toolbar.disable();
-            // loop over all the tools and remove their output
-            for (var key in this.tools) {
-                var tool = this.tools[key];
-                if (tool.outputTarget === "map") {
-                    tool.removeOutput();
-                }
-            }
-            var layersContainer = Ext.getCmp("tree");
-            var layersToolbar = layersContainer && layersContainer.getTopToolbar();
-            if (layersToolbar) {
-                layersToolbar.items.each(function(item) {
-                    if (item.disabled) {
-                        preGoogleDisabled.push(item);
-                    }
-                });
-                layersToolbar.disable();
-            }
-        }, this);
- 
-        googleEarthPanel.on("hide", function() {
-            // re-enable all tools
-            this.toolbar.enable();
-           
-            var layersContainer = Ext.getCmp("tree");
-            var layersToolbar = layersContainer && layersContainer.getTopToolbar();
-            if (layersToolbar) {
-                layersToolbar.enable();
-            }
-            // now go back and disable all things that were disabled previously
-            for (var i=0, ii=preGoogleDisabled.length; i<ii; ++i) {
-                preGoogleDisabled[i].disable();
-            }
- 
-        }, this);
-        
-        this.mapPanelContainer = new Ext.Panel({
-            layout: "card",
-            region: "center",
-            defaults: {
-                border: false
-            },
-            items: [
-                this.mapPanel,
-                new gxp.GoogleEarthPanel({
-                    mapPanel: this.mapPanel,
-                    listeners: {
-                        beforeadd: function(record) {
-                            return record.get("group") !== "background";
-                        }
-                    }
-                })
-            ],
-            activeItem: 0
-        });
-        
-        GeoExplorer.Composer.superclass.initPortal.apply(this, arguments);          
-    },*/
 
     /** private: method[showEmbedWindow]
      */
@@ -838,8 +777,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                }
            };
            
-            var curLang = OpenLayers.Util.getParameters()["locale"] || 'en';            
-            
+           var curLang = OpenLayers.Util.getParameters()["locale"] || 'en';            
+           
            var embedMap = new gxp.EmbedMapDialog({
                id: 'geobuilder-1',
                url: "viewer" + "?locale=" + curLang + "&bbox=" + app.mapPanel.map.getExtent() + "&mapId=" + app.mapId
