@@ -45,6 +45,11 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     // End i18n.
 
     constructor: function(config) {
+    
+//		config.customTools = [{	//for testing customTools, ( comment  {ptype: "gxp_googleearth",...} )
+//		    ptype: "gxp_googleearth",
+//		    actionTarget: {target: "paneltbar", index: 24} 
+//		}];
 
 		if(!config.tools)
 		{
@@ -206,7 +211,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            ptype: "gxp_saveDefaultContext",
 		            actionTarget: {target: "paneltbar", index: 26},
 					needsAuthorization: true
-		        },{
+		        },
+		        {
 		            actions: ["->"], actionTarget: "paneltbar"
 		        },
 		        {
@@ -244,38 +250,33 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            actionTarget: {target: "paneltbar", index: 4}
 		        }*/
 		    ];
-			//test: to get a json string of tools to customize
-			//document.write(Ext.util.JSON.encode(config.tools));
 
-//			if(config.customTools)
-//			{
-//				for(var c=0; c < config.customTools.length; c++)
-//				{
-//					var toolIsDefined = false;
-//					for(var t=0; t < config.tools.length; t++)
-//					{
-//						if( config.tools[t].ptype && config.tools[t].ptype == config.customTools[c].ptype ) {	//plugin already defined
-//							toolIsDefined = true;
-//							break;
-//						}
-//					}
-//				
-//					if(!toolIsDefined)
-//						config.tools.push(config.customTools[c]);
+			if(config.customTools)
+			{
+				for(var c=0; c < config.customTools.length; c++)
+				{
+					var toolIsDefined = false;
+					for(var t=0; t < config.tools.length; t++)
+					{
+						if( config.tools[t]['ptype'] && config.tools[t]['ptype'] == config.customTools[c]['ptype'] ) {	//plugin already defined
+							toolIsDefined = true;
+							break;
+						}
+					}
+				
+					if(!toolIsDefined)
+						config.tools.push(config.customTools[c]);
+				}
+			}
+			
+        }//END: if(!config.tools)
 
-//					console.log(config.tools);
-//				}
-//			}
-        }//!config.tools
-        
         if (config.showGraticule == true){
             config.tools.push({
                 ptype: "gxp_graticule",
                 actionTarget: {target: "paneltbar", index: config.xmlJsonTranslateService ? 24 : 22}
             })
         }
-
-//console.log(config);
         
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);
     },

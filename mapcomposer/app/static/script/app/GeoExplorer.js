@@ -247,6 +247,25 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 actionTarget: {target: "paneltbar", index: 12}
             }*/
         ];
+
+        
+		if(config.customTools)
+		{
+			for(var c=0; c < config.customTools.length; c++)
+			{
+				var toolIsDefined = false;
+				for(var t=0; t < config.viewerTools.length; t++)
+				{
+					if( config.viewerTools[t]['ptype'] && config.viewerTools[t]['ptype'] == config.customTools[c]['ptype'] ) {	//plugin already defined
+						toolIsDefined = true;
+						break;
+					}
+				}
+			
+				if(!toolIsDefined)
+					config.viewerTools.push(config.customTools[c]);
+			}
+		} 
         
         if (config.showGraticule == true){
             config.viewerTools.push({

@@ -48,6 +48,7 @@
  *      user rest endpoint  http://localhost:8080/geostore/rest/users
  * 
  */
+
 var config = {
 
 	baseUrl: 'http://localhost:8080',
