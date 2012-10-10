@@ -1546,7 +1546,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 '</tr>'+
             '</table>'+
             
-		  	'</tpl>';//*/
+		  	'</tpl>';
 		
 			tpl +=  '</tr></table></div><br/>';
        

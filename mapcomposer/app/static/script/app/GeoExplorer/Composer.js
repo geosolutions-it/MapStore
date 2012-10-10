@@ -170,8 +170,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				  "zoom":18,
 				  "outputTarget":"paneltbar",
 				  "index":30
-			   },//*/
-			   /*{//wfssearchbox example using united states populations, for testing polygons search
+			   },
+			   /*{	//wfssearchbox example using united states populations, for testing polygons search
 				  "ptype":"gxp_wfssearchbox",
 				  "outputConfig": {
 					 "url":"http://localhost:8080/geoserver/topp/ows?",
@@ -237,35 +237,36 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            index: 26
 		        },{
 		            ptype: "gxp_print",
-		            customParams: {outputFilename: 'mapstore-print'},
-		            printService: "http://192.168.1.43:8080/acque/geoserver/pdf/",
+		            customParams: { outputFilename: 'mapstore-print' },
+		            //printService: "http://192.168.1.43:8080/acque/geoserver/pdf/",
+		            printService: "http://asus:8080/geoserver/pdf/",
 		            legendPanelId: 'legendPanel',
 		            actionTarget: {target: "paneltbar", index: 4}
 		        }*/
 		    ];
 			//test: to get a json string of tools to customize
 			//document.write(Ext.util.JSON.encode(config.tools));
-        }
 
-		if(config.customTools)
-		{
-			for(var c=0; c < config.customTools.length; c++)
-			{
-				var toolIsDefined = false;
-				for(var t=0; t < config.tools.length; t++)
-				{
-					if( config.tools[t].ptype && config.tools[t].ptype == config.customTools[c].ptype ) {	//plugin already defined
-						toolIsDefined = true;
-						break;
-					}
-				}
-				
-				if(!toolIsDefined)
-					config.tools.push(config.customTools[c]);
+//			if(config.customTools)
+//			{
+//				for(var c=0; c < config.customTools.length; c++)
+//				{
+//					var toolIsDefined = false;
+//					for(var t=0; t < config.tools.length; t++)
+//					{
+//						if( config.tools[t].ptype && config.tools[t].ptype == config.customTools[c].ptype ) {	//plugin already defined
+//							toolIsDefined = true;
+//							break;
+//						}
+//					}
+//				
+//					if(!toolIsDefined)
+//						config.tools.push(config.customTools[c]);
 
-				console.log(config.tools);
-			}
-		}
+//					console.log(config.tools);
+//				}
+//			}
+        }//!config.tools
         
         if (config.showGraticule == true){
             config.tools.push({
@@ -273,6 +274,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 actionTarget: {target: "paneltbar", index: config.xmlJsonTranslateService ? 24 : 22}
             })
         }
+
+//console.log(config);
         
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);
     },
@@ -308,7 +311,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     }
                 }
             });            
-                            
+
             tools.unshift(fullScreen);
         }else{
 			var layerChooser = new Ext.Button({

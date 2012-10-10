@@ -305,7 +305,6 @@
 	       },
 	       failure:  function(response, opts){
 	       		var json = Ext.util.JSON.decode(response.responseText);
-				console.log(Ext.util.JSON.decode(json));
 	       }
 	    });		
 	};

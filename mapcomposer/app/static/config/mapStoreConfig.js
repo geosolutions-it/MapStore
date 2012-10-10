@@ -67,7 +67,6 @@
 				"group": "background"
 			}
 		]
-		
 	},
 	"cswconfig": {
 		"catalogs": [
@@ -93,4 +92,5 @@
 		"limit": 10,
 		"timeout": 60000
 	}
+
 }

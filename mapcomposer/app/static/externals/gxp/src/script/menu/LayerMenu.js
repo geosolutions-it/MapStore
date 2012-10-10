@@ -102,7 +102,9 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
                             		break;
                             	}
                             }
-                            layerGroupsNode[item.groupname].setChecked(gcheck);
+                            try {
+                           		layerGroupsNode[item.groupname].setChecked(gcheck);
+                            }catch(e){}
                         }
                     }
                 });
@@ -126,15 +128,13 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
 					listeners: {
 						checkchange: function(item, checked) {
 							var glayers = item.layers;
-	                        //console.log(item.text);
+
 							for(var l in glayers)
 							{
-								try{
+								try {
 									glayers[l].layer.setVisibility(checked);
 									glayers[l].setChecked(checked);
-								}catch(e){
-									console.log(glayers[l]);
-								} 
+								}catch(e){}
 							}
 						}
 					}
