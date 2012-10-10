@@ -1,0 +1,149 @@
+<!--
+  RecordsReader.html
+  
+  Tests the API of the CSWRecordsReader class 
+ -->
+<html>
+  <head>
+    <title>RecordStore</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        
+    <!-- All CSS -->
+    <link rel="stylesheet" type="text/css" href="../../lib/ext-3.3.1/resources/css/ext-all.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/csw.css" />
+        
+    <!-- OpenLayers scripts -->
+    <script type="text/javascript" src="../../lib/OpenLayers-2.10/OpenLayers.js"></script>
+        
+    <!-- ExtJS scripts -->       
+    <script type="text/javascript" src="../../lib/ext-3.3.1/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../lib/ext-3.3.1/ext-all.js"></script>  
+    <script type="text/javascript" src="../../lib/ResourceBundle/PropertyReader.js"></script>
+    <script type="text/javascript" src="../../lib/ResourceBundle/Bundle.js"></script>
+        
+    <!-- Ext UX scripts -->
+    <script type="text/javascript" src="../../lib/ext-3.3.1/ux/RowExpander.js"></script>
+        
+    <!-- CSW scripts -->
+    <script type="text/javascript" src="../../tests/CSWViewer/config.js"></script>
+    <script type="text/javascript" src="../../src/CSWHttpProxy.js"></script>
+    <script type="text/javascript" src="../../src/CSWRecord.js"></script>
+    <script type="text/javascript" src="../../src/CSWRecordsReader.js"></script>
+    <script type="text/javascript" src="../../src/CSWGrid.js"></script>
+    <script type="text/javascript" src="../../src/CSWPagingToolbar.js"></script>
+    <script type="text/javascript" src="../../src/CSWCatalogChooser.js"></script>
+    <script type="text/javascript" src="../../src/CSWSearchTool.js"></script>
+    <script type="text/javascript" src="../../src/CSWPanel.js"></script>
+        
+    <!-- Test settings -->
+    <script type="text/javascript" src="../../tests/CSWViewer/settings.js"></script>
+        
+    <!-- Test cases -->    
+    <script type="text/javascript">
+     function test_init(t) {
+        t.plan(1);
+        t.wait_result(config.i18nWait);
+        t.ok(true, "panel initialized");
+     }
+
+      function test_searchLanguage(t) {
+        setupTest();
+        t.plan(2);
+        var store= setupStore(1, 10);
+        t.delay_call(config.cswWait, function () {
+            t.eq(store.getCount(), 10, "N. of records in cache matched");
+            t.eq(store.getTotalCount(), 132, "Total n. of records matched");
+        });
+        store.load();
+        t.wait_result(config.cswWait);
+      }
+      
+      function test_searchLanguagePaging(t) {
+        setupTest();
+        t.plan(2);
+        var store= setupStore(23, 7);
+        t.delay_call(config.cswWait, function () {
+            t.eq(store.getCount(), 7, "N. of records in cache after paging matched");
+            t.eq(store.getTotalCount(), 132, "Total n. of records matched after paging");
+        });
+        store.load();
+        t.wait_result(config.cswWait);
+      }
+
+     /*
+      * FIXME: These could not be tested because data returned do not appear to be sorted by title
+      */
+      function XXXtest_Data(t) {
+        setupTest();
+        t.plan(7);
+        var store= setupStore(1, 8);
+        t.eq(store.data.length, 0, "Too early call error detected");
+        t.delay_call(config.cswWait, function () {
+            t.eq(store.getCount(), 8, "N. of records in cache after paging matched");
+            t.eq(store.data.length, 8, "N. of records in data property");
+            t.eq(store.data.items[0].get("title"), "Soil (Organic Carbon Pool) - FDH Extent - Topsoil", "Matched title of 1st record");
+            t.eq(store.data.items[0].get("subject")[0], "Organic Carbon Pool", "Matched subject of 1st record");
+            t.eq(store.data.items[7].get("title"), "Land Cover (Mangroves) - Gambia", "Matched title of last record");
+            t.eq(store.data.items[7].get("subject")[0], "mangroves", "Matched subject of last record");
+        });
+        store.load();
+        t.wait_result(config.cswWait);
+      }
+
+      function XXXtest_DataPaging(t) {
+        setupTest();
+        t.plan(6);
+        var store= setupStore(22, 6);
+        t.delay_call(config.cswWait, function () {
+            t.eq(store.getCount(), 6, "N. of records in cache after paging matched");
+            t.eq(store.data.length, 6, "N. of records in data property");
+            t.eq(store.data.items[0].get("title"), "Climatology (Precipitation) - FDH Extent - Grid", "Matched title of 1st record");
+            t.eq(store.data.items[0].get("subject")[0], "precipitation", "Matched subject of 1st record");
+            t.eq(store.data.items[5].get("title"), "Boundary - Haut Niger NP, Guinea", "Matched title of last record");
+            t.eq(store.data.items[5].get("subject")[0], "parks", "Matched subject of last record");
+        });
+        store.load();
+        t.wait_result(config.cswWait);
+      }
+
+      function test_searchEmpty(t) {
+        setupTest();
+        t.plan(3);
+      
+        var options= {
+          filter: new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+            matchCase: false,
+            property: "dc:Language",
+            value: "XXX"
+          }),
+          start: 1, 
+          limit: 10, 
+          url: config.catalogs[0].url,
+          filterVersion: config.filterVersion,
+          resultType: "full" 
+        };
+        var reader= new CSWRecordsReader({
+            fields : ["title", "subject"]
+        });
+        var store= new Ext.data.Store({
+          reader: reader,
+          proxy : new CSWHttpProxy(options),
+          autoLoad: false,
+          remoteSort: false
+        });
+        reader.store= store;
+        t.delay_call(config.cswWait, function () {
+            t.eq(store.getTotalCount(), 0, "Total n. of records matched");
+            t.eq(store.getCount(), 0, "N. of records in cache matched");
+            t.eq(store.data.length, 0, "N. of records in data property");
+        });
+        store.load();
+        t.wait_result(config.cswWait);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="map" style="width: 512px; height: 256px"></div>
+  </body>
+</html>

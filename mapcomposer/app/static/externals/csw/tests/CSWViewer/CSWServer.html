@@ -1,0 +1,415 @@
+<!--
+  CSWServer.html
+  
+  Badiv tests on a CSW server 
+ -->
+<html>
+<head>
+<!-- CSS -->
+<link rel="stylesheet" type="text/css"
+  href="../../lib/ext-3.3.1/resources/css/ext-all.css" />
+<link rel="stylesheet" type="text/css" href="../../css/csw.css" />
+
+<!-- All CSS -->
+<link rel="stylesheet" type="text/css"
+  href="../../lib/ext-3.3.1/resources/css/ext-all.css" />
+<link rel="stylesheet" type="text/css" href="../../css/csw.css" />
+
+<!-- OpenLayers scripts -->
+<script type="text/javascript" src="../../lib/OpenLayers-2.10/OpenLayers.js"></script>
+
+<!-- ExtJS scripts -->
+<script type="text/javascript" src="../../lib/ext-3.3.1/adapter/ext/ext-base.js"></script>
+<script type="text/javascript" src="../../lib/ext-3.3.1/ext-all.js"></script>
+<script type="text/javascript" src="../../lib/ResourceBundle/PropertyReader.js"></script>
+<script type="text/javascript" src="../../lib/ResourceBundle/Bundle.js"></script>
+
+<!-- Ext UX scripts -->
+<script type="text/javascript" src="../../lib/ext-3.3.1/ux/RowExpander.js"></script>
+
+<!-- CSW scripts -->
+<script type="text/javascript" src="../../tests/CSWViewer/config.js"></script>
+<script type="text/javascript" src="../../src/CSWHttpProxy.js"></script>
+<script type="text/javascript" src="../../src/CSWRecord.js"></script>
+<script type="text/javascript" src="../../src/CSWRecordsReader.js"></script>
+<script type="text/javascript" src="../../src/CSWGrid.js"></script>
+<script type="text/javascript" src="../../src/CSWCatalogChooser.js"></script>
+<script type="text/javascript" src="../../src/CSWPagingToolbar.js"></script>
+<script type="text/javascript" src="../../src/CSWSearchTool.js"></script>
+<script type="text/javascript" src="../../src/CSWPanel.js"></script>
+
+<!-- Test settings -->
+<script type="text/javascript" src="../../tests/CSWViewer/settings.js"></script>
+
+<!-- Test cases -->
+<script type="text/javascript">
+      var nRecords= -1;
+      
+     function test_init(t) {
+        t.plan(1);
+        t.wait_result(config.i18nWait);
+        t.ok(true, "panel initialized");
+     }
+
+      function test_Server1(t) {
+        executeTestServer(t, 0, true);      
+      }
+
+      function test_Server2(t) {
+        executeTestServer(t, 1, false);      
+      }
+      
+      function test_Server3(t) {
+        executeTestServer(t, 2, true);      
+      }
+      
+      function test_Server4(t) {
+        executeTestServer(t, 3, false);      
+      }
+
+      function test_Server5(t) {
+        executeTestServer(t, 4, false);      
+      }
+      
+      function test_Server6(t) {
+        executeTestServer(t, 5, false);      
+      }
+      
+      function test_Server7(t) {
+        executeTestServer(t, 6, true);      
+      }
+      
+      function test_Server8(t) {
+        executeTestServer(t, 7, false);      
+      }
+      
+      function test_Server9(t) {
+        executeTestServer(t, 8, false);      
+      }
+      
+      function test_emptySearch(t) {
+        t.plan(1);
+        executeGetRecords("");
+                
+        t.delay_call(config.cswWait, function () {
+           t.eq(nRecords, 139, "Matched all records");
+        });
+      }
+      
+      function test_languageSearch1(t) {
+        t.plan(1);
+        executeGetRecords(
+              '<csw:Constraint version="1.1.0"> ' + 
+              '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"> ' +
+              ' <ogc:And> ' +
+              '   <ogc:PropertyIsEqualTo matchCase="false"> ' +
+              '    <ogc:PropertyName>language</ogc:PropertyName> ' +
+              '    <ogc:Literal>eng</ogc:Literal> ' +
+              '   </ogc:PropertyIsEqualTo> ' +
+              ' </ogc:And> ' +
+              '</ogc:Filter> ' +
+              '</csw:Constraint>'
+        );
+                
+        t.delay_call(config.cswWait, function () {
+           t.eq(nRecords, 132, "Matched records with 'eng' as language");
+        });
+      }      
+
+      function test_languageSearch2(t) {
+        t.plan(1);
+        executeGetRecords(
+              '<csw:Constraint version="1.1.0"> ' + 
+              '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"> ' +
+              ' <ogc:And> ' +
+              '   <ogc:PropertyIsNotEqualTo matchCase="false"> ' +
+              '    <ogc:PropertyName>language</ogc:PropertyName> ' +
+              '    <ogc:Literal>eng</ogc:Literal> ' +
+              '   </ogc:PropertyIsNotEqualTo> ' +
+              ' </ogc:And> ' +
+              '</ogc:Filter> ' +
+              '</csw:Constraint>'
+        );
+                
+        t.delay_call(config.cswWait, function () {
+           t.eq(nRecords, 7, "Matched records with something else than 'eng' as language");
+        });
+      }      
+      
+      function test_languageSearch3(t) {
+        t.plan(1);
+        executeGetRecords(
+              '<csw:Constraint version="1.1.0"> ' + 
+              '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"> ' +
+              ' <ogc:And> ' +
+              '   <ogc:PropertyIsLike wildCard="*" singleChar="." escapeChar="!"> ' +
+              '    <ogc:PropertyName>language</ogc:PropertyName> ' +
+              '    <ogc:Literal>eng</ogc:Literal> ' +
+              '   </ogc:PropertyIsLike> ' +
+              ' </ogc:And> ' +
+              '</ogc:Filter> ' +
+              '</csw:Constraint>'
+        );
+                
+        t.delay_call(config.cswWait, function () {
+           t.eq(nRecords, 132, "Matched records that contains 'eng' as language");
+        });
+      }      
+
+      /*
+       * FIXME: this test case fails becuase Lucene indexing is not case-insensitive
+       */
+      function XXXtest_languageSearch4(t) {
+        t.plan(1);
+        executeGetRecords(
+              '<csw:Constraint version="1.1.0"> ' + 
+              '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"> ' +
+              ' <ogc:And> ' +
+              '   <ogc:PropertyIsEqualTo matchCase="false"> ' +
+              '    <ogc:PropertyName>language</ogc:PropertyName> ' +
+              '    <ogc:Literal>ENG</ogc:Literal> ' +
+              '   </ogc:PropertyIsEqualTo> ' +
+              ' </ogc:And> ' +
+              '</ogc:Filter> ' +
+              '</csw:Constraint>'
+        );
+                
+        t.delay_call(config.cswWait, function () {
+           t.eq(nRecords, 132, "Matched records with 'ENG' as language");
+        });
+      }      
+
+      /*
+       * FIXME: this test case fails becuase Lucene indexing is not case-insensitive
+       */
+      function XXXtest_languageSearch5(t) {
+        t.plan(1);
+        executeGetRecords(
+              '<csw:Constraint version="1.1.0"> ' + 
+              '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"> ' +
+              ' <ogc:And> ' +
+              '   <ogc:PropertyIsLike wildCard="*" singleChar="." escapeChar="!"> ' +
+              '    <ogc:PropertyName>language</ogc:PropertyName> ' +
+              '    <ogc:Literal>ENG</ogc:Literal> ' +
+              '   </ogc:PropertyIsLike> ' +
+              ' </ogc:And> ' +
+              '</ogc:Filter> ' +
+              '</csw:Constraint>'
+        );
+                
+        t.delay_call(config.cswWait, function () {
+           t.eq(nRecords, 132, "Matched records that contains 'ENG' as language");
+        });
+      }      
+
+      function test_titleSearch1(t) {
+        t.plan(1);
+        executeGetRecords(
+              '<csw:Constraint version="1.1.0"> ' + 
+              '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"> ' +
+              ' <ogc:And> ' +
+              '   <ogc:PropertyIsEqualTo matchCase="true"> ' +
+              '    <ogc:PropertyName>title</ogc:PropertyName> ' +
+              '    <ogc:Literal>Livestock</ogc:Literal> ' +
+              '   </ogc:PropertyIsEqualTo> ' +
+              ' </ogc:And> ' +
+              '</ogc:Filter> ' +
+              '</csw:Constraint>'
+        );
+                
+        t.delay_call(config.cswWait, function () {
+           t.eq(nRecords, 3, "Matched record that have 'Livestock' as title");
+        });
+      }
+
+      function test_titleSearch2(t) {
+        t.plan(1);
+        executeGetRecords(
+              '<csw:Constraint version="1.1.0"> ' + 
+              '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"> ' +
+              ' <ogc:And> ' +
+              '   <ogc:PropertyIsEqualTo matchCase="false"> ' +
+              '    <ogc:PropertyName>title</ogc:PropertyName> ' +
+              '    <ogc:Literal>LIVESTOCK</ogc:Literal> ' +
+              '   </ogc:PropertyIsEqualTo> ' +
+              ' </ogc:And> ' +
+              '</ogc:Filter> ' +
+              '</csw:Constraint>'
+        );
+                
+        t.delay_call(config.cswWait, function () {
+           t.eq(nRecords, 3, "Matched record that have 'LIVESTOCK' as title");
+        });
+      }      
+
+      function test_titleSearch3(t) {
+        t.plan(1);
+        executeGetRecords(
+              '<csw:Constraint version="1.1.0"> ' + 
+              '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"> ' +
+              ' <ogc:And> ' +
+              '   <ogc:PropertyIsLike wildCard="*" singleChar="." escapeChar="!"> ' +
+              '    <ogc:PropertyName>title</ogc:PropertyName> ' +
+              '    <ogc:Literal>Livestock</ogc:Literal> ' +
+              '   </ogc:PropertyIsLike> ' +
+              ' </ogc:And> ' +
+              '</ogc:Filter> ' +
+              '</csw:Constraint>'
+        );
+                
+        t.delay_call(config.cswWait, function () {
+           t.eq(nRecords, 3, "Matched records that contains 'Livestock' in title");
+        });
+      }
+
+      function test_titleSearch4(t) {
+        t.plan(1);
+        executeGetRecords(
+              '<csw:Constraint version="1.1.0"> ' + 
+              '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"> ' +
+              ' <ogc:And> ' +
+              '   <ogc:PropertyIsLike wildCard="*" singleChar="." escapeChar="!"> ' +
+              '    <ogc:PropertyName>title</ogc:PropertyName> ' +
+              '    <ogc:Literal>LIVESTOCK</ogc:Literal> ' +
+              '   </ogc:PropertyIsLike> ' +
+              ' </ogc:And> ' +
+              '</ogc:Filter> ' +
+              '</csw:Constraint>'
+        );
+                
+        t.delay_call(config.cswWait, function () {
+           t.eq(nRecords, 3, "Matched records that contains 'LIVESTOCK' in title");
+        });
+      }
+
+      function test_identifierSearch(t) {
+        t.plan(1);
+        executeGetRecords(
+              '<csw:Constraint version="1.1.0"> ' + 
+              '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"> ' +
+              ' <ogc:And> ' +
+              '   <ogc:PropertyIsEqualTo matchCase="false"> ' +
+              '    <ogc:PropertyName>identifier</ogc:PropertyName> ' +
+              '    <ogc:Literal>9987d975-51f3-4ad5-91d5-d12755abed96</ogc:Literal> ' +
+              '   </ogc:PropertyIsEqualTo> ' +
+              ' </ogc:And> ' +
+              '</ogc:Filter> ' +
+              '</csw:Constraint>'
+        );
+                
+        t.delay_call(config.cswWait, function () {
+           t.eq(nRecords, 1, "Matched records that are equal to '9987d975-51f3-4ad5-91d5-d12755abed96' in identifier");
+        });
+      }
+
+      /*
+       * FIXME: this test case fails because of case-sensitive indexing on Lucene
+       */
+      function XXtest_identifierSearchMixedCase(t) {
+        t.plan(1);
+        executeGetRecords(
+              '<csw:Constraint version="1.1.0"> ' + 
+              '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"> ' +
+              ' <ogc:And> ' +
+              '   <ogc:PropertyIsEqualTo matchCase="false"> ' +
+              '    <ogc:PropertyName>identifier</ogc:PropertyName> ' +
+              '    <ogc:Literal>9987D975-51F3-4ad5-91d5-d12755abed96</ogc:Literal> ' +
+              '   </ogc:PropertyIsEqualTo> ' +
+              ' </ogc:And> ' +
+              '</ogc:Filter> ' +
+              '</csw:Constraint>'
+        );
+            
+        t.delay_call(config.cswWait, function () {
+           t.eq(nRecords, 1, "Matched records that are equal to '9987D975-51F3-4ad5-91d5-d12755abed96' in identifier");
+        });
+      }
+
+      function test_subjectSearch1(t) {
+        t.plan(1);
+        executeGetRecords(
+              '<csw:Constraint version="1.1.0"> ' + 
+              '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"> ' +
+              ' <ogc:And> ' +
+              '   <ogc:PropertyIsLike wildCard="*" singleChar="." escapeChar="!"> ' +
+              '    <ogc:PropertyName>subject</ogc:PropertyName> ' +
+              '    <ogc:Literal>cattle</ogc:Literal> ' +
+              '   </ogc:PropertyIsLike> ' +
+              ' </ogc:And> ' +
+              '</ogc:Filter> ' +
+              '</csw:Constraint>'
+        );
+                
+        t.delay_call(config.cswWait, function () {
+           t.eq(nRecords, 3, "Matched records that contains 'cattle' in subject");
+        });
+      }
+
+      /*
+       * FIXME: this test case fails because the indexing of Lucene is case-sensitive
+       */
+      function XXXtest_subjectSearch2(t) {
+        t.plan(1);
+        executeGetRecords(
+              '<csw:Constraint version="1.1.0"> ' + 
+              '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"> ' +
+              ' <ogc:And> ' +
+              '   <ogc:PropertyIsLike wildCard="*" singleChar="." escapeChar="!"> ' +
+              '    <ogc:PropertyName>subject</ogc:PropertyName> ' +
+              '    <ogc:Literal>CATTLe</ogc:Literal> ' +
+              '   </ogc:PropertyIsLike> ' +
+              ' </ogc:And> ' +
+              '</ogc:Filter> ' +
+              '</csw:Constraint>'
+        );
+            
+        t.delay_call(config.cswWait, function () {
+           t.eq(nRecords, 3, "Matched records that contains 'CATTLe' in subject");
+        });
+      }
+
+      function test_subjectSearch3(t) {
+        t.plan(1);
+        executeGetRecords(
+              '<csw:Constraint version="1.1.0"> ' + 
+              '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"> ' +
+              ' <ogc:And> ' +
+              '   <ogc:PropertyIsEqualTo wildCard="*" singleChar="." escapeChar="!"> ' +
+              '    <ogc:PropertyName>subject</ogc:PropertyName> ' +
+              '    <ogc:Literal>landuse</ogc:Literal> ' +
+              '   </ogc:PropertyIsEqualTo> ' +
+              ' </ogc:And> ' +
+              '</ogc:Filter> ' +
+              '</csw:Constraint>'
+        );
+                
+        t.delay_call(config.cswWait, function () {
+           t.eq(nRecords, 5, "Matched record that have 'landuse' as subject");
+        });
+      }
+
+      function test_subjectSearch4(t) {
+        t.plan(1);
+        executeGetRecords(
+              '<csw:Constraint version="1.1.0"> ' + 
+              '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"> ' +
+              ' <ogc:And> ' +
+              '   <ogc:PropertyIsLike matchCase="false"> ' +
+              '    <ogc:PropertyName>subject</ogc:PropertyName> ' +
+              '    <ogc:Literal>landus*</ogc:Literal> ' +
+              '   </ogc:PropertyIsLike> ' +
+              ' </ogc:And> ' +
+              '</ogc:Filter> ' +
+              '</csw:Constraint>'
+        );
+                
+        t.delay_call(config.cswWait, function () {
+           t.eq(nRecords, 5, "Matched record that have 'landus*' as subject");
+        });
+      }      
+    </script>
+</head>
+<body>
+  <div id="map" style="width: 512px; height: 256px"></div>
+</body>
+</html>
