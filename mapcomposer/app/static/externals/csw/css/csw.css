@@ -1,0 +1,65 @@
+.icon-table{
+    background-image:url(../img/table.png) !important;
+}
+
+.icon-grid {
+    background-image:url(../img/grid.png) !important;
+}
+
+.icon-expand-all {
+	background-image:url(../img/add.png) !important;
+}
+
+.icon-collapse-all{
+	background-image:url(../img/delete.png) !important;
+}
+
+.icon-search{
+	background-image:url(../img/magnifier.png) !important;
+}
+.expander-button-table button{
+color: #333333;
+    font: 11px arial,tahoma,verdana,helvetica;
+}
+.icon-reset{
+	background-image:url(../img/decline.png) !important;
+}
+.icon-layers{
+	background-image:url(../img/layers.png) !important;
+}
+.icon-info{
+	background-image:url(../img/information.png) !important;
+}
+.icon-mapgo{
+	background-image:url(../img/map_go.png) !important;
+}
+
+img.csw-viewer-thumb{
+    float:left;
+    margin: 5px 10px;
+}
+.catalog-desc-warning{
+    padding-left : 20px;
+    background-image:url(../img/error.png) !important;
+    background-position: 0 50%;
+    background-repeat:no-repeat;
+    color: d5a03c;
+    text-align:justify;
+}
+.catalog-desc-ok{
+    padding-left : 20px;
+    background-image:url(../img/tick.png) !important;
+    background-position: 0 50%;
+    background-repeat:no-repeat;
+    text-align:justify;
+}
+.catalog-desc-error{
+    padding-left : 20px;
+    background-image:url(../img/cross.png) !important;
+    background-position: 0 50%;
+    background-repeat:no-repeat;
+    text-align:justify;
+    color:red;
+
+}
+

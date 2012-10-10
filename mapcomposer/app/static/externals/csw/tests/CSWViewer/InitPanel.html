@@ -1,0 +1,184 @@
+<!--
+  InitPanel.html
+  
+  Tests the initialization of the CWSWPanel and its API 
+ -->
+<html>
+  <head>
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="../../lib/ext-3.3.1/resources/css/ext-all.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/csw.css" />
+        
+    <!-- OpenLayers scripts -->
+    <script type="text/javascript" src="../../lib/OpenLayers-2.10/OpenLayers.js"></script>
+        
+    <!-- ExtJS scripts -->       
+    <script type="text/javascript" src="../../lib/ext-3.3.1/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../lib/ext-3.3.1/ext-all.js"></script>  
+    <script type="text/javascript" src="../../lib/ResourceBundle/PropertyReader.js"></script>
+    <script type="text/javascript" src="../../lib/ResourceBundle/Bundle.js"></script>
+        
+    <!-- Ext UX scripts -->
+    <script type="text/javascript" src="../../lib/ext-3.3.1/ux/RowExpander.js"></script>
+        
+    <!-- CSW scripts -->
+    <script type="text/javascript" src="../../tests/CSWViewer/config.js"></script>
+    <script type="text/javascript" src="../../src/CSWRecord.js"></script>
+    <script type="text/javascript" src="../../src/CSWRecordsReader.js"></script>
+    <script type="text/javascript" src="../../src/CSWHttpProxy.js"></script>
+    <script type="text/javascript" src="../../src/CSWGrid.js"></script>
+    <script type="text/javascript" src="../../src/CSWCatalogChooser.js"></script>
+    <script type="text/javascript" src="../../src/CSWPagingToolbar.js"></script>
+    <script type="text/javascript" src="../../src/CSWSearchTool.js"></script>
+    <script type="text/javascript" src="../../src/CSWPanel.js"></script>
+
+    <!-- Test settings -->
+    <script type="text/javascript" src="../../tests/CSWViewer/settings.js"></script>
+    
+    <!-- Test cases -->    
+    <script type="text/javascript">
+     function test_init(t) {
+        t.plan(1);
+        t.wait_result(config.i18nWait);
+        t.ok(true, "panel initialized");
+     }
+     
+     function test_cswServer(t) {
+        t.wait_result(config.i18nWait);
+        setupTest();
+        t.plan(2);
+
+        request = OpenLayers.Request.GET(
+          OpenLayers.Util.applyDefaults(
+            {
+              url: config.catalogs[0].url,
+              params: {
+                Request: "GetCapabilities",
+                Service: "CSW"
+              }
+            },
+            {
+              success : function(response) {
+                t.ok(true, "CSW Server answered");
+              },
+              failure: function (response) {
+                t.ok(false, "CSW Server did not answer");
+              }
+            }
+          )
+        );
+        t.wait_result(config.cswWait);
+        
+        request = OpenLayers.Request.GET(
+          OpenLayers.Util.applyDefaults(
+            {
+              url: config.catalogs[0].url,
+              params: {
+                Request: "GetCapabilities",
+                Service: "XXX"
+              }
+            }, 
+            {
+              success : function(response) {
+                if (response.responseText.indexOf("InvalidParameterValue") > -1) {
+                  t.ok(true, "CSW Server detected invalid parameter");
+                } else {
+                  t.ok(false, "CSW Server did not dectect error");
+                }
+              },
+              failure: function (response) {
+                t.ok(false, "CSW Server did not answer");
+              }
+            }
+          )
+        );
+        t.wait_result(config.cswWait);
+      }
+
+      function test_bbox(t) {
+        setupTest();
+        t.plan(1);
+
+        request = OpenLayers.Request.GET(
+          OpenLayers.Util.applyDefaults(
+            {
+              url: config.catalogs[0].url,
+              params: {
+                Request: "GetRecords",
+                Service: "CSW",
+                Version: config.cswVersion,
+                typeNames: "csw:Record",
+                elementSetName: "brief",
+                constraintLanguage: "CQL_TEXT",
+                constraintLanguageVersion: config.cqlVersion
+              }
+            }, 
+            {
+              success : function(response) {
+                if (response.responseText.indexOf("numberOfRecordsMatched") > -1) {
+                  t.ok(true, "CSW Server worked");
+                } else {
+                  t.ok(false, "CSW Server did not answer correctly");
+                }
+              },
+              failure: function (response) {
+                t.ok(false, "CSW Server did not answer");
+              }
+            }
+          )
+        );
+        t.wait_result(config.cswWait);
+      }
+
+      function test_panelEvents(t) {
+        setupTest();
+        t.plan(3);
+        
+        // Mock-up functions to test events
+        panel.zoom= function () {
+          if (this.onZoomToExtent != null) {
+            var evt= new Object();
+            evt.bbox= new OpenLayers.Bounds(-180, -90, 180, 90);
+            this.onZoomToExtent(evt);
+          }
+        }
+        panel.showWMSResource= function () {
+          if (this.onLayerShown != null) {
+            var evt= new Object();
+            evt.layer= "testLayer";
+            this.onLayerShown(evt);
+          }
+        }
+        
+        // Checks empty callbaxks do not cause exceptions
+        try {
+          panel.zoom();
+          panel.showWMSResource();
+          t.ok(true, "When callbacks are not defined, CSWPanel doesn't break");
+        } catch(e) {
+          t.ok(false, "Error when callbacks are not defined");
+        }
+        
+        // Callbacks definition
+        panel.onZoomToExtent= function (evt) {
+          t.ok(
+            evt.bbox.equals(
+              new OpenLayers.Bounds(-180, -90, 180, 90)
+            ),
+            "On zoom caught with correct parameters")
+        }          
+        panel.onLayerShown= function (evt) {
+          t.ok(evt.layer == "testLayer",
+          "On layer shown caught with correct parameters")
+        }
+          
+        // Test callbacks            
+        panel.zoom();
+        panel.showWMSResource();
+      }
+    </script>
+  </head>
+  <body>
+    <div id="map" style="width: 512px; height: 256px"></div>
+  </body>
+</html>
