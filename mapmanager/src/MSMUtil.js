@@ -567,7 +567,9 @@ var Shortener = Google.Shortener = function(options) {
 Shortener.prototype.shorten = function( longUrl, callback ) {
 
 //disabled shorting URL!
-	callback( longUrl );
+	setTimeout(function() {		//simulate ajax delay
+		callback( longUrl );
+	}, 800);
 /*
 	var apikey = this.config.googleApi,
 		gapi_proxyUrl = this.config.proxyUrl + '?url=' + escape('https://www.googleapis.com/urlshortener/v1/url?key='+apikey);
