@@ -45,24 +45,24 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         }
         config.tools = tools;
         
-//		if(config.customTools)
-//		{
-//			for(var c=0; c < config.customTools.length; c++)
-//			{
-//				var toolIsDefined = false;
-//				for(var t=0; t < config.tools.length; t++)
-//				{
-//					if( config.tools[t]['ptype'] && config.tools[t]['ptype'] == config.customTools[c]['ptype'] ) {	//plugin already defined
-//						toolIsDefined = true;
-//						break;
-//					}
-//				}
-//			
-//				if(!toolIsDefined)
-//					config.tools.push(config.customTools[c]);
-//			}
-//		} 
-		       
+		if(config.customTools)
+		{
+			for(var c=0; c < config.customTools.length; c++)
+			{
+				var toolIsDefined = false;
+				for(var t=0; t < config.tools.length; t++)
+				{
+					if( config.tools[t]['ptype'] && config.tools[t]['ptype'] == config.customTools[c]['ptype'] ) {	//plugin already defined
+						toolIsDefined = true;
+						break;
+					}
+				}
+			
+				if(!toolIsDefined)
+					config.tools.push(config.customTools[c]);
+			}
+		}
+		
         GeoExplorer.Viewer.superclass.applyConfig.call(this, config);
     },
 

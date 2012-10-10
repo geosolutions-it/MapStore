@@ -45,11 +45,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     // End i18n.
 
     constructor: function(config) {
-    
-//		config.customTools = [{	//for testing customTools, ( comment  {ptype: "gxp_googleearth",...} )
-//		    ptype: "gxp_googleearth",
-//		    actionTarget: {target: "paneltbar", index: 24} 
-//		}];
 
 		if(!config.tools)
 		{
@@ -103,9 +98,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            actionTarget: {target: "layertree.contextMenu", index: 0}
 		        },{
 		            ptype:"gxp_geonetworksearch",
-		            actionTarget:[
-		               "layertree.contextMenu"
-		            ]
+		            actionTarget: ["layertree.contextMenu"]
 		        }, {
 		            ptype: "gxp_zoomtoextent",
 		            actionTarget: {target: "paneltbar", index: 15}
@@ -142,10 +135,10 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            actionTarget: {target: "paneltbar", index: 23}
 		        },
 		        //https://github.com/geosolutions-it/mapstore/wiki/WFS-Search
-				{
+				/*{
 				  "ptype":"gxp_wfssearchbox",
 				  "outputConfig": {
-					 "url":"http://localhost:8080/geoserver/sf/ows?",
+					 "url":"http://asus:8080/geoserver/sf/ows?",
 					 "typeName":"sf:archsites",
 					 "recordModel":[
 						{
@@ -175,7 +168,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				  "zoom":18,
 				  "outputTarget":"paneltbar",
 				  "index":30
-			   },
+			   },*/
 			   /*{	//wfssearchbox example using united states populations, for testing polygons search
 				  "ptype":"gxp_wfssearchbox",
 				  "outputConfig": {

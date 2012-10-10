@@ -564,13 +564,15 @@ var Shortener = Google.Shortener = function(options) {
  *   https://developers.google.com/url-shortener/v1/getting_started
  *
  */
-Shortener.prototype.shorten = function( url, callback ) {
+Shortener.prototype.shorten = function( longUrl, callback ) {
 
+//disabled shorting URL!
+	callback( longUrl );
+/*
 	var apikey = this.config.googleApi,
 		gapi_proxyUrl = this.config.proxyUrl + '?url=' + escape('https://www.googleapis.com/urlshortener/v1/url?key='+apikey);
 
-	var jsonparams = Ext.util.JSON.encode({ longUrl: url });
-
+	var jsonparams = Ext.util.JSON.encode({ longUrl: longUrl });
 	var myAjax = new Ext.data.Connection();
 	myAjax.request({
 		url: gapi_proxyUrl,
@@ -581,13 +583,17 @@ Shortener.prototype.shorten = function( url, callback ) {
 		params: jsonparams,
 		scope: this,
 		success: function(response, opts) {
-			var json = Ext.util.JSON.decode( response.responseText );
-			callback(json);
+			var json = Ext.util.JSON.decode( response.responseText ),
+				shortUrl = json.id;
+			//https://developers.google.com/url-shortener/v1/getting_started#shorten
+			//for returned properties
+			callback(shortUrl);
 		},
 		failure:  function(response, opts) {
 			this.onFailure_(response.statusText);
 		}
 	});
+//*/
 };
 
 /** 

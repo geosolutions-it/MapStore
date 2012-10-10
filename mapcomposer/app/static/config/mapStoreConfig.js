@@ -2,7 +2,7 @@
    "geoStoreBase":"http://localhost:8080/geostore/rest/",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
-   "gsSources":{ 
+   "gsSources": { 
 		"demo1": {
             "ptype": "gxp_wmssource",
             "title": "GeoSolutions server",

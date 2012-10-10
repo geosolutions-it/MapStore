@@ -772,30 +772,30 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 					
 						var shortener = new Google.Shortener({
 								config: grid.config
-							}).failure(function(response) {
-								console.error(response);
+							}).failure(function(resp) {
+								console.error(resp);
 							});
 						
-						shortener.shorten(longUrl, function(response) {	// send request to Google
+						shortener.shorten(longUrl, function(shortUrl) {
 
 									// inject social links within the div element
-									var socialDiv = document.getElementById(divid);
+									var socialDiv = document.getElementById( divid );
+
+									//console.log(divid);
 									
 									// we need a table, otherwise IE7 does not display the button correctly
 									var table = document.createElement('table');
 									table.width = '200px';
 									var tbody = document.createElement('tbody');
 									var row = document.createElement('tr');
-									table.appendChild(tbody);
+									table.appendChild( tbody );
 									tbody.appendChild( row );
 									socialDiv.appendChild( table );
 									
-									// <div class="fb-like" data-href=\'{[this.getShortLink(values.id, false)]}\' 
-									//   data-send="false" data-layout="button_count" data-width="80" data-show-faces="true"></div>
 									var fb = document.createElement('div');
 									// IE7 problem: http://stackoverflow.com/questions/9919095/dom-element-addclass-not-working-in-ie7
 									// b.setAttribute('class', 'fb-like');
-									fb.setAttribute('data-href', response.id);
+									fb.setAttribute('data-href', shortUrl);
 									fb.setAttribute('data-send', 'false');
 									fb.setAttribute('data-layout', 'button_count');
 									fb.setAttribute('data-show-faces', 'true');
@@ -823,16 +823,13 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				                            }
 				                            fun(document, 'script', 'facebook-jssdk');
 				                    }
-				
-									// '<a href="http://opensdi.geo-solutions.it/" class="twitter-share-button" 
-									// data-url=\'{[this.getShortLink(values.id, false)]}\' data-text="MapComposer" 
-									// data-count="horizontal" data-via="geosolutions_it" data-lang="' + this.lang + '"></a>'+
+				                    
 									var tw = document.createElement('a');
 									tw.setAttribute('href', 'http://opensdi.geo-solutions.it/');
 									// IE7 problem http://stackoverflow.com/questions/9919095/dom-element-addclass-not-working-in-ie7
 									// tw.setAttribute('class', 'twitter-share-button');
 									tw.className = 'twitter-share-button';
-									tw.setAttribute('data-url', response.id);
+									tw.setAttribute('data-url', shortUrl);
 									tw.setAttribute('data-text', 'MapComposer');
 									tw.setAttribute('data-count', 'horizontal');
 									tw.setAttribute('data-via', 'geosolutions_it');
@@ -847,7 +844,6 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									if (typeof (twttr) != 'undefined') {
 										twttr.widgets.load();
 									} else {
-									//$.getScript('http://platform.twitter.com/widgets.js');
 										Ext.Loader.load('http://platform.twitter.com/widgets.js');
 									}
 							});
@@ -857,12 +853,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 					/**
                     * Private: getShortLink
                     * 
-                    * 
                     * return - {string} get map composer short link or null if not present
                     * 
                     */
-					getShortLink: function(id, sendRequest){
-						console.log('looking for ' + id + ', found: ' +grid.shortUrls[id]);
+					getShortLink: function(id, sendRequest) {
 						
 						// verify if we already have this uri in cache
 						if ( grid.shortUrls[id] === undefined && sendRequest ) {
@@ -871,18 +865,12 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 							var longUrl = grid.murl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+id;
 							var shortener = new Google.Shortener({
 									config: grid.config
-								}).failure(function(response){
-									console.error(response);
-									/*Ext.Msg.show({
-								       title: grid.metadataFailSuccessTitle,
-								       msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
-								       buttons: Ext.Msg.OK,
-								       icon: Ext.MessageBox.ERROR
-								    });*/
+								}).failure(function(resp){
+									console.error(resp);
 								});
 
-							shortener.shorten(longUrl, function(response) {
-										grid.shortUrls[id] = response.id;
+							shortener.shorten(longUrl, function(shortUrl) {
+										grid.shortUrls[id] = shortUrl;
 										console.log('created short url ' + grid.shortUrls[id] + ' for map ' + id);
 								});
 						}

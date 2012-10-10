@@ -87,7 +87,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         graphicZIndex: 11,
         backgroundGraphicZIndex: 10
 	},
-		
+
 	markerTemplateSelected: {
 		label: "${label}",
 		fontWeight: "bold",
