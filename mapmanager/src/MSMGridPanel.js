@@ -1476,7 +1476,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         '</table>' +
                     '</td>';
 
-						tpl += '<td >'+
+				tpl += '<td >'+
 						 '<tpl if="this.isNotGuest()">'+
 	                        '<table class="x-btn x-btn-text-icon" style="width:30px" cellspacing="0" >'+
 	                        '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getCloneButton(values)]}\'>'+
@@ -1515,31 +1515,15 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	                        '</table>' +
 						  '</tpl>'+
 	                    '</td>';
-					
+	                    
               tpl +=  '</tr>'+
             '</table>'+
-        '</div>' +
-        
-		   '<tpl if="this.getShortLink(id, true)!=null">'+
-		   
-            '<table align="left" cellspacing="0" cellpadding="0" border="0" style="table-layout:auto">'+
-                '<tr>'+
-                    '<td align="left">'+
-                        '<span> <div class="fb-like" data-href=\'{[this.getShortLink(values.id, false)]}\' data-send="false" data-layout="button_count" data-width="80" data-show-faces="true"></div></span>'+
-                    '</td>'+
-                    '<td align="left">'+
-                        '<a href="http://opensdi.geo-solutions.it/" class="twitter-share-button" data-url=\'{[this.getShortLink(values.id, false)]}\' data-text="MapComposer" data-count="horizontal" data-via="geosolutions_it" data-lang="' + this.lang + '"></a>'+
-                    '</td>'+
-                '</tr>'+
-            '</table>'+
-            
-		  	'</tpl>';
+        '</div>';
 		
-			tpl +=  '</tr></table></div><br/>';
+			tpl +=  '</tr></table></div><br />';
        
             tpl += '<div id=\'{[this.getSocialLinksId(values.id)]}\' style=\'float:left\' ></div>';
-            
-		
+        
 		return tpl;
 	}
 
