@@ -780,8 +780,6 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
 									// inject social links within the div element
 									var socialDiv = document.getElementById( divid );
-
-									//console.log(divid);
 									
 									// we need a table, otherwise IE7 does not display the button correctly
 									var table = document.createElement('table');
@@ -812,16 +810,16 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									if (typeof (FB) != 'undefined') {
 				                        FB.XFBML.parse();
 				                    } else {
-				                        var langFB = grid.lang == "en" ? "en_US" : "it_IT";;
+										var langFB = grid.lang == "en" ? "en_US" : "it_IT";;
 
-				                            var fun = function(d, s, id) {
-				                                var js, fjs = d.getElementsByTagName(s)[0];
-				                                if (d.getElementById(id)) return;
-				                                js = d.createElement(s); js.id = id;
-				                                js.src = "//connect.facebook.net/" + langFB + "/all.js#xfbml=1";
-				                                fjs.parentNode.insertBefore(js, fjs);
-				                            }
-				                            fun(document, 'script', 'facebook-jssdk');
+										var fun = function(d, s, id) {
+											var js, fjs = d.getElementsByTagName(s)[0];
+											if (d.getElementById(id)) return;
+											js = d.createElement(s); js.id = id;
+											js.src = "//connect.facebook.net/" + langFB + "/all.js#xfbml=1";
+											fjs.parentNode.insertBefore(js, fjs);
+										}
+										fun(document, 'script', 'facebook-jssdk');
 				                    }
 				                    
 									var tw = document.createElement('a');
@@ -829,8 +827,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									// IE7 problem http://stackoverflow.com/questions/9919095/dom-element-addclass-not-working-in-ie7
 									// tw.setAttribute('class', 'twitter-share-button');
 									tw.className = 'twitter-share-button';
-									tw.setAttribute('data-url', shortUrl);
-									tw.setAttribute('data-text', 'MapComposer');
+									
+									//tw.setAttribute('data-url', shortUrl );
+									tw.setAttribute('data-text', 'MapComposer: '+ shortUrl );
 									tw.setAttribute('data-count', 'horizontal');
 									tw.setAttribute('data-via', 'geosolutions_it');
 									tw.setAttribute('data-lang', grid.lang);
@@ -871,7 +870,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
 							shortener.shorten(longUrl, function(shortUrl) {
 										grid.shortUrls[id] = shortUrl;
-										console.log('created short url ' + grid.shortUrls[id] + ' for map ' + id);
+										//console.log('created short url ' + grid.shortUrls[id] + ' for map ' + id);
 								});
 						}
 						

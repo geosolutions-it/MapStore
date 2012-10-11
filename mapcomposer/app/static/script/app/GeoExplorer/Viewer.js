@@ -79,7 +79,6 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         
         this.on("ready", function() {
         	this.toolbar.enable();
-	        console.log('initPortal READY');
         }, this);
 
         this.mapPanelContainer = new Ext.Panel({

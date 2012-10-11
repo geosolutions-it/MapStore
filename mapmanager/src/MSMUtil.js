@@ -144,9 +144,9 @@
 	 * Return:
 	 */
 	ContentProvider.prototype.initialize = function(){
-		console.log( 'created GeoStore.ContentProvider');
-		console.log( 'authorization: ' + this.authorization_ );
-		console.log( 'base url: ' + this.baseUrl_);
+//		console.log( 'created GeoStore.ContentProvider');
+//		console.log( 'authorization: ' + this.authorization_ );
+//		console.log( 'base url: ' + this.baseUrl_);
 	};
 	
 	/** 
@@ -369,7 +369,7 @@
 				var json = Ext.util.JSON.decode(response.responseText);
 				callback( response );
 	       },
-	       failure:  function(response, opts){
+	       failure:  function(response, opts) {
 	       		var json = Ext.util.JSON.decode(response.responseText);
 				console.log(Ext.util.JSON.decode(json));
 	       }
