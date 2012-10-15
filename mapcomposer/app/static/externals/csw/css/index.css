@@ -1,0 +1,138 @@
+/*  HTML5 ? Boilerplate  
+
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+*/
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+body {
+	text-align:center;
+	background: url(../img/background.jpg) #51534E;
+	background-size: 100%;
+	-moz-background-size: 100%;
+	-webkit-background-origin: 100%;
+	font-family: Helvetica, Arial, Sans-serif;
+}
+body div{
+text-align:left;
+}
+.content {
+	width: 920px;
+	margin: 45px auto 0 auto;
+	overflow: hidden;
+}
+.geobatch a {
+	color: #33ccff;
+	text-decoration: none;
+	text-shadow: 0 0 12px rgba(0,0,0, .9);
+}
+.geobatch a:hover {
+	color: #eee;
+}
+.twitter a {
+	background: url(../img/twitter.png) no-repeat right;
+	padding: 0 45px 0 0;
+	height: 45px;
+	float: right;
+	line-height: 50px;
+	display: block;
+	color: #33ccff;
+	text-decoration: none;
+	text-shadow: 0 0 12px rgba(0,0,0, .9);
+}
+.gplus a{
+	/*background: url(../img/gplus.png) no-repeat right;*/
+	padding: 0 0px 0 0;
+	/*height: 45px;*/
+	float: right;
+	line-height: 50px;
+	display: block;
+	color: #33ccff;
+	text-decoration: none;
+	text-shadow: 0 0 12px rgba(0,0,0, .9);
+}
+
+.twitter a:hover {
+	color: #eee;
+}
+.middle {
+	margin: 80px 0 0 500px;
+}
+.middle img {
+	float: left;
+}
+.middle a {
+	color: #33ccff;
+}
+.middle a:hover {
+	color: #ddd;
+}
+.middle p {
+	display: block;
+	font-size: 20px;
+	color: #ddd;
+	text-shadow: 0 0 12px rgba(0,0,0, .9);
+	line-height: 26px;
+	font-weight: lighter;
+	padding: 0 0 0 55px;
+	overflow: hidden;
+	text-shadow: 0 0 20px rgba(0,0,0, .9);
+	
+	
+}
+.middle h1 {
+	text-align:right;
+	color: #33fb66 !important;
+	margin: 35px 0 0 0; 
+	font-size: 50px;
+
+}
+
+.title, .middle  a img.title {
+	float: right !important;
+	/*margin: 0 0 0 0px;*/
+	right: 0px;
+}
+b {
+	font-weight: bold;
+}
+.tester {
+	color: #33fb66 !important;
+	margin: 35px 0 0 0; 
+}
+
+.ss-form {
+	overflow: hidden;
+	padding: 15px 0 15px 55px;
+}
+label {
+	display: none;
+}
+.ss-item input.ss-q-short {
+	font-size: 20px;
+	font-style: italic;
+	color: #bbb;
+	height: 30px;
+	width: 300px;
+		box-shadow: 0 0 10px rgba(0,0,0, .9);
+	-moz-box-shadow: 0 0 10px rgba(0,0,0, .9);
+	-webkit-box-shadow: 0 0 10px rgba(0,0,0, .9);
+	border-radius: 4px;
+}
