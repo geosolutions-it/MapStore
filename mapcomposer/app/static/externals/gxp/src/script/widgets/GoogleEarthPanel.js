@@ -79,7 +79,12 @@ gxp.GoogleEarthPanel = Ext.extend(Ext.Panel, {
              *  will receive two arguments: this plugin and the failure code
              *  (see the Google Earth API docs for details on the failure codes).
              */
-            "pluginfailure"
+            "pluginfailure",
+            /** api: event[pluginready]
+             *  Fires when the instance is ready.  Listeners will receive one
+             *  argument: the GEPlugin instance.
+             */
+            "pluginready"            
         );
 
         gxp.GoogleEarthPanel.superclass.initComponent.call(this);
@@ -159,7 +164,9 @@ gxp.GoogleEarthPanel = Ext.extend(Ext.Panel, {
         this.layers.on("update", this.updateLayers, this);
         
         this.layers.on("add", this.updateLayers, this);
-        
+
+        this.fireEvent("pluginready", this.earth);
+                
         // Set up events. Notice global google namespace.
         // google.earth.addEventListener(this.earth.getView(), 
             // "viewchangeend", 

@@ -453,7 +453,12 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             mapPanel: this.mapPanel,
             listeners: {
                 beforeadd: function(record) {
+	                //console.log('GoogleEarthPanel beforeadd!!!');
+	                
                     return record.get("group") !== "background";
+                },
+                pluginready: function() {
+                	//console.log('GoogleEarthPanel pluginready!!!');
                 }
             }
         });
