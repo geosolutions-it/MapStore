@@ -457,7 +457,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 	                
                     return record.get("group") !== "background";
                 },
-                pluginready: function() {
+                pluginready: function(istance) {
                 	//console.log('GoogleEarthPanel pluginready!!!');
                 }
             }

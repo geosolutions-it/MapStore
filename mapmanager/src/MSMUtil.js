@@ -248,7 +248,7 @@
 		this.beforeFind();
 		
 		// build the uri to invoke
-		var uri = new Uri({'url':this.baseUrl_});
+		var uri = new Uri({'url': this.baseUrl_ });
 		uri.appendPath( this.resourceNamePrefix_ ).appendId( pk );
 		if (params_opt){
 			for( name in params_opt ){
@@ -566,7 +566,8 @@ var Shortener = Google.Shortener = function(options) {
  */
 Shortener.prototype.shorten = function( longUrl, callback ) {
 
-//disabled shorting URL!
+//disabled Google shortener URL!
+
 	setTimeout(function() {		//simulate ajax delay
 		callback( longUrl );
 	}, 800);

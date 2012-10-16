@@ -164,7 +164,7 @@ gxp.GoogleEarthPanel = Ext.extend(Ext.Panel, {
         this.layers.on("update", this.updateLayers, this);
         
         this.layers.on("add", this.updateLayers, this);
-
+        
         this.fireEvent("pluginready", this.earth);
                 
         // Set up events. Notice global google namespace.

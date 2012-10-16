@@ -221,15 +221,21 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * 
     */
     tooltipViewMap: 'Open Map to read only',
-    /**
-    * Property: textCopyMap
-    * {string} string to add in CopyMap button
-    * 
-    */
+	/**
+	 * Property: textCopyMap
+	 * {string} string to add in CopyMap button
+	 * 
+	 */
     textCopyMap: '', //'Clone Map',
     /**
-    * Property: tooltipCopyMap
-    * {string} string to add in CloneMap tooltip
+    * Property: textCopyMap
+    * {string} string to add in CopyMap name
+    * 
+    */
+    textCloneMap: 'Copy of ',
+    /**
+    * Property: textCloneMap
+    * {string} string name prefix for cloned map
     * 
     */
     tooltipCopyMap: 'Make a copy of this map',
@@ -605,11 +611,11 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
              *   mapId - {string} id of the map to be cloned
              *  make a copy of the selected map
              */
-			cloneMap: function(mapId){
+			cloneMap: function(mapId, prefixName) {
 				
 				// TODO refactoring!
 				// this code is repeated several times within this file
-				 var reload = function(){
+				 var reload = function() {
                         grid.getBottomToolbar().bindStore(grid.store, true);
                         grid.getBottomToolbar().doRefresh();
                         expander.collapseAll();
@@ -619,12 +625,12 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			    var auth = grid.login.getToken();
 				// fetch base url
 				var url =  grid.geoBaseMapsUrl; // 'http://localhost:8080/geostore/rest/resources';
-	
+
 				// get the api for GeoStore
-				var geostore = new GeoStore.Maps(
-										{ authorization: auth,
+				var geostore = new GeoStore.Maps({
+										  authorization: auth,
 										  url: url
-										 }).failure( function(response){ 
+										 }).failure( function(response) { 
 											console.error(response); 
 											  Ext.Msg.show({
 	                                             title: grid.metadataFailSuccessTitle,
@@ -633,17 +639,20 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	                                             icon: Ext.MessageBox.ERROR
 	                                          });	
 										});
-				geostore.findByPk(mapId, function(data){
+										
+				geostore.findByPk(mapId, function(data) {
 					// make a copy of the current object
+				
 					var copy = new Object;
-					copy.name = data.name;
+					copy.name = prefixName + data.name;
 					copy.description = data.description;
 					copy.blob = data.blob;
 					copy.owner = grid.login.getCurrentUser();
-					geostore.create(copy, function(data){
+					geostore.create(copy, function(data) {
 						reload();
 					});
-				}, {full:true});
+				}, 
+				{full:true} );
 				
 			},
 			
@@ -950,8 +959,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 					 */
 					bindCloneMapButton: function(id, values){
 						Ext.get(id).on('click', function(e){
-								var mapId = values.id;
-	                            expander.cloneMap(mapId);
+								var mapId = values.id,
+									prefix = grid.textCloneMap;
+									
+	                            expander.cloneMap(mapId,prefix);
 	                    });
 						// if (grid.login.isGuest()){
 						//	Ext.get(id).setVisible(false);
