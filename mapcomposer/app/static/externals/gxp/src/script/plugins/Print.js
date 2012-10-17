@@ -151,15 +151,11 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
 						var notIgnorable = getNotIgnorable(notSupported, this.ignoreLayers);
                         if( notIgnorable.length > 0 ){
 
-                        console.log(notIgnorable);
-                        
                             Ext.Msg.alert(
                                 this.notAllNotPrintableText,
                                 this.notPrintableLayersText + '<br />' + notIgnorable.join(',') +
                                 ( notIgnorable.indexOf('Marker') != -1 ? '<br />'+ this.notPrintableMarkersText : '')
                             );
-                            
-                            //
                             
                         } else {                    
 							createPrintWindow.call(this);

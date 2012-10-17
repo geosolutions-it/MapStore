@@ -251,7 +251,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 					var toolIsDefined = false;
 					for(var t=0; t < config.tools.length; t++)
 					{
-						if( config.tools[t]['ptype'] && config.tools[t]['ptype'] == config.customTools[c]['ptype'] ) {	//plugin already defined
+						//plugin already defined
+						if( config.tools[t]['ptype'] && config.tools[t]['ptype'] == config.customTools[c]['ptype'] ) {
 							toolIsDefined = true;
 							break;
 						}

@@ -81,7 +81,6 @@ var config = {
 		/* NOTE: leave the proxyed servers before the others, in order to make the test cases work */
        catalogs: [
                   /*
-                  {"name": "Demo1GeoSolutions-no proxy", "url": "http://localhost/geonetwork/srv/en/csw", "description": "http://demo1.geo-solutions.it/geonetwork/srv/en/csw"},
                   {"name": "Invalid server-no proxy", "url": "http://localhost/xxx", "description": "Invalid server"},
                   {"name": "Treviso-no proxy", "url": "http://localhost/geonetworktn/srv/it/csw", "description": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw"},
                   {"name": "kscNet-no proxy" , "url": "http://localhost/geonetworkksc/srv/ru/csw", "description" : "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw"},
@@ -92,7 +91,6 @@ var config = {
                   {"name": "SADC-no proxy", "url": "http://localhost/geonetworksadc/srv/en/csw", "description" : "http://www.sadc.int/geonetwork/srv/en/csw"},
                   {"name": "MAPAS-no proxy", "url": "http://localhost/geonetworkmapas/srv/en/csw", "description" : "http://mapas.mma.gov.br/geonetwork/srv/en/csw"},
 */
-                  {"name": "Demo1GeoSolutions" , "url": "http://demo1.geo-solutions.it/geonetwork/srv/en/csw", "description": "Iternal GeoNetwork demo"},
                   {"name": "Treviso", "url": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw", "description": "Treviso Geonetwork"},
         		  {"name": "kscNet", "url": "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw", "description": "kscNet"},
                   {"name": "CSI-CGIAR", "url": "http://geonetwork.csi.cgiar.org/geonetwork/srv/en/csw", "description" : "CSI-CGIAR"},

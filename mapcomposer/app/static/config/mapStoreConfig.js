@@ -3,12 +3,6 @@
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
    "gsSources":{ 
-		"demo1": {
-            "ptype": "gxp_wmssource",
-            "title": "GeoSolutions server",
-            "projection":"EPSG:900913",
-            "url": "http://demo1.geo-solutions.it/geoserver/ows"
-        },
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
 		}, 
@@ -71,7 +65,6 @@
 	"cswconfig": {
 		"catalogs": [
 		        {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina", "metaDataOptions":{"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page","idParam":"uuid","idIndex":0}},
-				{"name": "Demo1GeoSolutions" , "url": "http://demo1.geo-solutions.it/geonetwork/srv/en/csw", "description": "Iternal GeoNetwork demo"},
 				{"name": "Treviso", "url": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw", "description": "Treviso Geonetwork"},
 				{"name": "kscNet", "url": "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw", "description": "kscNet"},
 				{"name": "CSI-CGIAR", "url": "http://geonetwork.csi.cgiar.org/geonetwork/srv/en/csw", "description" : "CSI-CGIAR"},
