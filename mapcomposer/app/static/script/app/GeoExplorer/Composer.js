@@ -220,7 +220,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            },
 		            outputTarget:"paneltbar",
 		            index: 25
-		        },/*{
+		        }, /*{
 		            ptype: "gxp_nominatimgeocoder",
 		            //actionTarget: {target: "paneltbar", index: 28},
 		            outputConfig:{
@@ -234,11 +234,11 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            },
 		            outputTarget:"paneltbar",
 		            index: 26
-		        },*/{
+		        },*/ {
 		            ptype: "gxp_print",
 		            customParams: { outputFilename: 'mapstore-print' },
 		            //printService: "http://192.168.1.43:8080/acque/geoserver/pdf/",
-		            //printService: "http://asus:8080/geoserver/pdf/",
+		            printService: "http://localhost:8080/geoserver/pdf/",
 		            legendPanelId: 'legendPanel',
 		            actionTarget: {target: "paneltbar", index: 4}
 		        }

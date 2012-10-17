@@ -73,6 +73,8 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
 
     notPrintableLayersText: "Following layers are not supported for print:",
     
+    notPrintableMarkersText: "Please disable these layers and remove all markers before print",
+    
     /** api: config[previewText]
      *  ``String``
      *  Text for print preview text (i18n).
@@ -146,12 +148,19 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                     var notSupported = layers.notSupported;
                     
                     if (supported.length > 0) {
-						var notIgnorable = getNotIgnorable(notSupported,this.ignoreLayers);
-                        if( notIgnorable.length >0 ){
+						var notIgnorable = getNotIgnorable(notSupported, this.ignoreLayers);
+                        if( notIgnorable.length > 0 ){
+
+                        console.log(notIgnorable);
+                        
                             Ext.Msg.alert(
                                 this.notAllNotPrintableText,
-                                this.notPrintableLayersText + '<br />' + notIgnorable.join(',')
+                                this.notPrintableLayersText + '<br />' + notIgnorable.join(',') +
+                                ( notIgnorable.indexOf('Marker') != -1 ? '<br />'+ this.notPrintableMarkersText : '')
                             );
+                            
+                            //
+                            
                         } else {                    
 							createPrintWindow.call(this);
 							showPrintWindow.call(this);
