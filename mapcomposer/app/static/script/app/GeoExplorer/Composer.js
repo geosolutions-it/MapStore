@@ -138,7 +138,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				/*{
 				  "ptype":"gxp_wfssearchbox",
 				  "outputConfig": {
-					 "url":"http://asus:8080/geoserver/sf/ows?",
+					 "url":"http://localhost:8080/geoserver/sf/ows?",
 					 "typeName":"sf:archsites",
 					 "recordModel":[
 						{
@@ -172,7 +172,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 			   /*{	//wfssearchbox example using united states populations, for testing polygons search
 				  "ptype":"gxp_wfssearchbox",
 				  "outputConfig": {
-					 "url":"http://asus:8080/geoserver/topp/ows?",
+					 "url":"http://localhost:8080/geoserver/topp/ows?",
 					 "typeName":"topp:states",
 					 "recordModel":[
 						{
@@ -215,7 +215,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		        {
 		            ptype: "gxp_googlegeocoder",
 		            //actionTarget: {target: "paneltbar", index: 28},
-		            outputConfig:{
+		            outputConfig: {
 		                emptyText:"Google GeoCoder"
 		            },
 		            outputTarget:"paneltbar",
@@ -238,7 +238,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            ptype: "gxp_print",
 		            customParams: { outputFilename: 'mapstore-print' },
 		            //printService: "http://192.168.1.43:8080/acque/geoserver/pdf/",
-		            printService: "http://asus:8080/geoserver/pdf/",
+		            //printService: "http://asus:8080/geoserver/pdf/",
 		            legendPanelId: 'legendPanel',
 		            actionTarget: {target: "paneltbar", index: 4}
 		        }

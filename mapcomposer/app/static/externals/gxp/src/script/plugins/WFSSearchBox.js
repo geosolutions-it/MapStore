@@ -56,7 +56,7 @@ Ext.namespace("gxp.plugins");
     externalGraphicXOffsetMarkers:-13,
     externalGraphicYOffsetMarkers:-28,
     backgroundXOffsetMarkers: -7,
-    backgroundYOffsetMarkers: -30,
+    backgroundYOffsetMarkers: -22,
   
     
     init: function(target) {

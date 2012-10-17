@@ -55,16 +55,13 @@ gxp.plugins.NominatimGeocoder = Ext.extend(gxp.plugins.Tool, {
      *  tooltip for addMarker button
      */
     markerName: "Marker",
-    
     pointRadiusMarkers: 14,
-    
     externalGraphicMarkers: 'theme/app/img/markers/star_red.png',
-    
     backgroundGraphicMarkers: 'theme/app/img/markers/markers_shadow.png',
-    
+    externalGraphicXOffsetMarkers:-13,
+    externalGraphicYOffsetMarkers:-28,
     backgroundXOffsetMarkers: -7,
-    
-    backgroundYOffsetMarkers: -7,
+    backgroundYOffsetMarkers: -22,
     
     init: function(target) {
 
@@ -149,16 +146,18 @@ gxp.plugins.NominatimGeocoder = Ext.extend(gxp.plugins.Tool, {
 				var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
 				renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
 				
-				// Sets the style for the markers
-				var styleMarkers = new OpenLayers.StyleMap({
-					pointRadius: this.pointRadiusMarkers,
-					externalGraphic: this.externalGraphicMarkers,
-					backgroundGraphic: this.backgroundGraphicMarkers,
-					backgroundXOffset: this.backgroundXOffsetMarkers,
-					backgroundYOffset: this.backgroundYOffsetMarkers,
-					graphicZIndex: MARKER_Z_INDEX,
-					backgroundGraphicZIndex: SHADOW_Z_INDEX
-				});
+                // Sets the style for the markers
+                var styleMarkers = new OpenLayers.StyleMap({
+                    pointRadius: this.pointRadiusMarkers,
+                    externalGraphic: this.externalGraphicMarkers,
+					graphicXOffset:this.externalGraphicXOffsetMarkers,
+					graphicYOffset:this.externalGraphicYOffsetMarkers,
+                    backgroundGraphic: this.backgroundGraphicMarkers,
+                    backgroundXOffset: this.backgroundXOffsetMarkers,
+                    backgroundYOffset: this.backgroundYOffsetMarkers,
+                    graphicZIndex: MARKER_Z_INDEX,
+                    backgroundGraphicZIndex: SHADOW_Z_INDEX
+                });
 
 				var markers_feature = new OpenLayers.Feature.Vector(points);
 				var markers = new OpenLayers.Layer.Vector( this.markerName, {

@@ -56,14 +56,12 @@ gxp.plugins.GoogleGeocoder = Ext.extend(gxp.plugins.Tool, {
     markerName: "Marker",
     
     pointRadiusMarkers: 14,
-    
     externalGraphicMarkers: 'theme/app/img/markers/star_red.png',
-    
     backgroundGraphicMarkers: 'theme/app/img/markers/markers_shadow.png',
-    
+    externalGraphicXOffsetMarkers:-13,
+    externalGraphicYOffsetMarkers:-28,
     backgroundXOffsetMarkers: -7,
-    
-    backgroundYOffsetMarkers: -7,
+    backgroundYOffsetMarkers: -22,
     
     init: function(target) {
 
@@ -140,6 +138,8 @@ gxp.plugins.GoogleGeocoder = Ext.extend(gxp.plugins.Tool, {
                 var styleMarkers = new OpenLayers.StyleMap({
                     pointRadius: this.pointRadiusMarkers,
                     externalGraphic: this.externalGraphicMarkers,
+					graphicXOffset:this.externalGraphicXOffsetMarkers,
+					graphicYOffset:this.externalGraphicYOffsetMarkers,
                     backgroundGraphic: this.backgroundGraphicMarkers,
                     backgroundXOffset: this.backgroundXOffsetMarkers,
                     backgroundYOffset: this.backgroundYOffsetMarkers,
