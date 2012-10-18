@@ -193,7 +193,7 @@ UserManagerView = Ext.extend(
 											    value        : keyword,
 											    anyMatch     : true, 
 											    caseSensitive: true  
-											  }]);			
+											  }]);
 									}
 
 			                    }
@@ -207,23 +207,41 @@ UserManagerView = Ext.extend(
 			            tooltip: userManager.tooltipSearch,
 			            iconCls: 'find',
 			            disabled: false,
-			            handler : function() {  
-			     				var keyword = Ext.getCmp("user-input-search").getValue();
-								if ( !keyword || keyword==='' ){
-									userManager.store.filter('*');
-								} else {
-									userManager.store.filter([
-										  {
-										    property     : 'name',
-										    value        : keyword,
-										    anyMatch     : true, 
-										    caseSensitive: true  
-										  }]);			
-								}
-			                }
-			            };
-			
-			
+			            handler: function() {  
+		     				var keyword = Ext.getCmp("user-input-search").getValue();
+							if ( !keyword || keyword==='' ){
+								userManager.store.filter('*');
+							} else {
+								userManager.store.filter([
+									  {
+									    property     : 'name',
+									    value        : keyword,
+									    anyMatch     : true, 
+									    caseSensitive: true  
+									  }]);			
+							}
+			            }
+					};
+			            
+				// reset search button
+				this.resetSearchButton =  {
+						id: 'userClearBtn',
+						text: this.textReset,
+						tooltip: this.tooltipReset,
+						iconCls: 'reset',
+						disabled: false,
+						handler : function() {
+								Ext.getCmp('user-input-search').setValue('');
+								userManager.store.filter('*');
+//								searchString = '*';
+//								Ext.getCmp('searchBtn').disable();
+//								Ext.getCmp('clearBtn').disable();
+//								grid.getBottomToolbar().bindStore(grid.store, true);
+//								grid.getBottomToolbar().doRefresh();
+//								expander.collapseAll();
+							} 
+						};
+
 				// button to open the add user window
 				this.addUserButton = {
 						id: 'id_addUser_button',
@@ -426,7 +444,7 @@ UserManagerView = Ext.extend(
 				        ]});		
 				
 				// the top bar of the user manager window
-				this.tbar = [ this.inputSearch, this.searchButton, '-', this.addUserButton ];
+				this.tbar = [ this.inputSearch, this.searchButton, this.resetSearchButton, '-', this.addUserButton ];
 
 				// data store
 				this.store = new Ext.data.JsonStore({

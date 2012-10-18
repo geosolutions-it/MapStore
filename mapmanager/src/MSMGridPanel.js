@@ -1248,7 +1248,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
             tooltip: this.tooltipSearch,
             iconCls: 'find',
             disabled: true,
-            handler : function() {  
+            handler: function() {  
                     searchString = grid.inputSearch.getValue();
                     if(searchString==null || searchString == 'undefined'  || searchString == ''){
                         searchString = '*';
@@ -1263,7 +1263,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
             tooltip: this.tooltipReset,
             iconCls: 'reset',
             disabled: true,
-            handler : function() {  
+            handler : function() {
                     grid.inputSearch.setValue('');
                     searchString = '*';
                     Ext.getCmp('searchBtn').disable();
@@ -1273,8 +1273,6 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     expander.collapseAll();
                 } 
             },'->',
-			
-
 			this.login.userLabel,'-',this.openUserManagerButton,'-',this.login.loginButton,'-',this.langSelector,'-'
         ];
         
