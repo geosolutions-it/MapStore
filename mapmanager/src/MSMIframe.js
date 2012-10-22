@@ -39,3 +39,4 @@ Ext.IframeWindow = Ext.extend(Ext.Window, {
         Ext.IframeWindow.superclass.onRender.apply(this, arguments);
     }
 });
+

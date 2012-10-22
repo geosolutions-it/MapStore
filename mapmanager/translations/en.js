@@ -45,7 +45,9 @@ GeoExt.Lang.add("en", {
         msgSuccessDeleteMapTitle: "Success",
         msgSuccessDeleteMapBody: "Map has been deleted",
         msgFailureDeleteMapTitle: "Failed",
-        msgFailureDeleteMapBody: "Something wrong has appened"
+        msgFailureDeleteMapBody: "Something wrong has appened",
+        IframeViewerTitle: "Map Viewer - ",
+        IframeComposerTitle: "Map Composer - "        
     },
     "MSMPagingToolbar.prototype": {
         desc: "New Map",

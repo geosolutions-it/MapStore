@@ -357,8 +357,20 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     */
     msgFailureDeleteMapBody: 'Something wrong has appened',
     /**
-     * Property: lang
-     * {string} sets application locale
+    * Property: msgFailureDeleteMapBody
+    * {string} string to add in Failure Body message when user deletes map
+    * 
+    */
+    IframeViewerTitle: "Map Viewer - ",
+    /**
+    * Property: IframeViewerTitle
+    * {string} set Viewer window title
+    * 
+    */        
+    IframeComposerTitle: "Map Composer - ",
+    /**
+     * Property: IframeComposerTitle
+    * {string} set Composer window title
      * 
      */ 
     lang: "en",
@@ -694,6 +706,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 						src += '&mapId=' + idMap;
 					}
 					
+					var iframeTitle = (userProfile == "&auth=true" ? grid.IframeComposerTitle : grid.IframeViewerTitle) + desc;
+					
                     var iframe = new Ext.IframeWindow({
                         id:'idMapManager',
                         width:900,
@@ -705,8 +719,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         modal: true,
                         closeAction: 'close',
                         constrainHeader: true,
-                        maskEmpty: true, 
-                        title: (userProfile == "&auth=true" ? "Map Composer - " : "Map Viewer - ") + desc,
+                        maskEmpty: true,
+                        title: iframeTitle,
                         src: src,
                         onEsc: Ext.emptyFn,
                         listeners: {
@@ -995,8 +1009,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     */
                     MapComposerVM : function(id, values, userProfile) {
                         Ext.get(id).on('click', function(e){
-                            var idMap = values.id;
-                            var desc = values.name;
+                            var idMap = values.id,
+                            	desc = values.name;
                             expander.openMapComposer(grid.murl, userProfile, idMap, desc);
                         });
                     },
