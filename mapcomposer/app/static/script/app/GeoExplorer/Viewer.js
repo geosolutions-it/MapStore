@@ -126,7 +126,7 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         var tools = GeoExplorer.Viewer.superclass.createTools.apply(this, arguments);
 
         var layerChooser = new Ext.Button({
-            tooltip: 'Layer Switcher',
+			//tooltip: 'Layer Switcher',	//TODO uncomment in ExtJS >= 4.1, http://goo.gl/x1c5X
             iconCls: 'icon-layer-switcher',
             menu: new gxp.menu.LayerMenu({
                 layers: this.mapPanel.layers
