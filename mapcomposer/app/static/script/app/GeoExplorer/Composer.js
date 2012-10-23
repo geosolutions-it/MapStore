@@ -134,8 +134,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            ptype: "gxp_georeferences",
 		            actionTarget: {target: "paneltbar", index: 23}
 		        },
-		        //https://github.com/geosolutions-it/mapstore/wiki/WFS-Search
-				{
+				/*{ //https://github.com/geosolutions-it/mapstore/wiki/WFS-Search
 				  "ptype":"gxp_wfssearchbox",
 				  "outputConfig": {
 					 "url":"http://localhost:8080/geoserver/sf/ows?",
@@ -168,8 +167,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				  "zoom":18,
 				  "outputTarget":"paneltbar",
 				  "index":30
-			   },//*/
-			   /*{	//wfssearchbox example using united states populations, for testing polygons search
+			   },*/
+			   {	//wfssearchbox example using united states populations, for testing polygons search
 				  "ptype":"gxp_wfssearchbox",
 				  "outputConfig": {
 					 "url":"http://localhost:8080/geoserver/topp/ows?",
@@ -199,7 +198,41 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				  "zoom":18,
 				  "outputTarget":"paneltbar",
 				  "index":30
-			   },//*/
+			   },
+			   /*{	//wfssearchbox example using roads, for testing lines search
+				  "ptype":"gxp_wfssearchbox",
+				  "outputConfig": {
+					 "url":"http://localhost:8080/geoserver/sf/ows?",
+					 "typeName":"sf:roads",
+					 "recordModel":[
+						{
+						   "name":"cat",
+						   "mapping":"properties.cat"
+						},
+						{
+						   "name":"geometry",
+						   "mapping":"geometry"
+						},
+						{
+						   "name":"label",
+						   "mapping":"properties.label"
+						}
+					 ],
+					 "sortBy":"cat",
+					 "queriableAttributes":[
+						"label",
+						"cat"
+					 ],
+					 "displayField":"label",
+					 "pageSize":10,
+					 "width":250,
+					 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{cat}</span></h3>{label}</div></tpl>"
+				  },
+				  "updateField":"geometry",
+				  "zoom":18,
+				  "outputTarget":"paneltbar",
+				  "index":30
+			   },*/
 			   {
 		            ptype: "gxp_saveDefaultContext",
 		            actionTarget: {target: "paneltbar", index: 26},
