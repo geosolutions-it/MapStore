@@ -93,7 +93,7 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
      *  needed for pagination.
      */
 	sortBy : 'codice_ato',
-    
+
 	/** api: config[pageSize]
      *  ``Integer`` page size of result list.
      *  needed for pagination. default is 10
@@ -214,7 +214,7 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 
         return gxp.form.WFSSearchComboBox.superclass.initComponent.apply(this, arguments);
     },
-	listeners:{
+	listeners: {
 		focus: function() {
 			this.clearValue();
 		},

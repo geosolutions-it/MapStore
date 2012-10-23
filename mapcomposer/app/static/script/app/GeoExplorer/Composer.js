@@ -169,7 +169,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				  "outputTarget":"paneltbar",
 				  "index":30
 			   },//*/
-			   /*{	//wfssearchbox example using united states populations, for testing polygons search
+			   {	//wfssearchbox example using united states populations, for testing polygons search
 				  "ptype":"gxp_wfssearchbox",
 				  "outputConfig": {
 					 "url":"http://localhost:8080/geoserver/topp/ows?",
@@ -177,7 +177,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 					 "recordModel":[
 						{
 						   "name":"geometry",
-						   "mapping":"the_geom"
+						   "mapping":"geometry"
 						},
 						{
 						   "name":"statename",

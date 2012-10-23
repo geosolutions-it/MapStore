@@ -69,7 +69,7 @@ Ext.namespace("gxp.plugins");
 			}, this.outputConfig)
 		);
         
-        // remove marker 
+        // remove marker
         var removeMarkerBtn = new Ext.Button({
             tooltip: this.addMarkerTooltip,
             handler: function() {
@@ -102,20 +102,27 @@ Ext.namespace("gxp.plugins");
      *  Listener for combo's select event.
      */
     onComboSelect: function(combo, record) {
+    
+    console.log(arguments);
+    
         if (this.updateField) {
+        
             var map = this.target.mapPanel.map;
-            var location = record.get(this.updateField)
+            
+            var center,
+	            bounds,
+            	points,
+            	location = record.get(this.updateField),
+            	projcode = combo.crs.type+ ":" +combo.crs.properties.code;
+			
+            
+			console.log('Results type: '+location.type);
 			location = new OpenLayers.Format.GeoJSON().read(location,"Geometry");
-			//TODO OL Point clone and transform
-			var projcode = combo.crs.type+":"+combo.crs.properties.code;
-			var location = location.clone().transform(
-                new OpenLayers.Projection(projcode),
-                map.getProjectionObject()
-            );
-			var points = location;
-			
-			
-            if (location) {
+            
+            if (location)
+            {
+		        console.log(location);
+
                 // Set the z-indexes of both graphics to make sure the background
                 // graphics stay in the background
                 var SHADOW_Z_INDEX = 10;
@@ -137,18 +144,19 @@ Ext.namespace("gxp.plugins");
                     graphicZIndex: MARKER_Z_INDEX,
                     backgroundGraphicZIndex: SHADOW_Z_INDEX
                 });
-				var center;
-                if(location instanceof OpenLayers.Bounds){
-					center = location.getCenterLonLat();
-					points = new OpenLayers.Geometry.Point(center.lon,center.lat);
-				}else{
-					points =location;
-					center = location.clone();
-					center = new OpenLayers.LonLat(center.x,center.y);
-					
-				}
-                var markers_feature = new OpenLayers.Feature.Vector(points);
 				
+				center = location.getCentroid();
+				center = center.clone().transform(
+					new OpenLayers.Projection(projcode),
+					map.getProjectionObject()
+				);
+				center = new OpenLayers.LonLat(center.x, center.y);
+				bounds = location.getBounds().transform(
+						new OpenLayers.Projection(projcode),
+						map.getProjectionObject()
+				);								
+
+                var markers_feature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(center.lon, center.lat) );
 				
                 var markers = new OpenLayers.Layer.Vector( this.markerName, {
 					styleMap: styleMarkers,
@@ -156,16 +164,21 @@ Ext.namespace("gxp.plugins");
 					rendererOptions: {yOrdering: true},
 					renderers: renderer
 				});
+				
                 var markerLyr = map.getLayersByName(this.markerName);  
                 if (markerLyr.length){
                     map.removeLayer(markerLyr[0]);	
                 }
+                
 				map.addLayer(markers);
 				markers.addFeatures(markers_feature);
-				if(location instanceof OpenLayers.Bounds){
-					map.zoomToExtent(location, true);
+
+				console.log('setcenter/zoomToExtent');
+				
+				if(location instanceof OpenLayers.Geometry.Point) {
+					map.setCenter(center, this.zoom);
 				}else{
-					map.setCenter(center,this.zoom);
+					map.zoomToExtent(bounds, true);
 				}
             }
         }
