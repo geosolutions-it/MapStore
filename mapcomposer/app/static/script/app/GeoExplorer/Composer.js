@@ -135,7 +135,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            actionTarget: {target: "paneltbar", index: 23}
 		        },
 		        //https://github.com/geosolutions-it/mapstore/wiki/WFS-Search
-				/*{
+				{
 				  "ptype":"gxp_wfssearchbox",
 				  "outputConfig": {
 					 "url":"http://localhost:8080/geoserver/sf/ows?",
@@ -169,7 +169,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				  "outputTarget":"paneltbar",
 				  "index":30
 			   },//*/
-			   {	//wfssearchbox example using united states populations, for testing polygons search
+			   /*{	//wfssearchbox example using united states populations, for testing polygons search
 				  "ptype":"gxp_wfssearchbox",
 				  "outputConfig": {
 					 "url":"http://localhost:8080/geoserver/topp/ows?",

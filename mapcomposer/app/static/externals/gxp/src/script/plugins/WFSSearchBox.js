@@ -103,8 +103,6 @@ Ext.namespace("gxp.plugins");
      */
     onComboSelect: function(combo, record) {
     
-    console.log(arguments);
-    
         if (this.updateField) {
         
             var map = this.target.mapPanel.map;
@@ -114,15 +112,11 @@ Ext.namespace("gxp.plugins");
             	points,
             	location = record.get(this.updateField),
             	projcode = combo.crs.type+ ":" +combo.crs.properties.code;
-			
-            
-			console.log('Results type: '+location.type);
+
 			location = new OpenLayers.Format.GeoJSON().read(location,"Geometry");
             
             if (location)
             {
-		        console.log(location);
-
                 // Set the z-indexes of both graphics to make sure the background
                 // graphics stay in the background
                 var SHADOW_Z_INDEX = 10;
@@ -154,7 +148,7 @@ Ext.namespace("gxp.plugins");
 				bounds = location.getBounds().transform(
 						new OpenLayers.Projection(projcode),
 						map.getProjectionObject()
-				);								
+				);
 
                 var markers_feature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(center.lon, center.lat) );
 				
@@ -172,8 +166,6 @@ Ext.namespace("gxp.plugins");
                 
 				map.addLayer(markers);
 				markers.addFeatures(markers_feature);
-
-				console.log('setcenter/zoomToExtent');
 				
 				if(location instanceof OpenLayers.Geometry.Point) {
 					map.setCenter(center, this.zoom);
