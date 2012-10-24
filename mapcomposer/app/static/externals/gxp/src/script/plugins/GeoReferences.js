@@ -141,7 +141,7 @@ gxp.plugins.GeoReferences = Ext.extend(gxp.plugins.Tool, {
 	//						console.log('defined position');
 		                }
 		                else
-			                center = bbox.getCenterLonLat();            
+			                center = bbox.getCenterLonLat();
 		                    
 				        // Set the z-indexes of both graphics to make sure the background
 				        // graphics stay in the background
@@ -182,7 +182,7 @@ gxp.plugins.GeoReferences = Ext.extend(gxp.plugins.Tool, {
 						markers.addFeatures(markers_feature);
 						map.zoomToExtent(bbox);	
 					
-						Ext.get(markers.id).fadeOut({ endOpacity: 0, duration: that.markerFadeoutDelay});	//fadeout marker 
+						Ext.get(markers.id).fadeOut({ endOpacity: 0.01, duration: that.markerFadeoutDelay});	//fadeout marker 
 					}
 					else
 						map.zoomToExtent(bbox);                    
@@ -197,3 +197,4 @@ gxp.plugins.GeoReferences = Ext.extend(gxp.plugins.Tool, {
 });
 
 Ext.preg(gxp.plugins.GeoReferences.prototype.ptype, gxp.plugins.GeoReferences);
+
