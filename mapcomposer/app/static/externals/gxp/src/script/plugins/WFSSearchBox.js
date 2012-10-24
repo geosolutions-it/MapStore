@@ -46,8 +46,9 @@ Ext.namespace("gxp.plugins");
      *  to use as geometry.
      */
 	zoom: 8,
+	
     ////////////////////////////////////////////////////////////
-    // respectivily the Sizes, grafic sources and offsets of
+    // Respectivily the Sizes, grafic sources and offsets of
     // the marker and it's background (typically shadow).
     ////////////////////////////////////////////////////////////
     pointRadiusMarkers: 14,
@@ -80,7 +81,7 @@ Ext.namespace("gxp.plugins");
                 this.combo.reset();
             },
             scope: this,
-            iconCls: "icon-removemarkers"
+            iconCls: "icon-removewfsmarkers"
         });
         
         var bounds = target.mapPanel.map.restrictedExtent;
@@ -95,7 +96,7 @@ Ext.namespace("gxp.plugins");
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-        return gxp.plugins.WFSSearchBox.superclass.addOutput.call(this, ['-',this.removeMarkerBtn,'-',this.combo]);
+        return gxp.plugins.WFSSearchBox.superclass.addOutput.call(this, ['-',this.removeMarkerBtn,this.combo]);
     },
     
     /** private: method[onComboSelect]

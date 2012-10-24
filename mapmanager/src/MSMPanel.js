@@ -51,7 +51,7 @@ MSMPanel = Ext.extend(Ext.Panel, {
      * {string} add a title to a panel.
      * 
      */ 
-    title : "Map Store Manager",
+    title : "Map Manager",
     /**
      * Property: iconCls
      * {string} class associated to icon

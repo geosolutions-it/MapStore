@@ -7,6 +7,7 @@
 
     <property name="composerbuild" location="mapcomposer/build"/>
 	<property name="managerbuild" location="mapmanager/build"/>
+	<property name="manager.war.name" value="mapstore"/>
     <property name="app.proxy.geoserver" value=""/>
     <property name="app.port" value="8081"/>
 
@@ -145,6 +146,9 @@
     <target name="war" depends="dist">
         <war destfile="${composerbuild}/${ant.project.name}.war">
             <fileset dir="${composerbuild}/${ant.project.name}"/>
+        </war>
+		<war destfile="${managerbuild}/${manager.war.name}.war" needxmlfile='false'>
+            <fileset dir="${managerbuild}/${manager.war.name}"/>
         </war>
     </target>
 

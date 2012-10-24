@@ -133,147 +133,22 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		        }, {
 		            ptype: "gxp_georeferences",
 		            actionTarget: {target: "paneltbar", index: 23}
-		        },
-				/*{ //https://github.com/geosolutions-it/mapstore/wiki/WFS-Search
-				  "ptype":"gxp_wfssearchbox",
-				  "outputConfig": {
-					 "url":"http://localhost:8080/geoserver/sf/ows?",
-					 "typeName":"sf:archsites",
-					 "recordModel":[
-						{
-						   "name":"cat",
-						   "mapping":"properties.cat"
-						},
-						{
-						   "name":"geometry",
-						   "mapping":"geometry"
-						},
-						{
-						   "name":"str1",
-						   "mapping":"properties.str1"
-						}
-					 ],
-					 "sortBy":"cat",
-					 "queriableAttributes":[
-						"str1",
-						"cat"
-					 ],
-					 "displayField":"cat",
-					 "pageSize":10,
-					 "width":250,
-					 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{cat}</span></h3>{str1}</div></tpl>"
-				  },
-				  "updateField":"geometry",
-				  "zoom":18,
-				  "outputTarget":"paneltbar",
-				  "index":30
-			   },*/
-			   {	//wfssearchbox example using united states populations, for testing polygons search
-				  "ptype":"gxp_wfssearchbox",
-				  "outputConfig": {
-					 "url":"http://localhost:8080/geoserver/topp/ows?",
-					 "typeName":"topp:states",
-					 "recordModel":[
-						{
-						   "name":"geometry",
-						   "mapping":"geometry"
-						},
-						{
-						   "name":"statename",
-						   "mapping":"properties.STATE_NAME"
-						},
-						{
-						   "name":"pop",
-						   "mapping":"properties.PERSONS"
-						}
-					 ],
-					 "sortBy":"PERSONS",
-					 "queriableAttributes":["STATE_NAME"],
-					 "displayField":"STATE_NAME",
-					 "pageSize":10,
-					 "width":250,
-					 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{statename}</h3><span>{pop}</span></div></tpl>"
-				  },
-				  "updateField":"geometry",
-				  "zoom":18,
-				  "outputTarget":"paneltbar",
-				  "index":30
-			   },
-			   /*{	//wfssearchbox example using roads, for testing lines search
-				  "ptype":"gxp_wfssearchbox",
-				  "outputConfig": {
-					 "url":"http://localhost:8080/geoserver/sf/ows?",
-					 "typeName":"sf:roads",
-					 "recordModel":[
-						{
-						   "name":"cat",
-						   "mapping":"properties.cat"
-						},
-						{
-						   "name":"geometry",
-						   "mapping":"geometry"
-						},
-						{
-						   "name":"label",
-						   "mapping":"properties.label"
-						}
-					 ],
-					 "sortBy":"cat",
-					 "queriableAttributes":[
-						"label",
-						"cat"
-					 ],
-					 "displayField":"label",
-					 "pageSize":10,
-					 "width":250,
-					 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{cat}</span></h3>{label}</div></tpl>"
-				  },
-				  "updateField":"geometry",
-				  "zoom":18,
-				  "outputTarget":"paneltbar",
-				  "index":30
-			   },*/
-			   {
+		        }, {
 		            ptype: "gxp_saveDefaultContext",
 		            actionTarget: {target: "paneltbar", index: 26},
 					needsAuthorization: true
-		        },
-		        {
+		        }, {
 		            actions: ["->"], actionTarget: "paneltbar"
-		        },
-		        {
+		        }, {
 		            ptype: "gxp_googleearth",
 		            actionTarget: {target: "paneltbar", index: 24}
-		        },
-		        {
+		        }, {
 		            ptype: "gxp_googlegeocoder",
-		            //actionTarget: {target: "paneltbar", index: 28},
 		            outputConfig: {
-		                emptyText:"Google GeoCoder"
+		                emptyText: "Google GeoCoder"
 		            },
 		            outputTarget:"paneltbar",
 		            index: 25
-		        }, /*{
-		            ptype: "gxp_nominatimgeocoder",
-		            //actionTarget: {target: "paneltbar", index: 28},
-		            outputConfig:{
-		                emptyText:"Nominatim GeoCoder",
-						vendorOptions:{
-							bounded: 1,
-							countrycodes: 'it',
-							addressdetails:0
-						},
-						boundOption:"max"
-		            },
-		            outputTarget:"paneltbar",
-		            index: 26
-		        },*/ {
-		            ptype: "gxp_print",
-		            customParams: { outputFilename: 'mapstore-print' },
-		            //printService: "http://192.168.1.43:8080/acque/geoserver/pdf/",
-		            printService: "http://localhost:8080/geoserver/pdf/",
-		            legendPanelId: 'legendPanel',
-		            actionTarget: {target: "paneltbar", index: 4}
 		        }
 		    ];
 

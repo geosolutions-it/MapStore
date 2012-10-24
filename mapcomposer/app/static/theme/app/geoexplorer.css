@@ -77,6 +77,14 @@ font-family: tahoma, arial, helvetica, sans-serif;
     background-image: url(img/geosilk/vector_delete.png);
 }
 
+.x-btn .icon-removewfsmarkers {
+    background-image: url(img/geosilk/tag_blue_delete.png);
+}
+
+.x-btn .icon-removenominatimmarkers {
+    background-image: url(img/geosilk/world_delete.png);
+}
+
 .x-btn .icon-getfeatureinfo {
     background-image: url(img/silk/information.png);
 }

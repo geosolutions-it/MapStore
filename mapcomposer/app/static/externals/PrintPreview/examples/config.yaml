@@ -95,7 +95,7 @@ layouts:
             - !image
               maxWidth: 40
               maxHeight: 40
-              url: 'file://${configDir}/Arrow_North_CFCF.svg'
+              url: 'http://localhost:8080/geoserver/www/print/Arrow_North_CFCF.svg'
               rotation: '${rotation}'          
         - !columns
           absoluteX: 30
@@ -185,7 +185,7 @@ layouts:
             - !image
               maxWidth: 40
               maxHeight: 40
-              url: 'file://${configDir}/Arrow_North_CFCF.svg'
+              url: 'http://localhost:8080/geoserver/www/print/Arrow_North_CFCF.svg'
               rotation: '${rotation}'          
         - !columns
           absoluteX: 30
@@ -250,7 +250,7 @@ layouts:
             - !image
               maxWidth: 40
               maxHeight: 40
-              url: 'file://${configDir}/Arrow_North_CFCF.svg'
+              url: 'http://localhost:8080/geoserver/www/print/Arrow_North_CFCF.svg'
               rotation: '${rotation}'          
         - !columns
           absoluteX: 30
@@ -315,7 +315,7 @@ layouts:
             - !image
               maxWidth: 40
               maxHeight: 40
-              url: 'file://${configDir}/Arrow_North_CFCF.svg'
+              url: 'http://localhost:8080/geoserver/www/print/Arrow_North_CFCF.svg'
               rotation: '${rotation}'          
         - !columns
           absoluteX: 30
@@ -410,7 +410,7 @@ layouts:
             - !image
               maxWidth: 40
               maxHeight: 40
-              url: 'file://${configDir}/Arrow_North_CFCF.svg'
+              url: 'http://localhost:8080/geoserver/www/print/Arrow_North_CFCF.svg'
               rotation: '${rotation}'          
         - !columns
           absoluteX: 30
@@ -530,7 +530,7 @@ layouts:
             - !image
               maxWidth: 40
               maxHeight: 40
-              url: 'file://${configDir}/Arrow_North_CFCF.svg'
+              url: 'http://localhost:8080/geoserver/www/print/Arrow_North_CFCF.svg'
               rotation: '${rotation}'          
         - !columns
           absoluteX: 30
@@ -620,7 +620,7 @@ layouts:
             - !image
               maxWidth: 40
               maxHeight: 40
-              url: 'file://${configDir}/Arrow_North_CFCF.svg'
+              url: 'http://localhost:8080/geoserver/www/print/Arrow_North_CFCF.svg'
               rotation: '${rotation}'          
         - !columns
           absoluteX: 30
@@ -685,7 +685,7 @@ layouts:
             - !image
               maxWidth: 40
               maxHeight: 40
-              url: 'file://${configDir}/Arrow_North_CFCF.svg'
+              url: 'http://localhost:8080/geoserver/www/print/Arrow_North_CFCF.svg'
               rotation: '${rotation}'          
         - !columns
           absoluteX: 30
@@ -750,7 +750,7 @@ layouts:
             - !image
               maxWidth: 40
               maxHeight: 40
-              url: 'file://${configDir}/Arrow_North_CFCF.svg'
+              url: 'http://localhost:8080/geoserver/www/print/Arrow_North_CFCF.svg'
               rotation: '${rotation}'          
         - !columns
           absoluteX: 30
@@ -845,7 +845,7 @@ layouts:
             - !image
               maxWidth: 40
               maxHeight: 40
-              url: 'file://${configDir}/Arrow_North_CFCF.svg'
+              url: 'http://localhost:8080/geoserver/www/print/Arrow_North_CFCF.svg'
               rotation: '${rotation}'          
         - !columns
           absoluteX: 30

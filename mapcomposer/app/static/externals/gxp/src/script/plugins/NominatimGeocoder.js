@@ -83,7 +83,7 @@ gxp.plugins.NominatimGeocoder = Ext.extend(gxp.plugins.Tool, {
                 this.combo.reset();
             },
             scope: this,
-            iconCls: "icon-removemarkers"
+            iconCls: "icon-removeominatimmarkers"
         });
         
         var bounds = target.mapPanel.map.restrictedExtent;

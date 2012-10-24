@@ -30,7 +30,8 @@ GeoExt.Lang.add("fr", {
         searchTabTitle : "Chercher",
         viewTabTitle : "Vue",
         portalTabTitle : "Portail",
-		markerPopupTitle: "Détails"
+		markerPopupTitle: "Détails",
+		mainLoadingMask: "S'il vous plaît attendre ..."
     },  
 
     "GeoExplorer.Composer.prototype": {

@@ -71,6 +71,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     viewTabTitle : "View",    
 	
 	markerPopupTitle: "Details",
+	
+	mainLoadingMask: "Please wait, loading...",
     // End i18n.
     
     //properties for style markers
@@ -136,8 +138,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     fScreen: false,
 
     constructor: function(config, mapId, auth, fScreen) {
-    
-        if(mapId)
+	
+		if(mapId)
             this.mapId = mapId;
         if(auth)
             this.auth = auth;
@@ -228,24 +230,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 text: gxp.plugins.GeoReferences.prototype.tooltip, 
                 checked: true, 
                 ptype: "gxp_georeferences"
-            }/*, {
-                leaf: true,
-                text: "Google Geocoder",
-                checked: true,
-                iconCls: "gxp-icon-googleearth",
-                ptype: "gxp_googlegeocoder",
-                outputConfig:{
-                    emptyText:"Google GeoCoder"
-                },
-                outputTarget:"paneltbar"
-            }*//*, {
-                leaf: true,
-                text: gxp.plugins.GoogleEarth.prototype.tooltip,
-                checked: true,
-                iconCls: "gxp-icon-googleearth",
-                ptype: "gxp_googleearth",
-                actionTarget: {target: "paneltbar", index: 12}
-            }*/
+            }
         ];
 
         
@@ -337,35 +322,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                }
             });        
         }
-
-        /*
-        var success = function(request) {                                
-                  var addConfig;
-                  try {
-                    addConfig = Ext.util.JSON.decode(request.responseText);
-                  } catch (err) {
-                    // pass
-                  }
-
-                  if(addConfig && addConfig.success && addConfig.success==true){                               
-                    this.applyConfig(Ext.applyIf(addConfig.result, config));
-                  } else {
-                    this.applyConfig(config);
-                  }
-        };
-                       
-        var failure = function(request) {                                                 
-          alert("ERROR: " + request.statusText);
-        };
-
-        OpenLayers.Request.GET({
-          url: "json2.txt",
-          params: '',
-          success: success,
-          failure: failure,
-          scope: this
-        });
-        */
     },
     
     loadUserConfig: function(json){
@@ -382,11 +338,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         var config = Ext.util.JSON.decode(json);        
         if(config && config.map){
             config.isLoadedFromConfigFile = true;
-            
-            //if(modified){
-            //    config.modified = modified;
-            //}
-            
             app = new GeoExplorer.Composer(config, this.mapId, this.auth, this.fScreen);
         }else{
             Ext.Msg.show({
@@ -410,7 +361,9 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      * Create the various parts that compose the layout.
      */
     initPortal: function() {
-        
+        var appMask = new Ext.LoadMask(Ext.getBody(), {msg: this.mainLoadingMask});
+		appMask.show();
+		
         var westPanel = new Ext.TabPanel({
             border: false,
             activeTab:0,
@@ -447,6 +400,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             disabled.each(function(item) {
                 item.disable();
             });
+			
+			appMask.hide();
         });
 
        var googleEarthPanel = new gxp.GoogleEarthPanel({
@@ -463,10 +418,12 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             }
         });
        
+	    // ///////////////////////////////////////////////////////////////////
         // TODO: continue making this Google Earth Panel more independent
         // Currently, it's too tightly tied into the viewer.
         // In the meantime, we keep track of all items that the were already
         // disabled when the panel is shown.
+		// ///////////////////////////////////////////////////////////////////
         var preGoogleDisabled = [];
  
         googleEarthPanel.on("show", function() {
@@ -477,7 +434,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 }
             });
             this.toolbar.disable();
-            // loop over all the tools and remove their output
+			
+			// ////////////////////////////////////////////////////
+            // Loop over all the tools and remove their output
+			// ////////////////////////////////////////////////////
             for (var key in this.tools) {
                 var tool = this.tools[key];
                 if (tool.outputTarget === "map") {

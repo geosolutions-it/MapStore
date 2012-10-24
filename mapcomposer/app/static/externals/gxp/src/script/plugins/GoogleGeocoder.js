@@ -107,7 +107,7 @@ gxp.plugins.GoogleGeocoder = Ext.extend(gxp.plugins.Tool, {
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-        return gxp.plugins.GoogleGeocoder.superclass.addOutput.call(this, ['-',this.removeMarkerBtn,'-',this.combo]);
+        return gxp.plugins.GoogleGeocoder.superclass.addOutput.call(this, ['-',this.removeMarkerBtn,this.combo]);
     },
     
     /** private: method[onComboSelect]
