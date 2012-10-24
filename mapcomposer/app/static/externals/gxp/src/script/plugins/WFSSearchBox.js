@@ -70,7 +70,10 @@ Ext.namespace("gxp.plugins");
     externalGraphicYOffsetMarkers:-28,
     backgroundXOffsetMarkers: -7,
     backgroundYOffsetMarkers: -22,
-    
+
+	/** api: enable fadeOut marker
+	*/
+    markerFadeoutEnable: true,     
 	/** api: delay for fadeOut marker
 	*  duration in seconds
 	*/
@@ -174,8 +177,9 @@ Ext.namespace("gxp.plugins");
 				}else{
 					map.zoomToExtent(bounds, true);
 				}
-			
-				Ext.get(markers.id).fadeOut({ endOpacity: 0.01, duration: this.markerFadeoutDelay});	//fadeout marker, no change 0.01
+				
+				if(this.markerFadeoutEnable===true)
+					Ext.get(markers.id).fadeOut({ endOpacity: 0.01, duration: this.markerFadeoutDelay});	//fadeout marker, no change 0.01
             }
         }
     }
