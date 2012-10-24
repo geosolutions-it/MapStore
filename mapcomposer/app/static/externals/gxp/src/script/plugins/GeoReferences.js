@@ -126,19 +126,28 @@ gxp.plugins.GeoReferences = Ext.extend(gxp.plugins.Tool, {
                     bbox = bbox.transform(
                         new OpenLayers.Projection("EPSG:4326"),
                         new OpenLayers.Projection(map.projection));
-                    
+						 
+					// //////////// Test Code /////////////////////////////////////
+					// alert(bbox);
+                    // var boxes  = new OpenLayers.Layer.Vector( "Boxes" );
+					// box = new OpenLayers.Feature.Vector(bbox.toGeometry());
+					// map.addLayer(boxes);
+                    // boxes.addFeatures(box);
+					// ////////////////////////////////////////////////////////////
+					
                     if(that.showMarker===true)
                     {
-		            	if( record.get('position') )//optional "position" field (if not specified the marker goes on the bbox center). 
+						//optional "position" field (if not specified the marker goes on the bbox center). 
+		            	if( record.get('position') )
 		                {
-	//TODO implement 'position' field in config file: georeferences.js (http://goo.gl/3diTR)
-	//
-	//                    	var position = record.get('position');
-	//						position = new OpenLayers.LonLat(position.lon, position.lat);
-	//                    	center = position.transform(
-	//                        new OpenLayers.Projection("EPSG:4326"),
-	//                        new OpenLayers.Projection(map.projection));
-	//						console.log('defined position');
+							//TODO implement 'position' field in config file: georeferences.js (http://goo.gl/3diTR)
+							//
+							//                    	var position = record.get('position');
+							//						position = new OpenLayers.LonLat(position.lon, position.lat);
+							//                    	center = position.transform(
+							//                        new OpenLayers.Projection("EPSG:4326"),
+							//                        new OpenLayers.Projection(map.projection));
+							//						console.log('defined position');
 		                }
 		                else
 			                center = bbox.getCenterLonLat();
@@ -193,7 +202,6 @@ gxp.plugins.GeoReferences = Ext.extend(gxp.plugins.Tool, {
         var actions = [georeferencesSelector];
         return gxp.plugins.GeoReferences.superclass.addActions.apply(this, [actions]);
     }
-        
 });
 
 Ext.preg(gxp.plugins.GeoReferences.prototype.ptype, gxp.plugins.GeoReferences);

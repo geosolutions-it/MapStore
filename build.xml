@@ -9,6 +9,7 @@
 	<property name="managerbuild" location="mapmanager/build"/>
 	<property name="manager.war.name" value="mapstore"/>
     <property name="app.proxy.geoserver" value=""/>
+	<property name="app.debug.proxy" value="true"/>
     <property name="app.port" value="8081"/>
 
     <target name="init">
@@ -155,6 +156,7 @@
     <target name="debug">
         <java jar="externals/ringojs/run.jar" fork="true">
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
+			<sysproperty key="app.debug.proxy" value="${app.debug.proxy}"/>
             <sysproperty key="ringo.home" path="externals/ringojs"/>
             <!-- <jvmarg value="-XX:+HeapDumpOnOutOfMemoryError"/> -->
             <arg path="mapcomposer/app/main.js"/>
@@ -165,6 +167,7 @@
     <target name="debugall">
         <java jar="externals/ringojs/run.jar" fork="true">
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
+			<sysproperty key="app.debug.proxy" value="${app.debug.proxy}"/>
             <sysproperty key="ringo.home" path="externals/ringojs"/>
             <arg value="-d"/>
             <arg path="mapcomposer/app/main.js"/>

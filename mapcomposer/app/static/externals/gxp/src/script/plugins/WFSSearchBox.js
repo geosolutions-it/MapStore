@@ -124,9 +124,9 @@ Ext.namespace("gxp.plugins");
 	            bounds,
             	points,
             	location = record.get(this.updateField),
-            	projcode = combo.crs.type+ ":" +combo.crs.properties.code;
+            	projcode = combo.crs.type + ":" + combo.crs.properties.code;
 
-			location = new OpenLayers.Format.GeoJSON().read(location,"Geometry");
+			location = new OpenLayers.Format.GeoJSON().read(location, "Geometry");
             
             if (location)
             {
@@ -163,7 +163,7 @@ Ext.namespace("gxp.plugins");
 						map.getProjectionObject()
 				);
 
-                var markers_feature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(center.lon, center.lat) );
+                var markers_feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(center.lon, center.lat));
 				
                 var markers = new OpenLayers.Layer.Vector( this.markerName, {
 					styleMap: styleMarkers,
@@ -188,8 +188,6 @@ Ext.namespace("gxp.plugins");
             }
         }
     }
-	
-	
 });
 
 Ext.preg(gxp.plugins.WFSSearchBox.prototype.ptype, gxp.plugins.WFSSearchBox);
