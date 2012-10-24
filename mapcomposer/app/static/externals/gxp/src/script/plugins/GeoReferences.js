@@ -51,7 +51,7 @@ gxp.plugins.GeoReferences = Ext.extend(gxp.plugins.Tool, {
     /** api: config[markerName]
      *  ``String`` Layer Name
      */
-	markerName: "Marker",
+	markerName: "GeoRefMarker",
    
     /** api: config[initialText]
      *  ``String``
@@ -191,7 +191,7 @@ gxp.plugins.GeoReferences = Ext.extend(gxp.plugins.Tool, {
 						markers.addFeatures(markers_feature);
 						map.zoomToExtent(bbox);	
 					
-						Ext.get(markers.id).fadeOut({ endOpacity: 0.01, duration: that.markerFadeoutDelay});	//fadeout marker 
+						Ext.get(markers.id).fadeOut({ endOpacity: 0.01, duration: that.markerFadeoutDelay});	//fadeout marker, no change 0.01
 					}
 					else
 						map.zoomToExtent(bbox);                    
