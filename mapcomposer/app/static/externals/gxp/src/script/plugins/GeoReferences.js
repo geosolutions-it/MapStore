@@ -43,6 +43,16 @@ gxp.plugins.GeoReferences = Ext.extend(gxp.plugins.Tool, {
     /** api: ptype = gxp_georeferences */
     ptype: "gxp_georeferences",
 
+    /** api: config[markerName]
+     *  ``String`` Layer Name
+     */
+	showMarker: true,
+	    
+    /** api: config[markerName]
+     *  ``String`` Layer Name
+     */
+	markerName: "Marker",
+   
     /** api: config[initialText]
      *  ``String``
      *  Initial text for combo box (i18n).
@@ -60,6 +70,23 @@ gxp.plugins.GeoReferences = Ext.extend(gxp.plugins.Tool, {
      *  Text for zoom action tooltip (i18n).
      */
     tooltip: "Georeferences",
+
+    ////////////////////////////////////////////////////////////
+    // Respectivily the Sizes, grafic sources and offsets of
+    // the marker and it's background (typically shadow).
+    ////////////////////////////////////////////////////////////
+    pointRadiusMarkers: 14,
+    externalGraphicMarkers: 'theme/app/img/markers/star_red.png',
+    backgroundGraphicMarkers: 'theme/app/img/markers/markers_shadow.png',
+    externalGraphicXOffsetMarkers:-13,
+    externalGraphicYOffsetMarkers:-28,
+    backgroundXOffsetMarkers: -7,
+    backgroundYOffsetMarkers: -22,  
+
+	/** api: delay for fadeOut marker
+	*  duration in seconds
+	*/
+    markerFadeoutDelay: 2,  
     
     georeferences:[],
     
@@ -78,6 +105,7 @@ gxp.plugins.GeoReferences = Ext.extend(gxp.plugins.Tool, {
         });
 
         var map = this.target.mapPanel.map;
+        var that = this;
         var georeferencesSelector = new Ext.form.ComboBox({
             store: georeferencesStore,
             displayField: 'name',
@@ -91,11 +119,73 @@ gxp.plugins.GeoReferences = Ext.extend(gxp.plugins.Tool, {
             resizable: true,
             listeners: {
                 select: function(cb, record, index) {
-                    var bbox = new OpenLayers.Bounds.fromString(record.get('geometry'));
+                
+                    var center,
+                    	bbox = new OpenLayers.Bounds.fromString(record.get('geometry')),      	
+                    
                     bbox = bbox.transform(
                         new OpenLayers.Projection("EPSG:4326"),
                         new OpenLayers.Projection(map.projection));
-                    map.zoomToExtent(bbox);
+                    
+                    if(that.showMarker===true)
+                    {
+		            	if( record.get('position') )//optional "position" field (if not specified the marker goes on the bbox center). 
+		                {
+	//TODO implement 'position' field in config file: georeferences.js (http://goo.gl/3diTR)
+	//
+	//                    	var position = record.get('position');
+	//						position = new OpenLayers.LonLat(position.lon, position.lat);
+	//                    	center = position.transform(
+	//                        new OpenLayers.Projection("EPSG:4326"),
+	//                        new OpenLayers.Projection(map.projection));
+	//						console.log('defined position');
+		                }
+		                else
+			                center = bbox.getCenterLonLat();            
+		                    
+				        // Set the z-indexes of both graphics to make sure the background
+				        // graphics stay in the background
+				        var SHADOW_Z_INDEX = 10;
+				        var MARKER_Z_INDEX = 11;
+				        
+				        var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+				        renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+				        
+				        // Sets the style for the markers
+				        var styleMarkers = new OpenLayers.StyleMap({
+				            pointRadius: that.pointRadiusMarkers,
+				            externalGraphic: that.externalGraphicMarkers,
+							graphicXOffset: that.externalGraphicXOffsetMarkers,
+							graphicYOffset: that.externalGraphicYOffsetMarkers,
+				            backgroundGraphic: that.backgroundGraphicMarkers,
+				            backgroundXOffset: that.backgroundXOffsetMarkers,
+				            backgroundYOffset: that.backgroundYOffsetMarkers,
+				            graphicZIndex: MARKER_Z_INDEX,
+				            backgroundGraphicZIndex: SHADOW_Z_INDEX
+				        });
+					
+				        var markers_feature = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(center.lon, center.lat) );
+				
+				        var markers = new OpenLayers.Layer.Vector( that.markerName, {
+							styleMap: styleMarkers,
+							displayInLayerSwitcher: false,
+							rendererOptions: {yOrdering: true},
+							renderers: renderer
+						});
+				
+				        var markerLyr = map.getLayersByName(that.markerName);  
+				        if (markerLyr.length) {
+				            map.removeLayer(markerLyr[0]);	
+				        }
+				        
+						map.addLayer(markers);
+						markers.addFeatures(markers_feature);
+						map.zoomToExtent(bbox);	
+					
+						Ext.get(markers.id).fadeOut({ endOpacity: 0, duration: that.markerFadeoutDelay});	//fadeout marker 
+					}
+					else
+						map.zoomToExtent(bbox);                    
                 }
             }
         });

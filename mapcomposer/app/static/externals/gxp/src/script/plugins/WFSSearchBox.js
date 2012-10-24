@@ -48,7 +48,7 @@ Ext.namespace("gxp.plugins");
     /** api: config[markerName]
      *  ``String`` Layer Name
      */
-   markerName: "WFSSearch",
+	markerName: "WFSSearch",
      /** api: config[updateField]
      *  ``String`` The field of the Model of the combo box
      *  to use as geometry.
