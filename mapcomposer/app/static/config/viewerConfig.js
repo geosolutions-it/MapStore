@@ -21,5 +21,19 @@
         }],
         "center": [1250000.000000, 5370000.000000],
         "zoom": 5
-    }
+    },
+	
+	"customTools":[
+		{
+			"actions": ["->"], 
+			"actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_googlegeocoder",
+			"outputConfig": {
+				"emptyText": "Google GeoCoder"
+			},
+			"outputTarget":"paneltbar",
+			"index": 26
+		}
+	]
 }

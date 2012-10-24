@@ -39,6 +39,7 @@
         <script type="text/javascript" src="translations/en.js"></script>
         <script type="text/javascript" src="translations/fr.js"></script>
         <script type="text/javascript" src="translations/it.js"></script>
+		
 		<!-- uncomment to have  welcome screen
         <script type="text/javascript">
 		
@@ -56,14 +57,7 @@
 		  <div class="loading-indicator">
 		  </div>
 		</div>
-		-->
-		<style>
-		.x-btn .x-btn-text.icon-geoexplorer {
-			background-image: none;
-			line-height:1.5em;
-			padding:.125em;
-		}
-		</style>		
+		-->	
         <script>
             
             var app;
@@ -105,8 +99,7 @@
 										mapIdentifier = -1;
 					}
 				}
-            }
-                      
+            }                      
 			
             var onReady = function(){
 
@@ -242,7 +235,8 @@
                         }
                     },
                     georeferences: georeferences_data,
-                    map: serverConfig.map
+                    map: serverConfig.map,
+					customTools: serverConfig.customTools
                 }, mapIdentifier, false, fullScreen);   
                 
                 app.on({
@@ -263,7 +257,7 @@
             };			
                 
 			Ext.Ajax.request({
-			      url: customConfigName ? "config/"+customConfigName +".js"  : "config/viewerConfig.js",
+			      url: customConfigName ? "config/" + customConfigName + ".js"  : "config/viewerConfig.js",
 				  method: 'GET',
 				  success: function(response, opts){      
 					    
@@ -273,14 +267,14 @@
 					  }catch(e){
 						  Ext.Msg.show({
 								title: "Startup",
-								msg: "An error occurred while parsing the GeoStore URL config: " + response.status,
+							    msg: "An error occurred while parsing the external configuration: " + response.status,
 								buttons: Ext.Msg.OK,
 								icon: Ext.MessageBox.ERROR
 						  });
 					  }
 					  
 					  if(serverConfig){
-					      proxy = location.host.indexOf('localhost:8081') != -1 ? "/mapcomposer/proxy/?url=" : serverConfig.proxy; 
+					      proxy = location.host.indexOf('localhost:8081') != -1 ? "/proxy/?url=" : serverConfig.proxy; 
 						  geoStoreBaseURL = serverConfig.geoStoreBase;                  
 						  customSources = serverConfig.gsSources;
 
@@ -293,7 +287,7 @@
 				  failure:  function(response, opts){
 					  Ext.Msg.show({
 							title: "Startup",
-							msg: "An error occurred while getting the GeoStore URL config: " + response.status,
+						    msg: "An error occurred while getting the external configuration: " + response.status,
 							buttons: Ext.Msg.OK,
 							icon: Ext.MessageBox.ERROR
 					  });

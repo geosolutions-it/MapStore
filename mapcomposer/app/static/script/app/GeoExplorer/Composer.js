@@ -138,17 +138,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            actionTarget: {target: "paneltbar", index: 24},
 					needsAuthorization: true
 		        }, {
-		            actions: ["->"], actionTarget: "paneltbar"
-		        }, {
 		            ptype: "gxp_googleearth",
 		            actionTarget: {target: "paneltbar", index: 25}
-		        }, {
-		            ptype: "gxp_googlegeocoder",
-		            outputConfig: {
-		                emptyText: "Google GeoCoder"
-		            },
-		            outputTarget:"paneltbar",
-		            index: 26
 		        }
 		    ];
 
@@ -182,8 +173,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);
     },
-    
-    
 
     /** api: method[destroy]
      */

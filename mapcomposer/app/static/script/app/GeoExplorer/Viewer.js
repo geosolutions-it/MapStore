@@ -97,11 +97,9 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
                     mapPanel: this.mapPanel,
                     listeners: {
                         beforeadd: function(record) {
-				        	//console.log('Viewer GoogleEarthPanel beforeadd!!!');
                             return record.get("group") !== "background";
                         },
 				        pluginready: function() {
-				        	//console.log('Viewer GoogleEarthPanel pluginready!!!');
 				        }
                     }
                 })
@@ -137,19 +135,8 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
             })
         });
 
-        //tools.unshift("-");
         tools.unshift(layerChooser);
-/*
-        var aboutButton = new Ext.Button({
-            tooltip: this.aboutText,
-            iconCls: "icon-about",
-            handler: this.displayAppInfo,
-            scope: this
-        });
 
-        tools.push("->");
-        tools.push(aboutButton);
-*/
         return tools;
     }
 });

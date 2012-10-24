@@ -85,5 +85,19 @@
 		"start": 1,
 		"limit": 10,
 		"timeout": 60000
-	}
+	},
+	
+	"customTools":[
+		{
+			"actions": ["->"], 
+			"actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_googlegeocoder",
+			"outputConfig": {
+				"emptyText": "Google GeoCoder"
+			},
+			"outputTarget":"paneltbar",
+			"index": 26
+		}
+	]
 }

@@ -267,7 +267,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             })
         }
 
-        config.viewerTools.push({
+        /*config.viewerTools.push({
             hidden: true, actions: ["->"], checked: true
             }, {
             leaf: true,
@@ -279,7 +279,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 emptyText:"Google GeoCoder"
             },
             outputTarget:"paneltbar"
-        })
+        });*/
             
         GeoExplorer.superclass.constructor.apply(this, arguments);
     }, 
