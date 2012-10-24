@@ -67,7 +67,7 @@ GeoExt.Lang.add("en", {
         beforePageText: "Page"
     },
     "MSMPanel.prototype": {
-        title : "Map Store Manager"
+        title : "Map Manager"
     },
     "MSMLogin.prototype": {
         loginText: "Login",

@@ -1,9 +1,21 @@
 /**
- * Copyright (c) 2008-2011 The Open Planning Project
- * 
- * Published under the BSD license.
- * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
- * of the license.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /** api: (define)
@@ -35,18 +47,22 @@ gxp.form.ContextSwitcher = Ext.extend(Ext.form.ComboBox, {
 	hideTrigger:false,
 	forceSelection:true,
 	editable:false,
+	
 	/** api: config[currentContext]
 	 * ``String`` The current Configuration (to set as selected).
      */
+	 
 	 /** api: config[saveMessage]
 	 * ``boolean`` Add a save Message in the alert.
      */
 	saveMessage:false,
+	
     /** api: config[displayField]
 	 * If a template is not defined, this is the field to show.
      */
 	valueField: "name",
 	displayField: "name",
+	
 	/** api: config[recordModel]
 	 *	
      */
@@ -59,21 +75,24 @@ gxp.form.ContextSwitcher = Ext.extend(Ext.form.ComboBox, {
 	switchActionTip : "Switch Context",
 	switchConfirmationText : "You are sure to change context?",
 	switchSaveAlert: "All unsaved data will be lost.",
+	
 	/** api: config[width]
      *  ``int`` width of the text box. default is 200
      */
 	width: 130,
+	
 	paramName:'config',
+	
 	/** api: config[data]
 	 * eg. [["id","Default Viewer", "viewer","","descript"],
 	 * ["id","Custom Viewer", "viewer","config","descript"] ,
 	 * ["id","Custom Composer", "","config","descript"] ]
 	 */
 	data:[],
+	
 	/** api: config[tpl]
      *  ``Ext.XTemplate`` the template to show results.
-     */
-	
+     */	
 
     /** private: method[initComponent]
      *  Override
@@ -97,6 +116,7 @@ gxp.form.ContextSwitcher = Ext.extend(Ext.form.ComboBox, {
 	},
 	listeners:{
 		scope:this,
+		
 		beforeselect: function(cb, record, index){
 			
 		   if(cb.getValue() == record.get(cb.valueField)){
@@ -107,20 +127,7 @@ gxp.form.ContextSwitcher = Ext.extend(Ext.form.ComboBox, {
 		  }
 		},   
 		
-		select: function(cb, record, index) {         
-			
-			
-			
-			
-			/*
-			if(code === 'fr'){
-				switchActionTip = "Changement de contexte";
-				switchConfirmationText = "Vous êtes certain que vous souhaitez modifier le contexte ? toutes les données non enregistrées seront a perdu";
-			}else if(code === 'it'){
-				switchActionTip = "Cambiamento contesto";
-				switchConfirmationText = "Si è sicuri di voler cambiare contesto? I dati non salvati saranno persi";
-			}
-			*/
+		select: function(cb, record, index) {         			
 			Ext.Msg.show({
 				title: cb.switchActionTip,
 				msg: cb.switchConfirmationText +( cb.saveMessage ? " "+cb.switchSaveAlert : ""),
@@ -137,6 +144,7 @@ gxp.form.ContextSwitcher = Ext.extend(Ext.form.ComboBox, {
 
 						var c = record.get('newpar');
 						var rurl = record.get('base');
+						
 						//if url present set it
 						var u =(rurl&& rurl!="") ?rurl:location.pathname;
 						var separator='';
@@ -146,6 +154,7 @@ gxp.form.ContextSwitcher = Ext.extend(Ext.form.ComboBox, {
 						}else{
 							u+='?';
 						}
+						
 						//TODO make it use more than one parameter
 						for(x in query) {
 							if(x!=cb.paramName){
@@ -161,12 +170,8 @@ gxp.form.ContextSwitcher = Ext.extend(Ext.form.ComboBox, {
 				},
 			    icon: Ext.MessageBox.QUESTION
 			});  
-		}
-		
-	}
-	
-	
-	
+		}		
+	}	
 });
 
 Ext.reg(gxp.form.ContextSwitcher.prototype.xtype, gxp.form.ContextSwitcher);

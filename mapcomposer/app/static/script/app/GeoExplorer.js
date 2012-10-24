@@ -115,8 +115,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 	
     markerClusterShadow: 'theme/app/img/markers/marker-c-shadow.png',
 	markerShadow: 'theme/app/img/markers/markers_shadow.png',
-    
-    //properties for style tracks
+
+	/**
+     * private: property[trackStyle]
+     * The properties for style tracks
+     */
 	trackStyle: {
 		strokeColorTracks: "green",
 		strokeWidthTracks: 7,
@@ -161,9 +164,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             }
         ];
         
+		// ///////////////////////////////////////////////////////////////////////////////////
         // both the Composer and the Viewer need to know about the viewerTools
         // First row in each object is needed to correctly render a tool in the treeview
         // of the embed map dialog. TODO: make this more flexible so this is not needed.
+		// ////////////////////////////////////////////////////////////////////////////////////
         config.viewerTools = [
             {
                 leaf: true, 
@@ -407,13 +412,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
        var googleEarthPanel = new gxp.GoogleEarthPanel({
             mapPanel: this.mapPanel,
             listeners: {
-                beforeadd: function(record) {
-	                //console.log('GoogleEarthPanel beforeadd!!!');
-	                
+                beforeadd: function(record) {	                
                     return record.get("group") !== "background";
                 },
                 pluginready: function(istance) {
-                	//console.log('GoogleEarthPanel pluginready!!!');
                 }
             }
         });

@@ -22,9 +22,13 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         var allTools = config.viewerTools || this.viewerTools;
         var tools = [];
         var toolConfig;
+		
+		// /////////////////////////////////////////////////////////////////////////
         // we need to start counting at 2 since there is the Layer Switcher and a 
         // split button already
+		// /////////////////////////////////////////////////////////////////////////
         var counter = 15;
+		
         for (var i=0, len=allTools.length; i<len; i++) {
             var tool = allTools[i];
             if (tool.checked === true) {

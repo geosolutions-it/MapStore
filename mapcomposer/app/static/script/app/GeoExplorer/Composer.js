@@ -135,20 +135,20 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            actionTarget: {target: "paneltbar", index: 23}
 		        }, {
 		            ptype: "gxp_saveDefaultContext",
-		            actionTarget: {target: "paneltbar", index: 26},
+		            actionTarget: {target: "paneltbar", index: 24},
 					needsAuthorization: true
 		        }, {
 		            actions: ["->"], actionTarget: "paneltbar"
 		        }, {
 		            ptype: "gxp_googleearth",
-		            actionTarget: {target: "paneltbar", index: 24}
+		            actionTarget: {target: "paneltbar", index: 25}
 		        }, {
 		            ptype: "gxp_googlegeocoder",
 		            outputConfig: {
 		                emptyText: "Google GeoCoder"
 		            },
 		            outputTarget:"paneltbar",
-		            index: 25
+		            index: 26
 		        }
 		    ];
 
@@ -588,9 +588,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         
         tools.push(new Ext.Button({
             tooltip: this.exportMapText,
-            //disabled: true,
             handler: function() {
-                //this.saveAndExport(this.showEmbedWindow);
                 this.showEmbedWindow();
             },
             scope: this,
