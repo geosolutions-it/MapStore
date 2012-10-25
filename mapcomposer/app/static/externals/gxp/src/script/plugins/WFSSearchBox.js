@@ -72,8 +72,10 @@ Ext.namespace("gxp.plugins");
     backgroundYOffsetMarkers: -22,
 
 	/** api: enable fadeOut marker
+	*	if true disable reset button
 	*/
-    markerFadeoutEnable: true,     
+    markerFadeoutEnable: true,
+    
 	/** api: delay for fadeOut marker
 	*  duration in seconds
 	*/
@@ -88,11 +90,28 @@ Ext.namespace("gxp.plugins");
 				},target:target 
 			}, this.outputConfig)
 		);
-        
+		
+		if(this.markerFadeoutEnable===false)
+		{
+		    this.removeMarkerBtn = new Ext.Button({
+		        tooltip: this.addMarkerTooltip,
+		        handler: function() {
+		            var markerLyr = app.mapPanel.map.getLayersByName(this.markerName);  
+		            if (markerLyr.length){
+		                app.mapPanel.map.removeLayer(markerLyr[0]);
+		            }
+		            this.combo.reset();
+		        },
+		        scope: this,
+		        iconCls: "icon-removewfsmarkers"
+		    });
+        }
+                
         var bounds = target.mapPanel.map.restrictedExtent;
         
         this.combo = combo;
-        
+
+                
         return gxp.plugins.WFSSearchBox.superclass.init.apply(this, arguments);
 
     },
@@ -100,7 +119,8 @@ Ext.namespace("gxp.plugins");
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-        return gxp.plugins.WFSSearchBox.superclass.addOutput.call(this, ['-',this.combo]);
+    	var controls = (this.markerFadeoutEnable===false) ? ['-', this.removeMarkerBtn, this.combo] : ['-', this.combo];
+        return gxp.plugins.WFSSearchBox.superclass.addOutput.call(this, controls);
     },
     
     /** private: method[onComboSelect]
