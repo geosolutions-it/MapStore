@@ -140,41 +140,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		        }, {
 		            ptype: "gxp_googleearth",
 		            actionTarget: {target: "paneltbar", index: 25}
-		        },
-		        { //https://github.com/geosolutions-it/mapstore/wiki/WFS-Search
-				  "ptype":"gxp_wfssearchbox",
-				  "outputConfig": {
-					 "url":"http://localhost:8080/geoserver/sf/ows?",
-					 "typeName":"sf:archsites",
-					 "recordModel":[
-						{
-						   "name":"cat",
-						   "mapping":"properties.cat"
-						},
-						{
-						   "name":"geometry",
-						   "mapping":"geometry"
-						},
-						{
-						   "name":"str1",
-						   "mapping":"properties.str1"
-						}
-					 ],
-					 "sortBy":"cat",
-					 "queriableAttributes":[
-						"str1",
-						"cat"
-					 ],
-					 "displayField":"cat",
-					 "pageSize":10,
-					 "width":250,
-					 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{cat}</span></h3>{str1}</div></tpl>"
-				  },
-				  "updateField":"geometry",
-				  "zoom":18,
-				  "outputTarget":"paneltbar",
-				  "index":30
-			   }
+		        }
 		    ];
 
 			if(config.customTools)
