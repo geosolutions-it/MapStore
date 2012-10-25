@@ -181,9 +181,8 @@
 				saveMessage:authorization
 			});
 			
-            var appTabs = new Ext.Panel({
+            var appTabs = new Ext.TabPanel({
                 region: 'center',
-				layout: 'fit',
                 border : false,
                 id : 'appTabs',
                 enableTabScroll: true
@@ -205,7 +204,7 @@
                         title:  GeoExplorer.prototype.aboutThisMapText,
                         modal: true,
                         layout: "fit",
-                        width: 340,
+                        width: 360,
                         height: 360,
                         items: [appInfo]
                     });
