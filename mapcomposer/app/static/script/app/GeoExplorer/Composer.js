@@ -36,6 +36,9 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     alertEmbedTitle: "Attention",
     alertEmbedText: "Save the map before using the 'Publish Map' tool",
 	
+	cswZoomToExtentMsg: "BBOX not available",
+	cswZoomToExtent: "CSW Zoom To Extent",
+	
     /**
     * Property: cswMsg
     * {string} string to add in loading message
@@ -266,16 +269,25 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                                   zoomToExtent: function(layerInfo){
                                       var map = viewer.mapPanel.map;
                                       var bbox = layerInfo.bbox;
-                                      
-                                      //
-                                      // TODO: parse the urn crs code (like "urn:ogc:def:crs:::WGS 1984") inside the CSW BBOX tag. 
-                                      //
-                                      bbox.transform(
-                                          new OpenLayers.Projection("EPSG:4326"),
-                                          new OpenLayers.Projection(map.projection)
-                                      );
-                                      
-                                      map.zoomToExtent(bbox);
+
+									  if(bbox){
+										  //
+										  // TODO: parse the urn crs code (like "urn:ogc:def:crs:::WGS 1984") inside the CSW BBOX tag. 
+										  //
+										  bbox.transform(
+											  new OpenLayers.Projection("EPSG:4326"),
+											  new OpenLayers.Projection(map.projection)
+										  );
+										  
+										  map.zoomToExtent(bbox);
+									  }else{
+										Ext.Msg.show({
+											  title: viewer.cswZoomToExtent,
+											  msg: viewer.cswZoomToExtentMsg,
+											  width: 300,
+											  icon: Ext.MessageBox.WARNING
+										}); 
+									  }
                                   },
                                   viewMap: function(el){       
                                       var mask = new Ext.LoadMask(Ext.getBody(), {msg:this.cswMsg});
