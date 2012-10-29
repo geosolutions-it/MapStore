@@ -137,6 +137,9 @@ UserManagerView = Ext.extend(
 			 * 
 			 */			
 			textSelectRole: 'Select a role...',
+
+			titleConfirmDeleteMsg: "Confirm delete user",
+			textConfirmDeleteMsg: "Are you sure you want to delete this user?",
 			
 			invalidFormMsg: 'Some fields are invalid',
 			userAlreadyTaken: 'User is already taken',
@@ -433,10 +436,18 @@ UserManagerView = Ext.extend(
 				                    tooltip: userManager.tooltipDelete,
 				                    handler: function(grid, rowIndex, colIndex) {
 				                       var record = grid.store.getAt(rowIndex);
-										userManager.users.deleteByPk( record.get('id'), function(data){
-											// refresh the store
-											userManager.reloadData();
-										} );
+						
+										Ext.Msg.confirm(
+											userManager.titleConfirmDeleteMsg,
+											userManager.textConfirmDeleteMsg,
+											function(btn) {
+												if(btn=='yes') {
+													userManager.users.deleteByPk( record.get('id'), function(data){
+														// refresh the store
+														userManager.reloadData();
+													});
+												}									
+											});										
 				                    }
 				                }
 				                ]

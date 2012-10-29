@@ -96,6 +96,8 @@ GeoExt.Lang.add("it", {
 		textTitle: 'User Manager',
 		tooltipSearch: "Cerca",
 		textSelectRole: 'Seleziona un ruolo...',
-		userAlreadyTaken: 'Nome utente presente'
+		userAlreadyTaken: 'Nome utente presente',
+		titleConfirmDeleteMsg: "Confirma cancellazione utente",
+		textConfirmDeleteMsg: "Sei sicuro di voler eliminare questo utente?"
 	}
 });

@@ -96,6 +96,8 @@ GeoExt.Lang.add("en", {
 		textTitle: 'User Manager',
 		tooltipSearch: "Search",
 		userAlreadyTaken: 'User name has been already taken',
-		textSelectRole: 'Select a role...'
+		textSelectRole: 'Select a role...',
+		titleConfirmDeleteMsg: "Confirm delete user",
+		textConfirmDeleteMsg: "Are you sure you want to delete this user?"	
 	}
 });
