@@ -704,16 +704,21 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
              * 
              */
 			openUserManager: function(){
-				
+				   	
 				var win = new Ext.Window({
 				   title: grid.textUserManager,
 				   iconCls: "open_usermanager",
 				   width: 430, height: 215, resizable: true, modal: true,
+				   layout: "fit",
 				   items: new UserManagerView({
 							auth: grid.login.getToken(),
-							url: grid.geoBaseUsersUrl
-				   })
-				});				
+							url: grid.geoBaseUsersUrl,
+							autoWidth: true,
+							viewConfig: {
+								forceFit: true
+							}
+				   	})
+				});
 
 				win.show();
 			},
