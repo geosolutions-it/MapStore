@@ -24,7 +24,7 @@ GeoExt.Lang.add("en", {
         textViewMap: '', //"View Map",
         tooltipViewMap: "Open Map to read only",
         textCopyMap: '', //"Clone Map",
-        tooltipCopyMap: "Make a copy of this map",
+        tooltipCopyMap: "Make a clone of this map",
         textEditMap: '', //"Edit Map",
         tooltipEditMap: "Open Map to edit",
         textDeleteMap: '', //"Delete Map",

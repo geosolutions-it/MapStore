@@ -238,7 +238,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * {string} string name prefix for cloned map
     * 
     */
-    tooltipCopyMap: 'Make a copy of this map',
+    tooltipCopyMap: 'Make a clone of this map',
     /**
     * Property: textEditMap
     * {string} string to add in EditMap button

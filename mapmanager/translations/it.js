@@ -24,7 +24,7 @@ GeoExt.Lang.add("it", {
         textViewMap: '', // "Visualizza mappa",
         tooltipViewMap: "Apre la mappa in sola lettura",
 		textCopyMap: '', //"Clone Map",
-        tooltipCopyMap: "Copia questa mappa",
+        tooltipCopyMap: "Clona questa mappa",
         textEditMap: '', //"Modifica mappa",
         tooltipEditMap: "Apre la mappa per le modifiche",
         textDeleteMap: '', //"Elimina mappa",
