@@ -61,7 +61,7 @@
         <script>
             
             var app;
-            var modified = false; var mapIdentifier; var fullScreen = false; var bbox;
+            var modified = false; var mapIdentifier = -1; var fullScreen = false; var bbox;
 			 // ///////////////////////////////////////////////////////////////
             // Custom variables from the mapStoreConfig user configuration file 
             // ///////////////////////////////////////////////////////////////
@@ -93,10 +93,10 @@
 										} 
 										break;
                         case "config":
-									customConfigName = param[1];
-									break;
+										customConfigName = param[1];
+										break;
 						default : 
-										mapIdentifier = -1;
+										//mapIdentifier = -1;
 					}
 				}
             }                      
@@ -113,18 +113,23 @@
 
                 OpenLayers.ImgPath = "externals/openlayers/theme/default/img/";
                 
-                //get Proj4js configuration 
+				// ////////////////////////////
+                // Get Proj4js configuration 
+				// ////////////////////////////
                 if( typeof(Proj4js)!="undefined" && !(serverConfig.proj4jsDefs===undefined) ){
                     for(var name in serverConfig.proj4jsDefs){
-                        //Proj4js.defs["EPSG:102113"]="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
                         Proj4js.defs[name] = serverConfig.proj4jsDefs[name];
                     
                     }
                 }
-                //get georeferences data to override
+				
+				// //////////////////////////////////////
+                // Get georeferences data to override
+				// //////////////////////////////////////
                 if (serverConfig.georeferences_data){
                     georeferences_data = serverConfig.georeferences_data;
                 }
+				
                 gxp.plugins.ZoomToExtent.prototype.closest = false;
 
 				Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
@@ -186,7 +191,7 @@
                             title:  GeoExplorer.prototype.aboutThisMapText,
                             modal: true,
                             layout: "fit",
-                            width: 340,
+                            width: 360,
                             height: 360,
                             items: [appInfo]
                         });

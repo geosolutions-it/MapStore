@@ -53,7 +53,9 @@ GeoExt.Lang.add("it", {
 		cswFailureAddLayer: ' Il layer n on può essere aggiunto alla mappa',
 		uploadButtonText: 'Carica',
         alertEmbedTitle: 'Attenzione',
-        alertEmbedText: "Salvare la mappa prima di utilizzare il tool 'Pubblicazione Mappa'"
+        alertEmbedText: "Salvare la mappa prima di utilizzare il tool 'Pubblicazione Mappa'",
+	    cswZoomToExtentMsg: "BBOX non disponibile",
+		cswZoomToExtent: "CSW Zoom all'estensione"
     },
 
     "gxp.menu.LayerMenu.prototype": {

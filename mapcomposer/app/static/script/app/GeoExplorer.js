@@ -366,8 +366,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      * Create the various parts that compose the layout.
      */
     initPortal: function() {
-        var appMask = new Ext.LoadMask(Ext.getBody(), {msg: this.mainLoadingMask});
-		appMask.show();
+        this.appMask = new Ext.LoadMask(Ext.getBody(), {msg: this.mainLoadingMask});
+		this.appMask.show();
 		
         var westPanel = new Ext.TabPanel({
             border: false,
@@ -406,7 +406,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 item.disable();
             });
 			
-			appMask.hide();
+			this.appMask.hide();
         });
 
        var googleEarthPanel = new gxp.GoogleEarthPanel({
@@ -603,6 +603,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
         var mHost=pattern.exec(app.xmlJsonTranslateService);
 
+		this.appMask.show();
+		
         var mUrl = app.xmlJsonTranslateService + 'HTTPWebGISFileDownload';
         OpenLayers.Request.POST({
             url: mHost[2] == location.host ? mUrl : proxy + mUrl,
@@ -631,6 +633,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                     elemIF.src = mHost[2] == location.host ? mUrl : proxy + mUrlEncoded; 
                     elemIF.style.display = "none"; 
                     document.body.appendChild(elemIF); 
+					this.appMask.hide();
                 }else{
                     Ext.Msg.show({
                        title:'File Download Error',

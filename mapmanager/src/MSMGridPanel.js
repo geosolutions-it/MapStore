@@ -402,18 +402,24 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
         var searchString = '*';
 
-		// init useful urls
+		// /////////////////////////
+		// Init useful URLs
+		// /////////////////////////
 		this.murl = config.baseUrl + '/mapcomposer/';
 		this.geoBaseUsersUrl= config.baseUrl + '/geostore/rest/users';
 		this.geoBaseMapsUrl = config.baseUrl + '/geostore/rest/resources';
 		this.geoSearchUrl = config.baseUrl + '/geostore/rest/extjs/search/';
         
-        //inizialization of MSMLogin class
+		// ///////////////////////////////////
+        // Inizialization of MSMLogin class
+		// ///////////////////////////////////
         this.login = new MSMLogin({
             grid: this
         });
 		
-        //An object that contains the string to search the resource
+		// //////////////////////////////////////////////////////////
+        // An object that contains the string to search the resource
+		// //////////////////////////////////////////////////////////
         this.inputSearch = new Ext.form.TextField({
             id: 'id-inputSearch',
             style: 'margin-right:8px; margin-left:8px;',
@@ -477,38 +483,38 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                  scope: this,
                  expand: function(){
 
-                    //I will assume that if we have one type of button we have them all
-                    //If not we'll just exit
-                    //if ($(".twitter-share-button").length == 0) return;
+				    // ////////////////////////////////////////////////////////////////////
+                    // I will assume that if we have one type of button we have them all
+                    // If not we'll just exit
+                    // if ($(".twitter-share-button").length == 0) return;
+					// /////////////////////////////////////////////////////////////////////
 
-                    //Twitter
+					// ------------------------ //
+                    // Twitter                  //
+					// ------------------------ //
                     if (typeof (twttr) != 'undefined') {
                         twttr.widgets.load();
                     } else {
-                        //$.getScript('http://platform.twitter.com/widgets.js');
                         Ext.Loader.load('http://platform.twitter.com/widgets.js');
                     }
-
-                    //Facebook
+					
+					// ------------------------ //
+                    // Facebook                 //
+					// ------------------------ //
                     if (typeof (FB) != 'undefined') {
                         FB.XFBML.parse();
                     } else {
                         var langFB = grid.lang == "en" ? "en_US" : "it_IT";;
                         
-                        //var element = document.getElementById('facebook-jssdk');
-                        //if(!element){
-                            var fun = function(d, s, id) {
-                                var js, fjs = d.getElementsByTagName(s)[0];
-                                if (d.getElementById(id)) return;
-                                js = d.createElement(s); js.id = id;
-                                js.src = "//connect.facebook.net/" + langFB + "/all.js#xfbml=1";
-                                fjs.parentNode.insertBefore(js, fjs);
-                            }
-                            fun(document, 'script', 'facebook-jssdk');
-                        //}
-                        //Ext.Loader.load("http://connect.facebook.net/it_IT/all.js#xfbml=1&cookie=1&status=1&channelUrl='http://localhost:8080/MapStoreManager'");
+						var fun = function(d, s, id) {
+							var js, fjs = d.getElementsByTagName(s)[0];
+							if (d.getElementById(id)) return;
+							js = d.createElement(s); js.id = id;
+							js.src = "//connect.facebook.net/" + langFB + "/all.js#xfbml=1";
+							fjs.parentNode.insertBefore(js, fjs);
+						}
+						fun(document, 'script', 'facebook-jssdk');
                     }
-
                 }                
             },
             /**
@@ -569,43 +575,57 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                     var mapName = Ext.getCmp("diag-text-field").getValue();        
                                     var mapDescription = Ext.getCmp("diag-text-description").getValue();
                                     
-									// get info about logged user if any
+									// /////////////////////////////////////
+									// Get info about logged user if any
+									// /////////////////////////////////////
 									var auth = grid.login.getToken();
-									// fetch base url
+									
+									// /////////////////////////
+									// Fetch base url
+									// /////////////////////////
 									var url =  grid.geoBaseMapsUrl;
 
-									// get the api for GeoStore
-									var geostore = new GeoStore.Maps(
-														{ authorization: auth,
-														  url: url
-														 }).failure( function(data){ 
-																	  Ext.Msg.show({
-							                                             title: grid.metadataFailSuccessTitle,
-							                                             msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
-							                                             buttons: Ext.Msg.OK,
-							                                             icon: Ext.MessageBox.ERROR
-							                                          });	
-														});
-									// update metadata for the selected map
+									// ////////////////////////////
+									// Get the api for GeoStore
+									// ////////////////////////////
+									var geostore = new GeoStore.Maps({
+										authorization: auth,
+										url: url
+									}).failure( function(data){ 
+										Ext.Msg.show({
+											 title: grid.metadataFailSuccessTitle,
+											 msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+											 buttons: Ext.Msg.OK,
+											 icon: Ext.MessageBox.ERROR
+										});	
+									});
+									
+									// //////////////////////////////////////////
+									// Update metadata for the selected map
+									// //////////////////////////////////////////
 									geostore.update(
-											mapId, 
-											{name:mapName, description: mapDescription},
-											function(data){ // callback
-												 var reload = function(){
-		                                                grid.getBottomToolbar().bindStore(grid.store, true);
-		                                                grid.getBottomToolbar().doRefresh();
-		                                                expander.collapseAll();
-		                                          };
+										mapId, 
+										{
+											name:mapName, 
+											description: mapDescription
+										},
+										function(data){ // Callback function
+											 var reload = function(){
+													grid.getBottomToolbar().bindStore(grid.store, true);
+													grid.getBottomToolbar().doRefresh();
+													expander.collapseAll();
+											  };
 
-		                                          Ext.Msg.show({
-		                                               title: grid.metadataSaveSuccessTitle,
-		                                               msg: data.statusText + " - " + grid.metadataSaveSuccessMsg,
-		                                               buttons: Ext.Msg.OK,
-		                                               fn: reload,
-		                                               icon: Ext.MessageBox.OK,
-		                                               scope: this
-		                                          });
-										   });
+											  Ext.Msg.show({
+												   title: grid.metadataSaveSuccessTitle,
+												   msg: data.statusText + " - " + grid.metadataSaveSuccessMsg,
+												   buttons: Ext.Msg.OK,
+												   fn: reload,
+												   icon: Ext.MessageBox.OK,
+												   scope: this
+											  });
+										}
+									);
 
                                     win.destroy(); 
                                 }
@@ -625,35 +645,46 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
              */
 			cloneMap: function(mapId, prefixName) {
 				
-				// TODO refactoring!
-				// this code is repeated several times within this file
+				// /////////////////////////////////////////////////////////
+				// TODO: refactoring!
+				// This code is repeated several times within this file
+				// /////////////////////////////////////////////////////////
 				 var reload = function() {
                         grid.getBottomToolbar().bindStore(grid.store, true);
                         grid.getBottomToolbar().doRefresh();
                         expander.collapseAll();
                   };
 			
-			  	// get info about logged user if any
+			    // /////////////////////////////////////
+			  	// Get info about logged user if any
+				// /////////////////////////////////////
 			    var auth = grid.login.getToken();
+				
+				// ///////////////////
 				// fetch base url
-				var url =  grid.geoBaseMapsUrl; // 'http://localhost:8080/geostore/rest/resources';
+				// ///////////////////
+				var url =  grid.geoBaseMapsUrl;
 
-				// get the api for GeoStore
+				// ///////////////////////////////
+				// Get the api for GeoStore
+				// ///////////////////////////////
 				var geostore = new GeoStore.Maps({
-										  authorization: auth,
-										  url: url
-										 }).failure( function(response) { 
-											console.error(response); 
-											  Ext.Msg.show({
-	                                             title: grid.metadataFailSuccessTitle,
-	                                             msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
-	                                             buttons: Ext.Msg.OK,
-	                                             icon: Ext.MessageBox.ERROR
-	                                          });	
-										});
+					authorization: auth,
+					url: url
+				}).failure( function(response) { 
+					console.error(response); 
+					  Ext.Msg.show({
+						 title: grid.metadataFailSuccessTitle,
+						 msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+						 buttons: Ext.Msg.OK,
+						 icon: Ext.MessageBox.ERROR
+					  });	
+				});
 										
 				geostore.findByPk(mapId, function(data) {
-					// make a copy of the current object
+				    // ///////////////////////////////////
+					// Make a copy of the current object
+					// ///////////////////////////////////
 				
 					var copy = new Object;
 					copy.name = prefixName + data.name;
@@ -664,8 +695,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 						reload();
 					});
 				}, 
-				{full:true} );
-				
+				{full:true} );				
 			},
 			
 			/**
@@ -676,16 +706,15 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			openUserManager: function(){
 				
 				var win = new Ext.Window({
-					   title: grid.textUserManager,
-					   iconCls: "open_usermanager",
-				       width: 430, height: 215, resizable: true, modal: true, // autoScroll:true,
-				       items: new UserManagerView( {
-								auth: grid.login.getToken(),
-								url: grid.geoBaseUsersUrl
-							})
+				   title: grid.textUserManager,
+				   iconCls: "open_usermanager",
+				   width: 430, height: 215, resizable: true, modal: true,
+				   items: new UserManagerView({
+							auth: grid.login.getToken(),
+							url: grid.geoBaseUsersUrl
+				   })
 				});				
-				
-				// show window
+
 				win.show();
 			},
 
@@ -725,7 +754,6 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         onEsc: Ext.emptyFn,
                         listeners: {
 						    close: function(p){
-								//window.scrollTo(0,0);
 								
 								// //////////////////////////////////////////////
 								// To maintaing evantually the body scrollbar.
@@ -783,16 +811,18 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     });
                 iframe.show();
             },
-
-            tpl: new Ext.XTemplate( // expander-button-table
+			
+            // ////////////////////////////
+			// expander-button-table
+			// ////////////////////////////
+            tpl: new Ext.XTemplate( 
                 grid.createTemplate(grid.murl, grid.lang), 
 				{
 				
 					getSocialLinksId: function(mapid) {
 					
-						var divid = mapid + '_social_div',
-							longUrl = grid.murl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+mapid;
-					
+						var divid = mapid + '_social_div', longUrl = grid.murl + 'viewer?locale=' + grid.lang + '&mapId=' + mapid;
+							
 						var shortener = new Google.Shortener({
 								config: grid.config
 							}).failure(function(resp) {
@@ -800,11 +830,15 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 							});
 						
 						shortener.shorten(longUrl, function(shortUrl) {
-
-									// inject social links within the div element
+						            // ///////////////////////////////////////////////
+									// Inject social links within the div element
+									// ///////////////////////////////////////////////
 									var socialDiv = document.getElementById( divid );
 									
-									// we need a table, otherwise IE7 does not display the button correctly
+									// //////////////////////////////////////////////////
+									// We need a table, otherwise IE7 does not display 
+									// the button correctly
+									// //////////////////////////////////////////////////
 									var table = document.createElement('table');
 									table.width = '200px';
 									var tbody = document.createElement('tbody');
@@ -814,8 +848,13 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									socialDiv.appendChild( table );
 									
 									var fb = document.createElement('div');
-									// IE7 problem: http://stackoverflow.com/questions/9919095/dom-element-addclass-not-working-in-ie7
+									
+									// ////////////////////////////////////////////////////////////////////////////////////
+									// IE7 problem: 
+									// http://stackoverflow.com/questions/9919095/dom-element-addclass-not-working-in-ie7
+									//
 									// b.setAttribute('class', 'fb-like');
+									// ////////////////////////////////////////////////////////////////////////////////////
 									fb.setAttribute('data-href', shortUrl);
 									fb.setAttribute('data-send', 'false');
 									fb.setAttribute('data-layout', 'button_count');
@@ -827,8 +866,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									var fbcell = document.createElement('td');
 									fbcell.appendChild( fb );
 									
-									row.appendChild( fbcell );//Add fb button
-									
+									// ///////////////////
+									// Add fb button
+									// ///////////////////
+									row.appendChild( fbcell ); 									
 									
 									if (typeof (FB) != 'undefined') {
 				                        FB.XFBML.parse();
@@ -846,23 +887,31 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				                    }
 				                    
 									var tw = document.createElement('a');
-									tw.setAttribute('href', 'http://opensdi.geo-solutions.it/');
-									// IE7 problem http://stackoverflow.com/questions/9919095/dom-element-addclass-not-working-in-ie7
-									// tw.setAttribute('class', 'twitter-share-button');
-									tw.className = 'twitter-share-button';
 									
-									//tw.setAttribute('data-url', shortUrl );
-									tw.setAttribute('data-text', 'MapComposer: '+ shortUrl );
+									// //////////////////////////////////////////////////////////////
+									// For reference see: https://dev.twitter.com/docs/tweet-button
+									// //////////////////////////////////////////////////////////////
+									
+									// //////////////////////////////////////////////////////////////////////////////////////
+									// IE7 problem:                                                                        //
+									// http://stackoverflow.com/questions/9919095/dom-element-addclass-not-working-in-ie7  //
+									//                                                                                     //
+									// tw.setAttribute('class', 'twitter-share-button');                                   //
+									// //////////////////////////////////////////////////////////////////////////////////////
+									tw.className = 'twitter-share-button';
+									tw.setAttribute('data-url', shortUrl);
 									tw.setAttribute('data-count', 'horizontal');
 									tw.setAttribute('data-via', 'geosolutions_it');
-									tw.setAttribute('data-lang', grid.lang);
+									tw.setAttribute('data-lang', grid.lang);									
 									
 									var twcell = document.createElement('td');
 									twcell.appendChild( tw );
 									
-									row.appendChild( twcell );	//Add tw button
+									// /////////////////////
+									// Add tw button
+									// /////////////////////
+									row.appendChild( twcell );	
 									
-									//Twitter
 									if (typeof (twttr) != 'undefined') {
 										twttr.widgets.load();
 									} else {
@@ -872,6 +921,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 							
 						return divid;
 					},
+					
 					/**
                     * Private: getShortLink
                     * 
@@ -880,11 +930,15 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     */
 					getShortLink: function(id, sendRequest) {
 						
-						// verify if we already have this uri in cache
+						// //////////////////////////////////////////////
+						// Verify if we already have this uri in cache
+						// //////////////////////////////////////////////
 						if ( grid.shortUrls[id] === undefined && sendRequest ) {
-							// shorten urls for Twitter
-
-							var longUrl = grid.murl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+id;
+						    // //////////////////////////
+							// Shorten urls for Twitter
+							// //////////////////////////							
+							var longUrl = grid.murl + 'viewer?locale=' + grid.lang + '&mapId='+mapid;
+							
 							var shortener = new Google.Shortener({
 									config: grid.config
 								}).failure(function(resp){
@@ -893,11 +947,12 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
 							shortener.shorten(longUrl, function(shortUrl) {
 										grid.shortUrls[id] = shortUrl;
-										//console.log('created short url ' + grid.shortUrls[id] + ' for map ' + id);
 								});
 						}
 						
+						// ///////////////////////////////
 						// return even if it is not ready
+						// ///////////////////////////////
 						return grid.shortUrls[id];
 					},
 					
@@ -920,11 +975,15 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     * 
                     */
                     getButtonERId: function(values,button) {
-                        var result = Ext.id()+button;
-                        //adds listener for edit resource (Name and Description)
+                        var result = Ext.id() + button;
+						
+						// //////////////////////////////////////////////////////////
+                        // Adds listener for edit resource (Name and Description)
+						// //////////////////////////////////////////////////////////
                         this.MapComposerER.defer(1,this, [result,values]);
                         return result;
-                    },
+                    }, 
+					
                     /**
                     * Private: getCloneButton
                     * 
@@ -932,11 +991,19 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     * 
                     */
                     getCloneButton: function(values) {
-						// create a unique id for the clone button
+					    // ////////////////////////////////////////
+						// Create a unique id for the clone button
+						// /////////////////////////////////////////
                         var uniqueId = Ext.id()+'_cloneBtn';
-                        //adds listener for clone map
+						
+						// ///////////////////////////////
+                        // Adds listener for clone map
+						// ///////////////////////////////
                         this.bindCloneMapButton.defer(1,this, [uniqueId,values]);
-						// return the button id
+						
+						// //////////////////////////
+						// Return the button id
+						// //////////////////////////
                         return uniqueId;
                     },
                     /**
@@ -948,7 +1015,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     */
                     getButtonVMId: function(values,button,userProfile) {
                         var result = Ext.id()+button;
-                        //adds listener for view and edit map
+						
+						// //////////////////////////////////////
+                        // Adds listener for view and edit map
+						// //////////////////////////////////////
                         this.MapComposerVM.defer(1,this, [result,values,userProfile]);
                         return result;
                     },
@@ -961,7 +1031,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     */
                     getButtonDMId: function(values,button) {
                         var result = Ext.id()+button;
-                        //Adds listener for delete map
+						
+						// ////////////////////////////////
+                        // Adds listener for delete map
+						// ////////////////////////////////
                         this.MapComposerDM.defer(1,this, [result,values]);
                         return result;
                     },
@@ -978,11 +1051,12 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									
 	                            expander.cloneMap(mapId,prefix);
 	                    });
-						// if (grid.login.isGuest()){
-						//	Ext.get(id).setVisible(false);
-						// }
 						
+					    /*if (grid.login.isGuest()){
+							Ext.get(id).setVisible(false);
+						}*/						
 					},
+					
                     /**
                     * Private: MapComposerER 
                     * 
@@ -999,6 +1073,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             expander.metadataEdit(mapId,name,desc);
                         });
                     },
+					
                     /**
                     * Private: MapComposerVM 
                     * 
@@ -1014,6 +1089,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             expander.openMapComposer(grid.murl, userProfile, idMap, desc);
                         });
                     },
+					
                     /**
                     * Private: MapComposerDM 
                     * 
@@ -1026,27 +1102,37 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             var id = values.id;
                             Ext.Msg.confirm(grid.msgDeleteMapTitle, grid.msgDeleteMapBody, function(btn,text){
                                 if (btn == 'yes'){
-	
-									// get info about logged user if any
+									// //////////////////////////////////
+									// Get info about logged user if any
+									// //////////////////////////////////
 									var auth = grid.login.getToken();
-									// fetch base url
+									
+									// ////////////////////
+									// Fetch base url
+									// ////////////////////
 									var url =  grid.geoBaseMapsUrl; 
 
-									// get the api for GeoStore
-									var geostore = new GeoStore.Maps(
-																{ authorization: auth,
-																  url: url
-																 });
-									geostore.failure( function(response){ 
-														console.error(response); 
-														Ext.MessageBox
-														   .alert(grid.msgFailureDeleteMapTitle, grid.msgFailureDeleteMapBody);	
-													});
+									// ///////////////////////////
+									// Get the api for GeoStore
+									// ///////////////////////////
+									var geostore = new GeoStore.Maps({ 
+										authorization: auth,
+										url: url
+									});
+									
+									geostore.failure( 
+										function(response){ 
+											console.error(response); 
+											Ext.MessageBox.alert(grid.msgFailureDeleteMapTitle, grid.msgFailureDeleteMapBody);	
+										}
+									);
+									
 									geostore.deleteByPk(id, function(response){
 										 grid.getBottomToolbar().bindStore(grid.store, true);
                                          grid.getBottomToolbar().doRefresh();
                                          expander.collapseAll();
 									});
+									
                                     return true;
                                 } else {
                                     return false;
@@ -1166,36 +1252,47 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 disableCaching: true,
                 timeout: (config.msmTimeout)?(config.msmTimeout):(this.msmTimeout),
                 success: function (result) {
-					// hack to generate short urls
+				    // ///////////////////////////////////////
+					// Hack to generate short urls
 					// it is not a good solution!
+					// ////////////////////////////////////////
 					/*var maps = Ext.util.JSON.decode(result.responseText).results;
 					for (var i=0; i<maps.length; i++){
 						var map = maps[i];
 						var mapid = map.id;
-						// verify if we already have this uri in cache
+						// //////////////////////////////////////////////////
+						// Verify if we already have this uri in cache
+						// //////////////////////////////////////////////////
 						if ( grid.shortUrls[mapid] === undefined ){
-							// send a request to shorten urls for Twitter
+						    // /////////////////////////////////////////////
+							// Send a request to shorten urls for Twitter
+							// /////////////////////////////////////////////
 							var longUrl = config.mcUrl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+mapid;
-							//REPLACE config.mcUrl WITH this.murl !!!
+							
+							// /////////////////////////////////////////
+							// REPLACE config.mcUrl WITH this.murl !!!
+							// /////////////////////////////////////////
 							// console.log('sent ' + longUrl);
 							var shortener = new Google.Shortener({
-									appid: config.googleApi
-								}).failure(function(response){
-									console.error(response);
-								});
+								appid: config.googleApi
+							}).failure(function(response){
+								console.error(response);
+							});
+							
 							var infamous = 	function(num){
-									var result = function(response){
-										grid.shortUrls[ num ] = response.id;
-										console.log('created short url ' + grid.shortUrls[num] + ' for map ' + num);
-									};
-									return result;
+								var result = function(response){
+									grid.shortUrls[ num ] = response.id;
+									console.log('created short url ' + grid.shortUrls[num] + ' for map ' + num);
 								};
+								return result;
+							};
+							
 							shortener.shorten(
-										longUrl,
-										infamous(mapid)
-									);
+								longUrl,
+								infamous(mapid)
+							);
 						}
-					}//*/
+					}*/
                 },
                 failure: function (result) {
                     switch(result.status) {
@@ -1245,16 +1342,16 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
         });
        
 		this.openUserManagerButton = new Ext.Button({
-	            id: 'id_openUserManager_button',
-	            text: this.textUserManager,
-	            scope: this,
-	            disabled: true,
-	            iconCls: 'open_usermanager',
-	            tooltip: this.tooltipUserManager,
-	            handler: function(){
-	                this.plugins.openUserManager();
-	            }
-	        });
+			id: 'id_openUserManager_button',
+			text: this.textUserManager,
+			scope: this,
+			disabled: true,
+			iconCls: 'open_usermanager',
+			tooltip: this.tooltipUserManager,
+			handler: function(){
+				this.plugins.openUserManager();
+			}
+		});
         
         this.tbar = [grid.inputSearch,{
             id: 'searchBtn',
@@ -1290,13 +1387,17 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			this.login.userLabel,'-',this.openUserManagerButton,'-',this.login.loginButton,'-',this.langSelector,'-'
         ];
         
-        // initializes the store with the parameters set in <config.js> otherwise uses the default
+		// //////////////////////////////////////////////////
+        // Initializes the store with the parameters set 
+		// in <config.js> otherwise uses the default
+		// //////////////////////////////////////////////////
         this.store.load({
             params:{
                 start: (config.start)?(config.start):(this.start),
                 limit: (config.limit)?(config.limit):(this.limit)
             }
         });
+		
         MSMGridPanel.superclass.initComponent.call(this, arguments);
     },
     
@@ -1346,7 +1447,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
             '<table class="x-btn x-btn-text-icon" align="right" cellspacing="5" cellpadding="5" border="0" style="table-layout:auto">'+
                 '<tr>';
-		// in IE7 we need to set button property "padding" and table width otherwise buttons are stretched			
+		// /////////////////////////////////////////////////////
+		// In IE7 we need to set button property "padding" and 
+		// table width otherwise buttons are stretched			
+		// /////////////////////////////////////////////////////
         tpl +=  '<td >'+
                         '<tpl if="canEdit==true">'+
                             '<table class="x-btn x-btn-text-icon" style="width:30px" cellspacing="0"  >' +
@@ -1543,12 +1647,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
             '</table>'+
         '</div>';
 		
-			tpl +=  '</tr></table></div><br />';
-       
-            tpl += '<div id=\'{[this.getSocialLinksId(values.id)]}\' style=\'float:left\' ></div>';
+		tpl +=  '</tr></table></div><br/>';
+
+		tpl += '<div id=\'{[this.getSocialLinksId(values.id)]}\' style=\'float:left\'></div>';
         
 		return tpl;
 	}
-
-
 });

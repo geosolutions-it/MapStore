@@ -60,7 +60,9 @@ GeoExt.Lang.add("fr", {
 		cswFailureAddLayer: ' La couche ne peuvent pas être ajoutés à la carte',
 		uploadButtonText: 'Charger',
         alertEmbedTitle: 'Attention',
-        alertEmbedText: "Enregistrer la carte avant d'utiliser l'outil 'Publier la carte'"
+        alertEmbedText: "Enregistrer la carte avant d'utiliser l'outil 'Publier la carte'",
+	    cswZoomToExtentMsg: "BBOX pas disponible",
+		cswZoomToExtent: "CSW zoom dans la mesure"
     },  
 
     "gxp.menu.LayerMenu.prototype": {
