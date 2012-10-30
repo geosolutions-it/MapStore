@@ -265,9 +265,6 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     tooltipDeleteMap: 'Delete Map',
 
 	textUserManager: 'User Manager',
-	
-	textUserDataEdit: 'Edit User Data',
-	tooltipUserDataEdit: 'Edit User Data',	
 
     /**
     * Property: textEditMetadata
@@ -706,7 +703,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
              * 
              * 
              */
-			openUserManager: function(){
+			openUserManager: function() {
 				   	
 				var win = new Ext.Window({
 				   title: grid.textUserManager,
@@ -714,6 +711,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				   width: 430, height: 215, resizable: true, modal: true,
 				   layout: "fit",
 				   items: new UserManagerView({
+				   			login: grid.login,
 							auth: grid.login.getToken(),
 							url: grid.geoBaseUsersUrl,
 							autoWidth: true,
@@ -1361,18 +1359,6 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			}
 		});
 
-		this.openUserDataEditButton = new Ext.Button({
-			id: 'id_openUserDataEdit_button',
-			text: this.textUserDataEdit,
-			scope: this,
-			disabled: false,
-			iconCls: 'open_userdataedit',
-			tooltip: this.tooltipUserDataEdit,
-			handler: function(){
-				//this.plugins.openUserManager();
-			}
-		});		
-        
         this.tbar = [grid.inputSearch,{
             id: 'searchBtn',
             text: this.textSearch,
@@ -1407,7 +1393,6 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			this.login.userLabel,
 			'-',
 			this.openUserManagerButton,
-			this.openUserDataEditButton,
 			'-',
 			this.login.loginButton,
 			'-',

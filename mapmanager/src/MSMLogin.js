@@ -211,6 +211,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
     logout: function() {
 	    // invalidate token
 	    this.token = null;
+	    this.userid = null;
 	    this.username = null;
         this.grid.store.proxy.getConnection().defaultHeaders = {'Accept': 'application/json'};
         this.grid.getBottomToolbar().bindStore(this.grid.store, true);
@@ -265,13 +266,19 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 'Authorization' : auth
             },
             success: function(response, form, action) {
+            
                 this.win.hide();
                 this.getForm().reset();
+                
                 var user = Ext.util.JSON.decode(response.responseText);
+                
+                console.log(user);
+                
                 this.showLogout(user.User.name);
 				// save auth info
 				this.token = auth;
 				if (user.User) {
+					this.userid = user.User.id;
 					this.username = user.User.name;
 					this.role = user.User.role;
 				}
@@ -281,9 +288,9 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 this.grid.getBottomToolbar().doRefresh();
                 this.grid.plugins.collapseAll();
                 this.grid.getBottomToolbar().openMapComposer.enable();
-				if ( this.role === 'ADMIN' ){
+				//if ( this.role === 'ADMIN' ){
 					this.grid.openUserManagerButton.enable();
-				}
+				//}
 				
             },
             failure: function(response, form, action) {

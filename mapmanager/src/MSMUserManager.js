@@ -190,7 +190,10 @@ UserManagerView = Ext.extend(
 				 */
 				
 				// a reference for this object to be used in closures
-				var userManager = this;
+				var userManager = this,
+					isAdmin = (this.login.role == 'ADMIN');
+				
+				//userManager.showEditUserWindow(record);
 				
 				// input search box to search for users by name
 				this.inputSearch =
@@ -410,27 +413,25 @@ UserManagerView = Ext.extend(
 						}
 					};
 
-				this.showEditUserWindow = function(record) {
-				
-					console.log(record);
+				this.showEditUserWindow = function(userdata) {
+					
+					console.log('showEditUserWindow');
+					console.log(userdata);
 					// form in user add window
-					var formEdit = new Ext.form.FormPanel({
-						  // width: 415, height: 200, border:false,
-						  frame:true,  border:false,
-						  items: [
-									{
-									  xtype: 'fieldset',
-									  id: 'name-field-set',
-									  border:false,
-									  items: [
-									      {
+					
+					var userDataFields = [{
+									            xtype: 'hidden',
+									            id: 'userid-hidden',
+									            value: userdata.id
+									      },
+										  {
 									            xtype: 'textfield',
 									            width: 150,
 									            id: 'user-textfield',
 												allowBlank: false,
 												blankText: 'Name should not be null',
 									            fieldLabel: userManager.textName,
-									            value: record.data.name,//TODO set from record
+									            value: userdata.name,//TODO set from record
 												listeners: {
 												  beforeRender: function(field) {
 													field.focus(false, 1000);
@@ -446,34 +447,46 @@ UserManagerView = Ext.extend(
 									            fieldLabel: userManager.textPassword,
 												inputType:'password',
 									            value: '' //TODO set from record               
-									      }
-									      
-									      //TODO limit for admin
-				//					                                      ,{
-				//					                                            xtype: 'combo',
-				//																displayField:'role',
-				//																width: 150,
-				//																allowBlank: false,
-				//																editable: false,
-				//																blankText: 'Role should be selected',
-				//																valueField:'role',
-				//																emptyText: userManager.textSelectRole,
-				//																allowBlank: false,
-				//																triggerAction: 'all',
-				//																mode: 'local',
-				//					                                            id: 'role-dropdown',
-				//					                                            fieldLabel: userManager.textRole,
-				//					                                            store: new Ext.data.SimpleStore({
-				//																             fields:['id', 'role'],
-				//																             data:[['1', 'USER'], ['2', 'ADMIN']]
-				//																          })
-				//					                                      }	
-										  ]
-										}
-								  ]
+									      }];
+					if(isAdmin)
+					{
+						userDataFields.push({//TODO limit only to admin
+	                                            xtype: 'combo',
+												displayField:'role',
+												width: 150,
+												allowBlank: false,
+												editable: false,
+												blankText: 'Role should be selected',
+												valueField: 'role',
+												emptyText: userManager.textSelectRole,
+												allowBlank: false,
+												triggerAction: 'all',
+												mode: 'local',
+	                                            id: 'role-dropdown',
+	                                            
+	                                            //TODO set value
+	                                            value: userdata.role,
+	                                            
+	                                            fieldLabel: userManager.textRole,
+	                                            store: new Ext.data.SimpleStore({
+												             fields:['id', 'role'],
+												             data:[['1', 'USER'], ['2', 'ADMIN']]
+												          })
+	                                      });
+					}
+					
+					var formEdit = new Ext.form.FormPanel({
+						  // width: 415, height: 200, border:false,
+						  frame:true,  border:false,
+						  items: [{
+								  xtype: 'fieldset',
+								  id: 'name-field-set',
+								  border: false,
+								  items: userDataFields
+								  }]
 					   });
 						
-						var winEdit = new Ext.Window({
+					var winEdit = new Ext.Window({
 						width: 415, height: 200, resizable: false, modal: true, border:false, plain:true,
 						closeAction: 'hide', layout: 'fit', 
 						title: userManager.textEditUserTitle,
@@ -497,7 +510,8 @@ UserManagerView = Ext.extend(
 											id: "user-addbutton",
 											scope: this,
 											handler: function(){      
-												// win.hide(); 
+												// win.hide();
+												var useridField = Ext.getCmp("userid-hidden"); 
 												var nameField = Ext.getCmp("user-textfield");
 												var passwordField = Ext.getCmp("password-textfield");
 												var roleDropdown = Ext.getCmp("role-dropdown"); 
@@ -506,23 +520,27 @@ UserManagerView = Ext.extend(
 													   passwordField.isValid(false) &&
 														  
 														  //TODO only for admin
-														  roleDropdown.isValid(false )){
+														  roleDropdown.isValid(false )
+														  ){
 							
 													// check if the name is already taken
 													var index = userManager.store.find('name', nameField.getValue(), 0, true);
 							
 													if ( index===-1){ // no user with this name
-														userManager.users.create( 
+													
+														userManager.users.update(useridField,
+														
 															{ name: nameField.getValue(), 
 															  password:passwordField.getValue(), 
 															  role:roleDropdown.getValue() }, 
-															  function(response){
+															  function(response) {
 																winEdit.hide();
 																formEdit.getForm().reset();
 																// refresh the store
 																userManager.reloadData();
 																winEdit.destroy();
-															});	
+															});
+															
 													} else {
 														 Ext.Msg.show({
 												           title: userManager.failSuccessTitle,
@@ -541,9 +559,6 @@ UserManagerView = Ext.extend(
 												       icon: Ext.MessageBox.ERROR
 												    });
 												}
-						
-						
-												
 											}
 										},
 										{
@@ -562,121 +577,134 @@ UserManagerView = Ext.extend(
 								})
 						});
 						winEdit.show();						   
-					};				
-										
-					// column definitions for the grid panel
-					this.cm = new Ext.grid.ColumnModel({
-				            id: 'id_mapstore_cm',
-							columns: [
-			            	{
-			                	id       :'id',
-			                	header   : userManager.textId, 
-			                	sortable : true, 
-			                	dataIndex: 'id',
-								hidden   : true
-			            	},
-				            {
-				                id       :'name',
-				                header   : userManager.textName, 
-				                sortable : true, 
-				                dataIndex: 'name'
-				            },
-				            {
-				                header   : userManager.textPassword, 
-				                sortable : false, 
-				                dataIndex: 'password',
-								hidden   : true
-				            },
-				            {
-				                header   : userManager.textRole, 
-				                sortable : true, 
-				                dataIndex: 'role'
-				            },
-				            {
-				                xtype: 'actioncolumn',
-				                width: 50,
-				                items: [{
-				                    icon   : ASSET.delete_icon, 
-				                    tooltip: userManager.tooltipDelete,
-				                    handler: function(grid, rowIndex, colIndex) {
-				                       var record = grid.store.getAt(rowIndex);
+					};	
+					
+					if(isAdmin)
+					{			
+						// column definitions for the grid panel
+						this.cm = new Ext.grid.ColumnModel({
+						        id: 'id_mapstore_cm',
+								columns: [
+					        	{
+					            	id       :'id',
+					            	header   : userManager.textId, 
+					            	sortable : true, 
+					            	dataIndex: 'id',
+									hidden   : true
+					        	},
+						        {
+						            id       :'name',
+						            header   : userManager.textName, 
+						            sortable : true, 
+						            dataIndex: 'name'
+						        },
+						        {
+						            header   : userManager.textPassword, 
+						            sortable : false, 
+						            dataIndex: 'password',
+									hidden   : true
+						        },
+						        {
+						            header   : userManager.textRole, 
+						            sortable : true, 
+						            dataIndex: 'role'
+						        },
+						        {
+						            xtype: 'actioncolumn',
+						            width: 50,
+						            items: [{
+						                icon   : ASSET.delete_icon, 
+						                tooltip: userManager.tooltipDelete,
+						                handler: function(grid, rowIndex, colIndex) {
+						                   var record = grid.store.getAt(rowIndex);
 						
-										Ext.Msg.confirm(
-											userManager.titleConfirmDeleteMsg,
-											userManager.textConfirmDeleteMsg,
-											function(btn) {
-												if(btn=='yes') {
-													userManager.users.deleteByPk( record.get('id'), function(data){
-														// refresh the store
-														userManager.reloadData();
-													});
-												}									
-											});										
-						                }
-						            }]
-						      },
-						      {
-						      	xtype: 'actioncolumn',
-				                width: 50,
-				                items: [{
-					                icon   : ASSET.edit_icon, 
-					                tooltip: userManager.tooltipEdit,
-					                handler: function(grid, rowIndex, colIndex) {
-					                   var record = grid.store.getAt(rowIndex);
-					                   userManager.showEditUserWindow(record);
-					                   //open edit user data window				
-					                }
-					            }]
-				            }
-				        ]});		
+											Ext.Msg.confirm(
+												userManager.titleConfirmDeleteMsg,
+												userManager.textConfirmDeleteMsg,
+												function(btn) {
+													if(btn=='yes') {
+														userManager.users.deleteByPk( record.get('id'), function(data){
+															// refresh the store
+															userManager.reloadData();
+														});
+													}									
+												});										
+								            }
+								        }]
+								  },
+								  {
+								  	xtype: 'actioncolumn',
+						            width: 50,
+						            items: [{
+							            icon   : ASSET.edit_icon, 
+							            tooltip: userManager.tooltipEdit,
+							            handler: function(grid, rowIndex, colIndex) {
+							               var record = grid.store.getAt(rowIndex);
+			
+							               var userdata = {id: record.get('id'), name: record.data.name, role: record.data.role };
+							               
+							               userManager.showEditUserWindow(userdata);
+							               //open edit user data window				
+							            }
+							        }]
+						        }
+						    ]});		
 				
-				// the top bar of the user manager window
-				this.tbar = [ this.inputSearch, this.searchButton, this.resetSearchButton, '-', this.addUserButton ];
+					// the top bar of the user manager window
+					this.tbar = [ this.inputSearch, this.searchButton, this.resetSearchButton, '-', this.addUserButton ];
 
-				// data store
-				this.store = new Ext.data.JsonStore({
-							        fields: ['id', 'name', 'password', 'role']
-									// params:{start:0, limit:3}
-							 });
-				// create a content provider with init options
-				this.users = new GeoStore.Users(
-								{ authorization: userManager.auth,
-								  url: userManager.url
-								}).failure( function(response){ 
-									console.error(response); 
-									  Ext.Msg.show({
-                                       title: userManager.failSuccessTitle,
-                                       msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
-                                       buttons: Ext.Msg.OK,
-                                       icon: Ext.MessageBox.ERROR
-                                    });
-								} );
+					// data store
+					this.store = new Ext.data.JsonStore({
+									    fields: ['id', 'name', 'password', 'role']
+										// params:{start:0, limit:3}
+								 });
+					// create a content provider with init options
+					this.users = new GeoStore.Users(
+									{ authorization: userManager.auth,
+									  url: userManager.url
+									}).failure( function(response){ 
+										console.error(response); 
+										  Ext.Msg.show({
+		                                   title: userManager.failSuccessTitle,
+		                                   msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+		                                   buttons: Ext.Msg.OK,
+		                                   icon: Ext.MessageBox.ERROR
+		                                });
+									} );
 				
-				/*this.bbar = new Ext.PagingToolbar({
-									pageSize:3,
-									store: this.store,
-									grid: this,
-									displayInfo: true
-								});	*/
+					/*this.bbar = new Ext.PagingToolbar({
+										pageSize:3,
+										store: this.store,
+										grid: this,
+										displayInfo: true
+									});	*/
 				
 								
-				this.loadData = function(){
-					// get all users
-					userManager.users.find( function( data ){
-						// populate store
-						userManager.store.loadData(data);
-					});		
-				};
+					this.loadData = function(){
+						// get all users
+						userManager.users.find( function( data ){
+							// populate store
+							userManager.store.loadData(data);
+						});		
+					};
 
 
-				this.reloadData = function(){
-					userManager.store.removeAll();
-					userManager.loadData();
-				};
+					this.reloadData = function(){
+						userManager.store.removeAll();
+						userManager.loadData();
+					};
 
 				
-				// load data
-				userManager.loadData();
+					// load data
+					userManager.loadData();
+				
+				} else { //not Admin
+
+					var userdata = {id: this.login.userid, name: this.login.username, role: this.login.role };
+
+					userManager.showEditUserWindow(userdata);
+				
+				}
 				
 				
 				// call parent

@@ -517,6 +517,9 @@
 		          +'<role>' + data.role + '</role></User>';
 		return xml;
 	},
+
+	//TODO beforeUpdate
+	
 	afterFind: function(json){
 		 if ( json.UserList ){
 			var data = new Array;
