@@ -220,7 +220,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * {string} string to add in ViewMap tooltip
     * 
     */
-    tooltipViewMap: 'Open Map to read only',
+    tooltipViewMap: 'View Map',
 	/**
 	 * Property: textCopyMap
 	 * {string} string to add in CopyMap button
@@ -238,7 +238,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * {string} string name prefix for cloned map
     * 
     */
-    tooltipCopyMap: 'Make a clone of this map',
+    tooltipCopyMap: 'Clone Map',
     /**
     * Property: textEditMap
     * {string} string to add in EditMap button
@@ -250,7 +250,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * {string} string to add in EditMap tooltip
     * 
     */
-    tooltipEditMap: 'Open Map to edit',
+    tooltipEditMap: 'Edit Map',
     /**
     * Property: textDeleteMap
     * {string} string to add in DeleteMap button
@@ -277,7 +277,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * {string} string to add in EditMetadata tooltip
     * 
     */
-    tooltipEditMetadata: 'Edit Metadata',
+    tooltipEditMetadata: 'Edit Info',
     /**
     * Property: textSubmitEditMetadata
     * {string} string to add in EditMetadata button

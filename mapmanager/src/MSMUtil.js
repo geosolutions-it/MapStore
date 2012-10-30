@@ -327,7 +327,7 @@
 		var Request = Ext.Ajax.request({
 	       url: uri.toString(),
 	       method: 'PUT',
-	       headers:{
+	       headers: {
 	          'Content-Type' : 'text/xml',
 	          'Accept' : this.acceptTypes_,
 	          'Authorization' : this.authorization_
