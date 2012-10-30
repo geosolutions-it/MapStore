@@ -93,6 +93,7 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
 					style: record.get("group") != 'background' ? {marginLeft:'22px', border:'none'} : {border:'none'},
                     listeners: {
                         checkchange: function(item, checked) {
+                        
                             item.layer.setVisibility(checked);
 							var gcheck=false;
                             for(var g in layerGroups[item.groupname])//check all items status
@@ -102,6 +103,7 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
                             		break;
                             	}
                             }
+                            
                             try {
                            		layerGroupsNode[item.groupname].setChecked(gcheck);
                             }catch(e){}

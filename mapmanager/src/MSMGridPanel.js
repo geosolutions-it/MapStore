@@ -265,6 +265,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     tooltipDeleteMap: 'Delete Map',
 
 	textUserManager: 'User Manager',
+	
+	textUserDataEdit: 'Edit User Data',
+	tooltipUserDataEdit: 'Edit User Data',	
 
     /**
     * Property: textEditMetadata
@@ -1353,10 +1356,22 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			disabled: true,
 			iconCls: 'open_usermanager',
 			tooltip: this.tooltipUserManager,
-			handler: function(){
+			handler: function() {
 				this.plugins.openUserManager();
 			}
 		});
+
+		this.openUserDataEditButton = new Ext.Button({
+			id: 'id_openUserDataEdit_button',
+			text: this.textUserDataEdit,
+			scope: this,
+			disabled: false,
+			iconCls: 'open_userdataedit',
+			tooltip: this.tooltipUserDataEdit,
+			handler: function(){
+				//this.plugins.openUserManager();
+			}
+		});		
         
         this.tbar = [grid.inputSearch,{
             id: 'searchBtn',
@@ -1389,7 +1404,15 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     expander.collapseAll();
                 } 
             },'->',
-			this.login.userLabel,'-',this.openUserManagerButton,'-',this.login.loginButton,'-',this.langSelector,'-'
+			this.login.userLabel,
+			'-',
+			this.openUserManagerButton,
+			this.openUserDataEditButton,
+			'-',
+			this.login.loginButton,
+			'-',
+			this.langSelector,
+			'-'
         ];
         
 		// //////////////////////////////////////////////////
