@@ -53,6 +53,8 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
      *  Title for info popup (i18n).
      */
     popupTitle: "Feature Info",
+	
+	noDataMsg: "No data returned from the server",
     
     /** api: config[vendorParams]
      *  ``Object``
@@ -111,7 +113,14 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                                 this.displayPopup(
                                     evt, x.get("title") || x.get("name"), match[1]
                                 );
-                            }
+                            }else{
+								Ext.Msg.show({
+								    title: this.popupTitle,
+									msg: this.noDataMsg,
+									buttons: Ext.Msg.OK,
+									icon: Ext.MessageBox.WARNING
+								});	
+							}
                         },
                         scope: this
                     }

@@ -162,14 +162,18 @@ UserManagerView = Ext.extend(
 			 * {string} base url for user geostore services
 			 * 
 			 */			
-			url:null,
+			url: null,
 
 			/**
 			 * Property: auth
 			 * {string} auth token to access geostore services
 			 * 
 			 */
-			auth:null,
+			auth: null,
+			
+			gridPanelBbar: null,
+			
+			mapUrl: null, 
 
 			/**
 		    * Constructor: initComponent 
@@ -606,9 +610,39 @@ UserManagerView = Ext.extend(
 												userManager.textConfirmDeleteMsg,
 												function(btn) {
 													if(btn=='yes') {
-														userManager.users.deleteByPk( record.get('id'), function(data){
-															// refresh the store
-															userManager.reloadData();
+														// ------ DELETE USER'S MAPS ------- //
+														
+														// ///////////////////////////
+														// Get the api for GeoStore
+														// ///////////////////////////
+														var geostore = new GeoStore.Maps({ 
+															authorization: userManager.auth,
+															url: userManager.mapUrl
+														});
+														
+														geostore.failure(
+															function(response){ 
+																//console.error(response); 
+																Ext.MessageBox.alert("failure");	
+															}
+														);
+														
+														var filterData = {
+															name: "owner", 
+															operator: "EQUAL_TO", 
+															type: "STRING", 
+															value: record.data.name
+														};
+														
+														geostore.deleteByFilter(filterData, function(response){
+															userManager.gridPanelBbar.doRefresh();
+															
+															// ------ DELETE USER ------- //
+															
+															userManager.users.deleteByPk( record.get('id'), function(data){
+																// refresh the store
+																userManager.reloadData();
+															});
 														});
 													}									
 												});										

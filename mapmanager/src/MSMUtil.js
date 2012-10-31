@@ -387,8 +387,8 @@
 	 * 
 	 */
 	ContentProvider.prototype.create = function(item, callback){
-		 var uri = new Uri({'url':this.baseUrl_});
-		 var data = this.beforeSave( item );
+		var uri = new Uri({'url':this.baseUrl_});
+		var data = this.beforeSave( item );
 		// build the Ajax request
 		var Request = Ext.Ajax.request({
 	       url: uri.toString(),
@@ -405,6 +405,13 @@
 	       },
 	       failure:  function(response, opts){
 	       		console.log(response);
+				
+				// TODO: Refactor this code externalize the Msg definition for the i18n
+				Ext.Msg.show({
+					msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+					buttons: Ext.Msg.OK,
+					icon: Ext.MessageBox.ERROR
+				});	
 	       }
 	    });
 	};
@@ -448,9 +455,44 @@
  *  - <GeoStore.ContentProvider>
  *
  */
-   var Maps = GeoStore.Maps = ContentProvider.extend({
+ var Maps = GeoStore.Maps = ContentProvider.extend({
 	initialize: function(){
 		this.resourceNamePrefix_ = 'resource';
+	},
+	beforeDeleteByFilter: function(data){
+		var xmlFilter = "<AND>" +
+							"<ATTRIBUTE>" + 
+								"<name>" + 
+									data.name + 
+								"</name>" +
+								"<operator>" + data.operator + "</operator>" + 
+								"<type>" + data.type + "</type>" +
+								"<value>" + 
+									data.value + 
+								"</value>" + 
+							"</ATTRIBUTE>" + 
+						"</AND>";
+		return xmlFilter;
+	},
+    deleteByFilter: function(filterData, callback){
+	    var data = this.beforeDeleteByFilter(filterData);
+		var uri = this.baseUrl_;
+		
+		Ext.Ajax.request({
+	       url: uri,
+	       method: 'DELETE',
+	       headers:{
+	          'Content-Type' : 'text/xml',
+	          'Authorization' : this.authorization_
+	       },
+		   params: data,
+	       scope: this,
+	       success: function(response, opts){
+				callback(response);
+	       },
+	       failure:  function(response, opts) {
+	       }
+	    });		
 	},
 	beforeSave: function(data){
 		// wrap new map within an xml envelop
@@ -617,5 +659,3 @@ Shortener.prototype.failure = function( callback ){
 };
 	
 }).call(this);
-
-

@@ -182,7 +182,8 @@ GeoExt.Lang.add("fr", {
 
     "gxp.plugins.WMSGetFeatureInfo.prototype": {
         infoActionTip: "Obtenir des infos sur l`entité",
-        popupTitle: "Info sur l`entité"
+        popupTitle: "Info sur l`entité",
+		noDataMsg: "Aucune donnée n'a été renvoyée par le serveur"
     },  
 
     "gxp.plugins.Zoom.prototype": {
