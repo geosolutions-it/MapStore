@@ -298,12 +298,11 @@
             }, mapIdentifier, authorization, fullScreen);   
             
             app.on({
-                'portalready' : function(){
-                    if(fullScreen){
-                        var ovestPanel = Ext.getCmp('tree').findParentByType('panel');
-                        ovestPanel.setDisabled();
-                        ovestPanel.hide();
-                        ovestPanel.collapse();
+                'portalready' : function() {              	
+                    if(fullScreen) {
+                        var westPanel = Ext.getCmp('west');
+                        westPanel.setActiveTab('legend');
+                        westPanel.hideTabStripItem('tree');
                     }
                 }, 
                 'ready' : function(){

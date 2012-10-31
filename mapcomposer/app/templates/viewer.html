@@ -245,12 +245,11 @@
                 }, mapIdentifier, false, fullScreen);   
                 
                 app.on({
-                    'portalready' : function(){
+                    'portalready' : function(){                    	
                         if(fullScreen){
-                            var ovestPanel = Ext.getCmp('tree').findParentByType('panel');
-                            ovestPanel.setDisabled();
-                            ovestPanel.hide();
-                            ovestPanel.collapse();
+		                    var westPanel = Ext.getCmp('west');
+		                    westPanel.setActiveTab('legend');
+		                    westPanel.hideTabStripItem('tree');
                         }
                     }, 
                     'ready' : function(){
