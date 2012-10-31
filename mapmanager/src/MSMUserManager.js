@@ -152,9 +152,11 @@ UserManagerView = Ext.extend(
 			textSelectRole: 'Select a role...',
 
 			titleConfirmDeleteMsg: "Confirm delete user",
+			
 			textConfirmDeleteMsg: "Are you sure you want to delete this user?",
 			
 			invalidFormMsg: 'Some fields are invalid',
+			
 			userAlreadyTaken: 'User is already taken',
 
 			/**
@@ -182,8 +184,9 @@ UserManagerView = Ext.extend(
 		    */
 			initComponent: function(){
 				
-				
-				// assets used within the interface
+				// ///////////////////////////////////////
+				// Assets used within the interface
+				// ///////////////////////////////////////
 				var ASSET = {
 				    delete_icon: './theme/img/user_delete.png',
 				    edit_icon: './theme/img/user_edit.png'
@@ -193,13 +196,17 @@ UserManagerView = Ext.extend(
 				 * building blocks for ui
 				 */
 				
-				// a reference for this object to be used in closures
+				// /////////////////////////////////////////////////////
+				// A reference for this object to be used in closures
+				// /////////////////////////////////////////////////////
 				var userManager = this,
 					isAdmin = (this.login.role == 'ADMIN');
 				
 				//userManager.showEditUserWindow(record);
 				
-				// input search box to search for users by name
+				// ////////////////////////////////////////////////
+				// Input search box to search for users by name
+				// ////////////////////////////////////////////////
 				this.inputSearch =
 					new Ext.form.TextField({
 			            id: 'user-input-search',
@@ -219,48 +226,53 @@ UserManagerView = Ext.extend(
 											    caseSensitive: true  
 											  }]);
 									}
-
 			                    }
 			                }
 			            }
 			        });
-			
-				 // search button
-			     this.searchButton =  {
-			            id: 'userSearchBtn',
-			            tooltip: userManager.tooltipSearch,
-			            iconCls: 'find',
-			            disabled: false,
-			            handler: function() {  
-		     				var keyword = Ext.getCmp("user-input-search").getValue();
-							if ( !keyword || keyword==='' ){
-								userManager.store.filter('*');
-							} else {
-								userManager.store.filter([
-									  {
-									    property     : 'name',
-									    value        : keyword,
-									    anyMatch     : true, 
-									    caseSensitive: true  
-									  }]);			
-							}
-			            }
-					};
-			            
-				// reset search button
+			    
+				// //////////////////
+				// Search button
+				// //////////////////
+			    this.searchButton = {
+					id: 'userSearchBtn',
+					tooltip: userManager.tooltipSearch,
+					iconCls: 'find',
+					disabled: false,
+					handler: function() {  
+						var keyword = Ext.getCmp("user-input-search").getValue();
+						if ( !keyword || keyword==='' ){
+							userManager.store.filter('*');
+						} else {
+							userManager.store.filter([
+								  {
+									property     : 'name',
+									value        : keyword,
+									anyMatch     : true, 
+									caseSensitive: true  
+								  }]);			
+						}
+					}
+				};
+			    
+			    // ////////////////////////
+				// Reset search button
+				// ////////////////////////
 				this.resetSearchButton =  {
-						id: 'userClearBtn',
-						text: this.textReset,
-						tooltip: this.tooltipReset,
-						iconCls: 'reset',
-						disabled: false,
-						handler : function() {
-								Ext.getCmp('user-input-search').setValue('');
-								userManager.store.filter('*');
-							} 
-						};
+					id: 'userClearBtn',
+					text: this.textReset,
+					tooltip: this.tooltipReset,
+					iconCls: 'reset',
+					disabled: false,
+					handler : function() {
+						Ext.getCmp('user-input-search').setValue('');
+						userManager.store.filter('*');
+					} 
+				};
 
-				// button to open the add user window
+				// /////////////////////////////////////
+				// Button to open the add user window
+				// /////////////////////////////////////
 				this.addUserButton = {
 						id: 'id_addUser_button',
 						scope: this,
@@ -269,230 +281,238 @@ UserManagerView = Ext.extend(
 						tooltip: userManager.tooltipAddUser,
 						iconCls: 'user_add',
 				        handler : function(){
-								// form in user add window
-								var form = new Ext.form.FormPanel({
-					                  // width: 415, height: 200, border:false,
-									  frame:true,  border:false,
-					                  items: [
-					                                {
-					                                  xtype: 'fieldset',
-					                                  id: 'name-field-set',
-					                                  border:false,
-					                                  items: [
-					                                      {
-					                                            xtype: 'textfield',
-					                                            width: 150,
-					                                            id: 'user-textfield',
-																allowBlank: false,
-																blankText: 'Name should not be null',
-					                                            fieldLabel: userManager.textName,
-					                                            value: '',
-																listeners: {
-												                  beforeRender: function(field) {
-												                    field.focus(false, 1000);
-												                  }
-												                }
-					                                      },
-					                                      {
-					                                            xtype: 'textfield',
-					                                            width: 150,
-					                                            id: 'password-textfield',
-																allowBlank: false,
-																blankText: 'Password should not be null',
-					                                            fieldLabel: userManager.textPassword,
-																inputType:'password',
-					                                            value: ''                
-					                                      },
-														  {
-					                                            xtype: 'combo',
-																displayField:'role',
-																width: 150,
-																allowBlank: false,
-																editable: false,
-																blankText: 'Role should be selected',
-																valueField:'role',
-																emptyText: userManager.textSelectRole,
-																allowBlank: false,
-																triggerAction: 'all',
-																mode: 'local',
-					                                            id: 'role-dropdown',
-					                                            fieldLabel: userManager.textRole,
-					                                            store: new Ext.data.SimpleStore({
-																             fields:['id', 'role'],
-																             data:[['1', 'USER'], ['2', 'ADMIN']]
-																          })
-					                                      }	
-					                                  ]
-					                                }
-					                          ]
-					               });
+							// ////////////////////////////
+							// Form in user add window
+							// ////////////////////////////
+							var form = new Ext.form.FormPanel({
+								// width: 415, height: 200, border:false,
+								frame:true,  
+								border:false,
+								items: [{
+										xtype: 'fieldset',
+										id: 'name-field-set',
+										border:false,
+										items: [{
+											xtype: 'textfield',
+											width: 150,
+											id: 'user-textfield',
+											allowBlank: false,
+											blankText: 'Name should not be null',
+											fieldLabel: userManager.textName,
+											value: '',
+											listeners: {
+												beforeRender: function(field) {
+													field.focus(false, 1000);
+												}
+											}
+										}, {
+											xtype: 'textfield',
+											width: 150,
+											id: 'password-textfield',
+											allowBlank: false,
+											blankText: 'Password should not be null',
+											fieldLabel: userManager.textPassword,
+											inputType:'password',
+											value: ''                
+										}, {
+											xtype: 'combo',
+											displayField:'role',
+											width: 150,
+											allowBlank: false,
+											editable: false,
+											blankText: 'Role should be selected',
+											valueField:'role',
+											emptyText: userManager.textSelectRole,
+											allowBlank: false,
+											triggerAction: 'all',
+											mode: 'local',
+											id: 'role-dropdown',
+											fieldLabel: userManager.textRole,
+											store: new Ext.data.SimpleStore({
+												fields:['id', 'role'],
+												data:[['1', 'USER'], ['2', 'ADMIN']]
+											})
+										}]
+								}]
+							});
 
-						var winAdd = new Ext.Window({
-					           width: 415, height: 200, resizable: false, modal: true, border:false, plain:true,
-							   closeAction: 'hide', layout: 'fit', 
-					           title: userManager.textAddUserTitle,
-					           items: [ form ],
-					           listeners: {
-				                afterRender: function(){
-				                    form.getForm().clearInvalid();
-				                },
-				                hide: function(){
-				                    form.getForm().reset();
-									winAdd.destroy();
-				                }
-				               },
-							    bbar: new Ext.Toolbar({
-						                 items:[
-					                            '->',
-					                            {
-					                                text: userManager.textSave,
-					                                tooltip: userManager.tooltipSave,
-					                                iconCls: "accept",
-					                                id: "user-addbutton",
-					                                scope: this,
-					                                handler: function(){      
-					                                    // winAdd.hide(); 
-					 									var nameField = Ext.getCmp("user-textfield");
-														var passwordField = Ext.getCmp("password-textfield");
-														var roleDropdown = Ext.getCmp("role-dropdown"); 
+							var winAdd = new Ext.Window({
+								width: 415, 
+								height: 200, 
+								resizable: false, 
+								modal: true, 
+								border:false, 
+								plain:true,
+								closeAction: 'hide', 
+								layout: 'fit', 
+								title: userManager.textAddUserTitle,
+								items: [ form ],
+								listeners: {
+									afterRender: function(){
+										form.getForm().clearInvalid();
+									},
+									hide: function(){
+										form.getForm().reset();
+										winAdd.destroy();
+									}
+								},
+								bbar: new Ext.Toolbar({
+									items:[
+										'->',
+										{
+											text: userManager.textSave,
+											tooltip: userManager.tooltipSave,
+											iconCls: "accept",
+											id: "user-addbutton",
+											scope: this,
+											handler: function(){      
+												// winAdd.hide(); 
+												var nameField = Ext.getCmp("user-textfield");
+												var passwordField = Ext.getCmp("password-textfield");
+												var roleDropdown = Ext.getCmp("role-dropdown"); 
 
-													    if ( nameField.isValid(false) &&
-													           passwordField.isValid(false) &&
-													              roleDropdown.isValid(false )){
-															
-															// check if the name is already taken
-															var index = userManager.store.find('name', nameField.getValue(), 0, true);
-															
-															if ( index===-1){ // no user with this name
-																userManager.users.create( 
-																	{ name: nameField.getValue(), 
-																	  password:passwordField.getValue(), 
-																	  role:roleDropdown.getValue() }, 
-																	  function(response){
-																		winAdd.hide();
-																        form.getForm().reset();
-																		// refresh the store
-																		userManager.reloadData();
-																		winAdd.destroy();
-																	});	
-															} else {
-																 Ext.Msg.show({
-							                                       title: userManager.failSuccessTitle,
-							                                       msg: userManager.userAlreadyTaken,
-							                                       buttons: Ext.Msg.OK,
-							                                       icon: Ext.MessageBox.ERROR
-							                                    });
-															}
-															
-														
-														} else {
-															  Ext.Msg.show({
-						                                       title: userManager.failSuccessTitle,
-						                                       msg: userManager.invalidFormMsg,
-						                                       buttons: Ext.Msg.OK,
-						                                       icon: Ext.MessageBox.ERROR
-						                                    });
-														}
-														
-														
-					                                    
-					                                }
-					                            },
-												{
-					                                text: userManager.textCancel,
-					                                tooltip: userManager.tooltipCancel,
-					                                iconCls: "close",
-					                                id: "user-cancelbutton",
-					                                scope: this,
-					                                handler: function(){      
-					                                    winAdd.hide(); 
-													    // do nothing
-					                                    winAdd.destroy(); 
-					                                }
-					                            }
-					                        ]
-					                    })
-					            });
-								winAdd.show();			   
+												if ( nameField.isValid(false) &&
+													   passwordField.isValid(false) &&
+														  roleDropdown.isValid(false )){
+													
+													// ///////////////////////////////////
+													// Check if the name is already taken
+													// ////////////////////////////////////
+													var index = userManager.store.find('name', nameField.getValue(), 0, true);
+													
+													if ( index===-1){             // no user with this name
+														userManager.users.create( 
+															{ 
+																name: nameField.getValue(), 
+																password:passwordField.getValue(), 
+																role:roleDropdown.getValue() 
+															}, 
+															function(response){
+																winAdd.hide();
+																form.getForm().reset();
+																
+																// //////////////////////////
+																// Refresh the store
+																// //////////////////////////
+																userManager.reloadData();
+																winAdd.destroy();
+															});	
+													} else {
+														 Ext.Msg.show({
+														   title: userManager.failSuccessTitle,
+														   msg: userManager.userAlreadyTaken,
+														   buttons: Ext.Msg.OK,
+														   icon: Ext.MessageBox.ERROR
+														});
+													}													
+												} else {
+													Ext.Msg.show({
+													   title: userManager.failSuccessTitle,
+													   msg: userManager.invalidFormMsg,
+													   buttons: Ext.Msg.OK,
+													   icon: Ext.MessageBox.ERROR
+													});
+												}
+											}
+										}, {
+											text: userManager.textCancel,
+											tooltip: userManager.tooltipCancel,
+											iconCls: "close",
+											id: "user-cancelbutton",
+											scope: this,
+											handler: function(){      
+												winAdd.hide(); 
+												// do nothing
+												winAdd.destroy(); 
+											}
+										}
+									]
+								})
+							});
+							winAdd.show();			   
 						}
 					};
 
 				this.showEditUserWindow = function(userdata) {
+					//console.log('showEditUserWindow');
+					//console.log(userdata);
 					
-//					console.log('showEditUserWindow');
-//					console.log(userdata);
-//					// form in user add window
-					
+					// /////////////////////////////
+					// Form in user add window
+					// /////////////////////////////
 					var userDataFields = [{
-									            xtype: 'hidden',
-									            id: 'userid-hidden',
-									            value: userdata.id
-									      },
-										  {
-									            xtype: 'textfield',
-									            width: 150,
-									            id: 'user-textfield',
-												allowBlank: false,
-												blankText: 'Name should not be null',
-									            fieldLabel: userManager.textName,
-									            value: userdata.name,//TODO set from record
-												listeners: {
-												  beforeRender: function(field) {
-													field.focus(false, 1000);
-												  }
-												}
-									      },
-									      {
-									            xtype: 'textfield',
-									            width: 150,
-									            id: 'password-textfield',
-												allowBlank: false,
-												blankText: 'Password should not be null',
-									            fieldLabel: userManager.textPassword,
-												inputType:'password',
-									            value: '' //TODO set from record               
-									      }];
-					if(isAdmin)
-					{
-						userDataFields.push({//TODO limit only to admin
-	                                            xtype: 'combo',
-												displayField:'role',
-												width: 150,
-												allowBlank: false,
-												editable: false,
-												blankText: 'Role should be selected',
-												valueField: 'role',
-												emptyText: userManager.textSelectRole,
-												allowBlank: false,
-												triggerAction: 'all',
-												mode: 'local',
-	                                            id: 'role-dropdown',
-	                                            
-	                                            //TODO set value
-	                                            value: userdata.role,
-	                                            
-	                                            fieldLabel: userManager.textRole,
-	                                            store: new Ext.data.SimpleStore({
-												             fields:['id', 'role'],
-												             data:[['1', 'USER'], ['2', 'ADMIN']]
-												          })
-	                                      });
+						xtype: 'hidden',
+						id: 'userid-hidden',
+						value: userdata.id
+					}, {
+						xtype: 'textfield',
+						width: 150,
+						id: 'user-textfield',
+						allowBlank: false,
+						blankText: 'Name should not be null',
+						fieldLabel: userManager.textName,
+						value: userdata.name,  //TODO set from record
+						listeners: {
+							  beforeRender: function(field) {
+								field.focus(false, 1000);
+							  }
+						}
+					}, {
+						xtype: 'textfield',
+						width: 150,
+						id: 'password-textfield',
+						allowBlank: false,
+						blankText: 'Password should not be null',
+						fieldLabel: userManager.textPassword,
+						inputType:'password',
+						value: '' //TODO set from record               
+				    }];
+					
+					if(isAdmin){
+						userDataFields.push({   //TODO limit only to admin
+							xtype: 'combo',
+							displayField:'role',
+							width: 150,
+							allowBlank: false,
+							editable: false,
+							blankText: 'Role should be selected',
+							valueField: 'role',
+							emptyText: userManager.textSelectRole,
+							allowBlank: false,
+							triggerAction: 'all',
+							mode: 'local',
+							id: 'role-dropdown',
+							
+							//TODO set value
+							value: userdata.role,							
+							fieldLabel: userManager.textRole,
+							store: new Ext.data.SimpleStore({
+								 fields:['id', 'role'],
+								 data:[['1', 'USER'], ['2', 'ADMIN']]
+						    })
+					    });
 					}
 					
 					var formEdit = new Ext.form.FormPanel({
-						  // width: 415, height: 200, border:false,
-						  frame:true,  border:false,
-						  items: [{
-								  xtype: 'fieldset',
-								  id: 'name-field-set',
-								  border: false,
-								  items: userDataFields
-								  }]
-					   });
+						// width: 415, height: 200, border:false,
+						frame:true,  border:false,
+						items: [{
+							xtype: 'fieldset',
+							id: 'name-field-set',
+							border: false,
+							items: userDataFields
+						}]
+				    });
 						
 					var winEdit = new Ext.Window({
-						width: 415, height: 200, resizable: false, modal: true, border:false, plain:true,
-						closeAction: 'hide', layout: 'fit', 
+						width: 415, 
+						height: 200, 
+						resizable: false, 
+						modal: true, 
+						border:false, 
+						plain:true,
+						closeAction: 'hide', 
+						layout: 'fit', 
 						title: userManager.textEditUserTitle,
 						items: [ formEdit ],
 						listeners: {
@@ -505,70 +525,75 @@ UserManagerView = Ext.extend(
 							}
 						},
 						bbar: new Ext.Toolbar({
-								 items:[
-										'->',
-										{
-											text: userManager.textSave,
-											tooltip: userManager.tooltipSave,
-											iconCls: "accept",
-											id: "user-addbutton",
-											scope: this,
-											handler: function(){      
-												// win.hide();
-												var useridField = Ext.getCmp("userid-hidden"); 
-												var nameField = Ext.getCmp("user-textfield");
-												var passwordField = Ext.getCmp("password-textfield");
-												var roleDropdown = Ext.getCmp("role-dropdown"); 
+							items:[
+								'->',
+								{
+									text: userManager.textSave,
+									tooltip: userManager.tooltipSave,
+									iconCls: "accept",
+									id: "user-addbutton",
+									scope: this,
+									handler: function(){      
+										// win.hide();
+										var useridField = Ext.getCmp("userid-hidden"); 
+										var nameField = Ext.getCmp("user-textfield");
+										var passwordField = Ext.getCmp("password-textfield");
+										var roleDropdown = Ext.getCmp("role-dropdown"); 
 
-												if ( nameField.isValid(false) &&
-													 passwordField.isValid(false) &&
-													 (isAdmin && roleDropdown.isValid(false))
-													)
-												{
-													userManager.users.update( useridField.getValue(),
-															{ name: nameField.getValue(), 
-															  password:passwordField.getValue(), 
-															  role:roleDropdown.getValue() }, 
-															  function(response) {
-																winEdit.hide();
-																formEdit.getForm().reset();
-																// refresh the store
-																userManager.reloadData();
-																winEdit.destroy();
-															});
-							
-						
-												} else {
-													  Ext.Msg.show({
-												       title: userManager.failSuccessTitle,
-												       msg: userManager.invalidFormMsg,
-												       buttons: Ext.Msg.OK,
-												       icon: Ext.MessageBox.ERROR
-												    });
+										if ( nameField.isValid(false) &&
+											 passwordField.isValid(false) &&
+											 (isAdmin && roleDropdown.isValid(false))){
+											 
+											userManager.users.update(
+												useridField.getValue(),
+												{ 
+													name: nameField.getValue(), 
+													password:passwordField.getValue(), 
+													role:roleDropdown.getValue() 
+												}, 
+												function(response) {
+													winEdit.hide();
+													formEdit.getForm().reset();
+													
+													// //////////////////////
+													// Refresh the store
+													// //////////////////////
+													userManager.reloadData();
+													winEdit.destroy();
 												}
-											}
-										},
-										{
-											text: userManager.textCancel,
-											tooltip: userManager.tooltipCancel,
-											iconCls: "close",
-											id: "user-cancelbutton",
-											scope: this,
-											handler: function(){      
-												winEdit.hide(); 
-												// do nothing
-												winEdit.destroy(); 
-											}
+											);
+										} else {
+											Ext.Msg.show({
+											   title: userManager.failSuccessTitle,
+											   msg: userManager.invalidFormMsg,
+											   buttons: Ext.Msg.OK,
+											   icon: Ext.MessageBox.ERROR
+											});
 										}
-									]
-								})
-						});
-						winEdit.show();						   
-					};	
+									}
+								}, {
+									text: userManager.textCancel,
+									tooltip: userManager.tooltipCancel,
+									iconCls: "close",
+									id: "user-cancelbutton",
+									scope: this,
+									handler: function(){      
+										winEdit.hide(); 
+										
+										// do nothing
+										winEdit.destroy(); 
+									}
+								}
+							]
+						})
+					});
+					winEdit.show();						   
+				};	
 					
-					if(isAdmin)
-					{			
-						// column definitions for the grid panel
+				if(isAdmin){			
+				        // //////////////////////////////////////
+						// Column definitions for the grid panel
+						// //////////////////////////////////////
 						this.cm = new Ext.grid.ColumnModel({
 						        id: 'id_mapstore_cm',
 								columns: [
@@ -665,66 +690,83 @@ UserManagerView = Ext.extend(
 							            }
 							        }]
 						        }
-						    ]});		
-				
-					// the top bar of the user manager window
-					this.tbar = [ this.inputSearch, this.searchButton, this.resetSearchButton, '-', this.addUserButton ];
-
-					// data store
-					this.store = new Ext.data.JsonStore({
-									    fields: ['id', 'name', 'password', 'role']
-										// params:{start:0, limit:3}
-								 });
-					// create a content provider with init options
-					this.users = new GeoStore.Users(
-									{ authorization: userManager.auth,
-									  url: userManager.url
-									}).failure( function(response){ 
-										console.error(response); 
-										  Ext.Msg.show({
-		                                   title: userManager.failSuccessTitle,
-		                                   msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
-		                                   buttons: Ext.Msg.OK,
-		                                   icon: Ext.MessageBox.ERROR
-		                                });
-									} );
-				
-					/*this.bbar = new Ext.PagingToolbar({
-										pageSize:3,
-										store: this.store,
-										grid: this,
-										displayInfo: true
-									});	*/
-				
-								
-					this.loadData = function(){
-						// get all users
-						userManager.users.find( function( data ){
-							// populate store
-							userManager.store.loadData(data);
+						    ]
 						});		
-					};
-
-
-					this.reloadData = function(){
-						userManager.store.removeAll();
-						userManager.loadData();
-					};
-
 				
-					// load data
-					userManager.loadData();
+				        // /////////////////////////////////////////
+						// The top bar of the user manager window
+						// /////////////////////////////////////////
+						this.tbar = [ 
+							this.inputSearch, 
+							this.searchButton, 
+							this.resetSearchButton, '-', 
+							this.addUserButton 
+						];
+
+						// ////////////////
+						// Data store
+						// ////////////////
+						this.store = new Ext.data.JsonStore({
+							fields: ['id', 'name', 'password', 'role']
+							// params:{start:0, limit:3}
+						});
+						
+						// /////////////////////////////////////////////
+					    // Create a content provider with init options
+						// /////////////////////////////////////////////
+						this.users = new GeoStore.Users(
+							{ 
+								authorization: userManager.auth,
+								url: userManager.url
+							}
+						).failure( function(response){ 
+							console.error(response); 
+							
+							Ext.Msg.show({
+							   title: userManager.failSuccessTitle,
+							   msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+							   buttons: Ext.Msg.OK,
+							   icon: Ext.MessageBox.ERROR
+							});
+						});
+				
+						/*this.bbar = new Ext.PagingToolbar({
+							pageSize:3,
+							store: this.store,
+							grid: this,
+							displayInfo: true
+						});	*/
+				
+						this.loadData = function(){
+							// ////////////////////
+							// Get all users
+							// ////////////////////
+							userManager.users.find( function( data ){
+							    // //////////////////
+								// Populate store
+								// //////////////////
+								userManager.store.loadData(data);
+							});		
+						};
+
+						this.reloadData = function(){
+							userManager.store.removeAll();
+							userManager.loadData();
+						};
+
+						// ////////////////////
+						// Load data
+						// ////////////////////
+						userManager.loadData();
 				
 				} else { //not Admin
-
-					var userdata = {id: this.login.userid, name: this.login.username, role: this.login.role };
-
+					var userdata = {id: this.login.userid, name: this.login.username, role: this.login.role};
 					userManager.showEditUserWindow(userdata);
-				
 				}
 				
-				
-				// call parent
+				// ///////////////////
+				// Call parent
+				// ///////////////////
 				UserManagerView.superclass.initComponent.call(this, arguments);
 			},
 			loadMask:true,  
@@ -735,5 +777,5 @@ UserManagerView = Ext.extend(
 	        stateful: true,
 	        stateId: 'grid',
 		    border:false
-		  		
-	    });
+	    }
+);
