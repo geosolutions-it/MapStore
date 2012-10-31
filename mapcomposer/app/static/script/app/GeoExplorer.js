@@ -372,7 +372,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         var westPanel = new Ext.TabPanel({
             border: false,
             activeTab:0,
-            id:'west',
+            id: 'west',
             region: "west",
             width: 250,
             split: true,

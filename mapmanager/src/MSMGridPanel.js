@@ -575,20 +575,17 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     resizable: false,
                     modal: true,
                     listeners: {
-//		                afterRender: function() {
-//		                    console.log(formMetadata);
-//		                },
 		                beforeClose: function() {
 		                    
 		                    if(formMetadata.getForm().isDirty())
 		                    {
 								Ext.Msg.confirm(grid.titleConfirmCloseEditMetadata,
 												grid.textConfirmCloseEditMetadata,
-											function(btn){
-								            	if (btn === 'yes') {
-								            		win.destroy();
-								            	}
-								            });
+												function(btn){
+										        	if (btn === 'yes') {
+										        		win.destroy();
+										        	}
+										        });
 								return false;
 		                    }
 		                }

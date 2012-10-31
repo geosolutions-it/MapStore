@@ -60,6 +60,19 @@ UserManagerView = Ext.extend(
 		    */
 			textPassword: 'Password',
 			/**
+		    * Property: textPasswordConf
+		    * {string} column name for password confirmation
+		    * 
+		    */
+			textPasswordConf: 'Confirm Password',	
+
+			/**
+		    * Property: textPasswordConfMsg
+		    * {string} column name for password confirmation
+		    * 
+		    */
+			textPasswordConfError: 'Rewrite password',					
+			/**
 		    * Property: textRole
 		    * {string} column name for role
 		    * 
@@ -415,10 +428,6 @@ UserManagerView = Ext.extend(
 
 				this.showEditUserWindow = function(userdata) {
 					
-//					console.log('showEditUserWindow');
-//					console.log(userdata);
-//					// form in user add window
-					
 					var userDataFields = [{
 									            xtype: 'hidden',
 									            id: 'userid-hidden',
@@ -429,6 +438,7 @@ UserManagerView = Ext.extend(
 									            width: 150,
 									            id: 'user-textfield',
 												allowBlank: false,
+												disabled: true,
 												blankText: 'Name should not be null',
 									            fieldLabel: userManager.textName,
 									            value: userdata.name,//TODO set from record
@@ -447,13 +457,30 @@ UserManagerView = Ext.extend(
 									            fieldLabel: userManager.textPassword,
 												inputType:'password',
 									            value: '' //TODO set from record               
-									      }];
-					if(isAdmin)
-					{
-						userDataFields.push({//TODO limit only to admin
+									      },
+									      {
+									            xtype: 'textfield',
+									            width: 150,
+									            id: 'passwordconf-textfield',
+												allowBlank: false,
+												blankText: 'Password confirmation',
+									            fieldLabel: userManager.textPasswordConf,
+												inputType: 'password',
+									            value: '',
+									            validator: function() {
+									            	if( Ext.getCmp('password-textfield').getValue() == 
+									            		Ext.getCmp('passwordconf-textfield').getValue()
+									            		)
+									            		return true;
+									            	else
+									            		return userManager.textPasswordConfError;
+									            }
+									      },
+									      {
 	                                            xtype: 'combo',
 												displayField:'role',
 												width: 150,
+												disabled: !isAdmin,//limit only to admin
 												allowBlank: false,
 												editable: false,
 												blankText: 'Role should be selected',
@@ -463,17 +490,14 @@ UserManagerView = Ext.extend(
 												triggerAction: 'all',
 												mode: 'local',
 	                                            id: 'role-dropdown',
-	                                            
 	                                            //TODO set value
 	                                            value: userdata.role,
-	                                            
 	                                            fieldLabel: userManager.textRole,
 	                                            store: new Ext.data.SimpleStore({
 												             fields:['id', 'role'],
 												             data:[['1', 'USER'], ['2', 'ADMIN']]
 												          })
-	                                      });
-					}
+	                                      }];
 					
 					var formEdit = new Ext.form.FormPanel({
 						  // width: 415, height: 200, border:false,
