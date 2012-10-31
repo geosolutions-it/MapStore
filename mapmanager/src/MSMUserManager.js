@@ -60,18 +60,23 @@ UserManagerView = Ext.extend(
 		    */
 			textPassword: 'Password',
 			/**
-		    * Property: textPasswordConf
-		    * {string} column name for password confirmation
+		    * Property: textPassword
+		    * {string} column name for password
 		    * 
 		    */
-			textPasswordConf: 'Confirm Password',	
-
+			textPasswordEdit: 'New Password',
 			/**
-		    * Property: textPasswordConfMsg
-		    * {string} column name for password confirmation
+		    * Property: textPasswordConf
+		    * {string} 
 		    * 
-		    */
-			textPasswordConfError: 'Rewrite password',					
+		    */						
+			textPasswordConf: 'Confirm Password',
+			/**
+		    * Property: textPasswordConfError
+		    * {string} 
+		    * 
+		    */						
+			textPasswordConfError: 'Password not confirmed',
 			/**
 		    * Property: textRole
 		    * {string} column name for role
@@ -175,14 +180,18 @@ UserManagerView = Ext.extend(
 			 * {string} base url for user geostore services
 			 * 
 			 */			
-			url:null,
+			url: null,
 
 			/**
 			 * Property: auth
 			 * {string} auth token to access geostore services
 			 * 
 			 */
-			auth:null,
+			auth: null,
+			
+			gridPanelBbar: null,
+			
+			mapUrl: null, 
 
 			/**
 		    * Constructor: initComponent 
@@ -437,8 +446,8 @@ UserManagerView = Ext.extend(
 									            xtype: 'textfield',
 									            width: 150,
 									            id: 'user-textfield',
+									            disabled: true,
 												allowBlank: false,
-												disabled: true,
 												blankText: 'Name should not be null',
 									            fieldLabel: userManager.textName,
 									            value: userdata.name,//TODO set from record
@@ -454,7 +463,7 @@ UserManagerView = Ext.extend(
 									            id: 'password-textfield',
 												allowBlank: false,
 												blankText: 'Password should not be null',
-									            fieldLabel: userManager.textPassword,
+									            fieldLabel: userManager.textPasswordEdit,
 												inputType:'password',
 									            value: '' //TODO set from record               
 									      },
@@ -468,6 +477,7 @@ UserManagerView = Ext.extend(
 												inputType: 'password',
 									            value: '',
 									            validator: function() {
+
 									            	if( Ext.getCmp('password-textfield').getValue() == 
 									            		Ext.getCmp('passwordconf-textfield').getValue()
 									            		)
@@ -480,7 +490,7 @@ UserManagerView = Ext.extend(
 	                                            xtype: 'combo',
 												displayField:'role',
 												width: 150,
-												disabled: !isAdmin,//limit only to admin
+												disabled: !isAdmin,	//limit only to admin
 												allowBlank: false,
 												editable: false,
 												blankText: 'Role should be selected',
@@ -534,7 +544,7 @@ UserManagerView = Ext.extend(
 											id: "user-addbutton",
 											scope: this,
 											handler: function(){      
-												// win.hide();
+
 												var useridField = Ext.getCmp("userid-hidden"); 
 												var nameField = Ext.getCmp("user-textfield");
 												var passwordField = Ext.getCmp("password-textfield");
@@ -542,7 +552,7 @@ UserManagerView = Ext.extend(
 
 												if ( nameField.isValid(false) &&
 													 passwordField.isValid(false) &&
-													 (isAdmin && roleDropdown.isValid(false))
+													 (isAdmin ? roleDropdown.isValid(false) : true)
 													)
 												{
 													userManager.users.update( useridField.getValue(),
@@ -630,9 +640,39 @@ UserManagerView = Ext.extend(
 												userManager.textConfirmDeleteMsg,
 												function(btn) {
 													if(btn=='yes') {
-														userManager.users.deleteByPk( record.get('id'), function(data){
-															// refresh the store
-															userManager.reloadData();
+														// ------ DELETE USER'S MAPS ------- //
+														
+														// ///////////////////////////
+														// Get the api for GeoStore
+														// ///////////////////////////
+														var geostore = new GeoStore.Maps({ 
+															authorization: userManager.auth,
+															url: userManager.mapUrl
+														});
+														
+														geostore.failure(
+															function(response){ 
+																//console.error(response); 
+																Ext.MessageBox.alert("failure");	
+															}
+														);
+														
+														var filterData = {
+															name: "owner", 
+															operator: "EQUAL_TO", 
+															type: "STRING", 
+															value: record.data.name
+														};
+														
+														geostore.deleteByFilter(filterData, function(response){
+															userManager.gridPanelBbar.doRefresh();
+															
+															// ------ DELETE USER ------- //
+															
+															userManager.users.deleteByPk( record.get('id'), function(data){
+																// refresh the store
+																userManager.reloadData();
+															});
 														});
 													}									
 												});										

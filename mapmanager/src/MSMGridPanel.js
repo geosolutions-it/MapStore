@@ -680,11 +680,11 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				// TODO: refactoring!
 				// This code is repeated several times within this file
 				// /////////////////////////////////////////////////////////
-				 var reload = function() {
-                        grid.getBottomToolbar().bindStore(grid.store, true);
-                        grid.getBottomToolbar().doRefresh();
-                        expander.collapseAll();
-                  };
+				var reload = function() {
+                    grid.getBottomToolbar().bindStore(grid.store, true);
+                    grid.getBottomToolbar().doRefresh();
+                    expander.collapseAll();
+                };
 			
 			    // /////////////////////////////////////
 			  	// Get info about logged user if any
@@ -704,12 +704,12 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 					url: url
 				}).failure( function(response) { 
 					console.error(response); 
-					  Ext.Msg.show({
-						 title: grid.metadataFailSuccessTitle,
-						 msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
-						 buttons: Ext.Msg.OK,
-						 icon: Ext.MessageBox.ERROR
-					  });	
+					Ext.Msg.show({
+					    title: grid.metadataFailSuccessTitle,
+						msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+						buttons: Ext.Msg.OK,
+						icon: Ext.MessageBox.ERROR
+					});	
 				});
 
 				geostore.findByPk(mapId, function(data) {
@@ -726,7 +726,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 						reload();
 					});
 				}, 
-				{full:true} );				
+				{
+					full:true
+				});				
 			},
 			
 			/**
@@ -745,6 +747,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				   			login: grid.login,
 							auth: grid.login.getToken(),
 							url: grid.geoBaseUsersUrl,
+							mapUrl: grid.geoBaseMapsUrl,
+							gridPanelBbar: grid.getBottomToolbar(),
 							autoWidth: true,
 							viewConfig: {
 								forceFit: true

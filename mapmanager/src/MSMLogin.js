@@ -272,8 +272,6 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 
                 var user = Ext.util.JSON.decode(response.responseText);
                 
-                console.log(user);
-                
                 this.showLogout(user.User.name);
 				// save auth info
 				this.token = auth;
