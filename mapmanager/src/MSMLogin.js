@@ -278,7 +278,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
 				// save auth info
 				this.token = auth;
 				if (user.User) {
-					this.userid = user.User.id;
+					this.userid = user.User.id;//TODO geostore don't return user id! in details request
 					this.username = user.User.name;
 					this.role = user.User.role;
 				}

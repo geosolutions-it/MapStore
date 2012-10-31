@@ -284,6 +284,20 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * 
     */
     textSubmitEditMetadata: '', //'Update',
+
+    /**
+    * Property: titleConfirmCloseEditMetadata
+    * {string} string to add in EditMetadata dialog
+    * 
+    */
+    titleConfirmCloseEditMetadata: 'Confirm',
+    /**
+    * Property: textConfirmCloseEditMetadata
+    * {string} string to add in EditMetadata dialog
+    * 
+    */
+    textConfirmCloseEditMetadata: 'Close window without saving?',
+           
     /**
     * Property: tooltipSubmitEditMetadata
     * {string} string to add in EditMetadata tooltip
@@ -525,14 +539,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
              * desc - {string} description of the Map
              * 
              */
-            metadataEdit: function(mapId,name,desc){
-                var win = new Ext.Window({
-                    width: 415,
-                    height: 200,
-                    resizable: false,
-                    modal: true,
-                    items: [
-                        new Ext.form.FormPanel({
+            metadataEdit: function(mapId, name, desc) {
+            
+            	var formMetadata = new Ext.form.FormPanel({
                             width: 400,
                             height: 150,
                             items: [
@@ -558,8 +567,33 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                   ]
                                 }
                             ]
-                        })
-                    ],
+                        });
+            	
+                var win = new Ext.Window({
+                    width: 415,
+                    height: 200,
+                    resizable: false,
+                    modal: true,
+                    listeners: {
+//		                afterRender: function() {
+//		                    console.log(formMetadata);
+//		                },
+		                beforeClose: function() {
+		                    
+		                    if(formMetadata.getForm().isDirty())
+		                    {
+								Ext.Msg.confirm(grid.titleConfirmCloseEditMetadata,
+												grid.textConfirmCloseEditMetadata,
+											function(btn){
+								            	if (btn === 'yes') {
+								            		win.destroy();
+								            	}
+								            });
+								return false;
+		                    }
+		                }
+				    },
+                    items: [ formMetadata ],
                     bbar: new Ext.Toolbar({
                         items:[
                             '->',
@@ -680,7 +714,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 						 icon: Ext.MessageBox.ERROR
 					  });	
 				});
-										
+
 				geostore.findByPk(mapId, function(data) {
 				    // ///////////////////////////////////
 					// Make a copy of the current object
@@ -969,7 +1003,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     * return - {boolean} true if the current user is not a guest
                     * 
                     */
-					isNotGuest: function(){
+					isNotGuest: function() {
 						return ! grid.login.isGuest();
 					},
 					
@@ -986,7 +1020,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 						// //////////////////////////////////////////////////////////
                         // Adds listener for edit resource (Name and Description)
 						// //////////////////////////////////////////////////////////
-                        this.MapComposerER.defer(1,this, [result,values]);
+                        this.MapComposerER.defer(1, this, [result,values]);
                         return result;
                     }, 
 					
@@ -1076,7 +1110,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             var mapId = values.id;
                             var name = values.name;
                             var desc = values.description;
-                            expander.metadataEdit(mapId,name,desc);
+                            expander.metadataEdit(mapId, name, desc);
                         });
                     },
 					

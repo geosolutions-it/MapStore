@@ -406,7 +406,7 @@
 	       failure:  function(response, opts){
 	       		console.log(response);
 	       }
-	    });		
+	    });
 	};
 	
 	 // implements inheritance

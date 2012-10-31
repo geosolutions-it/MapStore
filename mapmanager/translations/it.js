@@ -33,6 +33,8 @@ GeoExt.Lang.add("it", {
         tooltipEditMetadata: "Modifica Info",
         textSubmitEditMetadata: "Aggiorna",
         tooltipSubmitEditMetadata: "Aggiorna Info",
+        titleConfirmCloseEditMetadata: 'Conferma',
+        textConfirmCloseEditMetadata: 'Chiudi la finestra senza salvare?',        
         metadataSaveSuccessTitle: "Success",
         metadataSaveSuccessMsg: "Metadati salvati correttamente",
         metadataSaveFailTitle: "Errore nel salvataggio del metadati",

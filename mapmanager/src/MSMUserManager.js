@@ -492,13 +492,13 @@ UserManagerView = Ext.extend(
 						title: userManager.textEditUserTitle,
 						items: [ formEdit ],
 						listeners: {
-						afterRender: function(){
-							formEdit.getForm().clearInvalid();
-						},
-						hide: function(){
-							formEdit.getForm().reset();
-							winEdit.destroy();
-						}
+							afterRender: function(){
+								formEdit.getForm().clearInvalid();
+							},
+							hide: function(){
+								formEdit.getForm().reset();
+								winEdit.destroy();
+							}
 						},
 						bbar: new Ext.Toolbar({
 								 items:[
