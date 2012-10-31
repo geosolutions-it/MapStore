@@ -322,7 +322,7 @@ UserManagerView = Ext.extend(
 					                                }
 					                          ]
 					               });
-					                        
+
 						var winAdd = new Ext.Window({
 					           width: 415, height: 200, resizable: false, modal: true, border:false, plain:true,
 							   closeAction: 'hide', layout: 'fit', 
@@ -409,15 +409,15 @@ UserManagerView = Ext.extend(
 					                        ]
 					                    })
 					            });
-								winAdd.show();						   
+								winAdd.show();			   
 						}
 					};
 
 				this.showEditUserWindow = function(userdata) {
 					
-					console.log('showEditUserWindow');
-					console.log(userdata);
-					// form in user add window
+//					console.log('showEditUserWindow');
+//					console.log(userdata);
+//					// form in user add window
 					
 					var userDataFields = [{
 									            xtype: 'hidden',
@@ -517,19 +517,11 @@ UserManagerView = Ext.extend(
 												var roleDropdown = Ext.getCmp("role-dropdown"); 
 
 												if ( nameField.isValid(false) &&
-													   passwordField.isValid(false) &&
-														  
-														  //TODO only for admin
-														  roleDropdown.isValid(false )
-														  ){
-							
-													// check if the name is already taken
-													var index = userManager.store.find('name', nameField.getValue(), 0, true);
-							
-													if ( index===-1){ // no user with this name
-													
-														userManager.users.update(useridField,
-														
+													 passwordField.isValid(false) &&
+													 (isAdmin && roleDropdown.isValid(false))
+													)
+												{
+													userManager.users.update( useridField.getValue(),
 															{ name: nameField.getValue(), 
 															  password:passwordField.getValue(), 
 															  role:roleDropdown.getValue() }, 
@@ -540,15 +532,6 @@ UserManagerView = Ext.extend(
 																userManager.reloadData();
 																winEdit.destroy();
 															});
-															
-													} else {
-														 Ext.Msg.show({
-												           title: userManager.failSuccessTitle,
-												           msg: userManager.userAlreadyTaken,
-												           buttons: Ext.Msg.OK,
-												           icon: Ext.MessageBox.ERROR
-												        });
-													}
 							
 						
 												} else {
