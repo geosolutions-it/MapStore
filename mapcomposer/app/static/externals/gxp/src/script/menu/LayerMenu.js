@@ -94,8 +94,6 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
                     listeners: {
                         checkchange: function(item, checked) {
                         
-                        console.log(item.groupname);
-                        
                             item.layer.setVisibility(checked);
 							var gcheck=false;
                             for(var g in layerGroups[item.groupname])//check all items status
