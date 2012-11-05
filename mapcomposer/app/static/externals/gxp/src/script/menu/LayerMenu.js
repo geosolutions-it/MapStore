@@ -88,11 +88,13 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
                     text: record.get("title"),
                     checked: record.getLayer().getVisibility(),
 					group: record.get("group") != 'background' ? undefined : 'background',
-					groupname: record.get("group"),
+					groupname: group,
 					layer: layer,
 					style: record.get("group") != 'background' ? {marginLeft:'22px', border:'none'} : {border:'none'},
                     listeners: {
                         checkchange: function(item, checked) {
+                        
+                        console.log(item.groupname);
                         
                             item.layer.setVisibility(checked);
 							var gcheck=false;
@@ -128,7 +130,11 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
 					checked: true,
 					layers: layerGroups[g],
 					listeners: {
-						checkchange: function(item, checked) {
+						click: function(item) {
+						
+							var checked = !item.checked;
+							item.setChecked(checked);
+
 							var glayers = item.layers;
 
 							for(var l in glayers)
@@ -138,6 +144,8 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
 									glayers[l].setChecked(checked);
 								}catch(e){}
 							}
+							
+							return false;
 						}
 					}
 				});
