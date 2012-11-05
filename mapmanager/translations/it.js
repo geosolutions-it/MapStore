@@ -22,17 +22,19 @@ GeoExt.Lang.add("it", {
         errorMsg_timeout: "Richiesta scaduta!",
         textUserManager: 'Gestione utenti',
         textViewMap: '', // "Visualizza mappa",
-        tooltipViewMap: "Apre la mappa in sola lettura",
+        tooltipViewMap: "Mostra Mappa",
 		textCopyMap: '', //"Clone Map",
-        tooltipCopyMap: "Copia questa mappa",
+        tooltipCopyMap: "Clona Mappa",
         textEditMap: '', //"Modifica mappa",
-        tooltipEditMap: "Apre la mappa per le modifiche",
+        tooltipEditMap: "Modifica Mappa",
         textDeleteMap: '', //"Elimina mappa",
-        tooltipDeleteMap: "Elimina la mappa",
+        tooltipDeleteMap: "Elimina Mappa",
         textEditMetadata: '', //"Edita Metadati",
-        tooltipEditMetadata: "Edita Metadati",
+        tooltipEditMetadata: "Modifica Info",
         textSubmitEditMetadata: "Aggiorna",
-        tooltipSubmitEditMetadata: "Aggiorna Metadati",
+        tooltipSubmitEditMetadata: "Aggiorna Info",
+        titleConfirmCloseEditMetadata: 'Conferma',
+        textConfirmCloseEditMetadata: 'Chiudi la finestra senza salvare?',        
         metadataSaveSuccessTitle: "Success",
         metadataSaveSuccessMsg: "Metadati salvati correttamente",
         metadataSaveFailTitle: "Errore nel salvataggio del metadati",
@@ -67,7 +69,7 @@ GeoExt.Lang.add("it", {
         beforePageText: "Pagina"
     },
     "MSMPanel.prototype": {
-        title : "Map Manager"
+        title : "MapManager"
     },
     "MSMLogin.prototype": {
         loginText: "Accedi",
@@ -96,6 +98,8 @@ GeoExt.Lang.add("it", {
 		textTitle: 'User Manager',
 		tooltipSearch: "Cerca",
 		textSelectRole: 'Seleziona un ruolo...',
-		userAlreadyTaken: 'Nome utente presente'
+		userAlreadyTaken: 'Nome utente presente',
+		titleConfirmDeleteMsg: "Confirma cancellazione utente",
+		textConfirmDeleteMsg: "Sei sicuro di voler eliminare questo utente?"
 	}
 });

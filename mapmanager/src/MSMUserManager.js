@@ -60,6 +60,24 @@ UserManagerView = Ext.extend(
 		    */
 			textPassword: 'Password',
 			/**
+		    * Property: textPassword
+		    * {string} column name for password
+		    * 
+		    */
+			textPasswordEdit: 'New Password',
+			/**
+		    * Property: textPasswordConf
+		    * {string} 
+		    * 
+		    */						
+			textPasswordConf: 'Confirm Password',
+			/**
+		    * Property: textPasswordConfError
+		    * {string} 
+		    * 
+		    */						
+			textPasswordConfError: 'Password not confirmed',
+			/**
 		    * Property: textRole
 		    * {string} column name for role
 		    * 
@@ -72,8 +90,14 @@ UserManagerView = Ext.extend(
 		    */
 			tooltipDelete: 'Delete this user',
 			/**
-		    * Property: textDelete
-		    * {string} label for delete button
+		    * Property: tooltipDelete
+		    * {string} tooltip for delete button
+		    * 
+		    */
+			tooltipEdit: 'Edit user data',
+			/**
+		    * Property: tooltipEdit
+		    * {string} label for edit button
 		    * 
 		    */
 			textDelete: 'Delete', 
@@ -90,11 +114,11 @@ UserManagerView = Ext.extend(
 		    */
 			textSave: 'Save',
 			/**
-		    * Property: tooltipCancel
-		    * {string} tooltip for cancel button
+		    * Property: tooltipSave
+		    * {string} tooltip for save button
 		    * 
 		    */
-			tooltipCancel: 'Cancel saving',
+			tooltipCancel: 'Cancel',
 			/**
 		    * Property: textCancel
 		    * {string} label for cancel button
@@ -113,6 +137,13 @@ UserManagerView = Ext.extend(
 		    * 
 		    */
 			textAddUserTitle: 'Add user',
+
+			/**
+		    * Property: textEditUserTitle
+		    * {string} title for the window edit user data
+		    * 
+		    */
+			textEditUserTitle: 'Edit user data',			
 			/**
 		    * Property: tooltipAddUser
 		    * {string} tooltip for add user button
@@ -137,6 +168,9 @@ UserManagerView = Ext.extend(
 			 * 
 			 */			
 			textSelectRole: 'Select a role...',
+
+			titleConfirmDeleteMsg: "Confirm delete user",
+			textConfirmDeleteMsg: "Are you sure you want to delete this user?",
 			
 			invalidFormMsg: 'Some fields are invalid',
 			userAlreadyTaken: 'User is already taken',
@@ -146,14 +180,18 @@ UserManagerView = Ext.extend(
 			 * {string} base url for user geostore services
 			 * 
 			 */			
-			url:null,
+			url: null,
 
 			/**
 			 * Property: auth
 			 * {string} auth token to access geostore services
 			 * 
 			 */
-			auth:null,
+			auth: null,
+			
+			gridPanelBbar: null,
+			
+			mapUrl: null, 
 
 			/**
 		    * Constructor: initComponent 
@@ -165,7 +203,8 @@ UserManagerView = Ext.extend(
 				
 				// assets used within the interface
 				var ASSET = {
-				    delete_icon: './theme/img/user_delete.png'
+				    delete_icon: './theme/img/user_delete.png',
+				    edit_icon: './theme/img/user_edit.png'
 				};
 
 				/*
@@ -173,7 +212,10 @@ UserManagerView = Ext.extend(
 				 */
 				
 				// a reference for this object to be used in closures
-				var userManager = this;
+				var userManager = this,
+					isAdmin = (this.login.role == 'ADMIN');
+				
+				//userManager.showEditUserWindow(record);
 				
 				// input search box to search for users by name
 				this.inputSearch =
@@ -233,12 +275,6 @@ UserManagerView = Ext.extend(
 						handler : function() {
 								Ext.getCmp('user-input-search').setValue('');
 								userManager.store.filter('*');
-//								searchString = '*';
-//								Ext.getCmp('searchBtn').disable();
-//								Ext.getCmp('clearBtn').disable();
-//								grid.getBottomToolbar().bindStore(grid.store, true);
-//								grid.getBottomToolbar().doRefresh();
-//								expander.collapseAll();
 							} 
 						};
 
@@ -307,8 +343,9 @@ UserManagerView = Ext.extend(
 					                                  ]
 					                                }
 					                          ]
-					                        });
-							var win = new Ext.Window({
+					               });
+
+						var winAdd = new Ext.Window({
 					           width: 415, height: 200, resizable: false, modal: true, border:false, plain:true,
 							   closeAction: 'hide', layout: 'fit', 
 					           title: userManager.textAddUserTitle,
@@ -319,177 +356,402 @@ UserManagerView = Ext.extend(
 				                },
 				                hide: function(){
 				                    form.getForm().reset();
-									win.destroy();
+									winAdd.destroy();
 				                }
 				               },
 							    bbar: new Ext.Toolbar({
 						                 items:[
-						                            '->',
-						                            {
-						                                text: userManager.textSave,
-						                                tooltip: userManager.tooltipSave,
-						                                iconCls: "accept",
-						                                id: "user-addbutton",
-						                                scope: this,
-						                                handler: function(){      
-						                                    // win.hide(); 
-						 									var nameField = Ext.getCmp("user-textfield");
-															var passwordField = Ext.getCmp("password-textfield");
-															var roleDropdown = Ext.getCmp("role-dropdown"); 
+					                            '->',
+					                            {
+					                                text: userManager.textSave,
+					                                tooltip: userManager.tooltipSave,
+					                                iconCls: "accept",
+					                                id: "user-addbutton",
+					                                scope: this,
+					                                handler: function(){      
+					                                    // winAdd.hide(); 
+					 									var nameField = Ext.getCmp("user-textfield");
+														var passwordField = Ext.getCmp("password-textfield");
+														var roleDropdown = Ext.getCmp("role-dropdown"); 
 
-														    if ( nameField.isValid(false) &&
-														           passwordField.isValid(false) &&
-														              roleDropdown.isValid(false )){
-																
-																// check if the name is already taken
-																var index = userManager.store.find('name', nameField.getValue(), 0, true);
-																
-																if ( index===-1){ // no user with this name
-																	userManager.users.create( 
-																		{ name: nameField.getValue(), 
-																		  password:passwordField.getValue(), 
-																		  role:roleDropdown.getValue() }, 
-																		  function(response){
-																			win.hide();
-																	        form.getForm().reset();
-																			// refresh the store
-																			userManager.reloadData();
-																			win.destroy();
-																		});	
-																} else {
-																	 Ext.Msg.show({
-								                                       title: userManager.failSuccessTitle,
-								                                       msg: userManager.userAlreadyTaken,
-								                                       buttons: Ext.Msg.OK,
-								                                       icon: Ext.MessageBox.ERROR
-								                                    });
-																}
-																
+													    if ( nameField.isValid(false) &&
+													           passwordField.isValid(false) &&
+													              roleDropdown.isValid(false )){
 															
+															// check if the name is already taken
+															var index = userManager.store.find('name', nameField.getValue(), 0, true);
+															
+															if ( index===-1){ // no user with this name
+																userManager.users.create( 
+																	{ name: nameField.getValue(), 
+																	  password:passwordField.getValue(), 
+																	  role:roleDropdown.getValue() }, 
+																	  function(response){
+																		winAdd.hide();
+																        form.getForm().reset();
+																		// refresh the store
+																		userManager.reloadData();
+																		winAdd.destroy();
+																	});	
 															} else {
-																  Ext.Msg.show({
+																 Ext.Msg.show({
 							                                       title: userManager.failSuccessTitle,
-							                                       msg: userManager.invalidFormMsg,
+							                                       msg: userManager.userAlreadyTaken,
 							                                       buttons: Ext.Msg.OK,
 							                                       icon: Ext.MessageBox.ERROR
 							                                    });
 															}
 															
-															
-						                                    
-						                                }
-						                            },
-													{
-						                                text: userManager.textCancel,
-						                                tooltip: userManager.tooltipCancel,
-						                                iconCls: "close",
-						                                id: "user-cancelbutton",
-						                                scope: this,
-						                                handler: function(){      
-						                                    win.hide(); 
-														    // do nothing
-						                                    win.destroy(); 
-						                                }
-						                            }
-						                        ]
-						                    })
+														
+														} else {
+															  Ext.Msg.show({
+						                                       title: userManager.failSuccessTitle,
+						                                       msg: userManager.invalidFormMsg,
+						                                       buttons: Ext.Msg.OK,
+						                                       icon: Ext.MessageBox.ERROR
+						                                    });
+														}
+														
+														
+					                                    
+					                                }
+					                            },
+												{
+					                                text: userManager.textCancel,
+					                                tooltip: userManager.tooltipCancel,
+					                                iconCls: "close",
+					                                id: "user-cancelbutton",
+					                                scope: this,
+					                                handler: function(){      
+					                                    winAdd.hide(); 
+													    // do nothing
+					                                    winAdd.destroy(); 
+					                                }
+					                            }
+					                        ]
+					                    })
 					            });
-								win.show();						   
+								winAdd.show();			   
 						}
 					};
-					// column definitions for the grid panel
-					this.cm = new Ext.grid.ColumnModel({
-				            id: 'id_mapstore_cm',
-							columns: [
-			            	{
-			                	id       :'id',
-			                	header   : userManager.textId, 
-			                	sortable : true, 
-			                	dataIndex: 'id',
-								hidden:true
-			            	},
-				            {
-				                id       :'name',
-				                header   : userManager.textName, 
-				                sortable : true, 
-				                dataIndex: 'name'
-				            },
-				            {
-				                header   : userManager.textPassword, 
-				                sortable : false, 
-				                dataIndex: 'password',
-								hidden: true
-				            },
-				            {
-				                header   : userManager.textRole, 
-				                sortable : true, 
-				                dataIndex: 'role'
-				            },
-				            {
-				                xtype: 'actioncolumn',
-				                width: 50,
-				                items: [{
-				                    icon   : ASSET.delete_icon, 
-				                    tooltip: userManager.tooltipDelete,
-				                    handler: function(grid, rowIndex, colIndex) {
-				                       var record = grid.store.getAt(rowIndex);
-										userManager.users.deleteByPk( record.get('id'), function(data){
-											// refresh the store
-											userManager.reloadData();
-										} );
-				                    }
-				                }
-				                ]
-				            }
-				        ]});		
-				
-				// the top bar of the user manager window
-				this.tbar = [ this.inputSearch, this.searchButton, this.resetSearchButton, '-', this.addUserButton ];
 
-				// data store
-				this.store = new Ext.data.JsonStore({
-							        fields: ['id', 'name', 'password', 'role']
-									// params:{start:0, limit:3}
-							 });
-				// create a content provider with init options
-				this.users = new GeoStore.Users(
-								{ authorization: userManager.auth,
-								  url: userManager.url
-								}).failure( function(response){ 
-									console.error(response); 
-									  Ext.Msg.show({
-                                       title: userManager.failSuccessTitle,
-                                       msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
-                                       buttons: Ext.Msg.OK,
-                                       icon: Ext.MessageBox.ERROR
-                                    });
-								} );
+				this.showEditUserWindow = function(userdata) {
+					
+					var userDataFields = [{
+									            xtype: 'hidden',
+									            id: 'userid-hidden',
+									            value: userdata.id
+									      },
+										  {
+									            xtype: 'textfield',
+									            width: 150,
+									            id: 'user-textfield',
+									            disabled: true,
+												allowBlank: false,
+												blankText: 'Name should not be null',
+									            fieldLabel: userManager.textName,
+									            value: userdata.name,//TODO set from record
+												listeners: {
+												  beforeRender: function(field) {
+													field.focus(false, 1000);
+												  }
+												}
+									      },
+									      {
+									            xtype: 'textfield',
+									            width: 150,
+									            id: 'password-textfield',
+												allowBlank: false,
+												blankText: 'Password should not be null',
+									            fieldLabel: userManager.textPasswordEdit,
+												inputType:'password',
+									            value: '' //TODO set from record               
+									      },
+									      {
+									            xtype: 'textfield',
+									            width: 150,
+									            id: 'passwordconf-textfield',
+												allowBlank: false,
+												blankText: 'Password confirmation',
+									            fieldLabel: userManager.textPasswordConf,
+												inputType: 'password',
+									            value: '',
+									            validator: function() {
+
+									            	if( Ext.getCmp('password-textfield').getValue() == 
+									            		Ext.getCmp('passwordconf-textfield').getValue()
+									            		)
+									            		return true;
+									            	else
+									            		return userManager.textPasswordConfError;
+									            }
+									      },
+									      {
+	                                            xtype: 'combo',
+												displayField:'role',
+												width: 150,
+												disabled: !isAdmin,	//limit only to admin
+												allowBlank: false,
+												editable: false,
+												blankText: 'Role should be selected',
+												valueField: 'role',
+												emptyText: userManager.textSelectRole,
+												allowBlank: false,
+												triggerAction: 'all',
+												mode: 'local',
+	                                            id: 'role-dropdown',
+	                                            //TODO set value
+	                                            value: userdata.role,
+	                                            fieldLabel: userManager.textRole,
+	                                            store: new Ext.data.SimpleStore({
+												             fields:['id', 'role'],
+												             data:[['1', 'USER'], ['2', 'ADMIN']]
+												          })
+	                                      }];
+					
+					var formEdit = new Ext.form.FormPanel({
+						  // width: 415, height: 200, border:false,
+						  frame:true,  border:false,
+						  items: [{
+								  xtype: 'fieldset',
+								  id: 'name-field-set',
+								  border: false,
+								  items: userDataFields
+								  }]
+					   });
+						
+					var winEdit = new Ext.Window({
+						width: 415, height: 200, resizable: false, modal: true, border:false, plain:true,
+						closeAction: 'hide', layout: 'fit', 
+						title: userManager.textEditUserTitle,
+						items: [ formEdit ],
+						listeners: {
+							afterRender: function(){
+								formEdit.getForm().clearInvalid();
+							},
+							hide: function(){
+								formEdit.getForm().reset();
+								winEdit.destroy();
+							}
+						},
+						bbar: new Ext.Toolbar({
+								 items:[
+										'->',
+										{
+											text: userManager.textSave,
+											tooltip: userManager.tooltipSave,
+											iconCls: "accept",
+											id: "user-addbutton",
+											scope: this,
+											handler: function(){      
+
+												var useridField = Ext.getCmp("userid-hidden"); 
+												var nameField = Ext.getCmp("user-textfield");
+												var passwordField = Ext.getCmp("password-textfield");
+												var roleDropdown = Ext.getCmp("role-dropdown"); 
+
+												if ( nameField.isValid(false) &&
+													 passwordField.isValid(false) &&
+													 (isAdmin ? roleDropdown.isValid(false) : true)
+													)
+												{
+													userManager.users.update( useridField.getValue(),
+															{ name: nameField.getValue(), 
+															  password:passwordField.getValue(), 
+															  role:roleDropdown.getValue() }, 
+															  function(response) {
+																winEdit.hide();
+																formEdit.getForm().reset();
+																// refresh the store
+																userManager.reloadData();
+																winEdit.destroy();
+															});
+							
+						
+												} else {
+													  Ext.Msg.show({
+												       title: userManager.failSuccessTitle,
+												       msg: userManager.invalidFormMsg,
+												       buttons: Ext.Msg.OK,
+												       icon: Ext.MessageBox.ERROR
+												    });
+												}
+											}
+										},
+										{
+											text: userManager.textCancel,
+											tooltip: userManager.tooltipCancel,
+											iconCls: "close",
+											id: "user-cancelbutton",
+											scope: this,
+											handler: function(){      
+												winEdit.hide(); 
+												// do nothing
+												winEdit.destroy(); 
+											}
+										}
+									]
+								})
+						});
+						winEdit.show();						   
+					};	
+					
+					if(isAdmin)
+					{			
+						// column definitions for the grid panel
+						this.cm = new Ext.grid.ColumnModel({
+						        id: 'id_mapstore_cm',
+								columns: [
+					        	{
+					            	id       :'id',
+					            	header   : userManager.textId, 
+					            	sortable : true, 
+					            	dataIndex: 'id',
+									hidden   : true
+					        	},
+						        {
+						            id       :'name',
+						            header   : userManager.textName, 
+						            sortable : true, 
+						            dataIndex: 'name'
+						        },
+						        {
+						            header   : userManager.textPassword, 
+						            sortable : false, 
+						            dataIndex: 'password',
+									hidden   : true
+						        },
+						        {
+						            header   : userManager.textRole, 
+						            sortable : true, 
+						            dataIndex: 'role'
+						        },
+						        {
+						            xtype: 'actioncolumn',
+						            width: 50,
+						            items: [{
+						                icon   : ASSET.delete_icon, 
+						                tooltip: userManager.tooltipDelete,
+						                handler: function(grid, rowIndex, colIndex) {
+						                   var record = grid.store.getAt(rowIndex);
+						
+											Ext.Msg.confirm(
+												userManager.titleConfirmDeleteMsg,
+												userManager.textConfirmDeleteMsg,
+												function(btn) {
+													if(btn=='yes') {
+														// ------ DELETE USER'S MAPS ------- //
+														
+														// ///////////////////////////
+														// Get the api for GeoStore
+														// ///////////////////////////
+														var geostore = new GeoStore.Maps({ 
+															authorization: userManager.auth,
+															url: userManager.mapUrl
+														});
+														
+														geostore.failure(
+															function(response){ 
+																//console.error(response); 
+																Ext.MessageBox.alert("failure");	
+															}
+														);
+														
+														var filterData = {
+															name: "owner", 
+															operator: "EQUAL_TO", 
+															type: "STRING", 
+															value: record.data.name
+														};
+														
+														geostore.deleteByFilter(filterData, function(response){
+															userManager.gridPanelBbar.doRefresh();
+															
+															// ------ DELETE USER ------- //
+															
+															userManager.users.deleteByPk( record.get('id'), function(data){
+																// refresh the store
+																userManager.reloadData();
+															});
+														});
+													}									
+												});										
+								            }
+								        }]
+								  },
+								  {
+								  	xtype: 'actioncolumn',
+						            width: 50,
+						            items: [{
+							            icon   : ASSET.edit_icon, 
+							            tooltip: userManager.tooltipEdit,
+							            handler: function(grid, rowIndex, colIndex) {
+							               var record = grid.store.getAt(rowIndex);
+			
+							               var userdata = {id: record.get('id'), name: record.data.name, role: record.data.role };
+							               
+							               userManager.showEditUserWindow(userdata);
+							               //open edit user data window				
+							            }
+							        }]
+						        }
+						    ]});		
 				
-				/*this.bbar = new Ext.PagingToolbar({
-									pageSize:3,
-									store: this.store,
-									grid: this,
-									displayInfo: true
-								});	*/
+					// the top bar of the user manager window
+					this.tbar = [ this.inputSearch, this.searchButton, this.resetSearchButton, '-', this.addUserButton ];
+
+					// data store
+					this.store = new Ext.data.JsonStore({
+									    fields: ['id', 'name', 'password', 'role']
+										// params:{start:0, limit:3}
+								 });
+					// create a content provider with init options
+					this.users = new GeoStore.Users(
+									{ authorization: userManager.auth,
+									  url: userManager.url
+									}).failure( function(response){ 
+										console.error(response); 
+										  Ext.Msg.show({
+		                                   title: userManager.failSuccessTitle,
+		                                   msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+		                                   buttons: Ext.Msg.OK,
+		                                   icon: Ext.MessageBox.ERROR
+		                                });
+									} );
+				
+					/*this.bbar = new Ext.PagingToolbar({
+										pageSize:3,
+										store: this.store,
+										grid: this,
+										displayInfo: true
+									});	*/
 				
 								
-				this.loadData = function(){
-					// get all users
-					userManager.users.find( function( data ){
-						// populate store
-						userManager.store.loadData(data);
-					});		
-				};
+					this.loadData = function(){
+						// get all users
+						userManager.users.find( function( data ){
+							// populate store
+							userManager.store.loadData(data);
+						});		
+					};
 
 
-				this.reloadData = function(){
-					userManager.store.removeAll();
-					userManager.loadData();
-				};
+					this.reloadData = function(){
+						userManager.store.removeAll();
+						userManager.loadData();
+					};
 
 				
-				// load data
-				userManager.loadData();
+					// load data
+					userManager.loadData();
+				
+				} else { //not Admin
+
+					var userdata = {id: this.login.userid, name: this.login.username, role: this.login.role };
+
+					userManager.showEditUserWindow(userdata);
+				
+				}
 				
 				
 				// call parent

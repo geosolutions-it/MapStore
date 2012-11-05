@@ -43,7 +43,7 @@ body{
 
 
 /* OpenSDI SUITE */
-#osdi{ clear: both;				 height:320px; overflow:hidden;	 }
+#osdi{ clear: both;				 height:330px; overflow:visible;	 }
 #osdi #logo{ float:left; width:305px; height:292px; background:url(../images/sprite.png) -10px -659px;/*logo_opensdi.png*/ overflow:hidden; }
 #osdi h1{ float:left; width:440px; height:75px; background:url(../images/sprite.png) -10px -268px;/*opensdisuite.png) no-repeat*/ overflow:hidden; margin:23px 0 0 20px; }
 #osdi #box{ float:right; width:135px; height:200px; background:url(../images/sprite.png) -307px -366px;/*box_opensdi.png*/ overflow:hidden;		margin-top:115px; }
@@ -65,7 +65,9 @@ body{
  }
  /*#submit*/#osdi form input:hover { background-color:#39c;/*9CF*/ color:#FFF;		-webkit-box-shadow:0 4px 8px rgba(50, 150, 200, 0.5);-moz-box-shadow:0 4px 8px rgba(50, 150, 200, 0.5);box-shadow:0 4px 8px rgba(50, 150, 200, 0.5); }
 
-#vedisotto{clear: left;   color:#CCC;    float: left;    font-size: 16px;    margin: 5px 0px 0px 9px;    width:230px; }
+#githublinks a,#githublinks {color:#3c6; text-decoration:none;}
+#githublinks a:hover{color:#FFF; text-decoration:underline;}
+#vedisotto{clear: left;   color:#CCC;    float: left;    font-size: 16px;    margin: 5px 0px 0px 9px;    width:220px; }
 #vedisotto a{color:#3c6; text-decoration:none;}
 #vedisotto a:hover{color:#FFF; text-decoration:underline;}
 
@@ -165,7 +167,10 @@ a:hover { color:#333; text-decoration:underline;}
 
 
 
-
+/* GOOGLE BADGES */
+a.link-white-bg{
+	color: blue;
+}
 
 
 

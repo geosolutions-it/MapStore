@@ -20,6 +20,7 @@
 	
     <!-- gxp resources -->
     <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
+
     <script type="text/javascript" src="script/gxp.js"></script> 
 
     <!-- script type="text/javascript" src="script/proj4js.js"></script -->
@@ -280,7 +281,7 @@
                 modified: false,
                 proxy: proxy,
 				tools: serverConfig.tools,
-                //xmlJsonTranslateService: "http://localhost:8080/xmlJsonTranslate/",
+                xmlJsonTranslateService: "http://localhost:8080/xmlJsonTranslate/",
                 defaultSourceType: "gxp_wmssource",
                 renderToTab : 'appTabs',
                 about: {
@@ -297,12 +298,11 @@
             }, mapIdentifier, authorization, fullScreen);   
             
             app.on({
-                'portalready' : function(){
-                    if(fullScreen){
-                        var ovestPanel = Ext.getCmp('tree').findParentByType('panel');
-                        ovestPanel.setDisabled();
-                        ovestPanel.hide();
-                        ovestPanel.collapse();
+                'portalready' : function() {              	
+                    if(fullScreen) {
+                        var westPanel = Ext.getCmp('west');
+                        westPanel.setActiveTab('legend');
+                        westPanel.hideTabStripItem('tree');
                     }
                 }, 
                 'ready' : function(){

@@ -93,7 +93,11 @@ display:block;
 .open_usermanager{
 	background-image:url(../img/user.png) !important;
 }
-.user_add{
+.open_userdataedit,
+.user_edit {
+	background-image:url(../img/user_edit.png) !important;
+}
+.user_add {
 	background-image:url(../img/user_add.png) !important;
 }
 .user_delete{

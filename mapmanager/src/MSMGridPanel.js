@@ -220,7 +220,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * {string} string to add in ViewMap tooltip
     * 
     */
-    tooltipViewMap: 'Open Map to read only',
+    tooltipViewMap: 'View Map',
 	/**
 	 * Property: textCopyMap
 	 * {string} string to add in CopyMap button
@@ -238,7 +238,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * {string} string name prefix for cloned map
     * 
     */
-    tooltipCopyMap: 'Make a copy of this map',
+    tooltipCopyMap: 'Clone Map',
     /**
     * Property: textEditMap
     * {string} string to add in EditMap button
@@ -250,7 +250,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * {string} string to add in EditMap tooltip
     * 
     */
-    tooltipEditMap: 'Open Map to edit',
+    tooltipEditMap: 'Edit Map',
     /**
     * Property: textDeleteMap
     * {string} string to add in DeleteMap button
@@ -277,13 +277,27 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * {string} string to add in EditMetadata tooltip
     * 
     */
-    tooltipEditMetadata: 'Edit Metadata',
+    tooltipEditMetadata: 'Edit Info',
     /**
     * Property: textSubmitEditMetadata
     * {string} string to add in EditMetadata button
     * 
     */
     textSubmitEditMetadata: '', //'Update',
+
+    /**
+    * Property: titleConfirmCloseEditMetadata
+    * {string} string to add in EditMetadata dialog
+    * 
+    */
+    titleConfirmCloseEditMetadata: 'Confirm',
+    /**
+    * Property: textConfirmCloseEditMetadata
+    * {string} string to add in EditMetadata dialog
+    * 
+    */
+    textConfirmCloseEditMetadata: 'Close window without saving?',
+           
     /**
     * Property: tooltipSubmitEditMetadata
     * {string} string to add in EditMetadata tooltip
@@ -525,14 +539,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
              * desc - {string} description of the Map
              * 
              */
-            metadataEdit: function(mapId,name,desc){
-                var win = new Ext.Window({
-                    width: 415,
-                    height: 200,
-                    resizable: false,
-                    modal: true,
-                    items: [
-                        new Ext.form.FormPanel({
+            metadataEdit: function(mapId, name, desc) {
+            
+            	var formMetadata = new Ext.form.FormPanel({
                             width: 400,
                             height: 150,
                             items: [
@@ -558,8 +567,30 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                   ]
                                 }
                             ]
-                        })
-                    ],
+                        });
+            	
+                var win = new Ext.Window({
+                    width: 415,
+                    height: 200,
+                    resizable: false,
+                    modal: true,
+                    listeners: {
+		                beforeClose: function() {
+		                    
+		                    if(formMetadata.getForm().isDirty())
+		                    {
+								Ext.Msg.confirm(grid.titleConfirmCloseEditMetadata,
+												grid.textConfirmCloseEditMetadata,
+												function(btn){
+										        	if (btn === 'yes') {
+										        		win.destroy();
+										        	}
+										        });
+								return false;
+		                    }
+		                }
+				    },
+                    items: [ formMetadata ],
                     bbar: new Ext.Toolbar({
                         items:[
                             '->',
@@ -649,11 +680,11 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				// TODO: refactoring!
 				// This code is repeated several times within this file
 				// /////////////////////////////////////////////////////////
-				 var reload = function() {
-                        grid.getBottomToolbar().bindStore(grid.store, true);
-                        grid.getBottomToolbar().doRefresh();
-                        expander.collapseAll();
-                  };
+				var reload = function() {
+                    grid.getBottomToolbar().bindStore(grid.store, true);
+                    grid.getBottomToolbar().doRefresh();
+                    expander.collapseAll();
+                };
 			
 			    // /////////////////////////////////////
 			  	// Get info about logged user if any
@@ -673,14 +704,14 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 					url: url
 				}).failure( function(response) { 
 					console.error(response); 
-					  Ext.Msg.show({
-						 title: grid.metadataFailSuccessTitle,
-						 msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
-						 buttons: Ext.Msg.OK,
-						 icon: Ext.MessageBox.ERROR
-					  });	
+					Ext.Msg.show({
+					    title: grid.metadataFailSuccessTitle,
+						msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+						buttons: Ext.Msg.OK,
+						icon: Ext.MessageBox.ERROR
+					});	
 				});
-										
+
 				geostore.findByPk(mapId, function(data) {
 				    // ///////////////////////////////////
 					// Make a copy of the current object
@@ -695,7 +726,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 						reload();
 					});
 				}, 
-				{full:true} );				
+				{
+					full:true
+				});				
 			},
 			
 			/**
@@ -703,17 +736,25 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
              * 
              * 
              */
-			openUserManager: function(){
-				
+			openUserManager: function() {
+				   	
 				var win = new Ext.Window({
 				   title: grid.textUserManager,
 				   iconCls: "open_usermanager",
 				   width: 430, height: 215, resizable: true, modal: true,
+				   layout: "fit",
 				   items: new UserManagerView({
+				   			login: grid.login,
 							auth: grid.login.getToken(),
-							url: grid.geoBaseUsersUrl
-				   })
-				});				
+							url: grid.geoBaseUsersUrl,
+							mapUrl: grid.geoBaseMapsUrl,
+							gridPanelBbar: grid.getBottomToolbar(),
+							autoWidth: true,
+							viewConfig: {
+								forceFit: true
+							}
+				   	})
+				});
 
 				win.show();
 			},
@@ -963,7 +1004,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     * return - {boolean} true if the current user is not a guest
                     * 
                     */
-					isNotGuest: function(){
+					isNotGuest: function() {
 						return ! grid.login.isGuest();
 					},
 					
@@ -980,7 +1021,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 						// //////////////////////////////////////////////////////////
                         // Adds listener for edit resource (Name and Description)
 						// //////////////////////////////////////////////////////////
-                        this.MapComposerER.defer(1,this, [result,values]);
+                        this.MapComposerER.defer(1, this, [result,values]);
                         return result;
                     }, 
 					
@@ -1070,7 +1111,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             var mapId = values.id;
                             var name = values.name;
                             var desc = values.description;
-                            expander.metadataEdit(mapId,name,desc);
+                            expander.metadataEdit(mapId, name, desc);
                         });
                     },
 					
@@ -1348,11 +1389,11 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			disabled: true,
 			iconCls: 'open_usermanager',
 			tooltip: this.tooltipUserManager,
-			handler: function(){
+			handler: function() {
 				this.plugins.openUserManager();
 			}
 		});
-        
+
         this.tbar = [grid.inputSearch,{
             id: 'searchBtn',
             text: this.textSearch,
@@ -1384,7 +1425,14 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     expander.collapseAll();
                 } 
             },'->',
-			this.login.userLabel,'-',this.openUserManagerButton,'-',this.login.loginButton,'-',this.langSelector,'-'
+			this.login.userLabel,
+			'-',
+			this.openUserManagerButton,
+			'-',
+			this.login.loginButton,
+			'-',
+			this.langSelector,
+			'-'
         ];
         
 		// //////////////////////////////////////////////////

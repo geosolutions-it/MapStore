@@ -22,17 +22,19 @@ GeoExt.Lang.add("en", {
         errorMsg_timeout: "Request Timeout!",
 		textUserManager: 'User Manager',
         textViewMap: '', //"View Map",
-        tooltipViewMap: "Open Map to read only",
+        tooltipViewMap: "View Map",
         textCopyMap: '', //"Clone Map",
-        tooltipCopyMap: "Make a copy of this map",
+        tooltipCopyMap: "Clone Map",
         textEditMap: '', //"Edit Map",
-        tooltipEditMap: "Open Map to edit",
+        tooltipEditMap: "Edit Map",
         textDeleteMap: '', //"Delete Map",
         tooltipDeleteMap: "Delete Map",
         textEditMetadata: '', //"Edit Metadata",
-        tooltipEditMetadata: "Edit Metadata",
+        tooltipEditMetadata: "Edit Info",
         textSubmitEditMetadata: "Update",
-        tooltipSubmitEditMetadata: "Update Metadata",
+        tooltipSubmitEditMetadata: "Update Info",
+        titleConfirmCloseEditMetadata: 'Confirm',
+        textConfirmCloseEditMetadata: 'Close window without saving?',
         metadataSaveSuccessTitle: "Success",
         metadataSaveSuccessMsg: "Metadata saved succesfully",
         metadataSaveFailTitle: "Metadata not saved succesfully",
@@ -67,7 +69,7 @@ GeoExt.Lang.add("en", {
         beforePageText: "Page"
     },
     "MSMPanel.prototype": {
-        title : "Map Manager"
+        title : "MapManager"
     },
     "MSMLogin.prototype": {
         loginText: "Login",
@@ -96,6 +98,8 @@ GeoExt.Lang.add("en", {
 		textTitle: 'User Manager',
 		tooltipSearch: "Search",
 		userAlreadyTaken: 'User name has been already taken',
-		textSelectRole: 'Select a role...'
+		textSelectRole: 'Select a role...',
+		titleConfirmDeleteMsg: "Confirm delete user",
+		textConfirmDeleteMsg: "Are you sure you want to delete this user?"	
 	}
 });

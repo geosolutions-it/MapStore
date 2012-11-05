@@ -211,6 +211,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
     logout: function() {
 	    // invalidate token
 	    this.token = null;
+	    this.userid = null;
 	    this.username = null;
         this.grid.store.proxy.getConnection().defaultHeaders = {'Accept': 'application/json'};
         this.grid.getBottomToolbar().bindStore(this.grid.store, true);
@@ -265,13 +266,17 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 'Authorization' : auth
             },
             success: function(response, form, action) {
+            
                 this.win.hide();
                 this.getForm().reset();
+                
                 var user = Ext.util.JSON.decode(response.responseText);
+                
                 this.showLogout(user.User.name);
 				// save auth info
 				this.token = auth;
 				if (user.User) {
+					this.userid = user.User.id;//TODO geostore don't return user id! in details request
 					this.username = user.User.name;
 					this.role = user.User.role;
 				}

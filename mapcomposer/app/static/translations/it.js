@@ -174,7 +174,8 @@ GeoExt.Lang.add("it", {
 
     "gxp.plugins.WMSGetFeatureInfo.prototype": {
         infoActionTip: "Recupera Feature Info",
-        popupTitle: "Feature Info"
+        popupTitle: "Feature Info",
+		noDataMsg: "Nessun dato è stato ritornato dal server"
     },
 
     "gxp.plugins.Zoom.prototype": {
