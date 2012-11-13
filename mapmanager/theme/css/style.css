@@ -9,7 +9,8 @@ body{
 	font-family:Arial, Helvetica, sans-serif; }
 
 
-#wrap{ width:920px; min-height:800px; background:url(../images/bg_content_top.png) top center no-repeat; margin:0 auto; }
+#wrap{ width:920px; min-height:800px; background:url(../images/bg_content_top1.png) top center no-repeat; margin:0 auto; }
+#mailinglists{  width:920px;background:url(../images/bg_content_top2.png) bottom center no-repeat; margin:0 auto;padding:1px;}
 #header{ height:829px; }
 
 
