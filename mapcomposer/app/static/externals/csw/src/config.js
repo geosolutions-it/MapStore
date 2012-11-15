@@ -92,7 +92,16 @@ var config = {
                   {"name": "MAPAS-no proxy", "url": "http://localhost/geonetworkmapas/srv/en/csw", "description" : "http://mapas.mma.gov.br/geonetwork/srv/en/csw"},
 */
                   {"name": "Treviso", "url": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw", "description": "Treviso Geonetwork"},
-        		  {"name": "kscNet", "url": "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw", "description": "kscNet"},
+/*       	  {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina",
+			"metaDataOptions":{
+				"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page",   //url of the base page to get resources metadata
+				"idParam":"uuid",	//querystring parameter name that identifies resource
+				"idIndex":0	//index of the uuid parameter in the getRecord dc:identifier tag (in geoportal there are 2 identifiers (FileID and DocId)
+			}
+		  }, 
+*/
+
+		{"name": "kscNet", "url": "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw", "description": "kscNet"},
                   {"name": "CSI-CGIAR", "url": "http://geonetwork.csi.cgiar.org/geonetwork/srv/en/csw", "description" : "CSI-CGIAR"},
                   {"name": "EauFrance", "url": "http://sandre.eaufrance.fr/geonetwork/srv/fr/csw", "description" : "EauFrance"},
 
