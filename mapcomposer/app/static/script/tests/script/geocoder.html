@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html debug="true">
+  <head>
+    <script src="http://extjs.cachefly.net/ext-3.3.1/adapter/ext/ext-base.js"></script>
+    <script src="http://extjs.cachefly.net/ext-3.3.1/ext-all-debug.js"></script>
+    <script type="text/javascript" src="../../../externals/openlayers/lib/OpenLayers.js"></script>
+    <script type="text/javascript" src="../../../externals/geoext/lib/GeoExt.js"></script>
+    <script type="text/javascript" src="../../../externals/gxp/src/script/loader.js"></script>
+    <script type="text/javascript" src="../../../externals/gxp/src/script/widgets/form/GoogleGeocoderComboBox.js"></script>
+    <script type="text/javascript" src="../../../externals/gxp/src/script/widgets/form/NominatimGeocoderComboBox.js"></script>
+    <script type="text/javascript" src="../../../externals/gxp/src/script/plugins/Tool.js"></script>
+    <script type="text/javascript" src="../../geocoder.js"></script>
+
+    <script type="text/javascript">
+        var target={
+			on: function(cfg) {
+				if(cfg.ready) {
+					Ext.onReady(function() {
+						cfg.ready.call(cfg.scope);
+					});
+					
+				}
+			},
+			mapPanel: {
+				map: {
+					getLayersBy: function(prop,value) {
+						return [];
+					},
+					events:{
+						register:function(evtName,scope,fun) {
+						}
+					}
+				}
+			},
+			portal:{
+				toolbar:new Ext.Toolbar()
+			},
+			tools:{
+			}
+		};
+		
+		
+		
+		
+		
+		
+        function test_constructor(t) {
+            t.plan(1);
+            
+            var instance = new gxp.plugins.DynamicGeocoder();
+            
+            t.ok(instance instanceof gxp.plugins.DynamicGeocoder, "Instance created successfully");
+            
+        }
+		
+		function test_google(t) {
+            t.plan(2);
+			
+			var instance = new gxp.plugins.DynamicGeocoder({geocoderType:'google',outputTarget:'toolbar'});
+			
+            instance.init(target);
+			
+			t.ok(instance.addOutput() !== null,"Widget added to the toolbar");
+			
+			t.ok(instance.combo instanceof gxp.form.GoogleGeocoderComboBox, "Google Combo created successfully");
+			
+        }
+		
+		function test_nominatim(t) {
+            t.plan(2);
+			
+			var instance = new gxp.plugins.DynamicGeocoder({geocoderType:'nominatim',outputTarget:'toolbar'});
+			
+            instance.init(target);
+			
+			t.ok(instance.addOutput() !== null,"Widget added to the toolbar");
+			
+			t.ok(instance.combo instanceof gxp.form.NominatimGeocoderComboBox, "Nominatim Combo created successfully");
+			
+        }
+		
+		function test_dynamic_google(t) {
+            t.plan(2);
+			
+			var instance = new gxp.plugins.DynamicGeocoder({geocoderType:'dynamic',outputTarget:'toolbar'});
+			
+			target.mapPanel.map.getLayersBy=function() {
+				return [{
+					CLASS_NAME:'OpenLayers.Layer.Google',
+					visibility:true
+				}];
+			};
+            instance.init(target);
+			
+			t.ok(instance.addOutput() !== null,"Widget added to the toolbar");
+			
+			t.ok(instance.combo instanceof gxp.form.GoogleGeocoderComboBox, "Google Combo created successfully");
+			
+        }
+		
+		function test_dynamic_other(t) {
+            t.plan(2);
+			
+			var instance = new gxp.plugins.DynamicGeocoder({geocoderType:'dynamic',outputTarget:'toolbar'});
+			target.mapPanel.map.getLayersBy=function() {
+				return [];
+			};
+            instance.init(target);
+			
+			t.ok(instance.addOutput() !== null,"Widget added to the toolbar");
+			
+			t.ok(instance.combo instanceof gxp.form.NominatimGeocoderComboBox, "Nominatim Combo created successfully");
+			
+        }
+
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
