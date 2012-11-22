@@ -212,7 +212,7 @@ gxp.plugins.ReverseGeocoder.Geocoders['nominatim']={
 	reverseGeocode: function(params) {
 		var proxy= new Ext.data.ScriptTagProxy({
 			api: {
-				read : 'http://nominatim.openstreetmap.org/reverse',
+				read : 'http://nominatim.openstreetmap.org/reverse'
 			},
 			url:'http://nominatim.openstreetmap.org',
 			callbackParam:'json_callback'
