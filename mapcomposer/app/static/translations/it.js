@@ -379,6 +379,16 @@ GeoExt.Lang.add("it", {
     "gxp.plugins.GoogleGeocoder.prototype": {
         addMarkerTooltip: "Resetta Marker"
     },
+	"gxp.plugins.DynamicGeocoder.prototype": {
+        addMarkerTooltip: "Resetta Marker",
+        emptyText: "Geocoder..."
+    },
+	"gxp.plugins.ReverseGeocoder.prototype": {
+        buttonText: "Indirizzo",
+        emptyText: "Indirizzo...",
+		errorMsg: "Nessun indirizzo trovato",
+		waitMsg: "Attendere prego..."
+    },
 	"gxp.form.WFSSearchComboBox.prototype": {
 		emptyText:"Ricerca",
 		loadingText: "Sto cercando"
