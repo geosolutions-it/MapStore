@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html debug="true">
+  <head>
+    <script src="http://extjs.cachefly.net/ext-3.3.0/adapter/ext/ext-base.js"></script>
+    <script src="http://extjs.cachefly.net/ext-3.3.0/ext-all-debug.js"></script>
+    <script type="text/javascript" src="../../../../openlayers/lib/OpenLayers.js"></script>
+    <script type="text/javascript" src="../../../../geoext/lib/GeoExt.js"></script>
+    <script type="text/javascript" src="../../../src/script/loader.js"></script>
+    <script type="text/javascript">
+		/**
+		 * Fake plugin target, emulates the minimum context
+		 * needed by the plugin:
+		 *  - toolbar in which the plugin will be inserted
+		 *  - mapPanel/map objects
+		 *  - domReady functions caller
+		 */
+        var target={
+			on: function(cfg) {
+				if(cfg.ready) {
+					Ext.onReady(function() {
+						cfg.ready.call(cfg.scope);
+					});
+					
+				}
+			},
+			mapPanel: {
+				map: {
+					getLayersBy: function(prop,value) {
+						return [];
+					},
+					events:{
+						register:function(evtName,scope,fun) {
+						}
+					}
+				}
+			},
+			portal:{
+				toolbar:new Ext.Toolbar()
+			},
+			tools:{
+			}
+		};
+		
+		/** test
+		 *  Tests that the plugin can be created.
+		 */
+        function test_constructor(t) {
+            t.plan(1);
+            
+            var instance = new gxp.plugins.DynamicGeocoder();
+            
+            t.ok(instance instanceof gxp.plugins.DynamicGeocoder, "Instance created successfully");
+            
+        }
+		
+		/** test
+		 *  Tests the plugin can be configured to use google 
+		 *  geocoding service and the corresponding combo
+		 *  widget is created.
+		 */
+		function test_google(t) {
+            t.plan(2);
+			
+			var instance = new gxp.plugins.DynamicGeocoder({geocoderType:'google',outputTarget:'toolbar'});
+			
+            instance.init(target);
+			
+			t.ok(instance.addOutput() !== null,"Widget added to the toolbar");
+			
+			t.ok(instance.combo instanceof gxp.form.GoogleGeocoderComboBox, "Google Combo created successfully");
+			
+        }
+		
+		/** test
+		 *  Tests the plugin can be configured to use nominatim 
+		 *  geocoding service and the corresponding combo
+		 *  widget is created.
+		 */
+		function test_nominatim(t) {
+            t.plan(2);
+			
+			var instance = new gxp.plugins.DynamicGeocoder({geocoderType:'nominatim',outputTarget:'toolbar'});
+			
+            instance.init(target);
+			
+			t.ok(instance.addOutput() !== null,"Widget added to the toolbar");
+			
+			t.ok(instance.combo instanceof gxp.form.NominatimGeocoderComboBox, "Nominatim Combo created successfully");
+			
+        }
+		
+		/** test
+		 *  Tests the plugin configured to be dynamic uses
+		 *  google geocoding service if a google layer is visible
+		 *  in map.
+		 */
+		function test_dynamic_google(t) {
+            t.plan(2);
+			
+			var instance = new gxp.plugins.DynamicGeocoder({geocoderType:'dynamic',outputTarget:'toolbar'});
+			
+			target.mapPanel.map.getLayersBy=function() {
+				return [{
+					CLASS_NAME:'OpenLayers.Layer.Google',
+					visibility:true
+				}];
+			};
+            instance.init(target);
+			
+			t.ok(instance.addOutput() !== null,"Widget added to the toolbar");
+			
+			t.ok(instance.combo instanceof gxp.form.GoogleGeocoderComboBox, "Google Combo created successfully");
+			
+        }
+		
+		/** test
+		 *  Tests the plugin configured to be dynamic uses
+		 *  nominatim geocoding service if a google layer is 
+		 *  NOT visible in map.
+		 */
+		function test_dynamic_other(t) {
+            t.plan(2);
+			
+			var instance = new gxp.plugins.DynamicGeocoder({geocoderType:'dynamic',outputTarget:'toolbar'});
+			target.mapPanel.map.getLayersBy=function() {
+				return [];
+			};
+            instance.init(target);
+			
+			t.ok(instance.addOutput() !== null,"Widget added to the toolbar");
+			
+			t.ok(instance.combo instanceof gxp.form.NominatimGeocoderComboBox, "Nominatim Combo created successfully");
+			
+        }
+
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

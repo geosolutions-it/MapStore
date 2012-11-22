@@ -116,6 +116,11 @@
     background-image: url(img/geosilk/google_earth.png);
 }
 
+/* gxp_reversegeocoder */
+.x-btn .gxp-icon-reversegeocoder, .x-menu-item .gxp-icon-reversegeocoder, .x-tree-node .gxp-icon-reversegeocoder {
+    background-image: url(img/geocoder.png);
+}
+
 /* gxp_legend */
 .x-btn .gxp-icon-legend, .x-menu-item .gxp-icon-legend, .x-tree-node .gxp-icon-legend {
     background-image: url(img/silk/application_view_tile.png);

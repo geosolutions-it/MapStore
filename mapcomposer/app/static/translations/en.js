@@ -344,6 +344,16 @@ GeoExt.Lang.add("en", {
     "gxp.plugins.GoogleGeocoder.prototype": {
         addMarkerTooltip: "Reset Marker"
     },
+	"gxp.plugins.DynamicGeocoder.prototype": {
+        addMarkerTooltip: "Reset Marker",
+        emptyText: "Geocoder..."
+    },
+	"gxp.plugins.ReverseGeocoder.prototype": {
+        buttonText: "Address",
+        emptyText: "Address...",
+		errorMsg: "No address found",
+		waitMsg: "Wait please..."
+    },
 	"gxp.form.WFSSearchComboBox.prototype": {
 		emptyText:"Search",
 		loadingText: "Searching"
