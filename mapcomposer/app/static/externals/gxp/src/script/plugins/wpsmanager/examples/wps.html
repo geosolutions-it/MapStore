@@ -1,0 +1,99 @@
+<html>
+    <head>
+        <title>WPS Manager Example</title>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">       
+        <script src="../../ext/adapter/ext/ext-base.js"></script>
+        <script src="../../ext/ext-all-debug.js"></script>
+       
+        <script src="../../openlayers/lib/OpenLayers.js"></script>
+       
+        <script type="text/javascript" src="../../GeoExt/lib/GeoExt.js"></script>
+        
+    
+        <script type="text/javascript" src="../../gxp/src/script/loader.js"></script>
+        
+
+        <script type="text/javascript" src="../lib/WPSManager.js"></script>
+        
+        <script type="text/javascript" src="../../GeoStoreClient/lib/GeoStoreClient.js"></script>
+   
+        <script src="../../openlayersExt/lib/OpenLayers/Format/WCSGetCoverage.js"></script>
+        <script src="../../openlayersExt/lib/OpenLayers/Format/OGCExceptionReport.js"></script>
+        <script src="../../openlayersExt/lib/OpenLayers/Format/XML/VersionedOGC.js"></script>
+        <script src="../../openlayersExt/lib/OpenLayers/Format/OWSCommon.js"></script>
+        
+        <script src="../../openlayersExt/lib/OpenLayers/Format/OWSCommon/v1_ext.js"></script>
+        <script src="../../openlayersExt/lib/OpenLayers/Format/WFST/v1_1_0_ext.js"></script>
+        
+        <script src="../../openlayersExt/lib/OpenLayers/Format/OWSCommon/v1_1_0_ext.js"></script>
+        
+        <script src="../../openlayersExt/lib/OpenLayers/Format/GeoStore.js"></script>
+        
+        <script src="../../openlayersExt/lib/OpenLayers/RequestExt.js"></script>
+        <script src="../../openlayersExt/lib/OpenLayers/EventsExt.js"></script>
+        <script src="../../openlayersExt/lib/OpenLayers/UtilExt.js"></script>
+        <script src="../../openlayersExt/lib/OpenLayers/RequestExt/XMLHttpRequestExt.js"></script>
+        <script src="../../openlayersExt/lib/OpenLayers/WPSClient.js"></script>
+        <script src="../../openlayersExt/lib/OpenLayers/WPSProcess.js"></script>
+        
+        <script src="../../openlayersExt/lib/OpenLayers/Format/WPSDescribeProcess.js"></script>
+        <script src="../../openlayersExt/lib/OpenLayers/Format/WPSExecute.js"></script>
+        <script src="../../openlayersExt/lib/OpenLayers/Format/WPSExecuteRequest.js"></script>
+        
+        <script src="../../../auth/base64.js"></script>
+  
+        
+        <script type="text/javascript" src="wps.js"></script>
+    
+	<script type="text/javascript">
+	  var proxy;
+	  Ext.Ajax.request({
+		  //url: "/proxy/?url=" + "http://localhost:8080/geostore/urlConfig.js",
+		  url: /*location.host.indexOf("localhost:8083")!=-1? "/*/"../../../urlConfig.js"/*: "/IDAMapStore_test/urlConfig.js"*/,
+		  method: 'GET',
+		  success: function(response, opts){      
+			  var serverConfig;    
+			  
+			  try{
+				  serverConfig = Ext.util.JSON.decode(response.responseText);
+			  }catch(e){
+				  Ext.Msg.show({
+						title: "Startup",
+						msg: "An error occurred while parsing the GeoStore URL config: " + response.status,
+						buttons: Ext.Msg.OK,
+						icon: Ext.MessageBox.ERROR
+				  });
+			  }
+			  
+			  if(serverConfig){
+				  proxy = serverConfig.proxy; 
+				  geoStoreBaseURL = serverConfig.geoStoreBase;                  
+				  customSources = serverConfig.gsSources;
+                                  scaleOverlayUnits = serverConfig.scaleOverlayUnits;
+
+				  //      
+				  // Run the application when browser is ready
+				  //
+				  Ext.onReady(onReady);
+			  }
+		  },
+		  failure:  function(response, opts){
+			  Ext.Msg.show({
+					title: "Startup",
+					msg: "An error occurred while getting the GeoStore URL config: " + response.status,
+					buttons: Ext.Msg.OK,
+					icon: Ext.MessageBox.ERROR
+			  });
+		  }
+		});
+	  
+	</script>
+    </head>
+    <body>
+        <h1>WPS Manager Example</h1>
+        <p>.
+        The js is not minified so it is readable. See <a href="geostore.js">wps.js</a>.</p>
+        <div id="container"></div>
+    </body>
+</html>

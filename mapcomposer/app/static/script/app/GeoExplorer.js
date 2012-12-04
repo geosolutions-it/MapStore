@@ -150,10 +150,15 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             this.fScreen = fScreen;
             this.auth = false;
         }
-            
-        this.mapItems = [
+		
+		this.mapItems = [
             {
-                xtype: "gxp_scaleoverlay"
+                xtype: "gxp_scaleoverlay",
+                topOutUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topOutUnits : null,
+                topInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topInUnits : null,
+                bottomInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.bottomInUnits : null,
+                bottomOutUnits: config.scaleOverlayUnits ? config.bottomOutUnits : null,
+                enableSetScaleUnits: config.scaleOverlayUnits ? true : false
             }, {
                 xtype: "gx_zoomslider",
                 vertical: true,

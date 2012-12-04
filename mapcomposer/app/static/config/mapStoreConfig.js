@@ -87,6 +87,13 @@
 		"timeout": 60000
 	},
 	
+	"scaleOverlayUnits":{
+        "bottomOutUnits":"nmi",    
+        "bottomInUnits":"nmi",    
+        "topInUnits":"m",    
+        "topOutUnits":"km"
+    },
+	
 	"customTools":[
 		{
 			"actions": ["->"], 

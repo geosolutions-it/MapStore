@@ -1,0 +1,76 @@
+<html>
+    <head>
+        <title>GeosStore Client Example</title>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">       
+        <script src="../../ext/adapter/ext/ext-base.js"></script>
+        <script src="../../ext/ext-all-debug.js"></script>
+       
+        <script src="../../openlayers/lib/OpenLayers.js"></script>
+       
+        <script type="text/javascript" src="../../GeoExt/lib/GeoExt.js"></script>
+        
+    
+        <script type="text/javascript" src="../../gxp/src/script/loader.js"></script>
+        
+        <script type="text/javascript" src="../lib/GeoStoreUtil.js"></script>
+        <script type="text/javascript" src="../lib/GeoStoreClient.js"></script>
+      <!--  <script type="text/javascript" src="../lib/openlayersExt/lib/Format/GeoStore.js"></script>-->
+        <script src="../../openlayersExt/lib/OpenLayers/Format/GeoStore.js"></script>
+        
+        <script src="../../../auth/base64.js"></script>
+     <!--  <script src="../../openlayersExt/lib/OpenLayers/Format/WFST/v1_1_0_ext.js"></script>-->
+        
+        <script type="text/javascript" src="geostore.js"></script>
+    
+	<script type="text/javascript">
+	  var proxy;
+	  Ext.Ajax.request({
+		  //url: "/proxy/?url=" + "http://localhost:8080/geostore/urlConfig.js",
+		  url: /*location.host.indexOf("localhost:8083")!=-1? "/*/"../../../urlConfig.js"/*: "/IDAMapStore_test/urlConfig.js"*/,
+		  method: 'GET',
+		  success: function(response, opts){      
+			  var serverConfig;    
+			  
+			  try{
+				  serverConfig = Ext.util.JSON.decode(response.responseText);
+			  }catch(e){
+				  Ext.Msg.show({
+						title: "Startup",
+						msg: "An error occurred while parsing the GeoStore URL config: " + response.status,
+						buttons: Ext.Msg.OK,
+						icon: Ext.MessageBox.ERROR
+				  });
+			  }
+			  
+			  if(serverConfig){
+				  proxy = serverConfig.proxy; 
+				  geoStoreBaseURL = serverConfig.geoStoreBase;                  
+				  customSources = serverConfig.gsSources;
+                                  scaleOverlayUnits = serverConfig.scaleOverlayUnits;
+
+				  //      
+				  // Run the application when browser is ready
+				  //
+				  Ext.onReady(onReady);
+			  }
+		  },
+		  failure:  function(response, opts){
+			  Ext.Msg.show({
+					title: "Startup",
+					msg: "An error occurred while getting the GeoStore URL config: " + response.status,
+					buttons: Ext.Msg.OK,
+					icon: Ext.MessageBox.ERROR
+			  });
+		  }
+		});
+	  
+	</script>
+    </head>
+    <body>
+        <h1>GeoStore Client Example</h1>
+        <p>.
+        The js is not minified so it is readable. See <a href="geostore.js">geostore.js</a>.</p>
+        <div id="container"></div>
+    </body>
+</html>

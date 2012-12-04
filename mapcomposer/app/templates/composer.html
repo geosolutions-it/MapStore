@@ -2,8 +2,13 @@
 <% subskin extrahead %>
     <!-- OpenLayers resources -->
     <link rel="stylesheet" type="text/css" href="externals/openlayers/theme/default/style.css">
-    <script type="text/javascript" src="script/OpenLayers.js"></script>
 
+	<!-- Basic OpenLayers libs -->
+    <script type="text/javascript" src="script/OpenLayers.js"></script>		
+	
+	<!-- Externatls OpenLayers libraries to manage WPS processes 
+	<script type="text/javascript" src="script/OpenLayersExt.js"></script> -->
+	
 	<!-- colorpicker resources 
     <link rel="stylesheet" type="text/css" href="externals/colorpicker/css/colorpicker.css">
     <script type="text/javascript" src="script/colorpicker.js"></script> -->
@@ -290,7 +295,8 @@
                     contact: "<a href='#'>#</a>."
                 },
                 sources: sources,
-				//showGraticule: false,            //Set showGraticule property to true only if the map projection is EPSG:4326 
+				scaleOverlayUnits: serverConfig.scaleOverlayUnits,
+				//showGraticule: false,  //Set showGraticule property to true only if the map projection is EPSG:4326 
                 georeferences: georeferences_data,
                 cswconfig: serverConfig.cswconfig,
                 map: serverConfig.map,
