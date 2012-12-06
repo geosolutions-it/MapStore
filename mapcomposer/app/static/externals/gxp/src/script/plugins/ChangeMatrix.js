@@ -96,6 +96,43 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
      */
     changeMatrixResultsTitle: "Change Matrix",
     
+    // form errors
+    /** api: config[changeMatrixEmptyLayer]
+     *  ``String``
+     *  Form validation messages: No layers selected (i18n).
+     */
+    changeMatrixEmptyLayer: "Please select a raster layer",
+    
+    /** api: config[changeMatrixEmptyFilter]
+     *  ``String``
+     *  Form validation messages: Empty filter (i18n).
+     */
+    changeMatrixEmptyFilter: "Please specify both time filters",
+    
+    /** api: config[changeMatrixEmptyClassesDialogTitle]
+     *  ``String``
+     *  Form validation messages: No classes selected (dialog title) (i18n).
+     */
+    changeMatrixEmptyClassesDialogTitle: "Error",
+    
+    /** api: config[changeMatrixEmptyClassesDialogText]
+     *  ``String``
+     *  Form validation messages: No classes selected (dialog content) (i18n).
+     */
+    changeMatrixEmptyClassesDialogText: "Please select at least one class",
+    
+    /** api: config[changeMatrixEmptyClassesDialogTitle]
+     *  ``String``
+     *  Form validation messages: No classes selected (dialog title) (i18n).
+     */
+    changeMatrixInvalidFormDialogTitle: "Error",
+    
+    /** api: config[changeMatrixEmptyClassesDialogText]
+     *  ``String``
+     *  Form validation messages: No classes selected (dialog content) (i18n).
+     */
+    changeMatrixInvalidFormDialogText: "Please correct the form errors",
+    
     /** api: config[rasterLayers]
      *  ``String[]``
      *  Array of available raster layers.
@@ -178,15 +215,27 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                                 data: rasterLayersStoreData
                             }),
                             valueField: 'name',
-                            displayField: 'name'
+                            displayField: 'name',
+                            validator: function(value) {
+                                if(Ext.isEmpty(value)) return me.changeMatrixEmptyLayer
+                                return true;
+                            }
                         },{
                             xtype: 'textfield',
                             name: 'filterT0',
-                            fieldLabel: this.changeMatrixCQLFilterT0FieldLabel
+                            fieldLabel: this.changeMatrixCQLFilterT0FieldLabel,
+                            validator: function(value) {
+                                if(Ext.isEmpty(value)) return me.changeMatrixEmptyFilter
+                                return true;
+                            }
                         },{
                             xtype: 'textfield',
                             name: 'filterT1',
-                            fieldLabel: this.changeMatrixCQLFilterT1FieldLabel
+                            fieldLabel: this.changeMatrixCQLFilterT1FieldLabel,
+                            validator: function(value) {
+                                if(Ext.isEmpty(value)) return me.changeMatrixEmptyFilter
+                                return true;
+                            }
                         }
                     ],
                     buttons: [
@@ -194,6 +243,10 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                             text: this.changeMatrixButtonText,
                             handler: function() {
                                 var form = me.formPanel.getForm();
+                                
+                                if(!form.isValid()) {
+                                    return Ext.Msg.alert(me.changeMatrixInvalidFormDialogTitle, me.changeMatrixInvalidFormDialogText);
+                                }
                                 
                                 // get form params
                                 var params = form.getFieldValues();
@@ -205,6 +258,10 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                                     selectedClasses.push(selectedCheckBoxes[i].value);
                                 }
                                 params.classes = selectedClasses;
+                                if(params.classes.length == 0) {
+                                    //if no classes were selected, alert a message and return
+                                    return Ext.Msg.alert(me.changeMatrixEmptyClassesDialogTitle, me.changeMatrixEmptyClassesDialogText);
+                                }
                                 
                                 //get the current extent
                                 var map = me.target.mapPanel.map;
@@ -214,7 +271,8 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                                     currentExtent.transform(map.getProjectionObject(),
                                         new OpenLayers.Projection('EPSG:4326'));
                                 }
-                                params.roi = currentExtent;
+                                //transform to a Geometry (instead of Bounds)
+                                params.roi = currentExtent.toGeometry();
                                 
                                 me.startWPSRequest(params);
                             }
