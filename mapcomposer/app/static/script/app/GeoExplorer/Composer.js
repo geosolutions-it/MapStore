@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Copyright (c) 2009-2010 The Open Planning Project
  *
  * @requires GeoExplorer.js
@@ -143,7 +143,12 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		        }, {
 		            ptype: "gxp_googleearth",
 		            actionTarget: {target: "paneltbar", index: 25}
-		        }
+		        }, {
+                    ptype: "gxp_changematrix",
+                    actionTarget: {target: "paneltbar", index: 26},
+                    rasterLayers: ["test1", "test2", "test3"],
+                    classes: [1, 2, 3, 4, 5, 6]
+                }
 		    ];
 
 			if(config.customTools)
