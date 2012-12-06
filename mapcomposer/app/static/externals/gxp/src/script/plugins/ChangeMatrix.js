@@ -133,8 +133,6 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
      * api: method[addActions]
      */
     addActions: function() {
-        var apptarget = this.target;
-        
         var actions = gxp.plugins.ChangeMatrix.superclass.addActions.apply(this, [{
             iconCls: "gxp-icon-addgroup",
             disabled: false,
@@ -197,13 +195,26 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                             handler: function() {
                                 var form = me.formPanel.getForm();
                                 
+                                // get form params
                                 var params = form.getFieldValues();
+                                
+                                //get an array of the selected classes from the CheckBoxGroup
                                 var selectedCheckBoxes = form.findField('classescheckboxgroup').getValue();
                                 var selectedClasses = [];
                                 for(var i = 0; i < selectedCheckBoxes.length; i++) {
                                     selectedClasses.push(selectedCheckBoxes[i].value);
                                 }
                                 params.classes = selectedClasses;
+                                
+                                //get the current extent
+                                var map = me.target.mapPanel.map;
+                                var currentExtent = map.getExtent();
+                                //change the extent projection if it differs from 4326
+                                if(map.getProjection() != 'EPSG:4326') {
+                                    currentExtent.transform(map.getProjectionObject(),
+                                        new OpenLayers.Projection('EPSG:4326'));
+                                }
+                                params.roi = currentExtent;
                                 
                                 me.startWPSRequest(params);
                             }
@@ -216,7 +227,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                     height: 200,
                     title: this.changeMatrixDialogTitle,
                     constrainHeader: true,
-                    renderTo: apptarget.mapPanel.body,
+                    renderTo: this.target.mapPanel.body,
                     items: [ me.formPanel ]
                 });
                 
@@ -297,21 +308,29 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
         };
         var grid = this.createResultsGrid(data.changeMatrix);
         
+        //ATTENZIONE: questo dovrebbe verificare se il mapComposer è stato creato in un tabpanel
+        // non sono sicuro però che questo sia il controllo giusto
         if(this.target.renderToTab) {
             Ext.getCmp(this.target.renderToTab).add(grid);
         } else {
             if(this.resultWin)
                 this.resultWin.destroy();
             
+            //remove title to avoid double header
+            grid.title = undefined;
+            
             this.resultWin = new Ext.Window({
-                width: 315,
-                height: 200,
+                width: 350,
+                height: 350,
+                layout: 'fit',
                 title: this.changeMatrixResultsTitle,
                 constrainHeader: true,
-                renderTo: apptarget.mapPanel.body,
-                items: [ me.formPanel ]
+                renderTo: this.target.mapPanel.body,
+                items: [ grid ]
             });
+            this.resultWin.show();
         }
+        if(this.win) this.win.destroy();
     },
     
     createResultsGrid: function(data) {
@@ -348,6 +367,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
             store: changeMatrixStore,
             height: 300,
             width: 300,
+            closable: true,
             columns: [
                 { header: 'ref', dataIndex: 'ref' },
                 { header: 'now', dataIndex: 'now' },
