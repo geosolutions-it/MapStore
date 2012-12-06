@@ -159,20 +159,12 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
     resultWin: null,
     
     init: function(target) {
-        console.log('init');
-        console.log(this.target);
-        console.log(arguments);
-        
-        // cannot find the wpsManager tool
-        // it is not included in the default tools
-        // if I add in the customTools property of mapStoreConfig.js, it says that the plugin cannot be created
-        
-        this.wpsManager = this.target.tools[this.wpsManagerID];
-        
-        //this.wpsMananger = "wpsSPM";
-        //var wps = this.target.tools[this.wpsManager];
-        
+
+        //get a reference to the wpsManager
+        this.wpsManager = target.tools[this.wpsManagerID];
+
         return gxp.plugins.ChangeMatrix.superclass.init.apply(this, arguments);
+
     },
 
     /** 
@@ -307,76 +299,39 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
     },
     
     startWPSRequest: function(params) {
-        this.showResultsGrid();
-        console.log(params);
-        return;
+
         var inputs = {
             raster: new OpenLayers.WPSProcess.LiteralData({value: params.raster}),
             filterT0: new OpenLayers.WPSProcess.LiteralData({value: params.filterT0}),
             filterT1: new OpenLayers.WPSProcess.LiteralData({value: params.filterT1})
         };
-        // come inseriamo più proprietà con lo stesso nome in inputs ? 
-        // Andrea: Plugin WPS Modificato per accettare anche array di Inputs
+        
         for(var i = 0; i < classes.length; i++) {
             inputs.classes.push(new OpenLayers.WPSProcess.LiteralData({value: classes[i]})); 
+
         }
-        
-        var callback = function(response, process) {
-            console.log('process executed');
-            console.log(arguments);
-            // fill the ChangeMatrixStore with response data
-            // show grid
-            //this.showResultsGrid(response);
-        }
-        
+
         var requestObject = {
             type: "raw",
             inputs: inputs,
             outputs: [{
                 identifier: "result",
                 mimeType: "application/json"
-            }],
+            }]/*,
+
             callback: callback,
-            scope: this
+            scope: this*/
         };
         this.wpsManager.execute(requestObject, this.showResultsGrid); //Andrea: Introdotto metodo di callback, il metodo viene invocato con la risposta in formato testo
+
     },
     
     showResultsGrid: function(responseText) {
         
-        var responseData= Ext.util.JSON.decode(responseText);
-        
-        // static data
-        var data = { "changeMatrix":
-          [
-            {"ref":"0", "now":"0", "pixels":"16002481"},
-            {"ref":"0", "now":"35", "pixels":"15002481"},
-            {"ref":"0", "now":"1", "pixels":"10002481"},
-            {"ref":"0", "now":"36", "pixels":"7002481"},
-            {"ref":"0", "now":"37", "pixels":"2002481"},
-            {"ref":"1", "now":"0", "pixels":"0"},
-            {"ref":"1", "now":"35", "pixels":"0"},
-            {"ref":"1", "now":"1", "pixels":"3192"},
-            {"ref":"1", "now":"36", "pixels":"15"},
-            {"ref":"1", "now":"37", "pixels":"0"},
-            {"ref":"35", "now":"0", "pixels":"0"},
-            {"ref":"35", "now":"35", "pixels":"7546"},
-            {"ref":"35", "now":"1", "pixels":"0"},
-            {"ref":"35", "now":"36", "pixels":"0"},
-            {"ref":"35", "now":"37", "pixels":"16"},
-            {"ref":"36", "now":"0", "pixels":"166"},
-            {"ref":"36", "now":"35", "pixels":"36"},
-            {"ref":"36", "now":"1", "pixels":"117"},
-            {"ref":"36", "now":"36", "pixels":"1273887"},
-            {"ref":"36", "now":"37", "pixels":"11976"},
-            {"ref":"37", "now":"0", "pixels":"274"},
-            {"ref":"37", "now":"35", "pixels":"16"},
-            {"ref":"37", "now":"1", "pixels":"16"},
-            {"ref":"37", "now":"36", "pixels":"28710"},
-            {"ref":"37", "now":"37", "pixels":"346154"}
-          ]
-        };
-        var grid = this.createResultsGrid(data.changeMatrix);
+        // aggiungere controllo e alert in caso di errore
+        var responseData = Ext.util.JSON.decode(responseText);
+
+        var grid = this.createResultsGrid(responseData.changeMatrix);
         
         var hasTabPanel = false;
         if(this.target.renderToTab) {
