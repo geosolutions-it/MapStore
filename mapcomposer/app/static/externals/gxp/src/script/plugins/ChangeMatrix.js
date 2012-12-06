@@ -366,10 +366,15 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
         };
         var grid = this.createResultsGrid(data.changeMatrix);
         
-        //ATTENZIONE: questo dovrebbe verificare se il mapComposer è stato creato in un tabpanel
-        // non sono sicuro però che questo sia il controllo giusto
+        var hasTabPanel = false;
         if(this.target.renderToTab) {
-            Ext.getCmp(this.target.renderToTab).add(grid);
+            var container = Ext.getCmp(this.target.renderToTab);
+            if(container.isXType('tabpanel')) hasTabPanel = true;
+        }
+        
+        if(hasTabPanel) {
+            container.add(grid);
+            container.setActiveTab(container.items.length-1);
         } else {
             if(this.resultWin)
                 this.resultWin.destroy();
