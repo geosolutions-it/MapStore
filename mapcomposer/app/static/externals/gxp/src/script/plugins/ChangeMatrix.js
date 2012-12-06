@@ -145,6 +145,13 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
      */
     classes: null,
     
+    
+    /** api: config[wpsManagerID]
+     *  ``String``
+     *  WPS Manager Plugin ID .
+     */
+    wpsManagerID: null,
+    
     //private
     win: null,
     formPanel: null,
@@ -159,6 +166,8 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
         // cannot find the wpsManager tool
         // it is not included in the default tools
         // if I add in the customTools property of mapStoreConfig.js, it says that the plugin cannot be created
+        
+        this.wpsManager = this.target.tools[this.wpsManager];
         
         //this.wpsMananger = "wpsSPM";
         //var wps = this.target.tools[this.wpsManager];
@@ -306,9 +315,10 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
             filterT0: new OpenLayers.WPSProcess.LiteralData({value: params.filterT0}),
             filterT1: new OpenLayers.WPSProcess.LiteralData({value: params.filterT1})
         };
-        // come inseriamo più proprietà con lo stesso nome in inputs ?
+        // come inseriamo più proprietà con lo stesso nome in inputs ? 
+        // Andrea: Plugin WPS Modificato per accettare anche array di Inputs
         for(var i = 0; i < classes.length; i++) {
-            inputs.classes = classes[i]; //questo illustra solo il problema, lasciandolo così, prenderebbe solo l'ultima classe
+            inputs.classes.push(new OpenLayers.WPSProcess.LiteralData({value: classes[i]})); 
         }
         
         var callback = function(response, process) {
@@ -329,10 +339,12 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
             callback: callback,
             scope: this
         };
-        this.wpsManager.execute(requestObject);
+        this.wpsManager.execute(requestObject, this.showResultsGrid); //Andrea: Introdotto metodo di callback, il metodo viene invocato con la risposta in formato testo
     },
     
-    showResultsGrid: function(responseData) {
+    showResultsGrid: function(responseText) {
+        
+        var responseData= Ext.util.JSON.decode(responseText);
         
         // static data
         var data = { "changeMatrix":
