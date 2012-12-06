@@ -269,10 +269,10 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
         var data = { "changeMatrix":
           [
             {"ref":"0", "now":"0", "pixels":"16002481"},
-            {"ref":"0", "now":"35", "pixels":"0"},
-            {"ref":"0", "now":"1", "pixels":"0"},
-            {"ref":"0", "now":"36", "pixels":"4"},
-            {"ref":"0", "now":"37", "pixels":"4"},
+            {"ref":"0", "now":"35", "pixels":"15002481"},
+            {"ref":"0", "now":"1", "pixels":"10002481"},
+            {"ref":"0", "now":"36", "pixels":"7002481"},
+            {"ref":"0", "now":"37", "pixels":"2002481"},
             {"ref":"1", "now":"0", "pixels":"0"},
             {"ref":"1", "now":"35", "pixels":"0"},
             {"ref":"1", "now":"1", "pixels":"3192"},
@@ -354,15 +354,18 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                 { header: 'Changes', dataIndex: 'pixels' }
             ],
             viewConfig: {
-                getRowClass: function(record, index) {
-                    var selectedClass,
-                        previousLimit = 0;
-                    
+                getRowClass: function(record, index, rowParams) {
                     // calculate the percentage
-                    var percentValue = ((record.get('pixels') - min) / max) * 100;
+                    var percentValue = Math.round(((record.get('pixels') - min) / max) * 100);
                     
-                    // how can we change the cell color?
-                    // classes? inline colors from green to red?
+                    // calculate color (0 = green, 100 = red)
+                    var r = Math.round((255 * percentValue) / 100);
+                    var g = Math.round((255 * (100 - percentValue)) / 100);
+                    var b = 0;
+
+                    // add inline styles to the row
+                    rowParams.tstyle = 'width:' + this.getTotalWidth() + ';';
+                    rowParams.tstyle += "background-color: rgb("+r+","+g+","+b+");";
                 }
             }
         });
