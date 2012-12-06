@@ -175,11 +175,28 @@ OpenLayers.WPSProcess = OpenLayers.Class({
             callback: function() {
                 var description = this.description,
                 inputs = options.inputs,
-                input, i, ii;
+                input, i, ii,u, z=0;
+                var executeDataInputs=new Array();
                 for (i=0, ii=description.dataInputs.length; i<ii; ++i) {
-                    input = description.dataInputs[i];
-                    this.setInputData(input, inputs[input.identifier]);
+                    input=description.dataInputs[i];
+                    
+                    if(inputs[input.identifier] instanceof Array){
+                        // TODO maxoccurs Control
+                        for (u=0; u<inputs[input.identifier].length; u++) {
+                          executeDataInputs[z]= new Object();  
+                          Ext.apply(executeDataInputs[z],input);
+                          this.setInputData(executeDataInputs[z], inputs[input.identifier][u]); 
+                          z++;
+                        }
+                    }else{
+                        executeDataInputs[z]= new Object();  
+                        Ext.apply(executeDataInputs[z],input);
+                        this.setInputData(executeDataInputs[executeDataInputs.length-1], inputs[input.identifier]);
+                        z++;
+                    }
+                        
                 }
+                this.description.dataInputs=executeDataInputs;
                 if (options.callback) {
                     options.callback.call(options.scope);
                 }
