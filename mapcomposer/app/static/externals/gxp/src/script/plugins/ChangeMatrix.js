@@ -167,7 +167,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
         // it is not included in the default tools
         // if I add in the customTools property of mapStoreConfig.js, it says that the plugin cannot be created
         
-        this.wpsManager = this.target.tools[this.wpsManager];
+        this.wpsManager = this.target.tools[this.wpsManagerID];
         
         //this.wpsMananger = "wpsSPM";
         //var wps = this.target.tools[this.wpsManager];
