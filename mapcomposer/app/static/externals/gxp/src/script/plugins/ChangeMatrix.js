@@ -301,14 +301,24 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
     startWPSRequest: function(params) {
 
         var inputs = {
-            raster: new OpenLayers.WPSProcess.LiteralData({value: params.raster}),
-            filterT0: new OpenLayers.WPSProcess.LiteralData({value: params.filterT0}),
-            filterT1: new OpenLayers.WPSProcess.LiteralData({value: params.filterT1})
+            name: new OpenLayers.WPSProcess.LiteralData({value: params.raster}),
+            referenceFilter: new OpenLayers.WPSProcess.ComplexData({
+                value: params.filterT0,
+                mimeType: 'text/plain; subtype=cql'
+            }),
+            nowFilter: new OpenLayers.WPSProcess.ComplexData({
+                value: params.filterT1,
+                mimeType: 'text/plain; subtype=cql'
+            }),
+            ROI: new OpenLayers.WPSProcess.ComplexData({
+                value: params.roi.toString(),
+                mimeType: 'application/wkt'
+            }),
+            classes: []
         };
         
-        for(var i = 0; i < classes.length; i++) {
-            inputs.classes.push(new OpenLayers.WPSProcess.LiteralData({value: classes[i]})); 
-
+        for(var i = 0; i < params.classes.length; i++) {
+            inputs.classes.push(new OpenLayers.WPSProcess.LiteralData({value: params.classes[i]})); 
         }
 
         var requestObject = {
@@ -317,13 +327,9 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
             outputs: [{
                 identifier: "result",
                 mimeType: "application/json"
-            }]/*,
-
-            callback: callback,
-            scope: this*/
+            }]
         };
-        this.wpsManager.execute(requestObject, this.showResultsGrid); //Andrea: Introdotto metodo di callback, il metodo viene invocato con la risposta in formato testo
-
+        this.wpsManager.execute('gs:ChangeMatrix', requestObject, this.showResultsGrid);
     },
     
     showResultsGrid: function(responseText) {
