@@ -95,12 +95,6 @@
     },
 
 	"customTools":[{
-            "ptype": "gxp_changematrix",
-            "actionTarget": {"target": "paneltbar", "index": 26},
-            "wpsManagerID": "wpsManager",
-            "rasterLayers": ["test1", "test2", "test3"],
-            "classes": [1, 2, 3, 4, 5, 6]
-        },{
            "ptype": "gxp_wpsmanager",
            "id": "wpsManager",
            "url": "http://84.33.1.22/geoserver/wps",
@@ -108,6 +102,12 @@
            "geostoreUser": "admin",
            "geostorePassword": "admin",
            "geostoreProxy": "/http_proxy/proxy?url="
+        },{
+            "ptype": "gxp_changematrix",
+            "actionTarget": {"target": "paneltbar", "index": 26},
+            "wpsManagerID": "wpsManager",
+            "rasterLayers": ["it.geosolutions:unina"],
+            "classes": [3, 6, 8, 11, 16]
         },{
             "actions": ["->"],
             "actionTarget": "paneltbar"
