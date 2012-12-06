@@ -103,10 +103,11 @@
         },{
            "ptype": "gxp_wpsmanager",
            "id": "wpsManager",
-           "url": "http://84.33.1.254/geoserver/wps",
-           "geostoreUrl": "http://192.168.188.130:8081/geostore/rest",
+           "url": "http://84.33.1.22/geoserver/wps",
+           "geostoreUrl": "http://84.33.1.22/geostore/rest",
            "geostoreUser": "admin",
-           "geostorePassword": "admin"
+           "geostorePassword": "admin",
+           "geostoreProxy": "/http_proxy/proxy?url="
         },{
             "actions": ["->"],
             "actionTarget": "paneltbar"
