@@ -1,0 +1,373 @@
+/**
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @requires plugins/Tool.js
+ */
+
+/** api: (define)
+ *  module = gxp.plugins
+ *  class = ChangeMatrix
+ */
+
+/** api: (extends)
+ *  plugins/Tool.js
+ */
+Ext.namespace("gxp.plugins");
+
+/** api: constructor
+ *  .. class:: ChangeMatrix(config)
+ *
+ *    Show a change matrix of changes between two rasters
+ */
+gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
+    
+    /** api: ptype = gxp_changematrix */
+    ptype: "gxp_changematrix",
+    
+    /** api: config[changeMatrixMenuText]
+     *  ``String``
+     *  Text for add menu item (i18n).
+     */
+    //changeMatrixMenuText: "Add Group", // serve?
+
+    /** api: config[changeMatrixActionTip]
+     *  ``String``
+     *  Text for add action tooltip (i18n).
+     */
+    changeMatrixActionTip: "Get a change matrix for two raster layers",
+    
+    /** api: config[changeMatrixDialogTitle]
+     *  ``String``
+     *  Title of the changeMatrix form window (i18n).
+     */
+    changeMatrixDialogTitle: "Change matrix",
+    
+    /** api: config[changeMatrixClassesFieldLabel]
+     *  ``String``
+     *  Text for the Classes field label (i18n).
+     */
+    changeMatrixClassesFieldLabel: "Classes",
+    
+    /** api: config[changeMatrixRasterFieldLabel]
+     *  ``String``
+     *  Text for the Raster field label (i18n).
+     */
+    changeMatrixRasterFieldLabel: "Raster T0",
+    
+    /** api: config[changeMatrixCQLFilterT0FieldLabel]
+     *  ``String``
+     *  Text for the CQL Filter T0 field label (i18n).
+     */
+    changeMatrixCQLFilterT0FieldLabel: "CQL Filter T0",
+    
+    /** api: config[changeMatrixCQLFilterT1FieldLabel]
+     *  ``String``
+     *  Text for the CQL Filter T1 field label (i18n).
+     */
+    changeMatrixCQLFilterT1FieldLabel: "CQL Filter T1",
+    
+    /** api: config[changeMatrixButtonText]
+     *  ``String``
+     *  Text for the changeMatrix form button (i18n).
+     */
+    changeMatrixButtonText: "Submit",
+    
+    /** api: config[changeMatrixResultsTitle]
+     *  ``String``
+     *  Text for the changeMatrix results container (i18n).
+     */
+    changeMatrixResultsTitle: "Change Matrix",
+    
+    /** api: config[rasterLayers]
+     *  ``String[]``
+     *  Array of available raster layers.
+     */
+    rasterLayers: null,
+    
+    /** api: config[classes]
+     *  ``Integer[]``
+     *  Array of classes.
+     */
+    classes: null,
+    
+    //private
+    win: null,
+    formPanel: null,
+    wpsManager: null,
+    resultWin: null,
+    
+    init: function(target) {
+        console.log('init');
+        console.log(this.target);
+        console.log(arguments);
+        
+        // cannot find the wpsManager tool
+        // it is not included in the default tools
+        // if I add in the customTools property of mapStoreConfig.js, it says that the plugin cannot be created
+        
+        //this.wpsMananger = "wpsSPM";
+        //var wps = this.target.tools[this.wpsManager];
+        
+        return gxp.plugins.ChangeMatrix.superclass.init.apply(this, arguments);
+    },
+
+    /** 
+     * api: method[addActions]
+     */
+    addActions: function() {
+        var apptarget = this.target;
+        
+        var actions = gxp.plugins.ChangeMatrix.superclass.addActions.apply(this, [{
+            iconCls: "gxp-icon-addgroup",
+            disabled: false,
+            tooltip: this.changeMatrixActionTip,
+            handler: function() {
+                var me = this;
+                
+                if(me.win)
+                    me.win.destroy();
+                    
+                var rasterLayersStoreData = [];
+                for(var i = 0; i < this.rasterLayers.length; i++) {
+                    rasterLayersStoreData.push([this.rasterLayers[i]]);
+                }
+                
+                var checkBoxGroupItems = [];
+                for(var i = 0; i < this.classes.length; i++) {
+                    checkBoxGroupItems.push({
+                        boxLabel: this.classes[i],
+                        name: 'class-'+this.classes[i],
+                        value: this.classes[i]
+                    });
+                }
+                
+                me.formPanel = new Ext.form.FormPanel({
+                    width: 300,
+                    height: 150,
+                    items: [
+                        {
+                            xtype: 'checkboxgroup',
+                            id: 'classescheckboxgroup',
+                            fieldLabel: this.changeMatrixClassesFieldLabel,
+                            items: checkBoxGroupItems
+                        },{
+                            xtype: 'combo',
+                            name: 'raster',
+                            forceSelection: true,
+                            editable: false,
+                            fieldLabel: this.changeMatrixRasterFieldLabel,
+                            mode: 'local',
+                            store: new Ext.data.ArrayStore({
+                                fields: ['name'],
+                                data: rasterLayersStoreData
+                            }),
+                            valueField: 'name',
+                            displayField: 'name'
+                        },{
+                            xtype: 'textfield',
+                            name: 'filterT0',
+                            fieldLabel: this.changeMatrixCQLFilterT0FieldLabel
+                        },{
+                            xtype: 'textfield',
+                            name: 'filterT1',
+                            fieldLabel: this.changeMatrixCQLFilterT1FieldLabel
+                        }
+                    ],
+                    buttons: [
+                        {
+                            text: this.changeMatrixButtonText,
+                            handler: function() {
+                                var form = me.formPanel.getForm();
+                                
+                                var params = form.getFieldValues();
+                                var selectedCheckBoxes = form.findField('classescheckboxgroup').getValue();
+                                var selectedClasses = [];
+                                for(var i = 0; i < selectedCheckBoxes.length; i++) {
+                                    selectedClasses.push(selectedCheckBoxes[i].value);
+                                }
+                                params.classes = selectedClasses;
+                                
+                                me.startWPSRequest(params);
+                            }
+                        }
+                    ]
+                });
+
+                me.win = new Ext.Window({
+                    width: 315,
+                    height: 200,
+                    title: this.changeMatrixDialogTitle,
+                    constrainHeader: true,
+                    renderTo: apptarget.mapPanel.body,
+                    items: [ me.formPanel ]
+                });
+                
+                me.win.show();
+            },
+            scope: this
+        }]);
+        
+        return actions;
+    },
+    
+    startWPSRequest: function(params) {
+        this.showResultsGrid();
+        console.log(params);
+        return;
+        var inputs = {
+            raster: new OpenLayers.WPSProcess.LiteralData({value: params.raster}),
+            filterT0: new OpenLayers.WPSProcess.LiteralData({value: params.filterT0}),
+            filterT1: new OpenLayers.WPSProcess.LiteralData({value: params.filterT1})
+        };
+        // come inseriamo più proprietà con lo stesso nome in inputs ?
+        for(var i = 0; i < classes.length; i++) {
+            inputs.classes = classes[i]; //questo illustra solo il problema, lasciandolo così, prenderebbe solo l'ultima classe
+        }
+        
+        var callback = function(response, process) {
+            console.log('process executed');
+            console.log(arguments);
+            // fill the ChangeMatrixStore with response data
+            // show grid
+            //this.showResultsGrid(response);
+        }
+        
+        var requestObject = {
+            type: "raw",
+            inputs: inputs,
+            outputs: [{
+                identifier: "result",
+                mimeType: "application/json"
+            }],
+            callback: callback,
+            scope: this
+        };
+        this.wpsManager.execute(requestObject);
+    },
+    
+    showResultsGrid: function(responseData) {
+        
+        // static data
+        var data = { "changeMatrix":
+          [
+            {"ref":"0", "now":"0", "pixels":"16002481"},
+            {"ref":"0", "now":"35", "pixels":"0"},
+            {"ref":"0", "now":"1", "pixels":"0"},
+            {"ref":"0", "now":"36", "pixels":"4"},
+            {"ref":"0", "now":"37", "pixels":"4"},
+            {"ref":"1", "now":"0", "pixels":"0"},
+            {"ref":"1", "now":"35", "pixels":"0"},
+            {"ref":"1", "now":"1", "pixels":"3192"},
+            {"ref":"1", "now":"36", "pixels":"15"},
+            {"ref":"1", "now":"37", "pixels":"0"},
+            {"ref":"35", "now":"0", "pixels":"0"},
+            {"ref":"35", "now":"35", "pixels":"7546"},
+            {"ref":"35", "now":"1", "pixels":"0"},
+            {"ref":"35", "now":"36", "pixels":"0"},
+            {"ref":"35", "now":"37", "pixels":"16"},
+            {"ref":"36", "now":"0", "pixels":"166"},
+            {"ref":"36", "now":"35", "pixels":"36"},
+            {"ref":"36", "now":"1", "pixels":"117"},
+            {"ref":"36", "now":"36", "pixels":"1273887"},
+            {"ref":"36", "now":"37", "pixels":"11976"},
+            {"ref":"37", "now":"0", "pixels":"274"},
+            {"ref":"37", "now":"35", "pixels":"16"},
+            {"ref":"37", "now":"1", "pixels":"16"},
+            {"ref":"37", "now":"36", "pixels":"28710"},
+            {"ref":"37", "now":"37", "pixels":"346154"}
+          ]
+        };
+        var grid = this.createResultsGrid(data.changeMatrix);
+        
+        if(this.target.renderToTab) {
+            Ext.getCmp(this.target.renderToTab).add(grid);
+        } else {
+            if(this.resultWin)
+                this.resultWin.destroy();
+            
+            this.resultWin = new Ext.Window({
+                width: 315,
+                height: 200,
+                title: this.changeMatrixResultsTitle,
+                constrainHeader: true,
+                renderTo: apptarget.mapPanel.body,
+                items: [ me.formPanel ]
+            });
+        }
+    },
+    
+    createResultsGrid: function(data) {
+
+        //store
+        var changeMatrixStore = new Ext.data.JsonStore({
+            storeId: 'changeMatrixStore',
+            autoLoad: false,
+            fields: [
+                {
+                    name: 'ref',
+                    type: 'int'
+                },{
+                    name: 'now',
+                    type: 'int'
+                },{
+                    name: 'pixels',
+                    type: 'int'
+                }
+            ],
+            data: data
+        });
+
+        //calculate min/max values, to scale values down to a 0-100 range
+        var min, max;
+        changeMatrixStore.each(function(record) {
+            if(min == null || record.get('pixels') < min) min = record.get('pixels');
+            if(max == null || record.get('pixels') > max) max = record.get('pixels');
+        });
+
+        //grid panel
+        return new Ext.grid.GridPanel({
+            title: this.changeMatrixResultsTitle,
+            store: changeMatrixStore,
+            height: 300,
+            width: 300,
+            columns: [
+                { header: 'ref', dataIndex: 'ref' },
+                { header: 'now', dataIndex: 'now' },
+                { header: 'Changes', dataIndex: 'pixels' }
+            ],
+            viewConfig: {
+                getRowClass: function(record, index) {
+                    var selectedClass,
+                        previousLimit = 0;
+                    
+                    // calculate the percentage
+                    var percentValue = ((record.get('pixels') - min) / max) * 100;
+                    
+                    // how can we change the cell color?
+                    // classes? inline colors from green to red?
+                }
+            }
+        });
+    }
+        
+});
+
+Ext.preg(gxp.plugins.ChangeMatrix.prototype.ptype, gxp.plugins.ChangeMatrix);

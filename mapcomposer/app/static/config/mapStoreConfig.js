@@ -93,12 +93,17 @@
         "topInUnits":"m",    
         "topOutUnits":"km"
     },
-	
+
 	"customTools":[
-		{
-			"actions": ["->"], 
-			"actionTarget": "paneltbar"
-		}, {
+        {
+            "actions": ["->"],
+            "actionTarget": "paneltbar"
+        },{
+            "ptype": "gxp_changematrix",
+            "outputTarget": "paneltbar",
+            "rasterLayers": ["test1", "test2", "test3"],
+            "classes": [1, 2, 3, 4, 5, 6]
+		},{
 			"ptype": "gxp_googlegeocoder",
 			"outputConfig": {
 				"emptyText": "Google GeoCoder"
