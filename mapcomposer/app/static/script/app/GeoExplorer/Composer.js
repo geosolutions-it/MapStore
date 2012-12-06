@@ -144,6 +144,40 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            ptype: "gxp_googleearth",
 		            actionTarget: {target: "paneltbar", index: 25}
 		        }
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        ,{
+                            ptype: "gxp_wpsmanager",
+                            id: "wpsManager",
+                            url: wps.wpsURL,
+                            geostoreUrl: geostore.url,
+                            geostoreUser: geostore.user,
+                            geostorePassword: geostore.password,
+                            geostoreProxy: geostore.proxy
+                        }
 		    ];
 
 			if(config.customTools)
