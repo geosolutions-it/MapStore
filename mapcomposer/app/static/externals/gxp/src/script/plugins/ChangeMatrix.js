@@ -70,25 +70,31 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
      *  ``String``
      *  Text for the Raster field label (i18n).
      */
-    changeMatrixRasterFieldLabel: "Raster T0",
+    changeMatrixRasterFieldLabel: "Raster Layer",
     
     /** api: config[changeMatrixCQLFilterT0FieldLabel]
      *  ``String``
      *  Text for the CQL Filter T0 field label (i18n).
      */
-    changeMatrixCQLFilterT0FieldLabel: "CQL Filter T0",
+    changeMatrixCQLFilterT0FieldLabel: "CQL Filter 1",
     
     /** api: config[changeMatrixCQLFilterT1FieldLabel]
      *  ``String``
      *  Text for the CQL Filter T1 field label (i18n).
      */
-    changeMatrixCQLFilterT1FieldLabel: "CQL Filter T1",
+    changeMatrixCQLFilterT1FieldLabel: "CQL Filter 2",
     
-    /** api: config[changeMatrixButtonText]
+    /** api: config[changeMatrixResetButtonText]
      *  ``String``
-     *  Text for the changeMatrix form button (i18n).
+     *  Text for the changeMatrix form submit button (i18n).
      */
-    changeMatrixButtonText: "Submit",
+    changeMatrixSubmitButtonText: "Submit",
+    
+    /** api: config[changeMatrixResetButtonText]
+     *  ``String``
+     *  Text for the changeMatrix form reset button (i18n).
+     */
+    changeMatrixResetButtonText: "Reset",
     
     /** api: config[changeMatrixResultsTitle]
      *  ``String``
@@ -132,6 +138,36 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
      *  Form validation messages: No classes selected (dialog content) (i18n).
      */
     changeMatrixInvalidFormDialogText: "Please correct the form errors",
+        
+    /** api: config[changeMatrixTimeoutDialogTitle]
+     *  ``String``
+     *  Form validation messages: No classes selected (dialog content) (i18n).
+     */
+    changeMatrixTimeoutDialogTitle: "Timeout",
+        
+    /** api: config[changeMatrixTimeoutDialogText]
+     *  ``String``
+     *  Form validation messages: No classes selected (dialog content) (i18n).
+     */
+    changeMatrixTimeoutDialogText: "Request Timeout",
+            
+    /** api: config[changeMatrixParseErrorDialogTitle]
+     *  ``String``
+     *  Error parsing the JSON response from the wps service (dialog title) (i18n).
+     */
+    changeMatrixParseErrorDialogTitle: "Error",
+        
+    /** api: config[changeMatrixParseErrorDialogText]
+     *  ``String``
+     *  Error parsing the JSON response from the wps service (dialog content) (i18n).
+     */
+    changeMatrixParseErrorDialogText: "Parse error",
+    
+    /** api: config[requestTimeout]
+     *  ``Integer``
+     *  Timeout for the WPS request
+     */
+    requestTimeout: 30000,
     
     /** api: config[rasterLayers]
      *  ``String[]``
@@ -157,6 +193,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
     formPanel: null,
     wpsManager: null,
     resultWin: null,
+    loadingMask: null,
     
     init: function(target) {
 
@@ -186,24 +223,43 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                     rasterLayersStoreData.push([this.rasterLayers[i]]);
                 }
                 
-                var checkBoxGroupItems = [];
+                var classesData = [];
                 for(var i = 0; i < this.classes.length; i++) {
-                    checkBoxGroupItems.push({
-                        boxLabel: this.classes[i],
-                        name: 'class-'+this.classes[i],
-                        value: this.classes[i]
-                    });
+                    classesData.push([this.classes[i]]);
                 }
+                var classesStore = new Ext.data.ArrayStore({
+                    fields: ['name'],
+                    data: classesData
+                });
+                var selectedClassesStore = new Ext.data.ArrayStore({
+                    fields: ['name'],
+                    data: []
+                });
                 
                 me.formPanel = new Ext.form.FormPanel({
-                    width: 300,
-                    height: 150,
+                    id: 'change-matrix-form-panel',
+                    width: 335,
+                    height: 360,
                     items: [
                         {
-                            xtype: 'checkboxgroup',
-                            id: 'classescheckboxgroup',
+                            xtype: 'itemselector',
                             fieldLabel: this.changeMatrixClassesFieldLabel,
-                            items: checkBoxGroupItems
+                            imagePath: 'theme/app/img/ux/',
+                            anchor: '100%',
+                            height: 250,
+                            multiselects: [{
+                                flex: 1,
+                                store: classesStore,
+                                height: 250,
+                                valueField: 'name',
+                                displayField: 'name'
+                            },{
+                                flex: 1,
+                                store: selectedClassesStore,
+                                height: 250,
+                                valueField: 'name',
+                                displayField: 'name'
+                            }]
                         },{
                             xtype: 'combo',
                             name: 'raster',
@@ -241,7 +297,15 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                     ],
                     buttons: [
                         {
-                            text: this.changeMatrixButtonText,
+                            text: this.changeMatrixResetButtonText,
+                            iconCls: 'gxp-icon-removelayers',
+                            handler: function() {
+                                me.formPanel.getForm().reset();
+                            }
+                        },{
+                            text: this.changeMatrixSubmitButtonText,
+                            iconCls: 'gxp-icon-zoom-next',
+                            id: 'change-matrix-submit-button',
                             handler: function() {
                                 var form = me.formPanel.getForm();
                                 
@@ -251,18 +315,16 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                                 
                                 // get form params
                                 var params = form.getFieldValues();
-                                
+
                                 //get an array of the selected classes from the CheckBoxGroup
-                                var selectedCheckBoxes = form.findField('classescheckboxgroup').getValue();
-                                var selectedClasses = [];
-                                for(var i = 0; i < selectedCheckBoxes.length; i++) {
-                                    selectedClasses.push(selectedCheckBoxes[i].value);
-                                }
-                                params.classes = selectedClasses;
-                                if(params.classes.length == 0) {
-                                    //if no classes were selected, alert a message and return
+                                if(selectedClassesStore.getCount() == 0) {
                                     return Ext.Msg.alert(me.changeMatrixEmptyClassesDialogTitle, me.changeMatrixEmptyClassesDialogText);
                                 }
+                                var selectedClasses = [];
+                                selectedClassesStore.each(function(record) {
+                                    selectedClasses.push(record.get('name'));
+                                });
+                                params.classes = selectedClasses;
                                 
                                 //get the current extent
                                 var map = me.target.mapPanel.map;
@@ -282,8 +344,9 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                 });
 
                 me.win = new Ext.Window({
-                    width: 315,
-                    height: 200,
+                    width: 355,
+                    height: 410,
+                    layout: 'fit',
                     title: this.changeMatrixDialogTitle,
                     constrainHeader: true,
                     renderTo: this.target.mapPanel.body,
@@ -291,6 +354,8 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                 });
                 
                 me.win.show();
+                
+                me.loadingMask = new Ext.LoadMask(Ext.get('change-matrix-form-panel'), 'Loading..');
             },
             scope: this
         }]);
@@ -299,7 +364,8 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
     },
     
     startWPSRequest: function(params) {
-
+        var me = this;
+        
         var inputs = {
             name: new OpenLayers.WPSProcess.LiteralData({value: params.raster}),
             referenceFilter: new OpenLayers.WPSProcess.ComplexData({
@@ -329,13 +395,24 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                 mimeType: "application/json"
             }]
         };
-        this.wpsManager.execute('gs:ChangeMatrix', requestObject, this.showResultsGrid, this);
+        
+        me.loadingMask.show();
+        Ext.getCmp('change-matrix-submit-button').disable();
+        
+        me.wpsManager.execute('gs:ChangeMatrix', requestObject, me.showResultsGrid, this);
+        
+        setTimeout(function() { me.handleTimeout(); }, me.requestTimeout);
     },
     
     showResultsGrid: function(responseText) {
-
-     	// aggiungere controllo e alert in caso di errore
-        var responseData = Ext.util.JSON.decode(responseText);
+        this.loadingMask.hide();
+        Ext.getCmp('change-matrix-submit-button').enable();
+        
+        try {
+            var responseData = Ext.util.JSON.decode(responseText);
+        } catch(e) {
+            return Ext.Msg.alert(me.changeMatrixParseErrorDialogTitle, me.changeMatrixParseErrorDialogText);
+        }
 
         var grid = this.createResultsGrid(responseData);
         
@@ -396,7 +473,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
             if(min == null || record.get('pixels') < min) min = record.get('pixels');
             if(max == null || record.get('pixels') > max) max = record.get('pixels');
         });
-		
+
         //grid panel
         return new Ext.grid.GridPanel({
             title: this.changeMatrixResultsTitle,
@@ -425,8 +502,13 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                 }
             }
         });
+    },
+    
+    handleTimeout: function() {
+        this.loadingMask.hide();
+        Ext.getCmp('change-matrix-submit-button').enable();
+        Ext.Msg.alert(this.changeMatrixTimeoutDialogTitle, this.changeMatrixTimeoutDialogText);
     }
-        
 });
 
 Ext.preg(gxp.plugins.ChangeMatrix.prototype.ptype, gxp.plugins.ChangeMatrix);
