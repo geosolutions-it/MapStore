@@ -333,8 +333,8 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
     },
     
     showResultsGrid: function(responseText) {
-	
-        // aggiungere controllo e alert in caso di errore
+
+     	// aggiungere controllo e alert in caso di errore
         var responseData = Ext.util.JSON.decode(responseText);
 
         var grid = this.createResultsGrid(responseData);
@@ -371,10 +371,6 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
     
     createResultsGrid: function(data) {
 
-	    var size = data.length;
-		
-		
-		
         //store
         var changeMatrixStore = new Ext.data.JsonStore({
             storeId: 'changeMatrixStore',
