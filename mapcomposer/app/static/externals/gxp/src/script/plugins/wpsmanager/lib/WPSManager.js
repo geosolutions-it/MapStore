@@ -332,28 +332,30 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
      *				};
      *  
      */
-    execute: function(processName, executeRequest,callback) {
+    execute: function(processName, executeRequest, callback, callbackscope) {
         var process = this.wpsClient.getProcess('opengeo', processName);    
-        var instanceName=null;
+        var instanceName = null;
         var executeOptions;
-        var me= this;
+        var me = this;
+		
         if(executeRequest instanceof Object){
-
-            executeOptions= executeRequest;
+            executeOptions = executeRequest;
         }else{
-
-            executeOptions= new OpenLayers.Format.WPSExecuteRequest().read(executeRequest).processInput;
-        
+            executeOptions = new OpenLayers.Format.WPSExecuteRequest().read(executeRequest).processInput;
         }   
-        instanceName=this.getInstanceName(processName);
-        executeOptions.scope= this;
-        executeOptions.success= function(response, processInstance){
+		
+        instanceName = this.getInstanceName(processName);
+        
+		executeOptions.scope = this;
+
+        executeOptions.success = function(response, processInstance){
             me.responseManager(response, processInstance);
             if(callback)
-              callback.call(this, response);
+              callback.call(callbackscope, response);
         };
-        executeOptions.success= this.responseManager;
-        executeOptions.processInstance=instanceName;
+		
+        //executeOptions.success= this.responseManager;
+        executeOptions.processInstance = instanceName;
       
         process.execute(executeOptions);    
         

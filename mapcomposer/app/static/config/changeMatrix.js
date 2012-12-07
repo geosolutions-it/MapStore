@@ -1,6 +1,6 @@
 {
    "geoStoreBase":"http://localhost:8080/geostore/rest/",
-   "proxy":"/http_proxy/proxy/?url=",
+   "proxy":"/proxy/?url=",
    "defaultLanguage": "en",
    "gsSources":{ 
 		"mapquest": {
@@ -101,7 +101,7 @@
            "geostoreUrl": "http://84.33.1.22/geostore/rest",
            "geostoreUser": "admin",
            "geostorePassword": "admin",
-           "geostoreProxy": "/http_proxy/proxy?url="
+           "geostoreProxy": "/proxy?url="
         },{
             "ptype": "gxp_changematrix",
             "actionTarget": {"target": "paneltbar", "index": 26},

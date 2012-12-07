@@ -310,10 +310,10 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                 value: params.filterT1,
                 mimeType: 'text/plain; subtype=cql'
             }),
-            ROI: new OpenLayers.WPSProcess.ComplexData({
+            /*ROI: new OpenLayers.WPSProcess.ComplexData({
                 value: params.roi.toString(),
                 mimeType: 'application/wkt'
-            }),
+            }),*/
             classes: []
         };
         
@@ -329,15 +329,15 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                 mimeType: "application/json"
             }]
         };
-        this.wpsManager.execute('gs:ChangeMatrix', requestObject, this.showResultsGrid);
+        this.wpsManager.execute('gs:ChangeMatrix', requestObject, this.showResultsGrid, this);
     },
     
     showResultsGrid: function(responseText) {
-        
+	
         // aggiungere controllo e alert in caso di errore
         var responseData = Ext.util.JSON.decode(responseText);
 
-        var grid = this.createResultsGrid(responseData.changeMatrix);
+        var grid = this.createResultsGrid(responseData);
         
         var hasTabPanel = false;
         if(this.target.renderToTab) {
@@ -371,6 +371,10 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
     
     createResultsGrid: function(data) {
 
+	    var size = data.length;
+		
+		
+		
         //store
         var changeMatrixStore = new Ext.data.JsonStore({
             storeId: 'changeMatrixStore',
@@ -396,7 +400,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
             if(min == null || record.get('pixels') < min) min = record.get('pixels');
             if(max == null || record.get('pixels') > max) max = record.get('pixels');
         });
-
+		
         //grid panel
         return new Ext.grid.GridPanel({
             title: this.changeMatrixResultsTitle,
