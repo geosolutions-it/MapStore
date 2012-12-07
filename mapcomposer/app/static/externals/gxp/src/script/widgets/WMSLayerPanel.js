@@ -278,12 +278,52 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         var transparent = layer.params["TRANSPARENT"];
         transparent = (transparent === "true" || transparent === true);
         
+		var tip = new Ext.slider.Tip({
+			getText: function(thumb){
+				var text;
+				if(thumb.value == 1)
+					text = 2000;
+				else
+					text = 2006;
+					
+				return "Year " + text;
+			}
+		});
+	
         return {
             title: this.displayText,
             style: {"padding": "10px"},
             layout: "form",
             labelWidth: 70,
             items: [{
+                xtype: "slider",
+                name: "time",
+                fieldLabel: "Time",
+                minValue: 1,
+				maxValue: 2,	
+				value: 2,
+                anchor: "99%",
+                isFormField: true,
+				plugins: tip,
+                listeners: {
+                    change: function(slider, value) {
+
+						var time;
+						if(value == 1){
+							time = "2000-01-01T00:00:00.000Z";
+						}else{
+							time = "2006-01-01T00:00:00.000Z";
+						}
+						
+                        layer.mergeNewParams({
+                            time: time
+                        });
+
+                        this.fireEvent("change");
+                    },
+                    scope: this
+                }
+            },{
                 xtype: "slider",
                 name: "opacity",
                 fieldLabel: this.opacityText,

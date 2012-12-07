@@ -403,10 +403,10 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                 value: params.filterT1,
                 mimeType: 'text/plain; subtype=cql'
             }),
-            /*ROI: new OpenLayers.WPSProcess.ComplexData({
+            ROI: new OpenLayers.WPSProcess.ComplexData({
                 value: params.roi.toString(),
                 mimeType: 'application/wkt'
-            }),*/
+            }),
             classes: []
         };
         
