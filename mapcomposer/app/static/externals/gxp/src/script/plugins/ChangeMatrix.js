@@ -448,7 +448,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
         
         if(hasTabPanel) {
             var now = new Date();
-            grid.title += ' - '+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();
+            grid.title += ' - ' + Ext.util.Format.date(now, 'H:i:s');
             container.add(grid);
             container.setActiveTab(container.items.length-1);
         } else {
