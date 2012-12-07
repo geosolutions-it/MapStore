@@ -52,7 +52,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
      *  ``String``
      *  Text for add action tooltip (i18n).
      */
-    changeMatrixActionTip: "Get a change matrix for two raster layers",
+    changeMatrixActionTip: "Get a change matrix for a raster layer",
     
     /** api: config[changeMatrixDialogTitle]
      *  ``String``
@@ -251,7 +251,8 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                             drawUpIcon: false,
                             iconDown: 'selectall2.gif',
                             drawTopIcon: false,
-                            drawBotIcon: false,
+                            //drawBotIcon: false,
+                            iconBottom: 'deselectall2.gif',
                             height: 250,
                             multiselects: [{
                                 flex: 1,
@@ -267,8 +268,24 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                                 displayField: 'name'
                             }],
                             down: function() {
-                                this.fromMultiselect.view.selectRange(0, classesStore.getCount());
+                                var leftMultiSelect = this.fromMultiselect,
+                                    rightMultiSelect = this.toMultiselect;
+
+                                leftMultiSelect.view.selectRange(0, classesStore.getCount());
                                 this.fromTo();
+
+                                leftMultiSelect.view.clearSelections();
+                                rightMultiSelect.view.clearSelections();
+                            },
+                            toBottom: function() {
+                                var leftMultiSelect = this.fromMultiselect,
+                                    rightMultiSelect = this.toMultiselect;
+
+                                rightMultiSelect.view.selectRange(0, selectedClassesStore.getCount());
+                                this.toFrom();
+
+                                leftMultiSelect.view.clearSelections();
+                                rightMultiSelect.view.clearSelections();
                             }
                         },{
                             xtype: 'combo',
@@ -431,7 +448,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
         
         if(hasTabPanel) {
             var now = new Date();
-            grid.title += ' - '+now.getHours()+':'+now.getMinutes();
+            grid.title += ' - '+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();
             container.add(grid);
             container.setActiveTab(container.items.length-1);
         } else {
