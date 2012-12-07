@@ -151,17 +151,17 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
      */
     changeMatrixTimeoutDialogText: "Request Timeout",
             
-    /** api: config[changeMatrixParseErrorDialogTitle]
+    /** api: config[changeMatrixResponseErrorDialogTitle]
      *  ``String``
      *  Error parsing the JSON response from the wps service (dialog title) (i18n).
      */
-    changeMatrixParseErrorDialogTitle: "Error",
+    changeMatrixResponseErrorDialogTitle: "Error",
         
-    /** api: config[changeMatrixParseErrorDialogText]
+    /** api: config[changeMatrixResponseErrorDialogText]
      *  ``String``
      *  Error parsing the JSON response from the wps service (dialog content) (i18n).
      */
-    changeMatrixParseErrorDialogText: "Parse error",
+    changeMatrixResponseErrorDialogText: "There was an error processing the request.",
     
     /** api: config[requestTimeout]
      *  ``Integer``
@@ -194,6 +194,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
     wpsManager: null,
     resultWin: null,
     loadingMask: null,
+    errorTimer: null,
     
     init: function(target) {
 
@@ -209,7 +210,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
      */
     addActions: function() {
         var actions = gxp.plugins.ChangeMatrix.superclass.addActions.apply(this, [{
-            iconCls: "gxp-icon-addgroup",
+            iconCls: "icon-changematrix",
             disabled: false,
             tooltip: this.changeMatrixActionTip,
             handler: function() {
@@ -245,7 +246,12 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                             xtype: 'itemselector',
                             fieldLabel: this.changeMatrixClassesFieldLabel,
                             imagePath: 'theme/app/img/ux/',
+                            name: 'classesselector',
                             anchor: '100%',
+                            drawUpIcon: false,
+                            iconDown: 'selectall2.gif',
+                            drawTopIcon: false,
+                            drawBotIcon: false,
                             height: 250,
                             multiselects: [{
                                 flex: 1,
@@ -259,7 +265,11 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
                                 height: 250,
                                 valueField: 'name',
                                 displayField: 'name'
-                            }]
+                            }],
+                            down: function() {
+                                this.fromMultiselect.view.selectRange(0, classesStore.getCount());
+                                this.fromTo();
+                            }
                         },{
                             xtype: 'combo',
                             name: 'raster',
@@ -396,22 +406,19 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
             }]
         };
         
-        me.loadingMask.show();
-        Ext.getCmp('change-matrix-submit-button').disable();
+        me.handleRequestStart();
         
         me.wpsManager.execute('gs:ChangeMatrix', requestObject, me.showResultsGrid, this);
-        
-        setTimeout(function() { me.handleTimeout(); }, me.requestTimeout);
     },
     
     showResultsGrid: function(responseText) {
-        this.loadingMask.hide();
-        Ext.getCmp('change-matrix-submit-button').enable();
+    
+        this.handleRequestStop();
         
         try {
             var responseData = Ext.util.JSON.decode(responseText);
         } catch(e) {
-            return Ext.Msg.alert(me.changeMatrixParseErrorDialogTitle, me.changeMatrixParseErrorDialogText);
+            return Ext.Msg.alert(this.changeMatrixResponseErrorDialogTitle, this.changeMatrixResponseErrorDialogText);
         }
 
         var grid = this.createResultsGrid(responseData);
@@ -423,6 +430,8 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
         }
         
         if(hasTabPanel) {
+            var now = new Date();
+            grid.title += ' - '+now.getHours()+':'+now.getMinutes();
             container.add(grid);
             container.setActiveTab(container.items.length-1);
         } else {
@@ -508,6 +517,23 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
         this.loadingMask.hide();
         Ext.getCmp('change-matrix-submit-button').enable();
         Ext.Msg.alert(this.changeMatrixTimeoutDialogTitle, this.changeMatrixTimeoutDialogText);
+    },
+    
+    handleRequestStart: function() {
+        var me = this;
+        
+        me.loadingMask.show();
+        var submitButton = Ext.getCmp('change-matrix-submit-button');
+        if(submitButton) submitButton.disable();
+        if(me.errorTimer) clearTimeout(me.errorTimer);
+        me.errorTimer = setTimeout(function() { me.handleTimeout(); }, me.requestTimeout);
+    },
+    
+    handleRequestStop: function() {
+        this.loadingMask.hide();
+        var submitButton = Ext.getCmp('change-matrix-submit-button');
+        if(submitButton) submitButton.enable();
+        if(this.errorTimer) clearTimeout(this.errorTimer);
     }
 });
 
