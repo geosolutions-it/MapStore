@@ -471,26 +471,63 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
         }
         if(this.win) this.win.destroy();
     },
-    
+    guessIndexes : function(data){
+		var changeMatrix = data;
+		var xs = [],ys=[];axisy=[],axisx=[];
+		var dim = Math.sqrt(data.length);
+		
+		//create output matrix
+		var matrix = new Array(dim);
+		for (var i = 0; i < dim; i++){
+			matrix[i] = new Array(dim +1);
+		}
+		var xAttribute = "now";
+		var yAttribute = "ref";
+		var dataAttribute ="pixels";
+		
+		for(var i = 0;i<changeMatrix.length;i++){
+			var el = changeMatrix[i];
+			if(axisx.indexOf(el[xAttribute]) < 0 ){axisx.push(el[xAttribute]);}
+			
+		}
+		axisx.sort(function(a,b){return parseInt(a)-parseInt(b)});
+		for(var i = 0;i<changeMatrix.length;i++){
+			var el = changeMatrix[i];
+			var x = axisx.indexOf(el[xAttribute]);
+			var y = axisx.indexOf(el[yAttribute]);
+			matrix[x][y +1] = el[dataAttribute];
+		}
+		console.log(axisx);
+		console.log(matrix);
+		for (var i = 0;i< matrix.length; i++){
+		    matrix[i][0]= axisx[i];
+		    axisx[i] = axisx[i]+"";
+		}
+		//Descending x 
+		//
+		//ascending y
+		//axisy.sort(function(a,b){return parseInt(b)-parseInt(a)});
+		var fields =[];
+		fields.push(" ");
+		for (var i = 0; i < axisx.length;i++){
+		    fields.push(axisx[i]);
+		    
+		}
+		
+		return { fields: fields	, data: matrix };
+					
+	},
+	
     createResultsGrid: function(data) {
-
+		var settings = this.guessIndexes(data)	;
+		
+					
         //store
-        var changeMatrixStore = new Ext.data.JsonStore({
+        var changeMatrixStore = new Ext.data.ArrayStore({
             storeId: 'changeMatrixStore',
             autoLoad: false,
-            fields: [
-                {
-                    name: 'ref',
-                    type: 'int'
-                },{
-                    name: 'now',
-                    type: 'int'
-                },{
-                    name: 'pixels',
-                    type: 'int'
-                }
-            ],
-            data: data
+            fields: settings.fields,
+            data: settings.data
         });
 
         //calculate min/max values, to scale values down to a 0-100 range
@@ -500,6 +537,12 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
             if(max == null || record.get('pixels') > max) max = record.get('pixels');
         });
 
+		var colmodel =[];
+		for (var i=0; i < settings.fields.length;i++){
+			colmodel.push({header: settings.fields[i],dataIndex: settings.fields[i]});
+		}
+		colmodel[0].id='leftaxis'; // to assign css
+		colmodel[0].header='-';	 
         //grid panel
         return new Ext.grid.GridPanel({
             title: this.changeMatrixResultsTitle,
@@ -507,11 +550,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
             height: 300,
             width: 300,
             closable: true,
-            columns: [
-                { header: 'ref', dataIndex: 'ref' },
-                { header: 'now', dataIndex: 'now' },
-                { header: 'Changes', dataIndex: 'pixels' }
-            ],
+            columns: colmodel,
             viewConfig: {
                 getRowClass: function(record, index, rowParams) {
                     // calculate the percentage
