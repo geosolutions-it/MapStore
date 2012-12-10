@@ -300,17 +300,28 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                 name: "time",
                 fieldLabel: "Time",
                 minValue: 1,
-				maxValue: 2,	
-				value: 2,
+				maxValue: 3,	
+				value: 3,
                 anchor: "99%",
                 isFormField: true,
 				plugins: tip,
                 listeners: {
-                    change: function(slider, value) {
+					render: function(cmp){
+						var time = "2006-01-01T00:00:00.000Z";
+						
+						layer.mergeNewParams({
+                            time: time
+                        });
 
+                        this.fireEvent("change");
+					},
+                    change: function(slider, value) {
+					
 						var time;
 						if(value == 1){
-							time = "2000-01-01T00:00:00.000Z";
+							time = "1954-01-01T00:00:00.000Z";
+						}if (value == 2){
+						    time = "2000-01-01T00:00:00.000Z";
 						}else{
 							time = "2006-01-01T00:00:00.000Z";
 						}

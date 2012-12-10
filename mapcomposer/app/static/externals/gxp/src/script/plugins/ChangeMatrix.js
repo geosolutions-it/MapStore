@@ -447,6 +447,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
         }
         
         if(hasTabPanel) {
+		    if(this.win) this.win.destroy();
             var now = new Date();
             grid.title += ' - ' + Ext.util.Format.date(now, 'H:i:s');
             container.add(grid);
@@ -469,7 +470,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
             });
             this.resultWin.show();
         }
-        if(this.win) this.win.destroy();
+        //if(this.win) this.win.destroy();
     },
     guessIndexes : function(data){
 		var changeMatrix = data;
