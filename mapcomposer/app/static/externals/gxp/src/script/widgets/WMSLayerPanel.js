@@ -281,10 +281,13 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
 		var tip = new Ext.slider.Tip({
 			getText: function(thumb){
 				var text;
-				if(thumb.value == 1)
+				if(thumb.value == 1){ 
+					text = 1954;
+				}else if(thumb.value == 2){
 					text = 2000;
-				else
+				}else{
 					text = 2006;
+				}
 					
 				return "Year " + text;
 			}
