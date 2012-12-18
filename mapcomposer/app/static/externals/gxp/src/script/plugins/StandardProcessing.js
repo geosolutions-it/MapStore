@@ -1,0 +1,589 @@
+/**
+ * @requires plugins/Tool.js
+ */
+
+/** api: (define)
+ *  module = gxp.plugins
+ *  class = StandardProcessing
+ */
+
+/** api: (extends)
+ *  plugins/Tool.js
+ */
+Ext.namespace("gxp.plugins");
+
+/** api: constructor
+ *  .. class:: StandardProcessing(config)
+ *
+ */   
+gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
+    
+    /** api: ptype = gxp_layertree */
+    ptype: "gxp_stdproc",
+
+    // Begin i18n.
+    title: "Elaborazione",
+    elabLabel: "Tipo elaborazione",
+    formLabel: "Formula",
+    extentLabel: "Ambito territoriale",
+    targetLabel: "tipo bersaglio",
+	accidentLabel: "Incidente",
+    fieldSetTitle: "Elaborazione Standard",
+	northLabel:"Nord",
+    westLabel:"Ovest",
+    eastLabel:"Est",
+    southLabel:"Sud",
+    aioFieldSetTitle: "Ambito Terriroriale",
+    setAoiText: "Seleziona Area",
+    setAoiTooltip: "Abilita la selezione della regione di interesse sulla mappa",
+    // End i18n.
+        
+	// TODO: bbox piemonte	
+	spatialFilterOptions: {
+		lonMax: 20037508.34,   
+		lonMin: -20037508.34,
+		latMax: 20037508.34,   
+		latMin: -20037508.34  
+    },	
+	
+	toggleGroup: "toolGroup",
+	
+	//processingWindow: null,
+	
+	outputTarget: null,
+	
+	syntheticView: "syntheticview",
+	
+	appTarget: null,
+	
+	geometryName: "the_geom",
+	
+	selectionLayerName: "geosolutions:aggregated_data_selection",
+	selectionLayerTitle: "ElaborazioneStd", 		
+	selectionLayerBaseURL: "http://localhost:8080/geoserver/wms",
+	selectionLayerProjection: "EPSG:32632",	
+	
+    /** private: method[constructor]
+     *  :arg config: ``Object``
+     */
+    constructor: function(config) {
+        gxp.plugins.StandardProcessing.superclass.constructor.apply(this, arguments);
+    },
+    
+    /** public: method[show]
+     *  :arg appTarget: ``Object``
+     */
+    show: function(appTarget) {
+	    if(!this.appTarget)
+			this.appTarget = appTarget;
+			
+        var map = this.appTarget.mapPanel.map;
+        map.enebaleMapEvent = true;
+		
+		var processing = this.buildForm(map);
+       
+        return processing;
+    },
+    
+    /** private: method[buildForm]
+     *  :arg map: ``Object``
+     */
+    buildForm: function(map){
+		var containerTab = Ext.getCmp(this.outputTarget);
+		
+		var syntView = this.appTarget.tools[this.syntheticView];
+		syntView.getControlPanel().disable();
+		
+		//
+		// Elaborazione
+		//
+		
+        var elabStore = new Ext.data.ArrayStore({
+            fields: ['name'],
+            data :  [
+				['Elaborazione Standard']/*,
+				'Personalizzazione',
+				'Simulazione',
+				'Danno'*/
+			]
+        });
+		
+		this.elab = new Ext.form.ComboBox({
+            fieldLabel: this.elabLabel,
+            id: "elabcb",
+            width: 150,
+            hideLabel : false,
+            store: elabStore,	
+            displayField: 'name',	
+			typeAhead: true,
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: true,
+            resizable: true,	
+			value: "Elaborazione Standard",
+            listeners: {
+                select: function(cb, record, index) {
+					//var value = record.get('');             
+                }
+            }			  
+        });
+		
+		var formStore = new Ext.data.ArrayStore({
+            fields: ['name'],
+            data :  [
+				['Rischio']/*,
+				'Rischio Amb',
+				'Rischio Soc'*/
+			]
+        });
+		
+		this.form = new Ext.form.ComboBox({
+            fieldLabel: this.formLabel,
+            id: "elabfr",
+            width: 150,
+            hideLabel : false,
+            store: formStore,	
+            displayField: 'name',	
+			typeAhead: true,
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: true,
+            resizable: true,	
+			value: "Rischio",
+            listeners: {
+                select: function(cb, record, index) {
+					//var value = record.get('');             
+                }
+            }			  
+        });
+       
+	    this.elabSet = new Ext.form.FieldSet({
+            title: "Elaborazione",
+            id: 'elabfset',
+            autoHeight: true,
+            defaults: {
+                // applied to each contained panel
+                bodyStyle:'padding:5px;'
+            },
+            items: [
+                 this.elab,
+				 this.form
+            ]
+        });
+		
+		//
+		// Ambito Territoriale
+		//
+		
+		this.northField = new Ext.form.NumberField({
+              fieldLabel: this.northLabel,
+              id: "NorthBBOX",
+              width: 100,
+              minValue: this.spatialFilterOptions.lonMin,
+              maxValue: this.spatialFilterOptions.lonMax,
+              decimalPrecision: 5,
+              allowDecimals: true,
+              hideLabel : false                    
+        });
+        
+        this.westField = new Ext.form.NumberField({
+              fieldLabel: this.westLabel,
+              id: "WestBBOX",
+              width: 100,
+              minValue: this.spatialFilterOptions.latMin,
+              maxValue: this.spatialFilterOptions.latMax,
+              decimalPrecision: 5,
+              allowDecimals: true,
+              hideLabel : false                    
+        });
+        
+        this.eastField = new Ext.form.NumberField({
+              fieldLabel: this.eastLabel,
+              id: "EastBBOX",
+              width: 100,
+              minValue: this.spatialFilterOptions.latMin,
+              maxValue: this.spatialFilterOptions.latMax,
+              decimalPrecision: 5,
+              allowDecimals: true,
+              hideLabel : false                    
+        });
+              
+        this.southField = new Ext.form.NumberField({
+              fieldLabel: this.southLabel,
+              id: "SouthBBOX",
+              width: 100,
+              minValue: this.spatialFilterOptions.lonMin,
+              maxValue: this.spatialFilterOptions.lonMax,
+              decimalPrecision: 5,
+              allowDecimals: true,
+              hideLabel : false                    
+        });
+                  
+        //
+        // Geographical Filter Field Set
+        //        
+        var selectAOI = new OpenLayers.Control.SetBox({      
+            map: map,    
+            onChangeAOI: function(){
+                var aoiArray = this.currentAOI.split(',');
+                
+                document.getElementById('WestBBOX').value = aoiArray[0];
+                document.getElementById('SouthBBOX').value = aoiArray[1];
+                document.getElementById('EastBBOX').value = aoiArray[2];
+                document.getElementById('NorthBBOX').value = aoiArray[3];
+            } 
+        }); 
+        
+        map.addControl(selectAOI);
+        
+		// TODO: harmonyze this control enablement/reset
+        this.aoiButton = new Ext.Button({
+              text: this.setAoiText,
+              tooltip: this.setAoiTooltip,
+              enableToggle: true,
+              toggleGroup: this.toggleGroup,
+              iconCls: 'aoi-button',
+              height: 50,
+              width: 50,
+              listeners: {
+                  scope: this, 
+                  toggle: function(button, pressed) {
+                     if(pressed){
+                     
+                          //
+                          // Reset the previous control
+                          //
+                          var aoiLayer = map.getLayersByName("AOI")[0];
+                          
+                          if(aoiLayer)
+                              map.removeLayer(aoiLayer);
+                          
+                          if(this.northField.isDirty() && this.southField.isDirty() && 
+                              this.eastField.isDirty() && this.westField.isDirty()){
+                              this.northField.reset();
+                              this.southField.reset();
+                              this.eastField.reset();
+                              this.westField.reset();
+                          }
+
+                          //
+                          // Activating the new control
+                          //                          
+                          selectAOI.activate();
+                      }else{
+                          selectAOI.deactivate();
+                      }
+                  }
+              }
+        });
+              
+        this.spatialFieldSet = new Ext.form.FieldSet({
+            title: this.aioFieldSetTitle,
+            id: 'bboxAOI-set',
+            autoHeight: true,
+            layout: 'table',
+            layoutConfig: {
+                columns: 3
+            },
+            defaults: {
+                // applied to each contained panel
+                bodyStyle:'padding:5px;'
+            },
+            bodyCssClass: 'aoi-fields',
+            items: [
+                {
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    labelAlign: "top",
+                    border: false,
+                    colspan: 3,
+                    items: [
+                        this.northField
+                    ]
+                },{
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    labelAlign: "top",
+                    border: false,
+                    items: [
+                        this.westField
+                    ]
+                },{
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    border: false,
+                    items: [
+                        this.aoiButton
+                    ]                
+                },{
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    labelAlign: "top",
+                    border: false,
+                    items: [
+                       this.eastField
+                    ]
+                },{
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    labelAlign: "top",
+                    border: false,
+                    colspan: 3,
+                    items: [
+                        this.southField
+                    ]
+                }
+            ]
+        });
+        
+	    //
+		// Bersaglio
+		//
+		
+        var targetStore = new Ext.data.ArrayStore({
+            fields: ['name'],
+            data :  [
+			    ['Tutti i Bersagli'],
+				['Umano'],
+				['Non Umano'],
+				['Residenti'],
+				['Scuole']
+			]
+        });
+		
+		this.bers = new Ext.form.ComboBox({
+            fieldLabel: "Bersaglio",
+            id: "bers",
+            width: 150,
+            hideLabel : false,
+            store: targetStore,	
+            displayField: 'name',	
+			typeAhead: true,
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: true,
+            resizable: true,	
+			value: "Tutti i Bersagli",
+            listeners: {
+                select: function(cb, record, index) {
+					//var value = record.get('');             
+                }
+            }			  
+        });
+		
+	    this.bersSet = new Ext.form.FieldSet({
+            title: "Tipo bersaglio",
+            id: 'bersfset',
+            autoHeight: true,
+            defaults: {
+                // applied to each contained panel
+                bodyStyle:'padding:5px;'
+            },
+            items: [
+                 this.bers
+            ]
+        });
+		
+	    //
+		// incidente
+		//
+		
+        var accidentStore = new Ext.data.ArrayStore({
+            fields: ['name'],
+            data :  [
+			    ['Tutti gli Incidenti']
+			]
+        });
+		
+		this.accident = new Ext.form.ComboBox({
+            fieldLabel: "Incidente",
+            id: "accidentcb",
+            width: 150,
+            hideLabel : false,
+            store: accidentStore,	
+            displayField: 'name',	
+			typeAhead: true,
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: true,
+            resizable: true,
+			value: "Tutti gli Incidenti",
+            listeners: {
+                select: function(cb, record, index) {
+					//var value = record.get('');             
+                }
+            }			  
+        });
+		
+	    this.accidentSet = new Ext.form.FieldSet({
+            title: "Tipo Incidente",
+            id: 'accidentfset',
+            autoHeight: true,
+            defaults: {
+                // applied to each contained panel
+                bodyStyle:'padding:5px;'
+            },
+            items: [
+				 this.accident
+            ]
+        });
+		
+        this.panel = new Ext.FormPanel({
+            border: false,
+            layout: "fit",
+            //head: false,
+			title: "Impostazioni di Elaborazione",
+			items:[
+                this.elabSet,
+				this.spatialFieldSet,
+				this.bersSet,
+				this.accidentSet
+            ],
+			buttons: [{
+				text: "Visualizza Mappa",
+				scope: this,
+				handler: function(){
+					var params = this.makeParams(this.panel.getForm());
+				    this.showLayer(params);
+					
+					//var status = this.getStatus(this.panel.getForm());				
+					
+					//var active = containerTab.getActiveTab();
+					//containerTab.remove(active);
+					
+				    //var syntView = this.appTarget.tools[this.syntheticView];
+					//syntView.getControlPanel().enable();
+				}
+			}]
+        });
+		
+		/*this.processingWindow = new Ext.Window({
+			title: "Impostazioni di Elaborazione",
+			width: 500,
+			height: 575,
+			closable: false,
+			autoScroll: true,
+			resizable: false,
+			maximizable: false,
+			items:[
+				panel
+			],
+			buttons:[
+				{
+					text: 'Chiudi',
+					scope: this,
+					handler: function(){
+						this.processingWindow.destroy();
+					}
+				}
+			]
+		});
+		
+		this.processingWindow.show();*/
+		
+     	containerTab.add(this.panel);
+		containerTab.setActiveTab(this.panel);
+    },
+	
+	/*hide: function(){
+		this.processingWindow.hide();
+	}*/
+	
+	makeParams: function(form){
+	    var map = this.appTarget.mapPanel.map;
+		var params = {};
+		var filters = [];
+		
+		//
+		// Spatial filter
+		// 
+		var roi = new OpenLayers.Bounds(
+			this.westField.getValue(), 
+			this.southField.getValue(), 
+			this.eastField.getValue(), 
+			this.northField.getValue()
+		);
+		 
+		if(!roi)
+		   roi = map.getExtent();
+        
+		//
+		// Check about the projection (this could needs Proj4JS definitions inside the mapstore config)
+		//
+		var mapPrj = map.getProjectionObject();
+		var selectionPrj = new OpenLayers.Projection(this.selectionLayerProjection);
+		if(!mapPrj.equals(selectionPrj)){
+			roi = roi.transform(
+				mapPrj,	
+				selectionPrj
+			);
+		}
+					
+		filters.push(new OpenLayers.Filter.Spatial({
+		   type: OpenLayers.Filter.Spatial.BBOX,
+		   property: this.geometryName,
+		   value: roi
+		}));
+	
+		params.bbox = roi;
+		params.filters = filters;
+		
+	    return params;
+	},
+	
+	showLayer: function(params){
+		var map = this.appTarget.mapPanel.map;
+		
+		var filterFormat = new OpenLayers.Format.Filter();
+        var ogcFilterString = filterFormat.write(params.filters[0]);  
+
+		var xmlFormat = new OpenLayers.Format.XML();                  
+        ogcFilterString = xmlFormat.write(ogcFilterString);
+		
+	    //
+	    // Check if the selection layer already exists
+	    //
+	    var stdElabLayer = map.getLayersByName(this.selectionLayerTitle)[0];
+	  
+	    if(!stdElabLayer){
+			stdElabLayer = new OpenLayers.Layer.WMS(
+				this.selectionLayerTitle, 		
+				this.selectionLayerBaseURL,
+				{
+					layers: this.selectionLayerName, 
+					transparent: true, 
+					format: this.selectionLayerFormat,
+					filter: ogcFilterString
+				},
+				{
+					isBaseLayer: false,
+					displayInLayerSwitcher: false
+				}
+			);
+					
+			map.addLayer(stdElabLayer);
+		}else{
+			stdElabLayer.mergeNewParams({
+				filter: ogcFilterString
+			});
+		}
+	},
+	
+	getStatus: function(form){
+		var obj;
+		
+		obj = "result";
+		
+		return obj;
+	}
+});
+
+Ext.preg(gxp.plugins.StandardProcessing.prototype.ptype, gxp.plugins.StandardProcessing);

@@ -379,10 +379,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             activeTab:0,
             id: 'west',
             region: "west",
-            width: 250,
+            width: 215,
             split: true,
             collapsible: true,
-            collapseMode: "mini",
+            //collapseMode: "mini",
             header: false,
             items: [
                 { autoScroll: true, tbar: [], border: false, id: 'tree', title: this.layersText}, 
@@ -492,16 +492,28 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             activeItem: 0,
             tbar: this.toolbar
         });
-        
+		        
+		var estPanel = new Ext.TabPanel({
+            border: false,
+            activeTab: 0,
+            id: 'east',
+            region: 'east',
+            width: 385,
+            split: true,
+            collapsible: true,
+            header: false
+        });		
+		
         this.portalItems = [{
             region: "center",
             layout: "border",            
             items: [
                 this.mapPanelContainer,
-                westPanel
+                westPanel,
+				estPanel
             ]
         }];
-        
+
         GeoExplorer.superclass.initPortal.apply(this, arguments);        
     },
     

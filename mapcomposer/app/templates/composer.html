@@ -28,7 +28,7 @@
 
     <script type="text/javascript" src="script/gxp.js"></script> 
 
-    <!-- script type="text/javascript" src="script/proj4js.js"></script -->
+    <script type="text/javascript" src="script/proj4js.js"></script>
 
     <!-- GeoExplorer resources -->
     <link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
@@ -141,7 +141,7 @@
                     Proj4js.defs[name] = serverConfig.proj4jsDefs[name];               
                 }
             }
-            
+			    
 			// /////////////////////////////////////
             // Get georeferences data to override
 			// /////////////////////////////////////
@@ -180,15 +180,8 @@
                 GeoExt.Lang.set(code);
             }
 			
-			// ////////////////////////////////////////////////////
-			// Setting the language selector
-			// ////////////////////////////////////////////////////
-			var languageSelector = new gxp.form.LanguageSwitcher({
-				currentContext:code,
-				saveMessage:authorization
-			});
-			
-            var appTabs = new Ext.TabPanel({
+            var appTabs = new Ext.Panel({
+			    layout: 'fit',
                 region: 'center',
                 border : false,
                 id : 'appTabs',
@@ -229,6 +222,20 @@
                 }
             });    
 			
+			var headerContent = [
+              '<table width="100%">',
+              //'<td>',
+              //'<img src="theme/app/img/banner/left.png"/>',
+              //'</td>',
+              '<td align="center">',
+              '<img src="theme/app/img/banner/BannerDestination.jpg"/>',
+              '</td>',
+              //'<td>',
+              //'<img src="theme/app/img/logos/banner4.gif"/>',
+              //'</td>',
+              '</table>'
+            ];
+			
             var appViewport = new Ext.Viewport({
                 id: 'appVieport',
                 layout:'fit',
@@ -238,9 +245,24 @@
                     layout : 'border',
                     border : false,
                     header : false,                    
-                    items : [appTabs],                            
+                    items : [{
+                      border: false,
+                      header: false,
+                      html:  headerContent,
+                      region: 'north',
+                      collapsible: true,
+					  collapsed: true,
+                      collapseMode:  'mini',
+                      hideCollapseTool: true,
+                      split: true,
+                      animCollapse : false,
+                      minHeight: 90,
+                      maxHeight: 90,
+                      height: 150,
+                      id : 'fdhHeader'
+                    },appTabs],                          
                     bbar : [
-                      poweredByGeoSol, ' ', aboutButton, '->',languageSelector
+                      poweredByGeoSol, ' ', aboutButton
                     ]
                 }]
             });
@@ -286,7 +308,8 @@
                 modified: false,
                 proxy: proxy,
 				tools: serverConfig.tools,
-                xmlJsonTranslateService: "http://localhost:8080/xmlJsonTranslate/",
+                xmlJsonTranslateService: serverConfig.xmlJsonTranslateService,
+				embedding: serverConfig.embedding,
                 defaultSourceType: "gxp_wmssource",
                 renderToTab : 'appTabs',
                 about: {
@@ -297,7 +320,7 @@
                 sources: sources,
 				scaleOverlayUnits: serverConfig.scaleOverlayUnits,
 				//showGraticule: false,  //Set showGraticule property to true only if the map projection is EPSG:4326 
-                georeferences: georeferences_data,
+                georeferences: province,
                 cswconfig: serverConfig.cswconfig,
                 map: serverConfig.map,
 				customTools: serverConfig.customTools
@@ -313,6 +336,9 @@
                 }, 
                 'ready' : function(){
                     app.modified = false;
+					/*app.mapPanel.map.events.register( 'moveend', this, function(){
+						alert(app.mapPanel.map.getCenter());
+					});*/
                 }
             });
 	    };

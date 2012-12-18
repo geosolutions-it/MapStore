@@ -1,7 +1,8 @@
 {
    "geoStoreBase":"http://localhost:8080/geostore/rest/",
    "proxy":"/http_proxy/proxy/?url=",
-   "defaultLanguage": "en",
+   "defaultLanguage": "it",
+   "embedding": false,
    "gsSources":{ 
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
@@ -17,16 +18,21 @@
 		}, 
 		"ol": { 
 			"ptype": "gxp_olsource" 
+		},
+		"destination": {
+			"ptype": "gxp_wmssource",
+			"title": "Destination GeoServer",
+		    "url": "http://localhost:8080/geoserver/ows"
 		}
 	},
 	"map": {
 		"projection": "EPSG:900913",
 		"units": "m",
-		"center": [1250000.000000, 5370000.000000],
-		"zoom":5,
+		"center": [903893.13597286, 5609706.520669],
+		"zoom":8,
 		"maxExtent": [
-			-20037508.34, -20037508.34,
-			20037508.34, 20037508.34
+			456125.02434063, 5403020.7962146,
+			1323838.1693132, 5887325.807362
 		],
 		"layers": [
 			{
@@ -59,52 +65,205 @@
 				"title": "Google Hybrid",
 				"name": "HYBRID",
 				"group": "background"
+			},{
+				"source": "destination",
+				"title": "Siig Aggragation",
+				"name": "geosolutions:aggregated_data",
+				"group": "Destination"
 			}
 		]
 	},
-	"cswconfig": {
-		"catalogs": [
-		        {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina", "metaDataOptions":{"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page","idParam":"uuid","idIndex":0}},
-				{"name": "Treviso", "url": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw", "description": "Treviso Geonetwork"},
-				{"name": "kscNet", "url": "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw", "description": "kscNet"},
-				{"name": "CSI-CGIAR", "url": "http://geonetwork.csi.cgiar.org/geonetwork/srv/en/csw", "description" : "CSI-CGIAR"},
-				{"name": "EauFrance", "url": "http://sandre.eaufrance.fr/geonetwork/srv/fr/csw", "description" : "EauFrance"},
-				{"name": "SOPAC", "url": "http://geonetwork.sopac.org/geonetwork/srv/en/csw", "description" : "SOPAC"},
-				{"name": "SADC", "url": "http://www.sadc.int/geonetwork/srv/en/csw", "description" : "SADC"},
-				{"name": "MAPAS", "url": "http://mapas.mma.gov.br/geonetwork/srv/en/csw", "description" : "MAPAS"}
-			],
-		"dcProperty": "title",
-		"initialBBox": {
-		   "minx":-13,
-		   "miny":10,
-			"maxx":-10,
-			"maxy":13
-		}, 
-		"cswVersion": "2.0.2",
-		"filterVersion": "1.1.0",
-		"start": 1,
-		"limit": 10,
-		"timeout": 60000
+	
+	"proj4jsDefs": {
+		"EPSG:32632": "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
 	},
 	
-	"scaleOverlayUnits":{
-        "bottomOutUnits":"nmi",    
-        "bottomInUnits":"nmi",    
-        "topInUnits":"m",    
-        "topOutUnits":"km"
-    },
-	
-	"customTools":[
-		{
+	"tools":[
+	   {
+		  "ptype":"gxp_layertree",
+		  "outputConfig":{
+			 "id":"layertree"
+		  },
+		  "outputTarget":"tree"
+	   },
+	   {
+		  "ptype":"gxp_legend",
+		  "outputTarget":"legend",
+		  "outputConfig":{
+			 "autoScroll":true
+		  },
+		  "legendConfig":{
+			 "legendPanelId":"legendPanel",
+			 "defaults":{
+				"style":"padding:5px",
+				"baseParams":{
+				   "LEGEND_OPTIONS":"forceLabels:on;fontSize:10",
+				   "WIDTH":12,
+				   "HEIGHT":12
+				}
+			 }
+		  }
+	   },
+	   {
+		  "ptype":"gxp_addlayers",
+		  "actionTarget":"tree.tbar",
+		  "upload":true
+	   },
+	   {
+		  "ptype":"gxp_removelayer",
+		  "actionTarget":[
+			 "tree.tbar",
+			 "layertree.contextMenu"
+		  ]
+	   },
+	   {
+		  "ptype":"gxp_removeoverlays",
+		  "actionTarget":"tree.tbar"
+	   },
+	   {
+		  "ptype":"gxp_addgroup",
+		  "actionTarget":"tree.tbar"
+	   },
+	   {
+		  "ptype":"gxp_removegroup",
+		  "actionTarget":[
+			 "tree.tbar",
+			 "layertree.contextMenu"
+		  ]
+	   },
+	   {
+		  "ptype":"gxp_groupproperties",
+		  "actionTarget":[
+			 "tree.tbar",
+			 "layertree.contextMenu"
+		  ]
+	   },
+	   {
+		  "ptype":"gxp_layerproperties",
+		  "actionTarget":[
+			 "tree.tbar",
+			 "layertree.contextMenu"
+		  ]
+	   },
+	   {
+		  "ptype":"gxp_zoomtolayerextent",
+		  "actionTarget":{
+			 "target":"layertree.contextMenu",
+			 "index":0
+		  }
+	   },
+	   {
+		  "ptype":"gxp_zoomtoextent",
+		  "actionTarget":{
+			 "target":"paneltbar",
+			 "index":15
+		  }
+	   },
+	   {
+		  "ptype":"gxp_navigation",
+		  "toggleGroup":"toolGroup",
+		  "actionTarget":{
+			 "target":"paneltbar",
+			 "index":16
+		  }
+	   },
+	   {
+		  "actions":[
+			 "-"
+		  ],
+		  "actionTarget":"paneltbar"
+	   },
+	   {
+		  "ptype":"gxp_zoombox",
+		  "toggleGroup":"toolGroup",
+		  "actionTarget":{
+			 "target":"paneltbar",
+			 "index":17
+		  }
+	   },
+	   {
+		  "ptype":"gxp_zoom",
+		  "actionTarget":{
+			 "target":"paneltbar",
+			 "index":18
+		  }
+	   },
+	   {
+		  "actions":[
+			 "-"
+		  ],
+		  "actionTarget":"paneltbar"
+	   },
+	   {
+		  "ptype":"gxp_navigationhistory",
+		  "actionTarget":{
+			 "target":"paneltbar",
+			 "index":19
+		  }
+	   },
+	   {
+		  "actions":[
+			 "-"
+		  ],
+		  "actionTarget":"paneltbar"
+	   },
+	   {
+		  "ptype":"gxp_wmsgetfeatureinfo",
+		  "toggleGroup":"toolGroup",
+		  "actionTarget":{
+			 "target":"paneltbar",
+			 "index":20
+		  }
+	   },
+	   {
+		  "actions":[
+			 "-"
+		  ],
+		  "actionTarget":"paneltbar"
+	   },
+	   {
+		  "ptype":"gxp_measure",
+		  "toggleGroup":"toolGroup",
+		  "actionTarget":{
+			 "target":"paneltbar",
+			 "index":21
+		  }
+	   },
+	   {
+		  "actions":[
+			 "-"
+		  ],
+		  "actionTarget":"paneltbar"
+	   },
+	   {
+		  "ptype":"gxp_georeferences",
+		  "actionTarget":{
+			 "target":"paneltbar",
+			 "index":23
+		  }
+	   },		
+	   {
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
-		}, {
-			"ptype": "gxp_googlegeocoder",
-			"outputConfig": {
-				"emptyText": "Google GeoCoder"
-			},
+	   }, 
+	   {
+			"ptype": "gxp_reversegeocoder",
 			"outputTarget":"paneltbar",
+			"outputConfig": {
+				"width": "200"
+			},
 			"index": 26
-		}
+	   }, 
+	   {
+			"ptype": "gxp_dynamicgeocoder",
+			"outputTarget":"paneltbar",
+			"index": 27
+	   },
+	   {
+			"ptype": "gxp_syntheticview",
+			"outputTarget": "east",
+			"id": "syntheticview",
+			"index": 28
+	   }
 	]
 }
