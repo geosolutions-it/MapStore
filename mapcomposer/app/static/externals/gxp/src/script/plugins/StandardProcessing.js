@@ -46,6 +46,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 		latMin: -20037508.34  
     },	
 	
+	defaultBBOXFilterExtent: [735120.17754268, 5467346.1565839, 1028638.3661169, 5856257.7564448],
+	
 	toggleGroup: "toolGroup",
 	
 	//processingWindow: null,
@@ -541,9 +543,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 				this.northField.getValue()
 			);	
 		}else{
-			roi = map.getExtent();
+			roi = new OpenLayers.Bounds.fromArray(this.defaultBBOXFilterExtent);
 		}
-		        
+		
+		params.roi = new OpenLayers.Bounds.fromString(roi.toBBOX());
+		
 		//
 		// Check about the projection (this could needs Proj4JS definitions inside the mapstore config)
 		//
@@ -555,7 +559,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 				selectionPrj
 			);
 		}
-					
+	
 		filters.push(new OpenLayers.Filter.Spatial({
 		   type: OpenLayers.Filter.Spatial.BBOX,
 		   property: this.geometryName,
@@ -620,6 +624,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 			stdElabLayer.mergeNewParams({
 				filter: ogcFilterString
 			});
+			
+			if(params.roi){
+				map.zoomToExtent(params.roi);
+			}			
 		}
 	},
 	
