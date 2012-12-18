@@ -70,6 +70,12 @@
 				"title": "Siig Aggragation",
 				"name": "geosolutions:aggregated_data",
 				"group": "Destination"
+			},{
+				"source": "destination",
+				"title": "ElaborazioneStd",
+				"name": "geosolutions:aggregated_data_selection",
+				"displayInLayerSwitcher": false,
+				"tiled": false
 			}
 		]
 	},

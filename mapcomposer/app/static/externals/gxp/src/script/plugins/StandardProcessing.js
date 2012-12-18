@@ -57,6 +57,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 	appTarget: null,
 	
 	geometryName: "the_geom",
+	accidentTipologyName: "tipology",
 	
 	selectionLayerName: "geosolutions:aggregated_data_selection",
 	selectionLayerTitle: "ElaborazioneStd", 		
@@ -101,10 +102,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var elabStore = new Ext.data.ArrayStore({
             fields: ['name'],
             data :  [
-				['Elaborazione Standard']/*,
-				'Personalizzazione',
-				'Simulazione',
-				'Danno'*/
+				['Elaborazione Standard'],
+				['Personalizzazione'],
+				['Simulazione'],
+				['Danno']
 			]
         });
 		
@@ -124,8 +125,21 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             resizable: true,	
 			value: "Elaborazione Standard",
             listeners: {
+				beforeselect: function(cb, record, index){
+					var value = record.get('name');  
+					
+					if(value != 'Elaborazione Standard'){
+						Ext.Msg.show({
+							title: "Elaborazione",
+							msg: "Tipo di elaborazione non ancora disponibile",
+							icon: Ext.MessageBox.WARNING
+						});
+						
+						return false;
+					}
+				},
                 select: function(cb, record, index) {
-					//var value = record.get('');             
+					//var value = record.get('name');             
                 }
             }			  
         });
@@ -133,9 +147,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 		var formStore = new Ext.data.ArrayStore({
             fields: ['name'],
             data :  [
-				['Rischio']/*,
-				'Rischio Amb',
-				'Rischio Soc'*/
+				['Rischio Totale']
 			]
         });
 		
@@ -153,10 +165,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             selectOnFocus:true,
             editable: true,
             resizable: true,	
-			value: "Rischio",
+			value: "Rischio Totale",
             listeners: {
                 select: function(cb, record, index) {
-					//var value = record.get('');             
+					//var value = record.get('name');             
                 }
             }			  
         });
@@ -240,7 +252,6 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         map.addControl(selectAOI);
         
-		// TODO: harmonyze this control enablement/reset
         this.aoiButton = new Ext.Button({
               text: this.setAoiText,
               tooltip: this.setAoiTooltip,
@@ -257,10 +268,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                           //
                           // Reset the previous control
                           //
-                          var aoiLayer = map.getLayersByName("AOI")[0];
-                          
-                          if(aoiLayer)
-                              map.removeLayer(aoiLayer);
+						  this.removeAOILayer(map);
                           
                           if(this.northField.isDirty() && this.southField.isDirty() && 
                               this.eastField.isDirty() && this.westField.isDirty()){
@@ -348,10 +356,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             fields: ['name'],
             data :  [
 			    ['Tutti i Bersagli'],
-				['Umano'],
-				['Non Umano'],
 				['Residenti'],
-				['Scuole']
+				['Zone Urbanizzate'],
+				['Boschi'],
+				['Aree Agricole']
 			]
         });
 		
@@ -372,7 +380,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 			value: "Tutti i Bersagli",
             listeners: {
                 select: function(cb, record, index) {
-					//var value = record.get('');             
+					//var value = record.get('name');             
                 }
             }			  
         });
@@ -397,7 +405,18 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var accidentStore = new Ext.data.ArrayStore({
             fields: ['name'],
             data :  [
-			    ['Tutti gli Incidenti']
+			    ['Tutti gli Incidenti'],
+				['POOL FIRE DA LIQUIDO INFIAMMABILE'],
+				['FLASH FIRE DA VAPORI LIQUIDO INFIAMMABILE'],
+				['POOL FIRE DA LIQUIDO ESTREMAMENTE INFIAMMABILE'],
+				['FLASH FIRE DA VAPORI LIQUIDO ESTREMAMENTE INFIAMMABILE'],
+				['JET FIRE DI GAS ESTREMAMENTE INFIAMMABILE'],
+				['FIRE BALL'],
+				['DISPERSIONE COMBURENTE'],
+				['RILASCIO SUL SUOLO E NELLE ACQUE'],
+				['DISPERSIONE VAPORI DA LIQUIDO TOSSICO'],
+				['DISPERSIONE VAPORI DA LIQUIDO REFRIGERATO TOSSICO'],
+				['DISPERSIONE GAS DA GAS LIQUEFATTO TOSSICO']
 			]
         });
 		
@@ -417,8 +436,22 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             resizable: true,
 			value: "Tutti gli Incidenti",
             listeners: {
+			    beforeselect: function(cb, record, index){
+					var value = record.get('name');  
+
+					if(value != 'Tutti gli Incidenti' && 
+						value != 'POOL FIRE DA LIQUIDO INFIAMMABILE'){
+						Ext.Msg.show({
+							title: "Scenario Incidentale",
+							msg: "Dati non ancora disponibili per questo scenario",
+							icon: Ext.MessageBox.WARNING
+						});
+						
+						return false;
+					}
+				},
                 select: function(cb, record, index) {
-					//var value = record.get('');             
+					//var value = record.get('name');             
                 }
             }			  
         });
@@ -439,7 +472,6 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.panel = new Ext.FormPanel({
             border: false,
             layout: "fit",
-            //head: false,
 			title: "Impostazioni di Elaborazione",
 			items:[
                 this.elabSet,
@@ -448,54 +480,46 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 				this.accidentSet
             ],
 			buttons: [{
+				text: "Reimposta",
+				scope: this,
+				handler: function(){
+					this.panel.getForm().reset();
+				}
+			}, {
 				text: "Visualizza Mappa",
 				scope: this,
 				handler: function(){
 					var params = this.makeParams(this.panel.getForm());
 				    this.showLayer(params);
 					
-					//var status = this.getStatus(this.panel.getForm());				
+					var status = this.getStatus(this.panel.getForm());				
 					
-					//var active = containerTab.getActiveTab();
-					//containerTab.remove(active);
+				    //
+				    // Remove the AOI box
+				    //
+				    this.removeAOILayer(this.appTarget.mapPanel.map);
+					selectAOI.deactivate();
 					
-				    //var syntView = this.appTarget.tools[this.syntheticView];
-					//syntView.getControlPanel().enable();
+					var active = containerTab.getActiveTab();
+					containerTab.remove(active);
+					
+				    var syntView = this.appTarget.tools[this.syntheticView];
+					syntView.getControlPanel().enable();
+					syntView.setStatus(status);
 				}
 			}]
         });
-		
-		/*this.processingWindow = new Ext.Window({
-			title: "Impostazioni di Elaborazione",
-			width: 500,
-			height: 575,
-			closable: false,
-			autoScroll: true,
-			resizable: false,
-			maximizable: false,
-			items:[
-				panel
-			],
-			buttons:[
-				{
-					text: 'Chiudi',
-					scope: this,
-					handler: function(){
-						this.processingWindow.destroy();
-					}
-				}
-			]
-		});
-		
-		this.processingWindow.show();*/
 		
      	containerTab.add(this.panel);
 		containerTab.setActiveTab(this.panel);
     },
 	
-	/*hide: function(){
-		this.processingWindow.hide();
-	}*/
+	removeAOILayer: function(map){
+	    var aoiLayer = map.getLayersByName("AOI")[0];
+	  
+	    if(aoiLayer)
+			map.removeLayer(aoiLayer);	
+	},
 	
 	makeParams: function(form){
 	    var map = this.appTarget.mapPanel.map;
@@ -505,16 +529,21 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 		//
 		// Spatial filter
 		// 
-		var roi = new OpenLayers.Bounds(
-			this.westField.getValue(), 
-			this.southField.getValue(), 
-			this.eastField.getValue(), 
-			this.northField.getValue()
-		);
-		 
-		if(!roi)
-		   roi = map.getExtent();
-        
+		var roi;
+		if(this.westField.isDirty() && 
+			this.southField.isDirty() && 
+				this.eastField.isDirty() && 
+					this.northField.isDirty()){
+			roi = new OpenLayers.Bounds(
+				this.westField.getValue(), 
+				this.southField.getValue(), 
+				this.eastField.getValue(), 
+				this.northField.getValue()
+			);	
+		}else{
+			roi = map.getExtent();
+		}
+		        
 		//
 		// Check about the projection (this could needs Proj4JS definitions inside the mapstore config)
 		//
@@ -533,7 +562,18 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 		   value: roi
 		}));
 	
-		params.bbox = roi;
+		//
+		// Accident Scenarios filter
+		//
+		var accidentValue = this.accident.getValue();
+		if(accidentValue != "Tutti gli Incidenti"){
+			filters.push(new OpenLayers.Filter.Comparison({
+			   type: OpenLayers.Filter.Comparison.EQUAL_TO,
+			   property: this.accidentTipologyName,
+			   value: this.accident.getValue()
+			}));
+		}
+		
 		params.filters = filters;
 		
 	    return params;
@@ -542,12 +582,17 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 	showLayer: function(params){
 		var map = this.appTarget.mapPanel.map;
 		
+		var filter = new OpenLayers.Filter.Logical({
+			type: OpenLayers.Filter.Logical.AND,
+			filters: params.filters
+		});
+		
 		var filterFormat = new OpenLayers.Format.Filter();
-        var ogcFilterString = filterFormat.write(params.filters[0]);  
-
+        var ogcFilterString = filterFormat.write(filter);  
+		
 		var xmlFormat = new OpenLayers.Format.XML();                  
         ogcFilterString = xmlFormat.write(ogcFilterString);
-		
+				
 	    //
 	    // Check if the selection layer already exists
 	    //
@@ -565,6 +610,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 				},
 				{
 					isBaseLayer: false,
+					singleTile: true,
 					displayInLayerSwitcher: false
 				}
 			);
@@ -577,10 +623,53 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 		}
 	},
 	
-	getStatus: function(form){
-		var obj;
+	setStatus: function(status){
+		this.elab.setValue(status.processing);
+		this.form.setValue(status.form);
 		
-		obj = "result";
+		var bboxArray = status.roi.bbox.toArray();
+		this.westField.setValue(bboxArray[0]);
+		this.southField.setValue(bboxArray[1]); 
+		this.eastField.setValue(bboxArray[2]);
+		this.northField.setValue(bboxArray[3]);
+		
+		this.bers.setValue(status.target);
+		this.accident.setValue(status.accident);
+	},
+	
+	getStatus: function(form){
+		var obj = {};
+		
+		obj.processing = this.elab.getValue();
+		obj.form = this.form.getValue();
+		
+		if(this.westField.isDirty() && 
+			this.southField.isDirty() && 
+				this.eastField.isDirty() && 
+					this.northField.isDirty()){
+			obj.roi = {
+				label: "Area Selezionata", 
+				bbox : new OpenLayers.Bounds(
+					this.westField.getValue(), 
+					this.southField.getValue(), 
+					this.eastField.getValue(), 
+					this.northField.getValue()
+				)
+			};	
+		}else{
+			obj.roi = {
+				label: "Regione Piemonte", 
+				bbox : new OpenLayers.Bounds(
+					this.westField.getValue(), 
+					this.southField.getValue(), 
+					this.eastField.getValue(), 
+					this.northField.getValue()
+				)
+			}
+		}
+
+		obj.target = this.bers.getValue();
+		obj.accident = this.accident.getValue();
 		
 		return obj;
 	}

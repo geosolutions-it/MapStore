@@ -26,7 +26,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     elabLabel: "Tipo elaborazione",
     formLabel: "Formula",
     extentLabel: "Ambito territoriale",
-    targetLabel: "tipo bersaglio",
+    targetLabel: "Tipo bersaglio",
 	accidentLabel: "Incidente",
     fieldSetTitle: "Elaborazione Standard",
     // End i18n.
@@ -38,6 +38,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 	selectionLayerBaseURL: "http://localhost:8080/geoserver/wms",
 	selectionLayerProjection: "EPSG:32632",
 	
+	geometryName: "geometria",
+	accidentTipologyName: "tipologia",
+	
     /** private: method[constructor]
      *  :arg config: ``Object``
      */
@@ -45,7 +48,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         gxp.plugins.SyntheticView.superclass.constructor.apply(this, arguments);		
 		this.processingPane = new gxp.plugins.StandardProcessing({
 			outputTarget: this.outputTarget,
-			geometryName: "geometria",
+			geometryName: this.geometryName,
+			accidentTipologyName: this.accidentTipologyName,
 			selectionLayerName: this.selectionLayerName,
 			selectionLayerTitle: this.selectionLayerTitle, 		
 			selectionLayerBaseURL: this.selectionLayerBaseURL,
@@ -72,7 +76,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               id: "form",
               width: 150,
 			  readOnly: true,
-			  value: "Rischio",
+			  value: "Rischio Totale",
               hideLabel : false                    
         });
         
@@ -122,7 +126,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 				text: "Esegui Elaborazione",
 				scope: this,
 				handler: function(){		
-                    this.processingPane.show(this.target)
+                    this.processingPane.show(this.target);
+					if(this.status){
+						this.processingPane.setStatus(this.status);
+					}
 				}
 			}]
         });
@@ -150,8 +157,17 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		return this.controlPanel;
 	},
 	
-	bind: function(){
+	setStatus: function(s){
+		this.status = s;
+		this.elab.setValue(this.status.processing);
+		this.form.setValue(this.status.form);
+		this.extent.setValue(this.status.roi.label);
+		this.trg.setValue(this.status.target);
+		this.accident.setValue(this.status.accident);
+	},
 	
+	getStatus: function(){
+		return this.status;
 	},
     
     /** private: method[makeSearchForm]
