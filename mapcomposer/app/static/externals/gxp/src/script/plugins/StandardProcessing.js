@@ -49,9 +49,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 	defaultBBOXFilterExtent: [735120.17754268, 5467346.1565839, 1028638.3661169, 5856257.7564448],
 	
 	toggleGroup: "toolGroup",
-	
-	//processingWindow: null,
-	
+		
 	outputTarget: null,
 	
 	syntheticView: "syntheticview",
@@ -355,13 +353,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 		//
 		
         var targetStore = new Ext.data.ArrayStore({
-            fields: ['name'],
+            fields: ['name', 'property'],
             data :  [
-			    ['Tutti i Bersagli'],
-				['Residenti'],
-				['Zone Urbanizzate'],
-				['Boschi'],
-				['Aree Agricole']
+			    ['Tutti i Bersagli', 'calc_formula_tot'],
+				['Zone Urbanizzate', 'calc_formula_zone_urbanizzate'],
+				['Boschi', 'calc_formula_aree_boscate'],
+				['Aree Agricole', 'calc_formula_aree_agricole']
 			]
         });
 		
@@ -381,8 +378,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             resizable: true,	
 			value: "Tutti i Bersagli",
             listeners: {
+				scope: this,
                 select: function(cb, record, index) {
-					//var value = record.get('name');             
+					var value = record.get('property'); 
+					if(value == "calc_formula_tot")
+						value = null;
+					this.selectedTargetProp = value;
                 }
             }			  
         });
@@ -409,7 +410,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             data :  [
 			    ['Tutti gli Incidenti'],
 				['POOL FIRE DA LIQUIDO INFIAMMABILE'],
-				['FLASH FIRE DA VAPORI LIQUIDO INFIAMMABILE'],
+				['FLASH FIRE DA VAPORI LIQUIDO INFIAMMABILE']/*,
 				['POOL FIRE DA LIQUIDO ESTREMAMENTE INFIAMMABILE'],
 				['FLASH FIRE DA VAPORI LIQUIDO ESTREMAMENTE INFIAMMABILE'],
 				['JET FIRE DI GAS ESTREMAMENTE INFIAMMABILE'],
@@ -418,7 +419,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 				['RILASCIO SUL SUOLO E NELLE ACQUE'],
 				['DISPERSIONE VAPORI DA LIQUIDO TOSSICO'],
 				['DISPERSIONE VAPORI DA LIQUIDO REFRIGERATO TOSSICO'],
-				['DISPERSIONE GAS DA GAS LIQUEFATTO TOSSICO']
+				['DISPERSIONE GAS DA GAS LIQUEFATTO TOSSICO']*/
 			]
         });
 		
@@ -486,6 +487,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 				scope: this,
 				handler: function(){
 					this.panel.getForm().reset();
+					this.resetBBOX();
 				}
 			}, {
 				text: "Visualizza Mappa",
@@ -514,6 +516,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 		
      	containerTab.add(this.panel);
 		containerTab.setActiveTab(this.panel);
+		
+		if(!this.status){
+			this.resetBBOX();
+		}
     },
 	
 	removeAOILayer: function(map){
@@ -521,6 +527,15 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 	  
 	    if(aoiLayer)
 			map.removeLayer(aoiLayer);	
+	},
+	
+	resetBBOX: function(){
+		    var defBBOX = new OpenLayers.Bounds.fromArray(this.defaultBBOXFilterExtent);
+			var bboxArray = defBBOX.toArray();
+			this.westField.setValue(bboxArray[0]);
+			this.southField.setValue(bboxArray[1]); 
+			this.eastField.setValue(bboxArray[2]);
+			this.northField.setValue(bboxArray[3]);
 	},
 	
 	makeParams: function(form){
@@ -578,6 +593,19 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 			}));
 		}
 		
+	    //
+		// Target filter OpenLayers.Filter.Logical.NOT
+		//
+		if(this.selectedTargetProp){
+			filters.push(new OpenLayers.Filter.Logical({
+				type: OpenLayers.Filter.Logical.NOT,
+				filters: [new OpenLayers.Filter.Comparison({
+					type: OpenLayers.Filter.Comparison.IS_NULL,
+					property: this.selectedTargetProp
+				})]
+			}));
+		}
+		
 		params.filters = filters;
 		
 	    return params;
@@ -596,7 +624,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 		
 		var xmlFormat = new OpenLayers.Format.XML();                  
         ogcFilterString = xmlFormat.write(ogcFilterString);
-				
+					
 	    //
 	    // Check if the selection layer already exists
 	    //
@@ -621,8 +649,22 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 					
 			map.addLayer(stdElabLayer);
 		}else{
+		    // ES: &env=formula:calc_formula_tot;basso_rischio:6000;medio_rischio_a:25000:medio_rischio_b:6001;alto_rischio:25001
+			/*var env;
+			if(this.selectedTargetProp == "calc_formula_tot"){
+				env = "formula:" + this.selectedTargetProp + "basso_rischio:6000;medio_rischio_a:25000:medio_rischio_b:6001;alto_rischio:25001";
+			}else if(this.selectedTargetProp == "calc_formula_aree_boscate"){
+				env = "formula:" + this.selectedTargetProp + "basso_rischio:5000;medio_rischio_a:20000:medio_rischio_b:5001;alto_rischio:70001";
+			}else if(this.selectedTargetProp == "calc_formula_aree_agricole"){
+				env = "formula:" + this.selectedTargetProp + "basso_rischio:30000;medio_rischio_a:40000:medio_rischio_b:30001;alto_rischio:40001";
+			}else{
+				env = "formula:" + this.selectedTargetProp + "basso_rischio:6000;medio_rischio_a:25000:medio_rischio_b:6001;alto_rischio:25001";
+			}*/
+			
 			stdElabLayer.mergeNewParams({
-				filter: ogcFilterString
+				filter: ogcFilterString //,
+				//env: env
+				//styles: this.selectedTargetProp ? this.selectedTargetProp : ''
 			});
 			
 			if(params.roi){
@@ -632,17 +674,18 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 	},
 	
 	setStatus: function(status){
-		this.elab.setValue(status.processing);
-		this.form.setValue(status.form);
+	    this.status = status;
+		this.elab.setValue(this.status.processing);
+		this.form.setValue(this.status.form);
 		
-		var bboxArray = status.roi.bbox.toArray();
+		var bboxArray = this.status.roi.bbox.toArray();
 		this.westField.setValue(bboxArray[0]);
 		this.southField.setValue(bboxArray[1]); 
 		this.eastField.setValue(bboxArray[2]);
 		this.northField.setValue(bboxArray[3]);
 		
-		this.bers.setValue(status.target);
-		this.accident.setValue(status.accident);
+		this.bers.setValue(this.status.target);
+		this.accident.setValue(this.status.accident);
 	},
 	
 	getStatus: function(form){
@@ -667,12 +710,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 		}else{
 			obj.roi = {
 				label: "Regione Piemonte", 
-				bbox : new OpenLayers.Bounds(
+				bbox : new OpenLayers.Bounds.fromArray(this.defaultBBOXFilterExtent)
+				/*new OpenLayers.Bounds(
 					this.westField.getValue(), 
 					this.southField.getValue(), 
 					this.eastField.getValue(), 
 					this.northField.getValue()
-				)
+				)*/
 			}
 		}
 

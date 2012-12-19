@@ -111,6 +111,33 @@
 		  }
 	   },
 	   {
+		  "ptype":"gxp_addlayers",
+		  "actionTarget":"tree.tbar",
+		  "upload":true
+	   },
+	   {
+		  "ptype":"gxp_removelayer",
+		  "actionTarget":[
+			 "tree.tbar",
+			 "layertree.contextMenu"
+		  ]
+	   },
+	   {
+		  "ptype":"gxp_removeoverlays",
+		  "actionTarget":"tree.tbar"
+	   },
+	   {
+		  "ptype":"gxp_addgroup",
+		  "actionTarget":"tree.tbar"
+	   },
+	   {
+		  "ptype":"gxp_removegroup",
+		  "actionTarget":[
+			 "tree.tbar",
+			 "layertree.contextMenu"
+		  ]
+	   },
+	   {
 		  "ptype":"gxp_groupproperties",
 		  "actionTarget":[
 			 "tree.tbar",

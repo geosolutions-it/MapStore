@@ -191,6 +191,13 @@ OpenLayers.Format.Filter.v1 = OpenLayers.Class(OpenLayers.Format.XML, {
             "Function": function(node, obj) {
                 //TODO write decoder for it
                 return;
+            },
+            "PropertyIsNull": function(node, obj) {
+                var filter = new OpenLayers.Filter.Comparison({
+                    type: OpenLayers.Filter.Comparison.IS_NULL
+                });
+                this.readChildNodes(node, filter);
+                obj.filters.push(filter);
             }
         }
     },
@@ -341,13 +348,9 @@ OpenLayers.Format.Filter.v1 = OpenLayers.Class(OpenLayers.Format.XML, {
             "Not": function(filter) {
                 var node = this.createElementNSPlus("ogc:Not");
                 var childFilter = filter.filters[0];
-                if (childFilter.type === "FID") {
-                    this.writeFeatureIdNodes(childFilter, node);
-                } else {
                 this.writeNode(
                     this.getFilterType(childFilter), childFilter, node
                 );
-                }
                 return node;
             },
             "PropertyIsLessThan": function(filter) {
@@ -447,6 +450,11 @@ OpenLayers.Format.Filter.v1 = OpenLayers.Class(OpenLayers.Format.XML, {
                     this.writeOgcExpression(params[i], node);
                 }
                 return node;
+            },
+            "PropertyIsNull": function(filter) {
+                var node = this.createElementNSPlus("ogc:PropertyIsNull");
+                this.writeNode("PropertyName", filter, node);
+                return node;
             }
         }
     },
@@ -479,6 +487,7 @@ OpenLayers.Format.Filter.v1 = OpenLayers.Class(OpenLayers.Format.XML, {
         ">=": "PropertyIsGreaterThanOrEqualTo",
         "..": "PropertyIsBetween",
         "~": "PropertyIsLike",
+        "NULL": "PropertyIsNull",
         "BBOX": "BBOX",
         "DWITHIN": "DWITHIN",
         "WITHIN": "WITHIN",
