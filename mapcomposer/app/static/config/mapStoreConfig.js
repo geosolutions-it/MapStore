@@ -22,6 +22,7 @@
 		"destination": {
 			"ptype": "gxp_wmssource",
 			"title": "Destination GeoServer",
+			"version":"1.1.1",
 		    "url": "http://localhost:8080/geoserver/ows"
 		}
 	},
@@ -76,6 +77,12 @@
 				"name": "geosolutions:aggregated_data_selection",
 				"displayInLayerSwitcher": false,
 				"tiled": false
+			},{
+				"source": "destination",
+				"title": "BersagliWFS",
+				"name": "geosolutions:bersagli",
+				"displayInLayerSwitcher": false,
+				"visibility": false
 			}
 		]
 	},
@@ -249,6 +256,22 @@
 			"geometryName": "geometria",
 			"accidentTipologyName": "tipologia",
 			"index": 28
-	   }
+	    },{
+			"ptype": "gxp_featuremanager",
+			"id": "featuremanager",
+			"autoSetLayer": false,
+			"layer": {
+				"source": "destination",
+				"name": "geosolutions:bersagli"
+			}
+	    }, {
+			"ptype": "gxp_featuregrid",
+			"featureManager": "featuremanager",
+			"outputConfig": {
+				"id": "featuregrid",
+				"title": "Features"
+			},
+			"outputTarget": "featurelist"
+		}
 	]
 }

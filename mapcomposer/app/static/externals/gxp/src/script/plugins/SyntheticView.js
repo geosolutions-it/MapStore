@@ -125,7 +125,16 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			buttons: [{
 				text: "Esegui Elaborazione",
 				scope: this,
-				handler: function(){		
+				handler: function(){	
+                    var map = this.target.mapPanel.map;		
+					
+				    var bersagli = map.getLayersByName("BersagliWMS")[0];
+					if(bersagli)
+						map.removeLayer(bersagli);
+					var bufferArchi = map.getLayersByName("BufferArchi")[0];
+					if(bufferArchi)
+						map.removeLayer(bufferArchi);
+						
                     this.processingPane.show(this.target);
 					if(this.status){
 						this.processingPane.setStatus(this.status);
@@ -138,9 +147,142 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             border: false,
             layout: "fit",
             title: this.title,
+			autoScroll: true,
             items:[
                 this.fieldSet
-            ]
+            ],
+			bbar: new Ext.Toolbar({
+				items: [
+					{
+						text: 'Visualizazione Analitica',
+						disabled: false,
+						id: "analytic_view",
+						scope: this,
+						handler: function(){
+							var featureManager = this.target.tools["featuremanager"];
+							
+							var map = this.target.mapPanel.map;
+							//map.zoomToScale(17061);
+							
+							//
+							// Get the status status
+							//
+							var status = this.getStatus();
+							var target = status.target;
+							//alert(target);
+							
+							//
+							// Manage the OGC filter
+							//
+							var ogcFilterString;
+							if(target != 'Tutti i Bersagli'){
+								var filter = new OpenLayers.Filter.Comparison({
+								   type: OpenLayers.Filter.Comparison.EQUAL_TO,
+								   property: "descrizione_clc",
+								   value: target
+								});
+								
+								var filterFormat = new OpenLayers.Format.Filter();
+								ogcFilterString = filterFormat.write(filter);  
+								
+								var xmlFormat = new OpenLayers.Format.XML();                  
+								ogcFilterString = xmlFormat.write(ogcFilterString);
+							}
+
+							//
+							// Manage VIEWPARAMS
+							//	
+							var viewParams = '';
+							
+							var bounds = new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX());
+							//alert(bounds.toBBOX().replace(/,/g, "\\\,"));
+							
+							//
+							// Check about the projection (this could needs Proj4JS definitions inside the mapstore config)
+							//
+							var mapPrj = map.getProjectionObject();
+							var selectionPrj = new OpenLayers.Projection("EPSG:32632");
+							if(!mapPrj.equals(selectionPrj)){
+								bounds = bounds.transform(
+									mapPrj,	
+									selectionPrj
+								);
+							}
+							
+							bounds = bounds.toBBOX().replace(/,/g, "\\\,");
+							
+							viewParams += "bounds:" + bounds;
+							//alert(bounds);
+							
+							var tipologia;
+							if(status.accident != 'Tutti gli Incidenti'){
+								tipologia = status.accident;
+								//alert(topologia);
+								viewParams += ";tipologia:" + tipologia; 
+							}
+
+							//alert(viewParams);
+							
+							var bersagli = map.getLayersByName("BersagliWMS")[0];
+							var bufferArchi = map.getLayersByName("BufferArchi")[0];
+							
+							if(bersagli && bufferArchi){
+								map.removeLayer(bersagli);
+								map.removeLayer(bufferArchi);
+							}else{
+								var bufferArchi = new OpenLayers.Layer.WMS(
+									"BufferArchi", 		
+									"http://localhost:8080/geoserver/wms",
+									{
+										layers: "geosolutions:siig_aggregation_1_buffer", 
+										transparent: true, 
+										format: "image/png"
+									},
+									{
+										isBaseLayer: false,
+										singleTile: false,
+										displayInLayerSwitcher: false
+									}
+								);
+								var bersagli = new OpenLayers.Layer.WMS(
+									"BersagliWMS", 		
+									"http://localhost:8080/geoserver/wms",
+									{
+										layers: "geosolutions:bersagli", 
+										transparent: true, 
+										format: "image/png",
+										viewparams: viewParams,
+										filter: ogcFilterString ? ogcFilterString : ''
+									},
+									{
+										isBaseLayer: false,
+										singleTile: false,
+										displayInLayerSwitcher: false
+									}
+								);
+						
+								map.addLayers([bufferArchi, bersagli]);
+							}
+							/*else{
+								bersagli.mergeNewParams({
+									viewparams: viewParams,
+									filter: ogcFilterString ? ogcFilterString : '',
+									d: new Date().getMilliseconds()
+								});
+							}*/
+							
+							/*var appMask = new Ext.LoadMask(Ext.getBody(), {msg: "Caricamento Bersagli in corso ..."});
+							appMask.show();
+							
+							var south = Ext.getCmp("south").expand();*/
+							featureManager.loadFeatures(null, function(){
+								//appMask.hide();
+							});
+						}
+					}
+				]
+			})
+		
         });
         
         config = Ext.apply(panel, config || {});
@@ -164,79 +306,16 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		this.extent.setValue(this.status.roi.label);
 		this.trg.setValue(this.status.target);
 		this.accident.setValue(this.status.accident);
+		
+		//
+		// Allow the Analytic visualizzation functionalities
+		//
+		Ext.getCmp("analytic_view").enable();
 	},
 	
 	getStatus: function(){
 		return this.status;
-	},
-    
-    /** private: method[makeSearchForm]
-     *  :arg map: ``Object``
-     */
-    makeSearchForm: function(map){
-        this.elab = new Ext.form.TextField({
-              fieldLabel: this.elabLabel,
-              id: "elab",
-              width: 100,
-              hideLabel : false                    
-        });
-        
-        this.form = new Ext.form.TextField({
-              fieldLabel: this.formLabel,
-              id: "form",
-              width: 100,
-              hideLabel : false                    
-        });
-        
-        this.extent = new Ext.form.TextField({
-              fieldLabel: this.extentLabel,
-              id: "extent",
-              width: 100,
-              hideLabel : false                    
-        });
-              
-        this.target = new Ext.form.TextField({
-              fieldLabel: this.targetLabel,
-              id: "target",
-              width: 100,
-              hideLabel : false                    
-        });
-		
-		this.accident = new Ext.form.TextField({
-              fieldLabel: this.accidentLabel,
-              id: "accedent",
-              width: 100,
-              hideLabel : false                    
-        });
-           
-        this.fieldSet = new Ext.form.FieldSet({
-            title: this.fieldSetTitle,
-            id: 'fset',
-            autoHeight: true,
-            defaults: {
-                // applied to each contained panel
-                bodyStyle:'padding:5px;'
-            },
-            items: [
-                 this.elab,
-				 this.form,
-				 this.extent,
-				 this.target,
-				 this.accident
-            ]
-        });
-        
-        var panel = new Ext.FormPanel({
-            border: false,
-            layout: "fit",
-            title: this.title,
-            items:[
-                this.fieldSet
-            ]
-        });
-        
-        return panel;
-    }
+	}
 });
 
 Ext.preg(gxp.plugins.SyntheticView.prototype.ptype, gxp.plugins.SyntheticView);

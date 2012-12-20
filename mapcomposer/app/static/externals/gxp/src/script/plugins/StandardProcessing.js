@@ -356,9 +356,17 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             fields: ['name', 'property'],
             data :  [
 			    ['Tutti i Bersagli', 'calc_formula_tot'],
-				['Zone Urbanizzate', 'calc_formula_zone_urbanizzate'],
-				['Boschi', 'calc_formula_aree_boscate'],
-				['Aree Agricole', 'calc_formula_aree_agricole']
+				/*['Zone urbanizzate', 'calc_formula_zone_urbanizzate'],*/
+				/*['Zone industriali, commerciali e reti di comunicazione', 'calc_formula_zone_urbanizzate'],
+				['Zone estrattive, discariche e cantieri', 'calc_formula_zone_urbanizzate'],
+				['Zone verdi artificiali non agricole', 'calc_formula_zone_urbanizzate'],
+				['Seminativi', 'calc_formula_aree_agricole'],*/
+				['Colture permanenti', 'calc_formula_aree_agricole'],
+				/*['Prati stabili', 'calc_formula_aree_agricole'],
+				['Zone agricole eterogenee', 'calc_formula_aree_agricole'],*/
+				['Zone boscate', 'calc_formula_aree_boscate'],
+				['Zone caratterizzate da vegetazione arbustiva e/o erbacea', 'calc_formula_aree_boscate']/*,
+				['Zone aperte con vegetazione rada o assente', 'calc_formula_aree_boscate']*/
 			]
         });
 		
@@ -476,6 +484,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             border: false,
             layout: "fit",
 			title: "Impostazioni di Elaborazione",
+			autoScroll: true,
 			items:[
                 this.elabSet,
 				this.spatialFieldSet,

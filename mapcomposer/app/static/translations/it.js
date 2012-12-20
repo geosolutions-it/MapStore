@@ -338,7 +338,7 @@ GeoExt.Lang.add("it", {
         previousPageTip: "Pagina precedente",
         zoomPageExtentTip: "Zoom all'estensione della pagina",
         nextPageTip: "Prossima pagina",
-        nextPageTip: "Ultima pagina",
+        lastPageTip: "Ultima pagina",
         totalMsg: "Totale: {0} righe"
     },
 	

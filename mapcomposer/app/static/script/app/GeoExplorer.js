@@ -411,6 +411,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 item.disable();
             });
 			
+			Ext.getCmp('south').collapse(true);	
+			
 			this.appMask.hide();
         });
 
@@ -504,13 +506,42 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             header: false
         });		
 		
+		var southPanel = new Ext.Panel({
+            border: false,
+            layout: "fit",
+            id: 'south',
+            region: "south",
+            height: 200,
+            split: true,
+            collapsible: true,
+            collapseMode: "mini",
+            collapsed: false,
+            header: false,
+            /*listeners: {
+                 expand: function(){
+                     var grid=Ext.getCmp("wfsGridPanel");
+                     if(grid){
+                         var lastOptions = grid.store.lastOptions;
+                         grid.store.reload(lastOptions);
+                         grid.getView().refresh();
+                     }
+                 }
+            },*/
+            items: [
+                {
+                  xtype: 'panel', layout: "fit", activeTab: 0, region: 'center', id: 'featurelist', autoScroll: true, border: false
+                }
+            ]
+        });
+		
         this.portalItems = [{
             region: "center",
             layout: "border",            
             items: [
                 this.mapPanelContainer,
                 westPanel,
-				estPanel
+				estPanel,
+				southPanel
             ]
         }];
 
