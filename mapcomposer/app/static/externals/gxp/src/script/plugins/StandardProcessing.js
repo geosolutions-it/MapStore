@@ -46,7 +46,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 		latMin: -20037508.34  
     },	
 	
-	defaultBBOXFilterExtent: [735120.17754268, 5467346.1565839, 1028638.3661169, 5856257.7564448],
+	defaultBBOXFilterExtent: "738789.1549,5474684.1113,1028026.86989,5843416.33569",
+	// ovest=738789.1549,sud=5474684.1113,est=1028026.86989,nord=5843416.33569 [735120.17754268, 5467346.1565839, 1028638.3661169, 5856257.7564448],
 	
 	toggleGroup: "toolGroup",
 		
@@ -493,6 +494,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             ],
 			buttons: [{
 				text: "Reimposta",
+				iconCls: 'reset-button',
 				scope: this,
 				handler: function(){
 					this.panel.getForm().reset();
@@ -500,6 +502,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 				}
 			}, {
 				text: "Visualizza Mappa",
+				iconCls: 'visualizzation-button',
 				scope: this,
 				handler: function(){
 					var params = this.makeParams(this.panel.getForm());
@@ -539,7 +542,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 	},
 	
 	resetBBOX: function(){
-		    var defBBOX = new OpenLayers.Bounds.fromArray(this.defaultBBOXFilterExtent);
+		    var defBBOX = new OpenLayers.Bounds.fromString(this.defaultBBOXFilterExtent);
 			var bboxArray = defBBOX.toArray();
 			this.westField.setValue(bboxArray[0]);
 			this.southField.setValue(bboxArray[1]); 
@@ -567,7 +570,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 				this.northField.getValue()
 			);	
 		}else{
-			roi = new OpenLayers.Bounds.fromArray(this.defaultBBOXFilterExtent);
+			roi = new OpenLayers.Bounds.fromString(this.defaultBBOXFilterExtent);
 		}
 		
 		params.roi = new OpenLayers.Bounds.fromString(roi.toBBOX());
@@ -719,7 +722,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 		}else{
 			obj.roi = {
 				label: "Regione Piemonte", 
-				bbox : new OpenLayers.Bounds.fromArray(this.defaultBBOXFilterExtent)
+				bbox : new OpenLayers.Bounds.fromString(this.defaultBBOXFilterExtent)
 				/*new OpenLayers.Bounds(
 					this.westField.getValue(), 
 					this.southField.getValue(), 

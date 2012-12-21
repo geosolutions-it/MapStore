@@ -2,6 +2,7 @@
    "geoStoreBase":"http://localhost:8080/geostore/rest/",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "it",
+   "wfsBaseURL": "http://localhost:8080/geoserver/wfs",
    "embedding": false,
    "gsSources":{ 
 		"mapquest": {
@@ -23,7 +24,11 @@
 			"ptype": "gxp_wmssource",
 			"title": "Destination GeoServer",
 			"version":"1.1.1",
-		    "url": "http://localhost:8080/geoserver/ows"
+		    "url": "http://localhost:8080/geoserver/ows",
+			"layerBaseParams": {
+				"TILED": true,
+				"TILESORIGIN": "-180,-90"
+            }
 		}
 	},
 	"map": {
@@ -68,21 +73,15 @@
 				"group": "background"
 			},{
 				"source": "destination",
-				"title": "Siig Aggragation",
+				"title": "SIIG Aggregation",
 				"name": "geosolutions:aggregated_data",
 				"group": "Destination"
 			},{
 				"source": "destination",
 				"title": "ElaborazioneStd",
 				"name": "geosolutions:aggregated_data_selection",
-				"displayInLayerSwitcher": false,
+				"displayInLayerSwitcher": true,
 				"tiled": false
-			},{
-				"source": "destination",
-				"title": "BersagliWFS",
-				"name": "geosolutions:bersagli",
-				"displayInLayerSwitcher": false,
-				"visibility": false
 			}
 		]
 	},
@@ -256,22 +255,6 @@
 			"geometryName": "geometria",
 			"accidentTipologyName": "tipologia",
 			"index": 28
-	    },{
-			"ptype": "gxp_featuremanager",
-			"id": "featuremanager",
-			"autoSetLayer": false,
-			"layer": {
-				"source": "destination",
-				"name": "geosolutions:bersagli"
-			}
-	    }, {
-			"ptype": "gxp_featuregrid",
-			"featureManager": "featuremanager",
-			"outputConfig": {
-				"id": "featuregrid",
-				"title": "Features"
-			},
-			"outputTarget": "featurelist"
-		}
+	    }
 	]
 }

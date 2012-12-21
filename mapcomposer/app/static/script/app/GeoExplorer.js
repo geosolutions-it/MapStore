@@ -506,6 +506,26 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             header: false
         });		
 		
+		var fstore = new WFSStore({
+			root: 'features',
+			idProperty: 'id', 
+			typeName: app.wfsLayerName,
+			
+			proxy : new Ext.data.HttpProxy({
+				method: 'GET',
+				url: app.wfsBaseURL
+			}),
+			
+			fields: [
+				{name: 'id',         mapping: 'id'},
+				{name: 'geometry',   mapping: 'geometry'},
+				{name: 'id_tema', mapping: 'properties.id_tema'},
+				{name: 'superficie', mapping: 'properties.superficie'},
+				{name: 'descrizione_clc', mapping: 'properties.descrizione_clc'},
+				{name: 'type',		 mapping: 'type'}
+			]
+		});
+		
 		var southPanel = new Ext.Panel({
             border: false,
             layout: "fit",
@@ -517,19 +537,84 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             collapseMode: "mini",
             collapsed: false,
             header: false,
-            /*listeners: {
-                 expand: function(){
-                     var grid=Ext.getCmp("wfsGridPanel");
-                     if(grid){
-                         var lastOptions = grid.store.lastOptions;
-                         grid.store.reload(lastOptions);
-                         grid.getView().refresh();
-                     }
-                 }
-            },*/
             items: [
                 {
-                  xtype: 'panel', layout: "fit", activeTab: 0, region: 'center', id: 'featurelist', autoScroll: true, border: false
+                  xtype: 'panel', layout: "fit", activeTab: 0, region: 'center', id: 'featurelist', autoScroll: true, border: false,
+				  items:[
+						new Ext.grid.GridPanel({
+							id: "featuregrid",
+							store: fstore,
+							loadMask: {
+								msg : "Caricamento Bersagli in corso ..."
+							},
+							colModel: new Ext.grid.ColumnModel({
+								columns: [
+									{id: 'id_tema', header: 'id_tema', dataIndex: 'id_tema'},
+									{header: 'superficie', dataIndex: 'superficie'},
+									{header: 'descrizione_clc', dataIndex: 'descrizione_clc'}
+								]
+							}),
+							bbar: new Ext.ux.LazyPagingToolbar({
+								store: fstore,
+								pageSize: 10									
+							}),
+							listeners: {
+								scope: this,
+								rowclick: function(grid, rowIndex, e){
+									var record = fstore.getAt(rowIndex);
+									var geom = record.get("geometry");
+									
+									var map = this.mapPanel.map;
+									
+									var targetLayer = map.getLayersByName("Bersaglio Selezionato")[0];
+									if(!targetLayer){
+										targetLayer = new OpenLayers.Layer.Vector("Bersaglio Selezionato", {
+											//style: layer_style
+										});
+										
+										map.addLayer(targetLayer);
+									}else{
+										targetLayer.removeAllFeatures();
+									}						
+									
+									switch(geom.type){
+										case 'Polygon':
+											var pointList = [];
+											var coordinates = geom.coordinates[0];
+											
+											var mapPrj = map.getProjectionObject();
+											var selectionPrj = new OpenLayers.Projection("EPSG:32632");
+											var transform = mapPrj.equals(selectionPrj);
+											
+											for(var p=0; p<coordinates.length; ++p) {
+												var coords = coordinates[p];
+												
+												var newPoint = new OpenLayers.Geometry.Point(coords[0],coords[1]);
+												
+												if(!transform){												
+													newPoint = newPoint.transform(
+														selectionPrj,
+														mapPrj														
+													);											
+												}
+												
+												pointList.push(newPoint);
+											}
+											
+											var linestring = new OpenLayers.Geometry.LineString(pointList);
+											var linearRing = new OpenLayers.Geometry.LinearRing(pointList);
+											var polygon = new OpenLayers.Geometry.Polygon([linearRing]);
+											var polygonFeature = new OpenLayers.Feature.Vector(polygon);
+											
+											targetLayer.addFeatures([polygonFeature]);
+											
+											map.zoomToExtent(polygon.getBounds());
+											
+									}
+								}
+							}
+						})
+				  ]
                 }
             ]
         });

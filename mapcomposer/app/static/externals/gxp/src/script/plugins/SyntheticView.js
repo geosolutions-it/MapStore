@@ -38,6 +38,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 	selectionLayerBaseURL: "http://localhost:8080/geoserver/wms",
 	selectionLayerProjection: "EPSG:32632",
 	
+	bufferLayerName: "geosolutions:siig_aggregation_1_buffer",
+	targetLayerName: "geosolutions:bersagli",
+	bufferLayerTitle: "BufferArchi",
+	targetLayerTitle: "Bersagli", 
+	layerImageFormat: "image/png8",
+	
 	geometryName: "geometria",
 	accidentTipologyName: "tipologia",
 	
@@ -124,17 +130,26 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             ],
 			buttons: [{
 				text: "Esegui Elaborazione",
+				iconCls: 'elab-button',
 				scope: this,
 				handler: function(){	
                     var map = this.target.mapPanel.map;		
 					
-				    var bersagli = map.getLayersByName("BersagliWMS")[0];
+				    var bersagli = map.getLayersByName(this.targetLayerTitle)[0];
 					if(bersagli)
 						map.removeLayer(bersagli);
-					var bufferArchi = map.getLayersByName("BufferArchi")[0];
+						
+					var bufferArchi = map.getLayersByName(this.bufferLayerTitle)[0];
 					if(bufferArchi)
 						map.removeLayer(bufferArchi);
 						
+					var targetLayer = map.getLayersByName("Bersaglio Selezionato")[0];
+					if(targetLayer)
+						map.removeLayer(targetLayer);
+						
+					var analyticButton = Ext.getCmp("analytic_view").disable();					
+					var south = Ext.getCmp("south").collapse();
+					
                     this.processingPane.show(this.target);
 					if(this.status){
 						this.processingPane.setStatus(this.status);
@@ -155,14 +170,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 				items: [
 					{
 						text: 'Visualizazione Analitica',
-						disabled: false,
+						iconCls: 'analytic-view-button',
+						disabled: true,
 						id: "analytic_view",
 						scope: this,
 						handler: function(){
 							var featureManager = this.target.tools["featuremanager"];
 							
 							var map = this.target.mapPanel.map;
-							//map.zoomToScale(17061);
 							
 							//
 							// Get the status status
@@ -175,8 +190,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 							// Manage the OGC filter
 							//
 							var ogcFilterString;
+							var filter;
 							if(target != 'Tutti i Bersagli'){
-								var filter = new OpenLayers.Filter.Comparison({
+								filter = new OpenLayers.Filter.Comparison({
 								   type: OpenLayers.Filter.Comparison.EQUAL_TO,
 								   property: "descrizione_clc",
 								   value: target
@@ -223,60 +239,78 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 
 							//alert(viewParams);
 							
-							var bersagli = map.getLayersByName("BersagliWMS")[0];
-							var bufferArchi = map.getLayersByName("BufferArchi")[0];
+							var bersagli = map.getLayersByName(this.targetLayerTitle)[0];
+							var bufferArchi = map.getLayersByName(this.bufferLayerTitle)[0];
 							
 							if(bersagli && bufferArchi){
 								map.removeLayer(bersagli);
 								map.removeLayer(bufferArchi);
-							}else{
-								var bufferArchi = new OpenLayers.Layer.WMS(
-									"BufferArchi", 		
-									"http://localhost:8080/geoserver/wms",
-									{
-										layers: "geosolutions:siig_aggregation_1_buffer", 
-										transparent: true, 
-										format: "image/png"
-									},
-									{
-										isBaseLayer: false,
-										singleTile: false,
-										displayInLayerSwitcher: false
-									}
-								);
-								var bersagli = new OpenLayers.Layer.WMS(
-									"BersagliWMS", 		
-									"http://localhost:8080/geoserver/wms",
-									{
-										layers: "geosolutions:bersagli", 
-										transparent: true, 
-										format: "image/png",
-										viewparams: viewParams,
-										filter: ogcFilterString ? ogcFilterString : ''
-									},
-									{
-										isBaseLayer: false,
-										singleTile: false,
-										displayInLayerSwitcher: false
-									}
-								);
-						
-								map.addLayers([bufferArchi, bersagli]);
 							}
-							/*else{
-								bersagli.mergeNewParams({
+
+							var bufferArchi = new OpenLayers.Layer.WMS(
+								this.bufferLayerTitle, 		
+								this.selectionLayerBaseURL,
+								{
+									layers: this.bufferLayerName, 
+									transparent: true, 
+									format: this.layerImageFormat
+								},
+								{
+									isBaseLayer: false,
+									singleTile: false,
+									displayInLayerSwitcher: true
+								}
+							);
+							
+							var bersagli = new OpenLayers.Layer.WMS(
+								this.targetLayerTitle, 		
+								this.selectionLayerBaseURL,
+								{
+									layers: this.targetLayerName, 
+									transparent: true, 
+									format: this.layerImageFormat,
 									viewparams: viewParams,
-									filter: ogcFilterString ? ogcFilterString : '',
-									d: new Date().getMilliseconds()
-								});
-							}*/
+									filter: ogcFilterString ? ogcFilterString : ''
+								},
+								{
+									isBaseLayer: false,
+									singleTile: false,
+									displayInLayerSwitcher: true
+								}
+							);
+					
+							map.addLayers([bufferArchi, bersagli]);
 							
-							/*var appMask = new Ext.LoadMask(Ext.getBody(), {msg: "Caricamento Bersagli in corso ..."});
-							appMask.show();
+							//
+							// Manage target grid
+							//
+							var fgrid = Ext.getCmp("featuregrid");
+							var store = fgrid.getStore();
 							
-							var south = Ext.getCmp("south").expand();*/
-							featureManager.loadFeatures(null, function(){
-								//appMask.hide();
+							store.resetTotal();
+							store.removeAll();
+							
+							var query = ogcFilterString;
+							
+							var params = {
+								startindex: 0,          
+								maxfeatures: 10,
+								sort: "id_tema"
+							};
+							
+							if(query){
+								store.setBaseParam("filter", query);
+								store.setBaseParam("srsName", this.selectionLayerProjection);
+							}
+							
+							if(viewParams){
+								store.setBaseParam("viewParams", viewParams);
+							}
+							
+							var south = Ext.getCmp("south").expand();
+		
+							store.load({
+								params: params
 							});
 						}
 					}

@@ -349,3 +349,19 @@ div.map-overlay div.overlay-element {
 .aoi-button{
     background-image: url(img/silk/shape_square.png) !important;
 }
+
+.analytic-view-button{
+    background-image: url(img/silk/application_form_magnify.png) !important;
+}
+
+.elab-button{
+    background-image: url(img/silk/application_form_edit.png) !important;
+}
+
+.reset-button{
+    background-image: url(img/silk/table_refresh.png) !important;
+}
+
+.visualizzation-button{
+    background-image: url(img/silk/application_go.png) !important;
+}
