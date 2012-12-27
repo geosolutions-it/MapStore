@@ -28,7 +28,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     extentLabel: "Ambito territoriale",
     targetLabel: "Tipo bersaglio",
 	accidentLabel: "Incidente",
-    fieldSetTitle: "Elaborazione Standard",
+    fieldSetTitle: "Elaborazione",
     // End i18n.
         
 	id: "syntheticview",
@@ -40,7 +40,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 	
 	bufferLayerName: "geosolutions:siig_aggregation_1_buffer",
 	targetLayerName: "geosolutions:bersagli",
-	bufferLayerTitle: "BufferArchi",
+	bufferLayerTitle: "Aree di danno",//"BufferArchi",
 	targetLayerTitle: "Bersagli", 
 	layerImageFormat: "image/png8",
 	
@@ -183,26 +183,29 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 							// Get the status status
 							//
 							var status = this.getStatus();
-							var target = status.target;
-							//alert(target);
 							
 							//
 							// Manage the OGC filter
 							//
 							var ogcFilterString;
 							var filter;
-							if(target != 'Tutti i Bersagli'){
-								filter = new OpenLayers.Filter.Comparison({
-								   type: OpenLayers.Filter.Comparison.EQUAL_TO,
-								   property: "descrizione_clc",
-								   value: target
-								});
-								
-								var filterFormat = new OpenLayers.Format.Filter();
-								ogcFilterString = filterFormat.write(filter);  
-								
-								var xmlFormat = new OpenLayers.Format.XML();                  
-								ogcFilterString = xmlFormat.write(ogcFilterString);
+							if(status && status.target){
+								var target = status.target;
+								//alert(target);
+						
+								if(target != 'Tutti i Bersagli'){
+									filter = new OpenLayers.Filter.Comparison({
+									   type: OpenLayers.Filter.Comparison.EQUAL_TO,
+									   property: "descrizione_clc",
+									   value: target
+									});
+									
+									var filterFormat = new OpenLayers.Format.Filter();
+									ogcFilterString = filterFormat.write(filter);  
+									
+									var xmlFormat = new OpenLayers.Format.XML();                  
+									ogcFilterString = xmlFormat.write(ogcFilterString);
+								}
 							}
 
 							//
@@ -210,7 +213,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 							//	
 							var viewParams = '';
 							
-							var bounds = new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX());
+							var bounds = map.getExtent();
+							if(status && status.roi)
+								bounds = new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX());
+								
 							//alert(bounds.toBBOX().replace(/,/g, "\\\,"));
 							
 							//
@@ -231,10 +237,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 							//alert(bounds);
 							
 							var tipologia;
-							if(status.accident != 'Tutti gli Incidenti'){
-								tipologia = status.accident;
-								//alert(topologia);
-								viewParams += ";tipologia:" + tipologia; 
+							if(status && status.accident){								
+								if(status.accident != 'Tutti gli Incidenti'){
+									tipologia = status.accident;
+									//alert(topologia);
+									viewParams += ";tipologia:" + tipologia; 
+								}
 							}
 
 							//alert(viewParams);
@@ -316,7 +324,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 					}
 				]
 			})
-		
         });
         
         config = Ext.apply(panel, config || {});
@@ -326,6 +333,17 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         if(this.outputTarget)
             Ext.getCmp(this.outputTarget).setActiveTab(this.controlPanel);
         
+		/*this.target.mapPanel.map.events.register('zoomend', this, function(){
+			var scale = this.target.mapPanel.map.getScale();
+			var scale = Math.round(scale);
+			
+			if(scale <= 17061){
+				Ext.getCmp("analytic_view").enable();
+			}else if(scale > 17061){
+				Ext.getCmp("analytic_view").disable();
+			}
+		});*/
+		
         return this.controlPanel;
     },
 	

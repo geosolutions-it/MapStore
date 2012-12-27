@@ -2,6 +2,7 @@
    "geoStoreBase":"http://localhost:8080/geostore/rest/",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "it",
+   "wfsLayerName": "geosolutions:bersagli",
    "wfsBaseURL": "http://localhost:8080/geoserver/wfs",
    "embedding": false,
    "gsSources":{ 
@@ -71,11 +72,6 @@
 				"title": "Google Hybrid",
 				"name": "HYBRID",
 				"group": "background"
-			},{
-				"source": "destination",
-				"title": "SIIG Aggregation",
-				"name": "geosolutions:aggregated_data",
-				"group": "Destination"
 			},{
 				"source": "destination",
 				"title": "ElaborazioneStd",
@@ -249,7 +245,9 @@
 			"outputTarget": "east",
 			"id": "syntheticview",
 			"selectionLayerName": "geosolutions:aggregated_data_selection",
-			"selectionLayerTitle": "ElaborazioneStd", 		
+			"selectionLayerTitle": "ElaborazioneStd", 	
+			"targetLayerName": "geosolutions:bersagli",		
+			"bufferLayerName": "geosolutions:siig_aggregation_1_buffer",
 			"selectionLayerBaseURL": "http://localhost:8080/geoserver/wms",
 			"selectionLayerProjection": "EPSG:32632",
 			"geometryName": "geometria",

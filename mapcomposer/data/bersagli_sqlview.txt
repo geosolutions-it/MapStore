@@ -1,0 +1,24 @@
+select bersaglio.gid, bersaglio.the_geom, bersaglio.id_tema, bersaglio.superficie, clc.descrizione_clc
+from siig_p.siig_p_bersagli_aree_agricole as bersaglio 
+     join siig_p.siig_geo_ln_arco_3 as arco 
+     on st_dwithin(bersaglio.the_geom, arco.geometria, 100) and arco.geometria && st_makeenvelope(427814.1727295,4943822.1928711,452602.10266114,4976281.0678711,32632)
+     join siig_p.siig_d_classe_clc as clc
+     on bersaglio.fk_clc = clc.codice_clc
+
+union 
+
+select bersaglio.gid, bersaglio.the_geom, bersaglio.id_tema, bersaglio.superficie, clc.descrizione_clc
+from siig_p.siig_p_bersagli_aree_boscate as bersaglio 
+     join siig_p.siig_geo_ln_arco_3 as arco 
+     on st_dwithin(bersaglio.the_geom, arco.geometria, 100) and arco.geometria && st_makeenvelope(427814.1727295,4943822.1928711,452602.10266114,4976281.0678711,32632)
+     join siig_p.siig_d_classe_clc as clc
+     on bersaglio.fk_clc = clc.codice_clc
+
+union 
+
+select bersaglio.gid, bersaglio.the_geom, bersaglio.id_tema, bersaglio.superficie, clc.descrizione_clc
+from siig_p.siig_p_bersagli_zone_urbanizzate as bersaglio 
+     join siig_p.siig_geo_ln_arco_3 as arco 
+     on st_dwithin(bersaglio.the_geom, arco.geometria, 100) and arco.geometria && st_makeenvelope(427814.1727295,4943822.1928711,452602.10266114,4976281.0678711,32632) and bersaglio.the_geom && st_makeenvelope(427814 - 1000, 4943822 - 1000,452602 + 1000,4976281 + 1000,32632)
+     join siig_p.siig_d_classe_clc as clc
+     on bersaglio.fk_clc = clc.codice_clc

@@ -31,6 +31,16 @@ div.mapstore_logo {
     background: url('img/MapStore_logo.png') center top  no-repeat;
 }
 
+div.csi_logo {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    text-align: center;
+    height: 80px;
+	overflow: visible;
+    background: url('img/csi.png') center top  no-repeat;
+}
+
 div.geoext_logo {
     margin-left: auto;
     margin-right: auto;

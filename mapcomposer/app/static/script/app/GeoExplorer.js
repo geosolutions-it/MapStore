@@ -568,8 +568,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 									
 									var targetLayer = map.getLayersByName("Bersaglio Selezionato")[0];
 									if(!targetLayer){
-										targetLayer = new OpenLayers.Layer.Vector("Bersaglio Selezionato", {
-											//style: layer_style
+										targetLayer = new OpenLayers.Layer.Vector("Bersaglio Selezionato",{
+											displayInLayerSwitcher: false
 										});
 										
 										map.addLayer(targetLayer);

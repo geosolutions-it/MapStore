@@ -11,10 +11,11 @@
       <FeatureTypeStyle>
         <!--FeatureTypeName>Feature</FeatureTypeName-->
         <Rule>
-          <MaxScaleDenominator>17061</MaxScaleDenominator>
           <Title>Blue Line</Title>
           <Abstract>A 1 pixel wide blue line</Abstract>
-          <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+          <MinScaleDenominator>17061</MinScaleDenominator>
+          <MaxScaleDenominator>272989</MaxScaleDenominator>
+          <LineSymbolizer>
             <Stroke>
               <CssParameter name="stroke">#A3A0A0</CssParameter>
             </Stroke>
