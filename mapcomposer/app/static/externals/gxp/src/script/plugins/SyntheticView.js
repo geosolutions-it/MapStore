@@ -59,7 +59,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			selectionLayerName: this.selectionLayerName,
 			selectionLayerTitle: this.selectionLayerTitle, 		
 			selectionLayerBaseURL: this.selectionLayerBaseURL,
-			selectionLayerProjection: this.selectionLayerProjection
+			selectionLayerProjection: this.selectionLayerProjection,
+			maxROIArea: 197807718.7307968
 		});
     },
     

@@ -2,8 +2,6 @@
    "geoStoreBase":"http://localhost:8080/geostore/rest/",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "it",
-   "wfsLayerName": "geosolutions:bersagli",
-   "wfsBaseURL": "http://localhost:8080/geoserver/wfs",
    "embedding": false,
    "gsSources":{ 
 		"mapquest": {
@@ -253,6 +251,26 @@
 			"geometryName": "geometria",
 			"accidentTipologyName": "tipologia",
 			"index": 28
+	    },
+	    {
+			"ptype": "gxp_wfsgrid",
+			"outputTarget": "featurelist",
+			"wfsURL": "http://localhost:8080/geoserver/wfs",
+			"featureType": "geosolutions:bersagli",
+			"storeFields": [
+				{"name": "id",              "mapping": "id"},
+				{"name": "geometry",        "mapping": "geometry"},
+				{"name": "id_tema",         "mapping": "properties.id_tema"},
+				{"name": "superficie",      "mapping": "properties.superficie"},
+				{"name": "descrizione_clc", "mapping": "properties.descrizione_clc"},
+				{"name": "type",		    "mapping": "type"}
+			],
+			"columnModel": [
+				{"id":     "id_tema",         "dataIndex": "id_tema", "header": "id_tema"},
+				{"header": "superficie",      "dataIndex": "superficie"},
+				{"header": "descrizione_clc", "dataIndex": "descrizione_clc"}
+			],
+			"index": 29
 	    }
 	]
 }
