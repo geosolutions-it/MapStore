@@ -35,6 +35,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     southLabel:"Sud",
     aioFieldSetTitle: "Ambito Territoriale",
     setAoiText: "Seleziona Area",
+    currentExtentText: "Area visualizzata",
+    currentExtentTooltip: "Usa l'area visualizzata sulla mappa come regione di interesse",
     setAoiTooltip: "Abilita la selezione della regione di interesse sulla mappa",
     // End i18n.
         
@@ -297,6 +299,25 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                   }
               }
         });
+        
+        this.currentExtentButton = new Ext.Button({
+              text: this.currentExtentText,
+              tooltip: this.currentExtentTooltip,                            
+              iconCls: 'current-extent-button',
+              height: 30,
+              width: 50,
+              listeners: {
+                  scope: this, 
+                  click: function(button) {
+                    var extent=map.getExtent();
+                    this.northField.setValue(extent.top);
+                    this.southField.setValue(extent.bottom);
+                    this.westField.setValue(extent.left);
+                    this.eastField.setValue(extent.right);  
+                    this.removeAOILayer(map);                  
+                  }
+              }
+        });
               
         this.spatialFieldSet = new Ext.form.FieldSet({
             title: this.aioFieldSetTitle,
@@ -311,7 +332,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 bodyStyle:'padding:5px;'
             },
             bodyCssClass: 'aoi-fields',
-            items: [
+            items: [                
                 {
                     layout: "form",
                     cellCls: 'spatial-cell',
@@ -353,6 +374,14 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     items: [
                         this.southField
                     ]
+                },{
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    colspan:3,
+                    border: false,
+                    items: [
+                        this.currentExtentButton
+                    ]                
                 }
             ]
         });

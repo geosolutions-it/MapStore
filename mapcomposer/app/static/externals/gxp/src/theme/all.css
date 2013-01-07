@@ -350,6 +350,10 @@ div.map-overlay div.overlay-element {
     background-image: url(img/silk/shape_square.png) !important;
 }
 
+.current-extent-button{
+    background-image: url(img/other/frame.png) !important;
+}
+
 .analytic-view-button{
     background-image: url(img/silk/application_form_magnify.png) !important;
 }
