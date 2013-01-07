@@ -72,7 +72,7 @@
 				"group": "background"
 			},{
 				"source": "destination",
-				"title": "ElaborazioneStd",
+				"title": "Rischio Totale",
 				"name": "geosolutions:aggregated_data_selection",
 				"displayInLayerSwitcher": true,
 				"tiled": false
@@ -243,7 +243,7 @@
 			"outputTarget": "east",
 			"id": "syntheticview",
 			"selectionLayerName": "geosolutions:aggregated_data_selection",
-			"selectionLayerTitle": "ElaborazioneStd", 	
+			"selectionLayerTitle": "Rischio Totale", 	
 			"targetLayerName": "geosolutions:bersagli",		
 			"bufferLayerName": "geosolutions:siig_aggregation_1_buffer",
 			"selectionLayerBaseURL": "http://localhost:8080/geoserver/wms",
