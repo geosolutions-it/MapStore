@@ -38,6 +38,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     currentExtentText: "Area visualizzata",
     currentExtentTooltip: "Usa l'area visualizzata sulla mappa come regione di interesse",
     setAoiTooltip: "Abilita la selezione della regione di interesse sulla mappa",
+        
     // End i18n.
         
     // TODO: bbox piemonte    
@@ -84,6 +85,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             
         var map = this.appTarget.mapPanel.map;
         map.enebaleMapEvent = true;
+        
+        this.mapProjection = new OpenLayers.Projection(map.getProjection());
+        this.wgs84Projection = new OpenLayers.Projection("EPSG:4326")
         
         var processing = this.buildForm(map);
        
@@ -242,23 +246,16 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
               allowDecimals: true,
               hideLabel : false                    
         });
-                  
+        
+        var me=this;     
+        
         //
         // Geographical Filter Field Set
         //     
         this.selectAOI = new OpenLayers.Control.SetBox({      
-            map: map,  
-            setROI: function(aoiArray){
-                document.getElementById('WestBBOX').value = aoiArray[0];
-                document.getElementById('SouthBBOX').value = aoiArray[1];
-                document.getElementById('EastBBOX').value = aoiArray[2];
-                document.getElementById('NorthBBOX').value = aoiArray[3];
-            },
-            onChangeAOI: function(){
-                var selbbox = new OpenLayers.Bounds.fromString(this.currentAOI);
-                
-                var aoiArray = selbbox.toArray();
-                this.setROI(aoiArray);             
+            map: map,            
+            onChangeAOI: function(){                               
+                me.setAOI(new OpenLayers.Bounds.fromString(this.currentAOI));             
             } 
         }); 
         
@@ -310,10 +307,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                   scope: this, 
                   click: function(button) {
                     var extent=map.getExtent();
-                    this.northField.setValue(extent.top);
-                    this.southField.setValue(extent.bottom);
-                    this.westField.setValue(extent.left);
-                    this.eastField.setValue(extent.right);  
+                    this.setAOI(extent);                    
                     this.removeAOILayer(map);                  
                   }
               }
@@ -555,6 +549,14 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }
     },
     
+    setAOI: function(bounds) {
+        var wgs84Bounds = bounds.transform(this.mapProjection,this.wgs84Projection);
+        this.northField.setValue(wgs84Bounds.top);
+        this.southField.setValue(wgs84Bounds.bottom);
+        this.westField.setValue(wgs84Bounds.left);
+        this.eastField.setValue(wgs84Bounds.right);  
+    },
+    
     showMap: function(params){
         if(params){
             this.showLayer(params);
@@ -591,12 +593,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             }else{
                 defBBOX = new OpenLayers.Bounds.fromString(this.defaultBBOXFilterExtent);
             }
-
-            var bboxArray = defBBOX.toArray();
-            this.westField.setValue(bboxArray[0]);
-            this.southField.setValue(bboxArray[1]); 
-            this.eastField.setValue(bboxArray[2]);
-            this.northField.setValue(bboxArray[3]);
+            this.setAOI(defBBOX);            
     },
     
     _makeParams: function(form){
@@ -667,9 +664,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     },
     
     bboxValidation: function(){
-        if(!this.westField.isValid() && 
-            !this.southField.isValid() && 
-                !this.eastField.isValid() && 
+        if(!this.westField.isValid() || 
+            !this.southField.isValid() || 
+                !this.eastField.isValid() || 
                     !this.northField.isValid()){
             Ext.Msg.show({
                 title: "Selezione Area di Interesse",
@@ -686,7 +683,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 this.southField.getValue(), 
                 this.eastField.getValue(), 
                 this.northField.getValue()
-            );
+            ).transform(this.wgs84Projection,this.mapProjection);
             
             if(this.maxROIArea ? selbbox.toGeometry().getArea() > this.maxROIArea : false){
                 var useROI = function(buttonId, text, opt){
@@ -781,11 +778,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.elab.setValue(this.status.processing);
         this.form.setValue(this.status.form);
         
-        var bboxArray = this.status.roi.bbox.toArray();
-        this.westField.setValue(bboxArray[0]);
-        this.southField.setValue(bboxArray[1]); 
-        this.eastField.setValue(bboxArray[2]);
-        this.northField.setValue(bboxArray[3]);
+        this.setAOI(this.status.roi.bbox);
         
         this.bers.setValue(this.status.target);
         this.accident.setValue(this.status.accident);
@@ -808,7 +801,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     this.southField.getValue(), 
                     this.eastField.getValue(), 
                     this.northField.getValue()
-                )
+                ).transform(this.wgs84Projection,this.mapProjection)
             };    
         }else{
             obj.roi = {
@@ -819,7 +812,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         this.southField.getValue(), 
                         this.eastField.getValue(), 
                         this.northField.getValue()
-                    )
+                    ).transform(this.wgs84Projection,this.mapProjection)
             }
         }
 
