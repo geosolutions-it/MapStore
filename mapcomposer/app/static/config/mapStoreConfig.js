@@ -3,7 +3,31 @@
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "it",
    "embedding": false,
-   "gsSources":{ 
+   "gsSources":{                
+        "csi_aa": {
+            "ptype": "gxp_wmssource",
+			"title": "Limiti Amministrativi RP",
+			"version":"1.3.0",
+		    "url": "http://geoeng-pta.regione.piemonte.it/ws/pta/PIE_WMS01_AmbitiAmministrativi"
+        },
+        "csi_tu": {
+            "ptype": "gxp_wmssource",
+			"title": "Tessuto Urbanizzato RP",
+			"version":"1.3.0",
+		    "url": "http://geoeng-pta.regione.piemonte.it/ws/pta/PIE_WMS02_TessutoUrbanizzato"
+        },
+        "csi_trasp": {
+            "ptype": "gxp_wmssource",
+			"title": "Trasporti RP",
+			"version":"1.3.0",
+		    "url": "http://geoeng-pta.regione.piemonte.it/ws/pta/PIE_WMS03_Trasporti"
+        },
+        "csi_idro": {
+            "ptype": "gxp_wmssource",
+			"title": "Idrografia RP",
+			"version":"1.3.0",
+		    "url": "http://geoeng-pta.regione.piemonte.it/ws/pta/PIE_WMS04_Idrografia"
+        },
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
 		}, 
@@ -31,7 +55,7 @@
 		}
 	},
 	"map": {
-		"projection": "EPSG:900913",
+		"projection": "EPSG:3857",
 		"units": "m",
 		"center": [903893.13597286, 5651406.520669],
 		"zoom": 8,
@@ -39,7 +63,8 @@
 			456125.02434063, 5403020.7962146,
 			1323838.1693132, 5887325.807362
 		],
-		"layers": [
+		"layers": [                      
+            
 			{
 				"source": "bing",
 				"title": "Bing Aerial",
@@ -55,7 +80,28 @@
 				"title": "MapQuest OpenStreetMap",
 				"name": "osm",
 				"group": "background"
-			},{
+			},
+            {
+                "source": "csi_aa",
+                "title": "Ambiti Amministrativi",
+                "name": "AmbitiAmministrativi",
+                "group": "background"
+            },{
+                "source": "csi_tu",
+                "title": "Tessuto Urbanizzato",
+                "name": "TessutoUrbanizzato",
+                "group": "background"
+            },{
+                "source": "csi_trasp",
+                "title": "Trasporti",
+                "name": "Trasporti",
+                "group": "background"
+            },{
+                "source": "csi_idro",
+                "title": "Idrografia",
+                "name": "Idrografia",
+                "group": "background"
+            },{
 				"source": "google",
 				"title": "Google Roadmap",
 				"name": "ROADMAP",
@@ -103,7 +149,7 @@
 			 "defaults":{
 				"style":"padding:5px",
 				"baseParams":{
-				   "LEGEND_OPTIONS":"forceLabels:on;fontSize:10",
+				   "LEGEND_OPTIONS":"forceLabels:on;forceTitles:off;fontSize:10",
 				   "WIDTH":12,
 				   "HEIGHT":12
 				}
