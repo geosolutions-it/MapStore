@@ -388,20 +388,24 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             fields: ['name', 'property'],
             data :  [
                 ['Tutti i Bersagli', 'calc_formula_tot'],
-                /*['Zone urbanizzate', 'calc_formula_zone_urbanizzate'],*/
-                /*['Zone industriali, commerciali e reti di comunicazione', 'calc_formula_zone_urbanizzate'],
-                ['Zone estrattive, discariche e cantieri', 'calc_formula_zone_urbanizzate'],
-                ['Zone verdi artificiali non agricole', 'calc_formula_zone_urbanizzate'],
-                ['Seminativi', 'calc_formula_aree_agricole'],*/
-                ['Colture permanenti', 'calc_formula_aree_agricole'],
-                /*['Prati stabili', 'calc_formula_aree_agricole'],
-                ['Zone agricole eterogenee', 'calc_formula_aree_agricole'],*/
-                ['Zone boscate', 'calc_formula_aree_boscate'],
-                ['Zone caratterizzate da vegetazione arbustiva e/o erbacea', 'calc_formula_aree_boscate']/*,
-                ['Zone aperte con vegetazione rada o assente', 'calc_formula_aree_boscate']*/
+                ['Popolazione residente', 'calc_formula_tot'],
+                ['Popolazione fluttuante turistica (medio)', 'calc_formula_tot'],
+                ['Popolazione fluttuante turistica (max)', 'calc_formula_tot'],
+                ['Addetti industria e servizi', 'calc_formula_tot'],
+                ['Addetti/utenti strutture sanitarie', 'calc_formula_tot'],
+                ['Addetti/utenti strutture scolastiche', 'calc_formula_tot'],
+                ['Addetti/utenti centri commerciali', 'calc_formula_tot'],
+                ['Utenti della strada coinvolti', 'calc_formula_tot'],
+                ['Utenti della strada territoriali', 'calc_formula_tot'],
+                ['Strutture', 'calc_formula_tot'],
+                ['Aree boscate', 'calc_formula_aree_boscate'],
+                ['Aree protette', 'calc_formula_aree_boscate'],
+                ['Aree agricole', 'calc_formula_aree_agricole'],
+                ['Acque sotterranee', 'calc_formula_aree_agricole'],
+                ['Acque superficiali', 'calc_formula_aree_agricole']
             ]
         });
-        
+
         this.bers = new Ext.form.ComboBox({
             fieldLabel: "Bersaglio",
             id: "bers",
@@ -444,6 +448,43 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         //
         // incidente
         //
+        var classiADRStore = new Ext.data.ArrayStore({
+            fields: ['name'],
+            data :  [
+                ['Tutte le classi'],
+                ['MATERIE E OGGETTI ESPLOSIVI'],
+                ['GAS COMPRESSI, LIQUEFATTI O DISCIOLTI IN PRESSIONE'],
+                ['MATERIE LIQUIDE INFIAMMABILI'],
+                ['MATERIE SOLIDE INFIAMMABILI'],
+                ['MATERIE SOGGETTE AD ACCENSIONE SPONTANEA'],
+                ['MATERIE CHE A CONTATTO CON L?ACQUA SVILUPPANO GAS INFIAMMABILI'],
+                ['MATERIE COMBURENTI'],
+                ['PEROSSIDI ORGANICI'],
+                ['MATERIE TOSSICHE'],
+                ['MATERIE INFETTANTI'],
+                ['MATERIE RADIOATTIVE'],
+                ['MATERIE CORROSIVE'],
+                ['MATERIE E OGGETTI PERICOLOSE DI ALTRA NATURA']
+            ]
+        });
+        
+        var sostanzeStore = new Ext.data.ArrayStore({
+            fields: ['name'],
+            data :  [
+                ['Tutte le sostanze'],
+                ['IDROGENO COMPRESSO'],
+                ['OSSIGENO COMPRESSO'],
+                ['GAS DI PETROLIO LIQUEFATTO'],
+                ['OSSIDO DI ETILENE (+AZOTO)'],
+                ['AMMONIACA ANIDRA'],
+                ['OSSIGENO LIQUIDO REFRIGERATO'],
+                ['GASOLIO'],
+                ['BENZINA'],
+                ['METANOLO'],
+                ['EPICLORIDRINA']
+            ]
+        });
+               
         
         var accidentStore = new Ext.data.ArrayStore({
             fields: ['name'],
@@ -461,6 +502,85 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 ['DISPERSIONE VAPORI DA LIQUIDO REFRIGERATO TOSSICO'],
                 ['DISPERSIONE GAS DA GAS LIQUEFATTO TOSSICO']
             ]
+        });
+        
+        var seriousnessStore = new Ext.data.ArrayStore({
+            fields: ['name'],
+            data :  [
+                ['Tutte le entità'],
+                ['Lieve'],
+                ['Grave']
+            ]
+        });
+        
+        this.classi = new Ext.form.ComboBox({
+            fieldLabel: "Classe ADR",
+            id: "classicb",
+            width: 150,
+            hideLabel : false,
+            store: classiADRStore,    
+            displayField: 'name',    
+            typeAhead: true,
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: true,
+            resizable: true,
+            value: "Tutti le classi",
+            listeners: {
+                beforeselect: function(cb, record, index){
+                    var value = record.get('name');  
+
+                    if(value != 'Tutti le classi'){
+                        Ext.Msg.show({
+                            title: "Scenario Incidentale",
+                            msg: "Dati non ancora disponibili per questo scenario",
+                            icon: Ext.MessageBox.WARNING
+                        });
+                        
+                        return false;
+                    }
+                },
+                select: function(cb, record, index) {
+                    //var value = record.get('name');             
+                }
+            }              
+        });
+        
+        this.sostanze = new Ext.form.ComboBox({
+            fieldLabel: "Sostanze",
+            id: "sostanzecb",
+            width: 150,
+            hideLabel : false,
+            store: sostanzeStore,    
+            displayField: 'name',    
+            typeAhead: true,
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: true,
+            resizable: true,
+            value: "Tutti le sostanze",
+            listeners: {
+                beforeselect: function(cb, record, index){
+                    var value = record.get('name');  
+
+                    if(value != 'Tutti le sostanze'){
+                        Ext.Msg.show({
+                            title: "Scenario Incidentale",
+                            msg: "Dati non ancora disponibili per questo scenario",
+                            icon: Ext.MessageBox.WARNING
+                        });
+                        
+                        return false;
+                    }
+                },
+                select: function(cb, record, index) {
+                    //var value = record.get('name');             
+                }
+            }              
         });
         
         this.accident = new Ext.form.ComboBox({
@@ -499,6 +619,41 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             }              
         });
         
+        this.seriousness = new Ext.form.ComboBox({
+            fieldLabel: "Entità",
+            id: "seriousnesscb",
+            width: 150,
+            hideLabel : false,
+            store: seriousnessStore,    
+            displayField: 'name',    
+            typeAhead: true,
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: true,
+            resizable: true,
+            value: "Tutte le entità",
+            listeners: {
+                beforeselect: function(cb, record, index){
+                    var value = record.get('name');  
+
+                    if(value != 'Tutte le entità'){
+                        Ext.Msg.show({
+                            title: "Scenario Incidentale",
+                            msg: "Dati non ancora disponibili per questo scenario",
+                            icon: Ext.MessageBox.WARNING
+                        });
+                        
+                        return false;
+                    }
+                },
+                select: function(cb, record, index) {
+                    //var value = record.get('name');             
+                }
+            }              
+        });
+        
         this.accidentSet = new Ext.form.FieldSet({
             title: "Tipo Incidente",
             id: 'accidentfset',
@@ -508,7 +663,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 bodyStyle:'padding:5px;'
             },
             items: [
-                 this.accident
+                this.classi,
+                this.sostanze,
+                this.accident,
+                this.seriousness
             ]
         });
         
