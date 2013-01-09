@@ -388,7 +388,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             fields: ['name', 'property'],
             data :  [
                 ['Tutti i Bersagli', 'calc_formula_tot'],
-                ['Popolazione residente', 'calc_formula_tot'],
+                ['Popolazione residente', 'calc_formula_residenti'],
                 ['Popolazione fluttuante turistica (medio)', 'calc_formula_tot'],
                 ['Popolazione fluttuante turistica (max)', 'calc_formula_tot'],
                 ['Addetti industria e servizi', 'calc_formula_tot'],

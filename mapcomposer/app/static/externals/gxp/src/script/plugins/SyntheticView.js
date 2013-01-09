@@ -50,6 +50,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     geometryName: "geometria",
     accidentTipologyName: "tipologia",
     
+    analiticViewScale: 17070,
+    
     /** private: method[constructor]
      *  :arg config: ``Object``
      */
@@ -118,6 +120,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             return new Record(data, layer.id);
         }
         return null;
+    },
+    
+    isHumanTarget: function() {
+        return this.status.target === 'Popolazione residente';
+    },
+    
+    isNotHumanTarget: function() {
+        return this.status.target !== 'Tutti i bersagli';
     },
     
     
@@ -205,7 +215,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     if(targetLayer)
                         map.removeLayer(targetLayer);
                         
-                    var analyticButton = Ext.getCmp("analytic_view").disable();                    
+                    //var analyticButton = Ext.getCmp("analytic_view").disable();                    
                     var south = Ext.getCmp("south").collapse();
                     
                     this.processingPane.show(this.target);
@@ -232,7 +242,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         disabled: true,
                         id: "analytic_view",
                         scope: this,
-                        handler: function(){
+                        handler: function(){                            
                             var featureManager = this.target.tools["featuremanager"];
                             
                             var map = this.target.mapPanel.map;
@@ -254,7 +264,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                 if(target != 'Tutti i Bersagli'){
                                     filter = new OpenLayers.Filter.Comparison({
                                        type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                                       property: "descrizione_clc",
+                                       property: "tipobersaglio",
                                        value: target
                                     });
                                     
@@ -313,11 +323,20 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                 map.removeLayer(bufferArchi);
                             }
 
-                            
-                            
+                            var style = 'aggregation_selection_buffer_1';
+                            debugger;
+                            if(this.isHumanTarget()) {
+                                style='aggregation_selection_buffer_human';
+                            } else if(this.isNotHumanTarget()) {
+                                style='aggregation_selection_buffer_nothuman';
+                            }
                             var bufferArchi = this.createLayerRecord({
                                 name: this.bufferLayerName,
-                                title: this.bufferLayerTitle
+                                title: this.bufferLayerTitle,
+                                params: {
+                                    styles: style,
+                                    buffer: 100
+                                }
                             });
                                                         
                             var bersagli = this.createLayerRecord({
@@ -375,16 +394,16 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         if(this.outputTarget)
             Ext.getCmp(this.outputTarget).setActiveTab(this.controlPanel);
         
-        /*this.target.mapPanel.map.events.register('zoomend', this, function(){
+        this.target.mapPanel.map.events.register('zoomend', this, function(){
             var scale = this.target.mapPanel.map.getScale();
             var scale = Math.round(scale);
             
-            if(scale <= 17061){
+            if(scale <= this.analiticViewScale) {
                 Ext.getCmp("analytic_view").enable();
-            }else if(scale > 17061){
+            } else {
                 Ext.getCmp("analytic_view").disable();
             }
-        });*/
+        });
         
         return this.controlPanel;
     },
@@ -404,7 +423,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         //
         // Allow the Analytic visualizzation functionalities
         //
-        Ext.getCmp("analytic_view").enable();
+        //Ext.getCmp("analytic_view").enable();
     },
     
     getStatus: function(){

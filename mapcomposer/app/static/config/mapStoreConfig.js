@@ -309,11 +309,13 @@
 				{"name": "id_tema",         "mapping": "properties.id_tema"},
 				{"name": "superficie",      "mapping": "properties.superficie"},
 				{"name": "descrizione_clc", "mapping": "properties.descrizione_clc"},
+                {"name": "tipobersaglio", "mapping": "properties.tipobersaglio"},
 				{"name": "type",		    "mapping": "type"}
 			],
 			"columnModel": [
 				{"id":     "id_tema",         "dataIndex": "id_tema", "header": "id_tema"},
 				{"header": "superficie",      "dataIndex": "superficie"},
+                {"header": "Tipologia", "dataIndex": "tipobersaglio"},
 				{"header": "descrizione_clc", "dataIndex": "descrizione_clc"}
 			],
 			"index": 29
