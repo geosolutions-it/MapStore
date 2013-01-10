@@ -113,14 +113,18 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                                 this.displayPopup(
                                     evt, x.get("title") || x.get("name"), match[1]
                                 );
-                            }else{
+                            } else {
+                                this.displayPopup(
+                                    evt, x.get("title") || x.get("name"), this.noDataMsg
+                                );
+                            }/*else{
 								Ext.Msg.show({
 								    title: this.popupTitle,
 									msg: this.noDataMsg,
 									buttons: Ext.Msg.OK,
 									icon: Ext.MessageBox.WARNING
 								});	
-							}
+							}*/
                         },
                         scope: this
                     }
