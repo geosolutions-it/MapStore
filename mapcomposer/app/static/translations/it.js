@@ -20,7 +20,7 @@ GeoExt.Lang.add("it", {
         mapInfoText: "Informazioni Mappa",
         descriptionText: "Descrizione",
         contactText: "Contatto",
-        aboutThisMapText: "Approposito di questa Mappa",
+        aboutThisMapText: "Crediti",
         searchTabTitle : "Portale",
         viewTabTitle : "Vista",
 		markerPopupTitle: "Dettagli",
