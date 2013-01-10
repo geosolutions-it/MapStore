@@ -383,7 +383,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                 }
                             })];
                             
-                            if(this.isMixedTargets()) {
+                            if(!this.status || this.isMixedTargets()) {
                                 newLayers.push(this.addHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitle+' (Bersagli umani)'));
                                 newLayers.push(this.addNotHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitle+' (Bersagli ambientali)'));
                             } else if(this.isHumanTarget()) {
