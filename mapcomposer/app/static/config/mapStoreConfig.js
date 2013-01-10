@@ -47,7 +47,7 @@
 			"ptype": "gxp_wmssource",
 			"title": "Destination GeoServer",
 			"version":"1.1.1",
-		    "url": "http://localhost:8080/geoserver/ows",
+		    "url": "http://localhost:8080/geoserver/geosolutions/ows",
 			"layerBaseParams": {
 				"TILED": true,
 				"TILESORIGIN": "-180,-90"
@@ -119,7 +119,7 @@
 			},{
 				"source": "destination",
 				"title": "Rischio Totale",
-				"name": "geosolutions:aggregated_data_selection",
+				"name": "aggregated_data_selection",
 				"displayInLayerSwitcher": true,
 				"tiled": false
 			}
@@ -127,7 +127,8 @@
 	},
 	
 	"proj4jsDefs": {
-		"EPSG:32632": "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+		"EPSG:32632": "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+        "EPSG:3857": "+title= Google Mercator EPSG:3857 +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs"
 	},
 	
 	"tools":[
@@ -288,11 +289,11 @@
 			"ptype": "gxp_syntheticview",
 			"outputTarget": "east",
 			"id": "syntheticview",
-			"selectionLayerName": "geosolutions:aggregated_data_selection",
+			"selectionLayerName": "aggregated_data_selection",
 			"selectionLayerTitle": "Rischio Totale", 	
-			"targetLayerName": "geosolutions:bersagli",		
-			"bufferLayerName": "geosolutions:siig_aggregation_1_buffer",
-			"selectionLayerBaseURL": "http://localhost:8080/geoserver/wms",
+			"targetLayerName": "bersagli",		
+			"bufferLayerName": "siig_aggregation_1_buffer",
+			"selectionLayerBaseURL": "http://localhost:8080/geoserver/geosolutions/wms",
 			"selectionLayerProjection": "EPSG:32632",
 			"geometryName": "geometria",
 			"accidentTipologyName": "tipologia",
@@ -301,8 +302,8 @@
 	    {
 			"ptype": "gxp_wfsgrid",
 			"outputTarget": "featurelist",
-			"wfsURL": "http://localhost:8080/geoserver/wfs",
-			"featureType": "geosolutions:bersagli",
+			"wfsURL": "http://localhost:8080/geoserver/geosolutions/wfs",
+			"featureType": "bersagli",
 			"storeFields": [
 				{"name": "id",              "mapping": "id"},
 				{"name": "geometry",        "mapping": "geometry"},
