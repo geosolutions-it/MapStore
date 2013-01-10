@@ -43,7 +43,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     bufferLayerName: "geosolutions:siig_aggregation_1_buffer",
     targetLayerName: "geosolutions:bersagli",
     bufferLayerTitle: "Aree di danno",
+    bufferLayerTitleHuman: "Aree di danno (Bersagli Umani)",
+    bufferLayerTitleNotHuman: "Aree di danno (Altri Bersagli)",
     targetLayerTitle: "Bersagli", 
+    
+    formulaLayerTitle: "Rischio Totale",
     
     layerImageFormat: "image/png8",
     
@@ -127,9 +131,58 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
     isNotHumanTarget: function() {
-        return this.status.target !== 'Tutti i bersagli';
+        return this.status.target !== 'Tutti i Bersagli' && this.status.target !== 'Popolazione residente';
     },
     
+    isMixedTargets: function() {
+        return this.status.target === 'Tutti i Bersagli';
+    },
+    
+    
+    addHumanTargetBuffer: function(layers,seriousness,title) {        
+        var distancesBySeriousness={
+            'Lieve':[30,42,48,58],
+            'Grave':[75,109,125,138]
+        };
+        var distances = distancesBySeriousness[seriousness];
+
+        return this.createLayerRecord({
+            name: this.bufferLayerName,
+            title: title,
+            params: {
+                styles: 'aggregation_selection_buffer_human',
+                buffer: 100,
+                env:'elevata:'+distances[0]+';inizio:'+distances[1]+';irreversibili:'+distances[2]+';reversibili:'+distances[3]
+            }
+        });        
+    },
+    
+    addNotHumanTargetBuffer: function(layers,seriousness,title) {        
+        var distancesBySeriousness={
+            'Lieve':8,
+            'Grave':25
+        };
+                                
+        return this.createLayerRecord({
+            name: this.bufferLayerName,
+            title: title,
+            params: {
+                styles: 'aggregation_selection_buffer_nothuman',
+                buffer: 100,
+                env:'distance:'+distancesBySeriousness[seriousness]
+            }
+        });
+    },
+    
+    removeLayers: function(map,layers) {
+        var layer;
+        for(var i = 0, layerName; layerName = layers[i]; i++) {
+            layer=map.getLayersByName(layerName)[0];
+            if(layer) {
+                map.removeLayer(layer);
+            }
+        }        
+    },
     
     /** private: method[addOutput]
      *  :arg config: ``Object``
@@ -200,20 +253,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 text: "Esegui Elaborazione",
                 iconCls: 'elab-button',
                 scope: this,
-                handler: function(){    
-                    var map = this.target.mapPanel.map;        
-                    
-                    var bersagli = map.getLayersByName(this.targetLayerTitle)[0];
-                    if(bersagli)
-                        map.removeLayer(bersagli);
-                        
-                    var bufferArchi = map.getLayersByName(this.bufferLayerTitle)[0];
-                    if(bufferArchi)
-                        map.removeLayer(bufferArchi);
-                        
-                    var targetLayer = map.getLayersByName("Bersaglio Selezionato")[0];
-                    if(targetLayer)
-                        map.removeLayer(targetLayer);
+                handler: function(){                                            
+                    this.removeLayers(this.target.mapPanel.map,[this.targetLayerTitle,this.bufferLayerTitle,this.bufferLayerTitleHuman,this.bufferLayerTitleNotHuman,"Bersaglio Selezionato"]);
                         
                     //var analyticButton = Ext.getCmp("analytic_view").disable();                    
                     var south = Ext.getCmp("south").collapse();
@@ -312,43 +353,45 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     viewParams += ";tipologia:" + tipologia; 
                                 }
                             }
+                            
+                            var seriousness='Grave';
+                            if(status && status.seriousness){                                
+                                if(status.seriousness != 'Tutte le entità'){
+                                    seriousness = status.seriousness;                                    
+                                }
+                            }
 
                             //alert(viewParams);
+                            this.removeLayers(map,[this.targetLayerTitle, this.bufferLayerTitleHuman, this.bufferLayerTitleNotHuman, this.bufferLayerTitle]);                            
                             
-                            var bersagli = map.getLayersByName(this.targetLayerTitle)[0];
-                            var bufferArchi = map.getLayersByName(this.bufferLayerTitle)[0];
-                            
-                            if(bersagli && bufferArchi){
-                                map.removeLayer(bersagli);
-                                map.removeLayer(bufferArchi);
-                            }
-
-                            var style = 'aggregation_selection_buffer_1';
-                            debugger;
-                            if(this.isHumanTarget()) {
-                                style='aggregation_selection_buffer_human';
-                            } else if(this.isNotHumanTarget()) {
-                                style='aggregation_selection_buffer_nothuman';
-                            }
-                            var bufferArchi = this.createLayerRecord({
-                                name: this.bufferLayerName,
-                                title: this.bufferLayerTitle,
-                                params: {
-                                    styles: style,
-                                    buffer: 100
-                                }
-                            });
-                                                        
-                            var bersagli = this.createLayerRecord({
+                            var newLayers=[this.createLayerRecord({
                                 name: this.targetLayerName,
                                 title: this.targetLayerTitle, 
                                 params: {                                                                
                                     viewparams: viewParams,                                    
                                     filter: ogcFilterString ? ogcFilterString : ''
                                 }
-                            });
+                            })];
                             
-                            this.target.mapPanel.layers.add([bufferArchi, bersagli]);                                               
+                            if(this.isMixedTargets()) {
+                                newLayers.push(this.addHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitleHuman));
+                                newLayers.push(this.addNotHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitleNotHuman));
+                            } else if(this.isHumanTarget()) {
+                                newLayers.push(this.addHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitle));                                
+                            } else if(this.isNotHumanTarget()) {
+                                newLayers.push(this.addNotHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitle));                                
+                            }
+                            
+                            var layerStore = this.target.mapPanel.layers;                            
+                            var mainLayerIndex = layerStore.findBy(function(rec) {
+                                return rec.get('title') === this.formulaLayerTitle;
+                            }, this);
+                            if(mainLayerIndex !== -1) {
+                                var mainLayer = layerStore.getAt(mainLayerIndex);
+                                layerStore.remove(mainLayer);
+                                newLayers.push(mainLayer);
+                            }
+                            this.target.mapPanel.layers.add(newLayers);                                               
                             
                             //
                             // Manage target grid
