@@ -42,10 +42,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     bufferLayerName: "geosolutions:siig_aggregation_1_buffer",
     targetLayerName: "geosolutions:bersagli",
-    bufferLayerTitle: "Aree di danno",
-    bufferLayerTitleHuman: "Aree di danno (Bersagli Umani)",
-    bufferLayerTitleNotHuman: "Aree di danno (Altri Bersagli)",
+    bufferLayerTitle: "Aree di danno",    
     targetLayerTitle: "Bersagli", 
+    
+    currentBufferLayers: [],
     
     formulaLayerTitle: "Rischio Totale",
     
@@ -146,6 +146,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         };
         var distances = distancesBySeriousness[seriousness];
 
+        this.currentBufferLayers.push(title);
+        
         return this.createLayerRecord({
             name: this.bufferLayerName,
             title: title,
@@ -154,7 +156,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 buffer: 100,
                 env:'elevata:'+distances[0]+';inizio:'+distances[1]+';irreversibili:'+distances[2]+';reversibili:'+distances[3]
             }
-        });        
+        });                
     },
     
     addNotHumanTargetBuffer: function(layers,seriousness,title) {        
@@ -162,8 +164,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             'Lieve':8,
             'Grave':25
         };
-                                
-        return this.createLayerRecord({
+             
+        this.currentBufferLayers.push(title);
+             
+        return layer = this.createLayerRecord({
             name: this.bufferLayerName,
             title: title,
             params: {
@@ -171,7 +175,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 buffer: 100,
                 env:'distance:'+distancesBySeriousness[seriousness]
             }
-        });
+        });        
     },
     
     removeLayers: function(map,layers) {
@@ -253,9 +257,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 text: "Esegui Elaborazione",
                 iconCls: 'elab-button',
                 scope: this,
-                handler: function(){                                            
-                    this.removeLayers(this.target.mapPanel.map,[this.targetLayerTitle,this.bufferLayerTitle,this.bufferLayerTitleHuman,this.bufferLayerTitleNotHuman,"Bersaglio Selezionato"]);
-                        
+                handler: function(){        
+                    var map = this.target.mapPanel.map;
+                    
+                    this.removeLayers(map,[this.targetLayerTitle,"Bersaglio Selezionato"]);
+                    this.removeBufferLayers(map);
+                                        
                     //var analyticButton = Ext.getCmp("analytic_view").disable();                    
                     var south = Ext.getCmp("south").collapse();
                     
@@ -298,11 +305,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             //
                             var ogcFilterString;
                             var filter;
+                            var targetName;
                             if(status && status.target){
                                 var target = status.target;
                                 //alert(target);
                         
                                 if(target != 'Tutti i Bersagli'){
+                                    targetName = status.targetName;
                                     filter = new OpenLayers.Filter.Comparison({
                                        type: OpenLayers.Filter.Comparison.EQUAL_TO,
                                        property: "tipobersaglio",
@@ -362,7 +371,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             }
 
                             //alert(viewParams);
-                            this.removeLayers(map,[this.targetLayerTitle, this.bufferLayerTitleHuman, this.bufferLayerTitleNotHuman, this.bufferLayerTitle]);                            
+                            this.removeLayers(map,[this.targetLayerTitle]);                            
+                            this.removeBufferLayers(map);
                             
                             var newLayers=[this.createLayerRecord({
                                 name: this.targetLayerName,
@@ -374,12 +384,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             })];
                             
                             if(this.isMixedTargets()) {
-                                newLayers.push(this.addHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitleHuman));
-                                newLayers.push(this.addNotHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitleNotHuman));
+                                newLayers.push(this.addHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitle+' (Bersagli umani)'));
+                                newLayers.push(this.addNotHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitle+' (Bersagli ambientali)'));
                             } else if(this.isHumanTarget()) {
-                                newLayers.push(this.addHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitle));                                
+                                newLayers.push(this.addHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitle+' ('+targetName+')'));                                
                             } else if(this.isNotHumanTarget()) {
-                                newLayers.push(this.addNotHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitle));                                
+                                newLayers.push(this.addNotHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitle+' ('+targetName+')'));                                
                             }
                             
                             var layerStore = this.target.mapPanel.layers;                            
@@ -449,6 +459,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         });
         
         return this.controlPanel;
+    },
+    
+    removeBufferLayers: function(map) {
+        this.removeLayers(map,this.currentBufferLayers);
+        this.currentBufferLayers = [];
     },
     
     getControlPanel: function(){

@@ -438,6 +438,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     if(value == "calc_formula_tot")
                         value = null;
                     this.selectedTargetProp = value;
+                    this.selectedTargetName = record.get('name');
                 }
             }              
         });
@@ -986,6 +987,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }
 
         obj.target = this.bers.getValue();
+        obj.targetName = this.selectedTargetName || 'Tutti i Bersagli';
         obj.accident = this.accident.getValue();
         obj.seriousness = this.seriousness.getValue();
         
