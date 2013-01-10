@@ -389,20 +389,20 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             data :  [
                 ['Tutti i Bersagli', 'calc_formula_tot'],
                 ['Popolazione residente', 'calc_formula_residenti'],
-                ['Popolazione fluttuante turistica (medio)', 'calc_formula_tot'],
-                ['Popolazione fluttuante turistica (max)', 'calc_formula_tot'],
-                ['Addetti industria e servizi', 'calc_formula_tot'],
-                ['Addetti/utenti strutture sanitarie', 'calc_formula_tot'],
-                ['Addetti/utenti strutture scolastiche', 'calc_formula_tot'],
-                ['Addetti/utenti centri commerciali', 'calc_formula_tot'],
-                ['Utenti della strada coinvolti', 'calc_formula_tot'],
-                ['Utenti della strada territoriali', 'calc_formula_tot'],
-                ['Strutture', 'calc_formula_tot'],
+                ['Popolazione fluttuante turistica (medio)', 'invalid'],
+                ['Popolazione fluttuante turistica (max)', 'invalid'],
+                ['Addetti industria e servizi', 'invalid'],
+                ['Addetti/utenti strutture sanitarie', 'invalid'],
+                ['Addetti/utenti strutture scolastiche', 'invalid'],
+                ['Addetti/utenti centri commerciali', 'invalid'],
+                ['Utenti della strada coinvolti', 'invalid'],
+                ['Utenti della strada territoriali', 'invalid'],
+                ['Strutture', 'invalid'],
                 ['Aree boscate', 'calc_formula_aree_boscate'],
-                ['Aree protette', 'calc_formula_aree_boscate'],
+                ['Aree protette', 'invalid'],
                 ['Aree agricole', 'calc_formula_aree_agricole'],
-                ['Acque sotterranee', 'calc_formula_aree_agricole'],
-                ['Acque superficiali', 'calc_formula_aree_agricole']
+                ['Acque sotterranee', 'invalid'],
+                ['Acque superficiali', 'invalid']
             ]
         });
 
@@ -424,7 +424,17 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 scope: this,
                 select: function(cb, record, index) {
-                    var value = record.get('property'); 
+                    var value = record.get('property');                     
+                    
+                    if(value === 'invalid'){
+                        Ext.Msg.show({
+                            title: "Bersaglio",
+                            msg: "Dati non ancora disponibili per questo bersaglio",
+                            icon: Ext.MessageBox.WARNING
+                        });
+                        
+                        return false;
+                    }
                     if(value == "calc_formula_tot")
                         value = null;
                     this.selectedTargetProp = value;
@@ -635,7 +645,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             resizable: true,
             value: "Tutte le entità",
             listeners: {
-                beforeselect: function(cb, record, index){
+                /*beforeselect: function(cb, record, index){
                     var value = record.get('name');  
 
                     if(value != 'Tutte le entità'){
@@ -647,7 +657,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         
                         return false;
                     }
-                },
+                },*/
                 select: function(cb, record, index) {
                     //var value = record.get('name');             
                 }
@@ -939,7 +949,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.setAOI(this.status.roi.bbox);
         
         this.bers.setValue(this.status.target);
-        this.accident.setValue(this.status.accident);
+        this.accident.setValue(this.status.accident);        
+        this.seriousness.setValue(this.status.seriousness);
     },
     
     getStatus: function(form){
@@ -976,6 +987,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 
         obj.target = this.bers.getValue();
         obj.accident = this.accident.getValue();
+        obj.seriousness = this.seriousness.getValue();
         
         return obj;
     }
