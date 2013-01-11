@@ -153,7 +153,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             title: title,
             params: {
                 styles: 'aggregation_selection_buffer_human',
-                buffer: 100,
+                buffer: 200,
                 env:'elevata:'+distances[0]+';inizio:'+distances[1]+';irreversibili:'+distances[2]+';reversibili:'+distances[3]
             }
         });                
@@ -374,14 +374,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             this.removeLayers(map,[this.targetLayerTitle]);                            
                             this.removeBufferLayers(map);
                             
-                            var newLayers=[this.createLayerRecord({
-                                name: this.targetLayerName,
-                                title: this.targetLayerTitle, 
-                                params: {                                                                
-                                    viewparams: viewParams,                                    
-                                    filter: ogcFilterString ? ogcFilterString : ''
-                                }
-                            })];
+                            var newLayers=[];
                             
                             if(!this.status || this.isMixedTargets()) {
                                 newLayers.push(this.addHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitle+' (Bersagli umani)'));
@@ -391,6 +384,15 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             } else if(this.isNotHumanTarget()) {
                                 newLayers.push(this.addNotHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitle+' ('+targetName+')'));                                
                             }
+                            
+                            newLayers.push(this.createLayerRecord({
+                                name: this.targetLayerName,
+                                title: this.targetLayerTitle, 
+                                params: {                                                                
+                                    viewparams: viewParams,                                    
+                                    filter: ogcFilterString ? ogcFilterString : ''
+                                }
+                            }));
                             
                             var layerStore = this.target.mapPanel.layers;                            
                             var mainLayerIndex = layerStore.findBy(function(rec) {
