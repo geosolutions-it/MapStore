@@ -213,13 +213,9 @@
                 }
             });
             
-            var poweredByGeoSol = new Ext.Button({
-                tooltip: 'Powered by GeoSolutions',
-                iconCls: "icon-geosol",
-                width : 150,
-                handler: function(btn){
-                    window.open('http://geo-solutions.it/contact/', '_blank');
-                }
+            var csiLabel = new Ext.Toolbar.TextItem({                
+                cls: "icon-csi",
+                width : 50
             });    
 			
 			var headerContent = [
@@ -263,7 +259,7 @@
                       id : 'header'
                     },appTabs],                          
                     bbar : [
-                      poweredByGeoSol, ' ', aboutButton
+                      csiLabel, ' ', aboutButton
                     ]
                 }]
             });

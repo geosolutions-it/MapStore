@@ -162,6 +162,13 @@ font-family: tahoma, arial, helvetica, sans-serif;
     width:150px !important;
 }
 
+.icon-csi {
+    background-repeat: no-repeat;
+    background-image: url(img/csi.png);
+    width:50px !important;
+    height: 16px !important;
+}
+
 /* Pan- and Zoom- Panel Styles*/
 
 .olControlPanPanel div {
