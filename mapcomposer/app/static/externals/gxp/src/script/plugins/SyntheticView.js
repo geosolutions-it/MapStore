@@ -188,6 +188,36 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }        
     },
     
+    loadGrid: function(fgrid, ogcFilterString, viewParams) {        
+        var store = fgrid.getStore();
+        
+        store.resetTotal();
+        store.removeAll();
+        
+        var query = ogcFilterString;
+        
+        var params = {
+            startindex: 0,          
+            maxfeatures: 10,
+            sort: "id_tema"
+        };
+        
+        if(query){
+            store.setBaseParam("filter", query);
+            store.setBaseParam("srsName", this.selectionLayerProjection);
+        }
+        
+        if(viewParams){
+            store.setBaseParam("viewParams", viewParams);
+        }
+        
+        
+
+        store.load({
+            params: params
+        });
+    },
+    
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
@@ -306,6 +336,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             var ogcFilterString;
                             var filter;
                             var targetName;
+                            
+                            var filterFormat = new OpenLayers.Format.Filter();
+                            var xmlFormat = new OpenLayers.Format.XML();   
                             if(status && status.target){
                                 var target = status.target;
                                 //alert(target);
@@ -317,11 +350,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                        property: "tipobersaglio",
                                        value: target
                                     });
-                                    
-                                    var filterFormat = new OpenLayers.Format.Filter();
-                                    ogcFilterString = filterFormat.write(filter);  
-                                    
-                                    var xmlFormat = new OpenLayers.Format.XML();                  
+                                                                        
+                                    ogcFilterString = filterFormat.write(filter);                                                                                         
                                     ogcFilterString = xmlFormat.write(ogcFilterString);
                                 }
                             }
@@ -408,34 +438,47 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             //
                             // Manage target grid
                             //
-                            var fgrid = Ext.getCmp("featuregrid");
-                            var store = fgrid.getStore();
-                            
-                            store.resetTotal();
-                            store.removeAll();
-                            
-                            var query = ogcFilterString;
-                            
-                            var params = {
-                                startindex: 0,          
-                                maxfeatures: 10,
-                                sort: "id_tema"
-                            };
-                            
-                            if(query){
-                                store.setBaseParam("filter", query);
-                                store.setBaseParam("srsName", this.selectionLayerProjection);
+                            var tabPanel = Ext.getCmp("featuregrid");
+                            var humanGrid = tabPanel.getItem('featuregridhuman');
+                            var notHumanGrid = tabPanel.getItem('featuregridnothuman');
+                            if(!this.status || this.isMixedTargets()) {
+                                tabPanel.unhideTabStripItem(humanGrid);
+                                tabPanel.unhideTabStripItem(notHumanGrid);
+                                
+                                filter = new OpenLayers.Filter.Comparison({
+                                   type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                   property: "tipobersaglio",
+                                   value: 'Popolazione residente'
+                                });
+                                                                
+                                ogcFilterString = filterFormat.write(filter);  
+                                ogcFilterString = xmlFormat.write(ogcFilterString);
+                                this.loadGrid(humanGrid, ogcFilterString, viewParams);
+                                
+                                filter = new OpenLayers.Filter.Comparison({
+                                   type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
+                                   property: "tipobersaglio",
+                                   value: 'Popolazione residente'
+                                });
+                                                                
+                                ogcFilterString = filterFormat.write(filter);  
+                                ogcFilterString = xmlFormat.write(ogcFilterString);
+                                
+                                this.loadGrid(notHumanGrid, ogcFilterString, viewParams);
+                                tabPanel.setActiveTab(humanGrid);
+                            } else if(this.isHumanTarget()) {
+                                tabPanel.hideTabStripItem(notHumanGrid);
+                                tabPanel.unhideTabStripItem(humanGrid);
+                                this.loadGrid(humanGrid, ogcFilterString, viewParams);
+                                tabPanel.setActiveTab(humanGrid);
+                            } else if(this.isNotHumanTarget()) {
+                                tabPanel.hideTabStripItem(humanGrid);
+                                tabPanel.unhideTabStripItem(notHumanGrid);
+                                this.loadGrid(notHumanGrid, ogcFilterString, viewParams);
+                                tabPanel.setActiveTab(notHumanGrid);
                             }
+                            Ext.getCmp("south").expand();
                             
-                            if(viewParams){
-                                store.setBaseParam("viewParams", viewParams);
-                            }
-                            
-                            var south = Ext.getCmp("south").expand();
-        
-                            store.load({
-                                params: params
-                            });
                         }
                     }
                 ]

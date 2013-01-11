@@ -308,7 +308,7 @@
 			"outputTarget": "featurelist",
 			"wfsURL": "http://localhost:8080/geoserver/geosolutions/wfs",
 			"featureType": "bersagli",
-			"storeFields": [
+			"storeFieldsNotHuman": [
 				{"name": "id",              "mapping": "id"},
 				{"name": "geometry",        "mapping": "geometry"},
 				{"name": "id_tema",         "mapping": "properties.id_tema"},
@@ -317,10 +317,23 @@
                 {"name": "tipobersaglio", "mapping": "properties.tipobersaglio"},
 				{"name": "type",		    "mapping": "type"}
 			],
-			"columnModel": [
+			"columnModelNotHuman": [
 				{"header": "Superficie",      "dataIndex": "superficie"},
                 {"header": "Tipologia", "dataIndex": "tipobersaglio"},
 				{"header": "Classe Corine Land Cover", "dataIndex": "descrizione_clc"}
+			],
+            "storeFieldsHuman": [
+				{"name": "id",              "mapping": "id"},
+				{"name": "geometry",        "mapping": "geometry"},
+				{"name": "id_tema",         "mapping": "properties.id_tema"},
+				{"name": "superficie",      "mapping": "properties.superficie"},
+				{"name": "descrizione_clc", "mapping": "properties.descrizione_clc"},
+                {"name": "tipobersaglio", "mapping": "properties.tipobersaglio"},
+				{"name": "type",		    "mapping": "type"}
+			],
+			"columnModelHuman": [
+				{"header": "Residenti",      "dataIndex": "superficie"},
+                {"header": "Tipologia", "dataIndex": "tipobersaglio"}
 			],
 			"index": 29
 	    }
