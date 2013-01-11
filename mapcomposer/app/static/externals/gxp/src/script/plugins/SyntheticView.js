@@ -167,7 +167,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
              
         this.currentBufferLayers.push(title);
              
-        return layer = this.createLayerRecord({
+        return this.createLayerRecord({
             name: this.bufferLayerName,
             title: title,
             params: {
