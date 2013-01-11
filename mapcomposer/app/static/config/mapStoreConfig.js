@@ -85,22 +85,26 @@
                 "source": "csi_aa",
                 "title": "Ambiti Amministrativi",
                 "name": "AmbitiAmministrativi",
-                "group": "background"
+                "group": "Dati di base",
+                "visibility": false
             },{
                 "source": "csi_tu",
                 "title": "Tessuto Urbanizzato",
                 "name": "TessutoUrbanizzato",
-                "group": "background"
+                "group": "Dati di base",
+                "visibility": false
             },{
                 "source": "csi_trasp",
                 "title": "Trasporti",
                 "name": "Trasporti",
-                "group": "background"
+                "group": "Dati di base",
+                "visibility": false
             },{
                 "source": "csi_idro",
                 "title": "Idrografia",
                 "name": "Idrografia",
-                "group": "background"
+                "group": "Dati di base",
+                "visibility": false
             },{
 				"source": "google",
 				"title": "Google Roadmap",
@@ -314,10 +318,9 @@
 				{"name": "type",		    "mapping": "type"}
 			],
 			"columnModel": [
-				{"id":     "id_tema",         "dataIndex": "id_tema", "header": "id_tema"},
-				{"header": "superficie",      "dataIndex": "superficie"},
+				{"header": "Superficie",      "dataIndex": "superficie"},
                 {"header": "Tipologia", "dataIndex": "tipobersaglio"},
-				{"header": "descrizione_clc", "dataIndex": "descrizione_clc"}
+				{"header": "Classe Corine Land Cover", "dataIndex": "descrizione_clc"}
 			],
 			"index": 29
 	    }
