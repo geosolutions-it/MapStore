@@ -114,7 +114,13 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 					var targetLayer = map.getLayersByName("Bersaglio Selezionato")[0];
 					if(!targetLayer){
 						targetLayer = new OpenLayers.Layer.Vector("Bersaglio Selezionato",{
-							displayInLayerSwitcher: false
+							displayInLayerSwitcher: false,
+                            style: {
+                                strokeColor: "#FF00FF",
+                                strokeWidth: 2,
+                                fillColor: "#FF00FF",
+                                fillOpacity: 0.8
+                            }
 						});
 						
 						map.addLayer(targetLayer);

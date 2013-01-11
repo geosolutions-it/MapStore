@@ -841,7 +841,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 title: "Selezione Area di Interesse",
                 buttons: Ext.Msg.OK,
                 msg: "Le coordinate dell'area di interesse non sono valide.",
-                icon: Ext.MessageBox.WARNING,
+                icon: Ext.MessageBox.WARNING
             });        
             
             this.bboxParam = null;
