@@ -153,6 +153,7 @@
 			 "legendPanelId":"legendPanel",
 			 "defaults":{
 				"style":"padding:5px",
+                "minScale":5000,
 				"baseParams":{
 				   "LEGEND_OPTIONS":"forceLabels:on;forceTitles:off;fontSize:10",
 				   "WIDTH":12,
