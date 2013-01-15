@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="mapcomposer" default="dist" basedir=".">
+<project name="mapcomposer" default="dist" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
     <description>
         MapStore Build File
@@ -8,45 +8,54 @@
     <property name="composerbuild" location="mapcomposer/build"/>
 	<property name="managerbuild" location="mapmanager/build"/>
 	<property name="manager.war.name" value="mapstore"/>
+    <property name="ringojs.dir" location="externals/ringojs"/>
+    <property name="ringojs.version" value="0.7.0-geosolutions"/>
+    <property name="ringojs.run" location="${ringojs.dir}/lib/ringojs-run-${ringojs.version}.jar"/>
     <property name="app.proxy.geoserver" value=""/>
 	<property name="app.debug.proxy" value="true"/>
     <property name="app.port" value="8081"/>
+    
+    <path id="maven-ant-tasks.classpath" path="lib/maven-ant-tasks-2.1.3.jar" />
+    <typedef resource="org/apache/maven/artifact/ant/antlib.xml"
+           uri="antlib:org.apache.maven.artifact.ant"
+           classpathref="maven-ant-tasks.classpath" />
 
-    <target name="init">
-
-        <!--echo message="pulling in submodules"/>
-        <exec executable="git" failonerror="true">
-            <arg line="submodule init"/>
-        </exec>
-        <exec executable="git" failonerror="true">
-            <arg line="submodule sync"/>
-        </exec>
-        <exec executable="git" failonerror="true">
-            <arg line="submodule update"/>
-        </exec-->
-
-        <echo message="building ringo jars"/>
-        <ant dir="externals/ringojs" target="jar"/>
-        <!--copy todir="externals/ringojs/lib" flatten="true" includeEmptyDirs="false">
-            <fileset dir="lib"/>
-        </copy-->
+    <target name="checkringo">
+      <condition property="ringo">
+        <available file="${ringojs.dir}" type="dir"/>
+      </condition>
+    </target>
+           
+    <target name="init" depends="checkringo" unless="ringo">
+        <echo message="downloading RingoJS jars"/>
+        <artifact:remoteRepository id="remote.repository" url="http://www.geo-solutions.it/m2" />
+        <artifact:dependencies filesetId="dependency.fileset" useScope="test">
+          <remoteRepository refid="remote.repository" />
+          <dependency groupId="org.ringojs" artifactId="ringojs" version="0.7.0-geosolutions"/>          
+          <dependency groupId="org.ringojs" artifactId="ringojs-run" version="0.7.0-geosolutions"/>          
+        </artifact:dependencies>
+        <copy todir="${ringojs.dir}/lib">
+          <fileset refid="dependency.fileset" />
+          <!-- This mapper strips off all leading directory information -->
+          <mapper type="flatten" />
+        </copy>        
 
     </target>
     
-    <target name="buildjs">
+    <target name="buildjs" depends="init">
 
 	    <!-- mapcomposer -->
         <mkdir dir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/script"/>
-        <java jar="externals/ringojs/run.jar" fork="true" failonerror="true">
-            <sysproperty key="ringo.home" path="externals/ringojs"/>
+        <java jar="${ringojs.run}" fork="true" failonerror="true">
+            <sysproperty key="ringo.home" path="${ringojs.dir}"/>
             <arg path="externals/buildkit/lib/buildkit/build.js"/>
             <arg line="-o ${composerbuild}/${ant.project.name}/WEB-INF/app/static/script mapcomposer/buildjs.cfg"/>
         </java>
 		
         <!-- mapmanager -->
         <mkdir dir="${managerbuild}/mapstore/src"/>
-        <java jar="externals/ringojs/run.jar" fork="true" failonerror="true">
-            <sysproperty key="ringo.home" path="externals/ringojs"/>
+        <java jar="${ringojs.run}" fork="true" failonerror="true">
+            <sysproperty key="ringo.home" path="${ringojs.dir}"/>
             <arg path="externals/buildkit/lib/buildkit/build.js"/>
             <arg line="-o ${managerbuild}/mapstore/src mapmanager/buildjs.cfg"/>
         </java>
@@ -65,7 +74,7 @@
             </fileset>
         </copy>
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/lib" flatten="true" includeEmptyDirs="false">
-            <fileset dir="externals/ringojs/lib"/>
+            <fileset dir="${ringojs.dir}/lib"/>
         </copy>
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app">
             <fileset dir="mapcomposer/app">
@@ -153,36 +162,37 @@
         </war>
     </target>
 
-    <target name="debug">
-        <java jar="externals/ringojs/run.jar" fork="true">
+    <target name="debug" depends="init">
+        <java jar="${ringojs.run}" fork="true" classpath="${ringojs.dir}/lib">
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
 			<sysproperty key="app.debug.proxy" value="${app.debug.proxy}"/>
-            <sysproperty key="ringo.home" path="externals/ringojs"/>
+            <sysproperty key="ringo.home" path="${ringojs.dir}"/>                              
             <!-- <jvmarg value="-XX:+HeapDumpOnOutOfMemoryError"/> -->
             <arg path="mapcomposer/app/main.js"/>
             <arg line="-p ${app.port}"/>
         </java>
     </target>
 
-    <target name="debugall">
-        <java jar="externals/ringojs/run.jar" fork="true">
+    <target name="debugall" depends="init">
+        <java jar="${ringojs.run}" fork="true">
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
 			<sysproperty key="app.debug.proxy" value="${app.debug.proxy}"/>
-            <sysproperty key="ringo.home" path="externals/ringojs"/>
+            <sysproperty key="ringo.home" path="${ringojs.dir}"/>
             <arg value="-d"/>
             <arg path="mapcomposer/app/main.js"/>
             <arg line="-p ${app.port}"/>
         </java>
     </target>
 
-    <target name="test">
-        <java jar="externals/ringojs/run.jar" fork="true" failonerror="yes">
-            <sysproperty key="ringo.home" path="externals/ringojs"/>
+    <target name="test" depends="init">
+        <java jar="${ringojs.run}" fork="true" failonerror="yes">
+            <sysproperty key="ringo.home" path="${ringojs.dir}"/>
             <arg path="mapcomposer/tests/all.js"/>
         </java>
     </target>
 
     <target name="clean" description="remove previous composerbuild">
+        <delete dir="${ringojs.dir}"/>
         <delete dir="${composerbuild}"/>
 		<delete dir="${managerbuild}"/>
     </target>
