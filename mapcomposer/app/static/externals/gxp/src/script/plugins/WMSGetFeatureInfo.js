@@ -53,8 +53,8 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
      *  Title for info popup (i18n).
      */
     popupTitle: "Feature Info",
-	
-	noDataMsg: "No data returned from the server",
+    
+    noDataMsg: "No data returned from the server",
     
     /** api: config[vendorParams]
      *  ``Object``
@@ -100,27 +100,38 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
             }
 
             info.controls = [];
-            queryableLayers.each(function(x){
+            var layersToQuery = 0;
+            var atLeastOneResponse = false;
+            queryableLayers.each(function(x){                
+                
                 var control = new OpenLayers.Control.WMSGetFeatureInfo({
                     url: x.getLayer().url,
                     queryVisible: true,
                     layers: [x.getLayer()],
                     vendorParams: this.vendorParams,
                     eventListeners: {
+                        beforegetfeatureinfo: function(evt) {
+                            atLeastOneResponse = false
+                            layersToQuery++;
+                        },
                         getfeatureinfo: function(evt) {
+                            layersToQuery--;
                             var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
                             if (match && !match[1].match(/^\s*$/)) {
+                                atLeastOneResponse = true;
                                 this.displayPopup(
                                     evt, x.get("title") || x.get("name"), match[1]
                                 );
-                            }else{
-								Ext.Msg.show({
-								    title: this.popupTitle,
-									msg: this.noDataMsg,
-									buttons: Ext.Msg.OK,
-									icon: Ext.MessageBox.WARNING
-								});	
-							}
+                            // no response at all
+                            } else if(layersToQuery === 0 && !atLeastOneResponse) {
+                                Ext.Msg.show({
+                                    title: this.popupTitle,
+                                    msg: this.noDataMsg,
+                                    buttons: Ext.Msg.OK,
+                                    icon: Ext.MessageBox.WARNING
+                                });
+                            }
+                            
                         },
                         scope: this
                     }
