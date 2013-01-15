@@ -28,7 +28,7 @@
            
     <target name="init" depends="checkringo" unless="ringo">
         <echo message="downloading RingoJS jars"/>
-        <artifact:remoteRepository id="remote.repository" url="http://www.geo-solutions.it/m2" />
+        <artifact:remoteRepository id="remote.repository" url="http://maven.geo-solutions.it" />
         <artifact:dependencies filesetId="dependency.fileset" useScope="test">
           <remoteRepository refid="remote.repository" />
           <dependency groupId="org.ringojs" artifactId="ringojs" version="0.7.0-geosolutions"/>          
