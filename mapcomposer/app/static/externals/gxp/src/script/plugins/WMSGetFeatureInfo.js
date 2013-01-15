@@ -108,7 +108,7 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                     url: x.getLayer().url,
                     queryVisible: true,
                     layers: [x.getLayer()],
-                    vendorParams: this.vendorParams,
+                    vendorParams: x.getLayer().vendorParams || this.vendorParams,
                     eventListeners: {
                         beforegetfeatureinfo: function(evt) {
                             atLeastOneResponse = false
