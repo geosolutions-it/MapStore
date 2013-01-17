@@ -61,7 +61,12 @@ var config = {
 
     limit: 10,
     
-    msmTimeout: 30000
+    msmTimeout: 30000,
+    
+    twitter: {
+        via: 'geosolutions_it',
+        hashtags: ''
+    }
 };
 
 

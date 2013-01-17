@@ -874,7 +874,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 grid.createTemplate(grid.murl, grid.lang), 
 				{
 				
-					getSocialLinksId: function(mapid) {
+					getSocialLinksId: function(mapid,name,description) {
 					
 						var divid = mapid + '_social_div', longUrl = grid.murl + 'viewer?locale=' + grid.lang + '&mapId=' + mapid;
 							
@@ -956,8 +956,12 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									tw.className = 'twitter-share-button';
 									tw.setAttribute('data-url', shortUrl);
 									tw.setAttribute('data-count', 'horizontal');
-									tw.setAttribute('data-via', 'geosolutions_it');
+									tw.setAttribute('data-via', config.twitter.via);
 									tw.setAttribute('data-lang', grid.lang);									
+                                    tw.setAttribute('data-text', name+'/'+description);	
+                                    if(config.twitter.hashtags) {
+                                        tw.setAttribute('data-hashtags', config.twitter.hashtags);	
+                                    }
 									
 									var twcell = document.createElement('td');
 									twcell.appendChild( tw );
@@ -1711,7 +1715,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 		
 		tpl +=  '</tr></table></div><br/>';
 
-		tpl += '<div id=\'{[this.getSocialLinksId(values.id)]}\' style=\'float:left\'></div>';
+		tpl += '<div id=\'{[this.getSocialLinksId(values.id,values.name,values.description)]}\' style=\'float:left\'></div>';
         
 		return tpl;
 	}
