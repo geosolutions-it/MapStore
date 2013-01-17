@@ -1,7 +1,0 @@
-This is the ever growing RingoJS JavaScript test suite.
-
-  ringo modules/test/all.js
-
-Or, using the module name to the same effect:
-
-  ringo test/all
