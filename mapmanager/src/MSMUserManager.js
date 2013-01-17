@@ -183,6 +183,13 @@ UserManagerView = Ext.extend(
 			url: null,
 
 			/**
+			 * Property: pageSize
+			 * {int} users grid page size
+			 * 
+			 */			
+			pageSize: 5,
+
+			/**
 			 * Property: auth
 			 * {string} auth token to access geostore services
 			 * 
@@ -193,6 +200,7 @@ UserManagerView = Ext.extend(
 			
 			mapUrl: null, 
 
+            
 			/**
 		    * Constructor: initComponent 
 		    * Initializes the component
@@ -225,21 +233,10 @@ UserManagerView = Ext.extend(
 			            listeners: {
 			                specialkey: function(f,e){
 			                    if (e.getKey() == e.ENTER) {
-									var keyword = Ext.getCmp("user-input-search").getValue();
-									if ( !keyword || keyword==='' ){
-										userManager.store.filter('*');
-									} else {
-										userManager.store.filter([
-											  {
-											    property     : 'name',
-											    value        : keyword,
-											    anyMatch     : true, 
-											    caseSensitive: true  
-											  }]);
-									}
-
-			                    }
+                                    this.searchUser();                                    
 			                }
+			                },
+                            scope: this
 			            }
 			        });
 			
@@ -250,19 +247,9 @@ UserManagerView = Ext.extend(
 			            iconCls: 'find',
 			            disabled: false,
 			            handler: function() {  
-		     				var keyword = Ext.getCmp("user-input-search").getValue();
-							if ( !keyword || keyword==='' ){
-								userManager.store.filter('*');
-							} else {
-								userManager.store.filter([
-									  {
-									    property     : 'name',
-									    value        : keyword,
-									    anyMatch     : true, 
-									    caseSensitive: true  
-									  }]);			
-							}
-			            }
+                            this.searchUser();		     				
+			            },
+                        scope: this
 					};
 			            
 				// reset search button
@@ -273,10 +260,10 @@ UserManagerView = Ext.extend(
 						iconCls: 'reset',
 						disabled: false,
 						handler : function() {
-								Ext.getCmp('user-input-search').setValue('');
-								userManager.store.filter('*');
-							} 
-						};
+							Ext.getCmp('user-input-search').setValue('');
+                            userManager.reload();                            
+						} 
+				};
 
 				// button to open the add user window
 				this.addUserButton = {
@@ -377,31 +364,25 @@ UserManagerView = Ext.extend(
 													    if ( nameField.isValid(false) &&
 													           passwordField.isValid(false) &&
 													              roleDropdown.isValid(false )){
-															
-															// check if the name is already taken
-															var index = userManager.store.find('name', nameField.getValue(), 0, true);
-															
-															if ( index===-1){ // no user with this name
 																userManager.users.create( 
 																	{ name: nameField.getValue(), 
 																	  password:passwordField.getValue(), 
 																	  role:roleDropdown.getValue() }, 
-																	  function(response){
+                                                                        function success(response){                                                                            
 																		winAdd.hide();
 																        form.getForm().reset();
 																		// refresh the store
-																		userManager.reloadData();
+                                                                            userManager.reload();
 																		winAdd.destroy();
-																	});	
-															} else {
+                                                                        },
+                                                                        function failure(response) {
 																 Ext.Msg.show({
 							                                       title: userManager.failSuccessTitle,
 							                                       msg: userManager.userAlreadyTaken,
 							                                       buttons: Ext.Msg.OK,
 							                                       icon: Ext.MessageBox.ERROR
 							                                    });
-															}
-															
+                                                            });																														
 														
 														} else {
 															  Ext.Msg.show({
@@ -563,7 +544,7 @@ UserManagerView = Ext.extend(
 																winEdit.hide();
 																formEdit.getForm().reset();
 																// refresh the store
-																userManager.reloadData();
+																userManager.reload();
 																winEdit.destroy();
 															});
 							
@@ -671,7 +652,7 @@ UserManagerView = Ext.extend(
 															
 															userManager.users.deleteByPk( record.get('id'), function(data){
 																// refresh the store
-																userManager.reloadData();
+																userManager.reload();
 															});
 														});
 													}									
@@ -702,9 +683,38 @@ UserManagerView = Ext.extend(
 
 					// data store
 					this.store = new Ext.data.JsonStore({
-									    fields: ['id', 'name', 'password', 'role']
-										// params:{start:0, limit:3}
+                        storeId: 'id_userstore',
+                        autoDestroy: true,
+                        root: 'UserList.User',
+                        totalProperty: 'totalCount',
+                        successProperty: 'UserList.User',
+                        idProperty: 'id',
+                        remoteSort: false,
+                        fields: ['id', 'name', 'password', 'role'],
+                        proxy: new Ext.data.HttpProxy({
+                            url: userManager.url,
+                            restful: true,
+                            method : 'GET',
+                            disableCaching: true,
+                            failure: function (result) {
+                                console.error(response); 
+                                  Ext.Msg.show({
+                                   title: userManager.failSuccessTitle,
+                                   msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+                                   buttons: Ext.Msg.OK,
+                                   icon: Ext.MessageBox.ERROR
+                                });                                
+                            },
+                            defaultHeaders: {'Accept': 'application/json', 'Authorization' : userManager.auth}
+                        }),
+                        getTotalCount: function() {
+                            return this.fixedTotalCount;
+                        },
+                        
+                        sortInfo: { field: "name", direction: "ASC" }
 								 });
+                    
+                    
 					// create a content provider with init options
 					this.users = new GeoStore.Users(
 									{ authorization: userManager.auth,
@@ -719,31 +729,48 @@ UserManagerView = Ext.extend(
 		                                });
 									} );
 				
-					/*this.bbar = new Ext.PagingToolbar({
-										pageSize:3,
+                    
+					var paging = new Ext.PagingToolbar({
+                        pageSize: this.pageSize,
 										store: this.store,
 										grid: this,
-										displayInfo: true
-									});	*/
+                        displayInfo: true,
+                        paramNames:{
+                            start: 'page',
+                            limit: 'entries'
+                        },                        
+                        doLoad : function(start){
+                            var o = {}, pn = this.getParams();
+                            var page = Math.floor(start / this.pageSize);
+                            o[pn.start] = page;
+                            o[pn.limit] = this.pageSize;
+                            if(this.fireEvent('beforechange', this, o) !== false){
+                                this.store.load({params:o});
+                            }
+                        }
+                    });	         
 				
+                    this.bbar = paging;					
 								
-					this.loadData = function(){
-						// get all users
-						userManager.users.find( function( data ){
-							// populate store
-							userManager.store.loadData(data);
+                    userManager.users.count( function( count ){
+                        // update total
+                        userManager.store.fixedTotalCount = count;
+                        userManager.store.load({
+                            params:{
+                                page: 0,
+                                entries: userManager.pageSize
+                            }
+                        });                        
 						});		
+
+                    userManager.reload = function() {
+                        userManager.users.count( function( count ){
+                            // update total
+                            userManager.store.fixedTotalCount = count;
+                            userManager.store.reload();                        
+                        });	 
 					};
 
-
-					this.reloadData = function(){
-						userManager.store.removeAll();
-						userManager.loadData();
-					};
-
-				
-					// load data
-					userManager.loadData();
 				
 				} else { //not Admin
 
@@ -757,6 +784,27 @@ UserManagerView = Ext.extend(
 				// call parent
 				UserManagerView.superclass.initComponent.call(this, arguments);
 			},
+            searchUser: function() {                
+                var keyword = Ext.getCmp("user-input-search").getValue();
+                var self = this;
+                if ( !keyword || keyword==='' ){
+                    self.reload();
+                } else {
+                    
+                    this.users.find(function(users) {
+                        var found=[];
+                        Ext.each(users,function(user) {
+                            if(user.name.indexOf(keyword) !== -1) {
+                                found.push(user);
+                            }
+                        });
+                        
+                        self.store.fixedTotalCount = found.length;
+                        self.store.loadData({UserList:{User:found}});
+                    });
+                    
+                }
+            },
 			loadMask:true,  
 	        stripeRows: true,
 			autoExpandColumn: 'name',

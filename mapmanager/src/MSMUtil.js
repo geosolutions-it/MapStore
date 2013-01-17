@@ -404,7 +404,7 @@
 	 * Return:
 	 * 
 	 */
-	ContentProvider.prototype.create = function(item, callback){
+	ContentProvider.prototype.create = function(item, callback, failureCallback){
 		var uri = new Uri({'url':this.baseUrl_});
 		var data = this.beforeSave( item );
 		
@@ -426,7 +426,9 @@
 	       },
 	       failure:  function(response, opts){
 	       		console.log(response);
-				
+				if(typeof(failureCallback) === 'function') {
+                    failureCallback(response);
+                } else {
 				// ////////////////////////////////////////////////// //
 				// TODO: Refactor this code externalize the           // 
 			    //	     Msg definition for the i18n                  //
@@ -436,6 +438,7 @@
 					buttons: Ext.Msg.OK,
 					icon: Ext.MessageBox.ERROR
 				});	
+	       }
 	       }
 	    });
 	};
@@ -600,6 +603,33 @@
 			return xml;
 		},
 
+        count: function(callback, pattern) {
+            pattern = pattern || '*';
+            
+            var uri = new Uri({'url':this.baseUrl_});
+            uri.appendPath( 'count' ).appendId( pattern );
+            // ////////////////////
+            // Build a request
+            // ////////////////////
+            var self = this;
+            var Request = Ext.Ajax.request({
+               url: uri.toString(),
+               method: 'GET',
+               headers:{
+                  'Content-Type' : 'application/json',
+                  'Accept' : this.acceptTypes_,
+                  'Authorization' : this.authorization_
+               },
+               scope: this,
+               success: function(response, opts){                                     
+                    callback(parseInt(response.responseText, 10));
+               },
+               failure:  function(response, opts){
+                    // TODO
+               }
+            });	
+        },
+        
 		//TODO beforeUpdate
 	
 		afterFind: function(json){
