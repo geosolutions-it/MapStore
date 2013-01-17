@@ -602,33 +602,6 @@
 					  +'<role>' + data.role + '</role></User>';
 			return xml;
 		},
-
-        count: function(callback, pattern) {
-            pattern = pattern || '*';
-            
-            var uri = new Uri({'url':this.baseUrl_});
-            uri.appendPath( 'count' ).appendId( pattern );
-            // ////////////////////
-            // Build a request
-            // ////////////////////
-            var self = this;
-            var Request = Ext.Ajax.request({
-               url: uri.toString(),
-               method: 'GET',
-               headers:{
-                  'Content-Type' : 'application/json',
-                  'Accept' : this.acceptTypes_,
-                  'Authorization' : this.authorization_
-               },
-               scope: this,
-               success: function(response, opts){                                     
-                    callback(parseInt(response.responseText, 10));
-               },
-               failure:  function(response, opts){
-                    // TODO
-               }
-            });	
-        },
         
 		//TODO beforeUpdate
 	

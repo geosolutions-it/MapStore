@@ -423,6 +423,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 		this.geoBaseUsersUrl= config.baseUrl + '/geostore/rest/users';
 		this.geoBaseMapsUrl = config.baseUrl + '/geostore/rest/resources';
 		this.geoSearchUrl = config.baseUrl + '/geostore/rest/extjs/search/';
+        this.geoSearchUsersUrl = config.baseUrl + '/geostore/rest/extjs/search/users';
         
 		// ///////////////////////////////////
         // Inizialization of MSMLogin class
@@ -747,6 +748,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 					   			login: grid.login,
 								auth: grid.login.getToken(),
 								url: grid.geoBaseUsersUrl,
+                            searchUrl: grid.geoSearchUsersUrl,
 								mapUrl: grid.geoBaseMapsUrl,
 								gridPanelBbar: grid.getBottomToolbar(),
 								autoWidth: true,

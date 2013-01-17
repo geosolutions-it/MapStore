@@ -183,6 +183,20 @@ UserManagerView = Ext.extend(
 			url: null,
 
 			/**
+			 * Property: searchUrl
+			 * {string} base url for user geostore search services
+			 * 
+			 */			
+			searchUrl: null,
+            
+            /**
+			 * Property: currentFilter
+			 * {string} currentSearchFilter
+			 * 
+			 */	
+            currentFilter: '*',
+            
+            /**
 			 * Property: pageSize
 			 * {int} users grid page size
 			 * 
@@ -261,8 +275,9 @@ UserManagerView = Ext.extend(
 						disabled: false,
 						handler : function() {
 							Ext.getCmp('user-input-search').setValue('');
-                            userManager.reload();                            
-						} 
+                            this.searchUser();	                 
+						},
+                        scope: this
 				};
 
 				// button to open the add user window
@@ -701,14 +716,14 @@ UserManagerView = Ext.extend(
 					this.store = new Ext.data.JsonStore({
                         storeId: 'id_userstore',
                         autoDestroy: true,
-                        root: 'UserList.User',
-                        totalProperty: 'totalCount',
-                        successProperty: 'UserList.User',
+                        root: 'ExtUserList.User || []',
+                        totalProperty: 'ExtUserList.UserCount',
+                        successProperty: 'ExtUserList',
                         idProperty: 'id',
                         remoteSort: false,
                         fields: ['id', 'name', 'password', 'role'],
                         proxy: new Ext.data.HttpProxy({
-                            url: userManager.url,
+                            url: this.getSearchUrl(),
                             restful: true,
                             method : 'GET',
                             disableCaching: true,
@@ -723,9 +738,6 @@ UserManagerView = Ext.extend(
                             },
                             defaultHeaders: {'Accept': 'application/json', 'Authorization' : userManager.auth}
                         }),
-                        getTotalCount: function() {
-                            return this.fixedTotalCount;
-                        },
                         
                         sortInfo: { field: "name", direction: "ASC" }
 								 });
@@ -736,42 +748,21 @@ UserManagerView = Ext.extend(
                         pageSize: this.pageSize,
 										store: this.store,
 										grid: this,
-                        displayInfo: true,
-                        paramNames:{
-                            start: 'page',
-                            limit: 'entries'
-                        },                        
-                        doLoad : function(start){
-                            var o = {}, pn = this.getParams();
-                            var page = Math.floor(start / this.pageSize);
-                            o[pn.start] = page;
-                            o[pn.limit] = this.pageSize;
-                            if(this.fireEvent('beforechange', this, o) !== false){
-                                this.store.load({params:o});
-                            }
-                        }
+                        displayInfo: true
                     });	         
 				
                     this.bbar = paging;					
 								
-                    userManager.users.count( function( count ){
-                        // update total
-                        userManager.store.fixedTotalCount = count;
-                        userManager.store.load({
+                    userManager.reload = function() {                        
+                        userManager.store.reload();
+                    };
+                    
+                    this.store.load({
                             params:{
-                                page: 0,
-                                entries: userManager.pageSize
+                            start:0,
+                            limit:this.pageSize
                             }
                         });                        
-						});		
-
-                    userManager.reload = function() {
-                        userManager.users.count( function( count ){
-                            // update total
-                            userManager.store.fixedTotalCount = count;
-                            userManager.store.reload();                        
-                        });	 
-					};
 
 				
 				} else { //not Admin
@@ -786,26 +777,21 @@ UserManagerView = Ext.extend(
 				// call parent
 				UserManagerView.superclass.initComponent.call(this, arguments);
 			},
+            
+            getSearchUrl: function() {
+                return this.searchUrl + '/' + this.currentFilter;
+            },
+
             searchUser: function() {                
                 var keyword = Ext.getCmp("user-input-search").getValue();
-                var self = this;
+                
                 if ( !keyword || keyword==='' ){
-                    self.reload();
+                    this.currentFilter = '*';                    
                 } else {
-                    
-                    this.users.find(function(users) {
-                        var found=[];
-                        Ext.each(users,function(user) {
-                            if(user.name.indexOf(keyword) !== -1) {
-                                found.push(user);
-                            }
-                        });
-                        
-                        self.store.fixedTotalCount = found.length;
-                        self.store.loadData({UserList:{User:found}});
-                    });
-                    
+                    this.currentFilter = '*'+keyword+'*';                                        
                 }
+                this.store.proxy.api.read.url = this.getSearchUrl();
+                this.store.reload();
             },
 			loadMask:true,  
 	        stripeRows: true,
