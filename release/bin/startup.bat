@@ -40,7 +40,7 @@ goto end
 
 
 :run
-  if "%JAVA_OPTS%" == "" (set JAVA_OPTS=-XX:MaxPermSize=128m)
+  if "%JAVA_OPTS%" == "" (set JAVA_OPTS="-XX:MaxPermSize=128m -Dgeostore-ovr=file:config/geostore-datasource-ovr.properties")
   set RUN_JAVA=%JAVA_HOME%\bin\java
   cd ..
   echo Please wait while loading MapStore...
