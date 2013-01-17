@@ -286,10 +286,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 this.grid.getBottomToolbar().doRefresh();
                 this.grid.plugins.collapseAll();
                 this.grid.getBottomToolbar().openMapComposer.enable();
-				if ( this.role === 'ADMIN' ){
 					this.grid.openUserManagerButton.enable();
-				}
-				
             },
             failure: function(response, form, action) {
                 Ext.MessageBox.show({

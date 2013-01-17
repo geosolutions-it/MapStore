@@ -543,8 +543,10 @@ UserManagerView = Ext.extend(
 															  function(response) {
 																winEdit.hide();
 																formEdit.getForm().reset();
+                                                                if(typeof(userManager.reload) === 'function') {
 																// refresh the store
 																userManager.reload();
+                                                                }
 																winEdit.destroy();
 															});
 							
@@ -577,6 +579,20 @@ UserManagerView = Ext.extend(
 						winEdit.show();						   
 					};	
 					
+                    // create a content provider with init options
+					this.users = new GeoStore.Users(
+									{ authorization: userManager.auth,
+									  url: userManager.url
+									}).failure( function(response){ 
+										console.error(response); 
+										  Ext.Msg.show({
+		                                   title: userManager.failSuccessTitle,
+		                                   msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+		                                   buttons: Ext.Msg.OK,
+		                                   icon: Ext.MessageBox.ERROR
+		                                });
+									} );
+                    
 					if(isAdmin)
 					{			
 						// column definitions for the grid panel
@@ -715,20 +731,6 @@ UserManagerView = Ext.extend(
 								 });
                     
                     
-					// create a content provider with init options
-					this.users = new GeoStore.Users(
-									{ authorization: userManager.auth,
-									  url: userManager.url
-									}).failure( function(response){ 
-										console.error(response); 
-										  Ext.Msg.show({
-		                                   title: userManager.failSuccessTitle,
-		                                   msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
-		                                   buttons: Ext.Msg.OK,
-		                                   icon: Ext.MessageBox.ERROR
-		                                });
-									} );
-				
                     
 					var paging = new Ext.PagingToolbar({
                         pageSize: this.pageSize,
