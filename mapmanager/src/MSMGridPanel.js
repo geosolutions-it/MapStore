@@ -402,6 +402,13 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     langSelector: null,
 
     /**
+     * Property: mapManagerContainer
+     * {string} id of the mapmanager UI container
+     * 
+     */ 
+    mapManagerContainer: 'wrap',
+    
+    /**
      *  cache when we put short urls when they arrive from the async service
      */
 	shortUrls: new Object(),
@@ -785,7 +792,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
              * 
              */
             openMapComposer : function(mapUrl, userProfile, idMap, desc) {
-	
+                    var scrollTop;
 					var src = mapUrl + '?locale=' + grid.lang + userProfile;
 					
 					if(idMap != -1){
@@ -818,6 +825,11 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 								
 								this.removeClass('x-window-maximized');
 								this.container.removeClass('x-window-maximized-ct');
+                                Ext.get(grid.mapManagerContainer).setDisplayed('block');
+                                if(document.documentElement) {
+                                    document.documentElement.scrollTop = scrollTop;
+                                }
+                                document.body.scrollTop = scrollTop;
 							},
                             afterRender: function(){
                                 function setAuth(){
@@ -866,6 +878,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             }
                         }
                     });
+                scrollTop = Ext.getBody().getScroll().top;
+                Ext.get(grid.mapManagerContainer).setDisplayed('none');
                 iframe.show();
             },
 			
