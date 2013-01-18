@@ -109,6 +109,12 @@
       </Get>
     </New>
     -->
+    
+    <New id="MapStore" class="org.mortbay.jetty.webapp.WebAppContext">
+      <Arg><Ref id="contexts"/></Arg>
+      <Arg><SystemProperty name="jetty.home" default="."/>/webapps/mapstore.war</Arg>
+      <Arg>/</Arg>      
+    </New>
 
     <!-- ======================================================= -->
     <!-- Configure a Context                                     -->
