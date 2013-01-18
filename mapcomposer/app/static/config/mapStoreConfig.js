@@ -1,6 +1,7 @@
 {
    "geoStoreBase":"http://localhost:8080/geostore/rest/",
    "proxy":"/http_proxy/proxy/?url=",
+   "xmlJsonTranslate": "http://localhost:8080/xmlJsonTranslate/",
    "defaultLanguage": "en",
    "gsSources":{ 
 		"mapquest": {
