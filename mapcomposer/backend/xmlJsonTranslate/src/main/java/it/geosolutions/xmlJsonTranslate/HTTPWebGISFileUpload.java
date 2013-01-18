@@ -52,8 +52,12 @@ public class HTTPWebGISFileUpload extends HttpServlet {
 	public void init(ServletConfig servletConfig) throws ServletException {
 		super.init(servletConfig);
 
-		InputStream inputStream = getServletContext().getResourceAsStream(
+		InputStream inputStream = this.getClass().getResourceAsStream(
+				"/xmlJsonTranslate.properties");
+		if(inputStream == null) {
+			inputStream = getServletContext().getResourceAsStream(
 				"/WEB-INF/classes/app.properties");
+		}
 		Properties props = new Properties();
 
 		try {

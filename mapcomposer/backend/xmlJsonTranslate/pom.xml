@@ -2,7 +2,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>xmlJsonTranslate</groupId>
+	<groupId>it.geosolutions</groupId>
 	<artifactId>xmlJsonTranslate</artifactId>
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
@@ -54,11 +54,20 @@
 						</connector>
 					</connectors>
 					<contextPath>xmlJsonTranslate</contextPath>
-					<webAppSourceDirectory>${project.build.directory}/xmlJsonTranslate-1.0-SNAPSHOT</webAppSourceDirectory>
+					<webAppSourceDirectory>${project.build.directory}/xmlJsonTranslate-1.0.0</webAppSourceDirectory>
 				</configuration>
 			</plugin>
 			
 		</plugins>
+        
+        <extensions>
+      <!-- Enabling the use of FTP -->
+          <extension>
+            <groupId>org.apache.maven.wagon</groupId>
+             <artifactId>wagon-ftp</artifactId>
+             <version>1.0-beta-6</version>
+          </extension>
+        </extensions>
 	</build>
 	
 	<dependencies>	
@@ -208,5 +217,14 @@
             <url>http://maven.geotools.fr/repository</url>
         </repository>
 	</repositories>
+    
+    <distributionManagement>
+      <!-- use the following if you're not using a snapshot version. -->
+      <repository>
+         <uniqueVersion>false</uniqueVersion>
+         <id>geosolutions</id>
+         <url>ftp://maven.geo-solutions.it/</url>
+      </repository>      
+    </distributionManagement>
 
 </project>
