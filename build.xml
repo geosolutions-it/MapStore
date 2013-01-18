@@ -234,6 +234,14 @@
         </zip> 
         <move file="${release.dir}/webapps/tmp.war" tofile="${release.dir}/webapps/geostore.war" /> 
         
+        <!-- remove proxy configuration file from http_proxy.war -->
+        <zip destfile="${release.dir}/webapps/tmp.war"> 
+                <zipfileset src="${release.dir}/webapps/http_proxy.war"> 
+                        <exclude name="**/proxy.properties" /> 
+                </zipfileset> 
+        </zip> 
+        <move file="${release.dir}/webapps/tmp.war" tofile="${release.dir}/webapps/http_proxy.war" /> 
+        
         <echo file="${release.dir}/VERSION.txt">MapStore Version: ${mapstore.version}
 GeoStore Version: ${geostore.version}
 HttpProxy Version: ${httpproxy.version}
