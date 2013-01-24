@@ -132,6 +132,11 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
      *  ``Ext.XTemplate`` the template to show results.
      */
 	tpl: null,
+	
+	/** api: config[predicate]
+     *  ``String`` predicate to use for search (LIKE,ILIKE,=...).
+     */
+	predicate: 'LIKE',
 
     /** private: method[initComponent]
      *  Override
@@ -234,7 +239,7 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 			var queryString = queryEvent.query;
 			queryEvent.query = "";
 			for( var i = 0 ; i < this.queriableAttributes.length ; i++){
-				queryEvent.query +=  "(" + this.queriableAttributes[i] + " LIKE '%" + queryString + "%')";
+				queryEvent.query +=  "(" + this.queriableAttributes[i] + " "+this.predicate+" '%" + queryString + "%')";
 				if ( i < this.queriableAttributes.length -1) {
 					queryEvent.query += " OR ";
 				}
