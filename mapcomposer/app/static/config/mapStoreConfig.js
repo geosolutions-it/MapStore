@@ -3,6 +3,12 @@
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
    "gsSources":{ 
+		"nrl":{
+			"ptype": "gxp_wmssource",
+			"title": "NRL GeoServer",
+			"projection":"EPSG:900913",
+			"url": "http://84.33.2.24/geoserver/ows"
+		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
 		}, 
@@ -19,92 +25,98 @@
 			"ptype": "gxp_olsource" 
 		}
 	},
+	"proj4jsDefs":{
+		"EPSG:32642":"+proj=utm +zone=42 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+
+	},
 	"map": {
 		"projection": "EPSG:900913",
 		"units": "m",
-		"center": [1250000.000000, 5370000.000000],
+		"center": [7798771.2914706,3574215.5268897],
 		"zoom":5,
 		"maxExtent": [
-			-20037508.34, -20037508.34,
-			20037508.34, 20037508.34
+			6770799.251963,2705604.806669,8826743.330978,4442826.247111
 		],
+		
 		"layers": [
+			
 			{
 				"source": "bing",
 				"title": "Bing Aerial",
 				"name": "Aerial",
 				"group": "background"
-			}, {
-				"source": "osm",
-				"title": "Open Street Map",
-				"name": "mapnik",
-				"group": "background"
 			},{
-				"source": "mapquest",
-				"title": "MapQuest OpenStreetMap",
-				"name": "osm",
-				"group": "background"
+				"source": "nrl",
+				"title": "National Boundary",
+				"name": "nrl:National_Boundary",
+				"group": "Boundaries",
+				"visibility": false
 			},{
-				"source": "google",
-				"title": "Google Roadmap",
-				"name": "ROADMAP",
-				"group": "background"
+				"source": "nrl",
+				"title": "GLOBC 2006",
+				"name": "nrl:GLOBC2006_v2.2",
+				"group": "Global Coverages",
+				"visibility": false
 			},{
-				"source": "google",
-				"title": "Google Terrain",
-				"name": "TERRAIN",
-				"group": "background"
-			},{
-				"source": "google",
-				"title": "Google Hybrid",
-				"name": "HYBRID",
-				"group": "background"
+				"source": "nrl",
+				"title": "GLOBC 2009",
+				"name": "nrl:GLOBC2009_v2.3",
+				"group": "Global Coverages",
+				"visibility": false
+			},
+			{
+				"source": "nrl",
+				"title": "Province Boundary",
+				"name": "nrl:Province_Boundary",
+				"group": "Boundaries",
+				"visibility": true
+			},
+			{
+				"source": "nrl",
+				"title": "District Boundary",
+				"name": "nrl:District_Boundary",
+				"group": "Boundaries",
+				"visibility": true
 			}
 		]
 	},
-	"cswconfig": {
-		"catalogs": [
-		        {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina", "metaDataOptions":{"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page","idParam":"uuid","idIndex":0}},
-				{"name": "Treviso", "url": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw", "description": "Treviso Geonetwork"},
-				{"name": "kscNet", "url": "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw", "description": "kscNet"},
-				{"name": "CSI-CGIAR", "url": "http://geonetwork.csi.cgiar.org/geonetwork/srv/en/csw", "description" : "CSI-CGIAR"},
-				{"name": "EauFrance", "url": "http://sandre.eaufrance.fr/geonetwork/srv/fr/csw", "description" : "EauFrance"},
-				{"name": "SOPAC", "url": "http://geonetwork.sopac.org/geonetwork/srv/en/csw", "description" : "SOPAC"},
-				{"name": "SADC", "url": "http://www.sadc.int/geonetwork/srv/en/csw", "description" : "SADC"},
-				{"name": "MAPAS", "url": "http://mapas.mma.gov.br/geonetwork/srv/en/csw", "description" : "MAPAS"}
-			],
-		"dcProperty": "title",
-		"initialBBox": {
-		   "minx":-13,
-		   "miny":10,
-			"maxx":-10,
-			"maxy":13
-		}, 
-		"cswVersion": "2.0.2",
-		"filterVersion": "1.1.0",
-		"start": 1,
-		"limit": 10,
-		"timeout": 60000
-	},
 	
-	"scaleOverlayUnits":{
-        "bottomOutUnits":"nmi",    
-        "bottomInUnits":"nmi",    
-        "topInUnits":"m",    
-        "topOutUnits":"km"
-    },
 	
 	"customTools":[
 		{
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
-		}, {
-			"ptype": "gxp_googlegeocoder",
-			"outputConfig": {
-				"emptyText": "Google GeoCoder"
-			},
-			"outputTarget":"paneltbar",
-			"index": 26
-		}
+		},
+		{
+		  "ptype":"gxp_nrl",
+		  "outputConfig":{
+			 "id":"nrl",
+			 "region":"east",
+			 "startTab":"nrlCropData"
+		  },
+		  "outputTarget":"west"
+	   },
+	   {
+		  "ptype":"nrl_crop_data",
+		  "outputConfig":{
+			 "itemId":"nrlCropData"
+			 
+		  },
+		  "outputTarget":"nrl"
+	   },{
+		 "ptype":"nrl_crop_status",
+		  "outputConfig":{
+			 "id":"nrlCropStatus"
+			 
+		  },
+		  "outputTarget":"nrl"
+	   },{
+	    "ptype":"nrl_agromet",
+		  "outputConfig":{
+			 "id":"Agromet"
+			 
+		  },
+		  "outputTarget":"nrl"
+	  }
 	]
-}
+	}
