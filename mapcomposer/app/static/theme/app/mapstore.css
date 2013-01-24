@@ -159,3 +159,15 @@ div#homelogos ul li a:hover {
 .csw-viewer{
     background-image: url(img/geosilk/server_table.png);
 }
+
+.icon-add{
+	background-image: url(img/silk/add.png);
+}
+.icon-map-add{
+	background-image: url(img/silk/map_add.png);
+}
+
+.icon-delete{
+	background-image: url(img/silk/delete.png);
+
+}
