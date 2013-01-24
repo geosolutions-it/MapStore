@@ -41,9 +41,13 @@ Ext.namespace("gxp.plugins.nrl");
  *    Plugin for adding NRL CropData Module to a :class:`gxp.Viewer`.
  */   
 gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
- /** api: ptype = nrl_crop_data */
+ /** api: ptype = nrl_agromet */
     ptype: "nrl_agromet",
-
+    layerStyle: {
+        strokeColor: "green",
+        strokeWidth: 1,
+        fillOpacity:0.6
+    },
     
     /** private: method[addOutput]
      *  :arg config: ``Object``
@@ -84,6 +88,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 					xtype: 'nrl_aoifieldset',
 					anchor:'100%',
 					target:this.target,
+                    layerStyle: this.layerStyle,
 					layers:{
 						DISTRICT:'nrl:District_Boundary',
 						PROVINCE:'nrl:Province_Boundary'

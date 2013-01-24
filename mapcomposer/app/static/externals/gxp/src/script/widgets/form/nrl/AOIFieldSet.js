@@ -60,7 +60,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
 				}
 				
 			},
-			{xtype: 'gxp_selectfeaturegrid',target:this.target,ref:'AreaSelector',displayField:'PROVINCE'}
+			{xtype: 'gxp_selectfeaturegrid',target:this.target,ref:'AreaSelector',displayField:'PROVINCE',layerStyle:this.layerStyle}
 		]
 		return nrl.form.AOIFieldSet.superclass.initComponent.apply(this, arguments);
 	}	
