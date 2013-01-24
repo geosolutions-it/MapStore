@@ -25,7 +25,7 @@ Ext.ns('Ext.ux.grid');
 Ext.ux.grid.ItemDeleter = Ext.extend(Ext.grid.RowSelectionModel, {
 
     width: 30,
-    iconCls:"extensive-remove",
+    iconCls:"icon-delete",
     sortable: false,
 	dataIndex: 0, // this is needed, otherwise there will be an error
     
