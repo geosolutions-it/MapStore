@@ -44,8 +44,7 @@ goto end
   set RUN_JAVA=%JAVA_HOME%\bin\java
   echo Please wait while loading MapStore...
   echo.
-  "%RUN_JAVA%" "%JAVA_OPTS%" -Djava.awt.headless=true -DSTOP.PORT=8079 -DSTOP.KEY=mapstore -jar start.jar
-  cd bin
+  "%RUN_JAVA%" "%JAVA_OPTS%" -Djava.awt.headless=true -DSTOP.PORT=8079 -DSTOP.KEY=mapstore -jar start.jar  
 goto end
 
 
