@@ -28,7 +28,7 @@
 
     <script type="text/javascript" src="script/gxp.js"></script> 
 
-    <!-- script type="text/javascript" src="script/proj4js.js"></script -->
+    <script type="text/javascript" src="script/proj4js.js"></script>
 
     <!-- GeoExplorer resources -->
     <link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
@@ -188,12 +188,14 @@
 				saveMessage:authorization
 			});
 			
-            var appTabs = new Ext.TabPanel({
+            var appTabs = {
+				displayHeader:false,
+				layout: 'fit',
                 region: 'center',
                 border : false,
                 id : 'appTabs',
                 enableTabScroll: true
-            });
+            };
 
 			var iframe = "<iframe style='border: none; height: 100%; width: 100%' src='about.html' frameborder='0' border='0'>" + 
 						 "<a target='_blank' href='about.html'>" + GeoExplorer.prototype.aboutText + "</a> </iframe>";
@@ -228,17 +230,47 @@
                     window.open('http://geo-solutions.it/contact/', '_blank');
                 }
             });    
-			
+			var headerConfig = {
+				border: false,
+				header: false,
+				html:  [
+					'<div align="center" style="background-image:url(theme/app/img/banner/bgimg.jpg);background-repeat: repeat;width:100%;height:100%">',
+						'<img  src="theme/app/img/banner/left-banner_en.jpg" style="float:left" usemap="#IM_left-banner"/>',
+						'<img  src="theme/app/img/banner/right-banner_en.jpg" style="float:right;position:absolute;top:0px;right:0px;" usemap="#IM_right-banner"/>',
+					'</div>',
+					'<map name="IM_left-banner">',
+						'<area shape="rect" coords="19,19,393,44" href="http://dwms.fao.org/~test/home_en.asp" alt="Pakistan Agriculture Information System" title="Pakistan Agriculture Information System"    />',
+					'</map>',
+					'<map name="IM_right-banner">',
+						'<area shape="rect" coords="31,22,96,87" href="http://www.sindhagri.gov.pk/" alt="SINDH Province" title="SINDH Province"    />',
+						'<area shape="rect" coords="99,22,161,87" href="http://www.agripunjab.gov.pk/" alt="PUNJAB Province" title="PUNJAB Province"    />',
+						'<area shape="rect" coords="166,22,234,87" href="http://www.suparco.gov.pk/" alt="SUPARCO - Pakistan Space and Upper Atmosphere Research Commission" title="SUPARCO - Pakistan Space and Upper Atmosphere Research Commission"    />',
+					'</map>'
+				  
+				],
+				region: 'north',
+				collapsible: true,
+				collapsed: false,
+				collapseMode:  'mini',
+				hideCollapseTool: true,
+				split: true,
+				animCollapse : false,
+				minHeight: 90,
+				maxHeight: 90,
+				height: 109,
+				id : 'header'
+			}
             var appViewport = new Ext.Viewport({
                 id: 'appVieport',
                 layout:'fit',
                 border:false,
                 items: [{
+					id:'appWrapper',
                     region : 'center',
                     layout : 'border',
                     border : false,
                     header : false,                    
-                    items : [appTabs],                            
+                    items : [headerConfig,appTabs],                            
                     bbar : [
                       poweredByGeoSol, ' ', aboutButton, '->',languageSelector
                     ]
@@ -286,8 +318,10 @@
                 modified: false,
                 proxy: proxy,
 				tools: serverConfig.tools,
-                xmlJsonTranslateService: "http://localhost:8080/xmlJsonTranslate/",
+                //xmlJsonTranslateService: "http://localhost:8080/xmlJsonTranslate/",
                 defaultSourceType: "gxp_wmssource",
+				portalConfig:{id:'View',header:false,border:false},
+				portalItems: [{id:'ww'}],
                 renderToTab : 'appTabs',
                 about: {
                     title: "Custom Map",

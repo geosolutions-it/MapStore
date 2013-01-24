@@ -200,9 +200,19 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 enableToggle: true,
                 handler: function(button, evt){
                     if(button.pressed){
-                        Ext.getCmp('tree').findParentByType('panel').collapse();
+                        Ext.getCmp('east').collapse();
+						Ext.getCmp('west').collapse();
+						Ext.getCmp('header').collapse();
+						
+					
                     } else {
-                        Ext.getCmp('tree').findParentByType('panel').expand();
+                        Ext.getCmp('east').expand();
+						Ext.getCmp('west').expand();
+						Ext.getCmp('header').expand();
+						
+						
+					
+						
                     }
                 }
             });
@@ -586,7 +596,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				iconCls: "icon-load"
 			}));
 		}
-        
+        /*
         tools.push(new Ext.Button({
             tooltip: this.exportMapText,
             handler: function() {
@@ -597,7 +607,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         }));
 		
         tools.push('-');
-        
+        */
         return tools;
 
     },

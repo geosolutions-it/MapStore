@@ -374,11 +374,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         this.appMask = new Ext.LoadMask(Ext.getBody(), {msg: this.mainLoadingMask});
 		this.appMask.show();
 		
-        var westPanel = new Ext.TabPanel({
+        var eastPanel = new Ext.TabPanel({
             border: false,
             activeTab:0,
-            id: 'west',
-            region: "west",
+            id: 'east',
+            region: "east",
             width: 250,
             split: true,
             collapsible: true,
@@ -392,6 +392,24 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 }
             ]
         });
+		var westPanel =new Ext.Panel({
+			border: false,
+			//layout:'accordion',
+			split: true,
+			id: 'west',
+			region:'west',
+			layout:'fit',
+            collapsible: true,
+            collapseMode: "mini",
+			enableTabScroll : true,
+            header: false,
+			width: 300,
+			minWidth:280
+			//items:[{title:'Crop Data'},{title:'Crop Status'},{title:'AgroMet'},{title:'NDVI'}]
+			
+			
+		});
+		
         
         this.toolbar = new Ext.Toolbar({
             disabled: true,
@@ -498,7 +516,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             layout: "border",            
             items: [
                 this.mapPanelContainer,
-                westPanel
+                eastPanel,
+				westPanel
             ]
         }];
         
