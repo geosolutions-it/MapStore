@@ -44,11 +44,11 @@ In order to install and run this application, follow these steps:
 Execute the following shell commands:
 
       Windows:
-      cd %MAPSTORE_HOME%\bin
+      cd %MAPSTORE_HOME%
       startup
 
       UNIX:
-      cd $MAPSTORE_HOME/bin
+      cd $MAPSTORE_HOME
       ./startup.sh
       
 (3) Access MapStore HomePage    
@@ -70,11 +70,11 @@ Then click the "New Map" button to start MapComposer.
 Execute the following shell commands:
 
       Windows:
-      cd %MAPSTORE_HOME%\bin
+      cd %MAPSTORE_HOME%
       shutdown
 
       UNIX:
-      cd $MAPSTORE_HOME/bin
+      cd $MAPSTORE_HOME
       ./shutdown.sh
 
 

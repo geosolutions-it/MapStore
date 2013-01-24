@@ -38,8 +38,7 @@ goto JavaFail
 goto end
 
 :shutdown
-  set RUN_JAVA=%JAVA_HOME%\bin\java
-  cd ..
+  set RUN_JAVA=%JAVA_HOME%\bin\java  
   "%RUN_JAVA%" -DSTOP.PORT=8079 -DSTOP.KEY=mapstore -jar start.jar --stop
   cd bin
 goto end

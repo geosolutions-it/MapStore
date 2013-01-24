@@ -19,5 +19,4 @@ fi
 # Set standard commands for invoking Java.
 _RUNJAVA="$JAVA_HOME"/bin/java
 
-cd ..
 exec "$_RUNJAVA" $JAVA_OPTS -DSTOP.PORT=8079 -DSTOP.KEY=mapstore -jar start.jar --stop

@@ -110,11 +110,7 @@
     </New>
     -->
     
-    <New id="MapStore" class="org.mortbay.jetty.webapp.WebAppContext">
-      <Arg><Ref id="contexts"/></Arg>
-      <Arg><SystemProperty name="jetty.home" default="."/>/webapps/mapstore.war</Arg>
-      <Arg>/</Arg>      
-    </New>
+    
 
     <!-- ======================================================= -->
     <!-- Configure a Context                                     -->
@@ -139,6 +135,17 @@
       <Arg type="boolean">True</Arg>  <!-- extract -->
       <Arg type="boolean">True</Arg> <!-- parent priority class loading -->
     </Call>
+    
+    <Call name="addLifeCycle">
+      <Arg>
+        <New class="org.mortbay.jetty.deployer.ContextDeployer">
+          <Set name="contexts"><Ref id="contexts"/></Set>
+          <Set name="configurationDir"><SystemProperty name="jetty.home" default="."/>/contexts</Set>
+          <Set name="scanInterval">1</Set>
+        </New>
+      </Arg>
+    </Call>
+    
 
     <!-- =========================================================== -->
     <!-- Configure Realms                                            -->

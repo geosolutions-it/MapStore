@@ -13,8 +13,8 @@
     <property name="ringojs.version" value="0.7.0-geosolutions"/>
     <property name="ringojs.run" location="${ringojs.dir}/lib/ringojs-run-${ringojs.version}.jar"/>
     <property name="httpproxy.version" value="1.0.2"/>
-    <property name="xmljson.version" value="1.0.1-SNAPSHOT"/>
-    <property name="mapstore.version" value="1.0.1-SNAPSHOT"/>
+    <property name="xmljson.version" value="1.0.0"/>
+    <property name="mapstore.version" value="1.0.0"/>
     <property name="geostore.version" value="1.1.0"/>
     <property name="app.proxy.geoserver" value=""/>
 	<property name="app.debug.proxy" value="true"/>
@@ -206,43 +206,56 @@
     <target name="release" depends="war">
         <delete dir="${release.dir}"/>
         <mkdir dir="${release.dir}"/>
-        <copy todir="${release.dir}">
+        <mkdir dir="${release.dir}/mapstore"/>
+        <copy todir="${release.dir}/mapstore">
             <fileset dir="release">                
             </fileset>
         </copy>
-        <copy todir="${release.dir}/webapps">
+        <copy todir="${release.dir}/mapstore/webapps">
             <fileset file="${composerbuild}/${ant.project.name}.war">
             </fileset>
         </copy>
-        <copy todir="${release.dir}/webapps">
+        <copy todir="${release.dir}/mapstore/webapps">
             <fileset file="${managerbuild}/${manager.war.name}.war">
             </fileset>
         </copy>
-        <copy todir="${release.dir}">
+        <copy todir="${release.dir}/mapstore">
             <fileset file="license.txt">
             </fileset>
         </copy>        
-        <get src="http://maven.geo-solutions.it/it/geosolutions/xmlJsonTranslate/${xmljson.version}/xmlJsonTranslate-${xmljson.version}.war" dest="${release.dir}/webapps/xmlJsonTranslate.war"/>        
-        <get src="http://maven.geo-solutions.it/it/geosolutions/geostore/geostore-webapp/${geostore.version}/geostore-webapp-${geostore.version}.war" dest="${release.dir}/webapps/geostore.war"/>        
-        <get src="http://maven.geo-solutions.it/proxy/http_proxy/${httpproxy.version}/http_proxy-${httpproxy.version}.war" dest="${release.dir}/webapps/http_proxy.war"/>
+        <get src="http://maven.geo-solutions.it/it/geosolutions/xmlJsonTranslate/${xmljson.version}/xmlJsonTranslate-${xmljson.version}.war" dest="${release.dir}/mapstore/webapps/xmlJsonTranslate.war"/>        
+        <get src="http://maven.geo-solutions.it/it/geosolutions/geostore/geostore-webapp/${geostore.version}/geostore-webapp-${geostore.version}.war" dest="${release.dir}/mapstore/webapps/geostore.war"/>        
+        <get src="http://maven.geo-solutions.it/proxy/http_proxy/${httpproxy.version}/http_proxy-${httpproxy.version}.war" dest="${release.dir}/mapstore/webapps/http_proxy.war"/>
         
         <!-- remove datasource configuration file from geostore.war -->
-        <zip destfile="${release.dir}/webapps/tmp.war"> 
-                <zipfileset src="${release.dir}/webapps/geostore.war"> 
+        <zip destfile="${release.dir}/mapstore/webapps/tmp.war"> 
+                <zipfileset src="${release.dir}/mapstore/webapps/geostore.war"> 
                         <exclude name="**/geostore-datasource-ovr.properties" /> 
                 </zipfileset> 
         </zip> 
-        <move file="${release.dir}/webapps/tmp.war" tofile="${release.dir}/webapps/geostore.war" /> 
+        <move file="${release.dir}/mapstore/webapps/tmp.war" tofile="${release.dir}/mapstore/webapps/geostore.war" /> 
         
         <!-- remove proxy configuration file from http_proxy.war -->
-        <zip destfile="${release.dir}/webapps/tmp.war"> 
-                <zipfileset src="${release.dir}/webapps/http_proxy.war"> 
+        <zip destfile="${release.dir}/mapstore/webapps/tmp.war"> 
+                <zipfileset src="${release.dir}/mapstore/webapps/http_proxy.war"> 
                         <exclude name="**/proxy.properties" /> 
                 </zipfileset> 
         </zip> 
-        <move file="${release.dir}/webapps/tmp.war" tofile="${release.dir}/webapps/http_proxy.war" /> 
+        <move file="${release.dir}/mapstore/webapps/tmp.war" tofile="${release.dir}/mapstore/webapps/http_proxy.war" /> 
         
-        <echo file="${release.dir}/VERSION.txt">MapStore Version: ${mapstore.version}
+        <!-- replace mapmanager home html file -->
+        <zip destfile="${release.dir}/mapstore/webapps/tmp.war"> 
+                <zipfileset src="${release.dir}/mapstore/webapps/mapstore.war"> 
+                        <exclude name="*.html" /> 
+                </zipfileset> 
+        </zip> 
+        <zip destfile="${release.dir}/mapstore/webapps/tmp.war" update="true">
+            <zipfileset dir="mapmanager/release" 
+                includes="*.html" />
+        </zip>
+        <move file="${release.dir}/mapstore/webapps/tmp.war" tofile="${release.dir}/mapstore/webapps/mapstore.war" /> 
+        
+        <echo file="${release.dir}/mapstore/VERSION.txt">MapStore Version: ${mapstore.version}
 GeoStore Version: ${geostore.version}
 HttpProxy Version: ${httpproxy.version}
 xmlJsonTranslate Version: ${xmljson.version}
