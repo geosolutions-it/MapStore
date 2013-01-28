@@ -172,11 +172,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button,{
                         type: 'spline',
                         color: '#AA4643',
                         yAxis: 2,
-                        data: yield,
-                        marker: {
-                            enabled: false
-                        },
-                        dashStyle: 'shortdot'
+                        data: yield
             
                     }, {
                         name: 'Area Ha',
