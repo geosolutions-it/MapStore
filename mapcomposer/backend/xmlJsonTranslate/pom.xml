@@ -5,7 +5,7 @@
 	<groupId>it.geosolutions</groupId>
 	<artifactId>xmlJsonTranslate</artifactId>
 	<packaging>war</packaging>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>xmlJsonTranslate</name>
 	<url>http://maven.apache.org</url>
 	
@@ -54,7 +54,7 @@
 						</connector>
 					</connectors>
 					<contextPath>xmlJsonTranslate</contextPath>
-					<webAppSourceDirectory>${project.build.directory}/xmlJsonTranslate-1.0.0</webAppSourceDirectory>
+					<webAppSourceDirectory>${project.build.directory}/xmlJsonTranslate-1.0.1-SNAPSHOT</webAppSourceDirectory>
 				</configuration>
 			</plugin>
 			
