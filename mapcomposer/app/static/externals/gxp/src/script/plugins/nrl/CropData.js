@@ -186,9 +186,13 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 			
 				
 			],	
-			buttons:[{text:'compute',handler:function(){
+			buttons:[{
+                text:'compute',
+                xtype: 'gxp_nrlChartButton'
+                /*handler:function(){
 						Ext.Msg.alert("Add Area","Not Yet Implemented");
-				}}]
+				}*/
+            }]
 			
 
 		};
