@@ -27,27 +27,34 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 	xtype: 'gxp_selectFeatureButton',
 	selectableLayer: ['nrl:Province_Boundary'],
 	nativeSrs : "EPSG:32642",
-	
+	singleSelect:false,
 	hilightLayerName: 'hilight_layer_selectAction',
-	
+	layerStyle: null,
    // tooltip: this.infoActionTip,
 	iconCls: "gxp-icon-getfeatureinfo",
 	toggleGroup: this.toggleGroup,
 	enableToggle: true,
 	allowDepress: true,
 	itemId: 'SelectAction',
+    events:['addFeature'],
 	initComponent: function(){
+        if(!this.store){
+            this.store = new Ext.data.SimpleStore({
+                mode:'local',
+                autoload:true,
+                fields:[,
+                        {name:'data',		mapping:'data'}
+                    ] 
+            });
+        };
 		this.store.on('add',function(store,records,index){
 			for(var i = 0 ; i< records.length ; i++){
 				var feature = records[i];
 				if(!this.hilightLayer){
 					this.createHilightLayer();  
-        }
+                }
 				//TODO externalize Note: no way to get native projection from gml using openlayers (parse directly xml can be a solution)	
-				var geometry = feature.get('geometry').transform(
-					new OpenLayers.Projection(this.nativeSrs), 
-					new OpenLayers.Projection(this.target.mapPanel.map.getProjection())
-				);
+				
 				this.hilightLayer.addFeatures(feature.data);
 			}
         },this);
@@ -74,11 +81,7 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 		
 		return gxp.widgets.button.SelectFeatureButton.superclass.initComponent.apply(this, arguments);
 	},
-	initEvents: function(){
-        gxp.widgets.button.SelectFeatureButton.superclass.initEvents.call(this);
-        //TODO
-		
-    },
+	
 	
 	/**
 	 * Updates control
@@ -113,25 +116,33 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 		var control = new OpenLayers.Control.WMSGetFeatureInfo({
 			url: x.getLayer().url,
 			//queryVisible: true,
-			
 			infoFormat:  "application/vnd.ogc.gml" ,
 			layers: [ x.getLayer()],
 			vendorParams: vp,
 			eventListeners: {
 				getfeatureinfo: function(evt) {
-					 
+					 var record,add=false ;
 					for(var i = 0; i< evt.features.length ; i++){
 						
-						var record = new this.store.recordType(evt.features[i],evt.features[i].fid);
+						record = new this.store.recordType(evt.features[i],evt.features[i].fid);
+                        if(this.singleSelect) {
+                            this.store.removeAll();
+                        }
 						//add if not in the store 
 						var presentRecord = this.store.getById(record.id);
 						if(!presentRecord){
+                            var geometry = record.get('geometry').transform(
+                                new OpenLayers.Projection(this.nativeSrs), 
+                                new OpenLayers.Projection(this.target.mapPanel.map.getProjection())
+                            );
 							this.store.add(record);
+                            add=true;//to fire event only the last feature if at least one is added  
 						//remove if it is in the store
 						}else{
 							this.store.remove(presentRecord);
 						}
 					}
+                    if(add){this.fireEvent('addfeature',record);}
 				},
 				scope: this
 			}
@@ -154,21 +165,22 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 		
 	},
 	createHilightLayer: function(){
-		
+		var conf = {
+				displayInLayerSwitcher:false
+			};
+        conf.style = this.layerStyle;
 		this.hilightLayer = new OpenLayers.Layer.Vector(
 			this.hilightLayerName,
-			{
-				displayInLayerSwitcher:false
-			}
+			conf
 		
 		);
 		
 		this.target.mapPanel.map.addLayer(this.hilightLayer);
-	
+        return this.hilightLayer
 	},
 	toggleHandler: function(button, pressed) {
 			if(!this.control){
-				this.updateControl();	
+				this.updateControl();
 			}
 			if (pressed) {
 				button.control.activate();

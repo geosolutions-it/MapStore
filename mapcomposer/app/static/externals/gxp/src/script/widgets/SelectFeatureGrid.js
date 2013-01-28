@@ -77,6 +77,7 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 		//add buttons to the bbar
 		this.selectButton = new gxp.widgets.button.SelectFeatureButton({
 				selectableLayer: ['nrl:Province_Boundary'],
+                layerStyle: this.layerStyle,
 				nativeSrs : "EPSG:32642",
 				target:this.target,
 				text:'Add from map',

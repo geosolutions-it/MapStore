@@ -66,7 +66,7 @@ Ext.ux.YearRangeSelector = Ext.extend(Ext.form.CompositeField,{
 							slider.setValue(0,e.getValue(),true);
 						}
 					}
-				},
+				}
 			},
 			slider,
 			{xtype:'numberfield',width:36,value:this.values[1],ref:'endValue',minValue: this.minValue, maxValue: this.maxValue,enableKeyEvents:true,

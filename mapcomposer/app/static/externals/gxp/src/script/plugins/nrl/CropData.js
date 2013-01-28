@@ -97,6 +97,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					}
 				},{
 					xtype: 'nrl_aoifieldset',
+                    layerStyle:this.layerStyle,
 					anchor:'100%',
 					target:this.target,
 					layers:{

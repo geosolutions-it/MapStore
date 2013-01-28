@@ -82,7 +82,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 							xtype: 'nrl_seasonradiogroup',
 							anchor:'100%'
 						},{
-							xtype:'nrl_singlefeatureselector',
+							xtype:'nrl_single_aoi_selector',
 							target:this.target,
 							hilightLayerName: 'hilight_layer_selectAction'
 						},{
