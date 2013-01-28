@@ -39,9 +39,7 @@ goto end
 
 :shutdown
   set RUN_JAVA=%JAVA_HOME%\bin\java
-  cd ..
-  "%RUN_JAVA%" -DSTOP.PORT=8079 -DSTOP.KEY=mapstore -jar start.jar --stop
-  cd bin
+  "%RUN_JAVA%" -DSTOP.PORT=8079 -DSTOP.KEY=mapstore -jar start.jar --stop  
 goto end
 
 :end

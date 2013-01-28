@@ -24,7 +24,6 @@ if [ -z "$JAVA_OPTS" ]; then
   export JAVA_OPTS="-XX:MaxPermSize=128m -Dgeostore-ovr=file:config/geostore-datasource-ovr.properties"
 fi 
 
-cd ..
 
 #added headless to true by default, if this messes anyone up let the list
 #know and we can change it back, but it seems like it won't hurt -ch
