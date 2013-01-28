@@ -34,7 +34,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button,{
             layout:'fit', 
             tabTip: 'Crop Data',
             closable: true,
-            html: "<div id='chartContainer' style='min-height: 305px; min-width: 584px'></div>"
+            html: "<div id='chartContainer' style='min-height: 350px; min-width: 584px'></div>"
         });        
         
         tabPanel.add(linkTab);
@@ -99,7 +99,10 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button,{
                         text: 'Maize'
                     },
                     xAxis: [{
-                        categories: uniqueYear
+                        type: 'datetime',
+                        categories: uniqueYear,
+                        tickWidth: 0,
+                        gridLineWidth: 1
                     }],
                     yAxis: [{ // Primary yAxis
                         labels: {
@@ -154,25 +157,8 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button,{
                         opposite: true
                     }],
                     tooltip: {
-                        formatter: function() {
-                            var unit = {
-                                'Area Ha': 'ha',
-                                'Production Tons': 'tons',
-                                'Yield Tons': 'tons'
-                            }[this.series.name];
-            
-                            return ''+
-                                this.x +': '+ this.y +' '+ unit;
-                        }
-                    },
-                    legend: {
-                        layout: 'vertical',
-                        align: 'left',
-                        x: 120,
-                        verticalAlign: 'top',
-                        y: 80,
-                        floating: true,
-                        backgroundColor: '#FFFFFF'
+                        shared: true,
+                        crosshairs: true
                     },
                     series: [{
                         name: 'Production Tons',
