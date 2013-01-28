@@ -13,137 +13,191 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button,{
     xtype: 'gxp_nrlChartButton',
     iconCls: "gxp-icon-nrl-chart",
     handler:function(){
-            //Ext.Msg.alert("Add Area","Not Yet Implemented");
-            
-        Ext.getCmp('id_mapTab').add({
-            title: 'Crop',
-            resizeTabs: true,
-            closable: true,
-            html: "<div id='chartContainer' style='min-height: 305px; min-width: 584px'></div>"
-        });
         
-        Ext.getCmp('id_mapTab').doLayout();
+        var delLastChar = function (str){
+            len = str.length;
+            str = str.substring(0,len-1);
+            return str;
+        };
         
-        Ext.getCmp('id_mapTab').setActiveTab(1);  
+        var tabPanel = Ext.getCmp('id_mapTab');
         
-        var chart;    
-        Ext.onReady(function () {
-            chart = new Highcharts.Chart({
-                chart: {
-                    renderTo: 'chartContainer',
-                    zoomType: 'xy'
-                },
-                title: {
-                    text: 'Average Monthly Weather Data for Tokyo'
-                },
-                subtitle: {
-                    text: 'Source: WorldClimate.com'
-                },
-                xAxis: [{
-                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-                }],
-                yAxis: [{ // Primary yAxis
-                    labels: {
-                        formatter: function() {
-                            return this.value +'°C';
-                        },
-                        style: {
-                            color: '#89A54E'
-                        }
-                    },
-                    title: {
-                        text: 'Temperature',
-                        style: {
-                            color: '#89A54E'
-                        }
-                    },
-                    opposite: true
+        var tabs = tabPanel.find('title', 'Crop Data');
         
-                }, { // Secondary yAxis
-                    gridLineWidth: 0,
-                    title: {
-                        text: 'Rainfall',
-                        style: {
-                            color: '#4572A7'
-                        }
-                    },
-                    labels: {
-                        formatter: function() {
-                            return this.value +' mm';
-                        },
-                        style: {
-                            color: '#4572A7'
-                        }
-                    }
-        
-                }, { // Tertiary yAxis
-                    gridLineWidth: 0,
-                    title: {
-                        text: 'Sea-Level Pressure',
-                        style: {
-                            color: '#AA4643'
-                        }
-                    },
-                    labels: {
-                        formatter: function() {
-                            return this.value +' mb';
-                        },
-                        style: {
-                            color: '#AA4643'
-                        }
-                    },
-                    opposite: true
-                }],
-                tooltip: {
-                    formatter: function() {
-                        var unit = {
-                            'Rainfall': 'mm',
-                            'Temperature': '°C',
-                            'Sea-Level Pressure': 'mb'
-                        }[this.series.name];
-        
-                        return ''+
-                            this.x +': '+ this.y +' '+ unit;
-                    }
-                },
-                legend: {
-                    layout: 'vertical',
-                    align: 'left',
-                    x: 120,
-                    verticalAlign: 'top',
-                    y: 80,
-                    floating: true,
-                    backgroundColor: '#FFFFFF'
-                },
-                series: [{
-                    name: 'Rainfall',
-                    color: '#4572A7',
-                    type: 'column',
-                    yAxis: 1,
-                    data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
-        
-                }, {
-                    name: 'Sea-Level Pressure',
-                    type: 'spline',
-                    color: '#AA4643',
-                    yAxis: 2,
-                    data: [1016, 1016, 1015.9, 1015.5, 1012.3, 1009.5, 1009.6, 1010.2, 1013.1, 1016.9, 1018.2, 1016.7],
-                    marker: {
-                        enabled: false
-                    },
-                    dashStyle: 'shortdot'
-        
-                }, {
-                    name: 'Temperature',
-                    color: '#89A54E',
-                    type: 'spline',
-                    data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-                }]
-            });  
-        });        
-    }    
+        if(tabs && tabs.length > 0){
+            tabPanel.setActiveTab(tabs[0]);
+        }else{    
 
+        tabPanel.add({
+                title: 'Crop Data',
+                resizeTabs: true,
+                closable: true,
+                html: "<div id='chartContainer' style='min-height: 305px; min-width: 584px'></div>"
+            });
+            
+            Ext.getCmp('id_mapTab').doLayout();
+            
+            Ext.getCmp('id_mapTab').setActiveTab(1);
+            
+            var data = this.target.chartData;
+            
+            var year = [];
+            var area = [];
+            var prod = [];
+            var yield = [];       
+            
+            //unique array
+            function unique(arrayName){
+                var newArray=new Array();
+                label:for(var a=0; a<arrayName.length;a++ ){  
+                    for(var j=0; j<newArray.length;j++ ){
+                        if(newArray[j]==arrayName[a]) 
+                        continue label;
+                    }
+                    newArray[newArray.length] = arrayName[a];
+                }
+                return newArray;
+            };         
+            
+            for (var i = 0; i<data.length; i++){
+                year.push(data[i].year.substring(0,data[i].year.lastIndexOf("-")));
+            }
+            
+            var uniqueYear = new Array;
+            uniqueYear = unique(year);
+
+            for (var i = 0; i<uniqueYear.length; i++){
+                var area_sum = 0;
+                var prod_sum = 0;
+                var yield_sum = 0;             
+                for (var c = 0; c<data.length; c++){   
+                    if (year[c] == uniqueYear[i]){
+                        area_sum = area_sum + parseFloat(data[c].area_mHa);
+                        prod_sum = prod_sum + parseFloat(data[c].prod_mTo);
+                    }
+                }
+                area.push(parseFloat(area_sum.toFixed(2)));
+                prod.push(parseFloat(prod_sum.toFixed(2)));
+                yield.push(parseFloat((prod[i]/area[i]).toFixed(2)));             
+            }        
+                
+            var chart;    
+            Ext.onReady(function () {
+                chart = new Highcharts.Chart({
+                    chart: {
+                        renderTo: 'chartContainer',
+                        zoomType: 'xy'
+                    },
+                    title: {
+                        text: 'PUNJAB'
+                    },
+                    subtitle: {
+                        text: 'Province'
+                    },
+                    xAxis: [{
+                        categories: uniqueYear
+                    }],
+                    yAxis: [{ // Primary yAxis
+                        labels: {
+                            formatter: function() {
+                                return this.value +'mHa';
+                            },
+                            style: {
+                                color: '#89A54E'
+                            }
+                        },
+                        title: {
+                            text: 'Area mHa',
+                            style: {
+                                color: '#89A54E'
+                            }
+                        }
+            
+                    }, { // Secondary yAxis
+                        gridLineWidth: 0,
+                        title: {
+                            text: 'Production mTO',
+                            style: {
+                                color: '#4572A7'
+                            }
+                        },
+                        labels: {
+                            formatter: function() {
+                                return this.value +' mTO';
+                            },
+                            style: {
+                                color: '#4572A7'
+                            }
+                        },
+                        opposite: true
+            
+                    }, { // Tertiary yAxis
+                        gridLineWidth: 0,
+                        title: {
+                            text: 'Yield ToHa',
+                            style: {
+                                color: '#AA4643'
+                            }
+                        },
+                        labels: {
+                            formatter: function() {
+                                return this.value +' Ha';
+                            },
+                            style: {
+                                color: '#AA4643'
+                            }
+                        },
+                        opposite: true
+                    }],
+                    tooltip: {
+                        formatter: function() {
+                            var unit = {
+                                'Area mHa': 'ha',
+                                'Production': 'q',
+                                'Yield': 'q'
+                            }[this.series.name];
+            
+                            return ''+
+                                this.x +': '+ this.y +' '+ unit;
+                        }
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'left',
+                        x: 120,
+                        verticalAlign: 'top',
+                        y: 80,
+                        floating: true,
+                        backgroundColor: '#FFFFFF'
+                    },
+                    series: [{
+                        name: 'Production mTO',
+                        color: '#4572A7',
+                        type: 'spline',
+                        yAxis: 1,
+                        data: prod
+            
+                    }, {
+                        name: 'Yield ToHa',
+                        type: 'spline',
+                        color: '#AA4643',
+                        yAxis: 2,
+                        data: yield,
+                        marker: {
+                            enabled: false
+                        },
+                        dashStyle: 'shortdot'
+            
+                    }, {
+                        name: 'Area mHa',
+                        color: '#89A54E',
+                        type: 'spline',
+                        data: area
+                    }]
+                });  
+            });        
+        }        
+    }
 });
 
 Ext.reg(gxp.widgets.button.NrlChartButton.prototype.xtype,gxp.widgets.button.NrlChartButton);
