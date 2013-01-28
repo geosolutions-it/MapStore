@@ -28,12 +28,16 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button,{
             tabPanel.setActiveTab(tabs[0]);
         }else{    
 
-        tabPanel.add({
-                title: 'Crop Data',
-                resizeTabs: true,
-                closable: true,
-                html: "<div id='chartContainer' style='min-height: 305px; min-width: 584px'></div>"
-            });
+        var linkTab = new Ext.Panel({
+            title: 'Crop Data',
+            border: true,
+            layout:'fit', 
+            tabTip: 'Crop Data',
+            closable: true,
+            html: "<div id='chartContainer' style='min-height: 305px; min-width: 584px'></div>"
+        });        
+        
+        tabPanel.add(linkTab);
             
             Ext.getCmp('id_mapTab').doLayout();
             
@@ -92,7 +96,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button,{
                         text: 'PUNJAB'
                     },
                     subtitle: {
-                        text: 'Province'
+                        text: 'Maize'
                     },
                     xAxis: [{
                         categories: uniqueYear
@@ -100,14 +104,14 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button,{
                     yAxis: [{ // Primary yAxis
                         labels: {
                             formatter: function() {
-                                return this.value +'mHa';
+                                return this.value +' Ha';
                             },
                             style: {
                                 color: '#89A54E'
                             }
                         },
                         title: {
-                            text: 'Area mHa',
+                            text: 'Area Ha',
                             style: {
                                 color: '#89A54E'
                             }
@@ -116,14 +120,14 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button,{
                     }, { // Secondary yAxis
                         gridLineWidth: 0,
                         title: {
-                            text: 'Production mTO',
+                            text: 'Production Tons',
                             style: {
                                 color: '#4572A7'
                             }
                         },
                         labels: {
                             formatter: function() {
-                                return this.value +' mTO';
+                                return this.value +' Tons';
                             },
                             style: {
                                 color: '#4572A7'
@@ -134,14 +138,14 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button,{
                     }, { // Tertiary yAxis
                         gridLineWidth: 0,
                         title: {
-                            text: 'Yield ToHa',
+                            text: 'Yield Tons',
                             style: {
                                 color: '#AA4643'
                             }
                         },
                         labels: {
                             formatter: function() {
-                                return this.value +' Ha';
+                                return this.value +' Tons';
                             },
                             style: {
                                 color: '#AA4643'
@@ -152,9 +156,9 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button,{
                     tooltip: {
                         formatter: function() {
                             var unit = {
-                                'Area mHa': 'ha',
-                                'Production': 'q',
-                                'Yield': 'q'
+                                'Area Ha': 'ha',
+                                'Production Tons': 'tons',
+                                'Yield Tons': 'tons'
                             }[this.series.name];
             
                             return ''+
@@ -171,14 +175,14 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button,{
                         backgroundColor: '#FFFFFF'
                     },
                     series: [{
-                        name: 'Production mTO',
+                        name: 'Production Tons',
                         color: '#4572A7',
                         type: 'spline',
                         yAxis: 1,
                         data: prod
             
                     }, {
-                        name: 'Yield ToHa',
+                        name: 'Yield Tons',
                         type: 'spline',
                         color: '#AA4643',
                         yAxis: 2,
@@ -189,7 +193,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button,{
                         dashStyle: 'shortdot'
             
                     }, {
-                        name: 'Area mHa',
+                        name: 'Area Ha',
                         color: '#89A54E',
                         type: 'spline',
                         data: area
