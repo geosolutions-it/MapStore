@@ -197,6 +197,6 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 		
 		this.output = gxp.plugins.nrl.CropData.superclass.addOutput.call(this, config);
 		return this.output;
-	}
+	}   
  });
  Ext.preg(gxp.plugins.nrl.CropData.prototype.ptype, gxp.plugins.nrl.CropData);

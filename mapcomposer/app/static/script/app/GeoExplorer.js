@@ -496,10 +496,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             }
  
         }, this);
-        
+
         this.mapPanelContainer = new Ext.Panel({
             layout: "card",
             region: "center",
+            title: 'View',
             defaults: {
                 border: false
             },
@@ -510,12 +511,21 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             activeItem: 0,
             tbar: this.toolbar
         });
+
+        this.mapTab = new Ext.TabPanel({
+            id: "id_mapTab",
+            region: "center",
+            activeTab : 0,
+            deferredRender: false,
+            autoTabs : true,
+            items : [this.mapPanelContainer]
+        });
         
         this.portalItems = [{
             region: "center",
             layout: "border",            
             items: [
-                this.mapPanelContainer,
+                this.mapTab,
                 eastPanel,
 				westPanel
             ]
