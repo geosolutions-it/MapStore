@@ -28,8 +28,12 @@
                 }
             }
             if (!sameOrigin) {
-                if (config.proxyUrl) {                    
-                    uri = config.proxyUrl + '?url='+encodeURIComponent(uri);
+                if (config.proxyUrl) {        
+					var proxyUrl = config.proxyUrl;
+					if(proxyUrl.match(/^http:\/\//i) === null) {
+						proxyUrl = 'http://' + window.location.host + proxyUrl;
+					}
+                    uri = proxyUrl + '?url='+encodeURIComponent(uri);
                 } else {
                     console.warn('Proxy needed');
                 }                

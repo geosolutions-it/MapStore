@@ -1,7 +1,7 @@
 {
-    "geoStoreBase":"http://localhost:8080/geostore/rest/",
+    "geoStoreBase":"",
     "proxy":"/http_proxy/proxy/?url=",
-    "xmlJsonTranslate": "http://localhost:8080/xmlJsonTranslate/",
+    "xmlJsonTranslate": "",
     "gsSources": {
         "google": {
             "ptype": "gxp_googlesource"
