@@ -139,6 +139,24 @@
 		]
 	},
 	
+	"cswconfig": {
+		"catalogs": [
+		        {"name": "Regione Piemonte", "url": "http://www.ruparpiemonte.it/geocatalogorp/geonetworkrp/srv/it/csw", "description": "Regione Piemonte"}				
+			],
+		"dcProperty": "title",
+		"initialBBox": {
+		   "minx":-13,
+		   "miny":10,
+			"maxx":-10,
+			"maxy":13
+		}, 
+		"cswVersion": "2.0.2",
+		"filterVersion": "1.1.0",
+		"start": 1,
+		"limit": 10,
+		"timeout": 60000
+	},
+	
 	"proj4jsDefs": {
 		"EPSG:32632": "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
         "EPSG:3857": "+title= Google Mercator EPSG:3857 +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs"
@@ -268,6 +286,23 @@
 			 "target":"paneltbar",
 			 "index":21
 		  }
+	   },		
+	   {
+			"actions": ["->"], 
+			"actionTarget": "paneltbar"
+	   }, 
+	   {
+			"ptype": "gxp_dynamicgeocoder",
+			"outputTarget":"paneltbar",
+			"index": 222
+	   }, 
+	   {
+			"ptype": "gxp_reversegeocoder",
+			"outputTarget":"paneltbar",
+			"outputConfig": {
+				"width": "200"
+			},
+			"index": 23
 	   },
 	   {
 		  "actions":[
@@ -279,25 +314,8 @@
 		  "ptype":"gxp_georeferences",
 		  "actionTarget":{
 			 "target":"paneltbar",
-			 "index":23
+			 "index":24
 		  }
-	   },		
-	   {
-			"actions": ["->"], 
-			"actionTarget": "paneltbar"
-	   }, 
-	   {
-			"ptype": "gxp_dynamicgeocoder",
-			"outputTarget":"paneltbar",
-			"index": 27
-	   }, 
-	   {
-			"ptype": "gxp_reversegeocoder",
-			"outputTarget":"paneltbar",
-			"outputConfig": {
-				"width": "200"
-			},
-			"index": 26
 	   },
 	   {
 			"ptype": "gxp_syntheticview",
