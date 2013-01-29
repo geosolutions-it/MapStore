@@ -8,21 +8,20 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
 	layerStyle:{
         strokeColor: "blue",
         strokeWidth: 1,
-        fillOpacity:0.6,
-        cursor: "pointer"
+        fillOpacity:0.6
+        
     },
-    
+    startConfig:'PROVINCE',
     featureSelectorConfigs:{
         base:{
+		toggleGroup:'toolGroup',
         xtype: 'gxp_searchboxcombo',
             anchor:'100%',
             fieldLabel: 'District',
             url: "http://84.33.2.24/geoserver/ows?",
-            
             predicate:"ILIKE",
-
             sortBy:"PROVINCE",
-
+			ref:'singleSelector',
             displayField:"name",
             pageSize:10
             
@@ -88,12 +87,10 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
     },
 	
 	initComponent: function() {
-		this.combos = {};
-		this.combos.PROVINCE = this.createProvinceCombo();
-		this.combos.DISTRICT = this.createDistrictCombo();
-		this.currentCombo = this.combos.PROVINCE;
+		
+		this.currentCombo = this.createCombo(this.startConfig);
 		this.items = [
-			{ 
+			{
 				fieldLabel: 'Type',
 				xtype: 'radiogroup',
 				autoHeight:true,
@@ -101,7 +98,7 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
 				defaultType: 'radio', // each item will be a radio button
 				items:[
 					{boxLabel: 'Province' , name: 'areatype', inputValue: 'PROVINCE' , checked: true},
-					{boxLabel: 'District', name: 'areatype', inputValue: 'DISTRICT'}	
+					{boxLabel: 'District', name: 'areatype', inputValue: 'DISTRICT'}
 				],
 				listeners: {
 					change: function(cbg,checkedarray){
@@ -109,16 +106,14 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
 						
 						if (cbg.getValue() && cbg.getValue().inputValue){
 							var newType = cbg.getValue().inputValue;
-							this.remove(this.currentCombo,true);
-							this.combos.PROVINCE = this.createProvinceCombo();
-							this.combos.DISTRICT =  this.createDistrictCombo();
-							this.currentCombo = this.combos[newType];
-							this.add(this.currentCombo);
-							this.doLayout();
+							this.ownerCt.remove(this.ownerCt.singleSelector,true);
+							this.ownerCt.currentCombo = this.ownerCt.createCombo(newType);
+							this.ownerCt.add(this.ownerCt.currentCombo);
+							this.ownerCt.doLayout();
 						}
 
-					},
-					scope:this
+					}
+					
 				
 				}
 				
@@ -141,24 +136,14 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
         return this.hilightLayer;
 	
 	},
-	createDistrictCombo: function(){
+	createCombo: function(type){
         
         return new gxp.widgets.form.SingleFeatureSelector(Ext.apply(
 			{
                 target:this.target,
                 layerStyle:this.layerStyle
-            },this.featureSelectorConfigs.DISTRICT,this.featureSelectorConfigs.base
+            },this.featureSelectorConfigs[type],this.featureSelectorConfigs.base
 		));
-	},
-	createProvinceCombo: function(){
-        return new gxp.widgets.form.SingleFeatureSelector(Ext.apply(
-        {
-                target: this.target,
-                layerStyle:this.layerStyle
-                },this.featureSelectorConfigs.PROVINCE,this.featureSelectorConfigs.base)
-		);
 	}
-	
-	
 });
 Ext.reg(nrl.form.SingleAOISelector.prototype.xtype,nrl.form.SingleAOISelector);

@@ -32,21 +32,23 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 	layerStyle: null,
    // tooltip: this.infoActionTip,
 	iconCls: "gxp-icon-getfeatureinfo",
-	toggleGroup: this.toggleGroup,
+	//toggleGroup: this.toggleGroup,
 	enableToggle: true,
 	allowDepress: true,
 	itemId: 'SelectAction',
-    events:['addFeature'],
+    //events:['addFeature'],
 	initComponent: function(){
         if(!this.store){
             this.store = new Ext.data.SimpleStore({
                 mode:'local',
                 autoload:true,
-                fields:[,
-                        {name:'data',		mapping:'data'}
+                fields:[
+                        {name:'data',mapping:'data'},
+						{name:'attributes',mapping:'data.attributes'}
                     ] 
             });
         };
+		this.addEvents('addFeature');
 		this.store.on('add',function(store,records,index){
 			for(var i = 0 ; i< records.length ; i++){
 				var feature = records[i];
@@ -54,7 +56,7 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 					this.createHilightLayer();  
                 }
 				//TODO externalize Note: no way to get native projection from gml using openlayers (parse directly xml can be a solution)	
-				
+				this.fireEvent('addfeature',records[i]);
 				this.hilightLayer.addFeatures(feature.data);
 			}
         },this);
@@ -79,6 +81,22 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 			this.hilightLayer.removeAllFeatures();
         },this);
 		
+		this.on('beforedestroy',function(component){
+			
+			var control = component.control;
+			component.toggle(false);
+			Ext.ButtonToggleMgr.unregister(component);
+			component.d
+			if (control){
+                control.deactivate();  // TODO: remove when http://trac.openlayers.org/ticket/2130 is closed
+                control.destroy();
+			}
+			if(component.hilightLayer){
+				component.hilightLayer.removeAllFeatures();
+			}
+            
+		});
+		
 		return gxp.widgets.button.SelectFeatureButton.superclass.initComponent.apply(this, arguments);
 	},
 	
@@ -96,7 +114,7 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 			});
 			if(queryableLayer.length <=0){return}
 			var active = false;
-			if( this.control){
+			if(this.control){
 				active = this.control.active;
 				this.control.deactivate();  // TODO: remove when http://trac.openlayers.org/ticket/2130 is closed
                 this.control.destroy();
@@ -142,7 +160,7 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 							this.store.remove(presentRecord);
 						}
 					}
-                    if(add){this.fireEvent('addfeature',record);}
+                    //if(add){this.fireEvent('addfeature',record);}
 				},
 				scope: this
 			}
@@ -179,8 +197,8 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
         return this.hilightLayer
 	},
 	toggleHandler: function(button, pressed) {
-			if(!this.control){
-				this.updateControl();
+			if(!button.control){
+				button.updateControl();
 			}
 			if (pressed) {
 				button.control.activate();

@@ -28,7 +28,7 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
     url: "http://84.33.2.24/geoserver/ows?",
     typeName:"nrl:District_Boundary",
     predicate:"ILIKE",
-
+	toggleGroup:'toolGroup',
     recordModel:[
         {
           name:"id",
@@ -54,10 +54,10 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
         "DISTRICT",
         "PROVINCE"
      ],
-     sortBy:"PROVINCE",
+    sortBy:"PROVINCE",
 	displayField:"name",
     pageSize:10,
-    wfsComboSize:100,
+    wfsComboSize:140,
     tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>",
     //for get feature info
     nativeSrs : "EPSG:32642",
@@ -65,11 +65,42 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
     
 	events:['change'],
 	initComponent:function(){
-		
-		this.items=[
-			{
+		var selectFeatureButton = new gxp.widgets.button.SelectFeatureButton({
+                xtype:'gxp_selectFeatureButton',
+                singleSelect:true,
+                ref:'selectButton',
+				selectableLayer: [this.typeName],
+                //TODO add layer
+                layerStyle: this.layerStyle,
+				nativeSrs:this.nativeSrs,
+				target:this.target,
+				text:'',
+				iconCls:this.iconCls,
+				//store: this.store,
+				toggleGroup:this.toggleGroup
+			});
+		selectFeatureButton.on('addfeature',function(a,b){
+			if (!this.selectCombo){ return }//TODO remove when you find why the this function is called also on other intances of SelectFeatureButton
+			var attributes = a.get('attributes');
+			var rm = this.selectCombo.recordModel;
+			var displayAttribute;
+			//get correct object to display (WFS properties are named attributes in openlayers object decoded from GML )
+			for(var i = 0;i<rm.length;i++){
+				if (rm[i].name==this.selectCombo.displayField) {
+					displayAttribute=rm[i].mapping;
+					var index =displayAttribute.indexOf(".");
+					if(index>=0){
+						var displayAttribute =  displayAttribute.substring(index+1);
+						
+					}
+				}
+			}
+			this.selectCombo.setValue(attributes[displayAttribute]);
+		},this);
+		var selectCombo = new gxp.form.WFSSearchComboBox({
 				xtype: 'gxp_searchboxcombo',
-				autoWidth:true,
+				ref:'selectCombo',
+				autoWidth:false,
                 width:this.wfsComboSize,
 				fieldLabel: this.fieldLabel,
                 url: this.url,
@@ -82,42 +113,26 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
                 pageSize:this.pageSize,
                 tpl:this.tpl,
                 listeners:{
-                    select:this.onComboSelect,
-                    scope:this
+                    
+                    
                 }
-			},{
-                xtype:'gxp_selectFeatureButton',
-                singleSelect:true,
-                ref:'selectButton',
-				selectableLayer: [this.typeName],
-                //TODO add layer
-                layerStyle: this.layerStyle,
-				nativeSrs:this.nativeSrs,
-				target:this.target,
-				text:'',
-				iconCls:this.iconCls,
-				//store: this.store,
-				toggleGroup:this.toggleGroup,
-                listeners:{
-                    'addfeature':function(a,b){
-                        //alert(a);
-                        //alert(b);
-                    }
-                }
-            }
-		]
-		return gxp.widgets.form.SingleFeatureSelector.superclass.initComponent.apply(this, arguments);
-	},
-    onComboSelect: function(combo,record,index){
-		var geom_json = record.get('geometry');
-        var attributes = record.get('properties');
-		var geom = new OpenLayers.Format.GeoJSON().parseGeometry(geom_json);
-        var location = new OpenLayers.Feature.Vector(geom,attributes);
-        var store = this.selectButton.store;
-        store.removeAll();
-        var record =new store.recordType(location);
-        store.add(record);
+			});
+		selectCombo.on('select', function(combo,record,index){
+				var geom_json = record.get('geometry');
+				var attributes = record.get('properties');
+				var geom = new OpenLayers.Format.GeoJSON().parseGeometry(geom_json);
+				var location = new OpenLayers.Feature.Vector(geom,attributes);
+				var store = combo.refOwner.selectButton.store;
+				store.removeAll();
+				var record =new store.recordType(location);
+				store.add(record);
+		},this);
+		this.items=[selectCombo,selectFeatureButton];
+		
+		
+		return  gxp.widgets.form.SingleFeatureSelector.superclass.initComponent.apply(this, arguments);
 	}
+    
     
 });
 Ext.reg(gxp.widgets.form.SingleFeatureSelector.prototype.xtype,gxp.widgets.form.SingleFeatureSelector);
