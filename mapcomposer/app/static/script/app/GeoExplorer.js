@@ -397,14 +397,15 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 			//layout:'accordion',
 			split: true,
 			id: 'west',
+			border:false,
 			region:'west',
 			layout:'fit',
             collapsible: true,
             collapseMode: "mini",
 			enableTabScroll : true,
             header: false,
-			width: 300,
-			minWidth:280
+			width: 310,
+			minWidth:310
 			//items:[{title:'Crop Data'},{title:'Crop Status'},{title:'AgroMet'},{title:'NDVI'}]
 			
 			
