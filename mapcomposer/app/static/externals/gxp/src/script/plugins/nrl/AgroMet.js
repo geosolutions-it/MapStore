@@ -46,7 +46,8 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
     layerStyle: {
         strokeColor: "green",
         strokeWidth: 1,
-        fillOpacity:0.6
+        fillOpacity:0.6,
+		cursor:'pointer'
     },
     
     /** private: method[addOutput]
@@ -86,6 +87,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 					anchor:'100%'
 				},{
 					xtype: 'nrl_aoifieldset',
+					ref:'aoiFieldSet',
 					anchor:'100%',
 					target:this.target,
                     layerStyle: this.layerStyle,
@@ -142,6 +144,22 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 		config = Ext.apply(agroMet,config || {});
 		
 		this.output = gxp.plugins.nrl.AgroMet.superclass.addOutput.call(this, config);
+		this.output.on('beforehide',function(){
+			var button = this.output.aoiFieldSet.AreaSelector.selectButton;
+			button.toggle(false);
+			var lyr = button.hilightLayer;
+			if(!lyr) return;
+			lyr.setVisibility(false);
+			
+		},this);
+		this.output.on('show',function(){
+			var button = this.output.aoiFieldSet.AreaSelector.selectButton;
+			
+			var lyr = button.hilightLayer;
+			if(!lyr) return;
+			lyr.setVisibility(true);
+			
+		},this);
 		return this.output;
 	}
  });

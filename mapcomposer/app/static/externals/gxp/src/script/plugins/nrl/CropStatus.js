@@ -84,6 +84,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 						},{
 							xtype:'nrl_single_aoi_selector',
 							target:this.target,
+							ref:'singleFeatureSelector',
 							hilightLayerName: 'hilight_layer_selectAction'
 						},{
 							xtype: 'singleyearcombobox',
@@ -120,8 +121,27 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 		};
 		config = Ext.apply(cropStatus,config || {});
 		
-		var output = gxp.plugins.nrl.CropStatus.superclass.addOutput.call(this, config);
-		return output;
+		this.output = gxp.plugins.nrl.CropStatus.superclass.addOutput.call(this, config);
+		
+		//hide selection layer on tab change
+		this.output.on('beforehide',function(){
+			var button = this.output.singleFeatureSelector.singleSelector.selectButton;
+			button.toggle(false);
+			var lyr = button.hilightLayer;
+			if(!lyr) return;
+			lyr.setVisibility(false);
+			
+		},this);
+		this.output.on('show',function(){
+			var button = this.output.singleFeatureSelector.singleSelector.selectButton;
+			
+			var lyr = button.hilightLayer;
+			if(!lyr) return;
+			lyr.setVisibility(true);
+			
+		},this);
+		return this.output;
+		
 	}
  });
  Ext.preg(gxp.plugins.nrl.CropStatus.prototype.ptype, gxp.plugins.nrl.CropStatus);

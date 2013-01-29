@@ -43,8 +43,17 @@ Ext.namespace("gxp.plugins.nrl");
 gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
  /** api: ptype = nrl_crop_data */
     ptype: "nrl_crop_data",
-
-    
+	/** i18n **/
+	outputTypeText:'Output Type',
+	seasonText:'Season',
+	/** layer Name **/
+    hilightLayerName:"CropData_Selection_Layer",//TODO doesn't seems to run
+	layerStyle:{
+        strokeColor: "red",
+        strokeWidth: 1,
+        fillOpacity:0.6,
+        cursor: "pointer"
+    },
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
@@ -57,7 +66,6 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 	
 		var cropData  = {
 			xtype:'form',
-			outputTypeText:'Output Type',
 			title: 'Crop Data',
 			layout: "form",
 			minWidth:180,
@@ -66,12 +74,12 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 			items:[
 			
 				{ 
-					fieldLabel: 'Output Type',
+					fieldLabel: this.outputTypeText,
 					xtype: 'checkboxgroup',
 					anchor:'100%',
 					autoHeight:true,
 					checkboxToggle:true,
-					title: this.outputTypeText,
+					//title: ,
 					autoHeight: true,
 
 					defaultType: 'radio', // each item will be a radio button
@@ -82,7 +90,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 						
 					]
 				},{ 
-					fieldLabel: 'Season',
+					fieldLabel: this.seasonText,
 					xtype: 'nrl_seasonradiogroup',
 					anchor:'100%',
 					ref:'season',
@@ -97,9 +105,11 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					}
 				},{
 					xtype: 'nrl_aoifieldset',
+					ref:'aoiFieldSet',
                     layerStyle:this.layerStyle,
 					anchor:'100%',
 					target:this.target,
+					hilightLayerName:this.hilightLayerName,
 					layers:{
 						DISTRICT:'nrl:District_Boundary',
 						PROVINCE:'nrl:Province_Boundary'
@@ -198,10 +208,29 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 			
 
 		};
+		
 		config = Ext.apply(cropData,config || {});
 		
 		this.output = gxp.plugins.nrl.CropData.superclass.addOutput.call(this, config);
+		
+		//hide selection layer on tab change
+		this.output.on('beforehide',function(){
+			var button = this.output.aoiFieldSet.AreaSelector.selectButton;
+			button.toggle(false);
+			var lyr = button.hilightLayer;
+			if(!lyr) return;
+			lyr.setVisibility(false);
+			
+		},this);
+		this.output.on('show',function(){
+			var button = this.output.aoiFieldSet.AreaSelector.selectButton;
+			
+			var lyr = button.hilightLayer;
+			if(!lyr) return;
+			lyr.setVisibility(true);
+			
+		},this);
 		return this.output;
-	}   
+	}
  });
  Ext.preg(gxp.plugins.nrl.CropData.prototype.ptype, gxp.plugins.nrl.CropData);
