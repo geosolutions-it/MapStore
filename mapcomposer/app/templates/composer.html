@@ -180,6 +180,14 @@
                 GeoExt.Lang.set(code);
             }
 			
+			// ////////////////////////////////////////////////////
+			// Setting the language selector
+			// ////////////////////////////////////////////////////
+			var languageSelector = new gxp.form.LanguageSwitcher({
+				currentContext:code,
+				saveMessage:authorization
+			});
+			
             var appTabs = new Ext.Panel({
 			    layout: 'fit',
                 region: 'center',
@@ -259,7 +267,7 @@
                       id : 'header'
                     },appTabs],                          
                     bbar : [
-                      csiLabel, ' ', aboutButton
+                      csiLabel, ' ', aboutButton, '->',languageSelector
                     ]
                 }]
             });
