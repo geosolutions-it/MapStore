@@ -43,6 +43,9 @@
 		"ol": { 
 			"ptype": "gxp_olsource" 
 		},
+		"fake": { 
+			"ptype": "gxp_nosource" 
+		},
 		"destination": {
 			"ptype": "gxp_wmssource",
 			"title": "Destination GeoServer",
@@ -70,6 +73,12 @@
 				"title": "Bing Aerial",
 				"name": "Aerial",
 				"group": "background"
+			}, {
+				"source": "fake",
+				"title": "Nessuno sfondo",
+				"name": "NOBACKGROUND",
+				"group": "background",
+				"visibility": false
 			}, {
 				"source": "osm",
 				"title": "Open Street Map",
