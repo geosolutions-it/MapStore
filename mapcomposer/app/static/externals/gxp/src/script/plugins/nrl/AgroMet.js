@@ -43,7 +43,7 @@ Ext.namespace("gxp.plugins.nrl");
 gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
  /** api: ptype = nrl_agromet */
     ptype: "nrl_agromet",
-	areaFilter: "PROVINCE NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY',DISPUTED AREA)",
+	areaFilter: "PROVINCE NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
     layerStyle: {
         strokeColor: "green",
         strokeWidth: 1,

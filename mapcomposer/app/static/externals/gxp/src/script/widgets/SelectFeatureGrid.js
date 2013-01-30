@@ -53,8 +53,9 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 		this.store =  new Ext.data.SimpleStore({
 		mode:'local',
 		autoload:true,
-		fields:[,
-				{name:'data',		mapping:'data'}
+		fields:[
+				{name:'data',		mapping:'data'},
+				{name:'attributes',	mapping:'attributes'}
 			]
 			
 		}),
@@ -62,7 +63,7 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 		this.columns=[
 			{
 				id: 'name',
-				dataIndex:'data', 
+				dataIndex:'attributes', 
 				renderer:{
 					fn:function(data){
 						return data[this.displayField];

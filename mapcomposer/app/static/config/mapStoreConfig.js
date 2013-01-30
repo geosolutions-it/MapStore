@@ -50,7 +50,7 @@
 				"title": "National Boundary",
 				"name": "nrl:National_Boundary",
 				"group": "Boundaries",
-				"visibility": false
+				"visibility": true
 			},{
 				"source": "nrl",
 				"title": "GLOBC 2006",
