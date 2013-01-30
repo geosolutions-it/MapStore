@@ -83,10 +83,91 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button,{
                 area.push(parseFloat(area_sum.toFixed(2)));
                 prod.push(parseFloat(prod_sum.toFixed(2)));
                 yield.push(parseFloat((prod[i]/area[i]).toFixed(2)));             
-            }        
-                
+            }     
+
+             // Store for random data
+             var store = new Ext.data.JsonStore({
+               data: data,
+               fields: [ 
+                 { name: 'time', type: 'int' },
+                 { name: 'yesterday', type: 'float' },
+                 { name: 'today', type: 'float' }
+               ],
+               root: 'rows'
+             });
+            
             var chart;    
-            Ext.onReady(function () {
+            
+             chart = new Ext.ux.HighChart({
+              series: [ {
+                type: 'spline',
+                dataIndex: 'yesterday',
+                name: 'Yesterday',
+                }, {
+                type: 'spline',
+                dataIndex: 'today',
+                name: 'Today',
+              }],
+              height: 500,
+              width: 700,
+              store: store,
+              animShift: true,
+              xField: 'time',
+              chartConfig: {
+                  chart: {
+                 marginRight: 130,
+                 marginBottom: 120,
+                 zoomType: 'x'
+                  },
+                  title: {
+                 text: 'Random Value',
+                 x: -20 //center
+                  },
+                  subtitle: {
+                 text: 'joekuan.wordpress.com',
+                 x: -20
+                  },
+                  xAxis: [{
+                title: {
+                  text: 'Time',
+                  margin: 20,
+                }, 
+                        labels: {
+                          rotation: 270,
+                          y: 35
+                        },
+                type: 'datetime'
+                  }],
+                  yAxis: {
+                 title: {
+                    text: 'Value'
+                 },
+                 plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                 }]
+                  },
+                  tooltip: {
+                 formatter: function() {
+                       return '<b>'+ this.series.name +'</b><br/>'+
+                       this.x +': '+ this.y;
+                 }
+                  },
+                  legend: {
+                 layout: 'vertical',
+                 align: 'right',
+                 verticalAlign: 'top',
+                 x: -10,
+                 y: 100,
+                 borderWidth: 0
+                  }
+                }
+             });
+
+             new Ext.Window({ title: 'Example', layout: 'anchor', items: [ chart ] }).show();   
+             
+/*
                 chart = new Highcharts.Chart({
                     chart: {
                         renderTo: 'chartContainer',
@@ -205,7 +286,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button,{
                         data: area
                     }]
                 });  
-            });        
+    */
         }        
     }
 });
