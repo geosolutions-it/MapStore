@@ -45,6 +45,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
     ptype: "nrl_crop_data",
 	/** i18n **/
 	outputTypeText:'Output Type',
+	areaFilter: "PROVINCE NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY')",
 	seasonText:'Season',
 	/** layer Name **/
     hilightLayerName:"CropData_Selection_Layer",//TODO doesn't seems to run
@@ -109,6 +110,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     layerStyle:this.layerStyle,
 					anchor:'100%',
 					target:this.target,
+					areaFilter:this.areaFilter, 
 					hilightLayerName:this.hilightLayerName,
 					layers:{
 						DISTRICT:'nrl:District_Boundary',

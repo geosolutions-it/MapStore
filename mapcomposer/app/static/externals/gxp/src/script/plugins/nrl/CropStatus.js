@@ -44,6 +44,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
  /** api: ptype = nrl_crop_status */
     ptype: "nrl_crop_status",
 
+	areaFilter: "PROVINCE NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY',DISPUTED AREA)",
     
     /** private: method[addOutput]
      *  :arg config: ``Object``
@@ -85,7 +86,8 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 							xtype:'nrl_single_aoi_selector',
 							target:this.target,
 							ref:'singleFeatureSelector',
-							hilightLayerName: 'hilight_layer_selectAction'
+							hilightLayerName: 'hilight_layer_selectAction',
+							vendorParams: {cql_filter:this.areaFilter}
 						},{
 							xtype: 'singleyearcombobox',
 							anchor:'100%'
