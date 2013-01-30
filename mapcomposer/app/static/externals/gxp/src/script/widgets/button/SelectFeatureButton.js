@@ -44,7 +44,7 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
                 autoload:true,
                 fields:[
                         {name:'data',mapping:'data'},
-						{name:'attributes',mapping:'data.attributes'}
+						{name:'attributes',mapping:'attributes'}
                     ] 
             });
         };
