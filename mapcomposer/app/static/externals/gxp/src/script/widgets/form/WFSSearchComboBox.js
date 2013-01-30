@@ -136,8 +136,13 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 	/** api: config[predicate]
      *  ``String`` predicate to use for search (LIKE,ILIKE,=...).
      */
-	predicate: 'LIKE',
-
+	predicate: 'ILIKE',
+	/** api: config[vendorParams]
+     *  ``String`` additional parameters object. cql_filters
+	 *  is used in AND the search params. (see listeners->beforequery)
+     */
+	vendorParams: '',
+	
     /** private: method[initComponent]
      *  Override
      */
@@ -150,7 +155,7 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 			autoLoad: false,
 			fields:this.recordModel,
             url: this.url,
-			
+			vendorParams: this.vendorParams,
 			paramNames:{
 				start: "startindex",
 				limit: "maxfeatures",
@@ -169,6 +174,11 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 			listeners:{
 				beforeload: function(store){
 					store.setBaseParam( 'srsName',app.mapPanel.map.getProjection() );
+					for (var name in this.vendorParams ) {
+						if(name!='cql_filter' && name != "startindex" && name != "maxfeatures" && name != 'outputFormat' ){
+							store.setBaseParam(store,this.vendorParams[name]);
+						}
+					}
 				}
 			},
 			
@@ -243,6 +253,10 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 				if ( i < this.queriableAttributes.length -1) {
 					queryEvent.query += " OR ";
 				}
+			}
+			//add cql filter in and with the other condictions
+			if(this.vendorParams && this.vendorParams.cql_filter) {
+				queryEvent.query = "(" + queryEvent.query + ")AND(" +this.vendorParams.cql_filter +")";
 			}
 		
 		}
