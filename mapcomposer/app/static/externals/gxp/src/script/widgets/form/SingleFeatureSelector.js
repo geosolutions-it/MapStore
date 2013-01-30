@@ -29,6 +29,7 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
     typeName:"nrl:District_Boundary",
     predicate:"ILIKE",
 	toggleGroup:'toolGroup',
+	vendorParams: this.vendorParams,
     recordModel:[
         {
           name:"id",
@@ -67,6 +68,7 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
 	initComponent:function(){
 		var selectFeatureButton = new gxp.widgets.button.SelectFeatureButton({
                 xtype:'gxp_selectFeatureButton',
+				vendorParams:this.vendorParams,
                 singleSelect:true,
                 ref:'selectButton',
 				selectableLayer: [this.typeName],
@@ -100,6 +102,7 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
 		var selectCombo = new gxp.form.WFSSearchComboBox({
 				xtype: 'gxp_searchboxcombo',
 				ref:'selectCombo',
+				vendorParams:this.vendorParams,
 				autoWidth:false,
                 width:this.wfsComboSize,
 				fieldLabel: this.fieldLabel,

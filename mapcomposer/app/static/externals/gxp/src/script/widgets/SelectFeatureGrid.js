@@ -77,6 +77,7 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 		//add buttons to the bbar
 		this.selectButton = new gxp.widgets.button.SelectFeatureButton({
 				ref:'selectButton',
+				vendorParams:this.vendorParams,
 				selectableLayer: ['nrl:Province_Boundary'],
                 layerStyle: this.layerStyle,
 				hilightLayerName:this.hilightLayerName,

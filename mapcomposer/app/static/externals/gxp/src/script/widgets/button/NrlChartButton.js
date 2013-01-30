@@ -154,7 +154,31 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button,{
                                 color: '#AA4643'
                             }
                         },
-                        opposite: true
+                        opposite: true,
+						plotLines : [{ //mid values
+							value : 1,
+							color : 'green',
+							dashStyle : 'shortdash',
+							width : 2,
+							label : {
+								text : 'Last quarter minimum'
+							}
+						}, {
+							value : 2,
+							color : 'red',
+							dashStyle : 'shortdash',
+							width : 2,
+							zIndex:10,
+							label : {
+								text : 'Last quarter maximum'
+							}
+						}],
+						 plotBands: [{ // mark the weekend
+							color: 'rgba(68, 170, 213, 0.2)',
+							from: 2,
+							to: 20000000
+						}]
+							
                     }],
                     tooltip: {
                         shared: true,
