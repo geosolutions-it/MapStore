@@ -422,15 +422,17 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
 
         var searchString = '*';
-
+		
+		var baseUrl = config.baseUrl || 'http://' + window.location.host;
+		
 		// /////////////////////////
 		// Init useful URLs
 		// /////////////////////////
-		this.murl = config.baseUrl + '/mapcomposer/';
-		this.geoBaseUsersUrl= config.baseUrl + '/geostore/rest/users';
-		this.geoBaseMapsUrl = config.baseUrl + '/geostore/rest/resources';
-		this.geoSearchUrl = config.baseUrl + '/geostore/rest/extjs/search/';
-        this.geoSearchUsersUrl = config.baseUrl + '/geostore/rest/extjs/search/users';
+		this.murl = baseUrl + '/mapcomposer/';
+		this.geoBaseUsersUrl= baseUrl + '/geostore/rest/users';
+		this.geoBaseMapsUrl = baseUrl + '/geostore/rest/resources';
+		this.geoSearchUrl = baseUrl + '/geostore/rest/extjs/search/';
+        this.geoSearchUsersUrl = baseUrl + '/geostore/rest/extjs/search/users';
         
 		// ///////////////////////////////////
         // Inizialization of MSMLogin class

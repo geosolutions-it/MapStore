@@ -12,10 +12,12 @@
     <property name="ringojs.dir" location="externals/ringojs"/>
     <property name="ringojs.version" value="0.7.0-geosolutions"/>
     <property name="ringojs.run" location="${ringojs.dir}/lib/ringojs-run-${ringojs.version}.jar"/>
+
     <property name="httpproxy.version" value="1.0.x-SNAPSHOT"/>
     <property name="xmljson.version" value="1.1-SNAPSHOT"/>
     <property name="mapstore.version" value="1.1-SNAPSHOT"/>
     <property name="geostore.version" value="1.1-SNAPSHOT"/>
+
     <property name="app.proxy.geoserver" value=""/>
 	<property name="app.debug.proxy" value="true"/>
     <property name="app.port" value="8081"/>

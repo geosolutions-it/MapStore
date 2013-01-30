@@ -320,11 +320,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                     
                     if(addConfig){
                         if(addConfig.data){    
-                            addConfig = Ext.util.JSON.decode(addConfig.data);
-                            this.applyConfig(Ext.applyIf(addConfig, config));
-                        }else{        
-                            this.applyConfig(Ext.applyIf(addConfig, config));
+                            addConfig = Ext.util.JSON.decode(addConfig.data);                            
                         }
+						// ignore xmlJsonTranslateService URL
+						delete addConfig.xmlJsonTranslateService;
+						this.applyConfig(Ext.applyIf(addConfig, config));
                     } else {
                         this.applyConfig(config);
                     }
@@ -1216,6 +1216,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         var state = GeoExplorer.superclass.getState.apply(this, arguments);
         // Don't persist tools
         delete state.tools;
+		// Don't persist xmlJsonTranslateService URL
+        delete state.xmlJsonTranslateService;
         return state;
     }
 });

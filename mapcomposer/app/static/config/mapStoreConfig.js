@@ -1,7 +1,7 @@
 {
-   "geoStoreBase":"http://localhost:8080/geostore/rest/",
+   "geoStoreBase":"",
    "proxy":"/http_proxy/proxy/?url=",
-   "xmlJsonTranslate": "http://localhost:8080/xmlJsonTranslate/",
+   "xmlJsonTranslate": "",
    "defaultLanguage": "en",
    "gsSources":{ 
 		"mapquest": {
@@ -18,19 +18,7 @@
 		}, 
 		"ol": { 
 			"ptype": "gxp_olsource" 
-		},
-        "wms_firenze": {
-            "ptype": "gxp_wmssource",
-			"title": "WMS Comune di Firenze",
-			"version":"1.1.1",
-		    "url": "http://tms.comune.fi.it/geowebcache/service/wms"
-        },
-        "wms_bolzano": {
-            "ptype": "gxp_wmssource",
-			"title": "WMS Comune di Bolzano",
-			"version":"1.3.0",
-		    "url": "http://sit.comune.bolzano.it/geoserver/ows"
-        }
+		}
 	},
 	"map": {
 		"projection": "EPSG:900913",
