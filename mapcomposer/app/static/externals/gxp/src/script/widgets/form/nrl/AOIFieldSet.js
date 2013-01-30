@@ -63,6 +63,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
 			{
 				xtype: 'gxp_selectfeaturegrid',
 				target:this.target,
+				vendorParams:{cql_filter:this.areaFilter},
 				ref:'AreaSelector',
 				displayField:'PROVINCE',
 				layerStyle:this.layerStyle}

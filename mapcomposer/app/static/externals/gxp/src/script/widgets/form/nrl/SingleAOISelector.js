@@ -141,7 +141,8 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
         return new gxp.widgets.form.SingleFeatureSelector(Ext.apply(
 			{
                 target:this.target,
-                layerStyle:this.layerStyle
+                layerStyle:this.layerStyle,
+				vendorParams:this.vendorParams
             },this.featureSelectorConfigs[type],this.featureSelectorConfigs.base
 		));
 	}
