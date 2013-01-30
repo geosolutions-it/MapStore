@@ -41,7 +41,6 @@
         "plugins/WMSCSource.js",
         "plugins/OSMSource.js",
         "plugins/GoogleSource.js",
-        "plugins/NoSource.js",
         "plugins/OLSource.js",
         "plugins/MapQuestSource.js",
         "plugins/StyleWriter.js",

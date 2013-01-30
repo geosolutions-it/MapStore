@@ -42,10 +42,7 @@
 		}, 
 		"ol": { 
 			"ptype": "gxp_olsource" 
-		},
-		"fake": { 
-			"ptype": "gxp_nosource" 
-		},
+		},		
 		"destination": {
 			"ptype": "gxp_wmssource",
 			"title": "Destination GeoServer",
@@ -73,13 +70,18 @@
 				"title": "Bing Aerial",
 				"name": "Aerial",
 				"group": "background"
-			}, {
-				"source": "fake",
-				"title": "Nessuno sfondo",
-				"name": "NOBACKGROUND",
+			}, 
+			{
+				"source": "ol",
 				"group": "background",
-				"visibility": false
-			}, {
+				"fixed": true,
+				"type": "OpenLayers.Layer",
+				"visibility": false,
+				"args": [
+					"Nessuno sfondo", {"visibility": false}
+				]
+			},
+			{
 				"source": "osm",
 				"title": "Open Street Map",
 				"name": "mapnik",
