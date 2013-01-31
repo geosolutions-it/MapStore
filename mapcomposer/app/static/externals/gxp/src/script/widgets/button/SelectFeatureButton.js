@@ -48,7 +48,7 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
                     ] 
             });
         };
-		this.addEvents('addFeature');
+		this.addEvents('addFeature','startselection','endselection');
 		this.store.on('add',function(store,records,index){
 			for(var i = 0 ; i< records.length ; i++){
 				var feature = records[i];
@@ -131,13 +131,19 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 			//srs: this.target.mapPanel.map.getProjection()
 		
 		});
+		var button= this;
 		var control = new OpenLayers.Control.WMSGetFeatureInfo({
 			url: x.getLayer().url,
 			//queryVisible: true,
+			button: this,
 			infoFormat:  "application/vnd.ogc.gml" ,
 			layers: [ x.getLayer()],
 			vendorParams: vp,
 			eventListeners: {
+				beforegetfeatureinfo: function(evt){
+					button.fireEvent('startselection');
+				},
+				
 				getfeatureinfo: function(evt) {
 					 var record,add=false ;
 					for(var i = 0; i< evt.features.length ; i++){
@@ -160,6 +166,7 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 							this.store.remove(presentRecord);
 						}
 					}
+					button.fireEvent('endselection');
                     //if(add){this.fireEvent('addfeature',record);}
 				},
 				scope: this
