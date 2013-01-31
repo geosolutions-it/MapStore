@@ -28,21 +28,6 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
             tabPanel.setActiveTab(tabs[0]);
         } else {
 
-            var linkTab = new Ext.Panel({
-                title: 'Crop Data',
-                border: true,
-                layout: 'fit',
-                tabTip: 'Crop Data',
-                closable: true,
-                html: "<div id='chartContainer' style='min-height: 350px; min-width: 584px'></div>"
-            });
-
-            tabPanel.add(linkTab);
-
-            Ext.getCmp('id_mapTab').doLayout();
-
-            Ext.getCmp('id_mapTab').setActiveTab(1);
-
             var data = this.target.chartData;
 
             var year = [];
@@ -249,11 +234,20 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                 }
             });
 
-            new Ext.Window({
-                title: 'Example',
-                layout: 'anchor',
+            var linkTab = new Ext.Panel({
+                title: 'Crop Data',
+                border: true,
+                layout: 'fit',
+                tabTip: 'Crop Data',
+                closable: true,
                 items: [chart]
-            }).show();
+            });
+
+            tabPanel.add(linkTab);
+
+            Ext.getCmp('id_mapTab').doLayout();
+
+            Ext.getCmp('id_mapTab').setActiveTab(1);
         }
     }
 });
