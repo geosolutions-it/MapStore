@@ -235,7 +235,7 @@ Ext.ux.HighChart = Ext.extend(Ext.BoxComponent, {
             // The only way to get initial animation working is to populate the 
             // data into the config object first from loading a data store
             // Only allow initial animation if none of series has defined animation: false
-            var initAnim = true;
+            var initAnim = false;
             for (var s = 0; s < this.series.length; s++) {
               // Look for the type and look into associated animation config in chartConfig
               var ctype = this.series[s].type;
