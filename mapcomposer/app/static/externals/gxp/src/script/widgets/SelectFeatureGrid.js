@@ -29,20 +29,29 @@ Ext.namespace('gxp.widgets');
 
 gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 	xtype:'gxp_selectfeaturegrid',
+	/**   api: xtype = gxp_selectfeaturegrid */
+	/** api: config[toggleGroup]
+     *  ``String`` the toggleGroup of selection button
+     */
 	toggleGroup: "toolGroup",
+	/**  api: config[displayField]
+	 *the feature name to display, as returned by WMS getFeatureInfo 
+	 */
 	displayField:"fname",
-	multiSelect: true,
 	
-	
+	/*NOTE 
+		contains the configuration of comboBox, for pratical reason
+		useful the develop of this application, the component is defined 
+		using this variable instead of a mixed value. TODO: make it better */
+	comboConfig:{
+                        
+    },
+	/** Configuration of the Ext.grid.GridPanel component */
 	hideHeaders:true,
 	reserveScrollOffset: true,
 	height:150,
 	autoScroll:true,
-	multiSelect: true,
-	overClass:'x-view-over',
-	itemSelector:'div.thumb-wrap',
-	emptyText: 'No images to display',
-	loadingMask: true,
+	loadMask: true,
 	viewConfig: {
 				
 		forceFit: true
@@ -87,7 +96,16 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 				text:'Add from map',
 				iconCls:'icon-map-add',
 				store: this.store,
-				toggleGroup:this.toggleGroup
+				toggleGroup:this.toggleGroup,
+				listeners:{
+					startSelection:function(){
+						this.loadMask.show();
+					},
+					endSelection:function(){
+						this.loadMask.hide();
+					},
+					scope:this
+				}
 		});
 		this.bbar=[
 			
@@ -96,8 +114,31 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 				text:'Add',
 				iconCls:'icon-add',
 				handler:function(){
-						Ext.Msg.alert("Add Area","Not Yet Implemented");
-				}
+						var selectCombo = new gxp.form.WFSSearchComboBox(Ext.apply({vendorParams:this.vendorParams},this.comboConfig));
+                        var window = new Ext.Window({
+                            items:[selectCombo],
+                            //layout:'form',
+                            width:265,
+                            y:250,
+                            modal:true,
+                            resizable:false,
+                            draggable:false
+                        });
+                        
+                        selectCombo.on('select', function(combo,record,index){
+                                var geom_json = record.get('geometry');
+                                var attributes = record.get('properties');
+                                var geom = new OpenLayers.Format.GeoJSON().parseGeometry(geom_json);
+                                var location = new OpenLayers.Feature.Vector(geom,attributes);
+                                var store = this.store;
+                                var record =new store.recordType(location);
+                                store.add(record);
+                                window.close();
+                        },this);
+                        window.show();
+
+				},
+                scope:this
 			},
 			
 			this.selectButton,
@@ -117,6 +158,16 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 	},
 	changeLayer :function(layer){
 		this.selectButton.setSelectableLayer(layer);
-	}
+	},
+    getComboConfig: function(){
+        return Ext.apply(this.comboConfig, {
+			//displayField:this.displayField,
+            vendorParams:this.vendorParams
+            
+        });
+            
+    
+    
+    }
 });
 Ext.reg(gxp.widgets.SelectFeatureGrid.prototype.xtype,gxp.widgets.SelectFeatureGrid);
