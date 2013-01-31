@@ -107,9 +107,10 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                 root: 'rows'
             });
 
-            var chart;
+            var chart1;
+            var chart2;
 
-            chart = new Ext.ux.HighChart({
+            chart1 = new Ext.ux.HighChart({
                 series: [{
                     name: 'Production Tons',
                     color: '#4572A7',
@@ -234,13 +235,155 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                 }
             });
 
+            chart2 = new Ext.ux.HighChart({
+                series: [{
+                    name: 'Production Tons',
+                    color: '#4572A7',
+                    type: 'spline',
+                    yAxis: 1,
+                    dataIndex: 'prod'
+
+                }, {
+                    name: 'Yield Tons',
+                    type: 'spline',
+                    color: '#AA4643',
+                    yAxis: 2,
+                    dataIndex: 'yield'
+
+                }, {
+                    name: 'Area Ha',
+                    color: '#89A54E',
+                    type: 'spline',
+                    dataIndex: 'area'
+                }],
+                height: 600,
+                width: 900,
+                store: store,
+                animShift: true,
+                xField: 'time',
+                chartConfig: {
+                    chart: {
+                        zoomType: 'x'
+                    },
+                    title: {
+                        text: 'PUNJAB'
+                    },
+                    subtitle: {
+                        text: 'Maize'
+                    },
+                    xAxis: [{
+                        type: 'datetime',
+                        categories: 'time',
+                        tickWidth: 0,
+                        gridLineWidth: 1
+                    }],
+                    yAxis: [{ // Primary yAxis
+                        labels: {
+                            formatter: function () {
+                                return this.value + ' Ha';
+                            },
+                            style: {
+                                color: '#89A54E'
+                            }
+                        },
+                        title: {
+                            text: 'Area Ha',
+                            style: {
+                                color: '#89A54E'
+                            }
+                        }
+
+                    }, { // Secondary yAxis
+                        gridLineWidth: 0,
+                        title: {
+                            text: 'Production Tons',
+                            style: {
+                                color: '#4572A7'
+                            }
+                        },
+                        labels: {
+                            formatter: function () {
+                                return this.value + ' Tons';
+                            },
+                            style: {
+                                color: '#4572A7'
+                            }
+                        },
+                        opposite: true
+
+                    }, { // Tertiary yAxis
+                        gridLineWidth: 0,
+                        title: {
+                            text: 'Yield Tons',
+                            style: {
+                                color: '#AA4643'
+                            }
+                        },
+                        labels: {
+                            formatter: function () {
+                                return this.value + ' Tons';
+                            },
+                            style: {
+                                color: '#AA4643'
+                            }
+                        },
+                        opposite: true,
+                        plotLines: [{ //mid values
+                            value: 1,
+                            color: 'green',
+                            dashStyle: 'shortdash',
+                            width: 2,
+                            label: {
+                                text: 'Last quarter minimum'
+                            }
+                        }, {
+                            value: 2,
+                            color: 'red',
+                            dashStyle: 'shortdash',
+                            width: 2,
+                            zIndex: 10,
+                            label: {
+                                text: 'Last quarter maximum'
+                            }
+                        }],
+                        plotBands: [{ // mark the weekend
+                            color: 'rgba(68, 170, 213, 0.2)',
+                            from: 2,
+                            to: 20000000
+                        }]
+
+                    }],
+                    tooltip: {
+                        shared: true,
+                        crosshairs: true
+                    }
+                }
+            });
+
+            var pannello1 = new Ext.Panel({
+                title: 'Grafico 1',
+                id: "pippo",
+                border: false,
+                layout: 'fit',
+                items: [chart1]
+            });
+            
+            var pannello2 = new Ext.Panel({
+                title: 'Grafico 2',
+                id: "pluto",
+                border: false,
+                layout: 'fit',
+                items: [chart2]
+            });            
+            
             var linkTab = new Ext.Panel({
                 title: 'Crop Data',
                 border: true,
-                layout: 'fit',
+                id: "main",
+                layout: 'form',
+                autoScroll: true,
                 tabTip: 'Crop Data',
-                closable: true,
-                items: [chart]
+                closable: true
             });
 
             tabPanel.add(linkTab);
@@ -248,6 +391,13 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
             Ext.getCmp('id_mapTab').doLayout();
 
             Ext.getCmp('id_mapTab').setActiveTab(1);
+            
+            Ext.getCmp('main').add(pannello1);            
+            Ext.getCmp('main').add(pannello2);
+            
+            Ext.getCmp('main').update();
+            Ext.getCmp('main').doLayout();            
+            
         }
     }
 });
