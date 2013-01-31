@@ -126,13 +126,19 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
                         });
                         
                         selectCombo.on('select', function(combo,record,index){
+								//create the OpenLayers.Feature.Vector obj
                                 var geom_json = record.get('geometry');
                                 var attributes = record.get('properties');
                                 var geom = new OpenLayers.Format.GeoJSON().parseGeometry(geom_json);
                                 var location = new OpenLayers.Feature.Vector(geom,attributes);
+								//add if missing to the store
                                 var store = this.store;
                                 var record =new store.recordType(location);
-                                store.add(record);
+								var presentRecord = this.store.getById(record.id);
+								if(!presentRecord){
+									store.add(record);
+								}
+
                                 window.close();
                         },this);
                         window.show();
