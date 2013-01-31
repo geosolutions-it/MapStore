@@ -31,8 +31,80 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
 	xtype: 'nrl_aoifieldset',
 	anchor:'100%',
 	title: 'Area of interest',
-	
+	comboConfigs:{
+        base:{
+            anchor:'100%',
+            fieldLabel: 'District',
+            url: "http://84.33.2.24/geoserver/ows?",
+            predicate:"ILIKE",
+            width:250,
+            sortBy:"PROVINCE",
+			ref:'singleSelector',
+            displayField:"name",
+            pageSize:10
+            
+        },
+        DISTRICT:{
+            typeName:"nrl:District_Boundary",
+            queriableAttributes:[
+                "DISTRICT",
+                "PROVINCE"
+                
+             ],
+             recordModel:[
+                {
+                  name:"id",
+                   mapping:"id"
+                },
+                {
+                   name:"geometry",
+                   mapping:"geometry"
+                },
+                {
+                   name:"name",
+                   mapping:"properties.DISTRICT"
+                },{
+                   name:"province",
+                   mapping:"properties.PROVINCE"
+                },{
+                   name:"properties",
+                   mapping:"properties"
+                } 
+            ],
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"       
+        },
+        PROVINCE:{ 
+            fieldLabel: 'Province',
+            typeName:"nrl:Province_Boundary",
+            recordModel:[
+                {
+                   name:"id",
+                   mapping:"id"
+                },
+                {
+                   name:"geometry",
+                   mapping:"geometry"
+                },
+                {
+                   name:"name",
+                   mapping:"properties.PROVINCE"
+                },{
+                   name:"properties",
+                   mapping:"properties"
+                }
+            ],
+            sortBy:"PROVINCE",
+            queriableAttributes:[
+                "PROVINCE"
+            ],
+            displayField:"name",
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
+                            
+        }
+    
+    },
 	initComponent: function() {
+        this.currentComboConfig = Ext.apply({},this.comboConfigs.base,this.comboConfigs.PROVINCE);
 		this.items = [
 			{ 
 				fieldLabel: 'Type',
@@ -47,15 +119,24 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
 				],
 				listeners: {
 					change: function(cbg,checkedarray){
-						var as = this.ownerCt.AreaSelector;
+						var as = cbg.ownerCt.AreaSelector;
+                        //TODO ask to confirm, before loose all selection
+                        
 						as.store.removeAll();
 						if (! cbg.getValue())return;
 						var val = cbg.getValue().inputValue	;
 						as.displayField = val;
-						var newLayerName = this.ownerCt.layers[val];
+						var newLayerName = cbg.ownerCt.layers[val];
 						as.changeLayer(newLayerName);
+                        as.comboConfig  = Ext.apply(
+							{},
+							cbg.ownerCt.comboConfigs.base,
+							cbg.ownerCt.comboConfigs[val]
+						);
+                        
 					
-					}
+					},
+                    scope:this
 				
 				}
 				
@@ -65,8 +146,10 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
 				target:this.target,
 				vendorParams:{cql_filter:this.areaFilter},
 				ref:'AreaSelector',
+                comboConfig:this.currentComboConfig,
 				displayField:'PROVINCE',
-				layerStyle:this.layerStyle}
+				layerStyle:this.layerStyle
+            }
 		]
 		return nrl.form.AOIFieldSet.superclass.initComponent.apply(this, arguments);
 	}	
