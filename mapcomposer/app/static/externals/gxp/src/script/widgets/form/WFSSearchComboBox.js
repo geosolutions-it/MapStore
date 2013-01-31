@@ -143,6 +143,7 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
      */
 	vendorParams: '',
 	
+    clearOnFocus:true,
     /** private: method[initComponent]
      *  Override
      */
@@ -243,7 +244,7 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
     },
 	listeners: {
 		focus: function() {
-			this.clearValue();
+			if(this.clearOnFocus) this.clearValue();
 		},
 		beforequery:function(queryEvent){
 			var queryString = queryEvent.query;
