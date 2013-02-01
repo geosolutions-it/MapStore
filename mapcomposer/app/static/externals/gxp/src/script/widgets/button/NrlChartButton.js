@@ -362,8 +362,9 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 
                 var pannello1 = new Ext.Panel({
                     title: 'Grafico ' + 2 * i,
-                    border: false,
                     layout: 'fit',
+                    style:'padding:5px  5px',
+                    border: true,                    
                     items: [chart1],
                     tools: [{
                         id: 'gear',
@@ -399,7 +400,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                 });
 
                 panels.push(pannello1);
-                panels.push(pannello2);
+                //panels.push(pannello2);
 
             }
 
@@ -411,9 +412,16 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                 tabTip: 'Crop Data',
                 closable: true,
                 items: {
-                    xtype: 'panel',
+                    xtype: 'portal',
+                    region: 'center',
+                    //margins: '35 5 5 0',
+                    //layout: 'fit',
                     title: "Commodity: " + data[0].crop + " - Season: Rabi",
-                    items: panels,
+                    items: [{
+                        columnWidth: .99,
+                        style:'padding:10px 0 10px 10px',
+                        items:[{items: [panels]}]
+                    }],
                     tools: [{
                         id: 'gear',
                         handler: function () {
