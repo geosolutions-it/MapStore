@@ -69,10 +69,16 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     
     maxROIArea: null,
     
+    urlEPSG: null,
+    epsgWinHeight: null,
+    epsgWinWidth: null,
+
     /** private: method[constructor]
      *  :arg config: ``Object``
      */
     constructor: function(config) {
+       this.epsgWinHeight= Ext.getBody().getHeight()*.7;
+       this.epsgWinWidth= Ext.getBody().getWidth()*.8;
         gxp.plugins.StandardProcessing.superclass.constructor.apply(this, arguments);
     },
     
@@ -80,6 +86,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      *  :arg appTarget: ``Object``
      */
     show: function(appTarget) {
+       
         if(!this.appTarget)
             this.appTarget = appTarget;
             
@@ -98,6 +105,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      *  :arg map: ``Object``
      */
     buildForm: function(map){
+        var me=this; 
         var containerTab = Ext.getCmp(this.outputTarget);
         
         var syntView = this.appTarget.tools[this.syntheticView];
@@ -247,7 +255,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
               hideLabel : false                    
         });
         
-        var me=this;     
+            
         
         //
         // Geographical Filter Field Set
@@ -312,9 +320,29 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                   }
               }
         });
+        
+
+        var urlEPSG= this.urlEPSG ? this.urlEPSG : "http://spatialreference.org/ref/epsg/"+me.wgs84Projection.getCode().split(":")[1]+"/";;
+        
+        
+      /*  this.epsgButton = new Ext.Button({
+               text: me.wgs84Projection.getCode() ,
+               handler: function(){
+                      new Ext.Window({
+                          layout:'fit',
+                          width:me.epsgWinWidth,
+                          height:me.epsgWinHeight,
+                          closeAction:'hide',
+                          html: '<iframe src="'+url_epsg+'" width="99%" height="99%"></iframe>'
+                      }).show();
+              },
+              tooltip: this.currentExtentTooltip                          
+            
+        });*/
               
         this.spatialFieldSet = new Ext.form.FieldSet({
-            title: this.aioFieldSetTitle,
+            title:  this.aioFieldSetTitle+" <a href='#' id='bboxAOI-set-EPSG'>["+me.wgs84Projection.getCode()+"]</a>",//["+this.wgs84Projection.getCode()+"]</div></b>",
+            //title: this.aioFieldSetTitle,
             id: 'bboxAOI-set',
             autoHeight: true,
             layout: 'table',
@@ -326,7 +354,16 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 bodyStyle:'padding:5px;'
             },
             bodyCssClass: 'aoi-fields',
-            items: [                
+            items: [      
+               /* {
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    colspan:3,
+                    border: false,
+                    items: [
+                        this.epsgButton
+                    ]                
+                },*/
                 {
                     layout: "form",
                     cellCls: 'spatial-cell',
@@ -385,33 +422,44 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         //
         
         var targetStore = new Ext.data.ArrayStore({
+            fields: ['name', 'property', 'humans'],
+            data :  [
+            //    ['Tutti i Bersagli', 'calc_formula_tot', ''],
+                ['Popolazione residente', 'calc_formula_residenti', true],
+                ['Popolazione fluttuante turistica (medio)', 'invalid', true],
+                ['Popolazione fluttuante turistica (max)', 'invalid', true],
+                ['Addetti industria e servizi', 'invalid', true],
+                ['Addetti/utenti strutture sanitarie', 'invalid', true],
+                ['Addetti/utenti strutture scolastiche', 'invalid', true],
+                ['Addetti/utenti centri commerciali', 'invalid', true],
+                ['Utenti della strada coinvolti', 'invalid', true],
+                ['Utenti della strada territoriali', 'invalid', true],
+                ['Strutture', 'invalid', false],
+                ['Aree boscate', 'calc_formula_aree_boscate', false],
+                ['Aree protette', 'invalid', false],
+                ['Aree agricole', 'calc_formula_aree_agricole', false],
+                ['Acque sotterranee', 'invalid', false],
+                ['Acque superficiali', 'invalid', false]
+            ]
+        });
+        
+        var targetMacroStore = new Ext.data.ArrayStore({
             fields: ['name', 'property'],
             data :  [
                 ['Tutti i Bersagli', 'calc_formula_tot'],
-                ['Popolazione residente', 'calc_formula_residenti'],
-                ['Popolazione fluttuante turistica (medio)', 'invalid'],
-                ['Popolazione fluttuante turistica (max)', 'invalid'],
-                ['Addetti industria e servizi', 'invalid'],
-                ['Addetti/utenti strutture sanitarie', 'invalid'],
-                ['Addetti/utenti strutture scolastiche', 'invalid'],
-                ['Addetti/utenti centri commerciali', 'invalid'],
-                ['Utenti della strada coinvolti', 'invalid'],
-                ['Utenti della strada territoriali', 'invalid'],
-                ['Strutture', 'invalid'],
-                ['Aree boscate', 'calc_formula_aree_boscate'],
-                ['Aree protette', 'invalid'],
-                ['Aree agricole', 'calc_formula_aree_agricole'],
-                ['Acque sotterranee', 'invalid'],
-                ['Acque superficiali', 'invalid']
+                ['Tutti i Beragli Umani', 'calc_formula_tot_um'],
+                ['Tutti i Beragli Ambientali', 'calc_formula_tot_amb']
             ]
         });
-
-        this.bers = new Ext.form.ComboBox({
-            fieldLabel: "Bersaglio",
-            id: "bers",
+        
+        
+        
+        this.macrobers = new Ext.form.ComboBox({
+            fieldLabel: "Categoria",
+            id: "macrobers",
             width: 150,
             hideLabel : false,
-            store: targetStore,    
+            store: targetMacroStore,    
             displayField: 'name',    
             typeAhead: true,
             mode: 'local',
@@ -424,9 +472,61 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 scope: this,
                 select: function(cb, record, index) {
-                    var value = record.get('property');                     
+                    var value = record.get('property');    
+                    var humans,tmpRec,i; 
+                    this.selectedTargetProp = value;
+                    this.selectedTargetName = record.get('name');
                     
-                    if(value === 'invalid'){
+                    var store=this.bers.getStore();
+                    store.removeAll();
+                    switch (value){
+                        case "calc_formula_tot":
+                            for(i=0; i<targetStore.getCount(); i++){ 
+                                store.add(targetStore.getAt(i));
+                            }
+                            return;
+                            break;
+                        case "calc_formula_tot_um":
+                            humans=true;
+                            break;
+                        case "calc_formula_tot_amb":
+                            humans=false;
+                            break;
+                    }
+                  
+                    for(i=0; i<targetStore.getCount(); i++){
+                        tmpRec=targetStore.getAt(i);
+                        if(humans == tmpRec.get('humans'))
+                           store.add(targetStore.getAt(i));
+                    }  
+                }
+            }              
+        });
+       
+
+        this.bers = new Ext.form.ComboBox({
+            fieldLabel: "Bersaglio",
+            id: "bers",
+            width: 150,
+            hideLabel : false,
+            store: new Ext.data.ArrayStore({
+                fields: ['name', 'property', 'humans']
+            }),    
+            displayField: 'name',    
+            typeAhead: true,
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: true,
+            resizable: true,    
+            //value: ,
+            listeners: {
+                scope: this,
+                select: function(cb, record, index) {
+                    var value = record.get('property');                     
+                    if(value){
+                       if(value === 'invalid'){
                         Ext.Msg.show({
                             title: "Bersaglio",
                             msg: "Dati non ancora disponibili per questo bersaglio",
@@ -438,7 +538,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     if(value == "calc_formula_tot")
                         value = null;
                     this.selectedTargetProp = value;
-                    this.selectedTargetName = record.get('name');
+                    this.selectedTargetName = record.get('name'); 
+                  } 
                 }
             }              
         });
@@ -452,6 +553,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 bodyStyle:'padding:5px;'
             },
             items: [
+                this.macrobers,
                  this.bers
             ]
         });
@@ -710,8 +812,39 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             }]
         });
         
-         containerTab.add(this.panel);
+        containerTab.add(this.panel);
         containerTab.setActiveTab(this.panel);
+        
+        Ext.get("bboxAOI-set-EPSG").addListener("click", function(){
+         var win= new Ext.Window({
+                layout:'fit',
+                
+                width:me.epsgWinWidth,
+                height:me.epsgWinHeight,
+                closeAction:'destroy',
+                html: '<div id="loaderIframe"><iframe id="epsgIframe" src="'+urlEPSG+'" width="99%" height="99%"></iframe></div>',
+                listeners: {
+                    afterrender: function(thisss, eOpts) {
+                        var ml=new Ext.LoadMask(document.getElementById('loaderIframe'), 
+                            { msg:"Prego Attendere...",removeMask: true});
+                        ml.show();   
+                        function rml(){
+                            ml.hide();
+                        }
+                        var iframe = document.getElementById('epsgIframe');
+                        if (iframe.attachEvent) {
+                            iframe.attachEvent("onload", rml);
+                        } else if (iframe.addEventListener) {
+                            iframe.addEventListener("load", rml, false);
+                        } 
+                 }   
+               }
+           });
+           
+           win.show();
+           
+           
+        });
         
         if(!this.status){
             this.resetBBOX();
