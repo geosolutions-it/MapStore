@@ -13,7 +13,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
     xtype: 'gxp_nrlChartButton',
     iconCls: "gxp-icon-nrl-chart",
     handler: function () {
-
+        
         var tabPanel = Ext.getCmp('id_mapTab');
 
         var tabs = tabPanel.find('title', 'Crop Data');
@@ -73,7 +73,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                     var bbb = area[i];
                     var ccc = prod[i];
                     var ddd = yield[i];
-
+        
                     obj.rows.push({
                         "time": aaa,
                         "area": bbb,
@@ -87,13 +87,14 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
             
             var data = [];
             var panels = [];
-            var count = 0;
+            var media = [];
+            var count = 2;
             data = this.target.chartData;
             
             for (var i=0; i<data.length; i++){
-                count++;
-                var ciccio = makeGraph(data[i]);
                 
+                var ciccio = makeGraph(data[i]);
+                media.push(ciccio.rows);
                 // Store for random data
                 var store = new Ext.data.JsonStore({
                     data: ciccio,
@@ -262,6 +263,217 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 
                 panels.push(pannello);
 
+            }
+            
+            if (media.length = 2){         
+                var year = [];
+                var area = [];
+                var prod = [];
+                var yield = [];
+                for (var c = 0; c < media[0].length; c++){
+                
+                    var area_sum = 0;
+                    var prod_sum = 0;
+                    var yield_sum = 0;                    
+                    for(var i = 0;i<media.length;i++){
+                        area_sum = area_sum + parseFloat(media[i][c].area);
+                        prod_sum = prod_sum + parseFloat(media[i][c].prod);
+                                              
+                    }
+                    year.push(  media[0][c].time);
+                    area.push(parseFloat(area_sum.toFixed(2)));
+                    prod.push(parseFloat(prod_sum.toFixed(2)));
+                    yield.push(parseFloat((prod[c] / area[c]).toFixed(2)));
+                    
+                }
+                
+                var obj = {
+                    rows: []
+                };
+
+                for (var i = 0; i < year.length; i++) {
+
+                    var aaa = year[i];
+                    var bbb = area[i];
+                    var ccc = prod[i];
+                    var ddd = yield[i];
+        
+                    obj.rows.push({
+                        "time": aaa,
+                        "area": bbb,
+                        "prod": ccc,
+                        "yield": ddd
+                    });
+                }
+                
+                // Store for random data
+                var store = new Ext.data.JsonStore({
+                    data: obj,
+                    fields: [{
+                        name: 'time',
+                        type: 'string'
+                    }, {
+                        name: 'area',
+                        type: 'float'
+                    }, {
+                        name: 'prod',
+                        type: 'float'
+                    }, {
+                        name: 'yield',
+                        type: 'float'
+                    }],
+                    root: 'rows'
+                });
+
+                var chart;
+
+                chart = new Ext.ux.HighChart({
+                    series: [{
+                        name: 'Production Tons',
+                        color: '#4572A7',
+                        type: 'spline',
+                        yAxis: 1,
+                        dataIndex: 'prod'
+
+                    }, {
+                        name: 'Yield Tons',
+                        type: 'spline',
+                        color: '#AA4643',
+                        yAxis: 2,
+                        dataIndex: 'yield'
+
+                    }, {
+                        name: 'Area Ha',
+                        color: '#89A54E',
+                        type: 'spline',
+                        dataIndex: 'area'
+                    }],
+                    height: 600,
+                    width: 900,
+                    store: store,
+                    animShift: true,
+                    xField: 'time',
+                    chartConfig: {
+                        chart: {
+                            zoomType: 'x'
+                        },
+                        title: {
+                            text: "Media"
+                        },
+                        subtitle: {
+                            text: "Media"
+                        },
+                        xAxis: [{
+                            type: 'datetime',
+                            categories: 'time',
+                            tickWidth: 0,
+                            gridLineWidth: 1
+                        }],
+                        yAxis: [{ // Primary yAxis
+                            labels: {
+                                formatter: function () {
+                                    return this.value + ' Ha';
+                                },
+                                style: {
+                                    color: '#89A54E'
+                                }
+                            },
+                            title: {
+                                text: 'Area Ha',
+                                style: {
+                                    color: '#89A54E'
+                                }
+                            }
+
+                        }, { // Secondary yAxis
+                            gridLineWidth: 0,
+                            title: {
+                                text: 'Production Tons',
+                                style: {
+                                    color: '#4572A7'
+                                }
+                            },
+                            labels: {
+                                formatter: function () {
+                                    return this.value + ' Tons';
+                                },
+                                style: {
+                                    color: '#4572A7'
+                                }
+                            },
+                            opposite: true
+
+                        }, { // Tertiary yAxis
+                            gridLineWidth: 0,
+                            title: {
+                                text: 'Yield Tons',
+                                style: {
+                                    color: '#AA4643'
+                                }
+                            },
+                            labels: {
+                                formatter: function () {
+                                    return this.value + ' Tons';
+                                },
+                                style: {
+                                    color: '#AA4643'
+                                }
+                            },
+                            opposite: true/*,
+                            plotLines: [{ //mid values
+                                value: 1,
+                                color: 'green',
+                                dashStyle: 'shortdash',
+                                width: 2,
+                                label: {
+                                    text: 'Last quarter minimum'
+                                }
+                            }, {
+                                value: 2,
+                                color: 'red',
+                                dashStyle: 'shortdash',
+                                width: 2,
+                                zIndex: 10,
+                                label: {
+                                    text: 'Last quarter maximum'
+                                }
+                            }],
+                            plotBands: [{ // mark the weekend
+                                color: 'rgba(68, 170, 213, 0.2)',
+                                from: 2,
+                                to: 20000000
+                            }]*/
+
+                        }],
+                        tooltip: {
+                            shared: true,
+                            crosshairs: true
+                        }
+                    }
+                });
+                
+                var pannello = new Ext.Panel({
+                    title: "MEDIA",
+                    layout: 'fit',
+                    style:'padding:5px  5px',
+                    border: true,                    
+                    items: [chart],
+                    tools: [{
+                        id: 'gear',
+                        handler: function () {
+                            Ext.Msg.alert('Message', 'The Settings tool was clicked.');
+                        }
+                    }, {
+                        id: 'close',
+                        handler: function (e, target, panel) {
+                            panel.ownerCt.remove(panel, true);
+                        }
+                    }],
+                    collapsible: true
+                });
+
+                panels.push(pannello);                
+                    
             }
             
             var cropDataTab = new Ext.Panel({
