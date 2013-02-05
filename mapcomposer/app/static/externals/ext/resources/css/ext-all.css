@@ -4028,6 +4028,10 @@ a.x-menu-item {
     background-position:0 -45px;
 }
 
+.x-tool-info {
+    background-image: url(../images/gray/panel/info.gif) !important;
+} 
+
 .x-tool-restore-over {
     background-position:-15px -45px;
 }

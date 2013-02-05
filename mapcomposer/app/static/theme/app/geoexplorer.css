@@ -295,3 +295,10 @@ table.featureInfo caption{
      background-position: center;
      background-repeat: no-repeat;
 }
+
+/* LIST #2 */
+#list2 { width:320px; background-color:#F1F1F1;}
+#list2 ol { font-style:italic; font-family:Georgia, Times, serif; font-size:24px; color:#000000;  }
+#list2 ol li { }
+#list2 ol li p { padding:4px; font-style:italic; font-family:Arial; font-size:13px; color:#000000; border-left: 1px solid #999; }
+#list2 ol li p em { display:inline; color:#A01445; font-weight:bold;}

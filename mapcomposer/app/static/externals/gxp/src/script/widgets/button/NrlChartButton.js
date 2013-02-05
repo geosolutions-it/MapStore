@@ -242,15 +242,43 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                 });
                 
                 var pannello = new Ext.Panel({
-                    title: data[i][0].prov,
+                    title: "Province: " + data[i][0].prov,
                     layout: 'fit',
                     style:'padding:5px  5px',
                     border: true,                    
                     items: [chart],
                     tools: [{
-                        id: 'gear',
+                        id: 'info',
                         handler: function () {
-                            Ext.Msg.alert('Message', 'The Settings tool was clicked.');
+                            //Ext.Msg.alert('Message', 'The Settings tool was clicked.');
+                            
+                            var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+                                    "<ol>" +
+                                        "<li><p><em> Commodity: </em>" + data[0][0].crop + "</p></li>" +
+                                        "<li><p><em> Season: </em>" + "Rabi" + "</p></li>" +
+                                        "<li><p><em> Province 1: </em>" + data[0][0].prov + "</p></li>" +
+                                        "<li><p><em> Province 2: </em>" + data[1][0].prov + "</p></li>" +
+                                        "<li><p><em> From year: </em>" + media[0][0].time + "</p></li>" +
+                                        "<li><p><em> To year: </em>" + media[0][media[0].length-1].time + "</p></li>" +
+                                    "</ol>" +                                        
+                                    "</div>";
+
+                            var appInfo = new Ext.Panel({
+                                header: false,
+                                html: iframe
+                            });
+
+                            var win = new Ext.Window({
+                                title:  "Charts Info",
+                                modal: true,
+                                layout: "fit",
+                                width: 200,
+                                height: 180,
+                                items: [appInfo]
+                            });
+                            
+                            win.show(); 
+                                                                    
                         }
                     }, {
                         id: 'close',
@@ -358,10 +386,10 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                             zoomType: 'x'
                         },
                         title: {
-                            text: "Media"
+                            text: "Mean"
                         },
                         subtitle: {
-                            text: "Media"
+                            text: "Maize"
                         },
                         xAxis: [{
                             type: 'datetime',
@@ -453,15 +481,43 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                 });
                 
                 var pannello = new Ext.Panel({
-                    title: "MEDIA",
+                    title: "Mean",
                     layout: 'fit',
                     style:'padding:5px  5px',
                     border: true,                    
                     items: [chart],
                     tools: [{
-                        id: 'gear',
+                        id: 'info',
                         handler: function () {
-                            Ext.Msg.alert('Message', 'The Settings tool was clicked.');
+                            //Ext.Msg.alert('Message', 'The Settings tool was clicked.');                      
+                            
+                            var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+                                    "<ol>" +
+                                        "<li><p><em> Commodity: </em>" + data[0][0].crop + "</p></li>" +
+                                        "<li><p><em> Season: </em>" + "Rabi" + "</p></li>" +
+                                        "<li><p><em> Province 1: </em>" + data[0][0].prov + "</p></li>" +
+                                        "<li><p><em> Province 2: </em>" + data[1][0].prov + "</p></li>" +
+                                        "<li><p><em> From year: </em>" + media[0][0].time + "</p></li>" +
+                                        "<li><p><em> To year: </em>" + media[0][media[0].length-1].time + "</p></li>" +
+                                    "</ol>" +                                        
+                                    "</div>";
+                         
+                            var appInfo = new Ext.Panel({
+                                header: false,
+                                html: iframe
+                            });
+
+                            var win = new Ext.Window({
+                                title:  "Charts Info",
+                                modal: true,
+                                layout: "fit",
+                                width: 200,
+                                height: 180,
+                                items: [appInfo]
+                            });
+                            
+                            win.show(); 
+                                                                    
                         }
                     }, {
                         id: 'close',
@@ -496,9 +552,36 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                             title: "Commodity: " + data[0][0].crop + " - Season: Rabi",
                             items: [panels],
                             tools: [{
-                                    id: 'gear',
+                                    id: 'info',
                                     handler: function () {
-                                        Ext.Msg.alert('Message', 'The Settings tool was clicked.');
+                                        //Ext.Msg.alert('Message', 'The Settings tool was clicked.');
+                            
+                                        var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+                                                "<ol>" +
+                                                    "<li><p><em> Commodity: </em>" + data[0][0].crop + "</p></li>" +
+                                                    "<li><p><em> Season: </em>" + "Rabi" + "</p></li>" +
+                                                    "<li><p><em> Province 1: </em>" + data[0][0].prov + "</p></li>" +
+                                                    "<li><p><em> Province 2: </em>" + data[1][0].prov + "</p></li>" +
+                                                    "<li><p><em> From year: </em>" + media[0][0].time + "</p></li>" +
+                                                    "<li><p><em> To year: </em>" + media[0][media[0].length-1].time + "</p></li>" +
+                                                "</ol>" +                                        
+                                                "</div>";
+                                     
+                                        var appInfo = new Ext.Panel({
+                                            header: false,
+                                            html: iframe
+                                        });
+
+                                        var win = new Ext.Window({
+                                            title:  "Charts Info",
+                                            modal: true,
+                                            layout: "fit",
+                                            width: 200,
+                                            height: 180,
+                                            items: [appInfo]
+                                        });
+                                        
+                                        win.show();                                              
                                     }
                                 }, {
                                     id: 'close',
