@@ -478,19 +478,19 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     this.selectedTargetProp = value;
                     this.selectedTargetName = record.get('name');
                     var store=this.bers.getStore();
-                    this.bers.setValue(null);
+                    
                     store.removeAll();
-                    switch (value){
-                        case "calc_formula_tot":
+                    switch (this.selectedTargetName){
+                        case "Tutti i Bersagli":
                             for(i=0; i<targetStore.getCount(); i++){ 
                                 store.add(targetStore.getAt(i));
                             }
                             return;
                             break;
-                        case "calc_formula_tot_um":
+                        case "Tutti i Bersagli Umani":
                             humans=true;
                             break;
-                        case "calc_formula_tot_amb":
+                        case "Tutti i Bersagli Ambientali":
                             humans=false;
                             break;
                     }
@@ -500,6 +500,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         if(humans == tmpRec.get('humans'))
                            store.add(targetStore.getAt(i));
                     }  
+                    
+                    this.bers.setValue(null);
                 }
             }              
         });
@@ -649,6 +651,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             resizable: true,
             value: "Tutti le classi",
             listeners: {
+                "expand": function(combo) {
+                    combo.list.setWidth( 'auto' );
+                    combo.innerList.setWidth( 'auto' );
+                },
                 beforeselect: function(cb, record, index){
                     var value = record.get('name');  
 
@@ -684,6 +690,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             resizable: true,
             value: "Tutti le sostanze",
             listeners: {
+                "expand": function(combo) {
+                    combo.list.setWidth( 'auto' );
+                    combo.innerList.setWidth( 'auto' );
+                },
                 beforeselect: function(cb, record, index){
                     var value = record.get('name');  
 
@@ -719,6 +729,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             resizable: true,
             value: "Tutti gli Incidenti",
             listeners: {
+                "expand": function(combo) {
+                    combo.list.setWidth( 'auto' );
+                    combo.innerList.setWidth( 'auto' );
+                },
                 beforeselect: function(cb, record, index){
                     var value = record.get('name');  
 
@@ -768,6 +782,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         return false;
                     }
                 },*/
+                "expand": function(combo) {
+                    combo.list.setWidth( 'auto' );
+                    combo.innerList.setWidth( 'auto' );
+                },
                 select: function(cb, record, index) {
                     //var value = record.get('name');             
                 }
