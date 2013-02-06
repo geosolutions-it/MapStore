@@ -56,6 +56,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     analiticViewScale: 17070,
     
+    analyticView: false,
+    
     /** private: method[constructor]
      *  :arg config: ``Object``
      */
@@ -127,11 +129,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
     isHumanTarget: function() {
-        return this.status.target === 'Popolazione residente';
+        return this.status.target === 'Popolazione residente' || this.status.target === 'Tutti i Bersagli Umani';
     },
     
     isNotHumanTarget: function() {
-        return this.status.target !== 'Tutti i Bersagli' && this.status.target !== 'Popolazione residente';
+        return (this.status.target !== 'Tutti i Bersagli' && this.status.target !== 'Popolazione residente') || this.status.target === 'Tutti i Bersagli Ambientali';
     },
     
     isMixedTargets: function() {
@@ -303,7 +305,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 }
             }]
         });
-        
+        var me= this;
         var panel = new Ext.FormPanel({
             border: false,
             layout: "fit",
@@ -320,6 +322,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         disabled: true,
                         id: "analytic_view",
                         scope: this,
+                        listeners: {
+                            enable: function(){
+                                me.analyticView= true;
+                            },
+                            disable: function(){
+                                me.analyticView= false;
+                            }
+                        },
                         handler: function(){                            
                             var featureManager = this.target.tools["featuremanager"];
                             
@@ -341,10 +351,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             var xmlFormat = new OpenLayers.Format.XML();   
                             if(status && status.target){
                                 var target = status.target;
-                                //alert(target);
-                        
-                                if(target != 'Tutti i Bersagli'){
-                                    targetName = status.targetName;
+                                
+                                targetName = status.targetName;
+                                if(target != 'Tutti i Bersagli' && target != 'Tutti i Bersagli Umani' && target != 'Tutti i Bersagli Ambientali'){
                                     filter = new OpenLayers.Filter.Comparison({
                                        type: OpenLayers.Filter.Comparison.EQUAL_TO,
                                        property: "tipobersaglio",
@@ -352,7 +361,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     });
                                                                         
                                     ogcFilterString = filterFormat.write(filter);                                                                                         
-                                    ogcFilterString = xmlFormat.write(ogcFilterString);
+                                    //ogcFilterString = xmlFormat.write(ogcFilterString);
                                 }
                             }
 
@@ -420,7 +429,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                 title: this.targetLayerTitle, 
                                 params: {                                                                
                                     viewparams: viewParams,                                    
-                                    filter: ogcFilterString ? ogcFilterString : ''
+                                    filter: ogcFilterString ? xmlFormat.write(ogcFilterString) : ''
                                 }
                             }));
                             
@@ -441,40 +450,34 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             var tabPanel = Ext.getCmp("featuregrid");
                             var humanGrid = tabPanel.getItem('featuregridhuman');
                             var notHumanGrid = tabPanel.getItem('featuregridnothuman');
-                            if(!this.status || this.isMixedTargets()) {
-                                tabPanel.unhideTabStripItem(humanGrid);
-                                tabPanel.unhideTabStripItem(notHumanGrid);
-                                
-                                filter = new OpenLayers.Filter.Comparison({
+                            
+                            var humanFilterString = filterFormat.write(new OpenLayers.Filter.Comparison({
                                    type: OpenLayers.Filter.Comparison.EQUAL_TO,
                                    property: "tipobersaglio",
                                    value: 'Popolazione residente'
-                                });
-                                                                
-                                ogcFilterString = filterFormat.write(filter);  
-                                ogcFilterString = xmlFormat.write(ogcFilterString);
-                                this.loadGrid(humanGrid, ogcFilterString, viewParams);
-                                
-                                filter = new OpenLayers.Filter.Comparison({
+                            }));
+                            
+                            var notHumanFilterString = filterFormat.write(new OpenLayers.Filter.Comparison({
                                    type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
                                    property: "tipobersaglio",
                                    value: 'Popolazione residente'
-                                });
-                                                                
-                                ogcFilterString = filterFormat.write(filter);  
-                                ogcFilterString = xmlFormat.write(ogcFilterString);
-                                
-                                this.loadGrid(notHumanGrid, ogcFilterString, viewParams);
+                            }));
+
+                            if(!this.status || this.isMixedTargets()) {
+                                tabPanel.unhideTabStripItem(humanGrid);
+                                tabPanel.unhideTabStripItem(notHumanGrid);
+                                this.loadGrid(humanGrid, xmlFormat.write(humanFilterString), viewParams);
+                                this.loadGrid(notHumanGrid, xmlFormat.write(notHumanFilterString), viewParams);
                                 tabPanel.setActiveTab(humanGrid);
                             } else if(this.isHumanTarget()) {
                                 tabPanel.hideTabStripItem(notHumanGrid);
                                 tabPanel.unhideTabStripItem(humanGrid);
-                                this.loadGrid(humanGrid, ogcFilterString, viewParams);
+                                this.loadGrid(humanGrid, xmlFormat.write(ogcFilterString || humanFilterString), viewParams);
                                 tabPanel.setActiveTab(humanGrid);
                             } else if(this.isNotHumanTarget()) {
                                 tabPanel.hideTabStripItem(humanGrid);
                                 tabPanel.unhideTabStripItem(notHumanGrid);
-                                this.loadGrid(notHumanGrid, ogcFilterString, viewParams);
+                                this.loadGrid(notHumanGrid, xmlFormat.write(ogcFilterString || notHumanFilterString), viewParams);
                                 tabPanel.setActiveTab(notHumanGrid);
                             }
                             Ext.getCmp("south").expand();
@@ -531,7 +534,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     getStatus: function(){
         return this.status;
+    },
+    
+    analyticViewIsEnable: function(){
+        return this.analyticView;
     }
+
+    
 });
 
 Ext.preg(gxp.plugins.SyntheticView.prototype.ptype, gxp.plugins.SyntheticView);
