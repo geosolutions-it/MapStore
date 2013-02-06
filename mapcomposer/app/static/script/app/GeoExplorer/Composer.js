@@ -189,7 +189,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
      * Create the toolbar configuration for the main view.
      */
     createTools: function() {
-    
+        var me= this;
         var tools = GeoExplorer.Composer.superclass.createTools.apply(this, arguments);
 
         if(!this.fScreen){
@@ -207,7 +207,9 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     } else {
                         Ext.getCmp('west').expand();
                         Ext.getCmp('east').expand();
-                        Ext.getCmp('south').expand();
+
+                        if(me.tools["syntheticview"].analyticViewIsEnable())
+                          Ext.getCmp('south').expand();
                         Ext.getCmp('header').expand();
                     }
                 }
