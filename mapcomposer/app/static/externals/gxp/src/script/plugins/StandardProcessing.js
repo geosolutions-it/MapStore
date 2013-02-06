@@ -424,7 +424,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var targetStore = new Ext.data.ArrayStore({
             fields: ['name', 'property', 'humans'],
             data :  [
-            //    ['Tutti i Bersagli', 'calc_formula_tot', ''],
+              //  ['Tutti i Bersagli', 'calc_formula_tot', ''],
                 ['Popolazione residente', 'calc_formula_residenti', true],
                 ['Popolazione fluttuante turistica (medio)', 'invalid', true],
                 ['Popolazione fluttuante turistica (max)', 'invalid', true],
@@ -434,12 +434,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 ['Addetti/utenti centri commerciali', 'invalid', true],
                 ['Utenti della strada coinvolti', 'invalid', true],
                 ['Utenti della strada territoriali', 'invalid', true],
-                ['Strutture', 'invalid', false],
+                ['Zone urbanizzate', 'invalid', false],
                 ['Aree boscate', 'calc_formula_aree_boscate', false],
                 ['Aree protette', 'invalid', false],
                 ['Aree agricole', 'calc_formula_aree_agricole', false],
                 ['Acque sotterranee', 'invalid', false],
-                ['Acque superficiali', 'invalid', false]
+                ['Acque superficiali', 'invalid', false],
+                ['Beni culturali', 'invalid', false]
             ]
         });
         
@@ -447,8 +448,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             fields: ['name', 'property'],
             data :  [
                 ['Tutti i Bersagli', 'calc_formula_tot'],
-                ['Tutti i Beragli Umani', 'calc_formula_tot_um'],
-                ['Tutti i Beragli Ambientali', 'calc_formula_tot_amb']
+                ['Tutti i Bersagli Umani', 'calc_formula_tot'],
+                ['Tutti i Bersagli Ambientali', 'calc_formula_tot']
             ]
         });
         
@@ -476,8 +477,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     var humans,tmpRec,i; 
                     this.selectedTargetProp = value;
                     this.selectedTargetName = record.get('name');
-                    
                     var store=this.bers.getStore();
+                    this.bers.setValue(null);
                     store.removeAll();
                     switch (value){
                         case "calc_formula_tot":
@@ -520,9 +521,14 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             selectOnFocus:true,
             editable: true,
             resizable: true,    
-            //value: ,
             listeners: {
                 scope: this,
+                render: function(cb){
+                    var store=cb.getStore();
+                    for(var i=0; i<targetStore.getCount(); i++){ 
+                       store.add(targetStore.getAt(i));
+                    }
+                },
                 select: function(cb, record, index) {
                     var value = record.get('property');                     
                     if(value){
@@ -537,6 +543,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     }
                     if(value == "calc_formula_tot")
                         value = null;
+                    
                     this.selectedTargetProp = value;
                     this.selectedTargetName = record.get('name'); 
                   } 
@@ -877,6 +884,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             
             var syntView = this.appTarget.tools[this.syntheticView];
             syntView.getControlPanel().enable();
+            console.log(status);
             syntView.setStatus(status);
         }
     },
@@ -1079,10 +1087,14 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.status = status;
         this.elab.setValue(this.status.processing);
         this.form.setValue(this.status.form);
-        
         this.setAOI(this.status.roi.bbox);
         
-        this.bers.setValue(this.status.target);
+        this.macrobers.setValue(this.status.macroTarget);
+        if(this.status.macroTarget != this.status.target)
+            this.bers.setValue(this.status.target);
+        else
+            this.bers.setValue(null);
+        
         this.accident.setValue(this.status.accident);        
         this.seriousness.setValue(this.status.seriousness);
     },
@@ -1119,8 +1131,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             }
         }
 
-        obj.target = this.bers.getValue();
+        obj.target = this.selectedTargetName || 'Tutti i Bersagli';/*this.bers.getValue()*/ ;
         obj.targetName = this.selectedTargetName || 'Tutti i Bersagli';
+        obj.macroTarget = this.macrobers.getValue();
         obj.accident = this.accident.getValue();
         obj.seriousness = this.seriousness.getValue();
         
