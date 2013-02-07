@@ -224,7 +224,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
      *  :arg config: ``Object``
      */
     addOutput: function(config) {
-        
+        var me= this;
         this.elab = new Ext.form.TextField({
               fieldLabel: this.elabLabel,
               id: "elab",
@@ -302,10 +302,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     if(this.status){
                         this.processingPane.setStatus(this.status);
                     }
+                    
+                    var extent=map.getExtent();
+                    me.processingPane.setAOI(extent);                    
+                    me.processingPane.removeAOILayer(map);
                 }
             }]
         });
-        var me= this;
+        
         var panel = new Ext.FormPanel({
             border: false,
             layout: "fit",
