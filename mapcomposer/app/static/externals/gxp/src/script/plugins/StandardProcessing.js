@@ -789,8 +789,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     }
                 },*/
                 "expand": function(combo) {
-                    combo.list.setWidth( 'auto' );
-                    combo.innerList.setWidth( 'auto' );
+                   /* combo.list.setWidth( 'auto' );
+                    combo.innerList.setWidth( 'auto' );*/
                 },
                 select: function(cb, record, index) {
                     //var value = record.get('name');             
