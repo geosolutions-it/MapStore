@@ -85,7 +85,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 
 					defaultType: 'radio', // each item will be a radio button
 					items:[
-						{boxLabel: 'Data' , xtype:'radio', name: 'outputtype', inputValue: 'data'},
+						{boxLabel: 'Data' , xtype:'radio', name: 'outputtype', inputValue: 'data',visible:false},
 						{boxLabel: 'Chart', xtype:'radio', name: 'outputtype', inputValue: 'chart', checked: true},
 						{boxLabel: 'Map'  , xtype:'radio', name: 'outputtype', inputValue: 'map'}
 						
@@ -174,24 +174,43 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							lazyRender:false,
 							mode: 'local',
 							autoLoad:true,
-							
-							
-							
 							displayField: 'label',
-							valueField:'name'
+							valueField:'name',
+							store: new Ext.data.JsonStore({
+								fields:[
+										{name:'name',dataIndex:'name'},
+										{name:'label',dataIndex:'label'},
+										{name:'commodity',dataIndex:'commodity'}
+								],
+								data:[
+									{label: '\'000\' tonnes', name:'1'},
+									{label: '\'000\' kgs', name:'2'},
+									{label: '\'000\' bales', name:'3'}
+								]
+							})
 						},{
 							xtype: 'combo',
 							anchor:'100%',
 							fieldLabel: 'Area',
 							typeAhead: true,
-							
 							triggerAction: 'all',
 							lazyRender:false,
 							mode: 'local',
 							autoLoad:true,
 							
 							displayField: 'label',
-							valueField:'name'
+							valueField:'name',
+							store: new Ext.data.JsonStore({
+								fields:[
+										{name:'name',dataIndex:'name'},
+										{name:'label',dataIndex:'label'},
+										{name:'commodity',dataIndex:'commodity'}
+								],
+								data:[
+									{label: '\'000\' hectares', name:'1'},
+									{label: 'square kilometers', name:'2'}
+								]
+							})
 					}]
 				  
 					
