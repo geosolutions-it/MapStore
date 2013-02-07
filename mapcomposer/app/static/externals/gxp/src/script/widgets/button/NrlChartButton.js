@@ -22,6 +22,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
             tabPanel.setActiveTab(tabs[0]);
         } else {
 
+        
             //unique array
             function unique(arrayName) {
                 var newArray = new Array();
@@ -93,11 +94,11 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
             
             for (var i=0; i<data.length; i++){
                 
-                var ciccio = makeGraph(data[i]);
-                media.push(ciccio.rows);
+                var graphData = makeGraph(data[i]);
+                media.push(graphData.rows);
                 // Store for random data
                 var store = new Ext.data.JsonStore({
-                    data: ciccio,
+                    data: graphData,
                     fields: [{
                         name: 'time',
                         type: 'string'
@@ -137,8 +138,8 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                         type: 'spline',
                         dataIndex: 'area'
                     }],
-                    //height: 600,
-                    //width: 900,
+                    height: 600,
+                    width: 900,
                     store: store,
                     animShift: true,
                     xField: 'time',
@@ -293,7 +294,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 
             }
             
-            if (media.length = 2){         
+            if (media.length >= 2){         
                 var year = [];
                 var area = [];
                 var prod = [];
@@ -376,8 +377,8 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                         type: 'spline',
                         dataIndex: 'area'
                     }],
-                    //height: 600,
-                    //width: 900,
+                    height: 600,
+                    width: 900,
                     store: store,
                     animShift: true,
                     xField: 'time',
@@ -540,10 +541,62 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                 tabTip: 'Crop Data',
                 closable: true,
                 items: {
-                    xtype: 'gxp_controlpanel',
-                    data: data,
-                    panels: panels,
-                    media: media
+                    xtype: 'portal',
+                    region: 'center',
+                    //margins: '35 5 5 0',
+                    //layout: 'fit',
+                    //title: "Commodity: " + data[0][0].crop + " - Season: Rabi",
+                    items: [{
+                        columnWidth: .99,
+                        style:'padding:10px 0 10px 10px',
+                        xtype: 'gxp_controlpanel',
+                        data: data,
+                        panels: panels,
+                        media: media
+                        /*items:[{
+                            title: "Commodity: " + data[0][0].crop + " - Season: Rabi",
+                            items: [panels],
+                            tools: [{
+                                    id: 'info',
+                                    handler: function () {
+                                        //Ext.Msg.alert('Message', 'The Settings tool was clicked.');
+                            
+                                        var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+                                                "<ol>" +
+                                                    "<li><p><em> Commodity: </em>" + data[0][0].crop + "</p></li>" +
+                                                    "<li><p><em> Season: </em>" + "Rabi" + "</p></li>" +
+                                                    "<li><p><em> Province 1: </em>" + data[0][0].prov + "</p></li>" +
+                                                    "<li><p><em> Province 2: </em>" + data[1][0].prov + "</p></li>" +
+                                                    "<li><p><em> From year: </em>" + media[0][0].time + "</p></li>" +
+                                                    "<li><p><em> To year: </em>" + media[0][media[0].length-1].time + "</p></li>" +
+                                                "</ol>" +                                        
+                                                "</div>";
+                                     
+                                        var appInfo = new Ext.Panel({
+                                            header: false,
+                                            html: iframe
+                                        });
+
+                                        var win = new Ext.Window({
+                                            title:  "Charts Info",
+                                            modal: true,
+                                            layout: "fit",
+                                            width: 200,
+                                            height: 180,
+                                            items: [appInfo]
+                                        });
+                                        
+                                        win.show();                                              
+                                    }
+                                }, {
+                                    id: 'close',
+                                    handler: function (e, target, panel) {
+                                        panel.ownerCt.remove(panel, true);
+                                    }
+                                }],
+                                collapsible: true
+                            }]*/
+                    }]
                 }
             });
 

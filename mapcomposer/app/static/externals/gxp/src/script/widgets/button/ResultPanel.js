@@ -21,17 +21,12 @@
 Ext.namespace("gxp");
 
 gxp.ControlPanel = Ext.extend(Ext.Panel, {
-    xtype: 'portal',
-    region: 'center',
     data: null,
     panels: null,
     media: null,
     
 	initComponent: function(){
-        this.items = [{
-            columnWidth: .99,
-            style:'padding:10px 0 10px 10px',
-            items:[{
+        this.items = {
                 title: "Commodity: " + this.data[0][0].crop + " - Season: Rabi",
                 items: [this.panels],
                 tools: [{
@@ -73,8 +68,7 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
                         }
                     }],
                     collapsible: true
-                }]
-        }]		
+                }
 		gxp.ControlPanel.superclass.initComponent.call(this);
 	}
 });
