@@ -405,7 +405,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     items: [
                         this.southField
                     ]
-                },{
+                }/*,{
                     layout: "form",
                     cellCls: 'spatial-cell',
                     colspan:3,
@@ -413,9 +413,15 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     items: [
                         this.currentExtentButton
                     ]                
-                }
+                }*/
             ]
         });
+        
+         map.events.register("move", map, function() {
+            var extent=map.getExtent();
+            me.setAOI(extent);                    
+            me.removeAOILayer(map); 
+         });
         
         //
         // Bersaglio

@@ -47,7 +47,7 @@
             "ptype": "gxp_wmssource",
             "title": "Destination GeoServer",
             "version":"1.1.1",
-            "url": "http://destination.geo-solutions.it/geoserver/it.geosolutions/ows",
+            "url": "http://84.33.2.23/geoserver/it.geosolutions/ows",
             "layerBaseParams": {
                 "TILED": true,
                 "TILESORIGIN": "-180,-90"
@@ -343,7 +343,7 @@
         "selectionLayerTitle": "Rischio Totale", 	
         "targetLayerName": "bersagli",		
         "bufferLayerName": "siig_aggregation_1_buffer",
-        "selectionLayerBaseURL": "http://destination.geo-solutions.it/geoserver/geosolutions/wms",
+        "selectionLayerBaseURL": "http://84.33.2.23/geoserver/it.geosolutions/wms",
         "selectionLayerProjection": "EPSG:32632",
         "geometryName": "geometria",
         "accidentTipologyName": "tipologia",
@@ -352,7 +352,7 @@
     {
         "ptype": "gxp_wfsgrid",
         "outputTarget": "featurelist",
-        "wfsURL": "http://destination.geo-solutions.it/geoserver/geosolutions/wfs",
+        "wfsURL": "http://84.33.2.23/geoserver/it.geosolutions/wfs",
         "featureType": "bersagli",
         "storeFieldsNotHuman": [
         {
