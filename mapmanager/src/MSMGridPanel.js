@@ -222,6 +222,18 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     */
     tooltipViewMap: 'View Map',
 	/**
+    * Property: textEmbedMap
+    * {string} string to add in EmbedMap button
+    * 
+    */
+    textEmbedMap: '', //'Embed Map',
+    /**
+    * Property: tooltipEmbedMap
+    * {string} string to add in EmbedMap tooltip
+    * 
+    */
+    tooltipEmbedMap: 'Embed Map',
+	/**
 	 * Property: textCopyMap
 	 * {string} string to add in CopyMap button
 	 * 
@@ -784,6 +796,35 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 }
 			},
 
+			/** private: method[showEmbedWindow]
+			 */
+			showEmbedWindow: function(mapId, mapDesc) {        							   
+				   
+			   var curLang = mapManagerLanguage || 'en';            
+			   
+			   var embedMap = new EmbedMapDialog({
+				   id: 'geobuilder-1',
+				   url: "viewer" + "?locale=" + curLang + "&mapId=" + mapId
+			   });
+
+			   var wizard = {
+				   id: 'geobuilder-wizard-panel',
+				   border: false,
+				   layout: 'card',
+				   activeItem: 0,
+				   defaults: {border: false, hideMode: 'offsets'},				   
+				   items: [embedMap]				   
+			   };
+
+			   new Ext.Window({
+					layout: 'fit',
+					width: 500, height: 300,
+					title: mapDesc,
+					items: [wizard]
+			   }).show();
+			},
+			
+			
             /**
              * Private: openMapComposer 
              * 
@@ -1099,6 +1140,22 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         this.MapComposerVM.defer(1,this, [result,values,userProfile]);
                         return result;
                     },
+					/**
+                    * Private: getButtonEMId
+                    * 
+                    * values - {array} fields of the column grid
+                    * button - {string} name button
+                    * 
+                    */
+                    getButtonEMId: function(values,button) {
+                        var result = Ext.id()+button;
+						
+						// //////////////////////////////////////
+                        // Adds listener for embed map
+						// //////////////////////////////////////
+                        this.MapComposerEM.defer(1,this, [result,values]);
+                        return result;
+                    },
                     /**
                     * Private: getButtonDMId
                     * 
@@ -1164,6 +1221,22 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             var idMap = values.id,
                             	desc = values.name;
                             expander.openMapComposer(grid.murl, userProfile, idMap, desc);
+                        });
+                    },
+					
+					/**
+                    * Private: MapComposerEM 
+                    * 
+                    * id - {number} button id
+                    * values - {array} fields of the column grid                    
+                    * 
+                    */
+                    MapComposerEM : function(id, values) {
+                        Ext.get(id).on('click', function(e){							
+                            var idMap = values.id,
+                            	desc = values.name;
+							
+                            expander.showEmbedWindow(idMap, desc);
                         });
                     },
 					
@@ -1668,6 +1741,44 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         '<td class="x-btn-mc">' +
                         '<em class="" unselectable="on">' +
                         '<button type="button" style="background-position:center;padding:10px;" class="x-btn-text icon-layers" title="' + this.tooltipViewMap + '">' + this.textViewMap + '</button>'+
+                        '</em>'+
+                        '</td>'+
+                        '<td class="x-btn-mr">'+
+                        '<i>&nbsp;</i>'+
+                        '</td>'+
+                        '</tr>'+
+                        '<tr>' +
+                        '<td class="x-btn-bl">' +
+                        '<i>&nbsp;</i>' +
+                        '</td>' +
+                        '<td class="x-btn-bc"></td>' +
+                        '<td class="x-btn-br">' +
+                        '<i>&nbsp;</i>' +
+                        '</td>' +
+                        '</tr>' +
+                        '</tbody>' +
+                        '</table>' +
+                    '</td>'
+					+
+                    '<td >'+
+                        '<table class="x-btn x-btn-text-icon" style="width:30px" cellspacing="0" >'+
+                        '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonEMId(values,\'_embedBtn\')]}\'>'+
+                        '<tr >'+
+                        '<td class="x-btn-tl">' +
+                        '<i>&nbsp;</i>' +
+                        '</td>' +
+                        '<td class="x-btn-tc"></td>' +
+                        '<td class="x-btn-tr">' +
+                        '<i>&nbsp;</i>' +
+                        '</td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td class="x-btn-ml">' +
+                        '<i>&nbsp;</i>' +
+                        '</td>' +
+                        '<td class="x-btn-mc">' +
+                        '<em class="" unselectable="on">' +
+                        '<button type="button" style="background-position:center;padding:10px;" class="x-btn-text icon-export" title="' + this.tooltipEmbedMap + '">' + this.textEmbedMap + '</button>'+
                         '</em>'+
                         '</td>'+
                         '<td class="x-btn-mr">'+
