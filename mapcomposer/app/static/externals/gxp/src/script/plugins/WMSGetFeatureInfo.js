@@ -53,6 +53,12 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
      *  Title for info popup (i18n).
      */
     popupTitle: "Feature Info",
+	
+	/** api: config[closePrevious]
+     *  ``Boolean``
+     *  Close previous popups when opening a new one.
+     */
+	closePrevious: true,
     
     noDataMsg: "No data returned from the server",
     
@@ -152,6 +158,17 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
         return actions;
     },
 
+	/** private: method[removeAllPopups] removes all open popups
+     */
+    removeAllPopups: function(evt, title, text) {
+		for(var key in this.popupCache) {
+			if(this.popupCache.hasOwnProperty(key)) {
+				this.popupCache[key].close();
+				delete this.popupCache[key];
+			}
+		}
+	},
+	
     /** private: method[displayPopup]
      * :arg evt: the event object from a 
      *     :class:`OpenLayers.Control.GetFeatureInfo` control
@@ -162,8 +179,12 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
     displayPopup: function(evt, title, text) {
         var popup;
         var popupKey = evt.xy.x + "." + evt.xy.y;
-
+						
         if (!(popupKey in this.popupCache)) {
+			if(this.closePrevious) {
+				this.removeAllPopups();
+			}
+		
             popup = this.addOutput({
                 xtype: "gx_popup",
                 title: this.popupTitle,
