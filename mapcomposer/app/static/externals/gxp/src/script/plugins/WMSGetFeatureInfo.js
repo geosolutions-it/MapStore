@@ -59,6 +59,18 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
      *  Close previous popups when opening a new one.
      */
 	closePrevious: true,
+	
+	/** api: config[loadingMask]
+     *  ``Boolean``
+     *  Use a loading mask during get feature info.
+     */
+	loadingMask: true,
+	
+	/** api: config[maskMessage]
+     *  ``String``
+     *  Message for the loading mask.
+     */
+	maskMessage: 'Getting info...',
     
     noDataMsg: "No data returned from the server",
     
@@ -108,6 +120,7 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
             info.controls = [];
             var layersToQuery = 0;
             var atLeastOneResponse = false;
+			this.masking = false;
             queryableLayers.each(function(x){                
                 
                 var control = new OpenLayers.Control.WMSGetFeatureInfo({
@@ -119,9 +132,16 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                         beforegetfeatureinfo: function(evt) {
                             atLeastOneResponse = false
                             layersToQuery++;
+							if(this.loadingMask && !this.masking) {								
+								this.target.mapPanel.el.mask(this.maskMessage);
+								this.masking = true;
+							}
                         },
                         getfeatureinfo: function(evt) {
                             layersToQuery--;
+							if(layersToQuery === 0) {
+								this.unmask();		
+							}
                             var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
                             if (match && !match[1].match(/^\s*$/)) {
                                 atLeastOneResponse = true;
@@ -139,6 +159,10 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                             }
                             
                         },
+						nogetfeatureinfo: function(evt) {
+							layersToQuery=0;							
+							this.unmask();							
+						},
                         scope: this
                     }
                 });
@@ -158,6 +182,13 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
         return actions;
     },
 
+	unmask: function() {
+		if(this.loadingMask) {
+			this.target.mapPanel.el.unmask();
+			this.masking = false;
+		}
+	},
+	
 	/** private: method[removeAllPopups] removes all open popups
      */
     removeAllPopups: function(evt, title, text) {
