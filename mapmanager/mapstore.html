@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>MapStore - GeoSolutions</title>
 <meta name="keywords" content="GeoSolutions, GIS, GeoServer, GeoTools, GDAL, GEO, Java, J2EE, JEE, JEE5, C, C++ LBS, OGC, Open Source, FOSS4G, GFOSS, SIG, SIT, LBS, Location, Geospatial, Professional Services, GeoServer Professional Support, Professional, Professionale, GeoServer Application Development, GeoServer Italia, GeoServer Italy, GeoServer Europe, Supporto Professionale GeoServer, Supporto Professionale GeoTools, GeoServer Training, GeoTools Training, GeoBatch,MapStore">
-<meta name="description" content="MapStore, crea, salva e condividi in modo semplice ed intuitivo  mappe e mashup creati selezionando dati da server come Google Maps, OpenStreetMap o da server forniti dalla propria organizzazione o da terzi secondo standard riconosciuti.">
+<meta name="description" content="MapStore, crea, salva e condividi in modo semplice ed intuitivo mappe e mashup creati selezionando dati da server come Google Maps, OpenStreetMap o da server forniti dalla propria organizzazione o da terzi secondo standard riconosciuti.">
 <meta name="author" content="Riccardo Fabiani">
 <meta name="copyright" content="GeoSolutions S.A.S. 2012" >
 <meta http-equiv="content-language" content="en">
@@ -18,7 +18,7 @@
         <link rel="stylesheet" type="text/css" href="theme/css/mapstoremanager.css" />
         <link href="theme/css/style.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="theme/css/slide.css" type="text/css" media="all" charset="utf-8"><!--GeoSolutions SLIDE-->
-		
+
         <!-- ExtJS scripts -->
         <script type="text/javascript" src="lib/ext/adapter/ext/ext-base.js"></script>
         <script type="text/javascript" src="lib/ext/ext-all-debug.js"></script>
@@ -33,11 +33,11 @@
         <script type="text/javascript" src="lib/auth/base64.js"></script>
 
         <!-- MapStoreManager scripts -->
-		<script type="text/javascript" src="src/config.js"></script>
-		<script type="text/javascript" src="src/mapmanager.js"></script>
+<script type="text/javascript" src="src/config.js"></script>
+<script type="text/javascript" src="src/mapmanager.js"></script>
         <script type="text/javascript" src="src/init.js"></script>
         
-        <!-- translation data  -->
+        <!-- translation data -->
         <script type="text/javascript" src="translations/it.js"></script>
         <script type="text/javascript" src="translations/en.js"></script>
         
@@ -47,29 +47,29 @@
             overflow-y: auto;}
         </style>
 
-	    <script type="text/javascript">
-			var _gaq = _gaq || [];
-			_gaq.push(['_setAccount', 'UA-15797497-6']);
-			_gaq.push(['_trackPageview']);
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-15797497-6']);
+_gaq.push(['_trackPageview']);
 
-			(function() {
-			  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-			  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-			  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-			})();
+(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
 
-			function validate(form_id,email) {
-			 
-			   var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-			   var address = document.forms[form_id].elements[email].value;
-			   if(reg.test(address) == false) {
-			 
-				  alert('Invalid Email Address');
-				  return false;
-			   }
-			}
-		</script>
-		
+function validate(form_id,email) {
+
+var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+var address = document.forms[form_id].elements[email].value;
+if(reg.test(address) == false) {
+
+alert('Invalid Email Address');
+return false;
+}
+}
+</script>
+
 
 </head>
 
@@ -104,54 +104,51 @@
         <div id="osdi_content">
           <!--p>ITALIANO!</p-->
           <!--p></br></p>
-          <p><b class="color2">Richiedi un account!</b></p>
-          <form> <input type="text" id="email" name="email" value="scrivi qui la tua email" style="width:350px;"  onblur="if(this.value=='') this.value='scrivi qui la tua email';" onfocus="if(this.value=='scrivi qui la tua email') this.value='';" /><input type="submit" id="submit" name="submit" value="OK" style="width:50px; margin-left:10px;" /></form-->
-		  
-		  <div class="ss-form">
-			  <form action="https://docs.google.com/spreadsheet/formResponse?formkey=dHluNnVsOXRMVFZqUG96ZDg0OGNyd1E6MA&amp;ifq" method="POST" id="ss-form" onsubmit="javascript:return validate('ss-form','entry_2');" >
-				<div class="errorbox-good">
-					<div class="ss-item  ss-text">
-						<div class="ss-form-entry">
-							<label class="ss-q-title" for="entry_2">
-								<p></br></p>
-								<p><b class="color2">Richiedi un account!</b></p>
-							</label>
-							<label class="ss-q-help" for="entry_2"></label>
-							<input type="text" name="entry.2.single" style="width:350px;" value="scrivi qui la tua email" class="ss-q-short" id="entry_2" onblur="if(this.value=='') this.value='scrivi qui la tua email';" onfocus="if(this.value=='scrivi qui la tua email') this.value='';">
-							<input type="submit" id="submit" name="submit" value="OK" style="width:50px; margin-left:10px;" />
-						</div>
-					</div>
-				</div>
-				<input type="hidden" name="pageNumber" value="0">
-				<input type="hidden" name="backupCache" value="">
-				<!--div class="ss-item ss-navigate">
-					<div class="ss-form-entry">
-						<input type="submit" name="submit" value="OK" class="button">
-					</div>
-				</div-->
-			  </form>
-		  </div>
-	  	<div id="githublinks" align="right">
-			<!--a href="https://github.com/geosolutions-it/mapstore/archive/stable.zip" target="_blank">Download</a> | <a href="https://github.com/geosolutions-it/mapstore/wiki" target="_blank">Documentazione</a> | <a href="https://github.com/geosolutions-it/mapstore" target="_blank">Codice Sorgente</a-->
-			<a href="http://goo.gl/EuzCO" target="_blank">Download binari</a> | <a href="https://github.com/geosolutions-it/mapstore/wiki" target="_blank">Documentazione</a> | <a href="https://github.com/geosolutions-it/mapstore" target="_blank">Codice sorgente</a>
-		</div>
-		</div>
+<p><b class="color2">Richiedi un account!</b></p>
+<form> <input type="text" id="email" name="email" value="scrivi qui la tua email" style="width:350px;" onblur="if(this.value=='') this.value='scrivi qui la tua email';" onfocus="if(this.value=='scrivi qui la tua email') this.value='';" /><input type="submit" id="submit" name="submit" value="OK" style="width:50px; margin-left:10px;" /></form-->
+
+<div class="ss-form">
+<form action="https://docs.google.com/spreadsheet/formResponse?formkey=dHluNnVsOXRMVFZqUG96ZDg0OGNyd1E6MA&amp;ifq" method="POST" id="ss-form" onsubmit="javascript:return validate('ss-form','entry_2');" >
+<div class="errorbox-good">
+<div class="ss-item ss-text">
+<div class="ss-form-entry">
+<label class="ss-q-title" for="entry_2">
+<p></br></p>
+<p><a href="https://docs.google.com/spreadsheet/viewform?formkey=dFNDcXExckdDNFpDWWEydXhQcnZZelE6MA" target="_blank" style="font-size:24px; text-transform:uppercase;color:#FFF;	margin-top:36px; " class="c2a_2" title="Richiedi un account">Richiedi un account!</a></p>
+</label>
+</div>
+</div>
+</div>
+<input type="hidden" name="pageNumber" value="0">
+<input type="hidden" name="backupCache" value="">
+<!--div class="ss-item ss-navigate">
+<div class="ss-form-entry">
+<input type="submit" name="submit" value="OK" class="button">
+</div>
+</div-->
+</form>
+</div>
+<div id="githublinks" style="font-size:18px; margin:13px 0 !important;">
+<!--a href="https://github.com/geosolutions-it/mapstore/archive/stable.zip" target="_blank">Download</a> | <a href="https://github.com/geosolutions-it/mapstore/wiki" target="_blank">Documentazione</a> | <a href="https://github.com/geosolutions-it/mapstore" target="_blank">Codice Sorgente</a-->
+<a href="http://goo.gl/EuzCO" target="_blank" title="Download Demo">Download Demo</a> | <a href="http://goo.gl/vfTpO" target="_blank" title="Documentazione">Documentazione</a> | <a href="http://goo.gl/Xm6Ut" target="_blank" title="Codice Sorgente">Codice Sorgente</a>
+</div>
+</div>
         <div id="vedisotto"><b><a href="#pianisupporto">vai alla demo &darr;</a></b></div>
     </div>
     
     <div id="slide">
-        <div style="width:920px;/*635px*/ 	/*height:380px;*/ overflow:hidden; float:left;">
+        <div style="width:920px;/*635px*/ /*height:380px;*/ overflow:hidden; float:left;">
   <!-- GeoSolutions SLIDE -->
-  <div id="scroll"> 
+  <div id="scroll">
     
     <!-- scrollable items -->
-    <div style="left:0px;" id="tools">    
+    <div style="left:0px;" id="tools">
       
       <!-- tabs -->
       <div class="tool" style="/*background-image:url(http://www.geo-solutions.it/static/img/background-box.png)*/">
                 <div class="slidecontent" >
-                  <b>MapStore</b>, sviluppato  per creare, salvare e condividere in modo semplice ed  intuitivo  mappe e mashup creati selezionando contenuti da server come <b>Google Maps</b>, <b>OpenStreetMap</b>, <b>MapQuest</b> o  da server specifici forniti dalla propria organizzazione o da terzi. MapStore si compone di due componenti principali <b>MapManager </b>e <b>GeoStore</b>, rispettivamente front-end e back-end.
-                    <br /><div class="moreinfo"><a  href="https://docs.google.com/spreadsheet/viewform?formkey=dFNDcXExckdDNFpDWWEydXhQcnZZelE6MA" target="_blank">CONTATTACI</a>
+                  <b>MapStore</b>, sviluppato  per creare, salvare e condividere in modo semplice ed intuitivo  mappe e mashup creati selezionando contenuti da server come <b>Google Maps</b>, <b>OpenStreetMap</b>, <b>MapQuest</b> o da server specifici forniti dalla propria organizzazione o da terzi. MapStore si compone di due componenti principali <b>MapManager </b>e <b>GeoStore</b>, rispettivamente front-end e back-end.
+                    <br /><div class="moreinfo"><a href="https://docs.google.com/spreadsheet/viewform?formkey=dFNDcXExckdDNFpDWWEydXhQcnZZelE6MA" target="_blank">CONTATTACI</a>
                 </div>
                 </div><img src="theme/images/slide1_03.png" style=" float:right; margin-right:20px; " />
                 
@@ -161,10 +158,10 @@
       <div class="tool" style="/*background-image:url(http://www.geo-solutions.it/static/img/background-box.png)*/">
         
         <div class="slidecontent">
-            <b>MapManager</b> permette in unica interfaccia di creare,  modificare, cancellare e fare ricerche su definizioni di mappe, generare  un link 
-            univoco per incapsulare una mappa in un sito web esterno,  condividere le proprie mappe con gli altri; tutto questo interagendo con <b>GeoStore</b>. 
-            Supporta sia la autenticazione che la definizione  di policy di accesso per la protezione delle mappe gestite da <b>GeoStore    </b>.
-            <br /><br /><div class="moreinfo"><a  href="https://docs.google.com/spreadsheet/viewform?formkey=dFNDcXExckdDNFpDWWEydXhQcnZZelE6MA" target="_blank">CONTATTACI</a></div>
+            <b>MapManager</b> permette in unica interfaccia di creare, modificare, cancellare e fare ricerche su definizioni di mappe, generare un link
+            univoco per incapsulare una mappa in un sito web esterno, condividere le proprie mappe con gli altri; tutto questo interagendo con <b>GeoStore</b>.
+            Supporta sia la autenticazione che la definizione di policy di accesso per la protezione delle mappe gestite da <b>GeoStore </b>.
+            <br /><br /><div class="moreinfo"><a href="https://docs.google.com/spreadsheet/viewform?formkey=dFNDcXExckdDNFpDWWEydXhQcnZZelE6MA" target="_blank">CONTATTACI</a></div>
         </div><img src="theme/images/MapManager-01.png" style=" float:right; margin:50px 50px 0 0; width:220px; " />
                     
         
@@ -175,12 +172,12 @@
       <div class="tool">
                 
                 <div class="slidecontent" >
-                    <b>GeoStore</b> implementa una infrastruttura flessibile e modulare sviluppata con tecnologia Java Enterprise per  
-                    creare, gestire, navigare  e ricercare definizioni di mappe. <b>GeoStore</b> integra la gestione di autenticazione 
-                    ed  autorizzazione secondo il paradigma Role Based Access Control (<b>RBAC</b>) per la protezione da accessi  indesiderati. 
-                    Il meccanismo di storage standard di <b>GeoStore</b> è costituito  da un DBMS: <b>Oracle</b> e <b>PostgreSQL</b> sono  supportati.
+                    <b>GeoStore</b> implementa una infrastruttura flessibile e modulare sviluppata con tecnologia Java Enterprise per
+                    creare, gestire, navigare e ricercare definizioni di mappe. <b>GeoStore</b> integra la gestione di autenticazione
+                    ed autorizzazione secondo il paradigma Role Based Access Control (<b>RBAC</b>) per la protezione da accessi indesiderati.
+                    Il meccanismo di storage standard di <b>GeoStore</b> è costituito da un DBMS: <b>Oracle</b> e <b>PostgreSQL</b> sono supportati.
                     <br /><br />
-                    <div class="moreinfo"><a  href="https://docs.google.com/spreadsheet/viewform?formkey=dFNDcXExckdDNFpDWWEydXhQcnZZelE6MA" target="_blank">CONTATTACI</a></div>
+                    <div class="moreinfo"><a href="https://docs.google.com/spreadsheet/viewform?formkey=dFNDcXExckdDNFpDWWEydXhQcnZZelE6MA" target="_blank">CONTATTACI</a></div>
                 </div><img src="theme/images/GeoStore-01.png" style=" float:right; margin:50px 50px 0 0; width:220px; " />
                 
       </div>
@@ -189,9 +186,9 @@
     <!-- required for IE6/IE7 --><br class="clearall">
     
     <!-- thumbnails -->
-    <div id="thumbs" class="t"> 
+    <div id="thumbs" class="t">
       
-      <!-- intro page navi button --> 
+      <!-- intro page navi button -->
       
       <!-- scrollable navigator root element -->
       <ul class="navi">
@@ -212,25 +209,25 @@
   </div>
   
   <div id="mailinglists">
-	  
+
     <h1 class="color2" style="align:center;font-size:bold;margin:10px" align="center"> Resta in contatto e tieniti aggiornato con le mailing list </h1>
-	<table border=0 cellspacing=5 style="margin: 10px auto"></tr><td >
-		<table border=0 style="background-color: #fff; padding: 5px;" cellspacing=0><tr><td>
-			<img src="http://groups.google.com/intl/it/images/logos/groups_logo_sm.gif"
+<table border=0 cellspacing=5 style="margin: 10px auto"></tr><td >
+<table border=0 style="background-color: #fff; padding: 5px;" cellspacing=0><tr><td>
+<img src="theme/img/groups_logo_sm.gif"
          height=30 width=136 alt="Google Groups">
-	</td></tr>
-	<tr><td style="padding-left: 5px"> <b>Sottoscrivi la mailing list degli utenti</b> </td></tr>
-		<form action="http://groups.google.com/group/mapstore-users/boxsubscribe">
-			<tr><td style="padding-left: 5px;"> Email: <input type=text name=email>
-				<input type=submit name="sub" value="Sottoscrivi">
-			</td></tr>
-		</form>
+</td></tr>
+<tr><td style="padding-left: 5px"> <b>Sottoscrivi la mailing list degli utenti</b> </td></tr>
+<form action="http://groups.google.com/group/mapstore-users/boxsubscribe">
+<tr><td style="padding-left: 5px;"> Email: <input type=text name=email>
+<input type=submit name="sub" value="Sottoscrivi">
+</td></tr>
+</form>
 <tr><td align=right> <a class="link-white-bg" href="http://groups.google.com/group/mapstore-users">Visita il grouppo</a> </td></tr>
 </table>
 </td><td>
 <table border=0 style="background-color: #fff; padding: 5px;" cellspacing=0>
   <tr><td>
-  <img src="http://groups.google.com/intl/it/images/logos/groups_logo_sm.gif"
+  <img src="theme/img/groups_logo_sm.gif"
          height=30 width=136 alt="Google Groups">
   </td></tr>
   <tr><td style="padding-left: 5px"> <b>Sottoscrivi la mailing list degli sviluppatori</b> </td></tr>
@@ -264,23 +261,23 @@
               })();
             </script>
         </div>
-  	<h2>Metti MapStore alla prova !</h2>
+   <h2>Metti MapStore alla prova !</h2>
     
-  </div>  
+  </div>
   
   <div id="topic-grid" align="center"></div>
    <div style="/*clear:both;*/min-height:50px;" class="plans">&nbsp;</div>
   <div id="closecontent"></div>
-  </div>  
+  </div>
 
   <div id="footer">
   
   <ul id="footersocial">
-  	<li><a href="https://plus.google.com/u/0/100131944378031878024/posts" title="Google+" id="gp">Google+</a></li>
-  	<li><a href="http://twitter.com/geosolutions_it/" title="Twitter" id="tw">Twitter</a></li>
+   <li><a href="https://plus.google.com/u/0/100131944378031878024/posts" title="Google+" id="gp">Google+</a></li>
+   <li><a href="http://twitter.com/geosolutions_it/" title="Twitter" id="tw">Twitter</a></li>
   </ul>
   <p align="center"><b><a href="http://www.geo-solutions.it">GeoSolutions s.a.s.</a></b> &bull; Via Poggio alle Viti 1187 - 55054 Massarosa (Lucca) - Italy</p>
-  <p align="center"><a href="mailto:info@geo-solutions.it">info@geo-solutions.it</a>   &bull;   <a href="http://www.geo-solutions.it">www.geo-solutions.it</a>   &bull;   Tel: 0039 0584 962313  &bull;   Fax: 0039 0584 1660272</p>
+  <p align="center"><a href="mailto:info@geo-solutions.it">info@geo-solutions.it</a> &bull; <a href="http://www.geo-solutions.it">www.geo-solutions.it</a> &bull; Tel: 0039 0584 962313 &bull; Fax: 0039 0584 1660272</p>
      
   
   </div>
@@ -300,29 +297,29 @@
 </body>
 
 <!-- GeoSolutions SLIDE -->
-<script src="theme/js/jquery.js" type="text/javascript"></script> 
+<script src="theme/js/jquery.js" type="text/javascript"></script>
 <script type="text/javascript" charset="utf-8">
         /*jQuery(function($) {
-            $.getScript('/static/js/prettify.js', function(){
-                prettyPrint();
-            });
-        });*/
+$.getScript('/static/js/prettify.js', function(){
+prettyPrint();
+});
+});*/
 
 
         $('.langlink').click(function() {
-	      var lang = $(this).html();
-	      $('#langval').val(lang);
-		  $('#target').submit();
-		});
+var lang = $(this).html();
+$('#langval').val(lang);
+$('#target').submit();
+});
 
-        </script> 
+        </script>
 <script type="text/javascript">
 // initialize scrollable and return the programming API
 
 var scrollable = $("#scroll").scrollable({
-	items: '#tools',
-	size: 1,
-	clickable: false
+items: '#tools',
+size: 1,
+clickable: false
 
 });
 
@@ -339,7 +336,7 @@ var autoscroll = scrollable.autoscroll({autoplay: true, loop: true, interval:800
 
 
 <!-- 4 PIANI SUPPORTO -->
-	<script src="theme/js/jquery-ui.min.js"></script>
+<script src="theme/js/jquery-ui.min.js"></script>
     <script>
     
     
@@ -357,7 +354,7 @@ var autoscroll = scrollable.autoscroll({autoplay: true, loop: true, interval:800
               if (p2.is(':visible')) {p2.hide("fade", {}, 1000);}
               if (p3.is(':visible')) {p3.hide("fade", {}, 1000);}
               if (p4.is(':visible')) {p4.hide("fade", {}, 1000);}
-              setTimeout(function() { 	p1.show("fade", {}, 1000); 	}, 1000 ); //p1.show("slide", {}, 1000);
+              setTimeout(function() { p1.show("fade", {}, 1000); }, 1000 ); //p1.show("slide", {}, 1000);
               document.getElementById('p1').style.background='url(images/selector.png) center no-repeat';
               document.getElementById('p2').style.background='';
               document.getElementById('p3').style.background='';
@@ -367,7 +364,7 @@ var autoscroll = scrollable.autoscroll({autoplay: true, loop: true, interval:800
               if (p1.is(':visible')) {p1.hide("fade", {}, 1000);}
               if (p3.is(':visible')) {p3.hide("fade", {}, 1000);}
               if (p4.is(':visible')) {p4.hide("fade", {}, 1000);}
-              setTimeout(function() { 	p2.show("fade", {}, 1000); 	}, 1000 ); //p2.show("slide", {}, 1000);
+              setTimeout(function() { p2.show("fade", {}, 1000); }, 1000 ); //p2.show("slide", {}, 1000);
               document.getElementById('p1').style.background='';
               document.getElementById('p2').style.background='url(images/selector.png) center no-repeat';
               document.getElementById('p3').style.background='';
@@ -377,7 +374,7 @@ var autoscroll = scrollable.autoscroll({autoplay: true, loop: true, interval:800
               if (p1.is(':visible')) {p1.hide("fade", {}, 1000);}
               if (p2.is(':visible')) {p2.hide("fade", {}, 1000);}
               if (p4.is(':visible')) {p4.hide("fade", {}, 1000);}
-              setTimeout(function() { 	p3.show("fade", {}, 1000); 	}, 1000 ); //p3.show("slide", {}, 1000);
+              setTimeout(function() { p3.show("fade", {}, 1000); }, 1000 ); //p3.show("slide", {}, 1000);
               document.getElementById('p1').style.background='';
               document.getElementById('p2').style.background='';
               document.getElementById('p3').style.background='url(images/selector.png) center no-repeat';
@@ -387,7 +384,7 @@ var autoscroll = scrollable.autoscroll({autoplay: true, loop: true, interval:800
               if (p1.is(':visible')) {p1.hide("fade", {}, 1000);}
               if (p2.is(':visible')) {p2.hide("fade", {}, 1000);}
               if (p3.is(':visible')) {p3.hide("fade", {}, 1000);}
-              setTimeout(function() { 	p4.show("fade", {}, 1000); 	}, 1000 ); //p4.show("slide", {}, 1000);
+              setTimeout(function() { p4.show("fade", {}, 1000); }, 1000 ); //p4.show("slide", {}, 1000);
               document.getElementById('p1').style.background='';
               document.getElementById('p2').style.background='';
               document.getElementById('p3').style.background='';
