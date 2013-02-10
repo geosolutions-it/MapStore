@@ -31,6 +31,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
 	xtype: 'nrl_aoifieldset',
 	anchor:'100%',
 	title: 'Area of interest',
+	displayField: 'province',
 	comboConfigs:{
         base:{
             anchor:'100%',
@@ -38,17 +39,17 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
             url: "http://84.33.2.24/geoserver/ows?",
             predicate:"ILIKE",
             width:250,
-            sortBy:"PROVINCE",
+            sortBy:"province",
 			ref:'singleSelector',
             displayField:"name",
             pageSize:10
             
         },
-        DISTRICT:{
-            typeName:"nrl:District_Boundary",
+        district:{
+            typeName:"nrl:district_boundary",
             queriableAttributes:[
-                "DISTRICT",
-                "PROVINCE"
+                "district",
+                "province"
                 
              ],
              recordModel:[
@@ -62,10 +63,10 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
                 },
                 {
                    name:"name",
-                   mapping:"properties.DISTRICT"
+                   mapping:"properties.district"
                 },{
                    name:"province",
-                   mapping:"properties.PROVINCE"
+                   mapping:"properties.province"
                 },{
                    name:"properties",
                    mapping:"properties"
@@ -73,9 +74,9 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
             ],
             tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"       
         },
-        PROVINCE:{ 
-            fieldLabel: 'Province',
-            typeName:"nrl:Province_Boundary",
+        province:{ 
+            
+            typeName:"nrl:province_boundary",
             recordModel:[
                 {
                    name:"id",
@@ -87,15 +88,15 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
                 },
                 {
                    name:"name",
-                   mapping:"properties.PROVINCE"
+                   mapping:"properties.province"
                 },{
                    name:"properties",
                    mapping:"properties"
                 }
             ],
-            sortBy:"PROVINCE",
+            sortBy:"province",
             queriableAttributes:[
-                "PROVINCE"
+                "province"
             ],
             displayField:"name",
             tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
@@ -104,7 +105,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
     
     },
 	initComponent: function() {
-        this.currentComboConfig = Ext.apply({},this.comboConfigs.base,this.comboConfigs.PROVINCE);
+        this.currentComboConfig = Ext.apply({},this.comboConfigs.base,this.comboConfigs.province);
 		this.items = [
 			{ 
 				fieldLabel: 'Type',
@@ -114,8 +115,8 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
 				title: this.outputTypeText,
 				defaultType: 'radio', // each item will be a radio button
 				items:[
-					{boxLabel: 'Province' , name: 'areatype', inputValue: 'PROVINCE' , checked: true},
-					{boxLabel: 'District', name: 'areatype', inputValue: 'DISTRICT'}
+					{boxLabel: 'Province' , name: 'areatype', inputValue: 'province' , checked: true},
+					{boxLabel: 'District', name: 'areatype', inputValue: 'district'}
 				],
 				listeners: {
 					change: function(cbg,checkedarray){
@@ -147,12 +148,12 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
 				vendorParams:{cql_filter:this.areaFilter},
 				ref:'AreaSelector',
                 comboConfig:this.currentComboConfig,
-				displayField:'PROVINCE',
+				displayField:'province',
 				layerStyle:this.layerStyle
             }
 		]
 		return nrl.form.AOIFieldSet.superclass.initComponent.apply(this, arguments);
-	}	
+	}
 	
 	
 });

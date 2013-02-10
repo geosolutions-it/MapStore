@@ -45,7 +45,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
     ptype: "nrl_crop_data",
 	/** i18n **/
 	outputTypeText:'Output Type',
-	areaFilter: "PROVINCE NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
+	areaFilter: "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
 	seasonText:'Season',
 	/** layer Name **/
     hilightLayerName:"CropData_Selection_Layer",//TODO doesn't seems to run
@@ -94,6 +94,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					fieldLabel: this.seasonText,
 					xtype: 'nrl_seasonradiogroup',
 					anchor:'100%',
+					name:'season',
 					ref:'season',
 					listeners: {
 						
@@ -106,6 +107,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					}
 				},{
 					xtype: 'nrl_aoifieldset',
+					name:'areas',
 					ref:'aoiFieldSet',
                     layerStyle:this.layerStyle,
 					anchor:'100%',
@@ -113,13 +115,14 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					areaFilter:this.areaFilter, 
 					hilightLayerName:this.hilightLayerName,
 					layers:{
-						DISTRICT:'nrl:District_Boundary',
-						PROVINCE:'nrl:Province_Boundary'
+						district:'nrl:district_boundary',
+						province:'nrl:province_boundary'
 					}
 					
 				},
 				{
 					xtype: 'nrl_commoditycombobox',
+					name:'crop',
 					anchor:'100%',
 					ref: 'Commodity'
 					
@@ -173,6 +176,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							triggerAction: 'all',
 							lazyRender:false,
 							mode: 'local',
+							name:'production_unit',
 							autoLoad:true,
 							displayField: 'label',
 							valueField:'name',
@@ -197,7 +201,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							lazyRender:false,
 							mode: 'local',
 							autoLoad:true,
-							
+							name:'area_unit',
 							displayField: 'label',
 							valueField:'name',
 							store: new Ext.data.JsonStore({
@@ -246,6 +250,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 			lyr.setVisibility(true);
 			
 		},this);
+		
 		return this.output;
 	}
  });

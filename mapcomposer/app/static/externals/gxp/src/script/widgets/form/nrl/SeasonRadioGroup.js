@@ -12,8 +12,8 @@ nrl.form.SeasonRadioGroup = Ext.extend(Ext.form.RadioGroup,
 	
 	initComponent: function() {
 		this.items=[
-						{boxLabel: 'Rabi' , name: 'season', inputValue: 'RABI'},
-						{boxLabel: 'Kharif', name: 'season', inputValue: 'KHARIF'}
+						{boxLabel: 'Rabi(Nov-Apr)' , name: 'season', inputValue: 'RABI'},
+						{boxLabel: 'Kharif(May-Oct)', name: 'season', inputValue: 'KHARIF'}
 						
 						
 		]

@@ -44,7 +44,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
  /** api: ptype = nrl_crop_status */
     ptype: "nrl_crop_status",
 
-	areaFilter: "PROVINCE NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
+	areaFilter: "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
     
     /** private: method[addOutput]
      *  :arg config: ``Object``

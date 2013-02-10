@@ -88,7 +88,7 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 		this.selectButton = new gxp.widgets.button.SelectFeatureButton({
 				ref:'selectButton',
 				vendorParams:this.vendorParams,
-				selectableLayer: ['nrl:Province_Boundary'],
+				selectableLayer: 'nrl:province_boundary',
                 layerStyle: this.layerStyle,
 				hilightLayerName:this.hilightLayerName,
 				nativeSrs : "EPSG:32642",
