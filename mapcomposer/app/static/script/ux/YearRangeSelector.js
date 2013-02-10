@@ -54,7 +54,7 @@ Ext.ux.YearRangeSelector = Ext.extend(Ext.form.CompositeField,{
 				}
 		});
 		this.items=[
-			{xtype:'numberfield',width:36,value:this.values[0],ref:'startValue',minValue: this.minValue, maxValue: this.maxValue,enableKeyEvents:true,//TODO smarter validation
+			{xtype:'numberfield',width:36,value:this.values[0],name:'startYear',ref:'startValue',minValue: this.minValue, maxValue: this.maxValue,enableKeyEvents:true,//TODO smarter validation
 				listeners:{
 					keyPress: function(e){
 						if(e.isValid()) { 
@@ -69,7 +69,7 @@ Ext.ux.YearRangeSelector = Ext.extend(Ext.form.CompositeField,{
 				}
 			},
 			slider,
-			{xtype:'numberfield',width:36,value:this.values[1],ref:'endValue',minValue: this.minValue, maxValue: this.maxValue,enableKeyEvents:true,
+			{xtype:'numberfield',width:36,value:this.values[1],name:'endYear',ref:'endValue',minValue: this.minValue, maxValue: this.maxValue,enableKeyEvents:true,
 			listeners:{
 					keyPress: function(e){
 						if(e.isValid()) { 
