@@ -7,7 +7,10 @@
 			"ptype": "gxp_wmssource",
 			"title": "NRL GeoServer",
 			"projection":"EPSG:900913",
-			"url": "http://84.33.2.24/geoserver/ows"
+			"url": "http://84.33.2.24/geoserver/ows", "layerBaseParams": {
+			   "TILED": true,
+			   "TILESORIGIN": "1394190.6211433, 4663756.8332024"
+			}
 		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
@@ -48,34 +51,111 @@
 			},{
 				"source": "nrl",
 				"title": "National Boundary",
-				"name": "nrl:National_Boundary",
-				"group": "Boundaries",
+				"name": "nrl:national_boundary",
+				"group": "Admin",
+				"visibility": true
+			},
+			{
+				"source": "nrl",
+				"title": "Province Boundary",
+				"name": "nrl:province_boundary",
+				"group": "Admin",
 				"visibility": true
 			},{
 				"source": "nrl",
-				"title": "GLOBC 2006",
+				"title": "2012",
+				"name": "nrl:flood_pak_2012",
+				"group": "Flooding",
+				"visibility": false
+			},{
+				"source": "nrl",
+				"title": "2011",
+				"name": "nrl:flood_pak_2011",
+				"group": "Flooding",
+				"visibility": false
+			},{
+				"source": "nrl",
+				"title": "2010",
+				"name": "nrl:flood_pak_2010",
+				"group": "Flooding",
+				"visibility": false
+			},{
+				"source": "nrl",
+				"title": "Contours 1000ft",
+				"name": "nrl:ETOPO2v2c_1000ft_conts_ln_pak",
+				"group": "Topography",
+				"visibility": false
+			},{
+				"source": "nrl",
+				"title": "ETOPO2 DEM",
+				"name": "nrl:ETOPO2v2C_pak",
+				"group": "Topography",
+				"visibility": false
+			},{
+				"source": "nrl",
+				"title": "Land cover 2010",
 				"name": "nrl:GLOBC2006_v2.2",
-				"group": "Global Coverages",
+				"group": "Land Cover",
+				"visibility": false
+			},{
+				"source": "nrl",
+				"title": "Land cover 2000",
+				"name": "nrl:LULC2000_Pak_wgs84",
+				"group": "Land Cover",
+				"visibility": false
+			},{
+				"source": "nrl",
+				"title": "GLOBC 2006",
+				"name": "nrl:LULC2010_Pak",
+				"group": "Land Cover",
 				"visibility": false
 			},{
 				"source": "nrl",
 				"title": "GLOBC 2009",
 				"name": "nrl:GLOBC2009_v2.3",
-				"group": "Global Coverages",
+				"group": "Land Cover",
 				"visibility": false
-			},
-			{
+			},{
 				"source": "nrl",
-				"title": "Province Boundary",
-				"name": "nrl:Province_Boundary",
-				"group": "Boundaries",
-				"visibility": true
-			},
-			{
+				"title": "Main Hydro Features",
+				"name": "nrl:main_hydro_features_RWDB",
+				"group": "Hydrology",
+				"visibility": false
+			},{
+				"source": "nrl",
+				"title": "Rivers",
+				"name": "nrl:rivers_pak",
+				"group": "Hydrology",
+				"visibility": false
+			},{
+				"source": "nrl",
+				"title": "Indus River",
+				"name": "nrl:indus_river_course",
+				"group": "Hydrology",
+				"visibility": false
+			},{
+				"source": "nrl",
+				"title": "Inland/Perennial water",
+				"name": "nrl:inwatera",
+				"group": "Hydrology",
+				"visibility": false
+			},{
+				"source": "nrl",
+				"title": "Roads",
+				"name": "nrl:roads_pak",
+				"group": "Transportation",
+				"visibility": false
+			},{
+				"source": "nrl",
+				"title": "MeteoData",
+				"name": "nrl:met_stations",
+				"group": "Meteo Stations",
+				"visibility": false
+			},{
 				"source": "nrl",
 				"title": "District Boundary",
-				"name": "nrl:District_Boundary",
-				"group": "Boundaries",
+				"name": "nrl:district_boundary",
+				"group": "Admin",
 				"visibility": true
 			}
 		]
@@ -119,4 +199,4 @@
 		  "outputTarget":"nrl"
 	  }
 	]
-	}
+}
