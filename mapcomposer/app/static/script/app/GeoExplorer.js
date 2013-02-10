@@ -404,8 +404,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             collapseMode: "mini",
 			enableTabScroll : true,
             header: false,
-			width: 310,
-			minWidth:310
+			width: 350,
+			minWidth:350
 			//items:[{title:'Crop Data'},{title:'Crop Status'},{title:'AgroMet'},{title:'NDVI'}]
 			
 			
