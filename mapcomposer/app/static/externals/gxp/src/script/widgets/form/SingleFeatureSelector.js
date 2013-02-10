@@ -147,6 +147,7 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
 		return  gxp.widgets.form.SingleFeatureSelector.superclass.initComponent.apply(this, arguments);
 	},
     setComboDisplayValue: function (selectCombo,record){
+		if(!record) return false;
         var attributes = record.get('attributes');
         if (!attributes) return;
         var rm = selectCombo.recordModel;

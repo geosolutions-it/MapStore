@@ -25,11 +25,13 @@ Ext.namespace('gxp.widgets.button');
 
 gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 	xtype: 'gxp_selectFeatureButton',
-	selectableLayer: ['nrl:Province_Boundary'],
+	/*selectableLayer: 'nrl:Province_Boundary',
 	nativeSrs : "EPSG:32642",
 	singleSelect:false,
 	hilightLayerName: 'hilight_layer_selectAction',
 	layerStyle: null,
+	*/
+	//TODO add wms URL
    // tooltip: this.infoActionTip,
 	iconCls: "gxp-icon-getfeatureinfo",
 	//toggleGroup: this.toggleGroup,
@@ -107,12 +109,14 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 	updateControl:  function (){
 			// check if control is present
 			var layername =this.selectableLayer;
+			
 			var queryableLayer = this.target.mapPanel.layers.queryBy(function(x){
 				var name = x.get("name");
 				var found = x.get("name")==layername
                 return found;	
 			});
-			if(queryableLayer.length <=0){return}
+			//TODO CREATE LAYER
+			if(queryableLayer.length <=0){return false;}
 			var active = false;
 			if(this.control){
 				active = this.control.active;
@@ -121,7 +125,7 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 			}
 			queryableLayer.each(this.addControl,this);
 			if(active){this.control.activate()};
-			
+			return true;
 				
 		
 	},
@@ -204,12 +208,13 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
         return this.hilightLayer
 	},
 	toggleHandler: function(button, pressed) {
+			var created = true;
 			if(!button.control){
-				button.updateControl();
+				created = button.updateControl();
 			}
-			if (pressed) {
+			if (created && pressed) {
 				button.control.activate();
-			} else {
+			}else if(created){
 				button.control.deactivate();
 			}
 		
