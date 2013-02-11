@@ -45,7 +45,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
     ptype: "nrl_crop_data",
 	/** i18n **/
 	outputTypeText:'Output Type',
-	areaFilter: "PROVINCE NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
+	areaFilter: "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
 	seasonText:'Season',
 	/** layer Name **/
     hilightLayerName:"CropData_Selection_Layer",//TODO doesn't seems to run
@@ -85,7 +85,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 
 					defaultType: 'radio', // each item will be a radio button
 					items:[
-						{boxLabel: 'Data' , xtype:'radio', name: 'outputtype', inputValue: 'data'},
+						{boxLabel: 'Data' , xtype:'radio', name: 'outputtype', inputValue: 'data',visible:false},
 						{boxLabel: 'Chart', xtype:'radio', name: 'outputtype', inputValue: 'chart', checked: true},
 						{boxLabel: 'Map'  , xtype:'radio', name: 'outputtype', inputValue: 'map'}
 						
@@ -94,6 +94,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					fieldLabel: this.seasonText,
 					xtype: 'nrl_seasonradiogroup',
 					anchor:'100%',
+					name:'season',
 					ref:'season',
 					listeners: {
 						
@@ -106,6 +107,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					}
 				},{
 					xtype: 'nrl_aoifieldset',
+					name:'areas',
 					ref:'aoiFieldSet',
                     layerStyle:this.layerStyle,
 					anchor:'100%',
@@ -113,13 +115,14 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					areaFilter:this.areaFilter, 
 					hilightLayerName:this.hilightLayerName,
 					layers:{
-						DISTRICT:'nrl:District_Boundary',
-						PROVINCE:'nrl:Province_Boundary'
+						district:'nrl:district_boundary',
+						province:'nrl:province_boundary'
 					}
 					
 				},
 				{
 					xtype: 'nrl_commoditycombobox',
+					name:'crop',
 					anchor:'100%',
 					ref: 'Commodity'
 					
@@ -173,25 +176,45 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							triggerAction: 'all',
 							lazyRender:false,
 							mode: 'local',
+							name:'production_unit',
 							autoLoad:true,
-							
-							
-							
 							displayField: 'label',
-							valueField:'name'
+							valueField:'name',
+							store: new Ext.data.JsonStore({
+								fields:[
+										{name:'name',dataIndex:'name'},
+										{name:'label',dataIndex:'label'},
+										{name:'commodity',dataIndex:'commodity'}
+								],
+								data:[
+									{label: '\'000\' tonnes', name:'1'},
+									{label: '\'000\' kgs', name:'2'},
+									{label: '\'000\' bales', name:'3'}
+								]
+							})
 						},{
 							xtype: 'combo',
 							anchor:'100%',
 							fieldLabel: 'Area',
 							typeAhead: true,
-							
 							triggerAction: 'all',
 							lazyRender:false,
 							mode: 'local',
 							autoLoad:true,
-							
+							name:'area_unit',
 							displayField: 'label',
-							valueField:'name'
+							valueField:'name',
+							store: new Ext.data.JsonStore({
+								fields:[
+										{name:'name',dataIndex:'name'},
+										{name:'label',dataIndex:'label'},
+										{name:'commodity',dataIndex:'commodity'}
+								],
+								data:[
+									{label: '\'000\' hectares', name:'1'},
+									{label: 'square kilometers', name:'2'}
+								]
+							})
 					}]
 				  
 					
@@ -202,7 +225,8 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 			buttons:[{
                 text:'Compute',
                 xtype: 'gxp_nrlChartButton',
-                target:this.target
+                target:this.target,
+				form: this
             }]
 		};
 		
@@ -227,6 +251,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 			lyr.setVisibility(true);
 			
 		},this);
+		
 		return this.output;
 	}
  });

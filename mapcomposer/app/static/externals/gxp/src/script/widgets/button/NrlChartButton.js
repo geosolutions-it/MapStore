@@ -39,6 +39,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
     vpEndYear: "2009",
     
     handler: function () {
+<<<<<<< HEAD
         
         var numRegion = this.vpRegionList;
         var commodity = this.vpCrop;
@@ -48,6 +49,11 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
         
         var media = [];
         
+=======
+        console.log(this.form.output.getForm().getValues());
+		var regStore = this.form.output.aoiFieldSet.AreaSelector.store
+		console.log(regStore.getRange());
+>>>>>>> 0b5de40ceaf66443f69946d21e45c2724e837b55
         var tabPanel = Ext.getCmp('id_mapTab');
 
         var tabs = tabPanel.find('title', 'Crop Data');

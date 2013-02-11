@@ -26,7 +26,7 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
     
     fieldLabel: 'District',
     url: "http://84.33.2.24/geoserver/ows?",
-    typeName:"nrl:District_Boundary",
+    typeName:"nrl:district_boundary",
     predicate:"ILIKE",
 	toggleGroup:'toolGroup',
 	vendorParams: this.vendorParams,
@@ -41,10 +41,10 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
         },
         {
            name:"name",
-           mapping:"properties.DISTRICT"
+           mapping:"properties.district"
         },{
            name:"province",
-           mapping:"properties.PROVINCE"
+           mapping:"properties.province"
         },{
            name:"properties",
            mapping:"properties"
@@ -52,10 +52,10 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
         
     ],
     queriableAttributes:[
-        "DISTRICT",
-        "PROVINCE"
+        "district",
+        "province"
      ],
-    sortBy:"PROVINCE",
+    sortBy:"province",
 	displayField:"name",
     pageSize:10,
     wfsComboSize:140,
@@ -147,6 +147,7 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
 		return  gxp.widgets.form.SingleFeatureSelector.superclass.initComponent.apply(this, arguments);
 	},
     setComboDisplayValue: function (selectCombo,record){
+		if(!record) return false;
         var attributes = record.get('attributes');
         if (!attributes) return;
         var rm = selectCombo.recordModel;

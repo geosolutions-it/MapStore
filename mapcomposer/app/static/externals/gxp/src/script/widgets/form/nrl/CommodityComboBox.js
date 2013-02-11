@@ -44,7 +44,7 @@ nrl.form.CommodityComboBox = Ext.extend(Ext.form.ComboBox,{
 				{name:'Fodder',label:'Fodder',season:'RABI,KHARIF'}
 				
 		],
-			fields:[
+		fields:[
 				{name:'name',dataIndex:'name'},
 				{name:'label',dataIndex:'label'},
 				{name:'season',dataIndex:'season'}

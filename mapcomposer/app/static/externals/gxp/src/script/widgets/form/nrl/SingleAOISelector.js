@@ -20,17 +20,17 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
             fieldLabel: 'District',
             url: "http://84.33.2.24/geoserver/ows?",
             predicate:"ILIKE",
-            sortBy:"PROVINCE",
+            sortBy:"province",
 			ref:'singleSelector',
             displayField:"name",
             pageSize:10
             
         },
         DISTRICT:{
-            typeName:"nrl:District_Boundary",
+            typeName:"nrl:district_boundary",
             queriableAttributes:[
-                "DISTRICT",
-                "PROVINCE"
+                "district",
+                "province"
                 
              ],
              recordModel:[
@@ -44,10 +44,10 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
                 },
                 {
                    name:"name",
-                   mapping:"properties.DISTRICT"
+                   mapping:"properties.district"
                 },{
                    name:"province",
-                   mapping:"properties.PROVINCE"
+                   mapping:"properties.province"
                 },{
                    name:"properties",
                    mapping:"properties"
@@ -57,7 +57,7 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
         },
         PROVINCE:{ 
             fieldLabel: 'Province',
-            typeName:"nrl:Province_Boundary",
+            typeName:"nrl:province_boundary",
             recordModel:[
                 {
                    name:"id",
@@ -69,15 +69,15 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
                 },
                 {
                    name:"name",
-                   mapping:"properties.PROVINCE"
+                   mapping:"properties.province"
                 },{
                    name:"properties",
                    mapping:"properties"
                 }
             ],
-            sortBy:"PROVINCE",
+            sortBy:"province",
             queriableAttributes:[
-                "PROVINCE"
+                "province"
             ],
             displayField:"name",
             tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
