@@ -51,6 +51,7 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
             });
         };
 		this.addEvents('addFeature','startselection','endselection','update');
+		this.enableBubble('update');
 		this.store.on('add',function(store,records,index){
 			for(var i = 0 ; i< records.length ; i++){
 				var feature = records[i];

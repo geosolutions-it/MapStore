@@ -33,15 +33,16 @@ nrl.form.CommodityComboBox = Ext.extend(Ext.form.ComboBox,{
 	autoLoad:true,
 	displayField: 'label',
 	valueField:'name',
+	value:'wheat',
 	
 	store: new Ext.data.JsonStore({
 		data: [
-				{name:'Wheat',label:'Wheat',season:'RABI'},
-				{name:'Cotton',label:'Cotton',season:'KHARIF'},
-				{name:'Sugarcane',label:'Sugarcane',season:'RABI,KHARIF'},
-				{name:'Rice',label:'Rice',season:'KHARIF'},
-				{name:'Maize',label:'Maize',season:'KHARIF'},
-				{name:'Fodder',label:'Fodder',season:'RABI,KHARIF'}
+				{name:'wheat',label:'Wheat',season:'RABI'},
+				{name:'cotton',label:'Cotton',season:'KHARIF'},
+				{name:'sugarcane',label:'Sugarcane',season:'RABI,KHARIF'},
+				{name:'rice',label:'Rice',season:'KHARIF'},
+				{name:'maize',label:'Maize',season:'KHARIF'},
+				{name:'fodder',label:'Fodder',season:'RABI,KHARIF'}
 				
 		],
 		fields:[

@@ -34,13 +34,15 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
     form: null,
     
     handler: function () {
-
+		
         var numRegion = [];
         var regStore = this.form.output.aoiFieldSet.AreaSelector.store
         var records = regStore.getRange();
-  
+		
         for (var i=0;i<records.length;i++){
-            numRegion.push(records[i].get("data").fname.toLowerCase());
+			var attrs = records[i].get("attributes");
+			var region = attrs.district || attrs.province;
+            numRegion.push(region.toLowerCase());
         }
         
         var data = this.form.output.getForm().getValues();
@@ -54,12 +56,12 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
         
         var tabPanel = Ext.getCmp('id_mapTab');
 
-        var tabs = tabPanel.find('title', 'Crop Data');
-        
+        var tabs = Ext.getCmp('cropData_tab');
+        /*
         if (tabs && tabs.length > 0) {
             tabPanel.setActiveTab(tabs[0]);
         } else {
-            
+            */
             Ext.Ajax.request({
                 url : "http://84.33.2.24/geoserver/nrl/ows",
                 method: 'POST',
@@ -77,16 +79,54 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                                 "region_list:" + regionList
                 },
                 success: function ( result, request ) {
-                    var jsonData = Ext.util.JSON.decode(result.responseText);
-                    makeChart(jsonData);
+					
+						var jsonData = Ext.util.JSON.decode(result.responseText);
+						if (jsonData.features.length <=0){
+							Ext.Msg.alert("No data","Data not available for these search criteria");
+							return;
+						}
+						var charts  = makeChart(jsonData);
+						var resultpanel = {
+							columnWidth: .99,
+							style:'padding:10px 0 10px 10px',
+							xtype: 'gxp_controlpanel',
+							commodity: commodity,
+							province: numRegion,
+							fromYear: fromYear,
+							toYear: toYear,
+							chart: charts
+							
+						};
+						if(!tabs){
+							var cropDataTab = new Ext.Panel({
+								title: 'Crop Data',
+								id:'cropData_tab',
+								itemId:'cropData_tab',
+								border: true,
+								layout: 'form',
+								autoScroll: true,
+								tabTip: 'Crop Data',
+								closable: true,
+								items: resultpanel
+							});
+							tabPanel.add(cropDataTab);
+						}else{
+							tabs.items.each(function(a){a.collapse()});
+							tabs.add(resultpanel);
+						}
+						Ext.getCmp('id_mapTab').doLayout();
+						Ext.getCmp('id_mapTab').setActiveTab('cropData_tab');
+						
+					
+                    
                 },
                 failure: function ( result, request ) {
-
+					Ext.Msg.alert("Error","Server response error");
                 }
             });           
 
             function makeChart( json ){
-
+				
                 var grafici = [];
                 
                 for (var r = 0;r<numRegion.length;r++){
@@ -432,40 +472,13 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                     grafici.push(chart);   
                 
                 }
+                return grafici; 
+				
+				
                 
-                var cropDataTab = new Ext.Panel({
-                    title: 'Crop Data',
-                    border: true,
-                    layout: 'form',
-                    autoScroll: true,
-                    tabTip: 'Crop Data',
-                    closable: true,
-                    items: {
-                        xtype: 'portal',
-                        region: 'center',
-                        //margins: '35 5 5 0',
-                        //layout: 'fit',
-                        //title: "Commodity: " + data[0][0].crop + " - Season: Rabi",
-                        items: [{
-                            columnWidth: .99,
-                            style:'padding:10px 0 10px 10px',
-                            xtype: 'gxp_controlpanel',
-                            commodity: commodity,
-                            province: numRegion,
-                            fromYear: fromYear,
-                            toYear: toYear,
-                            chart: grafici
-                        }]
-                    }
-                });
-
-                tabPanel.add(cropDataTab);
-
-                Ext.getCmp('id_mapTab').doLayout();
-                Ext.getCmp('id_mapTab').setActiveTab(1);
             
             }
-        }
+        
     }
 });
 
