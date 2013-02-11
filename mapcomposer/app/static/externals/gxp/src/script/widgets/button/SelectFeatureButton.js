@@ -50,7 +50,7 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
                     ] 
             });
         };
-		this.addEvents('addFeature','startselection','endselection');
+		this.addEvents('addFeature','startselection','endselection','update');
 		this.store.on('add',function(store,records,index){
 			for(var i = 0 ; i< records.length ; i++){
 				var feature = records[i];
@@ -61,6 +61,7 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 				this.fireEvent('addfeature',records[i]);
 				this.hilightLayer.addFeatures(feature.data);
 			}
+			this.fireEvent('update',store);
         },this);
 		this.store.on('remove',function(store,records){
 			if(!this.hilightLayer){
@@ -75,12 +76,14 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 			} else {
 				this.hilightLayer.removeFeatures(records.data);
 			}
+			this.fireEvent('update',store);
         },this);
 		this.store.on('clear',function(store,records){
 			if(!this.hilightLayer){
 				return
 			}
 			this.hilightLayer.removeAllFeatures();
+			this.fireEvent('update',store);
         },this);
 		
 		this.on('beforedestroy',function(component){
@@ -170,7 +173,7 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 							this.store.remove(presentRecord);
 						}
 					}
-					button.fireEvent('endselection');
+					this.fireEvent('endselection',this.store);
                     //if(add){this.fireEvent('addfeature',record);}
 				},
 				scope: this

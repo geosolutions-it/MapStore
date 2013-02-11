@@ -59,6 +59,7 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 		
 	},
 	initComponent: function() {
+		this.addEvents('update');
 		this.store =  new Ext.data.SimpleStore({
 		mode:'local',
 		autoload:true,
@@ -103,6 +104,9 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 					},
 					endSelection:function(){
 						this.loadMask.hide();
+					},
+					update:function(store){
+						this.fireEvent('update',store);
 					},
 					scope:this
 				}

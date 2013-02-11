@@ -110,6 +110,8 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
 			{ 
 				fieldLabel: 'Type',
 				xtype: 'radiogroup',
+				ref: 'gran_type',
+				name: 'gran_type',
 				autoHeight:true,
 				checkboxToggle:true,
 				title: this.outputTypeText,
@@ -149,9 +151,38 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
 				ref:'AreaSelector',
                 comboConfig:this.currentComboConfig,
 				displayField:'province',
-				layerStyle:this.layerStyle
-            }
-		]
+				layerStyle:this.layerStyle,
+				listeners: {
+					update: function(store){
+						records = store.getRange();
+						var len = records.length ;
+						if (len <= 0 ){ 
+							sel = "";
+						}else{
+							var attrs = records[0].get("attributes");
+							var name = attrs[this.gran_type.getValue().inputValue];
+							var sel =  "'" + name +"'";
+						}
+						for (var i = 1; i < len; i++) {
+							var attrs = records[i].get("attributes");
+							var name = attrs[this.gran_type.getValue().inputValue];
+							
+							sel +="\\,'" + name +"'";
+						}
+						this.selectedRegions.setValue(sel);
+						
+					},
+					scope:this
+				
+				}
+            },{   
+                xtype:'hidden',//<--hidden field  
+                name:this.name, //name of the field sent to the server  
+				ref: 'selectedRegions',
+                value:''//value of the field  
+        }
+		];
+		
 		return nrl.form.AOIFieldSet.superclass.initComponent.apply(this, arguments);
 	}
 	

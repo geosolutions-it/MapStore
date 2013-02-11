@@ -107,7 +107,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					}
 				},{
 					xtype: 'nrl_aoifieldset',
-					name:'areas',
+					name:'region_list',
 					ref:'aoiFieldSet',
                     layerStyle:this.layerStyle,
 					anchor:'100%',
