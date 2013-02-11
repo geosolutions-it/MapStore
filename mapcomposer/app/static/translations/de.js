@@ -4,7 +4,7 @@
 
 GeoExt.Lang.add("de", {
     "GeoExplorer.prototype": {
-        zoomSliderText: "<div>Livello di Zoom: {zoom}</div><div>Scala: 1:{scale}</div>",
+        zoomSliderText: "<div>Zoomlevel: {zoom}</div><div>Maßstab: 1:{scale}</div>",
         loadConfigErrorText: "Die gespeicherte Gestaltung kann nicht gelesen werden : <br />",
         loadConfigErrorDefaultText: "Serverfehler.",
         xhrTroubleText: "Verbindungsfehler: Status ",
@@ -93,9 +93,9 @@ GeoExt.Lang.add("de", {
     },
 
     "gxp.plugins.GoogleEarth.prototype": {
-        apiKeyPrompt: "Please enter the Google API key for ",
+        apiKeyPrompt: "Bitte die Google API-Schlüssel eingeben für ",
         menuText: "3D Viewer",
-        tooltip: "Switch to 3D Viewer"
+        tooltip: "zu 3D Viewer wechseln"
     },
     
     "gxp.plugins.GoogleSource.prototype": {
