@@ -626,8 +626,30 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             });
             
             tabPanel.add(meta);
+			meta.items.first().on('render', function() {
+				this.addLoadingMask(meta.items.first());
+			},this);						
         }
     },
+	
+	/** private: method[addLoadingMask]
+     */
+	addLoadingMask: function(panel) {		
+		var loading = Ext.DomHelper.append(panel.el.parent(), {
+			tag:'div',
+			cls:'loading-iframe'
+		}, true);		
+		var iframe = panel.el.dom;
+		if (iframe.attachEvent){
+			iframe.attachEvent("onload", function(){
+				loading.hide();
+			});
+		} else {
+			iframe.onload = function(){
+				loading.hide();
+			};
+		}
+	},
 
     /** private: method[openPreview]
      */

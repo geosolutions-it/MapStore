@@ -295,3 +295,12 @@ table.featureInfo caption{
      background-position: center;
      background-repeat: no-repeat;
 }
+
+.loading-iframe {
+	width: 100%;
+	height: 100%;
+	background: transparent url(img/ajax-loader.gif) center no-repeat;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
