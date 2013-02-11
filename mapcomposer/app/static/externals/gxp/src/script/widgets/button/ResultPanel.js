@@ -28,7 +28,7 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
     fromYear: null,
     toYear: null,
     chart: null,
-    
+    collapsible: true,
 	initComponent: function(){
         
     var panel;
@@ -85,50 +85,48 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
     }
     
     
-    
-        this.items = {
-                title: "Commodity: " + this.commodity +  " - Season: Rabi",
-                items: [panels],
-                tools: [{
-                        id: 'info',
-                        handler: function () {
-                
-                            var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
-                                    "<ol>" +
-                                        "<li><p><em> Commodity: </em>" + this.commodity + "</p></li>" +
-                                        "<li><p><em> Season: </em>" + "Rabi" + "</p></li>" +
-                                        "<li><p><em> Province 1: </em>" + this.province[0] + "</p></li>" +
-                                        "<li><p><em> Province 2: </em>" + this.province[1] + "</p></li>" +
-                                        "<li><p><em> From year: </em>" + this.fromYear + "</p></li>" +
-                                        "<li><p><em> To year: </em>" + this.toYear + "</p></li>" +
-                                    "</ol>" +                                        
-                                    "</div>";
-                         
-                            var appInfo = new Ext.Panel({
-                                header: false,
-                                html: iframe
-                            });
+		this.title= "Commodity: " + this.commodity +  " - Season: Rabi",
+		this.tools= [{
+			id: 'info',
+			handler: function () {
+	
+				var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+						"<ol>" +
+							"<li><p><em> Commodity: </em>" + this.commodity + "</p></li>" +
+							"<li><p><em> Season: </em>" + "Rabi" + "</p></li>" +
+							"<li><p><em> regions </em>" + this.province.concat(",") + "</p></li>" +
+							"<li><p><em> From year: </em>" + this.fromYear + "</p></li>" +
+							"<li><p><em> To year: </em>" + this.toYear + "</p></li>" +
+						"</ol>" +                                        
+						"</div>";
+			 
+				var appInfo = new Ext.Panel({
+					header: false,
+					html: iframe
+				});
 
-                            var win = new Ext.Window({
-                                title:  "Charts Info",
-                                modal: true,
-                                layout: "fit",
-                                width: 200,
-                                height: 180,
-                                items: [appInfo]
-                            });
-                            
-                            win.show();                                              
-                        },
-                        scope: this
-                    }, {
-                        id: 'close',
-                        handler: function (e, target, panel) {
-                            panel.ownerCt.remove(panel, true);
-                        }
-                    }],
-                    collapsible: true
-                }
+				var win = new Ext.Window({
+					title:  "Charts Info",
+					modal: true,
+					layout: "fit",
+					width: 200,
+					height: 180,
+					items: [appInfo]
+				});
+				
+				win.show();                                              
+			},
+			scope: this
+		}, {
+			id: 'close',
+			handler: function (e, target, panel) {
+				panel.ownerCt.remove(panel, true);
+			}
+		}],
+                    
+                
+        this.items =  panels,
+                
 		gxp.ControlPanel.superclass.initComponent.call(this);
 	}
 });
