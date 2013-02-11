@@ -31,37 +31,34 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
     /** api: xtype = gxp_nrlchart */
     xtype: 'gxp_nrlChartButton',
     iconCls: "gxp-icon-nrl-chart",
-    typeName: "nrl:CropData",
-    vpCrop: "maize",
-    vpGranType: "province",
-    vpRegionList: ["punjab","balochistan"],
-    vpStartYear: "1999",
-    vpEndYear: "2009",
+    form: null,
     
     handler: function () {
+
+        var numRegion = [];
+        var regStore = this.form.output.aoiFieldSet.AreaSelector.store
+        var records = regStore.getRange();
+  
+        for (var i=0;i<records.length;i++){
+            numRegion.push(records[i].get("data").fname.toLowerCase());
+        }
         
-        var numRegion = this.vpRegionList;
-        var commodity = this.vpCrop;
-        var province = this.vpRegionList;
-        var fromYear = this.vpStartYear;
-        var toYear = this.vpEndYear;
+        var data = this.form.output.getForm().getValues();
+        var regionList = data.region_list.toLowerCase();
+        var commodity = data.crop.toLowerCase();        
+        var granType = data.areatype;
+        var fromYear = data.startYear;
+        var toYear = data.endYear;
         
         var media = [];
         
         var tabPanel = Ext.getCmp('id_mapTab');
 
         var tabs = tabPanel.find('title', 'Crop Data');
-
         
         if (tabs && tabs.length > 0) {
             tabPanel.setActiveTab(tabs[0]);
         } else {
-            
-            var region = "'";
-            for(var i = 0;i<this.vpRegionList.length;i++){
-                region += this.vpRegionList[i] + "'";
-                region += i == this.vpRegionList.length-1 ? "" : "\\,'";
-            }
             
             Ext.Ajax.request({
                 url : "http://84.33.2.24/geoserver/nrl/ows",
@@ -70,14 +67,14 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                     service: "WFS",
                     version: "1.0.0",
                     request: "GetFeature",
-                    typeName: this.typeName,
+                    typeName: "nrl:CropData",
                     outputFormat: "json",
                     propertyName: "region,crop,year,production,area,yield",
-                    viewparams: "crop:" + this.vpCrop + ";" +
-                                "gran_type:" + this.vpGranType + ";" +
-                                "start_year:" + this.vpStartYear + ";" +
-                                "end_year:" + this.vpEndYear + ";" +
-                                "region_list:" + region
+                    viewparams: "crop:" + commodity + ";" +
+                                "gran_type:" + granType + ";" +
+                                "start_year:" + fromYear + ";" +
+                                "end_year:" + toYear + ";" +
+                                "region_list:" + regionList
                 },
                 success: function ( result, request ) {
                     var jsonData = Ext.util.JSON.decode(result.responseText);
@@ -454,7 +451,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                             style:'padding:10px 0 10px 10px',
                             xtype: 'gxp_controlpanel',
                             commodity: commodity,
-                            province: province,
+                            province: numRegion,
                             fromYear: fromYear,
                             toYear: toYear,
                             chart: grafici
