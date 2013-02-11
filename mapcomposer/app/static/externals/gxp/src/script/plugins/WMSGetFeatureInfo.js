@@ -71,6 +71,12 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
      *  Message for the loading mask.
      */
 	maskMessage: 'Getting info...',
+	
+	/** api: config[useTabPanel]
+     *  ``Boolean``
+     *  Use a loading mask during get feature info.
+     */
+	useTabPanel: false,
     
     noDataMsg: "No data returned from the server",
     
@@ -211,21 +217,40 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
         var popup;
         var popupKey = evt.xy.x + "." + evt.xy.y;
 						
+		var item = this.useTabPanel ? {
+			title: title,										
+			html: text,
+			autoScroll: true
+		} : {
+            title: title,			
+            layout: "fit",			
+            html: text,
+            autoScroll: true,
+            autoWidth: true,
+            collapsible: true
+        };
+						
         if (!(popupKey in this.popupCache)) {
 			if(this.closePrevious) {
 				this.removeAllPopups();
 			}
-		
+			var items = this.useTabPanel ? [{
+				xtype: 'tabpanel',
+				activeTab: 0,
+				items: [item]
+			}] : [item];
+			
             popup = this.addOutput({
                 xtype: "gx_popup",
                 title: this.popupTitle,
-                layout: "accordion",
+                layout: this.useTabPanel ? "fit" : "accordion",
                 location: evt.xy,
                 map: this.target.mapPanel,
                 width: 490,
                 height: 320,
                 /*anchored: true,
                 unpinnable : true,*/
+				items: items,
                 draggable: true,
                 listeners: {
                     close: (function(key) {
@@ -239,17 +264,11 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
             this.popupCache[popupKey] = popup;
         } else {
             popup = this.popupCache[popupKey];
+			
+			var container = this.useTabPanel ? popup.items.first() : popup;
+			container.add(item);
         }
-
-        // extract just the body content
-        popup.add({
-            title: title,
-            layout: "fit",
-            html: text,
-            autoScroll: true,
-            autoWidth: true,
-            collapsible: true
-        });
+		        
         popup.doLayout();
     }
     
