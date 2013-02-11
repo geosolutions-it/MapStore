@@ -72,6 +72,112 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     urlEPSG: null,
     epsgWinHeight: null,
     epsgWinWidth: null,
+    seriousnessCode: '0',
+    accidentCode: '0',
+    sostanzeCode: '0',
+    selectedTargetCode: '-1',
+    
+    holdValues: {
+        "L": 8,
+        "G": 25 
+    },
+ 
+    
+    // -1 HOLD Values, null not defined value
+    radiusData : {
+                 "1":{
+                    "E" : {
+                        "L": { "humans": [15,32,51,75],        "notHumans": [15,-1,-1,-1,null,null]},
+                        "G": { "humans": [75,90,110,130],      "notHumans": [75,-1,-1,-1,null,null]}
+                    }
+                 },
+                 "2":{
+                    "G" : {
+                        "L": { "humans": [25,null,81,null],    "notHumans": [null,-1,-1,-1,null,null]},
+                        "G": { "humans": [45,null,90,null],    "notHumans": [null,-1,-1,-1,null,null]}
+                    }
+                },
+                "3":{
+                    "D" : {
+                        "L": { "humans": [35,70,null,null],    "notHumans": [null,-1,-1,null,null,null]},
+                        "G": { "humans": [65,132,null,null],   "notHumans": [null,-1,-1,null,null,null]}
+                    },
+                    "F" : {
+                        "L": { "humans": [60,95,110,140],      "notHumans": [60,-1,-1,null,null,null]},
+                        "G": { "humans": [180,230,420,500],    "notHumans": [180,-1,-1,null,null,null]}
+                    }
+                },
+                "4":{
+                    "E" : {
+                        "L": { "humans": [30,65,null,null],    "notHumans": [null,-1,-1,null,null,null]},
+                        "G": { "humans": [60,148,null,null],   "notHumans": [null,-1,-1,null,null,null]}
+                    },
+                    "F" : {
+                        "L": { "humans": [55,93,100,131],      "notHumans": [55,-1,-1,null,null,null]},
+                        "G": { "humans": [112,210,339,467],    "notHumans": [112,-1,-1,null,null,null]}
+                    },
+                    "M" : {
+                        "L": { "humans": [60,null,110,null],   "notHumans": [null,-1,-1,-1,null,null]},
+                        "G": { "humans": [110,null,230,null],  "notHumans": [null,-1,-1,-1,null,null]}
+                    }
+                },
+                "5":{
+                    "B" : {
+                        "L": { "humans": [45,96,null,null],    "notHumans": [null,-1,-1,null,null,null]},
+                        "G": { "humans": [110,150,null,null],  "notHumans": [null,-1,-1,null,null,null]}
+                    },
+                    "L" : {
+                        "L": { "humans": [130,null,567,null],  "notHumans": [null,-1,-1,-1,null,null]},
+                        "G": { "humans": [250,null,780,null],  "notHumans": [null,-1,-1,-1,null,null]}
+                    }
+                },
+                "6":{
+                    "G" : {
+                        "L": { "humans": [25,null,81,null],    "notHumans": [null,-1,-1,-1,null,null]},
+                        "G": { "humans": [45,null,90,null],    "notHumans": [null,-1,-1,-1,null,null]}
+                    }
+                },
+                "7":{
+                    "H" : {
+                        "L": { "humans": [null,null,null,null],"notHumans": [null,null,null,8,8,8]},
+                        "G": { "humans": [null,null,null,null],"notHumans": [null,null,null,25,25,25]}
+                    }
+                },
+                "8":{
+                    "C" : {
+                        "L": { "humans": [35,45,52,60],        "notHumans": [35,-1,-1,-1,null,null]},
+                        "G": { "humans": [80,110,130,145],     "notHumans": [80,-1,-1,-1,null,null]}
+                    },
+                    "D" : {
+                        "L": { "humans": [45,90,null,null],    "notHumans": [null,-1,-1,null,null,null]},
+                        "G": { "humans": [127,250,null,null],  "notHumans": [null,-1,-1,null,null,null]}
+                    },
+                    "H" : {
+                        "L": { "humans": [null,null,null,null],"notHumans": [null,null,null,8,8,8]},
+                        "G": { "humans": [null,null,null,null],"notHumans": [null,null,null,25,25,25]}
+                    }
+                },
+                "9":{
+                    "A" : {
+                        "L": { "humans": [30,42,48,58],        "notHumans": [30,-1,-1,null,null,null]},
+                        "G": { "humans": [75,109,125,138],     "notHumans": [75,-1,-1,null,null,null]}
+                    },
+                    "B" : {
+                        "L": { "humans": [40,88,null,null],    "notHumans": [-1,-1,null,null,null,null]},
+                        "G": { "humans": [70,150,null,null],   "notHumans": [-1,-1,null,null,null,null]}
+                    },
+                    "I" : {
+                        "L": { "humans": [30,null,60,null],    "notHumans": [-1,-1,-1,-1,null,null]},
+                        "G": { "humans": [80,null,160,null],   "notHumans": [-1,-1,-1,-1,null,null]}
+                    }
+                },
+                 "10":{
+                    "H" : {
+                        "L": { "humans": [null,null,null,null],"notHumans": [null,null,null,8,8,8]},
+                        "G": { "humans": [null,null,null,null],"notHumans": [null,null,null,25,25,25]}
+                    }
+                }
+        },
 
     /** private: method[constructor]
      *  :arg config: ``Object``
@@ -417,45 +523,45 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             ]
         });
         
-         map.events.register("move", map, function() {
+        /* TODO Attivare solo quando elaborazione aperta map.events.register("move", map, function() {
             var extent=map.getExtent();
             me.setAOI(extent);                    
             me.removeAOILayer(map); 
-         });
+         });*/
         
         //
         // Bersaglio
         //
         
         var targetStore = new Ext.data.ArrayStore({
-            fields: ['name', 'property', 'humans'],
+            fields: ['name', 'property', 'humans', 'code'],
             data :  [
               //  ['Tutti i Bersagli', 'calc_formula_tot', ''],
-                ['Popolazione residente', 'calc_formula_residenti', true],
-                ['Popolazione fluttuante turistica (medio)', 'invalid', true],
-                ['Popolazione fluttuante turistica (max)', 'invalid', true],
-                ['Addetti industria e servizi', 'invalid', true],
-                ['Addetti/utenti strutture sanitarie', 'invalid', true],
-                ['Addetti/utenti strutture scolastiche', 'invalid', true],
-                ['Addetti/utenti centri commerciali', 'invalid', true],
-                ['Utenti della strada coinvolti', 'invalid', true],
-                ['Utenti della strada territoriali', 'invalid', true],
-                ['Zone urbanizzate', 'invalid', false],
-                ['Aree boscate', 'calc_formula_aree_boscate', false],
-                ['Aree protette', 'invalid', false],
-                ['Aree agricole', 'calc_formula_aree_agricole', false],
-                ['Acque sotterranee', 'invalid', false],
-                ['Acque superficiali', 'invalid', false],
-                ['Beni culturali', 'invalid', false]
+                ['Popolazione residente', 'calc_formula_residenti', true, '-1'],
+                ['Popolazione fluttuante turistica (medio)', 'invalid', true, '-1'],
+                ['Popolazione fluttuante turistica (max)', 'invalid', true, '-1'],
+                ['Addetti industria e servizi', 'invalid', true, '-1'],
+                ['Addetti/utenti strutture sanitarie', 'invalid', true, '-1'],
+                ['Addetti/utenti strutture scolastiche', 'invalid', true, '-1'],
+                ['Addetti/utenti centri commerciali', 'invalid', true, '-1'],
+                ['Utenti della strada coinvolti', 'invalid', true, '-1'],
+                ['Utenti della strada territoriali', 'invalid', true, '-1'],
+                ['Zone urbanizzate', 'invalid', false, '0'],
+                ['Aree boscate', 'calc_formula_aree_boscate', false, '1'],
+                ['Aree protette', 'invalid', false, '2'],
+                ['Aree agricole', 'calc_formula_aree_agricole', false, '3'],
+                ['Acque sotterranee', 'invalid', false, '4'],
+                ['Acque superficiali', 'invalid', false, '5'],
+                ['Beni culturali', 'invalid', false, '6']
             ]
         });
         
         var targetMacroStore = new Ext.data.ArrayStore({
-            fields: ['name', 'property'],
+            fields: ['name', 'property', 'code'],
             data :  [
-                ['Tutti i Bersagli', 'calc_formula_tot'],
-                ['Tutti i Bersagli Umani', 'calc_formula_tot'],
-                ['Tutti i Bersagli Ambientali', 'calc_formula_tot']
+                ['Tutti i Bersagli', 'calc_formula_tot', '1'],
+                ['Tutti i Bersagli Umani', 'calc_formula_tot', '-1'],
+                ['Tutti i Bersagli Ambientali', 'calc_formula_tot', '1']
             ]
         });
         
@@ -483,6 +589,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     var humans,tmpRec,i; 
                     this.selectedTargetProp = value;
                     this.selectedTargetName = record.get('name');
+                    this.selectedTargetCode = record.get('code');
                     var store=this.bers.getStore();
                     
                     store.removeAll();
@@ -554,6 +661,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     
                     this.selectedTargetProp = value;
                     this.selectedTargetName = record.get('name'); 
+                    this.selectedTargetCode = record.get('code');
                   } 
                 }
             }              
@@ -577,69 +685,112 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         // incidente
         //
         var classiADRStore = new Ext.data.ArrayStore({
-            fields: ['name'],
+            fields: ['name','value', 'sost'],
             data :  [
-                ['Tutte le classi'],
-                ['MATERIE E OGGETTI ESPLOSIVI'],
-                ['GAS COMPRESSI, LIQUEFATTI O DISCIOLTI IN PRESSIONE'],
-                ['MATERIE LIQUIDE INFIAMMABILI'],
-                ['MATERIE SOLIDE INFIAMMABILI'],
-                ['MATERIE SOGGETTE AD ACCENSIONE SPONTANEA'],
-                ['MATERIE CHE A CONTATTO CON L?ACQUA SVILUPPANO GAS INFIAMMABILI'],
-                ['MATERIE COMBURENTI'],
-                ['PEROSSIDI ORGANICI'],
-                ['MATERIE TOSSICHE'],
-                ['MATERIE INFETTANTI'],
-                ['MATERIE RADIOATTIVE'],
-                ['MATERIE CORROSIVE'],
-                ['MATERIE E OGGETTI PERICOLOSE DI ALTRA NATURA']
+                ['Tutte le classi', '0', []],
+             //   ['MATERIE E OGGETTI ESPLOSIVI', '1', []],
+                ['GAS COMPRESSI, LIQUEFATTI O DISCIOLTI IN PRESSIONE', '2', [1,2,3,4,5,6]],
+                ['MATERIE LIQUIDE INFIAMMABILI', '3', [7,8,9]],
+             //   ['MATERIE SOLIDE INFIAMMABILI', '4.1', []],
+             //   ['MATERIE SOGGETTE AD ACCENSIONE SPONTANEA', '4.2', []],
+             //   ['MATERIE CHE A CONTATTO CON L?ACQUA SVILUPPANO GAS INFIAMMABILI', '4.3', []],
+             //   ['MATERIE COMBURENTI', '5.1', []],
+             //   ['PEROSSIDI ORGANICI', '5.2', []],
+                ['MATERIE TOSSICHE', '6.1', [10]],
+             //   ['MATERIE INFETTANTI', '6.2', []],
+             //   ['MATERIE RADIOATTIVE', '7', []],
+             //   ['MATERIE CORROSIVE', '8', []],
+             //   ['MATERIE E OGGETTI PERICOLOSE DI ALTRA NATURA', '9', []]
             ]
         });
         
         var sostanzeStore = new Ext.data.ArrayStore({
-            fields: ['name'],
+            fields: ['name', 'value', 'accidents'],
             data :  [
-                ['Tutte le sostanze'],
-                ['IDROGENO COMPRESSO'],
-                ['OSSIGENO COMPRESSO'],
-                ['GAS DI PETROLIO LIQUEFATTO'],
-                ['OSSIDO DI ETILENE (+AZOTO)'],
-                ['AMMONIACA ANIDRA'],
-                ['OSSIGENO LIQUIDO REFRIGERATO'],
-                ['GASOLIO'],
-                ['BENZINA'],
-                ['METANOLO'],
-                ['EPICLORIDRINA']
+                ['Tutte le sostanze', '0', []],
+                ['IDROGENO COMPRESSO', '1', ['E'] ],
+                ['OSSIGENO COMPRESSO', '2', ['G']],
+                ['GAS DI PETROLIO LIQUEFATTO', '3', ['D', 'F']],
+                ['OSSIDO DI ETILENE (+AZOTO)', '4', ['D', 'F', 'M']],
+                ['AMMONIACA ANIDRA', '5', ['B', 'L']],
+                ['OSSIGENO LIQUIDO REFRIGERATO', '6', ['G']],
+                ['GASOLIO', '7', ['H']],
+                ['BENZINA', '8', ['C', 'D', 'H']],
+                ['METANOLO', '9', ['A', 'B', 'I']],
+                ['EPICLORIDRINA', '10', ['H']]
             ]
         });
                
         
         var accidentStore = new Ext.data.ArrayStore({
-            fields: ['name'],
+            fields: ['name', 'value'],
             data :  [
-                ['Tutti gli Incidenti'],
-                ['POOL FIRE DA LIQUIDO INFIAMMABILE'],
-                ['FLASH FIRE DA VAPORI LIQUIDO INFIAMMABILE'],
-                ['POOL FIRE DA LIQUIDO ESTREMAMENTE INFIAMMABILE'],
-                ['FLASH FIRE DA VAPORI LIQUIDO ESTREMAMENTE INFIAMMABILE'],
-                ['JET FIRE DI GAS ESTREMAMENTE INFIAMMABILE'],
-                ['FIRE BALL'],
-                ['DISPERSIONE COMBURENTE'],
-                ['RILASCIO SUL SUOLO E NELLE ACQUE'],
-                ['DISPERSIONE VAPORI DA LIQUIDO TOSSICO'],
-                ['DISPERSIONE VAPORI DA LIQUIDO REFRIGERATO TOSSICO'],
-                ['DISPERSIONE GAS DA GAS LIQUEFATTO TOSSICO']
+                ['Tutti gli Incidenti', '0'],
+                ['POOL FIRE DA LIQUIDO INFIAMMABILE', 'A'],
+                ['FLASH FIRE DA VAPORI LIQUIDO INFIAMMABILE', 'B'],
+                ['POOL FIRE DA LIQUIDO ESTREMAMENTE INFIAMMABILE', 'C'],
+                ['FLASH FIRE DA VAPORI LIQUIDO ESTREMAMENTE INFIAMMABILE', 'D'],
+                ['JET FIRE DI GAS ESTREMAMENTE INFIAMMABILE', 'E'],
+                ['FIRE BALL', 'F'],
+                ['DISPERSIONE COMBURENTE', 'G'],
+                ['RILASCIO SUL SUOLO E NELLE ACQUE', 'H'],
+                ['DISPERSIONE VAPORI DA LIQUIDO TOSSICO', 'I'],
+                ['DISPERSIONE VAPORI DA LIQUIDO REFRIGERATO TOSSICO', 'L'],
+                ['DISPERSIONE GAS DA GAS LIQUEFATTO TOSSICO', 'M']
             ]
         });
         
         var seriousnessStore = new Ext.data.ArrayStore({
-            fields: ['name'],
+            fields: ['name', 'value'],
             data :  [
-                ['Tutte le entità'],
-                ['Lieve'],
-                ['Grave']
+                ['Tutte le entità', '0'],
+                ['Lieve', 'L'],
+                ['Grave', 'G']
             ]
         });
+        
+        
+      /*  var radiusData = new Ext.data.ArrayStore({
+            fields: ['id', 'humans', 'notHumans'],
+            data :  [
+                ['1-E-L', [15,32,51,75],        [15,-1,-1,-1,null,null]],
+                ['1-E-G', [75,90,110,130],      [75,-1,-1,-1,null,null]],
+                ['2-G-L', [25,null,81,null],    [null,-1,-1,-1,null,null]],
+                ['2-G-G', [45,null,90,null],    [null,-1,-1,-1,null,null]],
+                ['3-D-L', [35,70,null,null],    [null,-1,-1,null,null,null]],
+                ['3-D-G', [65,132,null,null],   [null,-1,-1,null,null,null]],
+                ['3-F-L', [60,95,110,140],      [60,-1,-1,null,null,null]],
+                ['3-F-G', [180,230,420,500],    [180,-1,-1,null,null,null]],
+                ['4-D-L', [30,65,null,null],    [null,-1,-1,null,null,null]],
+                ['4-D-G', [60,148,null,null],   [null,-1,-1,null,null,null]],
+                ['4-F-L', [55,93,100,131],      [55,-1,-1,null,null,null]],
+                ['4-F-G', [112,210,339,467],    [112,-1,-1,null,null,null]], 
+                ['4-M-L', [60,null,110,null],   [null,-1,-1,-1,null,null]],
+                ['4-M-G', [110,null,230,null],  [null,-1,-1,-1,null,null]],
+                ['5-B-L', [45,96,null,null],    [null,-1,-1,null,null,null]],
+                ['5-B-G', [110,150,null,null],  [null,-1,-1,null,null,null]], 
+                ['5-L-L', [130,null,567,null],  [null,-1,-1,-1,null,null]],
+                ['5-L-G', [250,null,780,null],  [null,-1,-1,-1,null,null]],
+                ['6-G-L', [25,null,81,null],    [null,-1,-1,-1,null,null]],
+                ['6-G-G', [45,null,90,null],    [null,-1,-1,-1,null,null]], 
+                ['7-H-L', [null,null,null,null],[null,null,null,8,8,8]],
+                ['7-H-G', [null,null,null,null],[null,null,null,25,25,25]], 
+                ['8-C-L', [35,45,52,60],        [35,-1,-1,-1,null,null]],
+                ['8-C-G', [80,110,130,145],     [80,-1,-1,-1,null,null]],
+                ['8-D-L', [45,90,null,null],    [null,-1,-1,null,null,null]],
+                ['8-D-G', [127,250,null,null],  [null,-1,-1,null,null,null]], 
+                ['8-H-L', [null,null,null,null],[null,null,null,8,8,8]],
+                ['8-H-G', [null,null,null,null],[null,null,null,25,25,25]], 
+                ['9-A-L', [30,42,48,58],        [30,-1,-1,null,null,null]],
+                ['9-A-G', [75,109,125,138],     [75,-1,-1,null,null,null]],
+                ['9-B-L', [40,88,null,null],    [-1,-1,null,null,null,null]],
+                ['9-B-G', [70,150,null,null],   [-1,-1,null,null,null,null]], 
+                ['9-I-L', [30,null,60,null],    [-1,-1,-1,-1,null,null]],
+                ['9-I-G', [80,null,160,null],   [-1,-1,-1,-1,null,null]],
+                ['10-H-L',[null,null,null,null],[null,null,null,8,8,8]],
+                ['10-H-G',[null,null,null,null],[null,null,null,25,25,25]]
+            ]
+        });*/
         
         this.classi = new Ext.form.ComboBox({
             fieldLabel: "Classe ADR",
@@ -662,20 +813,33 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     combo.innerList.setWidth( 'auto' );
                 },
                 beforeselect: function(cb, record, index){
-                    var value = record.get('name');  
-
-                    if(value != 'Tutti le classi'){
+                    var sostArray = record.get('sost');  
+                    var value= record.get('value');
+                    
+                    if(sostArray.length ==0 && value != '0'){
                         Ext.Msg.show({
                             title: "Scenario Incidentale",
-                            msg: "Dati non ancora disponibili per questo scenario",
+                            msg: "Dati non di interesse per il modello",
                             icon: Ext.MessageBox.WARNING
                         });
-                        
                         return false;
                     }
                 },
                 select: function(cb, record, index) {
-                    //var value = record.get('name');             
+                    var store=me.sostanze.getStore();
+                     var sostArray = record.get('sost'); 
+                     var allRec=store.getAt(0);
+                     store.removeAll();
+                     store.add(allRec);
+                     for(var u=0; u<sostArray.length; u++){ 
+                       store.add(sostanzeStore.getAt(sostArray[u]));
+                     }    
+                     me.sostanze.setValue('Tutte le sostanze');
+                     me.accident.setValue('Tutti gli Incidenti');
+                     me.seriousness.setValue('Tutte le entità');
+                     me.seriousnessCode= '0';
+                     me.accidentCode= '0';
+                     me.sostanzeCode= '0';
                 }
             }              
         });
@@ -685,7 +849,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             id: "sostanzecb",
             width: 150,
             hideLabel : false,
-            store: sostanzeStore,    
+            store: /*sostanzeStore*/new Ext.data.ArrayStore({
+            fields: ['name', 'value', 'accidents'],
+            data :  [['Tutte le sostanze', '0', []]]
+            }),    
             displayField: 'name',    
             typeAhead: true,
             mode: 'local',
@@ -701,20 +868,22 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     combo.innerList.setWidth( 'auto' );
                 },
                 beforeselect: function(cb, record, index){
-                    var value = record.get('name');  
-
-                    if(value != 'Tutti le sostanze'){
-                        Ext.Msg.show({
-                            title: "Scenario Incidentale",
-                            msg: "Dati non ancora disponibili per questo scenario",
-                            icon: Ext.MessageBox.WARNING
-                        });
-                        
-                        return false;
-                    }
+                     
                 },
                 select: function(cb, record, index) {
-                    //var value = record.get('name');             
+                    me.sostanzeCode = record.get('value');
+                    var store=me.accident.getStore();
+                    var accidentsArray = record.get('accidents'); 
+                    var allRec=store.getAt(0);
+                    store.removeAll();
+                    store.add(allRec);
+                    for(var u=0; u<accidentsArray.length; u++){
+                       store.add(accidentStore.getAt(accidentStore.find("value", accidentsArray[u])));
+                    }    
+                    me.accident.setValue('Tutti gli Incidenti');
+                    me.seriousness.setValue('Tutte le entità');
+                    me.seriousnessCode= '0';
+                    me.accidentCode= '0';
                 }
             }              
         });
@@ -724,7 +893,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             id: "accidentcb",
             width: 150,
             hideLabel : false,
-            store: accidentStore,    
+            store:  new Ext.data.ArrayStore({
+                fields: ['name', 'value'],
+                data :  [['Tutti gli Incidenti', '0']]
+            }),    
             displayField: 'name',    
             typeAhead: true,
             mode: 'local',
@@ -739,22 +911,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );
                 },
-                beforeselect: function(cb, record, index){
-                    var value = record.get('name');  
-
-                    if(value != 'Tutti gli Incidenti' && 
-                        value != 'POOL FIRE DA LIQUIDO INFIAMMABILE'){
-                        Ext.Msg.show({
-                            title: "Scenario Incidentale",
-                            msg: "Dati non ancora disponibili per questo scenario",
-                            icon: Ext.MessageBox.WARNING
-                        });
-                        
-                        return false;
-                    }
-                },
                 select: function(cb, record, index) {
-                    //var value = record.get('name');             
+                    me.accidentCode = record.get('value');       
+                    me.seriousness.setValue('Tutte le entità');
+                    me.seriousnessCode= '0';
                 }
             }              
         });
@@ -775,25 +935,33 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             resizable: true,
             value: "Tutte le entità",
             listeners: {
-                /*beforeselect: function(cb, record, index){
-                    var value = record.get('name');  
+                beforeselect: function(cb, record, index){
+                    var value = record.get('value');  
+                    var notValid=false;
+                    var rad=me.radiusData[me.sostanzeCode][me.accidentCode][value];
 
-                    if(value != 'Tutte le entità'){
+                    if((me.selectedTargetCode != "-1")){
+                        notValid= rad.notHumans[me.selectedTargetCode] == null;
+                    }else
+                        notValid= rad.humans[0] == null;
+
+
+                    if(notValid){
                         Ext.Msg.show({
                             title: "Scenario Incidentale",
-                            msg: "Dati non ancora disponibili per questo scenario",
+                            msg: "Combinazione non consentita",
                             icon: Ext.MessageBox.WARNING
                         });
-                        
-                        return false;
+                      return false;
                     }
-                },*/
+                },
                 "expand": function(combo) {
                    /* combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );*/
                 },
                 select: function(cb, record, index) {
-                    //var value = record.get('name');             
+                    me.seriousnessCode = record.get('value');  
+                   
                 }
             }              
         });
@@ -908,8 +1076,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             
             var syntView = this.appTarget.tools[this.syntheticView];
             syntView.getControlPanel().enable();
-            console.log(status);
             syntView.setStatus(status);
+
         }
     },
     
@@ -1108,6 +1276,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     },
     
     setStatus: function(status){
+        var store;
         this.status = status;
         this.elab.setValue(this.status.processing);
         this.form.setValue(this.status.form);
@@ -1118,6 +1287,14 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             this.bers.setValue(this.status.target);
         else
             this.bers.setValue(null);
+        
+        store=this.classi.getStore();
+        this.classi.fireEvent('select',this.classi, store.getAt(store.find("name", this.status.classe)));
+        this.classi.setValue(this.status.classe);
+        
+        store=this.sostanze.getStore();
+        this.sostanze.fireEvent('select',this.sostanze, store.getAt(store.find("name", this.status.sostanza)));
+        this.sostanze.setValue(this.status.sostanza);
         
         this.accident.setValue(this.status.accident);        
         this.seriousness.setValue(this.status.seriousness);
@@ -1158,11 +1335,15 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         obj.target = this.selectedTargetName || 'Tutti i Bersagli';/*this.bers.getValue()*/ ;
         obj.targetName = this.selectedTargetName || 'Tutti i Bersagli';
         obj.macroTarget = this.macrobers.getValue();
+        obj.classe = this.classi.getValue();
+        obj.sostanza = this.sostanze.getValue();
         obj.accident = this.accident.getValue();
         obj.seriousness = this.seriousness.getValue();
-        
+
         return obj;
     }
+
+    
 });
 
 Ext.preg(gxp.plugins.StandardProcessing.prototype.ptype, gxp.plugins.StandardProcessing);

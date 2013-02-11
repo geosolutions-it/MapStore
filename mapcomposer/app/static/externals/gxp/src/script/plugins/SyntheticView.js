@@ -141,12 +141,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
     
-    addHumanTargetBuffer: function(layers,seriousness,title) {        
-        var distancesBySeriousness={
+    addHumanTargetBuffer: function(layers,/*seriousness*/distances,title) {    
+       
+        /*var distancesBySeriousness={
             'Lieve':[30,42,48,58],
             'Grave':[75,109,125,138]
         };
-        var distances = distancesBySeriousness[seriousness];
+        var distances = distancesBySeriousness[seriousness];*/
 
         this.currentBufferLayers.push(title);
         
@@ -161,12 +162,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         });                
     },
     
-    addNotHumanTargetBuffer: function(layers,seriousness,title) {        
-        var distancesBySeriousness={
+    addNotHumanTargetBuffer: function(layers,/*seriousness*/distances,title) {    
+        
+       /* var distancesBySeriousness={
             'Lieve':8,
             'Grave':25
-        };
-             
+        };*/
+        
         this.currentBufferLayers.push(title);
              
         return this.createLayerRecord({
@@ -175,7 +177,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             params: {
                 styles: 'aggregation_selection_buffer_nothuman',
                 buffer: 100,
-                env:'distance:'+distancesBySeriousness[seriousness]
+                env:'distance:'+distances/*distancesBySeriousness[seriousness]*/
             }
         });        
     },
@@ -418,14 +420,15 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             this.removeBufferLayers(map);
                             
                             var newLayers=[];
+                            var dist= this.getRadius();
                             
                             if(!this.status || this.isMixedTargets()) {
-                                newLayers.push(this.addHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitle+' (Bersagli umani)'));
-                                newLayers.push(this.addNotHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitle+' (Bersagli ambientali)'));
+                                newLayers.push(this.addHumanTargetBuffer(newLayers,/*seriousness*/dist.radiusHum,this.bufferLayerTitle+' (Bersagli umani)'));
+                                newLayers.push(this.addNotHumanTargetBuffer(newLayers,/*seriousness*/dist.radiusNotHum,this.bufferLayerTitle+' (Bersagli ambientali)'));
                             } else if(this.isHumanTarget()) {
-                                newLayers.push(this.addHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitle+' ('+targetName+')'));                                
+                                newLayers.push(this.addHumanTargetBuffer(newLayers,/*seriousness*/dist.radiusHum,this.bufferLayerTitle+' ('+targetName+')'));                                
                             } else if(this.isNotHumanTarget()) {
-                                newLayers.push(this.addNotHumanTargetBuffer(newLayers,seriousness,this.bufferLayerTitle+' ('+targetName+')'));                                
+                                newLayers.push(this.addNotHumanTargetBuffer(newLayers,/*seriousness*/dist.radiusNotHum,this.bufferLayerTitle+' ('+targetName+')'));                                
                             }
                             
                             newLayers.push(this.createLayerRecord({
@@ -501,7 +504,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         this.target.mapPanel.map.events.register('zoomend', this, function(){
             var scale = this.target.mapPanel.map.getScale();
-            var scale = Math.round(scale);
+            scale = Math.round(scale);
             
             if(scale <= this.analiticViewScale) {
                 Ext.getCmp("analytic_view").enable();
@@ -542,7 +545,101 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     analyticViewIsEnable: function(){
         return this.analyticView;
+    },
+    
+    getHumanDefaultValue: function(array,index){
+        var i=index-1;
+        while(i>=0){
+            if(array[i]!= -1)
+                return array[i];
+        }
+        return null;
+    },
+    
+    getRadius: function(){
+        var sost,acc,ser,i;
+        var sostFix,accFix,serFix, value;
+        var maxRadius={};
+        var openFor=false;
+
+        var radLoop="";
+        
+        var radHum= this.isHumanTarget() || this.isMixedTargets();
+        var radNotHum= this.isNotHumanTarget() || this.isMixedTargets();
+        
+        if(radHum)
+            maxRadius.radiusHum=[-2,-2,-2,-2];
+        
+        if(radNotHum)
+            maxRadius.radiusNotHum=-2;
+        
+        if(this.processingPane.sostanzeCode == "0"){
+            radLoop="for (sost in this.processingPane.radiusData)";
+            openFor=true;
+        }else
+            radLoop="sost='"+this.processingPane.sostanzeCode+"';";
+    
+        if(this.processingPane.accidentCode == "0"){
+            radLoop+="for (acc in this.processingPane.radiusData[sost])";
+            openFor=true;
+        }else
+            radLoop+="acc='"+this.processingPane.accidentCode+"';";
+        
+        if(this.processingPane.seriousnessCode == "0"){
+            radLoop+="for (ser in this.processingPane.radiusData[sost][acc])";
+            openFor=true;
+        }else
+            radLoop+="ser='"+this.processingPane.seriousnessCode+"';";
+        
+        if(openFor)
+           radLoop+="{"; 
+        
+        if(radHum)
+           radLoop+="for(i=0;i<maxRadius.radiusHum.length;i++){"+
+                        "value= this.processingPane.radiusData[sost][acc][ser].humans[i];"+
+                        "if(value){"+
+                            "if(value == -1)"+
+                                "value= this.getHumanDefaultValue(maxRadius.radiusHum, i);"+//get first element !=-1
+                            "maxRadius.radiusHum[i]="+
+                            "maxRadius.radiusHum[i] >= value ?"+
+                            "maxRadius.radiusHum[i]: value;"+
+                        "}"+    
+                    "}"; 
+                
+         if(radNotHum){
+             if(this.processingPane.selectedTargetCode != '-1')
+            radLoop+="value= this.processingPane.radiusData[sost][acc][ser].notHumans[this.processingPane.selectedTargetCode];"+
+                    "if(value){"+
+                        "if(value == -1)"+
+                           "value= this.processingPane.holdValues[ser];"+
+                        "maxRadius.radiusNotHum="+
+                            "maxRadius.radiusNotHum >= value ? "+
+                            "maxRadius.radiusNotHum:"+
+                            "value;"+
+                    "}"; 
+             else
+               radLoop+="for(i=0;i<this.processingPane.radiusData[sost][acc][ser].notHumans.length;i++){"+  
+                            "value= this.processingPane.radiusData[sost][acc][ser].notHumans[i];"+
+                            "if(value){"+
+                                "if(value == -1)"+
+                                    "value= this.processingPane.holdValues[ser];"+
+                                "maxRadius.radiusNotHum="+
+                                    "maxRadius.radiusNotHum >= value ? "+
+                                    "maxRadius.radiusNotHum:"+
+                                    "value;"+
+                            "}"+    
+                        "}";    
+         }
+           
+                   
+         if(openFor)
+         radLoop+="}";  
+        
+        eval(radLoop);
+        return maxRadius;
     }
+    
+  
 
     
 });
