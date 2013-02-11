@@ -13,7 +13,9 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
     xtype: 'gxp_nrlChartButton',
     iconCls: "gxp-icon-nrl-chart",
     handler: function () {
-        
+        console.log(this.form.output.getForm().getValues());
+		var regStore = this.form.output.aoiFieldSet.AreaSelector.store
+		console.log(regStore.getRange());
         var tabPanel = Ext.getCmp('id_mapTab');
 
         var tabs = tabPanel.find('title', 'Crop Data');
