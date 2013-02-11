@@ -19,28 +19,88 @@
  */
  
 Ext.namespace("gxp");
-
+//deve prendere le configurazioni dei grafici
+//
 gxp.ControlPanel = Ext.extend(Ext.Panel, {
-    data: null,
-    panels: null,
-    media: null,
+    
+    commodity: null,
+    province: null,
+    fromYear: null,
+    toYear: null,
+    chart: null,
     
 	initComponent: function(){
+        
+    var panel;
+    var panels = [];
+    
+    for (var i = 0; i<this.chart.length;i++){
+        panel = new Ext.Panel({
+            title: this.chart[i].chartConfig.title.text,
+            layout: 'fit',
+            style:'padding:5px  5px',
+            border: true,                    
+            items: [this.chart[i]],
+            tools: [{
+                id: 'info',
+                handler: function () {
+                    //Ext.Msg.alert('Message', 'The Settings tool was clicked.');                      
+                    
+                    var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+                            "<ol>" +
+                                "<li><p><em> Commodity: </em>" + this.commodity + "</p></li>" +
+                                "<li><p><em> Season: </em>" + "Rabi" + "</p></li>" +
+                                "<li><p><em> From year: </em>" + this.fromYear + "</p></li>" +
+                                "<li><p><em> To year: </em>" + this.toYear + "</p></li>" +
+                            "</ol>" +                                        
+                            "</div>";
+                 
+                    var appInfo = new Ext.Panel({
+                        header: false,
+                        html: iframe
+                    });
+
+                    var win = new Ext.Window({
+                        title:  "Charts Info",
+                        modal: true,
+                        layout: "fit",
+                        width: 200,
+                        height: 180,
+                        items: [appInfo]
+                    });
+                    
+                    win.show(); 
+                                                            
+                },
+                scope: this
+            }, {
+                id: 'close',
+                handler: function (e, target, panel) {
+                    panel.ownerCt.remove(panel, true);
+                }
+            }],
+            collapsible: true
+        });
+        panels.push(panel);
+    }
+    
+    
+    
         this.items = {
-                title: "Commodity: " + this.data[0][0].crop + " - Season: Rabi",
-                items: [this.panels],
+                title: "Commodity: " + this.commodity +  " - Season: Rabi",
+                items: [panels],
                 tools: [{
                         id: 'info',
                         handler: function () {
                 
                             var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
                                     "<ol>" +
-                                        "<li><p><em> Commodity: </em>" + this.data[0][0].crop + "</p></li>" +
+                                        "<li><p><em> Commodity: </em>" + this.commodity + "</p></li>" +
                                         "<li><p><em> Season: </em>" + "Rabi" + "</p></li>" +
-                                        "<li><p><em> Province 1: </em>" + this.data[0][0].prov + "</p></li>" +
-                                        "<li><p><em> Province 2: </em>" + this.data[1][0].prov + "</p></li>" +
-                                        "<li><p><em> From year: </em>" + this.media[0][0].time + "</p></li>" +
-                                        "<li><p><em> To year: </em>" + this.media[0][this.media[0].length-1].time + "</p></li>" +
+                                        "<li><p><em> Province 1: </em>" + this.province[0] + "</p></li>" +
+                                        "<li><p><em> Province 2: </em>" + this.province[1] + "</p></li>" +
+                                        "<li><p><em> From year: </em>" + this.fromYear + "</p></li>" +
+                                        "<li><p><em> To year: </em>" + this.toYear + "</p></li>" +
                                     "</ol>" +                                        
                                     "</div>";
                          
