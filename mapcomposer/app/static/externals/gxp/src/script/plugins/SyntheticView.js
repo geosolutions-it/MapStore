@@ -303,9 +303,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         this.processingPane.setStatus(this.status);
                     }
                     
-                    var extent=map.getExtent();
+                    /*var extent=map.getExtent().clone();
                     me.processingPane.setAOI(extent);                    
-                    me.processingPane.removeAOILayer(map);
+                    me.processingPane.removeAOILayer(map);*/
                 }
             }]
         });
