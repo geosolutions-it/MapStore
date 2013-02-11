@@ -122,6 +122,8 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 				},
 				{
 					xtype: 'nrl_commoditycombobox',
+					forceSelection:true,
+					allowBlank:false,
 					name:'crop',
 					anchor:'100%',
 					ref: 'Commodity'
@@ -131,15 +133,15 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					xtype: 'label',
 					anchor:'100%',
 					fieldLabel:'Reference Year',
-					text:2012, //TODO conf
+					text:2008, //TODO conf
 					ref: 'referenceYear'
 				},{
 					ref: 'yearRangeSelector',
 					xtype: 'yearrangeselector',
 					anchor:'100%',
-					maxValue: 2012, //TODO conf
-					minValue: 1992, //TODO conf
-					values:[2008,2012], //TODO conf
+					maxValue: 2008, //TODO conf
+					minValue: 1999, //TODO conf
+					values:[1999,2008], //TODO conf
 					listeners:{
 						scope:this,
 						change:function(start,end){
@@ -177,19 +179,22 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							lazyRender:false,
 							mode: 'local',
 							name:'production_unit',
+							forceSelected:true,
+							allowBlank:false,
 							autoLoad:true,
 							displayField: 'label',
-							valueField:'name',
+							valueField:'coeff',
+							value:1,
 							store: new Ext.data.JsonStore({
 								fields:[
 										{name:'name',dataIndex:'name'},
 										{name:'label',dataIndex:'label'},
-										{name:'commodity',dataIndex:'commodity'}
+										{name:'coeff',dataIndex:'coeff'}
 								],
 								data:[
-									{label: '\'000\' tonnes', name:'1'},
-									{label: '\'000\' kgs', name:'2'},
-									{label: '\'000\' bales', name:'3'}
+									{label: '\'000\' tonnes', coeff:1}, //TODO set proper values
+									{label: '\'000\' kgs', coeff:2},//TODO set proper values
+									{label: '\'000\' bales', coeff:3}//TODO set proper values
 								]
 							})
 						},{
@@ -201,18 +206,21 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							lazyRender:false,
 							mode: 'local',
 							autoLoad:true,
+							forceSelected:true,
+							allowBlank:false,
 							name:'area_unit',
 							displayField: 'label',
-							valueField:'name',
+							valueField:'coeff',
+							value: '1',
 							store: new Ext.data.JsonStore({
 								fields:[
 										{name:'name',dataIndex:'name'},
 										{name:'label',dataIndex:'label'},
-										{name:'commodity',dataIndex:'commodity'}
+										{name:'coeff',dataIndex:'coeff'}
 								],
 								data:[
-									{label: '\'000\' hectares', name:'1'},
-									{label: 'square kilometers', name:'2'}
+									{label: '\'000\' hectares', coeff:'1'},
+									{label: 'square kilometers', coeff:'2'}
 								]
 							})
 					}]
@@ -225,15 +233,18 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 			buttons:[{
                 text:'Compute',
                 xtype: 'gxp_nrlChartButton',
+				ref: '../chartbutton',
                 target:this.target,
-				form: this
+				form: this,disabled:true
             }]
 		};
 		
 		config = Ext.apply(cropData,config || {});
 		
 		this.output = gxp.plugins.nrl.CropData.superclass.addOutput.call(this, config);
-		
+		this.output.on('update',function(store){
+			 this.output.chartbutton.setDisabled(store.getCount()<=0)
+		},this);
 		//hide selection layer on tab change
 		this.output.on('beforehide',function(){
 			var button = this.output.aoiFieldSet.AreaSelector.selectButton;
