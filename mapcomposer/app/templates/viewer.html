@@ -39,6 +39,7 @@
         <script type="text/javascript" src="translations/en.js"></script>
         <script type="text/javascript" src="translations/fr.js"></script>
         <script type="text/javascript" src="translations/it.js"></script>
+        <script type="text/javascript" src="translations/de.js"></script>
 		
 		<!-- uncomment to have  welcome screen
         <script type="text/javascript">
@@ -153,7 +154,7 @@
 				
 				var url = Ext.urlDecode(query);        
 				var code = url.locale || serverConfig.defaultLanguage || "en";
-				var langData = [['en', 'English'],['fr','Français'],['it','Italiano']];
+				var langData = [['en', 'English'],['fr','Français'],['it','Italiano'],['de','Deutsch']];
 				
 							
 				// ////////////////////////////////////////////////////
@@ -168,7 +169,8 @@
 					data:[
 						['en','English','viewer','en','English language'],
 						['fr','Français','viewer','fr','Franch language'],
-						['it','Italiano','viewer','it','Italian language'] 
+						['it','Italiano','viewer','it','Italian language'] ,
+						['de','Deutsch','viewer','de','Deutsch language']
 					]
 				});
                 var appTabs = new Ext.TabPanel({

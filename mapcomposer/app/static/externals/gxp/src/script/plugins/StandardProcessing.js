@@ -522,12 +522,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 }*/
             ]
         });
-        
-        /* TODO Attivare solo quando elaborazione aperta map.events.register("move", map, function() {
-            var extent=map.getExtent();
-            me.setAOI(extent);                    
-            me.removeAOILayer(map); 
-         });*/
+        this.aoiUpdater = function() {			
+			var extent=map.getExtent().clone();
+			this.setAOI(extent);                    
+			this.removeAOILayer(map);			
+        };
+        map.events.register("move", this, this.aoiUpdater);
         
         //
         // Bersaglio
@@ -1077,7 +1077,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             var syntView = this.appTarget.tools[this.syntheticView];
             syntView.getControlPanel().enable();
             syntView.setStatus(status);
-
+			
+			this.appTarget.mapPanel.map.events.unregister("move", this, this.aoiUpdater);
         }
     },
     
@@ -1093,7 +1094,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             if(this.status){
                 defBBOX = this.status.roi.bbox;
             }else{
-                defBBOX = new OpenLayers.Bounds.fromString(this.defaultBBOXFilterExtent);
+                defBBOX = this.appTarget.mapPanel.map.getExtent();//new OpenLayers.Bounds.fromString(this.defaultBBOXFilterExtent);
             }
             this.setAOI(defBBOX);            
     },
