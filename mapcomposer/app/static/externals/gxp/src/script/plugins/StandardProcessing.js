@@ -430,22 +430,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 
         var urlEPSG= this.urlEPSG ? this.urlEPSG : "http://spatialreference.org/ref/epsg/"+me.wgs84Projection.getCode().split(":")[1]+"/";;
         
-        
-      /*  this.epsgButton = new Ext.Button({
-               text: me.wgs84Projection.getCode() ,
-               handler: function(){
-                      new Ext.Window({
-                          layout:'fit',
-                          width:me.epsgWinWidth,
-                          height:me.epsgWinHeight,
-                          closeAction:'hide',
-                          html: '<iframe src="'+url_epsg+'" width="99%" height="99%"></iframe>'
-                      }).show();
-              },
-              tooltip: this.currentExtentTooltip                          
-            
-        });*/
-              
+      
         this.spatialFieldSet = new Ext.form.FieldSet({
             title:  this.aioFieldSetTitle+" <a href='#' id='bboxAOI-set-EPSG'>["+me.wgs84Projection.getCode()+"]</a>",//["+this.wgs84Projection.getCode()+"]</div></b>",
             //title: this.aioFieldSetTitle,
@@ -598,6 +583,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                             for(i=0; i<targetStore.getCount(); i++){ 
                                 store.add(targetStore.getAt(i));
                             }
+                            this.bers.setValue(null);
                             return;
                             break;
                         case "Tutti i Bersagli Umani":
