@@ -187,7 +187,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                             dataIndex: 'prod'
 
                         }, {
-                            name: 'Yield Tons',
+                            name: 'Yield Tons / Ha',
                             type: 'spline',
                             color: '#AA4643',
                             yAxis: 2,
@@ -257,14 +257,14 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                             }, { // Tertiary yAxis
                                 gridLineWidth: 0,
                                 title: {
-                                    text: 'Yield Tons',
+                                    text: 'Yield Tons / Ha',
                                     style: {
                                         color: '#AA4643'
                                     }
                                 },
                                 labels: {
                                     formatter: function () {
-                                        return this.value + ' Tons';
+                                        return this.value + ' Tons / Ha';
                                     },
                                     style: {
                                         color: '#AA4643'
@@ -377,7 +377,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                             dataIndex: 'prod'
 
                         }, {
-                            name: 'Yield Tons',
+                            name: 'Yield Tons / Ha',
                             type: 'spline',
                             color: '#AA4643',
                             yAxis: 2,
@@ -447,14 +447,14 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                             }, { // Tertiary yAxis
                                 gridLineWidth: 0,
                                 title: {
-                                    text: 'Yield Tons',
+                                    text: 'Yield Tons / Ha',
                                     style: {
                                         color: '#AA4643'
                                     }
                                 },
                                 labels: {
                                     formatter: function () {
-                                        return this.value + ' Tons';
+                                        return this.value + ' Tons / Ha';
                                     },
                                     style: {
                                         color: '#AA4643'
