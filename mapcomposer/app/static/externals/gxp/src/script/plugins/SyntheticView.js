@@ -133,7 +133,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
     isNotHumanTarget: function() {
-        return (this.status.target !== 'Tutti i Bersagli' && this.status.target !== 'Popolazione residente') || this.status.target === 'Tutti i Bersagli Ambientali';
+        return (this.status.target !== 'Tutti i Bersagli' && this.status.target !== 'Tutti i Bersagli Umani' &&  this.status.target !== 'Popolazione residente') || this.status.target === 'Tutti i Bersagli Ambientali';
     },
     
     isMixedTargets: function() {
@@ -561,12 +561,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         var sostFix,accFix,serFix, value;
         var maxRadius={};
         var openFor=false;
-
         var radLoop="";
-        
         var radHum= this.isHumanTarget() || this.isMixedTargets();
         var radNotHum= this.isNotHumanTarget() || this.isMixedTargets();
         
+
         if(radHum)
             maxRadius.radiusHum=[-2,-2,-2,-2];
         
@@ -595,7 +594,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
            radLoop+="{"; 
         
         if(radHum)
-           radLoop+="for(i=0;i<maxRadius.radiusHum.length;i++){"+
+           radLoop+="this.setRadHum(this.processingPane.radiusData[sost][acc][ser].humans, " +
+               " maxRadius );";
+          /* radLoop+="for(i=0;i<maxRadius.radiusHum.length;i++){"+
                         "value= this.processingPane.radiusData[sost][acc][ser].humans[i];"+
                         "if(value){"+
                             "if(value == -1)"+
@@ -604,11 +605,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             "maxRadius.radiusHum[i] >= value ?"+
                             "maxRadius.radiusHum[i]: value;"+
                         "}"+    
-                    "}"; 
+                    "}"; */
                 
          if(radNotHum){
              if(this.processingPane.selectedTargetCode != '-1')
-            radLoop+="value= this.processingPane.radiusData[sost][acc][ser].notHumans[this.processingPane.selectedTargetCode];"+
+                 radLoop+="this.setRadNotHum("+
+                 "this.processingPane.radiusData[sost][acc][ser].notHumans[this.processingPane.selectedTargetCode],maxRadius, ser"+
+                 ");";
+             else
+                 radLoop+="this.setRadNotHum("+
+                 "this.processingPane.radiusData[sost][acc][ser].notHumans,maxRadius, ser"+
+                 ");";
+            /*radLoop+="value= this.processingPane.radiusData[sost][acc][ser].notHumans[this.processingPane.selectedTargetCode];"+
                     "if(value){"+
                         "if(value == -1)"+
                            "value= this.processingPane.holdValues[ser];"+
@@ -628,7 +636,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     "maxRadius.radiusNotHum:"+
                                     "value;"+
                             "}"+    
-                        "}";    
+                        "}";    */
          }
            
                    
@@ -637,6 +645,46 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         eval(radLoop);
         return maxRadius;
+    },
+    
+    setRadNotHum: function(values, maxRadius, ser){
+        var value;
+        if(values instanceof Array){
+            for(var i=0;i<values.length;i++){
+                value= values[i];
+                    if(value){
+                        if(value == -1)
+                            value= this.processingPane.holdValues[ser];
+                            maxRadius.radiusNotHum=
+                                    maxRadius.radiusNotHum >= value ? 
+                                    maxRadius.radiusNotHum:
+                                    value;
+                    }  
+           }        
+        }else{
+            value= values;
+            if(value){
+               if(value == -1)
+                  value= this.processingPane.holdValues[ser];
+                  maxRadius.radiusNotHum=
+                            maxRadius.radiusNotHum >= value ? 
+                            maxRadius.radiusNotHum: value;
+            }
+        }  
+    },
+    
+    setRadHum: function(values, maxRadius){
+        var value;
+        for(var i=0;i<maxRadius.radiusHum.length;i++){
+            value= values[i];
+            if(value){
+               if(value == -1)
+                  value= this.getHumanDefaultValue(maxRadius.radiusHum, i);//get first element !=-1
+                  maxRadius.radiusHum[i]=
+                            maxRadius.radiusHum[i] >= value ?
+                            maxRadius.radiusHum[i]: value;
+            }
+         }
     }
     
   
