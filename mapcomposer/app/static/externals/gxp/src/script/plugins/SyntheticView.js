@@ -79,8 +79,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 selectionLayerName: this.selectionLayerName,
                 selectionLayerTitle: this.selectionLayerTitle,         
                 selectionLayerBaseURL: this.layerSource.url,
-                selectionLayerProjection: this.selectionLayerProjection,
-                maxROIArea: 197807718.7307968
+                selectionLayerProjection: this.selectionLayerProjection/*,
+                maxROIArea: 197807718.7307968*/
             });
         },this);        
      },
@@ -128,16 +128,30 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return null;
     },
     
+	isAllHumanTargets: function() {
+		return this.status.targetName === 'Tutti i Bersagli Umani';
+	},
+	
+	isAllNotHumanTargets: function() {
+		return this.status.targetName === 'Tutti i Bersagli Ambientali';
+	},
+	
+	isSingleTarget: function() {
+		return this.status.targetName !== 'Tutti i Bersagli Umani'
+			&& this.status.targetName !== 'Tutti i Bersagli Ambientali' 
+			&& this.status.targetName !== 'Tutti i Bersagli';
+	},
+	
     isHumanTarget: function() {
-        return this.status.target === 'Popolazione residente' || this.status.target === 'Tutti i Bersagli Umani';
+        return this.status.targetType === 'umano';
     },
     
     isNotHumanTarget: function() {
-        return (this.status.target !== 'Tutti i Bersagli' && this.status.target !== 'Popolazione residente') || this.status.target === 'Tutti i Bersagli Ambientali';
+        return this.status.targetType === 'ambientale';
     },
     
     isMixedTargets: function() {
-        return this.status.target === 'Tutti i Bersagli';
+        return this.status.targetType === 'mixed';
     },
     
     
@@ -191,15 +205,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }
         }        
     },
-    
-    loadGrid: function(fgrid, ogcFilterString, viewParams) {        
+    /*
+    loadGrid: function(fgrid, query, viewParams) {        
         var store = fgrid.getStore();
         
         store.resetTotal();
         store.removeAll();
-        
-        var query = ogcFilterString;
-        
+                        
         var params = {
             startindex: 0,          
             maxfeatures: 10,
@@ -220,7 +232,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         store.load({
             params: params
         });
-    },
+    },*/
     
     /** private: method[addOutput]
      *  :arg config: ``Object``
@@ -349,7 +361,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             //
                             // Manage the OGC filter
                             //
-                            var ogcFilterString;
+                            //var ogcFilterString;
                             var filter;
                             var targetName;
                             
@@ -366,8 +378,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                        value: target
                                     });
                                                                         
-                                    ogcFilterString = filterFormat.write(filter);                                                                                         
-                                    //ogcFilterString = xmlFormat.write(ogcFilterString);
+                                    //ogcFilterString = filterFormat.write(filter);                                                                                         
+                                    
                                 }
                             }
 
@@ -414,6 +426,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     seriousness = status.seriousness;                                    
                                 }
                             }
+							
+							var targetLayer = 'bersagli';
+							if(status && status.targetLayer) {
+								targetLayer = status.targetLayer;
+							}
 
                             //alert(viewParams);
                             this.removeLayers(map,[this.targetLayerTitle]);                            
@@ -432,11 +449,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             }
                             
                             newLayers.push(this.createLayerRecord({
-                                name: this.targetLayerName,
+                                name: targetLayer,
                                 title: this.targetLayerTitle, 
                                 params: {                                                                
-                                    viewparams: viewParams,                                    
-                                    filter: ogcFilterString ? xmlFormat.write(ogcFilterString) : ''
+                                    viewparams: viewParams/*,                                    
+                                    filter: ogcFilterString ? xmlFormat.write(ogcFilterString) : ''*/
                                 }
                             }));
                             
@@ -454,20 +471,27 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             //
                             // Manage target grid
                             //
-                            var tabPanel = Ext.getCmp("featuregrid");
-                            var humanGrid = tabPanel.getItem('featuregridhuman');
+                            var wfsGrid = Ext.getCmp("featuregrid");
+							if(this.isSingleTarget()) {
+								wfsGrid.loadGrids("title", this.status.targetName, null, this.selectionLayerProjection, viewParams);								
+							} else if(this.isAllHumanTargets()) {
+								wfsGrid.loadGrids("type", 'umano', null, this.selectionLayerProjection, viewParams);
+							} else if(this.isAllNotHumanTargets()) {
+								wfsGrid.loadGridsByType("type", 'ambientale', null, this.selectionLayerProjection, viewParams);
+							}
+                            /*var humanGrid = tabPanel.getItem('featuregridhuman');
                             var notHumanGrid = tabPanel.getItem('featuregridnothuman');
                             
                             var humanFilterString = filterFormat.write(new OpenLayers.Filter.Comparison({
                                    type: OpenLayers.Filter.Comparison.EQUAL_TO,
                                    property: "tipobersaglio",
-                                   value: 'Popolazione residente'
+                                   value: this.status.target
                             }));
                             
                             var notHumanFilterString = filterFormat.write(new OpenLayers.Filter.Comparison({
                                    type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
                                    property: "tipobersaglio",
-                                   value: 'Popolazione residente'
+                                   value: this.status.target
                             }));
 
                             if(!this.status || this.isMixedTargets()) {
@@ -479,14 +503,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             } else if(this.isHumanTarget()) {
                                 tabPanel.hideTabStripItem(notHumanGrid);
                                 tabPanel.unhideTabStripItem(humanGrid);
-                                this.loadGrid(humanGrid, xmlFormat.write(ogcFilterString || humanFilterString), viewParams);
+                                this.loadGrid(humanGrid, xmlFormat.write(humanFilterString), viewParams);
                                 tabPanel.setActiveTab(humanGrid);
                             } else if(this.isNotHumanTarget()) {
                                 tabPanel.hideTabStripItem(humanGrid);
                                 tabPanel.unhideTabStripItem(notHumanGrid);
-                                this.loadGrid(notHumanGrid, xmlFormat.write(ogcFilterString || notHumanFilterString), viewParams);
+                                this.loadGrid(notHumanGrid, xmlFormat.write(notHumanFilterString), viewParams);
                                 tabPanel.setActiveTab(notHumanGrid);
-                            }
+                            }*/
                             Ext.getCmp("south").expand();
                             
                         }

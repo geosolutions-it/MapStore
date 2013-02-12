@@ -3,31 +3,7 @@
     "proxy":"/http_proxy/proxy/?url=",
     "defaultLanguage": "it",
     "embedding": false,
-    "gsSources":{                
-        "csi_aa": {
-            "ptype": "gxp_wmssource",
-            "title": "Limiti Amministrativi RP",
-            "version":"1.3.0",
-            "url": "http://geoeng-pta.regione.piemonte.it/ws/pta/PIE_WMS01_AmbitiAmministrativi"
-        },
-        "csi_tu": {
-            "ptype": "gxp_wmssource",
-            "title": "Tessuto Urbanizzato RP",
-            "version":"1.3.0",
-            "url": "http://geoeng-pta.regione.piemonte.it/ws/pta/PIE_WMS02_TessutoUrbanizzato"
-        },
-        "csi_trasp": {
-            "ptype": "gxp_wmssource",
-            "title": "Trasporti RP",
-            "version":"1.3.0",
-            "url": "http://geoeng-pta.regione.piemonte.it/ws/pta/PIE_WMS03_Trasporti"
-        },
-        "csi_idro": {
-            "ptype": "gxp_wmssource",
-            "title": "Idrografia RP",
-            "version":"1.3.0",
-            "url": "http://geoeng-pta.regione.piemonte.it/ws/pta/PIE_WMS04_Idrografia"
-        },
+    "gsSources":{                        
         "mapquest": {
             "ptype": "gxp_mapquestsource"
         }, 
@@ -47,7 +23,7 @@
             "ptype": "gxp_wmssource",
             "title": "Destination GeoServer",
             "version":"1.1.1",
-            "url": "http://84.33.2.23/geoserver/it.geosolutions/ows",
+            "url": "http://localhost:8080/geoserver/geosolutions/ows",
             "layerBaseParams": {
                 "TILED": true,
                 "TILESORIGIN": "-180,-90"
@@ -69,7 +45,8 @@
             "source": "bing",
             "title": "Bing Aerial",
             "name": "Aerial",
-            "group": "background"
+            "group": "background",
+            "visibility": false
         }, 
         {
             "source": "ol",
@@ -87,33 +64,38 @@
             "source": "osm",
             "title": "Open Street Map",
             "name": "mapnik",
-            "group": "background"
+            "group": "background",
+            "visibility": false
         },{
             "source": "mapquest",
             "title": "MapQuest OpenStreetMap",
             "name": "osm",
-            "group": "background"
+            "group": "background",
+            "visibility": false
         },
         {
-            "source": "csi_aa",
+            "source": "destination",
             "title": "Ambiti Amministrativi",
-            "name": "AmbitiAmministrativi",
+            "name": "LimitiAmministrativi",
             "group": "Dati di base",
             "visibility": false
-        },{
-            "source": "csi_tu",
+        },
+        {
+            "source": "destination",
             "title": "Tessuto Urbanizzato",
             "name": "TessutoUrbanizzato",
             "group": "Dati di base",
             "visibility": false
-        },{
-            "source": "csi_trasp",
+        },
+        {
+            "source": "destination",
             "title": "Trasporti",
             "name": "Trasporti",
             "group": "Dati di base",
             "visibility": false
-        },{
-            "source": "csi_idro",
+        },
+        {
+            "source": "destination",
             "title": "Idrografia",
             "name": "Idrografia",
             "group": "Dati di base",
@@ -122,12 +104,14 @@
             "source": "google",
             "title": "Google Roadmap",
             "name": "ROADMAP",
-            "group": "background"
+            "group": "background",
+            "visibility": false
         },{
             "source": "google",
             "title": "Google Terrain",
             "name": "TERRAIN",
-            "group": "background"
+            "group": "background",
+            "visibility": false
         },{
             "source": "google",
             "title": "Google Hybrid",
@@ -343,7 +327,7 @@
         "selectionLayerTitle": "Rischio Totale", 	
         "targetLayerName": "bersagli",		
         "bufferLayerName": "siig_aggregation_1_buffer",
-        "selectionLayerBaseURL": "http://84.33.2.23/geoserver/it.geosolutions/wms",
+        "selectionLayerBaseURL": "http://localhost:8080/geoserver/geosolutions/wms",
         "selectionLayerProjection": "EPSG:32632",
         "geometryName": "geometria",
         "accidentTipologyName": "tipologia",
@@ -352,7 +336,7 @@
     {
         "ptype": "gxp_wfsgrid",
         "outputTarget": "featurelist",
-        "wfsURL": "http://84.33.2.23/geoserver/it.geosolutions/wfs",
+        "wfsURL": "http://localhost:8080/geoserver/geosolutions/wfs",
         "featureType": "bersagli",
         "storeFieldsNotHuman": [
         {

@@ -534,34 +534,35 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         //
         
         var targetStore = new Ext.data.ArrayStore({
-            fields: ['name', 'property', 'humans', 'code'],
+            fields: ['layer','name', 'property', 'humans', 'code', 'type'],
             data :  [
               //  ['Tutti i Bersagli', 'calc_formula_tot', ''],
-                ['Popolazione residente', 'calc_formula_residenti', true, '-1'],
-                ['Popolazione fluttuante turistica (medio)', 'invalid', true, '-1'],
-                ['Popolazione fluttuante turistica (max)', 'invalid', true, '-1'],
-                ['Addetti industria e servizi', 'invalid', true, '-1'],
-                ['Addetti/utenti strutture sanitarie', 'invalid', true, '-1'],
-                ['Addetti/utenti strutture scolastiche', 'invalid', true, '-1'],
-                ['Addetti/utenti centri commerciali', 'invalid', true, '-1'],
-                ['Utenti della strada coinvolti', 'invalid', true, '-1'],
-                ['Utenti della strada territoriali', 'invalid', true, '-1'],
-                ['Zone urbanizzate', 'invalid', false, '0'],
-                ['Aree boscate', 'calc_formula_aree_boscate', false, '1'],
-                ['Aree protette', 'invalid', false, '2'],
-                ['Aree agricole', 'calc_formula_aree_agricole', false, '3'],
-                ['Acque sotterranee', 'invalid', false, '4'],
-                ['Acque superficiali', 'invalid', false, '5'],
-                ['Beni culturali', 'invalid', false, '6']
+                ['popolazione_residente','Popolazione residente', 'calc_formula_tot', true, '-1', 'umano'],
+                //['popolazione_turistica','Popolazione fluttuante turistica (medio)', 'calc_formula_tot', true, '-1', 'umano'],
+                ['popolazione_turistica','Popolazione fluttuante turistica', 'calc_formula_tot', true, '-1', 'umano'],
+                ['industria_servizi','Addetti industria e servizi', 'calc_formula_tot', true, '-1', 'umano'],
+                ['strutture_sanitarie','Addetti/utenti strutture sanitarie', 'calc_formula_tot', true, '-1', 'umano'],
+                ['strutture_scolastiche','Addetti/utenti strutture scolastiche', 'calc_formula_tot', true, '-1', 'umano'],
+                ['centri_commerciali','Addetti/utenti centri commerciali', 'calc_formula_tot', true, '-1', 'umano'],
+                ['xx','Utenti della strada coinvolti', 'calc_formula_tot', true, '-1', 'umano'],
+                ['yy','Utenti della strada territoriali', 'calc_formula_tot', true, '-1', 'umano'],
+                ['zone_urbanizzate','Zone urbanizzate', 'calc_formula_tot', false, '0', 'ambientale'],
+                ['aree_boscate','Aree boscate', 'calc_formula_tot', false, '1', 'ambientale'],
+                ['aree_protette','Aree protette', 'calc_formula_tot', false, '2', 'ambientale'],
+                ['aree_agricole','Aree agricole', 'calc_formula_tot', false, '3', 'ambientale'],
+                ['acque_sotterranee','Acque sotterranee', 'calc_formula_tot', false, '4', 'ambientale'],
+                ['acque_superficiali','Acque superficiali', 'calc_formula_tot', false, '5', 'ambientale'],
+                ['beni_culturali','Beni culturali', 'calc_formula_tot', false, '6', 'ambientale']
+
             ]
         });
         
         var targetMacroStore = new Ext.data.ArrayStore({
-            fields: ['name', 'property', 'code'],
+            fields: ['name', 'property', 'code', 'type'],
             data :  [
-                ['Tutti i Bersagli', 'calc_formula_tot', '1'],
-                ['Tutti i Bersagli Umani', 'calc_formula_tot', '-1'],
-                ['Tutti i Bersagli Ambientali', 'calc_formula_tot', '1']
+                ['Tutti i Bersagli', 'calc_formula_tot', '1', 'mixed'],
+                ['Tutti i Bersagli Umani', 'calc_formula_tot', '-1', 'umano'],
+                ['Tutti i Bersagli Ambientali', 'calc_formula_tot', '1', 'ambientale']
             ]
         });
         
@@ -598,13 +599,16 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                             for(i=0; i<targetStore.getCount(); i++){ 
                                 store.add(targetStore.getAt(i));
                             }
+							this.selectedTargetLayer = 'bersagli';
                             return;
                             break;
                         case "Tutti i Bersagli Umani":
                             humans=true;
+							this.selectedTargetLayer = 'bersagli_umani';
                             break;
                         case "Tutti i Bersagli Ambientali":
                             humans=false;
+							this.selectedTargetLayer = 'bersagli_ambientali';
                             break;
                     }
                   
@@ -626,7 +630,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             width: 150,
             hideLabel : false,
             store: new Ext.data.ArrayStore({
-                fields: ['name', 'property', 'humans']
+                fields: ['name', 'property', 'humans', 'type']
             }),    
             displayField: 'name',    
             typeAhead: true,
@@ -662,6 +666,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     this.selectedTargetProp = value;
                     this.selectedTargetName = record.get('name'); 
                     this.selectedTargetCode = record.get('code');
+					this.selectedTargetLayer = record.get('layer');
                   } 
                 }
             }              
@@ -687,7 +692,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var classiADRStore = new Ext.data.ArrayStore({
             fields: ['name','value', 'sost'],
             data :  [
-                ['Tutte le classi', '0', []],
+                ['Tutte le classi', '0', [1,2,3,4,5,6,7,8,9,10]],
              //   ['MATERIE E OGGETTI ESPLOSIVI', '1', []],
                 ['GAS COMPRESSI, LIQUEFATTI O DISCIOLTI IN PRESSIONE', '2', [1,2,3,4,5,6]],
                 ['MATERIE LIQUIDE INFIAMMABILI', '3', [7,8,9]],
@@ -707,7 +712,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var sostanzeStore = new Ext.data.ArrayStore({
             fields: ['name', 'value', 'accidents'],
             data :  [
-                ['Tutte le sostanze', '0', []],
+                ['Tutte le sostanze', '0', ['A','B','C','D','E','F','G','H','I','L','M']],
                 ['IDROGENO COMPRESSO', '1', ['E'] ],
                 ['OSSIGENO COMPRESSO', '2', ['G']],
                 ['GAS DI PETROLIO LIQUEFATTO', '3', ['D', 'F']],
@@ -849,10 +854,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             id: "sostanzecb",
             width: 150,
             hideLabel : false,
-            store: /*sostanzeStore*/new Ext.data.ArrayStore({
+            store: sostanzeStore/*new Ext.data.ArrayStore({
             fields: ['name', 'value', 'accidents'],
             data :  [['Tutte le sostanze', '0', []]]
-            }),    
+            })*/,    
             displayField: 'name',    
             typeAhead: true,
             mode: 'local',
@@ -999,7 +1004,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 scope: this,
                 handler: function(){
                     this.panel.getForm().reset();
-                    this.resetBBOX();
+                    this.resetBBOX(true);
                 }
             }, {
                 text: "Visualizza Mappa",
@@ -1050,8 +1055,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }
     },
     
-    setAOI: function(bounds) {
-        var wgs84Bounds = bounds.transform(this.mapProjection,this.wgs84Projection);
+    setAOI: function(bounds, wgs84) {
+        var wgs84Bounds = wgs84 ? bounds : bounds.transform(this.mapProjection,this.wgs84Projection);
         this.northField.setValue(wgs84Bounds.top);
         this.southField.setValue(wgs84Bounds.bottom);
         this.westField.setValue(wgs84Bounds.left);
@@ -1089,14 +1094,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             map.removeLayer(aoiLayer);    
     },
     
-    resetBBOX: function(){
-            var defBBOX;
-            if(this.status){
-                defBBOX = this.status.roi.bbox;
-            }else{
-                defBBOX = this.appTarget.mapPanel.map.getExtent();//new OpenLayers.Bounds.fromString(this.defaultBBOXFilterExtent);
-            }
-            this.setAOI(defBBOX);            
+    resetBBOX: function(extent){    
+		if(this.status && !extent){
+			this.setAOI(this.status.roi.bbox, true);
+		}else{
+			this.setAOI(this.appTarget.mapPanel.map.getExtent());
+		}              
     },
     
     _makeParams: function(form){
@@ -1301,6 +1304,14 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.seriousness.setValue(this.status.seriousness);
     },
     
+	getTargetType: function() {		
+		var record = this.bers.store.getAt(this.bers.store.find("name",this.bers.getValue()));
+		if(!record) {
+			record = this.macrobers.store.getAt(this.macrobers.store.find("name",this.macrobers.getValue()));
+		}
+		return record.get('type');		
+	},
+	
     getStatus: function(form){
         var obj = {};
         
@@ -1335,11 +1346,14 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 
         obj.target = this.selectedTargetName || 'Tutti i Bersagli';/*this.bers.getValue()*/ ;
         obj.targetName = this.selectedTargetName || 'Tutti i Bersagli';
+		obj.targetLayer = this.selectedTargetLayer || 'bersagli';
+		obj.targetType = this.getTargetType();
         obj.macroTarget = this.macrobers.getValue();
         obj.classe = this.classi.getValue();
         obj.sostanza = this.sostanze.getValue();
         obj.accident = this.accident.getValue();
         obj.seriousness = this.seriousness.getValue();
+		
 
         return obj;
     }

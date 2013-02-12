@@ -58,229 +58,194 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
      */
     id: "featuregrid",
 	
-    /** api: config[storeFieldsHuman]
-     *  ``Array[Object]``
+	/** api: config[targets] targets configuration object
+     *  ``Object``
      */
-	storeFieldsHuman: null,
-    
-	/** api: config[storeFieldsNotHuman]
-     *  ``Array[Object]``
-     */
-	storeFieldsNotHuman: null,
-	
-	/** api: config[columnModelHuman]
-     *  ``Array[Object]``
-     */
-	columnModelHuman: null,
-    
-    /** api: config[columnModelNotHuman]
-     *  ``Array[Object]``
-     */
-	columnModelNotHuman: null,
-    
-    humanTargetsTitle: 'Bersagli umani',
-    
-    notHumanTargetsTitle: 'Bersagli ambientali',
+	targets: {},
+		
 	
     /** private: method[constructor]
      */
     constructor: function(config) {
         gxp.plugins.WFSGrid.superclass.constructor.apply(this, arguments);         
     },
-
+	
+	buildStore: function(cfg) {
+		return new WFSStore({
+			root: 'features',
+			idProperty: 'id', 
+			typeName: cfg.featureType,
+			
+			proxy : new Ext.data.HttpProxy({
+				method: 'GET',
+				url: this.wfsURL
+			}),
+			
+			fields: cfg.fields
+		});
+	},
+	
+	onTargetSelect: function(grid, rowIndex, e) {
+		var record = grid.store.getAt(rowIndex);
+		var geom = record.get("geometry");
+		
+		var map = this.target.mapPanel.map;
+		
+		var targetLayer = map.getLayersByName("Bersaglio Selezionato")[0];
+		if(!targetLayer){
+			targetLayer = new OpenLayers.Layer.Vector("Bersaglio Selezionato",{
+				displayInLayerSwitcher: false,
+				style: {
+					strokeColor: "#FF00FF",
+					strokeWidth: 2,
+					fillColor: "#FF00FF",
+					fillOpacity: 0.8
+				}
+			});
+			
+			map.addLayer(targetLayer);
+		}else{
+			targetLayer.removeAllFeatures();
+		}						
+		
+		var mapPrj = map.getProjectionObject();
+		var selectionPrj = new OpenLayers.Projection("EPSG:32632");
+		var transform = mapPrj.equals(selectionPrj);
+		var pointList;
+		
+		switch(geom.type){
+			case 'Polygon':
+			case 'MultiPolygon':
+				var polygons = [];
+				for(var i = 0, polygon; polygon = geom.coordinates[i]; i++) {
+					var rings = [];
+					for(var j = 0, ring; ring = polygon[j]; j++) {
+						pointList = [];		
+						for(var p=0, coords; coords = ring[p] ; p++) {
+							var newPoint = new OpenLayers.Geometry.Point(coords[0],coords[1]);
+							if(!transform){												
+								newPoint = newPoint.transform(
+									selectionPrj,
+									mapPrj														
+								);											
+							}
+							pointList.push(newPoint);
+						}
+						rings.push(new OpenLayers.Geometry.LinearRing(pointList));
+					}
+					polygons.push(new OpenLayers.Geometry.Polygon(rings));
+				}
+				
+				var geometry = new OpenLayers.Geometry.MultiPolygon(polygons);
+				var feature = new OpenLayers.Feature.Vector(geometry);
+				targetLayer.addFeatures([feature]);
+				
+				map.zoomToExtent(geometry.getBounds());							
+				break;			
+		}
+	},
+	
+	buildGrid: function(cfg) {
+		var store = cfg.store;
+		
+		return new Ext.grid.GridPanel({
+			id: this.id+cfg.featureType,
+			store: cfg.store,
+            title:cfg.title,
+			loadMask: {
+				msg : "Caricamento Bersagli in corso ..."
+			},
+			colModel: new Ext.grid.ColumnModel({
+				columns: cfg.columnModel
+			}),
+			bbar: new Ext.ux.LazyPagingToolbar({
+				store: store,
+				pageSize: 10									
+			}),
+			listeners: {
+				scope: this,
+				rowclick: this.onTargetSelect
+			}
+		});
+	},	
+	
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-		var fstoreHuman = new WFSStore({
-			root: 'features',
-			idProperty: 'id', 
-			typeName: this.featureType,
-			
-			proxy : new Ext.data.HttpProxy({
-				method: 'GET',
-				url: this.wfsURL
-			}),
-			
-			fields: this.storeFieldsHuman
-		});
-        
-        var fstoreNotHuman = new WFSStore({
-			root: 'features',
-			idProperty: 'id', 
-			typeName: this.featureType,
-			
-			proxy : new Ext.data.HttpProxy({
-				method: 'GET',
-				url: this.wfsURL
-			}),
-			
-			fields: this.storeFieldsNotHuman
-		});
+		var grids = [];
+	
+		for(var targetName in this.targets) {
+			if(this.targets.hasOwnProperty(targetName)) {
+				var targetCfg = this.targets[targetName];
+				
+				// build store
+				targetCfg.store = this.buildStore(targetCfg);
+				
+				// build grid
+				targetCfg.grid = this.buildGrid(targetCfg);
+				Ext.apply(targetCfg.grid, config || {});
+				grids.push(targetCfg.grid);
+			}
+		}
 		
-        
-		var wfsGridPanelHuman = new Ext.grid.GridPanel({
-			id: this.id+'human',
-			store: fstoreHuman,
-            title:this.humanTargetsTitle,
-			loadMask: {
-				msg : "Caricamento Bersagli in corso ..."
-			},
-			colModel: new Ext.grid.ColumnModel({
-				columns: this.columnModelHuman
-			}),
-			bbar: new Ext.ux.LazyPagingToolbar({
-				store: fstoreHuman,
-				pageSize: 10									
-			}),
-			listeners: {
-				scope: this,
-				rowclick: function(grid, rowIndex, e){
-					var record = fstoreHuman.getAt(rowIndex);
-					var geom = record.get("geometry");
-					
-					var map = this.target.mapPanel.map;
-					
-					var targetLayer = map.getLayersByName("Bersaglio Selezionato")[0];
-					if(!targetLayer){
-						targetLayer = new OpenLayers.Layer.Vector("Bersaglio Selezionato",{
-							displayInLayerSwitcher: false,
-                            style: {
-                                strokeColor: "#FF00FF",
-                                strokeWidth: 2,
-                                fillColor: "#FF00FF",
-                                fillOpacity: 0.8
-                            }
-						});
-						
-						map.addLayer(targetLayer);
-					}else{
-						targetLayer.removeAllFeatures();
-					}						
-					
-					switch(geom.type){
-						case 'Polygon':
-							var pointList = [];
-							var coordinates = geom.coordinates[0];
-							
-							var mapPrj = map.getProjectionObject();
-							var selectionPrj = new OpenLayers.Projection("EPSG:32632");
-							var transform = mapPrj.equals(selectionPrj);
-							
-							for(var p=0; p<coordinates.length; ++p) {
-								var coords = coordinates[p];
-								
-								var newPoint = new OpenLayers.Geometry.Point(coords[0],coords[1]);
-								
-								if(!transform){												
-									newPoint = newPoint.transform(
-										selectionPrj,
-										mapPrj														
-									);											
-								}
-								
-								pointList.push(newPoint);
-							}
-							
-							var linestring = new OpenLayers.Geometry.LineString(pointList);
-							var linearRing = new OpenLayers.Geometry.LinearRing(pointList);
-							var polygon = new OpenLayers.Geometry.Polygon([linearRing]);
-							var polygonFeature = new OpenLayers.Feature.Vector(polygon);
-							
-							targetLayer.addFeatures([polygonFeature]);
-							
-							map.zoomToExtent(polygon.getBounds());							
-					}
-				}
-			}
-		});
-        
-        var wfsGridPanelNotHuman = new Ext.grid.GridPanel({
-			id: this.id+'nothuman',
-			store: fstoreNotHuman,
-            title:this.notHumanTargetsTitle,
-			loadMask: {
-				msg : "Caricamento Bersagli in corso ..."
-			},
-			colModel: new Ext.grid.ColumnModel({
-				columns: this.columnModelNotHuman
-			}),
-			bbar: new Ext.ux.LazyPagingToolbar({
-				store: fstoreNotHuman,
-				pageSize: 10									
-			}),
-			listeners: {
-				scope: this,
-				rowclick: function(grid, rowIndex, e){
-					var record = fstoreNotHuman.getAt(rowIndex);
-					var geom = record.get("geometry");
-					
-					var map = this.target.mapPanel.map;
-					
-					var targetLayer = map.getLayersByName("Bersaglio Selezionato")[0];
-					if(!targetLayer){
-						targetLayer = new OpenLayers.Layer.Vector("Bersaglio Selezionato",{
-							displayInLayerSwitcher: false,
-                            style: {
-                                strokeColor: "#FF00FF",
-                                strokeWidth: 2,
-                                fillColor: "#FF00FF",
-                                fillOpacity: 0.8
-                            }
-						});
-						
-						map.addLayer(targetLayer);
-					}else{
-						targetLayer.removeAllFeatures();
-					}						
-					
-					switch(geom.type){
-						case 'Polygon':
-							var pointList = [];
-							var coordinates = geom.coordinates[0];
-							
-							var mapPrj = map.getProjectionObject();
-							var selectionPrj = new OpenLayers.Projection("EPSG:32632");
-							var transform = mapPrj.equals(selectionPrj);
-							
-							for(var p=0; p<coordinates.length; ++p) {
-								var coords = coordinates[p];
-								
-								var newPoint = new OpenLayers.Geometry.Point(coords[0],coords[1]);
-								
-								if(!transform){												
-									newPoint = newPoint.transform(
-										selectionPrj,
-										mapPrj														
-									);											
-								}
-								
-								pointList.push(newPoint);
-							}
-							
-							var linestring = new OpenLayers.Geometry.LineString(pointList);
-							var linearRing = new OpenLayers.Geometry.LinearRing(pointList);
-							var polygon = new OpenLayers.Geometry.Polygon([linearRing]);
-							var polygonFeature = new OpenLayers.Feature.Vector(polygon);
-							
-							targetLayer.addFeatures([polygonFeature]);
-							
-							map.zoomToExtent(polygon.getBounds());							
-					}
-				}
-			}
-		});
-
         var tabPanel = new Ext.TabPanel({
             id: this.id,
             activeTab: 0,
-            items: [wfsGridPanelHuman, wfsGridPanelNotHuman]
+            items: grids,
+			targets: this.targets,
+			/** api: method[hideAllBut]
+			 */	
+			hideAllBut: function(attribute, attributeValue) {
+				var grids  = [];
+				for(var targetName in this.targets) {
+					if(this.targets.hasOwnProperty(targetName)) {
+						var grid = this.targets[targetName].grid;
+						var value = this.targets[targetName][attribute];
+						if(value === attributeValue) {
+							this.unhideTabStripItem(grid);
+							this.setActiveTab(grid);
+							grids.push(grid);
+						} else {
+							this.hideTabStripItem(grid);
+						}
+					}
+				}
+				return grids;
+			},
+			
+			/** api: method[loadGrid]
+			 */	
+			loadGrids: function(attributeName, attributeValue, query, projection, viewParams) {				
+				var grids = this.hideAllBut(attributeName, attributeValue);
+				for(var i=0, grid, store; grid=grids[i]; i++) {
+					store = grid.getStore();
+					store.resetTotal();
+					store.removeAll();
+									
+					var params = {
+						startindex: 0,          
+						maxfeatures: 10,
+						sort: "id_tema"
+					};
+					
+					if(query){
+						store.setBaseParam("filter", query);
+						store.setBaseParam("srsName", projection);
+					}
+					
+					if(viewParams){
+						store.setBaseParam("viewParams", viewParams);
+					}
+					
+					store.load({
+						params: params
+					});	
+				}									
+			}
+			
         });
-        
-        Ext.apply(wfsGridPanelHuman, config || {});
-        Ext.apply(wfsGridPanelNotHuman, config || {});
-        var wfsGrid = gxp.plugins.WFSGrid.superclass.addOutput.call(this, tabPanel);
-        
-        return wfsGrid;
+                      
+        return gxp.plugins.WFSGrid.superclass.addOutput.call(this, tabPanel);        
     }   
 });
 
