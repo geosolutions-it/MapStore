@@ -77,6 +77,10 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
      *  ``Array[Object]``
      */
 	columnModelNotHuman: null,
+   
+    zoomToIconPath: "theme/app/img/silk/map_magnify.png",
+    
+    zoomToTooltip: 'Zoom al bersaglio',
     
     humanTargetsTitle: 'Bersagli umani',
     
@@ -104,7 +108,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 			fields: this.storeFieldsHuman
 		});
         
-        var fstoreNotHuman = new WFSStore({
+            var fstoreNotHuman = new WFSStore({
 			root: 'features',
 			idProperty: 'id', 
 			typeName: this.featureType,
@@ -116,158 +120,101 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 			
 			fields: this.storeFieldsNotHuman
 		});
-		
-        
-		var wfsGridPanelHuman = new Ext.grid.GridPanel({
+                
+            var me= this;        
+            var checkConf={
+                listeners: {
+                            scope: this,
+                            beforerowselect: function (sm, row_index) {            
+                            /* sm.suspendEvents();
+                                if (sm.isSelected(row_index)) {
+                                    sm.deselectRow(row_index);
+                                } else {
+                                    sm.selectRow(row_index, true)
+                                }
+                                sm.resumeEvents();
+                                return false;*/
+                            },
+                            rowdeselect: function (selMod, rowIndex, record){
+                                var map = this.target.mapPanel.map;
+                                var targetLayer = map.getLayersByName("Bersagli Selezionati")[0];
+                                var unSelectFeatures= targetLayer.getFeaturesByAttribute("bersID", record.get("id"));
+                                targetLayer.removeFeatures(unSelectFeatures);
+
+                            },
+                            rowselect: function(selMod, rowIndex, record){
+                                //var record = fstoreNotHuman.getAt(rowIndex);
+                                var geom = record.get("geometry");
+                                var map = this.target.mapPanel.map;
+                                var targetLayer = map.getLayersByName("Bersagli Selezionati")[0];
+                                if(!targetLayer){
+                                    targetLayer = new OpenLayers.Layer.Vector("Bersagli Selezionati",{
+                                        displayInLayerSwitcher: false,
+                                        style: {
+                                            strokeColor: "#FF00FF",
+                                            strokeWidth: 2,
+                                            fillColor: "#FF00FF",
+                                            fillOpacity: 0.8
+                                        }
+                                    });
+
+                                map.addLayer(targetLayer);
+                            }					
+
+                            switch(geom.type){
+                                    case 'Polygon':
+                                            var pointList=me.getPointList(geom);
+                                            var linearRing = new OpenLayers.Geometry.LinearRing(pointList);
+                                            var polygon = new OpenLayers.Geometry.Polygon([linearRing]);
+                                            var polygonFeature = new OpenLayers.Feature.Vector(polygon,{ "bersID": record.get("id")});
+                                            targetLayer.addFeatures([polygonFeature]);			
+                            }
+                        }
+                }           
+            };
+            
+            var smHumans = new Ext.grid.CheckboxSelectionModel(checkConf);
+            var columnsHumans=[smHumans, this.getZoomToAction()];  
+	    var wfsGridPanelHuman = new Ext.grid.GridPanel({
 			id: this.id+'human',
 			store: fstoreHuman,
-            title:this.humanTargetsTitle,
+                        title:this.humanTargetsTitle,
+                        viewConfig : {
+                            forceFit: true
+                        },
+                        sm: smHumans,
 			loadMask: {
 				msg : "Caricamento Bersagli in corso ..."
 			},
-			colModel: new Ext.grid.ColumnModel({
-				columns: this.columnModelHuman
+                        colModel: new Ext.grid.ColumnModel({
+				columns: columnsHumans.concat(this.columnModelHuman)//this.columnModelHuman
 			}),
 			bbar: new Ext.ux.LazyPagingToolbar({
 				store: fstoreHuman,
 				pageSize: 10									
-			}),
-			listeners: {
-				scope: this,
-				rowclick: function(grid, rowIndex, e){
-					var record = fstoreHuman.getAt(rowIndex);
-					var geom = record.get("geometry");
-					
-					var map = this.target.mapPanel.map;
-					
-					var targetLayer = map.getLayersByName("Bersaglio Selezionato")[0];
-					if(!targetLayer){
-						targetLayer = new OpenLayers.Layer.Vector("Bersaglio Selezionato",{
-							displayInLayerSwitcher: false,
-                            style: {
-                                strokeColor: "#FF00FF",
-                                strokeWidth: 2,
-                                fillColor: "#FF00FF",
-                                fillOpacity: 0.8
-                            }
-						});
-						
-						map.addLayer(targetLayer);
-					}else{
-						targetLayer.removeAllFeatures();
-					}						
-					
-					switch(geom.type){
-						case 'Polygon':
-							var pointList = [];
-							var coordinates = geom.coordinates[0];
-							
-							var mapPrj = map.getProjectionObject();
-							var selectionPrj = new OpenLayers.Projection("EPSG:32632");
-							var transform = mapPrj.equals(selectionPrj);
-							
-							for(var p=0; p<coordinates.length; ++p) {
-								var coords = coordinates[p];
-								
-								var newPoint = new OpenLayers.Geometry.Point(coords[0],coords[1]);
-								
-								if(!transform){												
-									newPoint = newPoint.transform(
-										selectionPrj,
-										mapPrj														
-									);											
-								}
-								
-								pointList.push(newPoint);
-							}
-							
-							var linestring = new OpenLayers.Geometry.LineString(pointList);
-							var linearRing = new OpenLayers.Geometry.LinearRing(pointList);
-							var polygon = new OpenLayers.Geometry.Polygon([linearRing]);
-							var polygonFeature = new OpenLayers.Feature.Vector(polygon);
-							
-							targetLayer.addFeatures([polygonFeature]);
-							
-							map.zoomToExtent(polygon.getBounds());							
-					}
-				}
-			}
+			})
 		});
-        
-        var wfsGridPanelNotHuman = new Ext.grid.GridPanel({
+                
+            var smNotHumans = new Ext.grid.CheckboxSelectionModel(checkConf);  
+            var columnsNotHumans=[smNotHumans, this.getZoomToAction()];    
+            var wfsGridPanelNotHuman = new Ext.grid.GridPanel({
 			id: this.id+'nothuman',
 			store: fstoreNotHuman,
-            title:this.notHumanTargetsTitle,
+                        title:this.notHumanTargetsTitle,
+                        viewConfig : {
+                            forceFit: true
+                        },
 			loadMask: {
 				msg : "Caricamento Bersagli in corso ..."
 			},
 			colModel: new Ext.grid.ColumnModel({
-				columns: this.columnModelNotHuman
+				columns: columnsNotHumans.concat(this.columnModelNotHuman)//this.columnModelNotHuman
 			}),
+                        sm: smNotHumans,
 			bbar: new Ext.ux.LazyPagingToolbar({
 				store: fstoreNotHuman,
 				pageSize: 10									
-			}),
-			listeners: {
-				scope: this,
-				rowclick: function(grid, rowIndex, e){
-					var record = fstoreNotHuman.getAt(rowIndex);
-					var geom = record.get("geometry");
-					
-					var map = this.target.mapPanel.map;
-					
-					var targetLayer = map.getLayersByName("Bersaglio Selezionato")[0];
-					if(!targetLayer){
-						targetLayer = new OpenLayers.Layer.Vector("Bersaglio Selezionato",{
-							displayInLayerSwitcher: false,
-                            style: {
-                                strokeColor: "#FF00FF",
-                                strokeWidth: 2,
-                                fillColor: "#FF00FF",
-                                fillOpacity: 0.8
-                            }
-						});
-						
-						map.addLayer(targetLayer);
-					}else{
-						targetLayer.removeAllFeatures();
-					}						
-					
-					switch(geom.type){
-						case 'Polygon':
-							var pointList = [];
-							var coordinates = geom.coordinates[0];
-							
-							var mapPrj = map.getProjectionObject();
-							var selectionPrj = new OpenLayers.Projection("EPSG:32632");
-							var transform = mapPrj.equals(selectionPrj);
-							
-							for(var p=0; p<coordinates.length; ++p) {
-								var coords = coordinates[p];
-								
-								var newPoint = new OpenLayers.Geometry.Point(coords[0],coords[1]);
-								
-								if(!transform){												
-									newPoint = newPoint.transform(
-										selectionPrj,
-										mapPrj														
-									);											
-								}
-								
-								pointList.push(newPoint);
-							}
-							
-							var linestring = new OpenLayers.Geometry.LineString(pointList);
-							var linearRing = new OpenLayers.Geometry.LinearRing(pointList);
-							var polygon = new OpenLayers.Geometry.Polygon([linearRing]);
-							var polygonFeature = new OpenLayers.Feature.Vector(polygon);
-							
-							targetLayer.addFeatures([polygonFeature]);
-							
-							map.zoomToExtent(polygon.getBounds());							
-					}
-				}
-			}
+			})
 		});
 
         var tabPanel = new Ext.TabPanel({
@@ -281,7 +228,60 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         var wfsGrid = gxp.plugins.WFSGrid.superclass.addOutput.call(this, tabPanel);
         
         return wfsGrid;
-    }   
+    },
+    
+    /** private: method[getZoomToAction]
+     */
+    getZoomToAction: function(actionConf){
+        var me=this;
+        return {
+                xtype: 'actioncolumn',
+                sortable : false, 
+                width: 10,
+                items: [{
+                        icon   : me.zoomToIconPath,  
+                        tooltip: me.zoomToTooltip,
+                        scope: me,
+                        handler: function(gpanel, rowIndex, colIndex) {
+                                var map = me.target.mapPanel.map;
+                                var store = gpanel.getStore();	
+                                var record = store.getAt(rowIndex);
+                                var geom = record.get("geometry");
+                                
+                                switch(geom.type){
+                                    case 'Polygon':
+					var linearRing = new OpenLayers.Geometry.LinearRing(me.getPointList(geom));
+                                        var polygon = new OpenLayers.Geometry.Polygon([linearRing]);
+                                        map.zoomToExtent(polygon.getBounds());							
+			        }
+                        }
+                     }]  
+             };
+    },
+    
+    getPointList: function(geom){
+        var pointList = [];
+        var coords;
+        var map = this.target.mapPanel.map;
+	var coordinates = geom.coordinates[0];
+	var mapPrj = map.getProjectionObject();
+	var selectionPrj = new OpenLayers.Projection("EPSG:32632");
+	var transform = mapPrj.equals(selectionPrj);
+							
+	for(var p=0; p<coordinates.length; ++p) {
+            coords = coordinates[p];
+	    var newPoint = new OpenLayers.Geometry.Point(coords[0],coords[1]);
+	    if(!transform){												
+		newPoint = newPoint.transform(
+			selectionPrj,
+			mapPrj														
+		);											
+            }
+            pointList.push(newPoint);
+	}
+        
+        return pointList;
+    }
 });
 
 Ext.preg(gxp.plugins.WFSGrid.prototype.ptype, gxp.plugins.WFSGrid);
