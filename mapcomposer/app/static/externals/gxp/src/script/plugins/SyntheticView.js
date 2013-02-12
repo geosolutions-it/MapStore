@@ -581,87 +581,125 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
     getRadius: function(){
-        var sost,acc,ser,i;
-        var sostFix,accFix,serFix, value;
+        return this.getMaxRadious();
+    },
+    
+    getMaxRadious: function(){
         var maxRadius={};
-        var openFor=false;
 
-        var radLoop="";
-        
-        var radHum= this.isHumanTarget() || this.isMixedTargets();
-        var radNotHum= this.isNotHumanTarget() || this.isMixedTargets();
-        
-        if(radHum)
+        if(this.isHumanTarget() || this.isMixedTargets())
             maxRadius.radiusHum=[-2,-2,-2,-2];
         
-        if(radNotHum)
+        if(this.isNotHumanTarget() || this.isMixedTargets())
             maxRadius.radiusNotHum=-2;
+
+        this.parseSost(maxRadius);
         
-        if(this.processingPane.sostanzeCode == "0"){
-            radLoop="for (sost in this.processingPane.radiusData)";
-            openFor=true;
-        }else
-            radLoop="sost='"+this.processingPane.sostanzeCode+"';";
-    
-        if(this.processingPane.accidentCode == "0"){
-            radLoop+="for (acc in this.processingPane.radiusData[sost])";
-            openFor=true;
-        }else
-            radLoop+="acc='"+this.processingPane.accidentCode+"';";
-        
-        if(this.processingPane.seriousnessCode == "0"){
-            radLoop+="for (ser in this.processingPane.radiusData[sost][acc])";
-            openFor=true;
-        }else
-            radLoop+="ser='"+this.processingPane.seriousnessCode+"';";
-        
-        if(openFor)
-           radLoop+="{"; 
-        
-        if(radHum)
-           radLoop+="for(i=0;i<maxRadius.radiusHum.length;i++){"+
-                        "value= this.processingPane.radiusData[sost][acc][ser].humans[i];"+
-                        "if(value){"+
-                            "if(value == -1)"+
-                                "value= this.getHumanDefaultValue(maxRadius.radiusHum, i);"+//get first element !=-1
-                            "maxRadius.radiusHum[i]="+
-                            "maxRadius.radiusHum[i] >= value ?"+
-                            "maxRadius.radiusHum[i]: value;"+
-                        "}"+    
-                    "}"; 
-                
-         if(radNotHum){
-             if(this.processingPane.selectedTargetCode != '-1')
-            radLoop+="value= this.processingPane.radiusData[sost][acc][ser].notHumans[this.processingPane.selectedTargetCode];"+
-                    "if(value){"+
-                        "if(value == -1)"+
-                           "value= this.processingPane.holdValues[ser];"+
-                        "maxRadius.radiusNotHum="+
-                            "maxRadius.radiusNotHum >= value ? "+
-                            "maxRadius.radiusNotHum:"+
-                            "value;"+
-                    "}"; 
-             else
-               radLoop+="for(i=0;i<this.processingPane.radiusData[sost][acc][ser].notHumans.length;i++){"+  
-                            "value= this.processingPane.radiusData[sost][acc][ser].notHumans[i];"+
-                            "if(value){"+
-                                "if(value == -1)"+
-                                    "value= this.processingPane.holdValues[ser];"+
-                                "maxRadius.radiusNotHum="+
-                                    "maxRadius.radiusNotHum >= value ? "+
-                                    "maxRadius.radiusNotHum:"+
-                                    "value;"+
-                            "}"+    
-                        "}";    
-         }
-           
-                   
-         if(openFor)
-         radLoop+="}";  
-        
-        eval(radLoop);
         return maxRadius;
+    },
+    
+    parseSost: function(maxRadius){
+        var sost;
+        if(this.processingPane.sostanzeCode == "0"){
+           for (sost in this.processingPane.radiusData){
+               this.parseAcc(sost,maxRadius);
+           }
+        }else{
+           sost=this.processingPane.sostanzeCode;
+           this.parseAcc(sost,maxRadius);
+        }
+    },
+    
+    parseAcc: function(sost,maxRadius){
+        var acc;
+        if(this.processingPane.accidentCode == "0"){
+            for (acc in this.processingPane.radiusData[sost]){
+                this.parseSer(sost,acc,maxRadius);
+            }
+           
+        }else{
+            acc=this.processingPane.accidentCode;
+            this.parseSer(sost,acc,maxRadius);
+        }
+            
+    },
+    
+    parseSer: function(sost,acc,maxRadius){
+        var ser;
+        if(this.processingPane.seriousnessCode == "0"){
+            for (ser in this.processingPane.radiusData[sost][acc]){
+                if(maxRadius.radiusHum)
+                    this.setRadHum(this.processingPane.radiusData[sost][acc][ser].humans, maxRadius);
+         
+                if(maxRadius.radiusNotHum){
+                    if(this.processingPane.selectedTargetCode != '-1')
+                        this.setRadNotHum(
+                            this.processingPane.radiusData[sost][acc][ser].notHumans[this.processingPane.selectedTargetCode],maxRadius, ser);
+                    else
+                        this.setRadNotHum(
+                            this.processingPane.radiusData[sost][acc][ser].notHumans,maxRadius, ser);
+            
+                 }
+            }
+        }else{
+            ser=this.processingPane.seriousnessCode;
+            if(maxRadius.radiusHum)
+               this.setRadHum(this.processingPane.radiusData[sost][acc][ser].humans, maxRadius);
+         
+            if(maxRadius.radiusNotHum){
+               if(this.processingPane.selectedTargetCode != '-1')
+                  this.setRadNotHum(
+                        this.processingPane.radiusData[sost][acc][ser].notHumans[this.processingPane.selectedTargetCode],maxRadius, ser);
+               else
+                  this.setRadNotHum(
+                      this.processingPane.radiusData[sost][acc][ser].notHumans,maxRadius, ser);
+            
+            }
+        }
+            
+    },
+    
+    setRadNotHum: function(values, maxRadius, ser){
+        var value;
+        if(values instanceof Array){
+            for(var i=0;i<values.length;i++){
+                value= values[i];
+                    if(value){
+                        if(value == -1)
+                            value= this.processingPane.holdValues[ser];
+                            maxRadius.radiusNotHum=
+                                    maxRadius.radiusNotHum >= value ? 
+                                    maxRadius.radiusNotHum:
+                                    value;
+                    }  
+           }        
+        }else{
+            value= values;
+            if(value){
+               if(value == -1)
+                  value= this.processingPane.holdValues[ser];
+                  maxRadius.radiusNotHum=
+                            maxRadius.radiusNotHum >= value ? 
+                            maxRadius.radiusNotHum: value;
+            }
+        }  
+    },
+    
+    setRadHum: function(values, maxRadius){
+        var value;
+        for(var i=0;i<maxRadius.radiusHum.length;i++){
+            value= values[i];
+            if(value){
+               if(value == -1)
+                  value= this.getHumanDefaultValue(maxRadius.radiusHum, i);//get first element !=-1
+                  maxRadius.radiusHum[i]=
+                            maxRadius.radiusHum[i] >= value ?
+                            maxRadius.radiusHum[i]: value;
+            }
+         }
     }
+    
+    
     
   
 

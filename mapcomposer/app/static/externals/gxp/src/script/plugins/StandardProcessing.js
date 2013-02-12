@@ -93,14 +93,14 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                  },
                  "2":{
                     "G" : {
-                        "L": { "humans": [25,null,81,null],    "notHumans": [null,-1,-1,-1,null,null]},
-                        "G": { "humans": [45,null,90,null],    "notHumans": [null,-1,-1,-1,null,null]}
+                        "L": { "humans": [25,-1,81,-1],    "notHumans": [null,-1,-1,-1,null,null]},
+                        "G": { "humans": [45,-1,90,-1],    "notHumans": [null,-1,-1,-1,null,null]}
                     }
                 },
                 "3":{
                     "D" : {
-                        "L": { "humans": [35,70,null,null],    "notHumans": [null,-1,-1,null,null,null]},
-                        "G": { "humans": [65,132,null,null],   "notHumans": [null,-1,-1,null,null,null]}
+                        "L": { "humans": [35,70,-1,-1],    "notHumans": [null,-1,-1,null,null,null]},
+                        "G": { "humans": [65,132,-1,-1],   "notHumans": [null,-1,-1,null,null,null]}
                     },
                     "F" : {
                         "L": { "humans": [60,95,110,140],      "notHumans": [60,-1,-1,null,null,null]},
@@ -109,32 +109,32 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 },
                 "4":{
                     "E" : {
-                        "L": { "humans": [30,65,null,null],    "notHumans": [null,-1,-1,null,null,null]},
-                        "G": { "humans": [60,148,null,null],   "notHumans": [null,-1,-1,null,null,null]}
+                        "L": { "humans": [30,65,-1,-1],    "notHumans": [null,-1,-1,null,null,null]},
+                        "G": { "humans": [60,148,-1,-1],   "notHumans": [null,-1,-1,null,null,null]}
                     },
                     "F" : {
                         "L": { "humans": [55,93,100,131],      "notHumans": [55,-1,-1,null,null,null]},
                         "G": { "humans": [112,210,339,467],    "notHumans": [112,-1,-1,null,null,null]}
                     },
                     "M" : {
-                        "L": { "humans": [60,null,110,null],   "notHumans": [null,-1,-1,-1,null,null]},
-                        "G": { "humans": [110,null,230,null],  "notHumans": [null,-1,-1,-1,null,null]}
+                        "L": { "humans": [60,-1,110,-1],   "notHumans": [null,-1,-1,-1,null,null]},
+                        "G": { "humans": [110,-1,230,-1],  "notHumans": [null,-1,-1,-1,null,null]}
                     }
                 },
                 "5":{
                     "B" : {
-                        "L": { "humans": [45,96,null,null],    "notHumans": [null,-1,-1,null,null,null]},
-                        "G": { "humans": [110,150,null,null],  "notHumans": [null,-1,-1,null,null,null]}
+                        "L": { "humans": [45,96,-1,-1],    "notHumans": [null,-1,-1,null,null,null]},
+                        "G": { "humans": [110,150,-1,-1],  "notHumans": [null,-1,-1,null,null,null]}
                     },
                     "L" : {
-                        "L": { "humans": [130,null,567,null],  "notHumans": [null,-1,-1,-1,null,null]},
-                        "G": { "humans": [250,null,780,null],  "notHumans": [null,-1,-1,-1,null,null]}
+                        "L": { "humans": [130,-1,567,-1],  "notHumans": [null,-1,-1,-1,null,null]},
+                        "G": { "humans": [250,-1,780,-1],  "notHumans": [null,-1,-1,-1,null,null]}
                     }
                 },
                 "6":{
                     "G" : {
-                        "L": { "humans": [25,null,81,null],    "notHumans": [null,-1,-1,-1,null,null]},
-                        "G": { "humans": [45,null,90,null],    "notHumans": [null,-1,-1,-1,null,null]}
+                        "L": { "humans": [25,-1,81,-1],    "notHumans": [null,-1,-1,-1,null,null]},
+                        "G": { "humans": [45,-1,90,-1],    "notHumans": [null,-1,-1,-1,null,null]}
                     }
                 },
                 "7":{
@@ -149,8 +149,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         "G": { "humans": [80,110,130,145],     "notHumans": [80,-1,-1,-1,null,null]}
                     },
                     "D" : {
-                        "L": { "humans": [45,90,null,null],    "notHumans": [null,-1,-1,null,null,null]},
-                        "G": { "humans": [127,250,null,null],  "notHumans": [null,-1,-1,null,null,null]}
+                        "L": { "humans": [45,90,-1,-1],    "notHumans": [null,-1,-1,null,null,null]},
+                        "G": { "humans": [127,250,-1,-1],  "notHumans": [null,-1,-1,null,null,null]}
                     },
                     "H" : {
                         "L": { "humans": [null,null,null,null],"notHumans": [null,null,null,8,8,8]},
@@ -163,12 +163,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         "G": { "humans": [75,109,125,138],     "notHumans": [75,-1,-1,null,null,null]}
                     },
                     "B" : {
-                        "L": { "humans": [40,88,null,null],    "notHumans": [-1,-1,null,null,null,null]},
-                        "G": { "humans": [70,150,null,null],   "notHumans": [-1,-1,null,null,null,null]}
+                        "L": { "humans": [40,88,-1,-1],    "notHumans": [-1,-1,null,null,null,null]},
+                        "G": { "humans": [70,150,-1,-1],   "notHumans": [-1,-1,null,null,null,null]}
                     },
                     "I" : {
-                        "L": { "humans": [30,null,60,null],    "notHumans": [-1,-1,-1,-1,null,null]},
-                        "G": { "humans": [80,null,160,null],   "notHumans": [-1,-1,-1,-1,null,null]}
+                        "L": { "humans": [30,-1,60,-1],    "notHumans": [-1,-1,-1,-1,null,null]},
+                        "G": { "humans": [80,-1,160,-1],   "notHumans": [-1,-1,-1,-1,null,null]}
                     }
                 },
                  "10":{
@@ -430,22 +430,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 
         var urlEPSG= this.urlEPSG ? this.urlEPSG : "http://spatialreference.org/ref/epsg/"+me.wgs84Projection.getCode().split(":")[1]+"/";;
         
-        
-      /*  this.epsgButton = new Ext.Button({
-               text: me.wgs84Projection.getCode() ,
-               handler: function(){
-                      new Ext.Window({
-                          layout:'fit',
-                          width:me.epsgWinWidth,
-                          height:me.epsgWinHeight,
-                          closeAction:'hide',
-                          html: '<iframe src="'+url_epsg+'" width="99%" height="99%"></iframe>'
-                      }).show();
-              },
-              tooltip: this.currentExtentTooltip                          
-            
-        });*/
-              
+      
         this.spatialFieldSet = new Ext.form.FieldSet({
             title:  this.aioFieldSetTitle+" <a href='#' id='bboxAOI-set-EPSG'>["+me.wgs84Projection.getCode()+"]</a>",//["+this.wgs84Projection.getCode()+"]</div></b>",
             //title: this.aioFieldSetTitle,
@@ -600,6 +585,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                                 store.add(targetStore.getAt(i));
                             }
 							this.selectedTargetLayer = 'bersagli';
+                            this.bers.setValue(null);
                             return;
                             break;
                         case "Tutti i Bersagli Umani":
@@ -811,7 +797,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             selectOnFocus:true,
             editable: true,
             resizable: true,
-            value: "Tutti le classi",
+            value: "Tutte le classi",
             listeners: {
                 "expand": function(combo) {
                     combo.list.setWidth( 'auto' );
@@ -866,7 +852,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             selectOnFocus:true,
             editable: true,
             resizable: true,
-            value: "Tutti le sostanze",
+            value: "Tutte le sostanze",
             listeners: {
                 "expand": function(combo) {
                     combo.list.setWidth( 'auto' );
@@ -1299,6 +1285,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         store=this.sostanze.getStore();
         this.sostanze.fireEvent('select',this.sostanze, store.getAt(store.find("name", this.status.sostanza)));
         this.sostanze.setValue(this.status.sostanza);
+
         
         this.accident.setValue(this.status.accident);        
         this.seriousness.setValue(this.status.seriousness);

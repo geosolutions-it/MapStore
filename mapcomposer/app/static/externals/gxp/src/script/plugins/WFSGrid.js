@@ -62,7 +62,12 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
      *  ``Object``
      */
 	targets: {},
-		
+		  
+    zoomToIconPath: "theme/app/img/silk/map_magnify.png",
+    
+    zoomToTooltip: 'Zoom al bersaglio',
+    
+
 	
     /** private: method[constructor]
      */
@@ -85,7 +90,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 		});
 	},
 	
-	onTargetSelect: function(grid, rowIndex, e) {
+	onTargetSelect: function(check, rowIndex, e) {
+		var grid = check.grid;
 		var record = grid.store.getAt(rowIndex);
 		var geom = record.get("geometry");
 		
@@ -104,14 +110,29 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 			});
 			
 			map.addLayer(targetLayer);
-		}else{
-			targetLayer.removeAllFeatures();
-		}						
+		}
+
+		var geometry = this.getGeometry(map, geom);
+		if(geometry) {
+			var feature = new OpenLayers.Feature.Vector(geometry,{ "bersID": record.get("id")});
+			targetLayer.addFeatures([feature]);						
+		}
 		
+	},
+	
+	onTargetDeselect: function (selMod, rowIndex, record){
+		var map = this.target.mapPanel.map;
+		var targetLayer = map.getLayersByName("Bersaglio Selezionato")[0];
+		var unSelectFeatures= targetLayer.getFeaturesByAttribute("bersID", record.get("id"));
+		targetLayer.removeFeatures(unSelectFeatures);
+	},
+	
+	getGeometry: function(map, geom) {
 		var mapPrj = map.getProjectionObject();
 		var selectionPrj = new OpenLayers.Projection("EPSG:32632");
 		var transform = mapPrj.equals(selectionPrj);
 		var pointList;
+		var geometry;
 		
 		switch(geom.type){
 			case 'Polygon':
@@ -136,36 +157,46 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 					polygons.push(new OpenLayers.Geometry.Polygon(rings));
 				}
 				
-				var geometry = new OpenLayers.Geometry.MultiPolygon(polygons);
-				var feature = new OpenLayers.Feature.Vector(geometry);
-				targetLayer.addFeatures([feature]);
-				
-				map.zoomToExtent(geometry.getBounds());							
+				geometry = new OpenLayers.Geometry.MultiPolygon(polygons);				
 				break;			
 		}
+		return geometry;
 	},
 	
 	buildGrid: function(cfg) {
 		var store = cfg.store;
 		
+		var checkConf = {
+			listeners: {
+				scope: this,				
+				rowdeselect: this.onTargetDeselect,
+				rowselect: this.onTargetSelect
+			}
+		};
+		var checkSelModel = new Ext.grid.CheckboxSelectionModel(checkConf);
 		return new Ext.grid.GridPanel({
 			id: this.id+cfg.featureType,
 			store: cfg.store,
             title:cfg.title,
+
 			loadMask: {
 				msg : "Caricamento Bersagli in corso ..."
 			},
 			colModel: new Ext.grid.ColumnModel({
-				columns: cfg.columnModel
+				columns: [checkSelModel,this.getZoomToAction()].concat(cfg.columnModel)
 			}),
+			viewConfig : {
+				forceFit: true
+			},
+            sm: checkSelModel,
 			bbar: new Ext.ux.LazyPagingToolbar({
 				store: store,
 				pageSize: 10									
-			}),
+			})/*,
 			listeners: {
 				scope: this,
 				rowclick: this.onTargetSelect
-			}
+			}*/
 		});
 	},	
 	
@@ -244,9 +275,32 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 			}
 			
         });
+
                       
         return gxp.plugins.WFSGrid.superclass.addOutput.call(this, tabPanel);        
-    }   
+    },
+    
+    /** private: method[getZoomToAction]
+     */
+    getZoomToAction: function(actionConf){
+        
+        return {
+			xtype: 'actioncolumn',
+			sortable : false, 
+			width: 10,
+			items: [{
+				icon   : this.zoomToIconPath,  
+				tooltip: this.zoomToTooltip,
+				scope: this,
+				handler: function(grid, rowIndex, colIndex) {
+					var record = grid.store.getAt(rowIndex);
+					var map = this.target.mapPanel.map;
+					var geometry = this.getGeometry(map, record.get("geometry"))
+					map.zoomToExtent(geometry.getBounds());															
+				}
+			}]  
+		 };
+    }
 });
 
 Ext.preg(gxp.plugins.WFSGrid.prototype.ptype, gxp.plugins.WFSGrid);

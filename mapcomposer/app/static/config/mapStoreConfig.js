@@ -337,106 +337,288 @@
         "ptype": "gxp_wfsgrid",
         "outputTarget": "featurelist",
         "wfsURL": "http://localhost:8080/geoserver/geosolutions/wfs",
-        "featureType": "bersagli",
-        "storeFieldsNotHuman": [
-        {
-            "name": "id",              
-            "mapping": "id"
-        },
-
-        {
-            "name": "geometry",        
-            "mapping": "geometry"
-        },
-
-        {
-            "name": "id_tema",         
-            "mapping": "properties.id_tema"
-        },
-
-        {
-            "name": "superficie",      
-            "mapping": "properties.superficie"
-        },
-
-        {
-            "name": "descrizione_clc", 
-            "mapping": "properties.descrizione_clc"
-        },
-
-        {
-            "name": "tipobersaglio", 
-            "mapping": "properties.tipobersaglio"
-        },
-
-        {
-            "name": "type",		    
-            "mapping": "type"
-        }
-        ],
-        "columnModelNotHuman": [
-        {
-            "header": "Superficie",      
-            "dataIndex": "superficie"
-        },
-
-        {
-            "header": "Tipologia", 
-            "dataIndex": "tipobersaglio"
-        },
-
-        {
-            "header": "Classe Corine Land Cover", 
-            "dataIndex": "descrizione_clc"
-        }
-        ],
-        "storeFieldsHuman": [
-        {
-            "name": "id",              
-            "mapping": "id"
-        },
-
-        {
-            "name": "geometry",        
-            "mapping": "geometry"
-        },
-
-        {
-            "name": "id_tema",         
-            "mapping": "properties.id_tema"
-        },
-
-        {
-            "name": "superficie",      
-            "mapping": "properties.superficie"
-        },
-
-        {
-            "name": "descrizione_clc", 
-            "mapping": "properties.descrizione_clc"
-        },
-
-        {
-            "name": "tipobersaglio", 
-            "mapping": "properties.tipobersaglio"
-        },
-
-        {
-            "name": "type",		    
-            "mapping": "type"
-        }
-        ],
-        "columnModelHuman": [
-        {
-            "header": "Residenti",      
-            "dataIndex": "superficie"
-        },
-
-        {
-            "header": "Tipologia", 
-            "dataIndex": "tipobersaglio"
-        }
-        ],
+		"targets": {
+			"Popolazione residente": {				
+				"featureType": "popolazione_residente",
+				"fields": [
+					{
+						"name": "id",              
+						"mapping": "id"
+					},
+					{
+						"name": "geometry",        
+						"mapping": "geometry"
+					},
+					{
+						"name": "id_tema",         
+						"mapping": "properties.id_tema"
+					},
+					{
+						"name": "residenti",      
+						"mapping": "properties.residente"
+					}
+				],
+				"columnModel": [
+					{
+						"header": "Residenti",      
+						"dataIndex": "superficie"
+					}
+				],
+				"title": "Popolazione residente",
+				"type": "umano"
+			},
+			"Popolazione fluttuante turistica": {
+				"featureType": "popolazione_turistica",
+				"fields": [
+					{
+						"name": "id",              
+						"mapping": "id"
+					},
+					{
+						"name": "geometry",        
+						"mapping": "geometry"
+					},
+					{
+						"name": "id_tema",         
+						"mapping": "properties.id_tema"
+					},
+					{
+						"name": "popolazione",      
+						"mapping": "properties.superficie"
+					}
+				],
+				"columnModel": [
+					{
+						"header": "Popolazione",      
+						"dataIndex": "popolazione"
+					}
+				],
+				"title": "Popolazione fluttuante turistica",
+				"type": "umano"
+			},
+			"Addetti industria e servizi": {
+				"featureType": "industria_servizi",
+				"fields": [
+					{
+						"name": "id",              
+						"mapping": "id"
+					},
+					{
+						"name": "geometry",        
+						"mapping": "geometry"
+					},
+					{
+						"name": "id_tema",         
+						"mapping": "properties.id_tema"
+					},
+					{
+						"name": "addetti",      
+						"mapping": "properties.n_addetti"
+					},
+					{
+						"name": "denom",      
+						"mapping": "properties.denom"
+					}
+				],
+				"columnModel": [
+					{
+						"header": "Denominazione",      
+						"dataIndex": "denom"
+					},
+					{
+						"header": "N. Addetti",      
+						"dataIndex": "addetti"
+					}
+				],
+				"title": "Addetti industria e servizi",
+				"type": "umano"
+			},
+			"Addetti/utenti strutture sanitarie": {
+				"featureType": "strutture_sanitarie",
+				"fields": [
+					{
+						"name": "id",              
+						"mapping": "id"
+					},
+					{
+						"name": "geometry",        
+						"mapping": "geometry"
+					},
+					{
+						"name": "id_tema",         
+						"mapping": "properties.id_tema"
+					},
+					{
+						"name": "addetti",      
+						"mapping": "properties.n_addetti"
+					},
+					{
+						"name": "denom",      
+						"mapping": "properties.denom"
+					}
+				],
+				"columnModel": [
+					{
+						"header": "Denominazione",      
+						"dataIndex": "denom"
+					},
+					{
+						"header": "N. Addetti",      
+						"dataIndex": "addetti"
+					}
+				],
+				"title": "Addetti/utenti strutture sanitarie",
+				"type": "umano"
+			},
+			"Addetti/utenti strutture scolastiche": {
+				"featureType": "strutture_sanitarie",
+				"fields": [
+					{
+						"name": "id",              
+						"mapping": "id"
+					},
+					{
+						"name": "geometry",        
+						"mapping": "geometry"
+					},
+					{
+						"name": "id_tema",         
+						"mapping": "properties.id_tema"
+					},
+					{
+						"name": "addetti",      
+						"mapping": "properties.n_addetti"
+					},
+					{
+						"name": "denom",      
+						"mapping": "properties.denom"
+					}
+				],
+				"columnModel": [
+					{
+						"header": "Denominazione",      
+						"dataIndex": "denom"
+					},
+					{
+						"header": "N. Addetti",      
+						"dataIndex": "addetti"
+					}
+				],
+				"title": "Addetti/utenti strutture scolastiche",
+				"type": "umano"
+			},
+			"Addetti/utenti centri commerciali": {
+				"featureType": "strutture_sanitarie",
+				"fields": [
+					{
+						"name": "id",              
+						"mapping": "id"
+					},
+					{
+						"name": "geometry",        
+						"mapping": "geometry"
+					},
+					{
+						"name": "id_tema",         
+						"mapping": "properties.id_tema"
+					},
+					{
+						"name": "addetti",      
+						"mapping": "properties.n_addetti"
+					},
+					{
+						"name": "denom",      
+						"mapping": "properties.denom"
+					}
+				],
+				"columnModel": [
+					{
+						"header": "Denominazione",      
+						"dataIndex": "denom"
+					},
+					{
+						"header": "N. Addetti",      
+						"dataIndex": "addetti"
+					}
+				],
+				"title": "Addetti/utenti centri commerciali",
+				"type": "umano"
+			},
+			"Addetti/utenti centri commerciali": {
+				"featureType": "strutture_sanitarie",
+				"fields": [
+					{
+						"name": "id",              
+						"mapping": "id"
+					},
+					{
+						"name": "geometry",        
+						"mapping": "geometry"
+					},
+					{
+						"name": "id_tema",         
+						"mapping": "properties.id_tema"
+					},
+					{
+						"name": "addetti",      
+						"mapping": "properties.n_addetti"
+					},
+					{
+						"name": "denom",      
+						"mapping": "properties.denom"
+					}
+				],
+				"columnModel": [
+					{
+						"header": "Denominazione",      
+						"dataIndex": "denom"
+					},
+					{
+						"header": "N. Addetti",      
+						"dataIndex": "addetti"
+					}
+				],
+				"title": "Addetti/utenti centri commerciali",
+				"type": "umano"
+			},
+			"Zone urbanizzate": {
+				"featureType": "zone_urbanizzate",
+				"fields": [
+					{
+						"name": "id",              
+						"mapping": "id"
+					},
+					{
+						"name": "geometry",        
+						"mapping": "geometry"
+					},
+					{
+						"name": "id_tema",         
+						"mapping": "properties.id_tema"
+					},
+					{
+						"name": "superficie",      
+						"mapping": "properties.superficie"
+					},
+					{
+						"name": "clc",      
+						"mapping": "properties.descrizione_clc"
+					}
+				],
+				"columnModel": [
+					{
+						"header": "CLC",      
+						"dataIndex": "clc"
+					},
+					{
+						"header": "Superficie",      
+						"dataIndex": "superficie"
+					}
+				],
+				"title": "Zone urbanizzate",
+				"type": "ambientale"
+			}
+		},
         "index": 29
     }
     ]
