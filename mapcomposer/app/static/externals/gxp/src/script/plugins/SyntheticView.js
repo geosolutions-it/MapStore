@@ -568,8 +568,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         if(this.isNotHumanTarget() || this.isMixedTargets())
             maxRadius.radiusNotHum=-2;
-        
-        
+
         this.parseSost(maxRadius);
         
         return maxRadius;
