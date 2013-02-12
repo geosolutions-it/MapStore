@@ -317,9 +317,10 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                         var prod_sum = 0;
                         var yield_sum = 0;                    
                         for(var i = 0;i<media.length;i++){
-                            area_sum = area_sum + parseFloat(media[i][c].area);
-                            prod_sum = prod_sum + parseFloat(media[i][c].prod);
-                                                  
+							if (media[i][c]){
+								area_sum = area_sum + parseFloat(media[i][c].area);
+								prod_sum = prod_sum + parseFloat(media[i][c].prod);
+                            }                      
                         }
                         year.push(  media[0][c].time);
                         area.push(parseFloat(area_sum.toFixed(2)));

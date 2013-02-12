@@ -133,15 +133,15 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					xtype: 'label',
 					anchor:'100%',
 					fieldLabel:'Reference Year',
-					text:2008, //TODO conf
+					text:2009, //TODO conf
 					ref: 'referenceYear'
 				},{
 					ref: 'yearRangeSelector',
 					xtype: 'yearrangeselector',
 					anchor:'100%',
-					maxValue: 2008, //TODO conf
+					maxValue: 2009, //TODO conf
 					minValue: 1999, //TODO conf
-					values:[1999,2008], //TODO conf
+					values:[1999,2009], //TODO conf
 					listeners:{
 						scope:this,
 						change:function(start,end){
@@ -160,6 +160,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					autoHeight: true,
 					defaultType: 'radio',
 					columns: 1,
+					disabled:true,
 					items:[
 						{boxLabel: 'Area' , name: 'variable', inputValue: 'Area'},
 						{boxLabel: 'Production', name: 'variable', inputValue: 'Production', checked: true},
@@ -185,6 +186,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							displayField: 'label',
 							valueField:'coeff',
 							value:1,
+							disabled:true,
 							store: new Ext.data.JsonStore({
 								fields:[
 										{name:'name',dataIndex:'name'},
@@ -212,6 +214,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							displayField: 'label',
 							valueField:'coeff',
 							value: '1',
+							disabled:true,
 							store: new Ext.data.JsonStore({
 								fields:[
 										{name:'name',dataIndex:'name'},
