@@ -187,23 +187,6 @@
     }, {
         "ptype": "gxp_removelayer",
         "actionTarget": ["tree.tbar", "layertree.contextMenu"]
-    }, {
-        "ptype": "gxp_removeoverlays",
-        "actionTarget": "tree.tbar"
-    },
-    {
-        "ptype":"gxp_groupproperties",
-        "actionTarget":[
-        "tree.tbar",
-        "layertree.contextMenu"
-        ]
-    },
-    {
-        "ptype":"gxp_layerproperties",
-        "actionTarget":[
-        "tree.tbar",
-        "layertree.contextMenu"
-        ]
     },
     {
         "ptype":"gxp_zoomtolayerextent",
@@ -296,7 +279,7 @@
     {
         "ptype": "gxp_dynamicgeocoder",
         "outputTarget":"paneltbar",
-        "index": 222
+        "index": 22
     }, 
     {
         "ptype": "gxp_reversegeocoder",
@@ -316,7 +299,7 @@
         "ptype":"gxp_georeferences",
         "actionTarget":{
             "target":"paneltbar",
-            "index":24
+            "index":25
         }
     },
     {
@@ -471,7 +454,7 @@
 				"type": "umano"
 			},
 			"Addetti/utenti strutture scolastiche": {
-				"featureType": "strutture_sanitarie",
+				"featureType": "strutture_scolastiche",
 				"fields": [
 					{
 						"name": "id",              
@@ -616,6 +599,228 @@
 					}
 				],
 				"title": "Zone urbanizzate",
+				"type": "ambientale"
+			},
+			"Aree boscate": {
+				"featureType": "aree_boscate",
+				"fields": [
+					{
+						"name": "id",              
+						"mapping": "id"
+					},
+					{
+						"name": "geometry",        
+						"mapping": "geometry"
+					},
+					{
+						"name": "id_tema",         
+						"mapping": "properties.id_tema"
+					},
+					{
+						"name": "superficie",      
+						"mapping": "properties.superficie"
+					},
+					{
+						"name": "clc",      
+						"mapping": "properties.descrizione_clc"
+					}
+				],
+				"columnModel": [
+					{
+						"header": "CLC",      
+						"dataIndex": "clc"
+					},
+					{
+						"header": "Superficie",      
+						"dataIndex": "superficie"
+					}
+				],
+				"title": "Aree boscate",
+				"type": "ambientale"
+			},
+			"Aree protette": {
+				"featureType": "aree_protette",
+				"fields": [
+					{
+						"name": "id",              
+						"mapping": "id"
+					},
+					{
+						"name": "geometry",        
+						"mapping": "geometry"
+					},
+					{
+						"name": "id_tema",         
+						"mapping": "properties.id_tema"
+					},
+					{
+						"name": "superficie",      
+						"mapping": "properties.superficie"
+					},
+					{
+						"name": "clc",      
+						"mapping": "properties.descrizione_clc"
+					}
+				],
+				"columnModel": [
+					{
+						"header": "CLC",      
+						"dataIndex": "clc"
+					},
+					{
+						"header": "Superficie",      
+						"dataIndex": "superficie"
+					}
+				],
+				"title": "Aree protette",
+				"type": "ambientale"
+			},
+			"Aree agricole": {
+				"featureType": "aree_agricole",
+				"fields": [
+					{
+						"name": "id",              
+						"mapping": "id"
+					},
+					{
+						"name": "geometry",        
+						"mapping": "geometry"
+					},
+					{
+						"name": "id_tema",         
+						"mapping": "properties.id_tema"
+					},
+					{
+						"name": "superficie",      
+						"mapping": "properties.superficie"
+					},
+					{
+						"name": "clc",      
+						"mapping": "properties.descrizione_clc"
+					}
+				],
+				"columnModel": [
+					{
+						"header": "CLC",      
+						"dataIndex": "clc"
+					},
+					{
+						"header": "Superficie",      
+						"dataIndex": "superficie"
+					}
+				],
+				"title": "Aree agricole",
+				"type": "ambientale"
+			},
+			"Acque superficiali": {
+				"featureType": "aree_superficiali",
+				"fields": [
+					{
+						"name": "id",              
+						"mapping": "id"
+					},
+					{
+						"name": "geometry",        
+						"mapping": "geometry"
+					},
+					{
+						"name": "id_tema",         
+						"mapping": "properties.id_tema"
+					},
+					{
+						"name": "superficie",      
+						"mapping": "properties.superficie"
+					},
+					{
+						"name": "clc",      
+						"mapping": "properties.descrizione_clc"
+					}
+				],
+				"columnModel": [
+					{
+						"header": "CLC",      
+						"dataIndex": "clc"
+					},
+					{
+						"header": "Superficie",      
+						"dataIndex": "superficie"
+					}
+				],
+				"title": "Acque superficiali",
+				"type": "ambientale"
+			},
+			"Acque sotterranee": {
+				"featureType": "aree_sotterranee",
+				"fields": [
+					{
+						"name": "id",              
+						"mapping": "id"
+					},
+					{
+						"name": "geometry",        
+						"mapping": "geometry"
+					},
+					{
+						"name": "id_tema",         
+						"mapping": "properties.id_tema"
+					},
+					{
+						"name": "superficie",      
+						"mapping": "properties.superficie"
+					},
+					{
+						"name": "clc",      
+						"mapping": "properties.descrizione_clc"
+					}
+				],
+				"columnModel": [
+					{
+						"header": "CLC",      
+						"dataIndex": "clc"
+					},
+					{
+						"header": "Superficie",      
+						"dataIndex": "superficie"
+					}
+				],
+				"title": "Acque sotterranee",
+				"type": "ambientale"
+			},
+			"Beni culturali": {
+				"featureType": "beni_culturali",
+				"fields": [
+					{
+						"name": "id",              
+						"mapping": "id"
+					},
+					{
+						"name": "geometry",        
+						"mapping": "geometry"
+					},
+					{
+						"name": "id_tema",         
+						"mapping": "properties.id_tema"
+					},
+					{
+						"name": "superficie",      
+						"mapping": "properties.superficie"
+					},
+					{
+						"name": "clc",      
+						"mapping": "properties.descrizione_clc"
+					}
+				],
+				"columnModel": [
+					{
+						"header": "Tipologia",      
+						"dataIndex": "clc"
+					},
+					{
+						"header": "Superficie",      
+						"dataIndex": "superficie"
+					}
+				],
+				"title": "Beni culturali",
 				"type": "ambientale"
 			}
 		},

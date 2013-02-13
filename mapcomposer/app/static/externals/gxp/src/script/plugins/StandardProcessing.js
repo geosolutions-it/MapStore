@@ -529,8 +529,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 ['strutture_sanitarie','Addetti/utenti strutture sanitarie', 'calc_formula_tot', true, '-1', 'umano'],
                 ['strutture_scolastiche','Addetti/utenti strutture scolastiche', 'calc_formula_tot', true, '-1', 'umano'],
                 ['centri_commerciali','Addetti/utenti centri commerciali', 'calc_formula_tot', true, '-1', 'umano'],
-                ['xx','Utenti della strada coinvolti', 'calc_formula_tot', true, '-1', 'umano'],
-                ['yy','Utenti della strada territoriali', 'calc_formula_tot', true, '-1', 'umano'],
+                //['xx','Utenti della strada coinvolti', 'calc_formula_tot', true, '-1', 'umano'],
+                //['yy','Utenti della strada territoriali', 'calc_formula_tot', true, '-1', 'umano'],
                 ['zone_urbanizzate','Zone urbanizzate', 'calc_formula_tot', false, '0', 'ambientale'],
                 ['aree_boscate','Aree boscate', 'calc_formula_tot', false, '1', 'ambientale'],
                 ['aree_protette','Aree protette', 'calc_formula_tot', false, '2', 'ambientale'],
@@ -584,7 +584,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                             for(i=0; i<targetStore.getCount(); i++){ 
                                 store.add(targetStore.getAt(i));
                             }
-							this.selectedTargetLayer = 'bersagli';
+							this.selectedTargetLayer = 'bersagli_all';
                             this.bers.setValue(null);
                             return;
                             break;
@@ -1333,7 +1333,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 
         obj.target = this.selectedTargetName || 'Tutti i Bersagli';/*this.bers.getValue()*/ ;
         obj.targetName = this.selectedTargetName || 'Tutti i Bersagli';
-		obj.targetLayer = this.selectedTargetLayer || 'bersagli';
+		obj.targetLayer = this.selectedTargetLayer || 'bersagli_all';
 		obj.targetType = this.getTargetType();
         obj.macroTarget = this.macrobers.getValue();
         obj.classe = this.classi.getValue();

@@ -427,7 +427,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                 }
                             }
 							
-							var targetLayer = 'bersagli';
+							var targetLayer = 'bersagli_all';
 							if(status && status.targetLayer) {
 								targetLayer = status.targetLayer;
 							}
@@ -473,11 +473,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             //
                             var wfsGrid = Ext.getCmp("featuregrid");
 							if(this.isSingleTarget()) {
-								wfsGrid.loadGrids("title", this.status.targetName, null, this.selectionLayerProjection, viewParams);								
+								wfsGrid.loadGrids("title", this.status.targetName, this.selectionLayerProjection, viewParams);								
 							} else if(this.isAllHumanTargets()) {
-								wfsGrid.loadGrids("type", 'umano', null, this.selectionLayerProjection, viewParams);
+								wfsGrid.loadGrids("type", 'umano', this.selectionLayerProjection, viewParams);
 							} else if(this.isAllNotHumanTargets()) {
-								wfsGrid.loadGridsByType("type", 'ambientale', null, this.selectionLayerProjection, viewParams);
+								wfsGrid.loadGrids("type", 'ambientale', this.selectionLayerProjection, viewParams);
+							} else {
+								wfsGrid.loadGrids(null ,null , this.selectionLayerProjection, viewParams);
 							}
                             /*var humanGrid = tabPanel.getItem('featuregridhuman');
                             var notHumanGrid = tabPanel.getItem('featuregridnothuman');
@@ -579,12 +581,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }
         return null;
     },
-    
+        
     getRadius: function(){
-        return this.getMaxRadious();
-    },
-    
-    getMaxRadious: function(){
         var maxRadius={};
 
         if(this.isHumanTarget() || this.isMixedTargets())
@@ -690,11 +688,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         for(var i=0;i<maxRadius.radiusHum.length;i++){
             value= values[i];
             if(value){
-               if(value == -1)
-                  value= this.getHumanDefaultValue(maxRadius.radiusHum, i);//get first element !=-1
-                  maxRadius.radiusHum[i]=
-                            maxRadius.radiusHum[i] >= value ?
-                            maxRadius.radiusHum[i]: value;
+				if(value == -1) {
+					value= this.getHumanDefaultValue(maxRadius.radiusHum, i);//get first element !=-1
+				}
+                maxRadius.radiusHum[i]=
+                    maxRadius.radiusHum[i] >= value ?
+                    maxRadius.radiusHum[i]: value;
             }
          }
     }

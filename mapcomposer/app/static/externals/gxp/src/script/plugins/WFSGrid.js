@@ -231,13 +231,19 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 				for(var targetName in this.targets) {
 					if(this.targets.hasOwnProperty(targetName)) {
 						var grid = this.targets[targetName].grid;
-						var value = this.targets[targetName][attribute];
-						if(value === attributeValue) {
+						if(attribute) {
+							var value = this.targets[targetName][attribute];
+							if(value === attributeValue) {
+								this.unhideTabStripItem(grid);
+								this.setActiveTab(grid);
+								grids.push(grid);
+							} else {
+								this.hideTabStripItem(grid);
+							}
+						} else {
 							this.unhideTabStripItem(grid);
 							this.setActiveTab(grid);
 							grids.push(grid);
-						} else {
-							this.hideTabStripItem(grid);
 						}
 					}
 				}
@@ -246,7 +252,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 			
 			/** api: method[loadGrid]
 			 */	
-			loadGrids: function(attributeName, attributeValue, query, projection, viewParams) {				
+			loadGrids: function(attributeName, attributeValue, projection, viewParams) {				
 				var grids = this.hideAllBut(attributeName, attributeValue);
 				for(var i=0, grid, store; grid=grids[i]; i++) {
 					store = grid.getStore();
@@ -259,10 +265,10 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 						sort: "id_tema"
 					};
 					
-					if(query){
+					/*if(query) {
 						store.setBaseParam("filter", query);
 						store.setBaseParam("srsName", projection);
-					}
+					}*/
 					
 					if(viewParams){
 						store.setBaseParam("viewParams", viewParams);
@@ -287,7 +293,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         return {
 			xtype: 'actioncolumn',
 			sortable : false, 
-			width: 10,
+			width: 30,
 			items: [{
 				icon   : this.zoomToIconPath,  
 				tooltip: this.zoomToTooltip,
