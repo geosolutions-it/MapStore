@@ -252,6 +252,7 @@
     },
     {
         "ptype":"gxp_wmsgetfeatureinfo",
+		"useTabPanel": true,
         "toggleGroup":"toolGroup",
         "actionTarget":{
             "target":"paneltbar",
@@ -713,7 +714,7 @@
 				"type": "ambientale"
 			},
 			"Acque superficiali": {
-				"featureType": "aree_superficiali",
+				"featureType": "acque_superficiali",
 				"fields": [
 					{
 						"name": "id",              
@@ -750,7 +751,7 @@
 				"type": "ambientale"
 			},
 			"Acque sotterranee": {
-				"featureType": "aree_sotterranee",
+				"featureType": "acque_sotterranee",
 				"fields": [
 					{
 						"name": "id",              

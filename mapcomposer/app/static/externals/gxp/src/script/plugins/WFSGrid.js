@@ -212,8 +212,20 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 				// build store
 				targetCfg.store = this.buildStore(targetCfg);
 				
+				
 				// build grid
 				targetCfg.grid = this.buildGrid(targetCfg);
+				
+				targetCfg.store.grid = targetCfg.grid;
+				
+				targetCfg.store.on('load', function(str, records) {
+					if(records.length === 0) {
+						tabPanel.hideTabStripItem(str.grid);
+					} else {
+						tabPanel.setActiveTab(str.grid);
+					}
+				});
+				
 				Ext.apply(targetCfg.grid, config || {});
 				grids.push(targetCfg.grid);
 			}
@@ -228,6 +240,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 			 */	
 			hideAllBut: function(attribute, attributeValue) {
 				var grids  = [];
+				var activated =false;
 				for(var targetName in this.targets) {
 					if(this.targets.hasOwnProperty(targetName)) {
 						var grid = this.targets[targetName].grid;
@@ -235,14 +248,20 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 							var value = this.targets[targetName][attribute];
 							if(value === attributeValue) {
 								this.unhideTabStripItem(grid);
-								this.setActiveTab(grid);
+								/*if(!activated) {
+									this.setActiveTab(grid);
+									activated = true;
+								}*/
 								grids.push(grid);
 							} else {
 								this.hideTabStripItem(grid);
 							}
 						} else {
 							this.unhideTabStripItem(grid);
-							this.setActiveTab(grid);
+							/*if(!activated) {
+								this.setActiveTab(grid);
+								activated = true;
+							}*/
 							grids.push(grid);
 						}
 					}

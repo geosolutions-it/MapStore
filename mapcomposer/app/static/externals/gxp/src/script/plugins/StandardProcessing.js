@@ -572,37 +572,27 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 scope: this,
                 select: function(cb, record, index) {
                     var value = record.get('property');    
-                    var humans,tmpRec,i; 
+                    
                     this.selectedTargetProp = value;
                     this.selectedTargetName = record.get('name');
                     this.selectedTargetCode = record.get('code');
                     var store=this.bers.getStore();
                     
-                    store.removeAll();
                     switch (this.selectedTargetName){
                         case "Tutti i Bersagli":
-                            for(i=0; i<targetStore.getCount(); i++){ 
-                                store.add(targetStore.getAt(i));
-                            }
-							this.selectedTargetLayer = 'bersagli_all';
-                            this.bers.setValue(null);
-                            return;
+                            store.clearFilter();
+							this.selectedTargetLayer = 'bersagli_all';                            
                             break;
-                        case "Tutti i Bersagli Umani":
-                            humans=true;
+                        case "Tutti i Bersagli Umani":     
+							store.filter('type','umano');
 							this.selectedTargetLayer = 'bersagli_umani';
                             break;
-                        case "Tutti i Bersagli Ambientali":
-                            humans=false;
+                        case "Tutti i Bersagli Ambientali": 
+							store.filter('type','ambientale');
 							this.selectedTargetLayer = 'bersagli_ambientali';
                             break;
                     }
-                  
-                    for(i=0; i<targetStore.getCount(); i++){
-                        tmpRec=targetStore.getAt(i);
-                        if(humans == tmpRec.get('humans'))
-                           store.add(targetStore.getAt(i));
-                    }  
+                                      
                     
                     this.bers.setValue(null);
                 }
@@ -615,9 +605,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             id: "bers",
             width: 150,
             hideLabel : false,
-            store: new Ext.data.ArrayStore({
-                fields: ['name', 'property', 'humans', 'type']
-            }),    
+            store: targetStore,			 
             displayField: 'name',    
             typeAhead: true,
             mode: 'local',
@@ -627,13 +615,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             editable: true,
             resizable: true,    
             listeners: {
-                scope: this,
-                render: function(cb){
-                    var store=cb.getStore();
-                    for(var i=0; i<targetStore.getCount(); i++){ 
-                       store.add(targetStore.getAt(i));
-                    }
-                },
+                scope: this,                
                 select: function(cb, record, index) {
                     var value = record.get('property');                     
                     if(value){
@@ -1129,7 +1111,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             filters.push(new OpenLayers.Filter.Comparison({
                type: OpenLayers.Filter.Comparison.EQUAL_TO,
                property: this.accidentTipologyName,
-               value: this.accident.getValue()
+               value: 'POOL FIRE DA LIQUIDO INFIAMMABILE' //this.accident.getValue()
             }));
         }
         

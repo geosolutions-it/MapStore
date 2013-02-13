@@ -28,6 +28,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     extentLabel: "Ambito territoriale",
     targetLabel: "Tipo bersaglio",
     accidentLabel: "Incidente",
+	buffersLabel: "Raggi Aree Danno",
     fieldSetTitle: "Elaborazione",
     // End i18n.
         
@@ -260,7 +261,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.extent = new Ext.form.TextField({
               fieldLabel: this.extentLabel,
               id: "extent",
-              width: 150,
+              width: 200,
               readOnly: true,
               value: "Regione Piemonte",
               hideLabel : false                    
@@ -269,7 +270,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.trg = new Ext.form.TextField({
               fieldLabel: this.targetLabel,
               id: "target",
-              width: 150,
+              width: 200,
               readOnly: true,
               value: "Tutti i bersagli",
               hideLabel : false                    
@@ -278,9 +279,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.accident = new Ext.form.TextField({
               fieldLabel: this.accidentLabel,
               id: "accedent",
-              width: 150,
+              width: 200,
               readOnly: true,
               value: "Tutti gli incidenti",
+              hideLabel : false                    
+        });
+		
+		this.buffers = new Ext.form.TextArea({
+              fieldLabel: this.buffersLabel,
+              id: "buffers",
+              width: 200,
+              readOnly: true,
+              value: "",
               hideLabel : false                    
         });
            
@@ -297,7 +307,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                  this.form,
                  this.extent,
                  this.trg,
-                 this.accident
+                 this.accident,
+				 this.buffers
             ],
             buttons: [{
                 text: "Esegui Elaborazione",
@@ -414,8 +425,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             var tipologia;
                             if(status && status.accident){                                
                                 if(status.accident != 'Tutti gli Incidenti'){
-                                    tipologia = status.accident;
-                                    //alert(topologia);
+                                    tipologia = 'POOL FIRE DA LIQUIDO INFIAMMABILE'; //status.accident;                                    
                                     viewParams += ";tipologia:" + tipologia; 
                                 }
                             }
@@ -439,6 +449,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             var newLayers=[];
                             var dist= this.getRadius();
                             
+							this.buffers.setValue(this.getBuffersInfo());
+							
                             if(!this.status || this.isMixedTargets()) {
                                 newLayers.push(this.addHumanTargetBuffer(newLayers,/*seriousness*/dist.radiusHum,this.bufferLayerTitle+' (Bersagli umani)'));
                                 newLayers.push(this.addNotHumanTargetBuffer(newLayers,/*seriousness*/dist.radiusNotHum,this.bufferLayerTitle+' (Bersagli ambientali)'));
@@ -551,6 +563,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return this.controlPanel;
     },
     
+	getBuffersInfo: function() {
+		var radius = this.getRadius();
+		var info = '';
+		if(radius.radiusNotHum && radius.radiusNotHum > 0) {
+			info += 'Bersagli ambientali: ' + radius.radiusNotHum+'\n';
+		}
+		if(radius.radiusHum && radius.radiusHum.length > 0) {
+			info += 'Bersagli umani: ' + radius.radiusHum.join(', ')+'\n';
+		}
+		return info;
+	},
+	
     setStatus: function(s){
         this.status = s;
         this.elab.setValue(this.status.processing);
@@ -558,7 +582,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.extent.setValue(this.status.roi.label);
         this.trg.setValue(this.status.target);
         this.accident.setValue(this.status.accident);
-        
+        this.buffers.setValue('');
         //
         // Allow the Analytic visualizzation functionalities
         //
