@@ -680,17 +680,17 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var sostanzeStore = new Ext.data.ArrayStore({
             fields: ['name', 'value', 'accidents'],
             data :  [
-                ['Tutte le sostanze', '0', ['A','B','C','D','E','F','G','H','I','L','M']],
-                ['IDROGENO COMPRESSO', '1', ['E'] ],
-                ['OSSIGENO COMPRESSO', '2', ['G']],
-                ['GAS DI PETROLIO LIQUEFATTO', '3', ['D', 'F']],
-                ['OSSIDO DI ETILENE (+AZOTO)', '4', ['D', 'F', 'M']],
-                ['AMMONIACA ANIDRA', '5', ['B', 'L']],
-                ['OSSIGENO LIQUIDO REFRIGERATO', '6', ['G']],
-                ['GASOLIO', '7', ['H']],
-                ['BENZINA', '8', ['C', 'D', 'H']],
-                ['METANOLO', '9', ['A', 'B', 'I']],
-                ['EPICLORIDRINA', '10', ['H']]
+                ['Tutte le sostanze', 0, ['A','B','C','D','E','F','G','H','I','L','M']],
+                ['IDROGENO COMPRESSO', 1, ['E'] ],
+                ['OSSIGENO COMPRESSO', 2, ['G']],
+                ['GAS DI PETROLIO LIQUEFATTO', 3, ['D', 'F']],
+                ['OSSIDO DI ETILENE (+AZOTO)', 4, ['D', 'F', 'M']],
+                ['AMMONIACA ANIDRA', 5, ['B', 'L']],
+                ['OSSIGENO LIQUIDO REFRIGERATO', 6, ['G']],
+                ['GASOLIO', 7, ['H']],
+                ['BENZINA', 8, ['C', 'D', 'H']],
+                ['METANOLO', 9, ['A', 'B', 'I']],
+                ['EPICLORIDRINA', 10, ['H']]
             ]
         });
                
@@ -799,14 +799,14 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     }
                 },
                 select: function(cb, record, index) {
-                    var store=me.sostanze.getStore();
+                     var store=me.sostanze.getStore();
                      var sostArray = record.get('sost'); 
-                     var allRec=store.getAt(0);
-                     store.removeAll();
-                     store.add(allRec);
-                     for(var u=0; u<sostArray.length; u++){ 
-                       store.add(sostanzeStore.getAt(sostArray[u]));
-                     }    
+                     store.clearFilter();
+                     store.filterBy(function (record){
+                        var value=record.get('value'); 
+                        return (sostArray.indexOf(value) != -1 || value == '0');
+                     });
+
                      me.sostanze.setValue('Tutte le sostanze');
                      me.accident.setValue('Tutti gli Incidenti');
                      me.seriousness.setValue('Tutte le entità');
@@ -822,10 +822,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             id: "sostanzecb",
             width: 150,
             hideLabel : false,
-            store: sostanzeStore/*new Ext.data.ArrayStore({
-            fields: ['name', 'value', 'accidents'],
-            data :  [['Tutte le sostanze', '0', []]]
-            })*/,    
+            store: sostanzeStore, 
+            lastQuery:'',
             displayField: 'name',    
             typeAhead: true,
             mode: 'local',
@@ -847,12 +845,14 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     me.sostanzeCode = record.get('value');
                     var store=me.accident.getStore();
                     var accidentsArray = record.get('accidents'); 
-                    var allRec=store.getAt(0);
-                    store.removeAll();
-                    store.add(allRec);
-                    for(var u=0; u<accidentsArray.length; u++){
-                       store.add(accidentStore.getAt(accidentStore.find("value", accidentsArray[u])));
-                    }    
+                    store.clearFilter();
+                    
+                    store.filterBy(function (record){
+                        var value=record.get('value');
+                        return (accidentsArray.indexOf(value)!= -1 || value == '0');
+                     });
+                    
+                    
                     me.accident.setValue('Tutti gli Incidenti');
                     me.seriousness.setValue('Tutte le entità');
                     me.seriousnessCode= '0';
@@ -866,10 +866,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             id: "accidentcb",
             width: 150,
             hideLabel : false,
-            store:  new Ext.data.ArrayStore({
-                fields: ['name', 'value'],
-                data :  [['Tutti gli Incidenti', '0']]
-            }),    
+            store:  accidentStore,   
+            lastQuery:'',
             displayField: 'name',    
             typeAhead: true,
             mode: 'local',
@@ -917,8 +915,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         notValid= rad.notHumans[me.selectedTargetCode] == null;
                     }else
                         notValid= rad.humans[0] == null;
-
-
+                    
                     if(notValid){
                         Ext.Msg.show({
                             title: "Scenario Incidentale",
