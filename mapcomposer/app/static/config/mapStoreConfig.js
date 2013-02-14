@@ -23,7 +23,7 @@
             "ptype": "gxp_wmssource",
             "title": "Destination GeoServer",
             "version":"1.1.1",
-            "url": "http://localhost:8080/geoserver/geosolutions/ows",
+            "url": "http://localhost:8080/geoserver/destination/ows",
             "layerBaseParams": {
                 "TILED": true,
                 "TILESORIGIN": "-180,-90"
@@ -310,7 +310,7 @@
         "selectionLayerName": "aggregated_data_selection",
         "selectionLayerTitle": "Rischio Totale", 	        
         "bufferLayerName": "siig_aggregation_1_buffer",
-        "selectionLayerBaseURL": "http://localhost:8080/geoserver/geosolutions/wms",
+        "selectionLayerBaseURL": "http://localhost:8080/geoserver/destination/wms",
         "selectionLayerProjection": "EPSG:32632",
         "geometryName": "geometria",
         "accidentTipologyName": "tipologia",
@@ -319,7 +319,7 @@
     {
         "ptype": "gxp_wfsgrid",
         "outputTarget": "featurelist",
-        "wfsURL": "http://localhost:8080/geoserver/geosolutions/wfs",
+        "wfsURL": "http://localhost:8080/geoserver/destination/wfs",
 		"targets": {
 			"Popolazione residente": {				
 				"featureType": "popolazione_residente",
