@@ -628,7 +628,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 	
 	normalizeRadius: function(input) {
 		var output = [];
-		for(var i, el; el = input[i]; i++) {
+		for(var i = 0, el; el = input[i]; i++) {
 			if(el > 0) {
 				output.push(el);
 			}

@@ -189,13 +189,20 @@
 				saveMessage:authorization
 			});
 			
-            var appTabs = new Ext.Panel({
-			    layout: 'fit',
+			var appTabs = new Ext.TabPanel({
                 region: 'center',
                 border : false,
                 id : 'appTabs',
                 enableTabScroll: true
             });
+			
+            /*var appTabs = new Ext.Panel({
+			    layout: 'fit',
+                region: 'center',
+                border : false,
+                id : 'appTabs',
+                enableTabScroll: true
+            });*/
 
 			var iframe = "<iframe style='border: none; height: 100%; width: 100%' src='about.html' frameborder='0' border='0'>" + 
 						 "<a target='_blank' href='about.html'>" + GeoExplorer.prototype.aboutText + "</a> </iframe>";
