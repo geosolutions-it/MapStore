@@ -59,8 +59,7 @@
                 "visibility": false
             }
             ]
-        },
-        {
+        }, {
             "source": "osm",
             "title": "Open Street Map",
             "name": "mapnik",

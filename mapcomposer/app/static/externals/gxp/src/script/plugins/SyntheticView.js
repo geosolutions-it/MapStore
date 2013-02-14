@@ -488,7 +488,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             
 							this.buffers.setValue(this.getBuffersInfo());
 							
-							var radiusHum = this.normalizeRadius(dist.radiusHum);
+							var radiusHum = dist.radiusHum ? this.normalizeRadius(dist.radiusHum) : [];
 							var radiusNotHum = dist.radiusNotHum;
                             if(!this.status || this.isMixedTargets()) {
 								if(radiusHum.length > 0) {

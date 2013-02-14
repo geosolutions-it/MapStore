@@ -519,7 +519,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         //
         
         var targetStore = new Ext.data.ArrayStore({
-            fields: ['layer','name', 'property', 'humans', 'code', 'type'],
+            fields: ['layer','name', 'property', 'humans', 'code', 'type'],			
             data :  [
               //  ['Tutti i Bersagli', 'calc_formula_tot', ''],
                 ['popolazione_residente','Popolazione residente', 'calc_formula_tot', true, '-1', 'umano'],
@@ -540,7 +540,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 ['beni_culturali','Beni culturali', 'calc_formula_tot', false, '6', 'ambientale']
 
             ]
-        });
+        });			
         
         var targetMacroStore = new Ext.data.ArrayStore({
             fields: ['name', 'property', 'code', 'type'],
@@ -605,17 +605,19 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             id: "bers",
             width: 150,
             hideLabel : false,
-            store: targetStore,			 
+            store: targetStore,	
+			clearFilterOnReset: false,
             displayField: 'name',    
             typeAhead: true,
             mode: 'local',
+			lastQuery: '',
             forceSelection: true,
             triggerAction: 'all',
             selectOnFocus:true,
             editable: true,
             resizable: true,    
             listeners: {
-                scope: this,                
+                scope: this, 				
                 select: function(cb, record, index) {
                     var value = record.get('property');                     
                     if(value){
@@ -835,7 +837,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             triggerAction: 'all',
             selectOnFocus:true,
             editable: true,
-            resizable: true,
+            resizable: true,			
             value: "Tutte le sostanze",
             listeners: {
                 "expand": function(combo) {
