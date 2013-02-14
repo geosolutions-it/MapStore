@@ -27,7 +27,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     formLabel: "Formula",
     extentLabel: "Ambito territoriale",
     targetLabel: "Tipo bersaglio",
+    adrClassLabel: "Classe ADR",
+    substanceLabel: "Sostanze",
     accidentLabel: "Incidente",
+    seriousnessLabel: "Entità",
 	buffersLabel: "Raggi Aree Danno",
     fieldSetTitle: "Elaborazione",
     // End i18n.
@@ -275,6 +278,25 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               hideLabel : false                    
         });
         
+        this.adrClass = new Ext.form.TextField({
+              fieldLabel: this.adrClassLabel,
+              id: "adrClass",
+              width: 200,
+              readOnly: true,
+              value: "Tutte le classi",
+              hideLabel : false                    
+        });
+        
+        this.substance = new Ext.form.TextField({
+              fieldLabel: this.substanceLabel,
+              id: "substance",
+              width: 200,
+              readOnly: true,
+              value: "Tutte le sostanze",
+              hideLabel : false                    
+        });
+        
+
         this.accident = new Ext.form.TextField({
               fieldLabel: this.accidentLabel,
               id: "accedent",
@@ -283,6 +305,19 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               value: "Tutti gli incidenti",
               hideLabel : false                    
         });
+        
+        this.seriousness = new Ext.form.TextField({
+              fieldLabel: this.seriousnessLabel,
+              id: "seriousness",
+              width: 200,
+              readOnly: true,
+              value: "Tutte le entità",
+              hideLabel : false                    
+        });
+        
+        
+        
+        
 		
 		this.buffers = new Ext.form.TextArea({
               fieldLabel: this.buffersLabel,
@@ -306,7 +341,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                  this.form,
                  this.extent,
                  this.trg,
+                 this.adrClass,
+                 this.substance,
                  this.accident,
+                 this.seriousness,
 				 this.buffers
             ],
             buttons: [{
@@ -604,7 +642,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.form.setValue(this.status.form);
         this.extent.setValue(this.status.roi.label);
         this.trg.setValue(this.status.target);
+        this.adrClass.setValue(this.status.classe);
+        this.substance.setValue(this.status.sostanza);
         this.accident.setValue(this.status.accident);
+        this.seriousness.setValue(this.status.seriousness);
         this.buffers.setValue('');
         //
         // Allow the Analytic visualizzation functionalities
@@ -639,7 +680,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             maxRadius.radiusNotHum=-2;
 
         this.parseSost(maxRadius);
-        
         return maxRadius;
     },
     
