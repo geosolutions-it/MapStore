@@ -799,13 +799,17 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     }
                 },
                 select: function(cb, record, index) {
-                     var store=me.sostanze.getStore();
-                     var sostArray = record.get('sost'); 
+                     var store=me.sostanze.getStore();                     
                      store.clearFilter();
+					 
+					 var sostArray = record.get('sost'); 
                      store.filterBy(function (record){
                         var value=record.get('value'); 
                         return (sostArray.indexOf(value) != -1 || value == '0');
                      });
+					 
+					 store=me.accident.getStore();                     
+                     store.clearFilter();
 
                      me.sostanze.setValue('Tutte le sostanze');
                      me.accident.setValue('Tutti gli Incidenti');

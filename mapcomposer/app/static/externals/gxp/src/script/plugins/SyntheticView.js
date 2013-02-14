@@ -41,8 +41,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     //selectionLayerBaseURL: "http://localhost:8080/geoserver/wms",
     selectionLayerProjection: "EPSG:32632",
     
-    bufferLayerName: "geosolutions:siig_aggregation_1_buffer",
-    targetLayerName: "geosolutions:bersagli",
+    bufferLayerName: "geosolutions:siig_aggregation_1_buffer",    
     bufferLayerTitle: "Aree di danno",    
     targetLayerTitle: "Bersagli", 
     
@@ -261,7 +260,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.extent = new Ext.form.TextField({
               fieldLabel: this.extentLabel,
               id: "extent",
-              width: 200,
+              width: 150,
               readOnly: true,
               value: "Regione Piemonte",
               hideLabel : false                    
@@ -270,7 +269,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.trg = new Ext.form.TextField({
               fieldLabel: this.targetLabel,
               id: "target",
-              width: 200,
+              width: 150,
               readOnly: true,
               value: "Tutti i bersagli",
               hideLabel : false                    
@@ -279,7 +278,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.accident = new Ext.form.TextField({
               fieldLabel: this.accidentLabel,
               id: "accedent",
-              width: 200,
+              width: 150,
               readOnly: true,
               value: "Tutti gli incidenti",
               hideLabel : false                    
@@ -451,13 +450,23 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             
 							this.buffers.setValue(this.getBuffersInfo());
 							
+							var radiusHum = this.normalizeRadius(dist.radiusHum);
+							var radiusNotHum = dist.radiusNotHum;
                             if(!this.status || this.isMixedTargets()) {
-                                newLayers.push(this.addHumanTargetBuffer(newLayers,/*seriousness*/dist.radiusHum,this.bufferLayerTitle+' (Bersagli umani)'));
-                                newLayers.push(this.addNotHumanTargetBuffer(newLayers,/*seriousness*/dist.radiusNotHum,this.bufferLayerTitle+' (Bersagli ambientali)'));
+								if(radiusHum.length > 0) {
+									newLayers.push(this.addHumanTargetBuffer(newLayers,/*seriousness*/dist.radiusHum,this.bufferLayerTitle+' (Bersagli umani)'));
+								}
+								if(radiusNotHum > 0) {
+									newLayers.push(this.addNotHumanTargetBuffer(newLayers,/*seriousness*/dist.radiusNotHum,this.bufferLayerTitle+' (Bersagli ambientali)'));
+								}
                             } else if(this.isHumanTarget()) {
-                                newLayers.push(this.addHumanTargetBuffer(newLayers,/*seriousness*/dist.radiusHum,this.bufferLayerTitle+' ('+targetName+')'));                                
+								if(radiusHum.length > 0) {
+									newLayers.push(this.addHumanTargetBuffer(newLayers,/*seriousness*/dist.radiusHum,this.bufferLayerTitle+' ('+targetName+')'));                                
+								}
                             } else if(this.isNotHumanTarget()) {
-                                newLayers.push(this.addNotHumanTargetBuffer(newLayers,/*seriousness*/dist.radiusNotHum,this.bufferLayerTitle+' ('+targetName+')'));                                
+								if(radiusNotHum > 0) {
+									newLayers.push(this.addNotHumanTargetBuffer(newLayers,/*seriousness*/dist.radiusNotHum,this.bufferLayerTitle+' ('+targetName+')'));                                
+								}
                             }
                             
                             newLayers.push(this.createLayerRecord({
@@ -569,10 +578,24 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		if(radius.radiusNotHum && radius.radiusNotHum > 0) {
 			info += 'Bersagli ambientali: ' + radius.radiusNotHum+'\n';
 		}
-		if(radius.radiusHum && radius.radiusHum.length > 0) {
-			info += 'Bersagli umani: ' + radius.radiusHum.join(', ')+'\n';
+	
+		if(radius.radiusHum) {
+			var radiusHum = this.normalizeRadius(radius.radiusHum);
+			if(radiusHum.length > 0) {
+				info += 'Bersagli umani: ' + radius.radiusHum.join(', ')+'\n';
+			}
 		}
 		return info;
+	},
+	
+	normalizeRadius: function(input) {
+		var output = [];
+		for(var i, el; el = input[i]; i++) {
+			if(el > 0) {
+				output.push(el);
+			}
+		}
+		return output;
 	},
 	
     setStatus: function(s){
