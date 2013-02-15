@@ -128,7 +128,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 		strokeWidthTracks: 7,
 		strokeOpacityTracks: 0.5
 	},
-            
+    /**
+     * private: property[singlePopup]
+     * Opens Just one marker popup at time
+     */
+    singlePopup:false,
     /**
      * private: property[mapPanel]
      * the :class:`GeoExt.MapPanel` instance for the main viewport
@@ -1081,14 +1085,21 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             
             // Create the popups for markers
 			var popupTitle = this.markerPopupTitle;
+            var singlePopup = this.singlePopup;
             function onFeatureSelect(feature) {
                 if (feature.attributes.html){
-                    new GeoExt.Popup({
+                    if(this.popup && singlePopup){
+                        this.popup.close();
+                        this.popup.destroy();
+                        
+                    }
+                    this.popup = new GeoExt.Popup({
                         title: feature.attributes.title || popupTitle,
                         width: 300,
                         height: 200,
                         layout: "fit",
                         map: app.mapPanel,
+                        destroyOnClose:true,
                         location: feature.geometry.getBounds().getCenterLonLat(),
                         items: [{   
                             title: feature.fid,
@@ -1106,7 +1117,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 								}catch(e){};
 							}
                         }
-                    }).show();
+                    });
+                    this.popup.show();
                 } else {
                     // Use unselect to not highlight the marker. I could not delete the selection. This happens when I close the popup
                     selectControl.unselect(feature);
@@ -1159,7 +1171,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 					id:'injMarkerSelectControl',
 					onSelect: onFeatureSelect,
 					clickout: false,
-					multiple: true,
+					multiple: !singlePopup,
 					autoActivate: true
 				});        
 				var prev= app.mapPanel.map.getControlsByClass(selectControl.CLASS_NAME);
