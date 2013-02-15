@@ -545,9 +545,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var targetMacroStore = new Ext.data.ArrayStore({
             fields: ['name', 'property', 'code', 'type'],
             data :  [
-                ['Tutti i Bersagli', 'calc_formula_tot', '1', 'mixed'],
+                ['Tutti i Bersagli', 'calc_formula_tot', '-2', 'mixed'],
                 ['Tutti i Bersagli Umani', 'calc_formula_tot', '-1', 'umano'],
-                ['Tutti i Bersagli Ambientali', 'calc_formula_tot', '1', 'ambientale']
+                ['Tutti i Bersagli Ambientali', 'calc_formula_tot', '-2', 'ambientale']
             ]
         });
         
@@ -914,22 +914,24 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 beforeselect: function(cb, record, index){
                     var value = record.get('value');  
-                    var notValid=false;
-                    var rad=me.radiusData[me.sostanzeCode][me.accidentCode][value];
+					if(value != "0" && me.sostanzeCode != "0" && me.accidentCode != "0") {
+						var notValid=false;
+						var rad=me.radiusData[me.sostanzeCode][me.accidentCode][value];
 
-                    if((me.selectedTargetCode != "-1")){
-                        notValid= rad.notHumans[me.selectedTargetCode] == null;
-                    }else
-                        notValid= rad.humans[0] == null;
-                    
-                    if(notValid){
-                        Ext.Msg.show({
-                            title: "Scenario Incidentale",
-                            msg: "Combinazione non consentita",
-                            icon: Ext.MessageBox.WARNING
-                        });
-                      return false;
-                    }
+						if((me.selectedTargetCode != "-1" && me.selectedTargetCode != "-2")){
+							notValid= rad.notHumans[me.selectedTargetCode] == null;
+						}else
+							notValid= rad.humans[0] == null;
+						
+						if(notValid){
+							Ext.Msg.show({
+								title: "Scenario Incidentale",
+								msg: "Combinazione non consentita",
+								icon: Ext.MessageBox.WARNING
+							});
+						  return false;
+						}
+					}
                 },
                 "expand": function(combo) {
                    /* combo.list.setWidth( 'auto' );
@@ -975,6 +977,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 scope: this,
                 handler: function(){
                     this.panel.getForm().reset();
+					this.removeAOILayer(this.appTarget.mapPanel.map);
+					this.selectAOI.deactivate();
+					this.aoiButton.toggle(false, true);
+					this.selectedTargetName = null;
+					this.selectedTargetLayer = null;
                     this.resetBBOX(true);
                 }
             }, {
@@ -1257,23 +1264,32 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.form.setValue(this.status.form);
         this.setAOI(this.status.roi.bbox);
         
+		store=this.macrobers.getStore(); 
         this.macrobers.setValue(this.status.macroTarget);
-        if(this.status.macroTarget != this.status.target)
+		this.macrobers.fireEvent('select',this.macrobers, store.getAt(store.find("name", this.status.macroTarget)));
+		
+		store=this.bers.getStore(); 
+        if(this.status.macroTarget != this.status.target) {
             this.bers.setValue(this.status.target);
-        else
+			this.bers.fireEvent('select',this.bers, store.getAt(store.find("name", this.status.target)));
+        } else
             this.bers.setValue(null);
         
-        store=this.classi.getStore();
-        this.classi.fireEvent('select',this.classi, store.getAt(store.find("name", this.status.classe)));
+        store=this.classi.getStore();        
         this.classi.setValue(this.status.classe);
+		this.classi.fireEvent('select',this.classi, store.getAt(store.find("name", this.status.classe)));
         
-        store=this.sostanze.getStore();
-        this.sostanze.fireEvent('select',this.sostanze, store.getAt(store.find("name", this.status.sostanza)));
+        store=this.sostanze.getStore();        
         this.sostanze.setValue(this.status.sostanza);
+		this.sostanze.fireEvent('select',this.sostanze, store.getAt(store.find("name", this.status.sostanza)));
 
-        
-        this.accident.setValue(this.status.accident);        
+        store=this.accident.getStore(); 
+        this.accident.setValue(this.status.accident);    
+		this.accident.fireEvent('select',this.accident, store.getAt(store.find("name", this.status.accident)));
+		
+		store=this.seriousness.getStore(); 
         this.seriousness.setValue(this.status.seriousness);
+		this.seriousness.fireEvent('select',this.seriousness, store.getAt(store.find("name", this.status.seriousness)));
     },
     
 	getTargetType: function() {		
@@ -1325,7 +1341,6 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         obj.sostanza = this.sostanze.getValue();
         obj.accident = this.accident.getValue();
         obj.seriousness = this.seriousness.getValue();
-		
 
         return obj;
     }

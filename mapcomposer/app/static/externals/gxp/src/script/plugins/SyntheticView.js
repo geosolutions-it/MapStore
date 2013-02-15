@@ -717,7 +717,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     this.setRadHum(this.processingPane.radiusData[sost][acc][ser].humans, maxRadius);
          
                 if(maxRadius.radiusNotHum){
-                    if(this.processingPane.selectedTargetCode != '-1')
+                    if(this.processingPane.selectedTargetCode != '-1' && this.processingPane.selectedTargetCode != '-2')
                         this.setRadNotHum(
                             this.processingPane.radiusData[sost][acc][ser].notHumans[this.processingPane.selectedTargetCode],maxRadius, ser);
                     else
@@ -732,7 +732,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                this.setRadHum(this.processingPane.radiusData[sost][acc][ser].humans, maxRadius);
          
             if(maxRadius.radiusNotHum){
-               if(this.processingPane.selectedTargetCode != '-1')
+               if(this.processingPane.selectedTargetCode != '-1' && this.processingPane.selectedTargetCode != '-2')
                   this.setRadNotHum(
                         this.processingPane.radiusData[sost][acc][ser].notHumans[this.processingPane.selectedTargetCode],maxRadius, ser);
                else
