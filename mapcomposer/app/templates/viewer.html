@@ -175,12 +175,21 @@
 						['de','Deutsch','viewer','de','Deutsch language']
 					]
 				});
-                var appTabs = new Ext.TabPanel({
-                    region: 'center',
-                    border : false,
-                    id : 'appTabs',
-                    enableTabScroll: true
-                });         
+				
+                var appTabsOpts = {
+                        region: 'center',
+                        border : false,
+                        id : 'appTabs',
+                        enableTabScroll: true
+                    };
+                    
+                if(!serverConfig.tab && !serverConfig.cswconfig){
+                    appTabsOpts.layout = 'fit';
+                    appTabs = new Ext.Panel(appTabsOpts); 
+                }else{
+                    appTabs = new Ext.TabPanel(appTabsOpts); 
+                }
+                      
 
                 var aboutButton = new Ext.Button({
                     text: GeoExplorer.prototype.appInfoText,
@@ -233,6 +242,7 @@
                     proxy: proxy,
                     defaultSourceType: "gxp_wmssource",
                     renderToTab : 'appTabs',
+                    portalConfig: serverConfig.portalConfig,
 					xmlJsonTranslateService: serverConfig.xmlJsonTranslate  || ('http://' + window.location.host + '/xmlJsonTranslate/'),
                     about: {
                         title: "Custom Map",

@@ -1,6 +1,9 @@
 {
     "geoStoreBase":"",
     "proxy":"/http_proxy/proxy/?url=",
+    "portalConfig":{
+		"header":false
+	},
     "xmlJsonTranslate": "",
     "gsSources": {
         "google": {
