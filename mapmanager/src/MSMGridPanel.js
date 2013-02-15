@@ -1724,7 +1724,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     '</td>'+
                     '<td >'+
                         '<table class="x-btn x-btn-text-icon" style="width:30px" cellspacing="0" >'+
-                        '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonVMId(values,\'_viewBtn\',\'&auth=false&fullScreen=true\')]}\'>'+
+                        '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonVMId(values,\'_viewBtn\',\'&auth=false\')]}\'>'+
                         '<tr >'+
                         '<td class="x-btn-tl">' +
                         '<i>&nbsp;</i>' +
