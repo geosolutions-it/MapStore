@@ -110,6 +110,8 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
         var infoButton = this.actions[0].items[0];
 
         var info = {controls: []};
+		var layersToQuery = 0;
+		
         var updateInfo = function() {
             var queryableLayers = this.target.mapPanel.layers.queryBy(function(x){
                 return x.get("queryable");
@@ -124,7 +126,7 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
             }
 
             info.controls = [];
-            var layersToQuery = 0;
+            
             var atLeastOneResponse = false;
 			this.masking = false;
             queryableLayers.each(function(x){                
@@ -152,7 +154,10 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                             if (match && !match[1].match(/^\s*$/)) {
                                 atLeastOneResponse = true;
                                 this.displayPopup(
-                                    evt, x.get("title") || x.get("name"), match[1]
+                                    evt, x.get("title") || x.get("name"), match[1], function() {
+										layersToQuery=0;							
+										this.unmask();
+									}, this
                                 );
                             // no response at all
                             } else if(layersToQuery === 0 && !atLeastOneResponse) {
@@ -181,9 +186,14 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
 
         };
         
-        this.target.mapPanel.layers.on("update", updateInfo, this);
-        this.target.mapPanel.layers.on("add", updateInfo, this);
-        this.target.mapPanel.layers.on("remove", updateInfo, this);
+		var updateInfoEvent = function() {
+			if(layersToQuery === 0) {
+				updateInfo.call(this);
+			}
+		};
+        this.target.mapPanel.layers.on("update", updateInfoEvent, this);
+        this.target.mapPanel.layers.on("add", updateInfoEvent, this);
+        this.target.mapPanel.layers.on("remove", updateInfoEvent, this);
         
         return actions;
     },
@@ -213,7 +223,7 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
      *     reporting the info to the user
      * :arg text: ``String`` Body text.
      */
-    displayPopup: function(evt, title, text) {
+    displayPopup: function(evt, title, text, onClose, scope) {
         var popup;
         var popupKey = evt.xy.x + "." + evt.xy.y;
 						
@@ -255,6 +265,9 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                 listeners: {
                     close: (function(key) {
                         return function(panel){
+							if(onClose) {
+								onClose.call(scope);
+							}
                             delete this.popupCache[key];
                         };
                     })(popupKey),
