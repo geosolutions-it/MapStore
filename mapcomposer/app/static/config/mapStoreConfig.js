@@ -87,12 +87,6 @@
 				"visibility": false
 			},{
 				"source": "nrl",
-				"title": "ETOPO2 DEM",
-				"name": "nrl:ETOPO2v2C_pak",
-				"group": "Topography",
-				"visibility": false
-			},{
-				"source": "nrl",
 				"title": "Land cover 2010",
 				"name": "nrl:GLOBC2006_v2.2",
 				"group": "Land Cover",
@@ -117,12 +111,6 @@
 				"visibility": false
 			},{
 				"source": "nrl",
-				"title": "Main Hydro Features",
-				"name": "nrl:main_hydro_features_RWDB",
-				"group": "Hydrology",
-				"visibility": false
-			},{
-				"source": "nrl",
 				"title": "Rivers",
 				"name": "nrl:rivers_pak",
 				"group": "Hydrology",
@@ -135,16 +123,16 @@
 				"visibility": false
 			},{
 				"source": "nrl",
-				"title": "Inland/Perennial water",
-				"name": "nrl:inwatera",
-				"group": "Hydrology",
-				"visibility": false
-			},{
-				"source": "nrl",
 				"title": "Roads",
 				"name": "nrl:roads_pak",
 				"group": "Transportation",
 				"visibility": false
+			},{
+				"source": "nrl",
+				"title": "District Boundary",
+				"name": "nrl:district_boundary",
+				"group": "Admin",
+				"visibility": true
 			},{
 				"source": "nrl",
 				"title": "MeteoData",
@@ -153,10 +141,10 @@
 				"visibility": false
 			},{
 				"source": "nrl",
-				"title": "District Boundary",
-				"name": "nrl:district_boundary",
+				"title": "Populated Places",
+				"name": "nrl:POP_settlements_pak_main",
 				"group": "Admin",
-				"visibility": true
+				"visibility": false
 			}
 		]
 	},
