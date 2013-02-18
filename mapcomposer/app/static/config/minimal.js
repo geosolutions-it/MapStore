@@ -1,10 +1,9 @@
 {
     "geoStoreBase":"",
     "proxy":"/http_proxy/proxy/?url=",
-    "portalConfig":{
+	"portalConfig":{
 		"header":false
 	},
-    "xmlJsonTranslate": "",
     "gsSources": {
         "google": {
             "ptype": "gxp_googlesource"
@@ -25,23 +24,5 @@
         }],
         "center": [1250000.000000, 5370000.000000],
         "zoom": 5
-    },
-	
-	"customTools":[
-		{
-			"actions": ["->"], 
-			"actionTarget": "paneltbar"
-		}, {
-			"ptype": "gxp_reversegeocoder",
-			"outputTarget":"paneltbar",
-			"outputConfig": {
-				"width": "200"
-			},
-			"index": 26
-		}, {
-			"ptype": "gxp_dynamicgeocoder",
-			"outputTarget":"paneltbar",
-			"index": 27
-		}
-	]
+    }
 }

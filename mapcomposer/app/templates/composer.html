@@ -189,12 +189,19 @@
 				saveMessage:authorization
 			});
 			
-            var appTabs = new Ext.TabPanel({
-                region: 'center',
-                border : false,
-                id : 'appTabs',
-                enableTabScroll: true
-            });
+            var appTabsOpts = {
+                        region: 'center',
+                        border : false,
+                        id : 'appTabs',
+                        enableTabScroll: true
+                    };
+                    
+            if(!serverConfig.tab && !serverConfig.cswconfig){
+                appTabsOpts.layout = 'fit';
+                appTabs = new Ext.Panel(appTabsOpts); 
+            }else{
+                appTabs = new Ext.TabPanel(appTabsOpts); 
+            }
 
 			var iframe = "<iframe style='border: none; height: 100%; width: 100%' src='about.html' frameborder='0' border='0'>" + 
 						 "<a target='_blank' href='about.html'>" + GeoExplorer.prototype.aboutText + "</a> </iframe>";
@@ -288,6 +295,7 @@
                 proxy: proxy,
 				tools: serverConfig.tools,
                 xmlJsonTranslateService: serverConfig.xmlJsonTranslate || ('http://' + window.location.host + '/xmlJsonTranslate/'),
+                portalConfig:serverConfig.portalConfig,
                 defaultSourceType: "gxp_wmssource",
                 renderToTab : 'appTabs',
                 about: {

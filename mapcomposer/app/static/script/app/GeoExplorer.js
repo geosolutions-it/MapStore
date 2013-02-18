@@ -128,7 +128,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 		strokeWidthTracks: 7,
 		strokeOpacityTracks: 0.5
 	},
-            
+    /**
+     * private: property[singlePopup]
+     * Opens Just one marker popup at time
+     */
+    singlePopup:false,
     /**
      * private: property[mapPanel]
      * the :class:`GeoExt.MapPanel` instance for the main viewport
@@ -415,6 +419,9 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             });
 			
 			this.appMask.hide();
+			app.showMarkerGeoJSON('Markers','{"type":"FeatureCollection","features":[]}');
+			
+
         });
 
        var googleEarthPanel = new gxp.GoogleEarthPanel({
@@ -951,8 +958,21 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         }    
         
         if ((markerLyr && markerLyr.length) || (clusterLyr && clusterLyr.length)) {
-            //do nothing
-        }else {
+			for(var i = 0;i<markerLyr.length;i++){
+				app.mapPanel.map.removeLayer(markerLyr[i]);
+			}
+            
+			      
+            var prev= app.mapPanel.map.getControlsByClass("OpenLayers.Control.SelectFeature");
+			for (var i = 0; i<prev.length;i++){
+				if(prev[i].id=="injMarkerSelectControl"){
+					prev[i].deactivate();
+					app.mapPanel.map.removeControl(prev[i]);
+					prev[i].destroy();
+				}
+			}
+        };
+		{
             
             // Create a new parser for GeoJSON
             var geojson_format = new OpenLayers.Format.GeoJSON({
@@ -965,6 +985,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             var markersLayers = new Array();
             
             var features = geojson_format.read(geoJson);
+			if(!features) return;
 
             //unique array
             function unique(arrayName){
@@ -1064,14 +1085,21 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             
             // Create the popups for markers
 			var popupTitle = this.markerPopupTitle;
+            var singlePopup = this.singlePopup;
             function onFeatureSelect(feature) {
                 if (feature.attributes.html){
-                    new GeoExt.Popup({
-                        title: popupTitle,
+                    if(this.popup && singlePopup){
+                        this.popup.close();
+                        this.popup.destroy();
+                        
+                    }
+                    this.popup = new GeoExt.Popup({
+                        title: feature.attributes.title || popupTitle,
                         width: 300,
                         height: 200,
                         layout: "fit",
                         map: app.mapPanel,
+                        destroyOnClose:true,
                         location: feature.geometry.getBounds().getCenterLonLat(),
                         items: [{   
                             title: feature.fid,
@@ -1084,10 +1112,13 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                         }],
                         listeners: { 
                           close : function() {
-                               selectControl.unselect(feature);
-                            }
+								try{//to avoid control removal problems
+									selectControl.unselect(feature);
+								}catch(e){};
+							}
                         }
-                    }).show();
+                    });
+                    this.popup.show();
                 } else {
                     // Use unselect to not highlight the marker. I could not delete the selection. This happens when I close the popup
                     selectControl.unselect(feature);
@@ -1113,7 +1144,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 cluster_layer.addFeatures(clusters);
             }
             
-            var vectorSelect = new Array;
+            var vectorSelect = [];
             
             if(clusters.length>0 && markers.length>0){
                 vectorSelect = [cluster_layer];
@@ -1135,17 +1166,25 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             }else{
                 vectorSelect = cluster_layer;
             }
-            
-            var selectControl = new OpenLayers.Control.SelectFeature(vectorSelect ,{
-				onSelect: onFeatureSelect,
-				clickout: false,
-				multiple: true,
-                autoActivate: true
-			});        
-                  
-            app.mapPanel.map.addControl(selectControl);
-            selectControl.activate();
-            
+            if(vectorSelect && vectorSelect.length >0){
+				var selectControl = new OpenLayers.Control.SelectFeature(vectorSelect ,{
+					id:'injMarkerSelectControl',
+					onSelect: onFeatureSelect,
+					clickout: false,
+					multiple: !singlePopup,
+					autoActivate: true
+				});        
+				var prev= app.mapPanel.map.getControlsByClass(selectControl.CLASS_NAME);
+				for (var i = 0; i<prev.length;i++){
+					if(prev[i].id=="injMarkerSelectControl"){
+						prev[i].deactivate();
+						app.mapPanel.map.removeControl(prev[i]);
+						prev[i].destroy();
+					}
+				}
+				app.mapPanel.map.addControl(selectControl);
+				selectControl.activate();
+            }
         }
         
 		if(trackName){
