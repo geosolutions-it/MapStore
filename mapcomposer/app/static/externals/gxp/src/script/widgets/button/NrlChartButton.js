@@ -167,30 +167,33 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 		var chartData=[];
 		
 		for (var i =0 ; i<json.features.length; i++) {
-			//get proper object
+
 			var feature =json.features[i];
 			var obj=null;
+			//search already existing entries
 			for (var j= 0; j<chartData.length;j++){
 				if(chartData[j].region == feature.properties.region){
 					obj = chartData[j];
 				}
 			}
+			//create entry if doesn't exists yet
 			if(!obj){
 				obj = {
 					region:feature.properties.region,
 					title:feature.properties.region,
 					subtitle:feature.properties.crop,
-					rows: [],
+					rows: []/*,
 					avgs:{
 						area:0,
 						prod:0,
 						yield:0,
 						years:0
-					}
+					},
+					*/
 				};
 				chartData.push(obj);
 			}
-
+			//create a row entry
 			var yr = feature.properties.year.substring(0, feature.properties.year.lastIndexOf("-"));
 			var a = feature.properties.area;
 			var p = feature.properties.production;
@@ -200,43 +203,77 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 				time: yr,
 				area: parseFloat(a.toFixed(2)),
 				prod: parseFloat(p.toFixed(2)),
-				yield: parseFloat(yi.toFixed(2)),
-				crop: feature.properties.crop
+				yield: parseFloat(yi.toFixed(2))//,
+				//crop: feature.properties.crop
 			});
-			obj.avgs.area+=a;
-			obj.avgs.prod+=p;
-			obj.avgs.yield+=yi;
-			obj.avgs.years+=1;
+			//obj.avgs.area+=a;
+			//obj.avgs.prod+=p;
+			//obj.avgs.yield+=yi;
+			//obj.avgs.years+=1;
 
 		}
 	
 		//create mean chart if needed
 		if (chartData.length >1){
 			
-			obj = {
+			var mean = {
 				region:"all",
 				title:"Average",
 				subtitle:json.features[0].crop,
-				rows: [],
+				rows: []/*,
 				avgs:{
 					area:0,
 					prod:0,
 					yield:0,
 					years:0
-				}
+				}*/
 			};
 
-			var area = []
-			var production= [];
-			//TODO Calculate average
-			chartData.push(obj);
+			var meanareas = []
+			var meanproductions= [];
+			var meanyields = [];
+			var nyears = {};
+			//sum all values
+			for (var i= 0; i<chartData.length;i++){
+				var rows = chartData[i].rows;
+				for (var j= 0; j<rows.length;j++){
+					var yr = rows[j].time;
+					var area =rows[j].area;
+					var prod = rows[j].prod;
+					var yield =rows[j].yield;
+					meanareas[yr] = (meanareas[yr] ? meanareas[yr] :0) + area;
+					meanproductions[yr] = (meanproductions[yr] ? meanproductions[yr]:0) +prod;
+					meanyields[yr] = (meanyields[yr] ? meanyields[yr]:0) +yield;
+					nyears[yr] =(nyears[yr]?nyears[yr]:0) + 1;
+				}
+			}
+			//divide by nyears
+			for(var i=0 in nyears){
+				
+				mean.rows.push({
+					time: i,
+					area:  (meanareas[i]/nyears[i]).toFixed(2),
+					prod: (meanproductions[i]/nyears[i]).toFixed(2),
+					yield: (meanyields[i]/nyears[i]).toFixed(2)
+					
+				});
+			}
+			chartData.push(mean);
 		}	
+		
 		return chartData;
 
 	},
 	makeChart: function( data,opt ){
 		
 		var grafici = [];
+		var getAvg= function(arr,type) {
+			var sum = 0,len = arr.length;
+			for (var i=0;i<len;i++){
+				sum+=arr[i][type];
+			}
+			return sum/len;
+		};
 		
 		for (var r = 0;r<data.length;r++){
 
@@ -262,7 +299,9 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 			});
 
 			var chart;
-
+			var prodavg = getAvg(data[r].rows,'prod');
+			var yieldavg=getAvg(data[r].rows,'yield');
+			var areaavg=getAvg(data[r].rows,'area');
 			chart = new Ext.ux.HighChart({
 				series: [
 					opt.series.prod,
@@ -342,39 +381,26 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 								color: opt.series.yield.color
 							}
 						},
-						opposite: true/* ,
-						plotLines: [{ //mid values
-							value: avgs.prod,
+						opposite: true /*,
+						{plotLines: [ //NOTE all the mid values are overlapping in the middle of the chart
+						 //mid values
+							value: prodavg,
 							color: opt.series.prod.color,
-							dashStyle: 'shortdash',
-							width: 2,
-							label: {
-								text: 'Last quarter minimum'
-							}
+							dashStyle: 'shortdot',
+							width: 1
 						},{ //mid values
-							value: 1,
+							value: yieldavg,
 							color: opt.series.yield.color,
-							dashStyle: 'shortdash',
-							width: 2,
-							label: {
-								text: 'Last quarter minimum'
-							}
+							dashStyle: 'shortdot',
+							width: 1
 						},{ //mid values
-							value: 1,
+							value: areaavg,
 							color: opt.series.area.color,
-							dashStyle: 'shortdash',
-							width: 2,
-							label: {
-								text: 'Last quarter minimum'
-							}
+							dashStyle: 'shortdot',
+							width: 1
+							
 						
-						}]/*,
-						plotBands: [{ // mark the weekend
-							color: 'rgba(68, 170, 213, 0.2)',
-							from: 2,
-							to: 20000000
 						}]*/
-
 					}],
 					tooltip: {
 						shared: true,
@@ -384,124 +410,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 			});
 			grafici.push(chart);
 		}
-		//Mean chart
-		/*
-		if (data.length>=2){
-
-			
-			
-			// Store for random data
-			var store = new Ext.data.JsonStore({
-				data: obj,
-				fields: [{
-					name: 'time',
-					type: 'string'
-				}, {
-					name: 'area',
-					type: 'float'
-				}, {
-					name: 'prod',
-					type: 'float'
-				}, {
-					name: 'yield',
-					type: 'float'
-				}],
-				root: 'rows'
-			});
-
-			var chart;
-
-			chart = new Ext.ux.HighChart({
-				series: [
-					opt.series.prod,
-					opt.series.yield,
-					opt.series.area
-					
-				],
-				height: 600,
-				width: 900,
-				store: store,
-				animShift: true,
-				xField: 'time',
-				chartConfig: {
-					chart: {
-						zoomType: 'x'
-					},
-					title: {
-						text: "MEAN"
-					},
-					subtitle: {
-						text: data.subtitle
-					},
-					xAxis: [{
-						type: 'datetime',
-						categories: 'time',
-						tickWidth: 0,
-						gridLineWidth: 1
-					}],
-					yAxis: [{ // Primary yAxis
-						labels: {
-							formatter: function () {
-								return this.value + opt.series.area.unit;
-							},
-							style: {
-								color: opt.series.area.color
-							}
-						},
-						title: {
-							text: opt.series.area.name,
-							style: {
-								color: opt.series.area.color
-							}
-						}
-
-					}, { // Secondary yAxis
-						gridLineWidth: 0,
-						title: {
-							text: opt.series.prod.name,
-							style: {
-								color: opt.series.prod.color
-							}
-						},
-						labels: {
-							formatter: function () {
-								return this.value +  opt.series.prod.unit;
-							},
-							style: {
-								color:  opt.series.prod.color
-							}
-						},
-						opposite: true
-
-					}, { // Tertiary yAxis
-						gridLineWidth: 0,
-						title: {
-							text: opt.series.yield.name,
-							style: {
-								color: opt.series.yield.color
-							}
-						},
-						labels: {
-							formatter: function () {
-								return this.value + opt.series.yield.unit;
-							},
-							style: {
-								color: opt.series.yield.color
-							}
-						},
-						opposite: true
-
-					}],
-					tooltip: {
-						shared: true,
-						crosshairs: true
-					}
-				}
-			});
-			grafici.push(chart);   
 		
-		}
-		*/
 		return grafici; 
 	}	
 });
