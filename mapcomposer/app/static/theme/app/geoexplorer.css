@@ -241,6 +241,16 @@ font-family: tahoma, arial, helvetica, sans-serif;
     background-image: url(img/silk/cursor.png);
 }
 
+.gx-map-go{
+    background-image: url(img/silk/map_go.png);
+}
+
+.gx-map-edit{
+    background-image: url(img/silk/map_edit.png);
+}
+.gx-map-add{
+    background-image: url(img/silk/map_add.png);
+}
 .x-action-col-cell  .reset{
 	background-image: url(../img/decline.png) !important;
 	width:16px;
