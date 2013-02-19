@@ -126,13 +126,15 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
                 
         this.items =  [panels],
 
-        this.listeners={      
+        this.listeners={     
             bodyResize: function(p, width, height){
                 if (Ext.isIE && this.collapsed == false){
+                    for (var i = 0; i<this.items.items.length; i++){
+                        this.items.items[i].setSize(width,600);
+                    }                
                     if (this.chart[0].chart){
-                    var realWidth = width - 15;
                         for (var i = 0; i<this.chart.length; i++){
-                            this.chart[i].chart.setSize(realWidth,600);
+                            this.chart[i].chart.setSize(width,600);
                         }
                     }
                 }
