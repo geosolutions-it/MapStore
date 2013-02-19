@@ -106,14 +106,15 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
             ],
             activeItem: 0
         });
-
+        var portalItems =[this.mapPanelContainer];
+        if(this.customPanels){
+            portalItems=portalItems.concat(this.customPanels);
+        }
         this.portalItems = [{
             region: "center",
             layout: "border",
             tbar: this.toolbar,
-            items: [
-                this.mapPanelContainer
-            ]
+            items: portalItems
         }];
         
         GeoExplorer.superclass.initPortal.apply(this, arguments);        

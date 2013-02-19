@@ -146,7 +146,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     auth: false,
     
     fScreen: false,
-
+    
+   
     constructor: function(config, mapId, auth, fScreen) {
 	
 		if(mapId)
@@ -502,14 +503,15 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             activeItem: 0,
             tbar: this.toolbar
         });
-        
+        var portalPanels = [this.mapPanelContainer,
+                    westPanel];
+        if(this.customPanels){
+            var portalPanels =portalPanels.concat(this.customPanels);
+        }
         this.portalItems = [{
             region: "center",
             layout: "border",            
-            items: [
-                this.mapPanelContainer,
-                westPanel
-            ]
+            items: portalPanels
         }];
         
         GeoExplorer.superclass.initPortal.apply(this, arguments);        
