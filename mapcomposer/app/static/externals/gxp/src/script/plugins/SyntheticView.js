@@ -121,7 +121,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             var data = Ext.applyIf({
                 title: config.title, 
                 name: config.name,                
-                layer: layer
+                layer: layer,
+				properties: 'gxp_wmslayerpanel'
             }, layerRecord.data);
                         
 
