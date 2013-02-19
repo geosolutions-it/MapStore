@@ -206,7 +206,9 @@ OpenLayers.Layer.Google.v3 = {
      * APIMethod: onMapResize
      */
     onMapResize: function() {
-        if (this.visibility) {
+		var cache = OpenLayers.Layer.Google.cache[this.map.id];
+		cache.resized = true;
+        /*if (this.visibility) {
             google.maps.event.trigger(this.mapObject, "resize");
         } else {
             var cache = OpenLayers.Layer.Google.cache[this.map.id];
@@ -219,7 +221,7 @@ OpenLayers.Layer.Google.v3 = {
                 });
             }
             cache.resized = true;
-        }
+        }*/
     },
 
     /**
@@ -229,8 +231,14 @@ OpenLayers.Layer.Google.v3 = {
      * Parameters:
      * visible - {Boolean} Display the GMap elements.
      */
-    setGMapVisibility: function(visible) {
+    setGMapVisibility: function(visible) {	
         var cache = OpenLayers.Layer.Google.cache[this.map.id];
+		
+		if (visible && cache && cache.resized) {
+			google.maps.event.trigger(this.mapObject, "resize");
+			delete cache.resized;
+		}
+		
         if (cache && !cache.resized) {
             var type = this.type;
             var layers = this.map.layers;
