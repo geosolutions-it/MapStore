@@ -186,7 +186,13 @@
     }, {
         "ptype": "gxp_removelayer",
         "actionTarget": ["tree.tbar", "layertree.contextMenu"]
-    },
+    }, {
+		"ptype": "gxp_groupproperties",
+		"actionTarget": ["tree.tbar", "layertree.contextMenu"]
+	}, {
+		"ptype": "gxp_layerproperties",
+		"actionTarget": ["tree.tbar", "layertree.contextMenu"]
+	},
     {
         "ptype":"gxp_zoomtolayerextent",
         "actionTarget":{
