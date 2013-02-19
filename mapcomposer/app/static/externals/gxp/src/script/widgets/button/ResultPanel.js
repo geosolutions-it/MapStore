@@ -22,7 +22,6 @@ Ext.namespace("gxp");
 //deve prendere le configurazioni dei grafici
 //
 gxp.ControlPanel = Ext.extend(Ext.Panel, {
-    
     commodity: null,
     province: null,
     fromYear: null,
@@ -38,7 +37,7 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
         panel = new Ext.Panel({
             title: this.chart[i].chartConfig.title.text,
             layout: 'fit',
-            style:'padding:5px  5px',
+            style:'padding:5px 5px',
             border: true,                    
             items: [this.chart[i]],
             tools: [{
@@ -84,7 +83,7 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
         panels.push(panel);
     }
     
-    
+
 		this.title= "Commodity: " + this.commodity +  " - Season: Rabi",
 		this.tools= [{
 			id: 'info',
@@ -125,8 +124,20 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
 		}],
                     
                 
-        this.items =  panels,
-                
+        this.items =  [panels],
+
+        this.listeners={      
+            bodyResize: function(p, width, height){
+                if (Ext.isIE && this.collapsed == false){
+                    if (this.chart[0].chart){
+                    var realWidth = width - 15;
+                        for (var i = 0; i<this.chart.length; i++){
+                            this.chart[i].chart.setSize(realWidth,600);
+                        }
+                    }
+                }
+            }
+        },
 		gxp.ControlPanel.superclass.initComponent.call(this);
 	}
 });

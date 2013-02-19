@@ -122,8 +122,8 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 					
 					var charts  = this.makeChart(data,this.chartOpt);
 					var resultpanel = {
-						columnWidth: .99,
-						style:'padding:10px 0 10px 10px',
+						columnWidth: .95,
+                        style:'padding:10px 10px 10px 10px',
 						xtype: 'gxp_controlpanel',
 						commodity: commodity,
 						province: numRegion,
@@ -144,15 +144,15 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 							closable: true,
 							items: resultpanel
 						});
-						tabPanel.add(cropDataTab);
+						tabPanel.add(cropDataTab);  
+                       
 					}else{
 						tabs.items.each(function(a){a.collapse()});
 						tabs.add(resultpanel);
 					}
 					Ext.getCmp('id_mapTab').doLayout();
 					Ext.getCmp('id_mapTab').setActiveTab('cropData_tab');
-						
-					
+                    
                     
                 },
                 failure: function ( result, request ) {
@@ -310,7 +310,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 					
 				],
 				height: 600,
-				width: 900,
+				//width: 900,
 				store: store,
 				animShift: true,
 				xField: 'time',
