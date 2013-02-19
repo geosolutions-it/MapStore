@@ -126,7 +126,13 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
                 
         this.items =  [panels],
 
-        this.listeners={     
+        this.listeners={
+            removed: function(p){
+                if (this.ownerCt.items.length == 0){
+                    var tabPanel = Ext.getCmp('id_mapTab');
+                    tabPanel.remove('cropData_tab');
+                }
+            },
             bodyResize: function(p, width, height){
                 if (Ext.isIE && this.collapsed == false){
                     for (var i = 0; i<this.items.items.length; i++){
