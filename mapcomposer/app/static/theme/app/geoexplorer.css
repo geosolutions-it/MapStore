@@ -237,6 +237,15 @@ font-family: tahoma, arial, helvetica, sans-serif;
 .gx-layer-visibility {
     background-image: url(img/silk/eye.png);
 }
+.gx-cursor{
+    background-image: url(img/silk/cursor.png);
+}
+
+.x-action-col-cell  .reset{
+	background-image: url(../img/decline.png) !important;
+	width:16px;
+	height:16px;
+}
 
 .gx-field-label {
     font-weight: bold;
