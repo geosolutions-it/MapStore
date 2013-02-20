@@ -14,7 +14,8 @@
             "xtype":"panel",
             "id":"east", 
             "region": "east",
-            "width": 450,
+            "width": 550,
+            "minWidth":550,
             "header":false,
             "split": true,
             "collapseMode": "mini",
@@ -36,7 +37,17 @@
         }],
         "center": [1250000.000000, 5370000.000000],
         "zoom": 5
-    },"customTools":[{
+    },"customTools":[
+        {
+        "ptype":"gxp_help",
+        "actionTarget": "paneltbar",
+        "text":"About",
+        "tooltip":"About This Exemple",
+        "title":"Marker Editor",
+        "index": 26,
+        "description": "<a href='http://www.geo-solutions.it/' target='_blank'><div class='geosolutions_logo'></div></a><ul style='list-style:disc;margin-left:10px;'><li>You can add and remove marker from it using the controls on the right.<li>Click on the marker to see the popup preview.<li>Export and import all the makers using the button \"Export Markers\" or \"Import Marker(Simply copy and paste code)</li></ul>"
+
+        },{
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
 		}, {
@@ -45,11 +56,11 @@
 			"outputConfig": {
 				"width": "200"
 			},
-			"index": 26
+			"index": 27
 		}, {
 			"ptype": "gxp_dynamicgeocoder",
 			"outputTarget":"paneltbar",
-			"index": 27
+			"index": 28
 		},{
 			"ptype": "gxp_marker_editor",
 			"outputTarget":"east",
