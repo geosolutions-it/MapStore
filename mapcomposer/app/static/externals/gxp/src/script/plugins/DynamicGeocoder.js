@@ -49,7 +49,7 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
      *  ``String``
      *  tooltip for addMarker button
      */
-    markerName: "Marker",
+    markerName: "Marker_DYN_Geocoder",
 	pointRadiusMarkers: 14,
     externalGraphicMarkers: 'theme/app/img/markers/star_red.png',
     backgroundGraphicMarkers: 'theme/app/img/markers/markers_shadow.png',

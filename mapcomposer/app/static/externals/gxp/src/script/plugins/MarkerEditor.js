@@ -43,6 +43,8 @@ Ext.namespace("gxp.plugins");
 gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
  /** api: ptype = gxp_marker_editor */
     ptype: "gxp_marker_editor",
+    /** markerName */
+    markerName:'Markers',
     /** i18n */
     copyText:'Copy the text below and paste it in  the "Import Markers" window in a second time...',
     pasteText:'Paste the text in the text area and click on imoport.',
@@ -53,6 +55,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
      *  :arg config: ``Object``
      */
     addOutput: function(config) {
+        markerName= this.markerName;
 		var controlPanel = {
             collapsible:false,
             resizable:true,
@@ -62,7 +65,8 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
             //renderTo:'form',
             
             items:[
-                new Ext.FormPanel({
+                {
+                    xtype:'form',
                     border:false,
                     labelAlign: 'top',
                     ref:'form',
@@ -87,12 +91,12 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                                     xtype:'textfield',
                                     fieldLabel: 'Title',
                                     name: 'title',
-                                    allowBlank:false
+                                    allowBlank:true
                                 },{
                                     xtype:'textfield',
                                     fieldLabel:'Label',
                                     name:'label',
-                                    allowBlank:false,
+                                    allowBlank:true,
                                     maxLength:2,
                                     width:30
                                 }
@@ -164,7 +168,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                         valid: function(el){el.form.AddToMap.enable();},
                         scope: this
                     }
-                }),
+                },
             
                 new Ext.grid.GridPanel({
                     forceFit: true,
@@ -219,7 +223,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                         },
                         updateIframe:function(geoJson){
                             //var iframe = ifp.iframe.getEl().dom;
-                            app.showMarkerGeoJSON("Marker", geoJson);
+                            app.showMarkerGeoJSON(markerName, geoJson);
                         },
                         initIframe: function(geoJson){
                             /*
@@ -237,7 +241,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                                     if(iframe.contentWindow.app.mapPanel){
                                         if(iframe.contentWindow.app.mapPanel.map && iframe.contentWindow.app.mapPanel.map.getProjectionObject()){
                                             clearTimeout(timer);                                            
-                                            iframe.contentWindow.app.showMarkerGeoJSON("Marker",geoJson);
+                                            iframe.contentWindow.app.showMarkerGeoJSON(markerName,geoJson);
                                             var controls = iframe.contentWindow.app.mapPanel.map.getControlsByClass('OpenLayers.Control.Navigation');
                                             for(var i = 0; i<controls.length; ++i){
                                                 controls[i].disableZoomWheel();
@@ -250,7 +254,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                             };
                             
                             var timer = setInterval(geoJsonInjection, 100);  */
-                            app.showMarkerGeoJSON("Marker",geoJson);
+                            app.showMarkerGeoJSON(markerName,geoJson);
                         },
                         reader:new  Ext.data.JsonReader({root:'features'},[
                                 {name:'title', mapping:'properties.title'},
@@ -323,7 +327,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                         singleSelect: true,
                         listeners: {
                             rowselect: function(sm, row, rec) {
-                                controlPanel.form.getForm().loadRecord(rec);
+                                //controlPanel.form.getForm().loadRecord(rec);
                             }
                         }
                     }),
