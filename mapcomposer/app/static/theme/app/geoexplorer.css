@@ -251,8 +251,11 @@ font-family: tahoma, arial, helvetica, sans-serif;
 .gx-map-add{
     background-image: url(img/silk/map_add.png);
 }
+.gx-help{
+   background-image: url(img/silk/help.png);
+}
 .x-action-col-cell  .reset{
-	background-image: url(../img/decline.png) !important;
+	background-image: url(img/silk/delete.png) !important;
 	width:16px;
 	height:16px;
 }
@@ -279,6 +282,14 @@ font-family: tahoma, arial, helvetica, sans-serif;
     margin-left: 2px;
 }
 
+div.geosolutions_logo {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    text-align: center;
+    height: 61px;
+    background: url('img/GeoSolutions_logo.png') center  no-repeat;
+}
 
 /* TODO: Remove this if GetFeatureInfo is changed from text/html */
 

@@ -420,7 +420,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             });
 			
 			this.appMask.hide();
-			app.showMarkerGeoJSON('Markers','{"type":"FeatureCollection","features":[]}');
+			
 			
 
         });
@@ -1012,7 +1012,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 }
             }
 
-            var uniqueMarkersLayers = new Array;
+            var uniqueMarkersLayers = [];
             uniqueMarkersLayers = unique(markersLayers);
             
             for(var i=0;i<features.length;i++){
