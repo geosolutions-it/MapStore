@@ -260,10 +260,21 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 			}
 			chartData.push(mean);
 		}	
-		 //sort all year ascending
-		for (var i= 0; i< chartData.length;i++){
-            chartData[i].rows.sort(function(a,b){return a.time > b.time});
+        //sort all year ascending
+        for (var i= 0; i< chartData.length;i++){
+            //chartData[i].rows.sort(function(a,b){return a.time > b.time});
+            chartData[i].rows.sort(CompareForSort);
         
+        }
+        // Sorts array elements in ascending order numerically.
+        function CompareForSort(first, second)
+        {
+            if (first.time == second.time)
+                return 0;
+            if (first.time < second.time)
+                return -1;
+            else
+                return 1; 
         }
         
 		return chartData;
