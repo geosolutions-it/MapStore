@@ -49,6 +49,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
     copyText:'Copy the text below and paste it in  the "Import Markers" window in a second time...',
     pasteText:'Paste the text in the text area and click on imoport.',
     addToTheMapText:'Add To the Map',
+	updateText: 'Update',
     resetText:'Reset',
     removeText:'Remove',
     /** private: method[addOutput]
@@ -56,7 +57,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
      */
     addOutput: function(config) {
         markerName= this.markerName;
-		var controlPanel = {
+		var controlPanel = new Ext.Panel({
             collapsible:false,
             resizable:true,
             layout:'border',
@@ -81,7 +82,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                     
                     defaults: {anchor: '97%',msgTarget:'side'},
                    
-                    monitorValid :true,
+                    monitorValid :false,
                     items: [
                         {
                             xtype: 'compositefield',
@@ -101,28 +102,11 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                                     width:30
                                 }
                             ]
-                        },/*{
-                            xtype: 'compositefield',
-                            fieldLabel:'Coordinates',
-                            items:[
-                                {
-                                    xtype     : 'numberfield',
-                                    emptyText : 'Latitude',
-                                    flex      : 1,
-                                    allowBlank:false,
-                                    name: 'lat'
-                                },{
-                                    xtype     : 'numberfield',
-                                    emptyText : 'Longitude',
-                                    flex      : 1,
-                                    allowBlank:false,
-                                    name: 'lon'
-                                }
-                            ]
-                        },*/{
+                        },{
                                 xtype:'gxp_coordinate_picker',
                                 map:this.target.mapPanel.map,
-                                toggleGroup:this.toggleGroup
+                                toggleGroup:this.toggleGroup,
+								ref:'coordinatePicker'
                             
                         },{
                             xtype:'htmleditor',
@@ -136,38 +120,75 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                     buttons: [{
                         ref:'../AddToMap',
                         text: this.addToTheMapText,
+						appearances:{
+							update:{
+								text:this.updateText,
+								iconCls: 'icon-save'
+							},add:{
+								text:this.addToTheMapText,
+								iconCls: 'gx-map-add'
+							}
+						},
+						
                         iconCls:'gx-map-add',
-                        disabled:true,
+                        disabled:false,
+						setAppearance:function(app){
+							this.setText(this.appearances[app].text);
+							this.setIconClass(this.appearances[app].iconCls);
+							
+						},
                         handler: function(){
-                            var form = this.refOwner.getForm();
+							var formPanel = this.refOwner
+                            var form = formPanel.getForm();
+							if( !formPanel.coordinatePicker.isValid() ) return;
                             var vals = form.getValues();
-                            
-                            var store =this.refOwner.refOwner.grid.getStore();
-                            
+                            var grid = this.refOwner.refOwner.grid;
+                            var store= grid.getStore();
+                            var sm = grid.getSelectionModel();
+							var selected = sm.getSelected();
+							var id =  Ext.id();
+							if(selected){
+								id = selected.id;
+								store.remove(selected);
+							}
                             var record = new store.recordType({
                                 title:	vals.title,
                                 label:	vals.label,
                                 html:	vals.html,
                                 lat:	vals.lat,
                                 lon:	vals.lon
-                            },Ext.id());
+                            },id);
                             //var record = store.reader.readRecords([obj]);
                             store.add(record);
-                            //exemples.inclusion.addMarker()
+							formPanel.resetAll();
+							
+							
+                            
                         }
                     },{
                         text: this.resetText,
                         ref:'../clear',
                         iconCls:'icon-removelayers',
                         handler:function(){
-                            this.refOwner.getForm().reset();
+                            this.refOwner.resetAll();
+							
+							
                         }
                     }],
                     listeners: {
                         clientvalidation:function(el,valid){valid  ? el.AddToMap.enable():el.AddToMap.disable();} ,
                         valid: function(el){el.form.AddToMap.enable();},
                         scope: this
-                    }
+                    },
+					resetAll:function(){
+						var form = this.getForm();
+						var sm = controlPanel.grid.getSelectionModel();
+						form.reset();
+						this.coordinatePicker.resetPoint();
+						sm.clearSelections();
+						this.AddToMap.setAppearance("add");
+					
+					}
                 },
             
                 new Ext.grid.GridPanel({
@@ -175,8 +196,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                     border:false,
                     ref:'grid',
                     region:'center',
-                    //renderTo:'grid',
-                    
+              
                     store:new Ext.data.Store({
                         mode:'local',
                         autoload:true,
@@ -268,8 +288,8 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                         listeners:{
                             add: function(store){store.updateIframe(store.getGeoJson())},
                             remove: function(store){store.updateIframe(store.getGeoJson())},
-                            clear: function(store){store.updateIframe(store.getGeoJson())},
-                            load: function(store){store.initIframe(store.getGeoJson())}
+                            clear: function(store){store.updateIframe(store.getGeoJson());controlPanel.form.resetAll();},
+                            load: function(store){store.initIframe(store.getGeoJson());controlPanel.form.resetAll();}
                         }
                         
                     }),
@@ -289,22 +309,24 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                             
                         },{
                             id: 'latitude',
-                            width:30,
+                            width:50,
                             dataIndex:'lat',
                             header:'Lat'
                             
                         },{
                             id: 'longitude',
-                            width:30,
+                            width:50,
                             dataIndex:'lon',
                             header:'Lon'
                             
                         },{
                             id: 'html',
                             dataIndex:'html',
-                            header:'HTML',
+                            header:'Content',
                             renderer: function(value, p, record){
-                                return value.substring(0,100) + "...";
+								
+                                	var xf = Ext.util.Format;
+									return '<p>' + xf.ellipsis(xf.stripTags(value), 50) +   '</p>';
                             },
                             
                         },
@@ -316,9 +338,17 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                                     
                                     tooltip: this.removeText,
                                     handler: function(grid, rowIndex, colIndex) {
+										var sm = grid.getSelectionModel();
+										var sel = sm.getSelected();
                                         var store= grid.getStore();
                                         var rec = store.getAt(rowIndex);
+										if(sel){
+											if(sel.id == rec.id){controlPanel.form.resetAll()}
+											
+											
+										}
                                         store.remove(rec);
+										
                                     }
                                 }]
                         }
@@ -327,8 +357,15 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                         singleSelect: true,
                         listeners: {
                             rowselect: function(sm, row, rec) {
-                                //controlPanel.form.getForm().loadRecord(rec);
-                            }
+								var formPanel = controlPanel.form;
+                                formPanel.getForm().loadRecord(rec);
+								formPanel.coordinatePicker.updatePoint();
+								formPanel.AddToMap.setAppearance('update');
+                            },
+							rowdeselect: function(sm,rowIndex,record){
+								controlPanel.form.resetAll();
+							},
+							scope: this
                         }
                     }),
                     
@@ -388,6 +425,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                                             var geojson = Ext.util.JSON.decode(geojsonstring);
                                             store.loadData(geojson);
                                             b.refOwner.close();
+											
                                         }
                                         catch(e){Ext.Msg.alert("Error", "The Text you added is not well formed. Please check it");}
                                         
@@ -403,12 +441,13 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                         iconCls:'icon-removelayers',
                         handler: function(b){
                             b.refOwner.getStore().removeAll();
+							
                         }
                     
                     }]
                 })]
                 
-        };
+        });
 	
 		this.output = gxp.plugins.MarkerEditor.superclass.addOutput.call(this, Ext.apply(controlPanel,config));
 		
