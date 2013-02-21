@@ -125,6 +125,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 				properties: 'gxp_wmslayerpanel'
             }, layerRecord.data);
                         
+			if(config.params.styles) {
+				data.styles=[];
+			}
 
             var Record = GeoExt.data.LayerRecord.create(layerRecord.fields);
             return new Record(data, layer.id);
@@ -349,6 +352,23 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 				 this.buffers
             ],
             buttons: [{
+                text: "Annulla Elaborazione",
+                iconCls: 'elab-button',
+                scope: this,
+                handler: function(){        
+                    var map = this.target.mapPanel.map;
+                    
+                    this.removeLayers(map,[this.targetLayerTitle,"Bersaglio Selezionato"]);
+                    this.removeBufferLayers(map);
+                                                            
+                    Ext.getCmp("south").collapse();  
+
+					var stdElabLayer = map.getLayersByName(this.selectionLayerTitle)[0];					
+					stdElabLayer.mergeNewParams({
+						filter: ''
+					});
+                }
+            }, {
                 text: "Esegui Elaborazione",
                 iconCls: 'elab-button',
                 scope: this,

@@ -204,7 +204,10 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
      */
     addOutput: function(config) {
 		var grids = [];
-	
+		var info = {
+			currentlyLoading: 0,
+			hasData : false
+		};
 		for(var targetName in this.targets) {
 			if(this.targets.hasOwnProperty(targetName)) {
 				var targetCfg = this.targets[targetName];
@@ -218,10 +221,23 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 				
 				targetCfg.store.grid = targetCfg.grid;
 				
+				targetCfg.store.info = info;
+				
 				targetCfg.store.on('load', function(str, records) {
+					str.info.currentlyLoading--;
 					if(records.length === 0) {
+						str.grid.hide();
 						tabPanel.hideTabStripItem(str.grid);
+						if(str.info.currentlyLoading === 0 && !str.info.hasData) {
+							Ext.Msg.show({
+								title: 'Avviso',
+								msg: 'Nessun bersaglio trovato',
+								buttons: Ext.Msg.OK,
+								icon: Ext.MessageBox.WARNING
+							});
+						}
 					} else {
+						str.info.hasData = true;
 						tabPanel.setActiveTab(str.grid);
 					}
 				});
@@ -236,6 +252,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             activeTab: 0,
             items: grids,
 			targets: this.targets,
+			layoutOnTabChange: true,
 			/** api: method[hideAllBut]
 			 */	
 			hideAllBut: function(attribute, attributeValue) {
@@ -247,6 +264,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 						if(attribute) {
 							var value = this.targets[targetName][attribute];
 							if(value === attributeValue) {
+								grid.show();
 								this.unhideTabStripItem(grid);
 								/*if(!activated) {
 									this.setActiveTab(grid);
@@ -254,9 +272,11 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 								}*/
 								grids.push(grid);
 							} else {
+								grid.hide();
 								this.hideTabStripItem(grid);
 							}
 						} else {
+							grid.show();
 							this.unhideTabStripItem(grid);
 							/*if(!activated) {
 								this.setActiveTab(grid);
@@ -273,6 +293,15 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 			 */	
 			loadGrids: function(attributeName, attributeValue, projection, viewParams) {				
 				var grids = this.hideAllBut(attributeName, attributeValue);
+				if(grids.length === 0) {
+					Ext.Msg.show({
+						title: 'Avviso',
+						msg: 'Nessun bersaglio trovato',
+						buttons: Ext.Msg.OK,
+						icon: Ext.MessageBox.WARNING
+					});
+					tabPanel.collapse();
+				}				
 				for(var i=0, grid, store; grid=grids[i]; i++) {
 					store = grid.getStore();
 					store.resetTotal();
@@ -292,7 +321,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 					if(viewParams){
 						store.setBaseParam("viewParams", viewParams);
 					}
-					
+					store.info.currentlyLoading++;
+					store.info.hasData = false;
 					store.load({
 						params: params
 					});	
