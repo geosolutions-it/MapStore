@@ -108,7 +108,7 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
                     }, this.handlerOptions
                 );
             }, 
-            trigger: this.updateLonLat,
+            trigger: this.clickHandler,
             map:map,
         });
         
@@ -125,15 +125,18 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
                     flex      : 1,
                     decimalPrecision:this.decimalPrecision,
                     allowBlank:false,
-                    name: 'lat'
+                    name: 'lat',
+					listeners: {
+						scope:this,
+						change: this.updatePoint
+					}
                 },{
                     xtype: 'button',
+					ref:'clickToggle',
                     tooltip: this.pointSelectionButtionTip,
                     iconCls:this.buttonIconCls,
                     enableToggle: true,
                     toggleGroup: this.toggleGroup,
-                  
-                   
                     width:20,
                     listeners: {
                       scope: this, 
@@ -141,17 +144,17 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
                          if(pressed){
                               this.selectLonLat.activate();
                               this.updatePoint();
-                              this.latitudeField.on('change',this.updatePoint,this);
-                              this.longitudeField.on('change',this.updatePoint,this);
+                             
                               
                           }else{
                               this.selectLonLat.deactivate();
-                              this.latitudeField.un('change',this.updatePoint,this);
-                              this.longitudeField.un('change',this.updatePoint,this);
-                              var layer = map.getLayersByName(this.selectLayerName)[0];
+                             
+                              /*
+							  var layer = map.getLayersByName(this.selectLayerName)[0];
                               if(layer){
                                   map.removeLayer(layer);
                               }
+							  */
                           }
                       }
                     }
@@ -162,13 +165,18 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
                     decimalPrecision:this.decimalPrecision,
                     flex      : 1,
                     allowBlank:false,
-                    name: 'lon'
+                    name: 'lon',
+					listeners: {
+						scope:this,
+						change: this.updatePoint
+					}
                 }
             ]
         
          return  gxp.widgets.form.CoordinatePicker.superclass.initComponent.apply(this, arguments);
     },
-    updateLonLat: function(e){
+	/** event handler for the button click */
+    clickHandler: function(e){
         //get lon lat
         var map = this.map;
         var lonlat = map.getLonLatFromPixel(e.xy);
@@ -178,9 +186,11 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
         lonlat.transform(map.getProjectionObject(),new OpenLayers.Projection(this.outputSRS) );
         this.latitudeField.setValue(lonlat.lat);
         this.longitudeField.setValue(lonlat.lon);
+		this.clickToggle.toggle();
         
        
     },
+	/** gets values from the fields and drow it on the map */
     updatePoint: function(){
         var lat = this.latitudeField.getValue();
       var lon = this.longitudeField.getValue();
@@ -191,12 +201,18 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
         this.updateMapPoint(lonlat);
       }
     },
-    updateMapPoint:function(lonlat){
-        if(this.selectStyle){
-            var layer = map.getLayersByName(this.selectLayerName)[0];
+	resetPoint:function(){
+		if(this.selectStyle){
+			var layer = map.getLayersByName(this.selectLayerName)[0];
             if(layer){
                 map.removeLayer(layer);
             }
+		}
+	},
+	/** private point update */
+    updateMapPoint:function(lonlat){
+        if(this.selectStyle){
+            this.resetPoint();
             var style = new OpenLayers.Style(this.selectStyle);
             layer = new OpenLayers.Layer.Vector(this.selectLayerName,{
                 styleMap: style
