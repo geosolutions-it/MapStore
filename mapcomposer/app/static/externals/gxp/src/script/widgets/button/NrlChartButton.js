@@ -37,7 +37,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 			prod:{
 					name: 'Production Tons',
 					color: '#4572A7',
-					type: 'spline',
+					type: 'line',
 					yAxis: 1,
 					dataIndex: 'prod',
 					unit:'Tons'
@@ -46,7 +46,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 			yield:{
 					name: 'Yield Tons / Ha',
 					dashStyle: 'shortdot',
-					type: 'spline',
+					type: 'line',
 					color: '#AA4643',
 					yAxis: 2,
 					dataIndex: 'yield',
@@ -56,11 +56,12 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 			area:{
 					name: 'Area Ha',
 					color: '#89A54E',
-					type: 'spline',
+					type: 'line',
 					dataIndex: 'area',
 					unit:'Ha'
 			}
-		}
+		},
+        height: 400
 	},
     handler: function () {
 		
@@ -129,8 +130,8 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 						province: numRegion,
 						fromYear: fromYear,
 						toYear: toYear,
-						chart: charts
-						
+						chart: charts,
+                        chartHeight: this.chartOpt.height
 					};
 					if(!tabs){
 						var cropDataTab = new Ext.Panel({
@@ -218,7 +219,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 			
 			var mean = {
 				region:"all",
-				title:"Average",
+				title:"Aggregated data",
 				subtitle:json.features[0].crop,
 				rows: []/*,
 				avgs:{
@@ -252,8 +253,8 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 				
 				mean.rows.push({
 					time: i,
-					area:  (meanareas[i]/nyears[i]).toFixed(2),
-					prod: (meanproductions[i]/nyears[i]).toFixed(2),
+					area: (meanareas[i]).toFixed(2), //(meanareas[i]/nyears[i]).toFixed(2),
+					prod: (meanproductions[i]).toFixed(2), //(meanproductions[i]/nyears[i]).toFixed(2),
 					yield: (meanyields[i]/nyears[i]).toFixed(2)
 					
 				});
@@ -325,7 +326,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 					opt.series.area
 					
 				],
-				height: 600,
+				height: opt.height,
 				//width: 900,
 				store: store,
 				animShift: true,
@@ -360,7 +361,13 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 							style: {
 								color: opt.series.area.color
 							}
-						}
+						},
+                        plotLines: [{ //mid values
+							value: areaavg,
+							color: opt.series.area.color,
+							dashStyle: 'shortdot',
+							width: 3
+						}]
 
 					}, { // Secondary yAxis
 						gridLineWidth: 0,
@@ -378,7 +385,14 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 								color: opt.series.prod.color
 							}
 						},
-						opposite: true
+						opposite: true,
+                        plotLines: [{ //NOTE all the mid values are overlapping in the middle of the chart
+						 //mid values
+							value: prodavg,
+							color: opt.series.prod.color,
+							dashStyle: 'shortdot',
+							width: 3
+						}]
 
 					}, { // Tertiary yAxis
 						gridLineWidth: 0,
@@ -397,26 +411,13 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 								color: opt.series.yield.color
 							}
 						},
-						opposite: true /*,
-						{plotLines: [ //NOTE all the mid values are overlapping in the middle of the chart
-						 //mid values
-							value: prodavg,
-							color: opt.series.prod.color,
-							dashStyle: 'shortdot',
-							width: 1
-						},{ //mid values
+						opposite: true,
+                        plotLines: [{ //mid values
 							value: yieldavg,
 							color: opt.series.yield.color,
 							dashStyle: 'shortdot',
-							width: 1
-						},{ //mid values
-							value: areaavg,
-							color: opt.series.area.color,
-							dashStyle: 'shortdot',
-							width: 1
-							
-						
-						}]*/
+							width: 3
+						}]
 					}],
 					tooltip: {
 						shared: true,

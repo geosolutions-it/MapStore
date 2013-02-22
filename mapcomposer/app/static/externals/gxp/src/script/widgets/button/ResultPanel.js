@@ -27,6 +27,7 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
     fromYear: null,
     toYear: null,
     chart: null,
+    chartHeight: null,
     collapsible: true,
 	initComponent: function(){
         
@@ -143,14 +144,15 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
             },
             bodyResize: function(p, width, height){
                 if (Ext.isIE && this.collapsed == false){
+                    
                     for (var i = 0; i<this.items.items.length; i++){
-                        this.items.items[i].setSize(width,600);
+                        this.items.items[i].setSize(width,this.chartHeight);
                     }                
-                    if (this.chart[0].chart){
+                    /*if (this.chart[0].chart){
                         for (var i = 0; i<this.chart.length; i++){
                             this.chart[i].chart.setSize(width,600);
                         }
-                    }
+                    }*/
                 }
             }
         },
