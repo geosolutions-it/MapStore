@@ -27,6 +27,7 @@ nrl.form.CommodityComboBox = Ext.extend(Ext.form.ComboBox,{
 	anchor:'100%',
 	fieldLabel: 'Commodity',
 	typeAhead: true,
+    enableKeyEvents: true,
 	triggerAction: 'all',
 	lazyRender:false,
 	mode: 'local',
@@ -54,6 +55,15 @@ nrl.form.CommodityComboBox = Ext.extend(Ext.form.ComboBox,{
 	seasonFilter: function(season){
 		this.store.filter('season',season,true,true);
 	
-	}
+	},
+    listeners: {
+        expand: function( combo ){
+            for (var season in this.ownerCt.season.items.items){
+                if (this.ownerCt.season.items.items[season].checked == true){
+                    this.store.filter('season',this.ownerCt.season.items.items[season].inputValue,true,true);
+                }
+            }
+        }
+    }
 });
 Ext.reg('nrl_commoditycombobox',nrl.form.CommodityComboBox);

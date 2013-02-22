@@ -97,13 +97,12 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					name:'season',
 					ref:'season',
 					listeners: {
-						
-						select: function(group,checked){
+						/*select: function(group,checked){
 							//TODO (smart check if commodity is present in the filtered combo)
 							this.ownerCt.Commodity.setValue(this.startValue)
 							this.ownerCt.Commodity.seasonFilter(checked.inputValue);  //check it : first time dosn't run
 							
-						}
+						}*/                        
 					}
 				},{
 					xtype: 'nrl_aoifieldset',

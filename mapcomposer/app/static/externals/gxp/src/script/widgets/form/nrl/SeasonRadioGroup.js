@@ -12,11 +12,17 @@ nrl.form.SeasonRadioGroup = Ext.extend(Ext.form.RadioGroup,
 	
 	initComponent: function() {
 		this.items=[
-						{boxLabel: 'Rabi(Nov-Apr)' , name: 'season', inputValue: 'RABI'},
+						{boxLabel: 'Rabi(Nov-Apr)' , name: 'season', inputValue: 'RABI', checked: true},
 						{boxLabel: 'Kharif(May-Oct)', name: 'season', inputValue: 'KHARIF'}
 						
 						
-		]
+		],
+        this.listeners={
+            change: function(r,checked){
+                this.refOwner.Commodity.seasonFilter(checked.inputValue);
+                this.refOwner.Commodity.setValue(this.refOwner.Commodity.store.data.items[0].data.label);
+            }
+        }
 		
 		return nrl.form.SeasonRadioGroup.superclass.initComponent.apply(this, arguments);
 	}	
