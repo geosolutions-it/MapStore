@@ -87,6 +87,12 @@
 				"visibility": false
 			},{
 				"source": "nrl",
+				"title": "Crop Mask",
+				"name": "nrl:crop_mask",
+				"group": "Land Cover",
+				"visibility": false
+			},{
+				"source": "nrl",
 				"title": "Land cover 2010",
 				"name": "nrl:GLOBC2006_v2.2",
 				"group": "Land Cover",
@@ -99,13 +105,13 @@
 				"visibility": false
 			},{
 				"source": "nrl",
-				"title": "GLOBC 2006",
-				"name": "nrl:LULC2010_Pak",
+				"title": "GlobCover 2005-06",
+				"name": "nrl:GLOBC2006_v2.2",
 				"group": "Land Cover",
 				"visibility": false
 			},{
 				"source": "nrl",
-				"title": "GLOBC 2009",
+				"title": "GlobCover 2009",
 				"name": "nrl:GLOBC2009_v2.3",
 				"group": "Land Cover",
 				"visibility": false
