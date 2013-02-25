@@ -5,7 +5,7 @@
 	<groupId>it.geosolutions</groupId>
 	<artifactId>xmlJsonTranslate</artifactId>
 	<packaging>war</packaging>
-	<version>1.1.0</version>
+	<version>1.1.1-SNAPSHOT</version>
 	<name>xmlJsonTranslate</name>
 	<url>http://maven.apache.org</url>
 	
