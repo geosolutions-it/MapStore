@@ -368,6 +368,34 @@ GeoExt.Lang.add("en", {
 	"gxp.form.LanguageSwitcher.prototype":{
 		switchActionTip : "Switch Language",
 		switchConfirmationText : "Are you sure to change Language?"//Are you sure to change Language? All unsaved data will be lost
-
+	},
+	
+	"gxp.plugins.MarkerEditor.prototype":{
+		markerName:'Markers',
+		copyText:'Copy the text below and paste it in  the "Import Markers" window in a second time ...',
+		pasteText:'Paste the text in the text area and click on imoport.',
+		addToTheMapText:'Add To the Map',
+		updateText: 'Update',
+		resetText:'Reset',
+		removeText:'Remove',
+		compositeFieldTitle:  'Title',
+		compositeFieldLabel: 'Label',
+		coordinatesText: 'Coordinates',
+		contentText: 'Content',
+		gridColTitle: 'Title',
+		gridColLabel: 'Label',
+		gridColLat: 'Lat',
+		gridColLon: 'Lon',
+		gridColContent: 'Content',	
+		exportBtn:  'Export Markers',
+		importBtn: 'Import Markers',
+		removeAllBnt: 'Remove All'
+	},
+	
+	"gxp.widgets.form.CoordinatePicker.prototype":{
+	    fieldLabel: 'Coordinates',
+		pointSelectionButtionTip: 'Click to enable point selection',
+		latitudeEmptyText: 'Latitude',
+		longitudeEmptyText: 'Longitude'
 	}
 });

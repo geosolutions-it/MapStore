@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @author Lorenzo Natali
+ * @author Lorenzo Natali, Tobia Di Pisa
  */
 
 /**
@@ -52,6 +52,23 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
 	updateText: 'Update',
     resetText:'Reset',
     removeText:'Remove',
+	
+	compositeFieldTitle:  'Title',
+	compositeFieldLabel: 'Label',
+	
+	coordinatesText: 'Coordinates',
+	contentText: 'Content',
+	
+	gridColTitle: 'Title',
+	gridColLabel: 'Label',
+	gridColLat: 'Lat',
+	gridColLon: 'Lon',
+	gridColContent: 'Content',	
+	exportBtn:  'Export Markers',
+	importBtn: 'Import Markers',
+	
+	removeAllBnt: 'Remove All',
+	
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
@@ -90,12 +107,12 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                                 {
                                     flex:1,
                                     xtype:'textfield',
-                                    fieldLabel: 'Title',
+                                    fieldLabel: this.compositeFieldTitle,
                                     name: 'title',
                                     allowBlank:true
                                 },{
                                     xtype:'textfield',
-                                    fieldLabel:'Label',
+                                    fieldLabel: this.compositeFieldLabel,
                                     name:'label',
                                     allowBlank:true,
                                     maxLength:2,
@@ -112,7 +129,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                             xtype:'htmleditor',
                             name:'html',
                             allowBlank:false,
-                            fieldLabel:'Content',
+                            fieldLabel: this.contentText,
                             height:200
                         }
                     ],
@@ -299,30 +316,30 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                             id: 'title',
                             flex:1,
                             dataIndex:'title',
-                            header:'Title'
+                            header: this.gridColTitle
                             
                         },{
                             id: 'label',
-                            width:40,
+                            width:80,
                             dataIndex:'label',
-                            header:'Label'
+                            header: this.gridColLabel
                             
                         },{
                             id: 'latitude',
                             width:50,
                             dataIndex:'lat',
-                            header:'Lat'
+                            header: this.gridColLat
                             
                         },{
                             id: 'longitude',
                             width:50,
                             dataIndex:'lon',
-                            header:'Lon'
+                            header: this.gridColLon
                             
                         },{
                             id: 'html',
                             dataIndex:'html',
-                            header:'Content',
+                            header: this.gridColContent,
                             renderer: function(value, p, record){
 								
                                 	var xf = Ext.util.Format;
@@ -371,7 +388,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                     
                     bbar:[{
                         xtype:'button',
-                        text:'Export Markers',
+                        text: this.exportBtn,
                         iconCls:'gx-map-go',
                         ref:'../exportButton',
                         handler:function(b){
@@ -396,7 +413,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                     },{
                         xtype:'button',
                         iconCls:'gx-map-edit',
-                        text:'Import Markers',
+                        text: this.importBtn,
                         ref:'../importButton',
                         handler:function(b){
                             var store = b.refOwner.getStore();
@@ -436,7 +453,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                         },scope:this
                     },'->',{
                         xtype:'button',
-                        text:'Remove All',
+                        text: this.removeAllBnt,
                         ref: '../clearButton',
                         iconCls:'icon-removelayers',
                         handler: function(b){

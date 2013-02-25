@@ -35,7 +35,7 @@ Ext.onReady(function(){
     
     Ext.QuickTips.init();
     
-    var langData = [['en', 'English'],['it','Italiano']];
+    var langData = [['en', 'English'],['it','Italiano'],['fr','Français'],['de','Deutsch']];
 
     var query = location.search;        
     if(query && query.substr(0,1) === "?"){

@@ -79,10 +79,11 @@
         // Custom variables from the mapStoreConfig user configuration file 
         // ///////////////////////////////////////////////////////////////
         var proxy; 
-        var geoStoreBaseURL;        
+        var geoStoreBaseURL;  
+        var xmlJsonTranslateService;		
         var customSources;
         var serverConfig;
-        var customConfigName;
+        var customConfigName;		
 		
         // //////////////////////////////////////////////////
         // Parsing the request to get the parameters
@@ -296,7 +297,7 @@
                 modified: false,
                 proxy: proxy,
 				tools: serverConfig.tools,
-                xmlJsonTranslateService: serverConfig.xmlJsonTranslate || ('http://' + window.location.host + '/xmlJsonTranslate/'),
+                //xmlJsonTranslateService: serverConfig.xmlJsonTranslate || ('http://' + window.location.host + '/xmlJsonTranslate/'),
                 portalConfig:serverConfig.portalConfig,
                 defaultSourceType: "gxp_wmssource",
                 renderToTab : 'appTabs',
@@ -346,7 +347,8 @@
 				  
 				  if(serverConfig){
 					  proxy = location.host.indexOf('localhost:8081') != -1 ? "/proxy/?url=" : serverConfig.proxy; 
-					  geoStoreBaseURL = serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/');                  
+					  geoStoreBaseURL = serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/');  
+                      xmlJsonTranslateService = serverConfig.xmlJsonTranslate || ('http://' + window.location.host + '/xmlJsonTranslate/');	  
 					  customSources = serverConfig.gsSources;
 
 					  // ///////////////////////////////////////////////  

@@ -328,7 +328,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                             addConfig = Ext.util.JSON.decode(addConfig.data);                            
                         }
 						// ignore xmlJsonTranslateService URL
-						delete addConfig.xmlJsonTranslateService;
+						//delete addConfig.xmlJsonTranslateService;
 						this.applyConfig(Ext.applyIf(addConfig, config));
                     } else {
                         this.applyConfig(config);
@@ -537,9 +537,9 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         var configStr = Ext.util.JSON.encode(this.getState());        
         var method = "POST";
         var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
-        var mHost=pattern.exec(app.xmlJsonTranslateService);
+        var mHost=pattern.exec(xmlJsonTranslateService /*app.xmlJsonTranslateService*/);
 
-        var mUrl = app.xmlJsonTranslateService + 'HTTPWebGISSave';
+        var mUrl = xmlJsonTranslateService /*app.xmlJsonTranslateService*/ + 'HTTPWebGISSave';
         var url = mHost[2] == location.host ? mUrl : proxy + mUrl;
         OpenLayers.Request.issue({
             method: method,
@@ -618,11 +618,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      */
     showUrl: function() {
         var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
-        var mHost=pattern.exec(app.xmlJsonTranslateService);
+        var mHost=pattern.exec(xmlJsonTranslateService /*app.xmlJsonTranslateService*/);
 
 		this.appMask.show();
 		
-        var mUrl = app.xmlJsonTranslateService + 'HTTPWebGISFileDownload';
+        var mUrl = xmlJsonTranslateService /*app.xmlJsonTranslateService*/ + 'HTTPWebGISFileDownload';
         OpenLayers.Request.POST({
             url: mHost[2] == location.host ? mUrl : proxy + mUrl,
             data: this.xmlContext,
@@ -643,10 +643,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                     var elemIF = document.createElement("iframe"); 
                     elemIF.setAttribute("id","downloadIFrame");
                     var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
-                    var mHost=pattern.exec(app.xmlJsonTranslateService);
+                    var mHost=pattern.exec(xmlJsonTranslateService /*app.xmlJsonTranslateService*/);
 
-                    var mUrlEncoded = encodeURIComponent(app.xmlJsonTranslateService + "HTTPWebGISFileDownload?file="+request.responseText);
-                    var mUrl = app.xmlJsonTranslateService + "HTTPWebGISFileDownload?file="+request.responseText;
+                    var mUrlEncoded = encodeURIComponent(xmlJsonTranslateService /*app.xmlJsonTranslateService*/ + "HTTPWebGISFileDownload?file="+request.responseText);
+                    var mUrl = xmlJsonTranslateService /*app.xmlJsonTranslateService*/ + "HTTPWebGISFileDownload?file="+request.responseText;
                     elemIF.src = mHost[2] == location.host ? mUrl : proxy + mUrlEncoded; 
                     elemIF.style.display = "none"; 
                     document.body.appendChild(elemIF); 
@@ -1258,7 +1258,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         // Don't persist tools
         delete state.tools;
 		// Don't persist xmlJsonTranslateService URL
-        delete state.xmlJsonTranslateService;
+        //delete state.xmlJsonTranslateService;
         return state;
     }
 });

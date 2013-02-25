@@ -66,7 +66,8 @@ GeoExt.Lang.add("en", {
         nextText: "Next Page",
         prevText: "Previous Page",
         refreshText: "Refresh",
-        beforePageText: "Page"
+        beforePageText: "Page",
+		afterPageText : "of {0}"
     },
     "MSMPanel.prototype": {
         title : "MapManager"
@@ -84,6 +85,13 @@ GeoExt.Lang.add("en", {
     "UserManagerView.prototype":{
 		textName: 'Name',
 		textPassword: 'Password',
+		textPasswordEdit: 'New Password',
+		textPasswordConf: 'Confirm Password',
+		tooltipEdit: 'Edit user data',
+		textEditUserTitle: 'Edit user data',
+		displayMsg: "Displaying results {0} - {1} of {2}",
+		beforePageText: "Page",
+		afterPageText : "of {0}",
 		textRole: 'Role',
 		tooltipDelete: 'Delete this user',
 		textDelete: 'Delete',

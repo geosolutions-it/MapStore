@@ -203,6 +203,26 @@ UserManagerView = Ext.extend(
 			 */			
 			pageSize: 5,
 
+		    /**
+			 * Property: displayMsg
+			 * {string} string to add in displayMsg of Ext.PagingToolbar
+			 * 
+			 */
+			displayMsg: 'Displaying results {0} - {1} of {2}',
+			
+		   /**
+			* Property: beforePageText
+			* {string} The text displayed before the input item (defaults to 'Page')
+			* 
+			*/
+			beforePageText: 'Page',
+		   /**
+			* Property: afterPageText
+			* {string} Customizable piece of the default paging text (defaults to 'of {0}')
+			* 
+			*/
+			afterPageText : "of {0}",
+			
 			/**
 			 * Property: auth
 			 * {string} auth token to access geostore services
@@ -362,7 +382,7 @@ UserManagerView = Ext.extend(
 				                }
 				               },
 							    bbar: new Ext.Toolbar({
-						                 items:[
+								        items:[
 					                            '->',
 					                            {
 					                                text: userManager.textSave,
@@ -544,10 +564,13 @@ UserManagerView = Ext.extend(
 												var useridField = Ext.getCmp("userid-hidden"); 
 												var nameField = Ext.getCmp("user-textfield");
 												var passwordField = Ext.getCmp("password-textfield");
+												var passwordConfField = Ext.getCmp("passwordconf-textfield");
 												var roleDropdown = Ext.getCmp("role-dropdown"); 
 
 												if ( nameField.isValid(false) &&
 													 passwordField.isValid(false) &&
+													 passwordConfField.isValid(false) &&
+													 (passwordField.getValue() == passwordConfField.getValue()) &&
 													 (isAdmin ? roleDropdown.isValid(false) : true)
 													)
 												{
@@ -748,7 +771,10 @@ UserManagerView = Ext.extend(
                         pageSize: this.pageSize,
 										store: this.store,
 										grid: this,
-                        displayInfo: true
+                        displayInfo: true,
+						displayMsg: this.displayMsg,
+						beforePageText: this.beforePageText,
+						afterPageText: this.afterPageText
                     });	         
 				
                     this.bbar = paging;					

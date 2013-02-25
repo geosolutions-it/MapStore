@@ -170,7 +170,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         if (config.showGraticule == true){
             config.tools.push({
                 ptype: "gxp_graticule",
-                actionTarget: {target: "paneltbar", index: config.xmlJsonTranslateService ? 24 : 22}
+                actionTarget: {target: "paneltbar", index: xmlJsonTranslateService /*config.xmlJsonTranslateService*/ ? 24 : 22}
             })
         }
         
@@ -256,7 +256,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                       i18n = new Ext.i18n.Bundle({
                         bundle : "CSWViewer",
                         path : "externals/csw/i18n",
-                        lang : code == 'en' ? "en-EN" : (code == 'it' ? "it-IT" : "fr-FR")
+                        lang : code == 'en' ? "en-EN" : (code == 'it' ? "it-IT" : (code == 'fr' ? "fr-FR" : "de-DE"))
                       });
                       
                       i18n.onReady( function() {
@@ -490,7 +490,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 			
         }
 
-		if(this.xmlJsonTranslateService)
+		if(xmlJsonTranslateService /*this.xmlJsonTranslateService*/)
 		{
 			tools.push(new Ext.Button({
 				tooltip: this.saveMapText,
@@ -536,9 +536,9 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 							handler: function(){
 								if(fp.getForm().isValid()){
                                   var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
-                                  var mHost=pattern.exec(this.xmlJsonTranslateService);
+                                  var mHost=pattern.exec(xmlJsonTranslateService /*this.xmlJsonTranslateService*/);
 
-                                  var mUrl = this.xmlJsonTranslateService + 'HTTPWebGISFileUpload';
+                                  var mUrl = xmlJsonTranslateService /*this.xmlJsonTranslateService*/ + 'HTTPWebGISFileUpload';
 								  fp.getForm().submit({
 									  url: mHost[2] == location.host ? mUrl : this.proxy + mUrl,
 									  waitMsg: this.uploadWaitMsg,

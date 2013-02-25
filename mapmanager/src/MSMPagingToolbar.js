@@ -157,10 +157,17 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
     refreshText: "Refresh",
     /**
     * Property: beforePageText
-    * {string} string to add in DeleteMap tooltip
+    * {string} The text displayed before the input item (defaults to 'Page')
     * 
     */
     beforePageText: 'Page',
+   /**
+    * Property: afterPageText
+    * {string} Customizable piece of the default paging text (defaults to 'of {0}')
+    * 
+    */
+	afterPageText : "of {0}",
+	
     /**
      * Method: initComponent
      * Initializes the component

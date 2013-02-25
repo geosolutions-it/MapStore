@@ -22,20 +22,26 @@
  */
 Ext.namespace('gxp.widgets.form');
 gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
+
     xtype: 'gxp_coordinate_picker',
+	
     /** i18n */
     fieldLabel:'Coordinates',
+	
     pointSelectionButtionTip:'Click to enable point selection',
+	
      /**
      * Property: latitudeEmptyText
      * {string} emptyText of the latitude field
      */
      latitudeEmptyText:'Latitude',
+	 
     /**
      * Property: longitudeEmptyText
      * {string} emptyText of the longitude field
      */
      longitudeEmptyText:'Longitude',
+	 
     /** end of i18n */
     
     /**

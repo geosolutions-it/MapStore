@@ -404,6 +404,35 @@ GeoExt.Lang.add("it", {
 		switchActionTip :"Cambiamento Lingua" ,
 		switchConfirmationText : "Si è sicuri di voler cambiare lingua?"//Si è sicuri di voler cambiare lingua? I dati non salvati saranno persi
 
+	},
+
+	"gxp.plugins.MarkerEditor.prototype":{
+		markerName: 'Markers',
+		copyText: 'Copia il testo sottostante e incollalo nella finestra "Import Markers" in un secondo momento ...',
+		pasteText: "Incolla il testo nell'area sottostante e clicca su Importa.",
+		addToTheMapText:'Aggiungi alla mappa',
+		updateText: 'Aggiorna',
+		resetText:'Reimposta',
+		removeText:'Rimuovi',
+		compositeFieldTitle:  'Titolo',
+		compositeFieldLabel: 'Etichetta',
+		coordinatesText: 'Coordinate',
+		contentText: 'Contenuto',
+		gridColTitle: 'Titolo',
+		gridColLabel: 'Etichetta',
+		gridColLat: 'Lat',
+		gridColLon: 'Lon',
+		gridColContent: 'Contenuto',	
+		exportBtn:  'Esporta Markers',
+		importBtn: 'Importa Markers',
+		removeAllBnt: 'Rimuovi Tutti'
+	},
+	
+	"gxp.widgets.form.CoordinatePicker.prototype":{
+	    fieldLabel: 'Coordinate',
+		pointSelectionButtionTip: 'Clicca sulla mappa per abilitare la selezione del punto',
+		latitudeEmptyText: 'Latitudine',
+		longitudeEmptyText: 'Longitudine'
 	}
 	
 });
