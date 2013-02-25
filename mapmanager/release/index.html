@@ -17,7 +17,10 @@
         <link rel="stylesheet" type="text/css" href="lib/ext/resources/css/xtheme-gray.css" />
         <link rel="stylesheet" type="text/css" href="theme/css/mapstoremanager.css" />
         <link href="theme/css/style.css" rel="stylesheet" type="text/css" />
-        		
+        <link rel="stylesheet" href="theme/css/slide.css" type="text/css" media="all" charset="utf-8"><!--GeoSolutions SLIDE-->
+		<!-- gallery buttons -->
+		<link href="theme/css/scrollable-buttons.css" rel="stylesheet" type="text/css" />
+
         <!-- ExtJS scripts -->
         <script type="text/javascript" src="lib/ext/adapter/ext/ext-base.js"></script>
         <script type="text/javascript" src="lib/ext/ext-all-debug.js"></script>
@@ -45,6 +48,8 @@
         <!-- translation data  -->
         <script type="text/javascript" src="translations/it.js"></script>
         <script type="text/javascript" src="translations/en.js"></script>
+		<script type="text/javascript" src="translations/de.js"></script>
+		<script type="text/javascript" src="translations/fr.js"></script>
         
         <style type="text/css">
             body {overflow: auto;
@@ -110,6 +115,68 @@
   </div>
   
   
+   <!-- Gallery SLIDE -->
+   <div id="gallerywrapper">
+   <h1 class="gallery-title">Gallery</h1>
+   <a class="prev browse left"></a>
+  <div id="gallery">
+    
+    <!-- scrollable items -->
+    <div style="left:0px;" id="samples">
+      
+      <!-- tabs -->
+      <div class="tool" style="/*background-image:url(http://www.geo-solutions.it/static/img/background-box.png)*/">
+		<div class="slidecontent" ><br/>
+			<b>Marker Editor</b> is developed to create, save and share markers in a simple and intuitive way . 
+			You can import and export the markers just copying and pasting some text. This is a simple approch to integrate MapStore inside your CMS, using the MapStore marker injection functionality.
+			<b>Try to edit the markers and html popup content in the demo</b>.
+			<br /><div class="moreinfo"><a href="../mapcomposer/viewer?config=markerEditor" target="_blank">Try The Demo</a></div>
+		</div><img src="theme/images/marker-editor.jpg" style=" float:right; margin:50px 50px 0 0; width:220px; " />
+                
+      </div>
+      
+      <!-- tabs -->
+      <div class="tool" style="/*background-image:url(http://www.geo-solutions.it/static/img/background-box.png)*/">
+        
+        <div class="slidecontent"><br/>
+            <b>Chart Visualization</b>. MapStore can be used with many other libraries. You can add your libreries and develop your widgets
+			and plugins. Integration with complex charts drowing applications like HighCharts is only an exemple.
+			
+            <br /><br /><div class="moreinfo"><a href="http://84.33.2.24/MapStore/" target="_blank">Preview Demo</a></div><br/><br/>
+			<!-- <div class="moreinfo"><a href="http://foreststats.org/" target="_blank">YUI Charts Demo</a></div> -->
+        </div><img src="theme/images/charts1.png" style=" float:right; margin:50px 50px 0 0; width:220px; " />
+	</div>
+	  
+	  <div class="tool" style="/*background-image:url(http://www.geo-solutions.it/static/img/background-box.png)*/">
+        
+        <div class="slidecontent"><br/>
+            <b>GeoPortal</b>. MapStore can be integrated with GeoNetwork and other services easily, so you can have a complete GeoPortal integrated with
+			the map viewer. MapStore can communicate with CSW (Catalog Services on Web) and browse the content, see the metadata and add the layers on the
+			map.
+            <br /><br /><div class="moreinfo"><a href="http://datigis.comune.fi.it/MapStore/" target="_blank">See a Sample</a></div><br/><br/>		
+        </div><img src="theme/images/geoportal.png" style=" float:right; margin:50px 50px 0 0; width:220px; " />
+      </div>
+      
+      <!-- tabs -->
+      
+    </div>
+    
+    <!-- required for IE6/IE7 --><br class="clearall">
+    
+    <!-- thumbnails -->
+    <div id="thumbs" class="t">
+      
+      <!-- intro page navi button -->
+      
+      
+    </div>
+  </div>
+   
+<!-- "next page" action -->
+<a class="next browse right"></a>
+</div>
+  <!-- /Gallery SLIDE -->
+   
   <div id="mailinglists">
   
 	<table border=0 cellspacing=5 style="margin: 10px auto"><tr><td >
@@ -192,9 +259,10 @@
 // initialize scrollable and return the programming API
 
 var scrollable = $("#scroll").scrollable({
-	items: '#tools',
-	size: 1,
-	clickable: false
+items: '#tools',
+size: 1,
+clickable: false,
+circular: true
 
 });
 
@@ -204,6 +272,19 @@ var api = scrollable.navigator({api: true});
 // use the autoscroll plugin
 var autoscroll = scrollable.autoscroll({autoplay: true, loop: true, interval:8000});
 
+var gallery = $("#gallery").scrollable({
+items: '#samples',
+size: 1,
+clickable: false,
+circular: true
+
+});
+
+// use the navigator plugin
+var api = gallery.navigator({api: true});
+
+// use the autoscroll plugin
+var autoscroll = gallery.autoscroll({autoplay: true, loop: true, interval:8000});
 
 
 </script>
