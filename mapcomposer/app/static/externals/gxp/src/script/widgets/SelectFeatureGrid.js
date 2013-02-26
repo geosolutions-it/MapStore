@@ -38,6 +38,12 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 	 *the feature name to display, as returned by WMS getFeatureInfo 
 	 */
 	displayField:"fname",
+    
+    tooltipAdd: "Add",
+    
+    tooltipClear: "Clear",
+    
+    tooltipAddFromMap: "Add from map",
 	
 	/*NOTE 
 		contains the configuration of comboBox, for pratical reason
@@ -95,6 +101,7 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 				nativeSrs : "EPSG:32642",
 				target:this.target,
 				text:'Add from map',
+                tooltip: this.tooltipAddFromMap,
 				iconCls:'icon-map-add',
 				store: this.store,
 				toggleGroup:this.toggleGroup,
@@ -116,6 +123,7 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 			{
 				xtype:'tbbutton',
 				text:'Add',
+                tooltip: this.tooltipAdd,
 				iconCls:'icon-add',
 				handler:function(){
 						var selectCombo = new gxp.form.WFSSearchComboBox(Ext.apply({vendorParams:this.vendorParams},this.comboConfig));
@@ -156,6 +164,7 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 			{
 				xtype:'tbbutton',
 				text:'Clear',
+                tooltip: this.tooltipClear,
 				iconCls:'icon-delete',
 				handler:function(){
 						this.store.removeAll();

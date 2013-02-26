@@ -37,6 +37,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 			prod:{
 					name: 'Production Tons',
 					//color: '#4572A7',
+                    lcolor: 'rgb(139,184,237)',
                     color: 'rgb(69,114,167)',
 					type: 'line',
 					yAxis: 1,
@@ -49,6 +50,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 					dashStyle: 'shortdot',
 					type: 'line',
 					//color: '#AA4643',
+                    lcolor: 'rgb(240,140,137)',
                     color: 'rgb(170,70,67)',
 					yAxis: 2,
 					dataIndex: 'yield',
@@ -58,6 +60,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 			area:{
 					name: 'Area Ha',
 					//color: '#89A54E',
+                    lcolor: 'rgb(207,235,148)',
                     color: 'rgb(137,165,78)',
 					type: 'line',
 					dataIndex: 'area',
@@ -379,7 +382,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 						},
                         plotLines: [{ //mid values
 							value: areaavg,
-							color: 'rgb(207,235,148)',
+							color: opt.series.area.lcolor,
 							dashStyle: 'line',
 							width: 2
 						}]
@@ -404,7 +407,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                         plotLines: [{ //NOTE all the mid values are overlapping in the middle of the chart
 						 //mid values
 							value: prodavg,
-							color: 'rgb(139,184,237)',
+							color: opt.series.prod.lcolor,
 							dashStyle: 'line',
 							width: 2
 						}]
@@ -429,7 +432,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 						opposite: true,
                         plotLines: [{ //mid values
 							value: yieldavg,
-							color: 'rgb(240,140,137)',
+							color: opt.series.yield.lcolor,
 							dashStyle: 'line',
 							width: 2
 						}]
