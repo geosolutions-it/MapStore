@@ -84,7 +84,9 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
                 removed: function(panel){
                     if (this.ownerCt.items.length == 0){
                         var tabPanel = Ext.getCmp('cropData_tab');
-                        tabPanel.remove(this.ownerCt);
+                        if(tabPanel){
+                            tabPanel.remove(this.ownerCt);
+                        }
                     }
                 }
             }         

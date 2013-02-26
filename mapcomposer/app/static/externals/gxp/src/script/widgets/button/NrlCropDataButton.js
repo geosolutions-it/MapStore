@@ -26,10 +26,10 @@ Ext.namespace('gxp.widgets.button');
  *    Base class to create chart
  *
  */
-gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
+gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 
     /** api: xtype = gxp_nrlchart */
-    xtype: 'gxp_nrlChartButton',
+    xtype: 'gxp_nrlCropDataButton',
     iconCls: "gxp-icon-nrl-chart",
     form: null,
     chartOpt:{
@@ -450,4 +450,4 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 	}	
 });
 
-Ext.reg(gxp.widgets.button.NrlChartButton.prototype.xtype, gxp.widgets.button.NrlChartButton);
+Ext.reg(gxp.widgets.button.NrlCropDataButton.prototype.xtype, gxp.widgets.button.NrlCropDataButton);

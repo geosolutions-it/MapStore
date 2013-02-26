@@ -256,7 +256,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 			],	
 			buttons:[{
                 text:'Compute',
-                xtype: 'gxp_nrlChartButton',
+                xtype: 'gxp_nrlCropDataButton',
 				ref: '../chartbutton',
                 target:this.target,
 				form: this,disabled:true
