@@ -83,7 +83,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
         
         var data = this.form.output.getForm().getValues();
         var regionList = data.region_list.toLowerCase();
-        var commodity = data.crop.toLowerCase();        
+        var commodity = data.crop.toLowerCase();
+        var season = data.season.toLowerCase();
         var granType = data.areatype;
         var fromYear = data.startYear;
         var toYear = data.endYear;
@@ -133,6 +134,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                         style:'padding:10px 10px 10px 10px',
 						xtype: 'gxp_controlpanel',
 						commodity: commodity,
+                        season: season,
 						province: numRegion,
 						fromYear: fromYear,
 						toYear: toYear,
