@@ -340,8 +340,8 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 					},
                     exporting: {
                         enabled: true,
-                        width: 1200
-                        //url: "http://84.33.2.24/highcharts-export/"
+                        width: 1200,
+                        url: "http://84.33.2.24/highcharts-export/"
                     },
 					title: {
 						text: data[r].title.toUpperCase()
@@ -349,12 +349,12 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 					subtitle: {
                         text: '<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+'</span><br />'+
                               '<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean:  '+ prodavg.toFixed(2) +'</span><br />'+
-                              '<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean:  '+ yieldavg.toFixed(2) +'</span><br />',
+                              '<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean:  '+ yieldavg.toFixed(2) +'</span>',
                         align: 'left',
                         verticalAlign: 'bottom',
                         useHTML: true,
                         x: 30,
-                        y: -20
+                        y: -25
 					},
 					xAxis: [{
 						type: 'datetime',
