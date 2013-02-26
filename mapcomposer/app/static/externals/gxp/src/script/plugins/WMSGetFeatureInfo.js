@@ -54,7 +54,31 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
      */
     popupTitle: "Feature Info",
 	
-	noDataMsg: "No data returned from the server",
+	/** api: config[closePrevious]
+     *  ``Boolean``
+     *  Close previous popups when opening a new one.
+     */
+	closePrevious: true,
+	
+	/** api: config[loadingMask]
+     *  ``Boolean``
+     *  Use a loading mask during get feature info.
+     */
+	loadingMask: true,
+	
+	/** api: config[maskMessage]
+     *  ``String``
+     *  Message for the loading mask.
+     */
+	maskMessage: 'Getting info...',
+	
+	/** api: config[useTabPanel]
+     *  ``Boolean``
+     *  Use a loading mask during get feature info.
+     */
+	useTabPanel: false,
+    
+    noDataMsg: "No data returned from the server",
     
     /** api: config[vendorParams]
      *  ``Object``
@@ -86,6 +110,8 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
         var infoButton = this.actions[0].items[0];
 
         var info = {controls: []};
+		var layersToQuery = 0;
+		
         var updateInfo = function() {
             var queryableLayers = this.target.mapPanel.layers.queryBy(function(x){
                 return x.get("queryable");
@@ -100,28 +126,54 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
             }
 
             info.controls = [];
-            queryableLayers.each(function(x){
+            
+            var atLeastOneResponse = false;
+			this.masking = false;
+            queryableLayers.each(function(x){                
+                
                 var control = new OpenLayers.Control.WMSGetFeatureInfo({
                     url: x.getLayer().url,
                     queryVisible: true,
                     layers: [x.getLayer()],
-                    vendorParams: this.vendorParams,
+                    vendorParams: x.getLayer().vendorParams || this.vendorParams,
                     eventListeners: {
-                        getfeatureinfo: function(evt) {
-                            var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
-                            if (match && !match[1].match(/^\s*$/)) {
-                                this.displayPopup(
-                                    evt, x.get("title") || x.get("name"), match[1]
-                                );
-                            }else{
-								Ext.Msg.show({
-								    title: this.popupTitle,
-									msg: this.noDataMsg,
-									buttons: Ext.Msg.OK,
-									icon: Ext.MessageBox.WARNING
-								});	
+                        beforegetfeatureinfo: function(evt) {
+                            atLeastOneResponse = false
+                            layersToQuery++;
+							if(this.loadingMask && !this.masking) {								
+								this.target.mapPanel.el.mask(this.maskMessage);
+								this.masking = true;
 							}
                         },
+                        getfeatureinfo: function(evt) {
+                            layersToQuery--;
+							if(layersToQuery === 0) {
+								this.unmask();		
+							}
+                            var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
+                            if (match && !match[1].match(/^\s*$/)) {
+                                atLeastOneResponse = true;
+                                this.displayPopup(
+                                    evt, x.get("title") || x.get("name"), match[1], function() {
+										layersToQuery=0;							
+										this.unmask();
+									}, this
+                                );
+                            // no response at all
+                            } else if(layersToQuery === 0 && !atLeastOneResponse) {
+                                Ext.Msg.show({
+                                    title: this.popupTitle,
+                                    msg: this.noDataMsg,
+                                    buttons: Ext.Msg.OK,
+                                    icon: Ext.MessageBox.WARNING
+                                });
+                            }
+                            
+                        },
+						nogetfeatureinfo: function(evt) {
+							layersToQuery=0;							
+							this.unmask();							
+						},
                         scope: this
                     }
                 });
@@ -134,13 +186,36 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
 
         };
         
-        this.target.mapPanel.layers.on("update", updateInfo, this);
-        this.target.mapPanel.layers.on("add", updateInfo, this);
-        this.target.mapPanel.layers.on("remove", updateInfo, this);
+		var updateInfoEvent = function() {
+			if(layersToQuery === 0) {
+				updateInfo.call(this);
+			}
+		};
+        this.target.mapPanel.layers.on("update", updateInfoEvent, this);
+        this.target.mapPanel.layers.on("add", updateInfoEvent, this);
+        this.target.mapPanel.layers.on("remove", updateInfoEvent, this);
         
         return actions;
     },
 
+	unmask: function() {
+		if(this.loadingMask) {
+			this.target.mapPanel.el.unmask();
+			this.masking = false;
+		}
+	},
+	
+	/** private: method[removeAllPopups] removes all open popups
+     */
+    removeAllPopups: function(evt, title, text) {
+		for(var key in this.popupCache) {
+			if(this.popupCache.hasOwnProperty(key)) {
+				this.popupCache[key].close();
+				delete this.popupCache[key];
+			}
+		}
+	},
+	
     /** private: method[displayPopup]
      * :arg evt: the event object from a 
      *     :class:`OpenLayers.Control.GetFeatureInfo` control
@@ -148,25 +223,51 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
      *     reporting the info to the user
      * :arg text: ``String`` Body text.
      */
-    displayPopup: function(evt, title, text) {
+    displayPopup: function(evt, title, text, onClose, scope) {
         var popup;
         var popupKey = evt.xy.x + "." + evt.xy.y;
-
+						
+		var item = this.useTabPanel ? {
+			title: title,										
+			html: text,
+			autoScroll: true
+		} : {
+            title: title,			
+            layout: "fit",			
+            html: text,
+            autoScroll: true,
+            autoWidth: true,
+            collapsible: true
+        };
+						
         if (!(popupKey in this.popupCache)) {
+			if(this.closePrevious) {
+				this.removeAllPopups();
+			}
+			var items = this.useTabPanel ? [{
+				xtype: 'tabpanel',
+				activeTab: 0,
+				items: [item]
+			}] : [item];
+			
             popup = this.addOutput({
                 xtype: "gx_popup",
                 title: this.popupTitle,
-                layout: "accordion",
+                layout: this.useTabPanel ? "fit" : "accordion",
                 location: evt.xy,
                 map: this.target.mapPanel,
                 width: 490,
                 height: 320,
                 /*anchored: true,
                 unpinnable : true,*/
+				items: items,
                 draggable: true,
                 listeners: {
                     close: (function(key) {
                         return function(panel){
+							if(onClose) {
+								onClose.call(scope);
+							}
                             delete this.popupCache[key];
                         };
                     })(popupKey),
@@ -176,17 +277,11 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
             this.popupCache[popupKey] = popup;
         } else {
             popup = this.popupCache[popupKey];
+			
+			var container = this.useTabPanel ? popup.items.first() : popup;
+			container.add(item);
         }
-
-        // extract just the body content
-        popup.add({
-            title: title,
-            layout: "fit",
-            html: text,
-            autoScroll: true,
-            autoWidth: true,
-            collapsible: true
-        });
+		        
         popup.doLayout();
     }
     
