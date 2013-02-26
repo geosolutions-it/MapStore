@@ -102,7 +102,21 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							this.ownerCt.Commodity.setValue(this.startValue)
 							this.ownerCt.Commodity.seasonFilter(checked.inputValue);  //check it : first time dosn't run
 							
-						}*/                        
+						}*/
+                        change: function(c,checked){
+                            var commodity = this.ownerCt.Commodity;
+                            commodity.seasonFilter(checked.inputValue);
+                            commodity.setValue(commodity.store.data.items[0].data.label);
+                        },
+                        afterrender: function(c){
+                            var data = new Date();
+                            var n = data.getMonth();
+                            if (n>=4 && n<=9){
+                                c.setValue('KHARIF');
+                            }else{
+                                c.setValue('RABI');
+                            }
+                        }
 					}
 				},{
 					xtype: 'nrl_aoifieldset',
@@ -125,9 +139,17 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					allowBlank:false,
 					name:'crop',
 					anchor:'100%',
-					ref: 'Commodity'
-					
-					
+					ref: 'Commodity',
+                    listeners: {
+                        expand: function( combo ){
+                            var season = this.ownerCt.season;
+                            for (var seasons in season.items.items){
+                                if (season.items.items[seasons].checked == true){
+                                    this.store.filter('season',season.items.items[seasons].inputValue,true,true);
+                                }
+                            }
+                        }
+                    }
 				},{
 					xtype: 'label',
 					anchor:'100%',
