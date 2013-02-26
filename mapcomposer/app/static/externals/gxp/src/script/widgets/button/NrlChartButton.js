@@ -338,15 +338,21 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 					chart: {
 						zoomType: 'x'
 					},
+                    exporting: {
+                        enabled: true,
+                        width: 1200
+                        //url: "http://84.33.2.24/highcharts-export/"
+                    },
 					title: {
 						text: data[r].title.toUpperCase()
 					},
 					subtitle: {
-                        text: '<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+  
-                                '</span><br/><span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean:  '+ prodavg.toFixed(2) +
-                                '</span><br/><span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean:  '+ yieldavg.toFixed(2) +'</span>',
+                        text: '<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+'</span><br />'+
+                              '<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean:  '+ prodavg.toFixed(2) +'</span><br />'+
+                              '<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean:  '+ yieldavg.toFixed(2) +'</span><br />',
                         align: 'left',
                         verticalAlign: 'bottom',
+                        useHTML: true,
                         x: 30,
                         y: -20
 					},
@@ -373,7 +379,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 						},
                         plotLines: [{ //mid values
 							value: areaavg,
-							color: opt.series.area.color,
+							color: 'rgb(207,235,148)',
 							dashStyle: 'line',
 							width: 2
 						}]
@@ -398,7 +404,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
                         plotLines: [{ //NOTE all the mid values are overlapping in the middle of the chart
 						 //mid values
 							value: prodavg,
-							color: opt.series.prod.color,
+							color: 'rgb(139,184,237)',
 							dashStyle: 'line',
 							width: 2
 						}]
@@ -423,7 +429,7 @@ gxp.widgets.button.NrlChartButton = Ext.extend(Ext.Button, {
 						opposite: true,
                         plotLines: [{ //mid values
 							value: yieldavg,
-							color: opt.series.yield.color,
+							color: 'rgb(240,140,137)',
 							dashStyle: 'line',
 							width: 2
 						}]
