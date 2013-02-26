@@ -124,11 +124,12 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                 control.deactivate();  // TODO: remove when http://trac.openlayers.org/ticket/2130 is closed
                 control.destroy();
             }
-
+			
             info.controls = [];
-            
+            var started = false;
             var atLeastOneResponse = false;
 			this.masking = false;
+			
             queryableLayers.each(function(x){                
                 
                 var control = new OpenLayers.Control.WMSGetFeatureInfo({
@@ -138,25 +139,33 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                     vendorParams: x.getLayer().vendorParams || this.vendorParams,
                     eventListeners: {
                         beforegetfeatureinfo: function(evt) {
-                            atLeastOneResponse = false
-                            layersToQuery++;
-							if(this.loadingMask && !this.masking) {								
+							//first getFeatureInfo in chain
+							if(!started){
+								started= true;
+								atLeastOneResponse=false;
+								layersToQuery=queryableLayers.length;
+							}
+                            
+							if(this.loadingMask && !this.masking) {
 								this.target.mapPanel.el.mask(this.maskMessage);
 								this.masking = true;
 							}
                         },
                         getfeatureinfo: function(evt) {
                             layersToQuery--;
+							//last get feature info in chain
 							if(layersToQuery === 0) {
-								this.unmask();		
+								this.unmask();
+								started=false;
+								
 							}
                             var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
                             if (match && !match[1].match(/^\s*$/)) {
                                 atLeastOneResponse = true;
                                 this.displayPopup(
                                     evt, x.get("title") || x.get("name"), match[1], function() {
-										layersToQuery=0;							
-										this.unmask();
+										/*layersToQuery=0;
+										this.unmask();*/
 									}, this
                                 );
                             // no response at all
@@ -171,7 +180,7 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                             
                         },
 						nogetfeatureinfo: function(evt) {
-							layersToQuery=0;							
+							layersToQuery--;							
 							this.unmask();							
 						},
                         scope: this
