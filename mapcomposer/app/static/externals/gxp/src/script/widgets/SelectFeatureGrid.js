@@ -137,7 +137,7 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
                                 var location = new OpenLayers.Feature.Vector(geom,attributes);
 								//add if missing to the store
                                 var store = this.store;
-                                var record =new store.recordType(location,obj.id);
+                                var record =new store.recordType(location);
 								var presentRecord = this.store.getById(record.id);
 								if(!presentRecord){
 									store.add(record);
