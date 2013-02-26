@@ -27,12 +27,13 @@ Ext.ux.YearRangeSelector = Ext.extend(Ext.form.CompositeField,{
 	maxValue: 2012,
 	values:[1992,2012],
 	increment:1,
-	sliderWidth:80,
+	//sliderWidth:100,
 	events:['change'],
 	initComponent:function(){
 		this.addEvents('change');
 		
 		var slider  = new Ext.slider.MultiSlider({
+				flex:1,
 				fieldLabel:'Range',
 				width:this.sliderWidth,
 				ref:'slider',

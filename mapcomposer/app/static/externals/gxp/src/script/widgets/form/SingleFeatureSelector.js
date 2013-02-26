@@ -58,7 +58,7 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
     sortBy:"province",
 	displayField:"name",
     pageSize:10,
-    wfsComboSize:140,
+    //wsfsComboSize:140,
     tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>",
     //for get feature info
     nativeSrs : "EPSG:32642",
@@ -117,6 +117,7 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
 				vendorParams:this.vendorParams,
 				autoWidth:false,
                 width:this.wfsComboSize,
+				flex:1,
 				fieldLabel: this.fieldLabel,
                 url: this.url,
                 typeName:this.typeName,
