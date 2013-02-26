@@ -103,7 +103,7 @@ EmbedMapDialog = Ext.extend(Ext.Container, {
         this.snippetArea.setValue(
             '<iframe style="border: none;" height="' + this.heightField.getValue() +
             '" width="' + this.widthField.getValue() +'" src="' + 
-            this.getAbsoluteUrl(this.url).replace(/mapstore/g,"mapcomposer") + '"></iframe>');
+            this.getAbsoluteUrl(this.url).replace(/\/mapstore\//g,"/mapcomposer/") + '"></iframe>');
         if (this.snippetArea.isVisible() === true) {
             this.snippetArea.focus(true, 100);
         }
