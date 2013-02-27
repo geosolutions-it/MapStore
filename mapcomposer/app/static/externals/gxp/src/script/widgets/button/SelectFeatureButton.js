@@ -199,7 +199,8 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 	},
 	createHilightLayer: function(){
 		var conf = {
-				displayInLayerSwitcher:false
+				displayInLayerSwitcher:false,
+				
 			};
         conf.style = this.layerStyle;
 		this.hilightLayer = new OpenLayers.Layer.Vector(
@@ -207,8 +208,15 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 			conf
 		
 		);
+		var map =this.target.mapPanel.map
+		map.addLayer(this.hilightLayer);
+		var hl = this.hilightLayer;
+		var ev = map.events.register('addlayer', this, function(e){
+			if( e.layer ==hl )return;
+			map.setLayerIndex(hl, map.layers.length-1);
+		});
 		
-		this.target.mapPanel.map.addLayer(this.hilightLayer);
+		
         return this.hilightLayer
 	},
 	toggleHandler: function(button, pressed) {
