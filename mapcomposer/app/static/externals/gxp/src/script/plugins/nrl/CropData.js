@@ -93,16 +93,47 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     listeners: {
                         change: function(c,checked){
                             var outputValue = c.getValue().inputValue;
-                            var variable = this.ownerCt.variable;
+                            var variable = this.output.variable;
+                            var submitButton = this.output.submitButton;
                             if(outputValue == 'data'){
                                 variable.disable();
+                                submitButton.destroy();
+                                delete submitButton;
+                                this.output.addButton({               
+                                    xtype: 'gxp_nrlCropDataTabButton',
+                                    ref: '../submitButton',
+                                    target:this.target,
+                                    form: this
+                                })
+                                this.output.doLayout();
+                                this.output.submitButton.enable();
                             }else if(outputValue == 'map'){
                                 variable.enable();
-                            
+                                submitButton.destroy();
+                                delete submitButton;
+                                this.output.addButton({               
+                                    xtype: 'gxp_nrlCropDataMapButton',
+                                    ref: '../submitButton',
+                                    target:this.target,
+                                    form: this
+                                })
+                                this.output.doLayout();
+                                this.output.submitButton.enable();
                             }else{
                                 variable.disable();
+                                submitButton.destroy();
+                                delete submitButton;
+                                this.output.addButton({               
+                                    xtype: 'gxp_nrlCropDataButton',
+                                    ref: '../submitButton',
+                                    target:this.target,
+                                    form: this
+                                })
+                                this.output.submitButton.disable();                                
+                                this.output.doLayout();
                             }
-                        }                        
+                        },
+                        scope: this                        
                     }
 				},{ 
 					fieldLabel: this.seasonText,
@@ -121,15 +152,6 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             var commodity = this.ownerCt.Commodity;
                             commodity.seasonFilter(checked.inputValue);
                             commodity.setValue(commodity.store.data.items[0].data.label);
-                        },
-                        afterrender: function(c){
-                            var data = new Date();
-                            var n = data.getMonth();
-                            if (n>=4 && n<=9){
-                                c.setValue('KHARIF');
-                            }else{
-                                c.setValue('RABI');
-                            }
                         }
 					}
 				},{
@@ -270,8 +292,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 			
 				
 			],	
-			buttons:[{
-               
+			buttons:[{               
                 xtype: 'gxp_nrlCropDataButton',
 				ref: '../submitButton',
                 target:this.target,
@@ -286,6 +307,9 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 		this.output.on('update',function(store){
 			 this.output.submitButton.setDisabled(store.getCount()<=0)
 		},this);
+        /*this.output.on('update',function(store){
+            this.output.submitButton.setDisabled(store.getCount()<=0)
+        },this);*/        
 		//hide selection layer on tab change
 		this.output.on('beforehide',function(){
 			var button = this.output.aoiFieldSet.AreaSelector.selectButton;

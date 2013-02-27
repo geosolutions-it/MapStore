@@ -175,3 +175,7 @@ div#homelogos ul li a:hover {
 .x-btn  .gxp-icon-nrl-map,  .x-menu-item  .gxp-icon-nrl-map,.x-tree-node .gxp-icon-nrl-map {
     background-image: url(img/silk/map_go.png);
 }
+/* gxp_nrlTabButton */
+.x-btn  .gxp-icon-nrl-tab,  .x-menu-item  .gxp-icon-nrl-tab,.x-tree-node .gxp-icon-nrl-tab {
+    background-image: url(img/silk/table.png);
+}
