@@ -145,10 +145,10 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             var season = this.ownerCt.season;
                             for (var seasons in season.items.items){
                                 if (season.items.items[seasons].checked == true){
-                                    this.store.filter('season',season.items.items[seasons].inputValue,true,true);
+                                    this.seasonFilter(season.items.items[seasons].inputValue);
                                 }
                             }
-                        }
+                        }                   
                     }
 				},{
 					xtype: 'label',
@@ -234,7 +234,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							name:'area_unit',
 							displayField: 'label',
 							valueField:'coeff',
-							value: '1',
+							value: 1,
 							disabled:true,
 							store: new Ext.data.JsonStore({
 								fields:[
@@ -243,8 +243,8 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 										{name:'coeff',dataIndex:'coeff'}
 								],
 								data:[
-									{label: '\'000\' hectares', coeff:'1'},
-									{label: 'square kilometers', coeff:'2'}
+									{label: '\'000\' hectares', coeff:1},
+									{label: 'square kilometers', coeff:2}
 								]
 							})
 					}]
@@ -259,7 +259,8 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                 xtype: 'gxp_nrlCropDataButton',
 				ref: '../chartbutton',
                 target:this.target,
-				form: this,disabled:true
+				form: this,
+                disabled:true
             }]
 		};
 		
