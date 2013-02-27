@@ -82,6 +82,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
         }
         
         var data = this.form.output.getForm().getValues();
+        //var data2 = this.form.output.getForm().getFieldValues();
+        
         var regionList = data.region_list.toLowerCase();
         var commodity = data.crop.toLowerCase();
         var season = data.season.toLowerCase();
@@ -89,7 +91,20 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
         var fromYear = data.startYear;
         var toYear = data.endYear;
         
+        /*var prodUnits = data2.production_unit;
+        var areaUnits = data2.area_unit == 1 ? 'Ha' : 'Sqr Km';
         
+        switch(prodUnits)
+        {
+        case 1:
+          prodUnits = 'Tons';
+          break;
+        case 2:
+          prodUnits = 'Kgs';
+          break;
+        default:
+          prodUnits = 'Bales';
+        }*/        
         
         var tabPanel = Ext.getCmp('id_mapTab');
 
@@ -128,7 +143,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 					
 					
 					
-					var charts  = this.makeChart(data,this.chartOpt);
+					var charts  = this.makeChart(data,this.chartOpt,'Tons','Ha');
 					var resultpanel = {
 						columnWidth: .95,
                         style:'padding:10px 10px 10px 10px',
@@ -289,7 +304,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 		return chartData;
 
 	},
-	makeChart: function( data,opt ){
+	makeChart: function( data,opt,prodUnits,areaUnits ){
 		
 		var grafici = [];
 		var getAvg= function(arr,type) {
@@ -352,9 +367,9 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 						text: data[r].title.toUpperCase()
 					},
 					subtitle: {
-                        text: '<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+'</span><br />'+
-                              '<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean:  '+ prodavg.toFixed(2) +'</span><br />'+
-                              '<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean:  '+ yieldavg.toFixed(2) +'</span>',
+                        text: '<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+areaUnits+'</span><br />'+
+                              '<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean: '+ prodavg.toFixed(2)+' '+prodUnits+'</span><br />'+
+                              '<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean: '+ yieldavg.toFixed(2)+' '+prodUnits+'/'+areaUnits+'</span>',
                         align: 'left',
                         verticalAlign: 'bottom',
                         useHTML: true,
