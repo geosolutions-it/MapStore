@@ -76,7 +76,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 			
 				{ 
 					fieldLabel: this.outputTypeText,
-					xtype: 'checkboxgroup',
+					xtype: 'radiogroup',
 					anchor:'100%',
 					autoHeight:true,
 					checkboxToggle:true,
