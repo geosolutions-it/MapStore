@@ -38,12 +38,13 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 	 *the feature name to display, as returned by WMS getFeatureInfo 
 	 */
 	displayField:"fname",
+    searchWindowTitle:  "Seach for a region typing the text below",
+    tooltipAdd: "Seach the region by name",
+	
     
-    tooltipAdd: "Add",
+    tooltipClear: "Remove all the selected areas",
     
-    tooltipClear: "Clear",
-    
-    tooltipAddFromMap: "Add from map",
+    tooltipAddFromMap: "Select the regions clicking on the map",
 	
 	/*NOTE 
 		contains the configuration of comboBox, for pratical reason
@@ -128,6 +129,7 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 				handler:function(){
 						var selectCombo = new gxp.form.WFSSearchComboBox(Ext.apply({vendorParams:this.vendorParams},this.comboConfig));
                         var window = new Ext.Window({
+							title:this.searchWindowTitle,
                             items:[selectCombo],
                             //layout:'form',
                             width:265,

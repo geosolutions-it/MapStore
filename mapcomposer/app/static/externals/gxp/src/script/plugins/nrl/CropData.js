@@ -155,10 +155,10 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     listeners: {
                         expand: function( combo ){
                             var season = this.ownerCt.season;
-                            for (var seasons in season.items.items){
-                                if (season.items.items[seasons].checked == true){
-                                    this.seasonFilter(season.items.items[seasons].inputValue);
-                                }
+							var radio = season.getValue();
+							
+							if (radio && radio.getValue()){
+                               this.seasonFilter(radio.inputValue);
                             }
                         }                   
                     }
