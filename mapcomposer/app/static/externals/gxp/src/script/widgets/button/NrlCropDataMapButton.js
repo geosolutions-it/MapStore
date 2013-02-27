@@ -33,9 +33,41 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
     iconCls: "gxp-icon-nrl-map",
     form: null,
 	text: 'Generate Map',
+	wmsUrl: '',
+	
+		
     handler: function () {    
-
-            Ext.Msg.alert("Generate Map","Not Yet Implemented");
+			var values =  this.form.output.getForm().getValues();
+			if(values.crop != "Wheat" || values.areatype != "district" || values.endYear == "2009"){
+				Ext.Msg.alert("Test styles not available" ,"Test data is not yet available for this selection. Please select Wheat - District and Reference year fromm 1999 to 2008" + (values.crop ) + (values.areatype) +(values.endYear  ));
+				return;
+			}
+			var nextYr =parseInt(values.endYear)%100 +1;
+			var crop =values.crop;
+			
+			var varparam ="";
+			switch(values.variable) {
+				case "Area" : varparam='area_ha';break;
+				case  "Production" : varparam ='prod_t';break;
+				case "Yield" : varparam= 'yield_kg';break;
+			}
+			var tempstringtrailer =(nextYr<10) ? "0" +(nextYr) : (nextYr);
+			var viewParams= "crop:" + values.crop.toLowerCase() + ";" +
+					"gran_type:" + values.areatype.toLowerCase() + ";" +
+					"start_year:" + values.endYear +"-" +tempstringtrailer + ";" +
+					"end_year:" + values.endYear +"-" +tempstringtrailer + ";" 
+			
+			var wms = new OpenLayers.Layer.WMS(values.crop + " " + values.endYear + "-" + values.variable,//todo: choice the style for the needed variable
+			   "http://84.33.2.24/geoserver/wms",
+			   {
+				layers: "nrl:CropDataMap",
+				styles: "District" + "_crop_" + values.crop.toLowerCase() + "_"+ varparam ,
+				viewParams:viewParams,
+				transparent: "true"
+				
+				});
+			app.mapPanel.map.addLayers([wms]);
+            
         
     },
 	getData: function (json){
