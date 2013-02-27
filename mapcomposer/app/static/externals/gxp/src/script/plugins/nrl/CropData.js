@@ -268,9 +268,9 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 				
 			],	
 			buttons:[{
-                text:'Compute',
+               
                 xtype: 'gxp_nrlCropDataButton',
-				ref: '../chartbutton',
+				ref: '../submitButton',
                 target:this.target,
 				form: this,
                 disabled:true
@@ -281,7 +281,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 		
 		this.output = gxp.plugins.nrl.CropData.superclass.addOutput.call(this, config);
 		this.output.on('update',function(store){
-			 this.output.chartbutton.setDisabled(store.getCount()<=0)
+			 this.output.submitButton.setDisabled(store.getCount()<=0)
 		},this);
 		//hide selection layer on tab change
 		this.output.on('beforehide',function(){

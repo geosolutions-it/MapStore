@@ -171,3 +171,7 @@ div#homelogos ul li a:hover {
 	background-image: url(img/silk/delete.png);
 
 }
+/* gxp_nrlMapButton */
+.x-btn  .gxp-icon-nrl-map,  .x-menu-item  .gxp-icon-nrl-map,.x-tree-node .gxp-icon-nrl-map {
+    background-image: url(img/silk/map_go.png);
+}

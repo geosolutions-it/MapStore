@@ -21,171 +21,21 @@
 Ext.namespace('gxp.widgets.button');
 
 /** api: constructor
- *  .. class:: NrlChart(config)
+ *  .. class:: NrlCropDataMapButton(config)
  *
  *    Base class to create chart
  *
  */
-gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
+gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 
     /** api: xtype = gxp_nrlchart */
-    xtype: 'gxp_nrlCropDataButton',
-    iconCls: "gxp-icon-nrl-chart",
-	text: 'Compute',
+    xtype: 'gxp_nrlCropDataMapButton',
+    iconCls: "gxp-icon-nrl-map",
     form: null,
-    chartOpt:{
-		series:{
-			prod:{
-					name: 'Production Tons',
-					//color: '#4572A7',
-                    lcolor: 'rgb(139,184,237)',
-                    color: 'rgb(69,114,167)',
-					type: 'line',
-					yAxis: 1,
-					dataIndex: 'prod',
-					unit:'Tons'
+	text: 'Generate Map',
+    handler: function () {    
 
-				},
-			yield:{
-					name: 'Yield Tons / Ha',
-					dashStyle: 'shortdot',
-					type: 'line',
-					//color: '#AA4643',
-                    lcolor: 'rgb(240,140,137)',
-                    color: 'rgb(170,70,67)',
-					yAxis: 2,
-					dataIndex: 'yield',
-					unit:'Tons / Ha'
-
-				},
-			area:{
-					name: 'Area Ha',
-					//color: '#89A54E',
-                    lcolor: 'rgb(207,235,148)',
-                    color: 'rgb(137,165,78)',
-					type: 'line',
-					dataIndex: 'area',
-					unit:'Ha'
-			}
-		},
-        height: 400
-	},
-    handler: function () {
-		
-        var numRegion = [];
-        var regStore = this.form.output.aoiFieldSet.AreaSelector.store
-        var records = regStore.getRange();
-		
-        for (var i=0;i<records.length;i++){
-			var attrs = records[i].get("attributes");
-			var region = attrs.district || attrs.province;
-            numRegion.push(region.toLowerCase());
-        }
-        
-        var data = this.form.output.getForm().getValues();
-        //var data2 = this.form.output.getForm().getFieldValues();
-        
-        var regionList = data.region_list.toLowerCase();
-        var commodity = data.crop.toLowerCase();
-        var season = data.season.toLowerCase();
-        var granType = data.areatype;
-        var fromYear = data.startYear;
-        var toYear = data.endYear;
-        
-        /*var prodUnits = data2.production_unit;
-        var areaUnits = data2.area_unit == 1 ? 'Ha' : 'Sqr Km';
-        
-        switch(prodUnits)
-        {
-        case 1:
-          prodUnits = 'Tons';
-          break;
-        case 2:
-          prodUnits = 'Kgs';
-          break;
-        default:
-          prodUnits = 'Bales';
-        }*/        
-        
-        var tabPanel = Ext.getCmp('id_mapTab');
-
-        var tabs = Ext.getCmp('cropData_tab');
-        /*
-        if (tabs && tabs.length > 0) {
-            tabPanel.setActiveTab(tabs[0]);
-        } else {
-            */
-			
-            Ext.Ajax.request({
-				scope:this,
-                url : "http://84.33.2.24/geoserver/nrl/ows",
-                method: 'POST',
-                params :{
-                    service: "WFS",
-                    version: "1.0.0",
-                    request: "GetFeature",
-                    typeName: "nrl:CropData",
-                    outputFormat: "json",
-                    propertyName: "region,crop,year,production,area,yield",
-                    viewparams: "crop:" + commodity + ";" +
-                                "gran_type:" + granType + ";" +
-                                "start_year:" + fromYear + ";" +
-                                "end_year:" + toYear + ";" +
-                                "region_list:" + regionList
-                },
-                success: function ( result, request ) {
-					var jsonData = Ext.util.JSON.decode(result.responseText);
-					if (jsonData.features.length <=0){
-						Ext.Msg.alert("No data","Data not available for these search criteria");
-						return;
-					}
-					var data = this.getData(jsonData);
-				
-					
-					
-					
-					var charts  = this.makeChart(data,this.chartOpt,'Tons','Ha');
-					var resultpanel = {
-						columnWidth: .95,
-                        style:'padding:10px 10px 10px 10px',
-						xtype: 'gxp_controlpanel',
-						commodity: commodity,
-                        season: season,
-						province: numRegion,
-						fromYear: fromYear,
-						toYear: toYear,
-						chart: charts,
-                        chartHeight: this.chartOpt.height
-					};
-					if(!tabs){
-						var cropDataTab = new Ext.Panel({
-							title: 'Crop Data',
-							id:'cropData_tab',
-							itemId:'cropData_tab',
-							border: true,
-							layout: 'form',
-							autoScroll: true,
-							tabTip: 'Crop Data',
-							closable: true,
-							items: resultpanel
-						});
-						tabPanel.add(cropDataTab);  
-                       
-					}else{
-						tabs.items.each(function(a){a.collapse()});
-						tabs.add(resultpanel);
-					}
-					Ext.getCmp('id_mapTab').doLayout();
-					Ext.getCmp('id_mapTab').setActiveTab('cropData_tab');
-                    
-                    
-                },
-                failure: function ( result, request ) {
-					Ext.Msg.alert("Error","Server response error");
-                }
-            });           
-
-            
+            Ext.Msg.alert("Generate Map","Not Yet Implemented");
         
     },
 	getData: function (json){
@@ -468,4 +318,4 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 	}	
 });
 
-Ext.reg(gxp.widgets.button.NrlCropDataButton.prototype.xtype, gxp.widgets.button.NrlCropDataButton);
+Ext.reg(gxp.widgets.button.NrlCropDataMapButton.prototype.xtype, gxp.widgets.button.NrlCropDataMapButton);
