@@ -311,7 +311,10 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 		
 		this.output = gxp.plugins.nrl.CropData.superclass.addOutput.call(this, config);
 		this.output.on('update',function(store){
-			 this.output.submitButton.setDisabled(store.getCount()<=0)
+            var button = this.output.submitButton.getXType();
+            if (button == "gxp_nrlCropDataButton"){
+                this.output.submitButton.setDisabled(store.getCount()<=0)
+            }
 		},this);
 		//hide selection layer on tab change
 		this.output.on('beforehide',function(){
