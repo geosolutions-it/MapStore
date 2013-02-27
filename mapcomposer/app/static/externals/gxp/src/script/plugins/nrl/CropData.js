@@ -85,11 +85,23 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 
 					defaultType: 'radio', // each item will be a radio button
 					items:[
-						{boxLabel: 'Data' , xtype:'radio', name: 'outputtype', inputValue: 'data',visible:false},
-						{boxLabel: 'Chart', xtype:'radio', name: 'outputtype', inputValue: 'chart', checked: true},
-						{boxLabel: 'Map'  , xtype:'radio', name: 'outputtype', inputValue: 'map'}
+						{boxLabel: 'Data' , name: 'outputtype', inputValue: 'data'},
+						{boxLabel: 'Chart', name: 'outputtype', inputValue: 'chart'},
+						{boxLabel: 'Map'  , name: 'outputtype', inputValue: 'map'}
 						
-					]
+					],
+                    listeners: {
+                        change: function(c,checked){
+                            var outputValue = c.getValue();
+                            /*if(outputValue == 'data'){
+                                this.output.chartbutton.removeClass("gxp-icon-nrl-chart");
+                            }else if(outputValue == 'map'){
+                            
+                            }else{
+                            
+                            }*/
+                        }                        
+                    }
 				},{ 
 					fieldLabel: this.seasonText,
 					xtype: 'nrl_seasonradiogroup',
@@ -167,7 +179,6 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 						scope:this,
 						change:function(start,end){
 							this.output.referenceYear.setText(end);
-							
 						}
 					}
 					
