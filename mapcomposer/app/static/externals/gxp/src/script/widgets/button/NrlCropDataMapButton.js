@@ -39,7 +39,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
     handler: function () {    
 			var values =  this.form.output.getForm().getValues();
 			if(values.crop != "Wheat" || values.areatype != "district" || values.endYear == "2009"){
-				Ext.Msg.alert("Test styles not available" ,"Test data is not yet available for this selection. Please select Wheat - District and Reference year fromm 1999 to 2008" + (values.crop ) + (values.areatype) +(values.endYear  ));
+				Ext.Msg.alert("Test styles not available" ,"Test data is not yet available for this selection. Please select Wheat - District and Reference year fromm 1999 to 2008");
 				return;
 			}
 			var nextYr =parseInt(values.endYear)%100 +1;

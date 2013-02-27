@@ -96,7 +96,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             var submitButton = this.output.submitButton;
                             var areaSelector = this.output.aoiFieldSet.AreaSelector;                            
                             if(outputValue == 'data'){
-                                variable.disable();
+                                variable.enable();
                                 areaSelector.enable();
                                 submitButton.destroy();
                                 delete submitButton;
@@ -119,6 +119,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                     target:this.target,
                                     form: this
                                 })
+                                this.output.fireEvent('beforehide');
                                 this.output.doLayout();
                                 this.output.submitButton.enable();
                             }else{
@@ -132,13 +133,9 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                     target:this.target,
                                     form: this
                                 })
-                                var areaSelectorData = areaSelector.store.data.items;
-                                if (areaSelectorData.length==0){
-                                    this.output.submitButton.disable();   
-                                }else{
-                                    this.output.submitButton.enable();   
-                                }
-                                
+                                var store = areaSelector.store;
+                                this.output.fireEvent('update',store);
+                                this.output.fireEvent('show');
                                 this.output.doLayout();
                             }                               
                         },                        
