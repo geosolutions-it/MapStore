@@ -86,20 +86,22 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					defaultType: 'radio', // each item will be a radio button
 					items:[
 						{boxLabel: 'Data' , name: 'outputtype', inputValue: 'data'},
-						{boxLabel: 'Chart', name: 'outputtype', inputValue: 'chart'},
+						{boxLabel: 'Chart', name: 'outputtype', inputValue: 'chart', checked: true},
 						{boxLabel: 'Map'  , name: 'outputtype', inputValue: 'map'}
 						
 					],
                     listeners: {
                         change: function(c,checked){
-                            var outputValue = c.getValue();
-                            /*if(outputValue == 'data'){
-                                this.output.chartbutton.removeClass("gxp-icon-nrl-chart");
+                            var outputValue = c.getValue().inputValue;
+                            var variable = this.ownerCt.variable;
+                            if(outputValue == 'data'){
+                                variable.disable();
                             }else if(outputValue == 'map'){
+                                variable.enable();
                             
                             }else{
-                            
-                            }*/
+                                variable.disable();
+                            }
                         }                        
                     }
 				},{ 
@@ -187,6 +189,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					xtype: 'checkboxgroup',
 					anchor:'100%',
 					autoHeight:true,
+                    ref: 'variable',
 					//checkboxToggle:true,
 					title: this.outputTypeText,
 					autoHeight: true,
