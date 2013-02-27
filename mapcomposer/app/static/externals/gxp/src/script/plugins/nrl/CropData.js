@@ -212,12 +212,13 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 								fields:[
 										{name:'name',dataIndex:'name'},
 										{name:'label',dataIndex:'label'},
-										{name:'coeff',dataIndex:'coeff'}
+										{name:'coeff',dataIndex:'coeff'},
+										{name:'shortName', dataindex: 'shortName'}
 								],
 								data:[
-									{label: '\'000\' tonnes', coeff:1}, //TODO set proper values
-									{label: '\'000\' kgs', coeff:2},//TODO set proper values
-									{label: '\'000\' bales', coeff:3}//TODO set proper values
+									{label: '\'000\' tonnes', coeff:1,	shortName:'000 ha'},//TODO set proper values for coef
+									{label: '\'000\' kgs',    coeff:2,	shortName:'000 ha'},//TODO set proper values for coef
+									{label: '\'000\' bales', coeff:3,	shortName:'000 ha'} //TODO set proper values for coef
 								]
 							})
 						},{
@@ -240,11 +241,12 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 								fields:[
 										{name:'name',dataIndex:'name'},
 										{name:'label',dataIndex:'label'},
-										{name:'coeff',dataIndex:'coeff'}
+										{name:'coeff',dataIndex:'coeff'},
+										{name:'shortName', dataindex: 'shortName'}
 								],
 								data:[
-									{label: '\'000\' hectares', coeff:1},
-									{label: 'square kilometers', coeff:2}
+									{label: '\'000\' hectares',		coeff:1,	shortName:'000 ha'        },//TODO set proper values for coef
+									{label: 'square kilometers',	coeff:2,	shortName:'Km<sup>2</sup>'} //TODO set proper values for coef
 								]
 							})
 					}]
