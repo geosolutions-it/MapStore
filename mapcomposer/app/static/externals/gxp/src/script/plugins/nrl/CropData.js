@@ -64,7 +64,6 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 			
 		}
 	
-	
 		var cropData  = {
 			xtype:'form',
 			title: 'Crop Data',
@@ -95,8 +94,10 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             var outputValue = c.getValue().inputValue;
                             var variable = this.output.variable;
                             var submitButton = this.output.submitButton;
+                            var areaSelector = this.output.aoiFieldSet.AreaSelector;                            
                             if(outputValue == 'data'){
                                 variable.disable();
+                                areaSelector.enable();
                                 submitButton.destroy();
                                 delete submitButton;
                                 this.output.addButton({               
@@ -109,6 +110,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 this.output.submitButton.enable();
                             }else if(outputValue == 'map'){
                                 variable.enable();
+                                areaSelector.disable();
                                 submitButton.destroy();
                                 delete submitButton;
                                 this.output.addButton({               
@@ -121,6 +123,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 this.output.submitButton.enable();
                             }else{
                                 variable.disable();
+                                areaSelector.enable();
                                 submitButton.destroy();
                                 delete submitButton;
                                 this.output.addButton({               
@@ -129,10 +132,16 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                     target:this.target,
                                     form: this
                                 })
-                                this.output.submitButton.disable();                                
+                                var areaSelectorData = areaSelector.store.data.items;
+                                if (areaSelectorData.length==0){
+                                    this.output.submitButton.disable();   
+                                }else{
+                                    this.output.submitButton.enable();   
+                                }
+                                
                                 this.output.doLayout();
-                            }
-                        },
+                            }                               
+                        },                        
                         scope: this                        
                     }
 				},{ 
@@ -208,7 +217,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					
 				},{ 
 					fieldLabel: 'Variable',
-					xtype: 'checkboxgroup',
+					xtype: 'radiogroup',
 					anchor:'100%',
 					autoHeight:true,
                     ref: 'variable',
@@ -307,9 +316,6 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 		this.output.on('update',function(store){
 			 this.output.submitButton.setDisabled(store.getCount()<=0)
 		},this);
-        /*this.output.on('update',function(store){
-            this.output.submitButton.setDisabled(store.getCount()<=0)
-        },this);*/        
 		//hide selection layer on tab change
 		this.output.on('beforehide',function(){
 			var button = this.output.aoiFieldSet.AreaSelector.selectButton;
