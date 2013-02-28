@@ -314,7 +314,7 @@
         "id": "syntheticview",
         "selectionLayerName": "aggregated_data_selection",
         "selectionLayerTitle": "Rischio Totale", 	        
-        "bufferLayerName": "siig_aggregation_1_buffer",
+        "bufferLayerName": "buffer",
         "selectionLayerBaseURL": "http://localhost:8080/geoserver/destination/wms",
         "selectionLayerProjection": "EPSG:32632",
         "geometryName": "geometria",

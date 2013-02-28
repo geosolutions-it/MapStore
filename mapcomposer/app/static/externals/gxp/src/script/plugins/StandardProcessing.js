@@ -5,6 +5,8 @@
 /** api: (define)
  *  module = gxp.plugins
  *  class = StandardProcessing
+ *    This module implements a panel to insert parameters for Standard Processing evaluation.
+ *    This includes: type of processing and formula selection, area of interest, type of targets involved, types of accident involved
  */
 
 /** api: (extends)
@@ -23,21 +25,29 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 
     // Begin i18n.
     title: "Elaborazione",
-    elabLabel: "Tipo elaborazione",
-    formLabel: "Formula",
-    extentLabel: "Ambito territoriale",
-    targetLabel: "tipo bersaglio",
-    accidentLabel: "Incidente",
-    fieldSetTitle: "Elaborazione Standard",
+    elaborazioneLabel: "Tipo elaborazione",
+    formulaLabel: "Formula",                
     northLabel:"Nord",
     westLabel:"Ovest",
     eastLabel:"Est",
     southLabel:"Sud",
-    aioFieldSetTitle: "Ambito Territoriale",
-    setAoiText: "Seleziona Area",
-    currentExtentText: "Area visualizzata",
-    currentExtentTooltip: "Usa l'area visualizzata sulla mappa come regione di interesse",
+    aoiFieldSetTitle: "Ambito Territoriale",
+    setAoiText: "Seleziona Area",        
     setAoiTooltip: "Abilita la selezione della regione di interesse sulla mappa",
+	notAvailableProcessing: "Tipo di elaborazione non ancora disponibile",
+	targetLabel: "Bersaglio",
+	macroTargetLabel: "Categoria",
+	targetSetLabel: "Tipo bersaglio",
+	adrLabel: "Classe ADR",
+	sostanzeLabel: "Sostanza",
+	accidentLabel: "Incidente",
+	seriousnessLabel: "Entità",
+	resetButton: "Reimposta",
+	viewMapButton: "Visualizza Mappa",
+	formLabel: "Impostazioni di Elaborazione",
+	bboxValidationTitle: "Selezione Area di Interesse",
+	invalidAOI: "Le coordinate dell'area di interesse non sono valide.",
+	bboxTooBig: "L'area selezionata e' troppo grande e il server potrebbe impiegare molto tempo a rispondere. Se si desidera continuare ugualmente premere OK.",
         
     // End i18n.
         
@@ -47,9 +57,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         lonMin: -20037508.34,
         latMax: 20037508.34,   
         latMin: -20037508.34  
-    },    
-    
-    defaultBBOXFilterExtent: "738789.1549,5474684.1113,1028026.86989,5843416.33569",
+    },           
     
     toggleGroup: "toolGroup",
         
@@ -71,12 +79,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     
     urlEPSG: null,
     epsgWinHeight: null,
-    epsgWinWidth: null,
-    seriousnessCode: '0',
-    accidentCode: '0',
-    sostanzeCode: '0',
-    selectedTargetCode: '-1',
-    
+    epsgWinWidth: null,   	    
+    /*
     holdValues: {
         "L": 8,
         "G": 25 
@@ -177,7 +181,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         "G": { "humans": [null,null,null,null],"notHumans": [null,null,null,25,25,25]}
                     }
                 }
-        },
+        },*/
 
     /** private: method[constructor]
      *  :arg config: ``Object``
@@ -185,7 +189,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     constructor: function(config) {
        this.epsgWinHeight= Ext.getBody().getHeight()*.7;
        this.epsgWinWidth= Ext.getBody().getWidth()*.8;
-        gxp.plugins.StandardProcessing.superclass.constructor.apply(this, arguments);
+       gxp.plugins.StandardProcessing.superclass.constructor.apply(this, arguments);
     },
     
     /** public: method[show]
@@ -196,47 +200,50 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         if(!this.appTarget)
             this.appTarget = appTarget;
             
-        var map = this.appTarget.mapPanel.map;
-        map.enebaleMapEvent = true;
+        var map = this.appTarget.mapPanel.map;        
         
         this.mapProjection = new OpenLayers.Projection(map.getProjection());
         this.wgs84Projection = new OpenLayers.Projection("EPSG:4326")
         
         var processing = this.buildForm(map);
-       
+        map.enebaleMapEvent = true;
         return processing;
     },
     
-    /** private: method[buildForm]
-     *  :arg map: ``Object``
+	/** private: method[resetForm]
+	 *     resets the form with initial values
      */
-    buildForm: function(map){
-        var me=this; 
-        var containerTab = Ext.getCmp(this.outputTarget);
-        
-        var syntView = this.appTarget.tools[this.syntheticView];
-        syntView.getControlPanel().disable();
-        
+	resetForm: function(){
+		this.panel.getForm().reset();
+		this.removeAOILayer(this.appTarget.mapPanel.map);
+		this.selectAOI.deactivate();
+		this.aoiButton.toggle(false, true);		
+		this.resetBBOX(true);
+	},
+	
+	/** private: method[buildElaborazioneForm]
+	 *    builds the form for processing and formula choosing
+     */
+	buildElaborazioneForm: function() {		
         //
-        // Elaborazione
-        //
-        
-        var elabStore = new Ext.data.ArrayStore({
-            fields: ['name'],
+        // Tipo Elaborazione
+        //        
+        var elaborazioneStore = new Ext.data.ArrayStore({
+            fields: ['name', 'available'],
             data :  [
-                ['Elaborazione Standard'],
-                ['Personalizzazione'],
-                ['Simulazione'],
-                ['Danno']
+                ['Elaborazione Standard', true],
+                ['Personalizzazione', false],
+                ['Simulazione', false],
+                ['Danno', false]
             ]
         });
         
-        this.elab = new Ext.form.ComboBox({
-            fieldLabel: this.elabLabel,
+        this.elaborazione = new Ext.form.ComboBox({
+            fieldLabel: this.elaborazioneLabel,
             id: "elabcb",
             width: 150,
             hideLabel : false,
-            store: elabStore,    
+            store: elaborazioneStore,    
             displayField: 'name',    
             typeAhead: true,
             mode: 'local',
@@ -248,12 +255,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             value: "Elaborazione Standard",
             listeners: {
                 beforeselect: function(cb, record, index){
-                    var value = record.get('name');  
+                    var available = record.get('available');  
                     
-                    if(value != 'Elaborazione Standard'){
+                    if(!available){
                         Ext.Msg.show({
-                            title: "Elaborazione",
-                            msg: "Tipo di elaborazione non ancora disponibile",
+                            title: this.title,
+                            msg: this.notAvailableProcessing,
                             icon: Ext.MessageBox.WARNING
                         });
                         
@@ -262,23 +269,27 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 },
                 select: function(cb, record, index) {
                     //var value = record.get('name');             
-                }
+                },
+				scope: this
             }              
         });
         
-        var formStore = new Ext.data.ArrayStore({
+		//
+        // Formula
+        //        
+        var formulaStore = new Ext.data.ArrayStore({
             fields: ['name'],
             data :  [
                 ['Rischio Totale']
             ]
         });
         
-        this.form = new Ext.form.ComboBox({
-            fieldLabel: this.formLabel,
+        this.formula = new Ext.form.ComboBox({
+            fieldLabel: this.formulaLabel,
             id: "elabfr",
             width: 150,
             hideLabel : false,
-            store: formStore,    
+            store: formulaStore,    
             displayField: 'name',    
             typeAhead: true,
             mode: 'local',
@@ -296,7 +307,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         });
        
         this.elabSet = new Ext.form.FieldSet({
-            title: "Elaborazione",
+            title: this.title,
             id: 'elabfset',
             autoHeight: true,
             defaults: {
@@ -304,15 +315,22 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 bodyStyle:'padding:5px;'
             },
             items: [
-                 this.elab,
-                 this.form
+                 this.elaborazione,
+                 this.formula
             ]
         });
-        
+		
+		return this.elabSet;
+	},
+	
+	/** private: method[buildAOIForm]
+	 *  :arg map: ``Object``
+	 *    builds the form for AOI (Area of interest) choosing
+     */
+	buildAOIForm: function(map) {		
         //
         // Ambito Territoriale
-        //
-        
+        //        
         this.northField = new Ext.form.NumberField({
               fieldLabel: this.northLabel,
               id: "NorthBBOX",
@@ -360,12 +378,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
               allowDecimals: true,
               hideLabel : false                    
         });
-        
-            
-        
+
         //
         // Geographical Filter Field Set
-        //     
+        //  
+		var me = this;
         this.selectAOI = new OpenLayers.Control.SetBox({      
             map: map,            
             onChangeAOI: function(){                               
@@ -409,31 +426,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                       }
                   }
               }
-        });
-        
-        this.currentExtentButton = new Ext.Button({
-              text: this.currentExtentText,
-              tooltip: this.currentExtentTooltip,                            
-              iconCls: 'current-extent-button',
-              height: 30,
-              width: 50,
-              listeners: {
-                  scope: this, 
-                  click: function(button) {
-                    var extent=map.getExtent();
-                    this.setAOI(extent);                    
-                    this.removeAOILayer(map);                  
-                  }
-              }
-        });
-        
-
-        var urlEPSG= this.urlEPSG ? this.urlEPSG : "http://spatialreference.org/ref/epsg/"+me.wgs84Projection.getCode().split(":")[1]+"/";;
+        });                       
         
       
         this.spatialFieldSet = new Ext.form.FieldSet({
-            title:  this.aioFieldSetTitle+" <a href='#' id='bboxAOI-set-EPSG'>["+me.wgs84Projection.getCode()+"]</a>",//["+this.wgs84Projection.getCode()+"]</div></b>",
-            //title: this.aioFieldSetTitle,
+            title:  this.aoiFieldSetTitle+" <a href='#' id='bboxAOI-set-EPSG'>["+this.wgs84Projection.getCode()+"]</a>",
             id: 'bboxAOI-set',
             autoHeight: true,
             layout: 'table',
@@ -445,16 +442,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 bodyStyle:'padding:5px;'
             },
             bodyCssClass: 'aoi-fields',
-            items: [      
-               /* {
-                    layout: "form",
-                    cellCls: 'spatial-cell',
-                    colspan:3,
-                    border: false,
-                    items: [
-                        this.epsgButton
-                    ]                
-                },*/
+            items: [                     
                 {
                     layout: "form",
                     cellCls: 'spatial-cell',
@@ -496,17 +484,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     items: [
                         this.southField
                     ]
-                }/*,{
-                    layout: "form",
-                    cellCls: 'spatial-cell',
-                    colspan:3,
-                    border: false,
-                    items: [
-                        this.currentExtentButton
-                    ]                
-                }*/
+                }
             ]
         });
+		
+		// updates the AOI on map pan / zoom
         this.aoiUpdater = function() {			
 			var extent=map.getExtent().clone();
 			this.setAOI(extent);                    
@@ -514,47 +496,53 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         };
         map.events.register("move", this, this.aoiUpdater);
         
-        //
+		return this.spatialFieldSet;
+	},
+	
+	/** private: method[buildTargetForm]
+     *    builds the form for target type choosing
+     */
+	buildTargetForm: function() {
+		//
         // Bersaglio
-        //
-        
+        //        
         var targetStore = new Ext.data.ArrayStore({
-            fields: ['layer','name', 'property', 'humans', 'code', 'type'],			
+            fields: ['layer','name', 'property', 'humans', 'code', 'type', 'macro'],			
             data :  [
               //  ['Tutti i Bersagli', 'calc_formula_tot', ''],
-                ['popolazione_residente','Popolazione residente', 'calc_formula_tot', true, '-1', 'umano'],
+                ['popolazione_residente','Popolazione residente', 'calc_formula_tot', true, '-1', 'umano', false],
                 //['popolazione_turistica','Popolazione fluttuante turistica (medio)', 'calc_formula_tot', true, '-1', 'umano'],
-                ['popolazione_turistica','Popolazione fluttuante turistica', 'calc_formula_tot', true, '-1', 'umano'],
-                ['industria_servizi','Addetti industria e servizi', 'calc_formula_tot', true, '-1', 'umano'],
-                ['strutture_sanitarie','Addetti/utenti strutture sanitarie', 'calc_formula_tot', true, '-1', 'umano'],
-                ['strutture_scolastiche','Addetti/utenti strutture scolastiche', 'calc_formula_tot', true, '-1', 'umano'],
-                ['centri_commerciali','Addetti/utenti centri commerciali', 'calc_formula_tot', true, '-1', 'umano'],
+                ['popolazione_turistica','Popolazione fluttuante turistica', 'calc_formula_tot', true, '-1', 'umano', false],
+                ['industria_servizi','Addetti industria e servizi', 'calc_formula_tot', true, '-1', 'umano', false],
+                ['strutture_sanitarie','Addetti/utenti strutture sanitarie', 'calc_formula_tot', true, '-1', 'umano', false],
+                ['strutture_scolastiche','Addetti/utenti strutture scolastiche', 'calc_formula_tot', true, '-1', 'umano', false],
+                ['centri_commerciali','Addetti/utenti centri commerciali', 'calc_formula_tot', true, '-1', 'umano', false],
                 //['xx','Utenti della strada coinvolti', 'calc_formula_tot', true, '-1', 'umano'],
                 //['yy','Utenti della strada territoriali', 'calc_formula_tot', true, '-1', 'umano'],
-                ['zone_urbanizzate','Zone urbanizzate', 'calc_formula_tot', false, '0', 'ambientale'],
-                ['aree_boscate','Aree boscate', 'calc_formula_tot', false, '1', 'ambientale'],
-                ['aree_protette','Aree protette', 'calc_formula_tot', false, '2', 'ambientale'],
-                ['aree_agricole','Aree agricole', 'calc_formula_tot', false, '3', 'ambientale'],
-                ['acque_sotterranee','Acque sotterranee', 'calc_formula_tot', false, '4', 'ambientale'],
-                ['acque_superficiali','Acque superficiali', 'calc_formula_tot', false, '5', 'ambientale'],
-                ['beni_culturali','Beni culturali', 'calc_formula_tot', false, '6', 'ambientale']
+                ['zone_urbanizzate','Zone urbanizzate', 'calc_formula_tot', false, '0', 'ambientale', false],
+                ['aree_boscate','Aree boscate', 'calc_formula_tot', false, '1', 'ambientale', false],
+                ['aree_protette','Aree protette', 'calc_formula_tot', false, '2', 'ambientale', false],
+                ['aree_agricole','Aree agricole', 'calc_formula_tot', false, '3', 'ambientale', false],
+                ['acque_sotterranee','Acque sotterranee', 'calc_formula_tot', false, '4', 'ambientale', false],
+                ['acque_superficiali','Acque superficiali', 'calc_formula_tot', false, '5', 'ambientale', false],
+                ['beni_culturali','Beni culturali', 'calc_formula_tot', false, '6', 'ambientale', false]
 
             ]
         });			
         
         var targetMacroStore = new Ext.data.ArrayStore({
-            fields: ['name', 'property', 'code', 'type'],
+            fields: ['layer', 'name', 'property', 'humans', 'code', 'type', 'macro'],
             data :  [
-                ['Tutti i Bersagli', 'calc_formula_tot', '-2', 'mixed'],
-                ['Tutti i Bersagli Umani', 'calc_formula_tot', '-1', 'umano'],
-                ['Tutti i Bersagli Ambientali', 'calc_formula_tot', '-2', 'ambientale']
+                ['bersagli_all', 'Tutti i Bersagli', 'calc_formula_tot', false, '-2', 'mixed', true],
+                ['bersagli_umani', 'Tutti i Bersagli Umani', 'calc_formula_tot', true, '-1', 'umano', true],
+                ['bersagli_ambientali', 'Tutti i Bersagli Ambientali', 'calc_formula_tot', false, '-2', 'ambientale', true]
             ]
         });
         
         
         
         this.macrobers = new Ext.form.ComboBox({
-            fieldLabel: "Categoria",
+            fieldLabel: this.macroTargetLabel,
             id: "macrobers",
             width: 150,
             hideLabel : false,
@@ -570,29 +558,16 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             value: "Tutti i Bersagli",
             listeners: {
                 scope: this,
-                select: function(cb, record, index) {
-                    var value = record.get('property');    
-                    
-                    this.selectedTargetProp = value;
-                    this.selectedTargetName = record.get('name');
-                    this.selectedTargetCode = record.get('code');
-                    var store=this.bers.getStore();
-                    
-                    switch (this.selectedTargetName){
-                        case "Tutti i Bersagli":
-                            store.clearFilter();
-							this.selectedTargetLayer = 'bersagli_all';                            
-                            break;
-                        case "Tutti i Bersagli Umani":     
-							store.filter('type','umano');
-							this.selectedTargetLayer = 'bersagli_umani';
-                            break;
-                        case "Tutti i Bersagli Ambientali": 
-							store.filter('type','ambientale');
-							this.selectedTargetLayer = 'bersagli_ambientali';
-                            break;
-                    }
-                                      
+                select: function(cb, record, index) {				    					
+					var type = record.get('type');					
+					
+                    var store=this.bers.getStore();                    					
+					
+					if(type !== 'mixed') {
+						store.filter('type', type);
+					} else {
+						store.clearFilter();
+					}					                        
                     
                     this.bers.setValue(null);
                 }
@@ -601,7 +576,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
        
 
         this.bers = new Ext.form.ComboBox({
-            fieldLabel: "Bersaglio",
+            fieldLabel: this.targetLabel,
             id: "bers",
             width: 150,
             hideLabel : false,
@@ -615,35 +590,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             triggerAction: 'all',
             selectOnFocus:true,
             editable: true,
-            resizable: true,    
-            listeners: {
-                scope: this, 				
-                select: function(cb, record, index) {
-                    var value = record.get('property');                     
-                    if(value){
-                       if(value === 'invalid'){
-                        Ext.Msg.show({
-                            title: "Bersaglio",
-                            msg: "Dati non ancora disponibili per questo bersaglio",
-                            icon: Ext.MessageBox.WARNING
-                        });
-                        
-                        return false;
-                    }
-                    if(value == "calc_formula_tot")
-                        value = null;
-                    
-                    this.selectedTargetProp = value;
-                    this.selectedTargetName = record.get('name'); 
-                    this.selectedTargetCode = record.get('code');
-					this.selectedTargetLayer = record.get('layer');
-                  } 
-                }
-            }              
+            resizable: true
         });
         
         this.bersSet = new Ext.form.FieldSet({
-            title: "Tipo bersaglio",
+            title: this.targetSetLabel,
             id: 'bersfset',
             autoHeight: true,
             defaults: {
@@ -655,48 +606,144 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                  this.bers
             ]
         });
-        
-        //
-        // incidente
+		
+		return this.bersSet;
+	},
+	
+	/** private: method[buildAccidentForm]
+	 *    builds the form for accidents choosing (with 4 cascading combos)
+     */
+    buildAccidentForm: function(map){
+		//
+        // Classi ADR
         //
         var classiADRStore = new Ext.data.ArrayStore({
-            fields: ['name','value', 'sost'],
+            fields: ['name','value', 'sostanze'],
             data :  [
-                ['Tutte le classi', '0', [1,2,3,4,5,6,7,8,9,10]],
+                ['Tutte le classi', '0', ['1','2','3','4','5','6','7','8','9','10']],
              //   ['MATERIE E OGGETTI ESPLOSIVI', '1', []],
-                ['GAS COMPRESSI, LIQUEFATTI O DISCIOLTI IN PRESSIONE', '2', [1,2,3,4,5,6]],
-                ['MATERIE LIQUIDE INFIAMMABILI', '3', [7,8,9]],
+                ['GAS COMPRESSI, LIQUEFATTI O DISCIOLTI IN PRESSIONE', '2', ['1','2','3','4','5','6']],
+                ['MATERIE LIQUIDE INFIAMMABILI', '3', ['7','8','9']],
              //   ['MATERIE SOLIDE INFIAMMABILI', '4.1', []],
              //   ['MATERIE SOGGETTE AD ACCENSIONE SPONTANEA', '4.2', []],
              //   ['MATERIE CHE A CONTATTO CON L?ACQUA SVILUPPANO GAS INFIAMMABILI', '4.3', []],
              //   ['MATERIE COMBURENTI', '5.1', []],
              //   ['PEROSSIDI ORGANICI', '5.2', []],
-                ['MATERIE TOSSICHE', '6.1', [10]],
+                ['MATERIE TOSSICHE', '6.1', ['10']],
              //   ['MATERIE INFETTANTI', '6.2', []],
              //   ['MATERIE RADIOATTIVE', '7', []],
              //   ['MATERIE CORROSIVE', '8', []],
              //   ['MATERIE E OGGETTI PERICOLOSE DI ALTRA NATURA', '9', []]
             ]
         });
+		
+		this.classi = new Ext.form.ComboBox({
+            fieldLabel: this.adrLabel,
+            id: "classicb",
+            width: 150,
+            hideLabel : false,
+            store: classiADRStore,    
+            displayField: 'name',    
+            typeAhead: true,
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: true,
+            resizable: true,
+            value: "Tutte le classi",
+			lazyInit: false,
+            listeners: {
+                "expand": function(combo) {
+                    combo.list.setWidth( 'auto' );
+                    combo.innerList.setWidth( 'auto' );
+                },                
+                select: function(cb, record, index) {					
+					// filtra solo la combo delle sostanze in base alla classe scelta, resetta gli altri filtri
+					var sostanze = record.get('sostanze'); 
+					this.filterCombos([{
+						combo: this.sostanze,
+						filter: function(record) {							
+							var value=record.get('value'); 
+							return (sostanze.indexOf(value) != -1 || value == '0');
+						}
+					 },{
+						combo: this.accident,
+						filter: null
+					 }]);
+					 
+					 // resetta il valore selezionato sulle combo in cascata
+					 this.resetCombos([this.sostanze, this.accident, this.seriousness]);                    
+                },
+				scope: this
+            }              
+        });			
         
+		//
+        // Sostanze
+        //
         var sostanzeStore = new Ext.data.ArrayStore({
             fields: ['name', 'value', 'accidents'],
             data :  [
-                ['Tutte le sostanze', 0, ['A','B','C','D','E','F','G','H','I','L','M']],
-                ['IDROGENO COMPRESSO', 1, ['E'] ],
-                ['OSSIGENO COMPRESSO', 2, ['G']],
-                ['GAS DI PETROLIO LIQUEFATTO', 3, ['D', 'F']],
-                ['OSSIDO DI ETILENE (+AZOTO)', 4, ['D', 'F', 'M']],
-                ['AMMONIACA ANIDRA', 5, ['B', 'L']],
-                ['OSSIGENO LIQUIDO REFRIGERATO', 6, ['G']],
-                ['GASOLIO', 7, ['H']],
-                ['BENZINA', 8, ['C', 'D', 'H']],
-                ['METANOLO', 9, ['A', 'B', 'I']],
-                ['EPICLORIDRINA', 10, ['H']]
+                ['Tutte le sostanze', '0', ['A','B','C','D','E','F','G','H','I','L','M']],
+                ['IDROGENO COMPRESSO', '1', ['E'] ],
+                ['OSSIGENO COMPRESSO', '2', ['G']],
+                ['GAS DI PETROLIO LIQUEFATTO', '3', ['D', 'F']],
+                ['OSSIDO DI ETILENE (+AZOTO)', '4', ['D', 'F', 'M']],
+                ['AMMONIACA ANIDRA', '5', ['B', 'L']],
+                ['OSSIGENO LIQUIDO REFRIGERATO', '6', ['G']],
+                ['GASOLIO', '7', ['H']],
+                ['BENZINA', '8', ['C', 'D', 'H']],
+                ['METANOLO', '9', ['A', 'B', 'I']],
+                ['EPICLORIDRINA', '10', ['H']]
             ]
         });
+		
+		this.sostanze = new Ext.form.ComboBox({
+            fieldLabel: this.sostanzeLabel,
+            id: "sostanzecb",
+            width: 150,
+            hideLabel : false,
+            store: sostanzeStore, 
+            lastQuery:'',
+            displayField: 'name',    
+            typeAhead: true,
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: true,
+            resizable: true,	
+			lazyInit: false,			
+            value: "Tutte le sostanze",
+            listeners: {
+                "expand": function(combo) {
+                    combo.list.setWidth( 'auto' );
+                    combo.innerList.setWidth( 'auto' );
+                },
+                
+                select: function(cb, record, index) {
+					// filtra la combo degli incidenti
+					var accidents = record.get('accidents'); 
+					this.filterCombos([{
+						combo: this.accident,
+						filter: function(record) {							
+							var value=record.get('value'); 
+							return (accidents.indexOf(value)!= -1 || value == '0');
+						}
+					}]);                    
+                    
+                    // resetta il valore selezionato sulle combo in cascata
+					this.resetCombos([this.accident, this.seriousness]); 
+					
+                },
+				scope: this
+            }              
+        });
                
-        
+        //
+        // Incidenti / Scenari
+        //
         var accidentStore = new Ext.data.ArrayStore({
             fields: ['name', 'value'],
             data :  [
@@ -714,161 +761,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 ['DISPERSIONE GAS DA GAS LIQUEFATTO TOSSICO', 'M']
             ]
         });
-        
-        var seriousnessStore = new Ext.data.ArrayStore({
-            fields: ['name', 'value'],
-            data :  [
-                ['Tutte le entità', '0'],
-                ['Lieve', 'L'],
-                ['Grave', 'G']
-            ]
-        });
-        
-        
-      /*  var radiusData = new Ext.data.ArrayStore({
-            fields: ['id', 'humans', 'notHumans'],
-            data :  [
-                ['1-E-L', [15,32,51,75],        [15,-1,-1,-1,null,null]],
-                ['1-E-G', [75,90,110,130],      [75,-1,-1,-1,null,null]],
-                ['2-G-L', [25,null,81,null],    [null,-1,-1,-1,null,null]],
-                ['2-G-G', [45,null,90,null],    [null,-1,-1,-1,null,null]],
-                ['3-D-L', [35,70,null,null],    [null,-1,-1,null,null,null]],
-                ['3-D-G', [65,132,null,null],   [null,-1,-1,null,null,null]],
-                ['3-F-L', [60,95,110,140],      [60,-1,-1,null,null,null]],
-                ['3-F-G', [180,230,420,500],    [180,-1,-1,null,null,null]],
-                ['4-D-L', [30,65,null,null],    [null,-1,-1,null,null,null]],
-                ['4-D-G', [60,148,null,null],   [null,-1,-1,null,null,null]],
-                ['4-F-L', [55,93,100,131],      [55,-1,-1,null,null,null]],
-                ['4-F-G', [112,210,339,467],    [112,-1,-1,null,null,null]], 
-                ['4-M-L', [60,null,110,null],   [null,-1,-1,-1,null,null]],
-                ['4-M-G', [110,null,230,null],  [null,-1,-1,-1,null,null]],
-                ['5-B-L', [45,96,null,null],    [null,-1,-1,null,null,null]],
-                ['5-B-G', [110,150,null,null],  [null,-1,-1,null,null,null]], 
-                ['5-L-L', [130,null,567,null],  [null,-1,-1,-1,null,null]],
-                ['5-L-G', [250,null,780,null],  [null,-1,-1,-1,null,null]],
-                ['6-G-L', [25,null,81,null],    [null,-1,-1,-1,null,null]],
-                ['6-G-G', [45,null,90,null],    [null,-1,-1,-1,null,null]], 
-                ['7-H-L', [null,null,null,null],[null,null,null,8,8,8]],
-                ['7-H-G', [null,null,null,null],[null,null,null,25,25,25]], 
-                ['8-C-L', [35,45,52,60],        [35,-1,-1,-1,null,null]],
-                ['8-C-G', [80,110,130,145],     [80,-1,-1,-1,null,null]],
-                ['8-D-L', [45,90,null,null],    [null,-1,-1,null,null,null]],
-                ['8-D-G', [127,250,null,null],  [null,-1,-1,null,null,null]], 
-                ['8-H-L', [null,null,null,null],[null,null,null,8,8,8]],
-                ['8-H-G', [null,null,null,null],[null,null,null,25,25,25]], 
-                ['9-A-L', [30,42,48,58],        [30,-1,-1,null,null,null]],
-                ['9-A-G', [75,109,125,138],     [75,-1,-1,null,null,null]],
-                ['9-B-L', [40,88,null,null],    [-1,-1,null,null,null,null]],
-                ['9-B-G', [70,150,null,null],   [-1,-1,null,null,null,null]], 
-                ['9-I-L', [30,null,60,null],    [-1,-1,-1,-1,null,null]],
-                ['9-I-G', [80,null,160,null],   [-1,-1,-1,-1,null,null]],
-                ['10-H-L',[null,null,null,null],[null,null,null,8,8,8]],
-                ['10-H-G',[null,null,null,null],[null,null,null,25,25,25]]
-            ]
-        });*/
-        
-        this.classi = new Ext.form.ComboBox({
-            fieldLabel: "Classe ADR",
-            id: "classicb",
-            width: 150,
-            hideLabel : false,
-            store: classiADRStore,    
-            displayField: 'name',    
-            typeAhead: true,
-            mode: 'local',
-            forceSelection: true,
-            triggerAction: 'all',
-            selectOnFocus:true,
-            editable: true,
-            resizable: true,
-            value: "Tutte le classi",
-            listeners: {
-                "expand": function(combo) {
-                    combo.list.setWidth( 'auto' );
-                    combo.innerList.setWidth( 'auto' );
-                },
-                beforeselect: function(cb, record, index){
-                    var sostArray = record.get('sost');  
-                    var value= record.get('value');
-                    
-                    if(sostArray.length ==0 && value != '0'){
-                        Ext.Msg.show({
-                            title: "Scenario Incidentale",
-                            msg: "Dati non di interesse per il modello",
-                            icon: Ext.MessageBox.WARNING
-                        });
-                        return false;
-                    }
-                },
-                select: function(cb, record, index) {
-                     var store=me.sostanze.getStore();                     
-                     store.clearFilter();
-					 
-					 var sostArray = record.get('sost'); 
-                     store.filterBy(function (record){
-                        var value=record.get('value'); 
-                        return (sostArray.indexOf(value) != -1 || value == '0');
-                     });
-					 
-					 store=me.accident.getStore();                     
-                     store.clearFilter();
-
-                     me.sostanze.setValue('Tutte le sostanze');
-                     me.accident.setValue('Tutti gli Incidenti');
-                     me.seriousness.setValue('Tutte le entità');
-                     me.seriousnessCode= '0';
-                     me.accidentCode= '0';
-                     me.sostanzeCode= '0';
-                }
-            }              
-        });
-        
-        this.sostanze = new Ext.form.ComboBox({
-            fieldLabel: "Sostanze",
-            id: "sostanzecb",
-            width: 150,
-            hideLabel : false,
-            store: sostanzeStore, 
-            lastQuery:'',
-            displayField: 'name',    
-            typeAhead: true,
-            mode: 'local',
-            forceSelection: true,
-            triggerAction: 'all',
-            selectOnFocus:true,
-            editable: true,
-            resizable: true,			
-            value: "Tutte le sostanze",
-            listeners: {
-                "expand": function(combo) {
-                    combo.list.setWidth( 'auto' );
-                    combo.innerList.setWidth( 'auto' );
-                },
-                beforeselect: function(cb, record, index){
-                     
-                },
-                select: function(cb, record, index) {
-                    me.sostanzeCode = record.get('value');
-                    var store=me.accident.getStore();
-                    var accidentsArray = record.get('accidents'); 
-                    store.clearFilter();
-                    
-                    store.filterBy(function (record){
-                        var value=record.get('value');
-                        return (accidentsArray.indexOf(value)!= -1 || value == '0');
-                     });
-                    
-                    
-                    me.accident.setValue('Tutti gli Incidenti');
-                    me.seriousness.setValue('Tutte le entità');
-                    me.seriousnessCode= '0';
-                    me.accidentCode= '0';
-                }
-            }              
-        });
-        
-        this.accident = new Ext.form.ComboBox({
-            fieldLabel: "Incidente",
+		
+		this.accident = new Ext.form.ComboBox({
+            fieldLabel: this.accidentLabel,
             id: "accidentcb",
             width: 150,
             hideLabel : false,
@@ -882,6 +777,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             selectOnFocus:true,
             editable: true,
             resizable: true,
+			lazyInit: false,
             value: "Tutti gli Incidenti",
             listeners: {
                 "expand": function(combo) {
@@ -889,15 +785,26 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     combo.innerList.setWidth( 'auto' );
                 },
                 select: function(cb, record, index) {
-                    me.accidentCode = record.get('value');       
-                    me.seriousness.setValue('Tutte le entità');
-                    me.seriousnessCode= '0';
-                }
+                   this.resetCombos([this.seriousness]);                           
+                },
+				scope: this
             }              
         });
         
+		//
+        // Entità
+        //
+        var seriousnessStore = new Ext.data.ArrayStore({
+            fields: ['name', 'value'],
+            data :  [
+                ['Tutte le entità', '0'],
+                ['Lieve', 'L'],
+                ['Grave', 'G']
+            ]
+        });
+        
         this.seriousness = new Ext.form.ComboBox({
-            fieldLabel: "Entità",
+            fieldLabel: this.seriousnessLabel,
             id: "seriousnesscb",
             width: 150,
             hideLabel : false,
@@ -911,37 +818,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             editable: true,
             resizable: true,
             value: "Tutte le entità",
-            listeners: {
-                beforeselect: function(cb, record, index){
-                    var value = record.get('value');  
-					if(value != "0" && me.sostanzeCode != "0" && me.accidentCode != "0") {
-						var notValid=false;
-						var rad=me.radiusData[me.sostanzeCode][me.accidentCode][value];
-
-						if((me.selectedTargetCode != "-1" && me.selectedTargetCode != "-2")){
-							notValid= rad.notHumans[me.selectedTargetCode] == null;
-						}else
-							notValid= rad.humans[0] == null;
-						
-						if(notValid){
-							Ext.Msg.show({
-								title: "Scenario Incidentale",
-								msg: "Combinazione non consentita",
-								icon: Ext.MessageBox.WARNING
-							});
-						  return false;
-						}
-					}
-                },
-                "expand": function(combo) {
-                   /* combo.list.setWidth( 'auto' );
-                    combo.innerList.setWidth( 'auto' );*/
-                },
-                select: function(cb, record, index) {
-                    me.seriousnessCode = record.get('value');  
-                   
-                }
-            }              
+			lazyInit: false          
         });
         
         this.accidentSet = new Ext.form.FieldSet({
@@ -959,37 +836,43 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 this.seriousness
             ]
         });
-        
-        this.panel = new Ext.FormPanel({
+		
+		return this.accidentSet;
+	},
+	
+    /** private: method[buildForm]
+     *  :arg map: ``Object``
+	 *    builds the standard processing main (all including) form
+     */
+    buildForm: function(map){		
+		// disable synthetic view tab: why do we have tabs if we can't switch from one tab to the other?
+        var syntView = this.appTarget.tools[this.syntheticView];
+        syntView.getControlPanel().disable();
+		
+		var containerTab = Ext.getCmp(this.outputTarget);
+		
+		this.panel = new Ext.FormPanel({
             border: false,
             layout: "fit",
-            title: "Impostazioni di Elaborazione",
+            title: this.formLabel,
             autoScroll: true,
             items:[
-                this.elabSet,
-                this.spatialFieldSet,
-                this.bersSet,
-                this.accidentSet
+				this.buildElaborazioneForm(),
+				this.buildAOIForm(map),
+				this.buildTargetForm(),
+				this.buildAccidentForm()
             ],
             buttons: [{
-                text: "Reimposta",
+                text: this.resetButton,
                 iconCls: 'reset-button',
                 scope: this,
-                handler: function(){
-                    this.panel.getForm().reset();
-					this.removeAOILayer(this.appTarget.mapPanel.map);
-					this.selectAOI.deactivate();
-					this.aoiButton.toggle(false, true);
-					this.selectedTargetName = null;
-					this.selectedTargetLayer = null;
-                    this.resetBBOX(true);
-                }
+                handler: this.resetForm
             }, {
-                text: "Visualizza Mappa",
+                text: this.viewMapButton,
                 iconCls: 'visualizzation-button',
                 scope: this,
                 handler: function(){                    
-                    var params = this.makeParams();
+                    var params = this.viewMap();
                 }
             }]
         });
@@ -997,16 +880,26 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         containerTab.add(this.panel);
         containerTab.setActiveTab(this.panel);
         
-        Ext.get("bboxAOI-set-EPSG").addListener("click", function(){
+        Ext.get("bboxAOI-set-EPSG").addListener("click", this.openEpsgWin, this);
+        
+        if(!this.status){
+            this.resetBBOX();
+        }	
+    },
+    
+	/** private: method[openEpsgWin]
+	 *    Opens a popup with current AOI CRS description (EPSG:4326)
+     */
+	openEpsgWin: function() {
          var win= new Ext.Window({
                 layout:'fit',
                 
-                width:me.epsgWinWidth,
-                height:me.epsgWinHeight,
+                width:this.epsgWinWidth,
+                height:this.epsgWinHeight,
                 closeAction:'destroy',
-                html: '<div id="loaderIframe"><iframe id="epsgIframe" src="'+urlEPSG+'" width="99%" height="99%"></iframe></div>',
+                html: '<div id="loaderIframe"><iframe id="epsgIframe" src="'+ (this.urlEPSG ? this.urlEPSG : "http://spatialreference.org/ref/epsg/"+this.wgs84Projection.getCode().split(":")[1]+"/") +'" width="99%" height="99%"></iframe></div>',
                 listeners: {
-                    afterrender: function(thisss, eOpts) {
+                    afterrender: function(el, eOpts) {
                         var ml=new Ext.LoadMask(document.getElementById('loaderIframe'), 
                             { msg:"Prego Attendere...",removeMask: true});
                         ml.show();   
@@ -1024,15 +917,41 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
            });
            
            win.show();
-           
-           
-        });
-        
-        if(!this.status){
-            this.resetBBOX();
-        }
-    },
-    
+	},
+	
+	/** private: method[resetCombos]
+     *  :arg combos: ``Array``
+	 *    resets the given combos to their initial value ("all values")
+     */
+	resetCombos: function(combos) {
+		Ext.each(combos, function(combo) {
+			var record = combo.store.getAt(0);
+			combo.setValue(record.get('name'));
+			combo.fireEvent('select', combo, record, 0);
+		});
+	},
+	
+	/** private: method[filterCombos]
+     *  :arg combos: ``Array``
+	 *    sets the filter options on the given combos; each element
+	 *    of the array is an object with 2 properties, combo and filter,
+	 *    the filter is the function to filter the combo via filterBy.
+     */
+	filterCombos: function(combos) {
+		Ext.each(combos, function(comboInfo) {
+			var store=comboInfo.combo.getStore(); 
+			store.clearFilter();
+			if(comboInfo.filter) {
+				store.filterBy(comboInfo.filter);				
+			}
+		});
+	},
+	
+	/** private: method[setAOI]
+     *  :arg bounds: ``Object``
+	 *  :arg wgs84: ``Boolean``
+	 *     change the current AOI, to the given bounds, converting it to wgs84 if needed
+     */
     setAOI: function(bounds, wgs84) {
         var wgs84Bounds = wgs84 ? bounds : bounds.transform(this.mapProjection,this.wgs84Projection);
         this.northField.setValue(wgs84Bounds.top);
@@ -1041,7 +960,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.eastField.setValue(wgs84Bounds.right);  
     },
     
-    showMap: function(params){
+	/** private: method[doProcess]
+     *  :arg params: ``Object``	 
+	 *     executes the processing using given parameters
+     */
+    doProcess: function(params){
         if(params){
             this.showLayer(params);
             
@@ -1065,6 +988,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }
     },
     
+	/** private: method[removeAOILayer]
+     *  :arg map: ``Object``	 
+	 *     remove the AOI selection layer from the map
+     */
     removeAOILayer: function(map){
         var aoiLayer = map.getLayersByName("AOI")[0];
       
@@ -1072,6 +999,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             map.removeLayer(aoiLayer);    
     },
     
+	/** private: method[resetBBOX]
+     *  :arg extent: ``Boolean``	 
+	 *     reset bbox to current extent (if asked esplicitly or no status is defined) or saved status
+     */
     resetBBOX: function(extent){    
 		if(this.status && !extent){
 			this.setAOI(this.status.roi.bbox, true);
@@ -1080,15 +1011,19 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 		}              
     },
     
-    _makeParams: function(form){
+	/** private: method[makeParams]
+     *  :arg form: ``Object``	 
+     *  :arg roi: ``Object``	 
+	 *     builds processing params with form values and selected roi
+     */
+    makeParams: function(form, roi){
         var map = this.appTarget.mapPanel.map;
         var params = {};
         var filters = [];
         
         //
         // Spatial filter
-        //
-        var roi = this.bboxParam;
+        //       
         if(!roi){
             return null;
         }
@@ -1127,40 +1062,52 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         //
         // Target filter OpenLayers.Filter.Logical.NOT
-        //
-        if(this.selectedTargetProp){
+        //		
+		var targetRecord = this.getSelectedTarget();
+        if(targetRecord){
             filters.push(new OpenLayers.Filter.Logical({
                 type: OpenLayers.Filter.Logical.NOT,
                 filters: [new OpenLayers.Filter.Comparison({
                     type: OpenLayers.Filter.Comparison.IS_NULL,
-                    property: this.selectedTargetProp
+                    property: targetRecord.get('property')
                 })]
             }));
         }
         
         params.filters = filters;
         
-        this.showMap(params);
+        this.doProcess(params);
     },
     
-    makeParams: function(){
-        this.bboxValidation();
-    },
-    
-    bboxValidation: function(){
+	/** private: method[getSelectedTarget]    
+	 *     gets the currently selected target (or macro target) record
+     */
+	getSelectedTarget: function() {
+		var combo = this.bers.getValue() ? this.bers : this.macrobers;
+		return combo.store.getAt(combo.store.find('name', combo.getValue()));		
+	},
+	
+	getComboRecord: function(combo) {	
+		return combo.store.getAt(combo.store.find('name', combo.getValue()));
+	},
+	
+	/** private: method[viewMap]    
+	 *     handler of the "View Map" button, checks input data and proceed to process
+	 *     if everything is ok
+     */
+    viewMap: function(){
         if(!this.westField.isValid() || 
             !this.southField.isValid() || 
                 !this.eastField.isValid() || 
                     !this.northField.isValid()){
             Ext.Msg.show({
-                title: "Selezione Area di Interesse",
+                title: this.bboxValidationTitle,
                 buttons: Ext.Msg.OK,
-                msg: "Le coordinate dell'area di interesse non sono valide.",
+                msg: this.invalidAOI,
                 icon: Ext.MessageBox.WARNING
             });        
-            
-            this.bboxParam = null;
-            this._makeParams(this.panel.getForm());
+                        
+            this.makeParams(this.panel.getForm(), null);
         }else{
             var selbbox = new OpenLayers.Bounds(
                 this.westField.getValue(), 
@@ -1171,30 +1118,27 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             
             if(this.maxROIArea ? selbbox.toGeometry().getArea() > this.maxROIArea : false){
                 var useROI = function(buttonId, text, opt){
-                    if(buttonId === 'ok'){
-                        this.bboxParam = selbbox;
-                    }else{
-                        this.bboxParam = null;
-                    }
-                    
-                    this._makeParams(this.panel.getForm());
+					this.makeParams(this.panel.getForm(), buttonId === 'ok' ? selbbox : null);
                 };
                 
                 Ext.Msg.show({
-                    title: "Selezione Area di Interesse",
+                    title: this.bboxValidationTitle,
                     buttons: Ext.Msg.OKCANCEL,
                     fn: useROI,
-                    msg: "L'area selezionata e' troppo grande e il server potrebbe impiegare molto tempo a rispondere. Se si desidera continuare ugualmente premere OK.",
+                    msg: this.bboxTooBig,
                     icon: Ext.MessageBox.WARNING,
                     scope: this
                 });                
-            }else{
-                this.bboxParam = selbbox;
-                this._makeParams(this.panel.getForm());
+            }else{                
+                this.makeParams(this.panel.getForm(), selbbox);
             }
         }
     },
     
+	/** private: method[viewMap]   
+     *  :arg params: ``Object``		
+	 *     updates the risk thema on the map with the given processing parameters
+     */
     showLayer: function(params){
         var map = this.appTarget.mapPanel.map;
         
@@ -1208,14 +1152,14 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         var xmlFormat = new OpenLayers.Format.XML();                  
         ogcFilterString = xmlFormat.write(ogcFilterString);
-                    
+           
         //
         // Check if the selection layer already exists
         //
         var stdElabLayer = map.getLayersByName(this.selectionLayerTitle)[0];
       
         if(!stdElabLayer){
-            stdElabLayer = new OpenLayers.Layer.WMS(
+            /*stdElabLayer = new OpenLayers.Layer.WMS(
                 this.selectionLayerTitle,         
                 this.selectionLayerBaseURL,
                 {
@@ -1231,24 +1175,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 }
             );
                     
-            map.addLayer(stdElabLayer);
-        }else{
-            // ES: &env=formula:calc_formula_tot;basso_rischio:6000;medio_rischio_a:25000:medio_rischio_b:6001;alto_rischio:25001
-            /*var env;
-            if(this.selectedTargetProp == "calc_formula_tot"){
-                env = "formula:" + this.selectedTargetProp + "basso_rischio:6000;medio_rischio_a:25000:medio_rischio_b:6001;alto_rischio:25001";
-            }else if(this.selectedTargetProp == "calc_formula_aree_boscate"){
-                env = "formula:" + this.selectedTargetProp + "basso_rischio:5000;medio_rischio_a:20000:medio_rischio_b:5001;alto_rischio:70001";
-            }else if(this.selectedTargetProp == "calc_formula_aree_agricole"){
-                env = "formula:" + this.selectedTargetProp + "basso_rischio:30000;medio_rischio_a:40000:medio_rischio_b:30001;alto_rischio:40001";
-            }else{
-                env = "formula:" + this.selectedTargetProp + "basso_rischio:6000;medio_rischio_a:25000:medio_rischio_b:6001;alto_rischio:25001";
-            }*/
-            
+            map.addLayer(stdElabLayer);*/
+        }else{                        
             stdElabLayer.mergeNewParams({
-                filter: ogcFilterString //,
-                //env: env
-                //styles: this.selectedTargetProp ? this.selectedTargetProp : ''
+                filter: ogcFilterString 
             });
             
             if(params.roi){
@@ -1257,54 +1187,57 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }
     },
     
-    setStatus: function(status){
+	/** private: method[setStatus]   
+     *  :arg status: ``Object``		
+	 *     set current processing parameter when the form is open
+     */
+    setStatus: function(status){		
         var store;
         this.status = status;
-        this.elab.setValue(this.status.processing);
-        this.form.setValue(this.status.form);
+        this.elaborazione.setValue(this.status.processing);
+        this.formula.setValue(this.status.formula);
         this.setAOI(this.status.roi.bbox);
-        
+        		
 		store=this.macrobers.getStore(); 
         this.macrobers.setValue(this.status.macroTarget);
 		this.macrobers.fireEvent('select',this.macrobers, store.getAt(store.find("name", this.status.macroTarget)));
 		
 		store=this.bers.getStore(); 
-        if(this.status.macroTarget != this.status.target) {
-            this.bers.setValue(this.status.target);
-			this.bers.fireEvent('select',this.bers, store.getAt(store.find("name", this.status.target)));
-        } else
-            this.bers.setValue(null);
-        
-        store=this.classi.getStore();        
-        this.classi.setValue(this.status.classe);
-		this.classi.fireEvent('select',this.classi, store.getAt(store.find("name", this.status.classe)));
-        
-        store=this.sostanze.getStore();        
-        this.sostanze.setValue(this.status.sostanza);
-		this.sostanze.fireEvent('select',this.sostanze, store.getAt(store.find("name", this.status.sostanza)));
-
-        store=this.accident.getStore(); 
-        this.accident.setValue(this.status.accident);    
-		this.accident.fireEvent('select',this.accident, store.getAt(store.find("name", this.status.accident)));
-		
-		store=this.seriousness.getStore(); 
-        this.seriousness.setValue(this.status.seriousness);
-		this.seriousness.fireEvent('select',this.seriousness, store.getAt(store.find("name", this.status.seriousness)));
-    },
-    
-	getTargetType: function() {		
-		var record = this.bers.store.getAt(this.bers.store.find("name",this.bers.getValue()));
-		if(!record) {
-			record = this.macrobers.store.getAt(this.macrobers.store.find("name",this.macrobers.getValue()));
+		if(this.status.target['macro']) {
+			this.bers.setValue(null);
+		} else {
+			var value = this.status.target['name'];
+			this.bers.setValue(value);
+			this.bers.fireEvent('select',this.bers, store.getAt(store.find("name", value)));
 		}
-		return record.get('type');		
+        
+		this.setComboStatus(this.classi, 'classe');
+		this.setComboStatus(this.sostanze, 'sostanza');
+		this.setComboStatus(this.accident, 'accident');
+		this.setComboStatus(this.seriousness, 'seriousness');          
+    },    	
+	
+	/** private: method[setComboStatus]   
+     *  :arg combo: ``Object``		
+     *  :arg statusName: ``String``		
+	 *     Updates the given combo value from the status object
+     */
+	setComboStatus: function(combo, statusName) {
+		var store = combo.getStore();      
+		var value = this.status[statusName].name;
+		combo.setValue(value);
+		combo.fireEvent('select',combo, store.getAt(store.find("name", value)));
 	},
 	
+	/** private: method[getStatus]   
+     *  :arg form: ``Object``		
+	 *     extract processing parameters (status) from the compiled form
+     */
     getStatus: function(form){
         var obj = {};
         
-        obj.processing = this.elab.getValue();
-        obj.form = this.form.getValue();
+        obj.processing = this.elaborazione.getValue();
+        obj.formula = this.formula.getValue();
         
         if(this.westField.isDirty() && 
             this.southField.isDirty() && 
@@ -1322,7 +1255,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }else{
             obj.roi = {
                 label: "Regione Piemonte", 
-                bbox : //new OpenLayers.Bounds.fromString(this.defaultBBOXFilterExtent)
+                bbox : 
                     new OpenLayers.Bounds(
                         this.westField.getValue(), 
                         this.southField.getValue(), 
@@ -1331,16 +1264,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     ).transform(this.wgs84Projection,this.mapProjection)
             }
         }
-
-        obj.target = this.selectedTargetName || 'Tutti i Bersagli';/*this.bers.getValue()*/ ;
-        obj.targetName = this.selectedTargetName || 'Tutti i Bersagli';
-		obj.targetLayer = this.selectedTargetLayer || 'bersagli_all';
-		obj.targetType = this.getTargetType();
-        obj.macroTarget = this.macrobers.getValue();
-        obj.classe = this.classi.getValue();
-        obj.sostanza = this.sostanze.getValue();
-        obj.accident = this.accident.getValue();
-        obj.seriousness = this.seriousness.getValue();
+		
+        obj.target = this.getSelectedTarget().data; 
+		obj.macroTarget = this.macrobers.getValue();
+        obj.classe = this.getComboRecord(this.classi).data; //this.classi.getValue();
+        obj.sostanza = this.getComboRecord(this.sostanze).data; //this.sostanze.getValue();
+        obj.accident = this.getComboRecord(this.accident).data; //this.accident.getValue();
+        obj.seriousness = this.getComboRecord(this.seriousness).data; //this.seriousness.getValue();
 
         return obj;
     }

@@ -23,8 +23,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 
     // Begin i18n.
     title: "Visualizzazione Sintetica",
-    elabLabel: "Tipo elaborazione",
-    formLabel: "Formula",
+    elaborazioneLabel: "Tipo elaborazione",
+    formulaLabel: "Formula",
     extentLabel: "Ambito territoriale",
     targetLabel: "Tipo bersaglio",
     adrClassLabel: "Classe ADR",
@@ -33,6 +33,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     seriousnessLabel: "Entità",
 	buffersLabel: "Raggi Aree Danno",
     fieldSetTitle: "Elaborazione",
+	cancelButton: "Annulla Elaborazione",
+	processButton: "Esegui Elaborazione",
+	analyticViewButton: "Visualizzazione Analitica",
     // End i18n.
         
     id: "syntheticview",
@@ -45,12 +48,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     selectionLayerProjection: "EPSG:32632",
     
     bufferLayerName: "geosolutions:siig_aggregation_1_buffer",    
+	
     bufferLayerTitle: "Aree di danno",    
     targetLayerTitle: "Bersagli", 
+	formulaLayerTitle: "Rischio Totale",
+	
+	selectedTargetLayer: "Bersaglio Selezionato",
     
     currentBufferLayers: [],
-    
-    formulaLayerTitle: "Rischio Totale",
     
     layerImageFormat: "image/png8",
     
@@ -67,6 +72,102 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     constructor: function(config) {
         gxp.plugins.SyntheticView.superclass.constructor.apply(this, arguments);            
     },
+	
+	radiusData : {
+		 "1":{
+			"E" : {
+				"L": { "humans": [15,32,51,75],        "notHumans": [15,8,8,8,null,null]},
+				"G": { "humans": [75,90,110,130],      "notHumans": [75,25,25,25,null,null]}
+			}
+		 },
+		 "2":{
+			"G" : {
+				"L": { "humans": [25,null,81,null],    "notHumans": [null,8,8,8,null,null]},
+				"G": { "humans": [45,null,90,null],    "notHumans": [null,25,25,25,null,null]}
+			}
+		},
+		"3":{
+			"D" : {
+				"L": { "humans": [35,70,null,null],    "notHumans": [null,8,8,null,null,null]},
+				"G": { "humans": [65,132,null,null],   "notHumans": [null,25,25,null,null,null]}
+			},
+			"F" : {
+				"L": { "humans": [60,95,110,140],      "notHumans": [60,8,8,null,null,null]},
+				"G": { "humans": [180,230,420,500],    "notHumans": [180,25,25,null,null,null]}
+			}
+		},
+		"4":{
+			"E" : {
+				"L": { "humans": [30,65,null,null],    "notHumans": [null,8,8,null,null,null]},
+				"G": { "humans": [60,148,null,null],   "notHumans": [null,25,25,null,null,null]}
+			},
+			"F" : {
+				"L": { "humans": [55,93,100,131],      "notHumans": [55,8,8,null,null,null]},
+				"G": { "humans": [112,210,339,467],    "notHumans": [112,25,25,null,null,null]}
+			},
+			"M" : {
+				"L": { "humans": [60,null,110,null],   "notHumans": [null,8,8,8,null,null]},
+				"G": { "humans": [110,null,230,null],  "notHumans": [null,25,25,25,null,null]}
+			}
+		},
+		"5":{
+			"B" : {
+				"L": { "humans": [45,96,null,null],    "notHumans": [null,8,8,null,null,null]},
+				"G": { "humans": [110,150,null,null],  "notHumans": [null,25,25,null,null,null]}
+			},
+			"L" : {
+				"L": { "humans": [130,null,567,null],  "notHumans": [null,8,8,8,null,null]},
+				"G": { "humans": [250,null,780,null],  "notHumans": [null,25,25,25,null,null]}
+			}
+		},
+		"6":{
+			"G" : {
+				"L": { "humans": [25,null,81,null],    "notHumans": [null,8,8,8,null,null]},
+				"G": { "humans": [45,-1,90,-1],    "notHumans": [null,25,25,25,null,null]}
+			}
+		},
+		"7":{
+			"H" : {
+				"L": { "humans": [null,null,null,null],"notHumans": [null,null,null,8,8,8]},
+				"G": { "humans": [null,null,null,null],"notHumans": [null,null,null,25,25,25]}
+			}
+		},
+		"8":{
+			"C" : {
+				"L": { "humans": [35,45,52,60],        "notHumans": [35,8,8,8,null,null]},
+				"G": { "humans": [80,110,130,145],     "notHumans": [80,25,25,25,null,null]}
+			},
+			"D" : {
+				"L": { "humans": [45,90,null,null],    "notHumans": [null,8,8,null,null,null]},
+				"G": { "humans": [127,250,null,null],  "notHumans": [null,25,25,null,null,null]}
+			},
+			"H" : {
+				"L": { "humans": [null,null,null,null],"notHumans": [null,null,null,8,8,8]},
+				"G": { "humans": [null,null,null,null],"notHumans": [null,null,null,25,25,25]}
+			}
+		},
+		"9":{
+			"A" : {
+				"L": { "humans": [30,42,48,58],        "notHumans": [30,8,8,null,null,null]},
+				"G": { "humans": [75,109,125,138],     "notHumans": [75,25,25,null,null,null]}
+			},
+			"B" : {
+				"L": { "humans": [40,88,null,null],    "notHumans": [8,8,null,null,null,null]},
+				"G": { "humans": [70,150,null,null],   "notHumans": [25,25,null,null,null,null]}
+			},
+			"I" : {
+				"L": { "humans": [30,null,60,null],    "notHumans": [8,8,8,8,null,null]},
+				"G": { "humans": [80,null,160,null],   "notHumans": [25,25,25,25,null,null]}
+			}
+		},
+		 "10":{
+			"H" : {
+				"L": { "humans": [null,null,null,null],"notHumans": [null,null,null,8,8,8]},
+				"G": { "humans": [null,null,null,null],"notHumans": [null,null,null,25,25,25]}
+			}
+		}
+	},
+		 
 
     /** private: method[init]
      *  :arg target: ``Object`` The object initializing this plugin.
@@ -90,6 +191,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     /** private: method[createLayerRecord]
      *   :arg config: ``Object``
+	 *     creates a record for a new layer, with the given configuration
      */
     createLayerRecord: function(config) {        
         var params = {
@@ -113,6 +215,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }
         );
         
+		// look for the base record for layer in layerSource and builds a new
+		// record merging base configuration with given one
         var index = this.layerSource.store.findExact("name", config.name);
         if (index > -1) {
             var layerRecord = this.layerSource.store.getAt(index);
@@ -136,60 +240,57 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
 	isAllHumanTargets: function() {
-		return this.status.targetName === 'Tutti i Bersagli Umani';
+		return this.status.target.name === 'Tutti i Bersagli Umani';
 	},
 	
 	isAllNotHumanTargets: function() {
-		return this.status.targetName === 'Tutti i Bersagli Ambientali';
+		return this.status.target.name === 'Tutti i Bersagli Ambientali';
 	},
 	
 	isSingleTarget: function() {
-		return this.status.targetName !== 'Tutti i Bersagli Umani'
-			&& this.status.targetName !== 'Tutti i Bersagli Ambientali' 
-			&& this.status.targetName !== 'Tutti i Bersagli';
+		return this.status.target.name !== 'Tutti i Bersagli Umani'
+			&& this.status.target.name !== 'Tutti i Bersagli Ambientali' 
+			&& this.status.target.name !== 'Tutti i Bersagli';
 	},
 	
     isHumanTarget: function() {
-        return this.status.targetType === 'umano';
+        return this.status.target.type === 'umano';
     },
     
     isNotHumanTarget: function() {
-        return this.status.targetType === 'ambientale';
+        return this.status.target.type === 'ambientale';
     },
     
     isMixedTargets: function() {
-        return this.status.targetType === 'mixed';
+        return this.status.target.type === 'mixed';
     },
     
-    
-    addHumanTargetBuffer: function(layers,/*seriousness*/distances,title) {    
-       
-        /*var distancesBySeriousness={
-            'Lieve':[30,42,48,58],
-            'Grave':[75,109,125,138]
-        };
-        var distances = distancesBySeriousness[seriousness];*/
-
+    /** private: method[addHumanTargetBuffer]
+     *   :arg distances: ``Array`` array of concentric buffer distances
+     *   :arg title: ``String``
+	 *     adds a new layer buffer for human targets
+     */
+    addHumanTargetBuffer: function(distances, title, viewParams) {           
         this.currentBufferLayers.push(title);
-        
+        distances = this.normalizeRadius(distances, true);
         return this.createLayerRecord({
             name: this.bufferLayerName,
             title: title,
             params: {
                 styles: 'aggregation_selection_buffer_human',
-                buffer: 200,
-                env:'elevata:'+distances[0]+';inizio:'+distances[1]+';irreversibili:'+distances[2]+';reversibili:'+distances[3]
+                buffer: 50,
+                env:'elevata:'+distances[0]+';inizio:'+distances[1]+';irreversibili:'+distances[2]+';reversibili:'+distances[3],
+				viewparams: viewParams
             }
         });                
     },
     
-    addNotHumanTargetBuffer: function(layers,/*seriousness*/distances,title) {    
-        
-       /* var distancesBySeriousness={
-            'Lieve':8,
-            'Grave':25
-        };*/
-        
+	/** private: method[addNotHumanTargetBuffer]
+     *   :arg distance: ``Integer`` buffer dimension
+     *   :arg title: ``String``
+	 *     adds a new layer buffer for not human targets
+     */
+    addNotHumanTargetBuffer: function(distance, title, viewParams) {                   
         this.currentBufferLayers.push(title);
              
         return this.createLayerRecord({
@@ -197,12 +298,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             title: title,
             params: {
                 styles: 'aggregation_selection_buffer_nothuman',
-                buffer: 100,
-                env:'distance:'+distances/*distancesBySeriousness[seriousness]*/
+                buffer: 50,
+                env:'distance:'+distance,
+				viewparams: viewParams
             }
         });        
     },
     
+	/** private: method[removeLayers]
+     *   :arg map: ``Object``
+     *   :arg layers: ``Array``
+	 *     remove all the given layers (by name) from the map
+     */
     removeLayers: function(map,layers) {
         var layer;
         for(var i = 0, layerName; layerName = layers[i]; i++) {
@@ -212,42 +319,16 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }
         }        
     },
-    /*
-    loadGrid: function(fgrid, query, viewParams) {        
-        var store = fgrid.getStore();
-        
-        store.resetTotal();
-        store.removeAll();
-                        
-        var params = {
-            startindex: 0,          
-            maxfeatures: 10,
-            sort: "id_tema"
-        };
-        
-        if(query){
-            store.setBaseParam("filter", query);
-            store.setBaseParam("srsName", this.selectionLayerProjection);
-        }
-        
-        if(viewParams){
-            store.setBaseParam("viewParams", viewParams);
-        }
-        
-        
-
-        store.load({
-            params: params
-        });
-    },*/
+    
     
     /** private: method[addOutput]
      *  :arg config: ``Object``
+	 *     builds the SyntheticView form
      */
     addOutput: function(config) {
         var me= this;
         this.elab = new Ext.form.TextField({
-              fieldLabel: this.elabLabel,
+              fieldLabel: this.elaborazioneLabel,
               id: "elab",
               width: 150,
               readOnly: true,
@@ -256,7 +337,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         });
         
         this.form = new Ext.form.TextField({
-              fieldLabel: this.formLabel,
+              fieldLabel: this.formulaLabel,
               id: "form",
               width: 150,
               readOnly: true,
@@ -317,10 +398,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               readOnly: true,
               value: "Tutte le entità",
               hideLabel : false                    
-        });
-        
-        
-        
+        });                        
         
 		
 		this.buffers = new Ext.form.TextArea({
@@ -352,43 +430,41 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 				 this.buffers
             ],
             buttons: [{
-                text: "Annulla Elaborazione",
+                text: this.cancelButton,
                 iconCls: 'elab-button',
                 scope: this,
                 handler: function(){        
                     var map = this.target.mapPanel.map;
                     
-                    this.removeLayers(map,[this.targetLayerTitle,"Bersaglio Selezionato"]);
+					// remove analytic view layers (buffers, targets, selected targets)
+                    this.removeLayers(map,[this.targetLayerTitle,this.selectedTargetLayer]);
                     this.removeBufferLayers(map);
                                                             
                     Ext.getCmp("south").collapse();  
 
+					// remove filter from risk layer
 					var stdElabLayer = map.getLayersByName(this.selectionLayerTitle)[0];					
 					stdElabLayer.mergeNewParams({
 						filter: ''
 					});
                 }
             }, {
-                text: "Esegui Elaborazione",
+                text: this.processButton,
                 iconCls: 'elab-button',
                 scope: this,
                 handler: function(){        
                     var map = this.target.mapPanel.map;
                     
-                    this.removeLayers(map,[this.targetLayerTitle,"Bersaglio Selezionato"]);
+					// remove analytic view layers (buffers, targets, selected targets)
+                    this.removeLayers(map,[this.targetLayerTitle, this.selectedTargetLayer]);
                     this.removeBufferLayers(map);
-                                        
-                    //var analyticButton = Ext.getCmp("analytic_view").disable();                    
+                                   
                     var south = Ext.getCmp("south").collapse();
                     
                     this.processingPane.show(this.target);
                     if(this.status){
                         this.processingPane.setStatus(this.status);
-                    }
-                    
-                    /*var extent=map.getExtent().clone();
-                    me.processingPane.setAOI(extent);                    
-                    me.processingPane.removeAOILayer(map);*/
+                    }                    
                 }
             }]
         });
@@ -404,7 +480,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             bbar: new Ext.Toolbar({
                 items: [
                     {
-                        text: 'Visualizazione Analitica',
+                        text: this.analyticViewButton,
                         iconCls: 'analytic-view-button',
                         disabled: true,
                         id: "analytic_view",
@@ -417,186 +493,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                 me.analyticView= false;
                             }
                         },
-                        handler: function(){                            
-                            var featureManager = this.target.tools["featuremanager"];
-                            
-                            var map = this.target.mapPanel.map;
-                            
-                            //
-                            // Get the status status
-                            //
-                            var status = this.getStatus();
-                            
-                            //
-                            // Manage the OGC filter
-                            //
-                            //var ogcFilterString;
-                            var filter;
-                            var targetName;
-                            
-                            var filterFormat = new OpenLayers.Format.Filter();
-                            var xmlFormat = new OpenLayers.Format.XML();   
-                            if(status && status.target){
-                                var target = status.target;
-                                
-                                targetName = status.targetName;
-                                if(target != 'Tutti i Bersagli' && target != 'Tutti i Bersagli Umani' && target != 'Tutti i Bersagli Ambientali'){
-                                    filter = new OpenLayers.Filter.Comparison({
-                                       type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                                       property: "tipobersaglio",
-                                       value: target
-                                    });
-                                                                        
-                                    //ogcFilterString = filterFormat.write(filter);                                                                                         
-                                    
-                                }
-                            }
-
-                            //
-                            // Manage VIEWPARAMS
-                            //    
-                            var viewParams = '';
-                            
-                            var bounds = map.getExtent();
-                            if(status && status.roi)
-                                bounds = new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX());
-                                
-                            //alert(bounds.toBBOX().replace(/,/g, "\\\,"));
-                            
-                            //
-                            // Check about the projection (this could needs Proj4JS definitions inside the mapstore config)
-                            //
-                            var mapPrj = map.getProjectionObject();
-                            var selectionPrj = new OpenLayers.Projection("EPSG:32632");
-                            if(!mapPrj.equals(selectionPrj)){
-                                bounds = bounds.transform(
-                                    mapPrj,    
-                                    selectionPrj
-                                );
-                            }
-                            
-                            bounds = bounds.toBBOX().replace(/,/g, "\\\,");
-                            
-                            viewParams += "bounds:" + bounds;
-                            //alert(bounds);
-                            
-                            var tipologia;
-                            if(status && status.accident){                                
-                                if(status.accident != 'Tutti gli Incidenti'){
-                                    tipologia = 'POOL FIRE DA LIQUIDO INFIAMMABILE'; //status.accident;                                    
-                                    viewParams += ";tipologia:" + tipologia; 
-                                }
-                            }
-                            
-                            var seriousness='Grave';
-                            if(status && status.seriousness){                                
-                                if(status.seriousness != 'Tutte le entità'){
-                                    seriousness = status.seriousness;                                    
-                                }
-                            }
-							
-							var targetLayer = 'bersagli_all';
-							if(status && status.targetLayer) {
-								targetLayer = status.targetLayer;
-							}
-
-                            //alert(viewParams);
-                            this.removeLayers(map,[this.targetLayerTitle]);                            
-                            this.removeBufferLayers(map);
-                            
-                            var newLayers=[];
-                            var dist= this.getRadius();
-                            
-							this.buffers.setValue(this.getBuffersInfo());
-							
-							var radiusHum = dist.radiusHum ? this.normalizeRadius(dist.radiusHum) : [];
-							var radiusNotHum = dist.radiusNotHum;
-                            if(!this.status || this.isMixedTargets()) {
-								if(radiusHum.length > 0) {
-									newLayers.push(this.addHumanTargetBuffer(newLayers,/*seriousness*/dist.radiusHum,this.bufferLayerTitle+' (Bersagli umani)'));
-								}
-								if(radiusNotHum > 0) {
-									newLayers.push(this.addNotHumanTargetBuffer(newLayers,/*seriousness*/dist.radiusNotHum,this.bufferLayerTitle+' (Bersagli ambientali)'));
-								}
-                            } else if(this.isHumanTarget()) {
-								if(radiusHum.length > 0) {
-									newLayers.push(this.addHumanTargetBuffer(newLayers,/*seriousness*/dist.radiusHum,this.bufferLayerTitle+' ('+targetName+')'));                                
-								}
-                            } else if(this.isNotHumanTarget()) {
-								if(radiusNotHum > 0) {
-									newLayers.push(this.addNotHumanTargetBuffer(newLayers,/*seriousness*/dist.radiusNotHum,this.bufferLayerTitle+' ('+targetName+')'));                                
-								}
-                            }
-                            
-                            newLayers.push(this.createLayerRecord({
-                                name: targetLayer,
-                                title: this.targetLayerTitle, 
-                                params: {                                                                
-                                    viewparams: viewParams/*,                                    
-                                    filter: ogcFilterString ? xmlFormat.write(ogcFilterString) : ''*/
-                                }
-                            }));
-                            
-                            var layerStore = this.target.mapPanel.layers;                            
-                            var mainLayerIndex = layerStore.findBy(function(rec) {
-                                return rec.get('title') === this.formulaLayerTitle;
-                            }, this);
-                            if(mainLayerIndex !== -1) {
-                                var mainLayer = layerStore.getAt(mainLayerIndex);
-                                layerStore.remove(mainLayer);
-                                newLayers.push(mainLayer);
-                            }
-                            this.target.mapPanel.layers.add(newLayers);                                               
-                            
-                            //
-                            // Manage target grid
-                            //
-                            var wfsGrid = Ext.getCmp("featuregrid");
-							if(this.isSingleTarget()) {
-								wfsGrid.loadGrids("title", this.status.targetName, this.selectionLayerProjection, viewParams);								
-							} else if(this.isAllHumanTargets()) {
-								wfsGrid.loadGrids("type", 'umano', this.selectionLayerProjection, viewParams);
-							} else if(this.isAllNotHumanTargets()) {
-								wfsGrid.loadGrids("type", 'ambientale', this.selectionLayerProjection, viewParams);
-							} else {
-								wfsGrid.loadGrids(null ,null , this.selectionLayerProjection, viewParams);
-							}
-                            /*var humanGrid = tabPanel.getItem('featuregridhuman');
-                            var notHumanGrid = tabPanel.getItem('featuregridnothuman');
-                            
-                            var humanFilterString = filterFormat.write(new OpenLayers.Filter.Comparison({
-                                   type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                                   property: "tipobersaglio",
-                                   value: this.status.target
-                            }));
-                            
-                            var notHumanFilterString = filterFormat.write(new OpenLayers.Filter.Comparison({
-                                   type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
-                                   property: "tipobersaglio",
-                                   value: this.status.target
-                            }));
-
-                            if(!this.status || this.isMixedTargets()) {
-                                tabPanel.unhideTabStripItem(humanGrid);
-                                tabPanel.unhideTabStripItem(notHumanGrid);
-                                this.loadGrid(humanGrid, xmlFormat.write(humanFilterString), viewParams);
-                                this.loadGrid(notHumanGrid, xmlFormat.write(notHumanFilterString), viewParams);
-                                tabPanel.setActiveTab(humanGrid);
-                            } else if(this.isHumanTarget()) {
-                                tabPanel.hideTabStripItem(notHumanGrid);
-                                tabPanel.unhideTabStripItem(humanGrid);
-                                this.loadGrid(humanGrid, xmlFormat.write(humanFilterString), viewParams);
-                                tabPanel.setActiveTab(humanGrid);
-                            } else if(this.isNotHumanTarget()) {
-                                tabPanel.hideTabStripItem(humanGrid);
-                                tabPanel.unhideTabStripItem(notHumanGrid);
-                                this.loadGrid(notHumanGrid, xmlFormat.write(notHumanFilterString), viewParams);
-                                tabPanel.setActiveTab(notHumanGrid);
-                            }*/
-                            Ext.getCmp("south").expand();
-                            
-                        }
-                    }
+                        handler: this.analyticView
+					}
                 ]
             })
         });
@@ -622,6 +520,252 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return this.controlPanel;
     },
     
+	getBounds: function(status, map) {
+		// bounds: current map extent or roi saved in the status
+		var bounds;
+		if(status && status.roi) {
+			bounds = new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX());
+		} else {
+			bounds = map.getExtent();
+		}
+	
+		var mapPrj = map.getProjectionObject();
+		var selectionPrj = new OpenLayers.Projection("EPSG:32632");
+		if(!mapPrj.equals(selectionPrj)){
+			bounds = bounds.transform(
+				mapPrj,    
+				selectionPrj
+			);
+		}
+		
+		return bounds.toBBOX().replace(/,/g, "\\\,");
+	},
+	
+	addTargets: function(layers, bounds, radius) {
+		var targetViewParams = "bounds:" + bounds + ';distance:' + radius.max;
+		layers.push(this.createLayerRecord({
+			name: this.status.target ? this.status.target.layer : 'bersagli_all',
+			title: this.targetLayerTitle, 
+			params: {                                                                
+				viewparams: targetViewParams
+			}
+		}));
+		
+		var wfsGrid = Ext.getCmp("featuregrid");
+		if(this.isSingleTarget()) {
+			wfsGrid.loadGrids("title", this.status.target.name, this.selectionLayerProjection, targetViewParams);								
+		} else if(this.isAllHumanTargets()) {
+			wfsGrid.loadGrids("type", 'umano', this.selectionLayerProjection, targetViewParams);
+		} else if(this.isAllNotHumanTargets()) {
+			wfsGrid.loadGrids("type", 'ambientale', this.selectionLayerProjection, targetViewParams);
+		} else {
+			wfsGrid.loadGrids(null ,null , this.selectionLayerProjection, targetViewParams);
+		}
+	},
+	
+	addBuffers: function(layers, bounds, radius) {
+		var viewParams = "bounds:" + bounds;
+		if(!this.status || this.isMixedTargets()) {
+			if(radius.radiusHum.length > 0) {
+				layers.push(this.addHumanTargetBuffer(radius.radiusHum,this.bufferLayerTitle+' (Bersagli umani)', viewParams));
+			}
+			if(radius.radiusNotHum > 0) {
+				layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,this.bufferLayerTitle+' (Bersagli ambientali)', viewParams));
+			}
+		} else if(this.isHumanTarget()) {
+			if(radius.radiusHum.length > 0) {
+				layers.push(this.addHumanTargetBuffer(radius.radiusHum,this.bufferLayerTitle+' ('+this.status.target.name+')', viewParams));                                
+			}
+		} else if(this.isNotHumanTarget()) {
+			if(radius.radiusNotHum > 0) {
+				layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,this.bufferLayerTitle+' ('+this.status.target.name+')', viewParams));                                			
+			}
+		}
+	},
+	
+	analyticView: function() {		                   
+		var featureManager = this.target.tools["featuremanager"];			
+		var map = this.target.mapPanel.map;
+		
+		var status = this.getStatus();
+		
+		var bounds = this.getBounds(status, map);
+		
+		var radius = this.getRadius();
+		
+		// remove previous analytic view layers (targets and buffers)
+		this.removeLayers(map,[this.targetLayerTitle]);  
+		this.removeBufferLayers(map);
+		
+		var newLayers=[];
+		
+		// add the buffers layers
+		this.addBuffers(newLayers, bounds, radius);
+		
+		// add the target layer
+		this.addTargets(newLayers, bounds, radius);				
+		
+		this.target.mapPanel.layers.add(newLayers);
+		
+		// update info on buffers sizes
+		this.buffers.setValue(this.getBuffersInfo());
+		
+		Ext.getCmp("south").expand();
+		
+		//
+		// Manage the OGC filter
+		//
+		//var ogcFilterString;
+		/*var filter;
+		var targetName;
+		
+		var filterFormat = new OpenLayers.Format.Filter();
+		var xmlFormat = new OpenLayers.Format.XML();   
+		if(status && status.target){
+			var target = status.target;
+			
+			targetName = status.targetName;
+			if(target != 'Tutti i Bersagli' && target != 'Tutti i Bersagli Umani' && target != 'Tutti i Bersagli Ambientali'){
+				filter = new OpenLayers.Filter.Comparison({
+				   type: OpenLayers.Filter.Comparison.EQUAL_TO,
+				   property: "tipobersaglio",
+				   value: target
+				});
+													
+				//ogcFilterString = filterFormat.write(filter);                                                                                         
+				
+			}
+		}
+
+		//
+		// Manage VIEWPARAMS
+		//    
+		var viewParams = '';
+		
+		var bounds = map.getExtent();
+		if(status && status.roi)
+			bounds = new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX());
+			
+		//alert(bounds.toBBOX().replace(/,/g, "\\\,"));
+		
+		//
+		// Check about the projection (this could needs Proj4JS definitions inside the mapstore config)
+		//
+		var mapPrj = map.getProjectionObject();
+		var selectionPrj = new OpenLayers.Projection("EPSG:32632");
+		if(!mapPrj.equals(selectionPrj)){
+			bounds = bounds.transform(
+				mapPrj,    
+				selectionPrj
+			);
+		}
+		
+		bounds = bounds.toBBOX().replace(/,/g, "\\\,");
+		
+		viewParams += "bounds:" + bounds;
+		//alert(bounds);
+		
+		var tipologia;
+		if(status && status.accident){                                
+			if(status.accident != 'Tutti gli Incidenti'){
+				tipologia = 'POOL FIRE DA LIQUIDO INFIAMMABILE'; //status.accident;                                    
+				viewParams += ";tipologia:" + tipologia; 
+			}
+		}
+		
+		var seriousness='Grave';
+		if(status && status.seriousness){                                
+			if(status.seriousness != 'Tutte le entità'){
+				seriousness = status.seriousness;                                    
+			}
+		}
+		
+		var targetLayer = 'bersagli_all';
+		if(status && status.target) {
+			targetLayer = status.target.layer;
+		}
+
+		//alert(viewParams);
+		this.removeLayers(map,[this.targetLayerTitle]);                            
+		this.removeBufferLayers(map);
+		
+		var newLayers=[];
+		
+		
+		
+		
+		this.buffers.setValue(this.getBuffersInfo());
+		
+		var maxDistance = 0;
+		
+		var radiusHum = dist.radiusHum ? this.normalizeRadius(dist.radiusHum) : [];
+
+		for(var i=0,el; el = radiusHum[i]; i++) {
+			if(el > maxDistance) {
+				maxDistance = el;
+			}
+		}
+		
+		var radiusNotHum = dist.radiusNotHum || 0;
+		
+		if(radiusNotHum > maxDistance) {
+			maxDistance = radiusNotHum;
+		}
+
+		/*if(!this.status || this.isMixedTargets()) {
+			if(radiusHum.length > 0) {
+				newLayers.push(this.addHumanTargetBuffer(dist.radiusHum,this.bufferLayerTitle+' (Bersagli umani)'));
+			}
+			if(radiusNotHum > 0) {
+				newLayers.push(this.addNotHumanTargetBuffer(dist.radiusNotHum,this.bufferLayerTitle+' (Bersagli ambientali)'));
+			}
+		} else if(this.isHumanTarget()) {
+			if(radiusHum.length > 0) {
+				newLayers.push(this.addHumanTargetBuffer(dist.radiusHum,this.bufferLayerTitle+' ('+this.status.target.name+')'));                                
+			}
+		} else if(this.isNotHumanTarget()) {
+			if(radiusNotHum > 0) {
+				newLayers.push(this.addNotHumanTargetBuffer(dist.radiusNotHum,this.bufferLayerTitle+' ('+this.status.target.name+')'));                                
+			}
+		}
+		var targetViewParams = "bounds:" + bounds + ';distance:' + maxDistance;
+		newLayers.push(this.createLayerRecord({
+			name: targetLayer,
+			title: this.targetLayerTitle, 
+			params: {                                                                
+				viewparams: targetViewParams
+			}
+		}));
+		
+		var layerStore = this.target.mapPanel.layers;                            
+		var mainLayerIndex = layerStore.findBy(function(rec) {
+			return rec.get('title') === this.formulaLayerTitle;
+		}, this);
+		if(mainLayerIndex !== -1) {
+			var mainLayer = layerStore.getAt(mainLayerIndex);
+			layerStore.remove(mainLayer);
+			newLayers.push(mainLayer);
+		}
+		this.target.mapPanel.layers.add(newLayers);
+		
+		//
+		// Manage target grid
+		//
+		
+		var wfsGrid = Ext.getCmp("featuregrid");
+		if(this.isSingleTarget()) {
+			wfsGrid.loadGrids("title", this.status.targetName, this.selectionLayerProjection, targetViewParams);								
+		} else if(this.isAllHumanTargets()) {
+			wfsGrid.loadGrids("type", 'umano', this.selectionLayerProjection, targetViewParams);
+		} else if(this.isAllNotHumanTargets()) {
+			wfsGrid.loadGrids("type", 'ambientale', this.selectionLayerProjection, targetViewParams);
+		} else {
+			wfsGrid.loadGrids(null ,null , this.selectionLayerProjection, targetViewParams);
+		}
+		
+		*/			
+	},
+	
     removeBufferLayers: function(map) {
         this.removeLayers(map,this.currentBufferLayers);
         this.currentBufferLayers = [];
@@ -638,20 +782,31 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			info += 'Bersagli ambientali: ' + radius.radiusNotHum+'\n';
 		}
 	
-		if(radius.radiusHum) {
+		if(typeof(radius.radiusHum) !== "undefined") {
 			var radiusHum = this.normalizeRadius(radius.radiusHum);
 			if(radiusHum.length > 0) {
-				info += 'Bersagli umani: ' + radius.radiusHum.join(', ')+'\n';
+				info += 'Bersagli umani: ' + radiusHum.join(', ')+'\n';
 			}
 		}
 		return info;
 	},
 	
-	normalizeRadius: function(input) {
+	normalizeRadius: function(input, fillEmpty) {
 		var output = [];
-		for(var i = 0, el; el = input[i]; i++) {
-			if(el > 0) {
+		for(var i = 0, el, l = input.length;i<l; i++) {
+			el = input[i];
+			if(fillEmpty) {
+				if(!el) {
+					el = 0;
+				}
 				output.push(el);
+			} else {			
+				if(el && el > 0) {
+					// skip duplicates or not ascending values
+					if(output.length === 0 || el > output[output.length - 1]) {
+						output.push(el);
+					}
+				}
 			}
 		}
 		return output;
@@ -660,13 +815,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     setStatus: function(s){
         this.status = s;
         this.elab.setValue(this.status.processing);
-        this.form.setValue(this.status.form);
+        this.form.setValue(this.status.formula);
         this.extent.setValue(this.status.roi.label);
-        this.trg.setValue(this.status.target);
-        this.adrClass.setValue(this.status.classe);
-        this.substance.setValue(this.status.sostanza);
-        this.accident.setValue(this.status.accident);
-        this.seriousness.setValue(this.status.seriousness);
+        this.trg.setValue(this.status.target.name);
+        this.adrClass.setValue(this.status.classe.name);
+        this.substance.setValue(this.status.sostanza.name);
+        this.accident.setValue(this.status.accident.name);
+        this.seriousness.setValue(this.status.seriousness.name);
         this.buffers.setValue('');
         //
         // Allow the Analytic visualizzation functionalities
@@ -692,124 +847,87 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
         
     getRadius: function(){
-        var maxRadius={};
+        var radius={};
 
         if(this.isHumanTarget() || this.isMixedTargets())
-            maxRadius.radiusHum=[-2,-2,-2,-2];
+            radius.radiusHum=[null,null,null,null];
         
         if(this.isNotHumanTarget() || this.isMixedTargets())
-            maxRadius.radiusNotHum=-2;
+            radius.radiusNotHum=null;
 
-        this.parseSost(maxRadius);
-        return maxRadius;
+		radius.max = 0;
+			
+        this.parseSost(radius);
+		
+        return radius;
     },
     
-    parseSost: function(maxRadius){
-        var sost;
-        if(this.processingPane.sostanzeCode == "0"){
-           for (sost in this.processingPane.radiusData){
-               this.parseAcc(sost,maxRadius);
-           }
-        }else{
-           sost=this.processingPane.sostanzeCode;
-           this.parseAcc(sost,maxRadius);
-        }
+    parseSost: function(radius){        		
+		for (sost in this.radiusData){
+			if(this.status.sostanza.value == "0" || sost === this.status.sostanza.value) {
+				this.parseAcc(sost,radius);
+			}		   
+	    } 
     },
     
-    parseAcc: function(sost,maxRadius){
-        var acc;
-        if(this.processingPane.accidentCode == "0"){
-            for (acc in this.processingPane.radiusData[sost]){
-                this.parseSer(sost,acc,maxRadius);
-            }
-           
-        }else{
-            acc=this.processingPane.accidentCode;
-            this.parseSer(sost,acc,maxRadius);
-        }
-            
+    parseAcc: function(sost,radius){
+		for (acc in this.radiusData[sost]){
+			if(this.status.accident.value == "0" || acc === this.status.accident.value){
+				this.parseSer(sost,acc,radius);
+			}
+		}                   
     },
     
-    parseSer: function(sost,acc,maxRadius){
-        var ser;
-        if(this.processingPane.seriousnessCode == "0"){
-            for (ser in this.processingPane.radiusData[sost][acc]){
-                if(maxRadius.radiusHum)
-                    this.setRadHum(this.processingPane.radiusData[sost][acc][ser].humans, maxRadius);
-         
-                if(maxRadius.radiusNotHum){
-                    if(this.processingPane.selectedTargetCode != '-1' && this.processingPane.selectedTargetCode != '-2')
+    parseSer: function(sost,acc,radius){
+		for (ser in this.radiusData[sost][acc]) {
+			if(this.status.seriousness.value == "0" || ser === this.status.seriousness.value){
+				if(typeof(radius.radiusHum) !== "undefined") {
+                    this.setRadHum(this.radiusData[sost][acc][ser].humans, radius);
+				}
+				
+				if(typeof(radius.radiusNotHum) !== "undefined"){
+                    if(this.status.target.code != '-1' && this.status.target.code != '-2') {
                         this.setRadNotHum(
-                            this.processingPane.radiusData[sost][acc][ser].notHumans[this.processingPane.selectedTargetCode],maxRadius, ser);
-                    else
+                            this.radiusData[sost][acc][ser].notHumans[this.status.target.code],radius, ser);
+                    } else {
                         this.setRadNotHum(
-                            this.processingPane.radiusData[sost][acc][ser].notHumans,maxRadius, ser);
+                            this.radiusData[sost][acc][ser].notHumans,radius, ser);
+					}
             
                  }
-            }
-        }else{
-            ser=this.processingPane.seriousnessCode;
-            if(maxRadius.radiusHum)
-               this.setRadHum(this.processingPane.radiusData[sost][acc][ser].humans, maxRadius);
-         
-            if(maxRadius.radiusNotHum){
-               if(this.processingPane.selectedTargetCode != '-1' && this.processingPane.selectedTargetCode != '-2')
-                  this.setRadNotHum(
-                        this.processingPane.radiusData[sost][acc][ser].notHumans[this.processingPane.selectedTargetCode],maxRadius, ser);
-               else
-                  this.setRadNotHum(
-                      this.processingPane.radiusData[sost][acc][ser].notHumans,maxRadius, ser);
-            
-            }
-        }
+			}
+		}	        
             
     },
     
-    setRadNotHum: function(values, maxRadius, ser){
+    setRadNotHum: function(values, radius, ser){
         var value;
-        if(values instanceof Array){
-            for(var i=0;i<values.length;i++){
-                value= values[i];
-                    if(value){
-                        if(value == -1)
-                            value= this.processingPane.holdValues[ser];
-                            maxRadius.radiusNotHum=
-                                    maxRadius.radiusNotHum >= value ? 
-                                    maxRadius.radiusNotHum:
-                                    value;
-                    }  
-           }        
-        }else{
-            value= values;
-            if(value){
-               if(value == -1)
-                  value= this.processingPane.holdValues[ser];
-                  maxRadius.radiusNotHum=
-                            maxRadius.radiusNotHum >= value ? 
-                            maxRadius.radiusNotHum: value;
-            }
-        }  
-    },
-    
-    setRadHum: function(values, maxRadius){
-        var value;
-        for(var i=0;i<maxRadius.radiusHum.length;i++){
-            value= values[i];
-            if(value){
-				if(value == -1) {
-					value= this.getHumanDefaultValue(maxRadius.radiusHum, i);//get first element !=-1
+        if(!(values instanceof Array)){
+			values = [values];
+		}
+		for(var i=0;i<values.length;i++){
+			value= values[i];
+			if(value && (radius.radiusNotHum === null || value > radius.radiusNotHum)) {
+				radius.radiusNotHum = value;	
+				if(value > radius.max) {
+					radius.max = value;
 				}
-                maxRadius.radiusHum[i]=
-                    maxRadius.radiusHum[i] >= value ?
-                    maxRadius.radiusHum[i]: value;
+			}  
+	    }                
+    },
+    
+    setRadHum: function(values, radius){
+        var value;
+        for(var i=0, value;i<values.length;i++){
+            value = values[i];
+            if(value && (radius.radiusHum[i] === null || value > radius.radiusHum[i])) {				
+                radius.radiusHum[i] = value;  
+				if(value > radius.max) {
+					radius.max = value;
+				}				
             }
          }
     }
-    
-    
-    
-  
-
     
 });
 
