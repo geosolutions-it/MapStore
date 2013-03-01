@@ -199,7 +199,7 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 	},
 	createHilightLayer: function(){
 		var conf = {
-				displayInLayerSwitcher:false,
+				displayInLayerSwitcher:false
 				
 			};
         conf.style = this.layerStyle;
