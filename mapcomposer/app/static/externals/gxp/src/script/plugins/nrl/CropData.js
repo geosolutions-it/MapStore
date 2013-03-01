@@ -96,7 +96,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             var submitButton = this.output.submitButton;
                             var areaSelector = this.output.aoiFieldSet.AreaSelector;                            
                             if(outputValue == 'data'){
-                                variable.enable();
+                                variable.disable();
                                 areaSelector.enable();
                                 submitButton.destroy();
                                 delete submitButton;
