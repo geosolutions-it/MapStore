@@ -94,7 +94,7 @@
 			},{
 				"source": "nrl",
 				"title": "Land cover 2010",
-				"name": "nrl:GLOBC2006_v2.2",
+				"name": "nrl:LULC2010_Pak",
 				"group": "Land Cover",
 				"visibility": false
 			},{
