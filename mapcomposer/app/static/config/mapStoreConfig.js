@@ -63,19 +63,19 @@
 				"visibility": true
 			},{
 				"source": "nrl",
-				"title": "2012",
+				"title": "Flooded Areas 2012",
 				"name": "nrl:flood_pak_2012",
 				"group": "Flooding",
 				"visibility": false
 			},{
 				"source": "nrl",
-				"title": "2011",
+				"title": "Flooded Areas 2011",
 				"name": "nrl:flood_pak_2011",
 				"group": "Flooding",
 				"visibility": false
 			},{
 				"source": "nrl",
-				"title": "2010",
+				"title": "Flooded Areas 2010",
 				"name": "nrl:flood_pak_2010",
 				"group": "Flooding",
 				"visibility": false
