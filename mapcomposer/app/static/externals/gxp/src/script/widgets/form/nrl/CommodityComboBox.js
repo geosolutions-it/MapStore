@@ -40,10 +40,10 @@ nrl.form.CommodityComboBox = Ext.extend(Ext.form.ComboBox,{
 		data: [
 				{name:'wheat',label:'Wheat',season:'RABI'},
 				{name:'cotton',label:'Cotton',season:'KHARIF'},
-				{name:'sugarcane',label:'Sugarcane',season:'RABI,KHARIF'},
+				{name:'sugarcane',label:'Sugarcane',season:'KHARIF'},
 				{name:'rice',label:'Rice',season:'KHARIF'},
 				{name:'maize',label:'Maize',season:'KHARIF'},
-				{name:'fodder',label:'Fodder',season:'RABI,KHARIF'}
+				{name:'fodder',label:'Fodder',season:''}
 				
 		],
 		fields:[
