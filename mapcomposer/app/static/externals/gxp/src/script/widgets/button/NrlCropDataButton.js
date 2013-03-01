@@ -37,9 +37,9 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 		series:{
 			prod:{
 					name: 'Production Tons',
-					//color: '#4572A7',
+					color: '#4572A7',
                     lcolor: 'rgb(139,184,237)',
-                    color: 'rgb(69,114,167)',
+                    //color: 'rgb(69,114,167)',
 					type: 'line',
 					yAxis: 1,
 					dataIndex: 'prod',
@@ -50,9 +50,9 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 					name: 'Yield Tons / Ha',
 					dashStyle: 'shortdot',
 					type: 'line',
-					//color: '#AA4643',
+					color: '#AA4643',
                     lcolor: 'rgb(240,140,137)',
-                    color: 'rgb(170,70,67)',
+                    //color: 'rgb(170,70,67)',
 					yAxis: 2,
 					dataIndex: 'yield',
 					unit:'Tons / Ha'
@@ -60,9 +60,9 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 				},
 			area:{
 					name: 'Area Ha',
-					//color: '#89A54E',
+					color: '#89A54E',
                     lcolor: 'rgb(207,235,148)',
-                    color: 'rgb(137,165,78)',
+                    //color: 'rgb(137,165,78)',
 					type: 'line',
 					dataIndex: 'area',
 					unit:'Ha'
@@ -357,7 +357,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 				xField: 'time',
 				chartConfig: {
 					chart: {
-						zoomType: 'x'
+						zoomType: 'x',
+                        spacingBottom: 23                
 					},
                     exporting: {
                         enabled: true,
@@ -375,7 +376,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                         verticalAlign: 'bottom',
                         useHTML: true,
                         x: 30,
-                        y: -25
+                        y: -17
 					},
 					xAxis: [{
 						type: 'datetime',
@@ -401,8 +402,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                         plotLines: [{ //mid values
 							value: areaavg,
 							color: opt.series.area.lcolor,
-							dashStyle: 'line',
-							width: 2
+							dashStyle: 'LongDash',
+							width: 1                       
 						}]
 
 					}, { // Secondary yAxis
@@ -426,8 +427,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 						 //mid values
 							value: prodavg,
 							color: opt.series.prod.lcolor,
-							dashStyle: 'line',
-							width: 2
+							dashStyle: 'LongDash',
+							width: 1
 						}]
 
 					}, { // Tertiary yAxis
@@ -451,8 +452,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                         plotLines: [{ //mid values
 							value: yieldavg,
 							color: opt.series.yield.lcolor,
-							dashStyle: 'line',
-							width: 2
+							dashStyle: 'LongDash',
+							width: 1
 						}]
 					}],
 					tooltip: {
