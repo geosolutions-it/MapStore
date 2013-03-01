@@ -36,18 +36,18 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
     chartOpt:{
 		series:{
 			prod:{
-					name: 'Production Tons',
+					name: 'Production (000 t)',
 					color: '#4572A7',
                     lcolor: 'rgb(139,184,237)',
                     //color: 'rgb(69,114,167)',
 					type: 'line',
 					yAxis: 1,
 					dataIndex: 'prod',
-					unit:'Tons'
+					unit:'(000 t)'
 
 				},
 			yield:{
-					name: 'Yield Tons / Ha',
+					name: 'Yield (Kg/ha)',
 					dashStyle: 'shortdot',
 					type: 'line',
 					color: '#AA4643',
@@ -55,17 +55,17 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                     //color: 'rgb(170,70,67)',
 					yAxis: 2,
 					dataIndex: 'yield',
-					unit:'Tons / Ha'
+					unit:'(Kg/ha)'
 
 				},
 			area:{
-					name: 'Area Ha',
+					name: 'Area (000 ha)',
 					color: '#89A54E',
                     lcolor: 'rgb(207,235,148)',
                     //color: 'rgb(137,165,78)',
 					type: 'line',
 					dataIndex: 'area',
-					unit:'Ha'
+					unit:'(000 ha)'
 			}
 		},
         height: 400
@@ -144,7 +144,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 					
 					
 					
-					var charts  = this.makeChart(data,this.chartOpt,'Tons','Ha');
+					var charts  = this.makeChart(data,this.chartOpt);
 					var resultpanel = {
 						columnWidth: .95,
                         style:'padding:10px 10px 10px 10px',
@@ -305,7 +305,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 		return chartData;
 
 	},
-	makeChart: function( data,opt,prodUnits,areaUnits ){
+	makeChart: function( data,opt){
 		
 		var grafici = [];
 		var getAvg= function(arr,type) {
@@ -317,9 +317,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 		};
 		
 		for (var r = 0;r<data.length;r++){
-
-			
-			
+        
 			// Store for random data
 			var store = new Ext.data.JsonStore({
 				data: data[r],
@@ -369,9 +367,9 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 						text: data[r].title.toUpperCase()
 					},
 					subtitle: {
-                        text: '<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+areaUnits+'</span><br />'+
-                              '<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean: '+ prodavg.toFixed(2)+' '+prodUnits+'</span><br />'+
-                              '<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean: '+ yieldavg.toFixed(2)+' '+prodUnits+'/'+areaUnits+'</span>',
+                        text: '<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+opt.series.area.unit+'</span><br />'+
+                              '<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean: '+ prodavg.toFixed(2)+' '+opt.series.prod.unit+'</span><br />'+
+                              '<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean: '+ yieldavg.toFixed(2)+' '+opt.series.yield.unit+'</span>',
                         align: 'left',
                         verticalAlign: 'bottom',
                         useHTML: true,
@@ -384,17 +382,17 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 						tickWidth: 0,
 						gridLineWidth: 1
 					}],
-					yAxis: [{ // Primary yAxis
-						labels: {
-							formatter: function () {
-								return this.value + opt.series.area.unit;
-							},
+					yAxis: [{ // AREA
+						title: {
+							text: opt.series.area.name,
 							style: {
 								color: opt.series.area.color
 							}
-						},
-						title: {
-							text: opt.series.area.name,
+						},                    
+						labels: {
+							formatter: function () {
+								return this.value;
+							},
 							style: {
 								color: opt.series.area.color
 							}
@@ -406,7 +404,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 							width: 1                       
 						}]
 
-					}, { // Secondary yAxis
+					}, { // PRODUCTION yAxis
 						gridLineWidth: 0,
 						title: {
 							text: opt.series.prod.name,
@@ -416,7 +414,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 						},
 						labels: {
 							formatter: function () {
-								return this.value + opt.series.prod.unit;
+								return this.value;
 							},
 							style: {
 								color: opt.series.prod.color
@@ -442,7 +440,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 						},
 						labels: {
 							formatter: function () {
-								return this.value + opt.series.yield.unit;
+								return this.value;
 							},
 							style: {
 								color: opt.series.yield.color
