@@ -96,7 +96,7 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
     }
     
 
-		this.title= "Commodity: " + this.commodity +  " - Season: " + this.season,
+		this.title= "Commodity: " + this.commodity.toUpperCase() +  " - Season: " + this.season.toUpperCase(),
 		this.tools= [{
 			id: 'info',
 			handler: function () {
