@@ -31,7 +31,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
     /** api: xtype = gxp_nrlchart */
     xtype: 'gxp_nrlCropDataButton',
     iconCls: "gxp-icon-nrl-chart",
-	text: 'Compute',
+	text: 'Generate Chart',
     form: null,
     chartOpt:{
 		series:{
