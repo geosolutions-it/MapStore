@@ -507,35 +507,35 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         // Bersaglio
         //        
         var targetStore = new Ext.data.ArrayStore({
-            fields: ['layer','name', 'property', 'humans', 'code', 'type', 'macro'],			
+            fields: ['layer','name', 'property', 'humans', 'code', 'type', 'macro', 'id'],			
             data :  [
               //  ['Tutti i Bersagli', 'calc_formula_tot', ''],
-                ['popolazione_residente','Popolazione residente', 'calc_formula_tot', true, '-1', 'umano', false],
+                ['popolazione_residente','Popolazione residente', 'calc_formula_tot', true, '-1', 'umano', false, [1]],
                 //['popolazione_turistica','Popolazione fluttuante turistica (medio)', 'calc_formula_tot', true, '-1', 'umano'],
-                ['popolazione_turistica','Popolazione fluttuante turistica', 'calc_formula_tot', true, '-1', 'umano', false],
-                ['industria_servizi','Addetti industria e servizi', 'calc_formula_tot', true, '-1', 'umano', false],
-                ['strutture_sanitarie','Addetti/utenti strutture sanitarie', 'calc_formula_tot', true, '-1', 'umano', false],
-                ['strutture_scolastiche','Addetti/utenti strutture scolastiche', 'calc_formula_tot', true, '-1', 'umano', false],
-                ['centri_commerciali','Addetti/utenti centri commerciali', 'calc_formula_tot', true, '-1', 'umano', false],
+                ['popolazione_turistica','Popolazione fluttuante turistica', 'calc_formula_tot', true, '-1', 'umano', false, [2]],
+                ['industria_servizi','Addetti industria e servizi', 'calc_formula_tot', true, '-1', 'umano', false, [4]],
+                ['strutture_sanitarie','Addetti/utenti strutture sanitarie', 'calc_formula_tot', true, '-1', 'umano', false, [5]],
+                ['strutture_scolastiche','Addetti/utenti strutture scolastiche', 'calc_formula_tot', true, '-1', 'umano', false, [6]],
+                ['centri_commerciali','Addetti/utenti centri commerciali', 'calc_formula_tot', true, '-1', 'umano', false, [7]],
                 //['xx','Utenti della strada coinvolti', 'calc_formula_tot', true, '-1', 'umano'],
                 //['yy','Utenti della strada territoriali', 'calc_formula_tot', true, '-1', 'umano'],
-                ['zone_urbanizzate','Zone urbanizzate', 'calc_formula_tot', false, '0', 'ambientale', false],
-                ['aree_boscate','Aree boscate', 'calc_formula_tot', false, '1', 'ambientale', false],
-                ['aree_protette','Aree protette', 'calc_formula_tot', false, '2', 'ambientale', false],
-                ['aree_agricole','Aree agricole', 'calc_formula_tot', false, '3', 'ambientale', false],
-                ['acque_sotterranee','Acque sotterranee', 'calc_formula_tot', false, '4', 'ambientale', false],
-                ['acque_superficiali','Acque superficiali', 'calc_formula_tot', false, '5', 'ambientale', false],
-                ['beni_culturali','Beni culturali', 'calc_formula_tot', false, '6', 'ambientale', false]
+                ['zone_urbanizzate','Zone urbanizzate', 'calc_formula_tot', false, '0', 'ambientale', false, [10]],
+                ['aree_boscate','Aree boscate', 'calc_formula_tot', false, '1', 'ambientale', false, [11]],
+                ['aree_protette','Aree protette', 'calc_formula_tot', false, '2', 'ambientale', false, [12]],
+                ['aree_agricole','Aree agricole', 'calc_formula_tot', false, '3', 'ambientale', false, [13]],
+                ['acque_sotterranee','Acque sotterranee', 'calc_formula_tot', false, '4', 'ambientale', false, [14]],
+                ['acque_superficiali','Acque superficiali', 'calc_formula_tot', false, '5', 'ambientale', false, [15]],
+                ['beni_culturali','Beni culturali', 'calc_formula_tot', false, '6', 'ambientale', false, [16]]
 
             ]
         });			
         
         var targetMacroStore = new Ext.data.ArrayStore({
-            fields: ['layer', 'name', 'property', 'humans', 'code', 'type', 'macro'],
+            fields: ['layer', 'name', 'property', 'humans', 'code', 'type', 'macro', 'id'],
             data :  [
-                ['bersagli_all', 'Tutti i Bersagli', 'calc_formula_tot', false, '-2', 'mixed', true],
-                ['bersagli_umani', 'Tutti i Bersagli Umani', 'calc_formula_tot', true, '-1', 'umano', true],
-                ['bersagli_ambientali', 'Tutti i Bersagli Ambientali', 'calc_formula_tot', false, '-2', 'ambientale', true]
+                ['bersagli_all', 'Tutti i Bersagli', 'calc_formula_tot', false, '-2', 'mixed', true, [1,2,4,5,6,7,10,11,12,13,14,15,16]],
+                ['bersagli_umani', 'Tutti i Bersagli Umani', 'calc_formula_tot', true, '-1', 'umano', true, [1,2,4,5,6,7]],
+                ['bersagli_ambientali', 'Tutti i Bersagli Ambientali', 'calc_formula_tot', false, '-2', 'ambientale', true, [10,11,12,13,14,15,16]]
             ]
         });
         
@@ -683,19 +683,19 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         // Sostanze
         //
         var sostanzeStore = new Ext.data.ArrayStore({
-            fields: ['name', 'value', 'accidents'],
+            fields: ['name', 'value', 'accidents', 'id'],
             data :  [
-                ['Tutte le sostanze', '0', ['A','B','C','D','E','F','G','H','I','L','M']],
-                ['IDROGENO COMPRESSO', '1', ['E'] ],
-                ['OSSIGENO COMPRESSO', '2', ['G']],
-                ['GAS DI PETROLIO LIQUEFATTO', '3', ['D', 'F']],
-                ['OSSIDO DI ETILENE (+AZOTO)', '4', ['D', 'F', 'M']],
-                ['AMMONIACA ANIDRA', '5', ['B', 'L']],
-                ['OSSIGENO LIQUIDO REFRIGERATO', '6', ['G']],
-                ['GASOLIO', '7', ['H']],
-                ['BENZINA', '8', ['C', 'D', 'H']],
-                ['METANOLO', '9', ['A', 'B', 'I']],
-                ['EPICLORIDRINA', '10', ['H']]
+                ['Tutte le sostanze', '0', ['A','B','C','D','E','F','G','H','I','L','M'], [1,2,3,4,5,6,7,8,9,10]],
+                ['IDROGENO COMPRESSO', '1', ['E'], [1]],
+                ['OSSIGENO COMPRESSO', '2', ['G'], [2]],
+                ['GAS DI PETROLIO LIQUEFATTO', '3', ['D', 'F'], [3]],
+                ['OSSIDO DI ETILENE (+AZOTO)', '4', ['D', 'F', 'M'], [4]],
+                ['AMMONIACA ANIDRA', '5', ['B', 'L'], [5]],
+                ['OSSIGENO LIQUIDO REFRIGERATO', '6', ['G'], [6]],
+                ['GASOLIO', '7', ['H'], [7]],
+                ['BENZINA', '8', ['C', 'D', 'H'], [8]],
+                ['METANOLO', '9', ['A', 'B', 'I'], [9]],
+                ['EPICLORIDRINA', '10', ['H'], [10]]
             ]
         });
 		
@@ -745,20 +745,20 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         // Incidenti / Scenari
         //
         var accidentStore = new Ext.data.ArrayStore({
-            fields: ['name', 'value'],
+            fields: ['name', 'value', 'id'],
             data :  [
-                ['Tutti gli Incidenti', '0'],
-                ['POOL FIRE DA LIQUIDO INFIAMMABILE', 'A'],
-                ['FLASH FIRE DA VAPORI LIQUIDO INFIAMMABILE', 'B'],
-                ['POOL FIRE DA LIQUIDO ESTREMAMENTE INFIAMMABILE', 'C'],
-                ['FLASH FIRE DA VAPORI LIQUIDO ESTREMAMENTE INFIAMMABILE', 'D'],
-                ['JET FIRE DI GAS ESTREMAMENTE INFIAMMABILE', 'E'],
-                ['FIRE BALL', 'F'],
-                ['DISPERSIONE COMBURENTE', 'G'],
-                ['RILASCIO SUL SUOLO E NELLE ACQUE', 'H'],
-                ['DISPERSIONE VAPORI DA LIQUIDO TOSSICO', 'I'],
-                ['DISPERSIONE VAPORI DA LIQUIDO REFRIGERATO TOSSICO', 'L'],
-                ['DISPERSIONE GAS DA GAS LIQUEFATTO TOSSICO', 'M']
+                ['Tutti gli Incidenti', '0', [1,2,3,4,5,6,7,8,9,10,11]],
+                ['POOL FIRE DA LIQUIDO INFIAMMABILE', 'A', [1]],
+                ['FLASH FIRE DA VAPORI LIQUIDO INFIAMMABILE', 'B', [2]],
+                ['POOL FIRE DA LIQUIDO ESTREMAMENTE INFIAMMABILE', 'C', [3]],
+                ['FLASH FIRE DA VAPORI LIQUIDO ESTREMAMENTE INFIAMMABILE', 'D', [4]],
+                ['JET FIRE DI GAS ESTREMAMENTE INFIAMMABILE', 'E', [5]],
+                ['FIRE BALL', 'F', [6]],
+                ['DISPERSIONE COMBURENTE', 'G', [7]],
+                ['RILASCIO SUL SUOLO E NELLE ACQUE', 'H', [8]],
+                ['DISPERSIONE VAPORI DA LIQUIDO TOSSICO', 'I', [9]],
+                ['DISPERSIONE VAPORI DA LIQUIDO REFRIGERATO TOSSICO', 'L', [10]],
+                ['DISPERSIONE GAS DA GAS LIQUEFATTO TOSSICO', 'M', [11]]
             ]
         });
 		
@@ -795,11 +795,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         // Entità
         //
         var seriousnessStore = new Ext.data.ArrayStore({
-            fields: ['name', 'value'],
+            fields: ['name', 'value', 'id'],
             data :  [
-                ['Tutte le entità', '0'],
-                ['Lieve', 'L'],
-                ['Grave', 'G']
+                ['Tutte le entità', '0', [0,1]],
+                ['Lieve', 'L', [0]],
+                ['Grave', 'G', [1]]
             ]
         });
         
@@ -966,7 +966,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      */
     doProcess: function(params){
         if(params){
-            this.showLayer(params);
+            //this.showLayer(params);
             
             var status = this.getStatus(this.panel.getForm());                
             
@@ -983,7 +983,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             var syntView = this.appTarget.tools[this.syntheticView];
             syntView.getControlPanel().enable();
             syntView.setStatus(status);
-			
+			syntView.doProcess();
 			this.appTarget.mapPanel.map.events.unregister("move", this, this.aoiUpdater);
         }
     },
