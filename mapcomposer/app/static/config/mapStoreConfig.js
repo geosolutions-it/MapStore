@@ -42,8 +42,32 @@
 		],
 		
 		"layers": [
-			
 			{
+				"id" :"Crop_Province",
+				"source": "nrl",
+				"title": "nrl:province_crop",
+				"name": "nrl:province_crop",
+				"displayInLayerSwitcher":false,
+				"visibility": false
+			},	{
+				"source": "nrl",
+				"title": "nrl:district_crop",
+				"name": "nrl:district_crop",
+				"displayInLayerSwitcher":false,
+				"visibility": false
+			},{
+				"source": "nrl",
+				"title": "nrl:province_boundary",
+				"name": "nrl:province_boundary",
+				"displayInLayerSwitcher":false,
+				"visibility": false
+			},	{
+				"source": "nrl",
+				"title": "nrl:district_boundary",
+				"name": "nrl:district_boundary",
+				"displayInLayerSwitcher":false,
+				"visibility": false
+			},{
 				"source": "bing",
 				"title": "Bing Aerial",
 				"name": "Aerial",
@@ -172,6 +196,10 @@
 	   },
 	   {
 		  "ptype":"nrl_crop_data",
+		  "layers":{
+			"district":"nrl:district_crop",
+			"province":"nrl:province_crop"
+			},
 		  "outputConfig":{
 			 "itemId":"nrlCropData"
 			 

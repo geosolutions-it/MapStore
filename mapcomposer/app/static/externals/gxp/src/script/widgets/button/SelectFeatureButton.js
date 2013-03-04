@@ -115,8 +115,8 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 			var layername =this.selectableLayer;
 			
 			var queryableLayer = this.target.mapPanel.layers.queryBy(function(x){
-				var name = x.get("name");
-				var found = x.get("name")==layername
+				var name = x.get("title");
+				var found = x.get("title")==layername
                 return found;	
 			});
 			//TODO CREATE LAYER

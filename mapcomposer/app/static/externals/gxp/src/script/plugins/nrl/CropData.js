@@ -55,6 +55,79 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
         fillOpacity:0.6,
         cursor: "pointer"
     },
+	rangesUrl: "http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
+	comboConfigs:{
+        base:{
+            anchor:'100%',
+            fieldLabel: 'District',
+            url: "http://84.33.2.24/geoserver/ows?",
+            predicate:"ILIKE",
+            width:250,
+            sortBy:"province",
+			ref:'singleSelector',
+            displayField:"name",
+            pageSize:10
+            
+        },
+        district:{
+            typeName:"nrl:district_crop",
+            queriableAttributes:[
+                "district",
+                "province"
+                
+             ],
+             recordModel:[
+                {
+                  name:"id",
+                   mapping:"id"
+                },
+                {
+                   name:"geometry",
+                   mapping:"geometry"
+                },
+                {
+                   name:"name",
+                   mapping:"properties.district"
+                },{
+                   name:"province",
+                   mapping:"properties.province"
+                },{
+                   name:"properties",
+                   mapping:"properties"
+                } 
+            ],
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"       
+        },
+        province:{ 
+            
+            typeName:"nrl:province_crop",
+            recordModel:[
+                {
+                   name:"id",
+                   mapping:"id"
+                },
+                {
+                   name:"geometry",
+                   mapping:"geometry"
+                },
+                {
+                   name:"name",
+                   mapping:"properties.province"
+                },{
+                   name:"properties",
+                   mapping:"properties"
+                }
+            ],
+            sortBy:"province",
+            queriableAttributes:[
+                "province"
+            ],
+            displayField:"name",
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
+                            
+        }
+    
+    },
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
@@ -63,7 +136,15 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 			//TODO year ranges (from available data)
 			
 		}
-	
+		//
+
+		var yearRangeStore = new Ext.data.JsonStore({
+			fields: [{}],
+			autoLoad: true,
+			url: this.rangesUrl
+		
+		
+		});
 		var cropData  = {
 			xtype:'form',
 			title: 'Crop Data',
@@ -166,13 +247,11 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					ref:'aoiFieldSet',
                     layerStyle:this.layerStyle,
 					anchor:'100%',
+					comboConfigs:this.comboConfigs,
 					target:this.target,
 					areaFilter:this.areaFilter, 
 					hilightLayerName:this.hilightLayerName,
-					layers:{
-						district:'nrl:district_boundary',
-						province:'nrl:province_boundary'
-					}
+					layers:this.layers
 					
 				},
 				{

@@ -51,11 +51,12 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 				case  "Production" : varparam ='prod_t';break;
 				case "Yield" : varparam= 'yield_kg';break;
 			}
-			var tempstringtrailer =(nextYr<10) ? "0" +(nextYr) : (nextYr);
+			
+			
 			var viewParams= "crop:" + values.crop.toLowerCase() + ";" +
 					"gran_type:" + values.areatype.toLowerCase() + ";" +
-					"start_year:" + values.endYear +"-" +tempstringtrailer + ";" +
-					"end_year:" + values.endYear +"-" +tempstringtrailer + ";" 
+					"start_year:" + values.endYear +";" + //same year for start and end.
+					"end_year:" + values.endYear +";" 
 			
 			var wms = new OpenLayers.Layer.WMS(values.crop + " " + values.endYear + "-" + values.variable,//todo: choice the style for the needed variable
 			   "http://84.33.2.24/geoserver/wms",
@@ -65,289 +66,152 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 				viewParams:viewParams,
 				transparent: "true"
 				
-				});
+			});
+			var data = {
+                title: values.crop + " " + values.endYear + "-" + values.variable, 
+                name: "nrl:CropDataMap",
+                //group: "crop_data",
+                layer: wms,
+				selected:true
+            }
+			var fields = [
+                {name: "name", type: "string"}, 
+                {name: "group", type: "string"},
+				{name: "title", type: "string"},
+                {name: "selected", type: "boolean"}
+            ];
+            var tooltip;
+			var cleanup = function() {
+				if (tooltip) {
+					tooltip.destroy();
+				}  
+			};
+			var button = this;
+			var control = new OpenLayers.Control.WMSGetFeatureInfo({
+					infoFormat:  "application/vnd.ogc.gml" ,
+					
+					title: 'Identify features by clicking',
+					maxFeatures:200,
+					layers: [wms],
+					hover: false,
+					// defining a custom format options here
+					
+					queryVisible: true,
+					handlerOptions:{
+						
+					},
+					vendorParams:{
+						paramName: 'crop,year,production,area,yield',
+						
+						viewParams: "crop:" + values.crop.toLowerCase() + ";" +
+									"gran_type:" + values.areatype.toLowerCase() + ";" +
+									"start_year:" + values.startYear + ";" +
+									"end_year:" + values.endYear + ";" //here startyear
+			
+						
+					},
+					showResults: function(features){
+						
+						var n=features.length;
+						var regions = {};
+						for(var i=0;i<n;i++){
+							var f = features[i];
+							var region =f.attributes.region
+							if(!regions[region]){
+								regions[region] = [];
+							}
+							regions[region].push(f);
+						}
+						var result = "<table border='1' CELLPADDING=1><tr><th>Region</th><th>Year</th><th>Production</th><th>Area</th><th>Yield</th></tr>";
+						for (var i= 0 in regions){	
+							var f = regions[i];
+							result += "<tr><th rowspan=4>"+i+"</th></tr>";
+							//calculate aggregated data
+							var tot = {
+								production:0,
+								area:0,
+								yield:0
+							};
+							for (var j =0; j<f.length;j++){
+								var attrs =f[j].attributes;
+								tot.production+=parseFloat(attrs.production);
+								tot.area+=parseFloat(attrs.area);
+								if(attrs.year == values.endYear +"-" +tempstringtrailer){
+									result +="<tr><td>"+attrs.year+"</td><td>"+parseFloat(attrs.production).toFixed(2)+"</td><td>"+parseFloat(attrs.area).toFixed(2)+"</td><td>"+parseFloat(attrs.yield).toFixed(2)+"</td></tr>"
+									result +="<tr><td>"+(parseInt(attrs.year)-1)+"</td><td>"+parseFloat(attrs.production).toFixed(2)+"</td><td>"+parseFloat(attrs.area).toFixed(2)+"</td><td>"+parseFloat(attrs.yield).toFixed(2)+"</td></tr>"
+								}
+							}
+							//avgs
+							tot.yield = tot.production / tot.area;
+							tot.production /=  f.length;
+							tot.area /=  f.length;
+							tot.yield /=f.length ;
+							result +="<tr><td>"+values.startYear + "-"+values.endYear+"</td><td>"+tot.production.toFixed(2)+"</td><td>"+tot.area.toFixed(2)+"</td><td>"+tot.yield.toFixed(2)+"</td></tr>"
+							
+						}	 
+						result +='</table>'		;	 
+						//TODO
+						
+						return result;
+
+					},
+					eventListeners:{
+						getfeatureinfo:function(evt){
+							if(evt.features.length <1) return;
+							cleanup();
+							
+							tooltip = new Ext.ToolTip({
+								xtype: 'tooltip',
+								html:this.showResults(evt.features),
+								title: values.crop + " " + values.endYear + "-" + values.variable,
+								autoHide: false,
+								closable: true,
+								draggable: false,
+								mouseOffset: [0, 0],
+								showDelay: 1,
+								listeners: {hide: cleanup}
+							});
+							
+							//take only the first
+							
+							var p0 = app.mapPanel.getPosition();
+							tooltip.targetXY = [evt.xy.x +p0[0],evt.xy.y +p0[1]];
+							tooltip.show();
+							
+						
+						}
+					},
+					deactivate: cleanup
+				})
+			app.mapPanel.map.addControl(control);
+            //var Record = GeoExt.data.LayerRecord.create(fields);
+            //var record = new Record(data);
 			app.mapPanel.map.addLayers([wms]);
+			//app.mapPanel.layers.add(record);
+			wms.events.register('removed',app.mapPanel.map,function(eventObject){
+				control.deactivate();
+				control.destroy();
+				app.mapPanel.map.removeControl(control);
+			
+			})
+			var sm = Ext.getCmp('layertree').getSelectionModel();
+			if(!sm.getSelectedNode()) return;
+			if(sm.getSelectedNode().layer == wms){
+				control.activate();
+			}
+			//if(sm.getSelectedNode().layer == wms) { control.activate(); }
+			sm.on('selectionchange',function(sm,sel,eOpts){
+				if(!sm.getSelectedNode()) return;
+				if(sm.getSelectedNode().layer == wms){
+					control.activate();
+				}else{
+					control.deactivate();
+				}
+			
+			},this);
             
         
-    },
-	getData: function (json){
-		var chartData=[];
-		
-		for (var i =0 ; i<json.features.length; i++) {
-
-			var feature =json.features[i];
-			var obj=null;
-			//search already existing entries
-			for (var j= 0; j<chartData.length;j++){
-				if(chartData[j].region == feature.properties.region){
-					obj = chartData[j];
-				}
-			}
-			//create entry if doesn't exists yet
-			if(!obj){
-				obj = {
-					region:feature.properties.region,
-					title:feature.properties.region,
-					subtitle:feature.properties.crop,
-					rows: []/*,
-					avgs:{
-						area:0,
-						prod:0,
-						yield:0,
-						years:0
-					},
-					*/
-				};
-				chartData.push(obj);
-			}
-			//create a row entry
-			var yr = feature.properties.year.substring(0, feature.properties.year.lastIndexOf("-"));
-			var a = feature.properties.area;
-			var p = feature.properties.production;
-			var yi = feature.properties.yield;
-			
-			obj.rows.push({
-				time: yr,
-				area: parseFloat(a.toFixed(2)),
-				prod: parseFloat(p.toFixed(2)),
-				yield: parseFloat(yi.toFixed(2))//,
-				//crop: feature.properties.crop
-			});
-			//obj.avgs.area+=a;
-			//obj.avgs.prod+=p;
-			//obj.avgs.yield+=yi;
-			//obj.avgs.years+=1;
-
-		}
-	
-		//create mean chart if needed
-		if (chartData.length >1){
-			
-			var mean = {
-				region:"all",
-				title:"Aggregated data",
-				subtitle:json.features[0].properties.crop,
-				rows: []/*,
-				avgs:{
-					area:0,
-					prod:0,
-					yield:0,
-					years:0
-				}*/
-			};
-
-			var meanareas = []
-			var meanproductions= [];
-			var meanyields = [];
-			var nyears = {};
-			//sum all values
-			for (var i= 0; i<chartData.length;i++){
-				var rows = chartData[i].rows;
-				for (var j= 0; j<rows.length;j++){
-					var yr = rows[j].time;
-					var area =rows[j].area;
-					var prod = rows[j].prod;
-					var yield =rows[j].yield;
-					meanareas[yr] = (meanareas[yr] ? meanareas[yr] :0) + area;
-					meanproductions[yr] = (meanproductions[yr] ? meanproductions[yr]:0) +prod;
-					meanyields[yr] = (meanyields[yr] ? meanyields[yr]:0) +yield;
-					nyears[yr] =(nyears[yr]?nyears[yr]:0) + 1;
-				}
-			}
-			//divide by nyears
-			for(var i=0 in nyears){
-				
-				mean.rows.push({
-					time: i,
-					area: parseFloat(meanareas[i].toFixed(2)), //(meanareas[i]/nyears[i]).toFixed(2),
-					prod: parseFloat(meanproductions[i].toFixed(2)), //(meanproductions[i]/nyears[i]).toFixed(2),
-					yield: parseFloat((meanyields[i]/nyears[i]).toFixed(2))
-					
-				});
-			}
-			chartData.push(mean);
-		}	
-        //sort all year ascending
-        for (var i= 0; i< chartData.length;i++){
-            //chartData[i].rows.sort(function(a,b){return a.time > b.time});
-            chartData[i].rows.sort(CompareForSort);
-        
-        }
-        // Sorts array elements in ascending order numerically.
-        function CompareForSort(first, second)
-        {
-            if (first.time == second.time)
-                return 0;
-            if (first.time < second.time)
-                return -1;
-            else
-                return 1; 
-        }
-        
-		return chartData;
-
-	},
-	makeChart: function( data,opt,prodUnits,areaUnits ){
-		
-		var grafici = [];
-		var getAvg= function(arr,type) {
-			var sum = 0,len = arr.length;
-			for (var i=0;i<len;i++){
-				sum+=arr[i][type];
-			}
-			return sum/len;
-		};
-		
-		for (var r = 0;r<data.length;r++){
-
-			
-			
-			// Store for random data
-			var store = new Ext.data.JsonStore({
-				data: data[r],
-				fields: [{
-					name: 'time',
-					type: 'string'
-				}, {
-					name: 'area',
-					type: 'float'
-				}, {
-					name: 'prod',
-					type: 'float'
-				}, {
-					name: 'yield',
-					type: 'float'
-				}],
-				root: 'rows'
-			});
-
-			var chart;
-			var prodavg = getAvg(data[r].rows,'prod');
-			var yieldavg=getAvg(data[r].rows,'yield');
-			var areaavg=getAvg(data[r].rows,'area');
-			chart = new Ext.ux.HighChart({
-				series: [
-					opt.series.prod,
-					opt.series.yield,
-					opt.series.area
-					
-				],
-				height: opt.height,
-				//width: 900,
-				store: store,
-				animShift: true,
-				xField: 'time',
-				chartConfig: {
-					chart: {
-						zoomType: 'x'
-					},
-                    exporting: {
-                        enabled: true,
-                        width: 1200,
-                        url: "http://84.33.2.24/highcharts-export/"
-                    },
-					title: {
-						text: data[r].title.toUpperCase()
-					},
-					subtitle: {
-                        text: '<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+areaUnits+'</span><br />'+
-                              '<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean: '+ prodavg.toFixed(2)+' '+prodUnits+'</span><br />'+
-                              '<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean: '+ yieldavg.toFixed(2)+' '+prodUnits+'/'+areaUnits+'</span>',
-                        align: 'left',
-                        verticalAlign: 'bottom',
-                        useHTML: true,
-                        x: 30,
-                        y: -25
-					},
-					xAxis: [{
-						type: 'datetime',
-						categories: 'time',
-						tickWidth: 0,
-						gridLineWidth: 1
-					}],
-					yAxis: [{ // Primary yAxis
-						labels: {
-							formatter: function () {
-								return this.value + opt.series.area.unit;
-							},
-							style: {
-								color: opt.series.area.color
-							}
-						},
-						title: {
-							text: opt.series.area.name,
-							style: {
-								color: opt.series.area.color
-							}
-						},
-                        plotLines: [{ //mid values
-							value: areaavg,
-							color: opt.series.area.lcolor,
-							dashStyle: 'line',
-							width: 2
-						}]
-
-					}, { // Secondary yAxis
-						gridLineWidth: 0,
-						title: {
-							text: opt.series.prod.name,
-							style: {
-								color: opt.series.prod.color
-							}
-						},
-						labels: {
-							formatter: function () {
-								return this.value + opt.series.prod.unit;
-							},
-							style: {
-								color: opt.series.prod.color
-							}
-						},
-						opposite: true,
-                        plotLines: [{ //NOTE all the mid values are overlapping in the middle of the chart
-						 //mid values
-							value: prodavg,
-							color: opt.series.prod.lcolor,
-							dashStyle: 'line',
-							width: 2
-						}]
-
-					}, { // Tertiary yAxis
-						gridLineWidth: 0,
-						dashStyle: 'shortdot',
-						title: {
-							text: opt.series.yield.name,
-							style: {
-								color: opt.series.yield.color
-							}
-						},
-						labels: {
-							formatter: function () {
-								return this.value + opt.series.yield.unit;
-							},
-							style: {
-								color: opt.series.yield.color
-							}
-						},
-						opposite: true,
-                        plotLines: [{ //mid values
-							value: yieldavg,
-							color: opt.series.yield.lcolor,
-							dashStyle: 'line',
-							width: 2
-						}]
-					}],
-					tooltip: {
-						shared: true,
-						crosshairs: true
-					}
-				}
-			});
-			grafici.push(chart);
-		}
-		
-		return grafici; 
-	}	
+    }
 });
 
 Ext.reg(gxp.widgets.button.NrlCropDataMapButton.prototype.xtype, gxp.widgets.button.NrlCropDataMapButton);

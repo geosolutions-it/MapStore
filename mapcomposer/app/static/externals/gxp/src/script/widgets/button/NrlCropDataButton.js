@@ -219,7 +219,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 				chartData.push(obj);
 			}
 			//create a row entry
-			var yr = feature.properties.year.substring(0, feature.properties.year.lastIndexOf("-"));
+			var yr = feature.properties.year;
 			var a = feature.properties.area;
 			var p = feature.properties.production;
 			var yi = feature.properties.yield;
