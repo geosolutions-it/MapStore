@@ -118,9 +118,15 @@
             "group": "background"
         },{
             "source": "destination",
-            "title": "Rischio Totale",
-            "name": "aggregated_data_selection",
-            "displayInLayerSwitcher": true,
+            "title": "Rischio Totale Ambientale",
+            "name": "rischio_totale_ambientale",
+            "displayInLayerSwitcher": true,				
+            "tiled": false
+        },{
+            "source": "destination",
+            "title": "Rischio Totale Sociale",
+            "name": "rischio_totale_sociale",
+            "displayInLayerSwitcher": true,				
             "tiled": false
         }
         ]
