@@ -150,7 +150,7 @@
 				"title": "Indus River",
 				"name": "nrl:indus_river_course",
 				"group": "Hydrology",
-				"visibility": false
+				"visibility": true
 			},{
 				"source": "nrl",
 				"title": "Roads",
@@ -174,7 +174,7 @@
 				"title": "Populated Places",
 				"name": "nrl:POP_settlements_pak_main",
 				"group": "Admin",
-				"visibility": false
+				"visibility": true
 			}
 		]
 	},
