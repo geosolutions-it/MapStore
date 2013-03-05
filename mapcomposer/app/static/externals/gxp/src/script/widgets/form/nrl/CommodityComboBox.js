@@ -52,6 +52,16 @@ nrl.form.CommodityComboBox = Ext.extend(Ext.form.ComboBox,{
 				{name:'season',dataIndex:'season'}
 		]
 	}),
+    setValueAndFireSelect: function(v) {
+        this.setValue(v);
+        var r = this.findRecord(this.valueField, v);         
+        if (!Ext.isEmpty(r)) {
+            var index = this.store.indexOf(r);
+            this.initSelect = true;
+            this.fireEvent("select", this, r, index);
+            this.initSelect = false;
+        }
+    },
 	seasonFilter: function(season){
 		this.store.filter('season',season,true,true);
 	}

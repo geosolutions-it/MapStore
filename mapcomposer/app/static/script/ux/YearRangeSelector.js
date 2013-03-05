@@ -29,6 +29,45 @@ Ext.ux.YearRangeSelector = Ext.extend(Ext.form.CompositeField,{
 	increment:1,
 	//sliderWidth:100,
 	events:['change'],
+	setMaxValue: function(value){
+		var endValue = this.slider.thumbs[1].value;
+		var startValue = this.slider.thumbs[0].value;
+		if(value < endValue){
+			//this.slider.setValue(1,value,true);
+			this.endValue.setValue(value);
+		}
+		if(value < startValue){
+			//this.slider.setValue(1,value,true);
+			this.startValue.setValue(value);
+		}
+		this.slider.setMaxValue(value);
+		this.startValue.setMaxValue(value);
+		this.endValue.setMaxValue(value);
+		
+		
+	},
+	setMinValue: function(value){
+		var endValue = this.slider.thumbs[1].value;
+		var startValue = this.slider.thumbs[0].value;
+		if(value > endValue){
+			//this.slider.setValue(1,value,true);
+			this.endValue.setValue(value);
+		}
+		if(value > startValue){
+			//this.slider.setValue(1,value,true);
+			this.startValue.setValue(value);
+		}
+		this.slider.setMinValue(value);
+		this.startValue.setMinValue(value);
+		this.endValue.setMinValue(value);
+
+		
+	},
+	valid: function(){
+		this.slider.valid();
+		this.startValue.valid();
+		this.endValue.valid();
+	},
 	initComponent:function(){
 		this.addEvents('change');
 		

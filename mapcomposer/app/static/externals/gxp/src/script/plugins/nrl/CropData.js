@@ -128,6 +128,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
         }
     
     },
+    startCommodity:'Wheat',
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
@@ -136,12 +137,34 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 			//TODO year ranges (from available data)
 			
 		}
-		//
-
+		var rangeData ;
+        //download from WFS available year ranges for each crops.
 		var yearRangeStore = new Ext.data.JsonStore({
-			fields: [{}],
+			fields: [
+                {name:'crop',mapping:'properties.crop'},
+                {name:'max', mapping:'properties.max' },
+                {name:'min', mapping:'properties.min' }
+            ],
 			autoLoad: true,
-			url: this.rangesUrl
+			url: this.rangesUrl,
+            root: 'features',
+            idProperty:'properties.crop',
+            listeners:{ 
+                load: function(store,records){
+                    var start  = store.getById(this.startCommodity);
+                    if(cropData.yearRangeSelector){
+                         var max = start.get('max');
+                        var min = start.get('min');
+                        cropData.yearRangeSelector.setMaxValue(max);
+                        cropData.yearRangeSelector.setMinValue(min);
+                    }else{
+                        rangeData = start;
+                    }
+                    
+                },
+                scope:this
+            }
+            
 		
 		
 		});
@@ -238,7 +261,12 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                         change: function(c,checked){
                             var commodity = this.ownerCt.Commodity;
                             commodity.seasonFilter(checked.inputValue);
-                            commodity.setValue(commodity.store.data.items[0].data.label);
+                            var selectedCommodity = commodity.store.data.items[0].data.label
+                            commodity.setValue(selectedCommodity);
+                            var yrs= commodity.ownerCt.yearRangeSelector;
+                            var yearrange = yearRangeStore.getById(selectedCommodity);
+                            yrs.setMaxValue(yearrange.get('max'));
+                            yrs.setMinValue(yearrange.get('min'));
                         }
 					}
 				},{
@@ -269,7 +297,15 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							if (radio && radio.getValue()){
                                this.seasonFilter(radio.inputValue);
                             }
-                        }                   
+                        },
+                        select: function(cb,record,index){
+                            //set year range for the selected crop
+                            var selectedCommodity = record.get('label');
+                            var yrs= cb.ownerCt.yearRangeSelector;
+                            var yearrange = yearRangeStore.getById(selectedCommodity);
+                            yrs.setMaxValue(yearrange.get('max'));
+                            yrs.setMinValue(yearrange.get('min'));
+                        }
                     }
 				},{
 					xtype: 'label',
@@ -281,14 +317,19 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					ref: 'yearRangeSelector',
 					xtype: 'yearrangeselector',
 					anchor:'100%',
-					maxValue: 2009, //TODO conf
-					minValue: 1999, //TODO conf
-					values:[1999,2009], //TODO conf
+					
+					
 					listeners:{
 						scope:this,
 						change:function(start,end){
 							this.output.referenceYear.setText(end);
-						}
+						},
+                        afterrender: function(component) {
+                            if(rangeData){
+                                component.setMaxValue(rangeData.get('max'));
+                                component.setMinValue(rangeData.get('min'));
+                            }
+                        }
 					}
 					
 				},{ 
