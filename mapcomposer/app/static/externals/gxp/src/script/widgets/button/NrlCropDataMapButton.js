@@ -38,7 +38,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 		
     handler: function () {    
 			var values =  this.form.output.getForm().getValues();
-			if(values.crop != "Wheat" || values.areatype != "district" || values.endYear == "2009"){
+			if( values.areatype != "district" ){
 				Ext.Msg.alert("Test styles not available" ,"Test data is not yet available for this selection. Please select Wheat - District and Reference year fromm 1999 to 2008");
 				return;
 			}
@@ -47,9 +47,9 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 			
 			var varparam ="";
 			switch(values.variable) {
-				case "Area" : varparam='area_ha';break;
-				case  "Production" : varparam ='prod_t';break;
-				case "Yield" : varparam= 'yield_kg';break;
+				case "Area" : varparam='area';break;
+				case  "Production" : varparam ='prod';break;
+				case "Yield" : varparam= 'yield';break;
 			}
 			
 			
@@ -58,11 +58,11 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 					"start_year:" + values.endYear +";" + //same year for start and end.
 					"end_year:" + values.endYear +";" 
 			
-			var wms = new OpenLayers.Layer.WMS(values.crop + " " + values.endYear + "-" + values.variable,//todo: choice the style for the needed variable
+			var wms = new OpenLayers.Layer.WMS(values.crop + " " + values.endYear + " - "+values.variable,//todo: choice the style for the needed variable
 			   "http://84.33.2.24/geoserver/wms",
 			   {
 				layers: "nrl:CropDataMap",
-				styles: "District" + "_crop_" + values.crop.toLowerCase() + "_"+ varparam ,
+				styles: "district" + "_" + values.crop.toLowerCase() + "_"+ varparam + "_style" ,
 				viewParams:viewParams,
 				transparent: "true"
 				
