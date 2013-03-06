@@ -59,7 +59,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 			area:{
 					name: 'Area (000 hectares)',
 					color: '#AB4124',
-                    lcolor: '#E09A7E'
+                    lcolor: '#E09A7E',
 					type: 'line',
 					dataIndex: 'area',
 					unit:'(000 hectares)'
