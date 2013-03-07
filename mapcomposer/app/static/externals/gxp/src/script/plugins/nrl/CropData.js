@@ -414,7 +414,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							displayField: 'label',
 							valueField:'coeff',
 							value: 1,
-							disabled:false,
+							disabled:true,
 							store: new Ext.data.JsonStore({
 								fields:[
 										{name:'name',dataIndex:'name'},
@@ -425,6 +425,33 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 								data:[
 									{label: '\'000\' hectares',		coeff:1,	shortName:'000 ha'        },//TODO set proper values for coef
 									{label: 'square kilometers',	coeff:2,	shortName:'Km<sup>2</sup>'} //TODO set proper values for coef
+								]
+							})
+                        },{
+							xtype: 'combo',
+							anchor:'100%',
+							fieldLabel: 'Yield',
+							typeAhead: true,
+							triggerAction: 'all',
+							lazyRender:false,
+							mode: 'local',
+							autoLoad:true,
+							forceSelected:true,
+							allowBlank:false,
+							name:'yield_unit',
+							displayField: 'label',
+							valueField:'coeff',
+							value: 1,
+							disabled:true,
+							store: new Ext.data.JsonStore({
+								fields:[
+										{name:'name',dataIndex:'name'},
+										{name:'label',dataIndex:'label'},
+										{name:'coeff',dataIndex:'coeff'},
+										{name:'shortName', dataindex: 'shortName'}
+								],
+								data:[
+									{label: 'kg/ha', coeff:1, shortName:'kg/ha'},//TODO set proper values for coef
 								]
 							})
 					}]
