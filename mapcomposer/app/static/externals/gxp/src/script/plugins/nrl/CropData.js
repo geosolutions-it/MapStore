@@ -267,6 +267,9 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             var yearrange = yearRangeStore.getById(selectedCommodity);
                             yrs.setMaxValue(yearrange.get('max'));
                             yrs.setMinValue(yearrange.get('min'));
+                            
+                            var comboProd = Ext.getCmp('comboProd');
+                            comboProd.setValue('\'000\' tonnes');                                  
                         }
 					}
 				},{
@@ -306,8 +309,13 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             yrs.setMaxValue(yearrange.get('max'));
                             yrs.setMinValue(yearrange.get('min'));
                             
-                            var comboProd = Ext.getCmp('comboProd');        
-                            comboProd.store.filter('cid', cb.getValue(),true,true);                            
+                            var comboProd = Ext.getCmp('comboProd');
+                            var comValue = cb.getValue();
+                            if (comValue == 'cotton'){
+                                comboProd.setValue('\'000\' bales');               
+                            }else{
+                                comboProd.setValue('\'000\' tonnes');                                  
+                            }
                         }
                     }
 				},{
@@ -374,7 +382,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							displayField: 'label',
 							valueField:'coeff',
 							value:1,
-							disabled:false,
+							disabled:true,
 							store: new Ext.data.JsonStore({
 								fields:[
 										{name:'name',dataIndex:'name'},
@@ -451,7 +459,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 										{name:'shortName', dataindex: 'shortName'}
 								],
 								data:[
-									{label: 'kg/ha', coeff:1, shortName:'kg/ha'},//TODO set proper values for coef
+									{label: 'kg/ha', coeff:1, shortName:'kg/ha'}//TODO set proper values for coef
 								]
 							})
 					}]
