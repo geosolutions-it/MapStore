@@ -267,9 +267,10 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             var yearrange = yearRangeStore.getById(selectedCommodity);
                             yrs.setMaxValue(yearrange.get('max'));
                             yrs.setMinValue(yearrange.get('min'));
-                            
+
                             var comboProd = Ext.getCmp('comboProd');
-                            comboProd.setValue('\'000\' tons');                                  
+                            comboProd.setValue('\'000\' tons');  
+
                         }
 					}
 				},{
@@ -310,6 +311,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             yrs.setMinValue(yearrange.get('min'));
                             
                             var comboProd = Ext.getCmp('comboProd');
+                            
                             var comValue = cb.getValue();
                             if (comValue == 'cotton'){
                                 comboProd.setValue('\'000\' bales');               
@@ -383,7 +385,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							displayField: 'label',
 							valueField:'label',
 							value:'\'000\' tons',
-							disabled:false,
+							readOnly:true,
 							store: new Ext.data.JsonStore({
 								fields:[
 										{name:'name',dataIndex:'name'},
@@ -400,11 +402,15 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							}),
                             listeners: {
                                 expand: function( combo ){
-                                    var commodity = this.ownerCt.ownerCt.Commodity;
-                                    var radio = commodity.getValue();
-                                    
-                                    if(radio){
-                                        combo.store.filter('cid', radio.toLowerCase(),true,true); 
+                                    if (combo.disabled == true){
+                                        combo.enable();
+                                        var commodity = this.ownerCt.ownerCt.Commodity;
+                                        var radio = commodity.getValue();
+                                        
+                                        if(radio){
+                                            combo.store.filter('cid', radio.toLowerCase(),true,true); 
+                                        }
+                                        combo.disable();
                                     }
                                 }                        
                             }                      
@@ -424,7 +430,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							displayField: 'label',
 							valueField:'coeff',
 							value: 1,
-							disabled:true,
+							readOnly:true,
 							store: new Ext.data.JsonStore({
 								fields:[
 										{name:'name',dataIndex:'name'},
@@ -453,7 +459,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							displayField: 'label',
 							valueField:'coeff',
 							value: 1,
-							disabled:true,
+							readOnly:true,
 							store: new Ext.data.JsonStore({
 								fields:[
 										{name:'name',dataIndex:'name'},
