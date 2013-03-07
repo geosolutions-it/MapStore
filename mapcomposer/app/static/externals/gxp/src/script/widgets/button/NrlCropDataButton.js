@@ -68,7 +68,6 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
         height: 400
 	},
     handler: function () {
-		
         var numRegion = [];
         var regStore = this.form.output.aoiFieldSet.AreaSelector.store
         var records = regStore.getRange();
@@ -80,7 +79,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
         }
         
         var data = this.form.output.getForm().getValues();
-        //var data2 = this.form.output.getForm().getFieldValues();
+        var data2 = this.form.output.getForm().getFieldValues();
         
         var regionList = data.region_list.toLowerCase();
         var commodity = data.crop.toLowerCase();
@@ -89,20 +88,26 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
         var fromYear = data.startYear;
         var toYear = data.endYear;
         
-        /*var prodUnits = data2.production_unit;
-        var areaUnits = data2.area_unit == 1 ? 'Ha' : 'Sqr Km';
+        var prodUnits = data2.production_unit;
+        //var areaUnits = data2.area_unit == 1 ? 'Ha' : 'Sqr Km';
         
         switch(prodUnits)
         {
         case 1:
-          prodUnits = 'Tons';
+          this.chartOpt.series.prod.unit = '(000 tons)';
+          this.chartOpt.series.prod.name = 'Production (000 tons)';
+          var prodCoeffUnits = '1000';
           break;
         case 2:
-          prodUnits = 'Kgs';
+          this.chartOpt.series.prod.unit = '(000 kgs)';
+          this.chartOpt.series.prod.name = 'Production (000 kgs)';
+          var prodCoeffUnits = '1000';
           break;
         default:
-          prodUnits = 'Bales';
-        }*/        
+          this.chartOpt.series.prod.unit = '(000 bales)';
+          this.chartOpt.series.prod.name = 'Production (000 bales)';          
+          var prodCoeffUnits = '170';
+        }
         
         var tabPanel = Ext.getCmp('id_mapTab');
 
@@ -128,7 +133,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                                 "gran_type:" + granType + ";" +
                                 "start_year:" + fromYear + ";" +
                                 "end_year:" + toYear + ";" +
-                                "region_list:" + regionList
+                                "region_list:" + regionList + ";" +
+                                "yield_factor:" + prodCoeffUnits
                 },
                 success: function ( result, request ) {
 					var jsonData = Ext.util.JSON.decode(result.responseText);
@@ -302,7 +308,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 		return chartData;
 
 	},
-	makeChart: function( data,opt){
+	makeChart: function( data,opt ){
 		
 		var grafici = [];
 		var getAvg= function(arr,type) {
