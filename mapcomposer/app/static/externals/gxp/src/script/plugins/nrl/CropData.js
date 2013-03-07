@@ -296,7 +296,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							
 							if (radio && radio.getValue()){
                                this.seasonFilter(radio.inputValue);
-                            }
+                            }                           
                         },
                         select: function(cb,record,index){
                             //set year range for the selected crop
@@ -388,7 +388,17 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 									{label: '\'000\' kgs',    coeff:2,	shortName:'(000 kgs)', cid:'wheat,cotton,sugarcane,rice,maize'},//TODO set proper values for coef
 									{label: '\'000\' bales', coeff:3,	shortName:'(000 bales)', cid:'cotton'} //TODO set proper values for coef
 								]
-							})
+							}),
+                            listeners: {
+                                expand: function( combo ){
+                                    var commodity = this.ownerCt.ownerCt.Commodity;
+                                    var radio = commodity.getValue();
+                                    
+                                    if(radio){
+                                        combo.store.filter('cid', radio.toLowerCase(),true,true); 
+                                    }
+                                }                        
+                            }                      
 						},{
 							xtype: 'combo',
 							anchor:'100%',
