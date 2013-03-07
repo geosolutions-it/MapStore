@@ -36,33 +36,33 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
     chartOpt:{
 		series:{
 			prod:{
-					name: 'Production (000 tons)',
+					name: 'Production \'000\' tons',
 					color: '#606B2D',
                     lcolor: '#A7BA72',
 					type: 'line',
 					yAxis: 1,
 					dataIndex: 'prod',
-					unit:'(000 tons)'
+					unit:'\'000\' tons'
 
 				},
 			yield:{
-					name: 'Yield (kg/ha)',
+					name: 'Yield kg/ha',
 					dashStyle: 'shortdot',
 					type: 'line',
 					color: '#154F4A',
                     lcolor: '#79ABA4',
 					yAxis: 2,
 					dataIndex: 'yield',
-					unit:'(kg/ha)'
+					unit:'kg/ha'
 
 				},
 			area:{
-					name: 'Area (000 hectares)',
+					name: 'Area \'000\' hectares',
 					color: '#AB4124',
                     lcolor: '#E09A7E',
 					type: 'line',
 					dataIndex: 'area',
-					unit:'(000 hectares)'
+					unit:'\'000\' hectares'
 			}
 		},
         height: 400
@@ -93,19 +93,19 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
         
         switch(prodUnits)
         {
-        case 1:
-          this.chartOpt.series.prod.unit = '(000 tons)';
-          this.chartOpt.series.prod.name = 'Production (000 tons)';
+        case "\'000\' tons":
+          this.chartOpt.series.prod.unit = data.production_unit;
+          this.chartOpt.series.prod.name = 'Production '+data.production_unit;
           var prodCoeffUnits = '1000';
           break;
-        case 2:
-          this.chartOpt.series.prod.unit = '(000 kgs)';
-          this.chartOpt.series.prod.name = 'Production (000 kgs)';
+        case "\'000\' kgs":
+          this.chartOpt.series.prod.unit = data.production_unit;
+          this.chartOpt.series.prod.name = 'Production '+data.production_unit;
           var prodCoeffUnits = '1000';
           break;
         default:
-          this.chartOpt.series.prod.unit = '(000 bales)';
-          this.chartOpt.series.prod.name = 'Production (000 bales)';          
+          this.chartOpt.series.prod.unit = data.production_unit;
+          this.chartOpt.series.prod.name = 'Production '+data.production_unit;          
           var prodCoeffUnits = '170';
         }
         

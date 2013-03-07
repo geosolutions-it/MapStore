@@ -269,7 +269,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             yrs.setMinValue(yearrange.get('min'));
                             
                             var comboProd = Ext.getCmp('comboProd');
-                            comboProd.setValue('\'000\' tonnes');                                  
+                            comboProd.setValue('\'000\' tons');                                  
                         }
 					}
 				},{
@@ -314,7 +314,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             if (comValue == 'cotton'){
                                 comboProd.setValue('\'000\' bales');               
                             }else{
-                                comboProd.setValue('\'000\' tonnes');                                  
+                                comboProd.setValue('\'000\' tons');                                  
                             }
                         }
                     }
@@ -368,6 +368,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     ref: 'units',
 					items:[{
 							xtype: 'combo',
+                            ref: 'production',
                             id: 'comboProd',
 							anchor:'100%',
 							fieldLabel: 'Production',
@@ -380,9 +381,9 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							allowBlank:false,
 							autoLoad:true,
 							displayField: 'label',
-							valueField:'coeff',
-							value:1,
-							disabled:true,
+							valueField:'label',
+							value:'\'000\' tons',
+							disabled:false,
 							store: new Ext.data.JsonStore({
 								fields:[
 										{name:'name',dataIndex:'name'},
@@ -392,7 +393,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                         {name:'cid', dataindex: 'cid'}
 								],
 								data:[
-									{label: '\'000\' tonnes', coeff:1,	shortName:'(000 tons)', cid:'wheat,cotton,sugarcane,rice,maize'},//TODO set proper values for coef
+									{label: '\'000\' tons', coeff:1,	shortName:'(000 tons)', cid:'wheat,cotton,sugarcane,rice,maize'},//TODO set proper values for coef
 									{label: '\'000\' kgs',    coeff:2,	shortName:'(000 kgs)', cid:'wheat,cotton,sugarcane,rice,maize'},//TODO set proper values for coef
 									{label: '\'000\' bales', coeff:3,	shortName:'(000 bales)', cid:'cotton'} //TODO set proper values for coef
 								]
@@ -409,6 +410,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             }                      
 						},{
 							xtype: 'combo',
+                            ref: 'area',
 							anchor:'100%',
 							fieldLabel: 'Area',
 							typeAhead: true,
@@ -437,6 +439,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							})
                         },{
 							xtype: 'combo',
+                            ref: 'yield',
 							anchor:'100%',
 							fieldLabel: 'Yield',
 							typeAhead: true,
