@@ -145,25 +145,11 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                 {name:'max', mapping:'properties.max' },
                 {name:'min', mapping:'properties.min' }
             ],
-			autoLoad: true,
+			//autoLoad: true,
 			url: this.rangesUrl,
             root: 'features',
-            idProperty:'properties.crop',
-            listeners:{ 
-                load: function(store,records){
-                    var start  = store.getById(this.startCommodity);
-                    if(cropData.yearRangeSelector){
-                         var max = start.get('max');
-                        var min = start.get('min');
-                        cropData.yearRangeSelector.setMaxValue(max);
-                        cropData.yearRangeSelector.setMinValue(min);
-                    }else{
-                        rangeData = start;
-                    }
-                    
-                },
-                scope:this
-            }
+            idProperty:'properties.crop'
+            
             
 		
 		
@@ -338,11 +324,21 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							this.output.referenceYear.setText(end);
 						},
                         afterrender: function(component) {
-                            if(rangeData){
-                                component.setMaxValue(rangeData.get('max'));
-                                component.setMinValue(rangeData.get('min'));
-                            }
-                        }
+                            yearRangeStore.load({
+								 callback:function(){
+									var start  = yearRangeStore.getById('Wheat');
+									if(this.output.yearRangeSelector){
+										 var max = start.get('max');
+										var min = start.get('min');
+										this.output.yearRangeSelector.setMaxValue(max);
+										this.output.yearRangeSelector.setMinValue(min);
+									}else{
+										rangeData = start;
+									}
+								},
+								scope:this
+							});
+						}
 					}
 					
 				},{ 
