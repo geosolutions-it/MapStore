@@ -120,10 +120,11 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 							}
 							regions[region].push(f);
 						}
-						var result = "<table class='cropdatatooltip'><tr><th>Region</th><th>Year</th>"+
-							"<th>Production</br>("+values.production_unit+")</th>"+ //TODO unit
-							"<th>Area</br>("+values.area_unit+")</th>" +
-							"<th>Yield</br>("+values.yield_unit+")</th>" +
+						var result = "<table class='cropdatatooltip'>"+
+							"<tr><th>Region</th><th>Year</th>"+
+							"<th>Production</br><strong>("+values.production_unit+")</strong></th>"+ //TODO unit
+							"<th>Area</br><strong>("+values.area_unit+")</strong></th>" +
+							"<th>Yield</br><strong>("+values.yield_unit+")</strong></th>" +
 						"</tr>";
 						//cycle data
 						for (var i= 0 in regions){	
@@ -154,10 +155,10 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 							}
 							
 							//avgs
-							tot.yield = tot.production / tot.area;
+							
 							tot.production /=  f.length;
 							tot.area /=  f.length;
-							tot.yield /=f.length ;
+							tot.yield = yieldFactor * tot.production / tot.area;
 							tot.year = values.startYear + "-"+values.endYear;
 							var avg = this.generateYearlyRow(tot);
 							//generate block
