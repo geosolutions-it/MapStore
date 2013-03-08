@@ -181,10 +181,7 @@
 	
 	
 	"customTools":[
-		{
-			"actions": ["->"], 
-			"actionTarget": "paneltbar"
-		},
+		
 		{
 		  "ptype":"gxp_nrl",
 		  "outputConfig":{

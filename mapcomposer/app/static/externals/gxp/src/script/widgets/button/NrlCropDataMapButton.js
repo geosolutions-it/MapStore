@@ -34,14 +34,14 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
     form: null,
 	text: 'Generate Map',
 	wmsUrl: '',
-	
-		
+	controlToggleGroup: 'toolGroup',
+	infoActionTip: 'Crop Data info on selected layer',
+	controls:[],layers:[],
     handler: function () {    
+			var form = this.form.output.getForm();
 			var values =  this.form.output.getForm().getValues();
-			if( values.areatype != "district" ){
-				Ext.Msg.alert("Test styles not available" ,"Test data is not yet available for this selection. Please select Wheat - District and Reference year fromm 1999 to 2008");
-				return;
-			}
+			var fieldValues = form.getFieldValues();
+			
 			var nextYr =parseInt(values.endYear)%100 +1;
 			var crop =values.crop;
 			
@@ -51,35 +51,25 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 				case  "Production" : varparam ='prod';break;
 				case "Yield" : varparam= 'yield';break;
 			}
+			var yieldFactor = fieldValues.production_unit == 3 ? 170 : 1000;
 			
 			
 			var viewParams= "crop:" + values.crop.toLowerCase() + ";" +
 					"gran_type:" + values.areatype.toLowerCase() + ";" +
 					"start_year:" + values.endYear +";" + //same year for start and end.
-					"end_year:" + values.endYear +";" 
+					"end_year:" + values.endYear +";" + 
+					"yield_factor:" + yieldFactor
 			
 			var wms = new OpenLayers.Layer.WMS(values.crop + " " + values.endYear + " - "+values.variable,//todo: choice the style for the needed variable
 			   "http://84.33.2.24/geoserver/wms",
 			   {
 				layers: "nrl:CropDataMap",
-				styles: "district" + "_" + values.crop.toLowerCase() + "_"+ varparam + "_style" ,
+				styles: values.areatype.toLowerCase() + "_" + values.crop.toLowerCase() + "_"+ varparam + "_style" ,
 				viewParams:viewParams,
 				transparent: "true"
 				
 			});
-			var data = {
-                title: values.crop + " " + values.endYear + "-" + values.variable, 
-                name: "nrl:CropDataMap",
-                //group: "crop_data",
-                layer: wms,
-				selected:true
-            }
-			var fields = [
-                {name: "name", type: "string"}, 
-                {name: "group", type: "string"},
-				{name: "title", type: "string"},
-                {name: "selected", type: "boolean"}
-            ];
+			
             var tooltip;
 			var cleanup = function() {
 				if (tooltip) {
@@ -89,25 +79,33 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 			var button = this;
 			var control = new OpenLayers.Control.WMSGetFeatureInfo({
 					infoFormat:  "application/vnd.ogc.gml" ,
-					
 					title: 'Identify features by clicking',
 					maxFeatures:200,
 					layers: [wms],
-					hover: false,
-					// defining a custom format options here
-					
+					hover: true,
 					queryVisible: true,
-					handlerOptions:{
-						
+					handlerOptions:{	
+						hover: {delay: 200}
 					},
 					vendorParams:{
-						paramName: 'crop,year,production,area,yield',
+						propertyName: 'region,crop,year,production,area,yield',
 						
 						viewParams: "crop:" + values.crop.toLowerCase() + ";" +
 									"gran_type:" + values.areatype.toLowerCase() + ";" +
 									"start_year:" + values.startYear + ";" +
-									"end_year:" + values.endYear + ";" //here startyear
-			
+									"end_year:" + values.endYear + ";" +//here startyear
+									"yield_factor:" + yieldFactor
+						
+					},
+					generateYearlyRow:function (attrs){
+						//TODO manage NaN
+						var prod = isNaN(parseFloat(attrs.production))?"N/A":parseFloat(attrs.production).toFixed(2);
+						var area = isNaN(parseFloat(attrs.production))?"N/A":parseFloat(attrs.area).toFixed(2);
+						var yield = isNaN(parseFloat(attrs.production))?"N/A":parseFloat(attrs.yield).toFixed(2);
+						return "<td>"+attrs.year+"</td>"+
+							"<td style='text-align:right'>"+prod+"</td>"+
+							"<td style='text-align:right'>"+area+"</td>"+
+							"<td style='text-align:right'>"+yield+"</td>";
 						
 					},
 					showResults: function(features){
@@ -122,34 +120,58 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 							}
 							regions[region].push(f);
 						}
-						var result = "<table border='1' CELLPADDING=1><tr><th>Region</th><th>Year</th><th>Production</th><th>Area</th><th>Yield</th></tr>";
+						var result = "<table class='cropdatatooltip'><tr><th>Region</th><th>Year</th>"+
+							"<th>Production</br>("+values.production_unit+")</th>"+ //TODO unit
+							"<th>Area</br>("+values.area_unit+")</th>" +
+							"<th>Yield</br>("+values.yield_unit+")</th>" +
+						"</tr>";
+						//cycle data
 						for (var i= 0 in regions){	
 							var f = regions[i];
-							result += "<tr><th rowspan=4>"+i+"</th></tr>";
-							//calculate aggregated data
+							
 							var tot = {
 								production:0,
 								area:0,
 								yield:0
 							};
+							//calculate avgs
 							for (var j =0; j<f.length;j++){
 								var attrs =f[j].attributes;
 								tot.production+=parseFloat(attrs.production);
 								tot.area+=parseFloat(attrs.area);
-								if(attrs.year == values.endYear +"-" +tempstringtrailer){
-									result +="<tr><td>"+attrs.year+"</td><td>"+parseFloat(attrs.production).toFixed(2)+"</td><td>"+parseFloat(attrs.area).toFixed(2)+"</td><td>"+parseFloat(attrs.yield).toFixed(2)+"</td></tr>"
-									result +="<tr><td>"+(parseInt(attrs.year)-1)+"</td><td>"+parseFloat(attrs.production).toFixed(2)+"</td><td>"+parseFloat(attrs.area).toFixed(2)+"</td><td>"+parseFloat(attrs.yield).toFixed(2)+"</td></tr>"
+								
+							}
+							//get current and previous year 
+							var curr,prev;
+							for (var j =0; j<f.length;j++){
+								var attrs =f[j].attributes;
+								if(attrs.year == values.endYear){
+									var curr = this.generateYearlyRow(attrs);
+								}
+								if(parseInt(attrs.year) == parseInt(values.endYear)-1){
+									prev =this.generateYearlyRow(attrs);
 								}
 							}
+							
 							//avgs
 							tot.yield = tot.production / tot.area;
 							tot.production /=  f.length;
 							tot.area /=  f.length;
 							tot.yield /=f.length ;
-							result +="<tr><td>"+values.startYear + "-"+values.endYear+"</td><td>"+tot.production.toFixed(2)+"</td><td>"+tot.area.toFixed(2)+"</td><td>"+tot.yield.toFixed(2)+"</td></tr>"
+							tot.year = values.startYear + "-"+values.endYear;
+							var avg = this.generateYearlyRow(tot);
+							//generate block
+							
+							curr = curr || this.generateYearlyRow({year:values.endYear});
+							prev = prev || this.generateYearlyRow({year:parseInt(values.endYear)-1});
+							
+							//
+							result += "<tr class='regionblock'><th rowspan=3>"+i+"</th>"+ curr + "</tr>"+
+								"<tr>" + prev + "</tr>"+
+								"<tr>" + avg + "</tr>" ;
 							
 						}	 
-						result +='</table>'		;	 
+						result +='</table>';	 
 						//TODO
 						
 						return result;
@@ -160,9 +182,14 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 							if(evt.features.length <1) return;
 							cleanup();
 							
-							tooltip = new Ext.ToolTip({
+							tooltip = new GeoExt.Popup({
+								map: app.mapPanel.map,
+								width:400,
+								autoScroll:true,
 								xtype: 'tooltip',
-								html:this.showResults(evt.features),
+								location:evt.xy,
+								resizable:false,
+								items:{xtype:'panel',html:'<div style="padding:5px">'+this.showResults(evt.features)+'</div>'},
 								title: values.crop + " " + values.endYear + "-" + values.variable,
 								autoHide: false,
 								closable: true,
@@ -175,41 +202,103 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 							//take only the first
 							
 							var p0 = app.mapPanel.getPosition();
-							tooltip.targetXY = [evt.xy.x +p0[0],evt.xy.y +p0[1]];
+							//tooltip.targetXY = [evt.xy.x +p0[0],evt.xy.y +p0[1]];
 							tooltip.show();
 							
 						
-						}
-					},
-					deactivate: cleanup
+						},
+						deactivate: cleanup
+					}
+					
 				})
 			app.mapPanel.map.addControl(control);
-            //var Record = GeoExt.data.LayerRecord.create(fields);
-            //var record = new Record(data);
+			var data = {
+                title: values.crop + " " + values.endYear + "-" + values.variable, 
+                name: "nrl:CropDataMap",
+                //group: "crop_data",
+                layer: wms,
+				selected:true
+				
+            }
+			var fields = [
+                {name: "name", type: "string"}, 
+                {name: "group", type: "string"},
+				{name: "title", type: "string"},
+                {name: "selected", type: "boolean"},
+				{name: "querible", type: "boolean"}
+            ];
+			var Record = GeoExt.data.LayerRecord.create(fields);
+            var record = new Record(data);
 			app.mapPanel.map.addLayers([wms]);
-			//app.mapPanel.layers.add(record);
-			wms.events.register('removed',app.mapPanel.map,function(eventObject){
+			
+			//add to list of layers and controls 
+			this.controls.push(control);
+			this.layers.push(wms);
+			
+			//app.mapPanel.layers.add([record]);
+			wms.events.register('removed',this,function(eventObject){
 				control.deactivate();
 				control.destroy();
-				app.mapPanel.map.removeControl(control);
+				
+				var index = (this.controls.indexOf(control));
+				this.controls.splice(index,1);
+				this.layers.splice(index,1);
+				if(this.controls.length<=0){
+					Ext.getCmp('paneltbar').remove(this.action);
+					this.action.destroy();
+					this.action=undefined;
+					
+				}
+				
+				//app.mapPanel.map.removeControl(control);
 			
 			})
+			
+			
+            
 			var sm = Ext.getCmp('layertree').getSelectionModel();
-			if(!sm.getSelectedNode()) return;
-			if(sm.getSelectedNode().layer == wms){
-				control.activate();
+			if(!this.action){
+				this.action = new Ext.Button({
+					tooltip: this.infoActionTip,
+					iconCls: "icon-mapcursor",
+					toggleGroup: this.controlToggleGroup,
+					enableToggle: true,
+					allowDepress: true,
+					toggleHandler: function(button, pressed) {
+						for (var i = 0, len = this.controls.length; i < len; i++){
+							if (pressed) {
+								
+								if(sm.getSelectedNode() && sm.getSelectedNode().layer == this.layers[i]){
+									this.controls[i].activate();
+								}
+							} else {
+								this.controls[i].deactivate();
+							}
+						}
+					 },scope:this
+				});
+				Ext.getCmp('paneltbar').addItem(this.action);
+				Ext.getCmp('paneltbar').doLayout();
 			}
+			var action = this.action;
+			
+			
+			
 			//if(sm.getSelectedNode().layer == wms) { control.activate(); }
 			sm.on('selectionchange',function(sm,sel,eOpts){
 				if(!sm.getSelectedNode()) return;
-				if(sm.getSelectedNode().layer == wms){
-					control.activate();
+				if(sm.getSelectedNode().layer.id == wms.id){
+					if(action.pressed) control.activate();
+					
 				}else{
 					control.deactivate();
+					
 				}
+				
+				
 			
 			},this);
-            
+			
         
     }
 });
