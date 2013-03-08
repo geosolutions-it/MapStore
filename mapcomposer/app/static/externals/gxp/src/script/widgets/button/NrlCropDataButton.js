@@ -62,7 +62,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                     lcolor: 'rgb(240,140,137)',                    
 					type: 'spline',
 					dataIndex: 'area',
-					unit:'(000 hectares)'
+					unit:'(000 ha)'
 			}
 		},
         height: 400
@@ -470,7 +470,17 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                         },
                         shared: true,
 						crosshairs: true
-					}
+					},
+                    legend: {
+                        labelFormatter: function() {
+                            if (this.name == 'Area (000 hectares)'){
+                                return 'Area (000 ha)';
+                            }else{
+                                return this.name;
+                            }
+                            
+                        }
+                    },                    
 				}
 			});
 			grafici.push(chart);
