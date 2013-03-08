@@ -313,20 +313,29 @@ div.olLayerDiv svg{
 /* crop data table */
 .cropdatatooltip{
     border-collapse: collapse;
-	boder: 1px solid black;
+	
 	font-size:12px;
+	margin: 0;
+	width:100%;
 }
-.cropdatatooltip tr,.cropdatatooltip tr{
+.cropdatatooltip tr{
 	padding:2px;
-    border: 1px solid black;
+    
+	font-family: arial serif;
+	font-size: 12px;
+}
+.cropdatatooltip tr:hover{
+	background-color:#EEEEEE;
 }
 .cropdatatooltip th,.cropdatatooltip td{
 	padding:2px;
     border: 1px solid gray;
+	
 }
 .cropdatatooltip th{
-	font-weight:Bold;
+	font-weight:bold;
 	background-color:lightgrey;
+	text-align:center;
 }
 tr.regionblock td{
 	border-top:1px solid black;
