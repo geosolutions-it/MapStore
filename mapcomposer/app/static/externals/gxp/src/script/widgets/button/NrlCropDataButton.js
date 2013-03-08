@@ -480,7 +480,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                             }
                             
                         }
-                    },                    
+                    }            
 				}
 			});
 			grafici.push(chart);
