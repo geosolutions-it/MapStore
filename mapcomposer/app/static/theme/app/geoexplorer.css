@@ -315,14 +315,14 @@ div.olLayerDiv svg{
     border-collapse: collapse;
 	
 	font-size:12px;
-	margin: 0;
-	width:100%;
+	margin: 0 auto;
+	
 }
 .cropdatatooltip tr{
 	padding:2px;
     
 	font-family: arial serif;
-	font-size: 12px;
+	font-size: 11px;
 }
 .cropdatatooltip tr:hover{
 	background-color:#EEEEEE;
@@ -331,6 +331,11 @@ div.olLayerDiv svg{
 	padding:2px;
     border: 1px solid gray;
 	
+}
+
+.cropdatatooltip  strong {
+	font-style:italic;
+	text-align:center;
 }
 .cropdatatooltip th{
 	font-weight:bold;
