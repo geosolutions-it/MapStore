@@ -102,7 +102,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 						var prod = isNaN(parseFloat(attrs.production))?"N/A":parseFloat(attrs.production).toFixed(2);
 						var area = isNaN(parseFloat(attrs.production))?"N/A":parseFloat(attrs.area).toFixed(2);
 						var yield = isNaN(parseFloat(attrs.production))?"N/A":parseFloat(attrs.yield).toFixed(2);
-						return "<td>"+attrs.year+"</td>"+
+						return "<td><strong>"+attrs.year+"<strong></td>"+
 							"<td style='text-align:right'>"+prod+"</td>"+
 							"<td style='text-align:right'>"+area+"</td>"+
 							"<td style='text-align:right'>"+yield+"</td>";
@@ -120,10 +120,11 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 							}
 							regions[region].push(f);
 						}
+						var short_area_unit = values.area_unit.replace('hectares','ha');
 						var result = "<table class='cropdatatooltip'>"+
 							"<tr><th>Region</th><th>Year</th>"+
 							"<th>Production</br><strong>("+values.production_unit+")</strong></th>"+ //TODO unit
-							"<th>Area</br><strong>("+values.area_unit+")</strong></th>" +
+							"<th>Area</br><strong>("+short_area_unit+")</strong></th>" +
 							"<th>Yield</br><strong>("+values.yield_unit+")</strong></th>" +
 						"</tr>";
 						//cycle data
@@ -185,7 +186,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 							
 							tooltip = new GeoExt.Popup({
 								map: app.mapPanel.map,
-								width:400,
+								width:370,
 								autoScroll:true,
 								xtype: 'tooltip',
 								location:evt.xy,

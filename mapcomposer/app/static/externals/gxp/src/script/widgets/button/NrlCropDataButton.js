@@ -93,12 +93,12 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
         
         switch(prodUnits)
         {
-        case "\'000\' tons":
+        case "000 tons":
           this.chartOpt.series.prod.unit = '(000 tons)';
           this.chartOpt.series.prod.name = 'Production (000 tons)';
           var prodCoeffUnits = '1000';
           break;
-        case "\'000\' kgs":
+        case "000 kgs":
           this.chartOpt.series.prod.unit = '(000 kgs)';
           this.chartOpt.series.prod.name = 'Production (000 kgs)';
           var prodCoeffUnits = '1000';
