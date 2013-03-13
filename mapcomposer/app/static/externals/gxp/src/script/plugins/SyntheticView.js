@@ -202,7 +202,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
      *   :arg config: ``Object``
 	 *     creates a record for a new layer, with the given configuration
      */
-    createLayerRecord: function(config, singleTitle) {        
+    createLayerRecord: function(config, singleTitle, dynamicBuffer) {        
         var params = {
             layers: config.name, 
             transparent: true, 
@@ -223,7 +223,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 vendorParams: config.params
             }
         );
+		if(dynamicBuffer) {
+			var oldGetFullRequestString = layer.getFullRequestString;
+			
+			var me = this;
+			
+			layer.getFullRequestString = function(newParams, altUrl) {
+				this.params.BUFFER = me.getBufferSizeInPixels(dynamicBuffer);
+				this.vendorParams.buffer = this.params.BUFFER;
+				return oldGetFullRequestString.apply(this, arguments);
+			};
         
+		}
 		// look for the base record for layer in layerSource and builds a new
 		// record merging base configuration with given one
         var index = this.layerSource.store.findExact("name", config.name);
@@ -285,12 +296,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return this.createLayerRecord({
             name: this.bufferLayerNameHuman,
             title: title,
-            params: {                
-                buffer: buffer,
+            params: {                                
                 env:'elevata:'+distances[0]+';inizio:'+distances[1]+';irreversibili:'+distances[2]+';reversibili:'+distances[3],
 				viewparams: viewParams
             }
-        }, false);                
+        }, false, buffer);                
     },
     
 	/** private: method[addNotHumanTargetBuffer]
@@ -304,12 +314,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return this.createLayerRecord({
             name: this.bufferLayerNameNotHuman,
             title: title,
-            params: {                
-                buffer: buffer,
+            params: {                                
                 env:'distance:'+distance,
 				viewparams: viewParams
             }
-        }, false);        
+        }, false, buffer);        
     },
     
 	/** private: method[removeLayers]
@@ -574,24 +583,36 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		}
 	},
 	
+	getMetersToPixelsRatio: function() {
+		var extent = this.target.mapPanel.map.getExtent();
+		var lineString = new OpenLayers.Geometry.LineString([new OpenLayers.Geometry.Point(extent.left,extent.top), new OpenLayers.Geometry.Point(extent.right,extent.top)]);
+		var realWidth = lineString.getGeodesicLength(this.target.mapPanel.map.getProjectionObject());
+		return realWidth / this.target.mapPanel.getSize().width;
+	},
+	
+	getBufferSizeInPixels: function(bufferInMeter) {
+		return Math.round(bufferInMeter / this.getMetersToPixelsRatio());
+	},
+	
 	addBuffers: function(layers, bounds, radius) {
 		var viewParams = "bounds:" + bounds;
 		
-		var buffer = Math.round(radius.max / this.target.mapPanel.map.getResolution()) * 2;
+		//var buffer = this.getBufferSizeInPixels(radius.max);
+		
 		if(!this.status || this.isMixedTargets()) {
 			if(radius.radiusHum.length > 0) {
-				layers.push(this.addHumanTargetBuffer(radius.radiusHum,this.bufferLayerTitle+' (Bersagli umani)', viewParams, buffer));
+				layers.push(this.addHumanTargetBuffer(radius.radiusHum,this.bufferLayerTitle+' (Bersagli umani)', viewParams, radius.max));
 			}
 			if(radius.radiusNotHum > 0) {
-				layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,this.bufferLayerTitle+' (Bersagli ambientali)', viewParams, buffer));
+				layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,this.bufferLayerTitle+' (Bersagli ambientali)', viewParams, radius.max));
 			}
 		} else if(this.isHumanTarget()) {
 			if(radius.radiusHum.length > 0) {
-				layers.push(this.addHumanTargetBuffer(radius.radiusHum,this.bufferLayerTitle+' ('+this.status.target.name+')', viewParams, buffer));                                
+				layers.push(this.addHumanTargetBuffer(radius.radiusHum,this.bufferLayerTitle+' ('+this.status.target.name+')', viewParams, radius.max));                                
 			}
 		} else if(this.isNotHumanTarget()) {
 			if(radius.radiusNotHum > 0) {
-				layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,this.bufferLayerTitle+' ('+this.status.target.name+')', viewParams, buffer));                                			
+				layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,this.bufferLayerTitle+' ('+this.status.target.name+')', viewParams, radius.max));                                			
 			}
 		}
 	},
