@@ -79,7 +79,7 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
 	/**private: method[createOrUpdateCombo]
      *  Creates a new *GeocoderCombo or updates the existing one, using the current geocoder type.	 
 	 */
-	createOrUpdateCombo: function() {					
+	createOrUpdateCombo: function(force) {					
 		var newType;
 		var geocoders=gxp.plugins.DynamicGeocoder.Geocoders;
 		if(this.geocoderType === 'dynamic') {
@@ -99,7 +99,7 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
 			newType = this.geocoderType;
 		}
 		
-		if(newType && newType !== this.currentGeocoderType) {
+		if(force === true || (newType && newType !== this.currentGeocoderType)) {
 			this.currentGeocoderType=newType;			
 			var newCombo=this.createCombo(newType);
 			if(this.combo) {

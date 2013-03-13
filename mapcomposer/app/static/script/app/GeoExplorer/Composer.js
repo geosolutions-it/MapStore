@@ -77,6 +77,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		        }, {
 		            ptype: "gxp_addlayers",
 		            actionTarget: "tree.tbar",
+					id: "addlayers",
 		            upload: true
 		        }, {
 		            ptype: "gxp_removelayer",
@@ -611,7 +612,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         if(tabs && tabs.length > 0){
             tabPanel.setActiveTab(tabs[0]); 
         }else{
-            var metaURL = url;
+            var metaURL = url.indexOf("uuid") != -1 ? url : url + '?uuid=' + uuid;
             
             var meta = new Ext.Panel({
                 title: title,

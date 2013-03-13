@@ -541,7 +541,9 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
             portalContainer.add(this.portal);
             portalContainer.doLayout();
 			
-            if(portalContainer.getXType() == "tabpanel"){
+			if(this.geonetwork){
+				portalContainer.setActiveTab(1);
+			}else if(portalContainer.getXType() == "tabpanel"){
 				portalContainer.setActiveTab(0);
 			}
         }

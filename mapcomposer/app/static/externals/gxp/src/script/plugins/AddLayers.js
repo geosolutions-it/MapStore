@@ -229,7 +229,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         var addLayers = function() {
             var apptarget = this.target;
         
-            var key = sourceComboBox.getValue();
+            var key = this.sourceComboBox.getValue();
             var layerStore = this.target.mapPanel.layers;
             var source = this.target.layerSources[key];
             var records = capGridPanel.getSelectionModel().getSelections();
@@ -326,7 +326,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             }
         });
         
-        var sourceComboBox = new Ext.form.ComboBox({
+        this.sourceComboBox = new Ext.form.ComboBox({
             store: sources,
             valueField: "id",
             displayField: "title",
@@ -359,7 +359,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                 new Ext.Toolbar.TextItem({
                     text: this.layerSelectionText
                 }),
-                sourceComboBox
+                this.sourceComboBox
             ];
         }
         
@@ -387,7 +387,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                                 title: this.target.layerSources[id].title || this.untitledText
                             });
                             sources.insert(0, [record]);
-                            sourceComboBox.onSelect(record, 0);
+                            this.sourceComboBox.onSelect(record, 0);
                             newSourceWindow.hide();
                         },
                         fallback: function(source, msg) {
@@ -635,6 +635,10 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         return button;
     },
     
+	getSourceComboBox: function(){
+		return this.sourceComboBox;
+	},
+	
     /** private: method[isEligibleForUpload]
      *  :arg source: :class:`gxp.plugins.LayerSource`
      *  :returns: ``Boolean``
