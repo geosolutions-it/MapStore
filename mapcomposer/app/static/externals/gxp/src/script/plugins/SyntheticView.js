@@ -47,7 +47,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     //selectionLayerBaseURL: "http://localhost:8080/geoserver/wms",
     selectionLayerProjection: "EPSG:32632",
     
-    bufferLayerName: "geosolutions:siig_aggregation_1_buffer",    
+    bufferLayerNameHuman: "buffer_human",    
+	bufferLayerNameNotHuman: "buffer_not_human",    
 	
     bufferLayerTitle: "Aree di danno",    
     targetLayerTitle: "Bersagli", 
@@ -282,10 +283,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.analyticViewLayers.push(title);
         distances = this.normalizeRadius(distances, true);
         return this.createLayerRecord({
-            name: this.bufferLayerName,
+            name: this.bufferLayerNameHuman,
             title: title,
-            params: {
-                styles: 'aggregation_selection_buffer_human',
+            params: {                
                 buffer: buffer,
                 env:'elevata:'+distances[0]+';inizio:'+distances[1]+';irreversibili:'+distances[2]+';reversibili:'+distances[3],
 				viewparams: viewParams
@@ -302,10 +302,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.analyticViewLayers.push(title);
              
         return this.createLayerRecord({
-            name: this.bufferLayerName,
+            name: this.bufferLayerNameNotHuman,
             title: title,
-            params: {
-                styles: 'aggregation_selection_buffer_nothuman',
+            params: {                
                 buffer: buffer,
                 env:'distance:'+distance,
 				viewparams: viewParams
@@ -577,20 +576,22 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 	
 	addBuffers: function(layers, bounds, radius) {
 		var viewParams = "bounds:" + bounds;
+		
+		var buffer = Math.round(radius.max / this.target.mapPanel.map.getResolution()) * 2;
 		if(!this.status || this.isMixedTargets()) {
 			if(radius.radiusHum.length > 0) {
-				layers.push(this.addHumanTargetBuffer(radius.radiusHum,this.bufferLayerTitle+' (Bersagli umani)', viewParams, 200));
+				layers.push(this.addHumanTargetBuffer(radius.radiusHum,this.bufferLayerTitle+' (Bersagli umani)', viewParams, buffer));
 			}
 			if(radius.radiusNotHum > 0) {
-				layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,this.bufferLayerTitle+' (Bersagli ambientali)', viewParams, 200));
+				layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,this.bufferLayerTitle+' (Bersagli ambientali)', viewParams, buffer));
 			}
 		} else if(this.isHumanTarget()) {
 			if(radius.radiusHum.length > 0) {
-				layers.push(this.addHumanTargetBuffer(radius.radiusHum,this.bufferLayerTitle+' ('+this.status.target.name+')', viewParams, 200));                                
+				layers.push(this.addHumanTargetBuffer(radius.radiusHum,this.bufferLayerTitle+' ('+this.status.target.name+')', viewParams, buffer));                                
 			}
 		} else if(this.isNotHumanTarget()) {
 			if(radius.radiusNotHum > 0) {
-				layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,this.bufferLayerTitle+' ('+this.status.target.name+')', viewParams, 200));                                			
+				layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,this.bufferLayerTitle+' ('+this.status.target.name+')', viewParams, buffer));                                			
 			}
 		}
 	},
