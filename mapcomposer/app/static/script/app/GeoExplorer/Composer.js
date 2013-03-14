@@ -249,7 +249,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 					  }
 					
 					  var url = Ext.urlDecode(query);        
-					  var code = url.locale || 'en';	
+					  var code = url.locale || this.defaultLanguage;
                       
 					  // //////////////////////////////////
                       // Loads bundle for i18n messages

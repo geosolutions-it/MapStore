@@ -242,6 +242,7 @@
                 });
                 
                 app = new GeoExplorer.Viewer({
+				    defaultLanguage: serverConfig.defaultLanguage,	
                     customPanels:serverConfig.customPanels,
                     proxy: proxy,
                     defaultSourceType: "gxp_wmssource",
