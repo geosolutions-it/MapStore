@@ -168,6 +168,13 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
     */
 	afterPageText : "of {0}",
 	
+	/**
+    * Property: resizerText
+    * {string} text for the maps per page combo
+    * 
+    */
+	resizerText: "Maps per page",
+	
     /**
      * Method: initComponent
      * Initializes the component
@@ -222,5 +229,11 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
                  this.grid.plugins.collapseAll();
             }
         });
+		
+		this.plugins = (this.plugins || []);
+		this.plugins.push(new Ext.ux.plugin.PagingToolbarResizer( {
+			options : [ 10, 20, 50, 100 ],
+			displayText: this.resizerText
+		}));
     }
 });

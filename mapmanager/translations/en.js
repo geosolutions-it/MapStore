@@ -67,7 +67,8 @@ GeoExt.Lang.add("en", {
         prevText: "Previous Page",
         refreshText: "Refresh",
         beforePageText: "Page",
-		afterPageText : "of {0}"
+		afterPageText : "of {0}",
+		resizerText: "Maps per page"
     },
     "MSMPanel.prototype": {
         title : "MapManager"

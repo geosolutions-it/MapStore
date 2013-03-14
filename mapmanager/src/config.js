@@ -59,7 +59,7 @@ var config = {
     
     start: 0,
 
-    limit: 10,
+    limit: 20,
     
     msmTimeout: 30000,
     

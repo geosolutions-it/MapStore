@@ -2,7 +2,7 @@
  * Copyright (c) 2009-2010 The Open Planning Project
  */
 
-GeoExt.Lang.add("it", {
+GeoExt.Lang.add("it", {	
     "MSMGridPanel.prototype": {
         msg: "Caricamento...",
         textSearch: "Ricerca",
@@ -67,7 +67,8 @@ GeoExt.Lang.add("it", {
         prevText: "Pagina Precedente",
         refreshText: "Ricarica",
         beforePageText: "Pagina",
-		afterPageText : "di {0}"
+		afterPageText : "di {0}",
+		resizerText: "Mappe per pagina"
     },
     "MSMPanel.prototype": {
         title : "MapManager"
