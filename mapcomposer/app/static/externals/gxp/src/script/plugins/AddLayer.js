@@ -222,119 +222,110 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			}
 		}else{
 			mask.show();
-
-			var sourceOpt = {
-				config: {
-				  url: this.wmsURL
-				}
-			};
-		  
-			this.source = this.target.addLayerSource(sourceOpt);
-			
-			//
-			// Waiting GetCapabilities response from the server.
-			//			
-			this.source.on('ready', function(){ 
-				mask.hide();
-				
-				this.target.layerSources[this.source.id].loaded = true;
-				this.addLayerRecord();
-				
-				if(this.useEvents)
-					this.fireEvent('ready');
-			}, this);
-		  
-			//
-			// To manage failure in GetCapabilities request (invalid request url in 
-			// GeoNetwork configuration or server error).
-			//
-			this.source.on('failure', function(src, msg){		          
-				mask.hide();
-				
-				if(!this.useEvents){
-					Ext.Msg.show({
-						 title: 'GetCapabilities',
-						 msg: msg + this.capabilitiesFailureMsg,
-						 width: 300,
-						 icon: Ext.MessageBox.ERROR
-					});  
-				}else{
-					this.fireEvent('failure', msg);
-				}
-			}, this);
+			this.addSource(this.wmsURL, true);
 		}
 	},
 
 	/**  
 	 * api: method[addSource]
      */
-	addSource: function(wmsURL){			
+	addSource: function(wmsURL, showLayer){			
 		this.wmsURL = wmsURL;
 		
 		this.source = this.checkLayerSource(this.wmsURL);
 
 		if(!this.source){
-			  var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
-			  mask.show();
-
-			  var sourceOpt = {
-				  config: {
-					  url: this.wmsURL
-				  }
-			  };
-			  
-			  this.source = this.target.addLayerSource(
-					sourceOpt
-			  );
-			  
-			  //
-			  // Waiting GetCapabilities response from the server.
-			  //
-			  this.source.on('ready', function(){ 
-				mask.hide();
-				
-				// 
-				// Show the capabilities grid
+			var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
+			mask.show();
+		  
+			this.source = this.target.addLayerSource({
+				config: {url: this.wmsURL}, // assumes default of gx_wmssource
 				//
-				if(this.showCapabilitiesGrid === true){
+				// Waiting GetCapabilities response from the server.
+				//	
+				callback: function(id) {
 					var addLayerAction = this.target.tools["addlayers"];
-					addLayerAction.showCapabilitiesGrid();
+					var combo = addLayerAction.getSourceComboBox();	
+
+					// ////////////////////////////////////////////////////////////
+					// At the first time the CapGrid is not initialized so:
+					// - the source is present but the combo store is 
+					//   undefined.
+					// - when the showCapabilitiesGrid is called by the user, 
+					//   if the showCapabilitiesGrid == false, or automatically 
+					//   if == true the CapGrid is initialized and the all the 
+					//   layerSources loaded inside the combo array store.
+					// 
+					// For all the following steps the CapGrid is already 
+					// initialized so:
+					// - the new layerSource is loaded but we have to put manually.
+					//   the new record inside the combo store.
+					// /////////////////////////////////////////////////////////////
+					if(combo){
+						var store = combo.getStore();
+						
+						//
+						// Add to combo and select
+						//
+						var record = new store.recordType({
+							id: id,
+							title: this.target.layerSources[id].title || this.untitledText
+						});
+						
+						store.insert(0, [record]);
+						combo.onSelect(record, 0);
+					}
 					
+					// 
+					// Show the capabilities grid
 					//
-					// Select the newly created source
-					//
-					var combo = addLayerAction.getSourceComboBox();
+					if(this.showCapabilitiesGrid === true && !showLayer){
+						addLayerAction.showCapabilitiesGrid();
+						
+						//
+						// Select the newly created source
+						//
+						combo = addLayerAction.getSourceComboBox();
+						
+						var store = combo.getStore();
+						
+						var index = store.find('id', this.source.id);
+						var record = store.getAt(index);
+						
+						combo.onSelect(record, 0);
+					}				
 					
-					var store = combo.getStore();
+					mask.hide();
 					
-					var index = store.find('id', this.source.id);
-					var record = store.getAt(index);
+					this.target.layerSources[this.source.id].loaded = true;
+					if(showLayer){						
+						this.addLayerRecord();
+					}
 					
-					combo.onSelect(record, 0);
-				}				
-				
-				if(this.useEvents)
-					this.fireEvent('ready');
-			  }, this);
+					if(this.useEvents)
+						this.fireEvent('ready');
+					
+				},
+				//
+				// To manage failure in GetCapabilities request (invalid request url in 
+				// GeoNetwork configuration or server error).
+				//
+				fallback: function(source, msg) {
+					mask.hide();
 			  
-			  //
-			  // To manage failure in GetCapabilities request (invalid request url in 
-			  // GeoNetwork configuration or server error).
-			  //
-			  this.source.on('failure', function(src, msg){		          
-				mask.hide();
-				  
-				if(!this.useEvents){
-					Ext.Msg.show({
-						 title: 'GetCapabilities',
-						 msg: msg + this.capabilitiesFailureMsg,
-						 width: 300,
-						 icon: Ext.MessageBox.ERROR
-					});  
-				}else{
-					this.fireEvent('failure', msg);
-				}
-			  }, this);
+					if(!this.useEvents){
+						Ext.Msg.show({
+							 title: 'GetCapabilities',
+							 msg: msg + this.capabilitiesFailureMsg,
+							 width: 300,
+							 icon: Ext.MessageBox.ERROR
+						});  
+					}else{
+						this.fireEvent('failure', msg);
+					}
+				},
+				scope: this
+			});
 		}else{
 			// 
 			// Show the capabilities grid
