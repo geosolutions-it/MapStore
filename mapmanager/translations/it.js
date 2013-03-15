@@ -1,4 +1,4 @@
-/**
+Ôªø/**
  * Copyright (c) 2009-2010 The Open Planning Project
  */
 
@@ -17,8 +17,8 @@ GeoExt.Lang.add("it", {
         gridLastUpdate: "Ultimo aggiornamento",
         errorTitle: "Richiesta fallita",
         errorMsg_500: "Il server restituisce HTTP status code 500! </br></br>Controllare il log!",
-        errorMsg_501: "Il server restituisce HTTP status code 501! </br></br>Il server non puÚ completare la richiesta!",
-        errorMsg_404: "Il server restituisce HTTP status code 404! </br></br>La risorsa che stai cercando non puÚ essere trovata!",
+        errorMsg_501: "Il server restituisce HTTP status code 501! </br></br>Il server non pu√≤ completare la richiesta!",
+        errorMsg_404: "Il server restituisce HTTP status code 404! </br></br>La risorsa che stai cercando non pu√≤ essere trovata!",
         errorMsg_timeout: "Richiesta scaduta!",
         textUserManager: 'Gestione utenti',
         textViewMap: '', // "Visualizza mappa",
@@ -39,15 +39,15 @@ GeoExt.Lang.add("it", {
         metadataSaveSuccessMsg: "Metadati salvati correttamente",
         metadataSaveFailTitle: "Errore nel salvataggio del metadati",
         textClose: "Chiudi",
-        msgSaveAlertTitle: "Attenzione, la mappa non Ë stata salvata!",
+        msgSaveAlertTitle: "Attenzione, la mappa non √® stata salvata!",
         msgSaveAlertBody: "Vuoi veramente uscire senza salvare?",
         tooltipClose: "Chiudi la mappa",
         msgDeleteMapTitle: "Attenzione",
         msgDeleteMapBody: "Vuoi veramente eliminare la mappa?",
         msgSuccessDeleteMapTitle: "Success",
-        msgSuccessDeleteMapBody: "La mappa Ë stata eliminata",
+        msgSuccessDeleteMapBody: "La mappa √® stata eliminata",
         msgFailureDeleteMapTitle: "Failed",
-        msgFailureDeleteMapBody: "Qualcosa di sbagliato Ë accaduto",
+        msgFailureDeleteMapBody: "Qualcosa di sbagliato √® accaduto",
         IframeViewerTitle: "Visore Mappa - ",
         IframeComposerTitle: "Editor Mappa - "
     },
@@ -88,6 +88,10 @@ GeoExt.Lang.add("it", {
 		textPassword: 'Password',
 		textPasswordEdit: 'Nuova Password',
 		textPasswordConf: 'Conferma Password',
+		textPasswordConfError: 'Password non confermata', 		
+		textBlankUserName: 'Nome non pu√≤ essere vuoto',
+		textBlankPw: 'Password non pu√≤ essere vuoto',
+		textBlankRole: 'Il ruolo deve essere selezionato',			
 		tooltipEdit: 'Modifica dati utente',
 		textEditUserTitle: 'Modifica dati utente',
 		displayMsg: "Visualizzazione risultati {0} - {1} of {2}",

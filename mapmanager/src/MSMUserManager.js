@@ -61,6 +61,12 @@ UserManagerView = Ext.extend(
 			textPassword: 'Password',
 			/**
 		    * Property: textPassword
+		    * {string} column name for confirm the password
+		    * 
+		    */
+			textConfirmPassword: 'Confirm Password',
+			/**
+		    * Property: textPassword
 		    * {string} column name for password
 		    * 
 		    */
@@ -77,6 +83,25 @@ UserManagerView = Ext.extend(
 		    * 
 		    */						
 			textPasswordConfError: 'Password not confirmed',
+			/**
+		    * Property: textBlankUserName
+		    * {string} 
+		    * 
+		    */	
+			textBlankUserName: 'Name should not be null',
+			/**
+		    * Property: textBlankPw
+		    * {string} 
+		    * 
+		    */	
+			textBlankPw: 'Password should not be null',
+			/**
+		    * Property: textBlankRole
+		    * {string} 
+		    * 
+		    */	
+			textBlankRole: 'Role should be selected',
+		
 			/**
 		    * Property: textRole
 		    * {string} column name for role
@@ -309,63 +334,83 @@ UserManagerView = Ext.extend(
 						tooltip: userManager.tooltipAddUser,
 						iconCls: 'user_add',
 				        handler : function(){
-								// form in user add window
-								var form = new Ext.form.FormPanel({
-					                  // width: 415, height: 200, border:false,
-									  frame:true,  border:false,
-					                  items: [
-					                                {
-					                                  xtype: 'fieldset',
-					                                  id: 'name-field-set',
-					                                  border:false,
-					                                  items: [
-					                                      {
-					                                            xtype: 'textfield',
-					                                            width: 150,
-					                                            id: 'user-textfield',
-																allowBlank: false,
-																blankText: 'Name should not be null',
-					                                            fieldLabel: userManager.textName,
-					                                            value: '',
-																listeners: {
-												                  beforeRender: function(field) {
-												                    field.focus(false, 1000);
-												                  }
-												                }
-					                                      },
-					                                      {
-					                                            xtype: 'textfield',
-					                                            width: 150,
-					                                            id: 'password-textfield',
-																allowBlank: false,
-																blankText: 'Password should not be null',
-					                                            fieldLabel: userManager.textPassword,
-																inputType:'password',
-					                                            value: ''                
-					                                      },
-														  {
-					                                            xtype: 'combo',
-																displayField:'role',
-																width: 150,
-																allowBlank: false,
-																editable: false,
-																blankText: 'Role should be selected',
-																valueField:'role',
-																emptyText: userManager.textSelectRole,
-																allowBlank: false,
-																triggerAction: 'all',
-																mode: 'local',
-					                                            id: 'role-dropdown',
-					                                            fieldLabel: userManager.textRole,
-					                                            store: new Ext.data.SimpleStore({
-																             fields:['id', 'role'],
-																             data:[['1', 'USER'], ['2', 'ADMIN']]
-																          })
-					                                      }	
-					                                  ]
-					                                }
-					                          ]
-					               });
+							// form in user add window
+							var form = new Ext.form.FormPanel({
+								    // width: 415, height: 200, border:false,
+								    frame:true,  border:false,
+								    items: [
+										{
+										  xtype: 'fieldset',
+										  id: 'name-field-set',
+										  border:false,
+										  items: [
+											  {
+													xtype: 'textfield',
+													width: 150,
+													id: 'user-textfield',
+													allowBlank: false,
+													blankText: userManager.textBlankUserName,
+													fieldLabel: userManager.textName,
+													value: '',
+													listeners: {
+													  beforeRender: function(field) {
+														field.focus(false, 1000);
+													  }
+													}
+											  },
+											  {
+													xtype: 'textfield',
+													width: 150,
+													id: 'password-textfield',
+													allowBlank: false,
+													blankText: userManager.textBlankPw,
+													fieldLabel: userManager.textPassword,
+													inputType:'password',
+													value: ''                
+											  },
+											  {
+													xtype: 'textfield',
+													width: 150,
+													id: 'password-confirm-textfield',
+													allowBlank: false,
+													blankText: userManager.textBlankPw,
+													invalidText: userManager.textPasswordConfError,
+													fieldLabel: userManager.textPasswordConf,
+													validator: function(value){
+														var passwordField = Ext.getCmp("password-textfield");
+														
+														if(passwordField.getValue() == value){
+															return true;
+														}else{
+															return false;
+														} 
+													},
+													inputType:'password',
+													value: ''                
+											  },
+											  {
+													xtype: 'combo',
+													displayField:'role',
+													width: 150,
+													allowBlank: false,
+													editable: false,
+													blankText: userManager.textBlankRole,
+													valueField:'role',
+													emptyText: userManager.textSelectRole,
+													allowBlank: false,
+													triggerAction: 'all',
+													mode: 'local',
+													id: 'role-dropdown',
+													fieldLabel: userManager.textRole,
+													store: new Ext.data.SimpleStore({
+														 fields:['id', 'role'],
+														 data:[['1', 'USER'], ['2', 'ADMIN']]
+													})
+											  }	
+										  ]
+										}
+									]
+						});
 
 						var winAdd = new Ext.Window({
 					           width: 415, height: 200, resizable: false, modal: true, border:false, plain:true,
@@ -394,11 +439,15 @@ UserManagerView = Ext.extend(
 					                                    // winAdd.hide(); 
 					 									var nameField = Ext.getCmp("user-textfield");
 														var passwordField = Ext.getCmp("password-textfield");
+														var passwordConfirmField = Ext.getCmp("password-confirm-textfield");
+														
 														var roleDropdown = Ext.getCmp("role-dropdown"); 
 
-													    if ( nameField.isValid(false) &&
+														if ( nameField.isValid(false) &&
 													           passwordField.isValid(false) &&
-													              roleDropdown.isValid(false )){
+													              roleDropdown.isValid(false) &&
+																	passwordField.getValue() == passwordConfirmField.getValue()){
+																	
 																userManager.users.create( 
 																	{ name: nameField.getValue(), 
 																	  password:passwordField.getValue(), 
@@ -420,7 +469,7 @@ UserManagerView = Ext.extend(
                                                             });																														
 														
 														} else {
-															  Ext.Msg.show({
+															Ext.Msg.show({
 						                                       title: userManager.failSuccessTitle,
 						                                       msg: userManager.invalidFormMsg,
 						                                       buttons: Ext.Msg.OK,
@@ -464,7 +513,7 @@ UserManagerView = Ext.extend(
 									            id: 'user-textfield',
 									            disabled: true,
 												allowBlank: false,
-												blankText: 'Name should not be null',
+												blankText: userManager.textBlankUserName,
 									            fieldLabel: userManager.textName,
 									            value: userdata.name,//TODO set from record
 												listeners: {
@@ -478,7 +527,7 @@ UserManagerView = Ext.extend(
 									            width: 150,
 									            id: 'password-textfield',
 												allowBlank: false,
-												blankText: 'Password should not be null',
+												blankText: userManager.textBlankPw,
 									            fieldLabel: userManager.textPasswordEdit,
 												inputType:'password',
 									            value: '' //TODO set from record               
@@ -488,7 +537,7 @@ UserManagerView = Ext.extend(
 									            width: 150,
 									            id: 'passwordconf-textfield',
 												allowBlank: false,
-												blankText: 'Password confirmation',
+												blankText: userManager.textPasswordConf,
 									            fieldLabel: userManager.textPasswordConf,
 												inputType: 'password',
 									            value: '',
@@ -509,7 +558,7 @@ UserManagerView = Ext.extend(
 												disabled: !isAdmin,	//limit only to admin
 												allowBlank: false,
 												editable: false,
-												blankText: 'Role should be selected',
+												blankText: userManager.textBlankRole,
 												valueField: 'role',
 												emptyText: userManager.textSelectRole,
 												allowBlank: false,
