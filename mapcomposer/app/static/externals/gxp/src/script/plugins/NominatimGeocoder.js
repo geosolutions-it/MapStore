@@ -74,6 +74,11 @@ gxp.plugins.NominatimGeocoder = Ext.extend(gxp.plugins.Tool, {
     externalGraphicYOffsetMarkers:-28,
     backgroundXOffsetMarkers: -7,
     backgroundYOffsetMarkers: -22,
+	
+    /** api: delay for fadeOut marker
+	 *  duration in seconds
+	 */
+    markerFadeoutDelay: 5,  
     
     init: function(target) {
 
@@ -84,7 +89,7 @@ gxp.plugins.NominatimGeocoder = Ext.extend(gxp.plugins.Tool, {
             }
         }, this.outputConfig));
         
-        // remove marker added by Nominatim geocoder plugin
+        /*/ remove marker added by Nominatim geocoder plugin
         var removeMarkerBtn = new Ext.Button({
             tooltip: this.addMarkerTooltip,
             handler: function() {
@@ -96,7 +101,7 @@ gxp.plugins.NominatimGeocoder = Ext.extend(gxp.plugins.Tool, {
             },
             scope: this,
             iconCls: "icon-removeominatimmarkers"
-        });
+        });*/
         
         var bounds = target.mapPanel.map.restrictedExtent;
         if (bounds && !combo.bounds) {
@@ -110,7 +115,8 @@ gxp.plugins.NominatimGeocoder = Ext.extend(gxp.plugins.Tool, {
             });
         }
         this.combo = combo;
-        this.removeMarkerBtn = removeMarkerBtn;
+        
+		//this.removeMarkerBtn = removeMarkerBtn;
         
         return gxp.plugins.NominatimGeocoder.superclass.init.apply(this, arguments);
 
@@ -119,7 +125,7 @@ gxp.plugins.NominatimGeocoder = Ext.extend(gxp.plugins.Tool, {
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-        return gxp.plugins.NominatimGeocoder.superclass.addOutput.call(this, ['-',this.removeMarkerBtn,'-',this.combo]);
+        return gxp.plugins.NominatimGeocoder.superclass.addOutput.call(this, [/*'-',this.removeMarkerBtn,*/'-',this.combo]);
     },
     
     /** private: method[onComboSelect]
@@ -189,6 +195,12 @@ gxp.plugins.NominatimGeocoder = Ext.extend(gxp.plugins.Tool, {
 					markers.addFeatures(markers_feature);
 					map.zoomToExtent(bounds, true);
 				}
+				
+				//
+				// Fade out for the marker icon.
+				//
+				Ext.get(markers.id).fadeOut({ endOpacity: 0.01, duration: this.markerFadeoutDelay});	//fadeout marker, no change 0.01
+
 			}else{
 				map.setCenter(points);
 			}

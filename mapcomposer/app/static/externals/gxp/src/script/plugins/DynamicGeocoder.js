@@ -63,6 +63,11 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
      *  type of geocoder to use (google, nominatim, dynamic); defaults to dynamic
      */
 	geocoderType: "dynamic",
+	
+	/** api: delay for fadeOut marker
+	 *  duration in seconds
+	 */
+    markerFadeoutDelay: 5,  
     
 	/** private: method[createCombo]
      *  Creates a new *GeocoderCombo, using the given geocoder type.
@@ -113,7 +118,7 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
 	
     init: function(target) {
 		
-        // remove marker added by geocoder plugin
+        /*/ remove marker added by geocoder plugin
         var removeMarkerBtn = new Ext.Button({
             tooltip: this.addMarkerTooltip,
             handler: function() {
@@ -125,11 +130,12 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
             },
             scope: this,
             iconCls: "icon-removemarkers"
-        });
+        });*/
         this.target = target;
 		
-		this.comboContainer=new Ext.Container();        
-        this.removeMarkerBtn = removeMarkerBtn;
+		this.comboContainer = new Ext.Container();        
+        
+		//this.removeMarkerBtn = removeMarkerBtn;
         
 		// initialize combo on ready
 		target.on({
@@ -154,7 +160,7 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-        return gxp.plugins.DynamicGeocoder.superclass.addOutput.call(this, ['-',this.removeMarkerBtn,this.comboContainer]);
+        return gxp.plugins.DynamicGeocoder.superclass.addOutput.call(this, ['-',/*this.removeMarkerBtn,*/this.comboContainer]);
     },
     
     /** private: method[onComboSelect]
@@ -209,6 +215,12 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
 				markers.addFeatures(markers_feature);
 				map.zoomToExtent(location.bounds, true);
 			}
+			
+			//
+			// Fade out for the marker icon.
+			//
+			Ext.get(markers.id).fadeOut({ endOpacity: 0.01, duration: this.markerFadeoutDelay});	//fadeout marker, no change 0.01
+
 		} else {
 			map.setCenter(location.bounds);
 		}        
