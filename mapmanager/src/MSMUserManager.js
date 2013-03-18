@@ -866,7 +866,12 @@ UserManagerView = Ext.extend(
                     this.currentFilter = '*'+keyword+'*';                                        
                 }
                 this.store.proxy.api.read.url = this.getSearchUrl();
-                this.store.reload();
+                this.store.load({
+					params:{
+						start:0,
+						limit:this.pageSize
+					}
+				});
             },
 			loadMask:true,  
 	        stripeRows: true,
