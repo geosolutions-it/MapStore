@@ -136,7 +136,11 @@
 
 /* gxp_wmsgetfeatureinfo */
 .x-btn .gxp-icon-getfeatureinfo, .x-menu-item .gxp-icon-getfeatureinfo, .x-tree-node .gxp-icon-getfeatureinfo {
-    background-image: url(img/silk/information.png);
+    background-image: url(img/silk/information.png) !important;
+}
+/* xp-icon-mouse-map */
+.x-btn .gxp-icon-mouse-map, .x-menu-item .gxp-icon-mouse-map, .x-tree-node .gxp-icon-mouse-map {
+    background-image: url(img/map_cursor.png) !important;
 }
 
 /* gxp_featureeditor */
