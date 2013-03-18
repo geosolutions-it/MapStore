@@ -50,7 +50,10 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
         fillOpacity:0.6,
 		cursor:'pointer'
     },
-    
+	/** i18n **/
+	outputTypeText:'Output Type',
+	
+    factorsurl:"http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:AgroMet_factors&max&outputFormat=json",
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
@@ -63,13 +66,11 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 			layout: "form",
 			minWidth:180,
 			autoScroll:true,
-			buttons:[{text:'Compute',handler:function(){
-						Ext.Msg.alert("Add Area","Not Yet Implemented");
-				}}],
+			buttons:[{xtype:'gxp_nrlAgrometButton'}],
 			frame:true,
 			items:[
 				{ 
-					fieldLabel: 'Output Type',
+					fieldLabel: this.outputTypeText,
 					xtype: 'checkboxgroup',
 					anchor:'100%',
 					autoHeight:true,
@@ -109,8 +110,8 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 					xtype: 'yearrangeselector',
 					anchor:'100%',
 					maxValue: 2012, //TODO conf
-					minValue: 1992, //TODO conf
-					values:[2008,2012], //TODO conf
+					minValue: 2000, //TODO conf
+					values:[2000,2012], //TODO conf
 					listeners:{
 					    scope: this,
 						change:function(start,end){
@@ -125,18 +126,20 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                     hideHeaders:true,
                     autoHeight:true,
                     viewConfig: {forceFit: true},
-                    columns: [{id:'name',mapping:'label',header:'Factor'}],
+                    columns: [{id:'name',dataIndex:'factor',header:'Factor'}],
                     autoScroll:true,
-                    store: new Ext.data.ArrayStore({
-                        fields:Ext.data.Record.create([{name:'name',mapping:'name'},{name:'label',mapping:'boxLabel'}]),
-                        data: [
-                            {boxLabel: 'Max Temperature' , name: 'MaxTemperature', inputValue: 'MaxTemperature'},
-                            {boxLabel: 'Min Temperature' , name: 'MinTemperature', inputValue: 'MinTemperature'},
-                            {boxLabel: 'Precipitation' , name: 'Precipitation', inputValue: 'Precipitation'},
-                            {boxLabel: 'Sunshine Duration' , name: 'sunshine', inputValue: 'sunshine'},
-                            {boxLabel: 'Potential Evapo-Transpiration' , name: 'potentialevapotranspiration', inputValue: 'potentialevapotranspiration'},
-                            {boxLabel: 'Real Evapo-Transpiration' , name: 'realevapotranspiration', inputValue: 'realevapotranspiration'}
-                        ]
+                    store: new Ext.data.JsonStore({
+                       
+                        url:this.factorsurl,
+						root:'features',
+						idProperty:'factor',
+						autoLoad:true,
+						fields:[
+							{name:'factor', mapping:'properties.factor'},
+							{name:'max', mapping:'properties.max'},
+							{name:'min', mapping:'properties.min'}
+						]
+						
                     })
                 
                 })
