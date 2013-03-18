@@ -177,6 +177,13 @@ GeoExt.Lang.add("de", {
         popupTitle: "Feature Info",
 		noDataMsg: "Keine Daten vom Server erhalten"
     },
+	
+	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
+        infoActionTip: "Feature Info erhalten",
+        popupTitle: "Feature Info",
+		noDataMsg: "Keine Daten vom Server erhalten",
+		activeActionTip: "Informationen über ausgewählte Schicht"
+    },
 
     "gxp.plugins.Zoom.prototype": {
         zoomInMenuText: "Zoom vorwärts",

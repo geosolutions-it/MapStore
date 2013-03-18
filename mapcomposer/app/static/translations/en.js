@@ -185,6 +185,14 @@ GeoExt.Lang.add("en", {
 		noDataMsg: "No data returned from the server",
 		maskMessage: "Getting Feature Info..."
     },
+	
+	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
+        infoActionTip: "Get Feature Info",
+        popupTitle: "Feature Info",
+		noDataMsg: "No data returned from the server",
+		maskMessage: "Getting Feature Info...",
+		activeActionTip:"Active info on selected layer"
+    },
 
     "gxp.plugins.Zoom.prototype": {
         zoomInMenuText: "Zoom In",
