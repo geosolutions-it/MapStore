@@ -69,11 +69,120 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
 	
 	removeAllBnt: 'Remove All',
 	
+	markerChooserTitle:'Choose a marker',
+	useThisMarkerText:'Use this Marker',
+	selectMarkerText:'Select Marker',
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
+	 
+	 /**private Panel markerChooser
+	  */
+	 
+	
     addOutput: function(config) {
+		target =this.target;
+		this.markerChooser = new Ext.Button({
+			xtype: 'button',
+			width:30,
+			ref:'../markerChooser',
+			tooltip:this.selectMarkerText,
+			handler: function(){
+				
+				 var win = new Ext.Window({
+					closeAction: 'hide',
+					title:  this.markerChooserTitle,
+					modal: true,
+					layout: "fit",
+					width: 360,
+					height: 360,
+					items: [{
+						xtype:'panel',
+						id:'images-view',
+						frame:true,
+						layout:'fit',
+						items: new Ext.DataView({
+							ref:'../markerDataView',
+							store: this.markerConfigStore,
+							tpl: new Ext.XTemplate(
+								'<tpl for=".">',
+									'<div class="thumb-wrap" id="{name}">',
+									'<div class="thumb"><img src="{url}"></div>',
+									'<span>{shortName}</span></div>',
+								'</tpl>',
+								'<div class="x-clear"></div>'
+							),
+							autoScroll:true,
+							
+							singleSelect: true,
+							overClass:'x-view-over',
+							itemSelector:'div.thumb-wrap',
+							emptyText: 'No images to display',
+							prepareData: function(data){							
+								data.shortName = Ext.util.Format.ellipsis(data.name, 15);
+								return data;
+							},
+							
+							listeners: {
+								selectionchange: {
+									fn: function(dv,nodes){
+										var l = nodes.length;
+										dv.refOwner.useMarkerBtn.setDisabled(l<1);
+									}
+								}
+							}
+						})
+					}],
+					buttons:[{
+						xtype:'button',
+						iconCls:'icon-addlayers',
+						text:this.useThisMarkerText,
+						ref:'../useMarkerBtn',
+						disabled:true,
+						handler:function(btn){
+							var selected = btn.refOwner.markerDataView.getSelectedRecords()[0];//single select
+							var cfg = selected.get('icons');
+							//save json in the hidden input field
+							controlPanel.form.updateIcon(cfg);
+							
+							btn.refOwner.close();
+						},
+						scope:this
+					}],
+				});
+				
+				win.show();
+			},
+			scope:this,
+			text:this.chooseMarkerText
+		});
+		
+		//MARKER CONFIGURATION STORE
+		this.markerConfigStore =new Ext.data.JsonStore({
+			ref:'store',
+			url: 'data/markerconfigurations.js',
+			root: 'markers',
+			autoLoad:'true',
+			fields: [
+				'name',
+				'icons',
+				{name:'url', mapping: 'icons.img.markerDefault'}
+				
+			],
+			listeners:{
+				scope:this,
+				load:function(store,records,options){
+					var cfg = records[0].get('icons');
+					var img =cfg.img.markerDefault;
+					controlPanel.form.defaultIcons=cfg;
+					controlPanel.form.updateIcon(this.defaultIcons);
+				}
+			}
+			
+		});
+
         markerName= this.markerName;
+		
 		var controlPanel = new Ext.Panel({
             collapsible:false,
             resizable:true,
@@ -101,27 +210,34 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                    
                     monitorValid :false,
                     items: [
+						{
+							ref:'icons',
+							xtype:'hidden',
+							name: 'icons'
+						},
                         {
                             xtype: 'compositefield',
                             items:[
-                                {
-                                    flex:1,
-                                    xtype:'textfield',
-                                    fieldLabel: this.compositeFieldTitle,
-                                    name: 'title',
-                                    allowBlank:true
-                                },{
+                                this.markerChooser
+								 ,{
                                     xtype:'textfield',
                                     fieldLabel: this.compositeFieldLabel,
                                     name:'label',
                                     allowBlank:true,
                                     maxLength:2,
                                     width:30
+                                },{
+                                    flex:1,
+                                    xtype:'textfield',
+                                    fieldLabel: this.compositeFieldTitle,
+                                    name: 'title',
+                                    allowBlank:true
                                 }
+								
                             ]
                         },{
                                 xtype:'gxp_coordinate_picker',
-                                map:this.target.mapPanel.map,
+                                map: this.target.mapPanel.map,
                                 toggleGroup:this.toggleGroup,
 								ref:'coordinatePicker'
                             
@@ -173,7 +289,8 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                                 label:	vals.label,
                                 html:	vals.html,
                                 lat:	vals.lat,
-                                lon:	vals.lon
+                                lon:	vals.lon,
+								icons:  Ext.util.JSON.decode(vals.icons)
                             },id);
                             //var record = store.reader.readRecords([obj]);
                             store.add(record);
@@ -204,6 +321,14 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
 						this.coordinatePicker.resetPoint();
 						sm.clearSelections();
 						this.AddToMap.setAppearance("add");
+						this.updateIcon();
+					
+					},
+					updateIcon:function(icons){
+						if(!icons) icons = this.defaultIcons;
+						this.markerChooser.setText('<img src="' + icons.img.markerDefault +'" style="width:15px;height:15px" />');
+						this.icons.setValue(Ext.util.JSON.encode(icons));
+						
 					
 					}
                 },
@@ -217,17 +342,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                     store:new Ext.data.Store({
                         mode:'local',
                         autoload:true,
-                        /*
-                        data:{
-                            "type":"FeatureCollection",
-                            "features":[
-                                {	
-                                    "type":"Feature",
-                                    "geometry":{"type":"Point","coordinates":["12","43"]},
-                                    "properties":{"title":"Sample Marker","label":"1","html":"<b>Sample Marker:</b><br>The map is inside an Iframe.<br>You can add and remove iframes from the map inside an Iframe using showMarkerGeoJSON method.<br><br><br><b>Use it inside your CMS</b><br>You can manage your site contents in your CMS and let MapStore do all the the work!<br><br>","highlights":false,"cluster":false}
-                                }
-                            ]},
-                        */
+
                         getGeoJson: function(){
                             //clearTimeout(timer);
                             var records = this.getRange();
@@ -247,7 +362,8 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                                         label:vals.get('label'),
                                         html:vals.get('html'),
                                         highlights: false,
-                                        cluster: false
+                                        cluster: false,
+										icons:vals.get('icons')
                                     }
                                 
                                 }
@@ -260,40 +376,14 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                         },
                         updateIframe:function(geoJson){
                             //var iframe = ifp.iframe.getEl().dom;
-                            app.showMarkerGeoJSON(markerName, geoJson);
+                            target.showMarkerGeoJSON(markerName, geoJson);
                         },
                         initIframe: function(geoJson){
-                            /*
-                            geoJsonInjection = function(){
-                                var iframe;
-                                //TODO replace
-                                
-                                if(ifp){
-                                    var appMask = new Ext.LoadMask(ifp.getEl(), {msg:"Please Wait..."});
-                                }
-                                
-                                
-                                appMask.show();                                    
-                                if (iframe && iframe.contentWindow && iframe.contentWindow.app){
-                                    if(iframe.contentWindow.app.mapPanel){
-                                        if(iframe.contentWindow.app.mapPanel.map && iframe.contentWindow.app.mapPanel.map.getProjectionObject()){
-                                            clearTimeout(timer);                                            
-                                            iframe.contentWindow.app.showMarkerGeoJSON(markerName,geoJson);
-                                            var controls = iframe.contentWindow.app.mapPanel.map.getControlsByClass('OpenLayers.Control.Navigation');
-                                            for(var i = 0; i<controls.length; ++i){
-                                                controls[i].disableZoomWheel();
-                                            }                                                
-                                                   
-                                            appMask.hide();                                                  
-                                        }                                        
-                                    }
-                                }
-                            };
-                            
-                            var timer = setInterval(geoJsonInjection, 100);  */
-                            app.showMarkerGeoJSON(markerName,geoJson);
+                           
+                            target.showMarkerGeoJSON(markerName,geoJson);
                         },
                         reader:new  Ext.data.JsonReader({root:'features'},[
+								{name:'icons', mapping:'properties.icons'},
                                 {name:'title', mapping:'properties.title'},
                                 {name:'label', mapping:'properties.label'},
                                 {name:'html', mapping:'properties.html'},
@@ -312,17 +402,26 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                     }),
                     autoExpandColumn:'html',
                     columns:[
-                        {
+						{	
+							id:'marker',
+							dataIndex:'icons',
+							width:25,
+							renderer: function(value,p,record){
+								
+								return "<img style='height:15px;width:15px;' src=\""+value.img.markerDefault+"\"/>";
+							
+							}
+						},{
+                            id: 'label',
+                            width:50,
+                            dataIndex:'label',
+                            header: this.gridColLabel
+                            
+                        },{
                             id: 'title',
                             flex:1,
                             dataIndex:'title',
                             header: this.gridColTitle
-                            
-                        },{
-                            id: 'label',
-                            width:80,
-                            dataIndex:'label',
-                            header: this.gridColLabel
                             
                         },{
                             id: 'latitude',
@@ -376,8 +475,10 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                             rowselect: function(sm, row, rec) {
 								var formPanel = controlPanel.form;
                                 formPanel.getForm().loadRecord(rec);
+								//TODO: update hidden record of markerconfig
 								formPanel.coordinatePicker.updatePoint();
 								formPanel.AddToMap.setAppearance('update');
+								formPanel.updateIcon(rec.get('icons'));
                             },
 							rowdeselect: function(sm,rowIndex,record){
 								controlPanel.form.resetAll();

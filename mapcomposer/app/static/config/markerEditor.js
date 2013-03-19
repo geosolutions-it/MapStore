@@ -9,6 +9,7 @@
             "ptype": "gxp_googlesource"
         }
     },
+    
    "customPanels":[
         {
             "xtype":"panel",
@@ -18,6 +19,7 @@
             "minWidth":550,
             "header":false,
             "split": true,
+			"border":false,
             "collapseMode": "mini",
             "layout":"fit"
         }
