@@ -536,10 +536,17 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                             scope: this,
 							handler: function(){
 								if(fp.getForm().isValid()){
-                                  var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
-                                  var mHost=pattern.exec(xmlJsonTranslateService /*this.xmlJsonTranslateService*/);
+								
+								  // ////////////////////////////////////////////////////////////////////////
+								  // The Form 'submit' process not uses the override-ext-ajax definitions
+								  // so we have to define a proper proxy usage if needed
+								  // ////////////////////////////////////////////////////////////////////////
+								  
+                                  var pattern = /(.+:\/\/)?([^\/]+)(\/.*)*/i;
+                                  var mHost = pattern.exec(xmlJsonTranslateService);
 
-                                  var mUrl = xmlJsonTranslateService /*this.xmlJsonTranslateService*/ + 'HTTPWebGISFileUpload';
+                                  var mUrl = xmlJsonTranslateService + 'HTTPWebGISFileUpload';
+								  
 								  fp.getForm().submit({
 									  url: mHost[2] == location.host ? mUrl : this.proxy + mUrl,
 									  waitMsg: this.uploadWaitMsg,
