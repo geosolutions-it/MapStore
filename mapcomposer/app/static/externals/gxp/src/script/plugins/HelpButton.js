@@ -81,7 +81,7 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
             scope: this
         }];
         if(this.showOnStartup){
-            app.on('ready',this.showHelp,this);
+            this.target.on('ready',this.showHelp,this);
         
         }
         return gxp.plugins.HelpButton.superclass.addActions.apply(this, [actions]);

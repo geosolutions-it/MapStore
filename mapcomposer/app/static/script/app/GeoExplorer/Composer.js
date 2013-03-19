@@ -171,7 +171,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         if (config.showGraticule == true){
             config.tools.push({
                 ptype: "gxp_graticule",
-                actionTarget: {target: "paneltbar", index: xmlJsonTranslateService /*config.xmlJsonTranslateService*/ ? 24 : 22}
+                actionTarget: {target: "paneltbar", index: config.xmlJsonTranslateService ? 24 : 22}
             })
         }
         
@@ -303,8 +303,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                                           var wms = mapInfo[i].wms;    
                                           
                                           var source;
-                                          for (var id in app.layerSources) {
-                                              var src = app.layerSources[id];    
+                                          for (var id in viewer.layerSources) {
+                                              var src = viewer.layerSources[id];    
                                               var url  = src.initialConfig.url; 
                                               //
                                               // Checking if source url aldready exists
@@ -327,7 +327,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                                                   uuid: uuid
                                               });    
                                                           
-                                              var layerStore = app.mapPanel.layers;  
+                                              var layerStore = viewer.mapPanel.layers;  
                                                             
                                               if (record) {
                                                   layerStore.add([record]);
@@ -491,7 +491,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 			
         }
 
-		if(xmlJsonTranslateService /*this.xmlJsonTranslateService*/)
+		if(this.xmlJsonTranslateService)
 		{
 			tools.push(new Ext.Button({
 				tooltip: this.saveMapText,
@@ -543,9 +543,9 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 								  // ////////////////////////////////////////////////////////////////////////
 								  
                                   var pattern = /(.+:\/\/)?([^\/]+)(\/.*)*/i;
-                                  var mHost = pattern.exec(xmlJsonTranslateService);
+                                  var mHost = pattern.exec(this.xmlJsonTranslateService);
 
-                                  var mUrl = xmlJsonTranslateService + 'HTTPWebGISFileUpload';
+                                  var mUrl = this.xmlJsonTranslateService + 'HTTPWebGISFileUpload';
 								  
 								  fp.getForm().submit({
 									  url: mHost[2] == location.host ? mUrl : this.proxy + mUrl,
@@ -613,7 +613,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     /** private: method[viewMetadata]
      */
     viewMetadata: function(url, uuid, title){
-        var tabPanel = Ext.getCmp(app.renderToTab);
+        var tabPanel = Ext.getCmp(this.renderToTab);
         
         var tabs = tabPanel.find('title', title);
         if(tabs && tabs.length > 0){
@@ -679,7 +679,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     /** private: method[showEmbedWindow]
      */
     showEmbedWindow: function() {        
-	    if (app.mapId == -1 || (app.modified == true && authorization == true)){
+	    if (this.mapId == -1 || (this.modified == true && authorization == true)){
             Ext.MessageBox.show({
                 title: this.alertEmbedTitle,
                 msg: this.alertEmbedText,
@@ -716,7 +716,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
            
            var embedMap = new gxp.EmbedMapDialog({
                id: 'geobuilder-1',
-               url: "viewer" + "?locale=" + curLang + "&bbox=" + app.mapPanel.map.getExtent() + "&mapId=" + app.mapId
+               url: "viewer" + "?locale=" + curLang + "&bbox=" + this.mapPanel.map.getExtent() + "&mapId=" + this.mapId
            });
 
            var wizard = {

@@ -420,7 +420,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 					if (match && !match[1].match(/^\s*$/)) {
 						tooltip = new GeoExt.Popup({
 							constrainHeader : true,
-							map: app.mapPanel,
+							map: this.target.mapPanel,
 							panIn:false,
 							title: title || this.popupTitle,
 							width:350,
@@ -433,15 +433,12 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 							draggable: false,
 							listeners: {hide: cleanup}
 						});
-						var p0 = app.mapPanel.getPosition();
+						var p0 = this.target.mapPanel.getPosition();
 						//tooltip.targetXY = [evt.xy.x +p0[0],evt.xy.y +p0[1]];
 						tooltip.show();
 					}
 					//take only the first
-					
-					
-					
-				
+
 				},deactivate: cleanup
 			}
 		});

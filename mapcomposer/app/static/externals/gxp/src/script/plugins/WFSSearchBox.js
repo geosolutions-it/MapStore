@@ -87,7 +87,8 @@ Ext.namespace("gxp.plugins");
 				listeners: {
 					'select': this.onComboSelect,
 					scope: this
-				},target:target 
+				},
+				target:target 
 			}, this.outputConfig)
 		);
 		
@@ -96,9 +97,9 @@ Ext.namespace("gxp.plugins");
 		    this.removeMarkerBtn = new Ext.Button({
 		        tooltip: this.addMarkerTooltip,
 		        handler: function() {
-		            var markerLyr = app.mapPanel.map.getLayersByName(this.markerName);  
+		            var markerLyr = target.mapPanel.map.getLayersByName(this.markerName);  
 		            if (markerLyr.length){
-		                app.mapPanel.map.removeLayer(markerLyr[0]);
+		                target.mapPanel.map.removeLayer(markerLyr[0]);
 		            }
 		            this.combo.reset();
 		        },

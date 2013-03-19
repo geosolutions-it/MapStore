@@ -275,8 +275,8 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 
                         if(records.length == 1){
 				var layer = record.get('layer');
-				var extent = layer.restrictedExtent || layer.maxExtent || app.mapPanel.map.maxExtent;
-				var map = app.mapPanel.map;
+				var extent = layer.restrictedExtent || layer.maxExtent || this.target.mapPanel.map.maxExtent;
+				var map = this.target.mapPanel.map;
 
 				// respect map properties
 				var restricted = map.restrictedExtent || map.maxExtent;

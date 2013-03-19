@@ -86,7 +86,8 @@ gxp.plugins.NominatimGeocoder = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 select: this.onComboSelect,
                 scope: this
-            }
+            },
+			target: target
         }, this.outputConfig));
         
         /*/ remove marker added by Nominatim geocoder plugin

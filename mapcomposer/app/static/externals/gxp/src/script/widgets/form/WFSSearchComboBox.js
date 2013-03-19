@@ -150,7 +150,7 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
     initComponent: function() {
 		
         this.store = new Ext.data.JsonStore({
-			combo:this,
+			combo: this,
 			root: this.root,
 			messageProperty: 'crs',
 			autoLoad: false,
@@ -174,10 +174,10 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 			},
 			listeners:{
 				beforeload: function(store){
-					store.setBaseParam( 'srsName',app.mapPanel.map.getProjection() );
+					store.setBaseParam( 'srsName', this.combo.target.mapPanel.map.getProjection() );
 					for (var name in this.vendorParams ) {
 						if(name!='cql_filter' && name != "startindex" && name != "maxfeatures" && name != 'outputFormat' ){
-							store.setBaseParam(store,this.vendorParams[name]);
+							store.setBaseParam(store, this.vendorParams[name]);
 						}
 					}
 				}

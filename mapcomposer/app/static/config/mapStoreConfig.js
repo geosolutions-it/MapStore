@@ -1,5 +1,5 @@
 {
-   "geoStoreBase":"",
+   "geoStoreBase": "",
    "proxy":"/http_proxy/proxy/?url=",
    "xmlJsonTranslate": "",
    "defaultLanguage": "en",

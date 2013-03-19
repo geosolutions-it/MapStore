@@ -92,7 +92,7 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
             tooltip: this.saveDefaultContextActionTip,
             handler: function() {	
 				  if(this.auth){
-					  var configStr = Ext.util.JSON.encode(app.getState()); 
+					  var configStr = Ext.util.JSON.encode(this.target.getState()); 
 					  
 					  if(this.target.mapId == -1){
 						  //
@@ -103,7 +103,7 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
 						  //
 						  // UPDATE MAP
 						  //
-                          var mUrl = geoStoreBaseURL + "data/" + this.target.mapId;
+                          var mUrl = this.target.geoStoreBaseURL + "data/" + this.target.mapId;
 						  var url = /*mHost[2] == location.host ? mUrl : this.target.proxy + */mUrl;
 						  var method = 'PUT';
 						  var contentType = 'application/json';
@@ -125,7 +125,7 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
 						  loginWin.destroy();
 						  
 						  thisObj.auth = 'Basic ' + Base64.encode(user + ':' + pass);           
-						  var configStr = Ext.util.JSON.encode(app.getState()); 
+						  var configStr = Ext.util.JSON.encode(thisObj.target.getState()); 
 						  
 						  if(thisObj.target.mapId == -1){
 							  //
@@ -136,7 +136,7 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
 							  //
 							  // UPDATE MAP
 							  //
-                              var mUrl = geoStoreBaseURL + "data/" + thisObj.target.mapId;
+                              var mUrl = thisObj.target.geoStoreBaseURL + "data/" + thisObj.target.mapId;
 							  var url = /*mHost[2] == location.host ? mUrl : this.target.proxy +*/ mUrl;
 							  var method = 'PUT';
 							  var contentType = 'application/json';
@@ -208,8 +208,7 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
            scope: this,
            success: function(response, opts){
               mask.hide();
-              app.modified = false;
-              //modified = false;
+              this.target.modified = false;
               
 			  //
 			  // if the user change language the page is reloaded and this.auth is cleared
@@ -344,7 +343,7 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
                             //var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
                             //var mHost=pattern.exec(geoStoreBaseURL);
 
-                            var mUrl = geoStoreBaseURL + "resources";
+                            var mUrl = this.target.geoStoreBaseURL + "resources";
                             
                             var url = /*mHost[2] == location.host ? mUrl : this.target.proxy +*/ mUrl;
                             var method = 'POST';

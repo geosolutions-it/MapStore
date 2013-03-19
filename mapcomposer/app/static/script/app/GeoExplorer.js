@@ -82,10 +82,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 		fontSize: "10px",
 		fontColor: "#FFFFFF",
         labelSelect: true,
-        //graphicWidth: 30,
-		//backgroundGraphic: 'theme/app/img/markers/markers_shadow.png',
-		//backgroundXOffset: -7,
-		//backgroundYOffset: -7,
+		
 		// Set the z-indexes of both graphics to make sure the background
         // graphics stay in the background
         graphicZIndex: 11,
@@ -97,10 +94,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 		fontWeight: "bold",
 		fontSize: "10px",
 		fontColor: "#FFFFFF",
-        //labelSelect: true,
-		//backgroundGraphic: 'theme/app/img/markers/markers_shadow.png',
-		//backgroundXOffset: -7,
-		//backgroundYOffset: -7,
+		
 		// Set the z-indexes of both graphics to make sure the background
         // graphics stay in the background
         graphicZIndex: 11,
@@ -297,9 +291,9 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 		    // /////////////////////////////////////////////////////////////////////////
 								  
             var pattern = /(.+:\/\/)?([^\/]+)(\/.*)*/i;
-            var mHost = pattern.exec(geoStoreBaseURL);
+            var mHost = pattern.exec(config.geoStoreBaseURL);
 
-            var mUrl = geoStoreBaseURL + "data/" + this.mapId;
+            var mUrl = config.geoStoreBaseURL + "data/" + this.mapId;
 
             Ext.Ajax.request({
                url: mHost[2] == location.host ? mUrl : proxy + mUrl,
@@ -413,10 +407,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             });
 			
 			this.appMask.hide();
-			
-			
-
-        });
+		});
 
        var googleEarthPanel = new gxp.GoogleEarthPanel({
             mapPanel: this.mapPanel,
@@ -533,7 +524,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 		//var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
         //var mHost=pattern.exec(xmlJsonTranslateService);
 
-        var mUrl = xmlJsonTranslateService + 'HTTPWebGISSave';
+        var mUrl = this.xmlJsonTranslateService + 'HTTPWebGISSave';
         var url = /*mHost[2] == location.host ? mUrl : proxy +*/ mUrl;
         OpenLayers.Request.issue({
             method: method,
@@ -601,8 +592,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 this.id = mapId;
                 window.location.hash = "#maps/" + mapId;
             }
-            
-            //this.xmlContext = request.responseText;
         } else {
             throw this.saveErrorText + request.responseText;
         }
@@ -616,7 +605,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
 		this.appMask.show();
 		
-        var mUrl = xmlJsonTranslateService + 'HTTPWebGISFileDownload';
+        var mUrl = this.xmlJsonTranslateService + 'HTTPWebGISFileDownload';
         OpenLayers.Request.POST({
             url: /*mHost[2] == location.host ? mUrl : proxy +*/ mUrl,
             data: this.xmlContext,
@@ -641,7 +630,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                     //var mHost=pattern.exec(xmlJsonTranslateService);
 
                     //var mUrlEncoded = encodeURIComponent(xmlJsonTranslateService + "HTTPWebGISFileDownload?file="+request.responseText);
-                    var mUrl = xmlJsonTranslateService + "HTTPWebGISFileDownload?file=" + request.responseText;
+                    var mUrl = this.xmlJsonTranslateService + "HTTPWebGISFileDownload?file=" + request.responseText;
                     elemIF.src = /*mHost[2] == location.host ?*/ mUrl /*: proxy + mUrlEncoded*/; 
                     elemIF.style.display = "none"; 
                     document.body.appendChild(elemIF); 
@@ -913,14 +902,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                     backgroundHeight: "${getBackgroundMarkerHeight}"
                 }                
             }),
-            /*new OpenLayers.Rule({
-                filter: new OpenLayers.Filter.Comparison({
-                    type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
-                    property: "html",
-                    value: null
-                }),
-                symbolizer: {labelSelect: true, graphic: true}
-            }),*/
             new OpenLayers.Rule({
                 elseFilter: true
             })
@@ -947,24 +928,24 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             
         // check if the marker layer exists
         if(markerName){
-            var markerLyr = app.mapPanel.map.getLayersByName(markerName);
+            var markerLyr = this.mapPanel.map.getLayersByName(markerName);
         }
         // check if the cluster layer exists
         if(clusterName){        
-            var clusterLyr = app.mapPanel.map.getLayersByName(clusterName);
+            var clusterLyr = this.mapPanel.map.getLayersByName(clusterName);
         }    
         
         if ((markerLyr && markerLyr.length) || (clusterLyr && clusterLyr.length)) {
 			for(var i = 0;i<markerLyr.length;i++){
-				app.mapPanel.map.removeLayer(markerLyr[i]);
+				this.mapPanel.map.removeLayer(markerLyr[i]);
 			}
             
 			      
-            var prev= app.mapPanel.map.getControlsByClass("OpenLayers.Control.SelectFeature");
+            var prev= this.mapPanel.map.getControlsByClass("OpenLayers.Control.SelectFeature");
 			for (var i = 0; i<prev.length;i++){
 				if(prev[i].id=="injMarkerSelectControl"){
 					prev[i].deactivate();
-					app.mapPanel.map.removeControl(prev[i]);
+					this.mapPanel.map.removeControl(prev[i]);
 					prev[i].destroy();
 				}
 			}
@@ -973,7 +954,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             
             // Create a new parser for GeoJSON
             var geojson_format = new OpenLayers.Format.GeoJSON({
-				internalProjection: app.mapPanel.map.getProjectionObject(),
+				internalProjection: this.mapPanel.map.getProjectionObject(),
 				externalProjection: new OpenLayers.Projection("EPSG:4326")
 			});
             
@@ -1083,6 +1064,9 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             // Create the popups for markers
 			var popupTitle = this.markerPopupTitle;
             var singlePopup = this.singlePopup;
+			
+			var self = this;
+			
             function onFeatureSelect(feature) {
                 if (feature.attributes.html){
                     if(this.popup && singlePopup){
@@ -1095,7 +1079,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                         width: 300,
                         height: 200,
                         layout: "fit",
-                        map: app.mapPanel,
+                        map: self.mapPanel,
                         destroyOnClose:true,
                         location: feature.geometry.getBounds().getCenterLonLat(),
                         items: [{   
@@ -1109,7 +1093,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                         }],
                         listeners: { 
                           close : function() {
-								try{//to avoid control removal problems
+								try{
+									//
+									// To avoid control removal problems
+									//
 									selectControl.unselect(feature);
 								}catch(e){};
 							}
@@ -1126,10 +1113,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 for (var i = 0; i<uniqueMarkersLayers.length; i++){
                     for (var c=0; c<markers[i].length;c++){
                         if(uniqueMarkersLayers[i] == undefined){
-                            app.mapPanel.map.addLayer(marker_layer);
+                            this.mapPanel.map.addLayer(marker_layer);
                             marker_layer.addFeatures(markers[i][c]);
                         }else{
-                            app.mapPanel.map.addLayer(uniqueMarkersLayers[i]);
+                            this.mapPanel.map.addLayer(uniqueMarkersLayers[i]);
                             uniqueMarkersLayers[i].addFeatures(markers[i][c]);
                         }
                     }
@@ -1137,7 +1124,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             }
             
             if(clusters.length>0){
-                app.mapPanel.map.addLayer(cluster_layer);
+                this.mapPanel.map.addLayer(cluster_layer);
                 cluster_layer.addFeatures(clusters);
             }
             
@@ -1171,22 +1158,22 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 					multiple: !singlePopup,
 					autoActivate: true
 				});        
-				var prev= app.mapPanel.map.getControlsByClass(selectControl.CLASS_NAME);
+				var prev= this.mapPanel.map.getControlsByClass(selectControl.CLASS_NAME);
 				for (var i = 0; i<prev.length;i++){
 					if(prev[i].id=="injMarkerSelectControl"){
 						prev[i].deactivate();
-						app.mapPanel.map.removeControl(prev[i]);
+						this.mapPanel.map.removeControl(prev[i]);
 						prev[i].destroy();
 					}
 				}
-				app.mapPanel.map.addControl(selectControl);
+				this.mapPanel.map.addControl(selectControl);
 				selectControl.activate();
             }
         }
         
 		if(trackName){
 		    // Checks if the track layer exists
-			var trackLayer = app.mapPanel.map.getLayersByName(trackName)[0];
+			var trackLayer = this.mapPanel.map.getLayersByName(trackName)[0];
 			
 			if (trackLayer){ 
 				trackLayer.removeFeatures(trackLayer.features);
@@ -1204,7 +1191,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 					displayInLayerSwitcher: true
 				});
 				
-				app.mapPanel.map.addLayer(trackLayer);
+				this.mapPanel.map.addLayer(trackLayer);
 			}
 			
 			if(showLine){
@@ -1225,7 +1212,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                     new OpenLayers.Feature.Vector(
                         new OpenLayers.Geometry.LineString(pointCoord).transform(
                             new OpenLayers.Projection("EPSG:4326"),
-                            app.mapPanel.map.getProjectionObject()
+                            this.mapPanel.map.getProjectionObject()
                         )
                     )
                 ]);
