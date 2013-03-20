@@ -185,7 +185,8 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 							cleanup();
 							
 							tooltip = new GeoExt.Popup({
-								map: app.mapPanel.map,
+								constrainHeader : true,
+								map: app.mapPanel,
 								width:370,
 								autoScroll:true,
 								xtype: 'tooltip',
@@ -212,8 +213,27 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 						deactivate: cleanup
 					}
 					
-				})
-			app.mapPanel.map.addControl(control);
+			})
+			wms.events.register('added',this,function(eventObject){
+				this.layers.push(wms);
+				this.controls.push(control);
+			});
+			
+			wms.events.register('removed',this,function(eventObject){
+				control.deactivate();
+				var index = (this.controls.indexOf(control));
+				this.controls.splice(index,1);
+				this.layers.splice(index,1);
+				if(this.controls.length<=0){
+					var action = Ext.getCmp('paneltbar').getComponent('cropDataActiveTool');
+					Ext.getCmp('paneltbar').remove(action);
+					
+				}
+				
+				//app.mapPanel.map.removeControl(control);
+			
+			})
+			
 			var data = {
                 title: values.crop + " " + values.endYear + "-" + values.variable, 
                 name: "nrl:CropDataMap",
@@ -231,37 +251,21 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
             ];
 			var Record = GeoExt.data.LayerRecord.create(fields);
             var record = new Record(data);
+			
 			app.mapPanel.map.addLayers([wms]);
-			
+			app.mapPanel.map.addControl(control);
 			//add to list of layers and controls 
-			this.controls.push(control);
-			this.layers.push(wms);
-			
 			//app.mapPanel.layers.add([record]);
-			wms.events.register('removed',this,function(eventObject){
-				control.deactivate();
-				control.destroy();
-				
-				var index = (this.controls.indexOf(control));
-				this.controls.splice(index,1);
-				this.layers.splice(index,1);
-				if(this.controls.length<=0){
-					Ext.getCmp('paneltbar').remove(this.action);
-					this.action.destroy();
-					this.action=undefined;
-					
-				}
-				
-				//app.mapPanel.map.removeControl(control);
-			
-			})
 			
 			
-            
+			
+			
+            var action = Ext.getCmp('paneltbar').getComponent('cropDataActiveTool');
 			var sm = Ext.getCmp('layertree').getSelectionModel();
-			if(!this.action){
-				this.action = new Ext.Button({
+			if(!action){
+				action = new Ext.Button({
 					tooltip: this.infoActionTip,
+					itemId: 'cropDataActiveTool',
 					iconCls: "icon-mapcursor",
 					toggleGroup: this.controlToggleGroup,
 					enableToggle: true,
@@ -279,10 +283,10 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 						}
 					 },scope:this
 				});
-				Ext.getCmp('paneltbar').addItem(this.action);
+				Ext.getCmp('paneltbar').addItem(action);
 				Ext.getCmp('paneltbar').doLayout();
 			}
-			var action = this.action;
+			
 			
 			
 			
