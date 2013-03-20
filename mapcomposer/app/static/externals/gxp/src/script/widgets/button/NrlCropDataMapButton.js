@@ -51,7 +51,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 				case  "Production" : varparam ='prod';break;
 				case "Yield" : varparam= 'yield';break;
 			}
-			var yieldFactor = fieldValues.production_unit == 3 ? 170 : 1000;
+			var yieldFactor = fieldValues.production_unit == "000 bales" ? 170 : 1000;
 			
 			
 			var viewParams= "crop:" + values.crop.toLowerCase() + ";" +
@@ -85,7 +85,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 					hover: true,
 					queryVisible: true,
 					handlerOptions:{	
-						hover: {delay: 200}
+						hover: {delay: 200,pixelTolerance:2}
 					},
 					vendorParams:{
 						propertyName: 'region,crop,year,production,area,yield',
