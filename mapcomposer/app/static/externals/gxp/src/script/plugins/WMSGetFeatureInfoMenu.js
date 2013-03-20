@@ -396,34 +396,35 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 	activateActiveControl: function(layer,title){
 		this.cleanActiveControl();
 		var tooltip;
-			var cleanup = function() {
-				if (tooltip) {
-					tooltip.destroy();
-				}  
-			};
-		var control = control = new OpenLayers.Control.WMSGetFeatureInfo({
+		var cleanup = function() {
+			if (tooltip) {
+				tooltip.destroy();
+			}  
+		};
+		
+		var control = new OpenLayers.Control.WMSGetFeatureInfo({
 		
 			title: 'Identify features by clicking',
 			layers: [layer],
 			hover: true,
 			queryVisible: true,
 			handlerOptions:{	
-				hover: {delay: 200}
+				hover: {delay: 200,pixelTolerance:2}
 			},
-			
 			eventListeners:{
 				scope:this,
+				
 				getfeatureinfo:function(evt){
-					
 					cleanup();
 					var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
 					if (match && !match[1].match(/^\s*$/)) {
 						tooltip = new GeoExt.Popup({
-							constrainHeader : true,
+							
 							map: this.target.mapPanel,
-							panIn:false,
+							panIn:true,
 							title: title || this.popupTitle,
-							width:350,
+							width:490,
+							height:320,
 							autoScroll:false,
 							layout:'fit',
 							location:evt.xy,
@@ -433,11 +434,10 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 							draggable: false,
 							listeners: {hide: cleanup}
 						});
-						var p0 = this.target.mapPanel.getPosition();
-						//tooltip.targetXY = [evt.xy.x +p0[0],evt.xy.y +p0[1]];
+						
 						tooltip.show();
 					}
-					//take only the first
+					
 
 				},deactivate: cleanup
 			}
