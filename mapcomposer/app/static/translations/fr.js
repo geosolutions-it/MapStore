@@ -401,7 +401,15 @@ GeoExt.Lang.add("fr", {
 		gridColContent: 'Teneur',	
 		exportBtn:  "Marqueurs d'exportation",
 		importBtn: "Marqueurs d'importation",
-		removeAllBnt: 'Supprimer tout'
+		removeAllBnt: 'Supprimer tout',
+		markerChooserTitle:'Choisissez un marqueur',
+		useThisMarkerText:'Utilisez cette Marker',
+		selectMarkerText:'Marker Select',
+		insertImageText:'«Insérer une image',
+		imageUrlText:'URL de l\'image',
+		importGeoJsonText:'Importer GeoJSON',
+		errorText:"Error",
+		notWellFormedText:"Le texte que vous avez ajouté n'est pas bien formé Veuillez le vérifier"
 	},
 	
 	"gxp.widgets.form.CoordinatePicker.prototype":{
