@@ -1,16 +1,5 @@
-div.topbanner{
-	background-image: url(img/banner/world-home.jpg);
-	background-repeat:no-repeat;
-	background-color:black;
-	background-position:center top; 
-	height:100%;
-}
-div.topbanner .logo-gs-white{
-	float:right;
-	top:5px;
-}
-div.topbanner .logo-ms-white{
-	position:absolute;
-	top: 27px;
-	left: 10px;
-}	
+@import url(opendata_reset.css);
+@import url(opendata_layout.css);
+@import url(opendata_opendata.css);
+@import url(opendata_superfish.css);
+

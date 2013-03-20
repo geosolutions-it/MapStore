@@ -53,6 +53,30 @@
     <script type="text/javascript" src="translations/it.js"></script>
     <script type="text/javascript" src="translations/de.js"></script>
 	
+	<!-- OpenData resources -->
+    <link rel="stylesheet" type="text/css" href="theme/app/custom.css" media="all">
+    <script>
+		function fbs_click() {
+		        u=location.href;
+		        t=document.title;
+		        window.open('http://www.facebook.com/sharer.php?u=' +
+		             encodeURIComponent(u) +
+		             '&t=' +
+		             encodeURIComponent(t),
+		             ' sharer', 'toolbar=0, status=0, width=626, height=436');
+		        return false;
+		}
+		
+		function twt_click() {
+		        u=location.href;
+		        t=document.title;
+		        window.open('http://twitter.com/share?url=' + u + '&text=' +
+		        t + '&hashtags=opendatafirenze',
+		        ' sharer2', 'toolbar=0, status=0, width=626, height=436');
+		        return false;
+		}
+    </script>
+	
 	<!-- uncomment to have  welcome screen
 	<script type="text/javascript">
 	 
@@ -189,7 +213,7 @@
             }
             
             var url = Ext.urlDecode(query);        
-            var code = url.locale || serverConfig.defaultLanguage || "en";			
+            var code = url.locale || serverConfig.defaultLanguage || "it";			
 
 			// ////////////////////////////////////////////////////
 			// Setting the language code for the GeoExt tools
@@ -197,14 +221,6 @@
 			if (GeoExt.Lang) {
                 GeoExt.Lang.set(code);
             }
-			
-			// ////////////////////////////////////////////////////
-			// Setting the language selector
-			// ////////////////////////////////////////////////////
-			var languageSelector = new gxp.form.LanguageSwitcher({
-				currentContext:code,
-				saveMessage:authorization
-			});
 			
 			// ///////////////////////////////////////////
 			// Defining the GeoNetwork panel properties
@@ -280,20 +296,39 @@
 			// ///////////////////////////////////
 			// Header definition
 			// ///////////////////////////////////
-			var headerContent = [
-					'			<div class="topbanner">',
-					'				<div class="main">',
-					'					<div class="header">',
-					'						<div class="logo-gs-white"><a href="http://www.geo-solutions.it/"><img src="theme/app/img/banner/geosolutions-logo-whitebg.png" alt="GeoSolutions"></a></div>',
-					'						<div class="logo-ms-white"><a href="http://mapstore.geo-solutions.it/"><img src="theme/app/img/banner/mapstore-banner.png" alt="MapStore"></a></div>',
-					
-					'					</div>',
-					'				</div>',
-					'			</div>'
-				    /*'<div>',
-					'<div style="float:right"><img src="theme/app/img/fdh/fdh_left-banner_en.gif" usemap="#IM_left-banner"  border="0" /></div>',
-					'<div style="float:left"><img src="theme/app/img/fdh/fdh_right-banner_en.jpg" usemap="#IM_right-banner"  border="0" /></div>',
-					'</div>'*/
+            var headerContent = [
+				'			<div class="body1">',
+				'				<div class="main">',
+				'					<div class="header">',
+				'						<div class="logoopendata"><a href="http://opendata.comune.fi.it/index.html"><img class="logocls" src="theme/app/img/opendata/logo_opendata.jpg" alt="comune di firenze"></a></div>',
+				'						<div class="comune"><a href="http://www.comune.fi.it/"><img src="theme/app/img/opendata/logo_comunebar3.png" alt="comune di firenze"></a></div>',
+				'						<h1><a href="http://opendata.comune.fi.it/index.html">Open<span>Data</span></a></h1>',
+				'						<h2>I dati aperti del Comune di Firenze</h2>',
+				'							<ul id="icons">',
+				'								<li><a href="#"	onclick="return fbs_click()" class="normaltip" title="Condividi su Facebook"><img src="theme/app/img/opendata/icon1.jpg" alt="Facebook"></a></li>',
+				'								<li><a href="#"  onclick="return twt_click()" class="normaltip" title="Condividi su Twitter"><img src="theme/app/img/opendata/icon2.jpg" alt="Twitter"></a></li>',
+				'							</ul>',
+			  /*'						<div id="ricerca">',
+				'							<form action="http://search.comune.fi.it/search" method="get">',
+				'								<fieldset>',
+				'									<input type="text" accesskey="C" onfocus="this.value=\'\';" onblur="if(this.value==\'\') this.value=\'Parole chiave\';" id="ricercacampo" size="23" value="Parole chiave" name="q" />',
+				'									<input name="btnG" type="submit" value="CERCA">',
+				'									<input type="hidden" value="main_frontend" name="client" />',
+				'									<input type="hidden" value="main_frontend" name="proxystylesheet" />',
+				'									<input type="hidden" value="xml_no_dtd" name="output" />',
+				'									<input type="hidden" value="5" name="numgm" />',
+				'									<input type="hidden" value="open_data" name="site" />',
+				'								</fieldset>',
+				'							</form>',
+				'						</div>',
+				'						<div class="ic">Comune di Firenze</div>',*/
+				'					</div>',
+				'				</div>',
+				'			</div>'
+					  /*'<div>',
+				'<div style="float:right"><img src="theme/app/img/fdh/fdh_left-banner_en.gif" usemap="#IM_left-banner"  border="0" /></div>',
+				'<div style="float:left"><img src="theme/app/img/fdh/fdh_right-banner_en.jpg" usemap="#IM_right-banner"  border="0" /></div>',
+				'</div>'*/
 			];
 			
             var appViewport = new Ext.Viewport({
@@ -321,7 +356,7 @@
                       id : 'msheader'
                     },appTabs],                            
                     bbar : [
-                      poweredByGeoSol, ' ', aboutButton, '->',languageSelector
+                      poweredByGeoSol, ' ', aboutButton
                     ]
                 }]
             });
