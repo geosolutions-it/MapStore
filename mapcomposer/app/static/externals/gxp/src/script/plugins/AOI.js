@@ -104,16 +104,7 @@ gxp.plugins.AOI = Ext.extend(gxp.plugins.Tool, {
         latMin: -20037508.34  
     },
     
-    
-    /** api: config[urlEPSG]
-     *  ``URL``
-     *  
-     */
-    urlEPSG: null,
-    
-    
-    
-	
+
     /** private: method[constructor]
      */
     constructor: function(config) {
