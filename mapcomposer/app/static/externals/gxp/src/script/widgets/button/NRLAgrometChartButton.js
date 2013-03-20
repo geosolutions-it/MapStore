@@ -149,12 +149,17 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 				request: "GetFeature",
 				typeName: "nrl:agromet_aggregated",
 				outputFormat: "json",
-				viewparams:"start_year:"+ fromYear + ";" +
+				viewparams: season == 'rabi' ? "start_year:"+ fromYear + ";" +
+                            "end_year:"+ toYear + ";" +
+                            "factor_list:'"+ factorValues[0] + "'\\,'" + factorValues[1] +  "'\\,'" + factorValues[2] + "';" +
+                            "region_list:"+ regionList + ";" +
+                            "gran_type:" + granType + ";" +                            
+                            "season_flag:NOT" : + 
+                            "start_year:"+ fromYear + ";" +
                             "end_year:"+ toYear + ";" +
                             "factor_list:'"+ factorValues[0] + "';" +
                             "region_list:"+ regionList + ";" +
-                            "gran_type:" + granType + ";" +
-                            "season_flag:NOT"
+                            "gran_type:" + granType
 			}
 		}); 
         
@@ -162,7 +167,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 	createResultPanel:function(store,listVar){
 		 var tabPanel = Ext.getCmp('id_mapTab');
 
-        var tabs = Ext.getCmp('cropData_tab');
+        var tabs = Ext.getCmp('agromet_tab');
 		var charts  = this.makeChart(store,listVar);
 		var resultpanel = {
 			columnWidth: .95,
@@ -179,8 +184,8 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 		if(!tabs){
 			var cropDataTab = new Ext.Panel({
 				title: 'AgroMet',
-				id:'cropData_tab',
-				itemId:'cropData_tab',
+				id:'agromet_tab',
+				itemId:'agromet_tab',
 				border: true,
 				layout: 'form',
 				autoScroll: true,
@@ -195,7 +200,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 			tabs.add(resultpanel);
 		}
 		Ext.getCmp('id_mapTab').doLayout();
-		Ext.getCmp('id_mapTab').setActiveTab('cropData_tab');
+		Ext.getCmp('id_mapTab').setActiveTab('agromet_tab');
                     
 	
 	},
@@ -204,10 +209,11 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 		var grafici = [];
 		
 		
-		for (var r = 0;r<1;r++){
+		//for (var r = 0;r<listVar.factorValues.length;r++){
+        for (var r = 0;r<1;r++){
         
 			// Store for random data
-
+            //store = store.filter('factor', listVar.factorValues[r],true,true); 
 
 			var chart;
 			
@@ -245,12 +251,13 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 						tickWidth: 0,
 						gridLineWidth: 1,
 						labels: {
-                            staggerLines: 2,
+                            rotation: 270,
 							formatter: function () {
+                                var months = ["Nov","Nov","Nov","Dec","Dec","Dec","Jan","Jan","Jan","Feb","Feb","Feb","Mar","Mar","Mar","Apr","Apr","Apr","May","May","May","Jun","Jun","Jun","Jul","Jul","Jul","Aug","Aug","Aug","Sep","Sep","Sep","Oct","Oct","Oct"];
                                 if (this.axis.dataMin == 1){
-                                    return "Nov-" + this.value;
+                                    return months[this.value-1] + "-" + this.value;
                                 }else{
-                                    return "May-" + this.value;
+                                    return months[this.value-1] + "-" + this.value;
                                 }
 								
 							}
