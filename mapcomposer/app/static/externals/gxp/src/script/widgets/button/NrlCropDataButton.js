@@ -388,6 +388,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 					yAxis: [{ // AREA
 						title: {
 							text: opt.series.area.name,
+                            rotation: 270,
 							style: {
 								color: opt.series.area.color
 							}
@@ -411,6 +412,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 						gridLineWidth: 0,
 						title: {
 							text: opt.series.prod.name,
+                            rotation: 270,
 							style: {
 								color: opt.series.prod.color
 							}
@@ -437,6 +439,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 						dashStyle: 'shortdot',
 						title: {
 							text: opt.series.yield.name,
+                            rotation: 270,
 							style: {
 								color: opt.series.yield.color
 							}

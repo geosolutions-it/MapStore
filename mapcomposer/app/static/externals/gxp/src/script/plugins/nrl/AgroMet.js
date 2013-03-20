@@ -43,7 +43,12 @@ Ext.namespace("gxp.plugins.nrl");
 gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
  /** api: ptype = nrl_agromet */
     ptype: "nrl_agromet",
+	/** i18n **/
+	outputTypeText:'Output Type',
 	areaFilter: "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
+	seasonText:'Season',
+	/** layer Name **/
+    hilightLayerName:"CropData_Selection_Layer",//TODO doesn't seems to run
     layerStyle: {
         strokeColor: "green",
         strokeWidth: 1,
@@ -54,6 +59,9 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 	outputTypeText:'Output Type',
 	
     factorsurl:"http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:AgroMet_factors&max&outputFormat=json",
+    
+	rangesUrl: "http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
+
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
@@ -66,12 +74,11 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 			layout: "form",
 			minWidth:180,
 			autoScroll:true,
-			buttons:[{xtype:'gxp_nrlAgrometButton'}],
 			frame:true,
 			items:[
 				{ 
 					fieldLabel: this.outputTypeText,
-					xtype: 'checkboxgroup',
+					xtype: 'radiogroup',
 					anchor:'100%',
 					autoHeight:true,
 					checkboxToggle:true,
@@ -86,14 +93,18 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 				},{ 
 					fieldLabel: 'Season',
 					xtype: 'nrl_seasonradiogroup',
-					anchor:'100%'
+					anchor:'100%',
+					name:'season',
+					ref:'season'
 				},{
 					xtype: 'nrl_aoifieldset',
+					name:'region_list',
 					ref:'aoiFieldSet',
+                    layerStyle:this.layerStyle,
 					anchor:'100%',
 					target:this.target,
-					areaFilter:this.areaFilter,
-                    layerStyle: this.layerStyle,
+					areaFilter:this.areaFilter, 
+					hilightLayerName:this.hilightLayerName,
 					layers:{
 						district:'nrl:district_boundary',
 						province:'nrl:province_boundary'
@@ -120,11 +131,13 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 						}
 					}
 					
-				},new Ext.ux.grid.CheckboxSelectionGrid({
+				},
+                new Ext.ux.grid.CheckboxSelectionGrid({
                     title: 'Factors',
                     enableHdMenu:false,
                     hideHeaders:true,
                     autoHeight:true,
+                    ref: 'factors',
                     viewConfig: {forceFit: true},
                     columns: [{id:'name',dataIndex:'factor',header:'Factor'}],
                     autoScroll:true,
@@ -143,12 +156,24 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                     })
                 
                 })
-			
-			]
+			],
+			buttons:[{
+                xtype:'gxp_nrlAgrometButton',
+				ref: '../submitButton',
+                target:this.target,
+				form: this,
+                disabled:true                
+            }]            
 		};
 		config = Ext.apply(agroMet,config || {});
 		
 		this.output = gxp.plugins.nrl.AgroMet.superclass.addOutput.call(this, config);
+		this.output.on('update',function(store){
+            var button = this.output.submitButton.getXType();
+            if (button == "gxp_nrlAgrometButton"){
+                this.output.submitButton.setDisabled(store.getCount()<=0)
+            }
+		},this);        
 		this.output.on('beforehide',function(){
 			var button = this.output.aoiFieldSet.AreaSelector.selectButton;
 			button.toggle(false);

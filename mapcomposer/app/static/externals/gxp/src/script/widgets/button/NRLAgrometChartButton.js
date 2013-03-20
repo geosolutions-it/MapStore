@@ -70,7 +70,44 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
         height: 400
 	},
     handler: function () {
-			
+
+        var numRegion = [];
+        var regStore = this.form.output.aoiFieldSet.AreaSelector.store
+        var records = regStore.getRange();
+		
+        for (var i=0;i<records.length;i++){
+			var attrs = records[i].get("attributes");
+			var region = attrs.district || attrs.province;
+            numRegion.push(region.toLowerCase());
+        }
+        
+        var data = this.form.output.getForm().getValues();
+        var regionList = data.region_list.toLowerCase();
+        var season = data.season.toLowerCase();
+        var granType = data.areatype;
+        var fromYear = data.startYear;
+        var toYear = data.endYear;
+
+        var factorStore = this.form.output.factors.selModel.selections.items;
+        var factorValues = [];
+        
+        if (factorStore.length){
+            for (var i=0;i<factorStore.length;i++){
+                var factor = factorStore[i].data;
+                var factorValue = factor.factor;
+                factorValues.push(factorValue);
+            }
+        }
+        
+        var listVar = {
+            numRegion: numRegion,
+            season: season,
+            granType: granType,
+            fromYear: fromYear,
+            toYear: toYear,
+            factorValues: factorValues
+        };
+        
 		var store = new Ext.data.JsonStore({
 			url: this.url,
 			 sortInfo: {field: "s_dec", direction: "ASC"},
@@ -97,12 +134,12 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 			},{
 				name: 'aggregated',
 				mapping: 'properties.aggregated'
-			}],
+			}]
 			
 		});
 		store.load({
 			callback:function(){
-				this.createResultPanel(store);
+				this.createResultPanel(store,listVar);
 			},
 
 			scope:this,
@@ -112,43 +149,36 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 				request: "GetFeature",
 				typeName: "nrl:agromet_aggregated",
 				outputFormat: "json",
-				viewparams:"start_year:2001;end_year:2013;season_flag:NOT"
-				
-				/*propertyName: "region,crop,year,production,area,yield",
-				viewparams: "crop:" + commodity + ";" +
-					"gran_type:" + granType + ";" +
-					"start_year:" + fromYear + ";" +
-					"end_year:" + toYear + ";" +
-					"region_list:" + regionList + ";" +
-					"yield_factor:" + prodCoeffUnits*/
-			},
-		});
-                    
-               
-
-            
+				viewparams:"start_year:"+ fromYear + ";" +
+                            "end_year:"+ toYear + ";" +
+                            "factor_list:'"+ factorValues[0] + "';" +
+                            "region_list:"+ regionList + ";" +
+                            "gran_type:" + granType + ";" +
+                            "season_flag:NOT"
+			}
+		}); 
         
     },
-	createResultPanel:function(store){
+	createResultPanel:function(store,listVar){
 		 var tabPanel = Ext.getCmp('id_mapTab');
 
         var tabs = Ext.getCmp('cropData_tab');
-		var charts  = this.makeChart(store);
+		var charts  = this.makeChart(store,listVar);
 		var resultpanel = {
 			columnWidth: .95,
 			style:'padding:10px 10px 10px 10px',
 			xtype: 'gxp_controlpanel',
 			commodity: "XXX",
-			season: "XXX",
-			province: "XXX",
-			fromYear: "XXX",
-			toYear: "XXX",
+			season: listVar.season,
+			province: listVar.numRegion,
+			fromYear: listVar.fromYear,
+			toYear: listVar.toYear,
 			chart: charts,
-			//chartHeight: this.chartOpt.height
+			chartHeight: this.chartOpt.height
 		};
 		if(!tabs){
 			var cropDataTab = new Ext.Panel({
-				title: 'Crop Data',
+				title: 'AgroMet',
 				id:'cropData_tab',
 				itemId:'cropData_tab',
 				border: true,
@@ -169,7 +199,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                     
 	
 	},
-	makeChart: function(store ){
+	makeChart: function(store,listVar ){
 		
 		var grafici = [];
 		
@@ -189,7 +219,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 					this.chartOpt.series.area
 					
 				],
-				//height: opt.height,
+				height: this.chartOpt.height,
 				//width: 900,
 				store: store,
 				animShift: true,
@@ -213,17 +243,29 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 						type: 'datetime',
 						categories: ['s_dec'],
 						tickWidth: 0,
-						gridLineWidth: 1
+						gridLineWidth: 1,
+						labels: {
+                            staggerLines: 2,
+							formatter: function () {
+                                if (this.axis.dataMin == 1){
+                                    return "Nov-" + this.value;
+                                }else{
+                                    return "May-" + this.value;
+                                }
+								
+							}
+							
+						}                        
 					}],
 					yAxis: [{ // AREA
 						title: {
-							text: 'min Temperature'
+							text: listVar.factorValues[0]
 							
 						},                    
 						labels: {
 							formatter: function () {
 								return this.value;
-							},
+							}
 							
 						}
                         /*plotLines: [{ //mid values
