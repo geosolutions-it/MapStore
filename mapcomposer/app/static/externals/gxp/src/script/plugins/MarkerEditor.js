@@ -246,7 +246,21 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                             name:'html',
                             allowBlank:false,
                             fieldLabel: this.contentText,
-                            height:200
+                            height:200,
+							listeners: {
+								render: function(editor) {
+									editor.getToolbar().insertButton(5, {
+										iconCls: 'x-icon-addimage',
+										handler: function(b,e) {
+											Ext.Msg.prompt('Insert Image', 'Image URL', function(btn, txt) {
+												if (btn == 'ok') {
+													editor.relayCmd('insertimage', txt);
+												}
+											});                                            
+										}
+									});
+								}
+							}
                         }
                     ],
                     

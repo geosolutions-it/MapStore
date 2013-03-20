@@ -162,6 +162,11 @@ font-family: tahoma, arial, helvetica, sans-serif;
     width:150px !important;
 }
 
+.x-btn .x-icon-addimage {
+     background-image: url(img/silk/image_add.png);
+}
+
+
 /* Pan- and Zoom- Panel Styles*/
 
 .olControlPanPanel div {
