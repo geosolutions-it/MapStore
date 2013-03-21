@@ -68,7 +68,7 @@ gxp.plugins.nrl.NRL = Ext.extend(gxp.plugins.Tool, {
 			listeners:{
 				afterrender: function(tabpanel){
 					//set active tab after render
-					app.on('ready',function(){
+					target.on('ready',function(){
 						if(tabpanel.startTab){
 							tabpanel.setActiveTab(tabpanel.startTab);
 						}else{

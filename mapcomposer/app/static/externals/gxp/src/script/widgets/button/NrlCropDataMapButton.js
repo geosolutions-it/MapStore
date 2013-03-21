@@ -38,6 +38,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 	infoActionTip: 'Crop Data info on selected layer',
 	controls:[],layers:[],
     handler: function () {    
+			var target = this.target;
 			var form = this.form.output.getForm();
 			var values =  this.form.output.getForm().getValues();
 			var fieldValues = form.getFieldValues();
@@ -186,7 +187,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 							
 							tooltip = new GeoExt.Popup({
 								constrainHeader : true,
-								map: app.mapPanel,
+								map: target.mapPanel,
 								width:370,
 								autoScroll:true,
 								xtype: 'tooltip',
@@ -204,7 +205,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 							
 							//take only the first
 							
-							var p0 = app.mapPanel.getPosition();
+							var p0 = target.mapPanel.getPosition();
 							//tooltip.targetXY = [evt.xy.x +p0[0],evt.xy.y +p0[1]];
 							tooltip.show();
 							
@@ -230,7 +231,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 					
 				}
 				
-				//app.mapPanel.map.removeControl(control);
+				//target.mapPanel.map.removeControl(control);
 			
 			})
 			
@@ -252,10 +253,10 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 			var Record = GeoExt.data.LayerRecord.create(fields);
             var record = new Record(data);
 			
-			app.mapPanel.map.addLayers([wms]);
-			app.mapPanel.map.addControl(control);
+			target.mapPanel.map.addLayers([wms]);
+			target.mapPanel.map.addControl(control);
 			//add to list of layers and controls 
-			//app.mapPanel.layers.add([record]);
+			//target.mapPanel.layers.add([record]);
 			
 			
 			
