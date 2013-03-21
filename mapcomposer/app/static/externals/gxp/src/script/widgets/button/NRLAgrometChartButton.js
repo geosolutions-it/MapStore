@@ -153,16 +153,16 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 				typeName: "nrl:agromet_aggregated",
 				outputFormat: "json",
 				viewparams: season == 'rabi' ? "start_year:"+ fromYear + ";" +
-                            "end_year:"+ toYear + ";" +
-                            "factor_list:'"+ factorValues[0] + "'\\,'" + factorValues[1] +  "'\\,'" + factorValues[2] + "';" +
-                            "region_list:"+ regionList + ";" +
-                            "gran_type:" + granType + ";" +                            
-                            "season_flag:NOT" : + 
-                            "start_year:"+ fromYear + ";" +
-                            "end_year:"+ toYear + ";" +
-                            "factor_list:'"+ factorValues[0] + "'\\,'" + factorValues[1] +  "'\\,'" + factorValues[2] + "';" +
-                            "region_list:"+ regionList + ";" +
-                            "gran_type:" + granType
+                    "end_year:"+ toYear + ";" +
+                    "factor_list:'"+ factorValues[0] + "'\\,'" + factorValues[1] +  "'\\,'" + factorValues[2] + "';" +
+                    "region_list:"+ regionList + ";" +
+                    "gran_type:" + granType + ";" +                            
+                    "season_flag:NOT" : + 
+                    "start_year:"+ fromYear + ";" +
+                    "end_year:"+ toYear + ";" +
+                    "factor_list:'"+ factorValues[0] + "'\\,'" + factorValues[1] +  "'\\,'" + factorValues[2] + "';" +
+                    "region_list:"+ regionList + ";" +
+                    "gran_type:" + granType
 			}
 		}); 
         
@@ -176,7 +176,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 			columnWidth: .95,
 			style:'padding:10px 10px 10px 10px',
 			xtype: 'gxp_controlpanel',
-			commodity: "XXX",
+			panelTitle: "XXX",
 			season: listVar.season,
 			province: listVar.numRegion,
 			fromYear: listVar.fromYear,
@@ -192,7 +192,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 				border: true,
 				layout: 'form',
 				autoScroll: true,
-				tabTip: 'Crop Data',
+				tabTip: 'AgroMet',
 				closable: true,
 				items: resultpanel
 			});
@@ -207,7 +207,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                     
 	
 	},
-	makeChart: function(store,listVar ){
+	makeChart: function(store,listVar){
 		
 		var grafici = [];
 		var factorStore = [];
@@ -254,8 +254,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 				series: [
 					this.chartOpt.series.prod,
 					this.chartOpt.series.yield,
-					this.chartOpt.series.area
-					
+					this.chartOpt.series.area					
 				],
 				height: this.chartOpt.height,
 				//width: 900,
@@ -273,39 +272,35 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                         url: "http://84.33.2.24/highcharts-export/"
                     },
 					title: {
-						text: listVar.factorValues[i]
-						
-					},
-					
+						text: listVar.factorValues[i]						
+					},					
 					xAxis: [{
 						type: 'datetime',
 						categories: ['s_dec'],
 						tickWidth: 0,
 						gridLineWidth: 1,
 						labels: {
-                            rotation: 270,
+                            rotation: 320,
+                            y: +20,
 							formatter: function () {
-                                var months = ["Nov","Nov","Nov","Dec","Dec","Dec","Jan","Jan","Jan","Feb","Feb","Feb","Mar","Mar","Mar","Apr","Apr","Apr","May","May","May","Jun","Jun","Jun","Jul","Jul","Jul","Aug","Aug","Aug","Sep","Sep","Sep","Oct","Oct","Oct"];
+                                var months = ["Nov-1","Nov-2","Nov-3","Dec-1","Dec-2","Dec-3","Jan-1","Jan-2","Jan-3","Feb-1","Feb-2","Feb-3","Mar-1","Mar-2","Mar-3","Apr-1","Apr-2","Apr-3","May-1","May-2","May-3","Jun-1","Jun-2","Jun-3","Jul-1","Jul-2","Jul-3","Aug-1","Aug-2","Aug-3","Sep-1","Sep-2","Sep-3","Oct-1","Oct-2","Oct-3"];
                                 if (this.axis.dataMin == 1){
-                                    return months[this.value-1] + "-" + this.value;
+                                    //return months[this.value-1] + "-" + this.value;
+                                    return months[this.value-1];
                                 }else{
-                                    return months[this.value-1] + "-" + this.value;
-                                }
-								
-							}
-							
+                                    return months[this.value-1];
+                                }								
+							}							
 						}                        
 					}],
 					yAxis: [{ // AREA
 						title: {
-							text: listVar.factorValues[i]
-							
+							text: listVar.factorValues[i]							
 						},                    
 						labels: {
 							formatter: function () {
 								return this.value;
-							}
-							
+							}							
 						}
                         /*plotLines: [{ //mid values
 							value: areaavg,
@@ -313,17 +308,14 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 							dashStyle: 'LongDash',
 							width: 1                       
 						}] */
-
 					}], 
 					tooltip: {
                         formatter: function() {
-                            var s = '<b>'+ this.x +'</b>';
-                            
+                            var s = '<b>'+ this.x +'</b>';                            
                             Ext.each(this.points, function(i, point) {
                                 s += '<br/><span style="color:'+i.series.color+'">'+ i.series.name +': </span>'+
-                                    '<span style="font-size:12px;">'+ i.y+'</span>';
-                            });
-                            
+                                    '<span style="font-size:12px;">'+ i.y.toFixed(2)+'</span>';
+                            });                            
                             return s;
                         },
                         shared: true,
@@ -335,16 +327,13 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                                 return 'Area (000 ha)';
                             }else{
                                 return this.name;
-                            }
-                            
+                            }                            
                         }
                     }            
 				}
 			});
 			grafici.push(chart);
-            //store.clearFilter();            
-		}
-		
+		}		
 		return grafici; 
 	}	
 });
