@@ -160,7 +160,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                             "season_flag:NOT" : + 
                             "start_year:"+ fromYear + ";" +
                             "end_year:"+ toYear + ";" +
-                            "factor_list:'"+ factorValues[0] + "';" +
+                            "factor_list:'"+ factorValues[0] + "'\\,'" + factorValues[1] +  "'\\,'" + factorValues[2] + "';" +
                             "region_list:"+ regionList + ";" +
                             "gran_type:" + granType
 			}
@@ -215,8 +215,6 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 		for (var i = 0;i<listVar.factorValues.length;i++){
 
             factorStore[i] = new Ext.data.JsonStore({
-                //url: this.url,
-                //sortInfo: {field: "s_dec", direction: "ASC"},
                 root: 'features',
                 fields: [{
                     name: 'factor',
