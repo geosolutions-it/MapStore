@@ -78,7 +78,11 @@ gxp.plugins.AOI = Ext.extend(gxp.plugins.Tool, {
      */
     // updateMapMove: false,
     
-    
+    /** api: config[container]
+     *  ``Boolean``
+     *  
+     */
+    container: 'fieldset',
     
     
     // start i18n
@@ -127,6 +131,7 @@ gxp.plugins.AOI = Ext.extend(gxp.plugins.Tool, {
      *  
      */
     show: function() {
+        
         var me= this;
         this.map=this.target.mapPanel.map;
 
@@ -180,7 +185,6 @@ gxp.plugins.AOI = Ext.extend(gxp.plugins.Tool, {
             hideLabel : false                    
         });
         
-
         /*if(this.updateMapMove)
             this.map.events.register("move", this, this.aoiUpdater);*/
           
@@ -223,61 +227,6 @@ gxp.plugins.AOI = Ext.extend(gxp.plugins.Tool, {
             layoutConfig: {
                 columns: 3
             },
-            defaults: {
-                // applied to each contained panel
-                bodyStyle:'padding:5px;'
-            },
-            bodyCssClass: 'aoi-fields',
-            items: [                     
-            {
-                layout: "form",
-                cellCls: 'spatial-cell',
-                labelAlign: "top",
-                border: false,
-                colspan: 3,
-                items: [
-                this.northField
-                ]
-            },{
-                layout: "form",
-                cellCls: 'spatial-cell',
-                labelAlign: "top",
-                border: false,
-                items: [
-                this.westField
-                ]
-            },{
-                layout: "form",
-                cellCls: 'spatial-cell',
-                border: false,
-                items: [
-                this.aoiButton
-                ]                
-            },{
-                layout: "form",
-                cellCls: 'spatial-cell',
-                labelAlign: "top",
-                border: false,
-                items: [
-                this.eastField
-                ]
-            },{
-                layout: "form",
-                cellCls: 'spatial-cell',
-                labelAlign: "top",
-                border: false,
-                colspan: 3,
-                items: [
-                this.southField
-                ]
-            }]
-        });
-        
-        var aoiPanel= new Ext.FormPanel({
-            border: false,
-            layout: "fit",
-            id: me.id+"_mainPanel",
-            autoScroll: true,
             listeners: {
                 "afterlayout": function(){
                     Ext.get(me.id+"_bboxAOI-set-EPSG").addListener("click", me.openEPSGWin, me);  
@@ -299,17 +248,80 @@ gxp.plugins.AOI = Ext.extend(gxp.plugins.Tool, {
                    
                 }
             },
-            items:[
-            this.spatialFieldSet,		
-            ]
+            defaults: {
+                // applied to each contained panel
+                bodyStyle:'padding:5px;'
+            },
+            bodyCssClass: 'aoi-fields',
+            items: [                     
+                {
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    labelAlign: "top",
+                    border: false,
+                    colspan: 3,
+                    items: [
+                        this.northField
+                    ]
+                },{
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    labelAlign: "top",
+                    border: false,
+                    items: [
+                        this.westField
+                    ]
+                },{
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    border: false,
+                    items: [
+                        this.aoiButton
+                    ]                
+                },{
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    labelAlign: "top",
+                    border: false,
+                    items: [
+                        this.eastField
+                    ]
+                },{
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    labelAlign: "top",
+                    border: false,
+                    colspan: 3,
+                    items: [
+                        this.southField
+                    ]
+                }]
         });
         
-        return aoiPanel;
+        switch (this.container){
+            case "fieldset":
+                return this.spatialFieldSet;
+                break;
+            case "panel":
+                return new Ext.FormPanel({
+                    border: false,
+                    layout: "fit",
+                    id: me.id+"_mainPanel",
+                    autoScroll: true,
+           
+                    items:[
+                        this.spatialFieldSet,		
+                    ]
+                });
+                break;
+        }
         
-    },
+        return null;
+        
+        },
     
     /** public: method[removeAOILayer]	 
-	 *     remove the AOI selection layer from the map
+     *     remove the AOI selection layer from the map
      */
     removeAOILayer: function(){
         var aoiLayer = this.map.getLayersByName(this.layerName)[0];
@@ -320,19 +332,19 @@ gxp.plugins.AOI = Ext.extend(gxp.plugins.Tool, {
     
     
     /** public: method[reset]	 
-	 *    reset AOI Panel
+     *    reset AOI Panel
      */
     reset: function(){
-         this.removeAOILayer();
-         this.northField.reset();
-         this.southField.reset();
-         this.eastField.reset();
-         this.westField.reset();  
+        this.removeAOILayer();
+        this.northField.reset();
+        this.southField.reset();
+        this.eastField.reset();
+        this.westField.reset();  
     },
     
     /** public: method[setAOI]
      *  :arg bounds: ``Object``
-	 *     change the current AOI, to the given bounds, converting it to AOI projection if needed
+     *     change the current AOI, to the given bounds, converting it to AOI projection if needed
      */
     setAOI: function(bounds) {
         var aoiBounds;
@@ -353,25 +365,25 @@ gxp.plugins.AOI = Ext.extend(gxp.plugins.Tool, {
     
     /** public: method[isValid]
      *  
-	 *     
+     *     
      */
     isValid: function(){
         return(this.westField.isValid() &&
             this.southField.isValid() && 
-                this.eastField.isValid() && 
-                    this.northField.isValid());
+            this.eastField.isValid() && 
+            this.northField.isValid());
     },
     
     
     /** public: method[isDirty]
      *  
-	 *     
+     *     
      */
     isDirty: function(){
         return(this.westField.isDirty() &&
             this.southField.isDirty() && 
-                this.eastField.isDirty() && 
-                    this.northField.isDirty());
+            this.eastField.isDirty() && 
+            this.northField.isDirty());
     },
 
 
@@ -379,7 +391,7 @@ gxp.plugins.AOI = Ext.extend(gxp.plugins.Tool, {
     
     /** public: method[getAOIMapBounds]
      *  
-	 *   return the selected AOI bounds defined with the Map Projection  
+     *   return the selected AOI bounds defined with the Map Projection  
      */
     getAOIMapBounds: function(){
         if(this.map.getProjection() != this.aoiProjection.getCode())  
@@ -391,15 +403,15 @@ gxp.plugins.AOI = Ext.extend(gxp.plugins.Tool, {
     
     /** public: method[getAOIBounds]
      *  
-	 *  return the selected AOI bounds defined with the Panel Projection   
+     *  return the selected AOI bounds defined with the Panel Projection   
      */
     getAOIBounds: function(){
         return new OpenLayers.Bounds(
-                this.westField.getValue(), 
-                this.southField.getValue(), 
-                this.eastField.getValue(), 
-                this.northField.getValue()
-            )
+        this.westField.getValue(), 
+        this.southField.getValue(), 
+        this.eastField.getValue(), 
+        this.northField.getValue()
+    )
     },
     
     
@@ -412,7 +424,7 @@ gxp.plugins.AOI = Ext.extend(gxp.plugins.Tool, {
     },*/
     
     /** private: method[openEpsgWin]
-	 *    Opens a popup with current AOI CRS description 
+     *    Opens a popup with current AOI CRS description 
      */
     openEPSGWin: function() {
       

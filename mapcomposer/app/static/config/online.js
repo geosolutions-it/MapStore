@@ -226,6 +226,7 @@
            {
 	        "ptype": "gxp_aoi",
                 "id": "aoiPanel",
+                "container": "fieldset",
                 "aoiProjectionCode": "EPSG:4326"
 	        
 	        
