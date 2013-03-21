@@ -390,7 +390,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 							text: opt.series.area.name,
                             rotation: 270,
 							style: {
-								color: opt.series.area.color
+								color: opt.series.area.color,
+                                backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
 							}
 						},                    
 						labels: {
@@ -414,7 +415,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 							text: opt.series.prod.name,
                             rotation: 270,
 							style: {
-								color: opt.series.prod.color
+								color: opt.series.prod.color,
+                                backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
 							}
 						},
 						labels: {
@@ -441,8 +443,10 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 							text: opt.series.yield.name,
                             rotation: 270,
 							style: {
-								color: opt.series.yield.color
-							}
+								color: opt.series.yield.color,
+                                backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
+							},
+                            x: 6
 						},
 						labels: {
 							formatter: function () {

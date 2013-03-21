@@ -23,7 +23,6 @@ Ext.namespace("gxp");
 //
 gxp.ControlPanel = Ext.extend(Ext.Panel, {
     commodity: null,
-    panelTitle: null,
     season: null,
     province: null,
     fromYear: null,
@@ -83,7 +82,7 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
             collapsible: true,
             listeners: {
                 removed: function(panel){
-                    if (this.ownerCt.items.length == 0){
+                    if (this.ownerCt.items.length == 0 && this.ownerCt.ownerCt){
                         var tabPanel = Ext.getCmp(this.ownerCt.ownerCt.id);
                         if(tabPanel){
                             tabPanel.remove(this.ownerCt);

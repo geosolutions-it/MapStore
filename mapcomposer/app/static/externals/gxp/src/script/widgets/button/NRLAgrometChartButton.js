@@ -37,7 +37,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
     chartOpt:{
 		series:{
 			prod:{
-					name: '2009',
+					name: '2011',
 					color: '#89A54E',
                     lcolor: 'rgb(207,235,148)',                    
 					type: 'line',
@@ -47,7 +47,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 
 				},
 			yield:{
-					name: '2008',
+					name: '2000',
 					dashStyle: 'shortdot',
 					type: 'line',
 					color: '#4572A7',
@@ -58,7 +58,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 
 				},
 			area:{
-					name: '2000-2009',
+					name: '2000-2011',
 					color: '#AA4643',
                     lcolor: 'rgb(240,140,137)',                    
 					type: 'line',
@@ -176,7 +176,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 			columnWidth: .95,
 			style:'padding:10px 10px 10px 10px',
 			xtype: 'gxp_controlpanel',
-			panelTitle: "XXX",
+			//panelTitle: "XXX",
 			season: listVar.season,
 			province: listVar.numRegion,
 			fromYear: listVar.fromYear,
@@ -279,9 +279,15 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 						categories: ['s_dec'],
 						tickWidth: 0,
 						gridLineWidth: 1,
+                        style: { 
+                            backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
+                        },                        
 						labels: {
+                            style: { 
+                                backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
+                            },                        
                             rotation: 320,
-                            y: +20,
+                            y: +22,
 							formatter: function () {
                                 var months = ["Nov-1","Nov-2","Nov-3","Dec-1","Dec-2","Dec-3","Jan-1","Jan-2","Jan-3","Feb-1","Feb-2","Feb-3","Mar-1","Mar-2","Mar-3","Apr-1","Apr-2","Apr-3","May-1","May-2","May-3","Jun-1","Jun-2","Jun-3","Jul-1","Jul-2","Jul-3","Aug-1","Aug-2","Aug-3","Sep-1","Sep-2","Sep-3","Oct-1","Oct-2","Oct-3"];
                                 if (this.axis.dataMin == 1){
@@ -295,9 +301,12 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 					}],
 					yAxis: [{ // AREA
 						title: {
-							text: listVar.factorValues[i]							
+							text: listVar.factorValues[i],
+                            style: { 
+                                backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
+                            }							
 						},                    
-						labels: {
+						labels: {                   
 							formatter: function () {
 								return this.value;
 							}							
@@ -311,7 +320,12 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 					}], 
 					tooltip: {
                         formatter: function() {
-                            var s = '<b>'+ this.x +'</b>';                            
+                            var months = ["Nov-1","Nov-2","Nov-3","Dec-1","Dec-2","Dec-3","Jan-1","Jan-2","Jan-3","Feb-1","Feb-2","Feb-3","Mar-1","Mar-2","Mar-3","Apr-1","Apr-2","Apr-3","May-1","May-2","May-3","Jun-1","Jun-2","Jun-3","Jul-1","Jul-2","Jul-3","Aug-1","Aug-2","Aug-3","Sep-1","Sep-2","Sep-3","Oct-1","Oct-2","Oct-3"];
+                            if (this.x>=1 && this.x<=18){
+                                var s = '<b>'+ months[this.x-1] +'</b>';
+                            }else{
+                                var s = '<b>'+ months[this.x-1] +'</b>';
+                            }
                             Ext.each(this.points, function(i, point) {
                                 s += '<br/><span style="color:'+i.series.color+'">'+ i.series.name +': </span>'+
                                     '<span style="font-size:12px;">'+ i.y.toFixed(2)+'</span>';
