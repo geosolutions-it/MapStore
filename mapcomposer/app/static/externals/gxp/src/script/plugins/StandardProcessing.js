@@ -63,6 +63,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
     outputTarget: null,
     
+    aoiPanel: null,
+    
     syntheticView: "syntheticview",
     
     appTarget: null,
@@ -187,8 +189,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      *  :arg config: ``Object``
      */
     constructor: function(config) {
-       this.epsgWinHeight= Ext.getBody().getHeight()*.7;
-       this.epsgWinWidth= Ext.getBody().getWidth()*.8;
+      /* this.epsgWinHeight= Ext.getBody().getHeight()*.7;
+       this.epsgWinWidth= Ext.getBody().getWidth()*.8;*/
        gxp.plugins.StandardProcessing.superclass.constructor.apply(this, arguments);
     },
     
@@ -202,8 +204,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             
         var map = this.appTarget.mapPanel.map;        
         
-        this.mapProjection = new OpenLayers.Projection(map.getProjection());
-        this.wgs84Projection = new OpenLayers.Projection("EPSG:4326")
+       /* this.mapProjection = new OpenLayers.Projection(map.getProjection());
+        this.wgs84Projection = new OpenLayers.Projection("EPSG:4326")*/
         
         var processing = this.buildForm(map);
         map.enebaleMapEvent = true;
@@ -214,10 +216,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 	 *     resets the form with initial values
      */
 	resetForm: function(){
+                var aoiPanel = this.appTarget.tools[this.aoiPanel];
 		this.panel.getForm().reset();
-		this.removeAOILayer(this.appTarget.mapPanel.map);
-		this.selectAOI.deactivate();
-		this.aoiButton.toggle(false, true);		
+		aoiPanel.removeAOILayer();
+		/*this.selectAOI.deactivate();
+		this.aoiButton.toggle(false, true);*/		
 		this.resetBBOX(true);
 	},
 	
@@ -327,7 +330,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 	 *  :arg map: ``Object``
 	 *    builds the form for AOI (Area of interest) choosing
      */
-	buildAOIForm: function(map) {		
+	/*buildAOIForm: function(map) {		
         //
         // Ambito Territoriale
         //        
@@ -497,7 +500,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         map.events.register("move", this, this.aoiUpdater);
         
 		return this.spatialFieldSet;
-	},
+	},*/
 	
 	/** private: method[buildTargetForm]
      *    builds the form for target type choosing
@@ -847,6 +850,18 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     buildForm: function(map){		
 		// disable synthetic view tab: why do we have tabs if we can't switch from one tab to the other?
         var syntView = this.appTarget.tools[this.syntheticView];
+        
+        var aoiPanel = this.appTarget.tools[this.aoiPanel];
+        
+        
+        // updates the AOI on map pan / zoom
+        this.aoiUpdater = function() {			
+			var extent=map.getExtent().clone();
+			aoiPanel.setAOI(extent);                    
+			aoiPanel.removeAOILayer(map);			
+        };
+        map.events.register("move", this, this.aoiUpdater);
+        
         syntView.getControlPanel().disable();
 		
 		var containerTab = Ext.getCmp(this.outputTarget);
@@ -858,7 +873,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             autoScroll: true,
             items:[
 				this.buildElaborazioneForm(),
-				this.buildAOIForm(map),
+				//this.buildAOIForm(map),
+                                aoiPanel.show(), 
 				this.buildTargetForm(),
 				this.buildAccidentForm()
             ],
@@ -880,7 +896,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         containerTab.add(this.panel);
         containerTab.setActiveTab(this.panel);
         
-        Ext.get("bboxAOI-set-EPSG").addListener("click", this.openEpsgWin, this);
+        //Ext.get("bboxAOI-set-EPSG").addListener("click", this.openEpsgWin, this);
         
         if(!this.status){
             this.resetBBOX();
@@ -890,7 +906,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 	/** private: method[openEpsgWin]
 	 *    Opens a popup with current AOI CRS description (EPSG:4326)
      */
-	openEpsgWin: function() {
+	/*openEpsgWin: function() {
          var win= new Ext.Window({
                 layout:'fit',
                 
@@ -917,7 +933,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
            });
            
            win.show();
-	},
+	},*/
 	
 	/** private: method[resetCombos]
      *  :arg combos: ``Array``
@@ -952,13 +968,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 	 *  :arg wgs84: ``Boolean``
 	 *     change the current AOI, to the given bounds, converting it to wgs84 if needed
      */
-    setAOI: function(bounds, wgs84) {
+    /*setAOI: function(bounds, wgs84) {
         var wgs84Bounds = wgs84 ? bounds : bounds.transform(this.mapProjection,this.wgs84Projection);
         this.northField.setValue(wgs84Bounds.top);
         this.southField.setValue(wgs84Bounds.bottom);
         this.westField.setValue(wgs84Bounds.left);
         this.eastField.setValue(wgs84Bounds.right);  
-    },
+    },*/
     
 	/** private: method[doProcess]
      *  :arg params: ``Object``	 
@@ -966,15 +982,19 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      */
     doProcess: function(params){
         if(params){
-            //this.showLayer(params);
+          //  this.showLayer(params);
             
+            if(params.roi)
+                this.appTarget.mapPanel.map.zoomToExtent(params.roi);
+            
+            var aoiPanel = this.appTarget.tools[this.aoiPanel];
             var status = this.getStatus(this.panel.getForm());                
             
             //
             // Remove the AOI box
             //
-            this.removeAOILayer(this.appTarget.mapPanel.map);
-            this.selectAOI.deactivate();
+            aoiPanel.removeAOILayer();
+           // this.selectAOI.deactivate();
             
             var containerTab = Ext.getCmp(this.outputTarget);
             var active = containerTab.getActiveTab();
@@ -992,22 +1012,23 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      *  :arg map: ``Object``	 
 	 *     remove the AOI selection layer from the map
      */
-    removeAOILayer: function(map){
+   /* removeAOILayer: function(map){
         var aoiLayer = map.getLayersByName("AOI")[0];
       
         if(aoiLayer)
             map.removeLayer(aoiLayer);    
-    },
+    },*/
     
 	/** private: method[resetBBOX]
      *  :arg extent: ``Boolean``	 
 	 *     reset bbox to current extent (if asked esplicitly or no status is defined) or saved status
      */
     resetBBOX: function(extent){    
+            var aoiPanel = this.appTarget.tools[this.aoiPanel];
 		if(this.status && !extent){
-			this.setAOI(this.status.roi.bbox, true);
+			aoiPanel.setAOI(this.status.roi.bbox/*, true*/);
 		}else{
-			this.setAOI(this.appTarget.mapPanel.map.getExtent());
+			aoiPanel.setAOI(this.appTarget.mapPanel.map.getExtent());
 		}              
     },
     
@@ -1041,6 +1062,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 selectionPrj
             );
         }
+        
+      
     
         filters.push(new OpenLayers.Filter.Spatial({
            type: OpenLayers.Filter.Spatial.BBOX,
@@ -1096,10 +1119,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 	 *     if everything is ok
      */
     viewMap: function(){
-        if(!this.westField.isValid() || 
+        var aoiPanel = this.appTarget.tools[this.aoiPanel];
+        if(! aoiPanel.isValid()){
+       /* if(!this.westField.isValid() || 
             !this.southField.isValid() || 
                 !this.eastField.isValid() || 
-                    !this.northField.isValid()){
+                    !this.northField.isValid()){*/
             Ext.Msg.show({
                 title: this.bboxValidationTitle,
                 buttons: Ext.Msg.OK,
@@ -1109,14 +1134,15 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         
             this.makeParams(this.panel.getForm(), null);
         }else{
-            var selbbox = new OpenLayers.Bounds(
+            var selbbox =  aoiPanel.getAOIMapBounds();/*new OpenLayers.Bounds(
                 this.westField.getValue(), 
                 this.southField.getValue(), 
                 this.eastField.getValue(), 
                 this.northField.getValue()
-            ).transform(this.wgs84Projection,this.mapProjection);
-            
+            ).transform(this.wgs84Projection,this.mapProjection);*/
+      
             if(this.maxROIArea ? selbbox.toGeometry().getArea() > this.maxROIArea : false){
+                
                 var useROI = function(buttonId, text, opt){
 					this.makeParams(this.panel.getForm(), buttonId === 'ok' ? selbbox : null);
                 };
@@ -1129,7 +1155,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     icon: Ext.MessageBox.WARNING,
                     scope: this
                 });                
-            }else{                
+            }else{     
+            
                 this.makeParams(this.panel.getForm(), selbbox);
             }
         }
@@ -1140,6 +1167,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 	 *     updates the risk thema on the map with the given processing parameters
      */
     showLayer: function(params){
+       
         var map = this.appTarget.mapPanel.map;
         
         var filter = new OpenLayers.Filter.Logical({
@@ -1157,7 +1185,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         // Check if the selection layer already exists
         //
         var stdElabLayer = map.getLayersByName(this.selectionLayerTitle)[0];
-      
+     
         if(!stdElabLayer){
             /*stdElabLayer = new OpenLayers.Layer.WMS(
                 this.selectionLayerTitle,         
@@ -1193,10 +1221,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      */
     setStatus: function(status){		
         var store;
+         var aoiPanel = this.appTarget.tools[this.aoiPanel];
         this.status = status;
         this.elaborazione.setValue(this.status.processing);
         this.formula.setValue(this.status.formula);
-        this.setAOI(this.status.roi.bbox);
+        aoiPanel.setAOI(this.status.roi.bbox);
         		
 		store=this.macrobers.getStore(); 
         this.macrobers.setValue(this.status.macroTarget);
@@ -1235,33 +1264,34 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      */
     getStatus: function(form){
         var obj = {};
-        
+        var aoiPanel = this.appTarget.tools[this.aoiPanel];
         obj.processing = this.elaborazione.getValue();
         obj.formula = this.formula.getValue();
         
-        if(this.westField.isDirty() && 
+        /*if(this.westField.isDirty() && 
             this.southField.isDirty() && 
                 this.eastField.isDirty() && 
-                    this.northField.isDirty()){
+                    this.northField.isDirty()){*/
+         if(aoiPanel.isDirty()){
             obj.roi = {
                 label: "Area Selezionata", 
-                bbox : new OpenLayers.Bounds(
+                bbox : aoiPanel.getAOIMapBounds()/*new OpenLayers.Bounds(
                     this.westField.getValue(), 
                     this.southField.getValue(), 
                     this.eastField.getValue(), 
                     this.northField.getValue()
-                ).transform(this.wgs84Projection,this.mapProjection)
+                ).transform(this.wgs84Projection,this.mapProjection)*/
             };    
         }else{
             obj.roi = {
                 label: "Regione Piemonte", 
-                bbox : 
-                    new OpenLayers.Bounds(
+                bbox : aoiPanel.getAOIMapBounds()
+                   /* new OpenLayers.Bounds(
                         this.westField.getValue(), 
                         this.southField.getValue(), 
                         this.eastField.getValue(), 
                         this.northField.getValue()
-                    ).transform(this.wgs84Projection,this.mapProjection)
+                    ).transform(this.wgs84Projection,this.mapProjection)*/
             }
         }
 		
