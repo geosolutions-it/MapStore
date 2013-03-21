@@ -226,8 +226,20 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 				this.controls.splice(index,1);
 				this.layers.splice(index,1);
 				if(this.controls.length<=0){
-					var action = Ext.getCmp('paneltbar').getComponent('cropDataActiveTool');
-					Ext.getCmp('paneltbar').remove(action);
+					var controls =this.controls;
+					/* this timeout is needed becouse moving layers in layer tree
+					   causes a remove and an add. so if only one layer is left
+					   and the user moves the layer, the event empty the this.coltrols array
+					   temporarely. Waiting some time is actually the only way to check if the layer
+					   removed was added again(layer moved) or not,and so remove the button or not.					   
+				   */
+					setTimeout(function(){
+						if(controls.length<=0){
+							var action = Ext.getCmp('paneltbar').getComponent('cropDataActiveTool');
+							Ext.getCmp('paneltbar').remove(action);
+						}
+					},500)
+					
 					
 				}
 				
