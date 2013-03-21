@@ -91,7 +91,10 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
         var factorStore = this.form.output.factors.selModel.selections.items;
         var factorValues = [];
         
-        if (factorStore.length){
+        if (factorStore.length === 0){
+            Ext.Msg.alert("Grid Factors","Must be selected at least one Factor!");
+            return;
+        }else{
             for (var i=0;i<factorStore.length;i++){
                 var factor = factorStore[i].data;
                 var factorValue = factor.factor;
