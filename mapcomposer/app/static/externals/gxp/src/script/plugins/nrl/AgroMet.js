@@ -81,13 +81,15 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 					xtype: 'radiogroup',
 					anchor:'100%',
 					autoHeight:true,
+					name:'outputType',
+					ref:'outputType',                    
 					checkboxToggle:true,
 					title: this.outputTypeText,
 					autoHeight: true,
 
 					defaultType: 'radio', // each item will be a radio button
 					items:[
-						{boxLabel: 'Data' , name: 'outputtype', inputValue: 'data'},
+						{boxLabel: 'Data' , name: 'outputtype', inputValue: 'data', disabled: true},
 						{boxLabel: 'Chart', name: 'outputtype', inputValue: 'chart', checked: true}
 					]
 				},{ 

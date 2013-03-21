@@ -169,17 +169,18 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					anchor:'100%',
 					autoHeight:true,
 					checkboxToggle:true,
-					//title: ,
+					name:'outputType',
+					ref:'outputType',
 					autoHeight: true,
-
 					defaultType: 'radio', // each item will be a radio button
 					items:[
-						{boxLabel: 'Data' , name: 'outputtype', inputValue: 'data'},
+						{boxLabel: 'Data' , name: 'outputtype', listeners: this.setRadioQtip('You have to be registered to use this method'), inputValue: 'data', disabled: true},
 						{boxLabel: 'Chart', name: 'outputtype', inputValue: 'chart', checked: true},
 						{boxLabel: 'Map'  , name: 'outputtype', inputValue: 'map'}
 						
 					],
-                    listeners: {
+                 
+                    listeners: {           
                         change: function(c,checked){
                             var outputValue = c.getValue().inputValue;
                             var variable = this.output.variable;
@@ -511,6 +512,29 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 		},this);
 		
 		return this.output;
-	}
+	},
+    setRadioQtip: function (t){ 
+        var o = { 
+            afterrender: function() {
+                //Ext.QuickTips.init();
+                var id  = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
+                Ext.QuickTips.register({ target:  id.elements[id.elements.length-1].id, text: t});
+            },
+            destroy:function(){
+                var id = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
+                Ext.QuickTips.unregister(id.elements[id.elements.length-1].id);
+            },                                
+            enable: function() {
+                var id = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
+                Ext.QuickTips.unregister(id.elements[id.elements.length-1].id);
+            },
+            disable: function() {
+                //Ext.QuickTips.init();
+                var id  = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
+                Ext.QuickTips.register({ target:  id.elements[id.elements.length-1].id, text: t});
+            }
+        }        
+        return o;
+    } 
  });
  Ext.preg(gxp.plugins.nrl.CropData.prototype.ptype, gxp.plugins.nrl.CropData);
