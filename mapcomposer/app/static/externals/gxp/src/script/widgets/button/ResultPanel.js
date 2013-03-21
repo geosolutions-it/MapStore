@@ -23,6 +23,7 @@ Ext.namespace("gxp");
 //
 gxp.ControlPanel = Ext.extend(Ext.Panel, {
     commodity: null,
+    panelTitle: null,
     season: null,
     province: null,
     fromYear: null,
@@ -83,7 +84,7 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
             listeners: {
                 removed: function(panel){
                     if (this.ownerCt.items.length == 0){
-                        var tabPanel = Ext.getCmp('cropData_tab');
+                        var tabPanel = Ext.getCmp(this.ownerCt.ownerCt.id);
                         if(tabPanel){
                             tabPanel.remove(this.ownerCt);
                         }
@@ -95,7 +96,7 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
     }
     
 
-		this.title= this.commodity ? "Commodity: " + this.commodity.toUpperCase() +  " - Season: " + this.season.toUpperCase(): "PIPPO",
+		this.title= this.commodity ? "Commodity: " + this.commodity.toUpperCase() +  " - Season: " + this.season.toUpperCase() : "Season: " + this.season.toUpperCase() + " - From Year: "+ this.fromYear + " - To Year: "+ this.toYear,
 		this.tools= [{
 			id: 'info',
 			handler: function () {
@@ -141,7 +142,7 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
             removed: function(p){
                 if (this.ownerCt.items.length == 0){
                     var tabPanel = Ext.getCmp('id_mapTab');
-                    tabPanel.remove('cropData_tab');
+                    tabPanel.remove(this.ownerCt.id);
                 }
             },
             bodyResize: function(p, width, height){
