@@ -207,14 +207,45 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 	makeChart: function(store,listVar ){
 		
 		var grafici = [];
+		var factorStore = [];
 		
-		
-		//for (var r = 0;r<listVar.factorValues.length;r++){
-        for (var r = 0;r<1;r++){
-        
-			// Store for random data
-            //store = store.filter('factor', listVar.factorValues[r],true,true); 
+		for (var i = 0;i<listVar.factorValues.length;i++){
 
+            factorStore[i] = new Ext.data.JsonStore({
+                //url: this.url,
+                //sortInfo: {field: "s_dec", direction: "ASC"},
+                root: 'features',
+                fields: [{
+                    name: 'factor',
+                    mapping: 'properties.factor'
+                },{
+                    name: 'month',
+                    mapping: 'properties.month'
+                },{
+                    name: 'dec',
+                    mapping: 'properties.dec'
+                },{
+                    name: 's_dec',
+                    mapping: 'properties.s_dec'
+                }, {
+                    name: 'current',
+                    mapping: 'properties.current'
+                },{
+                    name: 'previous',
+                    mapping: 'properties.previous'
+                },{
+                    name: 'aggregated',
+                    mapping: 'properties.aggregated'
+                }]
+                
+            });
+
+            store.queryBy(function(record,id){
+                if (record.get('factor') == listVar.factorValues[i]){
+                    factorStore[i].insert(id,record);
+                }
+            });
+            factorStore[i].sort("s_dec", "ASC");    
 			var chart;
 			
 			chart = new Ext.ux.HighChart({
@@ -227,7 +258,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 				],
 				height: this.chartOpt.height,
 				//width: 900,
-				store: store,
+				store: factorStore[i],
 				animShift: true,
 				
 				chartConfig: {
@@ -241,7 +272,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                         url: "http://84.33.2.24/highcharts-export/"
                     },
 					title: {
-						text: 'TEST'
+						text: listVar.factorValues[i]
 						
 					},
 					
@@ -266,7 +297,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 					}],
 					yAxis: [{ // AREA
 						title: {
-							text: listVar.factorValues[0]
+							text: listVar.factorValues[i]
 							
 						},                    
 						labels: {
@@ -310,6 +341,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 				}
 			});
 			grafici.push(chart);
+            //store.clearFilter();            
 		}
 		
 		return grafici; 
