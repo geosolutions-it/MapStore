@@ -297,7 +297,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 						}
 					 },scope:this
 				});
-				Ext.getCmp('paneltbar').addItem(action);
+				Ext.getCmp('paneltbar').insertButton(19,action);
 				Ext.getCmp('paneltbar').doLayout();
 			}
 			
