@@ -169,12 +169,13 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					anchor:'100%',
 					autoHeight:true,
 					checkboxToggle:true,
-					//title: ,
+					name:'outputType',
+					ref:'outputType',
 					autoHeight: true,
 
 					defaultType: 'radio', // each item will be a radio button
 					items:[
-						{boxLabel: 'Data' , name: 'outputtype', inputValue: 'data'},
+						{boxLabel: 'Data' , name: 'outputtype', inputValue: 'data', disabled: true},
 						{boxLabel: 'Chart', name: 'outputtype', inputValue: 'chart', checked: true},
 						{boxLabel: 'Map'  , name: 'outputtype', inputValue: 'map'}
 						
