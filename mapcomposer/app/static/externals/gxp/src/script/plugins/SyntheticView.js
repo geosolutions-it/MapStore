@@ -75,7 +75,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     analyticView: false,
     
-    aoiPanel: null,
+    aoi: null,
     
     /** private: method[constructor]
      *  :arg config: ``Object``
@@ -190,7 +190,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             this.processingPane = new gxp.plugins.StandardProcessing({
                 outputTarget: this.outputTarget,
                 geometryName: this.geometryName,
-                aoiPanel: this.aoiPanel,
+                aoi: this.aoi,
                 accidentTipologyName: this.accidentTipologyName,
                 selectionLayerName: this.selectionLayerName,
                 selectionLayerTitle: this.selectionLayerTitle,         
