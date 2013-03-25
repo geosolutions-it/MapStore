@@ -59,7 +59,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 	outputTypeText:'Output Type',
     radioQtipTooltip: "You have to be logged in to use this method",
 	
-    factorsurl:"http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:AgroMet_factors&max&outputFormat=json",
+    factorsurl:"http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
     
 	rangesUrl: "http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
 
@@ -142,7 +142,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                     autoHeight:true,
                     ref: 'factors',
                     viewConfig: {forceFit: true},
-                    columns: [{id:'name',dataIndex:'factor',header:'Factor'}],
+                    columns: [{id:'name',dataIndex:'label',header:'Factor'}],
                     autoScroll:true,
                     store: new Ext.data.JsonStore({
                        
@@ -152,8 +152,8 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 						autoLoad:true,
 						fields:[
 							{name:'factor', mapping:'properties.factor'},
-							{name:'max', mapping:'properties.max'},
-							{name:'min', mapping:'properties.min'}
+							{name:'label', mapping:'properties.label'},
+							{name:'aggregation', mapping:'properties.aggregation'}
 						]
 						
                     })
