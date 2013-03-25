@@ -59,7 +59,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 					"gran_type:" + values.areatype.toLowerCase() + ";" +
 					"start_year:" + values.endYear +";" + //same year for start and end.
 					"end_year:" + values.endYear +";" + 
-					"yield_factor:" + yieldFactor
+					"yield_factor:" + yieldFactor;
 			
 			var wms = new OpenLayers.Layer.WMS(values.crop + " " + values.endYear + " - "+values.variable,//todo: choice the style for the needed variable
 			   "http://84.33.2.24/geoserver/wms",
@@ -266,6 +266,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
             var record = new Record(data);
 			
 			target.mapPanel.map.addLayers([wms]);
+			Ext.getCmp('id_mapTab').setActiveTab(0);
 			target.mapPanel.map.addControl(control);
 			//add to list of layers and controls 
 			//target.mapPanel.layers.add([record]);
@@ -296,7 +297,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 						}
 					 },scope:this
 				});
-				Ext.getCmp('paneltbar').addItem(action);
+				Ext.getCmp('paneltbar').insertButton(19,action);
 				Ext.getCmp('paneltbar').doLayout();
 			}
 			
@@ -314,7 +315,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 					
 				}
 				
-				
+			
 			
 			},this);
 			
