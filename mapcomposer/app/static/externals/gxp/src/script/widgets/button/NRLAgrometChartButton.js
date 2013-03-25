@@ -36,7 +36,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
     form: null,
     chartOpt:{
 		series:{
-			prod:{
+			current:{
 					name: '2011',
 					color: '#89A54E',
                     lcolor: 'rgb(207,235,148)',                    
@@ -46,7 +46,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 					xField:'s_dec'
 
 				},
-			yield:{
+			previous:{
 					name: '2000',
 					dashStyle: 'shortdot',
 					type: 'line',
@@ -57,7 +57,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 					xField:'s_dec'
 
 				},
-			area:{
+			aggregated:{
 					name: '2000-2011',
 					color: '#AA4643',
                     lcolor: 'rgb(240,140,137)',                    
@@ -251,9 +251,9 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 			chart = new Ext.ux.HighChart({
 				animation:false,
 				series: [
-					this.chartOpt.series.prod,
-					this.chartOpt.series.yield,
-					this.chartOpt.series.area					
+					this.chartOpt.series.previous,
+					this.chartOpt.series.current,
+					this.chartOpt.series.aggregated					
 				],
 				height: this.chartOpt.height,
 				//width: 900,
