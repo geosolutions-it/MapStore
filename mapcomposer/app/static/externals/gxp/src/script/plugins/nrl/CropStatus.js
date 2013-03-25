@@ -45,6 +45,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
     ptype: "nrl_crop_status",
 
 	areaFilter: "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
+    radioQtipTooltip: "You have to be logged in to use this method",
     
     /** private: method[addOutput]
      *  :arg config: ``Object``
@@ -77,7 +78,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 
 							defaultType: 'radio', // each item will be a radio button
 							items:[
-								{boxLabel: 'Data' , name: 'outputtype', inputValue: 'data', disabled: true},
+								{boxLabel: 'Data' , name: 'outputtype', listeners: this.setRadioQtip(this.radioQtipTooltip), inputValue: 'data', disabled: true},
 								{boxLabel: 'Chart', name: 'outputtype', inputValue: 'chart', checked: true}
 							]
 						},{ 
@@ -146,6 +147,29 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 		},this);
 		return this.output;
 		
-	}
+	},
+    setRadioQtip: function (t){ 
+        var o = { 
+            afterrender: function() {
+                //Ext.QuickTips.init();
+                var id  = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
+                Ext.QuickTips.register({ target:  id.elements[id.elements.length-1].id, text: t});
+            },
+            destroy:function(){
+                var id = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
+                Ext.QuickTips.unregister(id.elements[id.elements.length-1].id);
+            },                                
+            enable: function() {
+                var id = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
+                Ext.QuickTips.unregister(id.elements[id.elements.length-1].id);
+            },
+            disable: function() {
+                //Ext.QuickTips.init();
+                var id  = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
+                Ext.QuickTips.register({ target:  id.elements[id.elements.length-1].id, text: t});
+            }
+        }        
+        return o;
+    } 
  });
  Ext.preg(gxp.plugins.nrl.CropStatus.prototype.ptype, gxp.plugins.nrl.CropStatus);

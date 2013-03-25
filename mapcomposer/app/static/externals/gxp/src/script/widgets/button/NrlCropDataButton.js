@@ -67,7 +67,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 		},
         height: 400
 	},
-    handler: function () {
+    handler: function () {   
         var numRegion = [];
         var regStore = this.form.output.aoiFieldSet.AreaSelector.store
         var records = regStore.getRange();

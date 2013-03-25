@@ -70,7 +70,6 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
         height: 400
 	},
     handler: function () {
-
         var numRegion = [];
         var regStore = this.form.output.aoiFieldSet.AreaSelector.store
         var records = regStore.getRange();

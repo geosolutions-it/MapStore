@@ -49,6 +49,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 	seasonText:'Season',
 	/** layer Name **/
     hilightLayerName:"CropData_Selection_Layer",//TODO doesn't seems to run
+    radioQtipTooltip: "You have to be logged in to use this method",
 	layerStyle:{
         strokeColor: "red",
         strokeWidth: 1,
@@ -174,7 +175,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					autoHeight: true,
 					defaultType: 'radio', // each item will be a radio button
 					items:[
-						{boxLabel: 'Data' , name: 'outputtype', listeners: this.setRadioQtip('You have to be registered to use this method'), inputValue: 'data', disabled: true},
+						{boxLabel: 'Data' , name: 'outputtype', listeners: this.setRadioQtip(this.radioQtipTooltip), inputValue: 'data', disabled: true},
 						{boxLabel: 'Chart', name: 'outputtype', inputValue: 'chart', checked: true},
 						{boxLabel: 'Map'  , name: 'outputtype', inputValue: 'map'}
 						
