@@ -89,7 +89,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 
         var factorStore = this.form.output.factors.selModel.selections.items;
         var factorValues = [];
-        
+        var factorList = "";
         if (factorStore.length === 0){
             Ext.Msg.alert("Grid Factors","Must be selected at least one Factor!");
             return;
@@ -98,6 +98,12 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                 var factor = factorStore[i].data;
                 var factorValue = factor.factor;
                 factorValues.push(factorValue);
+                if(i==factorStore.length-1){
+                    factorList += "'" + factorValue + "'";
+                }else{
+                    factorList += "'" + factorValue.concat("'\\,");
+                    
+                }
             }
         }
         
@@ -153,13 +159,13 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 				outputFormat: "json",
 				viewparams: season == 'rabi' ? "start_year:"+ fromYear + ";" +
                     "end_year:"+ toYear + ";" +
-                    "factor_list:'"+ factorValues[0] + "'\\,'" + factorValues[1] +  "'\\,'" + factorValues[2] + "';" +
+                    "factor_list:"+ factorList + ";" +
                     "region_list:"+ regionList + ";" +
                     "gran_type:" + granType + ";" +                            
                     "season_flag:NOT" : + 
                     "start_year:"+ fromYear + ";" +
                     "end_year:"+ toYear + ";" +
-                    "factor_list:'"+ factorValues[0] + "'\\,'" + factorValues[1] +  "'\\,'" + factorValues[2] + "';" +
+                    "factor_list:"+ factorList + ";" +
                     "region_list:"+ regionList + ";" +
                     "gran_type:" + granType
 			}
@@ -298,7 +304,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 							}							
 						}                        
 					}],
-					yAxis: [{ // AREA
+					yAxis: [{ // YEARS
 						title: {
 							text: listVar.factorValues[i],
                             style: { 
@@ -310,12 +316,6 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 								return this.value;
 							}							
 						}
-                        /*plotLines: [{ //mid values
-							value: areaavg,
-							color: opt.series.area.lcolor,
-							dashStyle: 'LongDash',
-							width: 1                       
-						}] */
 					}], 
 					tooltip: {
                         formatter: function() {
