@@ -76,10 +76,18 @@
 				"source": "nrl",
 				"title": "National Boundary",
 				"name": "nrl:national_boundary",
-				"group": "Admin",
+				"group": "background",
 				"visibility": true
-			},
-			{
+			},{
+					"source": "ol",
+					"group": "background",
+					"fixed": true,
+					"type": "OpenLayers.Layer",
+					"visibility": false,
+					"args": [
+						"None", {"visibility": false}
+					]
+			},{
 				"source": "nrl",
 				"title": "Province Boundary",
 				"name": "nrl:province_boundary",
@@ -216,6 +224,14 @@
 			 
 		  },
 		  "outputTarget":"nrl"
+	  },{
+			"actions": ["->"], 
+			"actionTarget": "paneltbar"
+	  },{
+			"ptype":"gxp_login",
+			"loginService":"http://localhost:8081/ciao",
+			"isDummy":true,
+			"actionTarget": "paneltbar"
 	  }
 	]
 }
