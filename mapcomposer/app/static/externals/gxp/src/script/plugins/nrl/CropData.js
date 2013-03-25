@@ -192,7 +192,8 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 areaSelector.enable();
                                 submitButton.destroy();
                                 delete submitButton;
-                                this.output.addButton({               
+                                this.output.addButton({              
+									url: 'http://84.33.2.24/geoserver/ows',//TODO externalize this
                                     xtype: 'gxp_nrlCropDataTabButton',
                                     ref: '../submitButton',
                                     target:this.target,
