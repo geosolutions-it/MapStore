@@ -165,7 +165,9 @@ font-family: tahoma, arial, helvetica, sans-serif;
 .x-btn .icon-mapcursor{
 	background-image: url(img/map_cursor.png);
 }
-
+.x-btn .icon-disk{
+	background-image: url(img/silk/disk.png);
+}
 /* Pan- and Zoom- Panel Styles*/
 
 .olControlPanPanel div {
