@@ -63,7 +63,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
     outputTarget: null,
     
-    aoiPanel: null,
+    aoi: null,
     
     syntheticView: "syntheticview",
     
@@ -81,7 +81,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     
     urlEPSG: null,
     epsgWinHeight: null,
-    epsgWinWidth: null,   	    
+    epsgWinWidth: null,  
+
+    aoiFieldset: null,
     /*
     holdValues: {
         "L": 8,
@@ -194,6 +196,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
        gxp.plugins.StandardProcessing.superclass.constructor.apply(this, arguments);
     },
     
+    
     /** public: method[show]
      *  :arg appTarget: ``Object``
      */
@@ -202,7 +205,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         if(!this.appTarget)
             this.appTarget = appTarget;
             
-        var map = this.appTarget.mapPanel.map;        
+        var map = this.appTarget.mapPanel.map;    
+        this.aoiFieldset=this.appTarget.tools[this.aoi].getAOI();   
+    
         
        /* this.mapProjection = new OpenLayers.Projection(map.getProjection());
         this.wgs84Projection = new OpenLayers.Projection("EPSG:4326")*/
@@ -216,9 +221,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 	 *     resets the form with initial values
      */
 	resetForm: function(){
-                var aoiPanel = this.appTarget.tools[this.aoiPanel];
+                
 		this.panel.getForm().reset();
-		aoiPanel.removeAOILayer();
+		this.aoiFieldset.removeAOILayer();
 		/*this.selectAOI.deactivate();
 		this.aoiButton.toggle(false, true);*/		
 		this.resetBBOX(true);
@@ -850,15 +855,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     buildForm: function(map){		
 		// disable synthetic view tab: why do we have tabs if we can't switch from one tab to the other?
         var syntView = this.appTarget.tools[this.syntheticView];
-        
-        var aoiPanel = this.appTarget.tools[this.aoiPanel];
-        
-        
+        var me= this;
         // updates the AOI on map pan / zoom
         this.aoiUpdater = function() {			
 			var extent=map.getExtent().clone();
-			aoiPanel.setAOI(extent);                    
-			aoiPanel.removeAOILayer(map);			
+			me.aoiFieldset.setAOI(extent);                    
+			me.aoiFieldset.removeAOILayer(map);			
         };
         map.events.register("move", this, this.aoiUpdater);
         
@@ -874,7 +876,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             items:[
 				this.buildElaborazioneForm(),
 				//this.buildAOIForm(map),
-                                aoiPanel.show(), 
+                                me.aoiFieldset, 
 				this.buildTargetForm(),
 				this.buildAccidentForm()
             ],
@@ -986,14 +988,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             
             if(params.roi)
                 this.appTarget.mapPanel.map.zoomToExtent(params.roi);
-            
-            var aoiPanel = this.appTarget.tools[this.aoiPanel];
+
             var status = this.getStatus(this.panel.getForm());                
             
             //
             // Remove the AOI box
             //
-            aoiPanel.removeAOILayer();
+            this.aoiFieldset.removeAOILayer();
            // this.selectAOI.deactivate();
             
             var containerTab = Ext.getCmp(this.outputTarget);
@@ -1024,11 +1025,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 	 *     reset bbox to current extent (if asked esplicitly or no status is defined) or saved status
      */
     resetBBOX: function(extent){    
-            var aoiPanel = this.appTarget.tools[this.aoiPanel];
+   
 		if(this.status && !extent){
-			aoiPanel.setAOI(this.status.roi.bbox/*, true*/);
+			this.aoiFieldset.setAOI(this.status.roi.bbox/*, true*/);
 		}else{
-			aoiPanel.setAOI(this.appTarget.mapPanel.map.getExtent());
+			this.aoiFieldset.setAOI(this.appTarget.mapPanel.map.getExtent());
 		}              
     },
     
@@ -1119,8 +1120,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 	 *     if everything is ok
      */
     viewMap: function(){
-        var aoiPanel = this.appTarget.tools[this.aoiPanel];
-        if(! aoiPanel.isValid()){
+      
+        if(! this.aoiFieldset.isValid()){
        /* if(!this.westField.isValid() || 
             !this.southField.isValid() || 
                 !this.eastField.isValid() || 
@@ -1134,7 +1135,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         
             this.makeParams(this.panel.getForm(), null);
         }else{
-            var selbbox =  aoiPanel.getAOIMapBounds();/*new OpenLayers.Bounds(
+            var selbbox =  this.aoiFieldset.getAOIMapBounds();/*new OpenLayers.Bounds(
                 this.westField.getValue(), 
                 this.southField.getValue(), 
                 this.eastField.getValue(), 
@@ -1221,11 +1222,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      */
     setStatus: function(status){		
         var store;
-         var aoiPanel = this.appTarget.tools[this.aoiPanel];
+        
         this.status = status;
         this.elaborazione.setValue(this.status.processing);
         this.formula.setValue(this.status.formula);
-        aoiPanel.setAOI(this.status.roi.bbox);
+        this.aoiFieldset.setAOI(this.status.roi.bbox);
         		
 		store=this.macrobers.getStore(); 
         this.macrobers.setValue(this.status.macroTarget);
@@ -1264,7 +1265,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      */
     getStatus: function(form){
         var obj = {};
-        var aoiPanel = this.appTarget.tools[this.aoiPanel];
+    
         obj.processing = this.elaborazione.getValue();
         obj.formula = this.formula.getValue();
         
@@ -1272,10 +1273,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             this.southField.isDirty() && 
                 this.eastField.isDirty() && 
                     this.northField.isDirty()){*/
-         if(aoiPanel.isDirty()){
+         if(this.aoiFieldset.isDirty()){
             obj.roi = {
                 label: "Area Selezionata", 
-                bbox : aoiPanel.getAOIMapBounds()/*new OpenLayers.Bounds(
+                bbox : this.aoiFieldset.getAOIMapBounds()/*new OpenLayers.Bounds(
                     this.westField.getValue(), 
                     this.southField.getValue(), 
                     this.eastField.getValue(), 
@@ -1285,7 +1286,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }else{
             obj.roi = {
                 label: "Regione Piemonte", 
-                bbox : aoiPanel.getAOIMapBounds()
+                bbox : this.aoiFieldset.getAOIMapBounds()
                    /* new OpenLayers.Bounds(
                         this.westField.getValue(), 
                         this.southField.getValue(), 

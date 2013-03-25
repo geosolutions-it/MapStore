@@ -31,14 +31,29 @@ OpenLayers.Control.SetBox = OpenLayers.Class(OpenLayers.Control, {
     
     onChangeAOI: null,
     
+    layerName: "AOI",
+    
+    aoiStyle: null,
+    
     map: null,
+    
+    displayInLayerSwitcher: false,
 
     /**
      * Method: draw
      */    
     draw: function() {
+       
         this.handler = new OpenLayers.Handler.Box( this,
-                            {done: this.setAOI}, {keyMask: this.keyMask} );
+        {
+            done: this.setAOI
+        }, 
+        {
+            boxDivClassName: this.boxDivClassName   
+        },
+        {
+            keyMask: this.keyMask
+        } );
     },
 
     /**
@@ -52,14 +67,14 @@ OpenLayers.Control.SetBox = OpenLayers.Class(OpenLayers.Control, {
         var control;
       
         if(this.map.enebaleMapEvent)
-           control = this.map.enebaleMapEvent;
+            control = this.map.enebaleMapEvent;
         else
-           control = false;
+            control = false;
            
         if(control){    
     
             if(this.aoi!=null){       
-              this.boxes.removeMarker(this.aoi);
+                this.boxes.removeFeatures(this.aoi);
             }
             
             var bounds;
@@ -67,14 +82,14 @@ OpenLayers.Control.SetBox = OpenLayers.Class(OpenLayers.Control, {
             if (position instanceof OpenLayers.Bounds) {
                 if (!this.out) {
                     var minXY = this.map.getLonLatFromPixel(
-                                new OpenLayers.Pixel(position.left, position.bottom));
+                        new OpenLayers.Pixel(position.left, position.bottom));
                     var maxXY = this.map.getLonLatFromPixel(
-                                new OpenLayers.Pixel(position.right, position.top));
+                        new OpenLayers.Pixel(position.right, position.top));
                     bounds = new OpenLayers.Bounds(minXY.lon, minXY.lat,
-                                                   maxXY.lon, maxXY.lat);
+                        maxXY.lon, maxXY.lat);
 
                     this.currentAOI= minXY.lon+','+minXY.lat+','+
-                                     maxXY.lon+','+maxXY.lat;   
+                    maxXY.lon+','+maxXY.lat;   
                 } else {
                     var pixWidth = Math.abs(position.right-position.left);
                     var pixHeight = Math.abs(position.top-position.bottom);
@@ -92,25 +107,31 @@ OpenLayers.Control.SetBox = OpenLayers.Class(OpenLayers.Control, {
                     this.currentAOI=xmin+','+ymin+','+xmax+','+ymax;
                 }
 
-                var x=this.map.getLayersByName("AOI");
-                var index=null;
-                if(x.length>0){
-                    index=this.map.getLayerIndex(x[0]);
-                    this.map.removeLayer(x[0]);
-                }
-                  
-                this.boxes = new OpenLayers.Layer.Boxes("AOI",{
-                    displayInLayerSwitcher: false
-                });
-                this.aoi = new OpenLayers.Marker.Box(bounds);
-                this.boxes.addMarker(this.aoi);
-                this.map.addLayer(this.boxes);
+                if(this.layerName){
+                    var x=this.map.getLayersByName(this.layerName);
+                    var index=null;
+                    if(x.length>0){
+                        index=this.map.getLayerIndex(x[0]);
+                        this.map.removeLayer(x[0]);
+                    }
+                    var me=this;
+                    this.boxes  = new OpenLayers.Layer.Vector( this.layerName,{
+                        displayInLayerSwitcher: me.displayInLayerSwitcher,
+                        styleMap: me.aoiStyle
+                    });
+                    this.aoi = new OpenLayers.Feature.Vector(bounds.toGeometry());
+                    this.boxes.addFeatures(this.aoi);
+                     
+                    this.map.addLayer(this.boxes);
                 
-                if(index)
-                    this.map.setLayerIndex(this.boxes,index);
+                   
+                    if(index)
+                        this.map.setLayerIndex(this.boxes,index); 
+                }
+                
                     
                 if(this.onChangeAOI)
-                   this.onChangeAOI();
+                    this.onChangeAOI();
                    
             } else { 
                 //
@@ -118,10 +139,10 @@ OpenLayers.Control.SetBox = OpenLayers.Class(OpenLayers.Control, {
                 //
                 if (!this.out) {
                     this.map.setCenter(this.map.getLonLatFromPixel(position),
-                                   this.map.getZoom() + 1);
+                        this.map.getZoom() + 1);
                 } else {
                     this.map.setCenter(this.map.getLonLatFromPixel(position),
-                                   this.map.getZoom() - 1);
+                        this.map.getZoom() - 1);
                 }
             }
         }      
