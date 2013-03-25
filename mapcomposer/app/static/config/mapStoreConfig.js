@@ -395,6 +395,12 @@
             "index":15
         }
     },
+	{
+	        "ptype": "gxp_aoi",
+			"id": "aoiPanel",
+			"container": "fieldset",
+			"aoiProjectionCode": "EPSG:4326"
+	    },
     {
         "ptype":"gxp_navigation",
         "toggleGroup":"toolGroup",
@@ -500,6 +506,7 @@
         "ptype": "gxp_syntheticview",
         "outputTarget": "east",
         "id": "syntheticview",
+		"aoiPanel": "aoiPanel",
         "selectionLayerName": "aggregated_data_selection",
         "selectionLayerTitle": "Rischio Totale", 	        
         "bufferLayerNameHuman": "buffer_human",
