@@ -1,7 +1,8 @@
 {
    "geoStoreBase":"",
-   "gnBaseUrl": "http://localhost:8080/geonetwork/",
+   "gnBaseUrl": "http://sr-vm160-sitt1.comune.intranet/geonetwork/",
    "proxy":"/http_proxy/proxy/?url=",
+   "xmlJsonTranslate": "",
    "defaultLanguage": "it",
    "tab": true,
    "gsSources":{ 
@@ -24,11 +25,11 @@
 	"map": {
 		"projection": "EPSG:900913",
 		"units": "m",
-		"center": [1250000.000000, 5370000.000000],
-		"zoom":5,
+		"center": [1251650, 5430300],
+		"zoom": 12,
 		"maxExtent": [
-			-20037508.34, -20037508.34,
-			20037508.34, 20037508.34
+				1233700, 5418400,
+				1269600, 5442200
 		],
 		"layers": [
 			{
@@ -66,8 +67,7 @@
 	},
 	"cswconfig": {
 		"catalogs": [
-				{"name": "SIT Comune FI" , "url": "http://localhost:8080/geonetwork/srv/it/csw", "description": "GeoNetwork del Comune di Firenze"},
-		        {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina", "metaDataOptions":{"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page","idParam":"uuid","idIndex":0}},
+				{"name": "SIT Comune FI" , "url": "http://sr-vm160-sitt1.comune.intranet/geonetwork/srv/it/csw", "description": "GeoNetwork del Comune di Firenze"},		        {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina", "metaDataOptions":{"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page","idParam":"uuid","idIndex":0}},
 				{"name": "Treviso", "url": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw", "description": "Treviso Geonetwork"},
 				{"name": "kscNet", "url": "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw", "description": "kscNet"},
 				{"name": "CSI-CGIAR", "url": "http://geonetwork.csi.cgiar.org/geonetwork/srv/en/csw", "description" : "CSI-CGIAR"},
@@ -78,11 +78,11 @@
 			],
 		"dcProperty": "title",
 		"initialBBox": {
-		   "minx":-13,
-		   "miny":10,
-			"maxx":-10,
-			"maxy":13
-		}, 
+			"minx": 11.145,
+			"miny": 43.718,
+			"maxx": 11.348,
+			"maxy": 43.84
+		},
 		"cswVersion": "2.0.2",
 		"filterVersion": "1.1.0",
 		"start": 1,
