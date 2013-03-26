@@ -327,6 +327,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							this.output.referenceYear.setText(end);
 						},
                         afterrender: function(component) {
+							if(this.output.yearRangeSelector!=component)return;
                             yearRangeStore.load({
 								 callback:function(){
 									var start  = yearRangeStore.getById('Wheat');
