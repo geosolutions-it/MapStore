@@ -153,7 +153,8 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 						fields:[
 							{name:'factor', mapping:'properties.factor'},
 							{name:'label', mapping:'properties.label'},
-							{name:'aggregation', mapping:'properties.aggregation'}
+							{name:'aggregation', mapping:'properties.aggregation'},
+							{name:'unit', mapping:'properties.unit'}
 						]
 						
                     })
