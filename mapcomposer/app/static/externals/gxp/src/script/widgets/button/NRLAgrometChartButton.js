@@ -37,7 +37,6 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
     chartOpt:{
 		series:{
 			current:{
-					name: '2011',
 					color: '#89A54E',
                     lcolor: 'rgb(207,235,148)',                    
 					type: 'line',
@@ -47,8 +46,6 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 
 				},
 			previous:{
-					name: '2000',
-					dashStyle: 'shortdot',
 					type: 'line',
 					color: '#4572A7',
                     lcolor: 'rgb(139,184,237)',
@@ -58,7 +55,6 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 
 				},
 			aggregated:{
-					name: '2000-2011',
 					color: '#AA4643',
                     lcolor: 'rgb(240,140,137)',                    
 					type: 'line',
@@ -162,7 +158,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                     "factor_list:"+ factorList + ";" +
                     "region_list:"+ regionList + ";" +
                     "gran_type:" + granType + ";" +                            
-                    "season_flag:NOT" : + 
+                    "season_flag:NOT" :  
                     "start_year:"+ fromYear + ";" +
                     "end_year:"+ toYear + ";" +
                     "factor_list:"+ factorList + ";" +
@@ -257,9 +253,16 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 			chart = new Ext.ux.HighChart({
 				animation:false,
 				series: [
-					this.chartOpt.series.previous,
-					this.chartOpt.series.current,
-					this.chartOpt.series.aggregated					
+					Ext.apply({
+							name:listVar.toYear -1
+						},this.chartOpt.series.previous
+					),
+					Ext.apply({
+							name:listVar.toYear 
+						},this.chartOpt.series.current),
+					Ext.apply({
+							name:listVar.fromYear +"-"+ listVar.toYear
+						},this.chartOpt.series.aggregated)					
 				],
 				height: this.chartOpt.height,
 				//width: 900,
