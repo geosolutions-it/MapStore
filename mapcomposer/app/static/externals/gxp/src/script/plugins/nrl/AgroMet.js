@@ -62,12 +62,14 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
     factorsurl:"http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
     
 	rangesUrl: "http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
-
+	startYear: 2000,
+	
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
     addOutput: function(config) {
-	    
+	    var now = new Date();
+		currentYear= now.getFullYear();
 		
 		var agroMet  = {
 			xtype:'form',
@@ -117,15 +119,15 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 					xtype: 'label',
 					anchor:'100%',
 					fieldLabel:'Reference Year',
-					text:2012, //TODO conf
+					text:currentYear, //TODO conf
 					ref: 'referenceYear'
 				},{
 					ref: 'yearRangeSelector',
 					xtype: 'yearrangeselector',
 					anchor:'100%',
-					maxValue: 2012, //TODO conf
-					minValue: 2000, //TODO conf
-					values:[2000,2012], //TODO conf
+					maxValue: currentYear, //TODO conf
+					minValue: this.startYear, //TODO conf
+					values:[this.startYear,currentYear], //TODO conf
 					listeners:{
 					    scope: this,
 						change:function(start,end){
