@@ -83,7 +83,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
         var fromYear = data.startYear;
         var toYear = data.endYear;
 
-        var factorStore = this.form.output.factors.selModel.selections.items;
+        var factorStore = this.form.output.factors.getSelectionModel().getSelections();
         var factorValues = [];
         var factorList = "";
         if (factorStore.length === 0){
@@ -109,7 +109,8 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
             granType: granType,
             fromYear: fromYear,
             toYear: toYear,
-            factorValues: factorValues
+            factorValues: factorValues,
+			factorStore: factorStore
         };
         
 		var store = new Ext.data.JsonStore({
@@ -280,7 +281,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                         url: "http://84.33.2.24/highcharts-export/"
                     },
 					title: {
-						text: listVar.factorValues[i]						
+						text: listVar.factorStore[i].get('label')		
 					},					
 					xAxis: [{
 						type: 'datetime',
@@ -309,7 +310,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 					}],
 					yAxis: [{ // YEARS
 						title: {
-							text: listVar.factorValues[i],
+							text: listVar.factorStore[i].get('label')	+ " " + listVar.factorStore[i].get('unit'),
                             style: { 
                                 backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
                             }							
