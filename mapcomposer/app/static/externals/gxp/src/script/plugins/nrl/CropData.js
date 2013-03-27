@@ -199,8 +199,11 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                     target:this.target,
                                     form: this
                                 })
+                                var store = areaSelector.store;
+                                this.output.fireEvent('update',store);
+                                this.output.fireEvent('show');                                
                                 this.output.doLayout();
-                                this.output.submitButton.enable();
+
                             }else if(outputValue == 'map'){
                                 variable.enable();
                                 areaSelector.disable();
@@ -492,7 +495,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 		this.output = gxp.plugins.nrl.CropData.superclass.addOutput.call(this, config);
 		this.output.on('update',function(store){
             var button = this.output.submitButton.getXType();
-            if (button == "gxp_nrlCropDataButton"){
+            if (button == "gxp_nrlCropDataButton" || button == 'gxp_nrlCropDataTabButton'){
                 this.output.submitButton.setDisabled(store.getCount()<=0)
             }
 		},this);
