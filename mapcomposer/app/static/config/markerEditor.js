@@ -15,7 +15,7 @@
             "xtype":"panel",
             "id":"east", 
             "region": "east",
-            "width": 550,
+            "width": 570,
             "minWidth":550,
             "header":false,
             "split": true,

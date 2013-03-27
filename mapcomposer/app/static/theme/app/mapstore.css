@@ -200,14 +200,6 @@ div#homelogos ul li a:hover {
 	background:transparent;
 }
 
-#images-view .loading-indicator {
-	font-size:11px;
-	background-image:url('../../resources/images/default/grid/loading.gif');
-	background-repeat: no-repeat;
-	background-position: left;
-	padding-left:20px;
-	margin:10px;
-}
 .marker-icon-style{
 	background-size:15px;
 }
