@@ -86,20 +86,24 @@ gxp.plugins.nrl.NRL = Ext.extend(gxp.plugins.Tool, {
         return nrl_Modules;
     },
     enableData: function(){
-        for (var i = 0; i<this.output[0].items.items.length;i++){
-            if (this.output[0].items.items[i].outputType.items.items){
-                this.output[0].items.items[i].outputType.items.items[0].enable();
+        var nrlTab = this.output[0].items;
+        for (var i = 0; i<nrlTab.items.length;i++){
+            if (nrlTab.items[i].outputType.items.items){
+                nrlTab.items[i].outputType.items.items[0].enable();
             }else{
-                this.output[0].items.items[i].outputType.items[0].disabled = false;
+                nrlTab.items[i].outputType.items[0].disabled = false;
             }
         }
     },
     disableData: function(){
-        for (var i = 0; i<this.output[0].items.items.length;i++){
-            if (this.output[0].items.items[i].outputType.items.items){
-                this.output[0].items.items[i].outputType.items.items[0].disable();
+        var nrlTab = this.output[0].items;
+        for (var i = 0; i<nrlTab.items.length;i++){
+            if (nrlTab.items[i].outputType.items.items){
+                nrlTab.items[i].outputType.items.items[0].disable();
+                nrlTab.items[i].outputType.items.items[1].setValue("chart");                
             }else{
-                this.output[0].items.items[i].outputType.items[0].disabled = true;
+                nrlTab.items[i].outputType.items[0].disabled = true;
+                nrlTab.items[i].outputType.items[0].inputValue = "chart";
             }
         }
     }

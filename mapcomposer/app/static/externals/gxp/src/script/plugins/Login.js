@@ -258,8 +258,32 @@ gxp.plugins.Login = Ext.extend(gxp.plugins.Tool, {
      * Shows the window for logout confirmation.
      */ 
 	showLogout : function(){
-		var logoutFunction = function(buttonId, text,opt){
-			if(buttonId === 'ok'){                        
+    
+		var logoutFunction = function(buttonId, text,opt){        
+            if(buttonId === 'ok'){ 
+                for(var tool in this.target.tools){            
+                    if(this.target.tools[tool].ptype == "gxp_nrl"){  
+                        this.target.tools[tool].disableData();
+                    }                          
+                }
+                this.loginAction.show();
+                this.loginAction.enable();
+                this.logoutAction.hide();
+                this.logoutAction.disable();
+                this.logged=false;
+            }
+        }
+        
+        Ext.Msg.show({
+           title: this.logoutTitle,
+           msg: this.logoutText,
+           buttons: Ext.Msg.OKCANCEL,
+           fn: logoutFunction,
+           icon: Ext.MessageBox.QUESTION,
+           scope: this
+        });        
+            
+			/*if(buttonId === 'ok'){                        
 				window.location.reload( false );
 			}else if(buttonId === 'no'){
 				window.location.reload( false );
@@ -334,7 +358,7 @@ gxp.plugins.Login = Ext.extend(gxp.plugins.Tool, {
 			   icon: Ext.MessageBox.QUESTION,
 			   scope: this
 			});
-		}
+		}*/
 		
 	},
 	/** private: property[_keyStr]
@@ -471,7 +495,7 @@ gxp.plugins.Login = Ext.extend(gxp.plugins.Tool, {
 		return string;
 	},
 	dummyLogin: function(user,pass){
-        if (user == "admin" && user == "admin"){
+        if (user == "admin" && pass == "admin"){
             this.loginSuccess();
         }else{
             this.loginFailure();
