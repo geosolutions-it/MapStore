@@ -175,7 +175,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					autoHeight: true,
 					defaultType: 'radio', // each item will be a radio button
 					items:[
-						{boxLabel: 'Data' , name: 'outputtype', listeners: this.setRadioQtip(this.radioQtipTooltip), inputValue: 'data', disabled: true},
+						{boxLabel: 'Data' , name: 'outputtype', listeners: this.setRadioQtip(this.radioQtipTooltip), inputValue: 'data', disabled: false},
 						{boxLabel: 'Chart', name: 'outputtype', inputValue: 'chart', checked: true},
 						{boxLabel: 'Map'  , name: 'outputtype', inputValue: 'map'}
 						
@@ -428,8 +428,8 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							allowBlank:false,
 							name:'area_unit',
 							displayField: 'label',
-							valueField:'coeff',
-							value: 1,
+							valueField:'label',
+							value: '000 hectares',
 							readOnly:true,
 							store: new Ext.data.JsonStore({
 								fields:[
@@ -457,8 +457,8 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							allowBlank:false,
 							name:'yield_unit',
 							displayField: 'label',
-							valueField:'coeff',
-							value: 1,
+							valueField:'label',
+							value: 'kg/ha',
 							readOnly:true,
 							store: new Ext.data.JsonStore({
 								fields:[
