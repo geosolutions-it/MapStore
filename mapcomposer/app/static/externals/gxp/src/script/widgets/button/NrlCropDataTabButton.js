@@ -33,7 +33,7 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
     iconCls: "gxp-icon-nrl-tab",
     form: null,
 	text: 'Generate Table',
-    handler: function () {    
+    handler: function () {
 
             //Ext.Msg.alert("Generate Table","Not Yet Implemented");
 			var target = this.target;
@@ -111,7 +111,7 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 	createResultPanel: function( store ){
 		var tabPanel = Ext.getCmp('id_mapTab');
 
-        var tabs = Ext.getCmp('cropData_tab');
+        var tabs = Ext.getCmp('cropDataTable_tab');
 		var grid = new Ext.grid.GridPanel({
 			bbar:[
 				"->",{xtype:'button',text:'export',iconCls:'icon-disk',handler:function(){
@@ -124,54 +124,15 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 					}
 					window.open(dwl);
 				}}],
-			style:'padding:10px 10px 10px 10px',
+			forceFit:true,
 			loadMask:true,
 			layout:'fit',
-			forceFit:true,
-			height:300,
 			store:store,
 			autoExpandColumn:'region',
 			
 			title:'',
-			tools: [{
-                id: 'info',
-                handler: function () {
-                    var checkCommodity = this.commodity ? "<li><p><em> Commodity: </em>" + this.commodity + "</p></li>" : "<li><p><em></em></p></li>";
-                    var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
-                            "<ol>" +
-                                checkCommodity +
-                                "<li><p><em> Season: </em>" + this.season + "</p></li>" +
-                                "<li><p><em> From year: </em>" + this.fromYear + "</p></li>" +
-                                "<li><p><em> To year: </em>" + this.toYear + "</p></li>" +
-                            "</ol>" +                                        
-                            "</div>";
-                 
-                    var appInfo = new Ext.Panel({
-                        header: false,
-                        html: iframe
-                    });
 
-                    var win = new Ext.Window({
-                        title:  "Charts Info",
-                        modal: true,
-                        layout: "fit",
-                        width: 200,
-                        height: 180,
-                        items: [appInfo]
-                    });
-                    
-                    win.show(); 
-                                                            
-                },
-                scope: this
-            }, {
-                id: 'close',
-                handler: function (e, target, panel) {
-                    panel.ownerCt.remove(panel, true);
-                }
-            }],
-            collapsible: true,
-			header:true,
+
 			columns:[{
 				
 				id:'region',
@@ -208,27 +169,94 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 			]
 		
 		});
+		var oldPosition = tabs && tabs.items && tabs.items.getCount() ? [tabs.items.getCount()*10,tabs.items.getCount()*10]:[0,0]
 		
-			if(!tabs){
-				var cropDataTab = new Ext.Panel({
-					title: 'Crop Data',
-					id:'cropData_tab',
-					itemId:'cropData_tab',
+		var win = new Ext.Window({
+			collapsible: true,
+			constrainHeader :true,
+			maximizable:true,
+			height:400,
+			width:600,
+			x:oldPosition[0] +20,y:oldPosition[1]+20,
+			autoScroll:false,
+			header:true,
+			plain:true,
+			layout:'fit',
+			items:grid,
+			floating: {shadow: false},
+			tools: [{
+                id: 'info',
+                handler: function () {
+                    var checkCommodity = this.commodity ? "<li><p><em> Commodity: </em>" + this.commodity + "</p></li>" : "<li><p><em></em></p></li>";
+                    var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+                            "<ol>" +
+                                checkCommodity +
+                                "<li><p><em> Season: </em>" + this.season + "</p></li>" +
+                                "<li><p><em> From year: </em>" + this.fromYear + "</p></li>" +
+                                "<li><p><em> To year: </em>" + this.toYear + "</p></li>" +
+                            "</ol>" +                                        
+                            "</div>";
+                 
+                    var appInfo = new Ext.Panel({
+                        header: false,
+                        html: iframe
+                    });
+
+                    var win = new Ext.Window({
+                        title:  "Charts Info",
+                        modal: true,
+                        layout: "fit",
+                        width: 200,
+                        height: 180,
+                        items: [appInfo]
+                    });
+                    
+                    win.show(); 
+                                                            
+                },
+                scope: this
+            }]
+		});
+		var windowGroup ;
+			if(!tabs){	
+				windowGroup = new Ext.WindowGroup();
+				tabs = new Ext.Panel({
+					title: 'Crop Data Tables',
+					windowGroup:windowGroup,
+					id:'cropDataTable_tab',
+					itemId:'cropDataTable_tab',
 					border: true,
-					layout: 'form',
-					autoScroll: true,
+					autoScroll: false,
 					tabTip: 'Crop Data',
 					closable: true,
-					items: grid
+					items: win,
+					listeners:{
+						remove:function(tab){
+							if(tab.items.length <=0) {
+							tabPanel.remove(tab);
+							tabPanel.setActiveTab(0)
+						}
+						}
+					}
 				});
-				tabPanel.add(cropDataTab);  
+				
+				tabPanel.add(tabs); 
+				
+				
 			   
 			}else{
-				tabs.items.each(function(a){a.collapse()});
-				tabs.add(grid);
+				
+				windowGroup =tabs.windowGroup ;
+				tabs.add(win);
 			}
+			//windowGroup.register(win);
+			
+			
+			Ext.getCmp('id_mapTab').setActiveTab('cropDataTable_tab');
 			Ext.getCmp('id_mapTab').doLayout();
-			Ext.getCmp('id_mapTab').setActiveTab('cropData_tab');
+			
+			tabs.doLayout();
+			win.show();
 
 	}	
 });
