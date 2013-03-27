@@ -97,8 +97,95 @@
         "topOutUnits":"km"
     },
 	
-	"customTools":[
+	"tools":[
 		{
+			"ptype": "gxp_layertree",
+			"outputConfig": {
+				"id": "layertree"
+			},
+			"outputTarget": "tree"
+		}, {
+			"ptype": "gxp_legend",
+			"outputTarget": "legend",
+			"outputConfig": {
+				"autoScroll": true
+			},
+			"legendConfig": {
+				"legendPanelId": "legendPanel",
+				"defaults": {
+					"style": "padding:5px",                  
+					"baseParams": {
+						"LEGEND_OPTIONS": "forceLabels:on;fontSize:10",
+						"WIDTH": 12, 
+						"HEIGHT": 12
+					}
+				}
+			}
+		}, {
+			"ptype": "gxp_addlayers",
+			"actionTarget": "tree.tbar",
+			"id": "addlayers",
+			"upload": true
+		}, {
+			"ptype": "gxp_removelayer",
+			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
+		}, {
+			"ptype": "gxp_removeoverlays",
+			"actionTarget": "tree.tbar"
+		}, {
+			"ptype": "gxp_addgroup",
+			"actionTarget": "tree.tbar"
+		}, {
+			"ptype": "gxp_removegroup",
+			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
+		}, {
+			"ptype": "gxp_groupproperties",
+			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
+		}, {
+			"ptype": "gxp_layerproperties",
+			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
+		}, {
+			"ptype": "gxp_zoomtolayerextent",
+			"actionTarget": {"target": "layertree.contextMenu", "index": 0}
+		},{
+			"ptype":"gxp_geonetworksearch",
+			"actionTarget": ["layertree.contextMenu"]
+		}, {
+			"ptype": "gxp_zoomtoextent",
+			"actionTarget": {"target": "paneltbar", "index": 15}
+		}, {
+			"ptype": "gxp_navigation", "toggleGroup": "toolGroup",
+			"actionTarget": {"target": "paneltbar", "index": 16}
+		}, {
+			"actions": ["-"], "actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_zoombox", "toggleGroup": "toolGroup",
+			"actionTarget": {"target": "paneltbar", "index": 17}
+		}, {
+			"ptype": "gxp_zoom",
+			"actionTarget": {"target": "paneltbar", "index": 18}
+		}, {
+			"actions": ["-"], "actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_navigationhistory",
+			"actionTarget": {"target": "paneltbar", "index": 19}
+		}, {
+			"actions": ["-"], "actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_wmsgetfeatureinfo_menu", "toggleGroup": "toolGroup",
+			"actionTarget": {"target": "paneltbar", "index": 20}
+		}, {
+			"actions": ["-"], "actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_measure", "toggleGroup": "toolGroup",
+			"actionTarget": {"target": "paneltbar", "index": 21}
+		}, {
+			"actions": ["-"], "actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_saveDefaultContext",
+			"actionTarget": {"target": "paneltbar", "index": 22},
+			"needsAuthorization": true
+		}, {
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
 		}, {
@@ -107,12 +194,12 @@
 			"outputConfig": {
 				"width": "200"
 			},
-			"index": 26
+			"index": 23
 		}, {
 			"ptype": "gxp_dynamicgeocoder",
 			"outputTarget":"paneltbar",
 			"id": "dynamicgeocoder",
-			"index": 27
+			"index": 24
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
