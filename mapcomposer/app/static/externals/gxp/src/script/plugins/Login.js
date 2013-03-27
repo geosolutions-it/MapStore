@@ -174,9 +174,6 @@ gxp.plugins.Login = Ext.extend(gxp.plugins.Tool, {
                 scope: this
             }]
         });
-		
-        
-		
                 
         this.win = new Ext.Window({
             title: this.loginText,
@@ -195,11 +192,13 @@ gxp.plugins.Login = Ext.extend(gxp.plugins.Tool, {
      * Submits the login.
      */ 
 	submitLogin: function () {
-		if(this.isDummy) return this.dummyLogin();
+		//if(this.isDummy) return this.dummyLogin();
 		var form = this.panel.getForm();
 		var fields = form.getValues();
 		var pass = fields.password;
 		var user = fields.username;
+        if (this.isDummy) return this.dummyLogin(user,pass);
+
 		var auth= 'Basic ' + this.encode(user+':'+pass);
 		Ext.Ajax.request({
 			method: 'GET',
@@ -211,7 +210,7 @@ gxp.plugins.Login = Ext.extend(gxp.plugins.Tool, {
 				'Authorization' : auth
 			},
 			success: this.loginSuccess,
-			failure: this.loginFalure
+			failure: this.loginFailure
 			
 		});	
 
@@ -222,14 +221,21 @@ gxp.plugins.Login = Ext.extend(gxp.plugins.Tool, {
 		Ext.getCmp('paneltbar').items.each(function(tool) {
 			if (tool.needsAuthorization === true) {
 				tool.enable();	
-			}
+			}           
 		},this);
-		app.auth = auth;
-		app.user=user;
-		app.pass=pass;
+        
+        for(var tool in this.target.tools){            
+            if(this.target.tools[tool].ptype == "gxp_nrl"){  
+                this.target.tools[tool].enableData();
+            }                          
+        }
+        
+		//app.auth = auth;
+		//app.user=user;
+		//app.pass=pass;
 		//save user and password
-		this.pass=pass;
-		this.user=user;
+		//this.pass=pass;
+		//this.user=user;
 		
 		//change button to logout
 		this.loginAction.hide();
@@ -241,7 +247,7 @@ gxp.plugins.Login = Ext.extend(gxp.plugins.Tool, {
 		this.win.close();
 	},
 
-	loginFalure: function(request) {
+	loginFailure: function(request) {
 		var form =this.panel.getForm();
 		form.markInvalid({
 			"username": this.loginErrorText,
@@ -464,8 +470,12 @@ gxp.plugins.Login = Ext.extend(gxp.plugins.Tool, {
  
 		return string;
 	},
-	dummyLogin: function(){
-	   this.loginSuccess();
+	dummyLogin: function(user,pass){
+        if (user == "admin" && user == "admin"){
+            this.loginSuccess();
+        }else{
+            this.loginFailure();
+        }
 	}
         
 });

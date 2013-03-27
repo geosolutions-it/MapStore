@@ -179,3 +179,10 @@ div#homelogos ul li a:hover {
 .x-btn  .gxp-icon-nrl-tab,  .x-menu-item  .gxp-icon-nrl-tab,.x-tree-node .gxp-icon-nrl-tab {
     background-image: url(img/silk/table.png);
 }
+/* gxp_login */
+.x-btn  .gxp-icon-logout,  .x-menu-item  .gxp-icon-logout,.x-tree-node .gxp-icon-logout {
+    background-image: url(img/silk/door_out.png);
+}
+.x-btn  .gxp-icon-login,  .x-menu-item  .gxp-icon-login,.x-tree-node .gxp-icon-login {
+    background-image: url(img/silk/door_in.png);
+}
