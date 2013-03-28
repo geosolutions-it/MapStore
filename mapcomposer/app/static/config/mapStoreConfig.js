@@ -7,9 +7,12 @@
 			"ptype": "gxp_wmssource",
 			"title": "NRL GeoServer",
 			"projection":"EPSG:900913",
-			"url": "http://84.33.2.24/geoserver/ows", "layerBaseParams": {
+			"url": "http://84.33.2.24/geoserver/ows", 
+			"layerBaseParams": {
+			   "format":"image/png8",
+			   
 			   "TILED": true,
-			   "TILESORIGIN": "1394190.6211433, 4663756.8332024"
+			   "TILESORIGIN": "-20037508.34, -20037508.34"
 			}
 		},
 		"mapquest": {
@@ -38,7 +41,7 @@
 		"center": [7798771.2914706,3574215.5268897],
 		"zoom":5,
 		"maxExtent": [
-			6770799.251963,2705604.806669,8826743.330978,4442826.247111
+			-20037508.34, -20037508.34, 20037508.34, 20037508.34
 		],
 		
 		"layers": [
@@ -74,8 +77,9 @@
 				"group": "background"
 			},{
 				"source": "nrl",
-				"title": "National Boundary",
-				"name": "nrl:national_boundary",
+				"title": "Administrative",
+				"name": "nrl:g0gen_pak",
+				"format":"image/jpeg",
 				"group": "background",
 				"visibility": true
 			},{
@@ -180,6 +184,7 @@
 			},{
 				"source": "nrl",
 				"title": "Populated Places",
+				"buffer": "5",
 				"name": "nrl:POP_settlements_pak_main",
 				"group": "Admin",
 				"visibility": true
@@ -189,6 +194,12 @@
 	
 	
 	"customTools":[
+		{
+			"ptype": "gxp_zoomtoextent",
+			"extent": [	6770799.251963,2705604.806669,8826743.330978,4442826.247111 ],
+			"tooltip":"zoom to Pakistan Extent",
+			"actionTarget": {"target": "paneltbar", "index": 2}
+		 },
 		
 		{
 		  "ptype":"gxp_nrl",
