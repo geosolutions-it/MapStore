@@ -62,7 +62,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 					"yield_factor:" + yieldFactor;
 			
 			var wms = new OpenLayers.Layer.WMS(values.crop + " " + values.endYear + " - "+values.variable,//todo: choice the style for the needed variable
-			   "http://84.33.2.24/geoserver/wms",
+			   "http://84.33.2.24/geoserver/ows",
 			   {
 				layers: "nrl:CropDataMap",
 				styles: values.areatype.toLowerCase() + "_" + values.crop.toLowerCase() + "_"+ varparam + "_style" ,
@@ -99,7 +99,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 						
 					},
 					generateYearlyRow:function (attrs){
-						//TODO manage NaN
+						//manage NaN
 						var prod = isNaN(parseFloat(attrs.production))?"N/A":parseFloat(attrs.production).toFixed(2);
 						var area = isNaN(parseFloat(attrs.production))?"N/A":parseFloat(attrs.area).toFixed(2);
 						var yield = isNaN(parseFloat(attrs.production))?"N/A":parseFloat(attrs.yield).toFixed(2);
