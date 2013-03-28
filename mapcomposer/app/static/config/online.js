@@ -138,6 +138,97 @@
             "name": "rischio_totale_sociale",
 				"displayInLayerSwitcher": true,
 				"tiled": false
+        },
+		{
+            "source": "destination",
+            "title": "Beni culturali",
+            "name": "beni_culturali_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+		{
+            "source": "destination",
+            "title": "Zone urbanizzate",
+            "name": "zone_urbanizzate_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Acque sotterranee",
+            "name": "acque_sotterranee_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+		{
+            "source": "destination",
+            "title": "Acque superficiali",
+            "name": "acque_superficiali_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Aree protette",
+            "name": "aree_protette_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+		{
+            "source": "destination",
+            "title": "Aree boscate",
+            "name": "aree_boscate_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Aree agricole",
+            "name": "aree_agricole_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+		{
+            "source": "destination",
+            "title": "Addetti/utenti centri commerciali",
+            "name": "centri_commerciali_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+		{
+            "source": "destination",
+            "title": "Addetti/utenti strutture scolastiche",
+            "name": "strutture_scolastiche_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+		{
+            "source": "destination",
+            "title": "Addetti/utenti strutture sanitarie",
+            "name": "strutture_sanitarie_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+		{
+            "source": "destination",
+            "title": "Addetti industria e servizi",
+            "name": "industria_servizi_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Popolazione turistica",
+            "name": "popolazione_turistica_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Popolazione residente",
+            "name": "popolazione_residente_all",
+            "group": "Bersagli",
+            "visibility": false
 			}
 		]
 	},
@@ -636,7 +727,7 @@
 				"columnModel": [
 					{
 						"header": "Denominazione",      
-						"dataIndex": "denom"
+						"dataIndex": "denominazione"
 					},
 					{
 						"header": "Cod. Uso",      

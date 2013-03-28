@@ -552,7 +552,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return this.controlPanel;
     },
     
-	getBounds: function(status, map) {
+	getBounds: function(status, map, buffer) {		
 		// bounds: current map extent or roi saved in the status
 		var bounds;
 		if(status && status.roi) {
@@ -560,7 +560,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		} else {
 			bounds = map.getExtent();
 		}
-	
+		if(buffer) {
+			bounds.extend(new OpenLayers.Geometry.Point(bounds.left - buffer, bounds.bottom - buffer));
+			bounds.extend(new OpenLayers.Geometry.Point(bounds.right + buffer, bounds.top + buffer));
+		}
 		var mapPrj = map.getProjectionObject();
 		var selectionPrj = new OpenLayers.Projection("EPSG:32632");
 		if(!mapPrj.equals(selectionPrj)){
@@ -574,7 +577,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 	},
 	
 	addTargets: function(layers, bounds, radius) {
-		var targetViewParams = "bounds:" + bounds + ';distance:' + radius.max;
+		var targetViewParams = "bounds:" + bounds + ';distanza:' + radius.max;
 		this.analyticViewLayers.push(this.targetLayerTitle);
 		this.analyticViewLayers.push(this.selectedTargetLayer);
 		layers.push(this.createLayerRecord({
@@ -724,6 +727,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		
 		var radius = this.getRadius();
 		
+		var targetBounds = this.getBounds(status, map, radius.max);
+		
 		// remove previous analytic view layers (targets and buffers)
 		this.removeAnalyticViewLayers(map);				
 		
@@ -733,7 +738,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		this.addBuffers(newLayers, bounds, radius);
 		
 		// add the target layer
-		this.addTargets(newLayers, bounds, radius);				
+		this.addTargets(newLayers, targetBounds, radius);				
 				
 		this.moveRiskLayersToTop(newLayers);
 				

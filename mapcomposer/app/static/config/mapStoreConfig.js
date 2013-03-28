@@ -129,32 +129,186 @@
             "displayInLayerSwitcher": true,
             "tiled": false
         },
+		{
+            "source": "destination",
+            "title": "Beni culturali",
+            "name": "beni_culturali_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+		{
+            "source": "destination",
+            "title": "Zone urbanizzate",
+            "name": "zone_urbanizzate_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
         {
             "source": "destination",
-            "title": "Acque Sotterranee",
+            "title": "Acque sotterranee",
             "name": "acque_sotterranee_all",
             "group": "Bersagli",
             "visibility": false
         },
-        {
+		{
             "source": "destination",
-            "title": "Aree Protette",
-            "name": "aree_protette_all",
+            "title": "Acque superficiali",
+            "name": "acque_superficiali_all",
             "group": "Bersagli",
             "visibility": false
         },
         {
             "source": "destination",
-            "title": "Popolazione Residente",
+            "title": "Aree protette",
+            "name": "aree_protette_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+		{
+            "source": "destination",
+            "title": "Aree boscate",
+            "name": "aree_boscate_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Aree agricole",
+            "name": "aree_agricole_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+		{
+            "source": "destination",
+            "title": "Addetti/utenti centri commerciali",
+            "name": "centri_commerciali_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+		{
+            "source": "destination",
+            "title": "Addetti/utenti strutture scolastiche",
+            "name": "strutture_scolastiche_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+		{
+            "source": "destination",
+            "title": "Addetti/utenti strutture sanitarie",
+            "name": "strutture_sanitarie_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+		{
+            "source": "destination",
+            "title": "Addetti industria e servizi",
+            "name": "industria_servizi_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Popolazione turistica",
+            "name": "popolazione_turistica_all",
+            "group": "Bersagli",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Popolazione residente",
             "name": "popolazione_residente_all",
             "group": "Bersagli",
             "visibility": false
         },
         {
             "source": "destination",
-            "title": "Aree Agricole",
-            "name": "aree_agricole_all",
-            "group": "Bersagli",
+            "title": "Aree agricole",
+            "name": "Refresh_BZ_2011_UTM",
+            "group": "Provincia di Bolzano",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Acque sotterranee",
+            "name": "Acque_sotteranee",
+            "group": "Provincia di Bolzano",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Monumenti",
+            "name": "MONUMENTS",
+            "group": "Provincia di Bolzano",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Beni culturali",
+            "name": "BZ_Beni_Cult",
+            "group": "Provincia di Bolzano",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Formazione",
+            "name": "BZ_Formazione",
+            "group": "Provincia di Bolzano",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Residenti",
+            "name": "BZ_Residenti",
+            "group": "Provincia di Bolzano",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Case di cura",
+            "name": "BZ_SAN_casedicura",
+            "group": "Provincia di Bolzano",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Ospedali",
+            "name": "BZ_SAN_ospedali",
+            "group": "Provincia di Bolzano",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "BRD",
+            "name": "BZ_BRD",
+            "group": "Provincia di Bolzano",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Croce bianca",
+            "name": "BZ_CroceBianca",
+            "group": "Provincia di Bolzano",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Musei",
+            "name": "BZ_Musei",
+            "group": "Provincia di Bolzano",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Vigili del fuoco",
+            "name": "BZ_VVF",
+            "group": "Provincia di Bolzano",
+            "visibility": false
+        },
+        {
+            "source": "destination",
+            "title": "Rete stradale",
+            "name": "BZ_rete_stradaria_principale",
+            "group": "Provincia di Bolzano",
             "visibility": false
         }
         ]
@@ -241,6 +395,15 @@
             "index":15
         }
     },
+	{
+		"ptype": "gxp_aoi",
+		"id": "aoi",
+		"outputConfig":{
+			 "outputSRS": "EPSG:4326"
+		 },
+		 "container": "fieldset"
+
+	},
     {
         "ptype":"gxp_navigation",
         "toggleGroup":"toolGroup",
@@ -346,6 +509,7 @@
         "ptype": "gxp_syntheticview",
         "outputTarget": "east",
         "id": "syntheticview",
+                        "aoi": "aoi",
         "selectionLayerName": "aggregated_data_selection",
         "selectionLayerTitle": "Rischio Totale", 	        
         "bufferLayerNameHuman": "buffer_human",

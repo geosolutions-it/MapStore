@@ -117,7 +117,6 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
         strokeColor: "#0000FF",
         fillOpacity:0.5,
         strokeWidth:2
-        
     },
     
     
@@ -248,8 +247,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                 }
             }
         }); 
-        
-        
+                
         this.items = [];
         this.items = [{
             layout: "form",
@@ -481,4 +479,4 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
     
 });
 
-Ext.reg("gxp_colorfield", gxp.form.ColorField);
+Ext.reg("gxp_aoifieldset", gxp.form.AOIFieldset);
