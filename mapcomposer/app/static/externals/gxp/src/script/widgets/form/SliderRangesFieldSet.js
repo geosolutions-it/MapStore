@@ -26,62 +26,56 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
      *  Override
      */
     initComponent: function() {
-        this.multiSlider= new gxp.form.SliderRangesField(this.multiSliderConf);
-       
         var me= this;
+        var multi=null;
+        this.multiSliderConf.plugins = new Ext.slider.Tip({
+            getText: function(thumb){
+                if(me.numericFields){
+                    Ext.getCmp(thumb.id+"_minValue").setValue(thumb.minValue);
+                    Ext.getCmp(thumb.id+"_maxValue").setValue(thumb.value);
+                    
+                    if(thumb.index < multi.thumbs.length-1)
+                        Ext.getCmp(multi.thumbs[thumb.index+1].id+"_minValue").setValue(thumb.value+1);
+                }
+                    
+                 return String.format('Range <b>{2}</b> [<b>{0}</b> , <b>{1}</b>]', thumb.minValue ,thumb.value, thumb.name);
+            }
+        });
+        this.multiSlider= new gxp.form.SliderRangesField(this.multiSliderConf);
+        multi=this.multiSlider;
+        
         
         this.autoHeight= true;
         this.layout='table';
         this.layoutConfig= {
-            columns: 1
+            columns: 3
         };
         this.items = [];
         
-        this.multiSlider.plugins = new Ext.slider.Tip({
-            getText: function(thumb){
-                var rangeMin;
-                 
-                if(thumb.index == 0)
-                    rangeMin= me.multiSlider.minValue;
-                else
-                    rangeMin= me.multiSlider.thumbs[thumb.index-1].value+1;
-                    
-                if(me.numericField){
-                    Ext.getCmp(thumb.id+"_min").setValue(rangeMin);
-                    Ext.getCmp(thumb.id+"_max").setValue(thumb.value);
-                }
-                    
-                return String.format('Range <b>{2}</b> {<b>{0}</b> - <b>{1}</b>}', rangeMin ,thumb.value, thumb.name);
-            }
-        });
+     
         
-        this.items.push(this.multiSlider);
+        this.items.push({
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    labelAlign: "top",
+                    border: false,
+                    colspan: 3,
+                    items: [this.multiSlider]
+                });
         if(this.numericFields){
-            alert("numericField");
-            var minValue,maxValue, id;
+            var minValue,maxValue, id, rangeName, index;
+            var mindis= false, maxdis=false;
             var thumbs=this.multiSlider.thumbs;
-            alert(thumbs.length);
             for(var i=0; i< thumbs.length; i++){
-                alert(thumbs[i].id);
+                mindis= (i==0) ? true: false;
+               // maxdis= (i==thumbs.length-1) ? true: false;
                 id=thumbs[i].id;
+                index=thumbs[i].index;
                 minValue=thumbs[i].minValue;
                 maxValue=thumbs[i].maxValue;
+                rangeName=thumbs[i].name;
                 
-                this.items.push(
-                /* new Ext.Component({
-                        layout: {
-                            type: 'table',
-                            columns: 3
-                        },
-                        items: [
-                        new Ext.form.NumberField({
-                            id: id+"_minValue",
-                            value: minValue
-                        }),
-                        new Ext.Component({
-                        html: "<a href='#'>TEST</a>"
-                        }),*/
-                    {
+                this.items.push({
                     layout: "form",
                     cellCls: 'spatial-cell',
                     labelAlign: "top",
@@ -89,13 +83,59 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
                     colspan: 1,
                     items: [
                     new Ext.form.NumberField({
-                        id: id+"_maxValue",
-                        value: maxValue
+                        width: 80,
+                        disabled: mindis,
+                        id: id+"_minValue",
+                        value: minValue,
+                        minValue: multi.minValue,
+                        maxValue: multi.maxValue,
+                        listeners:{
+                            "change": function(it, newValue){
+                                
+                                multi.setValue(index-1, newValue, true); 
+                            }
+                        }
                     })]
-                    }
-                /*]
-                    })*/
-                );
+                });
+                    
+                this.items.push({
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    labelAlign: "top",
+                    border: false,
+                    colspan: 1,
+                    items: [{
+                       xtype: "label",     
+                      // cls: 'x-form-item-label',
+                       text: "  Range " + rangeName       
+                    }]
+                    
+                });
+                    
+                this.items.push({
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    labelAlign: "top",
+                    border: false,
+                    colspan: 1,
+                    items: [
+                    new Ext.form.NumberField({
+                        width: 80,
+                        disabled: maxdis,
+                        id: id+"_maxValue",
+                        value: maxValue,
+                        minValue: multi.minValue,
+                        maxValue: multi.maxValue,
+                        listeners:{
+                            "change": function(it, newValue){
+                                //alert(index);
+                                multi.setValue(index, newValue, true); 
+                                if(index < multi.thumbs.length-1)
+                                Ext.getCmp(multi.thumbs[index+1].id+"_minValue").setValue(newValue+1);
+                            }
+                        }
+                    })]
+                });
             }
                        
         }

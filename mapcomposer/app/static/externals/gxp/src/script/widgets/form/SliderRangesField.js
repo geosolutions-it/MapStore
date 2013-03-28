@@ -41,7 +41,6 @@ gxp.form.SliderRangesField = Ext.extend(Ext.slider.MultiSlider, {
          
          if(this.ranges)
          for(var i=0; i<this.ranges.length; i++){
-             alert("RANGE " + i);
              this.addThumb(this.ranges[i]);
          }
             

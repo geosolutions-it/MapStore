@@ -883,7 +883,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 				//this.buildAOIForm(map),
                                 me.aoiFieldset, 
                                 new gxp.form.SliderRangesFieldSet({
-                                    title: "TEST",
+                                    title: "Rischio",
                                     numericFields: true,
                                     multiSliderConf:{
                                         vertical : false,
@@ -892,7 +892,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                                             {maxValue: 40, name:"Medio", id:"range_medium"},
                                             {maxValue: 70, name:"Alto", id:"range_height"}
                                         ],                                        
-                                        width   : 200,
+                                        width   : 350,
                                         minValue: 0,
                                         maxValue: 100
                                     }
