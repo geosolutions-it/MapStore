@@ -13,7 +13,7 @@
 
 /** api: (define)
  *  module = gxp.plugins
- *  class = AOI
+ *  class = SliderRanges
  */
 
 /** api: (extends)
@@ -22,20 +22,20 @@
 Ext.namespace("gxp.plugins");
 
 /** api: constructor
- *  .. class:: AOI(config)
+ *  .. class:: SliderRanges(config)
  *
- *    Plugin for set the  Area Of Interest on the map
+ *    Plugin for the definition of range values
  */   
-gxp.plugins.AOI = Ext.extend(gxp.plugins.Tool, {
+gxp.plugins.SliderRanges = Ext.extend(gxp.plugins.Tool, {
     
-    /** api: ptype = gxp_aoi */
-    ptype: "gxp_aoi",
+    /** api: ptype = gxp_sliderranges */
+    ptype: "gxp_sliderranges",
     
     /** api: config[id]
      *  ``String``
      *  
      */
-    id: "aoi",
+    id: "sliderranges",
     
     
     /** api: config[container]
@@ -48,7 +48,7 @@ gxp.plugins.AOI = Ext.extend(gxp.plugins.Tool, {
     /** private: method[constructor]
      */
     constructor: function(config) {
-        gxp.plugins.AOI.superclass.constructor.apply(this, arguments); 
+        gxp.plugins.SliderRanges.superclass.constructor.apply(this, arguments); 
 
     },
     
@@ -56,17 +56,20 @@ gxp.plugins.AOI = Ext.extend(gxp.plugins.Tool, {
         
         var me=this;
         
-        var aoiFielset = new gxp.form.AOIFieldset(Ext.apply({
-            map: target.mapPanel.map,
-            id: me.id+"_widget"
-        }, this.outputConfig));
+        this.sliderFieldSet= new Ext.form.FieldSet({
+            id: this.id,
+            title: this.title,
+            items: [new gxp.form.SliderRangesField(this.sliderConf)]
+        });
         
        
-        this.aoiFielset = aoiFielset;
+        if(this.numericField){
+            this.sliderFieldSet.items.push(this.getRangeFields()); 
+        }
        
    
       
-        return gxp.plugins.AOI.superclass.init.apply(this, arguments);
+        return gxp.plugins.SliderRanges.superclass.init.apply(this, arguments);
 
     },
     
@@ -80,12 +83,28 @@ gxp.plugins.AOI = Ext.extend(gxp.plugins.Tool, {
     },
     
     
-    /** public: method[getAOI]
+    /** private: method[getRangeFields]
      *  
-     *  return the AOI Widget (Fieldset)   
+     *  return range form fields
      */
-    getAOI: function(){
-        return this.aoiFielset;
+    getRangeFields: function(sliderRange){
+       
+        return new Ext.Component({
+            layout: {
+                type: 'table',
+                columns: 3
+            },
+            items: [
+                new Ext.form.NumberField({
+                    id: sliderRange.id+"_minValue",
+                    value: 
+                }),
+                "",
+                new Ext.form.NumberField({
+                    
+                }),
+            ]
+        });
     },
     
     

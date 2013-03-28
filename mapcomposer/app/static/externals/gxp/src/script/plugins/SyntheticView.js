@@ -481,8 +481,19 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 					}
 								
                     var south = Ext.getCmp("south").collapse();
-                    
-                    this.processingPane.show(this.target);
+                   
+                    if(! this.processingPane.aoiFieldset)
+                        this.processingPane.show(this.target);
+                    else{
+                        var containerTab = Ext.getCmp(this.outputTarget);
+                        var active = containerTab.getActiveTab();
+                        map.events.register("move", this.processingPane, this.processingPane.aoiUpdater);
+                        active.disable();
+                        containerTab.setActiveTab(1);
+                        active = containerTab.getActiveTab();
+                        active.enable();
+                    }    
+                
                     if(this.status){
                         this.processingPane.setStatus(this.status);
                     }                    

@@ -370,5 +370,15 @@ GeoExt.Lang.add("en", {
 		switchActionTip : "Switch Language",
 		switchConfirmationText : "Are you sure to change Language?"//Are you sure to change Language? All unsaved data will be lost
 
-	}
+	},
+        "gxp.form.AOIFieldset.prototype":{
+            northLabel:"North",
+            westLabel:"West",
+            eastLabel:"East",
+            southLabel:"South",
+            title: "Territorial",
+            setAoiText: "Select area",        
+            setAoiTooltip: "Enable the selection of the region of interest on the map",
+            waitEPSGMsg: "Loading... please wait"
+        }
 });

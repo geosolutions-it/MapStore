@@ -404,6 +404,16 @@ GeoExt.Lang.add("de", {
 		switchActionTip :"Änderung der Sprache" ,
 		switchConfirmationText : "Sind Sie sicher die Sprache ändern zu wollen?"//Sind Sie sicher die Sprache ändern zu wollen? Die nicht gespeicherten daten werden verloren gehen.
 
-	}
+	},
+        "gxp.form.AOIFieldset.prototype":{
+            northLabel:"Norden",
+            westLabel:"West",
+            eastLabel:"Osten",
+            southLabel:"Süden",
+            title: "Territorial",
+            setAoiText: "Wählen Bereich",        
+            setAoiTooltip: "Ermöglichen die Auswahl des Bereichs von Interesse auf der Karte",
+            waitEPSGMsg: "Warten ... Laden"
+        }
 	
 });
