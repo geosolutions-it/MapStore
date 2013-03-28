@@ -203,6 +203,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 this.output.fireEvent('update',store);
                                 this.output.fireEvent('show');                                
                                 this.output.doLayout();
+                                this.output.syncSize();
 
                             }else if(outputValue == 'map'){
                                 variable.enable();
@@ -217,6 +218,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 })
                                 this.output.fireEvent('beforehide');
                                 this.output.doLayout();
+                                this.output.syncSize();
                                 this.output.submitButton.enable();
                             }else{
                                 variable.disable();
@@ -233,6 +235,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 this.output.fireEvent('update',store);
                                 this.output.fireEvent('show');
                                 this.output.doLayout();
+                                this.output.syncSize();
                             }                               
                         },                        
                         scope: this                        
