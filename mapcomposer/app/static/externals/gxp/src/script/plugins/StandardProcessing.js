@@ -43,6 +43,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 	accidentLabel: "Incidente",
 	seriousnessLabel: "Entità",
 	resetButton: "Reimposta",
+        cancelButton: "Annulla",
 	viewMapButton: "Visualizza Mappa",
 	formLabel: "Impostazioni di Elaborazione",
 	bboxValidationTitle: "Selezione Area di Interesse",
@@ -206,13 +207,16 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             this.appTarget = appTarget;
             
         var map = this.appTarget.mapPanel.map;    
+        
         this.aoiFieldset=this.appTarget.tools[this.aoi].getAOI();   
+        
     
         
        /* this.mapProjection = new OpenLayers.Projection(map.getProjection());
         this.wgs84Projection = new OpenLayers.Projection("EPSG:4326")*/
-        
+    
         var processing = this.buildForm(map);
+     
         map.enebaleMapEvent = true;
         return processing;
     },
@@ -856,6 +860,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 		// disable synthetic view tab: why do we have tabs if we can't switch from one tab to the other?
         var syntView = this.appTarget.tools[this.syntheticView];
         var me= this;
+      
         // updates the AOI on map pan / zoom
         this.aoiUpdater = function() {			
 			var extent=map.getExtent().clone();
@@ -877,10 +882,30 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 				this.buildElaborazioneForm(),
 				//this.buildAOIForm(map),
                                 me.aoiFieldset, 
+                                new gxp.form.SliderRangesFieldSet({
+                                    title: "TEST",
+                                    numericFields: true,
+                                    multiSliderConf:{
+                                        vertical : false,
+                                        ranges: [
+                                            {maxValue: 10, name:"Basso", id:"range_low"},
+                                            {maxValue: 40, name:"Medio", id:"range_medium"},
+                                            {maxValue: 70, name:"Alto", id:"range_height"}
+                                        ],                                        
+                                        width   : 200,
+                                        minValue: 0,
+                                        maxValue: 100
+                                    }
+                                }),
 				this.buildTargetForm(),
 				this.buildAccidentForm()
             ],
             buttons: [{
+                text: this.cancelButton,
+                iconCls: 'cancel-button',
+                scope: this,
+                handler: this.switchToSyntheticView
+            },{
                 text: this.resetButton,
                 iconCls: 'reset-button',
                 scope: this,
@@ -997,16 +1022,33 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             this.aoiFieldset.removeAOILayer();
            // this.selectAOI.deactivate();
             
-            var containerTab = Ext.getCmp(this.outputTarget);
+            /*var containerTab = Ext.getCmp(this.outputTarget);
             var active = containerTab.getActiveTab();
-            containerTab.remove(active);
+            active.disable();
             
+            containerTab.setActiveTab(0);
+            active = containerTab.getActiveTab();
+            active.enable();*/
+            
+            this.switchToSyntheticView();
             var syntView = this.appTarget.tools[this.syntheticView];
-            syntView.getControlPanel().enable();
+            
+          //  syntView.getControlPanel().enable();
+            
             syntView.setStatus(status);
 			syntView.doProcess();
 			this.appTarget.mapPanel.map.events.unregister("move", this, this.aoiUpdater);
         }
+    },
+    
+    switchToSyntheticView: function(){
+       var containerTab = Ext.getCmp(this.outputTarget);
+       var active = containerTab.getActiveTab();
+       active.disable();
+            
+       containerTab.setActiveTab(0);
+       active = containerTab.getActiveTab();
+       active.enable(); 
     },
     
 	/** private: method[removeAOILayer]

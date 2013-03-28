@@ -39,7 +39,7 @@ gxp.plugins.AOI = Ext.extend(gxp.plugins.Tool, {
     
     
     /** api: config[container]
-     *  ``Boolean``
+     *  ``String``
      *  
      */
     container: 'fieldset',

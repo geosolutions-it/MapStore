@@ -249,8 +249,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
             }
         }); 
         
-        console.log("items");
-        console.log(this.items);
+        
         this.items = [];
         this.items = [{
             layout: "form",
