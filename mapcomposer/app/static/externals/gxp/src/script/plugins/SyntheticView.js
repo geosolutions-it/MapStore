@@ -716,7 +716,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		
 		var radius = this.getRadius();
 		
-		var targetBounds = this.getBounds(status, map, radius.max);
 		
 		// remove previous analytic view layers (targets and buffers)
 		this.removeAnalyticViewLayers(map);				
@@ -727,7 +726,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		this.addBuffers(newLayers, bounds, radius);
 		
 		// add the target layer
-		this.addTargets(newLayers, targetBounds, radius);				
+		this.addTargets(newLayers, bounds, radius);				
 				
 		this.moveRiskLayersToTop(newLayers);
 				
