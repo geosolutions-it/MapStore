@@ -88,7 +88,7 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 			}]
 			
 		});
-		this.createResultPanel(store);
+		this.createResultPanel(store,fieldValues,values);
 		
 		store.load({
 			callback:function(records,req){
@@ -108,7 +108,7 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
         
     },
 	
-	createResultPanel: function( store ){
+	createResultPanel: function( store ,fieldValues,values){
 		var tabPanel = Ext.getCmp('id_mapTab');
 
         var tabs = Ext.getCmp('cropDataTable_tab');
@@ -126,74 +126,89 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 				}}],
 			forceFit:true,
 			loadMask:true,
+			border:false,
 			layout:'fit',
 			store:store,
 			autoExpandColumn:'region',
 			
 			title:'',
 
-
+		
 			columns:[{
-				
+				sortable: true, 
 				id:'region',
 				header:'Region',
 				name: 'region',
 				dataIndex: 'region'
 			},{
-
+				sortable: true, 
 				header:'Crop',
 				name: 'crop',
-				dataIndex: 'crop'
+				dataIndex: 'crop',
+				width:70
 			},{
-
+				sortable: true, 
 				header:'Year',
 				name: 'year',
-				dataIndex: 'year'
+				dataIndex: 'year',
+				width:50
 			}, {
-
-				header:'Production',
+				sortable: true, 
+				header:'Production('+fieldValues.production_unit+')',
 				name: 'production',
-				dataIndex: 'production'
+				dataIndex: 'production',
+				renderer: Ext.util.Format.numberRenderer('0.00'),
+				align: 'right',
+				width:130
 			},{
-
-				header:'Area',
+				sortable: true, 
+				header:'Area('+fieldValues.area_unit+')',
 				name: 'area',
-				dataIndex: 'area'
+				dataIndex: 'area',
+				renderer: Ext.util.Format.numberRenderer('0.00'),
+				align: 'right',
+				width:130
 			},{
-				header:'Yield',
+				sortable: true, 
+				header:'Yield('+fieldValues.yield_unit+')',
 				name: 'yield',
-				dataIndex: 'yield'
+				dataIndex: 'yield',
+				renderer: Ext.util.Format.numberRenderer('0.00'),
+				align: 'right',
+				width:90
 			}
 			
 			
 			]
 		
+		
 		});
-		var oldPosition = tabs && tabs.items && tabs.items.getCount() ? [tabs.items.getCount()*10,tabs.items.getCount()*10]:[0,0]
+		var oldPosition = tabs && tabs.items && tabs.items.getCount() ? [tabs.items.getCount()*20,tabs.items.getCount()*20]:[0,0]
 		
 		var win = new Ext.Window({
+			title:'Crop Data:' + fieldValues.crop,
 			collapsible: true,
 			constrainHeader :true,
 			maximizable:true,
 			height:400,
-			width:600,
+			width:700,
 			x:oldPosition[0] +20,y:oldPosition[1]+20,
 			autoScroll:false,
 			header:true,
-			plain:true,
+			
 			layout:'fit',
 			items:grid,
-			floating: {shadow: false},
+			//floating: {shadow: false},
 			tools: [{
                 id: 'info',
                 handler: function () {
-                    var checkCommodity = this.commodity ? "<li><p><em> Commodity: </em>" + this.commodity + "</p></li>" : "<li><p><em></em></p></li>";
+                    var checkCommodity = fieldValues.crop ? "<li><p><em> Commodity: </em>" + fieldValues.crop + "</p></li>" : "<li><p><em></em></p></li>";
                     var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
                             "<ol>" +
                                 checkCommodity +
-                                "<li><p><em> Season: </em>" + this.season + "</p></li>" +
-                                "<li><p><em> From year: </em>" + this.fromYear + "</p></li>" +
-                                "<li><p><em> To year: </em>" + this.toYear + "</p></li>" +
+                                "<li><p><em> Season: </em>" + values.season + "</p></li>" +
+                                "<li><p><em> From year: </em>" + values.startYear + "</p></li>" +
+                                "<li><p><em> To year: </em>" + values.endYear + "</p></li>" +
                             "</ol>" +                                        
                             "</div>";
                  
