@@ -219,97 +219,6 @@
             "name": "popolazione_residente_all",
             "group": "Bersagli",
             "visibility": false
-        },
-        {
-            "source": "destination",
-            "title": "Aree agricole",
-            "name": "Refresh_BZ_2011_UTM",
-            "group": "Provincia di Bolzano",
-            "visibility": false
-        },
-        {
-            "source": "destination",
-            "title": "Acque sotterranee",
-            "name": "Acque_sotteranee",
-            "group": "Provincia di Bolzano",
-            "visibility": false
-        },
-        {
-            "source": "destination",
-            "title": "Monumenti",
-            "name": "MONUMENTS",
-            "group": "Provincia di Bolzano",
-            "visibility": false
-        },
-        {
-            "source": "destination",
-            "title": "Beni culturali",
-            "name": "BZ_Beni_Cult",
-            "group": "Provincia di Bolzano",
-            "visibility": false
-        },
-        {
-            "source": "destination",
-            "title": "Formazione",
-            "name": "BZ_Formazione",
-            "group": "Provincia di Bolzano",
-            "visibility": false
-        },
-        {
-            "source": "destination",
-            "title": "Residenti",
-            "name": "BZ_Residenti",
-            "group": "Provincia di Bolzano",
-            "visibility": false
-        },
-        {
-            "source": "destination",
-            "title": "Case di cura",
-            "name": "BZ_SAN_casedicura",
-            "group": "Provincia di Bolzano",
-            "visibility": false
-        },
-        {
-            "source": "destination",
-            "title": "Ospedali",
-            "name": "BZ_SAN_ospedali",
-            "group": "Provincia di Bolzano",
-            "visibility": false
-        },
-        {
-            "source": "destination",
-            "title": "BRD",
-            "name": "BZ_BRD",
-            "group": "Provincia di Bolzano",
-            "visibility": false
-        },
-        {
-            "source": "destination",
-            "title": "Croce bianca",
-            "name": "BZ_CroceBianca",
-            "group": "Provincia di Bolzano",
-            "visibility": false
-        },
-        {
-            "source": "destination",
-            "title": "Musei",
-            "name": "BZ_Musei",
-            "group": "Provincia di Bolzano",
-            "visibility": false
-        },
-        {
-            "source": "destination",
-            "title": "Vigili del fuoco",
-            "name": "BZ_VVF",
-            "group": "Provincia di Bolzano",
-            "visibility": false
-        },
-        {
-            "source": "destination",
-            "title": "Rete stradale",
-            "name": "BZ_rete_stradaria_principale",
-            "group": "Provincia di Bolzano",
-            "visibility": false
         }
         ]
     },
@@ -933,10 +842,6 @@
 						"mapping": "properties.id_tema"
 					},
 					{
-						"name": "denominazione",      
-						"mapping": "properties.denominazione"
-					},
-					{
 						"name": "superficie",      
 						"mapping": "properties.superficie"
 					},
@@ -949,11 +854,7 @@
 						"mapping": "properties.descrizione_clc"
 					}
 				],
-				"columnModel": [
-					{
-						"header": "Denominazione",      
-						"dataIndex": "denominazione"
-					},
+				"columnModel": [					
 					{
 						"header": "Codice CLC",      
 						"dataIndex": "codice_clc"
@@ -984,10 +885,6 @@
 					{
 						"name": "id_tema",         
 						"mapping": "properties.id_tema"
-					},
-					{
-						"name": "denominazione",      
-						"mapping": "properties.denominazione"
 					},
 					{
 						"name": "superficie",      
@@ -1114,11 +1011,7 @@
 					{
 						"name": "id_tema",         
 						"mapping": "properties.id_tema"
-					},
-					{
-						"name": "denominazione",      
-						"mapping": "properties.denominazione"
-					},
+					},					
 					{
 						"name": "superficie",      
 						"mapping": "properties.superficie"
@@ -1294,14 +1187,6 @@
 					{
 						"header": "Superficie",      
 						"dataIndex": "superficie"
-					},
-					{
-						"header": "Profondità max",      
-						"dataIndex": "profondita_max"
-					},
-					{
-						"header": "Quota",      
-						"dataIndex": "quota_pdc"
 					}
 				],
 				"title": "Acque sotterranee",
@@ -1321,6 +1206,10 @@
 					{
 						"name": "id_tema",         
 						"mapping": "properties.id_tema"
+					},
+					{
+						"name": "denominazione_bene",      
+						"mapping": "properties.denominazione_bene"
 					},
 					{
 						"name": "superficie",      
@@ -1343,6 +1232,10 @@
 					{
 						"header": "Tipologia",      
 						"dataIndex": "tipologia"
+					},
+					{
+						"header": "Denominazione",      
+						"dataIndex": "denominazione_bene"
 					},
 					{
 						"header": "Superficie",      
