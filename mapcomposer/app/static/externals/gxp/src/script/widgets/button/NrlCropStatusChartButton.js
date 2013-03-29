@@ -21,16 +21,16 @@
 Ext.namespace('gxp.widgets.button');
 
 /** api: constructor
- *  .. class:: NrlAgrometChartButton(config)
+ *  .. class:: NrlCropStatusChartButton(config)
  *
  *    Base class to create chart
  *
  */
-gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
+gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
 
     /** api: xtype = gxp_nrlchart */
 	url:'http://84.33.2.24/geoserver/ows',
-    xtype: 'gxp_nrlAgrometChartButton',
+    xtype: 'gxp_nrlCropStatusChartButton',
     iconCls: "gxp-icon-nrl-chart",
 	text: 'Generate Chart',
     form: null,
@@ -66,6 +66,10 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
         height: 400
 	},
     handler: function () {
+    
+        Ext.Msg.alert("Generate Chart","Not Yet Implemented");
+        return;
+            
         var numRegion = [];
         var regStore = this.form.output.aoiFieldSet.AreaSelector.store
         var records = regStore.getRange();
@@ -355,4 +359,4 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 	}	
 });
 
-Ext.reg(gxp.widgets.button.NrlAgrometChartButton.prototype.xtype, gxp.widgets.button.NrlAgrometChartButton);
+Ext.reg(gxp.widgets.button.NrlCropStatusChartButton.prototype.xtype, gxp.widgets.button.NrlCropStatusChartButton);

@@ -21,15 +21,15 @@
 Ext.namespace('gxp.widgets.button');
 
 /** api: constructor
- *  .. class:: NrlAgrometTabButton(config)
+ *  .. class:: NrlCropStatusTabButton(config)
  *
  *    Base class to create chart
  *
  */
-gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
+gxp.widgets.button.NrlCropStatusTabButton = Ext.extend(Ext.Button, {
 
     /** api: xtype = gxp_nrlchart */
-    xtype: 'gxp_nrlAgrometTabButton',
+    xtype: 'gxp_nrlCropStatusTabButton',
     iconCls: "gxp-icon-nrl-tab",
     form: null,
 	text: 'Generate Table',
@@ -278,4 +278,4 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 	}	
 });
 
-Ext.reg(gxp.widgets.button.NrlAgrometTabButton.prototype.xtype, gxp.widgets.button.NrlAgrometTabButton);
+Ext.reg(gxp.widgets.button.NrlCropStatusTabButton.prototype.xtype, gxp.widgets.button.NrlCropStatusTabButton);

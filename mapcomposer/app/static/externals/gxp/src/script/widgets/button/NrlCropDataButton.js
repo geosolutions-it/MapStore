@@ -21,7 +21,7 @@
 Ext.namespace('gxp.widgets.button');
 
 /** api: constructor
- *  .. class:: NrlChart(config)
+ *  .. class:: NrlCropDataButton(config)
  *
  *    Base class to create chart
  *
