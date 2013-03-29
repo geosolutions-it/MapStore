@@ -24,9 +24,6 @@
 
 onReady=(function() {
 
-    alert("create WPS Manager");
-    
-
     var wpsManager = new gxp.plugins.WPSManager({
         id: "wpsTestLocal",
         url: "http://localhost:8089/geoserver/ows",
@@ -90,7 +87,7 @@ onReady=(function() {
 /* wpsManager.getExecuteInstances("JTS:buffer", function (instancesArray) {
         alert("prima");
         for(var i=0; i<instancesArray.length; i++)
-            alert(JSON.stringify(instancesArray[i]));
+            alert(Ext.util.JSON.encode(instancesArray[i]));
         
        
     });*/
@@ -103,7 +100,7 @@ onReady=(function() {
 /*   wpsManager.getExecuteInstances("JTS:buffer", function (instancesArray) {
            alert("seconda");
             for(var i=0; i<instancesArray.length; i++)
-                alert(JSON.stringify(instancesArray[i]));
+                alert(Ext.util.JSON.encode(instancesArray[i]));
         });*/
  
     
