@@ -94,7 +94,48 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 					items:[
 						{boxLabel: 'Data' , name: 'outputtype', listeners: this.setRadioQtip(this.radioQtipTooltip), inputValue: 'data', disabled: true},
 						{boxLabel: 'Chart', name: 'outputtype', inputValue: 'chart', checked: true}
-					]
+					],                 
+                    listeners: {           
+                        change: function(c,checked){
+                            var outputValue = c.getValue().inputValue;
+                            var submitButton = this.output.submitButton;
+                            var areaSelector = this.output.aoiFieldSet.AreaSelector;                            
+                            if(outputValue == 'data'){
+                                areaSelector.enable();
+                                submitButton.destroy();
+                                delete submitButton;
+                                this.output.addButton({              
+									url: 'http://84.33.2.24/geoserver/ows',//TODO externalize this
+                                    xtype: 'gxp_nrlAgrometTabButton',
+                                    ref: '../submitButton',
+                                    target:this.target,
+                                    form: this
+                                })
+                                var store = areaSelector.store;
+                                this.output.fireEvent('update',store);
+                                this.output.fireEvent('show');                                
+                                this.output.doLayout();
+                                this.output.syncSize();
+
+                            }else{
+                                areaSelector.enable();
+                                submitButton.destroy();
+                                delete submitButton;
+                                this.output.addButton({               
+                                    xtype: 'gxp_nrlAgrometChartButton',
+                                    ref: '../submitButton',
+                                    target:this.target,
+                                    form: this
+                                })
+                                var store = areaSelector.store;
+                                this.output.fireEvent('update',store);
+                                this.output.fireEvent('show');
+                                this.output.doLayout();
+                                this.output.syncSize();
+                            }                               
+                        },                        
+                        scope: this                        
+                    }
 				},{ 
 					fieldLabel: 'Season',
 					xtype: 'nrl_seasonradiogroup',
@@ -164,7 +205,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                 })
 			],
 			buttons:[{
-                xtype:'gxp_nrlAgrometButton',
+                xtype:'gxp_nrlAgrometChartButton',
 				ref: '../submitButton',
                 target:this.target,
 				form: this,
@@ -176,7 +217,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 		this.output = gxp.plugins.nrl.AgroMet.superclass.addOutput.call(this, config);
 		this.output.on('update',function(store){
             var button = this.output.submitButton.getXType();
-            if (button == "gxp_nrlAgrometButton"){
+            if (button == "gxp_nrlAgrometChartButton" || button == "gxp_nrlAgrometTabButton"){
                 this.output.submitButton.setDisabled(store.getCount()<=0)
             }
 		},this);        

@@ -134,11 +134,6 @@
     background-image: url(img/silk/printer.png);
 }
 
-/* gxp_nrlChartButton */
-.x-btn .gxp-icon-nrl-chart, .x-menu-item .gxp-icon-nrl-chart, .x-tree-node .gxp-icon-nrl-chart {
-    background-image: url(img/silk/chart_curve.png);
-}
-
 /* gxp_wmsgetfeatureinfo */
 .x-btn .gxp-icon-getfeatureinfo, .x-menu-item .gxp-icon-getfeatureinfo, .x-tree-node .gxp-icon-getfeatureinfo {
     background-image: url(img/silk/information.png);

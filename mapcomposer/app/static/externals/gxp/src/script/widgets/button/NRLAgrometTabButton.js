@@ -21,18 +21,18 @@
 Ext.namespace('gxp.widgets.button');
 
 /** api: constructor
- *  .. class:: NrlChart(config)
+ *  .. class:: NrlTab(config)
  *
- *    Base class to create chart
+ *    Base class to create tab
  *
  */
-gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
+gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 
     /** api: xtype = gxp_nrlchart */
 	url:'http://84.33.2.24/geoserver/ows',
-    xtype: 'gxp_nrlAgrometChartButton',
-    iconCls: "gxp-icon-nrl-chart",
-	text: 'Generate Chart',
+    xtype: 'gxp_nrlAgrometTabButton',
+    iconCls: "gxp-icon-nrl-tab",
+	text: 'Generate Table',
     form: null,
     chartOpt:{
 		series:{
@@ -66,7 +66,8 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
         height: 400
 	},
     handler: function () {
-        var numRegion = [];
+            Ext.Msg.alert("Agromet Data","Not Yet Implemented");
+        /*var numRegion = [];
         var regStore = this.form.output.aoiFieldSet.AreaSelector.store
         var records = regStore.getRange();
 		
@@ -166,7 +167,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                     "region_list:"+ regionList + ";" +
                     "gran_type:" + granType
 			}
-		}); 
+		});*/ 
         
     },
 	createResultPanel:function(store,listVar){
@@ -355,4 +356,4 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 	}	
 });
 
-Ext.reg(gxp.widgets.button.NrlAgrometChartButton.prototype.xtype, gxp.widgets.button.NrlAgrometChartButton);
+Ext.reg(gxp.widgets.button.NrlAgrometTabButton.prototype.xtype, gxp.widgets.button.NrlAgrometTabButton);
