@@ -119,7 +119,21 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 						},{ 
 							fieldLabel: 'Season',
 							xtype: 'nrl_seasonradiogroup',
-							anchor:'100%'
+							ref:'season',
+							name:'season',
+							anchor:'100%',
+							listeners:{
+								change: function(c,checked){
+									var commodity = this.ownerCt.Commodity;
+									commodity.seasonFilter(checked.inputValue);
+									var selectedCommodity = commodity.store.data.items[0].data.label
+									commodity.setValue(selectedCommodity);
+
+									var comboProd = Ext.getCmp('comboProd');
+									comboProd.setValue('000 tons');  
+
+								}
+							}
 						},{
 							xtype:'nrl_single_aoi_selector',
 							target:this.target,
@@ -130,7 +144,39 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 							xtype: 'singleyearcombobox',
 							anchor:'100%'
 							
-						},new Ext.ux.grid.CheckboxSelectionGrid({
+						},{
+					xtype: 'nrl_commoditycombobox',
+					forceSelection:true,
+					allowBlank:false,
+					name:'crop',
+					anchor:'100%',
+					ref: 'Commodity',
+                    listeners: {
+                        expand: function( combo ){
+                            var season = this.ownerCt.season;
+							var radio = season.getValue();
+							
+							if (radio && radio.getValue()){
+                               this.seasonFilter(radio.inputValue);
+                            }                           
+                        },
+                        select: function(cb,record,index){
+                            //set year range for the selected crop
+                            var selectedCommodity = record.get('label');
+                            var yrs= cb.ownerCt.yearRangeSelector;
+                            
+                            
+                            var comboProd = Ext.getCmp('comboProd');
+                            
+                            var comValue = cb.getValue();
+                            if (comValue == 'cotton'){
+                                comboProd.setValue('000 bales');               
+                            }else{
+                                comboProd.setValue('000 tons');                                  
+                            }
+                        }
+                    }
+				},new Ext.ux.grid.CheckboxSelectionGrid({
                             title:'Factors',
                             enableHdMenu:false,
                             hideHeaders:true,
