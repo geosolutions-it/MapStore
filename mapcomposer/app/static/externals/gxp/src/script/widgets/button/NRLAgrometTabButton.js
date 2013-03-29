@@ -35,8 +35,7 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 	text: 'Generate Table',
     handler: function () {
 
-            Ext.Msg.alert("Generate Table","Not Yet Implemented");
-            return;
+           
             
 			var target = this.target;
 			var form = this.form.output.getForm();
@@ -52,41 +51,65 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 				case  "Production" : varparam ='prod';break;
 				case "Yield" : varparam= 'yield';break;
 			}
-			var yieldFactor = fieldValues.production_unit == "000 bales" ? 170 : 1000;
 			
+			var factorStore = this.form.output.factors.getSelectionModel().getSelections();
+			var factorValues = [];
+			var factorList = "";
+			if (factorStore.length === 0){
+				Ext.Msg.alert("Grid Factors","Must be selected at least one Factor!");
+				return;
+			}else{
+				for (var i=0;i<factorStore.length;i++){
+					var factor = factorStore[i].data;
+					var factorValue = factor.factor;
+					factorValues.push(factorValue);
+					if(i==factorStore.length-1){
+						factorList += "'" + factorValue + "'";
+					}else{
+						factorList += "'" + factorValue.concat("'\\,");
+						
+					}
+				}
+			}
 			
-			var viewParams= "crop:" + values.crop.toLowerCase() + ";" +
+			var viewParams= 
 					"gran_type:" + values.areatype.toLowerCase() + ";" +
 					"start_year:" + values.startYear +";" + //same year for start and end.
 					"end_year:" + values.endYear +";" + 
-					"yield_factor:" + yieldFactor +";" +
+					"factor_list:" + factorList + ";" +
 					"region_list:" + values.region_list.toLowerCase() + ";";
+			if(values.season=="RABI"){
+				viewParams+='season_flag:NOT;'
+			}
 			var store = new Ext.data.JsonStore({
 			url: this.url,
-			 sortInfo: {field: "s_dec", direction: "ASC"},
+			 sortInfo: {field: "factor", direction: "ASC"},
 			root: 'features',
 			
 			fields: [{
-				name: 'region',
-				mapping: 'properties.region'
-			},{
-				name: 'crop',
-				mapping: 'properties.crop'
+				name: 'factor',
+				mapping: 'properties.factor'
 			},{
 				name: 'year',
 				mapping: 'properties.year'
 			},{
-				name: 's_dec',
-				mapping: 'properties.s_dec'
-			}, {
-				name: 'production',
-				mapping: 'properties.production'
+				name: 'month',
+				mapping: 'properties.month'
 			},{
-				name: 'area',
-				mapping: 'properties.area'
+				name: 'dec',
+				mapping: 'properties.dec'
 			},{
-				name: 'yield',
-				mapping: 'properties.yield'
+				name: 'dec_in_year',
+				mapping: 'properties.dec_in_year'
+			},{
+				name: 'current',
+				mapping: 'properties.current'
+			},{
+				name: 'previous',
+				mapping: 'properties.previous'
+			},{
+				name: 'aggregated',
+				mapping: 'properties.aggregated'
 			}]
 			
 		});
@@ -98,11 +121,11 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 			},
 
 			params :{
-				propertyName: "region,crop,year,production,area,yield",
+				
 				service: "WFS",
 				version: "1.0.0",
 				request: "GetFeature",
-				typeName: "nrl:CropData",
+				typeName: "nrl:agromet_aggregated",
 				outputFormat: "json",
 				viewparams: viewParams
 			}
@@ -113,7 +136,7 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 	createResultPanel: function( store ,fieldValues,values){
 		var tabPanel = Ext.getCmp('id_mapTab');
 
-        var tabs = Ext.getCmp('cropDataTable_tab');
+        var tabs = Ext.getCmp('agrometTable_tab');
 		var grid = new Ext.grid.GridPanel({
 			bbar:[
 				"->",{xtype:'button',text:'export',iconCls:'icon-disk',handler:function(){
@@ -131,53 +154,65 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 			border:false,
 			layout:'fit',
 			store:store,
-			autoExpandColumn:'region',
+			autoExpandColumn:'factor',
 			
 			title:'',
 
 		
 			columns:[{
 				sortable: true, 
-				id:'region',
-				header:'Region',
-				name: 'region',
-				dataIndex: 'region'
-			},{
-				sortable: true, 
-				header:'Crop',
-				name: 'crop',
-				dataIndex: 'crop',
-				width:70
+				id:'factor',
+				header:'Factor',
+				name: 'factor',
+				dataIndex: 'factor'
 			},{
 				sortable: true, 
 				header:'Year',
 				name: 'year',
 				dataIndex: 'year',
 				width:50
-			}, {
-				sortable: true, 
-				header:'Production('+fieldValues.production_unit+')',
-				name: 'production',
-				dataIndex: 'production',
-				renderer: Ext.util.Format.numberRenderer('0.00'),
-				align: 'right',
-				width:130
 			},{
 				sortable: true, 
-				header:'Area('+fieldValues.area_unit+')',
-				name: 'area',
-				dataIndex: 'area',
-				renderer: Ext.util.Format.numberRenderer('0.00'),
-				align: 'right',
-				width:130
+				header:'Month',
+				name: 'month',
+				dataIndex: 'month',
+				width:50
 			},{
 				sortable: true, 
-				header:'Yield('+fieldValues.yield_unit+')',
-				name: 'yield',
-				dataIndex: 'yield',
+				header:'Dec',
+				name: 'dec',
+				dataIndex: 'dec',
+				width:40
+			}/*,{
+				sortable: true, 
+				header:'Decad in Year',
+				name: 'dec_in_year',
+				dataIndex: 'dec_in_year',
+				flex:1
+			}*/, {
+				sortable: true, 
+				header:values.endYear,
+				name: 'current',
+				dataIndex: 'current',
 				renderer: Ext.util.Format.numberRenderer('0.00'),
 				align: 'right',
-				width:90
+				flex:1
+			},{
+				sortable: true, 
+				header:values.endYear-1,
+				name: 'previous',
+				dataIndex: 'previous',
+				renderer: Ext.util.Format.numberRenderer('0.00'),
+				align: 'right',
+				flex:1
+			},{
+				sortable: true, 
+				header:values.startYear+"-"+values.endYear,
+				name:  'aggregated',
+				dataIndex: 'aggregated',
+				renderer: Ext.util.Format.numberRenderer('0.00'),
+				align: 'right',
+				flex:1
 			}
 			
 			
@@ -204,7 +239,7 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 			tools: [{
                 id: 'info',
                 handler: function () {
-                    var checkCommodity = fieldValues.crop ? "<li><p><em> Commodity: </em>" + fieldValues.crop + "</p></li>" : "<li><p><em></em></p></li>";
+                    var checkCommodity = "<li><p><em></em></p></li>";
                     var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
                             "<ol>" +
                                 checkCommodity +
@@ -238,10 +273,10 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 			if(!tabs){	
 				windowGroup = new Ext.WindowGroup();
 				tabs = new Ext.Panel({
-					title: 'Crop Data Tables',
+					title: 'AgroMet Tables',
 					windowGroup:windowGroup,
-					id:'cropDataTable_tab',
-					itemId:'cropDataTable_tab',
+					id:'agrometTable_tab',
+					itemId:'agrometTable_tab',
 					border: true,
 					autoScroll: false,
 					tabTip: 'Crop Data',
@@ -266,10 +301,10 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 				windowGroup =tabs.windowGroup ;
 				tabs.add(win);
 			}
-			//windowGroup.register(win);
+			windowGroup.register(win);
 			
 			
-			Ext.getCmp('id_mapTab').setActiveTab('cropDataTable_tab');
+			Ext.getCmp('id_mapTab').setActiveTab('agrometTable_tab');
 			Ext.getCmp('id_mapTab').doLayout();
 			
 			tabs.doLayout();
