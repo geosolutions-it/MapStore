@@ -4,7 +4,7 @@ var Headers = require("ringo/utils/http").Headers;
 var MemoryStream = require("io").MemoryStream;
 var objects = require("ringo/utils/objects");
 var responseForStatus = require("../util").responseForStatus;
-
+var log = require('ringo/logging').getLogger(module.id);
 var URL = java.net.URL;
 
 var app = exports.app = function(env) {
@@ -87,7 +87,10 @@ var createProxyRequestProps = exports.createProxyRequestProps = function(config)
             // strip authorization and cookie headers
             headers.unset("Authorization");
             headers.unset("Cookie");
+			
+
         }
+		
         props = {
             url: urlProps.url,
             method: request.method,
@@ -126,6 +129,7 @@ function proxyPass(config) {
         headers.unset("WWW-Authenticate");
         headers.unset("Set-Cookie");
     }
+	headers.unset("Content-Length");
     return {
         status: exchange.status,
         headers: headers,
