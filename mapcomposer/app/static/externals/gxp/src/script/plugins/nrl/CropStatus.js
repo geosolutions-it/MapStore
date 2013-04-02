@@ -79,7 +79,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                                 change: function(c,checked){
                                     var outputValue = c.getValue().inputValue;
                                     var submitButton = this.output.submitButton;
-                                    //var areaSelector = this.output.aoiFieldSet.AreaSelector;                            
+                                    //var areaSelector = this.output.singleFeatureSelector;                            
                                     if(outputValue == 'data'){
                                         //areaSelector.enable();
                                         submitButton.destroy();
@@ -91,7 +91,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                                             target:this.target,
                                             form: this
                                         })
-                                        //var store = areaSelector.store;
+                                        //var store = areaSelector.currentCombo.items.items[0];
                                         //this.output.fireEvent('update',store);
                                         this.output.fireEvent('show');                                
                                         this.output.doLayout();
@@ -107,7 +107,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                                             target:this.target,
                                             form: this
                                         })
-                                        //var store = areaSelector.store;
+                                        //var store = areaSelector.currentCombo.items.items[0];
                                         //this.output.fireEvent('update',store);
                                         this.output.fireEvent('show');
                                         this.output.doLayout();
@@ -174,7 +174,8 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
             if (button == "gxp_nrlCropStatusChartButton" || button == 'gxp_nrlCropStatusTabButton'){
                 this.output.submitButton.setDisabled(store.getCount()<=0)
             }
-		},this);		
+		},this);	
+        
 		//hide selection layer on tab change
 		this.output.on('beforehide',function(){
 			var button = this.output.singleFeatureSelector.singleSelector.selectButton;
