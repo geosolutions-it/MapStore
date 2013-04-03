@@ -9,11 +9,25 @@
  *
  **/
 
+OpenLayers.GeoStore = OpenLayers.Class({
+    /**
+     * Property: type
+     * {String} Geostore entity type
+     */ 
+    type: null, 
+    
+    initialize: function(options) {
+        OpenLayers.Util.extend(this, options);
+    }, 
+    
+    CLASS_NAME: "OpenLayers.GeoStore"
+});
+
 /**
- * Class: OpenLayers.Format.GeoStore.Category
+ * Class: OpenLayers.GeoStore.Category
  * GeoStore Entity Category.
  */
-OpenLayers.GeoStore.Category = OpenLayers.Class({ 
+OpenLayers.GeoStore.Category = OpenLayers.Class(OpenLayers.GeoStore,{ 
     
     /**
      * Property: type
@@ -40,10 +54,10 @@ OpenLayers.GeoStore.Category = OpenLayers.Class({
 
 
 /**
- * Class: OpenLayers.Format.GeoStore.User
+ * Class: OpenLayers.GeoStore.User
  * GeoStore Entity User.
  */
-OpenLayers.GeoStore.User = OpenLayers.Class({ 
+OpenLayers.GeoStore.User = OpenLayers.Class(OpenLayers.GeoStore,{ 
     
     /**
      * Property: type
@@ -73,7 +87,7 @@ OpenLayers.GeoStore.User = OpenLayers.Class({
  * Class: OpenLayers.GeoStore.Resource
  * GeoStore Entity Resource.
  */
-OpenLayers.GeoStore.Resource = OpenLayers.Class({ 
+OpenLayers.GeoStore.Resource = OpenLayers.Class(OpenLayers.GeoStore,{ 
     
     /**
      * Property: type
@@ -118,6 +132,6 @@ OpenLayers.GeoStore.Resource = OpenLayers.Class({
         OpenLayers.Util.extend(this, options);
     },
     
-    CLASS_NAME: "OpenLayers.Resource"
+    CLASS_NAME: "OpenLayers.GeoStore.Resource"
     
 });
