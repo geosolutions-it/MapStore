@@ -121,13 +121,15 @@
             "title": "Rischio Totale Ambientale",
             "name": "rischio_totale_ambientale",
             "displayInLayerSwitcher": true,
-            "tiled": false
+            "tiled": false,
+			"env":"low:100;medium:500"
         },{
             "source": "destination",
             "title": "Rischio Totale Sociale",
             "name": "rischio_totale_sociale",
             "displayInLayerSwitcher": true,
-            "tiled": false
+            "tiled": false,
+			"env":"low:100;medium:500"
         },
 		{
             "source": "destination",
@@ -899,11 +901,7 @@
 						"mapping": "properties.descrizione_clc"
 					}
 				],
-				"columnModel": [
-					{
-						"header": "Denominazione",      
-						"dataIndex": "denominazione"
-					},
+				"columnModel": [					
 					{
 						"header": "Codice CLC",      
 						"dataIndex": "codice_clc"
@@ -1025,11 +1023,7 @@
 						"mapping": "properties.descrizione_clc"
 					}
 				],
-				"columnModel": [
-					{
-						"header": "Denominazione",      
-						"dataIndex": "denominazione"
-					},
+				"columnModel": [					
 					{
 						"header": "Codice CLC",      
 						"dataIndex": "codice_clc"

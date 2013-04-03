@@ -650,8 +650,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		layers.push(this.createLayerRecord({
 			name: this.notHumanRiskLayer,
 			title: this.notHumanRiskLayerTitle, 
-			params: {                                                                
-				viewparams: viewParams
+			params: {
+				viewparams: viewParams,
+				env:"low:100;medium:500"
 			}
 		}, false));
 	},
@@ -672,7 +673,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			name: this.humanRiskLayer,
 			title: this.humanRiskLayerTitle, 
 			params: {                                                                
-				viewparams: viewParams
+				viewparams: viewParams,
+				env:"low:100;medium:500"
 			}
 		}, false));
 	},
@@ -697,6 +699,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			}, this);
 			if(layerIndex !== -1) {
 				var layer = layerStore.getAt(layerIndex);
+				layer.get('layer').clearGrid();
 				layerStore.remove(layer);
 				layers.push(layer);
 			}

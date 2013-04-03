@@ -872,7 +872,20 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         syntView.getControlPanel().disable();
 		
 		var containerTab = Ext.getCmp(this.outputTarget);
-		
+		this.temaSlider = new gxp.form.SliderRangesFieldSet({
+			title: "Intervalli di tematizzazione",
+			numericFields: false,
+			multiSliderConf:{
+				vertical : false,
+				ranges: [
+					{maxValue: 100, name:"Rischio Basso", id:"range_low"},
+					{maxValue: 500, name:"Rischio Medio", id:"range_medium"}
+				],                                        
+				width   : 350,
+				minValue: 0,
+				maxValue: 1000
+			}
+		});
 		this.panel = new Ext.FormPanel({
             border: false,
             layout: "fit",
@@ -881,22 +894,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             items:[
 				this.buildElaborazioneForm(),
 				//this.buildAOIForm(map),
-                                me.aoiFieldset, 
-                                new gxp.form.SliderRangesFieldSet({
-                                    title: "Rischio",
-                                    numericFields: true,
-                                    multiSliderConf:{
-                                        vertical : false,
-                                        ranges: [
-                                            {maxValue: 10, name:"Basso", id:"range_low"},
-                                            {maxValue: 40, name:"Medio", id:"range_medium"},
-                                            {maxValue: 70, name:"Alto", id:"range_height"}
-                                        ],                                        
-                                        width   : 350,
-                                        minValue: 0,
-                                        maxValue: 100
-                                    }
-                                }),
+                this.aoiFieldset, 
+                this.temaSlider,
 				this.buildTargetForm(),
 				this.buildAccidentForm()
             ],
