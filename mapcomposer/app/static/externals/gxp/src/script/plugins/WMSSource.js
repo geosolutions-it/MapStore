@@ -256,7 +256,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 STYLES: config.styles,
                 FORMAT: config.format,
                 TRANSPARENT: config.transparent,
-				VIEWPARAMS: config.viewparams
+				VIEWPARAMS: config.viewparams,
+				ENV: config.env
             }, this.layerBaseParams);
             
             // use all params from original
