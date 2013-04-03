@@ -194,7 +194,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
             var me=this;
             callFailure= function(response, opts){
                 var msg="Create entity: \"" + entity.type +"\" failed. "
-                    + response.responseText;
+                + response.responseText;
                 me.fireEvent("geostorefailure", this, msg);
                 
             };
@@ -249,7 +249,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
             var me=this;
             callFailure= function(response, opts){
                 var msg="Delete entity: \"" + entity.type +"\" request failed. "
-                    + response.responseText;
+                + response.responseText;
                 me.fireEvent("geostorefailure", this, msg);
                 
             };
@@ -302,7 +302,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
             var me=this;
             callFailure= function(response, opts){
                 var msg="Update entity: \"" + entity.type +"\" failed. "
-                    + response.responseText;
+                + response.responseText;
                 me.fireEvent("geostorefailure", this, msg);
                 
             };
@@ -338,14 +338,19 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
         var callSuccess= function(response, opts){
             var jsonResponse= Ext.util.JSON.decode(response.responseText);
             var resources;
-          
-            if(jsonResponse.ResourceList.Resource instanceof Array)
-                resources=jsonResponse.ResourceList.Resource;
-            else{
-                resources= new Array();
-                resources.push(jsonResponse.ResourceList.Resource);
-            }
-	  
+
+            resources= new Array();
+            
+            if(jsonResponse.ResourceList.Resource)
+                if(jsonResponse.ResourceList.Resource instanceof Array)
+                    for(var resource in jsonResponse.ResourceList.Resource){
+                        if(! isNaN(resource)){
+                            resources.push(jsonResponse.ResourceList.Resource[resource]);
+                        }
+                    }
+                else{
+                    resources.push(jsonResponse.ResourceList.Resource);
+                }
             success.call(this, resources);
         };
         
@@ -356,7 +361,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
             var me=this;
             callFailure= function(response, opts){
                 var msg="Get all resources by category failed. "
-                    + response.responseText;
+                + response.responseText;
                 me.fireEvent("geostorefailure", this, msg);
                 
             };
@@ -376,7 +381,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
      *  :arg success: ``Function`` Optional callback to call when request the has been executed successfully
      *  :arg failure: ``Function`` Optional callback to call when the request fails
      *
-     *  Send get entity by like name request
+     *  Send get entities by like name request
      */
     getLikeName: function (entity, success, failure){
         var restPath="";
@@ -395,22 +400,26 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
 
         var callSuccess= function(response, opts){
             var jsonResponse= Ext.util.JSON.decode(response.responseText);
-            var entity= null;
-          
-            if(jsonResponse.ResourceList){
-                if(jsonResponse.ResourceList.Resource instanceof Object){
-                    entity= jsonResponse.ResourceList.Resource;
-                }
-            }
+            var entities= new Array();
+            var entitiesObj;
             
-            if(jsonResponse.UsersList){
-                if(jsonResponse.UsersList.User instanceof Object){
-                    entity= jsonResponse.UsersList.User;
+            if(jsonResponse.ResourceList)
+                entitiesObj= jsonResponse.ResourceList.Resource;
+            if(jsonResponse.UsersList)
+                entitiesObj= jsonResponse.UsersList.User; 
+                
+            if(entitiesObj)
+                if(entitiesObj instanceof Array)
+                    for(var entity in entitiesObj){
+                        if(! isNaN(entity)){
+                            entities.push(entitiesObj[entity]);
+                        }
+                    }
+                else{
+                    entities.push(entitiesObj);
                 }
-            }
 
-	  
-            success.call(this, entity);
+            success.call(this, entities);
         };
         
         if(failure)
@@ -419,7 +428,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
             var me=this;
             callFailure= function(response, opts){
                 var msg="Get entity: \"" + entity.type +"\" by like name request failed. "
-                    + response.responseText;
+                + response.responseText;
                 me.fireEvent("geostorefailure", this, msg);
                 
             };
@@ -475,7 +484,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
             var me=this;
             callFailure= function(response, opts){
                 var msg="Exists entity: \"" + entity.type +"\" request failed. "
-                    + response.responseText;
+                + response.responseText;
                 me.fireEvent("geostorefailure", this, msg);
                 
             };
@@ -535,7 +544,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
             var me=this;
             callFailure= function(response, opts){
                 var msg="Get entity by ID: \"" + entity.type +"\" request failed. "
-                    + response.responseText;
+                + response.responseText;
                 me.fireEvent("geostorefailure", this, msg);
                 
             };
