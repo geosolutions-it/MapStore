@@ -22,6 +22,7 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
 
     tip: null,
 
+
     /** private: method[initComponent]
      *  Override
      */
@@ -38,7 +39,7 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
                         Ext.getCmp(multi.thumbs[thumb.index+1].id+"_minValue").setValue(thumb.value+1);
                 }
                     
-                 return String.format('Range <b>{2}</b> [<b>{0}</b> , <b>{1}</b>]', thumb.minValue ,thumb.value, thumb.name);
+                 return String.format('<b>{2}</b> [<b>{0}</b> , <b>{1}</b>]', thumb.minValue ,thumb.value, thumb.name);
             }
         });
         this.multiSlider= new gxp.form.SliderRangesField(this.multiSliderConf);
@@ -107,7 +108,7 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
                     items: [{
                        xtype: "label",     
                       // cls: 'x-form-item-label',
-                       text: "  Range " + rangeName       
+                       text: rangeName       
                     }]
                     
                 });
