@@ -21,6 +21,8 @@ Ext.namespace("gxp.form");
 gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
 
     tip: null,
+    
+
 
     /** private: method[initComponent]
      *  Override
@@ -28,6 +30,10 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
     initComponent: function() {
         var me= this;
         var multi=null;
+        
+        this.multiSliderConf.id= this.id+"_multislider";
+        
+      
         this.multiSliderConf.plugins = new Ext.slider.Tip({
             getText: function(thumb){
                 if(me.numericFields){
