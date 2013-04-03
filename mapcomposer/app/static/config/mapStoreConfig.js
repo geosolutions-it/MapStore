@@ -1,5 +1,5 @@
 {
-   "geoStoreBase":"http://localhost:8080/geostore/rest/",
+   "geoStoreBase":"http://84.33.2.24/geostore/rest/",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
    "gsSources":{ 
@@ -239,9 +239,10 @@
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
 	  },{
-			"ptype":"gxp_login",
-			"loginService":"http://localhost:8081/ciao",
-			"isDummy":true,
+			"ptype":"gxp_geostore_login",
+			"loginService":"http://84.33.2.24/geostore/rest/users/user/details/",     
+
+			"isDummy":false,
 			"actionTarget": "paneltbar"
 	  }
 	]
