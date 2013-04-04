@@ -19,20 +19,46 @@
  */
 
 
+/*WPS Manager Example
 
+The WPS requests are sent to the process JTS:isValid that comes with the GeoServer WPS plugin.
+In order to instance the WPSManger plugins you must provide the following information:
+
+    - WPS URL
+    - Proxy URL used for the WPS requests
+    - Geostore URL used to save the WPS execute instances
+    - Proxy URL used for the Geostore requests
+*/
 
 var requestObject,wpsManager;
 onReady=(function() {
+    var el;
+    
+    var wpsURL= prompt("WPS URL: ", "http://hrt-11.pisa.intecs.it/geoserver/ows");
+    el=document.getElementById("wpsurl");
+    el.appendChild(document.createTextNode(wpsURL));
+    
+    var wpsProxy= prompt("WPS Proxy URL: ", "/http_proxy/proxy?url=");
+    el=document.getElementById("wpsproxy");
+    el.appendChild(document.createTextNode(wpsProxy));
+    
+    var geostoreURL= prompt("GeoStore URL: ", "http://localhost:8080/geostore/rest");
+    el=document.getElementById("geostoreurl");
+    el.appendChild(document.createTextNode(geostoreURL));
+    
+    var geostoreProxy= prompt("GeoStore Proxy URL: ", "/http_proxy/proxy?url=");
+    el=document.getElementById("geostoreproxy");
+    el.appendChild(document.createTextNode(geostoreProxy));
     
     wpsManager = new gxp.plugins.WPSManager({
-        id: "wpsTest3",
-        url: "http://hrt-11.pisa.intecs.it/geoserver/ows",
-        proxy: "/http_proxy/proxy?url=",
+        id: "wpsTest",
+        url: wpsURL,
+        proxy: wpsProxy,
         geoStoreClient: new gxp.plugins.GeoStoreClient({
-            url: "http://localhost:8080/geostore/rest",
+            url: geostoreURL,
             user: "admin",
             password: "admin",
-            proxy: "/http_proxy/proxy?url=",
+            proxy: geostoreProxy,
             listeners: {
                 "geostorefailure": function(tool, msg){
                     Ext.Msg.show({
@@ -70,14 +96,20 @@ function executeCallback(instanceOrRawData){
 
 function getSyncRequest(){
 
+    var type= null;
+    
+    if(document.getElementById("rawMod").value == "true")
+        type="raw";
+    /*alert(document.getElementById("rawMod").value);
+    alert(type);*/
     return {
         /* storeExecuteResponse: false,
         lineage:  false,
         status: false,*/
-        type: "raw",
+        type: type,
         inputs:{
             geom: new OpenLayers.WPSProcess.ComplexData({
-                value: "POINT(6 40)",
+                value: document.getElementById("geometry").value,
                 mimeType: "application/wkt"
             })
         },
@@ -102,7 +134,7 @@ function getAsyncRequest(){
         //type: "raw",
         inputs:{
             geom: new OpenLayers.WPSProcess.ComplexData({
-                value: "POINT(6 40)",
+                value: document.getElementById("geometry").value,
                 mimeType: "application/wkt"
             })
         },

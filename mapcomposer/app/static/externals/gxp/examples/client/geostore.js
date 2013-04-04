@@ -18,7 +18,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*GeoStore Client Example
 
+In order to instance the GeoStore Client plugin you must provide the following information:
+
+    - Geostore URL
+    - Proxy URL used for the Geostore requests
+*/
 var geoStore;
 
 onReady=(function() {
@@ -28,11 +34,15 @@ onReady=(function() {
     var el=document.getElementById("geourl");
     el.appendChild(document.createTextNode(geoStoreURL));
     
+    var geostoreProxy= prompt("GeoStore Proxy URL: ", "/http_proxy/proxy?url=");
+    el=document.getElementById("geoproxy");
+    el.appendChild(document.createTextNode(geostoreProxy));
+    
     geoStore = new gxp.plugins.GeoStoreClient({
             url: geoStoreURL,
             user: "admin",
             password: "admin",
-            proxy: "/http_proxy/proxy?url=",
+            proxy: geostoreProxy,
             listeners: {
                 "geostorefailure": function(tool, msg){
                     Ext.Msg.alert.show({
@@ -44,17 +54,9 @@ onReady=(function() {
                 }
             }
     });
-    
-    
-    
-    
     getCategories();
     getUsers();
     getResources();
-    
-    
-    
-    
 });
 
 
@@ -92,7 +94,7 @@ function testGeostore(){
                       
                       
                     geoStore.getCategoryResources(category.name, function(response){
-                        alert(response);
+                       // alert(response);
                     }/*, function(){
                         Ext.Msg.alert("info","Create resource failure");
                     }*/);
@@ -104,7 +106,7 @@ function testGeostore(){
                     Ext.Msg.alert("info","New Resource ID: " + resourceID);
                     getResources();  
                     geoStore.getCategoryResources(category.name, function(response){
-                        alert(response);
+                       // alert(response);
                        
                     }/*, function(){
                         Ext.Msg.alert("info","Create resource failure");
@@ -130,7 +132,7 @@ function testGeostore(){
                     Ext.Msg.alert("info","New Resource ID: " + resourceID);
                     getResources();  
                     geoStore.getCategoryResources(category.name, function(response){
-                        alert(response);
+                       // alert(response);
                         //Ext.Msg.alert("info",response.responseText);
                     }/*, function(){
                         Ext.Msg.alert("info","Create resource failure");
@@ -156,7 +158,7 @@ function testGeostore(){
 
 function getCategories(){
     geoStore.getEntities({type:"category"}, function(categories){
-        console.log(categories);
+   
         var tpl = new Ext.XTemplate(
             '<table class="gridtable">',
             '<tr><th>ID</th>',
@@ -179,7 +181,7 @@ function getCategories(){
 
 function getUsers(){
     geoStore.getEntities({type:"user"}, function(categories){
-        console.log(categories);
+    
         var tpl = new Ext.XTemplate(
             '<table class="gridtable">',
             '<tr><th>ID</th>',
@@ -203,7 +205,7 @@ function getUsers(){
 
 function getResources(){
     geoStore.getEntities({type:"resource"}, function(categories){
-        console.log(categories);
+    
         var tpl = new Ext.XTemplate(
             '<table class="gridtable">',
             '<tr><th>ID</th>',
