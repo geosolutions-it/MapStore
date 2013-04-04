@@ -57,6 +57,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
         cursor: "pointer"
     },
 	rangesUrl: "http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
+    dataUrl: "http://84.33.2.24/geoserver/ows?",
 	comboConfigs:{
         base:{
             anchor:'100%',
@@ -193,7 +194,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 submitButton.destroy();
                                 delete submitButton;
                                 this.output.addButton({              
-									url: 'http://84.33.2.24/geoserver/ows',//TODO externalize this
+									url: this.dataUrl, //'http://84.33.2.24/geoserver/ows',//TODO externalize this
                                     xtype: 'gxp_nrlCropDataTabButton',
                                     ref: '../submitButton',
                                     target:this.target,
@@ -210,7 +211,8 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 areaSelector.disable();
                                 submitButton.destroy();
                                 delete submitButton;
-                                this.output.addButton({               
+                                this.output.addButton({
+                                    url: this.dataUrl,
                                     xtype: 'gxp_nrlCropDataMapButton',
                                     ref: '../submitButton',
                                     target:this.target,
@@ -225,7 +227,8 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 areaSelector.enable();
                                 submitButton.destroy();
                                 delete submitButton;
-                                this.output.addButton({               
+                                this.output.addButton({
+                                    url: this.dataUrl,
                                     xtype: 'gxp_nrlCropDataButton',
                                     ref: '../submitButton',
                                     target:this.target,
@@ -484,7 +487,8 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 			
 				
 			],	
-			buttons:[{               
+			buttons:[{
+                url: this.dataUrl,
                 xtype: 'gxp_nrlCropDataButton',
 				ref: '../submitButton',
                 target:this.target,

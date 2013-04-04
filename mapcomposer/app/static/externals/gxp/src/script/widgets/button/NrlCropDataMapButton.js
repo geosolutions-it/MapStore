@@ -33,7 +33,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
     iconCls: "gxp-icon-nrl-map",
     form: null,
 	text: 'Generate Map',
-	wmsUrl: '',
+	url: null,
 	controlToggleGroup: 'toolGroup',
 	infoActionTip: 'Crop Data info on selected layer',
 	controls:[],layers:[],
@@ -62,7 +62,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 					"yield_factor:" + yieldFactor;
 			
 			var wms = new OpenLayers.Layer.WMS(values.crop + " " + values.endYear + " - "+values.variable,//todo: choice the style for the needed variable
-			   "http://84.33.2.24/geoserver/ows",
+			   this.url,
 			   {
 				layers: "nrl:CropDataMap",
 				styles: values.areatype.toLowerCase() + "_" + values.crop.toLowerCase() + "_"+ varparam + "_style" ,

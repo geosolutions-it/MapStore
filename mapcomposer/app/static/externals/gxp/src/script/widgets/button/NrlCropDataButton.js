@@ -33,6 +33,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
     iconCls: "gxp-icon-nrl-chart",
 	text: 'Generate Chart',
     form: null,
+    url: null,
     chartOpt:{
 		series:{
 			prod:{
@@ -120,7 +121,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 			
             Ext.Ajax.request({
 				scope:this,
-                url : "http://84.33.2.24/geoserver/nrl/ows",
+                url : this.url,
                 method: 'POST',
                 params :{
                     service: "WFS",
