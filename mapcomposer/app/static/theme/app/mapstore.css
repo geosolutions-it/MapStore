@@ -159,3 +159,7 @@ div#homelogos ul li a:hover {
 .csw-viewer{
     background-image: url(img/geosilk/server_table.png);
 }
+
+.multislider-label .x-form-item  {
+	font-size: 10px;
+}

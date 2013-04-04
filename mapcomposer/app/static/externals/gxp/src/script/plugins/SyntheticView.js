@@ -652,7 +652,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			title: this.notHumanRiskLayerTitle, 
 			params: {
 				viewparams: viewParams,
-				env:"low:100;medium:500"
+				env:"low:"+this.status.themas['ambientale'][0]+";medium:"+this.status.themas['ambientale'][1]
 			}
 		}, false));
 	},
@@ -665,7 +665,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			+ ';industria:' + (this.status.target.id.indexOf(4) === -1 ? 0 : 1) 
 			+ ';sanitarie:' + (this.status.target.id.indexOf(5) === -1 ? 0 : 1) 
 			+ ';scolastiche:' + (this.status.target.id.indexOf(6) === -1 ? 0 : 1)
-			+ ';commerciali:' + (this.status.target.id.indexOf(7) === -1 ? 0 : 1) 			
+			+ ';commerciali:' + (this.status.target.id.indexOf(7) === -1 ? 0 : 1) 
 			+ ';sostanze:' + this.status.sostanza.id.join('\\,')
 			+ ';scenari:' + this.status.accident.id.join('\\,')
 			+ ';gravita:' + this.status.seriousness.id.join('\\,');
@@ -674,7 +674,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			title: this.humanRiskLayerTitle, 
 			params: {                                                                
 				viewparams: viewParams,
-				env:"low:100;medium:500"
+				env:"low:"+this.status.themas['sociale'][0]+";medium:"+this.status.themas['sociale'][1]
 			}
 		}, false));
 	},
@@ -754,7 +754,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		Ext.getCmp("south").expand();			
 	},
 	
-	doProcess: function() {
+	doProcess: function(roi) {
 		var newLayers=[];
 		
 		var map = this.target.mapPanel.map;		
@@ -770,6 +770,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		this.addRisk(newLayers, bounds);
 		
 		this.target.mapPanel.layers.add(newLayers);
+		if(roi)
+			this.target.mapPanel.map.zoomToExtent(roi);
 	},
 	
 	removeAnalyticViewLayers: function(map) {
