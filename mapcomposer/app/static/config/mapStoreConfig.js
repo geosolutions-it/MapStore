@@ -1,5 +1,5 @@
 {
-   "geoStoreBase":"http://localhost:8080/geostore/rest/",
+   "geoStoreBase":"http://84.33.2.24/geostore/rest/",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
    "gsSources":{ 
@@ -199,9 +199,19 @@
 			"extent": [	6770799.251963,2705604.806669,8826743.330978,4442826.247111 ],
 			"tooltip":"zoom to Pakistan Extent",
 			"actionTarget": {"target": "paneltbar", "index": 2}
-		 },
-		
-		{
+		 },{
+		  "ptype":"gxp_print",
+		  "customParams":{
+			 "outputFilename":"mapstore-print"
+		  },
+		  "printService":"http://84.33.2.24/geoserver/pdf/",
+		  "legendPanelId":"legendPanel",
+		  "ignoreLayers":["WFSSearch","Marker"],
+		  "actionTarget":{
+			 "target":"paneltbar",
+			 "index":4
+		  }
+	   },{
 		  "ptype":"gxp_nrl",
 		  "outputConfig":{
 			 "id":"nrl",
@@ -239,9 +249,10 @@
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
 	  },{
-			"ptype":"gxp_login",
-			"loginService":"http://localhost:8081/ciao",
-			"isDummy":true,
+			"ptype":"gxp_geostore_login",
+			"loginService":"http://84.33.2.24/geostore/rest/users/user/details/",     
+
+			"isDummy":false,
 			"actionTarget": "paneltbar"
 	  }
 	]
