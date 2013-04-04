@@ -32,6 +32,7 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
     xtype: 'gxp_nrlAgrometTabButton',
     iconCls: "gxp-icon-nrl-tab",
     form: null,
+    url: null,
 	text: 'Generate Table',
     handler: function () {
 

@@ -29,7 +29,7 @@ Ext.namespace('gxp.widgets.button');
 gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 
     /** api: xtype = gxp_nrlchart */
-	url:'http://84.33.2.24/geoserver/ows',
+	url: null,
     xtype: 'gxp_nrlAgrometChartButton',
     iconCls: "gxp-icon-nrl-chart",
 	text: 'Generate Chart',

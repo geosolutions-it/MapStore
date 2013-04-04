@@ -62,6 +62,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
     factorsurl:"http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
     
 	rangesUrl: "http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
+    dataUrl: 'http://84.33.2.24/geoserver/ows',
 	startYear: 2000,
 	
     /** private: method[addOutput]
@@ -105,7 +106,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                                 submitButton.destroy();
                                 delete submitButton;
                                 this.output.addButton({              
-									url: 'http://84.33.2.24/geoserver/ows',//TODO externalize this
+									url: this.dataUrl, //'http://84.33.2.24/geoserver/ows',//TODO externalize this
                                     xtype: 'gxp_nrlAgrometTabButton',
                                     ref: '../submitButton',
                                     target:this.target,
@@ -121,7 +122,8 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                                 areaSelector.enable();
                                 submitButton.destroy();
                                 delete submitButton;
-                                this.output.addButton({               
+                                this.output.addButton({
+                                    url: this.dataUrl,
                                     xtype: 'gxp_nrlAgrometChartButton',
                                     ref: '../submitButton',
                                     target:this.target,
@@ -205,6 +207,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                 })
 			],
 			buttons:[{
+                url: this.dataUrl,
                 xtype:'gxp_nrlAgrometChartButton',
 				ref: '../submitButton',
                 target:this.target,
