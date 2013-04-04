@@ -94,34 +94,24 @@ function testGeostore(){
                       
                       
                     geoStore.getCategoryResources(category.name, function(response){
-                       // alert(response);
-                    }/*, function(){
-                        Ext.Msg.alert("info","Create resource failure");
-                    }*/);
-                }/*, function(){
-                    Ext.Msg.alert("info","Create resource failure");
-                }*/);
+                      
+                    });
+                });
                 }else{
                    geoStore.createEntity(resource, function(resourceID){
                     Ext.Msg.alert("info","New Resource ID: " + resourceID);
                     getResources();  
                     geoStore.getCategoryResources(category.name, function(response){
-                       // alert(response);
+                      
                        
-                    }/*, function(){
-                        Ext.Msg.alert("info","Create resource failure");
-                    }*/);
-                }/*, function(){
-                    Ext.Msg.alert("info","Create resource failure");
-                }*/); 
+                    });
+                }); 
                     
                 }
                 
                 
                 
-            }/*, function(){
-                    Ext.Msg.alert("info","Error");
-                }*/);   
+            });   
         }else
         {
             geoStore.createEntity(category, function(categoryID){
@@ -132,17 +122,10 @@ function testGeostore(){
                     Ext.Msg.alert("info","New Resource ID: " + resourceID);
                     getResources();  
                     geoStore.getCategoryResources(category.name, function(response){
-                       // alert(response);
-                        //Ext.Msg.alert("info",response.responseText);
-                    }/*, function(){
-                        Ext.Msg.alert("info","Create resource failure");
-                    }*/);
-                }/*, function(){
-                    Ext.Msg.alert("info","Create resource failure");
-                }*/);     
-            }/*, function(){
-                Ext.Msg.alert("info","Create Category failure");
-            }*/);  
+                       
+                    });
+                });     
+            });  
         }
       
     };
@@ -163,12 +146,11 @@ function getCategories(){
             '<table class="gridtable">',
             '<tr><th>ID</th>',
             '<th>Name</th></tr>',
-          //  '<th></th>',
+       
             '<tpl for=".">',
             '<tr><td>{id}</td>',		  
             '<td>{name}</td></tr>',
-            //'<td><button onclick=\"getInstance(\'{id}\')\"> Get Instance </button></td>',
-            //'<td><button onclick=\"removeInstance(\'{id}\')\"> Delete </button></td></tr>',
+          
             '</tpl>',
             '</table>'
             );
@@ -191,8 +173,7 @@ function getUsers(){
             '<tr><td>{id}</td>',		  
             '<td>{name}</td>',
             '<td>{role}</td></tr>',
-            //'<td><button onclick=\"getInstance(\'{id}\')\"> Get Instance </button></td>',
-            //'<td><button onclick=\"removeInstance(\'{id}\')\"> Delete </button></td></tr>',
+           
             '</tpl>',
             '</table>'
             );
@@ -221,8 +202,7 @@ function getResources(){
             '<td>{canDelete}</td>',
             '<td>{canEdit}</td>',
             '<td>{description}</td></tr>',
-            //'<td><button onclick=\"getInstance(\'{id}\')\"> Get Instance </button></td>',
-            //'<td><button onclick=\"removeInstance(\'{id}\')\"> Delete </button></td></tr>',
+           
             '</tpl>',
             '</table>'
             );
@@ -251,8 +231,7 @@ function resourcesMsg(category, resources){
             '<td>{canDelete}</td>',
             '<td>{canEdit}</td>',
             '<td>{description}</td></tr>',
-            //'<td><button onclick=\"getInstance(\'{id}\')\"> Get Instance </button></td>',
-            //'<td><button onclick=\"removeInstance(\'{id}\')\"> Delete </button></td></tr>',
+           
             '</tpl>',
             '</table>'
             );
