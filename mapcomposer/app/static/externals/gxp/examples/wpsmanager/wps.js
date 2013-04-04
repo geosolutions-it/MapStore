@@ -21,13 +21,14 @@
 
 /*WPS Manager Example
 
-The WPS requests are sent to the process JTS:isValid that comes with the GeoServer WPS plugin.
 In order to instance the WPSManger plugins you must provide the following information:
 
     - WPS URL
     - Proxy URL used for the WPS requests
     - Geostore URL used to save the WPS execute instances
     - Proxy URL used for the Geostore requests
+
+The WPS requests are sent to the process JTS:isValid that comes with the GeoServer WPS plugin.
 */
 
 var requestObject,wpsManager;
