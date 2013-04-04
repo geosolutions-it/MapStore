@@ -147,17 +147,19 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
         });	
     },
     
-   
     
     /** api: method[getEntities]
      *
-     *  :arg entity: ``Object`` Object which contains the Geostore entity properties.
-     *                          The Object properties are  defined in the OpenlayersExt.Format.Geostore class.
+     *  :arg entity: ``OpenLayers.GeoStore`` Object which contains the Geostore entity properties.
+     *                          This object properties are:
+     *                              - type: ``String`` Mandatory. Defines the entity type. Available values: category, resource, user, data
+     *                              - id: ``Number`` Mandatory. Entity identifier
+     *                          The Object properties are  defined in the Openlayers.Geostore class.
      *  :arg success: ``Function`` Optional callback to call when request the has been executed successfully
      *  :arg failure: ``Function`` Optional callback to call when the request fails
      *       
      *       
-     *  Send create Geostore entity request
+     *  Send get Geostore entity list request
      */
     getEntities: function (entity, success, failure){
         var restPath="";
@@ -221,8 +223,9 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
     
     /** api: method[createEntity]
      *
-     *  :arg entity: ``Object`` Object which contains the Geostore entity properties.
-     *                          The Object properties are  defined in the OpenlayersExt.Format.Geostore class.
+     *  :arg entity: ``OpenLayers.GeoStore.Category` | `OpenLayers.GeoStore.Resource` | `OpenLayers.GeoStore.User`` 
+     *                          Object which contains the Geostore entity properties.
+     *                          The Object properties are  defined in the Openlayers.Geostore class.
      *  :arg success: ``Function`` Optional callback to call when request the has been executed successfully
      *  :arg failure: ``Function`` Optional callback to call when the request fails
      *       
@@ -246,7 +249,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
                 break;
             case "category":
                 restPath="/categories";
-                break;    
+                break;       
             default:
                 throw "Entity type not supported"; 
         }
@@ -285,9 +288,9 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
     
     /** api: method[deleteEntity]
      *
-     *  :arg entity: ``Object`` Object which contains the Geostore entity properties.
+     *  :arg entity: ``OpenLayers.GeoStore`` Object which contains the Geostore entity properties.
      *                          This object properties are:
-     *                              - type: ``String`` Mandatory. Defines the entity type. Available values: category, resource, user
+     *                              - type: ``String`` Mandatory. Defines the entity type. Available values: category, resource, user, data
      *                              - id: ``Number`` Mandatory. Entity identifier
      *  :arg success: ``Function`` Optional callback to call when request the has been executed successfully
      *  :arg failure: ``Function`` Optional callback to call when the request fails
@@ -308,7 +311,10 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
                 break;
             case "category":
                 restPath="/categories/category/"+entity.id;
-                break;    
+                break;  
+            case "data":
+                restPath="/data/"+entity.id;
+                break;      
             default:
                 throw "Entity type not supported";     
         }
@@ -332,12 +338,13 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
     
     /** api: method[updateEntity]
      *
-     *  :arg entity: ``Object`` Object which contains the Geostore entity properties.
-     *                          The Object properties are  defined in the OpenlayersExt.Format.Geostore class.
+     *  :arg entity: ``OpenLayers.GeoStore.Category` | `OpenLayers.GeoStore.Resource` | `OpenLayers.GeoStore.User` | `OpenLayers.GeoStore.Data`` 
+     *                          Object which contains the Geostore entity properties.
+     *                          The Object properties are  defined in the Openlayers.Geostore class.
      *  :arg success: ``Function`` Optional callback to call when request the has been executed successfully
      *  :arg failure: ``Function`` Optional callback to call when the request fails
      *
-     *  Send update entity request
+     *  Send update entity request. If the type of entity is "resource" with the store attribute defined,  the entity "data" associated is automatically updated
      */
     updateEntity: function (entity, success, failure){
         var restPath="";
@@ -345,15 +352,23 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
         var contentType= "text/xml";
         var content= null;
         var callFailure;
+        var me= this;
         switch (entity.type){
             case "resource":
                 restPath="/resources/resource/"+entity.id;
+                content= new OpenLayers.Format.GeoStore().write(entity);
                 break;
             case "user":
                 restPath="/users/user/"+entity.id;
+                content= new OpenLayers.Format.GeoStore().write(entity);
                 break;
             case "category":
                 restPath="/categories/category/"+entity.id;
+                content= new OpenLayers.Format.GeoStore().write(entity);
+                break;  
+            case "data":
+                restPath="/data/"+entity.id;
+                content= entity.store;
                 break;    
             default:
                 throw "Entity type not supported";     
@@ -361,15 +376,22 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
         
         var callSuccess= function(response, opts){
             var entityID= response.responseText;
-	  
-            success.call(this, entityID);
+            
+            if(entity.store && entity.type == "resource"){
+                var data= new OpenLayers.GeoStore.Data({
+                    id: entity.id,
+                    store: entity.store
+                });
+                me.updateEntity(data, success, failure);
+            }else{
+               success.call(this, entityID); 
+            }
         };
         
         
         if(failure)
             callFailure= failure;
         else{
-            var me=this;
             callFailure= function(response, opts){
                 var msg="Update entity: \"" + entity.type +"\" failed. "
                 + response.responseText;
@@ -377,14 +399,6 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
                 
             };
         } 
-        
-        if(entity instanceof String){
-            content= entity;
-        }else {
-            if(entity instanceof Object){
-                content= new OpenLayers.Format.GeoStore().write(entity);
-            }
-        }
         
         this.sendRequest(restPath, method, content, contentType, callSuccess, callFailure);
     },
@@ -444,10 +458,11 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
     
     /** api: method[getLikeName]
      *
-     *  :arg entity: ``Object`` Object which contains the Geostore entity properties.
+     *  :arg entity: ``OpenLayers.GeoStore`` Object which contains the Geostore entity properties.
      *                          This object properties are:
-     *                              - type: ``String`` Mandatory. Defines the entity type. Available values: resource, user
-     *                              - regName: ``String`` Regular Expression for the entity name
+     *                              - type: ``String`` Mandatory. Defines the entity type. Available values: category, resource, user, data
+     *                              - id: ``Number`` Mandatory. Entity identifier
+     *                          The Object properties are  defined in the Openlayers.Geostore class.
      *  :arg success: ``Function`` Optional callback to call when request the has been executed successfully
      *  :arg failure: ``Function`` Optional callback to call when the request fails
      *
@@ -510,10 +525,11 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
     
     /** api: method[existsEntity]
      *
-     * :arg entity: ``Object`` Object which contains the Geostore entity properties.
+     * :arg entity: ``OpenLayers.GeoStore`` Object which contains the Geostore entity properties.
      *                          This object properties are:
-     *                              - type: ``String`` Mandatory. Defines the entity type. Available values: category, resource, user
-     *                              - id: ``Number`` Mandatory. Entity identifier               
+     *                              - type: ``String`` Mandatory. Defines the entity type. Available values: category, resource, user, data
+     *                              - id: ``Number`` Mandatory. Entity identifier
+     *                          The Object properties are  defined in the Openlayers.Geostore class.
      *  :arg success: ``Function`` Optional callback to call when request the has been executed successfully
      *  :arg failure: ``Function`` Optional callback to call when the request fails
      *                                       
@@ -567,10 +583,11 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
    
     /** api: method[getEntityByID]
      *
-     * :arg entity: ``Object`` Object which contains the Geostore entity properties.
+     * :arg entity: ``OpenLayers.GeoStore`` Object which contains the Geostore entity properties.
      *                          This object properties are:
-     *                              - type: ``String`` Mandatory. Defines the entity type. Available values: category, resource, user
-     *                              - id: ``Number`` Mandatory. Entity identifier               
+     *                              - type: ``String`` Mandatory. Defines the entity type. Available values: category, resource, user, data
+     *                              - id: ``Number`` Mandatory. Entity identifier
+     *                          The Object properties are  defined in the Openlayers.Geostore class.         
      *  :arg success: ``Function`` Optional callback to call when request the has been executed successfully
      *  :arg failure: ``Function`` Optional callback to call when the request fails
      *
@@ -592,6 +609,9 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
                 break;
             case "category":
                 throw "/categories/category/";
+                break; 
+            case "data":
+                throw "/data/";
                 break;    
             default:
                 throw "Entity type not supported";     
@@ -605,9 +625,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
      
             success.call(this, entity);
         };
-	
-	
-        
+
         if(failure)
             callFailure= failure;
         else{
