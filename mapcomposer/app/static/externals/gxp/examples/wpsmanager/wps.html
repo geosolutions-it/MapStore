@@ -152,15 +152,15 @@
 
                 <tr>
                     <td>
-                        RAW Modality: <select id="rawMod"> 
+                        RAW Mode: <select id="rawMod"> 
                             <option>true</option>
                             <option>false</option>
                         </select>
                         <button onclick="wpsManager.execute('JTS:isValid', getSyncRequest(), executeCallback)"> Send Execute Synchronus</button>
                     </td>
                     <td>
-                        <strong> Test WPS Asynchronus</strong>
-                        <button onclick="wpsManager.execute('JTS:isValid', getAsyncRequest(), executeCallback)"> Send </button>
+                       
+                        <button onclick="wpsManager.execute('JTS:isValid', getAsyncRequest(), executeCallback)"> Send Execute Asynchronus </button>
                     </td>
                 </tr>
             </table>
