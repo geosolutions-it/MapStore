@@ -4,7 +4,7 @@
  * ---------------------------------------------------------
  *  MapStore Integration information:
  *      new Class
- *      not yet used in MapStore
+ *      
  * --------------------------------------------------------- 
  *
  **/
@@ -15,6 +15,12 @@ OpenLayers.GeoStore = OpenLayers.Class({
      * {String} Geostore entity type
      */ 
     type: null, 
+    
+    /**
+     * Property: id
+     * {Integer} Geostore entity id
+     */ 
+    id: null, 
     
     initialize: function(options) {
         OpenLayers.Util.extend(this, options);
@@ -133,5 +139,34 @@ OpenLayers.GeoStore.Resource = OpenLayers.Class(OpenLayers.GeoStore,{
     },
     
     CLASS_NAME: "OpenLayers.GeoStore.Resource"
+    
+});
+
+
+
+/**
+ * Class: OpenLayers.GeoStore.Data
+ * GeoStore Entity Data.
+ */
+OpenLayers.GeoStore.Data = OpenLayers.Class(OpenLayers.GeoStore,{ 
+    
+    /**
+     * Property: type
+     * {String} Geostore entity type
+     */
+    type: "data",
+
+    /**
+     * Property: store
+     * {String} Store String (Blob representation)
+     */
+    store: null,
+    
+    
+    initialize: function(options) {
+        OpenLayers.Util.extend(this, options);
+    },
+    
+    CLASS_NAME: "OpenLayers.GeoStore.Data"
     
 });
