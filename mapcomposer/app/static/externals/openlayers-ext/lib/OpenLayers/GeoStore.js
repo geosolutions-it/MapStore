@@ -1,37 +1,39 @@
-/**
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
- *  http://www.geo-solutions.it
- *
- *  GPLv3 + Classpath exception
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+
 
 /*
  * ---------------------------------------------------------
  *  MapStore Integration information:
  *      new Class
- *      not yet used in MapStore
+ *      
  * --------------------------------------------------------- 
  *
  **/
 
+OpenLayers.GeoStore = OpenLayers.Class({
+    /**
+     * Property: type
+     * {String} Geostore entity type
+     */ 
+    type: null, 
+    
+    /**
+     * Property: id
+     * {Integer} Geostore entity id
+     */ 
+    id: null, 
+    
+    initialize: function(options) {
+        OpenLayers.Util.extend(this, options);
+    }, 
+    
+    CLASS_NAME: "OpenLayers.GeoStore"
+});
+
 /**
- * Class: OpenLayers.Format.GeoStore.Category
+ * Class: OpenLayers.GeoStore.Category
  * GeoStore Entity Category.
  */
-OpenLayers.GeoStore.Category = OpenLayers.Class({ 
+OpenLayers.GeoStore.Category = OpenLayers.Class(OpenLayers.GeoStore,{ 
     
     /**
      * Property: type
@@ -58,10 +60,10 @@ OpenLayers.GeoStore.Category = OpenLayers.Class({
 
 
 /**
- * Class: OpenLayers.Format.GeoStore.User
+ * Class: OpenLayers.GeoStore.User
  * GeoStore Entity User.
  */
-OpenLayers.GeoStore.User = OpenLayers.Class({ 
+OpenLayers.GeoStore.User = OpenLayers.Class(OpenLayers.GeoStore,{ 
     
     /**
      * Property: type
@@ -91,7 +93,7 @@ OpenLayers.GeoStore.User = OpenLayers.Class({
  * Class: OpenLayers.GeoStore.Resource
  * GeoStore Entity Resource.
  */
-OpenLayers.GeoStore.Resource = OpenLayers.Class({ 
+OpenLayers.GeoStore.Resource = OpenLayers.Class(OpenLayers.GeoStore,{ 
     
     /**
      * Property: type
@@ -136,6 +138,35 @@ OpenLayers.GeoStore.Resource = OpenLayers.Class({
         OpenLayers.Util.extend(this, options);
     },
     
-    CLASS_NAME: "OpenLayers.Resource"
+    CLASS_NAME: "OpenLayers.GeoStore.Resource"
+    
+});
+
+
+
+/**
+ * Class: OpenLayers.GeoStore.Data
+ * GeoStore Entity Data.
+ */
+OpenLayers.GeoStore.Data = OpenLayers.Class(OpenLayers.GeoStore,{ 
+    
+    /**
+     * Property: type
+     * {String} Geostore entity type
+     */
+    type: "data",
+
+    /**
+     * Property: store
+     * {String} Store String (Blob representation)
+     */
+    store: null,
+    
+    
+    initialize: function(options) {
+        OpenLayers.Util.extend(this, options);
+    },
+    
+    CLASS_NAME: "OpenLayers.GeoStore.Data"
     
 });

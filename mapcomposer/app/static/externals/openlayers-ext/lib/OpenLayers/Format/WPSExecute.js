@@ -268,7 +268,7 @@ OpenLayers.Format.WPSExecute = OpenLayers.Class(OpenLayers.Format.XML,
                                     return node;
                                 },
                                 "LiteralData": function(literalData) {
-                
+                                    
                                     var node = this.createElementNSPlus("wps:LiteralData", {
                                         attributes: {
                                             uom: literalData.uom
@@ -422,7 +422,7 @@ OpenLayers.Format.WPSExecute = OpenLayers.Class(OpenLayers.Format.XML,
                                         encoding: node.getAttribute("encoding"),
                                         value: ""
                                     };
-                
+                service
                                     // try to get *some* value, ignore the empty text values
                                     if (this.isSimpleContent(node)) {
                                         var child;
