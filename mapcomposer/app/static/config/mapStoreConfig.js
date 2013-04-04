@@ -199,9 +199,19 @@
 			"extent": [	6770799.251963,2705604.806669,8826743.330978,4442826.247111 ],
 			"tooltip":"zoom to Pakistan Extent",
 			"actionTarget": {"target": "paneltbar", "index": 2}
-		 },
-		
-		{
+		 },{
+		  "ptype":"gxp_print",
+		  "customParams":{
+			 "outputFilename":"mapstore-print"
+		  },
+		  "printService":"http://84.33.2.24/geoserver/pdf/",
+		  "legendPanelId":"legendPanel",
+		  "ignoreLayers":["WFSSearch","Marker"],
+		  "actionTarget":{
+			 "target":"paneltbar",
+			 "index":4
+		  }
+	   },{
 		  "ptype":"gxp_nrl",
 		  "outputConfig":{
 			 "id":"nrl",
