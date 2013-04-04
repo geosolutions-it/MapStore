@@ -35,7 +35,7 @@ var requestObject,wpsManager;
 onReady=(function() {
     var el;
     
-    var wpsURL= prompt("WPS URL: ", "http://hrt-11.pisa.intecs.it/geoserver/ows");
+    var wpsURL= prompt("WPS URL: ", "http://localhost:8080/geoserver/ows");
     el=document.getElementById("wpsurl");
     el.appendChild(document.createTextNode(wpsURL));
     
