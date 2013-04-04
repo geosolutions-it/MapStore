@@ -75,14 +75,7 @@ onReady=(function() {
     
    
     getInstances(false);
-// var requestXMLString="<wps:Execute xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" version=\"1.0.0\" service=\"WPS\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><ows:Identifier xmlns:ows=\"http://www.opengis.net/ows/1.1\">JTS:buffer</ows:Identifier><wps:DataInputs><wps:Input><ows:Identifier xmlns:ows=\"http://www.opengis.net/ows/1.1\">geom</ows:Identifier><ows:Title xmlns:ows=\"http://www.opengis.net/ows/1.1\">geom</ows:Title><wps:Data/><wps:Reference mimeType=\"text/xml; subtype=gml/3.1.1\" xlink:href=\"http://localhost:8089/geoserver/wfs?request=GetFeature&amp;version=1.1.0&amp;typeName=topp:states&amp;propertyName=STATE_NAME,PERSONS&amp;BBOX=-75.102613,40.212597,-72.361859,41.512517,EPSG:4326\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" method=\"GET\"/></wps:Input><wps:Input><ows:Identifier xmlns:ows=\"http://www.opengis.net/ows/1.1\">distance</ows:Identifier><ows:Title xmlns:ows=\"http://www.opengis.net/ows/1.1\">distance</ows:Title><wps:Data><wps:LiteralData>1</wps:LiteralData></wps:Data></wps:Input></wps:DataInputs><wps:ResponseForm><wps:ResponseDocument storeExecuteResponse=\"false\" lineage=\"false\" status=\"false\"><wps:Output asReference=\"true\"><ows:Identifier xmlns:ows=\"http://www.opengis.net/ows/1.1\">result</ows:Identifier><ows:Title xmlns:ows=\"http://www.opengis.net/ows/1.1\"/><ows:Abstract xmlns:ows=\"http://www.opengis.net/ows/1.1\"/></wps:Output></wps:ResponseDocument></wps:ResponseForm></wps:Execute>";
-     
-       
-       
-       
-//setTimeout("wpsManager.execute(\"JTS:isValid\", getAsyncRequest(), updateInstances)", 5000);
-      
-    
+
 });
 
 function executeCallback(instanceOrRawData){
@@ -101,12 +94,9 @@ function getSyncRequest(){
     
     if(document.getElementById("rawMod").value == "true")
         type="raw";
-    /*alert(document.getElementById("rawMod").value);
-    alert(type);*/
+    
     return {
-        /* storeExecuteResponse: false,
-        lineage:  false,
-        status: false,*/
+        
         type: type,
         inputs:{
             geom: new OpenLayers.WPSProcess.ComplexData({
@@ -117,8 +107,7 @@ function getSyncRequest(){
         outputs: [{
             identifier: "result",
             mimeType: "text/xml"
-        //asReference: true,
-        //type: "raw"
+       
         }]
     };
 
@@ -132,7 +121,6 @@ function getAsyncRequest(){
         storeExecuteResponse: true,
         lineage:  true,
         status: true,
-        //type: "raw",
         inputs:{
             geom: new OpenLayers.WPSProcess.ComplexData({
                 value: document.getElementById("geometry").value,
@@ -142,8 +130,7 @@ function getAsyncRequest(){
         outputs: [{
             identifier: "result",
             mimeType: "text/xml"
-        //asReference: true,
-        //type: "raw"
+        
         }]
     };
 
