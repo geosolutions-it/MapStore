@@ -408,7 +408,7 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
         
         var meCallback= callback;
         
-        if(executeProcessResponse instanceof /*OpenLayers.Format.WPSExecute*/ Object){
+        if(executeProcessResponse instanceof Object){
             
             resourceInstance.store= Ext.util.JSON.encode(executeProcessResponse);
 
