@@ -57,7 +57,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
         cursor: "pointer"
     },
 	rangesUrl: "http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
-    dataUrl: "http://84.33.2.24/geoserver/ows?",
+    dataUrl: null, //"http://84.33.2.24/geoserver/ows?",
 	comboConfigs:{
         base:{
             anchor:'100%',

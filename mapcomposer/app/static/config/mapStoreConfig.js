@@ -222,6 +222,7 @@
 	   },
 	   {
 		  "ptype":"nrl_crop_data",
+          "dataUrl":"http://84.33.2.24/geoserver/ows",
 		  "layers":{
 			"district":"nrl:district_crop",
 			"province":"nrl:province_crop"
@@ -233,6 +234,7 @@
 		  "outputTarget":"nrl"
 	   },{
 		 "ptype":"nrl_crop_status",
+         "dataUrl":"http://84.33.2.24/geoserver/ows",
 		  "outputConfig":{
 			 "id":"nrlCropStatus"
 			 
@@ -240,6 +242,7 @@
 		  "outputTarget":"nrl"
 	   },{
 	    "ptype":"nrl_agromet",
+        "dataUrl":"http://84.33.2.24/geoserver/ows",
 		  "outputConfig":{
 			 "id":"Agromet"
 			 
