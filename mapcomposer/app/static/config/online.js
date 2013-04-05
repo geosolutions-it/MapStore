@@ -131,13 +131,22 @@
             "title": "Rischio Totale Ambientale",
             "name": "rischio_totale_ambientale",
             "displayInLayerSwitcher": true,				
-            "tiled": false
+            "tiled": false,
+			"env":"low:100;medium:500"
         },{
             "source": "destination",
             "title": "Rischio Totale Sociale",
             "name": "rischio_totale_sociale",
 				"displayInLayerSwitcher": true,
-				"tiled": false
+            "tiled": false,
+			"env":"low:100;medium:500"
+        },{
+            "source": "destination",
+            "title": "Rischio Totale Sociale - Ambientale",
+            "name": "rischio_totale",
+            "displayInLayerSwitcher": true,
+            "tiled": false,
+			"env":"low:100;medium:500"
         },
 		{
             "source": "destination",
@@ -1031,10 +1040,6 @@
 				],
 				"columnModel": [
 					{
-						"header": "Denominazione",      
-						"dataIndex": "denominazione"
-					},
-					{
 						"header": "Codice CLC",      
 						"dataIndex": "codice_clc"
 					},
@@ -1239,6 +1244,9 @@
 					},
 					{
 						"header": "Denominazione",      
+						"dataIndex": "denominazione_bene"
+					},
+					{
 						"header": "Superficie",      
 						"dataIndex": "superficie"
 					}
