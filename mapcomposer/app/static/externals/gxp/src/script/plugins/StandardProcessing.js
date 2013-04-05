@@ -49,7 +49,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     bboxValidationTitle: "Selezione Area di Interesse",
     invalidAOI: "Le coordinate dell'area di interesse non sono valide.",
     bboxTooBig: "L'area selezionata e' troppo grande e il server potrebbe impiegare molto tempo a rispondere. Se si desidera continuare ugualmente premere OK.",
-        
+    meteoLabel: "Meteo",  
+    timeLabel: "Temporali",
+    conditionsFielSetLabel: "Condizioni",   
     // End i18n.
         
     // TODO: bbox piemonte    
@@ -333,6 +335,102 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         });
 		
         return this.elabSet;
+    },
+    
+    
+    
+    /** private: method[buildConditionsForm]
+	 *    builds the form for time and meteo choosing
+     */
+    buildConditionsForm: function() {		
+       
+        var meteoStore = new Ext.data.ArrayStore({
+            fields: ['name'],
+            data :  [
+            ['Presenza nebbia'],
+            ['Presenza ghiaccio'],
+            ['Presenza pioggia']
+            ]
+        });
+        
+        this.meteo = new Ext.form.ComboBox({
+            fieldLabel: this.meteoLabel,
+            id: "meteo",
+            width: 150,
+            hideLabel : false,
+            store: meteoStore,    
+            displayField: 'name',    
+            typeAhead: true,
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: true,
+            resizable: true,    
+            listeners: {
+                beforeselect: function(cb, record, index){
+                    
+                },
+                select: function(cb, record, index) {
+                      
+                },
+                scope: this
+            }              
+        });
+        
+        
+        var timeStore = new Ext.data.ArrayStore({
+            fields: ['name'],
+            data :  [
+            ['Scenario centrale'],
+            ['Scenario feriale diurno'],
+            ['Scenario notturno'],
+            ['Scenario festivo diurno'],
+            ['Scenario festivo diurno e normale/standard']
+            ]
+        });
+        
+        this.time = new Ext.form.ComboBox({
+            fieldLabel: this.timeLabel,
+            id: "time",
+            width: 150,
+            hideLabel : false,
+            store: timeStore,    
+            displayField: 'name',    
+            typeAhead: true,
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: true,
+            resizable: true,    
+            listeners: {
+                beforeselect: function(cb, record, index){
+                    
+                },
+                select: function(cb, record, index) {
+                      
+                },
+                scope: this
+            }              
+        });
+        
+       
+        this.conditionsSet = new Ext.form.FieldSet({
+            title: this.conditionsFielSetLabel,
+            id: 'meteoSet',
+            autoHeight: true,
+            defaults: {
+                // applied to each contained panel
+                bodyStyle:'padding:5px;'
+            },
+            items: [
+            this.time,    
+            this.meteo
+            ]
+        });
+		
+        return this.conditionsSet;
     },
 	
     /** private: method[buildAOIForm]
@@ -876,7 +974,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.sliderFiledRischio1=new gxp.form.SliderRangesFieldSet({
             title: "Rischio",
             id:"rischio1",    
-            numericFields: false,
+            numericFields: true,
             multiSliderConf:{
                 vertical : false,
                 ranges: [
@@ -909,7 +1007,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.sliderFiledRischio2=new gxp.form.SliderRangesFieldSet({
             title: "Rischio2",
             id:"rischio2",    
-            numericFields: false,
+            numericFields: true,
             multiSliderConf:{
                 vertical : false,
                 ranges: [
@@ -946,6 +1044,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             this.buildElaborazioneForm(),
             //this.buildAOIForm(map),
             me.aoiFieldset, 
+            this.buildConditionsForm(),
             new Ext.TabPanel({
                 // applyTo: 'hello-tabs',
                 autoTabs:true,

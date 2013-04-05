@@ -36,6 +36,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 	cancelButton: "Annulla Elaborazione",
 	processButton: "Esegui Elaborazione",
 	analyticViewButton: "Visualizzazione Analitica",
+        meteoLabel: "Condizioni Meteo",  
+        timeLabel: "Condizioni Temporali",
     // End i18n.
         
     id: "syntheticview",
@@ -372,6 +374,24 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               value: "Regione Piemonte",
               hideLabel : false                    
         });
+        
+        this.time = new Ext.form.TextField({
+              fieldLabel: this.timeLabel,
+              id: "timeCond",
+              width: 150,
+              readOnly: true,
+              value: "",
+              hideLabel : false                    
+        });
+        
+        this.meteo = new Ext.form.TextField({
+              fieldLabel: this.meteoLabel,
+              id: "meteoCond",
+              width: 150,
+              readOnly: true,
+              value: "",
+              hideLabel : false                    
+        });
               
         this.trg = new Ext.form.TextField({
               fieldLabel: this.targetLabel,
@@ -441,6 +461,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                  this.elab,
                  this.form,
                  this.extent,
+                 this.time,
+                 this.meteo,
                  this.trg,
                  this.adrClass,
                  this.substance,
