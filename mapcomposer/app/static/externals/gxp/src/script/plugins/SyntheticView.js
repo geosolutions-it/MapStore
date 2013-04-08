@@ -36,8 +36,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 	cancelButton: "Annulla Elaborazione",
 	processButton: "Esegui Elaborazione",
 	analyticViewButton: "Visualizzazione Analitica",
-        meteoLabel: "Condizioni Meteo",  
-        timeLabel: "Condizioni Temporali",
+        weatherLabel: "Condizioni Meteo",  
+        temporalLabel: "Condizioni Temporali",
     // End i18n.
         
     id: "syntheticview",
@@ -377,18 +377,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               hideLabel : false                    
         });
         
-        this.time = new Ext.form.TextField({
-              fieldLabel: this.timeLabel,
-              id: "timeCond",
+        this.temporal = new Ext.form.TextField({
+              fieldLabel: this.temporalLabel,
+              id: "temporalCond",
               width: 150,
               readOnly: true,
               value: "",
               hideLabel : false                    
         });
         
-        this.meteo = new Ext.form.TextField({
-              fieldLabel: this.meteoLabel,
-              id: "meteoCond",
+        this.weather = new Ext.form.TextField({
+              fieldLabel: this.weatherLabel,
+              id: "weatherCond",
               width: 150,
               readOnly: true,
               value: "",
@@ -463,8 +463,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                  this.elab,
                  this.form,
                  this.extent,
-                 this.time,
-                 this.meteo,
+                 this.temporal,
+                 this.weather,
                  this.trg,
                  this.adrClass,
                  this.substance,
@@ -886,6 +886,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.status = s;
         this.elab.setValue(this.status.processing);
         this.form.setValue(this.status.formula);
+        
+        this.weather.setValue(this.status.weather);
+        this.temporal.setValue(this.status.temporal);
+        
         this.extent.setValue(this.status.roi.label);
         this.trg.setValue(this.status.target.name);
         this.adrClass.setValue(this.status.classe.name);

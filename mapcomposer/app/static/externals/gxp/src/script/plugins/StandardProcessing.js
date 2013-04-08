@@ -49,8 +49,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     bboxValidationTitle: "Selezione Area di Interesse",
     invalidAOI: "Le coordinate dell'area di interesse non sono valide.",
     bboxTooBig: "L'area selezionata e' troppo grande e il server potrebbe impiegare molto tempo a rispondere. Se si desidera continuare ugualmente premere OK.",
-    meteoLabel: "Meteo",  
-    timeLabel: "Temporali",
+    weatherLabel: "Meteo",  
+    temporalLabel: "Temporali",
     conditionsFielSetLabel: "Condizioni",   
     // End i18n.
         
@@ -340,11 +340,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     
     
     /** private: method[buildConditionsForm]
-	 *    builds the form for time and meteo choosing
+	 *    builds the form for temporal and weather choosing
      */
     buildConditionsForm: function() {		
        
-        var meteoStore = new Ext.data.ArrayStore({
+        var weatherStore = new Ext.data.ArrayStore({
             fields: ['name'],
             data :  [
             ['Presenza nebbia'],
@@ -353,12 +353,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             ]
         });
         
-        this.meteo = new Ext.form.ComboBox({
-            fieldLabel: this.meteoLabel,
+        this.weather = new Ext.form.ComboBox({
+            fieldLabel: this.weatherLabel,
             id: "meteo",
             width: 150,
             hideLabel : false,
-            store: meteoStore,    
+            store: weatherStore,    
             displayField: 'name',    
             typeAhead: true,
             mode: 'local',
@@ -379,7 +379,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         });
         
         
-        var timeStore = new Ext.data.ArrayStore({
+        var temporalStore = new Ext.data.ArrayStore({
             fields: ['name'],
             data :  [
             ['Scenario centrale'],
@@ -390,12 +390,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             ]
         });
         
-        this.time = new Ext.form.ComboBox({
-            fieldLabel: this.timeLabel,
+        this.temporal = new Ext.form.ComboBox({
+            fieldLabel: this.temporalLabel,
             id: "time",
             width: 150,
             hideLabel : false,
-            store: timeStore,    
+            store: temporalStore,    
             displayField: 'name',    
             typeAhead: true,
             mode: 'local',
@@ -418,15 +418,15 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
        
         this.conditionsSet = new Ext.form.FieldSet({
             title: this.conditionsFielSetLabel,
-            id: 'meteoSet',
+            id: 'conditionStoreSet',
             autoHeight: true,
             defaults: {
                 // applied to each contained panel
                 bodyStyle:'padding:5px;'
             },
             items: [
-            this.time,    
-            this.meteo
+            this.temporal,    
+            this.weather
             ]
         });
 		
@@ -1082,7 +1082,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             title: this.formLabel,
             autoScroll: true,
             items:[
-				this.buildElaborazioneForm(),   
+				this.buildElaborazioneForm(),  
+                                this.buildConditionsForm(),
 				this.temasPanel,
 				this.aoiFieldset, 
 				this.buildTargetForm(),
@@ -1441,6 +1442,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 		Ext.getCmp('rischio_ambientale_multislider').setValue(0, status.themas.ambientale[0]);
 		Ext.getCmp('rischio_ambientale_multislider').setValue(1, status.themas.ambientale[1]);		
         
+        
+        this.setComboStatus(this.weather, 'weather');
+        this.setComboStatus(this.temporal, 'temporal');
+        
         this.setComboStatus(this.classi, 'classe');
         this.setComboStatus(this.sostanze, 'sostanza');
         this.setComboStatus(this.accident, 'accident');
@@ -1498,6 +1503,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 		
         obj.target = this.getSelectedTarget().data; 
         obj.macroTarget = this.macrobers.getValue();
+        
+        obj.weather = this.weather.getValue();
+        obj.temporal = this.temporal.getValue();
+        
         obj.classe = this.getComboRecord(this.classi).data; //this.classi.getValue();
         obj.sostanza = this.getComboRecord(this.sostanze).data; //this.sostanze.getValue();
         obj.accident = this.getComboRecord(this.accident).data; //this.accident.getValue();
