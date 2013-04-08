@@ -55,8 +55,9 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 
 				},
 			aggregated:{
-					color: '#AA4643',
-                    lcolor: 'rgb(240,140,137)',                    
+					color: '#808080',
+                    lcolor: 'rgb(240,140,137)', 
+                    dashStyle: 'dash',                    
 					type: 'line',
 					dataIndex: 'aggregated',
 					unit:'(000 ha)',
@@ -66,13 +67,21 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
         height: 400
 	},
     handler: function () {
+    
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+
+        var yyyy = today.getFullYear();
+        if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm} var today = mm+'/'+dd+'/'+yyyy;    
+        
         var numRegion = [];
         var regStore = this.form.output.aoiFieldSet.AreaSelector.store
         var records = regStore.getRange();
 		
         for (var i=0;i<records.length;i++){
 			var attrs = records[i].get("attributes");
-			var region = attrs.district || attrs.province;
+			var region = attrs.district ? attrs.district + "," + attrs.province : attrs.province;
             numRegion.push(region.toLowerCase());
         }
         
@@ -102,8 +111,39 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                 }
             }
         }
+
+        var chartTitle = "";
+        var splitRegion;
+        
+        /*if (listVar.numRegion.length == 1){
+            if (listVar.granType == "province"){
+                chartTitle = listVar.numRegion[0].slice(0,1).toUpperCase() + listVar.numRegion[0].slice(1);
+            }else{
+                splitRegion = listVar.numRegion[0].split(',');
+                chartTitle = splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + ")";
+            }
+        }else{*/
+            for (var i = 0;i<numRegion.length;i++){
+                if (granType == "province"){
+                    if(i==numRegion.length-1){
+                        chartTitle += numRegion[i].slice(0,1).toUpperCase() + numRegion[i].slice(1);
+                    }else{
+                        chartTitle += numRegion[i].slice(0,1).toUpperCase() + numRegion[i].slice(1) + ", ";
+                    }                
+                }else{
+                    splitRegion = numRegion[i].split(',');
+                    if(i==numRegion.length-1){
+                        chartTitle += splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + ")";
+                    }else{
+                        chartTitle += splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + "), ";
+                    }                       
+                }            
+            }
+        //} 
         
         var listVar = {
+            today: today,
+            chartTitle: chartTitle,
             numRegion: numRegion,
             season: season,
             granType: granType,
@@ -183,6 +223,8 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 			province: listVar.numRegion,
 			fromYear: listVar.fromYear,
 			toYear: listVar.toYear,
+            today: listVar.today,
+            chartTitle: listVar.chartTitle,
 			chart: charts,
 			chartHeight: this.chartOpt.height
 		};
@@ -256,8 +298,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 				series: [
 					Ext.apply({
 							name:listVar.toYear -1
-						},this.chartOpt.series.previous
-					),
+						},this.chartOpt.series.previous),
 					Ext.apply({
 							name:listVar.toYear 
 						},this.chartOpt.series.current),
@@ -273,7 +314,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 				chartConfig: {
 					chart: {
 						zoomType: 'x',
-                        spacingBottom: 23                
+                        spacingBottom: 65           
 					},
                     exporting: {
                         enabled: true,
@@ -281,7 +322,19 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                         url: "http://84.33.2.24/highcharts-export/"
                     },
 					title: {
-						text: listVar.factorStore[i].get('label')		
+						text: "SPOT-VEG " + listVar.factorStore[i].get('label') + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : "REGION")
+					},
+					subtitle: {
+                        text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
+                              '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
+                              '<span style="font-size:10px;">AOI: '+listVar.chartTitle+'</span><br />'+
+                              '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
+                              '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />',
+                        align: 'left',
+                        verticalAlign: 'bottom',
+                        useHTML: true,
+                        x: 30,
+                        y: -15
 					},					
 					xAxis: [{
 						type: 'datetime',

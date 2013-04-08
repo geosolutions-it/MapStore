@@ -30,6 +30,8 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
     chart: null,
     chartHeight: null,
     collapsible: true,
+    today: null,
+    chartTitle: null,
 	initComponent: function(){
         
     var panel;
@@ -45,18 +47,29 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
             tools: [{
                 id: 'info',
                 handler: function () {
-                    var checkCommodity = this.commodity ? "<li><p><em> Commodity: </em>" + this.commodity + "</p></li>" : "<li><p><em></em></p></li>";
-                    var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+                    var iframe = this.commodity ? 
+                            "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
                             "<ol>" +
-                                checkCommodity +
+                                "<li><p><em> Commodity: </em>" + this.commodity + "</p></li>" +
                                 "<li><p><em> Season: </em>" + this.season + "</p></li>" +
                                 "<li><p><em> From year: </em>" + this.fromYear + "</p></li>" +
                                 "<li><p><em> To year: </em>" + this.toYear + "</p></li>" +
                             "</ol>" +                                        
-                            "</div>";
+                            "</div>" : 
+                            
+                            "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+                            "<ol>" +
+                                "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
+                                "<li><p><em> Date: </em>"+this.today+"</p></li>" +
+                                "<li><p><em> AOI: </em>"+this.chartTitle+"</p></li>" +
+                                "<li><p><em> Season: </em>" + this.season + "</p></li>" +
+                                "<li><p><em> Years: </em>" + this.fromYear + "-" + this.toYear + "</p></li>" +
+                            "</ol>" +                                        
+                            "</div>";                            
                  
                     var appInfo = new Ext.Panel({
                         header: false,
+                        autoScroll: true,
                         html: iframe
                     });
 
@@ -64,7 +77,7 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
                         title:  "Charts Info",
                         modal: true,
                         layout: "fit",
-                        width: 200,
+                        width: 400,
                         height: 180,
                         items: [appInfo]
                     });
@@ -95,20 +108,30 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
     }
     
 
-		this.title= this.commodity ? "Commodity: " + this.commodity.toUpperCase() +  " - Season: " + this.season.toUpperCase() : "Season: " + this.season.toUpperCase() + " - From Year: "+ this.fromYear + " - To Year: "+ this.toYear,
+		this.title= this.commodity ? "Pakistan - Crop Data - Commodity: " + this.commodity.toUpperCase() +  " - Season: " + this.season.toUpperCase() + " - Years: "+ this.fromYear + "-"+ this.toYear : "Pakistan - AgroMet Variables - Season: " + this.season.toUpperCase() + " - Years: "+ this.fromYear + "-"+ this.toYear,
 		this.tools= [{
 			id: 'info',
 			handler: function () {
-                var checkCommodity = this.commodity ? "<li><p><em> Commodity: </em>" + this.commodity + "</p></li>" : "<li><p><em></em></p></li>";
-				var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+				var iframe = this.commodity ? 
+                        "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
 						"<ol>" +
-							checkCommodity +
+							"<li><p><em> Commodity: </em>" + this.commodity + "</p></li>" +
 							"<li><p><em> Season: </em>" + this.season + "</p></li>" +
 							"<li><p><em> regions </em>" + this.province.concat(",") + "</p></li>" +
 							"<li><p><em> From year: </em>" + this.fromYear + "</p></li>" +
 							"<li><p><em> To year: </em>" + this.toYear + "</p></li>" +
 						"</ol>" +                                        
-						"</div>";
+						"</div>" : 
+
+                        "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+                        "<ol>" +
+                            "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
+                            "<li><p><em> Date: </em>"+this.today+"</p></li>" +
+                            "<li><p><em> AOI: </em>"+this.chartTitle+"</p></li>" +
+                            "<li><p><em> Season: </em>" + this.season + "</p></li>" +
+                            "<li><p><em> Years: </em>" + this.fromYear + "-" + this.toYear + "</p></li>" +
+                        "</ol>" +                                        
+                        "</div>";                          
 			 
 				var appInfo = new Ext.Panel({
 					header: false,
@@ -119,7 +142,7 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
 					title:  "Charts Info",
 					modal: true,
 					layout: "fit",
-					width: 200,
+					width: 400,
 					height: 180,
 					items: [appInfo]
 				});

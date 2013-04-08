@@ -312,6 +312,7 @@ div.olLayerDiv svg{
 #list2 ol li { }
 #list2 ol li p { padding:4px; font-style:italic; font-family:Arial; font-size:13px; color:#000000; border-left: 1px solid #999; }
 #list2 ol li p em { display:inline; color:#A01445; font-weight:bold;}
+
 /* crop data table */
 .cropdatatooltip{
     border-collapse: collapse;
