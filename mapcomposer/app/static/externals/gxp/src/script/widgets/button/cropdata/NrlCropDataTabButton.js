@@ -205,7 +205,8 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
                 handler: function () {
                     var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
                             "<ol>" +
-                                "<li><p><em> Commodity: </em>" + fieldValues.crop + "</p></li>" +
+                                "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
+                                "<li><p><em> Commodity: </em>" + fieldValues.crop.toUpperCase() + "</p></li>" +
                                 "<li><p><em> Season: </em>" + values.season + "</p></li>" +
                                 "<li><p><em> Years: </em>" + values.startYear + "-" + values.endYear + "</p></li>" +
                             "</ol>" +                                        
@@ -217,7 +218,7 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
                     });
 
                     var win = new Ext.Window({
-                        title:  "Charts Info",
+                        title:  "Table Info",
                         modal: true,
                         layout: "fit",
                         width: 200,

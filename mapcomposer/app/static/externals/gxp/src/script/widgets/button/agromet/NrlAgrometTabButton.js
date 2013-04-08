@@ -254,7 +254,7 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
                     });
 
                     var win = new Ext.Window({
-                        title:  "Charts Info",
+                        title:  "Table Info",
                         modal: true,
                         layout: "fit",
                         width: 200,

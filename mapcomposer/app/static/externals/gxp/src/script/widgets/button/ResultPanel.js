@@ -50,6 +50,7 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
                     var iframe = this.commodity ? 
                             "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
                             "<ol>" +
+                                "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
                                 "<li><p><em> Commodity: </em>" + this.commodity.toUpperCase() + "</p></li>" +
                                 "<li><p><em> Season: </em>" + this.season.toUpperCase() + "</p></li>" +
                                 "<li><p><em> Years: </em>" + this.fromYear + "-" + this.toYear + "</p></li>" +
@@ -114,6 +115,7 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
 				var iframe = this.commodity ? 
                         "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
 						"<ol>" +
+                            "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
 							"<li><p><em> Commodity: </em>" + this.commodity.toUpperCase() + "</p></li>" +
 							"<li><p><em> Season: </em>" + this.season.toUpperCase() + "</p></li>" +
 							"<li><p><em> AOI: </em>" + this.province.concat() + "</p></li>" +
