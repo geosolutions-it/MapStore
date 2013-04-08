@@ -58,8 +58,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 	humanRiskLayer: "rischio_totale_sociale",
 	notHumanRiskLayerTitle: "Rischio Totale Ambientale",
 	notHumanRiskLayer: "rischio_totale_ambientale",
+	combinedRiskLayerTitle: "Rischio Totale Sociale - Ambientale",
+	combinedRiskLayer: "rischio_totale",
 	
-	currentRiskLayers: ["Rischio Totale Ambientale", "Rischio Totale Sociale"],
+	currentRiskLayers: ["Rischio Totale Ambientale", "Rischio Totale Sociale", "Rischio Totale Sociale - Ambientale"],
 	
 	originalRiskLayers: null,
 	
@@ -651,7 +653,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			}
 		} else if(this.isNotHumanTarget()) {
 			if(radius.radiusNotHum > 0) {
-				layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,this.bufferLayerTitle+' ('+this.status.target.name+')', viewParams, radius.max));                                			
+				layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,this.bufferLayerTitle+' ('+this.status.target.name+')', viewParams, radius.max));
 			}
 		}
 	},
@@ -672,8 +674,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		layers.push(this.createLayerRecord({
 			name: this.notHumanRiskLayer,
 			title: this.notHumanRiskLayerTitle, 
-			params: {                                                                
-				viewparams: viewParams
+			params: {
+				viewparams: viewParams,
+				env:"low:"+this.status.themas['ambientale'][0]+";medium:"+this.status.themas['ambientale'][1]
 			}
 		}, false));
 	},
@@ -686,7 +689,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			+ ';industria:' + (this.status.target.id.indexOf(4) === -1 ? 0 : 1) 
 			+ ';sanitarie:' + (this.status.target.id.indexOf(5) === -1 ? 0 : 1) 
 			+ ';scolastiche:' + (this.status.target.id.indexOf(6) === -1 ? 0 : 1)
-			+ ';commerciali:' + (this.status.target.id.indexOf(7) === -1 ? 0 : 1) 			
+			+ ';commerciali:' + (this.status.target.id.indexOf(7) === -1 ? 0 : 1) 
 			+ ';sostanze:' + this.status.sostanza.id.join('\\,')
 			+ ';scenari:' + this.status.accident.id.join('\\,')
 			+ ';gravita:' + this.status.seriousness.id.join('\\,');
@@ -694,7 +697,37 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			name: this.humanRiskLayer,
 			title: this.humanRiskLayerTitle, 
 			params: {                                                                
-				viewparams: viewParams
+				viewparams: viewParams,
+				env:"low:"+this.status.themas['sociale'][0]+";medium:"+this.status.themas['sociale'][1]
+			}
+		}, false));
+	},
+	
+	addCombinedRisk: function(layers, bounds) {
+		this.currentRiskLayers.push(this.combinedRiskLayerTitle);
+		var viewParams = "bounds:" + bounds 
+			+ ';residenti:' + (this.status.target.id.indexOf(1) === -1 ? 0 : 1) 
+			+ ';turistica:' + (this.status.target.id.indexOf(2) === -1 ? 0 : 1) 
+			+ ';industria:' + (this.status.target.id.indexOf(4) === -1 ? 0 : 1) 
+			+ ';sanitarie:' + (this.status.target.id.indexOf(5) === -1 ? 0 : 1) 
+			+ ';scolastiche:' + (this.status.target.id.indexOf(6) === -1 ? 0 : 1)
+			+ ';commerciali:' + (this.status.target.id.indexOf(7) === -1 ? 0 : 1) 
+			+ ';urbanizzate:' + (this.status.target.id.indexOf(10) === -1 ? 0 : 1) 
+			+ ';boscate:' + (this.status.target.id.indexOf(11) === -1 ? 0 : 1) 
+			+ ';protette:' + (this.status.target.id.indexOf(12) === -1 ? 0 : 1) 
+			+ ';agricole:' + (this.status.target.id.indexOf(13) === -1 ? 0 : 1) 
+			+ ';sotterranee:' + (this.status.target.id.indexOf(14) === -1 ? 0 : 1)
+			+ ';superficiali:' + (this.status.target.id.indexOf(15) === -1 ? 0 : 1) 
+			+ ';culturali:' + (this.status.target.id.indexOf(16) === -1 ? 0 : 1) 
+			+ ';sostanze:' + this.status.sostanza.id.join('\\,')
+			+ ';scenari:' + this.status.accident.id.join('\\,')
+			+ ';gravita:' + this.status.seriousness.id.join('\\,');
+		layers.push(this.createLayerRecord({
+			name: this.combinedRiskLayer,
+			title: this.combinedRiskLayerTitle, 
+			params: {                                                                
+				viewparams: viewParams,
+				env:"low:"+this.status.themas['sociale'][0]+";medium:"+this.status.themas['sociale'][1]
 			}
 		}, false));
 	},
@@ -703,6 +736,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		if(!this.status || this.isMixedTargets()) {
 			this.addHumanRisk(layers, bounds);
 			this.addNotHumanRisk(layers, bounds);
+			this.addCombinedRisk(layers, bounds);
 		} else if(this.isHumanTarget()) {
 			this.addHumanRisk(layers, bounds);
 		} else if(this.isNotHumanTarget()) {
@@ -719,6 +753,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			}, this);
 			if(layerIndex !== -1) {
 				var layer = layerStore.getAt(layerIndex);
+				layer.get('layer').clearGrid();
 				layerStore.remove(layer);
 				layers.push(layer);
 			}
@@ -727,11 +762,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 	
 	storeOriginalRiskLayers: function() {
 		this.originalRiskLayers=[];
-		this.extractLayers(this.originalRiskLayers, [this.humanRiskLayerTitle, this.notHumanRiskLayerTitle]);	
+		this.extractLayers(this.originalRiskLayers, [this.humanRiskLayerTitle, this.notHumanRiskLayerTitle, this.combinedRiskLayerTitle]);
 	},
 	
 	restoreOriginalRiskLayers: function() {		
-		this.currentRiskLayers = [this.notHumanRiskLayerTitle, this.humanRiskLayerTitle];
+		this.currentRiskLayers = [this.notHumanRiskLayerTitle, this.humanRiskLayerTitle, this.combinedRiskLayerTitle];
 		this.target.mapPanel.layers.add(this.originalRiskLayers);				
 	},
 	
@@ -749,7 +784,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		
 		var radius = this.getRadius();
 		
-		var targetBounds = this.getBounds(status, map, radius.max);
 		
 		// remove previous analytic view layers (targets and buffers)
 		this.removeAnalyticViewLayers(map);				
@@ -760,7 +794,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		this.addBuffers(newLayers, bounds, radius);
 		
 		// add the target layer
-		this.addTargets(newLayers, targetBounds, radius);				
+		this.addTargets(newLayers, bounds, radius);				
 				
 		this.moveRiskLayersToTop(newLayers);
 				
@@ -774,7 +808,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		Ext.getCmp("south").expand();			
 	},
 	
-	doProcess: function() {
+	doProcess: function(roi) {
 		var newLayers=[];
 		
 		var map = this.target.mapPanel.map;		
@@ -790,6 +824,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		this.addRisk(newLayers, bounds);
 		
 		this.target.mapPanel.layers.add(newLayers);
+		if(roi)
+			this.target.mapPanel.map.zoomToExtent(roi);
 	},
 	
 	removeAnalyticViewLayers: function(map) {

@@ -22,7 +22,28 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
 
     tip: null,
     
+	numericFields: false,
+	
+	labels: false,
 
+	multiSliderConf: {},
+	
+	tipFormat: '<b>{2}</b> [<b>{0}</b> , <b>{1}</b>]',
+	
+	labelsTpl: [
+		'<tpl for="ranges">',
+			'<tpl if="xindex === 1">',
+				'{name}: {parent.minValue} - {[parent.thumbs[xindex-1].value]}',
+			'</tpl>',
+			'<tpl if="xindex !== 1 &amp;&amp; xindex !== xcount">',
+				', {name}: {[parent.thumbs[xindex-2].value]} - {[parent.thumbs[xindex-1].value]}',
+			'</tpl>',
+			'<tpl if="xindex === xcount">',
+				', {name}: {[parent.thumbs[xindex-2].value]} - {parent.maxValue}',
+			'</tpl>',
+		'</tpl>'
+		
+	],
 
     /** private: method[initComponent]
      *  Override
@@ -35,21 +56,28 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
         
       
         this.multiSliderConf.plugins = new Ext.slider.Tip({
-            getText: function(thumb){
-                if(me.numericFields){
-                    Ext.getCmp(thumb.id+"_minValue").setValue(thumb.minValue);
-                    Ext.getCmp(thumb.id+"_maxValue").setValue(thumb.value);
-                    
-                    if(thumb.index < multi.thumbs.length-1)
-                        Ext.getCmp(multi.thumbs[thumb.index+1].id+"_minValue").setValue(thumb.value+1);
-                }
-                    
-                 return String.format('Range <b>{2}</b> [<b>{0}</b> , <b>{1}</b>]', thumb.minValue ,thumb.value, thumb.name);
+            getText: function(thumb){                
+                 return String.format(me.tipFormat, thumb.minValue ,thumb.value, thumb.name);
             }
         });
+		
         this.multiSlider= new gxp.form.SliderRangesField(this.multiSliderConf);
+		this.multiSlider.on('changecomplete', function(slider, value, thumb) {
+			if(this.numericFields){
+				Ext.getCmp(thumb.id+"_minValue").setValue(thumb.minValue);
+				Ext.getCmp(thumb.id+"_maxValue").setValue(thumb.value);
+				
+				if(thumb.index < multi.thumbs.length-1)
+					Ext.getCmp(multi.thumbs[thumb.index+1].id+"_minValue").setValue(thumb.value+1);
+			}
+			if(this.labels) {
+				Ext.getCmp(this.id+'_labels').setValue(this.labelsTpl.apply(this.multiSlider));
+			}
+			this.fireEvent('change', this, value, thumb.id);
+		}, this);
         multi=this.multiSlider;
         
+		this.labelsTpl = new Ext.XTemplate(this.labelsTpl, {compiled: true});
         
         this.autoHeight= true;
         this.layout='table';
@@ -68,7 +96,31 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
                     colspan: 3,
                     items: [this.multiSlider]
                 });
-        if(this.numericFields){
+		this.configureNumericFields();
+		this.configureLabels();        
+        
+        gxp.form.SliderRangesFieldSet.superclass.initComponent.call(this);
+    },
+	
+	configureLabels: function() {
+		if(this.labels) {
+			this.items.push({
+				layout: "form",
+				labelAlign: "top",
+				cellCls: 'multislider-label',
+				border: false,
+				colspan: 1,
+				items: [
+				new Ext.form.DisplayField({
+					id: this.id+"_labels",
+					value: this.labelsTpl.apply(this.multiSlider, {compiled: true})
+				})]
+			});
+		}
+	},
+	
+	configureNumericFields: function() {
+		if(this.numericFields){
             var minValue,maxValue, id, rangeName, index;
             var mindis= false, maxdis=false;
             var thumbs=this.multiSlider.thumbs;
@@ -113,7 +165,7 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
                     items: [{
                        xtype: "label",     
                       // cls: 'x-form-item-label',
-                       text: "  Range " + rangeName       
+                       text: rangeName       
                     }]
                     
                 });
@@ -145,9 +197,7 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
             }
                        
         }
-        
-        gxp.form.SliderRangesFieldSet.superclass.initComponent.call(this);
-    }
+	}
 });
 
 Ext.reg("gxp_sliderrangesfieldset", gxp.form.SliderRangesFieldSet);

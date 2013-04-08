@@ -39,11 +39,11 @@ gxp.form.SliderRangesField = Ext.extend(Ext.slider.MultiSlider, {
         
          this.thumbs=new Array();
          
-         if(this.ranges)
-         for(var i=0; i<this.ranges.length; i++){
-             this.addThumb(this.ranges[i]);
-         }
-            
+         if(this.ranges) {
+			 for(var i=0; i<this.ranges.length-1; i++){
+				 this.addThumb(this.ranges[i]);
+			 }
+        }
 
          this.values= null;
     },
@@ -63,14 +63,11 @@ gxp.form.SliderRangesField = Ext.extend(Ext.slider.MultiSlider, {
          
         thumbConf.value= thumbConf.maxValue;
         
-        
         var thumb = new Ext.slider.Thumb(Ext.apply({
             slider   : this,
             index    : this.thumbs.length,
             constrain: this.constrainThumbs
-        }, thumbConf));
-        
-        console.log(thumb);
+        }, thumbConf));               
         
         this.thumbs.push(thumb);
 

@@ -668,17 +668,18 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             value: "Tutti i Bersagli",
             listeners: {
                 scope: this,
-                select: function(cb, record, index) {				    					
-                    var type = record.get('type');					
+                select: function(cb, record, index) {
+                    var type = record.get('type');
 					
-                    var store=this.bers.getStore();                    					
+                    var store=this.bers.getStore();
 					
                     if(type !== 'mixed') {
                         store.filter('type', type);
                     } else {
                         store.clearFilter();
-                    }					                        
-                    
+                    }
+					this.updateTemaSliders(type);
+					
                     this.bers.setValue(null);
                 }
             }              
@@ -700,7 +701,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             triggerAction: 'all',
             selectOnFocus:true,
             editable: true,
-            resizable: true
+            resizable: true,
+			listeners: {
+                scope: this,
+                select: function(cb, record, index) {
+					this.updateTemaSliders(record.get('type'));                    
+                }
+            } 
         });
         
         this.bersSet = new Ext.form.FieldSet({
@@ -719,6 +726,21 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 		
         return this.bersSet;
     },
+	
+	updateTemaSliders: function(type) {
+		if(type == 'mixed') {
+			this.temasPanel.unhideTabStripItem(0);
+			this.temasPanel.unhideTabStripItem(1);
+		} else if(type == 'umano') {
+			this.temasPanel.unhideTabStripItem(0);
+			this.temasPanel.hideTabStripItem(1);
+			this.temasPanel.setActiveTab(0);
+		} else {
+			this.temasPanel.unhideTabStripItem(1);
+			this.temasPanel.hideTabStripItem(0);
+			this.temasPanel.setActiveTab(1);
+		}            
+	},
 	
     /** private: method[buildAccidentForm]
 	 *    builds the form for accidents choosing (with 4 cascading combos)
@@ -968,111 +990,104 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         map.events.register("move", this, this.aoiUpdater);
         
         syntView.getControlPanel().disable();
-		
+
         var containerTab = Ext.getCmp(this.outputTarget);
         
-        this.sliderFiledRischio1=new gxp.form.SliderRangesFieldSet({
-            title: "Rischio",
-            id:"rischio1",    
-            numericFields: true,
+        this.sliderFiledRischioSociale=new gxp.form.SliderRangesFieldSet({
+            title: "Rischio Sociale",
+            id:"rischio_sociale",    
+            labels: true,
             multiSliderConf:{
                 vertical : false,
                 ranges: [
                 {
-                    maxValue: 10, 
-                    name:"Basso", 
-                    id:"range_low"
+                    maxValue: 100, 
+                    name:"Rischio Basso", 
+                    id:"range_low_sociale"
                 },
-
                 {
-                    maxValue: 40, 
-                    name:"Medio", 
-                    id:"range_medium"
+                    maxValue: 500, 
+                    name:"Rischio Medio", 
+                    id:"range_medium_sociale"
                 },
-
                 {
-                    maxValue: 70, 
-                    name:"Alto", 
-                    id:"range_height"
+                    maxValue: 1000, 
+                    name:"Rischio Alto"
                 }
                 ],                                        
                 width   : 330,
                 minValue: 0,
-                maxValue: 100
+                maxValue: 1000
             }
         });
         
         
-        
-        this.sliderFiledRischio2=new gxp.form.SliderRangesFieldSet({
-            title: "Rischio2",
-            id:"rischio2",    
-            numericFields: true,
+        this.sliderFiledRischioAmbientale=new gxp.form.SliderRangesFieldSet({
+            title: "Rischio Ambientale",
+            id:"rischio_ambientale",    
+            labels: true,
             multiSliderConf:{
                 vertical : false,
                 ranges: [
                 {
-                    maxValue: 10, 
-                    name:"Basso", 
-                    id:"range_low2"
+                    maxValue: 100, 
+                    name:"Rischio Basso", 
+                    id:"range_low_ambientale"
                 },
 
                 {
-                    maxValue: 40, 
-                    name:"Medio", 
-                    id:"range_medium2"
+                    maxValue: 500, 
+                    name:"Rischio Medio", 
+                    id:"range_medium_ambientale"
                 },
-
                 {
-                    maxValue: 70, 
-                    name:"Alto", 
-                    id:"range_height2"
+                    maxValue: 1000, 
+                    name:"Rischio Alto"
                 }
                 ],                                        
                 width   : 330,
                 minValue: 0,
-                maxValue: 100
+                maxValue: 1000
             }
         });
 		
+		this.temasPanel = new Ext.TabPanel({
+			autoTabs:true,
+			activeTab:0,
+			deferredRender:false,
+			border:false,
+			items:[{   
+				title: 'Rischio Sociale',
+				listeners: {
+					activate: function(p){
+					   me.sliderFiledRischioSociale.render(Ext.get('rischio_sociale_slider'));
+					}
+				},
+				html: "<div id='rischio_sociale_slider'/>"
+			},{   
+				title: 'Rischio Ambientale',
+				listeners: {
+					activate: function(p){
+					   me.sliderFiledRischioAmbientale.render(Ext.get('rischio_ambientale_slider'));
+					}
+				},
+				html: "<div id='rischio_ambientale_slider'/>"
+			} 
+			]
+
+		});
         this.panel = new Ext.FormPanel({
             border: false,
             layout: "fit",
             title: this.formLabel,
             autoScroll: true,
             items:[
-            this.buildElaborazioneForm(),
-            //this.buildAOIForm(map),
-            me.aoiFieldset, 
-            this.buildConditionsForm(),
-            new Ext.TabPanel({
-                // applyTo: 'hello-tabs',
-                autoTabs:true,
-                activeTab:0,
-                deferredRender:false,
-                border:false,
-                items:[{   
-                    title: 'Rischio1',
-                    listeners: {
-                        activate: function(p){
-                           me.sliderFiledRischio1.render(Ext.get('rischio1_slider'));
-                        }
-                    },
-                    html: "<div id='rischio1_slider'/>"
-                },{   
-                    title: 'Rischio2',
-                    listeners: {
-                        activate: function(p){
-                           me.sliderFiledRischio2.render(Ext.get('rischio2_slider'));
-                        }
-                    },
-                    html: "<div id='rischio2_slider'/>"
-                } 
-                ]
-                                    
-            }),
-            this.buildTargetForm(),
-            this.buildAccidentForm()
+				this.buildElaborazioneForm(),   
+				this.temasPanel,
+				this.aoiFieldset, 
+				this.buildTargetForm(),
+				this.buildAccidentForm()
+
             ],
             buttons: [{
                 text: this.cancelButton,
@@ -1096,45 +1111,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         containerTab.add(this.panel);
         containerTab.setActiveTab(this.panel);
-        
-        //Ext.get("bboxAOI-set-EPSG").addListener("click", this.openEpsgWin, this);
+
         
         if(!this.status){
             this.resetBBOX();
         }	
     },
-    
-    /** private: method[openEpsgWin]
-	 *    Opens a popup with current AOI CRS description (EPSG:4326)
-     */
-    /*openEpsgWin: function() {
-         var win= new Ext.Window({
-                layout:'fit',
-                
-                width:this.epsgWinWidth,
-                height:this.epsgWinHeight,
-                closeAction:'destroy',
-                html: '<div id="loaderIframe"><iframe id="epsgIframe" src="'+ (this.urlEPSG ? this.urlEPSG : "http://spatialreference.org/ref/epsg/"+this.wgs84Projection.getCode().split(":")[1]+"/") +'" width="99%" height="99%"></iframe></div>',
-                listeners: {
-                    afterrender: function(el, eOpts) {
-                        var ml=new Ext.LoadMask(document.getElementById('loaderIframe'), 
-                            { msg:"Prego Attendere...",removeMask: true});
-                        ml.show();   
-                        function rml(){
-                            ml.hide();
-                        }
-                        var iframe = document.getElementById('epsgIframe');
-                        if (iframe.attachEvent) {
-                            iframe.attachEvent("onload", rml);
-                        } else if (iframe.addEventListener) {
-                            iframe.addEventListener("load", rml, false);
-                        } 
-                 }   
-               }
-           });
-           
-           win.show();
-	},*/
+        
 	
     /** private: method[resetCombos]
      *  :arg combos: ``Array``
@@ -1183,10 +1166,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      */
     doProcess: function(params){
         if(params){
-            //  this.showLayer(params);
-            
-            if(params.roi)
-                this.appTarget.mapPanel.map.zoomToExtent(params.roi);
+            //  this.showLayer(params);            
 
             var status = this.getStatus(this.panel.getForm());                
             
@@ -1210,7 +1190,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             //  syntView.getControlPanel().enable();
             
             syntView.setStatus(status);
-            syntView.doProcess();
+            syntView.doProcess(params.roi);
             this.appTarget.mapPanel.map.events.unregister("move", this, this.aoiUpdater);
         }
     },
@@ -1442,7 +1422,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.status = status;
         this.elaborazione.setValue(this.status.processing);
         this.formula.setValue(this.status.formula);
-        this.aoiFieldset.setAOI(this.status.roi.bbox);
+        this.aoiFieldset.setAOI(this.appTarget.mapPanel.map.getExtent());
         		
         store=this.macrobers.getStore(); 
         this.macrobers.setValue(this.status.macroTarget);
@@ -1456,6 +1436,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             this.bers.setValue(value);
             this.bers.fireEvent('select',this.bers, store.getAt(store.find("name", value)));
         }
+		Ext.getCmp('rischio_sociale_multislider').setValue(0, status.themas.sociale[0]);
+		Ext.getCmp('rischio_sociale_multislider').setValue(1, status.themas.sociale[1]);
+		Ext.getCmp('rischio_ambientale_multislider').setValue(0, status.themas.ambientale[0]);
+		Ext.getCmp('rischio_ambientale_multislider').setValue(1, status.themas.ambientale[1]);		
         
         this.setComboStatus(this.classi, 'classe');
         this.setComboStatus(this.sostanze, 'sostanza');
@@ -1518,6 +1502,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         obj.sostanza = this.getComboRecord(this.sostanze).data; //this.sostanze.getValue();
         obj.accident = this.getComboRecord(this.accident).data; //this.accident.getValue();
         obj.seriousness = this.getComboRecord(this.seriousness).data; //this.seriousness.getValue();
+		obj.themas = {
+			'sociale': Ext.getCmp('rischio_sociale_multislider').getValues(),
+			'ambientale': Ext.getCmp('rischio_ambientale_multislider').getValues()
+		};
 
         return obj;
     }
