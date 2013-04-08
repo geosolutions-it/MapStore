@@ -50,10 +50,9 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
                     var iframe = this.commodity ? 
                             "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
                             "<ol>" +
-                                "<li><p><em> Commodity: </em>" + this.commodity + "</p></li>" +
-                                "<li><p><em> Season: </em>" + this.season + "</p></li>" +
-                                "<li><p><em> From year: </em>" + this.fromYear + "</p></li>" +
-                                "<li><p><em> To year: </em>" + this.toYear + "</p></li>" +
+                                "<li><p><em> Commodity: </em>" + this.commodity.toUpperCase() + "</p></li>" +
+                                "<li><p><em> Season: </em>" + this.season.toUpperCase() + "</p></li>" +
+                                "<li><p><em> Years: </em>" + this.fromYear + "-" + this.toYear + "</p></li>" +
                             "</ol>" +                                        
                             "</div>" : 
                             
@@ -115,11 +114,10 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
 				var iframe = this.commodity ? 
                         "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
 						"<ol>" +
-							"<li><p><em> Commodity: </em>" + this.commodity + "</p></li>" +
-							"<li><p><em> Season: </em>" + this.season + "</p></li>" +
-							"<li><p><em> regions </em>" + this.province.concat(",") + "</p></li>" +
-							"<li><p><em> From year: </em>" + this.fromYear + "</p></li>" +
-							"<li><p><em> To year: </em>" + this.toYear + "</p></li>" +
+							"<li><p><em> Commodity: </em>" + this.commodity.toUpperCase() + "</p></li>" +
+							"<li><p><em> Season: </em>" + this.season.toUpperCase() + "</p></li>" +
+							"<li><p><em> AOI: </em>" + this.province.concat() + "</p></li>" +
+							"<li><p><em> Years: </em>" + this.fromYear + "-" + this.toYear + "</p></li>" +
 						"</ol>" +                                        
 						"</div>" : 
 

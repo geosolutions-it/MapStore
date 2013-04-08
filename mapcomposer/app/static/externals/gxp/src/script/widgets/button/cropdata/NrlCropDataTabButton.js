@@ -187,7 +187,7 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 		var oldPosition = tabs && tabs.items && tabs.items.getCount() ? [tabs.items.getCount()*20,tabs.items.getCount()*20]:[0,0]
 		
 		var win = new Ext.Window({
-			title:'Crop Data:' + fieldValues.crop,
+			title:'Pakistan - Crop Data - Commodity: ' + fieldValues.crop.toUpperCase() +  " - Season: " + values.season.toUpperCase() + " - Years: "+ values.startYear + "-"+ values.endYear,
 			collapsible: true,
 			constrainHeader :true,
 			maximizable:true,
@@ -203,13 +203,11 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 			tools: [{
                 id: 'info',
                 handler: function () {
-                    var checkCommodity = fieldValues.crop ? "<li><p><em> Commodity: </em>" + fieldValues.crop + "</p></li>" : "<li><p><em></em></p></li>";
                     var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
                             "<ol>" +
-                                checkCommodity +
+                                "<li><p><em> Commodity: </em>" + fieldValues.crop + "</p></li>" +
                                 "<li><p><em> Season: </em>" + values.season + "</p></li>" +
-                                "<li><p><em> From year: </em>" + values.startYear + "</p></li>" +
-                                "<li><p><em> To year: </em>" + values.endYear + "</p></li>" +
+                                "<li><p><em> Years: </em>" + values.startYear + "-" + values.endYear + "</p></li>" +
                             "</ol>" +                                        
                             "</div>";
                  
