@@ -427,6 +427,18 @@
         "actionTarget":"paneltbar"
     },
     {
+        "ptype":"gxp_print",
+        "customParams":{
+            "outputFilename":"mapstore-print"
+        },
+        "printService":"http://84.33.2.23/geoserver/pdf/",
+        "legendPanelId":"legendPanel",
+        "actionTarget":{
+            "target":"paneltbar",
+            "index":4
+        }
+    },
+    {
         "ptype":"gxp_georeferences",
         "actionTarget":{
             "target":"paneltbar",
@@ -1254,6 +1266,7 @@
 				"title": "Beni culturali",
 				"type": "ambientale"
 			}
+                        
 		},
 			"index": 29
 	    }
