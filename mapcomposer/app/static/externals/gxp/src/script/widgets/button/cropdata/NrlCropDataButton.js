@@ -66,7 +66,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 					unit:'(000 ha)'
 			}
 		},
-        height: 400
+        height: 500
 	},
     handler: function () {   
     
@@ -390,7 +390,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 				chartConfig: {
 					chart: {
 						zoomType: 'x',
-                        spacingBottom: 120             
+                        spacingBottom: 145                       
 					},
                     exporting: {
                         enabled: true,
