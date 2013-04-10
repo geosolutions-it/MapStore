@@ -617,7 +617,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         // Bersaglio
         //        
         var targetStore = new Ext.data.ArrayStore({
-            fields: ['layer','name', 'property', 'humans', 'code', 'type', 'macro', 'id'],			
+            fields: ['layer','name', 'property', 'humans', 'code', 'type', 'macro', 'id'],
             data :  [
             //  ['Tutti i Bersagli', 'calc_formula_tot', ''],
             ['popolazione_residente','Popolazione residente', 'calc_formula_tot', true, '-1', 'umano', false, [1]],
@@ -1083,8 +1083,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             autoScroll: true,
             items:[
 				this.buildElaborazioneForm(),  
-                                this.buildConditionsForm(),
 				this.temasPanel,
+				this.buildConditionsForm(),
 				this.aoiFieldset, 
 				this.buildTargetForm(),
 				this.buildAccidentForm()

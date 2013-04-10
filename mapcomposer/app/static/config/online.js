@@ -432,6 +432,7 @@
             "outputFilename":"mapstore-print"
         },
         "printService":"http://84.33.2.23/geoserver/pdf/",
+        "ignoreLayers": "Google Hybrid,Bing Aerial,Nessuno sfondo,Google Terrain,Google Roadmap",
         "legendPanelId":"legendPanel",
         "actionTarget":{
             "target":"paneltbar",
