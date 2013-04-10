@@ -37,7 +37,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
     chartOpt:{
 		series:{
 			current:{
-					color: '#89A54E',
+					color: '#FF0000',
                     lcolor: 'rgb(207,235,148)',                    
 					type: 'line',
 					dataIndex: 'current',
@@ -322,7 +322,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                         url: "http://84.33.2.24/highcharts-export/"
                     },
 					title: {
-						text: "SPOT-VEG " + listVar.factorStore[i].get('label') + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : "REGION")
+						text: listVar.factorStore[i].get('label') + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : "REGION")
 					},
 					subtitle: {
                         text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+

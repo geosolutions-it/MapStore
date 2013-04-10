@@ -307,7 +307,7 @@ div.olLayerDiv svg{
 	display:block;
 }
 /* LIST #2 */
-#list2 { width:320px; background-color:#F1F1F1;}
+#list2 { width:320px; background-color:#FFFFFF;}
 #list2 ol { font-style:italic; font-family:Georgia, Times, serif; font-size:24px; color:#000000;  }
 #list2 ol li { }
 #list2 ol li p { padding:4px; font-style:italic; font-family:Arial; font-size:13px; color:#000000; border-left: 1px solid #999; }

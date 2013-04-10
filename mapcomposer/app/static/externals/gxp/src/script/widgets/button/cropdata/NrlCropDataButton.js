@@ -69,13 +69,21 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
         height: 400
 	},
     handler: function () {   
+    
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+
+        var yyyy = today.getFullYear();
+        if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm} var today = mm+'/'+dd+'/'+yyyy; 
+        
         var numRegion = [];
         var regStore = this.form.output.aoiFieldSet.AreaSelector.store
         var records = regStore.getRange();
 		
         for (var i=0;i<records.length;i++){
 			var attrs = records[i].get("attributes");
-			var region = attrs.district || attrs.province;
+            var region = attrs.district ? attrs.district + "," + attrs.province : attrs.province;
             numRegion.push(region.toLowerCase());
         }
         
@@ -109,87 +117,109 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
           this.chartOpt.series.prod.name = 'Production (000 bales)';          
           var prodCoeffUnits = '170';
         }
+
+        var chartTitle = "";
+        var splitRegion;
+        
+        for (var i = 0;i<numRegion.length;i++){
+            if (granType == "province"){
+                if(i==numRegion.length-1){
+                    chartTitle += numRegion[i].slice(0,1).toUpperCase() + numRegion[i].slice(1);
+                }else{
+                    chartTitle += numRegion[i].slice(0,1).toUpperCase() + numRegion[i].slice(1) + ", ";
+                }                
+            }else{
+                splitRegion = numRegion[i].split(',');
+                if(i==numRegion.length-1){
+                    chartTitle += splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + ")";
+                }else{
+                    chartTitle += splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + "), ";
+                }                       
+            }            
+        }
+        
+        var listVar = {
+            today: today,
+            chartTitle: chartTitle,
+            numRegion: numRegion,
+            season: season,
+            fromYear: fromYear,
+            toYear: toYear,
+            commodity: commodity
+        };       
         
         var tabPanel = Ext.getCmp('id_mapTab');
 
         var tabs = Ext.getCmp('cropData_tab');
-        /*
-        if (tabs && tabs.length > 0) {
-            tabPanel.setActiveTab(tabs[0]);
-        } else {
-            */
 			
-            Ext.Ajax.request({
-				scope:this,
-                url : this.url,
-                method: 'POST',
-                params :{
-                    service: "WFS",
-                    version: "1.0.0",
-                    request: "GetFeature",
-                    typeName: "nrl:CropData",
-                    outputFormat: "json",
-                    propertyName: "region,crop,year,production,area,yield",
-                    viewparams: "crop:" + commodity + ";" +
-                                "gran_type:" + granType + ";" +
-                                "start_year:" + fromYear + ";" +
-                                "end_year:" + toYear + ";" +
-                                "region_list:" + regionList + ";" +
-                                "yield_factor:" + prodCoeffUnits
-                },
-                success: function ( result, request ) {
-					var jsonData = Ext.util.JSON.decode(result.responseText);
-					if (jsonData.features.length <=0){
-						Ext.Msg.alert("No data","Data not available for these search criteria");
-						return;
-					}
-					var data = this.getData(jsonData);
-				
-					
-					
-					
-					var charts  = this.makeChart(data,this.chartOpt);
-					var resultpanel = {
-						columnWidth: .95,
-                        style:'padding:10px 10px 10px 10px',
-						xtype: 'gxp_controlpanel',
-						commodity: commodity,
-                        season: season,
-						province: numRegion,
-						fromYear: fromYear,
-						toYear: toYear,
-						chart: charts,
-                        chartHeight: this.chartOpt.height
-					};
-					if(!tabs){
-						var cropDataTab = new Ext.Panel({
-							title: 'Crop Data',
-							id:'cropData_tab',
-							itemId:'cropData_tab',
-							border: true,
-							layout: 'form',
-							autoScroll: true,
-							tabTip: 'Crop Data',
-							closable: true,
-							items: resultpanel
-						});
-						tabPanel.add(cropDataTab);  
-                       
-					}else{
-						tabs.items.each(function(a){a.collapse()});
-						tabs.add(resultpanel);
-					}
-					Ext.getCmp('id_mapTab').doLayout();
-					Ext.getCmp('id_mapTab').setActiveTab('cropData_tab');
-                    
-                    
-                },
-                failure: function ( result, request ) {
-					Ext.Msg.alert("Error","Server response error");
+        Ext.Ajax.request({
+            scope:this,
+            url : this.url,
+            method: 'POST',
+            params :{
+                service: "WFS",
+                version: "1.0.0",
+                request: "GetFeature",
+                typeName: "nrl:CropData",
+                outputFormat: "json",
+                propertyName: "region,crop,year,production,area,yield",
+                viewparams: "crop:" + commodity + ";" +
+                            "gran_type:" + granType + ";" +
+                            "start_year:" + fromYear + ";" +
+                            "end_year:" + toYear + ";" +
+                            "region_list:" + regionList + ";" +
+                            "yield_factor:" + prodCoeffUnits
+            },
+            success: function ( result, request ) {
+                var jsonData = Ext.util.JSON.decode(result.responseText);
+                if (jsonData.features.length <=0){
+                    Ext.Msg.alert("No data","Data not available for these search criteria");
+                    return;
                 }
-            });           
-
-            
+                var data = this.getData(jsonData);
+                
+                var charts  = this.makeChart(data,this.chartOpt,listVar);
+                var resultpanel = {
+                    columnWidth: .95,
+                    style:'padding:10px 10px 10px 10px',
+                    xtype: 'gxp_controlpanel',
+                    commodity: commodity,
+                    today: today,
+                    chartTitle: chartTitle,                        
+                    season: season,
+                    province: numRegion,
+                    fromYear: fromYear,
+                    toYear: toYear,
+                    chart: charts,
+                    chartHeight: this.chartOpt.height
+                };
+                if(!tabs){
+                    var cropDataTab = new Ext.Panel({
+                        title: 'Crop Data',
+                        id:'cropData_tab',
+                        itemId:'cropData_tab',
+                        border: true,
+                        layout: 'form',
+                        autoScroll: true,
+                        tabTip: 'Crop Data',
+                        closable: true,
+                        items: resultpanel
+                    });
+                    tabPanel.add(cropDataTab);  
+                   
+                }else{
+                    tabs.items.each(function(a){a.collapse()});
+                    tabs.add(resultpanel);
+                }
+                Ext.getCmp('id_mapTab').doLayout();
+                Ext.getCmp('id_mapTab').setActiveTab('cropData_tab');
+                
+                
+            },
+            failure: function ( result, request ) {
+                Ext.Msg.alert("Error","Server response error");
+            }
+        });       
         
     },
 	getData: function (json){
@@ -309,7 +339,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 		return chartData;
 
 	},
-	makeChart: function( data,opt ){
+	makeChart: function( data,opt,listVar ){
 		
 		var grafici = [];
 		var getAvg= function(arr,type) {
@@ -360,7 +390,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 				chartConfig: {
 					chart: {
 						zoomType: 'x',
-                        spacingBottom: 23                
+                        spacingBottom: 120             
 					},
                     exporting: {
                         enabled: true,
@@ -368,17 +398,23 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                         url: "http://84.33.2.24/highcharts-export/"
                     },
 					title: {
-						text: data[r].title.toUpperCase()
+						text: (data[r].title.toUpperCase()=="AGGREGATED DATA" ? data[r].title.toUpperCase() + " - " + listVar.commodity.toUpperCase() : listVar.commodity.toUpperCase()) + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : "REGION")
 					},
 					subtitle: {
-                        text: '<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+opt.series.area.unit+'</span><br />'+
+                        text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
+                              '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
+                              '<span style="font-size:10px;">AOI: '+listVar.chartTitle+'</span><br />'+
+                              '<span style="font-size:10px;">Commodity: '+listVar.commodity.toUpperCase()+'</span><br />'+
+                              '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
+                              '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />'+ 
+                              '<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+opt.series.area.unit+'</span><br />'+
                               '<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean: '+ prodavg.toFixed(2)+' '+opt.series.prod.unit+'</span><br />'+
                               '<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean: '+ yieldavg.toFixed(2)+' '+opt.series.yield.unit+'</span>',
                         align: 'left',
                         verticalAlign: 'bottom',
                         useHTML: true,
                         x: 30,
-                        y: -17
+                        y: -10
 					},
 					xAxis: [{
 						type: 'datetime',
