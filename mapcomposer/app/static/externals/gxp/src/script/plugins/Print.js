@@ -143,7 +143,7 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                 iconCls: "gxp-icon-print",
                 disabled: false,
                 handler: function() {
-                    var layers = getSupportedLayers();
+                    /*var layers = getSupportedLayers();
                     var supported = layers.supported;
                     var notSupported = layers.notSupported;
                     
@@ -157,10 +157,10 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                                 ( notIgnorable.indexOf('Marker') != -1 ? '<br />'+ this.notPrintableMarkersText : '')
                             );
                             
-                        } else {                    
+                        } else {*/                    
 							createPrintWindow.call(this);
 							showPrintWindow.call(this);
-						}
+						/*}
 
                     } else {
                         // no layers supported
@@ -168,7 +168,7 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                             this.notAllNotPrintableText,
                             this.nonePrintableText
                         );
-                    }
+                    }*/
                 },
                 scope: this,
                 listeners: {

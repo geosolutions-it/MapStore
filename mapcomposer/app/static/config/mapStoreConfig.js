@@ -124,7 +124,7 @@
 			},{
 				"source": "nrl",
 				"title": "Crop Mask",
-				"name": "nrl:crop_mask",
+				"name": "nrl:crop_mask_pak_2012",
 				"group": "Land Cover",
 				"visibility": false
 			},{
