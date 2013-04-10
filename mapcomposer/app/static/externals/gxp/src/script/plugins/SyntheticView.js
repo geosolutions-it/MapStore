@@ -281,15 +281,15 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 	},
 	
     isHumanTarget: function() {
-        return this.status.target.type === 'umano';
+        return this.status.target.humans;
     },
     
     isNotHumanTarget: function() {
-        return this.status.target.type === 'ambientale';
+        return !this.status.target.humans;
     },
     
     isMixedTargets: function() {
-        return this.status.target.type === 'mixed';
+        return this.status.target.humans === null;
     },
     
     /** private: method[addHumanTargetBuffer]
