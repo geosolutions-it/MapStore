@@ -122,7 +122,6 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
                             "<li><p><em> AOI: </em>"+this.chartTitle+"</p></li>" +                            
 							"<li><p><em> Commodity: </em>" + this.commodity.toUpperCase() + "</p></li>" +
 							"<li><p><em> Season: </em>" + this.season.toUpperCase() + "</p></li>" +
-							"<li><p><em> AOI: </em>" + this.province.concat() + "</p></li>" +
 							"<li><p><em> Years: </em>" + this.fromYear + "-" + this.toYear + "</p></li>" +
 						"</ol>" +                                        
 						"</div>" : 
