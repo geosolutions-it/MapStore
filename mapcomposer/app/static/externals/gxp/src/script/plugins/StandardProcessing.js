@@ -52,6 +52,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     weatherLabel: "Meteo",  
     temporalLabel: "Temporali",
     conditionsFielSetLabel: "Condizioni",   
+    allClassOption: "Tutte le classi",
+    allSostOption: "Tutte le sostanze",
+    allScenOption: "Tutti gli incidenti",
     // End i18n.
         
     // TODO: bbox piemonte    
@@ -87,6 +90,18 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     epsgWinWidth: null,  
 
     aoiFieldset: null,
+    
+    /*WFSStores settings*/
+    wfsURL: "http://84.33.2.23/geoserver/wfs",
+    wfsVersion: "1.1.0",
+    destinationNS: "destinationprod",
+    bersFeature: "siig_t_bersaglio",
+    classFeature: "siig_d_classe_adr",
+    sostFeature: "siig_t_sostanza",
+    scenFeature: "siig_t_scenario",
+    sostAccFeature: "siig_r_scenario_sostanza",
+    
+    
     /*
     holdValues: {
         "L": 8,
@@ -616,8 +631,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         //
         // Bersaglio
         //        
-        var targetStore = new Ext.data.ArrayStore({
-            fields: ['layer','name', 'property', 'humans', 'code', 'type', 'macro', 'id'],
+
+        /*var targetStore = new Ext.data.ArrayStore({
+            fields: ['layer','name', 'property', 'humans', 'code', 'type', 'macro', 'id'],			
             data :  [
             //  ['Tutti i Bersagli', 'calc_formula_tot', ''],
             ['popolazione_residente','Popolazione residente', 'calc_formula_tot', true, '-1', 'umano', false, [1]],
@@ -636,17 +652,91 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             ['acque_sotterranee','Acque sotterranee', 'calc_formula_tot', false, '4', 'ambientale', false, [14]],
             ['acque_superficiali','Acque superficiali', 'calc_formula_tot', false, '5', 'ambientale', false, [15]],
             ['beni_culturali','Beni culturali', 'calc_formula_tot', false, '6', 'ambientale', false, [16]]
-
             ]
-        });			
+        });	*/	
+        var me= this;
+        var layers= [null,'popolazione_residente','popolazione_turistica',
+            'industria_servizi','strutture_sanitarie','strutture_scolastiche',
+            'centri_commerciali','zone_urbanizzate','aree_boscate',
+            'aree_protette','aree_agricole','acque_sotterranee',
+            'acque_superficiali','beni_culturali'];
         
-        var targetMacroStore = new Ext.data.ArrayStore({
-            fields: ['layer', 'name', 'property', 'humans', 'code', 'type', 'macro', 'id'],
-            data :  [
-            ['bersagli_all', 'Tutti i Bersagli', 'calc_formula_tot', false, '-2', 'mixed', true, [1,2,4,5,6,7,10,11,12,13,14,15,16]],
-            ['bersagli_umani', 'Tutti i Bersagli Umani', 'calc_formula_tot', true, '-1', 'umano', true, [1,2,4,5,6,7]],
-            ['bersagli_ambientali', 'Tutti i Bersagli Ambientali', 'calc_formula_tot', false, '-2', 'ambientale', true, [10,11,12,13,14,15,16]]
-            ]
+        
+        var targetStore= new GeoExt.data.FeatureStore({ 
+             id: "targetStore",
+             fields: [{
+                        "name": "id_bersaglio",              
+                        "mapping": "id_bersaglio"
+		      },{
+                        "name": "name",              
+                        "mapping": "descrizione"
+		      },{
+                        "name": "flg_umano",        
+                        "mapping": "flg_umano"
+		      }],
+             proxy: this.getWFSStoreProxy(this.bersFeature) , 
+             autoLoad: true 
+       });
+        
+       targetStore.on('load', function(str, records) {
+            var allIDsArray= new Array(); 
+            var code=0;
+            var humanIDsArray= new Array();
+            var notHumanIDsArray= new Array();
+             Ext.each(records,function(record){
+                      var flg_umano= parseInt(record.get("flg_umano"));
+                      var id= parseInt(record.get("id_bersaglio"));
+                      allIDsArray.push(id);
+                      record.set( "layer", layers[parseInt(id)]);
+                      record.set( "property", 'calc_formula_tot');
+                      record.set( "humans", flg_umano == 1 ? true: false);
+                      
+                      var code="-1";
+                      
+                      switch(id){
+                          case 10:
+                               code='0';
+                              break;
+                          case 11:
+                               code='1';
+                              break;    
+                          case 12:
+                               code='2';
+                              break;
+                          case 13:
+                               code='3';
+                              break;
+                          case 14:
+                               code='4';
+                              break;    
+                          case 15:
+                               code='5';
+                              break;
+                          case 16:
+                               code='6';
+                              break;    
+                      }
+                      record.set( "code", code);
+
+                      record.set( "macro", false);
+                      record.set( "id", [record.get("id_bersaglio")]);
+                      if(flg_umano!= 1){
+                         notHumanIDsArray.push(id);
+                      }else{
+                         humanIDsArray.push(id); 
+                      }
+             });
+           me.macrobers.getStore().loadData([
+            ['bersagli_all', 'Tutti i Bersagli', 'calc_formula_tot', null, '-2', true, allIDsArray],
+            ['bersagli_umani', 'Tutti i Bersagli Umani', 'calc_formula_tot', true, '-1', true, humanIDsArray],
+            ['bersagli_ambientali', 'Tutti i Bersagli Ambientali', 'calc_formula_tot', false, '-2', true, notHumanIDsArray]
+            ], true);
+
+      });
+        
+       var targetMacroStore = new Ext.data.ArrayStore({
+            fields: ['layer', 'name', 'property', 'humans', 'code', 'macro', 'id'],
+            data :  []
         });
         
         
@@ -669,12 +759,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 scope: this,
                 select: function(cb, record, index) {
-                    var type = record.get('type');
+                    var type = record.get('humans');
 					
                     var store=this.bers.getStore();
 					
-                    if(type !== 'mixed') {
-                        store.filter('type', type);
+                    if(type !== null) {
+                        store.filter('humans', type);
                     } else {
                         store.clearFilter();
                     }
@@ -700,13 +790,18 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             forceSelection: true,
             triggerAction: 'all',
             selectOnFocus:true,
+            
             editable: true,
             resizable: true,
 			listeners: {
                 scope: this,
                 select: function(cb, record, index) {
 					this.updateTemaSliders(record.get('type'));                    
-                }
+                },
+                expand: function(combo) {
+                    combo.list.setWidth( 'auto' );
+                    combo.innerList.setWidth( 'auto' );
+                } 
             } 
         });
         
@@ -749,7 +844,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         //
         // Classi ADR
         //
-        var classiADRStore = new Ext.data.ArrayStore({
+       /* var classiADRStore = new Ext.data.ArrayStore({
             fields: ['name','value', 'sostanze'],
             data :  [
             ['Tutte le classi', '0', ['1','2','3','4','5','6','7','8','9','10']],
@@ -767,7 +862,32 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             //   ['MATERIE CORROSIVE', '8', []],
             //   ['MATERIE E OGGETTI PERICOLOSE DI ALTRA NATURA', '9', []]
             ]
-        });
+        });*/
+        
+      var me= this;
+      
+      //Set filter with Destination ADR Class
+      var filterDest=new OpenLayers.Filter.FeatureId({
+          fids: ["siig_d_classe_adr.2","siig_d_classe_adr.3","siig_d_classe_adr.9"]
+      });
+      
+      var classiADRStore= new GeoExt.data.FeatureStore({ 
+             id: "calssiStore",
+             fields: [{
+                        "name": "name",              
+                        "mapping": "descrizione"
+		      },{
+                        "name": "value",        
+                        "mapping": "classe"
+		      }],
+             proxy: this.getWFSStoreProxy(this.classFeature, filterDest) , 
+             autoLoad: true 
+       });
+       
+      classiADRStore.on('load', function(str, records) {
+           str.insert(0, new str.recordType({name: me.allClassOption, value:'0'}, 1000));
+      });
+                
 		
         this.classi = new Ext.form.ComboBox({
             fieldLabel: this.adrLabel,
@@ -778,34 +898,40 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             displayField: 'name',    
             typeAhead: true,
             mode: 'local',
+         //   queryParam: 'remoteStore',
             forceSelection: true,
             triggerAction: 'all',
             selectOnFocus:true,
             editable: true,
             resizable: true,
-            value: "Tutte le classi",
+            value: this.allClassOption,
             lazyInit: false,
             listeners: {
                 "expand": function(combo) {
+                    var store=combo.getStore();
+                    delete store.baseParams.filter;
+                    combo.getStore().reload();
                     combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );
                 },                
                 select: function(cb, record, index) {					
                     // filtra solo la combo delle sostanze in base alla classe scelta, resetta gli altri filtri
-                    var sostanze = record.get('sostanze'); 
-                    this.filterCombos([{
-                        combo: this.sostanze,
-                        filter: function(record) {							
-                            var value=record.get('value'); 
-                            return (sostanze.indexOf(value) != -1 || value == '0');
-                        }
-                    },{
-                        combo: this.accident,
-                        filter: null
-                    }]);
-					 
-                    // resetta il valore selezionato sulle combo in cascata
-                    this.resetCombos([this.sostanze, this.accident, this.seriousness]);                    
+                    var classe = record.get('value'); 
+
+                    var store=me.sostanze.getStore();
+                    delete store.baseParams.filter;
+                    store.proxy.protocol.filter.filters= new Array();
+
+                    if(classe != "0"){
+                       var filter= new OpenLayers.Filter.Comparison({
+                            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                            property: "destinationprod:fk_classe_adr",
+                            value: classe
+                        });
+                        
+                        store.proxy.protocol.filter.filters.push(filter);
+                    }       
+                    me.resetCombos([me.sostanze]);
                 },
                 scope: this
             }              
@@ -814,7 +940,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         //
         // Sostanze
         //
-        var sostanzeStore = new Ext.data.ArrayStore({
+        /*var sostanzeStore = new Ext.data.ArrayStore({
             fields: ['name', 'value', 'accidents', 'id'],
             data :  [
             ['Tutte le sostanze', '0', ['A','B','C','D','E','F','G','H','I','L','M'], [1,2,3,4,5,6,7,8,9,10]],
@@ -829,15 +955,42 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             ['METANOLO', '9', ['A', 'B', 'I'], [9]],
             ['EPICLORIDRINA', '10', ['H'], [10]]
             ]
-        });
-		
-        this.sostanze = new Ext.form.ComboBox({
+        });*/
+    
+      var sostanzeStore= new GeoExt.data.FeatureStore({ 
+             id: "sostStore",
+             fields: [{
+                        "name": "name",              
+                        "mapping": "nome_sostanza"
+		      },{
+                        "name": "value",        
+                        "mapping": "id_sostanza"
+		      },{
+                         "name": "class",        
+                         "mapping": "fk_classe_adr"
+	              }],
+             proxy: this.getWFSStoreProxy(this.sostFeature) , 
+             autoLoad: true 
+       });
+                    
+      sostanzeStore.on('load', function(str, records) {
+             var allIDsArray= new Array(); 
+             Ext.each(records,function(record){
+                      var id= parseInt(record.get("value"));
+                      allIDsArray.push(id);
+                      record.set( "id", [id]);
+             });
+             str.insert(0, new str.recordType({name: me.allSostOption, value:'0', id: allIDsArray}, 1000));
+      });
+      
+
+	
+      this.sostanze = new Ext.form.ComboBox({
             fieldLabel: this.sostanzeLabel,
             id: "sostanzecb",
             width: 150,
             hideLabel : false,
             store: sostanzeStore, 
-            lastQuery:'',
             displayField: 'name',    
             typeAhead: true,
             mode: 'local',
@@ -847,27 +1000,57 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             editable: true,
             resizable: true,	
             lazyInit: false,			
-            value: "Tutte le sostanze",
+            value: this.allSostOption,
             listeners: {
                 "expand": function(combo) {
+                    combo.getStore().reload();
                     combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );
                 },
                 
                 select: function(cb, record, index) {
-                    // filtra la combo degli incidenti
-                    var accidents = record.get('accidents'); 
-                    this.filterCombos([{
-                        combo: this.accident,
-                        filter: function(record) {							
-                            var value=record.get('value'); 
-                            return (accidents.indexOf(value)!= -1 || value == '0');
-                        }
-                    }]);                    
+                    var sost=record.get('value');
+
+                    var filter= new OpenLayers.Filter.Comparison({
+                        type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                        property: "destinationprod:id_sostanza",
+                        value: sost
+                    });
                     
-                    // resetta il valore selezionato sulle combo in cascata
-                    this.resetCombos([this.accident, this.seriousness]); 
-					
+                    new GeoExt.data.FeatureStore({ 
+                        id: "sostaccStore",
+                        fields: [{
+                            "name": "scen",              
+                            "mapping": "id_scenario"
+                        }],
+                        proxy: me.getWFSStoreProxy(me.sostAccFeature, filter), 
+                        listeners:{
+                            load : function(str, records) {
+                                var fids= new Array();
+                                var fid=null;
+                                Ext.each(records,function(record){
+                                    fid="siig_t_scenario."+record.get("scen");
+                                    if(fids.indexOf(fid) == -1){
+                                        fids.push("siig_t_scenario."+record.get("scen"));
+                                    }
+
+                                });
+                                
+                                var store=me.accident.getStore();
+                                store.proxy.protocol.filter.filters= new Array();
+
+                                if(sost != "0"){
+                                    filter= new OpenLayers.Filter.FeatureId({
+                                        fids: fids
+                                    });
+                     
+                                  store.proxy.protocol.filter.filters.push(filter);
+                                }
+                                me.resetCombos([me.accident]);
+                            }
+                        },
+                        autoLoad: true 
+                    });			
                 },
                 scope: this
             }              
@@ -876,7 +1059,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         //
         // Incidenti / Scenari
         //
-        var accidentStore = new Ext.data.ArrayStore({
+       /* var accidentStore = new Ext.data.ArrayStore({
             fields: ['name', 'value', 'id'],
             data :  [
             ['Tutti gli Incidenti', '0', [1,2,3,4,5,6,7,8,9,10,11]],
@@ -892,7 +1075,35 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             ['DISPERSIONE VAPORI DA LIQUIDO REFRIGERATO TOSSICO', 'L', [10]],
             ['DISPERSIONE GAS DA GAS LIQUEFATTO TOSSICO', 'M', [11]]
             ]
-        });
+        });*/
+        
+       
+         var accidentStore= new GeoExt.data.FeatureStore({ 
+             id: "sostStore",
+             fields: [{
+                        "name": "name",              
+                        "mapping": "tipologia"
+		      },{
+                        "name": "value",        
+                        "mapping": "codice"
+		      },{
+                        "name": "id",        
+                        "mapping": "id_scenario"
+		      }],
+             proxy: this.getWFSStoreProxy(this.scenFeature) , 
+             autoLoad: true 
+          });       
+
+          accidentStore.on('load', function(str, records) {
+              var allIDsArray= new Array(); 
+              Ext.each(records,function(record){
+                      var id= parseInt(record.get("id"));
+                      allIDsArray.push(id);
+                      record.set( "id", [id]);
+              });
+              str.insert(0, new str.recordType({name: me.allScenOption, value:'0', id:allIDsArray }, 1000));
+          });
+                
 		
         this.accident = new Ext.form.ComboBox({
             fieldLabel: this.accidentLabel,
@@ -910,9 +1121,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             editable: true,
             resizable: true,
             lazyInit: false,
-            value: "Tutti gli Incidenti",
+            value: this.allScenOption,
             listeners: {
                 "expand": function(combo) {
+                    combo.getStore().reload();
                     combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );
                 },
@@ -1517,6 +1729,32 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 		};
 
         return obj;
+    },
+    
+    getWFSStoreProxy: function(featureName, filter){
+        var filterProtocol=new OpenLayers.Filter.Logical({
+                    type: OpenLayers.Filter.Logical.AND,
+                    filters: new Array()
+                });
+        if(filter)
+            if(filter.type== "FID")
+                filterProtocol=filter;
+           else
+              filterProtocol.filters.push(filter);
+     
+        var proxy= new GeoExt.data.ProtocolProxy({ 
+            protocol: new OpenLayers.Protocol.WFS({ 
+                url: this.wfsURL, 
+                featureType: featureName, 
+                readFormat: new OpenLayers.Format.GeoJSON(),
+                featureNS: this.destinationNS, 
+                filter: filterProtocol, 
+                outputFormat: "application/json",
+                version: this.wfsVersion
+            }) 
+        });
+        return proxy;         
+        
     }
 
     
