@@ -34,14 +34,8 @@ GeoExt.Lang.add("en", {
     },
     
     "GeoExplorer.Composer.prototype": {
-        loadMapText: "Import a Map file",
-        saveMapText: "Export Map",
         exportMapText: "Publish Map",
-		loadMapEmptyText: "Select a Map context file",
-		loadMapUploadText: "Uploading your file...",
 		uploadText: "Upload",
-		loadMapWindowTitle: 'File Upload Form',
-		loadMapErrorText:'File Upload Error',
         toolsTitle: "Choose tools to include in the toolbar:",
         previewText: "Preview",
         backText: "Back",
@@ -52,12 +46,7 @@ GeoExt.Lang.add("en", {
         passwordFieldText: "Password",
         fullScreenText: "Full Screen",
         cswMsg: 'Loading...',
-		uploadWaitMsg: 'Uploading your context file...',
-		uploadErrorTitle: 'File Upload Error',
-		uploadEmptyText: 'Select a Map context file',
-		uploadWinTitle: 'File Upload Form',
 		cswFailureAddLayer: ' The layer cannot be added to the map',
-		uploadButtonText: 'Upload',
         alertEmbedTitle: 'Attention',
         alertEmbedText: "Save the map before using the 'Publish Map' tool",
 	    cswZoomToExtentMsg: "BBOX not available",
@@ -397,7 +386,15 @@ GeoExt.Lang.add("en", {
 		gridColContent: 'Content',	
 		exportBtn:  'Export Markers',
 		importBtn: 'Import Markers',
-		removeAllBnt: 'Remove All'
+		removeAllBnt: 'Remove All',
+		markerChooserTitle:'Choose a marker',
+		useThisMarkerText:'Use this Marker',
+		selectMarkerText:'Select Marker',
+		insertImageText:'Insert Image',
+		imageUrlText:'Image URL',
+		importGeoJsonText:'Import GeoJson',
+		errorText:"Error",
+		notWellFormedText:"The Text you added is not well formed. Please check it"
 	},
 	
 	"gxp.widgets.form.CoordinatePicker.prototype":{
@@ -405,5 +402,17 @@ GeoExt.Lang.add("en", {
 		pointSelectionButtionTip: 'Click to enable point selection',
 		latitudeEmptyText: 'Latitude',
 		longitudeEmptyText: 'Longitude'
-	}
+	},
+	
+	"gxp.plugins.ImportExport.prototype":{
+		saveMapText: "Export Map",
+		loadMapText: "Import Map",
+		uploadButtonText: 'Upload',
+		uploadWaitMsg: 'Uploading your context file...',
+		uploadErrorTitle: 'File Upload Error',
+		uploadEmptyText: 'Select a Map context file',
+		uploadWinTitle: 'File Upload Form',		
+		saveErrorText: "Trouble saving: ",
+		mainLoadingMask: "Please wait, loading..."
+    }
 });

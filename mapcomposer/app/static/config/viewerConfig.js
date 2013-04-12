@@ -4,7 +4,6 @@
     "portalConfig":{
 		"header":false
 	},
-    "xmlJsonTranslate": "",
     "gsSources": {
         "google": {
             "ptype": "gxp_googlesource"

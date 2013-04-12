@@ -72,6 +72,11 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
 	markerChooserTitle:'Choose a marker',
 	useThisMarkerText:'Use this Marker',
 	selectMarkerText:'Select Marker',
+	insertImageText:'Insert Image',
+	imageUrlText:'Image URL',
+	importGeoJsonText:'Import GeoJson',
+	errorText:"Error",
+	notWellFormedText:"The Text you added is not well formed. Please check it",
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
@@ -117,7 +122,6 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
 							singleSelect: true,
 							overClass:'x-view-over',
 							itemSelector:'div.thumb-wrap',
-							emptyText: 'No images to display',
 							prepareData: function(data){							
 								data.shortName = Ext.util.Format.ellipsis(data.name, 15);
 								return data;
@@ -218,8 +222,8 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                         {
                             xtype: 'compositefield',
                             items:[
-                                this.markerChooser
-								 ,{
+                                this.markerChooser,
+								{
                                     xtype:'textfield',
                                     fieldLabel: this.compositeFieldLabel,
                                     name:'label',
@@ -246,7 +250,23 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                             name:'html',
                             allowBlank:false,
                             fieldLabel: this.contentText,
-                            height:200
+                            height:200,
+							listeners: {
+								scope:this,
+								render: function(editor) {
+									editor.getToolbar().insertButton(17, {
+										iconCls: 'x-icon-addimage',
+										scope:this,
+										handler: function(b,e) {
+											Ext.Msg.prompt(this.insertImageText, this.imageUrlText, function(btn, txt) {
+												if (btn == 'ok') {
+													editor.relayCmd('insertimage', txt);
+												}
+											});                                            
+										}
+									});
+								}
+							}
                         }
                     ],
                     
@@ -534,9 +554,10 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                                 }],
                                 buttons:[{
                                     xtype:'button',
-                                    text:'Import GeoJson',
+                                    text:this.importGeoJsonText,
                                     iconCls:'icon-addserver',
                                     ref:'../importButton',
+									scope:this,
                                     handler:function(b){
                                         var geojsonstring = b.refOwner.geojsonTxT.getValue();
                                         try{
@@ -545,7 +566,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                                             b.refOwner.close();
 											
                                         }
-                                        catch(e){Ext.Msg.alert("Error", "The Text you added is not well formed. Please check it");}
+                                        catch(e){Ext.Msg.alert(this.errorText, this.notWellFormedText);}
                                         
                                     }
                                 }]
