@@ -1,7 +1,7 @@
 {
    "geoStoreBase": "",
    "proxy":"/http_proxy/proxy/?url=",
-   "xmlJsonTranslate": "",
+   "xmlJsonTranslate": "http://localhost:8080/xmlJsonTranslate12/",
    "defaultLanguage": "en",
    "gsSources":{ 
 		"mapquest": {
@@ -96,6 +96,30 @@
     },
 	
 	"customTools":[
+                {
+                        "ptype":"gxp_import_kml",
+                        "service":"http://localhost:8080/xmlJsonTranslate12/",
+                        "toggleGroup":"toolGroup",
+                        "srs": "EPSG:900913",
+                        "externalProjection": "EPSG:900913",
+                        "internalProjection": "EPSG:4326",
+                        "layerName": "kmlLayer",
+                        "actionTarget":{
+                            "target":"paneltbar",
+                            "index":6
+                        }              
+                }, 
+                {
+                        "ptype":"gxp_export_kml",
+                        "srs": "EPSG:900913",
+                        "service":"http://localhost:8080/xmlJsonTranslate12/",
+                        "toggleGroup":"toolGroup",
+                        "layerName": "kmlLayer",
+                        "actionTarget":{
+                            "target":"paneltbar",
+                            "index":7
+                        }              
+                },
 		{
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
@@ -110,6 +134,13 @@
 			"ptype": "gxp_dynamicgeocoder",
 			"outputTarget":"paneltbar",
 			"index": 27
-		}
+               }, {
+                    "ptype": "gxp_wpsmanager",
+                    "id": "wpsTEST",
+                    "url": "http://hrt-11.pisa.intecs.it/geoserver/wps",
+                    "geostoreUser": "admin",
+                    "geostorePassword": "admin"
+                }
+                
 	]
 }
