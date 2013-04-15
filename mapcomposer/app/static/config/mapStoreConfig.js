@@ -188,6 +188,12 @@
 				"name": "nrl:POP_settlements_pak_main",
 				"group": "Admin",
 				"visibility": true
+			},{
+				"source": "nrl",
+				"title": "Label",
+				"name": "nrl:adminisrative_labels",
+				"group": "Admin",
+				"visibility": true
 			}
 		]
 	},
