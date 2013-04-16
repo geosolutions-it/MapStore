@@ -58,6 +58,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
 			xtype: 'panel',
 			id:'mio_pannello',
 			border: false,
+            layout: "fit",
 			split: true,
 			deferredRender:true,
             collapseMode: "mini",
@@ -111,7 +112,14 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                         target:this.target,
                         form: this,
                         disabled:false,
+                        scope: this,
                         handler: function(){
+                            //2012-01-01T00:00:00.000Z,2012-01-02T00:00:00.000Z,2012-01-03T00:00:00.000Z,2012-02-01T00:00:00.000Z
+                            var data1 = this.output[0].items.items[0].decad.getValue();
+                            var data2 = this.output[0].items.items[0].sel_month_years.getValue();
+                            var datafin = this.addDays(data2, data1);
+                            var pippo = datafin.toISOString();
+                            alert(pippo);
                             
                         
                         }
@@ -136,7 +144,12 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
         var ndvi_Modules = gxp.plugins.ndvi.NDVI.superclass.addOutput.call(this, config);
         
         return ndvi_Modules;
-    }
+    },
+    
+         addDays: function(data, giorni)
+        {
+            return new Date(data.getTime() + giorni*86400000)
+        }  
 });
 
 Ext.preg(gxp.plugins.ndvi.NDVI.prototype.ptype, gxp.plugins.ndvi.NDVI);

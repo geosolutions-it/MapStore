@@ -398,12 +398,12 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                         url: "http://84.33.2.24/highcharts-export/"
                     },
 					title: {
-						text: (data[r].title.toUpperCase()=="AGGREGATED DATA" ? data[r].title.toUpperCase() + " - " + listVar.commodity.toUpperCase() : listVar.commodity.toUpperCase()) + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : "REGION")
+						text: (data[r].title.toUpperCase()=="AGGREGATED DATA" ? data[r].title.toUpperCase() + " - " + listVar.commodity.toUpperCase() : listVar.commodity.toUpperCase() +" - "+listVar.chartTitle.split(',')[r]) // + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : listVar.chartTitle.split(',')[r])
 					},
 					subtitle: {
                         text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
                               '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
-                              '<span style="font-size:10px;">AOI: '+listVar.chartTitle+'</span><br />'+
+                              '<span style="font-size:10px;">AOI: '+(data[r].title.toUpperCase()=="AGGREGATED DATA" ? listVar.chartTitle : listVar.chartTitle.split(',')[r])+'</span><br />'+
                               '<span style="font-size:10px;">Commodity: '+listVar.commodity.toUpperCase()+'</span><br />'+
                               '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
                               '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />'+ 
