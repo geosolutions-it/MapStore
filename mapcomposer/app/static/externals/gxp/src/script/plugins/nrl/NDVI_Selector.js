@@ -44,7 +44,8 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
     
     /** api: ptype = gxp_ndvi */
     ptype: "gxp_ndvi",
-
+    
+    dataUrl: null,
     
     /** private: method[addOutput]
      *  :arg config: ``Object``
@@ -72,15 +73,50 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                 autoScroll:true,
                 frame:true,
                 items:[            
-                    {
-                        xtype: 'datefield',
-                        fieldLabel: "Select",
-                        anchor:'100%',
-                        format: 'm-Y', // or other format you'd like
-                        plugins: 'monthPickerPlugin'					
-                    }
-                    ]
-            }],			
+                        {
+                            xtype: 'datefield',
+                            name:'sel_month_years',
+                            ref:'sel_month_years',                            
+                            fieldLabel: "Select",
+                            anchor:'100%',
+                            format: 'm-Y', // or other format you'd like
+                            plugins: 'monthPickerPlugin'
+                        },{
+                            xtype: 'combo',
+                            name:'decad',
+                            ref:'decad',                            
+                            fieldLabel: "Decad",
+                            anchor:'100%',
+                            typeAhead: true,
+                            triggerAction: 'all',
+                            lazyRender:false,
+                            mode: 'local',
+                            store: new Ext.data.ArrayStore({
+                                id: 0,
+                                fields: [
+                                    'myId',
+                                    'displayText'
+                                ],
+                                data: [[1, 'First'], [2, 'Second'], [3, 'Third']]
+                            }),
+                            valueField: 'myId',
+                            displayField: 'displayText'
+                        }
+                    ],	
+                    buttons:[{
+                        url: this.dataUrl,
+                        text: "View NDVI",
+                        //xtype: 'gxp_nrlCropDataButton',
+                        ref: '../submitButton',
+                        target:this.target,
+                        form: this,
+                        disabled:false,
+                        handler: function(){
+                            
+                        
+                        }
+                    }]
+                }],			
 			listeners:{
 				afterrender: function(tabpanel){
 					//set active tab after render

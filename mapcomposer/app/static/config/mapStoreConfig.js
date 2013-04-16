@@ -194,6 +194,12 @@
 				"name": "nrl:adminisrative_labels",
 				"group": "Admin",
 				"visibility": true
+			},{
+				"source": "nrl",
+				"title": "NDVI-SPOT",
+				"name": "nrl:NDVI-SPOT",
+				"group": "NDVI",
+				"visibility": false
 			}
 		]
 	},
@@ -219,6 +225,7 @@
 		  }
 	   },{
 		  "ptype":"gxp_ndvi",
+          "dataUrl":"http://84.33.2.24/geoserver/ows",
 		  "outputConfig":{
             "title":"NDVI",
 			 "id":"ndvi",
