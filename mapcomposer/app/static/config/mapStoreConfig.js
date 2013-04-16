@@ -218,6 +218,14 @@
 			 "index":4
 		  }
 	   },{
+		  "ptype":"gxp_ndvi",
+		  "outputConfig":{
+            "title":"NDVI",
+			 "id":"ndvi",
+			 "region":"east"
+		  },
+		  "outputTarget":"east"
+	   },{
 		  "ptype":"gxp_nrl",
 		  "outputConfig":{
 			 "id":"nrl",
