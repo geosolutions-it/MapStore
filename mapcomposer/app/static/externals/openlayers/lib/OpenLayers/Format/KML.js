@@ -1222,15 +1222,18 @@ OpenLayers.Format.KML = OpenLayers.Class(OpenLayers.Format.XML, {
      * {DOMElement}
      */
     buildGeometryNode: function(geometry) {
-        if (this.internalProjection && this.externalProjection && 
-            !(geometry instanceof OpenLayers.Geometry.Collection)) {
+        if (this.internalProjection && this.externalProjection /*&& 
+            !(geometry instanceof OpenLayers.Geometry.Collection)*/) {
             geometry = geometry.clone();
+           
             geometry.transform(this.internalProjection, 
                                this.externalProjection);
+                     
         }                       
         var className = geometry.CLASS_NAME;
         var type = className.substring(className.lastIndexOf(".") + 1);
         var builder = this.buildGeometry[type.toLowerCase()];
+        
         var node = null;
         if(builder) {
             node = builder.apply(this, [geometry]);

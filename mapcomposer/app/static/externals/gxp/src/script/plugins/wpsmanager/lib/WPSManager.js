@@ -82,18 +82,29 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
     /** private: method[constructor]
      */
     constructor: function(config) {
-        gxp.plugins.WPSManager.superclass.constructor.apply(this, arguments);   
-        
+        gxp.plugins.WPSManager.superclass.constructor.apply(this, arguments); 
+     
+
         this.wpsClient = new OpenLayers.WPSClient({
             servers: {
                 opengeo: this.url
             }
         });
-        
+
+        if(this.geoStoreClient){
+            this.createGeoStoreCategory();
+        }
+    },
+    
+    
+    init: function(target){
+
+        gxp.plugins.WPSManager.superclass.init.apply(this, arguments); 
+         
         OpenLayers.ProxyHost = (this.proxy) ? this.proxy : this.target.proxy;
         
-        if(! this.geoStoreClient)
-            this.geoStoreClient = new gxp.plugins.GeoStoreClient({
+        if(! this.geoStoreClient){
+           this.geoStoreClient = new gxp.plugins.GeoStoreClient({
                 url: (this.geostoreUrl) ? this.geostoreUrl : this.target.geoStoreBaseURL,
                 user: (this.geostoreUser) ? this.geostoreUser : this.target.geostoreUser,
                 password: (this.geostorePassword) ? this.geostorePassword : this.target.geostorePassword,
@@ -109,31 +120,11 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
                     }
                 }
             }); 
+        }
+            
 
-        var geoStore= this.geoStoreClient;
+        this.createGeoStoreCategory();
        
-      
-        var wpsCategory= {
-            type:"category", 
-            name: this.id
-        };
-        
-      
-        geoStore.existsEntity(wpsCategory,
-            function(exists){
-                if(! exists){
-                    geoStore.createEntity(wpsCategory, function(categoryID){
-                        if( !categoryID){
-                            geoStore.fireEvent("geostorefailure", this, "Geostore: create WPS category error");
-                        }   
-                    });
-                } 
-            });
-    },
-    
-    
-    init: function(target){
-        gxp.plugins.WPSManager.superclass.init.apply(this, arguments); 
     },
     
     /** api: method[getExecuteInstances]
@@ -230,6 +221,32 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
             callback.call(me, response); 
         });
        
+    },
+    
+    
+     /** private: method[createGeoStoreCategory]
+     */
+    createGeoStoreCategory: function(){
+      OpenLayers.ProxyHost = this.proxy; 
+      var geoStore= this.geoStoreClient;
+       
+      
+        var wpsCategory= {
+            type:"category", 
+            name: this.id
+        };
+        
+      
+        geoStore.existsEntity(wpsCategory,
+            function(exists){
+                if(! exists){
+                    geoStore.createEntity(wpsCategory, function(categoryID){
+                        if( !categoryID){
+                            geoStore.fireEvent("geostorefailure", this, "Geostore: create WPS category error");
+                        }   
+                    });
+                } 
+            });  
     },
     
     /** private: method[getInstances]
@@ -338,7 +355,9 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
      *                                                  OpenLayers.WPSProcess.BoundingBoxData
      *                                                  OpenLayers.WPSProcess.ReferenceData
      *                              - outputs: ``Array`` Mandatory. Array of OpenLayers.WPSProcess.Output Object
-     *                           
+     *                              
+     *  :arg callback: ``Function`` Optional callback to call when the execute response is retrieved.     
+     *                      
      *  :returns: ``String`` Execute instance ID.
      *  
      *   Send Execute Process request.

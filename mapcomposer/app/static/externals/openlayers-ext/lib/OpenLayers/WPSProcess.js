@@ -338,7 +338,6 @@ OpenLayers.WPSProcess = OpenLayers.Class({
      */
     parseDescription: function(description) {
         var server = this.client.servers[this.server];
-        console.log(server);
         this.description = new OpenLayers.Format.WPSDescribeProcess().read(server.processDescription[this.identifier]).processDescriptions[this.identifier];
     },
     
