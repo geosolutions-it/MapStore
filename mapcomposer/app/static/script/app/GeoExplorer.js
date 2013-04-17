@@ -487,8 +487,21 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
         var portalPanels = [this.mapPanelContainer,
                     westPanel];
+		//collect additional panels to add them after init portal
+		var additionalPanels=[];
         if(this.customPanels){
-            var portalPanels =portalPanels.concat(this.customPanels);
+			var toPortal=[];
+			var pans =this.customPanels;
+			for (var i =0; i < pans.length;i++){
+				if(pans[i].target){
+					additionalPanels.push(pans[i]);
+					
+				}else{
+					toPortal.push(pans[i]);
+				}
+			}
+			
+            var portalPanels =portalPanels.concat(toPortal);
         }
         this.portalItems = [{
             region: "center",
@@ -496,7 +509,12 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             items: portalPanels
         }];
         
-        GeoExplorer.superclass.initPortal.apply(this, arguments);        
+        GeoExplorer.superclass.initPortal.apply(this, arguments);  
+		for(var i =0;i< additionalPanels.length;i++){
+			var target =Ext.getCmp(additionalPanels[i].target);
+			target.add(additionalPanels[i]);
+			target.doLayout();
+		}
     },
     
     /** private: method[createTools]
