@@ -51,7 +51,33 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
      *  :arg config: ``Object``
      */
     addOutput: function(config) {
-		
+
+        if ( !Date.prototype.toISOString ) {
+             
+            ( function() {
+             
+                function pad(number) {
+                    var r = String(number);
+                    if ( r.length === 1 ) {
+                        r = '0' + r;
+                    }
+                    return r;
+                }
+          
+                Date.prototype.toISOString = function() {
+                    return this.getUTCFullYear()
+                        + '-' + pad( this.getUTCMonth() + 1 )
+                        + '-' + pad( this.getUTCDate() )
+                        + 'T' + pad( this.getUTCHours() )
+                        + ':' + pad( this.getUTCMinutes() )
+                        + ':' + pad( this.getUTCSeconds() )
+                        + '.' + String( (this.getUTCMilliseconds()/1000).toFixed(3) ).slice( 2, 5 )
+                        + 'Z';
+                };
+           
+            }() );
+        }  
+        
         var target = this.target, me = this;
 		
         config = Ext.apply({
@@ -59,33 +85,35 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
 			id:'mio_pannello',
 			border: false,
             layout: "fit",
-			split: true,
-			deferredRender:true,
-            collapseMode: "mini",
-			activeItem:0,
-			activeTab:0,
-			enableTabScroll : true,
-            header: false,
             items:[{
                 xtype:'form',
-                title: 'Select Range',
+                //title: 'Select Range',
                 layout: "form",
-                minWidth:180,
                 autoScroll:true,
                 frame:true,
-                items:[            
+                items:[{            
+                    xtype: 'fieldset',
+                    ref:'range',     
+                    //iconCls: 'user_edit',
+                    anchor:'100%',
+                    title: 'NDVI',
+                         items:[
                         {
                             xtype: 'datefield',
                             name:'sel_month_years',
                             ref:'sel_month_years',                            
-                            fieldLabel: "Select",
+                            fieldLabel: "Select Date",
                             anchor:'100%',
                             format: 'm-Y', // or other format you'd like
                             plugins: 'monthPickerPlugin'
                         },{
                             xtype: 'combo',
+							forceSelected:true,
+							allowBlank:false,
+							autoLoad:true,                            
                             name:'decad',
-                            ref:'decad',                            
+                            ref:'decad',      
+                            width: 100,
                             fieldLabel: "Decad",
                             anchor:'100%',
                             typeAhead: true,
@@ -98,12 +126,12 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                                     'myId',
                                     'displayText'
                                 ],
-                                data: [[1, 'First'], [2, 'Second'], [3, 'Third']]
+                                data: [[01, 'First'], [02, 'Second'], [03, 'Third']]
                             }),
                             valueField: 'myId',
                             displayField: 'displayText'
                         }
-                    ],	
+                    ]}],	
                     buttons:[{
                         url: this.dataUrl,
                         text: "View NDVI",
@@ -115,13 +143,18 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                         scope: this,
                         handler: function(){
                             //2012-01-01T00:00:00.000Z,2012-01-02T00:00:00.000Z,2012-01-03T00:00:00.000Z,2012-02-01T00:00:00.000Z
-                            var data1 = this.output[0].items.items[0].decad.getValue();
-                            var data2 = this.output[0].items.items[0].sel_month_years.getValue();
-                            var datafin = this.addDays(data2, data1);
-                            var pippo = datafin.toISOString();
-                            alert(pippo);
-                            
-                        
+                            var data1 = this.output[0].items.items[0].items.items[0].decad.value;
+                            var data2 = this.output[0].items.items[0].items.items[0].sel_month_years.value.split('-');
+                            var intero = parseInt(data2[0]);
+                            var dateUTC = new Date(Date.UTC(data2[1],intero-1,data1));
+                            var dateISOString = dateUTC.toISOString();
+                            var layer = app.mapPanel.map.getLayersByName("NDVI-SPOT")[0];
+                            layer.mergeNewParams({
+                                time : dateISOString
+                            });     
+                            if(!layer.visiblity) {
+                                layer.setVisibility(true);
+                            }
                         }
                     }]
                 }],			
@@ -144,12 +177,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
         var ndvi_Modules = gxp.plugins.ndvi.NDVI.superclass.addOutput.call(this, config);
         
         return ndvi_Modules;
-    },
-    
-         addDays: function(data, giorni)
-        {
-            return new Date(data.getTime() + giorni*86400000)
-        }  
+    }  
 });
 
 Ext.preg(gxp.plugins.ndvi.NDVI.prototype.ptype, gxp.plugins.ndvi.NDVI);

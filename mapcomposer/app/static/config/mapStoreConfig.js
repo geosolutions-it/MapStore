@@ -225,7 +225,7 @@
 		  }
 	   },{
 		  "ptype":"gxp_ndvi",
-          "dataUrl":"http://84.33.2.24/geoserver/ows",
+          "layer":"nrl:NDVI-SPOT",
 		  "outputConfig":{
             "title":"NDVI",
 			 "id":"ndvi",
