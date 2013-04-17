@@ -1,50 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app id="WebApp_ID" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-	
-	<display-name>xmlJsonTranslate</display-name>
-
-  <!-- Save Servlet -->
-  <servlet>
-    <servlet-name>HTTPWebGISSave</servlet-name>
-    <servlet-class>it.geosolutions.xmlJsonTranslate.HTTPWebGISSave</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>HTTPWebGISSave</servlet-name>
-    <url-pattern>/HTTPWebGISSave/*</url-pattern>
-  </servlet-mapping>
-  
-  <!-- File Upload Servlet -->
-  <servlet>
-    <servlet-name>HTTPWebGISFileUpload</servlet-name>
-    <servlet-class>it.geosolutions.xmlJsonTranslate.HTTPWebGISFileUpload</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>HTTPWebGISFileUpload</servlet-name>
-    <url-pattern>/HTTPWebGISFileUpload/*</url-pattern>
-  </servlet-mapping>
-
-  <!-- XML Upload Servlet -->
-  <servlet>
-    <servlet-name>HTTPWebGISXmlUpload</servlet-name>
-    <servlet-class>it.geosolutions.xmlJsonTranslate.HTTPWebGISXmlUpload</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>HTTPWebGISXmlUpload</servlet-name>
-    <url-pattern>/HTTPWebGISXmlUpload/*</url-pattern>
-  </servlet-mapping>
-  
-  <!-- File Download Servlet -->
-  <servlet>
-    <servlet-name>HTTPWebGISFileDownload</servlet-name>
-    <servlet-class>it.geosolutions.xmlJsonTranslate.HTTPWebGISFileDownload</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>HTTPWebGISFileDownload</servlet-name>
-    <url-pattern>/HTTPWebGISFileDownload/*</url-pattern>
-  </servlet-mapping>
-  
+    <display-name>xmlJsonTranslate</display-name>
+    <!-- Save Servlet -->
+    <servlet>
+        <servlet-name>KMZUploader</servlet-name>
+        <servlet-class>it.geosolutions.xmlJsonTranslate.KMZUploader</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ZipDownloader</servlet-name>
+        <servlet-class>it.geosolutions.xmlJsonTranslate.ZipDownloader</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Transform</servlet-name>
+        <servlet-class>it.geosolutions.xmlJsonTranslate.GeoUtils.Transform</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>KMZUploader</servlet-name>
+        <url-pattern>/KMZUploader/*</url-pattern>
+    </servlet-mapping>
+    <!-- File upload -->
+    <servlet>
+        <servlet-name>FileUploader</servlet-name>
+        <servlet-class>it.geosolutions.xmlJsonTranslate.FileUploader</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FileUploader</servlet-name>
+        <url-pattern>/FileUploader/*</url-pattern>
+    </servlet-mapping>
+    <!-- File downalod -->
+    <servlet>
+        <servlet-name>FileDownloader</servlet-name>
+        <servlet-class>it.geosolutions.xmlJsonTranslate.FileDownloader</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FileDownloader</servlet-name>
+        <url-pattern>/FileDownloader/*</url-pattern>
+    </servlet-mapping>
+    <!-- Save Servlet -->
+    <servlet>
+        <servlet-name>HTTPWebGISSave</servlet-name>
+        <servlet-class>it.geosolutions.xmlJsonTranslate.HTTPWebGISSave</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>HTTPWebGISSave</servlet-name>
+        <url-pattern>/HTTPWebGISSave/*</url-pattern>
+    </servlet-mapping>
+    <!-- File Upload Servlet -->
+    <servlet>
+        <servlet-name>HTTPWebGISFileUpload</servlet-name>
+        <servlet-class>it.geosolutions.xmlJsonTranslate.HTTPWebGISFileUpload</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>HTTPWebGISFileUpload</servlet-name>
+        <url-pattern>/HTTPWebGISFileUpload/*</url-pattern>
+    </servlet-mapping>
+    <!-- XML Upload Servlet -->
+    <servlet>
+        <servlet-name>HTTPWebGISXmlUpload</servlet-name>
+        <servlet-class>it.geosolutions.xmlJsonTranslate.HTTPWebGISXmlUpload</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>HTTPWebGISXmlUpload</servlet-name>
+        <url-pattern>/HTTPWebGISXmlUpload/*</url-pattern>
+    </servlet-mapping>
+    <!-- File Download Servlet -->
+    <servlet>
+        <servlet-name>HTTPWebGISFileDownload</servlet-name>
+        <servlet-class>it.geosolutions.xmlJsonTranslate.HTTPWebGISFileDownload</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>HTTPWebGISFileDownload</servlet-name>
+        <url-pattern>/HTTPWebGISFileDownload/*</url-pattern>
+    </servlet-mapping>
+    <context-param>
+        <description>location for the property file used in this application</description>
+        <param-name>app.properties</param-name>
+        <param-value>/WEB-INF/classes/app.properties</param-value>
+    </context-param>
+    <servlet-mapping>
+        <servlet-name>ZipDownloader</servlet-name>
+        <url-pattern>/ZipDownloader</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>GeoUtils</servlet-name>
+        <servlet-class>it.geosolutions.xmlJsonTranslate.GeoUtils2</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GeoUtils</servlet-name>
+        <url-pattern>/GeoUtils</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Transform</servlet-name>
+        <url-pattern>/Transform</url-pattern>
+    </servlet-mapping>
 </web-app>
