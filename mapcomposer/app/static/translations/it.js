@@ -396,7 +396,8 @@ GeoExt.Lang.add("it", {
         buttonText: "Indirizzo",
         emptyText: "Indirizzo...",
 		errorMsg: "Nessun indirizzo trovato",
-		waitMsg: "Attendere prego..."
+		waitMsg: "Attendere prego...",
+		addressTitle: "Indirizzo trovato"
     },
 	"gxp.form.WFSSearchComboBox.prototype": {
 		emptyText:"Ricerca",
