@@ -28,14 +28,8 @@ GeoExt.Lang.add("it", {
     },
     
     "GeoExplorer.Composer.prototype": {
-        loadMapText: "Importazione Mappa",
-        saveMapText: "Esportazione Mappa",
         exportMapText: "Pubblicazione Mappa",
-	    loadMapEmptyText: "Selezionare un file di contesto",
-		loadMapUploadText: "Caricamento in corso",
 		uploadText: "Caricamento",
-		loadMapWindowTitle: 'Form di Caricamento File',
-		loadMapErrorText:'Errore nel caricamento del file',
         toolsTitle: "Scegliere gli strumenti da includere nella barra:",
         previewText: "Anteprima",
         backText: "Precedente",
@@ -46,12 +40,7 @@ GeoExt.Lang.add("it", {
         passwordFieldText: "Password",
         fullScreenText: "Schermo Intero",
         cswMsg: 'Caricamento...',
-	    uploadWaitMsg: 'Caricamento del file di contesto...',
-		uploadErrorTitle: 'Errore di Caricamento',
-		uploadEmptyText: 'Seleziona un file di contesto',
-		uploadWinTitle: 'From di Caricamento',
 		cswFailureAddLayer: ' Il layer n on può essere aggiunto alla mappa',
-		uploadButtonText: 'Carica',
         alertEmbedTitle: 'Attenzione',
         alertEmbedText: "Salvare la mappa prima di utilizzare il tool 'Pubblicazione Mappa'",
 	    cswZoomToExtentMsg: "BBOX non disponibile",
@@ -396,7 +385,8 @@ GeoExt.Lang.add("it", {
         buttonText: "Indirizzo",
         emptyText: "Indirizzo...",
 		errorMsg: "Nessun indirizzo trovato",
-		waitMsg: "Attendere prego..."
+		waitMsg: "Attendere prego...",
+		addressTitle: "Indirizzo trovato"
     },
 	"gxp.form.WFSSearchComboBox.prototype": {
 		emptyText:"Ricerca",
@@ -449,6 +439,18 @@ GeoExt.Lang.add("it", {
 		pointSelectionButtionTip: 'Clicca sulla mappa per abilitare la selezione del punto',
 		latitudeEmptyText: 'Latitudine',
 		longitudeEmptyText: 'Longitudine'
-	}
+	},
+	
+	"gxp.plugins.ImportExport.prototype":{
+	    loadMapText: "Importazione Mappa",
+        saveMapText: "Esportazione Mappa",	
+		uploadButtonText: 'Carica',
+	    uploadWaitMsg: 'Caricamento del file di contesto...',
+		uploadErrorTitle: 'Errore di Caricamento',
+		uploadEmptyText: 'Seleziona un file di contesto',
+		uploadWinTitle: 'From di Caricamento',
+		saveErrorText: "Problemi di salvataggio: ",
+		mainLoadingMask: "Attendere prego ..."
+    }
 	
 });

@@ -18,20 +18,13 @@
 GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 
     // Begin i18n.
-    saveMapText: "Export Map",
-    loadMapText: "Import Map",
     exportMapText: "Publish Map",
     toolsTitle: "Choose tools to include in the toolbar:",
     previewText: "Preview",
     backText: "Back",
     nextText: "Next",
-    fullScreenText: "Full Screen",
-	
-	uploadButtonText: 'Upload',
-	uploadWaitMsg: 'Uploading your context file...',
-    uploadErrorTitle: 'File Upload Error',
-    uploadEmptyText: 'Select a Map context file',
-    uploadWinTitle: 'File Upload Form',
+    fullScreenText: "Full Screen",	
+
     cswFailureAddLayer: ' The layer cannot be added to the map',
     alertEmbedTitle: "Attention",
     alertEmbedText: "Save the map before using the 'Publish Map' tool",
@@ -171,7 +164,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         if (config.showGraticule == true){
             config.tools.push({
                 ptype: "gxp_graticule",
-                actionTarget: {target: "paneltbar", index: config.xmlJsonTranslateService ? 24 : 22}
+                actionTarget: {target: "paneltbar", index: 22}
             })
         }
         
@@ -439,8 +432,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                                         autoScroll:true,
                                         autoHeight: false,
                                         width: 600,
-                                        height: 400
-                                      
+                                        height: 400                                      
                                       });		
                                               
                                       var dcWin = new Ext.Window({
@@ -490,110 +482,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             tools.push('-');
 			
         }
-
-		if(this.xmlJsonTranslateService)
-		{
-			tools.push(new Ext.Button({
-				tooltip: this.saveMapText,
-				handler: function() {
-					this.save(this.showUrl);
-				},
-				scope: this,
-				iconCls: "icon-save"
-			}));
-
-			tools.push(new Ext.Button({
-				tooltip: this.loadMapText,
-				handler: function() {    
-					var composer = this; 
-					var win;  
-					  
-					var fp = new Ext.FormPanel({
-						fileUpload: true,
-						autoWidth: true,
-						autoHeight: true,
-						frame: true,
-						bodyStyle: 'padding: 10px 10px 0 10px;',
-						labelWidth: 50,
-						defaults: {
-							anchor: '95%',
-							allowBlank: false,
-							msgTarget: 'side'
-						},
-						items: [{
-							xtype: 'fileuploadfield',
-							id: 'form-file',
-							emptyText: this.uploadEmptyText,
-							fieldLabel: 'File',
-							name: 'file-path',
-							buttonText: '',
-							buttonCfg: {
-								iconCls: 'upload-icon'
-							}
-						}],
-						buttons: [{
-							text: this.uploadButtonText,
-                            scope: this,
-							handler: function(){
-								if(fp.getForm().isValid()){
-								
-								  // ////////////////////////////////////////////////////////////////////////
-								  // The Form 'submit' process not uses the override-ext-ajax definitions
-								  // so we have to define a proper proxy usage if needed
-								  // ////////////////////////////////////////////////////////////////////////
-								  
-                                  var pattern = /(.+:\/\/)?([^\/]+)(\/.*)*/i;
-                                  var mHost = pattern.exec(this.xmlJsonTranslateService);
-
-                                  var mUrl = this.xmlJsonTranslateService + 'HTTPWebGISFileUpload';
-								  
-								  fp.getForm().submit({
-									  url: mHost[2] == location.host ? mUrl : this.proxy + mUrl,
-									  waitMsg: this.uploadWaitMsg,
-									  success: function(fp, o){
-										  win.hide();
-										  var json_str = unescape(o.result.result);
-										  json_str = json_str.replace(/\+/g, ' ');
-										  
-										  composer.loadUserConfig(json_str);  
-										  
-										  //app.modified = true;
-										  modified = true;                                    
-									  },                                    
-									  failure: function(fp, o){
-										  win.hide();
-										  win.destroy();
-										  
-										  Ext.Msg.show({
-											 title: this.uploadErrorTitle,
-											 msg: o.result.errorMessage,
-											 buttons: Ext.Msg.OK,
-											 icon: Ext.MessageBox.ERROR
-										  });
-									  }
-								  });
-								}
-							}
-						}]
-					});
-					
-					win = new Ext.Window({
-						title: this.uploadWinTitle,
-						id: 'upload-win',
-						layout: 'form',
-						labelAlign: 'top',
-						modal: true,
-						bodyStyle: "padding: 5px",
-						width: 380,
-						items: [fp]
-					});
-					
-					win.show();
-				},
-				scope: this,
-				iconCls: "icon-load"
-			}));
-		}
         
         tools.push(new Ext.Button({
             tooltip: this.exportMapText,

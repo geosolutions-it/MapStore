@@ -255,7 +255,9 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             var params = Ext.applyIf({
                 STYLES: config.styles,
                 FORMAT: config.format,
-                TRANSPARENT: config.transparent
+                TRANSPARENT: config.transparent,
+				CQL_FILTER: config.cql_filter,
+				ELEVATION: config.elevation
             }, this.layerBaseParams);
             
             // use all params from original
@@ -274,7 +276,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     visibility: ("visibility" in config) ? config.visibility : true,
                     opacity: ("opacity" in config) ? config.opacity : 1,
                     buffer: ("buffer" in config) ? config.buffer : 1,
-                    projection: layerProjection
+                    projection: layerProjection,
+					vendorParams: config.vendorParams
                 }
             );
 
@@ -283,8 +286,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 title: config.title, 
                 name: config.name,
                 group: config.group,
-				        uuid: config.uuid,
-				        gnURL: config.gnURL,
+				uuid: config.uuid,
+				gnURL: config.gnURL,
                 source: config.source,
                 properties: "gxp_wmslayerpanel",
                 fixed: config.fixed,
@@ -297,9 +300,9 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 {name: "source", type: "string"}, 
                 {name: "name", type: "string"}, 
                 {name: "group", type: "string"},
-				        {name: "uuid", type: "string"},
-				        {name: "gnURL", type: "string"},
-				        {name: "title", type: "string"},
+				{name: "uuid", type: "string"},
+				{name: "gnURL", type: "string"},
+				{name: "title", type: "string"},
                 {name: "properties", type: "string"},
                 {name: "fixed", type: "boolean"},
                 {name: "selected", type: "boolean"}
@@ -496,7 +499,9 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
         return Ext.apply(config, {
             format: params.FORMAT,
             styles: params.STYLES,
-            transparent: params.TRANSPARENT
+            transparent: params.TRANSPARENT,
+            cql_filter: params.CQL_FILTER,
+			elevation: params.ELEVATION
         });
     }
     

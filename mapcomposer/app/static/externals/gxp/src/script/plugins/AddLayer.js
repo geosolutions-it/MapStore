@@ -112,6 +112,11 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			title: this.msLayerTitle,
 			source: this.source.id
 		};
+		
+		Ext.applyIf(
+			props,
+			this.customParams
+		);
 		  
 		if(this.msLayerUUID)
 			props.uuid = this.msLayerUUID;
@@ -183,7 +188,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 	/**  
 	 * api: method[addLayer]
      */
-	addLayer: function(msLayerTitle, msLayerName, wmsURL, gnUrl, enableViewTab, msLayerUUID, gnLangStr){		
+	addLayer: function(msLayerTitle, msLayerName, wmsURL, customParams, gnUrl, enableViewTab, msLayerUUID, gnLangStr){		
 		var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
 		
 		this.msLayerTitle = msLayerTitle;
@@ -193,6 +198,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 		this.enableViewTab = enableViewTab;
 		this.msLayerUUID = msLayerUUID;
 		this.gnLangStr = gnLangStr;
+		this.customParams = customParams;
 				
 		this.source = this.checkLayerSource(this.wmsURL);
 

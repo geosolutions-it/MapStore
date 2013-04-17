@@ -68,10 +68,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     userConfigLoadTitle: "Loading User Context",
     userConfigLoadMsg: "Error reading user map context",
     
-    viewTabTitle : "View",    
-	
+    viewTabTitle : "View",	
 	markerPopupTitle: "Details",
-	
 	mainLoadingMask: "Please wait, loading...",
     // End i18n.
     
@@ -489,8 +487,21 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
         var portalPanels = [this.mapPanelContainer,
                     westPanel];
+		//collect additional panels to add them after init portal
+		var additionalPanels=[];
         if(this.customPanels){
-            var portalPanels =portalPanels.concat(this.customPanels);
+			var toPortal=[];
+			var pans =this.customPanels;
+			for (var i =0; i < pans.length;i++){
+				if(pans[i].target){
+					additionalPanels.push(pans[i]);
+					
+				}else{
+					toPortal.push(pans[i]);
+				}
+			}
+			
+            var portalPanels =portalPanels.concat(toPortal);
         }
         this.portalItems = [{
             region: "center",
@@ -498,7 +509,12 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             items: portalPanels
         }];
         
-        GeoExplorer.superclass.initPortal.apply(this, arguments);        
+        GeoExplorer.superclass.initPortal.apply(this, arguments);  
+		for(var i =0;i< additionalPanels.length;i++){
+			var target =Ext.getCmp(additionalPanels[i].target);
+			target.add(additionalPanels[i]);
+			target.doLayout();
+		}
     },
     
     /** private: method[createTools]
@@ -511,44 +527,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             "-"
         ];
         return tools;
-    },
-    
-    /** private: method[save]
-     *
-     * Saves the map config and displays the URL in a window.
-     */ 
-    save: function(callback, scope) {
-        var configStr = Ext.util.JSON.encode(this.getState());        
-        var method = "POST";
-        
-		//var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
-        //var mHost=pattern.exec(xmlJsonTranslateService);
-
-        var mUrl = this.xmlJsonTranslateService + 'HTTPWebGISSave';
-        var url = /*mHost[2] == location.host ? mUrl : proxy +*/ mUrl;
-        OpenLayers.Request.issue({
-            method: method,
-            url: url,
-            data: configStr,
-            callback: function(request) {
-                this.handleSave(request);
-                if (callback) {
-                    callback.call(scope || this);
-                }
-            },
-            scope: this
-        });
-    },
-        
-    /** private: method[handleSave]
-     *  :arg: ``XMLHttpRequest``
-     */
-    handleSave: function(request) {
-        if (request.status == 200) {
-            this.xmlContext = request.responseText;
-        } else {
-            throw this.saveErrorText + request.responseText;
-        }
     },
 
     /** private: method[saveAndExport]
@@ -595,57 +573,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         } else {
             throw this.saveErrorText + request.responseText;
         }
-    },
-    
-    /** private: method[showUrl]
-     */
-    showUrl: function() {
-        //var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
-        //var mHost=pattern.exec(xmlJsonTranslateService);
-
-		this.appMask.show();
-		
-        var mUrl = this.xmlJsonTranslateService + 'HTTPWebGISFileDownload';
-        OpenLayers.Request.POST({
-            url: /*mHost[2] == location.host ? mUrl : proxy +*/ mUrl,
-            data: this.xmlContext,
-            callback: function(request) {
-
-                if(request.status == 200){                            
-                    
-                    //        
-                    //delete other iframes appended
-                    //
-                    if(document.getElementById("downloadIFrame")) {
-                      document.body.removeChild( document.getElementById("downloadIFrame") ); 
-                    }
-                    
-                    //
-                    //Create an hidden iframe for forced download
-                    //
-                    var elemIF = document.createElement("iframe"); 
-                    elemIF.setAttribute("id","downloadIFrame");
-                    
-					//var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
-                    //var mHost=pattern.exec(xmlJsonTranslateService);
-
-                    //var mUrlEncoded = encodeURIComponent(xmlJsonTranslateService + "HTTPWebGISFileDownload?file="+request.responseText);
-                    var mUrl = this.xmlJsonTranslateService + "HTTPWebGISFileDownload?file=" + request.responseText;
-                    elemIF.src = /*mHost[2] == location.host ?*/ mUrl /*: proxy + mUrlEncoded*/; 
-                    elemIF.style.display = "none"; 
-                    document.body.appendChild(elemIF); 
-					this.appMask.hide();
-                }else{
-                    Ext.Msg.show({
-                       title:'File Download Error',
-                       msg: request.statusText,
-                       buttons: Ext.Msg.OK,
-                       icon: Ext.MessageBox.ERROR
-                    });
-                }
-            },
-            scope: this
-        });
     },
     
     /** api: method[getBookmark]

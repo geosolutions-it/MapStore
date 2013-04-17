@@ -245,8 +245,7 @@
                     defaultSourceType: "gxp_wmssource",
                     renderToTab : 'appTabs',
                     portalConfig: serverConfig.portalConfig,
-					geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),
-					xmlJsonTranslateService: serverConfig.xmlJsonTranslate || ('http://' + window.location.host + '/xmlJsonTranslate/'),	 
+					geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),	 
                     about: {
                         title: "Custom Map",
                         'abstract': "Custom Map",
@@ -282,8 +281,7 @@
 			      url: customConfigName ? "config/" + customConfigName + ".js"  : "config/viewerConfig.js",
 				  method: 'GET',
 				  success: function(response, opts){      
-					    
-					  
+					    					  
 					  try{
 						  serverConfig = Ext.util.JSON.decode(response.responseText);
 					  }catch(e){

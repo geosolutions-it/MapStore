@@ -35,14 +35,8 @@ GeoExt.Lang.add("fr", {
     },  
 
     "GeoExplorer.Composer.prototype": {
-        loadMapText: "Importer une carte ou un fichier KML",
-        saveMapText: "Exporter une carte",
         exportMapText: "Publier une carte",
-		loadMapEmptyText: "Sélectionnez un fichier KML ou de contexte",
-		loadMapUploadText: "Chargement...",
 		uploadText: "Télécharger",
-		loadMapWindowTitle: 'formulaire de téléchargement de  fichier',
-		loadMapErrorText:'Erreur de chargement de fichier',
         toolsTitle: "Sélectionner l`application à inclure dans la barre d`outils",
         previewText: "Previsualiser",
         backText: "Retour en arrière",
@@ -53,12 +47,7 @@ GeoExt.Lang.add("fr", {
         passwordFieldText: "Mot de passe",
         fullScreenText: "Plein écran",
         cswMsg: 'Chargement...',
-	    uploadWaitMsg: 'Chargement de le fichier de contexte...',
-		uploadErrorTitle: 'Erreur de téléchargement de fichiers',
-		uploadEmptyText: 'Sélectionnez un fichier de contexte',
-		uploadWinTitle: 'Formulaire de téléchargement',
 		cswFailureAddLayer: ' La couche ne peuvent pas être ajoutés à la carte',
-		uploadButtonText: 'Charger',
         alertEmbedTitle: 'Attention',
         alertEmbedText: "Enregistrer la carte avant d'utiliser l'outil 'Publier la carte'",
 	    cswZoomToExtentMsg: "BBOX pas disponible",
@@ -365,7 +354,8 @@ GeoExt.Lang.add("fr", {
         buttonText: "Adresse",
         emptyText: "Adresse...",
 		errorMsg: "Aucune adresse trouvée",
-		waitMsg: "S'il vous plaît attendre..."
+		waitMsg: "S'il vous plaît attendre...",
+		addressTitle: "Adresse trouvée"
     },
 	"gxp.form.WFSSearchComboBox.prototype": {
 		emptyText:"Rechercher",
@@ -417,5 +407,17 @@ GeoExt.Lang.add("fr", {
 		pointSelectionButtionTip: 'Cliquez pour activer la sélection du collimateur',
 		latitudeEmptyText: 'Latitude',
 		longitudeEmptyText: 'Longitude'
-	}
+	},
+	
+	"gxp.plugins.ImportExport.prototype":{
+		loadMapText: "Importer une carte",
+        saveMapText: "Exporter une carte",
+		uploadButtonText: 'Charger',
+	    uploadWaitMsg: 'Chargement de le fichier de contexte...',
+		uploadErrorTitle: 'Erreur de téléchargement de fichiers',
+		uploadEmptyText: 'Sélectionnez un fichier de contexte',
+		uploadWinTitle: 'Formulaire de téléchargement',
+		saveErrorText: "Problème de sauvegarde",
+		mainLoadingMask: "S'il vous plaît attendre ..."
+    }
 });

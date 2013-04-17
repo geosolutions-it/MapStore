@@ -186,7 +186,7 @@ OpenLayers.WPSClient = OpenLayers.Class({
             if (!(processID in server.processDescription)) {
                 // set to null so we know a describeFeature request is pending
                 server.processDescription[processID] = null;
-             
+            
                 OpenLayers.RequestExt.GET({
                     url: server.url,
                     params: {
@@ -196,6 +196,7 @@ OpenLayers.WPSClient = OpenLayers.Class({
                         IDENTIFIER: processID
                     },
                     success: function(response) {
+                      
                         server.processDescription[processID] = response.responseText;
                         this.events.triggerEvent('describeprocess', {
                             identifier: processID,
@@ -221,8 +222,7 @@ OpenLayers.WPSClient = OpenLayers.Class({
                     method: 'GET',
                     success: function(response) {
                         server.processDescription[processID] = response.responseText;
-                        alert("res: " + processID);
-                        alert(server.processDescription[processID]);
+                        
                         this.events.triggerEvent('describeprocess', {
                             identifier: processID,
                             raw: response.responseText

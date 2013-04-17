@@ -56,7 +56,7 @@ layouts:
           items:
             - !image
               maxWidth: 782
-              url: 'http://localhost:8080/geoserver/www/print/print_header.png'
+              url: '${configDir}/print_header.png'
         - !map
           width: 592
           height: 420
@@ -146,7 +146,7 @@ layouts:
           items:
             - !image
               maxWidth: 782
-              url: 'http://localhost:8080/geoserver/www/print/print_header.png'
+              url: '${configDir}/print_header.png'
         - !map
           width: 592
           height: 420
@@ -220,7 +220,7 @@ layouts:
               vertAlign: middle
               maxSize: 200
               type: 'bar sub'
-              intervals: 5    			  
+              intervals: 5                  
   #===========================================================================
   A4_no_legend :
   #===========================================================================
@@ -236,7 +236,7 @@ layouts:
           items:
             - !image
               maxWidth: 782
-              url: 'http://localhost:8080/geoserver/www/print/print_header.png'
+              url: '${configDir}/print_header.png'
         - !map
           width: 780
           height: 420
@@ -301,7 +301,7 @@ layouts:
           items:
             - !image
               maxWidth: 782
-              url: 'http://localhost:8080/geoserver/www/print/print_header.png'
+              url: '${configDir}/print_header.png'
         - !map
           width: 780
           height: 420
@@ -380,7 +380,7 @@ layouts:
               classIndentation: 5
               classFontSize: 8
               classSpace: 4
-              backgroundColor: #ffffff  	
+              backgroundColor: #ffffff      
   #===========================================================================
   A4_2_pages_compact_legend :
   #===========================================================================
@@ -475,7 +475,7 @@ layouts:
               classIndentation: 5
               classFontSize: 8
               classSpace: 4
-              backgroundColor: #ffffff  			  
+              backgroundColor: #ffffff                
   #===========================================================================
   A3 :
   #===========================================================================
@@ -491,7 +491,7 @@ layouts:
           items:
             - !image
               maxWidth: 782
-              url: 'http://localhost:8080/geoserver/www/print/print_header.png'
+              url: '${configDir}/print_header.png'
         - !map
           width: 592
           height: 420
@@ -581,7 +581,7 @@ layouts:
           items:
             - !image
               maxWidth: 782
-              url: 'http://localhost:8080/geoserver/www/print/print_header.png'
+              url: '${configDir}/print_header.png'        
         - !map
           width: 592
           height: 420
@@ -655,7 +655,7 @@ layouts:
               vertAlign: middle
               maxSize: 200
               type: 'bar sub'
-              intervals: 5    			  
+              intervals: 5                  
   #===========================================================================
   A3_no_legend :
   #===========================================================================
@@ -671,7 +671,7 @@ layouts:
           items:
             - !image
               maxWidth: 782
-              url: 'http://localhost:8080/geoserver/www/print/print_header.png'
+              url: '${configDir}/print_header.png '
         - !map
           width: 780
           height: 420
@@ -736,7 +736,7 @@ layouts:
           items:
             - !image
               maxWidth: 782
-              url: 'http://localhost:8080/geoserver/www/print/print_header.png'
+              url: '${configDir}/print_header.png'
         - !map
           width: 780
           height: 420
@@ -815,7 +815,7 @@ layouts:
               classIndentation: 5
               classFontSize: 8
               classSpace: 4
-              backgroundColor: #ffffff  	
+              backgroundColor: #ffffff      
   #===========================================================================
   A3_2_pages_compact_legend :
   #===========================================================================
@@ -831,7 +831,7 @@ layouts:
           items:
             - !image
               maxWidth: 782
-              url: 'http://localhost:8080/geoserver/www/print/print_header.png'
+              url: '${configDir}/print_header.png'
         - !map
           width: 780
           height: 420

@@ -28,14 +28,8 @@ GeoExt.Lang.add("de", {
     },
     
     "GeoExplorer.Composer.prototype": {
-        loadMapText: "Kartenimportierung",
-        saveMapText: "Kartenexportierung",
         exportMapText: "Kartenveröffentlichung",
-	    loadMapEmptyText: "Kontext-Datei auswählen",
-		loadMapUploadText: "Wird geladen",
 		uploadText: "Upload",
-		loadMapWindowTitle: 'Form für das Upload der Datei',
-		loadMapErrorText:'Fehler beim Upload der Datei',
         toolsTitle: "Werkzeuge auswählen die der Leiste hinzu zufügen sind:",
         previewText: "Vorschau",
         backText: "Zurück",
@@ -46,12 +40,7 @@ GeoExt.Lang.add("de", {
         passwordFieldText: "Password",
         fullScreenText: "Vollbild",
         cswMsg: 'Loading...',
-	    uploadWaitMsg: 'Kontext-Datei wird geladen...',
-		uploadErrorTitle: 'Uploadfehler',
-		uploadEmptyText: 'Kontext-Datei asuwählen',
-		uploadWinTitle: 'Upload-Formular',
 		cswFailureAddLayer: 'Die Schicht kann der Karte nicht hinzugefügt werden',
-		uploadButtonText: 'Upload',
         alertEmbedTitle: 'Achtung',
         alertEmbedText: "Zuerst di Karte speichern und dann erst das Werkzeug 'Kartenveröffentlichung' benützen",
 	    cswZoomToExtentMsg: "BBOX nicht verfügbar",
@@ -394,7 +383,8 @@ GeoExt.Lang.add("de", {
         buttonText: "Adresse",
         emptyText: "Adresse...",
 		errorMsg: "Keine Adresse gefunden",
-		waitMsg: "Bitte warten..."
+		waitMsg: "Bitte warten...",
+		addressTitle: "Adresse gefunden"
     },
 	"gxp.form.WFSSearchComboBox.prototype": {
 		emptyText:"Suche",
@@ -448,5 +438,17 @@ GeoExt.Lang.add("de", {
 		pointSelectionButtionTip: 'Klicken Sie auf den Punkt Auswahl zu aktivieren',
 		latitudeEmptyText: 'Latitude',
 		longitudeEmptyText: 'Longitude'
-	}	
+	},
+	
+	"gxp.plugins.ImportExport.prototype":{
+		loadMapText: "Kartenimportierung",
+        saveMapText: "Kartenexportierung",
+		uploadButtonText: 'Upload',
+		uploadWaitMsg: 'Kontext-Datei wird geladen...',
+		uploadErrorTitle: 'Uploadfehler',
+		uploadEmptyText: 'Kontext-Datei asuwählen',
+		uploadWinTitle: 'Upload-Formular',
+		saveErrorText: "Speicherungsprobleme: ",
+		mainLoadingMask: "Bitte warten ..."
+    }	
 });

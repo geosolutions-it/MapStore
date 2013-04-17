@@ -201,9 +201,9 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 			this.masking = false;
 			
             queryableLayers.each(function(x){                
-                
+                var l = x.getLayer();
                 var control = new OpenLayers.Control.WMSGetFeatureInfo({
-                    url: x.getLayer().url,
+                    url: l.url,
                     queryVisible: true,
                     layers: [x.getLayer()],
                     vendorParams: x.getLayer().vendorParams || this.vendorParams,
