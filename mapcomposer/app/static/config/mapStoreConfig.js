@@ -450,6 +450,9 @@
         "selectionLayerProjection": "EPSG:32632",
         "geometryName": "geometria",
         "accidentTipologyName": "tipologia",
+        "wfsURL": "http://localhost:8080/geoserver/destination/wfs",
+        "wfsVersion" : "1.1.0",
+        "destinationNS": "destination",
         "index": 28
     },
     {
