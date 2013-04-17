@@ -210,7 +210,7 @@
 			// Defining the GeoNetwork panel properties
 			// ///////////////////////////////////////////
 			// ---------------------------------------------------------------------
-			var gnBaseUrl = serverConfig.gnBaseUrl;
+			var gnBaseUrl = serverConfig.gnBaseUrl || ('http://' + window.location.host + '/geonetwork/');
             var gnURL = gnBaseUrl + 'srv/' + code + '/main.home';
 			
 			var geonetworkPanel = new Ext.Panel({
@@ -371,7 +371,6 @@
                 proxy: proxy,
 				tools: serverConfig.tools,
                 geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),
-                xmlJsonTranslateService: serverConfig.xmlJsonTranslate || ('http://' + window.location.host + '/xmlJsonTranslate/'),
                 portalConfig:serverConfig.portalConfig,
                 defaultSourceType: "gxp_wmssource",
                 renderToTab : 'appTabs',

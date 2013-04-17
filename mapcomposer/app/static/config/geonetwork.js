@@ -1,6 +1,6 @@
 {
    "geoStoreBase":"",
-   "gnBaseUrl": "http://localhost:8080/geonetwork/",
+   "gnBaseUrl": "",
    "proxy":"/http_proxy/proxy/?url=",
    "xmlJsonTranslate": "",
    "defaultLanguage": "it",
