@@ -1,7 +1,6 @@
 {
    "geoStoreBase": "",
    "proxy":"/http_proxy/proxy/?url=",
-   "xmlJsonTranslate": "",
    "defaultLanguage": "en",
    "gsSources":{ 
 		"mapquest": {
@@ -97,6 +96,14 @@
 	
 	"customTools":[
 		{
+			"actions": ["-"], 
+			"actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_importexport",
+			"service": "",
+			"actionTarget": "paneltbar",
+			"index": 28
+		}, {
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
 		}, {

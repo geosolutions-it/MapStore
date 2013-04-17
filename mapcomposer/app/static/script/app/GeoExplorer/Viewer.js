@@ -24,7 +24,7 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         var toolConfig;
 		
 		// /////////////////////////////////////////////////////////////////////////
-        // we need to start counting at 2 since there is the Layer Switcher and a 
+        // We need to start counting at 2 since there is the Layer Switcher and a 
         // split button already
 		// /////////////////////////////////////////////////////////////////////////
         var counter = 15;
@@ -47,6 +47,7 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
                 tools.push(toolConfig);
             }
         }
+		
         config.tools = tools;
         
 		if(config.customTools)
@@ -64,6 +65,18 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
 			
 				if(!toolIsDefined)
 					config.tools.push(config.customTools[c]);
+			}
+		}
+		
+		// ///////////////////////////////////////////////////////////////////////////
+		// TODO: Fix this. The ImportExport plugin should not be added to the Viewer
+		//       We have to decide what are the configurations that are to be saved in 
+		//       the composer necessarily.
+		// ////////////////////////////////////////////////////////////////////////////
+		for(var y = 0; y < config.tools.length; y++){
+			if( config.tools[y]['ptype'] && config.tools[y]['ptype'] == "gxp_importexport" ) {	
+				config.tools.splice(y, 1);
+				break;
 			}
 		}
 		

@@ -4,6 +4,7 @@
     "portalConfig":{
 		"header":false
 	},
+    "xmlJsonTranslate": "",
     "gsSources": {
         "google": {
             "ptype": "gxp_googlesource"
@@ -41,6 +42,12 @@
 			"ptype": "gxp_dynamicgeocoder",
 			"outputTarget":"paneltbar",
 			"index": 27
-		}
+		}, {
+                    "ptype": "gxp_wpsmanager",
+                    "id": "wpsTEST",
+                    "url": "http://hrt-11.pisa.intecs.it/geoserver/wps",
+                    "geostoreUser": "admin",
+                    "geostorePassword": "admin"
+                }
 	]
 }
