@@ -122,11 +122,6 @@
 				}
 			}
 		}, {
-			"ptype": "gxp_addlayers",
-			"actionTarget": "tree.tbar",
-			"id": "addlayers",
-			"upload": true
-		}, {
 			"ptype": "gxp_removelayer",
 			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
 		}, {
