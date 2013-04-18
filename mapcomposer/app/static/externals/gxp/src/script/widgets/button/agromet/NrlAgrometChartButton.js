@@ -304,7 +304,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                             name: listVar.season == 'rabi' ? listVar.toYear -1 + " - " + listVar.toYear : listVar.toYear
 						},this.chartOpt.series.current),
 					Ext.apply({
-							name:listVar.fromYear +"-"+ listVar.toYear
+							name:"mean " + listVar.fromYear +"-"+ listVar.toYear
 						},this.chartOpt.series.aggregated)					
 				],
 				height: this.chartOpt.height,
