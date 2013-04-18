@@ -136,6 +136,8 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 	
 	createResultPanel: function( store ,fieldValues,values){
 		var tabPanel = Ext.getCmp('id_mapTab');
+        
+        var region = values.region_list.split("\,");
 
         var tabs = Ext.getCmp('agrometTable_tab');
 		var grid = new Ext.grid.GridPanel({
@@ -224,7 +226,7 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 		var oldPosition = tabs && tabs.items && tabs.items.getCount() ? [tabs.items.getCount()*20,tabs.items.getCount()*20]:[0,0]
 		
 		var win = new Ext.Window({
-			title:'Pakistan - AgroMet Variables - Season: ' + values.season + " - Years: "+values.startYear+"-"+values.endYear,
+			title:'Pakistan - AgroMet Variables - AOI: ' + (region.length == 1 ? region[0] : "REGION") + ' - Season: ' + values.season + ' - Years: '+values.startYear+'-'+values.endYear,
 			collapsible: true,
 			constrainHeader :true,
 			maximizable:true,
