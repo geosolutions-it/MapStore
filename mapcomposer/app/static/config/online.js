@@ -431,6 +431,7 @@
         "customParams":{
             "outputFilename":"mapstore-print"
         },
+        "ignoreLayers": "Google Hybrid",
         "printService":"http://84.33.2.23/geoserver/pdf/",
         "legendPanelId":"legendPanel",
         "actionTarget":{
