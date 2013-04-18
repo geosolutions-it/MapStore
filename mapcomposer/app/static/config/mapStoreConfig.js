@@ -194,12 +194,6 @@
 				"name": "nrl:adminisrative_labels",
 				"group": "Admin",
 				"visibility": true
-			},{
-				"source": "nrl",
-				"title": "NDVI-SPOT",
-				"name": "nrl:NDVI-SPOT",
-				"group": "NDVI",
-				"visibility": false
 			}
 		]
 	},
