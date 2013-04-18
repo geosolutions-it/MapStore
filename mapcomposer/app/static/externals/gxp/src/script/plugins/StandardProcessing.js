@@ -631,6 +631,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         //
         // Bersaglio
         //        
+
         /*var targetStore = new Ext.data.ArrayStore({
             fields: ['layer','name', 'property', 'humans', 'code', 'type', 'macro', 'id'],			
             data :  [
@@ -795,7 +796,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 			listeners: {
                 scope: this,
                 select: function(cb, record, index) {
-					this.updateTemaSliders(record.get('type'));                    
+					this.updateTemaSliders(record.get('humans'));                    
                 },
                 expand: function(combo) {
                     combo.list.setWidth( 'auto' );
@@ -822,10 +823,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     },
 	
 	updateTemaSliders: function(type) {
-		if(type == 'mixed') {
+		if(type === null) {
 			this.temasPanel.unhideTabStripItem(0);
 			this.temasPanel.unhideTabStripItem(1);
-		} else if(type == 'umano') {
+		} else if(type === true) {
 			this.temasPanel.unhideTabStripItem(0);
 			this.temasPanel.hideTabStripItem(1);
 			this.temasPanel.setActiveTab(0);
@@ -877,7 +878,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         "mapping": "descrizione"
 		      },{
                         "name": "value",        
-                        "mapping": "classe"
+                        "mapping": "id_classe_adr"
 		      }],
              proxy: this.getWFSStoreProxy(this.classFeature, filterDest) , 
              autoLoad: true 
@@ -924,7 +925,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     if(classe != "0"){
                        var filter= new OpenLayers.Filter.Comparison({
                             type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                            property: "destinationprod:fk_classe_adr",
+                            property: this.destinationNS + ":fk_classe_adr",
                             value: classe
                         });
                         
@@ -1012,7 +1013,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 
                     var filter= new OpenLayers.Filter.Comparison({
                         type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                        property: "destinationprod:id_sostanza",
+                        property: this.destinationNS + ":id_sostanza",
                         value: sost
                     });
                     
@@ -1294,8 +1295,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             autoScroll: true,
             items:[
 				this.buildElaborazioneForm(),  
-                                this.buildConditionsForm(),
 				this.temasPanel,
+				this.buildConditionsForm(),
 				this.aoiFieldset, 
 				this.buildTargetForm(),
 				this.buildAccidentForm()
@@ -1735,12 +1736,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     type: OpenLayers.Filter.Logical.AND,
                     filters: new Array()
                 });
-        if(filter)
+        if(filter) {
             if(filter.type== "FID")
                 filterProtocol=filter;
            else
               filterProtocol.filters.push(filter);
-     
+        }
         var proxy= new GeoExt.data.ProtocolProxy({ 
             protocol: new OpenLayers.Protocol.WFS({ 
                 url: this.wfsURL, 

@@ -199,8 +199,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 selectionLayerName: this.selectionLayerName,
                 selectionLayerTitle: this.selectionLayerTitle,         
                 selectionLayerBaseURL: this.layerSource.url,
-                selectionLayerProjection: this.selectionLayerProjection/*,
-                maxROIArea: 197807718.7307968*/
+                selectionLayerProjection: this.selectionLayerProjection,
+                wfsURL: this.wfsURL,
+                wfsVersion: this.wfsVersion,
+                destinationNS: this.destinationNS                
             });
         },this);        
      },
@@ -600,8 +602,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		return bounds.toBBOX().replace(/,/g, "\\\,");
 	},
 	
-	addTargets: function(layers, bounds, radius) {
-		var targetViewParams = "bounds:" + bounds + ';distanza:' + radius.max;
+	addTargets: function(layers, bounds, radius) {        
+		var targetViewParams = "bounds:" + bounds + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman;
 		this.analyticViewLayers.push(this.targetLayerTitle);
 		this.analyticViewLayers.push(this.selectedTargetLayer);
 		layers.push(this.createLayerRecord({
@@ -925,7 +927,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         if(this.isNotHumanTarget() || this.isMixedTargets())
             radius.radiusNotHum=null;
 
-		radius.max = 0;
+        radius.max = 0;
+		radius.maxHuman = 0;
+        radius.maxNotHuman = 0;
 			
         this.parseSost(radius);
 		
@@ -978,10 +982,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		for(var i=0;i<values.length;i++){
 			value= values[i];
 			if(value && (radius.radiusNotHum === null || value > radius.radiusNotHum)) {
-				radius.radiusNotHum = value;	
+				radius.radiusNotHum = value;
 				if(value > radius.max) {
 					radius.max = value;
 				}
+                if(value > radius.maxNotHuman) {
+                    radius.maxNotHuman = value;
+                }
 			}  
 	    }                
     },
@@ -994,7 +1001,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 radius.radiusHum[i] = value;  
 				if(value > radius.max) {
 					radius.max = value;
-				}				
+				}
+                if(value > radius.maxHuman) {
+                    radius.maxHuman = value;
+                }
             }
          }
     }

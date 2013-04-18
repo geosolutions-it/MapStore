@@ -51,6 +51,7 @@
         {
             "source": "ol",
             "group": "background",
+            "title": "Nessuno sfondo",
             "fixed": true,
             "type": "OpenLayers.Layer",
             "visibility": false,
@@ -416,6 +417,19 @@
         ],
         "actionTarget":"paneltbar"
     },
+	{
+        "ptype":"gxp_print",
+        "customParams":{
+            "outputFilename":"mapstore-print"
+        },
+		"ignoreLayers": "Google Hybrid,Bing Aerial,Nessuno sfondo,Google Terrain,Google Roadmap",
+        "printService":"http://localhost:8080/geoserver/pdf/",
+        "legendPanelId":"legendPanel",
+        "actionTarget":{
+            "target":"paneltbar",
+            "index":4
+        }
+    },
     {
         "ptype":"gxp_georeferences",
         "actionTarget":{
@@ -436,6 +450,9 @@
         "selectionLayerProjection": "EPSG:32632",
         "geometryName": "geometria",
         "accidentTipologyName": "tipologia",
+        "wfsURL": "http://localhost:8080/geoserver/destination/wfs",
+        "wfsVersion" : "1.1.0",
+        "destinationNS": "destination",
         "index": 28
     },
     {
