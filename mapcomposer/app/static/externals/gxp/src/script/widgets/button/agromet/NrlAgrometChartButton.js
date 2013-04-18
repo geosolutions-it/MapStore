@@ -384,7 +384,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                                 var s = '<b>'+ months[this.x-1] +'</b>';
                             }
                             Ext.each(this.points, function(i, point) {
-                                s += '<br/><span style="color:'+i.series.color+'">' + ((i.key>=1&&i.key<=18) ? ((i.key>=1&&i.key<=6) && (point==1) ? i.series.name : (point==1 ? i.series.name.split("-")[1].replace(/\s/g, "") : i.series.name)) :  i.series.name) + ': </span>'+
+                                s += '<br/><span style="color:'+i.series.color+'">' + ((i.key>=1&&i.key<=18) ? ((i.key>=1&&i.key<=6) && (i.series.index==1) ? i.series.name : (i.series.index==1 ? i.series.name.split("-")[1].replace(/\s/g, "") : i.series.name)) :  i.series.name) + ': </span>'+
                                     '<span style="font-size:12px;">'+ i.y.toFixed(2)+'</span>';
                             });                            
                             return s;
