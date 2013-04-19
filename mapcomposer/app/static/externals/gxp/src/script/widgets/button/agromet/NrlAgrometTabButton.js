@@ -72,7 +72,19 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 					}
 				}
 			}
-			
+
+            var numRegion = [];
+            var regStore = this.form.output.aoiFieldSet.AreaSelector.store
+            var records = regStore.getRange();
+            
+            for (var i=0;i<records.length;i++){
+                var attrs = records[i].get("attributes");
+                var region = attrs.district ? attrs.district + "," + attrs.province : attrs.province;
+                numRegion.push(region.toLowerCase());
+            }
+            
+            values.numRegion = numRegion;            
+        
 			var viewParams= 
 					"gran_type:" + values.areatype.toLowerCase() + ";" +
 					"start_year:" + values.startYear +";" + //same year for start and end.
@@ -139,6 +151,26 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
         
         var region = values.region_list.split("\,");
 
+        var chartTitle = "";
+        var splitRegion;
+
+        for (var i = 0;i<values.numRegion.length;i++){
+            if (values.areatype.toLowerCase() == "province"){
+                if(i==values.numRegion.length-1){
+                    chartTitle += values.numRegion[i].slice(0,1).toUpperCase() + values.numRegion[i].slice(1);
+                }else{
+                    chartTitle += values.numRegion[i].slice(0,1).toUpperCase() + values.numRegion[i].slice(1) + ", ";
+                }                
+            }else{
+                splitRegion = values.numRegion[i].split(',');
+                if(i==values.numRegion.length-1){
+                    chartTitle += splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + ")";
+                }else{
+                    chartTitle += splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + "), ";
+                }                       
+            }            
+        }
+            
         var tabs = Ext.getCmp('agrometTable_tab');
 		var grid = new Ext.grid.GridPanel({
 			bbar:[
@@ -245,6 +277,7 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
                     var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
                             "<ol>" +
                                 "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
+                                "<li><p><em> AOI: </em>" + chartTitle + "</p></li>" +
                                 "<li><p><em> Season: </em>" + values.season + "</p></li>" +
                                 "<li><p><em> Years: </em>" + values.startYear + "-" + values.endYear + "</p></li>" +
                             "</ol>" +                                        
@@ -252,6 +285,7 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
                  
                     var appInfo = new Ext.Panel({
                         header: false,
+                        autoScroll: true,                        
                         html: iframe
                     });
 
@@ -259,7 +293,7 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
                         title:  "Table Info",
                         modal: true,
                         layout: "fit",
-                        width: 200,
+                        width: 400,
                         height: 180,
                         items: [appInfo]
                     });
