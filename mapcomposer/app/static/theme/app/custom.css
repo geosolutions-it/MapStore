@@ -10,7 +10,12 @@ div.topbanner .logo-gs-white{
 	padding-top:25px;
 }
 div.topbanner .logo-ms-white{
-	position:absolute;
-	top: 27px;
+	color: #33e366;
+	font-family:"Verdana";
+	font-style: oblique;
+	font-size: 20px;
+	font-weight: bold;
+	float: right;
+	padding-top: 50px;
 	left: 10px;
 }	
