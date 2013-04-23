@@ -72,7 +72,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
 		
         this.target.on({
 			ready: function() {
-				this.service = this.service || ('http://' + window.location.host + '/xmlJsonTranslate/');
+				this.service = this.service || ('http://' + window.location.host + '/servicebox/');
 			},
 			scope: this
 		});		

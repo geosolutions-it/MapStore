@@ -14,7 +14,7 @@
     <property name="ringojs.run" location="${ringojs.dir}/lib/ringojs-run-${ringojs.version}.jar"/>
 
     <property name="httpproxy.version" value="1.0.x-SNAPSHOT"/>
-    <property name="xmljson.version" value="1.2-SNAPSHOT"/>
+    <property name="servicebox.version" value="1.2-SNAPSHOT"/>
     <property name="mapstore.version" value="1.2-SNAPSHOT"/>
     <property name="geostore.version" value="1.1-SNAPSHOT"/>
 
@@ -225,7 +225,7 @@
             <fileset file="license.txt">
             </fileset>
         </copy>        
-        <get src="http://maven.geo-solutions.it/it/geosolutions/xmlJsonTranslate/${xmljson.version}/xmlJsonTranslate-${xmljson.version}.war" dest="${release.dir}/mapstore/webapps/xmlJsonTranslate.war"/>        
+        <get src="http://maven.geo-solutions.it/it/geosolutions/servicebox/${servicebox.version}/servicebox-${servicebox.version}.war" dest="${release.dir}/mapstore/webapps/servicebox.war"/>        
         <get src="http://maven.geo-solutions.it/it/geosolutions/geostore/geostore-webapp/${geostore.version}/geostore-webapp-${geostore.version}.war" dest="${release.dir}/mapstore/webapps/geostore.war"/>        
         <get src="http://maven.geo-solutions.it/proxy/http_proxy/${httpproxy.version}/http_proxy-${httpproxy.version}.war" dest="${release.dir}/mapstore/webapps/http_proxy.war"/>
         
@@ -260,7 +260,7 @@
         <echo file="${release.dir}/mapstore/VERSION.txt">MapStore Version: ${mapstore.version}
 GeoStore Version: ${geostore.version}
 HttpProxy Version: ${httpproxy.version}
-xmlJsonTranslate Version: ${xmljson.version}
+servicebox Version: ${servicebox.version}
 </echo>
     </target>
 
