@@ -616,7 +616,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		
 		var wfsGrid = Ext.getCmp("featuregrid");
 		if(this.isSingleTarget()) {
-			wfsGrid.loadGrids("title", this.status.target.name, this.selectionLayerProjection, targetViewParams);								
+			wfsGrid.loadGrids("name", this.status.target.name, this.selectionLayerProjection, targetViewParams);								
 		} else if(this.isAllHumanTargets()) {
 			wfsGrid.loadGrids("type", 'umano', this.selectionLayerProjection, targetViewParams);
 		} else if(this.isAllNotHumanTargets()) {

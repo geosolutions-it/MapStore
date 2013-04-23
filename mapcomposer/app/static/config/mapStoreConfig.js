@@ -487,6 +487,7 @@
 					}
 				],
 				"title": "Popolazione residente",
+				"name": "POPOLAZIONE RESIDENTE",
 				"type": "umano"
 			},
 			"Popolazione fluttuante turistica": {
@@ -541,6 +542,7 @@
 					}
 				],
 				"title": "Popolazione fluttuante turistica",
+				"name": "POPOLAZIONE FLUTTUANTE TURISTICA (MAX)",
 				"type": "umano"
 			},
 			"Addetti industria e servizi": {
@@ -603,6 +605,7 @@
 					}
 				],
 				"title": "Addetti industria e servizi",
+				"name": "ADDETTI INDUSTRIA E SERVIZI",
 				"type": "umano"
 			},
 			"Addetti/utenti strutture sanitarie": {
@@ -696,6 +699,7 @@
 					}
 				],
 				"title": "Addetti/utenti strutture sanitarie",
+				"name": "ADDETTI/UTENTI STRUTTURE SANITARIE",
 				"type": "umano"
 			},
 			"Addetti/utenti strutture scolastiche": {
@@ -773,6 +777,7 @@
 					}
 				],
 				"title": "Addetti/utenti strutture scolastiche",
+				"name": "ADDETTI/UTENTI STRUTTURE SCOLASTICHE",
 				"type": "umano"
 			},
 			"Addetti/utenti centri commerciali": {
@@ -850,6 +855,7 @@
 					}
 				],
 				"title": "Addetti/utenti centri commerciali",
+				"name": "ADDETTI/UTENTI CENTRI COMMERCIALI",
 				"type": "umano"
 			},
 			"Zone urbanizzate": {
@@ -895,6 +901,7 @@
 					}
 				],
 				"title": "Zone urbanizzate",
+				"name": "ZONE URBANIZZATE",
 				"type": "ambientale"
 			},
 			"Aree boscate": {
@@ -940,6 +947,7 @@
 					}
 				],
 				"title": "Aree boscate",
+				"name": "AREE BOSCATE",
 				"type": "ambientale"
 			},
 			"Aree protette": {
@@ -1017,6 +1025,7 @@
 					}
 				],
 				"title": "Aree protette",
+				"name": "AREE PROTETTE",
 				"type": "ambientale"
 			},
 			"Aree agricole": {
@@ -1062,6 +1071,7 @@
 					}
 				],
 				"title": "Aree agricole",
+				"name": "AREE AGRICOLE",
 				"type": "ambientale"
 			},
 			"Acque superficiali": {
@@ -1139,6 +1149,7 @@
 					}
 				],
 				"title": "Acque superficiali",
+				"name": "ACQUE SUPERFICIALI",
 				"type": "ambientale"
 			},
 			"Acque sotterranee": {
@@ -1208,6 +1219,7 @@
 					}
 				],
 				"title": "Acque sotterranee",
+				"name": "ACQUE SOTTERRANEE",
 				"type": "ambientale"
 			},
 			"Beni culturali": {
@@ -1261,6 +1273,7 @@
 					}
 				],
 				"title": "Beni culturali",
+				"name": "BENI CULTURALI",
 				"type": "ambientale"
 			}
 		},

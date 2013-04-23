@@ -655,9 +655,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             ]
         });	*/	
         var me= this;
-        var layers= [null,'popolazione_residente','popolazione_turistica',
+        var layers= [null,'popolazione_residente','popolazione_turistica','popolazione_turistica',
             'industria_servizi','strutture_sanitarie','strutture_scolastiche',
-            'centri_commerciali','zone_urbanizzate','aree_boscate',
+            'centri_commerciali','utenti_coinvolti','utenti_territoriali','zone_urbanizzate','aree_boscate',
             'aree_protette','aree_agricole','acque_sotterranee',
             'acque_superficiali','beni_culturali'];
         
