@@ -307,11 +307,7 @@ gxp.plugins.KMLExporter = Ext.extend(gxp.plugins.Tool, {
     exportKML: function(features){
         // create kml string from layer features
         var format = new OpenLayers.Format.KML({
-            //'maxDepth':10,
-            'extractStyles':true//,
-            //'foldersName': 'Gliders Export'
-            /* 'internalProjection': new OpenLayers.Projection(map.getProjection()),
-            'externalProjection': new OpenLayers.Projection("EPSG:4326")*/
+            'extractStyles':true
         });
         
         var kmlContent = format.write( features );
