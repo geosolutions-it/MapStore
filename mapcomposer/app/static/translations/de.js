@@ -202,7 +202,7 @@ GeoExt.Lang.add("de", {
         nameText: "Name",
         descriptionText: "Beschreibung",
         displayText: "Display",
-        opacityText: "Opazität ",
+        opacityText: "Opazität ",
         formatText: "Format",
         transparentText: "Transparenz",
         cacheText: "Cache",
@@ -305,7 +305,7 @@ GeoExt.Lang.add("de", {
     },
 
     "gxp.plugins.GroupProperties.prototype":{
-        groupPropertiesMenuText:  "Gruppeneigenschaften ProprietÃ  del gruppo",
+        groupPropertiesMenuText:  "Gruppeneigenschaften ProprietÃ  del gruppo",
         groupPropertiesActionTip:  "Gruppeneigenschaften ",
         groupPropertiesDialogTitle: "Gruppeneigenschaften - ",
         groupPropertiesFieldSetText: "Gruppenname",
@@ -383,7 +383,8 @@ GeoExt.Lang.add("de", {
         buttonText: "Adresse",
         emptyText: "Adresse...",
 		errorMsg: "Keine Adresse gefunden",
-		waitMsg: "Bitte warten..."
+		waitMsg: "Bitte warten...",
+		addressTitle: "Adresse gefunden"
     },
 	"gxp.form.WFSSearchComboBox.prototype": {
 		emptyText:"Suche",
@@ -438,16 +439,65 @@ GeoExt.Lang.add("de", {
 		latitudeEmptyText: 'Latitude',
 		longitudeEmptyText: 'Longitude'
 	},
+        
+        "gxp.plugins.ImportExport.prototype":{
+	 labels:{
+                "map": {
+                    "saveText" : "Kartenexportierung",
+                    "loadText" : "Kartenimportierung",
+                    "uploadWindowTitle" : "Import Map Context-Datei",
+                    "downloadWindowTitle" : "Exportieren Map Context-Datei"
+                },
+
+                "kml/kmz": {
+                    "saveText" : "Export KML",
+                    "loadText" : "Import KML/KMZ",
+                    "uploadWindowTitle" : "Import KML / KMZ-Datei",
+                    "downloadWindowTitle" : "Export KML-Datei",
+                    "kmlExportTitleText": "KML/KMZ Export",
+                    "layerEmptyText": "Die ausgewählte Ebene ist leer",
+                    "notVectorlayerText": "Bitte wählen Sie nur Vektorebene",
+                    "notLayerSelectedText": "Bitte wählen Sie einen Layer-Vektor"
+                } 
+        }
+      },
+      
+      "gxp.widgets.MapFileUploadPanel" :{
+            fileLabel: "Map-Datei",
+            fieldEmptyText: "Suchen Sie nach Map Context-Dateien ...",
+            uploadText: "Hochladen",
+            waitMsgText: "Hochladen der Daten ...",
+            resetText: "Zurücksetzen",
+            failedUploadingTitle: "Datei-Upload Fehler"
+       },
+       
+       "gxp.widgets.MapFileDownloadPanel" :{
+            buttonText: "Karte exportieren",
+            filenameLabel: "Karte Dateinamen",
+            waitMsgText: "Generieren Map-Datei ...",
+            resetText: "Zurücksetzen",
+            failedUploadingTitle: "Kann nicht generiert Map-Datei",
+            saveErrorText: "Ärger gespart: "
+       },
+       
+       "gxp.widgets.KMLFileDownloadPanel" :{
+            buttonText: "Exportieren",
+            filenameLabel: "KML Dateinamen",
+            waitMsgText: "Generieren KML ...",
+            invalidFileExtensionText: "Dateiendung muss einer der folgenden sein:",
+            resetText: "Zurücksetzen",
+            failedUploadingTitle: "Kann nicht generiert werden KML-Datei"
+       },
+       
+       "gxp.widgets.KMLFileUploadPanel" :{
+            fileLabel: "KML-Datei",
+            fieldEmptyText: "Suchen Sie KML-oder KMZ-Dateien ...",
+            uploadText: "Hochladen",
+            waitMsgText: "Hochladen der Daten ...",
+            invalidFileExtensionText: "Dateiendung muss einer der folgenden sein:",
+            resetText: "Zurücksetzen",
+            failedUploadingTitle: "Kann Datei nicht hochladen",
+            layerNameLabel: "Layername"
+       }
 	
-	"gxp.plugins.ImportExport.prototype":{
-		loadMapText: "Kartenimportierung",
-        saveMapText: "Kartenexportierung",
-		uploadButtonText: 'Upload',
-		uploadWaitMsg: 'Kontext-Datei wird geladen...',
-		uploadErrorTitle: 'Uploadfehler',
-		uploadEmptyText: 'Kontext-Datei asuwählen',
-		uploadWinTitle: 'Upload-Formular',
-		saveErrorText: "Speicherungsprobleme: ",
-		mainLoadingMask: "Bitte warten ..."
-    }	
 });

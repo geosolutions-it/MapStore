@@ -385,7 +385,8 @@ GeoExt.Lang.add("it", {
         buttonText: "Indirizzo",
         emptyText: "Indirizzo...",
 		errorMsg: "Nessun indirizzo trovato",
-		waitMsg: "Attendere prego..."
+		waitMsg: "Attendere prego...",
+		addressTitle: "Indirizzo trovato"
     },
 	"gxp.form.WFSSearchComboBox.prototype": {
 		emptyText:"Ricerca",
@@ -439,17 +440,64 @@ GeoExt.Lang.add("it", {
 		latitudeEmptyText: 'Latitudine',
 		longitudeEmptyText: 'Longitudine'
 	},
-	
-	"gxp.plugins.ImportExport.prototype":{
-	    loadMapText: "Importazione Mappa",
-        saveMapText: "Esportazione Mappa",	
-		uploadButtonText: 'Carica',
-	    uploadWaitMsg: 'Caricamento del file di contesto...',
-		uploadErrorTitle: 'Errore di Caricamento',
-		uploadEmptyText: 'Seleziona un file di contesto',
-		uploadWinTitle: 'From di Caricamento',
-		saveErrorText: "Problemi di salvataggio: ",
-		mainLoadingMask: "Attendere prego ..."
-    }
-	
+        
+        "gxp.plugins.ImportExport.prototype":{
+	   labels:{
+                "map": {
+                    "saveText" : "Esportazione Mappa",
+                    "loadText" : "Importazione Mappa",
+                    "uploadWindowTitle" : "Importa file di contesta di mappa",
+                    "downloadWindowTitle" : "Esporta file di contesta di mappa"
+                },
+
+                "kml/kmz": {
+                    "saveText" : "Esportazione KML",
+                    "loadText" : "Importazione KML/KMZ",
+                    "uploadWindowTitle" : "Importa file KML/KMZ",
+                    "downloadWindowTitle" : "Esporta file KML",
+                    "kmlExportTitleText": "Esportazione KML",
+                    "layerEmptyText": "Il layer selezionato è vuoto",
+                    "notVectorlayerText": "Selezionare un layer",
+                    "notLayerSelectedText": "Selezionare un layer vettoriale"
+                } 
+           }      
+        },
+        
+        "gxp.widgets.MapFileUploadPanel" :{
+            fileLabel: "File di mappa",
+            fieldEmptyText: "Seleziona il file di contesto di mappa...",
+            uploadText: "Upload",
+            waitMsgText: "In corso l'upload del file...",
+            resetText: "Reset",
+            failedUploadingTitle: "Errore nell'upload del file"
+       },
+       
+       "gxp.widgets.MapFileDownloadPanel" :{
+            buttonText: "Esportazione Mappa",
+            filenameLabel: "Nome del file di mappa",
+            waitMsgText: "In corso la generazione del file di mappa ...",
+            resetText: "Reset",
+            failedUploadingTitle: "Impossibile generara il file di mappa",
+            saveErrorText: "Errori riscontrati: "
+       },
+       
+       "gxp.widgets.KMLFileDownloadPanel" :{
+            buttonText: "Export",
+            filenameLabel: "Nome del file KML",
+            waitMsgText: "In corso la generazione del KML...",
+            invalidFileExtensionText: "L'estensione del file deve essere una delle seguenti: ",
+            resetText: "Reset",
+            failedUploadingTitle: "Imppossibile generare il file KML"
+       },
+       
+       "gxp.widgets.KMLFileUploadPanel" :{
+            fileLabel: "File KML",
+            fieldEmptyText: "Selezione un file KML o KMZ",
+            uploadText: "Upload",
+            waitMsgText: "In corso l'upload del file ...",
+            invalidFileExtensionText: "L'estensione del file deve essere una delle seguenti: ",
+            resetText: "Reset",
+            failedUploadingTitle: "Impossibile completare l'upload del file",
+            layerNameLabel: "Nome del Layer"
+       }
 });
