@@ -485,8 +485,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     this.removeAnalyticViewLayers(map);
 					
 					// reset risk layers
-					this.removeRiskLayers(map);                                       
-					this.restoreOriginalRiskLayers(map);
+					/*this.removeRiskLayers(map);                                       
+					this.restoreOriginalRiskLayers(map);*/
 										
                     Ext.getCmp("south").collapse();  
                 }
@@ -500,11 +500,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 					// remove analytic view layers (buffers, targets, selected targets)
 					this.removeAnalyticViewLayers(map);                    
                              
-					if(this.originalRiskLayers !== null) {
-						// reset risk layers
+                                        // reset risk layers
+					/*if(this.originalRiskLayers !== null) {
+						
 						this.removeRiskLayers(map);                                       
 						this.restoreOriginalRiskLayers(map);
-					}
+					}*/
 								
                     var south = Ext.getCmp("south").collapse();
                    
@@ -598,7 +599,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 				selectionPrj
 			);
 		}
-		
+	
 		return bounds.toBBOX().replace(/,/g, "\\\,");
 	},
 	
@@ -624,6 +625,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		} else {
 			wfsGrid.loadGrids(null ,null , this.selectionLayerProjection, targetViewParams);
 		}
+               
 	},
 	
 	getMetersToPixelsRatio: function() {
@@ -767,7 +769,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		this.extractLayers(this.originalRiskLayers, [this.humanRiskLayerTitle, this.notHumanRiskLayerTitle, this.combinedRiskLayerTitle]);
 	},
 	
-	restoreOriginalRiskLayers: function() {		
+	restoreOriginalRiskLayers: function() {	
 		this.currentRiskLayers = [this.notHumanRiskLayerTitle, this.humanRiskLayerTitle, this.combinedRiskLayerTitle];
 		this.target.mapPanel.layers.add(this.originalRiskLayers);				
 	},
@@ -776,7 +778,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		this.extractLayers(layers, this.currentRiskLayers);				
 	},
 	
-	analyticView: function() {		                   
+	analyticView: function() {	
 		var featureManager = this.target.tools["featuremanager"];			
 		var map = this.target.mapPanel.map;
 		
@@ -797,14 +799,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		
 		// add the target layer
 		this.addTargets(newLayers, bounds, radius);				
-				
+			
+                    
 		this.moveRiskLayersToTop(newLayers);
-				
-				
+		  	     
 		// add analytic view layers to the map
 		this.target.mapPanel.layers.add(newLayers);
 		
-		// update info on buffers sizes
+		// update info on buffers sizes     
 		this.buffers.setValue(this.getBuffersInfo());
 		
 		Ext.getCmp("south").expand();			
@@ -817,13 +819,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		var status = this.getStatus();		
 		var bounds = this.getBounds(status, map);
 		
-		if(this.originalRiskLayers === null) {
+		/*if(this.originalRiskLayers === null) {
 			this.storeOriginalRiskLayers();
-		}
+		}*/
 		
-		this.removeRiskLayers(map);
+		/*this.removeRiskLayers(map);
 		
-		this.addRisk(newLayers, bounds);
+		this.addRisk(newLayers, bounds);*/
 		
 		this.target.mapPanel.layers.add(newLayers);
 		if(roi)
@@ -932,7 +934,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         radius.maxNotHuman = 0;
 			
         this.parseSost(radius);
-		
         return radius;
     },
     
