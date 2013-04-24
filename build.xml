@@ -17,6 +17,7 @@
     <property name="servicebox.version" value="1.2-SNAPSHOT"/>
     <property name="mapstore.version" value="1.2-SNAPSHOT"/>
     <property name="geostore.version" value="1.1-SNAPSHOT"/>
+	<property name="geonetwork.version" value="2.6.5-SNAPSHOT"/>
 
     <property name="app.proxy.geoserver" value=""/>
 	<property name="app.debug.proxy" value="true"/>
@@ -151,12 +152,12 @@
         </copy>
 		
 		<!-- copy html resources -->
-        <copyfile src="mapmanager/index.html" dest="${managerbuild}/mapstore/index.html"/>
-		<copyfile src="mapmanager/mapstore.html" dest="${managerbuild}/mapstore/mapstore.html"/>
+		<copy file="mapmanager/index.html" tofile="${managerbuild}/mapstore/index.html"/>
+		<copy file="mapmanager/mapstore.html" tofile="${managerbuild}/mapstore/mapstore.html"/>
 		
 		<!-- copy config resources -->
-		<copyfile src="mapmanager/src/config.js" dest="${managerbuild}/mapstore/src/config.js"/>
-		<copyfile src="mapmanager/src/init.js" dest="${managerbuild}/mapstore/src/init.js"/>
+		<copy file="mapmanager/src/config.js" tofile="${managerbuild}/mapstore/src/config.js"/>
+		<copy file="mapmanager/src/init.js" tofile="${managerbuild}/mapstore/src/init.js"/>
 		
     </target>
 
@@ -256,13 +257,50 @@
                 includes="*.html" />
         </zip>
         <move file="${release.dir}/mapstore/webapps/tmp.war" tofile="${release.dir}/mapstore/webapps/mapstore.war" /> 
-        
-        <echo file="${release.dir}/mapstore/VERSION.txt">MapStore Version: ${mapstore.version}
-GeoStore Version: ${geostore.version}
-HttpProxy Version: ${httpproxy.version}
-servicebox Version: ${servicebox.version}
-</echo>
+		
+        <echo file="${release.dir}/mapstore/VERSION.txt">
+			MapStore Version: ${mapstore.version}
+			GeoStore Version: ${geostore.version}
+			HttpProxy Version: ${httpproxy.version}
+			servicebox Version: ${servicebox.version}
+		</echo>
     </target>
 
+	<target name="gnrelease" depends="release">      
+		<!-- Remove the old mapstore war -->
+	    <delete file="${release.dir}/mapstore/webapps/mapstore.war"/>
+		
+		<!-- Get GeoNetwork war -->
+        <get src="http://demo.geo-solutions.it/share/github/mapstore/downloads/war/geonetwork/${geonetwork.version}/geonetwork-${geonetwork.version}.war" dest="${release.dir}/mapstore/webapps/geonetwork.war"/>
+        
+		<!-- Remove mapcomposer ringo configuration file from mapcomposer.war to enable geonetwork node -->
+        <zip destfile="${release.dir}/mapstore/webapps/tmp.war"> 
+                <zipfileset src="${release.dir}/mapstore/webapps/mapcomposer.war"> 
+                        <exclude name="**/WEB-INF/app/config.js" /> 
+                </zipfileset> 
+				<zipfileset dir="mapcomposer/release" includes="config.js" prefix="WEB-INF/app"/>
+        </zip> 
+        <move file="${release.dir}/mapstore/webapps/tmp.war" tofile="${release.dir}/mapstore/webapps/mapstore.war" /> 
+		
+		<!-- Delete the old mapcomposer war -->
+		<delete file="${release.dir}/mapstore/webapps/mapcomposer.war"/>
+		
+		<!-- Replace the default context jetty file -->
+		<delete file="${release.dir}/mapstore/contexts/context.xml"/>
+		<copy file="mapcomposer/release/context.xml" tofile="${release.dir}/mapstore/contexts/context.xml"/>
+		
+	    <!-- Replace the logo GIF in GeoNetwork using the Geosolutions logo -->
+        <zip destfile="${release.dir}/mapstore/webapps/tmp.war"> 
+                <zipfileset src="${release.dir}/mapstore/webapps/geonetwork.war"> 
+                        <exclude name="**/images/logos/dummy.gif" /> 
+                </zipfileset> 
+				<zipfileset dir="mapcomposer/release/geonetwork/logos" includes="dummy.gif" prefix="images/logos"/>
+        </zip> 
+        <move file="${release.dir}/mapstore/webapps/tmp.war" tofile="${release.dir}/mapstore/webapps/geonetwork.war" /> 
+		
+        <echo file="${release.dir}/mapstore/VERSION.txt">
+			GeoNetwork Version: ${geonetwork.version}
+		</echo>
+    </target>
 
 </project>
