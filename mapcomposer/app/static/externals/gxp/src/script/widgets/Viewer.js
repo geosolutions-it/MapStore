@@ -712,7 +712,6 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
         // include all layer config (and add new sources)
         this.mapPanel.layers.each(function(record){
             var layer = record.getLayer();
-            console.log(layer);
             if(layer.CLASS_NAME != "OpenLayers.Layer.Vector")
             if (layer.displayInLayerSwitcher) {
                 var id = record.get("source");
