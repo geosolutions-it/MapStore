@@ -463,7 +463,7 @@ GeoExt.Lang.add("it", {
            }      
         },
         
-        "gxp.widgets.MapFileUploadPanel" :{
+        "gxp.MapFileUploadPanel" :{
             fileLabel: "File di mappa",
             fieldEmptyText: "Seleziona il file di contesto di mappa...",
             uploadText: "Upload",
@@ -472,7 +472,7 @@ GeoExt.Lang.add("it", {
             failedUploadingTitle: "Errore nell'upload del file"
        },
        
-       "gxp.widgets.MapFileDownloadPanel" :{
+       "gxp.MapFileDownloadPanel" :{
             buttonText: "Esportazione Mappa",
             filenameLabel: "Nome del file di mappa",
             waitMsgText: "In corso la generazione del file di mappa ...",
@@ -481,7 +481,7 @@ GeoExt.Lang.add("it", {
             saveErrorText: "Errori riscontrati: "
        },
        
-       "gxp.widgets.KMLFileDownloadPanel" :{
+       "gxp.KMLFileDownloadPanel" :{
             buttonText: "Export",
             filenameLabel: "Nome del file KML",
             waitMsgText: "In corso la generazione del KML...",
@@ -490,7 +490,7 @@ GeoExt.Lang.add("it", {
             failedUploadingTitle: "Imppossibile generare il file KML"
        },
        
-       "gxp.widgets.KMLFileUploadPanel" :{
+       "gxp.KMLFileUploadPanel" :{
             fileLabel: "File KML",
             fieldEmptyText: "Selezione un file KML o KMZ",
             uploadText: "Upload",
