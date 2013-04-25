@@ -89,8 +89,10 @@ gxp.MapFileDownloadPanel = Ext.extend(Ext.FormPanel, {
         this.buttons = [{
             text: this.buttonText,
             handler: function() {
+                var form = this.getForm();                
                 this.filename = Ext.getCmp("filename").getValue();
-                self.save(self.showUrl);
+                 if (form.isValid()) 
+                   self.save(self.showUrl);
             },
             scope: this
         },{
