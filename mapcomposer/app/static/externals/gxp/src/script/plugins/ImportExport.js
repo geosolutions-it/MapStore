@@ -72,6 +72,24 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
     },
     /** end i18n */
     
+    /** api: config[exportConf]
+     *  ``Object``
+     *  Object with type actions configurations. Supported ['map', 'kml/kmz'].
+     */
+    exportConf:{
+        "map": {
+            
+        },    
+        "kml/kmz": {
+            layerName: null,
+            alternativeStyle: false,
+            layer: null
+        }
+        
+    },
+    
+    
+    
     /**
      * private: config[iconClsDefault]
      * 
@@ -186,6 +204,10 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             width: 500,
             items: [ form ]
         });
+        
+        form.on("downloadcomplete", function (caller, response){
+            win.destroy();
+        });
 
         win.show();
         
@@ -226,7 +248,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
         var self= this;
         var map = this.target.mapPanel.map;       
         try{
-            layer= (this.layer) ? this.layer : this.target.selectedLayer.data.layer;
+            layer= (this.exportConf["kml/kmz"].layer) ? this.exportConf["kml/kmz"].layer : this.target.selectedLayer.data.layer;
         } catch (ex){
             layer= null;
         }
@@ -370,7 +392,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                 
         var form = new gxp.KMLFileUploadPanel( {
             service: this.service,
-            deafultLayerName: this.layerName
+            deafultLayerName: this.exportConf["kml/kmz"].layerName
         } );
         // open a modal window
         var win = new Ext.Window({
@@ -390,7 +412,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             var nfname = response.nfname;
             var url = response.url;
                     
-            self.layer = self.createLayer( self.target.mapPanel.map, caller.getLayerName());
+            var layer = self.createLayer( self.target.mapPanel.map, caller.getLayerName());
             url += '?' + 'code=' + code + '&filename=' + nfname;
 			   
             var appMask = new Ext.LoadMask(Ext.getBody(), {
@@ -468,7 +490,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                                         return;
                                     }
                                         
-                                    self.layer.addFeatures(displayFeatures);
+                                    layer.addFeatures(displayFeatures);
                                 
                                 },
                                 failure:  function(response, opts){
@@ -481,7 +503,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                                 }
                             });  
                         }else
-                            self.layer.addFeatures( displayFeatures );
+                            layer.addFeatures( displayFeatures );
                     }else{
                         Ext.Msg.show({
                             title: self.kmlImportTitleText,
@@ -518,7 +540,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             return layers[0]; // return the first layer with the given name
         } else {
             var layer;
-            if ( this.alternativeStyle ){
+            if ( this.exportConf["kml/kmz"].alternativeStyle ){
                 layer = new OpenLayers.Layer.Vector( layerName, {
                     projection: new OpenLayers.Projection( map.getProjection() ), 
                     styleMap: new OpenLayers.StyleMap({

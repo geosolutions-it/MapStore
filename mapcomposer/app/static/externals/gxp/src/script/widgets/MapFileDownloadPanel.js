@@ -66,6 +66,11 @@ gxp.MapFileDownloadPanel = Ext.extend(Ext.FormPanel, {
         this.appMask = new Ext.LoadMask(Ext.getBody(), {
             msg: this.waitMsgText
             });
+            
+        this.addEvents(
+            "downloadcomplete"
+        ); 
+            
         gxp.MapFileDownloadPanel.superclass.constructor.call(this, config);
     },
     
@@ -170,6 +175,7 @@ gxp.MapFileDownloadPanel = Ext.extend(Ext.FormPanel, {
                     elemIF.style.display = "none"; 
                     document.body.appendChild(elemIF); 
                     this.appMask.hide();
+                    this.fireEvent("downloadcomplete", this, null);
                 }else{
                     Ext.Msg.show({
                         title: this.failedUploadingTitle,
