@@ -432,6 +432,7 @@
         "customParams":{
             "outputFilename":"mapstore-print"
         },
+        "ignoreLayers": "Google Hybrid",
         "printService":"http://84.33.2.23/geoserver/pdf/",
         "ignoreLayers": "Google Hybrid,Bing Aerial,Nessuno sfondo,Google Terrain,Google Roadmap",
         "legendPanelId":"legendPanel",
@@ -459,48 +460,44 @@
 			"selectionLayerBaseURL": "http://84.33.2.23/geoserver/destinationprod/wms",
 			"selectionLayerProjection": "EPSG:32632",
 			"geometryName": "geometria",
+                         "wfsURL": "http://84.33.2.23/geoserver/wfs",
+                        "wfsVersion" : "1.1.0",
 			"accidentTipologyName": "tipologia",
         "wfsURL": "http://localhost:8080/84.33.2.23/destinationprod/wfs",
         "wfsVersion" : "1.1.0",
         "destinationNS": "destinationprod",
 			"index": 28
 	    },
-	    {
-			"ptype": "gxp_wfsgrid",
-			"outputTarget": "featurelist",
-        "wfsURL": "http://84.33.2.23/geoserver/wfs",
+            {
+		"ptype": "gxp_tabpanelwfsgrids",
+		"outputTarget": "featurelist",
+                "srsName" : "EPSG:32632",
+                "wfsURL": "http://84.33.2.23/geoserver/wfs",
 		"targets": {
 			"Popolazione residente": {				
 				"featureType": "destinationprod:popolazione_residente",
-				"fields": [
-					{
-						"name": "id",              
-						"mapping": "id"
-					},
-					{
-						"name": "geometry",        
-						"mapping": "geometry"
-					},
-					{
-						"name": "id_tema",         
-						"mapping": "properties.id_tema"
-					},
-					{
-						"name": "residenti",      
-						"mapping": "properties.residenti"
-					}
-				],
-				"columnModel": [
+				"columns": [
 					{
 						"header": "Residenti",      
 						"dataIndex": "residenti"
+					}
+				],
+                                "fields": [
+					{
+						"name": "id"
+					},
+					{
+						"name": "id_tema"
+					},
+					{
+						"name": "residenti"
 					}
 				],
 				"title": "Popolazione residente",
 				"name": "POPOLAZIONE RESIDENTE",
 				"type": "umano"
 			},
-			"Popolazione fluttuante turistica": {
+                        "Popolazione fluttuante turistica": {
 				"featureType": "destinationprod:popolazione_turistica",
 				"fields": [
 					{
@@ -513,26 +510,26 @@
 					},
 					{
 						"name": "id_tema",         
-						"mapping": "properties.id_tema"
+						"mapping": "id_tema"
 					},
 					{
 						"name": "comune",      
-						"mapping": "properties.denominazione_comune"
+						"mapping": "denominazione_comune"
 					},
 					{
 						"name": "natcode",      
-						"mapping": "properties.nat_code"
+						"mapping": "nat_code"
 					},
 					{
 						"name": "presmax",      
-						"mapping": "properties.pres_max"
+						"mapping": "pres_max"
 					},
 					{
 						"name": "presmed",      
-						"mapping": "properties.pres_med"
+						"mapping": "pres_med"
 					}
 				],
-				"columnModel": [
+				"columns": [
 					{
 						"header": "Comune",      
 						"dataIndex": "comune"
@@ -567,30 +564,30 @@
 					},
 					{
 						"name": "id_tema",         
-						"mapping": "properties.id_tema"
+						"mapping": "id_tema"
 					},
 					{
 						"name": "addetti",      
-						"mapping": "properties.addetti"
+						"mapping": "addetti"
 					},
 					{
 						"name": "denominazione",      
-						"mapping": "properties.denominazione"
+						"mapping": "denominazione"
 					},
 					{
 						"name": "codfisc",      
-						"mapping": "properties.cod_fisc"
+						"mapping": "cod_fisc"
 					},
 					{
 						"name": "codiceateco",      
-						"mapping": "properties.codice_ateco"
+						"mapping": "codice_ateco"
 					},
 					{
 						"name": "descrizioneateco",      
-						"mapping": "properties.descrizione_ateco"
+						"mapping": "descrizione_ateco"
 					}
 				],
-				"columnModel": [
+				"columns": [
 					{
 						"header": "Denominazione",      
 						"dataIndex": "denominazione"
@@ -629,46 +626,46 @@
 					},
 					{
 						"name": "id_tema",         
-						"mapping": "properties.id_tema"
+						"mapping": "id_tema"
 					},
 					{
 						"name": "addetti",      
-						"mapping": "properties.addetti"
+						"mapping": "addetti"
 					},
 					{
 						"name": "denominazione",      
-						"mapping": "properties.denominazione"
+						"mapping": "denominazione"
 					},
 					{
 						"name": "codice_uso",      
-						"mapping": "properties.codice_uso"
+						"mapping": "codice_uso"
 					},
 					{
 						"name": "descrizione_uso",      
-						"mapping": "properties.descrizione_uso"
+						"mapping": "descrizione_uso"
 					},
 					{
 						"name": "fonte_addetti",      
-						"mapping": "properties.fonte_addetti"
+						"mapping": "fonte_addetti"
 					},
 					{
 						"name": "fonte_numero_letti_day_h",      
-						"mapping": "properties.fonte_numero_letti_day_h"
+						"mapping": "fonte_numero_letti_day_h"
 					},
 					{
 						"name": "nr_letti_dh",      
-						"mapping": "properties.nr_letti_dh"
+						"mapping": "nr_letti_dh"
 					},
 					{
 						"name": "fonte_numero_letti_ordinri",      
-						"mapping": "properties.fonte_numero_letti_ordinri"
+						"mapping": "fonte_numero_letti_ordinri"
 					},
 					{
 						"name": "letti_ordinari",      
-						"mapping": "properties.letti_ordinari"
+						"mapping": "letti_ordinari"
 					}
 				],
-				"columnModel": [
+				"columns": [
 					{
 						"header": "Denominazione",      
 						"dataIndex": "denominazione"
@@ -723,38 +720,38 @@
 					},
 					{
 						"name": "id_tema",         
-						"mapping": "properties.id_tema"
+						"mapping": "id_tema"
 					},
 					{
 						"name": "addetti",      
-						"mapping": "properties.addetti"
+						"mapping": "addetti"
 					},
 					{
 						"name": "codice_uso",      
-						"mapping": "properties.codice_uso"
+						"mapping": "codice_uso"
 					},
 					{
 						"name": "descrizione_uso",      
-						"mapping": "properties.descrizione_uso"
+						"mapping": "descrizione_uso"
 					},
 					{
 						"name": "fonte_iscritti",      
-						"mapping": "properties.fonte_iscritti"
+						"mapping": "fonte_iscritti"
 					},
 					{
 						"name": "iscritti",      
-						"mapping": "properties.iscritti"
+						"mapping": "iscritti"
 					},
 					{
 						"name": "fonte_addetti_scuole",      
-						"mapping": "properties.fonte_addetti_scuole"
+						"mapping": "fonte_addetti_scuole"
 					},
 					{
 						"name": "denominazione",      
-						"mapping": "properties.denominazione"
+						"mapping": "denominazione"
 					}
 				],
-				"columnModel": [
+				"columns": [
 					{
 						"header": "Denominazione",      
 						"dataIndex": "denominazione"
@@ -801,38 +798,38 @@
 					},
 					{
 						"name": "id_tema",         
-						"mapping": "properties.id_tema"
+						"mapping": "id_tema"
 					},
 					{
 						"name": "addetti",      
-						"mapping": "properties.addetti"
+						"mapping": "addetti"
 					},
 					{
 						"name": "denominazione",      
-						"mapping": "properties.denominazione"
+						"mapping": "denominazione"
 			},
 					{
 						"name": "insegna",      
-						"mapping": "properties.insegna"
+						"mapping": "insegna"
 					},
 					{
 						"name": "sup_vendita",      
-						"mapping": "properties.sup_vendita"
+						"mapping": "sup_vendita"
 					},
 					{
 						"name": "fonte_utenti",      
-						"mapping": "properties.fonte_utenti"
+						"mapping": "fonte_utenti"
 					},
 					{
 						"name": "utenti",      
-						"mapping": "properties.utenti"
+						"mapping": "utenti"
 					},
 					{
 						"name": "fonte_addetti_commercio",      
-						"mapping": "properties.fonte_addetti_commercio"
+						"mapping": "fonte_addetti_commercio"
 					}
 				],
-				"columnModel": [
+				"columns": [
 					{
 						"header": "Denominazione",      
 						"dataIndex": "denominazione"
@@ -879,22 +876,22 @@
 					},
 					{
 						"name": "id_tema",         
-						"mapping": "properties.id_tema"
+						"mapping": "id_tema"
 					},
 					{
 						"name": "superficie",      
-						"mapping": "properties.superficie"
+						"mapping": "superficie"
 					},
 					{
 						"name": "codice_clc",      
-						"mapping": "properties.codice_clc"
+						"mapping": "codice_clc"
 					},
 					{
 						"name": "descrizione_clc",      
-						"mapping": "properties.descrizione_clc"
+						"mapping": "descrizione_clc"
 					}
 				],
-				"columnModel": [
+				"columns": [
 					{
 						"header": "Codice CLC",      
 						"dataIndex": "codice_clc"
@@ -925,22 +922,22 @@
 					},
 					{
 						"name": "id_tema",         
-						"mapping": "properties.id_tema"
+						"mapping": "id_tema"
 					},
 					{
 						"name": "superficie",      
-						"mapping": "properties.superficie"
+						"mapping": "superficie"
 					},
 					{
 						"name": "codice_clc",      
-						"mapping": "properties.codice_clc"
+						"mapping": "codice_clc"
 					},
 					{
 						"name": "descrizione_clc",      
-						"mapping": "properties.descrizione_clc"
+						"mapping": "descrizione_clc"
 					}
 				],
-				"columnModel": [					
+				"columns": [					
 					{
 						"header": "Codice CLC",      
 						"dataIndex": "codice_clc"
@@ -971,38 +968,38 @@
 					},
 					{
 						"name": "id_tema",         
-						"mapping": "properties.id_tema"
+						"mapping": "id_tema"
 					},
 					{
 						"name": "denominazione",      
-						"mapping": "properties.denominazione"
+						"mapping": "denominazione"
 					},
 					{
 						"name": "denominazione_ente",      
-						"mapping": "properties.denominazione_ente"
+						"mapping": "denominazione_ente"
 					},
 					{
 						"name": "superficie",      
-						"mapping": "properties.superficie"
+						"mapping": "superficie"
 					},
 					{
 						"name": "codice_iucn",      
-						"mapping": "properties.codice_iucn"
+						"mapping": "codice_iucn"
 					},
 					{
 						"name": "descrizione_iucn",      
-						"mapping": "properties.descrizione_iucn"
+						"mapping": "descrizione_iucn"
 					},
 					{
 						"name": "codice_clc",      
-						"mapping": "properties.codice_clc"
+						"mapping": "codice_clc"
 					},
 					{
 						"name": "descrizione_clc",      
-						"mapping": "properties.descrizione_clc"
+						"mapping": "descrizione_clc"
 					}
 				],
-				"columnModel": [
+				"columns": [
 					{
 						"header": "Denominazione",      
 						"dataIndex": "denominazione"
@@ -1049,22 +1046,22 @@
 					},
 					{
 						"name": "id_tema",         
-						"mapping": "properties.id_tema"
+						"mapping": "id_tema"
 					},
 					{
 						"name": "superficie",      
-						"mapping": "properties.superficie"
+						"mapping": "superficie"
 					},
 					{
 						"name": "codice_clc",      
-						"mapping": "properties.codice_clc"
+						"mapping": "codice_clc"
 					},
 					{
 						"name": "descrizione_clc",      
-						"mapping": "properties.descrizione_clc"
+						"mapping": "descrizione_clc"
 					}
 				],
-				"columnModel": [
+				"columns": [
 					{
 						"header": "Codice CLC",      
 						"dataIndex": "codice_clc"
@@ -1095,38 +1092,38 @@
 					},
 					{
 						"name": "id_tema",         
-						"mapping": "properties.id_tema"
+						"mapping": "id_tema"
 					},
 					{
 						"name": "denominazione",      
-						"mapping": "properties.denominazione"
+						"mapping": "denominazione"
 					},
 					{
 						"name": "superficie",      
-						"mapping": "properties.superficie"
+						"mapping": "superficie"
 					},
 					{
 						"name": "profondita_max",      
-						"mapping": "properties.profondita_max"
+						"mapping": "profondita_max"
 					},
 					{
 						"name": "quota_pdc",      
-						"mapping": "properties.quota_pdc"
+						"mapping": "quota_pdc"
 					},
 					{
 						"name": "codice_clc",      
-						"mapping": "properties.codice_clc"
+						"mapping": "codice_clc"
 					},
 					{
 						"name": "descrizione_clc",      
-						"mapping": "properties.descrizione_clc"
+						"mapping": "descrizione_clc"
 					},
 					{
 						"name": "toponimo_completo",      
-						"mapping": "properties.toponimo_completo"
+						"mapping": "toponimo_completo"
 					}
 				],
-				"columnModel": [
+				"columns": [
 					{
 						"header": "Denominazione",      
 						"dataIndex": "denominazione"
@@ -1173,38 +1170,38 @@
 					},
 					{
 						"name": "id_tema",         
-						"mapping": "properties.id_tema"
+						"mapping": "id_tema"
 					},
 					{
 						"name": "denominazione",      
-						"mapping": "properties.denominazione"
+						"mapping": "denominazione"
 					},
 					{
 						"name": "superficie",      
-						"mapping": "properties.superficie"
+						"mapping": "superficie"
 					},
 					{
 						"name": "profondita_max",      
-						"mapping": "properties.profondita_max"
+						"mapping": "profondita_max"
 					},
 					{
 						"name": "quota_pdc",      
-						"mapping": "properties.quota_pdc"
+						"mapping": "quota_pdc"
 					},
 					{
 						"name": "tipo_captazione",      
-						"mapping": "properties.tipo_captazione"
+						"mapping": "tipo_captazione"
 					},
 					{
 						"name": "codice_clc",      
-						"mapping": "properties.codice_clc"
+						"mapping": "codice_clc"
 					},
 					{
 						"name": "descrizione_clc",      
-						"mapping": "properties.descrizione_clc"
+						"mapping": "descrizione_clc"
 					}
 				],
-				"columnModel": [
+				"columns": [
 					{
 						"header": "Denominazione",      
 						"dataIndex": "denominazione"
@@ -1243,26 +1240,26 @@
 					},
 					{
 						"name": "id_tema",         
-						"mapping": "properties.id_tema"
+						"mapping": "id_tema"
 					},
 					{
 						"name": "denominazione_bene",      
-						"mapping": "properties.denominazione_bene"
+						"mapping": "denominazione_bene"
 					},
 					{
 						"name": "superficie",      
-						"mapping": "properties.superficie"
+						"mapping": "superficie"
 					},
 					{
 						"name": "cod_bene",      
-						"mapping": "properties.cod_bene"
+						"mapping": "cod_bene"
 					},
 					{
 						"name": "tipologia",      
-						"mapping": "properties.tipologia"
+						"mapping": "tipologia"
 					}
 				],
-				"columnModel": [
+				"columns": [
 					{
 						"header": "Cod. Bene",      
 						"dataIndex": "cod_bene"
@@ -1286,7 +1283,17 @@
 			}
                         
 		},
-			"index": 29
+                "actionColumns" : [ 
+                    {
+                      "type": "checkDisplay",
+                      "layerName": "Bersaglio Selezionato",
+                      "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                     "type": "zoom",
+                     "sourceSRS": "EPSG:32632"
+                    }],
+		"index": 29
 	    }
 	]
 }
