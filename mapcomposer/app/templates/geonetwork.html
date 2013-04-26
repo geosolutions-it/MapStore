@@ -46,6 +46,7 @@
     
     <!-- geocoding data  -->
     <script type="text/javascript" src="data/georeferences.js"></script>
+	<script type="text/javascript" src="AddLayer.js"></script>
     
 	<!-- translation data  -->
     <script type="text/javascript" src="translations/en.js"></script>
@@ -429,14 +430,18 @@
                     if(layName && wmsurl && gnBaseUrl && uuid){
 					    var title = layTitle ? layTitle : layName;
 						
+						var options = {
+							msLayerTitle: title,
+							msLayerName: layName,
+							wmsURL: wmsurl,
+							gnUrl: gnBaseUrl,
+							enableViewTab: false,
+							msLayerUUID: uuid,
+							gnLangStr: code
+						};
+				
 						addMSLayer(
-							title,
-							layName,
-							wmsurl,
-							gnBaseUrl,
-							false,
-							uuid,
-							code
+							options
 						);
 					}
  							
@@ -455,14 +460,18 @@
 			addMSLayer = function(msLayerTitle, msLayerName, wmsURL, gnUrl, enableViewTab, msLayerUUID, gnLangStr){
 				var addLayer = app.tools["addlayer"];
 				
+				var options = {
+					msLayerTitle: msLayerTitle,
+					msLayerName: msLayerName,
+					wmsURL: wmsURL,
+					gnUrl: gnUrl,
+					enableViewTab: enableViewTab,
+					msLayerUUID: msLayerUUID,
+					gnLangStr: gnLangStr
+				};
+				
 				addLayer.addLayer(
-					msLayerTitle,
-					msLayerName,
-					wmsURL,
-					gnUrl,
-					enableViewTab,
-					msLayerUUID,
-					gnLangStr
+					options
 				);
 			};
 			

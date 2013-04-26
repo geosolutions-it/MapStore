@@ -1,8 +1,8 @@
 ; MapStore Windows installer creation file.
 
 ; Define your application name
-!define APPNAME "MapStore"
-!define VERSION "1.1.0"
+!define APPNAME "MapStoreGn"
+!define VERSION "1.2-SNAPSHOT"
 ;!define LONGVERSION "2.0.0.0"
 !define APPNAMEANDVERSION "${APPNAME} ${VERSION}"
 
@@ -508,7 +508,7 @@ Section -FinishSection
   ;Create shortcuts
   CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\MapStore Homepage.lnk" "http://mapstore.geo-solutions.it"
-  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\MapStore Admin Page.lnk" "http://localhost:$Port/mapstore/"
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\MapStore Admin Page.lnk" "http://localhost:$Port/mapstore/geonetwork"
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
 
   SetOutPath "$INSTDIR\"
