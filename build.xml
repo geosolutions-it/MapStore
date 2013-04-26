@@ -13,11 +13,11 @@
     <property name="ringojs.version" value="0.7.0-geosolutions"/>
     <property name="ringojs.run" location="${ringojs.dir}/lib/ringojs-run-${ringojs.version}.jar"/>
 
-    <property name="httpproxy.version" value="1.0.x-SNAPSHOT"/>
-    <property name="servicebox.version" value="1.2-SNAPSHOT"/>
-    <property name="mapstore.version" value="1.2-SNAPSHOT"/>
-    <property name="geostore.version" value="1.1-SNAPSHOT"/>
-	<property name="geonetwork.version" value="2.6.5-SNAPSHOT"/>
+    <property name="httpproxy.version" value="1.0.3"/>
+    <property name="servicebox.version" value="1.2"/>
+    <property name="mapstore.version" value="1.2"/>
+    <property name="geostore.version" value="1.1.0"/>
+	<property name="geonetwork.version" value="2.6.5"/>
 
     <property name="app.proxy.geoserver" value=""/>
 	<property name="app.debug.proxy" value="true"/>
