@@ -1,0 +1,81 @@
+<!--
+  InitPanel.html
+  
+  Tests the initialization of the CWSWPanel and its API 
+ -->
+<html>
+  <head>
+    <title>CatalogChooser</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        
+    <!-- All CSS -->
+    <link rel="stylesheet" type="text/css" href="../../lib/ext-3.3.1/resources/css/ext-all.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/csw.css" />
+        
+    <!-- OpenLayers scripts -->
+    <script type="text/javascript" src="../../lib/OpenLayers-2.10/OpenLayers.js"></script>
+        
+    <!-- ExtJS scripts -->       
+    <script type="text/javascript" src="../../lib/ext-3.3.1/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../lib/ext-3.3.1/ext-all.js"></script>  
+    <script type="text/javascript" src="../../lib/ResourceBundle/PropertyReader.js"></script>
+    <script type="text/javascript" src="../../lib/ResourceBundle/Bundle.js"></script>
+        
+    <!-- Ext UX scripts -->
+    <script type="text/javascript" src="../../lib/ext-3.3.1/ux/RowExpander.js"></script>
+        
+    <!-- CSW scripts -->
+    <script type="text/javascript" src="../../tests/CSWViewer/config.js"></script>
+    <script type="text/javascript" src="../../src/CSWHttpProxy.js"></script>
+    <script type="text/javascript" src="../../src/CSWRecord.js"></script>
+    <script type="text/javascript" src="../../src/CSWRecordsReader.js"></script>
+    <script type="text/javascript" src="../../src/CSWGrid.js"></script>
+    <script type="text/javascript" src="../../src/CSWCatalogChooser.js"></script>
+    <script type="text/javascript" src="../../src/CSWPagingToolbar.js"></script>
+    <script type="text/javascript" src="../../src/CSWSearchTool.js"></script>
+    <script type="text/javascript" src="../../src/CSWPanel.js"></script>
+        
+    <!-- Test settings -->
+    <script type="text/javascript" src="../../tests/CSWViewer/settings.js"></script>
+
+    <!-- Test cases -->    
+    <script type="text/javascript">
+     function test_init(t) {
+        t.plan(1);
+        t.wait_result(config.i18nWait);
+        t.ok(true, "panel initialized");
+     }
+
+      function test_changeCatalog(t) {
+        setupTest();
+        t.plan(6);
+        
+        // Checks the change of catalogs
+        t.eq(panel.cswGrid.getStore().getCount(), 0, "No row is shown in results when no catalog is selected");
+        comboBoxSelect(panel.searchTool.catalogChooser, config.catalogs[2].url, 2);
+        t.ok(panel.searchTool.catalogChooser.getValue() == config.catalogs[2].url, "Correctly selected another catalog");
+        comboBoxSelect(panel.searchTool.catalogChooser, config.catalogs[0].url, 0);
+        t.ok(panel.searchTool.catalogChooser.getValue() == config.catalogs[0].url, "Correctly selected default catalog");
+        t.eq(panel.cswGrid.getStore().getCount(), 0, "No row is shown in results when another catalog is selected 1");
+        
+        // Checks the loading of a catalog
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getCount(), 20, "Some rows are loaded from test data");
+          
+          // Changes catalog
+          comboBoxSelect(panel.searchTool.catalogChooser, config.catalogs[0].url, 0);
+        });
+        comboBoxSelect(panel.searchTool.catalogChooser, config.catalogs[2].url, 2);
+        searchExecute();
+
+        // Checks the cleaning up of the results grid when a catalog is selected
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getCount(), 0, "No row is shown in results when another catalog is selected 2");
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="map" style="width: 512px; height: 256px"></div>
+  </body>
+</html>

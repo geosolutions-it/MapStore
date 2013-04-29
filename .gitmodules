@@ -1,3 +1,0 @@
-[submodule "mapcomposer/app/static/externals/csw"]
-	path = mapcomposer/app/static/externals/csw
-	url = https://github.com/geosolutions-it/metadataexplorer.git

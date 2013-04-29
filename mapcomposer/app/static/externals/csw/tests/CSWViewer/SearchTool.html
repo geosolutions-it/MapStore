@@ -1,0 +1,385 @@
+<!--
+  SeachTool.html
+  
+  Tests the workings of the searh tool 
+ -->
+<html>
+  <head>
+    <title>SearchTool</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        
+    <!-- All CSS -->
+    <link rel="stylesheet" type="text/css" href="../../lib/ext-3.3.1/resources/css/ext-all.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/csw.css" />
+        
+    <!-- OpenLayers scripts -->
+    <script type="text/javascript" src="../../lib/OpenLayers-2.10/OpenLayers.js"></script>
+        
+    <!-- ExtJS scripts -->       
+    <script type="text/javascript" src="../../lib/ext-3.3.1/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../lib/ext-3.3.1/ext-all.js"></script>  
+    <script type="text/javascript" src="../../lib/ResourceBundle/PropertyReader.js"></script>
+    <script type="text/javascript" src="../../lib/ResourceBundle/Bundle.js"></script>
+        
+    <!-- Ext UX scripts -->
+    <script type="text/javascript" src="../../lib/ext-3.3.1/ux/RowExpander.js"></script>
+        
+    <!-- CSW scripts -->
+    <script type="text/javascript" src="../../tests/CSWViewer/config.js"></script>
+    <script type="text/javascript" src="../../src/CSWHttpProxy.js"></script>
+    <script type="text/javascript" src="../../src/CSWRecord.js"></script>
+    <script type="text/javascript" src="../../src/CSWRecordsReader.js"></script>
+    <script type="text/javascript" src="../../src/CSWGrid.js"></script>
+    <script type="text/javascript" src="../../src/CSWCatalogChooser.js"></script>
+    <script type="text/javascript" src="../../src/CSWPagingToolbar.js"></script>
+    <script type="text/javascript" src="../../src/CSWSearchTool.js"></script>
+    <script type="text/javascript" src="../../src/CSWPanel.js"></script>
+        
+    <!-- Test settings -->
+    <script type="text/javascript" src="../../tests/CSWViewer/settings.js"></script>
+
+    <!-- Test cases -->    
+    <script type="text/javascript">
+     function test_init(t) {
+        t.plan(1);
+        t.wait_result(config.i18nWait);
+        t.ok(true, "panel initialized");
+     }
+
+      function test_searchFreeText1(t) {
+        setupTest();
+        t.plan(1);
+
+        panel.searchTool.freeText.setValue("Cities");
+        useAdvancedSearch(false);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 11, "Correctly populated grid with records from a free text search");
+        });
+      }
+
+      function test_searchFreeText2(t) {
+        setupTest();
+        t.plan(1);
+
+        panel.searchTool.freeText.setValue("");
+        useAdvancedSearch(false);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 139, "Correctly found all records when search string is empty");
+        });
+      }
+
+      function test_searchFreeText3(t) {
+        setupTest();
+        t.plan(1);
+
+        panel.searchTool.freeText.setValue("*");
+        useAdvancedSearch(false);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 139, "Correctly found records when search string is a wildcard character");
+        });
+      }
+
+      function test_searchFreeText4(t) {
+        setupTest();
+        t.plan(1);
+
+        panel.searchTool.freeText.setValue("cItIeS");
+        useAdvancedSearch(false);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 11, "Correctly found records with mixed-case search string");
+        });
+      }
+
+      function test_searchFreeText6(t) {
+        setupTest();
+        t.plan(1);
+
+        panel.searchTool.freeText.setValue("");
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 139, "Correctly found all records when search string is empty");
+        });
+      }
+      
+      function test_searchDcProperty1(t) {
+        setupTest();
+        t.plan(1);
+
+        panel.searchTool.freeText.setValue("");
+        panel.searchTool.dcValue.setValue("eng");
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 132, "Correctly found records in English");
+        });
+      }
+
+      /* 
+       * FIXME: This test fails because of GeoNeWtork indexing not cae-insensitive
+       */
+      function XXXtest_searchDcProperty2(t) {
+        setupTest();
+        t.plan(1);
+
+        panel.searchTool.freeText.setValue("");
+        panel.searchTool.dcValue.setValue("EnG");
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 132, "Correctly found records in English with mixed case");
+        });
+      }
+      
+      function test_searchDcProperty3(t) {
+        setupTest();
+        t.plan(1);
+
+        panel.searchTool.dcValue.setValue("xxx");
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 0, "Correctly found records in a non-existing language");
+        });
+      }
+
+      function test_searchBbox1(t) {
+        setupTest();
+        t.plan(1);
+
+        panel.searchTool.useBbox.setValue(true);
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 116, "Correctly populated grid with records within a bbox");
+        });
+      }
+
+      function test_searchBbox2(t) {
+        setupTest();
+        t.plan(1);
+
+        panel.searchTool.freeText.setValue("urban changes");
+        panel.searchTool.useBbox.setValue(true);
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 8, "Correctly populated grid with records within a bbox and a given free text");
+        });
+      }
+
+      /* 
+       * FIXME: This test fails because of some issues with GeoNetork and dates
+       */
+      function XXXtest_searchDate1(t) {
+        setupTest();
+        t.plan(1);
+
+        panel.searchTool.lastModifiedBegin.setValue("2010-01-06");
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 120, "Correctly populated grid with records with temp extent after a given date");
+        });
+      }
+
+      /* 
+       * FIXME: This test fails because of some issues with GeoNetork and dates
+       */
+      function XXXtest_searchDate2(t) {
+        setupTest();
+        t.plan(1);
+
+        panel.searchTool.lastModifiedEnd.setValue("2011-10-28");
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 8, "Correctly populated grid with records with temp extent before a given date");
+        });
+      }
+      
+      /* 
+       * FIXME: This test fails because GeoNetwork doesn't seem to take time into
+       * consideration when searching, only date is used
+       */ 
+      function XXXtest_searchIntervalSingleDay1(t) {
+        setupTest();
+        t.plan(1);
+
+        panel.searchTool.lastModifiedBegin.setValue("2011-11-28");
+        panel.searchTool.lastModifiedEnd.setValue("2011-11-28");
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 0, "Correctly populated grid with records with temp extent within given dates");
+        });
+      }
+
+      /* 
+       * FIXME: This test fails because GeoNetwork doesn't seem to take time into
+       * consideration when searching, only date is used
+       */ 
+      function XXXtest_searchIntervalSingleDay2(t) {
+        setupTest();
+        t.plan(1);
+
+        panel.searchTool.lastModifiedBegin.setValue("2011-11-29");
+        panel.searchTool.lastModifiedEnd.setValue("2011-11-29");
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 0, "Correctly populated grid with records with temp extent within given dates");
+        });
+      }
+
+      /* 
+       * FIXME: This test fails because of some issues with GeoNetork and dates
+       */
+      function XXXtest_searchIntervalConsecutiveDays(t) {
+        setupTest();
+        t.plan(1);
+
+        panel.searchTool.lastModifiedBegin.setValue("2011-11-28");
+        panel.searchTool.lastModifiedEnd.setValue("2011-11-29");
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 1, "Correctly populated grid with records with temp extent within given dates");
+        });
+      }
+
+      /* 
+       * FIXME: This test fails because of some issues with GeoNetork and dates
+       */
+      function XXXtest_searchInterval(t) {
+        setupTest();
+        t.plan(1);
+
+        panel.searchTool.lastModifiedBegin.setValue("2011-12-01");
+        panel.searchTool.lastModifiedEnd.setValue("2011-12-13");
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 69, "Correctly populated grid with records with temp extent within given dates separated by 1 day");
+        });
+      }
+
+      function test_searchDcPropertyAndFreeText1(t) {
+        setupTest();
+        t.plan(1);
+
+        panel.searchTool.freeText.setValue("cItIeS");
+        panel.searchTool.dcValue.setValue("eng");
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 11, "Correctly found records");
+        });
+      }
+      
+      function test_searchDcPropertyAndFreeText2(t) {
+        setupTest();
+        t.plan(1);
+
+        panel.searchTool.freeText.setValue("Guinea bissau");
+        panel.searchTool.dcValue.setValue("xxx");
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 0, "Correctly found no records");
+        });
+      }
+
+      function test_searchDcPropertyAndFreeTextAndBbox1(t) {
+        setupTest();
+        t.plan(1);
+        panel.searchTool.freeText.setValue("Guinea bissau");
+        panel.searchTool.dcValue.setValue("xxx");
+        panel.searchTool.useBbox.setValue(true);
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 0, "Correctly found no records");
+        });
+      }
+
+      function test_searchDcPropertyAndFreeTextAndBbox2(t) {
+        setupTest();
+        t.plan(1);
+        panel.searchTool.freeText.setValue("Guinea bissau");
+        panel.searchTool.dcValue.setValue("eng");
+        panel.searchTool.useBbox.setValue(true);
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 102, "Correctly found matching records");
+        });
+      }
+      
+      function test_searchDcPropertyAndFreeTextAndBbox1(t) {
+        setupTest();
+        t.plan(1);
+        panel.searchTool.freeText.setValue("Guinea bissau");
+        panel.searchTool.dcValue.setValue("xxx");
+        panel.searchTool.useBbox.setValue(true);
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 0, "Correctly found no records");
+        });
+      }
+
+      function test_searchDcPropertyAndFreeTextAndBbox2(t) {
+        setupTest();
+        t.plan(1);
+        panel.searchTool.freeText.setValue("Guinea bissau");
+        panel.searchTool.dcValue.setValue("eng");
+        panel.searchTool.useBbox.setValue(true);
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 102, "Correctly found matching records");
+        });
+      }
+
+      function test_searchDcPropertyAndFreeTextAndBboxAndTime1(t) {
+        setupTest();
+        t.plan(1);
+        panel.searchTool.freeText.setValue("satellite");
+        panel.searchTool.dcValue.setValue("eng");
+        panel.searchTool.useBbox.setValue(true);
+        panel.searchTool.lastModifiedBegin.setValue("2011-10-06");
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 97, "Correctly found matching records");
+        });
+      }
+
+      /* 
+       * FIXME: This test fails because of some issues with GeoNetork and dates
+       */
+      function XXXtest_searchDcPropertyAndFreeTextAndBboxAndTime2(t) {
+        setupTest();
+        t.plan(1);
+        panel.searchTool.freeText.setValue("boffa");
+        panel.searchTool.dcValue.setValue("eng");
+        panel.searchTool.useBbox.setValue(true);
+        panel.searchTool.lastModifiedBegin.setValue("2011-12-01");
+        panel.searchTool.lastModifiedEnd.setValue("2011-12-13");
+        useAdvancedSearch(true);
+        searchExecute();
+        t.delay_call(config.cswWait, function () {
+          t.eq(panel.cswGrid.getStore().getTotalCount(), 2, "Correctly found matching records");
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="map" style="width: 512px; height: 256px"></div>
+  </body>
+</html>
