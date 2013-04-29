@@ -8,7 +8,7 @@
 
 /**
  * @requires plugins/Tool.js
- * @requires widgets/form/WFSSearch<ComboBox.js
+ * @requires widgets/form/WFSSearchComboBox.js
  */
 
 /** api: (define)
