@@ -116,7 +116,11 @@
 		
 		
         var onReady = function(){
-
+		
+		
+		
+			OpenLayers.IMAGE_RELOAD_ATTEMPTS = 2;
+			OpenLayers.Util.onImageLoadErrorColor = "transparent";
             Ext.BLANK_IMAGE_URL = (function() {
                     if (Ext.isIE8 || Ext.isGecko || Ext.isOpera || Ext.isChrome) {
                         return "data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
