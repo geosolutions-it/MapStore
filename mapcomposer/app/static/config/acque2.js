@@ -1,5 +1,5 @@
 {
-   "geoStoreBase":"http://localhost:8080/geostore/rest/",
+   "geoStoreBase":"http://webgis.acque.net/geostore/rest/",
    "proxy":"../http_proxy/proxy/?url=",
    "defaultLanguage": "it",
    "gsSources":{ 
@@ -7,13 +7,26 @@
 			"ptype": "gxp_wmssource",
 			"title": "Acque GeoServer",
 			"projection":"EPSG:3003",
-			"url": "http://office.geo-solutions.it/acque/geoserver/ows"
+			"url": "http://webgis.acque.net/geoserver/ows",
+			"layerBaseParams": {
+					"TILED": true,
+					"TILESORIGIN": "1394190.6211433, 4663756.8332024",
+					"buffer":10
+			}
 		},
-        "gsrt": {
+        	"gsrt": {
 			"ptype": "gxp_wmssource",
 			"title": "Rete Toscana",
 			"projection":"EPSG:3003",
 			"url": "http://web.rete.toscana.it/sgrwms/com.rt.wms.RTmap"
+            
+		},
+		"gsrt_catasto": {
+			"ptype": "gxp_wmssource",
+			"title": "Rete Toscana Catasto",
+			"projection":"EPSG:3003",
+			"url": "http://web.regione.toscana.it/wmsraster/com.rt.wms.RTmap/wms?map=wmscatasto&"
+			       
             
 		},
 		"mapquest": {
@@ -47,157 +60,304 @@
 		],
        
         "resolutions": [
-			516.2328219921874,
-			258.11640996092,
-			129.05820498046,
-			64.52910249023,
-			32.264551245115,
-			16.1322756225575,
-			8.06613781127875,
-			4.033068905639375,
-			2.0165344528196875,
-			1.00826722640984375,
-			0.504133613204921875,
-			0.2520668066024609375,
-			0.12603340330123046875,
-			0.063016701650615234375,
-			0.0315083508253076171875,
-			0.01575417541265380859375],
+			596.717002,
+			397.8113347,
+			265.2075565,
+			176.8050376,
+			117.8700251,
+			78.58001673,
+			52.38667782,
+			34.92445188,
+			23.28296792,
+			15.52197861,
+			10.34798574,
+			6.898657161,
+			4.599104774,
+			3.066069849,
+			2.044046566,
+			1.362697711,
+			0.908465141,
+			0.605643427,
+			0.403762285,
+			0.269174856,
+			0.179449904,
+			0.11963327,
+			0.079755513,
+			0.053170342,
+			0.035446895,
+			0.023631263,
+			0.015754175,
+			0.007877088],
        
        
 		"layers": [
 			{
+				"source": "gsacque",
+				"title": "Comuni",
+				"name": "postgis_sw:comuni2",
+				"group": "background"
+			},{
                 "source": "gsrt",
-				"title": "Carta tecnica regionale 10000",
+				"title": "CTR 10K",
 				"name": "idrst10k",
-				"group": "background",
+				"format":"image/jpeg",
+				"group": "Geoscopio",				
                 "tiled": false
             },{
+				"source": "gsacque",
+				"title": "Bacino Arno",
+				"name": "postgis_sw:bacino_arno",
+				"group": "Reticoli idrografici",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Bacino Serchio",
+				"name": "postgis_sw:bacino_serchio",
+				"group": "Reticoli idrografici",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Ret.regionale(2k)",
+				"name": "postgis_sw:reg_tos2k",
+				"group": "Reticoli idrografici",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Ret.regionale(10k)",
+				"name": "postgis_sw:reg_tos_10k",
+				"group": "Reticoli idrografici",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Ret.regionale(fossi)",
+				"name": "postgis_sw:reg_tos_canaletta",
+				"group": "Reticoli idrografici",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "QuadroUnione_2k",
+				"name": "SW:foglio_2k",
+				"group": "Altro",
+				"tiled": false,
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "QuadroUnione_10k",
+				"name": "SW:foglio_10k",
+				"group": "Altro",
+				"tiled": false,
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Zone",
+				"name": "postgis_sw:comuni",
+				"group": "Altro",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Localit&agrave; Istat 2001",
+				"name": "postgis_sw:localita_2001_regtoscana",
+				"group": "Altro",
+				"tiled": false,
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Localit&agrave; Istat 2011",
+				"name": "postgis_sw:loc_istat2011",
+				"group": "Altro",
+				"tiled": false,
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Comuni",
+				"name": "postgis_sw:comuni_nomi",
+				"group": "Altro",
+				"tiled": false,
+				"visibility": false
+			},{
 				"source": "gsrt",
-				"title": "Quadro unione",
-				"name": "idquctr10k",
-				"group": "Aree",
+				"title": "CTR 2K Liv 2",
+				"name": "rst2k_liv2",
+				"group": "Geoscopio",
+				"visibility": false,
+                		"tiled": false
+			},{
+				"source": "gsrt",
+				"title": "CTR 2K Liv 3",
+				"name": "rst2k_liv3",
+				"group": "Geoscopio",
                 "tiled": false,
+                "visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Civici",
+				"name": "postgis_sw:civici",
+				"group": "Geoscopio",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Prese Enel",
+				"name": "postgis_sw:enel",
+				"group": "Altro",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Rete Acq",
+				"name": "SW:acq_con",
+				"group": "Acquedotto",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Interventi: riparazioni",
+				"name": "SW:riparazioni",
+				"group": "Acquedotto",
 				"visibility": false
 			},{
 				"source": "gsrt",
-				"title": "Confini Comunali",
-				"name": "idcomuni",
-				"group": "Aree",
-                "tiled": false
-			}, {
+				"title": "Mappa Catastale 5k",
+				"name": "rstcatast",
+				"group": "Geoscopio",
+                "tiled": false,
+                "visibility": false
+			},{
 				"source": "gsacque",
-				"title": "SF",
-				"name": "SW:SF",
-				"group": "Acque",
+				"title": "Fogli catastali",
+				"name": "fog_cat_old",
+				"group": "Geoscopio",
+				"tiled": false,
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "acq_con",
-				"name": "SW:acq_con",
-				"group": "Acque",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "enel",
-				"name": "SW:enel",
-				"group": "Acque",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "centrale",
-				"name": "SW:centrale",
-				"group": "Acque",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "manovra",
-				"name": "SW:manovra",
-				"group": "Acque",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Produtt",
-				"name": "SW:produtt",
-				"group": "Acque",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Elemento Idrico", 
-				"name": "SW:elemento_idrico",
-				"group": "Acque",
-				"visibility": false
+				"title": "Particelle catastali",
+				"name": "part_cat_old",
+				"group": "Geoscopio",
+				"visibility": false,
+				"tiled": false
 			},{
 				"source": "gsacque",
 				"title": "Contatori",
 				"name": "SW:contator",
-				"group": "Acque",
-				"visibility": true
+				"group": "Acquedotto",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Manovre",
+				"name": "SW:manovra",
+				"group": "Acquedotto",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Prelievo analisi",
+				"name": "postgis_sw:prelievo",
+				"group": "Altro",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Produttivi",
+				"name": "SW:produtt",
+				"group": "Fognatura",
+				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Valvole",
 				"name": "SW:valvol",
-				"group": "Acque",
+				"group": "Acquedotto",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Versi",
-				"name": "SW:versi",
-				"group": "Acque",
+				"title": "Punti di scarico (ID)",
+				"name": "SW:ID",
+				"group": "Fognatura",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Camerett",
-				"name": "SW:camerett",
-				"group": "Acque",
-				"visibility": true
-			},{
-				"source": "gsacque",
-				"title": "FGN Con",
-				"name": "SW:fgn_con",
-				"group": "FGN",
+				"title": "Punti di scarico (IT)",
+				"name": "SW:IT",
+				"group": "Fognatura",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "IMPIANTI FGN",
-				"name": "IMPIANTI_FGN",
-				"group": "FGN",
+				"title": "Punti di scarico (IB)",
+				"name": "SW:IB",
+				"group": "Fognatura",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "FGN_ALL",
-				"name": "FGN_ALL",
-				"group": "FGN",
+				"title": "Punti di scarico (IS)",
+				"name": "SW:IS",
+				"group": "Fognatura",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "IMPIANTI_ACQ",
-				"name": "IMPIANTI_ACQ",
-				"group": "Acque",
+				"title": "Punti di scarico (IL)",
+				"name": "SW:IL",
+				"group": "Fognatura",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "CAPTAZIONI",
-				"name": "CAPTAZIONI",
-				"group": "Acque",
+				"title": "Sfioratori",
+				"name": "SW:SF",
+				"group": "Fognatura",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "ACQ_ALL",
-				"name": "ACQ_ALL",
-				"group": "Acque",
+				"title": "Sollevamenti",
+				"name": "SW:SL",
+				"group": "Fognatura",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "ACQ_CON_MANOVRE",
-				"name": "ACQ_CON_MANOVRE",
-				"group": "Acque",
+				"title": "Depuratori",
+				"name": "SW:DE",
+				"group": "Fognatura",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "fgn_versi",
+				"title": "Sorgenti",
+				"name": "SW:SO",
+				"group": "Acquedotto",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Pozzi",
+				"name": "SW:PO",
+				"group": "Acquedotto",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Prese Fiume",
+				"name": "SW:FI",
+				"group": "Acquedotto",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Prese Lago",
+				"name": "SW:LA",
+				"group": "Acquedotto",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Potabilizzatori - Cloratori",
+				"name": "SW:PT",
+				"group": "Acquedotto",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Pompaggi",
+				"name": "SW:PG",
+				"group": "Acquedotto",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Depositi",
+				"name": "SW:AC",
+				"group": "Acquedotto",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Rete Fgn",
 				"name": "fgn_versi",
-				"group": "FGN",
+				"group": "Fognatura",
 				"visibility": false
 			}
 
@@ -376,8 +536,9 @@
 	   {
 		  "ptype":"gxp_wfssearchbox",
 		  "outputConfig":{
-			 "url":"http://office.geo-solutions.it/acque/geoserver/SW/ows?",
-			 "typeName":"SW:search_view",
+			 "url":"http://webgis.acque.net/geoserver/postgis_sw/ows?",
+			 "emptyText":"Ricerca impianti",
+			 "typeName":"postgis_sw:wfs_search",
 			 "recordModel":[
 				{
 				   "name":"id",
@@ -392,6 +553,10 @@
 				   "mapping":"properties.codice_ato"
 				},
 				{
+				   "name":"gestore",
+				   "mapping":"properties.gestore"
+				},
+				{
 				   "name":"denominazi",
 				   "mapping":"properties.denominazi"
 				}
@@ -403,11 +568,50 @@
 			 ],
 			 "displayField":"codice_ato",
 			 "pageSize":10,
-			 "width":250,
-			 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{codice_ato}</span></h3>{denominazi}</div></tpl>"
+			 "width":180,
+			 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{codice_ato}-{gestore}</span></h3>{denominazi}</div></tpl>"
 		  },
 		  "updateField":"geometry",
 		  "zoom":8,
+		  "outputTarget":"paneltbar",
+		  "index":30
+	   },
+	   {
+		  "ptype":"gxp_wfssearchbox",
+		  "outputConfig":{
+			 "url":"http://webgis.acque.net/geoserver/postgis_sw/ows?",
+			 "emptyText":"Ricerca contatori",
+			 "typeName":"postgis_sw:wfs_search8",
+			 "recordModel":[
+				{
+				   "name":"id",
+				   "mapping":"id"
+				},
+				{
+				   "name":"geometry",
+				   "mapping":"geometry"
+				},
+				{
+				   "name":"impianto2",
+				   "mapping":"properties.impianto2"
+				},
+				{
+				   "name":"nominativo",
+				   "mapping":"properties.nominativo"
+				}
+			 ],
+			 "sortBy":"impianto2",
+			 "queriableAttributes":[
+				"impianto2",
+				"nominativo"
+			 ],
+			 "displayField":"impianto2",
+			 "pageSize":10,
+			 "width":150,
+			 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{impianto2}</span></h3>{nominativo}</div></tpl>"
+		  },
+		  "updateField":"geometry",
+		  "zoom":18,
 		  "outputTarget":"paneltbar",
 		  "index":30
 	   },
@@ -429,7 +633,7 @@
 	   {
 		  "ptype":"gxp_nominatimgeocoder",
 		  "outputConfig":{
-			 "emptyText":"Nominatim GeoCoder",
+			 "emptyText":"Ricerca strade e indirizzi",
 			 "vendorOptions":{
 				"bounded":1,
 				"countrycodes":"it",
@@ -446,7 +650,7 @@
 			 "outputFilename":"mapstore-print"
 		  },
 		  "ignoreLayers":["WFSSearch","Marker"],
-		  "printService":"http://office.geo-solutions.it/acque/geoserver/pdf/",
+		  "printService":"http://webgis.acque.net/geoserver/pdf/",
 		  "legendPanelId":"legendPanel",
 		  "actionTarget":{
 			 "target":"paneltbar",

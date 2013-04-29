@@ -1,5 +1,5 @@
 {
-   "geoStoreBase":"http://localhost:8080/geostore/rest/",
+   "geoStoreBase":"http://webgis.acque.net/geostore/rest/",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "it",
    "gsSources":{ 
@@ -122,7 +122,7 @@
 				"title": "Contatori",
 				"name": "SW:contator",
 				"group": "acque",
-				"visibility": true
+				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Valvole",
