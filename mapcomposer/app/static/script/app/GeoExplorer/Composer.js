@@ -483,16 +483,18 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 			
         }
         
-        tools.push(new Ext.Button({
-            tooltip: this.exportMapText,
-            handler: function() {
-                this.showEmbedWindow();
-            },
-            scope: this,
-            iconCls: 'icon-export'
-        }));
-		
-        tools.push('-');
+		if(this.mapId && this.mapId != -1){
+			tools.push(new Ext.Button({
+				tooltip: this.exportMapText,
+				handler: function() {
+					this.showEmbedWindow();
+				},
+				scope: this,
+				iconCls: 'icon-export'
+			}));
+			
+			tools.push('-');
+		}
         
         return tools;
 

@@ -97,7 +97,7 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
            modal:true,
            height:200
         },this.windowOptions)).show();
-    },
+    }
     
 });
 Ext.preg(gxp.plugins.HelpButton.prototype.ptype, gxp.plugins.HelpButton);

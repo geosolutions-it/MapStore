@@ -450,5 +450,10 @@ GeoExt.Lang.add("de", {
 		uploadWinTitle: 'Upload-Formular',
 		saveErrorText: "Speicherungsprobleme: ",
 		mainLoadingMask: "Bitte warten ..."
-    }	
+    },
+	
+	"gxp.plugins.AddLayer.prototype":{
+		waitMsg: "Bitte warten...",
+		capabilitiesFailureMsg: " Die Schicht kann auf der Karte hinzugefügt werden"
+    }
 });

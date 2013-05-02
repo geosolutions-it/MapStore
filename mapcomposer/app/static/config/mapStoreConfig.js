@@ -99,11 +99,6 @@
 			"actions": ["-"], 
 			"actionTarget": "paneltbar"
 		}, {
-			"ptype": "gxp_importexport",
-			"service": "",
-			"actionTarget": "paneltbar",
-			"index": 28
-		}, {
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
 		}, {

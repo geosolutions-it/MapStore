@@ -152,7 +152,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
 							btn.refOwner.close();
 						},
 						scope:this
-					}],
+					}]
 				});
 				
 				win.show();
@@ -463,8 +463,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
 								
                                 	var xf = Ext.util.Format;
 									return '<p>' + xf.ellipsis(xf.stripTags(value), 50) +   '</p>';
-                            },
-                            
+                            }                            
                         },
                         {
                             xtype: 'actioncolumn',

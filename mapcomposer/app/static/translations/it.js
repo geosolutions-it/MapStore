@@ -451,6 +451,11 @@ GeoExt.Lang.add("it", {
 		uploadWinTitle: 'From di Caricamento',
 		saveErrorText: "Problemi di salvataggio: ",
 		mainLoadingMask: "Attendere prego ..."
+    },
+    
+	"gxp.plugins.AddLayer.prototype":{
+		waitMsg: "Attendere prego ...",
+		capabilitiesFailureMsg: " Il layer non può essere aggiunto alla mappa"
     }
 	
 });

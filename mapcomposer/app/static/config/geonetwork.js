@@ -67,7 +67,7 @@
 	},
 	"cswconfig": {
 		"catalogs": [
-				{"name": "SIT Comune FI" , "url": "http://sr-vm160-sitt1.comune.intranet/geonetwork/srv/it/csw", "description": "GeoNetwork del Comune di Firenze"},		        {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina", "metaDataOptions":{"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page","idParam":"uuid","idIndex":0}},
+				{"name": "SIT Comune FI" , "url": "http://datigis.comune.fi.it/geonetwork/srv/it/csw", "description": "GeoNetwork del Comune di Firenze"},		        {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina", "metaDataOptions":{"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page","idParam":"uuid","idIndex":0}},
 				{"name": "Treviso", "url": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw", "description": "Treviso Geonetwork"},
 				{"name": "kscNet", "url": "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw", "description": "kscNet"},
 				{"name": "CSI-CGIAR", "url": "http://geonetwork.csi.cgiar.org/geonetwork/srv/en/csw", "description" : "CSI-CGIAR"},

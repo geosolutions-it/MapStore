@@ -415,5 +415,10 @@ GeoExt.Lang.add("en", {
 		uploadWinTitle: 'File Upload Form',		
 		saveErrorText: "Trouble saving: ",
 		mainLoadingMask: "Please wait, loading..."
+    },
+	
+	"gxp.plugins.AddLayer.prototype":{
+		waitMsg: "Please Wait ...",
+		capabilitiesFailureMsg: " The layer cannot be added to the map"
     }
 });

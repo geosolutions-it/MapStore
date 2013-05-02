@@ -43,11 +43,11 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
      *  The object that this plugin is plugged into.
      */
      
-    /** api: property[title]
+    /** api: property[untitledText]
      *  ``String``
      *  A descriptive title for this layer source.
      */
-    title: "",
+    untitledText: "",
 	
 	/** api: property[waitMsg]
      *  ``String``
@@ -113,10 +113,12 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			source: this.source.id
 		};
 		
-		Ext.applyIf(
-			props,
-			this.customParams
-		);
+		if(this.customParams){
+			Ext.applyIf(
+				props,
+				this.customParams
+			);
+		}
 		  
 		if(this.msLayerUUID)
 			props.uuid = this.msLayerUUID;
@@ -188,17 +190,17 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 	/**  
 	 * api: method[addLayer]
      */
-	addLayer: function(msLayerTitle, msLayerName, wmsURL, customParams, gnUrl, enableViewTab, msLayerUUID, gnLangStr){		
+	addLayer: function(options){		
 		var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
 		
-		this.msLayerTitle = msLayerTitle;
-		this.msLayerName = msLayerName;
-		this.wmsURL = wmsURL;
-		this.gnUrl = gnUrl;
-		this.enableViewTab = enableViewTab;
-		this.msLayerUUID = msLayerUUID;
-		this.gnLangStr = gnLangStr;
-		this.customParams = customParams;
+		this.msLayerTitle = options.msLayerTitle;
+		this.msLayerName = options.msLayerName;
+		this.wmsURL = options.wmsURL;
+		this.gnUrl = options.gnUrl;
+		this.enableViewTab = options.enableViewTab;
+		this.msLayerUUID = options.msLayerUUID;
+		this.gnLangStr = options.gnLangStr;
+		this.customParams = options.customParams;
 				
 		this.source = this.checkLayerSource(this.wmsURL);
 

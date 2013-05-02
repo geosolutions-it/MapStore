@@ -115,7 +115,7 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
                 );
             }, 
             trigger: this.clickHandler,
-            map:map,
+            map:map
         });
         
         
