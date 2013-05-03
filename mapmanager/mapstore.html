@@ -42,8 +42,8 @@
         <!-- translation data -->
         <script type="text/javascript" src="translations/it.js"></script>
         <script type="text/javascript" src="translations/en.js"></script>
+		<script type="text/javascript" src="translations/de.js"></script>
 		<script type="text/javascript" src="translations/fr.js"></script>
-        <script type="text/javascript" src="translations/de.js"></script>
         
         <style type="text/css">
             body {overflow: auto;
@@ -89,7 +89,7 @@ return false;
     </div>
     
     <ul id="language">
-        <li><div id="langeng" style="margin-top:-5px;background:url(theme/images/sprite.png) -5px -60px;">ITA</div></li>
+        <li><div id="langita" style="margin-top:-5px;background:url(theme/images/sprite.png) -5px -60px;">ITA</div></li>
         <li><a href="index.html" id="langeng">ENG</a></li>
     </ul>
     <ul id="social">
@@ -106,7 +106,7 @@ return false;
         <a href=""><h1><span>OpenSDI Suite</span></h1></a>
         <a href=""><div id="box"><span></span></div></a>
         <div id="osdi_content">
-          <!--p>ITALIANO!</p-->
+          <p>Crea, salva e condividi mappe e mashup in modo semplice ed intuitivo !</p>
           <!--p></br></p>
 <p><b class="color2">Richiedi un account!</b></p>
 <form> <input type="text" id="email" name="email" value="scrivi qui la tua email" style="width:350px;" onblur="if(this.value=='') this.value='scrivi qui la tua email';" onfocus="if(this.value=='scrivi qui la tua email') this.value='';" /><input type="submit" id="submit" name="submit" value="OK" style="width:50px; margin-left:10px;" /></form-->
@@ -118,7 +118,7 @@ return false;
 <div class="ss-form-entry">
 <label class="ss-q-title" for="entry_2">
 <p></br></p>
-<p><a href="https://docs.google.com/spreadsheet/viewform?formkey=dFNDcXExckdDNFpDWWEydXhQcnZZelE6MA" target="_blank" style="font-size:24px; text-transform:uppercase;color:#FFF;	margin-top:36px; " class="c2a_2" title="Richiedi un account">Richiedi un account!</a></p>
+<p><a href="https://docs.google.com/spreadsheet/viewform?formkey=dFNDcXExckdDNFpDWWEydXhQcnZZelE6MA" target="_blank" style="font-size:24px; text-transform:uppercase;color:#FFF; " class="c2a_2" title="Richiedi un account">Richiedi un account!</a></p>
 </label>
 </div>
 </div>
@@ -134,7 +134,13 @@ return false;
 </div>
 <div id="githublinks" style="font-size:18px; margin:13px 0 !important;">
 <!--a href="https://github.com/geosolutions-it/mapstore/archive/stable.zip" target="_blank">Download</a> | <a href="https://github.com/geosolutions-it/mapstore/wiki" target="_blank">Documentazione</a> | <a href="https://github.com/geosolutions-it/mapstore" target="_blank">Codice Sorgente</a-->
-<a href="http://goo.gl/cmpWO" target="_blank" title="Download Demo">Download Demo</a> | <a href="http://goo.gl/vfTpO" target="_blank" title="Documentazione">Documentazione</a> | <a href="http://goo.gl/Xm6Ut" target="_blank" title="Codice Sorgente">Codice Sorgente</a>
+<h2>Download Demos</h2>
+</br>
+<a href="http://goo.gl/cmpWO" target="_blank" title="MapStore Standard (binario)">MapStore Standard (binario)</a> </br>
+<a href="http://goo.gl/Swefa" target="_blank" title="Integrazione con GeoNetwork (binario)">Integrazione con GeoNetwork (binario)</a></br>
+<a href="http://goo.gl/BE02J" target="_blank" title="MapStore Standard (Windows Installer)">MapStore Standard (Windows Installer)</a></br>
+<a href="http://goo.gl/UY3oB" target="_blank" title="Integrazione con GeoNetwork (Windows Installer)">Integrazione con GeoNetwork (Windows Installer)</a></br>
+<a href="http://goo.gl/vfTpO" target="_blank" title="Documentazione">Documentazione</a> | <a href="http://goo.gl/Xm6Ut" target="_blank" title="Codice Sorgente">Codice Sorgente</a>
 </div>
 </div>
         <div id="vedisotto"><b><a href="#pianisupporto">vai alla demo &darr;</a></b></div>
@@ -341,7 +347,7 @@ return false;
   </ul>
   <p align="center"><b><a href="http://www.geo-solutions.it">GeoSolutions s.a.s.</a></b> &bull; Via Poggio alle Viti 1187 - 55054 Massarosa (Lucca) - Italy</p>
   <p align="center"><a href="mailto:info@geo-solutions.it">info@geo-solutions.it</a> &bull; <a href="http://www.geo-solutions.it">www.geo-solutions.it</a> &bull; Tel: 0039 0584 962313 &bull; Fax: 0039 0584 1660272</p>
-     
+  
   
   </div>
 </div>
@@ -367,7 +373,6 @@ $.getScript('/static/js/prettify.js', function(){
 prettyPrint();
 });
 });*/
-
 
         $('.langlink').click(function() {
 var lang = $(this).html();

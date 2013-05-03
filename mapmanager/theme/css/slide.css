@@ -16,6 +16,7 @@
 		height:20000em;
 	}
 	#scroll,#gallery {
+	    background:url(../images/bg_gallery.png)  no-repeat; 
 		position:relative;
 		height:345px;
 		overflow:hidden;
