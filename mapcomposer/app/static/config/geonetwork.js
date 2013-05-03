@@ -2,7 +2,6 @@
    "geoStoreBase":"",
    "gnBaseUrl": "",
    "proxy":"/http_proxy/proxy/?url=",
-   "xmlJsonTranslate": "",
    "defaultLanguage": "it",
    "tab": true,
    "gsSources":{ 
