@@ -340,9 +340,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         for(var i = 0, layerName; layerName = layers[i]; i++) {
             layer=map.getLayersByName(layerName)[0];
             if(layer) {
+               
                 map.removeLayer(layer);
             }
-        }        
+        }  
     },
     
     
@@ -485,8 +486,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     this.removeAnalyticViewLayers(map);
 					
 					// reset risk layers
-					/*this.removeRiskLayers(map);                                       
-					this.restoreOriginalRiskLayers(map);*/
+					this.removeRiskLayers(map);                                       
+					this.restoreOriginalRiskLayers(map);
 										
                     Ext.getCmp("south").collapse();  
                 }
@@ -501,11 +502,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 					this.removeAnalyticViewLayers(map);                    
                              
                                         // reset risk layers
-					/*if(this.originalRiskLayers !== null) {
-						
+					if(this.originalRiskLayers !== null) {
 						this.removeRiskLayers(map);                                       
 						this.restoreOriginalRiskLayers(map);
-					}*/
+					}
 								
                     var south = Ext.getCmp("south").collapse();
                    
@@ -750,6 +750,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 	},
 	
 	extractLayers: function(layers, titles) {
+                var map = this.target.mapPanel.map;
 		var layerStore = this.target.mapPanel.layers;
 		for(var i=0, layerTitle; layerTitle = titles[i]; i++) {
 			var layerIndex = layerStore.findBy(function(rec) {
@@ -759,6 +760,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 				var layer = layerStore.getAt(layerIndex);
 				layer.get('layer').clearGrid();
 				layerStore.remove(layer);
+                                var mapLayers=map.getLayersByName(layer.get('name'));
+                                if(mapLayers.length == 1)
+                                layer.visibility= mapLayers[0].visibility;
 				layers.push(layer);
 			}
 		}
@@ -819,13 +823,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		var status = this.getStatus();		
 		var bounds = this.getBounds(status, map);
 		
-		/*if(this.originalRiskLayers === null) {
-			this.storeOriginalRiskLayers();
-		}*/
+		if(this.originalRiskLayers === null) {
+                    this.storeOriginalRiskLayers();
+		}
 		
-		/*this.removeRiskLayers(map);
+	        this.removeRiskLayers(map);
 		
-		this.addRisk(newLayers, bounds);*/
+		this.addRisk(newLayers, bounds);
 		
 		this.target.mapPanel.layers.add(newLayers);
 		if(roi)
@@ -1009,6 +1013,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }
          }
     }
+    
     
 });
 
