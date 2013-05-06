@@ -77,6 +77,8 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
      *  ``String``
      */
     instancePrefix: "wpsExecute",
+	
+	silentErrors: false,
     
 
     /** private: method[constructor]
@@ -90,7 +92,7 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
             }
         });
         
-        OpenLayers.ProxyHost = (this.proxy) ? this.proxy : this.target.proxy;
+        //OpenLayers.ProxyHost = (this.proxy) ? this.proxy : this.target.proxy;
         
         if(! this.geoStoreClient)
             this.geoStoreClient = new gxp.plugins.GeoStoreClient({
@@ -100,12 +102,14 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
                 proxy: (this.geostoreProxy) ? this.geostoreProxy:this.target.proxy,
                 listeners: {
                     "geostorefailure": function(tool, msg){
-                        Ext.Msg.show({
-                            title: "Geostore Exception",
-                            msg: msg,
-                            buttons: Ext.Msg.OK,
-                            icon: Ext.Msg.ERROR
-                        });
+						if(!silentErrors){	
+							Ext.Msg.show({
+								title: "Geostore Exception",
+								msg: msg,
+								buttons: Ext.Msg.OK,
+								icon: Ext.Msg.ERROR
+							});
+						}
                     }
                 }
             }); 
@@ -276,8 +280,12 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
                 statusInfo.status == "Process Accepted" ||
                 statusInfo.status == "Process Paused") && update){
                 this.updateInstance(instances[i].name, statusUpdated, i,statusInfo.statusLocation, updateCallback);  
-            }else
+            } else {
                 statusUpdated[i]=true; 
+				if(callback) {
+					callback.call(null, instances[i], statusInfo);
+				}
+			}
         }
         
         updateCallback.call(this, instances.length-1, statusUpdated);
@@ -297,12 +305,14 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
                 me.responseManager(responseObj,instanceName, callback, statusUpdated, instanceIndex);
             },
             failure:  function(response, opts){
-                Ext.Msg.show({
-                    title: "Instance Update Status Exception",
-                    msg: response,
-                    buttons: Ext.Msg.OK,
-                    icon: Ext.Msg.ERROR
-                });
+				if(!silentErrors){
+					Ext.Msg.show({
+						title: "Instance Update Status Exception",
+						msg: response,
+						buttons: Ext.Msg.OK,
+						icon: Ext.Msg.ERROR
+					});
+				}
             }
         });
      
@@ -359,7 +369,7 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
      *  
      */
     execute: function(processName, executeRequest, callback) {
-        var process = this.wpsClient.getProcess('opengeo', processName);    
+		var process = this.wpsClient.getProcess('opengeo', processName);    
         var instanceName=null;
         var executeOptions;
         var me= this;
@@ -379,7 +389,7 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
         };
        
         executeOptions.processInstance=instanceName;
-      
+		
         process.execute(executeOptions);    
         
         return instanceName;
@@ -395,7 +405,6 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
         var geoStore;
         var me= this;
         var stautsInfo;
-        
         var resourceInstance={
             type: "resource",
             name: processInstance,
@@ -403,7 +412,7 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
             metadata: "",
             status: "",
             category: me.id,
-            store: Ext.util.JSON.encode(executeResponse)
+            store: Ext.util.JSON.encode(executeProcessResponse)
         };
         
         var meCallback= callback;
@@ -412,13 +421,14 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
             
             resourceInstance.store= Ext.util.JSON.encode(executeProcessResponse);
 
-            var executeResponse= executeProcessResponse.executeResponse;
-            if(executeResponse.exceptionReport){
+            
+            if(executeProcessResponse.exceptionReport){
                 stautsInfo={
                     status: "Process Failed",
                     raw: false
                 };
             }else{
+				var executeResponse= executeProcessResponse.executeResponse;
                 if(executeResponse.processSucceeded){
                     stautsInfo={
                         status: "Process Succeeded",
