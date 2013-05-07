@@ -348,5 +348,12 @@ GeoExt.Lang.add("en", {
 		switchActionTip : "Switch Mappa",
 		switchConfirmationText : "You are sure to change map?"
 
-	}
+	},
+	"gxp.plugins.Geolocate.prototype":{
+        geolocateMenuText: "Geolocate",
+        geolocateTooltip: "Locate my position",
+        trackMenuText: "Track Position",
+        trackTooltip: "Track my position",
+        waitMsg:"Locating..."
+    }
 });

@@ -382,7 +382,14 @@ GeoExt.Lang.add("it", {
 	"gxp.form.ContextSwitcher.prototype":{
 		switchActionTip :"Cambiamento Mappa" ,
 		switchConfirmationText : "Si è sicuri di voler cambiare mappa?"
+	},
+    "gxp.plugins.Geolocate.prototype":{
+        geolocateMenuText: "Geolocalizza",
+        geolocateTooltip: "Localizza posizione attuale",
+        trackMenuText: "Segui",
+        trackTooltip: "Segui spostamenti",
+        waitMsg:"Localizzazione in corso..."
+    }
 
-	}
 	
 });
