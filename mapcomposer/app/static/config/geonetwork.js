@@ -82,12 +82,12 @@
             "region": "south",
             "layout": "fit",
             "autoScroll":true,
-            "height": 294,
-            "split": true,
+            "height": 330,
             "collapsed": true,
             "collapsible": true,
             "ctCls": "south-panel",
-            "header": true      
+            "header": true,
+            "bbar": [{}]
         }
     ],
 	"tools":[

@@ -155,7 +155,7 @@ CSWPanel = Ext.extend(Ext.Container, {
 		this.items = [ 
 			{
 			 //xtype:'container',
-			 layout:'fit',
+			 //layout:'fit',
 			 //autoHeight:true,
              columnWidth: .30,
 			 //border: true,
@@ -163,7 +163,7 @@ CSWPanel = Ext.extend(Ext.Container, {
 			 },
 			{
 			 //xtype:'container',
-			 layout:'fit',
+			 //layout:'fit',
 			 //autoWidth: true,
 			 autoHeight:true,
              columnWidth: .70,
