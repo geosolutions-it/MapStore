@@ -25,12 +25,25 @@
  *  - <Ext.Panel>
  *
  */
-CSWPanel = Ext.extend(Ext.Panel, {
+CSWPanel = Ext.extend(Ext.Container, {
     /**
 	 * Property: border
      * {boolean} se true viene disegnato un bordo.
 	 */ 
-	border : false,
+	border : false,   
+    
+    layout: 'column',
+    
+    defaults: {
+        // implicitly create Container by specifying xtype
+        xtype: 'container',
+        layout: 'form',
+        columnWidth: 0.5,
+        style: {
+            padding: '3px'
+        }
+    },    
+
 	/**
 	 * Property: title
      * {string}aggiunge un titolo al pannello.
@@ -106,7 +119,6 @@ CSWPanel = Ext.extend(Ext.Panel, {
 		this.cswGrid = new CSWGrid({
 			 loadMask: {msg: i18n.getMsg("loadWait")},
 			 config: this.config,
-             
 			 map: new Ext.KeyMap(document, [{
 				key: Ext.EventObject.ESC,
 				fn: function(){
@@ -142,22 +154,22 @@ CSWPanel = Ext.extend(Ext.Panel, {
 		
 		this.items = [ 
 			{
-			 xtype:'container',
+			 //xtype:'container',
 			 layout:'fit',
-			 autoHeight:true,
-			 border: false,
+			 //autoHeight:true,
+             columnWidth: .30,
+			 //border: true,
 			 items:[this.searchTool]
-			 
 			 },
 			{
-			 xtype:'container',
+			 //xtype:'container',
 			 layout:'fit',
-			 autoWidth: true,
-			 //autoHeight:true,
-			 border: false,
+			 //autoWidth: true,
+			 autoHeight:true,
+             columnWidth: .70,
+			 //border: true,
 			 items:[this.cswGrid]  
 			}
-            
 		];
 		
 
