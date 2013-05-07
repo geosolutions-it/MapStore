@@ -271,6 +271,11 @@
    background-image: url(img/silk/palette.png);
 }
 
+/* gxp_geolocate */
+.x-btn .gxp-icon-geolocate, .x-menu-item .gxp-icon-geolocate, .x-tree-node .gxp-icon-geolocate {
+    background-image: url(img/target.png) !important;
+}
+
 /* fixes textarea scrollbar issue in FF on OSX */
 .ext-gecko.ext-mac textarea.x-form-field {
     padding: 1px 2px;
