@@ -384,8 +384,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                     border: false, id: 'legend', title: this.legendText
                 }
             ]
-        });
-        
+        });       
+
         this.toolbar = new Ext.Toolbar({
             disabled: true,
             id: 'paneltbar',

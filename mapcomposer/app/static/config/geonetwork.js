@@ -65,30 +65,6 @@
 			}
 		]
 	},
-	"cswconfig": {
-		"catalogs": [
-				{"name": "SIT Comune FI" , "url": "http://datigis.comune.fi.it/geonetwork/srv/it/csw", "description": "GeoNetwork del Comune di Firenze"},		        {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina", "metaDataOptions":{"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page","idParam":"uuid","idIndex":0}},
-				{"name": "Treviso", "url": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw", "description": "Treviso Geonetwork"},
-				{"name": "kscNet", "url": "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw", "description": "kscNet"},
-				{"name": "CSI-CGIAR", "url": "http://geonetwork.csi.cgiar.org/geonetwork/srv/en/csw", "description" : "CSI-CGIAR"},
-				{"name": "EauFrance", "url": "http://sandre.eaufrance.fr/geonetwork/srv/fr/csw", "description" : "EauFrance"},
-				{"name": "SOPAC", "url": "http://geonetwork.sopac.org/geonetwork/srv/en/csw", "description" : "SOPAC"},
-				{"name": "SADC", "url": "http://www.sadc.int/geonetwork/srv/en/csw", "description" : "SADC"},
-				{"name": "MAPAS", "url": "http://mapas.mma.gov.br/geonetwork/srv/en/csw", "description" : "MAPAS"}
-			],
-		"dcProperty": "title",
-		"initialBBox": {
-			"minx": 11.145,
-			"miny": 43.718,
-			"maxx": 11.348,
-			"maxy": 43.84
-		},
-		"cswVersion": "2.0.2",
-		"filterVersion": "1.1.0",
-		"start": 1,
-		"limit": 10,
-		"timeout": 60000
-	},
 	
 	"scaleOverlayUnits":{
         "bottomOutUnits":"nmi",    
@@ -96,7 +72,24 @@
         "topInUnits":"m",    
         "topOutUnits":"km"
     },
-	
+    "customPanels":[
+        {
+            "xtype": "panel",
+            "title": "Metadata Explorer",
+            "iconCls": "csw-viewer",             
+            "border": false,
+            "id": "south",
+            "region": "south",
+            "layout": "fit",
+            "autoScroll":true,
+            "height": 250,
+            "split": true,
+            "collapsed": false,
+            "collapsible": true,
+            "ctCls": "south-panel",
+            "header": true      
+        }
+    ],
 	"tools":[
 		{
 			"ptype": "gxp_layertree",
@@ -177,8 +170,36 @@
 		}, {
 			"actions": ["-"], "actionTarget": "paneltbar"
 		}, {
+			"ptype": "gxp_metadataexplorer",
+			"id": "metadataexplorer",
+            "outputTarget": "south",
+            "cswconfig": {
+                "catalogs": [
+                        {"name": "SIT Comune FI" , "url": "http://datigis.comune.fi.it/geonetwork/srv/it/csw", "description": "GeoNetwork del Comune di Firenze"},		        {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina", "metaDataOptions":{"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page","idParam":"uuid","idIndex":0}},
+                        {"name": "Treviso", "url": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw", "description": "Treviso Geonetwork"},
+                        {"name": "kscNet", "url": "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw", "description": "kscNet"},
+                        {"name": "CSI-CGIAR", "url": "http://geonetwork.csi.cgiar.org/geonetwork/srv/en/csw", "description" : "CSI-CGIAR"},
+                        {"name": "EauFrance", "url": "http://sandre.eaufrance.fr/geonetwork/srv/fr/csw", "description" : "EauFrance"},
+                        {"name": "SOPAC", "url": "http://geonetwork.sopac.org/geonetwork/srv/en/csw", "description" : "SOPAC"},
+                        {"name": "SADC", "url": "http://www.sadc.int/geonetwork/srv/en/csw", "description" : "SADC"},
+                        {"name": "MAPAS", "url": "http://mapas.mma.gov.br/geonetwork/srv/en/csw", "description" : "MAPAS"}
+                    ],
+                "dcProperty": "title",
+                "initialBBox": {
+                    "minx": 11.145,
+                    "miny": 43.718,
+                    "maxx": 11.348,
+                    "maxy": 43.84
+                },
+                "cswVersion": "2.0.2",
+                "filterVersion": "1.1.0",
+                "start": 1,
+                "limit": 10,
+                "timeout": 60000
+            }            
+		}, {
 			"ptype": "gxp_saveDefaultContext",
-			"actionTarget": {"target": "paneltbar", "index": 22},
+			"actionTarget": {"target": "paneltbar", "index": 23},
 			"needsAuthorization": true
 		}, {
 			"actions": ["->"], 
@@ -189,12 +210,12 @@
 			"outputConfig": {
 				"width": "200"
 			},
-			"index": 23
+			"index": 24
 		}, {
 			"ptype": "gxp_dynamicgeocoder",
 			"outputTarget":"paneltbar",
 			"id": "dynamicgeocoder",
-			"index": 24
+			"index": 25
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,

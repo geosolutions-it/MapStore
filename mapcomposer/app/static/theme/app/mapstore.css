@@ -203,3 +203,7 @@ div#homelogos ul li a:hover {
 .marker-icon-style{
 	background-size:15px;
 }
+
+.south-panel .x-layout-collapsed-south{
+    background: url(img/collapsed-south.png) no-repeat center;
+}

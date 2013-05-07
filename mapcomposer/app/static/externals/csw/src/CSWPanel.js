@@ -35,7 +35,7 @@ CSWPanel = Ext.extend(Ext.Panel, {
 	 * Property: title
      * {string}aggiunge un titolo al pannello.
 	 */ 
-	title : "Metadata Explorer",
+	//title : "Metadata Explorer",
     /**
 	 * Property: defaults
      * {object} opzioni di default dei componenti contenuti nel pannello
@@ -50,7 +50,7 @@ CSWPanel = Ext.extend(Ext.Panel, {
 	 * Property: iconCls
      * {string} classe associata all'icona
 	 */ 
-    iconCls: "icon-table",
+    //iconCls: "icon-table",
 	
 	
 	/**
