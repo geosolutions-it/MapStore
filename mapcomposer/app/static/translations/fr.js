@@ -424,5 +424,15 @@ GeoExt.Lang.add("fr", {
 	"gxp.plugins.AddLayer.prototype":{
 		waitMsg: "S'il vous plaît attendre...",
 		capabilitiesFailureMsg: " La couche peut pas être ajouté à la carte"
+    },
+        
+    "gxp.plugins.Geolocate.prototype":{
+        geolocateMenuText: "Géolocaliser",
+        geolocateTooltip: "Localiser mon poste",
+        trackMenuText: "Suivre position",
+        trackTooltip: "Suivre ma position",
+        waitMsg: "Recherche...",
+        errorMsg: "Ce navigateur ne supporte pas Géolocalisation"
     }
+
 });

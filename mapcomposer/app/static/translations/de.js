@@ -455,5 +455,15 @@ GeoExt.Lang.add("de", {
 	"gxp.plugins.AddLayer.prototype":{
 		waitMsg: "Bitte warten...",
 		capabilitiesFailureMsg: " Die Schicht kann auf der Karte hinzugefügt werden"
+    },
+        
+    "gxp.plugins.Geolocate.prototype":{
+        geolocateMenuText: "Geolokalisieren",
+        geolocateTooltip: "Finde meine stelle",
+        trackMenuText: "Folgst stelle",
+        trackTooltip: "Folgst mein stelle",
+        waitMsg: "Fahndung...",
+        errorMsg: "Dieser Browser unterstützt keine Geolocation"
     }
+
 });

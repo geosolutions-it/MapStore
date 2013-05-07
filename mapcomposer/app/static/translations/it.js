@@ -456,6 +456,15 @@ GeoExt.Lang.add("it", {
 	"gxp.plugins.AddLayer.prototype":{
 		waitMsg: "Attendere prego ...",
 		capabilitiesFailureMsg: " Il layer non può essere aggiunto alla mappa"
+    },
+    
+    "gxp.plugins.Geolocate.prototype":{
+        geolocateMenuText: "Geolocalizza",
+        geolocateTooltip: "Localizza posizione attuale",
+        trackMenuText: "Segui",
+        trackTooltip: "Segui spostamenti",
+        waitMsg: "Localizzazione in corso...",
+        errorMsg: "Questo browser non supporta la geolocalizzazione"
     }
 	
 });
