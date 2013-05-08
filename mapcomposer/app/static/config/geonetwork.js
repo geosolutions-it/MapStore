@@ -1,11 +1,16 @@
 {
-   "geoStoreBase":"",
-   "gnBaseUrl": "http://sr-vm160-sitt1.comune.intranet/geonetwork/",
-   "proxy":"/http_proxy/proxy/?url=",
+   "geoStoreBase":"http://datigis.comune.fi.it/geostore_test/",
+   "gnBaseUrl": "http://datigis.comune.fi.it/geonetwork_test/",
+   "proxy":"/http_proxy_test/proxy/?url=",
    "xmlJsonTranslate": "",
    "defaultLanguage": "it",
    "tab": true,
    "gsSources":{ 
+                "comunefi-test":{
+                        "ptype": "gxp_wmssource",
+                        "url": "http://datigis.comune.fi.it/geowebcache_test/service/wms/",
+                        "title": "Comune FI WMS Server"
+                },
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
 		}, 
@@ -175,7 +180,7 @@
             "outputTarget": "south",
             "cswconfig": {
                 "catalogs": [
-                        {"name": "SIT Comune FI" , "url": "http://datigis.comune.fi.it/geonetwork/srv/it/csw", "description": "GeoNetwork del Comune di Firenze"},		        {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina", "metaDataOptions":{"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page","idParam":"uuid","idIndex":0}},
+                        {"name": "SIT Comune FI" , "url": "http://datigis.comune.fi.it/geonetwork_test/srv/it/csw", "description": "GeoNetwork del Comune di Firenze"},		        {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina", "metaDataOptions":{"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page","idParam":"uuid","idIndex":0}},
                         {"name": "Treviso", "url": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw", "description": "Treviso Geonetwork"},
                         {"name": "kscNet", "url": "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw", "description": "kscNet"},
                         {"name": "CSI-CGIAR", "url": "http://geonetwork.csi.cgiar.org/geonetwork/srv/en/csw", "description" : "CSI-CGIAR"},
