@@ -100,6 +100,7 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                                 var wfsGridConf={
                                     "outputTarget": this.id,
                                     "title": targetName,
+                                    "name": targetCfg.name || '',
                                     "id": targetCfg.id || targetName,
                                     "protocolType": "GET",
                                     "fields": targetCfg.fields || null,
@@ -155,12 +156,13 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
 			},
                         
                         removeAllGrids: function(){
-                            
+                            var toRemove = [];
                             for(var i=0; i<this.items.items.length;i++){
-                                   this.items.items[i].destroy();
-                                    
-                             }
-                            
+                                toRemove.push(this.items.items[i]);                                   
+                            }
+                            for(i=0; i<toRemove.length;i++){
+                                toRemove[i].destroy();
+                            }
                         },
 			
 			/** api: method[loadGrid]
@@ -177,15 +179,19 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
 					});
 					tabPanel.collapse();
 				}	
-                                for(var i=0; i<grids.length;i++){
-                                    grids[i].target= me.target;
-                                    grids[i].viewParams= viewParams;
-                                    grids[i].addOutput();
-                                    this.setActiveTab(i);
-                                }
-                                
-                               this.setActiveTab(0);	
-                               
+                var tabPanel = this;
+                for(var i=0; i<grids.length;i++){
+                    grids[i].target= me.target;
+                    grids[i].viewParams= viewParams;
+                    grids[i].addOutput();
+                    grids[i].onEmpty=function(grid) {
+                        tabPanel.hideTabStripItem(grid.wfsGrid);
+                        //grid.wfsGrid.destroy();
+                    };
+                    this.setActiveTab(i);
+                }
+                
+                this.setActiveTab(0);                               
 			}
 			
         });

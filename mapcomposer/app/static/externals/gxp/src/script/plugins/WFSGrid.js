@@ -204,7 +204,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                             response.priv.responseXML, {output: "object"});
                 this.countFeature=respObj.numberOfFeatures;
                 if(callback)
-                    callback.call();
+                    callback.call(null, this.countFeature);
             },
             scope: this
         });
@@ -668,7 +668,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 render: function(grid){
                     if(me.loadMsg){
                        me.loadMask = new Ext.LoadMask(grid.getEl(), {msg:me.loadMsg});
-                       me.loadMask.show();
+                       //me.loadMask.show();
                     }
                     
                 }
@@ -685,7 +685,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 displayInfo: true,
                 listeners: {
                     render: function(){
-                        this.last.setVisible(false);
+                        //this.last.setVisible(false);
                        
                     },
                     "beforechange": function(paging,params){
@@ -725,127 +725,132 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         
         this.wfsGrid = gxp.plugins.WFSGrid.superclass.addOutput.call(this, config);
         
-        this.setTotalRecord(function(){
-            me.loadFeatureFields(function(){
-                if(me.columns){
-                    for(kk=0; kk<me.columns.length; kk++){
-                        me.wfsColumns.push(me.columns[kk]);
-                    }
-                }else{
-                    for(kk=0; kk<me.featureFields.length; kk++){
-                        me.wfsColumns.push({
-                            header: me.featureFields[kk].name, 
-                            dataIndex: me.featureFields[kk].name,
-                            sortable: true
-                        });
-                    }
-                } 
-                
-                new GeoExt.data.FeatureStore({ 
-                    wfsParam: me,
-                    //sortInfo: {field: "runEnd", direction: "DESC"},
-                    id: this.id+"_store",
-                    fields: me.featureFields,
-                    listeners:{
-                        beforeload: function(store){
+        this.setTotalRecord(function(total){
+            if(parseInt(total,10) > 0) {
+                me.loadFeatureFields(function(){
+                    if(me.columns){
+                        for(kk=0; kk<me.columns.length; kk++){
+                            me.wfsColumns.push(me.columns[kk]);
+                        }
+                    }else{
+                        for(kk=0; kk<me.featureFields.length; kk++){
+                            me.wfsColumns.push({
+                                header: me.featureFields[kk].name, 
+                                dataIndex: me.featureFields[kk].name,
+                                sortable: true
+                            });
+                        }
+                    } 
+                    
+                    new GeoExt.data.FeatureStore({ 
+                        wfsParam: me,
+                        //sortInfo: {field: "runEnd", direction: "DESC"},
+                        id: this.id+"_store",
+                        fields: me.featureFields,
+                        listeners:{
+                            beforeload: function(store){
 
-                            if(me.loadMask)
-                                me.loadMask.show(); 
+                                if(me.loadMask)
+                                    me.loadMask.show(); 
+                                
+                                me.wfsGrid.reconfigure(
+                                    store, 
+                                    new Ext.grid.ColumnModel({
+                                        columns: me.wfsColumns
+                                    })
+                                    );
+                                me.wfsGrid.getBottomToolbar().bind(store);   
+                            },
+                            load : function(store){
+                                 if(me.loadMask)
+                                 me.loadMask.hide(); 
+                            },
                             
-                            me.wfsGrid.reconfigure(
-                                store, 
-                                new Ext.grid.ColumnModel({
-                                    columns: me.wfsColumns
-                                })
-                                );
-                            me.wfsGrid.getBottomToolbar().bind(store);   
-                        },
-                        load : function(store){
-                             if(me.loadMask)
-                             me.loadMask.hide(); 
-                        },
-                        
-                        exception : function(store){
-                            if(me.loadMask)
-                            me.loadMask.hide(); 
-                        }
-                    },
-                    loadRecords : function(o, options, success){     
-                        if (this.isDestroyed === true) {
-                            return;
-                        }
-                                
-                        if(!o || success === false){
-                            if(success !== false){
-                                this.fireEvent('load', this, [], options);
+                            exception : function(store){
+                                if(me.loadMask)
+                                me.loadMask.hide(); 
                             }
+                        },
+                        loadRecords : function(o, options, success){     
+                            if (this.isDestroyed === true) {
+                                return;
+                            }
+                                    
+                            if(!o || success === false){
+                                if(success !== false){
+                                    this.fireEvent('load', this, [], options);
+                                }
+                                if(options.callback){
+                                    options.callback.call(options.scope || this, [], options, false, o);
+                                }
+                                return;
+                            }
+                            o.totalRecords = me.countFeature;
+                                    
+                            var r = o.records, t = o.totalRecords || r.length;
+                            if(!options || options.add !== true){
+                                if(this.pruneModifiedRecords){
+                                    this.modified = [];
+                                }
+                                        
+                                for(var i = 0, len = r.length; i < len; i++){
+                                    r[i].join(this);
+                                }
+                                        
+                                if(this.snapshot){
+                                    this.data = this.snapshot;
+                                    delete this.snapshot;
+                                }
+                                        
+                                this.clearData();
+                                this.data.addAll(r);   
+                                this.totalLength = t;       
+                                //this.applySort();
+                                this.fireEvent('datachanged', this);
+                            }else{
+                                        
+                                this.totalLength = Math.max(t, this.data.length+r.length);
+                                this.add(r);
+                            }
+                                    
+                            this.fireEvent('load', this, r, options);
                             if(options.callback){
-                                options.callback.call(options.scope || this, [], options, false, o);
+                                options.callback.call(options.scope || this, r, options, true);
                             }
-                            return;
-                        }
-                        o.totalRecords = me.countFeature;
-                                
-                        var r = o.records, t = o.totalRecords || r.length;
-                        if(!options || options.add !== true){
-                            if(this.pruneModifiedRecords){
-                                this.modified = [];
-                            }
-                                    
-                            for(var i = 0, len = r.length; i < len; i++){
-                                r[i].join(this);
-                            }
-                                    
-                            if(this.snapshot){
-                                this.data = this.snapshot;
-                                delete this.snapshot;
-                            }
-                                    
-                            this.clearData();
-                            this.data.addAll(r);   
-                            this.totalLength = t;       
-                            //this.applySort();
-                            this.fireEvent('datachanged', this);
-                        }else{
-                                    
-                            this.totalLength = Math.max(t, this.data.length+r.length);
-                            this.add(r);
-                        }
-                                
-                        this.fireEvent('load', this, r, options);
-                        if(options.callback){
-                            options.callback.call(options.scope || this, r, options, true);
-                        }
-                    },
-                    proxy: new GeoExt.data.ProtocolProxy({ 
-                        protocol: /*new OpenLayers.Protocol.WFS({ 
-                                url: me.wfsURL, 
-                                featureType: me.featureType, 
-                                readFormat: new OpenLayers.Format.GeoJSON(),
-                                featureNS: me.featureNS, 
-                                filter: me.filter, 
-                                viewparams: me.viewParams,
-                                maxFeatures: me.pageSize,
-                                sortBy: {
-                                    property: "runEnd",
-                                    order: "DESC"
-                                },
-                                startIndex: 0,
-                                outputFormat: "application/json",
-                                srsName: me.srsName,
-                                version: me.version
-                            })*/
-                        me.getProtocol({
-                            limit: me.pageSize,
-                            start:  0
-                        })
-                    }), 
-                    autoLoad: true 
-                });
-      
+                        },
+                        proxy: new GeoExt.data.ProtocolProxy({ 
+                            protocol: /*new OpenLayers.Protocol.WFS({ 
+                                    url: me.wfsURL, 
+                                    featureType: me.featureType, 
+                                    readFormat: new OpenLayers.Format.GeoJSON(),
+                                    featureNS: me.featureNS, 
+                                    filter: me.filter, 
+                                    viewparams: me.viewParams,
+                                    maxFeatures: me.pageSize,
+                                    sortBy: {
+                                        property: "runEnd",
+                                        order: "DESC"
+                                    },
+                                    startIndex: 0,
+                                    outputFormat: "application/json",
+                                    srsName: me.srsName,
+                                    version: me.version
+                                })*/
+                            me.getProtocol({
+                                limit: me.pageSize,
+                                start:  0
+                            })
+                        }), 
+                        autoLoad: true 
+                    });
+          
+                }
+                );	
+            } else if(me.onEmpty){
+                me.onEmpty.call(null, me);
             }
-            );	
-        });   
+         });   
+        
  
         return this.wfsGrid;
     }  
