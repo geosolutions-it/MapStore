@@ -81,6 +81,7 @@
             "id": "south",
             "region": "south",
             "layout": "fit",
+            "split":true,
             "autoScroll":true,
             "height": 330,
             "collapsed": true,
