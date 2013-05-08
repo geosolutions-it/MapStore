@@ -82,7 +82,7 @@
             "xtype": "panel",
             "title": "Metadata Explorer",
             "iconCls": "csw-viewer",             
-            "border": false,
+	    "border": false,
             "id": "south",
             "region": "south",
             "layout": "fit",
@@ -120,6 +120,11 @@
 				}
 			}
 		}, {
+                        "ptype": "gxp_addlayers",
+                        "actionTarget": "tree.tbar",
+                        "id": "addlayers",
+                        "upload": true
+                }, {
 			"ptype": "gxp_removelayer",
 			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
 		}, {
@@ -180,14 +185,7 @@
             "outputTarget": "south",
             "cswconfig": {
                 "catalogs": [
-                        {"name": "SIT Comune FI" , "url": "http://datigis.comune.fi.it/geonetwork_test/srv/it/csw", "description": "GeoNetwork del Comune di Firenze"},		        {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina", "metaDataOptions":{"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page","idParam":"uuid","idIndex":0}},
-                        {"name": "Treviso", "url": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw", "description": "Treviso Geonetwork"},
-                        {"name": "kscNet", "url": "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw", "description": "kscNet"},
-                        {"name": "CSI-CGIAR", "url": "http://geonetwork.csi.cgiar.org/geonetwork/srv/en/csw", "description" : "CSI-CGIAR"},
-                        {"name": "EauFrance", "url": "http://sandre.eaufrance.fr/geonetwork/srv/fr/csw", "description" : "EauFrance"},
-                        {"name": "SOPAC", "url": "http://geonetwork.sopac.org/geonetwork/srv/en/csw", "description" : "SOPAC"},
-                        {"name": "SADC", "url": "http://www.sadc.int/geonetwork/srv/en/csw", "description" : "SADC"},
-                        {"name": "MAPAS", "url": "http://mapas.mma.gov.br/geonetwork/srv/en/csw", "description" : "MAPAS"}
+                        {"name": "SIT Comune FI" , "url": "http://datigis.comune.fi.it/geonetwork_test/srv/it/csw", "description": "GeoNetwork del Comune di Firenze"}
                     ],
                 "dcProperty": "title",
                 "initialBBox": {
