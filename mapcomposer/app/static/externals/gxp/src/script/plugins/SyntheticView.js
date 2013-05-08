@@ -485,8 +485,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     this.removeAnalyticViewLayers(map);
 					
 					// reset risk layers
-					/*this.removeRiskLayers(map);                                       
-					this.restoreOriginalRiskLayers(map);*/
+					this.removeRiskLayers(map);                                       
+					this.restoreOriginalRiskLayers(map);
 										
                     Ext.getCmp("south").collapse();  
                 }
@@ -501,11 +501,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 					this.removeAnalyticViewLayers(map);                    
                              
                                         // reset risk layers
-					/*if(this.originalRiskLayers !== null) {
+					if(this.originalRiskLayers !== null) {
 						
 						this.removeRiskLayers(map);                                       
 						this.restoreOriginalRiskLayers(map);
-					}*/
+					}
 								
                     var south = Ext.getCmp("south").collapse();
                    
@@ -819,13 +819,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		var status = this.getStatus();		
 		var bounds = this.getBounds(status, map);
 		
-		/*if(this.originalRiskLayers === null) {
+		if(this.originalRiskLayers === null) {
 			this.storeOriginalRiskLayers();
-		}*/
+		}
 		
-		/*this.removeRiskLayers(map);
+		this.removeRiskLayers(map);
 		
-		this.addRisk(newLayers, bounds);*/
+		this.addRisk(newLayers, bounds);
 		
 		this.target.mapPanel.layers.add(newLayers);
 		if(roi)
