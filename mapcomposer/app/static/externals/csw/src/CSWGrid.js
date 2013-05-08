@@ -47,7 +47,7 @@ CSWGrid = Ext.extend(Ext.grid.GridPanel, {
 	 * Property: height
      * {int} altezza del componente
 	 */ 
-	height:260, 
+	height:262, 
 	/**
 	 * Property: autoScroll
      * {boolean} se true permette la comparsa della barra di scorrimento se il contenuto eccede le dimensioni del componente

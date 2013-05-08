@@ -82,7 +82,6 @@
             "region": "south",
             "layout": "fit",
             "split":true,
-            "autoScroll":true,
             "height": 330,
             "collapsed": true,
             "collapsible": true,
