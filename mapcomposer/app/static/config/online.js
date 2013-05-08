@@ -463,7 +463,7 @@
                          "wfsURL": "http://84.33.2.23/geoserver/wfs",
                         "wfsVersion" : "1.1.0",
 			"accidentTipologyName": "tipologia",
-        "wfsURL": "http://localhost:8080/84.33.2.23/destinationprod/wfs",
+        "wfsURL": "http://84.33.2.23/geoserver/destinationprod/wfs",
         "wfsVersion" : "1.1.0",
         "destinationNS": "destinationprod",
 			"index": 28
