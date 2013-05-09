@@ -25,16 +25,23 @@
  *  - <Ext.Panel>
  *
  */
-CSWPanel = Ext.extend(Ext.Container, {
+CSWPanel = Ext.extend(Ext.Panel, {
     /**
 	 * Property: border
      * {boolean} se true viene disegnato un bordo.
 	 */ 
 	border : false,   
     
-    layout: 'column',
+    layout: 'border',
     
     defaults: {
+        collapsible: true,
+        split: true,
+        bodyStyle: 'padding:5px'
+    },    
+    
+    monitorResize: true,
+    /*defaults: {
         // implicitly create Container by specifying xtype
         xtype: 'container',
         layout: 'form',
@@ -42,7 +49,7 @@ CSWPanel = Ext.extend(Ext.Container, {
         style: {
             padding: '3px'
         }
-    },    
+    },*/    
 
 	/**
 	 * Property: title
@@ -104,9 +111,9 @@ CSWPanel = Ext.extend(Ext.Container, {
 	 */
 	],
     
-	autoWidth:true,
+	/*autoWidth:true,
 	autoHeight:true,
-	border: false,
+	border: false,*/
     
     
 	//PRIVATE
@@ -154,21 +161,18 @@ CSWPanel = Ext.extend(Ext.Container, {
 		
 		this.items = [ 
 			{
-			 //xtype:'container',
-			 //layout:'fit',
-			 //autoHeight:true,
-             columnWidth: .30,
-			 //border: true,
-			 items:[this.searchTool]
+                layout: 'anchor',
+                defaults: {anchor: '-19'},
+                autoScroll: true,
+                region:'west',
+                width: 350,
+                items:[this.searchTool]
 			 },
 			{
-			 //xtype:'container',
-			 //layout:'fit',
-			 //autoWidth: true,
-			 autoHeight:true,
-             columnWidth: .70,
-			 //border: true,
-			 items:[this.cswGrid]  
+                layout:'fit',
+                collapsible: false,
+                region:'center',
+                items:[this.cswGrid]  
 			}
 		];
 		

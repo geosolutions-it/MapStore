@@ -25,17 +25,27 @@
  * - <Ext.form.FormPanel>
  * 
  */
-CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
+CSWSearchTool = Ext.extend(Ext.Panel, {
 	/**
 	 * Property: border
      * {boolean} se true viene disegnato un bordo.
 	 */ 
 	border : false,
+
+    layout: 'anchor',
+    
+    defaults: {
+        anchor: '100%'
+    },
+    
+    bodyStyle:'padding:5px',
+    
+    height: 500,
 	/**
 	 * Property: autoWidth
      * {boolean} se true, imposta la larghezza del componente automaticamente 
 	 */ 
-	autoWidth: true,
+	//autoWidth: true,
 
 	/**
 	 *Parameter: dateFormat 
@@ -93,6 +103,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
     mask: null,
 
 	autoHeight:true,
+
 	/**
 	 * Method: initParameters 
 	 * Inizializza la comboBox che contiene i cataloghi tra cui scegliere
@@ -235,8 +246,9 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
             cswVersion: this.panel.config.cswVersion,
 			fieldLabel : i18n.getMsg("catalogField"),
 			emptyText : i18n.getMsg("catalogEmptyText"),
-            labelStyle : 'width: 150px',
-			width: 200
+            //labelStyle : 'width: 150px',
+            anchor:'100%'/*,
+			width: 200*/
             
 		});
         
@@ -298,6 +310,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
         this.catalogSelectionPan= new Ext.form.FieldSet({
             title: i18n.getMsg("catalogSelection"),
             autoHeight : true,
+            anchor:'100%',
 			collapsed : false,
 			collapsible : false,
 			/*defaults:{
@@ -306,7 +319,6 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 				
 			},*/
             items: [this.catalogChooser, this.catalogDescriptionPanel]
-        
         });
         /*
         //BASIC SEARCH FIELDSET
@@ -336,8 +348,9 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
         //
         this.freeText = new Ext.form.TextField({
 			fieldLabel : i18n.getMsg("freeText"),
-			labelStyle : 'width: 150px',
-			width: 200,
+			labelStyle : 'width: 110px',
+			//width: 200,
+            anchor: '90%',
 			emptyText : i18n.getMsg("anyText"),
 			enableKeyEvents : true,
 			
@@ -353,12 +366,14 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 				}
 			}
 		});
+        
 		this.lastModifiedBegin = new Ext.form.DateField({
 			fieldLabel : i18n.getMsg("modifiedbegin"),
 			width : 170,
 			format : this.dateFormat,
 			editable: false,
-			labelStyle : 'width: 140px',
+			labelStyle : 'width: 70px;',
+            anchor: "100%",
 			listeners:{
 				scope: this,
 				change: function(newValue,OldValue){
@@ -366,14 +381,14 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 				}
 			}
 		});
-		
 
 		this.lastModifiedEnd = new Ext.form.DateField({
 			fieldLabel : i18n.getMsg("modifiedend"),
 			width : 170,
 			format : this.dateFormat,
 			editable:false,
-			labelStyle : 'width: 140px',
+			labelStyle : 'width: 70px;',
+            anchor: "100%",
 			listeners:{
 				scope: this,
 				change: function(newValue,OldValue){
@@ -384,101 +399,92 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 		});
 
 		this.useBbox = new Ext.form.Checkbox({
-			fieldLabel : i18n.getMsg("mapExtent"),
-			labelStyle : 'width: 140px'
+			fieldLabel : i18n.getMsg("mapExtent")
+			//labelStyle : 'width: 140px'
 		});
 
 		this.dcValue = new Ext.form.TextField({
-			labelStyle : 'width: 140px',
-			width: 200,
+			//labelStyle : 'width: 140px',
+			//width: 200,
+            anchor: '100%',
 			fieldLabel : i18n.getMsg("dcProperty" + this.dcProperty)
 		});
 
+        this.dataBegin = new Ext.Button ({
+            iconCls: 'icon-reset',
+            tooltip: i18n.getMsg("clearDateBegin"),
+            scope:this,
+            handler:function(){
+                this.lastModifiedBegin.reset();
+                this.lastModifiedEnd.setMinValue();
+            }
+        });
+        
+        this.dataEnd = new Ext.Button ({
+            iconCls: 'icon-reset',
+            tooltip: i18n.getMsg("clearDateEnd"),
+            scope:this,
+            handler:function(){
+                this.lastModifiedEnd.reset();
+                this.lastModifiedBegin.setMaxValue();
+            }
+        });         
+                            
+        this.advancedSearchForm = new Ext.Panel({
+            bodyStyle:'padding:5px',
+            layout:'form',
+            header: false,
+            id: 'myForm',
+            //width: 200,
+            /*fieldDefaults: {
+                labelAlign: 'top',
+                msgTarget: 'side'
+            },*/
+            defaults: {
+                anchor: '100%'
+            },
+            items: [{
+                layout:'column',
+                border:false,
+                items:[{
+                    columnWidth:.80,
+                    border:false,
+                    layout: 'form',
+                    defaultType: 'textfield',
+                    items: [this.lastModifiedBegin, this.lastModifiedEnd,this.useBbox,this.dcValue]
+                },{
+                    columnWidth:.20,
+                    border:false,
+                    style:"position:relative;left:10px;",
+                    layout: 'form',
+                    defaultType: 'textfield',
+                    items: [this.dataBegin,this.dataEnd]
+                }]
+            }]
+        });
+        
 		//ADVANCED SEARCH FIELDSET
 		this.advancedSearchSet = new Ext.form.FieldSet({
 			checkboxToggle : true,
+            layout: "fit",
+            anchor:'100%',
 			title : i18n.getMsg("advancedSearchSet"),
-			autoHeight : true,
 			collapsed : true,
-			layout: 'table',
-			layoutConfig:{columns: 2},
-			
-			items : [ 
-				//first date row
-				{
-					layout: "form",
-					border: false,
-					colspan: 1,
-					width:320,
-					items: [this.lastModifiedBegin]
-                },
-				{
-					layout: "form",
-					border: false,
-					colspan: 1,
-					style:"position:relative;top:-2px;",
-					items: [
-						new Ext.Button ({
-							iconCls: 'icon-reset',
-							tooltip: i18n.getMsg("clearDateBegin"),
-							scope:this,
-							handler:function(){
-								this.lastModifiedBegin.reset();
-								this.lastModifiedEnd.setMinValue();
-							}
-						})
-					]
-                },
-				//second date row
-				{
-					layout: "form",
-					border: false,
-					colspan: 1,
-					width:320,
-					items: [this.lastModifiedEnd]
-                },
-				{
-					layout: "form",
-					border: false,
-					colspan: 1,
-					style:"position:relative;top:-2px;",
-					
-					items: [
-						new Ext.Button ({
-							iconCls: 'icon-reset',
-							tooltip: i18n.getMsg("clearDateEnd"),
-							scope:this,
-							handler:function(){
-								this.lastModifiedEnd.reset();
-								this.lastModifiedBegin.setMaxValue();
-							}
-						})
-					]
-                },
-                //other fields
-				{
-					layout: "form",
-					border: false,
-					colspan: 2,
-					width:345,
-					items: [
-						this.useBbox
-					]
-                },{
-					layout: "form",
-					border: false,
-					colspan: 2,
-					width:345,
-					items: [this.dcValue]
+			items : [this.advancedSearchForm]/*,
+            listeners: {
+                scope: this,
+                expand: function(p){
+                    this.SearchSet.updateBox();
                 }
-            ]
+            }*/
 		});
 		//
         //SEARCH FIELDSET
         //
         this.SearchSet = new Ext.form.FieldSet({
 			title : i18n.getMsg("basicSearchSet"),
-            autoHeight : true,
+             anchor:'100%',
+            //autoHeight : true,
             //autoWidth: true,
 			collapsed : false,
 			collapsible : false,
@@ -542,7 +548,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
           
             
 		}, this);
-        
+
 		CSWSearchTool.superclass.initComponent.call(this);
 	}
 });
