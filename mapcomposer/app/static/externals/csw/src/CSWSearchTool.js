@@ -237,6 +237,24 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
 	 * inizializza i componenti della GUI
 	 */
 	initComponent : function() {
+    
+        Ext.override(Ext.menu.Menu, {
+            autoWidth : function(){
+                var el = this.el, ul = this.ul;
+                if(!el){
+                    return;
+                }
+                var w = this.width;
+                if(w){
+                    el.setWidth(w);
+                }else if(Ext.isIE && !Ext.isIE8){
+                    el.setWidth(this.minWidth);
+                    var t = el.dom.offsetWidth; // force recalc
+                    el.setWidth(ul.getWidth()+el.getFrameWidth("lr"));
+                }
+            },
+        });
+    
         //
 		//CATALOG PANEL ELEMENTS
         //
@@ -450,14 +468,14 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
                     columnWidth:.80,
                     border:false,
                     layout: 'form',
-                    defaultType: 'textfield',
+                    //defaultType: 'textfield',
                     items: [this.lastModifiedBegin, this.lastModifiedEnd,this.useBbox,this.dcValue]
                 },{
                     columnWidth:.20,
                     border:false,
                     style:"position:relative;left:10px;",
                     layout: 'form',
-                    defaultType: 'textfield',
+                    //defaultType: 'textfield',
                     items: [this.dataBegin,this.dataEnd]
                 }]
             }]
