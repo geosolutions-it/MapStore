@@ -244,16 +244,31 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 (nativeExtent && OpenLayers.Bounds.fromArray(nativeExtent.bbox, swapAxis)) || 
                 OpenLayers.Bounds.fromArray(original.get("llbbox")).transform(new OpenLayers.Projection("EPSG:4326"), projection);
             
-            // make sure maxExtent is valid (transform does not succeed for all llbbox)
+            // make sure maxExtent is valid (transfzorm does not succeed for all llbbox)
             if (!(1 / maxExtent.getHeight() > 0) || !(1 / maxExtent.getWidth() > 0)) {
                 // maxExtent has infinite or non-numeric width or height
                 // in this case, the map maxExtent must be specified in the config
                 maxExtent = undefined;
             }
             
+            var styles=null;
+            var locCode= GeoExt.Lang.locale;
+            if(config.stylesAvail instanceof Array){
+               if(config.stylesAvail.length > 0){
+                    for(var k=0; k< config.stylesAvail.length; k++){
+                        if(config.stylesAvail[k].name == config.stylesAvail[0].name+"_"+locCode)
+                           styles= config.stylesAvail[0].name+"_"+locCode; 
+                    }
+                   if(! styles)
+                      styles= config.stylesAvail[0].name; 
+                } 
+            }else
+               styles=  config.stylesAvail; // OR    styles=config.styles+"_"+locCode;
+            
+            
             // use all params from sources layerBaseParams option
             var params = Ext.applyIf({
-                STYLES: config.styles,
+                STYLES: styles,
                 FORMAT: config.format,
                 TRANSPARENT: config.transparent,
 				CQL_FILTER: config.cql_filter,

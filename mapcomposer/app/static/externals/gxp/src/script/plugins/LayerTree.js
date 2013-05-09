@@ -86,6 +86,16 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
      */
     defaultGroup: "default",
     
+    
+    localLabelSep: "___",
+    
+    localIndexs:{
+            "en": 0,
+            "it": 1,
+            "fr": 2,
+            "de": 3
+    },
+    
     /** private: method[constructor]
      *  :arg config: ``Object``
      */
@@ -119,7 +129,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                 if (record === target.selectedLayer) {
                     node.on("rendernode", function() {
                         node.select();
-                        
+
                         // ///////////////////////////////////////////////////////////////////////
                         // to check the group at startup (if the layer node should be checked) 
                         // or when a layer is added.
@@ -156,10 +166,26 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
         });
         
         var groupConfig, defaultGroup = this.defaultGroup;
+        //TODO posrtare sull'add'
+      
+        var locIndex= this.localIndexs[GeoExt.Lang.locale];
+        var groupNames;
         for (var group in this.groups) {
-            groupConfig = typeof this.groups[group] == "string" ?
-                {title: this.groups[group]} : this.groups[group];
-            
+                
+              /*  
+                 groupConfig = typeof this.groups[group] == "string" ?
+                                            {title: this.groups[group]} : this.groups[group];*/
+            if(typeof this.groups[group] == "string"){
+                groupNames=this.groups[group].split(this.localLabelSep);
+                groupConfig= new Object();
+            }else{
+                groupNames=this.groups[group].title.split(this.localLabelSep);
+                groupConfig= this.groups[group];
+            }
+
+            if(groupNames.length > 0){
+                groupConfig.title= groupNames[locIndex] ? groupNames[locIndex] : groupNames[0];
+            }
             //
             // Managing withe spaces in strings
             // 
@@ -220,6 +246,8 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
             xtype: "treepanel",
             root: treeRoot,
             rootVisible: false,
+            localIndexs: this.localIndexs,
+            localLabelSep: this.localLabelSep,
             border: false,
             enableDD: true,
             selModel: new Ext.tree.DefaultSelectionModel({
@@ -436,3 +464,4 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
 });
 
 Ext.preg(gxp.plugins.LayerTree.prototype.ptype, gxp.plugins.LayerTree);
+

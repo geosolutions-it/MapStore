@@ -227,45 +227,60 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         var expander = this.createExpander();
         
         var addLayers = function() {
+            
             var apptarget = this.target;
-        
+            var locCode= GeoExt.Lang.locale;
             var key = this.sourceComboBox.getValue();
             var layerStore = this.target.mapPanel.layers;
             var source = this.target.layerSources[key];
             var records = capGridPanel.getSelectionModel().getSelections();
             var record;
-            for (var i=0, ii=records.length; i<ii; ++i) {
+            var defaultProps;
             
+            for (var i=0, ii=records.length; i<ii; ++i) {
+                
+                defaultProps = {
+                    name: records[i].get("name"),
+                    title: records[i].get("title"),
+                    source: key
+                };
+                
                 var keywords = records[i].get("keywords");
+                
+                /*var styles = records[i].get("styles");
+                
+                if(styles.length > 0){
+                    for(var k=0; k< styles.length; k++){
+                        if(styles[k].name == styles[0].name+"_"+locCode)
+                           defaultProps.styles= styles[0].name+"_"+locCode; 
+                    }
+                   if(! defaultProps.styles)
+                        defaultProps.styles= styles[0].name; 
+                }
+                */
+                
+                defaultProps.stylesAvail = records[i].get("styles");
+                
                 if(keywords){
-                    var uuidKey;
+                    var props=new Object();
+                    
                     for(var k=0; k<keywords.length; k++){
                         var keyword = keywords[k].value;
+                        
                         if(keyword.indexOf("uuid") != -1){
-                          uuidKey = keyword.substring(keyword.indexOf("uuid="));
-                          uuidKey = keyword.split("=")[1];
-                        }                      
+                          props.uuid = keyword.substring(keyword.indexOf("uuid="));
+                          props.uuid = keyword.split("=")[1];
+                        }  
+                        
+                        if(keyword.indexOf(locCode+"=") == 0){
+                          props.title = keyword.split("=")[1];
+                        }     
                     }
                     
-                    if(uuidKey)
-                        record = source.createLayerRecord({
-                            name: records[i].get("name"),
-                            title: records[i].get("title"),
-                            source: key,
-                            uuid: uuidKey
-                        });
-                    else
-                        record = source.createLayerRecord({
-                            name: records[i].get("name"),
-                            title: records[i].get("title"),
-                            source: key
-                        });
+                    props = Ext.applyIf(props, defaultProps);	
+		    record = source.createLayerRecord(props);
                 }else
-                    record = source.createLayerRecord({
-                        name: records[i].get("name"),
-                        title: records[i].get("title"),
-                        source: key
-                    });
+                   record = source.createLayerRecord(defaultProps); 
                   
                 if (record) {
                     if (record.get("group") === "background") {
