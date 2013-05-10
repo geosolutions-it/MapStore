@@ -251,19 +251,23 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 maxExtent = undefined;
             }
             
-            var styles=null;
+            /*TODO GET STYLE layer Name*/
+            //var styles= this.getLayerStyle(config);
+            var styles=config.style;
+            
             var locCode= GeoExt.Lang.locale;
             if(config.stylesAvail instanceof Array){
                if(config.stylesAvail.length > 0){
+                    var defaultStyle= config.style || config.stylesAvail[0].name;
                     for(var k=0; k< config.stylesAvail.length; k++){
-                        if(config.stylesAvail[k].name == config.stylesAvail[0].name+"_"+locCode)
-                           styles= config.stylesAvail[0].name+"_"+locCode; 
+                        if(config.stylesAvail[k].name == defaultStyle+"_"+locCode)
+                           styles= config.stylesAvail[k].name; 
                     }
                    if(! styles)
-                      styles= config.stylesAvail[0].name; 
+                      styles= defaultStyle; 
                 } 
-            }else
-               styles=  config.stylesAvail; // OR    styles=config.styles+"_"+locCode;
+            }/*else
+               styles=config.style;*/ // OR    styles=config.styles+"_"+locCode;
             
             
             // use all params from sources layerBaseParams option
@@ -508,17 +512,76 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      *  Create a config object that can be used to recreate the given record.
      */
     getConfigForRecord: function(record) {
+       
+        //var record= this.getRecordWithDefaultProps(rec);
         var config = gxp.plugins.WMSSource.superclass.getConfigForRecord.apply(this, arguments);
         var layer = record.getLayer();
         var params = layer.params;
         return Ext.apply(config, {
             format: params.FORMAT,
-            styles: params.STYLES,
+            styles: params.STYLES, //this.getLayerStyle(config)
             transparent: params.TRANSPARENT,
             cql_filter: params.CQL_FILTER,
 			elevation: params.ELEVATION
         });
     }
+    
+  /*  getLayerStyle: function (config){
+        var styles=config.style;
+            
+            var locCode= GeoExt.Lang.locale;
+            if(config.stylesAvail instanceof Array){
+               if(config.stylesAvail.length > 0){
+                    var defaultStyle= config.style || config.stylesAvail[0].name;
+                    for(var k=0; k< config.stylesAvail.length; k++){
+                        if(config.stylesAvail[k].name == defaultStyle+"_"+locCode)
+                           styles= config.stylesAvail[k].name; 
+                    }
+                   if(! styles)
+                      styles= defaultStyle; 
+                } 
+            }
+        return styles;    
+    },
+    
+    getRecordWithDefaultProps: function (record){
+        var locCode= GeoExt.Lang.locale;
+        var newrecord;
+        var defaultProps = {
+                    name: record.get("name"),
+                    title: record.get("title"),
+                    source: this
+                };
+                
+                var keywords = record.get("keywords");
+                
+               
+                
+                defaultProps.stylesAvail = record.get("styles");
+                
+                if(keywords){
+                    var props=new Object();
+                    
+                    for(var k=0; k<keywords.length; k++){
+                        var keyword = keywords[k].value;
+                        
+                        if(keyword.indexOf("uuid") != -1){
+                          props.uuid = keyword.substring(keyword.indexOf("uuid="));
+                          props.uuid = keyword.split("=")[1];
+                        }  
+                        
+                        if(keyword.indexOf(locCode+"=") == 0){
+                          props.title = keyword.split("=")[1];
+                        }     
+                    }
+                    
+                    props = Ext.applyIf(props, defaultProps);	
+		    newrecord = this.createLayerRecord(props);
+                }else
+                   newrecord = this.createLayerRecord(defaultProps);
+               
+         return newrecord;      
+    }*/
     
 });
 
