@@ -297,13 +297,15 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 				animation:false,
 				series: [
 					Ext.apply({
-							name:listVar.toYear -1
+							//name:listVar.toYear -1
+                            name: listVar.season == 'rabi' ? (listVar.toYear -2) + "-" + (listVar.toYear -1) : listVar.toYear -1
 						},this.chartOpt.series.previous),
 					Ext.apply({
-							name:listVar.toYear 
+							//name: ((listVar.season == 'rabi') &&  (new Date().getFullYear() == listVar.toYear)) ? listVar.toYear -1 + " - " + listVar.toYear : listVar.toYear
+                            name: listVar.season == 'rabi' ? (listVar.toYear -1) + "-" + listVar.toYear : listVar.toYear
 						},this.chartOpt.series.current),
 					Ext.apply({
-							name:listVar.fromYear +"-"+ listVar.toYear
+							name:"mean " + listVar.fromYear +"-"+ listVar.toYear
 						},this.chartOpt.series.aggregated)					
 				],
 				height: this.chartOpt.height,
@@ -383,7 +385,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                                 var s = '<b>'+ months[this.x-1] +'</b>';
                             }
                             Ext.each(this.points, function(i, point) {
-                                s += '<br/><span style="color:'+i.series.color+'">'+ i.series.name +': </span>'+
+                                s += '<br/><span style="color:'+i.series.color+'">' + ((i.key>=1&&i.key<=18) ? ((i.key>=1&&i.key<=6) && (i.series.index==1 || i.series.index==0) ? i.series.name : ((i.series.index==1 || i.series.index==0) ? i.series.name.split("-")[1].replace(/\s/g, "") : i.series.name)) :  i.series.name) + ': </span>'+
                                     '<span style="font-size:12px;">'+ i.y.toFixed(2)+'</span>';
                             });                            
                             return s;
