@@ -41,6 +41,8 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
     bodyStyle:'padding:5px',
     
     height: 500,
+    
+    cswPanelMode: null,
 	/**
 	 * Property: autoWidth
      * {boolean} se true, imposta la larghezza del componente automaticamente 
@@ -259,13 +261,13 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
 		//CATALOG PANEL ELEMENTS
         //
 		this.catalogChooser = new CSWCatalogChooser({
-			//width : 200,
+			width : 200,
 			XDProxy: this.panel.config.XDProxy,
             cswVersion: this.panel.config.cswVersion,
 			fieldLabel : i18n.getMsg("catalogField"),
 			emptyText : i18n.getMsg("catalogEmptyText"),
             //labelStyle : 'width: 150px',
-            anchor:'100%'/*,
+            anchor: this.cswPanelMode === 'addAction' ? '' : '100%'/*,
 			width: 200*/
             
 		});
@@ -367,8 +369,8 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
         this.freeText = new Ext.form.TextField({
 			fieldLabel : i18n.getMsg("freeText"),
 			labelStyle : 'width: 110px',
-			//width: 200,
-            anchor: '90%',
+			width: 200,
+            anchor: this.cswPanelMode === 'addAction' ? '' : '90%',
 			emptyText : i18n.getMsg("anyText"),
 			enableKeyEvents : true,
 			
@@ -387,11 +389,11 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
         
 		this.lastModifiedBegin = new Ext.form.DateField({
 			fieldLabel : i18n.getMsg("modifiedbegin"),
-			width : 170,
+			width : 150,
 			format : this.dateFormat,
 			editable: false,
 			labelStyle : 'width: 70px;',
-            anchor: "100%",
+            anchor: this.cswPanelMode === 'addAction' ? '' : '100%',
 			listeners:{
 				scope: this,
 				change: function(newValue,OldValue){
@@ -402,11 +404,11 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
 
 		this.lastModifiedEnd = new Ext.form.DateField({
 			fieldLabel : i18n.getMsg("modifiedend"),
-			width : 170,
+			width : 150,
 			format : this.dateFormat,
 			editable:false,
 			labelStyle : 'width: 70px;',
-            anchor: "100%",
+            anchor: this.cswPanelMode === 'addAction' ? '' : '100%',
 			listeners:{
 				scope: this,
 				change: function(newValue,OldValue){
@@ -423,8 +425,8 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
 
 		this.dcValue = new Ext.form.TextField({
 			//labelStyle : 'width: 140px',
-			//width: 200,
-            anchor: '100%',
+			width: 150,
+            anchor: this.cswPanelMode === 'addAction' ? '' : '100%',
 			fieldLabel : i18n.getMsg("dcProperty" + this.dcProperty)
 		});
 
@@ -465,13 +467,13 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
                 layout:'column',
                 border:false,
                 items:[{
-                    columnWidth:.80,
+                    columnWidth:this.cswPanelMode === 'addAction' ? .40 : .80,
                     border:false,
                     layout: 'form',
                     //defaultType: 'textfield',
                     items: [this.lastModifiedBegin, this.lastModifiedEnd,this.useBbox,this.dcValue]
                 },{
-                    columnWidth:.20,
+                    columnWidth:this.cswPanelMode === 'addAction' ? .60 : .20,
                     border:false,
                     style:"position:relative;left:10px;",
                     layout: 'form',
@@ -485,7 +487,7 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
 		this.advancedSearchSet = new Ext.form.FieldSet({
 			checkboxToggle : true,
             layout: "fit",
-            anchor:'100%',
+            anchor: this.cswPanelMode === 'addAction' ? '' : '100%',
 			title : i18n.getMsg("advancedSearchSet"),
 			collapsed : true,
 			items : [this.advancedSearchForm]/*,
@@ -501,7 +503,7 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
         //
         this.SearchSet = new Ext.form.FieldSet({
 			title : i18n.getMsg("basicSearchSet"),
-             anchor:'100%',
+             anchor: this.cswPanelMode === 'addAction' ? '' : '100%',
             //autoHeight : true,
             //autoWidth: true,
 			collapsed : false,

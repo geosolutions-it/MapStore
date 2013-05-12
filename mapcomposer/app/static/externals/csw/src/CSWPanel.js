@@ -55,7 +55,7 @@ CSWPanel = Ext.extend(Ext.Panel, {
 	 * Property: title
      * {string}aggiunge un titolo al pannello.
 	 */ 
-	//title : "Metadata Explorer",
+	title : "Metadata Explorer",
     /**
 	 * Property: defaults
      * {object} opzioni di default dei componenti contenuti nel pannello
@@ -70,7 +70,7 @@ CSWPanel = Ext.extend(Ext.Panel, {
 	 * Property: iconCls
      * {string} classe associata all'icona
 	 */ 
-    //iconCls: "icon-table",
+    iconCls: "icon-table",
 	
 	
 	/**
@@ -84,6 +84,12 @@ CSWPanel = Ext.extend(Ext.Panel, {
 	 *
 	 */
 	config : null,
+	/**
+	 * Property: panelMode
+	 * {boulean}. Se true indica che il CSWPanel è impostato come addAction altrimenti come addOutput
+	 *
+	 */    
+    cswPanelMode: null,
 	
 	events : [
 	
@@ -148,6 +154,7 @@ CSWPanel = Ext.extend(Ext.Panel, {
 		    grid: this.cswGrid,
 			dcProperty : this.config.dcProperty,
 			panel: this,
+            cswPanelMode: this.cswPanelMode,
             autoHeight:true,
             style:"margin-left:5px;margin-right:5px;"  ,         
 			initialBBox: new OpenLayers.Bounds(
@@ -158,25 +165,48 @@ CSWPanel = Ext.extend(Ext.Panel, {
 			),
 			filterVersion: this.config.filterVersion	
 		});
-		
-		this.items = [ 
-			{
-                layout: 'anchor',
-                defaults: {anchor: '-19'},
-                autoScroll: true,
-                region:'west',
-                width: 350,
-                items:[this.searchTool]
-			 },
-			{
-                layout:'fit',
-                collapsible: false,
-                region:'center',
-                items:[this.cswGrid]  
-			}
-		];
-		
-
+        
+        if(this.cswPanelMode === 'addAction'){
+            //items for actionTarget		
+            this.items = [ 
+                {
+                    layout: 'anchor',
+                    defaults: {anchor: '-19'},
+                    height: 270,
+                    width: 350,
+                    autoScroll: true,
+                    region:'north',
+                    items:[this.searchTool]
+                 },
+                {
+                    layout:'fit',
+                    //height: 250,
+                    collapsible: false,
+                    region:'center',
+                    items:[this.cswGrid]  
+                }
+            ];
+        }else{
+            //items for outputTarget
+            this.title = null;
+            this.iconCls = null;
+            this.items = [ 
+                {
+                    layout: 'anchor',
+                    defaults: {anchor: '-19'},
+                    autoScroll: true,
+                    region:'west',
+                    width: 400,
+                    items:[this.searchTool]
+                 },
+                {
+                    layout:'fit',
+                    collapsible: false,
+                    region:'center',
+                    items:[this.cswGrid]  
+                }
+            ];        
+        }
 		//event Handler associaton
 		this.addEvents(this.events);
 		
