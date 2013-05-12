@@ -351,7 +351,7 @@ CSWGrid = Ext.extend(Ext.grid.GridPanel, {
                                 layers:mapInfo,
                                 bbox: values.bounds,
                                 uuid: values.identifier,
-                                gnURL: values.absolutePath.substring(0,values.absolutePath.length-3)
+                                gnURL: values.absolutePath.substring(0,values.absolutePath.length-10)
                             };
 							
 							

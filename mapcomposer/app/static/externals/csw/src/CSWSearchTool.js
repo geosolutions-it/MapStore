@@ -267,7 +267,7 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
 			fieldLabel : i18n.getMsg("catalogField"),
 			emptyText : i18n.getMsg("catalogEmptyText"),
             //labelStyle : 'width: 150px',
-            anchor: this.cswPanelMode === 'addAction' ? '' : '100%'/*,
+            anchor: this.cswPanelMode === 'addActions' ? '' : '100%'/*,
 			width: 200*/
             
 		});
@@ -370,7 +370,7 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
 			fieldLabel : i18n.getMsg("freeText"),
 			labelStyle : 'width: 110px',
 			width: 200,
-            anchor: this.cswPanelMode === 'addAction' ? '' : '90%',
+            anchor: this.cswPanelMode === 'addActions' ? '' : '90%',
 			emptyText : i18n.getMsg("anyText"),
 			enableKeyEvents : true,
 			
@@ -393,7 +393,7 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
 			format : this.dateFormat,
 			editable: false,
 			labelStyle : 'width: 70px;',
-            anchor: this.cswPanelMode === 'addAction' ? '' : '100%',
+            anchor: this.cswPanelMode === 'addActions' ? '' : '100%',
 			listeners:{
 				scope: this,
 				change: function(newValue,OldValue){
@@ -408,7 +408,7 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
 			format : this.dateFormat,
 			editable:false,
 			labelStyle : 'width: 70px;',
-            anchor: this.cswPanelMode === 'addAction' ? '' : '100%',
+            anchor: this.cswPanelMode === 'addActions' ? '' : '100%',
 			listeners:{
 				scope: this,
 				change: function(newValue,OldValue){
@@ -426,7 +426,7 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
 		this.dcValue = new Ext.form.TextField({
 			//labelStyle : 'width: 140px',
 			width: 150,
-            anchor: this.cswPanelMode === 'addAction' ? '' : '100%',
+            anchor: this.cswPanelMode === 'addActions' ? '' : '100%',
 			fieldLabel : i18n.getMsg("dcProperty" + this.dcProperty)
 		});
 
@@ -467,13 +467,13 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
                 layout:'column',
                 border:false,
                 items:[{
-                    columnWidth:this.cswPanelMode === 'addAction' ? .40 : .80,
+                    columnWidth:this.cswPanelMode === 'addActions' ? .40 : .80,
                     border:false,
                     layout: 'form',
                     //defaultType: 'textfield',
                     items: [this.lastModifiedBegin, this.lastModifiedEnd,this.useBbox,this.dcValue]
                 },{
-                    columnWidth:this.cswPanelMode === 'addAction' ? .60 : .20,
+                    columnWidth:this.cswPanelMode === 'addActions' ? .60 : .20,
                     border:false,
                     style:"position:relative;left:10px;",
                     layout: 'form',
@@ -487,7 +487,7 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
 		this.advancedSearchSet = new Ext.form.FieldSet({
 			checkboxToggle : true,
             layout: "fit",
-            anchor: this.cswPanelMode === 'addAction' ? '' : '100%',
+            anchor: this.cswPanelMode === 'addActions' ? '' : '100%',
 			title : i18n.getMsg("advancedSearchSet"),
 			collapsed : true,
 			items : [this.advancedSearchForm]/*,
@@ -503,7 +503,7 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
         //
         this.SearchSet = new Ext.form.FieldSet({
 			title : i18n.getMsg("basicSearchSet"),
-             anchor: this.cswPanelMode === 'addAction' ? '' : '100%',
+             anchor: this.cswPanelMode === 'addActions' ? '' : '100%',
             //autoHeight : true,
             //autoWidth: true,
 			collapsed : false,

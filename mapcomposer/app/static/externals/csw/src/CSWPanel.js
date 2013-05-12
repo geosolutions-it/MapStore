@@ -166,7 +166,7 @@ CSWPanel = Ext.extend(Ext.Panel, {
 			filterVersion: this.config.filterVersion	
 		});
         
-        if(this.cswPanelMode === 'addAction'){
+        if(this.cswPanelMode === 'addActions'){
             //items for actionTarget		
             this.items = [ 
                 {
