@@ -40,7 +40,7 @@ CSWSearchTool = Ext.extend(Ext.Panel, {
     
     bodyStyle:'padding:5px',
     
-    height: 500,
+    //height: 500,
     
     cswPanelMode: null,
 	/**
