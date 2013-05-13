@@ -25,13 +25,13 @@
  * - <Ext.form.FormPanel>
  * 
  */
-CSWSearchTool = Ext.extend(Ext.Panel, {
+CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 	/**
 	 * Property: border
      * {boolean} se true viene disegnato un bordo.
 	 */ 
 	border : false,
-
+    xtype: 'form',
     layout: 'anchor',
     
     defaults: {
