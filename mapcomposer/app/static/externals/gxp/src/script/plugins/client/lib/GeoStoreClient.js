@@ -135,7 +135,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
         var url = mHost[2] == location.host ? mUrl : this.proxy + mUrl;
 	
         
-        Ext.Ajax.disableCaching=false;
+        Ext.Ajax.disableCaching=true;
         Ext.Ajax.request({
             url: url,
             method: method,
