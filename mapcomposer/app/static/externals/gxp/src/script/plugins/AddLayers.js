@@ -227,45 +227,23 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         var expander = this.createExpander();
         
         var addLayers = function() {
+            
             var apptarget = this.target;
-        
+           // var locCode= GeoExt.Lang.locale;
             var key = this.sourceComboBox.getValue();
             var layerStore = this.target.mapPanel.layers;
             var source = this.target.layerSources[key];
             var records = capGridPanel.getSelectionModel().getSelections();
             var record;
-            for (var i=0, ii=records.length; i<ii; ++i) {
+            var defaultProps;
             
-                var keywords = records[i].get("keywords");
-                if(keywords){
-                    var uuidKey;
-                    for(var k=0; k<keywords.length; k++){
-                        var keyword = keywords[k].value;
-                        if(keyword.indexOf("uuid") != -1){
-                          uuidKey = keyword.substring(keyword.indexOf("uuid="));
-                          uuidKey = keyword.split("=")[1];
-                        }                      
-                    }
-                    
-                    if(uuidKey)
-                        record = source.createLayerRecord({
-                            name: records[i].get("name"),
-                            title: records[i].get("title"),
-                            source: key,
-                            uuid: uuidKey
-                        });
-                    else
-                        record = source.createLayerRecord({
-                            name: records[i].get("name"),
-                            title: records[i].get("title"),
-                            source: key
-                        });
-                }else
-                    record = source.createLayerRecord({
-                        name: records[i].get("name"),
-                        title: records[i].get("title"),
-                        source: key
-                    });
+            for (var i=0, ii=records.length; i<ii; ++i) {
+                
+                defaultProps = {
+                    source: key
+                };
+
+                record = source.createLayerRecord(defaultProps); 
                   
                 if (record) {
                     if (record.get("group") === "background") {
@@ -296,7 +274,6 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             }
             
             apptarget.modified = true;
-            //modified = true;
         };
 
         var idx = 0;
