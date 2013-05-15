@@ -40,7 +40,7 @@
     };
     Ext.intercept(GeoExt.data.WMSCapabilitiesReader.prototype, "readRecords", keepRaw);
     GeoExt.data.AttributeReader &&
-        Ext.intercept(GeoExt.data.AttributeReader.prototype, "readRecords", keepRaw);
+    Ext.intercept(GeoExt.data.AttributeReader.prototype, "readRecords", keepRaw);
 })();
 
 /** api: (define)
@@ -209,7 +209,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
         return url.split("?").shift() + (keys ? 
             "?" + OpenLayers.Util.getParameterString(urlParams) :
             ""
-        );
+            );
     },
     
     /** api: method[createLayerRecord]
@@ -220,6 +220,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      */
     createLayerRecord: function(config) {
         var record;
+
         var index = this.store.findExact("name", config.name);
         if (index > -1) {
             var original = this.store.getAt(index);
@@ -231,6 +232,12 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
              * of layers in different SRS.
              */
             var projection = this.getMapProjection();
+
+            
+            var defProp= this.getDefaultProps(original);
+            
+            
+            config= Ext.applyIf(defProp, config);
             
             // If the layer is not available in the map projection, find a
             // compatible projection that equals the map projection. This helps
@@ -241,8 +248,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             var nativeExtent = original.get("bbox")[projCode];
             var swapAxis = layer.params.VERSION >= "1.3" && !!layer.yx[projCode];
             var maxExtent = 
-                (nativeExtent && OpenLayers.Bounds.fromArray(nativeExtent.bbox, swapAxis)) || 
-                OpenLayers.Bounds.fromArray(original.get("llbbox")).transform(new OpenLayers.Projection("EPSG:4326"), projection);
+            (nativeExtent && OpenLayers.Bounds.fromArray(nativeExtent.bbox, swapAxis)) || 
+            OpenLayers.Bounds.fromArray(original.get("llbbox")).transform(new OpenLayers.Projection("EPSG:4326"), projection);
             
             // make sure maxExtent is valid (transfzorm does not succeed for all llbbox)
             if (!(1 / maxExtent.getHeight() > 0) || !(1 / maxExtent.getWidth() > 0)) {
@@ -252,21 +259,21 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             }
             
             /*TODO GET STYLE layer Name*/
-            //var styles= this.getLayerStyle(config);
-            var styles=config.style;
+            var styles= this.getLayerStyle(config);
+           /* var styles=config.styles;
             
             var locCode= GeoExt.Lang.locale;
             if(config.stylesAvail instanceof Array){
-               if(config.stylesAvail.length > 0){
-                    var defaultStyle= config.style || config.stylesAvail[0].name;
+                if(config.stylesAvail.length > 0){
+                    var defaultStyle= config.styles || config.stylesAvail[0].name;
                     for(var k=0; k< config.stylesAvail.length; k++){
                         if(config.stylesAvail[k].name == defaultStyle+"_"+locCode)
-                           styles= config.stylesAvail[k].name; 
+                            styles= config.stylesAvail[k].name; 
                     }
-                   if(! styles)
-                      styles= defaultStyle; 
+                    if(! styles)
+                        styles= defaultStyle; 
                 } 
-            }/*else
+            }*//*else
                styles=config.style;*/ // OR    styles=config.styles+"_"+locCode;
             
             
@@ -275,8 +282,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 STYLES: styles,
                 FORMAT: config.format,
                 TRANSPARENT: config.transparent,
-				CQL_FILTER: config.cql_filter,
-				ELEVATION: config.elevation
+                CQL_FILTER: config.cql_filter,
+                ELEVATION: config.elevation
             }, this.layerBaseParams);
             
             // use all params from original
@@ -296,17 +303,17 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     opacity: ("opacity" in config) ? config.opacity : 1,
                     buffer: ("buffer" in config) ? config.buffer : 1,
                     projection: layerProjection,
-					vendorParams: config.vendorParams
+                    vendorParams: config.vendorParams
                 }
-            );
+                );
 
             // data for the new record
             var data = Ext.applyIf({
                 title: config.title, 
                 name: config.name,
                 group: config.group,
-				uuid: config.uuid,
-				gnURL: config.gnURL,
+                uuid: config.uuid,
+                gnURL: config.gnURL,
                 source: config.source,
                 properties: "gxp_wmslayerpanel",
                 fixed: config.fixed,
@@ -316,15 +323,50 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             
             // add additional fields
             var fields = [
-                {name: "source", type: "string"}, 
-                {name: "name", type: "string"}, 
-                {name: "group", type: "string"},
-				{name: "uuid", type: "string"},
-				{name: "gnURL", type: "string"},
-				{name: "title", type: "string"},
-                {name: "properties", type: "string"},
-                {name: "fixed", type: "boolean"},
-                {name: "selected", type: "boolean"}
+            {
+                name: "source", 
+                type: "string"
+            }, 
+
+            {
+                name: "name", 
+                type: "string"
+            }, 
+
+            {
+                name: "group", 
+                type: "string"
+            },
+
+            {
+                name: "uuid", 
+                type: "string"
+            },
+
+            {
+                name: "gnURL", 
+                type: "string"
+            },
+
+            {
+                name: "title", 
+                type: "string"
+            },
+
+            {
+                name: "properties", 
+                type: "string"
+            },
+
+            {
+                name: "fixed", 
+                type: "boolean"
+            },
+
+            {
+                name: "selected", 
+                type: "boolean"
+            }
             ];
             original.fields.each(function(field) {
                 fields.push(field);
@@ -439,7 +481,9 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
         if (!describedLayers[layerName]) {
             describedLayers[layerName] = cb;
             this.describeLayerStore.load({
-                params: {LAYERS: layerName},
+                params: {
+                    LAYERS: layerName
+                },
                 add: true,
                 callback: cb,
                 scope: this
@@ -475,7 +519,9 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     if (schema.getCount() == 0) {
                         schema.on("load", function() {
                             callback.call(scope, schema);
-                        }, this, {single: true});
+                        }, this, {
+                            single: true
+                        });
                     } else {
                         callback.call(scope, schema);
                     }
@@ -503,7 +549,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 callback.call(scope, false);
             }
         }, this);
-   },
+    },
     
     /** api: method[getConfigForRecord]
      *  :arg record: :class:`GeoExt.data.LayerRecord`
@@ -522,66 +568,64 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             styles: params.STYLES, //this.getLayerStyle(config)
             transparent: params.TRANSPARENT,
             cql_filter: params.CQL_FILTER,
-			elevation: params.ELEVATION
+            elevation: params.ELEVATION
         });
-    }
+    },
     
-  /*  getLayerStyle: function (config){
-        var styles=config.style;
-            
-            var locCode= GeoExt.Lang.locale;
-            if(config.stylesAvail instanceof Array){
-               if(config.stylesAvail.length > 0){
-                    var defaultStyle= config.style || config.stylesAvail[0].name;
-                    for(var k=0; k< config.stylesAvail.length; k++){
-                        if(config.stylesAvail[k].name == defaultStyle+"_"+locCode)
-                           styles= config.stylesAvail[k].name; 
-                    }
-                   if(! styles)
-                      styles= defaultStyle; 
-                } 
-            }
+    getLayerStyle: function (config){
+        var styles=null;
+        if(config.styles)
+            config.styles=config.styles.indexOf("_") == -1 ? config.styles : null;
+        
+        var locCode= GeoExt.Lang.locale;
+        if(config.stylesAvail instanceof Array){
+            if(config.stylesAvail.length > 0){
+                var defaultStyle= config.styles || config.stylesAvail[0].name;
+                for(var k=0; k< config.stylesAvail.length; k++){
+                    if(config.stylesAvail[k].name == defaultStyle+"_"+locCode)
+                        styles= config.stylesAvail[k].name; 
+                }
+                if(! styles)
+                    styles= defaultStyle; 
+            } 
+        }
         return styles;    
     },
     
-    getRecordWithDefaultProps: function (record){
+    getDefaultProps: function (record){
         var locCode= GeoExt.Lang.locale;
-        var newrecord;
         var defaultProps = {
-                    name: record.get("name"),
-                    title: record.get("title"),
-                    source: this
-                };
+            name: record.get("name"),
+            title: record.get("title")
+           // styles: this.getLayerStyle(record.get("styles")),
+           // source: this
+        };
                 
-                var keywords = record.get("keywords");
+        var keywords = record.get("keywords");
                 
-               
+        defaultProps.stylesAvail = record.get("styles");
                 
-                defaultProps.stylesAvail = record.get("styles");
-                
-                if(keywords){
-                    var props=new Object();
+        if(keywords){
+            var props=new Object();
                     
-                    for(var k=0; k<keywords.length; k++){
-                        var keyword = keywords[k].value;
+            for(var k=0; k<keywords.length; k++){
+                var keyword = keywords[k].value;
                         
-                        if(keyword.indexOf("uuid") != -1){
-                          props.uuid = keyword.substring(keyword.indexOf("uuid="));
-                          props.uuid = keyword.split("=")[1];
-                        }  
+                if(keyword.indexOf("uuid") != -1){
+                    props.uuid = keyword.substring(keyword.indexOf("uuid="));
+                    props.uuid = keyword.split("=")[1];
+                }  
                         
-                        if(keyword.indexOf(locCode+"=") == 0){
-                          props.title = keyword.split("=")[1];
-                        }     
-                    }
+                if(keyword.indexOf(locCode+"=") == 0){
+                    props.title = keyword.split("=")[1];
+                }     
+            }
                     
-                    props = Ext.applyIf(props, defaultProps);	
-		    newrecord = this.createLayerRecord(props);
-                }else
-                   newrecord = this.createLayerRecord(defaultProps);
-               
-         return newrecord;      
-    }*/
+            return Ext.applyIf(props, defaultProps);	
+		    
+        }else
+            return defaultProps;   
+    }
     
 });
 

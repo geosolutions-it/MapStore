@@ -229,7 +229,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         var addLayers = function() {
             
             var apptarget = this.target;
-            var locCode= GeoExt.Lang.locale;
+           // var locCode= GeoExt.Lang.locale;
             var key = this.sourceComboBox.getValue();
             var layerStore = this.target.mapPanel.layers;
             var source = this.target.layerSources[key];
@@ -245,7 +245,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                     source: key
                 };
                 
-                var keywords = records[i].get("keywords");
+                //var keywords = records[i].get("keywords");
                 
                 /*var styles = records[i].get("styles");
                 
@@ -259,9 +259,9 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                 }
                 */
                 
-                defaultProps.stylesAvail = records[i].get("styles");
+                //defaultProps.stylesAvail = records[i].get("styles");
                 
-                if(keywords){
+                /*if(keywords){
                     var props=new Object();
                     
                     for(var k=0; k<keywords.length; k++){
@@ -279,7 +279,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                     
                     props = Ext.applyIf(props, defaultProps);	
 		    record = source.createLayerRecord(props);
-                }else
+                }else*/
                    record = source.createLayerRecord(defaultProps); 
                   
                 if (record) {

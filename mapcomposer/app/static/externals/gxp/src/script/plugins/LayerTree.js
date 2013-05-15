@@ -87,7 +87,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
     defaultGroup: "default",
     
     
-    localLabelSep: "-",
+    localLabelSep: "__",
     
     localIndexs:{
             "en": 0,
