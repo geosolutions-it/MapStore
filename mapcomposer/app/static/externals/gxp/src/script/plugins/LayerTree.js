@@ -87,8 +87,15 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
     defaultGroup: "default",
     
     
-    localLabelSep: "__",
+    /** api: config[localLabelSep]
+     *  ``String`` Language separator for the groups name
+     */
+    localLabelSep: "-",
     
+    /** api: config[localLabelSep]
+     *  ``Object`` Contains the index position (in the groupName array obtained from the group name splitted with the "localLabelSep" separator) 
+     *   for each language supported
+     */
     localIndexs:{
             "en": 0,
             "it": 1,

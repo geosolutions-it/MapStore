@@ -240,47 +240,10 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             for (var i=0, ii=records.length; i<ii; ++i) {
                 
                 defaultProps = {
-                    name: records[i].get("name"),
-                    title: records[i].get("title"),
                     source: key
                 };
-                
-                //var keywords = records[i].get("keywords");
-                
-                /*var styles = records[i].get("styles");
-                
-                if(styles.length > 0){
-                    for(var k=0; k< styles.length; k++){
-                        if(styles[k].name == styles[0].name+"_"+locCode)
-                           defaultProps.styles= styles[0].name+"_"+locCode; 
-                    }
-                   if(! defaultProps.styles)
-                        defaultProps.styles= styles[0].name; 
-                }
-                */
-                
-                //defaultProps.stylesAvail = records[i].get("styles");
-                
-                /*if(keywords){
-                    var props=new Object();
-                    
-                    for(var k=0; k<keywords.length; k++){
-                        var keyword = keywords[k].value;
-                        
-                        if(keyword.indexOf("uuid") != -1){
-                          props.uuid = keyword.substring(keyword.indexOf("uuid="));
-                          props.uuid = keyword.split("=")[1];
-                        }  
-                        
-                        if(keyword.indexOf(locCode+"=") == 0){
-                          props.title = keyword.split("=")[1];
-                        }     
-                    }
-                    
-                    props = Ext.applyIf(props, defaultProps);	
-		    record = source.createLayerRecord(props);
-                }else*/
-                   record = source.createLayerRecord(defaultProps); 
+
+                record = source.createLayerRecord(defaultProps); 
                   
                 if (record) {
                     if (record.get("group") === "background") {
@@ -311,7 +274,6 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             }
             
             apptarget.modified = true;
-            //modified = true;
         };
 
         var idx = 0;

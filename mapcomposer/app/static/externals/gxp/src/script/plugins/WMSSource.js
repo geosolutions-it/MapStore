@@ -258,25 +258,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 maxExtent = undefined;
             }
             
-            /*TODO GET STYLE layer Name*/
             var styles= this.getLayerStyle(config);
-           /* var styles=config.styles;
-            
-            var locCode= GeoExt.Lang.locale;
-            if(config.stylesAvail instanceof Array){
-                if(config.stylesAvail.length > 0){
-                    var defaultStyle= config.styles || config.stylesAvail[0].name;
-                    for(var k=0; k< config.stylesAvail.length; k++){
-                        if(config.stylesAvail[k].name == defaultStyle+"_"+locCode)
-                            styles= config.stylesAvail[k].name; 
-                    }
-                    if(! styles)
-                        styles= defaultStyle; 
-                } 
-            }*//*else
-               styles=config.style;*/ // OR    styles=config.styles+"_"+locCode;
-            
-            
+        
             // use all params from sources layerBaseParams option
             var params = Ext.applyIf({
                 STYLES: styles,
@@ -323,50 +306,15 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             
             // add additional fields
             var fields = [
-            {
-                name: "source", 
-                type: "string"
-            }, 
-
-            {
-                name: "name", 
-                type: "string"
-            }, 
-
-            {
-                name: "group", 
-                type: "string"
-            },
-
-            {
-                name: "uuid", 
-                type: "string"
-            },
-
-            {
-                name: "gnURL", 
-                type: "string"
-            },
-
-            {
-                name: "title", 
-                type: "string"
-            },
-
-            {
-                name: "properties", 
-                type: "string"
-            },
-
-            {
-                name: "fixed", 
-                type: "boolean"
-            },
-
-            {
-                name: "selected", 
-                type: "boolean"
-            }
+                {name: "source", type: "string"}, 
+                {name: "name", type: "string"}, 
+                {name: "group", type: "string"},
+				{name: "uuid", type: "string"},
+				{name: "gnURL", type: "string"},
+				{name: "title", type: "string"},
+                {name: "properties", type: "string"},
+                {name: "fixed", type: "boolean"},
+                {name: "selected", type: "boolean"}
             ];
             original.fields.each(function(field) {
                 fields.push(field);
@@ -558,23 +506,33 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      *  Create a config object that can be used to recreate the given record.
      */
     getConfigForRecord: function(record) {
-       
-        //var record= this.getRecordWithDefaultProps(rec);
         var config = gxp.plugins.WMSSource.superclass.getConfigForRecord.apply(this, arguments);
         var layer = record.getLayer();
         var params = layer.params;
         return Ext.apply(config, {
             format: params.FORMAT,
-            styles: params.STYLES, //this.getLayerStyle(config)
+            styles: params.STYLES, 
             transparent: params.TRANSPARENT,
             cql_filter: params.CQL_FILTER,
             elevation: params.ELEVATION
         });
     },
     
+    
+    /** api: method[getLayerStyle]
+     *  :config:  ``Object``  The application config for this layer.
+     *  :returns: ``String``
+     *
+     *  Return the loacalized styles parmater if defined or the default styles parmater for the layer.
+     */
     getLayerStyle: function (config){
         var styles=null;
+        
+        
         if(config.styles)
+            /*
+            * If the config.styles contains the character "_" the style is already localized
+            **/
             config.styles=config.styles.indexOf("_") == -1 ? config.styles : null;
         
         var locCode= GeoExt.Lang.locale;
@@ -592,13 +550,18 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
         return styles;    
     },
     
+    
+    /** api: method[getDefaultProps]
+     *  :arg record: :class:`GeoExt.data.LayerRecord`
+     *  :returns: ``Object``
+     *
+     *  Create a config object with the capabilities information that can be used to recreate the given record.
+     */
     getDefaultProps: function (record){
         var locCode= GeoExt.Lang.locale;
         var defaultProps = {
             name: record.get("name"),
             title: record.get("title")
-           // styles: this.getLayerStyle(record.get("styles")),
-           // source: this
         };
                 
         var keywords = record.get("keywords");
