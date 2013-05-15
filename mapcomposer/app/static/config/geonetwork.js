@@ -77,6 +77,23 @@
         "topInUnits":"m",    
         "topOutUnits":"km"
     },
+    "customPanels":[
+        {
+            "xtype": "panel",
+            "title": "Metadata Explorer",
+            "iconCls": "csw-viewer",             
+            "border": false,
+            "id": "south",
+            "region": "south",
+            "layout": "fit",
+            "split":true,
+            "height": 330,
+            "collapsed": true,
+            "collapsible": true,
+            "ctCls": "south-panel",
+            "header": true
+        }
+    ],
 	"tools":[
 		{
 			"ptype": "gxp_layertree",
@@ -164,7 +181,7 @@
 		}, {
 			"ptype": "gxp_metadataexplorer",
 			"id": "metadataexplorer",
-            "actionTarget": {"target": "paneltbar", "index": 22},
+            "outputTarget": "south",
             "cswconfig": {
                 "catalogs": [
                         {"name": "SIT Comune FI" , "url": "http://datigis.comune.fi.it/geonetwork_test/srv/it/csw", "description": "GeoNetwork del Comune di Firenze"}
