@@ -90,7 +90,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
     /** api: config[localLabelSep]
      *  ``String`` Language separator for the groups name
      */
-    localLabelSep: "-",
+    localLabelSep: "_",
     
     /** api: config[localLabelSep]
      *  ``Object`` Contains the index position (in the groupName array obtained from the group name splitted with the "localLabelSep" separator) 
@@ -173,15 +173,21 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
         });
         
         var groupConfig, defaultGroup = this.defaultGroup;
-        //TODO posrtare sull'add'
+        
       
+        /*
+         * The locIndex is obtained from the localIndexs, with the current local code, 
+         * which contains the index position for each language supported
+         **/
         var locIndex= this.localIndexs[GeoExt.Lang.locale];
         var groupNames;
         for (var group in this.groups) {
-                
-              /*  
-                 groupConfig = typeof this.groups[group] == "string" ?
-                                            {title: this.groups[group]} : this.groups[group];*/
+            
+            /*
+             * The groupNames array, obtained from the group name 
+             * splitted with the "localLabelSep" separator, contains 
+             * the group name for each language supported
+             **/
             if(typeof this.groups[group] == "string"){
                 groupNames=this.groups[group].split(this.localLabelSep);
                 groupConfig= new Object();
@@ -189,10 +195,14 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                 groupNames=this.groups[group].title.split(this.localLabelSep);
                 groupConfig= this.groups[group];
             }
-
+            /*
+             * If the language is not supported, the group name 
+             * is the first contained in groupNames
+             **/
             if(groupNames.length > 0){
                 groupConfig.title= groupNames[locIndex] ? groupNames[locIndex] : groupNames[0];
             }
+            
             //
             // Managing withe spaces in strings
             // 
