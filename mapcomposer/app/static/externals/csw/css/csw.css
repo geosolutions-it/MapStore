@@ -24,6 +24,9 @@ color: #333333;
 .icon-reset{
 	background-image:url(../img/decline.png) !important;
 }
+.icon-add{
+	background-image:url(../img/add.png) !important;
+}
 .icon-layers{
 	background-image:url(../img/layers.png) !important;
 }

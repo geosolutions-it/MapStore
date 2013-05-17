@@ -143,71 +143,86 @@ CSWCatalogChooser = Ext.extend(Ext.form.ComboBox, {
          *
          */
         select: function(combo,record,index) {
-           
-           var catalogUrl=record.data.url;
-           var url="";
-           //build URL in "XDProxy present" case
-           if(this.XDProxy){
-                url= this.XDProxy.url + "?" + this.XDProxy.callback + "=" 
-                        + encodeURIComponent(
-                                catalogUrl 
-                                + "?"
-                                + "Request=GetCapabilities"
-                                + "&SERVICE=CSW"
-                                + "&Section=ServiceIdentification"
-                                + "&outputformat=application/xml"
-                                + "&AcceptVersions=" + this.cswVersion
-                        );
-            //build url without XDProxy
-            }else{
-                url =   catalogUrl 
-                        + "?Request=GetCapabilities"
-                        +"&SERVICE=CSW"
-                        +"&Section=ServiceIdentification"
-                        +"&outputformat=application/xml"
-                        +"&AcceptVersions=" +this.cswVersion;
-            }
-           
-           Ext.Ajax.request({
-                url: url ,
-                scope: this,
-                method: "GET",
-                timeout: 10000,
-                //CASE 200 OK
-                success : function(response, request) {
-				
-                    //case of OWS exception
-                    if( response.responseText.indexOf("ows:ExceptionReport") > 0 ){
-                        //Version problem
-                        if( response.responseText.indexOf("VersionNegotiationFailed") >0 ){
-                            Ext.Msg.show({
-                                title: i18n.getMsg("serverError.catalogCompatibilityProblem"),
-                                msg: i18n.getMsg("serverError.unsupportedVersion")+ "("+ this.cswVersion + ")",
-                                width: 300,
-                                icon: Ext.MessageBox.ERROR
-                            });
-                            combo.fireEvent("selectunsupported",i18n.getMsg("serverError.unsupportedVersion")+ "("+ this.cswVersion + ")");
-                        //Unsupported
-                        }else if( response.responseText.indexOf("InvalidParameterValue") >0 && response.responseText.indexOf("locator=\"service\"")) {
-                            Ext.Msg.show({
-                                title: i18n.getMsg("serverError.catalogCompatibilityProblem"),
-                                msg: i18n.getMsg("serverError.CSWNotAvaible"),
-                                width: 300,
-                                icon: Ext.MessageBox.ERROR
-                            });
-                            combo.fireEvent("selectunsupported",i18n.getMsg("serverError.CSWNotAvaible"));
-                        //getCapabilities not avaible
-                        }else if ( response.responseText.indexOf("exceptionCode=\"NoApplicableCode\"") ){
+           this.getCSWCapabilities(combo,record,index);
+		}
+    },
+
+    getCSWCapabilities: function(combo,record,index){
+        
+       var catalogUrl=record.data.url;
+       var url="";
+       var cswAdded=record.data.cswAdded ? true : false;
+       //build URL in "XDProxy present" case
+       if(this.XDProxy){
+            url= this.XDProxy.url + "?" + this.XDProxy.callback + "=" 
+                    + encodeURIComponent(
+                            catalogUrl 
+                            + "?"
+                            + "Request=GetCapabilities"
+                            + "&SERVICE=CSW"
+                            + "&Section=ServiceIdentification"
+                            + "&outputformat=application/xml"
+                            + "&AcceptVersions=" + this.cswVersion
+                    );
+        //build url without XDProxy
+        }else{
+            url =   catalogUrl 
+                    + "?Request=GetCapabilities"
+                    +"&SERVICE=CSW"
+                    +"&Section=ServiceIdentification"
+                    +"&outputformat=application/xml"
+                    +"&AcceptVersions=" +this.cswVersion;
+        }
+       
+       Ext.Ajax.request({
+            url: url ,
+            scope: this,
+            method: "GET",
+            timeout: 10000,
+            //CASE 200 OK
+            success : function(response, request) {
+            
+                //case of OWS exception
+                if( response.responseText.indexOf("ows:ExceptionReport") > 0 ){
+                    //Version problem
+                    if( response.responseText.indexOf("VersionNegotiationFailed") >0 ){
+                        Ext.Msg.show({
+                            title: i18n.getMsg("serverError.catalogCompatibilityProblem"),
+                            msg: i18n.getMsg("serverError.unsupportedVersion")+ "("+ this.cswVersion + ")",
+                            width: 300,
+                            icon: Ext.MessageBox.ERROR
+                        });
+                        combo.fireEvent("selectunsupported",i18n.getMsg("serverError.unsupportedVersion")+ "("+ this.cswVersion + ")");
+                    //Unsupported
+                    }else if( response.responseText.indexOf("InvalidParameterValue") >0 && response.responseText.indexOf("locator=\"service\"")) {
+                        Ext.Msg.show({
+                            title: i18n.getMsg("serverError.catalogCompatibilityProblem"),
+                            msg: i18n.getMsg("serverError.CSWNotAvaible"),
+                            width: 300,
+                            icon: Ext.MessageBox.ERROR
+                        });
+                        combo.fireEvent("selectunsupported",i18n.getMsg("serverError.CSWNotAvaible"));
+                    //getCapabilities not avaible
+                    }else if ( response.responseText.indexOf("exceptionCode=\"NoApplicableCode\"") ){
+                       if (cswAdded){ 
+
+                        combo.fireEvent("selectiunknownsupport",i18n.getMsg("serverError.unableToTestCapabilities"), cswAdded, record);
+                        }else{
                            Ext.Msg.show({
                                 title: i18n.getMsg("serverError.compatibilityInfo"),
                                 msg: i18n.getMsg("serverError.unableToTestCapabilities"),
                                 width: 300,
                                 icon: Ext.MessageBox.WARNING
                             }); 
-                            combo.fireEvent("selectiunknownsupport",i18n.getMsg("serverError.unableToTestCapabilities"));
+                            combo.fireEvent("selectiunknownsupport",i18n.getMsg("serverError.unableToTestCapabilities"), cswAdded, record);                                                
                         }
-                    //CASE Capabilities tag NOT founded    
-                    }else if( !(response.responseText.indexOf("csw:Capabilities") > 0) ){
+                    }
+                //CASE Capabilities tag NOT founded    
+                }else if( !(response.responseText.indexOf("csw:Capabilities") > 0) ){
+                    if (cswAdded){
+                         
+                        combo.fireEvent("selectunsupported",i18n.getMsg("serverError.unknownResponse"), cswAdded, record);
+                    }else{
                          Ext.Msg.show({
                             title: i18n.getMsg("serverError.standardCompatibility"),
                             msg:  i18n.getMsg("serverError.unknownResponse"),
@@ -215,35 +230,39 @@ CSWCatalogChooser = Ext.extend(Ext.form.ComboBox, {
                             icon: Ext.MessageBox.ERROR
                          });
                          
-                        combo.fireEvent("selectunsupported",i18n.getMsg("serverError.unknownResponse"));
-                    //Case Capabilities tag founded
-                    }else{
-                        var msg=combo.store.getAt(index).data.description;
-                        combo.fireEvent("selectsupported",msg);
+                        combo.fireEvent("selectunsupported",i18n.getMsg("serverError.unknownResponse"), cswAdded, record);                    
                     }
-                },
-                //CASE 401 402 timeout etc..
-                failure : function(response, request) {
-                    //Timeout case
-                    if(response.isTimeout && response.isTimeout==true){//TimeOut
-                        Ext.Msg.show({
-                            title: i18n.getMsg("timeout.title"),
-                            msg: i18n.getMsg("timeout.description"),
-                            buttons: Ext.Msg.OK,
-                            icon: Ext.MessageBox.ERROR 
-                        });
-                        combo.fireEvent("selectunsupported");
-                    //other errors case
+                //Case Capabilities tag founded
+                }else{
+                    var msg=combo.store.getAt(index).data.description;
+                    combo.fireEvent("selectsupported",msg);
+                }
+            },
+            //CASE 401 402 timeout etc..
+            failure : function(response, request) {
+                //Timeout case
+                if(response.isTimeout && response.isTimeout==true){//TimeOut
+                    Ext.Msg.show({
+                        title: i18n.getMsg("timeout.title"),
+                        msg: i18n.getMsg("timeout.description"),
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.MessageBox.ERROR 
+                    });
+                    combo.fireEvent("selectunsupported");
+                //other errors case
+                }else{
+                    if (cswAdded){
+                        combo.fireEvent("selectunsupported",i18n.getMsg("serverError.invalid")+ "<br/> Status:"+response.status, cswAdded, record);
                     }else{
                         Ext.Msg.alert(i18n.getMsg("serverError.title"), i18n.getMsg("serverError.invalid")+ "<br/> Status:"+response.status);
-                        combo.fireEvent("selectunsupported",i18n.getMsg("serverError.invalid")+ "<br/> Status:"+response.status);
+                        combo.fireEvent("selectunsupported",i18n.getMsg("serverError.invalid")+ "<br/> Status:"+response.status, cswAdded, record);                    
                     }
-                
-                }         
-           }); 
-		}
+                }
+            
+            }         
+       });     
+    
     },
-
 	/**
 	 * Method: initParameters
 	 * catalogs - {Array} cataloghi da cui scegliere. il formato degli elementi e' del tipo
@@ -257,7 +276,7 @@ CSWCatalogChooser = Ext.extend(Ext.form.ComboBox, {
 			data: catalogs,
 			autoLoad: true,
 			remoteSort: false,
-			fields: ["name", "url", "description","metaDataOptions"],
+			fields: ["name", "url", "description","metaDataOptions","cswAdded"],
 			sortInfo: {field: "name", direction: "ASC"}            	
 		});
         this.addEvents(this.events);

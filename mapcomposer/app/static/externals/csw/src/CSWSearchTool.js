@@ -105,6 +105,12 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
     mask: null,
 
 	autoHeight:true,
+    
+    /** api: config[addLayerSourceErrorText]
+     *  ``String``
+     *  Text for an error message when WMS GetCapabilities retrieval fails (i18n).
+     */
+    addLayerSourceErrorText: "Error getting CSW capabilities ({msg}).\nPlease check the url and try again. (e.g. http://example.com/geonetwork/srv/it/csw)",    
 
 	/**
 	 * Method: initParameters 
@@ -266,8 +272,8 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
             cswVersion: this.panel.config.cswVersion,
 			fieldLabel : i18n.getMsg("catalogField"),
 			emptyText : i18n.getMsg("catalogEmptyText"),
-            //labelStyle : 'width: 150px',
-            anchor: this.cswPanelMode === 'addActions' ? '' : '100%'/*,
+            labelStyle : 'width: 150px',
+            anchor: this.cswPanelMode === 'addActions' ? '' : '80%'/*,
 			width: 200*/
             
 		});
@@ -324,6 +330,43 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
                 
 			}
 		});
+        
+        //Button to open Windows add CSW Catalogs plugin
+        this.addCSWCatalogsButton = new Ext.Button ({
+            iconCls: 'icon-add',
+            labelStyle : 'width: 150px',
+			fieldLabel : i18n.getMsg("addCatalogs"),         
+            tooltip: i18n.getMsg("addCatalogs"),
+            scope:this,
+            handler:function(){
+                this.newCatalogsWindow.show();
+            }
+        });        
+        
+        //Window form to insert CSW Catalog
+        this.newCatalogsWindow = new CSWAddCatalogs({
+            modal: true,
+            listeners: {
+                "catalog-added": function(url) {
+                    this.newCatalogsWindow.setLoading();
+
+                    var catChooser = this.catalogChooser;
+
+                    var record = new catChooser.store.recordType({
+                        name:"Nuovo Catalogo",
+                        url:url, 
+                        description:"Nuovo Catalogo",
+                        cswAdded: true
+                    });
+                    
+                    catChooser.store.insert(0, [record]);
+                    catChooser.onSelect(record,0);
+
+                },
+                scope: this
+            }
+        });
+        
         //
         //CATALOG SELECTION FIELDSET
         //
@@ -338,7 +381,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 				width: 200
 				
 			},*/
-            items: [this.catalogChooser, this.catalogDescriptionPanel]
+            items: [this.addCSWCatalogsButton,this.catalogChooser, this.catalogDescriptionPanel]
         });
         /*
         //BASIC SEARCH FIELDSET
@@ -512,6 +555,8 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 		});
         
 		this.items = [ this.catalogSelectionPan, this.SearchSet ];
+        
+        //this.tbar = [this.addCSWCatalogsButton];
 
 		this.buttons = [ this.searchButton, this.resetButton ];
 
@@ -528,6 +573,9 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 		}, this);
         
 		this.catalogChooser.on('selectsupported', function(msg) {
+            //hide addCatalogs Window
+            this.newCatalogsWindow.hide();
+            
             //enable buttons
 			this.searchButton.enable();
 			this.resetButton.enable();
@@ -537,34 +585,64 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
             msg = '<div class="catalog-desc-ok">'+ msg + '</div>';
             this.catalogDescriptionPanel.update(msg);
             this.catalogDescriptionPanel.expand();
-			this.panel.setSize(this.panel.width -31,this.panel.getHeight);
+			//this.panel.setSize(this.panel.width -31,this.panel.getHeight);
 			
 		}, this);
         
-		this.catalogChooser.on('selectunsupported', function(msg) {
-			this.searchButton.disable();
-			this.resetButton.disable();
-            this.mask.hide();
-            this.mask=null;
-            //Show Description
-            var msg = '<div class="catalog-desc-error" /><div>'+ msg + '</div>';
-            this.catalogDescriptionPanel.update(msg);
-            this.catalogDescriptionPanel.expand();
-			this.panel.setSize(this.panel.width -31,this.panel.getHeight);
+		this.catalogChooser.on('selectunsupported', function(msg, cswAdded, record) {
+
+            if (cswAdded){
+                this.searchButton.disable();
+                this.resetButton.disable();
+                this.mask.hide();
+                this.mask=null;            
+                this.catalogChooser.store.remove(record);
+                this.catalogChooser.reset();
+                this.catalogDescriptionPanel.update();
+                this.catalogDescriptionPanel.collapse();                
+                this.newCatalogsWindow.setError(
+                    new Ext.Template(this.addLayerSourceErrorText).apply({msg: msg})
+                );                 
+            }else{
+                this.searchButton.disable();
+                this.resetButton.disable();
+                this.mask.hide();
+                this.mask=null;
+                //Show Description
+                var msg = '<div class="catalog-desc-error" /><div>'+ msg + '</div>';
+                this.catalogDescriptionPanel.update(msg);
+                this.catalogDescriptionPanel.expand();
+                //this.panel.setSize(this.panel.width -31,this.panel.getHeight);            
+            }
 		}, this);
         
-        this.catalogChooser.on('selectiunknownsupport', function(msg) {
-            //enable buttons
-			this.searchButton.enable();
-			this.resetButton.enable();
-            this.mask.hide();
-            this.mask=null;
-            //show description
-            var msg = '<div class="catalog-desc-warning">'+ msg + '</div>';
-            this.catalogDescriptionPanel.update(msg);
-            this.catalogDescriptionPanel.expand();
-			this.panel.setSize(this.panel.width -31,this.panel.getHeight);
-            //show description
+        this.catalogChooser.on('selectiunknownsupport', function(msg, cswAdded, record) {
+            if(cswAdded){
+                this.searchButton.disable();
+                this.resetButton.disable();
+                this.mask.hide();
+                this.mask=null;            
+                this.catalogChooser.store.remove(record);
+                this.catalogChooser.reset();
+                this.catalogDescriptionPanel.update();
+                this.catalogDescriptionPanel.collapse();
+                this.newCatalogsWindow.setError(
+                    new Ext.Template(this.addLayerSourceErrorText).apply({msg: msg})
+                );
+            }else{
+                //enable buttons
+                this.searchButton.enable();
+                this.resetButton.enable();
+                this.mask.hide();
+                this.mask=null;
+                //show description
+                var msg = '<div class="catalog-desc-warning">'+ msg + '</div>';
+                this.catalogDescriptionPanel.update(msg);
+                this.catalogDescriptionPanel.expand();
+                //this.panel.setSize(this.panel.width -31,this.panel.getHeight);
+                //show description
+            
+            }
           
             
 		}, this);
