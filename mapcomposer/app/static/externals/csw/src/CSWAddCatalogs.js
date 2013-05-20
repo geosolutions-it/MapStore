@@ -54,6 +54,11 @@ CSWAddCatalogs = Ext.extend(Ext.Window, {
      * The error message set (for example, when adding the source failed)
      */
     error: null,
+    
+    /** api: config[resizable]
+     * the window is not resizable
+     */
+    resizable : false,
 
     /** api: event[catalog-added]
      * Fired with the URL that the user provided as a parameter when the form 
