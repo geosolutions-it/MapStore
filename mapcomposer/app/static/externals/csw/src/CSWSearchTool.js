@@ -106,12 +106,6 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 
 	autoHeight:true,
     
-    /** api: config[addLayerSourceErrorText]
-     *  ``String``
-     *  Text for an error message when WMS GetCapabilities retrieval fails (i18n).
-     */
-    addLayerSourceErrorText: "Error getting CSW capabilities ({msg}).\nPlease check the url and try again. (e.g. http://example.com/geonetwork/srv/it/csw)",    
-
 	/**
 	 * Method: initParameters 
 	 * Inizializza la comboBox che contiene i cataloghi tra cui scegliere
@@ -246,7 +240,9 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 	 * inizializza i componenti della GUI
 	 */
 	initComponent : function() {
-    
+        
+        this.addCatalogErrorText = i18n.getMsg("cswSearch.addCatalogErrorText1") + " ({msg}).\n" + i18n.getMsg("cswSearch.addCatalogErrorText2") + " (e.g. http://example.com/geonetwork/srv/it/csw)";
+        
         Ext.override(Ext.menu.Menu, {
             autoWidth : function(){
                 var el = this.el, ul = this.ul;
@@ -477,7 +473,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 			width : 165,
 			format : this.dateFormat,
 			editable: false,
-			labelStyle : 'width: 70px;',
+			labelStyle : 'width: 102px;',
             anchor: this.cswPanelMode === 'addActions' ? '' : '100%',
 			listeners:{
 				scope: this,
@@ -519,6 +515,11 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
             iconCls: 'icon-reset',
             tooltip: i18n.getMsg("clearDateBegin"),
             scope:this,
+            style: {
+                width: 20,
+                height: 20,
+                marginBottom: '3px'
+            },
             handler:function(){
                 this.lastModifiedBegin.reset();
                 this.lastModifiedEnd.setMinValue();
@@ -663,7 +664,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
                 this.catalogDescriptionPanel.update();
                 this.catalogDescriptionPanel.collapse();                
                 this.newCatalogsWindow.setError(
-                    new Ext.Template(this.addLayerSourceErrorText).apply({msg: msg})
+                    new Ext.Template(this.addCatalogErrorText).apply({msg: msg})
                 );                 
             }else{
                 this.searchButton.disable();
@@ -689,7 +690,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
                 this.catalogDescriptionPanel.update();
                 this.catalogDescriptionPanel.collapse();
                 this.newCatalogsWindow.setError(
-                    new Ext.Template(this.addLayerSourceErrorText).apply({msg: msg})
+                    new Ext.Template(this.addCatalogErrorText).apply({msg: msg})
                 );
             }else{
                 //enable buttons
