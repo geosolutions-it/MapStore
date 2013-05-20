@@ -20,7 +20,7 @@
 
 /**
  * Class: CSWAddCatalogs
- * 
+ * This widget is used to add new CSW catalogs
  * 
  * Inherits from:
  *  - <Ext.Window>
@@ -28,41 +28,63 @@
  */
 CSWAddCatalogs = Ext.extend(Ext.Window, {
 
-    /** api: config[title]
-     *  ``String``
-     *  Window title (i18n).
+    /** 
+     *  Property: title
+     *  {string} Titolo della window
      */
     title: null,
 
-    /** api: config[bodyStyle]
-     * The default bodyStyle sets the padding to 0px
+    /** 
+     * Property: bodyStyle
+     * {string} Di default il bodyStyle è settato su padding = 0px
      */
     bodyStyle: "padding: 0px",
 
-    /** api: config[width]
-     * The width defaults to 300
+    /** 
+     * Property: width
+     * {number}  L'altezza di default della finestra
      */
     width: 300,
 
-    /** api: config[closeAction]
-     * The default closeAction is 'hide'
+    /** 
+     * Property: closeAction
+     * {string} Per default closeAction è 'hide'
      */
     closeAction: 'hide',
 
-    /** api: property[error]
-     * ``String``
-     * The error message set (for example, when adding the source failed)
+    /** 
+     * Property: error
+     * {strin} Il messaggio di errore, pep esempio quando una richiesta fallisce
      */
     error: null,
     
-    /** api: config[resizable]
-     * the window is not resizable
+    /** 
+     * Property: resizable
+     * {boolean} se false la finestra non è ridimensionabile
      */
     resizable : false,
+    
+    /** 
+     * Property: urlRegExp
+     *  `RegExp`
+     *
+     *  We want to allow protocol or scheme relative URL  
+     *  (e.g. //example.com/).  We also want to allow username and 
+     *  password in the URL (e.g. http://user:pass@example.com/).
+     *  We also want to support virtual host names without a top
+     *  level domain (e.g. http://localhost:9080/).  It also makes sense
+     *  to limit scheme to http and https.
+     *  The Ext "url" vtype does not support any of this.
+     *  This doesn't have to be completely strict.  It is meant to help
+     *  the user avoid typos.
+     *
+     */
+    urlRegExp: /^(http(s)?:)?\/\/([\w%]+:[\w%]+@)?([^@\/:]+)(:\d+)?\//i,    
 
-    /** api: event[catalog-added]
-     * Fired with the URL that the user provided as a parameter when the form 
-     * is submitted.
+    /** 
+     * Method: initComponent
+     * Metodo che inizializza la finestra per l'inserimento del nuovo catalogo CSW
+     *
      */
     initComponent: function() {
         
@@ -130,28 +152,15 @@ CSWAddCatalogs = Ext.extend(Ext.Window, {
 
     },
     
-    /** private: property[urlRegExp]
-     *  `RegExp`
-     *
-     *  We want to allow protocol or scheme relative URL  
-     *  (e.g. //example.com/).  We also want to allow username and 
-     *  password in the URL (e.g. http://user:pass@example.com/).
-     *  We also want to support virtual host names without a top
-     *  level domain (e.g. http://localhost:9080/).  It also makes sense
-     *  to limit scheme to http and https.
-     *  The Ext "url" vtype does not support any of this.
-     *  This doesn't have to be completely strict.  It is meant to help
-     *  the user avoid typos.
-     */
-    urlRegExp: /^(http(s)?:)?\/\/([\w%]+:[\w%]+@)?([^@\/:]+)(:\d+)?\//i,
-    
-    /** private: method[urlValidator]
+    /** 
+        Method: urlValidator
      *  :arg url: `String`
      *  :returns: `Boolean` The url looks valid.
      *  
      *  This method checks to see that a user entered URL looks valid.  It also
      *  does form validation based on the `error` property set when a response
      *  is parsed.
+     *
      */
     urlValidator: function(url) {
         var valid;
@@ -165,32 +174,27 @@ CSWAddCatalogs = Ext.extend(Ext.Window, {
         return valid;
     },
 
-    /** private: method[setLoading]
+    /** 
+     * Method: setLoading
      * Visually signify to the user that we're trying to load the service they 
      * requested, for example, by activating a loadmask.
+     *
      */
     setLoading: function() {
         this.loadMask.show();
     },
 
-    /** private: method[setError] 
+    /** 
+     * Method: setError 
      * :param: error the message to display
      *
      * Display an error message to the user indicating a failure occurred while
      * trying to load the service.
+     *
      */
     setError: function(error) {
         this.loadMask.hide();
         this.error = error;
         this.urlTextField.validate();
-    },
-
-    /** api: config[addSource]
-     * A callback function to be called when the user submits the form in the 
-     * NewSourceWindow.
-     *
-     * TODO this can probably be extracted to an event handler
-     */
-    addSource: function(url, success, failure, scope) {
     }
 });

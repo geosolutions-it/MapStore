@@ -105,6 +105,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
     mask: null,
 
 	autoHeight:true,
+    autoWidth:true,
     
 	/**
 	 * Method: initParameters 
@@ -518,7 +519,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
             style: {
                 width: 20,
                 height: 20,
-                marginBottom: '3px'
+                marginBottom: '2px'
             },
             handler:function(){
                 this.lastModifiedBegin.reset();
