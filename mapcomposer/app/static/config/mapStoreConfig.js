@@ -217,7 +217,16 @@
 			 "target":"paneltbar",
 			 "index":4
 		  }
-	   },{
+	       },{
+           "ptype":"gxp_ndvi",
+    "dataUrl":"http://84.33.2.24/geoserver/ows",
+           "outputConfig":{
+      "title":"NDVI",
+                  "id":"ndvi",
+                  "region":"east"
+           },
+           "outputTarget":"east"
+    },{
 		  "ptype":"gxp_nrl",
 		  "outputConfig":{
 			 "id":"nrl",
