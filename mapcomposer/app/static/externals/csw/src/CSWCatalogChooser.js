@@ -254,7 +254,8 @@ CSWCatalogChooser = Ext.extend(Ext.form.ComboBox, {
                         
                         var doc = response.responseXML;
                         var service = doc.getElementsByTagName(Ext.isChrome ? "ServiceIdentification" : "ows:ServiceIdentification")[0];
-                        var title = service.getElementsByTagName(Ext.isChrome ? "Title" : "ows:Title")[0].firstChild.data;
+                        //var title = service.getElementsByTagName(Ext.isChrome ? "Title" : "ows:Title")[0].firstChild.data;
+                        var title = service.getElementsByTagName(Ext.isChrome ? "Title" : "ows:Title")[0].firstChild ? (service.getElementsByTagName(Ext.isChrome ? "Title" : "ows:Title")[0].firstChild.data) : "";
 
                         var catalogTitle = title == "" ? i18n.getMsg("newCatalogAdded.Title") : title;
                         combo.fireEvent("selectsupported",msg,catalogTitle,url,cswAdded);
