@@ -350,11 +350,26 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
                     this.newCatalogsWindow.setLoading();
 
                     var catChooser = this.catalogChooser;
-
+                    
+                    var store = catChooser.getStore();
+                    
+                    var checkURL = [];
+                    
+                    store.each(function(record,idx){
+                        if (record.get('url') == url){
+                            checkURL.push(url)
+                        } 
+                    });
+                    
+                    if(checkURL.length != 0){
+                        this.newCatalogsWindow.setError( url + " - " + i18n.getMsg("newCatalogAdded.CatalogExists"));
+                        return;  
+                    }
+                    
                     var record = new catChooser.store.recordType({
-                        name:"",
+                        name: i18n.getMsg("newCatalogAdded.Title"),
                         url:url, 
-                        description:"",
+                        description: i18n.getMsg("newCatalogAdded.Title"),
                         metaDataOptions:"",
                         cswAdded: true
                     });
