@@ -112,6 +112,13 @@
 			"ptype": "gxp_dynamicgeocoder",
 			"outputTarget":"paneltbar",
 			"index": 27
+		},
+                {
+			"ptype": "gxp_importexport",
+			"service": "",
+                        "types": ["map","kml/kmz"],
+			"actionTarget": "paneltbar",
+			"index": 5
 		}
 	]
 }
