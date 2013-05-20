@@ -196,7 +196,9 @@ CSWPanel = Ext.extend(Ext.Panel, {
                     defaults: {anchor: '-19'},
                     autoScroll: true,
                     region:'west',
-                    width: 400,
+                    minWidth: 410,
+                    //maxWidth: 410,
+                    width: 410,
                     items:[this.searchTool]
                  },
                 {

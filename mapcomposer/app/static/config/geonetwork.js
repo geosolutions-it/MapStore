@@ -184,7 +184,7 @@
             "outputTarget": "south",
             "cswconfig": {
                 "catalogs": [
-                        {"name": "SIT Comune FI" , "url": "http://datigis.comune.fi.it/geonetwork_test/srv/it/csw", "description": "GeoNetwork del Comune di Firenze"}
+                        {"name": "SIT Comune FI" , "url": "http://datigis.comune.fi.it/geonetwork/srv/it/csw", "description": "GeoNetwork del Comune di Firenze"}
                     ],
                 "dcProperty": "title",
                 "initialBBox": {

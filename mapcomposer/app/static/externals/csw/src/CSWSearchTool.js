@@ -206,6 +206,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 		// Builds the query options
 		var options = {
 			url : this.catalogChooser.getValue(),
+            //url : this.catalogChooser.store.getAt(0).data.url,
 			filterVersion : this.filterVersion,
 			resultType : "full"
 		};
@@ -267,13 +268,13 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 		//CATALOG PANEL ELEMENTS
         //
 		this.catalogChooser = new CSWCatalogChooser({
-			width : 200,
+			//width : 200,
 			XDProxy: this.panel.config.XDProxy,
             cswVersion: this.panel.config.cswVersion,
 			fieldLabel : i18n.getMsg("catalogField"),
 			emptyText : i18n.getMsg("catalogEmptyText"),
-            labelStyle : 'width: 150px',
-            anchor: this.cswPanelMode === 'addActions' ? '' : '80%'/*,
+            labelStyle : 'width: 110px',
+            anchor: this.cswPanelMode === 'addActions' ? '' : '90%'/*,
 			width: 200*/
             
 		});
@@ -333,10 +334,8 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
         
         //Button to open Windows add CSW Catalogs plugin
         this.addCSWCatalogsButton = new Ext.Button ({
-            iconCls: 'icon-add',
-            labelStyle : 'width: 150px',
-			fieldLabel : i18n.getMsg("addCatalogs"),         
-            tooltip: i18n.getMsg("addCatalogs"),
+            iconCls: 'icon-add',        
+            tooltip: i18n.getMsg("addCatalogs.tooltip"),
             scope:this,
             handler:function(){
                 this.newCatalogsWindow.show();
@@ -353,9 +352,10 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
                     var catChooser = this.catalogChooser;
 
                     var record = new catChooser.store.recordType({
-                        name:"Nuovo Catalogo",
+                        name:"",
                         url:url, 
-                        description:"Nuovo Catalogo",
+                        description:"",
+                        metaDataOptions:"",
                         cswAdded: true
                     });
                     
@@ -366,6 +366,35 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
                 scope: this
             }
         });
+
+        this.catalogsManForm = new Ext.Panel({
+            //bodyStyle:'padding:5px',
+            layout:'form',
+            header: false,
+            border: false,
+            id: 'catManForm',
+            defaults: {
+                anchor: '100%'
+            },
+            items: [{
+                layout:'column',
+                border:false,
+                items:[{
+                    columnWidth:this.cswPanelMode === 'addActions' ? .40 : .84,
+                    border:false,
+                    layout: 'form',
+                    //defaultType: 'textfield',
+                    items: [this.catalogChooser, this.catalogDescriptionPanel]
+                },{
+                    columnWidth:this.cswPanelMode === 'addActions' ? .60 : .16,
+                    border:false,
+                    style:this.cswPanelMode === 'addActions' ? "position:relative;left:10px;" : "position:relative;left:-7px;",
+                    layout: 'form',
+                    //defaultType: 'textfield',
+                    items: [this.addCSWCatalogsButton]
+                }]
+            }]
+        });
         
         //
         //CATALOG SELECTION FIELDSET
@@ -373,16 +402,13 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
         this.catalogSelectionPan= new Ext.form.FieldSet({
             title: i18n.getMsg("catalogSelection"),
             autoHeight : true,
-            anchor:'100%',
+            layout: this.cswPanelMode === 'addActions' ? '' : 'fit',
+            anchor: this.cswPanelMode === 'addActions' ? '' : '100%',
 			collapsed : false,
 			collapsible : false,
-			/*defaults:{
-				labelStyle : 'width: 150px',
-				width: 200
-				
-			},*/
-            items: [this.addCSWCatalogsButton,this.catalogChooser, this.catalogDescriptionPanel]
+            items: [this.catalogsManForm]
         });
+        
         /*
         //BASIC SEARCH FIELDSET
 		this.basicSearchSet = new Ext.form.FieldSet({
@@ -412,8 +438,9 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
         this.freeText = new Ext.form.TextField({
 			fieldLabel : i18n.getMsg("freeText"),
 			labelStyle : 'width: 110px',
-			width: 200,
-            anchor: this.cswPanelMode === 'addActions' ? '' : '90%',
+            layout: 'anchor',
+            width: this.cswPanelMode === 'addActions' ? 165 : '',
+            anchor: this.cswPanelMode === 'addActions' ? '' : '75%',
 			emptyText : i18n.getMsg("anyText"),
 			enableKeyEvents : true,
 			
@@ -432,7 +459,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
         
 		this.lastModifiedBegin = new Ext.form.DateField({
 			fieldLabel : i18n.getMsg("modifiedbegin"),
-			width : 150,
+			width : 165,
 			format : this.dateFormat,
 			editable: false,
 			labelStyle : 'width: 70px;',
@@ -447,7 +474,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 
 		this.lastModifiedEnd = new Ext.form.DateField({
 			fieldLabel : i18n.getMsg("modifiedend"),
-			width : 150,
+			width : 165,
 			format : this.dateFormat,
 			editable:false,
 			labelStyle : 'width: 70px;',
@@ -462,13 +489,13 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 		});
 
 		this.useBbox = new Ext.form.Checkbox({
-			fieldLabel : i18n.getMsg("mapExtent")
-			//labelStyle : 'width: 140px'
+			fieldLabel : i18n.getMsg("mapExtent"),
+			labelStyle : 'width: 70px'
 		});
 
 		this.dcValue = new Ext.form.TextField({
-			//labelStyle : 'width: 140px',
-			width: 150,
+			labelStyle : 'width: 70px',
+			width: 165,
             anchor: this.cswPanelMode === 'addActions' ? '' : '100%',
 			fieldLabel : i18n.getMsg("dcProperty" + this.dcProperty)
 		});
@@ -494,10 +521,11 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
         });         
                             
         this.advancedSearchForm = new Ext.Panel({
-            bodyStyle:'padding:5px',
+            //bodyStyle:'padding:5px',
             layout:'form',
             header: false,
-            id: 'myForm',
+            border: false,
+            id: 'adSearchForm',
             //width: 200,
             /*fieldDefaults: {
                 labelAlign: 'top',
@@ -533,13 +561,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
             anchor: this.cswPanelMode === 'addActions' ? '' : '100%',
 			title : i18n.getMsg("advancedSearchSet"),
 			collapsed : true,
-			items : [this.advancedSearchForm]/*,
-            listeners: {
-                scope: this,
-                expand: function(p){
-                    this.SearchSet.updateBox();
-                }
-            }*/
+			items : [this.advancedSearchForm]
 		});
 		//
         //SEARCH FIELDSET
@@ -572,20 +594,45 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
             
 		}, this);
         
-		this.catalogChooser.on('selectsupported', function(msg) {
-            //hide addCatalogs Window
-            this.newCatalogsWindow.hide();
-            
-            //enable buttons
-			this.searchButton.enable();
-			this.resetButton.enable();
-            this.mask.hide();
-            this.mask=null;
-            //show description
-            msg = '<div class="catalog-desc-ok">'+ msg + '</div>';
-            this.catalogDescriptionPanel.update(msg);
-            this.catalogDescriptionPanel.expand();
-			//this.panel.setSize(this.panel.width -31,this.panel.getHeight);
+		this.catalogChooser.on('selectsupported', function(msg,catalogTitle,url,cswAdded) {
+            if(cswAdded){
+                //hide addCatalogs Window
+                this.newCatalogsWindow.hide();
+                
+                var catChooser2 = this.catalogChooser;
+
+                var record2 = catChooser2.store.getAt(0);
+                record2.set("name", catalogTitle);
+                record2.set("description", catalogTitle);
+                record2.set("cswAdded", false);
+
+                //enable buttons
+                this.searchButton.enable();
+                this.resetButton.enable();
+                this.mask.hide();
+                this.mask=null;
+                var msgAdded=catChooser2.store.getAt(0).data.description;
+                //show description
+                msgAdded = '<div class="catalog-desc-ok">'+ msgAdded + '</div>';
+                this.catalogDescriptionPanel.update(msgAdded);
+                this.catalogDescriptionPanel.expand();
+                catChooser2.setValue(catChooser2.store.getAt(0).data.url);
+                //this.panel.setSize(this.panel.width -31,this.panel.getHeight);
+            }else{
+                //hide addCatalogs Window
+                this.newCatalogsWindow.hide();
+                
+                //enable buttons
+                this.searchButton.enable();
+                this.resetButton.enable();
+                this.mask.hide();
+                this.mask=null;
+                //show description
+                msg = '<div class="catalog-desc-ok">'+ msg + '</div>';
+                this.catalogDescriptionPanel.update(msg);
+                this.catalogDescriptionPanel.expand();
+                //this.panel.setSize(this.panel.width -31,this.panel.getHeight);            
+            }
 			
 		}, this);
         

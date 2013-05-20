@@ -32,32 +32,8 @@ CSWAddCatalogs = Ext.extend(Ext.Window, {
      *  ``String``
      *  Window title (i18n).
      */
-    title: "Add New CSW Catalog...",
+    title: null,
 
-    /** api: config[cancelText]
-     *  ``String``
-     *  Text for cancel button (i18n).
-     */
-    cancelText: "Cancel",
-    
-    /** api: config[addServerText]
-     *  ``String``
-     *  Text for add server button (i18n).
-     */
-    addServerText: "Add CSW Catalog",
-    
-    /** api: config[invalidURLText]
-     *  ``String``
-     *  Message to display when an invalid URL is entered (i18n).
-     */
-    invalidURLText: "Enter a valid URL to a CSW endpoint (e.g. http://example.com/geonetwork/srv/it/csw)",
-
-    /** api: config[contactingServerText]
-     *  ``String``
-     *  Text for server contact (i18n).
-     */
-    contactingServerText: "Contacting CSW Catalog...",
-    
     /** api: config[bodyStyle]
      * The default bodyStyle sets the padding to 0px
      */
@@ -84,7 +60,9 @@ CSWAddCatalogs = Ext.extend(Ext.Window, {
      * is submitted.
      */
     initComponent: function() {
-
+        
+        this.title = i18n.getMsg("addCatalogs.title"),
+        
         this.addEvents("catalog-added");
 
         this.urlTextField = new Ext.form.TextField({
@@ -108,7 +86,7 @@ CSWAddCatalogs = Ext.extend(Ext.Window, {
 
         this.bbar = [
             new Ext.Button({
-                text: this.cancelText,
+                text: i18n.getMsg("addCatalogs.cancelText"),
                 handler: function() {
                     this.hide();
                 },
@@ -116,7 +94,7 @@ CSWAddCatalogs = Ext.extend(Ext.Window, {
             }),
             new Ext.Toolbar.Fill(),
             new Ext.Button({
-                text: this.addServerText,
+                text: i18n.getMsg("addCatalogs.addServerText"),
                 iconCls: "add",
                 handler: function() {
                     // Clear validation before trying again.
@@ -134,7 +112,7 @@ CSWAddCatalogs = Ext.extend(Ext.Window, {
         CSWAddCatalogs.superclass.initComponent.call(this);
 
         this.form.on("render", function() {
-            this.loadMask = new Ext.LoadMask(this.form.getEl(), {msg:this.contactingServerText});
+            this.loadMask = new Ext.LoadMask(this.form.getEl(), {msg:i18n.getMsg("addCatalogs.contactingServerText")});
         }, this);
 
         this.on("hide", function() {
@@ -144,20 +122,6 @@ CSWAddCatalogs = Ext.extend(Ext.Window, {
             this.urlTextField.reset();
             this.loadMask.hide();
         }, this);
-        
-        /*this.on("catalog-added", function(url) {
-            this.setLoading();
-            var success = function(record) {
-                this.hide();
-            };
-
-            var failure = function() {
-                this.setError(this.sourceLoadFailureMessage);
-            };
-
-            // this.explorer.addSource(url, null, success, failure, this);
-            this.addSource(url, success, failure, this);
-        }, this);*/
 
     },
     
@@ -187,7 +151,7 @@ CSWAddCatalogs = Ext.extend(Ext.Window, {
     urlValidator: function(url) {
         var valid;
         if (!this.urlRegExp.test(url)) {
-            valid = this.invalidURLText;
+            valid = i18n.getMsg("addCatalogs.invalidURLText");
         } else {
             valid = !this.error || this.error;
         }

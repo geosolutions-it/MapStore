@@ -38,8 +38,8 @@ CSWCatalogChooser = Ext.extend(Ext.form.ComboBox, {
 	 * Property: labelWitdh
      * {number} dimensione della Label
 	 */ 
-	labelWitdh : 30,
-	
+	//labelWitdh : 30,
+
 	/**
 	 * Property: name
      * {number} nome associato al componente Extjs
@@ -146,7 +146,13 @@ CSWCatalogChooser = Ext.extend(Ext.form.ComboBox, {
            this.getCSWCapabilities(combo,record,index);
 		}
     },
-
+    /** 
+     * Method: getCSWCapabilities
+     * Richiesta alla getCapabilities del server per 
+     * per verificare la compatibilita' con la versione del protocollo csw. Questa 
+     * funzione scatena gli eventi <selectsupported> e <selectunsupported> .
+     *
+     */
     getCSWCapabilities: function(combo,record,index){
         
        var catalogUrl=record.data.url;
@@ -186,22 +192,32 @@ CSWCatalogChooser = Ext.extend(Ext.form.ComboBox, {
                 if( response.responseText.indexOf("ows:ExceptionReport") > 0 ){
                     //Version problem
                     if( response.responseText.indexOf("VersionNegotiationFailed") >0 ){
+                        if (cswAddes){
+
+                        combo.fireEvent("selectunsupported",i18n.getMsg("serverError.unsupportedVersion")+ "("+ this.cswVersion + ")", cswAdded, record);
+                        }else{
                         Ext.Msg.show({
                             title: i18n.getMsg("serverError.catalogCompatibilityProblem"),
                             msg: i18n.getMsg("serverError.unsupportedVersion")+ "("+ this.cswVersion + ")",
                             width: 300,
                             icon: Ext.MessageBox.ERROR
                         });
-                        combo.fireEvent("selectunsupported",i18n.getMsg("serverError.unsupportedVersion")+ "("+ this.cswVersion + ")");
+                        combo.fireEvent("selectunsupported",i18n.getMsg("serverError.unsupportedVersion")+ "("+ this.cswVersion + ")", cswAdded, record);                        
+                        }
                     //Unsupported
                     }else if( response.responseText.indexOf("InvalidParameterValue") >0 && response.responseText.indexOf("locator=\"service\"")) {
+                        if (cswAdded){
+
+                        combo.fireEvent("selectunsupported",i18n.getMsg("serverError.CSWNotAvaible"), cswAdded, record);
+                        }else{
                         Ext.Msg.show({
                             title: i18n.getMsg("serverError.catalogCompatibilityProblem"),
                             msg: i18n.getMsg("serverError.CSWNotAvaible"),
                             width: 300,
                             icon: Ext.MessageBox.ERROR
                         });
-                        combo.fireEvent("selectunsupported",i18n.getMsg("serverError.CSWNotAvaible"));
+                        combo.fireEvent("selectunsupported",i18n.getMsg("serverError.CSWNotAvaible"), cswAdded, record);                        
+                        }
                     //getCapabilities not avaible
                     }else if ( response.responseText.indexOf("exceptionCode=\"NoApplicableCode\"") ){
                        if (cswAdded){ 
@@ -234,21 +250,36 @@ CSWCatalogChooser = Ext.extend(Ext.form.ComboBox, {
                     }
                 //Case Capabilities tag founded
                 }else{
-                    var msg=combo.store.getAt(index).data.description;
-                    combo.fireEvent("selectsupported",msg);
+                    if (cswAdded){
+                        
+                        var doc = response.responseXML;
+                        var service = doc.getElementsByTagName(Ext.isChrome ? "ServiceIdentification" : "ows:ServiceIdentification")[0];
+                        var title = service.getElementsByTagName(Ext.isChrome ? "Title" : "ows:Title")[0].firstChild.data;
+
+                        var catalogTitle = title == "" ? i18n.getMsg("newCatalogAdded.Title") : title;
+                        combo.fireEvent("selectsupported",msg,catalogTitle,url,cswAdded);
+                    }else{
+                        var msg=combo.store.getAt(index).data.description;
+                        combo.fireEvent("selectsupported",msg,catalogTitle,url,cswAdded);                    
+                    }
                 }
             },
             //CASE 401 402 timeout etc..
             failure : function(response, request) {
                 //Timeout case
                 if(response.isTimeout && response.isTimeout==true){//TimeOut
+                    if (cswAdded){
+
+                    combo.fireEvent("selectunsupported", cswAdded, record);
+                    }else{
                     Ext.Msg.show({
                         title: i18n.getMsg("timeout.title"),
                         msg: i18n.getMsg("timeout.description"),
                         buttons: Ext.Msg.OK,
                         icon: Ext.MessageBox.ERROR 
                     });
-                    combo.fireEvent("selectunsupported");
+                    combo.fireEvent("selectunsupported", cswAdded, record);                    
+                    }
                 //other errors case
                 }else{
                     if (cswAdded){
