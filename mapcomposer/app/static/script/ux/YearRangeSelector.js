@@ -35,10 +35,12 @@ Ext.ux.YearRangeSelector = Ext.extend(Ext.form.CompositeField,{
 		if(value < endValue){
 			//this.slider.setValue(1,value,true);
 			this.endValue.setValue(value);
+            this.fireEvent('change',startValue,endValue);
 		}
 		if(value < startValue){
 			//this.slider.setValue(1,value,true);
 			this.startValue.setValue(value);
+            this.fireEvent('change',startValue,endValue);
 		}
 		this.slider.setMaxValue(value);
 		this.startValue.setMaxValue(value);
@@ -52,10 +54,12 @@ Ext.ux.YearRangeSelector = Ext.extend(Ext.form.CompositeField,{
 		if(value > endValue){
 			//this.slider.setValue(1,value,true);
 			this.endValue.setValue(value);
+            this.fireEvent('change',startValue,endValue);
 		}
 		if(value > startValue){
 			//this.slider.setValue(1,value,true);
 			this.startValue.setValue(value);
+            this.fireEvent('change',startValue,endValue);
 		}
 		this.slider.setMinValue(value);
 		this.startValue.setMinValue(value);
