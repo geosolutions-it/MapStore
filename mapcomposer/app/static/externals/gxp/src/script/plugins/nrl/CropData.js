@@ -307,6 +307,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             var yearrange = yearRangeStore.getById(selectedCommodity);
                             yrs.setMaxValue(yearrange.get('max'));
                             yrs.setMinValue(yearrange.get('min'));
+                            cb.ownerCt.referenceYear.setText(yrs.endValue.getValue());
                             
                             var comboProd = Ext.getCmp('comboProd');
                             
@@ -341,10 +342,11 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 								 callback:function(){
 									var start  = yearRangeStore.getById('Wheat');
 									if(this.output.yearRangeSelector){
-										 var max = start.get('max');
+										var max = start.get('max');
 										var min = start.get('min');
 										this.output.yearRangeSelector.setMaxValue(max);
 										this.output.yearRangeSelector.setMinValue(min);
+                                        this.output.referenceYear.setText(max);
 									}else{
 										rangeData = start;
 									}
