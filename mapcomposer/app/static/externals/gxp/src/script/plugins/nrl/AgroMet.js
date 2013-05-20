@@ -106,7 +106,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                                 submitButton.destroy();
                                 delete submitButton;
                                 this.output.addButton({              
-									url: this.dataUrl, //'http://84.33.2.24/geoserver/ows',//TODO externalize this
+									url: this.dataUrl, 
                                     xtype: 'gxp_nrlAgrometTabButton',
                                     ref: '../submitButton',
                                     target:this.target,

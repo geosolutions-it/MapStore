@@ -44,7 +44,8 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
     
     /** api: ptype = gxp_ndvi */
     ptype: "gxp_ndvi",
-    
+    layer: "nrl:NDVI-SPOT",
+    source: "nrl",
     dataUrl: null,
     
     /** private: method[addOutput]
@@ -82,7 +83,6 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
 		
         config = Ext.apply({
 			xtype: 'panel',
-			id:'mio_pannello',
 			border: false,
             layout: "fit",
             items:[{
@@ -133,25 +133,29 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                         }
                     ]}],	
                     buttons:[{
-                        url: this.dataUrl,
+                        url: me.dataUrl,
                         text: "View NDVI",
                         //xtype: 'gxp_nrlCropDataButton',
                         ref: '../submitButton',
-                        target:this.target,
-                        form: this,
+                        target: me.target,
+                        form: me,
                         disabled:false,
-                        scope: this,
-                        handler: function(){
+                        handler: function(button, event){
                             //2012-01-01T00:00:00.000Z,2012-01-02T00:00:00.000Z,2012-01-03T00:00:00.000Z,2012-02-01T00:00:00.000Z
-                            var data1 = this.output[0].items.items[0].items.items[0].decad.value;
-                            var data2 = this.output[0].items.items[0].items.items[0].sel_month_years.value.split('-');
+                            var data1 = button.refOwner.range.decad.value;
+                            var data2 = button.refOwner.range.sel_month_years.value.split('-');
                             var intero = parseInt(data2[0]);
                             var dateUTC = new Date(Date.UTC(data2[1],intero-1,data1));
                             var dateISOString = dateUTC.toISOString();
-                            var layer = app.mapPanel.map.getLayersByName("NDVI-SPOT")[0];
-                            layer.mergeNewParams({
-                                time : dateISOString
-                            });     
+                            var layer = target.mapPanel.map.getLayersByName("NDVI-SPOT")[0];
+                            if (layer && me.replace){
+                                layer.mergeNewParams({
+                                    time : dateISOString
+                                }); 
+                            }else{
+                                Ext.Msg.alert("Not yet implemented","add NDVI layer for this date:" +dateISOString);
+                                
+                            }
                             if(!layer.visiblity) {
                                 layer.setVisibility(true);
                             }
