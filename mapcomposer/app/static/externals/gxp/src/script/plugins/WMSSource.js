@@ -565,10 +565,10 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
         };
                 
         var keywords = record.get("keywords");
-                
+        var identifiers = record.get("identifiers") || undefined;        
         defaultProps.stylesAvail = record.get("styles");
                 
-        if(keywords){
+        if(keywords.length>0 || !this.isEmptyObject(identifiers)){
             var props=new Object();
                     
             for(var k=0; k<keywords.length; k++){
@@ -584,10 +584,25 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 }     
             }
                     
+            for(var identifierKey in identifiers){
+                if(identifierKey === locCode && identifiers.hasOwnProperty(identifierKey)) {
+                    props.title = identifiers[identifierKey];
+                }
+            }
+                    
             return Ext.applyIf(props, defaultProps);	
 		    
-        }else
-            return defaultProps;   
+        } else {
+            return {};   
+    }
+    },
+    isEmptyObject: function(obj) {
+        for(var prop in obj){
+            if(obj.hasOwnProperty(prop)) {
+                return false;
+            }
+        }
+        return true;
     }
     
 });
