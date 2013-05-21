@@ -189,9 +189,9 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
                     if (ownerCt && ownerCt instanceof Ext.Window) {
                         ownerCt.hide();
                     } else {
-                        addAttributeFilter(
+                        addFilterBuilder(
                             featureManager, featureManager.layerRecord,
-                            featureManater.schema
+                            featureManager.schema
                         );
                     }
                 }
