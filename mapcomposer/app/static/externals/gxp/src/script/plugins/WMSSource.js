@@ -572,7 +572,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             var props=new Object();
                     
             for(var k=0; k<keywords.length; k++){
-                var keyword = keywords[k].value;
+                var keyword = keywords[k].value || keywords[k];
                         
                 if(keyword.indexOf("uuid") != -1){
                     props.uuid = keyword.substring(keyword.indexOf("uuid="));
