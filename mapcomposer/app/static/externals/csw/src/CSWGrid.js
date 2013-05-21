@@ -37,7 +37,7 @@ CSWGrid = Ext.extend(Ext.grid.GridPanel, {
 	 * Property: border
      * {boolean} se true viene disegnato un bordo.
 	 */ 
-	border : false,
+	border : true,
 	/**
 	 * Property: enableHDMenu
      * {boolean} se true viene aggiunto a ogni colonna un menu che permette l'ordinamento delle colonne.
@@ -47,7 +47,7 @@ CSWGrid = Ext.extend(Ext.grid.GridPanel, {
 	 * Property: height
      * {int} altezza del componente
 	 */ 
-	height:290, 
+	height:262, 
 	/**
 	 * Property: autoScroll
      * {boolean} se true permette la comparsa della barra di scorrimento se il contenuto eccede le dimensioni del componente
@@ -351,7 +351,7 @@ CSWGrid = Ext.extend(Ext.grid.GridPanel, {
                                 layers:mapInfo,
                                 bbox: values.bounds,
                                 uuid: values.identifier,
-                                gnURL: values.absolutePath.substring(0,values.absolutePath.length-3)
+                                gnURL: values.absolutePath.substring(0,values.absolutePath.length-10)
                             };
 							
 							

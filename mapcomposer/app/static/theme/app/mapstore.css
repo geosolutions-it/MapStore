@@ -203,3 +203,14 @@ div#homelogos ul li a:hover {
 .marker-icon-style{
 	background-size:15px;
 }
+
+.south-panel .x-layout-collapsed-south{
+    background: url(img/collapsed-south.png) no-repeat center;
+}
+/*to fix checkboxToggle top margin hide in IE*/
+.x-fieldset legend input {
+    margin-right:3px;
+    float:left !important;
+    height:14px; /*change from 13px to 14px*/
+    width:13px;
+}
