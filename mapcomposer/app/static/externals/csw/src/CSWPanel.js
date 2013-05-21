@@ -192,7 +192,7 @@ CSWPanel = Ext.extend(Ext.Panel, {
             this.iconCls = null;
             this.items = [ 
                 {
-                    layout: 'anchor',
+                    layout: 'anchor',                  
                     defaults: {anchor: '-19'},
                     autoScroll: true,
                     region:'west',
