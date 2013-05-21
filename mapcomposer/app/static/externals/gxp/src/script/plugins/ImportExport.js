@@ -35,7 +35,7 @@ Ext.namespace("gxp.plugins");
 /** api: constructor
  *  .. class:: ImportExport(config)
  *
- *    Plugin for adding a new group on layer tree.
+ *    Plugin for import/export data in MapStore.
  */
 gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
     
