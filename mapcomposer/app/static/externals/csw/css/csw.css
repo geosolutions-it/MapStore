@@ -24,6 +24,9 @@ color: #333333;
 .icon-reset{
 	background-image:url(../img/decline.png) !important;
 }
+.icon-add{
+	background-image:url(../img/add.png) !important;
+}
 .icon-layers{
 	background-image:url(../img/layers.png) !important;
 }
@@ -39,6 +42,7 @@ img.csw-viewer-thumb{
     margin: 5px 10px;
 }
 .catalog-desc-warning{
+    font:12px Arial, Helvetica, sans-serif;
     padding-left : 20px;
     background-image:url(../img/error.png) !important;
     background-position: 0 50%;
@@ -47,6 +51,7 @@ img.csw-viewer-thumb{
     text-align:justify;
 }
 .catalog-desc-ok{
+    font:12px Arial, Helvetica, sans-serif;
     padding-left : 20px;
     background-image:url(../img/tick.png) !important;
     background-position: 0 50%;
@@ -54,6 +59,7 @@ img.csw-viewer-thumb{
     text-align:justify;
 }
 .catalog-desc-error{
+    font:12px Arial, Helvetica, sans-serif;
     padding-left : 20px;
     background-image:url(../img/cross.png) !important;
     background-position: 0 50%;
