@@ -136,9 +136,37 @@
 
 /* gxp_wmsgetfeatureinfo */
 .x-btn .gxp-icon-getfeatureinfo, .x-menu-item .gxp-icon-getfeatureinfo, .x-tree-node .gxp-icon-getfeatureinfo {
-    background-image: url(img/silk/information.png) !important;
+   background-image: url(img/silk/information.png) !important;
 }
-/* xp-icon-mouse-map */
+
+/* gxp_importexport */
+.x-btn .gxp-icon-importexport, .x-menu-item .gxp-icon-importexport, .x-tree-node .gxp-icon-importexport {
+    background-image: url(img/geosilk/disk.png) !important;
+}
+
+/* gxp-icon-import-map */
+.x-btn .gxp-icon-import-map, .x-menu-item .gxp-icon-import-map, .x-tree-node .gxp-icon-import-map {
+    background-image: url(img/silk/map_add.png) !important;
+}
+
+/* gxp-icon-export-map */
+.x-btn .gxp-icon-export-map, .x-menu-item .gxp-icon-export-map, .x-tree-node .gxp-icon-export-map {
+    background-image: url(img/silk/map_edit.png) !important;
+}
+
+
+/* gxp-icon-export-kml */
+.x-btn .gxp-icon-export-kml, .x-tree-node .gxp-icon-export-kml, .gxp-icon-export-kml {
+    background-image: url(img/silk/application_put.png);
+}
+
+
+/* gxp-icon-import-kml */
+.x-btn .gxp-icon-import-kml, .x-tree-node .gxp-icon-import-kml, .gxp-icon-import-kml {
+    background-image: url(img/silk/application_get.png);
+}
+
+/* gxp-icon-mouse-map */
 .x-btn .gxp-icon-mouse-map, .x-menu-item .gxp-icon-mouse-map, .x-tree-node .gxp-icon-mouse-map {
     background-image: url(img/map_cursor.png) !important;
 }

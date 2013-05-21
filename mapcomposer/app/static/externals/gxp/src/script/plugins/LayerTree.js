@@ -188,11 +188,15 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
              * splitted with the "localLabelSep" separator, contains 
              * the group name for each language supported
              **/
-            if(typeof this.groups[group] == "string"){
+            if(typeof this.groups[group] === "string"){
                 groupNames=this.groups[group].split(this.localLabelSep);
                 groupConfig= new Object();
             }else{
+                if(typeof this.groups[group].title === "string") {
                 groupNames=this.groups[group].title.split(this.localLabelSep);
+                } else {
+                    groupNames=this.groups[group].title;
+                }
                 groupConfig= this.groups[group];
             }
             /*
@@ -207,8 +211,8 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
             // Managing withe spaces in strings
             // 
             var text = groupConfig.title;
-            if(groupConfig.title.indexOf("_") != -1)        
-                text = text.replace(/_+/g, " ");  
+            /*if(groupConfig.title.indexOf("_") != -1)        
+                text = text.replace(/_+/g, " ");   */
                 
             treeRoot.appendChild(new GeoExt.tree.LayerContainer({
                 text: text,
