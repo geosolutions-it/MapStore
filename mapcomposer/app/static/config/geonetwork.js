@@ -2,7 +2,6 @@
    "geoStoreBase":"http://datigis.comune.fi.it/geostore_test/",
    "gnBaseUrl": "http://datigis.comune.fi.it/geonetwork_test/",
    "proxy":"/http_proxy_test/proxy/?url=",
-   "xmlJsonTranslate": "",
    "defaultLanguage": "it",
    "tab": true,
    "gsSources":{ 
@@ -70,7 +69,6 @@
 			}
 		]
 	},
-	
 	"scaleOverlayUnits":{
         "bottomOutUnits":"nmi",    
         "bottomInUnits":"nmi",    

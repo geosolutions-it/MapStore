@@ -9,11 +9,9 @@ margin:0; padding:0;
 font-family:Arial, Helvetica, sans-serif; }
 
 
-#wrap{ width:920px; min-height:800px; background:url(../images/bg_content_top1.png) top center no-repeat; margin:0 auto; }
+#wrap{ width:920px; min-height:800px; /*background:url(../images/bg_content_top1.png) top center no-repeat;*/ margin:0 auto; }
 #mailinglists{ width:920px;background:url(../images/bg_content_top2.png) bottom center no-repeat; margin:0 auto;padding:1px;}
 #header{ height:829px; }
-#gallery{   background:url(../images/bg_gallery.png)  no-repeat; 	 }
-
 
 /* TOP */
 #top{ clear: both;	height:130px; overflow:hidden;	}
@@ -69,7 +67,7 @@ color:#FFF;}
 #osdi h1{ float:left; width:440px; height:75px; background:url(../images/sprite.png) -10px -268px;/*opensdisuite.png) no-repeat*/ overflow:hidden; margin:23px 0 0 20px; }
 #osdi #box{ float:right; width:135px; height:200px; background:url(../images/sprite.png) -307px -366px;/*box_opensdi.png*/ overflow:hidden;	margin-top:115px; }
 #osdi #logo span, #osdi h1 span, #osdi #box span { margin:-300px; }
-#osdi_content{ float:right; width:445px; height:185px; margin-right:17px; overflow:hidden; color:#ccc; font-family:Arial; font-size:20px; line-height:26px; text-align:justify; }
+#osdi_content{ float:right; width:445px; height:300px; margin-right:17px; overflow:hidden; color:#ccc; font-family:Arial; font-size:20px; line-height:26px; text-align:justify; }
 #osdi_content p{ margin:0; line-height:normal; font-size:18px; }
 #osdi_content a { color:#3c6; text-decoration:none;}
 #osdi_content a:hover { color:#fff; text-decoration:underline;} /*verde #3c6 - blue#39c */
@@ -86,9 +84,9 @@ padding:10px;margin:10px 0; border:0px; font-size:18px; color:#666;
  }
  /*#submit*/#osdi form input:hover { background-color:#39c;/*9CF*/ color:#FFF;	-webkit-box-shadow:0 4px 8px rgba(50, 150, 200, 0.5);-moz-box-shadow:0 4px 8px rgba(50, 150, 200, 0.5);box-shadow:0 4px 8px rgba(50, 150, 200, 0.5); }
 
-#githublinks a,#githublinks {color:#3c6; text-decoration:none;}
+#githublinks a,#githublinks {color:#3c6; text-decoration:none; }
 #githublinks a:hover{color:#FFF; text-decoration:underline;}
-#vedisotto{clear: left; color:#CCC; float: left; font-size: 16px; margin: 5px 0px 0px 9px; width:520px; }
+#vedisotto{clear: left; color:#CCC; float: left; font-size: 16px; margin: 50px 0px 0px 9px; width:520px; }
 #vedisotto a{color:#3c6; text-decoration:none;}
 #vedisotto a:hover{color:#FFF; text-decoration:underline;}
 
@@ -220,4 +218,5 @@ li.area { clear:both; }
 h1.gallery-title{
 	color:#3C6;
 	font-size: 24px;
+	margin-top:150px;
 }

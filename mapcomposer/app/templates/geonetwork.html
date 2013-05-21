@@ -248,7 +248,27 @@
 				id : 'appTabs'
 			};
                     
-            if(!serverConfig.tab && !serverConfig.cswconfig){
+            //check if MetadataExplorer plugin is defined in customTools configuration
+            var customToolsME = [];
+            if(serverConfig.customTools){
+                for(var cTools in serverConfig.customTools){
+                    if(serverConfig.customTools[cTools].ptype == "gxp_metadataexplorer"){  
+                        customToolsME.push(serverConfig.customTools[cTools].ptype);
+                    }
+                }
+            }
+            
+            //check if MetadataExplorer plugin is defined in tools configuration
+            var toolsME = [];                
+            if(serverConfig.tools){
+                for(var tools in serverConfig.tools){
+                    if(serverConfig.tools[tools].ptype == "gxp_metadataexplorer"){  
+                        toolsME.push(serverConfig.tools[tools].ptype);
+                    }
+                }
+            }            
+            
+            if(!serverConfig.tab && toolsME.length == 0 && customToolsME.length == 0){
                 appTabsOpts.layout = 'fit';
                 appTabs = new Ext.Panel(appTabsOpts); 
             }else{

@@ -105,7 +105,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
     mask: null,
 
 	autoHeight:true,
-    autoWidth:true,
+    autoWidth:null,
     
 	/**
 	 * Method: initParameters 
@@ -241,7 +241,8 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 	 * inizializza i componenti della GUI
 	 */
 	initComponent : function() {
-        
+
+        this.autoWidth = this.cswPanelMode === 'addActions' ? true : this.autoWidth;
         this.addCatalogErrorText = i18n.getMsg("cswSearch.addCatalogErrorText1") + " ({msg}).\n" + i18n.getMsg("cswSearch.addCatalogErrorText2") + " (e.g. http://example.com/geonetwork/srv/it/csw)";
         
         Ext.override(Ext.menu.Menu, {
@@ -279,15 +280,28 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
         this.catalogDescriptionPanel = new Ext.Panel({
             xtype: 'panel',
             id: 'suggestintropan',
-            //height: 70,
-            width:350,
+            anchor: this.cswPanelMode === 'addActions' ? '' : '100%',
             autoHeight: true,
             border: false,
             collapsible: true,
             collapsed: true,
             collapseMode: 'mini',
-            hideCollapseTool: true
-			
+            hideCollapseTool: true,
+            listeners: {
+                expand: function(p){
+                    if(this.autoWidth){
+                        this.doLayout(false,true);
+                        this.syncSize();
+                    }
+                },
+                collapse: function(p){
+                    if(this.autoWidth){
+                        this.doLayout(false,true);
+                        this.syncSize();   
+                    }
+                },
+                scope: this
+            }
         });
         
         //
@@ -324,8 +338,6 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 				this.panel.cswGrid.getStore().removeAll(); 
                 this.catalogDescriptionPanel.update("");
                 this.catalogDescriptionPanel.collapse();
-				
-                
 			}
 		});
         
@@ -413,11 +425,9 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
         //
         this.catalogSelectionPan= new Ext.form.FieldSet({
             title: i18n.getMsg("catalogSelection"),
-            autoHeight : true,
-            layout: this.cswPanelMode === 'addActions' ? '' : 'fit',
+            //autoHeight : true,
+            layout: this.cswPanelMode === 'addActions' ? '' : 'anchor',
             anchor: this.cswPanelMode === 'addActions' ? '' : '100%',
-			collapsed : false,
-			collapsible : false,
             items: [this.catalogsManForm]
         });
         
@@ -563,7 +573,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
                 },{
                     columnWidth:this.cswPanelMode === 'addActions' ? .60 : .20,
                     border:false,
-                    style:"position:relative;left:10px;",
+                    style:this.cswPanelMode === 'addActions' ? "position:relative;left:5px;" : "position:relative;left:10px;",
                     layout: 'form',
                     //defaultType: 'textfield',
                     items: [this.dataBegin,this.dataEnd]
@@ -578,7 +588,22 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
             anchor: this.cswPanelMode === 'addActions' ? '' : '100%',
 			title : i18n.getMsg("advancedSearchSet"),
 			collapsed : true,
-			items : [this.advancedSearchForm]
+			items : [this.advancedSearchForm],
+            listeners: {
+                expand: function(p){
+                    if(this.autoWidth){
+                        this.doLayout(false,true);
+                        this.syncSize();
+                    }
+                },
+                collapse: function(p){
+                    if(this.autoWidth){
+                        this.doLayout(false,true);
+                        this.syncSize();   
+                    }
+                },
+                scope: this
+            }
 		});
 		//
         //SEARCH FIELDSET
@@ -647,8 +672,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
                 //show description
                 msg = '<div class="catalog-desc-ok">'+ msg + '</div>';
                 this.catalogDescriptionPanel.update(msg);
-                this.catalogDescriptionPanel.expand();
-                //this.panel.setSize(this.panel.width -31,this.panel.getHeight);            
+                this.catalogDescriptionPanel.expand();            
             }
 			
 		}, this);
