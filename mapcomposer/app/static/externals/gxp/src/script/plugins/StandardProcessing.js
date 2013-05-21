@@ -41,6 +41,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     adrLabel: "Classe ADR",
     sostanzeLabel: "Sostanza",
     accidentLabel: "Incidente",
+    accidentSetLabel: "Tipo Incidente",
     seriousnessLabel: "Entità",
     resetButton: "Reimposta",
     cancelButton: "Annulla",
@@ -55,6 +56,17 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     allClassOption: "Tutte le classi",
     allSostOption: "Tutte le sostanze",
     allScenOption: "Tutti gli incidenti",
+    allEntOption: "Tutte le entità",
+    allTargetOption: "Tutti i Bersagli",
+    allHumanTargetOption: "Tutti i Bersagli Umani",
+    allNotHumanTargetOption: "Tutti i Bersagli Ambientali",
+    entLieve: "Lieve",
+    entGrave: "Grave",
+    humanRiskLabel: "Rischio Sociale",
+    notHumanRiskLabel: "Rischio Ambientale",
+    lowRiskLabel: "Basso Rischio",
+    mediumRiskLabel: "Medio Rischio",
+    highRiskLabel: "Alto Rischio",
     // End i18n.
         
     // TODO: bbox piemonte    
@@ -95,7 +107,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     wfsURL: "http://84.33.2.23/geoserver/wfs",
     wfsVersion: "1.1.0",
     destinationNS: "destinationprod",
+    temporalFeature: "siig_t_variabile",
+    weatherFeature: "siig_t_variabile",
     bersFeature: "siig_t_bersaglio",
+    elabFeature: "siig_mtd_d_elaborazione",
+    formulaFeature: "siig_mtd_t_formula",
     classFeature: "siig_d_classe_adr",
     sostFeature: "siig_t_sostanza",
     scenFeature: "siig_t_scenario",
@@ -256,87 +272,104 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     buildElaborazioneForm: function() {		
         //
         // Tipo Elaborazione
-        //        
-        var elaborazioneStore = new Ext.data.ArrayStore({
-            fields: ['name', 'available'],
-            data :  [
-            ['Elaborazione Standard', true],
-            ['Personalizzazione', false],
-            ['Simulazione', false],
-            ['Danno', false]
-            ]
-        });
+        //                
+        var elaborazioneStore= new GeoExt.data.FeatureStore({ 
+             id: "elaborazioneStore",
+             fields: [{
+                        "name": "id",              
+                        "mapping": "id_elaborazione"
+		      },{
+                        "name": "name",              
+                        "mapping": "descrizione_elaborazione_" + GeoExt.Lang.locale
+		      }],
+             proxy: this.getWFSStoreProxy(this.elabFeature) , 
+             autoLoad: true 
+       });
+        
+        
         
         this.elaborazione = new Ext.form.ComboBox({
             fieldLabel: this.elaborazioneLabel,
             id: "elabcb",
             width: 150,
             hideLabel : false,
-            store: elaborazioneStore,    
+            store: elaborazioneStore, 
+            valueField: 'id',
             displayField: 'name',    
             typeAhead: true,
-            mode: 'local',
+            //mode: 'local',
             forceSelection: true,
             triggerAction: 'all',
-            selectOnFocus:true,
-            editable: true,
+            selectOnFocus:true,            
+            //editable: true,
             resizable: true,    
-            value: "Elaborazione Standard",
+            //value: "Elaborazione Standard" ,
             listeners: {
-                beforeselect: function(cb, record, index){
-                    var available = record.get('available');  
-                    
-                    if(!available){
-                        Ext.Msg.show({
-                            title: this.title,
-                            msg: this.notAvailableProcessing,
-                            icon: Ext.MessageBox.WARNING
-                        });
-                        
-                        return false;
-                    }
-                },
-                select: function(cb, record, index) {
-                //var value = record.get('name');             
-                },
-                scope: this
-            }              
+                scope: this,                
+                expand: function(combo) {
+                    combo.list.setWidth( 'auto' );
+                    combo.innerList.setWidth( 'auto' );
+                } 
+            }          
         });
+        
+        elaborazioneStore.on('load', function(store, records, options) {            
+            this.elaborazione.setValue(records[0].get('id'));
+        }, this);
         
         //
         // Formula
         //        
-        var formulaStore = new Ext.data.ArrayStore({
-            fields: ['name'],
-            data :  [
-            ['Rischio Totale']
-            ]
+        var formulaFilter= new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.GREATER_THAN_OR_EQUAL_TO,
+            property: 'flg_visibile',
+            value: 1
         });
+        
+        var formulaStore= new GeoExt.data.FeatureStore({ 
+             id: "formulaStore",
+             fields: [{
+                        "name": "id",              
+                        "mapping": "id_formula"
+		      },{
+                        "name": "name",              
+                        "mapping": "descrizione_" + GeoExt.Lang.locale
+		      }],
+             proxy: this.getWFSStoreProxy(this.formulaFeature, formulaFilter, 'ordine_visibilita') , 
+             autoLoad: true 
+       });
         
         this.formula = new Ext.form.ComboBox({
             fieldLabel: this.formulaLabel,
             id: "elabfr",
             width: 150,
             hideLabel : false,
-            store: formulaStore,    
+            store: formulaStore, 
+            valueField: 'id',            
             displayField: 'name',    
             typeAhead: true,
-            mode: 'local',
+            //mode: 'local',
             forceSelection: true,
             triggerAction: 'all',
             selectOnFocus:true,
-            editable: true,
+            //editable: true,
             resizable: true,    
             value: "Rischio Totale",
             listeners: {
-                select: function(cb, record, index) {
-                //var value = record.get('name');             
-                }
-            }              
+                scope: this,                
+                expand: function(combo) {
+                    combo.list.setWidth( 'auto' );
+                    combo.innerList.setWidth( 'auto' );
+                } 
+            } 
         });
+        
+        formulaStore.on('load', function(store, records, options) {            
+            this.formula.setValue(records[0].get('id'));
+        }, this);
        
         this.elabSet = new Ext.form.FieldSet({
-            title: this.title,
+            title: this.formLabel,
             id: 'elabfset',
             autoHeight: true,
             defaults: {
@@ -359,14 +392,25 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      */
     buildConditionsForm: function() {		
        
-        var weatherStore = new Ext.data.ArrayStore({
-            fields: ['name'],
-            data :  [
-            ['Presenza nebbia'],
-            ['Presenza ghiaccio'],
-            ['Presenza pioggia']
-            ]
+       var filter= new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+            property: this.destinationNS + ":fk_tipo_variabile",
+            value: 2
         });
+       
+       var weatherStore= new GeoExt.data.FeatureStore({ 
+             id: "weatherStore",
+             fields: [{
+                        "name": "name",              
+                        "mapping": "descrizione_" + GeoExt.Lang.locale
+		      },{
+                        "name": "value",        
+                        "mapping": "id_variabile"
+		      }],
+             proxy: this.getWFSStoreProxy(this.temporalFeature, filter) , 
+             autoLoad: true 
+       });
+    
         
         this.weather = new Ext.form.ComboBox({
             fieldLabel: this.weatherLabel,
@@ -393,27 +437,36 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             }              
         });
         
-        
-        var temporalStore = new Ext.data.ArrayStore({
-            fields: ['name'],
-            data :  [
-            ['Scenario centrale'],
-            ['Scenario feriale diurno'],
-            ['Scenario notturno'],
-            ['Scenario festivo diurno'],
-            ['Scenario festivo diurno e normale/standard']
-            ]
+        filter= new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+            property: this.destinationNS + ":fk_tipo_variabile",
+            value: 1
         });
         
+        var temporalStore= new GeoExt.data.FeatureStore({ 
+             id: "temporalStore",
+             fields: [{
+                        "name": "name",              
+                        "mapping": "descrizione_" + GeoExt.Lang.locale
+		      },{
+                        "name": "value",        
+                        "mapping": "id_variabile"
+		      }],
+             proxy: this.getWFSStoreProxy(this.temporalFeature, filter) , 
+             autoLoad: true 
+       });
+        
+                
         this.temporal = new Ext.form.ComboBox({
             fieldLabel: this.temporalLabel,
             id: "time",
             width: 150,
             hideLabel : false,
             store: temporalStore,    
-            displayField: 'name',    
+            displayField: 'name', 
+            valueField: 'id',
             typeAhead: true,
-            mode: 'local',
+            //mode: 'local',
             forceSelection: true,
             triggerAction: 'all',
             selectOnFocus:true,
@@ -669,12 +722,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         "mapping": "id_bersaglio"
 		      },{
                         "name": "name",              
-                        "mapping": "descrizione"
+                        "mapping": "descrizione_" + GeoExt.Lang.locale
 		      },{
                         "name": "flg_umano",        
                         "mapping": "flg_umano"
 		      }],
-             proxy: this.getWFSStoreProxy(this.bersFeature) , 
+             proxy: this.getWFSStoreProxy(this.bersFeature, undefined, "id_bersaglio") , 
              autoLoad: true 
        });
         
@@ -727,9 +780,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                       }
              });
            me.macrobers.getStore().loadData([
-            ['bersagli_all', 'Tutti i Bersagli', 'calc_formula_tot', null, '-2', true, allIDsArray],
-            ['bersagli_umani', 'Tutti i Bersagli Umani', 'calc_formula_tot', true, '-1', true, humanIDsArray],
-            ['bersagli_ambientali', 'Tutti i Bersagli Ambientali', 'calc_formula_tot', false, '-2', true, notHumanIDsArray]
+            ['bersagli_all', me.allTargetOption, 'calc_formula_tot', null, '-2', true, allIDsArray],
+            ['bersagli_umani', me.allHumanTargetOption, 'calc_formula_tot', true, '-1', true, humanIDsArray],
+            ['bersagli_ambientali', me.allNotHumanTargetOption, 'calc_formula_tot', false, '-2', true, notHumanIDsArray]
             ], true);
 
       });
@@ -755,7 +808,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             selectOnFocus:true,
             editable: true,
             resizable: true,    
-            value: "Tutti i Bersagli",
+            value: this.allTargetOption,
             listeners: {
                 scope: this,
                 select: function(cb, record, index) {
@@ -875,12 +928,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
              id: "calssiStore",
              fields: [{
                         "name": "name",              
-                        "mapping": "descrizione"
+                        "mapping": "descrizione_" + GeoExt.Lang.locale
 		      },{
                         "name": "value",        
                         "mapping": "id_classe_adr"
 		      }],
-             proxy: this.getWFSStoreProxy(this.classFeature, filterDest) , 
+             proxy: this.getWFSStoreProxy(this.classFeature, filterDest, "id_classe_adr") , 
              autoLoad: true 
        });
        
@@ -1141,9 +1194,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var seriousnessStore = new Ext.data.ArrayStore({
             fields: ['name', 'value', 'id'],
             data :  [
-            ['Tutte le entità', '0', [0,1]],
-            ['Lieve', 'L', [0]],
-            ['Grave', 'G', [1]]
+            [this.allEntOption, '0', [0,1]],
+            [this.entLieve, 'L', [0]],
+            [this.entGrave, 'G', [1]]
             ]
         });
         
@@ -1161,12 +1214,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             selectOnFocus:true,
             editable: true,
             resizable: true,
-            value: "Tutte le entità",
+            value: this.allEntOption,
             lazyInit: false          
         });
         
         this.accidentSet = new Ext.form.FieldSet({
-            title: "Tipo Incidente",
+            title: this.accidentSetLabel,
             id: 'accidentfset',
             autoHeight: true,
             defaults: {
@@ -1206,7 +1259,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var containerTab = Ext.getCmp(this.outputTarget);
         
         this.sliderFiledRischioSociale=new gxp.form.SliderRangesFieldSet({
-            title: "Rischio Sociale",
+            title: this.humanRiskLabel,
             id:"rischio_sociale",    
             labels: true,
             multiSliderConf:{
@@ -1214,17 +1267,17 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 ranges: [
                 {
                     maxValue: 100, 
-                    name:"Rischio Basso", 
+                    name:this.lowRiskLabel, 
                     id:"range_low_sociale"
                 },
                 {
                     maxValue: 500, 
-                    name:"Rischio Medio", 
+                    name:this.mediumRiskLabel, 
                     id:"range_medium_sociale"
                 },
                 {
                     maxValue: 1000, 
-                    name:"Rischio Alto"
+                    name:this.highRiskLabel
                 }
                 ],                                        
                 width   : 330,
@@ -1235,7 +1288,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         
         this.sliderFiledRischioAmbientale=new gxp.form.SliderRangesFieldSet({
-            title: "Rischio Ambientale",
+            title: this.notHumanRiskLabel,
             id:"rischio_ambientale",    
             labels: true,
             multiSliderConf:{
@@ -1243,18 +1296,18 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 ranges: [
                 {
                     maxValue: 100, 
-                    name:"Rischio Basso", 
+                    name:this.lowRiskLabel, 
                     id:"range_low_ambientale"
                 },
 
                 {
                     maxValue: 500, 
-                    name:"Rischio Medio", 
+                    name:this.mediumRiskLabel, 
                     id:"range_medium_ambientale"
                 },
                 {
                     maxValue: 1000, 
-                    name:"Rischio Alto"
+                    name:this.highRiskLabel
                 }
                 ],                                        
                 width   : 330,
@@ -1269,7 +1322,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 			deferredRender:false,
 			border:false,
 			items:[{   
-				title: 'Rischio Sociale',
+				title: this.humanRiskLabel,
 				listeners: {
 					activate: function(p){
 					   me.sliderFiledRischioSociale.render(Ext.get('rischio_sociale_slider'));
@@ -1277,7 +1330,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 				},
 				html: "<div id='rischio_sociale_slider'/>"
 			},{   
-				title: 'Rischio Ambientale',
+				title: this.notHumanRiskLabel,
 				listeners: {
 					activate: function(p){
 					   me.sliderFiledRischioAmbientale.render(Ext.get('rischio_ambientale_slider'));
@@ -1291,7 +1344,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.panel = new Ext.FormPanel({
             border: false,
             layout: "fit",
-            title: this.formLabel,
+            title: this.title,
             autoScroll: true,
             items:[
 				this.buildElaborazioneForm(),  
@@ -1485,7 +1538,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         // Accident Scenarios filter
         //
         var accidentValue = this.accident.getValue();
-        if(accidentValue != "Tutti gli Incidenti"){
+        if(accidentValue != this.allScenOptions){
             filters.push(new OpenLayers.Filter.Comparison({
                 type: OpenLayers.Filter.Comparison.EQUAL_TO,
                 property: this.accidentTipologyName,
@@ -1731,7 +1784,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         return obj;
     },
     
-    getWFSStoreProxy: function(featureName, filter){
+    getWFSStoreProxy: function(featureName, filter, sortBy){
         var filterProtocol=new OpenLayers.Filter.Logical({
                     type: OpenLayers.Filter.Logical.AND,
                     filters: new Array()
@@ -1750,7 +1803,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 featureNS: this.destinationNS, 
                 filter: filterProtocol, 
                 outputFormat: "application/json",
-                version: this.wfsVersion
+                version: this.wfsVersion,
+                sortBy: sortBy || undefined
             }) 
         });
         return proxy;         

@@ -146,6 +146,14 @@ OpenLayers.Format.WFST.v1_1_0 = OpenLayers.Class(
                     this.setFilterProperty(options.filter);
                     this.writeNode("ogc:Filter", options.filter, node);
                 }
+                if(options.sortBy) {
+                    debugger;
+                    var sortByNode = this.createElementNSPlus("ogc:SortBy", {});
+                    var sortProperty = this.createElementNSPlus("ogc:SortProperty", {});
+                    sortProperty.appendChild(this.createElementNSPlus("ogc:PropertyName", {value: options.sortBy}));
+                    sortByNode.appendChild(sortProperty);                    
+                    node.appendChild(sortByNode);
+                }
                 return node;
             },
             "PropertyName": function(obj) {

@@ -168,7 +168,12 @@ GeoExt.WMSLegend = Ext.extend(GeoExt.LayerLegend, {
             }
             url = Ext.urlAppend(url, "SCALE=" + scale);
         }
-        var params = this.baseParams || {};
+        var params = this.baseParams || {};        
+        if(params['LEGEND_OPTIONS'] && params['LEGEND_OPTIONS'].indexOf('locale:') === -1) {
+            params['LEGEND_OPTIONS'] += ';locale:' + GeoExt.Lang.locale;
+        } else if(!params['LEGEND_OPTIONS']) {
+            params['LEGEND_OPTIONS'] = 'locale:' + GeoExt.Lang.locale;
+        }
         Ext.applyIf(params, {FORMAT: 'image/png'});
         if (layer.params._OLSALT) {
             // update legend after a forced layer redraw

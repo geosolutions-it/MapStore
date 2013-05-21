@@ -80,6 +80,22 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
      */
     groups: null,
     
+    /** api: config[localLabelSep]
+     *  ``String`` Language separator for the groups name
+     */
+    localLabelSep: ":",
+    
+    /** api: config[localLabelSep]
+     *  ``Object`` Contains the index position (in the groupName array obtained from the group name splitted with the "localLabelSep" separator) 
+     *   for each language supported
+     */
+    localIndexs:{
+            "en": 0,
+            "it": 1,
+            "fr": 2,
+            "de": 3
+    },
+    
     /** api: config[defaultGroup]
      *  ``String`` The name of the default group, i.e. the group that will be
      *  used when none is specified. Defaults to ``default``.
@@ -156,16 +172,43 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
         });
         
         var groupConfig, defaultGroup = this.defaultGroup;
+        /*
+         * The locIndex is obtained from the localIndexs, with the current local code, 
+         * which contains the index position for each language supported
+         **/
+        var locIndex= this.localIndexs[GeoExt.Lang.locale];
+        var groupNames;
         for (var group in this.groups) {
-            groupConfig = typeof this.groups[group] == "string" ?
-                {title: this.groups[group]} : this.groups[group];
+            /*
+             * The groupNames array, obtained from the group name 
+             * splitted with the "localLabelSep" separator, contains 
+             * the group name for each language supported
+             **/
+            if(typeof this.groups[group] === "string"){
+                groupNames=this.groups[group].split(this.localLabelSep);
+                groupConfig= new Object();
+            }else{
+                if(typeof this.groups[group].title === "string") {
+                    groupNames=this.groups[group].title.split(this.localLabelSep);
+                } else {
+                    groupNames=this.groups[group].title;
+                }
+                groupConfig= this.groups[group];
+            }
+            /*
+             * If the language is not supported, the group name 
+             * is the first contained in groupNames
+             **/
+            if(groupNames.length > 0){
+                groupConfig.title= groupNames[locIndex] ? groupNames[locIndex] : groupNames[0];
+            }
             
             //
             // Managing withe spaces in strings
             // 
             var text = groupConfig.title;
-            if(groupConfig.title.indexOf("_") != -1)        
-                text = text.replace(/_+/g, " ");  
+            /*if(groupConfig.title.indexOf("_") != -1)        
+                text = text.replace(/_+/g, " ");   */
                 
             treeRoot.appendChild(new GeoExt.tree.LayerContainer({
                 text: text,
@@ -220,6 +263,8 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
             xtype: "treepanel",
             root: treeRoot,
             rootVisible: false,
+            localIndexs: this.localIndexs,
+            localLabelSep: this.localLabelSep,
             border: false,
             enableDD: true,
             selModel: new Ext.tree.DefaultSelectionModel({

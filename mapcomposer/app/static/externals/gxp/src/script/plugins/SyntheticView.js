@@ -36,8 +36,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 	cancelButton: "Annulla Elaborazione",
 	processButton: "Esegui Elaborazione",
 	analyticViewButton: "Visualizzazione Analitica",
-        weatherLabel: "Condizioni Meteo",  
-        temporalLabel: "Condizioni Temporali",
+    weatherLabel: "Condizioni Meteo",  
+    temporalLabel: "Condizioni Temporali",
+    elabStandardLabel: "Elaborazione Standard",
+    totalRiskLabel: "Rischio totale",
+    defaultExtentLabel: "Regione Piemonte",
     // End i18n.
         
     id: "syntheticview",
@@ -187,7 +190,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     /** private: method[init]
      *  :arg target: ``Object`` The object initializing this plugin.
      */
-     init: function(target) {
+     init: function(target) {        
         gxp.plugins.SyntheticView.superclass.init.apply(this, arguments); 
         this.target.on('portalready', function() {
             this.layerSource = this.target.layerSources[this.layerSourceName];
@@ -340,9 +343,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         for(var i = 0, layerName; layerName = layers[i]; i++) {
             layer=map.getLayersByName(layerName)[0];
             if(layer) {
+               
                 map.removeLayer(layer);
             }
-        }        
+        }  
     },
     
     
@@ -357,7 +361,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               id: "elab",
               width: 150,
               readOnly: true,
-              value: "Elaborazione Standard",
+              value: this.elabStandardLabel,
               hideLabel : false                    
         });
         
@@ -366,7 +370,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               id: "form",
               width: 150,
               readOnly: true,
-              value: "Rischio Totale",
+              value: this.totalRiskLabel,
               hideLabel : false                    
         });
         
@@ -375,7 +379,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               id: "extent",
               width: 150,
               readOnly: true,
-              value: "Regione Piemonte",
+              value: this.defaultExtentLabel,
               hideLabel : false                    
         });
         
@@ -402,7 +406,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               id: "target",
               width: 150,
               readOnly: true,
-              value: "Tutti i bersagli",
+              value: gxp.plugins.StandardProcessing.prototype.allTargetOption,
               hideLabel : false                    
         });
         
@@ -411,7 +415,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               id: "adrClass",
               width: 200,
               readOnly: true,
-              value: "Tutte le classi",
+              value: gxp.plugins.StandardProcessing.prototype.allClassOption,
               hideLabel : false                    
         });
         
@@ -420,7 +424,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               id: "substance",
               width: 200,
               readOnly: true,
-              value: "Tutte le sostanze",
+              value: gxp.plugins.StandardProcessing.prototype.allSostOption,
               hideLabel : false                    
         });
         
@@ -430,7 +434,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               id: "accedent",
               width: 150,
               readOnly: true,
-              value: "Tutti gli incidenti",
+              value: gxp.plugins.StandardProcessing.prototype.allScenOption,
               hideLabel : false                    
         });
         
@@ -439,7 +443,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               id: "seriousness",
               width: 200,
               readOnly: true,
-              value: "Tutte le entità",
+              value: gxp.plugins.StandardProcessing.prototype.allEntOption,
               hideLabel : false                    
         });                        
         
@@ -502,7 +506,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                              
                                         // reset risk layers
 					if(this.originalRiskLayers !== null) {
-						
 						this.removeRiskLayers(map);                                       
 						this.restoreOriginalRiskLayers(map);
 					}
@@ -731,7 +734,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			title: this.combinedRiskLayerTitle, 
 			params: {                                                                
 				viewparams: viewParams,
-				env:"low:"+this.status.themas['sociale'][0]+";medium:"+this.status.themas['sociale'][1]
+				env:"lowsociale:"+this.status.themas['sociale'][0]+";mediumsociale:"+this.status.themas['sociale'][1]+";lowambientale:"+this.status.themas['ambientale'][0]+";mediumambientale:"+this.status.themas['ambientale'][1]
 			}
 		}, false));
 	},
@@ -750,6 +753,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 	},
 	
 	extractLayers: function(layers, titles) {
+                var map = this.target.mapPanel.map;
 		var layerStore = this.target.mapPanel.layers;
 		for(var i=0, layerTitle; layerTitle = titles[i]; i++) {
 			var layerIndex = layerStore.findBy(function(rec) {
@@ -759,6 +763,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 				var layer = layerStore.getAt(layerIndex);
 				layer.get('layer').clearGrid();
 				layerStore.remove(layer);
+                                var mapLayers=map.getLayersByName(layer.get('name'));
+                                if(mapLayers.length == 1)
+                                layer.visibility= mapLayers[0].visibility;
 				layers.push(layer);
 			}
 		}
@@ -1009,6 +1016,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }
          }
     }
+    
     
 });
 

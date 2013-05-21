@@ -485,17 +485,7 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
                         for(var j=size-1; j>=0; j--){
                             if(layers[j].group){
                                 if(layers[j].group != "background" && layers[j].group != "default"){      
-                                    var s = 'groups.' + layers[j].group + '={title:"' + layers[j].group + '"}';    
-                                    
-                                    //
-                                    // Managing withe spaces in strings
-                                    // 
-                                    if(s.indexOf(" ") != -1){
-                                        s = s.replace(/\s+/g, "_");   
-                                        layers[j].group = layers[j].group.replace(/\s+/g, "_"); 
-                                    }
-                                    
-                                    eval(s);
+                                    groups[layers[j].group]={title:layers[j].group};
                                 }
                             }
                         }

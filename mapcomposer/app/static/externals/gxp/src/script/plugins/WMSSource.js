@@ -232,6 +232,10 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
              */
             var projection = this.getMapProjection();
             
+            var defProp= this.getDefaultProps(original);
+            
+            config= Ext.applyIf(defProp, config);
+            
             // If the layer is not available in the map projection, find a
             // compatible projection that equals the map projection. This helps
             // us in dealing with the different EPSG codes for web mercator.
@@ -504,6 +508,58 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             styles: params.STYLES,
             transparent: params.TRANSPARENT
         });
+    },
+    
+    /** api: method[getDefaultProps]
+     *  :arg record: :class:`GeoExt.data.LayerRecord`
+     *  :returns: ``Object``
+     *
+     *  Create a config object with the capabilities information that can be used to recreate the given record.
+     */
+    getDefaultProps: function (record){
+        
+        var locCode= GeoExt.Lang.locale;
+        var defaultProps = {
+            name: record.get("name"),
+            title: record.get("title")
+        };
+          
+        var keywords = record.get("keywords") || [];
+        var identifiers = record.get("identifiers") || undefined;
+        if(keywords.length>0 || !this.isEmptyObject(identifiers)){
+            var props=new Object();
+                    
+            for(var k=0; k<keywords.length; k++){
+                var keyword = keywords[k].value;
+                        
+                if(keyword.indexOf("uuid") != -1){
+                    props.uuid = keyword.substring(keyword.indexOf("uuid="));
+                    props.uuid = keyword.split("=")[1];
+                }  
+                        
+                if(keyword.indexOf(locCode+"=") == 0){
+                    props.title = keyword.split("=")[1];
+                }     
+            }
+            
+            for(var identifierKey in identifiers){
+                if(identifierKey === locCode && identifiers.hasOwnProperty(identifierKey)) {
+                    props.title = identifiers[identifierKey];
+                }
+            }
+                    
+            return Ext.applyIf(props, defaultProps);	
+		    
+        }else
+            return {};   
+    },
+    isEmptyObject: function(obj) {
+        for(var prop in obj){
+            if(obj.hasOwnProperty(prop)) {
+                return false;
+            }
+        }
+        return true;
     }
     
 });

@@ -77,28 +77,28 @@
             "source": "destination",
             "title": "Ambiti Amministrativi",
             "name": "LimitiAmministrativi",
-            "group": "Dati di base",
+            "group": ["Basic Data","Dati di base"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Tessuto Urbanizzato",
             "name": "TessutoUrbanizzato",
-            "group": "Dati di base",
+            "group": ["Basic Data","Dati di base"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Trasporti",
             "name": "Trasporti",
-            "group": "Dati di base",
+            "group": ["Basic Data","Dati di base"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Idrografia",
             "name": "Idrografia",
-            "group": "Dati di base",
+            "group": ["Basic Data","Dati di base"],
             "visibility": false
         },{
             "source": "google",
@@ -119,115 +119,94 @@
             "group": "background"
         },{
             "source": "destination",
-            "title": "Rischio Totale Ambientale",
-            "name": "rischio_totale_ambientale",
+            "title": "Rischio",
+            "name": "rischio",
             "displayInLayerSwitcher": true,
-            "tiled": false,
-			"env":"low:100;medium:500"
-        },{
-            "source": "destination",
-            "title": "Rischio Totale Sociale",
-            "name": "rischio_totale_sociale",
-            "displayInLayerSwitcher": true,
-            "tiled": false,
-			"env":"low:100;medium:500"
-        },{
-            "source": "destination",
-            "title": "Rischio Totale Sociale - Ambientale",
-            "name": "rischio_totale",
-            "displayInLayerSwitcher": true,
-            "tiled": false,
-			"env":"low:100;medium:500"
-        },
-		{
-            "source": "destination",
-            "title": "Beni culturali",
-            "name": "beni_culturali_all",
-            "group": "Bersagli",
-            "visibility": false
+            "tiled": true,
+            "env": "formula:16;target:1"
         },
 		{
             "source": "destination",
             "title": "Zone urbanizzate",
             "name": "zone_urbanizzate_all",
-            "group": "Bersagli",
+            "group": ["Targets","Bersagli"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Acque sotterranee",
             "name": "acque_sotterranee_all",
-            "group": "Bersagli",
+            "group": ["Targets","Bersagli"],
             "visibility": false
         },
 		{
             "source": "destination",
             "title": "Acque superficiali",
             "name": "acque_superficiali_all",
-            "group": "Bersagli",
+            "group": ["Targets","Bersagli"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Aree protette",
             "name": "aree_protette_all",
-            "group": "Bersagli",
+            "group": ["Targets","Bersagli"],
             "visibility": false
         },
 		{
             "source": "destination",
             "title": "Aree boscate",
             "name": "aree_boscate_all",
-            "group": "Bersagli",
+            "group": ["Targets","Bersagli"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Aree agricole",
             "name": "aree_agricole_all",
-            "group": "Bersagli",
+            "group": ["Targets","Bersagli"],
             "visibility": false
         },
 		{
             "source": "destination",
             "title": "Addetti/utenti centri commerciali",
             "name": "centri_commerciali_all",
-            "group": "Bersagli",
+            "group": ["Targets","Bersagli"],
             "visibility": false
         },
 		{
             "source": "destination",
             "title": "Addetti/utenti strutture scolastiche",
             "name": "strutture_scolastiche_all",
-            "group": "Bersagli",
+            "group": ["Targets","Bersagli"],
             "visibility": false
         },
 		{
             "source": "destination",
             "title": "Addetti/utenti strutture sanitarie",
             "name": "strutture_sanitarie_all",
-            "group": "Bersagli",
+            "group": ["Targets","Bersagli"],
             "visibility": false
         },
 		{
             "source": "destination",
             "title": "Addetti industria e servizi",
             "name": "industria_servizi_all",
-            "group": "Bersagli",
+            "group": ["Targets","Bersagli"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Popolazione turistica",
             "name": "popolazione_turistica_all",
-            "group": "Bersagli",
+            "group": ["Targets","Bersagli"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Popolazione residente",
             "name": "popolazione_residente_all",
-            "group": "Bersagli",
+            "group": ["Targets","Bersagli"],
             "visibility": false
         }
         ]

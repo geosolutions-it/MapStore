@@ -67,12 +67,16 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
 				Ext.getCmp(thumb.id+"_minValue").setValue(thumb.minValue);
 				Ext.getCmp(thumb.id+"_maxValue").setValue(thumb.value);
 				
-				if(thumb.index < multi.thumbs.length-1)
+				if(thumb.index < multi.thumbs.length-1) {
 					Ext.getCmp(multi.thumbs[thumb.index+1].id+"_minValue").setValue(thumb.value+1);
+                }
 			}
 			if(this.labels) {
 				Ext.getCmp(this.id+'_labels').setValue(this.labelsTpl.apply(this.multiSlider));
 			}
+            if(thumb.index < multi.thumbs.length-1) {
+                multi.thumbs[thumb.index+1].minValue = value;
+            }
 			this.fireEvent('change', this, value, thumb.id);
 		}, this);
         multi=this.multiSlider;
