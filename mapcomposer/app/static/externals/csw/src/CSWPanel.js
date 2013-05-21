@@ -30,7 +30,27 @@ CSWPanel = Ext.extend(Ext.Panel, {
 	 * Property: border
      * {boolean} se true viene disegnato un bordo.
 	 */ 
-	border : false,
+	border : false,   
+    
+    layout: 'border',
+    
+    defaults: {
+        collapsible: true,
+        split: true,
+        bodyStyle: 'padding:5px'
+    },    
+    
+    monitorResize: true,
+    /*defaults: {
+        // implicitly create Container by specifying xtype
+        xtype: 'container',
+        layout: 'form',
+        columnWidth: 0.5,
+        style: {
+            padding: '3px'
+        }
+    },*/    
+
 	/**
 	 * Property: title
      * {string}aggiunge un titolo al pannello.
@@ -64,6 +84,12 @@ CSWPanel = Ext.extend(Ext.Panel, {
 	 *
 	 */
 	config : null,
+	/**
+	 * Property: panelMode
+	 * {boulean}. Se true indica che il CSWPanel è impostato come addAction altrimenti come addOutput
+	 *
+	 */    
+    cswPanelMode: null,
 	
 	events : [
 	
@@ -91,9 +117,9 @@ CSWPanel = Ext.extend(Ext.Panel, {
 	 */
 	],
     
-	autoWidth:true,
+	/*autoWidth:true,
 	autoHeight:true,
-	border: false,
+	border: false,*/
     
     
 	//PRIVATE
@@ -106,7 +132,6 @@ CSWPanel = Ext.extend(Ext.Panel, {
 		this.cswGrid = new CSWGrid({
 			 loadMask: {msg: i18n.getMsg("loadWait")},
 			 config: this.config,
-             
 			 map: new Ext.KeyMap(document, [{
 				key: Ext.EventObject.ESC,
 				fn: function(){
@@ -129,6 +154,7 @@ CSWPanel = Ext.extend(Ext.Panel, {
 		    grid: this.cswGrid,
 			dcProperty : this.config.dcProperty,
 			panel: this,
+            cswPanelMode: this.cswPanelMode,
             autoHeight:true,
             style:"margin-left:5px;margin-right:5px;"  ,         
 			initialBBox: new OpenLayers.Bounds(
@@ -139,28 +165,50 @@ CSWPanel = Ext.extend(Ext.Panel, {
 			),
 			filterVersion: this.config.filterVersion	
 		});
-		
-		this.items = [ 
-			{
-			 xtype:'container',
-			 layout:'fit',
-			 autoHeight:true,
-			 border: false,
-			 items:[this.searchTool]
-			 
-			 },
-			{
-			 xtype:'container',
-			 layout:'fit',
-			 autoWidth: true,
-			 //autoHeight:true,
-			 border: false,
-			 items:[this.cswGrid]  
-			}
-            
-		];
-		
-
+        
+        if(this.cswPanelMode === 'addActions'){
+            //items for actionTarget		
+            this.items = [ 
+                {
+                    layout: 'anchor',
+                    defaults: {anchor: '-19'},
+                    height: 270,
+                    width: 350,
+                    autoScroll: true,
+                    region:'north',
+                    items:[this.searchTool]
+                 },
+                {
+                    layout:'fit',
+                    //height: 250,
+                    collapsible: false,
+                    region:'center',
+                    items:[this.cswGrid]  
+                }
+            ];
+        }else{
+            //items for outputTarget
+            this.title = null;
+            this.iconCls = null;
+            this.items = [ 
+                {
+                    layout: 'anchor',
+                    defaults: {anchor: '-19'},
+                    autoScroll: true,
+                    region:'west',
+                    minWidth: 410,
+                    //maxWidth: 410,
+                    width: 410,
+                    items:[this.searchTool]
+                 },
+                {
+                    layout:'fit',
+                    collapsible: false,
+                    region:'center',
+                    items:[this.cswGrid]  
+                }
+            ];        
+        }
 		//event Handler associaton
 		this.addEvents(this.events);
 		
