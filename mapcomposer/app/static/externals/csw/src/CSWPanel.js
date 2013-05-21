@@ -41,6 +41,16 @@ CSWPanel = Ext.extend(Ext.Panel, {
     },    
     
     monitorResize: true,
+    /*defaults: {
+        // implicitly create Container by specifying xtype
+        xtype: 'container',
+        layout: 'form',
+        columnWidth: 0.5,
+        style: {
+            padding: '3px'
+        }
+    },*/    
+
 	/**
 	 * Property: title
      * {string}aggiunge un titolo al pannello.
@@ -160,8 +170,8 @@ CSWPanel = Ext.extend(Ext.Panel, {
             //items for actionTarget		
             this.items = [ 
                 {
-                    layout: 'fit',
-                    //defaults: {anchor: '-19'},
+                    layout: 'anchor',
+                    defaults: {anchor: '-19'},
                     height: 270,
                     width: 350,
                     autoScroll: true,
@@ -182,8 +192,8 @@ CSWPanel = Ext.extend(Ext.Panel, {
             this.iconCls = null;
             this.items = [ 
                 {
-                    layout: 'fit',
-                    //defaults: {anchor: '-19'},
+                    layout: 'anchor',
+                    defaults: {anchor: '-19'},
                     autoScroll: true,
                     region:'west',
                     minWidth: 410,

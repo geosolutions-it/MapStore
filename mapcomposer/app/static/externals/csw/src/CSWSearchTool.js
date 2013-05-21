@@ -105,7 +105,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
     mask: null,
 
 	autoHeight:true,
-    autoWidth:true,
+    autoWidth:null,
     
 	/**
 	 * Method: initParameters 
@@ -241,7 +241,8 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 	 * inizializza i componenti della GUI
 	 */
 	initComponent : function() {
-    
+        
+        this.autoWidth = this.cswPanelMode === 'addActions' ? true : this.autoWidth;
         this.addCatalogErrorText = i18n.getMsg("cswSearch.addCatalogErrorText1") + " ({msg}).\n" + i18n.getMsg("cswSearch.addCatalogErrorText2") + " (e.g. http://example.com/geonetwork/srv/it/csw)";
         
         Ext.override(Ext.menu.Menu, {
@@ -475,7 +476,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 			format : this.dateFormat,
 			editable: false,
 			labelStyle : 'width: 102px;',
-            anchor: this.cswPanelMode === 'addActions' ? '' : '95%',
+            anchor: this.cswPanelMode === 'addActions' ? '' : '100%',
 			listeners:{
 				scope: this,
 				change: function(newValue,OldValue){
@@ -490,7 +491,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 			format : this.dateFormat,
 			editable:false,
 			labelStyle : 'width: 70px;',
-            anchor: this.cswPanelMode === 'addActions' ? '' : '95%',
+            anchor: this.cswPanelMode === 'addActions' ? '' : '100%',
 			listeners:{
 				scope: this,
 				change: function(newValue,OldValue){
@@ -508,7 +509,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 		this.dcValue = new Ext.form.TextField({
 			labelStyle : 'width: 70px',
 			width: 165,
-            anchor: this.cswPanelMode === 'addActions' ? '' : '95%',
+            anchor: this.cswPanelMode === 'addActions' ? '' : '100%',
 			fieldLabel : i18n.getMsg("dcProperty" + this.dcProperty)
 		});
 
@@ -563,7 +564,7 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
                 },{
                     columnWidth:this.cswPanelMode === 'addActions' ? .60 : .20,
                     border:false,
-                    style:"position:relative;left:0px;",
+                    style:"position:relative;left:10px;",
                     layout: 'form',
                     //defaultType: 'textfield',
                     items: [this.dataBegin,this.dataEnd]
