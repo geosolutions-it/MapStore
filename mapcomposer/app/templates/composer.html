@@ -341,6 +341,11 @@
                 }, 
                 'ready' : function(){
                     app.modified = false;
+					
+					var layer = app.mapPanel.map.getLayersBy("name","Poi")[0];
+					layer.mergeNewParams({
+						"styles": "point"
+					});
                 }
             });
 	    };
