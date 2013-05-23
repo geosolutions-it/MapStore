@@ -118,10 +118,10 @@ gxp.plugins.Geolocate = Ext.extend(gxp.plugins.Tool, {
      * Options to pass to OpenLayers.Control.Geolocate
      */
     geolocationOptions: {
-                    enableHighAccuracy: true,
-                    maximumAge: 0,
-                    timeout: 7000
-                },
+		enableHighAccuracy: true,
+		maximumAge: 0,
+		timeout: 7000
+	},
                 
     /**
      * api: displayInLayerSwitcher
@@ -139,22 +139,22 @@ gxp.plugins.Geolocate = Ext.extend(gxp.plugins.Tool, {
      * 
      */
     geolocationStyles: {
-            pointStyle:{
-                    fillOpacity: 0.3,
-                    fillColor: '#55b',
-                    strokeColor: '#00f',
-                    strokeOpacity: 0.6
-            },
-            auraStyle:{
-                    graphicName: 'circle',
-                    strokeColor: '#aaa',
-                    fillColor: '#11f',
-                    strokeWidth: 2,
-                    fillOpacity: 0.7,
-                    strokeOpacity: 0.6,
-                    pointRadius: 5                           
-            }
-        },
+		pointStyle:{
+				fillOpacity: 0.3,
+				fillColor: '#55b',
+				strokeColor: '#00f',
+				strokeOpacity: 0.6
+		},
+		auraStyle:{
+				graphicName: 'circle',
+				strokeColor: '#aaa',
+				fillColor: '#11f',
+				strokeWidth: 2,
+				fillOpacity: 0.7,
+				strokeOpacity: 0.6,
+				pointRadius: 5                           
+		}
+	},
         
     /** private: method[constructor]
      */
@@ -178,14 +178,11 @@ gxp.plugins.Geolocate = Ext.extend(gxp.plugins.Tool, {
      * Convenience method for creating a :class:`OpenLayers.Control.Geolocate`
      * control
      */
-    createGeolocateControl: function() {
-        
+    createGeolocateControl: function() {        
         var appMap = this.target.mapPanel.map;
-
         var geostyles = this.geolocationStyles;
         
-        var geolocateControl = new OpenLayers.Control.Geolocate({
-            
+        var geolocateControl = new OpenLayers.Control.Geolocate({            
             map: appMap,
             id: 'locate-control',
             geolocationOptions: this.geolocationOptions ,
@@ -193,12 +190,13 @@ gxp.plugins.Geolocate = Ext.extend(gxp.plugins.Tool, {
             watch: this.enableTracking,
             eventListeners: {
                                 
-                locationupdated: function(event){
-                    
+                locationupdated: function(event){                    
                     this.target.mapPanel.getEl().unmask();
+					
                     if(this.geoLocationAreaVector){
                         appMap.removeLayer(this.geoLocationAreaVector);
                     }
+					
                     this.geoLocationAreaVector=new OpenLayers.Layer.Vector( this.layerName , {displayInLayerSwitcher: this.displayInLayerSwitcher});    
 
                     appMap.addLayer(this.geoLocationAreaVector);                   
@@ -221,8 +219,7 @@ gxp.plugins.Geolocate = Ext.extend(gxp.plugins.Tool, {
                             ),
                             {},
                             geostyles.auraStyle
-                        )
-                        
+                        )                        
                     ]);
                     if(this.zoom)
                         appMap.zoomToExtent(this.geoLocationAreaVector.getDataExtent());
@@ -240,8 +237,7 @@ gxp.plugins.Geolocate = Ext.extend(gxp.plugins.Tool, {
                                 msg : this.errorMsg
                             });
                 },
-
-               scope: this
+                scope: this
             }
         });
 
@@ -254,43 +250,43 @@ gxp.plugins.Geolocate = Ext.extend(gxp.plugins.Tool, {
     addActions: function() {
         var me = this;
         var actions = [{
-                        menuText: this.enableTracking ? this.trackMenuText : this.geolocateMenuText,
-                        tooltip: this.enableTracking ? this.trackTooltip : this.geolocateTooltip,
-                        iconCls: "gxp-icon-geolocate",
-                        enableToggle: this.enableTracking,
-                        handler: function() {
-                                if(!me.enableTracking){
-                                    me.target.mapPanel.getEl().mask(me.waitMsg);
-                                    if(!this.control.active){
-                                        this.control.activate();
-                                        }
-                                    else
-                                        this.control.getCurrentLocation();
-                                    }
-                        },
-                        toggleHandler: function(button, state) {
-                                if(me.enableTracking)
-                                    if(state)
-                                    {
-                                        me.target.mapPanel.getEl().mask(me.waitMsg);
-                                        this.control.active = this.control.activate();
-                                    }
-                                    else
-                                    {
-                                        this.control.active = !this.control.deactivate();
-                                        if(me.geoLocationAreaVector)
-                                           {
-                                               me.target.mapPanel.map.removeLayer(me.geoLocationAreaVector);
-                                               me.geoLocationAreaVector = null;
-                                           }      
-                                    }
-                        },
-                        map: this.target.mapPanel.map,
-                        control: this.createGeolocateControl()
-                    }];
+			menuText: this.enableTracking ? this.trackMenuText : this.geolocateMenuText,
+			tooltip: this.enableTracking ? this.trackTooltip : this.geolocateTooltip,
+			iconCls: "gxp-icon-geolocate",
+			enableToggle: this.enableTracking,
+			handler: function() {
+					if(!me.enableTracking){
+						me.target.mapPanel.getEl().mask(me.waitMsg);
+						if(!this.control.active){
+							this.control.activate();
+							}
+						else
+							this.control.getCurrentLocation();
+						}
+			},
+			toggleHandler: function(button, state) {
+					if(me.enableTracking)
+						if(state)
+						{
+							me.target.mapPanel.getEl().mask(me.waitMsg);
+							this.control.active = this.control.activate();
+						}
+						else
+						{
+							this.control.active = !this.control.deactivate();
+							if(me.geoLocationAreaVector)
+							   {
+								   me.target.mapPanel.map.removeLayer(me.geoLocationAreaVector);
+								   me.geoLocationAreaVector = null;
+							   }      
+						}
+			},
+			map: this.target.mapPanel.map,
+			control: this.createGeolocateControl()
+		}];
+		
         return gxp.plugins.Geolocate.superclass.addActions.apply(this, [actions]);
-    }
-        
+    }        
 });
 
 Ext.preg(gxp.plugins.Geolocate.prototype.ptype, gxp.plugins.Geolocate);

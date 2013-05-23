@@ -91,6 +91,7 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         this.toolbar = new Ext.Toolbar({
             disabled: true,
             id: "paneltbar",
+			enableOverflow: true,
             items: this.createTools()
         });
         

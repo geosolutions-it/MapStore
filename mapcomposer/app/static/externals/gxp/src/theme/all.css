@@ -121,6 +121,11 @@
     background-image: url(img/geocoder.png);
 }
 
+/* gxp_geolocationmenu */
+.x-btn .gxp-icon-geolocationmenu, .x-menu-item .gxp-icon-geolocationmenu, .x-tree-node .gxp-icon-geolocationmenu {
+    background-image: url(img/geolocation.png);
+}
+
 /* gxp_legend */
 .x-btn .gxp-icon-legend, .x-menu-item .gxp-icon-legend, .x-tree-node .gxp-icon-legend {
     background-image: url(img/silk/application_view_tile.png);

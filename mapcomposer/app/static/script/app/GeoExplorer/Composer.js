@@ -128,9 +128,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		        }, {
 		            actions: ["-"], actionTarget: "paneltbar"
 		        }, {
-		            ptype: "gxp_georeferences",
-		            actionTarget: {target: "paneltbar", index: 23}
-		        }, {
 		            ptype: "gxp_saveDefaultContext",
 		            actionTarget: {target: "paneltbar", index: 24},
 					needsAuthorization: true

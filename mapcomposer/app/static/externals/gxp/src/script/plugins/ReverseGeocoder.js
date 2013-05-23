@@ -64,7 +64,8 @@ gxp.plugins.ReverseGeocoder = Ext.extend(gxp.plugins.Tool, {
 	addressTitle: "Address found",
 	
     init: function(target) {		
-		var me=this;
+		var me = this;
+		
 		// handles clicks on map when the geocoder is active
 		this.handler = new OpenLayers.Handler.Click( this,
 			{
@@ -81,7 +82,7 @@ gxp.plugins.ReverseGeocoder = Ext.extend(gxp.plugins.Tool, {
 		);
 		
 		// reverse geocoding toggle button
-		var cfg=this.buttonConfig || {};
+		var cfg = this.buttonConfig || {};
 		this.button=new Ext.Button(Ext.apply({
 			enableToggle:true,						
 			text:this.buttonText,
@@ -98,9 +99,10 @@ gxp.plugins.ReverseGeocoder = Ext.extend(gxp.plugins.Tool, {
 		},cfg));
 		
 		// address found viewer
-		cfg=this.outputConfig || {};		
+		cfg = this.outputConfig || {};		
 		
-		this.target=target;
+		this.target = target; 
+		
 		// initialize geocoder on ready
 		target.on({
 			ready: function() {
@@ -111,7 +113,6 @@ gxp.plugins.ReverseGeocoder = Ext.extend(gxp.plugins.Tool, {
 		});
 	
         return gxp.plugins.ReverseGeocoder.superclass.init.apply(this, arguments);
-
     },
 
     /** api: method[addOutput]
@@ -119,6 +120,7 @@ gxp.plugins.ReverseGeocoder = Ext.extend(gxp.plugins.Tool, {
     addOutput: function(config) {
         return gxp.plugins.ReverseGeocoder.superclass.addOutput.call(this, ['-',this.button]);
     },
+	
 	/**private: method[updateGeocoderType]
      *  Updates the current geocoder type.	 
 	 */
@@ -178,10 +180,8 @@ gxp.plugins.ReverseGeocoder = Ext.extend(gxp.plugins.Tool, {
 				}
 			},
 			scope:this
-		});
-			
+		});			
 	}
-
 });
 
 /**
@@ -192,10 +192,11 @@ gxp.plugins.ReverseGeocoder = Ext.extend(gxp.plugins.Tool, {
  *  - getRanking : gets the geocoder ranking in the "to be used" list 
  *                 given the current map configuration
  */
-gxp.plugins.ReverseGeocoder.Geocoders={
+gxp.plugins.ReverseGeocoder.Geocoders = {
+
 };
 
-gxp.plugins.ReverseGeocoder.Geocoders['google']={
+gxp.plugins.ReverseGeocoder.Geocoders['google'] = {
 	reverseGeocode: function(params) {
 		var googleCoords = new google.maps.LatLng(params.latlon.lat, params.latlon.lon);
 		var geocoder=new google.maps.Geocoder();		
@@ -222,7 +223,7 @@ gxp.plugins.ReverseGeocoder.Geocoders['google']={
 	}
 };
 
-gxp.plugins.ReverseGeocoder.Geocoders['nominatim']={
+gxp.plugins.ReverseGeocoder.Geocoders['nominatim'] = {
 	reverseGeocode: function(params) {
 		var proxy= new Ext.data.ScriptTagProxy({
 			api: {
@@ -249,9 +250,7 @@ gxp.plugins.ReverseGeocoder.Geocoders['nominatim']={
 			format:'json',
 			lon:params.latlon.lon,
 			lat:params.latlon.lat
-		},reader,function() {},this);
-		
-				
+		},reader,function() {},this);				
 	},
 	getRanking: function(map) {
 		return 0;

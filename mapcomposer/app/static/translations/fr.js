@@ -408,9 +408,7 @@ GeoExt.Lang.add("fr", {
 		latitudeEmptyText: 'Latitude',
 		longitudeEmptyText: 'Longitude'
 	},
-	
-	
-	
+
 	"gxp.plugins.AddLayer.prototype":{
 		waitMsg: "S'il vous plaît attendre...",
 		capabilitiesFailureMsg: " La couche peut pas être ajouté à la carte"
@@ -425,16 +423,37 @@ GeoExt.Lang.add("fr", {
         errorMsg: "Ce navigateur ne supporte pas Géolocalisation"
     },
     
+	"gxp.plugins.GeoLocationMenu.prototype":{
+        initialText: "Sélectionner une zone",
+        menuText: "Codification Géographique",
+        tooltip: "Codification Géographique",
+        addMarkerTooltip: "Réinitialiser Marker",
+        emptyText: "Géocoder...",
+        buttonText: "Adresse",
+        emptyText: "Adresse...",
+		errorMsg: "Aucune adresse trouvée",
+		waitMsg: "S'il vous plaît attendre...",
+		addressTitle: "Adresse trouvée",
+		geolocate: {
+			geolocateMenuText: "Géolocaliser",
+			geolocateTooltip: "Localiser mon poste",
+			trackMenuText: "Suivre position",
+			trackTooltip: "Suivre ma position",
+			waitMsg: "Recherche...",
+			errorMsg: "Ce navigateur ne supporte pas Géolocalisation"
+		},
+		actionText: "Géolocalisations"
+    },
+	
     "gxp.plugins.ImportExport.prototype":{
-         importexportLabel: "Import / Export",
-	 labels:{
+        importexportLabel: "Import / Export",
+	    labels:{
                 "map": {
                     "saveText" : "Exportez la Carte",
                     "loadText" : "Importer la Carte",
                     "uploadWindowTitle" : "Importez le fichier de contexte de carte",
                     "downloadWindowTitle" : "Exporter le fichier de contexte de carte"
                 },
-
                 "kml/kmz": {
                     "saveText" : "Export KML",
                     "loadText" : "Importer KML/KMZ",
@@ -446,44 +465,43 @@ GeoExt.Lang.add("fr", {
                     "notLayerSelectedText": "S'il vous plaît sélectionner un couche vectoriel"
                 } 
         }
-       },
-       
-       "gxp.MapFileUploadPanel" :{
-            fileLabel: "Fichier de la carte",
-            fieldEmptyText: "Recherchez les fichiers de carte contexte ...",
-            uploadText: "Envoyez",
-            waitMsgText: "Téléchargement de vos données ...",
-            resetText: "Rréinitialiser",
-            failedUploadingTitle: "Téléchargement de fichier erreur"
-       },
-       
-       "gxp.MapFileDownloadPanel" :{
-            buttonText: "Exportez la Carte",
-            filenameLabel: "Carte nom de fichier",
-            waitMsgText: "Générer fichier de mappage de contexte ...",
-            resetText: "Rréinitialiser",
-            failedUploadingTitle: "Impossible de générer un fichier de la carte",
-            saveErrorText: "Économie d'Trouble:"
-       },
-       
-       "gxp.KMLFileDownloadPanel" :{
-            buttonText: "Exporter",
-            filenameLabel: "Nom du fichier KML",
-            waitMsgText: "Génération KML ...",
-            invalidFileExtensionText: "L'extension du fichier doit être:",
-            resetText: "Rréinitialiser",
-            failedUploadingTitle: "Impossible de générer le fichier KML"
-       },
-       
-       "gxp.KMLFileUploadPanel" :{
-            fileLabel: "Le fichier KML",
-            fieldEmptyText: "Rechercher des fichiers KML ou KMZ ...",
-            uploadText: "Envoyez",
-            waitMsgText: "Téléchargement de vos données ...",
-            invalidFileExtensionText: "File extension must be one of: ",
-            resetText: "Rréinitialiser",
-            failedUploadingTitle: "Téléchargement de fichier erreur",
-            layerNameLabel: "Nom de la couche"
-       }
-
+    },
+   
+    "gxp.MapFileUploadPanel" :{
+		fileLabel: "Fichier de la carte",
+		fieldEmptyText: "Recherchez les fichiers de carte contexte ...",
+		uploadText: "Envoyez",
+		waitMsgText: "Téléchargement de vos données ...",
+		resetText: "Rréinitialiser",
+		failedUploadingTitle: "Téléchargement de fichier erreur"
+    },
+   
+    "gxp.MapFileDownloadPanel" :{
+		buttonText: "Exportez la Carte",
+		filenameLabel: "Carte nom de fichier",
+		waitMsgText: "Générer fichier de mappage de contexte ...",
+		resetText: "Rréinitialiser",
+		failedUploadingTitle: "Impossible de générer un fichier de la carte",
+		saveErrorText: "Économie d'Trouble:"
+    },
+   
+    "gxp.KMLFileDownloadPanel" :{
+		buttonText: "Exporter",
+		filenameLabel: "Nom du fichier KML",
+		waitMsgText: "Génération KML ...",
+		invalidFileExtensionText: "L'extension du fichier doit être:",
+		resetText: "Rréinitialiser",
+		failedUploadingTitle: "Impossible de générer le fichier KML"
+    },
+   
+    "gxp.KMLFileUploadPanel" :{
+		fileLabel: "Le fichier KML",
+		fieldEmptyText: "Rechercher des fichiers KML ou KMZ ...",
+		uploadText: "Envoyez",
+		waitMsgText: "Téléchargement de vos données ...",
+		invalidFileExtensionText: "File extension must be one of: ",
+		resetText: "Rréinitialiser",
+		failedUploadingTitle: "Téléchargement de fichier erreur",
+		layerNameLabel: "Nom de la couche"
+    }
 });

@@ -235,11 +235,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 toggleGroup: this.toggleGroup
             }, {
                 actions: ["-"], checked: true
-            }, {
-                leaf: true, 
-                text: gxp.plugins.GeoReferences.prototype.tooltip, 
-                checked: true, 
-                ptype: "gxp_georeferences"
             }
         ];
 
@@ -347,7 +342,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 icon: Ext.MessageBox.WARNING
             });
         }
-
     },
     
     displayXHRTrouble: function(msg, status) {        
@@ -387,6 +381,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         this.toolbar = new Ext.Toolbar({
             disabled: true,
             id: 'paneltbar',
+			enableOverflow: true,
             items: this.createTools()
         });
         
