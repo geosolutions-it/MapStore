@@ -1,21 +1,32 @@
 div.topbanner{
-	background-image: url(img/banner/world-home.jpg);
+	/*background-image: url(img/banner/world-home.jpg);*/
 	background-repeat:no-repeat;
-	background-color:black;
+	background-color:white;
 	background-position:center top; 
 	height:100%;
+
+}
+div.topbanner a,div.topbanner a:visited,div.topbanner a:hover{
+    text-decoration:none;
+    
+}
+div.topbanner h1{
+    text-align:center;
+    display:inline;
+    color: #006AB2;
+	font-family:"Verdana";
+	font-style: oblique;
+	font-size: 50px;
+    padding-left:30px;
+	font-weight: bold;
 }
 div.topbanner .logo-gs-white{
 	float:left;
-	padding-top:25px;
+}
+div.topbanner .logo-gs-white img{
+    height: 100px
 }
 div.topbanner .logo-ms-white{
-	color: #33e366;
-	font-family:"Verdana";
-	font-style: oblique;
-	font-size: 20px;
-	font-weight: bold;
 	float: right;
-	padding-top: 50px;
 	left: 10px;
 }	
