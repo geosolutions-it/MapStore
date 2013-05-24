@@ -66,7 +66,9 @@ var config = {
     twitter: {
         via: 'geosolutions_it',
         hashtags: ''
-    }
+    },
+	
+	locales: [['en', 'English'],['it','Italiano'],['fr','FranÃ§ais'],['de','Deutsch']]
 };
 
 
