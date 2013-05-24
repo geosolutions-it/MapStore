@@ -37,14 +37,24 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
     init: function(target) {
         
         var me=this;
-        
-        this.bboxFielset = new gxp.form.BBOXFieldset(Ext.apply({
+      
+        var confbbox=Ext.apply({
             map: target.mapPanel.map,
             checkboxToggle: true,
             ref: "spatialFieldset",
             title: this.queryByLocationText,
-            id: me.id+"_bbox"
-        }, this.outputConfig));
+            id: me.id+"_bbox",
+            northLabel: this.northLabel,
+            westLabel: this.westLabel,
+            eastLabel:this.eastLabel,
+            southLabel:this.southLabel,
+            setAoiText: this.setAoiText,
+            waitEPSGMsg: this.waitEPSGMsg,
+            setAoiTooltip: this.setAoiTooltip
+        },this.outputConfig);
+        this.bboxFielset = new gxp.form.BBOXFieldset(confbbox);
+        
+       
         
        this.id= this.id ? this.id : new Date().getTime(); 
        
