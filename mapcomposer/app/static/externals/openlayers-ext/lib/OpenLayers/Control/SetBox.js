@@ -121,10 +121,8 @@ OpenLayers.Control.SetBox = OpenLayers.Class(OpenLayers.Control, {
                     });
                     this.aoi = new OpenLayers.Feature.Vector(bounds.toGeometry());
                     this.boxes.addFeatures(this.aoi);
-                     
                     this.map.addLayer(this.boxes);
-                
-                   
+
                     if(index)
                         this.map.setLayerIndex(this.boxes,index); 
                 }
