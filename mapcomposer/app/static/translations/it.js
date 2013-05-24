@@ -357,6 +357,7 @@ GeoExt.Lang.add("it", {
         eastLabel:"Est",
         southLabel:"Sud",
         setAoiText: "ImpostaROI",
+        waitEPSGMsg: "Caricamento in corso... Attendere",
         setAoiTooltip: "Abilita il controllo SetBox per disegnare una ROI (BBOX) sulla mappa",
         attributeEnablement: "Interrogazione per Attributo",
         attributeEnablementMsg: "Tipo di ricerca invalido! Si deve prima selezionare il tipo 'Feature' e il layer vettoriale.",

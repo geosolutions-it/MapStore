@@ -354,6 +354,7 @@ GeoExt.Lang.add("de", {
         westLabel:"Westen",
         eastLabel:"Osten",
         southLabel:"Süden",
+        waitEPSGMsg: "Bitte warten...",
         setAoiText: "ROI eingeben",
         setAoiTooltip: "SetBox-Kontrolle aktivieren um eine ROI (BBOX) auf der Karte zu zeichnen",
         attributeEnablement: "Abfrage nach Attribute",

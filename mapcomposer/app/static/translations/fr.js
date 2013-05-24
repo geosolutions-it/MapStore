@@ -325,6 +325,7 @@ GeoExt.Lang.add("fr", {
         westLabel:"Ouest",
         eastLabel:"Est",
         southLabel:"Sud",
+        waitEPSGMsg: "S'il vous plaît attendre...",
         setAoiText: "FixéROI",
         setAoiTooltip: "Activer le contrôle TextBox pour dessiner un ROI (BOX) sur la carte",
         attributeEnablement: "Requête par attributs",
