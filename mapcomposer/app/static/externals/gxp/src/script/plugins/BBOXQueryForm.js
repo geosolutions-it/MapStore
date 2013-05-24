@@ -70,19 +70,24 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                 checkboxToggle: true
             }],
             bbar: ["->", {   
+                scope: this,    
                 text: this.cancelButtonText,
                 iconCls: "cancel",
                 handler: function() {
+                    this.resetFeatureManager();
+                    this.bboxFielset.removeBBOXLayer();
+                    this.bboxFielset.setBBOX(this.target.mapPanel.map.getExtent());
                     var ownerCt = this.outputTarget ? queryForm.ownerCt :
                         queryForm.ownerCt.ownerCt;
                     if (ownerCt && ownerCt instanceof Ext.Window) {
                         ownerCt.hide();
                     } else {
-                        addAttributeFilter(
+                        addFilterBuilder(
                             featureManager, featureManager.layerRecord,
                             featureManager.schema
-                        );
+                        ); 
                     }
+                    
                 }
             }, {
                 text: this.queryActionText,
