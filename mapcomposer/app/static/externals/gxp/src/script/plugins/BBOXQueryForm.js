@@ -43,14 +43,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             checkboxToggle: true,
             ref: "spatialFieldset",
             title: this.queryByLocationText,
-            id: me.id+"_bbox",
-            northLabel: this.northLabel,
-            westLabel: this.westLabel,
-            eastLabel:this.eastLabel,
-            southLabel:this.southLabel,
-            setAoiText: this.setAoiText,
-            waitEPSGMsg: this.waitEPSGMsg,
-            setAoiTooltip: this.setAoiTooltip
+            id: me.id+"_bbox"
         },this.outputConfig);
         this.bboxFielset = new gxp.form.BBOXFieldset(confbbox);
         
