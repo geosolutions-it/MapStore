@@ -8,54 +8,54 @@
 
 /** api: (define)
  *  module = gxp.form
- *  class = AOIFieldset
+ *  class = BBOXFieldset
  *  base_link = `Ext.form.TextField <http://extjs.com/deploy/dev/docs/?class=Ext.form.TextField>`_
  */
 Ext.namespace("gxp.form");
 
 /** api: constructor
- *  .. class:: AOIFieldset(config)
+ *  .. class:: BBOXFieldset(config)
  *   
- *      Areo Of Interest (AOI) fieldset
+ *    BBOX fieldset
  */
-gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
+gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
 
 
 
-    /** api: ptype = gxp_aoifieldset */
-    ptype: "gxp_aoifieldset",
+    /** api: ptype = gxp_bboxfieldset */
+    ptype: "gxp_bboxfieldset",
     
     
     /** api: config[id]
      *  ``String``
      *  
      */
-    id: "aoiFieldSet",
+    id: "bboxFieldSet",
     
     
     /** api: property[map]
      *  ``Object``
      *  
      */
-    map: "AOI",
+    map: "BBOX",
     
 
     /** api: property[layerName]
      *  ``String``
      *  
      */
-    layerName: "AOI",
+    layerName: "BBOX",
     
 
     /**
      * Property: decimalPrecision
-     * {int} precision of the AOI textFields   
+     * {int} precision of the BBOX textFields   
      */
     decimalPrecision:5,
     
     /**
      * Property: outputSRS
-     * {String} EPSG code of the AOI
+     * {String} EPSG code of the BBOX
      *     
      */
     outputSRS: 'EPSG:4326',
@@ -92,24 +92,24 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
      *  
      */
     spatialFilterOptions: {
-        lonMax: 20037508.34,   
-        lonMin: -20037508.34,
-        latMax: 20037508.34,   
-        latMin: -20037508.34  
+        lonMax: null,   
+        lonMin: null,
+        latMax: null,   
+        latMin: null  
     },
     
     
-    /** api: config[displayAOIInLayerSwitcher]
+    /** api: config[displayBBOXInLayerSwitcher]
      *  ``Boolean``
      *  
      */
-    displayAOIInLayerSwitcher: false,
+    displayBBOXInLayerSwitcher: false,
     
  
     /**
      * Property: selectStyle
      * {Object} Configuration of OpenLayer.Style. 
-     *    used to highlight the AOI
+     *    used to highlight the BBOX
      *     
      */
     selectStyle:{
@@ -150,21 +150,23 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
         };
         this.bodyCssClass= 'aoi-fields';
         
+        // Define handlar box style
         Ext.util.CSS.createStyleSheet(".olHandlerBoxZoomBox_"+this.id+" {\n"
-            +" border: "+this.selectStyle.strokeWidth+"px solid "+this.selectStyle.strokeColor+"; \n"
+            +" border-width:"+this.selectStyle.strokeWidth+"px; \n"
+            +" border-style:solid; \n"
+            +" border-color: "+this.selectStyle.strokeColor+";"
             +" position: absolute; \n"
-            +" background-color: "+this.selectStyle.fillColor+"; \n"
-            +" opacity: "+this.selectStyle.fillOpacity+"; \n"
+            +" background-color: "+this.selectStyle.handlerFillColor+"; \n"
+            +" opacity: "+0.5+"; \n"
             +" font-size: 1px; \n"
-            +" filter: alpha(opacity="+this.selectStyle.fillOpacity * 100+"); \n"
+            +" filter: alpha(opacity="+0.5 * 100+"); \n"
             +"}",
             "olHandlerBoxZoomBox_"+this.id);
+   
         
         var me= this;
-        
-       
-       
-        this.aoiProjection = this.outputSRS ? new OpenLayers.Projection(this.outputSRS) : this.mapProjectionObject;
+
+        this.bboxProjection = this.outputSRS ? new OpenLayers.Projection(this.outputSRS) : null;
 
        
         this.northField = new Ext.form.NumberField({
@@ -172,8 +174,6 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
             id: me.id+"_NorthBBOX",
             width: 100,
             allowBlank: false,
-            //    minValue: this.spatialFilterOptions.lonMin,
-            //    maxValue: this.spatialFilterOptions.lonMax,
             decimalPrecision: me.decimalPrecision,
             allowDecimals: true,
             hideLabel : false                    
@@ -184,8 +184,8 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
             id: me.id+"_WestBBOX",
             width: 100,
             allowBlank: false,
-            minValue: this.spatialFilterOptions.latMin,
-            maxValue: this.spatialFilterOptions.latMax,
+          /*  minValue: this.spatialFilterOptions.latMin,
+            maxValue: this.spatialFilterOptions.latMax,*/
             decimalPrecision: this.decimalPrecision,
             allowDecimals: true,
             hideLabel : false                    
@@ -196,8 +196,8 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
             id: me.id+"_EastBBOX",
             width: 100,
             allowBlank: false,
-            minValue: this.spatialFilterOptions.latMin,
-            maxValue: this.spatialFilterOptions.latMax,
+          /*  minValue: this.spatialFilterOptions.latMin,
+            maxValue: this.spatialFilterOptions.latMax,*/
             decimalPrecision: this.decimalPrecision,
             allowDecimals: true,
             hideLabel : false                    
@@ -208,22 +208,31 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
             id: me.id+"_SouthBBOX",
             width: 100,
             allowBlank: false,
-            minValue: this.spatialFilterOptions.lonMin,
-            maxValue: this.spatialFilterOptions.lonMax,
+          /*  minValue: this.spatialFilterOptions.lonMin,
+            maxValue: this.spatialFilterOptions.lonMax,*/
             decimalPrecision: this.decimalPrecision,
             allowDecimals: true,
             hideLabel : false                    
         });
         
-        /*if(this.updateMapMove)
-            this.map.events.register("move", this, this.aoiUpdater);*/
-          
-
-        this.aoiButton = new Ext.Button({
+        if(this.spatialFilterOptions.lonMin && this.spatialFilterOptions.lonMax){
+            this.southField.minValue=this.spatialFilterOptions.lonMin;
+            this.southField.maxValue=this.spatialFilterOptions.lonMax;
+            this.northField.minValue=this.spatialFilterOptions.lonMin;
+            this.northField.maxValue=this.spatialFilterOptions.lonMax;
+        }
+        
+        if(this.spatialFilterOptions.latMin && this.spatialFilterOptions.latMax){
+            this.eastField.minValue=this.spatialFilterOptions.latMin;
+            this.eastField.maxValue=this.spatialFilterOptions.latMax;
+            this.westField.minValue=this.spatialFilterOptions.latMin;
+            this.westField.maxValue=this.spatialFilterOptions.latMax;
+        }
+        
+        this.bboxButton = new Ext.Button({
             text: this.setAoiText,
             tooltip: this.setAoiTooltip,
             enableToggle: true,
-            //  toggleGroup: this.toggleGroup,
             iconCls: 'aoi-button',
             height: 50,
             width: 50,
@@ -240,9 +249,9 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                         // Activating the new control
                         //   
                         
-                        this.selectAOI.activate();
+                        this.selectBBOX.activate();
                     }else{
-                        this.selectAOI.deactivate();
+                        this.selectBBOX.deactivate();
                     }
                 }
             }
@@ -253,6 +262,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
             layout: "form",
             cellCls: 'spatial-cell',
             labelAlign: "top",
+            cls: 'center-align',
             border: false,
             colspan: 3,
             items: [this.northField]
@@ -269,7 +279,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
             cellCls: 'spatial-cell',
             border: false,
             items: [
-            this.aoiButton
+            this.bboxButton
             ]                
         },{
             layout: "form",
@@ -291,27 +301,27 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
         }];
             
         if(this.infoSRS)   
-            this.title+=" <a href='#' id='"+me.id+"_bboxAOI-set-EPSG'>["+this.aoiProjection.getCode()+"]</a>";
+            this.title+=" <a href='#' id='"+me.id+"_bboxAOI-set-EPSG'>["+this.bboxProjection.getCode()+"]</a>";
         
         this.listeners= {
             "afterlayout": function(){
                 Ext.get(me.id+"_bboxAOI-set-EPSG").addListener("click", me.openEPSGWin, me);  
                 me.mapProjection = new OpenLayers.Projection(me.map.getProjection());
                     
-                me.selectAOI = new OpenLayers.Control.SetBox({      
+                me.selectBBOX = new OpenLayers.Control.SetBox({      
                     map: me.map,       
                     layerName: me.layerName,
-                    displayInLayerSwitcher: me.displayAOIInLayerSwitcher,
+                    displayInLayerSwitcher: me.displayBBOXInLayerSwitcher,
                     boxDivClassName: "olHandlerBoxZoomBox_"+me.id,
                     aoiStyle: new OpenLayers.StyleMap(me.selectStyle),
                     onChangeAOI: function(){  
-                        me.setAOI(new OpenLayers.Bounds.fromString(this.currentAOI)); 
+                        me.setBBOX(new OpenLayers.Bounds.fromString(this.currentAOI)); 
                         this.deactivate();
-                        me.aoiButton.toggle();
+                        me.bboxButton.toggle();
                     } 
                 }); 
         
-                me.map.addControl(me.selectAOI);
+                me.map.addControl(me.selectBBOX);
                 me.map.enebaleMapEvent = true;
             },
             "render": function(){
@@ -320,7 +330,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
         };
         
        
-        gxp.form.AOIFieldset.superclass.initComponent.call(this);
+        gxp.form.BBOXFieldset.superclass.initComponent.call(this);
     },
     
     /** private: method[isDark]
@@ -333,46 +343,46 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
      */
     
     
-    /** public: method[removeAOILayer]	 
-     *     remove the AOI selection layer from the map
+    /** public: method[removeBBOXLayer]	 
+     *     remove the BBOX selection layer from the map
      */
-    removeAOILayer: function(){
-        var aoiLayer = this.map.getLayersByName(this.layerName)[0];
+    removeBBOXLayer: function(){
+        var bboxLayer = this.map.getLayersByName(this.layerName)[0];
       
-        if(aoiLayer)
-            this.map.removeLayer(aoiLayer);    
+        if(bboxLayer)
+            this.map.removeLayer(bboxLayer);    
     },
     
     
     /** public: method[reset]	 
-     *    reset AOI Panel
+     *    reset BBOX Panel
      */
     reset: function(){
-        this.removeAOILayer();
+        this.removeBBOXLayer();
         this.northField.reset();
         this.southField.reset();
         this.eastField.reset();
         this.westField.reset();  
     },
     
-    /** public: method[setAOI]
+    /** public: method[setBBOX]
      *  :arg bounds: ``Object``
-     *     change the current AOI, to the given bounds, converting it to AOI projection if needed
+     *     change the current BBOX, to the given bounds, converting it to BBOX projection if needed
      */
-    setAOI: function(bounds) {
-        var aoiBounds;
+    setBBOX: function(bounds) {
+        var bboxBounds;
 
-        if(this.map.getProjection() != this.aoiProjection.getCode())
-            aoiBounds = bounds.transform(this.mapProjection,this.aoiProjection);
-        else
-            aoiBounds= bounds;  
+        if(this.map.getProjection() != this.bboxProjection.getCode()){
+            bboxBounds = bounds.transform(this.map.getProjectionObject(),this.bboxProjection);
+        }else
+            bboxBounds= bounds;  
       
-        this.northField.setValue(aoiBounds.top);
-        this.southField.setValue(aoiBounds.bottom);
-        this.westField.setValue(aoiBounds.left);
-        this.eastField.setValue(aoiBounds.right); 
+        this.northField.setValue(bboxBounds.top);
+        this.southField.setValue(bboxBounds.bottom);
+        this.westField.setValue(bboxBounds.left);
+        this.eastField.setValue(bboxBounds.right); 
         
-        this.fireEvent('select', this, aoiBounds);
+        this.fireEvent('select', this, bboxBounds);
 
     },
     
@@ -403,23 +413,23 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
 
     
     
-    /** public: method[getAOIMapBounds]
+    /** public: method[getBBOXMapBounds]
      *  
-     *   return the selected AOI bounds defined with the Map Projection  
+     *   return the selected BBOX bounds defined with the Map Projection  
      */
-    getAOIMapBounds: function(){
-        if(this.map.getProjection() != this.aoiProjection.getCode())  
-            return this.getAOIBounds().transform(this.aoiProjection,this.mapProjection);
+    getBBOXMapBounds: function(){
+        if(this.map.getProjection() != this.bboxProjection.getCode())  
+            return this.getBBOXBounds().transform(this.bboxProjection,this.mapProjection);
         else
-            return this.getAOIBounds();
+            return this.getBBOXBounds();
     },
     
     
-    /** public: method[getAOIBounds]
+    /** public: method[getBBOXBounds]
      *  
-     *  return the selected AOI bounds defined with the Panel Projection   
+     *  return the selected BBOX bounds defined with the Panel Projection   
      */
-    getAOIBounds: function(){
+    getBBOXBounds: function(){
         return new OpenLayers.Bounds(
             this.westField.getValue(), 
             this.southField.getValue(), 
@@ -428,17 +438,8 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
             )
     },
     
-    
-    
-    
-    /*   aoiUpdater:function() {			
-        var extent=this.map.getExtent().clone();
-        this.setAOI(extent);                    
-        this.removeAOILayer(this.map);			
-    },*/
-    
     /** private: method[openEpsgWin]
-     *    Opens a popup with current AOI CRS description 
+     *    Opens a popup with current BBOX CRS description 
      */
     openEPSGWin: function() {
       
@@ -450,12 +451,10 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
             layout:'fit', 
             id: me.id+'_epsg_info_win',
             width:me.epsgWinWidth,
-            height:me.epsgWinHeight,
             closeAction:'destroy',
-            html: '<div id="'+me.id+'_loaderIframe"><iframe id="'+me.id+'_epsgIframe" src="'+ (me.infoEPSGURL ? me.infoEPSGURL : "http://spatialreference.org/ref/epsg/"+this.aoiProjection.getCode().split(":")[1]+"/") +'" width="99%" height="99%"></iframe></div>',
+            html: '<div id="'+me.id+'_loaderIframe"><iframe id="'+me.id+'_epsgIframe" src="'+ me.getCRSURLFromCode() +'" width="99%" height="'+me.epsgWinHeight+'"></iframe></div>',
             listeners: {
                 afterrender: function(el, eOpts) {
-                  
                     var ml=new Ext.LoadMask(document.getElementById(me.id+'_loaderIframe'), 
                     {
                         msg: me.waitEPSGMsg,
@@ -475,8 +474,30 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
             }
         }); 
         win.show();
+    },
+    
+    
+    /** private: method[getCRSURLFromCode]
+     *    Get CRS HTML page URL description
+     */
+    getCRSURLFromCode: function(){
+        var srsURL;
+        if( ! this.infoEPSGURL){
+            srsURL="http://spatialreference.org/ref/";
+            switch (this.bboxProjection.getCode()){
+            case "EPSG:900913":
+                srsURL+= "sr-org/7483/";
+                break;
+                
+            default:
+               srsURL+= "/epsg/"+( +this.bboxProjection.getCode().split(":")[1]+"/"); 
+            }
+        }else
+         srsURL=this.infoEPSGURL;
+         
+       return srsURL;
     }
     
 });
 
-Ext.reg("gxp_aoifieldset", gxp.form.AOIFieldset);
+Ext.reg("gxp_bboxfieldset", gxp.form.BBOXFieldset);
