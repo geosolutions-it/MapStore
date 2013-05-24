@@ -462,12 +462,13 @@
 				],
 				"columns": [
 					{
-						"header": "Residenti",      
+						"header": ["Residents", "Residenti"],
 						"dataIndex": "residenti"
 					}
 				],
-				"title": "Popolazione residente",
+				"title": ["Resident people", "Popolazione residente"],
 				"name": "POPOLAZIONE RESIDENTE",
+                "id": 1,
 				"type": "umano"
 			},
 			"Popolazione fluttuante turistica": {
@@ -523,6 +524,7 @@
 				],
 				"title": "Popolazione fluttuante turistica",
 				"name": "POPOLAZIONE FLUTTUANTE TURISTICA (MAX)",
+                "id": 2,
 				"type": "umano"
 			},
 			"Addetti industria e servizi": {
@@ -547,7 +549,7 @@
 					},
 					{
 						"name": "denominazione",      
-						"mapping": "denominazione"
+						"mapping": "denominazione_${locale}"
 					},
 					{
 						"name": "codfisc",      
@@ -586,6 +588,7 @@
 				],
 				"title": "Addetti industria e servizi",
 				"name": "ADDETTI INDUSTRIA E SERVIZI",
+                "id": 4,
 				"type": "umano"
 			},
 			"Addetti/utenti strutture sanitarie": {
@@ -680,6 +683,7 @@
 				],
 				"title": "Addetti/utenti strutture sanitarie",
 				"name": "ADDETTI/UTENTI STRUTTURE SANITARIE",
+                "id": 5,
 				"type": "umano"
 			},
 			"Addetti/utenti strutture scolastiche": {
@@ -758,6 +762,7 @@
 				],
 				"title": "Addetti/utenti strutture scolastiche",
 				"name": "ADDETTI/UTENTI STRUTTURE SCOLASTICHE",
+                "id": 6,
 				"type": "umano"
 			},
 			"Addetti/utenti centri commerciali": {
@@ -836,6 +841,7 @@
 				],
 				"title": "Addetti/utenti centri commerciali",
 				"name": "ADDETTI/UTENTI CENTRI COMMERCIALI",
+                "id": 7,
 				"type": "umano"
 			},
 			"Zone urbanizzate": {
@@ -882,6 +888,7 @@
 				],
 				"title": "Zone urbanizzate",
 				"name": "ZONE URBANIZZATE",
+                "id": 10,
 				"type": "ambientale"
 			},
 			"Aree boscate": {
@@ -928,6 +935,7 @@
 				],
 				"title": "Aree boscate",
 				"name": "AREE BOSCATE",
+                "id": 11,
 				"type": "ambientale"
 			},
 			"Aree protette": {
@@ -1006,6 +1014,7 @@
 				],
 				"title": "Aree protette",
 				"name": "AREE PROTETTE",
+                "id": 12,
 				"type": "ambientale"
 			},
 			"Aree agricole": {
@@ -1052,6 +1061,7 @@
 				],
 				"title": "Aree agricole",
 				"name": "AREE AGRICOLE",
+                "id": 13,
 				"type": "ambientale"
 			},
 			"Acque superficiali": {
@@ -1129,6 +1139,7 @@
 					}
 				],
 				"title": "Acque superficiali",
+                "id": 15,
 				"name": "ACQUE SUPERFICIALI",
 				"type": "ambientale"
 			},
@@ -1199,6 +1210,7 @@
 					}
 				],
 				"title": "Acque sotterranee",
+                "id": 14,
 				"name": "ACQUE SOTTERRANEE",
 				"type": "ambientale"
 			},
@@ -1253,6 +1265,7 @@
 					}
 				],
 				"title": "Beni culturali",
+                "id": 16,
 				"name": "BENI CULTURALI",
 				"type": "ambientale"
 			}

@@ -113,7 +113,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
      *  
      */
     actionColumns: null,
-      
+    
+         
     
     // start i18n
     displayMsgPaging: "Displaying topics {0} - {1} of {2}",
@@ -730,7 +731,12 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 me.loadFeatureFields(function(){
                     if(me.columns){
                         for(kk=0; kk<me.columns.length; kk++){
-                            me.wfsColumns.push(me.columns[kk]);
+                            var column = {};
+                            Ext.apply(column, me.columns[kk]);
+                            if(column.header instanceof Array) {
+                                column.header = column.header[GeoExt.Lang.getLocaleIndex()];
+                            }
+                            me.wfsColumns.push(column);
                         }
                     }else{
                         for(kk=0; kk<me.featureFields.length; kk++){
@@ -741,6 +747,10 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                             });
                         }
                     } 
+                    
+                    for(kk=0; kk<me.featureFields.length; kk++){
+                        me.featureFields[kk].mapping = me.featureFields[kk].mapping.replace('${locale}', GeoExt.Lang.locale);                             
+                    }
                     
                     new GeoExt.data.FeatureStore({ 
                         wfsParam: me,

@@ -501,182 +501,6 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         return this.conditionsSet;
     },
 	
-    /** private: method[buildAOIForm]
-	 *  :arg map: ``Object``
-	 *    builds the form for AOI (Area of interest) choosing
-     */
-    /*buildAOIForm: function(map) {		
-        //
-        // Ambito Territoriale
-        //        
-        this.northField = new Ext.form.NumberField({
-              fieldLabel: this.northLabel,
-              id: "NorthBBOX",
-              width: 100,
-              allowBlank: false,
-              minValue: this.spatialFilterOptions.lonMin,
-              maxValue: this.spatialFilterOptions.lonMax,
-              decimalPrecision: 5,
-              allowDecimals: true,
-              hideLabel : false                    
-        });
-        
-        this.westField = new Ext.form.NumberField({
-              fieldLabel: this.westLabel,
-              id: "WestBBOX",
-              width: 100,
-              allowBlank: false,
-              minValue: this.spatialFilterOptions.latMin,
-              maxValue: this.spatialFilterOptions.latMax,
-              decimalPrecision: 5,
-              allowDecimals: true,
-              hideLabel : false                    
-        });
-        
-        this.eastField = new Ext.form.NumberField({
-              fieldLabel: this.eastLabel,
-              id: "EastBBOX",
-              width: 100,
-              allowBlank: false,
-              minValue: this.spatialFilterOptions.latMin,
-              maxValue: this.spatialFilterOptions.latMax,
-              decimalPrecision: 5,
-              allowDecimals: true,
-              hideLabel : false                    
-        });
-              
-        this.southField = new Ext.form.NumberField({
-              fieldLabel: this.southLabel,
-              id: "SouthBBOX",
-              width: 100,
-              allowBlank: false,
-              minValue: this.spatialFilterOptions.lonMin,
-              maxValue: this.spatialFilterOptions.lonMax,
-              decimalPrecision: 5,
-              allowDecimals: true,
-              hideLabel : false                    
-        });
-
-        //
-        // Geographical Filter Field Set
-        //  
-		var me = this;
-        this.selectAOI = new OpenLayers.Control.SetBox({      
-            map: map,            
-            onChangeAOI: function(){                               
-                me.setAOI(new OpenLayers.Bounds.fromString(this.currentAOI));             
-            } 
-        }); 
-        
-        map.addControl(this.selectAOI);
-        
-        this.aoiButton = new Ext.Button({
-              text: this.setAoiText,
-              tooltip: this.setAoiTooltip,
-              enableToggle: true,
-              toggleGroup: this.toggleGroup,
-              iconCls: 'aoi-button',
-              height: 50,
-              width: 50,
-              listeners: {
-                  scope: this, 
-                  toggle: function(button, pressed) {
-                     if(pressed){                     
-                          //
-                          // Reset the previous control
-                          //
-                          this.removeAOILayer(map);
-                          
-                          if(this.northField.isDirty() && this.southField.isDirty() && 
-                              this.eastField.isDirty() && this.westField.isDirty()){
-                              this.northField.reset();
-                              this.southField.reset();
-                              this.eastField.reset();
-                              this.westField.reset();
-                          }
-
-                          //
-                          // Activating the new control
-                          //                          
-                          this.selectAOI.activate();
-                      }else{
-                          this.selectAOI.deactivate();
-                      }
-                  }
-              }
-        });                       
-        
-      
-        this.spatialFieldSet = new Ext.form.FieldSet({
-            title:  this.aoiFieldSetTitle+" <a href='#' id='bboxAOI-set-EPSG'>["+this.wgs84Projection.getCode()+"]</a>",
-            id: 'bboxAOI-set',
-            autoHeight: true,
-            layout: 'table',
-            layoutConfig: {
-                columns: 3
-            },
-            defaults: {
-                // applied to each contained panel
-                bodyStyle:'padding:5px;'
-            },
-            bodyCssClass: 'aoi-fields',
-            items: [                     
-                {
-                    layout: "form",
-                    cellCls: 'spatial-cell',
-                    labelAlign: "top",
-                    border: false,
-                    colspan: 3,
-                    items: [
-                        this.northField
-                    ]
-                },{
-                    layout: "form",
-                    cellCls: 'spatial-cell',
-                    labelAlign: "top",
-                    border: false,
-                    items: [
-                        this.westField
-                    ]
-                },{
-                    layout: "form",
-                    cellCls: 'spatial-cell',
-                    border: false,
-                    items: [
-                        this.aoiButton
-                    ]                
-                },{
-                    layout: "form",
-                    cellCls: 'spatial-cell',
-                    labelAlign: "top",
-                    border: false,
-                    items: [
-                       this.eastField
-                    ]
-                },{
-                    layout: "form",
-                    cellCls: 'spatial-cell',
-                    labelAlign: "top",
-                    border: false,
-                    colspan: 3,
-                    items: [
-                        this.southField
-                    ]
-                }
-            ]
-        });
-		
-		// updates the AOI on map pan / zoom
-        this.aoiUpdater = function() {			
-			var extent=map.getExtent().clone();
-			this.setAOI(extent);                    
-			this.removeAOILayer(map);			
-        };
-        map.events.register("move", this, this.aoiUpdater);
-        
-		return this.spatialFieldSet;
-	},*/
-	
     /** private: method[buildTargetForm]
      *    builds the form for target type choosing
      */
@@ -780,15 +604,15 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                       }
              });
            me.macrobers.getStore().loadData([
-            ['bersagli_all', me.allTargetOption, 'calc_formula_tot', null, '-2', true, allIDsArray],
-            ['bersagli_umani', me.allHumanTargetOption, 'calc_formula_tot', true, '-1', true, humanIDsArray],
-            ['bersagli_ambientali', me.allNotHumanTargetOption, 'calc_formula_tot', false, '-2', true, notHumanIDsArray]
+            ['bersagli_all', me.allTargetOption, 'calc_formula_tot', null, '-2', true, allIDsArray, -1],
+            ['bersagli_umani', me.allHumanTargetOption, 'calc_formula_tot', true, '-1', true, humanIDsArray, -2],
+            ['bersagli_ambientali', me.allNotHumanTargetOption, 'calc_formula_tot', false, '-2', true, notHumanIDsArray, -3]
             ], true);
 
       });
         
        var targetMacroStore = new Ext.data.ArrayStore({
-            fields: ['layer', 'name', 'property', 'humans', 'code', 'macro', 'id'],
+            fields: ['layer', 'name', 'property', 'humans', 'code', 'macro', 'id', 'id_bersaglio'],
             data :  []
         });
         

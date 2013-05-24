@@ -90,9 +90,7 @@ GeoExt.Lang.add("en", {
         descriptionText: "Description",
         contactText: "Contact",
         aboutThisMapText: "About this Map",
-		resetButtonTooltip: "Reset Page",
-		helpButtonTooltip: "Help",
-        searchTabTitle : "Search",
+		searchTabTitle : "Search",
         viewTabTitle : "View",
         portalTabTitle : "Portal",
 		markerPopupTitle: "Details",
@@ -287,6 +285,34 @@ GeoExt.Lang.add("en", {
         cacheFieldText: "Use cached version",
         stylesText: "Styles"
     },
+    
+    
+	"gxp.WMSStylesDialog.prototype": {
+         addStyleText: "Aggiungi",
+         addStyleTip: "Aggiungi un nuovo stile",
+         chooseStyleText: "Scegli stile",
+         deleteStyleText: "Rimuovi",
+         deleteStyleTip: "Cancella lo stile selezionato",
+         editStyleText: "Modifica",
+         editStyleTip: "Modifica lo stile selezionato",
+         duplicateStyleText: "Duplica",
+         duplicateStyleTip: "Duplica lo stile selezionato",
+         addRuleText: "Aggiungi",
+         addRuleTip: "Aggiungi una nuova regola",
+         newRuleText: "Nuova Regola",
+         deleteRuleText: "Rimuovi",
+         deleteRuleTip: "Cancella la regola selezionata",
+         editRuleText: "Modifica",
+         editRuleTip: "Modifica le regola selezionata",
+         duplicateRuleText: "Duplica",
+         duplicateRuleTip: "Duplica la regola selezionata",
+         cancelText: "Cancella",
+         saveText: "Salva",
+         styleWindowTitle: "User Style: {0}",
+         ruleWindowTitle: "Style Rule: {0}",
+         stylesFieldsetTitle: "Stili",
+         rulesFieldsetTitle: "Regole"
+    },    
 
     "gxp.NewSourceWindow.prototype": {
         title: "Add New Server...",

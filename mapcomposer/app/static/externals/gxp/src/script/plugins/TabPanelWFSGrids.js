@@ -70,7 +70,7 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
     displayMsgPaging: "Displaying topics {0} - {1} of {2}",
     emptyMsg: "No topics to display",
     
-
+        
 	
     /** private: method[constructor]
      */
@@ -95,11 +95,14 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
 		for(var targetName in this.targets) {
 			if(this.targets.hasOwnProperty(targetName)) {
 				var targetCfg = this.targets[targetName];
-				
+                                var title = targetCfg.title || targetName;
+                                if(title instanceof Array) {
+                                    title = title[GeoExt.Lang.getLocaleIndex()];
+                                }
                                 // build grid
                                 var wfsGridConf={
                                     "outputTarget": this.id,
-                                    "title": targetName,
+                                    "title": title,
                                     "name": targetCfg.name || '',
                                     "id": targetCfg.id || targetName,
                                     "protocolType": "GET",
@@ -144,7 +147,7 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                                 for(var i=0; i<me.grids.length; i++) {
                                    if(attribute) {
 					var value = me.grids[i][attribute];
-					if(value.toLowerCase() == attributeValue.toLowerCase()) {
+					if(value == attributeValue) {
 					    gridsLoad.push(me.grids[i]);
 					} 
 				   } else {
@@ -177,7 +180,7 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
 						buttons: Ext.Msg.OK,
 						icon: Ext.MessageBox.WARNING
 					});
-					tabPanel.collapse();
+					this.collapse();
 				}	
                 var tabPanel = this;
                 for(var i=0; i<grids.length;i++){

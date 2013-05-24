@@ -272,17 +272,15 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
 	isAllHumanTargets: function() {
-		return this.status.target.name === 'Tutti i Bersagli Umani';
+		return this.status.target['id_bersaglio'] === -2;
 	},
 	
 	isAllNotHumanTargets: function() {
-		return this.status.target.name === 'Tutti i Bersagli Ambientali';
+		return this.status.target['id_bersaglio'] === -3;
 	},
 	
 	isSingleTarget: function() {
-		return this.status.target.name !== 'Tutti i Bersagli Umani'
-			&& this.status.target.name !== 'Tutti i Bersagli Ambientali' 
-			&& this.status.target.name !== 'Tutti i Bersagli';
+		return parseInt(this.status.target['id_bersaglio'],10) > 0;
 	},
 	
     isHumanTarget: function() {
@@ -620,7 +618,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		
 		var wfsGrid = Ext.getCmp("featuregrid");
 		if(this.isSingleTarget()) {
-			wfsGrid.loadGrids("name", this.status.target.name, this.selectionLayerProjection, targetViewParams);								
+			wfsGrid.loadGrids("id", this.status.target['id_bersaglio'], this.selectionLayerProjection, targetViewParams);								
 		} else if(this.isAllHumanTargets()) {
 			wfsGrid.loadGrids("type", 'umano', this.selectionLayerProjection, targetViewParams);
 		} else if(this.isAllNotHumanTargets()) {
@@ -795,21 +793,23 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		
 		var radius = this.getRadius();
 		
-		
+        var newLayers=[];
+        
+		/*
 		// remove previous analytic view layers (targets and buffers)
 		this.removeAnalyticViewLayers(map);				
 		
-		var newLayers=[];
+		
 		
 		// add the buffers layers
 		this.addBuffers(newLayers, bounds, radius);
-		
+		*/
 		// add the target layer
 		this.addTargets(newLayers, bounds, radius);				
 			
-                    
+        /*            
 		this.moveRiskLayersToTop(newLayers);
-		  	     
+		  	     */
 		// add analytic view layers to the map
 		this.target.mapPanel.layers.add(newLayers);
 		

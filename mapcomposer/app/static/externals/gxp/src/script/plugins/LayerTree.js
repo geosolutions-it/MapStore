@@ -85,16 +85,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
      */
     localLabelSep: ":",
     
-    /** api: config[localLabelSep]
-     *  ``Object`` Contains the index position (in the groupName array obtained from the group name splitted with the "localLabelSep" separator) 
-     *   for each language supported
-     */
-    localIndexs:{
-            "en": 0,
-            "it": 1,
-            "fr": 2,
-            "de": 3
-    },
+    
     
     /** api: config[defaultGroup]
      *  ``String`` The name of the default group, i.e. the group that will be
@@ -176,7 +167,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
          * The locIndex is obtained from the localIndexs, with the current local code, 
          * which contains the index position for each language supported
          **/
-        var locIndex= this.localIndexs[GeoExt.Lang.locale];
+        var locIndex= GeoExt.Lang.getLocaleIndex();
         var groupNames;
         for (var group in this.groups) {
             /*
@@ -262,8 +253,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
         config = Ext.apply({
             xtype: "treepanel",
             root: treeRoot,
-            rootVisible: false,
-            localIndexs: this.localIndexs,
+            rootVisible: false,            
             localLabelSep: this.localLabelSep,
             border: false,
             enableDD: true,
