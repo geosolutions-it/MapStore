@@ -350,6 +350,15 @@ GeoExt.Lang.add("de", {
         noFeaturesTitle: "Kein Ergebnis",
         noFeaturesMessage: "Die Suche hat keine Ergebnisse ergeben.",
         title: "Suche",
+        attributeEnablement: "Abfrage nach Attribute",
+        attributeEnablementMsg: "Abfrage ungültig! Zuerst 'Feature' und die vektorielle Schicht auswählen.",
+        searchType: "Grundeinstellungen",
+        typeLabel: "Typ",
+        featureLabel: "Max Features"
+    },
+    
+    
+     "gxp.form.BBOXFieldset.prototype":{
         northLabel:"Norden",
         westLabel:"Westen",
         eastLabel:"Osten",
@@ -357,11 +366,7 @@ GeoExt.Lang.add("de", {
         waitEPSGMsg: "Bitte warten...",
         setAoiText: "ROI eingeben",
         setAoiTooltip: "SetBox-Kontrolle aktivieren um eine ROI (BBOX) auf der Karte zu zeichnen",
-        attributeEnablement: "Abfrage nach Attribute",
-        attributeEnablementMsg: "Abfrage ungültig! Zuerst 'Feature' und die vektorielle Schicht auswählen.",
-        searchType: "Grundeinstellungen",
-        typeLabel: "Typ",
-        featureLabel: "Max Features"
+        title: "Region of interest"
     },
 	
     "gxp.EmbedMapDialog.prototype": {

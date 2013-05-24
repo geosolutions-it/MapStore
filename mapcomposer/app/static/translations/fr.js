@@ -321,6 +321,17 @@ GeoExt.Lang.add("fr", {
         noFeaturesTitle: "Pas de correspondance",
         noFeaturesMessage: "Votre requête n'a retourné aucun résultat.",
         title: "Rechercher",
+        
+        attributeEnablement: "Requête par attributs",
+        attributeEnablementMsg: "Invalid search Type! To use this you have to select 'Feature' type and to select a vector layer before.",
+        searchType: "Réglages de base",
+        typeLabel: "Type",
+        featureLabel: "Max Features"
+    },
+    
+    
+    
+    "gxp.form.BBOXFieldset.prototype":{
         northLabel:"Nord",
         westLabel:"Ouest",
         eastLabel:"Est",
@@ -328,12 +339,9 @@ GeoExt.Lang.add("fr", {
         waitEPSGMsg: "S'il vous plaît attendre...",
         setAoiText: "FixéROI",
         setAoiTooltip: "Activer le contrôle TextBox pour dessiner un ROI (BOX) sur la carte",
-        attributeEnablement: "Requête par attributs",
-        attributeEnablementMsg: "Invalid search Type! To use this you have to select 'Feature' type and to select a vector layer before.",
-        searchType: "Réglages de base",
-        typeLabel: "Type",
-        featureLabel: "Max Features"
+        title: "Région d'Intérêt"
     },
+    
     "gxp.EmbedMapDialog.prototype": {
         publishMessage: "Votre carte est prête à être publiée sur le web! Il suffit de copier le code HTML ci-dessous pour intégrer la carte dans votre site web:",
         heightLabel: "Hauteur",

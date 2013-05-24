@@ -315,13 +315,6 @@ GeoExt.Lang.add("en", {
         queryMsg: "Querying...",
         cancelButtonText: "Reset",
         noFeaturesTitle: "No Match",
-        northLabel:"North",
-            westLabel:"West",
-            eastLabel:"East",
-            southLabel:"South",
-            setAoiText: "SetROI",
-            waitEPSGMsg: "Please Wait...",
-            setAoiTooltip: "Enable the SetBox control to draw a ROI (BBOX) on the map",
         noFeaturesMessage: "Your query did not return any results.",
         title: "Search",
         attributeEnablement: "Query by Attribute",
@@ -329,6 +322,18 @@ GeoExt.Lang.add("en", {
         searchType: "Base Settings",
         typeLabel: "Type",
         featureLabel: "Max Features"
+    },
+    
+    
+     "gxp.form.BBOXFieldset.prototype":{
+        northLabel:"North",
+        westLabel:"West",
+        eastLabel:"East",
+        southLabel:"South",
+        setAoiText: "SetROI",
+        waitEPSGMsg: "Please Wait...",
+        setAoiTooltip: "Enable the SetBox control to draw a ROI (BBOX) on the map",
+        title: "Region of Interest"
     },
     
     "gxp.EmbedMapDialog.prototype": {

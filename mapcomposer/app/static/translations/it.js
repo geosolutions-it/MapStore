@@ -352,6 +352,15 @@ GeoExt.Lang.add("it", {
         noFeaturesTitle: "Nessun Risultato",
         noFeaturesMessage: "La tua ricerca non ha prodotto risultati.",
         title: "Ricerca",
+        attributeEnablement: "Interrogazione per Attributo",
+        attributeEnablementMsg: "Tipo di ricerca invalido! Si deve prima selezionare il tipo 'Feature' e il layer vettoriale.",
+        searchType: "Impostazioni di base",
+        typeLabel: "Tipo",
+        featureLabel: "Max Features"
+    },
+    
+    
+     "gxp.form.BBOXFieldset.prototype":{
         northLabel:"Nord",
         westLabel:"Ovest",
         eastLabel:"Est",
@@ -359,12 +368,9 @@ GeoExt.Lang.add("it", {
         setAoiText: "ImpostaROI",
         waitEPSGMsg: "Caricamento in corso... Attendere",
         setAoiTooltip: "Abilita il controllo SetBox per disegnare una ROI (BBOX) sulla mappa",
-        attributeEnablement: "Interrogazione per Attributo",
-        attributeEnablementMsg: "Tipo di ricerca invalido! Si deve prima selezionare il tipo 'Feature' e il layer vettoriale.",
-        searchType: "Impostazioni di base",
-        typeLabel: "Tipo",
-        featureLabel: "Max Features"
+        title: "Regione di Interesse"
     },
+    
     "gxp.EmbedMapDialog.prototype": {
         publishMessage: "La mappa è pronta per essere pubblicata sul web! Basta copiare il seguente codice HTML per visualizzare la mappa nel proprio sito web:",
         heightLabel: "Altezza",
