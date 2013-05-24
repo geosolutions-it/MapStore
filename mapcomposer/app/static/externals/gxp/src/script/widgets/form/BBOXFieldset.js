@@ -121,15 +121,17 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
     
     
     // start i18n
-    northLabel:"Nord",
-    westLabel:"Ovest",
-    eastLabel:"Est",
-    southLabel:"Sud",
-    title: "Ambito Territoriale",
-    setAoiText: "Seleziona Area",        
-    setAoiTooltip: "Abilita la selezione della regione di interesse sulla mappa",
-    waitEPSGMsg: "Attendere... Caricamento in corso",
+    northLabel:"North",
+    westLabel:"West",
+    eastLabel:"East",
+    southLabel:"South",
+    setAoiText: "SetROI",
+    waitEPSGMsg: "Please Wait...",
+    setAoiTooltip: "Enable the SetBox control to draw a ROI (BBOX) on the map",
+    title: "Region of Interest",
     // end i18n
+    
+
     
 
     /** private: method[initComponent]
