@@ -154,8 +154,8 @@
 			"ptype": "gxp_featuregrid",
 			"featureManager": "featuremanager",
 			"outputConfig": {
-				"id": "featuregrid",
-				"title": "Features"
+				"id": "featuregrid"
+				
 			},
 			"outputTarget": "south"
 		},{
