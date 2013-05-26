@@ -334,7 +334,8 @@ GeoExt.Lang.add("de", {
         previousPageTip: "Vorherige Seite",
         zoomPageExtentTip: "Zoom zur Erweterung der Seite",
         nextPageTip: "Nächste Seite",
-        nextPageTip: "Letzte Seite",
+        lastPageTip: "Letzte Seite",
+        title: "Zeilen",
         totalMsg: "Insgesamt: {0} Zeilen"
     },
 	
@@ -357,7 +358,6 @@ GeoExt.Lang.add("de", {
         featureLabel: "Max Features"
     },
     
-    
      "gxp.form.BBOXFieldset.prototype":{
         northLabel:"Norden",
         westLabel:"Westen",
@@ -367,6 +367,14 @@ GeoExt.Lang.add("de", {
         setAoiText: "ROI eingeben",
         setAoiTooltip: "SetBox-Kontrolle aktivieren um eine ROI (BBOX) auf der Karte zu zeichnen",
         title: "Region of interest"
+    },
+    
+    "gxp.FilterBuilder.prototype":{
+        preComboText: "Entsprechen",
+        postComboText: "der folgenden optionen:",
+        addConditionText: "bedingung hinzufügen",
+        addGroupText: "gruppe hinzufügen",
+        removeConditionText: "entfernen zustand"
     },
 	
     "gxp.EmbedMapDialog.prototype": {

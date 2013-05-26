@@ -299,14 +299,15 @@ GeoExt.Lang.add("fr", {
           passwordFieldText: "Mot de passe"
     },
 	
-	"gxp.plugins.FeatureGrid.prototype": {
+    "gxp.plugins.FeatureGrid.prototype": {
         displayFeatureText: "Afficher sur la carte",
         firstPageTip: "Première page",
         previousPageTip: "Page précédente",
         zoomPageExtentTip: "Zoom sur la page",
         nextPageTip: "Page suivante",
-        nextPageTip: "Dernière page",
-        totalMsg: "Total: {0} records"
+        lastPageTip: "Dernière page",
+        title: "Entités",
+        totalMsg: "Total: {0} entités"
     },
 	
 	"gxp.plugins.QueryForm.prototype": {
@@ -340,6 +341,14 @@ GeoExt.Lang.add("fr", {
         setAoiText: "FixéROI",
         setAoiTooltip: "Activer le contrôle TextBox pour dessiner un ROI (BOX) sur la carte",
         title: "Région d'Intérêt"
+    },
+    
+    "gxp.FilterBuilder.prototype":{
+        preComboText: "égaler",
+        postComboText: "de ce qui suit:",
+        addConditionText: "ajouter la condition",
+        addGroupText: "ajouter un groupe",
+        removeConditionText: "suppression de la condition"
     },
     
     "gxp.EmbedMapDialog.prototype": {

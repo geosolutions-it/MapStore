@@ -336,8 +336,9 @@ GeoExt.Lang.add("it", {
         previousPageTip: "Pagina precedente",
         zoomPageExtentTip: "Zoom all'estensione della pagina",
         nextPageTip: "Prossima pagina",
-        nextPageTip: "Ultima pagina",
-        totalMsg: "Totale: {0} righe"
+        lastPageTip: "Ultima pagina",
+        title: "Features",
+        totalMsg: "Totale: {0} features"
     },
 	
     "gxp.plugins.QueryForm.prototype": {
@@ -369,6 +370,14 @@ GeoExt.Lang.add("it", {
         waitEPSGMsg: "Caricamento in corso... Attendere",
         setAoiTooltip: "Abilita il controllo SetBox per disegnare una ROI (BBOX) sulla mappa",
         title: "Regione di Interesse"
+    },
+    
+    "gxp.FilterBuilder.prototype":{
+        preComboText: "Risultato",
+        postComboText: "dei seguenti:",
+        addConditionText: "aggiungi condizione",
+        addGroupText: "aggiungi gruppo",
+        removeConditionText: "rimuovi condizione"
     },
     
     "gxp.EmbedMapDialog.prototype": {
