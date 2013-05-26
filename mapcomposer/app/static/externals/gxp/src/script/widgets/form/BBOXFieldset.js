@@ -326,9 +326,10 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
                 me.map.addControl(me.selectBBOX);
                 me.map.enebaleMapEvent = true;
             },
-            "render": function(){
-                  
+             beforecollapse : function(p) {
+                me.removeBBOXLayer();
             }
+          
         };
         
        
