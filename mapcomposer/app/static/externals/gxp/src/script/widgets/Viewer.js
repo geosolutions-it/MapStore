@@ -716,6 +716,14 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
                 }
             }
         }, this);
+
+        //checks if in initialConfig savaState properties is set to true
+        //If so invokes the function getState () of the plugin.
+        Ext.iterate(this.tools,function(key,val,obj){
+            if(val.initialConfig.saveState){
+                state = val.getState(state);
+            }
+        });       
         
         return state;
     },

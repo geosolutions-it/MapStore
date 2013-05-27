@@ -1,5 +1,5 @@
 {
-   "geoStoreBase": "",
+   "geoStoreBase": "http://84.33.199.62/geostore-gliders/rest/",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
    "gsSources":{ 
@@ -93,6 +93,7 @@
 			"ptype": "gxp_metadataexplorer",
 			"id": "metadataexplorer",
             "outputTarget": "south",
+            "saveState":true,
             "cswconfig": {
                 "catalogs": [
                         {"name": "CSI Piemonte", "url": "http://www.ruparpiemonte.it/geocatalogorp/geonetworkrp/srv/it/csw", "description": "GeoPortale della Regione Piemonte"},
