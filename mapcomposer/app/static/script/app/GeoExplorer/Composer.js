@@ -130,7 +130,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		        }, {
 		            ptype: "gxp_saveDefaultContext",
 		            actionTarget: {target: "paneltbar", index: 24},
-					needsAuthorization: false
+					needsAuthorization: true
 		        }, {
 		            ptype: "gxp_googleearth",
 		            actionTarget: {target: "paneltbar", index: 25}
