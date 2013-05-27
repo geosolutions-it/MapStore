@@ -337,8 +337,8 @@ GeoExt.Lang.add("it", {
         zoomPageExtentTip: "Zoom all'estensione della pagina",
         nextPageTip: "Prossima pagina",
         lastPageTip: "Ultima pagina",
-        title: "Features",
-        totalMsg: "Totale: {0} features"
+        title: "Entità",
+        totalMsg: "Totale: {0} entità"
     },
 	
     "gxp.plugins.QueryForm.prototype": {
