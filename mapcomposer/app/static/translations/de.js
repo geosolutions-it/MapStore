@@ -334,7 +334,8 @@ GeoExt.Lang.add("de", {
         previousPageTip: "Vorherige Seite",
         zoomPageExtentTip: "Zoom zur Erweterung der Seite",
         nextPageTip: "Nächste Seite",
-        nextPageTip: "Letzte Seite",
+        lastPageTip: "Letzte Seite",
+        title: "Zeilen",
         totalMsg: "Insgesamt: {0} Zeilen"
     },
 	
@@ -350,17 +351,30 @@ GeoExt.Lang.add("de", {
         noFeaturesTitle: "Kein Ergebnis",
         noFeaturesMessage: "Die Suche hat keine Ergebnisse ergeben.",
         title: "Suche",
-        northLabel:"Norden",
-        westLabel:"Westen",
-        eastLabel:"Osten",
-        southLabel:"Süden",
-        setAoiText: "ROI eingeben",
-        setAoiTooltip: "SetBox-Kontrolle aktivieren um eine ROI (BBOX) auf der Karte zu zeichnen",
         attributeEnablement: "Abfrage nach Attribute",
         attributeEnablementMsg: "Abfrage ungültig! Zuerst 'Feature' und die vektorielle Schicht auswählen.",
         searchType: "Grundeinstellungen",
         typeLabel: "Typ",
         featureLabel: "Max Features"
+    },
+    
+     "gxp.form.BBOXFieldset.prototype":{
+        northLabel:"Norden",
+        westLabel:"Westen",
+        eastLabel:"Osten",
+        southLabel:"Süden",
+        waitEPSGMsg: "Bitte warten...",
+        setAoiText: "ROI eingeben",
+        setAoiTooltip: "SetBox-Kontrolle aktivieren um eine ROI (BBOX) auf der Karte zu zeichnen",
+        title: "Region of interest"
+    },
+    
+    "gxp.FilterBuilder.prototype":{
+        preComboText: "Entsprechen",
+        postComboText: "der folgenden optionen:",
+        addConditionText: "bedingung hinzufügen",
+        addGroupText: "gruppe hinzufügen",
+        removeConditionText: "entfernen zustand"
     },
 	
     "gxp.EmbedMapDialog.prototype": {

@@ -336,8 +336,9 @@ GeoExt.Lang.add("it", {
         previousPageTip: "Pagina precedente",
         zoomPageExtentTip: "Zoom all'estensione della pagina",
         nextPageTip: "Prossima pagina",
-        nextPageTip: "Ultima pagina",
-        totalMsg: "Totale: {0} righe"
+        lastPageTip: "Ultima pagina",
+        title: "Entità",
+        totalMsg: "Totale: {0} entità"
     },
 	
     "gxp.plugins.QueryForm.prototype": {
@@ -352,18 +353,33 @@ GeoExt.Lang.add("it", {
         noFeaturesTitle: "Nessun Risultato",
         noFeaturesMessage: "La tua ricerca non ha prodotto risultati.",
         title: "Ricerca",
-        northLabel:"Nord",
-        westLabel:"Ovest",
-        eastLabel:"Est",
-        southLabel:"Sud",
-        setAoiText: "ImpostaROI",
-        setAoiTooltip: "Abilita il controllo SetBox per disegnare una ROI (BBOX) sulla mappa",
         attributeEnablement: "Interrogazione per Attributo",
         attributeEnablementMsg: "Tipo di ricerca invalido! Si deve prima selezionare il tipo 'Feature' e il layer vettoriale.",
         searchType: "Impostazioni di base",
         typeLabel: "Tipo",
         featureLabel: "Max Features"
     },
+    
+    
+     "gxp.form.BBOXFieldset.prototype":{
+        northLabel:"Nord",
+        westLabel:"Ovest",
+        eastLabel:"Est",
+        southLabel:"Sud",
+        setAoiText: "ImpostaROI",
+        waitEPSGMsg: "Caricamento in corso... Attendere",
+        setAoiTooltip: "Abilita il controllo SetBox per disegnare una ROI (BBOX) sulla mappa",
+        title: "Regione di Interesse"
+    },
+    
+    "gxp.FilterBuilder.prototype":{
+        preComboText: "Risultato",
+        postComboText: "dei seguenti:",
+        addConditionText: "aggiungi condizione",
+        addGroupText: "aggiungi gruppo",
+        removeConditionText: "rimuovi condizione"
+    },
+    
     "gxp.EmbedMapDialog.prototype": {
         publishMessage: "La mappa è pronta per essere pubblicata sul web! Basta copiare il seguente codice HTML per visualizzare la mappa nel proprio sito web:",
         heightLabel: "Altezza",

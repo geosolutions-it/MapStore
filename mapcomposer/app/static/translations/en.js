@@ -302,7 +302,8 @@ GeoExt.Lang.add("en", {
         previousPageTip: "Previous page",
         zoomPageExtentTip: "Zoom to page extent",
         nextPageTip: "Next page",
-        nextPageTip: "Last page",
+        lastPageTip: "Last page",
+        title: "Features",
         totalMsg: "Total: {0} records"
     },
     "gxp.plugins.QueryForm.prototype": {
@@ -317,18 +318,33 @@ GeoExt.Lang.add("en", {
         noFeaturesTitle: "No Match",
         noFeaturesMessage: "Your query did not return any results.",
         title: "Search",
-        northLabel:"North",
-        westLabel:"West",
-        eastLabel:"East",
-        southLabel:"South",
-        setAoiText: "SetROI",
-        setAoiTooltip: "Enable the SetBox control to draw a ROI (BBOX) on the map",
         attributeEnablement: "Query by Attribute",
         attributeEnablementMsg: "Invalid search Type! To use this you have to select 'Feature' type and to select a vector layer before.",
         searchType: "Base Settings",
         typeLabel: "Type",
         featureLabel: "Max Features"
     },
+    
+    
+     "gxp.form.BBOXFieldset.prototype":{
+        northLabel:"North",
+        westLabel:"West",
+        eastLabel:"East",
+        southLabel:"South",
+        setAoiText: "SetROI",
+        waitEPSGMsg: "Please Wait...",
+        setAoiTooltip: "Enable the SetBox control to draw a ROI (BBOX) on the map",
+        title: "Region of Interest"
+    },
+    
+    "gxp.FilterBuilder.prototype":{
+        preComboText: "Match",
+        postComboText: "of the following:",
+        addConditionText: "add condition",
+        addGroupText: "add group",
+        removeConditionText: "remove condition"
+    },
+    
     "gxp.EmbedMapDialog.prototype": {
         publishMessage: "Your map is ready to be published to the web! Simply copy the following HTML to embed the map in your website:",
         heightLabel: "Height",
