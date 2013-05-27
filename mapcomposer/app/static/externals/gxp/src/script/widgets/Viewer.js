@@ -717,12 +717,13 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
             }
         }, this);
 
-        //checks if in configuration exists MetadataExplorer plugin and if savaState properties is set to true
+        //checks if in initialConfig savaState properties is set to true
         //If so invokes the function getState () of the plugin.
-        if(app.tools["metadataexplorer"] && app.tools["metadataexplorer"].saveState){
-            state.CSWCatalogues = [];
-            state.CSWCatalogues = app.tools["metadataexplorer"].getState();
-        }
+        Ext.iterate(this.tools,function(key,val,obj){
+            if(val.initialConfig.saveState){
+                val.getState(state);
+            }
+        });       
         
         return state;
     },
