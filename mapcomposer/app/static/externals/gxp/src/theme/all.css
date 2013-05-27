@@ -12,6 +12,21 @@
     left: 17px
 }
 
+/*Form spatial cell*/
+.spatial-cell{
+    text-align: center;
+}
+
+/*BBOX Fieldset style*/
+.aoi-fields{
+    margin-left: 0%;
+    margin-right: 5%;
+}
+.aoi-button{
+    background-image: url(img/silk/shape_square.png) !important;
+}
+
+
 /* Pan- and Zoom- Panel Styles*/
 
 .olControlPanPanel div {

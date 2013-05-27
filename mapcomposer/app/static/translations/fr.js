@@ -299,14 +299,15 @@ GeoExt.Lang.add("fr", {
           passwordFieldText: "Mot de passe"
     },
 	
-	"gxp.plugins.FeatureGrid.prototype": {
+    "gxp.plugins.FeatureGrid.prototype": {
         displayFeatureText: "Afficher sur la carte",
         firstPageTip: "Première page",
         previousPageTip: "Page précédente",
         zoomPageExtentTip: "Zoom sur la page",
         nextPageTip: "Page suivante",
-        nextPageTip: "Dernière page",
-        totalMsg: "Total: {0} records"
+        lastPageTip: "Dernière page",
+        title: "Entités",
+        totalMsg: "Total: {0} entités"
     },
 	
 	"gxp.plugins.QueryForm.prototype": {
@@ -321,18 +322,35 @@ GeoExt.Lang.add("fr", {
         noFeaturesTitle: "Pas de correspondance",
         noFeaturesMessage: "Votre requête n'a retourné aucun résultat.",
         title: "Rechercher",
-        northLabel:"Nord",
-        westLabel:"Ouest",
-        eastLabel:"Est",
-        southLabel:"Sud",
-        setAoiText: "FixéROI",
-        setAoiTooltip: "Activer le contrôle TextBox pour dessiner un ROI (BOX) sur la carte",
+        
         attributeEnablement: "Requête par attributs",
         attributeEnablementMsg: "Invalid search Type! To use this you have to select 'Feature' type and to select a vector layer before.",
         searchType: "Réglages de base",
         typeLabel: "Type",
         featureLabel: "Max Features"
     },
+    
+    
+    
+    "gxp.form.BBOXFieldset.prototype":{
+        northLabel:"Nord",
+        westLabel:"Ouest",
+        eastLabel:"Est",
+        southLabel:"Sud",
+        waitEPSGMsg: "S'il vous plaît attendre...",
+        setAoiText: "FixéROI",
+        setAoiTooltip: "Activer le contrôle TextBox pour dessiner un ROI (BOX) sur la carte",
+        title: "Région d'Intérêt"
+    },
+    
+    "gxp.FilterBuilder.prototype":{
+        preComboText: "égaler",
+        postComboText: "de ce qui suit:",
+        addConditionText: "ajouter la condition",
+        addGroupText: "ajouter un groupe",
+        removeConditionText: "suppression de la condition"
+    },
+    
     "gxp.EmbedMapDialog.prototype": {
         publishMessage: "Votre carte est prête à être publiée sur le web! Il suffit de copier le code HTML ci-dessous pour intégrer la carte dans votre site web:",
         heightLabel: "Hauteur",
