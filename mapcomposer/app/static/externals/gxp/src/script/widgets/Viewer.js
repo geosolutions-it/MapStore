@@ -721,7 +721,7 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
         //If so invokes the function getState () of the plugin.
         Ext.iterate(this.tools,function(key,val,obj){
             if(val.initialConfig.saveState){
-                val.getState(state);
+                state = val.getState(state);
             }
         });       
         
