@@ -122,6 +122,12 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  String template for showing total number of records (i18n).
      */
     totalMsg: "Total: {0} records",
+    
+    /** api: config[title]
+     *  ``String``
+     *  Feature Grid title.
+     */
+    title: "Features",
 
     /** private: method[displayTotalResults]
      */
@@ -185,6 +191,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             xtype: "gxp_featuregrid",
             sm: new GeoExt.grid.FeatureSelectionModel(smCfg),
             autoScroll: true,
+            title: this.title,
             bbar: (featureManager.paging ? [{
                 iconCls: "x-tbar-page-first",
                 ref: "../firstPageButton",
