@@ -89,6 +89,7 @@
 			"ptype": "gxp_metadataexplorer",
 			"id": "metadataexplorer",
             "outputTarget": "south",
+			"saveState": true,
             "cswconfig": {
                 "catalogs": [
                         {"name": "CSI Piemonte", "url": "http://www.ruparpiemonte.it/geocatalogorp/geonetworkrp/srv/it/csw", "description": "GeoPortale della Regione Piemonte"},
