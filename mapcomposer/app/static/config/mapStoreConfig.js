@@ -1,5 +1,5 @@
 {
-   "geoStoreBase": "http://84.33.199.62/geostore-gliders/rest/",
+   "geoStoreBase": "",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
    "gsSources":{ 
