@@ -12,6 +12,21 @@
     left: 17px
 }
 
+/*Form spatial cell*/
+.spatial-cell{
+    text-align: center;
+}
+
+/*BBOX Fieldset style*/
+.aoi-fields{
+    margin-left: 0%;
+    margin-right: 5%;
+}
+.aoi-button{
+    background-image: url(img/silk/shape_square.png) !important;
+}
+
+
 /* Pan- and Zoom- Panel Styles*/
 
 .olControlPanPanel div {
@@ -119,6 +134,11 @@
 /* gxp_reversegeocoder */
 .x-btn .gxp-icon-reversegeocoder, .x-menu-item .gxp-icon-reversegeocoder, .x-tree-node .gxp-icon-reversegeocoder {
     background-image: url(img/geocoder.png);
+}
+
+/* gxp_geolocationmenu */
+.x-btn .gxp-icon-geolocationmenu, .x-menu-item .gxp-icon-geolocationmenu, .x-tree-node .gxp-icon-geolocationmenu {
+    background-image: url(img/geolocation.png);
 }
 
 /* gxp_legend */

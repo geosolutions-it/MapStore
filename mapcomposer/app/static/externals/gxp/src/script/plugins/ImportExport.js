@@ -85,11 +85,8 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             layerName: null,
             alternativeStyle: false,
             layer: null
-        }
-        
-    },
-    
-    
+        }        
+    },    
     
     /**
      * private: config[iconClsDefault]
@@ -161,7 +158,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
           
         }
         
-        var menu=new Ext.SplitButton({
+        var menu = new Ext.SplitButton({
             iconCls: "gxp-icon-importexport",
             tooltip: this.importexportLabel,
             enableToggle: true,
@@ -199,7 +196,6 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
         return gxp.plugins.ImportExport.superclass.addActions.apply(this, [menu]);
     },
 	
-
     exportFile: function(type){
         switch (type){
             case "map":
@@ -211,8 +207,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
         } 
     },
     
-    importFile: function(type){
-        
+    importFile: function(type){        
         switch (type){
             case "map":
                 this.importMap();
@@ -222,8 +217,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                 break;
         }
     },
-    
-    
+        
     exportMap: function(){
         var configStr = Ext.util.JSON.encode(this.target.getState());  
         
@@ -250,10 +244,8 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             win.destroy();
         });
 
-        win.show();
-        
-    },
-    
+        win.show();        
+    },    
     
     importMap: function(){
         // create an upload file form
@@ -279,22 +271,18 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             win.destroy();
         });
 
-        win.show();
-        
-    },
-    
+        win.show();        
+    },    
     
     exportKML: function(){
         var layer;
-        var self= this;
+        var self = this;
         var map = this.target.mapPanel.map;       
         try{
-            layer= (this.exportConf["kml/kmz"].layer) ? this.exportConf["kml/kmz"].layer : this.target.selectedLayer.data.layer;
-        } catch (ex){
+            layer = (this.exportConf["kml/kmz"].layer) ? this.exportConf["kml/kmz"].layer : this.target.selectedLayer.data.layer;
+        }catch (ex){
             layer= null;
-        }
-        
-        
+        }        
      
         if(layer){
             var features = new Array;
@@ -410,7 +398,6 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             width: 500,
             items: [ form ]
         });
-
 	                   				
         // application/x-www-form-urlencoded
 					
@@ -421,20 +408,20 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             location.href = this.service+'FileDownloader?code=' + code +'&filename='+filename;
             win.destroy();
         });
-        win.show();
-        
-    },
-    
+		
+        win.show();        
+    },    
     
     importKML: function(){
         var self = this;
         var map = this.target.mapPanel.map;
-        // create an upload file form
-                
-        var form = new gxp.KMLFileUploadPanel( {
+		
+        // create an upload file form                
+        var form = new gxp.KMLFileUploadPanel({
             service: this.service,
             deafultLayerName: this.exportConf["kml/kmz"].layerName
-        } );
+        });
+		
         // open a modal window
         var win = new Ext.Window({
             closable:true,
@@ -447,6 +434,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             width: 500,
             items: [ form ]
         });		
+		
         form.on("uploadcomplete", function addKMLToLayer(caller, response){
             // the code to access the uploaded file
             var code = response.code;
@@ -570,8 +558,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
         // show window
         win.show();
     },
-    
-    
+        
     /**
      *  create a custom layer or it returns an existing one
      */
@@ -621,10 +608,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             map.addLayer( layer );
             return layer;
         }
-    }
-    
-    
-        
+    }        
 });
 
 Ext.preg(gxp.plugins.ImportExport.prototype.ptype, gxp.plugins.ImportExport);

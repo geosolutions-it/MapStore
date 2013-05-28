@@ -114,7 +114,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 		};
 		
 		if(this.customParams){
-			Ext.applyIf(
+			props = Ext.applyIf(
 				props,
 				this.customParams
 			);

@@ -100,7 +100,8 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
 	 */
 	createOrUpdateCombo: function(force) {					
 		var newType;
-		var geocoders=gxp.plugins.DynamicGeocoder.Geocoders;
+		var geocoders = gxp.plugins.DynamicGeocoder.Geocoders;
+		
 		if(this.geocoderType === 'dynamic') {
 			var priority=-1;
 			// gets the best geocoder type given the current map configuration
@@ -119,7 +120,7 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
 		}
 		
 		if(force === true || (newType && newType !== this.currentGeocoderType)) {
-			this.currentGeocoderType=newType;			
+			this.currentGeocoderType = newType;			
 			var newCombo=this.createCombo(newType);
 			if(this.combo) {
 				this.comboContainer.remove(this.combo);
@@ -130,8 +131,7 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
 		}
 	},
 	
-    init: function(target) {
-		
+    init: function(target) {		
         /*/ remove marker added by geocoder plugin
         var removeMarkerBtn = new Ext.Button({
             tooltip: this.addMarkerTooltip,
@@ -145,8 +145,8 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
             scope: this,
             iconCls: "icon-removemarkers"
         });*/
-        this.target = target;
 		
+        this.target = target;		
 		this.comboContainer = new Ext.Container();        
         
 		//this.removeMarkerBtn = removeMarkerBtn;
@@ -168,7 +168,6 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
 		});
 		
         return gxp.plugins.DynamicGeocoder.superclass.init.apply(this, arguments);
-
     },
 
     /** api: method[addOutput]

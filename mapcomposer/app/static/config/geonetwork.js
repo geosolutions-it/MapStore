@@ -180,6 +180,7 @@
 			"ptype": "gxp_metadataexplorer",
 			"id": "metadataexplorer",
             "outputTarget": "south",
+			"saveState": true,
             "cswconfig": {
                 "catalogs": [
                         {"name": "SIT Comune FI" , "url": "http://datigis.comune.fi.it/geonetwork/srv/it/csw", "description": "GeoNetwork del Comune di Firenze"}

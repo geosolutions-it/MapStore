@@ -302,7 +302,8 @@ GeoExt.Lang.add("en", {
         previousPageTip: "Previous page",
         zoomPageExtentTip: "Zoom to page extent",
         nextPageTip: "Next page",
-        nextPageTip: "Last page",
+        lastPageTip: "Last page",
+        title: "Features",
         totalMsg: "Total: {0} records"
     },
     "gxp.plugins.QueryForm.prototype": {
@@ -317,18 +318,33 @@ GeoExt.Lang.add("en", {
         noFeaturesTitle: "No Match",
         noFeaturesMessage: "Your query did not return any results.",
         title: "Search",
-        northLabel:"North",
-        westLabel:"West",
-        eastLabel:"East",
-        southLabel:"South",
-        setAoiText: "SetROI",
-        setAoiTooltip: "Enable the SetBox control to draw a ROI (BBOX) on the map",
         attributeEnablement: "Query by Attribute",
         attributeEnablementMsg: "Invalid search Type! To use this you have to select 'Feature' type and to select a vector layer before.",
         searchType: "Base Settings",
         typeLabel: "Type",
         featureLabel: "Max Features"
     },
+    
+    
+     "gxp.form.BBOXFieldset.prototype":{
+        northLabel:"North",
+        westLabel:"West",
+        eastLabel:"East",
+        southLabel:"South",
+        setAoiText: "SetROI",
+        waitEPSGMsg: "Please Wait...",
+        setAoiTooltip: "Enable the SetBox control to draw a ROI (BBOX) on the map",
+        title: "Region of Interest"
+    },
+    
+    "gxp.FilterBuilder.prototype":{
+        preComboText: "Match",
+        postComboText: "of the following:",
+        addConditionText: "add condition",
+        addGroupText: "add group",
+        removeConditionText: "remove condition"
+    },
+    
     "gxp.EmbedMapDialog.prototype": {
         publishMessage: "Your map is ready to be published to the web! Simply copy the following HTML to embed the map in your website:",
         heightLabel: "Height",
@@ -418,69 +434,88 @@ GeoExt.Lang.add("en", {
         waitMsg: "Locating...",
         errorMsg: "Geolocation is not supported by your browser"
     },
+	
+	"gxp.plugins.GeoLocationMenu.prototype": {
+	    initialText: "Select an area",
+        menuText: "GeoReferences",
+        tooltip: "GeoReferences",
+        addMarkerTooltip: "Reset Marker",
+        emptyText: "Geocoder...",
+        buttonText: "Address",
+        emptyText: "Address...",
+		errorMsg: "No address found",
+		waitMsg: "Wait please...",
+		addressTitle: "Address found",
+		geolocate: {
+			"geolocateMenuText": "Geolocate",
+			"geolocateTooltip": "Locate my position",
+			"trackMenuText": "Track Position",
+			"trackTooltip": "Track my position",
+			"waitMsg": "Locating...",
+			"errorMsg": "Geolocation is not supported by your browser"
+		},
+		actionText: "GeoLocations"
+    },
     
     "gxp.plugins.ImportExport.prototype":{
-         importexportLabel: "Import / Export",
-	 labels:{
-                "map": {
-                    "saveText" : "Export Map",
-                    "loadText" : "Import Map",
-                    "uploadWindowTitle" : "Import Map Context file",
-                    "downloadWindowTitle" : "Export Map Context file"
-                },
-
-                "kml/kmz": {
-                    "saveText" : "Export KML",
-                    "loadText" : "Import KML/KMZ",
-                    "uploadWindowTitle" : "Import KML/KMZ file",
-                    "downloadWindowTitle" : "Export KML file",
-                    "kmlExportTitleText": "KML/KMZ Export",
-                    "layerEmptyText": "The selected Layer is empty",
-                    "notVectorlayerText": "Please select only Vector Layer",
-                    "notLayerSelectedText": "Please select a Vector Layer"
-                } 
+        importexportLabel: "Import / Export",
+		labels: {
+			"map": {
+				"saveText" : "Export Map",
+				"loadText" : "Import Map",
+				"uploadWindowTitle" : "Import Map Context file",
+				"downloadWindowTitle" : "Export Map Context file"
+			},
+			"kml/kmz": {
+				"saveText" : "Export KML",
+				"loadText" : "Import KML/KMZ",
+				"uploadWindowTitle" : "Import KML/KMZ file",
+				"downloadWindowTitle" : "Export KML file",
+				"kmlExportTitleText": "KML/KMZ Export",
+				"layerEmptyText": "The selected Layer is empty",
+				"notVectorlayerText": "Please select only Vector Layer",
+				"notLayerSelectedText": "Please select a Vector Layer"
+			} 
         }
-       },
-       
-       "gxp.MapFileUploadPanel" :{
-            fileLabel: "Map file",
-            fieldEmptyText: "Browse for Map context files...",
-            uploadText: "Upload",
-            waitMsgText: "Uploading your data...",
-            resetText: "Reset",
-            failedUploadingTitle: "File Upload Error"
-       },
-       
-       "gxp.MapFileDownloadPanel" :{
-            buttonText: "Export Map",
-            filenameLabel: "Map file name",
-            fieldEmptyText: "context.map",
-            waitMsgText: "Generating Map Context File...",
-            resetText: "Reset",
-            failedUploadingTitle: "Cannot generate Map file",
-            saveErrorText: "Trouble saving: "
-       },
-       
-       "gxp.KMLFileDownloadPanel" :{
-            buttonText: "Export",
-            filenameLabel: "KML file name",
-            fieldEmptyText: "export.kml",
-            waitMsgText: "Generating KML...",
-            invalidFileExtensionText: "File extension must be one of: ",
-            resetText: "Reset",
-            failedUploadingTitle: "Cannot generate KML file"
-       },
-       
-       "gxp.KMLFileUploadPanel" :{
-            fileLabel: "KML file",
-            fieldEmptyText: "Browse for KML or KMZ files...",
-            uploadText: "Upload",
-            waitMsgText: "Uploading your data...",
-            invalidFileExtensionText: "File extension must be one of: ",
-            resetText: "Reset",
-            failedUploadingTitle: "Cannot upload file",
-            layerNameLabel: "Layer Name"
-       }
-
-
+    },
+   
+    "gxp.MapFileUploadPanel" :{
+		fileLabel: "Map file",
+		fieldEmptyText: "Browse for Map context files...",
+		uploadText: "Upload",
+		waitMsgText: "Uploading your data...",
+		resetText: "Reset",
+		failedUploadingTitle: "File Upload Error"
+    },
+   
+    "gxp.MapFileDownloadPanel" :{
+		buttonText: "Export Map",
+		filenameLabel: "Map file name",
+		fieldEmptyText: "context.map",
+		waitMsgText: "Generating Map Context File...",
+		resetText: "Reset",
+		failedUploadingTitle: "Cannot generate Map file",
+		saveErrorText: "Trouble saving: "
+    },
+   
+    "gxp.KMLFileDownloadPanel" :{
+		buttonText: "Export",
+		filenameLabel: "KML file name",
+		fieldEmptyText: "export.kml",
+		waitMsgText: "Generating KML...",
+		invalidFileExtensionText: "File extension must be one of: ",
+		resetText: "Reset",
+		failedUploadingTitle: "Cannot generate KML file"
+    },
+   
+    "gxp.KMLFileUploadPanel" :{
+		fileLabel: "KML file",
+		fieldEmptyText: "Browse for KML or KMZ files...",
+		uploadText: "Upload",
+		waitMsgText: "Uploading your data...",
+		invalidFileExtensionText: "File extension must be one of: ",
+		resetText: "Reset",
+		failedUploadingTitle: "Cannot upload file",
+		layerNameLabel: "Layer Name"
+    }
 });

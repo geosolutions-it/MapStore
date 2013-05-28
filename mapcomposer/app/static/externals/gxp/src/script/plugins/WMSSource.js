@@ -232,12 +232,10 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
              * of layers in different SRS.
              */
             var projection = this.getMapProjection();
-
             
-            var defProp= this.getDefaultProps(original);
+            var defProp = this.getDefaultProps(original, config);            
             
-            
-            config= Ext.applyIf(defProp, config);
+            config = Ext.applyIf(defProp, config);
             
             // If the layer is not available in the map projection, find a
             // compatible projection that equals the map projection. This helps
@@ -258,7 +256,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 maxExtent = undefined;
             }
             
-            var styles= this.getLayerStyle(config);
+            var styles = this.getLayerStyle(config);
         
             // use all params from sources layerBaseParams option
             var params = Ext.applyIf({
@@ -288,7 +286,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     projection: layerProjection,
                     vendorParams: config.vendorParams
                 }
-                );
+			);
 
             // data for the new record
             var data = Ext.applyIf({
@@ -316,13 +314,13 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 {name: "fixed", type: "boolean"},
                 {name: "selected", type: "boolean"}
             ];
+			
             original.fields.each(function(field) {
                 fields.push(field);
             });
 
             var Record = GeoExt.data.LayerRecord.create(fields);
             record = new Record(data, layer.id);
-
         }
         
         return record;
@@ -516,8 +514,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             cql_filter: params.CQL_FILTER,
             elevation: params.ELEVATION
         });
-    },
-    
+    },    
     
     /** api: method[getLayerStyle]
      *  :config:  ``Object``  The application config for this layer.
@@ -526,30 +523,69 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      *  Return the loacalized styles parmater if defined or the default styles parmater for the layer.
      */
     getLayerStyle: function (config){
-        var styles=null;
+        var styles = null;        
         
+		if(config.styles && config.styles.indexOf("_") == -1){
+			// /////////////////////////////////////////////////////
+			// If I've defined a style, I have to use it if 
+			// isnt localized (not contains the "_" character)
+			// /////////////////////////////////////////////////////
+			styles = config.styles;		
+		}else{		
+			// /////////////////////////////////////////////////////
+			// If I've not defined a style:
+            //    - I have to get the localized style from 
+			//      capabilities.
+			// If I've defined a localized style:
+			//    - MapStore assume that the localization is 
+			//		correctly defined and use this style.
+			// /////////////////////////////////////////////////////
+            var locCode = GeoExt.Lang.locale;	
+			
+			if(config.stylesAvail instanceof Array){
+				if(config.stylesAvail.length > 0){				
+					var defaultStyle = config.styles || config.stylesAvail[0].name;
+					for(var k=0; k<config.stylesAvail.length; k++){
+						if(config.stylesAvail[k].name == defaultStyle + "_" + locCode)
+							styles = config.stylesAvail[k].name; 
+					}
+					if(!styles){
+						styles = defaultStyle; 
+					}
+				} 
+			}
+		}
         
-        if(config.styles)
-            /*
-            * If the config.styles contains the character "_" the style is already localized
-            **/
-            config.styles=config.styles.indexOf("_") == -1 ? config.styles : null;
+		return styles;
+		
+		/*if(config.styles){
+		    // //////////////////////////////////////////////////
+            // If the config.styles contains the 
+			// character "_" the style is already localized
+			// //////////////////////////////////////////////////
+            config.styles = config.styles.indexOf("_") == -1 ? config.styles : null;
+		}
         
-        var locCode= GeoExt.Lang.locale;
+        var locCode = GeoExt.Lang.locale;
+		
         if(config.stylesAvail instanceof Array){
             if(config.stylesAvail.length > 0){
-                var defaultStyle= config.styles || config.stylesAvail[0].name;
-                for(var k=0; k< config.stylesAvail.length; k++){
-                    if(config.stylesAvail[k].name == defaultStyle+"_"+locCode)
-                        styles= config.stylesAvail[k].name; 
+                var defaultStyle = config.styles || config.stylesAvail[0].name;
+                for(var k=0; k<config.stylesAvail.length; k++){
+                    if(config.stylesAvail[k].name == defaultStyle + "_" + locCode)
+                        styles = config.stylesAvail[k].name; 
                 }
-                if(! styles)
-                    styles= defaultStyle; 
+                if(! styles){
+					styles = defaultStyle; 
+				}
             } 
-        }
-        return styles;    
-    },
-    
+        }else{
+			if(config.styles){
+				styles = config.styles;
+			}				
+		}        
+		return styles;*/   
+    },    
     
     /** api: method[getDefaultProps]
      *  :arg record: :class:`GeoExt.data.LayerRecord`
@@ -557,11 +593,11 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      *
      *  Create a config object with the capabilities information that can be used to recreate the given record.
      */
-    getDefaultProps: function (record){
-        var locCode= GeoExt.Lang.locale;
+    getDefaultProps: function (record, config){
+        var locCode = GeoExt.Lang.locale;
         var defaultProps = {
-            name: record.get("name"),
-            title: record.get("title")
+            name: config.name || record.get("name"),
+            title: config.title || record.get("title")
         };
                 
         var keywords = record.get("keywords");
@@ -579,7 +615,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     props.uuid = keyword.split("=")[1];
                 }  
                         
-                if(keyword.indexOf(locCode+"=") == 0){
+                if(keyword.indexOf(locCode + "=") == 0){
                     props.title = keyword.split("=")[1];
                 }     
             }
@@ -594,8 +630,9 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		    
         } else {
             return {};   
-    }
+		}
     },
+	
     isEmptyObject: function(obj) {
         for(var prop in obj){
             if(obj.hasOwnProperty(prop)) {
@@ -603,8 +640,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             }
         }
         return true;
-    }
-    
+    }    
 });
 
 Ext.preg(gxp.plugins.WMSSource.prototype.ptype, gxp.plugins.WMSSource);
