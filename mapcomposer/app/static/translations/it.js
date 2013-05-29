@@ -4,7 +4,7 @@
 
 GeoExt.Lang.add("it", {
 	"gxp.plugins.SyntheticView.prototype": {
-        title: "Synthetic View",
+        title: "Vista Sintetica",
         elaborazioneLabel: "Tipo elaborazione",
         formulaLabel: "Formula",
         extentLabel: "Ambito territoriale",
@@ -25,7 +25,7 @@ GeoExt.Lang.add("it", {
         defaultExtentLabel: "Regione Piemonte"
     },
     "gxp.plugins.StandardProcessing.prototype": {
-        title: "Processing",
+        title: "Elaborazione",
         elaborazioneLabel: "Tipo elaborazione",
         formulaLabel: "Formula",                
         northLabel:"Nord",

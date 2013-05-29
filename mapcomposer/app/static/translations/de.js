@@ -179,7 +179,7 @@ GeoExt.Lang.add("de", {
     
     "gxp.plugins.LayerTree.prototype": {
         rootNodeText: "Schichten",
-        overlayNodeText: "Default",
+        overlayNodeText: "SIIG",
         baseNodeText: "Hintergrund"
     },
 

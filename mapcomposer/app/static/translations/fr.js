@@ -185,7 +185,7 @@ GeoExt.Lang.add("fr", {
 
     "gxp.plugins.LayerTree.prototype": {
         rootNodeText: "Couvertures",
-        overlayNodeText: "Surimpressions",
+        overlayNodeText: "SIIG",
         baseNodeText: "Couvertures de base"
     },  
 
