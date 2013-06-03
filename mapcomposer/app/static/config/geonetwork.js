@@ -9,7 +9,12 @@
 			"ptype": "gxp_wmssource",
 			"title": "Acque GeoServer",
 			"projection":"EPSG:3003",
-			"url": "http://wiz.acque.net/geoserver/ows"
+			"url": "http://wiz.acque.net/geoserver/wms",
+			"layerBaseParams": {
+					"TILED": true,
+					"TILESORIGIN": "1394190.6211433, 4663756.8332024",
+					"buffer":10
+			}
 		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
