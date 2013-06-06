@@ -22,6 +22,8 @@ GeoExt.Lang.add("it", {
         temporalLabel: "Condizioni Temporali",
         elabStandardLabel: "Elaborazione Standard",
         totalRiskLabel: "Rischio totale",
+        humanTitle:'Sociale',    
+        notHumanTitle:'Ambientale', 
         defaultExtentLabel: "Regione Piemonte"
     },
     "gxp.plugins.StandardProcessing.prototype": {
@@ -49,6 +51,8 @@ GeoExt.Lang.add("it", {
         viewMapButton: "Visualizza Mappa",
         formLabel: "Impostazioni di Elaborazione",
         bboxValidationTitle: "Selezione Area di Interesse",
+        requiredMaterial: "Questa formula richiede di specificare la sostanza",
+        validationTitle: "Errore nei parametri",   
         invalidAOI: "Le coordinate dell'area di interesse non sono valide.",
         bboxTooBig: "L'area selezionata e' troppo grande e il server potrebbe impiegare molto tempo a rispondere. Se si desidera continuare ugualmente premere OK.",
         weatherLabel: "Meteo",  
@@ -68,6 +72,11 @@ GeoExt.Lang.add("it", {
         lowRiskLabel: "Basso Rischio",
         mediumRiskLabel: "Medio Rischio",
         highRiskLabel: "Alto Rischio"
+    },
+    "gxp.plugins.TabPanelWFSGrids.prototype": {
+        displayMsgPaging: "Bersagli {0} - {1} di {2}",
+        emptyMsg: "Nessun bersaglio trovato",
+        loadMsg: "Caricamento bersagli in corso...",
     },
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Livello di Zoom: {zoom}</div><div>Scala: 1:{scale}</div>",

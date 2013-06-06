@@ -77,28 +77,28 @@
             "source": "destination",
             "title": "Ambiti Amministrativi",
             "name": "LimitiAmministrativi",
-            "group": ["Basic Data","Dati di base","donnÈes de base","Grunddaten"],
+            "group": ["Basic Data","Dati di base","donn√©es de base","Grunddaten"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Tessuto Urbanizzato",
             "name": "TessutoUrbanizzato",
-            "group": ["Basic Data","Dati di base","donnÈes de base","Grunddaten"],
+            "group": ["Basic Data","Dati di base","donn√©es de base","Grunddaten"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Trasporti",
             "name": "Trasporti",
-            "group": ["Basic Data","Dati di base","donnÈes de base","Grunddaten"],
+            "group": ["Basic Data","Dati di base","donn√©es de base","Grunddaten"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Idrografia",
             "name": "Idrografia",
-            "group": ["Basic Data","Dati di base","donnÈes de base","Grunddaten"],
+            "group": ["Basic Data","Dati di base","donn√©es de base","Grunddaten"],
             "visibility": false
         },{
             "source": "google",
@@ -128,7 +128,7 @@
             "source": "destination",
             "title": "Rischio Totale Sociale",
             "name": "rischio_totale_sociale",
-                "displayInLayerSwitcher": true,
+            "displayInLayerSwitcher": true,
             "tiled": false,
             "env":"low:100;medium:500"
         },{
@@ -136,8 +136,8 @@
             "title": "Rischio Totale Sociale - Ambientale",
             "name": "rischio_totale",
             "displayInLayerSwitcher": true,
-            "tiled": false,
-            "env":"low:100;medium:500"
+            "tiled": false,            
+            "env":"lowsociale:100;mediumsociale:500;lowambientale:100;mediumambientale:500"
         },
         {
             "source": "destination",
@@ -480,7 +480,7 @@
                 ],
                 "columns": [
                     {
-                        "header": ["Residents", "Residenti", "rÈsidents", "Bewohner"],
+                        "header": ["Residents", "Residenti", "r√©sidents", "Bewohner"],
                         "dataIndex": "residenti"
                     },
                     {
@@ -488,7 +488,7 @@
                         "dataIndex": "partner"
                     }
                 ],
-                "title": ["Resident population", "Popolazione residente", "population rÈsidente", "Wohnbevˆlkerung"],
+                "title": ["Resident population", "Popolazione residente", "population r√©sidente", "Wohnbev√∂lkerung"],
                 "name": "POPOLAZIONE RESIDENTE",
                 "id": 1,
                 "type": "umano"
@@ -532,7 +532,7 @@
                 ],
                 "columns": [
                     {
-                        "header": ["municipality", "Comune", "municipalitÈ", "Gemeinde"],      
+                        "header": ["municipality", "Comune", "municipalit√©", "Gemeinde"],      
                         "dataIndex": "comune"
                     },
                     {
@@ -540,11 +540,11 @@
                         "dataIndex": "natcode"
                     },
                     {
-                        "header": ["maximum exposure", "Presenza massima", "exposition maximale", "maximale Pr‰senz"],      
+                        "header": ["maximum exposure", "Presenza massima", "exposition maximale", "maximale Pr√§senz"],      
                         "dataIndex": "presmax"
                     },
                     {
-                        "header": ["Average exposure", "Presenza media", "exposition moyenne", "durchschnittliche Pr‰senz"],      
+                        "header": ["Average exposure", "Presenza media", "exposition moyenne", "durchschnittliche Pr√§senz"],      
                         "dataIndex": "presmed"
                     },
                     {
@@ -552,7 +552,7 @@
                         "dataIndex": "partner"
                     }
                 ],
-                "title": ["floating tourist population", "Popolazione fluttuante turistica", "population touristique flottant", "Floating touristischen Bevˆlkerung"],
+                "title": ["floating tourist population", "Popolazione fluttuante turistica", "population touristique flottant", "Floating touristischen Bev√∂lkerung"],
                 "name": "POPOLAZIONE FLUTTUANTE TURISTICA (MAX)",
                 "id": 2,
                 "type": "umano"
@@ -604,11 +604,11 @@
                         "dataIndex": "denominazione"
                     },
                     {
-                        "header": ["Tax Code", "Cod. Fiscale", "Code gÈnÈral des impÙts", "Abgabenordnung"],      
+                        "header": ["Tax Code", "Cod. Fiscale", "Code g√©n√©ral des imp√¥ts", "Abgabenordnung"],      
                         "dataIndex": "codfisc"
                     },
                     {
-                        "header": [" ATECO Code", "Cod. ATECO", "ATECO code", "ATECO Code"],      
+                        "header": ["ATECO Code", "Cod. ATECO", "ATECO code", "ATECO Code"],      
                         "dataIndex": "codateco"
                     },
                     {
@@ -616,11 +616,11 @@
                         "dataIndex": "descrizioneateco"
                     },
                     {
-                        "header": ["number of employees", "N. Addetti", "nombre d'employÈs", "Anzahl der Mitarbeiter"],      
+                        "header": ["number of employees", "N. Addetti", "nombre d'employ√©s", "Anzahl der Mitarbeiter"],      
                         "dataIndex": "addetti"
                     },
                     {
-                        "header": ["Source of the employees", "Fonte addetti", "source des employÈs", "Quelle der Mitarbeiter"],      
+                        "header": ["Source of the employees", "Fonte addetti", "source des employ√©s", "Quelle der Mitarbeiter"],      
                         "dataIndex": "fonte_addetti"
                     },
                     {
@@ -628,7 +628,7 @@
                         "dataIndex": "partner"
                     }
                 ],
-                "title": ["Industry and Services employees", "Addetti industria e servizi", "employÈs de l'industrie e des services", "Industrie und Dienstleistungen Mitarbeiter"],
+                "title": ["Industry and Services employees", "Addetti industria e servizi", "employ√©s de l'industrie e des services", "Industrie und Dienstleistungen Mitarbeiter"],
                 "name": "ADDETTI INDUSTRIA E SERVIZI",
                 "id": 4,
                 "type": "umano"
@@ -695,11 +695,11 @@
                         "dataIndex": "descrizione_uso"
                     },
                     {
-                        "header": ["Source of the employees", "Fonte addetti", "source des employÈs", "Quelle der Mitarbeiter"],      
+                        "header": ["Source of the employees", "Fonte addetti", "source des employ√©s", "Quelle der Mitarbeiter"],      
                         "dataIndex": "fonte_addetti"
                     },
                     {
-                        "header": ["number of employees", "N. Addetti", "nombre d'employÈs", "Anzahl der Mitarbeiter"],      
+                        "header": ["number of employees", "N. Addetti", "nombre d'employ√©s", "Anzahl der Mitarbeiter"],      
                         "dataIndex": "addetti"
                     },
                     {
@@ -723,7 +723,7 @@
                         "dataIndex": "partner"
                     }
                 ],
-                "title": ["employees/users health care facilities", "Addetti/utenti strutture sanitarie", "employÈs/utilisateurs Ètablissements de soins de santÈ", "Mitarbeiter/Benutzer Einrichtungen des Gesundheitswesens"],
+                "title": ["employees/users health care facilities", "Addetti/utenti strutture sanitarie", "employ√©s/utilisateurs √©tablissements de soins de sant√©", "Mitarbeiter/Benutzer Einrichtungen des Gesundheitswesens"],
                 "name": "ADDETTI/UTENTI STRUTTURE SANITARIE",
                 "id": 5,
                 "type": "umano"
@@ -794,7 +794,7 @@
                         "dataIndex": "fonte_addetti_scuole"
                     },
                     {
-                        "header": ["number of employees", "N. Addetti", "nombre d'employÈs", "Anzahl der Mitarbeiter"],      
+                        "header": ["number of employees", "N. Addetti", "nombre d'employ√©s", "Anzahl der Mitarbeiter"],      
                         "dataIndex": "addetti"
                     },
                     {
@@ -802,7 +802,7 @@
                         "dataIndex": "partner"
                     }
                 ],
-                "title": ["employees/users schools", "Addetti/utenti strutture scolastiche", "employÈs/utilisateurs Ècoles", "Mitarbeiter/Benutzer Schulen"],
+                "title": ["employees/users schools", "Addetti/utenti strutture scolastiche", "employ√©s/utilisateurs √©coles", "Mitarbeiter/Benutzer Schulen"],
                 "name": "ADDETTI/UTENTI STRUTTURE SCOLASTICHE",
                 "id": 6,
                 "type": "umano"
@@ -889,7 +889,7 @@
                         "dataIndex": "partner"
                     }
                 ],
-                "title": ["employees/users shopping center", "Addetti/utenti centri commerciali", "employÈs/utilisateurs centre commercial", "Mitarbeiter/Benutzer Einkaufszentrum"],
+                "title": ["employees/users shopping center", "Addetti/utenti centri commerciali", "employ√©s/utilisateurs centre commercial", "Mitarbeiter/Benutzer Einkaufszentrum"],
                 "name": "ADDETTI/UTENTI CENTRI COMMERCIALI",
                 "id": 7,
                 "type": "umano"
@@ -936,7 +936,7 @@
                         "dataIndex": "descrizione_clc"
                     },
                     {
-                        "header": ["surface", "Superficie", "surface", "Oberfl‰che"],      
+                        "header": ["surface", "Superficie", "surface", "Oberfl√§che"],      
                         "dataIndex": "superficie"
                     },
                     {
@@ -944,7 +944,7 @@
                         "dataIndex": "partner"
                     }
                 ],
-                "title": ["urbanized areas", "Zone urbanizzate", "zones urbanisÈes", "verst‰dterten Gebieten"],
+                "title": ["urbanized areas", "Zone urbanizzate", "zones urbanis√©es", "verst√§dterten Gebieten"],
                 "name": "ZONE URBANIZZATE",
                 "id": 10,
                 "type": "ambientale"
@@ -999,7 +999,7 @@
                         "dataIndex": "partner"
                     }
                 ],
-                "title": ["wooded areas", "Aree boscate", "zones boisÈes", "Waldfl‰chen"],
+                "title": ["wooded areas", "Aree boscate", "zones bois√©es", "Waldfl√§chen"],
                 "name": "AREE BOSCATE",
                 "id": 11,
                 "type": "ambientale"
@@ -1062,7 +1062,7 @@
                         "dataIndex": "partner"
                     }
                 ],
-                "title": ["protected areas", "Aree protette", "zones protÈgÈes", "Schutzgebiete"],
+                "title": ["protected areas", "Aree protette", "zones prot√©g√©es", "Schutzgebiete"],
                 "name": "AREE PROTETTE",
                 "id": 12,
                 "type": "ambientale"
@@ -1117,7 +1117,7 @@
                         "dataIndex": "partner"
                     }
                 ],
-                "title": ["agricultural areas", "Aree agricole", "zones agricoles", "landwirtschaftlichen Fl‰chen"],
+                "title": ["agricultural areas", "Aree agricole", "zones agricoles", "landwirtschaftlichen Fl√§chen"],
                 "name": "AREE AGRICOLE",
                 "id": 13,
                 "type": "ambientale"
@@ -1176,7 +1176,7 @@
                         "dataIndex": "denominazione"
                     },
                     {
-                        "header": ["full name", "Toponimo completo", "nom et prÈnomo", "Vollst‰ndiger Nameo"],      
+                        "header": ["full name", "Toponimo completo", "nom et pr√©nomo", "Vollst√§ndiger Nameo"],      
                         "dataIndex": "toponimo_completo"
                     },
                     {
@@ -1192,7 +1192,7 @@
                         "dataIndex": "superficie"
                     },
                     {
-                        "header": ["maximum depth", "Profondit‡ max", "profondeur maximale", "maximale Tiefe"],      
+                        "header": ["maximum depth", "Profondit√† max", "profondeur maximale", "maximale Tiefe"],      
                         "dataIndex": "profondita_max"
                     },
                     {
@@ -1204,7 +1204,7 @@
                         "dataIndex": "partner"
                     }
                 ],
-                "title": ["surface water", "Acque superficiali", "eau de surface", "Oberfl‰chenwasser"],
+                "title": ["surface water", "Acque superficiali", "eau de surface", "Oberfl√§chenwasser"],
                 "id": 15,
                 "name": "ACQUE SUPERFICIALI",
                 "type": "ambientale"
@@ -1306,7 +1306,7 @@
                 ],
                 "columns": [
                     {
-                        "header": ["Type", "Tipologia", "catÈgorie", "Art"],      
+                        "header": ["Type", "Tipologia", "cat√©gorie", "Art"],      
                         "dataIndex": "tipologia"
                     },
                     {
