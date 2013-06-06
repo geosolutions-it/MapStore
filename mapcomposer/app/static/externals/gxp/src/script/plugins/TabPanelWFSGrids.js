@@ -53,48 +53,52 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
      */
     wfsURL: null,
     
-	/** api: config[id]
+    /** api: config[id]
      *  ``String``
      */
     id: "featuregrid",
-	
-	/** api: config[targets] targets configuration object
+    
+    /** api: config[targets] targets configuration object
      *  ``Object``
      */
-	targets: {},
-		  
+    targets: {},
+          
     zoomToIconPath: "theme/app/img/silk/map_magnify.png",
     
     zoomToTooltip: 'Zoom al bersaglio',
     
     displayMsgPaging: "Displaying topics {0} - {1} of {2}",
     emptyMsg: "No topics to display",
-    
+    loadMsg: "Loading...",
+    noRecordFoundLabel: "Nessun bersaglio trovato",
+    noRecordFoundCls: "empty-grid",
         
-	
+    
     /** private: method[constructor]
      */
     constructor: function(config) {
         gxp.plugins.TabPanelWFSGrids.superclass.constructor.apply(this, arguments);         
     },
-	
-	buildGrid: function(cfg) {
+    
+    buildGrid: function(cfg) {
             return new gxp.plugins.WFSGrid(cfg);
-	},	
-	
+    },    
+    
     /** api: method[addOutput]
      */
     addOutput: function(config) {
    
-		this.grids = [];
-		var info = {
-			currentlyLoading: 0,
-			hasData : false
-		};
+        this.grids = [];
+        var info = {
+            currentlyLoading: 0,
+            hasData : false
+        };
+        
+        var me = this;
               
-		for(var targetName in this.targets) {
-			if(this.targets.hasOwnProperty(targetName)) {
-				var targetCfg = this.targets[targetName];
+        for(var targetName in this.targets) {
+            if(this.targets.hasOwnProperty(targetName)) {
+                var targetCfg = this.targets[targetName];
                                 var title = targetCfg.title || targetName;
                                 if(title instanceof Array) {
                                     title = title[GeoExt.Lang.getLocaleIndex()];
@@ -108,9 +112,9 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                                     "protocolType": "GET",
                                     "fields": targetCfg.fields || null,
                                     "wfsURL": this.wfsURL,
-                                    "loadMsg": "Caricamento Bersagli in corso ...",
-                                    "emptyMsg": "Nessun bersaglio trovato",
-                                    "displayMsgPaging": "Bersagli {0} - {1} of {2}",
+                                    "loadMsg": me.loadMsg,
+                                    "emptyMsg": me.emptyMsg,
+                                    "displayMsgPaging": me.displayMsgPaging,
                                     "featureType": targetCfg.featureType,
                                     "pageSize": 10/*this.pageSize*/,
                                     "srsName": this.srsName, 
@@ -118,85 +122,99 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                                     "columns" : targetCfg.columns,
                                     "actionColumns" : this.actionColumns
                                 };
-				targetCfg.grid = this.buildGrid(wfsGridConf);
+                targetCfg.grid = this.buildGrid(wfsGridConf);
                                 targetCfg.grid.type= targetCfg.type;
-				
-				Ext.apply(targetCfg.grid, config || {});
-				this.grids.push(targetCfg.grid);
-			}
-		}
+                
+                Ext.apply(targetCfg.grid, config || {});
+                this.grids.push(targetCfg.grid);
+            }
+        }
         var me= this;
         var tabPanel = new Ext.TabPanel({
             enableTabScroll: true,
             id: this.id,
             activeTab: 0,
             items: [],
-			targets: this.targets,
-			layoutOnTabChange: true,
-			/** api: method[hideAllBut]
-			 */	
+            targets: this.targets,
+            layoutOnTabChange: true,
+            /** api: method[hideAllBut]
+             */    
                         listeners: {
                             "afterrender": function(){
                                 
                                 
                             }
                         },
-			hideAllBut: function(attribute, attributeValue) {
-				var gridsLoad  = [];
-				
+            hideAllBut: function(attribute, attributeValue) {
+                var gridsLoad  = [];
+                
                                 for(var i=0; i<me.grids.length; i++) {
                                    if(attribute) {
-					var value = me.grids[i][attribute];
-					if(value == attributeValue) {
-					    gridsLoad.push(me.grids[i]);
-					} 
-				   } else {
-					
-					gridsLoad.push(me.grids[i]);
-				  } 
+                    var value = me.grids[i][attribute];
+                    if(value == attributeValue) {
+                        gridsLoad.push(me.grids[i]);
+                    } 
+                   } else {
+                    
+                    gridsLoad.push(me.grids[i]);
+                  } 
                                 }
-				return gridsLoad;
-			},
+                return gridsLoad;
+            },
                         
                         removeAllGrids: function(){
                             var toRemove = [];
+                            var active = null;
                             for(var i=0; i<this.items.items.length;i++){
-                                toRemove.push(this.items.items[i]);                                   
+                                if(this.items.items[i] == this.activeTab) {
+                                    active = this.items.items[i];
+                                } else {
+                                    toRemove.push(this.items.items[i]);                                   
+                                }
                             }
                             for(i=0; i<toRemove.length;i++){
                                 toRemove[i].destroy();
                             }
+                            if(active) {
+                                active.destroy();
+                            }
                         },
-			
-			/** api: method[loadGrid]
-			 */	
-			loadGrids: function(attributeName, attributeValue, projection, viewParams) {	
-                                this.removeAllGrids();
-				var grids = this.hideAllBut(attributeName, attributeValue);
-				if(grids.length === 0) {
-					Ext.Msg.show({
-						title: 'Avviso',
-						msg: 'Nessun bersaglio trovato',
-						buttons: Ext.Msg.OK,
-						icon: Ext.MessageBox.WARNING
-					});
-					this.collapse();
-				}	
+            
+            /** api: method[loadGrid]
+             */    
+            loadGrids: function(attributeName, attributeValue, projection, viewParams) {
+                this.removeAllGrids();
+                var grids = this.hideAllBut(attributeName, attributeValue);
+                
+                                
+                if(grids.length === 0) {
+                    Ext.Msg.show({
+                        title: 'Avviso',
+                        msg: me.noRecordFoundLabel,
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.MessageBox.WARNING
+                    });
+                    this.collapse();
+                }    
                 var tabPanel = this;
                 for(var i=0; i<grids.length;i++){
                     grids[i].target= me.target;
                     grids[i].viewParams= viewParams;
-                    grids[i].addOutput();
-                    grids[i].onEmpty=function(grid) {
-                        tabPanel.hideTabStripItem(grid.wfsGrid);
-                        //grid.wfsGrid.destroy();
+                    grids[i].addOutput({},i === 0);
+                    grids[i].onEmpty=function(grid) {                        
+                        // no record found message
+                        var noRecordFoundEl = grid.wfsGrid.el.child('.x-grid3-scroller');
+                        noRecordFoundEl.addClass(me.noRecordFoundCls);
+                        noRecordFoundEl.update(me.noRecordFoundLabel);                        
                     };
-                    this.setActiveTab(i);
+                    if(i === 0) {
+                        this.setActiveTab(i);
+                    }
                 }
                 
-                this.setActiveTab(0);                               
-			}
-			
+                //this.setActiveTab(0);                               
+            }
+            
         });
 
                       

@@ -163,3 +163,8 @@ div#homelogos ul li a:hover {
 .multislider-label .x-form-item  {
 	font-size: 10px;
 }
+
+.empty-grid {
+    text-align: center;
+    padding-top: 50px;
+}

@@ -48,6 +48,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     viewMapButton: "Visualizza Mappa",
     formLabel: "Impostazioni di Elaborazione",
     bboxValidationTitle: "Selezione Area di Interesse",
+    requiredMaterial: "Questa formula richiede di specificare la sostanza",
+    validationTitle: "Errore nei parametri",
     invalidAOI: "Le coordinate dell'area di interesse non sono valide.",
     bboxTooBig: "L'area selezionata e' troppo grande e il server potrebbe impiegare molto tempo a rispondere. Se si desidera continuare ugualmente premere OK.",
     weatherLabel: "Meteo",  
@@ -184,7 +186,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             hideLabel : false,
             store: elaborazioneStore, 
             valueField: 'id',
-            displayField: 'name',    
+            displayField: 'name',   
+            lastQuery: '',
             typeAhead: true,
             //mode: 'local',
             forceSelection: true,
@@ -236,6 +239,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             store: formulaStore, 
             valueField: 'id_formula',            
             displayField: 'name',    
+            lastQuery: '',
             typeAhead: true,
             //mode: 'local',
             //forceSelection: true,
@@ -309,7 +313,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             store: weatherStore,    
             displayField: 'name',    
             typeAhead: true,
-            mode: 'local',
+            //mode: 'local',
+            lastQuery: '',
             forceSelection: true,
             triggerAction: 'all',
             selectOnFocus:true,
@@ -356,6 +361,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             valueField: 'id',
             typeAhead: true,
             //mode: 'local',
+            lastQuery: '',
             forceSelection: true,
             triggerAction: 'all',
             selectOnFocus:true,
@@ -653,7 +659,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                             value: classe
                         });
                         
-                        store.proxy.protocol.filter.filters.push(filter);
+                        store.proxy.protocol.filter.filters.push(filter);                        
                     }       
                     me.resetCombos([me.sostanze]);
                 },
@@ -733,24 +739,25 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                             load : function(str, records) {
                                 var fids= new Array();
                                 var fid=null;
-                                Ext.each(records,function(record){
-                                    fid="siig_t_scenario."+record.get("scen");
-                                    if(fids.indexOf(fid) == -1){
-                                        fids.push("siig_t_scenario."+record.get("scen"));
-                                    }
-
-                                });
                                 
                                 var store=me.accident.getStore();
-                                store.proxy.protocol.filter.filters= new Array();
-
-                                if(sost != "0"){
-                                    filter= new OpenLayers.Filter.FeatureId({
-                                        fids: fids
-                                    });
-                     
-                                  store.proxy.protocol.filter.filters.push(filter);
+                                var len
+                                while(store.proxy.protocol.filter.fids.length > 0) {
+                                     store.proxy.protocol.filter.fids.pop();
                                 }
+                                
+                                if(sost != "0") {
+
+                                    Ext.each(records,function(record){
+                                        fid="siig_t_scenario."+record.get("scen");
+                                        if(fids.indexOf(fid) == -1){
+                                            store.proxy.protocol.filter.fids.push("siig_t_scenario."+record.get("scen"));
+                                        }
+
+                                    });
+                                 
+                                }
+                                
                                 me.resetCombos([me.accident]);
                             }
                         },
@@ -773,7 +780,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         "name": "id",        
                         "mapping": "id_scenario"
               }],
-             proxy: this.getWFSStoreProxy(this.scenFeature) , 
+             proxy: this.getWFSStoreProxy(this.scenFeature, new OpenLayers.Filter.FeatureId({
+                fids: []
+             })) , 
              autoLoad: true 
           });       
 
@@ -1102,6 +1111,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      *     builds processing params with form values and selected roi
      */
     makeParams: function(form, roi){
+        var error = null;
+        
         var map = this.appTarget.mapPanel.map;
         var params = {};
         var filters = [];
@@ -1163,7 +1174,24 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         params.filters = filters;
         
-        this.doProcess(params);
+        var formula = this.formula.getValue();
+        var sostanza = parseInt(this.getComboRecord(this.sostanze).data.value, 10);
+        
+        if(formula === 20 && sostanza === 0) {
+            error = this.requiredMaterial;
+        }
+        
+        if(!error) {
+            this.doProcess(params);
+        } else {
+            Ext.Msg.show({
+                title: this.validationTitle,
+                buttons: Ext.Msg.OK,                
+                msg: error,
+                icon: Ext.MessageBox.ERROR,
+                scope: this
+            }); 
+        }
     },
     
     /** private: method[getSelectedTarget]    
@@ -1367,9 +1395,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     
     getWFSStoreProxy: function(featureName, filter, sortBy){
         var filterProtocol=new OpenLayers.Filter.Logical({
-                    type: OpenLayers.Filter.Logical.AND,
-                    filters: new Array()
-                });
+            type: OpenLayers.Filter.Logical.AND,
+            filters: new Array()
+        });
         if(filter) {
             if(filter.type== "FID")
                 filterProtocol=filter;

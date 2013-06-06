@@ -627,7 +627,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 
     /** api: method[addOutput]
      */
-    addOutput: function(config) {
+    addOutput: function(config, activate) {
         var me= this;
         this.wfsColumns= new Array();
         
@@ -692,23 +692,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     "beforechange": function(paging,params){
                         paging.store.removeAll(true);
                         paging.store.proxy=new GeoExt.data.ProtocolProxy({ 
-                            protocol: /*new OpenLayers.Protocol.WFS({ 
-                                    url: this.wfsParam.wfsURL, 
-                                    featureType: this.wfsParam.featureType, 
-                                    readFormat: new OpenLayers.Format.GeoJSON(),
-                                    featureNS: this.wfsParam.featureNS, 
-                                    filter: this.wfsParam.filter,
-                                    viewparams: this.viewParams,
-                                    sortBy: {
-                                        property: "runEnd",
-                                        order: "DESC"
-                                    },
-                                    maxFeatures: params.limit,
-                                    startIndex:  params.start,
-                                    outputFormat: "application/json",
-                                    srsName: this.wfsParam.srsName,
-                                    version: this.wfsParam.version
-                                })*/
+                            protocol:
                             me.getProtocol({
                                 limit: params.limit,
                                 start:  params.start
@@ -726,7 +710,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         
         this.wfsGrid = gxp.plugins.WFSGrid.superclass.addOutput.call(this, config);
         
-        this.setTotalRecord(function(total){
+        var totalHandler = function(total){
             if(parseInt(total,10) > 0) {
                 me.loadFeatureFields(function(){
                     if(me.columns){
@@ -760,7 +744,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                         listeners:{
                             beforeload: function(store){
 
-                                if(me.loadMask)
+                                if(me.loadMask && me.loadMask.el && me.loadMask.el.dom)
                                     me.loadMask.show(); 
                                 
                                 me.wfsGrid.reconfigure(
@@ -777,7 +761,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                             },
                             
                             exception : function(store){
-                                if(me.loadMask)
+                                if(me.loadMask && me.loadMask.el && me.loadMask.el.dom)
                                 me.loadMask.hide(); 
                             }
                         },
@@ -829,23 +813,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                             }
                         },
                         proxy: new GeoExt.data.ProtocolProxy({ 
-                            protocol: /*new OpenLayers.Protocol.WFS({ 
-                                    url: me.wfsURL, 
-                                    featureType: me.featureType, 
-                                    readFormat: new OpenLayers.Format.GeoJSON(),
-                                    featureNS: me.featureNS, 
-                                    filter: me.filter, 
-                                    viewparams: me.viewParams,
-                                    maxFeatures: me.pageSize,
-                                    sortBy: {
-                                        property: "runEnd",
-                                        order: "DESC"
-                                    },
-                                    startIndex: 0,
-                                    outputFormat: "application/json",
-                                    srsName: me.srsName,
-                                    version: me.version
-                                })*/
+                            protocol: 
                             me.getProtocol({
                                 limit: me.pageSize,
                                 start:  0
@@ -859,9 +827,11 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             } else if(me.onEmpty){
                 me.onEmpty.call(null, me);
             }
-         });   
+         };
+        this.wfsGrid.on('activate', function() {
+            this.setTotalRecord(totalHandler);
+        }, this, {single: true});
         
- 
         return this.wfsGrid;
     }  
 });

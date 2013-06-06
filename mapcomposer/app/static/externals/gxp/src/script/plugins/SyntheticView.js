@@ -67,7 +67,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     combinedRiskLayer: "rischio_totale",    
     currentRiskLayers: ["rischio_totale_ambientale", "rischio_totale_sociale", "rischio_totale"],
     formulaRiskLayer: "rischio",
-    
+    mixedFormulaRiskLayer: "mixed_rischio",
+    humanTitle:'Sociale',    
+    notHumanTitle:'Ambientale',    
     originalRiskLayers: null,
     
     selectedTargetLayer: "Bersaglio Selezionato",
@@ -312,7 +314,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 env:'elevata:'+distances[0]+';inizio:'+distances[1]+';irreversibili:'+distances[2]+';reversibili:'+distances[3],
                 viewparams: viewParams
             }
-        }, false, buffer);                
+        }, true, buffer);                
     },
     
     /** private: method[addNotHumanTargetBuffer]
@@ -330,7 +332,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 env:'distance:'+distance,
                 viewparams: viewParams
             }
-        }, false, buffer);        
+        }, true, buffer);        
     },
     
     /** private: method[removeLayers]
@@ -509,18 +511,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 scope: this,
                 handler: function(){        
                     var map = this.target.mapPanel.map;
-                    
+                    /*
                     // remove analytic view layers (buffers, targets, selected targets)
                     this.removeAnalyticViewLayers(map);                    
                              
-                                        // reset risk layers
+                    // reset risk layers
                     if(this.originalRiskLayers !== null) {
                         this.removeRiskLayers(map);                                       
                         this.restoreOriginalRiskLayers(map);
                     }
                                 
                     var south = Ext.getCmp("south").collapse();
-                   
+                    */
                     if(! this.processingPane.aoiFieldset)
                         this.processingPane.show(this.target);
                     else{
@@ -626,7 +628,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             params: {                                                                
                 viewparams: targetViewParams
             }
-        }, false));
+        }, true));
         
         var wfsGrid = Ext.getCmp("featuregrid");
         if(this.isSingleTarget()) {
@@ -694,10 +696,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             name: this.notHumanRiskLayer,
             title: this.notHumanRiskLayerTitle[GeoExt.Lang.getLocaleIndex()], 
             params: {
-                viewparams: viewParams,
+                viewparams: viewParams,                
                 env:"low:"+this.status.themas['ambientale'][0]+";medium:"+this.status.themas['ambientale'][1]
             }
-        }, false));
+        }, true));
     },
     
     addHumanRisk: function(layers, bounds) {
@@ -719,43 +721,40 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 viewparams: viewParams,
                 env:"low:"+this.status.themas['sociale'][0]+";medium:"+this.status.themas['sociale'][1]
             }
-        }, false));
+        }, true));
     },
     
-    addFormula: function(layers, bounds, status) {
-        this.currentRiskLayers.push(this.formulaRiskLayer);
+    addFormula: function(layers, bounds, status, targetId, layer, formulaDesc, env) {
+        this.currentRiskLayers.push(layer);
         var viewParams = "bounds:" + bounds 
             + ';residenti:' + (this.status.target.id.indexOf(1) === -1 ? 0 : 1) 
             + ';turistica:' + (this.status.target.id.indexOf(2) === -1 ? 0 : 1) 
             + ';industria:' + (this.status.target.id.indexOf(4) === -1 ? 0 : 1) 
             + ';sanitarie:' + (this.status.target.id.indexOf(5) === -1 ? 0 : 1) 
             + ';scolastiche:' + (this.status.target.id.indexOf(6) === -1 ? 0 : 1)
-            + ';commerciali:' + (this.status.target.id.indexOf(7) === -1 ? 0 : 1) 
+            + ';commerciali:' + (this.status.target.id.indexOf(7) === -1 ? 0 : 1)
+            + ';urbanizzate:' + (this.status.target.id.indexOf(10) === -1 ? 0 : 1) 
+            + ';boscate:' + (this.status.target.id.indexOf(11) === -1 ? 0 : 1) 
+            + ';protette:' + (this.status.target.id.indexOf(12) === -1 ? 0 : 1) 
+            + ';agricole:' + (this.status.target.id.indexOf(13) === -1 ? 0 : 1) 
+            + ';sotterranee:' + (this.status.target.id.indexOf(14) === -1 ? 0 : 1)
+            + ';superficiali:' + (this.status.target.id.indexOf(15) === -1 ? 0 : 1) 
+            + ';culturali:' + (this.status.target.id.indexOf(16) === -1 ? 0 : 1)             
             + ';sostanze:' + this.status.sostanza.id.join('\\,')
             + ';scenari:' + this.status.accident.id.join('\\,')
             + ';gravita:' + this.status.seriousness.id.join('\\,');
             
-        var targetId;
-        if(this.isSingleTarget()) {
-            targetId = parseInt(status.target['id_bersaglio'], 10);
-        } else if(this.isAllHumanTargets()) {
-            targetId = 98;
-        } else if(this.isAllNotHumanTargets()) {
-            targetId = 99;
-        } else {
-            targetId = 100;
-        }
-        
-        var env = "low:"+this.status.themas['sociale'][0]+";medium:"+this.status.themas['sociale'][1]
-                 +";formula:"+status.formula+";target:"+targetId+";materials:"+status.sostanza.id.join(',');
+                
+        env += ";formula:"+status.formula+";target:"+targetId+";materials:"+status.sostanza.id.join(',');
         layers.push(this.createLayerRecord({
-            name: this.formulaRiskLayer,
-            title: status.formulaDesc, 
+            name: layer,
+            title: formulaDesc, 
+            tiled: false,
             params: {                                                                
                 viewparams: viewParams,
                 env: env
             }
-        }, false));
+        }, true));
     },
     
     addCombinedRisk: function(layers, bounds) {
@@ -784,7 +783,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 viewparams: viewParams,
                 env:"lowsociale:"+this.status.themas['sociale'][0]+";mediumsociale:"+this.status.themas['sociale'][1]+";lowambientale:"+this.status.themas['ambientale'][0]+";mediumambientale:"+this.status.themas['ambientale'][1]
             }
-        }, false));
+        }, true));
+    },
+    
+    dependsOnTargets: function(formula) {
+        return formula == 2; // cff
     },
     
     addRisk: function(layers, bounds, status) {        
@@ -800,7 +803,32 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 this.addNotHumanRisk(layers, bounds);
             }
         } else {
-            this.addFormula(layers, bounds, status);
+            var env;
+            if(this.isMixedTargets()) {
+            } else if(this.isHumanTarget()) {
+                env = "low:"+this.status.themas['sociale'][0]+";medium:"+this.status.themas['sociale'][1];
+            } else if(this.isNotHumanTarget()) {
+                env = "low:"+this.status.themas['ambientale'][0]+";medium:"+this.status.themas['ambientale'][1];
+            }
+            var mixedenv = "lowsociale:"+this.status.themas['sociale'][0]+";mediumsociale:"+this.status.themas['sociale'][1]+";lowambientale:"+this.status.themas['ambientale'][0]+";mediumambientale:"+this.status.themas['ambientale'][1];
+            
+            if(this.dependsOnTargets(status.formula)) {
+                if(this.isSingleTarget()) {
+                    this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc, env);                
+                } else if(this.isAllHumanTargets()) {
+                    this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc, env);
+                } else if(this.isAllNotHumanTargets()) {
+                    this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc, env);
+                } else {
+                    this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, env);
+                    this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, env);                    
+                    this.addFormula(layers, bounds, status, 100, this.mixedFormulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle + ' - ' + this.notHumanTitle, mixedenv);
+                }
+            } else {
+                this.addFormula(layers, bounds, status, 0, this.formulaRiskLayer, status.formulaDesc, env);   
+            }
+            
+            //this.addFormula(layers, bounds, status);
         }
     },
     
@@ -903,6 +931,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }
         
         this.removeRiskLayers(map);
+        
+        // remove analytic view layers (buffers, targets, selected targets)
+        this.removeAnalyticViewLayers(map);                    
+        Ext.getCmp("south").collapse();
         
         this.addRisk(newLayers, bounds, status);
         
@@ -1018,7 +1050,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     parseSost: function(radius){                
         for (sost in this.radiusData){
-            if(this.status.sostanza.value == "0" || sost === this.status.sostanza.value) {
+            if(this.status.sostanza.value === "0" || sost === this.status.sostanza.value + "") {
                 this.parseAcc(sost,radius);
             }           
         } 
