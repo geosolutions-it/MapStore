@@ -320,7 +320,9 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         this.listeners= {
             "afterlayout": function(){
                 Ext.get(me.id+"_bboxAOI-set-EPSG").addListener("click", me.openEPSGWin, me);  
-                me.mapProjection = new OpenLayers.Projection(me.map.getProjection());
+				var baseProj = me.map.getProjection();
+				var projection = baseProj ? baseProj : me.map.projection; 				
+                me.mapProjection = new OpenLayers.Projection(projection);
                     
                 me.selectBBOX = new OpenLayers.Control.SetBox({      
                     map: me.map,       
@@ -338,7 +340,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
                 me.map.addControl(me.selectBBOX);
                 me.map.enebaleMapEvent = true;
             },
-             beforecollapse : function(p) {
+            beforecollapse : function(p) {
                 me.removeBBOXLayer();
             }
           
