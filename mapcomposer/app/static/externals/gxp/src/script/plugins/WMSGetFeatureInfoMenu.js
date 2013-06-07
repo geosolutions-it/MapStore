@@ -243,6 +243,11 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 								started=false;
 								
 							}
+							
+							// ////////////////////////////////////////////////////
+							// This function assume that teh body is empty in order 
+							// to return noDataMsg (no features)
+							// ////////////////////////////////////////////////////
                             var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
                             if (match && !match[1].match(/^\s*$/)) {
                                 atLeastOneResponse = true;
@@ -430,6 +435,10 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 				
 				getfeatureinfo:function(evt){
 					cleanup();
+					// ////////////////////////////////////////////////////
+					// This function assume that teh body is empty in order 
+					// to return noDataMsg (no features)
+					// ////////////////////////////////////////////////////
 					var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
 					if (match && !match[1].match(/^\s*$/)) {
 						tooltip = new GeoExt.Popup({
