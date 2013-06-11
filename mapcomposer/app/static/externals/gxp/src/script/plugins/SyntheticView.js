@@ -697,7 +697,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             title: this.notHumanRiskLayerTitle[GeoExt.Lang.getLocaleIndex()], 
             params: {
                 viewparams: viewParams,                
-                env:"low:"+this.status.themas['ambientale'][0]+";medium:"+this.status.themas['ambientale'][1]
+                env:"low:"+this.status.themas['ambientale'][0]+";medium:"+this.status.themas['ambientale'][1],
+                riskPanel: true
             }
         }, true));
     },
@@ -719,7 +720,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             title: this.humanRiskLayerTitle[GeoExt.Lang.getLocaleIndex()], 
             params: {                                                                
                 viewparams: viewParams,
-                env:"low:"+this.status.themas['sociale'][0]+";medium:"+this.status.themas['sociale'][1]
+                env:"low:"+this.status.themas['sociale'][0]+";medium:"+this.status.themas['sociale'][1],
+                riskPanel: true
             }
         }, true));
     },
@@ -781,7 +783,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             title: this.combinedRiskLayerTitle[GeoExt.Lang.getLocaleIndex()], 
             params: {                                                                
                 viewparams: viewParams,
-                env:"lowsociale:"+this.status.themas['sociale'][0]+";mediumsociale:"+this.status.themas['sociale'][1]+";lowambientale:"+this.status.themas['ambientale'][0]+";mediumambientale:"+this.status.themas['ambientale'][1]
+                env:"lowsociale:"+this.status.themas['sociale'][0]+";mediumsociale:"+this.status.themas['sociale'][1]+";lowambientale:"+this.status.themas['ambientale'][0]+";mediumambientale:"+this.status.themas['ambientale'][1],
+                riskPanel: true
             }
         }, true));
     },

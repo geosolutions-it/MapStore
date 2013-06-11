@@ -92,6 +92,13 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
     cacheText: "Cache",
     cacheFieldText: "Use cached version",
     stylesText: "Styles",
+    sliderRischioSocialeText: "Rischio Sociale",
+    sliderRischioAmbientaleText: "Rischio Ambientale",
+    minRangeSliderText: "Rischio Basso",
+    medRangeSliderText: "Rischio Medio",
+    maxRangeSliderText: "Rischio Alto",
+    riskTabTitle: "Rischio",
+    riskTabSubmitText: "Applica",
     
     initComponent: function() {
         
@@ -127,7 +134,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         }
         
         // only add the Risk panel for SIIG layers.
-        if (this.layerRecord.get("layer").options.vendorParams.env) {
+        if (this.layerRecord.get("layer").params.RISKPANEL) {
             this.items.push(this.createRiskPanel());
         }
 
@@ -359,7 +366,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         }
         
         var sliderFiledRischioSocialePanel=new gxp.form.SliderRangesFieldSet({
-            title: "Rischio Sociale",
+            title: this.sliderRischioSocialeText,
             id:"rischio_sociale_panel",    
             labels: true,
             multiSliderConf:{
@@ -368,17 +375,17 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                 ranges: [
                 {
                     maxValue: sliderEnv[0].split(":")[1],
-                    name:"Rischio Basso", 
+                    name:this.minRangeSliderText, 
                     id:"range_low_sociale_panel"
                 },
                 {
                     maxValue: sliderEnv[1].split(":")[1],
-                    name:"Rischio Medio", 
+                    name:this.medRangeSliderText, 
                     id:"range_medium_sociale_panel"
                 },
                 {
                     maxValue: 1000,
-                    name:"Rischio Alto"
+                    name:this.maxRangeSliderText
                 }
                 ],                                        
                 width   : 328,
@@ -388,7 +395,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         });
         
         var sliderFiledRischioAmbientalePanel=new gxp.form.SliderRangesFieldSet({
-            title: "Rischio Ambientale",
+            title: this.sliderRischioAmbientaleText,
             id:"rischio_ambientale_panel",    
             labels: true,
             multiSliderConf:{
@@ -397,18 +404,18 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                 ranges: [
                 {
                     maxValue: sliderEnv.length > 2 ? sliderEnv[2].split(":")[1] : sliderEnv[0].split(":")[1],
-                    name:"Rischio Basso", 
+                    name:this.minRangeSliderText,
                     id:"range_low_ambientale_panel"
                 },
 
                 {
                     maxValue: sliderEnv.length > 2 ? sliderEnv[3].split(":")[1] : sliderEnv[1].split(":")[1],
-                    name:"Rischio Medio", 
+                    name:this.medRangeSliderText, 
                     id:"range_medium_ambientale_panel"
                 },
                 {
                     maxValue: 1000, 
-                    name:"Rischio Alto"
+                    name:this.maxRangeSliderText
                 }
                 ],                                        
                 width   : 328,
@@ -421,7 +428,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         
         if (this.layerRecord.get("name") == "rischio_totale"){
             riskPanel = [{   
-				title: 'Rischio Sociale',
+				title: this.sliderRischioSocialeText,
 				listeners: {
 					activate: function(p){
 					   sliderFiledRischioSocialePanel.render(Ext.get('rischio_sociale_slider_panel'));
@@ -430,7 +437,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
 				},
 				html: "<div id='rischio_sociale_slider_panel'/>"
 			},{   
-				title: 'Rischio Ambientale',
+				title: this.sliderRischioAmbientaleText,
 				listeners: {
 					activate: function(p){
 					   sliderFiledRischioAmbientalePanel.render(Ext.get('rischio_ambientale_slider_panel'));
@@ -442,7 +449,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         
         }else if(this.layerRecord.get("name") == "rischio_totale_sociale"){
             riskPanel = [{   
-				title: 'Rischio Sociale',
+				title: this.sliderRischioSocialeText,
 				listeners: {
 					activate: function(p){
 					   sliderFiledRischioSocialePanel.render(Ext.get('rischio_sociale_slider_panel'));
@@ -453,7 +460,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
 			}];
         }else{
             riskPanel = [{   
-				title: 'Rischio Ambientale',
+				title: this.sliderRischioAmbientaleText,
 				listeners: {
 					activate: function(p){
 					   sliderFiledRischioAmbientalePanel.render(Ext.get('rischio_ambientale_slider_panel'));
@@ -477,19 +484,18 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         var panel = new Ext.FormPanel({
             border: false,
             layout: "fit",
-            //title: this.formLabel,
             autoScroll: true,
             items:[temasPanel]
         });
             
         return {
-            title: "Rischio",
+            title: this.riskTabTitle,
             style: {"padding": "2px"},
             layout: "form",
             labelWidth: 70,
             items: [panel],
             buttons: [{
-                text: "Applica",
+                text: this.riskTabSubmitText,
                 iconCls: 'elab-button',
                 scope: this,
                 handler: function(){

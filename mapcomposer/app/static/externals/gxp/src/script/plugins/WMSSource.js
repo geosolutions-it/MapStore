@@ -261,7 +261,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 FORMAT: config.format,
                 TRANSPARENT: config.transparent,
 				VIEWPARAMS: config.viewparams,
-				ENV: config.env
+				ENV: config.env,
+                RISKPANEL: config.riskPanel
             }, this.layerBaseParams);
             
             // use all params from original
@@ -284,6 +285,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 						env: config.env,
 						viewparams: config.viewparams
 					} : {},
+                    riskPanel: ("riskPanel" in config) ? config.riskPanel : false,
 					displayInLayerSwitcher: ("displayInLayerSwitcher" in config) ? config.displayInLayerSwitcher : true
                 }
             );
