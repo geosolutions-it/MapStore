@@ -49,6 +49,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     formLabel: "Impostazioni di Elaborazione",
     bboxValidationTitle: "Selezione Area di Interesse",
     requiredMaterial: "Questa formula richiede di specificare la sostanza",
+    requiredAccident: "Questa formula richiede di specificare l\'incidente",
+    requiredSeriousness: "Questa formula richiede di specificare la gravità",
     validationTitle: "Errore nei parametri",
     invalidAOI: "Le coordinate dell'area di interesse non sono valide.",
     bboxTooBig: "L'area selezionata e' troppo grande e il server potrebbe impiegare molto tempo a rispondere. Se si desidera continuare ugualmente premere OK.",
@@ -113,7 +115,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     weatherFeature: "siig_t_variabile",
     bersFeature: "siig_t_bersaglio",
     elabFeature: "siig_mtd_d_elaborazione",
-    formulaFeature: "siig_mtd_t_formula",
+    formulaFeature: "formule",
     classFeature: "siig_d_classe_adr",
     sostFeature: "siig_t_sostanza",
     scenFeature: "siig_t_scenario",
@@ -226,6 +228,33 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
               },{
                         "name": "name",              
                         "mapping": "descrizione_" + GeoExt.Lang.locale
+              },{
+                        "name": "ambito_territoriale",              
+                        "mapping": "ambito_territoriale"
+              },{
+                        "name": "condizioni_temporali",              
+                        "mapping": "condizioni_temporali"
+              },{
+                        "name": "condizioni_meteo",              
+                        "mapping": "condizioni_meteo"
+              },{
+                        "name": "bersagli_tutti",              
+                        "mapping": "bersagli_tutti"
+              },{
+                        "name": "bersagli_umani",              
+                        "mapping": "bersagli_umani"
+              },{
+                        "name": "bersagli_ambientali",              
+                        "mapping": "bersagli_ambientali"
+              },{
+                        "name": "sostanze",              
+                        "mapping": "sostanze"
+              },{
+                        "name": "incidenti",              
+                        "mapping": "incidenti"
+              },{
+                        "name": "gravita",              
+                        "mapping": "gravita"
               }],
              proxy: this.getWFSStoreProxy(this.formulaFeature, formulaFilter, 'ordine_visibilita') , 
              autoLoad: true 
@@ -253,7 +282,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 expand: function(combo) {
                     combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );
-                } 
+                },
+                select: function(combo, record, index) {
+                    this.enableDisableForm(record);
+                }
             } 
         });
         
@@ -278,7 +310,85 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         return this.elabSet;
     },
     
+    enableDisableForm: function(record) {
+        this.enableDisableTemporali(record);
+        this.enableDisableMeteo(record);
+        this.enableDisableTargets(record);
+        this.enableDisableScenario(record);        
+    },
     
+    enableDisable: function(condition, widget) {
+        if(condition) {
+            widget.enable();
+        } else {
+            widget.disable();
+        }
+    },
+    
+    enableDisableTemporali: function(record) {
+        this.enableDisable(record.get('condizioni_temporali'), this.temporal);
+        
+    },
+    
+    enableDisableMeteo: function(record) {
+        this.enableDisable(record.get('condizioni_meteo'), this.weather);
+    },
+    
+    enableDisableTargets: function(record) {
+        var hasTargets = record.get('bersagli_tutti') || record.get('bersagli_umani') || record.get('bersagli_ambientali');
+        this.enableDisable(hasTargets, this.macrobers);
+        this.enableDisable(hasTargets, this.bers);
+        this.enableDisable(hasTargets, this.temasPanel);
+        
+        if(hasTargets) {
+            var data;
+            var type;            
+            
+            if(record.get('bersagli_tutti')) {
+                data = this.macroBersData;
+                type = null;
+            } else if(record.get('bersagli_umani')) {
+                data = [this.macroBersData[1]];
+                type = true;
+            } else if(record.get('bersagli_ambientali')) {
+                data = [this.macroBersData[2]];
+                type = false;
+            }
+            this.macrobers.getStore().loadData(data);
+            this.macrobers.setValue(data[0][1]);
+            this.updateTargetCombo(type);
+        }
+    },
+    
+    updateTargetCombo: function(type) {        
+                    
+        var store=this.bers.getStore();
+        
+        if(type !== null) {
+            store.filter('humans', type);
+        } else {
+            store.clearFilter();
+        }
+        this.updateTemaSliders(type);
+        
+        this.bers.setValue(null);
+    },
+    
+    enableDisableScenario: function(record) {
+        var hasScenario = record.get('sostanze') || record.get('incidenti') || record.get('gravita');
+        this.enableDisable(hasScenario, this.classi);
+        this.enableDisable(hasScenario, this.sostanze);
+        this.enableDisable(hasScenario, this.accident);
+        this.enableDisable(hasScenario, this.seriousness);
+        
+        if(record.get('sostanze') && !record.get('incidenti')) {
+            this.accident.disable();
+            this.seriousness.disable();
+        } 
+        if(record.get('sostanze') && record.get('incidenti') && !record.get('gravita')) {
+            this.seriousness.disable();
+        } 
+    },
     
     /** private: method[buildConditionsForm]
      *    builds the form for temporal and weather choosing
@@ -426,7 +536,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
              proxy: this.getWFSStoreProxy(this.bersFeature, undefined, "id_bersaglio") , 
              autoLoad: true 
        });
-        
+       
        targetStore.on('load', function(str, records) {
             var allIDsArray= new Array(); 
             var code=0;
@@ -475,11 +585,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                          humanIDsArray.push(id); 
                       }
              });
-           me.macrobers.getStore().loadData([
+           me.macroBersData = [
             ['bersagli_all', me.allTargetOption, 'calc_formula_tot', null, '-2', true, allIDsArray, -1],
             ['bersagli_umani', me.allHumanTargetOption, 'calc_formula_tot', true, '-1', true, humanIDsArray, -2],
             ['bersagli_ambientali', me.allNotHumanTargetOption, 'calc_formula_tot', false, '-2', true, notHumanIDsArray, -3]
-            ], true);
+            ];
+           me.macrobers.getStore().loadData(me.macroBersData, true);
 
       });
         
@@ -509,17 +620,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 scope: this,
                 select: function(cb, record, index) {
                     var type = record.get('humans');
-                    
-                    var store=this.bers.getStore();
-                    
-                    if(type !== null) {
-                        store.filter('humans', type);
-                    } else {
-                        store.clearFilter();
-                    }
-                    this.updateTemaSliders(type);
-                    
-                    this.bers.setValue(null);
+                    this.updateTargetCombo(type);
                 }
             }              
         });
@@ -1176,11 +1277,20 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         var formula = this.formula.getValue();
         var sostanza = parseInt(this.getComboRecord(this.sostanze).data.value, 10);
+        var incidente = parseInt(this.getComboRecord(this.accident).data.value, 10);
+        var entita = this.getComboRecord(this.seriousness).data.value;
         
-        if(formula === 20 && sostanza === 0) {
+        var formulaRec = this.formula.store.getAt(this.formula.store.findExact("id_formula",this.formula.getValue()));                
+        
+        if(formulaRec.get('sostanze') === 2 && sostanza === 0) {
             error = this.requiredMaterial;
         }
-        
+        if(!error && formulaRec.get('incidenti') === 2 && incidente === 0) {
+            error = this.requiredAccident;
+        }
+        if(!error && formulaRec.get('gravita') === 2 && entita === '0') {
+            error = this.requiredSeriousness;
+        }
         if(!error) {
             this.doProcess(params);
         } else {
@@ -1199,11 +1309,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      */
     getSelectedTarget: function() {
         var combo = this.bers.getValue() ? this.bers : this.macrobers;
-        return combo.store.getAt(combo.store.find('name', combo.getValue()));        
+        return combo.store.getAt(combo.store.findExact('name', combo.getValue()));        
     },
     
     getComboRecord: function(combo) {    
-        return combo.store.getAt(combo.store.find('name', combo.getValue()));
+        return combo.store.getAt(combo.store.findExact('name', combo.getValue()));
     },
     
     /** private: method[viewMap]    
@@ -1312,7 +1422,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 
         store=this.macrobers.getStore(); 
         this.macrobers.setValue(this.status.macroTarget);
-        this.macrobers.fireEvent('select',this.macrobers, store.getAt(store.find("name", this.status.macroTarget)));
+        this.macrobers.fireEvent('select',this.macrobers, store.getAt(store.findExact("name", this.status.macroTarget)));
         
         store=this.bers.getStore(); 
         if(this.status.target['macro']) {
@@ -1320,7 +1430,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         } else {
             var value = this.status.target['name'];
             this.bers.setValue(value);
-            this.bers.fireEvent('select',this.bers, store.getAt(store.find("name", value)));
+            this.bers.fireEvent('select',this.bers, store.getAt(store.findExact("name", value)));
         }
         Ext.getCmp('rischio_sociale_multislider').setValue(0, status.themas.sociale[0]);
         Ext.getCmp('rischio_sociale_multislider').setValue(1, status.themas.sociale[1]);
@@ -1346,7 +1456,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var store = combo.getStore();      
         var value = this.status[statusName].name;
         combo.setValue(value);
-        combo.fireEvent('select',combo, store.getAt(store.find("name", value)));
+        combo.fireEvent('select',combo, store.getAt(store.findExact("name", value)));
     },
     
     /** private: method[getStatus]   
@@ -1360,6 +1470,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         obj.processingDesc = this.elaborazione.getEl().getValue();
         obj.formula = this.formula.getValue();
         obj.formulaDesc = this.formula.getEl().getValue();
+        var formulaRec = this.formula.store.getAt(this.formula.store.findExact("id_formula",obj.formula));
+        obj.formulaInfo = {
+            dependsOnTarget: formulaRec.get('bersagli_tutti') > 0 || formulaRec.get('bersagli_umani') > 0 || formulaRec.get('bersagli_ambientali') > 0
+        };        
         
         
         if(this.aoiFieldset.isDirty()){

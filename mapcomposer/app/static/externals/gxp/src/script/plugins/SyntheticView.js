@@ -745,7 +745,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             + ';gravita:' + this.status.seriousness.id.join('\\,');
             
                 
-        env += ";formula:"+status.formula+";target:"+targetId+";materials:"+status.sostanza.id.join(',');
+        env += ";formula:"+status.formula+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+";scenarios:"+status.accident.id.join(',')+";entities:"+this.status.seriousness.id.join(',');
         layers.push(this.createLayerRecord({
             name: layer,
             title: formulaDesc, 
@@ -784,11 +784,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 env:"lowsociale:"+this.status.themas['sociale'][0]+";mediumsociale:"+this.status.themas['sociale'][1]+";lowambientale:"+this.status.themas['ambientale'][0]+";mediumambientale:"+this.status.themas['ambientale'][1]
             }
         }, true));
-    },
-    
-    dependsOnTargets: function(formula) {
-        return formula == 2; // cff
-    },
+    },    
     
     addRisk: function(layers, bounds, status) {        
         if(status.formula == 26) {
@@ -805,6 +801,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         } else {
             var env;
             if(this.isMixedTargets()) {
+                env = "lowsociale:"+this.status.themas['sociale'][0]+";mediumsociale:"+this.status.themas['sociale'][1]+";lowambientale:"+this.status.themas['ambientale'][0]+";mediumambientale:"+this.status.themas['ambientale'][1];
             } else if(this.isHumanTarget()) {
                 env = "low:"+this.status.themas['sociale'][0]+";medium:"+this.status.themas['sociale'][1];
             } else if(this.isNotHumanTarget()) {
@@ -812,7 +809,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }
             var mixedenv = "lowsociale:"+this.status.themas['sociale'][0]+";mediumsociale:"+this.status.themas['sociale'][1]+";lowambientale:"+this.status.themas['ambientale'][0]+";mediumambientale:"+this.status.themas['ambientale'][1];
             
-            if(this.dependsOnTargets(status.formula)) {
+            if(status.formulaInfo.dependsOnTarget) {
                 if(this.isSingleTarget()) {
                     this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc, env);                
                 } else if(this.isAllHumanTargets()) {
@@ -825,7 +822,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     this.addFormula(layers, bounds, status, 100, this.mixedFormulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle + ' - ' + this.notHumanTitle, mixedenv);
                 }
             } else {
-                this.addFormula(layers, bounds, status, 0, this.formulaRiskLayer, status.formulaDesc, env);   
+                this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc, env);   
             }
             
             //this.addFormula(layers, bounds, status);

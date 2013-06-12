@@ -52,6 +52,8 @@ GeoExt.Lang.add("de", {
         formLabel: "Verarbeitungsoptionen",
         bboxValidationTitle: "Wählen Area of ​​Interest",
         requiredMaterial: "Diese Formel erfordert die Angabe des Stoffes",
+        requiredAccident: "Diese Formel erfordert die Angabe des Umfall",    
+        requiredSeriousness: "Diese Formel erfordert die Angabe des Entities",            
         validationTitle: "Parameter-Fehler",
         invalidAOI: "Die Koordinaten des Gebiets von Interesse sind nicht gültig.",
         bboxTooBig: "L'area selezionata e' troppo grande e il server potrebbe impiegare molto tempo a rispondere. Se si desidera continuare ugualmente premere OK.",

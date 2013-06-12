@@ -55,6 +55,8 @@ GeoExt.Lang.add("en", {
         formLabel: "setting processing",
         bboxValidationTitle: "select area of interest",
         requiredMaterial: "This formula requires the specification of the substance",
+        requiredAccident: "This formula requires the specification of the accident",
+        requiredSeriousness: "This formula requires the specification of the entity",
         validationTitle: "Parameter error",
         invalidAOI: "The coordinates of the area of interest are not valid.",
         bboxTooBig: "The selected area is too big and the server may take a long time to respond. If you want to continue anyway, press OK.",

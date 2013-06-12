@@ -56,6 +56,8 @@ GeoExt.Lang.add("fr", {
         formLabel: "Réglage de traitement",
         bboxValidationTitle: "Sélectionnez Zone d'intérêt",
         requiredMaterial: "Cette formule nécessite la spécification de la substance",
+        requiredAccident: "Cette formule nécessite la spécification de l\'accident",
+        requiredSeriousness: "Cette formule nécessite la spécification de l\'Entité",   
         validationTitle: "Erreur de paramètre",
         invalidAOI: "Les coordonnées de la zone d'intérêt ne sont pas valides.",
         bboxTooBig: "La zone sélectionnée est trop grand et le serveur peut prendre un certain temps à réagir Si vous voulez quand même continuer, appuyez sur OK.",
