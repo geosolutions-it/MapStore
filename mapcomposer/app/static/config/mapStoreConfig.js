@@ -123,21 +123,24 @@
             "name": "rischio_totale_ambientale",
             "displayInLayerSwitcher": true,                
             "tiled": false,
-            "env":"low:100;medium:500"
+            "env":"low:100;medium:500",
+            "riskPanel":true
         },{
             "source": "destination",
             "title": "Rischio Totale Sociale",
             "name": "rischio_totale_sociale",
             "displayInLayerSwitcher": true,
             "tiled": false,
-            "env":"low:100;medium:500"
+            "env":"low:100;medium:500",
+            "riskPanel":true
         },{
             "source": "destination",
             "title": "Rischio Totale Sociale - Ambientale",
             "name": "rischio_totale",
             "displayInLayerSwitcher": true,
-            "tiled": false,            
-            "env":"lowsociale:100;mediumsociale:500;lowambientale:100;mediumambientale:500"
+            "tiled": false,
+            "env":"lowsociale:100;mediumsociale:500;lowambientale:100;mediumambientale:500",
+            "riskPanel":true
         },
         {
             "source": "destination",

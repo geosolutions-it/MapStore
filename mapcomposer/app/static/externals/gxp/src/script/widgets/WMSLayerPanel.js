@@ -92,6 +92,13 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
     cacheText: "Cache",
     cacheFieldText: "Use cached version",
     stylesText: "Styles",
+    sliderRischioSocialeText: "Rischio Sociale",
+    sliderRischioAmbientaleText: "Rischio Ambientale",
+    minRangeSliderText: "Rischio Basso",
+    medRangeSliderText: "Rischio Medio",
+    maxRangeSliderText: "Rischio Alto",
+    riskTabTitle: "Rischio",
+    riskTabSubmitText: "Applica",
     
     initComponent: function() {
         
@@ -124,6 +131,11 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                 this.editableStyles = true;
             }
             this.items.push(this.createStylesPanel(url));
+        }
+        
+        // only add the Risk panel for SIIG layers.
+        if (this.layerRecord.get("layer").params.RISKPANEL) {
+            this.items.push(this.createRiskPanel());
         }
 
         gxp.WMSLayerPanel.superclass.initComponent.call(this);
@@ -335,8 +347,209 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                 }
             }]
         };
-    }    
+    },
+    
+    /** private: createRiskPanel
+     *  Creates the slider risk panels.
+     */
+    createRiskPanel: function(){
 
+        var sliderEnv = this.layerRecord.get("layer").params.ENV.split(";");
+        var envArray=[];
+        
+        var checkEnv = ["low","medium","lowsociale","mediumsociale","lowambientale","mediumambientale"];
+        
+        for (var i = 0;i<sliderEnv.length;i++){
+            if (checkEnv.indexOf(sliderEnv[i].split(":")[0]) != -1){
+                envArray.push(sliderEnv[i]);
+            }
+        }
+        
+        var sliderFiledRischioSocialePanel=new gxp.form.SliderRangesFieldSet({
+            title: this.sliderRischioSocialeText,
+            id:"rischio_sociale_panel",    
+            labels: true,
+            multiSliderConf:{
+                vertical : false,
+                anchor: "99%",
+                ranges: [
+                {
+                    maxValue: sliderEnv[0].split(":")[1],
+                    name:this.minRangeSliderText, 
+                    id:"range_low_sociale_panel"
+                },
+                {
+                    maxValue: sliderEnv[1].split(":")[1],
+                    name:this.medRangeSliderText, 
+                    id:"range_medium_sociale_panel"
+                },
+                {
+                    maxValue: 1000,
+                    name:this.maxRangeSliderText
+                }
+                ],                                        
+                width   : 328,
+                minValue: 0,
+                maxValue: 1000
+            }
+        });
+        
+        var sliderFiledRischioAmbientalePanel=new gxp.form.SliderRangesFieldSet({
+            title: this.sliderRischioAmbientaleText,
+            id:"rischio_ambientale_panel",    
+            labels: true,
+            multiSliderConf:{
+                vertical : false,
+                anchor: "99%",
+                ranges: [
+                {
+                    maxValue: sliderEnv.length > 2 ? sliderEnv[2].split(":")[1] : sliderEnv[0].split(":")[1],
+                    name:this.minRangeSliderText,
+                    id:"range_low_ambientale_panel"
+                },
+
+                {
+                    maxValue: sliderEnv.length > 2 ? sliderEnv[3].split(":")[1] : sliderEnv[1].split(":")[1],
+                    name:this.medRangeSliderText, 
+                    id:"range_medium_ambientale_panel"
+                },
+                {
+                    maxValue: 1000, 
+                    name:this.maxRangeSliderText
+                }
+                ],                                        
+                width   : 328,
+                minValue: 0,
+                maxValue: 1000
+            }
+        });
+        
+        var riskPanel = [];
+        
+        if (this.layerRecord.get("name") == "rischio_totale"){
+            riskPanel = [{   
+				title: this.sliderRischioSocialeText,
+				listeners: {
+					activate: function(p){
+					   sliderFiledRischioSocialePanel.render(Ext.get('rischio_sociale_slider_panel'));
+					},
+                    scope: this
+				},
+				html: "<div id='rischio_sociale_slider_panel'/>"
+			},{   
+				title: this.sliderRischioAmbientaleText,
+				listeners: {
+					activate: function(p){
+					   sliderFiledRischioAmbientalePanel.render(Ext.get('rischio_ambientale_slider_panel'));
+					},                 
+                    scope: this
+				},
+				html: "<div id='rischio_ambientale_slider_panel'/>"
+			}];
+        
+        }else if(this.layerRecord.get("name") == "rischio_totale_sociale"){
+            riskPanel = [{   
+				title: this.sliderRischioSocialeText,
+				listeners: {
+					activate: function(p){
+					   sliderFiledRischioSocialePanel.render(Ext.get('rischio_sociale_slider_panel'));
+					},
+                    scope: this
+				},
+				html: "<div id='rischio_sociale_slider_panel'/>"
+			}];
+        }else{
+            riskPanel = [{   
+				title: this.sliderRischioAmbientaleText,
+				listeners: {
+					activate: function(p){
+					   sliderFiledRischioAmbientalePanel.render(Ext.get('rischio_ambientale_slider_panel'));
+					},                 
+                    scope: this
+				},
+				html: "<div id='rischio_ambientale_slider_panel'/>"
+			}];       
+        }               
+        
+		var temasPanel = new Ext.TabPanel({
+			autoTabs:true,
+			activeTab:0,
+			deferredRender:false,
+			border:false
+		});        
+        
+        temasPanel.add(riskPanel);
+        temasPanel.doLayout(false,true);
+        
+        var panel = new Ext.FormPanel({
+            border: false,
+            layout: "fit",
+            autoScroll: true,
+            items:[temasPanel]
+        });
+            
+        return {
+            title: this.riskTabTitle,
+            style: {"padding": "2px"},
+            layout: "form",
+            labelWidth: 70,
+            items: [panel],
+            buttons: [{
+                text: this.riskTabSubmitText,
+                iconCls: 'elab-button',
+                scope: this,
+                handler: function(){
+                
+                    var layer = this.layerRecord.get("layer");
+                    var env = layer.params.ENV;
+                    var sliderEnv = env.split(";");
+                    var envArray = [];
+                    
+                    var checkEnv = ["low","medium","lowsociale","mediumsociale","lowambientale","mediumambientale"];
+                    
+                    for (var i = 0;i<sliderEnv.length;i++){
+                        if (checkEnv.indexOf(sliderEnv[i].split(":")[0]) == -1){
+                            envArray.push(sliderEnv[i]);
+                        }
+                    }
+                    
+                    var envStringa = envArray.join(";") == "" ? "" : envArray.join(";")+";";
+                    
+                    if (this.layerRecord.get("name") == "rischio_totale"){
+                        
+                        var socialMin = Ext.getCmp('rischio_sociale_panel_multislider').getValue(0);
+                        var socialMax = Ext.getCmp('rischio_sociale_panel_multislider').getValue(1);
+                        var ambMin = Ext.getCmp('rischio_ambientale_panel_multislider').getValue(0);
+                        var ambMax = Ext.getCmp('rischio_ambientale_panel_multislider').getValue(1);
+                        
+                        layer.mergeNewParams({
+                            ENV: envStringa+"lowsociale:"+socialMin+";mediumsociale:"+socialMax+";lowambientale:"+ambMin+";mediumambientale:"+ambMax
+                        });                        
+                        
+                    }else if(this.layerRecord.get("name") == "rischio_totale_sociale"){
+                        
+                        var socialMin = Ext.getCmp('rischio_sociale_panel_multislider').getValue(0);
+                        var socialMax = Ext.getCmp('rischio_sociale_panel_multislider').getValue(1);                        
+                        
+                        layer.mergeNewParams({
+                            ENV: envStringa+"low:"+socialMin+";medium:"+socialMax
+                        });                         
+                        
+                    }else{
+                        
+                        var ambMin = Ext.getCmp('rischio_ambientale_panel_multislider').getValue(0);
+                        var ambMax = Ext.getCmp('rischio_ambientale_panel_multislider').getValue(1);                         
+                        
+                        layer.mergeNewParams({
+                            ENV: envStringa+"low:"+ambMin+";medium:"+ambMax
+                        });                         
+                        
+                    }
+                }
+            }],
+            scope: this        
+        };  
+    }
 });
 
 Ext.reg('gxp_wmslayerpanel', gxp.WMSLayerPanel); 
