@@ -295,7 +295,14 @@ GeoExt.Lang.add("en", {
         transparentText: "Transparent",
         cacheText: "Cache",
         cacheFieldText: "Use cached version",
-        stylesText: "Styles"
+        stylesText: "Styles",
+        sliderRischioSocialeText: "Social Risk",
+        sliderRischioAmbientaleText: "Environmental Risk",
+        minRangeSliderText: "Low risk",
+        medRangeSliderText: "Medium risk",
+        maxRangeSliderText: "High risk",
+        riskTabTitle: "Risk",
+        riskTabSubmitText: "Apply"
     },
     
     

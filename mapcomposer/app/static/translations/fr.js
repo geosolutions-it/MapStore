@@ -295,7 +295,14 @@ GeoExt.Lang.add("fr", {
         transparentText: "Transparent",
         cacheText: "Cache",
         cacheFieldText: "Utiliser la version mise en cache",
-        stylesText: "Styles"
+        stylesText: "Styles",
+        sliderRischioSocialeText: "Risques Sociaux",
+        sliderRischioAmbientaleText: "Risque Environnemental",
+        minRangeSliderText: "Risque faible ",
+        medRangeSliderText: "Risque moyen",
+        maxRangeSliderText: "Risque élevé",
+        riskTabTitle: "Risque",
+        riskTabSubmitText: "Appliquer"
     },
 	"gxp.WMSStylesDialog.prototype": {
          addStyleText: "Aggiungi",
