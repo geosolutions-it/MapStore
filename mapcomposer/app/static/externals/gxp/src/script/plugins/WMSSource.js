@@ -525,7 +525,34 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
     getLayerStyle: function (config){
         var styles = null;        
         
-		if(config.styles && config.styles.indexOf("_") == -1){
+		var locCode = GeoExt.Lang.locale;	
+		
+		if(config.stylesAvail instanceof Array){
+			if(config.stylesAvail.length > 0){				
+				var defaultStyle = config.styles || config.stylesAvail[0].name;
+				for(var k=0; k<config.stylesAvail.length; k++){
+					var checkString = defaultStyle;
+					var langs = ["it","de", "en", "fr"]; // TODO: Fix this using the LanguageSelector tool. 
+					
+					for(var y=0; y<langs.length; y++){
+						if(checkString.indexOf("_" + langs[y]) != -1){
+							checkString = checkString.substring(0, checkString.indexOf("_" + langs[y]));
+						}
+					}
+					
+					if(config.stylesAvail[k].name == checkString + "_" + locCode)
+						styles = config.stylesAvail[k].name; 
+				}
+				
+				if(!styles){
+					styles = defaultStyle; 
+				}
+			} 
+		}
+
+		return styles;
+		
+		/*if(config.styles && config.styles.indexOf("_") == -1){
 			// /////////////////////////////////////////////////////
 			// If I've defined a style, I have to use it if 
 			// isnt localized (not contains the "_" character)
@@ -554,9 +581,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 					}
 				} 
 			}
-		}
-        
-		return styles;
+		}        
+		return styles;*/
 		
 		/*if(config.styles){
 		    // //////////////////////////////////////////////////
@@ -614,8 +640,12 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     props.uuid = keyword.substring(keyword.indexOf("uuid="));
                     props.uuid = keyword.split("=")[1];
                 }  
-                        
-                if(keyword.indexOf(locCode + "=") == 0){
+                
+				// ///////////////////////////////////////////////////////////////
+				// Use 'enableLang' set to 'true' in order to not enable i18n 
+				// for a specific layer
+				// ///////////////////////////////////////////////////////////////       
+                if(keyword.indexOf(locCode+"=") == 0 && config.enableLang != false){
                     props.title = keyword.split("=")[1];
                 }     
             }
