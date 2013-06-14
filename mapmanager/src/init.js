@@ -35,7 +35,7 @@ Ext.onReady(function(){
     
     Ext.QuickTips.init();
     
-    var langData = config.locales;
+    var langData = [['it','Italiano'],['de','Deutsch']];
 
     var query = location.search;        
     if(query && query.substr(0,1) === "?"){
@@ -46,7 +46,7 @@ Ext.onReady(function(){
     var code = url.locale;   
 
     if(!code){
-        code = config.locales[0][0];
+        code = "en";
     }
     
     var initialLanguageString;

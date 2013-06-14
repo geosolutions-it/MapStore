@@ -190,7 +190,7 @@
                     appTabs = new Ext.TabPanel(appTabsOpts); 
                 }
                       
-
+/*
                 var aboutButton = new Ext.Button({
                     text: GeoExplorer.prototype.appInfoText,
                     iconCls: "icon-geoexplorer",
@@ -220,7 +220,7 @@
                     handler: function(btn){
                         window.open('http://geo-solutions.it/contact/', '_blank');
                     }
-                });    
+                });    */
                 
                 var appViewport = new Ext.Viewport({
                     id: 'appVieport',
@@ -233,7 +233,8 @@
                         header : false,                    
                         items : [appTabs],                            
                         bbar : [
-                          poweredByGeoSol, ' ', aboutButton, '->',languageSelector
+							'->',languageSelector
+                         // poweredByGeoSol, ' ', aboutButton, '->',languageSelector
                         ]
                     }]
                 });
@@ -247,11 +248,11 @@
                     portalConfig: serverConfig.portalConfig,
 					geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),	 
                     about: {
-                        title: "Custom Map",
-                        'abstract': "Custom Map",
+                        title: "Comune di Bolzano - Stadtgemeinde Bozen",
+                        'abstract': "Comune di Bolzano - Stadtgemeinde Bozen",
                         contact: "<a href='#'>#</a>."
                     },
-                    sources: serverConfig.gsSources || {
+                    sources: {
                         google: {
                             ptype: "gxp_googlesource"
                         }

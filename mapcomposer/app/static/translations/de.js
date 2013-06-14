@@ -10,6 +10,7 @@ GeoExt.Lang.add("de", {
         xhrTroubleText: "Verbindungsfehler: Status ",
         layersText: "Stufen",
 		legendText: "Legende",
+		searchText: "Suche",
         titleText: "Überschrift",
         zoomLevelText: "Zoomlevel",
         saveErrorText: "Speicherungsprobleme: ",
@@ -556,6 +557,61 @@ GeoExt.Lang.add("de", {
 		resetText: "Zurücksetzen",
 		failedUploadingTitle: "Kann Datei nicht hochladen",
 		layerNameLabel: "Layername"
+	},
+
+	"gxp.plugins.SearchComune.prototype":{
+		waitMsg: 'Bitte warten ...',	
+		titleError: 'Fehler',	
+		title: 'Suche',	
+		viaText: 'Strasse',
+		civicoText: 'Hausnumm.',
+		vieLang: 'de',
+		viaTitle: 'Strasse / Hausnumm',
+		catastoTitle: 'Katastersuche',
+		comCatTitle: 'K.G.',
+		comCatEmpty: 'K.G. auswählen',
+		comTipoTitle: 'Typ',
+		comTipoEmpty: 'Typ auswählen',
+		particellaTitle: 'Parzelle',
+		particellaEmpty: 'Parzelle einfügen',
+		cercaText: 'Suchen',
+		civicoEmpty: 'Hausnumm. einfügen',
+		viaEmpty: 'Strasse einfügen',
+		bzText: 'Bozen',
+		dvText: 'Zwölfmalgreien',
+		griesText: 'Gries',		
+		pEdText: 'Bauparzelle',
+		pFondText: 'Grundparzelle'
+	},
+	
+	"gxp.plugins.SearchVia.prototype":{
+		waitMsg: 'Bitte warten ...',	
+		titleError: 'Fehler',	
+		viaText: 'Strasse',
+		civicoText: 'Hausnumm.',
+		vieLang: 'de',
+		viaTitle: 'Strasse / Hausnumm',
+		cercaText: 'Suchen',
+		civicoEmpty: 'Hausnumm. einfügen',
+		viaEmpty: 'Strasse einfügen'
+	},
+	
+	"gxp.plugins.SearchCatasto.prototype":{
+		waitMsg: 'Bitte warten ...',	
+		titleError: 'Fehler',	
+		catastoTitle: 'Katastersuche',
+		comCatTitle: 'K.G.',
+		comCatEmpty: 'K.G. auswählen',
+		comTipoTitle: 'Typ',
+		comTipoEmpty: 'Typ auswählen',
+		particellaTitle: 'Parzelle',
+		particellaEmpty: 'Parzelle einfügen',
+		cercaText: 'Suchen',
+		bzText: 'Bozen',
+		dvText: 'Zwölfmalgreien',
+		griesText: 'Gries',		
+		pEdText: 'Bauparzelle',
+		pFondText: 'Grundparzelle'
 	}
 
 });

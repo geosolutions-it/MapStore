@@ -216,7 +216,8 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
             function isSupported(layer) {
                 return (
                     layer instanceof OpenLayers.Layer.WMS ||
-                    layer instanceof OpenLayers.Layer.OSM 
+                    layer instanceof OpenLayers.Layer.OSM ||
+					layer.name == 'None'   //MB
 					
                     //|| layer instanceof OpenLayers.Layer.Google
                 );

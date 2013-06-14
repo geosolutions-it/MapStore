@@ -10,6 +10,7 @@ GeoExt.Lang.add("it", {
         xhrTroubleText: "Problemi di comunicazione: Stato ",
         layersText: "Livelli",
 		legendText: "Legenda",
+		searchText: "Ricerca",
         titleText: "Titolo",
         zoomLevelText: "Livello di Zoom",
         saveErrorText: "Problemi di salvataggio: ",
@@ -550,6 +551,60 @@ GeoExt.Lang.add("it", {
 		resetText: "Reset",
 		failedUploadingTitle: "Impossibile completare l'upload del file",
 		layerNameLabel: "Nome del Layer"
-	}
+	},
 	
+	"gxp.plugins.SearchComune.prototype":{
+		waitMsg: 'Si prega di attendere ...',	
+		titleError: 'Errore',	
+		title: 'Ricerca',	
+		viaText: 'Via',
+		civicoText: 'N. Civico',
+		vieLang: 'it',
+		viaTitle: 'Via / N. civico',
+		catastoTitle: 'Particella Catastale',
+		comCatTitle: 'CC',
+		comCatEmpty: 'Selez. CC',
+		comTipoTitle: 'Tipo',
+		comTipoEmpty: 'Selez. tipo part.',
+		particellaTitle: 'Particella',
+		particellaEmpty: 'Inserisci codice part.',
+		cercaText: 'Cerca',
+		civicoEmpty: 'Inserisci civico',
+		viaEmpty: 'Inserisci via',
+		bzText: 'Bolzano',
+		dvText: 'Dodiciville',
+		griesText: 'Gries',		
+		pEdText: 'Particella Edificabile',
+		pFondText: 'Particella Fondiaria'
+	},
+	
+	"gxp.plugins.SearchVia.prototype":{
+		waitMsg: 'Si prega di attendere ...',	
+		titleError: 'Errore',	
+		viaText: 'Via',
+		civicoText: 'N. Civico',
+		vieLang: 'it',
+		viaTitle: 'Via / N. civico',
+		cercaText: 'Cerca',
+		civicoEmpty: 'Inserisci civico',
+		viaEmpty: 'Inserisci via'
+	},
+	
+	"gxp.plugins.SearchCatasto.prototype":{
+		waitMsg: 'Si prega di attendere ...',	
+		titleError: 'Errore',	
+		catastoTitle: 'Particella Catastale',
+		comCatTitle: 'CC',
+		comCatEmpty: 'Selez. CC',
+		comTipoTitle: 'Tipo',
+		comTipoEmpty: 'Selez. tipo part.',
+		particellaTitle: 'Particella',
+		particellaEmpty: 'Inserisci codice part.',
+		cercaText: 'Cerca',
+		bzText: 'Bolzano',
+		dvText: 'Dodiciville',
+		griesText: 'Gries',		
+		pEdText: 'Particella Edificabile',
+		pFondText: 'Particella Fondiaria'
+	}
 });
