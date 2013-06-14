@@ -6,8 +6,8 @@
 	<!-- Basic OpenLayers libs -->
     <script type="text/javascript" src="script/OpenLayers.js"></script>		
 	
-	<!-- Externatls OpenLayers libraries to manage WPS processes and other extensions
-	<script type="text/javascript" src="script/OpenLayersExt.js"></script>-->
+	<!-- Externatls OpenLayers libraries to manage WPS processes 
+	<script type="text/javascript" src="script/OpenLayersExt.js"></script> -->
 	
 	<!-- colorpicker resources 
     <link rel="stylesheet" type="text/css" href="externals/colorpicker/css/colorpicker.css">
@@ -19,17 +19,16 @@
     <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/gxtheme-gray.css">
     <script type="text/javascript" src="script/GeoExt.js"></script> 
 
-	<!-- PrintPreview resources 
+	<!-- PrintPreview resources -->
     <link rel="stylesheet" type="text/css" href="externals/PrintPreview/resources/css/printpreview.css">
-    <script type="text/javascript" src="script/PrintPreview.js"></script> -->
+    <script type="text/javascript" src="script/PrintPreview.js"></script> 
 	
     <!-- gxp resources -->
     <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
 
     <script type="text/javascript" src="script/gxp.js"></script> 
 
-    <!--script type="text/javascript" src="script/proj4js.js"></script-->	
-	<!--script type="text/javascript" src="script/projCodes.js"></script-->
+    <script type="text/javascript" src="script/proj4js.js"></script>
 
     <!-- GeoExplorer resources -->
     <link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
@@ -185,7 +184,11 @@
 			// ////////////////////////////////////////////////////
 			var languageSelector = new gxp.form.LanguageSwitcher({
 				currentContext:code,
-				saveMessage:authorization
+				saveMessage:authorization,
+                data:[
+                    ['it','Italiano','','it','Italian language'], 
+                    ['de','Deutsch','','de','Deutsch language']
+                ]
 			});
 			
             var appTabsOpts = {
@@ -194,28 +197,8 @@
                         id : 'appTabs',
                         enableTabScroll: true
                     };
-            
-            //check if MetadataExplorer plugin is defined in customTools configuration
-            var customToolsME = [];
-            if(serverConfig.customTools){
-                for(var cTools in serverConfig.customTools){
-                    if(serverConfig.customTools[cTools].ptype == "gxp_metadataexplorer"){  
-                        customToolsME.push(serverConfig.customTools[cTools].ptype);
-                    }
-                }
-            }
-            
-            //check if MetadataExplorer plugin is defined in tools configuration
-            var toolsME = [];                
-            if(serverConfig.tools){
-                for(var tools in serverConfig.tools){
-                    if(serverConfig.tools[tools].ptype == "gxp_metadataexplorer"){  
-                        toolsME.push(serverConfig.tools[tools].ptype);
-                    }
-                }
-            }            
-            
-            if(!serverConfig.tab && toolsME.length == 0 && customToolsME.length == 0){
+                    
+            if(!serverConfig.tab && !serverConfig.cswconfig){
                 appTabsOpts.layout = 'fit';
                 appTabs = new Ext.Panel(appTabsOpts); 
             }else{
@@ -224,7 +207,9 @@
 
 			var iframe = "<iframe style='border: none; height: 100%; width: 100%' src='about.html' frameborder='0' border='0'>" + 
 						 "<a target='_blank' href='about.html'>" + GeoExplorer.prototype.aboutText + "</a> </iframe>";
-						 
+			
+
+            		
             var aboutButton = new Ext.Button({
                 text: GeoExplorer.prototype.appInfoText,
                 iconCls: "icon-geoexplorer",
@@ -267,7 +252,8 @@
                     header : false,                    
                     items : [appTabs],                            
                     bbar : [
-                      poweredByGeoSol, ' ', aboutButton, '->',languageSelector
+						'->',languageSelector
+                      //poweredByGeoSol, ' ', aboutButton, '->',languageSelector
                     ]
                 }]
             });
@@ -320,14 +306,15 @@
                 defaultSourceType: "gxp_wmssource",
                 renderToTab : 'appTabs',
                 about: {
-                    title: "Custom Map",
-                    'abstract': "Custom Map",
+                    title: "Comune di Bolzano - Stadtgemeinde Bozen",
+                    'abstract': "Comune di Bolzano - Stadtgemeinde Bozen",
                     contact: "<a href='#'>#</a>."
                 },
                 sources: sources,
 				scaleOverlayUnits: serverConfig.scaleOverlayUnits,
 				//showGraticule: false,  //Set showGraticule property to true only if the map projection is EPSG:4326 
                 georeferences: georeferences_data,
+                cswconfig: serverConfig.cswconfig,
                 map: serverConfig.map,
 				customTools: serverConfig.customTools
             }, mapIdentifier, authorization, fullScreen);   
@@ -342,12 +329,17 @@
                 }, 
                 'ready' : function(){
                     app.modified = false;
+					/*app.mapPanel.map.events.register("moveend", app.mapPanel.map, function(){
+						var extent = app.mapPanel.map.getExtent().toBBOX();
+						alert(extent);
+					});*/
                 }
             });
 	    };
 
 	    Ext.Ajax.request({
-			  url: customConfigName ? "config/" + customConfigName + ".js"  : "config/mapStoreConfig.js",
+			  //url: customConfigName ? "config/" + customConfigName + ".js"  : "config/mapStoreConfig.js",
+			  url: customConfigName ? "config/" + customConfigName + ".js"  : "config/bolzanoConfig.js",
 			  method: 'GET',
 			  success: function(response, opts){          
 				  
