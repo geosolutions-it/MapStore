@@ -5,11 +5,11 @@
    "defaultLanguage": "it",
    "tab": true,
    "gsSources":{ 
-                "comunefi-test":{
-                        "ptype": "gxp_wmssource",
-                        "url": "http://datigis.comune.fi.it/geowebcache_test/service/wms/",
-                        "title": "Comune FI WMS Server"
-                },
+		"comunefi-test":{
+				"ptype": "gxp_wmssource",
+				"url": "http://datigis.comune.fi.it/geowebcache_test/service/wms/",
+				"title": "Comune FI WMS Server"
+		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
 		}, 
@@ -117,11 +117,11 @@
 				}
 			}
 		}, {
-                        "ptype": "gxp_addlayers",
-                        "actionTarget": "tree.tbar",
-                        "id": "addlayers",
-                        "upload": true
-                }, {
+			"ptype": "gxp_addlayers",
+			"actionTarget": "tree.tbar",
+			"id": "addlayers",
+			"upload": true
+		}, {
 			"ptype": "gxp_removelayer",
 			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
 		}, {
@@ -203,20 +203,9 @@
 			"actionTarget": {"target": "paneltbar", "index": 23},
 			"needsAuthorization": true
 		}, {
-			"actions": ["->"], 
-			"actionTarget": "paneltbar"
-		}, {
-			"ptype": "gxp_reversegeocoder",
-			"outputTarget":"paneltbar",
-			"outputConfig": {
-				"width": "200"
-			},
-			"index": 24
-		}, {
-			"ptype": "gxp_dynamicgeocoder",
-			"outputTarget":"paneltbar",
-			"id": "dynamicgeocoder",
-			"index": 25
+			"ptype": "gxp_geolocationmenu",
+			"outputTarget": "paneltbar",
+			"index": 23
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
