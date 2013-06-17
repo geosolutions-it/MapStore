@@ -117,17 +117,9 @@
                 "timeout": 60000
             }            
 		}, {
-			"ptype": "gxp_reversegeocoder",
-			"outputTarget":"paneltbar",
-			"outputConfig": {
-				"width": "200"
-			},
-			"index": 26
-		}, {
-			"ptype": "gxp_dynamicgeocoder",
-			"outputTarget":"paneltbar",
-			"id": "dynamicgeocoder",
-			"index": 27
+			"ptype": "gxp_geolocationmenu",
+			"outputTarget": "paneltbar",
+			"index": 23
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
