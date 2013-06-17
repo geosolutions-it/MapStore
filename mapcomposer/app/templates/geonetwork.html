@@ -448,23 +448,19 @@
                     if(layName && wmsurl && gnBaseUrl && uuid){
 					    var title = layTitle ? layTitle : layName;
 						
-						var options = {
-							msLayerTitle: title,
-							msLayerName: layName,
-							wmsURL: wmsurl,
-							gnUrl: gnBaseUrl,
-							enableViewTab: false,
-							msLayerUUID: uuid,
-							gnLangStr: code
-						};
-				
 						addMSLayer(
-							options
-						);
+							title,
+							layName,
+							wmsurl,
+							gnBaseUrl,
+							false,
+							uuid,
+							code
+						};
 					}
  							
 					if(layName && gnBaseUrl && uuid){
-						app.viewMetadata(gnBaseUrl + "srv/" + code + "/", uuid, layTitle);
+						app.viewMetadata(gnBaseUrl + "srv/" + code + "/", uuid, title);
 						appTabs.setActiveTab(2);
 					}
                 }
