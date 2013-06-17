@@ -199,10 +199,6 @@
                 "timeout": 60000
             }            
 		}, {
-			"ptype": "gxp_saveDefaultContext",
-			"actionTarget": {"target": "paneltbar", "index": 23},
-			"needsAuthorization": true
-		}, {
 			"ptype": "gxp_geolocationmenu",
 			"outputTarget": "paneltbar",
 			"index": 23
