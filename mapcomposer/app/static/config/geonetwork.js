@@ -167,7 +167,9 @@
 		}, {
 			"actions": ["-"], "actionTarget": "paneltbar"
 		}, {
-			"ptype": "gxp_wmsgetfeatureinfo_menu", "toggleGroup": "toolGroup",
+			"ptype": "gxp_wmsgetfeatureinfo_menu", 
+			"toggleGroup": "toolGroup",
+			"useTabPanel": true,
 			"actionTarget": {"target": "paneltbar", "index": 20}
 		}, {
 			"actions": ["-"], "actionTarget": "paneltbar"
