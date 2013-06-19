@@ -92,6 +92,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
     cacheText: "Cache",
     cacheFieldText: "Use cached version",
     stylesText: "Styles",
+    sliderRischioText: "Rischio",
     sliderRischioSocialeText: "Rischio Sociale",
     sliderRischioAmbientaleText: "Rischio Ambientale",
     minRangeSliderText: "Rischio Basso",
@@ -359,11 +360,18 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         
         var checkEnv = ["low","medium","lowsociale","mediumsociale","lowambientale","mediumambientale"];
         
+        var hasBoth = false;        
+        
         for (var i = 0;i<sliderEnv.length;i++){
             if (checkEnv.indexOf(sliderEnv[i].split(":")[0]) != -1){
+                if(sliderEnv[i].indexOf('sociale') != -1 || sliderEnv[i].indexOf('ambientale') != -1) {
+                    hasBoth = true;
+                }               
                 envArray.push(sliderEnv[i]);
             }
         }
+        
+        
         
         var sliderFiledRischioSocialePanel=new gxp.form.SliderRangesFieldSet({
             title: this.sliderRischioSocialeText,
@@ -374,12 +382,12 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                 anchor: "99%",
                 ranges: [
                 {
-                    maxValue: sliderEnv[0].split(":")[1],
+                    maxValue: envArray[0].split(":")[1],
                     name:this.minRangeSliderText, 
                     id:"range_low_sociale_panel"
                 },
                 {
-                    maxValue: sliderEnv[1].split(":")[1],
+                    maxValue: envArray[1].split(":")[1],
                     name:this.medRangeSliderText, 
                     id:"range_medium_sociale_panel"
                 },
@@ -403,13 +411,13 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                 anchor: "99%",
                 ranges: [
                 {
-                    maxValue: sliderEnv.length > 2 ? sliderEnv[2].split(":")[1] : sliderEnv[0].split(":")[1],
+                    maxValue: envArray.length > 2 ? envArray[2].split(":")[1] : envArray[0].split(":")[1],
                     name:this.minRangeSliderText,
                     id:"range_low_ambientale_panel"
                 },
 
                 {
-                    maxValue: sliderEnv.length > 2 ? sliderEnv[3].split(":")[1] : sliderEnv[1].split(":")[1],
+                    maxValue: envArray.length > 2 ? envArray[3].split(":")[1] : envArray[1].split(":")[1],
                     name:this.medRangeSliderText, 
                     id:"range_medium_ambientale_panel"
                 },
@@ -424,9 +432,39 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
             }
         });
         
+        var sliderFiledRischioPanel=new gxp.form.SliderRangesFieldSet({
+            title: this.sliderRischioText,
+            id:"rischio_panel",    
+            labels: true,
+            multiSliderConf:{
+                vertical : false,
+                anchor: "99%",
+                ranges: [
+                {
+                    maxValue: sliderEnv[0].split(":")[1],
+                    name:this.minRangeSliderText,
+                    id:"range_low_panel"
+                },
+
+                {
+                    maxValue: sliderEnv[1].split(":")[1],
+                    name:this.medRangeSliderText, 
+                    id:"range_medium_panel"
+                },
+                {
+                    maxValue: 1000, 
+                    name:this.maxRangeSliderText
+                }
+                ],                                        
+                width   : 328,
+                minValue: 0,
+                maxValue: 1000
+            }
+        });
+        
         var riskPanel = [];
         
-        if (this.layerRecord.get("name") == "rischio_totale"){
+        if (hasBoth){
             riskPanel = [{   
 				title: this.sliderRischioSocialeText,
 				listeners: {
@@ -447,23 +485,12 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
 				html: "<div id='rischio_ambientale_slider_panel'/>"
 			}];
         
-        }else if(this.layerRecord.get("name") == "rischio_totale_sociale"){
+        }else {
             riskPanel = [{   
-				title: this.sliderRischioSocialeText,
+				title: this.sliderRischioText,
 				listeners: {
 					activate: function(p){
-					   sliderFiledRischioSocialePanel.render(Ext.get('rischio_sociale_slider_panel'));
-					},
-                    scope: this
-				},
-				html: "<div id='rischio_sociale_slider_panel'/>"
-			}];
-        }else{
-            riskPanel = [{   
-				title: this.sliderRischioAmbientaleText,
-				listeners: {
-					activate: function(p){
-					   sliderFiledRischioAmbientalePanel.render(Ext.get('rischio_ambientale_slider_panel'));
+					   sliderFiledRischioPanel.render(Ext.get('rischio_ambientale_slider_panel'));
 					},                 
                     scope: this
 				},
@@ -515,33 +542,25 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                     
                     var envStringa = envArray.join(";") == "" ? "" : envArray.join(";")+";";
                     
-                    if (this.layerRecord.get("name") == "rischio_totale"){
+                    if (hasBoth){
                         
                         var socialMin = Ext.getCmp('rischio_sociale_panel_multislider').getValue(0);
                         var socialMax = Ext.getCmp('rischio_sociale_panel_multislider').getValue(1);
                         var ambMin = Ext.getCmp('rischio_ambientale_panel_multislider').getValue(0);
                         var ambMax = Ext.getCmp('rischio_ambientale_panel_multislider').getValue(1);
+
                         
                         layer.mergeNewParams({
                             ENV: envStringa+"lowsociale:"+socialMin+";mediumsociale:"+socialMax+";lowambientale:"+ambMin+";mediumambientale:"+ambMax
                         });                        
                         
-                    }else if(this.layerRecord.get("name") == "rischio_totale_sociale"){
+                    } else {
                         
-                        var socialMin = Ext.getCmp('rischio_sociale_panel_multislider').getValue(0);
-                        var socialMax = Ext.getCmp('rischio_sociale_panel_multislider').getValue(1);                        
-                        
-                        layer.mergeNewParams({
-                            ENV: envStringa+"low:"+socialMin+";medium:"+socialMax
-                        });                         
-                        
-                    }else{
-                        
-                        var ambMin = Ext.getCmp('rischio_ambientale_panel_multislider').getValue(0);
-                        var ambMax = Ext.getCmp('rischio_ambientale_panel_multislider').getValue(1);                         
+                        var min = Ext.getCmp('rischio_panel_multislider').getValue(0);
+                        var max = Ext.getCmp('rischio_panel_multislider').getValue(1);                
                         
                         layer.mergeNewParams({
-                            ENV: envStringa+"low:"+ambMin+";medium:"+ambMax
+                            ENV: envStringa+"low:"+min+";medium:"+max
                         });                         
                         
                     }
