@@ -134,8 +134,12 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            actionTarget: {target: "paneltbar", index: 24},
 					needsAuthorization: true
 		        }, {
+		            actions: ["-"], actionTarget: "paneltbar"
+		        }, {
 		            ptype: "gxp_googleearth",
 		            actionTarget: {target: "paneltbar", index: 25}
+		        }, {
+		            actions: ["-"], actionTarget: "paneltbar"
 		        }
 		    ];
 
@@ -228,36 +232,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         
         return tools;
 
-    },
-    
-    /** private: method[viewMetadata]
-     */
-    viewMetadata: function(url, uuid, title){
-        var tabPanel = Ext.getCmp(this.renderToTab);
-        
-        var tabs = tabPanel.find('title', title);
-        if(tabs && tabs.length > 0){
-            tabPanel.setActiveTab(tabs[0]); 
-        }else{
-            var metaURL = url.indexOf("uuid") != -1 ? url : url + '?uuid=' + uuid;
-            
-            var meta = new Ext.Panel({
-                title: title,
-                layout:'fit', 
-                tabTip: title,
-                closable: true,
-                items: [ 
-                    new Ext.ux.IFrameComponent({ 
-                        url: metaURL 
-                    }) 
-                ]
-            });
-            
-            tabPanel.add(meta);
-			meta.items.first().on('render', function() {
-				this.addLoadingMask(meta.items.first());
-			},this);						
-        }
     },
 	
 	/** private: method[addLoadingMask]

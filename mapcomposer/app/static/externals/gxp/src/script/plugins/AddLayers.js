@@ -32,6 +32,8 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
     /** api: ptype = gxp_addlayers */
     ptype: "gxp_addlayers",
     
+	id: "addlayers",
+	
     /** api: config[addActionMenuText]
      *  ``String``
      *  Text for add menu item (i18n).
@@ -161,6 +163,8 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
      *  The currently selected layer source.
      */
     selectedSource: null,
+	
+	iconCls: "gxp-icon-addlayers",
 
     /** private: method[constructor]
      */
