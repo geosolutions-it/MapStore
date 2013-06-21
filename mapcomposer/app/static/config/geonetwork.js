@@ -83,9 +83,6 @@
     ],	
 	"customTools":[
 		{
-			"actions": ["->"], 
-			"actionTarget": "paneltbar"
-		}, {
 			"ptype": "gxp_metadataexplorer",
 			"id": "metadataexplorer",
             "outputTarget": "south",
@@ -120,6 +117,9 @@
 			"ptype": "gxp_geolocationmenu",
 			"outputTarget": "paneltbar",
 			"index": 23
+		}, {
+			"actions": ["->"], 
+			"actionTarget": "paneltbar"
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
