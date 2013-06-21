@@ -6,8 +6,8 @@
 	<!-- Basic OpenLayers libs -->
     <script type="text/javascript" src="script/OpenLayers.js"></script>		
 	
-	<!-- Externatls OpenLayers libraries to manage WPS processes 
-	<script type="text/javascript" src="script/OpenLayersExt.js"></script> -->
+	<!-- Externatls OpenLayers libraries to manage WPS processes -->
+	<script type="text/javascript" src="script/OpenLayersExt.js"></script> 
 	
 	<!-- colorpicker resources 
     <link rel="stylesheet" type="text/css" href="externals/colorpicker/css/colorpicker.css">
@@ -19,9 +19,9 @@
     <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/gxtheme-gray.css">
     <script type="text/javascript" src="script/GeoExt.js"></script> 
 
-	<!-- PrintPreview resources 
+	<!-- PrintPreview resources -->
     <link rel="stylesheet" type="text/css" href="externals/PrintPreview/resources/css/printpreview.css">
-    <script type="text/javascript" src="script/PrintPreview.js"></script> -->
+    <script type="text/javascript" src="script/PrintPreview.js"></script> 
 	
     <!-- gxp resources -->
     <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
@@ -304,15 +304,10 @@
 					'			<div class="topbanner">',
 					'				<div class="main">',
 					'					<div class="header">',
-					'						<div class="logo-gs-white"><a href="http://www.geo-solutions.it/"><img src="theme/app/img/banner/geosolutions-logo-whitebg.png" alt="GeoSolutions"></a></div>',
-					'						<div class="logo-ms-white"><h1>MapStore GeoNetwork Integration</h1></div>',					
+                    '			            <div class="logo-gs-left"><a href="http://sdi.provinz.bz.it/"><img src="theme/app/img/banner/provbz_right.gif" alt="Provincia di Bolzano"></a></div>',					
 					'					</div>',
 					'				</div>',
 					'			</div>'
-				    /*'<div>',
-					'<div style="float:right"><img src="theme/app/img/fdh/fdh_left-banner_en.gif" usemap="#IM_left-banner"  border="0" /></div>',
-					'<div style="float:left"><img src="theme/app/img/fdh/fdh_right-banner_en.jpg" usemap="#IM_right-banner"  border="0" /></div>',
-					'</div>'*/
 			];
 			
             var appViewport = new Ext.Viewport({
@@ -334,9 +329,9 @@
                       hideCollapseTool: true,
                       split: true,
                       animCollapse : false,
-                      minHeight: 140,
-                      maxHeight: 140,
-                      height: 140,
+                      minHeight: 120,
+                      maxHeight: 120,
+                      height: 120,
                       id : 'msheader'
                     },appTabs],                            
                     bbar : [
