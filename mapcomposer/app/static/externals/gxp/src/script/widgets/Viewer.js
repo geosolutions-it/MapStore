@@ -479,7 +479,10 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
                         var layers = this.initialConfig.map.layers;
                         var size = layers.length;
                         var groups = {
-                            "default": tool.overlayNodeText
+                            "default": {
+                                title: tool.overlayNodeText,
+                                exclusive: true
+                            }
                         };
 
                         for(var j=size-1; j>=0; j--){

@@ -63,11 +63,15 @@ GeoExt.tree.LayerNodeUI = Ext.extend(Ext.tree.TreeNodeUI, {
     /** private: method[toggleCheck]
      * :param value: ``Boolean``
      */
-    toggleCheck: function(value) {
+    toggleCheck: function(value,nodeText) {
         value = (value === undefined ? !this.isChecked() : value);
         GeoExt.tree.LayerNodeUI.superclass.toggleCheck.call(this, value);
         
-        this.enforceOneVisible();
+        var myCheckGroup = nodeText ? true : false;
+        
+        if(!myCheckGroup){
+            this.enforceOneVisible();
+        }
     },
     
     /** private: method[enforceOneVisible]
