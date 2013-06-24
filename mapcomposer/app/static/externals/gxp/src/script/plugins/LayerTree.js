@@ -419,10 +419,13 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                     if(!node.isLeaf()){
                         var childs = node.childNodes;
                         var size = childs.length;
-
+                        
+                        // get node name;
+                        var nodeText = node.text == "SIIG" ? true : false;
+                        
                         if(!checked){ 
                             for(var i=0; i<size; i++){
-                                childs[i].getUI().toggleCheck(checked);
+                                childs[i].getUI().toggleCheck(checked,nodeText);
                             }
                         }else{
                             var checkedNodes = 0;
