@@ -124,7 +124,8 @@
             "displayInLayerSwitcher": true,                
             "tiled": false,
             "env":"low:100;medium:500",
-            "riskPanel":true
+            "riskPanel":true,
+            "visibility": false
         },{
             "source": "destination",
             "title": "Rischio Totale Sociale",
@@ -132,7 +133,8 @@
             "displayInLayerSwitcher": true,
             "tiled": false,
             "env":"low:100;medium:500",
-            "riskPanel":true
+            "riskPanel":true,
+            "visibility": true
         },{
             "source": "destination",
             "title": "Rischio Totale Sociale - Ambientale",
@@ -140,7 +142,8 @@
             "displayInLayerSwitcher": true,
             "tiled": false,
             "env":"lowsociale:100;mediumsociale:500;lowambientale:100;mediumambientale:500",
-            "riskPanel":true
+            "riskPanel":true,
+            "visibility": true
         },
         {
             "source": "destination",
