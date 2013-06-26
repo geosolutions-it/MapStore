@@ -35,12 +35,15 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     fieldSetTitle: "Elaborazione",
     cancelButton: "Annulla Elaborazione",
     processButton: "Esegui Elaborazione",
-    analyticViewButton: "Visualizzazione Analitica",
+    analyticViewButton: "Visualizzazione Analitica:",
     weatherLabel: "Condizioni Meteo",  
     temporalLabel: "Condizioni Temporali",
     elabStandardLabel: "Elaborazione Standard",
     totalRiskLabel: "Rischio totale",
     defaultExtentLabel: "Regione Piemonte",
+    targetsTextBotton: "Bersagli",
+    areaDamageTextBotton: "Aree di danno",
+    roadGraphTextBotton: "Grafo stradale",    
     // End i18n.
         
     id: "syntheticview",
@@ -549,29 +552,54 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             autoScroll: true,
             items:[
                 this.fieldSet
-            ],
-            bbar: new Ext.Toolbar({
-                items: [
-                    {
-                        text: this.analyticViewButton,
-                        iconCls: 'analytic-view-button',
-                        disabled: true,
-                        id: "analytic_view",
-                        scope: this,
-                        listeners: {
-                            enable: function(){
-                                me.analyticView= true;
-                            },
-                            disable: function(){
-                                me.analyticView= false;
-                            }
-                        },
-                        handler: this.analyticView
-                    }
-                ]
-            })
+            ]
         });
+
+        //set analytic button toolbar with bottons
+        var analyticViewBbar =  [{
+                    xtype: 'tbtext',
+                    text: this.analyticViewButton
+                },{
+                    xtype: 'button',
+                    id: "targets_view",
+                    iconCls: 'analytic-view-button',
+                    text: this.targetsTextBotton,
+                    scope: this,
+                    listeners: {
+                        enable: function(){
+                            me.analyticView= true;
+                        },
+                        disable: function(){
+                            me.analyticView= false;
+                        }
+                    },
+                    handler: this.analyticView
+                },{
+                    xtype: 'button',
+                    id: "areaDamage_view",
+                    iconCls: 'analytic-view-button',
+                    text: this.areaDamageTextBotton,
+                    scope: this,
+                    handler: function(btn) {
+                        Ext.Msg.alert(this.areaDamageTextBotton,"Not Yet Implemented!");
+                    }
+                },{
+                    xtype: 'button',
+                    id: "roadGraph_view",
+                    iconCls: 'analytic-view-button',
+                    text: this.roadGraphTextBotton,
+                    scope: this,
+                    handler: function(btn) {
+                        Ext.Msg.alert(this.roadGraphTextBotton,"Not Yet Implemented!");
+                    }
+                }];        
         
+        //add analytic button toolbar to mapPanelContainer
+        var mapPanelContainer = Ext.getCmp("mapPanelContainer_id");
+        var mapPanelContainerBbar = mapPanelContainer.getBottomToolbar();
+        mapPanelContainerBbar.add(analyticViewBbar);
+        mapPanelContainer.doLayout(false,true);
+
         config = Ext.apply(panel, config || {});
         
         this.controlPanel = gxp.plugins.SyntheticView.superclass.addOutput.call(this, config);
@@ -584,9 +612,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             scale = Math.round(scale);
             
             if(scale <= this.analiticViewScale) {
-                Ext.getCmp("analytic_view").enable();
+                Ext.getCmp("targets_view").enable();
             } else {
-                Ext.getCmp("analytic_view").disable();
+                Ext.getCmp("targets_view").disable();
             }
         });
         
