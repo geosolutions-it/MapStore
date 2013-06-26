@@ -482,6 +482,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         }, this);
         
         this.mapPanelContainer = new Ext.Panel({
+            id: "mapPanelContainer_id", //added to make possible to add the buttons for Analytic View
             layout: "card",
             region: "center",
             defaults: {
@@ -492,7 +493,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 ,googleEarthPanel
             ],
             activeItem: 0,
-            tbar: this.toolbar
+            tbar: this.toolbar,
+            bbar: [] //added to make possible to add the buttons for Analytic View
         });
 		        
 		var estPanel = new Ext.TabPanel({

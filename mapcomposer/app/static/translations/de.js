@@ -17,14 +17,17 @@ GeoExt.Lang.add("de", {
         fieldSetTitle: "Verarbeitung",
         cancelButton: "Verarbeitung abbrechen",
         processButton: "Führen Verarbeitung",
-        analyticViewButton: "anzeigen Analytical",
+        analyticViewButton: "anzeigen Analytical:",
         weatherLabel: "Wetter",  
         temporalLabel: "AGB Gewitter",
         elabStandardLabel: "Processing Standard",
         totalRiskLabel: "Total Risiko",
         humanTitle:'Sozial',    
         notHumanTitle:'Umweltschutz', 
-        defaultExtentLabel: "Regione Piemonte"
+        defaultExtentLabel: "Regione Piemonte",
+        targetsTextBotton: "Treffer",
+        areaDamageTextBotton: "Stadtteile von Schäden",
+        roadGraphTextBotton: "Straße graph"  
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Processing",
@@ -289,12 +292,13 @@ GeoExt.Lang.add("de", {
         cacheText: "Cache",
         cacheFieldText: " Benutze die Cache-Version",
         stylesText: "Stil",
-        sliderRischioSocialeText: "Social Risk",
+        sliderRischioText: "Risk",
+        sliderRischioSocialeText: "Social",
         sliderRischioAmbientaleText: "Umweltrisk",
-        minRangeSliderText: "Geringes Risiko",
-        medRangeSliderText: "Durchschnittliche Risiko",
-        maxRangeSliderText: "Hohes Risiko",
-        riskTabTitle: "Risiko",
+        minRangeSliderText: "Geringes",
+        medRangeSliderText: "Durchschnittliche",
+        maxRangeSliderText: "Hohes",
+        riskTabTitle: "Themenbereich",
         riskTabSubmitText: "Anwenden"
     },
 
