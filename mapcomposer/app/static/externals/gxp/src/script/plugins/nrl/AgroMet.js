@@ -61,7 +61,6 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 	
     factorsurl:"http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
     
-	rangesUrl: "http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
     dataUrl: null, //'http://84.33.2.24/geoserver/ows',
 	startYear: 2000,
 	
@@ -70,7 +69,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
      */
     addOutput: function(config) {
 	    var now = new Date();
-		currentYear= now.getFullYear();
+		var currentYear= now.getFullYear();
 		
 		var agroMet  = {
 			xtype:'form',

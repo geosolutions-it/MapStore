@@ -219,9 +219,9 @@
 		  }
 	       },{
            "ptype":"gxp_ndvi",
-    "dataUrl":"http://84.33.2.24/geoserver/ows",
+            "dataUrl":"http://84.33.2.24/geoserver/ows",
            "outputConfig":{
-      "title":"NDVI",
+            "title":"NDVI",
                   "id":"ndvi",
                   "region":"east"
            },

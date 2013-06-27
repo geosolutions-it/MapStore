@@ -114,7 +114,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                             name:'decad',
                             ref:'decad',      
                             width: 100,
-                            fieldLabel: "Decad",
+                            fieldLabel: "Dekad",
                             anchor:'100%',
                             typeAhead: true,
                             triggerAction: 'all',
