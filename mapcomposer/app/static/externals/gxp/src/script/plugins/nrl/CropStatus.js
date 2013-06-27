@@ -46,11 +46,16 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 
 	areaFilter: "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
     radioQtipTooltip: "You have to be logged in to use this method",
-    
+    factorsurl:"http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
+	rangesUrl: "http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
+    startYear:2000,
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
     addOutput: function(config) {
+        var startYear = this.startYear;
+        var now = new Date();
+		var currentYear= now.getFullYear();
 		var cropStatus  = {
 					xtype:'form',
 					title: 'Crop Status',
@@ -79,9 +84,10 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                                 change: function(c,checked){
                                     var outputValue = c.getValue().inputValue;
                                     var submitButton = this.output.submitButton;
-                                    //var areaSelector = this.output.singleFeatureSelector;                            
+                                    var areaSelector = this.output.singleFeatureSelector;  
+                                    
                                     if(outputValue == 'data'){
-                                        //areaSelector.enable();
+                                        areaSelector.enable();
                                         submitButton.destroy();
                                         delete submitButton;
                                         this.output.addButton({              
@@ -91,14 +97,14 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                                             target:this.target,
                                             form: this
                                         })
-                                        //var store = areaSelector.currentCombo.items.items[0];
-                                        //this.output.fireEvent('update',store);
+                                        var store = areaSelector.currentCombo.items.items[0];
+                                        this.output.fireEvent('update',store);
                                         this.output.fireEvent('show');                                
                                         this.output.doLayout();
                                         this.output.syncSize();
 
                                     }else{
-                                        //areaSelector.enable();
+                                        areaSelector.enable();
                                         submitButton.destroy();
                                         delete submitButton;
                                         this.output.addButton({               
@@ -107,8 +113,8 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                                             target:this.target,
                                             form: this
                                         })
-                                        //var store = areaSelector.currentCombo.items.items[0];
-                                        //this.output.fireEvent('update',store);
+                                        var store = areaSelector.currentCombo.items.items[0];
+                                        this.output.fireEvent('update',store);
                                         this.output.fireEvent('show');
                                         this.output.doLayout();
                                         this.output.syncSize();
@@ -137,13 +143,20 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 						},{
 							xtype:'nrl_single_aoi_selector',
 							target:this.target,
+                            name:'region_list',
 							ref:'singleFeatureSelector',
 							hilightLayerName: 'hilight_layer_selectAction',
 							vendorParams: {cql_filter:this.areaFilter}
 						},{
+                            name:'year',
 							xtype: 'singleyearcombobox',
-							anchor:'100%'
-							
+							anchor:'100%',
+                            ref:'yearSelector',
+                            listeners:{
+                                afterrender:function(sel){
+                                    sel.setRange(startYear,currentYear);
+                                }
+                            }
 						},{
 					xtype: 'nrl_commoditycombobox',
 					forceSelection:true,
@@ -151,6 +164,20 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 					name:'crop',
 					anchor:'100%',
 					ref: 'Commodity',
+                    store:new Ext.data.JsonStore({
+                        fields: [
+                            {name:'label',  mapping:'properties.label'},
+                            {name:'season',mapping: 'properties.seasons'},
+                            {name:'crop',   mapping:'properties.crop'},
+                            {name:'max',    mapping:'properties.max' },
+                            {name:'min',    mapping:'properties.min' }
+                        ],
+                        autoLoad: true,
+                        url: this.rangesUrl,
+                        root: 'features',
+                        idProperty:'crop'
+                        
+                    }),
                     listeners: {
                         expand: function( combo ){
                             var season = this.ownerCt.season;
@@ -158,58 +185,42 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 							
 							if (radio && radio.getValue()){
                                this.seasonFilter(radio.inputValue);
-                            }                           
-                        },
-                        select: function(cb,record,index){
-                            //set year range for the selected crop
-                            var selectedCommodity = record.get('label');
-                            var yrs= cb.ownerCt.yearRangeSelector;
-                            
-                            
-                            var comboProd = Ext.getCmp('comboProd');
-                            
-                            var comValue = cb.getValue();
-                            if (comValue == 'cotton'){
-                                comboProd.setValue('000 bales');               
-                            }else{
-                                comboProd.setValue('000 tons');                                  
+                               
                             }
+                            var selectedRecord= combo.getStore().getById(combo.getValue());
+                            
                         }
                     }
-				},new Ext.ux.grid.CheckboxSelectionGrid({
-                            title:'Factors',
-                            enableHdMenu:false,
-                            hideHeaders:true,
-                            autoHeight:true,
-                            
-							viewConfig: {forceFit: true},
-                            columns: [{id:'name',mapping:'label',header:'Factor'}],
-                            autoScroll:true,
-                            store: new Ext.data.ArrayStore({
-								fields:Ext.data.Record.create([{name:'name',mapping:'name'},{name:'label',mapping:'boxLabel'}]),
-								data: [//TODO get it from remote services
-                                    {boxLabel: 'NDVI' , name: 'NDVI', inputValue: 'NDVI'},
-                                    {boxLabel: 'Max Temperature' , name: 'MaxTemperature', inputValue: 'MaxTemperature'},
-                                    {boxLabel: 'Min Temperature' , name: 'MinTemperature', inputValue: 'MinTemperature'},
-                                    {boxLabel: 'Precipitation' , name: 'Precipitation', inputValue: 'Precipitation'},
-                                    {boxLabel: 'Canals Discharge' , name: 'canaldischarge', inputValue: 'canaldischarge'},
-                                    {boxLabel: 'Hot Wave' , name: 'hotwave', inputValue: 'hotwave'},
-                                    {boxLabel: 'Cold Wave' , name: 'coldwave', inputValue: 'coldwave'},
-                                    {boxLabel: 'Wind Storm' , name: 'windstorm', inputValue: 'windstorm'},
-                                    {boxLabel: 'Hail Storm' , name: 'hailstorm', inputValue: 'hailstorm'},
-                                    {boxLabel: 'Flood' , name: 'Flood', inputValue: 'Flood'}
-                                ]
-							})
-                        
-                        })
-					
-					],	
+				},
+                new Ext.ux.grid.CheckboxSelectionGrid({
+                    title: 'Factors',
+                    enableHdMenu:false,
+                    hideHeaders:true,
+                    autoHeight:true,
+                    ref: 'factors',
+                    viewConfig: {forceFit: true},
+                    columns: [{id:'name',dataIndex:'label',header:'Factor'},{id:'unit',dataIndex:'unit',header:'Unit'}],
+                    autoScroll:true,
+                    store: new Ext.data.JsonStore({
+                        url:this.factorsurl,
+						root:'features',
+						idProperty:'factor',
+						autoLoad:true,
+						fields:[
+							{name:'factor', mapping:'properties.factor'},
+							{name:'label', mapping:'properties.label'},
+							{name:'aggregation', mapping:'properties.aggregation'},
+							{name:'unit', mapping:'properties.unit'}
+						]
+                    })
+                })
+            ],	
 			buttons:[{               
                 xtype: 'gxp_nrlCropStatusChartButton',
 				ref: '../submitButton',
                 target:this.target,
 				form: this,
-                disabled:true
+                disabled:false
             }]
 		};
 		config = Ext.apply(cropStatus,config || {});
@@ -218,7 +229,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 		this.output.on('update',function(store){
             var button = this.output.submitButton.getXType();
             if (button == "gxp_nrlCropStatusChartButton" || button == 'gxp_nrlCropStatusTabButton'){
-                this.output.submitButton.setDisabled(store.getCount()<=0)
+                this.output.submitButton.setDisabled(/*store.getCount()<=0*/)
             }
 		},this);	
         

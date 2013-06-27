@@ -29,62 +29,94 @@ Ext.namespace('gxp.widgets.button');
 gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
 
     /** api: xtype = gxp_nrlchart */
-	url:'http://84.33.2.24/geoserver/ows',
+    url:'http://84.33.2.24/geoserver/ows',
     xtype: 'gxp_nrlCropStatusChartButton',
     iconCls: "gxp-icon-nrl-chart",
-	text: 'Generate Chart',
+    text: 'Generate Chart',
     form: null,
     chartOpt:{
-		series:{
-			current:{
-					color: '#89A54E',
-                    lcolor: 'rgb(207,235,148)',                    
-					type: 'line',
-					dataIndex: 'current',
-					unit:'(000 tons)',
-					xField:'s_dec'
+        series:{
+            range:{
+                color: '#89A54E',
+                lcolor: 'rgb(207,235,148)',      
+                fillOpacity: 0.1,
+                type: 'arearange',
+                highDataIndex: 'max',
+                lowDataIndex:'min',
+                xField:'s_dec',
+                enableMouseTracking:false,
+                lineWidth:0,
+                showInLegend:false
+            },
+            max:{
+                name:"Max",
+                color: '#89A54E',
+                lcolor: 'rgb(207,235,148)',                    
+                type: 'line',
+                dataIndex: 'max',
+                xField:'s_dec',
+                lineWidth:1,
+                marker: {
+                    symbol: 'triangle-down'
+                }
+            },
+            min:{
+                name:"Min",
+                color: '#89A54E',
+                lcolor: 'rgb(207,235,148)',                    
+                type: 'line',
+                dataIndex: 'min',
+                xField:'s_dec',
+                lineWidth:1,
+                marker: {
+                    symbol: 'triangle'
+                }
+            },
+             opt:{
+                name:"Optimal",
+                color: '#89A54E',
+                lcolor: 'rgb(207,235,148)',                    
+                type: 'line',
+                lineWidth:1,
 
-				},
-			previous:{
-					type: 'line',
-					color: '#4572A7',
-                    lcolor: 'rgb(139,184,237)',
-					dataIndex: 'previous',
-					unit:'(kg/ha)',
-					xField:'s_dec'
-
-				},
-			aggregated:{
-					color: '#AA4643',
-                    lcolor: 'rgb(240,140,137)',                    
-					type: 'line',
-					dataIndex: 'aggregated',
-					unit:'(000 ha)',
-					xField:'s_dec'
-			}
-		},
+                dashStyle: 'dash',                    
+                dataIndex: 'opt',
+                xField:'s_dec',
+                marker: {
+                    enabled: false
+                }
+            },
+            data:{
+                color: '#AA4643',
+                lcolor: 'rgb(240,140,137)',                    
+                type: 'line',
+                dataIndex: 'value',
+                xField:'s_dec'
+            }
+        },
         height: 400
-	},
+    },
     handler: function () {
-    
-        Ext.Msg.alert("Generate Chart","Not Yet Implemented");
-        return;
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+
+        var yyyy = today.getFullYear();
+        if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm} var today = mm+'/'+dd+'/'+yyyy;    
+        //Ext.Msg.alert("Generate Chart","Not Yet Implemented");
+        //return;
             
         var numRegion = [];
-        var regStore = this.form.output.aoiFieldSet.AreaSelector.store
-        var records = regStore.getRange();
-		
-        for (var i=0;i<records.length;i++){
-			var attrs = records[i].get("attributes");
-			var region = attrs.district || attrs.province;
-            numRegion.push(region.toLowerCase());
-        }
-        
         var data = this.form.output.getForm().getValues();
-        var regionList = data.region_list.toLowerCase();
+        var fields = this.form.output.getForm().getFieldValues();
+        var regionList = "'" + data.region_list.toLowerCase() +"'" ;
+        var crop = fields.crop;
+        numRegion.push(regionList);
+        
+        
         var season = data.season.toLowerCase();
         var granType = data.areatype;
-        var fromYear = data.startYear;
+        var year = data.year;
         var toYear = data.endYear;
 
         var factorStore = this.form.output.factors.getSelectionModel().getSelections();
@@ -111,40 +143,44 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
             numRegion: numRegion,
             season: season,
             granType: granType,
-            fromYear: fromYear,
-            toYear: toYear,
+            year: year,
+            crop:crop,
             factorValues: factorValues,
-			factorStore: factorStore
+            factorStore: factorStore,
+            today:today
         };
         
-		var store = new Ext.data.JsonStore({
-			url: this.url,
-			 sortInfo: {field: "s_dec", direction: "ASC"},
-			root: 'features',
-			
-			fields: [{
-				name: 'factor',
-				mapping: 'properties.factor'
-			},{
-				name: 'month',
-				mapping: 'properties.month'
-			},{
-				name: 'dec',
-				mapping: 'properties.dec'
-			},{
-				name: 's_dec',
-				mapping: 'properties.s_dec'
-			}, {
-				name: 'current',
-				mapping: 'properties.current'
-			},{
-				name: 'previous',
-				mapping: 'properties.previous'
-			},{
-				name: 'aggregated',
-				mapping: 'properties.aggregated'
-			}]
-			
+        var store = new Ext.data.JsonStore({
+            url: this.url,
+             sortInfo: {field: "s_dec", direction: "ASC"},
+            root: 'features',
+            
+            fields: [{
+                name: 'factor',
+                mapping: 'properties.factor'
+            },{
+                name: 'month',
+                mapping: 'properties.month'
+            },{
+                name: 'dec',
+                mapping: 'properties.dec'
+            },{
+                name: 's_dec',
+                mapping: 'properties.s_dec'
+            }, {
+                name: 'value',
+                mapping: 'properties.value'
+            },{
+                name: 'max',
+                mapping: 'properties.max'
+            },{
+                name: 'min',
+                mapping: 'properties.min'
+            },{
+                name: 'opt',
+                mapping: 'properties.opt'
+            }]
+            
 		});
 		store.load({
 			callback:function(){
@@ -156,18 +192,19 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
 				service: "WFS",
 				version: "1.0.0",
 				request: "GetFeature",
-				typeName: "nrl:agromet_aggregated",
+				typeName: "nrl:crop_status",
 				outputFormat: "json",
-				viewparams: season == 'rabi' ? "start_year:"+ fromYear + ";" +
-                    "end_year:"+ toYear + ";" +
+				viewparams: season == 'rabi' ? 
+                    "year:"+ year + ";" +
                     "factor_list:"+ factorList + ";" +
                     "region_list:"+ regionList + ";" +
-                    "gran_type:" + granType + ";" +                            
+                    "gran_type:" + granType + ";" +      
+                    "crop:" + crop.toLowerCase() + ";" +
                     "season_flag:NOT" :  
-                    "start_year:"+ fromYear + ";" +
-                    "end_year:"+ toYear + ";" +
+                    "year:"+ year + ";" +
                     "factor_list:"+ factorList + ";" +
                     "region_list:"+ regionList + ";" +
+                    "crop:" + crop.toLowerCase() + ";" +
                     "gran_type:" + granType
 			}
 		}); 
@@ -176,29 +213,39 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
 	createResultPanel:function(store,listVar){
 		 var tabPanel = Ext.getCmp('id_mapTab');
 
-        var tabs = Ext.getCmp('agromet_tab');
+        var tabs = Ext.getCmp('cropstatus_tab');
 		var charts  = this.makeChart(store,listVar);
 		var resultpanel = {
 			columnWidth: .95,
 			style:'padding:10px 10px 10px 10px',
 			xtype: 'gxp_controlpanel',
-			//panelTitle: "XXX",
+			info: "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+                            "<ol>" +
+                            
+                            "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
+                            "<li><p><em> Date: </em>" +  listVar.today +   "</p></li>" +
+                            "<li><p><em> AOI: </em>" + listVar.numRegion[0] +"</p></li>" +
+                            "<li><p><em> Commodity: </em>" +  listVar.crop +   "</p></li>" +
+							"<li><p><em> Season: </em>" + listVar.season.toUpperCase() + "</p></li>" +
+							"<li><p><em> Year: </em>" + listVar.year+"</p></li>" +
+						"</ol>" +                                        
+						"</div>",
+            title:"Pakistan - Crop Status - Season:" +listVar.season.toUpperCase() + " - Year:" + listVar.year, 
 			season: listVar.season,
 			province: listVar.numRegion,
-			fromYear: listVar.fromYear,
-			toYear: listVar.toYear,
+			year: listVar.year,
 			chart: charts,
 			chartHeight: this.chartOpt.height
 		};
 		if(!tabs){
 			var cropDataTab = new Ext.Panel({
-				title: 'AgroMet',
-				id:'agromet_tab',
-				itemId:'agromet_tab',
+				title: 'Crop Status',
+				id:'cropstatus_tab',
+				itemId:'cropstatus_tab',
 				border: true,
 				layout: 'form',
 				autoScroll: true,
-				tabTip: 'AgroMet',
+				tabTip: 'Crop Status',
 				closable: true,
 				items: resultpanel
 			});
@@ -209,7 +256,7 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
 			tabs.add(resultpanel);
 		}
 		Ext.getCmp('id_mapTab').doLayout();
-		Ext.getCmp('id_mapTab').setActiveTab('agromet_tab');
+		Ext.getCmp('id_mapTab').setActiveTab('cropstatus_tab');
                     
 	
 	},
@@ -235,14 +282,14 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
                     name: 's_dec',
                     mapping: 'properties.s_dec'
                 }, {
-                    name: 'current',
-                    mapping: 'properties.current'
+                    name: 'value',
+                    mapping: 'properties.value'
                 },{
-                    name: 'previous',
-                    mapping: 'properties.previous'
+                    name: 'max',
+                    mapping: 'properties.max'
                 },{
-                    name: 'aggregated',
-                    mapping: 'properties.aggregated'
+                    name: 'min',
+                    mapping: 'properties.min'
                 }]
                 
             });
@@ -254,30 +301,39 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
             });
             factorStore[i].sort("s_dec", "ASC");    
 			var chart;
-			
+			var unit =listVar.factorStore[i].get('unit');
 			chart = new Ext.ux.HighChart({
-				animation:false,
+				animation:true,
 				series: [
-					Ext.apply({
-							name:listVar.toYear -1
-						},this.chartOpt.series.previous
-					),
-					Ext.apply({
-							name:listVar.toYear 
-						},this.chartOpt.series.current),
-					Ext.apply({
-							name:listVar.fromYear +"-"+ listVar.toYear
-						},this.chartOpt.series.aggregated)					
+                        this.chartOpt.series.opt,
+                        this.chartOpt.series.range,
+						this.chartOpt.series.max,
+                        this.chartOpt.series.min,
+                        Ext.apply({
+							name: listVar.factorStore[i].get('label')
+						},
+                        this.chartOpt.series.data)
+                        
 				],
 				height: this.chartOpt.height,
 				//width: 900,
 				store: factorStore[i],
 				animShift: true,
-				
+				info:   "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+                            "<ol>" +
+                            
+                            "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
+                            "<li><p><em> Date: </em>" +  listVar.today +   "</p></li>" +
+                            "<li><p><em> AOI: </em>" + listVar.numRegion[0] +"</p></li>" + 
+                            "<li><p><em> Commodity: </em>" + listVar.crop  + "</p></li>" +
+							"<li><p><em> Season: </em>" + listVar.season.toUpperCase() + "</p></li>" +
+							"<li><p><em> Year: </em>" + listVar.year+"</p></li>" +
+						"</ol>" +                                        
+						"</div>",
 				chartConfig: {
 					chart: {
 						zoomType: 'x',
-                        spacingBottom: 23                
+                        spacingBottom: 65                
 					},
                     exporting: {
                         enabled: true,
@@ -322,7 +378,7 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
 						labels: {                   
 							formatter: function () {
 								return this.value;
-							}							
+							}
 						}
 					}], 
 					tooltip: {
@@ -334,23 +390,28 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
                                 var s = '<b>'+ months[this.x-1] +'</b>';
                             }
                             Ext.each(this.points, function(i, point) {
-                                s += '<br/><span style="color:'+i.series.color+'">'+ i.series.name +': </span>'+
-                                    '<span style="font-size:12px;">'+ i.y.toFixed(2)+'</span>';
+                                s += '<br/><span style="color:'+i.series.color+'">'+ i.series.name  +': </span>'+
+                                    '<span style="font-size:12px;">'+ i.y.toFixed(2)+( unit !=null ? unit: "" )+'</span>';
                             });                            
                             return s;
                         },
                         shared: true,
 						crosshairs: true
 					},
-                    legend: {
-                        labelFormatter: function() {
-                            if (this.name == 'Area (000 hectares)'){
-                                return 'Area (000 ha)';
-                            }else{
-                                return this.name;
-                            }                            
-                        }
-                    }            
+                    
+                    subtitle: {
+                        text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
+                              '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
+                              '<span style="font-size:10px;">AOI: '+listVar.numRegion[0]+'</span><br />'+
+                              '<span style="font-size:10px;">Commodity: '+listVar.crop+'</span><br />'+
+                              '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
+                              '<span style="font-size:10px;">Year: '+ listVar.year +'</span><br />',
+                        align: 'left',
+                        verticalAlign: 'bottom',
+                        useHTML: true,
+                        x: 30,
+                        y: -15
+					}                    
 				}
 			});
 			grafici.push(chart);
