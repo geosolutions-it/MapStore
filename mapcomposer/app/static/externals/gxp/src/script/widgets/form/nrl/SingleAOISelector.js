@@ -93,6 +93,7 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
 			{
 				fieldLabel: 'Type',
 				xtype: 'radiogroup',
+                name:'areatype',
 				autoHeight:true,
 				checkboxToggle:true,
 				defaultType: 'radio', // each item will be a radio button
@@ -142,7 +143,8 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
 			{
                 target:this.target,
                 layerStyle:this.layerStyle,
-				vendorParams:this.vendorParams
+				vendorParams:this.vendorParams,
+                name:this.name
             },this.featureSelectorConfigs[type],this.featureSelectorConfigs.base
 		));
 	}

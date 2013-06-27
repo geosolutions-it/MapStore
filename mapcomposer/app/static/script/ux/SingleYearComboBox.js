@@ -38,7 +38,24 @@ Ext.ux.SingleYearComboBox = Ext.extend(Ext.form.ComboBox,{
 		],
 		fields:[{name:'year',dataIndex:0}]
 		
-	})
+	}),
+    setRange:function(start,end){
+        var data = [];
+        var currentValue= this.getValue();
+        if(!currentValue)currentValue=end;
+        if(currentValue >end){
+            currentValue = end;
+        }
+        if (currentValue < start){
+            currentValue = start;
+        }
+        this.setValue(currentValue);
+        for(var i = start;i<=end ; i++){
+            data.push([i]);
+        }
+        this.getStore().loadData(data);
+    
+    }
 });
 
 Ext.reg( 'singleyearcombobox',Ext.ux.SingleYearComboBox);

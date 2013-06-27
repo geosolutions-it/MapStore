@@ -110,6 +110,7 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
 			
 		},this);
 		var selectCombo = new gxp.form.WFSSearchComboBox({
+                name: this.name,
                 clearOnFocus:true,
                 forceAll :'false',
 				xtype: 'gxp_searchboxcombo',
