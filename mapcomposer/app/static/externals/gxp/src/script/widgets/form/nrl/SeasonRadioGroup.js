@@ -16,8 +16,7 @@ nrl.form.SeasonRadioGroup = Ext.extend(Ext.form.RadioGroup,
             {boxLabel: 'Kharif (May-Oct)', name: 'season', inputValue: 'KHARIF'}
 		];
 		this.on('render',function(c){
-		
-			
+
 				var data = new Date();
 				var n = data.getMonth();
 				if (n>=4 && n<=9){
@@ -25,6 +24,7 @@ nrl.form.SeasonRadioGroup = Ext.extend(Ext.form.RadioGroup,
 				}else{
 					c.setValue('RABI');
 				}
+                c.fireEvent('change',c,this.getValue());
 			
 		});
 		

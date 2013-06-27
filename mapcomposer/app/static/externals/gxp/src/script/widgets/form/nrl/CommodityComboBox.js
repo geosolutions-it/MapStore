@@ -26,6 +26,7 @@ nrl.form.CommodityComboBox = Ext.extend(Ext.form.ComboBox,{
 	xtype: 'nrl_commoditycombobox',
 	anchor:'100%',
 	fieldLabel: 'Commodity',
+    forceSelection:true,
 	typeAhead: true,
     enableKeyEvents: true,
 	triggerAction: 'all',
@@ -33,25 +34,8 @@ nrl.form.CommodityComboBox = Ext.extend(Ext.form.ComboBox,{
 	mode: 'local',
 	autoLoad:true,
 	displayField: 'label',
-	valueField:'name',
-	value:'wheat',
-	
-	store: new Ext.data.JsonStore({
-		data: [
-				{name:'wheat',label:'Wheat',season:'RABI'},
-				{name:'sugarcane',label:'Sugarcane',season:'KHARIF'},
-				{name:'rice',label:'Rice',season:'KHARIF'},
-				{name:'cotton',label:'Cotton',season:'KHARIF'},                
-				{name:'maize',label:'Maize',season:'KHARIF'},
-				{name:'fodder',label:'Fodder',season:''}
-				
-		],
-		fields:[
-				{name:'name',dataIndex:'name'},
-				{name:'label',dataIndex:'label'},
-				{name:'season',dataIndex:'season'}
-		]
-	}),
+	valueField:'crop',
+
     setValueAndFireSelect: function(v) {
         this.setValue(v);
         var r = this.findRecord(this.valueField, v);         
@@ -64,6 +48,18 @@ nrl.form.CommodityComboBox = Ext.extend(Ext.form.ComboBox,{
     },
 	seasonFilter: function(season){
 		this.store.filter('season',season,true,true);
+	},
+    
+    initComponent: function() {
+        if(this.store){
+            this.store.on('load', function(store,records,opt){
+                    if (records.length<1) return;
+                    var value =this.getStore().getAt(0).get(this.valueField);
+                    this.setValueAndFireSelect(value);
+                },this);
+        }
+        
+		return nrl.form.CommodityComboBox.superclass.initComponent.apply(this, arguments);
 	}
 });
 Ext.reg('nrl_commoditycombobox',nrl.form.CommodityComboBox);

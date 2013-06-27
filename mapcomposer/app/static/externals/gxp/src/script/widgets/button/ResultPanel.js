@@ -38,37 +38,42 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
     var panels = [];
     
     for (var i = 0; i<this.chart.length;i++){
+        var info =this.chart[i].info,
         panel = new Ext.Panel({
             title: this.chart[i].chartConfig.title.text,
             layout: 'fit',
             style:'padding:5px 5px',
-            border: true,                    
+            border: true,   
             items: [this.chart[i]],
             tools: [{
                 id: 'info',
                 handler: function () {
-                    var iframe = this.commodity ? 
-                            "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
-                            "<ol>" +
-                                "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
-                                "<li><p><em> Date: </em>"+this.today+"</p></li>" +
-                                "<li><p><em> AOI: </em>"+this.chartTitle+"</p></li>" +                                
-                                "<li><p><em> Commodity: </em>" + this.commodity.toUpperCase() + "</p></li>" +
-                                "<li><p><em> Season: </em>" + this.season.toUpperCase() + "</p></li>" +
-                                "<li><p><em> Years: </em>" + this.fromYear + "-" + this.toYear + "</p></li>" +
-                            "</ol>" +                                        
-                            "</div>" : 
-                            
-                            "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
-                            "<ol>" +
-                                "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
-                                "<li><p><em> Date: </em>"+this.today+"</p></li>" +
-                                "<li><p><em> AOI: </em>"+this.chartTitle+"</p></li>" +
-                                "<li><p><em> Season: </em>" + this.season + "</p></li>" +
-                                "<li><p><em> Years: </em>" + this.fromYear + "-" + this.toYear + "</p></li>" +
-                            "</ol>" +                                        
-                            "</div>";                            
-                 
+                    var iframe;
+                    if(info == undefined){ //TODO use only info for all modules
+                        iframe = this.commodity ? 
+                                "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+                                "<ol>" +
+                                    "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
+                                    "<li><p><em> Date: </em>"+this.today+"</p></li>" +
+                                    "<li><p><em> AOI: </em>"+this.chartTitle+"</p></li>" +                                
+                                    "<li><p><em> Commodity: </em>" + this.commodity.toUpperCase() + "</p></li>" +
+                                    "<li><p><em> Season: </em>" + this.season.toUpperCase() + "</p></li>" +
+                                    "<li><p><em> Years: </em>" + this.fromYear + "-" + this.toYear + "</p></li>" +
+                                "</ol>" +
+                                "</div>" : 
+                                
+                                "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+                                "<ol>" +
+                                    "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
+                                    "<li><p><em> Date: </em>"+this.today+"</p></li>" +
+                                    "<li><p><em> AOI: </em>"+this.chartTitle+"</p></li>" +
+                                    "<li><p><em> Season: </em>" + this.season + "</p></li>" +
+                                    "<li><p><em> Years: </em>" + this.fromYear + "-" + this.toYear + "</p></li>" +
+                                "</ol>" +                                        
+                                "</div>";                            
+                    }else{
+                        iframe=info;
+                    }
                     var appInfo = new Ext.Panel({
                         header: false,
                         autoScroll: true,
@@ -85,7 +90,7 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
                     });
                     
                     win.show(); 
-                                                            
+                
                 },
                 scope: this
             }, {
@@ -109,33 +114,39 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
         panels.push(panel);
     }
     
-
-		this.title= this.commodity ? "Pakistan - Crop Data - Commodity: " + this.commodity.toUpperCase() +  " - Season: " + this.season.toUpperCase() + " - Years: "+ this.fromYear + "-"+ this.toYear : "Pakistan - AgroMet Variables - Season: " + this.season.toUpperCase() + " - Years: "+ this.fromYear + "-"+ this.toYear,
+        var maininfo = this.info;
+        if(!this.title){
+        		this.title=  this.commodity ? "Pakistan - Crop Data - Commodity: " + this.commodity.toUpperCase() +  " - Season: " + this.season.toUpperCase() + " - Years: "+ this.fromYear + "-"+ this.toYear : "Pakistan - AgroMet Variables - Season: " + this.season.toUpperCase() + " - Years: "+ this.fromYear + "-"+ this.toYear;
+        }
 		this.tools= [{
 			id: 'info',
 			handler: function () {
-				var iframe = this.commodity ? 
-                        "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
-						"<ol>" +
-                            "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
-                            "<li><p><em> Date: </em>"+this.today+"</p></li>" +
-                            "<li><p><em> AOI: </em>"+this.chartTitle+"</p></li>" +                            
-							"<li><p><em> Commodity: </em>" + this.commodity.toUpperCase() + "</p></li>" +
-							"<li><p><em> Season: </em>" + this.season.toUpperCase() + "</p></li>" +
-							"<li><p><em> Years: </em>" + this.fromYear + "-" + this.toYear + "</p></li>" +
-						"</ol>" +                                        
-						"</div>" : 
+                 var iframe
+                if(maininfo == undefined){ //TODO use only info for all modules
+                    iframe =  this.commodity ? 
+                            "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+                            "<ol>" +
+                                "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
+                                "<li><p><em> Date: </em>"+this.today+"</p></li>" +
+                                "<li><p><em> AOI: </em>"+this.chartTitle+"</p></li>" +                            
+                                "<li><p><em> Commodity: </em>" + this.commodity.toUpperCase() + "</p></li>" +
+                                "<li><p><em> Season: </em>" + this.season.toUpperCase() + "</p></li>" +
+                                "<li><p><em> Years: </em>" + this.fromYear + "-" + this.toYear + "</p></li>" +
+                            "</ol>" +                                        
+                            "</div>" : 
 
-                        "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
-                        "<ol>" +
-                            "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
-                            "<li><p><em> Date: </em>"+this.today+"</p></li>" +
-                            "<li><p><em> AOI: </em>"+this.chartTitle+"</p></li>" +
-                            "<li><p><em> Season: </em>" + this.season + "</p></li>" +
-                            "<li><p><em> Years: </em>" + this.fromYear + "-" + this.toYear + "</p></li>" +
-                        "</ol>" +                                        
-                        "</div>";                          
-			 
+                            "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+                            "<ol>" +
+                                "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
+                                "<li><p><em> Date: </em>"+this.today+"</p></li>" +
+                                "<li><p><em> AOI: </em>"+this.chartTitle+"</p></li>" +
+                                "<li><p><em> Season: </em>" + this.season + "</p></li>" +
+                                "<li><p><em> Years: </em>" + this.fromYear + "-" + this.toYear + "</p></li>" +
+                            "</ol>" +                                        
+                            "</div>";                          
+                 }else{
+                    iframe = maininfo;
+                 }
 				var appInfo = new Ext.Panel({
 					header: false,
                     autoScroll: true,
