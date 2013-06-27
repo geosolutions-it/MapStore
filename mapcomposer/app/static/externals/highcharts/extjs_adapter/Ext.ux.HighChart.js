@@ -861,3 +861,28 @@ Ext.ux.HighChart.PieSerie = Ext.extend(Ext.ux.HighChart.Serie, {
     }
 });
 Ext.ux.HighChart.Series.reg('pie', Ext.ux.HighChart.PieSerie);
+
+/**
+ * @class Ext.ux.HighChart.SplineSerie
+ * @extends Ext.ux.HighChart.Serie
+ * AreaSerie class for the charts widget.
+ * @constructor
+ */
+Ext.ux.HighChart.AreaRange = Ext.extend(Ext.ux.HighChart.Serie, {
+    type: 'arearange',
+    getData: function(record, index){
+        var high = this.yField || this.highDataIndex, 
+        xField = this.xField,
+        low = this.yField || this.lowDataIndex ,
+        point = {
+            data: record.data,
+            //y: [record.data[high],record.data[low] ],
+            low: record.data[low] ,
+            high:record.data[high]
+        };
+        if (xField) point.x = record.data[xField];
+        return point;
+    }
+});
+Ext.ux.HighChart.Series.reg('arearange', Ext.ux.HighChart.AreaRange);
+
