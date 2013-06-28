@@ -998,6 +998,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 
         var containerTab = Ext.getCmp(this.outputTarget);
         
+        /*################
+        ##################
         this.sliderFiledRischioSociale=new gxp.form.SliderRangesFieldSet({
             title: this.humanRiskLabel,
             id:"rischio_sociale",    
@@ -1079,8 +1081,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 html: "<div id='rischio_ambientale_slider'/>"
             } 
             ]
-
         });
+        ################
+        ################*/
+        
         this.panel = new Ext.FormPanel({
             border: false,
             layout: "fit",
@@ -1088,7 +1092,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             autoScroll: true,
             items:[
                 this.buildElaborazioneForm(),  
-                this.temasPanel,
+                //this.temasPanel,
                 this.buildConditionsForm(),
                 this.aoiFieldset, 
                 this.buildTargetForm(),
@@ -1500,8 +1504,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         obj.accident = this.getComboRecord(this.accident).data; //this.accident.getValue();
         obj.seriousness = this.getComboRecord(this.seriousness).data; //this.seriousness.getValue();
         obj.themas = {
-            'sociale': Ext.getCmp('rischio_sociale_multislider').getValues(),
-            'ambientale': Ext.getCmp('rischio_ambientale_multislider').getValues()
+            'sociale': [100,500,1000], //Ext.getCmp('rischio_sociale_multislider').getValues(),
+            'ambientale': [100,500,1000] //Ext.getCmp('rischio_ambientale_multislider').getValues()
         };
 
         return obj;
