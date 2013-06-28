@@ -93,12 +93,12 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
     cacheFieldText: "Use cached version",
     stylesText: "Styles",
     sliderRischioText: "Rischio",
-    sliderRischioSocialeText: "Rischio Sociale",
-    sliderRischioAmbientaleText: "Rischio Ambientale",
-    minRangeSliderText: "Rischio Basso",
-    medRangeSliderText: "Rischio Medio",
-    maxRangeSliderText: "Rischio Alto",
-    riskTabTitle: "Rischio",
+    sliderRischioSocialeText: "Sociale",
+    sliderRischioAmbientaleText: "Ambientale",
+    minRangeSliderText: "Basso",
+    medRangeSliderText: "Medio",
+    maxRangeSliderText: "Alto",
+    riskTabTitle: "Tematizzazione",
     riskTabSubmitText: "Applica",
     
     initComponent: function() {
@@ -380,6 +380,8 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
             multiSliderConf:{
                 vertical : false,
                 anchor: "99%",
+                decimalPrecision: 1,
+                increment: 0.1,
                 ranges: [
                 {
                     maxValue: envArray[0].split(":")[1],
@@ -409,6 +411,8 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
             multiSliderConf:{
                 vertical : false,
                 anchor: "99%",
+                decimalPrecision: 1,
+                increment: 0.1,
                 ranges: [
                 {
                     maxValue: envArray.length > 2 ? envArray[2].split(":")[1] : envArray[0].split(":")[1],
@@ -439,6 +443,8 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
             multiSliderConf:{
                 vertical : false,
                 anchor: "99%",
+                decimalPrecision: 1,
+                increment: 0.1,
                 ranges: [
                 {
                     maxValue: sliderEnv[0].split(":")[1],
