@@ -17,6 +17,7 @@ GeoExt.Lang.add("fr", {
         substanceLabel: "substances",
         accidentLabel: "accident",
         seriousnessLabel: "entités",
+        severenessLabel: "Gravità",
         buffersLabel: "Les rayons des zones endommagées",
         fieldSetTitle: "traitement",
         cancelButton: "annuler le traitement",
@@ -32,6 +33,9 @@ GeoExt.Lang.add("fr", {
         targetsTextBotton: "Cibles",
         areaDamageTextBotton: "Domaines de dommages",
         roadGraphTextBotton: "Graphique routière"  
+        wpsTitle: "Errore",
+        wpsError: "Errore nella richiesta al servizio WPS"
+
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Processing",

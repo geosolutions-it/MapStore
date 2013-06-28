@@ -480,8 +480,7 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
                         var size = layers.length;
                         var groups = {
                             "default": {
-                                title: tool.overlayNodeText,
-                                exclusive: true
+                                title: tool.overlayNodeText
                             }
                         };
 

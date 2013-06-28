@@ -217,7 +217,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                                 record.getLayer().displayInLayerSwitcher == true;
                         };
                     })(group),
-                    createNode: function(attr) {
+                    createNode: function(attr) {                       
                         attr.uiProvider = LayerNodeUI;
                         var layer = attr.layer;
                         var store = attr.layerStore;

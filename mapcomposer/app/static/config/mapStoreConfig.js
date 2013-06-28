@@ -125,7 +125,7 @@
             "tiled": false,
             "env":"low:100;medium:500",
             "riskPanel":true,
-            "visibility": false
+            "exclusive":"SIIG"
         },{
             "source": "destination",
             "title": "Rischio Totale Sociale",
@@ -134,7 +134,7 @@
             "tiled": false,
             "env":"low:100;medium:500",
             "riskPanel":true,
-            "visibility": false
+            "exclusive":"SIIG"
         },{
             "source": "destination",
             "title": "Rischio Totale Sociale - Ambientale",
@@ -143,7 +143,7 @@
             "tiled": false,
             "env":"lowsociale:100;mediumsociale:500;lowambientale:100;mediumambientale:500",
             "riskPanel":true,
-            "visibility": true
+            "exclusive":"SIIG"
         },
         {
             "source": "destination",
@@ -227,6 +227,14 @@
             "title": "Popolazione residente",
             "name": "popolazione_residente_all",
             "group": ["Targets","Bersagli","Cibles","Ziele"],
+            "visibility": false
+        },{
+            "source": "destination",
+            "title": "Grafo stradale",
+            "name": "grafo_stradale",
+            "displayInLayerSwitcher": true,
+            "tiled": true,
+            "group": ["Roads","Strade","Strade","Strade"],
             "visibility": false
         }
         ]
@@ -450,6 +458,7 @@
         "geometryName": "geometria",
         "accidentTipologyName": "tipologia",
         "wfsURL": "http://localhost:8080/geoserver/destination/wfs",
+        "wpsURL": "http://localhost:8080/geoserver/wps",        
         "wfsVersion" : "1.1.0",
         "destinationNS": "destination",
         "index": 28

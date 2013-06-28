@@ -85,21 +85,23 @@ GeoExt.tree.LayerNodeUI = Ext.extend(Ext.tree.TreeNodeUI, {
         // enforcing visibility.
         if(group && group !== "gx_baselayer") {
             var layer = this.node.layer;
-            var checkedNodes = this.node.getOwnerTree().getChecked();
-            var checkedCount = 0;
-            // enforce "not more than one visible"
-            Ext.each(checkedNodes, function(n){
-                var l = n.layer
-                if(!n.hidden && n.attributes.checkedGroup === group) {
-                    checkedCount++;
-                    if(l != layer && attributes.checked) {
-                        l.setVisibility(false);
+            if(this.node.getOwnerTree()) {
+                var checkedNodes = this.node.getOwnerTree().getChecked();
+                var checkedCount = 0;
+                // enforce "not more than one visible"
+                Ext.each(checkedNodes, function(n){
+                    var l = n.layer
+                    if(!n.hidden && n.attributes.checkedGroup === group) {
+                        checkedCount++;
+                        if(l != layer && attributes.checked) {
+                            l.setVisibility(false);
+                        }
                     }
+                });
+                // enforce "at least one visible"
+                if(checkedCount === 0 && attributes.checked == false) {
+                    layer.setVisibility(true);
                 }
-            });
-            // enforce "at least one visible"
-            if(checkedCount === 0 && attributes.checked == false) {
-                layer.setVisibility(true);
             }
         }
     },

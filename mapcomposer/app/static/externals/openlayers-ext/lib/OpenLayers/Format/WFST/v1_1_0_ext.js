@@ -178,8 +178,7 @@ OpenLayers.Format.WFST.v1_1_0_ext = OpenLayers.Class(
                     OpenLayers.Format.WFST.v1_1_0_ext.prototype.setFilterProperty.call(this, options.filter);
                     this.writeNode("ogc:Filter", options.filter, node);
                 }
-                if(options.sortBy) {
-                    debugger;
+                if(options.sortBy) {                    
                     var sortByNode = this.writeNode("ogc:SortBy", {}, node);
                     var sortProperty = this.writeNode("ogc:SortProperty", {}, sortByNode);
                     this.writeNode("ogc:PropertyName", {property: options.sortBy}, sortProperty);

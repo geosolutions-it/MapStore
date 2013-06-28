@@ -13,6 +13,7 @@ GeoExt.Lang.add("it", {
         substanceLabel: "Sostanze",
         accidentLabel: "Incidente",
         seriousnessLabel: "Entità",
+        severenessLabel: "Gravità",
         buffersLabel: "Raggi Aree Danno",
         fieldSetTitle: "Elaborazione",
         cancelButton: "Annulla Elaborazione",
@@ -28,6 +29,8 @@ GeoExt.Lang.add("it", {
         targetsTextBotton: "Bersagli",
         areaDamageTextBotton: "Aree di danno",
         roadGraphTextBotton: "Grafo stradale"  
+        wpsTitle: "Errore",
+        wpsError: "Errore nella richiesta al servizio WPS"
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Elaborazione",
@@ -56,7 +59,7 @@ GeoExt.Lang.add("it", {
         bboxValidationTitle: "Selezione Area di Interesse",
         requiredMaterial: "Questa formula richiede di specificare la sostanza",
         requiredAccident: "Questa formula richiede di specificare l\'incidente",
-        requiredSeriousness: "Questa formula richiede di specificare la gravità",
+        requiredSeriousness: "Questa formula richiede di specificare l\'entità",
         validationTitle: "Errore nei parametri",   
         invalidAOI: "Le coordinate dell'area di interesse non sono valide.",
         bboxTooBig: "L'area selezionata e' troppo grande e il server potrebbe impiegare molto tempo a rispondere. Se si desidera continuare ugualmente premere OK.",

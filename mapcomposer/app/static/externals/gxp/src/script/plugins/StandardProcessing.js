@@ -532,20 +532,30 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
               },{
                         "name": "flg_umano",        
                         "mapping": "flg_umano"
+              },{
+                        "name": "description",        
+                        "mapping": "descrizione_" + GeoExt.Lang.locale
+              },{
+                        "name": "severeness",        
+                        "mapping": "id_bersaglio"
               }],
              proxy: this.getWFSStoreProxy(this.bersFeature, undefined, "id_bersaglio") , 
              autoLoad: true 
        });
        
        targetStore.on('load', function(str, records) {
-            var allIDsArray= new Array(); 
+            var allIDsArray= []; 
             var code=0;
-            var humanIDsArray= new Array();
-            var notHumanIDsArray= new Array();
-             Ext.each(records,function(record){
+            var humanIDsArray= [];
+            var notHumanIDsArray= [];
+            var allDescsMap = {};
+            var humanDescsMap = {};
+            var notHumanDescsMap = {};
+            Ext.each(records,function(record){
                       var flg_umano= parseInt(record.get("flg_umano"));
                       var id= parseInt(record.get("id_bersaglio"));
                       allIDsArray.push(id);
+                      allDescsMap[id] = record.get("name");
                       record.set( "layer", layers[parseInt(id)]);
                       record.set( "property", 'calc_formula_tot');
                       record.set( "humans", flg_umano == 1 ? true: false);
@@ -578,24 +588,29 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                       record.set( "code", code);
 
                       record.set( "macro", false);
+                      record.set( "description", {id: record.get("name")});
+                      record.set( "severeness", flg_umano ? '1,2,3,4' : '5');
+                      
                       record.set( "id", [record.get("id_bersaglio")]);
                       if(flg_umano!= 1){
                          notHumanIDsArray.push(id);
+                         notHumanDescsMap[id] = record.get("name");
                       }else{
                          humanIDsArray.push(id); 
+                         humanDescsMap[id] = record.get("name");
                       }
              });
            me.macroBersData = [
-            ['bersagli_all', me.allTargetOption, 'calc_formula_tot', null, '-2', true, allIDsArray, -1],
-            ['bersagli_umani', me.allHumanTargetOption, 'calc_formula_tot', true, '-1', true, humanIDsArray, -2],
-            ['bersagli_ambientali', me.allNotHumanTargetOption, 'calc_formula_tot', false, '-2', true, notHumanIDsArray, -3]
+            ['bersagli_all', me.allTargetOption, 'calc_formula_tot', null, '-2', true, allIDsArray, -1, allDescsMap, '1,2,3,4,5'],
+            ['bersagli_umani', me.allHumanTargetOption, 'calc_formula_tot', true, '-1', true, humanIDsArray, -2, humanDescsMap, '1,2,3,4'],
+            ['bersagli_ambientali', me.allNotHumanTargetOption, 'calc_formula_tot', false, '-2', true, notHumanIDsArray, -3, notHumanDescsMap, '5']
             ];
            me.macrobers.getStore().loadData(me.macroBersData, true);
 
       });
         
        var targetMacroStore = new Ext.data.ArrayStore({
-            fields: ['layer', 'name', 'property', 'humans', 'code', 'macro', 'id', 'id_bersaglio'],
+            fields: ['layer', 'name', 'property', 'humans', 'code', 'macro', 'id', 'id_bersaglio', 'description', 'severeness'],
             data :  []
         });
         
@@ -828,7 +843,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         property: this.destinationNS + ":id_sostanza",
                         value: sost
                     });
-                    
+                    me.resetCombos([me.accident]);
                     new GeoExt.data.FeatureStore({ 
                         id: "sostaccStore",
                         fields: [{
@@ -859,7 +874,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                                  
                                 }
                                 
-                                me.resetCombos([me.accident]);
+                                
                             }
                         },
                         autoLoad: true 
@@ -880,6 +895,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
               },{
                         "name": "id",        
                         "mapping": "id_scenario"
+              },{
+                        "name": "description",        
+                        "mapping": "tipologia"
               }],
              proxy: this.getWFSStoreProxy(this.scenFeature, new OpenLayers.Filter.FeatureId({
                 fids: []
@@ -888,13 +906,16 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
           });       
 
           accidentStore.on('load', function(str, records) {
-              var allIDsArray= new Array(); 
+              var allIDsArray= []; 
+              var allDescsMap = {};
               Ext.each(records,function(record){
                       var id= parseInt(record.get("id"));
                       allIDsArray.push(id);
                       record.set( "id", [id]);
+                      allDescsMap[id] = record.get("name");
+                      record.set( "description",  {id: record.get("name")});
               });
-              str.insert(0, new str.recordType({name: me.allScenOption, value:'0', id:allIDsArray }, 1000));
+              str.insert(0, new str.recordType({name: me.allScenOption, value:'0', id:allIDsArray, "description": allDescsMap }, 1000));
           });
                 
         
@@ -1472,7 +1493,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         obj.formulaDesc = this.formula.getEl().getValue();
         var formulaRec = this.formula.store.getAt(this.formula.store.findExact("id_formula",obj.formula));
         obj.formulaInfo = {
-            dependsOnTarget: formulaRec.get('bersagli_tutti') > 0 || formulaRec.get('bersagli_umani') > 0 || formulaRec.get('bersagli_ambientali') > 0
+            dependsOnTarget: formulaRec.get('bersagli_tutti') > 0 || formulaRec.get('bersagli_umani') > 0 || formulaRec.get('bersagli_ambientali') > 0,
+            dependsOnArcs: formulaRec.get('ambito_territoriale')
         };        
         
         

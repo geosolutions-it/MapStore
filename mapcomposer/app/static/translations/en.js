@@ -16,6 +16,7 @@ GeoExt.Lang.add("en", {
         substanceLabel: "Substances",
         accidentLabel: "Accident",
         seriousnessLabel: "Entities",
+        severenessLabel: "Gravità",
         buffersLabel: "Rays Damage Areas",
         fieldSetTitle: "processing",
         cancelButton: "Cancel Processing",
@@ -31,6 +32,8 @@ GeoExt.Lang.add("en", {
         targetsTextBotton: "Targets",
         areaDamageTextBotton: "Areas of damage",
         roadGraphTextBotton: "Road graph"  
+        wpsTitle: "Errore",
+        wpsError: "Errore nella richiesta al servizio WPS"
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Processing",

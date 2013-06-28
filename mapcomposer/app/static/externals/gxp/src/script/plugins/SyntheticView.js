@@ -31,7 +31,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     substanceLabel: "Sostanze",
     accidentLabel: "Incidente",
     seriousnessLabel: "Entità",
+    severenessLabel: "Gravità",
     buffersLabel: "Raggi Aree Danno",
+    resultsLabel: "Risultato Elaborazione",
     fieldSetTitle: "Elaborazione",
     cancelButton: "Annulla Elaborazione",
     processButton: "Esegui Elaborazione",
@@ -44,6 +46,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     targetsTextBotton: "Bersagli",
     areaDamageTextBotton: "Aree di danno",
     roadGraphTextBotton: "Grafo stradale",    
+    wpsTitle: "Errore",
+    wpsError: "Errore nella richiesta al servizio WPS",
     // End i18n.
         
     id: "syntheticview",
@@ -75,10 +79,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     notHumanTitle:'Ambientale',    
     originalRiskLayers: null,
     
+    severeness: [["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","UNICA GRAVITA"], ["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","UNICA GRAVITA"], ["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","UNICA GRAVITA"], ["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","UNICA GRAVITA"]],
+    
     selectedTargetLayer: "Bersaglio Selezionato",
     
     analyticViewLayers: [],    
     
+    roadsLayer: "grafo_stradale",
     
     layerImageFormat: "image/png8",
     
@@ -90,6 +97,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     analyticView: false,
     
     aoi: null,
+    wpsURL: '',
     
     /** private: method[constructor]
      *  :arg config: ``Object``
@@ -201,6 +209,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         gxp.plugins.SyntheticView.superclass.init.apply(this, arguments); 
         this.target.on('portalready', function() {
             this.layerSource = this.target.layerSources[this.layerSourceName];
+            this.wpsClient =  new OpenLayers.WPSClient({
+                servers: {
+                    destination: this.wpsURL
+                }
+            });
             this.processingPane = new gxp.plugins.StandardProcessing({
                 outputTarget: this.outputTarget,
                 geometryName: this.geometryName,
@@ -221,7 +234,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
      *   :arg config: ``Object``
      *     creates a record for a new layer, with the given configuration
      */
-    createLayerRecord: function(config, singleTitle, dynamicBuffer) {        
+    createLayerRecord: function(config, singleTitle, dynamicBuffer, exclusive) {        
         var params = {
             layers: config.name, 
             transparent: true, 
@@ -239,6 +252,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 isBaseLayer: false,
                 singleTile: singleTitle,
                 displayInLayerSwitcher: true,
+                exclusive: exclusive ? exclusive : undefined,
                 vendorParams: config.params
             }
         );
@@ -263,8 +277,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             // data for the new record
             var data = Ext.applyIf({
                 title: config.title, 
-                name: config.name,                
+                name: config.name,
                 layer: layer,
+                
                 properties: 'gxp_wmslayerpanel'
             }, layerRecord.data);
                         
@@ -462,15 +477,17 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         });                        
         
         
-        this.buffers = new Ext.form.TextArea({
-              fieldLabel: this.buffersLabel,
-              id: "buffers",
+        this.results = new Ext.form.DisplayField({
+              fieldLabel: this.resultsLabel,
+              id: "results",
               width: 200,
               readOnly: true,
               value: "",
               hideLabel : false                    
         });
-           
+                      
+        this.resultsContainer = new Ext.Container({layout:'fit'});
+        
         this.fieldSet = new Ext.form.FieldSet({
             title: this.fieldSetTitle,
             id: 'fset',
@@ -490,7 +507,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                  this.substance,
                  this.accident,
                  this.seriousness,
-                 this.buffers
+                 this.results,
+                 this.resultsContainer
             ],
             buttons: [{
                 text: this.cancelButton,
@@ -504,8 +522,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     
                     // reset risk layers
                     this.removeRiskLayers(map);                                       
-                    this.restoreOriginalRiskLayers(map);
-                                        
+                    //this.restoreOriginalRiskLayers(map);
+                    this.enableDisableRoads(true);
+                    
                     Ext.getCmp("south").collapse();  
                 }
             }, {
@@ -544,6 +563,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 }
             }]
         });
+        
+        
         
         var panel = new Ext.FormPanel({
             border: false,
@@ -656,7 +677,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             params: {                                                                
                 viewparams: targetViewParams
             }
-        }, true));
+        }, true, undefined));
         
         var wfsGrid = Ext.getCmp("featuregrid");
         if(this.isSingleTarget()) {
@@ -774,7 +795,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             + ';scenari:' + this.status.accident.id.join('\\,')
             + ';gravita:' + this.status.seriousness.id.join('\\,');
             
-        var newEnv = "formula:"+status.formula+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+";scenarios:"+status.accident.id.join(',')+";entities:"+this.status.seriousness.id.join(',');
+        var newEnv = "formula:"+status.formula+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',');
         env = env ? env + ";" + newEnv : newEnv;
         layers.push(this.createLayerRecord({
             name: layer,
@@ -785,7 +806,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 env: env,
                 riskPanel: true
             }
-        }, true));
+        }, true, undefined, "SIIG"));
     },
     
     addCombinedRisk: function(layers, bounds) {
@@ -945,9 +966,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.target.mapPanel.layers.add(newLayers);
         
         // update info on buffers sizes     
-        this.buffers.setValue(this.getBuffersInfo());
+        //this.results.setValue(this.getBuffersInfo());
         
         Ext.getCmp("south").expand();            
+    },
+    
+    enableDisableRoads: function(visibility) {
+        var layer = this.getLayerByName(this.target.mapPanel.map, this.roadsLayer);
+        layer.setVisibility(visibility);
     },
     
     doProcess: function(roi) {
@@ -955,11 +981,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         var map = this.target.mapPanel.map;        
         var status = this.getStatus();        
+        
         var bounds = this.getBounds(status, map);
         
         if(this.originalRiskLayers === null) {
             this.storeOriginalRiskLayers();
         }
+        
+        this.enableDisableRoads(!status.formulaInfo.dependsOnArcs);
         
         this.removeRiskLayers(map);
         
@@ -967,11 +996,152 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.removeAnalyticViewLayers(map);                    
         Ext.getCmp("south").collapse();
         
-        this.addRisk(newLayers, bounds, status);
+        if(status.formulaInfo.dependsOnArcs) {        
+            this.addRisk(newLayers, bounds, status);
+            
+            this.target.mapPanel.layers.add(newLayers);
+            if(roi)
+                this.target.mapPanel.map.zoomToExtent(roi);
+        } else {
+            // Create a process and configure it
+            var riskProcess = this.wpsClient.getProcess('destination', 'gs:RiskCalculatorSimple');    
+            var targetId = this.getChosenTarget(status);            
+            var me = this;
+            riskProcess.execute({
+                // spatial input can be a feature or a geometry or an array of
+                // features or geometries
+                inputs: {
+                    store: new OpenLayers.WPSProcess.LiteralData({value:'destination_test'}),
+                    formula: new OpenLayers.WPSProcess.LiteralData({value:status.formula}),
+                    target: new OpenLayers.WPSProcess.LiteralData({value:targetId}),
+                    materials: new OpenLayers.WPSProcess.LiteralData({value:status.sostanza.id.join(',')}),
+                    scenarios: new OpenLayers.WPSProcess.LiteralData({value:status.accident.id.join(',')}),
+                    entities: new OpenLayers.WPSProcess.LiteralData({value:status.seriousness.id.join(',')}),
+                    severeness: new OpenLayers.WPSProcess.LiteralData({value:status.formulaInfo.dependsOnTarget ? status.target.severeness : '0'})
+                },
+                outputs: [],
+                success: function(outputs) {
+                    if(outputs.executeResponse.status.processSucceeded && outputs.executeResponse.processOutputs.length > 0) {
+                        var data = Ext.decode(outputs.executeResponse.processOutputs[0].literalData.value);
+                        me.fillFormulaResults(status.formulaDesc, data);
+                        
+                    } else {
+                        Ext.Msg.show({
+                            title: this.wpsTitle,
+                            buttons: Ext.Msg.OK,                
+                            msg: this.wpsError,
+                            icon: Ext.MessageBox.ERROR,
+                            scope: this
+                        }); 
+                    }
+                }
+            });            
+            //
+        }
+    },
+    fillFormulaResults: function(formulaTitle, result) {
+        /*var html  = '<h2>' + formulaTitle + '</h2>';
+        html     += '<div id="synthetic-results-table"></div>';
+        this.resultsContainer.update(html);*/
         
-        this.target.mapPanel.layers.add(newLayers);
-        if(roi)
-            this.target.mapPanel.map.zoomToExtent(roi);
+        var data =[];
+        for(var i = 0; i < result.targets.length; i++) {
+            var targetObj = result.targets[i];            
+            for(var j = 0; j < targetObj.scenarios.length; j++) {
+                var scenarioObj = targetObj.scenarios[j];
+                for(var k = 0; k < scenarioObj.severeness.length; k++) {  
+                    var severenessObj = scenarioObj.severeness[k];
+                    var severenessDesc = this.severeness[GeoExt.Lang.getLocaleIndex()][parseInt(severenessObj.id, 10)-1];
+                    data.push([targetObj.id+'.'+scenarioObj.id+'.'+severenessObj.id,this.status.target.description[targetObj.id], this.status.accident.description[scenarioObj.id], severenessDesc, severenessObj.risk[0]]);                
+                }
+                
+            }
+        }
+        
+        var columns = [];
+        
+        if(result.targets.length > 1) {
+            columns.push({header: this.targetLabel, width: 150, dataIndex: 'target'});            
+        }
+        if(result.targets[0].scenarios.length > 1) {
+            columns.push({header: this.accidentLabel, width: 150, dataIndex: 'scenario'});            
+        }
+        if(result.targets[0].scenarios[0].severeness.length > 1) {
+            columns.push({header: this.severenessLabel, width: 150, dataIndex: 'severeness'});            
+        }
+        columns.push({header: formulaTitle, width: 150, dataIndex: 'value'});
+        var grid = new Ext.grid.GridPanel({
+                store: new Ext.data.ArrayStore({
+                fields: ['id','target', 'scenario', 'severeness', 'value'],
+                data: data,
+                idIndex: 0 // id for each record will be the first element
+            }),
+            colModel: new Ext.grid.ColumnModel({
+                defaults: {
+                    width: 200,
+                    sortable: true
+                },
+                columns: columns
+            }),
+            viewConfig: {
+                forceFit: true
+            },
+            frame: true,
+            title: formulaTitle,
+            //width: 300,
+            height: 150
+        });
+        
+        this.resultsContainer.removeAll();
+        this.resultsContainer.add(grid);
+        this.resultsContainer.doLayout();
+        
+        /*if(result.targets.length > 1) {                
+            html += '<th>' + this.targetLabel + '</th>';
+        }
+        if(result.targets[0].scenarios.length > 1) {                
+            html += '<th>' + this.accidentLabel + '</th>';
+        }
+        html += '<th>' + formulaTitle + '</th><tr>';
+        for(var i = 0; i < result.targets.length; i++) {
+            var targetObj = result.targets[i];
+            
+            for(var j = 0; j < targetObj.scenarios.length; j++) {
+                var currentValue = '';
+                var scenarioObj = targetObj.scenarios[j];
+                if(result.targets.length > 1) {   
+                    currentValue += '<td>' + this.status.target.description[targetObj.id] + '</td>';
+                }
+                if(result.targets[i].scenarios.length > 1) {                
+                    currentValue += '<td>' + this.status.accident.description[scenarioObj.id] + '</td>';
+                }
+                currentValue += '<td>' + scenarioObj.risk[0] + '</td>';
+                html += '<tr>' + currentValue + '</tr>';
+            }
+        }
+        
+        html     += '</table>';
+        this.results.setValue(html);  
+        var grid = new Ext.ux.grid.TableGrid("synthetic-results-table", {
+            stripeRows: true // stripe alternate rows
+        });
+        grid.render();    */    
+    },
+    
+    getChosenTarget: function(status) {
+        if(status.formulaInfo.dependsOnTarget) {
+            if(this.isSingleTarget()) {
+                return parseInt(status.target['id_bersaglio'], 10);                
+            } else if(this.isAllHumanTargets()) {
+                return 98;
+            } else if(this.isAllNotHumanTargets()) {
+                return 99;
+            } else {
+                return 100;
+            }
+        } else {
+            return parseInt(status.target['id_bersaglio'], 10);   
+        }
     },
     
     removeAnalyticViewLayers: function(map) {
@@ -1042,7 +1212,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.substance.setValue(this.status.sostanza.name);
         this.accident.setValue(this.status.accident.name);
         this.seriousness.setValue(this.status.seriousness.name);
-        this.buffers.setValue('');        
+        this.results.setValue('');        
     },
     
     getStatus: function(){

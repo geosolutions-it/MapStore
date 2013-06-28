@@ -285,7 +285,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 						env: config.env,
 						viewparams: config.viewparams
 					} : {},
-                    riskPanel: ("riskPanel" in config) ? config.riskPanel : false,
+                    riskPanel: ("riskPanel" in config) ? config.riskPanel : false,                    
+                    exclusive: config.exclusive || false,
 					displayInLayerSwitcher: ("displayInLayerSwitcher" in config) ? config.displayInLayerSwitcher : true
                 }
             );

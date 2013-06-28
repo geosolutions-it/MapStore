@@ -315,7 +315,9 @@ Ext.extend(GeoExt.tree.LayerLoader, Ext.util.Observable, {
            attr.uiProvider = this.uiProviders[attr.uiProvider] || eval(attr.uiProvider);
         }
         attr.nodeType = attr.nodeType || "gx_layer";
-
+        if(attr.layer && attr.layer.exclusive) {
+            attr.checkedGroup = attr.layer.exclusive;
+        }
         return new Ext.tree.TreePanel.nodeTypes[attr.nodeType](attr);
     },
 
