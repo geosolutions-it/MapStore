@@ -24,6 +24,7 @@ Ext.namespace("Ext.ux.grid");
 Ext.ux.grid.CheckboxSelectionGrid = Ext.extend(Ext.grid.GridPanel,{
     viewConfig: {forceFit: true},
     initComponent: function() {
+        this.addEvents('selectionchange');
         this.sm = new Ext.grid.CheckboxSelectionModel({checkOnly:true});
         var colums = [this.sm];
         this.columns = colums.concat(this.columns);
@@ -33,7 +34,11 @@ Ext.ux.grid.CheckboxSelectionGrid = Ext.extend(Ext.grid.GridPanel,{
                     sortable: true
                 },
                 columns: this.columns
-        })
+        });
+        this.sm.on('selectionchange',function(sm){
+            
+            this.fireEvent('selectionchange',sm.getSelections());
+        },this);
         return Ext.ux.grid.CheckboxSelectionGrid.superclass.initComponent.apply(this, arguments);
     
     }

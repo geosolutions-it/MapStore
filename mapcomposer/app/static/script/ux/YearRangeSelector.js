@@ -32,39 +32,49 @@ Ext.ux.YearRangeSelector = Ext.extend(Ext.form.CompositeField,{
 	setMaxValue: function(value){
 		var endValue = this.slider.thumbs[1].value;
 		var startValue = this.slider.thumbs[0].value;
+        var changed = false;
 		if(value < endValue){
 			//this.slider.setValue(1,value,true);
 			this.endValue.setValue(value);
-            this.fireEvent('change',startValue,endValue);
+             var changed = true;
 		}
 		if(value < startValue){
 			//this.slider.setValue(1,value,true);
 			this.startValue.setValue(value);
-            this.fireEvent('change',startValue,endValue);
+             var changed = true;
 		}
 		this.slider.setMaxValue(value);
 		this.startValue.setMaxValue(value);
 		this.endValue.setMaxValue(value);
-		
+		if(changed){
+            endValue = this.slider.thumbs[1].value;
+            startValue = this.slider.thumbs[0].value;
+            this.fireEvent('change',startValue,endValue);
+        }
 		
 	},
 	setMinValue: function(value){
 		var endValue = this.slider.thumbs[1].value;
 		var startValue = this.slider.thumbs[0].value;
+        var changed = false;
 		if(value > endValue){
 			//this.slider.setValue(1,value,true);
 			this.endValue.setValue(value);
-            this.fireEvent('change',startValue,endValue);
+            var changed = true;
 		}
 		if(value > startValue){
 			//this.slider.setValue(1,value,true);
 			this.startValue.setValue(value);
-            this.fireEvent('change',startValue,endValue);
+            var changed = true;
 		}
 		this.slider.setMinValue(value);
 		this.startValue.setMinValue(value);
 		this.endValue.setMinValue(value);
-
+        if(changed){
+            endValue = this.slider.thumbs[1].value;
+            startValue = this.slider.thumbs[0].value;
+            this.fireEvent('change',startValue,endValue);
+        }
 		
 	},
 	valid: function(){
