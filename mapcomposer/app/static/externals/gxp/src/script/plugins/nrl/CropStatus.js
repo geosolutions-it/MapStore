@@ -97,7 +97,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                                             target:this.target,
                                             form: this
                                         })
-                                        var store = areaSelector.currentCombo.items.items[0];
+                                        var store = areaSelector.currentCombo.selectButton.store;
                                         this.output.fireEvent('update',store);
                                         this.output.fireEvent('show');                                
                                         this.output.doLayout();
@@ -113,7 +113,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                                             target:this.target,
                                             form: this
                                         })
-                                        var store = areaSelector.currentCombo.items.items[0];
+                                        var store = areaSelector.currentCombo.selectButton.store;
                                         this.output.fireEvent('update',store);
                                         this.output.fireEvent('show');
                                         this.output.doLayout();
@@ -132,12 +132,8 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 								change: function(c,checked){
 									var commodity = this.ownerCt.Commodity;
 									commodity.seasonFilter(checked.inputValue);
-									var selectedCommodity = commodity.store.data.items[0].data.label
+									var selectedCommodity = commodity.getStore().getAt(0).get(commodity.valueField);
 									commodity.setValue(selectedCommodity);
-
-									var comboProd = Ext.getCmp('comboProd');
-									comboProd.setValue('000 tons');  
-
 								}
 							}
 						},{
@@ -149,6 +145,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 							vendorParams: {cql_filter:this.areaFilter}
 						},{
                             name:'year',
+                            disabled:true,
 							xtype: 'singleyearcombobox',
 							anchor:'100%',
                             ref:'yearSelector',
@@ -167,7 +164,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                     store:new Ext.data.JsonStore({
                         fields: [
                             {name:'label',  mapping:'properties.label'},
-                            {name:'season',mapping: 'properties.seasons'},
+                            {name:'season', mapping:'properties.seasons'},
                             {name:'crop',   mapping:'properties.crop'},
                             {name:'max',    mapping:'properties.max' },
                             {name:'min',    mapping:'properties.min' }
@@ -210,9 +207,38 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 							{name:'factor', mapping:'properties.factor'},
 							{name:'label', mapping:'properties.label'},
 							{name:'aggregation', mapping:'properties.aggregation'},
-							{name:'unit', mapping:'properties.unit'}
+							{name:'unit', mapping:'properties.unit'},
+                            {name:'max', mapping: 'properties.max'},
+                            {name:'min', mapping: 'properties.min'}
 						]
-                    })
+                    }),
+                    listeners:{
+                        selectionchange:function(records){
+                            var yearSelector =this.refOwner.yearSelector;
+                            if(records.length<=0){
+                               yearSelector.setDisabled(true); 
+                            }else{
+                                var max=-99999,min=99999;
+                                for(var i=0;i<records.length ;i++){
+                                    var rec = records[i];
+                                    var curmax = rec.get('max');
+                                    var curmin = rec.get('min');
+                                    if(curmax > max){
+                                        max = curmax;
+                                    }
+                                    if(curmin < min){
+                                        min = curmin;
+                                    }  
+                                }
+                                if(max==99999|| min == -99999){
+                                     yearSelector.setDisabled(true);
+                                }else{
+                                    yearSelector.setDisabled(false);
+                                    yearSelector.setRange(min,max);
+                                }
+                            }
+                        }
+                    }
                 })
             ],	
 			buttons:[{               
@@ -220,7 +246,8 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 				ref: '../submitButton',
                 target:this.target,
 				form: this,
-                disabled:false
+                disabled:true
+                
             }]
 		};
 		config = Ext.apply(cropStatus,config || {});
@@ -229,7 +256,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 		this.output.on('update',function(store){
             var button = this.output.submitButton.getXType();
             if (button == "gxp_nrlCropStatusChartButton" || button == 'gxp_nrlCropStatusTabButton'){
-                this.output.submitButton.setDisabled(/*store.getCount()<=0*/)
+                this.output.submitButton.setDisabled(store.getCount()<=0)
             }
 		},this);	
         

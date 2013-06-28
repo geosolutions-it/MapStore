@@ -241,7 +241,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             commodityCB.seasonFilter(checked.inputValue);
                             var selectedCommodity = commodityCB.getStore().getAt(0);
                             if(selectedCommodity){
-                                commodityCB.setValue(selectedCommodity.get('crop'));
+                                commodityCB.setValue(selectedCommodity.get(commodityCB.valueField));
                                 var yrs= commodityCB.ownerCt.yearRangeSelector;
                                 yrs.setMaxValue(selectedCommodity.get('max'));
                                 yrs.setMinValue(selectedCommodity.get('min'));

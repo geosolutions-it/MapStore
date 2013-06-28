@@ -101,7 +101,6 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                             var submitButton = this.output.submitButton;
                             var areaSelector = this.output.aoiFieldSet.AreaSelector;                            
                             if(outputValue == 'data'){
-                                areaSelector.enable();
                                 submitButton.destroy();
                                 delete submitButton;
                                 this.output.addButton({              
@@ -118,7 +117,6 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                                 this.output.syncSize();
 
                             }else{
-                                areaSelector.enable();
                                 submitButton.destroy();
                                 delete submitButton;
                                 this.output.addButton({
@@ -167,6 +165,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 					ref: 'yearRangeSelector',
 					xtype: 'yearrangeselector',
 					anchor:'100%',
+                    disabled:true,
 					maxValue: currentYear, //TODO conf
 					minValue: this.startYear, //TODO conf
 					values:[this.startYear,currentYear], //TODO conf
@@ -186,7 +185,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                     autoHeight:true,
                     ref: 'factors',
                     viewConfig: {forceFit: true},
-                    columns: [{id:'name',dataIndex:'label',header:'Factor'}],
+                    columns: [{id:'name',dataIndex:'label',header:'Factor'},{id:'unit',dataIndex:'unit',header:'Unit'}],
                     autoScroll:true,
                     store: new Ext.data.JsonStore({
                        
@@ -198,10 +197,41 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 							{name:'factor', mapping:'properties.factor'},
 							{name:'label', mapping:'properties.label'},
 							{name:'aggregation', mapping:'properties.aggregation'},
-							{name:'unit', mapping:'properties.unit'}
+							{name:'unit', mapping:'properties.unit'},
+                            {name:'max', mapping: 'properties.max'},
+                            {name:'min', mapping: 'properties.min'}
 						]
 						
-                    })
+                    }),
+                    listeners:{
+                        selectionchange:function(records){
+                            var yearRangeSelector =this.refOwner.yearRangeSelector;
+                            if(records.length<=0){
+                               yearRangeSelector.setDisabled(true); 
+                            }else{
+                                var max=-99999,min=99999;
+                                for(var i=0;i<records.length ;i++){
+                                    var rec = records[i];
+                                    var curmax = rec.get('max');
+                                    var curmin = rec.get('min');
+                                    if(curmax > max){
+                                        max = curmax;
+                                    }
+                                    if(curmin < min){
+                                        min = curmin;
+                                    }  
+                                }
+                                if(max==99999|| min == -99999){
+                                     yearRangeSelector.setDisabled(true);
+                                }else{
+                                    yearRangeSelector.setDisabled(false);
+                                    yearRangeSelector.setMaxValue(max);
+                                    yearRangeSelector.setMinValue(min);
+                                }
+                            }
+                        }
+                    }
+                    
                 
                 })
 			],
