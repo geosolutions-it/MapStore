@@ -139,6 +139,7 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
 				store.removeAll();
 				var record =new store.recordType(location);
 				store.add(record);
+                this.fireEvent('update',store);
 		},this);
         selectCombo.on('blur', function(cb){
             this.setComboDisplayValue(cb,cb.refOwner.selectButton.store.getAt(0)); //restore value on blur
