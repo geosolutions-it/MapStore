@@ -145,7 +145,7 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
                 layerStyle:this.layerStyle,
 				vendorParams:this.vendorParams,
                 name:this.name,
-                bubbleEvents:['update'],
+                bubbleEvents:['update']
             },this.featureSelectorConfigs[type],this.featureSelectorConfigs.base
 		));
 	}
