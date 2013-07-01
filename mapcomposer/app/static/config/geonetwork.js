@@ -114,12 +114,13 @@
                 "timeout": 60000
             }            
 		}, {
+			"actions": ["-"], 
+			"actionTarget": "paneltbar"
+		}, {
 			"ptype": "gxp_geolocationmenu",
 			"outputTarget": "paneltbar",
+			"toggleGroup": "toolGroup",
 			"index": 23
-		}, {
-			"actions": ["->"], 
-			"actionTarget": "paneltbar"
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,

@@ -132,12 +132,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		        }, {
 		            ptype: "gxp_googleearth",
 		            actionTarget: {target: "paneltbar", index: 25}
-		        }, {
-		            actions: ["-"], actionTarget: "paneltbar"
-		        }, {
-		            ptype: "gxp_saveDefaultContext",
-		            actionTarget: {target: "paneltbar", index: 24},
-					needsAuthorization: true
 		        }
 		    ];
 
@@ -168,6 +162,14 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 actionTarget: {target: "paneltbar", index: 22}
             })
         }
+		
+		config.tools.push({
+			actions: ["-"], actionTarget: "paneltbar"
+		}, {
+			ptype: "gxp_saveDefaultContext",
+			actionTarget: {target: "paneltbar", index: 24},
+			needsAuthorization: true
+		});
         
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);
     },

@@ -127,6 +127,7 @@
 		}, {
 			"ptype": "gxp_geolocationmenu",
 			"outputTarget": "paneltbar",
+			"toggleGroup": "toolGroup",
 			"index": 23
 		}
 	]

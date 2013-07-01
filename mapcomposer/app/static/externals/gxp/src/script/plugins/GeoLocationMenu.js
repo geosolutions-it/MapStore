@@ -406,6 +406,7 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
 		    //text: this.actionText,
             iconCls: "gxp-icon-geolocationmenu",
             tooltip: this.menuTooltip,
+			toggleGroup: this.toggleGroup,
             menu: this.menu
         });
 
