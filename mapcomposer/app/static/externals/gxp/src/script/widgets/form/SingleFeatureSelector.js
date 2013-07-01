@@ -74,7 +74,7 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
 		}
 	},
 	initComponent:function(){
-
+        this.enableBubble('update');
 		var selectFeatureButton = new gxp.widgets.button.SelectFeatureButton({
                 xtype:'gxp_selectFeatureButton',
 				vendorParams:this.vendorParams,
@@ -101,6 +101,9 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
 							this.loadMask.hide();
 						}
 					},
+                    update:function(store){
+                        this.fireEvent('update',store);
+                    },
 					scope:this
 				}
 			});
