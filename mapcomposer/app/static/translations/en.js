@@ -304,7 +304,10 @@ GeoExt.Lang.add("en", {
         nextPageTip: "Next page",
         lastPageTip: "Last page",
         title: "Features",
-        totalMsg: "Total: {0} records"
+        totalMsg: "Total: {0} records",
+        displayExportCSVText: "Export to CSV",
+        exportCSVSingleText: "Single Page",
+        exportCSVMultipleText: "All Page"
     },
     "gxp.plugins.QueryForm.prototype": {
         queryActionText: "Query",

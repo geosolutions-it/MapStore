@@ -52,6 +52,11 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      */
     alwaysDisplayOnMap: false,
     
+    /** api: config[showExportCSV]
+     *  ``Boolean`` If set to true, show CSV export bottons.
+     */
+    showExportCSV: true,    
+    
     /** api: config[displayMode]
      *  ``String`` Should we display all features on the map, or only the ones
      *  that are currently selected on the grid. Valid values are "all" and
@@ -86,6 +91,24 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      * Text for feature display button (i18n).
      */
     displayFeatureText: "Display on map",
+    
+    /** api: config[displayExportCSVText]
+     * ``String``
+     * Text for CSV Export buttons (i18n).
+     */
+    displayExportCSVText: "Export to CSV",
+    
+    /** api: config[exportCSVSingleText]
+     * ``String``
+     * Text for CSV Export Single Page button (i18n).
+     */
+    exportCSVSingleText: "Single Page",
+
+    /** api: config[exportCSVMultipleText]
+     * ``String``
+     * Text for CSV Export Multiple Pages button (i18n).
+     */
+    exportCSVMultipleText: "All Page",        
 
     /** api: config[zoomFirstPageTip]
      *  ``String``
@@ -241,16 +264,43 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                     featureManager[pressed ? "showLayer" : "hideLayer"](this.id, this.displayMode);
                 },
                 scope: this
+            }] : [])).concat(["->"].concat(this.showExportCSV ? [{
+                text: this.displayExportCSVText,
+                xtype: 'button',
+                disabled: true,
+                iconCls: "gxp-icon-csvexport",
+                ref: "../exportCSVButton",
+                menu:{
+                    xtype: "menu",
+                    showSeparator: true, 
+                    items: [{
+                        iconCls: "gxp-icon-csvexport-single",
+                        text: this.exportCSVSingleText,
+                        handler: function() {                    
+                            this.csvExport(true);
+                        },
+                        scope: this
+                    },{
+                        iconCls: "gxp-icon-csvexport-multiple",
+                        text: this.exportCSVMultipleText,
+                        handler: function() {                    
+                            this.csvExport(false);
+                        },
+                        scope: this
+                    }]
+                }
             }] : [])),
             listeners: {
                 "added": function(cmp, ownerCt) {
                     var onClear = (function() {
+                        this.showExportCSV ? this.output[0].exportCSVButton.disable() : {};
                         this.displayTotalResults();
                         this.selectOnMap && this.selectControl.deactivate();
                         this.autoCollapse && typeof ownerCt.collapse == "function" &&
                             ownerCt.collapse();
                     }).bind(this);
                     var onPopulate = (function() {
+                        this.showExportCSV ? this.output[0].exportCSVButton.enable() : {};
                         this.displayTotalResults();
                         this.selectOnMap && this.selectControl.activate();
                         this.autoExpand && typeof ownerCt.expand == "function" &&
@@ -306,8 +356,48 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         }, this);
         
         return featureGrid;
-    }
-            
+    },
+    /** api: method[csvExport]
+     */    
+    csvExport: function(single){
+    
+        var featureManager = this.target.tools[this.featureManager];
+        var grid = this.output[0];
+        var protocol = grid.getStore().proxy.protocol;
+        var allPage = {};
+        
+        allPage.extent = featureManager.getPagingExtent("getMaxExtent");
+        
+        var filter = featureManager.setPageFilter(single ? featureManager.page : allPage);
+        
+        var node = new OpenLayers.Format.Filter({
+            version: protocol.version,
+            srsName: protocol.srsName
+        }).write(filter);
+        
+        var xml = new OpenLayers.Format.XML().write(node);
+        
+        var colModel = grid.getColumnModel();
+        
+        var numColumns = colModel.getColumnCount(true);
+        var propertyName = [];
+        
+        for (var i=0; i<numColumns; i++){        
+            propertyName.push(colModel.getColumnHeader(i));
+        }
+        
+        window.open(
+            protocol.url + 
+            "propertyName=" + propertyName.join(',') +
+            "&service=WFS" +
+            "&version=" + protocol.version +
+            "&request=GetFeature" +
+            "&typeName=" + protocol.featureType +
+            "&outputFormat=CSV"+
+            "&filter=" + xml
+        );  
+
+    }       
 });
 
 Ext.preg(gxp.plugins.FeatureGrid.prototype.ptype, gxp.plugins.FeatureGrid);

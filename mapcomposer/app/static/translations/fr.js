@@ -307,7 +307,10 @@ GeoExt.Lang.add("fr", {
         nextPageTip: "Page suivante",
         lastPageTip: "Dernière page",
         title: "Entités",
-        totalMsg: "Total: {0} entités"
+        totalMsg: "Total: {0} entités",
+        displayExportCSVText: "Exporter au format CSV",
+        exportCSVSingleText: "Une seule page",
+        exportCSVMultipleText: "Toutes les pages"
     },
 	
 	"gxp.plugins.QueryForm.prototype": {
