@@ -356,7 +356,7 @@ OpenLayers.Format.WFST.v1 = OpenLayers.Class(OpenLayers.Format.XML, {
                 this.setFilterProperty(filter.filters[i]);
             }
         } else {
-            if(filter instanceof OpenLayers.Filter.Spatial) {
+            if(filter instanceof OpenLayers.Filter.Spatial && !filter.property) {
                 // got a spatial filter, set its property
                 filter.property = this.geometryName;
             }

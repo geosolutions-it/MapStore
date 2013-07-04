@@ -445,7 +445,7 @@ OpenLayers.WPSProcess = OpenLayers.Class({
             output = this.description.processOutputs[opt.outputIndex || 0];
             this.description.responseForm.rawDataOutput= {
                 identifier: output.identifier,
-                mimeType: output.mimeType/*this.findMimeType(output.complexOutput.supported.formats, opt.supportedFormats)*/
+                mimeType: opt.mimeType || output.mimeType/*this.findMimeType(output.complexOutput.supported.formats, opt.supportedFormats)*/
             }  
         }else{
             this.description.responseForm.responseDocument= {
@@ -459,7 +459,8 @@ OpenLayers.WPSProcess = OpenLayers.Class({
                 output = this.description.processOutputs[opt.outputIndex || 0];
                 this.description.responseForm.responseDocument.outputs.push({
                     identifier: output.identifier,
-                    asReference: opt.asReference
+                    asReference: opt.asReference,
+                    mimeType: opt.mimeType || output.mimeType
                 });
 	      
             }
