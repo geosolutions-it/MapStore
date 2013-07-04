@@ -655,30 +655,10 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             }
         }
          
+        var bbar;
         
-        var wfsGridPanel=new Ext.grid.GridPanel({ 
-            title: this.title, 
-            store: [], 
-            id: this.id,
-            layout: "fit",
-           
-            viewConfig : {
-                forceFit: true
-            },
-            listeners: {
-                render: function(grid){
-                    if(me.loadMsg){
-                       me.loadMask = new Ext.LoadMask(grid.getEl(), {msg:me.loadMsg});
-                       //me.loadMask.show();
-                    }
-                    
-                }
-            },     
-            sm: this.sm,
-            colModel: new Ext.grid.ColumnModel({
-                columns: []
-            }),
-            bbar: new Ext.PagingToolbar({
+        if(!this.noPaging) {
+            bbar = new Ext.PagingToolbar({
                 pageSize: this.pageSize,
                 wfsParam: this,
                 id: this.id+"_paging",
@@ -703,7 +683,32 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 },
                 displayMsg: this.displayMsgPaging,
                 emptyMsg: this.emptyMsg
-            })
+            });
+        }
+        
+        var wfsGridPanel=new Ext.grid.GridPanel({ 
+            title: this.title, 
+            store: [], 
+            id: this.id,
+            layout: "fit",
+           
+            viewConfig : {
+                forceFit: true
+            },
+            listeners: {
+                render: function(grid){
+                    if(me.loadMsg){
+                       me.loadMask = new Ext.LoadMask(grid.getEl(), {msg:me.loadMsg});
+                       //me.loadMask.show();
+                    }
+                    
+                }
+            },     
+            sm: this.sm,
+            colModel: new Ext.grid.ColumnModel({
+                columns: []
+            }),
+            bbar: bbar
         }); 
 
         config = Ext.apply(wfsGridPanel, config || {});
@@ -753,7 +758,9 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                         columns: me.wfsColumns
                                     })
                                     );
-                                me.wfsGrid.getBottomToolbar().bind(store);   
+                                if(me.wfsGrid.getBottomToolbar()) {
+                                    me.wfsGrid.getBottomToolbar().bind(store);
+                                }
                             },
                             load : function(store){
                                  if(me.loadMask)
@@ -828,12 +835,53 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 me.onEmpty.call(null, me);
             }
          };
-        this.wfsGrid.on('activate', function() {
-            this.setTotalRecord(totalHandler);
+        this.wfsGrid.on('activate', function() {            
+            if(this.data) {
+                this.loadData();
+            } else {
+                this.setTotalRecord(totalHandler);
+            }
         }, this, {single: true});
         
         return this.wfsGrid;
-    }  
+    },
+    loadData: function() {
+        var store = new GeoExt.data.FeatureStore({ 
+            //wfsParam: me,
+            //sortInfo: {field: "runEnd", direction: "DESC"},
+            id: this.id+"_store",
+            fields: this.featureFields
+            
+        });
+        
+        if(this.columns){
+            for(kk=0; kk<this.columns.length; kk++){
+                var column = {};
+                Ext.apply(column, this.columns[kk]);
+                if(column.header instanceof Array) {
+                    column.header = new Ext.XTemplate(column.header[GeoExt.Lang.getLocaleIndex()]).apply(this.tplData || {});
+                }
+                if(column.hidden && typeof column.hidden === 'string') {                    
+                    column.hidden = (new Ext.XTemplate(column.hidden).apply(this.tplData || {})) === "true";
+                }
+                this.wfsColumns.push(column);
+            }
+        }
+        
+        this.wfsGrid.reconfigure(
+            store, 
+            new Ext.grid.ColumnModel({
+                columns: this.wfsColumns
+            })
+        );
+        if(this.wfsGrid.getBottomToolbar()) {
+            this.wfsGrid.getBottomToolbar().bind(store);   
+        }
+        
+        store.loadData(new OpenLayers.Format.GeoJSON().read(this.data));
+
+    }
+    
 });
 
 Ext.preg(gxp.plugins.WFSGrid.prototype.ptype, gxp.plugins.WFSGrid);

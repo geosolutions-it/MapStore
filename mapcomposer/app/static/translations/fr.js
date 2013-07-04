@@ -22,7 +22,7 @@ GeoExt.Lang.add("fr", {
         fieldSetTitle: "traitement",
         cancelButton: "annuler le traitement",
         processButton: "exécuter traitement",
-        analyticViewButton: "Regarde analytique:",
+        analyticViewButton: "Regarde analytique",
         weatherLabel: "Conditions météorologiques",  
         temporalLabel: "Conditions orages",
         elabStandardLabel: "Processing Standard",
@@ -32,9 +32,10 @@ GeoExt.Lang.add("fr", {
         defaultExtentLabel: "Regione Piemonte",
         targetsTextBotton: "Cibles",
         areaDamageTextBotton: "Domaines de dommages",
-        roadGraphTextBotton: "Graphique routière"  
+        roadGraphTextBotton: "Graphique routière",  
         wpsTitle: "Errore",
-        wpsError: "Errore nella richiesta al servizio WPS"
+        wpsError: "Errore nella richiesta al servizio WPS",
+        loadMsg: "S'il vous plaît attendre ..."
 
     },
     "gxp.plugins.StandardProcessing.prototype": {
@@ -59,7 +60,7 @@ GeoExt.Lang.add("fr", {
         seriousnessLabel: "Entité",
         resetButton: "réinitialiser",
         cancelButton: "résilier",
-        viewMapButton: "Afficher la carte",
+        viewMapButton: "Lancer le traitement",
         formLabel: "Réglage de traitement",
         bboxValidationTitle: "Sélectionnez Zone d'intérêt",
         requiredMaterial: "Cette formule nécessite la spécification de la substance",
@@ -87,9 +88,9 @@ GeoExt.Lang.add("fr", {
         highRiskLabel: "risque élevé"
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
-        displayMsgPaging: "Targets {0} - {1} of {2}",
-        emptyMsg: "No targets found",
-        loadMsg: "Loading targets ...",
+        displayMsgPaging: "Elements {0} - {1} of {2}",
+        emptyMsg: "No elements found",
+        loadMsg: "S'il vous plaît attendre ...",
     },
     "GeoExplorer.prototype": {
         zoomSliderText: "<div> Niveau de zoom: {zoom}</div><div Echelle: 1:{scale}</div>",

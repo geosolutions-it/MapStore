@@ -21,7 +21,7 @@ GeoExt.Lang.add("en", {
         fieldSetTitle: "processing",
         cancelButton: "Cancel Processing",
         processButton: "Run Processing",
-        analyticViewButton: "Viewing analytical:",
+        analyticViewButton: "Analytical View",
         weatherLabel: "Weather conditions",  
         temporalLabel: "Terms Thunderstorms",
         elabStandardLabel: "processing Standard",
@@ -31,9 +31,10 @@ GeoExt.Lang.add("en", {
         defaultExtentLabel: "Regione Piemonte",
         targetsTextBotton: "Targets",
         areaDamageTextBotton: "Areas of damage",
-        roadGraphTextBotton: "Road graph"  
+        roadGraphTextBotton: "Road graph",  
         wpsTitle: "Errore",
-        wpsError: "Errore nella richiesta al servizio WPS"
+        wpsError: "Errore nella richiesta al servizio WPS",
+        loadMsg: "Loading..."
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Processing",
@@ -57,7 +58,7 @@ GeoExt.Lang.add("en", {
         seriousnessLabel: "entities",
         resetButton: "Reset",
         cancelButton: "Cancel",
-        viewMapButton: "map visualisation",
+        viewMapButton: "Process",
         formLabel: "setting processing",
         bboxValidationTitle: "select area of interest",
         requiredMaterial: "This formula requires the specification of the substance",
@@ -85,9 +86,9 @@ GeoExt.Lang.add("en", {
         highRiskLabel: "high Risk"
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
-        displayMsgPaging: "Targets {0} - {1} of {2}",
-        emptyMsg: "No targets found",
-        loadMsg: "Loading targets ...",
+        displayMsgPaging: "Elements {0} - {1} of {2}",
+        emptyMsg: "No elements found",
+        loadMsg: "Loading ...",
     },
     
     "GeoExplorer.prototype": {
@@ -203,6 +204,10 @@ GeoExt.Lang.add("en", {
         rootNodeText: "Layers",
         overlayNodeText: "SIIG",
         baseNodeText: "Background"
+    },
+    
+    "GeoExt.tree.OverlayLayerContainer" : {
+        text: "SIIG"
     },
 
     "gxp.plugins.Legend.prototype": {

@@ -18,7 +18,7 @@ GeoExt.Lang.add("it", {
         fieldSetTitle: "Elaborazione",
         cancelButton: "Annulla Elaborazione",
         processButton: "Esegui Elaborazione",
-        analyticViewButton: "Visualizzazione Analitica:",
+        analyticViewButton: "Visualizzazione Analitica",
         weatherLabel: "Condizioni Meteo",  
         temporalLabel: "Condizioni Temporali",
         elabStandardLabel: "Elaborazione Standard",
@@ -28,9 +28,10 @@ GeoExt.Lang.add("it", {
         defaultExtentLabel: "Regione Piemonte",
         targetsTextBotton: "Bersagli",
         areaDamageTextBotton: "Aree di danno",
-        roadGraphTextBotton: "Grafo stradale"  
+        roadGraphTextBotton: "Grafo stradale" , 
         wpsTitle: "Errore",
-        wpsError: "Errore nella richiesta al servizio WPS"
+        wpsError: "Errore nella richiesta al servizio WPS",
+        loadMsg: "Caricamento in corso..."
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Elaborazione",
@@ -54,7 +55,7 @@ GeoExt.Lang.add("it", {
         seriousnessLabel: "Entità",
         resetButton: "Reimposta",
         cancelButton: "Annulla",
-        viewMapButton: "Visualizza Mappa",
+        viewMapButton: "Elabora",
         formLabel: "Impostazioni di Elaborazione",
         bboxValidationTitle: "Selezione Area di Interesse",
         requiredMaterial: "Questa formula richiede di specificare la sostanza",
@@ -82,9 +83,9 @@ GeoExt.Lang.add("it", {
         highRiskLabel: "Alto Rischio"
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
-        displayMsgPaging: "Bersagli {0} - {1} di {2}",
-        emptyMsg: "Nessun bersaglio trovato",
-        loadMsg: "Caricamento bersagli in corso...",
+        displayMsgPaging: "Elementi {0} - {1} di {2}",
+        emptyMsg: "Nessun elemento trovato",
+        loadMsg: "Caricamento in corso...",
     },
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Livello di Zoom: {zoom}</div><div>Scala: 1:{scale}</div>",
@@ -199,7 +200,7 @@ GeoExt.Lang.add("it", {
         overlayNodeText: "SIIG",
         baseNodeText: "Sfondo"
     },
-
+    
     "gxp.plugins.Legend.prototype": {
         menuText: "Legenda",
         tooltip: "Legenda"

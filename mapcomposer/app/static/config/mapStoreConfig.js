@@ -123,7 +123,7 @@
             "name": "rischio_totale_ambientale",
             "displayInLayerSwitcher": true,                
             "tiled": false,
-            "env":"low:100;medium:500",
+            "env":"low:100;medium:500;max:1000",
             "riskPanel":true,
             "exclusive":"SIIG"
         },{
@@ -132,7 +132,7 @@
             "name": "rischio_totale_sociale",
             "displayInLayerSwitcher": true,
             "tiled": false,
-            "env":"low:100;medium:500",
+            "env":"low:100;medium:500;max:1000",
             "riskPanel":true,
             "exclusive":"SIIG"
         },{
@@ -141,7 +141,7 @@
             "name": "rischio_totale",
             "displayInLayerSwitcher": true,
             "tiled": false,
-            "env":"lowsociale:100;mediumsociale:500;lowambientale:100;mediumambientale:500",
+            "env":"lowsociale:100;mediumsociale:500;maxsociale:1000;lowambientale:100;mediumambientale:500;maxambientale:1000",
             "riskPanel":true,
             "exclusive":"SIIG"
         },
@@ -459,6 +459,7 @@
         "accidentTipologyName": "tipologia",
         "wfsURL": "http://localhost:8080/geoserver/destination/wfs",
         "wpsURL": "http://localhost:8080/geoserver/wps",        
+        "wpsStore": "destination_test",        
         "wfsVersion" : "1.1.0",
         "destinationNS": "destination",
         "index": 28
@@ -468,882 +469,966 @@
         "outputTarget": "featurelist",
         "srsName" : "EPSG:32632",
         "wfsURL": "http://localhost:8080/geoserver/destination/wfs",
-        "targets": {
-            "Popolazione residente": {
-                "featureType": "popolazione_residente",
-                "fields": [
-                    {
-                        "name": "id",              
-                        "mapping": "id"
-                    },
-                    {
-                        "name": "geometry",        
-                        "mapping": "geometry"
-                    },
-                    {
-                        "name": "id_tema",         
-                        "mapping": "id_tema"
-                    },
-                    {
-                        "name": "residenti",      
-                        "mapping": "residenti"
-                    },
-                    {
-                        "name": "partner",      
-                        "mapping": "partner_${locale}"
-                    }
-                ],
-                "columns": [
-                    {
-                        "header": ["Residents", "Residenti", "résidents", "Bewohner"],
-                        "dataIndex": "residenti"
-                    },
-                    {
-                        "header": ["Partner", "Partner", "Partner", "Partner"],      
-                        "dataIndex": "partner"
-                    }
-                ],
-                "title": ["Resident population", "Popolazione residente", "population résidente", "Wohnbevölkerung"],
-                "name": "POPOLAZIONE RESIDENTE",
-                "id": 1,
-                "type": "umano"
-            },
-            "Popolazione fluttuante turistica": {
-                "featureType": "popolazione_turistica",
-                            
-                "fields": [
-                    {
-                        "name": "id",              
-                        "mapping": "id"
-                    },
-                    {
-                        "name": "geometry",        
-                        "mapping": "geometry"
-                    },
-                    {
-                        "name": "id_tema",         
-                        "mapping": "id_tema"
-                    },
-                    {
-                        "name": "comune",      
-                        "mapping": "denominazione_comune_${locale}"
-                    },
-                    {
-                        "name": "natcode",      
-                        "mapping": "nat_code"
-                    },
-                    {
-                        "name": "presmax",      
-                        "mapping": "pres_max"
-                    },
-                    {
-                        "name": "presmed",      
-                        "mapping": "pres_med"
-                    },
-                    {
-                        "name": "partner",      
-                        "mapping": "partner_${locale}"
-                    }
-                ],
-                "columns": [
-                    {
-                        "header": ["municipality", "Comune", "municipalité", "Gemeinde"],      
-                        "dataIndex": "comune"
-                    },
-                    {
-                        "header": ["NAT Code", "NAT Code", "NAT Code", "NAT Code"],      
-                        "dataIndex": "natcode"
-                    },
-                    {
-                        "header": ["maximum exposure", "Presenza massima", "exposition maximale", "maximale Präsenz"],      
-                        "dataIndex": "presmax"
-                    },
-                    {
-                        "header": ["Average exposure", "Presenza media", "exposition moyenne", "durchschnittliche Präsenz"],      
-                        "dataIndex": "presmed"
-                    },
-                    {
-                        "header": ["Partner", "Partner", "Partner", "Partner"],      
-                        "dataIndex": "partner"
-                    }
-                ],
-                "title": ["floating tourist population", "Popolazione fluttuante turistica", "population touristique flottant", "Floating touristischen Bevölkerung"],
-                "name": "POPOLAZIONE FLUTTUANTE TURISTICA (MAX)",
-                "id": 2,
-                "type": "umano"
-            },
-            "Addetti industria e servizi": {
+        "panels": {
+            "targets": {
+                "Popolazione residente": {
+                    "featureType": "popolazione_residente",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "residenti",      
+                            "mapping": "residenti"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Residents", "Residenti", "résidents", "Bewohner"],
+                            "dataIndex": "residenti"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["Resident population", "Popolazione residente", "population résidente", "Wohnbevölkerung"],
+                    "name": "POPOLAZIONE RESIDENTE",
+                    "id": 1,
+                    "type": "umano"
+                },
+                "Popolazione fluttuante turistica": {
+                    "featureType": "popolazione_turistica",
                                 
-                "featureType": "industria_servizi",
-                "fields": [
-                    {
-                        "name": "id",              
-                        "mapping": "id"
-                    },
-                    {
-                        "name": "geometry",        
-                        "mapping": "geometry"
-                    },
-                    {
-                        "name": "id_tema",         
-                        "mapping": "id_tema"
-                    },
-                    {
-                        "name": "addetti",      
-                        "mapping": "addetti"
-                    },
-                    {
-                        "name": "fonte_addetti",      
-                        "mapping": "fonte_addetti_${locale}"
-                    },
-                    {
-                        "name": "denominazione",      
-                        "mapping": "denominazione_${locale}"
-                    },
-                    {
-                        "name": "codfisc",      
-                        "mapping": "cod_fisc"
-                    },
-                    {
-                        "name": "descrizioneateco",      
-                        "mapping": "descrizione_ateco_${locale}"
-                    },
-                    {
-                        "name": "partner",      
-                        "mapping": "partner_${locale}"
-                    }
-                ],
-                "columns": [
-                    {
-                        "header": ["name", "Denominazione", "nom", "Name"],      
-                        "dataIndex": "denominazione"
-                    },
-                    {
-                        "header": ["Tax Code", "Cod. Fiscale", "Code général des impôts", "Abgabenordnung"],      
-                        "dataIndex": "codfisc"
-                    },
-                    {
-                        "header": ["ATECO Code", "Cod. ATECO", "ATECO code", "ATECO Code"],      
-                        "dataIndex": "codateco"
-                    },
-                    {
-                        "header": ["ATECO Description", "Desc. ATECO", "Description ATECO", "ATECO Beschreibung"],      
-                        "dataIndex": "descrizioneateco"
-                    },
-                    {
-                        "header": ["number of employees", "N. Addetti", "nombre d'employés", "Anzahl der Mitarbeiter"],      
-                        "dataIndex": "addetti"
-                    },
-                    {
-                        "header": ["Source of the employees", "Fonte addetti", "source des employés", "Quelle der Mitarbeiter"],      
-                        "dataIndex": "fonte_addetti"
-                    },
-                    {
-                        "header": ["Partner", "Partner", "Partner", "Partner"],      
-                        "dataIndex": "partner"
-                    }
-                ],
-                "title": ["Industry and Services employees", "Addetti industria e servizi", "employés de l'industrie e des services", "Industrie und Dienstleistungen Mitarbeiter"],
-                "name": "ADDETTI INDUSTRIA E SERVIZI",
-                "id": 4,
-                "type": "umano"
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "comune",      
+                            "mapping": "denominazione_comune_${locale}"
+                        },
+                        {
+                            "name": "natcode",      
+                            "mapping": "nat_code"
+                        },
+                        {
+                            "name": "presmax",      
+                            "mapping": "pres_max"
+                        },
+                        {
+                            "name": "presmed",      
+                            "mapping": "pres_med"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["municipality", "Comune", "municipalité", "Gemeinde"],      
+                            "dataIndex": "comune"
+                        },
+                        {
+                            "header": ["NAT Code", "NAT Code", "NAT Code", "NAT Code"],      
+                            "dataIndex": "natcode"
+                        },
+                        {
+                            "header": ["maximum exposure", "Presenza massima", "exposition maximale", "maximale Präsenz"],      
+                            "dataIndex": "presmax"
+                        },
+                        {
+                            "header": ["Average exposure", "Presenza media", "exposition moyenne", "durchschnittliche Präsenz"],      
+                            "dataIndex": "presmed"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["floating tourist population", "Popolazione fluttuante turistica", "population touristique flottant", "Floating touristischen Bevölkerung"],
+                    "name": "POPOLAZIONE FLUTTUANTE TURISTICA (MAX)",
+                    "id": 2,
+                    "type": "umano"
+                },
+                "Addetti industria e servizi": {
+                                    
+                    "featureType": "industria_servizi",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "addetti",      
+                            "mapping": "addetti"
+                        },
+                        {
+                            "name": "fonte_addetti",      
+                            "mapping": "fonte_addetti_${locale}"
+                        },
+                        {
+                            "name": "denominazione",      
+                            "mapping": "denominazione_${locale}"
+                        },
+                        {
+                            "name": "codfisc",      
+                            "mapping": "cod_fisc"
+                        },
+                        {
+                            "name": "descrizioneateco",      
+                            "mapping": "descrizione_ateco_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["name", "Denominazione", "nom", "Name"],      
+                            "dataIndex": "denominazione"
+                        },
+                        {
+                            "header": ["Tax Code", "Cod. Fiscale", "Code général des impôts", "Abgabenordnung"],      
+                            "dataIndex": "codfisc"
+                        },
+                        {
+                            "header": ["ATECO Code", "Cod. ATECO", "ATECO code", "ATECO Code"],      
+                            "dataIndex": "codateco"
+                        },
+                        {
+                            "header": ["ATECO Description", "Desc. ATECO", "Description ATECO", "ATECO Beschreibung"],      
+                            "dataIndex": "descrizioneateco"
+                        },
+                        {
+                            "header": ["number of employees", "N. Addetti", "nombre d'employés", "Anzahl der Mitarbeiter"],      
+                            "dataIndex": "addetti"
+                        },
+                        {
+                            "header": ["Source of the employees", "Fonte addetti", "source des employés", "Quelle der Mitarbeiter"],      
+                            "dataIndex": "fonte_addetti"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["Industry and Services employees", "Addetti industria e servizi", "employés de l'industrie e des services", "Industrie und Dienstleistungen Mitarbeiter"],
+                    "name": "ADDETTI INDUSTRIA E SERVIZI",
+                    "id": 4,
+                    "type": "umano"
+                },
+                "Addetti/utenti strutture sanitarie": {
+                    "featureType": "strutture_sanitarie",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "addetti",      
+                            "mapping": "addetti"
+                        },
+                        {
+                            "name": "denominazione",      
+                            "mapping": "denominazione_${locale}"
+                        },
+                        {
+                            "name": "descrizione_uso",      
+                            "mapping": "descrizione_uso_${locale}"
+                        },
+                        {
+                            "name": "fonte_addetti",      
+                            "mapping": "fonte_addetti_${locale}"
+                        },
+                        {
+                            "name": "fonte_numero_letti_day_h",      
+                            "mapping": "fonte_numero_letti_day_h_${locale}"
+                        },
+                        {
+                            "name": "nr_letti_dh",      
+                            "mapping": "nr_letti_dh"
+                        },
+                        {
+                            "name": "fonte_numero_letti_ordinari",      
+                            "mapping": "fonte_numero_letti_ordinari_${locale}"
+                        },
+                        {
+                            "name": "letti_ordinari",      
+                            "mapping": "letti_ordinari"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["name", "Denominazione", "nom", "Name"],      
+                            "dataIndex": "denominazione"
+                        },
+                        {
+                            "header": ["Use description", "Desc. Uso", "Description de l'utilisation", "Beschreibung der Verwendung"],      
+                            "dataIndex": "descrizione_uso"
+                        },
+                        {
+                            "header": ["Source of the employees", "Fonte addetti", "source des employés", "Quelle der Mitarbeiter"],      
+                            "dataIndex": "fonte_addetti"
+                        },
+                        {
+                            "header": ["number of employees", "N. Addetti", "nombre d'employés", "Anzahl der Mitarbeiter"],      
+                            "dataIndex": "addetti"
+                        },
+                        {
+                            "header": ["Source day hospital beds.", "Fonte N. Letti day hosp.", "Source day hospital lits", "Quelle day hospital Krankenhausbetten"],      
+                            "dataIndex": "fonte_numero_letti_day_h"
+                        },
+                        {
+                            "header": ["day hospital number of beds", "N. Letti day hosp.", "nombre de lits du day hospital", "Anzahl der Krankenhausbetten"],      
+                            "dataIndex": "nr_letti_dh"
+                        },
+                        {
+                            "header": ["Source day ordin. beds.", "Fonte N. Letti day ordin.", "Source day ordin. lits", "Quelle Anzahl der day ordin. Krankenhausbetten"],      
+                            "dataIndex": "fonte_numero_letti_ordinari"
+                        },
+                        {
+                            "header": ["day ordin. number of beds", "N. Letti day ordin.", "nombre de lits du day ordin.", "Anzahl der day ordin. Krankenhausbetten"],      
+                            "dataIndex": "letti_ordinari"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["employees/users health care facilities", "Addetti/utenti strutture sanitarie", "employés/utilisateurs établissements de soins de santé", "Mitarbeiter/Benutzer Einrichtungen des Gesundheitswesens"],
+                    "name": "ADDETTI/UTENTI STRUTTURE SANITARIE",
+                    "id": 5,
+                    "type": "umano"
+                },
+                "Addetti/utenti strutture scolastiche": {
+                    "featureType": "strutture_scolastiche",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "addetti",      
+                            "mapping": "addetti"
+                        },
+                        {
+                            "name": "descrizione_uso",      
+                            "mapping": "descrizione_uso_${locale}"
+                        },
+                        {
+                            "name": "fonte_iscritti",      
+                            "mapping": "fonte_iscritti_${locale}"
+                        },
+                        {
+                            "name": "iscritti",      
+                            "mapping": "iscritti"
+                        },
+                        {
+                            "name": "fonte_addetti_scuole",      
+                            "mapping": "fonte_addetti_scuole_${locale}"
+                        },
+                        {
+                            "name": "denominazione",      
+                            "mapping": "denominazione_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Name", "Denominazione", "nom", "Name"],      
+                            "dataIndex": "denominazione"
+                        },
+                        {
+                            "header": ["use description", "Desc. Uso", "Description de l'utilisation", "Beschreibung der Verwendung"],      
+                            "dataIndex": "descrizione_uso"
+                        },
+                        {
+                            "header": ["Source members", "Fonte Iscritti", "Source membres", " Quelle Mitglieder"],      
+                            "dataIndex": "fonte_iscritti"
+                        },
+                        {
+                            "header": ["number of members", "N. Iscritti", "nombre des membre", "Anzahl der Mitglieder"],      
+                            "dataIndex": "iscritti"
+                        },
+                        {
+                            "header": ["Source employees", "Fonte Addetti", "Source employes", "Quelle Mitarbeiter"],      
+                            "dataIndex": "fonte_addetti_scuole"
+                        },
+                        {
+                            "header": ["number of employees", "N. Addetti", "nombre d'employés", "Anzahl der Mitarbeiter"],      
+                            "dataIndex": "addetti"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["employees/users schools", "Addetti/utenti strutture scolastiche", "employés/utilisateurs écoles", "Mitarbeiter/Benutzer Schulen"],
+                    "name": "ADDETTI/UTENTI STRUTTURE SCOLASTICHE",
+                    "id": 6,
+                    "type": "umano"
+                },
+                "Addetti/utenti centri commerciali": {
+                    "featureType": "centri_commerciali",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "addetti",      
+                            "mapping": "addetti"
+                        },
+                        {
+                            "name": "denominazione",      
+                            "mapping": "denominazione_${locale}"
+                        },
+                        {
+                            "name": "insegna",      
+                            "mapping": "insegna_${locale}"
+                        },
+                        {
+                            "name": "sup_vendita",      
+                            "mapping": "sup_vendita"
+                        },
+                        {
+                            "name": "fonte_utenti",      
+                            "mapping": "fonte_utenti_${locale}"
+                        },
+                        {
+                            "name": "utenti",      
+                            "mapping": "utenti"
+                        },
+                        {
+                            "name": "fonte_addetti_commercio",      
+                            "mapping": "fonte_addetti_commercio_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["name", "Denominazione", "nom", "Name"],      
+                            "dataIndex": "denominazione"
+                        },
+                        {
+                            "header": ["flag", "Insegna", "enseigne", "Schild"],      
+                            "dataIndex": "insegna"
+                        },
+                        {
+                            "header": ["Sup. sale", "Sup. Vendita", "Sup. vente", "Sup. Verkauf"],      
+                            "dataIndex": "sup_vendita"
+                        },
+                        {
+                            "header": ["Source of the users", "Fonte utenti", "source des utilisateurs", "Quelle der Benutzer"],      
+                            "dataIndex": "fonte_utenti"
+                        },
+                        {
+                            "header": ["number of users", "N. Utenti", "nombre des utilisateurs", "Anzahl der Benutzer"],      
+                            "dataIndex": "utenti"
+                        },
+                        {
+                            "header": ["Source of employees", "Fonte Addetti", "source des employes", "Quelle der Mitarbeiter"],      
+                            "dataIndex": "fonte_addetti_commercio"
+                        },
+                        {
+                            "header": ["number of employees", "N. Addetti", "nombre des employes", "Anzahl der Mitarbeiter"],      
+                            "dataIndex": "addetti"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["employees/users shopping center", "Addetti/utenti centri commerciali", "employés/utilisateurs centre commercial", "Mitarbeiter/Benutzer Einkaufszentrum"],
+                    "name": "ADDETTI/UTENTI CENTRI COMMERCIALI",
+                    "id": 7,
+                    "type": "umano"
+                },
+                "Zone urbanizzate": {
+                    "featureType": "zone_urbanizzate",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "superficie",      
+                            "mapping": "superficie"
+                        },
+                        {
+                            "name": "codice_clc",      
+                            "mapping": "codice_clc"
+                        },
+                        {
+                            "name": "descrizione_clc",      
+                            "mapping": "descrizione_clc_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": [" CLC code", "Codice CLC", "code CLC", "Code CLC"],      
+                            "dataIndex": "codice_clc"
+                        },
+                        {
+                            "header": ["CLC description", "Descrizione CLC", "description CLC", "CLC Beschreibung"],      
+                            "dataIndex": "descrizione_clc"
+                        },
+                        {
+                            "header": ["surface", "Superficie", "surface", "Oberfläche"],      
+                            "dataIndex": "superficie"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["urbanized areas", "Zone urbanizzate", "zones urbanisées", "verstädterten Gebieten"],
+                    "name": "ZONE URBANIZZATE",
+                    "id": 10,
+                    "type": "ambientale"
+                },
+                "Aree boscate": {
+                    "featureType": "aree_boscate",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "superficie",      
+                            "mapping": "superficie"
+                        },
+                        {
+                            "name": "codice_clc",      
+                            "mapping": "codice_clc"
+                        },
+                        {
+                            "name": "descrizione_clc",      
+                            "mapping": "descrizione_clc_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [                    
+                        {
+                            "header": ["Codice CLC", "Codice CLC", "Codice CLC", "Codice CLC"],      
+                            "dataIndex": "codice_clc"
+                        },
+                        {
+                            "header": ["Descrizione CLC", "Descrizione CLC", "Descrizione CLC", "Descrizione CLC"],      
+                            "dataIndex": "descrizione_clc"
+                        },
+                        {
+                            "header": ["Superficie", "Superficie", "Superficie", "Superficie"],      
+                            "dataIndex": "superficie"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["wooded areas", "Aree boscate", "zones boisées", "Waldflächen"],
+                    "name": "AREE BOSCATE",
+                    "id": 11,
+                    "type": "ambientale"
+                },
+                "Aree protette": {
+                    "featureType": "aree_protette",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "denominazione",      
+                            "mapping": "denominazione_${locale}"
+                        },
+                        {
+                            "name": "denominazione_ente",      
+                            "mapping": "denominazione_ente_${locale}"
+                        },
+                        {
+                            "name": "superficie",      
+                            "mapping": "superficie"
+                        },
+                        {
+                            "name": "descrizione_iucn",      
+                            "mapping": "descrizione_iucn_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Denominazione", "Denominazione", "Denominazione", "Denominazione"],      
+                            "dataIndex": "denominazione"
+                        },
+                        {
+                            "header": ["Institution", "Ente", "institution", "Institution"],      
+                            "dataIndex": "denominazione_ente"
+                        },
+                        {
+                            "header": ["IUCN description", "Descrizione IUCN", "description IUCN", "IUCN Beschreibung"],      
+                            "dataIndex": "descrizione_iucn"
+                        },
+                        {
+                            "header": ["Superficie", "Superficie", "Superficie", "Superficie"],      
+                            "dataIndex": "superficie"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["protected areas", "Aree protette", "zones protégées", "Schutzgebiete"],
+                    "name": "AREE PROTETTE",
+                    "id": 12,
+                    "type": "ambientale"
+                },
+                "Aree agricole": {
+                    "featureType": "aree_agricole",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },                    
+                        {
+                            "name": "superficie",      
+                            "mapping": "superficie"
+                        },
+                        {
+                            "name": "codice_clc",      
+                            "mapping": "codice_clc"
+                        },
+                        {
+                            "name": "descrizione_clc",      
+                            "mapping": "descrizione_clc_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Codice CLC", "Codice CLC", "Codice CLC", "Codice CLC"],      
+                            "dataIndex": "codice_clc"
+                        },
+                        {
+                            "header": ["Descrizione CLC", "Descrizione CLC", "Descrizione CLC", "Descrizione CLC"],      
+                            "dataIndex": "descrizione_clc"
+                        },
+                        {
+                            "header": ["Superficie", "Superficie", "Superficie", "Superficie"],      
+                            "dataIndex": "superficie"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["agricultural areas", "Aree agricole", "zones agricoles", "landwirtschaftlichen Flächen"],
+                    "name": "AREE AGRICOLE",
+                    "id": 13,
+                    "type": "ambientale"
+                },
+                "Acque superficiali": {
+                    "featureType": "acque_superficiali",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "denominazione",      
+                            "mapping": "denominazione_${locale}"
+                        },
+                        {
+                            "name": "superficie",      
+                            "mapping": "superficie"
+                        },
+                        {
+                            "name": "profondita_max",      
+                            "mapping": "profondita_max"
+                        },
+                        {
+                            "name": "quota_pdc",      
+                            "mapping": "quota_pdc"
+                        },
+                        {
+                            "name": "codice_clc",      
+                            "mapping": "codice_clc"
+                        },
+                        {
+                            "name": "descrizione_clc",      
+                            "mapping": "descrizione_clc_${locale}"
+                        },
+                        {
+                            "name": "toponimo_completo",      
+                            "mapping": "toponimo_completo_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Denominazione", "Denominazione", "Denominazione", "Denominazione"],      
+                            "dataIndex": "denominazione"
+                        },
+                        {
+                            "header": ["full name", "Toponimo completo", "nom et prénomo", "Vollständiger Nameo"],      
+                            "dataIndex": "toponimo_completo"
+                        },
+                        {
+                            "header": ["Codice CLC", "Codice CLC", "Codice CLC", "Codice CLC"],      
+                            "dataIndex": "codice_clc"
+                        },
+                        {
+                            "header": ["Descrizione CLC", "Descrizione CLC", "Descrizione CLC", "Descrizione CLC"],      
+                            "dataIndex": "descrizione_clc"
+                        },
+                        {
+                            "header": ["Superficie", "Superficie", "Superficie", "Superficie"],      
+                            "dataIndex": "superficie"
+                        },
+                        {
+                            "header": ["maximum depth", "Profondità max", "profondeur maximale", "maximale Tiefe"],      
+                            "dataIndex": "profondita_max"
+                        },
+                        {
+                            "header": ["Quota", "Quota", "Quota", "Quota"],      
+                            "dataIndex": "quota_pdc"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["surface water", "Acque superficiali", "eau de surface", "Oberflächenwasser"],
+                    "id": 15,
+                    "name": "ACQUE SUPERFICIALI",
+                    "type": "ambientale"
+                },
+                "Acque sotterranee": {
+                    "featureType": "acque_sotterranee",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "denominazione",      
+                            "mapping": "denominazione_${locale}"
+                        },
+                        {
+                            "name": "superficie",      
+                            "mapping": "superficie"
+                        },
+                        {
+                            "name": "profondita_max",      
+                            "mapping": "profondita_max"
+                        },
+                        {
+                            "name": "quota_pdc",      
+                            "mapping": "quota_pdc"
+                        },
+                        {
+                            "name": "tipo_captazione",      
+                            "mapping": "tipo_captazione_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Denominazione", "Denominazione", "Denominazione", "Denominazione"],      
+                            "dataIndex": "denominazione"
+                        },
+                        {
+                            "header": ["Tipo captazione", "Tipo captazione", "Tipo captazione", "Tipo captazione"],      
+                            "dataIndex": "tipo_captazione"
+                        },
+                        {
+                            "header": ["Superficie", "Superficie", "Superficie", "Superficie"],      
+                            "dataIndex": "superficie"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["groundwater", "Acque sotterranee", "eaux souterraines", "Grundwasser"],
+                    "id": 14,
+                    "name": "ACQUE SOTTERRANEE",
+                    "type": "ambientale"
+                },
+                "Beni culturali": {
+                    "featureType": "beni_culturali",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "denominazione_bene",      
+                            "mapping": "denominazione_bene_${locale}"
+                        },
+                        {
+                            "name": "superficie",      
+                            "mapping": "superficie"
+                        },
+                        {
+                            "name": "tipologia",      
+                            "mapping": "tipologia_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Type", "Tipologia", "catégorie", "Art"],      
+                            "dataIndex": "tipologia"
+                        },
+                        {
+                            "header": ["Denominazione", "Denominazione", "Denominazione", "Denominazione"],      
+                            "dataIndex": "denominazione_bene"
+                        },
+                        {
+                            "header": ["Superficie", "Superficie", "Superficie", "Superficie"],      
+                            "dataIndex": "superficie"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["cultural heritage", "Beni culturali", "patrimoine culturel", "Kulturerbe"],
+                    "id": 16,
+                    "name": "BENI CULTURALI",
+                    "type": "ambientale"
+                }
+                            
             },
-            "Addetti/utenti strutture sanitarie": {
-                "featureType": "strutture_sanitarie",
-                "fields": [
-                    {
-                        "name": "id",              
-                        "mapping": "id"
-                    },
-                    {
-                        "name": "geometry",        
-                        "mapping": "geometry"
-                    },
-                    {
-                        "name": "id_tema",         
-                        "mapping": "id_tema"
-                    },
-                    {
-                        "name": "addetti",      
-                        "mapping": "addetti"
-                    },
-                    {
-                        "name": "denominazione",      
-                        "mapping": "denominazione_${locale}"
-                    },
-                    {
-                        "name": "descrizione_uso",      
-                        "mapping": "descrizione_uso_${locale}"
-                    },
-                    {
-                        "name": "fonte_addetti",      
-                        "mapping": "fonte_addetti_${locale}"
-                    },
-                    {
-                        "name": "fonte_numero_letti_day_h",      
-                        "mapping": "fonte_numero_letti_day_h_${locale}"
-                    },
-                    {
-                        "name": "nr_letti_dh",      
-                        "mapping": "nr_letti_dh"
-                    },
-                    {
-                        "name": "fonte_numero_letti_ordinari",      
-                        "mapping": "fonte_numero_letti_ordinari_${locale}"
-                    },
-                    {
-                        "name": "letti_ordinari",      
-                        "mapping": "letti_ordinari"
-                    },
-                    {
-                        "name": "partner",      
-                        "mapping": "partner_${locale}"
-                    }
-                ],
-                "columns": [
-                    {
-                        "header": ["name", "Denominazione", "nom", "Name"],      
-                        "dataIndex": "denominazione"
-                    },
-                    {
-                        "header": ["Use description", "Desc. Uso", "Description de l'utilisation", "Beschreibung der Verwendung"],      
-                        "dataIndex": "descrizione_uso"
-                    },
-                    {
-                        "header": ["Source of the employees", "Fonte addetti", "source des employés", "Quelle der Mitarbeiter"],      
-                        "dataIndex": "fonte_addetti"
-                    },
-                    {
-                        "header": ["number of employees", "N. Addetti", "nombre d'employés", "Anzahl der Mitarbeiter"],      
-                        "dataIndex": "addetti"
-                    },
-                    {
-                        "header": ["Source day hospital beds.", "Fonte N. Letti day hosp.", "Source day hospital lits", "Quelle day hospital Krankenhausbetten"],      
-                        "dataIndex": "fonte_numero_letti_day_h"
-                    },
-                    {
-                        "header": ["day hospital number of beds", "N. Letti day hosp.", "nombre de lits du day hospital", "Anzahl der Krankenhausbetten"],      
-                        "dataIndex": "nr_letti_dh"
-                    },
-                    {
-                        "header": ["Source day ordin. beds.", "Fonte N. Letti day ordin.", "Source day ordin. lits", "Quelle Anzahl der day ordin. Krankenhausbetten"],      
-                        "dataIndex": "fonte_numero_letti_ordinari"
-                    },
-                    {
-                        "header": ["day ordin. number of beds", "N. Letti day ordin.", "nombre de lits du day ordin.", "Anzahl der day ordin. Krankenhausbetten"],      
-                        "dataIndex": "letti_ordinari"
-                    },
-                    {
-                        "header": ["Partner", "Partner", "Partner", "Partner"],      
-                        "dataIndex": "partner"
-                    }
-                ],
-                "title": ["employees/users health care facilities", "Addetti/utenti strutture sanitarie", "employés/utilisateurs établissements de soins de santé", "Mitarbeiter/Benutzer Einrichtungen des Gesundheitswesens"],
-                "name": "ADDETTI/UTENTI STRUTTURE SANITARIE",
-                "id": 5,
-                "type": "umano"
+            "roads": {
+                "Grafo Stradale": {
+                    "featureType": "rischio_1",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id_geo_arco"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometria"
+                        },
+                        {
+                            "name": "rischio1",         
+                            "mapping": "rischio1"
+                        },
+                        {
+                            "name": "rischio2",         
+                            "mapping": "rischio2"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Id", "Id", "Id", "Id"],      
+                            "dataIndex": "id"
+                        },
+                        {
+                            "header": ["{formulaDesc}<tpl if=\"target.humans === null && formulaInfo.dependsOnTarget\"> - Sociale</tpl>", "{formulaDesc}<tpl if=\"target.humans === null && formulaInfo.dependsOnTarget\"> - Sociale</tpl>", "{formulaDesc}<tpl if=\"target.humans === null && formulaInfo.dependsOnTarget\"> - Sociale</tpl>", "{formulaDesc}<tpl if=\"target.humans === null && formulaInfo.dependsOnTarget\"> - Sociale</tpl>"],
+                            "dataIndex": "rischio1"
+                        },
+                        {
+                            "header": ["{formulaDesc} - Ambientale", "{formulaDesc} - Ambientale", "{formulaDesc} - Ambientale", "{formulaDesc} - Ambientale"],      
+                            "dataIndex": "rischio2",
+                            "hidden": "{[values.target.humans !== null || !values.formulaInfo.dependsOnTarget]}"
+                        }
+                    ],
+                    "title": ["Archi", "Archi", "Archi", "Archi"],
+                    "id": 1,
+                    "name": "ARCHI",
+                    "type": "all",
+                    "noPaging": true
+                }
             },
-            "Addetti/utenti strutture scolastiche": {
-                "featureType": "strutture_scolastiche",
-                "fields": [
-                    {
-                        "name": "id",              
-                        "mapping": "id"
-                    },
-                    {
-                        "name": "geometry",        
-                        "mapping": "geometry"
-                    },
-                    {
-                        "name": "id_tema",         
-                        "mapping": "id_tema"
-                    },
-                    {
-                        "name": "addetti",      
-                        "mapping": "addetti"
-                    },
-                    {
-                        "name": "descrizione_uso",      
-                        "mapping": "descrizione_uso_${locale}"
-                    },
-                    {
-                        "name": "fonte_iscritti",      
-                        "mapping": "fonte_iscritti_${locale}"
-                    },
-                    {
-                        "name": "iscritti",      
-                        "mapping": "iscritti"
-                    },
-                    {
-                        "name": "fonte_addetti_scuole",      
-                        "mapping": "fonte_addetti_scuole_${locale}"
-                    },
-                    {
-                        "name": "denominazione",      
-                        "mapping": "denominazione_${locale}"
-                    },
-                    {
-                        "name": "partner",      
-                        "mapping": "partner_${locale}"
-                    }
-                ],
-                "columns": [
-                    {
-                        "header": ["Name", "Denominazione", "nom", "Name"],      
-                        "dataIndex": "denominazione"
-                    },
-                    {
-                        "header": ["use description", "Desc. Uso", "Description de l'utilisation", "Beschreibung der Verwendung"],      
-                        "dataIndex": "descrizione_uso"
-                    },
-                    {
-                        "header": ["Source members", "Fonte Iscritti", "Source membres", " Quelle Mitglieder"],      
-                        "dataIndex": "fonte_iscritti"
-                    },
-                    {
-                        "header": ["number of members", "N. Iscritti", "nombre des membre", "Anzahl der Mitglieder"],      
-                        "dataIndex": "iscritti"
-                    },
-                    {
-                        "header": ["Source employees", "Fonte Addetti", "Source employes", "Quelle Mitarbeiter"],      
-                        "dataIndex": "fonte_addetti_scuole"
-                    },
-                    {
-                        "header": ["number of employees", "N. Addetti", "nombre d'employés", "Anzahl der Mitarbeiter"],      
-                        "dataIndex": "addetti"
-                    },
-                    {
-                        "header": ["Partner", "Partner", "Partner", "Partner"],      
-                        "dataIndex": "partner"
-                    }
-                ],
-                "title": ["employees/users schools", "Addetti/utenti strutture scolastiche", "employés/utilisateurs écoles", "Mitarbeiter/Benutzer Schulen"],
-                "name": "ADDETTI/UTENTI STRUTTURE SCOLASTICHE",
-                "id": 6,
-                "type": "umano"
-            },
-            "Addetti/utenti centri commerciali": {
-                "featureType": "centri_commerciali",
-                "fields": [
-                    {
-                        "name": "id",              
-                        "mapping": "id"
-                    },
-                    {
-                        "name": "geometry",        
-                        "mapping": "geometry"
-                    },
-                    {
-                        "name": "id_tema",         
-                        "mapping": "id_tema"
-                    },
-                    {
-                        "name": "addetti",      
-                        "mapping": "addetti"
-                    },
-                    {
-                        "name": "denominazione",      
-                        "mapping": "denominazione_${locale}"
-                    },
-                    {
-                        "name": "insegna",      
-                        "mapping": "insegna_${locale}"
-                    },
-                    {
-                        "name": "sup_vendita",      
-                        "mapping": "sup_vendita"
-                    },
-                    {
-                        "name": "fonte_utenti",      
-                        "mapping": "fonte_utenti_${locale}"
-                    },
-                    {
-                        "name": "utenti",      
-                        "mapping": "utenti"
-                    },
-                    {
-                        "name": "fonte_addetti_commercio",      
-                        "mapping": "fonte_addetti_commercio_${locale}"
-                    },
-                    {
-                        "name": "partner",      
-                        "mapping": "partner_${locale}"
-                    }
-                ],
-                "columns": [
-                    {
-                        "header": ["name", "Denominazione", "nom", "Name"],      
-                        "dataIndex": "denominazione"
-                    },
-                    {
-                        "header": ["flag", "Insegna", "enseigne", "Schild"],      
-                        "dataIndex": "insegna"
-                    },
-                    {
-                        "header": ["Sup. sale", "Sup. Vendita", "Sup. vente", "Sup. Verkauf"],      
-                        "dataIndex": "sup_vendita"
-                    },
-                    {
-                        "header": ["Source of the users", "Fonte utenti", "source des utilisateurs", "Quelle der Benutzer"],      
-                        "dataIndex": "fonte_utenti"
-                    },
-                    {
-                        "header": ["number of users", "N. Utenti", "nombre des utilisateurs", "Anzahl der Benutzer"],      
-                        "dataIndex": "utenti"
-                    },
-                    {
-                        "header": ["Source of employees", "Fonte Addetti", "source des employes", "Quelle der Mitarbeiter"],      
-                        "dataIndex": "fonte_addetti_commercio"
-                    },
-                    {
-                        "header": ["number of employees", "N. Addetti", "nombre des employes", "Anzahl der Mitarbeiter"],      
-                        "dataIndex": "addetti"
-                    },
-                    {
-                        "header": ["Partner", "Partner", "Partner", "Partner"],      
-                        "dataIndex": "partner"
-                    }
-                ],
-                "title": ["employees/users shopping center", "Addetti/utenti centri commerciali", "employés/utilisateurs centre commercial", "Mitarbeiter/Benutzer Einkaufszentrum"],
-                "name": "ADDETTI/UTENTI CENTRI COMMERCIALI",
-                "id": 7,
-                "type": "umano"
-            },
-            "Zone urbanizzate": {
-                "featureType": "zone_urbanizzate",
-                "fields": [
-                    {
-                        "name": "id",              
-                        "mapping": "id"
-                    },
-                    {
-                        "name": "geometry",        
-                        "mapping": "geometry"
-                    },
-                    {
-                        "name": "id_tema",         
-                        "mapping": "id_tema"
-                    },
-                    {
-                        "name": "superficie",      
-                        "mapping": "superficie"
-                    },
-                    {
-                        "name": "codice_clc",      
-                        "mapping": "codice_clc"
-                    },
-                    {
-                        "name": "descrizione_clc",      
-                        "mapping": "descrizione_clc_${locale}"
-                    },
-                    {
-                        "name": "partner",      
-                        "mapping": "partner_${locale}"
-                    }
-                ],
-                "columns": [
-                    {
-                        "header": [" CLC code", "Codice CLC", "code CLC", "Code CLC"],      
-                        "dataIndex": "codice_clc"
-                    },
-                    {
-                        "header": ["CLC description", "Descrizione CLC", "description CLC", "CLC Beschreibung"],      
-                        "dataIndex": "descrizione_clc"
-                    },
-                    {
-                        "header": ["surface", "Superficie", "surface", "Oberfläche"],      
-                        "dataIndex": "superficie"
-                    },
-                    {
-                        "header": ["Partner", "Partner", "Partner", "Partner"],      
-                        "dataIndex": "partner"
-                    }
-                ],
-                "title": ["urbanized areas", "Zone urbanizzate", "zones urbanisées", "verstädterten Gebieten"],
-                "name": "ZONE URBANIZZATE",
-                "id": 10,
-                "type": "ambientale"
-            },
-            "Aree boscate": {
-                "featureType": "aree_boscate",
-                "fields": [
-                    {
-                        "name": "id",              
-                        "mapping": "id"
-                    },
-                    {
-                        "name": "geometry",        
-                        "mapping": "geometry"
-                    },
-                    {
-                        "name": "id_tema",         
-                        "mapping": "id_tema"
-                    },
-                    {
-                        "name": "superficie",      
-                        "mapping": "superficie"
-                    },
-                    {
-                        "name": "codice_clc",      
-                        "mapping": "codice_clc"
-                    },
-                    {
-                        "name": "descrizione_clc",      
-                        "mapping": "descrizione_clc_${locale}"
-                    },
-                    {
-                        "name": "partner",      
-                        "mapping": "partner_${locale}"
-                    }
-                ],
-                "columns": [                    
-                    {
-                        "header": ["Codice CLC", "Codice CLC", "Codice CLC", "Codice CLC"],      
-                        "dataIndex": "codice_clc"
-                    },
-                    {
-                        "header": ["Descrizione CLC", "Descrizione CLC", "Descrizione CLC", "Descrizione CLC"],      
-                        "dataIndex": "descrizione_clc"
-                    },
-                    {
-                        "header": ["Superficie", "Superficie", "Superficie", "Superficie"],      
-                        "dataIndex": "superficie"
-                    },
-                    {
-                        "header": ["Partner", "Partner", "Partner", "Partner"],      
-                        "dataIndex": "partner"
-                    }
-                ],
-                "title": ["wooded areas", "Aree boscate", "zones boisées", "Waldflächen"],
-                "name": "AREE BOSCATE",
-                "id": 11,
-                "type": "ambientale"
-            },
-            "Aree protette": {
-                "featureType": "aree_protette",
-                "fields": [
-                    {
-                        "name": "id",              
-                        "mapping": "id"
-                    },
-                    {
-                        "name": "geometry",        
-                        "mapping": "geometry"
-                    },
-                    {
-                        "name": "id_tema",         
-                        "mapping": "id_tema"
-                    },
-                    {
-                        "name": "denominazione",      
-                        "mapping": "denominazione_${locale}"
-                    },
-                    {
-                        "name": "denominazione_ente",      
-                        "mapping": "denominazione_ente_${locale}"
-                    },
-                    {
-                        "name": "superficie",      
-                        "mapping": "superficie"
-                    },
-                    {
-                        "name": "descrizione_iucn",      
-                        "mapping": "descrizione_iucn_${locale}"
-                    },
-                    {
-                        "name": "partner",      
-                        "mapping": "partner_${locale}"
-                    }
-                ],
-                "columns": [
-                    {
-                        "header": ["Denominazione", "Denominazione", "Denominazione", "Denominazione"],      
-                        "dataIndex": "denominazione"
-                    },
-                    {
-                        "header": ["Institution", "Ente", "institution", "Institution"],      
-                        "dataIndex": "denominazione_ente"
-                    },
-                    {
-                        "header": ["IUCN description", "Descrizione IUCN", "description IUCN", "IUCN Beschreibung"],      
-                        "dataIndex": "descrizione_iucn"
-                    },
-                    {
-                        "header": ["Superficie", "Superficie", "Superficie", "Superficie"],      
-                        "dataIndex": "superficie"
-                    },
-                    {
-                        "header": ["Partner", "Partner", "Partner", "Partner"],      
-                        "dataIndex": "partner"
-                    }
-                ],
-                "title": ["protected areas", "Aree protette", "zones protégées", "Schutzgebiete"],
-                "name": "AREE PROTETTE",
-                "id": 12,
-                "type": "ambientale"
-            },
-            "Aree agricole": {
-                "featureType": "aree_agricole",
-                "fields": [
-                    {
-                        "name": "id",              
-                        "mapping": "id"
-                    },
-                    {
-                        "name": "geometry",        
-                        "mapping": "geometry"
-                    },
-                    {
-                        "name": "id_tema",         
-                        "mapping": "id_tema"
-                    },                    
-                    {
-                        "name": "superficie",      
-                        "mapping": "superficie"
-                    },
-                    {
-                        "name": "codice_clc",      
-                        "mapping": "codice_clc"
-                    },
-                    {
-                        "name": "descrizione_clc",      
-                        "mapping": "descrizione_clc_${locale}"
-                    },
-                    {
-                        "name": "partner",      
-                        "mapping": "partner_${locale}"
-                    }
-                ],
-                "columns": [
-                    {
-                        "header": ["Codice CLC", "Codice CLC", "Codice CLC", "Codice CLC"],      
-                        "dataIndex": "codice_clc"
-                    },
-                    {
-                        "header": ["Descrizione CLC", "Descrizione CLC", "Descrizione CLC", "Descrizione CLC"],      
-                        "dataIndex": "descrizione_clc"
-                    },
-                    {
-                        "header": ["Superficie", "Superficie", "Superficie", "Superficie"],      
-                        "dataIndex": "superficie"
-                    },
-                    {
-                        "header": ["Partner", "Partner", "Partner", "Partner"],      
-                        "dataIndex": "partner"
-                    }
-                ],
-                "title": ["agricultural areas", "Aree agricole", "zones agricoles", "landwirtschaftlichen Flächen"],
-                "name": "AREE AGRICOLE",
-                "id": 13,
-                "type": "ambientale"
-            },
-            "Acque superficiali": {
-                "featureType": "acque_superficiali",
-                "fields": [
-                    {
-                        "name": "id",              
-                        "mapping": "id"
-                    },
-                    {
-                        "name": "geometry",        
-                        "mapping": "geometry"
-                    },
-                    {
-                        "name": "id_tema",         
-                        "mapping": "id_tema"
-                    },
-                    {
-                        "name": "denominazione",      
-                        "mapping": "denominazione_${locale}"
-                    },
-                    {
-                        "name": "superficie",      
-                        "mapping": "superficie"
-                    },
-                    {
-                        "name": "profondita_max",      
-                        "mapping": "profondita_max"
-                    },
-                    {
-                        "name": "quota_pdc",      
-                        "mapping": "quota_pdc"
-                    },
-                    {
-                        "name": "codice_clc",      
-                        "mapping": "codice_clc"
-                    },
-                    {
-                        "name": "descrizione_clc",      
-                        "mapping": "descrizione_clc_${locale}"
-                    },
-                    {
-                        "name": "toponimo_completo",      
-                        "mapping": "toponimo_completo_${locale}"
-                    },
-                    {
-                        "name": "partner",      
-                        "mapping": "partner_${locale}"
-                    }
-                ],
-                "columns": [
-                    {
-                        "header": ["Denominazione", "Denominazione", "Denominazione", "Denominazione"],      
-                        "dataIndex": "denominazione"
-                    },
-                    {
-                        "header": ["full name", "Toponimo completo", "nom et prénomo", "Vollständiger Nameo"],      
-                        "dataIndex": "toponimo_completo"
-                    },
-                    {
-                        "header": ["Codice CLC", "Codice CLC", "Codice CLC", "Codice CLC"],      
-                        "dataIndex": "codice_clc"
-                    },
-                    {
-                        "header": ["Descrizione CLC", "Descrizione CLC", "Descrizione CLC", "Descrizione CLC"],      
-                        "dataIndex": "descrizione_clc"
-                    },
-                    {
-                        "header": ["Superficie", "Superficie", "Superficie", "Superficie"],      
-                        "dataIndex": "superficie"
-                    },
-                    {
-                        "header": ["maximum depth", "Profondità max", "profondeur maximale", "maximale Tiefe"],      
-                        "dataIndex": "profondita_max"
-                    },
-                    {
-                        "header": ["Quota", "Quota", "Quota", "Quota"],      
-                        "dataIndex": "quota_pdc"
-                    },
-                    {
-                        "header": ["Partner", "Partner", "Partner", "Partner"],      
-                        "dataIndex": "partner"
-                    }
-                ],
-                "title": ["surface water", "Acque superficiali", "eau de surface", "Oberflächenwasser"],
-                "id": 15,
-                "name": "ACQUE SUPERFICIALI",
-                "type": "ambientale"
-            },
-            "Acque sotterranee": {
-                "featureType": "acque_sotterranee",
-                "fields": [
-                    {
-                        "name": "id",              
-                        "mapping": "id"
-                    },
-                    {
-                        "name": "geometry",        
-                        "mapping": "geometry"
-                    },
-                    {
-                        "name": "id_tema",         
-                        "mapping": "id_tema"
-                    },
-                    {
-                        "name": "denominazione",      
-                        "mapping": "denominazione_${locale}"
-                    },
-                    {
-                        "name": "superficie",      
-                        "mapping": "superficie"
-                    },
-                    {
-                        "name": "profondita_max",      
-                        "mapping": "profondita_max"
-                    },
-                    {
-                        "name": "quota_pdc",      
-                        "mapping": "quota_pdc"
-                    },
-                    {
-                        "name": "tipo_captazione",      
-                        "mapping": "tipo_captazione_${locale}"
-                    },
-                    {
-                        "name": "partner",      
-                        "mapping": "partner_${locale}"
-                    }
-                ],
-                "columns": [
-                    {
-                        "header": ["Denominazione", "Denominazione", "Denominazione", "Denominazione"],      
-                        "dataIndex": "denominazione"
-                    },
-                    {
-                        "header": ["Tipo captazione", "Tipo captazione", "Tipo captazione", "Tipo captazione"],      
-                        "dataIndex": "tipo_captazione"
-                    },
-                    {
-                        "header": ["Superficie", "Superficie", "Superficie", "Superficie"],      
-                        "dataIndex": "superficie"
-                    },
-                    {
-                        "header": ["Partner", "Partner", "Partner", "Partner"],      
-                        "dataIndex": "partner"
-                    }
-                ],
-                "title": ["groundwater", "Acque sotterranee", "eaux souterraines", "Grundwasser"],
-                "id": 14,
-                "name": "ACQUE SOTTERRANEE",
-                "type": "ambientale"
-            },
-            "Beni culturali": {
-                "featureType": "beni_culturali",
-                "fields": [
-                    {
-                        "name": "id",              
-                        "mapping": "id"
-                    },
-                    {
-                        "name": "geometry",        
-                        "mapping": "geometry"
-                    },
-                    {
-                        "name": "id_tema",         
-                        "mapping": "id_tema"
-                    },
-                    {
-                        "name": "denominazione_bene",      
-                        "mapping": "denominazione_bene_${locale}"
-                    },
-                    {
-                        "name": "superficie",      
-                        "mapping": "superficie"
-                    },
-                    {
-                        "name": "tipologia",      
-                        "mapping": "tipologia_${locale}"
-                    },
-                    {
-                        "name": "partner",      
-                        "mapping": "partner_${locale}"
-                    }
-                ],
-                "columns": [
-                    {
-                        "header": ["Type", "Tipologia", "catégorie", "Art"],      
-                        "dataIndex": "tipologia"
-                    },
-                    {
-                        "header": ["Denominazione", "Denominazione", "Denominazione", "Denominazione"],      
-                        "dataIndex": "denominazione_bene"
-                    },
-                    {
-                        "header": ["Superficie", "Superficie", "Superficie", "Superficie"],      
-                        "dataIndex": "superficie"
-                    },
-                    {
-                        "header": ["Partner", "Partner", "Partner", "Partner"],      
-                        "dataIndex": "partner"
-                    }
-                ],
-                "title": ["cultural heritage", "Beni culturali", "patrimoine culturel", "Kulturerbe"],
-                "id": 16,
-                "name": "BENI CULTURALI",
-                "type": "ambientale"
+            "damage": {
+                "Aree di danno": {
+                    "featureType": "buffer_1",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id_geo_arco"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometria"
+                        },
+                        {
+                            "name": "name",         
+                            "mapping": "name"
+                        },
+                        {
+                            "name": "distanza",         
+                            "mapping": "distance"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Fascia", "Fascia", "Fascia", "Fascia"],
+                            "dataIndex": "name"
+                        },
+                        {
+                            "header": ["Distanza", "Distanza", "Distanza", "Distanza"],
+                            "dataIndex": "distanza"
+                        }
+                    ],
+                    "title": ["Aree di danno", "Aree di danno", "Aree di danno", "Aree di danno"],
+                    "id": 1,
+                    "name": "DAMAGEAREA",
+                    "type": "all",
+                    "noPaging": true
+                }
             }
-                        
         },
+        "currentPanel": "targets",
                 "actionColumns" : [ 
                     {
                       "type": "checkDisplay",

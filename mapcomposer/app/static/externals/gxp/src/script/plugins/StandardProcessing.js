@@ -255,6 +255,15 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
               },{
                         "name": "gravita",              
                         "mapping": "gravita"
+              },{
+                        "name": "tema_low",              
+                        "mapping": "tema_low"
+              },{
+                        "name": "tema_medium",              
+                        "mapping": "tema_medium"
+              },{
+                        "name": "tema_max",              
+                        "mapping": "tema_max"
               }],
              proxy: this.getWFSStoreProxy(this.formulaFeature, formulaFilter, 'ordine_visibilita') , 
              autoLoad: true 
@@ -338,7 +347,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var hasTargets = record.get('bersagli_tutti') || record.get('bersagli_umani') || record.get('bersagli_ambientali');
         this.enableDisable(hasTargets, this.macrobers);
         this.enableDisable(hasTargets, this.bers);
-        this.enableDisable(hasTargets, this.temasPanel);
+        //this.enableDisable(hasTargets, this.temasPanel);
         
         if(hasTargets) {
             var data;
@@ -369,7 +378,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         } else {
             store.clearFilter();
         }
-        this.updateTemaSliders(type);
+        //this.updateTemaSliders(type);
         
         this.bers.setValue(null);
     },
@@ -661,7 +670,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 scope: this,
                 select: function(cb, record, index) {
-                    this.updateTemaSliders(record.get('humans'));                    
+                    //this.updateTemaSliders(record.get('humans'));                    
                 },
                 expand: function(combo) {
                     combo.list.setWidth( 'auto' );
@@ -1457,10 +1466,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             this.bers.setValue(value);
             this.bers.fireEvent('select',this.bers, store.getAt(store.findExact("name", value)));
         }
-        Ext.getCmp('rischio_sociale_multislider').setValue(0, status.themas.sociale[0]);
+        /*Ext.getCmp('rischio_sociale_multislider').setValue(0, status.themas.sociale[0]);
         Ext.getCmp('rischio_sociale_multislider').setValue(1, status.themas.sociale[1]);
         Ext.getCmp('rischio_ambientale_multislider').setValue(0, status.themas.ambientale[0]);
-        Ext.getCmp('rischio_ambientale_multislider').setValue(1, status.themas.ambientale[1]);        
+        Ext.getCmp('rischio_ambientale_multislider').setValue(1, status.themas.ambientale[1]);        */
         
         
         this.setComboStatus(this.weather, 'weather');
@@ -1525,9 +1534,50 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         obj.sostanza = this.getComboRecord(this.sostanze).data; //this.sostanze.getValue();
         obj.accident = this.getComboRecord(this.accident).data; //this.accident.getValue();
         obj.seriousness = this.getComboRecord(this.seriousness).data; //this.seriousness.getValue();
+        
+        var low = parseFloat(formulaRec.get('tema_low'));
+        var medium = parseFloat(formulaRec.get('tema_medium'));
+        var max = parseFloat(formulaRec.get('tema_max'));
+        
         obj.themas = {
-            'sociale': [100,500,1000], //Ext.getCmp('rischio_sociale_multislider').getValues(),
-            'ambientale': [100,500,1000] //Ext.getCmp('rischio_ambientale_multislider').getValues()
+            'sociale': [low,medium,max], //Ext.getCmp('rischio_sociale_multislider').getValues(),
+            'ambientale': [low,medium,max] //Ext.getCmp('rischio_ambientale_multislider').getValues()
+        };
+
+        return obj;
+    },
+    
+    getInitialStatus: function() {
+        var obj = {};
+    
+        obj.processing = 1;        
+        obj.processingDesc = '';
+        obj.formula = 26;
+        obj.formulaDesc = '';
+        var formulaRec = {};
+        obj.formulaInfo = {
+            dependsOnTarget: true,
+            dependsOnArcs: true
+        };                
+        
+        obj.target = {humans: null, code:'-2', layer: 'bersagli_all', severeness: '1,2,3,4,5'}; 
+        obj.macroTarget = {};
+        
+        obj.weather = "0";
+        obj.temporal = "0";
+        
+        obj.classe = {ivalue:"0"};
+        obj.sostanza = {value:"0", id: [1,2,3,4,5,6,7,8,9,10]};
+        obj.accident = {value:"0", id: [1,2,3,4,5,6,7,8,9,10,11]};
+        obj.seriousness = {value:"0", id: [0,1]};
+        
+        var low = 100;
+        var medium = 500;
+        var max = 1000;
+        
+        obj.themas = {
+            'sociale': [low,medium,max], //Ext.getCmp('rischio_sociale_multislider').getValues(),
+            'ambientale': [low,medium,max] //Ext.getCmp('rischio_ambientale_multislider').getValues()
         };
 
         return obj;

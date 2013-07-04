@@ -358,7 +358,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         var sliderEnv = this.layerRecord.get("layer").params.ENV.split(";");
         var envArray=[];
         
-        var checkEnv = ["low","medium","lowsociale","mediumsociale","lowambientale","mediumambientale"];
+        var checkEnv = ["low","medium","max","lowsociale","mediumsociale","maxsociale","lowambientale","mediumambientale","maxambientale"];
         
         var hasBoth = false;        
         
@@ -384,23 +384,23 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                 increment: 0.1,
                 ranges: [
                 {
-                    maxValue: envArray[0].split(":")[1],
+                    maxValue: parseFloat(envArray[0].split(":")[1]),
                     name:this.minRangeSliderText, 
                     id:"range_low_sociale_panel"
                 },
                 {
-                    maxValue: envArray[1].split(":")[1],
+                    maxValue: parseFloat(envArray[1].split(":")[1]),
                     name:this.medRangeSliderText, 
                     id:"range_medium_sociale_panel"
                 },
                 {
-                    maxValue: 1000,
+                    maxValue: parseFloat(envArray[2].split(":")[1]),
                     name:this.maxRangeSliderText
                 }
                 ],                                        
                 width   : 328,
                 minValue: 0,
-                maxValue: 1000
+                maxValue: parseFloat(envArray[2].split(":")[1])
             }
         });
         
@@ -415,24 +415,24 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                 increment: 0.1,
                 ranges: [
                 {
-                    maxValue: envArray.length > 2 ? envArray[2].split(":")[1] : envArray[0].split(":")[1],
+                    maxValue: envArray.length > 3 ? parseFloat(envArray[3].split(":")[1]) : parseFloat(envArray[0].split(":")[1]),
                     name:this.minRangeSliderText,
                     id:"range_low_ambientale_panel"
                 },
 
                 {
-                    maxValue: envArray.length > 2 ? envArray[3].split(":")[1] : envArray[1].split(":")[1],
+                    maxValue: envArray.length > 3 ? parseFloat(envArray[4].split(":")[1]) : parseFloat(envArray[1].split(":")[1]),
                     name:this.medRangeSliderText, 
                     id:"range_medium_ambientale_panel"
                 },
                 {
-                    maxValue: 1000, 
+                    maxValue: envArray.length > 3 ? parseFloat(envArray[5].split(":")[1]) : parseFloat(envArray[2].split(":")[1]), 
                     name:this.maxRangeSliderText
                 }
                 ],                                        
                 width   : 328,
                 minValue: 0,
-                maxValue: 1000
+                maxValue: envArray.length > 3 ? parseFloat(envArray[5].split(":")[1]) : parseFloat(envArray[2].split(":")[1])
             }
         });
         
@@ -447,24 +447,24 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                 increment: 0.1,
                 ranges: [
                 {
-                    maxValue: sliderEnv[0].split(":")[1],
+                    maxValue: parseFloat(sliderEnv[0].split(":")[1]),
                     name:this.minRangeSliderText,
                     id:"range_low_panel"
                 },
 
                 {
-                    maxValue: sliderEnv[1].split(":")[1],
+                    maxValue: parseFloat(sliderEnv[1].split(":")[1]),
                     name:this.medRangeSliderText, 
                     id:"range_medium_panel"
                 },
                 {
-                    maxValue: 1000, 
+                    maxValue: parseFloat(envArray[2].split(":")[1]), 
                     name:this.maxRangeSliderText
                 }
                 ],                                        
                 width   : 328,
                 minValue: 0,
-                maxValue: 1000
+                maxValue: parseFloat(envArray[2].split(":")[1])
             }
         });
         
@@ -536,9 +536,8 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                     var layer = this.layerRecord.get("layer");
                     var env = layer.params.ENV;
                     var sliderEnv = env.split(";");
-                    var envArray = [];
-                    
-                    var checkEnv = ["low","medium","lowsociale","mediumsociale","lowambientale","mediumambientale"];
+                    var envArray = [];                    
+                    var checkEnv = ["low","medium","max","lowsociale","mediumsociale","maxsociale","lowambientale","mediumambientale","maxambientale"];
                     
                     for (var i = 0;i<sliderEnv.length;i++){
                         if (checkEnv.indexOf(sliderEnv[i].split(":")[0]) == -1){

@@ -48,6 +48,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     roadGraphTextBotton: "Grafo stradale",    
     wpsTitle: "Errore",
     wpsError: "Errore nella richiesta al servizio WPS",
+    loadMsg: "Caricamento in corso...",
     // End i18n.
         
     id: "syntheticview",
@@ -98,6 +99,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     aoi: null,
     wpsURL: '',
+    wpsStore:'',
+    
+    processingDone: true,
     
     /** private: method[constructor]
      *  :arg config: ``Object``
@@ -525,7 +529,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     //this.restoreOriginalRiskLayers(map);
                     this.enableDisableRoads(true);
                     
-                    Ext.getCmp("south").collapse();  
+                    this.disableAnalyticView();  
+
+                    this.processingDone = false;
+                    
+                    Ext.getCmp('analytic_view').disable();
                 }
             }, {
                 text: this.processButton,
@@ -578,13 +586,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 
         //set analytic button toolbar with bottons
         var analyticViewBbar =  [{
-                    xtype: 'tbtext',
-                    text: this.analyticViewButton
-                },{
                     xtype: 'button',
-                    id: "targets_view",
+                    id: "analytic_view",
                     iconCls: 'analytic-view-button',
-                    text: this.targetsTextBotton,
+                    text: this.analyticViewButton,
                     scope: this,
                     listeners: {
                         enable: function(){
@@ -595,14 +600,34 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         }
                     },
                     handler: this.analyticView
+                },'->',{
+                    xtype: 'button',
+                    id: "targets_view",
+                    iconCls: 'analytic-view-button',
+                    text: this.targetsTextBotton,
+                    scope: this,
+                    toggleGroup: 'analytic_buttons',
+                    enableToggle: true,
+                    pressed: true,
+                    disabled:true,
+                    handler: function(btn) {
+                        var wfsGrid = Ext.getCmp("featuregrid");
+                        wfsGrid.setCurrentPanel('targets');
+                        this.loadTargetGrids();
+                    }
                 },{
                     xtype: 'button',
                     id: "areaDamage_view",
                     iconCls: 'analytic-view-button',
                     text: this.areaDamageTextBotton,
                     scope: this,
+                    toggleGroup: 'analytic_buttons',
+                    enableToggle: true,
+                    disabled:true,
                     handler: function(btn) {
-                        Ext.Msg.alert(this.areaDamageTextBotton,"Not Yet Implemented!");
+                        var wfsGrid = Ext.getCmp("featuregrid");
+                        wfsGrid.setCurrentPanel('damage');                        
+                        this.loadDamageGrid();
                     }
                 },{
                     xtype: 'button',
@@ -610,8 +635,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     iconCls: 'analytic-view-button',
                     text: this.roadGraphTextBotton,
                     scope: this,
-                    handler: function(btn) {
-                        Ext.Msg.alert(this.roadGraphTextBotton,"Not Yet Implemented!");
+                    toggleGroup: 'analytic_buttons',
+                    enableToggle: true,
+                    disabled:true,
+                    handler: function(btn) {                        
+                        var wfsGrid = Ext.getCmp("featuregrid");
+                        wfsGrid.setCurrentPanel('roads');
+                        this.loadRoadsGrid();                        
                     }
                 }];        
         
@@ -629,17 +659,214 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             Ext.getCmp(this.outputTarget).setActiveTab(this.controlPanel);
         
         this.target.mapPanel.map.events.register('zoomend', this, function(){
-            var scale = this.target.mapPanel.map.getScale();
-            scale = Math.round(scale);
+            var scale = this.getMapScale();
             
-            if(scale <= this.analiticViewScale) {
+            if(scale <= this.analiticViewScale && this.processingDone) {
+                Ext.getCmp("analytic_view").enable();
+                /*
                 Ext.getCmp("targets_view").enable();
+                Ext.getCmp("areaDamage_view").enable();
+                Ext.getCmp("roadGraph_view").enable();
+                */
             } else {
+                Ext.getCmp("analytic_view").disable();
+                /*
                 Ext.getCmp("targets_view").disable();
+                Ext.getCmp("areaDamage_view").disable();
+                Ext.getCmp("roadGraph_view").disable();
+                */
             }
         });
         
         return this.controlPanel;
+    },
+    
+    loadRoadsGrid: function() {
+        var wfsGrid = Ext.getCmp("featuregrid");
+        
+        var map = this.target.mapPanel.map;        
+        var status = this.getStatus();        
+       
+        
+        /*var viewParams = "bounds:" + bounds;
+        wfsGrid.loadGrids(undefined, undefined, this.selectionLayerProjection, viewParams);*/
+        
+        var status = this.status;
+        var targetId = this.getChosenTarget(status);            
+        var me = this;
+        
+        var riskProcess = this.wpsClient.getProcess('destination', 'gs:RiskCalculator');  
+        var bounds;
+        if(status && status.roi) {
+            bounds = new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX());
+        } else {
+            bounds = map.getExtent();
+        }         
+        
+        var filter = new OpenLayers.Filter.Spatial({ 
+          type: OpenLayers.Filter.Spatial.BBOX,
+          property: 'geometria',
+          value: bounds, 
+          projection: map.getProjection() 
+       });
+        wfsGrid.getEl().mask(this.loadMsg);
+        //riskProcess.describe({callback: function() {
+            //riskProcess.setResponseForm([{}], {supportedFormats: {'application/json':true}});
+        riskProcess.execute({
+            // spatial input can be a feature or a geometry or an array of
+            // features or geometries
+            inputs: {
+                features: new OpenLayers.WPSProcess.ReferenceData({
+                    href:'http://geoserver/wfs', 
+                    method:'POST', mimeType: 'text/xml', 
+                    body: {
+                        wfs: {
+                            featureType: 'destination:siig_geo_ln_arco_1', 
+                            version: '1.1.0',
+                            filter: filter
+                        }
+                    }
+                }),
+                store: new OpenLayers.WPSProcess.LiteralData({value:this.wpsStore}),
+                formula: new OpenLayers.WPSProcess.LiteralData({value:status.formula}),
+                target: new OpenLayers.WPSProcess.LiteralData({value:targetId}),
+                materials: new OpenLayers.WPSProcess.LiteralData({value:status.sostanza.id.join(',')}),
+                scenarios: new OpenLayers.WPSProcess.LiteralData({value:status.accident.id.join(',')}),
+                entities: new OpenLayers.WPSProcess.LiteralData({value:status.seriousness.id.join(',')}),
+                severeness: new OpenLayers.WPSProcess.LiteralData({value:status.formulaInfo.dependsOnTarget ? status.target.severeness : '0'})
+            },
+            outputs: [new OpenLayers.WPSProcess.Output({
+                mimeType: 'application/json'
+            })],
+            type: "raw",
+            success: function(json) {
+                wfsGrid.getEl().unmask();
+                wfsGrid.loadGridsFromJson(undefined, undefined, {"ARCHI": Ext.decode(json)}, status);
+            }
+        }); 
+        //}});
+        
+        
+        
+    },
+    
+    loadDamageGrid: function() {
+        var wfsGrid = Ext.getCmp("featuregrid");
+        
+        var map = this.target.mapPanel.map;        
+        var status = this.getStatus();                
+        
+        /*var viewParams = "bounds:" + bounds;
+        wfsGrid.loadGrids(undefined, undefined, this.selectionLayerProjection, viewParams);*/
+        
+        var status = this.status;
+        var targetId = this.getChosenTarget(status);            
+        var me = this;
+        
+        var riskProcess = this.wpsClient.getProcess('destination', 'ds:MultipleBuffer');  
+        
+        var bounds;
+        if(status && status.roi) {
+            bounds = new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX());
+        } else {
+            bounds = map.getExtent();
+        }   
+        
+        var radius = this.getRadius();
+        var distances = [];
+        var distanceNames = [];
+        if(radius.radiusNotHum) {
+            distances.push(new OpenLayers.WPSProcess.LiteralData({value: radius.radiusNotHum}));
+            distanceNames.push(new OpenLayers.WPSProcess.LiteralData({value: 'ambientale'}));
+        }
+        if(radius.radiusHum) {
+            for(var i=0; i<radius.radiusHum.length; i++) {
+                if(radius.radiusHum[i]) {
+                    distances.push(new OpenLayers.WPSProcess.LiteralData({value: radius.radiusHum[i]}));
+                    distanceNames.push(new OpenLayers.WPSProcess.LiteralData({value: 'sociale' + i}));
+                }
+            }
+        }
+        
+        var filter = new OpenLayers.Filter.Spatial({ 
+          type: OpenLayers.Filter.Spatial.BBOX,
+          property: 'geometria',
+          value: bounds, 
+          projection: map.getProjection() 
+       });
+        wfsGrid.getEl().mask(this.loadMsg);
+        //riskProcess.describe({callback: function() {
+            //riskProcess.setResponseForm([{}], {supportedFormats: {'application/json':true}});
+        riskProcess.execute({
+            // spatial input can be a feature or a geometry or an array of
+            // features or geometries
+            inputs: {
+                features: new OpenLayers.WPSProcess.ReferenceData({
+                    href:'http://geoserver/wfs', 
+                    method:'POST', mimeType: 'text/xml', 
+                    body: {
+                        wfs: {
+                            featureType: 'destination:siig_geo_ln_arco_1', 
+                            version: '1.1.0',
+                            filter: filter
+                        }
+                    }
+                }),
+                distances: distances,
+                distanceNames: distanceNames
+            },
+            outputs: [new OpenLayers.WPSProcess.Output({
+                mimeType: 'application/json'
+            })],
+            type: "raw",
+            success: function(json) {
+                wfsGrid.getEl().unmask();
+                var json = Ext.decode(json);
+                var refactoredJson = {type: "FeatureCollection", features:[]};
+                var geomPos = 1;
+                if(json.features.length > 0) {
+                    var item = json.features[0];
+                    
+                    if(item.properties.ambientale) {
+                        refactoredJson.features.push({
+                            geometry: item.geometry,
+                            id: "5",
+                            type: "Feature",
+                            properties: {
+                                name: "Ambientale",
+                                distance: item.properties.ambientale
+                            }
+                        });
+                        geomPos++;
+                    }
+                    for(var propName in item.properties) {
+                        if(item.properties.hasOwnProperty(propName)) {
+                            if(propName.indexOf('sociale') === 0) {
+                                var geometry = geomPos === 1 ? item.geometry : item.properties['geometria' + geomPos];
+                                var humPos = parseInt(propName.substring(7), 10);
+                                refactoredJson.features.push({
+                                    geometry: geometry,
+                                    id: humPos + 1,
+                                    type: "Feature",
+                                    properties: {
+                                        name: me.severeness[GeoExt.Lang.getLocaleIndex()][humPos],
+                                        distance: item.properties[propName]
+                                    }
+                                });
+                                geomPos++;
+                            }
+                            
+                        }
+                    }
+                }
+                
+                wfsGrid.loadGridsFromJson(undefined, undefined, {"DAMAGEAREA": refactoredJson}, status);
+            }
+        }); 
+        //}});
+        
+        
+        
     },
     
     getBounds: function(status, map, buffer) {        
@@ -679,17 +906,30 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }
         }, true, undefined));
         
+        if(Ext.getCmp('targets_view').pressed) {
+            this.loadTargetGrids(targetViewParams);
+        }   
+            
+    },
+    
+    loadTargetGrids: function(viewParams) {
+        if(!viewParams) {
+            var map = this.target.mapPanel.map;        
+            var status = this.getStatus();        
+            var bounds = this.getBounds(status, map);
+            var radius = this.getRadius();
+            viewParams = "bounds:" + bounds + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman;
+        }
         var wfsGrid = Ext.getCmp("featuregrid");
         if(this.isSingleTarget()) {
-            wfsGrid.loadGrids("id", this.status.target['id_bersaglio'], this.selectionLayerProjection, targetViewParams);                                
+            wfsGrid.loadGrids("id", this.status.target['id_bersaglio'], this.selectionLayerProjection, viewParams);                                
         } else if(this.isAllHumanTargets()) {
-            wfsGrid.loadGrids("type", 'umano', this.selectionLayerProjection, targetViewParams);
+            wfsGrid.loadGrids("type", 'umano', this.selectionLayerProjection, viewParams);
         } else if(this.isAllNotHumanTargets()) {
-            wfsGrid.loadGrids("type", 'ambientale', this.selectionLayerProjection, targetViewParams);
+            wfsGrid.loadGrids("type", 'ambientale', this.selectionLayerProjection, viewParams);
         } else {
-            wfsGrid.loadGrids(null ,null , this.selectionLayerProjection, targetViewParams);
+            wfsGrid.loadGrids(null ,null , this.selectionLayerProjection, viewParams);
         }
-               
     },
     
     getMetersToPixelsRatio: function() {
@@ -726,9 +966,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,bufferLayerTitle+' ('+this.status.target.name+')', viewParams, radius.max));
             }
         }
+        
+        if(Ext.getCmp('areaDamage_view').pressed) {
+            this.loadDamageGrid();
+        }
     },
     
-    addNotHumanRisk: function(layers, bounds) {    
+    /*addNotHumanRisk: function(layers, bounds) {    
         this.currentRiskLayers.push(this.notHumanRiskLayer);
         var viewParams = "bounds:" + bounds 
             + ';urbanizzate:' + (this.status.target.id.indexOf(10) === -1 ? 0 : 1) 
@@ -746,7 +990,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             title: this.notHumanRiskLayerTitle[GeoExt.Lang.getLocaleIndex()], 
             params: {
                 viewparams: viewParams,                
-                env:"low:"+this.status.themas['ambientale'][0]+";medium:"+this.status.themas['ambientale'][1],
+                env:"low:"+this.status.themas['ambientale'][0]+";medium:"+this.status.themas['ambientale'][1]+";max:"+this.status.themas['ambientale'][2],
                 riskPanel: true
             }
         }, true));
@@ -769,11 +1013,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             title: this.humanRiskLayerTitle[GeoExt.Lang.getLocaleIndex()], 
             params: {                                                                
                 viewparams: viewParams,
-                env:"low:"+this.status.themas['sociale'][0]+";medium:"+this.status.themas['sociale'][1],
+                env:"low:"+this.status.themas['sociale'][0]+";medium:"+this.status.themas['sociale'][1]+";max:"+this.status.themas['sociale'][2],
                 riskPanel: true
             }
         }, true));
-    },
+    },*/
     
     addFormula: function(layers, bounds, status, targetId, layer, formulaDesc, env) {
         this.currentRiskLayers.push(layer);
@@ -795,7 +1039,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             + ';scenari:' + this.status.accident.id.join('\\,')
             + ';gravita:' + this.status.seriousness.id.join('\\,');
             
-        var newEnv = "formula:"+status.formula+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',');
+        var newEnv = this.getFormulaEnv(status, targetId);
         env = env ? env + ";" + newEnv : newEnv;
         layers.push(this.createLayerRecord({
             name: layer,
@@ -809,79 +1053,42 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }, true, undefined, "SIIG"));
     },
     
-    addCombinedRisk: function(layers, bounds) {
-        this.currentRiskLayers.push(this.combinedRiskLayer);
-        var viewParams = "bounds:" + bounds 
-            + ';residenti:' + (this.status.target.id.indexOf(1) === -1 ? 0 : 1) 
-            + ';turistica:' + (this.status.target.id.indexOf(2) === -1 ? 0 : 1) 
-            + ';industria:' + (this.status.target.id.indexOf(4) === -1 ? 0 : 1) 
-            + ';sanitarie:' + (this.status.target.id.indexOf(5) === -1 ? 0 : 1) 
-            + ';scolastiche:' + (this.status.target.id.indexOf(6) === -1 ? 0 : 1)
-            + ';commerciali:' + (this.status.target.id.indexOf(7) === -1 ? 0 : 1) 
-            + ';urbanizzate:' + (this.status.target.id.indexOf(10) === -1 ? 0 : 1) 
-            + ';boscate:' + (this.status.target.id.indexOf(11) === -1 ? 0 : 1) 
-            + ';protette:' + (this.status.target.id.indexOf(12) === -1 ? 0 : 1) 
-            + ';agricole:' + (this.status.target.id.indexOf(13) === -1 ? 0 : 1) 
-            + ';sotterranee:' + (this.status.target.id.indexOf(14) === -1 ? 0 : 1)
-            + ';superficiali:' + (this.status.target.id.indexOf(15) === -1 ? 0 : 1) 
-            + ';culturali:' + (this.status.target.id.indexOf(16) === -1 ? 0 : 1) 
-            + ';sostanze:' + this.status.sostanza.id.join('\\,')
-            + ';scenari:' + this.status.accident.id.join('\\,')
-            + ';gravita:' + this.status.seriousness.id.join('\\,');
-        layers.push(this.createLayerRecord({
-            name: this.combinedRiskLayer,
-            title: this.combinedRiskLayerTitle[GeoExt.Lang.getLocaleIndex()], 
-            params: {                                                                
-                viewparams: viewParams,
-                env:"lowsociale:"+this.status.themas['sociale'][0]+";mediumsociale:"+this.status.themas['sociale'][1]+";lowambientale:"+this.status.themas['ambientale'][0]+";mediumambientale:"+this.status.themas['ambientale'][1],
-                riskPanel: true
-            }
-        }, true));
-    },    
+    getFormulaEnv: function(status, targetId) {
+        return "formula:"+status.formula+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',');
+    },
     
-    addRisk: function(layers, bounds, status) {        
-        if(status.formula == 1000) {
-            // rischio totale
-            if(this.isMixedTargets()) {
-                this.addHumanRisk(layers, bounds);
-                this.addNotHumanRisk(layers, bounds);
-                this.addCombinedRisk(layers, bounds);
-            } else if(this.isHumanTarget()) {
-                this.addHumanRisk(layers, bounds);
-            } else if(this.isNotHumanTarget()) {
-                this.addNotHumanRisk(layers, bounds);
+    addRisk: function(layers, bounds, status) {                
+        var env, envhum, envamb;
+        
+        if(this.isHumanTarget() || this.isAllHumanTargets() || this.isMixedTargets()) {
+            env = "low:"+this.status.themas['sociale'][0]+";medium:"+this.status.themas['sociale'][1]+";max:"+this.status.themas['sociale'][2];
+            envhum = env;
+        }
+        if(this.isNotHumanTarget() || this.isAllNotHumanTargets() || this.isMixedTargets()) {
+            env = "low:"+this.status.themas['ambientale'][0]+";medium:"+this.status.themas['ambientale'][1]+";max:"+this.status.themas['ambientale'][2];
+            envamb = env;
+        }
+        var mixedenv = this.getMixedFormulaEnv();
+        
+        if(status.formulaInfo.dependsOnTarget) {
+            if(this.isSingleTarget()) {
+                this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc, env);                
+            } else if(this.isAllHumanTargets()) {
+                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc, env);
+            } else if(this.isAllNotHumanTargets()) {
+                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc, env);
+            } else {
+                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, envhum);
+                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, envamb);                    
+                this.addFormula(layers, bounds, status, 100, this.mixedFormulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle + ' - ' + this.notHumanTitle, mixedenv);
             }
         } else {
-            var env, envhum, envamb;
-            
-            if(this.isHumanTarget() || this.isAllHumanTargets() || this.isMixedTargets()) {
-                env = "low:"+this.status.themas['sociale'][0]+";medium:"+this.status.themas['sociale'][1];
-                envhum = env;
-            }
-            if(this.isNotHumanTarget() || this.isAllNotHumanTargets() || this.isMixedTargets()) {
-                env = "low:"+this.status.themas['ambientale'][0]+";medium:"+this.status.themas['ambientale'][1];
-                envamb = env;
-            }
-            var mixedenv = "lowsociale:"+this.status.themas['sociale'][0]+";mediumsociale:"+this.status.themas['sociale'][1]+";lowambientale:"+this.status.themas['ambientale'][0]+";mediumambientale:"+this.status.themas['ambientale'][1];
-            
-            if(status.formulaInfo.dependsOnTarget) {
-                if(this.isSingleTarget()) {
-                    this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc, env);                
-                } else if(this.isAllHumanTargets()) {
-                    this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc, env);
-                } else if(this.isAllNotHumanTargets()) {
-                    this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc, env);
-                } else {
-                    this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, envhum);
-                    this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, envamb);                    
-                    this.addFormula(layers, bounds, status, 100, this.mixedFormulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle + ' - ' + this.notHumanTitle, mixedenv);
-                }
-            } else {
-                this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc, env);   
-            }
-            
-            //this.addFormula(layers, bounds, status);
-        }
+            this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc, env);   
+        }         
+    },
+    
+    getMixedFormulaEnv: function() {
+        return "lowsociale:"+this.status.themas['sociale'][0]+";mediumsociale:"+this.status.themas['sociale'][1]+";maxsociale:"+this.status.themas['sociale'][2]+";lowambientale:"+this.status.themas['ambientale'][0]+";mediumambientale:"+this.status.themas['ambientale'][1]+";maxambientale:"+this.status.themas['ambientale'][2];
     },
     
     /*extractLayers: function(layers, titles) {
@@ -943,6 +1150,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         var status = this.getStatus();
         
+        if(!status) {
+            this.status = this.processingPane.getInitialStatus();
+            this.status.formulaDesc = this.totalRiskLabel;
+            status = this.status;
+        }
+        
         var bounds = this.getBounds(status, map);
         
         var radius = this.getRadius();
@@ -959,7 +1172,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         // add the target layer
         this.addTargets(newLayers, bounds, radius);                
             
-                    
+        if(Ext.getCmp('roadGraph_view').pressed) {
+            this.loadRoadsGrid();
+        }   
+        
         this.moveRiskLayersToTop(newLayers);
 
         // add analytic view layers to the map
@@ -967,8 +1183,22 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         // update info on buffers sizes     
         //this.results.setValue(this.getBuffersInfo());
+        this.enableAnalyticView();
         
-        Ext.getCmp("south").expand();            
+    },
+    
+    enableAnalyticView: function() {        
+        Ext.getCmp("south").expand();  
+        Ext.getCmp("targets_view").enable();
+        Ext.getCmp("areaDamage_view").enable();
+        Ext.getCmp("roadGraph_view").enable();        
+    },
+    
+    disableAnalyticView: function() {        
+        Ext.getCmp("south").collapse();  
+        Ext.getCmp("targets_view").disable();
+        Ext.getCmp("areaDamage_view").disable();
+        Ext.getCmp("roadGraph_view").disable();        
     },
     
     enableDisableRoads: function(visibility) {
@@ -993,15 +1223,24 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.removeRiskLayers(map);
         
         // remove analytic view layers (buffers, targets, selected targets)
-        this.removeAnalyticViewLayers(map);                    
-        Ext.getCmp("south").collapse();
+        this.removeAnalyticViewLayers(map);     
+        this.disableAnalyticView();        
+        
+        this.processingDone = true;
+        
+        var scale = this.getMapScale();
+        if(scale <= this.analiticViewScale) {
+            Ext.getCmp("analytic_view").enable();
+        }
         
         if(status.formulaInfo.dependsOnArcs) {        
             this.addRisk(newLayers, bounds, status);
             
             this.target.mapPanel.layers.add(newLayers);
-            if(roi)
+            if(roi) {
                 this.target.mapPanel.map.zoomToExtent(roi);
+            }
+            this.resultsContainer.removeAll();
         } else {
             // Create a process and configure it
             var riskProcess = this.wpsClient.getProcess('destination', 'gs:RiskCalculatorSimple');    
@@ -1011,7 +1250,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 // spatial input can be a feature or a geometry or an array of
                 // features or geometries
                 inputs: {
-                    store: new OpenLayers.WPSProcess.LiteralData({value:'destination_test'}),
+                    store: new OpenLayers.WPSProcess.LiteralData({value:this.wpsStore}),
                     formula: new OpenLayers.WPSProcess.LiteralData({value:status.formula}),
                     target: new OpenLayers.WPSProcess.LiteralData({value:targetId}),
                     materials: new OpenLayers.WPSProcess.LiteralData({value:status.sostanza.id.join(',')}),
@@ -1096,6 +1335,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.resultsContainer.add(grid);
         this.resultsContainer.doLayout();
         
+        
+        
         /*if(result.targets.length > 1) {                
             html += '<th>' + this.targetLabel + '</th>';
         }
@@ -1126,6 +1367,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             stripeRows: true // stripe alternate rows
         });
         grid.render();    */    
+    },
+    
+    getMapScale: function() {
+        return Math.round(this.target.mapPanel.map.getScale());        
     },
     
     getChosenTarget: function(status) {

@@ -18,7 +18,7 @@ GeoExt.Lang.add("de", {
         fieldSetTitle: "Verarbeitung",
         cancelButton: "Verarbeitung abbrechen",
         processButton: "Führen Verarbeitung",
-        analyticViewButton: "anzeigen Analytical:",
+        analyticViewButton: "anzeigen Analytical",
         weatherLabel: "Wetter",  
         temporalLabel: "AGB Gewitter",
         elabStandardLabel: "Processing Standard",
@@ -28,9 +28,10 @@ GeoExt.Lang.add("de", {
         defaultExtentLabel: "Regione Piemonte",
         targetsTextBotton: "Treffer",
         areaDamageTextBotton: "Stadtteile von Schäden",
-        roadGraphTextBotton: "Straße graph"  
+        roadGraphTextBotton: "Straße graph",  
         wpsTitle: "Errore",
-        wpsError: "Errore nella richiesta al servizio WPS"
+        wpsError: "Errore nella richiesta al servizio WPS",
+        loadMsg: "Bitte warten ..."
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Processing",
@@ -54,7 +55,7 @@ GeoExt.Lang.add("de", {
         seriousnessLabel: "Entities",
         resetButton: "zurücksetzen",
         cancelButton: "stornieren",
-        viewMapButton: "Karte anzeigen",
+        viewMapButton: "Verarbeitung",
         formLabel: "Verarbeitungsoptionen",
         bboxValidationTitle: "Wählen Area of ​​Interest",
         requiredMaterial: "Diese Formel erfordert die Angabe des Stoffes",
@@ -82,8 +83,8 @@ GeoExt.Lang.add("de", {
         highRiskLabel: "hohes Risiko"
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
-        displayMsgPaging: "Ziel {0} - {1} of {2}",
-        emptyMsg: "No ziel gefunden",
+        displayMsgPaging: "Bestandteil {0} - {1} of {2}",
+        emptyMsg: "No Bestandteil gefunden",
         loadMsg: "Bitte warten...",
     },
     "GeoExplorer.prototype": {

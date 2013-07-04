@@ -23,7 +23,7 @@
             "ptype": "gxp_wmssource",
             "title": "Destination GeoServer",
             "version":"1.1.1",
-            "url": "http://84.33.2.23/geoserver_test/destination/ows",            
+            "url": "http://84.33.2.23/geoserver/destination/ows",            
             "layerBaseParams": {
                 "TILED": true,
                 "TILESORIGIN": "-180,-90"
@@ -123,27 +123,27 @@
             "name": "rischio_totale_ambientale",
             "displayInLayerSwitcher": true,                
             "tiled": false,
-            "env":"low:100;medium:500",
+            "env":"low:100;medium:500;max:1000",
             "riskPanel":true,
-            "visibility": false
+            "exclusive":"SIIG"
         },{
             "source": "destination",
             "title": "Rischio Totale Sociale",
             "name": "rischio_totale_sociale",
             "displayInLayerSwitcher": true,
             "tiled": false,
-            "env":"low:100;medium:500",
+            "env":"low:100;medium:500;max:1000",
             "riskPanel":true,
-            "visibility": true
+            "exclusive":"SIIG"
         },{
             "source": "destination",
             "title": "Rischio Totale Sociale - Ambientale",
             "name": "rischio_totale",
             "displayInLayerSwitcher": true,
             "tiled": false,
-            "env":"lowsociale:100;mediumsociale:500;lowambientale:100;mediumambientale:500",
+            "env":"lowsociale:100;mediumsociale:500;maxsociale:1000;lowambientale:100;mediumambientale:500;maxambientale:1000",
             "riskPanel":true,
-            "visibility": true
+            "exclusive":"SIIG"
         },
         {
             "source": "destination",
@@ -227,6 +227,14 @@
             "title": "Popolazione residente",
             "name": "popolazione_residente_all",
             "group": ["Targets","Bersagli","Cibles","Ziele"],
+            "visibility": false
+        },{
+            "source": "destination",
+            "title": "Grafo stradale",
+            "name": "grafo_stradale",
+            "displayInLayerSwitcher": true,
+            "tiled": true,
+            "group": ["Roads","Strade","Strade","Strade"],
             "visibility": false
             }
         ]
@@ -422,7 +430,7 @@
             "outputFilename":"mapstore-print"
         },
         "ignoreLayers": "Google Hybrid,Bing Aerial,Nessuno sfondo,Google Terrain,Google Roadmap",
-        "printService":"http://84.33.2.23/geoserver_test/pdf/",
+        "printService":"http://84.33.2.23/geoserver/pdf/",
         "legendPanelId":"legendPanel",
         "actionTarget":{
             "target":"paneltbar",
@@ -445,11 +453,13 @@
             "selectionLayerTitle": "Rischio Totale",     
             "bufferLayerNameHuman": "buffer_human",
             "bufferLayerNameNotHuman": "buffer_not_human",
-            "selectionLayerBaseURL": "http://84.33.2.23/geoserver_test/destination/wms",
+            "selectionLayerBaseURL": "http://84.33.2.23/geoserver/destination/wms",
             "selectionLayerProjection": "EPSG:32632",
             "geometryName": "geometria",
             "accidentTipologyName": "tipologia",
-        "wfsURL": "http://84.33.2.23/geoserver_test/destination/wfs",
+        "wfsURL": "http://84.33.2.23/geoserver/destination/wfs",
+		"wpsURL": "http://84.33.2.23/geoserver/wps",
+        "wpsStore": "destination",        
         "wfsVersion" : "1.1.0",
         "destinationNS": "destination",
             "index": 28
@@ -458,7 +468,8 @@
         "ptype": "gxp_tabpanelwfsgrids",
         "outputTarget": "featurelist",
                 "srsName" : "EPSG:32632",
-                "wfsURL": "http://84.33.2.23/geoserver_test/wfs",
+                "wfsURL": "http://84.33.2.23/geoserver/wfs",
+		"panels": {
         "targets": {
             "Popolazione residente": {
                 "featureType": "popolazione_residente",
@@ -1335,6 +1346,89 @@
             }
                         
         },
+            "roads": {
+                "Grafo Stradale": {
+                    "featureType": "rischio_1",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id_geo_arco"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometria"
+                        },
+                        {
+                            "name": "rischio1",         
+                            "mapping": "rischio1"
+                        },
+                        {
+                            "name": "rischio2",         
+                            "mapping": "rischio2"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Id", "Id", "Id", "Id"],      
+                            "dataIndex": "id"
+                        },
+                        {
+                            "header": ["{formulaDesc}<tpl if=\"target.humans === null && formulaInfo.dependsOnTarget\"> - Sociale</tpl>", "{formulaDesc}<tpl if=\"target.humans === null && formulaInfo.dependsOnTarget\"> - Sociale</tpl>", "{formulaDesc}<tpl if=\"target.humans === null && formulaInfo.dependsOnTarget\"> - Sociale</tpl>", "{formulaDesc}<tpl if=\"target.humans === null && formulaInfo.dependsOnTarget\"> - Sociale</tpl>"],
+                            "dataIndex": "rischio1"
+                        },
+                        {
+                            "header": ["{formulaDesc} - Ambientale", "{formulaDesc} - Ambientale", "{formulaDesc} - Ambientale", "{formulaDesc} - Ambientale"],      
+                            "dataIndex": "rischio2",
+                            "hidden": "{[values.target.humans !== null || !values.formulaInfo.dependsOnTarget]}"
+                        }
+                    ],
+                    "title": ["Archi", "Archi", "Archi", "Archi"],
+                    "id": 1,
+                    "name": "ARCHI",
+                    "type": "all",
+                    "noPaging": true
+                }
+            },
+            "damage": {
+                "Aree di danno": {
+                    "featureType": "buffer_1",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id_geo_arco"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometria"
+                        },
+                        {
+                            "name": "name",         
+                            "mapping": "name"
+                        },
+                        {
+                            "name": "distanza",         
+                            "mapping": "distance"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Fascia", "Fascia", "Fascia", "Fascia"],
+                            "dataIndex": "name"
+                        },
+                        {
+                            "header": ["Distanza", "Distanza", "Distanza", "Distanza"],
+                            "dataIndex": "distanza"
+                        }
+                    ],
+                    "title": ["Aree di danno", "Aree di danno", "Aree di danno", "Aree di danno"],
+                    "id": 1,
+                    "name": "DAMAGEAREA",
+                    "type": "all",
+                    "noPaging": true
+                }
+            }
+        },
+        "currentPanel": "targets",
                 "actionColumns" : [ 
                     {
                       "type": "checkDisplay",
