@@ -253,7 +253,15 @@ GeoExt.Lang.add("en", {
 	    saveDefaultContextActionTip: "Save Map context",
 	    contextSaveSuccessString: "Context saved succesfully",
 	    contextSaveFailString: "Context not saved succesfully",
-	    contextMsg: "Loading..."
+	    contextMsg: "Loading...",
+		userLabel: "User",	
+		passwordLabel: "Password", 	
+		loginLabel: "Login",	
+		mapMetadataTitle: "Insert Map Metadata",	
+		mapMedatataSetTitle: "Map Metadata",	
+		mapNameLabel: "Name",	
+		mapDescriptionLabel: "Description",
+		addResourceButtonText: "Add Map"
     },
     "gxp.plugins.GeoReferences.prototype": {
         initialText: "Select an area",
