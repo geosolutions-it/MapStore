@@ -46,7 +46,7 @@ Ext.onReady(function(){
     var code = url.locale;   
 
     if(!code){
-        code = "en";
+        code = "it";
     }
     
     var initialLanguageString;

@@ -181,12 +181,6 @@
 			"ptype": "gxp_measure", "toggleGroup": "toolGroup",
 			"actionTarget": {"target": "paneltbar", "index": 21}
 		}, {
-			"actions": ["-"], "actionTarget": "paneltbar"
-		}, {
-			"ptype": "gxp_saveDefaultContext",
-			"actionTarget": {"target": "paneltbar", "index": 24},
-			"needsAuthorization": true
-		}, {
 			"ptype": "gxp_print",
 			"customParams":{
 				"outputFilename":"mapstore-print"
