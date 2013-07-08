@@ -68,7 +68,7 @@ var config = {
         hashtags: ''
     },
 	
-	locales: [['en', 'English'],['it','Italiano'],['fr','FranÃ§ais'],['de','Deutsch']]
+	locales: [['en', 'English'],['it','Italiano'],['fr','Français'],['de','Deutsch']]
 };
 
 

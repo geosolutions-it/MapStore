@@ -272,7 +272,15 @@ GeoExt.Lang.add("de", {
 	    saveDefaultContextActionTip: "Karten-Kontext speichern",
 	    contextSaveSuccessString: "Kontext richtig gespeichert",
 	    contextSaveFailString: "Kontext nicht richtig gespeichert",
-	    contextMsg: "Loading..."
+	    contextMsg: "Loading...",
+		userLabel: "Benutzer",	
+		passwordLabel: "Kennwort", 	
+		loginLabel: "Anmelden",	
+		mapMetadataTitle: "Legen Karte Metadaten",	
+		mapMedatataSetTitle: "Karte Metadaten",	
+		mapNameLabel: "Name",	
+		mapDescriptionLabel: "Beschreibung",
+		addResourceButtonText: "In Map"
     },
 	
     "gxp.plugins.GeoReferences.prototype": {

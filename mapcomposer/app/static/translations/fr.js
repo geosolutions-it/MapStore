@@ -253,7 +253,15 @@ GeoExt.Lang.add("fr", {
 	    saveDefaultContextActionTip: "Enregistrer contexte Carte.",
 	    contextSaveSuccessString: "Sauver le contexte est géré.",
 	    contextSaveFailString: "Sauver le contexte a échoué.",
-	    contextMsg: "Chargement..."
+	    contextMsg: "Chargement...",
+		userLabel: "Utilisateur",	
+		passwordLabel: "Mot de passe", 	
+		loginLabel: "Connexion",	
+		mapMetadataTitle: "Insérer les métadonnées de la carte",	
+		mapMedatataSetTitle: "Métadonnées de la carte",	
+		mapNameLabel: "Nom",	
+		mapDescriptionLabel: "Description",
+		addResourceButtonText: "Ajouter Carte"
     },
     "gxp.plugins.GeoReferences.prototype":{
         initialText: "Sélectionner une zone",

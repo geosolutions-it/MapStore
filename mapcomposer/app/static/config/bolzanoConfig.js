@@ -9,7 +9,12 @@
 			"url": "http://sit.comune.bolzano.it/geoserver/ows",
 			"title": "Bolzano GeoServer",
 			"SRS": "EPSG:900913",
-			"version": "1.3.0"
+			"version":"1.1.1",
+			"layerBaseParams":{
+				"FORMAT":"image/png8",
+				"TILED":true,
+				"TILESORIGIN":"1259091.229051,5855016.830973"
+			}
 		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
@@ -84,41 +89,12 @@
 				"source": "bolzano",
 				"title": "Ortofoto Bolzano/Bozen",
 				"name": "Cartografia:ortofoto_2010",
-				"group": "background"
+				"group": "background",       
+				"format":"image/jpeg",
+				"transparent": false
 			}
 		]
 	},
-	"cswconfig": {
-		"catalogs": [
-		        {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina", "metaDataOptions":{"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page","idParam":"uuid","idIndex":0}},
-				{"name": "Treviso", "url": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw", "description": "Treviso Geonetwork"},
-				{"name": "kscNet", "url": "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw", "description": "kscNet"},
-				{"name": "CSI-CGIAR", "url": "http://geonetwork.csi.cgiar.org/geonetwork/srv/en/csw", "description" : "CSI-CGIAR"},
-				{"name": "EauFrance", "url": "http://sandre.eaufrance.fr/geonetwork/srv/fr/csw", "description" : "EauFrance"},
-				{"name": "SOPAC", "url": "http://geonetwork.sopac.org/geonetwork/srv/en/csw", "description" : "SOPAC"},
-				{"name": "SADC", "url": "http://www.sadc.int/geonetwork/srv/en/csw", "description" : "SADC"},
-				{"name": "MAPAS", "url": "http://mapas.mma.gov.br/geonetwork/srv/en/csw", "description" : "MAPAS"}
-			],
-		"dcProperty": "title",
-		"initialBBox": {
-		   "minx":-13,
-		   "miny":10,
-			"maxx":-10,
-			"maxy":13
-		}, 
-		"cswVersion": "2.0.2",
-		"filterVersion": "1.1.0",
-		"start": 1,
-		"limit": 10,
-		"timeout": 60000
-	},
-	
-	"scaleOverlayUnits":{
-        "bottomOutUnits":"nmi",    
-        "bottomInUnits":"nmi",    
-        "topInUnits":"m",    
-        "topOutUnits":"km"
-    },
 	
 	"tools": [
 		{
@@ -150,8 +126,7 @@
 		}, {
 			"ptype": "gxp_addlayers",
 			"actionTarget": "tree.tbar",
-			"id": "addlayers",
-			"upload": true
+			"id": "addlayers"
 		}, {
 			"ptype": "gxp_removelayer",
 			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
@@ -173,7 +148,7 @@
 		}, {
 			"ptype": "gxp_zoomtolayerextent",
 			"actionTarget": {"target": "layertree.contextMenu", "index": 0}
-		},{
+		}, {
 			"ptype":"gxp_geonetworksearch",
 			"actionTarget": ["layertree.contextMenu"]
 		}, {
@@ -212,21 +187,17 @@
 			"actionTarget": {"target": "paneltbar", "index": 24},
 			"needsAuthorization": true
 		}, {
-			"actions": ["->"], 
-			"actionTarget": "paneltbar"
-		}, {
-		  "ptype":"gxp_print",
-		  "customParams":{
-			 "outputFilename":"mapstore-print"
-		  },
-		  "printService":"http://sit.comune.bolzano.it/geoserver/pdf/",
-		  "legendPanelId":"legendPanel",
-		  "actionTarget":{
-			 "target":"paneltbar",
-			 "index":4
-		  }
-        }, 	
-		{
+			"ptype": "gxp_print",
+			"customParams":{
+				"outputFilename":"mapstore-print"
+			},
+			"printService": "http://sit.comune.bolzano.it/geoserver/pdf/",
+			"legendPanelId": "legendPanel",
+			"actionTarget":{
+			    "target": "paneltbar",
+				"index":4
+			}
+        }, {
 			"ptype": "gxp_searchvia",
 			"outputTarget": "searchpanel",
 			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",			
@@ -248,11 +219,15 @@
 			    "wmsURL": "http://sit.comune.bolzano.it/geoserver/",
 				"selectionLayerTitle": "Selection Layer"
 			}
-		},		
-		{
+		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": false,
 			"id": "addlayer"
+		}, {
+			"ptype": "gxp_geolocationmenu",
+			"outputTarget": "paneltbar",
+			"toggleGroup": "toolGroup",
+			"index": 23
 		}
 	]
 }

@@ -175,6 +175,16 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         // of the embed map dialog. TODO: make this more flexible so this is not needed.
 		// ////////////////////////////////////////////////////////////////////////////////////
         config.viewerTools = [
+		    {
+                leaf: true, 
+                text: gxp.plugins.AddLayers.prototype.addActionTip, 
+                checked: true, 
+                iconCls: gxp.plugins.AddLayers.prototype.iconCls,
+                ptype: "gxp_addlayers"
+            },
+			{
+                actions: ["-"], checked: true
+            },
             {
                 leaf: true, 
                 text: gxp.plugins.ZoomToExtent.prototype.tooltip, 
@@ -524,6 +534,68 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             "-"
         ];
         return tools;
+    },
+	
+	/** private: method[viewMetadata]
+     */
+    viewMetadata: function(url, uuid, title){
+		var portalContainer = Ext.getCmp(this.renderToTab);
+		
+		var metaURL = url.indexOf("uuid") != -1 ? url : url + '?uuid=' + uuid;
+		
+		var metaPanelOptions = {
+			title: title,
+			items: [ 
+				new Ext.ux.IFrameComponent({ 
+					url: metaURL 
+				}) 
+			]
+		};
+				
+		if(portalContainer instanceof Ext.TabPanel){
+			var tabPanel = portalContainer;
+			
+			var tabs = tabPanel.find('title', title);
+			if(tabs && tabs.length > 0){
+				tabPanel.setActiveTab(tabs[0]); 
+			}else{				
+			
+				metaPanelOptions = Ext.applyIf(metaPanelOptions, {
+					layout:'fit', 
+					tabTip: title,
+					closable: true
+				});
+				
+				var meta = new Ext.Panel(metaPanelOptions);
+				
+				tabPanel.add(meta);
+				meta.items.first().on('render', function() {
+					this.addLoadingMask(meta.items.first());
+				},this);						
+			}
+		}else{		
+		
+			metaPanelOptions = Ext.applyIf(metaPanelOptions, {
+			    layout:'fit', 
+				height: 600
+			});
+			
+			var meta = new Ext.Panel(metaPanelOptions);
+			
+			var metaWin = new Ext.Window({									
+				title: "MetaData",
+				closable: true,
+				width: 800,
+				height: 630,
+				resizable: true,				
+				draggable: true,
+				items: [
+					meta
+				]									
+			});
+			
+			metaWin.show();
+		}
     },
 
     /** private: method[saveAndExport]
