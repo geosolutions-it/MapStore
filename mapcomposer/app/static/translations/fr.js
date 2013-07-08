@@ -310,7 +310,9 @@ GeoExt.Lang.add("fr", {
         totalMsg: "Total: {0} entités",
         displayExportCSVText: "Exporter au format CSV",
         exportCSVSingleText: "Une seule page",
-        exportCSVMultipleText: "Toutes les pages"
+        exportCSVMultipleText: "Toutes les pages",
+        failedExportCSV: "Impossible de trouver la réponse pour le format de sortie CSV",
+        invalidParameterValueErrorText: "Valeur de paramètre non valide"
     },
 	
 	"gxp.plugins.QueryForm.prototype": {
@@ -324,8 +326,7 @@ GeoExt.Lang.add("fr", {
         cancelButtonText: "Remettre",
         noFeaturesTitle: "Pas de correspondance",
         noFeaturesMessage: "Votre requête n'a retourné aucun résultat.",
-        title: "Rechercher",
-        
+        title: "Rechercher",        
         attributeEnablement: "Requête par attributs",
         attributeEnablementMsg: "Invalid search Type! To use this you have to select 'Feature' type and to select a vector layer before.",
         searchType: "Réglages de base",

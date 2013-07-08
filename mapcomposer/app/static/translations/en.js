@@ -307,7 +307,9 @@ GeoExt.Lang.add("en", {
         totalMsg: "Total: {0} records",
         displayExportCSVText: "Export to CSV",
         exportCSVSingleText: "Single Page",
-        exportCSVMultipleText: "All Page"
+        exportCSVMultipleText: "Whole Page",
+        failedExportCSV: "Failed to find response for output format CSV",
+        invalidParameterValueErrorText: "Invalid Parameter Value"
     },
     "gxp.plugins.QueryForm.prototype": {
         queryActionText: "Query",
