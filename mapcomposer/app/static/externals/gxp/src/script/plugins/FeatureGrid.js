@@ -108,7 +108,19 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      * ``String``
      * Text for CSV Export Multiple Pages button (i18n).
      */
-    exportCSVMultipleText: "All Page",        
+    exportCSVMultipleText: "Whole Page",       
+
+    /** api: config[failedExportCSV]
+     * ``String``
+     * Text for CSV Export error (i18n).
+     */
+    failedExportCSV: "Failed to find response for output format CSV",
+    
+    /** api: config[nvalidParameterValueErrorText]
+     * ``String``
+     * Text for CSV Export error (i18n).
+     */
+    invalidParameterValueErrorText: "Invalid Parameter Value",    
 
     /** api: config[zoomFirstPageTip]
      *  ``String``
@@ -375,7 +387,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             srsName: protocol.srsName
         }).write(filter);
         
-        var xml = new OpenLayers.Format.XML().write(node);
+        this.xml = new OpenLayers.Format.XML().write(node);
         
         var colModel = grid.getColumnModel();
         
@@ -386,18 +398,69 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             propertyName.push(colModel.getColumnHeader(i));
         }
         
-        window.open(
-            protocol.url + 
-            "propertyName=" + propertyName.join(',') +
-            "&service=WFS" +
-            "&version=" + protocol.version +
-            "&request=GetFeature" +
-            "&typeName=" + protocol.featureType +
-            "&outputFormat=CSV"+
-            "&filter=" + xml
-        );  
+        this.url =  protocol.url +
+                    "propertyName=" + propertyName.join(',') +
+                    "&service=WFS" +
+                    "&version=" + protocol.version +
+                    "&request=GetFeature" +
+                    "&typeName=" + protocol.featureType +
+                    "&exceptions=application/json" +
+                    "&outputFormat=CSV"
 
-    }       
+        OpenLayers.Request.POST({
+            url: this.url,
+            data: this.xml,
+            callback: function(request) {
+
+                if(request.status == 200){
+                
+                    try
+                      {
+                            var serverError = Ext.util.JSON.decode(request.responseText);
+                            Ext.Msg.show({
+                                title: this.invalidParameterValueErrorText,
+                                msg: "outputFormat: CSV</br></br>" +
+                                     this.failedExportCSV + "</br></br>" +
+                                     "Error: " + serverError.exceptions[0].text,
+                                buttons: Ext.Msg.OK,
+                                icon: Ext.MessageBox.ERROR
+                            });                        
+                      }
+                    catch(err)
+                      {
+                            //        
+                            //delete other iframes appended
+                            //
+                            if(document.getElementById("downloadIFrame")) {
+                                document.body.removeChild( document.getElementById("downloadIFrame") ); 
+                            }
+                            
+                            //
+                            //Create an hidden iframe for forced download
+                            //
+                            var elemIF = document.createElement("iframe"); 
+                            elemIF.setAttribute("id","downloadIFrame");
+
+                            var mUrl = this.url + "&filter=" + this.xml;
+                            elemIF.src = mUrl; 
+                            elemIF.style.display = "none"; 
+                            document.body.appendChild(elemIF); 
+                      }
+                      
+                }else{
+                    Ext.Msg.show({
+                        title: this.failedExportCSV,
+                        msg: request.statusText,
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.MessageBox.ERROR
+                    });
+                }
+            },
+            scope: this
+        });        
+
+    }
+    
 });
 
 Ext.preg(gxp.plugins.FeatureGrid.prototype.ptype, gxp.plugins.FeatureGrid);
