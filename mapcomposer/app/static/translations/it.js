@@ -273,7 +273,15 @@ GeoExt.Lang.add("it", {
 	    saveDefaultContextActionTip: "Salva il contesto della Mappa",
 	    contextSaveSuccessString: "Contesto salvato con successo",
 	    contextSaveFailString: "Contesto non salvato con successo",
-	    contextMsg: "Caricamento..."
+	    contextMsg: "Caricamento...",
+		userLabel: "Utente",	
+		passwordLabel: "Password", 	
+		loginLabel: "Accesso",	
+		mapMetadataTitle: "Inserimento dei metadati",	
+		mapMedatataSetTitle: "Metadati della Mappa",	
+		mapNameLabel: "Nome",	
+		mapDescriptionLabel: "Descrizione",
+		addResourceButtonText: "Salva Mappa"
     },
 	
     "gxp.plugins.GeoReferences.prototype": {
