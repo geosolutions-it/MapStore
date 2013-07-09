@@ -339,7 +339,15 @@ GeoExt.Lang.add("fr", {
         attributeEnablementMsg: "Invalid search Type! To use this you have to select 'Feature' type and to select a vector layer before.",
         searchType: "Réglages de base",
         typeLabel: "Type",
-        featureLabel: "Max Features"
+        featureLabel: "Max Features",
+        selectionMethodFieldSetComboTitle: "Définir la méthode de sélection",
+        comboSelectionMethodLabel: "Sélection",
+        comboPolygonSelection: 'Polygone',
+        comboCircleSelection: 'Cercle',
+        comboBBOXSelection: 'BBOX',
+        errorDrawPolygonText: "Vous devez dessiner un polygone",
+        errorDrawCircleText: "Vous devez dessiner un cercle",     
+        errorDrawTitle: "Erreur Query"    
     },
     
     
