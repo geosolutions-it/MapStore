@@ -115,8 +115,9 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                         ]
                     }), 
                     listeners: {
-                        select: function(c,record, index ){ 
-
+                        select: function(c,record, index ){
+                            me.resetFeatureManager();                        
+                            me.bboxFielset.removeBBOXLayer();
                             var disabledItems = [];
                             this.target.toolbar.items.each(function(item) {
                                 if (!item.disabled) {
