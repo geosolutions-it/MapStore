@@ -370,7 +370,15 @@ GeoExt.Lang.add("it", {
         attributeEnablementMsg: "Tipo di ricerca invalido! Si deve prima selezionare il tipo 'Feature' e il layer vettoriale.",
         searchType: "Impostazioni di base",
         typeLabel: "Tipo",
-        featureLabel: "Max Features"
+        featureLabel: "Max Features", 
+        selectionMethodFieldSetComboTitle: "Impostare Metodo di selezione",
+        comboSelectionMethodLabel: "Selezione",
+        comboPolygonSelection: 'Poligono',
+        comboCircleSelection: 'Cerchio',
+        comboBBOXSelection: 'BBOX',
+        errorDrawPolygonText: "Devi disegnare un Poligono",
+        errorDrawCircleText: "Devi disegnare un Cerchio",     
+        errorDrawTitle: "Errore nell'interrogazione"  
     },
     
     
