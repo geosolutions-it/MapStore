@@ -38,7 +38,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     cancelButton: "Annulla Elaborazione",
     processButton: "Esegui Elaborazione",
     analyticViewButton: "Visualizzazione Analitica:",
-    weatherLabel: "Condizioni Meteo",  
+    //weatherLabel: "Condizioni Meteo",  
     temporalLabel: "Condizioni Temporali",
     elabStandardLabel: "Elaborazione Standard",
     totalRiskLabel: "Rischio totale",
@@ -374,6 +374,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
     getLayerByName: function(map, layerName) {
+        if(map.getLayersByName(layerName).length > 0) {
+            return map.getLayersByName(layerName)[0];
+        }
         for(var i = 0; i < map.layers.length; i++) {
             var layer = map.layers[i];
             if(layer.params && layer.params.LAYERS == layerName) {
@@ -425,14 +428,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               hideLabel : false                    
         });
         
-        this.weather = new Ext.form.TextField({
+        /*this.weather = new Ext.form.TextField({
               fieldLabel: this.weatherLabel,
               id: "weatherCond",
               width: 150,
               readOnly: true,
               value: "",
               hideLabel : false                    
-        });
+        });*/
               
         this.trg = new Ext.form.TextField({
               fieldLabel: this.targetLabel,
@@ -505,7 +508,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                  this.form,
                  this.extent,
                  this.temporal,
-                 this.weather,
+                 //this.weather,
                  this.trg,
                  this.adrClass,
                  this.substance,
@@ -728,12 +731,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     }
                 }),
                 store: new OpenLayers.WPSProcess.LiteralData({value:this.wpsStore}),
+                processing: new OpenLayers.WPSProcess.LiteralData({value:status.processing}),
                 formula: new OpenLayers.WPSProcess.LiteralData({value:status.formula}),
                 target: new OpenLayers.WPSProcess.LiteralData({value:targetId}),
                 materials: new OpenLayers.WPSProcess.LiteralData({value:status.sostanza.id.join(',')}),
                 scenarios: new OpenLayers.WPSProcess.LiteralData({value:status.accident.id.join(',')}),
                 entities: new OpenLayers.WPSProcess.LiteralData({value:status.seriousness.id.join(',')}),
-                severeness: new OpenLayers.WPSProcess.LiteralData({value:status.formulaInfo.dependsOnTarget ? status.target.severeness : '0'})
+                severeness: new OpenLayers.WPSProcess.LiteralData({value:status.formulaInfo.dependsOnTarget ? status.target.severeness : '0'}),
+                fp: new OpenLayers.WPSProcess.LiteralData({value:status.temporal.value})
             },
             outputs: [new OpenLayers.WPSProcess.Output({
                 mimeType: 'application/json'
@@ -1019,7 +1024,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }, true));
     },*/
     
-    addFormula: function(layers, bounds, status, targetId, layer, formulaDesc, env) {
+    addFormula: function(layers, bounds, status, targetId, layer, formulaDesc, formulaUdm, env) {
         this.currentRiskLayers.push(layer);
         var viewParams = "bounds:" + bounds 
             + ';residenti:' + (this.status.target.id.indexOf(1) === -1 ? 0 : 1) 
@@ -1038,7 +1043,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             + ';sostanze:' + this.status.sostanza.id.join('\\,')
             + ';scenari:' + this.status.accident.id.join('\\,')
             + ';gravita:' + this.status.seriousness.id.join('\\,');
-            
+        if(formulaUdm) {
+            formulaDesc = formulaDesc + ' ' + formulaUdm;
+        }
         var newEnv = this.getFormulaEnv(status, targetId);
         env = env ? env + ";" + newEnv : newEnv;
         layers.push(this.createLayerRecord({
@@ -1054,7 +1061,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
     getFormulaEnv: function(status, targetId) {
-        return "formula:"+status.formula+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',');
+        return "formula:"+status.formula+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',')+";fp:"+status.temporal.value+";processing:"+status.processing;
     },
     
     addRisk: function(layers, bounds, status) {                
@@ -1072,18 +1079,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         if(status.formulaInfo.dependsOnTarget) {
             if(this.isSingleTarget()) {
-                this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc, env);                
+                this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc, status.formulaUdm, env);                
             } else if(this.isAllHumanTargets()) {
-                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc, env);
+                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc, status.formulaUdm, env);
             } else if(this.isAllNotHumanTargets()) {
-                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc, env);
+                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc, status.formulaUdm, env);
             } else {
-                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, envhum);
-                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, envamb);                    
-                this.addFormula(layers, bounds, status, 100, this.mixedFormulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle + ' - ' + this.notHumanTitle, mixedenv);
+                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, status.formulaUdm, envhum);
+                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, status.formulaUdm, envamb);                    
+                this.addFormula(layers, bounds, status, 100, this.mixedFormulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle + ' - ' + this.notHumanTitle, status.formulaUdm, mixedenv);
             }
         } else {
-            this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc, env);   
+            this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc, status.formulaUdm, env);   
         }         
     },
     
@@ -1251,12 +1258,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 // features or geometries
                 inputs: {
                     store: new OpenLayers.WPSProcess.LiteralData({value:this.wpsStore}),
+                    processing: new OpenLayers.WPSProcess.LiteralData({value:status.processing}),
                     formula: new OpenLayers.WPSProcess.LiteralData({value:status.formula}),
                     target: new OpenLayers.WPSProcess.LiteralData({value:targetId}),
                     materials: new OpenLayers.WPSProcess.LiteralData({value:status.sostanza.id.join(',')}),
                     scenarios: new OpenLayers.WPSProcess.LiteralData({value:status.accident.id.join(',')}),
                     entities: new OpenLayers.WPSProcess.LiteralData({value:status.seriousness.id.join(',')}),
-                    severeness: new OpenLayers.WPSProcess.LiteralData({value:status.formulaInfo.dependsOnTarget ? status.target.severeness : '0'})
+                    severeness: new OpenLayers.WPSProcess.LiteralData({value:status.formulaInfo.dependsOnTarget ? status.target.severeness : '0'}),
+                    fp: new OpenLayers.WPSProcess.LiteralData({value:status.temporal.value})
                 },
                 outputs: [],
                 success: function(outputs) {
@@ -1448,8 +1457,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.elab.setValue(this.status.processingDesc);
         this.form.setValue(this.status.formulaDesc);
         
-        this.weather.setValue(this.status.weather);
-        this.temporal.setValue(this.status.temporal);
+        //this.weather.setValue(this.status.weather);
+        this.temporal.setValue(this.status.temporal.name);
         
         this.extent.setValue(this.status.roi.label);
         this.trg.setValue(this.status.target.name);

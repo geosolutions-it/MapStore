@@ -54,7 +54,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     validationTitle: "Errore nei parametri",
     invalidAOI: "Le coordinate dell'area di interesse non sono valide.",
     bboxTooBig: "L'area selezionata e' troppo grande e il server potrebbe impiegare molto tempo a rispondere. Se si desidera continuare ugualmente premere OK.",
-    weatherLabel: "Meteo",  
+    //weatherLabel: "Meteo",  
     temporalLabel: "Temporali",
     conditionsFielSetLabel: "Condizioni",   
     allClassOption: "Tutte le classi",
@@ -112,7 +112,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     wfsVersion: "1.1.0",
     destinationNS: "destinationprod",
     temporalFeature: "siig_t_variabile",
-    weatherFeature: "siig_t_variabile",
+    //weatherFeature: "siig_t_variabile",
     bersFeature: "siig_t_bersaglio",
     elabFeature: "siig_mtd_d_elaborazione",
     formulaFeature: "formule",
@@ -203,7 +203,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 expand: function(combo) {
                     combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );
-                } 
+                },
+                select: function(combo, record, index) {
+                    this.enableDisableForm(this.getComboRecord(this.formula, 'id_formula'), record);
+                }
             }          
         });
         
@@ -228,6 +231,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
               },{
                         "name": "name",              
                         "mapping": "descrizione_" + GeoExt.Lang.locale
+              },{
+                        "name": "udm",              
+                        "mapping": "udm_" + GeoExt.Lang.locale
               },{
                         "name": "ambito_territoriale",              
                         "mapping": "ambito_territoriale"
@@ -293,7 +299,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     combo.innerList.setWidth( 'auto' );
                 },
                 select: function(combo, record, index) {
-                    this.enableDisableForm(record);
+                    this.enableDisableForm(record, this.getComboRecord(this.elaborazione, 'id'));
                 }
             } 
         });
@@ -319,11 +325,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         return this.elabSet;
     },
     
-    enableDisableForm: function(record) {
-        this.enableDisableTemporali(record);
-        this.enableDisableMeteo(record);
-        this.enableDisableTargets(record);
-        this.enableDisableScenario(record);        
+    enableDisableForm: function(formula, elaborazione) {
+        this.enableDisableAOI(formula, elaborazione);
+        this.enableDisableTemporali(formula, elaborazione);
+        //this.enableDisableMeteo(record);
+        this.enableDisableTargets(formula, elaborazione);
+        this.enableDisableScenario(formula, elaborazione);        
     },
     
     enableDisable: function(condition, widget) {
@@ -334,14 +341,17 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }
     },
     
-    enableDisableTemporali: function(record) {
-        this.enableDisable(record.get('condizioni_temporali'), this.temporal);
-        
+    enableDisableTemporali: function(formula, elaborazione) {
+        this.enableDisable(formula.get('condizioni_temporali') && elaborazione.get('id') === 2, this.temporal);        
     },
     
-    enableDisableMeteo: function(record) {
-        this.enableDisable(record.get('condizioni_meteo'), this.weather);
+    enableDisableAOI: function(formula, elaborazione) {
+        this.enableDisable(formula.get('ambito_territoriale'), this.aoiFieldset);        
     },
+    
+    /*enableDisableMeteo: function(record) {
+        this.enableDisable(record.get('condizioni_meteo'), this.weather);
+    },*/
     
     enableDisableTargets: function(record) {
         var hasTargets = record.get('bersagli_tutti') || record.get('bersagli_umani') || record.get('bersagli_ambientali');
@@ -404,7 +414,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      */
     buildConditionsForm: function() {        
        
-       var filter= new OpenLayers.Filter.Comparison({
+       /*var filter= new OpenLayers.Filter.Comparison({
             type: OpenLayers.Filter.Comparison.EQUAL_TO,
             property: this.destinationNS + ":fk_tipo_variabile",
             value: 2
@@ -448,9 +458,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 },
                 scope: this
             }              
-        });
+        });*/
         
-        filter= new OpenLayers.Filter.Comparison({
+        var filter= new OpenLayers.Filter.Comparison({
             type: OpenLayers.Filter.Comparison.EQUAL_TO,
             property: this.destinationNS + ":fk_tipo_variabile",
             value: 1
@@ -463,11 +473,15 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         "mapping": "descrizione_" + GeoExt.Lang.locale
               },{
                         "name": "value",        
-                        "mapping": "id_variabile"
+                        "mapping": "campo_fp"
               }],
-             proxy: this.getWFSStoreProxy(this.temporalFeature, filter) , 
+             proxy: this.getWFSStoreProxy(this.temporalFeature, filter, 'id_variabile') , 
              autoLoad: true 
        });
+       
+       temporalStore.on('load', function(store, records, options) {            
+            this.temporal.setValue(records[0].get('value'));
+       }, this);
         
                 
         this.temporal = new Ext.form.ComboBox({
@@ -477,22 +491,17 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             hideLabel : false,
             store: temporalStore,    
             displayField: 'name', 
-            valueField: 'id',
-            typeAhead: true,
+            valueField: 'value',
+            typeAhead: true,            
             //mode: 'local',
             lastQuery: '',
             forceSelection: true,
+            disabled: true,
             triggerAction: 'all',
             selectOnFocus:true,
-            editable: true,
+            //editable: true,
             resizable: true,    
-            listeners: {
-                beforeselect: function(cb, record, index){
-                    
-                },
-                select: function(cb, record, index) {
-                      
-                },
+            listeners: {                
                 scope: this
             }              
         });
@@ -507,8 +516,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 bodyStyle:'padding:5px;'
             },
             items: [
-            this.temporal,    
-            this.weather
+            this.temporal/*,    
+            this.weather*/
             ]
         });
         
@@ -1346,8 +1355,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         return combo.store.getAt(combo.store.findExact('name', combo.getValue()));        
     },
     
-    getComboRecord: function(combo) {    
-        return combo.store.getAt(combo.store.findExact('name', combo.getValue()));
+    getComboRecord: function(combo, field) {    
+        return combo.store.getAt(combo.store.findExact(field || 'name', combo.getValue()));
     },
     
     /** private: method[viewMap]    
@@ -1472,8 +1481,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         Ext.getCmp('rischio_ambientale_multislider').setValue(1, status.themas.ambientale[1]);        */
         
         
-        this.setComboStatus(this.weather, 'weather');
-        this.setComboStatus(this.temporal, 'temporal');
+        //this.setComboStatus(this.weather, 'weather');
+        this.setComboStatus(this.temporal, 'temporal', 'value');
         
         this.setComboStatus(this.classi, 'classe');
         this.setComboStatus(this.sostanze, 'sostanza');
@@ -1486,11 +1495,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      *  :arg statusName: ``String``        
      *     Updates the given combo value from the status object
      */
-    setComboStatus: function(combo, statusName) {
+    setComboStatus: function(combo, statusName, field) {
+        field = field || 'name';
         var store = combo.getStore();      
-        var value = this.status[statusName].name;
+        var value = this.status[statusName][field];
         combo.setValue(value);
-        combo.fireEvent('select',combo, store.getAt(store.findExact("name", value)));
+        combo.fireEvent('select',combo, store.getAt(store.findExact(field, value)));
     },
     
     /** private: method[getStatus]   
@@ -1505,9 +1515,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         obj.formula = this.formula.getValue();
         obj.formulaDesc = this.formula.getEl().getValue();
         var formulaRec = this.formula.store.getAt(this.formula.store.findExact("id_formula",obj.formula));
+        obj.formulaUdm = formulaRec.get('udm');
+        
         obj.formulaInfo = {
             dependsOnTarget: formulaRec.get('bersagli_tutti') > 0 || formulaRec.get('bersagli_umani') > 0 || formulaRec.get('bersagli_ambientali') > 0,
-            dependsOnArcs: formulaRec.get('ambito_territoriale')
+            dependsOnArcs: formulaRec.get('ambito_territoriale'),
         };        
         
         
@@ -1527,8 +1539,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         obj.target = this.getSelectedTarget().data; 
         obj.macroTarget = this.macrobers.getValue();
         
-        obj.weather = this.weather.getValue();
-        obj.temporal = this.temporal.getValue();
+        //obj.weather = this.weather.getValue();
+        obj.temporal = this.getComboRecord(this.temporal, 'value').data;
         
         obj.classe = this.getComboRecord(this.classi).data; //this.classi.getValue();
         obj.sostanza = this.getComboRecord(this.sostanze).data; //this.sostanze.getValue();
@@ -1563,7 +1575,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         obj.target = {humans: null, code:'-2', layer: 'bersagli_all', severeness: '1,2,3,4,5'}; 
         obj.macroTarget = {};
         
-        obj.weather = "0";
+        //obj.weather = "0";
         obj.temporal = "0";
         
         obj.classe = {ivalue:"0"};

@@ -459,7 +459,7 @@
         "accidentTipologyName": "tipologia",
         "wfsURL": "http://localhost:8080/geoserver/destination/wfs",
         "wpsURL": "http://localhost:8080/geoserver/wps",        
-        "wpsStore": "destination_test",        
+        "wpsStore": "destination",        
         "wfsVersion" : "1.1.0",
         "destinationNS": "destination",
         "index": 28
