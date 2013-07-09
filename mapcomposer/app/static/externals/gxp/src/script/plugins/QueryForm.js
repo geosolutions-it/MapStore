@@ -289,6 +289,7 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
     
     resetFeatureManager: function(){
         this.target.tools[this.featureManager].featureStore.removeAll();  
+        this.target.tools[this.featureManager].clearFeatures();  
     }
         
 });

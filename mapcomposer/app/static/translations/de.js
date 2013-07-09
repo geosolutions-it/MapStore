@@ -345,7 +345,12 @@ GeoExt.Lang.add("de", {
         nextPageTip: "Nächste Seite",
         lastPageTip: "Letzte Seite",
         title: "Zeilen",
-        totalMsg: "Insgesamt: {0} Zeilen"
+        totalMsg: "Insgesamt: {0} Zeilen",
+        displayExportCSVText: "Export to CSV",
+        exportCSVSingleText: "einzelne Seite",
+        exportCSVMultipleText: "Alle Seite",
+        failedExportCSV: "Fehler beim Ansprechen für Ausgabeformat CSV finden",
+        invalidParameterValueErrorText: "Ungültige Parameter Wert"
     },
 	
     "gxp.plugins.QueryForm.prototype": {
