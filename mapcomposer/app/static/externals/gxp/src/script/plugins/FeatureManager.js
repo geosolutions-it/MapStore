@@ -477,6 +477,10 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
      *  features and selected features, all features will be shown.
      */
     setLayerDisplay: function() {
+        var mapLayer = this.featureLayer && this.featureLayer.map;
+        if (mapLayer) {
+            mapLayer.setLayerIndex(this.featureLayer, mapLayer.layers.length);
+        }      
         var show = this.visible();
         var map = this.target.mapPanel.map;
         if (show) {
