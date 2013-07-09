@@ -346,7 +346,12 @@ GeoExt.Lang.add("it", {
         nextPageTip: "Prossima pagina",
         lastPageTip: "Ultima pagina",
         title: "Entità",
-        totalMsg: "Totale: {0} entità"
+        totalMsg: "Totale: {0} entità",
+        displayExportCSVText: "Esporta nel formato CSV",
+        exportCSVSingleText: "Singola pagina",
+        exportCSVMultipleText: "Tutte le pagine",
+        failedExportCSV: "Impossibile esportare nel formato CSV",
+        invalidParameterValueErrorText: "Valore parametro non valido"            
     },
 	
     "gxp.plugins.QueryForm.prototype": {

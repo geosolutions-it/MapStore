@@ -393,3 +393,16 @@ div.map-overlay div.overlay-element {
     left: 0px;
     margin-top: 0px;
 }
+
+/* csv_export */
+.x-btn .gxp-icon-csvexport, .x-menu-item .gxp-icon-csvexport {
+    background-image: url(img/geosilk/disk.png) !important;
+}
+
+.x-btn .gxp-icon-csvexport-single, .x-menu-item .gxp-icon-csvexport-single {
+    background-image: url(img/silk/table.png) !important;
+}
+
+.x-btn .gxp-icon-csvexport-multiple, .x-menu-item .gxp-icon-csvexport-multiple {
+    background-image: url(img/silk/table_multiple.png) !important;
+}
