@@ -368,7 +368,15 @@ GeoExt.Lang.add("de", {
         attributeEnablementMsg: "Abfrage ungültig! Zuerst 'Feature' und die vektorielle Schicht auswählen.",
         searchType: "Grundeinstellungen",
         typeLabel: "Typ",
-        featureLabel: "Max Features"
+        featureLabel: "Max Features",
+        selectionMethodFieldSetComboTitle: "Set Selection Method",
+        comboSelectionMethodLabel: "Auswahl",
+        comboPolygonSelection: 'Polygon',
+        comboCircleSelection: 'Rund',
+        comboBBOXSelection: 'BBOX',
+        errorDrawPolygonText: "Sie müssen ein Polygon zeichnen",
+        errorDrawCircleText: "Sie müssen einen Kreis zu zeichnen",     
+        errorDrawTitle: "Abfrage Fehler"  
     },
     
      "gxp.form.BBOXFieldset.prototype":{
