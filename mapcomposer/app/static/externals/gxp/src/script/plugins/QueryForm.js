@@ -110,6 +110,55 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
      *  Text for no features alert message (i18n)
      */
     noFeaturesMessage: "Your query did not return any results.",
+    
+    /** api: config[selectionMethodFieldSetComboTitle]
+     * ``String``
+     * Text for FieldSet Combo Selection Method (i18n).
+     */    
+    selectionMethodFieldSetComboTitle: "Set Selection Method",
+    
+    /** api: config[comboSelectionMethodLabel]
+     * ``String``
+     * Text for Label Combo Selection Method (i18n).
+     */    
+    comboSelectionMethodLabel: "Selection",
+
+    /** api: config[comboPolygonSelection]
+     * ``String``
+     * Text for Label Polygon (i18n).
+     */        
+    comboPolygonSelection: 'Polygon',
+    
+    /** api: config[comboCircleSelection]
+     * ``String``
+     * Text for Label Circle (i18n).
+     */        
+    comboCircleSelection: 'Circle',
+    
+    /** api: config[comboBBOXSelection]
+     * ``String``
+     * Text for Label BBOX (i18n).
+     */        
+    comboBBOXSelection: 'BBOX',
+
+    /** api: config[errorDrawPolygonText]
+     * ``String``
+     * Text for Query Error Draw Polygon (i18n).
+     */            
+    errorDrawPolygonText: "You have to draw a Polygon",    
+    
+    /** api: config[errorDrawCircleText]
+     * ``String``
+     * Text for Query Error Draw Circle (i18n).
+     */            
+    errorDrawCircleText: "You have to draw a Circle",        
+
+    /** api: config[errorDrawTitle]
+     * ``String``
+     * Text for Draw Query Error Title (i18n).
+     */            
+    errorDrawTitle: "Query error",
+         
 
     /** api: config[actions]
      *  ``Object`` By default, this tool creates a "Query" action to trigger
