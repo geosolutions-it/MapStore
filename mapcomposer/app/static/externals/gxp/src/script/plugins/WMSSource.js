@@ -262,7 +262,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 TRANSPARENT: config.transparent,
 				VIEWPARAMS: config.viewparams,
 				ENV: config.env,
-                RISKPANEL: config.riskPanel
+                RISKPANEL: config.riskPanel,
+                DEFAULTENV: config.env
             }, this.layerBaseParams);
             
             // use all params from original

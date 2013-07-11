@@ -1519,7 +1519,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         obj.formulaInfo = {
             dependsOnTarget: formulaRec.get('bersagli_tutti') > 0 || formulaRec.get('bersagli_umani') > 0 || formulaRec.get('bersagli_ambientali') > 0,
-            dependsOnArcs: formulaRec.get('ambito_territoriale'),
+            dependsOnArcs: formulaRec.get('ambito_territoriale')
         };        
         
         
