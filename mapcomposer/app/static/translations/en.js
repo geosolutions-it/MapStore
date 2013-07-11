@@ -88,7 +88,7 @@ GeoExt.Lang.add("en", {
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Elements {0} - {1} of {2}",
         emptyMsg: "No elements found",
-        loadMsg: "Loading ...",
+        loadMsg: "Loading ..."
     },
     
     "GeoExplorer.prototype": {
@@ -314,7 +314,8 @@ GeoExt.Lang.add("en", {
         medRangeSliderText: "Medium",
         maxRangeSliderText: "High",
         riskTabTitle: "Theming",
-        riskTabSubmitText: "Apply"
+        riskTabSubmitText: "Apply",
+        riskTabResetText: "Defaults"
     },
     
     
