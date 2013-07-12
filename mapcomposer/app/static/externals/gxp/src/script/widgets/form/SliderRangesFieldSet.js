@@ -62,7 +62,7 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
         });
 		
         this.multiSlider= new gxp.form.SliderRangesField(this.multiSliderConf);
-		this.multiSlider.on('changecomplete', function(slider, value, thumb) {
+		this.multiSlider.on('change', function(slider, value, thumb) {
 			if(this.numericFields){
 				Ext.getCmp(thumb.id+"_minValue").setValue(thumb.minValue);
 				Ext.getCmp(thumb.id+"_maxValue").setValue(thumb.value);

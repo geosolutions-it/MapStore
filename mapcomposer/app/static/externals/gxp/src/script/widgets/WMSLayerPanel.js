@@ -100,6 +100,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
     maxRangeSliderText: "Alto",
     riskTabTitle: "Tematizzazione",
     riskTabSubmitText: "Applica",
+    riskTabResetText: "Valori Predefiniti",
     
     initComponent: function() {
         
@@ -447,13 +448,13 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                 increment: 0.1,
                 ranges: [
                 {
-                    maxValue: parseFloat(sliderEnv[0].split(":")[1]),
+                    maxValue: parseFloat(envArray[0].split(":")[1]),
                     name:this.minRangeSliderText,
                     id:"range_low_panel"
                 },
 
                 {
-                    maxValue: parseFloat(sliderEnv[1].split(":")[1]),
+                    maxValue: parseFloat(envArray[1].split(":")[1]),
                     name:this.medRangeSliderText, 
                     id:"range_medium_panel"
                 },
@@ -505,10 +506,17 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         }               
         
 		var temasPanel = new Ext.TabPanel({
+            id: "sliderTab",
 			autoTabs:true,
 			activeTab:0,
 			deferredRender:false,
-			border:false
+			border:false,
+            listeners: {
+                tabchange: function(tabPanel,panel) {
+                    Ext.getCmp('rischio_sociale_panel_multislider').syncThumb();
+                    Ext.getCmp('rischio_ambientale_panel_multislider').syncThumb();
+                }
+            }
 		});        
         
         temasPanel.add(riskPanel);
@@ -528,6 +536,77 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
             labelWidth: 70,
             items: [panel],
             buttons: [{
+                text: this.riskTabResetText,
+                //iconCls: 'elab-button',
+                scope: this,
+                handler: function(){
+                    var sliderDefaultEnv = this.layerRecord.get("layer").params.DEFAULTENV.split(";");
+                    var defaultEnvArray=[];
+                    
+                    var checkEnv = ["low","medium","max","lowsociale","mediumsociale","maxsociale","lowambientale","mediumambientale","maxambientale"];
+                    
+                    var hasBoth = false;
+                    
+                    for (var i = 0;i<sliderDefaultEnv.length;i++){
+                        if (checkEnv.indexOf(sliderDefaultEnv[i].split(":")[0]) != -1){
+                            if(sliderDefaultEnv[i].indexOf('sociale') != -1 || sliderDefaultEnv[i].indexOf('ambientale') != -1) {
+                                hasBoth = true;
+                            }                      
+                            defaultEnvArray.push(sliderDefaultEnv[i]);
+                        }
+                    }      
+
+                    var layer = this.layerRecord.get("layer");
+                    var env = layer.params.ENV;
+                    var sliderEnv = env.split(";");
+                    var envArray = [];                    
+                    
+                    for (var i = 0;i<sliderEnv.length;i++){
+                        if (checkEnv.indexOf(sliderEnv[i].split(":")[0]) == -1){
+                            envArray.push(sliderEnv[i]);
+                        }
+                    }
+                    
+                    var envStringa = envArray.join(";") == "" ? "" : envArray.join(";")+";";                    
+                    
+                    if (hasBoth){
+
+                        Ext.getCmp('rischio_sociale_panel_multislider').setValue(0,defaultEnvArray.length > 3 ? parseFloat(defaultEnvArray[3].split(":")[1]) : parseFloat(defaultEnvArray[0].split(":")[1]));
+                        Ext.getCmp('rischio_sociale_panel_multislider').setValue(1,defaultEnvArray.length > 3 ? parseFloat(defaultEnvArray[4].split(":")[1]) : parseFloat(defaultEnvArray[1].split(":")[1]));
+
+                        Ext.getCmp('rischio_ambientale_panel_multislider').setValue(0,defaultEnvArray.length > 3 ? parseFloat(defaultEnvArray[3].split(":")[1]) : parseFloat(defaultEnvArray[0].split(":")[1]));
+                        Ext.getCmp('rischio_ambientale_panel_multislider').setValue(1,defaultEnvArray.length > 3 ? parseFloat(defaultEnvArray[4].split(":")[1]) : parseFloat(defaultEnvArray[1].split(":")[1]));
+
+                        var socialMin = Ext.getCmp('rischio_sociale_panel_multislider').getValue(0);
+                        var socialMax = Ext.getCmp('rischio_sociale_panel_multislider').getValue(1);
+                        var maxValueSociale = Ext.getCmp('rischio_sociale_panel_multislider').maxValue;
+                        
+                        var ambMin = Ext.getCmp('rischio_ambientale_panel_multislider').getValue(0);
+                        var ambMax = Ext.getCmp('rischio_ambientale_panel_multislider').getValue(1);
+                        var maxValueAmbientale = Ext.getCmp('rischio_ambientale_panel_multislider').maxValue;
+
+                        
+                        layer.mergeNewParams({
+                            ENV: envStringa+"lowsociale:"+socialMin+";mediumsociale:"+socialMax+";maxsociale:"+maxValueSociale+";lowambientale:"+ambMin+";mediumambientale:"+ambMax+";maxambientale:"+maxValueAmbientale
+                        }); 
+                        
+                    } else {
+                        
+                        Ext.getCmp('rischio_panel_multislider').setValue(0,parseFloat(sliderDefaultEnv[0].split(":")[1]));
+                        Ext.getCmp('rischio_panel_multislider').setValue(1,parseFloat(sliderDefaultEnv[1].split(":")[1]));
+                                               
+                        var min = Ext.getCmp('rischio_panel_multislider').getValue(0);
+                        var max = Ext.getCmp('rischio_panel_multislider').getValue(1);    
+                        var maxValue = Ext.getCmp('rischio_panel_multislider').maxValue;                         
+                        
+                        layer.mergeNewParams({
+                            ENV: envStringa+"low:"+min+";medium:"+max+";max:"+maxValue
+                        });                          
+                        
+                    }
+                    
+                }
+            },{
                 text: this.riskTabSubmitText,
                 iconCls: 'elab-button',
                 scope: this,
@@ -548,6 +627,9 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                     var envStringa = envArray.join(";") == "" ? "" : envArray.join(";")+";";
                     
                     if (hasBoth){
+                    
+                        var maxValueSociale = Ext.getCmp('rischio_sociale_panel_multislider').maxValue;
+                        var maxValueAmbientale = Ext.getCmp('rischio_ambientale_panel_multislider').maxValue;
                         
                         var socialMin = Ext.getCmp('rischio_sociale_panel_multislider').getValue(0);
                         var socialMax = Ext.getCmp('rischio_sociale_panel_multislider').getValue(1);
@@ -556,16 +638,16 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
 
                         
                         layer.mergeNewParams({
-                            ENV: envStringa+"lowsociale:"+socialMin+";mediumsociale:"+socialMax+";lowambientale:"+ambMin+";mediumambientale:"+ambMax
+                            ENV: envStringa+"lowsociale:"+socialMin+";mediumsociale:"+socialMax+";maxsociale:"+maxValueSociale+";lowambientale:"+ambMin+";mediumambientale:"+ambMax+";maxambientale:"+maxValueAmbientale
                         });                        
                         
                     } else {
-                        
+                        var maxValue = Ext.getCmp('rischio_panel_multislider').maxValue;
                         var min = Ext.getCmp('rischio_panel_multislider').getValue(0);
                         var max = Ext.getCmp('rischio_panel_multislider').getValue(1);                
                         
                         layer.mergeNewParams({
-                            ENV: envStringa+"low:"+min+";medium:"+max
+                            ENV: envStringa+"low:"+min+";medium:"+max+";max:"+maxValue
                         });                         
                         
                     }

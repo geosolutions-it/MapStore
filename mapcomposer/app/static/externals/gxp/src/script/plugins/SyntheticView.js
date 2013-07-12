@@ -1024,7 +1024,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }, true));
     },*/
     
-    addFormula: function(layers, bounds, status, targetId, layer, formulaDesc, formulaUdm, env) {
+    addFormula: function(layers, bounds, status, targetId, layer, formulaDesc, formulaUdm, env, defaultEnv) {
         this.currentRiskLayers.push(layer);
         var viewParams = "bounds:" + bounds 
             + ';residenti:' + (this.status.target.id.indexOf(1) === -1 ? 0 : 1) 
@@ -1055,6 +1055,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             params: {                                                                
                 viewparams: viewParams,
                 env: env,
+                defaultenv: defaultEnv,
                 riskPanel: true
             }
         }, true, undefined, "SIIG"));
@@ -1064,8 +1065,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return "formula:"+status.formula+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',')+";fp:"+status.temporal.value+";processing:"+status.processing;
     },
     
-    addRisk: function(layers, bounds, status) {                
-        var env, envhum, envamb;
+    addRisk: function(layers, bounds, status, defaultEnv) {                
+        var env, envhum, envamb, defEnvTot, defEnvAmb, defEnvSoc;
+        
+        for(var i = 0;i<defaultEnv.length;i++){
+            if(defaultEnv[i].layer.indexOf('sociale') != -1) {
+                defEnvSoc = defaultEnv[i].defaultEnv;
+            }else if(defaultEnv[i].layer.indexOf('ambientale') != -1){
+                defEnvAmb = defaultEnv[i].defaultEnv;
+            }else{
+                defEnvTot = defaultEnv[i].defaultEnv;
+            }
+        }
         
         if(this.isHumanTarget() || this.isAllHumanTargets() || this.isMixedTargets()) {
             env = "low:"+this.status.themas['sociale'][0]+";medium:"+this.status.themas['sociale'][1]+";max:"+this.status.themas['sociale'][2];
@@ -1085,9 +1096,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             } else if(this.isAllNotHumanTargets()) {
                 this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc, status.formulaUdm, env);
             } else {
-                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, status.formulaUdm, envhum);
-                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, status.formulaUdm, envamb);                    
-                this.addFormula(layers, bounds, status, 100, this.mixedFormulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle + ' - ' + this.notHumanTitle, status.formulaUdm, mixedenv);
+                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, status.formulaUdm, envhum, defEnvSoc);
+                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, status.formulaUdm, envamb, defEnvAmb);                    
+                this.addFormula(layers, bounds, status, 100, this.mixedFormulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle + ' - ' + this.notHumanTitle, status.formulaUdm, mixedenv, defEnvTot);
             }
         } else {
             this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc, status.formulaUdm, env);   
@@ -1225,6 +1236,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             this.storeOriginalRiskLayers();
         }
         
+        var defaultEnv = [];
+        
+        for (var i = 0;i<this.originalRiskLayers.length;i++){
+            defaultEnv[defaultEnv.length] = {layer:this.originalRiskLayers[i].get("layer").params.LAYERS,defaultEnv:this.originalRiskLayers[i].get("layer").params.DEFAULTENV};
+        }
+        
         this.enableDisableRoads(!status.formulaInfo.dependsOnArcs);
         
         this.removeRiskLayers(map);
@@ -1241,7 +1258,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }
         
         if(status.formulaInfo.dependsOnArcs) {        
-            this.addRisk(newLayers, bounds, status);
+            this.addRisk(newLayers, bounds, status, defaultEnv);
             
             this.target.mapPanel.layers.add(newLayers);
             if(roi) {
