@@ -235,6 +235,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         "name": "udm",              
                         "mapping": "udm_" + GeoExt.Lang.locale
               },{
+                        "name": "visibile",              
+                        "mapping": "flg_visibile"
+              },{
                         "name": "ambito_territoriale",              
                         "mapping": "ambito_territoriale"
               },{
@@ -806,7 +809,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
              id: "sostStore",
              fields: [{
                         "name": "name",              
-                        "mapping": "nome_sostanza"
+                        "mapping": "nome_sostanza_" + GeoExt.Lang.locale
               },{
                         "name": "value",        
                         "mapping": "id_sostanza"
@@ -906,7 +909,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
              id: "sostStore",
              fields: [{
                         "name": "name",              
-                        "mapping": "tipologia"
+                        "mapping": "tipologia_" + GeoExt.Lang.locale
               },{
                         "name": "value",        
                         "mapping": "codice"
@@ -915,7 +918,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         "mapping": "id_scenario"
               },{
                         "name": "description",        
-                        "mapping": "tipologia"
+                        "mapping": "tipologia_" + GeoExt.Lang.locale
               }],
              proxy: this.getWFSStoreProxy(this.scenFeature, new OpenLayers.Filter.FeatureId({
                 fids: []
@@ -1520,6 +1523,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         obj.formulaInfo = {
             dependsOnTarget: formulaRec.get('bersagli_tutti') > 0 || formulaRec.get('bersagli_umani') > 0 || formulaRec.get('bersagli_ambientali') > 0,
             dependsOnArcs: formulaRec.get('ambito_territoriale'),
+            visibleOnArcs: formulaRec.get('visibile') === 1 || formulaRec.get('visibile') === 3,
+            visibleOnGrid: formulaRec.get('visibile') === 2 || formulaRec.get('visibile') === 3
         };        
         
         

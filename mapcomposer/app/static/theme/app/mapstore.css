@@ -168,3 +168,10 @@ div#homelogos ul li a:hover {
     text-align: center;
     padding-top: 50px;
 }
+
+#warning_message {
+    font-weight: bold;
+    font-size: 15px;
+    color: red;
+    margin-left: 50px;
+}

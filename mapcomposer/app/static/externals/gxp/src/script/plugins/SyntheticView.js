@@ -49,6 +49,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     wpsTitle: "Errore",
     wpsError: "Errore nella richiesta al servizio WPS",
     loadMsg: "Caricamento in corso...",
+    notVisibleOnArcsMessage: "Formula non visibile a questa scala",
+    notVisibleOnGridMessage: "Formula non visibile a questa scala",
     // End i18n.
         
     id: "syntheticview",
@@ -94,6 +96,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     accidentTipologyName: "tipologia",
     
     analiticViewScale: 17070,
+    cellViewScale: 500010,
     
     analyticView: false,
     
@@ -536,6 +539,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 
                     this.processingDone = false;
                     
+                    Ext.getCmp('warning_message').setValue('');
+                    
                     Ext.getCmp('analytic_view').disable();
                 }
             }, {
@@ -603,6 +608,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         }
                     },
                     handler: this.analyticView
+                },' ',{
+                    xtype:'displayfield',
+                    id:'warning_message'
                 },'->',{
                     xtype: 'button',
                     id: "targets_view",
@@ -679,6 +687,16 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 Ext.getCmp("roadGraph_view").disable();
                 */
             }
+            var msg = '';
+            if(this.status && this.status.formulaInfo) {
+                if(scale <= this.cellViewScale && this.status.formulaInfo.dependsOnArcs && !this.status.formulaInfo.visibleOnArcs) {
+                    msg = this.notVisibleOnArcsMessage;
+                } else if(scale > this.cellViewScale && this.status.formulaInfo.dependsOnArcs && !this.status.formulaInfo.visibleOnGrid) {
+                    msg = this.notVisibleOnGridMessage;
+                }
+            }
+            
+            Ext.getCmp('warning_message').setValue(msg);
         });
         
         return this.controlPanel;
@@ -1234,6 +1252,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.disableAnalyticView();        
         
         this.processingDone = true;
+        
+        Ext.getCmp('warning_message').setValue('');
         
         var scale = this.getMapScale();
         if(scale <= this.analiticViewScale) {
