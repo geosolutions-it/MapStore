@@ -39,6 +39,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
     emptyCommentText: "Enter comments here.",
     /** api: config[creatingPdfText] ``String`` i18n */
     creatingPdfText: "Creating PDF...",
+    printOsmText: "OSM Background?",
     /* end i18n */
     
     /** api: config[printProvider]
@@ -100,6 +101,8 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
      *  ignored if :ref:`GeoExt.ux.PrintPreview.legend` is not provided.
      */
     includeLegend: false,
+    
+    printOsm: false,
 	
 	compactLegend: false,
 	
@@ -361,7 +364,39 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
 				printProvider: this.printProvider
 			})
 		});
-		
+        
+		var osmLayer = new OpenLayers.Layer.OSM();
+        
+        var printOsmCheckbox = new Ext.form.Checkbox({
+            name: "printOsm",
+            checked: this.printOsm,
+            boxLabel: this.printOsmText,
+            hideLabel: true,
+            ctCls: "gx-item-nowrap",
+            handler: function(cb, checked) {
+                this.printOsm = checked;
+                if(checked) {
+                    this.printMapPanel.layers.map.addLayer(osmLayer, true);
+                    this.printMapPanel.layers.map.setLayerIndex(osmLayer, 0);
+                } else {
+                    this.printMapPanel.layers.map.removeLayer(osmLayer);
+                }
+                this.updateLayout();
+            },
+            cls : "gx-item-margin-left",
+            scope: this
+        });
+        
+        panelElements.push({
+				xtype: "container",
+				layout: "form",
+				cls: "x-form-item",
+                		style:"text-align:left",
+				items: [
+					printOsmCheckbox
+				]
+			});
+        
         return new Ext.form.FormPanel({
             autoHeight: true,
             border: false,

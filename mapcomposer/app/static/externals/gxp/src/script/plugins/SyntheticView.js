@@ -1073,6 +1073,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             params: {                                                                
                 viewparams: viewParams,
                 env: env,
+                defaultenv: env,
                 riskPanel: true
             }
         }, true, undefined, "SIIG"));

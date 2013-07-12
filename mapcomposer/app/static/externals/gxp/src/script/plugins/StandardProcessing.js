@@ -71,7 +71,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     lowRiskLabel: "Basso Rischio",
     mediumRiskLabel: "Medio Rischio",
     highRiskLabel: "Alto Rischio",
+    notVisibleOnArcsMessage: "Formula non visibile a questa scala",
+    notVisibleOnGridMessage: "Formula non visibile a questa scala",
     // End i18n.
+        
+    cellViewScale: 500010,
         
     // TODO: bbox piemonte    
     spatialFilterOptions: {
@@ -1337,6 +1341,19 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         if(!error && formulaRec.get('gravita') === 2 && entita === '0') {
             error = this.requiredSeriousness;
         }
+        if(!error) {
+            var scale = Math.round(map.getScale());   
+            
+            var visibleOnArcs = formulaRec.get('visibile') === 1 || formulaRec.get('visibile') === 3;
+            var visibleOnGrid = formulaRec.get('visibile') === 2 || formulaRec.get('visibile') === 3;
+            
+            if(scale <= this.cellViewScale && !visibleOnArcs) {
+                error = this.notVisibleOnArcsMessage;
+            } else if(scale > this.cellViewScale && !visibleOnGrid) {
+                error = this.notVisibleOnGridMessage;
+            }
+        }
+        
         if(!error) {
             this.doProcess(params);
         } else {

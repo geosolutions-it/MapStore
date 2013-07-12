@@ -85,7 +85,7 @@ GeoExt.Lang.add("it", {
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Elementi {0} - {1} di {2}",
         emptyMsg: "Nessun elemento trovato",
-        loadMsg: "Caricamento in corso...",
+        loadMsg: "Caricamento in corso..."
     },
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Livello di Zoom: {zoom}</div><div>Scala: 1:{scale}</div>",
@@ -304,7 +304,8 @@ GeoExt.Lang.add("it", {
         medRangeSliderText: "Medio",
         maxRangeSliderText: "Alto",
         riskTabTitle: "Tematizzazione",
-        riskTabSubmitText: "Applica"
+        riskTabSubmitText: "Applica",
+        riskTabResetText: "Valori Predefiniti"
     },
 
     "gxp.WMSStylesDialog.prototype": {
@@ -393,7 +394,8 @@ GeoExt.Lang.add("it", {
 	    legendOnSeparatePageText: "Legenda in una pagina separata?",
 	    compactLegendText: "Legenda compatta?",	
 	    emptyCommentText: "Inserisci qui i commenti.",
-	    creatingPdfText: "Creazione del file PDF..."
+	    creatingPdfText: "Creazione del file PDF...",
+        printOsmText: "Sfondo OpenStreetMap?"
     },
 
     "gxp.plugins.GeonetworkSearch.prototype":{
