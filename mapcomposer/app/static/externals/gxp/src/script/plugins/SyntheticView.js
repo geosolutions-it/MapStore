@@ -702,15 +702,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return this.controlPanel;
     },
     
-    loadRoadsGrid: function() {
+    /*loadRoadsGrid: function() {
         var wfsGrid = Ext.getCmp("featuregrid");
         
         var map = this.target.mapPanel.map;        
         var status = this.getStatus();        
        
-        
-        /*var viewParams = "bounds:" + bounds;
-        wfsGrid.loadGrids(undefined, undefined, this.selectionLayerProjection, viewParams);*/
         
         var status = this.status;
         var targetId = this.getChosenTarget(status);            
@@ -771,6 +768,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         
         
+    },*/
+    
+    loadRoadsGrid: function(viewParams) {
+        if(!viewParams) {
+            var map = this.target.mapPanel.map;        
+            var status = this.getStatus();        
+            var bounds = this.getBounds(status, map);
+            
+            viewParams = "bounds:" + bounds;
+        }
+        var wfsGrid = Ext.getCmp("featuregrid");
+        wfsGrid.loadGrids(null, null, this.selectionLayerProjection, viewParams);                                
     },
     
     loadDamageGrid: function() {

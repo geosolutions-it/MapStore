@@ -127,6 +127,7 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                             "emptyMsg": me.emptyMsg,
                             "displayMsgPaging": me.displayMsgPaging,
                             "featureType": gridCfg.featureType,
+                            "sortAttribute": gridCfg.sortBy,
                             "pageSize": 10/*this.pageSize*/,
                             "srsName": this.srsName, 
                             "version": "1.1.0",

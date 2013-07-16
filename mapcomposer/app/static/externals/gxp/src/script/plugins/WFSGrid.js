@@ -579,15 +579,17 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 otherParams+="&filter="+  filterFormat.write(this.filter);
             }
            
-            otherParams+= this.sortAttribute ? "&sort="+this.sortAttribute :"";
+            otherParams+= this.sortAttribute ? "&sortBy="+this.sortAttribute :"";
             otherParams+= this.viewParams ? "&viewParams="+encodeURIComponent(this.viewParams) : "";
             otherParams+= this.outputFormat ? "&outputFormat="+this.outputFormat : "&outputFormat=json";
+           
+            
            
             protocol= new OpenLayers.Protocol.HTTP({
                 url: this.wfsURL+"?service=WFS"
                 +"&version="+this.version
                 +"&request=GetFeature"
-                +"&typeName="+this.featureType
+                +"&typeName="+this.featureType                
                 +"&srs="+this.srsName
                 +otherParams,
                 format: new OpenLayers.Format.GeoJSON()

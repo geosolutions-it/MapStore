@@ -497,7 +497,7 @@
                     ],
                     "columns": [
                         {
-                            "header": ["Residents number", "Residenti", "Nombre de résidents", "Bewohner"],
+                            "header": ["Residents number", "Residenti", "Nombre de résidents", "Anzahl der Anwohner"],
                             "dataIndex": "residenti"
                         },
                         {
@@ -505,7 +505,7 @@
                             "dataIndex": "partner"
                         }
                     ],
-                    "title": ["Resident Population", "Popolazione residente", "Population résidente", "Wohnbevölkerung"],
+                    "title": ["Resident Population", "Popolazione residente", "Population résidente", "Anwohnerzahlen"],
                     "name": "POPOLAZIONE RESIDENTE",
                     "id": 1,
                     "type": "umano"
@@ -549,19 +549,19 @@
                     ],
                     "columns": [
                         {
-                            "header": ["Municipality name", "Comune", "Nom de la commune", "Gemeinde"],      
+                            "header": ["Municipality name", "Comune", "Nom de la commune", "Gemeindename"],      
                             "dataIndex": "comune"
                         },
                         {
-                            "header": ["Municipality National Code", "NAT Code", "Code national de la commune", "NAT Code"],      
+                            "header": ["Municipality National Code", "NAT Code", "Code national de la commune", "Gemeindekodex"],      
                             "dataIndex": "natcode"
                         },
                         {
-                            "header": ["Maximum presence", "Presenza massima", "Présence maximale", "maximale Präsenz"],      
+                            "header": ["Maximum presence", "Presenza massima", "Présence maximale", "maximale Kapazität/ maximale Nächtigungen"],      
                             "dataIndex": "presmax"
                         },
                         {
-                            "header": ["Average presence", "Presenza media", "Présence moyenne", "durchschnittliche Präsenz"],      
+                            "header": ["Average presence", "Presenza media", "Présence moyenne", "mittlere Kapazität/ mittlere Nächtigungen"],      
                             "dataIndex": "presmed"
                         },
                         {
@@ -569,7 +569,7 @@
                             "dataIndex": "partner"
                         }
                     ],
-                    "title": ["Tourist population", "Popolazione fluttuante turistica", "Population touristique", "Floating touristischen Bevölkerung"],
+                    "title": ["Tourist population", "Popolazione fluttuante turistica", "Population touristique", "Tourismuszahlen"],
                     "name": "POPOLAZIONE FLUTTUANTE TURISTICA (MAX)",
                     "id": 2,
                     "type": "umano"
@@ -617,27 +617,27 @@
                     ],
                     "columns": [
                         {
-                            "header": ["Description", "Denominazione", "Dénomination", "Name"],      
+                            "header": ["Description", "Denominazione", "Dénomination", "Benennung"],      
                             "dataIndex": "denominazione"
                         },
                         {
-                            "header": ["Tax Code", "Cod. Fiscale", "Numéro d'identification fiscale", "Abgabenordnung"],      
+                            "header": ["Tax Code", "Cod. Fiscale", "Numéro d'identification fiscale", "Mehrwertssteuer-Nummer"],      
                             "dataIndex": "codfisc"
                         },
                         {
-                            "header": ["NACE code", "Cod. ATECO", "Code NACE", "ATECO Code"],      
+                            "header": ["NACE code", "Cod. ATECO", "Code NACE", "ATECO Kodex"],      
                             "dataIndex": "codateco"
                         },
                         {
-                            "header": ["NACE code eescription ", "Desc. ATECO", "Description code NACE", "ATECO Beschreibung"],      
+                            "header": ["NACE code eescription ", "Desc. ATECO", "Description code NACE", "Beschreibung des ATECO Kodex"],      
                             "dataIndex": "descrizioneateco"
                         },
                         {
-                            "header": ["Employees number", "N. Addetti", "Nombre d'employés", "Anzahl der Mitarbeiter"],      
+                            "header": ["Employees number", "N. Addetti", "Nombre d'employés", "Anzahl der Beschäftigten"],      
                             "dataIndex": "addetti"
                         },
                         {
-                            "header": ["Employees number source (Estimated / calculated)", "Fonte addetti", "Source du nombre d'employés (Estimé/calculé)", "Quelle der Mitarbeiter"],      
+                            "header": ["Employees number source (Estimated / calculated)", "Fonte addetti", "Source du nombre d'employés (Estimé/calculé)", "Quelle der Anzahl der Beschäftigten (geschätzt/berechnet)"],      
                             "dataIndex": "fonte_addetti"
                         },
                         {
@@ -645,7 +645,7 @@
                             "dataIndex": "partner"
                         }
                     ],
-                    "title": ["Industry and services", "Addetti industria e servizi", "Industrie et services", "Industrie und Dienstleistungen Mitarbeiter"],
+                    "title": ["Industry and services", "Addetti industria e servizi", "Industrie et services", "Industrie und Dienstleistungen"],
                     "name": "ADDETTI INDUSTRIA E SERVIZI",
                     "id": 4,
                     "type": "umano"
@@ -704,35 +704,35 @@
                     ],
                     "columns": [
                         {
-                            "header": ["Name", "Denominazione", "Dénomination", "Name"],      
+                            "header": ["Name", "Denominazione", "Dénomination", "Benennung"],      
                             "dataIndex": "denominazione"
                         },
                         {
-                            "header": ["Use description", "Desc. Uso", "Description d'utilisation", "Beschreibung der Verwendung"],      
+                            "header": ["Use description", "Desc. Uso", "Description d'utilisation", "Nutzungsbeschreibung"],      
                             "dataIndex": "descrizione_uso"
                         },
                         {
-                            "header": ["Employees number source (Estimated / calculated)", "Fonte addetti", "Source du nombre d'employés (Estimé/calculé)", "Quelle der Mitarbeiter"],      
+                            "header": ["Employees number source (Estimated / calculated)", "Fonte addetti", "Source du nombre d'employés (Estimé/calculé)", "Quelle der Bedienstetenzahlen"],      
                             "dataIndex": "fonte_addetti"
                         },
                         {
-                            "header": ["Employees number", "N. Addetti", "Nombre d'employés", "Anzahl der Mitarbeiter"],      
+                            "header": ["Employees number", "N. Addetti", "Nombre d'employés", "Anzahl der Bediensteten"],      
                             "dataIndex": "addetti"
                         },
                         {
-                            "header": ["Day-Hospital beds number source (Estimated / calculated)", "Fonte N. Letti day hosp.", "Source du nombre de lits d'hôpital de jour (Estimé/calculé)s", "Quelle day hospital Krankenhausbetten"],      
+                            "header": ["Day-Hospital beds number source (Estimated / calculated)", "Fonte N. Letti day hosp.", "Source du nombre de lits d'hôpital de jour (Estimé/calculé)s", "Quelle der Bettenzahlen des Day-Hospital (geschätzt/erhoben))"],      
                             "dataIndex": "fonte_numero_letti_day_h"
                         },
                         {
-                            "header": ["Day-Hospital beds number", "N. Letti day hosp.", "Nombre de lits d'hôpital de jour", "Anzahl der Krankenhausbetten"],      
+                            "header": ["Day-Hospital beds number", "N. Letti day hosp.", "Nombre de lits d'hôpital de jour", "Anzahl der Betten im Tageskrankenhaus/Day-Hospital"],      
                             "dataIndex": "nr_letti_dh"
                         },
                         {
-                            "header": ["Ordinary beds number source (Estimated / calculated)", "Fonte N. Letti day ordin.", "Source du nombre de lits ordinaires (Estimé/calculé)", "Quelle Anzahl der day ordin. Krankenhausbetten"],      
+                            "header": ["Ordinary beds number source (Estimated / calculated)", "Fonte N. Letti day ordin.", "Source du nombre de lits ordinaires (Estimé/calculé)", "Quelle der ordentlichen Bettenzahlen (geschätzt/erhoben)"],      
                             "dataIndex": "fonte_numero_letti_ordinari"
                         },
                         {
-                            "header": ["Ordinary beds number", "N. Letti day ordin.", "Nombre de lits ordinaires", "Anzahl der day ordin. Krankenhausbetten"],      
+                            "header": ["Ordinary beds number", "N. Letti day ordin.", "Nombre de lits ordinaires", "Anzahl ordentliche Betten"],      
                             "dataIndex": "letti_ordinari"
                         },
                         {
@@ -740,7 +740,7 @@
                             "dataIndex": "partner"
                         }
                     ],
-                    "title": ["Health facilities", "Addetti/utenti strutture sanitarie", "Structures sanitaires", "Mitarbeiter/Benutzer Einrichtungen des Gesundheitswesens"],
+                    "title": ["Health facilities", "Addetti/utenti strutture sanitarie", "Structures sanitaires", "Sanitäre Strukturen"],
                     "name": "ADDETTI/UTENTI STRUTTURE SANITARIE",
                     "id": 5,
                     "type": "umano"
@@ -791,27 +791,27 @@
                     ],
                     "columns": [
                         {
-                            "header": ["Name", "Denominazione", "Dénomination", "Name"],      
+                            "header": ["Name", "Denominazione", "Dénomination", "Benennung"],      
                             "dataIndex": "denominazione"
                         },
                         {
-                            "header": ["Use description", "Desc. Uso", "Description du code d'utilisation", "Beschreibung der Verwendung"],      
+                            "header": ["Use description", "Desc. Uso", "Description du code d'utilisation", "Nutzungsbeschreibung"],      
                             "dataIndex": "descrizione_uso"
                         },
                         {
-                            "header": ["Students number source (Estimated / calculated)", "Fonte Iscritti", "Source du nombre d'élèves inscrits (Estimé/calculé)", " Quelle Mitglieder"],      
+                            "header": ["Students number source (Estimated / calculated)", "Fonte Iscritti", "Source du nombre d'élèves inscrits (Estimé/calculé)", " Quelle der Inskribiertenzahlen (geschätzt/erhoben)"],      
                             "dataIndex": "fonte_iscritti"
                         },
                         {
-                            "header": ["Students number", "N. Iscritti", "Nombre d'élèves inscrits", "Anzahl der Mitglieder"],      
+                            "header": ["Students number", "N. Iscritti", "Nombre d'élèves inscrits", "Anzahl der Inskribierten "],      
                             "dataIndex": "iscritti"
                         },
                         {
-                            "header": ["Employees number source (Estimated / calculated)", "Fonte Addetti", "Source du nombre d'employés (Estimé/calculé)", "Quelle Mitarbeiter"],      
+                            "header": ["Employees number source (Estimated / calculated)", "Fonte Addetti", "Source du nombre d'employés (Estimé/calculé)", "Quelle der Beschäftigtenzahlen (geschätzt/erhoben)"],      
                             "dataIndex": "fonte_addetti_scuole"
                         },
                         {
-                            "header": ["Employees number", "N. Addetti", "Nombre d'employés", "Anzahl der Mitarbeiter"],      
+                            "header": ["Employees number", "N. Addetti", "Nombre d'employés", "Anzahl der Beschäftigten"],      
                             "dataIndex": "addetti"
                         },
                         {
@@ -819,7 +819,7 @@
                             "dataIndex": "partner"
                         }
                     ],
-                    "title": ["School Facilities", "Addetti/utenti strutture scolastiche", "Établissements scolaires", "Mitarbeiter/Benutzer Schulen"],
+                    "title": ["School Facilities", "Addetti/utenti strutture scolastiche", "Établissements scolaires", "Bildungseinrichtungen"],
                     "name": "ADDETTI/UTENTI STRUTTURE SCOLASTICHE",
                     "id": 6,
                     "type": "umano"
@@ -874,31 +874,31 @@
                     ],
                     "columns": [
                         {
-                            "header": ["Description", "Denominazione", "Dénomination", "Name"],      
+                            "header": ["Description", "Denominazione", "Dénomination", "Benennung"],      
                             "dataIndex": "denominazione"
                         },
                         {
-                            "header": ["Signboard", "Insegna", "Enseigne", "Schild"],      
+                            "header": ["Signboard", "Insegna", "Enseigne", "Firmenbezeichnung"],      
                             "dataIndex": "insegna"
                         },
                         {
-                            "header": ["Retail area", "Sup. Vendita", "Surface de vente", "Sup. Verkauf"],      
+                            "header": ["Retail area", "Sup. Vendita", "Surface de vente", "Verkaufsfläche"],      
                             "dataIndex": "sup_vendita"
                         },
                         {
-                            "header": ["Customers number source (Estimated / calculated)", "Fonte utenti", "Source du nombre de clients (Estimé/calculé)", "Quelle der Benutzer"],      
+                            "header": ["Customers number source (Estimated / calculated)", "Fonte utenti", "Source du nombre de clients (Estimé/calculé)", "Quelle der Anzahl der Kunden (geschätzt/berechnet)"],      
                             "dataIndex": "fonte_utenti"
                         },
                         {
-                            "header": ["Customers number", "N. Utenti", "Nombre de clients", "Anzahl der Benutzer"],      
+                            "header": ["Customers number", "N. Utenti", "Nombre de clients", "Anzahl der Kunden"],      
                             "dataIndex": "utenti"
                         },
                         {
-                            "header": ["Employees number source (Estimated / calculated)", "Fonte Addetti", "Source du nombre d'employés (Estimé/calculé)", "Quelle der Mitarbeiter"],      
+                            "header": ["Employees number source (Estimated / calculated)", "Fonte Addetti", "Source du nombre d'employés (Estimé/calculé)", "Quelle der Anzahl der Beschäftigten (geschätzt/berechnet)"],      
                             "dataIndex": "fonte_addetti_commercio"
                         },
                         {
-                            "header": ["Employees number", "N. Addetti", "Nombre d'employés", "Anzahl der Mitarbeiter"],      
+                            "header": ["Employees number", "N. Addetti", "Nombre d'employés", "Anzahl der Beschäftigten"],      
                             "dataIndex": "addetti"
                         },
                         {
@@ -906,7 +906,7 @@
                             "dataIndex": "partner"
                         }
                     ],
-                    "title": ["medium and large retailers", "Addetti/utenti centri commerciali", "Moyennes et grandes surfaces", "Mitarbeiter/Benutzer Einkaufszentrum"],
+                    "title": ["medium and large retailers", "Addetti/utenti centri commerciali", "Moyennes et grandes surfaces", "Strukturen mittlerer und großer Verteilung"],
                     "name": "ADDETTI/UTENTI CENTRI COMMERCIALI",
                     "id": 7,
                     "type": "umano"
@@ -945,15 +945,15 @@
                     ],
                     "columns": [
                         {
-                            "header": [" Corine Land Cover code", "Codice CLC", "Code Corine Land Cover", "Code CLC"],      
+                            "header": [" Corine Land Cover code", "Codice CLC", "Code Corine Land Cover", "Kodex aus Corine Land Cover"],      
                             "dataIndex": "codice_clc"
                         },
                         {
-                            "header": ["Corine Land Cover description", "Descrizione CLC", "Description  Corine Land Cover", "CLC Beschreibung"],      
+                            "header": ["Corine Land Cover description", "Descrizione CLC", "Description  Corine Land Cover", "Beschreibung gemäß Corine Land Cover"],      
                             "dataIndex": "descrizione_clc"
                         },
                         {
-                            "header": ["Area", "Superficie", "Superficie", "Oberfläche"],      
+                            "header": ["Area", "Superficie", "Superficie", "Fläche"],      
                             "dataIndex": "superficie"
                         },
                         {
@@ -961,7 +961,7 @@
                             "dataIndex": "partner"
                         }
                     ],
-                    "title": ["Urban Areas", "Zone urbanizzate", "Zones urbanisées", "verstädterten Gebieten"],
+                    "title": ["Urban Areas", "Zone urbanizzate", "Zones urbanisées", "Urbane Zonen/Flächen"],
                     "name": "ZONE URBANIZZATE",
                     "id": 10,
                     "type": "ambientale"
@@ -1000,15 +1000,15 @@
                     ],
                     "columns": [                    
                         {
-                            "header": ["Corine Land Cover code", "Codice CLC", "Code Corine Land Cover", "Codice CLC"],      
+                            "header": ["Corine Land Cover code", "Codice CLC", "Code Corine Land Cover", "Kodex aus Corine Land Cover"],      
                             "dataIndex": "codice_clc"
                         },
                         {
-                            "header": ["Corine Land Cover description", "Descrizione CLC", "Description  Corine Land Cover", "Descrizione CLC"],      
+                            "header": ["Corine Land Cover description", "Descrizione CLC", "Description  Corine Land Cover", "Beschreibung gemäß Corine Land Cover"],      
                             "dataIndex": "descrizione_clc"
                         },
                         {
-                            "header": ["Area", "Superficie", "Superficie", "Superficie"],      
+                            "header": ["Area", "Superficie", "Superficie", "Fläche"],      
                             "dataIndex": "superficie"
                         },
                         {
@@ -1016,7 +1016,7 @@
                             "dataIndex": "partner"
                         }
                     ],
-                    "title": ["Wooded Areas", "Aree boscate", "Zones forestières", "Waldflächen"],
+                    "title": ["Wooded Areas", "Aree boscate", "Zones forestières", "Bewaldete Flächen"],
                     "name": "AREE BOSCATE",
                     "id": 11,
                     "type": "ambientale"
@@ -1059,19 +1059,19 @@
                     ],
                     "columns": [
                         {
-                            "header": ["Area name", "Denominazione", "Dénomination", "Denominazione"],      
+                            "header": ["Area name", "Denominazione", "Dénomination", "Benennung"],      
                             "dataIndex": "denominazione"
                         },
                         {
-                            "header": ["Management authority", "Ente", "Dénomination de l'organisme", "Institution"],      
+                            "header": ["Management authority", "Ente", "Dénomination de l'organisme", "Benennung der verwaltenden Institution"],      
                             "dataIndex": "denominazione_ente"
                         },
                         {
-                            "header": ["IUCN Description", "Descrizione IUCN", "Description UICN", "IUCN Beschreibung"],      
+                            "header": ["IUCN Description", "Descrizione IUCN", "Description UICN", "Beschreibung IUCN"],      
                             "dataIndex": "descrizione_iucn"
                         },
                         {
-                            "header": ["Area", "Superficie", "Superficie", "Superficie"],      
+                            "header": ["Area", "Superficie", "Superficie", "Fläche"],      
                             "dataIndex": "superficie"
                         },
                         {
@@ -1079,7 +1079,7 @@
                             "dataIndex": "partner"
                         }
                     ],
-                    "title": ["Protected Areas", "Aree protette", "Zones protégées", "Schutzgebiete"],
+                    "title": ["Protected Areas", "Aree protette", "Zones protégées", "Naturschutzflächen"],
                     "name": "AREE PROTETTE",
                     "id": 12,
                     "type": "ambientale"
@@ -1118,15 +1118,15 @@
                     ],
                     "columns": [
                         {
-                            "header": ["Corine Land Cover code", "Codice CLC", "Code Corine Land Cover", "Codice CLC"],      
+                            "header": ["Corine Land Cover code", "Codice CLC", "Code Corine Land Cover", "Kodex aus Corine Land Cover"],      
                             "dataIndex": "codice_clc"
                         },
                         {
-                            "header": ["Corine Land Cover description", "Descrizione CLC", "Description  Corine Land Cover", "Descrizione CLC"],      
+                            "header": ["Corine Land Cover description", "Descrizione CLC", "Description  Corine Land Cover", "Beschreibung gemäß Corine Land Cover"],      
                             "dataIndex": "descrizione_clc"
                         },
                         {
-                            "header": ["Area", "Superficie", "Superficie", "Superficie"],      
+                            "header": ["Area", "Superficie", "Superficie", "Fläche"],      
                             "dataIndex": "superficie"
                         },
                         {
@@ -1134,7 +1134,7 @@
                             "dataIndex": "partner"
                         }
                     ],
-                    "title": ["Agricultural Areas", "Aree agricole", "Zones agricoles", "landwirtschaftlichen Flächen"],
+                    "title": ["Agricultural Areas", "Aree agricole", "Zones agricoles", "Landwirtschaftliche Flächen"],
                     "name": "AREE AGRICOLE",
                     "id": 13,
                     "type": "ambientale"
@@ -1189,31 +1189,31 @@
                     ],
                     "columns": [
                         {
-                            "header": ["Name", "Denominazione", "Dénomination", "Denominazione"],      
+                            "header": ["Name", "Denominazione", "Dénomination", "Benennung"],      
                             "dataIndex": "denominazione"
                         },
                         {
-                            "header": ["Complete name", "Toponimo completo", "Toponyme complet", "Vollständiger Nameo"],      
+                            "header": ["Complete name", "Toponimo completo", "Toponyme complet", "offizielle Benennung"],      
                             "dataIndex": "toponimo_completo"
                         },
                         {
-                            "header": ["Corine Land Cover code", "Codice CLC", "Code Corine Land Cover", "Codice CLC"],      
+                            "header": ["Corine Land Cover code", "Codice CLC", "Code Corine Land Cover", "Kodex aus Corine Land Cover],      
                             "dataIndex": "codice_clc"
                         },
                         {
-                            "header": ["Corine Land Cover description", "Descrizione CLC", "Description  Corine Land Cover", "Descrizione CLC"],      
+                            "header": ["Corine Land Cover description", "Descrizione CLC", "Description  Corine Land Cover", "Beschreibung gemäß Corine Land Cover"],      
                             "dataIndex": "descrizione_clc"
                         },
                         {
-                            "header": ["Area", "Superficie", "Superficie", "Superficie"],      
+                            "header": ["Area", "Superficie", "Superficie", "Fläche"],      
                             "dataIndex": "superficie"
                         },
                         {
-                            "header": ["Maximum depth", "Profondità max", "Profondeur maximale", "maximale Tiefe"],      
+                            "header": ["Maximum depth", "Profondità max", "Profondeur maximale", "Maximale Tiefe"],      
                             "dataIndex": "profondita_max"
                         },
                         {
-                            "header": ["Ground level altitude", "Quota", "Altitude du niveau du sol", "Quota"],      
+                            "header": ["Ground level altitude", "Quota", "Altitude du niveau du sol", "Höhe der Geländeoberfläche"],      
                             "dataIndex": "quota_pdc"
                         },
                         {
@@ -1221,7 +1221,7 @@
                             "dataIndex": "partner"
                         }
                     ],
-                    "title": ["Surface waters", "Acque superficiali", "Eaux superficielles", "Oberflächenwasser"],
+                    "title": ["Surface waters", "Acque superficiali", "Eaux superficielles", "Oberflächengewässer"],
                     "id": 15,
                     "name": "ACQUE SUPERFICIALI",
                     "type": "ambientale"
@@ -1268,15 +1268,15 @@
                     ],
                     "columns": [
                         {
-                            "header": ["Name", "Denominazione", "Dénomination", "Denominazione"],      
+                            "header": ["Name", "Denominazione", "Dénomination", "Benennung"],      
                             "dataIndex": "denominazione"
                         },
                         {
-                            "header": ["Uptake typology", "Tipo captazione", "Type de captage", "Tipo captazione"],      
+                            "header": ["Uptake typology", "Tipo captazione", "Type de captage", "Fassungstyp"],      
                             "dataIndex": "tipo_captazione"
                         },
                         {
-                            "header": ["Area", "Superficie", "Superficie", "Superficie"],      
+                            "header": ["Area", "Superficie", "Superficie", "Fläche"],      
                             "dataIndex": "superficie"
                         },
                         {
@@ -1284,7 +1284,7 @@
                             "dataIndex": "partner"
                         }
                     ],
-                    "title": ["Groundwater", "Acque sotterranee", "Eaux souterraines", "Grundwasser"],
+                    "title": ["Groundwater", "Acque sotterranee", "Eaux souterraines", "unterirdische Gewässer (Tiefbrunnen)"],
                     "id": 14,
                     "name": "ACQUE SOTTERRANEE",
                     "type": "ambientale"
@@ -1323,15 +1323,15 @@
                     ],
                     "columns": [
                         {
-                            "header": ["Area typology", "Tipologia", "Type de bien", "Art"],      
+                            "header": ["Area typology", "Tipologia", "Type de bien", "Art des Gutes"],      
                             "dataIndex": "tipologia"
                         },
                         {
-                            "header": ["Description", "Denominazione", "Dénomination du bien", "Denominazione"],      
+                            "header": ["Description", "Denominazione", "Dénomination du bien", "Benennung des Gutes"],      
                             "dataIndex": "denominazione_bene"
                         },
                         {
-                            "header": ["Area", "Superficie", "Superficie", "Superficie"],      
+                            "header": ["Area", "Superficie", "Superficie", "Fläche"],      
                             "dataIndex": "superficie"
                         },
                         {
@@ -1339,7 +1339,7 @@
                             "dataIndex": "partner"
                         }
                     ],
-                    "title": ["Cultural Areas", "Beni culturali", "Patrimoine culturel", "Kulturerbe"],
+                    "title": ["Cultural Areas", "Beni culturali", "Patrimoine culturel", "Kulturelle Güter "],
                     "id": 16,
                     "name": "BENI CULTURALI",
                     "type": "ambientale"
@@ -1348,10 +1348,11 @@
             },
             "roads": {
                 "Grafo Stradale": {
-                    "featureType": "rischio_1",
+                    "featureType": "v_grafo_stradale",
+                    "sortBy": "id_geo_arco",
                     "fields": [
                         {
-                            "name": "id",              
+                            "name": "id",
                             "mapping": "id_geo_arco"
                         },
                         {
@@ -1359,12 +1360,56 @@
                             "mapping": "geometria"
                         },
                         {
-                            "name": "rischio1",         
-                            "mapping": "rischio1"
+                            "name": "partner",         
+                            "mapping": "partner_it"
                         },
                         {
-                            "name": "rischio2",         
-                            "mapping": "rischio2"
+                            "name": "tipo_densita",         
+                            "mapping": "tipo_densita_veicolare_leggeri_pesanti_it"
+                        },
+                        {
+                            "name": "densita_veicolare",         
+                            "mapping": "densita_veicolare"
+                        },
+                        {
+                            "name": "tipo_velocita",         
+                            "mapping": "tipo_velocita_media_leggeri_pesanti_it"
+                        },
+                        {
+                            "name": "velocita_media",         
+                            "mapping": "velocita_media"
+                        },
+                        {
+                            "name": "fl_nr_corsie",         
+                            "mapping": "flg_nr_corsie"
+                        },
+                        {
+                            "name": "nr_corsie",         
+                            "mapping": "nr_corsie"
+                        },
+                        {
+                            "name": "flg_nr_incidenti",         
+                            "mapping": "flg_nr_incidenti"
+                        },
+                        {
+                            "name": "nr_incidenti",         
+                            "mapping": "nr_incidenti"
+                        },
+                        {
+                            "name": "nr_corsie",         
+                            "mapping": "nr_corsie"
+                        },
+                        {
+                            "name": "lunghezza",         
+                            "mapping": "lunghezza"
+                        },
+                        {
+                            "name": "nr_incidenti_elab",         
+                            "mapping": "nr_incidenti_elab"
+                        },
+                        {
+                            "name": "elenco_dissesti",         
+                            "mapping": "elenco_dissesti"
                         }
                     ],
                     "columns": [
@@ -1373,20 +1418,58 @@
                             "dataIndex": "id"
                         },
                         {
-                            "header": ["{formulaDesc}<tpl if=\"target.humans === null && formulaInfo.dependsOnTarget\"> - Sociale</tpl>", "{formulaDesc}<tpl if=\"target.humans === null && formulaInfo.dependsOnTarget\"> - Sociale</tpl>", "{formulaDesc}<tpl if=\"target.humans === null && formulaInfo.dependsOnTarget\"> - Sociale</tpl>", "{formulaDesc}<tpl if=\"target.humans === null && formulaInfo.dependsOnTarget\"> - Sociale</tpl>"],
-                            "dataIndex": "rischio1"
+                            "header": ["Partner","Partner","Partner","Partner"],
+                            "dataIndex": "partner"
                         },
                         {
-                            "header": ["{formulaDesc} - Ambientale", "{formulaDesc} - Ambientale", "{formulaDesc} - Ambientale", "{formulaDesc} - Ambientale"],      
-                            "dataIndex": "rischio2",
-                            "hidden": "{[values.target.humans !== null || !values.formulaInfo.dependsOnTarget]}"
+                            "header": ["Tipo Densità Veicolare","Tipo Densità Veicolare","Tipo Densità Veicolare","Tipo Densità Veicolare"],
+                            "dataIndex": "tipo_densita"
+                        },
+                        {
+                            "header": ["Densità Veicolare","Densità Veicolare","Densità Veicolare","Densità Veicolare"],
+                            "dataIndex": "densita_veicolare"
+                        },
+                        {
+                            "header": ["Tipo Velocità Media","Tipo Velocità Media","Tipo Velocità Media","Tipo Velocità Media"],
+                            "dataIndex": "tipo_velocita"
+                        },
+                        {
+                            "header": ["Velocità Media","Velocità Media","Velocità Media","Velocità Media"],
+                            "dataIndex": "velocita_media"
+                        },
+                        {
+                            "header": ["Flag Corsie","Flag Corsie","Flag Corsie","Flag Corsie"],
+                            "dataIndex": "flg_nr_corsie"
+                        },
+                        {
+                            "header": ["N. Corsie","N. Corsie","N. Corsie","N. Corsie"],
+                            "dataIndex": "nr_corsie"
+                        },
+                        {
+                            "header": ["Flag Incidenti","Flag Incidenti","Flag Incidenti","Flag Incidenti"],
+                            "dataIndex": "flg_nr_incidenti"
+                        },
+                        {
+                            "header": ["N. Incidenti","N. Incidenti","N. Incidenti","N. Incidenti"],
+                            "dataIndex": "nr_incidenti"
+                        },
+                        {
+                            "header": ["N. Incidenti Elab.","N. Incidenti Elab.","N. Incidenti Elab.","N. Incidenti Elab."],
+                            "dataIndex": "nr_incidenti_elab"
+                        },
+                        {
+                            "header": ["Lunghezza","Lunghezza","Lunghezza","Lunghezza"],
+                            "dataIndex": "lunghezza"
+                        },
+                        {
+                            "header": ["Elenco Dissesti","Elenco Dissesti","Elenco Dissesti","Elenco Dissesti"],
+                            "dataIndex": "elenco_dissesti"
                         }
                     ],
                     "title": ["Archi", "Archi", "Archi", "Archi"],
                     "id": 1,
                     "name": "ARCHI",
-                    "type": "all",
-                    "noPaging": true
+                    "type": "all"
                 }
             },
             "damage": {
