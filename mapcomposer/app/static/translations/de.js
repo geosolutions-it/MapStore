@@ -614,7 +614,8 @@ GeoExt.Lang.add("de", {
 		viaTitle: 'Strasse / Hausnumm',
 		cercaText: 'Suchen',
 		civicoEmpty: 'Hausnumm. einfügen',
-		viaEmpty: 'Strasse einfügen'
+		viaEmpty: 'Strasse einfügen',
+		viaToolTip: 'z.B. für Romstrasse "Rom" eingeben'
 	},
 	
 	"gxp.plugins.SearchCatasto.prototype":{

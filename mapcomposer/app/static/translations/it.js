@@ -608,7 +608,8 @@ GeoExt.Lang.add("it", {
 		viaTitle: 'Via / N. civico',
 		cercaText: 'Cerca',
 		civicoEmpty: 'Inserisci civico',
-		viaEmpty: 'Inserisci via'
+		viaEmpty: 'Inserisci via',
+		viaToolTip: 'Per esempio per Via Roma digitare "Roma"'
 	},
 	
 	"gxp.plugins.SearchCatasto.prototype":{
