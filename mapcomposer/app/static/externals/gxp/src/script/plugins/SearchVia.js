@@ -35,6 +35,8 @@ gxp.plugins.SearchVia = Ext.extend(gxp.plugins.Tool, {
 	cercaText: 'Cerca',
 	civicoEmpty: 'Inserisci civico',
 	viaEmpty: 'Inserisci via',
+	
+	viaToolTip: 'Per esempio per Via Roma digitare "Roma"',
 
 	selectionProperties: null,
 		
@@ -83,6 +85,10 @@ gxp.plugins.SearchVia = Ext.extend(gxp.plugins.Tool, {
 			})
 		});				
 				
+		var me = this;
+		
+		
+		
 		var form = new Ext.form.FormPanel({
 			header: true,
 			border: true,
@@ -105,12 +111,19 @@ gxp.plugins.SearchVia = Ext.extend(gxp.plugins.Tool, {
 					id: 'vieBox',
 					hideTrigger:true,
 					forceSelection: false,
-					listeners:{
+					scope: this,	
+					listeners:{					    
 						select: function(combo, record, index) {
 							dsCivici.removeAll(false);
 							var civiciCombo = Ext.getCmp("civicoBox"); 
 							civiciCombo.clearValue();
 							dsCivici.setBaseParam('idVia', combo.getValue());
+						},
+						render: function(c) {
+						  Ext.QuickTips.register({
+							target: c.getEl(),
+							text: me.viaToolTip
+						  });
 						}
 					}
 				},
@@ -232,7 +245,9 @@ gxp.plugins.SearchVia = Ext.extend(gxp.plugins.Tool, {
 					}
 				}
             ]
-		});						
+		});	
+
+		
         
 		var panel = gxp.plugins.SearchVia.superclass.addOutput.call(this, form);
         return panel;
