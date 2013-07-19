@@ -282,27 +282,36 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                 handler: function() {
                     var methodSelection = this.output[0].outputType.getValue();
                     var filters = new Array();
-                    if(this.bboxFielset.isValid() && queryForm.spatialFieldset.hidden !== true){
-                        if (queryForm.spatialFieldset.hidden !== true) {
-                            filters.push(new OpenLayers.Filter.Spatial({
-                                type: OpenLayers.Filter.Spatial.BBOX,
-                                property: featureManager.featureStore.geometryName,
-                                value: me.bboxFielset.getBBOXBounds()
-                            }));
-                        }
-                        if (queryForm.attributeFieldset.collapsed !== true) {
-                            var attributeFilter = queryForm.filterBuilder.getFilter();
-                            attributeFilter && filters.push(attributeFilter);
-                        }
-                        featureManager.loadFeatures(filters.length > 1 ?
-                            new OpenLayers.Filter.Logical({
-                                type: OpenLayers.Filter.Logical.AND,
-                                filters: filters
-                            }) :
-                            filters[0]
-                            );                                  
-                        
-                    }else{
+					if(queryForm.spatialFieldset.hidden === false){
+						if(this.bboxFielset.isValid() /* && queryForm.spatialFieldset.hidden !== true*/){
+							//if (queryForm.spatialFieldset.hidden !== true) {
+								filters.push(new OpenLayers.Filter.Spatial({
+									type: OpenLayers.Filter.Spatial.BBOX,
+									property: featureManager.featureStore.geometryName,
+									value: me.bboxFielset.getBBOXBounds()
+								}));
+							//}
+							if (queryForm.attributeFieldset.collapsed !== true) {
+								var attributeFilter = queryForm.filterBuilder.getFilter();
+								attributeFilter && filters.push(attributeFilter);
+							}
+							featureManager.loadFeatures(filters.length > 1 ?
+								new OpenLayers.Filter.Logical({
+									type: OpenLayers.Filter.Logical.AND,
+									filters: filters
+								}) :
+								filters[0]
+								);                                  
+							
+						}else{
+							Ext.Msg.show({
+								title: this.errorDrawTitle,
+								msg: this.errorBBOXText,
+								buttons: Ext.Msg.OK,
+								icon: Ext.MessageBox.INFO
+							});
+						}
+					}else{
                         if (methodSelection === 'circle'){
                             if(me.filterCircle && me.filterCircle.value ){
                                 if (queryForm.attributeFieldset.collapsed !== true) {

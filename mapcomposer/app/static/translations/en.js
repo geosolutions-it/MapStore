@@ -341,6 +341,7 @@ GeoExt.Lang.add("en", {
         comboPolygonSelection: 'Polygon',
         comboCircleSelection: 'Circle',
         comboBBOXSelection: 'BBOX',
+		errorBBOXText: "BBOX invalid",
         errorDrawPolygonText: "You have to draw a Polygon",
         errorDrawCircleText: "You have to draw a Circle",     
         errorDrawTitle: "Query error"       

@@ -158,7 +158,12 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
      * Text for Draw Query Error Title (i18n).
      */            
     errorDrawTitle: "Query error",
-         
+	
+	/** api: config[errorDrawTitle]
+     * ``String``
+     * Text for BBOx Error Msg (i18n).
+     */  
+	errorBBOXText: "BBOX invalid",         
 
     /** api: config[actions]
      *  ``Object`` By default, this tool creates a "Query" action to trigger
