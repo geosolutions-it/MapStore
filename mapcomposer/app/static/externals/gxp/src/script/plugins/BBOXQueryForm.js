@@ -381,10 +381,19 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                 queryForm.spatialFieldset.enable();
                 queryForm.spatialFieldset.show();
                 queryForm.attributeFieldset.expand();
+				methodSelection.setValue('bbox');
+				if (me.draw) {me.draw.deactivate()};
+				if (me.drawings) {me.drawings.destroyFeatures()};
+				if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({})};
+				if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({})};   
             } else {
                 queryForm.attributeFieldset.rendered && queryForm.attributeFieldset.collapse();
                 queryForm.spatialFieldset.rendered && queryForm.spatialFieldset.hide();
                 methodSelection.setValue('bbox');
+				if (me.draw) {me.draw.deactivate()};
+				if (me.drawings) {me.drawings.destroyFeatures()};
+				if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({})};
+				if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({})};  
             }
             queryForm.attributeFieldset.doLayout();
         };
