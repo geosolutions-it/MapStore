@@ -55,7 +55,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
     /** api: config[showExportCSV]
      *  ``Boolean`` If set to true, show CSV export bottons.
      */
-    showExportCSV: true,    
+    showExportCSV: false,    
     
     /** api: config[displayMode]
      *  ``String`` Should we display all features on the map, or only the ones

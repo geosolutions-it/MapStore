@@ -377,6 +377,7 @@ GeoExt.Lang.add("it", {
         comboPolygonSelection: 'Poligono',
         comboCircleSelection: 'Cerchio',
         comboBBOXSelection: 'BBOX',
+		errorBBOXText: "BBOX Invalido",
         errorDrawPolygonText: "Devi disegnare un Poligono",
         errorDrawCircleText: "Devi disegnare un Cerchio",     
         errorDrawTitle: "Errore nell'interrogazione"  

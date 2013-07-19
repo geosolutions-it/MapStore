@@ -138,6 +138,10 @@ OpenLayers.Format.GML.v3 = OpenLayers.Class(OpenLayers.Format.GML.Base, {
                 var dim = parseInt(node.getAttribute("dimension")) || 2;
                 var j, x, y, z;
                 var numPoints = coords.length / dim;
+				
+				// FIX
+				numPoints = Math.round(numPoints);
+				
                 var points = new Array(numPoints);
                 for(var i=0, len=coords.length; i<len; i += dim) {
                     x = coords[i];
