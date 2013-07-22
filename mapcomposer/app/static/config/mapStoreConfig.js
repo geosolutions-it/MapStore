@@ -13,7 +13,7 @@
 					"TILESORIGIN": "1046403.2, 5200006.1",
 					"buffer":10
 			}
-		},
+		},        	
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
 		}, 
@@ -23,6 +23,9 @@
 		"google": {
 			"ptype": "gxp_googlesource" 
 		},
+		"bing": {
+                        "ptype": "gxp_bingsource"
+        },
 		"ol": { 
 			"ptype": "gxp_olsource" 
 		}
@@ -47,10 +50,31 @@
 		
 		
 		"layers": [
-			 {
+			
+			{
 				"source": "osm",
 				"title": "Open Street Map",
 				"name": "mapnik",
+				"group": "background"
+			},{
+				"source": "gsacque",
+				"title": "Ctr2k - Acque",
+				"name": "SW:ctr2k",
+				"group": "background"				
+			},{
+				"source": "mapquest",
+				"title": "MapQuest OpenStreetMap",
+				"name": "osm",
+				"group": "background"
+			},{
+				"source": "bing",
+				"title": "Bing Road",
+				"name": "Road",
+				"group": "background"
+			},{
+				"source": "google",
+				"title": "Google Terrain",
+				"name": "TERRAIN",
 				"group": "background"
 			},{
 				"source": "google",
@@ -90,8 +114,14 @@
 				"visibility": false
 			},{
 				"source": "gsacque",
+				"title": "Aree qualita",
+				"name": "qualita:Poligoni20130625",
+				"group": "Acquedotto",
+				"visibility": false
+			},{
+				"source": "gsacque",
 				"title": "Prese Enel",
-				"name": "postgis_sw:enel",
+				"name": "SW:enel",
 				"group": "Altro",
 				"visibility": false
 			},{
@@ -183,6 +213,18 @@
 				"visibility": false
 			},{
 				"source": "gsacque",
+				"title": "Rete Sensibile",
+				"name": "SW:fgn_rete_sensibile",
+				"group": "Fognatura",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Rete a Dispersione",
+				"name": "SW:Rete_ID",
+				"group": "Fognatura",
+				"visibility": false
+			},{
+				"source": "gsacque",
 				"title": "Valvole Acq",
 				"name": "SW:valvol",
 				"group": "Acquedotto",
@@ -191,49 +233,49 @@
 				"source": "gsacque",
 				"title": "Punti di scarico (ID)",
 				"name": "SW:ID",
-				"group": "Fognatura",
+				"group": "PIA",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Punti di scarico (IT)",
 				"name": "SW:IT",
-				"group": "Fognatura",
+				"group": "PIA",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Punti di scarico (IB)",
 				"name": "SW:IB",
-				"group": "Fognatura",
+				"group": "PIA",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Punti di scarico (IS)",
 				"name": "SW:IS",
-				"group": "Fognatura",
+				"group": "PIA",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Punti di scarico (IL)",
 				"name": "SW:IL",
-				"group": "Fognatura",
+				"group": "PIA",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Sfioratori",
 				"name": "SW:SF",
-				"group": "Fognatura",
+				"group": "Impianti Fgn",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Sollevamenti",
 				"name": "SW:SL",
-				"group": "Fognatura",
+				"group": "Impianti Fgn",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Depuratori",
 				"name": "SW:DE",
-				"group": "Fognatura",
+				"group": "Impianti Fgn",
 				"visibility": false
 			},{
 				"source": "gsacque",
@@ -279,8 +321,14 @@
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Rete Fgn",
-				"name": "fgn_versi",
+				"title": "Versi",
+				"name": "SW:versi",
+				"group": "Fognatura",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Rete fgn",
+				"name": "postgis_sw:fgn_con",
 				"group": "Fognatura",
 				"visibility": false
 			}
@@ -430,40 +478,21 @@
 			 "target":"paneltbar",
 			 "index":20
 		  }
-	   },
+	   },	  
 	   {
-		  "actions":[
-			 "-"
-		  ],
-		  "actionTarget":"paneltbar"
-	   },
-	   {
-		  "ptype":"gxp_measure",
-		  "toggleGroup":"toolGroup",
-		  "actionTarget":{
-			 "target":"paneltbar",
-			 "index":21
-		  }
-	   },
-	   {
-		  "actions":[
-			 "-"
-		  ],
-		  "actionTarget":"paneltbar"
-	   },
-	   {
-		  "ptype":"gxp_georeferences",
-		  "actionTarget":{
-			 "target":"paneltbar",
-			 "index":23
-		  }
-	   },
+		  "ptype":"gxp_googlegeocoder",
+		  "outputConfig":{
+			 "emptyText":"Ricerca strade e indirizzi"
+		  },
+		  "outputTarget":"paneltbar",
+		  "index":25
+	   },	   
 	   {
 		  "ptype":"gxp_wfssearchbox",
 		  "outputConfig":{
 			 "url":"http://webgis.acque.net/geoserver/postgis_sw/ows?",
 			 "emptyText":"Ricerca impianti",
-			 "typeName":"postgis_sw:wfs_search",
+			 "typeName":"postgis_sw:wfs_search_impianti",
 			 "recordModel":[
 				{
 				   "name":"id",
@@ -542,23 +571,29 @@
 	   },
 	   {
 		  "actions":[
-			 "->"
+			 "-"
 		  ],
 		  "actionTarget":"paneltbar"
 	   },
 	   {
-		  "ptype":"gxp_googlegeocoder",
-		  "outputConfig":{
-			 "emptyText":"Ricerca strade e indirizzi"
-		  },
-		  "outputTarget":"paneltbar",
-		  "index":25
+		  "ptype":"gxp_georeferences",
+		  "actionTarget":{
+			 "target":"paneltbar",
+			 "index":23
+		  }
 	   },
-	   
+	   {
+		  "ptype":"gxp_measure",
+		  "toggleGroup":"toolGroup",
+		  "actionTarget":{
+			 "target":"paneltbar",
+			 "index":21
+		  }
+	   },
 	   {
 		  "ptype":"gxp_print",
 		  "customParams":{
-			 "outputFilename":"mapstore-print"
+			 "outputFilename":"stampa"
 		  },
 		  "printService":"http://webgis.acque.net/geoserver/pdf/",
 		  "legendPanelId":"legendPanel",
