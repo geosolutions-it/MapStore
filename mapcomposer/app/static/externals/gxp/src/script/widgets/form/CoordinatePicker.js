@@ -129,7 +129,7 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
                     emptyText : this.latitudeEmptyText,
                     ref: 'latitudeField',
                     flex      : 1,
-                    decimalPrecision:this.decimalPrecision,
+                    decimalPrecision: this.decimalPrecision,
                     allowBlank:false,
                     name: 'lat',
 					listeners: {
@@ -149,9 +149,7 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
                       toggle: function(button, pressed) {  
                          if(pressed){
                               this.selectLonLat.activate();
-                              this.updatePoint();
-                             
-                              
+                              this.updatePoint();                            
                           }else{
                               this.selectLonLat.deactivate();
                              
@@ -222,14 +220,17 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
 		this.fireEvent("reset");
 	},
 	
+	toggleButton: function(toggle){
+		this.clickToggle.toggle(toggle);
+	},
+	
 	/** private point update */
     updateMapPoint:function(lonlat){
         if(this.selectStyle){
             this.resetPoint();
             var style = new OpenLayers.Style(this.selectStyle);
             this.layer = new OpenLayers.Layer.Vector(this.selectLayerName,{
-                styleMap: style
-                
+                styleMap: style                
             });
             var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
             var pointFeature = new OpenLayers.Feature.Vector(point);

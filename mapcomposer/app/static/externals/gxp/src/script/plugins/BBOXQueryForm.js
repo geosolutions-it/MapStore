@@ -139,6 +139,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 			collapsed : false,
 			hidden: true,
 			map: target.mapPanel.map,
+			toggleGroup: target.toggleGroup,
 			minValue: this.outputConfig.bufferOptions.minValue,
             maxValue: this.outputConfig.bufferOptions.maxValue,
 		    decimalPrecision: this.outputConfig.bufferOptions.decimalPrecision,
@@ -219,6 +220,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 							
                             me.bboxFielset.removeBBOXLayer();
 							me.bufferFieldSet.resetPointSelection();
+							me.bufferFieldSet.coordinatePicker.toggleButton(false);
 							
                             var disabledItems = [];
                             this.target.toolbar.items.each(function(item) {
@@ -344,7 +346,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                                 queryForm.spatialFieldset.disable();
 								
                                 queryForm.bufferFieldset.enable();								
-                                me.bufferFieldSet.resetPointSelection();
+                                //me.bufferFieldSet.resetPointSelection();
 							}                           
                         },                        
                         scope: this                        
@@ -370,6 +372,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     this.bboxFielset.setBBOX(this.target.mapPanel.map.getExtent());
 					
 					this.bufferFieldSet.resetPointSelection();
+					this.bufferFieldSet.coordinatePicker.toggleButton(false);
 					
                     var methodSelection = this.output[0].outputType;
                     methodSelection.setValue('bbox');

@@ -108,6 +108,7 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 			fieldLabel: this.coordinatePickerLabel,
 			outputSRS: this.outputSRS,
 			selectStyle: this.selectStyle,
+			toggleGroup: this.toggleGroup,
 			ref: "coordinatePicker",
 			listeners: {
 				scope: this,
