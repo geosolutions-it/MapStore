@@ -3,12 +3,17 @@ var Request = require("ringo/webapp/request").Request;
 
 var urls = [
     [(/^\/(index(.html)?)?/), require("./root/index").app],
-    [(/^\/(login)/), require("./root/login").app],
-    [(/^\/(proxy)/), require("./root/proxy").app],
-    [(/^\/(maps(\/\d+)?)/), require("./root/maps").app],
+    //[(/^\/(login)/), require("./root/login").app],
+    //[(/^\/(maps(\/\d+)?)/), require("./root/maps").app],
+	//[(/^\/(geonetwork)/), require("./root/geonetwork").app],  // Enable this only for the GeoNetwork integration
     [(/^\/(composer)/), require("./root/composer").app],
     [(/^\/(viewer(.html)?)/), require("./root/viewer").app]
 ];
+
+var debug_proxy = java.lang.System.getProperty("app.debug.proxy");
+if (debug_proxy) {
+	urls.push([(/^\/(proxy)/), require("./root/proxy").app]);
+}
 
 // debug mode loads unminified scripts
 if (java.lang.System.getProperty("app.debug")) {

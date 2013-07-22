@@ -48,6 +48,20 @@ GeoExt.WMSLegend = Ext.extend(GeoExt.LayerLegend, {
      *  GetLegendGraphic request? Defaults to true.
      */
     useScaleParameter: true,
+    
+    /** api: config[minScale]
+     *  ``Number``
+     *  If useScaleParameter is true, we can set the minimum SCALE
+     *  to use for SLD WMS to a fixed value. Defaults to -1 (no minimum).     
+     */    
+    minScale: -1,
+    
+    /** api: config[maxScale]
+     *  ``Number``
+     *  If useScaleParameter is true, we can set the maximum SCALE
+     *  to use for SLD WMS to a fixed value. Defaults to -1 (no maximum).     
+     */    
+    maxScale: -1,
 
     /** api: config[baseParams]
      * ``Object``
@@ -146,6 +160,12 @@ GeoExt.WMSLegend = Ext.extend(GeoExt.LayerLegend, {
         if(this.useScaleParameter === true &&
                 url.toLowerCase().indexOf("request=getlegendgraphic") != -1) {
             var scale = layer.map.getScale();
+            if(this.minScale !== -1 && scale < this.minScale) {
+                scale = this.minScale;
+            }
+            if(this.maxScale !== -1 && scale > this.maxScale) {
+                scale = this.maxScale;
+            }
             url = Ext.urlAppend(url, "SCALE=" + scale);
         }
         var params = this.baseParams || {};

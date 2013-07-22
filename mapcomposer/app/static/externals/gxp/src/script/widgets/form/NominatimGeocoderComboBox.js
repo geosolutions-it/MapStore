@@ -1,9 +1,21 @@
 /**
- * Copyright (c) 2008-2011 The Open Planning Project
- * 
- * Published under the BSD license.
- * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
- * of the license.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /** api: (define)
@@ -94,8 +106,8 @@ gxp.form.NominatimGeocoderComboBox = Ext.extend(Ext.form.ComboBox, {
 				callbackParam:'json_callback'
 		});
        this.store = new Ext.data.JsonStore({
-			combo:this,
-			proxy:this.proxy,
+			combo: this,
+			proxy: this.proxy,
 			root: this.root,
 			messageProperty: 'crs',
 			autoLoad: false,
@@ -129,19 +141,18 @@ gxp.form.NominatimGeocoderComboBox = Ext.extend(Ext.form.ComboBox, {
 			},
 			listeners:{
 				beforeload: function(store){
-
 					var bounds;
 					if(this.bounded == "max"){
-						bounds = app.mapPanel.map.getMaxExtent();
+						bounds = this.target.mapPanel.map.getMaxExtent();
 					}else if(!this.bounded =="current"){
-						bounds = app.mapPanel.map.getExtent();
+						bounds = this.target.mapPanel.map.getExtent();
 					}else{
-						bounds= this.bounds;
+						bounds = this.bounds;
 					}
 					if(bounds){
 						//bounds.transform( app.mapPanel.map.getProjectionObject() ,new OpenLayers.Projection("EPSG:4326"));
 						//required format for viewbox=<left>,<top>,<right>,<bottom>
-						var viewbox= bounds.left+ ',' + bounds.top + ',' +bounds.right+ ',' +bounds.bottom;
+						var viewbox= bounds.left + ',' + bounds.top + ',' + bounds.right + ',' + bounds.bottom;
 						store.setBaseParam( 'viewbox ',viewbox );
 					}
 					

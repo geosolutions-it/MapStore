@@ -4,8 +4,13 @@
     <!-- OpenLayers resources -->
     <link rel="stylesheet" type="text/css" href="externals/openlayers/theme/default/style.css">
 
-    <script type="text/javascript" src="script/OpenLayers.js"></script>
 
+	<!-- Basic OpenLayers libs -->
+    <script type="text/javascript" src="script/OpenLayers.js"></script>		
+	
+	<!-- Externatls OpenLayers libraries to manage other extensions
+	<script type="text/javascript" src="script/OpenLayersExt.js"></script> -->
+	
 	<!-- colorpicker resources 
     <link rel="stylesheet" type="text/css" href="externals/colorpicker/css/colorpicker.css">
     <script type="text/javascript" src="script/colorpicker.js"></script> -->
@@ -16,8 +21,13 @@
     <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/gxtheme-gray.css">
     <script type="text/javascript" src="script/GeoExt.js"></script> 
 
+	<!-- PrintPreview resources 
+    <link rel="stylesheet" type="text/css" href="externals/PrintPreview/resources/css/printpreview.css">
+    <script type="text/javascript" src="script/PrintPreview.js"></script> -->
+	
     <!-- gxp resources -->
     <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
+
     <script type="text/javascript" src="script/gxp.js"></script> 
 
     <script type="text/javascript" src="script/proj4js.js"></script>
@@ -47,14 +57,14 @@
     <script type="text/javascript" src="translations/fr.js"></script>
     <script type="text/javascript" src="translations/it.js"></script>
     <script type="text/javascript">
-    <!--
+    
         Ext.onReady(function() {
           setTimeout(function(){
             Ext.get('loading').remove();
             Ext.get('loading-mask').fadeOut({remove:true});
           }, 2000);
         });
-    //-->
+    
     </script>
     
     <div id="loading-mask"></div>
@@ -62,21 +72,19 @@
       <div class="loading-indicator">
       </div>
     </div>
-
-    
     <script>
         
 		
         var app;        
-        var modified = false; var mapIdentifier; var authorization; var fullScreen;
+        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false;
+		
         // ///////////////////////////////////////////////////////////////
         // Custom variables from the mapStoreConfig user configuration file 
         // ///////////////////////////////////////////////////////////////
         var proxy; 
-        var geoStoreBaseURL;        
-        var customSources;
         var serverConfig;
-        var customConfigName;
+        var customConfigName;		
+		
         // //////////////////////////////////////////////////
         // Parsing the request to get the parameters
         // //////////////////////////////////////////////////
@@ -108,14 +116,12 @@
 									customConfigName = param[1];
 									break;
 					default :       
-									mapIdentifier = -1;
-									authorization = false;
-									fullScreen = false; 
+									//mapIdentifier = -1;
+									//authorization = false;
+									//fullScreen = false; 
 				}
 			}
-        }
-		
-		
+        }		
 		
         var onReady = function(){
 		
@@ -134,18 +140,23 @@
                 OpenLayers.Tile.Image.useBlankTile=false;
             };
             OpenLayers.ImgPath = "externals/openlayers/theme/default/img/";
-            //get Proj4js configuration 
+			
+			// ////////////////////////////////
+            // Get Proj4js configuration 
+			// ////////////////////////////////
             if( typeof(Proj4js)!="undefined" && !(serverConfig.proj4jsDefs===undefined) ){
                 for(var name in serverConfig.proj4jsDefs){
-                    //Proj4js.defs["EPSG:102113"]="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
-                    Proj4js.defs[name] = serverConfig.proj4jsDefs[name];
-                
+                    Proj4js.defs[name] = serverConfig.proj4jsDefs[name];               
                 }
             }
-            //get georeferences data to override
+            
+			// /////////////////////////////////////
+            // Get georeferences data to override
+			// /////////////////////////////////////
             if (serverConfig.georeferences_data){
                 georeferences_data = serverConfig.georeferences_data;
             }
+			
             gxp.plugins.ZoomToExtent.prototype.closest = false;
 
             Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
@@ -169,101 +180,30 @@
             
             var url = Ext.urlDecode(query);        
             var code = url.locale || serverConfig.defaultLanguage || "en";			
-            var langData = [['en', 'English'],['fr','Français'],['it','Italiano']];
-            
-            // //////////////////////////////////////////////////        
-            // Setting the initial language for the selector
-            // //////////////////////////////////////////////////
-			var initialLanguageString;					
-			Ext.each(langData, function(rec){
-				if(rec[0] === code.toLowerCase()){
-					initialLanguageString = rec[1];
-					return;
-				}
-			});
-			
-			initialLanguageString = !initialLanguageString ? "English" : initialLanguageString;	
-			
+
 			// ////////////////////////////////////////////////////
 			// Setting the language code for the GeoExt tools
 			// ////////////////////////////////////////////////////
 			if (GeoExt.Lang) {
                 GeoExt.Lang.set(code);
             }
+			
+			// ////////////////////////////////////////////////////
+			// Setting the language selector
+			// ////////////////////////////////////////////////////
+			var languageSelector = new gxp.form.LanguageSwitcher({
+				currentContext:code,
+				saveMessage:authorization
+			});
+			
+            var appTabsOpts = {
+                        region: 'center',
+                        border : false,
+                        id : 'appTabs',
+                        enableTabScroll: true
+                    };
             
-            var languageSelector = new Ext.form.ComboBox({
-                store: new Ext.data.ArrayStore({
-                    fields: ['code', 'name'],
-                    data :  langData
-                }),
-                displayField: 'name',
-                typeAhead: true,
-                mode: 'local',
-                forceSelection: true,
-                triggerAction: 'all',
-                emptyText: initialLanguageString,
-                selectOnFocus:false,
-                editable: false,
-                width: 100,
-                listeners: {
-                    beforeselect: function(cb, record, index){
-					   var c = record.get('code');
-                       if(c && c == code)
-                          return false; 
-					   else
-						  languageSelector.prevLang = code;
-                    },                    
-                    select: function(cb, record, index) {         
-                        
-                        var switchLang = function(buttonId, text, opt){
-                            if(buttonId === 'ok'){
-                                var c = record.get('code');
-								var u = location.pathname + '?locale=' + c;
-								
-								if(url.auth){
-									u += '&auth=' + url.auth;
-									if(url.auth == 'false')
-										u += '&fullScreen=true';
-								}
-								
-								if(url.mapId)
-									u += '&mapId=' + url.mapId;
-								if(url.config){
-									u += '&config=' + url.config;
-								}
-								location.replace(u);                                
-                            }else{																
-                                if(languageSelector.prevLang && languageSelector.prevLang == 'fr'){
-                                    cb.setValue('Français');
-                                }else if(languageSelector.prevLang && languageSelector.prevLang == 'it'){
-									cb.setValue('Italiano');
-								}else{
-                                    cb.setValue('English');
-                                }
-                            }
-                        };
-                        
-                        var switchLangActionTip = "Switch Language";
-                        var switchLangConfirmationText = "You are sure to change language?";
-                        
-                        if(code === 'fr'){
-                            switchLangActionTip = "Changement de langue";
-                            switchLangConfirmationText = "Vous êtes certain que vous souhaitez modifier la langue ?";
-                        }else if(code === 'it'){
-                            switchLangActionTip = "Cambiamento Lingua";
-                            switchLangConfirmationText = "Si è sicuri di voler cambiare lingua?";
-                        }
-                        
-                        Ext.Msg.show({
-                           title: switchLangActionTip,
-                           msg: switchLangConfirmationText,
-                           buttons: Ext.Msg.OKCANCEL,
-                           fn: switchLang,
-                           icon: Ext.MessageBox.QUESTION
-                        });  
-                    }
-                }
-            });
+            
 			/* To disable tabs add layout:'fit' and change type to Ext.Panel.
 			 * You have also to comment title property in this.portal
 			 */
@@ -276,20 +216,51 @@
                 enableTabScroll: true
             });         
 		
+
+            //check if MetadataExplorer plugin is defined in customTools configuration
+            var customToolsME = [];
+            if(serverConfig.customTools){
+                for(var cTools in serverConfig.customTools){
+                    if(serverConfig.customTools[cTools].ptype == "gxp_metadataexplorer"){  
+                        customToolsME.push(serverConfig.customTools[cTools].ptype);
+                    }
+                }
+            }
+            
+            //check if MetadataExplorer plugin is defined in tools configuration
+            var toolsME = [];                
+            if(serverConfig.tools){
+                for(var tools in serverConfig.tools){
+                    if(serverConfig.tools[tools].ptype == "gxp_metadataexplorer"){  
+                        toolsME.push(serverConfig.tools[tools].ptype);
+                    }
+                }
+            }            
+            
+            if(!serverConfig.tab && toolsME.length == 0 && customToolsME.length == 0){
+                appTabsOpts.layout = 'fit';
+                appTabs = new Ext.Panel(appTabsOpts); 
+            }else{
+                appTabs = new Ext.TabPanel(appTabsOpts); 
+            }
+
+			var iframe = "<iframe style='border: none; height: 100%; width: 100%' src='about.html' frameborder='0' border='0'>" + 
+						 "<a target='_blank' href='about.html'>" + GeoExplorer.prototype.aboutText + "</a> </iframe>";
+						 
             var aboutButton = new Ext.Button({
                 text: GeoExplorer.prototype.appInfoText,
                 iconCls: "icon-geoexplorer",
                 handler: function(){
                     var appInfo = new Ext.Panel({
                         header: false,
-                        html: "<iframe style='border: none; height: 100%; width: 100%' src='about.html' frameborder='0' border='0'><a target='_blank' href='about.html'>"+ GeoExplorer.prototype.aboutText+"</a> </iframe>"
+                        html: iframe
                     });
 
                     var win = new Ext.Window({
                         title:  GeoExplorer.prototype.aboutThisMapText,
                         modal: true,
                         layout: "fit",
-                        width: 340,
+                        width: 360,
                         height: 360,
                         items: [appInfo]
                     });
@@ -387,12 +358,15 @@
 			      Ext.Ajax.defaultHeaders = {
                 'Authorization' : auth
             };*/
-             			
+
             app = new GeoExplorer.Composer({
+				defaultLanguage: serverConfig.defaultLanguage,	
+                customPanels: serverConfig.customPanels,
                 modified: false,
                 proxy: proxy,
-				tools:serverConfig.tools,
-                //xmlJsonTranslateService: "http://demo1.geo-solutions.it/xmlJsonTranslate/",
+				tools: serverConfig.tools,
+				geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),
+                portalConfig: serverConfig.portalConfig,
                 defaultSourceType: "gxp_wmssource",
                 renderToTab : 'appTabs',
                 //printService:"http://localhost:8080/geoserver/pdf/",
@@ -403,30 +377,30 @@
                     'abstract': "Custom Map",
                     contact: "<a href='#'>#</a>."
                 },
-                sources: sources,              
+                sources: sources,
+				scaleOverlayUnits: serverConfig.scaleOverlayUnits,
 				//showGraticule: false,  //Set showGraticule property to true only if the map projection is EPSG:4326 
                 georeferences: georeferences_data,
-                cswconfig: serverConfig.cswconfig,
-                map: serverConfig.map
+                map: serverConfig.map,
+				customTools: serverConfig.customTools
             }, mapIdentifier, authorization, fullScreen);   
             
             app.on({
-                'portalready' : function(){
-                    if(fullScreen){
-                        var ovestPanel = Ext.getCmp('tree').findParentByType('panel');
-                        ovestPanel.setDisabled();
-                        ovestPanel.hide();
-                        ovestPanel.collapse();
+                'portalready' : function() {              	
+                    if(fullScreen) {
+                        var westPanel = Ext.getCmp('west');
+                        westPanel.setActiveTab('legend');
+                        westPanel.hideTabStripItem('tree');
                     }
                 }, 
                 'ready' : function(){
                     app.modified = false;
                 }
             });
-	    };			
-			
+	    };
+
 	    Ext.Ajax.request({
-			  url: customConfigName ? "config/"+customConfigName +".js"  : "config/mapStoreConfig.js",
+			  url: customConfigName ? "config/" + customConfigName + ".js"  : "config/mapStoreConfig.js",
 			  method: 'GET',
 			  success: function(response, opts){          
 				  
@@ -435,7 +409,7 @@
 				  }catch(e){
 					  Ext.Msg.show({
 							title: "Startup",
-							msg: "An error occurred while parsing the GeoStore URL config: " + response.status,
+							msg: "An error occurred while parsing the external configuration: " + response.status,
 							buttons: Ext.Msg.OK,
 							icon: Ext.MessageBox.ERROR
 					  });
@@ -443,19 +417,17 @@
 				  
 				  if(serverConfig){
 					  proxy = location.host.indexOf('localhost:8081') != -1 ? "/proxy/?url=" : serverConfig.proxy; 
-					  geoStoreBaseURL = serverConfig.geoStoreBase;                  
-					  customSources = serverConfig.gsSources;
 
 					  // ///////////////////////////////////////////////  
 					  // Run the application when browser is ready
-					  // ///////////////////////////////////////////////
+					  // ///////////////////////////////////////////////f
 					  Ext.onReady(onReady);
 				  }
 			  },
 			  failure:  function(response, opts){
 				  Ext.Msg.show({
 						title: "Startup",
-						msg: "An error occurred while getting the GeoStore URL config: " + response.status,
+						msg: "An error occurred while getting the external configuration: " + response.status,
 						buttons: Ext.Msg.OK,
 						icon: Ext.MessageBox.ERROR
 				  });

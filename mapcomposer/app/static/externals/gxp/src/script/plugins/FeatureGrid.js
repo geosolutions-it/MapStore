@@ -1,10 +1,10 @@
 /**
- * Copyright (c) 2008-2011 The Open Planning Project
- * 
- * Published under the BSD license.
- * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
- * of the license.
- */
+* Copyright (c) 2008-2011 The Open Planning Project
+*
+* Published under the GPL license.
+* See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
+* of the license.
+*/
 
 /**
  * @requires plugins/ClickableFeatures.js
@@ -52,6 +52,11 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      */
     alwaysDisplayOnMap: false,
     
+    /** api: config[showExportCSV]
+     *  ``Boolean`` If set to true, show CSV export bottons.
+     */
+    showExportCSV: false,    
+    
     /** api: config[displayMode]
      *  ``String`` Should we display all features on the map, or only the ones
      *  that are currently selected on the grid. Valid values are "all" and
@@ -86,6 +91,36 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      * Text for feature display button (i18n).
      */
     displayFeatureText: "Display on map",
+    
+    /** api: config[displayExportCSVText]
+     * ``String``
+     * Text for CSV Export buttons (i18n).
+     */
+    displayExportCSVText: "Export to CSV",
+    
+    /** api: config[exportCSVSingleText]
+     * ``String``
+     * Text for CSV Export Single Page button (i18n).
+     */
+    exportCSVSingleText: "Single Page",
+
+    /** api: config[exportCSVMultipleText]
+     * ``String``
+     * Text for CSV Export Multiple Pages button (i18n).
+     */
+    exportCSVMultipleText: "Whole Page",       
+
+    /** api: config[failedExportCSV]
+     * ``String``
+     * Text for CSV Export error (i18n).
+     */
+    failedExportCSV: "Failed to find response for output format CSV",
+    
+    /** api: config[nvalidParameterValueErrorText]
+     * ``String``
+     * Text for CSV Export error (i18n).
+     */
+    invalidParameterValueErrorText: "Invalid Parameter Value",    
 
     /** api: config[zoomFirstPageTip]
      *  ``String``
@@ -122,6 +157,12 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  String template for showing total number of records (i18n).
      */
     totalMsg: "Total: {0} records",
+    
+    /** api: config[title]
+     *  ``String``
+     *  Feature Grid title.
+     */
+    title: "Features",
 
     /** private: method[displayTotalResults]
      */
@@ -185,6 +226,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             xtype: "gxp_featuregrid",
             sm: new GeoExt.grid.FeatureSelectionModel(smCfg),
             autoScroll: true,
+            title: this.title,
             bbar: (featureManager.paging ? [{
                 iconCls: "x-tbar-page-first",
                 ref: "../firstPageButton",
@@ -234,16 +276,43 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                     featureManager[pressed ? "showLayer" : "hideLayer"](this.id, this.displayMode);
                 },
                 scope: this
+            }] : [])).concat(["->"].concat(this.showExportCSV ? [{
+                text: this.displayExportCSVText,
+                xtype: 'button',
+                disabled: true,
+                iconCls: "gxp-icon-csvexport",
+                ref: "../exportCSVButton",
+                menu:{
+                    xtype: "menu",
+                    showSeparator: true, 
+                    items: [{
+                        iconCls: "gxp-icon-csvexport-single",
+                        text: this.exportCSVSingleText,
+                        handler: function() {                    
+                            this.csvExport(true);
+                        },
+                        scope: this
+                    },{
+                        iconCls: "gxp-icon-csvexport-multiple",
+                        text: this.exportCSVMultipleText,
+                        handler: function() {                    
+                            this.csvExport(false);
+                        },
+                        scope: this
+                    }]
+                }
             }] : [])),
             listeners: {
                 "added": function(cmp, ownerCt) {
                     var onClear = (function() {
+                        this.showExportCSV ? this.output[0].exportCSVButton.disable() : {};
                         this.displayTotalResults();
                         this.selectOnMap && this.selectControl.deactivate();
                         this.autoCollapse && typeof ownerCt.collapse == "function" &&
                             ownerCt.collapse();
                     }).bind(this);
                     var onPopulate = (function() {
+                        this.showExportCSV ? this.output[0].exportCSVButton.enable() : {};
                         this.displayTotalResults();
                         this.selectOnMap && this.selectControl.activate();
                         this.autoExpand && typeof ownerCt.expand == "function" &&
@@ -299,8 +368,99 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         }, this);
         
         return featureGrid;
+    },
+    /** api: method[csvExport]
+     */    
+    csvExport: function(single){
+    
+        var featureManager = this.target.tools[this.featureManager];
+        var grid = this.output[0];
+        var protocol = grid.getStore().proxy.protocol;
+        var allPage = {};
+        
+        allPage.extent = featureManager.getPagingExtent("getMaxExtent");
+        
+        var filter = featureManager.setPageFilter(single ? featureManager.page : allPage);
+        
+        var node = new OpenLayers.Format.Filter({
+            version: protocol.version,
+            srsName: protocol.srsName
+        }).write(filter);
+        
+        this.xml = new OpenLayers.Format.XML().write(node);
+        
+        var colModel = grid.getColumnModel();
+        
+        var numColumns = colModel.getColumnCount(true);
+        var propertyName = [];
+        
+        for (var i=0; i<numColumns; i++){        
+            propertyName.push(colModel.getColumnHeader(i));
+        }
+        
+        this.url =  protocol.url +
+                    "propertyName=" + propertyName.join(',') +
+                    "&service=WFS" +
+                    "&version=" + protocol.version +
+                    "&request=GetFeature" +
+                    "&typeName=" + protocol.featureType +
+                    "&exceptions=application/json" +
+                    "&outputFormat=CSV"
+
+        OpenLayers.Request.POST({
+            url: this.url,
+            data: this.xml,
+            callback: function(request) {
+
+                if(request.status == 200){
+                
+                    try
+                      {
+                            var serverError = Ext.util.JSON.decode(request.responseText);
+                            Ext.Msg.show({
+                                title: this.invalidParameterValueErrorText,
+                                msg: "outputFormat: CSV</br></br>" +
+                                     this.failedExportCSV + "</br></br>" +
+                                     "Error: " + serverError.exceptions[0].text,
+                                buttons: Ext.Msg.OK,
+                                icon: Ext.MessageBox.ERROR
+                            });                        
+                      }
+                    catch(err)
+                      {
+                            //        
+                            //delete other iframes appended
+                            //
+                            if(document.getElementById("downloadIFrame")) {
+                                document.body.removeChild( document.getElementById("downloadIFrame") ); 
+                            }
+                            
+                            //
+                            //Create an hidden iframe for forced download
+                            //
+                            var elemIF = document.createElement("iframe"); 
+                            elemIF.setAttribute("id","downloadIFrame");
+
+                            var mUrl = this.url + "&filter=" + this.xml;
+                            elemIF.src = mUrl; 
+                            elemIF.style.display = "none"; 
+                            document.body.appendChild(elemIF); 
+                      }
+                      
+                }else{
+                    Ext.Msg.show({
+                        title: this.failedExportCSV,
+                        msg: request.statusText,
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.MessageBox.ERROR
+                    });
+                }
+            },
+            scope: this
+        });        
+
     }
-            
+    
 });
 
 Ext.preg(gxp.plugins.FeatureGrid.prototype.ptype, gxp.plugins.FeatureGrid);

@@ -31,10 +31,11 @@
  */
 
 Ext.onReady(function(){
+
     
     Ext.QuickTips.init();
     
-    var langData = [['en', 'English'],['it','Italiano']];
+    var langData = config.locales;
 
     var query = location.search;        
     if(query && query.substr(0,1) === "?"){
@@ -45,7 +46,7 @@ Ext.onReady(function(){
     var code = url.locale;   
 
     if(!code){
-        code = "en";
+        code = config.locales[0][0];
     }
     
     var initialLanguageString;
@@ -83,7 +84,6 @@ Ext.onReady(function(){
 			   if(code == record.get('code')){
 					return false;
 			   }
-				   
 			},                    
 			select: function(cb, record, index) {         
 			   var code = record.get('code');
@@ -102,7 +102,7 @@ Ext.onReady(function(){
 			}
 		}
 	});
-    
+
     var msmPanel = new MSMPanel ({
         xtype: 'panel',
         id: 'mapManagerPanel',

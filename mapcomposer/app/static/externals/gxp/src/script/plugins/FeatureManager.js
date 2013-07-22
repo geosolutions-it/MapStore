@@ -1,10 +1,10 @@
 /**
- * Copyright (c) 2008-2011 The Open Planning Project
- * 
- * Published under the BSD license.
- * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
- * of the license.
- */
+* Copyright (c) 2008-2011 The Open Planning Project
+*
+* Published under the GPL license.
+* See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
+* of the license.
+*/
 
 /**
  * @requires plugins/Tool.js
@@ -477,6 +477,10 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
      *  features and selected features, all features will be shown.
      */
     setLayerDisplay: function() {
+        var mapLayer = this.featureLayer && this.featureLayer.map;
+        if (mapLayer) {
+            mapLayer.setLayerIndex(this.featureLayer, mapLayer.layers.length);
+        }      
         var show = this.visible();
         var map = this.target.mapPanel.map;
         if (show) {
@@ -979,7 +983,13 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                 if (!condition) {
                     // choose a page on the top left
                     var extent = this.getPagingExtent("getExtent");
-                    maxExtent = this.getPagingExtent("getMaxExtent");
+                    //maxExtent = this.getPagingExtent("getMaxExtent");
+					
+				    if(this.useDefinedExtent){
+						maxExtent = OpenLayers.Bounds.fromArray(this.target.map.maxExtent);
+					}else{
+						maxExtent = this.getPagingExtent("getMaxExtent");
+					}
                     condition = {
                         lonLat: new OpenLayers.LonLat(
                             Math.max(maxExtent.left, extent.left),

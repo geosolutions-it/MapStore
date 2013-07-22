@@ -1,11 +1,23 @@
 /**
- * Copyright (c) 2008-2011 The Open Planning Project
- * 
- * Published under the BSD license.
- * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
- * of the license.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+ 
 /** api: (define)
  *  module = gxp.form
  *  class = WFSSearchComboBox
@@ -93,7 +105,7 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
      *  needed for pagination.
      */
 	sortBy : 'codice_ato',
-    
+
 	/** api: config[pageSize]
      *  ``Integer`` page size of result list.
      *  needed for pagination. default is 10
@@ -120,20 +132,31 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
      *  ``Ext.XTemplate`` the template to show results.
      */
 	tpl: null,
-
+	
+	/** api: config[predicate]
+     *  ``String`` predicate to use for search (LIKE,ILIKE,=...).
+     */
+	predicate: 'LIKE',
+	/** api: config[vendorParams]
+     *  ``String`` additional parameters object. cql_filters
+	 *  is used in AND the search params. (see listeners->beforequery)
+     */
+	vendorParams: '',
+	
+    clearOnFocus:true,
     /** private: method[initComponent]
      *  Override
      */
     initComponent: function() {
 		
         this.store = new Ext.data.JsonStore({
-			combo:this,
+			combo: this,
 			root: this.root,
 			messageProperty: 'crs',
 			autoLoad: false,
 			fields:this.recordModel,
             url: this.url,
-			
+			vendorParams: this.vendorParams,
 			paramNames:{
 				start: "startindex",
 				limit: "maxfeatures",
@@ -151,7 +174,12 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 			},
 			listeners:{
 				beforeload: function(store){
-					store.setBaseParam( 'srsName',app.mapPanel.map.getProjection() );
+					store.setBaseParam( 'srsName', this.combo.target.mapPanel.map.getProjection() );
+					for (var name in this.vendorParams ) {
+						if(name!='cql_filter' && name != "startindex" && name != "maxfeatures" && name != 'outputFormat' ){
+							store.setBaseParam(store, this.vendorParams[name]);
+						}
+					}
 				}
 			},
 			
@@ -214,18 +242,22 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 
         return gxp.form.WFSSearchComboBox.superclass.initComponent.apply(this, arguments);
     },
-	listeners:{
+	listeners: {
 		focus: function() {
-			this.clearValue();
+			if(this.clearOnFocus) this.clearValue();
 		},
 		beforequery:function(queryEvent){
 			var queryString = queryEvent.query;
 			queryEvent.query = "";
 			for( var i = 0 ; i < this.queriableAttributes.length ; i++){
-				queryEvent.query +=  "(" + this.queriableAttributes[i] + " LIKE '%" + queryString + "%')";
+				queryEvent.query +=  "(" + this.queriableAttributes[i] + " "+this.predicate+" '%" + queryString + "%')";
 				if ( i < this.queriableAttributes.length -1) {
 					queryEvent.query += " OR ";
 				}
+			}
+			//add cql filter in and with the other condictions
+			if(this.vendorParams && this.vendorParams.cql_filter) {
+				queryEvent.query = "(" + queryEvent.query + ")AND(" +this.vendorParams.cql_filter +")";
 			}
 		
 		}

@@ -12,6 +12,21 @@
     left: 17px
 }
 
+/*Form spatial cell*/
+.spatial-cell{
+    text-align: center;
+}
+
+/*BBOX Fieldset style*/
+.aoi-fields{
+    margin-left: 0%;
+    margin-right: 5%;
+}
+.aoi-button{
+    background-image: url(img/silk/shape_square.png) !important;
+}
+
+
 /* Pan- and Zoom- Panel Styles*/
 
 .olControlPanPanel div {
@@ -116,6 +131,16 @@
     background-image: url(img/geosilk/google_earth.png);
 }
 
+/* gxp_reversegeocoder */
+.x-btn .gxp-icon-reversegeocoder, .x-menu-item .gxp-icon-reversegeocoder, .x-tree-node .gxp-icon-reversegeocoder {
+    background-image: url(img/geocoder.png);
+}
+
+/* gxp_geolocationmenu */
+.x-btn .gxp-icon-geolocationmenu, .x-menu-item .gxp-icon-geolocationmenu, .x-tree-node .gxp-icon-geolocationmenu {
+    background-image: url(img/geolocation.png);
+}
+
 /* gxp_legend */
 .x-btn .gxp-icon-legend, .x-menu-item .gxp-icon-legend, .x-tree-node .gxp-icon-legend {
     background-image: url(img/silk/application_view_tile.png);
@@ -131,7 +156,39 @@
 
 /* gxp_wmsgetfeatureinfo */
 .x-btn .gxp-icon-getfeatureinfo, .x-menu-item .gxp-icon-getfeatureinfo, .x-tree-node .gxp-icon-getfeatureinfo {
-    background-image: url(img/silk/information.png);
+   background-image: url(img/silk/information.png) !important;
+}
+
+/* gxp_importexport */
+.x-btn .gxp-icon-importexport, .x-menu-item .gxp-icon-importexport, .x-tree-node .gxp-icon-importexport {
+    background-image: url(img/geosilk/disk.png) !important;
+}
+
+/* gxp-icon-import-map */
+.x-btn .gxp-icon-import-map, .x-menu-item .gxp-icon-import-map, .x-tree-node .gxp-icon-import-map {
+    background-image: url(img/silk/map_add.png) !important;
+}
+
+/* gxp-icon-export-map */
+.x-btn .gxp-icon-export-map, .x-menu-item .gxp-icon-export-map, .x-tree-node .gxp-icon-export-map {
+    background-image: url(img/silk/map_edit.png) !important;
+}
+
+
+/* gxp-icon-export-kml */
+.x-btn .gxp-icon-export-kml, .x-tree-node .gxp-icon-export-kml, .gxp-icon-export-kml {
+    background-image: url(img/silk/application_put.png);
+}
+
+
+/* gxp-icon-import-kml */
+.x-btn .gxp-icon-import-kml, .x-tree-node .gxp-icon-import-kml, .gxp-icon-import-kml {
+    background-image: url(img/silk/application_get.png);
+}
+
+/* gxp-icon-mouse-map */
+.x-btn .gxp-icon-mouse-map, .x-menu-item .gxp-icon-mouse-map, .x-tree-node .gxp-icon-mouse-map {
+    background-image: url(img/map_cursor.png) !important;
 }
 
 /* gxp_featureeditor */
@@ -335,4 +392,17 @@ div.map-overlay div.overlay-element {
     bottom: 0px;
     left: 0px;
     margin-top: 0px;
+}
+
+/* csv_export */
+.x-btn .gxp-icon-csvexport, .x-menu-item .gxp-icon-csvexport {
+    background-image: url(img/geosilk/disk.png) !important;
+}
+
+.x-btn .gxp-icon-csvexport-single, .x-menu-item .gxp-icon-csvexport-single {
+    background-image: url(img/silk/table.png) !important;
+}
+
+.x-btn .gxp-icon-csvexport-multiple, .x-menu-item .gxp-icon-csvexport-multiple {
+    background-image: url(img/silk/table_multiple.png) !important;
 }

@@ -1,10 +1,10 @@
 /**
- * Copyright (c) 2008-2011 The Open Planning Project
- * 
- * Published under the BSD license.
- * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
- * of the license.
- */
+* Copyright (c) 2008-2011 The Open Planning Project
+*
+* Published under the GPL license.
+* See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
+* of the license.
+*/
 
 /**
  * @requires plugins/Tool.js
@@ -110,6 +110,60 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
      *  Text for no features alert message (i18n)
      */
     noFeaturesMessage: "Your query did not return any results.",
+    
+    /** api: config[selectionMethodFieldSetComboTitle]
+     * ``String``
+     * Text for FieldSet Combo Selection Method (i18n).
+     */    
+    selectionMethodFieldSetComboTitle: "Set Selection Method",
+    
+    /** api: config[comboSelectionMethodLabel]
+     * ``String``
+     * Text for Label Combo Selection Method (i18n).
+     */    
+    comboSelectionMethodLabel: "Selection",
+
+    /** api: config[comboPolygonSelection]
+     * ``String``
+     * Text for Label Polygon (i18n).
+     */        
+    comboPolygonSelection: 'Polygon',
+    
+    /** api: config[comboCircleSelection]
+     * ``String``
+     * Text for Label Circle (i18n).
+     */        
+    comboCircleSelection: 'Circle',
+    
+    /** api: config[comboBBOXSelection]
+     * ``String``
+     * Text for Label BBOX (i18n).
+     */        
+    comboBBOXSelection: 'BBOX',
+
+    /** api: config[errorDrawPolygonText]
+     * ``String``
+     * Text for Query Error Draw Polygon (i18n).
+     */            
+    errorDrawPolygonText: "You have to draw a Polygon",    
+    
+    /** api: config[errorDrawCircleText]
+     * ``String``
+     * Text for Query Error Draw Circle (i18n).
+     */            
+    errorDrawCircleText: "You have to draw a Circle",        
+
+    /** api: config[errorDrawTitle]
+     * ``String``
+     * Text for Draw Query Error Title (i18n).
+     */            
+    errorDrawTitle: "Query error",
+	
+	/** api: config[errorDrawTitle]
+     * ``String``
+     * Text for BBOx Error Msg (i18n).
+     */  
+	errorBBOXText: "BBOX invalid",         
 
     /** api: config[actions]
      *  ``Object`` By default, this tool creates a "Query" action to trigger
@@ -183,15 +237,17 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
             bbar: ["->", {
                 text: this.cancelButtonText,
                 iconCls: "cancel",
+                scope: this,
                 handler: function() {
+                    this.resetFeatureManager();
                     var ownerCt = this.outputTarget ? queryForm.ownerCt :
                         queryForm.ownerCt.ownerCt;
                     if (ownerCt && ownerCt instanceof Ext.Window) {
                         ownerCt.hide();
                     } else {
-                        addAttributeFilter(
+                        addFilterBuilder(
                             featureManager, featureManager.layerRecord,
-                            featureManater.schema
+                            featureManager.schema
                         );
                     }
                 }
@@ -283,6 +339,11 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
     getFormattedMapExtent: function() {
         var extent = this.target.mapPanel.map.getExtent();
         return extent && extent.toArray().join(", ");
+    },
+    
+    resetFeatureManager: function(){
+        this.target.tools[this.featureManager].featureStore.removeAll();  
+        this.target.tools[this.featureManager].clearFeatures();  
     }
         
 });

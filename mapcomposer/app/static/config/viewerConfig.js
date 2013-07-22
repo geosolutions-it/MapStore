@@ -1,4 +1,9 @@
 {
+    "geoStoreBase":"",
+    "proxy":"/http_proxy/proxy/?url=",
+    "portalConfig":{
+		"header":false
+	},
     "gsSources": {
         "google": {
             "ptype": "gxp_googlesource"
@@ -19,5 +24,14 @@
         }],
         "center": [1250000.000000, 5370000.000000],
         "zoom": 5
-    }
+    },
+	
+	"customTools":[
+		{
+			"ptype": "gxp_geolocationmenu",
+			"outputTarget": "paneltbar",
+			"toggleGroup": "toolGroup",
+			"index": 23
+		}
+	]
 }

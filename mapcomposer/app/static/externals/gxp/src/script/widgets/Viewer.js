@@ -1,10 +1,10 @@
 /**
- * Copyright (c) 2008-2011 The Open Planning Project
- * 
- * Published under the BSD license.
- * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
- * of the license.
- */
+* Copyright (c) 2008-2011 The Open Planning Project
+*
+* Published under the GPL license.
+* See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
+* of the license.
+*/
 
 /** api: (define)
  *  module = gxp
@@ -427,8 +427,8 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
                     new OpenLayers.Control.Attribution(),
                     new OpenLayers.Control.LoadingPanel()
                 ],
-                maxExtent: mapConfig.maxExtent && OpenLayers.Bounds.fromArray(mapConfig.maxExtent),
-                restrictedExtent: mapConfig.restrictedExtent && OpenLayers.Bounds.fromArray(mapConfig.restrictedExtent),
+                maxExtent: mapConfig.maxExtent ? OpenLayers.Bounds.fromArray(mapConfig.maxExtent) : undefined,
+                restrictedExtent: mapConfig.restrictedExtent ? OpenLayers.Bounds.fromArray(mapConfig.restrictedExtent) : undefined,
                 numZoomLevels: mapConfig.numZoomLevels || 20
             }, mapConfig),
             center: config.center && new OpenLayers.LonLat(config.center[0], config.center[1]),
@@ -485,17 +485,7 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
                         for(var j=size-1; j>=0; j--){
                             if(layers[j].group){
                                 if(layers[j].group != "background" && layers[j].group != "default"){      
-                                    var s = 'groups.' + layers[j].group + '={title:"' + layers[j].group + '"}';    
-                                    
-                                    //
-                                    // Managing withe spaces in strings
-                                    // 
-                                    if(s.indexOf(" ") != -1){
-                                        s = s.replace(/\s+/g, "_");   
-                                        layers[j].group = layers[j].group.replace(/\s+/g, "_"); 
-                                    }
-                                    
-                                    eval(s);
+                                    groups[layers[j].group]={title:layers[j].group};
                                 }
                             }
                         }
@@ -541,7 +531,9 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
             portalContainer.add(this.portal);
             portalContainer.doLayout();
 			
-            if(portalContainer.getXType() == "tabpanel"){
+			if(this.geonetwork){
+				portalContainer.setActiveTab(1);
+			}else if(portalContainer.getXType() == "tabpanel"){
 				portalContainer.setActiveTab(0);
 			}
         }
@@ -644,7 +636,7 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
      *  configured before the call.
      */
     createLayerRecord: function(config, callback, scope) {
-        alert(callback);
+        
         this.createLayerRecordQueue.push({
             config: config,
             callback: callback,
@@ -710,6 +702,7 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
         // include all layer config (and add new sources)
         this.mapPanel.layers.each(function(record){
             var layer = record.getLayer();
+            if(layer.CLASS_NAME != "OpenLayers.Layer.Vector")
             if (layer.displayInLayerSwitcher) {
                 var id = record.get("source");
                 var source = this.layerSources[id];
@@ -723,6 +716,14 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
                 }
             }
         }, this);
+
+        //checks if in initialConfig savaState properties is set to true
+        //If so invokes the function getState () of the plugin.
+        Ext.iterate(this.tools,function(key,val,obj){
+            if(val.initialConfig.saveState){
+                state = val.getState(state);
+            }
+        });       
         
         return state;
     },

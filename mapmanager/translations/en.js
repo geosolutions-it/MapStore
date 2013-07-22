@@ -22,17 +22,19 @@ GeoExt.Lang.add("en", {
         errorMsg_timeout: "Request Timeout!",
 		textUserManager: 'User Manager',
         textViewMap: '', //"View Map",
-        tooltipViewMap: "Open Map to read only",
+        tooltipViewMap: "View Map",
         textCopyMap: '', //"Clone Map",
-        tooltipCopyMap: "Make a copy of this map",
+        tooltipCopyMap: "Clone Map",
         textEditMap: '', //"Edit Map",
-        tooltipEditMap: "Open Map to edit",
+        tooltipEditMap: "Edit Map",
         textDeleteMap: '', //"Delete Map",
         tooltipDeleteMap: "Delete Map",
         textEditMetadata: '', //"Edit Metadata",
-        tooltipEditMetadata: "Edit Metadata",
+        tooltipEditMetadata: "Edit Info",
         textSubmitEditMetadata: "Update",
-        tooltipSubmitEditMetadata: "Update Metadata",
+        tooltipSubmitEditMetadata: "Update Info",
+        titleConfirmCloseEditMetadata: 'Confirm',
+        textConfirmCloseEditMetadata: 'Close window without saving?',
         metadataSaveSuccessTitle: "Success",
         metadataSaveSuccessMsg: "Metadata saved succesfully",
         metadataSaveFailTitle: "Metadata not saved succesfully",
@@ -45,7 +47,9 @@ GeoExt.Lang.add("en", {
         msgSuccessDeleteMapTitle: "Success",
         msgSuccessDeleteMapBody: "Map has been deleted",
         msgFailureDeleteMapTitle: "Failed",
-        msgFailureDeleteMapBody: "Something wrong has appened"
+        msgFailureDeleteMapBody: "Something wrong has appened",
+        IframeViewerTitle: "Map Viewer - ",
+        IframeComposerTitle: "Map Composer - "        
     },
     "MSMPagingToolbar.prototype": {
         desc: "New Map",
@@ -62,10 +66,12 @@ GeoExt.Lang.add("en", {
         nextText: "Next Page",
         prevText: "Previous Page",
         refreshText: "Refresh",
-        beforePageText: "Page"
+        beforePageText: "Page",
+		afterPageText : "of {0}",
+		resizerText: "Maps per page"
     },
     "MSMPanel.prototype": {
-        title : "Map Store Manager"
+        title : "MapManager"
     },
     "MSMLogin.prototype": {
         loginText: "Login",
@@ -80,6 +86,17 @@ GeoExt.Lang.add("en", {
     "UserManagerView.prototype":{
 		textName: 'Name',
 		textPassword: 'Password',
+		textPasswordEdit: 'New Password',
+		textPasswordConf: 'Confirm Password',
+		textPasswordConfError: 'Password not confirmed', 		
+		textBlankUserName: 'Name should not be null',
+		textBlankPw: 'Password should not be null',
+		textBlankRole: 'Role should be selected',		
+		tooltipEdit: 'Edit user data',
+		textEditUserTitle: 'Edit user data',
+		displayMsg: "Displaying results {0} - {1} of {2}",
+		beforePageText: "Page",
+		afterPageText : "of {0}",
 		textRole: 'Role',
 		tooltipDelete: 'Delete this user',
 		textDelete: 'Delete',
@@ -94,6 +111,8 @@ GeoExt.Lang.add("en", {
 		textTitle: 'User Manager',
 		tooltipSearch: "Search",
 		userAlreadyTaken: 'User name has been already taken',
-		textSelectRole: 'Select a role...'
+		textSelectRole: 'Select a role...',
+		titleConfirmDeleteMsg: "Confirm delete user",
+		textConfirmDeleteMsg: "Are you sure you want to delete this user?"	
 	}
 });

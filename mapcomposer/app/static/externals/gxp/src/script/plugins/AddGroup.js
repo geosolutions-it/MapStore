@@ -1,9 +1,21 @@
 /**
- * Copyright (c) 2008-2011 The Open Planning Project
- * 
- * Published under the BSD license.
- * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
- * of the license.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
@@ -117,22 +129,35 @@ gxp.plugins.AddGroup = Ext.extend(gxp.plugins.Tool, {
                                 scope: this,
                                 disabled: true,
                                 handler: function(){      
-                                    this.win.hide();     
-                                                             
-                                    var tree = Ext.getCmp("layertree");                                        
+                                    this.win.hide();                             
+                                    var tree = Ext.getCmp("layertree");      
                                     var textField = Ext.getCmp("diag-text-field");
-                                    
+                                    var groupNames;
+                                    var groupConfig;
                                     if(textField.isDirty() && textField.isValid()){
                                         var group = textField.getValue();
-                                
+                                        
                                         var LayerNodeUI = Ext.extend(GeoExt.tree.LayerNodeUI,
                                             new GeoExt.tree.TreeNodeUIEventMixin());
                                     
-                                        var groupConfig = typeof group == "string" ?
-                                            {title: group} : group;
+                                        var locIndex= tree.localIndexs[GeoExt.Lang.locale];
+                                        
+                                         if(typeof group == "string"){
+                                            groupNames=group.split(tree.localLabelSep);
+                                            groupConfig= new Object();
+                                        }else{
+                                            groupNames=group.title.split(tree.localLabelSep);
+                                            groupConfig= group;
+                                        }
+                                        if(groupNames.length > 0){
+                                            groupConfig.title= groupNames[locIndex] ? groupNames[locIndex] : groupNames[0];
+                                        }
+
+                                        /*var groupConfig = typeof group == "string" ?
+                                            {title: group} : group;*/
                                             
                                         var node = new GeoExt.tree.LayerContainer({
-                                            text: group,
+                                            text: groupConfig.title,
                                             iconCls: "gxp-folder",
                                             expanded: true,
                                             checked: false,
@@ -169,7 +194,6 @@ gxp.plugins.AddGroup = Ext.extend(gxp.plugins.Tool, {
                                     this.win.destroy();
                                     
                                     apptarget.modified = true;
-                                    //modified = true;
                                 }
                             }
                         ]

@@ -30,14 +30,24 @@
 
 (function(){
 	
-	
-	// save a reference for this function scope/context
+	// ///////////////////////////////////////////////////////
+	// Save a reference for this function scope/context
+	// ///////////////////////////////////////////////////////
 	var root = this;
-	// expose GeoStore to the external world
+	
+	// ///////////////////////////////////////////////////////
+	// Expose GeoStore to the external world
+	// ///////////////////////////////////////////////////////	
 	var GeoStore = root.GeoStore = {};
-	// espose Google Services
+	
+	// ///////////////////////////////////////////////////////
+	// Expose Google Services
+	// ///////////////////////////////////////////////////////
 	var Google = root.Google = {};
-	// version for the API client
+	
+	// ///////////////////////////////////////////////////////
+	// Version for the API client
+	// ///////////////////////////////////////////////////////
 	GeoStore.VERSION = '0.1';
 	
 	/**
@@ -64,6 +74,7 @@
 		this.uri_ = this.uri_ + this.SEPARATOR + path;
 		return this;
 	};
+	
 	/** 
 	 * Function: setBaseUrl
 	 * set the base url for this uri
@@ -78,6 +89,7 @@
 		this.uri_ = baseUrl + this.SEPARATOR + this.uri_;
 		return this;
 	};
+	
 	/** 
 	 * Function: appendId
 	 * add an id to the current uri
@@ -90,6 +102,7 @@
 	Uri.prototype.appendId = function(id){
 		return this.appendPath(id);
 	};
+	
 	/** 
 	 * Function: addParam
 	 * add params to the uri
@@ -103,6 +116,7 @@
 	Uri.prototype.addParam = function(name, value){
 		this.params_[name] = value;
 	};
+	
 	/** 
 	 * Function: toString
 	 * get a string representation for the uri
@@ -134,8 +148,9 @@
 		this.initialize.apply(this, arguments);
 	};
 	
-	// prototype definitions
-	
+	// ////////////////////////////////////
+	//       Prototype definitions       //
+	// ////////////////////////////////////
 	/** 
 	 * Function: initialize
 	 * initialize this class
@@ -144,9 +159,9 @@
 	 * Return:
 	 */
 	ContentProvider.prototype.initialize = function(){
-		console.log( 'created GeoStore.ContentProvider');
-		console.log( 'authorization: ' + this.authorization_ );
-		console.log( 'base url: ' + this.baseUrl_);
+//		console.log( 'created GeoStore.ContentProvider');
+//		console.log( 'authorization: ' + this.authorization_ );
+//		console.log( 'base url: ' + this.baseUrl_);
 	};
 	
 	/** 
@@ -159,7 +174,6 @@
 	 * {Any}
 	 */
 	ContentProvider.prototype.beforeFind = function(data){
-		// do nothing
 		return data;
 	};
 	
@@ -247,8 +261,10 @@
 	ContentProvider.prototype.findByPk = function(pk, callback, params_opt){
 		this.beforeFind();
 		
-		// build the uri to invoke
-		var uri = new Uri({'url':this.baseUrl_});
+		// ///////////////////////////////////////////////////////
+		// Build the uri to invoke
+		// ///////////////////////////////////////////////////////
+		var uri = new Uri({'url': this.baseUrl_ });
 		uri.appendPath( this.resourceNamePrefix_ ).appendId( pk );
 		if (params_opt){
 			for( name in params_opt ){
@@ -274,8 +290,7 @@
 				this.onFailure_(response);
 	       }
 	    });
-	};
-	
+	};	
 
 	/** 
 	 * Function: find
@@ -288,7 +303,10 @@
 	 */
 	ContentProvider.prototype.find = function(callback){
 		var uri = new Uri({'url':this.baseUrl_});
-		// build a request
+		
+		// ////////////////////
+		// Build a request
+		// ////////////////////
 		var self = this;
 		var Request = Ext.Ajax.request({
 	       url: uri.toString(),
@@ -305,7 +323,6 @@
 	       },
 	       failure:  function(response, opts){
 	       		var json = Ext.util.JSON.decode(response.responseText);
-				console.log(Ext.util.JSON.decode(json));
 	       }
 	    });		
 	};
@@ -328,7 +345,7 @@
 		var Request = Ext.Ajax.request({
 	       url: uri.toString(),
 	       method: 'PUT',
-	       headers:{
+	       headers: {
 	          'Content-Type' : 'text/xml',
 	          'Accept' : this.acceptTypes_,
 	          'Authorization' : this.authorization_
@@ -370,7 +387,7 @@
 				var json = Ext.util.JSON.decode(response.responseText);
 				callback( response );
 	       },
-	       failure:  function(response, opts){
+	       failure:  function(response, opts) {
 	       		var json = Ext.util.JSON.decode(response.responseText);
 				console.log(Ext.util.JSON.decode(json));
 	       }
@@ -387,10 +404,13 @@
 	 * Return:
 	 * 
 	 */
-	ContentProvider.prototype.create = function(item, callback){
-		 var uri = new Uri({'url':this.baseUrl_});
-		 var data = this.beforeSave( item );
-		// build the Ajax request
+	ContentProvider.prototype.create = function(item, callback, failureCallback){
+		var uri = new Uri({'url':this.baseUrl_});
+		var data = this.beforeSave( item );
+		
+		// ///////////////////////////////
+		// Build the Ajax request
+		// ///////////////////////////////
 		var Request = Ext.Ajax.request({
 	       url: uri.toString(),
 	       method: 'POST',
@@ -406,31 +426,57 @@
 	       },
 	       failure:  function(response, opts){
 	       		console.log(response);
+				if(typeof(failureCallback) === 'function') {
+                    failureCallback(response);
+                } else {
+				// ////////////////////////////////////////////////// //
+				// TODO: Refactor this code externalize the           // 
+			    //	     Msg definition for the i18n                  //
+			    // ////////////////////////////////////////////////// //
+				Ext.Msg.show({
+					msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+					buttons: Ext.Msg.OK,
+					icon: Ext.MessageBox.ERROR
+				});	
 	       }
-	    });		
+	       }
+	    });
 	};
 	
-	 // implements inheritance
-	 var extend = function (proto) {
+	// ////////////////////////////////
+	// Implements inheritance
+	// ////////////////////////////////
+	var extend = function (proto) {
 	    var child = inherits(this, proto);
 	    child.extend = this.extend;
 	    return child;
-	  };
+	};
 
-	 // allow a ContentProvider to extend itself
-	 ContentProvider.extend = extend;	
+	// ////////////////////////////////////////////
+	// Allow a ContentProvider to extend itself
+	// ////////////////////////////////////////////
+	ContentProvider.extend = extend;	
 	
-	// utility functions
-	// it implements inheritance following prototype chaining
+	// //////////////////////////////////////////////
+	// Utility functions it implements inheritance 
+	// following prototype chaining
+	// //////////////////////////////////////////////
 	var inherits = function(parent, proto) {
-	    var child = function(){ parent.apply(this, arguments); };
-	    // assign to child all the properties of the parent
+	    var child = function(){ 
+			parent.apply(this, arguments); 		
+		};
+		
+		// ////////////////////////////////////////////////////
+	    // Assign to child all the properties of the parent
+		// ////////////////////////////////////////////////////
 	    for (var prop in parent){
 			child[prop] = parent[prop];
 		}
+		
 		var F = function(){};
 		F.prototype = parent.prototype;
 		child.prototype = new F;
+		
 		if (proto){
 			for (var prop in proto){
 				child.prototype[prop] = proto[prop];
@@ -439,187 +485,222 @@
 		return child;
 	};
 	
-   // init some content providers used in the application
+	// /////////////////////////////////////////////////// //
+	// Init some content providers used in the application //
+	// /////////////////////////////////////////////////// //
 
-/**
- * Class: GeoStore.Maps
- *
- * CRUD methods for maps in GeoStore
- * Inherits from:
- *  - <GeoStore.ContentProvider>
- *
- */
-   var Maps = GeoStore.Maps = ContentProvider.extend({
-	initialize: function(){
-		this.resourceNamePrefix_ = 'resource';
-	},
-	beforeSave: function(data){
-		// wrap new map within an xml envelop
-		var xml = '<Resource>';
-		if (data.owner) 
-			xml += 
-			'<Attributes>' +
-				'<attribute>' +
-					'<name>owner</name>' +
-					'<type>STRING</type>' +
-					'<value>' + data.owner + '</value>' +
-				'</attribute>' +
-			'</Attributes>';
-		xml +=
-			'<description>' + data.description + '</description>' +
-			'<metadata></metadata>' +
-			'<name>' + data.name + '</name>';
-		if (data.blob)
-		  xml+=
-			'<category>' +
-				'<name>MAP</name>' +
-			'</category>' +
-			'<store>' +
-				'<data><![CDATA[ ' + data.blob + ' ]]></data>' +
-			'</store>';
+	/**
+	 * Class: GeoStore.Maps
+	 *
+	 * CRUD methods for maps in GeoStore
+	 * Inherits from:
+	 *  - <GeoStore.ContentProvider>
+	 *
+	 */
+	var Maps = GeoStore.Maps = ContentProvider.extend({
+		initialize: function(){
+			this.resourceNamePrefix_ = 'resource';
+		},
+		beforeDeleteByFilter: function(data){
+			var xmlFilter = "<AND>" +
+								"<ATTRIBUTE>" + 
+									"<name>" + 
+										data.name + 
+									"</name>" +
+									"<operator>" + data.operator + "</operator>" + 
+									"<type>" + data.type + "</type>" +
+									"<value>" + 
+										data.value + 
+									"</value>" + 
+								"</ATTRIBUTE>" + 
+							"</AND>";
+			return xmlFilter;
+		},
+		deleteByFilter: function(filterData, callback){
+			var data = this.beforeDeleteByFilter(filterData);
+			var uri = this.baseUrl_;
 			
-		xml += '</Resource>';
-		return xml;
-	},
-	afterFind: function(json){
-		
-		if ( json.Resource ){
-			var data = new Object;
-			data.owner = json.Resource.Attributes.attribute.value;
-			data.description = json.Resource.description;
-			data.name = json.Resource.name;
-			data.blob = json.Resource.data.data;
-			data.id = json.Resource.id;
-			data.creation = json.Resource.creation;		
-			return data;			
-		} else {
-			this.onFailure_('cannot parse response');
-		}
-
-	}
-   } );
-
-/**
- * Class: GeoStore.Users
- *
- * CRUD methods for users in GeoStore
- * Inherits from:
- *  - <GeoStore.ContentProvider>
- *
- */
-  var Users = GeoStore.Users = ContentProvider.extend({
-	initialize: function(){
-		this.resourceNamePrefix_ = 'user';
-	},
-	beforeSave: function(data){
-		// wrap new user within an xml envelop
-		var xml = '<User><name>' + data.name +'</name>'
-		          +'<newPassword>'+ data.password + '</newPassword>'
-		          +'<role>' + data.role + '</role></User>';
-		return xml;
-	},
-	afterFind: function(json){
-		 if ( json.UserList ){
-			var data = new Array;
-			if ( json.UserList.User.length === undefined){
-				data.push(json.UserList.User);
-				return data;
+			Ext.Ajax.request({
+			   url: uri,
+			   method: 'DELETE',
+			   headers:{
+				  'Content-Type' : 'text/xml',
+				  'Authorization' : this.authorization_
+			   },
+			   params: data,
+			   scope: this,
+			   success: function(response, opts){
+					callback(response);
+			   },
+			   failure:  function(response, opts) {
+			   }
+			});		
+		},
+		beforeSave: function(data){
+			// ///////////////////////////////////////
+			// Wrap new map within an xml envelop
+			// ///////////////////////////////////////
+			var xml = '<Resource>';
+			if (data.owner) 
+				xml += 
+				'<Attributes>' +
+					'<attribute>' +
+						'<name>owner</name>' +
+						'<type>STRING</type>' +
+						'<value>' + data.owner + '</value>' +
+					'</attribute>' +
+				'</Attributes>';
+			xml +=
+				'<description>' + data.description + '</description>' +
+				'<metadata></metadata>' +
+				'<name>' + data.name + '</name>';
+			if (data.blob)
+			  xml+=
+				'<category>' +
+					'<name>MAP</name>' +
+				'</category>' +
+				'<store>' +
+					'<data><![CDATA[ ' + data.blob + ' ]]></data>' +
+				'</store>';
+				
+			xml += '</Resource>';
+			return xml;
+		},
+		afterFind: function(json){
+			
+			if ( json.Resource ){
+				var data = new Object;
+				data.owner = json.Resource.Attributes.attribute.value;
+				data.description = json.Resource.description;
+				data.name = json.Resource.name;
+				data.blob = json.Resource.data.data;
+				data.id = json.Resource.id;
+				data.creation = json.Resource.creation;		
+				return data;			
+			} else {
+				this.onFailure_('cannot parse response');
 			}
-			for (var i=0; i< json.UserList.User.length; i++){
-				var user = json.UserList.User[i];
-				var obj = new Object;
-				obj.id = user.id;
-				obj.name = user.name;
-				obj.password = '';
-				obj.role = user.role;
-				data.push( obj ); 
-			}
-			return data;
-		} else {
-			this.onFailure_('cannot parse response');
 		}
-	}
-  } );
-	
-/**
- * Class: Google.Shortener
- *
- * Access Google service to shorten urls
- *
- */	
-var Shortener = Google.Shortener = function(options){
-	this.appid_ = options.appid;
-	this.onFailure_ = Ext.emptyFn;
-};
-
-/** 
- * Function: shorten
- * shortens a long url in async mode
- *
- * Parameters:
- * url - {String} a long url
- *
- * Return:
- * 
- * See Also:
- *   https://developers.google.com/url-shortener/v1/getting_started
- *
- */
-Shortener.prototype.shorten = function( url, callback ){
-	
-	/*var apiKey = this.appid_;
-	gapi.client.setApiKey(apiKey);
-	var longurl = url;
-	// console.log('make short ' + longurl);
-	gapi.client.load('urlshortener', 'v1', function() {
-	    var request = gapi.client.urlshortener.url.insert({
-	        'resource': {
-	            'longUrl': longurl
-	        }
-	    });
-	    var resp = request.execute(function(resp) {
-	        if (resp.error) {
-				this.onFailure_( resp.error.message );
-	        } else {
-				callback( resp );
-	        }
-	    });
-	});*/
-	
-	// Works in Chrome and Firefox, but not in IE!
-	// Because of Same Origin Policy
-	var Request = Ext.Ajax.request({
-       url: config.proxyUrl + '?url=' + escape('https://www.googleapis.com/urlshortener/v1/url?key='+this.appid_),
-       method: 'POST',
-       headers:{
-          'Content-Type' : 'application/json'
-       },
-       params: '{"longUrl": "'+ url +'"}',
-       scope: this,
-       success: function(response, opts){
-			var json = Ext.util.JSON.decode( response.responseText );
-			callback(json);
-       },
-       failure:  function(response, opts){
-       		this.onFailure_(response.statusText);
-       }
     });
-};
 
-/** 
- * Function: failure
- * set a callback method for failure
- *
- * Parameters:
- * callback - {Function}
- * Return:
- * {Shortener}
- */
-Shortener.prototype.failure = function( callback ){
-	this.onFailure_ = callback;
-	return this;
-};
+	/**
+	 * Class: GeoStore.Users
+	 *
+	 * CRUD methods for users in GeoStore
+	 * Inherits from:
+	 *  - <GeoStore.ContentProvider>
+	 *
+	 */
+	var Users = GeoStore.Users = ContentProvider.extend({
+		initialize: function(){
+			this.resourceNamePrefix_ = 'user';
+		},
+		beforeSave: function(data){
+			// wrap new user within an xml envelop
+			var xml = '<User><name>' + data.name +'</name>'
+					  +'<newPassword>'+ data.password + '</newPassword>'
+					  +'<role>' + data.role + '</role></User>';
+			return xml;
+		},
+        
+		//TODO beforeUpdate
+	
+		afterFind: function(json){
+			 if ( json.UserList ){
+				var data = new Array;
+				if ( json.UserList.User.length === undefined){
+					data.push(json.UserList.User);
+					return data;
+				}
+				for (var i=0; i< json.UserList.User.length; i++){
+					var user = json.UserList.User[i];
+					var obj = new Object;
+					obj.id = user.id;
+					obj.name = user.name;
+					obj.password = '';
+					obj.role = user.role;
+					data.push( obj ); 
+				}
+				return data;
+			} else {
+				this.onFailure_('cannot parse response');
+			}
+		}
+	});
+	
+	/**
+	 * Class: Google.Shortener
+	 *
+	 * Access Google service to shorten urls
+	 *
+	 */	
+	var Shortener = Google.Shortener = function(options) {
+		this.config = options.config;
+		this.onFailure_ = Ext.emptyFn;
+	};
+
+	/** 
+	 * Function: shorten
+	 * shortens a long url in async mode
+	 *
+	 * Parameters:
+	 * url - {String} a long url
+	 *
+	 * Return:
+	 * 
+	 * See Also:
+	 *   https://developers.google.com/url-shortener/v1/getting_started
+	 *
+	 */
+	Shortener.prototype.shorten = function( longUrl, callback ) {
+		// /////////////////////////////////
+		// Disabled Google shortener URL!
+		// /////////////////////////////////
+
+		setTimeout(function() {		//simulate ajax delay
+			callback( longUrl );
+		}, 800);
+		
+		/*
+		var apikey = this.config.googleApi,
+			gapi_proxyUrl = this.config.proxyUrl + '?url=' + escape('https://www.googleapis.com/urlshortener/v1/url?key='+apikey);
+
+		var jsonparams = Ext.util.JSON.encode({ longUrl: longUrl });
+		var myAjax = new Ext.data.Connection();
+		myAjax.request({
+			url: gapi_proxyUrl,
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			params: jsonparams,
+			scope: this,
+			success: function(response, opts) {
+				var json = Ext.util.JSON.decode( response.responseText ),
+					shortUrl = json.id;
+				//https://developers.google.com/url-shortener/v1/getting_started#shorten
+				//for returned properties
+				callback(shortUrl);
+			},
+			failure:  function(response, opts) {
+				this.onFailure_(response.statusText);
+			}
+		});
+		*/
+	};
+
+	/** 
+	 * Function: failure
+	 * set a callback method for failure
+	 *
+	 * Parameters:
+	 * callback - {Function}
+	 * Return:
+	 * {Shortener}
+	 */
+	Shortener.prototype.failure = function( callback ){
+		this.onFailure_ = callback;
+		return this;
+	};
 	
 }).call(this);
-
-

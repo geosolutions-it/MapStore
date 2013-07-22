@@ -23,18 +23,13 @@ GeoExt.Lang.add("it", {
         aboutThisMapText: "Approposito di questa Mappa",
         searchTabTitle : "Portale",
         viewTabTitle : "Vista",
-		markerPopupTitle: "Dettagli"
+		markerPopupTitle: "Dettagli",
+		mainLoadingMask: "Attendere prego ..."
     },
     
     "GeoExplorer.Composer.prototype": {
-        loadMapText: "Importazione Mappa",
-        saveMapText: "Esportazione Mappa",
         exportMapText: "Pubblicazione Mappa",
-	    loadMapEmptyText: "Selezionare un file di contesto",
-		loadMapUploadText: "Caricamento in corso",
 		uploadText: "Caricamento",
-		loadMapWindowTitle: 'Form di Caricamento File',
-		loadMapErrorText:'Errore nel caricamento del file',
         toolsTitle: "Scegliere gli strumenti da includere nella barra:",
         previewText: "Anteprima",
         backText: "Precedente",
@@ -45,14 +40,11 @@ GeoExt.Lang.add("it", {
         passwordFieldText: "Password",
         fullScreenText: "Schermo Intero",
         cswMsg: 'Caricamento...',
-	    uploadWaitMsg: 'Caricamento del file di contesto...',
-		uploadErrorTitle: 'Errore di Caricamento',
-		uploadEmptyText: 'Seleziona un file di contesto',
-		uploadWinTitle: 'From di Caricamento',
 		cswFailureAddLayer: ' Il layer n on può essere aggiunto alla mappa',
-		uploadButtonText: 'Carica',
         alertEmbedTitle: 'Attenzione',
-        alertEmbedText: "Salvare la mappa prima di utilizzare il tool 'Pubblicazione Mappa'"
+        alertEmbedText: "Salvare la mappa prima di utilizzare il tool 'Pubblicazione Mappa'",
+	    cswZoomToExtentMsg: "BBOX non disponibile",
+		cswZoomToExtent: "CSW Zoom all'estensione"
     },
 
     "gxp.menu.LayerMenu.prototype": {
@@ -171,7 +163,17 @@ GeoExt.Lang.add("it", {
 
     "gxp.plugins.WMSGetFeatureInfo.prototype": {
         infoActionTip: "Recupera Feature Info",
-        popupTitle: "Feature Info"
+        popupTitle: "Feature Info",
+		noDataMsg: "Nessun dato è stato ritornato dal server",
+		maskMessage: "Recupero Feature Info..."
+    },
+	
+	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
+        infoActionTip: "Recupera Feature Info",
+        popupTitle: "Feature Info",
+		noDataMsg: "Nessun dato è stato ritornato dal server",
+		maskMessage: "Recupero Feature Info...",
+		activeActionTip:"Feature Info sul layer selezionato"
     },
 
     "gxp.plugins.Zoom.prototype": {
@@ -271,7 +273,15 @@ GeoExt.Lang.add("it", {
 	    saveDefaultContextActionTip: "Salva il contesto della Mappa",
 	    contextSaveSuccessString: "Contesto salvato con successo",
 	    contextSaveFailString: "Contesto non salvato con successo",
-	    contextMsg: "Caricamento..."
+	    contextMsg: "Caricamento...",
+		userLabel: "Utente",	
+		passwordLabel: "Password", 	
+		loginLabel: "Accesso",	
+		mapMetadataTitle: "Inserimento dei metadati",	
+		mapMedatataSetTitle: "Metadati della Mappa",	
+		mapNameLabel: "Nome",	
+		mapDescriptionLabel: "Descrizione",
+		addResourceButtonText: "Salva Mappa"
     },
 	
     "gxp.plugins.GeoReferences.prototype": {
@@ -334,8 +344,14 @@ GeoExt.Lang.add("it", {
         previousPageTip: "Pagina precedente",
         zoomPageExtentTip: "Zoom all'estensione della pagina",
         nextPageTip: "Prossima pagina",
-        nextPageTip: "Ultima pagina",
-        totalMsg: "Totale: {0} righe"
+        lastPageTip: "Ultima pagina",
+        title: "Entità",
+        totalMsg: "Totale: {0} entità",
+        displayExportCSVText: "Esporta nel formato CSV",
+        exportCSVSingleText: "Singola pagina",
+        exportCSVMultipleText: "Tutte le pagine",
+        failedExportCSV: "Impossibile esportare nel formato CSV",
+        invalidParameterValueErrorText: "Valore parametro non valido"            
     },
 	
     "gxp.plugins.QueryForm.prototype": {
@@ -350,18 +366,42 @@ GeoExt.Lang.add("it", {
         noFeaturesTitle: "Nessun Risultato",
         noFeaturesMessage: "La tua ricerca non ha prodotto risultati.",
         title: "Ricerca",
+        attributeEnablement: "Interrogazione per Attributo",
+        attributeEnablementMsg: "Tipo di ricerca invalido! Si deve prima selezionare il tipo 'Feature' e il layer vettoriale.",
+        searchType: "Impostazioni di base",
+        typeLabel: "Tipo",
+        featureLabel: "Max Features", 
+        selectionMethodFieldSetComboTitle: "Impostare Metodo di selezione",
+        comboSelectionMethodLabel: "Selezione",
+        comboPolygonSelection: 'Poligono',
+        comboCircleSelection: 'Cerchio',
+        comboBBOXSelection: 'BBOX',
+		errorBBOXText: "BBOX Invalido",
+        errorDrawPolygonText: "Devi disegnare un Poligono",
+        errorDrawCircleText: "Devi disegnare un Cerchio",     
+        errorDrawTitle: "Errore nell'interrogazione"  
+    },
+    
+    
+     "gxp.form.BBOXFieldset.prototype":{
         northLabel:"Nord",
         westLabel:"Ovest",
         eastLabel:"Est",
         southLabel:"Sud",
         setAoiText: "ImpostaROI",
+        waitEPSGMsg: "Caricamento in corso... Attendere",
         setAoiTooltip: "Abilita il controllo SetBox per disegnare una ROI (BBOX) sulla mappa",
-        attributeEnablement: "Interrogazione per Attributo",
-        attributeEnablementMsg: "Tipo di ricerca invalido! Si deve prima selezionare il tipo 'Feature' e il layer vettoriale.",
-        searchType: "Impostazioni di base",
-        typeLabel: "Tipo",
-        featureLabel: "Max Features"
+        title: "Regione di Interesse"
     },
+    
+    "gxp.FilterBuilder.prototype":{
+        preComboText: "Risultato",
+        postComboText: "dei seguenti:",
+        addConditionText: "aggiungi condizione",
+        addGroupText: "aggiungi gruppo",
+        removeConditionText: "rimuovi condizione"
+    },
+    
     "gxp.EmbedMapDialog.prototype": {
         publishMessage: "La mappa è pronta per essere pubblicata sul web! Basta copiare il seguente codice HTML per visualizzare la mappa nel proprio sito web:",
         heightLabel: "Altezza",
@@ -374,6 +414,17 @@ GeoExt.Lang.add("it", {
     },
     "gxp.plugins.GoogleGeocoder.prototype": {
         addMarkerTooltip: "Resetta Marker"
+    },
+	"gxp.plugins.DynamicGeocoder.prototype": {
+        addMarkerTooltip: "Resetta Marker",
+        emptyText: "Geocoder..."
+    },
+	"gxp.plugins.ReverseGeocoder.prototype": {
+        buttonText: "Indirizzo",
+        emptyText: "Indirizzo...",
+		errorMsg: "Nessun indirizzo trovato",
+		waitMsg: "Attendere prego...",
+		addressTitle: "Indirizzo trovato"
     },
 	"gxp.form.WFSSearchComboBox.prototype": {
 		emptyText:"Ricerca",
@@ -389,7 +440,144 @@ GeoExt.Lang.add("it", {
         trackMenuText: "Segui",
         trackTooltip: "Segui spostamenti",
         waitMsg:"Localizzazione in corso..."
-    }
+    },
 
+	"gxp.form.LanguageSwitcher.prototype":{
+		switchActionTip :"Cambiamento Lingua" ,
+		switchConfirmationText : "Si è sicuri di voler cambiare lingua?"
+	},
+
+	"gxp.plugins.MarkerEditor.prototype":{
+		markerName: 'Markers',
+		copyText: 'Copia il testo sottostante e incollalo nella finestra "Import Markers" in un secondo momento ...',
+		pasteText: "Incolla il testo nell'area sottostante e clicca su Importa.",
+		addToTheMapText:'Aggiungi alla mappa',
+		updateText: 'Aggiorna',
+		resetText:'Reimposta',
+		removeText:'Rimuovi',
+		compositeFieldTitle:  'Titolo',
+		compositeFieldLabel: 'Etichetta',
+		coordinatesText: 'Coordinate',
+		contentText: 'Contenuto',
+		gridColTitle: 'Titolo',
+		gridColLabel: 'Etichetta',
+		gridColLat: 'Lat',
+		gridColLon: 'Lon',
+		gridColContent: 'Contenuto',	
+		exportBtn:  'Esporta Markers',
+		importBtn: 'Importa Markers',
+		removeAllBnt: 'Rimuovi Tutti',
+		markerChooserTitle:'Scegli il marker',
+		useThisMarkerText:'Usa questo marker',
+		selectMarkerText:'Seleziona il Marker',
+		insertImageText:'Inserisci un\' immagine',
+		imageUrlText:'URL immagine',
+		importGeoJsonText:'Importa GeoJson',
+		errorText:"Errore",
+		notWellFormedText:"Il testo che hai inserito non è ben formato."
+	},
+	
+	"gxp.widgets.form.CoordinatePicker.prototype":{
+	    fieldLabel: 'Coordinate',
+		pointSelectionButtionTip: 'Clicca sulla mappa per abilitare la selezione del punto',
+		latitudeEmptyText: 'Latitudine',
+		longitudeEmptyText: 'Longitudine'
+	},
+    
+	"gxp.plugins.AddLayer.prototype":{
+		waitMsg: "Attendere prego ...",
+		capabilitiesFailureMsg: " Il layer non può essere aggiunto alla mappa"
+    },
+    
+    "gxp.plugins.Geolocate.prototype":{
+        geolocateMenuText: "Geolocalizza",
+        geolocateTooltip: "Localizza posizione attuale",
+        trackMenuText: "Segui",
+        trackTooltip: "Segui spostamenti",
+        waitMsg: "Localizzazione in corso...",
+        errorMsg: "Questo browser non supporta la geolocalizzazione"
+    },
+	
+	"gxp.plugins.GeoLocationMenu.prototype": {
+        initialText: "Seleziona un'area",
+        menuText: "Geo Referimenti",
+        tooltip: "Geo Referimenti",
+        addMarkerTooltip: "Resetta Marker",
+        emptyText: "Geocoder...",
+        buttonText: "Indirizzo",
+        emptyText: "Indirizzo...",
+		errorMsg: "Nessun indirizzo trovato",
+		waitMsg: "Attendere prego...",
+		addressTitle: "Indirizzo trovato",
+		geolocate: {
+			geolocateMenuText: "Geolocalizza",
+			geolocateTooltip: "Localizza posizione attuale",
+			trackMenuText: "Segui",
+			trackTooltip: "Segui spostamenti",
+			waitMsg: "Localizzazione in corso...",
+			errorMsg: "Questo browser non supporta la geolocalizzazione"
+		},
+		actionText: "GeoLocalizzazioni"
+    },
+    
+    "gxp.plugins.ImportExport.prototype":{
+		importexportLabel: "Importa / Esporta",
+		labels:{
+			"map": {
+				"saveText" : "Esportazione Mappa",
+				"loadText" : "Importazione Mappa",
+				"uploadWindowTitle" : "Importa file di contesta di mappa",
+				"downloadWindowTitle" : "Esporta file di contesta di mappa"
+			},
+			"kml/kmz": {
+				"saveText" : "Esportazione KML",
+				"loadText" : "Importazione KML/KMZ",
+				"uploadWindowTitle" : "Importa file KML/KMZ",
+				"downloadWindowTitle" : "Esporta file KML",
+				"kmlExportTitleText": "Esportazione KML",
+				"layerEmptyText": "Il layer selezionato è vuoto",
+				"notVectorlayerText": "Selezionare un layer",
+				"notLayerSelectedText": "Selezionare un layer vettoriale"
+			} 
+		}      
+	},
+	
+	"gxp.MapFileUploadPanel" :{
+		fileLabel: "File di mappa",
+		fieldEmptyText: "Seleziona il file di contesto di mappa...",
+		uploadText: "Upload",
+		waitMsgText: "In corso l'upload del file...",
+		resetText: "Reset",
+		failedUploadingTitle: "Errore nell'upload del file"
+	},
+   
+	"gxp.MapFileDownloadPanel" :{
+		buttonText: "Esportazione Mappa",
+		filenameLabel: "Nome del file di mappa",
+		waitMsgText: "In corso la generazione del file di mappa ...",
+		resetText: "Reset",
+		failedUploadingTitle: "Impossibile generara il file di mappa",
+		saveErrorText: "Errori riscontrati: "
+	},
+   
+	"gxp.KMLFileDownloadPanel" :{
+		buttonText: "Export",
+		filenameLabel: "Nome del file KML",
+		waitMsgText: "In corso la generazione del KML...",
+		invalidFileExtensionText: "L'estensione del file deve essere una delle seguenti: ",
+		resetText: "Reset",
+		failedUploadingTitle: "Imppossibile generare il file KML"
+	},
+   
+	"gxp.KMLFileUploadPanel" :{
+		fileLabel: "File KML",
+		fieldEmptyText: "Selezione un file KML o KMZ",
+		uploadText: "Upload",
+		waitMsgText: "In corso l'upload del file ...",
+		invalidFileExtensionText: "L'estensione del file deve essere una delle seguenti: ",
+		resetText: "Reset",
+		failedUploadingTitle: "Impossibile completare l'upload del file",
+		layerNameLabel: "Nome del Layer"
+	}
 	
 });

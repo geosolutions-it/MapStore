@@ -1,10 +1,10 @@
 /**
- * Copyright (c) 2008-2011 The Open Planning Project
- * 
- * Published under the BSD license.
- * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
- * of the license.
- */
+* Copyright (c) 2008-2011 The Open Planning Project
+*
+* Published under the GPL license.
+* See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
+* of the license.
+*/
 
 /**
  * @requires plugins/Tool.js
@@ -56,14 +56,17 @@ gxp.plugins.GoogleGeocoder = Ext.extend(gxp.plugins.Tool, {
     markerName: "Marker",
     
     pointRadiusMarkers: 14,
-    
     externalGraphicMarkers: 'theme/app/img/markers/star_red.png',
-    
     backgroundGraphicMarkers: 'theme/app/img/markers/markers_shadow.png',
-    
+    externalGraphicXOffsetMarkers:-13,
+    externalGraphicYOffsetMarkers:-28,
     backgroundXOffsetMarkers: -7,
-    
-    backgroundYOffsetMarkers: -7,
+    backgroundYOffsetMarkers: -22,
+	
+	/** api: delay for fadeOut marker
+	 *  duration in seconds
+	 */
+    markerFadeoutDelay: 5,  
     
     init: function(target) {
 
@@ -74,7 +77,7 @@ gxp.plugins.GoogleGeocoder = Ext.extend(gxp.plugins.Tool, {
             }
         }, this.outputConfig));
         
-        // remove marker added by google geocoder plugin
+        /*/ remove marker added by google geocoder plugin
         var removeMarkerBtn = new Ext.Button({
             tooltip: this.addMarkerTooltip,
             handler: function() {
@@ -86,7 +89,7 @@ gxp.plugins.GoogleGeocoder = Ext.extend(gxp.plugins.Tool, {
             },
             scope: this,
             iconCls: "icon-removemarkers"
-        });
+        });*/
         
         var bounds = target.mapPanel.map.restrictedExtent;
         if (bounds && !combo.bounds) {
@@ -100,7 +103,8 @@ gxp.plugins.GoogleGeocoder = Ext.extend(gxp.plugins.Tool, {
             });
         }
         this.combo = combo;
-        this.removeMarkerBtn = removeMarkerBtn;
+        
+		//this.removeMarkerBtn = removeMarkerBtn;
         
         return gxp.plugins.GoogleGeocoder.superclass.init.apply(this, arguments);
 
@@ -109,7 +113,7 @@ gxp.plugins.GoogleGeocoder = Ext.extend(gxp.plugins.Tool, {
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-        return gxp.plugins.GoogleGeocoder.superclass.addOutput.call(this, ['-',this.removeMarkerBtn,'-',this.combo]);
+        return gxp.plugins.GoogleGeocoder.superclass.addOutput.call(this, ['-',/*this.removeMarkerBtn,*/this.combo]);
     },
     
     /** private: method[onComboSelect]
@@ -140,6 +144,8 @@ gxp.plugins.GoogleGeocoder = Ext.extend(gxp.plugins.Tool, {
                 var styleMarkers = new OpenLayers.StyleMap({
                     pointRadius: this.pointRadiusMarkers,
                     externalGraphic: this.externalGraphicMarkers,
+					graphicXOffset:this.externalGraphicXOffsetMarkers,
+					graphicYOffset:this.externalGraphicYOffsetMarkers,
                     backgroundGraphic: this.backgroundGraphicMarkers,
                     backgroundXOffset: this.backgroundXOffsetMarkers,
                     backgroundYOffset: this.backgroundYOffsetMarkers,
@@ -167,6 +173,12 @@ gxp.plugins.GoogleGeocoder = Ext.extend(gxp.plugins.Tool, {
                     markers.addFeatures(markers_feature);
                     map.zoomToExtent(location, true);
                 }
+				
+				//
+				// Fade out for the marker icon.
+				//
+				Ext.get(markers.id).fadeOut({ endOpacity: 0.01, duration: this.markerFadeoutDelay});	//fadeout marker, no change 0.01
+
             } else {
                 map.setCenter(location);
             }

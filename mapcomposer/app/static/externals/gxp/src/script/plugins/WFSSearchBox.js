@@ -1,9 +1,21 @@
 /**
- * Copyright (c) 2008-2011 The Open Planning Project
- * 
- * Published under the BSD license.
- * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
- * of the license.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
@@ -36,7 +48,7 @@ Ext.namespace("gxp.plugins");
     /** api: config[markerName]
      *  ``String`` Layer Name
      */
-   markerName: "WFSSearch",
+	markerName: "WFSsearchMarker",
      /** api: config[updateField]
      *  ``String`` The field of the Model of the combo box
      *  to use as geometry.
@@ -46,8 +58,9 @@ Ext.namespace("gxp.plugins");
      *  to use as geometry.
      */
 	zoom: 8,
+
     ////////////////////////////////////////////////////////////
-    // respectivily the Sizes, grafic sources and offsets of
+    // Respectivily the Sizes, grafic sources and offsets of
     // the marker and it's background (typically shadow).
     ////////////////////////////////////////////////////////////
     pointRadiusMarkers: 14,
@@ -56,8 +69,17 @@ Ext.namespace("gxp.plugins");
     externalGraphicXOffsetMarkers:-13,
     externalGraphicYOffsetMarkers:-28,
     backgroundXOffsetMarkers: -7,
-    backgroundYOffsetMarkers: -30,
-  
+    backgroundYOffsetMarkers: -22,
+
+	/** api: enable fadeOut marker
+	*	if true disable reset button
+	*/
+    markerFadeoutEnable: true,
+    
+	/** api: delay for fadeOut marker
+	*  duration in seconds
+	*/
+    markerFadeoutDelay: 3,   
     
     init: function(target) {
 
@@ -65,29 +87,32 @@ Ext.namespace("gxp.plugins");
 				listeners: {
 					'select': this.onComboSelect,
 					scope: this
-				},target:target 
+				},
+				target:target 
 			}, this.outputConfig)
 		);
-        
-        // remove marker 
-        var removeMarkerBtn = new Ext.Button({
-            tooltip: this.addMarkerTooltip,
-            handler: function() {
-                var markerLyr = app.mapPanel.map.getLayersByName(this.markerName);  
-                if (markerLyr.length){
-                    app.mapPanel.map.removeLayer(markerLyr[0]);
-                }
-                this.combo.reset();
-            },
-            scope: this,
-            iconCls: "icon-removemarkers"
-        });
-        
+		
+		if(this.markerFadeoutEnable===false)
+		{
+		    this.removeMarkerBtn = new Ext.Button({
+		        tooltip: this.addMarkerTooltip,
+		        handler: function() {
+		            var markerLyr = target.mapPanel.map.getLayersByName(this.markerName);  
+		            if (markerLyr.length){
+		                target.mapPanel.map.removeLayer(markerLyr[0]);
+		            }
+		            this.combo.reset();
+		        },
+		        scope: this,
+		        iconCls: "icon-removewfsmarkers"
+		    });
+        }
+                
         var bounds = target.mapPanel.map.restrictedExtent;
         
         this.combo = combo;
-        this.removeMarkerBtn = removeMarkerBtn;
-        
+
+                
         return gxp.plugins.WFSSearchBox.superclass.init.apply(this, arguments);
 
     },
@@ -95,83 +120,90 @@ Ext.namespace("gxp.plugins");
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-        return gxp.plugins.WFSSearchBox.superclass.addOutput.call(this, ['-',this.removeMarkerBtn,'-',this.combo]);
+    	var controls = (this.markerFadeoutEnable===false) ? ['-', this.removeMarkerBtn, this.combo] : ['-', this.combo];
+        return gxp.plugins.WFSSearchBox.superclass.addOutput.call(this, controls);
     },
     
     /** private: method[onComboSelect]
      *  Listener for combo's select event.
      */
     onComboSelect: function(combo, record) {
+    
         if (this.updateField) {
+        
             var map = this.target.mapPanel.map;
-            var location = record.get(this.updateField)
-			location = new OpenLayers.Format.GeoJSON().read(location,"Geometry");
-			//TODO OL Point clone and transform
-			var projcode = combo.crs.type+":"+combo.crs.properties.code;
-			var location = location.clone().transform(
-                new OpenLayers.Projection(projcode),
-                map.getProjectionObject()
-            );
-			var points = location;
-			
-			
-            if (location) {
-                // Set the z-indexes of both graphics to make sure the background
-                // graphics stay in the background
-                var SHADOW_Z_INDEX = 10;
-                var MARKER_Z_INDEX = 11;
-                
-                // allow testing of specific renderers via "?renderer=Canvas", etc
-                var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
-                renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
-                
-                // Sets the style for the markers
-                var styleMarkers = new OpenLayers.StyleMap({
-                    pointRadius: this.pointRadiusMarkers,
-                    externalGraphic: this.externalGraphicMarkers,
+            
+            var center,
+	            bounds,
+            	points,
+            	location = record.get(this.updateField),
+            	projcode = combo.crs.type + ":" + combo.crs.properties.code;
+
+			location = new OpenLayers.Format.GeoJSON().read(location, "Geometry");
+            
+            if (location)
+            {
+	            // Set the z-indexes of both graphics to make sure the background
+	            // graphics stay in the background
+	            var SHADOW_Z_INDEX = 10;
+	            var MARKER_Z_INDEX = 11;
+	            
+	            // allow testing of specific renderers via "?renderer=Canvas", etc
+	            var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+	            renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+	            
+	            // Sets the style for the markers
+	            var styleMarkers = new OpenLayers.StyleMap({
+	                pointRadius: this.pointRadiusMarkers,
+	                externalGraphic: this.externalGraphicMarkers,
 					graphicXOffset:this.externalGraphicXOffsetMarkers,
 					graphicYOffset:this.externalGraphicYOffsetMarkers,
-                    backgroundGraphic: this.backgroundGraphicMarkers,
-                    backgroundXOffset: this.backgroundXOffsetMarkers,
-                    backgroundYOffset: this.backgroundYOffsetMarkers,
-                    graphicZIndex: MARKER_Z_INDEX,
-                    backgroundGraphicZIndex: SHADOW_Z_INDEX
-                });
-				var center;
-                if(location instanceof OpenLayers.Bounds){
-					center = location.getCenterLonLat();
-					points = new OpenLayers.Geometry.Point(center.lon,center.lat);
-				}else{
-					points =location;
-					center = location.clone();
-					center = new OpenLayers.LonLat(center.x,center.y);
-					
-				}
-                var markers_feature = new OpenLayers.Feature.Vector(points);
-				
-				
-                var markers = new OpenLayers.Layer.Vector( this.markerName, {
+	                backgroundGraphic: this.backgroundGraphicMarkers,
+	                backgroundXOffset: this.backgroundXOffsetMarkers,
+	                backgroundYOffset: this.backgroundYOffsetMarkers,
+	                graphicZIndex: MARKER_Z_INDEX,
+	                backgroundGraphicZIndex: SHADOW_Z_INDEX
+	            });
+			
+				center = location.getCentroid();
+				center = center.clone().transform(
+					new OpenLayers.Projection(projcode),
+					map.getProjectionObject()
+				);
+				center = new OpenLayers.LonLat(center.x, center.y);
+				bounds = location.getBounds().transform(
+						new OpenLayers.Projection(projcode),
+						map.getProjectionObject()
+				);
+
+	            var markers_feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(center.lon, center.lat));
+			
+	            var markers = new OpenLayers.Layer.Vector( this.markerName, {
 					styleMap: styleMarkers,
 					displayInLayerSwitcher: false,
 					rendererOptions: {yOrdering: true},
 					renderers: renderer
 				});
-                var markerLyr = map.getLayersByName(this.markerName);  
-                if (markerLyr.length){
-                    map.removeLayer(markerLyr[0]);	
-                }
+			
+	            var markerLyr = map.getLayersByName(this.markerName);  
+	            if (markerLyr.length){
+	                map.removeLayer(markerLyr[0]);	
+	            }
+	            
 				map.addLayer(markers);
 				markers.addFeatures(markers_feature);
-				if(location instanceof OpenLayers.Bounds){
-					map.zoomToExtent(location, true);
+			
+				if(location instanceof OpenLayers.Geometry.Point) {
+					map.setCenter(center, this.zoom);
 				}else{
 					map.setCenter(center,this.zoom);
 				}
+				
+				if(this.markerFadeoutEnable===true)
+					Ext.get(markers.id).fadeOut({ endOpacity: 0.01, duration: this.markerFadeoutDelay});	//fadeout marker, no change 0.01
             }
         }
     }
-	
-	
 });
 
 Ext.preg(gxp.plugins.WFSSearchBox.prototype.ptype, gxp.plugins.WFSSearchBox);

@@ -1,9 +1,21 @@
 /**
- * Copyright (c) 2008-2011 The Open Planning Project
- * 
- * Published under the BSD license.
- * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
- * of the license.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
@@ -55,16 +67,18 @@ gxp.plugins.NominatimGeocoder = Ext.extend(gxp.plugins.Tool, {
      *  tooltip for addMarker button
      */
     markerName: "Marker",
-    
     pointRadiusMarkers: 14,
-    
     externalGraphicMarkers: 'theme/app/img/markers/star_red.png',
-    
     backgroundGraphicMarkers: 'theme/app/img/markers/markers_shadow.png',
-    
+    externalGraphicXOffsetMarkers:-13,
+    externalGraphicYOffsetMarkers:-28,
     backgroundXOffsetMarkers: -7,
-    
-    backgroundYOffsetMarkers: -7,
+    backgroundYOffsetMarkers: -22,
+	
+    /** api: delay for fadeOut marker
+	 *  duration in seconds
+	 */
+    markerFadeoutDelay: 5,  
     
     init: function(target) {
 
@@ -72,10 +86,11 @@ gxp.plugins.NominatimGeocoder = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 select: this.onComboSelect,
                 scope: this
-            }
+            },
+			target: target
         }, this.outputConfig));
         
-        // remove marker added by Nominatim geocoder plugin
+        /*/ remove marker added by Nominatim geocoder plugin
         var removeMarkerBtn = new Ext.Button({
             tooltip: this.addMarkerTooltip,
             handler: function() {
@@ -86,8 +101,8 @@ gxp.plugins.NominatimGeocoder = Ext.extend(gxp.plugins.Tool, {
                 this.combo.reset();
             },
             scope: this,
-            iconCls: "icon-removemarkers"
-        });
+            iconCls: "icon-removeominatimmarkers"
+        });*/
         
         var bounds = target.mapPanel.map.restrictedExtent;
         if (bounds && !combo.bounds) {
@@ -101,7 +116,8 @@ gxp.plugins.NominatimGeocoder = Ext.extend(gxp.plugins.Tool, {
             });
         }
         this.combo = combo;
-        this.removeMarkerBtn = removeMarkerBtn;
+        
+		//this.removeMarkerBtn = removeMarkerBtn;
         
         return gxp.plugins.NominatimGeocoder.superclass.init.apply(this, arguments);
 
@@ -110,7 +126,7 @@ gxp.plugins.NominatimGeocoder = Ext.extend(gxp.plugins.Tool, {
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-        return gxp.plugins.NominatimGeocoder.superclass.addOutput.call(this, ['-',this.removeMarkerBtn,'-',this.combo]);
+        return gxp.plugins.NominatimGeocoder.superclass.addOutput.call(this, [/*'-',this.removeMarkerBtn,*/'-',this.combo]);
     },
     
     /** private: method[onComboSelect]
@@ -149,16 +165,18 @@ gxp.plugins.NominatimGeocoder = Ext.extend(gxp.plugins.Tool, {
 				var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
 				renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
 				
-				// Sets the style for the markers
-				var styleMarkers = new OpenLayers.StyleMap({
-					pointRadius: this.pointRadiusMarkers,
-					externalGraphic: this.externalGraphicMarkers,
-					backgroundGraphic: this.backgroundGraphicMarkers,
-					backgroundXOffset: this.backgroundXOffsetMarkers,
-					backgroundYOffset: this.backgroundYOffsetMarkers,
-					graphicZIndex: MARKER_Z_INDEX,
-					backgroundGraphicZIndex: SHADOW_Z_INDEX
-				});
+                // Sets the style for the markers
+                var styleMarkers = new OpenLayers.StyleMap({
+                    pointRadius: this.pointRadiusMarkers,
+                    externalGraphic: this.externalGraphicMarkers,
+					graphicXOffset:this.externalGraphicXOffsetMarkers,
+					graphicYOffset:this.externalGraphicYOffsetMarkers,
+                    backgroundGraphic: this.backgroundGraphicMarkers,
+                    backgroundXOffset: this.backgroundXOffsetMarkers,
+                    backgroundYOffset: this.backgroundYOffsetMarkers,
+                    graphicZIndex: MARKER_Z_INDEX,
+                    backgroundGraphicZIndex: SHADOW_Z_INDEX
+                });
 
 				var markers_feature = new OpenLayers.Feature.Vector(points);
 				var markers = new OpenLayers.Layer.Vector( this.markerName, {
@@ -178,6 +196,12 @@ gxp.plugins.NominatimGeocoder = Ext.extend(gxp.plugins.Tool, {
 					markers.addFeatures(markers_feature);
 					map.zoomToExtent(bounds, true);
 				}
+				
+				//
+				// Fade out for the marker icon.
+				//
+				Ext.get(markers.id).fadeOut({ endOpacity: 0.01, duration: this.markerFadeoutDelay});	//fadeout marker, no change 0.01
+
 			}else{
 				map.setCenter(points);
 			}

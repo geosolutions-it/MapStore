@@ -1,9 +1,21 @@
 /**
- * Copyright (c) 2008-2011 The Open Planning Project
- * 
- * Published under the BSD license.
- * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
- * of the license.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
@@ -74,6 +86,23 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
      */
     defaultGroup: "default",
     
+    
+    /** api: config[localLabelSep]
+     *  ``String`` Language separator for the groups name
+     */
+    localLabelSep: "_",
+    
+    /** api: config[localLabelSep]
+     *  ``Object`` Contains the index position (in the groupName array obtained from the group name splitted with the "localLabelSep" separator) 
+     *   for each language supported
+     */
+    localIndexs:{
+            "en": 0,
+            "it": 1,
+            "fr": 2,
+            "de": 3
+    },
+    
     /** private: method[constructor]
      *  :arg config: ``Object``
      */
@@ -107,7 +136,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                 if (record === target.selectedLayer) {
                     node.on("rendernode", function() {
                         node.select();
-                        
+
                         // ///////////////////////////////////////////////////////////////////////
                         // to check the group at startup (if the layer node should be checked) 
                         // or when a layer is added.
@@ -144,16 +173,46 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
         });
         
         var groupConfig, defaultGroup = this.defaultGroup;
+        
+      
+        /*
+         * The locIndex is obtained from the localIndexs, with the current local code, 
+         * which contains the index position for each language supported
+         **/
+        var locIndex= this.localIndexs[GeoExt.Lang.locale];
+        var groupNames;
         for (var group in this.groups) {
-            groupConfig = typeof this.groups[group] == "string" ?
-                {title: this.groups[group]} : this.groups[group];
+            
+            /*
+             * The groupNames array, obtained from the group name 
+             * splitted with the "localLabelSep" separator, contains 
+             * the group name for each language supported
+             **/
+            if(typeof this.groups[group] === "string"){
+                groupNames=this.groups[group].split(this.localLabelSep);
+                groupConfig= new Object();
+            }else{
+                if(typeof this.groups[group].title === "string") {
+                groupNames=this.groups[group].title.split(this.localLabelSep);
+                } else {
+                    groupNames=this.groups[group].title;
+                }
+                groupConfig= this.groups[group];
+            }
+            /*
+             * If the language is not supported, the group name 
+             * is the first contained in groupNames
+             **/
+            if(groupNames.length > 0){
+                groupConfig.title= groupNames[locIndex] ? groupNames[locIndex] : groupNames[0];
+            }
             
             //
             // Managing withe spaces in strings
             // 
             var text = groupConfig.title;
-            if(groupConfig.title.indexOf("_") != -1)        
-                text = text.replace(/_+/g, " ");  
+            /*if(groupConfig.title.indexOf("_") != -1)        
+                text = text.replace(/_+/g, " ");   */
                 
             treeRoot.appendChild(new GeoExt.tree.LayerContainer({
                 text: text,
@@ -208,6 +267,8 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
             xtype: "treepanel",
             root: treeRoot,
             rootVisible: false,
+            localIndexs: this.localIndexs,
+            localLabelSep: this.localLabelSep,
             border: false,
             enableDD: true,
             selModel: new Ext.tree.DefaultSelectionModel({
@@ -424,3 +485,4 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
 });
 
 Ext.preg(gxp.plugins.LayerTree.prototype.ptype, gxp.plugins.LayerTree);
+

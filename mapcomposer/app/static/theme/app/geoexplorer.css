@@ -50,7 +50,7 @@ font-family: tahoma, arial, helvetica, sans-serif;
 }
 
 .x-btn .icon-geoexplorer {
-    background-image: url(img/geoexplorer.png);
+    background-image: url(img/mapstore-logo.png);
 }
 
 .x-btn .icon-about {
@@ -77,6 +77,14 @@ font-family: tahoma, arial, helvetica, sans-serif;
     background-image: url(img/geosilk/vector_delete.png);
 }
 
+.x-btn .icon-removewfsmarkers {
+    background-image: url(img/geosilk/tag_blue_delete.png);
+}
+
+.x-btn .icon-removenominatimmarkers {
+    background-image: url(img/geosilk/world_delete.png);
+}
+
 .x-btn .icon-getfeatureinfo {
     background-image: url(img/silk/information.png);
 }
@@ -84,7 +92,6 @@ font-family: tahoma, arial, helvetica, sans-serif;
 .x-btn .icon-fullscreen {
     background-image: url(img/silk/application_view_gallery.png);
 }
-
 
 .x-btn .icon-save {
     background-image: url(img/geosilk/map_save.png);
@@ -154,6 +161,11 @@ font-family: tahoma, arial, helvetica, sans-serif;
     background-image: url(img/poweredby.png);
     width:150px !important;
 }
+
+.x-btn .x-icon-addimage {
+     background-image: url(img/silk/image_add.png);
+}
+
 
 /* Pan- and Zoom- Panel Styles*/
 
@@ -230,6 +242,28 @@ font-family: tahoma, arial, helvetica, sans-serif;
 .gx-layer-visibility {
     background-image: url(img/silk/eye.png);
 }
+.gx-cursor{
+    background-image: url(img/silk/cursor.png);
+}
+
+.gx-map-go{
+    background-image: url(img/silk/map_go.png);
+}
+
+.gx-map-edit{
+    background-image: url(img/silk/map_edit.png);
+}
+.gx-map-add{
+    background-image: url(img/silk/map_add.png);
+}
+.gx-help{
+   background-image: url(img/silk/help.png);
+}
+.x-action-col-cell  .reset{
+	background-image: url(img/silk/delete.png) !important;
+	width:16px;
+	height:16px;
+}
 
 .gx-field-label {
     font-weight: bold;
@@ -253,6 +287,14 @@ font-family: tahoma, arial, helvetica, sans-serif;
     margin-left: 2px;
 }
 
+div.geosolutions_logo {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    text-align: center;
+    height: 61px;
+    background: url('img/GeoSolutions_logo.png') center  no-repeat;
+}
 
 /* TODO: Remove this if GetFeatureInfo is changed from text/html */
 
@@ -284,7 +326,16 @@ table.featureInfo caption{
 }
 
 .olControlLoadingPanel {
-     background-image: url(img/loader5.gif);
+     background-image: url(img/ajax-loader.gif);
      background-position: center;
      background-repeat: no-repeat;
+}
+
+.loading-iframe {
+	width: 100%;
+	height: 100%;
+	background: transparent url(img/ajax-loader.gif) center no-repeat;
+	position: absolute;
+	top: 0;
+	left: 0;
 }

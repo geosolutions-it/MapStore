@@ -1,10 +1,10 @@
 /**
- * Copyright (c) 2008-2011 The Open Planning Project
- * 
- * Published under the BSD license.
- * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
- * of the license.
- */
+* Copyright (c) 2008-2011 The Open Planning Project
+*
+* Published under the GPL license.
+* See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
+* of the license.
+*/
 
 /**
  * @requires plugins/Tool.js
@@ -72,6 +72,8 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
     nonePrintableText: "None of your current map layers can be printed",
 
     notPrintableLayersText: "Following layers are not supported for print:",
+    
+    notPrintableMarkersText: "Please disable these layers and remove all markers before print",
     
     /** api: config[previewText]
      *  ``String``
@@ -146,12 +148,16 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                     var notSupported = layers.notSupported;
                     
                     if (supported.length > 0) {
-						var notIgnorable = getNotIgnorable(notSupported,this.ignoreLayers);
-                        if( notIgnorable.length >0 ){
+
+						var notIgnorable = getNotIgnorable(notSupported, this.ignoreLayers);
+                        if( notIgnorable.length > 0 ){
+
                             Ext.Msg.alert(
                                 this.notAllNotPrintableText,
-                                this.notPrintableLayersText + '<br />' + notIgnorable.join(',')
+                                this.notPrintableLayersText + '<br />' + notIgnorable.join(',') +
+                                ( notIgnorable.indexOf('Marker') != -1 ? '<br />'+ this.notPrintableMarkersText : '')
                             );
+                            
                         } else {                    
 							createPrintWindow.call(this);
 							showPrintWindow.call(this);

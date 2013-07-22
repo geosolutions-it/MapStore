@@ -1,10 +1,10 @@
 /**
- * Copyright (c) 2008-2011 The Open Planning Project
- * 
- * Published under the BSD license.
- * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
- * of the license.
- */
+* Copyright (c) 2008-2011 The Open Planning Project
+*
+* Published under the GPL license.
+* See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
+* of the license.
+*/
 
 /** api: (define)
  *  module = gxp.menu
@@ -64,11 +64,6 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
      */
     onLayerAdd: function() {
         this.removeAll();
-        // this.getEl().addClass("gxp-layer-menu");
-        // this.getEl().applyStyles({
-        //     width: '',
-        //     height: ''
-        // });
         this.add(
             {
                 iconCls: "gxp-layer-visibility",
@@ -77,29 +72,90 @@ gxp.menu.LayerMenu = Ext.extend(Ext.menu.Menu, {
             },
             "-"
         );
+        
+		var layerGroupsNode = {},	//layers menu group title
+			layerGroups = {};	//for grouping layers menu
+		
         this.layers.each(function(record) {
-            var layer = record.getLayer();
+
+		    var group = record.get("group")==undefined ? 'Default' : record.get("group"),
+		    	layer = record.getLayer();
+            
             if(layer.displayInLayerSwitcher) {
+
                 var item = new Ext.menu.CheckItem({
+                	hideOnClick: false,
                     text: record.get("title"),
                     checked: record.getLayer().getVisibility(),
-                    group: record.get("group") != 'background' ? undefined : 'background',
+					group: record.get("group") != 'background' ? undefined : 'background',
+					groupname: group,
+					layer: layer,
+					style: record.get("group") != 'background' ? {marginLeft:'22px', border:'none'} : {border:'none'},
                     listeners: {
                         checkchange: function(item, checked) {
-                            record.getLayer().setVisibility(checked);
+                        
+                            item.layer.setVisibility(checked);
+							var gcheck=false;
+                            for(var g in layerGroups[item.groupname])//check all items status
+                            {
+                            	if(layerGroups[item.groupname][g].checked) {
+                            		gcheck = true;
+                            		break;
+                            	}
+                            }
+                            
+                            try {
+                           		layerGroupsNode[item.groupname].setChecked(gcheck);
+                            }catch(e){}
                         }
                     }
                 });
-                if (this.items.getCount() > 2) {
-                    this.insert(2, item);
-                } else {
-                    this.add(item);
-                }
+                
+				if(!layerGroups[group])
+					layerGroups[group]= [];
+
+				layerGroups[group].push( item );
             }
-        }, this);
-        
+        }, this);	//end each
+
+        for(var g in layerGroups)	//fill menu
+        {
+			if(g != 'background')
+			{
+				var gmenu = new Ext.menu.CheckItem({
+					hideOnClick: false,
+					text: g,
+					checked: true,
+					layers: layerGroups[g],
+					listeners: {
+						click: function(item) {
+						
+							var checked = !item.checked;
+							item.setChecked(checked);
+
+							var glayers = item.layers;
+
+							for(var l in glayers)
+							{
+								try {
+									glayers[l].layer.setVisibility(checked);
+									glayers[l].setChecked(checked);
+								}catch(e){}
+							}
+							
+							return false;
+						}
+					}
+				});
+				layerGroupsNode[g]= gmenu;
+				this.add( gmenu );
+			}
+			this.add( layerGroups[g] );
+			this.addSeparator();
+        }
     }
     
 });
 
 Ext.reg('gxp_layermenu', gxp.menu.LayerMenu);
+

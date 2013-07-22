@@ -4,28 +4,27 @@
  * Settings of the test environment  
  */
 
-var grid;
-var msmPanel;
-var successFlag;
-var auth = 'Basic ' + Base64.encode('admin:admin');
-//Counts the resources of geostore before the tests
-var initTotalCount;        
-//Counts the resources of geostore after the tests
-var finalTotalCount;
+var grid,
+	msmPanel,
+	successFlag,
+	auth = 'Basic ' + Base64.encode('admin:admin');
 
-Ext.onReady(function(){
+var initTotalCount,  //Counts the resources of geostore before the tests
+	finalTotalCount; //Counts the resources of geostore after the tests
+
+Ext.onReady(function() {
     
     Ext.QuickTips.init();
     
-    var langData = [['en', 'English']];
+    var langData = [['en', 'English']],
+    	query = location.search;
 
-    var query = location.search;        
     if(query && query.substr(0,1) === "?"){
         query = query.substring(1);
     }
     
-    var url = Ext.urlDecode(query);     
-    var code = url.locale;   
+    var url = Ext.urlDecode(query),
+    	code = url.locale;
 
     if(!code){
         code = "en";
@@ -44,7 +43,7 @@ Ext.onReady(function(){
     }            
     
     if (GeoExt.Lang) {
-            GeoExt.Lang.set(code);
+		GeoExt.Lang.set(code);
     }
     
     msmPanel = new Ext.Panel({
@@ -53,19 +52,19 @@ Ext.onReady(function(){
         config: config,
         items: grid,
         lang: code,
-        width:1100,
-        height:500
+        width: 1100,
+        height: 500
     });
     
     grid = new MSMGridPanel({
         renderTo: "topic-grid",
-        layout:'fit',
+        layout: 'fit',
         iconCls: "server_map",
         border : true,
         //lang: lang,
-        config: this.config
+        config: config
     });
-    
+   
 });
 
 /*
@@ -73,7 +72,7 @@ Ext.onReady(function(){
  */
 function initGrid(t) {
     t.plan(1);
-    t.delay_call(config.msmWait, function () {
+    t.delay_call(config.msmTimeout, function () {
         if(grid.id = 'id_geostore_grid'){
             t.ok(true, "grid initialized");
         }else{
@@ -87,7 +86,7 @@ function initGrid(t) {
  */
 function initPanel(t) {
     t.plan(1);
-    t.delay_call(config.msmWait, function () {
+    t.delay_call(config.msmTimeout, function () {
         if(msmPanel.id = 'mapManagerPanel'){
             t.ok(true, "panel initialized");
         }else{
@@ -101,7 +100,7 @@ function initPanel(t) {
  */
 function initStore(t) {
     t.plan(1);
-    t.delay_call(config.msmWait, function () {
+    t.delay_call(config.msmTimeout, function () {
         if(grid.store.storeId = 'id_geostore' && grid.store.getTotalCount()){
             t.ok(true, "store initialized");
         }else{
@@ -228,7 +227,7 @@ function addResource(t) {
     setupTest();
     t.plan(1);
     addResources(auth, successFlag);
-    t.delay_call(config.msmWait, function () {
+    t.delay_call(config.msmTimeout, function () {
         t.eq(successFlag, true, "Server works");
     });
 }

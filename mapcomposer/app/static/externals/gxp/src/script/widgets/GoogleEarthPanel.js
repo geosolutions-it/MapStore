@@ -1,10 +1,10 @@
 /**
- * Copyright (c) 2008-2011 The Open Planning Project
- * 
- * Published under the BSD license.
- * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
- * of the license.
- */
+* Copyright (c) 2008-2011 The Open Planning Project
+*
+* Published under the GPL license.
+* See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
+* of the license.
+*/
 
 /** api: (define)
  *  module = gxp
@@ -79,7 +79,12 @@ gxp.GoogleEarthPanel = Ext.extend(Ext.Panel, {
              *  will receive two arguments: this plugin and the failure code
              *  (see the Google Earth API docs for details on the failure codes).
              */
-            "pluginfailure"
+            "pluginfailure",
+            /** api: event[pluginready]
+             *  Fires when the instance is ready.  Listeners will receive one
+             *  argument: the GEPlugin instance.
+             */
+            "pluginready"            
         );
 
         gxp.GoogleEarthPanel.superclass.initComponent.call(this);
@@ -160,6 +165,8 @@ gxp.GoogleEarthPanel = Ext.extend(Ext.Panel, {
         
         this.layers.on("add", this.updateLayers, this);
         
+        this.fireEvent("pluginready", this.earth);
+                
         // Set up events. Notice global google namespace.
         // google.earth.addEventListener(this.earth.getView(), 
             // "viewchangeend", 
@@ -194,26 +201,34 @@ gxp.GoogleEarthPanel = Ext.extend(Ext.Panel, {
     addLayer: function(layer, order) {
         var lyr = layer.getLayer();
         var ows = (lyr && lyr.url);
+        
         if (this.earth && lyr instanceof OpenLayers.Layer.WMS && typeof ows == "string") {
             var add = this.fireEvent("beforeadd", layer);
             if (add !== false) {
                 var name = lyr.id;
                 var networkLink;
+                
                 if (this.layerCache[name]) {
                     networkLink = this.layerCache[name];
                 } else {
                     var link = this.earth.createLink('kl_' + name);
-                    ows = ows.replace(/\?.*/, '');
+                    
+                    //ows = ows.replace(/\?.*/, '');
+                    ows = ows.replace(/ows\?.*/, 'wms');
+                    
                     var params = lyr.params;
+                    
                     var kmlPath = '/kml?mode=refresh&layers=' + params.LAYERS +
                         "&styles=" + params.STYLES;
-                    link.setHref(ows + kmlPath);
+                    var khref = ows + kmlPath;
+                    
+                    link.setHref(khref);
                     networkLink = this.earth.createNetworkLink('nl_' + name);
                     networkLink.setName(name);
                     networkLink.set(link, false, false);
                     this.layerCache[name] = networkLink;
-                }
-
+               	}
+               	
                 networkLink.setVisibility(lyr.getVisibility());
 
                 if (order !== undefined && order < this.earth.getFeatures().getChildNodes().getLength()) {

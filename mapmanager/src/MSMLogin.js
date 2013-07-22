@@ -211,6 +211,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
     logout: function() {
 	    // invalidate token
 	    this.token = null;
+	    this.userid = null;
 	    this.username = null;
         this.grid.store.proxy.getConnection().defaultHeaders = {'Accept': 'application/json'};
         this.grid.getBottomToolbar().bindStore(this.grid.store, true);
@@ -258,20 +259,24 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
         var auth= 'Basic ' + Base64.encode(user+':'+pass);
         Ext.Ajax.request({
             method: 'GET',
-            url: config.baseUrl + '/geostore/rest/users/user/details/',
+            url: (config.baseUrl || 'http://' + window.location.host ) + '/geostore/rest/users/user/details/',
             scope: this,
             headers: {
                 'Accept': 'application/json',
                 'Authorization' : auth
             },
             success: function(response, form, action) {
+            
                 this.win.hide();
                 this.getForm().reset();
+                
                 var user = Ext.util.JSON.decode(response.responseText);
+                
                 this.showLogout(user.User.name);
 				// save auth info
 				this.token = auth;
-				if (user.User){
+				if (user.User) {
+					this.userid = user.User.id;//TODO geostore don't return user id! in details request
 					this.username = user.User.name;
 					this.role = user.User.role;
 				}
@@ -281,10 +286,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 this.grid.getBottomToolbar().doRefresh();
                 this.grid.plugins.collapseAll();
                 this.grid.getBottomToolbar().openMapComposer.enable();
-				if ( this.role === 'ADMIN' ){
 					this.grid.openUserManagerButton.enable();
-				}
-				
             },
             failure: function(response, form, action) {
                 Ext.MessageBox.show({
