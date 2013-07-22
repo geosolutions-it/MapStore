@@ -335,20 +335,30 @@ GeoExt.Lang.add("en", {
         attributeEnablementMsg: "Invalid search Type! To use this you have to select 'Feature' type and to select a vector layer before.",
         searchType: "Base Settings",
         typeLabel: "Type",
-        featureLabel: "Max Features",
+        featureLabel: "Max Features"     
+    },   
+
+    "gxp.plugins.BBOXQueryForm.prototype": {
         selectionMethodFieldSetComboTitle: "Set Selection Method",
         comboSelectionMethodLabel: "Selection",
         comboPolygonSelection: 'Polygon',
         comboCircleSelection: 'Circle',
         comboBBOXSelection: 'BBOX',
-		errorBBOXText: "BBOX invalid",
+		errorBBOXText: "The selected BBOX is invalid!",
         errorDrawPolygonText: "You have to draw a Polygon",
         errorDrawCircleText: "You have to draw a Circle",     
-        errorDrawTitle: "Query error"       
-    },
+        errorDrawTitle: "Query error",
+	    errorBufferTitle: "Buffer Error",
+		errorBufferText: "The selected buffer is invalid!"
+	},
+	
+    "gxp.widgets.form.BufferFieldset.prototype": {
+		bufferFieldLabel: "Buffer Range",
+		bufferFieldSetTitle: "Buffer",
+		coordinatePickerLabel: "Coordinates"
+	},
     
-    
-     "gxp.form.BBOXFieldset.prototype":{
+    "gxp.form.BBOXFieldset.prototype":{
         northLabel:"North",
         westLabel:"West",
         eastLabel:"East",

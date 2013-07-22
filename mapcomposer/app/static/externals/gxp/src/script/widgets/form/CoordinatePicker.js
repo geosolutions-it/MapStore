@@ -89,10 +89,12 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
     
     initComponent:function(){
         
-        map= this.map;
+        map = this.map;
+		
         var compositeField = this;
+		
         //create the click control
-        var ClickControl= OpenLayers.Class(OpenLayers.Control, {                
+        var ClickControl = OpenLayers.Class(OpenLayers.Control, {                
             defaultHandlerOptions: {
                 'single': true,
                 'double': false,
@@ -116,14 +118,12 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
             }, 
             trigger: this.clickHandler,
             map:map
-        });
+        });       
         
-        
-        
-         this.selectLonLat = new ClickControl();
-         map.addControl(this.selectLonLat);
+        this.selectLonLat = new ClickControl();
+        map.addControl(this.selectLonLat);
          
-         this.items= [
+        this.items= [
                 {
                     xtype     : 'numberfield',
                     emptyText : this.latitudeEmptyText,
@@ -179,8 +179,9 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
                 }
             ]
         
-         return  gxp.widgets.form.CoordinatePicker.superclass.initComponent.apply(this, arguments);
+        return  gxp.widgets.form.CoordinatePicker.superclass.initComponent.apply(this, arguments);
     },
+	
 	/** event handler for the button click */
     clickHandler: function(e){
         //get lon lat
@@ -189,24 +190,24 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
         //update point on the map
         this.updateMapPoint(lonlat);
         //
-        lonlat.transform(map.getProjectionObject(),new OpenLayers.Projection(this.outputSRS) );
+        lonlat.transform(map.getProjectionObject(),new OpenLayers.Projection(this.outputSRS));
         this.latitudeField.setValue(lonlat.lat);
         this.longitudeField.setValue(lonlat.lon);
-		this.clickToggle.toggle();
-        
-       
+		this.clickToggle.toggle();      
     },
+	
 	/** gets values from the fields and drow it on the map */
     updatePoint: function(){
         var lat = this.latitudeField.getValue();
-      var lon = this.longitudeField.getValue();
-      if( lon && lat ){
-        //add point
-        var lonlat = new OpenLayers.LonLat(lon,lat);
-        lonlat.transform(new OpenLayers.Projection(this.outputSRS),map.getProjectionObject() );
-        this.updateMapPoint(lonlat);
-      }
+		var lon = this.longitudeField.getValue();
+		if( lon && lat ){
+			//add point
+			var lonlat = new OpenLayers.LonLat(lon,lat);
+			lonlat.transform(new OpenLayers.Projection(this.outputSRS),map.getProjectionObject() );
+			this.updateMapPoint(lonlat);
+		}
     },
+	
 	resetPoint:function(){
 		if(this.selectStyle){
 			var layer = map.getLayersByName(this.selectLayerName)[0];
@@ -214,24 +215,34 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
                 map.removeLayer(layer);
             }
 		}
+		
+		this.latitudeField.reset();
+        this.longitudeField.reset();
+		
+		this.fireEvent("reset");
 	},
+	
 	/** private point update */
     updateMapPoint:function(lonlat){
         if(this.selectStyle){
             this.resetPoint();
             var style = new OpenLayers.Style(this.selectStyle);
-            layer = new OpenLayers.Layer.Vector(this.selectLayerName,{
+            this.layer = new OpenLayers.Layer.Vector(this.selectLayerName,{
                 styleMap: style
                 
             });
             var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
             var pointFeature = new OpenLayers.Feature.Vector(point);
-            layer.addFeatures([pointFeature]);
-            layer.displayInLayerSwitcher = this.displayInLayerSwitcher;
-            map.addLayer(layer);
-        
-        }
-    
-    }
+            this.layer.addFeatures([pointFeature]);
+            this.layer.displayInLayerSwitcher = this.displayInLayerSwitcher;
+            map.addLayer(this.layer);  
+
+			this.fireEvent("update");
+        }    
+    },
+	 
+	getCoordinate: function(){
+		return [this.longitudeField.getValue(), this.latitudeField.getValue()];
+	}
 });
 Ext.reg(gxp.widgets.form.CoordinatePicker.prototype.xtype,gxp.widgets.form.CoordinatePicker);         
