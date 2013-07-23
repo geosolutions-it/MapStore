@@ -258,12 +258,18 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 				{
 					if( config.viewerTools[t]['ptype'] && config.viewerTools[t]['ptype'] == config.customTools[c]['ptype'] ) {	//plugin already defined
 						toolIsDefined = true;
+                        if(config.customTools[c].forceMultiple){
+                            config.viewerTools.push(config.customTools[c])
+                        }else{
+                            config.viewerTools[t]=config.customTools[c];
+                        }
 						break;
 					}
 				}
 			
-				if(!toolIsDefined)
-					config.viewerTools.push(config.customTools[c]);
+				if(!toolIsDefined){
+                    config.viewerTools.push(config.customTools[c])
+                }
 			}
 		} 
         
