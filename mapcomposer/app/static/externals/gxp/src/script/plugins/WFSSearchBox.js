@@ -81,6 +81,10 @@ Ext.namespace("gxp.plugins");
 	*/
     markerFadeoutDelay: 3,   
     
+    /** api: add separator at the start
+	*  allowed values: false (null), 'start','end'
+	*/
+    separator:false,
     init: function(target) {
 
         var combo = new gxp.form.WFSSearchComboBox(Ext.apply({
@@ -120,7 +124,21 @@ Ext.namespace("gxp.plugins");
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-    	var controls = (this.markerFadeoutEnable===false) ? ['-', this.removeMarkerBtn, this.combo] : ['-', this.combo];
+        
+    	var controls = (!this.markerFadeoutEnable && !this.noButton) ? [ this.removeMarkerBtn, this.combo] : [this.combo];
+        if(this.separator){
+            switch(this.separator){
+                case 'start':
+                    controls.unshift("-");
+                    break;
+                case'end' :
+                    controls.push("-");
+                default:
+                    break;
+            
+            }
+        }
+        
         return gxp.plugins.WFSSearchBox.superclass.addOutput.call(this, controls);
     },
     

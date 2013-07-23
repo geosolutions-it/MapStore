@@ -101,7 +101,12 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 	useTabPanel: false,
     
     noDataMsg: "No data returned from the server",
-    
+    /** api: config[regex]
+     *  ``regex``
+     *  Use a regex to filter if some result is returned in html response.
+     */
+    regex:"\\s*$",
+
     /** api: config[vendorParams]
      *  ``Object``
      *  Optional object with properties to be serialized as vendor specific
@@ -249,7 +254,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 							// to return noDataMsg (no features)
 							// ////////////////////////////////////////////////////
                             var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
-                            if (match && !match[1].match(/^\s*$/)) {
+                            if (match && match[1].match(this.regex)) {
                                 atLeastOneResponse = true;
                                 this.displayPopup(
                                     evt, x.get("title") || x.get("name"), match[1], function() {
@@ -344,6 +349,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 			}
 			var items = this.useTabPanel ? [{
 				xtype: 'tabpanel',
+                enableTabScroll:true,
 				activeTab: 0,
 				items: [item]
 			}] : [item];
@@ -440,7 +446,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 					// to return noDataMsg (no features)
 					// ////////////////////////////////////////////////////
 					var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
-					if (match && !match[1].match(/^\s*$/)) {
+					if (match && match[1].match(this.regex)) {
 						tooltip = new GeoExt.Popup({
 							
 							map: this.target.mapPanel,

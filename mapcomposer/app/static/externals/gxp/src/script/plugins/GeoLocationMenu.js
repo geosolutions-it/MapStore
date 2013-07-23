@@ -290,6 +290,7 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
      */
     constructor: function(config) {
 	    if(config.geolocate || config.enableDefaultGeolocate === true){
+            Ext.apply(this.geolocate,config.geolocate);
 			this.enableGeoLocateTool = true;
 		}
         
@@ -477,7 +478,7 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
                     this.target.mapPanel.getEl().unmask();
                     Ext.Msg.show({
 						title : "Geolocation",
-						msg : this.errorMsg
+						msg : this.geocoder.geolocateErrorMsg || this.errorMsg
 					});
                 },
                 scope: this
