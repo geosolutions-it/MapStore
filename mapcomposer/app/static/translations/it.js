@@ -390,7 +390,8 @@ GeoExt.Lang.add("it", {
 	"gxp.widgets.form.BufferFieldset.prototype": {
 		bufferFieldLabel: "Intervallo del Buffer",
 		bufferFieldSetTitle: "Buffer",
-		coordinatePickerLabel: "Coordinate"
+		coordinatePickerLabel: "Coordinate",
+		draweBufferTooltip: "Disegna il Buffer"
 	},
 	
     "gxp.form.BBOXFieldset.prototype":{
