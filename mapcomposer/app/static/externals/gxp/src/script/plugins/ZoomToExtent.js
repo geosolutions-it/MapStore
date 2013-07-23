@@ -128,8 +128,7 @@ gxp.plugins.ZoomToExtent = Ext.extend(gxp.plugins.Tool, {
                         );
                     }
                     map.zoomToExtent(extent, this.closest);
-                }				
-				
+                }					
             },
             scope: this
         }]);

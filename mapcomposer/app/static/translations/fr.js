@@ -339,19 +339,28 @@ GeoExt.Lang.add("fr", {
         attributeEnablementMsg: "Invalid search Type! To use this you have to select 'Feature' type and to select a vector layer before.",
         searchType: "Réglages de base",
         typeLabel: "Type",
-        featureLabel: "Max Features",
-        selectionMethodFieldSetComboTitle: "Définir la méthode de sélection",
-        comboSelectionMethodLabel: "Sélection",
-        comboPolygonSelection: 'Polygone',
-        comboCircleSelection: 'Cercle',
-        comboBBOXSelection: 'BBOX',
-		errorBBOXText: "BBOX invalide",
-        errorDrawPolygonText: "Vous devez dessiner un polygone",
-        errorDrawCircleText: "Vous devez dessiner un cercle",     
-        errorDrawTitle: "Erreur Query"    
+        featureLabel: "Max Features" 
     },
     
-    
+    "gxp.plugins.BBOXQueryForm.prototype": {
+        selectionMethodFieldSetComboTitle: "Méthode de sélection",
+        comboSelectionMethodLabel: "Sélection",
+        comboPolygonSelection: 'Polygon',
+        comboCircleSelection: 'Arrondissez',
+        comboBBOXSelection: 'BBOX',
+		errorBBOXText: "Le BBOX choisi n'est pas valide!",
+        errorDrawPolygonText: "Vous devez dessiner le polygone",
+        errorDrawCircleText: "Vous devez dessiner le cercle",     
+        errorDrawTitle: "Demande erreur",
+		errorBufferTitle: "Le tampon est incorrecte",
+		errorBufferText: "Le tampon sélectionné n'est pas valide!"
+    },
+	
+    "gxp.widgets.form.BufferFieldset.prototype": {
+		bufferFieldLabel: "Gamme de tampon",
+		bufferFieldSetTitle: "Tampon",
+		coordinatePickerLabel: "Coordonnées"
+	},
     
     "gxp.form.BBOXFieldset.prototype":{
         northLabel:"Nord",

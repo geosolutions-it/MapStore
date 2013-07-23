@@ -370,20 +370,30 @@ GeoExt.Lang.add("it", {
         attributeEnablementMsg: "Tipo di ricerca invalido! Si deve prima selezionare il tipo 'Feature' e il layer vettoriale.",
         searchType: "Impostazioni di base",
         typeLabel: "Tipo",
-        featureLabel: "Max Features", 
-        selectionMethodFieldSetComboTitle: "Impostare Metodo di selezione",
+        featureLabel: "Max Features"
+    },
+    
+    "gxp.plugins.BBOXQueryForm.prototype": {
+        selectionMethodFieldSetComboTitle: "Metodo di Selezione",
         comboSelectionMethodLabel: "Selezione",
         comboPolygonSelection: 'Poligono',
         comboCircleSelection: 'Cerchio',
         comboBBOXSelection: 'BBOX',
-		errorBBOXText: "BBOX Invalido",
-        errorDrawPolygonText: "Devi disegnare un Poligono",
-        errorDrawCircleText: "Devi disegnare un Cerchio",     
-        errorDrawTitle: "Errore nell'interrogazione"  
+		errorBBOXText: "Il BBOX selezionato è invalido!",
+        errorDrawPolygonText: "Si deve disegnare il Poligono",
+        errorDrawCircleText: "Si deve disegnare il Cerchio",     
+        errorDrawTitle: "Errore nella richiesta",
+		errorBufferTitle: "Il Buffer è errato",
+		errorBufferText: "Il buffer selezionato è invalido!"
     },
-    
-    
-     "gxp.form.BBOXFieldset.prototype":{
+	
+	"gxp.widgets.form.BufferFieldset.prototype": {
+		bufferFieldLabel: "Intervallo del Buffer",
+		bufferFieldSetTitle: "Buffer",
+		coordinatePickerLabel: "Coordinate"
+	},
+	
+    "gxp.form.BBOXFieldset.prototype":{
         northLabel:"Nord",
         westLabel:"Ovest",
         eastLabel:"Est",

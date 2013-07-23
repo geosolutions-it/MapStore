@@ -983,13 +983,8 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                 if (!condition) {
                     // choose a page on the top left
                     var extent = this.getPagingExtent("getExtent");
-                    //maxExtent = this.getPagingExtent("getMaxExtent");
+                    maxExtent = this.getPagingExtent("getMaxExtent");
 					
-				    if(this.useDefinedExtent){
-						maxExtent = OpenLayers.Bounds.fromArray(this.target.map.maxExtent);
-					}else{
-						maxExtent = this.getPagingExtent("getMaxExtent");
-					}
                     condition = {
                         lonLat: new OpenLayers.LonLat(
                             Math.max(maxExtent.left, extent.left),
@@ -1003,6 +998,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                     condition.index = this.pages.length - 1;
                     condition.next = this.pages[0];
                 }
+				
                 this.page = null;
                 if (!this.pages) {
                     var layer = this.layerRecord.getLayer();
