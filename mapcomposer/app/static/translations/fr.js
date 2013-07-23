@@ -359,7 +359,8 @@ GeoExt.Lang.add("fr", {
     "gxp.widgets.form.BufferFieldset.prototype": {
 		bufferFieldLabel: "Gamme de tampon",
 		bufferFieldSetTitle: "Tampon",
-		coordinatePickerLabel: "Coordonnées"
+		coordinatePickerLabel: "Coordonnées",
+		draweBufferTooltip: "Dessinez le tampon"
 	},
     
     "gxp.form.BBOXFieldset.prototype":{

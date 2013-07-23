@@ -396,10 +396,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             }, {
                 text: this.queryActionText,
                 iconCls: "gxp-icon-find",
-                handler: function() {
-				    
-					me.setExtentBeforeQuery();
-					
+                handler: function() {					
                     var methodSelection = this.output[0].outputType.getValue();
                     var filters = new Array();
 					if(queryForm.spatialFieldset.hidden === false){
@@ -544,6 +541,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                 queryForm.spatialFieldset.show();
 				
 				queryForm.bufferFieldset.disable();
+				queryForm.bufferFieldset.resetPointSelection();
 				
                 queryForm.attributeFieldset.expand();			
 				methodSelection.setValue('bbox');
@@ -603,37 +601,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         });
         
         return queryForm;
-    },
-
-	setExtentBeforeQuery: function(){
-		var map = this.target.mapPanel.map;
-		var layer, extended;
-		for (var i=0, len=map.layers.length; i<len; ++i) {
-			layer = map.layers[i];
-			if (layer.getVisibility()) {
-				extended = layer.restrictedExtent || layer.maxExtent;
-				extent = extended.clone();
-			}
-		}
-		
-		if (extent) {
-			// respect map properties
-			var restricted = map.restrictedExtent || map.maxExtent;
-			if (restricted) {
-				extent = new OpenLayers.Bounds(
-					Math.max(extent.left, restricted.left),
-					Math.max(extent.bottom, restricted.bottom),
-					Math.min(extent.right, restricted.right),
-					Math.min(extent.top, restricted.top)
-				);
-			}
-			
-			var currentExtent = map.getExtent();
-			if(!extent.containsBounds(currentExtent)){
-				map.zoomToExtent(extent, true);
-			}			
-		}	
-	}
+    }
 });
 
 Ext.preg(gxp.plugins.BBOXQueryForm.prototype.ptype, gxp.plugins.BBOXQueryForm);

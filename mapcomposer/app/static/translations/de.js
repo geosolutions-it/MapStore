@@ -381,14 +381,15 @@ GeoExt.Lang.add("de", {
         errorDrawPolygonText: "Sie müssen das Polygon zeichnen",
         errorDrawCircleText: "Sie müssen den Kreis ziehen",     
         errorDrawTitle: "Antrag Fehler",
-		errorBufferTitle: "Der Puffer ist falsch",
-		errorBufferText: "Der ausgewählte Puffer ist ungültig!"
+		errorBufferTitle: "Der Buffer ist falsch",
+		errorBufferText: "Der ausgewählte Buffer ist ungültig!"
     },
 	
 	"gxp.widgets.form.BufferFieldset.prototype": {
-		bufferFieldLabel: "Reichweite von Puffer",
-		bufferFieldSetTitle: "Puffer",
-		coordinatePickerLabel: "Koordinaten"
+		bufferFieldLabel: "Reichweite von Buffer",
+		bufferFieldSetTitle: "Buffer",
+		coordinatePickerLabel: "Koordinaten",
+		draweBufferTooltip: "Zeichnen Sie die Buffer"
 	},
 	
     "gxp.form.BBOXFieldset.prototype":{
