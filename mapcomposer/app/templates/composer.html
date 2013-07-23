@@ -61,7 +61,7 @@
         Ext.onReady(function() {
           setTimeout(function(){
             Ext.get('loading').remove();
-            Ext.get('loading-mask').fadeOut({remove:true});
+            Ext.get('loading-mask').fadeOut({remove:true,duration:1});
           }, 2000);
         });
     
@@ -127,8 +127,7 @@
 		
 		
 		
-			OpenLayers.IMAGE_RELOAD_ATTEMPTS = 2;
-			OpenLayers.Util.onImageLoadErrorColor = "transparent";
+			//OpenLayers.Util.onImageLoadErrorColor = "transparent";
             Ext.BLANK_IMAGE_URL = (function() {
                     if (Ext.isIE8 || Ext.isGecko || Ext.isOpera || Ext.isChrome) {
                         return "data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
@@ -136,9 +135,7 @@
                         return "theme/app/img/blank.gif";
                     }
             })();
-            if(Ext.isChrome){
-                OpenLayers.Tile.Image.useBlankTile=false;
-            };
+            
             OpenLayers.ImgPath = "externals/openlayers/theme/default/img/";
 			
 			// ////////////////////////////////
