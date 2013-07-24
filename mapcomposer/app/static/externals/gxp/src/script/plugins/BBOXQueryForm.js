@@ -200,7 +200,8 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     displayField: 'label',
                     valueField:'value',
                     value:'bbox',
-                    readOnly:false,
+					editable: false,
+                    readOnly: false,
                     store: new Ext.data.JsonStore({
                         fields:[
                                 {name:'name', dataIndex:'name'},
@@ -345,8 +346,11 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 							    queryForm.spatialFieldset.hide();
                                 queryForm.spatialFieldset.disable();
 								
-                                queryForm.bufferFieldset.enable();								
-                                //me.bufferFieldSet.resetPointSelection();
+                                queryForm.bufferFieldset.enable();	
+								
+								if(Ext.isIE){
+									queryForm.bufferFieldset.doLayout();
+								}
 							}                           
                         },                        
                         scope: this                        
