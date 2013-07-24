@@ -163,7 +163,7 @@
 			 "target":"paneltbar",
 			 "index":4
 		  }
-	   },,{
+	   },{
             "ptype": "gxp_wmsgetfeatureinfo_menu", 
             "toggleGroup": "toolGroup",
             "regex":"<table[^>]*>([\\s\\S]*)<\\/table>",
