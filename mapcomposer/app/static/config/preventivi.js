@@ -156,12 +156,14 @@
 		  },
 		  "printService":"http://webgis.acque.net/geoserver/pdf/",
 		  "legendPanelId":"legendPanel",
+          "defaultResolutionIndex":1,
+          "defaultLayoutIndex":1,
 		  "ignoreLayers":["WFSSearch","Marker","WFSsearchMarker","GeoRefMarker"],
 		  "actionTarget":{
 			 "target":"paneltbar",
 			 "index":4
 		  }
-	   },{
+	   },,{
             "ptype": "gxp_wmsgetfeatureinfo_menu", 
             "toggleGroup": "toolGroup",
             "regex":"<table[^>]*>([\\s\\S]*)<\\/table>",

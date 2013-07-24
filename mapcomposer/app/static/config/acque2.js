@@ -479,6 +479,8 @@
 		  },
 		  "printService":"http://webgis.acque.net/geoserver/pdf/",
 		  "legendPanelId":"legendPanel",
+          "defaultResolutionIndex":1,
+          "defaultLayoutIndex":1,
 		  "ignoreLayers":["WFSSearch","Marker","WFSsearchMarker","GeoRefMarker"],
 		  "actionTarget":{
 			 "target":"paneltbar",
