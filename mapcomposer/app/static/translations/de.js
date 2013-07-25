@@ -369,19 +369,31 @@ GeoExt.Lang.add("de", {
         attributeEnablementMsg: "Abfrage ungültig! Zuerst 'Feature' und die vektorielle Schicht auswählen.",
         searchType: "Grundeinstellungen",
         typeLabel: "Typ",
-        featureLabel: "Max Features",
-        selectionMethodFieldSetComboTitle: "Set Selection Method",
+        featureLabel: "Max Features"
+    },
+    
+	"gxp.plugins.BBOXQueryForm.prototype": {
+        selectionMethodFieldSetComboTitle: "Verfahren zur Auswahl",
         comboSelectionMethodLabel: "Auswahl",
         comboPolygonSelection: 'Polygon',
         comboCircleSelection: 'Rund',
         comboBBOXSelection: 'BBOX',
-		errorBBOXText: "BBOX ungültig",
-        errorDrawPolygonText: "Sie müssen ein Polygon zeichnen",
-        errorDrawCircleText: "Sie müssen einen Kreis zu zeichnen",     
-        errorDrawTitle: "Abfrage Fehler"  
+		errorBBOXText: "Die BBOX ausgewählt ist ungültig!",
+        errorDrawPolygonText: "Sie müssen das Polygon zeichnen",
+        errorDrawCircleText: "Sie müssen den Kreis ziehen",     
+        errorDrawTitle: "Antrag Fehler",
+		errorBufferTitle: "Der Buffer ist falsch",
+		errorBufferText: "Der ausgewählte Buffer ist ungültig!"
     },
-    
-     "gxp.form.BBOXFieldset.prototype":{
+	
+	"gxp.widgets.form.BufferFieldset.prototype": {
+		bufferFieldLabel: "Reichweite von Buffer",
+		bufferFieldSetTitle: "Buffer",
+		coordinatePickerLabel: "Koordinaten",
+		draweBufferTooltip: "Zeichnen Sie die Buffer"
+	},
+	
+    "gxp.form.BBOXFieldset.prototype":{
         northLabel:"Norden",
         westLabel:"Westen",
         eastLabel:"Osten",

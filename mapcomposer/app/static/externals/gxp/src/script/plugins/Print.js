@@ -80,6 +80,24 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
      *  Text for print preview text (i18n).
      */
     previewText: "Print Preview",
+    /** api config[legendOnSeparatePage]
+     *  option checked in the print preview
+     */
+    legendOnSeparatePage:false,
+    /** api config[includeLegend]
+     *  option checked in the print preview
+     */
+    includeLegend:true,
+    /** api config[defaultResolutionIndex]
+     *  resolution at that index will be selected as default in the print preview
+     */
+    defaultResolutionIndex:0,
+    /** api config[defaultLayoutIndex]
+     *  layout at that index will be selected as default in the print preview
+     */
+    defaultLayoutIndex:0,
+    
+    
 
     /** private: method[constructor]
      */
@@ -95,6 +113,8 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
         if (this.printService !== null) {
 
             var printProvider = new GeoExt.data.PrintProvider({
+                defaultLayoutIndex:this.defaultLayoutIndex,
+                defaultResolutionIndex:this.defaultResolutionIndex,
                 url: this.printService,
                 customParams: this.customParams,
                 autoLoad: false,
@@ -148,6 +168,7 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                     var notSupported = layers.notSupported;
                     
                     if (supported.length > 0) {
+
 						var notIgnorable = getNotIgnorable(notSupported, this.ignoreLayers);
                         if( notIgnorable.length > 0 ){
 
@@ -231,6 +252,8 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                     resizable: false,
                     items: [
                         new GeoExt.ux.PrintPreview({
+                            legendOnSeparatePage:this.legendOnSeparatePage,
+                            includeLegend:this.includeLegend,
                             autoHeight: true,
                             mapTitle: this.target.about && this.target.about["title"],
                             comment: this.target.about && this.target.about["abstract"],

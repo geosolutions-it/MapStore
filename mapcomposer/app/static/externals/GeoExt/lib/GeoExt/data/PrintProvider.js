@@ -560,8 +560,8 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
 		
         this.layouts.loadData(caps2);
         
-        this.setLayout(this.layouts.getAt(0));
-        this.setDpi(this.dpis.getAt(0));
+        this.setLayout(this.layouts.getAt(this.defaultLayoutIndex ||0));
+        this.setDpi(this.dpis.getAt(this.defaultResolutionIndex||0));
         this.fireEvent("loadcapabilities", this, this.capabilities);
     },
         
