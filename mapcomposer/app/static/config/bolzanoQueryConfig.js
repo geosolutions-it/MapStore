@@ -10,10 +10,13 @@
 			"title": "Bolzano GeoServer",
 			"SRS": "EPSG:900913",
 			"version":"1.1.1",
+		    "layersCachedExtent": [
+				-20037508.34,-20037508.34,
+				20037508.34,20037508.34
+			],
 			"layerBaseParams":{
 				"FORMAT":"image/png8",
-				"TILED":true,
-				"TILESORIGIN":"1259091.229051,5855016.830973"
+				"TILED":true
 			}
 		},
 		"mapquest": {
@@ -41,8 +44,8 @@
 			1268808.28627,5863434.458712
 		],
 		"maxExtent": [
-			1259091.229051,5855016.830973,
-			1268808.28627,5863434.458712
+			-20037508.34,-20037508.34,
+			20037508.34,20037508.34
 		],
 		"layers": [						
 			{
@@ -89,8 +92,11 @@
 				"source": "bolzano",
 				"title": "Ortofoto Bolzano/Bozen",
 				"name": "it.geosolutions:Cartografia-ortofoto_2010",
-				"group": "background",       
-				"format":"image/jpeg",
+			    "layersCachedExtent": [
+					1252344.2712499984,5831228.013007812,1291480.0297265612,5870363.771484375
+				],
+				"group": "background",
+				"format": "image/jpeg",
 				"transparent": false
 			}
 		]
@@ -198,7 +204,7 @@
 		}, {
 			"actions": ["-"], "actionTarget": "paneltbar"
 		}, {
-			"ptype": "gxp_wmsgetfeatureinfo_menu", "toggleGroup": "toolGroup",
+			"ptype": "gxp_wmsgetfeatureinfo", "toggleGroup": "toolGroup",
 			"actionTarget": {"target": "paneltbar", "index": 20}
 		}, {
 			"actions": ["-"], "actionTarget": "paneltbar"
@@ -217,28 +223,6 @@
 				"index":4
 			}
         }, {
-			"ptype": "gxp_searchvia",
-			"outputTarget": "searchpanel",
-			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",			
-			"selectionProperties": {
-			    "wmsURL": "http://sit.comune.bolzano.it/geoserver/",
-				"selectionLayerTitle": "Selection Layer",
-				"selectionLayerCiviciName": "Cartografia:civici",
-				"selectionLayerViaName": "Ambiente:grafo",
-				"filterCiviciAttribute": "ID",
-				"selectionCiviciStyle": "highlight_point",
-				"filterViaAttribute": "ID_STRASSE",
-				"selectionViaStyle": "highlight"
-			}
-		}, {
-			"ptype": "gxp_searchcatasto",
-			"outputTarget": "searchpanel",
-			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",			
-			"selectionProperties": {
-			    "wmsURL": "http://sit.comune.bolzano.it/geoserver/",
-				"selectionLayerTitle": "Selection Layer"
-			}
-		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": false,
 			"id": "addlayer"
@@ -249,8 +233,7 @@
 			"index": 23
 		}, {
 		  "ptype": "gxp_featuremanager",
-		  "id": "featuremanager",
-		  "useDefinedExtent": true
+		  "id": "featuremanager"
 	    }, {
 		  "ptype": "gxp_featuregrid",
 		  "featureManager": "featuremanager",
@@ -275,12 +258,18 @@
 				  "fillOpacity":0,
 				  "strokeWidth":2
 			  }	,
-		  "spatialFilterOptions": {	
-			  "lonMax": 20037508.34,   
-			  "lonMin": -20037508.34,
-			  "latMax": 20037508.34,   
-			  "latMin": -20037508.34  
-		  }	
+			  "spatialFilterOptions": {	
+				  "lonMax": 20037508.34,   
+				  "lonMin": -20037508.34,
+				  "latMax": 20037508.34,   
+				  "latMin": -20037508.34  
+			  },
+			  "bufferOptions": {
+				"minValue": 1,
+				"maxValue": 1000,
+				"decimalPrecision": 2,
+				"distanceUnits": "m"
+			  }
 		  }
 	    }
 	]
