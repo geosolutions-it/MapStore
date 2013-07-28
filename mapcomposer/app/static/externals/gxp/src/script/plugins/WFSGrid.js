@@ -128,6 +128,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
     detailsWinTitle: "Details",
     zoomToTooltip: "Zoom al bersaglio",
     loadMsg: "Please Wait...",
+    startEditToTooltip: "Start Edit Row",
     // end i18n
     
 
@@ -142,6 +143,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
     detailsIconPath: "theme/app/img/silk/information.png",
     deleteIconPath: "theme/app/img/silk/delete.png",
     zoomToIconPath: "theme/app/img/silk/map_magnify.png",
+    startEditToIconPath: "theme/app/img/silk/table_edit.png",
   
     addLayerTool: null,
   
@@ -407,6 +409,207 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         };
         return new Ext.grid.CheckboxSelectionModel(checkConf);  
     },
+    
+    /** private: method[setEditGrid]
+     */
+    setEditGrid: function(record,colType,rowIndex){
+        var me = this;
+        var rowIndex = rowIndex;
+        var fm = Ext.form;    
+        
+        var editor = new fm.TextField({
+            allowBlank: false
+        });            
+
+        var listValues = record.substring(1,record.length-1);
+        var arrayValues = listValues.split(",");
+        
+        var values = [];
+        
+        for (var i = 0;i<arrayValues.length;i++){
+            values[values.length] = [i,arrayValues[i]];
+        }        
+        
+        var store = new Ext.data.ArrayStore({
+            storeId: 'store_'+colType,
+            fields: ['layer','values'],
+            data: values
+        });
+
+        var grid = new Ext.grid.EditorGridPanel({
+            store: store,
+            border: false,
+            id: 'grid_'+colType,
+            layout: 'fit',
+            colModel: new Ext.grid.ColumnModel({
+                columns: [{
+                    id: 'layer',
+                    width: 20,
+                    header: 'layer',
+                    dataIndex: 'layer',
+                    hidden: false
+                },{
+                    id: 'values',
+                    header: 'values',
+                    dataIndex: 'values',
+                    hidden: false,
+                    editor: editor
+                }]
+            }),
+            viewConfig: {
+                forceFit: true
+            },
+            sm: new Ext.grid.RowSelectionModel({
+                singleSelect: true
+            }),
+            frame: false,            
+            listeners: {
+                afteredit : function(object) {
+                    row = object.row;
+                    unitGrid = Ext.getCmp(this.id);
+                    rowview = unitGrid.getView().getRow(row);
+                    changecss = Ext.get(rowview);
+                    changecss.addClass('change-row');
+                }
+            }
+        });   
+        
+        return grid;    
+    },
+
+    /** private: method[getStartEditAction]
+     */    
+    getStartEditAction: function(actionConf){
+        var sourceSRS=actionConf.sourceSRS;
+        var me= this;
+        return {
+            xtype: 'actioncolumn',
+            sortable : false, 
+            width: 30,
+            items: [{
+                icon   : this.startEditToIconPath,  
+                tooltip: this.startEditToTooltip,
+                scope: this,
+                handler: function(grid, rowIndex, colIndex) {
+                    //var arrayGrid = [];
+                    var columnCount = grid.getColumnModel().getColumnCount();
+                    
+                    var selectionModel = grid.getSelectionModel();
+                    selectionModel.unlock();
+                    selectionModel.clearSelections(false);
+                    selectionModel.selectRow( rowIndex, false );
+                    
+                    for( var kk=0; kk<columnCount; kk++){
+                        var colType = grid.getColumnModel().getColumnHeader(kk);
+                        switch (colType){
+                            case "PADR":
+                                var colRecord = grid.getStore().getAt(rowIndex).get('padr');
+                                var padrGrid = me.setEditGrid(colRecord,colType,rowIndex);
+                                break;
+                            case "PIS":
+                                var colRecord = grid.getStore().getAt(rowIndex).get('pis');
+                                var textField = {
+                                    anchor: '100%',
+                                    xtype: 'fieldset',
+                                    title:'PIS',
+                                    defaults: {
+                                        labelWidth: 70
+                                    },
+                                    defaultType: 'textfield',
+                                    items: [{
+                                        fieldLabel: 'PIS value',
+                                        anchor: '100%',
+                                        name: 'pis',
+                                        value: colRecord
+                                    }]
+                                };
+                                break;  
+                            case "CFF":
+                                var colRecord = grid.getStore().getAt(rowIndex).get('cff');
+                                var cffGrid = me.setEditGrid(colRecord,colType,rowIndex);
+                                break;   
+                        }
+                    }
+
+                    var tabs = new Ext.TabPanel({
+                        activeTab: 0,
+                        enableTabScroll: true,
+                        items: [{
+                            title: 'PIS',
+                            anchor: '100%',
+                            items: textField
+                        },{
+                            title: 'CFF',
+                            items: cffGrid,
+                            layout: 'fit'
+                        },{
+                            title: 'PADR',
+                            items: padrGrid,
+                            layout: 'fit'
+                        }]
+                    });
+                    
+                    var win = new Ext.Window({
+                        width: 300,
+                        height: 250,
+                        modal: true,
+                        resizable: false,
+                        title: 'Road Edit Form',
+                        autoShow: true,
+                        autoScroll: true,
+                        layout: 'fit',
+                        constrain: true,
+                        items: tabs,
+                        buttons: [
+                            {
+                                text: "Salva",
+                                //iconCls:this.okIconCls,
+                                handler: function() {
+                                
+                                    var myTabs = tabs;
+                                    
+                                    myTabs.items.each(function(i){
+                                    
+                                        if(i.items.items[0].getXType() != 'fieldset'){
+                                            var store = i.items.items[0].getStore();
+                                            var ccc = [];
+                                            
+                                            store.each(function(r) {
+                                                ccc.push(r.get('values'));
+                                            });
+                                            var newString = "{" + ccc.join() + "}";
+                                            
+                                            var originSelectionModel = me.wfsGrid.getSelectionModel();
+                                            var record = originSelectionModel.getSelected();
+                                            record.set(i.title.toLowerCase(),newString);
+                                        }else{
+                                            var fieldValue = i.items.items[0].items.items[0].getValue();
+                                            var originSelectionModel = me.wfsGrid.getSelectionModel();
+                                            var record = originSelectionModel.getSelected();
+                                            record.set(i.title.toLowerCase(),fieldValue);
+                                        }
+                                        
+                                    });
+                                    
+                                    this.ownerCt.ownerCt.hide();
+                                }
+                            },{
+                                 text: "Chiudi",
+                                 //iconCls:this.cancelIconCls,
+                                 //scope:this,
+                                 handler:function() {
+                                    this.ownerCt.ownerCt.hide();
+                                }
+                            }
+                        ]                        
+                    }); 
+
+                     win.show();
+                     
+                }
+            }]  
+        };
+    },    
                 
 		
     getGeometry: function(rec, sourceSRS){
@@ -648,6 +851,12 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     case "zoom":
                         me.wfsColumns.push(me.getZoomAction(me.actionColumns[kk]));
                         break;
+                    case "startedit":
+                        me.wfsColumns.push(me.getStartEditAction(me.actionColumns[kk]));
+                        break;
+                    case "stopedit":
+                        me.wfsColumns.push(me.getStopEditAction(me.actionColumns[kk]));
+                        break;                        
                     case "checkDisplay":
                         var checkModel=me.getCheckDisplayAction(me.actionColumns[kk]);
                         this.sm= checkModel;
@@ -688,7 +897,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             });
         }
         
-        var wfsGridPanel=new Ext.grid.GridPanel({ 
+        var wfsGridPanel=new Ext.grid.EditorGridPanel({ 
             title: this.title, 
             store: [], 
             id: this.id,
@@ -710,7 +919,17 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             colModel: new Ext.grid.ColumnModel({
                 columns: []
             }),
-            bbar: bbar
+            bbar: bbar,
+            scope: this,
+            listeners: {
+                afteredit : function(object) {
+                    row = object.row;
+                    unitGrid = Ext.getCmp(this.id);
+                    rowview = unitGrid.getView().getRow(row);
+                    changecss = Ext.get(rowview);
+                    changecss.addClass('change-row');
+                }
+            }    
         }); 
 
         config = Ext.apply(wfsGridPanel, config || {});
