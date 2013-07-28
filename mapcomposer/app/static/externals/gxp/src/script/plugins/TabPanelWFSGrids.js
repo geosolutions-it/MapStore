@@ -132,7 +132,7 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                             "srsName": this.srsName, 
                             "version": "1.1.0",
                             "columns" : gridCfg.columns,
-                            "actionColumns" : this.actionColumns,
+                            "actionColumns" : gridCfg.actionColumns || this.actionColumns, //change to set editActionColumn only in roads_edit layer
                             "noPaging": gridCfg.noPaging || false
                         };
                         
