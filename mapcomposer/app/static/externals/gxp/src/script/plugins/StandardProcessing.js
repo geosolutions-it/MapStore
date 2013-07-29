@@ -210,7 +210,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 },
                 select: function(combo, record, index) {
                     this.enableDisableForm(this.getComboRecord(this.formula, 'id_formula'), record);
-                    this.expandeCollapseGrid(record); //call function to expand wfsGrid if elab is Simulation 
+                    this.expandCollapseGrid(record); //call function to expand wfsGrid if elab is Simulation 
                 }
             }          
         });
@@ -349,19 +349,22 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }
     },
 
-    expandeCollapse: function(condition, widget) {
+    expandCollapse: function(condition, widget) {
     
         var syntView = this.appTarget.tools[this.syntheticView];
         var mapPanelContainer = Ext.getCmp("mapPanelContainer_id");
         var mapPanelContainerBbar = mapPanelContainer.getBottomToolbar(); 
         
         if(condition) {
-            widget.expand();
+            if(widget.collapsed) {
+                widget.expand();
+            }
+            Ext.getCmp("featuregrid").removeAllGrids();
             mapPanelContainerBbar.removeAll(true);
             mapPanelContainerBbar.add(syntView.simulationViewBbar);
             mapPanelContainer.doLayout(false,true);
             
-        } else {
+        } else if(!widget.collapsed) {
             widget.collapse();
             mapPanelContainerBbar.removeAll(true);
             mapPanelContainerBbar.add(syntView.analyticViewBbar);
@@ -370,9 +373,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }
     },
     
-    expandeCollapseGrid: function(elaborazione) {
+    expandCollapseGrid: function(elaborazione) {
         var southPanel = Ext.getCmp("south");
-        this.expandeCollapse(elaborazione.get('id') === 3,southPanel);
+        this.expandCollapse(elaborazione.get('id') === 3 ,southPanel);
     },    
     
     enableDisableTemporali: function(formula, elaborazione) {
@@ -1254,6 +1257,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             //  syntView.getControlPanel().enable();
             
             syntView.setStatus(status);
+            
+            this.expandCollapse(false ,Ext.getCmp("south"));
+            
             syntView.doProcess(params.roi);
             this.appTarget.mapPanel.map.events.unregister("move", this, this.aoiUpdater);
         }
@@ -1571,6 +1577,39 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             visibleOnGrid: formulaRec.get('visibile') === 2 || formulaRec.get('visibile') === 3
         };        
         
+        obj.simulation = {
+            cff:[],
+            padr:[],
+            pis:[]
+        };
+        
+        if(obj.processing === 3) {
+            var wfsGrid = Ext.getCmp("featuregrid");
+            
+            Ext.each(wfsGrid.currentGrids, function(grid) {
+                if(grid.save) {                    
+                    for(var id in grid.save) {
+                        if(grid.save.hasOwnProperty(id)) {
+                            var recordInfo = grid.save[id];
+                            for(var propName in recordInfo) {
+                                if(recordInfo.hasOwnProperty(propName)) {
+                                    var changed = recordInfo[propName];
+                                    if(propName === 'pis') {
+                                        if(typeof changed !== 'undefined') {
+                                            obj.simulation[propName].push(id+','+changed);
+                                        }
+                                    } else if(changed.length > 0) {
+                                        for(var count = 0; count < changed.length; count++) {
+                                            obj.simulation[propName].push(id+','+changed[count].id+','+changed[count].value);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },this);
+        }
         
         if(this.aoiFieldset.isDirty()){
             obj.roi = {

@@ -624,7 +624,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     handler: function(btn) {                        
                         var wfsGrid = Ext.getCmp("featuregrid");
                         wfsGrid.setCurrentPanel('roads_edit');
-                        this.loadRoadsGrid();                        
+                        
+                        var map = this.target.mapPanel.map;        
+                        var status = this.getStatus();        
+                        var bounds = this.getBounds(null, map);
+                        var viewParams = "bounds:" + bounds;                        
+                        this.loadRoadsGrid(viewParams);                        
                     }
                 }];
                 
@@ -692,7 +697,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     }
                 }];        
         
-        //add analytic button toolbar to mapPanelContainer
+        //add analytic button toolbar to mapPanelContainer        
         var mapPanelContainer = Ext.getCmp("mapPanelContainer_id");
         var mapPanelContainerBbar = mapPanelContainer.getBottomToolbar();
         mapPanelContainerBbar.add(this.analyticViewBbar);
@@ -1127,7 +1132,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
     getFormulaEnv: function(status, targetId) {
-        return "formula:"+status.formula+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',')+";fp:"+status.temporal.value+";processing:"+status.processing;
+        var env = "formula:"+status.formula+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',')+";fp:"+status.temporal.value+";processing:"+status.processing;
+        if(status.processing === 3) {
+            var simulation = status.simulation;            
+            env += ';pis:'+simulation.pis.join('_') + ';padr:'+simulation.padr.join('_') + ';cff:'+simulation.cff.join('_');
+        }
+        return env;
     },
     
     addRisk: function(layers, bounds, status) {                
@@ -1262,16 +1272,28 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     enableAnalyticView: function() {        
         Ext.getCmp("south").expand();  
-        Ext.getCmp("targets_view").enable();
-        Ext.getCmp("areaDamage_view").enable();
-        Ext.getCmp("roadGraph_view").enable();        
+        if(Ext.getCmp("targets_view")) {
+            Ext.getCmp("targets_view").enable();
+        }
+        if(Ext.getCmp("areaDamage_view")) {
+            Ext.getCmp("areaDamage_view").enable();
+        }
+        if(Ext.getCmp("roadGraph_view")) {
+            Ext.getCmp("roadGraph_view").enable();        
+        }
     },
     
     disableAnalyticView: function() {        
         Ext.getCmp("south").collapse();  
-        Ext.getCmp("targets_view").disable();
-        Ext.getCmp("areaDamage_view").disable();
-        Ext.getCmp("roadGraph_view").disable();        
+        if(Ext.getCmp("targets_view")) {
+            Ext.getCmp("targets_view").disable();
+        }
+        if(Ext.getCmp("areaDamage_view")) {
+            Ext.getCmp("areaDamage_view").disable();
+        }
+        if(Ext.getCmp("roadGraph_view")) {
+            Ext.getCmp("roadGraph_view").disable();        
+        }    
     },
     
     enableDisableRoads: function(visibility) {

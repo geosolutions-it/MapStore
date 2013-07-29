@@ -412,7 +412,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
     
     /** private: method[setEditGrid]
      */
-    setEditGrid: function(record,colType,rowIndex){
+    setEditGrid: function(record,valueCol,idCol,descCol,colType,rowIndex){
         var me = this;
         var rowIndex = rowIndex;
         var fm = Ext.form;    
@@ -420,19 +420,27 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         var editor = new fm.TextField({
             allowBlank: false
         });            
-
-        var listValues = record.substring(1,record.length-1);
+        var values = record.get(valueCol);
+        var listValues = values.substring(1,values.length-1);
         var arrayValues = listValues.split(",");
+        
+        var ids = record.get(idCol);
+        var listIds = ids.substring(1,ids.length-1);
+        var arrayIds = listIds.split(",");
+        
+        var descs = record.get(descCol);
+        var listDescs = descs.substring(1,descs.length-1);
+        var arrayDescs = listDescs.split(",");
         
         var values = [];
         
         for (var i = 0;i<arrayValues.length;i++){
-            values[values.length] = [i,arrayValues[i]];
+            values[values.length] = [arrayIds[i],arrayDescs[i],arrayValues[i]];
         }        
         
         var store = new Ext.data.ArrayStore({
             storeId: 'store_'+colType,
-            fields: ['layer','values'],
+            fields: ['id','layer','values'],
             data: values
         });
 
@@ -491,6 +499,18 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 tooltip: this.startEditToTooltip,
                 scope: this,
                 handler: function(grid, rowIndex, colIndex) {
+                    var record = grid.getStore().getAt(rowIndex);
+                   
+                    me.currentRecord = me.save[record.get("id")];
+                    if(!me.currentRecord) {
+                        me.currentRecord = {
+                            id: record.get("id"),
+                            cff: [],
+                            padr: [],
+                            pis: undefined
+                        };
+                    }
+                        
                     //var arrayGrid = [];
                     var columnCount = grid.getColumnModel().getColumnCount();
                     
@@ -501,10 +521,10 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     
                     for( var kk=0; kk<columnCount; kk++){
                         var colType = grid.getColumnModel().getColumnHeader(kk);
+                        
                         switch (colType){
-                            case "PADR":
-                                var colRecord = grid.getStore().getAt(rowIndex).get('padr');
-                                var padrGrid = me.setEditGrid(colRecord,colType,rowIndex);
+                            case "PADR":                                
+                                var padrGrid = me.setEditGrid(record,'padr','sostanze','sostanze_desc', colType,rowIndex);
                                 break;
                             case "PIS":
                                 var colRecord = grid.getStore().getAt(rowIndex).get('pis');
@@ -525,8 +545,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                 };
                                 break;  
                             case "CFF":
-                                var colRecord = grid.getStore().getAt(rowIndex).get('cff');
-                                var cffGrid = me.setEditGrid(colRecord,colType,rowIndex);
+                                
+                                var cffGrid = me.setEditGrid(record,'cff','bersagli','bersagli_desc',colType,rowIndex);
                                 break;   
                         }
                     }
@@ -567,30 +587,46 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                 handler: function() {
                                 
                                     var myTabs = tabs;
-                                    
+                                    var changed = false;
                                     myTabs.items.each(function(i){
                                     
                                         if(i.items.items[0].getXType() != 'fieldset'){
                                             var store = i.items.items[0].getStore();
+                                            var fieldName = i.title.toLowerCase();
                                             var ccc = [];
-                                            
+                                            var foundDirty = false;
                                             store.each(function(r) {
+                                                if(r.dirty) {
+                                                    changed  = true;
+                                                    foundDirty = true;
+                                                    me.currentRecord[fieldName].push({id: r.get("id"), value: parseFloat(r.get('values'))});                                                    
+                                                }
                                                 ccc.push(r.get('values'));
                                             });
-                                            var newString = "{" + ccc.join() + "}";
-                                            
-                                            var originSelectionModel = me.wfsGrid.getSelectionModel();
-                                            var record = originSelectionModel.getSelected();
-                                            record.set(i.title.toLowerCase(),newString);
+                                            if(foundDirty) {
+                                                var newString = "{" + ccc.join() + "}";
+                                                
+                                                var originSelectionModel = me.wfsGrid.getSelectionModel();
+                                                var record = originSelectionModel.getSelected();
+                                                record.set(fieldName,newString);
+                                            }
                                         }else{
-                                            var fieldValue = i.items.items[0].items.items[0].getValue();
+                                            var fieldValue = parseFloat(i.items.items[0].items.items[0].getValue());
                                             var originSelectionModel = me.wfsGrid.getSelectionModel();
                                             var record = originSelectionModel.getSelected();
-                                            record.set(i.title.toLowerCase(),fieldValue);
+                                            var fieldName = i.title.toLowerCase();
+                                            var oldValue = record.get(fieldName);
+                                            if(oldValue !== fieldValue) {
+                                                me.currentRecord[fieldName] = fieldValue;
+                                                record.set(fieldName,fieldValue);
+                                                changed = true;
+                                            }
                                         }
                                         
                                     });
-                                    
+                                    if(changed) {
+                                        me.save[me.currentRecord.id] = me.currentRecord;
+                                    }
                                     this.ownerCt.ownerCt.hide();
                                 }
                             },{

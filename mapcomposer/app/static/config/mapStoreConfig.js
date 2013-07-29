@@ -1492,12 +1492,20 @@
 						"mapping": "bersagli"
 					},
 					{
+						"name": "bersagli_desc",
+						"mapping": "bersagli_desc"
+					},
+					{
 						"name": "cff",
 						"mapping": "cff"
 					},
 					{
 						"name": "sostanze",
 						"mapping": "sostanze"
+					},
+					{
+						"name": "sostanze_desc",
+						"mapping": "sostanze_desc"
 					},
 					{
 						"name": "padr",
