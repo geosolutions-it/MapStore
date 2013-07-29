@@ -1197,7 +1197,7 @@
                             "dataIndex": "toponimo_completo"
                         },
                         {
-                            "header": ["Corine Land Cover code", "Codice CLC", "Code Corine Land Cover", "Kodex aus Corine Land Cover],      
+                            "header": ["Corine Land Cover code", "Codice CLC", "Code Corine Land Cover", "Kodex aus Corine Land Cover"],      
                             "dataIndex": "codice_clc"
                         },
                         {
