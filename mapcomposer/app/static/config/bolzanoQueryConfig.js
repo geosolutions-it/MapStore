@@ -91,13 +91,13 @@
 			},{
 				"source": "bolzano",
 				"title": "Ortofoto Bolzano/Bozen",
-				"name": "it.geosolutions:Cartografia-ortofoto_2010",
+				"name": "Cartografia:ortofoto_2010",
 			    "layersCachedExtent": [
-					1252344.2712499984,5831228.013007812,1291480.0297265612,5870363.771484375
+					1252344.2712499984,5850795.892246094,1271912.1504882798,5870363.771484375
 				],
 				"group": "background",
-				"format": "image/jpeg",
-				"transparent": false
+				"transparent": false,
+				"format": "image/jpeg"
 			}
 		]
 	},
