@@ -210,6 +210,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 },
                 select: function(combo, record, index) {
                     this.enableDisableForm(this.getComboRecord(this.formula, 'id_formula'), record);
+                    this.expandeCollapseGrid(record); //call function to expand wfsGrid if elab is Simulation 
                 }
             }          
         });
@@ -347,6 +348,32 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             widget.disable();
         }
     },
+
+    expandeCollapse: function(condition, widget) {
+    
+        var syntView = this.appTarget.tools[this.syntheticView];
+        var mapPanelContainer = Ext.getCmp("mapPanelContainer_id");
+        var mapPanelContainerBbar = mapPanelContainer.getBottomToolbar(); 
+        
+        if(condition) {
+            widget.expand();
+            mapPanelContainerBbar.removeAll(true);
+            mapPanelContainerBbar.add(syntView.simulationViewBbar);
+            mapPanelContainer.doLayout(false,true);
+            
+        } else {
+            widget.collapse();
+            mapPanelContainerBbar.removeAll(true);
+            mapPanelContainerBbar.add(syntView.analyticViewBbar);
+            mapPanelContainer.doLayout(false,true);
+            
+        }
+    },
+    
+    expandeCollapseGrid: function(elaborazione) {
+        var southPanel = Ext.getCmp("south");
+        this.expandeCollapse(elaborazione.get('id') === 3,southPanel);
+    },    
     
     enableDisableTemporali: function(formula, elaborazione) {
         this.enableDisable(formula.get('condizioni_temporali') && elaborazione.get('id') === 2, this.temporal);        

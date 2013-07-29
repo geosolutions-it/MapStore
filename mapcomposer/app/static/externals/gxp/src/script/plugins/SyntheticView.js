@@ -592,8 +592,44 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             ]
         });
 
+        //set simulation button toolbar with bottons. Viewable only in simulation mode.
+        this.simulationViewBbar =  [{
+                    xtype:'displayfield',
+                    id:'warning_message'
+                },'->',{
+                    xtype: 'button',
+                    id: "targets_simulation_view",
+                    iconCls: 'analytic-view-button',
+                    text: this.targetsTextBotton,
+                    scope: this,
+                    toggleGroup: 'simulation_buttons',
+                    enableToggle: true,
+                    pressed: false,
+                    disabled:true,
+                    handler: function(btn) {
+                        var wfsGrid = Ext.getCmp("featuregrid");
+                        wfsGrid.setCurrentPanel('targets'); //change for edit targets
+                        this.loadTargetGrids();
+                    }
+                },{
+                    xtype: 'button',
+                    id: "roadGraph_simulation_view",
+                    iconCls: 'analytic-view-button',
+                    text: this.roadGraphTextBotton,
+                    scope: this,
+                    toggleGroup: 'simulation_buttons',
+                    enableToggle: true,
+                    pressed: false,
+                    disabled:true,
+                    handler: function(btn) {                        
+                        var wfsGrid = Ext.getCmp("featuregrid");
+                        wfsGrid.setCurrentPanel('roads_edit');
+                        this.loadRoadsGrid();                        
+                    }
+                }];
+                
         //set analytic button toolbar with bottons
-        var analyticViewBbar =  [{
+        this.analyticViewBbar =  [{
                     xtype: 'button',
                     id: "analytic_view",
                     iconCls: 'analytic-view-button',
@@ -659,7 +695,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         //add analytic button toolbar to mapPanelContainer
         var mapPanelContainer = Ext.getCmp("mapPanelContainer_id");
         var mapPanelContainerBbar = mapPanelContainer.getBottomToolbar();
-        mapPanelContainerBbar.add(analyticViewBbar);
+        mapPanelContainerBbar.add(this.analyticViewBbar);
         mapPanelContainer.doLayout(false,true);
 
         config = Ext.apply(panel, config || {});
@@ -673,19 +709,20 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             var scale = this.getMapScale();
             
             if(scale <= this.analiticViewScale && this.processingDone) {
-                Ext.getCmp("analytic_view").enable();
-                /*
-                Ext.getCmp("targets_view").enable();
-                Ext.getCmp("areaDamage_view").enable();
-                Ext.getCmp("roadGraph_view").enable();
-                */
+                if(Ext.getCmp("analytic_view")){
+                    Ext.getCmp("analytic_view").enable();
+                }else{
+                    Ext.getCmp("roadGraph_simulation_view").enable();
+                    Ext.getCmp("targets_simulation_view").enable();
+                }
             } else {
-                Ext.getCmp("analytic_view").disable();
-                /*
-                Ext.getCmp("targets_view").disable();
-                Ext.getCmp("areaDamage_view").disable();
-                Ext.getCmp("roadGraph_view").disable();
-                */
+                if(Ext.getCmp("analytic_view")){
+                    Ext.getCmp("analytic_view").disable();
+                }else{
+                    Ext.getCmp("roadGraph_simulation_view").disable();
+                    Ext.getCmp("targets_simulation_view").disable();                
+                }
+
             }
             var msg = '';
             if(this.status && this.status.formulaInfo) {
@@ -695,8 +732,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     msg = this.notVisibleOnGridMessage;
                 }
             }
-            
-            Ext.getCmp('warning_message').setValue(msg);
+            if(Ext.getCmp("analytic_view")){
+                Ext.getCmp('warning_message').setValue(msg);
+            }
         });
         
         return this.controlPanel;

@@ -175,3 +175,8 @@ div#homelogos ul li a:hover {
     color: red;
     margin-left: 50px;
 }
+
+.change-row {
+    background-color: #ffffa8;
+    border-color:#FA1505;
+} 

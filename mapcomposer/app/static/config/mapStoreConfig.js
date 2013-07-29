@@ -1472,6 +1472,89 @@
                     "type": "all"
                 }
             },
+			"roads_edit": {
+				"Grafo Stradale Simulazione": {
+					"featureType": "grafo_simulazione",
+					"fields": [{
+						"name": "id",
+						"mapping": "id_geo_arco"
+					},
+					{
+						"name": "geometry",
+						"mapping": "geometria"
+					},
+					{
+						"name": "pis",
+						"mapping": "pis"
+					},
+					{
+						"name": "bersagli",
+						"mapping": "bersagli"
+					},
+					{
+						"name": "cff",
+						"mapping": "cff"
+					},
+					{
+						"name": "sostanze",
+						"mapping": "sostanze"
+					},
+					{
+						"name": "padr",
+						"mapping": "padr"
+					}],
+					"columns": [{
+						"header": ["Id",
+						"Id",
+						"Id",
+						"Id"],
+						"dataIndex": "id"
+					},
+					{
+						"header": ["PIS",
+						"PIS",
+						"PIS",
+						"PIS"],
+						"dataIndex": "pis"
+					},
+					{
+						"header": ["CFF",
+						"CFF",
+						"CFF",
+						"CFF"],
+						"dataIndex": "cff"
+					},
+					{
+						"header": ["PADR",
+						"PADR",
+						"PADR",
+						"PADR"],
+						"dataIndex": "padr"
+					}],
+					"title": ["Archi",
+					"Archi",
+					"Archi",
+					"Archi"],
+					"id": 1,
+					"name": "ARCHI",
+					"type": "all",
+					"noPaging": true,
+                    "actionColumns": [{
+                        "type": "checkDisplay",
+                        "layerName": "Bersaglio Selezionato",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "zoom",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "startedit",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    }]                    
+				}
+			},
             "damage": {
                 "Aree di danno": {
                     "featureType": "buffer_1",
