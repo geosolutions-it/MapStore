@@ -124,19 +124,19 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
         map.addControl(this.selectLonLat);
          
         this.items= [
-                {
+				{
                     xtype     : 'numberfield',
-                    emptyText : this.latitudeEmptyText,
-                    ref: 'latitudeField',
+                    emptyText : this.longitudeEmptyText,
+                    ref:'longitudeField',
+                    decimalPrecision:this.decimalPrecision,
                     flex      : 1,
-                    decimalPrecision: this.decimalPrecision,
                     allowBlank:false,
-                    name: 'lat',
+                    name: 'lon',
 					listeners: {
 						scope:this,
 						change: this.updatePoint
 					}
-                },{
+                }, {
                     xtype: 'button',
 					ref:'clickToggle',
                     tooltip: this.pointSelectionButtionTip,
@@ -162,14 +162,14 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
                           }
                       }
                     }
-                },{
+                }, {
                     xtype     : 'numberfield',
-                    emptyText : this.longitudeEmptyText,
-                    ref:'longitudeField',
-                    decimalPrecision:this.decimalPrecision,
+                    emptyText : this.latitudeEmptyText,
+                    ref: 'latitudeField',
                     flex      : 1,
+                    decimalPrecision: this.decimalPrecision,
                     allowBlank:false,
-                    name: 'lon',
+                    name: 'lat',
 					listeners: {
 						scope:this,
 						change: this.updatePoint

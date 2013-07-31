@@ -436,16 +436,36 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 						if(queryForm.bufferFieldset.isValid()){	
 
 							var radius = queryForm.bufferFieldset.bufferField.getValue(); 
-
+							
+							//
 							// create point from your lat and lon of your selected feature
+							//
 							var coordinates = queryForm.bufferFieldset.coordinatePicker.getCoordinate();
 							var radiusPoint = new OpenLayers.Geometry.Point(coordinates[0], coordinates[1]);
-
+							
+							/*var units = this.target.mapPanel.map.getUnits();
+							
 							var radiusFilter = new OpenLayers.Filter.Spatial({
 								 type: OpenLayers.Filter.Spatial.DWITHIN,
 								 value: radiusPoint,
-								 distanceUnits: me.outputConfig.bufferOptions.distanceUnits || "m",
+								 distanceUnits: units, //me.outputConfig.bufferOptions.distanceUnits || "m",
 								 distance: radius
+							});*/
+							
+							var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
+								radiusPoint,
+								radius,
+								100, 
+								null
+							);
+							
+							var bounds = regularPolygon.getBounds();							
+							regularPolygon.bounds = bounds;
+																
+						    var radiusFilter = new OpenLayers.Filter.Spatial({
+								type: OpenLayers.Filter.Spatial.INTERSECTS,
+								property: featureManager.featureStore.geometryName,
+								value: regularPolygon
 							});
 			 
 							filters.push(radiusFilter);
