@@ -129,6 +129,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
     zoomToTooltip: "Zoom al bersaglio",
     loadMsg: "Please Wait...",
     startEditToTooltip: "Start Edit Row",
+    startEditGeomToTooltip: "Start Edit Feature",
+    stopEditGeomToTooltip: "Stop Edit Feature",
     // end i18n
     
 
@@ -144,6 +146,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
     deleteIconPath: "theme/app/img/silk/delete.png",
     zoomToIconPath: "theme/app/img/silk/map_magnify.png",
     startEditToIconPath: "theme/app/img/silk/table_edit.png",
+    startEditGeomToIconPath: "theme/app/img/geosilk/shape_square_green.png",
+    stopEditGeomToIconPath: "theme/app/img/geosilk/shape_square_red.png",
   
     addLayerTool: null,
   
@@ -645,6 +649,313 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 }
             }]  
         };
+    },
+
+    /** private: method[getStartEditTargetsAction]
+     */    
+    getStartEditTargetsAction: function(actionConf){
+        var sourceSRS=actionConf.sourceSRS;
+        var me= this;
+        return {
+            xtype: 'actioncolumn',
+            sortable : false, 
+            width: 30,            
+            items: [{
+                icon   : this.startEditToIconPath,  
+                tooltip: this.startEditToTooltip,
+                scope: this,
+                handler: function(grid, rowIndex, colIndex) {
+                    var record = grid.getStore().getAt(rowIndex);
+                   
+                    /*me.currentRecord = me.save[record.get("id")];
+                    if(!me.currentRecord) {
+                        me.currentRecord = {
+                            id: record.get("id"),
+                            cff: [],
+                            padr: [],
+                            pis: undefined
+                        };
+                    }*/
+                        
+                    //var arrayGrid = [];
+                    var columnCount = grid.getColumnModel().getColumnCount();
+                    
+                    var selectionModel = grid.getSelectionModel();
+                    selectionModel.unlock();
+                    selectionModel.clearSelections(false);
+                    selectionModel.selectRow( rowIndex, false );
+                    
+                    for( var kk=0; kk<columnCount; kk++){
+                        var colType = grid.getColumnModel().getColumnHeader(kk);
+                        
+                        switch (colType){
+                            case "Residenti":
+                                var colRecord = grid.getStore().getAt(rowIndex).get('residenti');
+                                var textField = {
+                                    anchor: '100%',
+                                    xtype: 'fieldset',
+                                    title:'Residenti',
+                                    defaults: {
+                                        labelWidth: 70
+                                    },
+                                    defaultType: 'textfield',
+                                    items: [{
+                                        fieldLabel: 'Residenti value',
+                                        anchor: '100%',
+                                        name: 'residenti',
+                                        value: colRecord
+                                    }]
+                                };
+                                break;  
+                        }
+                    }
+
+                    var tabs = new Ext.TabPanel({
+                        activeTab: 0,
+                        enableTabScroll: true,
+                        items: [{
+                            title: 'RESIDENTI',
+                            anchor: '100%',
+                            items: textField
+                        }]
+                    });
+                    
+                    var win = new Ext.Window({
+                        width: 300,
+                        height: 250,
+                        modal: true,
+                        resizable: false,
+                        title: 'Road Edit Form',
+                        autoShow: true,
+                        autoScroll: true,
+                        layout: 'fit',
+                        constrain: true,
+                        items: tabs,
+                        buttons: [
+                            {
+                                text: "Salva",
+                                //iconCls:this.okIconCls,
+                                handler: function() {
+                                
+                                    var myTabs = tabs;
+                                    var changed = false;
+                                    myTabs.items.each(function(i){
+                                    
+                                        if(i.items.items[0].getXType() != 'fieldset'){
+                                            var store = i.items.items[0].getStore();
+                                            var fieldName = i.title.toLowerCase();
+                                            var ccc = [];
+                                            var foundDirty = false;
+                                            store.each(function(r) {
+                                                if(r.dirty) {
+                                                    changed  = true;
+                                                    foundDirty = true;
+                                                    me.currentRecord[fieldName].push({id: r.get("id"), value: parseFloat(r.get('values'))});                                                    
+                                                }
+                                                ccc.push(r.get('values'));
+                                            });
+                                            if(foundDirty) {
+                                                var newString = "{" + ccc.join() + "}";
+                                                
+                                                var originSelectionModel = me.wfsGrid.getSelectionModel();
+                                                var record = originSelectionModel.getSelected();
+                                                record.set(fieldName,newString);
+                                            }
+                                        }else{
+                                            var fieldValue = parseFloat(i.items.items[0].items.items[0].getValue());
+                                            var originSelectionModel = me.wfsGrid.getSelectionModel();
+                                            var record = originSelectionModel.getSelected();
+                                            var fieldName = i.title.toLowerCase();
+                                            var oldValue = record.get(fieldName);
+                                            if(oldValue !== fieldValue) {
+                                                me.currentRecord[fieldName] = fieldValue;
+                                                record.set(fieldName,fieldValue);
+                                                changed = true;
+                                            }
+                                        }
+                                        
+                                    });
+                                    if(changed) {
+                                        me.save[me.currentRecord.id] = me.currentRecord;
+                                    }
+                                    this.ownerCt.ownerCt.hide();
+                                }
+                            },{
+                                 text: "Chiudi",
+                                 //iconCls:this.cancelIconCls,
+                                 //scope:this,
+                                 handler:function() {
+                                    this.ownerCt.ownerCt.hide();
+                                }
+                            }
+                        ]                        
+                    }); 
+
+                     win.show();
+                     
+                }
+            }]  
+        };
+    },
+
+    /** private: method[getStartEditTargetsGeomAction]
+     */    
+    getStartEditTargetsGeomAction: function(actionConf){
+        var sourceSRS=actionConf.sourceSRS;
+        var me= this;
+        var modifyControl;
+        var record;
+        //var targetLayer;
+        return {
+            xtype: 'actioncolumn',
+            sortable : false, 
+            width: 30,           
+            items: [{
+                icon   : this.startEditGeomToIconPath,  
+                tooltip: this.startEditGeomToTooltip,
+                scope: this,
+                handler: function(grid, rowIndex, colIndex) {
+                
+                    record = grid.getStore().getAt(rowIndex);
+                    
+                    var selectionModel = grid.getSelectionModel();
+                    selectionModel.unlock();
+                    
+                    var oldRow = selectionModel.getSelected();
+                    if(oldRow){
+                        if(oldRow.get("fid") != record.get("fid")){
+                            //alert("vuoi salvare?");
+                            me.removeGeometry(actionConf.layerName, oldRow.get("fid"));
+                            modifyControl.deactivate();
+                        }
+                    }
+                    
+                    selectionModel.clearSelections(false);
+                    selectionModel.selectRow( rowIndex, false );
+                    
+                    var map = this.target.mapPanel.map;
+                    
+                    //perform displayGeometry
+                    var geom = me.getGeometry(record,sourceSRS);
+                    
+                    var layerStyle= {
+                        strokeColor: "#FF0000",
+                        strokeWidth: 3,
+                        fillColor: "#00FFFF",
+                        fillOpacity: 0.8
+                    };
+                    
+                    var targetLayer = me.displayEditGeometry(actionConf.layerName, 
+                        record.get("fid"),
+                        geom, layerStyle);
+                        
+                    targetLayer.events.unregister("featureunselected", targetLayer, selected);    
+                    
+                    var selected = function(){
+                        //alert("attenzione");
+                        targetLayer.events.unregister("featureunselected", targetLayer, selected);
+                        
+                    };
+                    
+                    targetLayer.events.register("featureunselected", targetLayer, selected);
+
+                    modifyControl = new OpenLayers.Control.ModifyFeature(targetLayer, {clickout: false,toggle: false ,createVertices: true});
+
+                    map.addControl(modifyControl);
+                    modifyControl.mode = OpenLayers.Control.ModifyFeature.RESHAPE;
+                    
+                    modifyControl.activate();
+                    
+                    var selectFeature = targetLayer.getFeaturesByAttribute("id",record.get("fid"));
+                    
+                    modifyControl.selectFeature(selectFeature[0]);
+                    
+                    //perform ZoomAction
+                    var geometry = me.getGeometry(record,sourceSRS);
+                    map.zoomToExtent(geometry.getBounds());
+                    
+                }
+            },"-",{
+                icon   : this.stopEditGeomToIconPath,  
+                tooltip: this.stopEditGeomToTooltip,
+                scope: this,
+                handler: function(grid, rowIndex, colIndex) {
+                
+                    record = grid.getStore().getAt(rowIndex);
+
+                    var selectionModel = grid.getSelectionModel();
+                    selectionModel.unlock();
+                    
+                    var oldRow = selectionModel.getSelected();
+                    if(oldRow){
+                        if(oldRow.get("fid") != record.get("fid")){
+                            //alert("vuoi salvare?");
+                            me.removeGeometry(actionConf.layerName, oldRow.get("fid"));
+                            me.removeGeometry(actionConf.layerName, record.get("fid"));                                       
+                            modifyControl.deactivate();
+                            //return;
+                        }else{
+                        
+                            modifyControl.deactivate();
+                            
+                            var map = this.target.mapPanel.map;
+                            
+                            var geom = me.getGeometry(record,sourceSRS);
+                            
+                            var layerStyle= {
+                                strokeColor: "#FF0000",
+                                strokeWidth: 3,
+                                fillColor: "#00FFFF",
+                                fillOpacity: 0.8
+                            };
+                            
+                            targetLayer = me.displayEditGeometry(actionConf.layerName, 
+                                record.get("fid"),
+                                geom, layerStyle);
+                                
+                            var originSelectionModel = me.wfsGrid.getSelectionModel();
+                            var record1 = originSelectionModel.getSelected();
+                            var destSRS = map.getProjectionObject();
+                            var geometry = me.getGeometryEdit(targetLayer.features[0].geometry,sourceSRS,destSRS.projCode);
+                            record1.data.feature.geometry = geometry;   
+
+                            selectionModel.clearSelections(false);
+                            selectionModel.selectRow( rowIndex, false );
+                            
+                            me.removeGeometry(actionConf.layerName, record.get("fid"));                        
+                        }
+                    }else{
+                        modifyControl.deactivate();
+                        
+                        var map = this.target.mapPanel.map;
+                        
+                        var geom = me.getGeometry(record,sourceSRS);
+                        
+                        var layerStyle= {
+                            strokeColor: "#FF0000",
+                            strokeWidth: 3,
+                            fillColor: "#00FFFF",
+                            fillOpacity: 0.8
+                        };
+                        
+                        targetLayer = me.displayEditGeometry(actionConf.layerName, 
+                            record.get("fid"),
+                            geom, layerStyle);
+                            
+                        var originSelectionModel = me.wfsGrid.getSelectionModel();
+                        var record1 = originSelectionModel.getSelected();
+                        var destSRS = map.getProjectionObject();
+                        var geometry = me.getGeometryEdit(targetLayer.features[0].geometry,sourceSRS,destSRS.projCode);
+                        record1.data.feature.geometry = geometry;   
+
+                        selectionModel.clearSelections(false);
+                        selectionModel.selectRow( rowIndex, false );
+                        
+                        me.removeGeometry(actionConf.layerName, record.get("fid"));                         
+                    }
+                }
+            }]  
+        };
     },    
                 
 		
@@ -665,10 +976,30 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         return geometry;
     },
     
-    displayGeometry: function(layerName, id, geometry, style ){ //"Bersaglio Selezionato"
+    getGeometryEdit: function(rec, sourceSRS, destSRS){
+        var map = this.target.mapPanel.map;
+        var geometry = rec;
+        
+        if(sourceSRS)
+            if(sourceSRS != map.getProjection()){
+                var coll=new OpenLayers.Geometry.Collection(new Array(geometry.clone()));
+                var targetColl=coll.transform(
+                    new OpenLayers.Projection(destSRS),		                
+                    new OpenLayers.Projection(sourceSRS)											
+                    );	
+                geometry = targetColl.components[0];   
+                delete targetColl;
+            }
+        return geometry;
+    },    
+
+    displayEditGeometry: function(layerName, id, geometry, style ){ //"Bersaglio Selezionato"
         var map = this.target.mapPanel.map;
         var targetLayer = map.getLayersByName(layerName)[0];
-       
+        
+        var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+        renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;       
+        
         if(!targetLayer){
             var layerStyle= style || {
                 strokeColor: "#FF00FF",
@@ -679,7 +1010,54 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                     
             targetLayer = new OpenLayers.Layer.Vector(layerName,{
                 displayInLayerSwitcher: false,
-                style: layerStyle
+                style: layerStyle,
+                renderers: renderer
+            });
+			
+            map.addLayer(targetLayer);
+        }
+        if(geometry) {
+            var feature = new OpenLayers.Feature.Vector(geometry,{
+                "id": id
+            });
+            if(targetLayer.features.length == 0){
+                targetLayer.addFeatures([feature]);
+            }else{
+                var oldFeature = targetLayer.getFeaturesByAttribute("id",id);
+                if(!oldFeature.length){
+                    targetLayer.addFeatures([feature]);
+                }
+            }
+        }
+        return targetLayer;
+    },
+    
+    removeEditGeometry: function(layerName, id){
+        var map = this.target.mapPanel.map;
+        var targetLayer = map.getLayersByName(layerName)[0];
+        var unSelectFeatures= targetLayer.getFeaturesByAttribute("id", id);
+        targetLayer.removeFeatures(unSelectFeatures); 
+    },
+    
+    displayGeometry: function(layerName, id, geometry, style ){ //"Bersaglio Selezionato"
+        var map = this.target.mapPanel.map;
+        var targetLayer = map.getLayersByName(layerName)[0];
+        
+        var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+        renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;       
+        
+        if(!targetLayer){
+            var layerStyle= style || {
+                strokeColor: "#FF00FF",
+                strokeWidth: 2,
+                fillColor: "#FF00FF",
+                fillOpacity: 0.8
+            };
+                                    
+            targetLayer = new OpenLayers.Layer.Vector(layerName,{
+                displayInLayerSwitcher: false,
+                style: layerStyle,
+                renderers: renderer
             });
 			
             map.addLayer(targetLayer);
@@ -689,7 +1067,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 "id": id
             });
             targetLayer.addFeatures([feature]);	   
-        } 
+        }
+        return targetLayer;
     },
     
     removeGeometry: function(layerName, id){
@@ -890,6 +1269,12 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     case "startedit":
                         me.wfsColumns.push(me.getStartEditAction(me.actionColumns[kk]));
                         break;
+                    case "startedit_targets":
+                        me.wfsColumns.push(me.getStartEditTargetsAction(me.actionColumns[kk]));
+                        break;
+                    case "starteditgeom_targets":
+                        me.wfsColumns.push(me.getStartEditTargetsGeomAction(me.actionColumns[kk]));
+                        break;                        
                     case "stopedit":
                         me.wfsColumns.push(me.getStopEditAction(me.actionColumns[kk]));
                         break;                        
