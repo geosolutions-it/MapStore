@@ -991,6 +991,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         if(!viewParams) {
             var map = this.target.mapPanel.map;        
             var status = this.getStatus();        
+            
+            //DA VERIFICARE MEGLIO!!!
+            if(!status) {
+                this.status = this.processingPane.getInitialStatus();
+                this.status.formulaDesc = this.totalRiskLabel;
+                status = this.status;
+            }
+        
             var bounds = this.getBounds(status, map);
             var radius = this.getRadius();
             viewParams = "bounds:" + bounds + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman;

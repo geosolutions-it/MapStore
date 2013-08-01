@@ -547,7 +547,27 @@
 					"Wohnbevölkerung"],
 					"name": "POPOLAZIONE RESIDENTE",
 					"id": 1,
-					"type": "umano"
+					"type": "umano",
+                    "actionColumns": [{
+                        "type": "checkDisplay",
+                        "layerName": "Bersaglio Selezionato",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "zoom",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "starteditgeom_targets",
+                        "layerName": "Bersaglio Selezionato Editing",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    },
+                    {
+                        "type": "startedit_targets",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    }]
 				},
 				"Popolazione fluttuante turistica": {
 					"featureType": "popolazione_turistica",
@@ -1648,12 +1668,20 @@
 						"mapping": "bersagli"
 					},
 					{
+						"name": "bersagli_desc",
+						"mapping": "bersagli_desc"
+					},
+					{
 						"name": "cff",
 						"mapping": "cff"
 					},
 					{
 						"name": "sostanze",
 						"mapping": "sostanze"
+					},
+					{
+						"name": "sostanze_desc",
+						"mapping": "sostanze_desc"
 					},
 					{
 						"name": "padr",
