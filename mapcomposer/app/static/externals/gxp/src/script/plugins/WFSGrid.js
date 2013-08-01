@@ -667,15 +667,16 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 handler: function(grid, rowIndex, colIndex) {
                     var record = grid.getStore().getAt(rowIndex);
                    
-                    /*me.currentRecord = me.save[record.get("id")];
+                    me.currentRecord = me.save[record.get("id")];
                     if(!me.currentRecord) {
                         me.currentRecord = {
                             id: record.get("id"),
-                            cff: [],
-                            padr: [],
-                            pis: undefined
+                            value: record.get("value"),
+                            oldvalue: record.get("value"),
+                            geometry: me.getGeometry(record,sourceSRS),
+                            oldgeometry: me.getGeometry(record,sourceSRS)
                         };
-                    }*/
+                    }
                         
                     //var arrayGrid = [];
                     var columnCount = grid.getColumnModel().getColumnCount();
@@ -768,8 +769,9 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                             var fieldName = i.title.toLowerCase();
                                             var oldValue = record.get(fieldName);
                                             if(oldValue !== fieldValue) {
-                                                me.currentRecord[fieldName] = fieldValue;
+                                                me.currentRecord["value"] = fieldValue;
                                                 record.set(fieldName,fieldValue);
+                                                record.set("value",fieldValue);
                                                 changed = true;
                                             }
                                         }
@@ -816,7 +818,18 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 scope: this,
                 handler: function(grid, rowIndex, colIndex) {
                 
-                    record = grid.getStore().getAt(rowIndex);
+                    record = grid.getStore().getAt(rowIndex);                    
+                   
+                    me.currentRecord = me.save[record.get("id")];
+                    if(!me.currentRecord) {
+                        me.currentRecord = {
+                            id: record.get("id"),
+                            value: record.get("value"),
+                            oldvalue: record.get("value"),
+                            geometry: me.getGeometry(record,sourceSRS),
+                            oldgeometry: me.getGeometry(record,sourceSRS)
+                        };
+                    }
                     
                     var selectionModel = grid.getSelectionModel();
                     selectionModel.unlock();
@@ -837,7 +850,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     
                     //perform displayGeometry
                     var geom = me.getGeometry(record,sourceSRS);
-                    
+                   
                     var layerStyle= {
                         strokeColor: "#FF0000",
                         strokeWidth: 3,
@@ -921,6 +934,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 
                             selectionModel.clearSelections(false);
                             selectionModel.selectRow( rowIndex, false );
+                            me.currentRecord.geometry = geometry;
+                            me.save[me.currentRecord.id] = me.currentRecord;
                             
                             me.removeGeometry(actionConf.layerName, record.get("fid"));                        
                         }
@@ -950,6 +965,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 
                         selectionModel.clearSelections(false);
                         selectionModel.selectRow( rowIndex, false );
+                        me.currentRecord.geometry = geometry;
+                        me.save[me.currentRecord.id] = me.currentRecord;
                         
                         me.removeGeometry(actionConf.layerName, record.get("fid"));                         
                     }

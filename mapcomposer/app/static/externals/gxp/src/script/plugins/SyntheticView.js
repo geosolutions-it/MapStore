@@ -1120,6 +1120,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         if(status.processing === 3) {
             var simulation = status.simulation;            
             env += ';pis:'+simulation.pis.join('_') + ';padr:'+simulation.padr.join('_') + ';cff:'+simulation.cff.join('_');
+            env += ';changedTargets:'+simulation.targets.join('_');
+            env += ';distances:'+this.getBuffersList().join(',');
         }
         return env;
     },
@@ -1508,6 +1510,22 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }
         }
         return info;
+    },
+    
+    getBuffersList: function() {
+        var radius = this.getRadius();
+        var allRadius = [];
+        if(radius.radiusNotHum && radius.radiusNotHum > 0) {
+            allRadius.push(radius.radiusNotHum);
+        }
+    
+        if(typeof(radius.radiusHum) !== "undefined") {
+            var radiusHum = this.normalizeRadius(radius.radiusHum);
+            if(radiusHum.length > 0) {
+                allRadius=allRadius.concat(radiusHum);
+            }
+        }
+        return allRadius;
     },
     
     normalizeRadius: function(input, fillEmpty) {

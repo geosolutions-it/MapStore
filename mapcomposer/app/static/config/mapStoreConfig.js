@@ -476,7 +476,7 @@
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -488,6 +488,10 @@
                         },
                         {
                             "name": "residenti",      
+                            "mapping": "residenti"
+                        },
+                        {
+                            "name": "value",      
                             "mapping": "residenti"
                         },
                         {

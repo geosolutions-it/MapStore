@@ -125,6 +125,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     scenFeature: "siig_t_scenario",
     sostAccFeature: "siig_r_scenario_sostanza",
     
+
+
+    
     /** private: method[constructor]
      *  :arg config: ``Object``
      */
@@ -210,7 +213,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 },
                 select: function(combo, record, index) {
                     this.enableDisableForm(this.getComboRecord(this.formula, 'id_formula'), record);
-                    this.expandCollapseGrid(record); //call function to expand wfsGrid if elab is Simulation 
+                    this.enableDisableSimulation(record.get('id') === 3);
                 }
             }          
         });
@@ -348,13 +351,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             widget.disable();
         }
     },
-
+    /*
     expandCollapse: function(condition, widget) {
-    
-        var syntView = this.appTarget.tools[this.syntheticView];
-        var mapPanelContainer = Ext.getCmp("mapPanelContainer_id");
-        var mapPanelContainerBbar = mapPanelContainer.getBottomToolbar(); 
-        
         if(condition) {
             if(widget.collapsed) {
                 widget.expand();
@@ -363,19 +361,84 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             mapPanelContainerBbar.removeAll(true);
             mapPanelContainerBbar.add(syntView.simulationViewBbar);
             mapPanelContainer.doLayout(false,true);
-            
         } else if(!widget.collapsed) {
             widget.collapse();
             mapPanelContainerBbar.removeAll(true);
             mapPanelContainerBbar.add(syntView.analyticViewBbar);
             mapPanelContainer.doLayout(false,true);
-            
         }
-    },
+    },*/
     
-    expandCollapseGrid: function(elaborazione) {
-        var southPanel = Ext.getCmp("south");
-        this.expandCollapse(elaborazione.get('id') === 3 ,southPanel);
+    enableDisableSimulation: function(enable) {
+        var syntView = this.appTarget.tools[this.syntheticView];
+        // nothing to do
+        if((enable && syntView.simulationEnabled) || (!enable && !syntView.simulationEnabled)) {
+            return;
+        }
+        var southPanel = Ext.getCmp("south");        
+        var wfsGrid = Ext.getCmp("featuregrid");
+        var map = this.appTarget.mapPanel.map;
+        
+        var scale = Math.round(map.getScale());   
+        
+        if(enable) {
+            syntView.simulationRestore = {
+                collapsed: southPanel.collapsed,
+                buttons: {
+                    'roadGraph_view': Ext.getCmp('roadGraph_view').pressed,
+                    'areaDamage_view': Ext.getCmp('areaDamage_view').pressed,
+                    'targets_view': Ext.getCmp('targets_view').pressed
+                }
+            };
+            
+            if(southPanel.collapsed) {
+                southPanel.expand();
+            } else {
+                syntView.simulationRestore.grids = wfsGrid.currentGrids;
+            }
+            
+            wfsGrid.removeAllGrids();
+            
+            if(scale <= syntView.analiticViewScale) {
+                Ext.getCmp("targets_view").enable();
+                Ext.getCmp("roadGraph_view").enable(); 
+            } else {
+                Ext.getCmp("targets_view").disable();
+                Ext.getCmp("roadGraph_view").disable(); 
+            }
+            Ext.getCmp("targets_view").toggle(false, true);
+            Ext.getCmp("roadGraph_view").toggle(false, true);   
+            Ext.getCmp("areaDamage_view").disable();
+            Ext.getCmp("areaDamage_view").toggle(false, true);
+            
+            syntView.simulationEnabled = true;
+        } else {
+            if(syntView.simulationRestore) {
+                if(syntView.simulationRestore.collapsed) {
+                    southPanel.collapse();
+                } else {
+                    Ext.getCmp("areaDamage_view").enable();
+                    Ext.getCmp("roadGraph_view").enable();
+                    Ext.getCmp("targets_view").enable();
+                    if(syntView.simulationRestore.grids && syntView.simulationRestore.grids.length > 0) {
+                        wfsGrid.removeAllGrids();
+                        wfsGrid.restoreGrids(syntView.simulationRestore.grids);
+                    }
+                }
+                for(var buttonId in syntView.simulationRestore.buttons) {
+                    if(syntView.simulationRestore.buttons.hasOwnProperty(buttonId)) {
+                        var button = Ext.getCmp(buttonId);
+                        var status = syntView.simulationRestore.buttons[buttonId];
+                        button.toggle(status, true);
+                    }
+                }
+            }            
+            syntView.removeLayersByName(map, [syntView.selectedTargetLayer]);
+            syntView.simulationRestore = null;
+            syntView.simulationEnabled = false;
+        }
+        
+        //this.expandCollapse(enable ,southPanel);
     },    
     
     enableDisableTemporali: function(formula, elaborazione) {
@@ -1179,7 +1242,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 text: this.cancelButton,
                 iconCls: 'cancel-button',
                 scope: this,
-                handler: this.switchToSyntheticView
+                handler: this.cancelProcessing
             },{
                 text: this.resetButton,
                 iconCls: 'reset-button',
@@ -1258,11 +1321,16 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             
             syntView.setStatus(status);
             
-            this.expandCollapse(false ,Ext.getCmp("south"));
+            Ext.getCmp("south").collapse();
             
             syntView.doProcess(params.roi);
             this.appTarget.mapPanel.map.events.unregister("move", this, this.aoiUpdater);
         }
+    },
+    
+    cancelProcessing: function() {
+        this.enableDisableSimulation(false);
+        this.switchToSyntheticView();
     },
     
     switchToSyntheticView: function(){
@@ -1518,7 +1586,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 
         store=this.macrobers.getStore(); 
         this.macrobers.setValue(this.status.macroTarget);
-        this.macrobers.fireEvent('select',this.macrobers, store.getAt(store.findExact("name", this.status.macroTarget)));
+        if(store.findExact("name", this.status.macroTarget) !== -1) {
+            this.macrobers.fireEvent('select',this.macrobers, store.getAt(store.findExact("name", this.status.macroTarget)));
+        }
         
         store=this.bers.getStore(); 
         if(this.status.target['macro']) {
@@ -1540,7 +1610,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.setComboStatus(this.classi, 'classe');
         this.setComboStatus(this.sostanze, 'sostanza');
         this.setComboStatus(this.accident, 'accident');
-        this.setComboStatus(this.seriousness, 'seriousness');          
+        this.setComboStatus(this.seriousness, 'seriousness');   
+
+        // simulation
+        if(this.status.processing === 3) {
+            this.enableDisableSimulation(true);
+        }
     },        
     
     /** private: method[setComboStatus]   
@@ -1553,7 +1628,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var store = combo.getStore();      
         var value = this.status[statusName][field];
         combo.setValue(value);
-        combo.fireEvent('select',combo, store.getAt(store.findExact(field, value)));
+        if(store.findExact(field, value) !== -1) {
+            combo.fireEvent('select',combo, store.getAt(store.findExact(field, value)));
+        }
     },
     
     /** private: method[getStatus]   
@@ -1580,7 +1657,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         obj.simulation = {
             cff:[],
             padr:[],
-            pis:[]
+            pis:[],
+            targets:[]
         };
         
         if(obj.processing === 3) {
@@ -1598,12 +1676,22 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                                         if(typeof changed !== 'undefined') {
                                             obj.simulation[propName].push(id+','+changed);
                                         }
-                                    } else if(changed.length > 0) {
+                                    } else if(changed && changed.length > 0) {
                                         for(var count = 0; count < changed.length; count++) {
                                             obj.simulation[propName].push(id+','+changed[count].id+','+changed[count].value);
                                         }
-                                    }
+                                    } 
                                 }
+                            }
+                            
+                            // targets
+                            if(recordInfo.oldgeometry) {
+                                // remove
+                                obj.simulation.targets.push('-'+id+','+recordInfo.oldvalue+','+recordInfo.oldgeometry.toString());
+                            }
+                            if(recordInfo.geometry) {
+                                // add
+                                obj.simulation.targets.push(id+','+recordInfo.value+','+recordInfo.geometry.toString());
                             }
                         }
                     }
@@ -1650,6 +1738,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     getInitialStatus: function() {
         var obj = {};
     
+        obj.initial = true;
         obj.processing = 1;        
         obj.processingDesc = '';
         obj.formula = 26;
@@ -1657,11 +1746,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var formulaRec = {};
         obj.formulaInfo = {
             dependsOnTarget: true,
-            dependsOnArcs: true
+            dependsOnArcs: true,
+            visibleOnArcs: true,
+            visibleOnGrid: true
         };                
         
-        obj.target = {humans: null, code:'-2', layer: 'bersagli_all', severeness: '1,2,3,4,5'}; 
-        obj.macroTarget = {};
+        obj.target = {humans: null, code:'-2', layer: 'bersagli_all', severeness: '1,2,3,4,5', macro: true}; 
+        obj.macroTarget = this.allTargetOption;
         
         //obj.weather = "0";
         obj.temporal = "0";
