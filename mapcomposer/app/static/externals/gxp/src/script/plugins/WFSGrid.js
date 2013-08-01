@@ -412,7 +412,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
     
     /** private: method[setEditGrid]
      */
-    setEditGrid: function(record,valueCol,idCol,descCol,colType,rowIndex){
+    setEditGrid: function(record,valueCol,idCol,descCol,colType,rowIndex,idHeader,descHeader){
         var me = this;
         var rowIndex = rowIndex;
         var fm = Ext.form;    
@@ -452,13 +452,13 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             colModel: new Ext.grid.ColumnModel({
                 columns: [{
                     id: 'layer',
-                    width: 20,
-                    header: 'layer',
+                    width: 200,
+                    header: idHeader || 'layer',
                     dataIndex: 'layer',
                     hidden: false
                 },{
                     id: 'values',
-                    header: 'values',
+                    header: descHeader || 'values',
                     dataIndex: 'values',
                     hidden: false,
                     editor: editor
@@ -524,7 +524,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                         
                         switch (colType){
                             case "PADR":                                
-                                var padrGrid = me.setEditGrid(record,'padr','sostanze','sostanze_desc', colType,rowIndex);
+                                var padrGrid = me.setEditGrid(record,'padr','sostanze','sostanze_desc', colType,rowIndex,'Sostanza','PADR');
                                 break;
                             case "PIS":
                                 var colRecord = grid.getStore().getAt(rowIndex).get('pis');
@@ -546,7 +546,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                 break;  
                             case "CFF":
                                 
-                                var cffGrid = me.setEditGrid(record,'cff','bersagli','bersagli_desc',colType,rowIndex);
+                                var cffGrid = me.setEditGrid(record,'cff','bersagli','bersagli_desc',colType,rowIndex,'Bersaglio','CFF');
                                 break;   
                         }
                     }
@@ -570,7 +570,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     });
                     
                     var win = new Ext.Window({
-                        width: 300,
+                        width: 400,
                         height: 250,
                         modal: true,
                         resizable: false,

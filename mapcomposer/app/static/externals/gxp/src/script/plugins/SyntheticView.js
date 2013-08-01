@@ -106,6 +106,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     processingDone: true,
     
+    analyticEnabled: false,
+    simulationEnabled: false,
+    
     /** private: method[constructor]
      *  :arg config: ``Object``
      */
@@ -535,7 +538,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     //this.restoreOriginalRiskLayers(map);
                     this.enableDisableRoads(true);
                     
-                    this.disableAnalyticView();  
+                    this.disableSouthPanel();  
 
                     this.processingDone = false;
                     
@@ -573,7 +576,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         active.enable();
                     }    
                 
-                    if(this.status){
+                    if(this.status && !this.status.initial){
                         this.processingPane.setStatus(this.status);
                     }                    
                 }
@@ -592,49 +595,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             ]
         });
 
-        //set simulation button toolbar with bottons. Viewable only in simulation mode.
-        this.simulationViewBbar =  [{
-                    xtype:'displayfield',
-                    id:'warning_message'
-                },'->',{
-                    xtype: 'button',
-                    id: "targets_simulation_view",
-                    iconCls: 'analytic-view-button',
-                    text: this.targetsTextBotton,
-                    scope: this,
-                    toggleGroup: 'simulation_buttons',
-                    enableToggle: true,
-                    pressed: false,
-                    disabled:true,
-                    handler: function(btn) {
-                        var wfsGrid = Ext.getCmp("featuregrid");
-                        wfsGrid.setCurrentPanel('targets'); //change for edit targets
-                        this.loadTargetGrids();
-                    }
-                },{
-                    xtype: 'button',
-                    id: "roadGraph_simulation_view",
-                    iconCls: 'analytic-view-button',
-                    text: this.roadGraphTextBotton,
-                    scope: this,
-                    toggleGroup: 'simulation_buttons',
-                    enableToggle: true,
-                    pressed: false,
-                    disabled:true,
-                    handler: function(btn) {                        
-                        var wfsGrid = Ext.getCmp("featuregrid");
-                        wfsGrid.setCurrentPanel('roads_edit');
                         
-                        var map = this.target.mapPanel.map;        
-                        var status = this.getStatus();        
-                        var bounds = this.getBounds(null, map);
-                        var viewParams = "bounds:" + bounds;                        
-                        this.loadRoadsGrid(viewParams);                        
-                    }
-                }];
-                
-        //set analytic button toolbar with bottons
-        this.analyticViewBbar =  [{
+        //set analytic/simulation button toolbar with bottons
+        this.mapBbar =  [{
                     xtype: 'button',
                     id: "analytic_view",
                     iconCls: 'analytic-view-button',
@@ -690,17 +653,25 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     toggleGroup: 'analytic_buttons',
                     enableToggle: true,
                     disabled:true,
-                    handler: function(btn) {                        
+                    handler: function(btn) {        
                         var wfsGrid = Ext.getCmp("featuregrid");
-                        wfsGrid.setCurrentPanel('roads');
-                        this.loadRoadsGrid();                        
+                        var viewParams;
+                        wfsGrid.setCurrentPanel(this.simulationEnabled ? 'roads_edit' : 'roads');
+                        
+                        if(this.simulationEnabled) {
+                            var map = this.target.mapPanel.map;        
+                            var status = this.getStatus();        
+                            var bounds = this.getBounds(null, map);
+                            viewParams = "bounds:" + bounds;                        
+                        }
+                        this.loadRoadsGrid(viewParams);            
                     }
                 }];        
         
         //add analytic button toolbar to mapPanelContainer        
         var mapPanelContainer = Ext.getCmp("mapPanelContainer_id");
         var mapPanelContainerBbar = mapPanelContainer.getBottomToolbar();
-        mapPanelContainerBbar.add(this.analyticViewBbar);
+        mapPanelContainerBbar.add(this.mapBbar);
         mapPanelContainer.doLayout(false,true);
 
         config = Ext.apply(panel, config || {});
@@ -712,23 +683,26 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         this.target.mapPanel.map.events.register('zoomend', this, function(){
             var scale = this.getMapScale();
-            
-            if(scale <= this.analiticViewScale && this.processingDone) {
-                if(Ext.getCmp("analytic_view")){
-                    Ext.getCmp("analytic_view").enable();
-                }else{
-                    Ext.getCmp("roadGraph_simulation_view").enable();
-                    Ext.getCmp("targets_simulation_view").enable();
+            if(this.simulationEnabled) {
+                if(scale <= this.analiticViewScale) {
+                    Ext.getCmp("roadGraph_view").enable();
+                    Ext.getCmp("targets_view").enable();
+                    Ext.getCmp("analytic_view").disable();
+                    Ext.getCmp("areaDamage_view").disable();
+                } else {
+                    Ext.getCmp("roadGraph_view").disable();
+                    Ext.getCmp("targets_view").disable();
+                    Ext.getCmp("analytic_view").disable();
+                    Ext.getCmp("areaDamage_view").disable();
                 }
             } else {
-                if(Ext.getCmp("analytic_view")){
+                if(scale <= this.analiticViewScale && this.processingDone) {
+                    Ext.getCmp("analytic_view").enable();  
+                } else {
                     Ext.getCmp("analytic_view").disable();
-                }else{
-                    Ext.getCmp("roadGraph_simulation_view").disable();
-                    Ext.getCmp("targets_simulation_view").disable();                
                 }
-
             }
+            
             var msg = '';
             if(this.status && this.status.formulaInfo) {
                 if(scale <= this.cellViewScale && this.status.formulaInfo.dependsOnArcs && !this.status.formulaInfo.visibleOnArcs) {
@@ -982,6 +956,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }, true, undefined));
         
         if(Ext.getCmp('targets_view').pressed) {
+            Ext.getCmp('featuregrid').setCurrentPanel('targets');
             this.loadTargetGrids(targetViewParams);
         }   
             
@@ -1043,6 +1018,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }
         
         if(Ext.getCmp('areaDamage_view').pressed) {
+            Ext.getCmp('featuregrid').setCurrentPanel('damage');                        
             this.loadDamageGrid();
         }
     },
@@ -1256,6 +1232,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.addTargets(newLayers, bounds, radius);                
             
         if(Ext.getCmp('roadGraph_view').pressed) {
+            Ext.getCmp('featuregrid').setCurrentPanel('roads');
             this.loadRoadsGrid();
         }   
         
@@ -1281,10 +1258,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         if(Ext.getCmp("roadGraph_view")) {
             Ext.getCmp("roadGraph_view").enable();        
         }
+        this.analyticEnabled = true;
     },
     
-    disableAnalyticView: function() {        
-        Ext.getCmp("south").collapse();  
+    disableSouthPanel: function() {     
+        if(!Ext.getCmp("south").collapsed) {
+            Ext.getCmp("south").collapse();  
+        }
         if(Ext.getCmp("targets_view")) {
             Ext.getCmp("targets_view").disable();
         }
@@ -1294,6 +1274,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         if(Ext.getCmp("roadGraph_view")) {
             Ext.getCmp("roadGraph_view").disable();        
         }    
+        Ext.getCmp("featuregrid").removeAllGrids();
+        this.analyticEnabled = false;
+        this.simulationEnabled = false;
     },
     
     enableDisableRoads: function(visibility) {
@@ -1319,7 +1302,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         // remove analytic view layers (buffers, targets, selected targets)
         this.removeAnalyticViewLayers(map);     
-        this.disableAnalyticView();        
+        this.disableSouthPanel();        
         
         this.processingDone = true;
         
@@ -1495,6 +1478,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     removeRiskLayers: function(map) {
         this.removeLayersByName(map,this.currentRiskLayers);
+        this.removeLayersByName(map,[this.selectedTargetLayer]);
         this.currentRiskLayers = [];
     },    
     

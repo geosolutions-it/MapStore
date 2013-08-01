@@ -238,6 +238,23 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                 //this.setActiveTab(0);                               
             },
             
+            restoreGrids: function(grids) {
+                for(var i=0; i<grids.length;i++){
+                    grids[i].target= me.target;                    
+                    grids[i].addOutput({},i === 0);                                        
+                    grids[i].onEmpty=function(grid) {                        
+                        // no record found message
+                        var noRecordFoundEl = grid.wfsGrid.el.child('.x-grid3-scroller');
+                        noRecordFoundEl.addClass(me.noRecordFoundCls);
+                        noRecordFoundEl.update(me.noRecordFoundLabel);                        
+                    };
+                    if(i === 0) {
+                        this.setActiveTab(i);
+                    }
+                }
+                this.currentGrids = grids;
+            },
+            
             loadGridsFromJson: function(attributeName, attributeValue, data, tplData) {
                 this.removeAllGrids();
                 var grids = this.hideAllBut(attributeName, attributeValue);
@@ -268,7 +285,7 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                         this.setActiveTab(i);
                     }
                 }
-                
+                this.currentGrids = grids;
                 //this.setActiveTab(0);                               
             }
             
