@@ -399,16 +399,31 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             
             wfsGrid.removeAllGrids();
             
+            syntView.simulationLoaded = false;
+            
+            var wfsGrid = Ext.getCmp("featuregrid");
+            wfsGrid.setCurrentPanel('simulation');
+            
             if(scale <= syntView.analiticViewScale) {
-                Ext.getCmp("targets_view").enable();
-                Ext.getCmp("roadGraph_view").enable(); 
-            } else {
+                syntView.simulationLoaded = true;
+                
+                var viewParams;                
+                var status = syntView.getStatus();        
+                var bounds = syntView.getBounds(null, map);
+                viewParams = "bounds:" + bounds;                        
+                wfsGrid.loadGrids(null, null, syntView.selectionLayerProjection, viewParams);                                                
+            } 
+/*            else {
                 Ext.getCmp("targets_view").disable();
                 Ext.getCmp("roadGraph_view").disable(); 
-            }
-            Ext.getCmp("targets_view").toggle(false, true);
-            Ext.getCmp("roadGraph_view").toggle(false, true);   
+            }*/
+            Ext.getCmp("analytic_view").disable();
+            Ext.getCmp("targets_view").disable();
+            Ext.getCmp("roadGraph_view").disable(); 
             Ext.getCmp("areaDamage_view").disable();
+            
+            Ext.getCmp("targets_view").toggle(false, true);
+            Ext.getCmp("roadGraph_view").toggle(false, true);               
             Ext.getCmp("areaDamage_view").toggle(false, true);
             
             syntView.simulationEnabled = true;
@@ -420,6 +435,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     Ext.getCmp("areaDamage_view").enable();
                     Ext.getCmp("roadGraph_view").enable();
                     Ext.getCmp("targets_view").enable();
+                    Ext.getCmp("analytic_view").enable();
                     if(syntView.simulationRestore.grids && syntView.simulationRestore.grids.length > 0) {
                         wfsGrid.removeAllGrids();
                         wfsGrid.restoreGrids(syntView.simulationRestore.grids);
@@ -1676,7 +1692,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                                         if(typeof changed !== 'undefined') {
                                             obj.simulation[propName].push(id+','+changed);
                                         }
-                                    } else if(changed && changed.length > 0) {
+                                    } else if(changed && Ext.isArray(changed) && changed.length > 0) {
                                         for(var count = 0; count < changed.length; count++) {
                                             obj.simulation[propName].push(id+','+changed[count].id+','+changed[count].value);
                                         }
@@ -1687,11 +1703,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                             // targets
                             if(recordInfo.oldgeometry) {
                                 // remove
-                                obj.simulation.targets.push('-'+id+','+recordInfo.oldvalue+','+recordInfo.oldgeometry.toString());
+                                obj.simulation.targets.push('-'+grid.id+','+recordInfo.oldvalue+','+recordInfo.oldgeometry.toString());
                             }
                             if(recordInfo.geometry) {
                                 // add
-                                obj.simulation.targets.push(id+','+recordInfo.value+','+recordInfo.geometry.toString());
+                                obj.simulation.targets.push(grid.id+','+recordInfo.value+','+recordInfo.geometry.toString());
                             }
                         }
                     }

@@ -653,8 +653,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     toggleGroup: 'analytic_buttons',
                     enableToggle: true,
                     disabled:true,
-                    handler: function(btn) {        
+                    handler: function(btn) {
                         var wfsGrid = Ext.getCmp("featuregrid");
+                        wfsGrid.setCurrentPanel('roads');
+                        this.loadRoadsGrid();
+                        /*var wfsGrid = Ext.getCmp("featuregrid");
                         var viewParams;
                         wfsGrid.setCurrentPanel(this.simulationEnabled ? 'roads_edit' : 'roads');
                         
@@ -664,7 +667,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             var bounds = this.getBounds(null, map);
                             viewParams = "bounds:" + bounds;                        
                         }
-                        this.loadRoadsGrid(viewParams);            
+                        this.loadRoadsGrid(viewParams);            */
                     }
                 }];        
         
@@ -684,16 +687,15 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.target.mapPanel.map.events.register('zoomend', this, function(){
             var scale = this.getMapScale();
             if(this.simulationEnabled) {
-                if(scale <= this.analiticViewScale) {
-                    Ext.getCmp("roadGraph_view").enable();
-                    Ext.getCmp("targets_view").enable();
-                    Ext.getCmp("analytic_view").disable();
-                    Ext.getCmp("areaDamage_view").disable();
-                } else {
-                    Ext.getCmp("roadGraph_view").disable();
-                    Ext.getCmp("targets_view").disable();
-                    Ext.getCmp("analytic_view").disable();
-                    Ext.getCmp("areaDamage_view").disable();
+                if(scale <= this.analiticViewScale && !this.simulationLoaded) {
+                    this.simulationLoaded = true;
+                    var wfsGrid = Ext.getCmp("featuregrid");
+                    var viewParams;
+                    
+                    var status = this.getStatus();        
+                    var bounds = this.getBounds(null, this.target.mapPanel.map);
+                    viewParams = "bounds:" + bounds;                        
+                    wfsGrid.loadGrids(null, null, this.selectionLayerProjection, viewParams);  
                 }
             } else {
                 if(scale <= this.analiticViewScale && this.processingDone) {
@@ -702,7 +704,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     Ext.getCmp("analytic_view").disable();
                 }
             }
-            
             var msg = '';
             if(this.status && this.status.formulaInfo) {
                 if(scale <= this.cellViewScale && this.status.formulaInfo.dependsOnArcs && !this.status.formulaInfo.visibleOnArcs) {

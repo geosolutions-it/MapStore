@@ -521,17 +521,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
-                    },
-                    {
-                        "type": "startedit_targets",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     }]
                 },
                 "Popolazione fluttuante turistica": {
@@ -1496,81 +1485,81 @@
                     "type": "all"
                 }
             },
-			"roads_edit": {
-				"Grafo Stradale Simulazione": {
-					"featureType": "grafo_simulazione",
-					"fields": [{
-						"name": "id",
-						"mapping": "id_geo_arco"
-					},
-					{
-						"name": "geometry",
-						"mapping": "geometria"
-					},
-					{
-						"name": "pis",
-						"mapping": "pis"
-					},
-					{
-						"name": "bersagli",
-						"mapping": "bersagli"
-					},
-					{
-						"name": "bersagli_desc",
-						"mapping": "bersagli_desc"
-					},
-					{
-						"name": "cff",
-						"mapping": "cff"
-					},
-					{
-						"name": "sostanze",
-						"mapping": "sostanze"
-					},
-					{
-						"name": "sostanze_desc",
-						"mapping": "sostanze_desc"
-					},
-					{
-						"name": "padr",
-						"mapping": "padr"
-					}],
-					"columns": [{
-						"header": ["Id",
-						"Id",
-						"Id",
-						"Id"],
-						"dataIndex": "id"
-					},
-					{
-						"header": ["PIS",
-						"PIS",
-						"PIS",
-						"PIS"],
-						"dataIndex": "pis"
-					},
-					{
-						"header": ["CFF",
-						"CFF",
-						"CFF",
-						"CFF"],
-						"dataIndex": "cff"
-					},
-					{
-						"header": ["PADR",
-						"PADR",
-						"PADR",
-						"PADR"],
-						"dataIndex": "padr"
-					}],
-					"title": ["Archi",
-					"Archi",
-					"Archi",
-					"Archi"],
-					"id": 1,
-					"name": "ARCHI",
-					"type": "all",
-					"noPaging": true,
+            "simulation": {
+                "Grafo Stradale": {
+                    "featureType": "grafo_simulazione",
+                    "fields": [{
+                        "name": "id",
+                        "mapping": "id_geo_arco"
+                    },
+                    {
+                        "name": "geometry",
+                        "mapping": "geometria"
+                    },
+                    {
+                        "name": "pis",
+                        "mapping": "pis"
+                    },
+                    {
+                        "name": "bersagli",
+                        "mapping": "bersagli"
+                    },
+                    {
+                        "name": "bersagli_desc",
+                        "mapping": "bersagli_desc"
+                    },
+                    {
+                        "name": "cff",
+                        "mapping": "cff"
+                    },
+                    {
+                        "name": "sostanze",
+                        "mapping": "sostanze"
+                    },
+                    {
+                        "name": "sostanze_desc",
+                        "mapping": "sostanze_desc"
+                    },
+                    {
+                        "name": "padr",
+                        "mapping": "padr"
+                    }],
+                    "columns": [{
+                        "header": ["Id",
+                        "Id",
+                        "Id",
+                        "Id"],
+                        "dataIndex": "id"
+                    },
+                    {
+                        "header": ["PIS",
+                        "PIS",
+                        "PIS",
+                        "PIS"],
+                        "dataIndex": "pis"
+                    },
+                    {
+                        "header": ["CFF",
+                        "CFF",
+                        "CFF",
+                        "CFF"],
+                        "dataIndex": "cff"
+                    },
+                    {
+                        "header": ["PADR",
+                        "PADR",
+                        "PADR",
+                        "PADR"],
+                        "dataIndex": "padr"
+                    }],
+                    "title": ["Archi",
+                    "Archi",
+                    "Archi",
+                    "Archi"],
+                    "id": 100,
+                    "name": "ARCHI",
+                    "type": "all",
+                    "noPaging": true,
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -1585,8 +1574,1154 @@
                         "sourceSRS": "EPSG:32632",
                         "width": 20
                     }]                    
-				}
-			},
+                },
+                "Popolazione residente": {
+                    "featureType": "popolazione_residente",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id_tematico"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "value",      
+                            "mapping": "residenti"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Residents number", "Residenti", "Nombre de résidents", "Anzahl der Anwohner"],
+                            "dataIndex": "value",
+                            "editable": true
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["Resident Population", "Popolazione residente", "Population résidente", "Anwohnerzahlen"],
+                    "name": "POPOLAZIONE RESIDENTE",
+                    "id": 1,
+                    "type": "umano",
+                    "noPaging": true,
+                    "allowAdd": true,                    
+                    "actionColumns": [{
+                        "type": "checkDisplay",
+                        "layerName": "Bersaglio Selezionato",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "zoom",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "starteditgeom_targets",
+                        "layerName": "Bersaglio Selezionato Editing",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    },
+                    {
+                        "type": "remove_target",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    }]
+                },
+                "Popolazione fluttuante turistica": {
+                    "featureType": "popolazione_turistica",
+                                
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "comune",      
+                            "mapping": "denominazione_comune_${locale}"
+                        },
+                        {
+                            "name": "natcode",      
+                            "mapping": "nat_code"
+                        },
+                        {
+                            "name": "value",      
+                            "mapping": "pres_max"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Municipality name", "Comune", "Nom de la commune", "Gemeindename"],      
+                            "dataIndex": "comune"
+                        },
+                        {
+                            "header": ["Municipality National Code", "NAT Code", "Code national de la commune", "Gemeindekodex"],      
+                            "dataIndex": "natcode"
+                        },
+                        {
+                            "header": ["Maximum presence", "Presenza massima", "Présence maximale", "maximale Kapazität/ maximale Nächtigungen"],      
+                            "dataIndex": "value",
+                            "editable": true
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["Tourist population", "Popolazione fluttuante turistica", "Population touristique", "Tourismuszahlen"],
+                    "name": "POPOLAZIONE FLUTTUANTE TURISTICA (MAX)",
+                    "id": 2,
+                    "type": "umano",
+                    "noPaging": true,
+                    "allowAdd": true,
+                    "actionColumns": [{
+                        "type": "checkDisplay",
+                        "layerName": "Bersaglio Selezionato",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "zoom",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "starteditgeom_targets",
+                        "layerName": "Bersaglio Selezionato Editing",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    },
+                    {
+                        "type": "remove_target",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    }]
+                },
+                "Addetti industria e servizi": {
+                                    
+                    "featureType": "industria_servizi",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "value",      
+                            "mapping": "addetti"
+                        },
+                        {
+                            "name": "fonte_addetti",      
+                            "mapping": "fonte_addetti_${locale}"
+                        },
+                        {
+                            "name": "denominazione",      
+                            "mapping": "denominazione_${locale}"
+                        },
+                        {
+                            "name": "codfisc",      
+                            "mapping": "cod_fisc"
+                        },
+                        {
+                            "name": "descrizioneateco",      
+                            "mapping": "descrizione_ateco_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Description", "Denominazione", "Dénomination", "Benennung"],      
+                            "dataIndex": "denominazione"
+                        },
+                        {
+                            "header": ["Tax Code", "Cod. Fiscale", "Numéro d'identification fiscale", "Mehrwertssteuer-Nummer"],      
+                            "dataIndex": "codfisc"
+                        },
+                        {
+                            "header": ["NACE code", "Cod. ATECO", "Code NACE", "ATECO Kodex"],      
+                            "dataIndex": "codateco"
+                        },
+                        {
+                            "header": ["NACE code eescription ", "Desc. ATECO", "Description code NACE", "Beschreibung des ATECO Kodex"],      
+                            "dataIndex": "descrizioneateco"
+                        },
+                        {
+                            "header": ["Employees number", "N. Addetti", "Nombre d'employés", "Anzahl der Beschäftigten"],      
+                            "dataIndex": "value",
+                            "editable": true
+                        },
+                        {
+                            "header": ["Employees number source (Estimated / calculated)", "Fonte addetti", "Source du nombre d'employés (Estimé/calculé)", "Quelle der Anzahl der Beschäftigten (geschätzt/berechnet)"],      
+                            "dataIndex": "fonte_addetti"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["Industry and services", "Addetti industria e servizi", "Industrie et services", "Industrie und Dienstleistungen"],
+                    "name": "ADDETTI INDUSTRIA E SERVIZI",
+                    "id": 4,
+                    "type": "umano",
+                    "noPaging": true,
+                    "actionColumns": [{
+                        "type": "checkDisplay",
+                        "layerName": "Bersaglio Selezionato",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "zoom",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "starteditgeom_targets",
+                        "layerName": "Bersaglio Selezionato Editing",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    },
+                    {
+                        "type": "remove_target",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    }]
+                },
+                "Addetti/utenti strutture sanitarie": {
+                    "featureType": "strutture_sanitarie",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "value",      
+                            "mapping": "addetti"
+                        },
+                        {
+                            "name": "denominazione",      
+                            "mapping": "denominazione_${locale}"
+                        },
+                        {
+                            "name": "descrizione_uso",      
+                            "mapping": "descrizione_uso_${locale}"
+                        },
+                        {
+                            "name": "fonte_addetti",      
+                            "mapping": "fonte_addetti_${locale}"
+                        },
+                        {
+                            "name": "fonte_numero_letti_day_h",      
+                            "mapping": "fonte_numero_letti_day_h_${locale}"
+                        },
+                        {
+                            "name": "nr_letti_dh",      
+                            "mapping": "nr_letti_dh"
+                        },
+                        {
+                            "name": "fonte_numero_letti_ordinari",      
+                            "mapping": "fonte_numero_letti_ordinari_${locale}"
+                        },
+                        {
+                            "name": "letti_ordinari",      
+                            "mapping": "letti_ordinari"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Name", "Denominazione", "Dénomination", "Benennung"],      
+                            "dataIndex": "denominazione"
+                        },
+                        {
+                            "header": ["Use description", "Desc. Uso", "Description d'utilisation", "Nutzungsbeschreibung"],      
+                            "dataIndex": "descrizione_uso"
+                        },
+                        {
+                            "header": ["Employees number source (Estimated / calculated)", "Fonte addetti", "Source du nombre d'employés (Estimé/calculé)", "Quelle der Bedienstetenzahlen"],      
+                            "dataIndex": "fonte_addetti"
+                        },
+                        {
+                            "header": ["Employees number", "N. Addetti", "Nombre d'employés", "Anzahl der Bediensteten"],      
+                            "dataIndex": "value",
+                            "editable": true
+                        },
+                        {
+                            "header": ["Day-Hospital beds number source (Estimated / calculated)", "Fonte N. Letti day hosp.", "Source du nombre de lits d'hôpital de jour (Estimé/calculé)s", "Quelle der Bettenzahlen des Day-Hospital (geschätzt/erhoben))"],      
+                            "dataIndex": "fonte_numero_letti_day_h"
+                        },
+                        {
+                            "header": ["Day-Hospital beds number", "N. Letti day hosp.", "Nombre de lits d'hôpital de jour", "Anzahl der Betten im Tageskrankenhaus/Day-Hospital"],      
+                            "dataIndex": "nr_letti_dh"
+                        },
+                        {
+                            "header": ["Ordinary beds number source (Estimated / calculated)", "Fonte N. Letti day ordin.", "Source du nombre de lits ordinaires (Estimé/calculé)", "Quelle der ordentlichen Bettenzahlen (geschätzt/erhoben)"],      
+                            "dataIndex": "fonte_numero_letti_ordinari"
+                        },
+                        {
+                            "header": ["Ordinary beds number", "N. Letti day ordin.", "Nombre de lits ordinaires", "Anzahl ordentliche Betten"],      
+                            "dataIndex": "letti_ordinari"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["Health facilities", "Addetti/utenti strutture sanitarie", "Structures sanitaires", "Sanitäre Strukturen"],
+                    "name": "ADDETTI/UTENTI STRUTTURE SANITARIE",
+                    "id": 5,
+                    "type": "umano",
+                    "noPaging": true,
+                    "actionColumns": [{
+                        "type": "checkDisplay",
+                        "layerName": "Bersaglio Selezionato",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "zoom",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "starteditgeom_targets",
+                        "layerName": "Bersaglio Selezionato Editing",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    },
+                    {
+                        "type": "remove_target",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    }]
+                },
+                "Addetti/utenti strutture scolastiche": {
+                    "featureType": "strutture_scolastiche",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "value",      
+                            "mapping": "addetti"
+                        },
+                        {
+                            "name": "descrizione_uso",      
+                            "mapping": "descrizione_uso_${locale}"
+                        },
+                        {
+                            "name": "fonte_iscritti",      
+                            "mapping": "fonte_iscritti_${locale}"
+                        },
+                        {
+                            "name": "iscritti",      
+                            "mapping": "iscritti"
+                        },
+                        {
+                            "name": "fonte_addetti_scuole",      
+                            "mapping": "fonte_addetti_scuole_${locale}"
+                        },
+                        {
+                            "name": "denominazione",      
+                            "mapping": "denominazione_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Name", "Denominazione", "Dénomination", "Benennung"],      
+                            "dataIndex": "denominazione"
+                        },
+                        {
+                            "header": ["Use description", "Desc. Uso", "Description du code d'utilisation", "Nutzungsbeschreibung"],      
+                            "dataIndex": "descrizione_uso"
+                        },
+                        {
+                            "header": ["Students number source (Estimated / calculated)", "Fonte Iscritti", "Source du nombre d'élèves inscrits (Estimé/calculé)", " Quelle der Inskribiertenzahlen (geschätzt/erhoben)"],      
+                            "dataIndex": "fonte_iscritti"
+                        },
+                        {
+                            "header": ["Students number", "N. Iscritti", "Nombre d'élèves inscrits", "Anzahl der Inskribierten "],      
+                            "dataIndex": "iscritti"
+                        },
+                        {
+                            "header": ["Employees number source (Estimated / calculated)", "Fonte Addetti", "Source du nombre d'employés (Estimé/calculé)", "Quelle der Beschäftigtenzahlen (geschätzt/erhoben)"],      
+                            "dataIndex": "fonte_addetti_scuole"
+                        },
+                        {
+                            "header": ["Employees number", "N. Addetti", "Nombre d'employés", "Anzahl der Beschäftigten"],      
+                            "dataIndex": "value",
+                            "editable": true
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["School Facilities", "Addetti/utenti strutture scolastiche", "Établissements scolaires", "Bildungseinrichtungen"],
+                    "name": "ADDETTI/UTENTI STRUTTURE SCOLASTICHE",
+                    "id": 6,
+                    "type": "umano",
+                    "noPaging": true,
+                    "actionColumns": [{
+                        "type": "checkDisplay",
+                        "layerName": "Bersaglio Selezionato",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "zoom",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "starteditgeom_targets",
+                        "layerName": "Bersaglio Selezionato Editing",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    },
+                    {
+                        "type": "remove_target",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    }]
+                },
+                "Addetti/utenti centri commerciali": {
+                    "featureType": "centri_commerciali",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "value",      
+                            "mapping": "addetti"
+                        },
+                        {
+                            "name": "denominazione",      
+                            "mapping": "denominazione_${locale}"
+                        },
+                        {
+                            "name": "insegna",      
+                            "mapping": "insegna_${locale}"
+                        },
+                        {
+                            "name": "sup_vendita",      
+                            "mapping": "sup_vendita"
+                        },
+                        {
+                            "name": "fonte_utenti",      
+                            "mapping": "fonte_utenti_${locale}"
+                        },
+                        {
+                            "name": "utenti",      
+                            "mapping": "utenti"
+                        },
+                        {
+                            "name": "fonte_addetti_commercio",      
+                            "mapping": "fonte_addetti_commercio_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Description", "Denominazione", "Dénomination", "Benennung"],      
+                            "dataIndex": "denominazione"
+                        },
+                        {
+                            "header": ["Signboard", "Insegna", "Enseigne", "Firmenbezeichnung"],      
+                            "dataIndex": "insegna"
+                        },
+                        {
+                            "header": ["Retail area", "Sup. Vendita", "Surface de vente", "Verkaufsfläche"],      
+                            "dataIndex": "sup_vendita"
+                        },
+                        {
+                            "header": ["Customers number source (Estimated / calculated)", "Fonte utenti", "Source du nombre de clients (Estimé/calculé)", "Quelle der Anzahl der Kunden (geschätzt/berechnet)"],      
+                            "dataIndex": "fonte_utenti"
+                        },
+                        {
+                            "header": ["Customers number", "N. Utenti", "Nombre de clients", "Anzahl der Kunden"],      
+                            "dataIndex": "utenti"
+                        },
+                        {
+                            "header": ["Employees number source (Estimated / calculated)", "Fonte Addetti", "Source du nombre d'employés (Estimé/calculé)", "Quelle der Anzahl der Beschäftigten (geschätzt/berechnet)"],      
+                            "dataIndex": "fonte_addetti_commercio"
+                        },
+                        {
+                            "header": ["Employees number", "N. Addetti", "Nombre d'employés", "Anzahl der Beschäftigten"],      
+                            "dataIndex": "value",
+                            "editable": true
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["medium and large retailers", "Addetti/utenti centri commerciali", "Moyennes et grandes surfaces", "Strukturen mittlerer und großer Verteilung"],
+                    "name": "ADDETTI/UTENTI CENTRI COMMERCIALI",
+                    "id": 7,
+                    "type": "umano",
+                    "noPaging": true,
+                    "actionColumns": [{
+                        "type": "checkDisplay",
+                        "layerName": "Bersaglio Selezionato",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "zoom",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "starteditgeom_targets",
+                        "layerName": "Bersaglio Selezionato Editing",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    },
+                    {
+                        "type": "remove_target",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    }]
+                },
+                "Zone urbanizzate": {
+                    "featureType": "zone_urbanizzate",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "value",      
+                            "mapping": "superficie"
+                        },
+                        {
+                            "name": "codice_clc",      
+                            "mapping": "codice_clc"
+                        },
+                        {
+                            "name": "descrizione_clc",      
+                            "mapping": "descrizione_clc_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": [" Corine Land Cover code", "Codice CLC", "Code Corine Land Cover", "Kodex aus Corine Land Cover"],      
+                            "dataIndex": "codice_clc"
+                        },
+                        {
+                            "header": ["Corine Land Cover description", "Descrizione CLC", "Description  Corine Land Cover", "Beschreibung gemäß Corine Land Cover"],      
+                            "dataIndex": "descrizione_clc"
+                        },
+                        {
+                            "header": ["Area", "Superficie", "Superficie", "Fläche"],      
+                            "dataIndex": "value"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["Urban Areas", "Zone urbanizzate", "Zones urbanisées", "Urbane Zonen/Flächen"],
+                    "name": "ZONE URBANIZZATE",
+                    "id": 10,
+                    "type": "ambientale",
+                    "noPaging": true,
+                    "actionColumns": [{
+                        "type": "checkDisplay",
+                        "layerName": "Bersaglio Selezionato",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "zoom",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "starteditgeom_targets",
+                        "layerName": "Bersaglio Selezionato Editing",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    },
+                    {
+                        "type": "remove_target",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    }]
+                },
+                "Aree boscate": {
+                    "featureType": "aree_boscate",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "value",      
+                            "mapping": "superficie"
+                        },
+                        {
+                            "name": "codice_clc",      
+                            "mapping": "codice_clc"
+                        },
+                        {
+                            "name": "descrizione_clc",      
+                            "mapping": "descrizione_clc_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [                    
+                        {
+                            "header": ["Corine Land Cover code", "Codice CLC", "Code Corine Land Cover", "Kodex aus Corine Land Cover"],      
+                            "dataIndex": "codice_clc"
+                        },
+                        {
+                            "header": ["Corine Land Cover description", "Descrizione CLC", "Description  Corine Land Cover", "Beschreibung gemäß Corine Land Cover"],      
+                            "dataIndex": "descrizione_clc"
+                        },
+                        {
+                            "header": ["Area", "Superficie", "Superficie", "Fläche"],      
+                            "dataIndex": "value"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["Wooded Areas", "Aree boscate", "Zones forestières", "Bewaldete Flächen"],
+                    "name": "AREE BOSCATE",
+                    "id": 11,
+                    "type": "ambientale",
+                    "noPaging": true,
+                    "actionColumns": [{
+                        "type": "checkDisplay",
+                        "layerName": "Bersaglio Selezionato",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "zoom",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "starteditgeom_targets",
+                        "layerName": "Bersaglio Selezionato Editing",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    },
+                    {
+                        "type": "remove_target",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    }]
+                },
+                "Aree protette": {
+                    "featureType": "aree_protette",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "denominazione",      
+                            "mapping": "denominazione_${locale}"
+                        },
+                        {
+                            "name": "denominazione_ente",      
+                            "mapping": "denominazione_ente_${locale}"
+                        },
+                        {
+                            "name": "value",      
+                            "mapping": "superficie"
+                        },
+                        {
+                            "name": "descrizione_iucn",      
+                            "mapping": "descrizione_iucn_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Area name", "Denominazione", "Dénomination", "Benennung"],      
+                            "dataIndex": "denominazione"
+                        },
+                        {
+                            "header": ["Management authority", "Ente", "Dénomination de l'organisme", "Benennung der verwaltenden Institution"],      
+                            "dataIndex": "denominazione_ente"
+                        },
+                        {
+                            "header": ["IUCN Description", "Descrizione IUCN", "Description UICN", "Beschreibung IUCN"],      
+                            "dataIndex": "descrizione_iucn"
+                        },
+                        {
+                            "header": ["Area", "Superficie", "Superficie", "Fläche"],      
+                            "dataIndex": "value"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["Protected Areas", "Aree protette", "Zones protégées", "Naturschutzflächen"],
+                    "name": "AREE PROTETTE",
+                    "id": 12,
+                    "type": "ambientale",
+                    "noPaging": true,
+                    "actionColumns": [{
+                        "type": "checkDisplay",
+                        "layerName": "Bersaglio Selezionato",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "zoom",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "starteditgeom_targets",
+                        "layerName": "Bersaglio Selezionato Editing",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    },
+                    {
+                        "type": "remove_target",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    }]
+                },
+                "Aree agricole": {
+                    "featureType": "aree_agricole",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },                    
+                        {
+                            "name": "value",      
+                            "mapping": "superficie"
+                        },
+                        {
+                            "name": "codice_clc",      
+                            "mapping": "codice_clc"
+                        },
+                        {
+                            "name": "descrizione_clc",      
+                            "mapping": "descrizione_clc_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Corine Land Cover code", "Codice CLC", "Code Corine Land Cover", "Kodex aus Corine Land Cover"],      
+                            "dataIndex": "codice_clc"
+                        },
+                        {
+                            "header": ["Corine Land Cover description", "Descrizione CLC", "Description  Corine Land Cover", "Beschreibung gemäß Corine Land Cover"],      
+                            "dataIndex": "descrizione_clc"
+                        },
+                        {
+                            "header": ["Area", "Superficie", "Superficie", "Fläche"],      
+                            "dataIndex": "value"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["Agricultural Areas", "Aree agricole", "Zones agricoles", "Landwirtschaftliche Flächen"],
+                    "name": "AREE AGRICOLE",
+                    "id": 13,
+                    "type": "ambientale",
+                    "noPaging": true,
+                    "actionColumns": [{
+                        "type": "checkDisplay",
+                        "layerName": "Bersaglio Selezionato",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "zoom",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "starteditgeom_targets",
+                        "layerName": "Bersaglio Selezionato Editing",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    },
+                    {
+                        "type": "remove_target",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    }]
+                },
+                "Acque superficiali": {
+                    "featureType": "acque_superficiali",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "denominazione",      
+                            "mapping": "denominazione_${locale}"
+                        },
+                        {
+                            "name": "value",      
+                            "mapping": "superficie"
+                        },
+                        {
+                            "name": "profondita_max",      
+                            "mapping": "profondita_max"
+                        },
+                        {
+                            "name": "quota_pdc",      
+                            "mapping": "quota_pdc"
+                        },
+                        {
+                            "name": "codice_clc",      
+                            "mapping": "codice_clc"
+                        },
+                        {
+                            "name": "descrizione_clc",      
+                            "mapping": "descrizione_clc_${locale}"
+                        },
+                        {
+                            "name": "toponimo_completo",      
+                            "mapping": "toponimo_completo_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Name", "Denominazione", "Dénomination", "Benennung"],      
+                            "dataIndex": "denominazione"
+                        },
+                        {
+                            "header": ["Complete name", "Toponimo completo", "Toponyme complet", "offizielle Benennung"],      
+                            "dataIndex": "toponimo_completo"
+                        },
+                        {
+                            "header": ["Corine Land Cover code", "Codice CLC", "Code Corine Land Cover", "Kodex aus Corine Land Cover"],      
+                            "dataIndex": "codice_clc"
+                        },
+                        {
+                            "header": ["Corine Land Cover description", "Descrizione CLC", "Description  Corine Land Cover", "Beschreibung gemäß Corine Land Cover"],      
+                            "dataIndex": "descrizione_clc"
+                        },
+                        {
+                            "header": ["Area", "Superficie", "Superficie", "Fläche"],      
+                            "dataIndex": "value"
+                        },
+                        {
+                            "header": ["Maximum depth", "Profondità max", "Profondeur maximale", "Maximale Tiefe"],      
+                            "dataIndex": "profondita_max"
+                        },
+                        {
+                            "header": ["Ground level altitude", "Quota", "Altitude du niveau du sol", "Höhe der Geländeoberfläche"],      
+                            "dataIndex": "quota_pdc"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["Surface waters", "Acque superficiali", "Eaux superficielles", "Oberflächengewässer"],
+                    "id": 15,
+                    "name": "ACQUE SUPERFICIALI",
+                    "type": "ambientale",
+                    "noPaging": true,
+                    "actionColumns": [{
+                        "type": "checkDisplay",
+                        "layerName": "Bersaglio Selezionato",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "zoom",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "starteditgeom_targets",
+                        "layerName": "Bersaglio Selezionato Editing",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    },
+                    {
+                        "type": "remove_target",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    }]
+                },
+                "Acque sotterranee": {
+                    "featureType": "acque_sotterranee",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "denominazione",      
+                            "mapping": "denominazione_${locale}"
+                        },
+                        {
+                            "name": "value",      
+                            "mapping": "superficie"
+                        },
+                        {
+                            "name": "profondita_max",      
+                            "mapping": "profondita_max"
+                        },
+                        {
+                            "name": "quota_pdc",      
+                            "mapping": "quota_pdc"
+                        },
+                        {
+                            "name": "tipo_captazione",      
+                            "mapping": "tipo_captazione_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Name", "Denominazione", "Dénomination", "Benennung"],      
+                            "dataIndex": "denominazione"
+                        },
+                        {
+                            "header": ["Uptake typology", "Tipo captazione", "Type de captage", "Fassungstyp"],      
+                            "dataIndex": "tipo_captazione"
+                        },
+                        {
+                            "header": ["Area", "Superficie", "Superficie", "Fläche"],      
+                            "dataIndex": "value"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["Groundwater", "Acque sotterranee", "Eaux souterraines", "unterirdische Gewässer (Tiefbrunnen)"],
+                    "id": 14,
+                    "name": "ACQUE SOTTERRANEE",
+                    "type": "ambientale",
+                    "noPaging": true,
+                    "actionColumns": [{
+                        "type": "checkDisplay",
+                        "layerName": "Bersaglio Selezionato",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "zoom",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "starteditgeom_targets",
+                        "layerName": "Bersaglio Selezionato Editing",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    },
+                    {
+                        "type": "remove_target",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    }]
+                },
+                "Beni culturali": {
+                    "featureType": "beni_culturali",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometry"
+                        },
+                        {
+                            "name": "id_tema",         
+                            "mapping": "id_tema"
+                        },
+                        {
+                            "name": "denominazione_bene",      
+                            "mapping": "denominazione_bene_${locale}"
+                        },
+                        {
+                            "name": "value",      
+                            "mapping": "superficie"
+                        },
+                        {
+                            "name": "tipologia",      
+                            "mapping": "tipologia_${locale}"
+                        },
+                        {
+                            "name": "partner",      
+                            "mapping": "partner_${locale}"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Area typology", "Tipologia", "Type de bien", "Art des Gutes"],      
+                            "dataIndex": "tipologia"
+                        },
+                        {
+                            "header": ["Description", "Denominazione", "Dénomination du bien", "Benennung des Gutes"],      
+                            "dataIndex": "denominazione_bene"
+                        },
+                        {
+                            "header": ["Area", "Superficie", "Superficie", "Fläche"],      
+                            "dataIndex": "value"
+                        },
+                        {
+                            "header": ["Partner", "Partner", "Partner", "Partner"],      
+                            "dataIndex": "partner"
+                        }
+                    ],
+                    "title": ["Cultural Areas", "Beni culturali", "Patrimoine culturel", "Kulturelle Güter "],
+                    "id": 16,
+                    "name": "BENI CULTURALI",
+                    "type": "ambientale",
+                    "noPaging": true,
+                    "actionColumns": [{
+                        "type": "checkDisplay",
+                        "layerName": "Bersaglio Selezionato",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "zoom",
+                        "sourceSRS": "EPSG:32632"
+                    },
+                    {
+                        "type": "starteditgeom_targets",
+                        "layerName": "Bersaglio Selezionato Editing",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    },
+                    {
+                        "type": "remove_target",
+                        "sourceSRS": "EPSG:32632",
+                        "width": 20
+                    }]
+                }
+            },
             "damage": {
                 "Aree di danno": {
                     "featureType": "buffer_1",
