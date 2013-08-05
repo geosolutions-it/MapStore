@@ -487,7 +487,7 @@
                             "mapping": "id_tema"
                         },
                         {
-                            "name": "residenti",      
+                            "name": "value",      
                             "mapping": "residenti"
                         },
                         {
@@ -502,7 +502,7 @@
                     "columns": [
                         {
                             "header": ["Residents number", "Residenti", "Nombre de résidents", "Anzahl der Anwohner"],
-                            "dataIndex": "residenti"
+                            "dataIndex": "value"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -529,7 +529,7 @@
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -548,7 +548,7 @@
                             "mapping": "nat_code"
                         },
                         {
-                            "name": "presmax",      
+                            "name": "value",      
                             "mapping": "pres_max"
                         },
                         {
@@ -571,7 +571,7 @@
                         },
                         {
                             "header": ["Maximum presence", "Presenza massima", "Présence maximale", "maximale Kapazität/ maximale Nächtigungen"],      
-                            "dataIndex": "presmax"
+                            "dataIndex": "value"
                         },
                         {
                             "header": ["Average presence", "Presenza media", "Présence moyenne", "mittlere Kapazität/ mittlere Nächtigungen"],      
@@ -593,7 +593,7 @@
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -604,7 +604,7 @@
                             "mapping": "id_tema"
                         },
                         {
-                            "name": "addetti",      
+                            "name": "value",      
                             "mapping": "addetti"
                         },
                         {
@@ -647,7 +647,7 @@
                         },
                         {
                             "header": ["Employees number", "N. Addetti", "Nombre d'employés", "Anzahl der Beschäftigten"],      
-                            "dataIndex": "addetti"
+                            "dataIndex": "value"
                         },
                         {
                             "header": ["Employees number source (Estimated / calculated)", "Fonte addetti", "Source du nombre d'employés (Estimé/calculé)", "Quelle der Anzahl der Beschäftigten (geschätzt/berechnet)"],      
@@ -668,7 +668,7 @@
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -679,7 +679,7 @@
                             "mapping": "id_tema"
                         },
                         {
-                            "name": "addetti",      
+                            "name": "value",      
                             "mapping": "addetti"
                         },
                         {
@@ -730,7 +730,7 @@
                         },
                         {
                             "header": ["Employees number", "N. Addetti", "Nombre d'employés", "Anzahl der Bediensteten"],      
-                            "dataIndex": "addetti"
+                            "dataIndex": "value"
                         },
                         {
                             "header": ["Day-Hospital beds number source (Estimated / calculated)", "Fonte N. Letti day hosp.", "Source du nombre de lits d'hôpital de jour (Estimé/calculé)s", "Quelle der Bettenzahlen des Day-Hospital (geschätzt/erhoben))"],      
@@ -763,7 +763,7 @@
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -774,7 +774,7 @@
                             "mapping": "id_tema"
                         },
                         {
-                            "name": "addetti",      
+                            "name": "value",      
                             "mapping": "addetti"
                         },
                         {
@@ -825,7 +825,7 @@
                         },
                         {
                             "header": ["Employees number", "N. Addetti", "Nombre d'employés", "Anzahl der Beschäftigten"],      
-                            "dataIndex": "addetti"
+                            "dataIndex": "value"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -842,7 +842,7 @@
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -853,7 +853,7 @@
                             "mapping": "id_tema"
                         },
                         {
-                            "name": "addetti",      
+                            "name": "value",      
                             "mapping": "addetti"
                         },
                         {
@@ -912,7 +912,7 @@
                         },
                         {
                             "header": ["Employees number", "N. Addetti", "Nombre d'employés", "Anzahl der Beschäftigten"],      
-                            "dataIndex": "addetti"
+                            "dataIndex": "value"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -929,7 +929,7 @@
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -940,7 +940,7 @@
                             "mapping": "id_tema"
                         },
                         {
-                            "name": "superficie",      
+                            "name": "value",      
                             "mapping": "superficie"
                         },
                         {
@@ -967,7 +967,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "superficie"
+                            "dataIndex": "value"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -984,7 +984,7 @@
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -995,7 +995,7 @@
                             "mapping": "id_tema"
                         },
                         {
-                            "name": "superficie",      
+                            "name": "value",      
                             "mapping": "superficie"
                         },
                         {
@@ -1022,7 +1022,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "superficie"
+                            "dataIndex": "value"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -1039,7 +1039,7 @@
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -1058,7 +1058,7 @@
                             "mapping": "denominazione_ente_${locale}"
                         },
                         {
-                            "name": "superficie",      
+                            "name": "value",      
                             "mapping": "superficie"
                         },
                         {
@@ -1085,7 +1085,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "superficie"
+                            "dataIndex": "value"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -1102,7 +1102,7 @@
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -1113,7 +1113,7 @@
                             "mapping": "id_tema"
                         },                    
                         {
-                            "name": "superficie",      
+                            "name": "value",      
                             "mapping": "superficie"
                         },
                         {
@@ -1140,7 +1140,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "superficie"
+                            "dataIndex": "value"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -1157,7 +1157,7 @@
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -1172,7 +1172,7 @@
                             "mapping": "denominazione_${locale}"
                         },
                         {
-                            "name": "superficie",      
+                            "name": "value",      
                             "mapping": "superficie"
                         },
                         {
@@ -1219,7 +1219,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "superficie"
+                            "dataIndex": "value"
                         },
                         {
                             "header": ["Maximum depth", "Profondità max", "Profondeur maximale", "Maximale Tiefe"],      
@@ -1244,7 +1244,7 @@
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -1259,7 +1259,7 @@
                             "mapping": "denominazione_${locale}"
                         },
                         {
-                            "name": "superficie",      
+                            "name": "value",      
                             "mapping": "superficie"
                         },
                         {
@@ -1290,7 +1290,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "superficie"
+                            "dataIndex": "value"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -1307,7 +1307,7 @@
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -1322,7 +1322,7 @@
                             "mapping": "denominazione_bene_${locale}"
                         },
                         {
-                            "name": "superficie",      
+                            "name": "value",      
                             "mapping": "superficie"
                         },
                         {
@@ -1345,7 +1345,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "superficie"
+                            "dataIndex": "value"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -1576,7 +1576,7 @@
                     }]                    
                 },
                 "Popolazione residente": {
-                    "featureType": "popolazione_residente",
+                    "featureType": "popolazione_residente_box",
                     "fields": [
                         {
                             "name": "id",              
@@ -1638,12 +1638,12 @@
                     }]
                 },
                 "Popolazione fluttuante turistica": {
-                    "featureType": "popolazione_turistica",
+                    "featureType": "popolazione_turistica_box",
                                 
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -1718,11 +1718,11 @@
                 },
                 "Addetti industria e servizi": {
                                     
-                    "featureType": "industria_servizi",
+                    "featureType": "industria_servizi_box",
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -1793,6 +1793,7 @@
                     "id": 4,
                     "type": "umano",
                     "noPaging": true,
+                    "allowAdd": true,   
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -1815,11 +1816,11 @@
                     }]
                 },
                 "Addetti/utenti strutture sanitarie": {
-                    "featureType": "strutture_sanitarie",
+                    "featureType": "strutture_sanitarie_box",
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -1910,6 +1911,7 @@
                     "id": 5,
                     "type": "umano",
                     "noPaging": true,
+                    "allowAdd": true,   
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -1932,11 +1934,11 @@
                     }]
                 },
                 "Addetti/utenti strutture scolastiche": {
-                    "featureType": "strutture_scolastiche",
+                    "featureType": "strutture_scolastiche_box",
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -2011,6 +2013,7 @@
                     "id": 6,
                     "type": "umano",
                     "noPaging": true,
+                    "allowAdd": true,   
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2033,11 +2036,11 @@
                     }]
                 },
                 "Addetti/utenti centri commerciali": {
-                    "featureType": "centri_commerciali",
+                    "featureType": "centri_commerciali_box",
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -2120,6 +2123,7 @@
                     "id": 7,
                     "type": "umano",
                     "noPaging": true,
+                    "allowAdd": true,   
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2142,11 +2146,11 @@
                     }]
                 },
                 "Zone urbanizzate": {
-                    "featureType": "zone_urbanizzate",
+                    "featureType": "zone_urbanizzate_box",
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -2196,6 +2200,7 @@
                     "id": 10,
                     "type": "ambientale",
                     "noPaging": true,
+                    "allowAdd": true,   
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2218,11 +2223,11 @@
                     }]
                 },
                 "Aree boscate": {
-                    "featureType": "aree_boscate",
+                    "featureType": "aree_boscate_box",
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -2272,6 +2277,7 @@
                     "id": 11,
                     "type": "ambientale",
                     "noPaging": true,
+                    "allowAdd": true,   
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2294,11 +2300,11 @@
                     }]
                 },
                 "Aree protette": {
-                    "featureType": "aree_protette",
+                    "featureType": "aree_protette_box",
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -2356,6 +2362,7 @@
                     "id": 12,
                     "type": "ambientale",
                     "noPaging": true,
+                    "allowAdd": true,   
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2378,11 +2385,11 @@
                     }]
                 },
                 "Aree agricole": {
-                    "featureType": "aree_agricole",
+                    "featureType": "aree_agricole_box",
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -2432,6 +2439,7 @@
                     "id": 13,
                     "type": "ambientale",
                     "noPaging": true,
+                    "allowAdd": true,   
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2454,11 +2462,11 @@
                     }]
                 },
                 "Acque superficiali": {
-                    "featureType": "acque_superficiali",
+                    "featureType": "acque_superficiali_box",
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -2540,6 +2548,7 @@
                     "name": "ACQUE SUPERFICIALI",
                     "type": "ambientale",
                     "noPaging": true,
+                    "allowAdd": true,   
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2562,11 +2571,11 @@
                     }]
                 },
                 "Acque sotterranee": {
-                    "featureType": "acque_sotterranee",
+                    "featureType": "acque_sotterranee_box",
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -2624,6 +2633,7 @@
                     "name": "ACQUE SOTTERRANEE",
                     "type": "ambientale",
                     "noPaging": true,
+                    "allowAdd": true,   
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2646,11 +2656,11 @@
                     }]
                 },
                 "Beni culturali": {
-                    "featureType": "beni_culturali",
+                    "featureType": "beni_culturali_box",
                     "fields": [
                         {
                             "name": "id",              
-                            "mapping": "id"
+                            "mapping": "id_tematico"
                         },
                         {
                             "name": "geometry",        
@@ -2700,6 +2710,7 @@
                     "name": "BENI CULTURALI",
                     "type": "ambientale",
                     "noPaging": true,
+                    "allowAdd": true,   
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",

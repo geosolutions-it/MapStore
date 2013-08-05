@@ -204,7 +204,7 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
             
             /** api: method[loadGrids]
              */    
-            loadGrids: function(attributeName, attributeValue, projection, viewParams, tplData) {
+            loadGrids: function(attributeName, attributeValue, projection, viewParams, tplData, extraRecords) {
                 this.removeAllGrids();
                 var grids = this.hideAllBut(attributeName, attributeValue);
                 
@@ -222,6 +222,7 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                 for(var i=0; i<grids.length;i++){
                     grids[i].target= me.target;
                     grids[i].viewParams= viewParams;
+                    grids[i].extraRecords = extraRecords;
                     grids[i].addOutput({},i === 0);
                     grids[i].tplData = tplData;
                     grids[i].save = {};
@@ -230,7 +231,7 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                         var noRecordFoundEl = grid.wfsGrid.el.child('.x-grid3-scroller');
                         noRecordFoundEl.addClass(me.noRecordFoundCls);
                         noRecordFoundEl.update(me.noRecordFoundLabel);                        
-                    };
+                    };                    
                     if(i === 0) {
                         this.setActiveTab(i);
                     }

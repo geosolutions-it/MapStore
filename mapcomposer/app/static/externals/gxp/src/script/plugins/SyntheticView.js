@@ -85,8 +85,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     severeness: [["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","UNICA GRAVITA"], ["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","UNICA GRAVITA"], ["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","UNICA GRAVITA"], ["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","UNICA GRAVITA"]],
     
     selectedTargetLayer: "Bersaglio Selezionato",
+    selectedTargetLayerEditing: "Bersaglio Selezionato Editing",
+    simulationAddedLayer: "simulation_added",
+    simulationChangedLayer: "simulation_changed",
+    simulationRemovedLayer: "simulation_removed",
     
-    analyticViewLayers: [],    
+    analyticViewLayers: [],   
+    vectorLayers: [],
     
     roadsLayer: "grafo_stradale",
     
@@ -108,6 +113,28 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     analyticEnabled: false,
     simulationEnabled: false,
+    
+    targetStyles: {
+        "simulation_added": {
+            strokeColor: "#00FF00",
+            strokeWidth: 3,
+            fillColor: "#00FF00",
+            fillOpacity: 0.5
+        },
+        "simulation_changed": {
+            strokeColor: "#FFFF00",
+            strokeWidth: 3,
+            fillColor: "#FFFF00",
+            fillOpacity: 0.5
+        },
+        "simulation_removed": {
+            strokeColor: "#FF0000",
+            strokeWidth: 3,
+            fillColor: "#FF0000",
+            fillOpacity: 0.5
+        }
+        
+    },
     
     /** private: method[constructor]
      *  :arg config: ``Object``
@@ -217,6 +244,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
      */
      init: function(target) {        
         gxp.plugins.SyntheticView.superclass.init.apply(this, arguments); 
+        this.vectorLayers = [this.selectedTargetLayer, this.selectedTargetLayerEditing, "simulation_added", "simulation_changed", "simulation_removed"];
         this.target.on('portalready', function() {
             this.layerSource = this.target.layerSources[this.layerSourceName];
             this.wpsClient =  new OpenLayers.WPSClient({
@@ -932,7 +960,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             bounds.extend(new OpenLayers.Geometry.Point(bounds.right + buffer, bounds.top + buffer));
         }
         var mapPrj = map.getProjectionObject();
-        var selectionPrj = new OpenLayers.Projection("EPSG:32632");
+        var selectionPrj = new OpenLayers.Projection(this.selectionLayerProjection);
         if(!mapPrj.equals(selectionPrj)){
             bounds = bounds.transform(
                 mapPrj,    
@@ -943,7 +971,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return bounds.toBBOX().replace(/,/g, "\\\,");
     },
     
-    addTargets: function(layers, bounds, radius) { 
+    addTargets: function(layers, bounds, radius, extraTargets) { 
         var name = this.status.target ? this.status.target.layer : 'bersagli_all';
         var targetViewParams = "bounds:" + bounds + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman;
         this.analyticViewLayers.push(name);
@@ -958,12 +986,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         if(Ext.getCmp('targets_view').pressed) {
             Ext.getCmp('featuregrid').setCurrentPanel('targets');
-            this.loadTargetGrids(targetViewParams);
+            this.loadTargetGrids(targetViewParams, extraTargets);
         }   
             
     },
     
-    loadTargetGrids: function(viewParams) {
+    loadTargetGrids: function(viewParams, extraTargets) {
         if(!viewParams) {
             var map = this.target.mapPanel.map;        
             var status = this.getStatus();        
@@ -979,15 +1007,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             var radius = this.getRadius();
             viewParams = "bounds:" + bounds + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman;
         }
+        if(!extraTargets && this.status) {
+            extraTargets = this.status.simulation.targetsInfo;
+        }
         var wfsGrid = Ext.getCmp("featuregrid");
         if(this.isSingleTarget()) {
-            wfsGrid.loadGrids("id", this.status.target['id_bersaglio'], this.selectionLayerProjection, viewParams);                                
+            wfsGrid.loadGrids("id", this.status.target['id_bersaglio'], this.selectionLayerProjection, viewParams, null, extraTargets);                                
         } else if(this.isAllHumanTargets()) {
-            wfsGrid.loadGrids("type", 'umano', this.selectionLayerProjection, viewParams);
+            wfsGrid.loadGrids("type", 'umano', this.selectionLayerProjection, viewParams, null, extraTargets);
         } else if(this.isAllNotHumanTargets()) {
-            wfsGrid.loadGrids("type", 'ambientale', this.selectionLayerProjection, viewParams);
+            wfsGrid.loadGrids("type", 'ambientale', this.selectionLayerProjection, viewParams, null, extraTargets);
         } else {
-            wfsGrid.loadGrids(null ,null , this.selectionLayerProjection, viewParams);
+            wfsGrid.loadGrids(null ,null , this.selectionLayerProjection, viewParams, null, extraTargets);
         }
     },
     
@@ -1240,7 +1271,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.addBuffers(newLayers, bounds, radius);
         
         // add the target layer
-        this.addTargets(newLayers, bounds, radius);                
+        this.addTargets(newLayers, bounds, radius, status.simulation.targetsInfo);                
             
         if(Ext.getCmp('roadGraph_view').pressed) {
             Ext.getCmp('featuregrid').setCurrentPanel('roads');
@@ -1251,11 +1282,86 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 
         // add analytic view layers to the map
         this.target.mapPanel.layers.add(newLayers);
+
+        if(status.simulation.targetsInfo.length > 0) {
+            this.addExtraTargets(map, status.simulation.targetsInfo);
+        }
+        
         
         // update info on buffers sizes     
         //this.results.setValue(this.getBuffersInfo());
         this.enableAnalyticView();
         
+    },
+    
+    addExtraTargets: function(map, targets) {
+        for(var count = 0; count< targets.length; count++) {
+            var target = targets[count];
+            var layerName = "simulation_changed";
+            if(target.removed) {
+                layerName = "simulation_removed";
+            } else if(target.newfeature) {
+                layerName = "simulation_added";
+            }
+            this.drawTargetGeometry(map, layerName, "target" + count, target.geometry, this.targetStyles[layerName]);
+        }
+    },
+    
+    getMapGeometry: function(map, geometry, sourceSRS){        
+        if(geometry && sourceSRS) {
+            if(sourceSRS != map.getProjection()){
+                var coll=new OpenLayers.Geometry.Collection(new Array(geometry.clone()));
+                var targetColl=coll.transform(
+                    new OpenLayers.Projection(sourceSRS),
+                    map.getProjectionObject()
+                    );
+                geometry = targetColl.components[0];   
+                delete targetColl;
+            }
+        }
+        return geometry;
+    },
+    
+    drawTargetGeometry: function(map, layerName, id, geometry, style ){ //"Bersaglio Selezionato"
+        
+        var targetLayer = map.getLayersByName(layerName)[0];
+        
+        var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+        renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;       
+                
+        var layerStyle= style || {
+            strokeColor: "#FF00FF",
+            strokeWidth: 2,
+            fillColor: "#FF00FF",
+            fillOpacity: 0.8
+        };
+        if(!targetLayer) {
+             targetLayer = new OpenLayers.Layer.Vector(layerName,{
+                displayInLayerSwitcher: false,
+                style: layerStyle,
+                renderers: renderer
+            });
+                
+            map.addLayer(targetLayer);
+        }                
+        
+        
+        if(geometry) {
+            geometry = this.getMapGeometry(map, geometry, this.selectionLayerProjection);
+            var feature = new OpenLayers.Feature.Vector(geometry,{
+                "id": id
+            });
+            if(targetLayer.features.length == 0){
+                targetLayer.addFeatures([feature]);
+            }else{
+                var oldFeature = targetLayer.getFeaturesByAttribute("id",id);
+                if(oldFeature.length > 0){
+                    targetLayer.removeFeatures(oldFeature);
+                }
+                targetLayer.addFeatures([feature]);
+            }
+        }
+        return targetLayer;
     },
     
     enableAnalyticView: function() {        
@@ -1296,6 +1402,16 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
     doProcess: function(roi) {
+        if(this.simulationRestore) {
+            for(var buttonId in this.simulationRestore.buttons) {
+                if(this.simulationRestore.buttons.hasOwnProperty(buttonId)) {
+                    var button = Ext.getCmp(buttonId);
+                    var status = this.simulationRestore.buttons[buttonId];
+                    button.toggle(status, true);
+                }
+            }
+            this.simulationRestore = null;
+        }
         var newLayers=[];
         
         var map = this.target.mapPanel.map;        
@@ -1489,7 +1605,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     removeRiskLayers: function(map) {
         this.removeLayersByName(map,this.currentRiskLayers);
-        this.removeLayersByName(map,[this.selectedTargetLayer]);
+        this.removeLayersByName(map,this.vectorLayers);
         this.currentRiskLayers = [];
     },    
     

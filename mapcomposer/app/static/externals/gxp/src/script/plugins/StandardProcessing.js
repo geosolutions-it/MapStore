@@ -123,9 +123,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     classFeature: "siig_d_classe_adr",
     sostFeature: "siig_t_sostanza",
     scenFeature: "siig_t_scenario",
-    sostAccFeature: "siig_r_scenario_sostanza",
-    
-
+    sostAccFeature: "siig_r_scenario_sostanza",        
 
     
     /** private: method[constructor]
@@ -212,6 +210,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     combo.innerList.setWidth( 'auto' );
                 },
                 select: function(combo, record, index) {
+                    this.formula.getStore().filter('id_elaborazione', record.get('id'));
+                    
                     this.enableDisableForm(this.getComboRecord(this.formula, 'id_formula'), record);
                     this.enableDisableSimulation(record.get('id') === 3);
                 }
@@ -225,10 +225,24 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         //
         // Formula
         //        
-        var formulaFilter= new OpenLayers.Filter.Comparison({
+        var formulaVisibleFilter= new OpenLayers.Filter.Comparison({
             type: OpenLayers.Filter.Comparison.GREATER_THAN_OR_EQUAL_TO,
             property: 'flg_visibile',
             value: 1
+        });
+        
+         var elaborazioneFilter= new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+            property: this.destinationNS + ":id_elaborazione",
+            value: 1
+         });
+         
+        var formulaFilter = new OpenLayers.Filter.Logical({
+                type: OpenLayers.Filter.Logical.AND,
+                filters: [
+                    formulaVisibleFilter,
+                    elaborazioneFilter
+                ]
         });
         
         var formulaStore= new GeoExt.data.FeatureStore({ 
@@ -236,6 +250,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
              fields: [{
                         "name": "id_formula",              
                         "mapping": "id_formula"
+              },{
+                        "name": "id_elaborazione",              
+                        "mapping": "id_elaborazione"
               },{
                         "name": "name",              
                         "mapping": "descrizione_" + GeoExt.Lang.locale
@@ -282,9 +299,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         "name": "tema_max",              
                         "mapping": "tema_max"
               }],
-             proxy: this.getWFSStoreProxy(this.formulaFeature, formulaFilter, 'ordine_visibilita') , 
+             proxy: this.getWFSStoreProxy(this.formulaFeature, null, 'ordine_visibilita') , 
              autoLoad: true 
        });
+       
+       //formulaStore.filter('id_elaborazione', 1);
         
         this.formula = new Ext.form.ComboBox({
             fieldLabel: this.formulaLabel,
@@ -311,11 +330,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 },
                 select: function(combo, record, index) {
                     this.enableDisableForm(record, this.getComboRecord(this.elaborazione, 'id'));
+                    
                 }
             } 
         });
         
-        formulaStore.on('load', function(store, records, options) {            
+        formulaStore.on('load', function(store, records, options) {
+            this.formula.getStore().filter('id_elaborazione', this.elaborazione.getValue());
             this.formula.setValue(records[0].get('id_formula'));
         }, this);
        
@@ -449,7 +470,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     }
                 }
             }            
-            syntView.removeLayersByName(map, [syntView.selectedTargetLayer]);
+            syntView.removeLayersByName(map, syntView.vectorLayers);
             syntView.simulationRestore = null;
             syntView.simulationEnabled = false;
         }
@@ -1674,7 +1695,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             cff:[],
             padr:[],
             pis:[],
-            targets:[]
+            targets:[],
+            targetsInfo:[]
         };
         
         if(obj.processing === 3) {
@@ -1701,13 +1723,16 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                             }
                             
                             // targets
+                            if(recordInfo.oldgeometry || recordInfo.geometry) {
+                                obj.simulation.targetsInfo.push(recordInfo);
+                            }
                             if(recordInfo.oldgeometry) {
                                 // remove
-                                obj.simulation.targets.push('-'+grid.id+','+recordInfo.oldvalue+','+recordInfo.oldgeometry.toString());
+                                obj.simulation.targets.push('-'+grid.id+','+(recordInfo.oldvalue || 0)+','+recordInfo.oldgeometry.toString());
                             }
                             if(recordInfo.geometry) {
                                 // add
-                                obj.simulation.targets.push(grid.id+','+recordInfo.value+','+recordInfo.geometry.toString());
+                                obj.simulation.targets.push(grid.id+','+(recordInfo.value || 0)+','+recordInfo.geometry.toString());
                             }
                         }
                     }
@@ -1766,6 +1791,14 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             visibleOnArcs: true,
             visibleOnGrid: true
         };                
+        
+        obj.simulation = {
+            cff:[],
+            padr:[],
+            pis:[],
+            targets:[],
+            targetsInfo:[]
+        };
         
         obj.target = {humans: null, code:'-2', layer: 'bersagli_all', severeness: '1,2,3,4,5', macro: true}; 
         obj.macroTarget = this.allTargetOption;

@@ -1575,15 +1575,43 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                 return;
                             }
                             o.totalRecords = me.countFeature;
-                                    
+                            
                             var r = o.records, t = o.totalRecords || r.length;
                             if(!options || options.add !== true){
                                 if(this.pruneModifiedRecords){
                                     this.modified = [];
                                 }
-                                        
+                                
+                                var finalRecords = [];
                                 for(var i = 0, len = r.length; i < len; i++){
-                                    r[i].join(this);
+                                    var add = true;
+                                    if(me.extraRecords && me.extraRecords.length > 0) {
+                                        for(var j = 0, lenextra = me.extraRecords.length; j < lenextra; j++){
+                                            var extraRecord = me.extraRecords[j];
+                                            if(extraRecord.id === r[i].get("id")) {
+                                                if(extraRecord.removed) {
+                                                    add = false;
+                                                } else {
+                                                    // changed
+                                                    r[i].data.feature.geometry = extraRecord.geometry;
+                                                    r[i].set("value", extraRecord.value);                                                    
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if(add) {
+                                        r[i].join(this);
+                                        finalRecords.push(r[i]);
+                                    }
+                                }
+                                
+                                if(me.extraRecords && me.extraRecords.length > 0) {
+                                    for(var j = 0, lenextra = me.extraRecords.length; j < lenextra; j++){
+                                        var extraRecord = me.extraRecords[j];
+                                        if(extraRecord.newfeature) {
+                                            debugger;
+                                        }
+                                    }
                                 }
                                         
                                 if(this.snapshot){
@@ -1592,7 +1620,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                 }
                                         
                                 this.clearData();
-                                this.data.addAll(r);   
+                                this.data.addAll(finalRecords);   
                                 this.totalLength = t;       
                                 //this.applySort();
                                 this.fireEvent('datachanged', this);
