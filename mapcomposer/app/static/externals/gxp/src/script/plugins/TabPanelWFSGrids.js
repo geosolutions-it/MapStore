@@ -229,8 +229,19 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                     grids[i].onEmpty=function(grid) {                        
                         // no record found message
                         var noRecordFoundEl = grid.wfsGrid.el.child('.x-grid3-scroller');
-                        noRecordFoundEl.addClass(me.noRecordFoundCls);
-                        noRecordFoundEl.update(me.noRecordFoundLabel);                        
+                        var dh = Ext.DomHelper;
+                        dh.append(noRecordFoundEl,{
+                            'tag': 'div',
+                            'cls': me.noRecordFoundCls,
+                            'html': me.noRecordFoundLabel
+                        });
+                    }; 
+                    grids[i].onFill=function(grid) {                        
+                        // no record found message
+                        var noRecordEl = grid.wfsGrid.el.child('.x-grid3-scroller .'+me.noRecordFoundCls);
+                        if(noRecordEl) {
+                            noRecordEl.remove();
+                        }                        
                     };                    
                     if(i === 0) {
                         this.setActiveTab(i);
