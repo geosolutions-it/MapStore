@@ -221,11 +221,18 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 			
             queryableLayers.each(function(x){                
                 var l = x.getLayer();
+				
+				var vendorParams = {};
+		    	Ext.apply(vendorParams, x.getLayer().vendorParams || this.vendorParams || {});
+				if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
+					vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
+				}
+				
                 var control = new OpenLayers.Control.WMSGetFeatureInfo({
                     url: l.url,
                     queryVisible: true,
                     layers: [x.getLayer()],
-                    vendorParams: x.getLayer().vendorParams || this.vendorParams,
+                    vendorParams: vendorParams,
                     eventListeners: {
                         beforegetfeatureinfo: function(evt) {
 							//first getFeatureInfo in chain
@@ -418,7 +425,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 	 *  activate the active control. called on tool activation
 	 *  if a layer is selected, or on selectionchangeEvent
      */
-	activateActiveControl: function(layer,title){
+	activateActiveControl: function(layer, title){
 		this.cleanActiveControl();
 		var tooltip;
 		var cleanup = function() {
@@ -427,10 +434,16 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 			}  
 		};
 		
+		var vendorParams = {};
+		Ext.apply(vendorParams, layer.vendorParams || this.vendorParams || {});
+		if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
+			vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
+		}
+				
 		var control = new OpenLayers.Control.WMSGetFeatureInfo({
-		
 			title: 'Identify features by clicking',
 			layers: [layer],
+			vendorParams: vendorParams,
 			hover: true,
 			queryVisible: true,
 			handlerOptions:{	
