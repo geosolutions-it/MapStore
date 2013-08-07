@@ -44,8 +44,7 @@
 			1268808.28627,5863434.458712
 		],
 		"maxExtent": [
-			-20037508.34,-20037508.34,
-			20037508.34,20037508.34
+			1252344.2712499984,5850795.892246094,1271912.1504882798,5870363.771484375
 		],
 		"layers": [						
 			{
@@ -204,7 +203,10 @@
 		}, {
 			"actions": ["-"], "actionTarget": "paneltbar"
 		}, {
-			"ptype": "gxp_wmsgetfeatureinfo", "toggleGroup": "toolGroup",
+			"ptype": "gxp_wmsgetfeatureinfo_menu", 
+			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
+			"useTabPanel": true,
+			"toggleGroup": "toolGroup",
 			"actionTarget": {"target": "paneltbar", "index": 20}
 		}, {
 			"actions": ["-"], "actionTarget": "paneltbar"

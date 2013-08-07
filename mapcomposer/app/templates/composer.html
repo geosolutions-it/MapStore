@@ -330,6 +330,14 @@
                 }, 
                 'ready' : function(){
                     app.modified = false;
+					
+					var eastPanel = Ext.getCmp('east');
+					var southPanel = Ext.getCmp('south');
+					if(eastPanel && southPanel){
+						eastPanel.collapse();
+						southPanel.collapse();
+					}
+					
 					/*app.mapPanel.map.events.register("moveend", app.mapPanel.map, function(){
 						var extent = app.mapPanel.map.getExtent().toBBOX();
 						alert(extent);
