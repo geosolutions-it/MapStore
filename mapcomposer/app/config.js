@@ -7,7 +7,7 @@ var urls = [
     //[(/^\/(maps(\/\d+)?)/), require("./root/maps").app],
 	//[(/^\/(geonetwork)/), require("./root/geonetwork").app],  // Enable this only for the GeoNetwork integration
     //[(/^\/(composer)/), require("./root/composer").app],
-    //[(/^\/(viewer(.html)?)/), require("./root/viewer").app]
+    [(/^\/(viewer(.html)?)/), require("./root/viewer").app]
 ];
 
 var debug_proxy = java.lang.System.getProperty("app.debug.proxy");
