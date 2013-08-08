@@ -1043,7 +1043,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     getState: function() {
         var state = GeoExplorer.superclass.getState.apply(this, arguments);
         // Don't persist tools
-        delete state.tools;
+        state.tools=undefined;
+        state.customtools=undefined;
+		state.viewerTools=undefined;
+        state.portalConfig=undefined;
         return state;
     }
 });
