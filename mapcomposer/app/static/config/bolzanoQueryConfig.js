@@ -225,6 +225,32 @@
 				"index":4
 			}
         }, {
+                        "ptype": "gxp_addlayer",
+                        "showCapabilitiesGrid": false,
+                        "id": "addlayer"
+                }, {
+                        "ptype": "gxp_searchvia",
+                        "outputTarget": "searchpanel",
+                        "serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
+                        "selectionProperties": {
+                            "wmsURL": "http://sit.comune.bolzano.it/geoserver/",
+                                "selectionLayerTitle": "Selection Layer",
+                                "selectionLayerCiviciName": "topp:civici",
+                                "selectionLayerViaName": "topp:grafo",
+                                "filterCiviciAttribute": "ID",
+                                "selectionCiviciStyle": "highlight_point",
+                                "filterViaAttribute": "ID_STRASSE",
+                                "selectionViaStyle": "highlight"
+                        }
+                },  {
+                        "ptype": "gxp_searchcatasto",
+                        "outputTarget": "searchpanel",
+                        "serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
+                        "selectionProperties": {
+                            "wmsURL": "http://sit.comune.bolzano.it/geoserver/",
+                                "selectionLayerTitle": "Selection Layer"
+                        }
+                },{
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": false,
 			"id": "addlayer"
@@ -248,6 +274,7 @@
 	    }, {
 		  "ptype": "gxp_bboxqueryform",
 		  "featureManager": "featuremanager",
+		  "featureGridContainer": "south",
 		  "outputTarget": "east",
 		  "actions": null,
 		  "id": "bboxquery",
