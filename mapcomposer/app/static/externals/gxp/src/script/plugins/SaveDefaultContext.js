@@ -162,11 +162,13 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
 						  buttons: [{
 							  text: "Login",
 							  formBind: true,
-							  handler: submitLogin
+							  handler: submitLogin,
+                              scope:this
 						  }],
 						  keys: [{ 
 							  key: [Ext.EventObject.ENTER], 
-							  handler: submitLogin
+							  handler: submitLogin,
+                              scope:this
 						  }]
 					  });
 					  
