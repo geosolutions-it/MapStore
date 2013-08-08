@@ -106,6 +106,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     analyticView: false,
     
     aoi: null,
+    seldamage: null,
     wpsURL: '',
     wpsStore:'',
     
@@ -255,6 +256,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             this.processingPane = new gxp.plugins.StandardProcessing({
                 outputTarget: this.outputTarget,
                 geometryName: this.geometryName,
+                seldamage: this.seldamage,                
                 aoi: this.aoi,
                 accidentTipologyName: this.accidentTipologyName,
                 selectionLayerName: this.selectionLayerName,

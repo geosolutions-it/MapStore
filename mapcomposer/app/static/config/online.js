@@ -23,7 +23,7 @@
 			"ptype": "gxp_wmssource",
 			"title": "Destination GeoServer",
 			"version": "1.1.1",
-			"url": "http://84.33.2.23:8082/geoserver_test/destination/ows",
+			"url": "http://84.33.2.23/geoserver_test/destination/ows",
 			"layerBaseParams": {
 				"TILED": true,
 				"TILESORIGIN": "-180,-90"
@@ -330,6 +330,19 @@
 		"container": "fieldset"
 	},
 	{
+		"ptype": "gxp_seldamage",
+		"id": "seldamage",
+		"outputConfig": {
+			"outputSRS": "EPSG:900913",
+            "bufferOptions":{
+                "minValue": 0,
+                "maValue":100000,
+                "decimalPrecision":2
+            }            
+		},
+		"container": "fieldset"
+	},
+	{
 		"ptype": "gxp_navigation",
 		"toggleGroup": "toolGroup",
 		"actionTarget": {
@@ -429,7 +442,7 @@
             "outputFilename":"mapstore-print"
         },
         "ignoreLayers": "Google Hybrid,Bing Aerial,Nessuno sfondo,Google Terrain,Google Roadmap",
-        "printService":"http://84.33.2.23:8082/geoserver_test/pdf/",
+        "printService":"http://84.33.2.23/geoserver_test/pdf/",
         "legendPanelId":"legendPanel",
         "actionTarget":{
             "target":"paneltbar",
@@ -448,16 +461,17 @@
 		"outputTarget": "east",
 		"id": "syntheticview",
 		"aoi": "aoi",
+        "seldamage": "seldamage",
 		"selectionLayerName": "aggregated_data_selection",
 		"selectionLayerTitle": "Rischio Totale",
 		"bufferLayerNameHuman": "buffer_human",
 		"bufferLayerNameNotHuman": "buffer_not_human",
-		"selectionLayerBaseURL": "http://84.33.2.23:8082/geoserver_test/destination/wms",
+		"selectionLayerBaseURL": "http://84.33.2.23/geoserver_test/destination/wms",
 		"selectionLayerProjection": "EPSG:32632",
 		"geometryName": "geometria",
 		"accidentTipologyName": "tipologia",
-		"wfsURL": "http://84.33.2.23:8082/geoserver_test/destination/wfs",
-		"wpsURL": "http://84.33.2.23:8082/geoserver_test/wps",
+		"wfsURL": "http://84.33.2.23/geoserver_test/destination/wfs",
+		"wpsURL": "http://84.33.2.23/geoserver_test/wps",
 		"wpsStore": "destination",
 		"wfsVersion": "1.1.0",
 		"destinationNS": "destination",
@@ -467,7 +481,7 @@
 		"ptype": "gxp_tabpanelwfsgrids",
 		"outputTarget": "featurelist",
 		"srsName": "EPSG:32632",
-		"wfsURL": "http://84.33.2.23:8082/geoserver_test/wfs",
+		"wfsURL": "http://84.33.2.23/geoserver_test/wfs",
 		"panels": {
 			"targets": {
 				"Popolazione residente": {
