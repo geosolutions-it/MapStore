@@ -330,6 +330,19 @@
          "container": "fieldset"
 
     },
+	{
+		"ptype": "gxp_seldamage",
+		"id": "seldamage",
+		"outputConfig": {
+			"outputSRS": "EPSG:900913",
+            "bufferOptions":{
+                "minValue": 0,
+                "maValue":100000,
+                "decimalPrecision":2
+            }            
+		},
+		"container": "fieldset"
+	},
     {
         "ptype":"gxp_navigation",
         "toggleGroup":"toolGroup",
