@@ -91,6 +91,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     
     aoi: null,
     
+    seldamagearea: null,
+    
     syntheticView: "syntheticview",
     
     appTarget: null,
@@ -110,6 +112,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     epsgWinWidth: null,  
 
     aoiFieldset: null,
+    
+    selDamage: null,
     
     /*WFSStores settings*/
     wfsURL: "http://84.33.2.23/geoserver/wfs",
@@ -146,7 +150,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             
         var map = this.appTarget.mapPanel.map;    
         
-        this.aoiFieldset=this.appTarget.tools[this.aoi].getAOI();   
+        this.aoiFieldset=this.appTarget.tools[this.aoi].getAOI();
+        
+        this.selDamage=this.appTarget.tools[this.seldamage].getAOI();
             
         var processing = this.buildForm(map);
      
@@ -367,9 +373,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     
     enableDisable: function(condition, widget) {
         if(condition) {
-            widget.enable();
+            widget.id == "aoi_widget" ? widget.show() : widget.enable();
         } else {
-            widget.disable();
+            widget.id == "aoi_widget" ? widget.hide() : widget.disable();
         }
     },
     /*
@@ -483,7 +489,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     },
     
     enableDisableAOI: function(formula, elaborazione) {
-        this.enableDisable(formula.get('ambito_territoriale'), this.aoiFieldset);        
+        if(formula){
+            this.enableDisable(formula.get('ambito_territoriale') || elaborazione.get('id') !== 4, this.aoiFieldset);
+        }else{
+            this.enableDisable(elaborazione.get('id') !== 4, this.aoiFieldset);        
+        }
     },
     
     /*enableDisableMeteo: function(record) {
@@ -1270,6 +1280,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 this.buildElaborazioneForm(),  
                 //this.temasPanel,
                 this.buildConditionsForm(),
+                this.selDamage,
                 this.aoiFieldset, 
                 this.buildTargetForm(),
                 this.buildAccidentForm()
