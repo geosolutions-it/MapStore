@@ -173,14 +173,16 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             var outputValue = c.getValue().inputValue;
                             var variable = this.output.variable;
                             var submitButton = this.output.submitButton;
-                            var areaSelector = this.output.aoiFieldSet.AreaSelector;                            
+                            var aoiFieldSet=this.output.aoiFieldSet;
+                            var areaSelector = aoiFieldSet.AreaSelector;
+                            var gran_type =aoiFieldSet.gran_type.getValue().inputValue;
                             if(outputValue == 'data'){
                                 variable.disable();
                                 areaSelector.enable();
                                 submitButton.destroy();
                                 delete submitButton;
                                 this.output.addButton({              
-									url: this.dataUrl, //'http://84.33.2.24/geoserver/ows',//TODO externalize this
+									url: this.dataUrl, 
                                     xtype: 'gxp_nrlCropDataTabButton',
                                     ref: '../submitButton',
                                     target:this.target,
@@ -194,7 +196,13 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 
                             }else if(outputValue == 'map'){
                                 variable.enable();
-                                areaSelector.disable();
+                                //set area selector constraints and status
+                                aoiFieldSet.disableWidth= ['district','pakistan'];
+                                if('province'== gran_type){
+                                    areaSelector.enable();// if pakistan is selected selection is not allowed!!
+                                }else{
+                                    areaSelector.setDisabled(true);
+                                }
                                 submitButton.destroy();
                                 delete submitButton;
                                 this.output.addButton({
@@ -210,7 +218,14 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 this.output.submitButton.enable();
                             }else{
                                 variable.disable();
-                                areaSelector.enable();
+                                
+                                //set area selector constraints and status
+                                aoiFieldSet.disableWidth=['pakistan'];
+                                if('pakistan'!= gran_type){
+                                    areaSelector.enable();// if pakistan is selected selection is not allowed!!
+                                }else{
+                                    areaSelector.setDisabled(true);
+                                }
                                 submitButton.destroy();
                                 delete submitButton;
                                 this.output.addButton({

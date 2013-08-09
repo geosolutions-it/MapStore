@@ -33,6 +33,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
 	title: 'Area of interest',
 	displayField: 'province',
 	selectableLayer: 'nrl:province_boundary',
+    disableWidth:['pakistan'],
 	comboConfigs:{
         base:{
             anchor:'100%',
@@ -119,7 +120,8 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
 				defaultType: 'radio', // each item will be a radio button
 				items:[
 					{boxLabel: 'Province' , name: 'areatype', inputValue: 'province' , checked: true},
-					{boxLabel: 'District', name: 'areatype', inputValue: 'district'}
+					{boxLabel: 'District', name: 'areatype', inputValue: 'district'},
+                    {boxLabel: 'Pakistan', name: 'areatype', inputValue: 'pakistan'}
 				],
 				listeners: {
 					change: function(cbg,checkedarray){
@@ -129,14 +131,26 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
 						as.store.removeAll();
 						if (! cbg.getValue())return;
 						var val = cbg.getValue().inputValue	;
-						as.displayField = val;
+						
 						var newLayerName = cbg.ownerCt.layers[val];
-						as.changeLayer(newLayerName);
-                        as.comboConfig  = Ext.apply(
-							{},
-							cbg.ownerCt.comboConfigs.base,
-							cbg.ownerCt.comboConfigs[val]
-						);
+                        if(newLayerName){
+                            as.displayField = val;
+                            as.changeLayer(newLayerName);
+                            as.comboConfig  = Ext.apply(
+                                {},
+                                cbg.ownerCt.comboConfigs.base,
+                                cbg.ownerCt.comboConfigs[val]
+                            );
+                            
+                            as.setDisabled(false);
+                        }else{
+                            as.setDisabled(true);
+                        }
+                        if( this.disableWidth.indexOf(val)>-1){
+                            as.setDisabled(true);
+                        }else{
+                            as.setDisabled(false);
+                        }
                         
 					
 					},
