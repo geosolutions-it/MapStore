@@ -161,15 +161,17 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         this.draw;
         
         this.id = this.id ? this.id : new Date().getTime(); 
-		
-		target.on("ready", function(){
-			var container = this.outputTarget ? Ext.getCmp(this.outputTarget) : null;
+	
+		target.on("ready", function(){	
+            var container = this.outputTarget ? Ext.getCmp(this.outputTarget) : null;		
 			
-			container.on("expand", function(){
-				if(this.featureManagerTool && this.featureManagerTool.layerRecord && this.featureManagerTool.schema){
-					this.addFilterBuilder(this.featureManagerTool, this.featureManagerTool.layerRecord, this.featureManagerTool.schema);
-				}
-			}, this);
+			if(container){
+				container.on("expand", function(){
+					if(this.featureManagerTool && this.featureManagerTool.layerRecord && this.featureManagerTool.schema){
+						this.addFilterBuilder(this.featureManagerTool, this.featureManagerTool.layerRecord, this.featureManagerTool.schema);
+					}
+				}, this);
+			}
 		}, this);
        
         return gxp.plugins.BBOXQueryForm.superclass.init.apply(this, arguments);
