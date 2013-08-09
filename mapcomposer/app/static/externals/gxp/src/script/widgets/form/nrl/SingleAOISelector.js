@@ -99,7 +99,8 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
 				defaultType: 'radio', // each item will be a radio button
 				items:[
 					{boxLabel: 'Province' , name: 'areatype', inputValue: 'PROVINCE' , checked: true},
-					{boxLabel: 'District', name: 'areatype', inputValue: 'DISTRICT'}
+					{boxLabel: 'District', name: 'areatype', inputValue: 'DISTRICT'},
+                    {boxLabel: 'Pakistan', name: 'areatype', inputValue: 'PAKISTAN'}
 				],
 				listeners: {
 					change: function(cbg,checkedarray){
@@ -107,10 +108,17 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
 						
 						if (cbg.getValue() && cbg.getValue().inputValue){
 							var newType = cbg.getValue().inputValue;
-							this.ownerCt.remove(this.ownerCt.singleSelector,true);
-							this.ownerCt.currentCombo = this.ownerCt.createCombo(newType);
-							this.ownerCt.add(this.ownerCt.currentCombo);
-							this.ownerCt.doLayout();
+							
+							
+                            if(this.ownerCt.featureSelectorConfigs[newType]){
+                                this.ownerCt.currentCombo = this.ownerCt.createCombo(newType);
+                                this.ownerCt.remove(this.ownerCt.singleSelector,true);
+                                this.ownerCt.add(this.ownerCt.currentCombo);
+                                this.ownerCt.doLayout();
+                                this.ownerCt.currentCombo.setDisabled(false);
+                            }else{
+                                this.ownerCt.currentCombo.setDisabled(true);
+                            }
 						}
 
 					}
@@ -138,7 +146,6 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
 	
 	},
 	createCombo: function(type){
-        
         return new gxp.widgets.form.SingleFeatureSelector(Ext.apply(
 			{
                 target:this.target,

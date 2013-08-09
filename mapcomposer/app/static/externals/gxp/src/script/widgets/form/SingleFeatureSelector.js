@@ -148,7 +148,7 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
             this.setComboDisplayValue(cb,cb.refOwner.selectButton.store.getAt(0)); //restore value on blur
         },this);
 		this.items=[selectCombo,selectFeatureButton];
-		
+		this.selectFeatureButton=selectFeatureButton;
 		
 		return  gxp.widgets.form.SingleFeatureSelector.superclass.initComponent.apply(this, arguments);
 	},
@@ -170,6 +170,15 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
             }
         }
         selectCombo.setValue(attributes[displayAttribute]);
+    },
+    setDisabled: function(disabled){
+        if(this.selectCombo){
+            this.selectCombo.setDisabled(disabled);
+        }
+        if(this.selectFeatureButton){
+            this.selectFeatureButton.toggle(false);
+            this.selectFeatureButton.setDisabled(disabled);
+        }
     }
     
     
