@@ -52,22 +52,37 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 				case  "Production" : varparam ='prod';break;
 				case "Yield" : varparam= 'yield';break;
 			}
+            var region_list=values.region_list.replace('\\,',',');
 			var yieldFactor = fieldValues.production_unit == "000 bales" ? 170 : 1000;
-			
-			
+            //set up cql_filter
+			var cql_filter="1=1";
+            if(values.areatype=='province' &&region_list.length>0 ){
+                cql_filter="province IN (" +region_list+ ")";
+            
+            }
+			//set up the area type
+            var areatype = values.areatype.toLowerCase();
+            if(values.areatype=='pakistan'){
+                areatype='province';
+            }else{
+                areatype='district';
+            }
+            
+            
 			var viewParams= "crop:" + values.crop.toLowerCase() + ";" +
-					"gran_type:" + values.areatype.toLowerCase() + ";" +
+					"gran_type:" + areatype + ";" +
 					"start_year:" + values.endYear +";" + //same year for start and end.
 					"end_year:" + values.endYear +";" + 
-					"yield_factor:" + yieldFactor;
+					"yield_factor:" + yieldFactor
 			
 			var wms = new OpenLayers.Layer.WMS(values.crop + " " + values.endYear + " - "+values.variable,//todo: choice the style for the needed variable
 			   this.url,
 			   {
 				layers: "nrl:CropDataMap",
-				styles: values.areatype.toLowerCase() + "_" + values.crop.toLowerCase() + "_"+ varparam + "_style" ,
+				styles: areatype + "_" + values.crop.toLowerCase() + "_"+ varparam + "_style" ,
 				viewParams:viewParams,
-				transparent: "true"
+				transparent: "true",
+                cql_filter:cql_filter
 				
 			});
 			
@@ -90,9 +105,10 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 					},
 					vendorParams:{
 						propertyName: 'region,crop,year,production,area,yield',
+                        cql_filter:cql_filter,
 						
 						viewParams: "crop:" + values.crop.toLowerCase() + ";" +
-									"gran_type:" + values.areatype.toLowerCase() + ";" +
+									"gran_type:" + areatype + ";" +
 									"start_year:" + values.startYear + ";" +
 									"end_year:" + values.endYear + ";" +//here startyear
 									"yield_factor:" + yieldFactor
@@ -307,7 +323,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 			//if(sm.getSelectedNode().layer == wms) { control.activate(); }
 			sm.on('selectionchange',function(sm,sel,eOpts){
 				if(!sm.getSelectedNode()) return;
-				if(sm.getSelectedNode().layer.id == wms.id){
+				if(sm.getSelectedNode().layer && sm.getSelectedNode().layer.id == wms.id){
 					if(action.pressed) control.activate();
 					
 				}else{
