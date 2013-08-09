@@ -494,14 +494,36 @@ GeoExt.Lang.add("fr", {
 		switchConfirmationText : "Vous êtes certain que vous souhaitez modifier la langue?"//Vous êtes certain que vous souhaitez modifier la langue? toutes les données non enregistrées seront a perdu?"
 
 	},
-        "gxp.form.AOIFieldset.prototype":{
-            northLabel:"Nord",
-            westLabel:"Ouest",
-            eastLabel:"Est",
-            southLabel:"Sud",
-            title: "Territorial",
-            setAoiText: "Sélectionner une zone",        
-            setAoiTooltip: "Permettre la sélection de la région d'intérêt sur ​​la carte",
-            waitEPSGMsg: "Attendez ... Chargement"
-        }
+    "gxp.form.AOIFieldset.prototype":{
+        northLabel:"Nord",
+        westLabel:"Ouest",
+        eastLabel:"Est",
+        southLabel:"Sud",
+        title: "Territorial",
+        setAoiText: "Sélectionner une zone",        
+        setAoiTooltip: "Permettre la sélection de la région d'intérêt sur ​​la carte",
+        waitEPSGMsg: "Attendez ... Chargement"
+    },
+    "gxp.form.SelDamageArea.prototype":{
+        selAreaDamageTitle: "Sélection de la région",
+        selAreaDamageLabel: "Méthode de sélection",
+        selAreaDamageEmptyText: "--- Choisissez le type ---",
+        comboPolygonSelection: 'Polygon',
+        comboCircleSelection: 'Arrondissez',
+        comboBufferSelection: "Buffer"
+    },
+
+    "gxp.widgets.form.BufferFieldset.prototype": {
+		bufferFieldLabel: "Gamme de tampon",
+		bufferFieldSetTitle: "Tampon",
+		coordinatePickerLabel: "Coordonnées",
+		draweBufferTooltip: "Dessinez le tampon"
+	},
+
+	"gxp.widgets.form.CoordinatePicker.prototype":{
+	    fieldLabel: 'Coordonnées',
+		pointSelectionButtionTip: 'Cliquez pour activer la sélection du collimateur',
+		latitudeEmptyText: 'Latitude',
+		longitudeEmptyText: 'Longitude'
+	}
 });

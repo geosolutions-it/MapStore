@@ -496,14 +496,36 @@ GeoExt.Lang.add("en", {
 		switchConfirmationText : "Are you sure to change Language?"//Are you sure to change Language? All unsaved data will be lost
 
 	},
-        "gxp.form.AOIFieldset.prototype":{
-            northLabel:"North",
-            westLabel:"West",
-            eastLabel:"East",
-            southLabel:"South",
-            title: "Territorial",
-            setAoiText: "Select area",        
-            setAoiTooltip: "Enable the selection of the region of interest on the map",
-            waitEPSGMsg: "Loading... please wait"
-        }
+    "gxp.form.AOIFieldset.prototype":{
+        northLabel:"North",
+        westLabel:"West",
+        eastLabel:"East",
+        southLabel:"South",
+        title: "Territorial",
+        setAoiText: "Select area",        
+        setAoiTooltip: "Enable the selection of the region of interest on the map",
+        waitEPSGMsg: "Loading... please wait"
+    },
+    "gxp.form.SelDamageArea.prototype":{
+        selAreaDamageTitle: "Area selection",
+        selAreaDamageLabel: "Selection method",
+        selAreaDamageEmptyText: "--- Choose type ---",
+        comboPolygonSelection: 'Polygon',
+        comboCircleSelection: 'Circle',
+        comboBufferSelection: "Buffer"
+    },
+
+    "gxp.widgets.form.BufferFieldset.prototype": {
+		bufferFieldLabel: "Buffer Range",
+		bufferFieldSetTitle: "Buffer",
+		coordinatePickerLabel: "Coordinates",
+		draweBufferTooltip: "Draw the Buffer"
+	},
+
+	"gxp.widgets.form.CoordinatePicker.prototype":{
+	    fieldLabel: 'Coordinates',
+		pointSelectionButtionTip: 'Click to enable point selection',
+		latitudeEmptyText: 'Latitude',
+		longitudeEmptyText: 'Longitude'
+	}
 });
