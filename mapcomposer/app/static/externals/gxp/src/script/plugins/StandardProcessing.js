@@ -152,7 +152,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         this.aoiFieldset=this.appTarget.tools[this.aoi].getAOI();
         
-        this.selDamage=this.appTarget.tools[this.seldamage].getAOI();
+        this.selDamage=this.appTarget.tools[this.seldamage].getSelDamage();
+        this.selDamage.hide();
             
         var processing = this.buildForm(map);
      
@@ -365,17 +366,27 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     
     enableDisableForm: function(formula, elaborazione) {
         this.enableDisableAOI(formula, elaborazione);
+        this.enableDisableSelAreaDamage(formula, elaborazione);
         this.enableDisableTemporali(formula, elaborazione);
         //this.enableDisableMeteo(record);
         this.enableDisableTargets(formula, elaborazione);
         this.enableDisableScenario(formula, elaborazione);        
+        this.enableDisableFormula(formula, elaborazione);        
     },
     
     enableDisable: function(condition, widget) {
         if(condition) {
-            widget.id == "aoi_widget" ? widget.show() : widget.enable();
+            if(widget.id === "aoi_widget" || widget.id ==="seldamage_widget"){
+                widget.show()
+            }else{
+                widget.enable();
+            }
         } else {
-            widget.id == "aoi_widget" ? widget.hide() : widget.disable();
+            if(widget.id === "aoi_widget" || widget.id ==="seldamage_widget"){
+                widget.hide()
+            }else{
+                widget.disable();
+            }
         }
     },
     /*
@@ -485,15 +496,28 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     },    
     
     enableDisableTemporali: function(formula, elaborazione) {
-        this.enableDisable(formula.get('condizioni_temporali') && elaborazione.get('id') === 2, this.temporal);        
+        if(formula){
+            this.enableDisable(formula.get('condizioni_temporali') && elaborazione.get('id') === 2, this.temporal);        
+        }else{
+            this.enableDisable(elaborazione.get('id') !== 4, this.temporal);
+        }
     },
     
     enableDisableAOI: function(formula, elaborazione) {
         if(formula){
             this.enableDisable(formula.get('ambito_territoriale') || elaborazione.get('id') !== 4, this.aoiFieldset);
         }else{
-            this.enableDisable(elaborazione.get('id') !== 4, this.aoiFieldset);        
+            this.enableDisable(elaborazione.get('id') !== 4, this.aoiFieldset);      
         }
+    },
+    
+    //disable combo formula if elaboration method is Damage Assessment
+    enableDisableFormula: function(formula, elaborazione) {
+        this.enableDisable(elaborazione.get('id') !== 4, this.formula);
+   },
+    
+    enableDisableSelAreaDamage: function(formula, elaborazione) {
+        this.enableDisable(elaborazione.get('id') === 4, this.selDamage);        
     },
     
     /*enableDisableMeteo: function(record) {
@@ -501,28 +525,30 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     },*/
     
     enableDisableTargets: function(record) {
-        var hasTargets = record.get('bersagli_tutti') || record.get('bersagli_umani') || record.get('bersagli_ambientali');
-        this.enableDisable(hasTargets, this.macrobers);
-        this.enableDisable(hasTargets, this.bers);
-        //this.enableDisable(hasTargets, this.temasPanel);
-        
-        if(hasTargets) {
-            var data;
-            var type;            
+        if(record){
+            var hasTargets = record.get('bersagli_tutti') || record.get('bersagli_umani') || record.get('bersagli_ambientali');
+            this.enableDisable(hasTargets, this.macrobers);
+            this.enableDisable(hasTargets, this.bers);
+            //this.enableDisable(hasTargets, this.temasPanel);
             
-            if(record.get('bersagli_tutti')) {
-                data = this.macroBersData;
-                type = null;
-            } else if(record.get('bersagli_umani')) {
-                data = [this.macroBersData[1]];
-                type = true;
-            } else if(record.get('bersagli_ambientali')) {
-                data = [this.macroBersData[2]];
-                type = false;
+            if(hasTargets) {
+                var data;
+                var type;            
+                
+                if(record.get('bersagli_tutti')) {
+                    data = this.macroBersData;
+                    type = null;
+                } else if(record.get('bersagli_umani')) {
+                    data = [this.macroBersData[1]];
+                    type = true;
+                } else if(record.get('bersagli_ambientali')) {
+                    data = [this.macroBersData[2]];
+                    type = false;
+                }
+                this.macrobers.getStore().loadData(data);
+                this.macrobers.setValue(data[0][1]);
+                this.updateTargetCombo(type);
             }
-            this.macrobers.getStore().loadData(data);
-            this.macrobers.setValue(data[0][1]);
-            this.updateTargetCombo(type);
         }
     },
     
@@ -541,19 +567,21 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     },
     
     enableDisableScenario: function(record) {
-        var hasScenario = record.get('sostanze') || record.get('incidenti') || record.get('gravita');
-        this.enableDisable(hasScenario, this.classi);
-        this.enableDisable(hasScenario, this.sostanze);
-        this.enableDisable(hasScenario, this.accident);
-        this.enableDisable(hasScenario, this.seriousness);
-        
-        if(record.get('sostanze') && !record.get('incidenti')) {
-            this.accident.disable();
-            this.seriousness.disable();
-        } 
-        if(record.get('sostanze') && record.get('incidenti') && !record.get('gravita')) {
-            this.seriousness.disable();
-        } 
+        if(record){
+            var hasScenario = record.get('sostanze') || record.get('incidenti') || record.get('gravita');
+            this.enableDisable(hasScenario, this.classi);
+            this.enableDisable(hasScenario, this.sostanze);
+            this.enableDisable(hasScenario, this.accident);
+            this.enableDisable(hasScenario, this.seriousness);
+            
+            if(record.get('sostanze') && !record.get('incidenti')) {
+                this.accident.disable();
+                this.seriousness.disable();
+            } 
+            if(record.get('sostanze') && record.get('incidenti') && !record.get('gravita')) {
+                this.seriousness.disable();
+            }
+        }
     },
     
     /** private: method[buildConditionsForm]
@@ -1379,6 +1407,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     cancelProcessing: function() {
         this.enableDisableSimulation(false);
         this.switchToSyntheticView();
+        this.selDamage.clearDrawFeature();
     },
     
     switchToSyntheticView: function(){
