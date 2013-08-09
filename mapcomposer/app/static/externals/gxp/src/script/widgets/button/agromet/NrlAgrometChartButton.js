@@ -67,7 +67,9 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
         height: 400
 	},
     handler: function () {
-    
+        
+        
+        
         var today = new Date();
         var dd = today.getDate();
         var mm = today.getMonth()+1; //January is 0!
@@ -153,6 +155,18 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 			factorStore: factorStore
         };
         
+        //loading mask
+        var loadingMsg ="Please wait...";
+        /* not needed anymore
+        if( (granType == "province" || numRegion.length >20 ) && factorValues.lenth >1){
+            loadingMsg += "<br/>This request could take a long time to be served";
+        
+        }
+        */
+        var myMask = new Ext.LoadMask(this.findParentByType('form').getEl(),
+        {msg:loadingMsg} );
+        
+        myMask.show();
 		var store = new Ext.data.JsonStore({
 			url: this.url,
 			 sortInfo: {field: "s_dec", direction: "ASC"},
@@ -185,6 +199,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 		store.load({
 			callback:function(){
 				this.createResultPanel(store,listVar);
+                myMask.hide();
 			},
 
 			scope:this,
