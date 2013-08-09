@@ -45,7 +45,10 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
     /** api: ptype = gxp_ndvi */
     ptype: "gxp_ndvi",
     layer: "nrl:NDVI-SPOT",
+    layerName:"NDVI-SPOT",
     source: "nrl",
+    replace:false,
+    multipleMethod:'add',
     dataUrl: null,
     
     /** private: method[addOutput]
@@ -126,7 +129,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                                     'myId',
                                     'displayText'
                                 ],
-                                data: [[01, 'First'], [02, 'Second'], [03, 'Third']]
+                                data: [[5, 'First'], [15, 'Second'], [25, 'Third']]
                             }),
                             valueField: 'myId',
                             displayField: 'displayText'
@@ -134,11 +137,13 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                     ]}],	
                     buttons:[{
                         url: me.dataUrl,
+                        layer:me.layer,
                         text: "View NDVI",
                         //xtype: 'gxp_nrlCropDataButton',
                         ref: '../submitButton',
                         target: me.target,
                         form: me,
+                        layerName:me.layerName,
                         disabled:false,
                         handler: function(button, event){
                             //2012-01-01T00:00:00.000Z,2012-01-02T00:00:00.000Z,2012-01-03T00:00:00.000Z,2012-02-01T00:00:00.000Z
@@ -147,12 +152,26 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                             var intero = parseInt(data2[0]);
                             var dateUTC = new Date(Date.UTC(data2[1],intero-1,data1));
                             var dateISOString = dateUTC.toISOString();
-                            var layer = target.mapPanel.map.getLayersByName("NDVI-SPOT")[0];
+                            var map= target.mapPanel.map;
+                            var layer = target.mapPanel.map.getLayersByName(this.layerName)[0];
+                            if(!layer){
+                                layer = new OpenLayers.Layer.WMS(
+                                    this.layerName,//todo: choice the style for the needed variable
+                                    this.url,
+                                    {
+                                        layers: this.layer,
+                                        time : dateISOString,
+                                        tiled:true
+                                    }
+                                        
+                            );
+                            map.addLayer(layer);
+                            }
                             if (layer && me.replace){
                                 layer.mergeNewParams({
                                     time : dateISOString
                                 }); 
-                            }else{
+                            }else if (layer){
                                 Ext.Msg.alert("Not yet implemented","add NDVI layer for this date:" +dateISOString);
                                 
                             }
