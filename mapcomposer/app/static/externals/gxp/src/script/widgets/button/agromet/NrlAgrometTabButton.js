@@ -242,7 +242,7 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 				flex:1
 			},{
 				sortable: true, 
-				header:values.startYear+"-"+values.endYear,
+				header:values.startYear+"-"+(values.endYear-1),
 				name:  'aggregated',
 				dataIndex: 'aggregated',
 				renderer: Ext.util.Format.numberRenderer('0.00'),

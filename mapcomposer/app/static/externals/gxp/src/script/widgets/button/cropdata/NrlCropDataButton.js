@@ -171,7 +171,12 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                             "yield_factor:" + prodCoeffUnits
             },
             success: function ( result, request ) {
-                var jsonData = Ext.util.JSON.decode(result.responseText);
+                try{
+                    var jsonData = Ext.util.JSON.decode(result.responseText);
+                }catch(e){
+                    Ext.Msg.alert("Error","Error parsing data from the server");
+                    return;
+                }
                 if (jsonData.features.length <=0){
                     Ext.Msg.alert("No data","Data not available for these search criteria");
                     return;
