@@ -270,6 +270,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 }
             }, {xtype: 'tbspacer', width: 10}, this.displayItem] : []).concat(["->"].concat(!this.alwaysDisplayOnMap ? [{
                 text: this.displayFeatureText,
+				iconCls: "gxp-icon-addtomap",
                 enableToggle: true,
                 toggleHandler: function(btn, pressed) {
                     this.selectOnMap && this.selectControl[pressed ? "activate" : "deactivate"]();

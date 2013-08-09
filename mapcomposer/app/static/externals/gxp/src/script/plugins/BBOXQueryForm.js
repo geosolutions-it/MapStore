@@ -161,6 +161,18 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         this.draw;
         
         this.id = this.id ? this.id : new Date().getTime(); 
+	
+		target.on("ready", function(){	
+            var container = this.outputTarget ? Ext.getCmp(this.outputTarget) : null;		
+			
+			if(container){
+				container.on("expand", function(){
+					if(this.featureManagerTool && this.featureManagerTool.layerRecord && this.featureManagerTool.schema){
+						this.addFilterBuilder(this.featureManagerTool, this.featureManagerTool.layerRecord, this.featureManagerTool.schema);
+					}
+				}, this);
+			}
+		}, this);
        
         return gxp.plugins.BBOXQueryForm.superclass.init.apply(this, arguments);
     },
@@ -168,7 +180,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-        var featureManager = this.target.tools[this.featureManager];
+        this.featureManagerTool = this.target.tools[this.featureManager];
 		
 		var me = this;
 		
@@ -294,7 +306,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                                     "featureadded": function(event) {
                                         me.filterCircle = new OpenLayers.Filter.Spatial({
 											type: OpenLayers.Filter.Spatial.INTERSECTS,
-											property: featureManager.featureStore.geometryName,
+											property: me.featureManagerTool.featureStore.geometryName,
 											value: event.feature.geometry
 										});                                                        
                                     },                                
@@ -333,7 +345,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                                     "featureadded": function(event) {
                                         me.filterPolygon = new OpenLayers.Filter.Spatial({
 											type: OpenLayers.Filter.Spatial.INTERSECTS,
-											property: featureManager.featureStore.geometryName,
+											property: me.featureManagerTool.featureStore.geometryName,
 											value: event.feature.geometry
 										});
                                     },                                
@@ -391,16 +403,21 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     if (ownerCt && ownerCt instanceof Ext.Window) {
                         ownerCt.hide();
                     } else {
-                        addFilterBuilder(
-                            featureManager, featureManager.layerRecord,
-                            featureManager.schema
+                        this.addFilterBuilder(
+                            this.featureManagerTool, this.featureManagerTool.layerRecord,
+                            this.featureManagerTool.schema
                         ); 
                     }                    
                 }
             }, {
                 text: this.queryActionText,
                 iconCls: "gxp-icon-find",
-                handler: function() {					
+                handler: function() {
+					var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
+					if(container){
+						container.expand();
+					}
+					
                     var methodSelection = this.output[0].outputType.getValue();
                     var filters = new Array();
 					if(queryForm.spatialFieldset.hidden === false){
@@ -408,7 +425,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 
 							filters.push(new OpenLayers.Filter.Spatial({
 								type: OpenLayers.Filter.Spatial.BBOX,
-								property: featureManager.featureStore.geometryName,
+								property: this.featureManagerTool.featureStore.geometryName,
 								value: me.bboxFielset.getBBOXBounds()
 							}));
 								
@@ -416,7 +433,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 								var attributeFilter = queryForm.filterBuilder.getFilter();
 								attributeFilter && filters.push(attributeFilter);
 							}
-							featureManager.loadFeatures(filters.length > 1 ?
+							this.featureManagerTool.loadFeatures(filters.length > 1 ?
 								new OpenLayers.Filter.Logical({
 									type: OpenLayers.Filter.Logical.AND,
 									filters: filters
@@ -464,7 +481,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 																
 						    var radiusFilter = new OpenLayers.Filter.Spatial({
 								type: OpenLayers.Filter.Spatial.INTERSECTS,
-								property: featureManager.featureStore.geometryName,
+								property: this.featureManagerTool.featureStore.geometryName,
 								value: regularPolygon
 							});
 			 
@@ -475,7 +492,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 								attributeFilter && filters.push(attributeFilter);
 							}
 							
-							featureManager.loadFeatures(filters.length > 1 ?
+							this.featureManagerTool.loadFeatures(filters.length > 1 ?
 								new OpenLayers.Filter.Logical({
 									type: OpenLayers.Filter.Logical.AND,
 									filters: filters
@@ -499,7 +516,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                                     attributeFilter && filters.push(attributeFilter);
                                 }
                                 filters.push(me.filterCircle);
-                                featureManager.loadFeatures(filters.length > 1 ?
+                                this.featureManagerTool.loadFeatures(filters.length > 1 ?
                                     new OpenLayers.Filter.Logical({
                                         type: OpenLayers.Filter.Logical.AND,
                                         filters: filters
@@ -522,7 +539,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                                     attributeFilter && filters.push(attributeFilter);
                                 }
                                 filters.push(me.filterPolygon);
-                                featureManager.loadFeatures(filters.length > 1 ?
+                                this.featureManagerTool.loadFeatures(filters.length > 1 ?
                                     new OpenLayers.Filter.Logical({
                                         type: OpenLayers.Filter.Logical.AND,
                                         filters: filters
@@ -548,7 +565,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         
         var methodSelection = this.output[0].outputType;
         
-        var addFilterBuilder = function(mgr, rec, schema) {
+        this.addFilterBuilder = function(mgr, rec, schema) {			
             queryForm.attributeFieldset.removeAll();
             queryForm.setDisabled(!schema);
 			
@@ -560,6 +577,33 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     allowBlank: true,
                     allowGroups: false
                 });
+				
+			   /**
+				* Overriding the removeCondition method in order to manage the 
+				* single filterfield reset.
+				*/
+				 queryForm.filterBuilder.removeCondition = function(item, filter) {
+					var parent = this.filter.filters[0].filters;
+					if(parent.length > 1) {
+						parent.remove(filter);
+						this.childFilterContainer.remove(item, true);
+					}else{
+						var items = item.findByType("gxp_filterfield");
+						
+						var i = 0;
+						while(items[i]){
+							items[i].reset();
+							
+							items[i].items.get(1).disable();
+							items[i].items.get(2).disable();
+
+							filter.value = null;
+							i++;
+						}
+					}
+					
+					this.fireEvent("change", this);
+				};
 				
                 queryForm.spatialFieldset.enable();
                 queryForm.spatialFieldset.show();
@@ -588,10 +632,10 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             queryForm.attributeFieldset.doLayout();
         };
 		
-        featureManager.on("layerchange", addFilterBuilder);
+        this.featureManagerTool.on("layerchange", this.addFilterBuilder);
 		
-        addFilterBuilder(featureManager,
-            featureManager.layerRecord, featureManager.schema
+        this.addFilterBuilder(this.featureManagerTool,
+            this.featureManagerTool.layerRecord, this.featureManagerTool.schema
         );
         
         this.target.mapPanel.map.events.register("moveend", this, function() {
@@ -599,10 +643,10 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             this.bboxFielset.setBBOX(this.target.mapPanel.map.getExtent())
         });
         
-        featureManager.on({
+        this.featureManagerTool.on({
             "beforequery": function() {
                 new Ext.LoadMask(queryForm.getEl(), {
-                    store: featureManager.featureStore,
+                    store: this.featureManagerTool.featureStore,
                     msg: this.queryMsg
                 }).show();
             },
