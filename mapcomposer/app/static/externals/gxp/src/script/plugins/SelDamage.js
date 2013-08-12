@@ -84,7 +84,7 @@ gxp.plugins.SelDamage = Ext.extend(gxp.plugins.Tool, {
      *  
      *  return the AOI Widget (Fieldset)   
      */
-    getAOI: function(){
+    getSelDamage: function(){
         return this.selDamageArea;
     },
     
@@ -93,7 +93,7 @@ gxp.plugins.SelDamage = Ext.extend(gxp.plugins.Tool, {
      *  
      *  return the AOI Panel   
      */
-    getAOIPanel: function(){
+    getSelDamagePanel: function(){
         return new Ext.FormPanel({
             border: false,
             layout: "fit",
@@ -116,10 +116,10 @@ gxp.plugins.SelDamage = Ext.extend(gxp.plugins.Tool, {
         
         switch (this.container){
             case "fieldset":
-                return this.getAOI();
+                return this.getSelDamage();
                 break;
             case "panel":
-                return this.getAOIPanel();
+                return this.getSelDamagePanel();
                 break;
         }
         

@@ -493,15 +493,36 @@ GeoExt.Lang.add("it", {
 		switchConfirmationText : "Si è sicuri di voler cambiare lingua?"//Si è sicuri di voler cambiare lingua? I dati non salvati saranno persi
 
 	},
-        "gxp.form.AOIFieldset.prototype":{
-            northLabel:"Nord",
-            westLabel:"Ovest",
-            eastLabel:"Est",
-            southLabel:"Sud",
-            title: "Ambito Territoriale",
-            setAoiText: "Seleziona Area",        
-            setAoiTooltip: "Abilita la selezione della regione di interesse sulla mappa",
-            waitEPSGMsg: "Attendere... Caricamento in corso"
-        }
-	
+    "gxp.form.AOIFieldset.prototype":{
+        northLabel:"Nord",
+        westLabel:"Ovest",
+        eastLabel:"Est",
+        southLabel:"Sud",
+        title: "Ambito Territoriale",
+        setAoiText: "Seleziona Area",        
+        setAoiTooltip: "Abilita la selezione della regione di interesse sulla mappa",
+        waitEPSGMsg: "Attendere... Caricamento in corso"
+    },
+    "gxp.form.SelDamageArea.prototype":{
+        selAreaDamageTitle: "Selezione area",
+        selAreaDamageLabel: "Metodo selezione",
+        selAreaDamageEmptyText: "--- Scegli tipologia ---",
+        comboPolygonSelection: 'Poligono',
+        comboCircleSelection: 'Cerchio',
+        comboBufferSelection: "Buffer"
+    },
+
+	"gxp.widgets.form.BufferFieldset.prototype": {
+		bufferFieldLabel: "Intervallo del Buffer",
+		bufferFieldSetTitle: "Buffer",
+		coordinatePickerLabel: "Coordinate",
+		draweBufferTooltip: "Disegna il Buffer"
+	},
+
+	"gxp.widgets.form.CoordinatePicker.prototype":{
+	    fieldLabel: 'Coordinate',
+		pointSelectionButtionTip: 'Clicca sulla mappa per abilitare la selezione del punto',
+		latitudeEmptyText: 'Latitudine',
+		longitudeEmptyText: 'Longitudine'
+	}
 });
