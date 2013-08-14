@@ -334,7 +334,7 @@
 		"ptype": "gxp_seldamage",
 		"id": "seldamage",
 		"outputConfig": {
-			"outputSRS": "EPSG:900913",
+			"outputSRS": "EPSG:4326",
             "bufferOptions":{
                 "minValue": 0,
                 "maValue":100000,
