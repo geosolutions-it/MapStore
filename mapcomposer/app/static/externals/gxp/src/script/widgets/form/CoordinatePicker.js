@@ -134,7 +134,9 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
                     name: 'lon',
 					listeners: {
 						scope:this,
-						change: this.updatePoint
+						change: function(){
+                            this.updatePoint(true);
+                        }
 					}
                 }, {
                     xtype: 'button',
@@ -172,7 +174,9 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
                     name: 'lat',
 					listeners: {
 						scope:this,
-						change: this.updatePoint
+						change: function(){
+                            this.updatePoint(true);
+                        }
 					}
                 }
             ]
@@ -195,27 +199,28 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
     },
 
 	/** gets values from the fields and drow it on the map */
-    updatePoint: function(){
+    updatePoint: function(check){
         var lat = this.latitudeField.getValue();
 		var lon = this.longitudeField.getValue();
 		if( lon && lat ){
 			//add point
 			var lonlat = new OpenLayers.LonLat(lon,lat);
 			lonlat.transform(new OpenLayers.Projection(this.outputSRS),map.getProjectionObject() );
-			this.updateMapPoint(lonlat);
+			this.updateMapPoint(lonlat,check);
 		}
     },
 
-	resetPoint:function(){
+	resetPoint:function(check){
 		if(this.selectStyle){
 			var layer = map.getLayersByName(this.selectLayerName)[0];
             if(layer){
                 map.removeLayer(layer);
             }
 		}
-
-		this.latitudeField.reset();
-        this.longitudeField.reset();
+        if(!check){
+            this.latitudeField.reset();
+            this.longitudeField.reset();
+        }
 
 		this.fireEvent("reset");
 	},
@@ -225,9 +230,9 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
 	},
 
 	/** private point update */
-    updateMapPoint:function(lonlat){
+    updateMapPoint:function(lonlat,check){
         if(this.selectStyle){
-            this.resetPoint();
+            this.resetPoint(check);
             var style = new OpenLayers.Style(this.selectStyle);
             this.layer = new OpenLayers.Layer.Vector(this.selectLayerName,{
                 styleMap: style                
