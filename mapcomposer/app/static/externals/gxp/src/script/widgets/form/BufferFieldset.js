@@ -138,6 +138,7 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 				scope: this,
 				update: function(){
 					this.bufferField.enable();
+                    this.resetBuffer();
 				},				
 				reset: function(){
 					this.bufferField.disable();
@@ -186,6 +187,9 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 								if(this.isValid()){									
 									var coords = this.coordinatePicker.getCoordinate();
 									var lonlat = new OpenLayers.LonLat(coords[0], coords[1]);
+                                    
+                                    lonlat.transform(new OpenLayers.Projection(this.outputSRS),map.getProjectionObject());
+
 									var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
 
 									var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
