@@ -93,6 +93,10 @@ font-family: tahoma, arial, helvetica, sans-serif;
     background-image: url(img/silk/application_view_gallery.png);
 }
 
+.x-btn .icon-selectvulnelem {
+    background-image: url(img/silk/application_view_list.png);
+}
+
 .x-btn .icon-save {
     background-image: url(img/geosilk/map_save.png);
 }

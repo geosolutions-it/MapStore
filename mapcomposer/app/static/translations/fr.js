@@ -525,5 +525,14 @@ GeoExt.Lang.add("fr", {
 		pointSelectionButtionTip: 'Cliquez pour activer la sélection du collimateur',
 		latitudeEmptyText: 'Latitude',
 		longitudeEmptyText: 'Longitude'
+	},
+
+	"gxp.plugins.SelectVulnElem.prototype":{
+        menuText: "Afficher les éléments vulnérables",
+        tooltip: "Afficher les éléments vulnérables",
+        allHumanTargetTitle: "Toutes les cibles humaines",
+        allNotHumanTargetTitle: "Toutes les cibles environnementales",
+        selectAllTitle: "SELECT ALL",
+        addToMapButtonText: "Ajouter à la carte"
 	}
 });

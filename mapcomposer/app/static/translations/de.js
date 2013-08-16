@@ -523,6 +523,15 @@ GeoExt.Lang.add("de", {
 		pointSelectionButtionTip: 'Klicken Sie auf den Punkt Auswahl zu aktivieren',
 		latitudeEmptyText: 'Latitude',
 		longitudeEmptyText: 'Longitude'
+	},
+
+	"gxp.plugins.SelectVulnElem.prototype":{
+        menuText: "Anzeige Gefährdete Elements",
+        tooltip: "Anzeige Gefährdete Elements",
+        allHumanTargetTitle: "Alle menschlichen Ziele",
+        allNotHumanTargetTitle: "Alle Umweltziele",
+        selectAllTitle: "SELECT ALL",
+        addToMapButtonText: "In den Karte"
 	}
 	
 });

@@ -527,5 +527,14 @@ GeoExt.Lang.add("en", {
 		pointSelectionButtionTip: 'Click to enable point selection',
 		latitudeEmptyText: 'Latitude',
 		longitudeEmptyText: 'Longitude'
+	},
+
+	"gxp.plugins.SelectVulnElem.prototype":{
+        menuText: "Display Vulnerable Elements",
+        tooltip: "Display Vulnerable Elements",
+        allHumanTargetTitle: "All human targets",
+        allNotHumanTargetTitle: "All environmental targets",
+        selectAllTitle: "SELECT ALL",
+        addToMapButtonText: "Add to map"
 	}
 });
