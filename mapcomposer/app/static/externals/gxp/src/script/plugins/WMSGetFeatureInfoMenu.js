@@ -274,8 +274,10 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                             
                         },
 						nogetfeatureinfo: function(evt) {
-							layersToQuery--;							
-							this.unmask();							
+							layersToQuery--;		
+							if(layersToQuery === 0 ){
+								this.unmask();		
+							}
 						},
                         scope: this
                     }
