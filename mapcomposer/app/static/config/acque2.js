@@ -357,7 +357,7 @@
             "trackMenuText": "Localizzami",
             "geolocateTooltip": "Trova la mia posizione",
             "enableTracking" : true,
-            
+            "layerName":"GeoLocation",
             "bind": true,
             "zoom": true,
             "displayInLayerSwitcher": false,
@@ -481,7 +481,7 @@
 		  "legendPanelId":"legendPanel",
           "defaultResolutionIndex":1,
           "defaultLayoutIndex":1,
-		  "ignoreLayers":["WFSSearch","Marker","WFSsearchMarker","GeoRefMarker"],
+		  "ignoreLayers":["WFSSearch","Marker","WFSsearchMarker","GeoRefMarker","GeoLocation"],
 		  "actionTarget":{
 			 "target":"paneltbar",
 			 "index":4
