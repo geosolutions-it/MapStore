@@ -86,7 +86,8 @@
         // //////////////////////////////////////////////////
         // Parsing the request to get the parameters
         // //////////////////////////////////////////////////
-        var params = location.search.replace(/^\?/,'').replace(/&amp;/g,'&').split("&");
+		var localURL = decodeURIComponent(location.search);
+        var params = localURL.replace(/^\?/,'').replace(/&amp;/g,'&').split("&");
         for (var j=0; j < params.length; j++) {
 			var param = params[j].split("=");
 			if(param[0]){
