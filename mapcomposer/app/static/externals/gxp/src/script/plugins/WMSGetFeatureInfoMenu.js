@@ -304,6 +304,19 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
         this.target.mapPanel.layers.on("update", updateInfoEvent, this);
         this.target.mapPanel.layers.on("add", updateInfoEvent, this);
         this.target.mapPanel.layers.on("remove", updateInfoEvent, this);
+
+        // Issue #178: add click callback for each item
+        this.button.on({
+            click: this.closePopups,
+            scope:this
+        });
+        Ext.each(this.button.menu.items.keys, function(key){
+            var item = this.button.menu.items.get(key);
+            item.on({
+                click: this.closePopups,
+                scope:this
+            });
+        }, this);
         
         return actions;
     },
@@ -314,6 +327,20 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 			this.masking = false;
 		}
 	},
+    
+    /** private: method[closePopups]
+     *  Clear all popups openned. Fixes issue #178.
+     */
+    closePopups: function(){
+        if(this.closePrevious){
+            for(var key in this.popupCache) {
+                if(this.popupCache.hasOwnProperty(key)) {
+                    this.popupCache[key].close();
+                    delete this.popupCache[key];
+                }
+            }
+        }
+    },
 	
 	/** private: method[removeAllPopups] removes all open popups
      */
