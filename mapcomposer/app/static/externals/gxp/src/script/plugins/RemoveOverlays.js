@@ -66,7 +66,9 @@ gxp.plugins.RemoveOverlays = Ext.extend(gxp.plugins.Tool, {
                         var layers = this.target.mapPanel.layers;
 
                         layers.data.each(function(record, index, totalItems ) {
-                            if(record.get('group') !== 'background'){
+							var group = record.get('group');
+							var name = record.get('name');
+                            if(group !== 'background' && name){
                                 layers.remove(record);
                             }
                         }); 
@@ -91,12 +93,13 @@ gxp.plugins.RemoveOverlays = Ext.extend(gxp.plugins.Tool, {
         
         var removeLayerAction = actions[0];
 
-        var enforceOne = function(store) {
+        var enforceOne = function(store) {			
             var hasOverlays = store.findBy(function(record,id){
-                if(record.get('group') !== 'background'){
+				var group = record.get('group');
+                if(group !== 'background'){
                     return true;
                 }
-            });
+            }, this, 1);
             removeLayerAction.setDisabled(
                 hasOverlays < 1
             );

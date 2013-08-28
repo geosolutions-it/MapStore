@@ -305,20 +305,20 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             }] : [])),
             listeners: {
                 "added": function(cmp, ownerCt) {
-                    var onClear = (function() {
+                    var onClear = OpenLayers.Function.bind(function() {
                         this.showExportCSV ? this.output[0].exportCSVButton.disable() : {};
                         this.displayTotalResults();
                         this.selectOnMap && this.selectControl.deactivate();
                         this.autoCollapse && typeof ownerCt.collapse == "function" &&
                             ownerCt.collapse();
-                    }).bind(this);
-                    var onPopulate = (function() {
+                    }, this);
+                    var onPopulate = OpenLayers.Function.bind(function() {
                         this.showExportCSV ? this.output[0].exportCSVButton.enable() : {};
                         this.displayTotalResults();
                         this.selectOnMap && this.selectControl.activate();
                         this.autoExpand && typeof ownerCt.expand == "function" &&
                             ownerCt.expand();
-                    }).bind(this);
+                    }, this);
                     featureManager.on({
                         "query": function(tool, store) {
                             store && store.getCount() ? onPopulate() : onClear();
