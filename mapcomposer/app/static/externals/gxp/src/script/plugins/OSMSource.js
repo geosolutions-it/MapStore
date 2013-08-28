@@ -68,7 +68,7 @@ gxp.plugins.OSMSource = Ext.extend(gxp.plugins.LayerSource, {
      *  ``String``
      *  Attribution string for mapnik generated layer (i18n).
      */
-    mapnikAttribution: "Data CC-By-SA by <a href='http://openstreetmap.org/' target='_blank'>OpenStreetMap</a>",
+    mapnikAttribution: "&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors",
 
     /** api: config[homeAttribution]
      *  ``String``
@@ -91,7 +91,8 @@ gxp.plugins.OSMSource = Ext.extend(gxp.plugins.LayerSource, {
             maxResolution: 156543.03390625,
             numZoomLevels: 19,
             units: "m",
-            buffer: 1
+            buffer: 1,
+            transitionEffect: "resize"
         };
         
         var layers = [
@@ -105,18 +106,6 @@ gxp.plugins.OSMSource = Ext.extend(gxp.plugins.LayerSource, {
                 OpenLayers.Util.applyDefaults({                
                     attribution: this.mapnikAttribution,
                     type: "mapnik"
-                }, options)
-            ),
-            new OpenLayers.Layer.OSM(
-                "Tiles@home",
-                [
-                    "http://a.tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png",
-                    "http://b.tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png",
-                    "http://c.tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png"
-                ],
-                OpenLayers.Util.applyDefaults({                
-                    attribution: this.osmarenderAttribution,
-                    type: "osmarender"
                 }, options)
             )
         ];
