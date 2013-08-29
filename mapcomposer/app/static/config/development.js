@@ -1,8 +1,19 @@
 {
-   "geoStoreBase": "",
+   "geoStoreBase": "http://localhost:8080/geostore/rest/",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
    "gsSources":{ 
+		"local":{
+			"ptype": "gxp_wmssource",
+			"title": "Local GeoServer",
+			"url": "http://localhost:8080/geoserver/ows",
+			"version":"1.1.1",
+            "layerBaseParams": { 
+			    "FORMAT":"image/png8",
+				"TILED": true,
+				"TILESORIGIN": "-20037508.34, -20037508.34"
+            }
+		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
 		}, 
@@ -64,18 +75,27 @@
 	},
     "customPanels":[
         {
-            "xtype": "panel",
-            "title": "Metadata Explorer",
-            "iconCls": "csw-viewer",             
+            "xtype": "tabpanel",
+			"activeTab": 0,            
             "border": false,
             "id": "south",
             "region": "south",
-            "layout": "fit",
             "split":true,
             "height": 330,
             "collapsed": true,
             "collapsible": true,
-            "ctCls": "south-panel",
+            "header": true
+        }, {
+            "xtype": "panel",
+            "title": "Query Panel",         
+            "border": false,
+            "id": "east",
+            "width": 400,
+            "height": 500,
+            "region": "east",
+            "layout": "fit",
+            "collapsed": false,
+            "collapsible": true,
             "header": true
         }
     ],	
@@ -129,6 +149,104 @@
 			"outputTarget": "paneltbar",
 			"toggleGroup": "toolGroup",
 			"index": 23
+		}, {
+			"ptype":"gxp_print",
+			"customParams":{
+				"outputFilename":"mapstore-print"
+			},
+			"printService":"http://localhost:8080/geoserver/pdf/",
+			"legendPanelId":"legendPanel",
+			"actionTarget":{
+				"target":"paneltbar",
+				"index": 4
+			}
+		}, {
+			"ptype":"gxp_wfssearchbox",
+			"outputConfig":{
+				 "url":"http://localhost:8080/geoserver/sf/ows?",
+				 "typeName":"sf:archsites",
+				 "recordModel":[
+					{
+					   "name":"cat",
+					   "mapping":"properties.cat"
+					},
+					{
+					   "name":"geometry",
+					   "mapping":"geometry"
+					},
+
+					{
+					   "name":"str1",
+					   "mapping":"properties.str1"
+					}
+				 ],
+				 "sortBy":"cat",
+				 "queriableAttributes":[
+					"str1",
+					"cat"
+				 ],
+				 "displayField":"cat",
+				 "pageSize": 10,
+				 "width": 250,
+				 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{cat}</span></h3>{str1}</div></tpl>"
+			},
+			"updateField":"geometry",
+			"zoom": 18,
+			"outputTarget":"paneltbar",
+			"index": 30
+		}, {
+			"ptype": "gxp_importexport",
+			"service": "http://localhost:8080/servicebox/",
+			"types": ["map","kml/kmz"],
+			"actionTarget": "paneltbar",
+			"index": 28
+		}, {
+		    "ptype": "gxp_featuremanager",
+		    "id": "featuremanager"
+		}, {
+			"actions": ["-"], 
+			"actionTarget": "paneltbar"
+		}, {
+		    "ptype": "gxp_featureeditor",
+		    "featureManager": "featuremanager",
+			"actionTarget": "paneltbar"
+		}, {
+		    "ptype": "gxp_featuregrid",
+		    "featureManager": "featuremanager",
+		    "outputConfig": {
+			  "id": "featuregrid",
+			  "title": "Features"
+		    },
+		    "outputTarget": "south",
+		    "showExportCSV": true
+		}, {
+			"ptype": "gxp_bboxqueryform",
+			"featureManager": "featuremanager",
+			"outputTarget": "east",
+			"actions": null,
+			"id": "bboxquery",
+			"outputConfig":{
+				"outputSRS": "EPSG:900913",
+				"selectStyle":{
+					  "strokeColor": "#FF0000",
+					  "handlerFillColor": "#FFFFFF",
+					  "fillColor": "#FFFFFF",
+					  "fillOpacity":0,
+					  "strokeWidth":2
+				},
+				"spatialFilterOptions": {	
+					  "lonMax": 20037508.34,   
+					  "lonMin": -20037508.34,
+					  "latMax": 20037508.34,   
+					  "latMin": -20037508.34  
+				},
+				"bufferOptions": {
+					  "minValue": 1,
+					  "maxValue": 1000,
+					  "decimalPrecision": 2,
+					  "distanceUnits": "m"
+				}
+			}			
 		}
 	]
 }
