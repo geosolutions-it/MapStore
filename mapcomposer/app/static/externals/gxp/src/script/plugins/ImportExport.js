@@ -224,6 +224,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
         // create an upload file form
         var form = new gxp.MapFileDownloadPanel( {
             service: this.service,
+			composer: this.target,
             content: configStr
         } );
         
@@ -383,6 +384,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
         // create an upload file form
         var form = new gxp.KMLFileDownloadPanel( {
             service: this.service,
+			composer: this.target,
             content: kmlContent
         } );
         
@@ -419,6 +421,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
         // create an upload file form                
         var form = new gxp.KMLFileUploadPanel({
             service: this.service,
+			composer: this.target,
             deafultLayerName: this.exportConf["kml/kmz"].layerName
         });
 		

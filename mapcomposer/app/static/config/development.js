@@ -50,22 +50,22 @@
 				"title": "Open Street Map",
 				"name": "mapnik",
 				"group": "background"
-			},{
+			}, {
 				"source": "mapquest",
 				"title": "MapQuest OpenStreetMap",
 				"name": "osm",
 				"group": "background"
-			},{
+			}, {
 				"source": "google",
 				"title": "Google Roadmap",
 				"name": "ROADMAP",
 				"group": "background"
-			},{
+			}, {
 				"source": "google",
 				"title": "Google Terrain",
 				"name": "TERRAIN",
 				"group": "background"
-			},{
+			}, {
 				"source": "google",
 				"title": "Google Hybrid",
 				"name": "HYBRID",
@@ -94,7 +94,7 @@
             "height": 500,
             "region": "east",
             "layout": "fit",
-            "collapsed": false,
+            "collapsed": true,
             "collapsible": true,
             "header": true
         }
