@@ -242,6 +242,11 @@ font-family: tahoma, arial, helvetica, sans-serif;
 .gx-layer-visibility {
     background-image: url(img/silk/eye.png);
 }
+
+.gx-buffer{
+    background-image: url(img/silk/map_add.png);
+}
+
 .gx-cursor{
     background-image: url(img/silk/cursor.png);
 }

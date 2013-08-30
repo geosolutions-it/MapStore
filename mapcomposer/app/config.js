@@ -7,6 +7,7 @@ var urls = [
     //[(/^\/(maps(\/\d+)?)/), require("./root/maps").app],
 	//[(/^\/(geonetwork)/), require("./root/geonetwork").app],  // Enable this only for the GeoNetwork integration
     [(/^\/(composer)/), require("./root/composer").app],
+	[(/^\/(wps)/), require("./root/wps").app],                // to test WPS plugin
     [(/^\/(viewer(.html)?)/), require("./root/viewer").app]
 ];
 

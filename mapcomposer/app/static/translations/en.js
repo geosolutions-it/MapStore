@@ -355,7 +355,8 @@ GeoExt.Lang.add("en", {
     "gxp.widgets.form.BufferFieldset.prototype": {
 		bufferFieldLabel: "Buffer Range",
 		bufferFieldSetTitle: "Buffer",
-		coordinatePickerLabel: "Coordinates"
+		coordinatePickerLabel: "Coordinates",
+		draweBufferTooltip: "Draw the Buffer"
 	},
     
     "gxp.form.BBOXFieldset.prototype":{

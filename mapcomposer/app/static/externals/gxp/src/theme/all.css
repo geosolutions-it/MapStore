@@ -394,6 +394,10 @@ div.map-overlay div.overlay-element {
     margin-top: 0px;
 }
 
+.gxp-icon-addtomap{
+	background-image: url(img/geosilk/vector_add.png) !important;
+}
+
 /* csv_export */
 .x-btn .gxp-icon-csvexport, .x-menu-item .gxp-icon-csvexport {
     background-image: url(img/geosilk/disk.png) !important;
