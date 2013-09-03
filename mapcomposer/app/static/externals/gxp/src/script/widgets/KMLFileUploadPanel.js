@@ -111,7 +111,10 @@ gxp.KMLFileUploadPanel = Ext.extend(Ext.FormPanel, {
             disabled:true,
             handler: function() {
 	
-                this.url = this.service;
+				var pattern = /(.+:\/\/)?([^\/]+)(\/.*)*/i;
+				var mHost = pattern.exec(this.service);
+                
+				this.url = this.service;
 				
                 var ext = this.filename.slice(-4).toLowerCase();
                 switch( ext ){
@@ -131,8 +134,9 @@ gxp.KMLFileUploadPanel = Ext.extend(Ext.FormPanel, {
                 var form = this.getForm();
                 if (form.isValid()) {
                     form.submit({
-                        url: this.url, 
-                        submitEmptyText: false,
+                        //url: this.url, 
+                        url: mHost[2] == location.host ? this.url : self.composer.proxy + this.url,
+						submitEmptyText: false,
                         waitMsg: this.waitMsgText,
                         waitMsgTarget: true,
                         //reset: true,

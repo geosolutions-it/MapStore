@@ -69,10 +69,10 @@ gxp.plugins.WMSFilterView = Ext.extend(gxp.plugins.Tool, {
         });
         var featureManager = this.target.tools[this.featureManager];
         var format = new OpenLayers.Format.SLD();
-        var clear = (function() {
+        var clear = OpenLayers.Function.bind(function() {
             this.filterLayer.setUrl(Ext.BLANK_IMAGE_URL);
             this.filterLayer.setVisibility(false);
-        }).bind(this); 
+        }, this); 
         featureManager.on({
             "clearfeatures": clear,
             "beforelayerchange": clear,

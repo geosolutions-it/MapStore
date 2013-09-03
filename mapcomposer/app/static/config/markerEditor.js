@@ -48,7 +48,10 @@
         "title":"Marker Editor",
         "index": 26,
 		"showOnStartup":true,
-        "description": "<a href='http://www.geo-solutions.it/' target='_blank'><div class='geosolutions_logo'></div></a><ul style='list-style:disc;margin-left:10px;'><li>You can add and remove marker from it using the controls on the right.<li>Click on the marker to see the popup preview.<li>Export and import all the makers using the button \"Export Markers\" or \"Import Marker(Simply copy and paste code)</li></ul>"
+        "description": "<a href='http://www.geo-solutions.it/' target='_blank'><div class='geosolutions_logo'></div></a><ul style='list-style:disc;margin-left:10px;'><li>You can add and remove marker from it using the controls on the right.<li>Click on the marker to see the popup preview.<li>Export and import all the makers using the button \"Export Markers\" or \"Import Marker(Simply copy and paste code)</li></ul>",
+        "windowOptions":{
+            "constrain":true
+            }
 	
         },{
 			"actions": ["->"], 
