@@ -92,30 +92,36 @@ gxp.plugins.ZoomToExtent = Ext.extend(gxp.plugins.Tool, {
             handler: function() {
                 var map = this.target.mapPanel.map;
 				
-				        /*
-				        var bbox = new OpenLayers.Bounds.fromString('-7.343,8.368,-15,14.771');
-				        bbox = bbox.transform(
-					         new OpenLayers.Projection("EPSG:4326"),
-					         new OpenLayers.Projection(map.projection));
-                map.zoomToExtent(bbox);
-                */
+				/*
+				var bbox = new OpenLayers.Bounds.fromString('-7.343,8.368,-15,14.771');
+				bbox = bbox.transform(
+					 new OpenLayers.Projection("EPSG:4326"),
+					 new OpenLayers.Projection(map.projection));
+				map.zoomToExtent(bbox);
+				*/
 								
                 var extent = typeof this.extent == "function" ? this.extent() : this.extent;
-                if (!extent) {
-                    // determine visible extent
-                    var layer, extended;
-                    for (var i=0, len=map.layers.length; i<len; ++i) {
-                        layer = map.layers[i];
-                        if (layer.getVisibility()) {
-                            extended = layer.restrictedExtent || layer.maxExtent;
-                            if (extent) {
-                                extent.extend(extended);
-                            } else if (extended) {
-                                extent = extended.clone();
-                            }
-                        }
-                    }
+                if (!extent) {					
+					var initConfig = this.target.initialConfig;
+					if(initConfig && initConfig.map.extent){
+						map.zoomToExtent(initConfig.map.extent);
+					}else{
+						// determine visible extent
+						var layer, extended;
+						for (var i=0, len=map.layers.length; i<len; ++i) {
+							layer = map.layers[i];
+							if (layer.getVisibility()) {
+								extended = layer.restrictedExtent || layer.maxExtent;
+								if (extent) {
+									extent.extend(extended);
+								} else if (extended) {
+									extent = extended.clone();
+								}
+							}
+						}
+					}
                 }
+				
                 if (extent) {
                     // respect map properties
                     var restricted = map.restrictedExtent || map.maxExtent;
