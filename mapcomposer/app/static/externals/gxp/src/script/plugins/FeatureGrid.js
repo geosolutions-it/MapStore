@@ -348,7 +348,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         }
        
         featureManager.paging && featureManager.on("setpage", function(mgr, condition, callback, scope, pageIndex, numPages) {
-            var paging = (numPages > 0);
+            var paging = (mgr.page.numFeatures > 0);
             featureGrid.zoomToPageButton.setDisabled(!paging);
             var prev = (paging && (pageIndex !== 0));
             featureGrid.firstPageButton.setDisabled(!prev);

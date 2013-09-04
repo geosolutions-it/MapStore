@@ -373,11 +373,12 @@ GeoExt.Lang.add("de", {
     
 	"gxp.plugins.BBOXQueryForm.prototype": {
         selectionMethodFieldSetComboTitle: "Verfahren zur Auswahl",
+        comboEmptyText: "Wählen Sie eine Methode..",
         comboSelectionMethodLabel: "Auswahl",
         comboPolygonSelection: 'Polygon',
         comboCircleSelection: 'Rund',
-        comboBBOXSelection: 'BBOX',
-		errorBBOXText: "Die BBOX ausgewählt ist ungültig!",
+        comboBBOXSelection: 'BBox',
+		errorBBOXText: "Die BBox ausgewählt ist ungültig!",
         errorDrawPolygonText: "Sie müssen das Polygon zeichnen",
         errorDrawCircleText: "Sie müssen den Kreis ziehen",     
         errorDrawTitle: "Antrag Fehler",
@@ -399,7 +400,7 @@ GeoExt.Lang.add("de", {
         southLabel:"Süden",
         waitEPSGMsg: "Bitte warten...",
         setAoiText: "ROI eingeben",
-        setAoiTooltip: "SetBox-Kontrolle aktivieren um eine ROI (BBOX) auf der Karte zu zeichnen",
+        setAoiTooltip: "SetBox-Kontrolle aktivieren um eine ROI (BBox) auf der Karte zu zeichnen",
         title: "Region of interest"
     },
     

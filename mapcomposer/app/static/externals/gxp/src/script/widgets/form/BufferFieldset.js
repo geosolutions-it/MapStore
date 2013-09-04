@@ -133,24 +133,39 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 			outputSRS: this.outputSRS,
 			selectStyle: this.selectStyle,
 			toggleGroup: this.toggleGroup,
-			ref: "coordinatePicker",
-			listeners: {
+			ref: "coordinatePicker"
+			
+    		,listeners: {
 				scope: this,
 				update: function(){
-					this.bufferField.enable();
-				},				
-				reset: function(){
-					this.bufferField.disable();
-					this.bufferField.reset();
+				    var cv = this.coordinatePicker.isValid();
+				    var bv = this.bufferField.isValid();
+					if(cv && bv ){                                 
+                        var coords = this.coordinatePicker.getCoordinate();
+                        var lonlat = new OpenLayers.LonLat(coords[0], coords[1]);
+                        var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
+                        
+                        var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
+                            point,
+                            this.bufferField.getValue(),
+                            100, 
+                            null
+                        );
+                        
+                        this.drawBuffer(regularPolygon);
+                    }
+
 				}
 			}
+			
 		});
 	
 		this.bufferField = new Ext.form.NumberField({
 			name: 'buffer',
 			ref: 'bufferField',
+			fieldLabel: this.bufferFieldLabel + " ("+this.map.units+")",
 			allowBlank: false,
-			disabled: true,
+			disabled: false,
 			width: 112,
 			flex: 1,
 			minValue: this.minValue,
@@ -158,32 +173,11 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 			enableKeyEvents: true,
 		    decimalPrecision: this.decimalPrecision,
 			allowDecimals: true,
-			hideLabel : false,
-			listeners: {
-				scope: this,
-				keypress: function(){
-					this.compositeField.clickToggle.toggle(false);
-				}
-			}
-		});
-		
-	    this.compositeField = new Ext.form.CompositeField({
-		    fieldLabel: this.bufferFieldLabel,
-			items: [
-				this.bufferField,
-				{
-                    xtype: 'button',
-					ref: 'clickToggle',
-                    tooltip: this.draweBufferTooltip,
-                    iconCls: this.buttonIconCls,
-                    enableToggle: true,
-                    toggleGroup: this.toggleGroup,
-                    width:20,
-                    listeners: {
-						scope: this, 
-                        toggle: function(button, pressed) {  
-							if(pressed){
-								if(this.isValid()){									
+			hideLabel : false
+			,listeners:{
+                scope:this
+                ,valid: function(){
+                    if(this.coordinatePicker.isValid()){                                 
 									var coords = this.coordinatePicker.getCoordinate();
 									var lonlat = new OpenLayers.LonLat(coords[0], coords[1]);
 									var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
@@ -197,23 +191,17 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 									
 									this.drawBuffer(regularPolygon);
 									
-									var bounds = regularPolygon.getBounds();
-									this.map.zoomToExtent(bounds);
-								}else{
-									this.compositeField.clickToggle.toggle(false);
-								}
-                            }else{
-								this.resetBuffer();
-                            }
+                        //var bounds = regularPolygon.getBounds();
+                        //this.map.zoomToExtent(bounds);
                         }
                     }
+
                 }
-			]
 		});
 		
 		this.items = [
 			this.coordinatePicker,
-			this.compositeField
+			this.bufferField
 		];
         
 		this.title = this.bufferFieldSetTitle;
@@ -254,8 +242,8 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 	
 	resetPointSelection: function(){
 		this.coordinatePicker.resetPoint();
+        this.bufferField.reset();
 		this.resetBuffer();
-		this.compositeField.clickToggle.toggle(false);
 	}
 });
 
