@@ -387,10 +387,39 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
                         text: me.addToMapButtonText,
                         scope: me,
                         listeners: {
-
+                
                         },
                         handler: function(){
-                            Ext.Msg.alert(me.tooltip,"Not Yet Implemented");
+                            var syntView = app.tools["syntheticview"];
+                            var newLayers=[];
+                            
+                            /*var status = this.getStatus();        
+                            
+                            var bounds = this.getBounds(status, map);
+                            
+                            if(syntView.originalRiskLayers === null) {
+                                syntView.storeOriginalRiskLayers();
+                            }
+                            
+                            this.enableDisableRoads(!status.formulaInfo.dependsOnArcs);
+                            
+                            syntView.removeRiskLayers(map);
+                            
+                            // remove analytic view layers (buffers, targets, selected targets)
+                            syntView.removeAnalyticViewLayers(map);     
+                            syntView.disableSouthPanel();        
+                            
+                            syntView.processingDone = true;
+                            
+                            Ext.getCmp('warning_message').setValue('');
+                            
+                            var scale = this.getMapScale();
+                            if(scale <= this.analiticViewScale) {
+                                Ext.getCmp("analytic_view").enable();
+                            }*/
+                            
+                            syntView.addVulnLayer(newLayers,"rischio","Vulnerabilita",["Targets","Bersagli","Cibles","Ziele"]);
+                            syntView.target.mapPanel.layers.add(newLayers);
                         }
                     }],
                 });
