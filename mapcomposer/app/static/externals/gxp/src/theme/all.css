@@ -422,6 +422,7 @@ div.map-overlay div.overlay-element {
 
 .x-btn .gxp-icon-csvexport-multiple, .x-menu-item .gxp-icon-csvexport-multiple {
     background-image: url(img/silk/table_multiple.png) !important;
+}
 
 .labelField{
 	font-style: normal; 
