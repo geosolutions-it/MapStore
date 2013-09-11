@@ -39,7 +39,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     */
     cswMsg: 'Loading...',
     // End i18n.
-
+	
     constructor: function(config) {
 
 		if(!config.tools)

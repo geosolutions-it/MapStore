@@ -233,7 +233,6 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         var addLayers = function() {
             
             var apptarget = this.target;
-           // var locCode= GeoExt.Lang.locale;
             var key = this.sourceComboBox.getValue();
             var layerStore = this.target.mapPanel.layers;
             var source = this.target.layerSources[key];
@@ -301,7 +300,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                 expander,
                 {id: "title", header: this.panelTitleText, dataIndex: "title", sortable: true},
                 {header: "Id", dataIndex: "name", width: 150, sortable: true},
-                {header: "uuid", dataIndex: "keywords", width: 150, sortable: true, hidden: true}
+                {header: "keywords", dataIndex: "keywords", width: 150, sortable: true, hidden: true}
             ]),
             listeners: {
                 rowdblclick: addLayers,
@@ -448,7 +447,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             }),
             new Ext.Button({
                 text: this.doneText,
-				iconCls: "gx-map-go",
+                iconCls: "save",
                 handler: function() {
                     this.capGrid.hide();
                 },

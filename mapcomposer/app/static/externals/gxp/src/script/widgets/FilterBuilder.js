@@ -45,6 +45,12 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
      *  is false.
      */
     allowBlank: false,
+	
+	/** api: config[caseInsensitiveMatch]
+	* ``Boolean``
+	* Should Comparison Filters for Strings do case insensitive matching? Default is ``"false"``.
+	*/
+    caseInsensitiveMatch: false,
     
     /** api: config[preComboText]
      *  ``String``
@@ -82,6 +88,8 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
     addConditionText: "add condition",
     addGroupText: "add group",
     removeConditionText: "remove condition",
+	
+	matchCaseLabel: "Match Case",
 
     /** api: config[allowGroups]
      *  ``Boolean``
@@ -108,7 +116,29 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
             layout: "form",
             defaults: {anchor: "100%"},
             hideLabels: true,
-            items: [{
+            items: [/*{
+				xtype: "compositefield",
+                style: "padding-left: 2px",
+				items:[
+					{
+						xtype: "label",
+						style: "padding-top: 0.2em",
+						text: this.matchCaseLabel
+					}, {
+						xtype: "checkbox",
+						listeners: {
+							scope: this,
+							check: function(checkbox, checked){
+								if(checked){
+									caseInsensitiveMatch = false
+								}else{
+									caseInsensitiveMatch = true;
+								}
+							} 
+						}
+					}
+				]
+			},*/ {
                 xtype: "compositefield",
                 style: "padding-left: 2px",
                 items: [{
@@ -320,7 +350,8 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
     },
     
     createDefaultFilter: function() {
-        return new OpenLayers.Filter.Comparison();
+        return new OpenLayers.Filter.Comparison({
+                            matchCase: !this.caseInsensitiveMatch});
     },
     
     /** private: method[wrapFilter]
@@ -368,6 +399,7 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
             attributes: this.attributes,
             allowBlank: group ? undefined : this.allowBlank,
             customizeFilterOnInit: group && false,
+			caseInsensitiveMatch: this.caseInsensitiveMatch,
             listeners: {
                 change: function() {
                     this.fireEvent("change", this);

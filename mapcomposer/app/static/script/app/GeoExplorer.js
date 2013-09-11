@@ -377,10 +377,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 		
         var westPanel = new Ext.TabPanel({
             border: false,
-            activeTab:0,
+            activeTab: 0,
             id: 'west',
             region: "west",
-            width: 250,
+            width: 380,
             split: true,
             collapsible: true,
             collapseMode: "mini",
@@ -1233,7 +1233,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     },
     
     /** private: method[getState]
-     *  :returns: ``Òbject`` the state of the viewer
+     *  :returns: ``ï¿½bject`` the state of the viewer
      */
     getState: function() {
         var state = GeoExplorer.superclass.getState.apply(this, arguments);

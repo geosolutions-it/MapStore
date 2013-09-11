@@ -6,9 +6,9 @@
 	<!-- Basic OpenLayers libs -->
     <script type="text/javascript" src="script/OpenLayers.js"></script>		
 	
-	<!-- Externatls OpenLayers libraries to manage other extensions -->
+	<!-- Externatls OpenLayers libraries to manage WPS processes -->
 	<script type="text/javascript" src="script/OpenLayersExt.js"></script> 
-	
+    
 	<!-- colorpicker resources 
     <link rel="stylesheet" type="text/css" href="externals/colorpicker/css/colorpicker.css">
     <script type="text/javascript" src="script/colorpicker.js"></script> -->
@@ -18,22 +18,25 @@
     <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/layerlegend.css">
     <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/gxtheme-gray.css">
     <script type="text/javascript" src="script/GeoExt.js"></script> 
+    
+	<!-- Externatls GeoExt libraries to search Gazetteer services -->
+	<script type="text/javascript" src="script/GeoExtExt.js"></script> 
 
-	<!-- PrintPreview resources 
+	<!-- PrintPreview resources -->
     <link rel="stylesheet" type="text/css" href="externals/PrintPreview/resources/css/printpreview.css">
-    <script type="text/javascript" src="script/PrintPreview.js"></script> -->
+    <script type="text/javascript" src="script/PrintPreview.js"></script> 
 	
     <!-- gxp resources -->
     <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
 
     <script type="text/javascript" src="script/gxp.js"></script> 
 
-    <script type="text/javascript" src="script/proj4js.js"></script>	
-	<script type="text/javascript" src="script/projCodes.js"></script>
+    <!--script type="text/javascript" src="script/proj4js.js"></script-->
 
     <!-- GeoExplorer resources -->
     <link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
     <link rel="stylesheet" type="text/css" href="theme/app/mapstore.css" />
+	<link rel="stylesheet" type="text/css" href="theme/app/custom.css" />
     <!--[if IE]><link rel="stylesheet" type="text/css" href="theme/app/ie.css"/><![endif]-->        
 
     <script type="text/javascript" src="script/GeoExplorer.js"></script>
@@ -76,12 +79,18 @@
         var app;        
         var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false;
 		
+		// /////////////////////////////////////////////////////
+		// Extra parameters to manage geonetwork integration
+		// /////////////////////////////////////////////////////
+		var uuid; var layName; var layTitle; var wmsurl;
+		
         // ///////////////////////////////////////////////////////////////
         // Custom variables from the mapStoreConfig user configuration file 
         // ///////////////////////////////////////////////////////////////
         var proxy; 
         var serverConfig;
-        var customConfigName;		
+        var customConfigName;	
+		var executionId;
 		
         // //////////////////////////////////////////////////
         // Parsing the request to get the parameters
@@ -110,8 +119,24 @@
 									else 
 										fullScreen = false; 
 									break;
+					case "layName" : 
+									layName = param[1]; 
+									break;
+					case "layTitle" : 
+									layTitle = param[1]; 
+									break;
+					case "wmsurl" : 
+									wmsurl = param[1]; 
+									wmsurl = decodeURIComponent(wmsurl);
+									break;
+					case "uuid" : 
+									uuid = param[1]; 
+									break;
 					case "config":	
 									customConfigName = param[1];
+									break;
+					case "executionId":	
+									executionId = param[1];
 									break;
 					default :       
 									//mapIdentifier = -1;
@@ -171,7 +196,7 @@
             }
             
             var url = Ext.urlDecode(query);        
-            var code = url.locale || serverConfig.defaultLanguage || "en";			
+            var code = url.locale || serverConfig.defaultLanguage || "it";			
 
 			// ////////////////////////////////////////////////////
 			// Setting the language code for the GeoExt tools
@@ -185,16 +210,39 @@
 			// ////////////////////////////////////////////////////
 			var languageSelector = new gxp.form.LanguageSwitcher({
 				currentContext:code,
-				saveMessage:authorization
+				saveMessage:authorization,
+				data:[
+					['it','Italiano','','it','Italian language'], 
+					['de','Deutsch','','de','Deutsch language'] 
+				]
 			});
 			
+			// ///////////////////////////////////////////
+			// Defining the GeoNetwork panel properties
+			// ///////////////////////////////////////////
+			// ---------------------------------------------------------------------
+			var gnBaseUrl = serverConfig.gnBaseUrl || ('http://' + window.location.host + '/geonetwork/');
+            var gnURL = gnBaseUrl + 'srv/' + code + '/main.home';
+			
+			var geonetworkPanel = new Ext.Panel({
+                id: 'geonetworkPanel',
+                title: GeoExplorer.prototype.searchTabTitle || 'Portale',
+                layout:'fit', 
+                items: [ 
+                    new Ext.ux.IFrameComponent({ 
+                        id: 'gn-panel',
+                        url: gnURL 
+                    }) 
+                ]
+            });
+			// ---------------------------------------------------------------------
+			
             var appTabsOpts = {
-                        region: 'center',
-                        border : false,
-                        id : 'appTabs',
-                        enableTabScroll: true
-                    };
-            
+				region: 'center',
+				border : false,
+				id : 'appTabs'
+			};
+                    
             //check if MetadataExplorer plugin is defined in customTools configuration
             var customToolsME = [];
             if(serverConfig.customTools){
@@ -219,6 +267,10 @@
                 appTabsOpts.layout = 'fit';
                 appTabs = new Ext.Panel(appTabsOpts); 
             }else{
+				appTabsOpts.items = [geonetworkPanel];
+				appTabsOpts.enableTabScroll = true;
+				appTabsOpts.deferredRender = false;
+				appTabsOpts.hideMode = "offsets";
                 appTabs = new Ext.TabPanel(appTabsOpts); 
             }
 
@@ -256,6 +308,19 @@
                 }
             });    
 			
+			// ///////////////////////////////////
+			// Header definition
+			// ///////////////////////////////////
+			var headerContent = [
+					'			<div class="topbanner">',
+					'				<div class="main">',
+					'					<div class="header">',
+                    '			            <div class="logo-gs-left"><a href="http://sdi.provinz.bz.it/"><img src="theme/app/img/banner/provbz_right.gif" alt="Provincia di Bolzano"></a></div>',					
+					'					</div>',
+					'				</div>',
+					'			</div>'
+			];
+			
             var appViewport = new Ext.Viewport({
                 id: 'appVieport',
                 layout:'fit',
@@ -265,7 +330,21 @@
                     layout : 'border',
                     border : false,
                     header : false,                    
-                    items : [appTabs],                            
+                    items : [{
+                      border: false,
+                      header: false,
+                      html:  headerContent,
+                      region: 'north',
+                      collapsible: true,
+                      collapseMode:  'mini',
+                      hideCollapseTool: true,
+                      split: true,
+                      animCollapse : false,
+                      minHeight: 120,
+                      maxHeight: 120,
+                      height: 120,
+                      id : 'msheader'
+                    },appTabs],                            
                     bbar : [
                       poweredByGeoSol, ' ', aboutButton, '->',languageSelector
                     ]
@@ -309,13 +388,14 @@
                 'Authorization' : auth
             };*/
 
-            app = new GeoExplorer.Composer({
-				defaultLanguage: serverConfig.defaultLanguage,	
+            app = new GeoExplorer.Composer({  
+                defaultLanguage: serverConfig.defaultLanguage,		
+				geonetwork: true, // hidden/private config only used for the geonetwork use case
                 customPanels: serverConfig.customPanels,
                 modified: false,
                 proxy: proxy,
 				tools: serverConfig.tools,
-				geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),
+                geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),
                 portalConfig: serverConfig.portalConfig,
                 defaultSourceType: "gxp_wmssource",
                 renderToTab : 'appTabs',
@@ -326,10 +406,11 @@
                 },
                 sources: sources,
 				scaleOverlayUnits: serverConfig.scaleOverlayUnits,
-				showGraticule: false,
+				//showGraticule: false,  //Set showGraticule property to true only if the map projection is EPSG:4326 
                 georeferences: georeferences_data,
                 map: serverConfig.map,
-				customTools: serverConfig.customTools
+				customTools: serverConfig.customTools, 
+				multipleToolInstances: true
             }, mapIdentifier, authorization, fullScreen);   
             
             app.on({
@@ -338,16 +419,155 @@
                         var westPanel = Ext.getCmp('west');
                         westPanel.setActiveTab('legend');
                         westPanel.hideTabStripItem('tree');
-                    }
+                    }				
                 }, 
                 'ready' : function(){
                     app.modified = false;
+					
+					// /////////////////////////////////////////////////////////////////
+					// Enabling the GN panel as acrive tab panel and
+					// align the map size when teh mappanel is activated the firs time
+					// /////////////////////////////////////////////////////////////////
+					var activeTab = appTabs.getActiveTab();
+					var map = app.mapPanel.map;
+					
+					activeTab.addListener("activate", function(){
+						Ext.getCmp('west').expand();
+
+						map.size.w += 1;
+						map.updateSize();
+						map.size.w -= 1;
+						map.updateSize();
+						
+						// ////////////////////////////////////////////////////////////////////////
+						// We need to force the to reload the "dynamicgeocoder" tool 
+						// due to base layer issue at the first portal load (switch between tabs).
+						// ////////////////////////////////////////////////////////////////////////
+						var dynamicGeocoder = app.tools["dynamicgeocoder"];
+						if(dynamicGeocoder){
+							dynamicGeocoder.createOrUpdateCombo(true);
+						}						
+					});
+					
+					appTabs.setActiveTab(0);	
+					
+					// ///////////////////////////////////////////////////
+                    // Visualizing metadata tab and layer at startup 
+                    // ///////////////////////////////////////////////////
+                    if(layName && wmsurl && gnBaseUrl && uuid){
+					    var title = layTitle ? layTitle : layName;
+						
+						addMSLayer(
+							title,
+							layName,
+							wmsurl,
+							gnBaseUrl,
+							false,
+							uuid,
+							code
+						);
+					}
+ 							
+					if(layName && gnBaseUrl && uuid){
+						app.viewMetadata(gnBaseUrl + "srv/" + code + "/", uuid, title);
+						appTabs.setActiveTab(2);
+					}
+					
+					if(executionId){
+						var downloadTool = app.tools["download"];	
+						downloadTool.on("ready", function(){
+							appTabs.setActiveTab(1);	
+
+							var westPanel = Ext.getCmp("west");
+							westPanel.setActiveTab(downloadTool.formPanel);		
+							
+							downloadTool.setExecutionId(executionId);
+						});
+					}
                 }
             });
+			
+			/**
+			* Add a WMS layer from GeoNetwork 
+			*
+			* TODO: Check the API using a MapServer URL as wmsURL.
+			*/
+			addMSLayer = function(msLayerTitle, msLayerName, wmsURL, gnUrl, enableViewTab, msLayerUUID, gnLangStr, interactiveDownload){
+			    var t = app;
+				var addLayer = t.tools["addlayerbis"];
+				
+				var options = {
+					msLayerTitle: msLayerTitle,
+					msLayerName: msLayerName,
+					wmsURL: wmsURL,
+					gnUrl: gnUrl,
+					enableViewTab: enableViewTab,
+					msLayerUUID: msLayerUUID,
+					gnLangStr: gnLangStr
+				};
+				
+				var downloadTool = app.tools["download"];
+				if(interactiveDownload === 'true'){
+					var westPanel = Ext.getCmp('west');
+					westPanel.setActiveTab(downloadTool.formPanel);		
+
+					var listener = function(layerRecord){
+						if(interactiveDownload === 'true'){
+							downloadTool.setLayer(layerRecord, true);
+						}	
+						
+						addLayer.removeListener('ready', listener, this);
+					};
+					
+					addLayer.on({
+						'ready' : listener,
+						scope: this
+					});					
+				}
+				
+				// //////////////////////////////////////////////////
+				// Remove the layer from the map if 'name' and 
+				// 'source' are the same, in order to avoid duplicate.
+				// The layer will be re-added to the map from the 
+				// Downlaod tool or the AddLayer directly. 
+				// In this way the user can view the selected layer
+				// on top.
+				// //////////////////////////////////////////////////
+				
+				var layerStore = app.mapPanel.layers;  
+				var index = layerStore.findExact("name", msLayerName);
+				if (index > -1) {
+					var original = layerStore.getAt(index);
+				
+					var source = addLayer.checkLayerSource(wmsURL);
+					if(original.get('source') == source.id){
+						layerStore.remove(original);
+					}
+				}
+							
+				addLayer.addLayer(
+					options
+				);				
+			};
+			
+			/**
+			* Add WMS sources from GeoNetwork
+			* 
+			* TODO: Check the API using a MapServer URL from GeoNetwork.
+			*/
+			addMSSource = function(wmsURL){
+				var addLayer = app.tools["addlayerbis"];
+				
+				appTabs.setActiveTab(1);
+				
+				addLayer.addSource(
+					wmsURL
+				);		
+			};
 	    };
 
 	    Ext.Ajax.request({
-			  url: customConfigName ? "config/" + customConfigName + ".js"  : "config/mapStoreConfig.js",
+			  url: customConfigName ? "config/" + customConfigName + ".js"  : "config/download.js",
 			  method: 'GET',
 			  success: function(response, opts){          
 				  
@@ -364,7 +584,7 @@
 				  
 				  if(serverConfig){
 					  proxy = location.host.indexOf('localhost:8081') != -1 ? "/proxy/?url=" : serverConfig.proxy; 
-
+					  
 					  // ///////////////////////////////////////////////  
 					  // Run the application when browser is ready
 					  // ///////////////////////////////////////////////

@@ -1,21 +1,11 @@
 div.topbanner{
-	background-image: url(img/banner/world-home.jpg);
+	background-image: url(img/banner/provbz.jpg);
 	background-repeat:no-repeat;
-	background-color:black;
-	background-position:center top; 
+	background-color: #9bcdfe;
+	background-position:left top; 
 	height:100%;
 }
-div.topbanner .logo-gs-white{
-	float:left;
-	padding-top:25px;
+
+div.topbanner .logo-gs-left{
+	float:right;
 }
-div.topbanner .logo-ms-white{
-	color: #33e366;
-	font-family:"Verdana";
-	font-style: oblique;
-	font-size: 20px;
-	font-weight: bold;
-	float: right;
-	padding-top: 50px;
-	left: 10px;
-}	

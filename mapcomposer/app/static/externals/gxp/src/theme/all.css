@@ -6,6 +6,12 @@
     background-image: url(img/silk/map.png);
 }
 
+/* Override the original ExtJs css in order to remove dirty.gif 
+   image from grid records */
+.x-grid3-dirty-cell {
+    background-image:url();
+}
+
 /* position the zoom slider within map panel */
 .gx-zoomslider {
     top: 90px;
@@ -26,6 +32,13 @@
     background-image: url(img/silk/shape_square.png) !important;
 }
 
+.execution-cls{
+	background-image: url(img/silk/add.png) !important;
+}
+
+.execution-cls-delete{
+	background-image: url(img/geosilk/erase.png) !important;
+}
 
 /* Pan- and Zoom- Panel Styles*/
 
@@ -409,4 +422,15 @@ div.map-overlay div.overlay-element {
 
 .x-btn .gxp-icon-csvexport-multiple, .x-menu-item .gxp-icon-csvexport-multiple {
     background-image: url(img/silk/table_multiple.png) !important;
+
+.labelField{
+	font-style: normal; 
+	color: #918E8F; 
+	font-variant: normal; 
+	font-weight: normal; 
+	font-size: 11px; 
+	line-height: normal; 
+	font-family: tahoma, arial, helvetica, sans-serif;
+	padding-top: 10px;
+	padding-bottom: 10px;
 }

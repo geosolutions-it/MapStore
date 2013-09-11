@@ -167,24 +167,37 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 
 			map.zoomToExtent(extent, true);
 		}
+		
+		return record;
 	},
 
     /**  
 	 * api: method[checkLayerSource]
+	 * 
+	 * wmsURL - The WMS service URL of the source.
+	 * source (optional) - The given source identifier.  
      */
-	checkLayerSource: function(wmsURL){
+	checkLayerSource: function(wmsURL, source){
 	    var s;
 		for (var id in this.target.layerSources) {
-			  var src = this.target.layerSources[id];    
-			  var url  = src.initialConfig.url; 
+			var src = this.target.layerSources[id];    
+			var url  = src.initialConfig.url; 
 			  
-			  // //////////////////////////////////////////
-			  // Checking if source URL aldready exists
-			  // //////////////////////////////////////////
-			  if(url != undefined && url.indexOf(wmsURL) != -1){
-				  s = src;
-				  break;
-			  }
+			// ////////////////////////////////////////////////////
+			// Checking if the provided source ID aldready exists
+			// ////////////////////////////////////////////////////
+			if(source && id == source){
+				s = src;
+				break;
+			}
+			  
+			// //////////////////////////////////////////
+			// Checking if source URL aldready exists
+			// //////////////////////////////////////////
+			if(url != undefined && url.indexOf(wmsURL) != -1){
+				s = src;
+				break;
+			}
 		} 
 
 		return s;
@@ -204,8 +217,8 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 		this.msLayerUUID = options.msLayerUUID;
 		this.gnLangStr = options.gnLangStr;
 		this.customParams = options.customParams;
-				
-		this.source = this.checkLayerSource(this.wmsURL);
+
+		this.source = this.checkLayerSource(this.wmsURL, options.source);
 
 		if(this.source){
 		
@@ -213,10 +226,10 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 				this.source.on('ready', function(){
 					mask.hide();
 					this.target.layerSources[this.source.id].loaded = true; 
-					this.addLayerRecord();
+					var r = this.addLayerRecord();
 					
 					if(this.useEvents)
-						this.fireEvent('ready');
+						this.fireEvent('ready', r);
 				}, this);
 			}
 			
@@ -229,7 +242,10 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 				// ///////////////////////////////////////////////////////////////
 				this.source.store.reload();
 			}else{
-				this.addLayerRecord();
+				var r = this.addLayerRecord();
+				
+				if(this.useEvents)
+					this.fireEvent('ready', r);
 			}
 		}else{
 			mask.show();
@@ -309,12 +325,14 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 					mask.hide();
 					
 					this.target.layerSources[this.source.id].loaded = true;
+					
+					var r;
 					if(showLayer){						
-						this.addLayerRecord();
+						r = this.addLayerRecord();
 					}
 					
 					if(this.useEvents)
-						this.fireEvent('ready');
+						this.fireEvent('ready', r);
 					
 				},
 				//
