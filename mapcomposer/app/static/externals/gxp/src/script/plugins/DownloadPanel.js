@@ -386,7 +386,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 						// As usual reload the Formats store
 						// ///////////////////////////////////
 						this.formatStore.removeAll();
-						if(layerRecord.data.wcs === true){
+						if(layerRecord && layerRecord.data.wcs === true){
 							this.formatStore.loadData(this.formats.wcs, false);
 						}else{
 							this.formatStore.loadData(this.formats.wfs, false);
@@ -1273,9 +1273,9 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 			listeners: {
 				scope: this,
 				expand: function(panel){
-					if(Ext.isIE){
+					//if(Ext.isIE){
 						this.vectorFilterContainer.doLayout();
-					}
+					//}
 				}
 			}
         });
@@ -2360,8 +2360,14 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
             method: 'GET',
             scope: this,
             success: function(response, opts){
-                if(response.responseXML){
-                    var xml= response.responseXML;
+                if(response.responseXML || response.responseText){
+                    var xml = response.responseXML || response.responseText;
+					
+					if(!response.responseXML){
+						var format = new OpenLayers.Format.XML();
+						xml = format.read(xml);						
+					}
+					
                     if(xml.getElementsByTagName("ProcessDescription").length == 0){
                         Ext.Msg.show({
                             title: this.errWPSTitle,
