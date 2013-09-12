@@ -1,5 +1,5 @@
 {
-   "geoStoreBase":"http://84.33.2.24/geostore/rest/",
+   "geoStoreBase":"http://84.33.2.75/geostore/rest/",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
    "gsSources":{ 
@@ -7,7 +7,7 @@
 			"ptype": "gxp_wmssource",
 			"title": "NRL GeoServer",
 			"projection":"EPSG:900913",
-			"url": "http://84.33.2.24/geoserver/ows", 
+			"url": "http://84.33.2.75/geoserver/ows", 
 			"layerBaseParams": {
 			   "format":"image/png8",
 			   
@@ -210,7 +210,7 @@
 		  "customParams":{
 			 "outputFilename":"mapstore-print"
 		  },
-		  "printService":"http://84.33.2.24/geoserver/pdf/",
+		  "printService":"http://84.33.2.75/geoserver/pdf/",
 		  "legendPanelId":"legendPanel",
 		  "ignoreLayers":["WFSSearch","Marker"],
 		  "actionTarget":{
@@ -219,7 +219,7 @@
 		  }
 	       },{
            "ptype":"gxp_ndvi",
-            "dataUrl":"http://84.33.2.24/geoserver/ows",
+            "dataUrl":"http://84.33.2.75/geoserver/ows",
            "outputConfig":{
             "title":"NDVI",
                   "id":"ndvi",
@@ -237,7 +237,9 @@
 	   },
 	   {
 		  "ptype":"nrl_crop_data",
-          "dataUrl":"http://84.33.2.24/geoserver/ows",
+          "dataUrl":"http://84.33.2.75/geoserver/ows",
+		  "rangesUrl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
+		  "highChartExportUrl" :"http://84.33.2.75/highcharts-export/",
 		  "layers":{
 			"district":"nrl:district_crop",
 			"province":"nrl:province_crop"
@@ -249,7 +251,10 @@
 		  "outputTarget":"nrl"
 	   },{
 		 "ptype":"nrl_crop_status",
-         "dataUrl":"http://84.33.2.24/geoserver/ows",
+		 "factorsurl":"http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
+         "rangesUrl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
+		 "dataUrl":"http://84.33.2.75/geoserver/ows",
+		 "highChartExportUrl" :"http://84.33.2.75/highcharts-export/",
 		  "outputConfig":{
 			 "id":"nrlCropStatus"
 			 
@@ -257,7 +262,9 @@
 		  "outputTarget":"nrl"
 	   },{
 	    "ptype":"nrl_agromet",
-        "dataUrl":"http://84.33.2.24/geoserver/ows",
+        "dataUrl":"http://84.33.2.75/geoserver/ows",
+		"factorsurl":"http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
+		"highChartExportUrl" :"http://84.33.2.75/highcharts-export/",
 		  "outputConfig":{
 			 "id":"Agromet"
 			 
@@ -268,7 +275,7 @@
 			"actionTarget": "paneltbar"
 	  },{
 			"ptype":"gxp_geostore_login",
-			"loginService":"http://84.33.2.24/geostore/rest/users/user/details/",     
+			"loginService":"http://84.33.2.75/geostore/rest/users/user/details/",     
 
 			"isDummy":false,
 			"actionTarget": "paneltbar"
