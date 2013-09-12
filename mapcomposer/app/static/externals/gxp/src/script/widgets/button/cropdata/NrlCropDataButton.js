@@ -400,7 +400,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                     exporting: {
                         enabled: true,
                         width: 1200,
-                        url: "http://84.33.2.24/highcharts-export/"
+                        url: this.target.highChartExportUrl
                     },
 					title: {
 						text: (data[r].title.toUpperCase()=="AGGREGATED DATA" ? data[r].title.toUpperCase() + " - " + listVar.commodity.toUpperCase() : listVar.commodity.toUpperCase() +" - "+listVar.chartTitle.split(',')[r]) // + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : listVar.chartTitle.split(',')[r])

@@ -336,7 +336,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                     exporting: {
                         enabled: true,
                         width: 1200,
-                        url: "http://84.33.2.24/highcharts-export/"
+                        url: this.target.highChartExportUrl
                     },
 					title: {
 						text: listVar.factorStore[i].get('label') + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : "REGION")

@@ -49,10 +49,84 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
     factorsurl:"http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
 	rangesUrl: "http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
     startYear:2000,
+	featureSelectorConfigs:{
+        base:{
+		toggleGroup:'toolGroup',
+        xtype: 'gxp_searchboxcombo',
+            anchor:'100%',
+            fieldLabel: 'District',
+            url: "http://84.33.2.24/geoserver/ows?",
+            predicate:"ILIKE",
+            sortBy:"province",
+			ref:'singleSelector',
+            displayField:"name",
+            pageSize:10
+            
+        },
+        DISTRICT:{
+            typeName:"nrl:district_boundary",
+            queriableAttributes:[
+                "district",
+                "province"
+                
+             ],
+             recordModel:[
+                {
+                  name:"id",
+                   mapping:"id"
+                },
+                {
+                   name:"geometry",
+                   mapping:"geometry"
+                },
+                {
+                   name:"name",
+                   mapping:"properties.district"
+                },{
+                   name:"province",
+                   mapping:"properties.province"
+                },{
+                   name:"properties",
+                   mapping:"properties"
+                } 
+            ],
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"       
+        },
+        PROVINCE:{ 
+            fieldLabel: 'Province',
+            typeName:"nrl:province_boundary",
+            recordModel:[
+                {
+                   name:"id",
+                   mapping:"id"
+                },
+                {
+                   name:"geometry",
+                   mapping:"geometry"
+                },
+                {
+                   name:"name",
+                   mapping:"properties.province"
+                },{
+                   name:"properties",
+                   mapping:"properties"
+                }
+            ],
+            sortBy:"province",
+            queriableAttributes:[
+                "province"
+            ],
+            displayField:"name",
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
+                            
+        }
+    
+    },
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
     addOutput: function(config) {
+		this.featureSelectorConfigs.base.url = this.dataUrl;
         var startYear = this.startYear;
         var now = new Date();
 		var currentYear= now.getFullYear();
@@ -91,7 +165,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                                         submitButton.destroy();
                                         delete submitButton;
                                         this.output.addButton({              
-                                            url: 'http://84.33.2.24/geoserver/ows',//TODO externalize this
+                                            url: this.dataUrl,//TODO externalize this
                                             xtype: 'gxp_nrlCropStatusTabButton',
                                             ref: '../submitButton',
                                             target:this.target,
@@ -141,6 +215,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 							target:this.target,
                             name:'region_list',
 							ref:'singleFeatureSelector',
+							featureSelectorConfigs:this.featureSelectorConfigs,
 							hilightLayerName: 'hilight_layer_selectAction',
 							vendorParams: {cql_filter:this.areaFilter}
 						},{
@@ -244,6 +319,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 			buttons:[{               
                 xtype: 'gxp_nrlCropStatusChartButton',
 				ref: '../submitButton',
+				url:this.dataUrl,
                 target:this.target,
 				form: this,
                 disabled:true

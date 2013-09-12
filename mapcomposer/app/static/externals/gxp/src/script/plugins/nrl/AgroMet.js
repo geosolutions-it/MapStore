@@ -63,14 +63,87 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
     
     dataUrl: null, //'http://84.33.2.24/geoserver/ows',
 	startYear: 2000,
-	
+	comboConfigs:{
+        base:{
+            anchor:'100%',
+            fieldLabel: 'District',
+            //url: "http://84.33.2.24/geoserver/ows?",
+            predicate:"ILIKE",
+            width:250,
+            sortBy:"province",
+			ref:'singleSelector',
+            displayField:"name",
+            pageSize:10
+            
+        },
+        district:{
+            typeName:"nrl:district_crop",
+            queriableAttributes:[
+                "district",
+                "province"
+                
+             ],
+             recordModel:[
+                {
+                  name:"id",
+                   mapping:"id"
+                },
+                {
+                   name:"geometry",
+                   mapping:"geometry"
+                },
+                {
+                   name:"name",
+                   mapping:"properties.district"
+                },{
+                   name:"province",
+                   mapping:"properties.province"
+                },{
+                   name:"properties",
+                   mapping:"properties"
+                } 
+            ],
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"       
+        },
+        province:{ 
+            
+            typeName:"nrl:province_crop",
+            recordModel:[
+                {
+                   name:"id",
+                   mapping:"id"
+                },
+                {
+                   name:"geometry",
+                   mapping:"geometry"
+                },
+                {
+                   name:"name",
+                   mapping:"properties.province"
+                },{
+                   name:"properties",
+                   mapping:"properties"
+                }
+            ],
+            sortBy:"province",
+            queriableAttributes:[
+                "province"
+            ],
+            displayField:"name",
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
+                            
+        }
+    
+    },
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
     addOutput: function(config) {
 	    var now = new Date();
 		var currentYear= now.getFullYear();
-		
+		//Override the comboconfig url;
+		this.comboConfigs.base.url = this.dataUrl;
+
 		var agroMet  = {
 			xtype:'form',
 			title: 'AgroMet',
@@ -148,6 +221,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                     layerStyle:this.layerStyle,
 					anchor:'100%',
 					target:this.target,
+					comboConfigs:this.comboConfigs,
 					areaFilter:this.areaFilter, 
 					hilightLayerName:this.hilightLayerName,
 					layers:{

@@ -62,7 +62,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
         base:{
             anchor:'100%',
             fieldLabel: 'District',
-            url: "http://84.33.2.24/geoserver/ows?",
+            //url: "http://84.33.2.24/geoserver/ows?",
             predicate:"ILIKE",
             width:250,
             sortBy:"province",
@@ -139,6 +139,8 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 			//TODO year ranges (from available data)
 			
 		}
+		//Override the comboconfig url;
+		this.comboConfigs.base.url = this.dataUrl;
 		var rangeData ;
         //download from WFS available year ranges for each crops.
 		
@@ -493,7 +495,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                 url: this.dataUrl,
                 xtype: 'gxp_nrlCropDataButton',
 				ref: '../submitButton',
-                target:this.target,
+                target:this,
 				form: this,
                 disabled:true
             }]
