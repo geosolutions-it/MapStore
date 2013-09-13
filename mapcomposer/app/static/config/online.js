@@ -23,7 +23,7 @@
 			"ptype": "gxp_wmssource",
 			"title": "Destination GeoServer",
 			"version": "1.1.1",
-			"url": "http://84.33.2.23/geoserver_test/destination/ows",
+			"url": "http://84.33.2.23/geoserver_slave_1/destination/ows",
 			"layerBaseParams": {
 				"TILED": true,
 				"TILESORIGIN": "-180,-90"
@@ -147,6 +147,13 @@
 		},
 		{
 			"source": "destination",
+            "title": "Beni culturali",
+            "name": "beni_culturali_all",
+            "group": ["Targets","Bersagli","Cibles","Ziele"],
+            "visibility": false
+        },
+        {
+            "source": "destination",
 			"title": "Zone urbanizzate",
 			"name": "zone_urbanizzate_all",
             "group": ["Targets","Bersagli","Cibles","Ziele"],
@@ -442,7 +449,7 @@
             "outputFilename":"mapstore-print"
         },
         "ignoreLayers": "Google Hybrid,Bing Aerial,Nessuno sfondo,Google Terrain,Google Roadmap",
-        "printService":"http://84.33.2.23/geoserver_test/pdf/",
+        "printService":"http://84.33.2.23/geoserver_slave_1/pdf/",
         "legendPanelId":"legendPanel",
         "actionTarget":{
             "target":"paneltbar",
@@ -466,12 +473,12 @@
 		"selectionLayerTitle": "Rischio Totale",
 		"bufferLayerNameHuman": "buffer_human",
 		"bufferLayerNameNotHuman": "buffer_not_human",
-		"selectionLayerBaseURL": "http://84.33.2.23/geoserver_test/destination/wms",
+		"selectionLayerBaseURL": "http://84.33.2.23/geoserver_slave_1/destination/wms",
 		"selectionLayerProjection": "EPSG:32632",
 		"geometryName": "geometria",
 		"accidentTipologyName": "tipologia",
-		"wfsURL": "http://84.33.2.23/geoserver_test/destination/wfs",
-		"wpsURL": "http://84.33.2.23/geoserver_test/wps",
+		"wfsURL": "http://84.33.2.23/geoserver_slave_1/destination/wfs",
+		"wpsURL": "http://84.33.2.23/geoserver_slave_1/wps",
 		"wpsStore": "destination",
 		"wfsVersion": "1.1.0",
 		"destinationNS": "destination",
@@ -481,11 +488,11 @@
 		"ptype": "gxp_tabpanelwfsgrids",
 		"outputTarget": "featurelist",
 		"srsName": "EPSG:32632",
-		"wfsURL": "http://84.33.2.23/geoserver_test/wfs",
+		"wfsURL": "http://84.33.2.23/geoserver_slave_1/wfs",
 		"panels": {
 			"targets": {
 				"Popolazione residente": {
-					"featureType": "popolazione_residente",
+                    "featureType": "popolazione_residente_pl",
                     "fields": [
                         {
 						"name": "id",
@@ -510,6 +517,10 @@
 					{
 						"name": "partner",
 						"mapping": "partner_${locale}"
+                        },
+                        {
+                            "name": "fonte_residenti",      
+                            "mapping": "fonte_residenti_${locale}"
                         }
                     ],
                     "columns": [
@@ -520,6 +531,10 @@
 					{
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
 						"dataIndex": "partner"
+                        },
+                        {
+                            "header": ["Residents number source (Estimated / calculated)", "Fonte residenti", "Source du nombre de résidents (Estimé/calculé)", "Quelle der Anzahl der Anwohner (geschätzt/berechnet)"],      
+                            "dataIndex": "fonte_residenti"
                         }
                     ],
                     "title": ["Resident Population", "Popolazione residente", "Population résidente", "Anwohnerzahlen"],
@@ -602,7 +617,7 @@
 				},
 				"Addetti industria e servizi": {
                                     
-					"featureType": "industria_servizi",
+                    "featureType": "industria_servizi_pl",
                     "fields": [
                         {
 						"name": "id",
@@ -677,7 +692,7 @@
 					"type": "umano"
 				},
 				"Addetti/utenti strutture sanitarie": {
-					"featureType": "strutture_sanitarie",
+                    "featureType": "strutture_sanitarie_pl",
                     "fields": [
                         {
 						"name": "id",
@@ -772,7 +787,7 @@
 					"type": "umano"
 				},
 				"Addetti/utenti strutture scolastiche": {
-					"featureType": "strutture_scolastiche",
+                    "featureType": "strutture_scolastiche_pl",
                     "fields": [
                         {
 						"name": "id",
@@ -851,7 +866,7 @@
 					"type": "umano"
 				},
 				"Addetti/utenti centri commerciali": {
-					"featureType": "centri_commerciali",
+                    "featureType": "centri_commerciali_pl",
                     "fields": [
                         {
 						"name": "id",
@@ -1253,7 +1268,7 @@
 					"type": "ambientale"
 				},
 				"Acque sotterranee": {
-					"featureType": "acque_sotterranee",
+                    "featureType": "acque_sotterranee_pl",
                     "fields": [
                         {
 						"name": "id",
@@ -1316,7 +1331,7 @@
 					"type": "ambientale"
 				},
 				"Beni culturali": {
-					"featureType": "beni_culturali",
+                    "featureType": "beni_culturali_pl",
                     "fields": [
                         {
 						"name": "id",
@@ -1610,6 +1625,10 @@
                         {
                             "name": "partner",      
                             "mapping": "partner_${locale}"
+                        },
+                        {
+                            "name": "fonte_residenti",      
+                            "mapping": "fonte_residenti_${locale}"
                         }
                     ],
                     "columns": [
@@ -1621,6 +1640,10 @@
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
                             "dataIndex": "partner"
+                        },
+                        {
+                            "header": ["Residents number source (Estimated / calculated)", "Fonte residenti", "Source du nombre de résidents (Estimé/calculé)", "Quelle der Anzahl der Anwohner (geschätzt/berechnet)"],      
+                            "dataIndex": "fonte_residenti"
 				}
                     ],
                     "title": ["Resident Population", "Popolazione residente", "Population résidente", "Anwohnerzahlen"],

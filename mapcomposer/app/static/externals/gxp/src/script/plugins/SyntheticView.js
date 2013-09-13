@@ -64,6 +64,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     bufferLayerNameHuman: "buffer_human",    
     bufferLayerNameNotHuman: "buffer_not_human",    
+    damageBufferLayer: "damage_buffer",
     
     bufferLayerTitle: ["Buffer Areas", "Aree di danno", "Aree di danno", "Aree di danno"],    
     targetLayerTitle: ["Targets", "Bersagli", "Bersagli", "Bersagli"],
@@ -106,7 +107,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     analyticView: false,
     
     aoi: null,
-    seldamage: null,
     wpsURL: '',
     wpsStore:'',
     
@@ -256,8 +256,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             this.processingPane = new gxp.plugins.StandardProcessing({
                 outputTarget: this.outputTarget,
                 geometryName: this.geometryName,
-                seldamage: this.seldamage,                
                 aoi: this.aoi,
+                seldamage: this.seldamage,
                 accidentTipologyName: this.accidentTipologyName,
                 selectionLayerName: this.selectionLayerName,
                 selectionLayerTitle: this.selectionLayerTitle,         
@@ -355,6 +355,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     isMixedTargets: function() {
         return this.status.target.humans === null;
+    },
+    
+    addDamageBuffer: function(title, geometry) {
+        this.analyticViewLayers.push(this.damageBufferLayer);
+        
+        return this.createLayerRecord({
+            name: this.damageBufferLayer,
+            title: title,
+            params: {                                
+                viewparams:'wkt:'+geometry.replace(/,/g, "\\\,")
+            }
+        }, true);
     },
     
     /** private: method[addHumanTargetBuffer]
@@ -830,7 +842,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         wfsGrid.loadGrids(null, null, this.selectionLayerProjection, viewParams);                                
     },
     
-    loadDamageGrid: function() {
+    loadDamageGrid: function() {       
         var wfsGrid = Ext.getCmp("featuregrid");
         
         var map = this.target.mapPanel.map;        
@@ -843,106 +855,124 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         var targetId = this.getChosenTarget(status);            
         var me = this;
         
-        var riskProcess = this.wpsClient.getProcess('destination', 'ds:MultipleBuffer');  
-        
-        var bounds;
-        if(status && status.roi) {
-            bounds = new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX());
+        if(status.processing === 4) {
+            // damage calculus
+            var json = {type: "FeatureCollection", features:[]};
+            json.features.push({
+                geometry: JSON.parse(new OpenLayers.Format.GeoJSON().write(status.damageAreaGeometry)),
+                id: "5",
+                type: "Feature",
+                properties: {
+                    name: "Area di danno",
+                    distance: 0
+                }
+            });
+            
+             wfsGrid.loadGridsFromJson(undefined, undefined, {"DAMAGEAREA": json}, status);
         } else {
-            bounds = map.getExtent();
-        }   
+            var riskProcess = this.wpsClient.getProcess('destination', 'ds:MultipleBuffer');  
         
-        var radius = this.getRadius();
-        var distances = [];
-        var distanceNames = [];
-        if(radius.radiusNotHum) {
-            distances.push(new OpenLayers.WPSProcess.LiteralData({value: radius.radiusNotHum}));
-            distanceNames.push(new OpenLayers.WPSProcess.LiteralData({value: 'ambientale'}));
-        }
-        if(radius.radiusHum) {
-            for(var i=0; i<radius.radiusHum.length; i++) {
-                if(radius.radiusHum[i]) {
-                    distances.push(new OpenLayers.WPSProcess.LiteralData({value: radius.radiusHum[i]}));
-                    distanceNames.push(new OpenLayers.WPSProcess.LiteralData({value: 'sociale' + i}));
+            var bounds;
+            if(status && status.roi) {
+                bounds = new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX());
+            } else {
+                bounds = map.getExtent();
+            }   
+            
+            var radius = this.getRadius();
+            var distances = [];
+            var distanceNames = [];
+            if(radius.radiusNotHum) {
+                distances.push(new OpenLayers.WPSProcess.LiteralData({value: radius.radiusNotHum}));
+                distanceNames.push(new OpenLayers.WPSProcess.LiteralData({value: 'ambientale'}));
+            }
+            if(radius.radiusHum) {
+                for(var i=0; i<radius.radiusHum.length; i++) {
+                    if(radius.radiusHum[i]) {
+                        distances.push(new OpenLayers.WPSProcess.LiteralData({value: radius.radiusHum[i]}));
+                        distanceNames.push(new OpenLayers.WPSProcess.LiteralData({value: 'sociale' + i}));
+                    }
                 }
             }
-        }
-        
-        var filter = new OpenLayers.Filter.Spatial({ 
-          type: OpenLayers.Filter.Spatial.BBOX,
-          property: 'geometria',
-          value: bounds, 
-          projection: map.getProjection() 
-       });
-        wfsGrid.getEl().mask(this.loadMsg);
-        //riskProcess.describe({callback: function() {
-            //riskProcess.setResponseForm([{}], {supportedFormats: {'application/json':true}});
-        riskProcess.execute({
-            // spatial input can be a feature or a geometry or an array of
-            // features or geometries
-            inputs: {
-                features: new OpenLayers.WPSProcess.ReferenceData({
-                    href:'http://geoserver/wfs', 
-                    method:'POST', mimeType: 'text/xml', 
-                    body: {
-                        wfs: {
-                            featureType: 'destination:siig_geo_ln_arco_1', 
-                            version: '1.1.0',
-                            filter: filter
+            
+            var filter = new OpenLayers.Filter.Spatial({ 
+              type: OpenLayers.Filter.Spatial.BBOX,
+              property: 'geometria',
+              value: bounds, 
+              projection: map.getProjection() 
+            });
+            wfsGrid.getEl().mask(this.loadMsg);
+            //riskProcess.describe({callback: function() {
+                //riskProcess.setResponseForm([{}], {supportedFormats: {'application/json':true}});
+            riskProcess.execute({
+                // spatial input can be a feature or a geometry or an array of
+                // features or geometries
+                inputs: {
+                    features: new OpenLayers.WPSProcess.ReferenceData({
+                        href:'http://geoserver/wfs', 
+                        method:'POST', mimeType: 'text/xml', 
+                        body: {
+                            wfs: {
+                                featureType: 'destination:siig_geo_ln_arco_1', 
+                                version: '1.1.0',
+                                filter: filter
+                            }
+                        }
+                    }),
+                    distances: distances,
+                    distanceNames: distanceNames
+                },
+                outputs: [new OpenLayers.WPSProcess.Output({
+                    mimeType: 'application/json'
+                })],
+                type: "raw",
+                success: function(json) {
+                    wfsGrid.getEl().unmask();
+                    var json = Ext.decode(json);
+                    var refactoredJson = {type: "FeatureCollection", features:[]};
+                    var geomPos = 1;
+                    if(json.features.length > 0) {
+                        var item = json.features[0];
+                        
+                        if(item.properties.ambientale) {
+                            refactoredJson.features.push({
+                                geometry: item.geometry,
+                                id: "5",
+                                type: "Feature",
+                                properties: {
+                                    name: "Ambientale",
+                                    distance: item.properties.ambientale
+                                }
+                            });
+                            geomPos++;
+                        }
+                        for(var propName in item.properties) {
+                            if(item.properties.hasOwnProperty(propName)) {
+                                if(propName.indexOf('sociale') === 0) {
+                                    var geometry = geomPos === 1 ? item.geometry : item.properties['geometria' + geomPos];
+                                    var humPos = parseInt(propName.substring(7), 10);
+                                    refactoredJson.features.push({
+                                        geometry: geometry,
+                                        id: humPos + 1,
+                                        type: "Feature",
+                                        properties: {
+                                            name: me.severeness[GeoExt.Lang.getLocaleIndex()][humPos],
+                                            distance: item.properties[propName]
+                                        }
+                                    });
+                                    geomPos++;
+                                }
+                                
+                            }
                         }
                     }
-                }),
-                distances: distances,
-                distanceNames: distanceNames
-            },
-            outputs: [new OpenLayers.WPSProcess.Output({
-                mimeType: 'application/json'
-            })],
-            type: "raw",
-            success: function(json) {
-                wfsGrid.getEl().unmask();
-                var json = Ext.decode(json);
-                var refactoredJson = {type: "FeatureCollection", features:[]};
-                var geomPos = 1;
-                if(json.features.length > 0) {
-                    var item = json.features[0];
                     
-                    if(item.properties.ambientale) {
-                        refactoredJson.features.push({
-                            geometry: item.geometry,
-                            id: "5",
-                            type: "Feature",
-                            properties: {
-                                name: "Ambientale",
-                                distance: item.properties.ambientale
-                            }
-                        });
-                        geomPos++;
-                    }
-                    for(var propName in item.properties) {
-                        if(item.properties.hasOwnProperty(propName)) {
-                            if(propName.indexOf('sociale') === 0) {
-                                var geometry = geomPos === 1 ? item.geometry : item.properties['geometria' + geomPos];
-                                var humPos = parseInt(propName.substring(7), 10);
-                                refactoredJson.features.push({
-                                    geometry: geometry,
-                                    id: humPos + 1,
-                                    type: "Feature",
-                                    properties: {
-                                        name: me.severeness[GeoExt.Lang.getLocaleIndex()][humPos],
-                                        distance: item.properties[propName]
-                                    }
-                                });
-                                geomPos++;
-                            }
-                            
-                        }
-                    }
+                    wfsGrid.loadGridsFromJson(undefined, undefined, {"DAMAGEAREA": refactoredJson}, status);
                 }
-                
-                wfsGrid.loadGridsFromJson(undefined, undefined, {"DAMAGEAREA": refactoredJson}, status);
-            }
-        }); 
+            }); 
+        }
+        
+        
         //}});
         
         
@@ -974,8 +1004,17 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
     addTargets: function(layers, bounds, radius, extraTargets) { 
+        
         var name = this.status.target ? this.status.target.layer : 'bersagli_all';
-        var targetViewParams = "bounds:" + bounds + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman;
+        var wkt;
+        if(this.status.processing === 4) {
+            bounds = '0,1,0,1'.replace(/,/g, "\\\,");
+            wkt = this.status.damageArea.replace(/,/g, "\\\,");            
+        } else {
+            wkt = 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'.replace(/,/g, "\\\,");
+        }
+        var targetViewParams = "bounds:" + bounds + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman + ';wkt:' + wkt;
+        
         this.analyticViewLayers.push(name);
         this.analyticViewLayers.push(this.selectedTargetLayer);
         layers.push(this.createLayerRecord({
@@ -1007,7 +1046,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
             var bounds = this.getBounds(status, map);
             var radius = this.getRadius();
-            viewParams = "bounds:" + bounds + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman;
+            var wkt;
+            if(this.status.processing === 4) {
+                bounds = '0,1,0,1'.replace(/,/g, "\\\,");
+                wkt = this.status.damageArea.replace(/,/g, "\\\,");            
+            } else {
+                wkt = 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'.replace(/,/g, "\\\,");
+            }
+            viewParams = "bounds:" + bounds + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman + ';wkt:' + wkt;
         }
         if(!extraTargets && this.status) {
             extraTargets = this.status.simulation.targetsInfo;
@@ -1035,27 +1081,30 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return Math.round(bufferInMeter / this.getMetersToPixelsRatio());
     },
     
-    addBuffers: function(layers, bounds, radius) {
-        var viewParams = "bounds:" + bounds;
-        
-        //var buffer = this.getBufferSizeInPixels(radius.max);
-        
+    addBuffers: function(layers, bounds, radius, bufferArea) {        
         var bufferLayerTitle =this.bufferLayerTitle[GeoExt.Lang.getLocaleIndex()];
-        
-        if(!this.status || this.isMixedTargets()) {
-            if(radius.radiusHum.length > 0) {
-                layers.push(this.addHumanTargetBuffer(radius.radiusHum,bufferLayerTitle+' (' +this.humanTargets[GeoExt.Lang.getLocaleIndex()]+ ')', viewParams, radius.max));
-            }
-            if(radius.radiusNotHum > 0) {
-                layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,bufferLayerTitle+' (' +this.notHumanTargets[GeoExt.Lang.getLocaleIndex()]+ ')', viewParams, radius.max));
-            }
-        } else if(this.isHumanTarget()) {
-            if(radius.radiusHum.length > 0) {
-                layers.push(this.addHumanTargetBuffer(radius.radiusHum,bufferLayerTitle+' ('+this.status.target.name+')', viewParams, radius.max));                                
-            }
-        } else if(this.isNotHumanTarget()) {
-            if(radius.radiusNotHum > 0) {
-                layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,bufferLayerTitle+' ('+this.status.target.name+')', viewParams, radius.max));
+        if(bufferArea) {
+            layers.push(this.addDamageBuffer(bufferLayerTitle, bufferArea));
+        } else {
+            var viewParams = "bounds:" + bounds;
+            
+            //var buffer = this.getBufferSizeInPixels(radius.max);
+            
+            if(!this.status || this.isMixedTargets()) {
+                if(radius.radiusHum.length > 0) {
+                    layers.push(this.addHumanTargetBuffer(radius.radiusHum,bufferLayerTitle+' (' +this.humanTargets[GeoExt.Lang.getLocaleIndex()]+ ')', viewParams, radius.max));
+                }
+                if(radius.radiusNotHum > 0) {
+                    layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,bufferLayerTitle+' (' +this.notHumanTargets[GeoExt.Lang.getLocaleIndex()]+ ')', viewParams, radius.max));
+                }
+            } else if(this.isHumanTarget()) {
+                if(radius.radiusHum.length > 0) {
+                    layers.push(this.addHumanTargetBuffer(radius.radiusHum,bufferLayerTitle+' ('+this.status.target.name+')', viewParams, radius.max));                                
+                }
+            } else if(this.isNotHumanTarget()) {
+                if(radius.radiusNotHum > 0) {
+                    layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,bufferLayerTitle+' ('+this.status.target.name+')', viewParams, radius.max));
+                }
             }
         }
         
@@ -1064,6 +1113,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             this.loadDamageGrid();
         }
     },
+    
+    
     
     /*addNotHumanRisk: function(layers, bounds) {    
         this.currentRiskLayers.push(this.notHumanRiskLayer);
@@ -1154,8 +1205,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         if(status.processing === 3) {
             var simulation = status.simulation;            
             env += ';pis:'+simulation.pis.join('_') + ';padr:'+simulation.padr.join('_') + ';cff:'+simulation.cff.join('_');
-            env += ';changedTargets:'+simulation.targets.join('_');
+            env += ';changedTargets:' + (simulation.targetsRepositoryId ? simulation.targetsRepositoryId : simulation.targets.join('_'));
             env += ';distances:'+this.getBuffersList().join(',');
+        }
+        if(status.processing === 4) {
+            env += ';damageArea:' + (status.damageAreaId ? status.damageAreaId : status.damageArea);
         }
         return env;
     },
@@ -1270,7 +1324,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.removeAnalyticViewLayers(map);                                
         
         // add the buffers layers
-        this.addBuffers(newLayers, bounds, radius);
+        this.addBuffers(newLayers, bounds, radius, status.processing === 4 ? status.damageArea : null);
         
         // add the target layer
         this.addTargets(newLayers, bounds, radius, status.simulation.targetsInfo);                
@@ -1323,6 +1377,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }
         return geometry;
     },
+    
+
     
     drawTargetGeometry: function(map, layerName, id, geometry, style ){ //"Bersaglio Selezionato"
         
@@ -1403,7 +1459,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         layer.setVisibility(visibility);
     },
     
-    doProcess: function(roi) {
+    doProcess: function(roi) {        
         if(this.simulationRestore) {
             for(var buttonId in this.simulationRestore.buttons) {
                 if(this.simulationRestore.buttons.hasOwnProperty(buttonId)) {
@@ -1442,14 +1498,55 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             Ext.getCmp("analytic_view").enable();
         }
         
-        if(status.formulaInfo.dependsOnArcs) {        
-            this.addRisk(newLayers, bounds, status);
-            
-            this.target.mapPanel.layers.add(newLayers);
-            if(roi) {
-                this.target.mapPanel.map.zoomToExtent(roi);
+        if(status.formulaInfo.dependsOnArcs) {
+        
+            var addRiskToMap = function() {
+                this.addRisk(newLayers, bounds, status);
+                
+                this.target.mapPanel.layers.add(newLayers);
+                if(roi) {
+                    this.target.mapPanel.map.zoomToExtent(roi);
+                }
+                this.resultsContainer.removeAll();
             }
-            this.resultsContainer.removeAll();
+            var me = this;
+            if(status.simulation.targets.length > 0 || status.damageArea) {                
+                var repositoryProcess = this.wpsClient.getProcess('destination', 'gs:ProcessingRepository');                  
+                var data = status.simulation.targets.length > 0 ? status.simulation.targets.join('_') : status.damageArea;
+                
+                repositoryProcess.execute({
+                    inputs: {
+                        store: new OpenLayers.WPSProcess.LiteralData({value:this.wpsStore}),
+                        action: new OpenLayers.WPSProcess.LiteralData({value:'save'}),
+                        user: new OpenLayers.WPSProcess.LiteralData({value:-1}),
+                        clean: new OpenLayers.WPSProcess.LiteralData({value:true}),
+                        data: new OpenLayers.WPSProcess.LiteralData({value:data})
+                    },
+                    outputs: [],
+                    success: function(outputs) {                        
+                        if(outputs.executeResponse.status.processSucceeded && outputs.executeResponse.processOutputs.length > 0) {
+                            var key = Ext.decode(outputs.executeResponse.processOutputs[0].literalData.value);
+                            if(status.simulation.targets.length > 0) {
+                                status.simulation.targetsRepositoryId = key;
+                            } else {
+                                status.damageAreaId = key;
+                            }
+                            addRiskToMap.call(me);
+                        } else {
+                            Ext.Msg.show({
+                                title: this.wpsTitle,
+                                buttons: Ext.Msg.OK,                
+                                msg: this.wpsError,
+                                icon: Ext.MessageBox.ERROR,
+                                scope: this
+                            }); 
+                        }
+                    }
+                });
+            } else {
+                addRiskToMap.call(this);
+            }
+            
         } else {
             // Create a process and configure it
             var riskProcess = this.wpsClient.getProcess('destination', 'gs:RiskCalculatorSimple');    

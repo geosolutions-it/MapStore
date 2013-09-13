@@ -147,6 +147,13 @@
         },
         {
             "source": "destination",
+            "title": "Beni culturali",
+            "name": "beni_culturali_all",
+            "group": ["Targets","Bersagli","Cibles","Ziele"],
+            "visibility": false
+        },
+        {
+            "source": "destination",
             "title": "Zone urbanizzate",
             "name": "zone_urbanizzate_all",
             "group": ["Targets","Bersagli","Cibles","Ziele"],
@@ -486,7 +493,7 @@
         "panels": {
             "targets": {
                 "Popolazione residente": {
-                    "featureType": "popolazione_residente",
+                    "featureType": "popolazione_residente_pl",
                     "fields": [
                         {
                             "name": "id",              
@@ -511,6 +518,10 @@
                         {
                             "name": "partner",      
                             "mapping": "partner_${locale}"
+                        },
+                        {
+                            "name": "fonte_residenti",      
+                            "mapping": "fonte_residenti_${locale}"
                         }
                     ],
                     "columns": [
@@ -521,6 +532,10 @@
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
                             "dataIndex": "partner"
+                        },
+                        {
+                            "header": ["Residents number source (Estimated / calculated)", "Fonte residenti", "Source du nombre de résidents (Estimé/calculé)", "Quelle der Anzahl der Anwohner (geschätzt/berechnet)"],      
+                            "dataIndex": "fonte_residenti"
                         }
                     ],
                     "title": ["Resident Population", "Popolazione residente", "Population résidente", "Anwohnerzahlen"],
@@ -603,7 +618,7 @@
                 },
                 "Addetti industria e servizi": {
                                     
-                    "featureType": "industria_servizi",
+                    "featureType": "industria_servizi_pl",
                     "fields": [
                         {
                             "name": "id",              
@@ -678,7 +693,7 @@
                     "type": "umano"
                 },
                 "Addetti/utenti strutture sanitarie": {
-                    "featureType": "strutture_sanitarie",
+                    "featureType": "strutture_sanitarie_pl",
                     "fields": [
                         {
                             "name": "id",              
@@ -773,7 +788,7 @@
                     "type": "umano"
                 },
                 "Addetti/utenti strutture scolastiche": {
-                    "featureType": "strutture_scolastiche",
+                    "featureType": "strutture_scolastiche_pl",
                     "fields": [
                         {
                             "name": "id",              
@@ -852,7 +867,7 @@
                     "type": "umano"
                 },
                 "Addetti/utenti centri commerciali": {
-                    "featureType": "centri_commerciali",
+                    "featureType": "centri_commerciali_pl",
                     "fields": [
                         {
                             "name": "id",              
@@ -1254,7 +1269,7 @@
                     "type": "ambientale"
                 },
                 "Acque sotterranee": {
-                    "featureType": "acque_sotterranee",
+                    "featureType": "acque_sotterranee_pl",
                     "fields": [
                         {
                             "name": "id",              
@@ -1317,7 +1332,7 @@
                     "type": "ambientale"
                 },
                 "Beni culturali": {
-                    "featureType": "beni_culturali",
+                    "featureType": "beni_culturali_pl",
                     "fields": [
                         {
                             "name": "id",              
@@ -1611,6 +1626,10 @@
                         {
                             "name": "partner",      
                             "mapping": "partner_${locale}"
+                        },
+                        {
+                            "name": "fonte_residenti",      
+                            "mapping": "fonte_residenti_${locale}"
                         }
                     ],
                     "columns": [
@@ -1622,6 +1641,10 @@
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
                             "dataIndex": "partner"
+                        },
+                        {
+                            "header": ["Residents number source (Estimated / calculated)", "Fonte residenti", "Source du nombre de résidents (Estimé/calculé)", "Quelle der Anzahl der Anwohner (geschätzt/berechnet)"],      
+                            "dataIndex": "fonte_residenti"
                         }
                     ],
                     "title": ["Resident Population", "Popolazione residente", "Population résidente", "Anwohnerzahlen"],

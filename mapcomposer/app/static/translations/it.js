@@ -61,6 +61,7 @@ GeoExt.Lang.add("it", {
         requiredMaterial: "Questa formula richiede di specificare la sostanza",
         requiredAccident: "Questa formula richiede di specificare l\'incidente",
         requiredSeriousness: "Questa formula richiede di specificare l\'entità",
+        requiredDamageArea: "Selezionare l'area di danno",
         validationTitle: "Errore nei parametri",   
         invalidAOI: "Le coordinate dell'area di interesse non sono valide.",
         bboxTooBig: "L'area selezionata e' troppo grande e il server potrebbe impiegare molto tempo a rispondere. Se si desidera continuare ugualmente premere OK.",
@@ -513,7 +514,7 @@ GeoExt.Lang.add("it", {
     },
 
 	"gxp.widgets.form.BufferFieldset.prototype": {
-		bufferFieldLabel: "Intervallo del Buffer",
+		bufferFieldLabel: "Ampiezza del Buffer",
 		bufferFieldSetTitle: "Buffer",
 		coordinatePickerLabel: "Coordinate",
 		draweBufferTooltip: "Disegna il Buffer"

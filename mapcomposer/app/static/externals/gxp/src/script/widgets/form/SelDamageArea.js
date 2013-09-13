@@ -301,6 +301,17 @@ gxp.form.SelDamageArea = Ext.extend(Ext.form.FieldSet, {
         return areaDamage;
     },
     
+    getDamageArea: function() {
+        if(this.drawings && this.drawings.features && this.drawings.features.length > 0) {
+            return this.drawings.features[0].geometry;
+        }
+        if(this.bufferFieldSet.bufferLayer && this.bufferFieldSet.bufferLayer.features && this.bufferFieldSet.bufferLayer.features.length > 0) {
+            return this.bufferFieldSet.bufferLayer.features[0].geometry;
+        }
+        
+        return null;
+    },
+    
     clearDrawFeature: function(){
         var me = this;
         if (me.draw) {

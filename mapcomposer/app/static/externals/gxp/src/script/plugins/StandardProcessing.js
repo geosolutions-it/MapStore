@@ -51,6 +51,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     requiredMaterial: "Questa formula richiede di specificare la sostanza",
     requiredAccident: "Questa formula richiede di specificare l\'incidente",
     requiredSeriousness: "Questa formula richiede di specificare la gravità",
+    requiredDamageArea: "Selezionare l'area di danno",
     validationTitle: "Errore nei parametri",
     invalidAOI: "Le coordinate dell'area di interesse non sono valide.",
     bboxTooBig: "L'area selezionata e' troppo grande e il server potrebbe impiegare molto tempo a rispondere. Se si desidera continuare ugualmente premere OK.",
@@ -161,6 +162,21 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         return processing;
     },
     
+    getLayerGeometry: function(map, geometry, destSRS) {
+        if(geometry && destSRS) {
+            if(destSRS != map.getProjection()){
+                var coll=new OpenLayers.Geometry.Collection(new Array(geometry.clone()));
+                var targetColl=coll.transform(                    
+                    map.getProjectionObject(),
+                    new OpenLayers.Projection(destSRS)
+                );
+                geometry = targetColl.components[0];   
+                delete targetColl;
+            }
+        }
+        return geometry;
+    },
+    
     /** private: method[resetForm]
      *     resets the form with initial values
      */
@@ -168,6 +184,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 
         this.panel.getForm().reset();
         this.aoiFieldset.removeAOILayer();
+        this.selDamage.clearDrawFeature();
         this.resetBBOX(true);
     },
     
@@ -218,7 +235,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 },
                 select: function(combo, record, index) {
                     this.formula.getStore().filter('id_elaborazione', record.get('id'));
-                    
+                    this.formula.setValue(this.formula.getStore().getAt(0).get('id_formula'));
                     this.enableDisableForm(this.getComboRecord(this.formula, 'id_formula'), record);
                     this.enableDisableSimulation(record.get('id') === 3);
                 }
@@ -371,7 +388,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         //this.enableDisableMeteo(record);
         this.enableDisableTargets(formula, elaborazione);
         this.enableDisableScenario(formula, elaborazione);        
-        this.enableDisableFormula(formula, elaborazione);        
+        //this.enableDisableFormula(formula, elaborazione);        
     },
     
     enableDisable: function(condition, widget) {
@@ -1390,6 +1407,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             this.aoiFieldset.removeAOILayer();
             // this.selectAOI.deactivate();
             
+            this.selDamage.clearDrawFeature();
+            
             this.switchToSyntheticView();
             var syntView = this.appTarget.tools[this.syntheticView];
             
@@ -1519,7 +1538,14 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         if(!error && formulaRec.get('gravita') === 2 && entita === '0') {
             error = this.requiredSeriousness;
         }
+        if(this.elaborazione.getValue() === 4) {
+            // damage calculus
+            if(!error && (!this.selDamage.getDamageArea())) {
+                error = this.requiredDamageArea;
+            }
+        }
         if(!error) {
+        
             var scale = Math.round(map.getScale());   
             
             var visibleOnArcs = formulaRec.get('visibile') === 1 || formulaRec.get('visibile') === 3;
@@ -1659,6 +1685,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.status = status;
         this.elaborazione.setValue(this.status.processing);
         this.formula.setValue(this.status.formula);
+        this.formula.fireEvent('select',this.formula, this.formula.getStore().getAt(this.formula.getStore().findExact("id_formula", this.status.formula)));
         this.aoiFieldset.setAOI(this.appTarget.mapPanel.map.getExtent());
                 
         store=this.macrobers.getStore(); 
@@ -1722,6 +1749,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         obj.formula = this.formula.getValue();
         obj.formulaDesc = this.formula.getEl().getValue();
         var formulaRec = this.formula.store.getAt(this.formula.store.findExact("id_formula",obj.formula));
+        
         obj.formulaUdm = formulaRec.get('udm');
         
         obj.formulaInfo = {
@@ -1729,7 +1757,18 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             dependsOnArcs: formulaRec.get('ambito_territoriale'),
             visibleOnArcs: formulaRec.get('visibile') === 1 || formulaRec.get('visibile') === 3,
             visibleOnGrid: formulaRec.get('visibile') === 2 || formulaRec.get('visibile') === 3
-        };        
+        };
+        if(obj.processing === 4) {
+            
+            var geometry = this.getLayerGeometry(
+                map,
+                this.selDamage.getDamageArea(),
+                this.selectionLayerProjection
+            );
+            
+            obj.damageAreaGeometry = geometry;
+            obj.damageArea = geometry.toString();
+        }
         
         obj.simulation = {
             cff:[],
@@ -1804,15 +1843,23 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         obj.accident = this.getComboRecord(this.accident).data; //this.accident.getValue();
         obj.seriousness = this.getComboRecord(this.seriousness).data; //this.seriousness.getValue();
         
-        var low = parseFloat(formulaRec.get('tema_low'));
-        var medium = parseFloat(formulaRec.get('tema_medium'));
-        var max = parseFloat(formulaRec.get('tema_max'));
-        
-        obj.themas = {
-            'sociale': [low,medium,max], //Ext.getCmp('rischio_sociale_multislider').getValues(),
-            'ambientale': [low,medium,max] //Ext.getCmp('rischio_ambientale_multislider').getValues()
-        };
-
+        if(formulaRec) {
+            var low = parseFloat(formulaRec.get('tema_low'));
+            var medium = parseFloat(formulaRec.get('tema_medium'));
+            var max = parseFloat(formulaRec.get('tema_max'));
+            
+            obj.themas = {
+                'sociale': [low,medium,max], //Ext.getCmp('rischio_sociale_multislider').getValues(),
+                'ambientale': [low,medium,max] //Ext.getCmp('rischio_ambientale_multislider').getValues()
+            };
+        } else if(obj.processing === 4) {
+            // damage calculus
+            obj.themas = {
+                'sociale': [100,500,1000], //Ext.getCmp('rischio_sociale_multislider').getValues(),
+                'ambientale': [100,500,1000] //Ext.getCmp('rischio_ambientale_multislider').getValues()
+            };
+        }
+            
         return obj;
     },
     
