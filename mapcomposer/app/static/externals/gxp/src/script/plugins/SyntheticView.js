@@ -274,7 +274,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
      *   :arg config: ``Object``
      *     creates a record for a new layer, with the given configuration
      */
-    createLayerRecord: function(config, singleTitle, dynamicBuffer, exclusive) {        
+    createLayerRecord: function(config, singleTitle, dynamicBuffer, exclusive, group) {        
         var params = {
             layers: config.name, 
             transparent: true, 
@@ -319,8 +319,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 title: config.title, 
                 name: config.name,
                 layer: layer,
-                
-                properties: 'gxp_wmslayerpanel'
+                properties: 'gxp_wmslayerpanel',
+                group: group ? group : undefined, 
             }, layerRecord.data);
                         
             if(config.params.styles) {
@@ -1162,6 +1162,24 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }
         }, true));
     },*/
+
+    addVulnLayer: function(layers,layer,formulaDesc, group) {
+        this.currentRiskLayers.push(layer);
+        var group = group;
+        var viewParams = "bounds:264455.272103\\,4889918.130753\\,594775.925407\\,5120964.085926;residenti:1;turistica:1;industria:1;sanitarie:1;scolastiche:1;commerciali:1;urbanizzate:0;boscate:0;protette:0;agricole:0;sotterranee:0;superficiali:0;culturali:0;sostanze:1\\,2\\,3\\,4\\,5\\,6\\,7\\,8\\,9\\,10;scenari:1\\,2\\,3\\,4\\,5\\,6\\,7\\,8\\,9\\,10\\,11;gravita:0\\,1";
+        var env = "low:100;medium:500;max:1000;formula:32;target:98;materials:1,2,3,4,5,6,7,8,9,10;scenarios:1,2,3,4,5,6,7,8,9,10,11;entities:0,1;fp:fp_scen_centrale;processing:1";
+        layers.push(this.createLayerRecord({
+            name: layer,
+            title: formulaDesc, 
+            tiled: false,
+            params: {                                                                
+                viewparams: viewParams,
+                env: env,
+                defaultenv: env,
+                riskPanel: true
+            }
+        }, true, undefined, undefined, group));
+    },
     
     addFormula: function(layers, bounds, status, targetId, layer, formulaDesc, formulaUdm, env) {
         this.currentRiskLayers.push(layer);
