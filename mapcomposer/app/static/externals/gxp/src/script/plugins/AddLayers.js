@@ -448,7 +448,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             }),
             new Ext.Button({
                 text: this.doneText,
-				iconCls: "gx-map-go",
+				iconCls: "save",
                 handler: function() {
                     this.capGrid.hide();
                 },
