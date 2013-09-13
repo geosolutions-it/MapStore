@@ -349,6 +349,13 @@
 		},
 		"container": "fieldset"
 	},
+    {
+        "ptype": "gxp_selectvulnelem",
+		"actionTarget": {
+			"target": "paneltbar",
+			"index": 2
+		}
+    },
 	{
 		"ptype": "gxp_navigation",
 		"toggleGroup": "toolGroup",

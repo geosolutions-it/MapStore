@@ -525,5 +525,14 @@ GeoExt.Lang.add("it", {
 		pointSelectionButtionTip: 'Clicca sulla mappa per abilitare la selezione del punto',
 		latitudeEmptyText: 'Latitudine',
 		longitudeEmptyText: 'Longitudine'
+	},
+
+	"gxp.plugins.SelectVulnElem.prototype":{
+        menuText: "Visualizzazione Elementi Vulnerabili",
+        tooltip: "Visualizzazione Elementi Vulnerabili",
+        allHumanTargetTitle: "Tutti i Bersagli Umani",
+        allNotHumanTargetTitle: "Tutti i Bersagli Ambientali",
+        selectAllTitle: "SELEZIONA TUTTO",
+        addToMapButtonText: "Aggiungi alla mappa"
 	}
 });
