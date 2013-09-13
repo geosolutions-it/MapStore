@@ -94,13 +94,14 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
 				fieldLabel: 'Type',
 				xtype: 'radiogroup',
                 name:'areatype',
+				ref:'gran_type',
 				autoHeight:true,
 				checkboxToggle:true,
 				defaultType: 'radio', // each item will be a radio button
 				items:[
-					{boxLabel: 'Province' , name: 'areatype', inputValue: 'PROVINCE' , checked: true},
-					{boxLabel: 'District', name: 'areatype', inputValue: 'DISTRICT'},
-                    {boxLabel: 'Pakistan', name: 'areatype', inputValue: 'PAKISTAN'}
+					{boxLabel: 'Province', itemId:'PROVINCE', name: 'areatype', inputValue: 'PROVINCE' , checked: true},
+					{boxLabel: 'District', itemId:'DISTRICT', name: 'areatype', inputValue: 'DISTRICT'},
+                    {boxLabel: 'Pakistan', itemId:'PAKISTAN', name: 'areatype', inputValue: 'PAKISTAN',disabled:true}
 				],
 				listeners: {
 					change: function(cbg,checkedarray){
