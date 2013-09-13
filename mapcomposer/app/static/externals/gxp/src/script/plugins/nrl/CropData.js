@@ -43,11 +43,11 @@ Ext.namespace("gxp.plugins.nrl");
 gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
  /** api: ptype = nrl_crop_data */
     ptype: "nrl_crop_data",
-	/** i18n **/
-	outputTypeText:'Output Type',
-	areaFilter: "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
-	seasonText:'Season',
-	/** layer Name **/
+
+    outputTypeText:'Output Type',
+    areaFilter: "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
+    seasonText:'Season',
+    /** layer Name **/
     hilightLayerName:"CropData_Selection_Layer",//TODO doesn't seems to run
     radioQtipTooltip: "You have to be logged in to use this method",
 	layerStyle:{
@@ -131,44 +131,46 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
     
     },
     startCommodity:'Wheat',
+
+
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
     addOutput: function(config) {
-		var conf = {
-			//TODO year ranges (from available data)
-			
-		}
-		//Override the comboconfig url;
-		this.comboConfigs.base.url = this.dataUrl;
-		var rangeData ;
+        var conf = {
+            //TODO year ranges (from available data)
+            
+        }
+        //Override the comboconfig url;
+        this.comboConfigs.base.url = this.dataUrl;
+        var rangeData ;
         //download from WFS available year ranges for each crops.
-		
-		var cropData  = {
-			xtype:'form',
-			title: 'Crop Data',
-			layout: "form",
-			minWidth:180,
-			autoScroll:true,
-			frame:true,
-			items:[
-			
-				{ 
-					fieldLabel: this.outputTypeText,
-					xtype: 'radiogroup',
-					anchor:'100%',
-					autoHeight:true,
-					checkboxToggle:true,
-					name:'outputType',
-					ref:'outputType',
-					autoHeight: true,
-					defaultType: 'radio', // each item will be a radio button
-					items:[
-						{boxLabel: 'Data' , name: 'outputtype', listeners: this.setRadioQtip(this.radioQtipTooltip), inputValue: 'data', disabled: true},
-						{boxLabel: 'Chart', name: 'outputtype', inputValue: 'chart', checked: true},
-						{boxLabel: 'Map'  , name: 'outputtype', inputValue: 'map'}
-						
-					],
+        
+        var cropData  = {
+            xtype:'form',
+            title: 'Crop Data',
+            layout: "form",
+            minWidth:180,
+            autoScroll:true,
+            frame:true,
+            items:[
+            
+                { 
+                    fieldLabel: this.outputTypeText,
+                    xtype: 'radiogroup',
+                    anchor:'100%',
+                    autoHeight:true,
+                    checkboxToggle:true,
+                    name:'outputType',
+                    ref:'outputType',
+                    autoHeight: true,
+                    defaultType: 'radio', // each item will be a radio button
+                    items:[
+                        {boxLabel: 'Data' , name: 'outputtype', listeners: this.setRadioQtip(this.radioQtipTooltip), inputValue: 'data', disabled: true},
+                        {boxLabel: 'Chart', name: 'outputtype', inputValue: 'chart', checked: true},
+                        {boxLabel: 'Map'  , name: 'outputtype', inputValue: 'map'}
+                        
+                    ],
                  
                     listeners: {           
                         change: function(c,checked){
@@ -184,7 +186,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 submitButton.destroy();
                                 delete submitButton;
                                 this.output.addButton({              
-									url: this.dataUrl, 
+                                    url: this.dataUrl, 
                                     xtype: 'gxp_nrlCropDataTabButton',
                                     ref: '../submitButton',
                                     target:this.target,
@@ -214,10 +216,12 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                     target:this.target,
                                     form: this
                                 })
+                                var store = areaSelector.store;
+                                this.output.fireEvent('update',store);
                                 this.output.fireEvent('beforehide');
                                 this.output.doLayout();
                                 this.output.syncSize();
-                                this.output.submitButton.enable();
+                                
                             }else{
                                 variable.disable();
                                 
@@ -242,17 +246,44 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 this.output.fireEvent('show');
                                 this.output.doLayout();
                                 this.output.syncSize();
-                            }                               
+                            }   
+                            //set Labels of gran_type for map
+                            var mapConvert,pakenabled;
+                            if(outputValue =="map"){
+                                mapConvert = {
+                                    province:"Province (District)",
+                                    district:"National (District)",
+                                    pakistan:"National (Province)"
+                                }
+                                pakenabled=true;
+                            }else{
+                                mapConvert = {
+                                    province:"Province ",
+                                    district:"District",
+                                    pakistan:"Pakistan"
+                                }
+                                pakenabled=false;
+                            }
+                            aoiFieldSet.gran_type.eachItem(function(item){
+                                    if(item.inputValue=="pakistan"){
+                                        item.setDisabled(!pakenabled);
+                                    }
+                                    var el =item.wrap.child('.x-form-cb-label');
+                                    el.update(mapConvert[item.inputValue]);
+                                    
+                                
+                            },this);
+                            this.output.doLayout();
                         },                        
                         scope: this                        
                     }
-				},{ 
-					fieldLabel: this.seasonText,
-					xtype: 'nrl_seasonradiogroup',
-					anchor:'100%',
-					name:'season',
-					ref:'season',
-					listeners: {
+                },{ 
+                    fieldLabel: this.seasonText,
+                    xtype: 'nrl_seasonradiogroup',
+                    anchor:'100%',
+                    name:'season',
+                    ref:'season',
+                    listeners: {
                         change: function(c,checked){
                             var commodityCB = this.ownerCt.Commodity;
                             commodityCB.seasonFilter(checked.inputValue);
@@ -268,23 +299,23 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             comboProd.setValue('000 tons');
 
                         }
-					}
-				},{
-					xtype: 'nrl_aoifieldset',
-					name:'region_list',
-					ref:'aoiFieldSet',
+                    }
+                },{
+                    xtype: 'nrl_aoifieldset',
+                    name:'region_list',
+                    ref:'aoiFieldSet',
                     layerStyle:this.layerStyle,
-					anchor:'100%',
-					comboConfigs:this.comboConfigs,
-					target:this.target,
-					areaFilter:this.areaFilter, 
-					hilightLayerName:this.hilightLayerName,
-					layers:this.layers
-					
-				},
-				{
-					xtype: 'nrl_commoditycombobox',
-					forceSelection:true,
+                    anchor:'100%',
+                    comboConfigs:this.comboConfigs,
+                    target:this.target,
+                    areaFilter:this.areaFilter, 
+                    hilightLayerName:this.hilightLayerName,
+                    layers:this.layers
+                    
+                },
+                {
+                    xtype: 'nrl_commoditycombobox',
+                    forceSelection:true,
                     selectOnFocus:true,
                     store: new Ext.data.JsonStore({
                         fields: [
@@ -300,17 +331,17 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                         idProperty:'crop'
                         
                     }),
-					allowBlank:false,
-					name:'crop',
-					anchor:'100%',
-					ref: 'Commodity',
+                    allowBlank:false,
+                    name:'crop',
+                    anchor:'100%',
+                    ref: 'Commodity',
                     listeners: {
                         
                         expand: function( combo ){
                             var season = this.ownerCt.season;
-							var radio = season.getValue();
-							
-							if (radio && radio.getValue()){
+                            var radio = season.getValue();
+                            
+                            if (radio && radio.getValue()){
                                this.seasonFilter(radio.inputValue);
                             }                           
                         },
@@ -332,89 +363,90 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             }
                         }
                     }
-				},{
-					xtype: 'label',
-					anchor:'100%',
-					fieldLabel:'Reference Year',
-					text:2009, //TODO conf
-					ref: 'referenceYear'
-				},{
-					ref: 'yearRangeSelector',
-					xtype: 'yearrangeselector',
-					anchor:'100%',
-					
-					
-					listeners:{
-						scope:this,
-						change:function(start,end){
-							this.output.referenceYear.setText(end);
-						},
+                },{
+                    xtype: 'label',
+                    anchor:'100%',
+                    fieldLabel:'Reference Year',
+                    text:2009, //TODO conf
+                    ref: 'referenceYear'
+                },{
+                    ref: 'yearRangeSelector',
+                    xtype: 'yearrangeselector',
+                    anchor:'100%',
+                    
+                    
+                    listeners:{
+                        scope:this,
+                        change:function(start,end){
+                            this.output.referenceYear.setText(end);
+                        },
                         afterrender: function(component) {
-							if(this.output.yearRangeSelector!=component)return;
+                            if(this.output.yearRangeSelector!=component)return;
                             
-						}
-					}
-					
-				},{ 
-					fieldLabel: 'Variable',
-					xtype: 'radiogroup',
-					anchor:'100%',
-					autoHeight:true,
+                        }
+                    }
+                    
+                },{ 
+                    fieldLabel: 'Variable',
+                    xtype: 'radiogroup',
+                    anchor:'100%',
+                    autoHeight:true,
                     ref: 'variable',
-					//checkboxToggle:true,
-					title: this.outputTypeText,
-					autoHeight: true,
-					defaultType: 'radio',
-					columns: 1,
-					disabled:true,
-					items:[
-						{boxLabel: 'Area' , name: 'variable', inputValue: 'Area'},
-						{boxLabel: 'Production', name: 'variable', inputValue: 'Production', checked: true},
-						{boxLabel: 'Yield' , name: 'variable', inputValue: 'Yield'}
-						
-					]
-				},{
-					xtype: 'fieldset',
-					title:'Unit',
-					anchor:'100%',
+                    //checkboxToggle:true,
+                    title: this.outputTypeText,
+                    autoHeight: true,
+                    defaultType: 'radio',
+                    columns: 1,
+                    disabled:true,
+                    items:[
+                        {boxLabel: 'Area' , name: 'variable', inputValue: 'Area'},
+                        {boxLabel: 'Production', name: 'variable', inputValue: 'Production', checked: true},
+                        {boxLabel: 'Yield' , name: 'variable', inputValue: 'Yield'}
+                        
+                    ]
+                },{
+                    xtype: 'fieldset',
+                    title:'Unit',
+                    anchor:'100%',
                     ref: 'units',
                     collapsible:true,
                     forceLayout:true, //needed to force to read values from this fieldset
                     collapsed:true,
-					items:[{
-							xtype: 'combo',
+                    items:[{
+                            xtype: 'combo',
                             ref: 'production',
                             id: 'comboProd',
-							anchor:'100%',
-							fieldLabel: 'Production',
-							typeAhead: true,
-							triggerAction: 'all',
-							lazyRender:false,
-							mode: 'local',
-							name:'production_unit',
-							forceSelected:true,
-							allowBlank:false,
-							autoLoad:true,
-							displayField: 'label',
-							valueField:'label',
-							value:'000 tons',
-							readOnly:true,
-							store: new Ext.data.JsonStore({
-								fields:[
-										{name:'name',dataIndex:'name'},
-										{name:'label',dataIndex:'label'},
-										{name:'coeff',dataIndex:'coeff'},
-										{name:'shortName', dataindex: 'shortName'},
+                            anchor:'100%',
+                            fieldLabel: 'Production',
+                            typeAhead: true,
+                            triggerAction: 'all',
+                            lazyRender:false,
+                            mode: 'local',
+                            name:'production_unit',
+                            forceSelected:true,
+                            allowBlank:false,
+                            autoLoad:true,
+                            displayField: 'label',
+                            valueField:'label',
+                            value:'000 tons',
+                            readOnly:true,
+                            store: new Ext.data.JsonStore({
+                                fields:[
+                                        {name:'name',dataIndex:'name'},
+                                        {name:'label',dataIndex:'label'},
+                                        {name:'coeff',dataIndex:'coeff'},
+                                        {name:'shortName', dataindex: 'shortName'},
                                         {name:'cid', dataindex: 'cid'}
-								],
-								data:[
-									{label: '000 tons', coeff:1,	shortName:'(000 tons)', cid:'wheat,cotton,sugarcane,rice,maize'},//TODO set proper values for coef
-									{label: '000 kgs',    coeff:2,	shortName:'(000 kgs)', cid:'wheat,cotton,sugarcane,rice,maize'},//TODO set proper values for coef
-									{label: '000 bales', coeff:3,	shortName:'(000 bales)', cid:'cotton'} //TODO set proper values for coef
-								]
-							}),
+                                ],
+                                data:[
+                                    {label: '000 tons', coeff:1,	shortName:'(000 tons)', cid:'cotton,sugarcane,rice,maize'},//TODO set proper values for coef
+                                    {label: '000 kgs',    coeff:2,	shortName:'(000 kgs)', cid:'cotton,sugarcane,rice,maize'},//TODO set proper values for coef
+                                    {label: '000 bales', coeff:3,	shortName:'(000 bales)', cid:'cotton'} //TODO set proper values for coef
+                                ]
+                            }),
                             listeners: {
                                 expand: function( combo ){
+                                    
                                     if (combo.disabled == true){
                                         combo.enable();
                                         var commodity = this.ownerCt.ownerCt.Commodity;
@@ -428,108 +460,115 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 }                        
                             }                      
 						},{
-							xtype: 'combo',
+                            xtype: 'combo',
                             ref: 'area',
-							anchor:'100%',
-							fieldLabel: 'Area',
-							typeAhead: true,
-							triggerAction: 'all',
-							lazyRender:false,
-							mode: 'local',
-							autoLoad:true,
-							forceSelected:true,
-							allowBlank:false,
-							name:'area_unit',
-							displayField: 'label',
-							valueField:'label',
-							value: '000 hectares',
-							readOnly:true,
-							store: new Ext.data.JsonStore({
-								fields:[
-										{name:'name',dataIndex:'name'},
-										{name:'label',dataIndex:'label'},
-										{name:'coeff',dataIndex:'coeff'},
-										{name:'shortName', dataindex: 'shortName'}
-								],
-								data:[
-									{label: '000 hectares',		coeff:1,	shortName:'000 ha'        },//TODO set proper values for coef
-									{label: 'square kilometers',	coeff:2,	shortName:'Km<sup>2</sup>'} //TODO set proper values for coef
-								]
-							})
+                            anchor:'100%',
+                            fieldLabel: 'Area',
+                            typeAhead: true,
+                            triggerAction: 'all',
+                            lazyRender:false,
+                            mode: 'local',
+                            autoLoad:true,
+                            forceSelected:true,
+                            allowBlank:false,
+                            name:'area_unit',
+                            displayField: 'label',
+                            valueField:'label',
+                            value: '000 hectares',
+                            readOnly:true,
+                            store: new Ext.data.JsonStore({
+                                fields:[
+                                        {name:'name',dataIndex:'name'},
+                                        {name:'label',dataIndex:'label'},
+                                        {name:'coeff',dataIndex:'coeff'},
+                                        {name:'shortName', dataindex: 'shortName'}
+                                ],
+                                data:[
+                                    {label: '000 hectares',		coeff:1,	shortName:'000 ha'        },//TODO set proper values for coef
+                                    {label: 'square kilometers',	coeff:2,	shortName:'Km<sup>2</sup>'} //TODO set proper values for coef
+                                ]
+                            })
                         },{
-							xtype: 'combo',
+                            xtype: 'combo',
                             ref: 'yield',
-							anchor:'100%',
-							fieldLabel: 'Yield',
-							typeAhead: true,
-							triggerAction: 'all',
-							lazyRender:false,
-							mode: 'local',
-							autoLoad:true,
-							forceSelected:true,
-							allowBlank:false,
-							name:'yield_unit',
-							displayField: 'label',
-							valueField:'label',
-							value: 'kg/ha',
-							readOnly:true,
-							store: new Ext.data.JsonStore({
-								fields:[
-										{name:'name',dataIndex:'name'},
-										{name:'label',dataIndex:'label'},
-										{name:'coeff',dataIndex:'coeff'},
-										{name:'shortName', dataindex: 'shortName'}
-								],
-								data:[
-									{label: 'kg/ha', coeff:1, shortName:'kg/ha'}//TODO set proper values for coef
-								]
-							})
-					}]
-				  
-					
-				}
-			
-				
-			],	
-			buttons:[{
+                            anchor:'100%',
+                            fieldLabel: 'Yield',
+                            typeAhead: true,
+                            triggerAction: 'all',
+                            lazyRender:false,
+                            mode: 'local',
+                            autoLoad:true,
+                            forceSelected:true,
+                            allowBlank:false,
+                            name:'yield_unit',
+                            displayField: 'label',
+                            valueField:'label',
+                            value: 'kg/ha',
+                            readOnly:true,
+                            store: new Ext.data.JsonStore({
+                                fields:[
+                                        {name:'name',dataIndex:'name'},
+                                        {name:'label',dataIndex:'label'},
+                                        {name:'coeff',dataIndex:'coeff'},
+                                        {name:'shortName', dataindex: 'shortName'}
+                                ],
+                                data:[
+                                    {label: 'kg/ha', coeff:1, shortName:'kg/ha'}//TODO set proper values for coef
+                                ]
+                            })
+                    }]
+                  
+                    
+                }
+            
+                
+            ],	
+            buttons:[{
                 url: this.dataUrl,
                 xtype: 'gxp_nrlCropDataButton',
-				ref: '../submitButton',
+                ref: '../submitButton',
                 target:this,
-				form: this,
+                form: this,
                 disabled:true
             }]
-		};
-		
-		config = Ext.apply(cropData,config || {});
-		
-		this.output = gxp.plugins.nrl.CropData.superclass.addOutput.call(this, config);
-		this.output.on('update',function(store){
+        };
+        
+        config = Ext.apply(cropData,config || {});
+        
+        this.output = gxp.plugins.nrl.CropData.superclass.addOutput.call(this, config);
+        //Enable Disable button when regions are selected
+        this.output.on('update',function(store){
             var button = this.output.submitButton.getXType();
             if (button == "gxp_nrlCropDataButton" || button == 'gxp_nrlCropDataTabButton'){
                 this.output.submitButton.setDisabled(store.getCount()<=0)
+            }else{
+                //map button
+                var values =this.output.getForm().getValues();
+                var gran_type = values.areatype;
+                this.output.submitButton.setDisabled(store.getCount()<=0 && gran_type=="province")
             }
-		},this);
-		//hide selection layer on tab change
-		this.output.on('beforehide',function(){
-			var button = this.output.aoiFieldSet.AreaSelector.selectButton;
-			button.toggle(false);
-			var lyr = button.hilightLayer;
-			if(!lyr) return;
-			lyr.setVisibility(false);
-			
-		},this);
-		this.output.on('show',function(){
-			var button = this.output.aoiFieldSet.AreaSelector.selectButton;
-			
-			var lyr = button.hilightLayer;
-			if(!lyr) return;
-			lyr.setVisibility(true);
-			
-		},this);
-		
-		return this.output;
-	},
+            
+        },this);
+        //hide selection layer on tab change
+        this.output.on('beforehide',function(){
+            var button = this.output.aoiFieldSet.AreaSelector.selectButton;
+            button.toggle(false);
+            var lyr = button.hilightLayer;
+            if(!lyr) return;
+            lyr.setVisibility(false);
+            
+        },this);
+        this.output.on('show',function(){
+            var button = this.output.aoiFieldSet.AreaSelector.selectButton;
+            
+            var lyr = button.hilightLayer;
+            if(!lyr) return;
+            lyr.setVisibility(true);
+            
+        },this);
+        
+        return this.output;
+    },
     setRadioQtip: function (t){ 
         var o = { 
             afterrender: function() {
