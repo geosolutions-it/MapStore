@@ -413,6 +413,27 @@
 				multipleToolInstances: true
             }, mapIdentifier, authorization, fullScreen);   
             
+			app.viewMetadata = function(url, uuid, title){
+				var tabPanel = Ext.getCmp(this.renderToTab);
+				
+				var tabs = tabPanel.find('title', title);
+				if(tabs && tabs.length > 0){
+					tabPanel.setActiveTab(tabs[0]); 
+				}else{
+					var metaURL = url.indexOf("uuid") != -1 ? url : url + '?uuid=' + uuid;
+					
+					var meta = Ext.getCmp("geonetworkPanel");
+					var gnIframe = document.getElementById('iframe-gn-panel');
+					gnIframe.src = metaURL;
+						
+					tabPanel.setActiveTab(0); 						
+					
+					meta.items.first().on('render', function() {
+						this.addLoadingMask(meta.items.first());
+					},this);						
+				}
+			};
+			
             app.on({
                 'portalready' : function() {              	
                     if(fullScreen) {

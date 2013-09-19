@@ -1,6 +1,6 @@
 {
-   "geoStoreBase":"",
-   "gnBaseUrl": "http://84.33.2.30/geonetworkbz/",
+   "geoStoreBase":"http://localhost:8282/geostore/rest/",
+   "gnBaseUrl": "http://localhost:8282/geonetwork/",
    "proxy":"/proxy/?url=",
    "defaultLanguage": "it",
    "tab": true,
