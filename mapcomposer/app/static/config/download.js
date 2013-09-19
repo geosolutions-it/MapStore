@@ -103,9 +103,10 @@
 		}, {
 			"ptype": "gxp_download",
             "featureManager": "featuremanager",
-			"readOnlyLayerSelection": true,
+			"readOnlyLayerSelection": false,
 			"removePreviousLayerOnSelection": false,
 			"id": "download",
+			"layersFromAllCapabilities": false,
 			"outputTarget": "west",
             "wpsUrl": "http://84.33.2.30/geoserver/ows?service=WPS",
 			"sridLinkTpl": "http://spatialreference.org/ref/#AUTH#/#SRID#/",

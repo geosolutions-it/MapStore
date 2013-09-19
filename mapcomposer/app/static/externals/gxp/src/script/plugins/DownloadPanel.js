@@ -739,9 +739,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 	 *  synchronization with other WMS possibly added in the meantime. 
      */
 	reloadLayers: function(callback){
-		var source, data = [];   
-
-		var layerSources = this.target.layerSources;
+		
         // /////////////////////////////////////////////////
         // Store the checks that will be done on the layer
         // It contains check for layertype (wcs, wfs)
@@ -751,78 +749,118 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
         // /////////////////////////////////////////////////
         if(!this.layersAttributes) this.layersAttributes = {};
 
-		for (var id in layerSources) {
-			source = layerSources[id];
+		var data = []; 
+		if(this.layersFromAllCapabilities){
+			// /////////////////////////////////////////////////
+			// The code below allows layers selection from all 
+			// loaded sources of type 'gxp_wmssource'.
+			// /////////////////////////////////////////////////
 			
-			// //////////////////////////////////////////////
-			// Slide the array of WMS and concatenates the 
-			// layers Records for the Store
-			// //////////////////////////////////////////////
-			switch(source.ptype){
-				case "gxp_mapquestsource": continue;
-				case "gxp_osmsource": continue;
-				case "gxp_googlesource": continue;
-				case "gxp_bingsource": continue;
-				case "gxp_olsource": continue;
-				case "gxp_wmssource": 
-					var store = source.store;
-					if (store) {
-						var records = store.getRange();
+			var source; 
+			var layerSources = this.target.layerSources;
+			
+			for (var id in layerSources) {
+				source = layerSources[id];
+				
+				// //////////////////////////////////////////////
+				// Slide the array of WMS and concatenates the 
+				// layers Records for the Store
+				// //////////////////////////////////////////////
+				switch(source.ptype){
+					case "gxp_mapquestsource": continue;
+					case "gxp_osmsource": continue;
+					case "gxp_googlesource": continue;
+					case "gxp_bingsource": continue;
+					case "gxp_olsource": continue;
+					case "gxp_wmssource": 
+						var store = source.store;
+						if (store) {
+							var records = store.getRange();
 
-						var size = store.getCount();
-						for(var i=0; i<size; i++){
-						    var record = records[i]; 
-							
-							if(record){
-								var bbox = record.get("bbox");
-								
-								var srs;
-								for(var crs in bbox){
-									srs = bbox[crs].srs;
-									break;
-								}
-								
-								var recordData = [id, record.data.title, record.data.name, record.id, srs];
-								
-                                if(this.layersAttributes[record.id]) {
-                                    recordData.push(this.layersAttributes[record.id].wcs);
-                                    recordData.push(this.layersAttributes[record.id].wfs);
-                                    recordData.push(this.layersAttributes[record.id].wpsdownload);
-                                } else {
-                                    this.layersAttributes[record.id] = {wcs: false, wfs: false, wpsdownload: false};
-                                    // ////////////////////////////////////////////////////
-                                    // The keyword control is necessary in order         //
-                                    // to markup a layers as Raster or Vector in order   //
-                                    // to set a proper format in the 'Format' combo box. //
-                                    // ////////////////////////////////////////////////////
-                                    var keywords = record.get("keywords");								
-                                    if(keywords){
-                                        if(keywords.length == 0){
-                                            recordData.push(false); // wcs
-                                            recordData.push(false); // wfs
-                                            recordData.push(false); // wpsdownload
-                                            recordData.push(true); // isLayerGroup
-                                        }else{
-                                            for(var k=0; k<keywords.length; k++){
-                                                var keyword = keywords[k].value || keywords[k];
-                                                
-                                                if(keyword.indexOf("WCS") != -1){
-                                                    recordData.push(true);
-                                                    break;
-                                                }                       
-                                            }
-                                        }
-                                    }
-								}
-								data.push(recordData);  
-							}
-						}              
-					}
+							var size = store.getCount();
+							for(var i=0; i<size; i++){
+								var record = records[i]; 
+								var sourceId = id;								
+								data = this.buildLayerRecord(data, record, sourceId);
+							}              
+						}
+				}
+			}
+		}else{
+			var overlays = this.target.mapPanel.layers;
+			var size = overlays.getCount();		
+			var records = overlays.getRange();
+			
+			for(var i=0; i<size; i++){
+				var record = records[i];	
+				
+				var group = record.get("group");
+				var name = record.get("name");			
+				var sourceId = record.data.source;		
+				
+				if (group !== "background" && name) {
+					data = this.buildLayerRecord(data, record, sourceId);
+				}
 			}
 		}
 
 		this.layerStore.removeAll();
 		this.layerStore.loadData(data, false);
+	},
+	
+    /** private: method[buildLayerRecord]
+	 * 
+	 *  Create the layer record for layers combobox.
+     */
+	buildLayerRecord: function(data, record, sourceId){		
+		if(record){	
+			var bbox = record.get("bbox");
+			
+			var srs;
+			for(var crs in bbox){
+				srs = bbox[crs].srs;
+				break;
+			}
+			
+			var recordData = [sourceId, record.data.title, record.data.name, record.id, srs];
+			
+			if(this.layersAttributes[record.id]) {
+				recordData.push(this.layersAttributes[record.id].wcs);
+				recordData.push(this.layersAttributes[record.id].wfs);
+				recordData.push(this.layersAttributes[record.id].wpsdownload);
+			} else {
+				this.layersAttributes[record.id] = {wcs: false, wfs: false, wpsdownload: false};
+				
+				// ////////////////////////////////////////////////////
+				// The keyword control is necessary in order         //
+				// to markup a layers as Raster or Vector in order   //
+				// to set a proper format in the 'Format' combo box. //
+				// ////////////////////////////////////////////////////
+				
+				var keywords = record.get("keywords");								
+				if(keywords){
+					if(keywords.length == 0){
+						recordData.push(false); // wcs
+						recordData.push(false); // wfs
+						recordData.push(false); // wpsdownload
+						recordData.push(true);  // isLayerGroup
+					}else{
+						for(var k=0; k<keywords.length; k++){
+							var keyword = keywords[k].value || keywords[k];
+							
+							if(keyword.indexOf("WCS") != -1){
+								recordData.push(true);
+								break;
+							}                       
+						}
+					}
+				}
+			}
+			
+			data.push(recordData);  
+		}
+
+		return data;		
 	},
 	
 	/** private: method[resetForm]
@@ -835,7 +873,9 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 		this.updateFormStatus();
 		
 		if(!this.spatialSettings.collapsed)
-			this.spatialSettings.collapse();
+			this.spatialSettings.collapse();			
+				
+		this.formPanel.crsFieldset.infoBtn.disable();
 	},
 	
     /** private: method[toggleControl]
@@ -956,9 +996,11 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 						},
 						select: function(combo, record, index){		
 
-							//
-							// Customize the Native CRS record definition. Native Record must be the first.
-							//
+							// ////////////////////////////////////////////////
+							// Customize the Native CRS record definition. 
+							// Native Record must be the first.
+							// ////////////////////////////////////////////////
+							
 							var crsCombo = this.formPanel.crsFieldset.crsCombo;
 							var crsComboStore = crsCombo.getStore();
 							var crsRecord = crsComboStore.getAt(0);			
@@ -1085,9 +1127,18 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 					        scope: this,
 					        fn: function(combo){
 					            // GPX and KML only supported format is EPSG:4326
-					            if(    combo.getValue() == 'application/vnd.google-earth.kml+xml'
+					            if(combo.getValue() == 'application/vnd.google-earth.kml+xml'
                                     || combo.getValue() == 'application/gpx+xml') {
-					                this.formPanel.crsFieldset.crsCombo.setValue('EPSG:4326');
+									
+					                this.formPanel.crsFieldset.crsCombo.setValue("EPSG:4326");
+									
+									var crsComboStore = this.formPanel.crsFieldset.crsCombo.getStore();
+									var idx = crsComboStore.find("name", "EPSG:4326");
+									
+									if(idx > -1){
+										this.selectedCRSRecord = crsComboStore.getAt(idx);
+									}
+									
                                     this.formPanel.crsFieldset.crsCombo.setReadOnly(true);
                                     this.formPanel.crsFieldset.infoBtn.enable();
 					            }else{
@@ -1840,8 +1891,13 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
         
         var layer = dform.layerCombo.getValue();
         
-		var crs = dform.crsFieldset.crsCombo.getValue();
-		crs = crs.indexOf("EPSG:") != -1 ? crs : "";
+		var crs_record = this.selectedCRSRecord;
+		
+		var crs = "";
+		if(crs_record){
+			crs = crs_record.get("code");
+			crs = crs.indexOf("EPSG:") != -1 ? crs : "";
+		}
 		
         var format = dform.formatCombo.getValue();
         
