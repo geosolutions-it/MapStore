@@ -108,8 +108,10 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 	
 	/** api: config[targetCSR]
      *  ``Array``
+	 *  Native Record must be the first.
      */
 	targetCSR: [
+		["Native", "", "", ""],
 		["EPSG:4326", "EPSG:4326", "epsg", "4326"],
 	],
 	
@@ -772,7 +774,15 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 						    var record = records[i]; 
 							
 							if(record){
-								var recordData = [id, record.data.title, record.data.name, record.id];
+								var bbox = record.get("bbox");
+								
+								var srs;
+								for(var crs in bbox){
+									srs = bbox[crs].srs;
+									break;
+								}
+								
+								var recordData = [id, record.data.title, record.data.name, record.id, srs];
 								
                                 if(this.layersAttributes[record.id]) {
                                     recordData.push(this.layersAttributes[record.id].wcs);
@@ -882,7 +892,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 		// Stores Array stores definitions.
 		// /////////////////////////////////////
 		this.layerStore = new Ext.data.ArrayStore({
-			fields: ["source", "title", "name", "olid", {name: "wcs", type: 'boolean'}, {name: "wfs", type: 'boolean'}, {name: "wpsdownload", type: 'boolean'}, {name: "isLayerGroup", type: 'boolean'}],
+			fields: ["source", "title", "name", "olid", "crs", {name: "wcs", type: 'boolean'}, {name: "wfs", type: 'boolean'}, {name: "wpsdownload", type: 'boolean'}, {name: "isLayerGroup", type: 'boolean'}],
 			data: []
 		});
 			
@@ -944,7 +954,20 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 						beforeselect: function(combo, record, index){
 							this.resetForm();
 						},
-						select: function(combo, record, index){							
+						select: function(combo, record, index){		
+
+							//
+							// Customize the Native CRS record definition. Native Record must be the first.
+							//
+							var crsCombo = this.formPanel.crsFieldset.crsCombo;
+							var crsComboStore = crsCombo.getStore();
+							var crsRecord = crsComboStore.getAt(0);			
+							var crs = record.get("crs"); 							
+							crsRecord.set("name", "Native - " + crs);
+							crsRecord.set("code", crs);
+							crsRecord.set("type", "epsg");
+							crsRecord.set("subcode", crs.replace("EPSG:", ""));
+							
 						    // ////////////////////////////////////////
 							// Remove the previous selected layer, 
 							// from this tool if exists.
