@@ -1,13 +1,13 @@
 {
    "geoStoreBase":"",
-   "gnBaseUrl": "http://localhost:8080/geonetworkbz/",
+   "gnBaseUrl": "http://84.33.2.30/geonetworkbz/",
    "proxy":"/proxy/?url=",
    "defaultLanguage": "it",
    "tab": true,
    "gsSources":{ 
    		"geosol":{
 			"ptype": "gxp_wmssource",
-			"url": "http://localhost:8080/geoserver/wms",
+			"url": "http://84.33.2.30/geoserver/wms",
 			"version":"1.1.1",
             "layerBaseParams": { 
 			    "FORMAT":"image/png8",
@@ -85,7 +85,7 @@
 			"index": 23
 		}, {
              "ptype": "gxp_importexport",
-             "service": "http://localhost:8080/servicebox/",
+             "service": "http://84.33.2.30/servicebox/",
              "types": ["map"],
              "actionTarget": "paneltbar",
              "index": 28
@@ -107,7 +107,7 @@
 			"removePreviousLayerOnSelection": false,
 			"id": "download",
 			"outputTarget": "west",
-            "wpsUrl": "http://localhost:8080/geoserver/ows?service=WPS",
+            "wpsUrl": "http://84.33.2.30/geoserver/ows?service=WPS",
 			"sridLinkTpl": "http://spatialreference.org/ref/#AUTH#/#SRID#/",
 			"formats": {
 				"wfs":[
@@ -124,15 +124,15 @@
 			},
 			"targetCSR": [
 				["Native"],
-				["EPSG:26713"],
-				["EPSG:25832"],
-				["EPSG:32632"],
-                ["EPSG:3034"],
-				["EPSG:3035"],
-				["EPSG:3416"],
-				["EPSG:4258"],
-				["EPSG:4326"],
-				["EPSG:900913"]
+				["EPSG:26713", "EPSG:26713", "epsg", "26713"],
+				["EPSG:25832", "EPSG:25832", "epsg", "25832"],
+				["EPSG:32632", "EPSG:32632", "epsg", "32632"],
+                ["EPSG:3034",  "EPSG:3034", "epsg", "3034"],
+				["EPSG:3035",  "EPSG:3035", "epsg", "3035"],
+				["EPSG:3416",  "EPSG:3416", "epsg", "3416"],
+				["EPSG:4258",  "EPSG:4258", "epsg", "4258"],
+				["EPSG:4326",  "EPSG:4326", "epsg", "4326"],
+				["EPSG:3857",  "EPSG:900913", "sr-org", "7483"]
 			],
             "gazetteerConfig": {
                 "addressUrl": "http://sdi.provinz.bz.it/routingservice/rest/gazetteer/GeocodeServer/findAddressCandidates",
@@ -148,6 +148,14 @@
 			"ptype":"gxp_downloadtoolaction",
 			"downloadTool": "download",
 			"actionTarget": ["layertree.contextMenu"]
+		}, {
+			"ptype":"gxp_languagechoice",
+			"languages": [
+				["it", "Italiano", "", "it", "Italian language"], 
+				["de", "Deutsch", "", "de", "Deutsch language"] 
+			],
+			"initialLanguage": "it",
+			"outputTarget": "paneltbar"
 		}
 	]
 }

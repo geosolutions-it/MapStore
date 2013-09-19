@@ -110,7 +110,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
      *  ``Array``
      */
 	targetCSR: [
-		["EPSG:4326","EPSG:4326", "epsg", "4326"],
+		["EPSG:4326", "EPSG:4326", "epsg", "4326"],
 	],
 	
 	/** api: config[layerStore]
@@ -887,7 +887,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 		});
 			
 		this.crsStore = new Ext.data.ArrayStore({
-			fields: ["name"],
+			fields: ["name", "code", "type", "subcode"],
 			data: this.targetCSR
 		});
 		
@@ -1121,7 +1121,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 				expand: function(p){
 					this.formPanel.selectionMode.setValue(null);
 					this.formPanel.bufferField.setValue("");
-					this.formPanel.cutMode.setValue(true);
+					this.formPanel.cutMode.setValue(false);
 				},
 				collapse: function(){
 					this.toggleControl(null, true);
@@ -1154,7 +1154,9 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
                             listeners : {
                                 select:{
                                     scope :this,
-                                    fn :function(combo){
+                                    fn :function(combo, record, index){
+										this.selectedCRSRecord = record;
+										
                                         if(combo.isValid() && combo.getValue() != "Native")
                                             this.formPanel.crsFieldset.infoBtn.enable();
                                         else
@@ -1171,8 +1173,12 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
                             width: 23,
                             scope: this,
                             handler: function(){
-                               var epsg = this.formPanel.crsFieldset.crsCombo.getValue().replace("EPSG:", "");
-                               window.open('http://www.spatialreference.org/ref/epsg/'+epsg+'/', '_blank');
+							   var crs_record = this.selectedCRSRecord;
+							   if(crs_record){
+									var subcode = crs_record.get("subcode");
+									var codetype = crs_record.get("type");
+									window.open('http://www.spatialreference.org/ref/' + codetype + '/' + subcode + '/', '_blank');
+							   }				   
                             }
                         }
                     ]
@@ -1253,7 +1259,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
                     displayField: 'text',
                     triggerAction: 'all',
                     mode: 'local',
-                    value: true,
+                    value: false,
                     width: 140,
                     store: new Ext.data.ArrayStore({
                         fields: ['value', 'text'],
