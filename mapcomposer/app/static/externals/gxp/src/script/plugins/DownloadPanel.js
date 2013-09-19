@@ -633,24 +633,14 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
                             return; 
                         }
                     } catch(e) {
-                        // TODO: log this exception
+                        console.log("Process storage return a wrong message");
+						console.log(e);
+						
                         this.hideMask();
                         return;
                     }
 				}
-				/*
-				if(!("list" in element)){
-					Ext.Msg.show({
-						title: "",
-						msg: this.errUnexistingListMsg,
-						buttons: Ext.Msg.OK,
-						icon: Ext.Msg.WARNING
-					});
-					return;
-				}
 				
-				var list = element.list;
-				*/
 				var magicString = 'org.geoserver.wps.gs.ClusterManagerProcess_-ExecutionStatusExt';
 				
 				if((element instanceof Object) && (magicString in element)){
@@ -1409,7 +1399,9 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 							// Reset pending
 							this.pendingRows = 0;
 			
-							store.each(this.updateRecord, this);
+							store.each(function(r){
+								this.updateRecord(r, true);
+							}, this);
 			
 							// Stop if nothing left pending
 							if(this.pendingRows <= 0){
@@ -1554,6 +1546,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 								return '<a href="' + val + '" target="_blank" /><img src="theme/app/img/download.png" /></a>';
 							}else{
 							    var message = mydlp.wpsErrorMsg;
+								var val = val.replace(/[\n\r]/g, ' ');
 							    var html = '<img src="theme/app/img/error.png" onclick="Ext.Msg.show({title: \'Failed\', msg: \'' + message + ' -  ' + val + '\', buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR});"/>'; 								
 								return html;
 							}
@@ -2096,6 +2089,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
           
             instance.Resource.store = Ext.encode(instance.Resource.data);
             instance.Resource.category = Ext.encode(instance.Resource.category);
+			
             Ext.Msg.show({
                 title: this.msgInstance + " " + instance.Resource.id,
                 msg: tpl.applyTemplate(instance.Resource),
@@ -2115,7 +2109,9 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 				// reset pending
 				this.pendingRows = 0;
 
-				store.each(this.updateRecord, this);
+				store.each(function(r){
+					this.updateRecord(r, false);
+				}, this);
 
 				// Stop if nothing left pending
 				if(this.pendingRows <= 0){
@@ -2131,10 +2127,37 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
         if(this.runningTask)
             Ext.TaskMgr.stop(this.runningTask);        
     },
+	
+	parseResponse: function(response){
+		var element;
+		
+		try {
+			element =  Ext.decode(response);
+			return element;
+		} catch(e){
+			var format = new OpenLayers.Format.XML();
+			try {
+				var xml = format.read(response);
+				var exceptiontexts = format.getElementsByTagNameNS(xml, "*","ExceptionText");
+				
+				if(exceptiontexts.length > 0) {				
+					element = (Ext.isIE ? exceptiontexts[0].text : exceptiontexts[0].textContent);
+					return element;
+				}else{
+					element = this.errWrongResponseMsg;
+					return element; 
+				}
+			} catch(e) {
+				console.log("Process storage return a wrong message");
+				console.log(e);
+				return e;
+			}
+		}
+	},
     
     pendingRows: 0,
     
-    updateRecord: function(r){        
+    updateRecord: function(r, force){        
 		var phase = r.get('phase');
 		var execId = r.get('executionId');
 		var execStatus = r.get('executionStatus');
@@ -2143,50 +2166,42 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
             return;
         }
         		
-        if(execStatus == 'Failed' || execStatus == 'Succeeded'){
+        if((execStatus == 'Failed' || execStatus == 'Succeeded') && !force){
             return;
         }
         
-        if(phase && (phase == 'COMPLETED' || phase == 'FAILED')){
+        if(phase && (phase == 'COMPLETED' || phase == 'FAILED') && !force){
             return;
         }
         
         r.beginEdit();
         
 		this.invokeClusterManager(r.get('executionId'), this, function(response){
-            var element =  Ext.decode(response);
-            /*
-            if(!("list" in element)){
-				Ext.Msg.show({
-					title: "",
-					msg: this.errUnexistingListMsg,
-					buttons: Ext.Msg.OK,
-					icon: Ext.Msg.ERROR
-				});
-                return;
-            }
-            
-            var list = element.list;*/
-            var magicString = 'org.geoserver.wps.gs.ClusterManagerProcess_-ExecutionStatusExt';
-            
-			try{
-				if(!(magicString in element)){
-					return;
+            var element =  this.parseResponse(response);
+            		
+			if(element instanceof Object){
+				var magicString = 'org.geoserver.wps.gs.ClusterManagerProcess_-ExecutionStatusExt';
+				
+				try{
+					if(!(magicString in element)){
+						return;
+					}
+				}catch(e){
+					console.log("Process storage return a wrong message");
+					console.log(e);
 				}
-			}catch(e){
-				console.log("Process storage return a wrong message");
-				console.log(e);
+				
+				var x = element[magicString];
+				if( x ){
+					r.set('phase', x.phase);
+					r.set('progress', x.progress + "%");
+					r.set('result', x.result);
+				} 
+			}else{
+				r.set('result', element);
 			}
-            
-            var x = element[magicString];
-            if( x ){
-                r.set('phase', x.phase);
-                r.set('progress', x.progress + "%");
-                r.set('result', x.result);
-            } 
-			
-			//this.wpsClusterManager._updateInstance(r);
-			
+
+			//this.wpsClusterManager._updateInstance(r);			
         });        
         
 		//
