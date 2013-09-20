@@ -1,44 +1,99 @@
-/*
- * Ext JS Library 2.2.1
- * Copyright(c) 2006-2009, Ext JS, LLC.
- * licensing@extjs.com
- * 
- * http://extjs.com/license
+/*!
+ * Ext JS Library 3.4.0
+ * Copyright(c) 2006-2011 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
+Ext.ns('Ext.ux.grid');
 
-Ext.grid.RowExpander = function(config){
-    Ext.apply(this, config);
+/**
+ * @class Ext.ux.grid.RowExpander
+ * @extends Ext.util.Observable
+ * Plugin (ptype = 'rowexpander') that adds the ability to have a Column in a grid which enables
+ * a second row body which expands/contracts.  The expand/contract behavior is configurable to react
+ * on clicking of the column, double click of the row, and/or hitting enter while a row is selected.
+ *
+ * @ptype rowexpander
+ */
+Ext.ux.grid.RowExpander = Ext.extend(Ext.util.Observable, {
+    /**
+     * @cfg {Boolean} expandOnEnter
+     * <tt>true</tt> to toggle selected row(s) between expanded/collapsed when the enter
+     * key is pressed (defaults to <tt>true</tt>).
+     */
+    expandOnEnter : true,
+    /**
+     * @cfg {Boolean} expandOnDblClick
+     * <tt>true</tt> to toggle a row between expanded/collapsed when double clicked
+     * (defaults to <tt>true</tt>).
+     */
+    expandOnDblClick : true,
 
-    this.addEvents({
-        beforeexpand : true,
-        expand: true,
-        beforecollapse: true,
-        collapse: true
-    });
-
-    Ext.grid.RowExpander.superclass.constructor.call(this);
-
-    if(this.tpl){
-        if(typeof this.tpl == 'string'){
-            this.tpl = new Ext.Template(this.tpl);
-        }
-        this.tpl.compile();
-    }
-
-    this.state = {};
-    this.bodyContent = {};
-};
-
-Ext.extend(Ext.grid.RowExpander, Ext.util.Observable, {
-    header: "",
-    width: 20,
-    sortable: false,
-    fixed:true,
-    menuDisabled:true,
-    dataIndex: '',
-    id: 'expander',
+    header : '',
+    width : 20,
+    sortable : false,
+    fixed : true,
+    hideable: false,
+    menuDisabled : true,
+    dataIndex : '',
+    id : 'expander',
     lazyRender : true,
-    enableCaching: true,
+    enableCaching : true,
+
+    constructor: function(config){
+        Ext.apply(this, config);
+
+        this.addEvents({
+            /**
+             * @event beforeexpand
+             * Fires before the row expands. Have the listener return false to prevent the row from expanding.
+             * @param {Object} this RowExpander object.
+             * @param {Object} Ext.data.Record Record for the selected row.
+             * @param {Object} body body element for the secondary row.
+             * @param {Number} rowIndex The current row index.
+             */
+            beforeexpand: true,
+            /**
+             * @event expand
+             * Fires after the row expands.
+             * @param {Object} this RowExpander object.
+             * @param {Object} Ext.data.Record Record for the selected row.
+             * @param {Object} body body element for the secondary row.
+             * @param {Number} rowIndex The current row index.
+             */
+            expand: true,
+            /**
+             * @event beforecollapse
+             * Fires before the row collapses. Have the listener return false to prevent the row from collapsing.
+             * @param {Object} this RowExpander object.
+             * @param {Object} Ext.data.Record Record for the selected row.
+             * @param {Object} body body element for the secondary row.
+             * @param {Number} rowIndex The current row index.
+             */
+            beforecollapse: true,
+            /**
+             * @event collapse
+             * Fires after the row collapses.
+             * @param {Object} this RowExpander object.
+             * @param {Object} Ext.data.Record Record for the selected row.
+             * @param {Object} body body element for the secondary row.
+             * @param {Number} rowIndex The current row index.
+             */
+            collapse: true
+        });
+
+        Ext.ux.grid.RowExpander.superclass.constructor.call(this);
+
+        if(this.tpl){
+            if(typeof this.tpl == 'string'){
+                this.tpl = new Ext.Template(this.tpl);
+            }
+            this.tpl.compile();
+        }
+
+        this.state = {};
+        this.bodyContent = {};
+    },
 
     getRowClass : function(record, rowIndex, p, ds){
         p.cols = p.cols-1;
@@ -60,9 +115,56 @@ Ext.extend(Ext.grid.RowExpander, Ext.util.Observable, {
 
         view.enableRowBody = true;
 
-        grid.on('render', function(){
-            view.mainBody.on('mousedown', this.onMouseDown, this);
-        }, this);
+
+        grid.on('render', this.onRender, this);
+        grid.on('destroy', this.onDestroy, this);
+    },
+
+    // @private
+    onRender: function() {
+        var grid = this.grid;
+        var mainBody = grid.getView().mainBody;
+        mainBody.on('mousedown', this.onMouseDown, this, {delegate: '.x-grid3-row-expander'});
+        if (this.expandOnEnter) {
+            this.keyNav = new Ext.KeyNav(this.grid.getGridEl(), {
+                'enter' : this.onEnter,
+                scope: this
+            });
+        }
+        if (this.expandOnDblClick) {
+            grid.on('rowdblclick', this.onRowDblClick, this);
+        }
+    },
+    
+    // @private    
+    onDestroy: function() {
+        if(this.keyNav){
+            this.keyNav.disable();
+            delete this.keyNav;
+        }
+        /*
+         * A majority of the time, the plugin will be destroyed along with the grid,
+         * which means the mainBody won't be available. On the off chance that the plugin
+         * isn't destroyed with the grid, take care of removing the listener.
+         */
+        var mainBody = this.grid.getView().mainBody;
+        if(mainBody){
+            mainBody.un('mousedown', this.onMouseDown, this);
+        }
+    },
+    // @private
+    onRowDblClick: function(grid, rowIdx, e) {
+        this.toggleRow(rowIdx);
+    },
+
+    onEnter: function(e) {
+        var g = this.grid;
+        var sm = g.getSelectionModel();
+        var sels = sm.getSelections();
+        for (var i = 0, len = sels.length; i < len; i++) {
+            var rowIdx = g.getStore().indexOf(sels[i]);
+            this.toggleRow(rowIdx);
+        }
     },
 
     getBodyContent : function(record, index){
@@ -78,11 +180,9 @@ Ext.extend(Ext.grid.RowExpander, Ext.util.Observable, {
     },
 
     onMouseDown : function(e, t){
-        if(t.className == 'x-grid3-row-expander'){
-            e.stopEvent();
-            var row = e.getTarget('.x-grid3-row');
-            this.toggleRow(row);
-        }
+        e.stopEvent();
+        var row = e.getTarget('.x-grid3-row');
+        this.toggleRow(row);
     },
 
     renderer : function(v, p, record){
@@ -134,3 +234,8 @@ Ext.extend(Ext.grid.RowExpander, Ext.util.Observable, {
         }
     }
 });
+
+Ext.preg('rowexpander', Ext.ux.grid.RowExpander);
+
+//backwards compat
+Ext.grid.RowExpander = Ext.ux.grid.RowExpander;
