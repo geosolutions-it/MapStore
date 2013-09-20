@@ -682,6 +682,7 @@ GeoExt.Lang.add("de", {
 		bufferFieldLabel: "Buffer (m)",
 		downloadFormFieldSetTitle: "Formulare zum Herunterladen",
 		loadMaskMsg: "Bitte warten...",
-		requiredFieldsLabel: "* Diese Felder sind Pflichtfelder für den Download-Prozess."	
+		requiredFieldsLabel: "* Diese Felder sind Pflichtfelder für den Download-Prozess.",
+		btnDeleteTxt: "Löschen Sie die ausgewählten Prozesse"
     }
 });

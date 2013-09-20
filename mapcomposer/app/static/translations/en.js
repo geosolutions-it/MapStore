@@ -641,6 +641,7 @@ GeoExt.Lang.add("en", {
 		bufferFieldLabel: "Buffer (m)",
 		downloadFormFieldSetTitle: "Download Form",
 		loadMaskMsg: "Please wait...",
-		requiredFieldsLabel: "* These fields are mandatory for the download process."
+		requiredFieldsLabel: "* These fields are mandatory for the download process.",
+		btnDeleteTxt: "Delete the selected processes"
     }
 });

@@ -229,6 +229,8 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
     
     btnRefreshTxt: "Refresh",
 	
+	btnDeleteTxt: "Delete the selected processes",
+	
     btnResetTxt: "Reset",
 	
     btnDownloadTxt: "Download",
@@ -1377,6 +1379,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
         //
 		var store = new Ext.data.ArrayStore({
             fields: [
+			   {name: 'check', type: 'bool'},
                {name: 'id'},
 			   {name: 'name'},
                {name: 'executionId'},
@@ -1415,11 +1418,74 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 								return false;
 							}
 						}
+					},
+					{
+						ref: '../deleteButton',
+						tooltip: this.btnDeleteTxt,
+						iconCls: 'delete',
+						scope: this,
+						handler: function(){                           
+							var store = this.resultPanel.getStore();
+							var records = store.getRange();
+							var size = store.getCount();
+							
+							var checkedRecords = [];
+							
+							var pending = 0;
+							for(var i=0; i<size; i++){
+								var record = records[i];
+								
+								var checked = record.get("check");								
+								if(checked){
+									checkedRecords.push(record);
+								}
+								
+								var phase = record.get('phase');								
+								if(checked && !phase || phase == 'RUNNING' || phase == 'QUEUED'){
+									pending++;
+								}
+							}	
+							
+							if(checkedRecords.length > 0){
+								if(pending > 0){                
+									Ext.Msg.show({
+									   title: this.msgRemRunningTitle,
+									   msg: this.msgRemRunningMsg,
+									   buttons: Ext.Msg.OKCANCEL,
+									   fn: function(btn){
+											if(btn == 'ok'){
+												store.remove(checkedRecords);
+											} 
+										},
+									   icon: Ext.MessageBox.WARNING,
+									   scope: this
+									});                
+								}else{                
+									Ext.Msg.show({
+									   title: this.msgRemTitle,
+									   msg: this.msgRemMsg,
+									   buttons: Ext.Msg.OKCANCEL,
+									   fn: function(btn){
+											if(btn == 'ok'){
+												store.remove(checkedRecords);
+											} 
+										},
+									   icon: Ext.MessageBox.QUESTION,
+									   scope: this
+									});
+								}	
+							}						
+						}
 					}
 				]
 			},
             columns: [
-                {
+				{
+					xtype: 'checkcolumn',
+					header: '',
+					dataIndex: 'check',
+					width: 20
+				}, {
                     id       : 'id',
                     header   : this.resID, 
                     width    : 30, 
@@ -1563,7 +1629,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
             ],
             height: 300,
             title: this.resTitle,
-            scope:this
+            scope: this
         });
 		
 		this.executionIdField = new Ext.form.CompositeField({		
