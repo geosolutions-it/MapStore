@@ -401,11 +401,11 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
                                 syntView.storeOriginalRiskLayers();
                             }
                             
-                            this.enableDisableRoads(!status.formulaInfo.dependsOnArcs);
+                            this.enableDisableRoads(!status.formulaInfo.dependsOnArcs);*/
                             
                             syntView.removeRiskLayers(map);
                             
-                            // remove analytic view layers (buffers, targets, selected targets)
+                            /*// remove analytic view layers (buffers, targets, selected targets)
                             syntView.removeAnalyticViewLayers(map);     
                             syntView.disableSouthPanel();        
                             

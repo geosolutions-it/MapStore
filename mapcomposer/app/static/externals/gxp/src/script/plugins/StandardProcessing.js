@@ -472,10 +472,20 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 Ext.getCmp("targets_view").disable();
                 Ext.getCmp("roadGraph_view").disable(); 
             }*/
-            Ext.getCmp("analytic_view").disable();
-            Ext.getCmp("targets_view").disable();
-            Ext.getCmp("roadGraph_view").disable(); 
+            
+            Ext.getCmp("analytic_view").hide();
+            Ext.getCmp("targets_view").hide();
+            Ext.getCmp("roadGraph_view").hide(); 
+            Ext.getCmp("areaDamage_view").hide();
+            
+            Ext.getCmp("refresh_grid").show();
+            
             Ext.getCmp("areaDamage_view").disable();
+            Ext.getCmp("roadGraph_view").disable();
+            Ext.getCmp("targets_view").disable();
+            Ext.getCmp("analytic_view").disable();            
+            
+            Ext.getCmp("refresh_grid").enable();
             
             Ext.getCmp("targets_view").toggle(false, true);
             Ext.getCmp("roadGraph_view").toggle(false, true);               
@@ -485,12 +495,35 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         } else {
             if(syntView.simulationRestore) {
                 if(syntView.simulationRestore.collapsed) {
+                
                     southPanel.collapse();
+                    
+                    Ext.getCmp("areaDamage_view").show();
+                    Ext.getCmp("roadGraph_view").show();
+                    Ext.getCmp("targets_view").show();
+                    Ext.getCmp("analytic_view").show();      
+
+                    Ext.getCmp("refresh_grid").hide();
+                    
                 } else {
+                
+                    Ext.getCmp("areaDamage_view").show();
+                    Ext.getCmp("roadGraph_view").show();
+                    Ext.getCmp("targets_view").show();
+                    Ext.getCmp("analytic_view").show();
+                    
+                    Ext.getCmp("refresh_grid").hide();
+                    
                     Ext.getCmp("areaDamage_view").enable();
                     Ext.getCmp("roadGraph_view").enable();
                     Ext.getCmp("targets_view").enable();
                     Ext.getCmp("analytic_view").enable();
+                    
+                    Ext.getCmp("refresh_grid").disable();
+                    
+                    var mapPanelContainer = Ext.getCmp("mapPanelContainer_id");
+                    mapPanelContainer.doLayout(false,true);                 
+                
                     if(syntView.simulationRestore.grids && syntView.simulationRestore.grids.length > 0) {
                         wfsGrid.removeAllGrids();
                         wfsGrid.restoreGrids(syntView.simulationRestore.grids);
@@ -1427,6 +1460,17 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.enableDisableSimulation(false);
         this.switchToSyntheticView();
         this.selDamage.clearDrawFeature();
+        
+        //this.temporal.disable(); 
+        
+        //var syntView = this.appTarget.tools[this.syntheticView];
+        
+        /*var status = this.getStatus(this.panel.getForm());
+        var form = syntView.fieldSet.ownerCt.getForm();
+        form.reset();
+        syntView.setStatus(status);*/
+        
+        //syntView.disableSouthPanel();  
     },
     
     switchToSyntheticView: function(){

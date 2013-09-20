@@ -31,7 +31,9 @@ GeoExt.Lang.add("it", {
         roadGraphTextBotton: "Grafo stradale" , 
         wpsTitle: "Errore",
         wpsError: "Errore nella richiesta al servizio WPS",
-        loadMsg: "Caricamento in corso..."
+        loadMsg: "Caricamento in corso...",
+        refreshGridButton: "Aggiorna la griglia",
+        simMsg: 'Funzione non disponibile a questa scala'
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Elaborazione",
@@ -87,6 +89,26 @@ GeoExt.Lang.add("it", {
         displayMsgPaging: "Elementi {0} - {1} di {2}",
         emptyMsg: "Nessun elemento trovato",
         loadMsg: "Caricamento in corso..."
+    },
+    "gxp.plugins.WFSGrid.prototype": {
+        displayMsgPaging: "Elementi {0} - {1} di {2}",
+        emptyMsg: "Nessun elemento trovato",
+        loadMsg: "Caricamento in corso...",
+        addTooltip: "Aggiungi elemento",
+        addLayerTooltip: "Aggiungi livello alla  mappa",
+        detailsTooltip: "Visualizza dettagli",
+        deleteTooltip: "Elimina feature",
+        deleteConfirmMsg: "Sei sicuro di voler eliminare la feature?",
+        detailsHeaderName: "Property Name",
+        detailsHeaderValue: "Property Value",
+        detailsWinTitle: "Dettagli",
+        zoomToTooltip: "Zoom al bersaglio",
+        startEditToTooltip: "Inizia modifica riga",
+        startEditGeomToTooltip: "Inizia modifica Feature",
+        stopEditGeomToTooltip: "Termina modifica Feature",
+        resetEditGeomToTooltip: "Annulla modifica Feature",
+        removeMessage: "Rimuovi",
+        removeTitle:"Sei sicuro di voler eliminare la feature?"
     },
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Livello di Zoom: {zoom}</div><div>Scala: 1:{scale}</div>",

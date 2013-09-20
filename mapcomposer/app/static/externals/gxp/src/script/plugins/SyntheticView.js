@@ -38,6 +38,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     cancelButton: "Annulla Elaborazione",
     processButton: "Esegui Elaborazione",
     analyticViewButton: "Visualizzazione Analitica:",
+    refreshGridButton: "Aggiorna la griglia",
     //weatherLabel: "Condizioni Meteo",  
     temporalLabel: "Condizioni Temporali",
     elabStandardLabel: "Elaborazione Standard",
@@ -51,6 +52,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     loadMsg: "Caricamento in corso...",
     notVisibleOnArcsMessage: "Formula non visibile a questa scala",
     notVisibleOnGridMessage: "Formula non visibile a questa scala",
+    simMsg: 'Funzione non disponibile a questa scala',
     // End i18n.
         
     id: "syntheticview",
@@ -87,9 +89,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     selectedTargetLayer: "Bersaglio Selezionato",
     selectedTargetLayerEditing: "Bersaglio Selezionato Editing",
-    simulationAddedLayer: "simulation_added",
-    simulationChangedLayer: "simulation_changed",
-    simulationRemovedLayer: "simulation_removed",
+    simulationAddedLayer: "Bersagli aggiunti", //"simulation_added",
+    simulationChangedLayer: "Bersagli modificati", //"simulation_changed",
+    simulationRemovedLayer: "Bersagli rimossi", //"simulation_removed",
     
     analyticViewLayers: [],   
     vectorLayers: [],
@@ -114,6 +116,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     analyticEnabled: false,
     simulationEnabled: false,
+    
+    reset: false,
     
     targetStyles: {
         "simulation_added": {
@@ -245,7 +249,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
      */
      init: function(target) {        
         gxp.plugins.SyntheticView.superclass.init.apply(this, arguments); 
-        this.vectorLayers = [this.selectedTargetLayer, this.selectedTargetLayerEditing, "simulation_added", "simulation_changed", "simulation_removed"];
+        this.vectorLayers = [this.selectedTargetLayer, this.selectedTargetLayerEditing, this.simulationAddedLayer, this.simulationChangedLayer, this.simulationRemovedLayer];
         this.target.on('portalready', function() {
             this.layerSource = this.target.layerSources[this.layerSourceName];
             this.wpsClient =  new OpenLayers.WPSClient({
@@ -587,6 +591,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     Ext.getCmp('warning_message').setValue('');
                     
                     Ext.getCmp('analytic_view').disable();
+                    
+                    // remove resultContainer on elab cancel
+                    this.resultsContainer.removeAll();
+                    this.resultsContainer.doLayout();
+                    var form = this.fieldSet.ownerCt.getForm();
+                    form.reset();
+                    this.reset = true;
+                    //this.processingPane.enableDisableSimulation(false);
                 }
             }, {
                 text: this.processButton,
@@ -616,11 +628,47 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         containerTab.setActiveTab(1);
                         active = containerTab.getActiveTab();
                         active.enable();
+                        
+                        var elabValue = this.processingPane.elaborazione.getValue();
+                        if(elabValue != 2){
+                            this.processingPane.temporal.disable(); 
+                        }
+                        
+                        if(elabValue === 3 && !this.reset){
+                            this.processingPane.enableDisableSimulation(true);
+                        }
                     }    
                 
-                    if(this.status && !this.status.initial){
+                    if(this.status && !this.status.initial && !this.reset){
                         this.processingPane.setStatus(this.status);
-                    }                    
+                    }
+                    
+                    if(this.status && !this.status.initial && this.reset){
+                    
+                        // Tipo elaborazione
+                        this.processingPane.elaborazione.setValue(1);                        
+                        // Formula
+                        this.processingPane.formula.setValue(26);                        
+                        // Temporali
+                        this.processingPane.temporal.setValue("fp_scen_centrale");                        
+                        this.processingPane.temporal.disable();   
+                        // Categoria
+                        this.processingPane.macrobers.setValue(this.processingPane.allTargetOption);                        
+                        // Bersaglio
+                        this.processingPane.bers.setValue("");                        
+                        // Classe ADR
+                        this.processingPane.classi.setValue(this.processingPane.allClassOption);                        
+                        // Sostanza
+                        this.processingPane.sostanze.setValue(this.processingPane.allSostOption);
+                        // Incidente
+                        this.processingPane.accident.setValue(this.processingPane.allScenOption);
+                        // Entità
+                        this.processingPane.seriousness.setValue(this.processingPane.allEntOption);                         
+
+                        //this.processingPane.setStatus(this.status);
+                        
+                        this.reset = false;
+                    }
                 }
             }]
         });
@@ -640,6 +688,23 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         
         //set analytic/simulation button toolbar with bottons
         this.mapBbar =  [{
+                    xtype: 'button',
+                    id: "refresh_grid",
+                    iconCls: 'refresh-grid-button',
+                    text: this.refreshGridButton,
+                    scope: this,
+                    disabled:true,
+                    hidden: true,
+                    handler: function(btn) {
+                        var wfsGrid = Ext.getCmp("featuregrid");
+                        var viewParams;
+                        
+                        var status = this.getStatus();        
+                        var bounds = this.getBounds(null, this.target.mapPanel.map);
+                        viewParams = "bounds:" + bounds;                        
+                        wfsGrid.loadGrids(null, null, this.selectionLayerProjection, viewParams);  
+                    }
+                },{
                     xtype: 'button',
                     id: "analytic_view",
                     iconCls: 'analytic-view-button',
@@ -729,6 +794,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.target.mapPanel.map.events.register('zoomend', this, function(){
             var scale = this.getMapScale();
             if(this.simulationEnabled) {
+                var simMsg = this.simMsg;
+                //if(scale <= this.analiticViewScale && !this.simulationLoaded) {
                 if(scale <= this.analiticViewScale && !this.simulationLoaded) {
                     this.simulationLoaded = true;
                     var wfsGrid = Ext.getCmp("featuregrid");
@@ -737,7 +804,16 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     var status = this.getStatus();        
                     var bounds = this.getBounds(null, this.target.mapPanel.map);
                     viewParams = "bounds:" + bounds;                        
-                    wfsGrid.loadGrids(null, null, this.selectionLayerProjection, viewParams);  
+                    wfsGrid.loadGrids(null, null, this.selectionLayerProjection, viewParams);
+                    simMsg = '';
+                    Ext.getCmp('warning_message').setValue(simMsg);                    
+                }else if(scale <= this.analiticViewScale){
+                    Ext.getCmp("refresh_grid").enable();
+                    simMsg = '';
+                    Ext.getCmp('warning_message').setValue(simMsg);
+                }else{
+                    Ext.getCmp("refresh_grid").disable();
+                    Ext.getCmp('warning_message').setValue(simMsg);
                 }
             } else {
                 if(scale <= this.analiticViewScale && this.processingDone) {
@@ -754,8 +830,17 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     msg = this.notVisibleOnGridMessage;
                 }
             }
-            if(Ext.getCmp("analytic_view")){
+            if(Ext.getCmp("analytic_view") && !this.simulationEnabled){
                 Ext.getCmp('warning_message').setValue(msg);
+            }
+        });
+
+        this.target.mapPanel.map.events.register('moveend', this, function(){
+            var scale = this.getMapScale();
+            if(this.simulationEnabled) {
+                if(scale <= this.analiticViewScale){
+                    Ext.getCmp("refresh_grid").enable();
+                }
             }
         });
         
@@ -1371,11 +1456,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     addExtraTargets: function(map, targets) {
         for(var count = 0; count< targets.length; count++) {
             var target = targets[count];
-            var layerName = "simulation_changed";
+            var layerName = this.simulationChangedLayer; //"simulation_changed";
             if(target.removed) {
-                layerName = "simulation_removed";
+                layerName = this.simulationRemovedLayer; //"simulation_removed";
             } else if(target.newfeature) {
-                layerName = "simulation_added";
+                layerName = this.simulationAddedLayer; //"simulation_added";
             }
             this.drawTargetGeometry(map, layerName, "target" + count, target.geometry, this.targetStyles[layerName]);
         }
@@ -1458,15 +1543,25 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         if(!Ext.getCmp("south").collapsed) {
             Ext.getCmp("south").collapse();  
         }
+        if(Ext.getCmp("analytic_view")) {
+            Ext.getCmp("analytic_view").show();
+        }
         if(Ext.getCmp("targets_view")) {
             Ext.getCmp("targets_view").disable();
+            Ext.getCmp("targets_view").show();
         }
         if(Ext.getCmp("areaDamage_view")) {
             Ext.getCmp("areaDamage_view").disable();
+            Ext.getCmp("areaDamage_view").show();
         }
         if(Ext.getCmp("roadGraph_view")) {
             Ext.getCmp("roadGraph_view").disable();        
-        }    
+            Ext.getCmp("roadGraph_view").show();        
+        }
+        if(Ext.getCmp("refresh_grid")) {
+            Ext.getCmp("refresh_grid").disable();        
+            Ext.getCmp("refresh_grid").hide();        
+        }        
         Ext.getCmp("featuregrid").removeAllGrids();
         this.analyticEnabled = false;
         this.simulationEnabled = false;
