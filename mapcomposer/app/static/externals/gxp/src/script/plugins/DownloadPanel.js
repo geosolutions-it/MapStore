@@ -777,6 +777,11 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 				}
 			}
 		}else{
+			// /////////////////////////////////////////////////
+			// The code below allows layers selection only from 
+			// overlays in layetree.
+			// /////////////////////////////////////////////////
+			
 			var overlays = this.target.mapPanel.layers;
 			var size = overlays.getCount();		
 			var records = overlays.getRange();
@@ -812,7 +817,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 				break;
 			}
 			
-			var recordData = [sourceId, record.data.title, record.data.name, record.id, srs];
+			var recordData = [sourceId, record.data.title, record.data.name, record.id, srs, record.data.uuid, record.data.gnURL];
 			
 			if(this.layersAttributes[record.id]) {
 				recordData.push(this.layersAttributes[record.id].wcs);
@@ -922,7 +927,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 		// Stores Array stores definitions.
 		// /////////////////////////////////////
 		this.layerStore = new Ext.data.ArrayStore({
-			fields: ["source", "title", "name", "olid", "crs", {name: "wcs", type: 'boolean'}, {name: "wfs", type: 'boolean'}, {name: "wpsdownload", type: 'boolean'}, {name: "isLayerGroup", type: 'boolean'}],
+			fields: ["source", "title", "name", "olid", "crs", "uuid", "gnURL", {name: "wcs", type: 'boolean'}, {name: "wfs", type: 'boolean'}, {name: "wpsdownload", type: 'boolean'}, {name: "isLayerGroup", type: 'boolean'}],
 			data: []
 		});
 			
@@ -1037,6 +1042,8 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
                                     msLayerTitle: record.data.title,
                                     msLayerName: record.data.name,
                                     source: record.data.source,
+									msLayerUUID: record.data.uuid,
+									gnUrl: record.data.gnURL,
                                     customParams: {
                                         wcs: (layerType == 'WCS')
                                     }
@@ -2510,8 +2517,8 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
     },
     
     isSameOrigin: function(url) {
-        var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
-        var mHost=pattern.exec(url); 
+        var pattern = /(.+:\/\/)?([^\/]+)(\/.*)*/i;
+        var mHost = pattern.exec(url); 
         return (mHost[2] == location.host);
     }       
 });

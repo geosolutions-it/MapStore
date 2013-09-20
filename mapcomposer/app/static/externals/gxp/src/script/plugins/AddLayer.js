@@ -123,9 +123,18 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 		if(this.msLayerUUID)
 			props.uuid = this.msLayerUUID;
 		
-		if(this.gnUrl && this.gnLangStr)
-			props.gnURL = this.gnUrl + "srv/" + this.gnLangStr + "/";
-		  
+		if(this.gnUrl){	
+			var locCode = GeoExt.Lang.locale;
+			
+			if(this.gnUrl.indexOf("srv/" + locCode) != -1){
+				props.gnURL = this.gnUrl;
+			}else if(this.gnLangStr){
+				props.gnURL = this.gnUrl + "srv/" + this.gnLangStr + "/";			
+			}else{
+				props.gnURL = this.gnUrl + "srv/" + locCode + "/";
+			}				
+		}
+
 		var record = this.source.createLayerRecord(props);   
 				  
 		if (record) {
