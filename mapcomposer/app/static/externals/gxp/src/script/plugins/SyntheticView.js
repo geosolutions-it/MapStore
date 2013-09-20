@@ -30,8 +30,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     adrClassLabel: "Classe ADR",
     substanceLabel: "Sostanze",
     accidentLabel: "Incidente",
-    seriousnessLabel: "Entit‡",
-    severenessLabel: "Gravit‡",
+    seriousnessLabel: "Entit√†",
+    severenessLabel: "Gravit√†",
     buffersLabel: "Raggi Aree Danno",
     resultsLabel: "Risultato Elaborazione",
     fieldSetTitle: "Elaborazione",
@@ -662,7 +662,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         this.processingPane.sostanze.setValue(this.processingPane.allSostOption);
                         // Incidente
                         this.processingPane.accident.setValue(this.processingPane.allScenOption);
-                        // Entit‡
+                        // Entit√†
                         this.processingPane.seriousness.setValue(this.processingPane.allEntOption);                         
 
                         //this.processingPane.setStatus(this.status);

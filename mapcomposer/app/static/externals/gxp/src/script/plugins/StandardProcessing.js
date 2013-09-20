@@ -42,7 +42,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     sostanzeLabel: "Sostanza",
     accidentLabel: "Incidente",
     accidentSetLabel: "Tipo Incidente",
-    seriousnessLabel: "Entit‡",
+    seriousnessLabel: "Entit√†",
     resetButton: "Reimposta",
     cancelButton: "Annulla",
     viewMapButton: "Visualizza Mappa",
@@ -50,7 +50,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     bboxValidationTitle: "Selezione Area di Interesse",
     requiredMaterial: "Questa formula richiede di specificare la sostanza",
     requiredAccident: "Questa formula richiede di specificare l\'incidente",
-    requiredSeriousness: "Questa formula richiede di specificare la gravit‡",
+    requiredSeriousness: "Questa formula richiede di specificare la gravit√†",
     requiredDamageArea: "Selezionare l'area di danno",
     validationTitle: "Errore nei parametri",
     invalidAOI: "Le coordinate dell'area di interesse non sono valide.",
@@ -61,7 +61,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     allClassOption: "Tutte le classi",
     allSostOption: "Tutte le sostanze",
     allScenOption: "Tutti gli incidenti",
-    allEntOption: "Tutte le entit‡",
+    allEntOption: "Tutte le entit√†",
     allTargetOption: "Tutti i Bersagli",
     allHumanTargetOption: "Tutti i Bersagli Umani",
     allNotHumanTargetOption: "Tutti i Bersagli Ambientali",
@@ -1193,7 +1193,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         });
         
         //
-        // Entit‡
+        // Entit√†
         //
         var seriousnessStore = new Ext.data.ArrayStore({
             fields: ['name', 'value', 'id'],
