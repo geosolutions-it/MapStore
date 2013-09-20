@@ -137,7 +137,7 @@ OpenLayers.Geometry.Point = OpenLayers.Class(OpenLayers.Geometry, {
     equals: function(geom) {
         var equals = false;
         if (geom != null) {
-            equals = ((this.x == geom.x && this.y == geom.y) ||
+            equals = ((this.x.toFixed(6) == geom.x.toFixed(6) && this.y.toFixed(6) == geom.y.toFixed(6)) ||
                       (isNaN(this.x) && isNaN(this.y) && isNaN(geom.x) && isNaN(geom.y)));
         }
         return equals;

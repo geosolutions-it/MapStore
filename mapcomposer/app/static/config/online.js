@@ -23,7 +23,7 @@
 			"ptype": "gxp_wmssource",
 			"title": "Destination GeoServer",
 			"version": "1.1.1",
-			"url": "http://84.33.2.23/geoserver_slave_1/destination/ows",
+			"url": "http://84.33.2.23/geoserver_slave/destination/ows",
 			"layerBaseParams": {
 				"TILED": true,
 				"TILESORIGIN": "-180,-90"
@@ -456,7 +456,7 @@
             "outputFilename":"mapstore-print"
         },
         "ignoreLayers": "Google Hybrid,Bing Aerial,Nessuno sfondo,Google Terrain,Google Roadmap",
-        "printService":"http://84.33.2.23/geoserver_slave_1/pdf/",
+        "printService":"http://84.33.2.23/geoserver_slave/pdf/",
         "legendPanelId":"legendPanel",
         "actionTarget":{
             "target":"paneltbar",
@@ -480,12 +480,12 @@
 		"selectionLayerTitle": "Rischio Totale",
 		"bufferLayerNameHuman": "buffer_human",
 		"bufferLayerNameNotHuman": "buffer_not_human",
-		"selectionLayerBaseURL": "http://84.33.2.23/geoserver_slave_1/destination/wms",
+		"selectionLayerBaseURL": "http://84.33.2.23/geoserver_slave/destination/wms",
 		"selectionLayerProjection": "EPSG:32632",
 		"geometryName": "geometria",
 		"accidentTipologyName": "tipologia",
-		"wfsURL": "http://84.33.2.23/geoserver_slave_1/destination/wfs",
-		"wpsURL": "http://84.33.2.23/geoserver_slave_1/wps",
+		"wfsURL": "http://84.33.2.23/geoserver_slave/destination/wfs",
+		"wpsURL": "http://84.33.2.23/geoserver_slave/wps",
 		"wpsStore": "destination",
 		"wfsVersion": "1.1.0",
 		"destinationNS": "destination",
@@ -495,7 +495,7 @@
 		"ptype": "gxp_tabpanelwfsgrids",
 		"outputTarget": "featurelist",
 		"srsName": "EPSG:32632",
-		"wfsURL": "http://84.33.2.23/geoserver_slave_1/wfs",
+		"wfsURL": "http://84.33.2.23/geoserver_slave/wfs",
 		"panels": {
 			"targets": {
 				"Popolazione residente": {
