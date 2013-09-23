@@ -1,7 +1,7 @@
 {
    "geoStoreBase":"http://localhost:8282/geostore/rest/",
    "gnBaseUrl": "http://localhost:8282/geonetwork/",
-   "proxy":"/proxy/?url=",
+   "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "it",
    "tab": true,
    "gsSources":{ 

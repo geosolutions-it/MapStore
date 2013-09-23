@@ -530,23 +530,49 @@
 				
 				var downloadTool = app.tools["download"];
 				if(interactiveDownload === 'true'){
+					appTabs.setActiveTab(1);
+				
+					/*var activateListener = function(){
+						var listener = function(layerRecord){
+							downloadTool.setLayer(layerRecord, true);							
+							addLayer.removeListener('ready', listener, this);
+						};
+						
+						addLayer.on({
+							'ready' : listener,
+							scope: this
+						});
+						
+						_addMSLayer(addLayer, msLayerName, options);
+						westPanel.removeListener('tabchange', activateListener, this);
+					}*/
+					
 					var westPanel = Ext.getCmp('west');
-					westPanel.setActiveTab(downloadTool.formPanel);		
+					
+					/*westPanel.on({
+						"tabchange": activateListener,
+						scope: this
+					});*/
+					
+					westPanel.setActiveTab(downloadTool.formPanel);	
 
 					var listener = function(layerRecord){
-						if(interactiveDownload === 'true'){
-							downloadTool.setLayer(layerRecord, true);
-						}	
-						
+						downloadTool.setLayer(layerRecord, true);							
 						addLayer.removeListener('ready', listener, this);
 					};
 					
 					addLayer.on({
 						'ready' : listener,
 						scope: this
-					});					
-				}
-				
+					});
+					
+					_addMSLayer(addLayer, options);					
+				}else{
+					_addMSLayer(addLayer, options);
+				}			
+			};
+			
+			_addMSLayer = function(addLayer, options){
 				// //////////////////////////////////////////////////
 				// Remove the layer from the map if 'name' and 
 				// 'source' are the same, in order to avoid duplicate.
@@ -557,11 +583,11 @@
 				// //////////////////////////////////////////////////
 				
 				var layerStore = app.mapPanel.layers;  
-				var index = layerStore.findExact("name", msLayerName);
+				var index = layerStore.findExact("name", options.msLayerName);
 				if (index > -1) {
 					var original = layerStore.getAt(index);
 				
-					var source = addLayer.checkLayerSource(wmsURL);
+					var source = addLayer.checkLayerSource(options.wmsURL);
 					if(original.get('source') == source.id){
 						layerStore.remove(original);
 					}
@@ -569,7 +595,7 @@
 							
 				addLayer.addLayer(
 					options
-				);				
+				);	
 			};
 			
 			/**
