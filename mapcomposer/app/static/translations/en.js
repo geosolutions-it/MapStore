@@ -642,6 +642,10 @@ GeoExt.Lang.add("en", {
 		downloadFormFieldSetTitle: "Download Form",
 		loadMaskMsg: "Please wait...",
 		requiredFieldsLabel: "* These fields are mandatory for the download process.",
-		btnDeleteTxt: "Delete the selected processes"
+		btnDeleteTxt: "Delete the selected processes",
+		selectionSummary: "Selection Summary",
+	    areaLabel: "Area",
+		perimeterLabel: "Perimeter",	
+		radiusLabel: "Radius"
     }
 });

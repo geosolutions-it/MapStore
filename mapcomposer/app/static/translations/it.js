@@ -669,7 +669,11 @@ GeoExt.Lang.add("it", {
 		downloadFormFieldSetTitle: "Form di Download",
 		loadMaskMsg: "Attendere prego...",
 		requiredFieldsLabel: "* Dati necessari per il processo di download.",
-		btnDeleteTxt: "Cancella i processi selezionati"
+		btnDeleteTxt: "Cancella i processi selezionati",
+		selectionSummary: "Sommario Selezione",	
+		areaLabel: "Area",
+		perimeterLabel: "Perimetro",	
+		radiusLabel: "Raggio"
     }
 	
 });

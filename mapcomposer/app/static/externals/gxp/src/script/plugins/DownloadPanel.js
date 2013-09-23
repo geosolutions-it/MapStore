@@ -361,6 +361,14 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 	
 	readOnlyLayerSelection: false,
 	
+	selectionSummary: "Selection Summary",
+	
+	areaLabel: "Area",
+	
+	perimeterLabel: "Perimeter",
+	
+	radiusLabel: "Radius",
+	
     /** private: method[constructor]
      */
     constructor: function(config) {
@@ -449,15 +457,17 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
                     }
 				});
                 
-				this.spatialSelection.events.register("featureadded", this, function(){
+				this.spatialSelection.events.register("featureadded", this, function(f){
 					// //////////////////////////////////////////////////////
 					// Check the form status: the buffer field shall be 
 					// enabled here
 					// //////////////////////////////////////////////////////
 					this.updateFormStatus();
+					
+					this.addFeatureSummary(f);
 				});
 				
-                this.spatialSelection.events.register('featureremoved', this, function() {
+                this.spatialSelection.events.register('featureremoved', this, function(f) {
 					// //////////////////////////////////////////////////////
 					// Remove the "unbuffered" copy of the feature
 					// //////////////////////////////////////////////////////
@@ -467,6 +477,8 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 					// disabled here
 					// //////////////////////////////////////////////////////
                     this.updateFormStatus();
+					
+					this.removeFeatureSummary();
                 });
                
 				var ev = map.events.register('addlayer', this, function(e){
@@ -560,6 +572,161 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
         
 		return gxp.plugins.DownloadPanel.superclass.init.apply(this, arguments);
     },
+	
+    /**
+     * Method: getArea
+     *
+     * Parameters:
+     * geometry - {<OpenLayers.Geometry>}
+     * units - {String} Unit abbreviation
+     *
+     * Returns:
+     * {Float} The geometry area in the given units.
+     */
+    getArea: function(geometry, units) {
+        var area, geomUnits;
+		area = geometry.getGeodesicArea(this.target.mapPanel.map.getProjectionObject());
+		geomUnits = "m";
+
+        var inPerDisplayUnit = OpenLayers.INCHES_PER_UNIT[units];
+        if(inPerDisplayUnit) {
+            var inPerMapUnit = OpenLayers.INCHES_PER_UNIT[geomUnits];
+            area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
+        }
+        return area;
+    },
+
+    /**
+     * Method: getLength
+     *
+     * Parameters:
+     * geometry - {<OpenLayers.Geometry>}
+     * units - {String} Unit abbreviation
+     *
+     * Returns:
+     * {Float} The geometry length in the given units.
+     */
+    getLength: function(geometry, units) {
+        var length, geomUnits;
+		length = geometry.getGeodesicLength(this.target.mapPanel.map.getProjectionObject());
+		geomUnits = "m";
+        
+        var inPerDisplayUnit = OpenLayers.INCHES_PER_UNIT[units];
+        if(inPerDisplayUnit) {
+            var inPerMapUnit = OpenLayers.INCHES_PER_UNIT[geomUnits];
+            length *= (inPerMapUnit / inPerDisplayUnit);
+        }
+        return length;
+    },
+	
+   /**
+	* api: method[removeFeatureSummary]
+	*/
+	removeFeatureSummary: function(){
+		if(this.featureSummary){
+			this.featureSummary.destroy();
+		}		
+	    
+		var map = this.target.mapPanel.map;
+		var layer = map.getLayersByName("circleCentroidLayer")[0];
+		if(layer){
+            map.removeLayer(layer);
+		}
+	},
+	
+	/**
+     * Property: selectStyle
+     * {Object} Configuration of OpenLayer.Style. 
+     *    used to highlight the circle center point
+     *     
+     */
+    selectStyle: {
+        pointRadius: 4,
+        graphicName: "cross",
+        fillColor: "#FFFFFF",
+        strokeColor: "#FF0000",
+        fillOpacity: 0.5,
+        strokeWidth: 2
+    },
+	
+	/**
+	* api: method[addFeatureSummary]
+	*/
+	addFeatureSummary: function(f){		
+		this.removeFeatureSummary();
+		
+		var feature = f.feature;		
+		var summary = "", metricUnit = "km";
+		
+		var area = this.getArea(feature.geometry, metricUnit);
+		if(area){
+			summary += this.areaLabel + ": " + area + " " + metricUnit + '<sup>2</sup>' + '<br />';
+		}
+		
+		var selectionType = this.formPanel.selectionMode.getValue();
+		switch(selectionType){
+			case 'polygon':
+			case 'box':
+				var perimeter = this.getLength(feature.geometry, metricUnit);
+				if(perimeter){
+					summary += this.perimeterLabel + ": " + perimeter + " " + metricUnit + '<br />';
+				}
+				break;
+			case 'circle':
+				var radius = Math.sqrt(area/Math.PI);
+				if(radius){
+					summary += this.radiusLabel + ": " + radius + " " + metricUnit + '<br />';
+				}
+				
+				// //////////////////////////////////////////////////////////
+				// Draw also the circle center as a part of summary report
+				// //////////////////////////////////////////////////////////
+				var circleSelectionCentroid = feature.geometry.getCentroid();
+				
+				var options = {};
+				if(this.selectStyle){
+					var style = new OpenLayers.Style(this.selectStyle);
+					var options = {styleMap: style};
+				}
+
+				var circleCentroidLayer = new OpenLayers.Layer.Vector("circleCentroidLayer", options);
+
+				var pointFeature = new OpenLayers.Feature.Vector(circleSelectionCentroid);
+				circleCentroidLayer.addFeatures([pointFeature]);
+				
+				circleCentroidLayer.displayInLayerSwitcher = false;
+				this.target.mapPanel.map.addLayer(circleCentroidLayer);  
+				
+				break;				
+		}
+		
+		this.featureSummary = new Ext.ToolTip({
+			xtype: 'tooltip',
+			target: Ext.getBody(),
+			html: summary,
+			title: this.selectionSummary,
+			autoHide: false,
+			closable: true,
+			draggable: false,
+			mouseOffset: [0, 0],
+			showDelay: 1,
+			listeners: {
+				scope: this,
+				hide: function(cmp) {
+					this.featureSummary.destroy();
+				}
+			}
+		});			
+		
+		var vertex = feature.geometry.getVertices()
+		var lastPoint = vertex[vertex.length - 1];
+		
+		var px = this.target.mapPanel.map.getPixelFromLonLat(new OpenLayers.LonLat(lastPoint.x, lastPoint.y));			
+		var p0 = this.target.mapPanel.getPosition();
+		
+		this.featureSummary.targetXY = [p0[0] + px.x, p0[1] + px.y];
+		this.featureSummary.show();
+	},
 
 	/**
 	* api: method[buildLayerWPSUrl]
@@ -904,6 +1071,8 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
             if(value == key) {
                 control.activate();
                 toolActivated = true;
+				
+				this.activatedDrawControl = control;
             } else {
                 control.deactivate();
             }

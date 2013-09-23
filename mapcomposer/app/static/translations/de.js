@@ -683,6 +683,10 @@ GeoExt.Lang.add("de", {
 		downloadFormFieldSetTitle: "Formulare zum Herunterladen",
 		loadMaskMsg: "Bitte warten...",
 		requiredFieldsLabel: "* Diese Felder sind Pflichtfelder für den Download-Prozess.",
-		btnDeleteTxt: "Löschen Sie die ausgewählten Prozesse"
+		btnDeleteTxt: "Löschen Sie die ausgewählten Prozesse",
+		selectionSummary: "Selection Zusammenfassung",
+	    areaLabel: "Bereich",
+		perimeterLabel: "Perimeter",	
+		radiusLabel: "Radius"
     }
 });
