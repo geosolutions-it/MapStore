@@ -4,44 +4,47 @@
 
 GeoExt.Lang.add("de", {
 	"gxp.plugins.SyntheticView.prototype": {
-        title: "Synthetische Übersicht",
+        title: "Übersicht",
         elaborazioneLabel: "Art der Bearbeitung",
         formulaLabel: "Formel",
-        extentLabel: "Räumlicher Bereich",
-        targetLabel: "Typ Ziel",
+        extentLabel: "Bearbeitungsgebiet",
+        targetLabel: "Berücksichtigte Elemente",
         adrClassLabel: "ADR Klasse",
         substanceLabel: "Substanz/Stoff",
         accidentLabel: "Unfall",
         seriousnessLabel: "Entität",
         severenessLabel: "Gravità",
         buffersLabel: "Rays Schadensbereich",
-        fieldSetTitle: "in Bearbeitung",
-        cancelButton: "Bearbeitung abbrechen",
-        processButton: "Bearbeitung durchführen",
-        analyticViewButton: "analytische Ansicht",
+        fieldSetTitle: "Bearbeitung",
+        cancelButton: "Abbrechen",
+        processButton: "Neue Bearbeitung",
+        analyticViewButton: "Analyse",
         weatherLabel: "Wetter",  
-        temporalLabel: "Zeitliche",
-        elabStandardLabel: "Processing Standard",
+        temporalLabel: "Zeitliche Bedingungen",
+        elabStandardLabel: "Standardbearbeitung",
         totalRiskLabel: "Total Risiko",
-        humanTitle:'Sozial',    
+        humanTitle:'Sozial', 
+        resultsLabel: "",        
         notHumanTitle:'Umweltschutz', 
         defaultExtentLabel: "Regione Piemonte",
         targetsTextBotton: "Treffer",
         areaDamageTextBotton: "Schadensbereich",
-        roadGraphTextBotton: "Straße graph",  
+        roadGraphTextBotton: "Straßennetz",  
         wpsTitle: "Errore",
         wpsError: "Errore nella richiesta al servizio WPS",
-        loadMsg: "Bitte warten ..."
+        loadMsg: "Bitte warten ...",
+        notVisibleOnArcsMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein",
+        notVisibleOnGridMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein"
     },
     "gxp.plugins.StandardProcessing.prototype": {
-        title: "in Bearbeitung",
+        title: "Bearbeitung",
         elaborazioneLabel: "Art der Bearbeitung",
         formulaLabel: "Formel",                
         northLabel:"Nord",
-        westLabel:"West",
+        westLabel:"Westen",
         eastLabel:"Ost",
         southLabel:"Süd",
-        aoiFieldSetTitle: "Räumlicher Bereich",
+        aoiFieldSetTitle: "Bearbeitungsgebiet",
         setAoiText: "Auswahl Bereich",        
         setAoiTooltip: "Hier können Sie die Region von Interesse auf der Karte wählen",
         notAvailableProcessing: "Art der Verarbeitung noch nicht verfügbar",
@@ -56,7 +59,7 @@ GeoExt.Lang.add("de", {
         resetButton: "Zurücksetzen",
         cancelButton: "Abbrechen",
         viewMapButton: "Karte anzeigen",
-        formLabel: "Verarbeitungsoptionen",
+        formLabel: "Bearbeitungsoptionen",
         bboxValidationTitle: "Wählen Area of ​​Interest",
         requiredMaterial: "Diese Formel erfordert die Angabe des Stoffes",
         requiredAccident: "Diese Formel erfordert die Angabe des Umfall",    
@@ -66,8 +69,8 @@ GeoExt.Lang.add("de", {
         invalidAOI: "Die Koordinaten des Gebiets von Interesse sind nicht gültig.",
         bboxTooBig: "L'area selezionata e' troppo grande e il server potrebbe impiegare molto tempo a rispondere. Se si desidera continuare ugualmente premere OK.",
         weatherLabel: "Wetter",  
-        temporalLabel: "Gewitter",
-        conditionsFielSetLabel: "Bedingungen",   
+        temporalLabel: "Szenarien",
+        conditionsFielSetLabel: "Zeitliche Bedingungen",   
         allClassOption: "Alle Klassen",
         allSostOption: "Alle Substanzen/Stoffe",
         allScenOption: "alle Unfälle",
@@ -81,11 +84,14 @@ GeoExt.Lang.add("de", {
         notHumanRiskLabel: "Umweltrisk",
         lowRiskLabel: "Geringes Risiko",
         mediumRiskLabel: "Durchschnittliche Risiko",
-        highRiskLabel: "hohes Risiko"
+        highRiskLabel: "hohes Risiko",
+        notVisibleOnArcsMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein",
+        notVisibleOnGridMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein"
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
-        displayMsgPaging: "Bestandteil {0} - {1} of {2}",
+        displayMsgPaging: "Bestandteil {0} - {1} von {2}",
         emptyMsg: "No Bestandteil gefunden",
+        noRecordFoundLabel: "Kein Bestandteil gefunden",
         loadMsg: "Bitte warten..."
     },
     "GeoExplorer.prototype": {
@@ -213,20 +219,20 @@ GeoExt.Lang.add("de", {
         lengthTooltip: "Länge messen",
         areaTooltip: "Fläche messen",
         measureTooltip: "Messen",
-        bearingMenuText: "Strecke",
+        bearingMenuText: "Route",
         bearingTooltip: "Strecke messen"
     },
 
     "gxp.plugins.Navigation.prototype": {
-        menuText: "Karte ziehen",
-        tooltip: "Karte ziehen"
+        menuText: "Karte verschieben",
+        tooltip: "Karte verschieben"
     },
 
     "gxp.plugins.NavigationHistory.prototype": {
-        previousMenuText: "Zoom zur vorherigen Erweiterung",
-        nextMenuText: "Zoom zur nächsten Erweiterung",
-        previousTooltip: "Zoom zur vorherigen Erweiterung",
-        nextTooltip: "Zoom zur nächsten Erweiterung"
+        previousMenuText: "Zoom zur vorherigen Stufe",
+        nextMenuText: "Zoom zur nächsten Stufe",
+        previousTooltip: "Zoom zur vorherigen Stufe",
+        nextTooltip: "Zoom zur nächsten Stufe"
     },
 
     "gxp.plugins.OSMSource.prototype": {
@@ -271,8 +277,8 @@ GeoExt.Lang.add("de", {
     },
     
     "gxp.plugins.ZoomToExtent.prototype": {
-        menuText: "Zoom höchste Erweiterung",
-        tooltip: "Zoom höchste Erweiterung"
+        menuText: "Zoom höchste Stufe",
+        tooltip: "Zoom höchste Stufe"
     },
     
     "gxp.plugins.ZoomToDataExtent.prototype": {
@@ -435,7 +441,7 @@ GeoExt.Lang.add("de", {
         queryMenuText: "Schichtenabfrage",
         queryActionTip: "Ausgewählte Schichte abfragen",
         queryByLocationText: "Interessierte Lage",
-        currentTextText: "Aktuelle Erweiterung",
+        currentTextText: "Aktuelle Stufe",
         queryByAttributesText: "Abfrage nach Attribute",
         queryMsg: "Abfrage läuft...",
         cancelButtonText: "Cancel",
@@ -495,11 +501,11 @@ GeoExt.Lang.add("de", {
 	},
     "gxp.form.AOIFieldset.prototype":{
         northLabel:"Norden",
-        westLabel:"West",
+        westLabel:"Westen",
         eastLabel:"Osten",
         southLabel:"Süden",
-        title: "Territorial",
-        setAoiText: "Wählen Bereich",        
+        title: "Bearbeitungsbereich",
+        setAoiText: "Bereich wählen",        
         setAoiTooltip: "Ermöglichen die Auswahl des Bereichs von Interesse auf der Karte",
         waitEPSGMsg: "Warten ... Laden"
     },

@@ -28,6 +28,7 @@ GeoExt.Lang.add("fr", {
         elabStandardLabel: "Processing Standard",
         totalRiskLabel: "Le risque total",
         humanTitle:'social',    
+        resultsLabel: "Risultato Elaborazione", 
         notHumanTitle:'l\'environnement', 
         defaultExtentLabel: "Regione Piemonte",
         targetsTextBotton: "Cibles",
@@ -35,7 +36,9 @@ GeoExt.Lang.add("fr", {
         roadGraphTextBotton: "Graphique routière",  
         wpsTitle: "Errore",
         wpsError: "Errore nella richiesta al servizio WPS",
-        loadMsg: "S'il vous plaît attendre ..."
+        loadMsg: "S'il vous plaît attendre ...",
+        notVisibleOnArcsMessage: "Formula pas visible à cette échelle",
+        notVisibleOnGridMessage: "Formula pas visible à cette échelle"
 
     },
     "gxp.plugins.StandardProcessing.prototype": {
@@ -86,11 +89,14 @@ GeoExt.Lang.add("fr", {
         notHumanRiskLabel: "risque environnemental",
         lowRiskLabel: "risque faible",
         mediumRiskLabel: "risque moyen",
-        highRiskLabel: "risque élevé"
+        highRiskLabel: "risque élevé",
+        notVisibleOnArcsMessage: "Formula pas visible à cette échelle",
+        notVisibleOnGridMessage: "Formula pas visible à cette échellee"
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Elements {0} - {1} of {2}",
         emptyMsg: "No elements found",
+        noRecordFoundLabel: "No elements found",
         loadMsg: "S'il vous plaît attendre ..."
     },
     "GeoExplorer.prototype": {

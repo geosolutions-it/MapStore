@@ -24,6 +24,7 @@ GeoExt.Lang.add("it", {
         elabStandardLabel: "Elaborazione Standard",
         totalRiskLabel: "Rischio totale",
         humanTitle:'Sociale',    
+        resultsLabel: "Risultato Elaborazione", 
         notHumanTitle:'Ambientale', 
         defaultExtentLabel: "Regione Piemonte",
         targetsTextBotton: "Bersagli",
@@ -31,7 +32,9 @@ GeoExt.Lang.add("it", {
         roadGraphTextBotton: "Grafo stradale" , 
         wpsTitle: "Errore",
         wpsError: "Errore nella richiesta al servizio WPS",
-        loadMsg: "Caricamento in corso..."
+        loadMsg: "Caricamento in corso...",
+        notVisibleOnArcsMessage: "Formula non visibile a questa scala",
+        notVisibleOnGridMessage: "Formula non visibile a questa scala"
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Elaborazione",
@@ -81,11 +84,14 @@ GeoExt.Lang.add("it", {
         notHumanRiskLabel: "Rischio Ambientale",
         lowRiskLabel: "Basso Rischio",
         mediumRiskLabel: "Medio Rischio",
-        highRiskLabel: "Alto Rischio"
+        highRiskLabel: "Alto Rischio",
+        notVisibleOnArcsMessage: "Formula non visibile a questa scala",
+        notVisibleOnGridMessage: "Formula non visibile a questa scala"
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Elementi {0} - {1} di {2}",
         emptyMsg: "Nessun elemento trovato",
+        noRecordFoundLabel: "Nessun elemento trovato",
         loadMsg: "Caricamento in corso..."
     },
     "GeoExplorer.prototype": {

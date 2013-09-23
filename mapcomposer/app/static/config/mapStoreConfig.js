@@ -33,8 +33,8 @@
     "map": {
         "projection": "EPSG:3857",
         "units": "m",
-        "center": [903893.13597286, 5651406.520669],
-        "zoom": 8,
+        "center": [1103893.13597286, 5651406.520669],
+        "zoom": 7,
         "maxExtent": [
         456125.02434063, 5403020.7962146,
         1323838.1693132, 5887325.807362
@@ -51,12 +51,12 @@
         {
             "source": "ol",
             "group": "background",
-            "title": "Nessuno sfondo",
+            "title": ["Nessuno sfondo", "Nessuno sfondo", "Nessuno sfondo", "Kein Hintergrund"],
             "fixed": true,
             "type": "OpenLayers.Layer",
             "visibility": false,
             "args": [
-            "Nessuno sfondo", {
+                "Nessuno sfondo", {
                 "visibility": false
             }
             ]
@@ -77,28 +77,28 @@
             "source": "destination",
             "title": "Ambiti Amministrativi",
             "name": "LimitiAmministrativi",
-            "group": ["Basic Data","Dati di base","données de base","Grunddaten"],
+            "group": ["Basic Data","Dati di base","données de base","Basisdaten PTA"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Tessuto Urbanizzato",
             "name": "TessutoUrbanizzato",
-            "group": ["Basic Data","Dati di base","données de base","Grunddaten"],
+            "group": ["Basic Data","Dati di base","données de base","Basisdaten PTA"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Trasporti",
             "name": "Trasporti",
-            "group": ["Basic Data","Dati di base","données de base","Grunddaten"],
+            "group": ["Basic Data","Dati di base","données de base","Basisdaten PTA"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Idrografia",
             "name": "Idrografia",
-            "group": ["Basic Data","Dati di base","données de base","Grunddaten"],
+            "group": ["Basic Data","Dati di base","données de base","Basisdaten PTA"],
             "visibility": false
         },{
             "source": "google",
@@ -149,91 +149,91 @@
             "source": "destination",
             "title": "Beni culturali",
             "name": "beni_culturali_all",
-            "group": ["Targets","Bersagli","Cibles","Ziele"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Zone urbanizzate",
             "name": "zone_urbanizzate_all",
-            "group": ["Targets","Bersagli","Cibles","Ziele"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Acque sotterranee",
             "name": "acque_sotterranee_all",
-            "group": ["Targets","Bersagli","Cibles","Ziele"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Acque superficiali",
             "name": "acque_superficiali_all",
-            "group": ["Targets","Bersagli","Cibles","Ziele"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Aree protette",
             "name": "aree_protette_all",
-            "group": ["Targets","Bersagli","Cibles","Ziele"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Aree boscate",
             "name": "aree_boscate_all",
-            "group": ["Targets","Bersagli","Cibles","Ziele"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Aree agricole",
             "name": "aree_agricole_all",
-            "group": ["Targets","Bersagli","Cibles","Ziele"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Addetti/utenti centri commerciali",
             "name": "centri_commerciali_all",
-            "group": ["Targets","Bersagli","Cibles","Ziele"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Addetti/utenti strutture scolastiche",
             "name": "strutture_scolastiche_all",
-            "group": ["Targets","Bersagli","Cibles","Ziele"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Addetti/utenti strutture sanitarie",
             "name": "strutture_sanitarie_all",
-            "group": ["Targets","Bersagli","Cibles","Ziele"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Addetti industria e servizi",
             "name": "industria_servizi_all",
-            "group": ["Targets","Bersagli","Cibles","Ziele"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Popolazione turistica",
             "name": "popolazione_turistica_all",
-            "group": ["Targets","Bersagli","Cibles","Ziele"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
             "visibility": false
         },
         {
             "source": "destination",
             "title": "Popolazione residente",
             "name": "popolazione_residente_all",
-            "group": ["Targets","Bersagli","Cibles","Ziele"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
             "visibility": false
         },{
             "source": "destination",
@@ -241,7 +241,7 @@
             "name": "grafo_stradale",
             "displayInLayerSwitcher": true,
             "tiled": true,
-            "group": ["Roads","Strade","Strade","Strade"],
+            "group": ["Roads","Strade","Strade"," Straßen"],
             "visibility": false
         }
         ]
@@ -1499,7 +1499,7 @@
                             "dataIndex": "flg_nr_incidenti"
                         },
                         {
-                            "header": ["N. Incidenti","N. Incidenti","N. Incidenti","N. Incidenti"],
+                            "header": ["N. Incidenti","N. Incidenti","N. Incidenti","alle Unfälle"],
                             "dataIndex": "nr_incidenti"
                         },
                         {
@@ -1515,7 +1515,7 @@
                             "dataIndex": "elenco_dissesti"
                         }
                     ],
-                    "title": ["Archi", "Archi", "Archi", "Archi"],
+                    "title": ["Archi", "Archi", "Archi", "Segmente"],
                     "id": 1,
                     "name": "ARCHI",
                     "type": "all"
@@ -1591,7 +1591,7 @@
                     "title": ["Archi",
                     "Archi",
                     "Archi",
-                    "Archi"],
+                    "Segmente"],
                     "id": 100,
                     "name": "ARCHI",
                     "type": "all",
@@ -2800,15 +2800,15 @@
                     ],
                     "columns": [
                         {
-                            "header": ["Fascia", "Fascia", "Fascia", "Fascia"],
+                            "header": ["Fascia", "Fascia", "Fascia", "Bereich"],
                             "dataIndex": "name"
                         },
                         {
-                            "header": ["Distanza", "Distanza", "Distanza", "Distanza"],
+                            "header": ["Distanza", "Distanza", "Distanza", "Distanz"],
                             "dataIndex": "distanza"
                         }
                     ],
-                    "title": ["Aree di danno", "Aree di danno", "Aree di danno", "Aree di danno"],
+                    "title": ["Aree di danno", "Aree di danno", "Aree di danno", "Schadensbereiche"],
                     "id": 1,
                     "name": "DAMAGEAREA",
                     "type": "all",

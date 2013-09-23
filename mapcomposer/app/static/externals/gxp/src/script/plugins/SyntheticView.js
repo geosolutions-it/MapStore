@@ -66,13 +66,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     bufferLayerNameNotHuman: "buffer_not_human",    
     damageBufferLayer: "damage_buffer",
     
-    bufferLayerTitle: ["Buffer Areas", "Aree di danno", "Aree di danno", "Aree di danno"],    
-    targetLayerTitle: ["Targets", "Bersagli", "Bersagli", "Bersagli"],
+    bufferLayerTitle: ["Buffer Areas", "Aree di danno", "Aree di danno", "Shadensbereich"],    
+    targetLayerTitle: ["Targets", "Bersagli", "Bersagli", "Betroffene Elemente"],
     humanRiskLayerTitle: ["Total Human Risk", "Rischio Totale Sociale", "Rischio Totale Sociale", "Rischio Totale Sociale"],
     notHumanRiskLayerTitle: ["Total Environment Risk", "Rischio Totale Ambientale", "Rischio Totale Ambientale", "Rischio Totale Ambientale"],
     combinedRiskLayerTitle: ["Total Risk - Human and Environment", "Rischio Totale Sociale - Ambientale", "Rischio Totale Sociale - Ambientale", "Rischio Totale Sociale - Ambientale"],
-    humanTargets: ["Human Targets", "Bersagli umani", "Bersagli umani", "Bersagli umani"],
-    notHumanTargets: ["Environment Targets", "Bersagli ambientali", "Bersagli ambientali", "Bersagli ambientali"],
+    humanTargets: ["Human Targets", "Bersagli umani", "Bersagli umani", "Anthropologischen betroffene"],
+    notHumanTargets: ["Environment Targets", "Bersagli ambientali", "Bersagli ambientali", "Umwelt betroffene"],
     humanRiskLayer: "rischio_totale_sociale",    
     notHumanRiskLayer: "rischio_totale_ambientale",    
     combinedRiskLayer: "rischio_totale",    
@@ -83,7 +83,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     notHumanTitle:'Ambientale',    
     originalRiskLayers: null,
     
-    severeness: [["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","UNICA GRAVITA"], ["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","UNICA GRAVITA"], ["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","UNICA GRAVITA"], ["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","UNICA GRAVITA"]],
+    severeness: [["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","Ambientale"], ["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","Ambientale"], ["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","Ambientale"], ["Hohe Letalität","Beginn Letalität","Irreversible Verletzungen","Reversiblie Verletzungen","Umweltschäden"]],
     
     selectedTargetLayer: "Bersaglio Selezionato",
     selectedTargetLayerEditing: "Bersaglio Selezionato Editing",
@@ -940,7 +940,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                 id: "5",
                                 type: "Feature",
                                 properties: {
-                                    name: "Ambientale",
+                                    name: me.severeness[GeoExt.Lang.getLocaleIndex()][4],
                                     distance: item.properties.ambientale
                                 }
                             });
