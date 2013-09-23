@@ -105,9 +105,17 @@ gxp.plugins.OLSource = Ext.extend(gxp.plugins.LayerSource, {
                 {name: "type", type: "string"},
                 {name: "args"}
             ]);
+            
+            var title;
+            if(config.title && Ext.isArray(config.title)) {
+                title = config.title[GeoExt.Lang.getLocaleIndex()];
+            }
+            if(title) {
+                layer.name = title;
+            }
             var data = {
                 layer: layer,
-                title: layer.name,
+                title: title || layer.name,
                 source: config.source,
                 group: config.group,
 				uuid : config.uuid,
