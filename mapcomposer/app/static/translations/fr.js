@@ -38,7 +38,9 @@ GeoExt.Lang.add("fr", {
         wpsError: "Errore nella richiesta al servizio WPS",
         loadMsg: "S'il vous plaît attendre ...",
         notVisibleOnArcsMessage: "Formula pas visible à cette échelle",
-        notVisibleOnGridMessage: "Formula pas visible à cette échelle"
+        notVisibleOnGridMessage: "Formula pas visible à cette échelle",
+        refreshGridButton: "Actualiser la grille",
+        simMsg: "Cette fonction n'est pas disponible à cette échelle"
 
     },
     "gxp.plugins.StandardProcessing.prototype": {
@@ -98,6 +100,26 @@ GeoExt.Lang.add("fr", {
         emptyMsg: "No elements found",
         noRecordFoundLabel: "No elements found",
         loadMsg: "S'il vous plaît attendre ..."
+    },
+    "gxp.plugins.WFSGrid.prototype": {
+        displayMsgPaging: "Elements {0} - {1} of {2}",
+        emptyMsg: "No elements found",
+        loadMsg: "S'il vous plaît attendre ...",
+        addTooltip: "Ajouter un élément",
+        addLayerTooltip: "Ajouter couche à la carte",
+        detailsTooltip: "voir les détails",
+        deleteTooltip: "supprimer Feature",
+        deleteConfirmMsg: "Êtes-vous sûr de vouloir supprimer cet élément?",
+        detailsHeaderName: "Nom de la propriété",
+        detailsHeaderValue: "Valeur de la propriété",
+        detailsWinTitle: "Détails",
+        zoomToTooltip: "Zoom sur la cible",
+        startEditToTooltip: "Commencez édition en ligne",
+        startEditGeomToTooltip: "Commencez édition Feature",
+        stopEditGeomToTooltip: "Stop Edit Feature",
+        resetEditGeomToTooltip: "Arrêtez Modifier Feature",
+        removeMessage: "supprimer",
+        removeTitle:"Êtes-vous sûr de vouloir supprimer cet élément?"
     },
     "GeoExplorer.prototype": {
         zoomSliderText: "<div> Niveau de zoom: {zoom}</div><div Echelle: 1:{scale}</div>",

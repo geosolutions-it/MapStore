@@ -34,7 +34,9 @@ GeoExt.Lang.add("it", {
         wpsError: "Errore nella richiesta al servizio WPS",
         loadMsg: "Caricamento in corso...",
         notVisibleOnArcsMessage: "Formula non visibile a questa scala",
-        notVisibleOnGridMessage: "Formula non visibile a questa scala"
+        notVisibleOnGridMessage: "Formula non visibile a questa scala",
+        refreshGridButton: "Aggiorna la griglia",
+        simMsg: 'Modifica dei parametri di simulazione non possibile a questa scala. Zoomare fino a scala 1:17061'
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Elaborazione",
@@ -93,6 +95,26 @@ GeoExt.Lang.add("it", {
         emptyMsg: "Nessun elemento trovato",
         noRecordFoundLabel: "Nessun elemento trovato",
         loadMsg: "Caricamento in corso..."
+    },
+    "gxp.plugins.WFSGrid.prototype": {
+        displayMsgPaging: "Elementi {0} - {1} di {2}",
+        emptyMsg: "Nessun elemento trovato",
+        loadMsg: "Caricamento in corso...",
+        addTooltip: "Aggiungi elemento",
+        addLayerTooltip: "Aggiungi livello alla  mappa",
+        detailsTooltip: "Visualizza dettagli",
+        deleteTooltip: "Elimina feature",
+        deleteConfirmMsg: "Sei sicuro di voler eliminare la feature?",
+        detailsHeaderName: "Property Name",
+        detailsHeaderValue: "Property Value",
+        detailsWinTitle: "Dettagli",
+        zoomToTooltip: "Zoom al bersaglio",
+        startEditToTooltip: "Inizia modifica riga",
+        startEditGeomToTooltip: "Inizia modifica Feature",
+        stopEditGeomToTooltip: "Termina modifica Feature",
+        resetEditGeomToTooltip: "Annulla modifica Feature",
+        removeMessage: "Rimuovi",
+        removeTitle:"Sei sicuro di voler eliminare la feature?"
     },
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Livello di Zoom: {zoom}</div><div>Scala: 1:{scale}</div>",

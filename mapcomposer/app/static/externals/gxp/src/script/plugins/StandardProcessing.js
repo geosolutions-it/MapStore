@@ -476,6 +476,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             Ext.getCmp("targets_view").disable();
             Ext.getCmp("roadGraph_view").disable(); 
             Ext.getCmp("areaDamage_view").disable();
+			Ext.getCmp("refresh_grid").enable();
+            Ext.getCmp("refresh_grid").show();
             
             Ext.getCmp("targets_view").toggle(false, true);
             Ext.getCmp("roadGraph_view").toggle(false, true);               
@@ -486,11 +488,16 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             if(syntView.simulationRestore) {
                 if(syntView.simulationRestore.collapsed) {
                     southPanel.collapse();
+					Ext.getCmp("refresh_grid").hide();
                 } else {
+					Ext.getCmp("refresh_grid").hide();
                     Ext.getCmp("areaDamage_view").enable();
                     Ext.getCmp("roadGraph_view").enable();
                     Ext.getCmp("targets_view").enable();
                     Ext.getCmp("analytic_view").enable();
+					Ext.getCmp("refresh_grid").disable();
+					var mapPanelContainer = Ext.getCmp("mapPanelContainer_id");
+                    mapPanelContainer.doLayout(false,true);  
                     if(syntView.simulationRestore.grids && syntView.simulationRestore.grids.length > 0) {
                         wfsGrid.removeAllGrids();
                         wfsGrid.restoreGrids(syntView.simulationRestore.grids);

@@ -34,7 +34,9 @@ GeoExt.Lang.add("de", {
         wpsError: "Errore nella richiesta al servizio WPS",
         loadMsg: "Bitte warten ...",
         notVisibleOnArcsMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein",
-        notVisibleOnGridMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein"
+        notVisibleOnGridMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein",
+        refreshGridButton: "Aktualisieren Sie die Grid",
+        simMsg: 'Diese Funktion ist nicht in dieser Größenordnung zur Verfügung'
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Bearbeitung",
@@ -93,6 +95,26 @@ GeoExt.Lang.add("de", {
         emptyMsg: "No Bestandteil gefunden",
         noRecordFoundLabel: "Kein Bestandteil gefunden",
         loadMsg: "Bitte warten..."
+    },
+    "gxp.plugins.WFSGrid.prototype": {
+        displayMsgPaging: "Bestandteil {0} - {1} of {2}",
+        emptyMsg: "No Bestandteil gefunden",
+        loadMsg: "Bitte warten...",
+        addTooltip: "Neues Element hinzufügen",
+        addLayerTooltip: "Layer hinzufügen zu Karte",
+        detailsTooltip: "Details anzeigen",
+        deleteTooltip: "Löschfunktion",
+        deleteConfirmMsg: "Sind Sie sicher, dass Sie dieses Element löschen?",
+        detailsHeaderName: "Name der Unterkunft",
+        detailsHeaderValue: "Property Value",
+        detailsWinTitle: "Einzelheiten",
+        zoomToTooltip: "Zoom auf das Ziel",
+        startEditToTooltip: "Starten Sie bearbeiten Row",
+        startEditGeomToTooltip: "Starten Sie bearbeiten Feature",
+        stopEditGeomToTooltip: "Stoppen bearbeiten Feature",
+        resetEditGeomToTooltip: "Zurücksetzen bearbeiten Feature",
+        removeMessage: "Entfernen",
+        removeTitle:"Sind Sie sicher, dass Sie dieses Element löschen?"
     },
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Zoomlevel: {zoom}</div><div>Maßstab: 1:{scale}</div>",

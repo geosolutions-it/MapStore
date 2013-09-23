@@ -37,7 +37,9 @@ GeoExt.Lang.add("en", {
         wpsError: "Errore nella richiesta al servizio WPS",
         loadMsg: "Loading...",
         notVisibleOnArcsMessage: "Formula not visible at this scale",
-        notVisibleOnGridMessage: "Formula not visible at this scale"
+        notVisibleOnGridMessage: "Formula not visible at this scale",
+        refreshGridButton: "Refresh the grid",
+        simMsg: 'This function is not available at this scale'
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Processing",
@@ -96,6 +98,26 @@ GeoExt.Lang.add("en", {
         emptyMsg: "No elements found",
         noRecordFoundLabel: "No elements found",
         loadMsg: "Loading ..."
+    },
+    "gxp.plugins.WFSGrid.prototype": {
+        displayMsgPaging: "Elements {0} - {1} of {2}",
+        emptyMsg: "No elements found",
+        loadMsg: "Loading ...",
+        addTooltip: "Add new element",
+        addLayerTooltip: "Add Layer to Map",
+        detailsTooltip: "View Details",
+        deleteTooltip: "Delete Feature",
+        deleteConfirmMsg: "Are you sure you want delete this feature?",
+        detailsHeaderName: "Property Name",
+        detailsHeaderValue: "Property Value",
+        detailsWinTitle: "Details",
+        zoomToTooltip: "Zoom al bersaglio",
+        startEditToTooltip: "Start Edit Row",
+        startEditGeomToTooltip: "Start Edit Feature",
+        stopEditGeomToTooltip: "Stop Edit Feature",
+        resetEditGeomToTooltip: "Reset Edit Feature",
+        removeMessage: "Remove",
+        removeTitle:"Are you sure you want to remove the element?"
     },
     
     "GeoExplorer.prototype": {

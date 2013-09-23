@@ -132,6 +132,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
     startEditToTooltip: "Start Edit Row",
     startEditGeomToTooltip: "Start Edit Feature",
     stopEditGeomToTooltip: "Stop Edit Feature",
+    resetEditGeomToTooltip: "Reset Edit Feature",
     removeMessage: "Remove",
     removeTitle:"Are you sure you want to remove the element?",
     // end i18n
@@ -152,6 +153,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
     startEditToIconPath: "theme/app/img/silk/table_edit.png",
     startEditGeomToIconPath: "theme/app/img/geosilk/shape_square_green.png",
     stopEditGeomToIconPath: "theme/app/img/geosilk/shape_square_red.png",
+    resetEditGeomToIconPath: "theme/app/img/geosilk/shape_square_yellow.png",
 
   
     addLayerTool: null,
@@ -832,7 +834,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                             }
                             currentRecord.removed = true;
                             
-                            me.persistEditGeometry("simulation_removed", record.get("fid"), me.getGeometry(record, sourceSRS), removedStyle);
+                            //me.persistEditGeometry("simulation_removed", record.get("fid"), me.getGeometry(record, sourceSRS), removedStyle);
+                            me.persistEditGeometry("Bersagli rimossi", record.get("fid"), me.getGeometry(record, sourceSRS), removedStyle);
                             grid.getStore().remove(record);
                         }
                     });
@@ -905,6 +908,15 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                             new OpenLayers.Control.ModifyFeature(targetLayer, {clickout: false,toggle: false ,createVertices: true}) : 
                             new OpenLayers.Control.DrawFeature(targetLayer, OpenLayers.Handler.Polygon);
 
+        targetLayer.events.on({
+            "featureadded": function(event) {
+                me.modifyControl.deactivate();
+            },                                
+            "beforefeatureadded": function(event) {
+                //alert("beforefeatureadded");  
+            }
+        });
+                                
         map.addControl(me.modifyControl);
         if(geom) {
             me.modifyControl.mode = OpenLayers.Control.ModifyFeature.RESHAPE;
@@ -975,7 +987,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                         me.modifyControl.deactivate();
                         //return;
                     }else{
-                    
+                        if(me.modifyControl){
                         me.modifyControl.deactivate();
                         
                         var map = this.target.mapPanel.map;
@@ -993,26 +1005,46 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                             geom, layerStyle);*/
                             
                         var originSelectionModel = me.wfsGrid.getSelectionModel();
-                        var record1 = originSelectionModel.getSelected();
+                            //var record1 = originSelectionModel.getSelected();
                         var destSRS = map.getProjectionObject();
+                            
+                            if(targetLayer.features[0]){
                         var geometry = me.getGeometryEdit(targetLayer.features[0].geometry,sourceSRS,destSRS.projCode);
-                        record1.data.feature.geometry = geometry;   
+                                //record1.data.feature.geometry = geometry;   
 
                         selectionModel.clearSelections(false);
+                                
                         //selectionModel.selectRow( rowIndex, false );
+                                var checkEqualGeom = geometry.equals(me.currentRecord.geometry);
+                                if(!checkEqualGeom){
                         me.currentRecord.geometry = geometry;
                         me.save[me.currentRecord.id] = me.currentRecord;
-                        me.persistEditGeometry(me.currentRecord.newfeature ? "simulation_added" : "simulation_changed", 
+                                    me.persistEditGeometry(me.currentRecord.newfeature ? "Bersagli aggiunti" : "Bersagli modificati", //"simulation_added" : "simulation_changed", 
                                                 record.get("fid"), 
                                                 targetLayer.features[0].geometry, me.currentRecord.newfeature ? simulationStyleAdded : simulationStyleChanged);
+                                }
+                                                        
                         
                         me.removeGeometry(actionConf.layerName, record.get("fid"));
                         if(me.oldExtent) {
                             map.zoomToExtent(me.oldExtent);
                         }
+                            }
+                        }
                         
                     }
                     
+                }
+            },"-",{
+                icon   : this.resetEditGeomToIconPath,  
+                tooltip: this.resetEditGeomToTooltip,
+                scope: this,
+                handler: function(){
+                
+                    var map = this.target.mapPanel.map;
+                    var targetLayer = map.getLayersByName(actionConf.layerName)[0];
+                    targetLayer.removeAllFeatures();
+
                 }
             }]  
         };
@@ -1108,7 +1140,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         };
         if(!targetLayer) {
              targetLayer = new OpenLayers.Layer.Vector(layerName,{
-                displayInLayerSwitcher: false,
+                //displayInLayerSwitcher: layerName === "simulation_removed" ? false : true, //per visualizzare le features editate dall'utente
+                displayInLayerSwitcher: true, //per visualizzare le features editate dall'utente
                 style: layerStyle,
                 renderers: renderer
             });
