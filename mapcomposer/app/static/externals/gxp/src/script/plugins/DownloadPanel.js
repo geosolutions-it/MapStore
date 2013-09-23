@@ -464,7 +464,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 					// //////////////////////////////////////////////////////
 					this.updateFormStatus();
 					
-					this.addFeatureSummary(f);
+					this.addFeatureSummary(f.feature);
 				});
 				
                 this.spatialSelection.events.register('featureremoved', this, function(f) {
@@ -652,10 +652,9 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 	/**
 	* api: method[addFeatureSummary]
 	*/
-	addFeatureSummary: function(f){		
+	addFeatureSummary: function(feature){		
 		this.removeFeatureSummary();
 		
-		var feature = f.feature;		
 		var summary = "", metricUnit = "km";
 		
 		var area = this.getArea(feature.geometry, metricUnit);
@@ -667,6 +666,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 		switch(selectionType){
 			case 'polygon':
 			case 'box':
+			case 'place':
 				var perimeter = this.getLength(feature.geometry, metricUnit);
 				if(perimeter){
 					summary += this.perimeterLabel + ": " + perimeter + " " + metricUnit + '<br />';
@@ -2555,6 +2555,8 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
                 this.spatialSelection._addingBufferedFeature = false;
                 this.unBufferedFeature = feature; //copy the "original" feature, without any buffer applied
                 this.target.mapPanel.map.zoomToExtent(geometry.getBounds());
+				
+				this.addFeatureSummary(bufferedFeature);
             }
             
             this.hideMask();
