@@ -209,14 +209,14 @@
 			// ////////////////////////////////////////////////////
 			// Setting the language selector
 			// ////////////////////////////////////////////////////
-			/*var languageSelector = new gxp.form.LanguageSwitcher({
+			var languageSelector = new gxp.form.LanguageSwitcher({
 				currentContext:code,
 				saveMessage:authorization,
 				data:[
 					['it','Italiano','','it','Italian language'], 
 					['de','Deutsch','','de','Deutsch language'] 
 				]
-			});*/
+			});
 			
 			// ///////////////////////////////////////////
 			// Defining the GeoNetwork panel properties
@@ -330,7 +330,7 @@
                     region : 'center',
                     layout : 'border',
                     border : false,
-                    header : false,                    
+                    header : false, 				
                     items : [{
                       border: false,
                       header: false,
@@ -341,11 +341,14 @@
                       hideCollapseTool: true,
                       split: true,
                       animCollapse : false,
-                      minHeight: 120,
-                      maxHeight: 120,
-                      height: 120,
-                      id : 'msheader'
-                    },appTabs],                            
+                      minHeight: 145,
+                      maxHeight: 145,
+                      height: 145,
+                      id : 'msheader',
+					  bbar : [
+						'->', languageSelector
+					  ]
+                    }, appTabs],                            
                     bbar : [
                       poweredByGeoSol, ' ', aboutButton/*, '->',languageSelector*/
                     ]

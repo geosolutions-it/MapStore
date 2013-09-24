@@ -149,14 +149,6 @@
 			"ptype":"gxp_downloadtoolaction",
 			"downloadTool": "download",
 			"actionTarget": ["layertree.contextMenu"]
-		}, {
-			"ptype":"gxp_languagechoice",
-			"languages": [
-				["it", "Italiano", "", "it", "Italian language"], 
-				["de", "Deutsch", "", "de", "Deutsch language"] 
-			],
-			"initialLanguage": "it",
-			"outputTarget": "paneltbar"
 		}
 	]
 }
