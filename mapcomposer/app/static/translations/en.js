@@ -646,6 +646,7 @@ GeoExt.Lang.add("en", {
 		selectionSummary: "Selection Summary",
 	    areaLabel: "Area",
 		perimeterLabel: "Perimeter",	
-		radiusLabel: "Radius"
+		radiusLabel: "Radius",
+		centroidLabel: "Centroid"
     }
 });

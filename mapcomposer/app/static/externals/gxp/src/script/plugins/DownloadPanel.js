@@ -369,6 +369,8 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 	
 	radiusLabel: "Radius",
 	
+	centroidLabel: "Centroid",
+	
     /** private: method[constructor]
      */
     constructor: function(config) {
@@ -422,7 +424,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
                         property: 'isBuffered',
                         value: true
                     }),
-                    symbolizer: {fillColor: '#FF0000', fillOpacity: 0.5}
+                    symbolizer: {fillColor: '#0011FF', fillOpacity: 0.5}
                 }), new OpenLayers.Rule({
                     symbolizer: {fillOpacity: 0.4}
                 })];
@@ -682,6 +684,10 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 				// Draw also the circle center as a part of summary report
 				// //////////////////////////////////////////////////////////
 				var circleSelectionCentroid = feature.geometry.getCentroid();
+				
+				if(circleSelectionCentroid){
+					summary += this.centroidLabel + ": " + circleSelectionCentroid.x + "(Lon) " + circleSelectionCentroid.y + "(Lat)" +'<br />';
+				}
 				
 				var options = {};
 				if(this.selectStyle){
@@ -1169,8 +1175,36 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 							
 							var crsCombo = this.formPanel.crsFieldset.crsCombo;
 							var crsComboStore = crsCombo.getStore();
-							var crsRecord = crsComboStore.getAt(0);			
-							var crs = record.get("crs"); 							
+							var crs = record.get("crs"); 
+							
+							// ///////////////////////////
+							// Find CRS duplicates before
+							// ///////////////////////////
+							var dIndex = crsComboStore.find("code", crs);
+							if(dIndex > 0){
+								var r = crsComboStore.getAt(dIndex);	
+								crsComboStore.remove(r);
+							}
+							
+							// Leave the first unique element
+							var crsRecord = crsComboStore.getAt(0);	
+							if(crsRecord.get("code") != ""){
+								var r = Ext.data.Record.create([
+									{name: "name"},
+									{name: "code"},
+									{name: "type"},
+									{name: "subcode"}
+								]);
+								
+								crsComboStore.add(new r({
+									name: crsRecord.get("code"),
+									code: crsRecord.get("code"),
+									type: crsRecord.get("type"),
+									subcode: crsRecord.get("subcode"),
+								}));
+							}
+							
+							// Replace the firse element with the new native crs
 							crsRecord.set("name", "Native - " + crs);
 							crsRecord.set("code", crs);
 							crsRecord.set("type", "epsg");

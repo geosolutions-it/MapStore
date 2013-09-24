@@ -673,7 +673,8 @@ GeoExt.Lang.add("it", {
 		selectionSummary: "Sommario Selezione",	
 		areaLabel: "Area",
 		perimeterLabel: "Perimetro",	
-		radiusLabel: "Raggio"
+		radiusLabel: "Raggio",
+		centroidLabel: "Centro"
     }
 	
 });
