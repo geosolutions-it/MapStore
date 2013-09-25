@@ -26,7 +26,8 @@
             "url": "http://localhost:8080/geoserver/destination/ows",
             "layerBaseParams": {
                 "TILED": true,
-                "TILESORIGIN": "-180,-90"
+                "TILESORIGIN": "-180,-90",
+                "format": "image/png8"
             }
         }
     },
@@ -456,7 +457,7 @@
         "customParams":{
             "outputFilename":"mapstore-print"
         },
-        "ignoreLayers": "Google Hybrid,Bing Aerial,Nessuno sfondo,Google Terrain,Google Roadmap",
+        "ignoreLayers": "Google Hybrid,Bing Aerial,Nessuno sfondo,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
         "printService":"http://localhost:8080/geoserver/pdf/",
         "legendPanelId":"legendPanel",
         "actionTarget":{

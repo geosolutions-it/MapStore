@@ -241,7 +241,7 @@ GeoExt.Lang.add("de", {
         lengthTooltip: "Länge messen",
         areaTooltip: "Fläche messen",
         measureTooltip: "Messen",
-        bearingMenuText: "Route",
+        bearingMenuText: "Luftlinie",
         bearingTooltip: "Strecke messen"
     },
 
