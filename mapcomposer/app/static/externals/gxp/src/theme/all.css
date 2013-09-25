@@ -410,3 +410,9 @@ div.map-overlay div.overlay-element {
 .x-btn .gxp-icon-csvexport-multiple, .x-menu-item .gxp-icon-csvexport-multiple {
     background-image: url(img/silk/table_multiple.png) !important;
 }
+
+.x-action-col-cell  .zoomaction{
+	background-image: url(img/silk/magnifier.png) !important;
+	width:16px;
+	height:16px;
+}

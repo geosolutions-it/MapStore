@@ -226,6 +226,8 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         this.displayItem = new Ext.Toolbar.TextItem({});
         config = Ext.apply({
             xtype: "gxp_featuregrid",
+			actionTooltip: this.zoomToFeature,
+			map: this.target.mapPanel.map,
             sm: new GeoExt.grid.FeatureSelectionModel(smCfg),
             autoScroll: true,
             title: this.title,
