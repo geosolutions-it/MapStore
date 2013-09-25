@@ -651,6 +651,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                 
                     var south = Ext.getCmp("south").collapse();
                     */
+                    
                     if(! this.processingPane.aoiFieldset)
                         this.processingPane.show(this.target);
                     else{
@@ -1466,9 +1467,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         // add analytic view layers to the map
         this.target.mapPanel.layers.add(newLayers);
 
-        if(status.simulation.targetsInfo.length > 0) {
+        /*if(status.simulation.targetsInfo.length > 0) {
             this.addExtraTargets(map, status.simulation.targetsInfo);
-        }
+        }*/
         
         
         // update info on buffers sizes     
