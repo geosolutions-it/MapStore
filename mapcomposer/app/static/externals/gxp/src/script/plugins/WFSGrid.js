@@ -1015,14 +1015,14 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                         selectionModel.clearSelections(false);
                                 
                         //selectionModel.selectRow( rowIndex, false );
-                                var checkEqualGeom = geometry.equals(me.currentRecord.geometry);
-                                if(!checkEqualGeom){
-                        me.currentRecord.geometry = geometry;
-                        me.save[me.currentRecord.id] = me.currentRecord;
-                                    me.persistEditGeometry(me.currentRecord.newfeature ? "Bersagli aggiunti" : "Bersagli modificati", //"simulation_added" : "simulation_changed", 
-                                                record.get("fid"), 
-                                                targetLayer.features[0].geometry, me.currentRecord.newfeature ? simulationStyleAdded : simulationStyleChanged);
-                                }
+                        var checkEqualGeom = geometry.equals(me.currentRecord.geometry);
+                        if(!checkEqualGeom){
+                            me.currentRecord.geometry = geometry;
+                            me.save[me.currentRecord.id] = me.currentRecord;
+                            me.persistEditGeometry(me.currentRecord.newfeature ? "Bersagli aggiunti" : "Bersagli modificati", //"simulation_added" : "simulation_changed", 
+                            record.get("fid"), 
+                            targetLayer.features[0].geometry, me.currentRecord.newfeature ? simulationStyleAdded : simulationStyleChanged);
+                        }
                                                         
                         
                         me.removeGeometry(actionConf.layerName, record.get("fid"));
@@ -1141,7 +1141,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         if(!targetLayer) {
              targetLayer = new OpenLayers.Layer.Vector(layerName,{
                 //displayInLayerSwitcher: layerName === "simulation_removed" ? false : true, //per visualizzare le features editate dall'utente
-                displayInLayerSwitcher: true, //per visualizzare le features editate dall'utente
+                //displayInLayerSwitcher: true, //per visualizzare le features editate dall'utente
+                displayInLayerSwitcher: false,
                 style: layerStyle,
                 renderers: renderer
             });
@@ -1630,6 +1631,50 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
          };
         
         var addNewTarget = function() {
+            var disabledItems = [];
+            this.app.toolbar.items.each(function(item) {
+                if (!item.disabled) {
+                    disabledItems.push(item);
+                }
+            });
+            
+            // For every enabled tool in the toolbar, toggle the button off (deactivating the tool)
+            // Then add a listener on 'click' and 'menushow' to reset the BBoxQueryForm to disable all active tools
+            for (var i = 0;i<disabledItems.length;i++){
+                if(disabledItems[i].toggleGroup){
+                    if(disabledItems[i].scope && disabledItems[i].scope.actions){
+                        for(var a = 0;a<disabledItems[i].scope.actions.length;a++){
+                            disabledItems[i].scope.actions[a].toggle(false);
+                            
+                            if (disabledItems[i].scope.actions[a].menu){
+                                for(var b = 0;b<disabledItems[i].scope.actions[a].menu.items.items.length;b++){
+                                    disabledItems[i].scope.actions[a].menu.items.items[b].disable();
+                                }
+                            }
+
+                            disabledItems[i].scope.actions[a].on({
+                                "click": function(evt) {
+                                     if (me.modifyControl) {me.modifyControl.deactivate();};
+                                     // TODO 'Circle' and 'Poligon' tool have no other visual way to display
+                                     // their statuses (active, not active), apart from the combobox
+                                     // The clearValue() is intended to tell user that the tool is not enabled
+                                     //me.output[0].outputType.clearValue();
+
+                                },
+                                "menushow": function(evt) {
+                                    var menuItems = evt.menu.items.items;
+                                    for (var i = 0;i<menuItems.length;i++){
+                                        menuItems[i].enable();
+                                    }
+                                     if (me.modifyControl) {me.modifyControl.deactivate();};
+                                     //me.output[0].outputType.clearValue();
+                                },
+                                scope: this
+                            });
+                        }
+                    }                    
+                }
+            }        
             var store = wfsGridPanel.getStore();
             var record = new store.recordType({
                 "geometry": "",

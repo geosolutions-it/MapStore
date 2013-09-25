@@ -92,6 +92,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     simulationAddedLayer: "Bersagli aggiunti", //"simulation_added",
     simulationChangedLayer: "Bersagli modificati", //"simulation_changed",
     simulationRemovedLayer: "Bersagli rimossi", //"simulation_removed",
+    simulationModLayer: "Bersagli Modifiche Geometriche",
     
     analyticViewLayers: [],   
     vectorLayers: [],
@@ -250,6 +251,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
      init: function(target) {        
         gxp.plugins.SyntheticView.superclass.init.apply(this, arguments); 
         this.vectorLayers = [this.selectedTargetLayer, this.selectedTargetLayerEditing, this.simulationAddedLayer, this.simulationChangedLayer, this.simulationRemovedLayer];
+        this.modifiedLayer = [this.simulationModLayer];
         this.target.on('portalready', function() {
             this.layerSource = this.target.layerSources[this.layerSourceName];
             this.wpsClient =  new OpenLayers.WPSClient({
@@ -425,6 +427,33 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }  
     },
     
+    /** private: method[addModifiedFeatures]
+     *   :arg map: ``Object``
+     *   :arg layers: ``Array``
+     *    add modified features in simulation type
+     */
+    addModifiedFeatures: function(map,layers) {
+        var layer;
+        var modifiedLayer = this.modifiedLayer[0];        
+        var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+        renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;       
+
+        var targetLayer = new OpenLayers.Layer.Vector(modifiedLayer,{
+            displayInLayerSwitcher: true,
+            renderers: renderer
+        });
+        map.addLayer(targetLayer);
+        for(var i = 0, layerName; layerName = layers[i]; i++) {
+            layer = this.getLayerByName(map, layerName);
+            //layer=map.getLayersByName(layerName)[0];
+            if(layer && layer.features.length > 0) {
+                for(var x = 0;x<layer.features.length;x++){
+                    targetLayer.addFeatures(layer.features[x]);
+                }
+            }
+        }  
+    },    
+    
     getLayerByName: function(map, layerName) {
         if(map.getLayersByName(layerName).length > 0) {
             return map.getLayersByName(layerName)[0];
@@ -580,7 +609,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     this.removeAnalyticViewLayers(map);
                     
                     // reset risk layers
-                    this.removeRiskLayers(map);                                       
+                    this.removeRiskLayers(map);     
+
+                    this.removeModifiedLayer(map);
                     //this.restoreOriginalRiskLayers(map);
                     this.enableDisableRoads(true);
                     
@@ -596,7 +627,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     this.resultsContainer.removeAll();
                     this.resultsContainer.doLayout();
                     var form = this.fieldSet.ownerCt.getForm();
-                    form.reset();
+                    for (var i=0;i<form.items.items.length;i++){
+                        form.items.items[i].setValue("");
+                    }
                     this.reset = true;
                     //this.processingPane.enableDisableSimulation(false);
                 }
@@ -1581,6 +1614,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         this.enableDisableRoads(!status.formulaInfo.dependsOnArcs);
         
+        this.removeModifiedLayer(map);
+        
+        this.addModifiedFeatures(map,this.vectorLayers);
+        
         this.removeRiskLayers(map);
         
         // remove analytic view layers (buffers, targets, selected targets)
@@ -1804,7 +1841,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.removeLayersByName(map,this.currentRiskLayers);
         this.removeLayersByName(map,this.vectorLayers);
         this.currentRiskLayers = [];
-    },    
+    },
+
+    removeModifiedLayer: function(map) {
+        this.removeLayersByName(map,this.modifiedLayer);
+    
+    },
     
     getControlPanel: function(){
         return this.controlPanel;
