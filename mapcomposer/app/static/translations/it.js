@@ -344,7 +344,8 @@ GeoExt.Lang.add("it", {
         exportCSVSingleText: "Singola pagina",
         exportCSVMultipleText: "Tutte le pagine",
         failedExportCSV: "Impossibile esportare nel formato CSV",
-        invalidParameterValueErrorText: "Valore parametro non valido"            
+        invalidParameterValueErrorText: "Valore parametro non valido",
+		zoomToFeature: "Zoom alla Feature"            
     },
 	
     "gxp.plugins.QueryForm.prototype": {

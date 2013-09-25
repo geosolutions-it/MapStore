@@ -133,9 +133,8 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 			outputSRS: this.outputSRS,
 			selectStyle: this.selectStyle,
 			toggleGroup: this.toggleGroup,
-			ref: "coordinatePicker"
-			
-    		,listeners: {
+			ref: "coordinatePicker",
+			listeners: {
 				scope: this,
 				update: function(){
 				    var cv = this.coordinatePicker.isValid();
@@ -154,12 +153,10 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
                         
                         this.drawBuffer(regularPolygon);
                     }
-
 				}
-			}
-			
+			}			
 		});
-	
+		
 		this.bufferField = new Ext.form.NumberField({
 			name: 'buffer',
 			ref: 'bufferField',
@@ -173,30 +170,34 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 			enableKeyEvents: true,
 		    decimalPrecision: this.decimalPrecision,
 			allowDecimals: true,
-			hideLabel : false
-			,listeners:{
-                scope:this
-                ,valid: function(){
+			hideLabel : false,
+			listeners:{
+                scope:this,
+                valid: function(){
                     if(this.coordinatePicker.isValid()){                                 
-									var coords = this.coordinatePicker.getCoordinate();
-									var lonlat = new OpenLayers.LonLat(coords[0], coords[1]);
-									var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
-									
-									var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
-										point,
-										this.bufferField.getValue(),
-										100, 
-										null
-									);
-									
-									this.drawBuffer(regularPolygon);
-									
-                        //var bounds = regularPolygon.getBounds();
-                        //this.map.zoomToExtent(bounds);
-                        }
-                    }
-
-                }
+						var coords = this.coordinatePicker.getCoordinate();
+						var lonlat = new OpenLayers.LonLat(coords[0], coords[1]);
+						var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
+						
+						var regularPolygon = OpenLayers.Geometry.Polygon.createGeodesicPolygon(
+							point,
+							this.bufferField.getValue(),
+							100, 
+							0,
+							this.map.getProjectionObject()
+						);
+				
+						/*var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
+							point,
+							this.bufferField.getValue(),
+							100, 
+							null
+						);*/
+						
+						this.drawBuffer(regularPolygon);
+					}
+				}
+            }
 		});
 		
 		this.items = [

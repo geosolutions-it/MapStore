@@ -163,6 +163,8 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  Feature Grid title.
      */
     title: "Features",
+	
+	zoomToFeature: "Zoom To Feature",
 
     /** private: method[displayTotalResults]
      */
@@ -270,6 +272,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 }
             }, {xtype: 'tbspacer', width: 10}, this.displayItem] : []).concat(["->"].concat(!this.alwaysDisplayOnMap ? [{
                 text: this.displayFeatureText,
+				id: "showButton",
 				iconCls: "gxp-icon-addtomap",
                 enableToggle: true,
                 toggleHandler: function(btn, pressed) {
@@ -339,7 +342,29 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 },
                 scope: this
             },
-            contextMenu: new Ext.menu.Menu({items: []})
+            contextMenu: new Ext.menu.Menu({items: [{
+				text: this.zoomToFeature,
+				tooltip: this.zoomToFeature,
+				iconCls: 'gxp-icon-zoom-to',
+				scope: this,
+				handler: function(cmp){
+					var grid = this.output[0];
+					var selection = grid.getSelectionModel().getSelections()[0];
+					var feature = selection.data.feature;
+					if(feature){
+						var bounds = feature.geometry.getBounds();
+						if(bounds){
+							this.target.mapPanel.map.zoomToExtent(bounds);
+							
+							var showButton = Ext.getCmp("showButton");
+							if(!showButton.pressed){
+								showButton.toggle(true);
+								this.selectControl.select(feature);
+							}
+						}
+					}
+				}				
+			}]})
         }, config || {});
         var featureGrid = gxp.plugins.FeatureGrid.superclass.addOutput.call(this, config);
         

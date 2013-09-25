@@ -349,7 +349,8 @@ GeoExt.Lang.add("de", {
         exportCSVSingleText: "einzelne Seite",
         exportCSVMultipleText: "Alle Seite",
         failedExportCSV: "Fehler beim Ansprechen für Ausgabeformat CSV finden",
-        invalidParameterValueErrorText: "Ungültige Parameter Wert"
+        invalidParameterValueErrorText: "Ungültige Parameter Wert",
+		zoomToFeature: "Zoom auf Funktionen"
     },
 	
     "gxp.plugins.QueryForm.prototype": {
