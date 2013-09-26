@@ -35,18 +35,22 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
      *  URL of the print service.
      */
     printService: null,
+	
 	/** api: config[ignoreLayers]
 	 * ``boolean`` ignore layers for print 
 	 * for print alerts.
 	 */
 	ignoreLayers:[],
+	
     /** api: config[customParams]
      *  ``Object`` Key-value pairs of custom data to be sent to the print
      *  service. Optional. This is e.g. useful for complex layout definitions
      *  on the server side that require additional parameters.
      */
     customParams: null,
+	
     legendPanelId : null,
+	
     /** api: config[menuText]
      *  ``String``
      *  Text for print menu item (i18n).
@@ -95,9 +99,7 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
     /** api config[defaultLayoutIndex]
      *  layout at that index will be selected as default in the print preview
      */
-    defaultLayoutIndex:0,
-    
-    
+    defaultLayoutIndex:0,    
 
     /** private: method[constructor]
      */
@@ -152,11 +154,11 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
 					var layerName = notSupported[i];
 					if (layerName && ignorable.indexOf(layerName)<0) {
 						notIgnorable.push (notSupported[i]);
-					}
-	
+					}	
 				}
 				return notIgnorable;
 			}
+			
             var actions = gxp.plugins.Print.superclass.addActions.call(this, [{
                 menuText: this.menuText,
                 tooltip: this.tooltip,
@@ -238,9 +240,8 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                 return (
                     layer instanceof OpenLayers.Layer.WMS ||
                     layer instanceof OpenLayers.Layer.OSM ||
-					layer.name == 'None'   //MB
-					
-                    //|| layer instanceof OpenLayers.Layer.Google
+					layer.name == 'None'                  ||  //MB
+					layer instanceof OpenLayers.Layer.Vector
                 );
             }
 

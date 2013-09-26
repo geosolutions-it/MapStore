@@ -39,6 +39,7 @@
 		"projection": "EPSG:900913",
 		"units": "m",
 		"zoom": 5,
+		"numZoomLevels": 22,
 		"extent": [
 			1259091.229051,5855016.830973,
 			1268808.28627,5863434.458712
@@ -201,9 +202,9 @@
 			"actions": ["-"], "actionTarget": "paneltbar"
 		}, {
 			"ptype": "gxp_wmsgetfeatureinfo_menu", 
-                        "regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
-		        "useTabPanel": true,
-                        "toggleGroup": "toolGroup",
+            "regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
+		    "useTabPanel": true,
+            "toggleGroup": "toolGroup",
 			"actionTarget": {"target": "paneltbar", "index": 20}
 		}, {
 			"actions": ["-"], "actionTarget": "paneltbar"

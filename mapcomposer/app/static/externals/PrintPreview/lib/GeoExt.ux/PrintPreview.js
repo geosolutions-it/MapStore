@@ -324,7 +324,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 checked: this.compactLegend,
                 boxLabel: this.compactLegendText,
                 hideLabel: true,
-				hidden:true,
+				hidden: false,
                 ctCls: "gx-item-nowrap",
                 handler: function(cb, checked) {
                     this.compactLegend = checked;
