@@ -640,5 +640,25 @@ GeoExt.Lang.add("it", {
 		griesText: 'Gries',		
 		pEdText: 'Particella Edificabile',
 		pFondText: 'Particella Fondiaria'
+	},
+	
+	"gxp.plugins.SearchCosap.prototype":{
+		layerCosapTitle: 'Occupazioni Area',
+		layerCosapLogoTitle: 'Occupazioni Icone',
+		waitMsg: "Si prega di attendere ...",	
+		titleError: "Errore",	
+		cercaText: 'Cerca',		
+		cosapTitle: 'Ricerca Occupazioni',				
+		viaText: "Via",
+		civicoText: "N. Civico",
+		vieLang: "it",			
+		civicoEmpty: 'Inserisci civico',
+		viaEmpty: 'Inserisci via',		
+		viaToolTip: 'Per esempio per Via Roma digitare "Roma"',
+		daDataText: 'Da data',
+		aDataText: 'A data',		
+		errorData1: 'Inserire una data di inizio e una data fine valida.',
+		errorData2: 'La data di inizio è maggiore della data di fine.',		
+		errorLayer: 'Layer occupazioni non definito: '
 	}
 });

@@ -10,10 +10,13 @@
 			"title": "Bolzano GeoServer",
 			"SRS": "EPSG:900913",
 			"version":"1.1.1",
+		    "layersCachedExtent": [
+				-20037508.34,-20037508.34,
+				20037508.34,20037508.34
+			],
 			"layerBaseParams":{
 				"FORMAT":"image/png8",
-				"TILED":true,
-				"TILESORIGIN":"1259091.229051,5855016.830973"
+				"TILED":true
 			}
 		},
 		"mapquest": {
@@ -41,8 +44,7 @@
 			1268808.28627,5863434.458712
 		],
 		"maxExtent": [
-			1259091.229051,5855016.830973,
-			1268808.28627,5863434.458712
+                        1252344.2712499984,5850795.892246094,1271912.1504882798,5870363.771484375
 		],
 		"layers": [						
 			{
@@ -89,13 +91,41 @@
 				"source": "bolzano",
 				"title": "Ortofoto Bolzano/Bozen",
 				"name": "Cartografia:ortofoto_2010",
-				"group": "background",       
-				"format":"image/jpeg",
-				"transparent": false
+			    "layersCachedExtent": [
+					1252344.2712499984,5850795.892246094,1271912.1504882798,5870363.771484375
+				],
+				"group": "background",
+				"transparent": false,
+				"format": "image/jpeg"
 			}
 		]
 	},
-	
+			"customPanels":[
+      {
+          "xtype": "panel",
+          "title": "FeatureGrid",      
+          "border": false,
+          "id": "south",
+          "region": "south",
+          "layout": "fit",
+          "height": 330,
+          "collapsed": false,
+          "collapsible": true,
+          "header": true
+      },{
+          "xtype": "panel",
+          "title": "Query Panel",         
+          "border": false,
+          "id": "east",
+          "width": 400,
+          "height": 500,
+          "region": "east",
+          "layout": "fit",
+          "collapsed": false,
+          "collapsible": true,
+          "header": true
+      }
+    ],	
 	"tools": [
 		{
 			"ptype": "gxp_layertree",
@@ -173,7 +203,10 @@
 		}, {
 			"actions": ["-"], "actionTarget": "paneltbar"
 		}, {
-			"ptype": "gxp_wmsgetfeatureinfo_menu", "toggleGroup": "toolGroup",
+			"ptype": "gxp_wmsgetfeatureinfo_menu", 
+                        "regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
+		        "useTabPanel": true,
+                        "toggleGroup": "toolGroup",
 			"actionTarget": {"target": "paneltbar", "index": 20}
 		}, {
 			"actions": ["-"], "actionTarget": "paneltbar"
@@ -209,11 +242,47 @@
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": false,
 			"id": "addlayer"
-		}, {
-			"ptype": "gxp_geolocationmenu",
-			"outputTarget": "paneltbar",
-			"toggleGroup": "toolGroup",
-			"index": 23
-		}
+		},  {
+		  "ptype": "gxp_featuremanager",
+		  "id": "featuremanager"
+	    }, {
+		  "ptype": "gxp_featuregrid",
+		  "featureManager": "featuremanager",
+		  "outputConfig": {
+			  "id": "featuregrid",
+			  "title": "Features"
+		  },
+		  "outputTarget": "south",
+		  "showExportCSV": true
+	    }, {
+		  "ptype": "gxp_bboxqueryform",
+		  "featureManager": "featuremanager",
+		  "featureGridContainer": "south",
+		  "outputTarget": "east",
+		  "actions": null,
+		  "id": "bboxquery",
+		  "outputConfig":{
+			  "outputSRS": "EPSG:900913",
+			  "selectStyle":{
+				  "strokeColor": "#FF0000",
+				  "handlerFillColor": "#FFFFFF",
+				  "fillColor": "#FFFFFF",
+				  "fillOpacity":0,
+				  "strokeWidth":2
+			  }	,
+			  "spatialFilterOptions": {	
+				  "lonMax": 20037508.34,   
+				  "lonMin": -20037508.34,
+				  "latMax": 20037508.34,   
+				  "latMin": -20037508.34  
+			  },
+			  "bufferOptions": {
+				"minValue": 1,
+				"maxValue": 1000,
+				"decimalPrecision": 2,
+				"distanceUnits": "m"
+			  }
+		  }
+	    }
 	]
 }
