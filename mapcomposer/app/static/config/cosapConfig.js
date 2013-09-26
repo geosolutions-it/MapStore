@@ -1,12 +1,12 @@
 {
-   "geoStoreBase": "http://localhost:8080/geostore/rest/",
+   "geoStoreBase": "",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "it",
    "proj4jsDefs": {"EPSG:25832": "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs"},
    "gsSources":{ 
 		"bolzano": {
 			"ptype": "gxp_wmssource",
-			"url": "http://localhost:8080/geoserver/ows",
+			"url": "http://sit.comune.bolzano.it/geoserver/ows",
 			"title": "Bolzano GeoServer",
 			"SRS": "EPSG:900913",
 			"version":"1.1.1",
@@ -42,9 +42,6 @@
 		"extent": [
 			1259091.229051,5855016.830973,
 			1268808.28627,5863434.458712
-		],
-		"maxExtent": [
-			1252344.2712499984,5850795.892246094,1271912.1504882798,5870363.771484375
 		],
 		"layers": [						
 			{
@@ -90,7 +87,7 @@
 			},{
 				"source": "bolzano",
 				"title": "Ortofoto Bolzano/Bozen",
-				"name": "it.geosolutions:Cartografia-ortofoto_2010",
+				"name": "Cartografia:ortofoto_2010",
 			    "layersCachedExtent": [
 					1252344.2712499984,5850795.892246094,1271912.1504882798,5870363.771484375
 				],
@@ -218,7 +215,7 @@
 			"customParams":{
 				"outputFilename":"mapstore-print"
 			},
-			"printService": "http://localhost:8080/geoserver/pdf/",
+			"printService": "http://sit.comune.bolzano.it/geoserver/pdf/",
 			"legendPanelId": "legendPanel",
 			"actionTarget":{
 			    "target": "paneltbar",
@@ -259,17 +256,17 @@
 		  "featureManager": "featuremanager",
 		  "featureGridContainer": "south",
 		  "outputTarget": "east",
+		  "showSelectionSummary": true,
 		  "actions": null,
 		  "id": "bboxquery",
 		  "outputConfig":{
 			  "outputSRS": "EPSG:900913",
 			  "selectStyle":{
-				  "strokeColor": "#FF0000",
-				  "handlerFillColor": "#FFFFFF",
-				  "fillColor": "#FFFFFF",
-				  "fillOpacity":0,
-				  "strokeWidth":2
-			  }	,
+				  "strokeColor": "#ee9900",
+				  "fillColor": "#ee9900",
+				  "fillOpacity": 0.4,
+				  "strokeWidth": 1
+			  },
 			  "spatialFilterOptions": {	
 				  "lonMax": 20037508.34,   
 				  "lonMin": -20037508.34,

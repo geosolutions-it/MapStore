@@ -25,13 +25,15 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 	
 	serviceUrl: null,
 	
+	layerCosapTitle: 'occupazioni_concessioni',
+	layerCosapLogoTitle: 'occupazioni_logo',
+	
 	waitMsg: "Si prega di attendere ...",	
 	titleError: "Errore",	
 	cercaText: 'Cerca',
 	
 	cosapTitle: 'Ricerca Occupazioni',
-	layerCosapTitle: 'occupazioni_concessioni',
-	layerCosapLogoTitle: 'occupazioni_logo',
+	
 	
 	viaText: "Via",
 	civicoText: "N. Civico",
@@ -39,6 +41,16 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 		
 	civicoEmpty: 'Inserisci civico',
 	viaEmpty: 'Inserisci via',
+	
+	daDataText: 'Da data',
+	aDataText: 'A data',
+	
+	errorData1: 'Inserire una data di inizio e una data fine valida.',
+	errorData2: 'La data di inizio è maggiore della data di fine.',
+	
+	errorLayer: 'Layer occupazioni non definito: ',
+	
+	viaToolTip: 'Per esempio per Via Roma digitare "Roma"',
 		
 	constructor: function(config) {
         gxp.plugins.SearchCosap.superclass.constructor.apply(this, arguments);
@@ -93,6 +105,8 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 		      APER_DATA_INIZIO BEFORE 2013-02-31T00:00:00Z AND APER_DATA_FINE AFTER 2013-02-01T00:00:00Z
 		*/
 		
+		var me = this;
+		
 		var cosapForm = new Ext.form.FormPanel({
 			header: true,
 			border: true,
@@ -114,6 +128,7 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 					id: 'vieBox',
 					hideTrigger:true,
 					forceSelection: false,
+					scope: this,
 					listeners:{
 						select: function(combo, record, index) {
 							dsCivici.removeAll(false);
@@ -140,7 +155,7 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 				}, 
 				{
 					xtype: 'datefield',
-					fieldLabel: 'Da data',
+					fieldLabel: this.daDataText,
 					labelStyle:'font-weight:bold;',
 					id: 'daDataBox',
 					format: 'd/m/Y',
@@ -150,7 +165,7 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 				},
 				{
 					xtype: 'datefield',
-					fieldLabel: 'A data',
+					fieldLabel: this.aDataText,
 					id: 'aDataBox',
 					labelStyle:'font-weight:bold;',	
 					format: 'd/m/Y',
@@ -169,8 +184,8 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 					   
 					   if ((! startDate) || (!endDate)) {
 							Ext.Msg.show({
-								  title: 'Errore',
-								  msg: 'Inserire una data di inizio e una data fine valida.',
+								  title: this.titleError,
+								  msg: this.errorData1,
 								  width: 300,
 								  icon: Ext.MessageBox.WARNING
 							});
@@ -179,8 +194,8 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 					   
 					   if (startDate > endDate) {
 							Ext.Msg.show({
-								  title: 'Errore',
-								  msg: 'La data di inizio è maggiore della data di fine.',
+								  title: this.titleError,
+								  msg: this.errorData2,
 								  width: 300,
 								  icon: Ext.MessageBox.WARNING
 							});
@@ -205,8 +220,8 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 									}*/
 						   } else {
 								Ext.Msg.show({
-									  title: 'Errore',
-									  msg: 'Layer occupazioni non definito: ' + cosapLayers[i],
+									  title: this.titleError,
+									  msg: this.errorLayer + cosapLayers[i],
 									  width: 300,
 									  icon: Ext.MessageBox.WARNING
 								});
@@ -316,23 +331,27 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 		
 		
 		apptarget.mapPanel.map.events.register('preaddlayer', apptarget.mapPanel.map, function (e) {
-			if ((e.layer.name == 'occupazioni_concessioni') || 
-			    (e.layer.name == 'occupazioni_logo')){
-				var aDate = new Date();
-				
-				//Impostazione di un filtro iniziale.
-				e.layer.vendorParams =  {
-					"cql_filter": "APER_DATA_INIZIO <= '"+ aDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + aDate.format('Y-m-d') + "'"
-				};
-				
-				e.layer.mergeNewParams({
-					"cql_filter": "APER_DATA_INIZIO <= '"+ aDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + aDate.format('Y-m-d') + "'"
-				});
+			if (e.layer && e.layer.params) {
+				if ((e.layer.params.LAYERS == 'Cosap:occupazioni_concessioni') || 
+					(e.layer.params.LAYERS == 'Cosap:occupazioni_logo')){
+					var aDate = new Date();
+					
+					//Impostazione di un filtro iniziale.
+					e.layer.vendorParams =  {
+						"cql_filter": "APER_DATA_INIZIO <= '"+ aDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + aDate.format('Y-m-d') + "'"
+					};
+					
+					e.layer.mergeNewParams({
+						"cql_filter": "APER_DATA_INIZIO <= '"+ aDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + aDate.format('Y-m-d') + "'"
+					});
+				}
 			}
-			
 		});
 		
         
+		// Imposto il tab di ricerca come tab attivo
+		Ext.getCmp("west").setActiveTab(2);
+		
 		var panel = gxp.plugins.SearchCosap.superclass.addOutput.call(this, cosapForm);
         return panel;
     }

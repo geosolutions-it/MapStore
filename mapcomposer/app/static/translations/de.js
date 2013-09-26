@@ -654,6 +654,26 @@ GeoExt.Lang.add("de", {
 		griesText: 'Gries',		
 		pEdText: 'Bauparzelle',
 		pFondText: 'Grundparzelle'
+	},
+	
+	"gxp.plugins.SearchCosap.prototype":{
+		layerCosapTitle: 'Besetzungen Fläche',
+		layerCosapLogoTitle: 'Besetzungen Symbole',
+		waitMsg: "Bitte warten ...",	
+		titleError: "Fehler",	
+		cercaText: 'Suche',		
+		cosapTitle: 'Besetzungen Suche',				
+		viaText: "Staße",
+		civicoText: "Hausnummer",
+		viaToolTip: 'z.B. für Romstrasse "Rom" eingeben',
+		vieLang: "de",			
+		civicoEmpty: 'Hausnumm. einfügen',
+		viaEmpty: 'Strasse einfügen',		
+		daDataText: 'Von',
+		aDataText: 'Bis',		
+		errorData1: 'Geben Sie ein gültiges Beginn- und Enddatum ein.',
+		errorData2: 'Das Beginndatum ist größer als das Enddatum.',		
+		errorLayer: 'Besetzungen Eben nicht gefunden: '
 	}
 
 });

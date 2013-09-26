@@ -92,7 +92,7 @@ gxp.plugins.Measure = Ext.extend(gxp.plugins.Tool, {
      * api: config[enableBearingTool]
      * set false to remove the bearing tool
      */
-    enableBearingTool:true,
+    enableBearingTool:false,
     /** private: method[constructor]
      */
     constructor: function(config) {
@@ -184,9 +184,10 @@ gxp.plugins.Measure = Ext.extend(gxp.plugins.Tool, {
 				nmi = Math.round(nmi*100)/100;
 			}
 			var lenghtmeasure = metricData.geometry.CLASS_NAME.indexOf("LineString") > -1;
-            return metric.toFixed(2) + " " + metricUnit + dim + "<br>" +
-                english.toFixed(2) + " " + englishUnit + dim + "<br>" +
-				(lenghtmeasure?nmi + " " + "nmi":"") ;
+            return metric.toFixed(2) + " " + metricUnit + dim;
+				// + "<br>" +
+                // english.toFixed(2) + " " + englishUnit + dim + "<br>" +
+				// (lenghtmeasure?nmi + " " + "nmi":"") ;
         };
 
         var measureToolTip;
