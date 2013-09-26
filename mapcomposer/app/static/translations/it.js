@@ -5,7 +5,7 @@
 GeoExt.Lang.add("it", {
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Livello di Zoom: {zoom}</div><div>Scala: 1:{scale}</div>",
-        loadConfigErrorText: "Impossibile leggerre la configurazione salvata : <br />",
+        loadConfigErrorText: "Impossibile leggere la configurazione salvata : <br />",
         loadConfigErrorDefaultText: "Errore del Server.",
         xhrTroubleText: "Problemi di comunicazione: Stato ",
         layersText: "Livelli",
@@ -21,7 +21,7 @@ GeoExt.Lang.add("it", {
         mapInfoText: "Informazioni Mappa",
         descriptionText: "Descrizione",
         contactText: "Contatto",
-        aboutThisMapText: "Approposito di questa Mappa",
+        aboutThisMapText: "Informazioni",
         searchTabTitle : "Portale",
         viewTabTitle : "Vista",
 		markerPopupTitle: "Dettagli",
@@ -36,12 +36,12 @@ GeoExt.Lang.add("it", {
         backText: "Precedente",
         nextText: "Prossimo",
         loginText: "Login",
-        loginErrorText: "Username o password invalidi.",
+        loginErrorText: "Username o password non validi.",
         userFieldText: "Utente",
         passwordFieldText: "Password",
         fullScreenText: "Schermo Intero",
         cswMsg: 'Caricamento...',
-		cswFailureAddLayer: ' Il layer n on può essere aggiunto alla mappa',
+		cswFailureAddLayer: ' Il layer non può essere aggiunto alla mappa',
         alertEmbedTitle: 'Attenzione',
         alertEmbedText: "Salvare la mappa prima di utilizzare il tool 'Pubblicazione Mappa'",
 	    cswZoomToExtentMsg: "BBOX non disponibile",
@@ -128,10 +128,10 @@ GeoExt.Lang.add("it", {
     },
 
     "gxp.plugins.NavigationHistory.prototype": {
-        previousMenuText: "Zoom alla precedente estenzione",
-        nextMenuText: "Zoom alla prossima estenzione",
-        previousTooltip: "Zoom alla precedente estenzione",
-        nextTooltip: "Zoom alla prossima estenzione"
+        previousMenuText: "Zoom alla precedente estensione",
+        nextMenuText: "Zoom alla prossima estensione",
+        previousTooltip: "Zoom alla precedente estensione",
+        nextTooltip: "Zoom alla prossima estensione"
     },
 
     "gxp.plugins.OSMSource.prototype": {
@@ -185,8 +185,8 @@ GeoExt.Lang.add("it", {
     },
     
     "gxp.plugins.ZoomToExtent.prototype": {
-        menuText: "Zoom massima estenzione",
-        tooltip: "Zoom massima estenzione"
+        menuText: "Zoom massima estensione",
+        tooltip: "Zoom massima estensione"
     },
     
     "gxp.plugins.ZoomToDataExtent.prototype": {
@@ -207,7 +207,7 @@ GeoExt.Lang.add("it", {
         displayText: "Display",
         opacityText: "Opacità",
         formatText: "Formato",
-        transparentText: "Transparenza",
+        transparentText: "Trasparenza",
         cacheText: "Cache",
         cacheFieldText: "Usa versione in cache",
         stylesText: "Stile"
@@ -287,8 +287,8 @@ GeoExt.Lang.add("it", {
 	
     "gxp.plugins.GeoReferences.prototype": {
         initialText: "Seleziona un'area",
-        menuText: "Geo Referimenti",
-        tooltip: "Geo Referimenti"
+        menuText: "Geo Riferimenti",
+        tooltip: "Geo Riferimenti"
     },
 
     "gxp.plugins.ZoomBox.prototype":{
@@ -299,7 +299,7 @@ GeoExt.Lang.add("it", {
     },
 
     "GeoExt.ux.PrintPreview.prototype":{
-	    paperSizeText: "Dimesioni del foglio:",
+	    paperSizeText: "Dimensioni del foglio:",
 	    resolutionText: "Risoluzione:",
 	    printText: "Stampa",
 	    emptyTitleText: "Inserisci qui il titolo della mappa.",
@@ -319,26 +319,19 @@ GeoExt.Lang.add("it", {
         groupPropertiesMenuText:  "Proprietà del gruppo",
         groupPropertiesActionTip:  "Proprietà del gruppo",
         groupPropertiesDialogTitle: "Proprietà del gruppo - ",
-        groupPropertiesFieldSetText: "Nome del Gruppo",
-        groupPropertiesFieldLabel: "Nuovo nome del Gruppo",
+        groupPropertiesFieldSetText: "Nome del gruppo",
+        groupPropertiesFieldLabel: "Nuovo nome del gruppo",
         groupPropertiesButtonText: "Fatto",
         groupPropertiesMsg: "Si prega di inserire il nome del gruppo."
     },
 
     "gxp.plugins.Login.prototype":{
         loginText: "Login",
-        loginErrorText: "Username o password invalidi.",
+        loginErrorText: "Username o password non validi.",
         userFieldText: "Utente",
         passwordFieldText: "Password"
     },
 
-    "gxp.plugins.Login.prototype":{
-      loginText: "Se connecter",
-          loginErrorText: "Nom d`utilisateur ou mot de passe incorrect",
-          userFieldText: "Utilisateur",
-          passwordFieldText: "Mot de passe"
-    },
-	
     "gxp.plugins.FeatureGrid.prototype": {
         displayFeatureText: "Visualizza in mappa",
         firstPageTip: "Prima pagina",
@@ -352,19 +345,20 @@ GeoExt.Lang.add("it", {
         exportCSVSingleText: "Singola pagina",
         exportCSVMultipleText: "Tutte le pagine",
         failedExportCSV: "Impossibile esportare nel formato CSV",
-        invalidParameterValueErrorText: "Valore parametro non valido"            
+        invalidParameterValueErrorText: "Valore parametro non valido",
+		zoomToFeature: "Zoom alla Feature"            
     },
 	
     "gxp.plugins.QueryForm.prototype": {
         queryActionText: "Interrogazione",
         queryMenuText: "Interrogazione livello",
-        queryActionTip: "Interrogazione il livello selezionato",
+        queryActionTip: "Interrogazione del livello selezionato",
         queryByLocationText: "Regione di Interesse",
         currentTextText: "Estensione corrente",
         queryByAttributesText: "Interrogazione per attributo",
         queryMsg: "Interrogazione in corso...",
         cancelButtonText: "Reimposta",
-        noFeaturesTitle: "Nessun Risultato",
+        noFeaturesTitle: "Nessun risultato",
         noFeaturesMessage: "La tua ricerca non ha prodotto risultati.",
         title: "Ricerca",
         attributeEnablement: "Interrogazione per Attributo",
@@ -376,11 +370,12 @@ GeoExt.Lang.add("it", {
     
     "gxp.plugins.BBOXQueryForm.prototype": {
         selectionMethodFieldSetComboTitle: "Metodo di Selezione",
+        comboEmptyText: "Seleziona un metodo..",
         comboSelectionMethodLabel: "Selezione",
         comboPolygonSelection: 'Poligono',
         comboCircleSelection: 'Cerchio',
-        comboBBOXSelection: 'BBOX',
-		errorBBOXText: "Il BBOX selezionato è invalido!",
+        comboBBOXSelection: 'Bounding Box',
+		errorBBOXText: "Il BBox selezionato è invalido!",
         errorDrawPolygonText: "Si deve disegnare il Poligono",
         errorDrawCircleText: "Si deve disegnare il Cerchio",     
         errorDrawTitle: "Errore nella richiesta",
@@ -389,7 +384,7 @@ GeoExt.Lang.add("it", {
     },
 	
 	"gxp.widgets.form.BufferFieldset.prototype": {
-		bufferFieldLabel: "Intervallo del Buffer",
+		bufferFieldLabel: "Raggio",
 		bufferFieldSetTitle: "Buffer",
 		coordinatePickerLabel: "Coordinate",
 		draweBufferTooltip: "Disegna il Buffer"
@@ -402,8 +397,8 @@ GeoExt.Lang.add("it", {
         southLabel:"Sud",
         setAoiText: "ImpostaROI",
         waitEPSGMsg: "Caricamento in corso... Attendere",
-        setAoiTooltip: "Abilita il controllo SetBox per disegnare una ROI (BBOX) sulla mappa",
-        title: "Regione di Interesse"
+        setAoiTooltip: "Abilita il controllo SetBox per disegnare una ROI (BBox) sulla mappa",
+        title: "Bounding Box"
     },
     
     "gxp.FilterBuilder.prototype":{
@@ -506,8 +501,8 @@ GeoExt.Lang.add("it", {
 	
 	"gxp.plugins.GeoLocationMenu.prototype": {
         initialText: "Seleziona un'area",
-        menuText: "Geo Referimenti",
-        tooltip: "Geo Referimenti",
+        menuText: "Geo Riferimenti",
+        tooltip: "Geo Riferimenti",
         addMarkerTooltip: "Resetta Marker",
         emptyText: "Geocoder...",
         buttonText: "Indirizzo",
@@ -532,8 +527,8 @@ GeoExt.Lang.add("it", {
 			"map": {
 				"saveText" : "Esportazione Mappa",
 				"loadText" : "Importazione Mappa",
-				"uploadWindowTitle" : "Importa file di contesta di mappa",
-				"downloadWindowTitle" : "Esporta file di contesta di mappa"
+				"uploadWindowTitle" : "Importa file di contesto di mappa",
+				"downloadWindowTitle" : "Esporta file di contesto di mappa"
 			},
 			"kml/kmz": {
 				"saveText" : "Esportazione KML",
@@ -562,7 +557,7 @@ GeoExt.Lang.add("it", {
 		filenameLabel: "Nome del file di mappa",
 		waitMsgText: "In corso la generazione del file di mappa ...",
 		resetText: "Reset",
-		failedUploadingTitle: "Impossibile generara il file di mappa",
+		failedUploadingTitle: "Impossibile generare il file di mappa",
 		saveErrorText: "Errori riscontrati: "
 	},
    

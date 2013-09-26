@@ -852,20 +852,31 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
 		if(filter){
 			if(filter.value instanceof OpenLayers.Geometry.Polygon){
 				extent = filter.value.bounds;
+			}else if(filter.value instanceof OpenLayers.Bounds){
+				extent = filter.value;
 			}else if(filter.value instanceof OpenLayers.Geometry.Point){
 			
-				var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
+				var geodesicPolygon = OpenLayers.Geometry.Polygon.createGeodesicPolygon(
+					filter.value,
+					filter.distance,
+					100, 
+					0,
+					this.target.mapPanel.map.getProjectionObject()
+				);
+				
+				/*var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
 					filter.value,
 					filter.distance,
 					100, 
 					null
-				);
+				);*/
 				
-				extent = regularPolygon.getBounds();
+				extent = geodesicPolygon.getBounds();
 			}else{
 				extent = this.target.mapPanel.map[meth]();
 			}		
 		}
+		
         //var extent = filter ? filter.value : this.target.mapPanel.map[meth]();
         if (extent && layer.maxExtent) {
             if (extent.containsBounds(layer.maxExtent)) {

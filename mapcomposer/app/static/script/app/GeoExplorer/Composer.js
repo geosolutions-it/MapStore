@@ -70,8 +70,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		        }, {
 		            ptype: "gxp_addlayers",
 		            actionTarget: "tree.tbar",
-					id: "addlayers",
-		            upload: true
+					id: "addlayers"
 		        }, {
 		            ptype: "gxp_removelayer",
 		            actionTarget: ["tree.tbar", "layertree.contextMenu"]
@@ -280,7 +279,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     /** private: method[showEmbedWindow]
      */
     showEmbedWindow: function() {        
-	    if (this.mapId == -1 || (this.modified == true && authorization == true)){
+	    if (this.mapId == -1 || (this.modified == true && this.auth == true)){
             Ext.MessageBox.show({
                 title: this.alertEmbedTitle,
                 msg: this.alertEmbedText,

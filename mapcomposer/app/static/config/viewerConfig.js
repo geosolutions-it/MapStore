@@ -28,6 +28,8 @@
 	
 	"customTools":[
 		{
+			"ptype": "gxp_mouseposition"
+		},{
 			"ptype": "gxp_geolocationmenu",
 			"outputTarget": "paneltbar",
 			"toggleGroup": "toolGroup",

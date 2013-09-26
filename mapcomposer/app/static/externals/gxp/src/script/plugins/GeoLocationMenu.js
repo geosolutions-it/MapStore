@@ -543,6 +543,7 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
             data :  this.target.georeferences
         });
 		
+		this.geoRefListener;
         var georeferencesSelector = new Ext.form.ComboBox({
             store: georeferencesStore,
             displayField: 'name',
@@ -556,7 +557,15 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
             resizable: true,
             listeners: {
 			    scope: this,
-                select: function(cb, record, index) {                
+                select: function(cb, record, index) {   
+					
+					//
+					// Every time a reference is selected clean the previous listener in order to avoid event queue
+					//	
+					if(this.geoRefListener){
+						this.target.mapPanel.map.events.unregister("moveend", this, this.geoRefListener);
+					}
+					
                     var center,
 					bbox = new OpenLayers.Bounds.fromString(record.get('geometry')),      	
                     
@@ -631,10 +640,19 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
 					} else {
 						this.target.mapPanel.map.zoomToExtent(bbox);                    
 					}
+					
+					//
+					// The georeference combo should be cleaned if the current extent change
+					//						
+					this.geoRefListener = function(){
+						cb.reset();
+					};
+					
+					this.target.mapPanel.map.events.register("moveend", this, this.geoRefListener);
                 }
             }
         });
-        
+		
         return georeferencesSelector;
 	},
 	

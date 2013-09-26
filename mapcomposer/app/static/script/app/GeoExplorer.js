@@ -492,30 +492,32 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 border: false
             },
             items: [
-                this.mapPanel
-                ,googleEarthPanel
+                this.mapPanel,
+                googleEarthPanel
             ],
             activeItem: 0,
             tbar: this.toolbar
         });
-        var portalPanels = [this.mapPanelContainer,
-                    westPanel];
+		
+        var portalPanels = [this.mapPanelContainer, westPanel];
+		
 		//collect additional panels to add them after init portal
-		var additionalPanels=[];
+		var additionalPanels = [];
+		
         if(this.customPanels){
-			var toPortal=[];
-			var pans =this.customPanels;
-			for (var i =0; i < pans.length;i++){
+			var toPortal = [];
+			var pans = this.customPanels;
+			for (var i = 0; i < pans.length; i++){
 				if(pans[i].target){
-					additionalPanels.push(pans[i]);
-					
+					additionalPanels.push(pans[i]);					
 				}else{
 					toPortal.push(pans[i]);
 				}
 			}
 			
-            var portalPanels =portalPanels.concat(toPortal);
+            var portalPanels = portalPanels.concat(toPortal);
         }
+		
         this.portalItems = [{
             region: "center",
             layout: "border",            
@@ -523,8 +525,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         }];
         
         GeoExplorer.superclass.initPortal.apply(this, arguments);  
-		for(var i =0;i< additionalPanels.length;i++){
-			var target =Ext.getCmp(additionalPanels[i].target);
+		for(var i = 0; i< additionalPanels.length; i++){
+			var target = Ext.getCmp(additionalPanels[i].target);
 			target.add(additionalPanels[i]);
 			target.doLayout();
 		}
@@ -1239,8 +1241,20 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      */
     getState: function() {
         var state = GeoExplorer.superclass.getState.apply(this, arguments);
-        // Don't persist tools
+        
+		// ///////////////////////////////////////////
+		// Don't persist unnecessary components. 
+		// Only the map details are mandatory, other
+        // elements are merged from the default 
+		// configuration.
+		// ///////////////////////////////////////////
+		
         delete state.tools;
+		delete state.customTools;
+		delete state.viewerTools;
+		delete state.georeferences;
+		delete state.customPanels;
+		
         return state;
     }
 });

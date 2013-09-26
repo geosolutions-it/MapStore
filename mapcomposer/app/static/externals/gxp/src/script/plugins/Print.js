@@ -150,7 +150,7 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
 				var notIgnorable = new Array();
 				for (var i = 0; i< length;i++){
 					var layerName = notSupported[i];
-					if (ignorable.indexOf(layerName)<0) {
+					if (layerName && ignorable.indexOf(layerName)<0) {
 						notIgnorable.push (notSupported[i]);
 					}
 	
@@ -178,7 +178,7 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                                 ( notIgnorable.indexOf('Marker') != -1 ? '<br />'+ this.notPrintableMarkersText : '')
                             );
                             
-                        } else {                    
+                        } else {              
 							createPrintWindow.call(this);
 							showPrintWindow.call(this);
 						}

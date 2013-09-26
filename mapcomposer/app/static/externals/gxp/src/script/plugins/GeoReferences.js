@@ -106,7 +106,9 @@ gxp.plugins.GeoReferences = Ext.extend(gxp.plugins.Tool, {
 
         var map = this.target.mapPanel.map;
         var that = this;
-        var georeferencesSelector = new Ext.form.ComboBox({
+		
+		this.geoRefListener;
+        this.georeferencesSelector = new Ext.form.ComboBox({
             store: georeferencesStore,
             displayField: 'name',
             typeAhead: true,
@@ -120,6 +122,13 @@ gxp.plugins.GeoReferences = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 select: function(cb, record, index) {
                 
+					//
+					// Every time a reference is selected clean the previous listener in order to avoid event queue
+					//	
+					if(this.geoRefListener){
+						map.events.unregister("moveend", this, this.geoRefListener);
+					}
+					
                     var center,
                     	bbox = new OpenLayers.Bounds.fromString(record.get('geometry')),      	
                     
@@ -192,12 +201,26 @@ gxp.plugins.GeoReferences = Ext.extend(gxp.plugins.Tool, {
 						map.zoomToExtent(bbox);	
 					
 						Ext.get(markers.id).fadeOut({ endOpacity: 0.01, duration: that.markerFadeoutDelay});	//fadeout marker, no change 0.01
+					} else {
+						map.zoomToExtent(bbox);  
 					}
-					else
-						map.zoomToExtent(bbox);                    
+
+					//
+					// The georeference combo should be cleaned if the current extent change
+					//						
+					this.geoRefListener = function(){
+						cb.reset();
+					};
+					
+					map.events.register("moveend", this, this.geoRefListener);						
                 }
             }
         });
+		
+		map.events.register("zoomend", this, function(){
+			alert("eco");
+			this.georeferencesSelector.reset();
+		});
         
         var actions = [georeferencesSelector];
         return gxp.plugins.GeoReferences.superclass.addActions.apply(this, [actions]);

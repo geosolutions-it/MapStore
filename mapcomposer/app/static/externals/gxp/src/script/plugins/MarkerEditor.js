@@ -89,6 +89,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
 		target =this.target;
 		this.markerChooser = new Ext.Button({
 			xtype: 'button',
+			margins: {top:0, right:5, bottom:10, left:0},
 			width:30,
 			ref:'../markerChooser',
 			tooltip:this.selectMarkerText,

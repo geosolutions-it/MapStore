@@ -92,6 +92,8 @@
 	
 	"customTools":[
 		{
+			"ptype": "gxp_mouseposition"
+		},{
 			"ptype": "gxp_metadataexplorer",
 			"id": "metadataexplorer",
             "outputTarget": "south",

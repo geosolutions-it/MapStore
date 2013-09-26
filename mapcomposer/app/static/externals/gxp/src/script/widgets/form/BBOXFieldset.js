@@ -170,7 +170,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             +" border-style:solid; \n"
             +" border-color: "+this.selectStyle.strokeColor+";"
             +" position: absolute; \n"
-            +" background-color: "+this.selectStyle.handlerFillColor+"; \n"
+            +" background-color: "+this.selectStyle.fillColor+"; \n"
             +" opacity: "+0.5+"; \n"
             +" font-size: 1px; \n"
             +" filter: alpha(opacity="+0.5 * 100+"); \n"
@@ -247,6 +247,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             text: this.setAoiText,
             tooltip: this.setAoiTooltip,
             enableToggle: true,
+            toggleGroup: this.toggleGroup,
             iconCls: 'aoi-button',
             height: 50,
             width: 50,
@@ -257,7 +258,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
                         //
                         // Reset the previous control
                         //
-                        this.reset();
+                        //this.reset();
 
                         //
                         // Activating the new control
@@ -452,7 +453,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             this.southField.getValue(), 
             this.eastField.getValue(), 
             this.northField.getValue()
-            )
+        );
     },
     
     /** private: method[openEpsgWin]

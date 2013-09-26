@@ -6,8 +6,8 @@
 	<!-- Basic OpenLayers libs -->
     <script type="text/javascript" src="script/OpenLayers.js"></script>		
 	
-	<!-- Externatls OpenLayers libraries to manage other extensions
-	<script type="text/javascript" src="script/OpenLayersExt.js"></script> -->
+	<!-- Externatls OpenLayers libraries to manage other extensions -->
+	<script type="text/javascript" src="script/OpenLayersExt.js"></script> 
 	
 	<!-- colorpicker resources 
     <link rel="stylesheet" type="text/css" href="externals/colorpicker/css/colorpicker.css">
@@ -71,6 +71,18 @@
       </div>
     </div>
 	-->	
+	
+    <!-- This defines the OpenLayers.Control.MousePosition CSS -->
+	<style>
+		.olControlMousePosition {
+			top: 5px !important;
+			right: 5px !important;
+			font-size: 3em;
+			color: lightgrey;
+			height: 20px;
+		}
+	</style>
+	
     <script>
         
         var app;        
@@ -442,9 +454,10 @@
 						);
 					}
  							
-					if(layName && gnBaseUrl && uuid){
-						app.viewMetadata(gnBaseUrl + "srv/" + code + "/", uuid, title);
-						appTabs.setActiveTab(2);
+					if(/*layName &&*/ gnBaseUrl && uuid){
+                        var metadataTitle = title ? title : uuid;
+						app.viewMetadata(gnBaseUrl + "srv/" + code + "/", uuid, metadataTitle);
+						//appTabs.setActiveTab(2);
 					}
                 }
             });

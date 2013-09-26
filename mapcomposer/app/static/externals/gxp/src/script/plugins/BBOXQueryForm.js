@@ -51,6 +51,12 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
      */    
     selectionMethodFieldSetComboTitle: "Set Selection Method",
 	
+    /** api: config[comboEmptyText]
+     * ``String``
+     * Text for empty Combo Selection Method (i18n).
+     */    
+    comboEmptyText: "Select a method..",
+
 	/** api: config[comboSelectionMethodLabel]
      * ``String``
      * Text for Label Combo Selection Method (i18n).
@@ -117,12 +123,25 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
      */ 
 	errorBufferText: "The selected buffer is invalid!",
 	
+	/** private
+	 *  OpenLayers.Style
+	 *  default style for temporary layers
+	 */
+	style : null,
+	
 	useDefinedExtent: false,
     
     init: function(target) {
         
         var me = this;
       
+        if(!this.style){
+            this.style = new OpenLayers.Style();
+            if(this.outputConfig){
+                Ext.apply(this.style.defaultStyle, this.outputConfig.selectStyle);
+            }
+        }
+        
         var confbbox = Ext.apply({
             map: target.mapPanel.map,
             checkboxToggle: false,
@@ -207,6 +226,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     mode: 'local',
                     name:'selection_method',
                     forceSelected:true,
+                    emptyText: this.comboEmptyText,
                     allowBlank:false,
                     autoLoad:true,
                     displayField: 'label',
@@ -242,6 +262,8 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                                 }
                             });
                             
+                            // For every enabled tool in the toolbar, toggle the button off (deactivating the tool)
+                            // Then add a listener on 'click' and 'menushow' to reset the BBoxQueryForm to disable all active tools
                             for (var i = 0;i<disabledItems.length;i++){
                                 if(disabledItems[i].toggleGroup){
                                     if(disabledItems[i].scope && disabledItems[i].scope.actions){
@@ -256,16 +278,20 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 
                                             disabledItems[i].scope.actions[a].on({
                                                 "click": function(evt) {
-                                                    var clearButton = this.output[0].getBottomToolbar().items.items[1];
-                                                    clearButton.handler.call(clearButton.scope, clearButton, Ext.EventObject);
+                                                     if (me.draw) {me.draw.deactivate();};
+                                                     // TODO 'Circle' and 'Poligon' tool have no other visual way to display
+                                                     // their statuses (active, not active), apart from the combobox
+                                                     // The clearValue() is intended to tell user that the tool is not enabled
+                                                     //me.output[0].outputType.clearValue();
+
                                                 },
                                                 "menushow": function(evt) {
                                                     var menuItems = evt.menu.items.items;
                                                     for (var i = 0;i<menuItems.length;i++){
                                                         menuItems[i].enable();
                                                     }
-                                                    var clearButton = this.output[0].getBottomToolbar().items.items[1];
-                                                    clearButton.handler.call(clearButton.scope, clearButton, Ext.EventObject);
+                                                     if (me.draw) {me.draw.deactivate();};
+                                                     //me.output[0].outputType.clearValue();
                                                 },
                                                 scope: this
                                             });
@@ -275,18 +301,54 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                             }
             
                             var outputValue = c.getValue();
-                            if (me.draw) {me.draw.deactivate()};
-                            if (me.drawings) {me.drawings.destroyFeatures()};
-                            if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({})};
-                            if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({})};
+                            if (me.draw) {me.draw.deactivate();};
+                            if (me.drawings) {me.drawings.destroyFeatures();};
+                            if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({});};
+                            if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({});};
                             
                             if(outputValue == 'circle'){
                                 queryForm.spatialFieldset.hide();
                                 queryForm.spatialFieldset.disable();
 								
 								queryForm.bufferFieldset.disable();
+								
+								// Disable current active tool
+                                var currently_pressed = Ext.ButtonToggleMgr.getPressed(me.bufferFieldSet.toggleGroup);
+                                if(currently_pressed){
+                                    currently_pressed.toggle(false);
+                                    currently_pressed.on( "menushow",
+										function(evt) {
+											var menuItems = evt.menu.items.items;
+											for (var i = 0;i<menuItems.length;i++){
+												menuItems[i].enable();
+											}
+											if (this.draw) {
+												this.draw.deactivate();
+											}
+										},
+                                        me,
+										{single : true}
+									);
+									
+									currently_pressed.on("click",
+										function(evt) {
+											if (this.draw) {
+												this.draw.deactivate();
+											}
+										},
+										me,
+										{single : true}
+									);
+                                }
                                 
-                                me.drawings = new OpenLayers.Layer.Vector({},{displayInLayerSwitcher:false});
+                                me.drawings = new OpenLayers.Layer.Vector({},
+									{
+										displayInLayerSwitcher:false,
+										styleMap: new OpenLayers.StyleMap({
+											"default": this.style
+										})
+									}
+								);
                                 
                                 this.target.mapPanel.map.addLayer(me.drawings);
                                 var polyOptions = {sides: 100};
@@ -321,8 +383,9 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 								
                                 queryForm.bufferFieldset.disable();
 								
-                                me.bboxFielset.removeBBOXLayer();
-                                me.bboxFielset.setBBOX(me.target.mapPanel.map.getExtent());
+                                //me.bboxFielset.removeBBOXLayer();
+                                //me.bboxFielset.setBBOX(me.target.mapPanel.map.getExtent());
+								me.bboxFielset.reset();
                                 
                             }else if(outputValue == 'polygon'){                            
                                 queryForm.spatialFieldset.hide();
@@ -330,13 +393,55 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 								
                                 queryForm.bufferFieldset.disable();
                                 
-                                me.drawings = new OpenLayers.Layer.Vector({},{displayInLayerSwitcher:false});
+                                // Disable current active tool
+                                var currently_pressed = Ext.ButtonToggleMgr.getPressed(me.bufferFieldSet.toggleGroup);
+                                if(currently_pressed){
+                                    currently_pressed.toggle(false);
+                                    currently_pressed.on( "menushow",
+										function(evt) {
+											var menuItems = evt.menu.items.items;
+											for (var i = 0;i<menuItems.length;i++){
+												menuItems[i].enable();
+											}
+											if (this.draw) {
+												this.draw.deactivate();
+											}
+										},
+                                        me,
+										{single : true}
+									);
+									
+									currently_pressed.on("click",
+										function(evt) {
+											if (this.draw) {
+												this.draw.deactivate();
+											}
+										},
+										me,
+										{single : true}
+									);
+                                }
+								
+                                me.drawings = new OpenLayers.Layer.Vector({},
+									{
+										displayInLayerSwitcher:false,
+										styleMap: new OpenLayers.StyleMap({
+											"default": this.style
+										})
+									}
+								);
+
                                 this.target.mapPanel.map.addLayer(me.drawings);
                                 
                                 me.draw = new OpenLayers.Control.DrawFeature(
                                     me.drawings,
                                     OpenLayers.Handler.Polygon
                                 );
+                                
+                                // disable pan while drawing
+                                // TODO: make it configurable
+                                me.draw.handler.stopDown = true;
+                                me.draw.handler.stopUp = true;
                                 
                                 this.target.mapPanel.map.addControl(me.draw);
                                 me.draw.activate();
@@ -375,7 +480,14 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                 xtype: "fieldset",
                 ref: "attributeFieldset",
                 title: this.queryByAttributesText,
-                checkboxToggle: true
+                checkboxToggle: true,
+                collapsed : true,
+				listeners: {
+					scope: this,
+					expand: function(panel){
+						panel.doLayout();
+					}
+				}
             }],
             bbar: ["->", {   
                 scope: this,    
@@ -385,7 +497,8 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     this.resetFeatureManager();
 					
                     this.bboxFielset.removeBBOXLayer();
-                    this.bboxFielset.setBBOX(this.target.mapPanel.map.getExtent());
+                    //this.bboxFielset.setBBOX(this.target.mapPanel.map.getExtent());
+					this.bboxFielset.reset();
 					
 					this.bufferFieldSet.resetPointSelection();
 					this.bufferFieldSet.coordinatePicker.toggleButton(false);
@@ -393,10 +506,10 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     var methodSelection = this.output[0].outputType;
                     methodSelection.setValue('bbox');
 					
-                    if (me.draw) {me.draw.deactivate()};
-                    if (me.drawings) {me.drawings.destroyFeatures()};
-                    if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({})};
-                    if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({})};    
+                    if (me.draw) {me.draw.deactivate();};
+                    if (me.drawings) {me.drawings.destroyFeatures();};
+                    if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({});};
+                    if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({});};    
 					
                     var ownerCt = this.outputTarget ? queryForm.ownerCt :
                         queryForm.ownerCt.ownerCt;
@@ -469,20 +582,28 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 								 distance: radius
 							});*/
 							
-							var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
+							var geodesicPolygon = OpenLayers.Geometry.Polygon.createGeodesicPolygon(
+								radiusPoint,
+								radius,
+								100, 
+								0,
+								this.target.mapPanel.map.getProjectionObject()
+							);
+						
+							/*var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
 								radiusPoint,
 								radius,
 								100, 
 								null
-							);
+							);*/
 							
-							var bounds = regularPolygon.getBounds();							
-							regularPolygon.bounds = bounds;
+							var bounds = geodesicPolygon.getBounds();							
+							geodesicPolygon.bounds = bounds;
 																
 						    var radiusFilter = new OpenLayers.Filter.Spatial({
 								type: OpenLayers.Filter.Spatial.INTERSECTS,
 								property: this.featureManagerTool.featureStore.geometryName,
-								value: regularPolygon
+								value: geodesicPolygon
 							});
 			 
 							filters.push(radiusFilter);
@@ -611,22 +732,22 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 				queryForm.bufferFieldset.disable();
 				queryForm.bufferFieldset.resetPointSelection();
 				
-                queryForm.attributeFieldset.expand();			
+                //queryForm.attributeFieldset.expand();			
 				methodSelection.setValue('bbox');
 				
-				if (me.draw) {me.draw.deactivate()};
-				if (me.drawings) {me.drawings.destroyFeatures()};
-				if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({})};
-				if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({})};   
+				if (me.draw) {me.draw.deactivate();};
+				if (me.drawings) {me.drawings.destroyFeatures();};
+				if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({});};
+				if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({});};   
             } else {
                 queryForm.attributeFieldset.rendered && queryForm.attributeFieldset.collapse();
                 queryForm.spatialFieldset.rendered && queryForm.spatialFieldset.hide();
                 methodSelection.setValue('bbox');
 				
-				if (me.draw) {me.draw.deactivate()};
-				if (me.drawings) {me.drawings.destroyFeatures()};
-				if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({})};
-				if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({})};  
+				if (me.draw) {me.draw.deactivate();};
+				if (me.drawings) {me.drawings.destroyFeatures();};
+				if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({});};
+				if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({});};  
             }
 			
             queryForm.attributeFieldset.doLayout();
@@ -637,12 +758,12 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         this.addFilterBuilder(this.featureManagerTool,
             this.featureManagerTool.layerRecord, this.featureManagerTool.schema
         );
-        
+        /*
         this.target.mapPanel.map.events.register("moveend", this, function() {
             this.bboxFielset.removeBBOXLayer();
             this.bboxFielset.setBBOX(this.target.mapPanel.map.getExtent())
         });
-        
+        */
         this.featureManagerTool.on({
             "beforequery": function() {
                 new Ext.LoadMask(queryForm.getEl(), {
@@ -671,5 +792,38 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         return queryForm;
     }
 });
+
+/*
+ * APIMethod: createGeodesicPolygon
+ * Create a regular polygon around a radius. Useful for creating circles
+ * and the like.
+ *
+ * Parameters:
+ * origin - {<OpenLayers.Geometry.Point>} center of polygon.
+ * radius - {Float} distance to vertex, in map units.
+ * sides - {Integer} Number of sides. 20 approximates a circle.
+ * rotation - {Float} original angle of rotation, in degrees.
+ * projection - {<OpenLayers.Projection>} the map's projection
+ */
+OpenLayers.Geometry.Polygon.createGeodesicPolygon = function(origin, radius, sides, rotation, projection){
+	if (projection.getCode() !== "EPSG:4326") {
+		origin.transform(projection, new OpenLayers.Projection("EPSG:4326"));
+	}
+	var latlon = new OpenLayers.LonLat(origin.x, origin.y);
+	
+	var angle;
+	var new_lonlat, geom_point;
+	var points = [];
+	
+	for (var i = 0; i < sides; i++) {
+		angle = (i * 360 / sides) + rotation;
+		new_lonlat = OpenLayers.Util.destinationVincenty(latlon, angle, radius);
+		new_lonlat.transform(new OpenLayers.Projection("EPSG:4326"), projection);
+		geom_point = new OpenLayers.Geometry.Point(new_lonlat.lon, new_lonlat.lat);
+		points.push(geom_point);
+	}
+	var ring = new OpenLayers.Geometry.LinearRing(points);
+	return new OpenLayers.Geometry.Polygon([ring]);
+};
 
 Ext.preg(gxp.plugins.BBOXQueryForm.prototype.ptype, gxp.plugins.BBOXQueryForm);
