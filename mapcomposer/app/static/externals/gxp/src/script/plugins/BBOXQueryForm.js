@@ -129,7 +129,19 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 	 */
 	style : null,
 	
-	useDefinedExtent: false,
+	showSelectionSummary: true,
+	
+	areaLabel: "Area",
+	
+	perimeterLabel: "Perimetro",
+	
+	radiusLabel: "Raggio",
+	
+	centroidLabel: "Centroide",
+	
+	selectionSummary: "Sommario Selezione",
+	
+	geodesic: true,
     
     init: function(target) {
         
@@ -151,6 +163,14 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         }, this.outputConfig); 
 		
         this.bboxFielset = new gxp.form.BBOXFieldset(confbbox);
+		
+		this.bboxFielset.on("select", function(evt, bounds){
+			this.addFeatureSummary(bounds);
+		}, this);
+		
+	    /*this.bboxFielset.on("unselect", function(evt){
+			this.removeFeatureSummary();
+		}, this);*/
 
 		this.bufferFieldSet = new gxp.widgets.form.BufferFieldset({
 			anchor: '100%',
@@ -164,6 +184,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 		    decimalPrecision: this.outputConfig.bufferOptions.decimalPrecision,
 			outputSRS: this.outputConfig.outputSRS,
 			selectStyle: this.outputConfig.selectStyle,
+			geodesic: this.geodesic,
 			listeners: {
 				disable: function(){
 					this.hide();
@@ -173,6 +194,14 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 				}
 			}
 		});
+		
+		this.bufferFieldSet.on("bufferadded", function(evt, feature){
+			this.addFeatureSummary(feature);
+		}, this);
+		
+	    this.bufferFieldSet.on("bufferremoved", function(evt, feature){
+			this.removeFeatureSummary();
+		}, this);
 		
         this.filterCircle;
         this.filterPolygon;
@@ -195,6 +224,177 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
        
         return gxp.plugins.BBOXQueryForm.superclass.init.apply(this, arguments);
     },
+	
+	/**
+     * Method: getArea
+     *
+     * Parameters:
+     * geometry - {<OpenLayers.Geometry>}
+     * units - {String} Unit abbreviation
+     *
+     * Returns:
+     * {Float} The geometry area in the given units.
+     */
+    getArea: function(geometry, units) {
+        var area, geomUnits;
+		area = geometry.getGeodesicArea(this.target.mapPanel.map.getProjectionObject());
+		geomUnits = "m";
+
+        var inPerDisplayUnit = OpenLayers.INCHES_PER_UNIT[units];
+        if(inPerDisplayUnit) {
+            var inPerMapUnit = OpenLayers.INCHES_PER_UNIT[geomUnits];
+            area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
+        }
+        return area;
+    },
+
+    /**
+     * Method: getLength
+     *
+     * Parameters:
+     * geometry - {<OpenLayers.Geometry>}
+     * units - {String} Unit abbreviation
+     *
+     * Returns:
+     * {Float} The geometry length in the given units.
+     */
+    getLength: function(geometry, units) {
+        var length, geomUnits;
+		length = geometry.getGeodesicLength(this.target.mapPanel.map.getProjectionObject());
+		geomUnits = "m";
+        
+        var inPerDisplayUnit = OpenLayers.INCHES_PER_UNIT[units];
+        if(inPerDisplayUnit) {
+            var inPerMapUnit = OpenLayers.INCHES_PER_UNIT[geomUnits];
+            length *= (inPerMapUnit / inPerDisplayUnit);
+        }
+        return length;
+    },
+	
+   /**
+	* api: method[removeFeatureSummary]
+	*/
+	removeFeatureSummary: function(){
+		if(this.featureSummary){
+			this.featureSummary.destroy();
+		}		
+	    
+		var map = this.target.mapPanel.map;
+		var layer = map.getLayersByName("bboxqf-circleCentroid")[0];
+		if(layer){
+            map.removeLayer(layer);
+		}
+	},
+	
+   /**
+	* api: method[addFeatureSummary]
+	*/
+	addFeatureSummary: function(obj){
+		if(this.showSelectionSummary){
+			this.removeFeatureSummary();
+		
+			var geometry;
+			if(obj instanceof OpenLayers.Bounds){
+				geometry = obj.toGeometry();
+			}else if(obj instanceof OpenLayers.Feature.Vector){
+				geometry = obj.geometry;
+			}
+			
+			var summary = "", metricUnit = "km";
+			
+			var area = this.getArea(geometry, metricUnit);
+			if(area){
+				summary += this.areaLabel + ": " + area + " " + metricUnit + '<sup>2</sup>' + '<br />';
+			}
+			
+			var selectionType = this.output[0].outputType.getValue();
+			switch(selectionType){
+				case 'polygon':
+				case 'bbox':
+					var perimeter = this.getLength(geometry, metricUnit);
+					if(perimeter){
+						summary += this.perimeterLabel + ": " + perimeter + " " + metricUnit + '<br />';
+					}
+					break;
+				case 'circle':
+				case 'buffer':
+					var radius = Math.sqrt(area/Math.PI);
+					if(radius){
+						summary += this.radiusLabel + ": " + radius + " " + metricUnit + '<br />';
+					}
+					
+					// //////////////////////////////////////////////////////////
+					// Draw also the circle center as a part of summary report
+					// //////////////////////////////////////////////////////////
+					var circleSelectionCentroid = geometry.getCentroid();
+					
+					if(circleSelectionCentroid){
+						var lon = circleSelectionCentroid.x.toFixed(3);
+						var lat = circleSelectionCentroid.y.toFixed(3);
+						summary += this.centroidLabel + ": " + lon + " (Lon) " + lat + " (Lat)" +'<br />';
+					}
+					
+					if(selectionType == "circle"){
+						var options = {};
+						var centroidStyle = {
+							pointRadius: 4,
+							graphicName: "cross",
+							fillColor: "#FFFFFF",
+							strokeColor: "#FF0000",
+							fillOpacity: 0.5,
+							strokeWidth: 2
+						};
+						
+						if(centroidStyle){
+							var style = new OpenLayers.Style(centroidStyle);
+							var options = {styleMap: style};
+						}
+
+						var circleCentroidLayer = new OpenLayers.Layer.Vector("bboxqf-circleCentroid", options);
+
+						var pointFeature = new OpenLayers.Feature.Vector(circleSelectionCentroid);
+						circleCentroidLayer.addFeatures([pointFeature]);
+						
+						circleCentroidLayer.displayInLayerSwitcher = false;
+						this.target.mapPanel.map.addLayer(circleCentroidLayer);  
+					}
+					
+					break;				
+			}
+			
+			this.featureSummary = new Ext.ToolTip({
+				xtype: 'tooltip',
+				target: Ext.getBody(),
+				html: summary,
+				title: this.selectionSummary,
+				autoHide: false,
+				closable: true,
+				draggable: false,
+				mouseOffset: [0, 0],
+				showDelay: 1,
+				listeners: {
+					scope: this,
+					hide: function(cmp) {
+						this.featureSummary.destroy();
+					}
+				}
+			});			
+			
+			var vertex = geometry.getVertices()
+			var point;
+			if(obj instanceof OpenLayers.Bounds){
+				point = vertex[1];
+			}else if(obj instanceof OpenLayers.Feature.Vector){
+				point = vertex[vertex.length - 1];
+			}
+			
+			var px = this.target.mapPanel.map.getPixelFromLonLat(new OpenLayers.LonLat(point.x, point.y));			
+			var p0 = this.target.mapPanel.getPosition();
+			
+			this.featureSummary.targetXY = [p0[0] + px.x, p0[1] + px.y];
+			this.featureSummary.show();
+		}
+	},
     
     /** api: method[addOutput]
      */
@@ -249,7 +449,9 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     }), 
                     listeners: {
                         select: function(c,record, index ){
-                            me.resetFeatureManager();     
+							me.removeFeatureSummary();
+                            
+							me.resetFeatureManager();     
 							
                             me.bboxFielset.removeBBOXLayer();
 							me.bufferFieldSet.resetPointSelection();
@@ -370,7 +572,9 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 											type: OpenLayers.Filter.Spatial.INTERSECTS,
 											property: me.featureManagerTool.featureStore.geometryName,
 											value: event.feature.geometry
-										});                                                        
+										});    
+
+										me.addFeatureSummary(event.feature);										
                                     },                                
                                     "beforefeatureadded": function(event) {
                                         me.drawings.destroyFeatures();
@@ -453,6 +657,8 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 											property: me.featureManagerTool.featureStore.geometryName,
 											value: event.feature.geometry
 										});
+										
+										me.addFeatureSummary(event.feature);	
                                     },                                
                                     "beforefeatureadded": function(event) {
                                         me.drawings.destroyFeatures();
@@ -496,7 +702,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                 handler: function() {                
                     this.resetFeatureManager();
 					
-                    this.bboxFielset.removeBBOXLayer();
+                    //this.bboxFielset.removeBBOXLayer();
                     //this.bboxFielset.setBBOX(this.target.mapPanel.map.getExtent());
 					this.bboxFielset.reset();
 					
@@ -573,8 +779,7 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 							var coordinates = queryForm.bufferFieldset.coordinatePicker.getCoordinate();
 							var radiusPoint = new OpenLayers.Geometry.Point(coordinates[0], coordinates[1]);
 							
-							/*var units = this.target.mapPanel.map.getUnits();
-							
+							/*var units = this.target.mapPanel.map.getUnits();							
 							var radiusFilter = new OpenLayers.Filter.Spatial({
 								 type: OpenLayers.Filter.Spatial.DWITHIN,
 								 value: radiusPoint,
@@ -582,28 +787,31 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 								 distance: radius
 							});*/
 							
-							var geodesicPolygon = OpenLayers.Geometry.Polygon.createGeodesicPolygon(
-								radiusPoint,
-								radius,
-								100, 
-								0,
-								this.target.mapPanel.map.getProjectionObject()
-							);
-						
-							/*var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
-								radiusPoint,
-								radius,
-								100, 
-								null
-							);*/
+							var polygon;
+							if(this.geodesic){
+								polygon = OpenLayers.Geometry.Polygon.createGeodesicPolygon(
+									radiusPoint,
+									radius,
+									100, 
+									0,
+									this.target.mapPanel.map.getProjectionObject()
+								);
+							}else{
+								polygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
+									radiusPoint,
+									radius,
+									100, 
+									0
+								);
+							}
 							
-							var bounds = geodesicPolygon.getBounds();							
-							geodesicPolygon.bounds = bounds;
+							var bounds = polygon.getBounds();							
+							polygon.bounds = bounds;
 																
 						    var radiusFilter = new OpenLayers.Filter.Spatial({
 								type: OpenLayers.Filter.Spatial.INTERSECTS,
 								property: this.featureManagerTool.featureStore.geometryName,
-								value: geodesicPolygon
+								value: polygon
 							});
 			 
 							filters.push(radiusFilter);
@@ -758,12 +966,12 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         this.addFilterBuilder(this.featureManagerTool,
             this.featureManagerTool.layerRecord, this.featureManagerTool.schema
         );
-        /*
-        this.target.mapPanel.map.events.register("moveend", this, function() {
+		
+        /*this.target.mapPanel.map.events.register("moveend", this, function() {
             this.bboxFielset.removeBBOXLayer();
             this.bboxFielset.setBBOX(this.target.mapPanel.map.getExtent())
-        });
-        */
+        });*/
+		
         this.featureManagerTool.on({
             "beforequery": function() {
                 new Ext.LoadMask(queryForm.getEl(), {

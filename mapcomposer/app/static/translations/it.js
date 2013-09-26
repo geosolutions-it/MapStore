@@ -379,7 +379,12 @@ GeoExt.Lang.add("it", {
         errorDrawCircleText: "Si deve disegnare il Cerchio",     
         errorDrawTitle: "Errore nella richiesta",
 		errorBufferTitle: "Il Buffer è errato",
-		errorBufferText: "Il buffer selezionato è invalido!"
+		errorBufferText: "Il buffer selezionato è invalido!",
+		areaLabel: "Area",	
+		perimeterLabel: "Perimetro",	
+		radiusLabel: "Raggio",	
+		centroidLabel: "Centroide",	
+		selectionSummary: "Sommario Selezione"
     },
 	
 	"gxp.widgets.form.BufferFieldset.prototype": {

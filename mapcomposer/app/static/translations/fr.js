@@ -79,8 +79,7 @@ GeoExt.Lang.add("fr", {
 	    removeOverlaysMenuText: "Retirer des superpositions",
 	    removeOverlaysActionTip: "Supprime toutes les superpositions de la carte",
 	    removeOverlaysConfirmationText: "Etes-vous sûr de vouloir supprimer tous les calques chargés de la carte?"
-    },
-    
+    },    
 	
     "gxp.plugins.BingSource.prototype": {
         title: "Bing couvertures",
@@ -355,7 +354,12 @@ GeoExt.Lang.add("fr", {
         errorDrawCircleText: "Vous devez dessiner le cercle",     
         errorDrawTitle: "Demande erreur",
 		errorBufferTitle: "Le tampon est incorrecte",
-		errorBufferText: "Le tampon sélectionné n'est pas valide!"
+		errorBufferText: "Le tampon sélectionné n'est pas valide!",
+		areaLabel: "Région",	
+		perimeterLabel: "Perimetro",	
+		radiusLabel: "Perimeter",	
+		centroidLabel: "Centroid",	
+		selectionSummary: "Résumé de Sélection"
     },
 	
     "gxp.widgets.form.BufferFieldset.prototype": {

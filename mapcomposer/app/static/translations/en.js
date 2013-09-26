@@ -351,7 +351,12 @@ GeoExt.Lang.add("en", {
         errorDrawCircleText: "You have to draw a Circle",     
         errorDrawTitle: "Query error",
 	    errorBufferTitle: "Buffer Error",
-		errorBufferText: "The selected buffer is invalid!"
+		errorBufferText: "The selected buffer is invalid!",
+		areaLabel: "Area",	
+		perimeterLabel: "Perimeter",	
+		radiusLabel: "Radius",	
+		centroidLabel: "Cenroid",	
+		selectionSummary: "Selection Summary"
 	},
 	
     "gxp.widgets.form.BufferFieldset.prototype": {
