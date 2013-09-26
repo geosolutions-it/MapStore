@@ -64,9 +64,9 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
      */
     selectStyle:{
         pointRadius: 4,
-        graphicName: "circle",
-        fillColor: "#0000FF",
-        strokeColor: "#0000FF",
+        graphicName: "cross",
+        fillColor: "#FFFFFF",
+        strokeColor: "#FF0000",
         fillOpacity:0.5,
         strokeWidth:2
     },
@@ -84,9 +84,9 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
         fillColor: "#0000FF",
         strokeColor: "#0000FF",
         fillOpacity:0.5,
-        strokeWidth:2
-        
+        strokeWidth:2        
     },
+	
     /**
      * Property: decimalPrecision
      * {int} precision of the textFields   
