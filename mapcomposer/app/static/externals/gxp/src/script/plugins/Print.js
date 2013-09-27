@@ -237,7 +237,15 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
             }
 
             function isSupported(layer) {
-                return (
+				var map = mapPanel.map;
+				
+				var drawcontrols = map.getControlsByClass("OpenLayers.Control.DrawFeature");
+				var size = drawcontrols.length;
+				for (var i=0; i<size; i++){
+					drawcontrols[i].deactivate();
+				}
+                
+				return (
                     layer instanceof OpenLayers.Layer.WMS ||
                     layer instanceof OpenLayers.Layer.OSM ||
 					layer.name == 'None'                  ||  //MB

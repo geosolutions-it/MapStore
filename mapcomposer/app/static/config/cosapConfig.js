@@ -6,7 +6,7 @@
    "gsSources":{ 
 		"bolzano": {
 			"ptype": "gxp_wmssource",
-			"url": "http://sit.comune.bolzano.it/geoserver/ows",
+			"url": "http://geoserver:8080/geoserver/ows",
 			"title": "Bolzano GeoServer",
 			"SRS": "EPSG:900913",
 			"version":"1.1.1",
@@ -95,10 +95,88 @@
 				"group": "background",
 				"transparent": false,
 				"format": "image/jpeg"
+			}, {
+				"source":"bolzano",
+				"name":"Cartografia:particelle",
+				"title":"Parzellen",
+				"group":"Catasto_Kataster",
+				"visibility": false
+			}, {
+				"source":"bolzano",
+				"name":"Cartografia:C_VESTIZIONI",
+				"title":"Zierlinien",
+				"group":"Catasto_Kataster",
+				"visibility": false
+			}, {
+				"source":"bolzano",
+				"name":"Cartografia:C_SIMBOLI",
+				"title":"Symbole",
+				"group":"Catasto_Kataster",
+				"visibility": false
+			}, {
+				"source":"bolzano",
+				"name":"Ambiente:Isolato",
+				"title":"Wohnblöcke",
+				"visibility": false
+			}, {
+				"source":"bolzano",
+				"name":"Ambiente:Edifici",
+				"title":"Gebäude"
+			}, {
+				"source":"bolzano",
+				"name":"Cartografia:civici",
+				"title":"Hausnummern",
+				"visibility": false
+			}, {
+				"source":"bolzano",
+				"name":"Cartografia:fiumi",
+				"title":"Flüsse",
+				"visibility": false
+			}, {
+				"source":"bolzano",
+				"name":"Cartografia:ferrovia",
+				"title":"Eisenbahn",
+				"visibility": false
+			}, {
+				"source":"bolzano",
+				"name":"Ambiente:grafo",
+				"title":"Strassennetz",
+				"visibility": false
+			}, {
+				"source":"bolzano",
+				"name":"Cartografia:autostrada",
+				"title":"Autobahn",
+				"visibility": false
+			}, {
+				"source":"bolzano",
+				"name":"Ambiente:quartieri",
+				"title":"Stadtviertel",
+				"visibility": false
+			}, {
+				"source":"bolzano",
+				"name":"Ambiente:poi",
+				"title":"In der Umgebung",
+				"layersCachedExtent": [
+					1252344.2712499984,5831228.013007812,1291480.0297265612,5870363.771484375
+				],
+				"visibility": false
+			}, {
+				"source":"bolzano",
+				"name":"Cartografia:Confine_comunale",
+				"title":"Gemeindegrenze",
+				"visibility": false
+			}, {
+				"source":"bolzano",
+				"name":"Cosap:occupazioni_concessioni",
+				"title":"occupazioni_concessioni"
+			}, {
+				"source":"bolzano",
+				"name":"Cosap:occupazioni_logo",
+				"title":"occupazioni_logo"
 			}
 		]
 	},
-			"customPanels":[
+	"customPanels":[
       {
           "xtype": "panel",
           "title": "FeatureGrid",      
@@ -146,8 +224,7 @@
 				"defaults": {
 					"style": "padding:5px",                  
 					"baseParams": {
-						"LEGEND_OPTIONS": "forceLabels:on;fontSize:10",
-						"WIDTH": 20, "HEIGHT": 20
+						"LEGEND_OPTIONS": "dpi:150;forceLabels:on;fontSize:10;minSymbolSize:28"	
 					}
 				}
 			}
@@ -216,7 +293,7 @@
 			"customParams":{
 				"outputFilename":"mapstore-print"
 			},
-			"printService": "http://sit.comune.bolzano.it/geoserver/pdf/",
+			"printService": "http://geoserver:8080/geoserver/pdf/",
 			"legendPanelId": "legendPanel",
 			"actionTarget":{
 			    "target": "paneltbar",
@@ -224,10 +301,10 @@
 			}
         }, {
 			"ptype": "gxp_searchcosap",			
-			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
+			"serviceUrl": "http://geoserver:8080/GeoInfo/",
 			"outputTarget": "searchpanel",
 			"selectionProperties": {
-			    "wmsURL": "http://sit.comune.bolzano.it/geoserver",
+			    "wmsURL": "http://geoserver:8080/geoserver",
 				"selectionLayerTitle": "Selection Layer",
 				"selectionLayerCiviciName": "Cartografia:civici",
 				"selectionLayerViaName": "Ambiente:grafo",
