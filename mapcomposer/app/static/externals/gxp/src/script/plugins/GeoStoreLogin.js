@@ -36,36 +36,43 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
      *  toggle when user login
      */
     logged:false,
+	
     /** api: config[loginText]
      *  ``String``
      *  Text for the tool text in login (i18n).
      */
     loginText: "Login",
+	
     /** api: config[logoutTitle]
      *  ``String``
      *  Text for the tool text in logout (i18n).
      */
     logoutTitle: "Logout",
+	
     /** api: config[logoutText]
      *  ``String``
      *  Text for confirmation window (i18n).
      */
     logoutText: "Are you sure to logout?",
+	
     /** api: config[loginErrorText]
      *  ``String``
      *  Text for invalid user or password (i18n).
      */
     loginErrorText: "Invalid username or password.",
+	
     /** api: config[loginParseErrorText]
      *  ``String``
      *  Text for for invalid response (user details) (i18n).
      */
      loginParseErrorText: "Sorry, there was a problem parsing the server resonse.",
+	 
     /** api: config[userFieldText]
      *  ``String``
      *  Text for the user field in login window (i18n).
      */
     userFieldText: "User",
+	
     /** api: config[passwordFieldText]
      *  ``String``
      *  Text for the password field in login window(i18n).
@@ -73,11 +80,16 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
     passwordFieldText: "Password", 
 
     loginAction: null,
+	
     logoutAction: null,
+	
     user:null,
+	
     pass:null,
+	
     loginService: null,
-
+	
+	loginLoadingMask: "Login ...",
 
     /** 
      * api: method[addActions]
@@ -86,8 +98,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
         if (this.loginService !== null) {
             var apptarget = this.target;
         
-            var actions = gxp.plugins.GeoStoreLogin.superclass.addActions.apply(this, [
-                
+            var actions = gxp.plugins.GeoStoreLogin.superclass.addActions.apply(this, [                
                 [{
                     menuText: this.loginText,
                     iconCls: "gxp-icon-login",
@@ -98,8 +109,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                     tooltip: this.loginText,
                     handler: function() {
                         if(!this.logged){
-                            this.showLoginDialog();
-                            
+                            this.showLoginDialog();                            
                         }	
                     },
                     scope: this
@@ -157,10 +167,12 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
             items: [{
                 fieldLabel: this.userFieldText,
                 anchor:'100%',
+				ref: "uname",
                 name: "username",
                 allowBlank: false
             }, {
                 fieldLabel: this.passwordFieldText,
+				ref: "pwd",
                 name: "password",
                 anchor:'100%',
                 inputType: "password",
@@ -190,20 +202,24 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
             modal: true,
             items: [this.panel]
         });
+		
         this.win.show();
     },
     /** api: method[submitLogin]
      * Submits the login.
      */ 
-    submitLogin: function () {
-        
+    submitLogin: function () {        
         var form = this.panel.getForm();
         var fields = form.getValues();
         
         var pass = fields.password;
         var user = fields.username;
-        if (this.isDummy) return this.dummyLogin(user,pass);
-        var auth= 'Basic ' + Base64.encode(user+':'+pass);
+        if (this.isDummy) return this.dummyLogin(user, pass);
+        var auth = 'Basic ' + Base64.encode(user + ':' + pass);
+		
+		this.mask = new Ext.LoadMask(this.panel.getEl(), {msg: this.loginLoadingMask});
+		this.mask.show();
+		
         Ext.Ajax.request({
             method: 'GET',
             url: this.loginService,
@@ -213,9 +229,11 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                 'Authorization' : auth
             },
             success: function(response, form, action) {
-            
+				this.mask.hide();            
                 this.win.hide();
+				
                 this.panel.getForm().reset();
+				
                 try{
                     var user = Ext.util.JSON.decode(response.responseText);
                 }catch(e){
@@ -228,7 +246,9 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                     });
                     return;
                 }
+				
                 this.loginSuccess();
+				
                 // save auth info
                 this.token = auth;
                 if (user.User) {
@@ -238,6 +258,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                 }
             },
             failure: function(response, form, action) {
+			    this.mask.hide(); 
                 Ext.MessageBox.show({
                     title: this.loginErrorTitle,
                     msg: this.loginErrorText,
@@ -245,11 +266,14 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                     animEl: 'mb4',
                     icon: Ext.MessageBox.WARNING
                 });
-                this.panel.markInvalid({
-                    "loginUsername": this.loginErrorText,
+				
+				this.panel.uname.markInvalid({
+                    "loginUsername": this.loginErrorText
+                });
+				
+				this.panel.pwd.markInvalid({
                     "loginPassword": this.loginErrorText
                 });
-
             }
         });
     },
