@@ -162,7 +162,6 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 					checkboxToggle:true,
 					title: this.outputTypeText,
 					autoHeight: true,
-
 					defaultType: 'radio', // each item will be a radio button
 					items:[
 						{boxLabel: 'Data' , name: 'outputtype', listeners: this.setRadioQtip(this.radioQtipTooltip), inputValue: 'data', disabled: true},
@@ -172,7 +171,10 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                         change: function(c,checked){
                             var outputValue = c.getValue().inputValue;
                             var submitButton = this.output.submitButton;
-                            var areaSelector = this.output.aoiFieldSet.AreaSelector;                            
+							var aoiFieldSet = this.output.aoiFieldSet;
+                            var areaSelector = aoiFieldSet.AreaSelector;   
+							var gran_type = aoiFieldSet.gran_type.getValue().inputValue;							
+							
                             if(outputValue == 'data'){
                                 submitButton.destroy();
                                 delete submitButton;
@@ -182,7 +184,13 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                                     ref: '../submitButton',
                                     target:this.target,
                                     form: this
-                                })
+                                });
+								
+								// Avoid 'pakistan' checked when 'outputValue' = 'data'
+								if(gran_type == "pakistan"){
+									aoiFieldSet.gran_type.reset();
+								}
+								
                                 var store = areaSelector.store;
                                 this.output.fireEvent('update',store);
                                 this.output.fireEvent('show');                                
@@ -204,7 +212,14 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                                 this.output.fireEvent('show');
                                 this.output.doLayout();
                                 this.output.syncSize();
-                            }                               
+                            } 
+							
+							var pakenabled = outputValue != 'data';
+                            aoiFieldSet.gran_type.eachItem(function(item){
+								if(item.inputValue=="pakistan"){
+									item.setDisabled(!pakenabled);							
+								}               
+                            },this);							
                         },                        
                         scope: this                        
                     }
@@ -321,12 +336,18 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 		config = Ext.apply(agroMet,config || {});
 		
 		this.output = gxp.plugins.nrl.AgroMet.superclass.addOutput.call(this, config);
+		
 		this.output.on('update',function(store){
             var button = this.output.submitButton.getXType();
+			
+			var values = this.output.getForm().getValues();
+			var gran_type = values.areatype;
+			
             if (button == "gxp_nrlAgrometChartButton" || button == "gxp_nrlAgrometTabButton"){
-                this.output.submitButton.setDisabled(store.getCount()<=0)
+                this.output.submitButton.setDisabled(store.getCount()<=0 && gran_type != "pakistan")
             }
-		},this);        
+		},this);      
+		
 		this.output.on('beforehide',function(){
 			var button = this.output.aoiFieldSet.AreaSelector.selectButton;
 			button.toggle(false);
@@ -335,6 +356,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 			lyr.setVisibility(false);
 			
 		},this);
+		
 		this.output.on('show',function(){
 			var button = this.output.aoiFieldSet.AreaSelector.selectButton;
 			
@@ -343,6 +365,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 			lyr.setVisibility(true);
 			
 		},this);
+		
 		return this.output;
 	},
     setRadioQtip: function (t){ 

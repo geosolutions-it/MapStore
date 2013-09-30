@@ -193,15 +193,24 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 			},{
 				name: 'aggregated',
 				mapping: 'properties.aggregated'
-			}]
-			
+			}]			
 		});
+		
+		var params =             
+			(fromYear   ? "start_year:"  + fromYear + ";" : "") +
+            (toYear     ? "end_year:"    + toYear + ";" : "") +
+            (factorList ? "factor_list:" + factorList + ";" : "") +
+            (regionList ? "region_list:" + regionList + ";" : "") +
+            (granType   ? (granType != "pakistan" ? "gran_type:" + granType + ";" : "gran_type:province;") : "");
+			
+		var viewparams = (season == 'rabi' ? params + ";season_flag:NOT" : params);
+					
 		store.load({
 			callback:function(){
-				this.createResultPanel(store,listVar);
+				var allPakistanRegions = (granType == "pakistan");
+				this.createResultPanel(store, listVar, allPakistanRegions);
                 myMask.hide();
 			},
-
 			scope:this,
 			params :{
 				service: "WFS",
@@ -209,7 +218,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 				request: "GetFeature",
 				typeName: "nrl:agromet_aggregated",
 				outputFormat: "json",
-				viewparams: season == 'rabi' ? "start_year:"+ fromYear + ";" +
+				viewparams: viewparams /*season == 'rabi' ? "start_year:"+ fromYear + ";" +
                     "end_year:"+ toYear + ";" +
                     "factor_list:"+ factorList + ";" +
                     "region_list:"+ regionList + ";" +
@@ -219,19 +228,19 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                     "end_year:"+ toYear + ";" +
                     "factor_list:"+ factorList + ";" +
                     "region_list:"+ regionList + ";" +
-                    "gran_type:" + granType
+                    "gran_type:" + granType*/
 			}
-		}); 
-        
+		});         
     },
-	createResultPanel:function(store,listVar){
-		 var tabPanel = Ext.getCmp('id_mapTab');
-
+	
+	createResultPanel:function(store, listVar, allPakistanRegions){
+		var tabPanel = Ext.getCmp('id_mapTab');
         var tabs = Ext.getCmp('agromet_tab');
-		var charts  = this.makeChart(store,listVar);
+		var charts  = this.makeChart(store, listVar, allPakistanRegions);
+		
 		var resultpanel = {
 			columnWidth: .95,
-			style:'padding:10px 10px 10px 10px',
+			style: 'padding:10px 10px 10px 10px',
 			xtype: 'gxp_controlpanel',
 			//panelTitle: "XXX",
 			season: listVar.season,
@@ -243,6 +252,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 			chart: charts,
 			chartHeight: this.chartOpt.height
 		};
+		
 		if(!tabs){
 			var cropDataTab = new Ext.Panel({
 				title: 'AgroMet',
@@ -255,24 +265,22 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 				closable: true,
 				items: resultpanel
 			});
-			tabPanel.add(cropDataTab);  
-		   
+			
+			tabPanel.add(cropDataTab); 
 		}else{
 			tabs.items.each(function(a){a.collapse()});
 			tabs.add(resultpanel);
 		}
+		
 		Ext.getCmp('id_mapTab').doLayout();
 		Ext.getCmp('id_mapTab').setActiveTab('agromet_tab');
-                    
-	
 	},
-	makeChart: function(store,listVar){
-		
+	
+	makeChart: function(store, listVar, allPakistanRegions){		
 		var grafici = [];
 		var factorStore = [];
 		
 		for (var i = 0;i<listVar.factorValues.length;i++){
-
             factorStore[i] = new Ext.data.JsonStore({
                 root: 'features',
                 fields: [{
@@ -296,8 +304,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                 },{
                     name: 'aggregated',
                     mapping: 'properties.aggregated'
-                }]
-                
+                }]                
             });
 
             store.queryBy(function(record,id){
@@ -305,8 +312,16 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                     factorStore[i].insert(id,record);
                 }
             });
+			
             factorStore[i].sort("s_dec", "ASC");    
 			var chart;
+			
+			var text = "";
+			if(allPakistanRegions){
+				text += listVar.factorStore[i].get('label') + " - Pakistan";
+			}else{
+				text += listVar.factorStore[i].get('label') + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : "REGION");
+			}
 			
 			chart = new Ext.ux.HighChart({
 				animation:false,
@@ -326,8 +341,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 				height: this.chartOpt.height,
 				//width: 900,
 				store: factorStore[i],
-				animShift: true,
-				
+				animShift: true,				
 				chartConfig: {
 					chart: {
 						zoomType: 'x',
@@ -339,14 +353,15 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                         url: this.target.highChartExportUrl
                     },
 					title: {
-						text: listVar.factorStore[i].get('label') + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : "REGION")
+						//text: listVar.factorStore[i].get('label') + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : "REGION")
+						text: text
 					},
 					subtitle: {
-                        text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
-                              '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
-                              '<span style="font-size:10px;">AOI: '+listVar.chartTitle+'</span><br />'+
-                              '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
-                              '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />',
+                        text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />' +
+                              '<span style="font-size:10px;">Date: ' + listVar.today + '</span><br />' +
+                              '<span style="font-size:10px;">AOI: ' + (allPakistanRegions ? "Pakistan" : listVar.chartTitle) + '</span><br />' +
+                              '<span style="font-size:10px;">Season: ' + listVar.season.toUpperCase() + '</span><br />' +
+                              '<span style="font-size:10px;">Years: ' + listVar.fromYear + "-" + listVar.toYear + '</span><br />',
                         align: 'left',
                         verticalAlign: 'bottom',
                         useHTML: true,

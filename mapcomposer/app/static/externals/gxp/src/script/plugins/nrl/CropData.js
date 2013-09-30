@@ -170,28 +170,35 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                         {boxLabel: 'Chart', name: 'outputtype', inputValue: 'chart', checked: true},
                         {boxLabel: 'Map'  , name: 'outputtype', inputValue: 'map'}
                         
-                    ],
-                 
+                    ],                 
                     listeners: {           
-                        change: function(c,checked){
+                        change: function(c, checked){
                             var outputValue = c.getValue().inputValue;
                             var variable = this.output.variable;
                             var submitButton = this.output.submitButton;
-                            var aoiFieldSet=this.output.aoiFieldSet;
+                            var aoiFieldSet = this.output.aoiFieldSet;
                             var areaSelector = aoiFieldSet.AreaSelector;
-                            var gran_type =aoiFieldSet.gran_type.getValue().inputValue;
+                            var gran_type = aoiFieldSet.gran_type.getValue().inputValue;
+							
                             if(outputValue == 'data'){
                                 variable.disable();
                                 areaSelector.enable();
                                 submitButton.destroy();
                                 delete submitButton;
+								
                                 this.output.addButton({              
                                     url: this.dataUrl, 
                                     xtype: 'gxp_nrlCropDataTabButton',
                                     ref: '../submitButton',
                                     target:this.target,
                                     form: this
-                                })
+                                });
+								
+								// Avoid 'pakistan' checked when 'outputValue' = 'data'
+								if(gran_type == "pakistan"){
+									aoiFieldSet.gran_type.reset();
+								}
+									
                                 var store = areaSelector.store;
                                 this.output.fireEvent('update',store);
                                 this.output.fireEvent('show');                                
@@ -226,8 +233,8 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 variable.disable();
                                 
                                 //set area selector constraints and status
-                                aoiFieldSet.disableWidth=['pakistan'];
-                                if('pakistan'!= gran_type){
+                                aoiFieldSet.disableWidth = ['pakistan'];
+                                if('pakistan' != gran_type){
                                     areaSelector.enable();// if pakistan is selected selection is not allowed!!
                                 }else{
                                     areaSelector.setDisabled(true);
@@ -248,31 +255,33 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 this.output.syncSize();
                             }   
                             //set Labels of gran_type for map
-                            var mapConvert,pakenabled;
-                            if(outputValue =="map"){
+                            var mapConvert, pakenabled;
+                            if(outputValue == "map"){
                                 mapConvert = {
                                     province:"Province (District)",
                                     district:"National (District)",
                                     pakistan:"National (Province)"
                                 }
-                                pakenabled=true;
+                                //pakenabled=true;
+								pakenabled = outputValue != 'data';
                             }else{
                                 mapConvert = {
                                     province:"Province ",
                                     district:"District",
                                     pakistan:"Pakistan"
                                 }
-                                pakenabled=false;
+                                //pakenabled=false;
+								pakenabled = outputValue != 'data';
                             }
+							
                             aoiFieldSet.gran_type.eachItem(function(item){
-                                    if(item.inputValue=="pakistan"){
-                                        item.setDisabled(!pakenabled);
-                                    }
-                                    var el =item.wrap.child('.x-form-cb-label');
-                                    el.update(mapConvert[item.inputValue]);
-                                    
-                                
+								if(item.inputValue == "pakistan"){
+									item.setDisabled(!pakenabled);					
+								}
+								var el = item.wrap.child('.x-form-cb-label');
+								el.update(mapConvert[item.inputValue]);                     
                             },this);
+							
                             this.output.doLayout();
                         },                        
                         scope: this                        
@@ -539,13 +548,15 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
         //Enable Disable button when regions are selected
         this.output.on('update',function(store){
             var button = this.output.submitButton.getXType();
+			
+			var values = this.output.getForm().getValues();
+			var gran_type = values.areatype;
+				
             if (button == "gxp_nrlCropDataButton" || button == 'gxp_nrlCropDataTabButton'){
-                this.output.submitButton.setDisabled(store.getCount()<=0)
+                this.output.submitButton.setDisabled(store.getCount()<=0 && gran_type != "pakistan");
             }else{
                 //map button
-                var values =this.output.getForm().getValues();
-                var gran_type = values.areatype;
-                this.output.submitButton.setDisabled(store.getCount()<=0 && gran_type=="province")
+                this.output.submitButton.setDisabled(store.getCount()<=0 && gran_type == "province");
             }
             
         },this);

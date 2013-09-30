@@ -45,10 +45,12 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
                 {
                    name:"name",
                    mapping:"properties.district"
-                },{
+                },
+				{
                    name:"province",
                    mapping:"properties.province"
-                },{
+                },
+				{
                    name:"properties",
                    mapping:"properties"
                 } 
@@ -70,7 +72,8 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
                 {
                    name:"name",
                    mapping:"properties.province"
-                },{
+                },
+				{
                    name:"properties",
                    mapping:"properties"
                 }
@@ -80,14 +83,11 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
                 "province"
             ],
             displayField:"name",
-            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
-                            
-        }
-    
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"                            
+        }    
     },
 	
-	initComponent: function() {
-		
+	initComponent: function() {		
 		this.currentCombo = this.createCombo(this.startConfig);
 		this.items = [
 			{
@@ -100,19 +100,17 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
 				defaultType: 'radio', // each item will be a radio button
 				items:[
 					{boxLabel: 'Province', itemId:'PROVINCE', name: 'areatype', inputValue: 'PROVINCE' , checked: true},
-					{boxLabel: 'District', itemId:'DISTRICT', name: 'areatype', inputValue: 'DISTRICT'},
-                    {boxLabel: 'Pakistan', itemId:'PAKISTAN', name: 'areatype', inputValue: 'PAKISTAN',disabled:true}
+					{boxLabel: 'District', itemId:'DISTRICT', name: 'areatype', inputValue: 'DISTRICT'}/*,
+                    {boxLabel: 'Pakistan', itemId:'PAKISTAN', name: 'areatype', inputValue: 'PAKISTAN',disabled:true}*/
 				],
 				listeners: {
 					change: function(cbg,checkedarray){
+						var value = cbg.getValue();
+						var outputValue = value.inputValue;
 						
-						
-						if (cbg.getValue() && cbg.getValue().inputValue){
-							var newType = cbg.getValue().inputValue;
-							
-							
-                            if(this.ownerCt.featureSelectorConfigs[newType]){
-                                this.ownerCt.currentCombo = this.ownerCt.createCombo(newType);
+						if (value && outputValue){
+                            if(this.ownerCt.featureSelectorConfigs[outputValue]){
+                                this.ownerCt.currentCombo = this.ownerCt.createCombo(outputValue);
                                 this.ownerCt.remove(this.ownerCt.singleSelector,true);
                                 this.ownerCt.add(this.ownerCt.currentCombo);
                                 this.ownerCt.doLayout();
@@ -121,31 +119,27 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
                                 this.ownerCt.currentCombo.setDisabled(true);
                             }
 						}
-
 					}
-					
-				
-				}
-				
-			},this.currentCombo
-		]
+				}				
+			},
+			this.currentCombo
+		];
+		
 		return nrl.form.SingleAOISelector.superclass.initComponent.apply(this, arguments);
 	},
 	
-	createHilightLayer: function(){
-		
+	createHilightLayer: function(){		
 		this.hilightLayer = new OpenLayers.Layer.Vector(
 			this.hilightLayerName,
 			{
 				style: this.layerStyle
-			}
-		
+			}		
 		);
 		
 		this.target.mapPanel.map.addLayer(this.hilightLayer);
-        return this.hilightLayer;
-	
+        return this.hilightLayer;	
 	},
+	
 	createCombo: function(type){
         return new gxp.widgets.form.SingleFeatureSelector(Ext.apply(
 			{
@@ -158,4 +152,5 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
 		));
 	}
 });
+
 Ext.reg(nrl.form.SingleAOISelector.prototype.xtype,nrl.form.SingleAOISelector);

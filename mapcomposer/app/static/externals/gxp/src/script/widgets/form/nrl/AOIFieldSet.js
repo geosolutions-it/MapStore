@@ -124,7 +124,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
                     {boxLabel: 'Pakistan', name: 'areatype', inputValue: 'pakistan'}
 				],
 				listeners: {
-					change: function(cbg,checkedarray){
+					change: function(cbg, checkedarray){
 						var as = cbg.ownerCt.AreaSelector;
                         //TODO ask to confirm, before loose all selection
                         
@@ -146,23 +146,27 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
                         }else{
                             as.setDisabled(true);
                         }
-                        if( this.disableWidth.indexOf(val)>-1){
+                        if(this.disableWidth.indexOf(val)>-1){
                             as.setDisabled(true);
                         }else{
                             as.setDisabled(false);
-                        }
-                        
-					
+                        } 
+
+						var outputValue = cbg.getValue().inputValue;
+						if(outputValue == "pakistan"){
+							this.ownerCt.submitButton.setDisabled(false);
+						}else{
+							var store = this.AreaSelector.getStore();
+							this.ownerCt.submitButton.setDisabled(store.getCount()<=0);
+						}
 					},
-                    scope:this
-				
+                    scope: this
 				}
-				
 			},
 			{
 				xtype: 'gxp_selectfeaturegrid',
 				target:this.target,
-				vendorParams:{cql_filter:this.areaFilter},
+				vendorParams: {cql_filter: this.areaFilter},
 				selectableLayer:this.selectableLayer,
 				ref:'AreaSelector',
                 comboConfig:this.currentComboConfig,
@@ -189,7 +193,6 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
 						
 					},
 					scope:this
-				
 				}
             },{   
                 xtype:'hidden',//<--hidden field  
@@ -201,8 +204,6 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
 		
 		return nrl.form.AOIFieldSet.superclass.initComponent.apply(this, arguments);
 	}
-	
-	
 });
 Ext.reg('nrl_aoifieldset',nrl.form.AOIFieldSet);
 

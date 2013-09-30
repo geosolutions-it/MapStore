@@ -151,6 +151,13 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
         var tabPanel = Ext.getCmp('id_mapTab');
 
         var tabs = Ext.getCmp('cropData_tab');
+		
+		var viewparams = (commodity      ? "crop:" + commodity + ";" : "") +
+                         (granType       ? (granType != "pakistan" ? "gran_type:" + granType + ";" : "gran_type:province;") : "") +
+                         (fromYear       ? "start_year:" + fromYear + ";" : "") +
+                         (toYear         ? "end_year:" + toYear + ";" : "") +
+                         (regionList     ? "region_list:" + regionList + ";" : "") +
+                         (prodCoeffUnits ? "yield_factor:" + prodCoeffUnits : "");
 			
         Ext.Ajax.request({
             scope:this,
@@ -163,12 +170,12 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                 typeName: "nrl:CropData",
                 outputFormat: "json",
                 propertyName: "region,crop,year,production,area,yield",
-                viewparams: "crop:" + commodity + ";" +
+                viewparams: viewparams /*"crop:" + commodity + ";" +
                             "gran_type:" + granType + ";" +
                             "start_year:" + fromYear + ";" +
                             "end_year:" + toYear + ";" +
                             "region_list:" + regionList + ";" +
-                            "yield_factor:" + prodCoeffUnits
+                            "yield_factor:" + prodCoeffUnits*/
             },
             success: function ( result, request ) {
                 try{
@@ -181,9 +188,11 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                     Ext.Msg.alert("No data","Data not available for these search criteria");
                     return;
                 }
-                var data = this.getData(jsonData);
+				
+				var aggregatedDataOnly = (granType == "pakistan");
+                var data = this.getData(jsonData, aggregatedDataOnly);
                 
-                var charts  = this.makeChart(data,this.chartOpt,listVar);
+                var charts  = this.makeChart(data, this.chartOpt, listVar, aggregatedDataOnly);
                 var resultpanel = {
                     columnWidth: .95,
                     style:'padding:10px 10px 10px 10px',
@@ -227,19 +236,20 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
         });       
         
     },
-	getData: function (json){
-		var chartData=[];
+	getData: function (json, aggregatedDataOnly){
+		var chartData = [];
 		
-		for (var i =0 ; i<json.features.length; i++) {
-
-			var feature =json.features[i];
-			var obj=null;
+		for (var i=0 ; i<json.features.length; i++) {
+			var feature = json.features[i];
+			var obj = null;
+			
 			//search already existing entries
-			for (var j= 0; j<chartData.length;j++){
+			for (var j=0; j<chartData.length; j++){
 				if(chartData[j].region == feature.properties.region){
 					obj = chartData[j];
 				}
 			}
+			
 			//create entry if doesn't exists yet
 			if(!obj){
 				obj = {
@@ -257,6 +267,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 				};
 				chartData.push(obj);
 			}
+			
 			//create a row entry
 			var yr = feature.properties.year;
 			var a = feature.properties.area;
@@ -270,20 +281,20 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 				yield: parseFloat(yi.toFixed(2))//,
 				//crop: feature.properties.crop
 			});
+			
 			//obj.avgs.area+=a;
 			//obj.avgs.prod+=p;
 			//obj.avgs.yield+=yi;
 			//obj.avgs.years+=1;
-
 		}
 	
 		//create mean chart if needed
-		if (chartData.length >1){
-			
-			var mean = {
-				region:"all",
-				title:"Aggregated data",
-				subtitle:json.features[0].properties.crop,
+		var mean;
+		if (chartData.length > 1){			
+			mean = {
+				region: "all",
+				title: "Aggregated data",
+				subtitle: json.features[0].properties.crop,
 				rows: []/*,
 				avgs:{
 					area:0,
@@ -294,68 +305,73 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 			};
 
 			var meanareas = []
-			var meanproductions= [];
+			var meanproductions = [];
 			var meanyields = [];
 			var nyears = {};
+			
 			//sum all values
-			for (var i= 0; i<chartData.length;i++){
+			for (var i=0; i<chartData.length; i++){
 				var rows = chartData[i].rows;
-				for (var j= 0; j<rows.length;j++){
+				for (var j=0; j<rows.length; j++){
 					var yr = rows[j].time;
-					var area =rows[j].area;
+					var area = rows[j].area;
 					var prod = rows[j].prod;
-					var yield =rows[j].yield;
+					var yield = rows[j].yield;
 					meanareas[yr] = (meanareas[yr] ? meanareas[yr] :0) + area;
 					meanproductions[yr] = (meanproductions[yr] ? meanproductions[yr]:0) +prod;
 					meanyields[yr] = (meanyields[yr] ? meanyields[yr]:0) +yield;
-					nyears[yr] =(nyears[yr]?nyears[yr]:0) + 1;
+					nyears[yr] = (nyears[yr]?nyears[yr]:0) + 1;
 				}
 			}
+			
 			//divide by nyears
-			for(var i=0 in nyears){
-				
+			for(var i=0 in nyears){				
 				mean.rows.push({
 					time: i,
 					area: parseFloat(meanareas[i].toFixed(2)), //(meanareas[i]/nyears[i]).toFixed(2),
 					prod: parseFloat(meanproductions[i].toFixed(2)), //(meanproductions[i]/nyears[i]).toFixed(2),
-					yield: parseFloat((meanyields[i]/nyears[i]).toFixed(2))
-					
+					yield: parseFloat((meanyields[i]/nyears[i]).toFixed(2))					
 				});
 			}
+			
 			chartData.push(mean);
 		}	
-        //sort all year ascending
-        for (var i= 0; i< chartData.length;i++){
-            //chartData[i].rows.sort(function(a,b){return a.time > b.time});
-            chartData[i].rows.sort(CompareForSort);
-        
-        }
-        // Sorts array elements in ascending order numerically.
-        function CompareForSort(first, second)
-        {
-            if (first.time == second.time)
-                return 0;
-            if (first.time < second.time)
-                return -1;
-            else
-                return 1; 
-        }
+		
+		if(aggregatedDataOnly && mean){
+			chartData = [mean];
+		}else{		
+			// Sorts array elements in ascending order numerically.
+			function CompareForSort(first, second){
+				if (first.time == second.time)
+					return 0;
+				if (first.time < second.time)
+					return -1;
+				else
+					return 1; 
+			}
+			
+			//sort all year ascending
+			for (var i=0; i<chartData.length; i++){
+				//chartData[i].rows.sort(function(a,b){return a.time > b.time});
+				chartData[i].rows.sort(CompareForSort);        
+			}
+		}
         
 		return chartData;
-
 	},
-	makeChart: function( data,opt,listVar ){
+	
+	makeChart: function(data, opt, listVar, aggregatedDataOnly){
 		
 		var grafici = [];
-		var getAvg= function(arr,type) {
+		var getAvg = function(arr,type) {
 			var sum = 0,len = arr.length;
 			for (var i=0;i<len;i++){
-				sum+=arr[i][type];
+				sum += arr[i][type];
 			}
 			return sum/len;
 		};
 		
-		for (var r = 0;r<data.length;r++){
+		for (var r=0; r<data.length; r++){
         
 			// Store for random data
 			var store = new Ext.data.JsonStore({
@@ -378,14 +394,48 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 
 			var chart;
 			var prodavg = getAvg(data[r].rows,'prod');
-			var yieldavg=getAvg(data[r].rows,'yield');
-			var areaavg=getAvg(data[r].rows,'area');
+			var yieldavg = getAvg(data[r].rows,'yield');
+			var areaavg = getAvg(data[r].rows,'area');
+			
+			//
+			// Making Chart Title
+			//
+			var text = "";
+			var dataTitle = data[r].title.toUpperCase();
+			var commodity = listVar.commodity.toUpperCase();
+			var chartTitle = listVar.chartTitle.split(',')[r];
+				
+			if(dataTitle){				
+				if(dataTitle == "AGGREGATED DATA"){
+					if(aggregatedDataOnly){
+						text += dataTitle + " (Pakistan) - " + commodity;
+					}else{
+						text += dataTitle + " - " + commodity;
+					}					
+				}else{
+					text += commodity + " - " + chartTitle;
+				}
+			}
+			
+			//
+			// AOI Subtitle customization
+			//
+			var aoiSubtitle = "";
+			if(dataTitle == "AGGREGATED DATA"){
+				if(aggregatedDataOnly){
+					aoiSubtitle += "Pakistan";
+				}else{
+					aoiSubtitle += listVar.chartTitle;
+				}	
+			}else{
+				aoiSubtitle += chartTitle;
+			}
+			
 			chart = new Ext.ux.HighChart({
 				series: [
 					opt.series.prod,
 					opt.series.yield,
-					opt.series.area
-					
+					opt.series.area					
 				],
 				height: opt.height,
 				//width: 900,
@@ -403,12 +453,13 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                         url: this.target.highChartExportUrl
                     },
 					title: {
-						text: (data[r].title.toUpperCase()=="AGGREGATED DATA" ? data[r].title.toUpperCase() + " - " + listVar.commodity.toUpperCase() : listVar.commodity.toUpperCase() +" - "+listVar.chartTitle.split(',')[r]) // + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : listVar.chartTitle.split(',')[r])
+						//text: (data[r].title.toUpperCase()=="AGGREGATED DATA" ? data[r].title.toUpperCase() + " - " + listVar.commodity.toUpperCase() : listVar.commodity.toUpperCase() +" - "+listVar.chartTitle.split(',')[r]) // + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : listVar.chartTitle.split(',')[r])
+						text: text
 					},
 					subtitle: {
                         text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
                               '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
-                              '<span style="font-size:10px;">AOI: '+(data[r].title.toUpperCase()=="AGGREGATED DATA" ? listVar.chartTitle : listVar.chartTitle.split(',')[r])+'</span><br />'+
+                              '<span style="font-size:10px;">AOI: '+ aoiSubtitle /*(data[r].title.toUpperCase()=="AGGREGATED DATA" ? listVar.chartTitle : listVar.chartTitle.split(',')[r])*/ + '</span><br />' +
                               '<span style="font-size:10px;">Commodity: '+listVar.commodity.toUpperCase()+'</span><br />'+
                               '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
                               '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />'+ 
