@@ -8,8 +8,7 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
 	layerStyle:{
         strokeColor: "blue",
         strokeWidth: 1,
-        fillOpacity:0.6
-        
+        fillOpacity:0.6        
     },
     startConfig:'PROVINCE',
     featureSelectorConfigs:{
@@ -23,8 +22,7 @@ nrl.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
             sortBy:"province",
 			ref:'singleSelector',
             displayField:"name",
-            pageSize:10
-            
+            pageSize:10            
         },
         DISTRICT:{
             typeName:"nrl:district_boundary",

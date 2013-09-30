@@ -29,18 +29,21 @@ Ext.namespace('gxp.widgets');
 
 gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 	xtype:'gxp_selectfeaturegrid',
+	
 	/**   api: xtype = gxp_selectfeaturegrid */
 	/** api: config[toggleGroup]
      *  ``String`` the toggleGroup of selection button
      */
 	toggleGroup: "toolGroup",
+	
 	/**  api: config[displayField]
 	 *the feature name to display, as returned by WMS getFeatureInfo 
 	 */
 	displayField:"fname",
-    searchWindowTitle:  "Seach for a region typing the text below",
-    tooltipAdd: "Seach the region by name",
 	
+    searchWindowTitle:  "Seach for a region typing the text below",
+	
+    tooltipAdd: "Seach the region by name",	
     
     tooltipClear: "Remove all the selected areas",
     
@@ -53,19 +56,25 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 	comboConfig:{
                         
     },
+	
 	/** Configuration of the Ext.grid.GridPanel component */
 	hideHeaders:true,
+	
 	reserveScrollOffset: true,
+	
 	height:150,
+	
 	selectableLayer: 'nrl:province_boundary',
+	
 	autoScroll:true,
+	
 	loadMask: true,
-	viewConfig: {
-				
+	
+	viewConfig: {				
 		forceFit: true
-		//Return CSS class to apply to rows depending upon data values
-		
+		//Return CSS class to apply to rows depending upon data values		
 	},
+	
 	initComponent: function() {
 		this.addEvents('update');
 		this.store =  new Ext.data.SimpleStore({
@@ -74,11 +83,10 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 		fields:[
 				{name:'data',		mapping:'data'},
 				{name:'attributes',	mapping:'attributes'}
-			]
-			
+			]			
 		}),
 		itemdeleter = new Ext.ux.grid.ItemDeleter();
-		this.columns=[
+		this.columns = [
 			{
 				id: 'name',
 				dataIndex:'attributes', 
@@ -91,73 +99,73 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 			},
 			itemdeleter
 		];
-		this.sm =itemdeleter;
+		this.sm = itemdeleter;
 		
 		//add buttons to the bbar
 		this.selectButton = new gxp.widgets.button.SelectFeatureButton({
-				ref:'selectButton',
-				vendorParams:this.vendorParams,
-				selectableLayer: this.selectableLayer,
-                layerStyle: this.layerStyle,
-				hilightLayerName:this.hilightLayerName,
-				nativeSrs : "EPSG:32642",
-				target:this.target,
-				text:'Add from map',
-                tooltip: this.tooltipAddFromMap,
-				iconCls:'icon-map-add',
-				store: this.store,
-				toggleGroup:this.toggleGroup,
-				listeners:{
-					startSelection:function(){
-						this.loadMask.show();
-					},
-					endSelection:function(){
-						this.loadMask.hide();
-					},
-					update:function(store){
-						this.fireEvent('update',store);
-					},
-					scope:this
-				}
+			ref:'selectButton',
+			vendorParams:this.vendorParams,
+			selectableLayer: this.selectableLayer,
+			layerStyle: this.layerStyle,
+			hilightLayerName:this.hilightLayerName,
+			nativeSrs : "EPSG:32642",
+			target:this.target,
+			text: 'Add from map',
+			tooltip: this.tooltipAddFromMap,
+			iconCls:'icon-map-add',
+			store: this.store,
+			toggleGroup:this.toggleGroup,
+			listeners:{
+				startSelection:function(){
+					this.loadMask.show();
+				},
+				endSelection:function(){
+					this.loadMask.hide();
+				},
+				update:function(store){
+					this.fireEvent('update',store);
+				},
+				scope:this
+			}
 		});
-		this.bbar=[
-			
+		this.bbar = [			
 			{
 				xtype:'tbbutton',
 				text:'Add',
                 tooltip: this.tooltipAdd,
 				iconCls:'icon-add',
 				handler:function(){
-						var selectCombo = new gxp.form.WFSSearchComboBox(Ext.apply({vendorParams:this.vendorParams},this.comboConfig));
-                        var window = new Ext.Window({
-							title:this.searchWindowTitle,
-                            items:[selectCombo],
-                            //layout:'form',
-                            width:265,
-                            y:250,
-                            modal:true,
-                            resizable:false,
-                            draggable:false
-                        });
-                        
-                        selectCombo.on('select', function(combo,record,index){
-								//create the OpenLayers.Feature.Vector obj
-                                var geom_json = record.get('geometry');
-                                var attributes = record.get('properties');
-                                var geom = new OpenLayers.Format.GeoJSON().parseGeometry(geom_json);
-                                var location = new OpenLayers.Feature.Vector(geom,attributes);
-								//add if missing to the store
-                                var store = this.store;
-                                var record =new store.recordType(location);
-								var presentRecord = this.store.getById(record.id);
-								if(!presentRecord){
-									store.add(record);
-								}
+					var selectCombo = new gxp.form.WFSSearchComboBox(Ext.apply({vendorParams:this.vendorParams},this.comboConfig));
+					var window = new Ext.Window({
+						title:this.searchWindowTitle,
+						items:[selectCombo],
+						//layout:'form',
+						width:265,
+						y:250,
+						modal:true,
+						resizable:false,
+						draggable:false
+					});
+					
+					selectCombo.on('select', function(combo,record,index){
+							//create the OpenLayers.Feature.Vector obj
+							var geom_json = record.get('geometry');
+							var attributes = record.get('properties');
+							var geom = new OpenLayers.Format.GeoJSON().parseGeometry(geom_json);
+							var location = new OpenLayers.Feature.Vector(geom,attributes);
+							//add if missing to the store
+							var store = this.store;
+							var record =new store.recordType(location);
+							var presentRecord = this.store.getById(record.id);
+							
+							if(!presentRecord){
+								store.add(record);
+							}
 
-                                window.close();
-                        },this);
-                        window.show();
-
+							window.close();
+					},this);
+					
+					window.show();
 				},
                 scope:this
 			},
@@ -178,18 +186,16 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 		return gxp.widgets.SelectFeatureGrid.superclass.initComponent.apply(this, arguments);
 		
 	},
+	
 	changeLayer :function(layer){
 		this.selectButton.setSelectableLayer(layer);
 	},
+	
     getComboConfig: function(){
         return Ext.apply(this.comboConfig, {
 			//displayField:this.displayField,
             vendorParams:this.vendorParams
-            
-        });
-            
-    
-    
+        });          
     }
 });
 Ext.reg(gxp.widgets.SelectFeatureGrid.prototype.xtype,gxp.widgets.SelectFeatureGrid);

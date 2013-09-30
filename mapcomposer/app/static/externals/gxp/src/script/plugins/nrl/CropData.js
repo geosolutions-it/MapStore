@@ -41,14 +41,15 @@ Ext.namespace("gxp.plugins.nrl");
  *    Plugin for adding NRL CropData Module to a :class:`gxp.Viewer`.
  */   
 gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
- /** api: ptype = nrl_crop_data */
+	/** api: ptype = nrl_crop_data */
     ptype: "nrl_crop_data",
 
     outputTypeText:'Output Type',
     areaFilter: "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
     seasonText:'Season',
+	
     /** layer Name **/
-    hilightLayerName:"CropData_Selection_Layer",//TODO doesn't seems to run
+    hilightLayerName:"CropData_Selection_Layer", //TODO doesn't seems to run
     radioQtipTooltip: "You have to be logged in to use this method",
 	layerStyle:{
         strokeColor: "red",
@@ -68,15 +69,13 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
             sortBy:"province",
 			ref:'singleSelector',
             displayField:"name",
-            pageSize:10
-            
+            pageSize:10            
         },
         district:{
             typeName:"nrl:district_crop",
             queriableAttributes:[
                 "district",
-                "province"
-                
+                "province"                
              ],
              recordModel:[
                 {
@@ -100,8 +99,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
             ],
             tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"       
         },
-        province:{ 
-            
+        province:{             
             typeName:"nrl:province_crop",
             recordModel:[
                 {
@@ -125,22 +123,20 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                 "province"
             ],
             displayField:"name",
-            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
-                            
-        }
-    
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"                            
+        }    
     },
+	
     startCommodity:'Wheat',
-
 
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
     addOutput: function(config) {
         var conf = {
-            //TODO year ranges (from available data)
-            
+            //TODO year ranges (from available data)            
         }
+		
         //Override the comboconfig url;
         this.comboConfigs.base.url = this.dataUrl;
         var rangeData ;
@@ -153,8 +149,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
             minWidth:180,
             autoScroll:true,
             frame:true,
-            items:[
-            
+            items:[            
                 { 
                     fieldLabel: this.outputTypeText,
                     xtype: 'radiogroup',
@@ -168,8 +163,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     items:[
                         {boxLabel: 'Data' , name: 'outputtype', listeners: this.setRadioQtip(this.radioQtipTooltip), inputValue: 'data', disabled: true},
                         {boxLabel: 'Chart', name: 'outputtype', inputValue: 'chart', checked: true},
-                        {boxLabel: 'Map'  , name: 'outputtype', inputValue: 'map'}
-                        
+                        {boxLabel: 'Map'  , name: 'outputtype', inputValue: 'map'}                        
                     ],                 
                     listeners: {           
                         change: function(c, checked){
@@ -254,6 +248,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 this.output.doLayout();
                                 this.output.syncSize();
                             }   
+							
                             //set Labels of gran_type for map
                             var mapConvert, pakenabled;
                             if(outputValue == "map"){
@@ -297,6 +292,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             var commodityCB = this.ownerCt.Commodity;
                             commodityCB.seasonFilter(checked.inputValue);
                             var selectedCommodity = commodityCB.getStore().getAt(0);
+							
                             if(selectedCommodity){
                                 commodityCB.setValue(selectedCommodity.get(commodityCB.valueField));
                                 var yrs= commodityCB.ownerCt.yearRangeSelector;
@@ -304,9 +300,9 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 yrs.setMinValue(selectedCommodity.get('min'));
                                 
                             }
+							
                             var comboProd = Ext.getCmp('comboProd');
                             comboProd.setValue('000 tons');
-
                         }
                     }
                 },{
@@ -319,8 +315,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     target:this.target,
                     areaFilter:this.areaFilter, 
                     hilightLayerName:this.hilightLayerName,
-                    layers:this.layers
-                    
+                    layers:this.layers                    
                 },
                 {
                     xtype: 'nrl_commoditycombobox',
@@ -337,15 +332,13 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                         autoLoad: true,
                         url: this.rangesUrl,
                         root: 'features',
-                        idProperty:'crop'
-                        
+                        idProperty:'crop'                        
                     }),
                     allowBlank:false,
                     name:'crop',
                     anchor:'100%',
                     ref: 'Commodity',
-                    listeners: {
-                        
+                    listeners: {                        
                         expand: function( combo ){
                             var season = this.ownerCt.season;
                             var radio = season.getValue();
@@ -382,19 +375,15 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     ref: 'yearRangeSelector',
                     xtype: 'yearrangeselector',
                     anchor:'100%',
-                    
-                    
                     listeners:{
                         scope:this,
                         change:function(start,end){
                             this.output.referenceYear.setText(end);
                         },
                         afterrender: function(component) {
-                            if(this.output.yearRangeSelector!=component)return;
-                            
+                            if(this.output.yearRangeSelector!=component)return;           
                         }
-                    }
-                    
+                    }         
                 },{ 
                     fieldLabel: 'Variable',
                     xtype: 'radiogroup',
@@ -526,11 +515,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 ]
                             })
                     }]
-                  
-                    
-                }
-            
-                
+                }            
             ],	
             buttons:[{
                 url: this.dataUrl,
@@ -545,6 +530,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
         config = Ext.apply(cropData,config || {});
         
         this.output = gxp.plugins.nrl.CropData.superclass.addOutput.call(this, config);
+		
         //Enable Disable button when regions are selected
         this.output.on('update',function(store){
             var button = this.output.submitButton.getXType();
@@ -560,6 +546,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
             }
             
         },this);
+		
         //hide selection layer on tab change
         this.output.on('beforehide',function(){
             var button = this.output.aoiFieldSet.AreaSelector.selectButton;
@@ -580,6 +567,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
         
         return this.output;
     },
+	
     setRadioQtip: function (t){ 
         var o = { 
             afterrender: function() {
@@ -604,4 +592,5 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
         return o;
     } 
  });
+ 
  Ext.preg(gxp.plugins.nrl.CropData.prototype.ptype, gxp.plugins.nrl.CropData);

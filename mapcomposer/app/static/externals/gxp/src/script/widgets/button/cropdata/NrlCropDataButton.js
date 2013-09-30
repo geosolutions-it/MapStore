@@ -37,33 +37,31 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
     chartOpt:{
 		series:{
 			prod:{
-					name: 'Production (000 tons)',
-					color: '#89A54E',
-                    lcolor: 'rgb(207,235,148)',                    
-					type: 'line',
-					yAxis: 1,
-					dataIndex: 'prod',
-					unit:'(000 tons)'
-
-				},
+				name: 'Production (000 tons)',
+				color: '#89A54E',
+				lcolor: 'rgb(207,235,148)',                    
+				type: 'line',
+				yAxis: 1,
+				dataIndex: 'prod',
+				unit:'(000 tons)'
+			},
 			yield:{
-					name: 'Yield (kg/ha)',
-					dashStyle: 'shortdot',
-					type: 'line',
-					color: '#4572A7',
-                    lcolor: 'rgb(139,184,237)',
-					yAxis: 2,
-					dataIndex: 'yield',
-					unit:'(kg/ha)'
-
-				},
+				name: 'Yield (kg/ha)',
+				dashStyle: 'shortdot',
+				type: 'line',
+				color: '#4572A7',
+				lcolor: 'rgb(139,184,237)',
+				yAxis: 2,
+				dataIndex: 'yield',
+				unit:'(kg/ha)'
+			},
 			area:{
-					name: 'Area (000 hectares)',
-					color: '#AA4643',
-                    lcolor: 'rgb(240,140,137)',                    
-					type: 'line',
-					dataIndex: 'area',
-					unit:'(000 ha)'
+				name: 'Area (000 hectares)',
+				color: '#AA4643',
+				lcolor: 'rgb(240,140,137)',                    
+				type: 'line',
+				dataIndex: 'area',
+				unit:'(000 ha)'
 			}
 		},
         height: 500

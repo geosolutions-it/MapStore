@@ -26,8 +26,8 @@
  */
 
 Ext.namespace('nrl.form');
-nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
-{
+nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
+
 	xtype: 'nrl_aoifieldset',
 	anchor:'100%',
 	title: 'Area of interest',
@@ -51,10 +51,9 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
             typeName:"nrl:district_boundary",
             queriableAttributes:[
                 "district",
-                "province"
-                
-             ],
-             recordModel:[
+                "province"                
+            ],
+            recordModel:[
                 {
                   name:"id",
                    mapping:"id"
@@ -66,18 +65,19 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
                 {
                    name:"name",
                    mapping:"properties.district"
-                },{
+                },
+				{
                    name:"province",
                    mapping:"properties.province"
-                },{
+                },
+				{
                    name:"properties",
                    mapping:"properties"
                 } 
             ],
             tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"       
         },
-        province:{ 
-            
+        province:{            
             typeName:"nrl:province_boundary",
             recordModel:[
                 {
@@ -91,7 +91,8 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
                 {
                    name:"name",
                    mapping:"properties.province"
-                },{
+                },
+				{
                    name:"properties",
                    mapping:"properties"
                 }
@@ -101,10 +102,8 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
                 "province"
             ],
             displayField:"name",
-            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
-                            
-        }
-    
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"                            
+        }    
     },
 	initComponent: function() {
         this.currentComboConfig = Ext.apply({},this.comboConfigs.base,this.comboConfigs.province);
@@ -155,6 +154,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet,
 						var outputValue = cbg.getValue().inputValue;
 						if(outputValue == "pakistan"){
 							this.ownerCt.submitButton.setDisabled(false);
+							this.AreaSelector.selectButton.toggle(false);
 						}else{
 							var store = this.AreaSelector.getStore();
 							this.ownerCt.submitButton.setDisabled(store.getCount()<=0);
