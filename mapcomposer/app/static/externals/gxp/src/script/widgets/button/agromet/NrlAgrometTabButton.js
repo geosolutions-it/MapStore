@@ -30,75 +30,78 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 
     /** api: xtype = gxp_nrlchart */
     xtype: 'gxp_nrlAgrometTabButton',
+	
     iconCls: "gxp-icon-nrl-tab",
+	
     form: null,
+	
     url: null,
+	
 	text: 'Generate Table',
-    handler: function () {
-
-           
-            
-			var target = this.target;
-			var form = this.form.output.getForm();
-			var values =  this.form.output.getForm().getValues();
-			var fieldValues = form.getFieldValues();
-			
-			var nextYr =parseInt(values.endYear)%100 +1;
-			var crop =values.crop;
-			
-			var varparam ="";
-			switch(values.variable) {
-				case "Area" : varparam='area';break;
-				case  "Production" : varparam ='prod';break;
-				case "Yield" : varparam= 'yield';break;
-			}
-			
-			var factorStore = this.form.output.factors.getSelectionModel().getSelections();
-			var factorValues = [];
-			var factorList = "";
-			if (factorStore.length === 0){
-				Ext.Msg.alert("Grid Factors","Must be selected at least one Factor!");
-				return;
-			}else{
-				for (var i=0;i<factorStore.length;i++){
-					var factor = factorStore[i].data;
-					var factorValue = factor.factor;
-					factorValues.push(factorValue);
-					if(i==factorStore.length-1){
-						factorList += "'" + factorValue + "'";
-					}else{
-						factorList += "'" + factorValue.concat("'\\,");
-						
-					}
+	
+    handler: function () {            
+		var target = this.target;
+		var form = this.form.output.getForm();
+		var values =  this.form.output.getForm().getValues();
+		var fieldValues = form.getFieldValues();
+		
+		var nextYr = parseInt(values.endYear)%100 +1;
+		var crop = values.crop;
+		
+		var varparam = "";
+		switch(values.variable) {
+			case "Area" : varparam = 'area'; break;
+			case "Production" : varparam = 'prod'; break;
+			case "Yield" : varparam = 'yield'; break;
+		}
+		
+		var factorStore = this.form.output.factors.getSelectionModel().getSelections();
+		var factorValues = [];
+		var factorList = "";
+		
+		if (factorStore.length === 0){
+			Ext.Msg.alert("Grid Factors","Must be selected at least one Factor!");
+			return;
+		}else{
+			for (var i=0; i<factorStore.length; i++){
+				var factor = factorStore[i].data;
+				var factorValue = factor.factor;
+				factorValues.push(factorValue);
+				if(i == factorStore.length-1){
+					factorList += "'" + factorValue + "'";
+				}else{
+					factorList += "'" + factorValue.concat("'\\,");						
 				}
 			}
+		}
 
-            var numRegion = [];
-            var regStore = this.form.output.aoiFieldSet.AreaSelector.store
-            var records = regStore.getRange();
-            
-            for (var i=0;i<records.length;i++){
-                var attrs = records[i].get("attributes");
-                var region = attrs.district ? attrs.district + "," + attrs.province : attrs.province;
-                numRegion.push(region.toLowerCase());
-            }
-            
-            values.numRegion = numRegion;            
-        
-			var viewParams= 
-					"gran_type:" + values.areatype.toLowerCase() + ";" +
-					"start_year:" + values.startYear +";" + //same year for start and end.
-					"end_year:" + values.endYear +";" + 
-					"factor_list:" + factorList + ";" +
-					"region_list:" + values.region_list.toLowerCase() + ";";
-			if(values.season=="RABI"){
-				viewParams+='season_flag:NOT;'
-			}
-			var store = new Ext.data.JsonStore({
+		var numRegion = [];
+		var regStore = this.form.output.aoiFieldSet.AreaSelector.store;
+		var records = regStore.getRange();
+		
+		for (var i=0;i<records.length;i++){
+			var attrs = records[i].get("attributes");
+			var region = attrs.district ? attrs.district + "," + attrs.province : attrs.province;
+			numRegion.push(region.toLowerCase());
+		}
+		
+		values.numRegion = numRegion;            
+	
+		var viewParams = 
+				(values.areatype    ? "gran_type:" + values.areatype.toLowerCase() + ";" : "") +
+				(values.startYear   ? "start_year:" + values.startYear +";" : "") + //same year for start and end.
+				(values.endYear     ? "end_year:" + values.endYear +";" : "") + 
+				(factorList         ? "factor_list:" + factorList + ";" : "") +
+				(values.region_list ? "region_list:" + values.region_list.toLowerCase() + ";" : "");
+				
+		if(values.season == "RABI"){
+			viewParams += 'season_flag:NOT;'
+		}
+		
+		var store = new Ext.data.JsonStore({
 			url: this.url,
-			 sortInfo: {field: "factor", direction: "ASC"},
-			root: 'features',
-			
+			sortInfo: {field: "factor", direction: "ASC"},
+			root: 'features',			
 			fields: [{
 				name: 'factor',
 				mapping: 'properties.factor'
@@ -123,18 +126,17 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 			},{
 				name: 'aggregated',
 				mapping: 'properties.aggregated'
-			}]
-			
+			}]			
 		});
-		this.createResultPanel(store,fieldValues,values);
+		
+		var isProvince = values.areatype.toLowerCase() == "province";
+		this.createResultPanel(store, fieldValues, values, isProvince);
 		
 		store.load({
 			callback:function(records,req){
 				this.lastParams = req.params;
 			},
-
-			params :{
-				
+			params: {				
 				service: "WFS",
 				version: "1.0.0",
 				request: "GetFeature",
@@ -142,11 +144,10 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 				outputFormat: "json",
 				viewparams: viewParams
 			}
-		}); 
-        
+		});         
     },
 	
-	createResultPanel: function( store ,fieldValues,values){
+	createResultPanel: function(store, fieldValues, values, isProvince){
 		var tabPanel = Ext.getCmp('id_mapTab');
         
         var region = values.region_list.split("\,");
@@ -174,26 +175,55 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
         var tabs = Ext.getCmp('agrometTable_tab');
 		var grid = new Ext.grid.GridPanel({
 			bbar:[
-				"->",{xtype:'button',text:'export',iconCls:'icon-disk',handler:function(){
-					var store =this.ownerCt.ownerCt.getStore();
-					var lastParams = store.lastParams;
-					var dwl = store.url + "?";
-					lastParams.outputFormat="CSV";
-					for (var i in lastParams){
-						dwl+=i + "=" +encodeURIComponent(lastParams[i])+"&";
+				"->",
+				{
+					xtype: 'button',
+					text: 'Export All District',
+					tooltip: 'Export All District',
+					hidden: !isProvince,
+					iconCls: 'icon-disk-multiple',
+					handler: function(){
+						var store = this.ownerCt.ownerCt.getStore();
+						var lastParams = Ext.applyIf({}, store.lastParams);						
+						
+						var dwl = store.url + "?";
+						lastParams.outputFormat = "CSV";
+						
+						if(lastParams.typeName && isProvince){
+							lastParams.typeName = "nrl:agromet_aggregated_district";
+						}
+						
+						for (var i in lastParams){
+							dwl += i + "=" +encodeURIComponent(lastParams[i])+"&";
+						}
+						
+						window.open(dwl);
 					}
-					window.open(dwl);
-				}}],
-			forceFit:true,
-			loadMask:true,
-			border:false,
-			layout:'fit',
-			store:store,
-			autoExpandColumn:'factor',
-			
-			title:'',
-
-		
+				},
+				{
+					xtype: 'button',
+					text: 'Export',
+					tooltip: 'Export',
+					iconCls: 'icon-disk',
+					handler: function(){
+						var store = this.ownerCt.ownerCt.getStore();
+						var lastParams = store.lastParams;
+						var dwl = store.url + "?";
+						lastParams.outputFormat = "CSV";
+						for (var i in lastParams){
+							dwl+=i + "=" +encodeURIComponent(lastParams[i])+"&";
+						}
+						window.open(dwl);
+					}
+				}
+			],
+			forceFit: true,
+			loadMask: true,
+			border: false,
+			layout: 'fit',
+			store: store,
+			autoExpandColumn: 'factor',			
+			title: '',		
 			columns:[{
 				sortable: true, 
 				id:'factor',
@@ -248,40 +278,37 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 				renderer: Ext.util.Format.numberRenderer('0.00'),
 				align: 'right',
 				flex:1
-			}
-			
-			
-			]
-		
-		
+			}]
 		});
-		var oldPosition = tabs && tabs.items && tabs.items.getCount() ? [tabs.items.getCount()*20,tabs.items.getCount()*20]:[0,0]
+		
+		var oldPosition = (tabs && tabs.items && tabs.items.getCount() ? [tabs.items.getCount()*20,tabs.items.getCount()*20]:[0,0]);
 		
 		var win = new Ext.Window({
 			title:'Pakistan - AgroMet Variables - AOI: ' + (region.length == 1 ? region[0] : "REGION") + ' - Season: ' + values.season + ' - Years: '+values.startYear+'-'+values.endYear,
 			collapsible: true,
-			constrainHeader :true,
-			maximizable:true,
-			height:400,
-			width:700,
-			x:oldPosition[0] +20,y:oldPosition[1]+20,
-			autoScroll:false,
-			header:true,
-			
-			layout:'fit',
-			items:grid,
+			constrainHeader: true,
+			maximizable: true,
+			height: 400,
+			width: 700,
+			x: oldPosition[0] + 20, 
+			y: oldPosition[1] + 20,
+			autoScroll: false,
+			header: true,			
+			layout: 'fit',
+			items: grid,
 			//floating: {shadow: false},
 			tools: [{
                 id: 'info',
                 handler: function () {
-                    var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
-                            "<ol>" +
-                                "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
-                                "<li><p><em> AOI: </em>" + chartTitle + "</p></li>" +
-                                "<li><p><em> Season: </em>" + values.season + "</p></li>" +
-                                "<li><p><em> Years: </em>" + values.startYear + "-" + values.endYear + "</p></li>" +
-                            "</ol>" +                                        
-                            "</div>";
+                    var iframe = 
+						"<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+							"<ol>" +
+								"<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
+								"<li><p><em> AOI: </em>" + chartTitle + "</p></li>" +
+								"<li><p><em> Season: </em>" + values.season + "</p></li>" +
+								"<li><p><em> Years: </em>" + values.startYear + "-" + values.endYear + "</p></li>" +
+							"</ol>" +                                        
+						"</div>";
                  
                     var appInfo = new Ext.Panel({
                         header: false,
@@ -298,53 +325,48 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
                         items: [appInfo]
                     });
                     
-                    win.show(); 
-                                                            
+                    win.show();                                                             
                 },
                 scope: this
             }]
 		});
-		var windowGroup ;
-			if(!tabs){	
-				windowGroup = new Ext.WindowGroup();
-				tabs = new Ext.Panel({
-					title: 'AgroMet Tables',
-					windowGroup:windowGroup,
-					id:'agrometTable_tab',
-					itemId:'agrometTable_tab',
-					border: true,
-					autoScroll: false,
-					tabTip: 'Crop Data',
-					closable: true,
-					items: win,
-					listeners:{
-						remove:function(tab){
-							if(tab.items.length <=0) {
-							tabPanel.remove(tab);
-							tabPanel.setActiveTab(0)
-						}
-						}
+		
+		var windowGroup;
+		if(!tabs){	
+			windowGroup = new Ext.WindowGroup();
+			tabs = new Ext.Panel({
+				title: 'AgroMet Tables',
+				windowGroup:windowGroup,
+				id:'agrometTable_tab',
+				itemId:'agrometTable_tab',
+				border: true,
+				autoScroll: false,
+				tabTip: 'Crop Data',
+				closable: true,
+				items: win,
+				listeners:{
+					remove:function(tab){
+						if(tab.items.length <=0) {
+						tabPanel.remove(tab);
+						tabPanel.setActiveTab(0)
 					}
-				});
-				
-				tabPanel.add(tabs); 
-				
-				
-			   
-			}else{
-				
-				windowGroup =tabs.windowGroup ;
-				tabs.add(win);
-			}
-			windowGroup.register(win);
+					}
+				}
+			});
 			
-			
-			Ext.getCmp('id_mapTab').setActiveTab('agrometTable_tab');
-			Ext.getCmp('id_mapTab').doLayout();
-			
-			tabs.doLayout();
-			win.show();
-
+			tabPanel.add(tabs); 
+		}else{				
+			windowGroup =tabs.windowGroup ;
+			tabs.add(win);
+		}
+		
+		windowGroup.register(win);		
+		
+		Ext.getCmp('id_mapTab').setActiveTab('agrometTable_tab');
+		Ext.getCmp('id_mapTab').doLayout();
+		
+		tabs.doLayout();
+		win.show();
 	}	
 });
 

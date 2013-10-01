@@ -139,7 +139,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 		
         //Override the comboconfig url;
         this.comboConfigs.base.url = this.dataUrl;
-        var rangeData ;
+        var rangeData;
         //download from WFS available year ranges for each crops.
         
         var cropData  = {

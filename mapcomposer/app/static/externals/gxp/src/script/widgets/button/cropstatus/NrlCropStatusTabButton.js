@@ -30,51 +30,56 @@ gxp.widgets.button.NrlCropStatusTabButton = Ext.extend(Ext.Button, {
 
     /** api: xtype = gxp_nrlchart */
     xtype: 'gxp_nrlCropStatusTabButton',
+	
     iconCls: "gxp-icon-nrl-tab",
+	
     form: null,
+	
 	text: 'Generate Table',
+	
     handler: function () {
-
-            //Ext.Msg.alert("Generate Table","Not Yet Implemented");
-            //return;
-            
-			var target = this.target;
-			var form = this.form.output.getForm();
-			var values =  this.form.output.getForm().getValues();
-			var fieldValues = form.getFieldValues();
-            var season_flag = values.season.toLowerCase()=="rabi"? "season_flag:NOT;":"";
-            var factorList = "";
-            var factorValues =[];
-             var factorStore = this.form.output.factors.getSelectionModel().getSelections();
-            if (factorStore.length === 0){
-                Ext.Msg.alert("Grid Factors","Must be selected at least one Factor!");
-                return;
-            }else{
-                for (var i=0;i<factorStore.length;i++){
-                    var factor = factorStore[i].data;
-                    var factorValue = factor.factor;
-                    factorValues.push(factorValue);
-                    if(i==factorStore.length-1){
-                        factorList += "'" + factorValue + "'";
-                    }else{
-                        factorList += "'" + factorValue.concat("'\\,");
-                        
-                    }
-                }
-            }
-            //view params generation
-            var region_list = "'" + values.region_list + "'";
-			var viewParams= "crop:" + values.crop.toLowerCase() + ";" +
-					"gran_type:" + values.areatype.toLowerCase() + ";" +
-					"year:" + values.year +";" + //same year for start and end.
-					"factor_list:" + factorList +";" +
-					"region_list:" + region_list.toLowerCase() + ";" +
-                    season_flag;
-			var store = new Ext.data.JsonStore({
+		//Ext.Msg.alert("Generate Table","Not Yet Implemented");
+		//return;
+		
+		var target = this.target;
+		var form = this.form.output.getForm();
+		var values = this.form.output.getForm().getValues();
+		var fieldValues = form.getFieldValues();
+		var season_flag = values.season.toLowerCase() == "rabi" ? "season_flag:NOT;" : "";
+		var factorList = "";
+		var factorValues = [];
+		var factorStore = this.form.output.factors.getSelectionModel().getSelections();
+		
+		if (factorStore.length === 0){
+			Ext.Msg.alert("Grid Factors","Must be selected at least one Factor!");
+			return;
+		}else{
+			for (var i=0; i<factorStore.length; i++){
+				var factor = factorStore[i].data;
+				var factorValue = factor.factor;
+				factorValues.push(factorValue);
+				if(i == factorStore.length-1){
+					factorList += "'" + factorValue + "'";
+				}else{
+					factorList += "'" + factorValue.concat("'\\,");
+				}
+			}
+		}
+		
+		//view params generation
+		var region_list = "'" + values.region_list + "'";
+		var viewParams = 
+				(values.crop     ? "crop:" + values.crop.toLowerCase() + ";" : "") +
+				(values.areatype ? "gran_type:" + values.areatype.toLowerCase() + ";" : "") +
+				(values.year     ? "year:" + values.year +";" : "") + //same year for start and end.
+				(factorList      ? "factor_list:" + factorList +";" : "") +
+				(region_list     ? "region_list:" + region_list.toLowerCase() + ";" : "") +
+				season_flag;
+				
+		var store = new Ext.data.JsonStore({
 			url: this.url,
-			 sortInfo: {field: "factor", direction: "ASC"},
-			root: 'features',
-			
+			sortInfo: {field: "factor", direction: "ASC"},
+			root: 'features',			
 			fields: [{
 				name: 'factor',
 				mapping: 'properties.label'
@@ -108,18 +113,17 @@ gxp.widgets.button.NrlCropStatusTabButton = Ext.extend(Ext.Button, {
 			},{
 				name: 'unit',
 				mapping: 'properties.unit'
-			}]
-			
+			}]			
 		});
-		this.createResultPanel(store,fieldValues,values);
+		
+		var isProvince = values.areatype.toLowerCase() == "province";
+		this.createResultPanel(store, fieldValues, values, isProvince);
 		
 		store.load({
 			callback:function(records,req){
 				this.lastParams = req.params;
 			},
-
-			params :{
-				
+			params:{				
 				service: "WFS",
 				version: "1.0.0",
 				request: "GetFeature",
@@ -127,36 +131,62 @@ gxp.widgets.button.NrlCropStatusTabButton = Ext.extend(Ext.Button, {
 				outputFormat: "json",
 				viewparams: viewParams
 			}
-		}); 
-        
+		});         
     },
 	
-	createResultPanel: function( store ,fieldValues,values){
+	createResultPanel: function(store, fieldValues, values, isProvince){
 		var tabPanel = Ext.getCmp('id_mapTab');
 
         var tabs = Ext.getCmp('cropStatusTable_tab');
 		var grid = new Ext.grid.GridPanel({
 			bbar:[
-				"->",{xtype:'button',text:'export',iconCls:'icon-disk',handler:function(){
-					var store =this.ownerCt.ownerCt.getStore();
-					var lastParams = store.lastParams;
-					var dwl = store.url + "?";
-					lastParams.outputFormat="CSV";
-					for (var i in lastParams){
-						dwl+=i + "=" +encodeURIComponent(lastParams[i])+"&";
+				"->",
+				{
+					xtype:'button',
+					text: 'Export All District',
+					tooltip: 'Export All District',
+					hidden: !isProvince,
+					iconCls: 'icon-disk-multiple',
+					handler:function(){
+						var store = this.ownerCt.ownerCt.getStore();
+						var lastParams = Ext.applyIf({}, store.lastParams);						
+						
+						var dwl = store.url + "?";
+						lastParams.outputFormat = "CSV";
+						
+						if(lastParams.typeName && isProvince){
+							lastParams.typeName = "nrl:crop_status_district";
+						}
+						
+						for (var i in lastParams){
+							dwl += i + "=" +encodeURIComponent(lastParams[i])+"&";
+						}
+						
+						window.open(dwl);
 					}
-					window.open(dwl);
-				}}],
+				},
+				{
+					xtype:'button',
+					text:'Export',
+					iconCls:'icon-disk',
+					handler:function(){
+						var store = this.ownerCt.ownerCt.getStore();
+						var lastParams = store.lastParams;
+						var dwl = store.url + "?";
+						lastParams.outputFormat="CSV";
+						for (var i in lastParams){
+							dwl += i + "=" +encodeURIComponent(lastParams[i])+"&";
+						}
+						window.open(dwl);
+					}
+				}],
 			forceFit:true,
 			loadMask:true,
 			border:false,
 			layout:'fit',
 			store:store,
-			autoExpandColumn:'factor',
-			
-			title:'',
-
-		
+			autoExpandColumn:'factor',			
+			title:'',		
 			columns:[{
 				sortable: true, 
 				id:'factor',
@@ -226,39 +256,35 @@ gxp.widgets.button.NrlCropStatusTabButton = Ext.extend(Ext.Button, {
 				dataIndex: 'unit',
 				align: 'right',
 				width:40
-			}
-			
-			
-			]
-		
-		
+			}]	
 		});
-		var oldPosition = tabs && tabs.items && tabs.items.getCount() ? [tabs.items.getCount()*20,tabs.items.getCount()*20]:[0,0]
+		
+		var oldPosition = (tabs && tabs.items && tabs.items.getCount() ? [tabs.items.getCount()*20,tabs.items.getCount()*20]:[0,0]);
 		
 		var win = new Ext.Window({
 			title:'Crop Status:' + fieldValues.crop + "Year:" +values.year,
 			collapsible: true,
-			constrainHeader :true,
-			maximizable:true,
-			height:400,
-			width:800,
-			x:oldPosition[0] +20,y:oldPosition[1]+20,
-			autoScroll:false,
-			header:true,
-			
-			layout:'fit',
-			items:grid,
+			constrainHeader: true,
+			maximizable: true,
+			height: 400,
+			width: 800,
+			x: oldPosition[0] +20,y:oldPosition[1]+20,
+			autoScroll: false,
+			header: true,			
+			layout: 'fit',
+			items: grid,
 			//floating: {shadow: false},
 			tools: [{
                 id: 'info',
                 handler: function () {
                     var checkCommodity = fieldValues.crop ? "<li><p><em> Commodity: </em>" + fieldValues.crop + "</p></li>" : "<li><p><em></em></p></li>";
-                    var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
-                            "<ol>" +
-                                checkCommodity +
-                                "<li><p><em> Season: </em>" + values.season + "</p></li>" +
-                                "<li><p><em>Year: </em>" + values.year + "</p></li>" +
-                            "</ol>" +                                        
+                    var iframe = 
+							"<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+								"<ol>" +
+									checkCommodity +
+									"<li><p><em> Season: </em>" + values.season + "</p></li>" +
+									"<li><p><em>Year: </em>" + values.year + "</p></li>" +
+								"</ol>" +                                        
                             "</div>";
                  
                     var appInfo = new Ext.Panel({
@@ -275,53 +301,48 @@ gxp.widgets.button.NrlCropStatusTabButton = Ext.extend(Ext.Button, {
                         items: [appInfo]
                     });
                     
-                    win.show(); 
-                                                            
+                    win.show();                                                             
                 },
                 scope: this
             }]
 		});
-		var windowGroup ;
-			if(!tabs){
-				windowGroup = new Ext.WindowGroup();
-				tabs = new Ext.Panel({
-					title: 'Crop Status Tables',
-					windowGroup:windowGroup,
-					id:'cropStatusTable_tab',
-					itemId:'cropStatusTable_tab',
-					border: true,
-					autoScroll: false,
-					tabTip: 'Crop Data',
-					closable: true,
-					items: win,
-					listeners:{
-						remove:function(tab){
-							if(tab.items.length <=0) {
+		
+		var windowGroup;
+		if(!tabs){
+			windowGroup = new Ext.WindowGroup();
+			tabs = new Ext.Panel({
+				title: 'Crop Status Tables',
+				windowGroup: windowGroup,
+				id: 'cropStatusTable_tab',
+				itemId: 'cropStatusTable_tab',
+				border: true,
+				autoScroll: false,
+				tabTip: 'Crop Data',
+				closable: true,
+				items: win,
+				listeners:{
+					remove:function(tab){
+						if(tab.items.length <= 0) {
 							tabPanel.remove(tab);
 							tabPanel.setActiveTab(0)
 						}
-						}
 					}
-				});
-				
-				tabPanel.add(tabs); 
-				
-				
-			   
-			}else{
-				
-				windowGroup =tabs.windowGroup ;
-				tabs.add(win);
-			}
-			//windowGroup.register(win);
+				}
+			});
 			
-			
-			Ext.getCmp('id_mapTab').setActiveTab('cropStatusTable_tab');
-			Ext.getCmp('id_mapTab').doLayout();
-			
-			tabs.doLayout();
-			win.show();
+			tabPanel.add(tabs); 
+		}else{			
+			windowGroup = tabs.windowGroup ;
+			tabs.add(win);
+		}
+		
+		//windowGroup.register(win);
 
+		Ext.getCmp('id_mapTab').setActiveTab('cropStatusTable_tab');
+		Ext.getCmp('id_mapTab').doLayout();
+		
+		tabs.doLayout();
+		win.show();
 	}	
 });
 

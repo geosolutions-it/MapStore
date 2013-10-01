@@ -35,36 +35,36 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
     url: null,
 	text: 'Generate Table',
     handler: function () {
-
-            //Ext.Msg.alert("Generate Table","Not Yet Implemented");
-			var target = this.target;
-			var form = this.form.output.getForm();
-			var values =  this.form.output.getForm().getValues();
-			var fieldValues = form.getFieldValues();
+		//Ext.Msg.alert("Generate Table","Not Yet Implemented");
+		var target = this.target;
+		var form = this.form.output.getForm();
+		var values =  this.form.output.getForm().getValues();
+		var fieldValues = form.getFieldValues();
+		
+		var nextYr = parseInt(values.endYear)%100 +1;
+		var crop = values.crop;
+		
+		var varparam = "";
+		switch(values.variable) {
+			case "Area" : varparam='area';break;
+			case  "Production" : varparam ='prod';break;
+			case "Yield" : varparam= 'yield';break;
+		}
+		
+		var yieldFactor = fieldValues.production_unit == "000 bales" ? 170 : 1000;			
 			
-			var nextYr =parseInt(values.endYear)%100 +1;
-			var crop =values.crop;
-			
-			var varparam ="";
-			switch(values.variable) {
-				case "Area" : varparam='area';break;
-				case  "Production" : varparam ='prod';break;
-				case "Yield" : varparam= 'yield';break;
-			}
-			var yieldFactor = fieldValues.production_unit == "000 bales" ? 170 : 1000;
-			
-			
-			var viewParams= "crop:" + values.crop.toLowerCase() + ";" +
-					"gran_type:" + values.areatype.toLowerCase() + ";" +
-					"start_year:" + values.startYear +";" + //same year for start and end.
-					"end_year:" + values.endYear +";" + 
-					"yield_factor:" + yieldFactor +";" +
-					"region_list:" + values.region_list.toLowerCase() + ";";
-			var store = new Ext.data.JsonStore({
+		var viewParams = 
+			(values.crop        ? "crop:" + values.crop.toLowerCase() + ";" : "" ) +
+			(values.areatype    ? "gran_type:" + values.areatype.toLowerCase() + ";" : "" ) +
+			(values.startYear   ? "start_year:" + values.startYear +";" : "" ) + //same year for start and end.
+			(values.endYear     ? "end_year:" + values.endYear +";" : "" ) + 
+			(yieldFactor        ? "yield_factor:" + yieldFactor +";" : "" ) +
+			(values.region_list ? "region_list:" + values.region_list.toLowerCase() + ";" : "" );
+					
+		var store = new Ext.data.JsonStore({
 			url: this.url,
-			 sortInfo: {field: "s_dec", direction: "ASC"},
-			root: 'features',
-			
+			sortInfo: {field: "s_dec", direction: "ASC"},
+			root: 'features',			
 			fields: [{
 				name: 'region',
 				mapping: 'properties.region'
@@ -86,16 +86,16 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 			},{
 				name: 'yield',
 				mapping: 'properties.yield'
-			}]
-			
+			}]			
 		});
-		this.createResultPanel(store,fieldValues,values);
+		
+		var isProvince = values.areatype.toLowerCase() == "province";
+		this.createResultPanel(store, fieldValues, values, isProvince);
 		
 		store.load({
 			callback:function(records,req){
 				this.lastParams = req.params;
 			},
-
 			params :{
 				propertyName: "region,crop,year,production,area,yield",
 				service: "WFS",
@@ -105,26 +105,56 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 				outputFormat: "json",
 				viewparams: viewParams
 			}
-		}); 
-        
+		});         
     },
 	
-	createResultPanel: function( store ,fieldValues,values){
+	createResultPanel: function(store, fieldValues, values, isProvince){
 		var tabPanel = Ext.getCmp('id_mapTab');
-
         var tabs = Ext.getCmp('cropDataTable_tab');
+		
 		var grid = new Ext.grid.GridPanel({
 			bbar:[
-				"->",{xtype:'button',text:'export',iconCls:'icon-disk',handler:function(){
-					var store =this.ownerCt.ownerCt.getStore();
-					var lastParams = store.lastParams;
-					var dwl = store.url + "?";
-					lastParams.outputFormat="CSV";
-					for (var i in lastParams){
-						dwl+=i + "=" +encodeURIComponent(lastParams[i])+"&";
+				"->",
+				{
+					xtype: 'button',
+					hidden: !isProvince,
+					text: 'Export All District',
+					tooltip: 'Export All District',
+					iconCls: 'icon-disk-multiple',
+					handler:function(){
+						var store = this.ownerCt.ownerCt.getStore();
+						var lastParams = Ext.applyIf({}, store.lastParams);						
+						
+						var dwl = store.url + "?";
+						lastParams.outputFormat = "CSV";
+						
+						if(lastParams.typeName && isProvince){
+							lastParams.typeName = "nrl:CropDataDistrict";
+						}
+						
+						for (var i in lastParams){
+							dwl += i + "=" +encodeURIComponent(lastParams[i])+"&";
+						}
+						
+						window.open(dwl);
 					}
-					window.open(dwl);
-				}}],
+				}, {
+					xtype:'button',
+					text: 'Export',
+					tooltip: 'Export',
+					iconCls: 'icon-disk',
+					handler:function(){
+						var store = this.ownerCt.ownerCt.getStore();
+						var lastParams = store.lastParams;
+						var dwl = store.url + "?";
+						lastParams.outputFormat = "CSV";
+						for (var i in lastParams){
+							dwl += i + "=" +encodeURIComponent(lastParams[i])+"&";
+						}
+						window.open(dwl);
+					}
+				}
+			],
 			forceFit:true,
 			loadMask:true,
 			border:false,

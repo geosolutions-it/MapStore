@@ -106,8 +106,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
                 if(i==factorStore.length-1){
                     factorList += "'" + factorValue + "'";
                 }else{
-                    factorList += "'" + factorValue.concat("'\\,");
-                    
+                    factorList += "'" + factorValue.concat("'\\,");                    
                 }
             }
         }

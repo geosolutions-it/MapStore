@@ -336,3 +336,8 @@ div.map-overlay div.overlay-element {
     left: 0px;
     margin-top: 0px;
 }
+
+/* NRL special buttons */
+.x-btn .icon-disk-multiple{
+	background-image: url(img/silk/disk_multiple.png);
+}
