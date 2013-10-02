@@ -362,6 +362,14 @@ div.map-overlay div.overlay-element {
     background-image: url(img/silk/application_form_edit.png) !important;
 }
 
+.save-button{
+    background-image: url(img/silk/database_save.png) !important;
+}
+
+.load-button{
+    background-image: url(img/silk/database_go.png) !important;
+}
+
 .reset-button{
     background-image: url(img/silk/table_refresh.png) !important;
 }
