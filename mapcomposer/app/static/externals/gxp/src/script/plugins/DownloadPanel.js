@@ -1188,7 +1188,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 							
 							// Leave the first unique element
 							var crsRecord = crsComboStore.getAt(0);	
-							if(crsRecord.get("code") != ""){
+							if(crsRecord.get("code") != "" && crsRecord.get("code") != crs){
 								var r = Ext.data.Record.create([
 									{name: "name"},
 									{name: "code"},
