@@ -176,8 +176,10 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 				beforeload: function(store){
 					store.setBaseParam( 'srsName', this.combo.target.mapPanel.map.getProjection() );
 					for (var name in this.vendorParams ) {
-						if(name!='cql_filter' && name != "startindex" && name != "maxfeatures" && name != 'outputFormat' ){
-							store.setBaseParam(store, this.vendorParams[name]);
+					    if(this.vendorParams.hasOwnProperty(name)){
+    						if(name!='cql_filter' && name != "startindex" && name != "maxfeatures" && name != 'outputFormat' ){
+    							store.setBaseParam(store, this.vendorParams[name]);
+    						}
 						}
 					}
 				}
@@ -207,7 +209,7 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 						return 100000000000000000; 
 					}
 	
-				}
+				};
 				o.totalRecords = estimateTotal(o,options,this);
 				//end of custom total workaround
 				

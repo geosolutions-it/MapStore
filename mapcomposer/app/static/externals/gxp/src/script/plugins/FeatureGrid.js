@@ -163,6 +163,8 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  Feature Grid title.
      */
     title: "Features",
+	
+	zoomToFeature: "Zoom To Feature",
 
     /** private: method[displayTotalResults]
      */
@@ -224,6 +226,8 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         this.displayItem = new Ext.Toolbar.TextItem({});
         config = Ext.apply({
             xtype: "gxp_featuregrid",
+			actionTooltip: this.zoomToFeature,
+			map: this.target.mapPanel.map,
             sm: new GeoExt.grid.FeatureSelectionModel(smCfg),
             autoScroll: true,
             title: this.title,
@@ -270,6 +274,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 }
             }, {xtype: 'tbspacer', width: 10}, this.displayItem] : []).concat(["->"].concat(!this.alwaysDisplayOnMap ? [{
                 text: this.displayFeatureText,
+				id: "showButton",
 				iconCls: "gxp-icon-addtomap",
                 enableToggle: true,
                 toggleHandler: function(btn, pressed) {
@@ -305,20 +310,20 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             }] : [])),
             listeners: {
                 "added": function(cmp, ownerCt) {
-                    var onClear = (function() {
+                    var onClear = OpenLayers.Function.bind(function() {
                         this.showExportCSV ? this.output[0].exportCSVButton.disable() : {};
                         this.displayTotalResults();
                         this.selectOnMap && this.selectControl.deactivate();
                         this.autoCollapse && typeof ownerCt.collapse == "function" &&
                             ownerCt.collapse();
-                    }).bind(this);
-                    var onPopulate = (function() {
+                    }, this);
+                    var onPopulate = OpenLayers.Function.bind(function() {
                         this.showExportCSV ? this.output[0].exportCSVButton.enable() : {};
                         this.displayTotalResults();
                         this.selectOnMap && this.selectControl.activate();
                         this.autoExpand && typeof ownerCt.expand == "function" &&
                             ownerCt.expand();
-                    }).bind(this);
+                    }, this);
                     featureManager.on({
                         "query": function(tool, store) {
                             store && store.getCount() ? onPopulate() : onClear();
@@ -339,7 +344,29 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 },
                 scope: this
             },
-            contextMenu: new Ext.menu.Menu({items: []})
+            contextMenu: new Ext.menu.Menu({items: [{
+				text: this.zoomToFeature,
+				tooltip: this.zoomToFeature,
+				iconCls: 'gxp-icon-zoom-to',
+				scope: this,
+				handler: function(cmp){
+					var grid = this.output[0];
+					var selection = grid.getSelectionModel().getSelections()[0];
+					var feature = selection.data.feature;
+					if(feature){
+						var bounds = feature.geometry.getBounds();
+						if(bounds){
+							this.target.mapPanel.map.zoomToExtent(bounds);
+							
+							var showButton = Ext.getCmp("showButton");
+							if(!showButton.pressed){
+								showButton.toggle(true);
+								this.selectControl.select(feature);
+							}
+						}
+					}
+				}				
+			}]})
         }, config || {});
         var featureGrid = gxp.plugins.FeatureGrid.superclass.addOutput.call(this, config);
         
@@ -348,7 +375,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         }
        
         featureManager.paging && featureManager.on("setpage", function(mgr, condition, callback, scope, pageIndex, numPages) {
-            var paging = (numPages > 0);
+            var paging = (mgr.page.numFeatures > 0);
             featureGrid.zoomToPageButton.setDisabled(!paging);
             var prev = (paging && (pageIndex !== 0));
             featureGrid.firstPageButton.setDisabled(!prev);

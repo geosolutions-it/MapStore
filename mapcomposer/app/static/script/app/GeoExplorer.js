@@ -1237,8 +1237,20 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      */
     getState: function() {
         var state = GeoExplorer.superclass.getState.apply(this, arguments);
-        // Don't persist tools
+        
+		// ///////////////////////////////////////////
+		// Don't persist unnecessary components. 
+		// Only the map details are mandatory, other
+        // elements are merged from the default 
+		// configuration.
+		// ///////////////////////////////////////////
+		
         delete state.tools;
+		delete state.customTools;
+		delete state.viewerTools;
+		delete state.georeferences;
+		delete state.customPanels;
+		
         return state;
     }
 });

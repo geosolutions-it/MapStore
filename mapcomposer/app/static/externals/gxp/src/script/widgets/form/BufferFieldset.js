@@ -123,6 +123,8 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
      */ 
 	decimalPrecision: 0,
 	
+	geodesic: true,
+	
     /** 
 	 * private: method[initComponent]
      */
@@ -131,26 +133,38 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 			map: this.map,
 			fieldLabel: this.coordinatePickerLabel,
 			outputSRS: this.outputSRS,
-			selectStyle: this.selectStyle,
+			//selectStyle: this.selectStyle,
 			toggleGroup: this.toggleGroup,
 			ref: "coordinatePicker",
 			listeners: {
 				scope: this,
 				update: function(){
-					this.bufferField.enable();
-				},				
-				reset: function(){
-					this.bufferField.disable();
-					this.bufferField.reset();
+				    var cv = this.coordinatePicker.isValid();
+				    var bv = this.bufferField.isValid();
+					if(cv && bv ){                                 
+                        var coords = this.coordinatePicker.getCoordinate();
+                        var lonlat = new OpenLayers.LonLat(coords[0], coords[1]);
+                        var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
+                        
+                        var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
+                            point,
+                            this.bufferField.getValue(),
+                            100, 
+                            null
+                        );
+                        
+                        this.drawBuffer(regularPolygon);
+                    }
 				}
-			}
+			}			
 		});
-	
+		
 		this.bufferField = new Ext.form.NumberField({
 			name: 'buffer',
 			ref: 'bufferField',
+			fieldLabel: this.bufferFieldLabel + " ("+this.map.units+")",
 			allowBlank: false,
-			disabled: true,
+			disabled: false,
 			width: 112,
 			flex: 1,
 			minValue: this.minValue,
@@ -159,61 +173,42 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 		    decimalPrecision: this.decimalPrecision,
 			allowDecimals: true,
 			hideLabel : false,
-			listeners: {
-				scope: this,
-				keypress: function(){
-					this.compositeField.clickToggle.toggle(false);
-				}
-			}
+			validationDelay: 1500
 		});
 		
-	    this.compositeField = new Ext.form.CompositeField({
-		    fieldLabel: this.bufferFieldLabel,
-			items: [
-				this.bufferField,
-				{
-                    xtype: 'button',
-					ref: 'clickToggle',
-                    tooltip: this.draweBufferTooltip,
-                    iconCls: this.buttonIconCls,
-                    enableToggle: true,
-                    toggleGroup: this.toggleGroup,
-                    width:20,
-                    listeners: {
-						scope: this, 
-                        toggle: function(button, pressed) {  
-							if(pressed){
-								if(this.isValid()){									
-									var coords = this.coordinatePicker.getCoordinate();
-									var lonlat = new OpenLayers.LonLat(coords[0], coords[1]);
-									var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
-									
-									var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
-										point,
-										this.bufferField.getValue(),
-										100, 
-										null
-									);
-									
-									this.drawBuffer(regularPolygon);
-									
-									var bounds = regularPolygon.getBounds();
-									this.map.zoomToExtent(bounds);
-								}else{
-									this.compositeField.clickToggle.toggle(false);
-								}
-                            }else{
-								this.resetBuffer();
-                            }
-                        }
-                    }
-                }
-			]
-		});
+		this.bufferField.addListener("keyup", function(){        
+			if(this.coordinatePicker.isValid() && this.bufferField.isValid()){						
+				var coords = this.coordinatePicker.getCoordinate();
+				var lonlat = new OpenLayers.LonLat(coords[0], coords[1]);
+				var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
+				
+				var polygon;
+				if(this.geodesic){
+					polygon = OpenLayers.Geometry.Polygon.createGeodesicPolygon(
+						point,
+						this.bufferField.getValue(),
+						100, 
+						0,
+						this.map.getProjectionObject()
+					);
+				}else{
+					polygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
+						point,
+						this.bufferField.getValue(),
+						100, 
+						0
+					);
+				}
+				
+				this.drawBuffer(polygon);
+			}else{
+				this.resetBuffer();
+			}
+		}, this, {delay: 1500});
 		
 		this.items = [
 			this.coordinatePicker,
-			this.compositeField
+			this.bufferField
 		];
         
 		this.title = this.bufferFieldSetTitle;
@@ -235,6 +230,8 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 			
             this.bufferLayer.displayInLayerSwitcher = this.displayInLayerSwitcher;
             this.map.addLayer(this.bufferLayer);  
+			
+			this.fireEvent('bufferadded', this, bufferFeature);
         }    
     },
 	
@@ -244,6 +241,8 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
             if(layer){
                 map.removeLayer(layer);
             }
+			
+			this.fireEvent('bufferremoved', this);
 		}
 	},
 	
@@ -254,8 +253,8 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 	
 	resetPointSelection: function(){
 		this.coordinatePicker.resetPoint();
+        this.bufferField.reset();
 		this.resetBuffer();
-		this.compositeField.clickToggle.toggle(false);
 	}
 });
 

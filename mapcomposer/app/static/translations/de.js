@@ -349,7 +349,8 @@ GeoExt.Lang.add("de", {
         exportCSVSingleText: "einzelne Seite",
         exportCSVMultipleText: "Alle Seite",
         failedExportCSV: "Fehler beim Ansprechen für Ausgabeformat CSV finden",
-        invalidParameterValueErrorText: "Ungültige Parameter Wert"
+        invalidParameterValueErrorText: "Ungültige Parameter Wert",
+		zoomToFeature: "Zoom auf Funktionen"
     },
 	
     "gxp.plugins.QueryForm.prototype": {
@@ -373,16 +374,22 @@ GeoExt.Lang.add("de", {
     
 	"gxp.plugins.BBOXQueryForm.prototype": {
         selectionMethodFieldSetComboTitle: "Verfahren zur Auswahl",
+        comboEmptyText: "Wählen Sie eine Methode..",
         comboSelectionMethodLabel: "Auswahl",
         comboPolygonSelection: 'Polygon',
         comboCircleSelection: 'Rund',
-        comboBBOXSelection: 'BBOX',
-		errorBBOXText: "Die BBOX ausgewählt ist ungültig!",
+        comboBBOXSelection: 'BBox',
+		errorBBOXText: "Die BBox ausgewählt ist ungültig!",
         errorDrawPolygonText: "Sie müssen das Polygon zeichnen",
         errorDrawCircleText: "Sie müssen den Kreis ziehen",     
         errorDrawTitle: "Antrag Fehler",
 		errorBufferTitle: "Der Buffer ist falsch",
-		errorBufferText: "Der ausgewählte Buffer ist ungültig!"
+		errorBufferText: "Der ausgewählte Buffer ist ungültig!",
+		areaLabel: "Bereich",	
+		perimeterLabel: "Perimeter",	
+		radiusLabel: "Raggio",	
+		centroidLabel: "Radius",	
+		selectionSummary: "Zusammenfassung Selection"
     },
 	
 	"gxp.widgets.form.BufferFieldset.prototype": {
@@ -399,7 +406,7 @@ GeoExt.Lang.add("de", {
         southLabel:"Süden",
         waitEPSGMsg: "Bitte warten...",
         setAoiText: "ROI eingeben",
-        setAoiTooltip: "SetBox-Kontrolle aktivieren um eine ROI (BBOX) auf der Karte zu zeichnen",
+        setAoiTooltip: "SetBox-Kontrolle aktivieren um eine ROI (BBox) auf der Karte zu zeichnen",
         title: "Region of interest"
     },
     

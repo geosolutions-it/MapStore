@@ -72,6 +72,20 @@
       <div class="loading-indicator">
       </div>
     </div>
+
+	-->	
+	
+	<!-- This defines the OpenLayers.Control.MousePosition CSS -->
+	<style>
+		.olControlMousePosition {
+			top: 5px !important;
+			right: 5px !important;
+			font-size: 3em;
+			color: lightgrey;
+			height: 20px;
+		}
+	</style>
+
     <script>
         
 		
@@ -382,7 +396,7 @@
                 },
                 sources: sources,
 				scaleOverlayUnits: serverConfig.scaleOverlayUnits,
-				//showGraticule: false,  //Set showGraticule property to true only if the map projection is EPSG:4326 
+				showGraticule: false,
                 georeferences: georeferences_data,
                 map: serverConfig.map,
 				customTools: serverConfig.customTools

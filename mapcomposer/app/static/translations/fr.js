@@ -79,8 +79,7 @@ GeoExt.Lang.add("fr", {
 	    removeOverlaysMenuText: "Retirer des superpositions",
 	    removeOverlaysActionTip: "Supprime toutes les superpositions de la carte",
 	    removeOverlaysConfirmationText: "Etes-vous sûr de vouloir supprimer tous les calques chargés de la carte?"
-    },
-    
+    },    
 	
     "gxp.plugins.BingSource.prototype": {
         title: "Bing couvertures",
@@ -320,7 +319,8 @@ GeoExt.Lang.add("fr", {
         exportCSVSingleText: "Une seule page",
         exportCSVMultipleText: "Toutes les pages",
         failedExportCSV: "Impossible de trouver la réponse pour le format de sortie CSV",
-        invalidParameterValueErrorText: "Valeur de paramètre non valide"
+        invalidParameterValueErrorText: "Valeur de paramètre non valide",
+		zoomToFeature: "Zoom sur Feature"
     },
 	
 	"gxp.plugins.QueryForm.prototype": {
@@ -344,16 +344,22 @@ GeoExt.Lang.add("fr", {
     
     "gxp.plugins.BBOXQueryForm.prototype": {
         selectionMethodFieldSetComboTitle: "Méthode de sélection",
+        comboEmptyText: "Sélectionner une méthode..",
         comboSelectionMethodLabel: "Sélection",
         comboPolygonSelection: 'Polygon',
         comboCircleSelection: 'Arrondissez',
-        comboBBOXSelection: 'BBOX',
-		errorBBOXText: "Le BBOX choisi n'est pas valide!",
+        comboBBOXSelection: 'BBox',
+		errorBBOXText: "Le BBox choisi n'est pas valide!",
         errorDrawPolygonText: "Vous devez dessiner le polygone",
         errorDrawCircleText: "Vous devez dessiner le cercle",     
         errorDrawTitle: "Demande erreur",
 		errorBufferTitle: "Le tampon est incorrecte",
-		errorBufferText: "Le tampon sélectionné n'est pas valide!"
+		errorBufferText: "Le tampon sélectionné n'est pas valide!",
+		areaLabel: "Région",	
+		perimeterLabel: "Perimetro",	
+		radiusLabel: "Perimeter",	
+		centroidLabel: "Centroid",	
+		selectionSummary: "Résumé de Sélection"
     },
 	
     "gxp.widgets.form.BufferFieldset.prototype": {
@@ -370,7 +376,7 @@ GeoExt.Lang.add("fr", {
         southLabel:"Sud",
         waitEPSGMsg: "S'il vous plaît attendre...",
         setAoiText: "FixéROI",
-        setAoiTooltip: "Activer le contrôle TextBox pour dessiner un ROI (BOX) sur la carte",
+        setAoiTooltip: "Activer le contrôle TextBox pour dessiner un ROI (BBox) sur la carte",
         title: "Région d'Intérêt"
     },
     

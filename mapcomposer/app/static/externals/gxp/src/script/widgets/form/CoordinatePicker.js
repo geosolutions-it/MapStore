@@ -63,14 +63,30 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
      *     
      */
     selectStyle:{
+        pointRadius: 4,
+        graphicName: "cross",
+        fillColor: "#FFFFFF",
+        strokeColor: "#FF0000",
+        fillOpacity:0.5,
+        strokeWidth:2
+    },
+
+    /**
+     * Private 
+     * Property: defaultSelectStyle
+     * {Object} Configuration of OpenLayer.Style.
+     * used to fill "selectStyle" missing fields
+     *     
+     */
+    defaultSelectStyle:{
         pointRadius: 4, // sized according to type attribute
-        graphicName: "circle",
+        graphicName: "cross",
         fillColor: "#0000FF",
         strokeColor: "#0000FF",
         fillOpacity:0.5,
-        strokeWidth:2
-        
+        strokeWidth:2        
     },
+	
     /**
      * Property: decimalPrecision
      * {int} precision of the textFields   
@@ -92,6 +108,8 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
         map = this.map;
 		
         var compositeField = this;
+		
+		Ext.applyIf(this.selectStyle, this.defaultSelectStyle);
 		
         //create the click control
         var ClickControl = OpenLayers.Class(OpenLayers.Control, {                
@@ -149,7 +167,7 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
                       toggle: function(button, pressed) {  
                          if(pressed){
                               this.selectLonLat.activate();
-                              this.updatePoint();                            
+                              //this.updatePoint();                            
                           }else{
                               this.selectLonLat.deactivate();
                              
@@ -175,22 +193,23 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
 						change: this.updatePoint
 					}
                 }
-            ]
+            ];
         
         return  gxp.widgets.form.CoordinatePicker.superclass.initComponent.apply(this, arguments);
     },
 	
-	/** event handler for the button click */
+	/** event handler for the ClickControl click event*/
     clickHandler: function(e){
         //get lon lat
         var map = this.map;
         var lonlat = map.getLonLatFromPixel(e.xy);
+        //
+        var geoJsonPoint = lonlat.clone();
+        geoJsonPoint.transform(map.getProjectionObject(),new OpenLayers.Projection(this.outputSRS));
+        this.latitudeField.setValue(geoJsonPoint.lat);
+        this.longitudeField.setValue(geoJsonPoint.lon);
         //update point on the map
         this.updateMapPoint(lonlat);
-        //
-        lonlat.transform(map.getProjectionObject(),new OpenLayers.Projection(this.outputSRS));
-        this.latitudeField.setValue(lonlat.lat);
-        this.longitudeField.setValue(lonlat.lon);
 		this.clickToggle.toggle();      
     },
 	
@@ -206,7 +225,10 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
 		}
     },
 	
-	resetPoint:function(){
+	/**
+	 * Remove the point displayed in the map 
+	 */
+    resetMapPoint:function(){
 		if(this.selectStyle){
 			var layer = map.getLayersByName(this.selectLayerName)[0];
             if(layer){
@@ -214,6 +236,15 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
             }
 		}
 		
+        this.fireEvent("reset");
+    },
+
+    /**
+     * Reset the fields and remove the point from the map
+     */
+    resetPoint:function(){
+        this.resetMapPoint();
+        
 		this.latitudeField.reset();
         this.longitudeField.reset();
 		
@@ -227,7 +258,7 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
 	/** private point update */
     updateMapPoint:function(lonlat){
         if(this.selectStyle){
-            this.resetPoint();
+            this.resetMapPoint();
             var style = new OpenLayers.Style(this.selectStyle);
             this.layer = new OpenLayers.Layer.Vector(this.selectLayerName,{
                 styleMap: style                

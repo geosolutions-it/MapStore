@@ -32,32 +32,26 @@ Ext.namespace("gxp.form");
  */
 gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
 
-
-
     /** api: ptype = gxp_bboxfieldset */
     ptype: "gxp_bboxfieldset",
-    
-    
+ 
     /** api: config[id]
      *  ``String``
      *  
      */
     id: "bboxFieldSet",
-    
-    
+  
     /** api: property[map]
      *  ``Object``
      *  
      */
     map: "BBOX",
-    
 
     /** api: property[layerName]
      *  ``String``
      *  
      */
     layerName: "BBOX",
-    
 
     /**
      * Property: decimalPrecision
@@ -71,8 +65,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
      *     
      */
     outputSRS: 'EPSG:4326',
-    
-    
+
     /** api: property[infoEPSG]
      *  ``Boolean``
      *  
@@ -90,15 +83,13 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
      *  
      */
     epsgWinWidth: null,
-    
-    
+
     /** api: property[epsgWinHeight]
      *  ``String``
      *  
      */
     epsgWinHeight: null,
-    
-    
+
     /** api: config[spatialFilterOptions]
      *  ``Object``
      *  
@@ -109,15 +100,13 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         latMax: null,   
         latMin: null  
     },
-    
-    
+
     /** api: config[displayBBOXInLayerSwitcher]
      *  ``Boolean``
      *  
      */
     displayBBOXInLayerSwitcher: false,
-    
- 
+
     /**
      * Property: selectStyle
      * {Object} Configuration of OpenLayer.Style. 
@@ -130,8 +119,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         fillOpacity:0.5,
         strokeWidth:2
     },
-    
-    
+
     // start i18n
     northLabel:"North",
     westLabel:"West",
@@ -142,46 +130,40 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
     setAoiTooltip: "Enable the SetBox control to draw a ROI (BBOX) on the map",
     title: "Region of Interest",
     // end i18n
-    
-
-    
 
     /** private: method[initComponent]
      *  Override
      */
-    initComponent: function() {
-       
-       
-        
-        this.autoHeight= true;
-        this.layout='table';
-        this.layoutConfig= {
+    initComponent: function() {       
+        this.autoHeight = true;
+        this.layout ='table';
+        this.layoutConfig = {
             columns: 3
         };
-        this.defaults= {
+		
+        this.defaults = {
             // applied to each contained panel
             bodyStyle:'padding:5px;'
         };
-        this.bodyCssClass= 'aoi-fields';
+		
+        this.bodyCssClass = 'aoi-fields';
         
         // Define handlar box style
         Ext.util.CSS.createStyleSheet(".olHandlerBoxZoomBox_"+this.id+" {\n"
-            +" border-width:"+this.selectStyle.strokeWidth+"px; \n"
+            +" border-width:" + 5 + "px; \n"
             +" border-style:solid; \n"
-            +" border-color: "+this.selectStyle.strokeColor+";"
+            +" border-color: " + "#66cccc" + ";"
             +" position: absolute; \n"
-            +" background-color: "+this.selectStyle.handlerFillColor+"; \n"
+            +" background-color: " + "#66cccc" + "; \n"
             +" opacity: "+0.5+"; \n"
             +" font-size: 1px; \n"
             +" filter: alpha(opacity="+0.5 * 100+"); \n"
             +"}",
-            "olHandlerBoxZoomBox_"+this.id);
-   
+            "olHandlerBoxZoomBox_"+this.id);   
         
-        var me= this;
+        var me = this;
 
         this.bboxProjection = this.outputSRS ? new OpenLayers.Projection(this.outputSRS) : null;
-
        
         this.northField = new Ext.form.NumberField({
             fieldLabel: me.northLabel,
@@ -247,6 +229,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             text: this.setAoiText,
             tooltip: this.setAoiTooltip,
             enableToggle: true,
+            toggleGroup: this.toggleGroup,
             iconCls: 'aoi-button',
             height: 50,
             width: 50,
@@ -257,7 +240,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
                         //
                         // Reset the previous control
                         //
-                        this.reset();
+                        //this.reset();
 
                         //
                         // Activating the new control
@@ -315,9 +298,9 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         }];
             
         if(this.infoSRS)   
-            this.title+=" <a href='#' id='"+me.id+"_bboxAOI-set-EPSG'>["+this.bboxProjection.getCode()+"]</a>";
+            this.title += " <a href='#' id='"+me.id+"_bboxAOI-set-EPSG'>["+this.bboxProjection.getCode()+"]</a>";
         
-        this.listeners= {
+        this.listeners = {
             "afterlayout": function(){
                 Ext.get(me.id+"_bboxAOI-set-EPSG").addListener("click", me.openEPSGWin, me);  
 				var baseProj = me.map.getProjection();
@@ -345,8 +328,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             }
           
         };
-        
-       
+
         gxp.form.BBOXFieldset.superclass.initComponent.call(this);
     },
     
@@ -358,8 +340,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
      *  W3C suggested algorithm for calculating brightness of screen colors.
      *  http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
      */
-    
-    
+
     /** public: method[removeBBOXLayer]	 
      *     remove the BBOX selection layer from the map
      */
@@ -369,8 +350,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         if(bboxLayer)
             this.map.removeLayer(bboxLayer);    
     },
-    
-    
+
     /** public: method[reset]	 
      *    reset BBOX Panel
      */
@@ -379,7 +359,9 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         this.northField.reset();
         this.southField.reset();
         this.eastField.reset();
-        this.westField.reset();  
+        this.westField.reset(); 
+
+		this.fireEvent('unselect', this);		
     },
     
     /** public: method[setBBOX]
@@ -392,7 +374,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         if(this.map.getProjection() != this.bboxProjection.getCode()){
             bboxBounds = bounds.transform(this.map.getProjectionObject(),this.bboxProjection);
         }else
-            bboxBounds= bounds;  
+            bboxBounds = bounds;  
       
         this.northField.setValue(bboxBounds.top);
         this.southField.setValue(bboxBounds.bottom);
@@ -402,8 +384,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         this.fireEvent('select', this, bboxBounds);
 
     },
-    
-    
+
     /** public: method[isValid]
      *  
      *     
@@ -414,7 +395,6 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             this.eastField.isValid() && 
             this.northField.isValid());
     },
-    
     
     /** public: method[isDirty]
      *  
@@ -427,9 +407,6 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             this.northField.isDirty());
     },
 
-
-    
-    
     /** public: method[getBBOXMapBounds]
      *  
      *   return the selected BBOX bounds defined with the Map Projection  
@@ -441,7 +418,6 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             return this.getBBOXBounds();
     },
     
-    
     /** public: method[getBBOXBounds]
      *  
      *  return the selected BBOX bounds defined with the Panel Projection   
@@ -452,7 +428,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             this.southField.getValue(), 
             this.eastField.getValue(), 
             this.northField.getValue()
-            )
+        );
     },
     
     /** private: method[openEpsgWin]
@@ -492,8 +468,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         }); 
         win.show();
     },
-    
-    
+     
     /** private: method[getCRSURLFromCode]
      *    Get CRS HTML page URL description
      */
@@ -513,8 +488,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
          srsURL=this.infoEPSGURL;
          
        return srsURL;
-    }
-    
+    }  
 });
 
 Ext.reg("gxp_bboxfieldset", gxp.form.BBOXFieldset);
