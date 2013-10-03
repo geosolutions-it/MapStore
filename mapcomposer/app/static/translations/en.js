@@ -582,7 +582,7 @@ GeoExt.Lang.add("en", {
         errMissParamsTitle: "Missing parameters" ,
         errMissParamsMsg: "Please fill all the mandatory fields" ,        
         errMissGeomTitle: "Missing feature" ,
-        errMissGeomMsg: "Please draw the Area of Interest before submitting" ,    
+        errMissGeomMsg: "Draw a geometry before sending the request?" ,    
         msgRemRunningTitle:"Remove Running Instance",
         msgRemRunningMsg:  "You are about to delete a running instance, you will not be able to retrieve the result<br/>Do you really want to delete instance ?",
         msgRemTitle: "Remove Instance",

@@ -584,7 +584,7 @@ GeoExt.Lang.add("fr", {
         errMissParamsTitle: "Paramètres manquants" ,
         errMissParamsMsg: "S'il vous plaît remplir tous les champs obligatoires",        
         errMissGeomTitle: "Fonctionnalité manquante" ,
-        errMissGeomMsg: "S'il vous plaît dessiner la zone d'intérêt avant de soumettre",    
+        errMissGeomMsg: "Dessiner une géométrie avant d'envoyer la demande ?",    
         msgRemRunningTitle:"Retirer instance d'exécution",
         msgRemRunningMsg:  "Vous êtes sur le point de supprimer une instance en cours d'exécution, vous ne serez pas en mesure de récupérer le résultat <br/> Voulez-vous vraiment supprimer exemple?",
         msgRemTitle: "Retirer instance",

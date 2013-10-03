@@ -659,9 +659,13 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 		
 		var summary = "", metricUnit = "km";
 		
-		var area = this.getArea(feature.geometry, metricUnit);
-		if(area){
-			summary += this.areaLabel + ": " + area + " " + metricUnit + '<sup>2</sup>' + '<br />';
+		var geom = feature.geometry;
+		if(!(geom instanceof OpenLayers.Geometry.Point) &&
+			!(geom instanceof OpenLayers.Geometry.LineString)){
+				var area = this.getArea(feature.geometry, metricUnit);
+				if(area){
+					summary += this.areaLabel + ": " + area + " " + metricUnit + '<sup>2</sup>' + '<br />';
+				}
 		}
 		
 		var selectionType = this.formPanel.selectionMode.getValue();
@@ -740,7 +744,13 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 	* This method to use the specific layer's URL for WPS requests
 	*/
 	buildLayerWPSUrl: function(url){
-		var newURL = url.replace(/\/wms/g, "/ows");
+		var newURL = url;
+		
+		if(url.indexOf("?") != -1){
+			url = url.split("?")[0];
+		}
+		
+		newURL = url.replace(/\/wms/g, "/ows");
 		newURL = newURL.concat("?service=WPS");
 		
 		this.wpsClusterManager.setWPSClient(newURL);
@@ -2061,7 +2071,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 					msg: this.errMissGeomMsg,
 					buttons: Ext.Msg.YESNO,
 					fn: function(btnValue) {
-						if(btnValue == 'yes') {
+						if(btnValue == 'no') {
 							callback.call(this);
 						}
 					},
@@ -2217,6 +2227,13 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
         };
 		
 		if(wkt){
+			var selectionType = this.formPanel.selectionMode.getValue();
+			if(selectionType == "box"){
+				var geometry = OpenLayers.Geometry.fromWKT(wkt);
+				var bounds = geometry.getBounds();
+				wkt = bounds.toGeometry().toString();
+			}
+			
 			request.inputs.ROI = new OpenLayers.WPSProcess.ComplexData({
 				value: wkt,
 				mimeType: "application/wkt"

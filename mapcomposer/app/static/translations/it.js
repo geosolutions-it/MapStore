@@ -608,7 +608,7 @@ GeoExt.Lang.add("it", {
         errMissParamsTitle: "Parametri mancanti" ,
         errMissParamsMsg: "Compila tutti i campi obbligatori" ,        
         errMissGeomTitle: "Geometrie mancanti" ,
-        errMissGeomMsg: "Disegna una geometria prima di inviare la richiesta" ,    
+        errMissGeomMsg: "Disegnare una geometria prima di inviare la richiesta ?" ,    
         msgRemRunningTitle:"Rimuovi istanza in corso",
         msgRemRunningMsg:  "Stai per cancellare una istanza in corso, non sarai in grado di recuperare il risultato<br/>Vuoi continuare ?",
         msgRemTitle: "Rimuovi istanza",

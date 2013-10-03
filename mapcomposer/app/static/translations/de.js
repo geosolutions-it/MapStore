@@ -622,7 +622,7 @@ GeoExt.Lang.add("de", {
         errMissParamsTitle: "Fehlende Parameter",
         errMissParamsMsg: "Bitte füllen Sie alle Pflichtfelder aus",       
         errMissGeomTitle: "Fehlende Funktion",
-        errMissGeomMsg: "Bitte zeichnen Sie eine Fläche",   
+        errMissGeomMsg: "Zeichnen Sie eine Geometrie vor dem Senden der Anfrage?",   
         msgRemRunningTitle: "Entferne laufende Instanz",
         msgRemRunningMsg: "Sie sind dabei eine laufende Instanz zu entfernen und können somit nicht mehr auf das Ergebniss zugreifen.<br/>Möchten Sie wirklich fortfahren?",
         msgRemTitle: "Instanz entfernen",
