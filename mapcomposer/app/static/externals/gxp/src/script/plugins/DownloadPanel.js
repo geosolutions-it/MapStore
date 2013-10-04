@@ -2229,9 +2229,22 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 		if(wkt){
 			var selectionType = this.formPanel.selectionMode.getValue();
 			if(selectionType == "box"){
-				var geometry = OpenLayers.Geometry.fromWKT(wkt);
-				var bounds = geometry.getBounds();
-				wkt = bounds.toGeometry().toString();
+				var isBuffered = this.formPanel.bufferField.isDirty();
+				
+				if(!isBuffered){
+					var geometry = OpenLayers.Geometry.fromWKT(wkt);
+					var bounds = geometry.getBounds();	
+					
+					//
+					// Make a fine BBOX  WKT
+					//					
+					var rt = bounds.right + " " + bounds.top;
+					var lb = bounds.left  + " " + bounds.bottom;
+					var lt = bounds.left  + " " + bounds.top;
+					var rb = bounds.right + " " + bounds.bottom;
+					
+					wkt = "POLYGON((" + lt + "," + rt + "," + rb + "," + lb + "," + lt + "))";
+				}
 			}
 			
 			request.inputs.ROI = new OpenLayers.WPSProcess.ComplexData({
