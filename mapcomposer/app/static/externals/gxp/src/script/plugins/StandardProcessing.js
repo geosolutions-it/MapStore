@@ -74,6 +74,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     highRiskLabel: "Alto Rischio",
     notVisibleOnArcsMessage: "Formula non visibile a questa scala",
     notVisibleOnGridMessage: "Formula non visibile a questa scala",
+    
+    loadUserElab: false,
+    geostoreElab: null,
+    geostoreFormula: null,
+    geostoreTemporal: null,    
     // End i18n.
         
     cellViewScale: 500010,
@@ -230,6 +235,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 scope: this,                
                 expand: function(combo) {
+                    this.loadUserElab = false;
                     combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );
                 },
@@ -242,8 +248,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             }          
         });
         
-        elaborazioneStore.on('load', function(store, records, options) {            
-            this.elaborazione.setValue(records[0].get('id'));
+        elaborazioneStore.on('load', function(store, records, options) {
+            if(!this.loadUserElab){
+                this.elaborazione.setValue(records[0].get('id'));
+            }else{
+                this.elaborazione.setValue(this.geostoreElab);
+            }
         }, this);
         
         //
@@ -349,6 +359,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 scope: this,                
                 expand: function(combo) {
+                    this.loadUserElab = false;
                     combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );
                 },
@@ -361,7 +372,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         formulaStore.on('load', function(store, records, options) {
             this.formula.getStore().filter('id_elaborazione', this.elaborazione.getValue());
-            this.formula.setValue(records[0].get('id_formula'));
+            if(!this.loadUserElab){
+                this.formula.setValue(records[0].get('id_formula'));
+            }else{
+                this.formula.setValue(this.geostoreFormula);
+            }
         }, this);
        
         this.elabSet = new Ext.form.FieldSet({
@@ -678,8 +693,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
              autoLoad: true 
        });
        
-       temporalStore.on('load', function(store, records, options) {            
-            this.temporal.setValue(records[0].get('value'));
+       temporalStore.on('load', function(store, records, options) {
+            if(!this.loadUserElab){       
+                this.temporal.setValue(records[0].get('value'));
+            }else{
+                this.temporal.setValue(this.geostoreTemporal);
+            }
        }, this);
         
                 
@@ -761,69 +780,70 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
        });
        
        targetStore.on('load', function(str, records) {
-            var allIDsArray= []; 
-            var code=0;
-            var humanIDsArray= [];
-            var notHumanIDsArray= [];
-            var allDescsMap = {};
-            var humanDescsMap = {};
-            var notHumanDescsMap = {};
-            Ext.each(records,function(record){
-                      var flg_umano= parseInt(record.get("flg_umano"));
-                      var id= parseInt(record.get("id_bersaglio"));
-                      allIDsArray.push(id);
-                      allDescsMap[id] = record.get("name");
-                      record.set( "layer", layers[parseInt(id)]);
-                      record.set( "property", 'calc_formula_tot');
-                      record.set( "humans", flg_umano == 1 ? true: false);
-                      
-                      var code="-1";
-                      
-                      switch(id){
-                          case 10:
-                               code='0';
-                              break;
-                          case 11:
-                               code='1';
-                              break;    
-                          case 12:
-                               code='2';
-                              break;
-                          case 13:
-                               code='3';
-                              break;
-                          case 14:
-                               code='4';
-                              break;    
-                          case 15:
-                               code='5';
-                              break;
-                          case 16:
-                               code='6';
-                              break;    
-                      }
-                      record.set( "code", code);
+            if(!this.loadUserElab){
+                var allIDsArray= []; 
+                var code=0;
+                var humanIDsArray= [];
+                var notHumanIDsArray= [];
+                var allDescsMap = {};
+                var humanDescsMap = {};
+                var notHumanDescsMap = {};
+                Ext.each(records,function(record){
+                          var flg_umano= parseInt(record.get("flg_umano"));
+                          var id= parseInt(record.get("id_bersaglio"));
+                          allIDsArray.push(id);
+                          allDescsMap[id] = record.get("name");
+                          record.set( "layer", layers[parseInt(id)]);
+                          record.set( "property", 'calc_formula_tot');
+                          record.set( "humans", flg_umano == 1 ? true: false);
+                          
+                          var code="-1";
+                          
+                          switch(id){
+                              case 10:
+                                   code='0';
+                                  break;
+                              case 11:
+                                   code='1';
+                                  break;    
+                              case 12:
+                                   code='2';
+                                  break;
+                              case 13:
+                                   code='3';
+                                  break;
+                              case 14:
+                                   code='4';
+                                  break;    
+                              case 15:
+                                   code='5';
+                                  break;
+                              case 16:
+                                   code='6';
+                                  break;    
+                          }
+                          record.set( "code", code);
 
-                      record.set( "macro", false);
-                      record.set( "description", {id: record.get("name")});
-                      record.set( "severeness", flg_umano ? '1,2,3,4' : '5');
-                      
-                      record.set( "id", [record.get("id_bersaglio")]);
-                      if(flg_umano!= 1){
-                         notHumanIDsArray.push(id);
-                         notHumanDescsMap[id] = record.get("name");
-                      }else{
-                         humanIDsArray.push(id); 
-                         humanDescsMap[id] = record.get("name");
-                      }
-             });
-           me.macroBersData = [
-            ['bersagli_all', me.allTargetOption, 'calc_formula_tot', null, '-2', true, allIDsArray, -1, allDescsMap, '1,2,3,4,5'],
-            ['bersagli_umani', me.allHumanTargetOption, 'calc_formula_tot', true, '-1', true, humanIDsArray, -2, humanDescsMap, '1,2,3,4'],
-            ['bersagli_ambientali', me.allNotHumanTargetOption, 'calc_formula_tot', false, '-2', true, notHumanIDsArray, -3, notHumanDescsMap, '5']
-            ];
-           me.macrobers.getStore().loadData(me.macroBersData, true);
-
+                          record.set( "macro", false);
+                          record.set( "description", {id: record.get("name")});
+                          record.set( "severeness", flg_umano ? '1,2,3,4' : '5');
+                          
+                          record.set( "id", [record.get("id_bersaglio")]);
+                          if(flg_umano!= 1){
+                             notHumanIDsArray.push(id);
+                             notHumanDescsMap[id] = record.get("name");
+                          }else{
+                             humanIDsArray.push(id); 
+                             humanDescsMap[id] = record.get("name");
+                          }
+                 });
+               me.macroBersData = [
+                ['bersagli_all', me.allTargetOption, 'calc_formula_tot', null, '-2', true, allIDsArray, -1, allDescsMap, '1,2,3,4,5'],
+                ['bersagli_umani', me.allHumanTargetOption, 'calc_formula_tot', true, '-1', true, humanIDsArray, -2, humanDescsMap, '1,2,3,4'],
+                ['bersagli_ambientali', me.allNotHumanTargetOption, 'calc_formula_tot', false, '-2', true, notHumanIDsArray, -3, notHumanDescsMap, '5']
+                ];
+               me.macrobers.getStore().loadData(me.macroBersData, true);
+            }
       });
         
        var targetMacroStore = new Ext.data.ArrayStore({
@@ -881,6 +901,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     //this.updateTemaSliders(record.get('humans'));                    
                 },
                 expand: function(combo) {
+                    this.loadUserElab = false;
                     combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );
                 } 
@@ -948,7 +969,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
        });
        
       classiADRStore.on('load', function(str, records) {
-           str.insert(0, new str.recordType({name: me.allClassOption, value:'0'}, 1000));
+           if(!this.loadUserElab){
+            str.insert(0, new str.recordType({name: me.allClassOption, value:'0'}, 1000));
+           }
       });
                 
         
@@ -971,6 +994,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             lazyInit: false,
             listeners: {
                 "expand": function(combo) {
+                    this.loadUserElab = false;
                     var store=combo.getStore();
                     delete store.baseParams.filter;
                     combo.getStore().reload();
@@ -1018,13 +1042,15 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
        });
                     
       sostanzeStore.on('load', function(str, records) {
-             var allIDsArray= new Array(); 
-             Ext.each(records,function(record){
+            if(!this.loadUserElab){
+                var allIDsArray= new Array(); 
+                Ext.each(records,function(record){
                       var id= parseInt(record.get("value"));
                       allIDsArray.push(id);
                       record.set( "id", [id]);
-             });
-             str.insert(0, new str.recordType({name: me.allSostOption, value:'0', id: allIDsArray}, 1000));
+                });
+                str.insert(0, new str.recordType({name: me.allSostOption, value:'0', id: allIDsArray}, 1000));
+             }
       });
       
 
@@ -1047,6 +1073,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             value: this.allSostOption,
             listeners: {
                 "expand": function(combo) {
+                    this.loadUserElab = false;
                     combo.getStore().reload();
                     combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );
@@ -1123,16 +1150,18 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
           });       
 
           accidentStore.on('load', function(str, records) {
-              var allIDsArray= []; 
-              var allDescsMap = {};
-              Ext.each(records,function(record){
-                      var id= parseInt(record.get("id"));
-                      allIDsArray.push(id);
-                      record.set( "id", [id]);
-                      allDescsMap[id] = record.get("name");
-                      record.set( "description",  {id: record.get("name")});
-              });
-              str.insert(0, new str.recordType({name: me.allScenOption, value:'0', id:allIDsArray, "description": allDescsMap }, 1000));
+              if(!this.loadUserElab){
+                  var allIDsArray= []; 
+                  var allDescsMap = {};
+                  Ext.each(records,function(record){
+                          var id= parseInt(record.get("id"));
+                          allIDsArray.push(id);
+                          record.set( "id", [id]);
+                          allDescsMap[id] = record.get("name");
+                          record.set( "description",  {id: record.get("name")});
+                  });
+                  str.insert(0, new str.recordType({name: me.allScenOption, value:'0', id:allIDsArray, "description": allDescsMap }, 1000));
+              }
           });
                 
         
@@ -1155,6 +1184,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             value: this.allScenOption,
             listeners: {
                 "expand": function(combo) {
+                    this.loadUserElab = false;
                     combo.getStore().reload();
                     combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );
@@ -1692,22 +1722,34 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.status = status;
         this.elaborazione.setValue(this.status.processing);
         this.formula.setValue(this.status.formula);
-        this.formula.fireEvent('select',this.formula, this.formula.getStore().getAt(this.formula.getStore().findExact("id_formula", this.status.formula)));
+        
+        if(!this.loadUserElab){
+            this.formula.fireEvent('select',this.formula, this.formula.getStore().getAt(this.formula.getStore().findExact("id_formula", this.status.formula)));
+        }
+        
         this.aoiFieldset.setAOI(this.appTarget.mapPanel.map.getExtent());
                 
         store=this.macrobers.getStore(); 
         this.macrobers.setValue(this.status.macroTarget);
         if(store.findExact("name", this.status.macroTarget) !== -1) {
-            this.macrobers.fireEvent('select',this.macrobers, store.getAt(store.findExact("name", this.status.macroTarget)));
+        
+            if(!this.loadUserElab){
+                this.macrobers.fireEvent('select',this.macrobers, store.getAt(store.findExact("name", this.status.macroTarget)));
+            }
+            
         }
         
         store=this.bers.getStore(); 
         if(this.status.target['macro']) {
             this.bers.setValue(null);
         } else {
-            var value = this.status.target['name'];
-            this.bers.setValue(value);
-            this.bers.fireEvent('select',this.bers, store.getAt(store.findExact("name", value)));
+        
+            if(!this.loadUserElab){
+                var value = this.status.target['name'];
+                this.bers.setValue(value);
+                this.bers.fireEvent('select',this.bers, store.getAt(store.findExact("name", value)));
+            }
+            
         }
         /*Ext.getCmp('rischio_sociale_multislider').setValue(0, status.themas.sociale[0]);
         Ext.getCmp('rischio_sociale_multislider').setValue(1, status.themas.sociale[1]);
