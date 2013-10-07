@@ -152,7 +152,17 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
                         } 
 
 						var outputValue = cbg.getValue().inputValue;
-						if(outputValue == "pakistan"){
+                        // check if disable with 'this.disableWidth' config param
+                        var disable = false;
+                        if(this.disableWidth && this.disableWidth.length > 0){
+                            for(var i=0; i<this.disableWidth.length; i++){
+                                if(outputValue == this.disableWidth[i]){
+                                    disable = true;
+                                    break;
+                                }    
+                            }
+                        }
+						if(disable){
 							this.ownerCt.submitButton.setDisabled(false);
 							this.AreaSelector.selectButton.toggle(false);
 						}else{
