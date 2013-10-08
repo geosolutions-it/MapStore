@@ -1,5 +1,5 @@
     {
-    "geoStoreBase":"http://localhost:8080/geostore/rest/",
+    "geoStoreBase":"http://localhost:8082/geostore/rest/",
     "proxy":"/http_proxy/proxy/?url=",
     "defaultLanguage": "it",
     "embedding": false,
@@ -491,7 +491,9 @@
         "wpsStore": "destination",        
         "wfsVersion" : "1.1.0",
         "destinationNS": "destination",
-        "index": 28
+        "index": 28,
+        "geoStoreBase":"http://localhost:8082/geostore/rest/",
+        "proxy":"/proxy/?url="
     },
     {
         "ptype": "gxp_tabpanelwfsgrids",
