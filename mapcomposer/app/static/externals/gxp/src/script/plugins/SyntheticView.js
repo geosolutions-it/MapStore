@@ -122,6 +122,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     reset: false,
     
+    "geoStoreBase":"http://localhost:8080/geostore/rest/",
+    "proxy":"/http_proxy/?url=",
+    
     targetStyles: {
         "simulation_added": {
             strokeColor: "#00FF00",
@@ -278,10 +281,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         },this);
 
         this.geoStore = new gxp.plugins.GeoStoreClient({
-            url: "http://localhost:8080/geostore/rest",
+            url: this.geoStoreBase,
             user: "user",
             password: "user",
-            proxy: "/http_proxy/proxy/?url=",
+            proxy: this.proxy,
             listeners: {
                 "geostorefailure": function(tool, msg){
                     Ext.Msg.show({
@@ -708,7 +711,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             var geostoreEntityResource = new OpenLayers.GeoStore.Resource({
                                 type: "resource",
                                 name: fields.elab_name,
-                                category: 'cat1',
+                                category: 'processing',
                                 store: jsonStatus
                             });                    
                             
@@ -869,7 +872,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                             //Assegno il nome alla risorsa (elaborazione)
                                             var geostoreEntityResource = new OpenLayers.GeoStore.Resource({
                                                 type: "resource",
-                                                category: "cat1",
+                                                category: "processing",
                                                 id: newRecord
                                             });  
                                             

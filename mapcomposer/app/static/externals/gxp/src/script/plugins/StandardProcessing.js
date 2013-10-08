@@ -676,7 +676,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         var filter= new OpenLayers.Filter.Comparison({
             type: OpenLayers.Filter.Comparison.EQUAL_TO,
-            property: this.destinationNS + ":fk_tipo_variabile",
+            property: "fk_tipo_variabile",
             value: 1
         });
         
