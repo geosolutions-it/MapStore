@@ -132,7 +132,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
         var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
         var mHost=pattern.exec(this.url); 
         var mUrl = this.url+restPath;
-        var url = mHost[2] == location.host ? mUrl : this.proxy + mUrl;
+        var url = mHost[2] == location.host ? mUrl : this.proxy + encodeURIComponent(mUrl);
 	
         
         Ext.Ajax.disableCaching=true;
