@@ -14,7 +14,8 @@ var app = exports.app = function(env) {
     if (url) {
         response = proxyPass({
             request: request, 
-            url: url
+            url: url,
+            allowAuth:true
         });
     } else {
         response = responseForStatus(400, "Request must contain url parameter.");
