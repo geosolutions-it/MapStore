@@ -8,9 +8,12 @@
 			"title": "NRL GeoServer",
 			"projection":"EPSG:900913",
 			"url": "http://84.33.2.75/geoserver/ows", 
+            "layersCachedExtent": [
+				-20037508.34,-20037508.34,
+				20037508.34,20037508.34
+			],
 			"layerBaseParams": {
 			   "format":"image/png8",
-			   
 			   "TILED": true,
 			   "TILESORIGIN": "-20037508.34, -20037508.34"
 			}
