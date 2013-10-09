@@ -241,9 +241,19 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             var nativeExtent = original.get("bbox")[projCode];
             var swapAxis = layer.params.VERSION >= "1.3" && !!layer.yx[projCode];
             var maxExtent = 
-                (nativeExtent && OpenLayers.Bounds.fromArray(nativeExtent.bbox, swapAxis)) || 
-                OpenLayers.Bounds.fromArray(original.get("llbbox")).transform(new OpenLayers.Projection("EPSG:4326"), projection);
-            
+            (nativeExtent && OpenLayers.Bounds.fromArray(nativeExtent.bbox, swapAxis)) || 
+            OpenLayers.Bounds.fromArray(original.get("llbbox")).transform(new OpenLayers.Projection("EPSG:4326"), projection);
+
+			// ///////////////////////////////////////////////////////////////////////////////////////////
+			// 'layersCachedExtent' property can be defined for source and/or a single 
+			// layer configuration when we use GeoWebCache integration in GeoServer. 
+			// GeoServer getCapabilities request return only bounds in 4326 and natice CRS so, if the 
+			// map CRS is 900913 the transformed bounds is not aligned with the google standard 
+			// gridset defined in GeoServer.
+			// //////////////////////////////////////////////////////////////////////////////////////////
+			var maxCachedExtent = config.layersCachedExtent ? OpenLayers.Bounds.fromArray(config.layersCachedExtent) :
+				this.layersCachedExtent ? OpenLayers.Bounds.fromArray(this.layersCachedExtent) : maxExtent;
+
             // make sure maxExtent is valid (transform does not succeed for all llbbox)
             if (!(1 / maxExtent.getHeight() > 0) || !(1 / maxExtent.getWidth() > 0)) {
                 // maxExtent has infinite or non-numeric width or height
@@ -266,7 +276,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 layer.url, 
                 params, {
                     attribution: layer.attribution,
-                    maxExtent: maxExtent,
+                     maxExtent: maxCachedExtent,
                     restrictedExtent: maxExtent,
 					displayInLayerSwitcher: ("displayInLayerSwitcher" in config) ? config.displayInLayerSwitcher :true,
                     singleTile: ("tiled" in config) ? !config.tiled : false,
