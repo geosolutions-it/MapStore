@@ -246,7 +246,7 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
 				return (
                     layer instanceof OpenLayers.Layer.WMS ||
                     layer instanceof OpenLayers.Layer.OSM /*||
-					layer.name == 'None'                ||  
+					layer.name == 'None'                  ||  
 					layer instanceof OpenLayers.Layer.Vector*/
                 );
             }
