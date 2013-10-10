@@ -158,6 +158,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 topInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topInUnits : null,
                 bottomInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.bottomInUnits : null,
                 bottomOutUnits: config.scaleOverlayUnits ? config.bottomOutUnits : null,
+                divisions: 2,
+                subdivisions: 2,
+                showMinorMeasures: true,
+                singleLine: false,
+                abbreviateLabel: false,
                 enableSetScaleUnits: config.scaleOverlayUnits ? true : false
             }, {
                 xtype: "gx_zoomslider",

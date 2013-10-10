@@ -1,5 +1,6 @@
 {
    "geoStoreBase": "",
+   "xmlJsonTranslateService": "http://localhost:8080/servicebox/",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
    "gsSources":{ 
