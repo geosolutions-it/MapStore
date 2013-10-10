@@ -6,7 +6,7 @@
 		"header":false
 	},
     "gsSources": {
-	"geosolutions": {
+		"geosolutions": {
 			"ptype": "gxp_wmssource",
 			"url": "http://localhost:8080/geoserver/ows",
 			"title": "GeoSolutions GeoServer",
@@ -129,6 +129,14 @@
 				"target":"paneltbar",
 				"index":5
 			}
-	    }
+	    },{
+			"ptype": "gxp_wpsmanager",
+			"id": "wpsManager",
+			"url": "http://localhost:8080/geoserver/wps",
+			"geostoreUrl": "http://localhost:8080/geostore/rest",
+			"geostoreUser": "admin",
+			"geostorePassword": "admin",
+		    "geostoreProxy": "/http_proxy/proxy?url="
+		}
 	]
 }

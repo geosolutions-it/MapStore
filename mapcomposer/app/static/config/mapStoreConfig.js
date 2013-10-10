@@ -147,6 +147,15 @@
 			"types": ["map","kml/kmz"],
 			"actionTarget": "paneltbar",
 			"index": 28
+		}, {
+			"ptype": "gxp_wpsmanager",
+			"id": "wpsManager",
+			"url": "http://localhost:8080/geoserver/wps",
+			"proxy": "/http_proxy/proxy?url=",
+			"geostoreUrl": "http://localhost:8080/geostore/rest",
+			"geostoreUser": "admin",
+			"geostorePassword": "admin",
+		    "geostoreProxy": "/http_proxy/proxy?url="
 		}
 	]
 }
