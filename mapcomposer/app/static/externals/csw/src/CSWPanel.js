@@ -154,6 +154,7 @@ CSWPanel = Ext.extend(Ext.Panel, {
 		    grid: this.cswGrid,
 			dcProperty : this.config.dcProperty,
 			panel: this,
+			map: this.map,
             cswPanelMode: this.cswPanelMode,
             autoHeight:true,
             style:"margin-left:5px;margin-right:5px;"  ,         
