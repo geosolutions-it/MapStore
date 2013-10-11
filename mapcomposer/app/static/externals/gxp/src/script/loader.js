@@ -84,6 +84,7 @@
         "plugins/LayerProperties.js",
         "plugins/Legend.js",
         "plugins/Print.js",
+        "plugins/PrintSnapshot.js",
         "plugins/WMSFilterView.js",
         "locale/es.js",
         "locale/ca.js"
