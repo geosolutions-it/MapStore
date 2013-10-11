@@ -167,24 +167,11 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 
 			// BBOX condition
 			if (params.useBbox == true) {
-				var extent = this.initialBBox;
-				if(this.map){
-					var extent = this.map.getExtent();
-
-					if (extent){
-						extent = extent.transform(
-							new OpenLayers.Projection(this.map.projection),
-							new OpenLayers.Projection("EPSG:4326")
-						);
-					}
-				}
-
 				var filter = new OpenLayers.Filter.Comparison({
 					type : OpenLayers.Filter.Spatial.BBOX,
 					property : "ows:BoundingBox",
-					value : extent
+					value : this.initialBBox
 				});
-				
 				filters.push(filter);
 			}
 			

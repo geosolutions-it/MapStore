@@ -92,7 +92,7 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
             }
         });
         
-        //OpenLayers.ProxyHost = (this.geostoreProxy) ? this.geostoreProxy : this.target.proxy;
+        OpenLayers.ProxyHost = (this.proxy) ? this.proxy : this.target.proxy;
         
         if(! this.geoStoreClient)
             this.geoStoreClient = new gxp.plugins.GeoStoreClient({

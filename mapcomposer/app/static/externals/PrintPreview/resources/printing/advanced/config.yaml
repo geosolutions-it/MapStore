@@ -181,7 +181,7 @@ layouts:
               classSpace: 4
               backgroundColor: #ffffff
               fitWidth: 200
-              fitHeight: 390
+              fitHeight: 420
               failOnBrokenUrl: false
         - !columns
           absoluteX: 590
@@ -383,7 +383,7 @@ layouts:
               horizontalAlignment: left
               iconMaxWidth: 100
               iconMaxHeight: 0
-              maxHeight: 750
+              maxHeight: 600
               maxColumns: 3
               maxWidth: 500
               layerSpace: 5
@@ -465,10 +465,10 @@ layouts:
         #legend panel            
         - !columns
           config:
-            borderWidth: 0
+            borderWidth: 1
             cells:
-              - borderWidth: 0
-                borderWidthLeft: 0
+              - borderWidth: 2
+                borderWidthLeft: 1
                 borderColor: black
                 padding: 4
                 backgroundColor: white
@@ -479,18 +479,14 @@ layouts:
           width: 220
           items:
             - !legends
-              horizontalAlignment: left
-              #iconMaxWidth: 150
-              iconMaxHeight: 0
+              maxIconWidth: 210
+              maxIconHeight: 300
               layerSpace: 5
               layerFontSize: 12
               classIndentation: 5
               classFontSize: 8
               classSpace: 4
-              backgroundColor: #ffffff
-              fitWidth: 200
-              fitHeight: 390
-              failOnBrokenUrl: false             
+              backgroundColor: #ffffff                
   #===========================================================================
   A3 :
   #===========================================================================
@@ -815,10 +811,10 @@ layouts:
         #legend panel            
         - !columns
           config:
-            borderWidth: 0
+            borderWidth: 1
             cells:
-              - borderWidth: 0
-                borderWidthLeft: 0
+              - borderWidth: 2
+                borderWidthLeft: 1
                 borderColor: black
                 padding: 4
                 backgroundColor: white
@@ -833,7 +829,7 @@ layouts:
               horizontalAlignment: left
               iconMaxWidth: 100
               iconMaxHeight: 0
-              maxHeight: 750
+              maxHeight: 600
               maxColumns: 3
               maxWidth: 500
               layerSpace: 5
@@ -915,10 +911,10 @@ layouts:
         #legend panel            
         - !columns
           config:
-            borderWidth: 0
+            borderWidth: 1
             cells:
-              - borderWidth: 0
-                borderWidthLeft: 0
+              - borderWidth: 2
+                borderWidthLeft: 1
                 borderColor: black
                 padding: 4
                 backgroundColor: white

@@ -25,9 +25,6 @@
         <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/gxtheme-gray.css">
         <script type="text/javascript" src="script/GeoExt.js"></script> 
 
-		<!-- canvg-1.2 resources -->
-		<script type="text/javascript" src="script/canvg-1.2.js"></script> 
-		
         <!-- gxp resources -->
         <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
         <script type="text/javascript" src="script/gxp.js"></script> 
@@ -92,7 +89,6 @@
             // Custom variables from the mapStoreConfig user configuration file 
             // ///////////////////////////////////////////////////////////////
             var proxy; 
-			var xmlJsonTranslateService;
             var serverConfig;
             var customConfigName;
             
@@ -265,7 +261,6 @@
 				    defaultLanguage: serverConfig.defaultLanguage,	
                     customPanels: serverConfig.customPanels,
                     proxy: proxy,
-					xmlJsonTranslateService: xmlJsonTranslateService,
                     defaultSourceType: "gxp_wmssource",
                     renderToTab : 'appTabs',
                     portalConfig: serverConfig.portalConfig,
@@ -319,7 +314,6 @@
 					  
 					  if(serverConfig){
 					      proxy = location.host.indexOf('localhost:8081') != -1 ? "/proxy/?url=" : serverConfig.proxy; 
-						  xmlJsonTranslateService = serverConfig.xmlJsonTranslateService;
 
 						  // ///////////////////////////////////////////////  
 						  // Run the application when browser is ready
@@ -340,7 +334,6 @@
     </script>
     </head>
     <body>
-        <% render content %>
-		<div style="visibility:hidden"><canvas id="printcanvas" /></div>
+        <% render content %>       
     </body>
 </html>

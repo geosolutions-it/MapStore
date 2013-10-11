@@ -309,10 +309,6 @@ GeoExt.data.PrintPage = Ext.extend(Ext.util.Observable, {
      *  Handler for the printProvider's layoutchange event.
      */
     onLayoutChange: function() {
-    	if(!this.printProvider.layout) {
-    		if(this.printProvider.setLayout(this.printProvider.layouts.getAt(this.printProvider.defaultLayoutIndex ||0)));
-	    }
-
         if(this.printProvider.layout.get("rotation") === false) {
             this.setRotation(0, true);
         }

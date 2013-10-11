@@ -414,19 +414,18 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
 
         var pagesLayer = pages[0].feature.layer;
         var encodedLayers = [];
-		
+
         // ensure that the baseLayer is the first one in the encoded list
         var layers = map.layers.concat();
         layers.remove(map.baseLayer);
         layers.unshift(map.baseLayer);
-        
+
         Ext.each(layers, function(layer){
             if(layer !== pagesLayer && layer.getVisibility() === true) {
                 var enc = this.encodeLayer(layer);
                 enc && encodedLayers.push(enc);
             }
         }, this);
-        
         jsonData.layers = encodedLayers;
         
         var encodedPages = [];
@@ -459,9 +458,10 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
             }
             var encodedLegends = [];
             legend.items && legend.items.each(function(cmp) {
-                if(!cmp.hidden && !(cmp.layer instanceof OpenLayers.Layer.Vector)) {
+                if(!cmp.hidden) {
                     var encFn = this.encoders.legends[cmp.getXType()];
-                    encodedLegends = encodedLegends.concat(encFn.call(this, cmp));
+                    encodedLegends = encodedLegends.concat(
+                        encFn.call(this, cmp));
                 }
             }, this);
             if (!rendered) {
@@ -471,16 +471,7 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
 			
         }
 
-		// encoded layers decoration and print ...
-        this.decorateEncodedLayer(jsonData, jsonData.layers, 0);
-    },
-    
-    
-    /** private: method[doPrint]
-     *  :param jsonData: ``JSONObject``
-     */
-    doPrint: function(jsonData) {
-    	if(this.method === "GET") {
+        if(this.method === "GET") {
             var url = Ext.urlAppend(this.capabilities.printURL,
                 "spec=" + encodeURIComponent(Ext.encode(jsonData)));
             this.download(url);
@@ -568,85 +559,12 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
 		}
 		
         this.layouts.loadData(caps2);
-
+        
         this.setLayout(this.layouts.getAt(this.defaultLayoutIndex ||0));
         this.setDpi(this.dpis.getAt(this.defaultResolutionIndex||0));
         this.fireEvent("loadcapabilities", this, this.capabilities);
     },
-    
-    /**
-     * 
-     */     
-    decorateEncodedLayer: function(jsonData, encLayers, encodedLayersCounter){
-    	if (encLayers[encodedLayersCounter].type == "Vector" || 
-		    encLayers[encodedLayersCounter].type != "WMS" || 
-			encLayers[encodedLayersCounter].baseURL.indexOf("geoserver") < 0) {
-    		if (encodedLayersCounter < encLayers.length-1) {
-	        	encodedLayersCounter = encodedLayersCounter+1;
-	        	this.decorateEncodedLayer(jsonData, encLayers, encodedLayersCounter);
-	        } else {
-		        // send JSON Data to the print provider
-				this.doPrint(jsonData);
-	        }
-    	} else {6
-	    	var wfsUrl = encLayers[encodedLayersCounter].baseURL;
-	    	    wfsUrl = wfsUrl.replace("wms", "wfs");
-	    	    wfsUrl = wfsUrl.replace("WMS", "WFS");
-			var featureType = encLayers[encodedLayersCounter].layers[0].split(":")[1];
-			var featurePrefix = encLayers[encodedLayersCounter].layers[0].split(":")[0];
-			
-			var filter = new OpenLayers.Filter.Comparison({
-	           type: OpenLayers.Filter.Comparison.EQUAL_TO,
-	           property: (featurePrefix == "spm" ? "layerName" : "attributeName"),
-	           value: featureType
-	        });
-	          
-			var protocol = new OpenLayers.Protocol.WFS({
-	           version: "1.1.0",
-	           readFormat: new OpenLayers.Format.GeoJSON(),
-			   outputFormat: "json",
-	           url:  wfsUrl,
-	           maxFeatures: 1,            
-	           featureType: (featurePrefix == "spm" ? "spm:IDASoundPropModel" : "spm:IDARasterAlgebraProcess"),
-	           featurePrefix: featurePrefix,
-	           srsName: "EPSG:4326",
-	           defaultFilter: filter
-		     });
-			
-			 var me = this;
-			 var featuresBodyFunction = function(layer) {
-			 	if(layer && layer.features && layer.features.length) {
-	            	var encFeatures = [];
-	            	var featureFormat = new OpenLayers.Format.GeoJSON();
-	            	var feature;
-	            	for(var i=0, len=layer.features.length; i<len; ++i) {
-	            		feature = layer.features[i];
-	            		var featureGeoJson = featureFormat.extract.feature.call(featureFormat, feature);
-	            		encFeatures.push(featureGeoJson);
-	            	}
-	            	
-	            	if (!jsonData.features) {
-	            		jsonData.features = [];
-	            	}
-	            	jsonData.features.push(encFeatures);
-	            	//encLayers[encodedLayersCounter].features = encFeatures;
-	            }
-	            
-	            if (encodedLayersCounter < encLayers.length-1) {
-		        	encodedLayersCounter = encodedLayersCounter+1;
-		        	me.decorateEncodedLayer(jsonData, encLayers, encodedLayersCounter);
-		        } else {
-			        // send JSON Data to the print provider
-					me.doPrint(jsonData);
-		        }
-			};
-	         
-			var response = protocol.read({
-	         	callback: featuresBodyFunction
-	        }, this);
-    	}    	
-    },
-    
+        
     /** private: method[encodeLayer]
      *  :param layer: ``OpenLayers.Layer``
      *  :return: ``Object``
@@ -661,7 +579,6 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                     return;
                 }
                 encLayer = this.encoders.layers[c].call(this, layer);
-                
                 this.fireEvent("encodelayer", this, layer, encLayer);
                 break;
             }
@@ -716,7 +633,6 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                         enc.customParams[p] = layer.params[p];
                     }
                 }
-                
                 return enc;
             },
             "OSM": function(layer) {
@@ -787,12 +703,11 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                 };
             },
             "Vector": function(layer) {
-        		
-        		if(!layer.features.length) {
+                if(!layer.features.length) {
                     return;
                 }
-
-        		var encFeatures = [];
+                
+                var encFeatures = [];
                 var encStyles = {};
                 var features = layer.features;
                 var featureFormat = new OpenLayers.Format.GeoJSON();
@@ -803,7 +718,8 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                 for(var i=0, len=features.length; i<len; ++i) {
                     feature = features[i];
                     style = feature.style || layer.style ||
-                    layer.styleMap.createSymbolizer(feature, feature.renderIntent);
+                    layer.styleMap.createSymbolizer(feature,
+                        feature.renderIntent);
                     dictKey = styleFormat.write(style);
                     dictItem = styleDict[dictKey];
                     if(dictItem) {

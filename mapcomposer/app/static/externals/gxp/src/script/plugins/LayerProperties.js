@@ -55,9 +55,10 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
     
     constructor: function(config) {
         gxp.plugins.LayerProperties.superclass.constructor.apply(this, arguments);
+        
         if (!this.outputConfig) {
             this.outputConfig = {
-                width: 365,
+                width: 265,
                 autoHeight: true
             };
         }
@@ -102,14 +103,11 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
         }
         this.outputConfig.renderTo = this.target.mapPanelContainer.body;
         this.outputConfig.constrainHeader=true;
-        
         return gxp.plugins.LayerProperties.superclass.addOutput.call(this, Ext.apply({
             xtype: xtype,
             authorized: this.target.isAuthorized(),
             layerRecord: record,
             source: this.target.getSource(record),
-            wps: this.target.tools["wpsManager"],
-            map: this.target.mapPanel.map,
             defaults: {
                 style: "padding: 10px",
                 autoHeight: this.outputConfig.autoHeight
