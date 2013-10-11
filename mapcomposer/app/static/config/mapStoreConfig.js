@@ -1,8 +1,24 @@
 {
    "geoStoreBase": "",
+   "xmlJsonTranslateService": "http://localhost:8080/servicebox/",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
    "gsSources":{ 
+   		"geosolutions": {
+			"ptype": "gxp_wmssource",
+			"url": "http://localhost:8080/geoserver/wms",
+			"title": "GeoSolutions GeoServer",
+			"SRS": "EPSG:900913",
+			"version":"1.1.1",
+		    "layersCachedExtent": [
+				-20037508.34,-20037508.34,
+				20037508.34,20037508.34
+			],
+			"layerBaseParams":{
+				"FORMAT":"image/png8",
+				"TILED":true
+			}
+		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
 		}, 
@@ -107,12 +123,6 @@
                         {"name": "MAPAS", "url": "http://mapas.mma.gov.br/geonetwork/srv/en/csw", "description" : "MAPAS"}
                     ],
                 "dcProperty": "title",
-                "initialBBox": {
-                    "minx": 11.145,
-                    "miny": 43.718,
-                    "maxx": 11.348,
-                    "maxy": 43.84
-                },
                 "cswVersion": "2.0.2",
                 "filterVersion": "1.1.0",
                 "start": 1,
@@ -131,6 +141,21 @@
 			"outputTarget": "paneltbar",
 			"toggleGroup": "toolGroup",
 			"index": 23
+		}, {
+			"ptype": "gxp_importexport",
+			"service": "http://localhost:8081/servicebox/",
+			"types": ["map","kml/kmz"],
+			"actionTarget": "paneltbar",
+			"index": 28
+		}, {
+			"ptype": "gxp_wpsmanager",
+			"id": "wpsManager",
+			"url": "http://localhost:8080/geoserver/wps",
+			"proxy": "/http_proxy/proxy?url=",
+			"geostoreUrl": "http://localhost:8080/geostore/rest",
+			"geostoreUser": "admin",
+			"geostorePassword": "admin",
+		    "geostoreProxy": "/http_proxy/proxy?url="
 		}
 	]
 }
