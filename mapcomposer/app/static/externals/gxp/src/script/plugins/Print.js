@@ -224,9 +224,17 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                 mapPanel.layers.each(function(record) {
                     var layer = record.getLayer();
                     if (isSupported(layer)) {
-                        supported.push(layer);
+                    	if (!(layer.name === "Graticule"))
+                        	supported.push(layer);
                     } else {
-                        if(layer.getVisibility()){
+                        if(layer.getVisibility()) {
+                        	if (layer.name === "AOI") {
+                        		layer.setVisibility(true);
+                        		supported.push(layer);
+                        	} else {
+                        		notSupported.push(layer.name);
+                        	}
+                        } else if(layer.name === "spm_source" /*|| layer.name === "AOI"*/) {
                             notSupported.push(layer.name);
                         }
                     }
@@ -245,9 +253,9 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                 
 				return (
                     layer instanceof OpenLayers.Layer.WMS ||
-                    layer instanceof OpenLayers.Layer.OSM /*||
-					layer.name == 'None'                ||  
-					layer instanceof OpenLayers.Layer.Vector*/
+                    layer instanceof OpenLayers.Layer.OSM ||
+                    layer instanceof OpenLayers.Layer.Vector
+                    //|| layer instanceof OpenLayers.Layer.Google
                 );
             }
 
@@ -264,6 +272,33 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                             autoHeight: true,
                             mapTitle: this.target.about && this.target.about["title"],
                             comment: this.target.about && this.target.about["abstract"],
+                            listeners: {
+                            	scope: this,
+                            	"afterrender": function() {
+                            		/**
+                            		 * Add a custom Grid Control
+                            		 */
+                            		var printMapPanel = printWindow.items.get(0).printMapPanel;
+                
+					                var ctrl = printMapPanel.map.getControlsByClass("OpenLayers.Control.Graticule");
+									if(ctrl > 0) 
+										printMapPanel.map.removeControl(ctrl);
+										
+							        var graticule = new OpenLayers.Control.Graticule({ 
+										  //targetSize: 600,
+										  displayInLayerSwitcher: false,
+										  labelled: true, 
+										  visible: true                  
+									});
+									 
+									graticule.labelSymbolizer.fontColor =  '#45F760';   
+									graticule.lineSymbolizer.strokeColor = '#45F760'; 
+							
+							        printMapPanel.map.addControl(graticule);
+							        
+							        graticule.activate();
+                            	}
+                            },
                             printMapPanel: {
                                 map: Ext.applyIf({
                                     controls: [
