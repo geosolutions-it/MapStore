@@ -137,14 +137,18 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
             var started = false;
             var atLeastOneResponse = false;
 			this.masking = false;
-			
+            
             queryableLayers.each(function(x){                
-                
+                var lyr = x.getLayer();
+                var vendorParams = lyr.vendorParams || this.vendorParams ||{};
+                if(lyr.params.TIME){
+                    vendorParams.time = lyr.params.TIME;
+                }
                 var control = new OpenLayers.Control.WMSGetFeatureInfo({
-                    url: x.getLayer().url,
+                    url: lyr.url,
                     queryVisible: true,
-                    layers: [x.getLayer()],
-                    vendorParams: x.getLayer().vendorParams || this.vendorParams,
+                    layers: [lyr],
+                    vendorParams: vendorParams,
                     eventListeners: {
                         beforegetfeatureinfo: function(evt) {
 							//first getFeatureInfo in chain
