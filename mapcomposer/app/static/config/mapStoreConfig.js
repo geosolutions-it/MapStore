@@ -9,13 +9,11 @@
 			"projection":"EPSG:900913",
 			"url": "http://84.33.2.75/geoserver/ows", 
             "layersCachedExtent": [
-				-20037508.34,-20037508.34,
-				20037508.34,20037508.34
+                5009377.085000001,0.0, 1.0018754169999998E7,5009377.085000001
 			],
 			"layerBaseParams": {
 			   "format":"image/png8",
-			   "TILED": true,
-			   "TILESORIGIN": "-20037508.34, -20037508.34"
+			   "TILED": true
 			}
 		},
 		"mapquest": {
@@ -84,7 +82,11 @@
 				"name": "nrl:g0gen_pak",
 				"format":"image/jpeg",
 				"group": "background",
-				"visibility": true
+				"visibility": true,
+                "layersCachedExtent": [
+                    -20037508.34,-20037508.34,
+                    20037508.34,20037508.34
+                ]
 			},{
 					"source": "ol",
 					"group": "background",
@@ -196,7 +198,11 @@
 				"title": "Label",
 				"name": "nrl:adminisrative_labels",
 				"group": "Admin",
-				"visibility": true
+				"visibility": true,
+                "layersCachedExtent": [
+                    -20037508.34,-20037508.34,
+                    20037508.34,20037508.34
+                ]
 			}
 		]
 	},
@@ -223,10 +229,12 @@
 	       },{
            "ptype":"gxp_ndvi",
             "dataUrl":"http://84.33.2.75/geoserver/ows",
-           "outputConfig":{
-            "title":"NDVI",
+            "layer":"ndvi:ndvi",
+            "outputConfig":{
+                  "title":"NDVI",
                   "id":"ndvi",
-                  "region":"east"
+                  "region":"east",
+                  "replace":"false"
            },
            "outputTarget":"east"
     },{

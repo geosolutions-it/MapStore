@@ -46,10 +46,13 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
     ptype: "gxp_ndvi",
     layer: "nrl:NDVI-SPOT",
     layerName:"NDVI-SPOT",
-    source: "nrl",
+    source: "nrl", //TODO use it
+    format: "image/png8",
     replace:false,
     multipleMethod:'add',
     dataUrl: null,
+    addNDVItext: "Add NDVI layer",
+    monthShortNames : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     
     /** private: method[addOutput]
      *  :arg config: ``Object``
@@ -93,6 +96,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                 //title: 'Select Range',
                 layout: "form",
                 autoScroll:true,
+                ref:"form",
                 frame:true,
                 items:[{            
                     xtype: 'fieldset',
@@ -108,7 +112,12 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                             fieldLabel: "Select Date",
                             anchor:'100%',
                             format: 'm-Y', // or other format you'd like
-                            plugins: 'monthPickerPlugin'
+                            plugins: 'monthPickerPlugin',
+                            listeners:{
+                                select:function(){
+                                    this.refOwner.refOwner.submitButton.enable();
+                                }
+                            }
                         },{
                             xtype: 'combo',
 							forceSelected:true,
@@ -123,6 +132,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                             triggerAction: 'all',
                             lazyRender:false,
                             mode: 'local',
+                            value:5,
                             store: new Ext.data.ArrayStore({
                                 id: 0,
                                 fields: [
@@ -138,46 +148,77 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                     buttons:[{
                         url: me.dataUrl,
                         layer:me.layer,
-                        text: "View NDVI",
+                        text: me.addNDVItext,
                         //xtype: 'gxp_nrlCropDataButton',
                         ref: '../submitButton',
+                        iconCls:"gxp-icon-ndvi",
                         target: me.target,
                         form: me,
                         layerName:me.layerName,
-                        disabled:false,
+                        disabled:true,
                         handler: function(button, event){
                             //2012-01-01T00:00:00.000Z,2012-01-02T00:00:00.000Z,2012-01-03T00:00:00.000Z,2012-02-01T00:00:00.000Z
-                            var data1 = button.refOwner.range.decad.value;
-                            var data2 = button.refOwner.range.sel_month_years.value.split('-');
-                            var intero = parseInt(data2[0]);
-                            var dateUTC = new Date(Date.UTC(data2[1],intero-1,data1));
+                            var day = button.refOwner.range.decad.value;
+                            var date = button.refOwner.range.sel_month_years.value.split('-');
+                            var monthNumber = parseInt(date[0]);
+                            var year = date[1];
+                            var dateUTC = new Date(Date.UTC(date[1],monthNumber-1,day));
                             var dateISOString = dateUTC.toISOString();
-                            var map= target.mapPanel.map;
-                            var layer = target.mapPanel.map.getLayersByName(this.layerName)[0];
-                            if(!layer){
-                                layer = new OpenLayers.Layer.WMS(
-                                    this.layerName,//todo: choice the style for the needed variable
-                                    this.url,
-                                    {
-                                        layers: this.layer,
-                                        time : dateISOString,
-                                        tiled:true
-                                    }
-                                        
-                            );
-                            map.addLayer(layer);
+                            var dekName = "";
+                            var dekad = (Math.floor(day / 10) + 1)
+                            switch(dekad){
+                                case 1: 
+                                    dekName="1st";
+                                    break;
+                                case 2: 
+                                    dekName="2nd";
+                                    break;
+                                case 3: 
+                                    dekName="3rd";
+                                    break;
                             }
-                            if (layer && me.replace){
-                                layer.mergeNewParams({
+                            var map= target.mapPanel.map;
+                            //name of layer: <layerName> 2 
+                            var name =this.layerName+" "+ year +" "+ me.monthShortNames[monthNumber-1] + " " +dekName + " dekad";
+                            //this.layerObject = target.mapPanel.map.getLayersByName(this.layerName)[0];
+                            
+                            //create the properties
+                            var props ={
+                                        name: this.layer,
+                                        title: name,
+                                        layers: this.layer,
+                                        layerBaseParams:{time : dateISOString},
+                                        tiled:true,
+                                        format:me.format
+                                    }
+                            var source
+                            //find the source 
+                            if(me.source){
+                                source = this.target.layerSources[me.source];
+                            }else if(me.dataUrl){
+                                source = this.searchSource();
+                            }
+                            
+                            if(source){
+                                var record = source.createLayerRecord(props);   
+                                if(record){
+                                    var layerStore = this.target.mapPanel.layers;
+                                    layerStore.add([record]);
+                                }
+                            // map.addLayer(this.layerObject);
+                            }else{
+                              //TODO add a wms layer
+                            }
+                            this.layerObject = record.get("layer");
+                            if (this.layerObject){
+                                this.layerObject.mergeNewParams({
                                     time : dateISOString
                                 }); 
-                            }else if (layer){
-                                Ext.Msg.alert("Not yet implemented","add NDVI layer for this date:" +dateISOString);
-                                
+                                if(!this.layerObject.visiblity) {
+                                    this.layerObject.setVisibility(true);
+                                }
                             }
-                            if(!layer.visiblity) {
-                                layer.setVisibility(true);
-                            }
+                            
                         }
                     }]
                 }],			
@@ -200,7 +241,21 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
         var ndvi_Modules = gxp.plugins.ndvi.NDVI.superclass.addOutput.call(this, config);
         
         return ndvi_Modules;
-    }  
+    },
+    searchSource:function(){
+        for (var id in this.target.layerSources) {
+              var src = this.target.layerSources[id];    
+              var url  = src.initialConfig.url; 
+              
+              // //////////////////////////////////////////
+              // Checking if source URL aldready exists
+              // //////////////////////////////////////////
+              if(url && url.indexOf(this.dataUrl) != -1){
+                  source = src;
+                  break;
+              }
+        } 
+    }
 });
 
 Ext.preg(gxp.plugins.ndvi.NDVI.prototype.ptype, gxp.plugins.ndvi.NDVI);

@@ -190,3 +190,7 @@ div#homelogos ul li a:hover {
 .x-btn  .gxp-icon-login,  .x-menu-item  .gxp-icon-login,.x-tree-node .gxp-icon-login {
     background-image: url(img/silk/door_in.png);
 }
+/* NDVI icon */
+.x-btn  .gxp-icon-ndvi,  .x-menu-item  .gxp-icon-ndvi,.x-tree-node .gxp-icon-ndvi {
+    background-image: url(img/ndvi.png);
+}
