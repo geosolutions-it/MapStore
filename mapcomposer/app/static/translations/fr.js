@@ -217,9 +217,9 @@ GeoExt.Lang.add("fr", {
         cacheText: "Cache",
         cacheFieldText: "Utiliser la version mise en cache",
         stylesText: "Styles",
-        idaRasterRiskSummaryText: "Statistiques",
-        idaRasterRiskSummaryInfoText: "Current Viewport Raster Statistics",
-        loadMaskMsg:"Chargement des donnees..",
+        summaryText: "Statistiques",
+        summaryInfoText: "Current Viewport Raster Statistics",
+        loadMaskMsg: "Chargement des donnees ...",
         noDataMsg: "Pas de données disponibles en la vue actuelle",
         refreshText: "Actualiser"
     },  

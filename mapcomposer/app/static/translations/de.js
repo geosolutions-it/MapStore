@@ -207,7 +207,12 @@ GeoExt.Lang.add("de", {
         transparentText: "Transparenz",
         cacheText: "Cache",
         cacheFieldText: " Benutze die Cache-Version",
-        stylesText: "Stil"
+        stylesText: "Stil",
+		summaryText: "Statistik",
+        summaryInfoText: "Aktuelles Ansichtsfenster Raster Statistik",
+        loadMaskMsg: "Daten abrufen ...",
+        noDataMsg: "Keine Daten vorhanden in aktuellen Ansicht",
+        refreshText: "Erfrischen"
     },
 
     "gxp.WMSStylesDialog.prototype": {
