@@ -151,9 +151,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             this.auth = false;
         }
 		
-		this.mapItems = [
-            {
-                xtype: "gxp_scaleoverlay",
+		this.mapItems = [];
+		
+		if(config.advancedScaleOverlay){
+			this.mapItems.push({
+                xtype: "gxp_advancedscaleoverlay",
                 topOutUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topOutUnits : null,
                 topInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topInUnits : null,
                 bottomInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.bottomInUnits : null,
@@ -164,15 +166,26 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 singleLine: false,
                 abbreviateLabel: false,
                 enableSetScaleUnits: config.scaleOverlayUnits ? true : false
-            }, {
-                xtype: "gx_zoomslider",
-                vertical: true,
-                height: 100,
-                plugins: new GeoExt.ZoomSliderTip({
-                    template: this.zoomSliderText
-                })
-            }
-        ];
+            });
+		}else{
+			this.mapItems.push({
+                xtype: "gxp_scaleoverlay",
+                topOutUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topOutUnits : null,
+                topInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topInUnits : null,
+                bottomInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.bottomInUnits : null,
+                bottomOutUnits: config.scaleOverlayUnits ? config.bottomOutUnits : null,
+                enableSetScaleUnits: config.scaleOverlayUnits ? true : false
+            });
+		}		
+		
+		this.mapItems.push({
+			xtype: "gx_zoomslider",
+			vertical: true,
+			height: 100,
+			plugins: new GeoExt.ZoomSliderTip({
+				template: this.zoomSliderText
+			})
+		});
         
 		// ///////////////////////////////////////////////////////////////////////////////////
         // both the Composer and the Viewer need to know about the viewerTools

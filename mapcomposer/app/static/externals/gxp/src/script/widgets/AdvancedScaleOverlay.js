@@ -19,7 +19,7 @@ Ext.namespace("gxp");
  *      Create a panel for showing a ScaleLine control and a combobox for 
  *      selecting the map scale.
  */
-gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
+gxp.AdvancedScaleOverlay = Ext.extend(Ext.Panel, {
     
     /** api: config[map]
      *  ``OpenLayers.Map`` or :class:`GeoExt.MapPanel`
@@ -37,6 +37,11 @@ gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
      */    
     topInUnits: null,
     
+    /** api: config[displaySystem]
+     *  {String} Units for zoomed in on scale bar. Default is nautical.
+     */
+    displaySystem: null,
+    
     /** api: config[bottomInUnits]
      *  {String} Units for zoomed in on bottom bar. Default is ft.
      */    
@@ -50,8 +55,33 @@ gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
     /** api: config[enableSetScaleUnits]
      *  {boolean} Enable or disable ComboUnits.
      */        
-    enableSetScaleUnits: false,
+    enableSetScaleUnits: true,
+
+    /** api: config[divisions]
+     *  {integer} Number of Divisions.
+     */ 
+    divisions: 2,
     
+    /** api: config[subdivisions]
+     *  {integer} Number of SubDivisions.
+     */ 
+	subdivisions: 2,
+	
+	/** api: config[showMinorMeasures]
+     *  {boolean} Enable or disable MinorMeasures.
+     */ 
+    showMinorMeasures: false,
+    
+    /** api: config[singleLine]
+     *  {boolean} Enable or disable Single Line display.
+     */ 
+    singleLine: false,
+    
+    /** api: config[abbreviateLabel]
+     *  {boolean} Enable or disable Abbreviate Labels.
+     */ 
+    abbreviateLabel: false,
+
     /** i18n */
     zoomLevelText: "Zoom level",
 
@@ -59,7 +89,7 @@ gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
      *  Initialize the component.
      */
     initComponent: function() {
-        gxp.ScaleOverlay.superclass.initComponent.call(this);
+        gxp.AdvancedScaleOverlay.superclass.initComponent.call(this);
         
         if(!this.topOutUnits){
             this.topOutUnits = "km";
@@ -72,6 +102,9 @@ gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
         }
         if(!this.bottomOutUnits){
             this.bottomOutUnits = "mi";
+        }
+        if(!this.displaySystem){
+        	this.displaySystem = "metric";
         }
         
         this.cls = 'map-overlay';
@@ -121,7 +154,7 @@ gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
      *  
      *  Create the scale line control and add it to the panel.
      */
-    addScaleLine: function(topOutUnits,topInUnits,bottomInUnits,bottomOutUnits) {
+    addScaleLine: function(topOutUnits,topInUnits,bottomInUnits,bottomOutUnits,divisions,subdivisions,showMinorMeasures,singleLine,abbreviateLabel) {
         if(topOutUnits && topInUnits && bottomInUnits && bottomOutUnits){
             Ext.getCmp("id_box").destroy();
         }
@@ -146,21 +179,40 @@ gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
         }, this);
         
         this.scaleLinePanel.on('render', function(){
-            var scaleLineControl = this.map.getControlsByClass('OpenLayers.Control.ScaleLine');
-            if(topOutUnits && topInUnits && bottomInUnits && bottomOutUnits){
-                this.map.removeControl(scaleLineControl[0]);
+        	var mousePositionControl = this.map.getControlsByClass('OpenLayers.Control.MousePosition');
+            var scaleBarControl  = this.map.getControlsByClass('OpenLayers.Control.ScaleBar');
+            
+			if(topOutUnits && topInUnits && bottomInUnits && bottomOutUnits){
+            	this.map.removeControl(mousePositionControl[0]);
+                this.map.removeControl(scaleBarControl[0]);
             }
-            var scaleLine = new OpenLayers.Control.ScaleLine({
-                geodesic: true,
-				topOutUnits:topOutUnits ? topOutUnits : this.topOutUnits,
-				topInUnits: topInUnits ? topInUnits : this.topInUnits,
-				bottomInUnits: bottomInUnits ? bottomInUnits : this.bottomInUnits,
-				bottomOutUnits: bottomOutUnits ? bottomOutUnits : this.bottomOutUnits,
+			
+            var mousePosition = new OpenLayers.Control.MousePosition({
+                /*prefix: '<a target="_blank" ' +
+                        'href="http://spatialreference.org/ref/epsg/4326/">' +
+                        'EPSG:4326</a> lon/lat: ',*/
+                separator: ' : ',
+                numDigits: 3,
                 div: this.scaleLinePanel.getEl().dom
             });
-           
-            this.map.addControl(scaleLine);
-            scaleLine.activate();
+
+			if (topOutUnits != "hide") {
+	            var scalebar = new OpenLayers.Control.ScaleBar({
+	                geodesic: true,
+	                displaySystem:     topOutUnits ? (topOutUnits == "mi" || topOutUnits == "nmi" ? "nautical" : "metric") : this.displaySystem,
+					divisions:         divisions ? divisions : this.divisions,
+					subdivisions:      subdivisions ? subdivisions : this.subdivisions,
+	                showMinorMeasures: showMinorMeasures ? showMinorMeasures : this.showMinorMeasures,
+	                singleLine:        singleLine ? singleLine : this.singleLine,
+	                abbreviateLabel:   abbreviateLabel ? abbreviateLabel : this.abbreviateLabel
+	            });
+
+            	this.map.addControl(scalebar);
+            	scalebar.activate();
+            }
+			
+            this.map.addControl(mousePosition);
+            mousePosition.activate();
         }, this);
 
         this.add(this.scaleLinePanel);
@@ -238,7 +290,7 @@ gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
             valueField: 'unitsValue',           
             store: new Ext.data.SimpleStore({
                 fields: ['unitsValue', 'unitsName'],
-                data: [['km;m;ft;mi','Km'],['nmi;nmi;m;km','Nmi']]
+                data: [['km;m;ft;mi','Km'],['nmi;nmi;m;km','Nmi'],['hide;hide;hide;hide','Hide']]
             }),
             width: 90
         });
@@ -262,8 +314,8 @@ gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
     /** private: method[updateScaleUnits]
      *  :params topOutUnits,topInUnits,bottomInUnits,bottomOutUnits
      */
-    updateScaleUnits: function(topOutUnits,topInUnits,bottomInUnits,bottomOutUnits) {
-        this.addScaleLine(topOutUnits,topInUnits,bottomInUnits,bottomOutUnits);
+    updateScaleUnits: function(topOutUnits,topInUnits,bottomInUnits,bottomOutUnits,divisions,subdivisions,showMinorMeasures,singleLine,abbreviateLabel) {
+        this.addScaleLine(topOutUnits,topInUnits,bottomInUnits,bottomOutUnits,divisions,subdivisions,showMinorMeasures,singleLine,abbreviateLabel);
         this.doLayout();
     },
     /** private: method[bind]
@@ -292,5 +344,5 @@ gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
 
 });
 
-/** api: xtype = gxp_scaleoverlay */
-Ext.reg('gxp_scaleoverlay', gxp.ScaleOverlay);
+/** api: xtype = gxp_advancedscaleoverlay */
+Ext.reg('gxp_advancedscaleoverlay', gxp.AdvancedScaleOverlay);
