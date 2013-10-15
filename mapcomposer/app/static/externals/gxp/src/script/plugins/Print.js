@@ -224,17 +224,9 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                 mapPanel.layers.each(function(record) {
                     var layer = record.getLayer();
                     if (isSupported(layer)) {
-                    	if (!(layer.name === "Graticule"))
-                        	supported.push(layer);
+                        supported.push(layer);
                     } else {
-                        if(layer.getVisibility()) {
-                        	if (layer.name === "AOI") {
-                        		layer.setVisibility(true);
-                        		supported.push(layer);
-                        	} else {
-                        		notSupported.push(layer.name);
-                        	}
-                        } else if(layer.name === "spm_source" /*|| layer.name === "AOI"*/) {
+                        if(layer.getVisibility()){
                             notSupported.push(layer.name);
                         }
                     }
@@ -243,19 +235,19 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
             }
 
             function isSupported(layer) {
-				/*var map = mapPanel.map;
+				var map = mapPanel.map;
 				
 				var drawcontrols = map.getControlsByClass("OpenLayers.Control.DrawFeature");
 				var size = drawcontrols.length;
 				for (var i=0; i<size; i++){
 					drawcontrols[i].deactivate();
-				}*/
+				}
                 
 				return (
                     layer instanceof OpenLayers.Layer.WMS ||
                     layer instanceof OpenLayers.Layer.OSM ||
-                    layer instanceof OpenLayers.Layer.Vector
-                    //|| layer instanceof OpenLayers.Layer.Google
+					layer.name == 'None'                  ||  
+					layer instanceof OpenLayers.Layer.Vector
                 );
             }
 
@@ -280,23 +272,22 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                             		 */
                             		var printMapPanel = printWindow.items.get(0).printMapPanel;
                 
-					                var ctrl = printMapPanel.map.getControlsByClass("OpenLayers.Control.Graticule");
-									if(ctrl > 0) 
-										printMapPanel.map.removeControl(ctrl);
+					                var ctrl = this.target.mapPanel.map.getControlsByClass("OpenLayers.Control.Graticule");
+									
+									if(ctrl[0] && ctrl[0].active){											
+										var graticule = new OpenLayers.Control.Graticule({ 
+											  displayInLayerSwitcher: false,
+											  labelled: true, 
+											  visible: true                  
+										});
+										 
+										graticule.labelSymbolizer.fontColor =  '#45F760';   
+										graticule.lineSymbolizer.strokeColor = '#45F760'; 
+								
+										printMapPanel.map.addControl(graticule);
 										
-							        var graticule = new OpenLayers.Control.Graticule({ 
-										  //targetSize: 600,
-										  displayInLayerSwitcher: false,
-										  labelled: true, 
-										  visible: true                  
-									});
-									 
-									graticule.labelSymbolizer.fontColor =  '#45F760';   
-									graticule.lineSymbolizer.strokeColor = '#45F760'; 
-							
-							        printMapPanel.map.addControl(graticule);
-							        
-							        graticule.activate();
+										graticule.activate();
+									} 
                             	}
                             },
                             printMapPanel: {

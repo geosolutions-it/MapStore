@@ -414,18 +414,19 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
 
         var pagesLayer = pages[0].feature.layer;
         var encodedLayers = [];
-
+		
         // ensure that the baseLayer is the first one in the encoded list
         var layers = map.layers.concat();
         layers.remove(map.baseLayer);
         layers.unshift(map.baseLayer);
-
+        
         Ext.each(layers, function(layer){
             if(layer !== pagesLayer && layer.getVisibility() === true) {
                 var enc = this.encodeLayer(layer);
                 enc && encodedLayers.push(enc);
             }
         }, this);
+        
         jsonData.layers = encodedLayers;
         
         var encodedPages = [];
@@ -458,10 +459,9 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
             }
             var encodedLegends = [];
             legend.items && legend.items.each(function(cmp) {
-                if(!cmp.hidden) {
+                if(!cmp.hidden && !(cmp.layer instanceof OpenLayers.Layer.Vector)) {
                     var encFn = this.encoders.legends[cmp.getXType()];
-                    encodedLegends = encodedLegends.concat(
-                        encFn.call(this, cmp));
+                    encodedLegends = encodedLegends.concat(encFn.call(this, cmp));
                 }
             }, this);
             if (!rendered) {
@@ -579,6 +579,7 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                     return;
                 }
                 encLayer = this.encoders.layers[c].call(this, layer);
+                
                 this.fireEvent("encodelayer", this, layer, encLayer);
                 break;
             }
@@ -633,6 +634,7 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                         enc.customParams[p] = layer.params[p];
                     }
                 }
+                
                 return enc;
             },
             "OSM": function(layer) {
@@ -703,11 +705,12 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                 };
             },
             "Vector": function(layer) {
-                if(!layer.features.length) {
+        		
+        		if(!layer.features.length) {
                     return;
                 }
-                
-                var encFeatures = [];
+
+        		var encFeatures = [];
                 var encStyles = {};
                 var features = layer.features;
                 var featureFormat = new OpenLayers.Format.GeoJSON();
@@ -718,8 +721,7 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                 for(var i=0, len=features.length; i<len; ++i) {
                     feature = features[i];
                     style = feature.style || layer.style ||
-                    layer.styleMap.createSymbolizer(feature,
-                        feature.renderIntent);
+                    layer.styleMap.createSymbolizer(feature, feature.renderIntent);
                     dictKey = styleFormat.write(style);
                     dictItem = styleDict[dictKey];
                     if(dictItem) {

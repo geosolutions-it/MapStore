@@ -7,9 +7,9 @@
  */
 
 /**
- * @requires GeoExt/widgets/MapPanel.js
- * @include GeoExt/data/PrintProvider.js
- * @include GeoExt/data/PrintPage.js
+ * requires GeoExt/widgets/MapPanel.js
+ * include GeoExt/data/PrintProvider.js
+ * include GeoExt/data/PrintPage.js
  */
 Ext.namespace("GeoExt");
 
@@ -188,13 +188,16 @@ GeoExt.PrintMapPanel = Ext.extend(GeoExt.MapPanel, {
         });
         
         this.previewScales = new Ext.data.Store();
-        this.previewScales.add(this.printProvider.scales.getRange());
-
+        this.previewScales.add(this.printProvider.scales.getRange());        
+        
         this.layers = [];
+
         var layer;
         Ext.each(this.sourceMap.layers, function(layer) {
-            layer.getVisibility() === true && this.layers.push(layer.clone());
+        	if (!(layer.name === "Graticule"))
+            	layer.getVisibility() === true && this.layers.push(layer.clone());            
         }, this);
+        
 
         this.extent = this.sourceMap.getExtent();
         
