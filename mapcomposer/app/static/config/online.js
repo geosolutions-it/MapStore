@@ -489,7 +489,9 @@
 		"wpsStore": "destination",
 		"wfsVersion": "1.1.0",
 		"destinationNS": "destination",
-		"index": 28
+		"index": 28,
+        "geoStoreBase":"http://localhost:8080/geostore/rest/",
+        "proxy":"/proxy/?url="
 	},
 	{
 		"ptype": "gxp_tabpanelwfsgrids",
