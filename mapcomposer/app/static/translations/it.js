@@ -588,6 +588,14 @@ GeoExt.Lang.add("it", {
 		resetText: "Reset",
 		failedUploadingTitle: "Impossibile completare l'upload del file",
 		layerNameLabel: "Nome del Layer"
-	}
-	
+	},
+
+	"gxp.plugins.PrintSnapshot.prototype" :{
+		noSupportedLayersErrorMsg: "Si è verificato un errore durante la generazione della mappa Snapshot: Nessun layer è supportato !",
+		generatingErrorMsg: "Si è verificato un errore durante la generazione della mappa Snapshot",
+		printStapshotTitle: "Stampa Snapshot",
+		serverErrorMsg: "Verificato un errore durante la generazione della mappa Snapshot: Errore del server",
+		menuText: "Snapshot",
+		tooltip: "Snapshot"
+	}	
 });

@@ -602,6 +602,14 @@ GeoExt.Lang.add("de", {
 		resetText: "Zurücksetzen",
 		failedUploadingTitle: "Kann Datei nicht hochladen",
 		layerNameLabel: "Layername"
-	}
+	},
 
+	"gxp.plugins.PrintSnapshot.prototype" :{
+		noSupportedLayersErrorMsg: "Fehler beim Erzeugen der Karte Snapshot: Nein Unterstützte Ebenen gefunden!",
+		generatingErrorMsg: "Fehler beim Erzeugen der Karte Snapshot",
+		printStapshotTitle: "Drucken Snapshot",
+		serverErrorMsg: "Fehler beim Erzeugen der Karte Snapshot: Server Error",
+		menuText: "Snapshot",
+		tooltip: "Snapshot"
+	}
 });
