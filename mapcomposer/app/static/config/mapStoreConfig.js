@@ -1,6 +1,5 @@
 {
    "geoStoreBase": "",
-   "xmlJsonTranslateService": "http://localhost:8080/servicebox/",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
    "gsSources":{ 
@@ -141,21 +140,6 @@
 			"outputTarget": "paneltbar",
 			"toggleGroup": "toolGroup",
 			"index": 23
-		}, {
-			"ptype": "gxp_importexport",
-			"service": "http://localhost:8081/servicebox/",
-			"types": ["map","kml/kmz"],
-			"actionTarget": "paneltbar",
-			"index": 28
-		}, {
-			"ptype": "gxp_wpsmanager",
-			"id": "wpsManager",
-			"url": "http://localhost:8080/geoserver/wps",
-			"proxy": "/http_proxy/proxy?url=",
-			"geostoreUrl": "http://localhost:8080/geostore/rest",
-			"geostoreUser": "admin",
-			"geostorePassword": "admin",
-		    "geostoreProxy": "/http_proxy/proxy?url="
 		}
 	]
 }
