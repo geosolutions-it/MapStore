@@ -558,5 +558,14 @@ GeoExt.Lang.add("fr", {
 		resetText: "Rréinitialiser",
 		failedUploadingTitle: "Téléchargement de fichier erreur",
 		layerNameLabel: "Nom de la couche"
-    }
+    },
+
+	"gxp.plugins.PrintSnapshot.prototype" :{
+		noSupportedLayersErrorMsg: "Une erreur s'est produite lors de la génération de la carte Instantané: pas de couches en charge ont été trouvés!",
+		generatingErrorMsg: "Une erreur s'est produite lors de la génération de la carte Snapshot",
+		printStapshotTitle: "Imprimer Snapshot",
+		serverErrorMsg: "Une erreur s'est produite lors de la génération de la carte Snapshot: Erreur de serveur",
+		menuText: "Snapshot",
+		tooltip: "Snapshot"
+	}
 });
