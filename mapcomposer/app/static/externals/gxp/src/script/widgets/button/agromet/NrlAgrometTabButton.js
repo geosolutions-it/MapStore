@@ -298,7 +298,7 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 			items: grid,
 			//floating: {shadow: false},
 			tools: [{
-                id: 'info',
+                id: 'help',
                 handler: function () {
                     var iframe = 
 						"<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 

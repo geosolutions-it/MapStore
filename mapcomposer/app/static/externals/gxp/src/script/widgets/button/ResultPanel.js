@@ -46,7 +46,7 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
             border: true,   
             items: [this.chart[i]],
             tools: [{
-                id: 'info',
+                id: 'help',
                 handler: function () {
                     var iframe;
                     if(info == undefined){ //TODO use only info for all modules
@@ -119,7 +119,7 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
         		this.title=  this.commodity ? "Pakistan - Crop Data - Commodity: " + this.commodity.toUpperCase() +  " - Season: " + this.season.toUpperCase() + " - Years: "+ this.fromYear + "-"+ this.toYear : "Pakistan - AgroMet Variables - Season: " + this.season.toUpperCase() + " - Years: "+ this.fromYear + "-"+ this.toYear;
         }
 		this.tools= [{
-			id: 'info',
+			id: 'help',
 			handler: function () {
                  var iframe
                 if(maininfo == undefined){ //TODO use only info for all modules

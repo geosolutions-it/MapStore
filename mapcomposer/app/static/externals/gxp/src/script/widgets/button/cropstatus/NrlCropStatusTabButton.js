@@ -275,7 +275,7 @@ gxp.widgets.button.NrlCropStatusTabButton = Ext.extend(Ext.Button, {
 			items: grid,
 			//floating: {shadow: false},
 			tools: [{
-                id: 'info',
+                id: 'help',
                 handler: function () {
                     var checkCommodity = fieldValues.crop ? "<li><p><em> Commodity: </em>" + fieldValues.crop + "</p></li>" : "<li><p><em></em></p></li>";
                     var iframe = 
