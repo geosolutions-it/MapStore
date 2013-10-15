@@ -52,6 +52,32 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
      *  Text for print action tooltip (i18n).
      */
     tooltip: "Snapshot",
+	
+	/** api: config[service]
+     *  ``String``
+     *  The ServiceBox URL.
+     */
+	service: null,
+	
+    /** api: config[noSupportedLayersErrorMsg]
+     *  ``String``
+     */
+	noSupportedLayersErrorMsg: "Error occurred while generating the Map Snapshot: No Supported Layers have been found!",
+	
+	/** api: config[generatingErrorMsg]
+     *  ``String``
+     */
+	generatingErrorMsg: "Error occurred while generating the Map Snapshot",
+	
+	/** api: config[printStapshotTitle]
+     *  ``String``
+     */
+	printStapshotTitle: "Print Snapshot",
+	
+	/** api: config[serverErrorMsg]
+     *  ``String``
+     */
+	serverErrorMsg: "Error occurred while generating the Map Snapshot: Server Error",
 
     /** private: method[constructor]
      */
@@ -62,6 +88,8 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
     /** api: method[addActions]
      */
     addActions: function() {
+		var me = this;
+		
     	var actions = gxp.plugins.Print.superclass.addActions.call(this, [{
                 menuText: this.menuText,
                 tooltip: this.tooltip,
@@ -123,22 +151,23 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
 						"&HEIGHT=" + height +
 						"&CQL_FILTER=" + filters.join(";");
 						
-                	var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
-					var mHost=pattern.exec(app.xmlJsonTranslateService);
+                	var pattern = /(.+:\/\/)?([^\/]+)(\/.*)*/i;
+					var mHost = pattern.exec(me.service);
                 	
                 	var img = new Image();
                 	
                 	img.onload = function(){
                     	//Draw
-                    	canvas.width  = width;      // change if you have to add legend
+                    	canvas.width  = width;     // change if you have to add legend
                     	canvas.height = height;    // change if you have to add legend
                     	var ctx = canvas.getContext("2d");
 
                     	//WARNING: cross domain is not allowed 
                     	ctx.drawImage(img,0, 0);
+						
                     	//to avoid clear use another canvas and draw on the old after executing canvg
                     	var canvas2 = document.createElement("canvas");
-                    	canvas2.width  = width;      // change if you have to add legend
+                    	canvas2.width  = width;     // change if you have to add legend
                     	canvas2.height = height;    // change if you have to add legend
 
 						// draw vectorial layers
@@ -165,51 +194,56 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
 						// Print final image
                     	canvas.getContext('2d').drawImage(canvas2, 0,0);
 		    			
-		    			//Save
+		    			// Save
                     	var canvasData = canvas.toDataURL("image/png;base64");
-
-	                    var ajax = new XMLHttpRequest();
-
-	                    ajax.onreadystatechange = function(data){
-	                            if (ajax.readyState==4 && ajax.status==200){
-                                    var fname = "mapstore-snapshot.png";
-                					var mUrl = app.xmlJsonTranslateService + "UploadCanvas";
-                	    			    mUrl = mHost[2] == location.host ? mUrl+"?ID="+ajax.responseText+"&fn="+fname : proxy + encodeURIComponent(mUrl+"?ID="+ajax.responseText+"&fn="+fname);
-                                    window.location.assign(mUrl);
-                                    enableSaving=true;
-	                            }
-	                            else if (ajax.status!=200){
-	                            	Ext.Msg.show({
-						                 title: 'Print Snapshot',
-						                 msg: "Error occurred while generating the Map Snapshot: Server Error",
-						                 width: 300,
-						                 icon: Ext.MessageBox.ERROR
-						            });
-	                            }
-	                    };
 	                    
-	                    var mUrl = app.xmlJsonTranslateService + "UploadCanvas";
+	                    var mUrl = me.service + "UploadCanvas";
                 	    	mUrl = mHost[2] == location.host ? mUrl : proxy + mUrl;
-                	    try {
-	                    	ajax.open("POST",mUrl,false);
-	                    	ajax.setRequestHeader('Content-Type', 'application/upload');
-	                    	ajax.send(canvasData);
-	                    } catch (e) {
-	                    	Ext.Msg.show({
-				                 title: 'Print Snapshot',
-				                 msg: "Error occurred while generating the Map Snapshot" + e,
-				                 width: 300,
-				                 icon: Ext.MessageBox.ERROR
-				            });
-	                    }
+							
+						Ext.Ajax.request({
+						    url: mUrl,
+						    method: "POST",
+						    headers:{
+						    	  'Content-Type' : 'application/upload'
+						    },
+						    params: canvasData,
+						    scope: this,
+						    success: function(response, opts){
+								if (response.readyState == 4 && response.status == 200){
+									var fname = "mapstore-snapshot.png";
+									
+									var mUrl = me.service + "UploadCanvas";
+										mUrl = mHost[2] == location.host ? mUrl + "?ID=" + response.responseText + "&fn=" + fname : proxy + encodeURIComponent(mUrl + "?ID=" + response.responseText + "&fn=" + fname);
+									
+									window.location.assign(mUrl);
+									enableSaving = true;
+									
+								}else if (response.status != 200){
+									Ext.Msg.show({
+										 title: 'Print Snapshot',
+										 msg: this.serverErrorMsg,
+										 width: 300,
+										 icon: Ext.MessageBox.ERROR
+									});
+								}					
+						    },
+						    failure:  function(response, opts){
+								Ext.Msg.show({
+									 title: this.printStapshotTitle,
+									 msg: this.generatingErrorMsg + " " + e,
+									 width: 300,
+									 icon: Ext.MessageBox.ERROR
+								});
+						    }
+						});
                     };
                     
                     if (supportedLayers.length > 0)
                     	img.src = proxy + encodeURIComponent(gsURL);
                    	else {
                    		Ext.Msg.show({
-			                 title: 'Print Snapshot',
-			                 msg: "Error occurred while generating the Map Snapshot: No Supported Layers have been found!",
+			                 title: this.printStapshotTitle,
+			                 msg: this.noSupportedLayersErrorMsg,
 			                 width: 300,
 			                 icon: Ext.MessageBox.ERROR
 			            });
@@ -225,7 +259,6 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
             
 		return actions;
     }
-
 });
 
 Ext.preg(gxp.plugins.PrintSnapshot.prototype.ptype, gxp.plugins.PrintSnapshot);
