@@ -151,23 +151,41 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             this.auth = false;
         }
 		
-		this.mapItems = [
-            {
+		this.mapItems = [];
+		
+		if(config.advancedScaleOverlay){
+			this.mapItems.push({
+                xtype: "gxp_advancedscaleoverlay",
+                topOutUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topOutUnits : null,
+                topInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topInUnits : null,
+                bottomInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.bottomInUnits : null,
+                bottomOutUnits: config.scaleOverlayUnits ? config.bottomOutUnits : null,
+                divisions: 2,
+                subdivisions: 2,
+                showMinorMeasures: true,
+                singleLine: false,
+                abbreviateLabel: false,
+                enableSetScaleUnits: config.scaleOverlayUnits ? true : false
+            });
+		}else{
+			this.mapItems.push({
                 xtype: "gxp_scaleoverlay",
                 topOutUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topOutUnits : null,
                 topInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topInUnits : null,
                 bottomInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.bottomInUnits : null,
                 bottomOutUnits: config.scaleOverlayUnits ? config.bottomOutUnits : null,
                 enableSetScaleUnits: config.scaleOverlayUnits ? true : false
-            }, {
-                xtype: "gx_zoomslider",
-                vertical: true,
-                height: 100,
-                plugins: new GeoExt.ZoomSliderTip({
-                    template: this.zoomSliderText
-                })
-            }
-        ];
+            });
+		}		
+		
+		this.mapItems.push({
+			xtype: "gx_zoomslider",
+			vertical: true,
+			height: 100,
+			plugins: new GeoExt.ZoomSliderTip({
+				template: this.zoomSliderText
+			})
+		});
         
 		// ///////////////////////////////////////////////////////////////////////////////////
         // both the Composer and the Viewer need to know about the viewerTools
@@ -350,6 +368,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         var config = Ext.util.JSON.decode(json);        
         if(config && config.map){
             config.isLoadedFromConfigFile = true;
+			config = Ext.applyIf(config, this.initialConfig);
             app = new GeoExplorer.Composer(config, this.mapId, this.auth, this.fScreen);
         }else{
             Ext.Msg.show({
