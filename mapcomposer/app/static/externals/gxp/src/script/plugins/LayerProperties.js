@@ -41,6 +41,12 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
      *  Text for layer properties action tooltip (i18n).
      */
     toolTip: "Layer Properties",
+	
+	/** api: config[wpsmanager]
+     *  ``String``
+     *  The WPS Manager tool ID in order to enable statistics Tab.
+     */
+	wpsmanager: null,
     
     /** api: config[layerPanelConfig]
      *  ``Object`` Additional configuration options for the layer type specific
@@ -55,10 +61,9 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
     
     constructor: function(config) {
         gxp.plugins.LayerProperties.superclass.constructor.apply(this, arguments);
-        
         if (!this.outputConfig) {
             this.outputConfig = {
-                width: 265,
+                width: this.wpsmanager ? 365 : 265,
                 autoHeight: true
             };
         }
@@ -103,18 +108,24 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
         }
         this.outputConfig.renderTo = this.target.mapPanelContainer.body;
         this.outputConfig.constrainHeader=true;
+        
+		if(this.wpsmanager){
+			this.wpsManager = this.target.tools[this.wpsmanager];
+		}
+		
         return gxp.plugins.LayerProperties.superclass.addOutput.call(this, Ext.apply({
             xtype: xtype,
             authorized: this.target.isAuthorized(),
             layerRecord: record,
             source: this.target.getSource(record),
+            wps: this.wpsManager,
+            map: this.target.mapPanel.map,
             defaults: {
                 style: "padding: 10px",
                 autoHeight: this.outputConfig.autoHeight
             }
         }, config));
-    }
-        
+    }        
 });
 
 Ext.preg(gxp.plugins.LayerProperties.prototype.ptype, gxp.plugins.LayerProperties);
