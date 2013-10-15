@@ -38,7 +38,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
     /** api: config[emptyCommentText] ``String`` i18n */
     emptyCommentText: "Enter comments here.",
     /** api: config[creatingPdfText] ``String`` i18n */
-    creatingPdfText: "Creating PDF...",
+    creatingPdfText: "Rendering Layout...",
     /* end i18n */
     
     /** api: config[printProvider]
@@ -168,6 +168,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 printMapPanelOptions);
         }
         this.sourceMap = this.printMapPanel.sourceMap;
+
         this.printProvider = this.printMapPanel.printProvider;
         
         this.form = this.createForm();
@@ -203,10 +204,13 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 this.mon(this.printProvider,{
                     "beforeprint": function(printProvider){
 						this.busyMask.show();
-						
 					},
-                    "print": this.busyMask.hide,
-                    "printexception": this.busyMask.hide,
+                    "print": function(printProvider){
+						this.busyMask.hide;
+					},
+                    "printexception": function(printProvider){
+						this.busyMask.hide;
+					},
                     scope: this
                 });
             },
@@ -373,8 +377,14 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
     },
 
 	updateLayout: function() {
-					
-		var currentLayout = this.printProvider.layout.get('name').substr(0,2);
+		var currentLayout;
+		
+		if(!this.printProvider.layout) {
+    		currentLayout = this.printProvider.layouts.getAt(this.printProvider.defaultLayoutIndex ||0).get('name').substr(0,2);
+	    } else {
+	   	    currentLayout = this.printProvider.layout.get('name').substr(0,2);
+	    }
+		
 		var newLayoutName = '';
 		var newLayout = null;
 		/*
@@ -416,6 +426,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         var scaleLine = new OpenLayers.Control.ScaleLine();
         this.printMapPanel.map.addControl(scaleLine);
         scaleLine.activate();
+        
         return new Ext.Panel({
             cls: "gx-map-overlay",
             layout: "column",
