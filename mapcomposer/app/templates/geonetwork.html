@@ -396,7 +396,7 @@
             };*/
 
             app = new GeoExplorer.Composer({  
-				advancedScaleOverlay: true,
+				advancedScaleOverlay: serverConfig.advancedScaleOverlay,
                 defaultLanguage: serverConfig.defaultLanguage,		
 				geonetwork: true, // hidden/private config only used for the geonetwork use case
                 customPanels:serverConfig.customPanels,
