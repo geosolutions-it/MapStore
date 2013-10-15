@@ -557,5 +557,14 @@ GeoExt.Lang.add("en", {
 		resetText: "Reset",
 		failedUploadingTitle: "Cannot upload file",
 		layerNameLabel: "Layer Name"
-    }
+    },
+
+	"gxp.plugins.PrintSnapshot.prototype" :{
+		noSupportedLayersErrorMsg: "Error occurred while generating the Map Snapshot: No Supported Layers have been found!",
+		generatingErrorMsg: "Error occurred while generating the Map Snapshot",
+		printStapshotTitle: "Print Snapshot",
+		serverErrorMsg: "Error occurred while generating the Map Snapshot: Server Error",
+		menuText: "Snapshot",
+		tooltip: "Snapshot"
+	}
 });
