@@ -1,8 +1,8 @@
 .olControlScaleBar {
-    bottom: 10px;
-    left: 10px;
+    bottom: 50px;
+    left: 0px;
     font-family: sans-serif;
-    color: #000;
+    color: #00FFEE;
 }
 
 .olControlScaleBarBar {
