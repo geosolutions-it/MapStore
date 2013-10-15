@@ -235,19 +235,19 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
             }
 
             function isSupported(layer) {
-				/*var map = mapPanel.map;
+				var map = mapPanel.map;
 				
 				var drawcontrols = map.getControlsByClass("OpenLayers.Control.DrawFeature");
 				var size = drawcontrols.length;
 				for (var i=0; i<size; i++){
 					drawcontrols[i].deactivate();
-				}*/
+				}
                 
 				return (
                     layer instanceof OpenLayers.Layer.WMS ||
-                    layer instanceof OpenLayers.Layer.OSM /*||
-					layer.name == 'None'                ||  
-					layer instanceof OpenLayers.Layer.Vector*/
+                    layer instanceof OpenLayers.Layer.OSM ||
+					layer.name == 'None'                  ||  
+					layer instanceof OpenLayers.Layer.Vector
                 );
             }
 
@@ -264,6 +264,32 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                             autoHeight: true,
                             mapTitle: this.target.about && this.target.about["title"],
                             comment: this.target.about && this.target.about["abstract"],
+                            listeners: {
+                            	scope: this,
+                            	"afterrender": function() {
+                            		/**
+                            		 * Add a custom Grid Control
+                            		 */
+                            		var printMapPanel = printWindow.items.get(0).printMapPanel;
+                
+					                var ctrl = this.target.mapPanel.map.getControlsByClass("OpenLayers.Control.Graticule");
+									
+									if(ctrl[0] && ctrl[0].active){											
+										var graticule = new OpenLayers.Control.Graticule({ 
+											  displayInLayerSwitcher: false,
+											  labelled: true, 
+											  visible: true                  
+										});
+										 
+										graticule.labelSymbolizer.fontColor =  '#45F760';   
+										graticule.lineSymbolizer.strokeColor = '#45F760'; 
+								
+										printMapPanel.map.addControl(graticule);
+										
+										graticule.activate();
+									} 
+                            	}
+                            },
                             printMapPanel: {
                                 map: Ext.applyIf({
                                     controls: [
