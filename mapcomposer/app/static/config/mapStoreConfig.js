@@ -282,6 +282,24 @@
 		  },
 		  "outputTarget":"nrl"
 	  },{
+		  "ptype":"nrl_report_crop_data",
+		 "factorsurl":"http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
+         "rangesUrl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
+		 "dataUrl":"http://84.33.2.75/geoserver/ows",
+		 "highChartExportUrl" :"http://84.33.2.75/highcharts-export/",
+		  "outputConfig":{
+			 "id":"nrlReportCropData"
+			 
+		  },
+		  "outputTarget":"nrl"
+	   },{
+		  "ptype":"gxp_printreporthelper",
+		  "printService":"http://84.33.2.75/geoserver/pdf/",
+		  "dataUrl":"http://84.33.2.75/geoserver/ows",
+		  "defaultExtent": [6770799.251963,2705604.806669,8826743.330978,4442826.247111],
+		  "id":"printreporthelper",
+		  "hideAll":true
+      },{
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
 	  },{
