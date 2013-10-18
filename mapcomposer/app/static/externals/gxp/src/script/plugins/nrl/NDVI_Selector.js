@@ -58,8 +58,8 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
      *  :arg config: ``Object``
      */
     addOutput: function(config) {
-
-        if ( !Date.prototype.toISOString ) {
+        //Old IE versions workaround
+         if ( !Date.prototype.toISOString ) {
              
             ( function() {
              
@@ -81,9 +81,13 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                         + '.' + String( (this.getUTCMilliseconds()/1000).toFixed(3) ).slice( 2, 5 )
                         + 'Z';
                 };
-           
+
             }() );
         }  
+        //get available data 
+        this.target.on('ready',this.loadDimensions,this);
+
+       
         
         var target = this.target, me = this;
 		
@@ -114,13 +118,43 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                             format: 'm-Y', // or other format you'd like
                             plugins: 'monthPickerPlugin',
                             listeners:{
-                                select:function(){
-                                    this.refOwner.refOwner.submitButton.enable();
+                                
+                                scope:this,
+                                select:function(selector,date){
+                                    //get Allowed values
+                                    var submitButton =selector.refOwner.refOwner.submitButton;
+                                    var y = this.values[date.format('Y')];
+                                    if(!y){
+                                        submitButton.disable();
+                                        return;
+                                    }
+                                    var deks =y[date.format('m')];
+                                    if(!deks){
+                                         submitButton.disable();
+                                        return;
+                                    }
+                                     var decadCombo = selector.refOwner.decad;
+                                     var decStore = decadCombo.getStore();
+                                     decadCombo.filterByDekad(deks);
+                                        
+                                    
+                                    var count =decStore.getCount();
+                                    if(count>0){
+                                        decadCombo.setValue(decStore.getAt(0).get(decadCombo.valueField));
+                                        submitButton.enable();
+                                    }else{
+                                        submitButton.disable();
+                                    }
+                                    
                                 }
                             }
                         },{
                             xtype: 'combo',
+                            triggerAction:'all',
+                            forceSelection:true,
 							forceSelected:true,
+                            disableKeyFilter: true,
+                            editable: false,
 							allowBlank:false,
 							autoLoad:true,                            
                             name:'decad',
@@ -129,10 +163,21 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                             fieldLabel: "Dekad",
                             anchor:'100%',
                             typeAhead: true,
-                            triggerAction: 'all',
                             lazyRender:false,
                             mode: 'local',
                             value:5,
+                            filterByDekad:function(deks){
+                                this.getStore().clearFilter();
+                                this.getStore().filterBy(function(_rc,id){
+                                    //look for 5 15 25 
+                                    for(var i = 0;i<deks.length;i++){
+                                        if( parseInt(deks[i])*10+5 == id){
+                                            return true;
+                                        }
+                                    }
+                                    return false;
+                                });
+                            },
                             store: new Ext.data.ArrayStore({
                                 id: 0,
                                 fields: [
@@ -191,16 +236,11 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                                         tiled:true,
                                         format:me.format
                                     }
-                            var source
-                            //find the source 
-                            if(me.source){
-                                source = this.target.layerSources[me.source];
-                            }else if(me.dataUrl){
-                                source = this.searchSource();
-                            }
                             
-                            if(source){
-                                var record = source.createLayerRecord(props);   
+                            
+                            if(me.sourceObj){
+                                
+                                var record = me.sourceObj.createLayerRecord(props);   
                                 if(record){
                                     var layerStore = this.target.mapPanel.layers;
                                     layerStore.add([record]);
@@ -239,8 +279,89 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
         
 
         var ndvi_Modules = gxp.plugins.ndvi.NDVI.superclass.addOutput.call(this, config);
-        
+        this.form = ndvi_Modules.form;
         return ndvi_Modules;
+    },
+    /**
+     * create a structure to mantain available dekads in this.values
+     * this.values:{
+     *      2013:{
+     *          11:[0] // first dekad available for Nov 2013
+     *          12:[0,1] // first and second dekad available for Dec 2013
+     *      }
+     *  }
+     * then updates the fildset
+     */
+    loadDimensions:function(){
+        if(this.source){
+            this.sourceObj = this.target.layerSources[this.source];
+            }else if(this.dataUrl){
+                this.sourceObj = this.searchSource();
+            }
+             var props ={
+                name: this.layer,
+                title: this.name,
+                layers: this.layer,
+                //layerBaseParams:{time : dateISOString},
+                tiled:true,
+                format:this.format
+            };
+            var dummyRec = this.sourceObj.createLayerRecord(props);
+            if(!dummyRec){
+                this.disableAll();
+                return;
+            }
+            var dim = dummyRec.get("dimensions");
+            if(!dim.time){
+                this.disableAll();
+                return;
+            }
+            // : "2013-01-01T00:00:00.000Z/2013-01-10T00:00:00.000Z/PT1S"
+            var values = dim.time.values;
+            //To store them we take the first 9 chars "2013-01-0" "2013-01-1" "2013-01-2"
+            //this should identify the first(0) second(1) third(2) dekads availability
+            if(values.length==0){
+                this.diableAll();
+                return;
+            }
+            this.values= {};
+            var max="0";min = "9999";
+            for(var i=0;i<values.length;i++){
+                var year = values[i].substring(0,4);
+                var month = values[i].substring(5,7);
+                var dek = values[i][8];
+                var dateString = values[i].substring(0,10);
+                if(!this.values[year]){
+                    this.values[year]={};
+                }
+                 if(!this.values[year][month]){
+                    this.values[year][month]=[];
+                }
+                //add the dekad to the available list
+                this.values[year][month].push(dek);
+                //set max and min years
+                max = dateString >max ?dateString:max;
+                min = dateString <min ?dateString:min;
+            }
+            //only one granule published
+            if(max == min) {
+               var value = Date.parseDate(max, "Y-m-d");
+               this.form.range.sel_month_years.setValue(value);
+               this.form.range.sel_month_years.setReadOnly(true);
+               this.form.range.decad.filterByDekad(this.values[year][month]);
+               return;
+            }
+            //if we have more than one granule available we set proper disabled
+            //dates
+            this.form.range.sel_month_years.setMaxValue(new Date(max));
+            this.form.range.sel_month_years.setMinValue(new Date(min));
+        
+    },
+    disableAll: function(){
+        this.form.range.sel_month_years.setDisabled(true);
+        this.form.range.decad.setDisabled(true);
+        this.values={};
+        return;
     },
     searchSource:function(){
         for (var id in this.target.layerSources) {
