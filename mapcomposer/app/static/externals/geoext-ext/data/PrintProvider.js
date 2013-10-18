@@ -172,6 +172,51 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
      */
     layout: null,
 
+    /** api: config[formParameters]
+     *  Default legend parameters
+     **/
+    legendParameters:{
+        height: "8",
+        width: "8",
+        minSymbolSize: "8",
+        fontFamily: "Verdana",
+        forceLabels: true,
+        dpi: "96"
+    },
+
+    /** api: config[replaceLegendParametersInUrl]
+     *  ``Boolean`` Flag indicates if it's needed to replace legend parameters on the url.
+     */
+    changeLegendParameters: false,
+
+    /** api: config[legendParametersConfig]
+     *  ``Object`` Legend parameters configuration.
+     */
+    legendParametersConfig:{
+        paramatersSearches: [
+            // simple parameters inside the url
+            "&{0}=[A-Za-z0-9]+&",
+            "&{0}=[A-Za-z0-9]+",
+            "{0}=[A-Za-z0-9]+&",
+            "{0}=[A-Za-z0-9]+",
+            // encoded options for as LEGEND_OPTIONS=...
+            "%3B{0}%3A[A-Za-z0-9]+%3B",
+            "%3B{0}%3A[A-Za-z0-9]+",
+            "{0}%3A[A-Za-z0-9]+%3B",
+            "{0}%3A[A-Za-z0-9]+"],
+        paramatersSetters: [
+            // simple parameters inside the url
+            "&{0}={1}&",
+            "&{0}={1}",
+            "{0}={1}&",
+            "{0}={1}",
+            // encoded options for as LEGEND_OPTIONS=...
+            "%3B{0}%3A{1}%3B",
+            "%3B{0}%3A{1}",
+            "{0}%3A{1}%3B",
+            "{0}%3A{1}"]
+    },
+
     /** private:  method[constructor]
      *  Private constructor override.
      */
@@ -766,7 +811,10 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                 var enc = this.encoders.legends.base.call(this, legend);
                 var icons = [];
                 for(var i=1, len=legend.items.getCount(); i<len; ++i) {
-                    icons.push(this.getAbsoluteUrl(legend.items.get(i).url));
+                    // replace legend parameters if it's needed
+                    var url = this.getAbsoluteUrl(legend.items.get(i).url);
+                    icons.push(this.changeLegendParameters?
+                        this.replaceLegendParametersInUrl(url) : url);
                 }
                 enc[0].classes[0] = {
                     name: "",
@@ -789,6 +837,29 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                 }];
             }
         }
+    },
+
+    /** private: method[replaceLegendParametersInUrl]
+     *  :param url: ``String``
+     *  :return: ``String``
+     *  
+     *  Replace legend parameters on the url.
+     */
+    replaceLegendParametersInUrl: function(url){
+        var paramatersSearches = this.legendParametersConfig.paramatersSearches;
+        var paramatersSetters = this.legendParametersConfig.paramatersSetters;
+        for(var key in this.legendParameters){
+            for(var i = 0; i<paramatersSearches.length; i++){
+                var match = url.match(new RegExp(String.format(paramatersSearches[i], key)));
+                if(match && match.length > 0){
+                    for(var j = 0; j< match.length; j++){
+                        url = url.replace(match[j], String.format(paramatersSetters[i], key, this.legendParameters[key]));
+                    }
+                    break;
+                }
+            }
+        }    
+        return url;
     }
     
 });
