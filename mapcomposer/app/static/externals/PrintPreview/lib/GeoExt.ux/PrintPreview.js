@@ -39,6 +39,18 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
     emptyCommentText: "Enter comments here.",
     /** api: config[creatingPdfText] ``String`` i18n */
     creatingPdfText: "Rendering Layout...",
+    /** api: config[graticuleFieldLabelText] ``String`` i18n */
+    graticuleFieldLabelText: 'Active graticule',
+    /** api: config[iconsSizeText] ``String`` i18n */
+    iconsSizeText: "Icons size",
+    /** api: config[fontSizeText] ``String`` i18n */
+    fontSizeText: "Font size",
+    /** api: config[fontFamilyText] ``String`` i18n */
+    fontFamilyText: "Font Family",
+    /** api: config[forceLabelsText] ``String`` i18n */
+    forceLabelsText: "Force label",
+    /** api: config[dpiText] ``String`` i18n */
+    dpiText: "dpi",
     /* end i18n */
     
     /** api: config[printProvider]
@@ -148,6 +160,90 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
      *  override
      */
     cls: "x-panel-body x-panel-body-noheader",
+
+    /** api: config[fieldsetConfig]
+     *  Default configuration for the fieldset.
+     **/
+    fieldsetConfig:{
+        // Form parameters
+        anchor:'100%',
+        title: 'Legend configuration',
+        collapsible:true,
+        collapsed:true
+    },
+
+    /** api: config[addFormParameters]
+     *  Flag indicates that we need to add the form parameters fieldset or not
+     **/
+    addFormParameters: false,
+
+    /** api: config[addGraticuleControl]
+     *  Flag indicates that we need to add graticule control to the legend options
+     **/
+    addGraticuleControl: true,
+
+    /** api: config[ignoreLegendParametersKey]
+     *  ``String`` key that indicates this parameter.
+     */
+    ignoreLegendParametersKey: "_ignore_",  
+
+    /** api: config[formParameters]
+     *  Base configuration parameters to manage in the form panel
+     **/
+    formParameters:{
+        // Form parameters
+        height: {
+            xtype: "numberfield",
+            fieldLabel: "Icons height",
+            value: "8",
+            hidden: true
+        },
+        width: {
+            xtype: "numberfield",
+            fieldLabel: "Icons width",
+            value: "8",
+            hidden : true
+        },
+        fontFamily: {
+            xtype: "gxp_fontcombo",
+            width: 86,
+            fieldLabel: "fontFamilyText",
+            value: "Verdana"
+        },
+        fontSize: {
+            xtype: "textfield",
+            fieldLabel: "fontSizeText",
+            value: "8"
+        },
+        minSymbolSize: {
+            xtype: "numberfield",
+            fieldLabel: "iconsSizeText",
+            value: "8",
+            listeners:{
+                change: function (numberField, value){
+                    numberField.ownerCt.items.keys.forEach(function(key){
+                        var formParam = numberField.ownerCt.items.get(key);
+                        if(formParam.name == "height"
+                            || formParam.name == "width"){
+                            formParam.setValue(value);
+                        }
+                    });
+                }
+            }
+        },
+        forceLabels: {
+            // Managed as a checkbox
+            xtype: "textfield",
+            fieldLabel: "forceLabelsText",
+            value: "on",
+            hidden: true
+        },
+        dpi: {
+            xtype: "numberfield",
+            fieldLabel: "dpiText",
+            value: "96"
+        }
+    },
     
     /** private: method[initComponent]
      */
@@ -187,6 +283,9 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             ]
         });
 
+        // use the flag
+        this.addFormParameters && this.items.push(this.getFormParamatersFieldset());
+
         GeoExt.ux.PrintPreview.superclass.initComponent.call(this);
         
         this.addMapOverlay && this.printMapPanel.add(this.createMapOverlay());
@@ -195,6 +294,10 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             "resize": this.updateSize,
             scope: this
         });
+
+        var tmpChangeLegendParameters;
+        var tmpLegendParameters;
+
         this.on({
             "render": function() {
 				this.updateLayout();
@@ -203,12 +306,30 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
 				});
                 this.mon(this.printProvider,{
                     "beforeprint": function(printProvider){
+                        if(this.addFormParameters){
+                            // save state before print
+                            tmpChangeLegendParameters = printProvider.changeLegendParameters;
+                            tmpLegendParameters = printProvider.legendParameters;
+                            // change parameters on printProvider
+                            printProvider.changeLegendParameters = true;
+                            printProvider.legendParameters = this.writeFormParameters(printProvider.legendParameters);
+                        }
 						this.busyMask.show();
 					},
                     "print": function(printProvider){
+                        if(this.addFormParameters){
+                            // restore state before print
+                            printProvider.changeLegendParameters = tmpChangeLegendParameters;
+                            printProvider.legendParameters = tmpLegendParameters;
+                        }
 						this.busyMask.hide;
 					},
                     "printexception": function(printProvider){
+                        if(this.addFormParameters){
+                            // restore state before print
+                            printProvider.changeLegendParameters = tmpChangeLegendParameters;
+                            printProvider.legendParameters = tmpLegendParameters;
+                        }
 						this.busyMask.hide;
 					},
                     scope: this
@@ -216,6 +337,32 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             },
             scope: this
         });
+    },
+
+    /** api: method[writeFormParameters]
+     *  :arg spec: ``Map`` With the information of the print
+     *  :returns: ``Map`` with the configuration overwrited by the fieldset form
+     */
+    writeFormParameters: function(spec){
+        if(this.fieldSet){
+            // copy the form fieldset
+            this.fieldSet.items.keys.forEach(function(key){
+                if(key.indexOf(this.ignoreLegendParametersKey) < 0){
+                    var formParam = this.fieldSet.items.get(key);
+                    spec[formParam.name] = formParam.getValue();
+                }
+            }, this);
+        }else{
+            // copy the default value
+            for(var field in this.formParameters){
+                if(field.indexOf(this.ignoreLegendParametersKey) < 0){
+                    var itemConfig = this.formParameters[field];
+                    spec[field] = itemConfig.value;
+                }
+            }
+        }
+
+        return spec;
     },
     
     /** private: method[createToolbar]
@@ -374,6 +521,112 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             },
             items: panelElements
         });
+    },
+    
+    /** api: method[getFormParamatersFieldset]
+     *  :arg extraParameters: ``Map`` Optional parameters to show in the form panel
+     *  :arg overrideConfig: ``Map`` Optional config for the form panel
+     *  :returns: ``FormPanel`` with text fields composed by this.formParameters 
+     *  and extraParameters initialized with the values of the map
+     */
+    getFormParamatersFieldset: function(extraParameters, overrideConfig){
+
+        var fieldsetConfig = {};
+        
+        for(var config in this.fieldsetConfig){
+            fieldsetConfig[config] = this.fieldsetConfig[config];
+        }
+
+        if(overrideConfig){
+            Ext.apply(fieldsetConfig, overrideConfig);
+        }
+
+        var items = [];
+        for(var field in this.formParameters){
+            var itemConfig = this.formParameters[field];
+            itemConfig.name = field;
+            if(itemConfig.fieldLabel && this[itemConfig.fieldLabel]){
+                itemConfig.fieldLabel = this[itemConfig.fieldLabel];
+            }
+            items.push(itemConfig);
+        }
+
+        if(extraParameters){
+            for(var field in extraParameters){
+                var itemConfig = extraParameters[field];
+                itemConfig.name = field;
+                if(itemConfig.fieldLabel && this[itemConfig.fieldLabel]){
+                    itemConfig.fieldLabel = this[itemConfig.fieldLabel];
+                }
+                items.push(itemConfig);
+            }
+        }
+
+        this.addGraticuleControl && items.push(this.getGraticuleCheckBox());
+
+        if(this.formParameters.forceLabels){
+            items.push({
+                xtype: "checkbox",
+                fieldLabel: this.forceLabelsText,
+                name: this.ignoreLegendParametersKey + "forceLabel",
+                checked: this.formParameters.forceLabels.value == "on",
+                listeners:{
+                    change: function (chk, value){
+                        this.fieldSet.items.keys.forEach(function(key){
+                            var formParam = this.fieldSet.items.get(key);
+                            if(formParam.name == "forceLabels"){
+                                formParam.setValue(value ? "on" : "off");
+                            }
+                        }, this);
+                    }, 
+                    scope: this
+                }
+            });
+        }
+
+        fieldsetConfig.items = items;
+
+        this.fieldSet = new Ext.form.FieldSet(fieldsetConfig);
+
+        return this.fieldSet;
+    },
+    
+    /** api: method[getGraticuleCheckBox]
+     *  :returns: ``Checkbox`` to put on or off the graticule inside the printPanel
+     */
+    getGraticuleCheckBox: function(){
+        //This code is the similar that Graticule control.
+        var graticule = new OpenLayers.Control.Graticule({ 
+              //targetSize: 600,
+              displayInLayerSwitcher: false,
+              labelled: true, 
+              visible: true                  
+        });
+
+        var map = this.printMapPanel.map;
+
+        return {
+            xtype: 'checkbox',
+            fieldLabel: this.graticuleFieldLabelText,
+            checked: false,
+            name: this.ignoreLegendParametersKey + "graticuleTool",
+            listeners: {
+                "change": function (chk, value){
+                    if(map){
+                        if(value){
+                            var ctrl = map.getControlsByClass("OpenLayers.Control.Graticule");
+                            if(ctrl < 1)
+                                map.addControl(graticule); 
+                            
+                            graticule.activate();  
+                        }else{
+                            graticule.deactivate();
+                        } 
+                    }
+                }, 
+                scope: this
+            }
+        };
     },
 
 	updateLayout: function() {

@@ -96,6 +96,11 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
      *  layout at that index will be selected as default in the print preview
      */
     defaultLayoutIndex:0,
+
+    /** api: config[appendLegendOptions]
+     *  Flag indicates that we need to change legend options for the print or not
+     **/
+    appendLegendOptions: false,
     
     
 
@@ -264,6 +269,8 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                             autoHeight: true,
                             mapTitle: this.target.about && this.target.about["title"],
                             comment: this.target.about && this.target.about["abstract"],
+                            // Add legend paramaters
+                            addFormParameters: this.appendLegendOptions,
                             listeners: {
                             	scope: this,
                             	"afterrender": function() {
