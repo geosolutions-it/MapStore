@@ -868,74 +868,71 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     active.enable();
                                 }    
                                 
-                                 if(status.temporal != 0){
-                                    var tipologia = "tipologia_" + GeoExt.Lang.locale;
-                                    var descrizione = "descrizione_" + GeoExt.Lang.locale;
-                                    var nome_sostanza = "nome_sostanza_" + GeoExt.Lang.locale;
-                                    
-                                    if(status.accident.feature){
-                                        status.accident.name = status.accident.feature.attributes[tipologia];
-                                    }else{
-                                        status.accident.name = me.processingPane.allScenOption;
-                                    }
-                                    
-                                    if(status.classe.feature){
-                                        status.classe.name = status.classe.feature.attributes[descrizione];
-                                    }else{
-                                        status.classe.name = me.processingPane.allClassOption;
-                                    }
-                                    
-                                    if(status.sostanza.feature){
-                                        status.sostanza.name = status.sostanza.feature.attributes[nome_sostanza];
-                                    }else{
-                                        status.sostanza.name = me.processingPane.allSostOption;
-                                    }
-                                    
-                                    if(status.target.feature){
-                                        status.target.name = status.target.feature.attributes[descrizione];
-                                    }
-                                    
-                                    if(status.target.macro){
-                                        switch(status.target.id_bersaglio)
-                                        {
-                                            case -1:
-                                                status.macroTarget = me.processingPane.allTargetOption;
-                                                break;
-                                            case -2:
-                                                status.macroTarget = me.processingPane.allHumanTargetOption;
-                                                break;
-                                            case -3:
-                                                status.macroTarget = me.processingPane.allNotHumanTargetOption;
-                                                break;
-                                        }
-                                    }else{
-                                        if(status.target.flg_umano!= 1){
-                                            status.macroTarget = me.processingPane.allNotHumanTargetOption;
-                                        }else{
-                                            status.macroTarget = me.processingPane.allHumanTargetOption;
-                                        }
-                                    }
-                                    
-                                    switch(status.seriousness.value)
+                                var tipologia = "tipologia_" + GeoExt.Lang.locale;
+                                var descrizione = "descrizione_" + GeoExt.Lang.locale;
+                                var nome_sostanza = "nome_sostanza_" + GeoExt.Lang.locale;
+                                
+                                if(status.accident.feature){
+                                    status.accident.name = status.accident.feature.attributes[tipologia];
+                                }else{
+                                    status.accident.name = me.processingPane.allScenOption;
+                                }
+                                
+                                if(status.classe.feature){
+                                    status.classe.name = status.classe.feature.attributes[descrizione];
+                                }else{
+                                    status.classe.name = me.processingPane.allClassOption;
+                                }
+                                
+                                if(status.sostanza.feature){
+                                    status.sostanza.name = status.sostanza.feature.attributes[nome_sostanza];
+                                }else{
+                                    status.sostanza.name = me.processingPane.allSostOption;
+                                }
+                                
+                                if(status.target.feature){
+                                    status.target.name = status.target.feature.attributes[descrizione];
+                                }
+                                
+                                if(status.target.macro){
+                                    switch(status.target.id_bersaglio)
                                     {
-                                        case "L":
-                                            status.seriousness.name = me.processingPane.entLieve;
+                                        case -1:
+                                            status.macroTarget = me.processingPane.allTargetOption;
                                             break;
-                                        case "G":
-                                            status.seriousness.name = me.processingPane.entGrave;
+                                        case -2:
+                                            status.macroTarget = me.processingPane.allHumanTargetOption;
                                             break;
-                                        case "0":
-                                            status.seriousness.name = me.processingPane.allEntOption;
+                                        case -3:
+                                            status.macroTarget = me.processingPane.allNotHumanTargetOption;
                                             break;
                                     }
-                                    
-                                    me.processingPane.setStatus(status);
-                                    
-                                    if(status.processing == 2){
-                                        me.processingPane.temporal.enable();
+                                }else{
+                                    if(status.target.flg_umano!= 1){
+                                        status.macroTarget = me.processingPane.allNotHumanTargetOption;
+                                    }else{
+                                        status.macroTarget = me.processingPane.allHumanTargetOption;
                                     }
                                 }
-                   
+                                
+                                switch(status.seriousness.value)
+                                {
+                                    case "L":
+                                        status.seriousness.name = me.processingPane.entLieve;
+                                        break;
+                                    case "G":
+                                        status.seriousness.name = me.processingPane.entGrave;
+                                        break;
+                                    case "0":
+                                        status.seriousness.name = me.processingPane.allEntOption;
+                                        break;
+                                }
+                                
+                                me.processingPane.setStatus(status);
+                                
+                                if(status.processing == 2){
+                                    me.processingPane.temporal.enable();
+                                }
                             };
                             
                             function userFilter(element) {
