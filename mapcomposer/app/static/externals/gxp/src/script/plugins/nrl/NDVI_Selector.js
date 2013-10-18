@@ -122,28 +122,33 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                                 scope:this,
                                 select:function(selector,date){
                                     //get Allowed values
-                                    var submitButton =selector.refOwner.refOwner.submitButton;
+                                    var submitButton = selector.refOwner.refOwner.submitButton;
+                                    var dekadCombo = selector.refOwner.decad;
                                     var y = this.values[date.format('Y')];
                                     if(!y){
                                         submitButton.disable();
+                                        dekadCombo.disable();
                                         return;
                                     }
                                     var deks =y[date.format('m')];
                                     if(!deks){
-                                         submitButton.disable();
+                                        submitButton.disable();
+                                        dekadCombo.disable();
                                         return;
                                     }
-                                     var decadCombo = selector.refOwner.decad;
-                                     var decStore = decadCombo.getStore();
-                                     decadCombo.filterByDekad(deks);
-                                        
+                                    var decadCombo = selector.refOwner.decad;
+                                    var decStore = decadCombo.getStore();
+                                    decadCombo.filterByDekad(deks);
+                                    
                                     
                                     var count =decStore.getCount();
                                     if(count>0){
                                         decadCombo.setValue(decStore.getAt(0).get(decadCombo.valueField));
                                         submitButton.enable();
+                                        dekadCombo.enable();
                                     }else{
                                         submitButton.disable();
+                                        dekadCombo.disable();
                                     }
                                     
                                 }
@@ -210,7 +215,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                             var dateUTC = new Date(Date.UTC(date[1],monthNumber-1,day));
                             var dateISOString = dateUTC.toISOString();
                             var dekName = "";
-                            var dekad = (Math.floor(day / 10) + 1)
+                            var dekad = (Math.floor(day / 10) + 1);
                             switch(dekad){
                                 case 1: 
                                     dekName="1st";
@@ -235,7 +240,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                                         layerBaseParams:{time : dateISOString},
                                         tiled:true,
                                         format:me.format
-                                    }
+                                };
                             
                             
                             if(me.sourceObj){
@@ -321,7 +326,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
             //To store them we take the first 9 chars "2013-01-0" "2013-01-1" "2013-01-2"
             //this should identify the first(0) second(1) third(2) dekads availability
             if(values.length==0){
-                this.diableAll();
+                this.disableAll();
                 return;
             }
             this.values= {};
