@@ -103,6 +103,11 @@ Ext.ux.HighChart = Ext.extend(Ext.BoxComponent, {
         }
     },
 
+    // TODO:doc
+    getSVG: function(){
+        return this.chart ? this.chart.getSVG() : null;
+    },
+
     /**
     *
     */
@@ -493,6 +498,8 @@ Ext.ux.HighChart = Ext.extend(Ext.BoxComponent, {
                 this.updatexAxisData();
             }
         }
+
+        this.fireEvent('chartrefresh', this, this.chart);
     },
 
     /**
