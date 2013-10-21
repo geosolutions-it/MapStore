@@ -780,7 +780,6 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
        });
        
        targetStore.on('load', function(str, records) {
-            if(!this.loadUserElab){
                 var allIDsArray= []; 
                 var code=0;
                 var humanIDsArray= [];
@@ -843,7 +842,6 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 ['bersagli_ambientali', me.allNotHumanTargetOption, 'calc_formula_tot', false, '-2', true, notHumanIDsArray, -3, notHumanDescsMap, '5']
                 ];
                me.macrobers.getStore().loadData(me.macroBersData, true);
-            }
       });
         
        var targetMacroStore = new Ext.data.ArrayStore({
@@ -969,9 +967,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
        });
        
       classiADRStore.on('load', function(str, records) {
-           if(!this.loadUserElab){
-            str.insert(0, new str.recordType({name: me.allClassOption, value:'0'}, 1000));
-           }
+        str.insert(0, new str.recordType({name: me.allClassOption, value:'0'}, 1000));
       });
                 
         
@@ -1042,15 +1038,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
        });
                     
       sostanzeStore.on('load', function(str, records) {
-            if(!this.loadUserElab){
-                var allIDsArray= new Array(); 
-                Ext.each(records,function(record){
-                      var id= parseInt(record.get("value"));
-                      allIDsArray.push(id);
-                      record.set( "id", [id]);
-                });
-                str.insert(0, new str.recordType({name: me.allSostOption, value:'0', id: allIDsArray}, 1000));
-             }
+            var allIDsArray= new Array(); 
+            Ext.each(records,function(record){
+                  var id= parseInt(record.get("value"));
+                  allIDsArray.push(id);
+                  record.set( "id", [id]);
+            });
+            str.insert(0, new str.recordType({name: me.allSostOption, value:'0', id: allIDsArray}, 1000));
       });
       
 
@@ -1150,18 +1144,16 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
           });       
 
           accidentStore.on('load', function(str, records) {
-              if(!this.loadUserElab){
-                  var allIDsArray= []; 
-                  var allDescsMap = {};
-                  Ext.each(records,function(record){
-                          var id= parseInt(record.get("id"));
-                          allIDsArray.push(id);
-                          record.set( "id", [id]);
-                          allDescsMap[id] = record.get("name");
-                          record.set( "description",  {id: record.get("name")});
-                  });
-                  str.insert(0, new str.recordType({name: me.allScenOption, value:'0', id:allIDsArray, "description": allDescsMap }, 1000));
-              }
+              var allIDsArray= []; 
+              var allDescsMap = {};
+              Ext.each(records,function(record){
+                      var id= parseInt(record.get("id"));
+                      allIDsArray.push(id);
+                      record.set( "id", [id]);
+                      allDescsMap[id] = record.get("name");
+                      record.set( "description",  {id: record.get("name")});
+              });
+              str.insert(0, new str.recordType({name: me.allScenOption, value:'0', id:allIDsArray, "description": allDescsMap }, 1000));
           });
                 
         
@@ -1732,24 +1724,16 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         store=this.macrobers.getStore(); 
         this.macrobers.setValue(this.status.macroTarget);
         if(store.findExact("name", this.status.macroTarget) !== -1) {
-        
-            if(!this.loadUserElab){
-                this.macrobers.fireEvent('select',this.macrobers, store.getAt(store.findExact("name", this.status.macroTarget)));
-            }
-            
+            this.macrobers.fireEvent('select',this.macrobers, store.getAt(store.findExact("name", this.status.macroTarget)));
         }
         
         store=this.bers.getStore(); 
         if(this.status.target['macro']) {
             this.bers.setValue(null);
         } else {
-        
-            if(!this.loadUserElab){
-                var value = this.status.target['name'];
-                this.bers.setValue(value);
-                this.bers.fireEvent('select',this.bers, store.getAt(store.findExact("name", value)));
-            }
-            
+            var value = this.status.target['name'];
+            this.bers.setValue(value);
+            this.bers.fireEvent('select',this.bers, store.getAt(store.findExact("name", value)));
         }
         /*Ext.getCmp('rischio_sociale_multislider').setValue(0, status.themas.sociale[0]);
         Ext.getCmp('rischio_sociale_multislider').setValue(1, status.themas.sociale[1]);

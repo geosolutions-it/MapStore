@@ -36,8 +36,31 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     resultsLabel: "Risultato Elaborazione",
     fieldSetTitle: "Elaborazione",
     cancelButton: "Annulla Elaborazione",
+    
     saveButton: "Salva Elaborazione",
+    saveProcessingTitle: "Salvataggio Elaborazione",
+    saveProcessingMsg: "Elaborazione già salvata con questo nome, vuoi sostituirla?",
+    saveProcessingErrorTitle: "Salvataggio Elaborazione",
+    saveProcessingErrorMsg: "Impossibile salvare l'elaborazione",
+    saveProcessingSuccessTitle: "Salvataggio Elaborazione",
+    saveProcessingSuccessMsg: "Elaborazione salvata con successo",
+    saveProcessingNameFieldsetTitle: "Elaborazione",
+    saveProcessingNameLabel: "Nome",
+    saveProcessingDescriptionLabel: "Descrizione",
+    saveProcessingButtonText: "Salva Elaborazione",
+    saveProcessingWinTitle: "Nuova Elaborazione",
+
     loadButton: "Carica Elaborazione",
+    loadProcessingNameHeader: 'Name',
+    loadProcessingDescriptionHeader: 'Descrizione',
+    removeProcessingTooltip: 'Rimuovi Elaborazione',
+    removeProcessingMsgTitle: "Eliminazione Elaborazione",
+    removeProcessingMsg: "Vuoi eliminare l'elaborazione? L'azione è irreversibile!",
+    loadProcessingButtonText: "Carica Elaborazione",
+    selectProcessingMsgTitle: "Seleziona Elaborazione",
+    selectProcessingMsg: "Devi selezionare una elaborazione",
+    loadProcessingWinTitle: "Carica Elaborazione",
+    
     processButton: "Esegui Elaborazione",
     analyticViewButton: "Visualizzazione Analitica:",
     refreshGridButton: "Aggiorna la griglia",
@@ -121,6 +144,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     simulationEnabled: false,
     
     reset: false,
+    
+    deleteIconPath: "theme/app/img/silk/delete.png",
     
     "geoStoreBase":"http://localhost:8080/geostore/rest/",
     "proxy":"/http_proxy/?url=",
@@ -622,16 +647,19 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                  this.resultsContainer
             ],
             bbar:{
+                cls: 'my-toolbar',
                 buttons: [{
                     text: this.saveButton,
                     iconCls: 'save-button',
+                    name: "save-proc-geostore",
                     scope: this,
+                    disabled: true,
                     handler: function(){
                         var me=this;
                         var submitElab = function(){
                         
-                            var form = this.panel.getForm();
-                            var fields = form.getValues();                    
+                            var form = this.savePanel.getForm();
+                            var fields = form.getValues();
                             
                             var status;
                             var jsonStatus;
@@ -656,9 +684,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     me.geoStore.createEntity(geostoreEntityResource,successRes,failureRes);
                                 }else{
                                     Ext.Msg.show({
-                                        title: "Salvataggio Elaborazione",
+                                        title: me.saveProcessingTitle,
                                         buttons: Ext.Msg.YESNO,                
-                                        msg: "Elaborazione già salvata con questo nome, vuoi sostituirla?",
+                                        msg: me.saveProcessingMsg,
                                         fn: updateResource,
                                         icon: Ext.MessageBox.QUESTION,
                                         scope: this
@@ -669,9 +697,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             //Errore "existsEntity" function
                             var checkEntitiesResFail = function(){
                                 Ext.Msg.show({
-                                    title: "Errore creazione risorsa",
-                                    buttons: Ext.Msg.OK,                
-                                    msg: "Errore creazione risorsa",
+                                    title: me.saveProcessingErrorTitle,
+                                    buttons: Ext.Msg.OK,
+                                    msg: me.saveProcessingErrorMsg,
                                     icon: Ext.MessageBox.ERROR,
                                     scope: this
                                 });                     
@@ -684,13 +712,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                 me.geoStore.updateEntity(updateResource1,successRes,failureRes);
                                     
                             };                            
-
+                            
+                            var closeSaveWin = function(){
+                                me.saveWin.close();
+                            };
+                            
                             // Elaborazione salvata con successo
                             var successRes = function(){
                                 Ext.Msg.show({
-                                    title: "Salvataggio Elaborazione",
-                                    buttons: Ext.Msg.OK,                
-                                    msg: "Elaborazione salvata con successo",
+                                    title: me.saveProcessingSuccessTitle,
+                                    buttons: Ext.Msg.OK,
+                                    msg: me.saveProcessingSuccessMsg,
+                                    fn: closeSaveWin,
                                     icon: Ext.MessageBox.INFO,
                                     scope: this
                                 });                                         
@@ -699,9 +732,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             // Errore salvataggio elaborazione
                             var failureRes = function(){
                                 Ext.Msg.show({
-                                    title: "Salvataggio Elaborazione",
-                                    buttons: Ext.Msg.OK,                
-                                    msg: "Errore salvataggio elaborazione",
+                                    title: me.saveProcessingErrorTitle,
+                                    buttons: Ext.Msg.OK,
+                                    msg: me.saveProcessingErrorMsg,
                                     icon: Ext.MessageBox.ERROR,
                                     scope: this
                                 });                     
@@ -711,6 +744,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             var geostoreEntityResource = new OpenLayers.GeoStore.Resource({
                                 type: "resource",
                                 name: fields.elab_name,
+                                description: fields.elab_description,
                                 category: 'processing',
                                 store: jsonStatus
                             });                    
@@ -718,22 +752,58 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             //Verifico se la risorsa (elaborazione) esiste
                             me.geoStore.existsEntity(geostoreEntityResource,checkEntitiesResSucc,checkEntitiesResFail);
 
-                        }
-
-                        this.panel = new Ext.FormPanel({
+                        };
+                        
+                        var enableBtnFunction = function(){
+                            if(this.getValue() != "")
+                                Ext.getCmp("elab-savebutton").enable();
+                            else
+                                Ext.getCmp("elab-savebutton").disable();
+                        };
+                        
+                        this.savePanel = new Ext.form.FormPanel({
                             //url: this.loginService,
                             frame: true,
                             labelWidth: 80,
+                            width: 400,
+                            height: 150,
                             layout: "form",
                             defaultType: "textfield",
-                            items: [{
-                                fieldLabel: "Nome Elaborazione",
-                                anchor:'100%',
-                                name: "elab_name",
-                                allowBlank: false
-                            }],
+                            items: [
+                                {
+                                    xtype: 'fieldset',
+                                    id: 'name-field-set',
+                                    title: me.saveProcessingNameFieldsetTitle,
+                                    items: [
+                                        {
+                                            xtype: 'textfield',
+                                            width: 120,
+                                            fieldLabel: me.saveProcessingNameLabel,
+                                            id: 'diag-text-field',
+                                            anchor:'100%',
+                                            name: "elab_name",
+                                            listeners: {
+                                                render: function(f){
+                                                    f.el.on('keydown', enableBtnFunction, f, {buffer: 350});
+                                                }
+                                            }
+                                        },{
+                                            xtype: 'textarea',
+                                            width: 200,
+                                            id: 'diag-text-description',
+                                            fieldLabel: me.saveProcessingDescriptionLabel,
+                                            name: "elab_description",
+                                            readOnly: false,
+                                            hideLabel : false
+                                        }
+                                    ]
+                                }
+                            ],
                             buttons: [{
-                                text: "Salva Elaborazione",
+                                text: me.saveProcessingButtonText,
+                                iconCls: 'save-button',
+                                id: "elab-savebutton",
+                                disabled: true,
                                 formBind: true,
                                 handler: submitElab,
                                 scope: this
@@ -745,18 +815,22 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             }]
                         });
                                 
-                        this.win = new Ext.Window({
-                            title: "Nuova Elaborazione",
+                        this.saveWin = new Ext.Window({
+                            title: me.saveProcessingWinTitle,
+                            iconCls: 'save-button',
                             layout: "fit",
-                            width: 275,
+                            width: 450,
+                            height: 250,
                             closeAction: 'close',
-                            height: 130,
+                            resizable: false,
                             plain: true,
                             border: false,
                             modal: true,
-                            items: [this.panel]
+                            items: [
+                                this.savePanel
+                            ]
                         });
-                        this.win.show(); 
+                        this.saveWin.show(); 
                     }
                 },{
                     text: this.loadButton,
@@ -778,20 +852,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     if(status.temporal == 0){
                                         me.processingPane.loadUserElab = false;
                                         // Temporali
-                                        me.processingPane.temporal.setValue("fp_scen_centrale");                        
-                                        me.processingPane.temporal.disable();                                         
-                                        // Categoria
-                                        me.processingPane.macrobers.setValue(me.processingPane.allTargetOption);                        
-                                        // Bersaglio
-                                        me.processingPane.bers.setValue("");                        
-                                        // Classe ADR
-                                        me.processingPane.classi.setValue(me.processingPane.allClassOption);                        
-                                        // Sostanza
-                                        me.processingPane.sostanze.setValue(me.processingPane.allSostOption);
-                                        // Incidente
-                                        me.processingPane.accident.setValue(me.processingPane.allScenOption);
-                                        // Entità
-                                        me.processingPane.seriousness.setValue(me.processingPane.allEntOption);
+                                        me.processingPane.temporal.setValue("fp_scen_centrale");
+                                        me.processingPane.temporal.disable();
                                     }else {
                                         me.processingPane.geostoreTemporal = status.temporal.value;
                                     }
@@ -806,103 +868,246 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     active.enable();
                                 }    
                                 
-                                 if(status.temporal != 0){
-                                    me.processingPane.setStatus(status);
-                                    
-                                    if(status.processing != 2){
-                                        me.processingPane.temporal.disable();
+                                var tipologia = "tipologia_" + GeoExt.Lang.locale;
+                                var descrizione = "descrizione_" + GeoExt.Lang.locale;
+                                var nome_sostanza = "nome_sostanza_" + GeoExt.Lang.locale;
+                                
+                                if(status.accident.feature){
+                                    status.accident.name = status.accident.feature.attributes[tipologia];
+                                }else{
+                                    status.accident.name = me.processingPane.allScenOption;
+                                }
+                                
+                                if(status.classe.feature){
+                                    status.classe.name = status.classe.feature.attributes[descrizione];
+                                }else{
+                                    status.classe.name = me.processingPane.allClassOption;
+                                }
+                                
+                                if(status.sostanza.feature){
+                                    status.sostanza.name = status.sostanza.feature.attributes[nome_sostanza];
+                                }else{
+                                    status.sostanza.name = me.processingPane.allSostOption;
+                                }
+                                
+                                if(status.target.feature){
+                                    status.target.name = status.target.feature.attributes[descrizione];
+                                }
+                                
+                                if(status.target.macro){
+                                    switch(status.target.id_bersaglio)
+                                    {
+                                        case -1:
+                                            status.macroTarget = me.processingPane.allTargetOption;
+                                            break;
+                                        case -2:
+                                            status.macroTarget = me.processingPane.allHumanTargetOption;
+                                            break;
+                                        case -3:
+                                            status.macroTarget = me.processingPane.allNotHumanTargetOption;
+                                            break;
+                                    }
+                                }else{
+                                    if(status.target.flg_umano!= 1){
+                                        status.macroTarget = me.processingPane.allNotHumanTargetOption;
+                                    }else{
+                                        status.macroTarget = me.processingPane.allHumanTargetOption;
                                     }
                                 }
-                   
+                                
+                                switch(status.seriousness.value)
+                                {
+                                    case "L":
+                                        status.seriousness.name = me.processingPane.entLieve;
+                                        break;
+                                    case "G":
+                                        status.seriousness.name = me.processingPane.entGrave;
+                                        break;
+                                    case "0":
+                                        status.seriousness.name = me.processingPane.allEntOption;
+                                        break;
+                                }
+                                
+                                me.processingPane.setStatus(status);
+                                
+                                if(status.processing == 2){
+                                    me.processingPane.temporal.enable();
+                                }
                             };
                             
                             function userFilter(element) {
                                 return element.canEdit == true;
                             }            
                             
-                            var success = function(resourceList){
+                            this.success = function(resourceList){
                                 var resourceList = resourceList.filter(userFilter);
                                 var jsonResource = Ext.util.JSON.encode(resourceList);
                                 
                                 var resourceDataReader = new Ext.data.ArrayReader({}, [
                                        {name: 'id', type: 'int', mapping: 'id'},
-                                       {name: 'name', type: 'string', mapping: 'name'}
+                                       {name: 'name', type: 'string', mapping: 'name'},
+                                       {name: 'description', type: 'string', mapping: 'description'}
                                 ]);
                                 
                                 this.resourceDataStore = new Ext.data.Store({
                                     reader: resourceDataReader,
                                     data: resourceList
                                 });
-
-                                var comboModels = new Ext.form.ComboBox({
-                                    id: 'comboModel',
-                                    triggerAction: 'all',
+                                
+                                var xg = Ext.grid;
+                                
+                                this.processingGrid = new xg.GridPanel({
+                                    id: 'id_processing_grid',
                                     store: this.resourceDataStore,
-                                    mode: 'local',
-                                    xtype: 'combo',
-                                    displayField: 'name',
-                                    fieldLabel: 'Seleziona Elaborazione',
-                                    valueField: 'id',
-                                    listClass: 'x-combo-list-small',
-                                    resizable: true,
-                                    typeAhead: true,
-                                    emptyText: 'Seleziona una elaborazione',
-                                    selectOnFocus: false,
-                                    scope: this,
-                                    listeners: {
-                                        select: function (combo, record, index) {
-                                        
-                                            var success = function(data){
+                                    header: false,
+                                    sm: new xg.RowSelectionModel({
+                                        singleSelect:true,
+                                        scope: this,
+                                        listeners: {
+                                            rowselect: function (grid,rowIndex,record) {
+                                            
+                                                var success = function(data){
 
-                                                this.newStatus = Ext.util.JSON.decode(data.Resource.data.data);
+                                                    this.newStatus = Ext.util.JSON.decode(data.Resource.data.data);
+                                                    
+                                                    if (typeof this.newStatus == "string"){
+                                                        this.newStatus = Ext.util.JSON.decode(this.newStatus);
+                                                    }else{
+                                                        if (typeof this.newStatus == "object"){
+                                                            this.newStatus
+                                                        }
+                                                    }
+                                                    return this.newStatus;
+                                                };
                                                 
-                                                if (typeof this.newStatus == "string"){
-                                                    this.newStatus = Ext.util.JSON.decode(this.newStatus);
-                                                }else{
-                                                    if (typeof this.newStatus == "object"){
-                                                        this.newStatus
-                                                    }                                            
-                                                }
-                                                return this.newStatus;
-                                            };
-                                            
-                                            var failure = function(){};
-                                            var newRecord = record.get('id');
-                                            
-                                            //Assegno il nome alla risorsa (elaborazione)
-                                            var geostoreEntityResource = new OpenLayers.GeoStore.Resource({
-                                                type: "resource",
-                                                category: "processing",
-                                                id: newRecord
-                                            });  
-                                            
-                                            me.geoStore.getEntityByID(geostoreEntityResource,success,failure);
-                                        },
-                                        render: function (combo){
+                                                var failure = function(){};
+                                                var newRecord = record.get('id');
+                                                
+                                                //Assegno il nome alla risorsa (elaborazione)
+                                                var geostoreEntityResource = new OpenLayers.GeoStore.Resource({
+                                                    type: "resource",
+                                                    category: "processing",
+                                                    id: newRecord
+                                                });  
+                                                
+                                                me.geoStore.getEntityByID(geostoreEntityResource,success,failure);
+                                            },
+                                            scope:this
+                                        }
+                                    }),
+                                    cm: new xg.ColumnModel({
+                                        columns: [
+                                            {
+                                                header: me.loadProcessingNameHeader,
+                                                width : 60,
+                                                sortable : true,
+                                                dataIndex: 'name'
+                                            },{
+                                                header: me.loadProcessingDescriptionHeader,
+                                                width : 120,
+                                                sortable : true,
+                                                dataIndex: 'description'
+                                            },{
+                                                xtype: 'actioncolumn',
+                                                width: 20,
+                                                header: '',
+                                                listeners: {
+                                                    scope: this,
+                                                    click: function(column, grd, row, e){
+                                                        grd.getSelectionModel().selectRow(row);
+                                                    }
+                                                },
+                                                items: [
+                                                    {
+                                                    tooltip: me.removeProcessingTooltip,
+                                                    icon: me.deleteIconPath,
+                                                    scope: this,
+                                                    handler: function(gpanel, rowIndex, colIndex) {
 
-                                        },
-                                        scope:this
-                                    }
+                                                            var deleteRecord = function(btn, text){
+                                                                if (btn == 'yes'){
+                                                                    var store = gpanel.getStore();
+                                                                    var record = store.getAt(rowIndex);
+                                                                    var id = record.get("id");
+                                                                    var removeResource = {
+                                                                        type: 'resource',
+                                                                        id: id
+                                                                    };
+                                                                    store.remove(record);
+                                                                    gpanel.getSelectionModel().clearSelections(true);
+                                                                    this.newStatus = null;
+                                                                    me.geoStore.deleteEntity(removeResource);
+                                                                }
+                                                            }
+                                                            
+                                                            Ext.Msg.show({
+                                                                title: me.removeProcessingMsgTitle,
+                                                                buttons: Ext.Msg.YESNO,
+                                                                msg: me.removeProcessingMsg,
+                                                                fn: deleteRecord,
+                                                                icon: Ext.MessageBox.WARNING,
+                                                                scope: this
+                                                            });
+                                                           
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                          ]                
+                                    }),
+                                    viewConfig: {
+                                        forceFit: true
+                                    }            
                                 });
                                 
-                                this.panel = new Ext.FormPanel({
+
+                                this.loadPanel = new Ext.FormPanel({
                                     frame: true,
                                     labelWidth: 80,
-                                    layout: "form",
+                                    layout: "fit",
                                     defaultType: "textfield",
                                     scope: this,
-                                    items: [comboModels],
+                                    items: [this.processingGrid],
                                     buttons: [{
-                                        text: "Carica Elaborazione",
+                                        text: me.loadProcessingButtonText,
                                         formBind: true,
+                                        iconCls: 'load-button',
                                         handler: function(){
                                             if(this.newStatus){
+                                            
                                                 loadGeostoreStatus(this.newStatus);
+                                                
+                                                var map = me.target.mapPanel.map;
+                                                var bbox = this.newStatus.roi.bbox;
+                                                
+                                                map.zoomToExtent(
+                                                    new OpenLayers.Bounds(
+                                                        bbox.left,
+                                                        bbox.bottom,
+                                                        bbox.right,
+                                                        bbox.top
+                                                    )
+                                                )
+                                                
+                                                this.newStatus = null;
+                                                
+                                            }else{
+                                            
+                                                Ext.Msg.show({
+                                                    title: me.selectProcessingMsgTitle,
+                                                    buttons: Ext.Msg.OK,
+                                                    msg: me.selectProcessingMsg,
+                                                    icon: Ext.MessageBox.INFO,
+                                                    scope: this
+                                                });
+                                                
                                             }
                                         },
                                         listeners:{
                                             'click': function( button, e ){
-                                                this.scope.win.close();
+                                                if(button.initialConfig.scope.newStatus){
+                                                    this.scope.loadWin.close();
+                                                }
                                             }
                                         },
                                         scope: this
@@ -918,18 +1123,21 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     }]
                                 });
                                         
-                                this.win = new Ext.Window({
-                                    title: "Carica Elaborazione",
+                                this.loadWin = new Ext.Window({
+                                    title: me.loadProcessingWinTitle,
+                                    iconCls: 'load-button',
                                     layout: "fit",
-                                    width: 275,
+                                    width: 450,
                                     closeAction: 'close',
-                                    height: 130,
+                                    height: 250,
+                                    resizable: false,
                                     plain: true,
                                     border: false,
                                     modal: true,
-                                    items: [this.panel]
+                                    autoScroll: true,
+                                    items: [this.loadPanel]
                                 });
-                                this.win.show();                             
+                                this.loadWin.show();
                             }
                             
                             var failure = function(){
@@ -939,12 +1147,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             //RICHIAMO NOME CATEGORIA
                             var geostoreEntityResource = new OpenLayers.GeoStore.Resource({
                                 type: "resource"
-                            });                        
+                            });
                             
-                            me.geoStore.getEntities(geostoreEntityResource,success,failure);
+                            me.geoStore.getEntities(geostoreEntityResource,this.success,failure);
                             
                     }
-                }]            
+                }]
             },
             buttons: [{
                 text: this.cancelButton,
@@ -1011,6 +1219,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         containerTab.setActiveTab(1);
                         active = containerTab.getActiveTab();
                         active.enable();
+                        
+                        if(this.status.processing == 2){
+                            me.processingPane.temporal.enable();
+                        }                        
                     }    
                 
                     if(this.status && !this.status.initial && !this.reset){
@@ -1940,7 +2152,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         layer.setVisibility(visibility);
     },
     
-    doProcess: function(roi) {        
+    doProcess: function(roi) {
+        
         if(this.simulationRestore) {
             for(var buttonId in this.simulationRestore.buttons) {
                 if(this.simulationRestore.buttons.hasOwnProperty(buttonId)) {
@@ -1954,7 +2167,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         var newLayers=[];
         
         var map = this.target.mapPanel.map;        
-        var status = this.getStatus();        
+        var status = this.getStatus();
+        
+        //enable save status button
+        if (status.processing != 1){
+            this.fieldSet.getBottomToolbar().items.items[0].enable();
+        }
         
         var bounds = this.getBounds(status, map);
         

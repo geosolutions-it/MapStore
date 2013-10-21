@@ -318,3 +318,9 @@ table.featureInfo caption{
      background-position: center;
      background-repeat: no-repeat;
 }
+
+.my-toolbar {
+    background-color: #FFFFFF;
+    background-image: url("../../externals/ext/resources/images/gray/toolbar/bg_white.gif");
+    border-color: #FFFFFF;
+}
