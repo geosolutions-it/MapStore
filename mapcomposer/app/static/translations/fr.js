@@ -62,7 +62,11 @@ GeoExt.Lang.add("fr", {
         loadProcessingButtonText: "Téléchargez traitement",
         selectProcessingMsgTitle: "Sélectionnez l'option Traitement",
         selectProcessingMsg: "Vous devez sélectionner un traitement",
-        loadProcessingWinTitle: "Téléchargez traitement"
+        loadProcessingWinTitle: "Téléchargez traitement",    
+        saveDownloadProcessingTitle: "Download traitement",
+        loadDownloadButton: "Download traitement",
+        loadDownloadProcessingWinTitle: "Download traitement",
+        loadDownloadProcessingButtonText: "Download traitement"
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Traitement",

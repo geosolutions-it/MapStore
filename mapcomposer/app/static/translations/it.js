@@ -58,7 +58,11 @@ GeoExt.Lang.add("it", {
         loadProcessingButtonText: "Carica Elaborazione",
         selectProcessingMsgTitle: "Seleziona Elaborazione",
         selectProcessingMsg: "Devi selezionare una elaborazione",
-        loadProcessingWinTitle: "Carica Elaborazione"
+        loadProcessingWinTitle: "Carica Elaborazione",    
+        saveDownloadProcessingTitle: "Download Elaborazione",
+        loadDownloadButton: "Download Elaborazione",
+        loadDownloadProcessingWinTitle: "Download Elaborazione",
+        loadDownloadProcessingButtonText: "Download Elaborazione"
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Elaborazione",
