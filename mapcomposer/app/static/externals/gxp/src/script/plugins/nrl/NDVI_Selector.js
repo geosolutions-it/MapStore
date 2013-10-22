@@ -52,7 +52,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
     multipleMethod:'add',
     dataUrl: null,
     addNDVItext: "Add NDVI layer",
-    monthShortNames : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    monthShortNames : [[01,'Jan'],[02, 'Feb'],[03, 'Mar'],[04, 'Apr'],[05, 'May'],[06, 'Jun'],[07, 'Jul'],[08, 'Aug'],[09, 'Sep'],[10, 'Oct'],[11, 'Nov'],[12, 'Dec']],
     
     /** private: method[addOutput]
      *  :arg config: ``Object``
@@ -109,7 +109,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                     anchor:'100%',
                     title: 'NDVI',
                          items:[
-                        {
+                        /*{
                             xtype: 'datefield',
                             name:'sel_month_years',
                             ref:'sel_month_years',                            
@@ -153,10 +153,134 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                                     
                                 }
                             }
-                        },{
+                        },*/
+                        {
+                            xtype:'compositefield',
+                            items:[{
+                                xtype: 'combo',
+                                triggerAction:'all',
+                                forceSelection:true,
+                                forceSelected:true,
+                                disableKeyFilter: true,
+                                editable: false,
+                                allowBlank:false,
+                                autoLoad:true,                            
+                                name:'year',
+                                ref:'../year',      
+                                width: 55,
+                                fieldLabel: "Year",
+                                anchor:'100%',
+                                typeAhead: false,
+                                lazyRender:false,
+                                mode: 'local',
+                                valueField:'year',
+                                displayField:'year',
+                                setValue : function(v, fireSelect){
+                                    var text = v;
+                                    if(this.valueField){
+                                        var r = this.findRecord(this.valueField, v);
+                                        if(r){
+                                            text = r.data[this.displayField];
+                                            if (fireSelect) {
+                                                this.fireEvent('select', this, r, this.store.indexOf(r));
+                                            }
+                                        }else if(Ext.isDefined(this.valueNotFoundText)){
+                                            text = this.valueNotFoundText;
+                                        }
+                                    }
+                                    this.lastSelectionText = text;
+                                    if(this.hiddenField){
+                                        this.hiddenField.value = v;
+                                    }
+                                    Ext.form.ComboBox.superclass.setValue.call(this, text);
+                                    this.value = v;
+                                    return this;
+                                },
+                                store: new Ext.data.ArrayStore({
+                                    idIndex:0,
+                                    fields: ['year'],
+                                    data:[]    
+                                }),
+                                listeners:{
+                                    scope:this,
+                                    select:function(cmb,record,index){
+                                        var availableMonths = this.values[record.id];
+                                        var monthSelector = cmb.refOwner.month;
+                                        monthSelector.getStore().filterBy(function(rec,id){
+                                            var present = (id in availableMonths);
+                                            return present  ;
+                                        });
+                                        monthSelector.enable(true);
+                                        var firstRecord = monthSelector.getStore().getAt(0);
+                                        monthSelector.setValue(firstRecord.get(monthSelector.valueField),true);
+                                        
+                                    }
+                                }
+                            },{
+                                xtype: 'combo',
+                                disabled:true,
+                                forceSelection:true,
+                                disableKeyFilter: true,
+                                editable: false,
+                                allowBlank:false,
+                                autoLoad:true,                            
+                                name:'month',
+                                ref:'../month',      
+                                width: 50,
+                                fieldLabel: "Month",
+                                anchor:'100%',
+                                typeAhead: true,
+                                lazyRender:false,
+                                mode: 'local',
+                                valueField:'num',
+                                displayField:'name',
+                                value:1,
+                                setValue : function(v, fireSelect){
+                                    var text = v;
+                                    if(this.valueField){
+                                        var r = this.findRecord(this.valueField, v);
+                                        if(r){
+                                            text = r.data[this.displayField];
+                                            if (fireSelect) {
+                                                this.fireEvent('select', this, r, this.store.indexOf(r));
+                                            }
+                                        }else if(Ext.isDefined(this.valueNotFoundText)){
+                                            text = this.valueNotFoundText;
+                                        }
+                                    }
+                                    this.lastSelectionText = text;
+                                    if(this.hiddenField){
+                                        this.hiddenField.value = v;
+                                    }
+                                    Ext.form.ComboBox.superclass.setValue.call(this, text);
+                                    this.value = v;
+                                    return this;
+                                },
+                                store: new Ext.data.ArrayStore({
+                                    idIndex:0,
+                                    fields: ['num', 'name'],
+                                    data : this.monthShortNames
+                                }),
+                                listeners:{
+                                    scope:this,
+                                    select:function(cmb,record,index){
+                                        var decSelector = cmb.refOwner.decad;
+                                        var year = parseInt(cmb.refOwner.year.getValue());
+                                        decSelector.filterByDekad(this.values[year][parseInt(record.id)]);
+                                        var store =decSelector.getStore();
+                                        var firstRecord = store.    getAt(0);
+                                            decSelector.setValue(firstRecord.get(decSelector.valueField),true);
+                                            decSelector.enable();
+                                        
+                                        
+                                    }
+                                }
+                            }]
+                        },
+                        {
                             xtype: 'combo',
-                            triggerAction:'all',
                             forceSelection:true,
+                            disabled:true,
 							forceSelected:true,
                             disableKeyFilter: true,
                             editable: false,
@@ -170,7 +294,29 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                             typeAhead: true,
                             lazyRender:false,
                             mode: 'local',
+                            valueField:'id',
                             value:5,
+                            setValue : function(v, fireSelect){
+                                var text = v;
+                                if(this.valueField){
+                                    var r = this.findRecord(this.valueField, v);
+                                    if(r){
+                                        text = r.data[this.displayField];
+                                        if (fireSelect) {
+                                            this.fireEvent('select', this, r, this.store.indexOf(r));
+                                        }
+                                    }else if(Ext.isDefined(this.valueNotFoundText)){
+                                        text = this.valueNotFoundText;
+                                    }
+                                }
+                                this.lastSelectionText = text;
+                                if(this.hiddenField){
+                                    this.hiddenField.value = v;
+                                }
+                                Ext.form.ComboBox.superclass.setValue.call(this, text);
+                                this.value = v;
+                                return this;
+                            },
                             filterByDekad:function(deks){
                                 this.getStore().clearFilter();
                                 this.getStore().filterBy(function(_rc,id){
@@ -183,8 +329,13 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                                     return false;
                                 });
                             },
+                            listeners:{
+                                select:function(){
+                                    this.refOwner.refOwner.submitButton.enable();
+                                }
+                            },
                             store: new Ext.data.ArrayStore({
-                                id: 0,
+                                idIndex: 0,
                                 fields: [
                                     'myId',
                                     'displayText'
@@ -208,11 +359,12 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                         disabled:true,
                         handler: function(button, event){
                             //2012-01-01T00:00:00.000Z,2012-01-02T00:00:00.000Z,2012-01-03T00:00:00.000Z,2012-02-01T00:00:00.000Z
-                            var day = button.refOwner.range.decad.value;
-                            var date = button.refOwner.range.sel_month_years.value.split('-');
-                            var monthNumber = parseInt(date[0]);
-                            var year = date[1];
-                            var dateUTC = new Date(Date.UTC(date[1],monthNumber-1,day));
+                            var day = button.refOwner.range.decad.getValue();
+                            var monthNumber = button.refOwner.range.month.getValue();
+                            var year = button.refOwner.range.year.getValue();
+                            
+                           
+                            var dateUTC = new Date(Date.UTC(year,monthNumber-1,day));
                             var dateISOString = dateUTC.toISOString();
                             var dekName = "";
                             var dekad = (Math.floor(day / 10) + 1);
@@ -229,7 +381,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                             }
                             var map= target.mapPanel.map;
                             //name of layer: <layerName> 2 
-                            var name =this.layerName+" "+ year +" "+ me.monthShortNames[monthNumber-1] + " " +dekName + " dekad";
+                            var name =this.layerName+" "+ year +" "+ me.monthShortNames[monthNumber-1][1] + " " +dekName + " dekad";
                             //this.layerObject = target.mapPanel.map.getLayersByName(this.layerName)[0];
                             
                             //create the properties
@@ -332,9 +484,9 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
             this.values= {};
             var max="0";min = "9999";
             for(var i=0;i<values.length;i++){
-                var year = values[i].substring(0,4);
-                var month = values[i].substring(5,7);
-                var dek = values[i][8];
+                var year = parseInt(values[i].substring(0,4));
+                var month = parseInt(values[i].substring(5,7));
+                var dek = parseInt(values[i].substring(8,9));
                 var dateString = values[i].substring(0,10);
                 if(!this.values[year]){
                     this.values[year]={};
@@ -348,23 +500,28 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                 max = dateString >max ?dateString:max;
                 min = dateString <min ?dateString:min;
             }
-            //only one granule published
-            if(max == min) {
-               var value = Date.parseDate(max, "Y-m-d");
-               this.form.range.sel_month_years.setValue(value);
-               this.form.range.sel_month_years.setReadOnly(true);
-               this.form.range.decad.filterByDekad(this.values[year][month]);
-               return;
+            //no year
+            if(this.values=={}){
+                this.disableAll();
+                return;
             }
-            //if we have more than one granule available we set proper disabled
-            //dates
-            this.form.range.sel_month_years.setMaxValue(new Date(max));
-            this.form.range.sel_month_years.setMinValue(new Date(min));
+            //one date at least
+            var range=this.form.range;
+            var years=[];
+            for(var key in this.values){
+                years.push([key]);
+            }
+            range.year.getStore().loadData(years);
+            //range.year.setValue(range.year.getStore().getAt(0).get(range.year.valueField),true);
+            
+            
         
     },
     disableAll: function(){
-        this.form.range.sel_month_years.setDisabled(true);
-        this.form.range.decad.setDisabled(true);
+        var range = this.form.range;
+        range.year.setDisabled(true);
+        range.month.setDisabled(true);
+        range.decad.setDisabled(true);
         this.values={};
         return;
     },
