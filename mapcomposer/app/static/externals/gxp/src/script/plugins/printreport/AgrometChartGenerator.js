@@ -68,7 +68,7 @@ gxp.plugins.printreport.AgrometChartGenerator = Ext.extend(gxp.plugins.printrepo
             layout: 'fit',
             modal: false,
             items: [this.agrometChartPanel],
-            constrain: true,
+            constrain: true
         });
         this.reportWindow.show();
         if(this.hideAndCloseReportWindow){

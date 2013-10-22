@@ -66,7 +66,7 @@ gxp.plugins.printreport.CropDataChartGenerator = Ext.extend(gxp.plugins.printrep
                     scope: this
                 }
             })],
-            constrain: true,
+            constrain: true
         });
         this.reportWindow.show();
         if(this.hideAndCloseReportWindow){

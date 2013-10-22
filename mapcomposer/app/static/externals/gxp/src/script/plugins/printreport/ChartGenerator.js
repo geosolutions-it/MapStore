@@ -71,7 +71,7 @@ gxp.plugins.printreport.ChartGenerator = Ext.extend(gxp.plugins.printreport.Gene
             layout: 'fit',
             modal: false,
             items: [this.chartPanel],
-            constrain: true,
+            constrain: true
         });
         this.reportWindow.show();
         if(this.hideAndCloseReportWindow){
