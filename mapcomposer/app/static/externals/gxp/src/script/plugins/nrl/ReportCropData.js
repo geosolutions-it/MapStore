@@ -116,7 +116,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
     },
 
     generateAllFieldItems: function(){
-        var items = [this.getOutputFieldItem(),this.getSeasonFieldItem(),this.getAoIFieldItem()];
+        var items = [this.getSeasonFieldItem(),this.getAoIFieldItem()];
 
         items.push(this.getCommodityFieldItem());
 
@@ -138,6 +138,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
         return { 
             fieldLabel: 'Output Type',
             xtype: 'radiogroup',
+            visible:false,
             anchor:'100%',
             autoHeight:true,
             name:'outputType',

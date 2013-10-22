@@ -88,22 +88,26 @@ gxp.plugins.nrl.NRL = Ext.extend(gxp.plugins.Tool, {
     enableData: function(){
         var nrlTab = this.output[0].items;
         for (var i = 0; i<nrlTab.items.length;i++){
-            if (nrlTab.items[i].outputType.items.items){
+            if (nrlTab.items[i].outputType && nrlTab.items[i].outputType.items.items){
                 nrlTab.items[i].outputType.items.items[0].enable();
             }else{
-                nrlTab.items[i].outputType.items[0].disabled = false;
+                if(nrlTab.items[i].outputType){
+                    nrlTab.items[i].outputType.items[0].disabled = false;
+                }
             }
         }
     },
     disableData: function(){
         var nrlTab = this.output[0].items;
         for (var i = 0; i<nrlTab.items.length;i++){
-            if (nrlTab.items[i].outputType.items.items){
+            if (nrlTab.items[i].outputType && nrlTab.items[i].outputType.items.items){
                 nrlTab.items[i].outputType.items.items[0].disable();
                 nrlTab.items[i].outputType.items.items[1].setValue("chart");                
             }else{
-                nrlTab.items[i].outputType.items[0].disabled = true;
-                nrlTab.items[i].outputType.items[0].inputValue = "chart";
+                if(nrlTab.items[i].outputType){
+                    nrlTab.items[i].outputType.items[0].disabled = true;
+                    nrlTab.items[i].outputType.items[0].inputValue = "chart";
+                }
             }
         }
     }

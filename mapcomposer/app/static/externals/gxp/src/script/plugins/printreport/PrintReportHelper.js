@@ -320,7 +320,7 @@ gxp.plugins.printreport.PrintReportHelper = Ext.extend(gxp.plugins.Tool, {
             ;
             for(var i = 0;i<this.fieldSet.items.keys.length;i++){
                 var formParam =this.fieldSet.items.key(this.fieldSet.items.keys[i]);
-                // this.fieldSet.items.get(key);
+                //   this.fieldSet.items.get(key);
                 spec[formParam.name] = formParam.getValue();
             };
         }else{
