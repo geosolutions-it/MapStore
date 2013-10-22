@@ -58,7 +58,11 @@ GeoExt.Lang.add("de", {
         loadProcessingButtonText: "Hochladen Verarbeitung",
         selectProcessingMsgTitle: "Wählen Verarbeitung",
         selectProcessingMsg: "Sie müssen eine Verarbeitung",
-        loadProcessingWinTitle: "Hochladen Verarbeitung"
+        loadProcessingWinTitle: "Hochladen Verarbeitung",    
+        saveDownloadProcessingTitle: "Download Verarbeitung",
+        loadDownloadButton: "Download Verarbeitung",
+        loadDownloadProcessingWinTitle: "Download Verarbeitung",
+        loadDownloadProcessingButtonText: "Download Verarbeitung"
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Bearbeitung",
