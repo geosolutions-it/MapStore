@@ -147,7 +147,7 @@ gxp.plugins.printreport.PrintReportHelper = Ext.extend(gxp.plugins.Tool, {
             third: {
                 layers:[],
                 srs: null //common!!
-            }, // here the third map
+            } // here the third map
         },
         images:{
             chart1:{
@@ -317,10 +317,12 @@ gxp.plugins.printreport.PrintReportHelper = Ext.extend(gxp.plugins.Tool, {
     writeFormParameters: function(spec){
         if(this.fieldSet){
             // copy the form fieldset
-            this.fieldSet.items.keys.forEach(function(key){
-                var formParam = this.fieldSet.items.get(key);
+            ;
+            for(var i = 0;i<this.fieldSet.items.keys.length;i++){
+                var formParam =this.fieldSet.items.key(this.fieldSet.items.keys[i]);
+                // this.fieldSet.items.get(key);
                 spec[formParam.name] = formParam.getValue();
-            }, this);
+            };
         }else{
             // copy the default value
             for(var field in this.formParameters){
