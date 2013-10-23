@@ -90,6 +90,60 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
     loginService: null,
 	
 	loginLoadingMask: "Login ...",
+    
+    /** api: config[passwordFieldText]
+     *  ``String``
+     *  Text for the password field in login window(i18n).
+     */
+    adminTitle: "Admin GUI",
+    
+    /** api: config[adminIconCls]
+     *  ``String``
+     *  Icon class for the admin GUI link.
+     */
+    adminIconCls: "gxp-icon-login",
+    
+    /** api: config[adminGUIUrl]
+     *  ``String``
+     *  Admin app url.
+     */
+    adminGUIUrl: null, // TODO: remove from here!!
+    // adminGUIUrl: "http://localhost:9191/admin", // TODO: remove from here!!
+    
+    /** api: config[enableAdminGUILogin]
+     *  ``Boolean``
+     *  Flag to activate the login with the admin app
+     */
+    enableAdminGUILogin: false,
+    
+    /** api: config[adminGUIHome]
+     *  ``String``
+     *  Relative url for a logged user link inside the admin GUI.
+     */
+    adminGUIHome: null,
+    
+    /** api: config[adminLoginInvalidResponseValidator]
+     *  ``String``
+     *  The response invalid from the admin GUI contains this string. In this case, the login is not succesfull with the admin GUI.
+     */
+    adminLoginInvalidResponseValidator: "No AuthenticationProvider found",
+    
+    /** api: config[enableAdminAppWindowFocus]
+     *  ``Boolean``
+     *  Flag to activate forbid open more than one page for the admin GUI
+     */
+    enableAdminAppWindowFocus: false,
+
+    /** private: config[adminAppWindowKey]
+     *  ``String``
+     *  String key for control child window close and don't open more than one adminApp
+     */
+    adminAppWindowKey: "__ADMIN_APP_ACTIVE",
+
+    /** private: config[adminLinkAction]
+     *  Action to show the admin GUI link
+     **/ 
+    adminLinkAction: null,
 
     /** 
      * api: method[addActions]
@@ -97,42 +151,97 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
     addActions: function() {
         if (this.loginService !== null) {
             var apptarget = this.target;
-        
-            var actions = gxp.plugins.GeoStoreLogin.superclass.addActions.apply(this, [                
-                [{
-                    menuText: this.loginText,
-                    iconCls: "gxp-icon-login",
+            var adminAppWindow;
+
+            var actionsArray = [{
+                menuText: this.loginText,
+                iconCls: "gxp-icon-login",
+                anchor:'100%',
+                text: this.loginText,
+                disabled: false,
+                hidden: false,
+                tooltip: this.loginText,
+                handler: function() {
+                    if(!this.logged){
+                        this.showLoginDialog();                            
+                    }   
+                },
+                scope: this
+            },{
+                menuText: this.logoutTitle,
+                iconCls: "gxp-icon-logout",
+                anchor:'100%',
+                text: this.logoutTitle,
+                hidden: true,
+                disabled: true,
+                tooltip: this.logoutTitle,
+                handler: function() {
+                    if(this.logged){
+                        this.showLogout();
+                    }
+                },
+                scope: this
+            }];
+
+            if(this.enableAdminGUILogin){
+                actionsArray.push({
+                    menuText: this.adminTitle,
+                    iconCls: this.adminIconCls,
                     anchor:'100%',
-                    text: this.loginText,
-                    disabled: false,
-                    hidden: false,
-                    tooltip: this.loginText,
-                    handler: function() {
-                        if(!this.logged){
-                            this.showLoginDialog();                            
-                        }	
-                    },
-                    scope: this
-                },{
-                    menuText: this.logoutTitle,
-                    iconCls: "gxp-icon-logout",
-                    anchor:'100%',
-                    text: this.logoutTitle,
+                    text: this.adminTitle,
                     hidden: true,
                     disabled: true,
-                    tooltip: this.logoutTitle,
+                    tooltip: this.adminTitle,
                     handler: function() {
                         if(this.logged){
-                            this.showLogout();
+                            if(!this.enableAdminAppWindowFocus){
+                                // We open always a new window
+                                window.open(this.adminGUIUrl +  this.adminGUIHome);
+                            }else{
+                                /*
+                                 * TODO: Repair this option. Now it's different for each browser:
+                                 * 
+                                 *  * Chrome: let you focus and manage the window openend with the 'adminAppWindowKey'
+                                 *  * Firefox: don't allow window.focus.
+                                 *  * IE: Nothing allowed
+                                 */
+                                var agt=navigator.userAgent.toLowerCase();
+                                var browserType = null;
+                                if (agt.indexOf("msie") != -1){
+                                    browserType = "IE";
+                                }
+                                if (browserType != null && browserType == "IE"){ 
+                                    // msie not support focus or beforeunload event
+                                    window.open(this.adminGUIUrl +  this.adminGUIHome);
+                                }else{
+                                    var adminAppWindowKey = this.adminAppWindowKey;
+                                    if(adminAppWindow && window[adminAppWindowKey]){
+                                        // only run with chrome
+                                        adminAppWindow.focus();
+                                    }else{
+                                        adminAppWindow = window.open(this.adminGUIUrl +  this.adminGUIHome);
+                                        // beforeunload, we need to mark as invalid the window
+                                        $(adminAppWindow).on("beforeunload", function(){
+                                            window.parent[adminAppWindowKey] = false;
+                                        });
+                                        window[adminAppWindowKey] = true;
+                                    }
+                                }
+                            }
                         }
                     },
                     scope: this
-                }]
-            ]);
+                });
+            }
+        
+            var actions = gxp.plugins.GeoStoreLogin.superclass.addActions.apply(this, [actionsArray]);
             
             this.loginAction = actions[0];
             this.logoutAction= actions[1];
-            
+            if(this.enableAdminGUILogin){
+                this.adminLinkAction= actions[2];
+            }
+
             return actions;
         }
     },
@@ -231,6 +340,11 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
             success: function(response, form, action) {
 				this.mask.hide();            
                 this.win.hide();
+
+                // obatain again the usernaem and pass before reset
+                var fields = this.panel.getForm().getValues();
+                var password = fields.password;
+                var username = fields.username;
 				
                 this.panel.getForm().reset();
 				
@@ -247,7 +361,11 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                     return;
                 }
 				
-                this.loginSuccess();
+                if(this.enableAdminGUILogin){
+                    this.adminGUILogin(username, password);
+                }else{
+                    this.loginSuccess(false);
+                }
 				
                 // save auth info
                 this.token = auth;
@@ -278,7 +396,36 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
         });
     },
 
-    loginSuccess: function(request) {
+    // try to login with the Admin GUI
+    adminGUILogin: function(username, password){
+        var adminLoginService = this.adminGUIUrl + "/j_spring_security_check";
+        Ext.Ajax.request({
+            url: adminLoginService,
+            scope: this,
+            params : {
+                j_username: username,
+                j_password: password
+            },
+            headers : {
+                "Content-Type" : "application/x-www-form-urlencoded"
+            },
+            success: function(response, form, action) {
+                // we check if the response include the 'adminLoginInvalidResponseValidator' string
+                this.loginSuccess(response.responseText 
+                    && response.responseText.indexOf(this.adminLoginInvalidResponseValidator) < 0);
+            },
+            failure: function(response, form, action) {
+                // maybe is not admin!!
+                this.loginSuccess(false);
+            }
+        });
+    },
+
+    /** api: method[loginSuccess]
+     *  Login success handler.
+     *  :arg allLoginSuccess: ``Boolean`` Flag to indicate if the admin GUI login was succesfull.
+     */ 
+    loginSuccess: function(allLoginSuccess) {
         this.authorizedRoles = ["ROLE_ADMINISTRATOR"];
         Ext.getCmp('paneltbar').items.each(function(tool) {
             if (tool.needsAuthorization === true) {
@@ -292,11 +439,14 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
             }                          
         }
         
-        
         this.loginAction.hide();
         this.loginAction.disable();
         this.logoutAction.show();
         this.logoutAction.enable();
+        if(allLoginSuccess && this.enableAdminGUILogin){
+            this.adminLinkAction.show();
+            this.adminLinkAction.enable();
+        }
         //this.target.setIconClass("gxp-icon-logout");
         this.logged=true;
         this.win.close();
@@ -309,6 +459,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
             "password": this.loginErrorText
         });
     },
+
     /** api: method[showLogout]
      * Shows the window for logout confirmation.
      */ 
@@ -325,6 +476,10 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                 this.loginAction.enable();
                 this.logoutAction.hide();
                 this.logoutAction.disable();
+                if(this.enableAdminGUILogin){
+                    this.adminLinkAction.hide();
+                    this.adminLinkAction.disable();
+                }
                 this.logged=false;
             }
         }
