@@ -59,7 +59,15 @@ gxp.plugins.printreport.Generator = Ext.extend(gxp.plugins.Tool, {
             /** api: event[done]
              *  Fires when the data is generated.
              */
-            "done"
+            "done",
+            /** api: event[error]
+             *  Fires when we have an error in data generation.
+             *
+             *  Listener arguments:
+             *  * name - :class:`String` with the name of the error
+             *  * cause - :class:`String` with the cause of the error
+             */
+            "error"
         );
         
         gxp.plugins.printreport.Generator.superclass.constructor.apply(this, arguments);

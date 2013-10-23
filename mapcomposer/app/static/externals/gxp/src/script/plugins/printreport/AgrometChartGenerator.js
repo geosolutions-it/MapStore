@@ -57,6 +57,9 @@ gxp.plugins.printreport.AgrometChartGenerator = Ext.extend(gxp.plugins.printrepo
                         this.addChartSVG(svg);
                     }
                 }, 
+                charterror: function(name, cause){
+                    this.fireEvent("error", name, cause);
+                },
                 scope: this
             }
         });
@@ -93,7 +96,7 @@ gxp.plugins.printreport.AgrometChartGenerator = Ext.extend(gxp.plugins.printrepo
 
     onDone: function(){
         if(this.hideAndCloseReportWindow){
-            this.reportWindow.close();
+            this.reportWindow.hide();
         }
         this.fireEvent("done", this.chartsSVG);
     }

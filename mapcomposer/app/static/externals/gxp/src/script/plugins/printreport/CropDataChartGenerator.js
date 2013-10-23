@@ -63,6 +63,9 @@ gxp.plugins.printreport.CropDataChartGenerator = Ext.extend(gxp.plugins.printrep
                             this.addChartSVG(svg);
                         }
                     }, 
+                    charterror: function(name, cause){
+                        this.fireEvent("error", name, cause);
+                    },
                     scope: this
                 }
             })],
@@ -96,7 +99,8 @@ gxp.plugins.printreport.CropDataChartGenerator = Ext.extend(gxp.plugins.printrep
 
     onDone: function(){
         if(this.hideAndCloseReportWindow){
-            this.reportWindow.close();
+            this.reportWindow.hide();
+            console.log("hide")
         }
         this.fireEvent("done", this.chartsSVG);
     }

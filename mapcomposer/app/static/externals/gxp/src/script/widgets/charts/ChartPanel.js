@@ -52,6 +52,9 @@ Ext.namespace('gxp.charts');
     // Geoserver url to obtain the data
     url: null,
 
+    // config param verbose. Show messages when an error is ocurred
+    verbose: false,
+
     /* Panel parameters */
     title: 'Crop Data',
     id:'cropData_tab',
@@ -210,11 +213,11 @@ Ext.namespace('gxp.charts');
                 try{
                     var jsonData = Ext.util.JSON.decode(result.responseText);
                 }catch(e){
-                    Ext.Msg.alert("Error","Error parsing data from the server");
+                    this.handleError("Error","Error parsing data from the server");
                     return;
                 }
                 if (jsonData.features.length <=0){
-                    Ext.Msg.alert("No data","Data not available for these search criteria");
+                    this.handleError("No data","Data not available for these search criteria");
                     return;
                 }
 				
@@ -253,10 +256,17 @@ Ext.namespace('gxp.charts');
                 }
             },
             failure: function ( result, request ) {
-                Ext.Msg.alert("Error","Server response error");
+                this.handleError("Error","Server response error");
             }
         });       
         
+    },
+
+    handleError: function(title, cause){
+    	if(this.verbose)
+        	Ext.Msg.alert(title, cause);
+        // TODO: Add doc for this listener and function
+    	this.fireEvent("charterror", title, cause);
     },
 
     generateChartTitle: function(region){

@@ -88,6 +88,18 @@ gxp.plugins.printreport.PrintReportHelper = Ext.extend(gxp.plugins.Tool, {
         collapsed:true
     },
 
+    /** i18n **/
+    mapTitleLabelText: "Report title",
+    mapTitleValueText: "Crop report map",
+    mapSubTitleLabelText: "Subtitle",
+    mapSubTitleValueText: " ",
+    cropPagesTitleLabelText: "Crop pages title",
+    cropPagesTitleValueText: "Crop info",
+    meteorologicalPagesTitleLabelText: "Meteorological pages title",
+    meteorologicalPagesTitleValueText: "Meteorological info",
+    /** EoF i18n **/
+
+
     /** api: config[formParameters]
      *  Base configuration parameters to manage in the form panel
      **/
@@ -95,23 +107,23 @@ gxp.plugins.printreport.PrintReportHelper = Ext.extend(gxp.plugins.Tool, {
         // Form parameters
         mapTitle: {
             xtype: "textfield",
-            fieldLabel: "Report title",
-            value: "Crop report map"
+            fieldLabel: "mapTitleLabelText",
+            value: "mapTitleValueText"
         },
         mapSubTitle: {
             xtype: "textfield",
-            fieldLabel: "Subtitle",
-            value: ""
+            fieldLabel: "mapSubTitleLabelText",
+            value: "mapSubTitleValueText"
         },
         cropPagesTitle: {
             xtype: "textfield",
-            fieldLabel: "Crop pages title",
-            value: "Crop info title"
+            fieldLabel: "cropPagesTitleLabelText",
+            value: "cropPagesTitleValueText"
         },
         meteorologicalPagesTitle: {
             xtype: "textfield",
-            fieldLabel: "Meteorological pages title",
-            value: "Meteorological info title"
+            fieldLabel: "meteorologicalPagesTitleLabelText",
+            value: "meteorologicalPagesTitleValueText"
         }
     },
 
@@ -202,6 +214,8 @@ gxp.plugins.printreport.PrintReportHelper = Ext.extend(gxp.plugins.Tool, {
         for(var field in this.formParameters){
             var itemConfig = this.formParameters[field];
             itemConfig.name = field;
+            itemConfig.fieldLabel = this[itemConfig.fieldLabel] ? this[itemConfig.fieldLabel] : itemConfig.fieldLabel;
+            itemConfig.value = this[itemConfig.value] ? this[itemConfig.value] : itemConfig.value;
             items.push(itemConfig);
         }
 

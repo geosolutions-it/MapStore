@@ -298,7 +298,10 @@
 		  "dataUrl":"http://84.33.2.75/geoserver/ows",
 		  "defaultExtent": [6770799.251963,2705604.806669,8826743.330978,4442826.247111],
 		  "id":"printreporthelper",
-		  "hideAll":true
+		  "hideAll":true,
+		  "mapTitleValueText": "Crop report",
+		  "cropPagesTitleValueText": "Crop information",
+		  "meteorologicalPagesTitleValueText": "Meteorological information"
       },{
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"

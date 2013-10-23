@@ -43,6 +43,9 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.butto
 
     firstSVGTitle: "AGGREGATED DATA -",
 
+    // save mask
+    myMask: null,
+
     handler: function () {
         
         //loading mask
@@ -50,6 +53,7 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.butto
         var myMask = new Ext.LoadMask(this.findParentByType('form').getEl(),
         {msg:loadingMsg} );
         myMask.show();
+        this.myMask = myMask;
 
         // obtain the printreporthelper plugin (see mapStoreConfig.js)
         var helper = this.target.tools["printreporthelper"];
@@ -73,6 +77,7 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.butto
                 helper.printConfig = printConfig;
                 helper.layers = layers;
             },
+            error: this.onError,
             scope: this
         });
         // CropData
@@ -100,6 +105,7 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.butto
                     helper.firstSVG = chartsSVG[0];
                 }
             },
+            error: this.onError,
             scope: this
         })
         // Agromet
@@ -118,6 +124,7 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.butto
                     helper.chartsSVG.push(chartsSVG[i]);
                 }
             },
+            error: this.onError,
             scope: this
         })
         var generators = [];
@@ -132,14 +139,18 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.butto
                 myMask.hide();
             },
             printexception: function(response){
-                myMask.hide();
-                Ext.Msg.alert("Error","Error printing the report");
+                this.onError("Error","Error printing the report");
             },
             scope:this
         });
 
         //Print
         helper.print();
+    },
+
+    onError: function(name, cause){
+        this.myMask.hide();
+        Ext.Msg.alert(name, cause);
     }
 });
 
