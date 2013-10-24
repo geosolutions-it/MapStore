@@ -53,6 +53,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
     dataUrl: null,
     addNDVItext: "Add NDVI layer",
     monthShortNames : [[01,'Jan'],[02, 'Feb'],[03, 'Mar'],[04, 'Apr'],[05, 'May'],[06, 'Jun'],[07, 'Jul'],[08, 'Aug'],[09, 'Sep'],[10, 'Oct'],[11, 'Nov'],[12, 'Dec']],
+    dekadsNames: [[5, 'First'], [15, 'Second'], [25, 'Third']],
     
     /** private: method[addOutput]
      *  :arg config: ``Object``
@@ -204,16 +205,12 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                                 listeners:{
                                     scope:this,
                                     select:function(cmb,record,index){
-                                        var availableMonths = this.values[record.id];
+                                        var monthStore = this.getMonthsForAYear(record.id);
                                         var monthSelector = cmb.refOwner.month;
-                                        monthSelector.getStore().filterBy(function(rec,id){
-                                            var present = (id in availableMonths);
-                                            return present  ;
-                                        });
+                                        monthSelector.bindStore(monthStore);
                                         monthSelector.enable(true);
                                         var firstRecord = monthSelector.getStore().getAt(0);
                                         monthSelector.setValue(firstRecord.get(monthSelector.valueField),true);
-                                        
                                     }
                                 }
                             },{
@@ -235,6 +232,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                                 valueField:'num',
                                 displayField:'name',
                                 value:1,
+                                triggerAction: "all",
                                 setValue : function(v, fireSelect){
                                     var text = v;
                                     if(this.valueField){
@@ -266,13 +264,11 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                                     select:function(cmb,record,index){
                                         var decSelector = cmb.refOwner.decad;
                                         var year = parseInt(cmb.refOwner.year.getValue());
-                                        decSelector.filterByDekad(this.values[year][parseInt(record.id)]);
-                                        var store =decSelector.getStore();
-                                        var firstRecord = store.    getAt(0);
-                                            decSelector.setValue(firstRecord.get(decSelector.valueField),true);
-                                            decSelector.enable();
-                                        
-                                        
+                                        var dekadsStore = this.getDekadsByYearMonth(year, record.id);
+                                        decSelector.bindStore(dekadsStore);
+                                        decSelector.enable(true);
+                                        var firstRecord = decSelector.getStore().getAt(0);
+                                        decSelector.setValue(firstRecord.get(decSelector.valueField),true);
                                     }
                                 }
                             }]
@@ -296,6 +292,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                             mode: 'local',
                             valueField:'id',
                             value:5,
+                            triggerAction: "all",
                             setValue : function(v, fireSelect){
                                 var text = v;
                                 if(this.valueField){
@@ -323,6 +320,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                                     //look for 5 15 25 
                                     for(var i = 0;i<deks.length;i++){
                                         if( parseInt(deks[i])*10+5 == id){
+                                            console.log(id + " dekad present");
                                             return true;
                                         }
                                     }
@@ -538,6 +536,39 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                   break;
               }
         } 
+    },
+    // obtain store with the months available for a year
+    getMonthsForAYear: function(selectedYear){
+        var availableMonths = this.values[selectedYear];
+        var monthsData = [];
+        for(var month in this.monthShortNames){
+            if(parseInt(month) in availableMonths){
+                monthsData.push(this.monthShortNames[month-1]);
+            }
+        }
+        return new Ext.data.ArrayStore({
+            idIndex:0,
+            fields: ['num', 'name'],
+            data: monthsData
+        });
+    },
+    // obtain store with the dekads for a month and a year
+    getDekadsByYearMonth: function(selectedYear, selectedMonth){
+        var availableDekads = this.values[selectedYear][selectedMonth];
+        var dekadsData = [];
+        for(var dekad in this.dekadsNames){
+            if(parseInt(dekad) in availableDekads){
+                dekadsData.push(this.dekadsNames[dekad]);
+            }
+        }
+        return new Ext.data.ArrayStore({
+            idIndex: 0,
+            fields: [
+                'myId',
+                'displayText'
+            ],
+            data: dekadsData
+        });
     }
 });
 
