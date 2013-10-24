@@ -187,6 +187,16 @@ div#homelogos ul li a:hover {
 .x-btn  .gxp-icon-logout,  .x-menu-item  .gxp-icon-logout,.x-tree-node .gxp-icon-logout {
     background-image: url(img/silk/door_out.png);
 }
+/* gxp_login - new Login icons */
+.x-btn  .gxp-icon-ms-user,  .x-menu-item  .gxp-icon-ms-user,.x-tree-node .gxp-icon-ms-user {
+    background-image: url(img/silk/user.png);
+}
+.x-btn  .gxp-icon-ms-admin,  .x-menu-item  .gxp-icon-ms-admin,.x-tree-node .gxp-icon-ms-admin {
+    background-image: url(img/silk/user_red.png);
+}
+.x-btn  .gxp-icon-ms-admin-link,  .x-menu-item  .gxp-icon-ms-admin-link,.x-tree-node .gxp-icon-ms-admin-link {
+    background-image: url(img/silk/application_go.png);
+}
 .x-btn  .gxp-icon-login,  .x-menu-item  .gxp-icon-login,.x-tree-node .gxp-icon-login {
     background-image: url(img/silk/door_in.png);
 }

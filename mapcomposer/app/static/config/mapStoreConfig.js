@@ -311,7 +311,6 @@
 			"enableAdminGUILogin": true,
     		"adminGUIUrl": "/admin", 
     		"adminGUIHome": "/users",
-    		"adminIconCls": "gxp-icon-login",
     		"adminLoginInvalidResponseValidator": "No AuthenticationProvider found",
 
 			"isDummy":false,
