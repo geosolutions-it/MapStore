@@ -151,8 +151,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     deleteIconPath: "theme/app/img/silk/delete.png",
     
-    "geoStoreBase":"http://localhost:8080/geostore/rest/",
-    "proxy":"/http_proxy/?url=",
+    geoStoreBase:"http://localhost:8080/geostore/rest/",    
+    geoStoreUser: undefined,
+    geoStorePassword: undefined,
+    proxy:"/http_proxy/?url=",
     
     targetStyles: {
         "simulation_added": {
@@ -311,8 +313,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 
         this.geoStore = new gxp.plugins.GeoStoreClient({
             url: this.geoStoreBase,
-            user: "user",
-            password: "user",
+            user: this.geoStoreUser || undefined,
+            password: this.geoStorePassword || undefined,
             proxy: this.proxy,
             listeners: {
                 "geostorefailure": function(tool, msg){
