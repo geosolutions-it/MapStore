@@ -23,10 +23,13 @@
             "ptype": "gxp_wmssource",
             "title": "Destination GeoServer",
             "version":"1.1.1",
+            "layersCachedExtent": [
+                    0.0, 5009377.085000,
+                    1252344.2712499984, 6261721.356249999
+            ],
             "url": "http://localhost:8080/geoserver/destination/ows",
             "layerBaseParams": {
-                "TILED": true,
-                "TILESORIGIN": "-180,-90",
+                "TILED": true,                
                 "format": "image/png8"
             }
         }
