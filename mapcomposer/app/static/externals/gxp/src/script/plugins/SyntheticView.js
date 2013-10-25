@@ -1606,6 +1606,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         form.items.items[i].setValue("");
                     }
                     this.reset = true;
+                    
+                    //disable save and download processing buttons
+                    this.fieldSet.getBottomToolbar().items.items[1].menu.items.items[0].disable();
+                    this.fieldSet.getBottomToolbar().items.items[0].menu.items.items[0].disable();
+                    
                     //this.processingPane.enableDisableSimulation(false);
                 }
             }, {
@@ -2588,12 +2593,16 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         var map = this.target.mapPanel.map;        
         var status = this.getStatus();
         
-        //enable save status button
-        if (status.processing != 1){
-            var saveProcMenuButtons = this.fieldSet.getBottomToolbar().items.items[0].menu.items.items[0];
-            var saveDownloadProcMenuButtons = this.fieldSet.getBottomToolbar().items.items[1].menu.items.items[0];
+        //enable download processing button at first run process for all processing type
+        var saveDownloadProcMenuButtons = this.fieldSet.getBottomToolbar().items.items[1].menu.items.items[0];
+        saveDownloadProcMenuButtons.enable();
+        
+        //enable save processing button for all processing type except for standard type
+        var saveProcMenuButtons = this.fieldSet.getBottomToolbar().items.items[0].menu.items.items[0];
+        if (status.processing != 1){            
             saveProcMenuButtons.enable();
-            saveDownloadProcMenuButtons.enable();
+        }else{
+            saveProcMenuButtons.disable();
         }
         
         var bounds = this.getBounds(status, map);
