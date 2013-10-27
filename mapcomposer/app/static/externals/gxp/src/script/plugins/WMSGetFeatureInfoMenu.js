@@ -281,7 +281,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                             var title = x.get("title") || x.get("name");
                             if (infoFormat == "text/html") {
                                 var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
-                                if (match && !match[1].match(/^\s*$/)) {
+                                if (match && match[1].match(this.regex)) {
                                     this.displayPopup(evt, title, match[1]);
                                     atLeastOneResponse = true;
                                 }
