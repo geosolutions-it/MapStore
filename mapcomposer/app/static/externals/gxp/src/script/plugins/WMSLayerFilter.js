@@ -63,7 +63,7 @@ gxp.plugins.WMSLayerFilter = Ext.extend(gxp.plugins.Tool, {
                 {boxLabel: 'Chiuso',     checked: false, cql_filter: 'IDAvvisoStato = 0'},
                 {boxLabel: 'Aperto',     checked: true,  cql_filter: 'IDAvvisoStato = 3'},
                 {boxLabel: 'Intervento', checked: true,  cql_filter: 'IDAvvisoStato = 2'},
-                {boxLabel: 'Sopralluogo',checked: true,  cql_filter: 'IDAvvisoStato = 1'},
+                {boxLabel: 'Sopralluogo',checked: true,  cql_filter: 'IDAvvisoStato = 1'}
             ],
             emptyFilter:'1=0',
             customConfig:{
@@ -79,7 +79,7 @@ gxp.plugins.WMSLayerFilter = Ext.extend(gxp.plugins.Tool, {
                 {boxLabel: 'Ultima settimana', name:"creazione",      cql_filter: 'DataCreazione >  \'${backtime}\'',daysBack:7},
                 {boxLabel: 'Ultimo mese ',   name:"creazione",     cql_filter: 'DataCreazione >  \'${backtime}\'',monthsBack:1},
                 {boxLabel: 'Ultimi 6 mesi',  name:"creazione",  cql_filter: 'DataCreazione >  \'${backtime} \'',monthsBack:6},
-                {boxLabel: 'Ultimo anno',  name:"creazione", checked:true, cql_filter: 'DataCreazione >  \'${backtime} \'',monthsBack:12},
+                {boxLabel: 'Ultimo anno',  name:"creazione", checked:true, cql_filter: 'DataCreazione >  \'${backtime} \'',monthsBack:12}
             ],
             emptyFilter:'1=0',
             customConfig:{
@@ -95,7 +95,7 @@ gxp.plugins.WMSLayerFilter = Ext.extend(gxp.plugins.Tool, {
                 {boxLabel: 'Ultima settimana', name:"chiusura",     cql_filter: 'DataChiusura > \'${backtime}\'',daysBack:7},
                 {boxLabel: 'Ultimo mese ',   name:"chiusura",     cql_filter: 'DataChiusura >  \'${backtime}\'',monthsBack:1},
                 {boxLabel: 'Ultimi 6 mesi',  name:"chiusura",  cql_filter: 'DataChiusura >  \'${backtime}\'',monthsBack:6},
-                {boxLabel: 'Ultimo anno',  name:"chiusura", checked:true, cql_filter: 'DataChiusura >  \'${backtime}\'',monthsBack:12},
+                {boxLabel: 'Ultimo anno',  name:"chiusura", checked:true, cql_filter: 'DataChiusura >  \'${backtime}\'',monthsBack:12}
             ],
             emptyFilter:'1=0',
             customConfig:{
@@ -242,6 +242,8 @@ gxp.plugins.WMSLayerFilter = Ext.extend(gxp.plugins.Tool, {
                  onCheckClick : function(){
                     this[this.checkbox.dom.checked ? 'expand' : 'collapse']();
                     me.updateFilter();
+                    me.form.doLayout();
+                    
                 }               
             };
             filterFieldsets.push(fieldset);
