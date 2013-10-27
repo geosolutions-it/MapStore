@@ -126,6 +126,7 @@
 	      "leaf":true,
 		  "checked": true,
 		  "ptype":"gxp_wmsgetfeatureinfo",
+          "buttonId":"getfeatureinfo_tool_button",
 		  "toggleGroup": "toolGroup",
           
 		  "regex":"<table[^>]*>([\\s\\S]*)<\\/table>",
@@ -206,6 +207,11 @@
 		},{
 			"ptype": "gxp_wms_layer_filter",
             "outputTarget":"filter"
-		}
+		},{
+            "ptype": "gxp_autoenabler_tool",
+            "options":{
+                "id":"getfeatureinfo_tool_button"
+            }
+        }
 	]
 }
