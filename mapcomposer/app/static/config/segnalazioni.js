@@ -84,7 +84,12 @@
 	   {	
 		  "leaf":true,
 		  "checked": true,
-		  "ptype":"gxp_zoomtoextent"
+		  "ptype":"gxp_zoomtoextent",
+          "extent":[
+			 1046403.2 , 5200006.1,
+		     1413757.5 ,   5544708.1
+		   
+		]
 	   },{
 		  "leaf":true,
 		  "checked": true,
