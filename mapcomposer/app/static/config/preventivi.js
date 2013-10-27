@@ -1,5 +1,5 @@
 {
-   "geoStoreBase":"http://webgis.acque.net/geostore/rest/",
+   "geoStoreBase":"http://10.80.4.45/geostore/rest/",
    "proxy":"../http_proxy/proxy/?url=",
    "defaultLanguage": "it",
    "gsSources":{ 
@@ -7,7 +7,7 @@
 			"ptype": "gxp_wmssource",
 			"title": "Acque GeoServer",
 			"projection":"EPSG:3003",
-			"url": "http://webgis.acque.net/geoserver/ows",
+			"url": "http://10.80.4.45/geoserver/ows",
 			"layerBaseParams": {
 					"TILED": true,
 					"TILESORIGIN": "1046403.2, 5200006.1",
@@ -34,7 +34,7 @@
 	"map":{
 		"projection": "EPSG:900913",
 		"units": "m",
-		"maxExtent": [
+		"extent": [
 			 1046403.2 , 5200006.1,
 		   1413757.5 ,   5544708.1
 		   
@@ -154,7 +154,7 @@
 		  "customParams":{
 			 "outputFilename":"stampa"
 		  },
-		  "printService":"http://webgis.acque.net/geoserver/pdf/",
+		  "printService":"http://10.80.4.45/geoserver/pdf/",
 		  "legendPanelId":"legendPanel",
           "defaultResolutionIndex":1,
           "defaultLayoutIndex":1,

@@ -1,5 +1,5 @@
 {
-   "geoStoreBase":"http://webgis.acque.net/geostore/rest/",
+   "geoStoreBase":"http://10.80.4.45/geostore/rest/",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "it",
    "gsSources":{ 

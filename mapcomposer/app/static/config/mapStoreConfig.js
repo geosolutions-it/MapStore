@@ -1,5 +1,5 @@
 {
-   "geoStoreBase":"http://webgis.acque.net/geostore/rest/",
+   "geoStoreBase":"http://10.80.4.45/geostore/rest/",
    "proxy":"../http_proxy/proxy/?url=",
    "defaultLanguage": "it",
    "gsSources":{ 
@@ -7,7 +7,7 @@
 			"ptype": "gxp_wmssource",
 			"title": "Acque GeoServer",
 			"projection":"EPSG:3003",
-			"url": "http://webgis.acque.net/geoserver/ows",
+			"url": "http://10.80.4.45/geoserver/ows",
 			"layerBaseParams": {
 					"TILED": true,
 					"TILESORIGIN": "-20037508.34, -20037508.34",
@@ -72,17 +72,7 @@
 				"title": "Bing Road",
 				"name": "Road",
 				"group": "background"
-			},{
-				"source": "google",
-				"title": "Google Terrain",
-				"name": "TERRAIN",
-				"group": "background"
-			},{
-				"source": "google",
-				"title": "Google Satellite",
-				"name": "SATELLITE",
-				"group": "background"
-			},{
+			}, {
 				"source": "google",
 				"title": "Google Roadmap",
 				"name": "ROADMAP",
@@ -384,7 +374,7 @@
           "forceMultiple":true,
           "separator":"start",
 		  "outputConfig":{
-			 "url":"http://webgis.acque.net/geoserver/postgis_sw/ows?",
+			 "url":"http://10.80.4.45/geoserver/postgis_sw/ows?",
 			 "emptyText":"Ricerca impianti",
 			 "typeName":"postgis_sw:wfs_search_impianti",
 			 "recordModel":[
@@ -430,7 +420,7 @@
           "forceMultiple":true,
           "noButton":true,
 		  "outputConfig":{
-			 "url":"http://webgis.acque.net/geoserver/postgis_sw/ows?",
+			 "url":"http://10.80.4.45/geoserver/postgis_sw/ows?",
 			 "emptyText":"Ricerca contatori",
 			 "typeName":"postgis_sw:wfs_search8",
 			 "recordModel":[
@@ -470,7 +460,7 @@
 		  "customParams":{
 			 "outputFilename":"stampa"
 		  },
-		  "printService":"http://webgis.acque.net/geoserver/pdf/",
+		  "printService":"http://10.80.4.45/geoserver/pdf/",
 		  "legendPanelId":"legendPanel",
           "defaultResolutionIndex":1,
           "defaultLayoutIndex":1,

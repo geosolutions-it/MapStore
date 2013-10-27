@@ -1,13 +1,13 @@
 {
-   "geoStoreBase":"http://webgis.acque.net/geostore/rest/",
+   "geoStoreBase":"http:/10.80.4.45/geostore/rest/",
    "proxy":"../http_proxy/proxy/?url=",
    "defaultLanguage": "it",
    "gsSources":{ 
 		"gsacque": {
 			"ptype": "gxp_wmssource",
 			"title": "Acque GeoServer",
+			"url": "http://10.80.4.45/geoserver/ows",
 			"projection":"EPSG:3003",
-			"url": "http://webgis.acque.net/geoserver/ows",
 			"layerBaseParams": {
 					"TILED": true,
 					"TILESORIGIN": "1394190.6211433, 4663756.8332024",
@@ -391,7 +391,7 @@
           "forceMultiple":true,
           "separator":"start",
 		  "outputConfig":{
-			 "url":"http://webgis.acque.net/geoserver/postgis_sw/ows?",
+			 "url":"http://10.80.4.45/geoserver/postgis_sw/ows?",
 			 "emptyText":"Ricerca impianti",
 			 "typeName":"postgis_sw:wfs_search_impianti",
 			 "recordModel":[
@@ -437,7 +437,7 @@
           "forceMultiple":true,
           "noButton":true,
 		  "outputConfig":{
-			 "url":"http://webgis.acque.net/geoserver/postgis_sw/ows?",
+			 "url":"http://10.80.4.45/geoserver/postgis_sw/ows?",
 			 "emptyText":"Ricerca contatori",
 			 "typeName":"postgis_sw:wfs_search8",
 			 "recordModel":[
@@ -477,7 +477,7 @@
 		  "customParams":{
 			 "outputFilename":"stampa"
 		  },
-		  "printService":"http://webgis.acque.net/geoserver/pdf/",
+		  "printService":"http://10.80.4.45/geoserver/pdf/",
 		  "legendPanelId":"legendPanel",
           "defaultResolutionIndex":1,
           "defaultLayoutIndex":1,
