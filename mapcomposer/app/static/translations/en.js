@@ -288,8 +288,23 @@ GeoExt.Lang.add("en", {
         legendOnSeparatePageText: "Legend on separate page?",
         compactLegendText: "Compact legend?",	
         emptyCommentText: "Enter comments here.",
-        creatingPdfText: "Creating PDF..."
+        creatingPdfText: "Creating PDF...",
+		graticuleFieldLabelText: 'Active graticule',
+		defaultTabText: "Default",
+		legendTabText: "Legend"
     },
+	
+    "GeoExt.ux.LegendStylePanel.prototype":{
+		iconsSizeText: "Icons size",
+		fontSizeText: "Font size",
+		fontFamilyText: "Font Family",
+		forceLabelsText: "Force label",
+		dpiText: "Dpi",
+		fontStyleText: "Font style",
+		fontEditorText: "Label config",
+		sizeText: "Size"
+    },
+	
     "gxp.plugins.GeonetworkSearch.prototype":{
         geonetworkSearchText: "View metadata",
         geonetworkSearchActionTip: "View metadata"
