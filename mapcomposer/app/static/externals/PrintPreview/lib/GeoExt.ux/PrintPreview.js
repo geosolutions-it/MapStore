@@ -406,7 +406,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                     checked: this.landscape,
                     boxLabel: this.landscapeText,
                     hideLabel: true,
-                    disabled: true,
+                    disabled: !this.legendOnSeparatePage,
                     ctCls: "gx-item-nowrap",
                     handler: function(cb, checked) {
                         this.landscape = checked;
