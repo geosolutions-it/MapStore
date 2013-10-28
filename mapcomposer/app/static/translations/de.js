@@ -58,11 +58,15 @@ GeoExt.Lang.add("de", {
         loadProcessingButtonText: "Hochladen Verarbeitung",
         selectProcessingMsgTitle: "Wählen Verarbeitung",
         selectProcessingMsg: "Sie müssen eine Verarbeitung",
-        loadProcessingWinTitle: "Hochladen Verarbeitung",    
-        saveDownloadProcessingTitle: "Download Verarbeitung",
-        loadDownloadButton: "Download Verarbeitung",
-        loadDownloadProcessingWinTitle: "Download Verarbeitung",
-        loadDownloadProcessingButtonText: "Download Verarbeitung"
+        loadProcessingWinTitle: "Hochladen Verarbeitung",
+        
+        saveDownloadMenuButton: "Herunterladen",            
+        saveDownloadProcessingTitle: "Exportieren",
+        loadDownloadButton: "Geschichtlich",
+        loadDownloadProcessingWinTitle: "Herunterladen Verarbeitung",
+        loadDownloadProcessingButtonText: "Herunterladen Verarbeitung",
+        failureAchieveResourceTitle: "Fehler",
+        failureAchieveResourceMsg: "Es gibt keine Verarbeitung für diesen Benutzer gespeichert"
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Bearbeitung",
