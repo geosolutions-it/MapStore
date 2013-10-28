@@ -61,11 +61,15 @@ GeoExt.Lang.add("en", {
         loadProcessingButtonText: "Upload Processing",
         selectProcessingMsgTitle: "Select Processing",
         selectProcessingMsg: "You must select a processing",
-        loadProcessingWinTitle: "Upload Processing",    
-        saveDownloadProcessingTitle: "Download Processing",
-        loadDownloadButton: "Download Processing",
+        loadProcessingWinTitle: "Upload Processing",
+        
+        saveDownloadMenuButton: "Download",            
+        saveDownloadProcessingTitle: "Export",
+        loadDownloadButton: "Historical",
         loadDownloadProcessingWinTitle: "Download Processing",
-        loadDownloadProcessingButtonText: "Download Processing"
+        loadDownloadProcessingButtonText: "Download Processing",
+        failureAchieveResourceTitle: "Error",
+        failureAchieveResourceMsg: "There are no processing saved for this user"
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Processing",

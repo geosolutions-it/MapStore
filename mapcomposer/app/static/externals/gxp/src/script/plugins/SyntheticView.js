@@ -60,10 +60,15 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     selectProcessingMsgTitle: "Seleziona Elaborazione",
     selectProcessingMsg: "Devi selezionare una elaborazione",
     loadProcessingWinTitle: "Carica Elaborazione",    
-    saveDownloadProcessingTitle: "Download Elaborazione",
-    loadDownloadButton: "Download Elaborazione",
+    
+    saveDownloadMenuButton: "Scarica",    
+    saveDownloadProcessingTitle: "Esportazione",
+    loadDownloadButton: "Storico",
     loadDownloadProcessingWinTitle: "Download Elaborazione",
     loadDownloadProcessingButtonText: "Download Elaborazione",
+    
+    failureAchieveResourceTitle: "Errore",
+    failureAchieveResourceMsg: "Non ci sono elaborazioni salvate per questo utente",    
     
     processButton: "Esegui Elaborazione",
     analyticViewButton: "Visualizzazione Analitica:",
@@ -1153,33 +1158,32 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     });
                                     this.loadWin.show();
                                 }
+ 
+                                var failureSave = function(){
+                                    Ext.Msg.show({
+                                        title: me.failureAchieveResourceTitle,
+                                        buttons: Ext.Msg.OK,
+                                        msg: me.failureAchieveResourceMsg,
+                                        icon: Ext.MessageBox.INFO,
+                                        scope: this
+                                    });
+                                };
                                 
-                                var failure = function(){
-                                
-                                }
-                                
-                                //RICHIAMO NOME CATEGORIA
-                                /*var geostoreEntityResource = new OpenLayers.GeoStore.Resource({
-                                    type: "resource"
-                                });
-                                
-                                me.geoStore.getEntities(geostoreEntityResource,this.success,failure);*/
-                                
-                                me.geoStore.getCategoryResources("processing",this.success,failure);
+                                me.geoStore.getCategoryResources("processing",this.success,failureSave);
                                 
                         }
                     }]
                 }
             },{
-                iconCls: 'save-button',
+                iconCls: 'save-download-button',
                 xtype: 'button',
                 text: this.saveDownloadProcessingTitle,
                 menu:{
                     xtype: "menu",
                     showSeparator: true, 
                     items:[{
-                        text: this.saveButton,
-                        iconCls: 'save-button',
+                        text: this.saveDownloadMenuButton,
+                        iconCls: 'save-download-button',
                         name: "save-download-proc-geostore",
                         scope: this,
                         disabled: true,
@@ -1322,8 +1326,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     }
                                 ],
                                 buttons: [{
-                                    text: me.saveProcessingButtonText,
-                                    iconCls: 'save-button',
+                                    text: me.saveDownloadMenuButton,
+                                    iconCls: 'save-download-button',
                                     id: "elab-savebutton",
                                     disabled: true,
                                     formBind: true,
@@ -1339,7 +1343,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     
                             this.saveDownloadWin = new Ext.Window({
                                 title: me.saveProcessingWinTitle,
-                                iconCls: 'save-button',
+                                iconCls: 'save-download-button',
                                 layout: "fit",
                                 width: 450,
                                 height: 250,
@@ -1356,7 +1360,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         }
                     },{
                         text: this.loadDownloadButton,
-                        iconCls: 'load-button',
+                        iconCls: 'load-download-button',
                         scope: this,
                         name: "load-download-proc-geostore",
                         disabled: false,
@@ -1500,7 +1504,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                         buttons: [{
                                             text: me.loadDownloadProcessingButtonText,
                                             formBind: true,
-                                            iconCls: 'load-button',
+                                            iconCls: 'load-download-button',
                                             handler: function(){
                                                 if(this.newDownloadStatus){
                                                 
@@ -1541,7 +1545,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                             
                                     this.loadDownloadWin = new Ext.Window({
                                         title: me.loadDownloadProcessingWinTitle,
-                                        iconCls: 'load-button',
+                                        iconCls: 'load-download-button',
                                         layout: "fit",
                                         width: 450,
                                         closeAction: 'close',
@@ -1556,25 +1560,25 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     this.loadDownloadWin.show();
                                 }
                                 
-                                var failure = function(){
+                                var failureDownload = function(){
                                     Ext.Msg.show({
-                                        title: "ERRORE",
+                                        title: me.failureAchieveResourceTitle,
                                         buttons: Ext.Msg.OK,
-                                        msg: "NON ESISTONO RISORSE PER QUESTA CATEGORIA",
+                                        msg: me.failureAchieveResourceMsg,
                                         icon: Ext.MessageBox.INFO,
                                         scope: this
                                     });
                                 };
 
                                 //RICHIAMO NOME CATEGORIA
-                                me.geoStore.getCategoryResources("download",this.downloadSuccess,failure);
+                                me.geoStore.getCategoryResources("download",this.downloadSuccess,failureDownload);
                         }
                     }]
                 }
             }],
             buttons: [{
                 text: this.cancelButton,
-                iconCls: 'elab-button',
+                iconCls: 'cancel-button',
                 buttonAlign:'left',
                 scope: this,
                 handler: function(){        

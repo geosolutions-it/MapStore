@@ -363,10 +363,18 @@ div.map-overlay div.overlay-element {
 }
 
 .save-button{
-    background-image: url(img/silk/database_save.png) !important;
+    background-image: url(img/silk/script_save.png) !important;
 }
 
 .load-button{
+    background-image: url(img/silk/script_go.png) !important;
+}
+
+.save-download-button{
+    background-image: url(img/silk/database_save.png) !important;
+}
+
+.load-download-button{
     background-image: url(img/silk/database_go.png) !important;
 }
 
