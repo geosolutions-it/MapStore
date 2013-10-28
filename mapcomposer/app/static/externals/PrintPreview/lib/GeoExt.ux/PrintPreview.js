@@ -45,6 +45,8 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
     legendTabText: "Legend",
     /** api: config[graticuleFieldLabelText] ``String`` i18n */
     graticuleFieldLabelText: 'Active graticule',
+    /** api: config[landscapeText] ``String`` i18n */
+    landscapeText: 'Landscape',
     /* end i18n */
     
     /** api: config[printProvider]
@@ -161,9 +163,19 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
     addFormParameters: false,
 
     /** api: config[addGraticuleControl]
-     *  Flag indicates that we need to add graticule control to the legend options
+     *  Flag indicates that we need to add graticule control for the default tab
      **/
     addGraticuleControl: false,
+
+    /** api: config[addLandscapeControl]
+     *  Flag indicates that we need to add landscape control for the default tab
+     **/
+    addLandscapeControl: false,
+
+    /** api: config[landscape]
+     *  Print in landscape mode
+     **/
+    landscape: false,
     
     /** private: method[initComponent]
      */
@@ -333,6 +345,8 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             })
         };
         
+        var panelElements = [titleCfg];
+        
         if(this.legend) {
             var legendOnSeparatePageCheckbox = new Ext.form.Checkbox({
                 name: "legend",
@@ -342,6 +356,9 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 ctCls: "gx-item-nowrap",
                 handler: function(cb, checked) {
                     this.legendOnSeparatePage = checked;
+                    if(this.addLandscapeControl){
+                        this.landscapeCheckbox.setDisabled(!checked);
+                    }
                     this.updateLayout();
                 },
                 cls : "gx-item-margin-left",                
@@ -375,20 +392,35 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 },
                 cls : "gx-item-margin-left",
                 scope: this
-            });         
-        }
-        
-        var panelElements = [titleCfg];
+            });  
 
-        var checkItems = [
-                    legendCheckbox, 
-                    legendOnSeparatePageCheckbox,
-                    compactLegendCheckbox
-                ];
+            var checkItems = [
+                        legendCheckbox, 
+                        legendOnSeparatePageCheckbox,
+                        compactLegendCheckbox
+                    ];
+            
+            if(this.addLandscapeControl){
+                var landscapeCheckbox = new Ext.form.Checkbox({
+                    name: "landscape",
+                    checked: this.landscape,
+                    boxLabel: this.landscapeText,
+                    hideLabel: true,
+                    disabled: true,
+                    ctCls: "gx-item-nowrap",
+                    handler: function(cb, checked) {
+                        this.landscape = checked;
+                        this.updateLayout();
+                    },
+                    cls : "gx-item-margin-left",
+                    scope: this
+                });    
+                this.landscapeCheckbox = landscapeCheckbox;
+                checkItems.push(landscapeCheckbox);
+            }
 
-        this.addGraticuleControl && checkItems.push(this.getGraticuleCheckBox());
-        
-        if(this.legend){
+            this.addGraticuleControl && checkItems.push(this.getGraticuleCheckBox());  
+
             panelElements.push({
                 xtype: "container",
                 layout: "form",
@@ -483,7 +515,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             compactLegend: false,
             legendOnSeparatePage: false,
             
-        */      
+        */ 
         if(this.includeLegend){
             newLayoutName = currentLayout;
             
@@ -497,6 +529,14 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             
         } else {
             newLayoutName = currentLayout + '_no_legend';
+        }
+
+        /* Configure landscape layout: 
+         *   * _2_pages_compact_legend_landscape
+         *   * _2_pages_landscape
+        */
+        if(this.legendOnSeparatePage && this.landscape){
+            newLayoutName += "_landscape";
         }
         
         var nr = this.printProvider.fullLayouts.find("name", newLayoutName);
