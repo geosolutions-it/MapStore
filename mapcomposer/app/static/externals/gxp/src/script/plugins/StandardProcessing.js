@@ -360,6 +360,45 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 scope: this,                
                 expand: function(combo) {
                     this.loadUserElab = false;
+                    var store = combo.getStore();
+                    
+                    var syntView = this.appTarget.tools[this.syntheticView];
+                    var map = app.mapPanel.map;
+                    var scale = Math.round(map.getScale());
+                    
+                    /*analiticViewScale: 17070,
+                    cellViewScale: 500010,*/
+                    
+                    if(scale>=syntView.cellViewScale){
+                        store.filter([
+                          {
+                            fn   : function(record) {
+                              return (record.get('visibile') > 2);
+                            },
+                            scope: this
+                          },{
+                            fn   : function(record) {
+                              return (record.get('id_elaborazione') == this.elaborazione.getValue());
+                            },
+                            scope: this
+                          }                      
+                        ]);
+                    }else{
+                        store.filter([
+                          {
+                            fn   : function(record) {
+                              return ((record.get('visibile') == 1) || (record.get('visibile') == 3));
+                            },
+                            scope: this
+                          },{
+                            fn   : function(record) {
+                              return (record.get('id_elaborazione') == this.elaborazione.getValue());
+                            },
+                            scope: this
+                          }                          
+                        ]);
+                    }
+                    
                     combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );
                 },
