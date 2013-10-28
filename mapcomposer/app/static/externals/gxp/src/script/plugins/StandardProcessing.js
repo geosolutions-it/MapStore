@@ -375,7 +375,6 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 },
                 select: function(combo, record, index) {
                     this.enableDisableForm(record, this.getComboRecord(this.elaborazione, 'id'));
-                    
                 }
             } 
         });
@@ -391,6 +390,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             }else{
                 this.formula.setValue(this.geostoreFormula);
             }
+            
+            //fire select formula combo to update target combo
+            this.formula.fireEvent('select',this.formula,store.data.items[0]);
         }, this);
        
         this.elabSet = new Ext.form.FieldSet({
@@ -493,18 +495,55 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             mapPanelContainer.doLayout(false,true);
         }
     },*/
+    isAllHumanTargets: function(status) {
+        return status.target['id_bersaglio'] === -2;
+    },
+    
+    isAllNotHumanTargets: function(status) {
+        return status.target['id_bersaglio'] === -3;
+    },
+    
+    isSingleTarget: function(status) {
+        return parseInt(status.target['id_bersaglio'],10) > 0;
+    },
+
+    updateSimulationTabPabel: function(wfsGrid,syntView,map){
+    
+        var viewParams;                
+        var status = this.getStatus();        
+        var bounds = syntView.getBounds(null, map);
+        viewParams = "bounds:" + bounds;
+        
+        if(this.isSingleTarget(status)) {
+            wfsGrid.loadGrids("id", status.target['id_bersaglio'], syntView.selectionLayerProjection, viewParams);                                
+        } else if(this.isAllHumanTargets(status)) {
+            wfsGrid.loadGrids("type", 'umano', syntView.selectionLayerProjection, viewParams);
+        } else if(this.isAllNotHumanTargets(status)) {
+            wfsGrid.loadGrids("type", 'ambientale', syntView.selectionLayerProjection, viewParams);
+        } else {
+            wfsGrid.loadGrids(null ,null , syntView.selectionLayerProjection, viewParams);
+        }
+        
+    },
     
     enableDisableSimulation: function(enable) {
         var syntView = this.appTarget.tools[this.syntheticView];
-        // nothing to do
-        if((enable && syntView.simulationEnabled) || (!enable && !syntView.simulationEnabled)) {
-            return;
-        }
         var southPanel = Ext.getCmp("south");        
         var wfsGrid = Ext.getCmp("featuregrid");
         var map = this.appTarget.mapPanel.map;
         
-        var scale = Math.round(map.getScale());   
+        var scale = Math.round(map.getScale()); 
+        
+        // nothing to do!!! Set target panels according to target combo selection
+        if((enable && syntView.simulationEnabled) || (!enable && !syntView.simulationEnabled)) {
+
+            syntView.simulationLoaded = true;
+
+            this.updateSimulationTabPabel(wfsGrid,syntView,map);
+                
+            return;
+        }
+  
         
         if(enable) {
             syntView.simulationRestore = {
@@ -530,13 +569,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             wfsGrid.setCurrentPanel('simulation');
             
             if(scale <= syntView.analiticViewScale) {
+            
                 syntView.simulationLoaded = true;
+                this.updateSimulationTabPabel(wfsGrid,syntView,map);
                 
-                var viewParams;                
-                var status = syntView.getStatus();        
-                var bounds = syntView.getBounds(null, map);
-                viewParams = "bounds:" + bounds;                        
-                wfsGrid.loadGrids(null, null, syntView.selectionLayerProjection, viewParams);                                                
             } 
 /*            else {
                 Ext.getCmp("targets_view").disable();
@@ -587,7 +623,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }
         
         //this.expandCollapse(enable ,southPanel);
-    },    
+    },
     
     enableDisableTemporali: function(formula, elaborazione) {
         if(formula){
@@ -926,6 +962,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 select: function(cb, record, index) {
                     var type = record.get('humans');
                     this.updateTargetCombo(type);
+                    var processingCombo = this.elaborazione.getValue();
+                    this.enableDisableSimulation(processingCombo === 3);
                 }
             }              
         });
@@ -951,7 +989,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 scope: this,
                 select: function(cb, record, index) {
-                    //this.updateTemaSliders(record.get('humans'));                    
+                    var processingCombo = this.elaborazione.getValue();
+                    this.enableDisableSimulation(processingCombo === 3);                    
                 },
                 expand: function(combo) {
                     this.loadUserElab = false;
