@@ -553,7 +553,8 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
         for(var i=0; i < layouts.length; i++){
             var layout = layouts[i];
             // > -1) && !(layout.name.indexOf("pages") > -1)
-            if(!(layout.name.indexOf("_legend") > 0)){
+            if(!(layout.name.indexOf("_legend") > 0) 
+                && !(layout.name.indexOf("_landscape") > 0)){
                 caps2.layouts.push(layout);
             }
         }

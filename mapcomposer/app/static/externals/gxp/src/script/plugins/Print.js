@@ -106,6 +106,11 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
      *  Flag indicates that we need to add graticule control to the default options
      **/
     addGraticuleControl: false,
+
+    /** api: config[addLandscapeControl]
+     *  Flag indicates that we need to add landscape control for the default tab
+     **/
+    addLandscapeControl: false,
     
     /** api: config[offsetByScale]
      *  ``Object`` Force to change the lat and lon offset for the graticule fixed to the scale 
@@ -376,6 +381,8 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                             addGraticuleControl: this.addGraticuleControl,
                             // Add graticule offset by scale
                             offsetByScale: this.offsetByScale,
+                            // Add landscape control
+                            addLandscapeControl: this.addLandscapeControl,
                             listeners: {
                                 scope: this,
                                 "afterrender": function() {
