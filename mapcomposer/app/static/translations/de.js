@@ -207,7 +207,12 @@ GeoExt.Lang.add("de", {
         transparentText: "Transparenz",
         cacheText: "Cache",
         cacheFieldText: " Benutze die Cache-Version",
-        stylesText: "Stil"
+        stylesText: "Stil",
+		summaryText: "Statistik",
+        summaryInfoText: "Aktuelles Ansichtsfenster Raster Statistik",
+        loadMaskMsg: "Daten abrufen ...",
+        noDataMsg: "Keine Daten vorhanden in aktuellen Ansicht",
+        refreshText: "Erfrischen"
     },
 
     "gxp.WMSStylesDialog.prototype": {
@@ -597,6 +602,14 @@ GeoExt.Lang.add("de", {
 		resetText: "Zurücksetzen",
 		failedUploadingTitle: "Kann Datei nicht hochladen",
 		layerNameLabel: "Layername"
-	}
+	},
 
+	"gxp.plugins.PrintSnapshot.prototype" :{
+		noSupportedLayersErrorMsg: "Fehler beim Erzeugen der Karte Snapshot: Nein Unterstützte Ebenen gefunden!",
+		generatingErrorMsg: "Fehler beim Erzeugen der Karte Snapshot",
+		printStapshotTitle: "Drucken Snapshot",
+		serverErrorMsg: "Fehler beim Erzeugen der Karte Snapshot: Server Error",
+		menuText: "Snapshot",
+		tooltip: "Snapshot"
+	}
 });

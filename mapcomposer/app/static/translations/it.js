@@ -209,7 +209,12 @@ GeoExt.Lang.add("it", {
         transparentText: "Trasparenza",
         cacheText: "Cache",
         cacheFieldText: "Usa versione in cache",
-        stylesText: "Stile"
+        stylesText: "Stile",
+        summaryText: "Statistiche",
+        summaryInfoText: "Statistiche Raster nella Viewport corrente",
+        loadMaskMsg: "Caricamento ...",
+        noDataMsg: "Nessun dato disponibile per la vista corrente",
+        refreshText: "Aggiorna"
     },
 
     "gxp.WMSStylesDialog.prototype": {
@@ -589,6 +594,14 @@ GeoExt.Lang.add("it", {
 		resetText: "Reset",
 		failedUploadingTitle: "Impossibile completare l'upload del file",
 		layerNameLabel: "Nome del Layer"
-	}
-	
+	},
+
+	"gxp.plugins.PrintSnapshot.prototype" :{
+		noSupportedLayersErrorMsg: "Si è verificato un errore durante la generazione della mappa Snapshot: Nessun layer è supportato !",
+		generatingErrorMsg: "Si è verificato un errore durante la generazione della mappa Snapshot",
+		printStapshotTitle: "Stampa Snapshot",
+		serverErrorMsg: "Verificato un errore durante la generazione della mappa Snapshot: Errore del server",
+		menuText: "Snapshot",
+		tooltip: "Snapshot"
+	}	
 });

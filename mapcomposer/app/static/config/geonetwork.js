@@ -3,6 +3,7 @@
    "gnBaseUrl": "",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "it",
+   "advancedScaleOverlay": true,
    "tab": true,
    "gsSources":{ 
 		"mapquest": {
