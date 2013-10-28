@@ -1646,10 +1646,16 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         containerTab.setActiveTab(1);
                         active = containerTab.getActiveTab();
                         active.enable();
-                        
-                        if(this.status.processing == 2){
-                            me.processingPane.temporal.enable();
-                        }                        
+
+                        if(this.status){
+                            if(this.status.processing == 2){
+                                me.processingPane.temporal.enable();
+                            }
+                        }else{
+                            if(me.processingPane.elaborazione.value != 2){
+                                me.processingPane.temporal.disable();
+                            }
+                        }
                     }    
                 
                     if(this.status && !this.status.initial && !this.reset){
@@ -1847,6 +1853,15 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             if(Ext.getCmp("analytic_view") && !this.simulationEnabled){
                 Ext.getCmp('warning_message').setValue(msg);
             }
+            
+            // to change formula according to scale
+            var processingPane = this.processingPane;
+            if (processingPane.formula){
+                var store = processingPane.formula.getStore();
+                processingPane.filterComboFormulaScale(processingPane.formula);
+                processingPane.formula.setValue(store.data.items[0].get('id_formula'));            
+            }
+            
         });
         
         this.target.mapPanel.map.events.register('moveend', this, function(){

@@ -240,8 +240,14 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     combo.innerList.setWidth( 'auto' );
                 },
                 select: function(combo, record, index) {
-                    this.formula.getStore().filter('id_elaborazione', record.get('id'));
-                    this.formula.setValue(this.formula.getStore().getAt(0).get('id_formula'));
+                    /*this.formula.getStore().filter('id_elaborazione', record.get('id'));
+                    this.formula.setValue(this.formula.getStore().getAt(0).get('id_formula'));*/
+                    
+                    // to change formula according to scale
+                    var store = this.formula.getStore();
+                    this.filterComboFormulaScale(this.formula);
+                    this.formula.setValue(store.data.items[0].get('id_formula'));
+                    
                     this.enableDisableForm(this.getComboRecord(this.formula, 'id_formula'), record);
                     this.enableDisableSimulation(record.get('id') === 3);
                 }
@@ -360,44 +366,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 scope: this,                
                 expand: function(combo) {
                     this.loadUserElab = false;
-                    var store = combo.getStore();
                     
-                    var syntView = this.appTarget.tools[this.syntheticView];
-                    var map = app.mapPanel.map;
-                    var scale = Math.round(map.getScale());
-                    
-                    /*analiticViewScale: 17070,
-                    cellViewScale: 500010,*/
-                    
-                    if(scale>=syntView.cellViewScale){
-                        store.filter([
-                          {
-                            fn   : function(record) {
-                              return (record.get('visibile') > 2);
-                            },
-                            scope: this
-                          },{
-                            fn   : function(record) {
-                              return (record.get('id_elaborazione') == this.elaborazione.getValue());
-                            },
-                            scope: this
-                          }                      
-                        ]);
-                    }else{
-                        store.filter([
-                          {
-                            fn   : function(record) {
-                              return ((record.get('visibile') == 1) || (record.get('visibile') == 3));
-                            },
-                            scope: this
-                          },{
-                            fn   : function(record) {
-                              return (record.get('id_elaborazione') == this.elaborazione.getValue());
-                            },
-                            scope: this
-                          }                          
-                        ]);
-                    }
+                    // to change formula according to scale
+                    this.filterComboFormulaScale(combo);
                     
                     combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );
@@ -410,9 +381,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         });
         
         formulaStore.on('load', function(store, records, options) {
-            this.formula.getStore().filter('id_elaborazione', this.elaborazione.getValue());
+            //this.formula.getStore().filter('id_elaborazione', this.elaborazione.getValue());
+            
+            // to change formula according to scale
+            this.filterComboFormulaScale(this.formula);
             if(!this.loadUserElab){
-                this.formula.setValue(records[0].get('id_formula'));
+                //this.formula.setValue(records[0].get('id_formula'));
+                this.formula.setValue(store.data.items[0].get('id_formula'));
             }else{
                 this.formula.setValue(this.geostoreFormula);
             }
@@ -433,6 +408,47 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         });
         
         return this.elabSet;
+    },
+    
+    filterComboFormulaScale: function(combo){
+        var store = combo.getStore();
+        
+        var syntView = this.appTarget.tools[this.syntheticView];
+        var map = app.mapPanel.map;
+        var scale = Math.round(map.getScale());
+        
+        /*analiticViewScale: 17070,
+        cellViewScale: 500010,*/
+        
+        if(scale>=syntView.cellViewScale){
+            store.filter([
+              {
+                fn   : function(record) {
+                  return (record.get('visibile') > 2);
+                },
+                scope: this
+              },{
+                fn   : function(record) {
+                  return (record.get('id_elaborazione') == this.elaborazione.getValue());
+                },
+                scope: this
+              }                      
+            ]);
+        }else{
+            store.filter([
+              {
+                fn   : function(record) {
+                  return ((record.get('visibile') == 1) || (record.get('visibile') == 3));
+                },
+                scope: this
+              },{
+                fn   : function(record) {
+                  return (record.get('id_elaborazione') == this.elaborazione.getValue());
+                },
+                scope: this
+              }                          
+            ]);
+        }
     },
     
     enableDisableForm: function(formula, elaborazione) {
