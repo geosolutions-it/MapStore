@@ -381,7 +381,7 @@ layouts:
             - !legends      
               failOnBrokenUrl: false
               horizontalAlignment: left
-              iconMaxWidth: 100
+              iconMaxWidth: 0
               iconMaxHeight: 0
               maxHeight: 750
               maxColumns: 3
@@ -391,7 +391,9 @@ layouts:
               classIndentation: 5
               classFontSize: 8
               classSpace: 4
-              backgroundColor: #ffffff      
+              backgroundColor: #ffffff   
+              reorderColumns: true    
+              dontBreakItems: true   
   #===========================================================================
   A4_2_pages_compact_legend :
   #===========================================================================
@@ -831,7 +833,7 @@ layouts:
             - !legends      
               failOnBrokenUrl: false
               horizontalAlignment: left
-              iconMaxWidth: 100
+              iconMaxWidth: 0
               iconMaxHeight: 0
               maxHeight: 750
               maxColumns: 3
@@ -841,7 +843,9 @@ layouts:
               classIndentation: 5
               classFontSize: 8
               classSpace: 4
-              backgroundColor: #ffffff       
+              backgroundColor: #ffffff 
+              reorderColumns: true    
+              dontBreakItems: true       
   #===========================================================================
   A3_2_pages_compact_legend :
   #===========================================================================
