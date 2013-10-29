@@ -51,6 +51,9 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
     fontStyleText: "Font style",
     /** api: config[fontEditorText] ``String`` i18n */
     fontEditorText: "Label config",
+	
+	antiAliasingText: "Font Anti Aliasing",
+	
     /** api: config[sizeText] ``String`` i18n */
     sizeText: "Size",
     /* end i18n */
@@ -93,6 +96,7 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
         minSymbolSize: "8",
         fontFamily: "Verdana",
         forceLabels: true,
+		fontAntiAliasing: true,
         dpi: "96"
     },
 
@@ -304,6 +308,11 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                         }
                     }
                 },
+			    fontAntiAliasing: {
+                    xtype: "checkbox",
+                    fieldLabel: this.antiAliasingText,
+                    checked: true
+                },
                 minSymbolSize: {
                     xtype: "numberfield",
                     fieldLabel: "iconsSizeText",
@@ -324,7 +333,7 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                     // Managed as a checkbox
                     xtype: "textfield",
                     fieldLabel: "forceLabelsText",
-                    value: "on",
+                    value: "off",
                     hidden: true
                 },
                 dpi: {
