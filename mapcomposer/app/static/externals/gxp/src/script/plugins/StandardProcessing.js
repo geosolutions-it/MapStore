@@ -426,7 +426,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             store.filter([
               {
                 fn   : function(record) {
-                  return (record.get('visibile') > 2);
+                  return (record.get('visibile') >= 2);
                 },
                 scope: this
               },{
@@ -515,11 +515,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         viewParams = "bounds:" + bounds;
         
         if(this.isSingleTarget(status)) {
-            wfsGrid.loadGrids("id", status.target['id_bersaglio'], syntView.selectionLayerProjection, viewParams);                                
+            wfsGrid.loadGrids(["id", "type"], [status.target['id_bersaglio'], 'all'], syntView.selectionLayerProjection, viewParams);                                
         } else if(this.isAllHumanTargets(status)) {
-            wfsGrid.loadGrids("type", 'umano', syntView.selectionLayerProjection, viewParams);
+            wfsGrid.loadGrids("type", ['umano', 'all'], syntView.selectionLayerProjection, viewParams);
         } else if(this.isAllNotHumanTargets(status)) {
-            wfsGrid.loadGrids("type", 'ambientale', syntView.selectionLayerProjection, viewParams);
+            wfsGrid.loadGrids("type", ['ambientale','all'], syntView.selectionLayerProjection, viewParams);
         } else {
             wfsGrid.loadGrids(null ,null , syntView.selectionLayerProjection, viewParams);
         }

@@ -166,18 +166,37 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
             hideAllBut: function(attribute, attributeValue) {
                 var gridsLoad  = [];
                 var grids = me.grids[me.currentPanel];
-                for(var i=0; i<grids.length; i++) {
+                for(var i=0; i<grids.length; i++) {                   
                    if(attribute) {
-                    var value = grids[i][attribute];
-                    if(value == attributeValue) {
+                     if(this.matchesAttribute(grids[i], attribute, attributeValue)) {
                         gridsLoad.push(grids[i]);
-                    } 
+                     }
                    } else {
-                    
                     gridsLoad.push(grids[i]);
                   } 
                 }
                 return gridsLoad;
+            },
+            
+            matchesAttribute: function(grid, attributeName, attributeValue) {
+                if(Ext.isArray(attributeName) && Ext.isArray(attributeValue)) {
+                    for(var count = 0; count<attributeName.length; count++) {
+                        if(grid[attributeName[count]] == attributeValue[count])
+                            return true;
+                    }
+                } else {
+                    var value = grid[attributeName];
+                    if(Ext.isArray(attributeValue)) {
+                        for(var count = 0; count < attributeValue.length; count++) {
+                            if(value == attributeValue[count]) {
+                                return true;
+                            }
+                        }
+                    } else {
+                        return (value == values);
+                    }
+                }
+                return false;
             },
                         
             removeAllGrids: function(){
