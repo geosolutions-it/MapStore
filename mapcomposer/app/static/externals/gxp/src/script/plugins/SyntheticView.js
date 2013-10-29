@@ -1799,11 +1799,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     }                    
                     
                     if(this.status && !this.status.initial && this.reset){
-                    
+
                         // Tipo elaborazione
                         this.processingPane.elaborazione.setValue(1);                        
                         // Formula
-                        this.processingPane.formula.setValue(26);                        
+                        this.processingPane.formula.setValue(this.processingPane.formula.getStore().data.items[0].get('id_formula'));                        
                         // Temporali
                         this.processingPane.temporal.setValue("fp_scen_centrale");                        
                         this.processingPane.temporal.disable();   
@@ -1853,12 +1853,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     hidden: true,
                     handler: function(btn) {
                         var wfsGrid = Ext.getCmp("featuregrid");
-                        var viewParams;
+                        var synthView = this;
+                        var map = app.mapPanel.map;
                         
-                        var status = this.getStatus();        
-                        var bounds = this.getBounds(null, this.target.mapPanel.map);
-                        viewParams = "bounds:" + bounds;                        
-                        wfsGrid.loadGrids(null, null, this.selectionLayerProjection, viewParams);  
+                        this.processingPane.updateSimulationTabPabel(wfsGrid,synthView,map)
                     }
                 },{
                     xtype: 'button',
@@ -1995,7 +1993,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             if (processingPane.formula){
                 var store = processingPane.formula.getStore();
                 processingPane.filterComboFormulaScale(processingPane.formula);
-                processingPane.formula.setValue(store.data.items[0].get('id_formula'));            
+                processingPane.formula.setValue(store.data.items[0].get('id_formula'));
+                
+                //fire select formula combo to update target combo                
+                processingPane.formula.fireEvent('select',processingPane.formula,store.data.items[0]);
             }
             
         });
