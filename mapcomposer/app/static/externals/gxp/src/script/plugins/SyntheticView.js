@@ -12,6 +12,56 @@
  */
 Ext.namespace("gxp.plugins");
 
+Ext.util.base64 = {
+
+    base64s : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
+    
+    encode: function(decStr){
+        if (typeof btoa === 'function') {
+             return btoa(decStr);            
+        }
+        var base64s = this.base64s;
+        var bits;
+        var dual;
+        var i = 0;
+        var encOut = "";
+        while(decStr.length >= i + 3){
+            bits = (decStr.charCodeAt(i++) & 0xff) <<16 | (decStr.charCodeAt(i++) & 0xff) <<8 | decStr.charCodeAt(i++) & 0xff;
+            encOut += base64s.charAt((bits & 0x00fc0000) >>18) + base64s.charAt((bits & 0x0003f000) >>12) + base64s.charAt((bits & 0x00000fc0) >> 6) + base64s.charAt((bits & 0x0000003f));
+        }
+        if(decStr.length -i > 0 && decStr.length -i < 3){
+            dual = Boolean(decStr.length -i -1);
+            bits = ((decStr.charCodeAt(i++) & 0xff) <<16) |    (dual ? (decStr.charCodeAt(i) & 0xff) <<8 : 0);
+            encOut += base64s.charAt((bits & 0x00fc0000) >>18) + base64s.charAt((bits & 0x0003f000) >>12) + (dual ? base64s.charAt((bits & 0x00000fc0) >>6) : '=') + '=';
+        }
+        return(encOut);
+    },
+    
+    decode: function(encStr){
+        if (typeof atob === 'function') {
+            return atob(encStr); 
+        }
+        var base64s = this.base64s;        
+        var bits;
+        var decOut = "";
+        var i = 0;
+        for(; i<encStr.length; i += 4){
+            bits = (base64s.indexOf(encStr.charAt(i)) & 0xff) <<18 | (base64s.indexOf(encStr.charAt(i +1)) & 0xff) <<12 | (base64s.indexOf(encStr.charAt(i +2)) & 0xff) << 6 | base64s.indexOf(encStr.charAt(i +3)) & 0xff;
+            decOut += String.fromCharCode((bits & 0xff0000) >>16, (bits & 0xff00) >>8, bits & 0xff);
+        }
+        if(encStr.charCodeAt(i -2) == 61){
+            return(decOut.substring(0, decOut.length -2));
+        }
+        else if(encStr.charCodeAt(i -1) == 61){
+            return(decOut.substring(0, decOut.length -1));
+        }
+        else {
+            return(decOut);
+        }
+    }
+
+};  
+
 /** api: constructor
  *  .. class:: SyntheticView(config)
  *
@@ -87,6 +137,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     notVisibleOnArcsMessage: "Formula non visibile a questa scala",
     notVisibleOnGridMessage: "Formula non visibile a questa scala",
     simMsg: 'Modifica dei parametri di simulazione non possibile a questa scala. Zoomare fino a scala 1:17061',
+    downloadFileLabel: 'Scarica il file',
     // End i18n.
         
     id: "syntheticview",
@@ -160,6 +211,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     geoStoreUser: undefined,
     geoStorePassword: undefined,
     proxy:"/http_proxy/?url=",
+    downloadBaseUrl: "http://localhost:8080/geoserver/www/downloads/",
     
     targetStyles: {
         "simulation_added": {
@@ -1189,14 +1241,98 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         disabled: true,
                         handler: function(){
                             var me=this;
-                            var submitElab = function(){
                             
+                            var executeDownload = function() {
+                                var map = me.target.mapPanel.map;
+                                var status = me.status;
+                                var targetId = me.getChosenTarget(status);
+                                
+                                var distances=[];
+                                var distanceNames=[];
+                                var radius = me.getRadius();
+                                if(radius.radiusNotHum) {
+                                    distances.push(radius.radiusNotHum);
+                                    distanceNames.push('ambientale');
+                                }
+                                if(radius.radiusHum) {
+                                    for(var i=0; i<radius.radiusHum.length; i++) {
+                                        if(radius.radiusHum[i]) {
+                                            distances.push(radius.radiusHum[i]);
+                                            distanceNames.push('sociale' + i);
+                                        }
+                                    }
+                                }
+                                
+                                var downloadProcess = this.wpsClient.getProcess('destination', 'gs:DestinationDownload');  
+                                var bounds;
+                                if(status && status.roi) {
+                                    bounds = new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX());
+                                } else {
+                                    bounds = map.getExtent();
+                                }         
+                                
+                                var filter = new OpenLayers.Filter.Spatial({ 
+                                  type: OpenLayers.Filter.Spatial.BBOX,
+                                  property: 'geometria',
+                                  value: bounds, 
+                                  projection: map.getProjection() 
+                                });
+
+                                downloadProcess.execute({
+                                    headers: me.geoStoreUser ? {
+                                        "Authorization":  "Basic " + Ext.util.base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
+                                    } : undefined,
+                                    // spatial input can be a feature or a geometry or an array of
+                                    // features or geometries
+                                    inputs: {
+                                        features: new OpenLayers.WPSProcess.ReferenceData({
+                                            href:'http://geoserver/wfs', 
+                                            method:'POST', mimeType: 'text/xml', 
+                                            body: {
+                                                wfs: {
+                                                    featureType: 'destination:siig_geo_ln_arco_1', 
+                                                    version: '1.1.0',
+                                                    filter: filter
+                                                }
+                                            }
+                                        }),
+                                        store: new OpenLayers.WPSProcess.LiteralData({value:this.wpsStore}),
+                                        processing: new OpenLayers.WPSProcess.LiteralData({value:status.processing}),
+                                        formula: new OpenLayers.WPSProcess.LiteralData({value:status.formula}),
+                                        target: new OpenLayers.WPSProcess.LiteralData({value:targetId}),
+                                        materials: new OpenLayers.WPSProcess.LiteralData({value:status.sostanza.id.join(',')}),
+                                        scenarios: new OpenLayers.WPSProcess.LiteralData({value:status.accident.id.join(',')}),
+                                        entities: new OpenLayers.WPSProcess.LiteralData({value:status.seriousness.id.join(',')}),
+                                        severeness: new OpenLayers.WPSProcess.LiteralData({value:status.formulaInfo.dependsOnTarget ? status.target.severeness : '0'}),
+                                        distances: new OpenLayers.WPSProcess.LiteralData({value: distances.join(',')}),
+                                        distanceNames: new OpenLayers.WPSProcess.LiteralData({value: distanceNames.join(',')}),
+                                        fp: new OpenLayers.WPSProcess.LiteralData({value:status.temporal.value})
+                                    },
+                                    outputs: [],                                    
+                                    success: function(outputs) {
+                                        if(outputs.executeResponse.status.processSucceeded) {
+                                            var link = outputs.executeResponse.processOutputs[0].literalData.value;
+                                            var url = me.downloadBaseUrl + link;
+                                            submitElab.call(me, url);
+                                        } else {
+                                            var error = outputs.executeResponse.status.exception.exceptionReport.exceptions[0].texts[0]
+                                            Ext.Msg.show({
+                                                title: me.saveProcessingErrorTitle,
+                                                buttons: Ext.Msg.OK,
+                                                msg: error,
+                                                icon: Ext.MessageBox.ERROR,
+                                                scope: me
+                                            });  
+                                        }
+                                    }
+                                }); 
+                            };
+                            
+                            var submitElab = function(downloadUrl){
+                                debugger;
                                 var form = this.saveDownloadPanel.getForm();
                                 var fields = form.getValues();
                                 
-                                var downloadStatus;
-                                
-                                downloadStatus = "www.geo-solutions.it";
                                 
                                 var updateResource = function(btn, text){
                                     if (btn == 'yes'){
@@ -1249,7 +1385,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     Ext.Msg.show({
                                         title: me.saveProcessingSuccessTitle,
                                         buttons: Ext.Msg.OK,
-                                        msg: me.saveProcessingSuccessMsg,
+                                        msg: '<a href="'+downloadUrl+'" target="_blank">' + me.downloadFileLabel + '</a>',
                                         fn: closeSaveWin,
                                         icon: Ext.MessageBox.INFO,
                                         scope: this
@@ -1273,7 +1409,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     name: fields.elab_name,
                                     description: fields.elab_description,
                                     category: 'download',
-                                    store: downloadStatus
+                                    store: downloadUrl
                                 });
                                 
                                 //Verifico se la risorsa (elaborazione) esiste
@@ -1331,12 +1467,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     id: "elab-savebutton",
                                     disabled: true,
                                     formBind: true,
-                                    handler: submitElab,
+                                    handler: executeDownload,
                                     scope: this
                                 }],
                                 keys: [{ 
                                     key: [Ext.EventObject.ENTER], 
-                                    handler: submitElab,
+                                    handler: executeDownload,
                                     scope: this
                                 }]
                             });
@@ -1370,9 +1506,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                 
                                 var loadGeostoreStatus = function(status){
                                     Ext.Msg.show({
-                                        title: "Download Not Yet Implemented!!!",
+                                        title: "Download",
                                         buttons: Ext.Msg.OK,
-                                        msg: "DOWNLOAD: " + status,
+                                        msg: '<a href='+status+' target="_blank">' + me.downloadFileLabel + '</a>',
                                         icon: Ext.MessageBox.INFO,
                                         scope: this
                                     });
