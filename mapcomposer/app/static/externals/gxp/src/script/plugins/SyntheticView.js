@@ -1328,8 +1328,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                 }); 
                             };
                             
-                            var submitElab = function(downloadUrl){
-                                debugger;
+                            var submitElab = function(downloadUrl){                                
                                 var form = this.saveDownloadPanel.getForm();
                                 var fields = form.getValues();
                                 
