@@ -391,8 +391,15 @@ OpenLayers.Control.WMSGetFeatureInfo = OpenLayers.Class(OpenLayers.Control, {
             }
         );
         OpenLayers.Util.applyDefaults(params, this.vendorParams);
+        var headers;
+        if(this.authentication) {
+            headers = {
+                "Authorization":  "Basic " + Base64.encode(this.authentication.user + ":" + this.authentication.password)
+            };
+        }
         return {
             url: url,
+            headers: headers,
             params: OpenLayers.Util.upperCaseObject(params),
             callback: function(request) {
                 this.handleResponse(clickPosition, request, url);
@@ -481,7 +488,7 @@ OpenLayers.Control.WMSGetFeatureInfo = OpenLayers.Class(OpenLayers.Control, {
             for (var url in services) {
                 layers = services[url];
                 var wmsOptions = this.buildWMSOptions(url, layers, 
-                    clickPosition, layers[0].params.FORMAT);
+                    clickPosition, layers[0].params.FORMAT);                
                 OpenLayers.Request.GET(wmsOptions); 
             }
         }
