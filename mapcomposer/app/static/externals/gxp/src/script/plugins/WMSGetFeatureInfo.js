@@ -141,6 +141,7 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                     queryVisible: true,
                     layers: [x.getLayer()],
                     vendorParams: vendorParams,
+                    authentication: this.authentication,
                     eventListeners: {
                         beforegetfeatureinfo: function(evt) {
 							//first getFeatureInfo in chain
