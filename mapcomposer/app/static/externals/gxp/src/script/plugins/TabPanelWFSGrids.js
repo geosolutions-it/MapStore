@@ -193,7 +193,7 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                             }
                         }
                     } else {
-                        return (value == values);
+                        return (value == attributeValue);
                     }
                 }
                 return false;

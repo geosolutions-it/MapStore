@@ -412,6 +412,10 @@
     {
         "ptype":"gxp_wmsgetfeatureinfo",
         "useTabPanel": true,
+        "authentication": {
+            "user": "super",
+            "password": "super"
+        },
         "toggleGroup":"toolGroup",
         "actionTarget":{
             "target":"paneltbar",

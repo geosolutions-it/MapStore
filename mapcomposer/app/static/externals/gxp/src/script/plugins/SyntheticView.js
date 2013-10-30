@@ -12,56 +12,6 @@
  */
 Ext.namespace("gxp.plugins");
 
-Ext.util.base64 = {
-
-    base64s : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
-    
-    encode: function(decStr){
-        if (typeof btoa === 'function') {
-             return btoa(decStr);            
-        }
-        var base64s = this.base64s;
-        var bits;
-        var dual;
-        var i = 0;
-        var encOut = "";
-        while(decStr.length >= i + 3){
-            bits = (decStr.charCodeAt(i++) & 0xff) <<16 | (decStr.charCodeAt(i++) & 0xff) <<8 | decStr.charCodeAt(i++) & 0xff;
-            encOut += base64s.charAt((bits & 0x00fc0000) >>18) + base64s.charAt((bits & 0x0003f000) >>12) + base64s.charAt((bits & 0x00000fc0) >> 6) + base64s.charAt((bits & 0x0000003f));
-        }
-        if(decStr.length -i > 0 && decStr.length -i < 3){
-            dual = Boolean(decStr.length -i -1);
-            bits = ((decStr.charCodeAt(i++) & 0xff) <<16) |    (dual ? (decStr.charCodeAt(i) & 0xff) <<8 : 0);
-            encOut += base64s.charAt((bits & 0x00fc0000) >>18) + base64s.charAt((bits & 0x0003f000) >>12) + (dual ? base64s.charAt((bits & 0x00000fc0) >>6) : '=') + '=';
-        }
-        return(encOut);
-    },
-    
-    decode: function(encStr){
-        if (typeof atob === 'function') {
-            return atob(encStr); 
-        }
-        var base64s = this.base64s;        
-        var bits;
-        var decOut = "";
-        var i = 0;
-        for(; i<encStr.length; i += 4){
-            bits = (base64s.indexOf(encStr.charAt(i)) & 0xff) <<18 | (base64s.indexOf(encStr.charAt(i +1)) & 0xff) <<12 | (base64s.indexOf(encStr.charAt(i +2)) & 0xff) << 6 | base64s.indexOf(encStr.charAt(i +3)) & 0xff;
-            decOut += String.fromCharCode((bits & 0xff0000) >>16, (bits & 0xff00) >>8, bits & 0xff);
-        }
-        if(encStr.charCodeAt(i -2) == 61){
-            return(decOut.substring(0, decOut.length -2));
-        }
-        else if(encStr.charCodeAt(i -1) == 61){
-            return(decOut.substring(0, decOut.length -1));
-        }
-        else {
-            return(decOut);
-        }
-    }
-
-};  
-
 /** api: constructor
  *  .. class:: SyntheticView(config)
  *
@@ -1991,12 +1941,16 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             var processingPane = this.processingPane;
             if (processingPane.formula){
                 var store = processingPane.formula.getStore();
+                var oldFormula = processingPane.formula.getValue();
                 processingPane.filterComboFormulaScale(processingPane.formula);
-                processingPane.formula.setValue(store.data.items[0].get('id_formula'));
-                
-                //fire select formula combo to update target combo                
-                processingPane.formula.fireEvent('select',processingPane.formula,store.data.items[0]);
+                if(store.findExact('id_formula',oldFormula) === -1) {
+                    processingPane.formula.setValue(store.data.items[0].get('id_formula'));
+                    
+                    //fire select formula combo to update target combo                
+                    processingPane.formula.fireEvent('select',processingPane.formula,store.data.items[0]);
+                }
             }
+
             
         });
         
@@ -2155,6 +2109,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             //riskProcess.describe({callback: function() {
                 //riskProcess.setResponseForm([{}], {supportedFormats: {'application/json':true}});
             riskProcess.execute({
+                headers: me.geoStoreUser ? {
+                    "Authorization":  "Basic " + Ext.util.base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
+                } : undefined,
                 // spatial input can be a feature or a geometry or an array of
                 // features or geometries
                 inputs: {
@@ -2535,18 +2492,21 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }
     },*/
     
-    extractLayersByName: function(layers, names) {
+    extractLayersByName: function(layers, names, field) {
+        field = field || 'name';
         var map = this.target.mapPanel.map;
         var layerStore = this.target.mapPanel.layers;
         for(var i=0, layerName; layerName = names[i]; i++) {
             var layerIndex = layerStore.findBy(function(rec) {
-                return rec.get('name') === layerName;
+                return rec.get(field) === layerName;
             }, this);
             if(layerIndex !== -1) {
                 var layer = layerStore.getAt(layerIndex);
-                layer.get('layer').clearGrid();
+                if(layer.get('layer').clearGrid) {
+                    layer.get('layer').clearGrid();
+                }
                 layerStore.remove(layer);
-                var mapLayer = this.getLayerByName(map, layer.get('name'));
+                var mapLayer = this.getLayerByName(map, layer.get(field));
                 if(mapLayer) {
                     layer.visibility= mapLayer.visibility;
                 }
@@ -2567,6 +2527,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     moveRiskLayersToTop: function(layers) {        
         this.extractLayersByName(layers, this.currentRiskLayers);                
+    },
+    
+    moveModifiedLayerToTop: function(layers) {        
+        this.extractLayersByName(layers, this.modifiedLayer, "title");                
     },
     
     analyticView: function() {    
@@ -2601,8 +2565,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             Ext.getCmp('featuregrid').setCurrentPanel('roads');
             this.loadRoadsGrid();
         }   
-        
-        this.moveRiskLayersToTop(newLayers);
+        if(status.processing === 3) {
+            this.moveModifiedLayerToTop(newLayers);
+        }
+        this.moveRiskLayersToTop(newLayers);        
 
         // add analytic view layers to the map
         this.target.mapPanel.layers.add(newLayers);
@@ -2769,8 +2735,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.enableDisableRoads(!status.formulaInfo.dependsOnArcs);
         
         this.removeModifiedLayer(map);
-        
-        this.addModifiedFeatures(map,this.vectorLayers);
+        if(status.processing === 3) {
+            this.addModifiedFeatures(map,this.vectorLayers);
+        }
         
         this.removeRiskLayers(map);
         
@@ -2804,6 +2771,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 var data = status.simulation.targets.length > 0 ? status.simulation.targets.join('_') : status.damageArea;
                 
                 repositoryProcess.execute({
+                    headers: me.geoStoreUser ? {
+                        "Authorization":  "Basic " + Ext.util.base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
+                    } : undefined,
                     inputs: {
                         store: new OpenLayers.WPSProcess.LiteralData({value:this.wpsStore}),
                         action: new OpenLayers.WPSProcess.LiteralData({value:'save'}),
@@ -2842,6 +2812,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             var targetId = this.getChosenTarget(status);            
             var me = this;
             riskProcess.execute({
+                headers: me.geoStoreUser ? {
+                    "Authorization":  "Basic " + Base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
+                } : undefined,
                 // spatial input can be a feature or a geometry or an array of
                 // features or geometries
                 inputs: {

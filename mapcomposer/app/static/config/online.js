@@ -1,5 +1,5 @@
 {
-	"geoStoreBase": "http://84.33.2.23/geostore/rest/",
+	"geoStoreBase": "http://destination.geo-solutions.it/geostore/rest/",
 	"proxy": "/http_proxy/proxy/?url=",
 	"defaultLanguage": "it",
 	"embedding": false,
@@ -23,7 +23,7 @@
 			"ptype": "gxp_wmssource",
 			"title": "Destination GeoServer",
 			"version": "1.1.1",
-			"url": "http://84.33.2.23/geoserver_slave/destination/ows",
+			"url": "http://destination.geo-solutions.it/geoserver_test/destination/ows",
 			"layerBaseParams": {
 				"TILED": true,
 				"TILESORIGIN": "-180,-90"
@@ -149,91 +149,91 @@
 			"source": "destination",
             "title": "Beni culturali",
             "name": "beni_culturali_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Inhalte"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
             "visibility": false
         },
         {
             "source": "destination",
 			"title": "Zone urbanizzate",
 			"name": "zone_urbanizzate_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Inhalte"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
 			"visibility": false
 		},
 		{
 			"source": "destination",
 			"title": "Acque sotterranee",
 			"name": "acque_sotterranee_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Inhalte"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
 			"visibility": false
 		},
 		{
 			"source": "destination",
 			"title": "Acque superficiali",
 			"name": "acque_superficiali_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Inhalte"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
 			"visibility": false
 		},
 		{
 			"source": "destination",
 			"title": "Aree protette",
 			"name": "aree_protette_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Inhalte"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
 			"visibility": false
 		},
 		{
 			"source": "destination",
 			"title": "Aree boscate",
 			"name": "aree_boscate_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Inhalte"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
 			"visibility": false
 		},
 		{
 			"source": "destination",
 			"title": "Aree agricole",
 			"name": "aree_agricole_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Inhalte"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
 			"visibility": false
 		},
 		{
 			"source": "destination",
 			"title": "Addetti/utenti centri commerciali",
 			"name": "centri_commerciali_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Inhalte"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
 			"visibility": false
 		},
 		{
 			"source": "destination",
 			"title": "Addetti/utenti strutture scolastiche",
 			"name": "strutture_scolastiche_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Inhalte"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
 			"visibility": false
 		},
 		{
 			"source": "destination",
 			"title": "Addetti/utenti strutture sanitarie",
 			"name": "strutture_sanitarie_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Inhalte"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
 			"visibility": false
 		},
 		{
 			"source": "destination",
 			"title": "Addetti industria e servizi",
 			"name": "industria_servizi_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Inhalte"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
 			"visibility": false
 		},
 		{
 			"source": "destination",
 			"title": "Popolazione turistica",
 			"name": "popolazione_turistica_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Inhalte"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
 			"visibility": false
 		},
 		{
 			"source": "destination",
 			"title": "Popolazione residente",
 			"name": "popolazione_residente_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Inhalte"],
+            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
 			"visibility": false
         },{
 			"source": "destination",
@@ -455,8 +455,8 @@
         "customParams":{
             "outputFilename":"mapstore-print"
         },
-        "ignoreLayers": "Google Hybrid,Bing Aerial,Nessuno sfondo,Google Terrain,Google Roadmap",
-        "printService":"http://84.33.2.23/geoserver_slave/pdf/",
+        "ignoreLayers": "Google Hybrid,Bing Aerial,Nessuno sfondo,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
+        "printService":"http://destination.geo-solutions.it/geoserver_test/pdf/",
         "legendPanelId":"legendPanel",
         "actionTarget":{
             "target":"paneltbar",
@@ -480,24 +480,24 @@
 		"selectionLayerTitle": "Rischio Totale",
 		"bufferLayerNameHuman": "buffer_human",
 		"bufferLayerNameNotHuman": "buffer_not_human",
-		"selectionLayerBaseURL": "http://84.33.2.23/geoserver_slave/destination/wms",
+		"selectionLayerBaseURL": "http://destination.geo-solutions.it/geoserver_test/destination/wms",
 		"selectionLayerProjection": "EPSG:32632",
 		"geometryName": "geometria",
 		"accidentTipologyName": "tipologia",
-		"wfsURL": "http://84.33.2.23/geoserver_slave/destination/wfs",
-		"wpsURL": "http://84.33.2.23/geoserver_slave/wps",
+		"wfsURL": "http://destination.geo-solutions.it/geoserver_test/destination/wfs",
+		"wpsURL": "http://destination.geo-solutions.it/geoserver_test/wps",
 		"wpsStore": "destination",
 		"wfsVersion": "1.1.0",
 		"destinationNS": "destination",
 		"index": 28,
-        "geoStoreBase":"http://localhost:8080/geostore/rest/",
-        "proxy":"/proxy/?url="
+        "geoStoreBase":"http://destination.geo-solutions.it/geostore/rest/",
+        "proxy":"/http_proxy/?url="
 	},
 	{
 		"ptype": "gxp_tabpanelwfsgrids",
 		"outputTarget": "featurelist",
 		"srsName": "EPSG:32632",
-		"wfsURL": "http://84.33.2.23/geoserver_slave/wfs",
+		"wfsURL": "http://destination.geo-solutions.it/geoserver_test/wfs",
 		"panels": {
 			"targets": {
 				"Popolazione residente": {
