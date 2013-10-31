@@ -486,6 +486,7 @@
 		"accidentTipologyName": "tipologia",
 		"wfsURL": "http://destination.geo-solutions.it/geoserver_test/destination/wfs",
 		"wpsURL": "http://destination.geo-solutions.it/geoserver_test/wps",
+		"downloadBaseUrl": "http://destination.geo-solutions.it/geoserver_test/www/downloads/",
 		"wpsStore": "destination",
 		"wfsVersion": "1.1.0",
 		"destinationNS": "destination",

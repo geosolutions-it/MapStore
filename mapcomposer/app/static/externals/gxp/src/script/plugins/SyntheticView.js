@@ -1227,10 +1227,21 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                   value: bounds, 
                                   projection: map.getProjection() 
                                 });
-
+                                var cff;
+                                var padr;
+                                var pis;
+                                var changedTargets;
+                                
+                                if(status.processing === 3) {
+                                    var simulation = status.simulation;            
+                                    pis = new OpenLayers.WPSProcess.LiteralData({value:simulation.pis.join('_')});
+                                    padr = new OpenLayers.WPSProcess.LiteralData({value:simulation.padr.join('_')});
+                                    cff = new OpenLayers.WPSProcess.LiteralData({value:simulation.cff.join('_')});
+                                    changedTargets = new OpenLayers.WPSProcess.LiteralData({value:simulation.targets.join('_')});                                    
+                                }
                                 downloadProcess.execute({
                                     headers: me.geoStoreUser ? {
-                                        "Authorization":  "Basic " + Ext.util.base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
+                                        "Authorization":  "Basic " + Base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
                                     } : undefined,
                                     // spatial input can be a feature or a geometry or an array of
                                     // features or geometries
@@ -1256,7 +1267,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                         severeness: new OpenLayers.WPSProcess.LiteralData({value:status.formulaInfo.dependsOnTarget ? status.target.severeness : '0'}),
                                         distances: new OpenLayers.WPSProcess.LiteralData({value: distances.join(',')}),
                                         distanceNames: new OpenLayers.WPSProcess.LiteralData({value: distanceNames.join(',')}),
-                                        fp: new OpenLayers.WPSProcess.LiteralData({value:status.temporal.value})
+                                        fp: new OpenLayers.WPSProcess.LiteralData({value:status.temporal.value}),
+                                        language: new OpenLayers.WPSProcess.LiteralData({value:GeoExt.Lang.locale}),
+                                        damageArea: status.processing === 4 ? new OpenLayers.WPSProcess.LiteralData({value:status.damageArea}) : undefined,
+                                        cff: cff,
+                                        padr: padr,
+                                        pis: pis,
+                                        changedTargets: changedTargets
                                     },
                                     outputs: [],                                    
                                     success: function(outputs) {
@@ -2110,7 +2127,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 //riskProcess.setResponseForm([{}], {supportedFormats: {'application/json':true}});
             riskProcess.execute({
                 headers: me.geoStoreUser ? {
-                    "Authorization":  "Basic " + Ext.util.base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
+                    "Authorization":  "Basic " + Base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
                 } : undefined,
                 // spatial input can be a feature or a geometry or an array of
                 // features or geometries
@@ -2772,7 +2789,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 
                 repositoryProcess.execute({
                     headers: me.geoStoreUser ? {
-                        "Authorization":  "Basic " + Ext.util.base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
+                        "Authorization":  "Basic " + Base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
                     } : undefined,
                     inputs: {
                         store: new OpenLayers.WPSProcess.LiteralData({value:this.wpsStore}),
