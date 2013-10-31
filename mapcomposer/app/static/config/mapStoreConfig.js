@@ -222,6 +222,7 @@
 		  "printService":"http://84.33.2.75/geoserver/pdf/",
 		  "legendPanelId":"legendPanel",
 		  "ignoreLayers":["WFSSearch","Marker"],
+		  "appendLegendOptions":true,
 		  "actionTarget":{
 			 "target":"paneltbar",
 			 "index":4

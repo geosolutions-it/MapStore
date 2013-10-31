@@ -35,11 +35,11 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
      *  URL of the print service.
      */
     printService: null,
-	/** api: config[ignoreLayers]
-	 * ``boolean`` ignore layers for print 
-	 * for print alerts.
-	 */
-	ignoreLayers:[],
+    /** api: config[ignoreLayers]
+     * ``boolean`` ignore layers for print 
+     * for print alerts.
+     */
+    ignoreLayers:[],
     /** api: config[customParams]
      *  ``Object`` Key-value pairs of custom data to be sent to the print
      *  service. Optional. This is e.g. useful for complex layout definitions
@@ -80,6 +80,134 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
      *  Text for print preview text (i18n).
      */
     previewText: "Print Preview",
+
+    /** api config[legendOnSeparatePage]
+     *  option checked in the print preview
+     */
+    legendOnSeparatePage:false,
+    /** api config[includeLegend]
+     *  option checked in the print preview
+     */
+    includeLegend:true,
+    /** api config[defaultResolutionIndex]
+     *  resolution at that index will be selected as default in the print preview
+     */
+    defaultResolutionIndex:0,
+    /** api config[defaultLayoutIndex]
+     *  layout at that index will be selected as default in the print preview
+     */
+    defaultLayoutIndex:0,
+
+    /** api: config[appendLegendOptions]
+     *  Flag indicates that we need to change legend options for the print or not
+     **/
+    appendLegendOptions: false,
+
+    /** api: config[addGraticuleControl]
+     *  Flag indicates that we need to add graticule control to the default options
+     **/
+    addGraticuleControl: false,
+
+    /** api: config[addLandscapeControl]
+     *  Flag indicates that we need to add landscape control for the default tab
+     **/
+    addLandscapeControl: false,
+    
+    /** api: config[offsetByScale]
+     *  ``Object`` Force to change the lat and lon offset for the graticule fixed to the scale 
+     */
+    offsetByScale:{
+        20000000:{
+            lonOffsetX: 0,
+            lonOffsetY: 180,
+            latOffsetX: -270,
+            latOffsetY: 2
+        },
+        10000000:{
+            lonOffsetX: 0,
+            lonOffsetY: 180,
+            latOffsetX: -270,
+            latOffsetY: 2
+        },
+        4000000:{
+            lonOffsetX: 0,
+            lonOffsetY: 50,
+            latOffsetX: -50,
+            latOffsetY: 2
+        },
+        2000000:{
+            lonOffsetX: 0,
+            lonOffsetY: 50,
+            latOffsetX: -50,
+            latOffsetY: 2
+        },
+        1000000:{
+            lonOffsetX: 0,
+            lonOffsetY: 50,
+            latOffsetX: -50,
+            latOffsetY: 2
+        },
+        500000:{
+            lonOffsetX: 0,
+            lonOffsetY: 50,
+            latOffsetX: -50,
+            latOffsetY: 2
+        },
+        200000:{
+            lonOffsetX: 0,
+            lonOffsetY: 100,
+            latOffsetX: -150,
+            latOffsetY: 2
+        },
+        100000:{
+            lonOffsetX: 0,
+            lonOffsetY: 100,
+            latOffsetX: -150,
+            latOffsetY: 2
+        },
+        50000:{
+            lonOffsetX: 0,
+            lonOffsetY: 100,
+            latOffsetX: -150,
+            latOffsetY: 2
+        },
+        20000:{
+            lonOffsetX: 0,
+            lonOffsetY: 200,
+            latOffsetX: -245,
+            latOffsetY: 2
+        },
+        10000:{
+            lonOffsetX: 0,
+            lonOffsetY: 200,
+            latOffsetX: -245,
+            latOffsetY: 2
+        },
+        5000:{
+            lonOffsetX: 0,
+            lonOffsetY: 200,
+            latOffsetX: -245,
+            latOffsetY: 2
+        },
+        2000:{
+            lonOffsetX: 0,
+            lonOffsetY: 45,
+            latOffsetX: -45,
+            latOffsetY: 2
+        },
+        1000:{
+            lonOffsetX: 0,
+            lonOffsetY: 45,
+            latOffsetX: -45,
+            latOffsetY: 2
+        },
+        500:{
+            lonOffsetX: 0,
+            lonOffsetY: 45,
+            latOffsetX: -45,
+            latOffsetY: 2
+        }
+    },
 
     /** private: method[constructor]
      */
@@ -124,51 +252,28 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                     }
                 }
             });
-			
-			var getNotIgnorable = function(notSupported,ignorable){
-				var length = notSupported.length;
-				var notIgnorable = new Array();
-				for (var i = 0; i< length;i++){
-					var layerName = notSupported[i];
-					if (ignorable.indexOf(layerName)<0) {
-						notIgnorable.push (notSupported[i]);
-					}
-	
-				}
-				return notIgnorable;
-			}
+            
+            var getNotIgnorable = function(notSupported,ignorable){
+                var length = notSupported.length;
+                var notIgnorable = new Array();
+                for (var i = 0; i< length;i++){
+                    var layerName = notSupported[i];
+                    if (layerName && ignorable.indexOf(layerName)<0) {
+                        notIgnorable.push (notSupported[i]);
+                    }
+    
+                }
+                return notIgnorable;
+            }
+
             var actions = gxp.plugins.Print.superclass.addActions.call(this, [{
                 menuText: this.menuText,
                 tooltip: this.tooltip,
                 iconCls: "gxp-icon-print",
                 disabled: false,
                 handler: function() {
-                    /*var layers = getSupportedLayers();
-                    var supported = layers.supported;
-                    var notSupported = layers.notSupported;
-                    
-                    if (supported.length > 0) {
-						var notIgnorable = getNotIgnorable(notSupported, this.ignoreLayers);
-                        if( notIgnorable.length > 0 ){
-
-                            Ext.Msg.alert(
-                                this.notAllNotPrintableText,
-                                this.notPrintableLayersText + '<br />' + notIgnorable.join(',') +
-                                ( notIgnorable.indexOf('Marker') != -1 ? '<br />'+ this.notPrintableMarkersText : '')
-                            );
-                            
-                        } else {*/                    
-							createPrintWindow.call(this);
-							showPrintWindow.call(this);
-						/*}
-
-                    } else {
-                        // no layers supported
-                        Ext.Msg.alert(
-                            this.notAllNotPrintableText,
-                            this.nonePrintableText
-                        );
-                    }*/
+					createPrintWindow.call(this);
+					showPrintWindow.call(this);
                 },
                 scope: this,
                 listeners: {
@@ -214,11 +319,19 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
             }
 
             function isSupported(layer) {
+                var map = mapPanel.map;
+                
+                var drawcontrols = map.getControlsByClass("OpenLayers.Control.DrawFeature");
+                var size = drawcontrols.length;
+                for (var i=0; i<size; i++){
+                    drawcontrols[i].deactivate();
+                }
+                
                 return (
                     layer instanceof OpenLayers.Layer.WMS ||
-                    layer instanceof OpenLayers.Layer.OSM 
-					
-                    //|| layer instanceof OpenLayers.Layer.Google
+                    layer instanceof OpenLayers.Layer.OSM ||
+                    layer.name == 'None'                  ||  
+                    layer instanceof OpenLayers.Layer.Vector
                 );
             }
 
@@ -233,10 +346,44 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                             autoHeight: true,
                             mapTitle: this.target.about && this.target.about["title"],
                             comment: this.target.about && this.target.about["abstract"],
+                            // Add legend option
+                            addFormParameters: this.appendLegendOptions,
+                            // Add graticule option
+                            addGraticuleControl: this.addGraticuleControl,
+                            // Add graticule offset by scale
+                            offsetByScale: this.offsetByScale,
+                            // Add landscape control
+                            addLandscapeControl: this.addLandscapeControl,
+                            listeners: {
+                                scope: this,
+                                "afterrender": function() {
+                                    /**
+                                     * Add a custom Grid Control
+                                     */
+                                    var printMapPanel = printWindow.items.get(0).printMapPanel;
+                
+                                    var ctrl = this.target.mapPanel.map.getControlsByClass("OpenLayers.Control.Graticule");
+                                    
+                                    if(ctrl[0] && ctrl[0].active){                                          
+                                        var graticule = new OpenLayers.Control.Graticule({ 
+                                              displayInLayerSwitcher: false,
+                                              labelled: true, 
+                                              visible: true                  
+                                        });
+                                         
+                                        graticule.labelSymbolizer.fontColor =  '#45F760';   
+                                        graticule.lineSymbolizer.strokeColor = '#45F760'; 
+                                
+                                        printMapPanel.map.addControl(graticule);
+                                        
+                                        graticule.activate();
+                                    } 
+                                }
+                            },
                             printMapPanel: {
                                 map: Ext.applyIf({
                                     controls: [
-										//UNCOMMENT TO ADD CONTROLS TO PRINT PREVIEW
+                                        //UNCOMMENT TO ADD CONTROLS TO PRINT PREVIEW
                                         //new OpenLayers.Control.Navigation(),
                                         //new OpenLayers.Control.PanPanel(),
                                         //new OpenLayers.Control.ZoomPanel(),
@@ -248,7 +395,7 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                                         }
                                     }
                                 }, mapPanel.initialConfig.map)
-								//UNCOMMENT TO ADD ZOOM SLIDER TO PRINT PREVIEW
+                                //UNCOMMENT TO ADD ZOOM SLIDER TO PRINT PREVIEW
                                 /*items: [{
                                     xtype: "gx_zoomslider",
                                     vertical: true,

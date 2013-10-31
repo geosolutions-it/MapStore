@@ -33,12 +33,20 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
     emptyTitleText: "Enter map title here.",
     /** api: config[includeLegendText] ``String`` i18n */
     includeLegendText: "Include legend?",
-	legendOnSeparatePageText: "Legend on separate page?",
-	compactLegendText: "Compact legend?",	
+    legendOnSeparatePageText: "Legend on separate page?",
+    compactLegendText: "Compact legend?",   
     /** api: config[emptyCommentText] ``String`` i18n */
     emptyCommentText: "Enter comments here.",
     /** api: config[creatingPdfText] ``String`` i18n */
     creatingPdfText: "Creating PDF...",
+    /** api: config[defaultTabText] ``String`` i18n */
+    defaultTabText: "Default",
+    /** api: config[legendTabText] ``String`` i18n */
+    legendTabText: "Legend",
+    /** api: config[graticuleFieldLabelText] ``String`` i18n */
+    graticuleFieldLabelText: 'Active graticule',
+    /** api: config[landscapeText] ``String`` i18n */
+    landscapeText: 'Landscape',
     /* end i18n */
     
     /** api: config[printProvider]
@@ -100,10 +108,10 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
      *  ignored if :ref:`GeoExt.ux.PrintPreview.legend` is not provided.
      */
     includeLegend: false,
-	
-	compactLegend: false,
-	
-	legendOnSeparatePage: false,
+    
+    compactLegend: false,
+    
+    legendOnSeparatePage: false,
     
     /** api: config[mapTitle]
      *  ``String`` An optional title to set for the mapTitle field when
@@ -148,6 +156,26 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
      *  override
      */
     cls: "x-panel-body x-panel-body-noheader",
+
+    /** api: config[addFormParameters]
+     *  Flag indicates that we need to add the form parameters fieldset or not
+     **/
+    addFormParameters: false,
+
+    /** api: config[addGraticuleControl]
+     *  Flag indicates that we need to add graticule control for the default tab
+     **/
+    addGraticuleControl: false,
+
+    /** api: config[addLandscapeControl]
+     *  Flag indicates that we need to add landscape control for the default tab
+     **/
+    addLandscapeControl: false,
+
+    /** api: config[landscape]
+     *  Print in landscape mode
+     **/
+    landscape: false,
     
     /** private: method[initComponent]
      */
@@ -194,19 +222,45 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             "resize": this.updateSize,
             scope: this
         });
+
+        var tmpLegendParameters;
+        var tmpChangeLegendParameters;
+
         this.on({
             "render": function() {
-				this.updateLayout();
-				this.busyMask = new Ext.LoadMask(this.getEl(), {
-					msg: this.creatingPdfText
-				});
+                this.updateLayout();
+                this.busyMask = new Ext.LoadMask(this.getEl(), {
+                    msg: this.creatingPdfText
+                });
                 this.mon(this.printProvider,{
                     "beforeprint": function(printProvider){
-						this.busyMask.show();
-						
-					},
-                    "print": this.busyMask.hide,
-                    "printexception": this.busyMask.hide,
+                        if(this.addFormParameters){
+                            // save state before print
+                            tmpChangeLegendParameters = printProvider.changeLegendParameters;
+                            tmpLegendParameters = printProvider.legendStylePanel;
+                            // change parameters on printProvider
+                            printProvider.changeLegendParameters = true;
+                            printProvider.legendStylePanel = this.legendStylePanel;
+                            this.legendStylePanel.legendParameters = this.legendStylePanel.writeFormParameters(this.legendStylePanel.legendParameters);
+                        }
+                        this.busyMask.show();
+                    },
+                    "print": function(printProvider){
+                        if(this.addFormParameters){
+                            // restore state before print
+                            printProvider.changeLegendParameters = tmpChangeLegendParameters;
+                            printProvider.legendStylePanel = tmpLegendParameters;
+                        }
+                        this.busyMask.hide;
+                    },
+                    "printexception": function(printProvider){
+                        if(this.addFormParameters){
+                            // restore state before print
+                            printProvider.changeLegendParameters = tmpChangeLegendParameters;
+                            printProvider.legendStylePanel = tmpLegendParameters;
+                        }
+                        this.busyMask.hide;
+                    },
                     scope: this
                 });
             },
@@ -258,11 +312,11 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             handler: function(){
                 this.printMapPanel.print(this.includeLegend &&
                     {
-						legend: this.legend, 
-						compactLegend : this.compactLegend, 
-						legendOnSeparatePage : this.legendOnSeparatePage
-					}
-				);
+                        legend: this.legend, 
+                        compactLegend : this.compactLegend, 
+                        legendOnSeparatePage : this.legendOnSeparatePage
+                    }
+                );
             },
             scope: this
         });
@@ -290,6 +344,8 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             })
         };
         
+        var panelElements = [titleCfg];
+        
         if(this.legend) {
             var legendOnSeparatePageCheckbox = new Ext.form.Checkbox({
                 name: "legend",
@@ -299,13 +355,16 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 ctCls: "gx-item-nowrap",
                 handler: function(cb, checked) {
                     this.legendOnSeparatePage = checked;
-					this.updateLayout();
+                    if(this.addLandscapeControl){
+                        this.landscapeCheckbox.setDisabled(!checked);
+                    }
+                    this.updateLayout();
                 },
-				cls : "gx-item-margin-left",				
+                cls : "gx-item-margin-left",                
                 scope: this
             });
-			
-			var legendCheckbox = new Ext.form.Checkbox({
+            
+            var legendCheckbox = new Ext.form.Checkbox({
                 name: "legendSeparatePage",
                 checked: this.includeLegend,
                 boxLabel: this.includeLegendText,
@@ -313,102 +372,178 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 ctCls: "gx-item-nowrap",
                 handler: function(cb, checked) {
                     this.includeLegend = checked;
-					this.updateLayout();
+                    this.updateLayout();
                 },
-				cls : "gx-item-margin-left",
+                cls : "gx-item-margin-left",
                 scope: this
             });
-			
-			var compactLegendCheckbox = new Ext.form.Checkbox({
+            
+            var compactLegendCheckbox = new Ext.form.Checkbox({
                 name: "compactLegend",
                 checked: this.compactLegend,
                 boxLabel: this.compactLegendText,
                 hideLabel: true,
-				hidden:true,
+                hidden:true,
                 ctCls: "gx-item-nowrap",
                 handler: function(cb, checked) {
                     this.compactLegend = checked;
-					this.updateLayout();
+                    this.updateLayout();
                 },
-				cls : "gx-item-margin-left",
+                cls : "gx-item-margin-left",
                 scope: this
-            });			
+            });  
+
+            var checkItems = [
+                        legendCheckbox, 
+                        legendOnSeparatePageCheckbox,
+                        compactLegendCheckbox
+                    ];
+            
+            if(this.addLandscapeControl){
+                var landscapeCheckbox = new Ext.form.Checkbox({
+                    name: "landscape",
+                    checked: this.landscape,
+                    boxLabel: this.landscapeText,
+                    hideLabel: true,
+                    disabled: !this.legendOnSeparatePage,
+                    ctCls: "gx-item-nowrap",
+                    handler: function(cb, checked) {
+                        this.landscape = checked;
+                        this.updateLayout();
+                    },
+                    cls : "gx-item-margin-left",
+                    scope: this
+                });    
+                this.landscapeCheckbox = landscapeCheckbox;
+                checkItems.push(landscapeCheckbox);
+            }
+
+            this.addGraticuleControl && checkItems.push(this.getGraticuleCheckBox());  
+
+            panelElements.push({
+                xtype: "container",
+                layout: "form",
+                cls: "x-form-item",
+                        style:"text-align:left",
+                items: checkItems
+            });
         }
         
-		var panelElements = [titleCfg];
-		
-		if(this.legend){
-			panelElements.push({
-				xtype: "container",
-				layout: "form",
-				cls: "x-form-item",
-                		style:"text-align:left",
-				items: [
-					legendCheckbox, 
-					legendOnSeparatePageCheckbox,
-					compactLegendCheckbox
-				]
-			});
-		}
-		
-		panelElements.push({
-			xtype: "textarea",
-			name: this.commentField,
-			value: this.comment,
-			emptyText: this.emptyCommentText,
-			hideLabel: true,
-			plugins: new GeoExt.plugins.PrintProviderField({
-				printProvider: this.printProvider
-			})
-		});
-		
-        return new Ext.form.FormPanel({
-            autoHeight: true,
-            border: false,
-            defaults: {
-                anchor: "100%"
-            },
-            items: panelElements
+        panelElements.push({
+            xtype: "textarea",
+            name: this.commentField,
+            value: this.comment,
+            emptyText: this.emptyCommentText,
+            hideLabel: true,
+            plugins: new GeoExt.plugins.PrintProviderField({
+                printProvider: this.printProvider
+            })
         });
+
+        if(this.addFormParameters){
+            // use the flag
+            var tabItems = [];
+            tabItems.push(new Ext.form.FormPanel({
+                title: this.defaultTabText,
+                autoHeight: true,
+                border: false,
+                defaults: {
+                    anchor: "100%"
+                },
+                items: panelElements
+            }));
+            tabItems.push(new Ext.form.FormPanel({
+                title: this.legendTabText,
+                autoHeight: true,
+                border: false,
+                defaults: {
+                    anchor: "100%"
+                },
+                items: [this.getFormParamatersFieldset()]
+            }));
+            
+            return new Ext.TabPanel({
+                activeTab: 0,
+                items: tabItems
+            });
+        }else{
+            return new Ext.form.FormPanel({
+                autoHeight: true,
+                border: false,
+                defaults: {
+                    anchor: "100%"
+                },
+                items: panelElements
+            });
+        }
+    },
+    
+    /** api: method[getFormParamatersFieldset]
+     *  :arg extraParameters: ``Map`` Optional parameters to show in the form panel
+     *  :arg overrideConfig: ``Map`` Optional config for the form panel
+     *  :returns: ``FormPanel`` with text fields composed by this.formParameters 
+     *  and extraParameters initialized with the values of the map
+     */
+    getFormParamatersFieldset: function(extraParameters, overrideConfig){
+        this.legendStylePanel = new GeoExt.ux.LegendStylePanel({
+            extraParameters: extraParameters,
+            overrideConfig: overrideConfig,
+            printMapPanel: this.printMapPanel
+        });
+        return this.legendStylePanel;
     },
 
-	updateLayout: function() {
-					
-		var currentLayout = this.printProvider.layout.get('name').substr(0,2);
-		var newLayoutName = '';
-		var newLayout = null;
-		/*
-			A4_legend
-			A4_compact_legend
-			A4_2_pages_legend			
-			A4_2_pages_compact_legend
-			
-			includeLegend: false,
-			compactLegend: false,
-			legendOnSeparatePage: false,
-			
-		*/		
-		if(this.includeLegend){
-			newLayoutName = currentLayout;
-			
-			if(this.compactLegend && this.legendOnSeparatePage){
-				newLayoutName = currentLayout + '_2_pages_compact_legend';
-			} else if(this.compactLegend){
-				newLayoutName = currentLayout + '_compact_legend';
-			}else if(this.legendOnSeparatePage){
-				newLayoutName = currentLayout + '_2_pages_legend';
-			}			
-			
-		} else {
-			newLayoutName = currentLayout + '_no_legend';
-		}
-		
-		var nr = this.printProvider.fullLayouts.find("name", newLayoutName);
-		newLayout = this.printProvider.fullLayouts.getAt(nr);			
-		this.printProvider.setLayout(newLayout);
+    updateLayout: function() {
+        var currentLayout;
+        
+        if(!this.printProvider.layout) {
+            currentLayout = this.printProvider.layouts.getAt(this.printProvider.defaultLayoutIndex ||0).get('name').substr(0,2);
+        } else {
+            currentLayout = this.printProvider.layout.get('name').substr(0,2);
+        }
+        
+        var newLayoutName = '';
+        var newLayout = null;
+        /*
+            A4_legend
+            A4_compact_legend
+            A4_2_pages_legend           
+            A4_2_pages_compact_legend
+            
+            includeLegend: false,
+            compactLegend: false,
+            legendOnSeparatePage: false,
+            
+        */ 
+        if(this.includeLegend){
+            newLayoutName = currentLayout;
+            
+            if(this.compactLegend && this.legendOnSeparatePage){
+                newLayoutName = currentLayout + '_2_pages_compact_legend';
+            } else if(this.compactLegend){
+                newLayoutName = currentLayout + '_compact_legend';
+            }else if(this.legendOnSeparatePage){
+                newLayoutName = currentLayout + '_2_pages_legend';
+            }           
+            
+        } else {
+            newLayoutName = currentLayout + '_no_legend';
+        }
 
-	},
-	
+        /* Configure landscape layout: 
+         *   * _2_pages_compact_legend_landscape
+         *   * _2_pages_landscape
+        */
+        if(this.legendOnSeparatePage && this.landscape){
+            newLayoutName += "_landscape";
+        }
+        
+        var nr = this.printProvider.fullLayouts.find("name", newLayoutName);
+        newLayout = this.printProvider.fullLayouts.getAt(nr);           
+        this.printProvider.setLayout(newLayout);
+
+    },
+    
     /** private: method[createMapOverlay]
      *  :return: ``Ext.Panel``
      */
@@ -502,6 +637,198 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         }
         this.printMapPanel.un("resize", this.updateSize, this);
         GeoExt.ux.PrintPreview.superclass.beforeDestroy.apply(this, arguments);
+    },
+    
+    /** api: method[getGraticuleCheckBox]
+     *  :returns: ``Checkbox`` to put on or off the graticule inside the printPanel
+     */
+    getGraticuleCheckBox: function(){
+        //This code is the similar that Graticule control.
+        var graticule = new OpenLayers.Control.Graticule({ 
+              //targetSize: 600,
+              displayInLayerSwitcher: false,
+              labelled: true, 
+              visible: true
+        });
+
+        // Fixme: Remove graticule active and add another one with this listener!!
+        this.printMapPanel.printPage.on({
+            change: function(mods){
+                Ext.apply(graticule, this.calculateLonLatOffsets(mods));
+            }, 
+            scope: this
+        });
+
+        var map = this.printMapPanel.map;
+        var ctrl = this.sourceMap.getControlsByClass("OpenLayers.Control.Graticule");
+
+        return  new Ext.form.Checkbox({
+            name: "graticuleTool",
+            checked: ctrl && ctrl > 1 && ctrl[0].active,
+            boxLabel: this.graticuleFieldLabelText,
+            hideLabel: true,
+            // hidden:true,
+            ctCls: "gx-item-nowrap",
+            handler: function(cb, value) {
+                if(map){
+                    ctrl = map.getControlsByClass("OpenLayers.Control.Graticule");
+                    if(ctrl < 1)
+                        map.addControl(graticule); 
+                    else
+                        graticule = ctrl[0];
+                    if(value){
+                        graticule.activate();
+                    }else{
+                        graticule.deactivate();
+                    } 
+                }
+            },
+            cls : "gx-item-margin-left",
+            scope: this
+        });
+    },
+    
+    /** api: config[offsetByScale]
+     *  ``Object`` Force to change the lat and lon offset for the graticule fixed to the scale 
+     */
+    offsetByScale:{
+        20000000:{
+            lonOffsetX: 0,
+            lonOffsetY: 180,
+            latOffsetX: -270,
+            latOffsetY: 2
+        },
+        10000000:{
+            lonOffsetX: 0,
+            lonOffsetY: 180,
+            latOffsetX: -270,
+            latOffsetY: 2
+        },
+        4000000:{
+            lonOffsetX: 0,
+            lonOffsetY: 50,
+            latOffsetX: -50,
+            latOffsetY: 2
+        },
+        2000000:{
+            lonOffsetX: 0,
+            lonOffsetY: 50,
+            latOffsetX: -50,
+            latOffsetY: 2
+        },
+        1000000:{
+            lonOffsetX: 0,
+            lonOffsetY: 50,
+            latOffsetX: -50,
+            latOffsetY: 2
+        },
+        500000:{
+            lonOffsetX: 0,
+            lonOffsetY: 50,
+            latOffsetX: -50,
+            latOffsetY: 2
+        },
+        200000:{
+            lonOffsetX: 0,
+            lonOffsetY: 100,
+            latOffsetX: -150,
+            latOffsetY: 2
+        },
+        100000:{
+            lonOffsetX: 0,
+            lonOffsetY: 100,
+            latOffsetX: -150,
+            latOffsetY: 2
+        },
+        50000:{
+            lonOffsetX: 0,
+            lonOffsetY: 100,
+            latOffsetX: -150,
+            latOffsetY: 2
+        },
+        20000:{
+            lonOffsetX: 0,
+            lonOffsetY: 200,
+            latOffsetX: -245,
+            latOffsetY: 2
+        },
+        10000:{
+            lonOffsetX: 0,
+            lonOffsetY: 200,
+            latOffsetX: -245,
+            latOffsetY: 2
+        },
+        5000:{
+            lonOffsetX: 0,
+            lonOffsetY: 200,
+            latOffsetX: -245,
+            latOffsetY: 2
+        },
+        2000:{
+            lonOffsetX: 0,
+            lonOffsetY: 45,
+            latOffsetX: -45,
+            latOffsetY: 2
+        },
+        1000:{
+            lonOffsetX: 0,
+            lonOffsetY: 45,
+            latOffsetX: -45,
+            latOffsetY: 2
+        },
+        500:{
+            lonOffsetX: 0,
+            lonOffsetY: 45,
+            latOffsetX: -45,
+            latOffsetY: 2
+        }
+    },
+    
+    /** api: method[calculateLonLatOffsets]
+     *  This method it's only necesary because the final bbox is not the same that the map preview. Remove it when this is fixed
+     *  :returns: ``Object`` with the offsets for the graticule
+     */
+    calculateLonLatOffsets: function (mods){
+
+        // Obtain the offset stored
+        if(mods 
+            && mods.scale){
+            var scale = mods.scale.get("value");
+            if(this.offsetByScale[scale])
+                return this.offsetByScale[scale];
+        }
+
+        var lonOffsetX = 0;
+        var lonOffsetY = 100;
+        var latOffsetX = -150;
+        var latOffsetY = 2;
+
+        // the scale is not recognized. try to adjust
+        if(mods 
+            && mods.feature
+            && mods.feature.geometry
+            && mods.feature.geometry.getBounds()){
+            var boundsArray = mods.feature.geometry.getBounds().toArray();
+
+            var xOffset = boundsArray[2] - boundsArray[0];
+            var yOffset = boundsArray[3] - boundsArray[1];
+
+            lonOffsetY = (Math.floor(xOffset * 10) + 1);
+            latOffsetX =  - (Math.floor(yOffset * 10) + 1);
+            if(lonOffsetY < 100){
+                lonOffsetY = 100 + (xOffset* 1000);
+            }
+            if(latOffsetX >  -100){
+                latOffsetX =  -100 - (yOffset* 1000);
+            }
+        }
+
+        return {
+            lonOffsetX: lonOffsetX,
+            lonOffsetY: lonOffsetY,
+            latOffsetX: latOffsetX,
+            latOffsetY: latOffsetY
+         };
     }
     
 });

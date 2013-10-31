@@ -158,7 +158,7 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
      *  * rotation - ``Boolean`` indicates if rotation is supported
      */
     layouts: null,
-	fullLayouts: null,
+    fullLayouts: null,
     
     /** api: property[dpi]
      *  ``Ext.data.Record`` the record for the currently used resolution.
@@ -414,18 +414,19 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
 
         var pagesLayer = pages[0].feature.layer;
         var encodedLayers = [];
-
+        
         // ensure that the baseLayer is the first one in the encoded list
         var layers = map.layers.concat();
         layers.remove(map.baseLayer);
         layers.unshift(map.baseLayer);
-
+        
         Ext.each(layers, function(layer){
             if(layer !== pagesLayer && layer.getVisibility() === true) {
                 var enc = this.encodeLayer(layer);
                 enc && encodedLayers.push(enc);
             }
         }, this);
+        
         jsonData.layers = encodedLayers;
         
         var encodedPages = [];
@@ -458,17 +459,16 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
             }
             var encodedLegends = [];
             legend.items && legend.items.each(function(cmp) {
-                if(!cmp.hidden) {
+                if(!cmp.hidden && !(cmp.layer instanceof OpenLayers.Layer.Vector)) {
                     var encFn = this.encoders.legends[cmp.getXType()];
-                    encodedLegends = encodedLegends.concat(
-                        encFn.call(this, cmp));
+                    encodedLegends = encodedLegends.concat(encFn.call(this, cmp));
                 }
             }, this);
             if (!rendered) {
                 legend.destroy();
             }
-            jsonData.legends = encodedLegends;						
-			
+            jsonData.legends = encodedLegends;                      
+            
         }
 
         if(this.method === "GET") {
@@ -544,24 +544,25 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
     loadStores: function() {
         this.scales.loadData(this.capabilities);
         this.dpis.loadData(this.capabilities);
-		
-		var caps2 = { layouts : []};
-		var layouts = this.capabilities.layouts;
-		
-		this.fullLayouts.loadData({'layouts' : layouts});
-		
-		for(var i=0; i < layouts.length; i++){
-			var layout = layouts[i];
-			// > -1) && !(layout.name.indexOf("pages") > -1)
-			if(!(layout.name.indexOf("_legend") > 0)){
-				caps2.layouts.push(layout);
-			}
-		}
-		
+        
+        var caps2 = { layouts : []};
+        var layouts = this.capabilities.layouts;
+        
+        this.fullLayouts.loadData({'layouts' : layouts});
+        
+        for(var i=0; i < layouts.length; i++){
+            var layout = layouts[i];
+            // > -1) && !(layout.name.indexOf("pages") > -1)
+            if(!(layout.name.indexOf("_legend") > 0) 
+                && !(layout.name.indexOf("_landscape") > 0)){
+                caps2.layouts.push(layout);
+            }
+        }
+        
         this.layouts.loadData(caps2);
         
-        this.setLayout(this.layouts.getAt(0));
-        this.setDpi(this.dpis.getAt(0));
+        this.setLayout(this.layouts.getAt(this.defaultLayoutIndex ||0));
+        this.setDpi(this.dpis.getAt(this.defaultResolutionIndex||0));
         this.fireEvent("loadcapabilities", this, this.capabilities);
     },
         
@@ -579,6 +580,7 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                     return;
                 }
                 encLayer = this.encoders.layers[c].call(this, layer);
+                
                 this.fireEvent("encodelayer", this, layer, encLayer);
                 break;
             }
@@ -633,6 +635,7 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                         enc.customParams[p] = layer.params[p];
                     }
                 }
+                
                 return enc;
             },
             "OSM": function(layer) {
@@ -703,10 +706,11 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                 };
             },
             "Vector": function(layer) {
+                
                 if(!layer.features.length) {
                     return;
                 }
-                
+
                 var encFeatures = [];
                 var encStyles = {};
                 var features = layer.features;
@@ -718,8 +722,7 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                 for(var i=0, len=features.length; i<len; ++i) {
                     feature = features[i];
                     style = feature.style || layer.style ||
-                    layer.styleMap.createSymbolizer(feature,
-                        feature.renderIntent);
+                    layer.styleMap.createSymbolizer(feature, feature.renderIntent);
                     dictKey = styleFormat.write(style);
                     dictItem = styleDict[dictKey];
                     if(dictItem) {
@@ -763,8 +766,13 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
             "gx_wmslegend": function(legend) {
                 var enc = this.encoders.legends.base.call(this, legend);
                 var icons = [];
+
                 for(var i=1, len=legend.items.getCount(); i<len; ++i) {
-                    icons.push(this.getAbsoluteUrl(legend.items.get(i).url));
+                    // replace legend parameters if it's needed
+                    var url = this.getAbsoluteUrl(legend.items.get(i).url);
+                    icons.push(this.changeLegendParameters && this.legendStylePanel?
+                        this.legendStylePanel.getLegendUrl(legend.items.get(i).itemId, null, legend)
+                        : url);
                 }
                 enc[0].classes[0] = {
                     name: "",
