@@ -859,6 +859,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 geometry: record.data.feature.geometry,
                 oldgeometry: record.data.feature.geometry
             };
+            me.save[record.get("id")] = me.currentRecord;
         }
         
         var selectionModel = grid.getSelectionModel();
