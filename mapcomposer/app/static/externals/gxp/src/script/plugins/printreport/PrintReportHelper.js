@@ -74,6 +74,7 @@ gxp.plugins.printreport.PrintReportHelper = Ext.extend(gxp.plugins.Tool, {
     firstSVG: null,
     emptyContent: '',
     generators: [],
+    selectedVector: null,
 
     generatorsDoneCount: 0,
 
@@ -345,26 +346,13 @@ gxp.plugins.printreport.PrintReportHelper = Ext.extend(gxp.plugins.Tool, {
             }
         }
 
-        // Common data of the form
-        // TODO: maybe injected not readed here
-        var values = this.form.output.getForm().getValues();
-        if(values.areatype.toLowerCase() != 'pakistan' 
-            && this.form.selectedProvince && this.form.selectedProvince.data.geometry){
-            // copy vector feature selected
-            this.selectedVector = this.form.selectedProvince.data;
-            spec.region = this.cleanAndCapitalize(values.region_list); // region
-        }else{
-            spec.region = "Pakistan";
-            this.selectedVector = null;
-        }
         // commodity and interval
+        var values = this.form.output.getForm().getValues();
         spec.commodity = values.crop;
         spec.interval = values.startYear + "-" + values.endYear;
 
         return spec;
     },
-
-    selectedVector: null,
 
     printSpec: function(spec){
         this.printProvider.customParams = spec;
@@ -375,8 +363,6 @@ gxp.plugins.printreport.PrintReportHelper = Ext.extend(gxp.plugins.Tool, {
         if(this.selectedVector){
             bounds = this.selectedVector.geometry.getBounds();
             vector = this.selectedVector;
-            // this.printPage.fit(this.form.selectedProvince.data);
-            // this.printPage.setCenter(this.form.selectedProvince.data.geometry.getCenterLonLat());
         }else if(this.defaultExtent){
             var bounds = new OpenLayers.Bounds(this.defaultExtent[0],this.defaultExtent[1],this.defaultExtent[2],this.defaultExtent[3]);
             var vector = new OpenLayers.Feature.Vector(bounds.toGeometry());

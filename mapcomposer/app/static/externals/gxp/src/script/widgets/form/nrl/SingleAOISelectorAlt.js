@@ -66,7 +66,7 @@ nrl.form.SingleAOISelectorAlt = Ext.extend(nrl.form.SingleAOISelector,
         		this.fireEvent("select", store);
         	},
         	scope:this
-        })
+        });
         return combo;
 	}
 });

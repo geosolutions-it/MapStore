@@ -292,6 +292,10 @@
 			 "id":"nrlReportCropData"
 			 
 		  },
+		  "layers":{
+			"district":"nrl:district_crop",
+			"province":"nrl:province_crop"
+			},
 		  "outputTarget":"nrl"
 	   },{
 		  "ptype":"gxp_printreporthelper",

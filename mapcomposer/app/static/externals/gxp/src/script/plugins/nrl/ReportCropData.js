@@ -48,6 +48,15 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
     /** i18n **/
     titleText: 'Crop Report',
 
+    aoiSimpleSelection: false,
+    hilightLayerName:"hilight_layer_selectAction",
+    layerStyle:{
+        strokeColor: "red",
+        strokeWidth: 1,
+        fillOpacity:0.6,
+        cursor: "pointer"
+    },
+
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
@@ -65,24 +74,46 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 this.output.submitButton.setDisabled(store.getCount()<=0)
             }
         },this);    
+
+        if(this.aoiSimpleSelection){
+            //hide selection layer on tab change
+            this.output.on('beforehide',function(){
+                var button = this.output.singleFeatureSelector.singleSelector.selectButton;
+                button.toggle(false);
+                var lyr = button.hilightLayer;
+                if(!lyr) return;
+                lyr.setVisibility(false);
+                
+            },this);
+            this.output.on('show',function(){
+                var button = this.output.singleFeatureSelector.singleSelector.selectButton;
+                
+                var lyr = button.hilightLayer;
+                if(!lyr) return;
+                lyr.setVisibility(true);
+                
+            },this);
+        }else{
+            //hide selection layer on tab change
+            this.output.on('beforehide',function(){
+                var button = this.output.aoiFieldSet.AreaSelector.selectButton;
+                button.toggle(false);
+                var lyr = button.hilightLayer;
+                if(!lyr) return;
+                lyr.setVisibility(false);
+                
+            },this);
+            this.output.on('show',function(){
+                var button = this.output.aoiFieldSet.AreaSelector.selectButton;
+                
+                var lyr = button.hilightLayer;
+                if(!lyr) return;
+                lyr.setVisibility(true);
+                
+            },this);
+        }
         
-        //hide selection layer on tab change
-        this.output.on('beforehide',function(){
-            var button = this.output.singleFeatureSelector.singleSelector.selectButton;
-            button.toggle(false);
-            var lyr = button.hilightLayer;
-            if(!lyr) return;
-            lyr.setVisibility(false);
-            
-        },this);
-        this.output.on('show',function(){
-            var button = this.output.singleFeatureSelector.singleSelector.selectButton;
-            
-            var lyr = button.hilightLayer;
-            if(!lyr) return;
-            lyr.setVisibility(true);
-            
-        },this);
+        
         return this.output;
         
     },
@@ -229,21 +260,42 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
     },
 
     getAoIFieldItem: function(){
-        return this.aoiFieldSet = {
-            xtype:'nrl_single_aoi_selector_alt',
-            target:this.target,
-            name:'region_list',
-            ref:'singleFeatureSelector',
-            featureSelectorConfigs:this.featureSelectorConfigs,
-            hilightLayerName: 'hilight_layer_selectAction',
-            vendorParams: {cql_filter:this.areaFilter},
-            listeners: {
-                select: function(store){
-                    this.selectedProvince = store.getAt(0);
-                },
-                scope:this
-            }
-        };
+        if(!this.aoiSimpleSelection){
+            return this.aoiFieldSet = {
+                xtype:'nrl_aoifieldset',
+                target:this.target,
+                name:'region_list',
+                ref:'aoiFieldSet',
+                featureSelectorConfigs:this.featureSelectorConfigs,
+                hilightLayerName:this.hilightLayerName,
+                vendorParams: {cql_filter:this.areaFilter},
+                layers:this.layers,
+                layerStyle: this.layerStyle,
+                listeners: {
+                    regionsChange: function(store){
+                        this.selectedProvince = store.getAt(0);
+                        this.regionsStore = store;
+                    },
+                    scope:this
+                }
+            };
+        }else{
+            return this.aoiFieldSet = {
+                xtype:'nrl_single_aoi_selector_alt',
+                target:this.target,
+                name:'region_list',
+                ref:'singleFeatureSelector',
+                featureSelectorConfigs:this.featureSelectorConfigs,
+                hilightLayerName:this.hilightLayerName,
+                vendorParams: {cql_filter:this.areaFilter},
+                listeners: {
+                    select: function(store){
+                        this.selectedProvince = store.getAt(0);
+                    },
+                    scope:this
+                }
+            };
+        }
     },
 
     getYearFieldItem: function(){

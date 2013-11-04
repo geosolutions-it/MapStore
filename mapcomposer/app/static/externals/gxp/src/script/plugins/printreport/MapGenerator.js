@@ -83,9 +83,11 @@ gxp.plugins.printreport.MapGenerator = Ext.extend(gxp.plugins.printreport.Genera
         var yieldFactor = fieldValues.production_unit == "000 bales" ? 170 : 1000;
         //set up cql_filter
         var cql_filter="1=1";
-        if(values.areatype.toLowerCase()=='province' &&region_list.length>0 ){
-            cql_filter="province IN ('" +region_list+ "')";
-        
+        if(values.areatype.toLowerCase()=='province' && region_list.length>0 ){
+            if(region_list.indexOf("'") < 0)
+                cql_filter="province IN ('" +region_list+ "')";
+            else
+                cql_filter="province IN (" +region_list+ ")";
         }
 
         //set up the area type

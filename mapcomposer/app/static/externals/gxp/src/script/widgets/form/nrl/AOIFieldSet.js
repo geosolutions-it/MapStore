@@ -105,6 +105,17 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
             tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"                            
         }    
     },
+    constructor: function(config){
+        Ext.apply(this, config);
+        nrl.form.AOIFieldSet.superclass.constructor.call(this, config);
+        
+        this.addEvents(
+            /** api: event[regionsChange]
+             *  Fires when a region is added or removed.
+             */
+            "regionsChange"
+        );
+    },
 	initComponent: function() {
         this.currentComboConfig = Ext.apply({},this.comboConfigs.base,this.comboConfigs.province);
 		this.items = [
@@ -178,6 +189,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
 				target:this.target,
 				vendorParams: {cql_filter: this.areaFilter},
 				selectableLayer:this.selectableLayer,
+                hilightLayerName:this.hilightLayerName,
 				ref:'AreaSelector',
                 comboConfig:this.currentComboConfig,
 				displayField:'province',
@@ -200,7 +212,8 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
 							sel +="\\,'" + name +"'";
 						}
 						this.selectedRegions.setValue(sel);
-						
+                        // call to listener
+                        this.fireEvent("regionsChange", store);
 					},
 					scope:this
 				}

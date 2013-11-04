@@ -74,7 +74,7 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.butto
         });
         mapGenerator.on({
             done: function(printConfig, layers){
-                helper.printConfig = printConfig;
+                Ext.apply(helper.printConfig, printConfig);
                 helper.layers = layers;
             },
             error: this.onError,
@@ -127,10 +127,35 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.butto
             error: this.onError,
             scope: this
         })
+        // Extra info for the report
+        var extraInfoGenerator = new gxp.plugins.printreport.ExtraInformationGenerator({
+            form: this.form,
+            target: this.target,
+            printReportHelper: helper,
+            defaultRegionList: helper.defaultRegionList,
+            printConfig: helper.printConfig,
+            mapGenerationVariables: helper.mapGenerationVariables,
+            url: helper.dataUrl,
+            addLayers: !helper.hideAll
+        });
+        extraInfoGenerator.on({
+            done: function(printConfig){
+                helper.selectedVector = printConfig.selectedVector;
+                helper.printConfig.region = printConfig.region;
+                if(printConfig.layers){
+                    for(var i = 0; i < printConfig.layers.length; i++){
+                        helper.layers.push(printConfig.layers[i]);
+                    }
+                }
+            },
+            error: this.onError,
+            scope: this
+        });
         var generators = [];
         generators.push(mapGenerator);
         generators.push(cropDataChartGenerator);
         generators.push(agrometChartGenerator);
+        // generators.push(extraInfoGenerator);
         helper.generators = generators;
 
         // loading mark hide
@@ -143,6 +168,46 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.butto
             },
             scope:this
         });
+
+        // TODO: Repair extra info generator and remove it
+        // add selected regions
+        var values = this.form.output.getForm().getValues();
+        if(!this.ownerCt.aoiSimpleSelection){
+            if(values.areatype == 'province' || values.areatype == 'district'){
+                helper.printConfig.region = helper.cleanAndCapitalize(values.region_list);
+                // add layer
+                this.ownerCt.selectedRegions;
+                var layer;
+                if(this.form.hilightLayerName){
+                    layer = this.target.mapPanel.map.getLayersByName(this.form.hilightLayerName)[0];
+                    helper.layers.push(layer);
+                }
+                // change bounds
+                var bounds = new OpenLayers.Bounds();
+                this.form.regionsStore.each(function(reg){
+                    bounds.extend(reg.data.geometry.getBounds());
+                });
+                helper.selectedVector = new OpenLayers.Feature.Vector(bounds.toGeometry());
+                helper.selectedVector.layer = layer;
+            }else{
+                helper.printConfig.region = "Pakistan";
+                helper.selectedVector = null;
+            }
+            //TODO: helper.selectedVector = bbox;
+        }else{        
+            this.ownerCt.selectedRegions;
+            // Common data of the form
+            if(values.areatype.toLowerCase() != 'pakistan' 
+                && this.form.selectedProvince && this.form.selectedProvince.data.geometry){
+                // copy vector feature selected
+                helper.selectedVector = this.form.selectedProvince.data;
+                helper.printConfig.region = printer.cleanAndCapitalize(values.region_list); // region
+            }else{
+                helper.printConfig.region = "Pakistan";
+                helper.selectedVector = null;
+            }
+        }
+        // Eof TODO
 
         //Print
         helper.print();
