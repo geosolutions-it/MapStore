@@ -75,6 +75,8 @@ gxp.plugins.printreport.PrintReportHelper = Ext.extend(gxp.plugins.Tool, {
     emptyContent: '',
     generators: [],
     selectedVector: null,
+    // for all maps!!
+    commonLayers: null,
 
     generatorsDoneCount: 0,
 
@@ -272,6 +274,14 @@ gxp.plugins.printreport.PrintReportHelper = Ext.extend(gxp.plugins.Tool, {
         spec.maps.first.layers.push(this.printProvider.encodeLayer(this.layers[0]));
         spec.maps.second.layers.push(this.printProvider.encodeLayer(this.layers[1]));
         spec.maps.third.layers.push(this.printProvider.encodeLayer(this.layers[2]));
+        if(this.commonLayers != null){
+            for(var i = 0; i < this.commonLayers.length; i++){
+                var encodedLayer = this.printProvider.encodeLayer(this.commonLayers[i]);
+                spec.maps.first.layers.push(encodedLayer);
+                spec.maps.second.layers.push(encodedLayer);
+                spec.maps.third.layers.push(encodedLayer);
+            }
+        }
         spec.maps.first.srs = spec.srs;
         spec.maps.second.srs = spec.srs;
         spec.maps.third.srs = spec.srs;

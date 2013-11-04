@@ -50,11 +50,19 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
 
     aoiSimpleSelection: false,
     hilightLayerName:"hilight_layer_selectAction",
+    targetLayerName:"hidden_hilight_layer",
+    // In map style
     layerStyle:{
         strokeColor: "red",
         strokeWidth: 1,
         fillOpacity:0.6,
         cursor: "pointer"
+    },
+    // print style
+    targetLayerStyle:{
+        strokeColor: "red",
+        strokeWidth: 0.5,
+        fillOpacity:0
     },
 
     /** private: method[addOutput]
@@ -139,6 +147,10 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
         return this.submitButton = {               
                 xtype: 'gxp_nrlReportCropStatusChartButton',
                 ref: '../submitButton',
+                hilightLayerName: this.hilightLayerName,
+                hilightLayerLayerStyle: this.hilightLayerStyle,
+                targetLayerName: this.targetLayerName,
+                targetLayerStyle: this.targetLayerStyle,
                 url:this.dataUrl,
                 target:this.target,
                 form: this,
@@ -205,6 +217,10 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 url: this.dataUrl,//TODO externalize this
                 xtype: 'gxp_nrlReportCropStatusChartButton',
                 ref: '../submitButton',
+                hilightLayerName: this.hilightLayerName,
+                hilightLayerLayerStyle: this.hilightLayerStyle,
+                targetLayerName: this.targetLayerName,
+                targetLayerStyle: this.targetLayerStyle,
                 target:this.target,
                 form: this
             })
@@ -221,6 +237,10 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
             this.output.addButton({               
                 xtype: 'gxp_nrlReportCropStatusChartButton',
                 ref: '../submitButton',
+                hilightLayerName: this.hilightLayerName,
+                hilightLayerLayerStyle: this.hilightLayerStyle,
+                targetLayerName: this.targetLayerName,
+                targetLayerStyle: this.targetLayerStyle,
                 target:this.target,
                 form: this
             })
@@ -268,6 +288,8 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 ref:'aoiFieldSet',
                 featureSelectorConfigs:this.featureSelectorConfigs,
                 hilightLayerName:this.hilightLayerName,
+                targetLayerName: this.targetLayerName,
+                targetLayerStyle: this.targetLayerStyle,
                 vendorParams: {cql_filter:this.areaFilter},
                 layers:this.layers,
                 layerStyle: this.layerStyle,

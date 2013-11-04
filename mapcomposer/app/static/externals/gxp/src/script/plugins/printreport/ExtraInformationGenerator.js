@@ -35,6 +35,15 @@ gxp.plugins.printreport.ExtraInformationGenerator = Ext.extend(gxp.plugins.print
     /** api: xtype = gxp_extrainforeportgenerator */
     xtype: 'gxp_extrainforeportgenerator',
 
+    /**
+     **/
+    targetLayerName:"hidden_hilight_layer",
+    targetLayerStyle:{
+        strokeColor: "red",
+        strokeWidth: 1,
+        fillOpacity:0
+    },
+
     /** config parameters **/
     
     /** api: method[generate]
@@ -48,12 +57,21 @@ gxp.plugins.printreport.ExtraInformationGenerator = Ext.extend(gxp.plugins.print
         if(!this.form.aoiSimpleSelection){
             if(values.areatype == 'province' || values.areatype == 'district'){
                 this.printConfig.region = this.cleanAndCapitalize(values.region_list);
-                // add layer
+                // apply print style and add layer
                 var layer;
                 var layers = [];
                 if(this.form.hilightLayerName){
                     layer = this.target.mapPanel.map.getLayersByName(this.form.hilightLayerName)[0];
-                    layers.push(layer);
+                    var vectorLayer = new OpenLayers.Layer.Vector(this.targetLayerName,{
+                        style: this.targetLayerStyle
+                    });
+                    var features = [];
+                    for(var i = 0; i < layer.features.length; i++){
+                        var feature = new OpenLayers.Feature.Vector(layer.features[i].geometry);
+                        features.push(feature);
+                    }
+                    vectorLayer.addFeatures(features);
+                    layers.push(vectorLayer);
                 }
                 this.printConfig.layers = layers;
                 // change bounds
@@ -61,8 +79,9 @@ gxp.plugins.printreport.ExtraInformationGenerator = Ext.extend(gxp.plugins.print
                 this.form.regionsStore.each(function(reg){
                     bounds.extend(reg.data.geometry.getBounds());
                 });
-                this.printConfig.selectedVector = new OpenLayers.Feature.Vector(bounds.toGeometry());
-                this.printConfig.selectedVector.layer = layer;
+                // TODO: Repair it and remove from button
+                // this.printConfig.selectedVector = new OpenLayers.Feature.Vector(bounds.toGeometry());
+                // this.printConfig.selectedVector.layer = this.target.mapPanel.map.layers[0];
             }else{
                 this.printConfig.region = "Pakistan";
                 this.printConfig.selectedVector = null;

@@ -42,6 +42,12 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.butto
     text: 'Generate Report',
 
     firstSVGTitle: "AGGREGATED DATA -",
+    targetLayerName:"hidden_hilight_layer",
+    targetLayerStyle:{
+        strokeColor: "red",
+        strokeWidth: 1,
+        fillOpacity:0
+    },
 
     // save mask
     myMask: null,
@@ -136,6 +142,8 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.butto
             printConfig: helper.printConfig,
             mapGenerationVariables: helper.mapGenerationVariables,
             url: helper.dataUrl,
+            targetLayerName: this.targetLayerName,
+            targetLayerStyle: this.targetLayerStyle,
             addLayers: !helper.hideAll
         });
         extraInfoGenerator.on({
@@ -143,9 +151,11 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.butto
                 helper.selectedVector = printConfig.selectedVector;
                 helper.printConfig.region = printConfig.region;
                 if(printConfig.layers){
+                    var commonLayers = [];
                     for(var i = 0; i < printConfig.layers.length; i++){
-                        helper.layers.push(printConfig.layers[i]);
+                        commonLayers.push(printConfig.layers[i]);
                     }
+                    helper.commonLayers = commonLayers;
                 }
             },
             error: this.onError,
@@ -155,7 +165,7 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.butto
         generators.push(mapGenerator);
         generators.push(cropDataChartGenerator);
         generators.push(agrometChartGenerator);
-        // generators.push(extraInfoGenerator);
+        generators.push(extraInfoGenerator);
         helper.generators = generators;
 
         // loading mark hide

@@ -296,6 +296,11 @@
 			"district":"nrl:district_crop",
 			"province":"nrl:province_crop"
 			},
+		    "targetLayerStyle":{
+		        "strokeColor": "green",
+		        "strokeWidth": 0.5,
+		        "fillOpacity":0
+		    },
 		  "outputTarget":"nrl"
 	   },{
 		  "ptype":"gxp_printreporthelper",
