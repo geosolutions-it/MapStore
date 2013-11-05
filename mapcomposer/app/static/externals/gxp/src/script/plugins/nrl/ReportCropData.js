@@ -65,6 +65,11 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
         fillOpacity:0
     },
 
+    /** config:[defaultAreaTypeMap]
+     *  ``String`` for the area type for the map generation for Pakistan. Can be 'province' or 'district' .Default it's 'province'.
+     **/
+    defaultAreaTypeMap: 'province',
+
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
@@ -151,6 +156,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 hilightLayerLayerStyle: this.hilightLayerStyle,
                 targetLayerName: this.targetLayerName,
                 targetLayerStyle: this.targetLayerStyle,
+                defaultAreaTypeMap: this.defaultAreaTypeMap,
                 url:this.dataUrl,
                 target:this.target,
                 form: this,
@@ -221,6 +227,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 hilightLayerLayerStyle: this.hilightLayerStyle,
                 targetLayerName: this.targetLayerName,
                 targetLayerStyle: this.targetLayerStyle,
+                defaultAreaTypeMap: this.defaultAreaTypeMap,
                 target:this.target,
                 form: this
             })
@@ -241,6 +248,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 hilightLayerLayerStyle: this.hilightLayerStyle,
                 targetLayerName: this.targetLayerName,
                 targetLayerStyle: this.targetLayerStyle,
+                defaultAreaTypeMap: this.defaultAreaTypeMap,
                 target:this.target,
                 form: this
             })
@@ -290,6 +298,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 hilightLayerName:this.hilightLayerName,
                 targetLayerName: this.targetLayerName,
                 targetLayerStyle: this.targetLayerStyle,
+                defaultAreaTypeMap: this.defaultAreaTypeMap,
                 vendorParams: {cql_filter:this.areaFilter},
                 layers:this.layers,
                 layerStyle: this.layerStyle,

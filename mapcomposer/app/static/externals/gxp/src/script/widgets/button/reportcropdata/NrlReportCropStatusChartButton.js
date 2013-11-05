@@ -49,6 +49,11 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.butto
         fillOpacity:0
     },
 
+    /** config:[defaultAreaTypeMap]
+     *  ``String`` for the area type for the map generation for Pakistan. Can be 'province' or 'district' .Default it's 'province'.
+     **/
+    defaultAreaTypeMap: 'province',
+
     // save mask
     myMask: null,
 
@@ -76,7 +81,8 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.butto
             printConfig: helper.printConfig,
             mapGenerationVariables: helper.mapGenerationVariables,
             url: helper.dataUrl,
-            addLayers: !helper.hideAll
+            addLayers: !helper.hideAll,
+            defaultAreaType: this.defaultAreaTypeMap
         });
         mapGenerator.on({
             done: function(printConfig, layers){

@@ -298,9 +298,10 @@
 			},
 		    "targetLayerStyle":{
 		        "strokeColor": "green",
-		        "strokeWidth": 0.5,
+		        "strokeWidth": 0.25,
 		        "fillOpacity":0
 		    },
+		  "defaultAreaTypeMap": "district",
 		  "outputTarget":"nrl"
 	   },{
 		  "ptype":"gxp_printreporthelper",

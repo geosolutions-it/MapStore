@@ -45,6 +45,11 @@ gxp.plugins.printreport.MapGenerator = Ext.extend(gxp.plugins.printreport.Genera
      **/
     addLayers: false,
 
+    /** config:[defaultAreaType]
+     *  ``String`` for the area type for Pakistan. Can be 'province' or 'district' .Default it's 'province'.
+     **/
+    defaultAreaType: 'province',
+
     /** i18n **/
     mapsTitlesText: '{0} {1} map', // for example: 'Rice area map'
 
@@ -93,7 +98,7 @@ gxp.plugins.printreport.MapGenerator = Ext.extend(gxp.plugins.printreport.Genera
         //set up the area type
         var areatype = values.areatype.toLowerCase();
         if(values.areatype.toLowerCase()=='pakistan'){
-            areatype='province';
+            areatype=this.defaultAreaType;
         }else{
             areatype='district';
         }

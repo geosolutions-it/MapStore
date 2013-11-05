@@ -518,7 +518,7 @@ Ext.namespace('gxp.charts');
 			//
 			var aoiSubtitle = "";
 			if(dataTitle == "AGGREGATED DATA"){
-				if(aggregatedDataOnly){
+				if(aggregatedDataOnly || !listVar.chartTitle || listVar.chartTitle == ""){
 					aoiSubtitle += "Pakistan";
 				}else{
 					aoiSubtitle += listVar.chartTitle;
