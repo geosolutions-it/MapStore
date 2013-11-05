@@ -1902,7 +1902,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             padr:[],
             pis:[],
             targets:[],
-            targetsInfo:[]
+            targetsInfo:[],
+            exportInfo:[]
         };
         
         if(obj.processing === 3) {
@@ -1929,8 +1930,16 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                             }
                             
                             // targets
-                            if(recordInfo.oldgeometry || recordInfo.geometry) {
+                            if(recordInfo.oldgeometry || recordInfo.geometry) {                                
                                 obj.simulation.targetsInfo.push(recordInfo);
+                                obj.simulation.exportInfo.push({
+                                    id: recordInfo.id,
+                                    type: grid.featureType,
+                                    geometry: recordInfo.geometry.toString(),
+                                    newfeature: recordInfo.newfeature || false,
+                                    removed: recordInfo.removed || false,
+                                    value: recordInfo.value
+                                });
                             }
                             if(recordInfo.oldgeometry) {
                                 // remove
@@ -2011,7 +2020,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             padr:[],
             pis:[],
             targets:[],
-            targetsInfo:[]
+            targetsInfo:[],
+            exportInfo: []
         };
         
         obj.target = {humans: null, code:'-2', layer: 'bersagli_all', severeness: '1,2,3,4,5', macro: true}; 

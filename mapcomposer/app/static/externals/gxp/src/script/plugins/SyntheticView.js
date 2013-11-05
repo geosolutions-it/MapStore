@@ -1346,14 +1346,17 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                 var padr;
                                 var pis;
                                 var changedTargets;
+                                var changedTargetsInfo;
                                 
                                 if(status.processing === 3) {
                                     var simulation = status.simulation;            
                                     pis = new OpenLayers.WPSProcess.LiteralData({value:simulation.pis.join('_')});
                                     padr = new OpenLayers.WPSProcess.LiteralData({value:simulation.padr.join('_')});
                                     cff = new OpenLayers.WPSProcess.LiteralData({value:simulation.cff.join('_')});
-                                    changedTargets = new OpenLayers.WPSProcess.LiteralData({value:simulation.targets.join('_')});                                    
+                                    changedTargets = new OpenLayers.WPSProcess.LiteralData({value:simulation.targets.join('_')});
+                                    changedTargetsInfo = new OpenLayers.WPSProcess.LiteralData({value:Ext.encode(simulation.exportInfo)});
                                 }
+                                
                                 downloadProcess.execute({
                                     headers: me.geoStoreUser ? {
                                         "Authorization":  "Basic " + Base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
@@ -1388,7 +1391,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                         cff: cff,
                                         padr: padr,
                                         pis: pis,
-                                        changedTargets: changedTargets
+                                        changedTargets: changedTargets,
+                                        changedTargetsInfo: changedTargetsInfo
                                     },
                                     outputs: [],                                    
                                     success: function(outputs) {
