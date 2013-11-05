@@ -40,6 +40,7 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.butto
     xtype: 'gxp_nrlReportCropStatusChartButton',
     iconCls: "gxp-icon-nrl-chart", //TODO: Change
     text: 'Generate Report',
+    disclaimerText: '',
 
     firstSVGTitle: "AGGREGATED DATA -",
     targetLayerName:"hidden_hilight_layer",
@@ -150,13 +151,16 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.butto
             url: helper.dataUrl,
             targetLayerName: this.targetLayerName,
             targetLayerStyle: this.targetLayerStyle,
-            addLayers: !helper.hideAll
+            addLayers: !helper.hideAll,
+            disclaimerText: this.disclaimerText
         });
         extraInfoGenerator.on({
             done: function(printConfig){
                 // TODO: repair it
                 // helper.selectedVector = printConfig.selectedVector;
-                helper.printConfig.region = printConfig.region;
+                // helper.printConfig.region = printConfig.region;
+                // helper.printConfig.disclaimer = this.printConfig.disclaimer;
+                Ext.apply(helper.printConfig, printConfig);
                 if(printConfig.layers){
                     var commonLayers = [];
                     for(var i = 0; i < printConfig.layers.length; i++){

@@ -35,6 +35,10 @@ gxp.plugins.printreport.ExtraInformationGenerator = Ext.extend(gxp.plugins.print
     /** api: xtype = gxp_extrainforeportgenerator */
     xtype: 'gxp_extrainforeportgenerator',
 
+    /** i18n **/    
+    disclaimerText: "Disclaimer",
+    /** EoF i18n **/
+
     /**
      **/
     targetLayerName:"hidden_hilight_layer",
@@ -50,6 +54,8 @@ gxp.plugins.printreport.ExtraInformationGenerator = Ext.extend(gxp.plugins.print
      *  Generate data for the report. Override it with the specific data of the report
      */
     generate: function(){
+        // clean old data
+        this.printConfig = {};
         // add selected regions
         var values = this.form.output.getForm().getValues();
         // add selected regions
@@ -102,6 +108,10 @@ gxp.plugins.printreport.ExtraInformationGenerator = Ext.extend(gxp.plugins.print
                 this.printConfig.selectedVector = null;
             }
         }
+
+        // disclaimer
+        this.printConfig.disclaimer = this.disclaimerText;
+
         this.onDone();
     }
     

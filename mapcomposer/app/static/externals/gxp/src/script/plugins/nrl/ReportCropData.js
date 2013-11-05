@@ -47,6 +47,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
 
     /** i18n **/
     titleText: 'Crop Report',
+    disclaimerText: '',
 
     aoiSimpleSelection: false,
     hilightLayerName:"hilight_layer_selectAction",
@@ -157,6 +158,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 targetLayerName: this.targetLayerName,
                 targetLayerStyle: this.targetLayerStyle,
                 defaultAreaTypeMap: this.defaultAreaTypeMap,
+                disclaimerText: this.disclaimerText,
                 url:this.dataUrl,
                 target:this.target,
                 form: this,
@@ -228,6 +230,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 targetLayerName: this.targetLayerName,
                 targetLayerStyle: this.targetLayerStyle,
                 defaultAreaTypeMap: this.defaultAreaTypeMap,
+                disclaimerText: this.disclaimerText,
                 target:this.target,
                 form: this
             })
@@ -249,6 +252,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 targetLayerName: this.targetLayerName,
                 targetLayerStyle: this.targetLayerStyle,
                 defaultAreaTypeMap: this.defaultAreaTypeMap,
+                disclaimerText: this.disclaimerText,
                 target:this.target,
                 form: this
             })
@@ -299,6 +303,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 targetLayerName: this.targetLayerName,
                 targetLayerStyle: this.targetLayerStyle,
                 defaultAreaTypeMap: this.defaultAreaTypeMap,
+                disclaimerText: this.disclaimerText,
                 vendorParams: {cql_filter:this.areaFilter},
                 layers:this.layers,
                 layerStyle: this.layerStyle,

@@ -302,6 +302,7 @@
 		        "fillOpacity":0
 		    },
 		  "defaultAreaTypeMap": "district",
+		  "disclaimerText": "Disclaimer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sed viverra neque. Sed in quam urna. Sed posuere nulla nec lectus convallis suscipit. Etiam bibendum lectus ultrices lobortis feugiat. Quisque nibh sem, ultrices gravida gravida cursus, ullamcorper pellentesque magna. Ut aliquam mauris ac neque ultrices porta. Nam molestie eget magna.",
 		  "outputTarget":"nrl"
 	   },{
 		  "ptype":"gxp_printreporthelper",
