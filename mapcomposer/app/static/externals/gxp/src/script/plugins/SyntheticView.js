@@ -2862,11 +2862,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         //enable save processing button for all processing type except for standard type
         var saveProcMenuButtons = this.fieldSet.getBottomToolbar().items.items[0].menu.items.items[0];
-        if (status.processing != 1){            
+        //if (status.processing != 1){            
             saveProcMenuButtons.enable();
-        }else{
+        /*}else{
             saveProcMenuButtons.disable();
-        }
+        }*/
         
         var bounds = this.getBounds(status, map);
         
