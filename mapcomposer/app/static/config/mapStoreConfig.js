@@ -309,9 +309,9 @@
 		  "defaultExtent": [6770799.251963,2705604.806669,8826743.330978,4442826.247111],
 		  "id":"printreporthelper",
 		  "hideAll":true,
-		  "mapTitleValueText": "Crop report",
-		  "cropPagesTitleValueText": "Crop information",
-		  "meteorologicalPagesTitleValueText": "Meteorological information"
+		  "mapTitleValueText": "Crop Report",
+		  "cropPagesTitleValueText": "Crop Maps and Charts",
+		  "meteorologicalPagesTitleValueText": "AgroMet Variables"
       },{
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
