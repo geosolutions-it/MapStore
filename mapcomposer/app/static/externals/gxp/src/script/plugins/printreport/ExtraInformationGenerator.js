@@ -85,6 +85,8 @@ gxp.plugins.printreport.ExtraInformationGenerator = Ext.extend(gxp.plugins.print
             }else{
                 this.printConfig.region = "Pakistan";
                 this.printConfig.selectedVector = null;
+                // clean layers
+                this.printConfig.layers = [];
             }
             //TODO: this.printReportHelper.selectedVector = bbox;
         }else{        

@@ -393,9 +393,38 @@ gxp.plugins.printreport.PrintReportHelper = Ext.extend(gxp.plugins.Tool, {
      *  Utility to clean a string of "'" characters and capitalize it
      */
     cleanAndCapitalize: function(str){
-        var cleanAndCap = str.replace("'", "").replace("'", ""); // clean "'" char of 'name'
-        cleanAndCap = cleanAndCap.slice(0,1).toUpperCase() + cleanAndCap.slice(1).toLowerCase(); // Capitalize: Name
+        var cleanAndCap = this.replaceAll(str, "'", ""); // clean "'" char
+        cleanAndCap = this.replaceAll(cleanAndCap, "\\", ""); // clean "\" char8
+        //
+        while(cleanAndCap.indexOf("\\") > -1){
+            cleanAndCap = cleanAndCap.replace("\\", "");
+        }
+        if(cleanAndCap.indexOf(",") > -1){
+            var resultStr = "";
+            var strings = cleanAndCap.split(",");
+            for(var i = 0; i < strings.length; i++){
+                var subStrCap = this.cleanAndCapitalize(strings[i]);
+                if(i>0){
+                    subStrCap = " (" + subStrCap + ")";
+                }
+                resultStr += subStrCap;
+            }
+            cleanAndCap = resultStr;
+        }else{
+            cleanAndCap = cleanAndCap.slice(0,1).toUpperCase() + cleanAndCap.slice(1).toLowerCase(); // Capitalize: Name
+        }
         return cleanAndCap;
+    },
+
+    /** api: method[replaceAll]
+     *  Utility to clean all occurs in a string
+     */
+    replaceAll: function(str, search, replace){
+        var clean = str; 
+        while(clean.indexOf(search) > -1){
+            clean = clean.replace(search, replace);
+        }
+        return clean;
     }
 });
 

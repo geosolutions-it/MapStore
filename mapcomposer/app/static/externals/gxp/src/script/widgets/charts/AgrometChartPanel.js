@@ -134,35 +134,13 @@ Ext.namespace('gxp.charts');
         var chartTitle = "";
         var splitRegion;
         
-        /*if (listVar.numRegion.length == 1){
-            if (listVar.granType == "province"){
-                chartTitle = listVar.numRegion[0].slice(0,1).toUpperCase() + listVar.numRegion[0].slice(1);
+        for (var i = 0;i<numRegion.length;i++){
+            if(i==numRegion.length-1){
+                chartTitle += this.generateChartTitle(numRegion[i]);
             }else{
-                splitRegion = listVar.numRegion[0].split(',');
-                chartTitle = splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + ")";
-            }
-        }else{*/
-            for (var i = 0;i<numRegion.length;i++){
-                if (granType == "province"){
-                    if(i==numRegion.length-1){
-                        chartTitle += numRegion[i].slice(0,1).toUpperCase() + numRegion[i].slice(1);
-                    }else{
-                        chartTitle += numRegion[i].slice(0,1).toUpperCase() + numRegion[i].slice(1) + ", ";
-                    }                
-                }else{
-                	if(numRegion[i].indexOf(',') < 0){
-						chartTitle = this.generateChartTitle(numRegion[0]);
-                	}else{
-	                    splitRegion = numRegion[i].split(',');
-	                    if(i==numRegion.length-1){
-	                        chartTitle += splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + ")";
-	                    }else{
-	                        chartTitle += splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + "), ";
-	                    }                       
-	                }
-                }            
-            }
-        //} 
+                chartTitle += this.generateChartTitle(numRegion[i])+ ", ";
+            }        
+        }
         
         var listVar = {
             today: today,

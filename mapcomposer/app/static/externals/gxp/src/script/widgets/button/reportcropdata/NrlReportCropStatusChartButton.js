@@ -148,7 +148,8 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.butto
         });
         extraInfoGenerator.on({
             done: function(printConfig){
-                helper.selectedVector = printConfig.selectedVector;
+                // TODO: repair it
+                // helper.selectedVector = printConfig.selectedVector;
                 helper.printConfig.region = printConfig.region;
                 if(printConfig.layers){
                     var commonLayers = [];

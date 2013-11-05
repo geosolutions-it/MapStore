@@ -280,7 +280,20 @@ Ext.namespace('gxp.charts');
      */
     cleanAndCapitalize: function(str){
         var cleanAndCap = str.replace("'", "").replace("'", ""); // clean "'" char of 'name'
-        cleanAndCap = cleanAndCap.slice(0,1).toUpperCase() + cleanAndCap.slice(1).toLowerCase(); // Capitalize: Name
+        if(cleanAndCap.indexOf(",") > -1){
+        	var resultStr = "";
+        	var strings = cleanAndCap.split(",");
+        	for(var i = 0; i < strings.length; i++){
+        		var subStrCap = this.cleanAndCapitalize(strings[i]);
+        		if(i>0){
+        			subStrCap = " (" + subStrCap + ")";
+        		}
+        		resultStr += subStrCap;
+        	}
+        	cleanAndCap = resultStr;
+        }else{
+        	cleanAndCap = cleanAndCap.slice(0,1).toUpperCase() + cleanAndCap.slice(1).toLowerCase(); // Capitalize: Name
+        }
         return cleanAndCap;
     },
 

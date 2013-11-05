@@ -100,7 +100,6 @@ gxp.plugins.printreport.CropDataChartGenerator = Ext.extend(gxp.plugins.printrep
     onDone: function(){
         if(this.hideAndCloseReportWindow){
             this.reportWindow.hide();
-            console.log("hide")
         }
         this.fireEvent("done", this.chartsSVG);
     }
