@@ -386,7 +386,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 name: config.name,
                 layer: layer,
                 properties: 'gxp_wmslayerpanel',
-                group: group ? group : undefined, 
+                group: group ? group : undefined
             }, layerRecord.data);
                         
             if(config.params.styles) {
@@ -635,6 +635,112 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         });
                       
         this.resultsContainer = new Ext.Container({layout:'fit'});
+
+        //http://blogs.cozi.com/tech/2010/04/generating-uuids-in-javascript.html
+        this.UUID = {
+            // Return a randomly generated v4 UUID, per RFC 4122
+            uuid4: function () {
+                return this._uuid(
+                    this.randomInt(), this.randomInt(),
+                    this.randomInt(), this.randomInt(), 4);
+            },
+
+            // Create a versioned UUID from w1..w4, 32-bit non-negative ints
+            _uuid: function (w1, w2, w3, w4, version) {
+                var uuid = new Array(36);
+                var data = [
+                    (w1 & 0xFFFFFFFF), (w2 & 0xFFFF0FFF) | ((version || 4) << 12), // version (1-5)
+                    (w3 & 0x3FFFFFFF) | 0x80000000, // rfc 4122 variant
+                    (w4 & 0xFFFFFFFF)
+                ];
+                for (var i = 0, k = 0; i < 4; i++) {
+                    var rnd = data[i];
+                    for (var j = 0; j < 8; j++) {
+                        if (k == 8 || k == 13 || k == 18 || k == 23) {
+                            uuid[k++] = '-';
+                        }
+                        var r = (rnd >>> 28) & 0xf; // Take the high-order nybble
+                        rnd = (rnd & 0x0FFFFFFF) << 4;
+                        uuid[k++] = this.hex.charAt(r);
+                    }
+                }
+                return uuid.join('');
+            },
+
+            hex: '0123456789abcdef',
+
+            // Return a random integer in [0, 2^32).
+            randomInt: function () {
+                return Math.floor(0x100000000 * Math.random());
+            }
+        };
+        
+        // method to filter users resource
+        var userFilter = function (element) {
+            return element.canEdit == true;
+        };
+        
+        // method to search and push attribute resource inside resourceList
+        this.searchAttributesSuccess = function(category,resourceList){
+            
+            // array filter in IE7 and IE8
+            if (!Array.prototype.filter) {
+              Array.prototype.filter = function (fn, context) {
+                var i,
+                    value,
+                    result = [],
+                    length;
+
+                    if (!this || typeof fn !== 'function' || (fn instanceof RegExp)) {
+                      throw new TypeError();
+                    }
+
+                    length = this.length;
+
+                    for (i = 0; i < length; i++) {
+                      if (this.hasOwnProperty(i)) {
+                        value = this[i];
+                        if (fn.call(context, value, i, this)) {
+                          result.push(value);
+                        }
+                      }
+                    }
+                return result;
+              };
+            }        
+            
+            this.resourceList = resourceList.filter(userFilter);
+
+            var asyncForEach = function (array) {
+                count = array.length;
+                newarray = array.slice(0);
+                function processOne() {
+                    var item = newarray.pop();
+                    var geostoreAttribute = new OpenLayers.GeoStore.Resource({
+                        type: "attribute",
+                        category: category,
+                        id: item.id
+                    });                                            
+                    me.geoStore.getEntityByID(geostoreAttribute, function(result) {
+                        me.resourceList[count].attributeDesc = result.AttributeList.Attribute.name;
+                        count--;
+                        if(newarray.length > 0) {
+                            processOne();
+                        } else {
+                            category === 'processing' ? me.saveCreateGridProcess(me.resourceList) : me.downloadSuccess(me.resourceList); // Done!
+                        }
+                    });
+                }
+                if(newarray.length > 0) {
+                    count--;
+                    processOne();
+                } else {
+                    category === 'processing' ? me.saveCreateGridProcess(me.resourceList) : me.downloadSuccess(me.resourceList); // Done!
+                }
+            };
+            
+            asyncForEach(this.resourceList);
+        };        
         
         this.fieldSet = new Ext.form.FieldSet({
             title: this.fieldSetTitle,
@@ -673,7 +779,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         scope: this,
                         disabled: true,
                         handler: function(){
+                        
                             var me=this;
+                            
+                            this.saveUserUUID = this.UUID.uuid4();
+                            
                             var submitElab = function(){
                             
                                 var form = this.savePanel.getForm();
@@ -757,19 +867,22 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                         scope: this
                                     });                     
                                 };
-                                
+
                                 //Assegno il nome alla risorsa (elaborazione)
                                 var geostoreEntityResource = new OpenLayers.GeoStore.Resource({
                                     type: "resource",
-                                    name: fields.elab_name,
-                                    description: fields.elab_description,
+                                    name: this.saveUserUUID,
+                                    description: fields.elab_name,
+                                    attributes: [{
+                                        name: fields.elab_description,
+                                        type:"STRING",
+                                        value:fields.elab_description
+                                    }],
                                     category: 'processing',
                                     store: jsonStatus
                                 });                    
                                 
-                                //Verifico se la risorsa (elaborazione) esiste
-                                me.geoStore.existsEntity(geostoreEntityResource,checkEntitiesResSucc,checkEntitiesResFail);
-
+                                me.geoStore.createEntity(geostoreEntityResource,successRes,failureRes);
                             };
                             
                             var enableBtnFunction = function(){
@@ -859,6 +972,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         disabled: false,
                         handler: function(){
                                 var me = this;
+                                
                                 this.newStatus;
                                 
                                 var loadGeostoreStatus = function(status){
@@ -956,18 +1070,17 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     }
                                 };
                                 
-                                function userFilter(element) {
-                                    return element.canEdit == true;
-                                }            
-                                
-                                this.success = function(resourceList){
-                                    var resourceList = resourceList.filter(userFilter);
-                                    var jsonResource = Ext.util.JSON.encode(resourceList);
+                                this.saveCreateGridProcess = function(resourceList){
+                                    
+                                    if (!resourceList){
+                                        failureSave();
+                                        return;
+                                    }
                                     
                                     var resourceDataReader = new Ext.data.ArrayReader({}, [
                                            {name: 'id', type: 'int', mapping: 'id'},
-                                           {name: 'name', type: 'string', mapping: 'name'},
-                                           {name: 'description', type: 'string', mapping: 'description'}
+                                           {name: 'name', type: 'string', mapping: 'description'},
+                                           {name: 'descrizione', type: 'string', mapping: 'attributeDesc'}
                                     ]);
                                     
                                     this.resourceDataStore = new Ext.data.Store({
@@ -989,16 +1102,16 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                                 
                                                     var success = function(data){
 
-                                                        this.newStatus = Ext.util.JSON.decode(data.Resource.data.data);
+                                                        me.newStatus = Ext.util.JSON.decode(data.Resource.data.data);
                                                         
-                                                        if (typeof this.newStatus == "string"){
-                                                            this.newStatus = Ext.util.JSON.decode(this.newStatus);
+                                                        if (typeof me.newStatus == "string"){
+                                                            me.newStatus = Ext.util.JSON.decode(me.newStatus);
                                                         }else{
-                                                            if (typeof this.newStatus == "object"){
-                                                                this.newStatus
+                                                            if (typeof me.newStatus == "object"){
+                                                                me.newStatus
                                                             }
                                                         }
-                                                        return this.newStatus;
+                                                        return me.newStatus;
                                                     };
                                                     
                                                     var failure = function(){};
@@ -1027,7 +1140,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                                     header: me.loadProcessingDescriptionHeader,
                                                     width : 120,
                                                     sortable : true,
-                                                    dataIndex: 'description'
+                                                    dataIndex: 'descrizione'
                                                 },{
                                                     xtype: 'actioncolumn',
                                                     width: 20,
@@ -1056,7 +1169,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                                                         };
                                                                         store.remove(record);
                                                                         gpanel.getSelectionModel().clearSelections(true);
-                                                                        this.newStatus = null;
+                                                                        me.newStatus = null;
                                                                         me.geoStore.deleteEntity(removeResource);
                                                                     }
                                                                 }
@@ -1094,12 +1207,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                             formBind: true,
                                             iconCls: 'load-button',
                                             handler: function(){
-                                                if(this.newStatus){
+                                                if(me.newStatus){
                                                 
-                                                    loadGeostoreStatus(this.newStatus);
+                                                    loadGeostoreStatus(me.newStatus);
                                                     
                                                     var map = me.target.mapPanel.map;
-                                                    var bbox = this.newStatus.roi.bbox;
+                                                    var bbox = me.newStatus.roi.bbox;
                                                     
                                                     map.zoomToExtent(
                                                         new OpenLayers.Bounds(
@@ -1110,7 +1223,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                                         )
                                                     )
                                                     
-                                                    this.newStatus = null;
+                                                    me.newStatus = null;
                                                     
                                                 }else{
                                                 
@@ -1136,8 +1249,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                         keys: [{ 
                                             key: [Ext.EventObject.ENTER], 
                                             handler: function(){
-                                                if(this.newStatus){
-                                                    loadGeostoreStatus(this.newStatus);
+                                                if(me.newStatus){
+                                                    loadGeostoreStatus(me.newStatus);
                                                 }
                                             },                                 
                                             scope: this
@@ -1170,9 +1283,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                         scope: this
                                     });
                                 };
-                                
-                                me.geoStore.getCategoryResources("processing",this.success,failureSave);
-                                
+                                    
+                                me.geoStore.getCategoryResources("processing",this.searchAttributesSuccess.createDelegate(this, "processing", 0),failureSave);
                         }
                     }]
                 }
@@ -1190,7 +1302,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         scope: this,
                         disabled: true,
                         handler: function(){
+                        
                             var me=this;
+                            
+                            this.downloadUserUUID = this.UUID.uuid4();
                             
                             var executeDownload = function() {
                                 var map = me.target.mapPanel.map;
@@ -1296,7 +1411,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                             });  
                                         }
                                     }
-                                }); 
+                                });
                             };
                             
                             var submitElab = function(downloadUrl){                                
@@ -1376,14 +1491,19 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                 //Assegno il nome alla risorsa (elaborazione)
                                 var geostoreEntityResource = new OpenLayers.GeoStore.Resource({
                                     type: "resource",
-                                    name: fields.elab_name,
-                                    description: fields.elab_description,
+                                    name: this.downloadUserUUID,
+                                    description: fields.elab_name,
+                                    attributes: [{
+                                        name: fields.elab_description,
+                                        type:"STRING",
+                                        value:fields.elab_description
+                                    }],                                    
                                     category: 'download',
                                     store: downloadUrl
                                 });
                                 
                                 //Verifico se la risorsa (elaborazione) esiste
-                                me.geoStore.existsEntity(geostoreEntityResource,checkEntitiesResSucc,checkEntitiesResFail);
+                                me.geoStore.createEntity(geostoreEntityResource,successRes,checkEntitiesResFail);
 
                             };
                             
@@ -1484,18 +1604,17 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     });
                                 };
                                 
-                                function userFilter(element) {
-                                    return element.canEdit == true;
-                                }            
-                                
                                 this.downloadSuccess = function(resourceList){
-                                    var resourceList = resourceList.filter(userFilter);
-                                    var jsonResource = Ext.util.JSON.encode(resourceList);
+
+                                    if (!resourceList){
+                                        failureDownload();
+                                        return;
+                                    }
                                     
                                     var resourceDataReader = new Ext.data.ArrayReader({}, [
                                            {name: 'id', type: 'int', mapping: 'id'},
-                                           {name: 'name', type: 'string', mapping: 'name'},
-                                           {name: 'description', type: 'string', mapping: 'description'}
+                                           {name: 'name', type: 'string', mapping: 'description'},
+                                           {name: 'description', type: 'string', mapping: 'attributeDesc'}
                                     ]);
                                     
                                     this.downloadResourceDataStore = new Ext.data.Store({
@@ -1516,8 +1635,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                                 rowselect: function (grid,rowIndex,record) {
                                                 
                                                     var success = function(data){
-                                                        this.newDownloadStatus = data.Resource.data.data;
-                                                        return this.newDownloadStatus;
+                                                        me.newDownloadStatus = data.Resource.data.data;
+                                                        return me.newDownloadStatus;
                                                     };
                                                     
                                                     var failure = function(){};
@@ -1575,7 +1694,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                                                         };
                                                                         store.remove(record);
                                                                         gpanel.getSelectionModel().clearSelections(true);
-                                                                        this.newDownloadStatus = null;
+                                                                        me.newDownloadStatus = null;
                                                                         me.geoStore.deleteEntity(removeResource);
                                                                     }
                                                                 }
@@ -1612,10 +1731,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                             formBind: true,
                                             iconCls: 'load-download-button',
                                             handler: function(){
-                                                if(this.newDownloadStatus){
+                                                if(me.newDownloadStatus){
                                                 
-                                                    loadGeostoreStatus(this.newDownloadStatus);
-                                                    this.newDownloadStatus = null;
+                                                    loadGeostoreStatus(me.newDownloadStatus);
+                                                    me.newDownloadStatus = null;
                                                     
                                                 }else{
                                                 
@@ -1641,8 +1760,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                         keys: [{ 
                                             key: [Ext.EventObject.ENTER], 
                                             handler: function(){
-                                                if(this.newDownloadStatus){
-                                                    loadGeostoreStatus(this.newDownloadStatus);
+                                                if(me.newDownloadStatus){
+                                                    loadGeostoreStatus(me.newDownloadStatus);
                                                 }
                                             },
                                             scope: this
@@ -1677,7 +1796,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                 };
 
                                 //RICHIAMO NOME CATEGORIA
-                                me.geoStore.getCategoryResources("download",this.downloadSuccess,failureDownload);
+                                //me.geoStore.getCategoryResources("download",this.downloadSuccess,failureDownload);
+                                
+                                me.geoStore.getCategoryResources("download",this.searchAttributesSuccess.createDelegate(this, "download", 0),failureDownload);
                         }
                     }]
                 }
@@ -2741,11 +2862,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         //enable save processing button for all processing type except for standard type
         var saveProcMenuButtons = this.fieldSet.getBottomToolbar().items.items[0].menu.items.items[0];
-        if (status.processing != 1){            
+        //if (status.processing != 1){            
             saveProcMenuButtons.enable();
-        }else{
+        /*}else{
             saveProcMenuButtons.disable();
-        }
+        }*/
         
         var bounds = this.getBounds(status, map);
         

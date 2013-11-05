@@ -604,6 +604,10 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
                 restPath="/resources/resource/";
                 advPar="?full=true";
                 break;
+            case "attribute":
+                restPath="/resources/resource/";
+                advPar="/attributes?full=true";
+                break;                
             case "user":
                 restPath="/users/user/";
                 break;
