@@ -157,6 +157,29 @@ OpenLayers.Format.GeoStore = OpenLayers.Class(OpenLayers.Format.XML,{
                                 }
                                 return node;
                             },
+                            "attribute": function(attribute) {
+                                var node = this.createElementNSPlus("attribute", {});
+                                
+                                this.writeNode("store:name", attribute.name, node);
+                                this.writeNode("store:type", attribute.type, node);
+                                this.writeNode("store:value", attribute.value, node);
+                                
+                                return node;
+                            },
+                            "type": function(type) {
+                                var node = this.createElementNSPlus("type", {
+                                    value: type
+                                });
+                
+                                return node;
+                            },
+                            "value": function(value) {
+                                var node = this.createElementNSPlus("value", {
+                                    value: value
+                                });
+                
+                                return node;
+                            },              
                             "description": function(description) {
                                 var node = this.createElementNSPlus("description", {
                                     value: description
@@ -196,7 +219,8 @@ OpenLayers.Format.GeoStore = OpenLayers.Class(OpenLayers.Format.XML,{
                             },
                             "data": function(responseInfo) {
                                 var node = this.createElementNSPlus("data", {
-                                    value: JSON.stringify(responseInfo)
+                                    //value: JSON.stringify(responseInfo)
+                                    value: Ext.decode(responseInfo)
                                 });
                
                                 return node;

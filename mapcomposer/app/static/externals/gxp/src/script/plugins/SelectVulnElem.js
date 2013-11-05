@@ -421,7 +421,7 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
                             syntView.addVulnLayer(newLayers,"rischio","Vulnerabilita",["Targets","Bersagli","Cibles","Ziele"]);
                             syntView.target.mapPanel.layers.add(newLayers);
                         }
-                    }],
+                    }]
                 });
                 selectVulnElem.disable();
                 viewWin.show();
