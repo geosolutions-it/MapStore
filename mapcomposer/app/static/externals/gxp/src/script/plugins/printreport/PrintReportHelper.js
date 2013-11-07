@@ -111,22 +111,26 @@ gxp.plugins.printreport.PrintReportHelper = Ext.extend(gxp.plugins.Tool, {
         mapTitle: {
             xtype: "textfield",
             fieldLabel: "mapTitleLabelText",
-            value: "mapTitleValueText"
+            value: "mapTitleValueText",
+            width: "100%"
         },
         mapSubTitle: {
             xtype: "textfield",
             fieldLabel: "mapSubTitleLabelText",
-            value: "mapSubTitleValueText"
+            value: "mapSubTitleValueText",
+            width: "100%"
         },
         cropPagesTitle: {
             xtype: "textfield",
             fieldLabel: "cropPagesTitleLabelText",
-            value: "cropPagesTitleValueText"
+            value: "cropPagesTitleValueText",
+            width: "100%"
         },
         meteorologicalPagesTitle: {
             xtype: "textfield",
             fieldLabel: "meteorologicalPagesTitleLabelText",
-            value: "meteorologicalPagesTitleValueText"
+            value: "meteorologicalPagesTitleValueText",
+            width: "100%"
         }
     },
 

@@ -39,6 +39,12 @@ Ext.ux.SingleYearComboBox = Ext.extend(Ext.form.ComboBox,{
 		fields:[{name:'year',dataIndex:0}]
 		
 	}),
+    //private: fixes expand when load data
+	onLoad: function(){
+		Ext.ux.SingleYearComboBox.superclass.onLoad.call(this);
+        this.hasFocus = this.isReloading ? this.previousFocusValue : this.hasFocus;
+        this.isReloading = false;
+	},
     setRange:function(start,end){
         var data = [];
         var currentValue= this.getValue();
@@ -53,8 +59,11 @@ Ext.ux.SingleYearComboBox = Ext.extend(Ext.form.ComboBox,{
         for(var i = start;i<=end ; i++){
             data.push([i]);
         }
+        // fixes expand when load data
+        this.isReloading = true;
+        this.previousFocusValue = this.hasFocus;
+        this.hasFocus = false;
         this.getStore().loadData(data);
-    
     }
 });
 

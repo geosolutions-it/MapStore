@@ -34,6 +34,7 @@ gxp.widgets.button.SelectFeatureButton = Ext.extend(Ext.Button,{
 	//TODO add wms URL
    // tooltip: this.infoActionTip,
 	iconCls: "gxp-icon-getfeatureinfo",
+    tooltip: "Select the region clicking on the map",
 	//toggleGroup: this.toggleGroup,
 	enableToggle: true,
 	allowDepress: true,
