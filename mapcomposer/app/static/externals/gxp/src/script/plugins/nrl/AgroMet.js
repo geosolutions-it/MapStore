@@ -47,6 +47,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 	outputTypeText:'Output Type',
 	areaFilter: "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
 	seasonText:'Season',
+    titleText:'AgroMet',
 	/** layer Name **/
     hilightLayerName:"CropData_Selection_Layer",//TODO doesn't seems to run
     layerStyle: {
@@ -146,7 +147,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 
 		var agroMet  = {
 			xtype:'form',
-			title: 'AgroMet',
+			title: this.titleText,
 			layout: "form",
 			minWidth:180,
 			autoScroll:true,
