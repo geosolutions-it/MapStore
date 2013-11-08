@@ -299,7 +299,7 @@
 			},
 		    "targetLayerStyle":{
 		        "strokeColor": "green",
-		        "strokeWidth": 0.25,
+		        "strokeWidth": 2,
 		        "fillOpacity":0
 		    },
 		  "defaultAreaTypeMap": "district",

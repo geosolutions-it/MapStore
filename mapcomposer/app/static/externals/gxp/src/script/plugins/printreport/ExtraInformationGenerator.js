@@ -112,6 +112,8 @@ gxp.plugins.printreport.ExtraInformationGenerator = Ext.extend(gxp.plugins.print
         // disclaimer
         this.printConfig.disclaimer = this.disclaimerText;
 
+        this.printConfig.season = values && values.season ? this.cleanAndCapitalize(values.season) : "Rabi";
+
         this.onDone();
     }
     

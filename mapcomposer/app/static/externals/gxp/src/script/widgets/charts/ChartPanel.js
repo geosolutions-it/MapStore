@@ -127,8 +127,11 @@ Ext.namespace('gxp.charts');
         var fromYear = data.startYear;
         var toYear = data.endYear;
         
-        var prodUnits = data2.production_unit;
-        //var areaUnits = data2.area_unit == 1 ? 'Ha' : 'Sqr Km';
+        // cotton: bales. tons for others
+        var prodUnits = "000 tons";
+        if(commodity == "cotton"){
+        	prodUnits = "000 bales";
+        }
         
         switch(prodUnits)
         {

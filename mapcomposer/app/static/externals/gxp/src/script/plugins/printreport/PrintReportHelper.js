@@ -88,14 +88,15 @@ gxp.plugins.printreport.PrintReportHelper = Ext.extend(gxp.plugins.Tool, {
         anchor:'100%',
         title: 'Layout configuration',
         collapsible:true,
-        collapsed:true
+        "style": "margin-top:10px;",
+        collapsed:false
     },
 
     /** i18n **/
     mapTitleLabelText: "Report title",
     mapTitleValueText: "Crop report map",
     mapSubTitleLabelText: "Subtitle",
-    mapSubTitleValueText: " ",
+    mapSubTitleValueText: "_empty",
     cropPagesTitleLabelText: "Crop pages title",
     cropPagesTitleValueText: "Crop info",
     meteorologicalPagesTitleLabelText: "Meteorological pages title",
@@ -222,7 +223,7 @@ gxp.plugins.printreport.PrintReportHelper = Ext.extend(gxp.plugins.Tool, {
             var itemConfig = this.formParameters[field];
             itemConfig.name = field;
             itemConfig.fieldLabel = this[itemConfig.fieldLabel] ? this[itemConfig.fieldLabel] : itemConfig.fieldLabel;
-            itemConfig.value = this[itemConfig.value] ? this[itemConfig.value] : itemConfig.value;
+            itemConfig.value = this[itemConfig.value] ? this[itemConfig.value] == "_empty" ? "": this[itemConfig.value]: itemConfig.value;
             items.push(itemConfig);
         }
 
