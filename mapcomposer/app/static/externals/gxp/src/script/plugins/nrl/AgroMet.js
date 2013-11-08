@@ -183,6 +183,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 									url: this.dataUrl, 
                                     xtype: 'gxp_nrlAgrometTabButton',
                                     ref: '../submitButton',
+                                    highChartExportUrl: this.highChartExportUrl,
                                     target:this.target,
                                     form: this
                                 });
@@ -205,6 +206,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                                     url: this.dataUrl,
                                     xtype: 'gxp_nrlAgrometChartButton',
                                     ref: '../submitButton',
+                                    highChartExportUrl: this.highChartExportUrl,
                                     target:this.target,
                                     form: this
                                 })
@@ -329,6 +331,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                 url: this.dataUrl,
                 xtype:'gxp_nrlAgrometChartButton',
 				ref: '../submitButton',
+                highChartExportUrl: this.highChartExportUrl,
                 target:this.target,
 				form: this,
                 disabled:true                

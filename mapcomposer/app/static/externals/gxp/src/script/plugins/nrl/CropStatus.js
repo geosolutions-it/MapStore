@@ -168,6 +168,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                                             url: this.dataUrl,//TODO externalize this
                                             xtype: 'gxp_nrlCropStatusTabButton',
                                             ref: '../submitButton',
+                                            highChartExportUrl: this.highChartExportUrl,
                                             target:this.target,
                                             form: this
                                         })
@@ -184,6 +185,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                                         this.output.addButton({               
                                             xtype: 'gxp_nrlCropStatusChartButton',
                                             ref: '../submitButton',
+                                            highChartExportUrl: this.highChartExportUrl,
                                             target:this.target,
                                             form: this
                                         })
@@ -319,6 +321,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 			buttons:[{               
                 xtype: 'gxp_nrlCropStatusChartButton',
 				ref: '../submitButton',
+                highChartExportUrl: this.highChartExportUrl,
 				url:this.dataUrl,
                 target:this.target,
 				form: this,

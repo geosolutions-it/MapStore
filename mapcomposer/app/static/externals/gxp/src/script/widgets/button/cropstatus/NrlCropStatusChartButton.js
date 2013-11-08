@@ -299,6 +299,7 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
                     factorStore[i].insert(id,record);
                 }
             });
+            
             factorStore[i].sort("s_dec", "ASC");    
 			var chart;
 			var unit =listVar.factorStore[i].get('unit');
@@ -338,7 +339,7 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
                     exporting: {
                         enabled: true,
                         width: 1200,
-                        url: this.target.highChartExportUrl
+                        url: this.highChartExportUrl
                     },
 					title: {
 						text: listVar.factorStore[i].get('label')		
