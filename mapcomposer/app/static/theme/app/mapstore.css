@@ -213,3 +213,7 @@ div#homelogos ul li a:hover {
     height:14px; /*change from 13px to 14px*/
     width:13px;
 }
+
+.icon-layer-switcher {
+   background-image: url(img/silk/layers.png);
+}

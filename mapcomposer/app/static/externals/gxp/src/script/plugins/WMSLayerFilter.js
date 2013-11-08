@@ -52,7 +52,7 @@ gxp.plugins.WMSLayerFilter = Ext.extend(gxp.plugins.Tool, {
      *  ``Array`` 
      *  Fields with filters to generate the filter
      */
-    filterFieldsets:[
+    /*filterFieldsets:[
         {
             ref:'state',
             label:'Stato',
@@ -60,10 +60,14 @@ gxp.plugins.WMSLayerFilter = Ext.extend(gxp.plugins.Tool, {
             checked:true,
             columns:2,
             checkboxes:[
-                {boxLabel: 'Chiuso',     checked: false, cql_filter: 'IDAvvisoStato = 0'},
-                {boxLabel: 'Aperto',     checked: true,  cql_filter: 'IDAvvisoStato = 3'},
-                {boxLabel: 'Intervento', checked: true,  cql_filter: 'IDAvvisoStato = 2'},
-                {boxLabel: 'Sopralluogo',checked: true,  cql_filter: 'IDAvvisoStato = 1'}
+                {boxLabel: 'Annullato',     checked: false,  cql_filter: 'IDAvvisoStato = 0'},
+                {boxLabel: 'Aperto',     checked: true,  cql_filter: 'IDAvvisoStato = 1'},
+                {boxLabel: 'Sopralluogo',checked: true,  cql_filter: 'IDAvvisoStato = 2'},
+                {boxLabel: 'Intervento', checked: true,  cql_filter: 'IDAvvisoStato = 3'},
+                {boxLabel: 'Ripristino Stradale',     checked: false, cql_filter: 'IDAvvisoStato = 4'},
+                {boxLabel: 'Chiuso',     checked: false, cql_filter: 'IDAvvisoStato = 5'},
+                {boxLabel: 'Interruzione Servizio',     checked: false, cql_filter: 'IDAvvisoStato = 200'}
+
             ],
             emptyFilter:'1=0',
             customConfig:{
@@ -134,7 +138,7 @@ gxp.plugins.WMSLayerFilter = Ext.extend(gxp.plugins.Tool, {
         }
         
         
-    ],
+    ],*/
     
     
     /** 

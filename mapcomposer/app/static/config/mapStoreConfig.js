@@ -1,5 +1,5 @@
 {
-   "geoStoreBase":"http://10.80.4.45/geostore/rest/",
+   "geoStoreBase":"http://webgis.acque.net/geostore/rest/",
    "proxy":"../http_proxy/proxy/?url=",
    "defaultLanguage": "it",
    "gsSources":{ 
@@ -7,7 +7,7 @@
 			"ptype": "gxp_wmssource",
 			"title": "Acque GeoServer",
 			"projection":"EPSG:3003",
-			"url": "http://10.80.4.45/geoserver/ows",
+			"url": "http://webgis.acque.net/geoserver/ows",
 			"layerBaseParams": {
 					"TILED": true,
 					"TILESORIGIN": "-20037508.34, -20037508.34",
@@ -63,25 +63,42 @@
 				"name": "SW:ctr2k",
 				"group": "background"				
 			},{
-				"source": "mapquest",
-				"title": "MapQuest OpenStreetMap",
-				"name": "osm",
-				"group": "background"
-			},{
 				"source": "bing",
 				"title": "Bing Road",
 				"name": "Road",
 				"group": "background"
-			}, {
+			},{
+				"source": "google",
+				"title": "Google Terrain",
+				"name": "TERRAIN",
+				"group": "background"
+			},{
+				"source": "google",
+				"title": "Google Satellite",
+				"name": "SATELLITE",
+				"group": "background"
+			},{
 				"source": "google",
 				"title": "Google Roadmap",
 				"name": "ROADMAP",
+				"group": "background"
+			},{
+				"source": "mapquest",
+				"title": "MapQuest OpenStreetMap",
+				"name": "osm",
 				"group": "background"
 			},{
 				"source": "gsacque",
 				"title": "QU_2k",
 				"name": "SW:foglio_2k",
 				"group": "Altro",
+				"tiled": false,
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Lidar DTM",
+				"name": "SW:lidar_acque",
+				"group": "Lidar DTM",
 				"tiled": false,
 				"visibility": false
 			},{
@@ -93,9 +110,21 @@
 				"visibility": false
 			},{
 				"source": "gsacque",
+				"title": "Fogli catastali",
+				"name": "geoscopio:rt_cat.idcatbdfog.rt",
+				"group": "AdT Catasto Terreni",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Particelle catastali",
+				"name": "geoscopio:rt_cat.idcatpart.rt",
+				"group": "AdT Catasto Terreni",
+				"visibility": false
+			},{
+				"source": "gsacque",
 				"title": "Civici",
 				"name": "postgis_sw:civici",
-				"group": "Altro",
+				"group": "Civici",
 				"visibility": false
 			},{
 				"source": "gsacque",
@@ -106,7 +135,7 @@
 			},{
 				"source": "gsacque",
 				"title": "Aree qualita",
-				"name": "qualita:Poligoni20130625",
+				"name": "qualita:risorsa",
 				"group": "Acquedotto",
 				"visibility": false
 			},{
@@ -180,15 +209,16 @@
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Rete Acq",
-				"name": "SW:acq_con",
+				"title": "Condotte Eternit",
+				"name": "postgis_sw:acq_con",
+				"styles": "eternit_acque",
 				"group": "Acquedotto",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Contatori",
 				"name": "SW:contator",
-				"group": "Acquedotto",
+				"group": "Contatori",
 				"visibility": false
 			},{
 				"source": "gsacque",
@@ -200,6 +230,12 @@
 				"source": "gsacque",
 				"title": "Produttivi",
 				"name": "SW:produtt",
+				"group": "Fognatura",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "FG area rete",
+				"name": "SW:fg",
 				"group": "Fognatura",
 				"visibility": false
 			},{
@@ -222,93 +258,63 @@
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Punti di scarico (ID)",
-				"name": "SW:ID",
-				"group": "PIA",
+				"title": "Da Depuratore (IT)",
+				"name": "SW:it",
+				"group": "Punti Immissione in Ambiente",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Punti di scarico (IT)",
-				"name": "SW:IT",
-				"group": "PIA",
+				"title": "Da Bypass Depuratore(IB)",
+				"name": "SW:ib",
+				"group": "Punti Immissione in Ambiente",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Punti di scarico (IB)",
-				"name": "SW:IB",
-				"group": "PIA",
+				"title": "Da Sfioratore(IS)",
+				"name": "SW:is",
+				"group": "Punti Immissione in Ambiente",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Punti di scarico (IS)",
-				"name": "SW:IS",
-				"group": "PIA",
+				"title": "Da Sollevamento(IL)",
+				"name": "SW:il",
+				"group": "Punti Immissione in Ambiente",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Punti di scarico (IL)",
-				"name": "SW:IL",
-				"group": "PIA",
+				"title": "Diretto(ID)",
+				"name": "SW:id",
+				"group": "Punti Immissione in Ambiente",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Sfioratori",
-				"name": "SW:SF",
-				"group": "Impianti Fgn",
+				"name": "SW:sf",
+				"group": "Fognatura",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Sollevamenti",
-				"name": "SW:SL",
+				"name": "SW:sl",
 				"group": "Impianti Fgn",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Depuratori",
-				"name": "SW:DE",
+				"name": "SW:de",
 				"group": "Impianti Fgn",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Sorgenti",
-				"name": "SW:SO",
-				"group": "Acquedotto",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Pozzi",
-				"name": "SW:PO",
-				"group": "Acquedotto",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Prese Fiume",
-				"name": "SW:FI",
-				"group": "Acquedotto",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Prese Lago",
-				"name": "SW:LA",
-				"group": "Acquedotto",
-				"visibility": false
-			},{
-				"source": "gsacque",
 				"title": "Potabilizzatori - Cloratori",
-				"name": "SW:PT",
-				"group": "Acquedotto",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Pompaggi",
-				"name": "SW:PG",
-				"group": "Acquedotto",
+				"name": "SW:pt",
+				"group": "Impianti Acq",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Depositi",
-				"name": "SW:AC",
-				"group": "Acquedotto",
+				"name": "SW:ac",
+				"group": "Impianti Acq",
 				"visibility": false
 			},{
 				"source": "gsacque",
@@ -321,6 +327,42 @@
 				"title": "Rete fgn",
 				"name": "postgis_sw:fgn_con",
 				"group": "Fognatura",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Sorgenti",
+				"name": "SW:so",
+				"group": "Captazioni",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Pozzi",
+				"name": "SW:po",
+				"group": "Captazioni",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Prese Fiume",
+				"name": "SW:fi",
+				"group": "Captazioni",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Prese Lago",
+				"name": "SW:la",
+				"group": "Captazioni",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Pompaggi",
+				"name": "SW:pg",
+				"group": "Impianti Acq",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Rete Acq",
+				"name": "SW:acq_con",
+				"group": "Acquedotto",
 				"visibility": false
 			}
 
@@ -375,7 +417,7 @@
           "forceMultiple":true,
           "separator":"start",
 		  "outputConfig":{
-			 "url":"http://10.80.4.45/geoserver/postgis_sw/ows?",
+			 "url":"http://webgis.acque.net/geoserver/postgis_sw/ows?",
 			 "emptyText":"Ricerca impianti",
 			 "typeName":"postgis_sw:wfs_search_impianti",
 			 "recordModel":[
@@ -421,7 +463,7 @@
           "forceMultiple":true,
           "noButton":true,
 		  "outputConfig":{
-			 "url":"http://10.80.4.45/geoserver/postgis_sw/ows?",
+			 "url":"http://webgis.acque.net/geoserver/postgis_sw/ows?",
 			 "emptyText":"Ricerca contatori",
 			 "typeName":"postgis_sw:wfs_search8",
 			 "recordModel":[
@@ -461,7 +503,7 @@
 		  "customParams":{
 			 "outputFilename":"stampa"
 		  },
-		  "printService":"http://10.80.4.45/geoserver/pdf/",
+		  "printService":"http://webgis.acque.net/geoserver/pdf/",
 		  "legendPanelId":"legendPanel",
           "defaultResolutionIndex":1,
           "defaultLayoutIndex":1,
@@ -479,7 +521,7 @@
         },{
 			"ptype": "gxp_mouseposition",
             "displayProjectionCode":"EPSG:4326",
-            "customCss": "text-shadow: 1px 0px 0px #686868, 1px 1px 0px #686868, 0px 1px 0px #686868,-1px 1px 0px #686868, -1px 0px 0px #686868, -1px -1px 0px #686868, 0px -1px 0px #686868, 1px -1px 0px #686868, 1px 4px 5px #aeaeae;color:white "
+            "customCss": "text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
 		}
 	],
     
