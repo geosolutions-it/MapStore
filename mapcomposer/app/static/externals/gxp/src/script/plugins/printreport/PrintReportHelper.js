@@ -383,7 +383,7 @@ gxp.plugins.printreport.PrintReportHelper = Ext.extend(gxp.plugins.Tool, {
             vector.layer = this.target.mapPanel.map.layers[0]; // TODO: should add it in a hidden layer!!
         }
         if(bounds && vector){
-            this.printPage.fit(vector);
+            this.printPage.fitToBBox(bounds);
             this.printPage.setCenter(bounds.getCenterLonLat());
         }else{
             // Default is the actual zoom
