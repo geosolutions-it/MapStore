@@ -112,6 +112,11 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
      *  Flag indicates that we need to add landscape control for the default tab
      **/
     addLandscapeControl: false,
+
+    /** api: config[bboxFit]
+     *  Flag indicates that the mapPanel is fixed by bbox (not by scale)
+     **/
+    bboxFit: false,
     
     /** api: config[offsetByScale]
      *  ``Object`` Force to change the lat and lon offset for the graticule fixed to the scale 
@@ -354,6 +359,8 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                             offsetByScale: this.offsetByScale,
                             // Add landscape control
                             addLandscapeControl: this.addLandscapeControl,
+                            // BBox fit
+                            bboxFit: this.bboxFit,
                             listeners: {
                                 scope: this,
                                 "afterrender": function() {
@@ -381,6 +388,8 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                                 }
                             },
                             printMapPanel: {
+                                // BBox fit
+                                bboxFit: this.bboxFit,
                                 map: Ext.applyIf({
                                     controls: [
                                         //UNCOMMENT TO ADD CONTROLS TO PRINT PREVIEW

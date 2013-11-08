@@ -159,6 +159,11 @@ GeoExt.PrintMapPanel = Ext.extend(GeoExt.MapPanel, {
      *  ``Number``
      */
     currentZoom: null,
+
+    /** api: config[bboxFit]
+     *  Flag indicates that the mapPanel is fixed by bbox (not by scale)
+     **/
+    bboxFit: false,
     
     /**
      * private: method[initComponent]
@@ -199,6 +204,12 @@ GeoExt.PrintMapPanel = Ext.extend(GeoExt.MapPanel, {
         this.extent = this.sourceMap.getExtent();
         
         GeoExt.PrintMapPanel.superclass.initComponent.call(this);
+
+        if(this.bboxFit){
+            // var scale = this.printPage.scale;
+            // scale.setDisabled(true);
+            this.printPage.fitToBBox(this.sourceMap.getExtent());
+        }
     },
     
     /** private: method[bind]
@@ -274,7 +285,13 @@ GeoExt.PrintMapPanel = Ext.extend(GeoExt.MapPanel, {
      *  Fits this PrintMapPanel's zoom to the print scale.
      */
     fitZoom: function() {
-        if (!this._updating && this.printPage.scale) {
+        if(!this._updating && this.printPage.bbox){
+            this._updating = true;
+            var printBounds = this.printPage.bbox;
+            this.currentZoom = this.map.getZoomForExtent(printBounds);
+            this.map.zoomToExtent(printBounds);
+            delete this._updating;
+        }else if (!this._updating && this.printPage.scale) {
             this._updating = true;
             var printBounds = this.printPage.getPrintExtent(this.map);
             this.currentZoom = this.map.getZoomForExtent(printBounds);

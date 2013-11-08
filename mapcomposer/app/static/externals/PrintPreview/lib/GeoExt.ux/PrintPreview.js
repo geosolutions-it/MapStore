@@ -551,16 +551,14 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         var scaleLine = new OpenLayers.Control.ScaleLine();
         this.printMapPanel.map.addControl(scaleLine);
         scaleLine.activate();
-        return new Ext.Panel({
-            cls: "gx-map-overlay",
-            layout: "column",
-            width: 235,
-            bodyStyle: "padding:5px",
-            items: [{
+        var items = [{
                 xtype: "box",
                 el: scaleLine.div,
                 width: scaleLine.maxWidth
-            }, {
+            }];
+        if(!this.bboxFit){
+            // hide scale for bboxFit
+            items.push({
                 xtype: "container",
                 layout: "form",
                 style: "padding: .2em 5px 0 0;",
@@ -585,13 +583,21 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                         printPage: this.printMapPanel.printPage
                     })
                 }
-            }, {
-                xtype: "box",
-                autoEl: {
-                    tag: "div",
-                    cls: "gx-northarrow"
-                }
-            }],
+            });
+        }
+        items.push({
+            xtype: "box",
+            autoEl: {
+                tag: "div",
+                cls: "gx-northarrow"
+            }
+        });
+        return new Ext.Panel({
+            cls: "gx-map-overlay",
+            layout: "column",
+            width: 235,
+            bodyStyle: "padding:5px",
+            items: items,
             listeners: {
                 "render": function() {
                     function stop(evt){evt.stopPropagation();}

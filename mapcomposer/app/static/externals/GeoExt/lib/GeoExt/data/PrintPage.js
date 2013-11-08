@@ -51,6 +51,11 @@ GeoExt.data.PrintPage = Ext.extend(Ext.util.Observable, {
      */
     scale: null,
     
+    /** api: property[bbox]
+     *  ``OpenLayers.BoundingBox`` The current bbox of the map.
+     */
+    bbox: null,
+    
     /** api: property[rotation]
      *  ``Float`` The current rotation of the page. Read-only.
      */
@@ -243,6 +248,25 @@ GeoExt.data.PrintPage = Ext.extend(Ext.util.Observable, {
             center: center,
             scale: scale
         });
+    },
+    
+    /** api: method[fitToBBox]
+     *  :param bbox: :class:``OpenLayers.BoundingBox``
+     *      The bounding box to fit the page to.
+     *
+     *  Fits the page layout to a bounding box.
+     * 
+     *  If you fit to a bounding box, scale and center turn null and 
+     *  only use bbox to fit the map
+     * 
+     */
+    fitToBBox: function(bbox) {
+        this._updating = true;
+        this.center = null;
+        this.scale = null;
+        this.bbox = bbox;
+        this.fireEvent("change", this, {bbox: bbox});
+        this._updating = false;
     },
 
     /** private: method[updateFeature]

@@ -431,11 +431,20 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
         
         var encodedPages = [];
         Ext.each(pages, function(page) {
-            encodedPages.push(Ext.apply({
-                center: [page.center.lon, page.center.lat],
-                scale: page.scale.get("value"),
-                rotation: page.rotation
-            }, page.customParams));
+            if(page.bbox){
+                // only bbox fix!!
+                encodedPages.push(Ext.apply({
+                    bbox: page.bbox.toArray(),
+                    rotation: page.rotation
+                }, page.customParams));
+            }else{
+                // default: use center and scale!!
+                encodedPages.push(Ext.apply({
+                    center: [page.center.lon, page.center.lat],
+                    scale: page.scale.get("value"),
+                    rotation: page.rotation
+                }, page.customParams));
+            }
         }, this);
         jsonData.pages = encodedPages;
         
