@@ -66,6 +66,78 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
         fillOpacity:0
     },
 
+    // combo configs
+    comboConfigs:{
+        base:{
+            anchor:'100%',
+            fieldLabel: 'District',
+            //url: "http://84.33.2.24/geoserver/ows?",
+            predicate:"ILIKE",
+            width:250,
+            sortBy:"province",
+            ref:'singleSelector',
+            displayField:"name",
+            pageSize:10            
+        },
+        district:{
+            typeName:"nrl:district_crop",
+            queriableAttributes:[
+                "district",
+                "province"                
+             ],
+             recordModel:[
+                {
+                  name:"id",
+                   mapping:"id"
+                },
+                {
+                   name:"geometry",
+                   mapping:"geometry"
+                },
+                {
+                   name:"name",
+                   mapping:"properties.district"
+                },{
+                   name:"province",
+                   mapping:"properties.province"
+                },{
+                   name:"properties",
+                   mapping:"properties"
+                } 
+            ],
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"       
+        },
+        province:{             
+            typeName:"nrl:province_crop",
+            recordModel:[
+                {
+                   name:"id",
+                   mapping:"id"
+                },
+                {
+                   name:"geometry",
+                   mapping:"geometry"
+                },
+                {
+                   name:"name",
+                   mapping:"properties.province"
+                },{
+                   name:"properties",
+                   mapping:"properties"
+                }
+            ],
+            sortBy:"province",
+            queriableAttributes:[
+                "province"
+            ],
+            displayField:"name",
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"                            
+        }    
+    },
+
+    // area filter
+    areaFilter: "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
+
     /** config:[defaultAreaTypeMap]
      *  ``String`` for the area type for the map generation for Pakistan. Can be 'province' or 'district' .Default it's 'province'.
      **/
@@ -76,6 +148,9 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
      */
     addOutput: function(config) {
         this.featureSelectorConfigs.base.url = this.dataUrl;
+        
+        //Override the comboconfig url;
+        this.comboConfigs.base.url = this.dataUrl;
 
         var cropStatus = this.getTabPanel();
         
@@ -213,7 +288,8 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
     outputRadioChange: function(c,checked){
         var outputValue = c.getValue().inputValue;
         var submitButton = this.output.submitButton;
-        var areaSelector = this.output.singleFeatureSelector;  
+        var areaSelector = this.output.singleFeatureSelector;
+        console.log("Radio change!!");  
 
         this.selectedProvince = null;
         
@@ -235,6 +311,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 form: this
             })
             var store = areaSelector.currentCombo.selectButton.store;
+            console.log(store);
             this.output.fireEvent('update',store);
             this.output.fireEvent('show');                                
             this.output.doLayout();
@@ -307,6 +384,9 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 vendorParams: {cql_filter:this.areaFilter},
                 layers:this.layers,
                 layerStyle: this.layerStyle,
+                comboConfigs:this.comboConfigs,
+                target:this.target,
+                areaFilter:this.areaFilter, 
                 listeners: {
                     regionsChange: function(store){
                         this.selectedProvince = store.getAt(0);

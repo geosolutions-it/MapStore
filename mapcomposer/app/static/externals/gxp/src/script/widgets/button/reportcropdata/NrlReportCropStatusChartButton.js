@@ -34,7 +34,7 @@ Ext.namespace('gxp.widgets.button');
  *    Base class to create chart and send to the print module
  *
  */
-gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(gxp.widgets.button.NrlCropStatusChartButton, {
+gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(Ext.Button, {
 
     /** api: xtype = gxp_nrlReportCropStatusChartButton */
     xtype: 'gxp_nrlReportCropStatusChartButton',
