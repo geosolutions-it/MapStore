@@ -320,7 +320,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                                     //look for 5 15 25 
                                     for(var i = 0;i<deks.length;i++){
                                         if( parseInt(deks[i])*10+5 == id){
-                                            console.log(id + " dekad present");
+                                            //console.log(id + " dekad present");
                                             return true;
                                         }
                                     }
@@ -483,7 +483,12 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
             var max="0";min = "9999";
             for(var i=0;i<values.length;i++){
                 var year = parseInt(values[i].substring(0,4));
-                var month = parseInt(values[i].substring(5,7));
+                var monthStr = values[i].substring(5,7);
+                // fix IE 8 problem when a number starts with 0
+                if(monthStr.indexOf("0") == 0){
+                    monthStr = monthStr.replace("0", "");
+                }
+                var month = parseInt(monthStr);
                 var dek = parseInt(values[i].substring(8,9));
                 var dateString = values[i].substring(0,10);
                 if(!this.values[year]){
@@ -510,6 +515,15 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                 years.push([key]);
             }
             range.year.getStore().loadData(years);
+
+            // show all values, only for testing
+            // for(var year in this.values){
+            //     console.log("YEAR --> "+year);
+            //     for (var month in this.values[year]){
+            //         console.log(month + "=");
+            //         console.log(this.values[year][month]);
+            //     }
+            // }
             //range.year.setValue(range.year.getStore().getAt(0).get(range.year.valueField),true);
             
             
@@ -541,9 +555,11 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
     getMonthsForAYear: function(selectedYear){
         var availableMonths = this.values[selectedYear];
         var monthsData = [];
-        for(var month in this.monthShortNames){
-            if(parseInt(month) in availableMonths){
-                monthsData.push(this.monthShortNames[month-1]);
+        for(var i = 0; i < this.monthShortNames.length; i++){
+            var month = this.monthShortNames[i][0];
+            var text = this.monthShortNames[i][1];
+            if(!!availableMonths[parseInt(month)]){
+                monthsData.push(this.monthShortNames[i]);
             }
         }
         return new Ext.data.ArrayStore({
@@ -558,7 +574,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
         var dekadsData = [];
         for(var dekad in this.dekadsNames){
             if(parseInt(dekad) in availableDekads){
-                dekadsData.push(this.dekadsNames[dekad]);
+                dekadsData.push(this.dekadsNames[availableDekads[parseInt(dekad)]]);
             }
         }
         return new Ext.data.ArrayStore({
