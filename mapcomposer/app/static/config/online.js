@@ -24,6 +24,11 @@
 			"title": "Destination GeoServer",
 			"version": "1.1.1",
 			"url": "http://destination.geo-solutions.it/geoserver_test/destination/ows",
+			"SRS": "EPSG:3857",
+		    "layersCachedExtent": [
+                    0.0, 5009377.085000,
+                    1252344.2712499984, 6261721.356249999
+			],            
 			"layerBaseParams": {
 				"TILED": true,
 				"TILESORIGIN": "-180,-90"
@@ -36,9 +41,13 @@
         "center": [1103893.13597286, 5651406.520669],
         "zoom": 7,
         "maxExtent": [
-        456125.02434063, 5403020.7962146,
-        1323838.1693132, 5887325.807362
+				-20037508.34,-20037508.34,
+				20037508.34,20037508.34
         ],
+        "restrictedExtent": [
+				-20037508.34,-20037508.34,
+				20037508.34,20037508.34
+        ],        
         "layers": [                      
             
         {
@@ -491,8 +500,10 @@
 		"wfsVersion": "1.1.0",
 		"destinationNS": "destination",
 		"index": 28,
-        "geoStoreBase":"http://destination.geo-solutions.it/geostore/rest/",
-        "proxy":"/http_proxy/?url="
+        "geoStoreBase": "http://destination.geo-solutions.it/geostore/rest/",
+        "proxy": "/http_proxy/proxy/?url=",
+        "geoStoreUser": "super",
+        "geoStorePassword": "super"
 	},
 	{
 		"ptype": "gxp_tabpanelwfsgrids",
