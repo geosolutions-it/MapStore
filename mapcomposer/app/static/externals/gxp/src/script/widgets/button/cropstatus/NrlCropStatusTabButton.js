@@ -141,30 +141,31 @@ gxp.widgets.button.NrlCropStatusTabButton = Ext.extend(Ext.Button, {
 		var grid = new Ext.grid.GridPanel({
 			bbar:[
 				"->",
-				{
-					xtype:'button',
-					text: 'Export All District',
-					tooltip: 'Export All District',
-					hidden: !isProvince,
-					iconCls: 'icon-disk-multiple',
-					handler:function(){
-						var store = this.ownerCt.ownerCt.getStore();
-						var lastParams = Ext.applyIf({}, store.lastParams);						
+				// Export button disabled
+				// {
+				// 	xtype:'button',
+				// 	text: 'Export All District',
+				// 	tooltip: 'Export All District',
+				// 	hidden: !isProvince,
+				// 	iconCls: 'icon-disk-multiple',
+				// 	handler:function(){
+				// 		var store = this.ownerCt.ownerCt.getStore();
+				// 		var lastParams = Ext.applyIf({}, store.lastParams);						
 						
-						var dwl = store.url + "?";
-						lastParams.outputFormat = "CSV";
+				// 		var dwl = store.url + "?";
+				// 		lastParams.outputFormat = "CSV";
 						
-						if(lastParams.typeName && isProvince){
-							lastParams.typeName = "nrl:crop_status_district";
-						}
+				// 		if(lastParams.typeName && isProvince){
+				// 			lastParams.typeName = "nrl:crop_status_district";
+				// 		}
 						
-						for (var i in lastParams){
-							dwl += i + "=" +encodeURIComponent(lastParams[i])+"&";
-						}
+				// 		for (var i in lastParams){
+				// 			dwl += i + "=" +encodeURIComponent(lastParams[i])+"&";
+				// 		}
 						
-						window.open(dwl);
-					}
-				},
+				// 		window.open(dwl);
+				// 	}
+				// },
 				{
 					xtype:'button',
 					text:'Export',

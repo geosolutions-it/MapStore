@@ -409,7 +409,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     ref: 'units',
                     collapsible:true,
                     forceLayout:true, //needed to force to read values from this fieldset
-                    collapsed:true,
+                    collapsed:false,
                     items:[{
                             xtype: 'combo',
                             ref: 'production',
