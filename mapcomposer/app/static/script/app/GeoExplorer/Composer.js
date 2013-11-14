@@ -63,7 +63,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		                    style: 'padding:5px',                  
 		                    baseParams: {
 		                        LEGEND_OPTIONS: 'forceLabels:on;fontSize:10',
-		                        WIDTH: 12, HEIGHT: 12
+		                        WIDTH: 20, HEIGHT: 20
 		                    }
 		                }
 		            }
