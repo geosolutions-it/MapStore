@@ -86,6 +86,7 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
      *  parameters in the requests (e.g. {buffer: 10}).
      */
      
+     layerParams: ["TIME","ELEVATION"],
     /** api: method[addActions]
      */
     addActions: function() {
@@ -129,11 +130,18 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
             
             var atLeastOneResponse = false;
 			this.masking = false;
-            queryableLayers.each(function(x){                
+            queryableLayers.each(function(x){
+	    	var layer = x.getLayer();                
                 var vendorParams = {};
                 Ext.apply(vendorParams, x.getLayer().vendorParams || this.vendorParams || {});
                 if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
                     vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale  : 'locale:' + GeoExt.Lang.locale;
+                }
+                if (this.layerParams) {
+                    for (var i=this.layerParams.length-1; i>=0; --i) {
+                        param = this.layerParams[i].toUpperCase();
+                        vendorParams[param] = layer.params[param];
+                    }
                 }
                 var control = new OpenLayers.Control.WMSGetFeatureInfo({
                     url: x.getLayer().url,

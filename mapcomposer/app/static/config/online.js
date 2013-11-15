@@ -1,6 +1,6 @@
 {
-	"geoStoreBase": "http://destination.geo-solutions.it/geostore/rest/",
-	"proxy": "/http_proxy/proxy/?url=",
+	"geoStoreBase": "http://localhost:8080/geostore/rest/",
+	"proxy": "/proxy/?url=",
 	"defaultLanguage": "it",
 	"embedding": false,
 	"gsSources": {
@@ -435,7 +435,25 @@
 			"target": "paneltbar",
 			"index": 21
 		}
-	},
+	},{
+        "ptype":"gxp_playback",
+        "outputTarget": "map",
+        "playbackMode": "range",
+        "showIntervals": false,
+        "labelButtons": false,
+        "settingsButton": true,
+        "rateAdjuster": false,
+        "dynamicRange": false,
+        "timeFormat": "l, F d, Y g:i:s A",
+        "outputConfig": {
+            "controlConfig":{
+                "step": 1,
+                "units": "Hours",
+                "range": ["2013-11-03T01:00:00.000Z", "2013-11-04T00:00:00.000Z"],
+                "frameRate": 1
+            }
+        }
+    },
 	{
 		"actions": ["->"],
 		"actionTarget": "paneltbar"
@@ -478,8 +496,7 @@
 			"target": "paneltbar",
 			"index": 25
 		}
-	},
-	{
+	},{
 		"ptype": "gxp_syntheticview",
 		"outputTarget": "east",
 		"id": "syntheticview",
@@ -500,8 +517,8 @@
 		"wfsVersion": "1.1.0",
 		"destinationNS": "destination",
 		"index": 28,
-        "geoStoreBase": "http://destination.geo-solutions.it/geostore/rest/",
-        "proxy": "/http_proxy/proxy/?url=",
+        "geoStoreBase":"http://localhost:8080/geostore/rest/",
+        "proxy":"/proxy/?url=",
         "geoStoreUser": "super",
         "geoStorePassword": "super"
 	},
