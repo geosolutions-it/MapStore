@@ -1,5 +1,7 @@
-﻿<html>
+﻿<!DOCTYPE html>
+<html>
     <head>
+        <!--meta http-equiv="X-UA-Compatible" content="IE=8" /-->
         <title>Map Viewer</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="shortcut icon" href="theme/app/img/favicon.ico">
@@ -13,6 +15,11 @@
 		<!-- OpenLayers resources -->
         <link rel="stylesheet" type="text/css" href="externals/openlayers/theme/default/style.css">
         <script type="text/javascript" src="script/OpenLayers.js"></script>
+		
+		<!-- Externatls OpenLayers libraries to manage other extensions -->
+		<script type="text/javascript" src="script/OpenLayersExt.js"></script> 
+		
+		<link rel="stylesheet" type="text/css" href="theme/app/openlayers.css" />
 
         <!-- GeoExt resources -->
         <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/popup.css">
@@ -20,6 +27,9 @@
         <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/gxtheme-gray.css">
         <script type="text/javascript" src="script/GeoExt.js"></script> 
 
+		<!-- canvg-1.2 resources -->
+		<script type="text/javascript" src="script/canvg-1.2.js"></script> 
+		
         <!-- gxp resources -->
         <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
         <script type="text/javascript" src="script/gxp.js"></script> 
@@ -34,11 +44,16 @@
         
         <!-- geocoding data  -->
         <script type="text/javascript" src="data/georeferences.js"></script>
+		
+		<!-- csw resources -->
+		<link rel="stylesheet" type="text/css" href="externals/csw/css/csw.css">
+		<script type="text/javascript" src="script/metadataexplorer.js"></script>
         
         <!-- translation data  -->
         <script type="text/javascript" src="translations/en.js"></script>
         <script type="text/javascript" src="translations/fr.js"></script>
         <script type="text/javascript" src="translations/it.js"></script>
+        <script type="text/javascript" src="translations/de.js"></script>
 		
 		<!-- uncomment to have  welcome screen
         <script type="text/javascript">
@@ -58,19 +73,20 @@
 		  </div>
 		</div>
 		-->	
+	
         <script>
             
             var app;
             var modified = false; var mapIdentifier = -1; var fullScreen = false; var bbox;
-			 // ///////////////////////////////////////////////////////////////
+			
+			// ///////////////////////////////////////////////////////////////
             // Custom variables from the mapStoreConfig user configuration file 
             // ///////////////////////////////////////////////////////////////
             var proxy; 
-            var geoStoreBaseURL;        
-            var customSources;
             var serverConfig;
             var customConfigName;
-            // //////////////////////////////////////////////////
+            
+			// //////////////////////////////////////////////////
             // Parsing the request to get the parameters
             // //////////////////////////////////////////////////
             var params = location.search.replace(/^\?/,'').replace(/&amp;/g,'&').split("&");
@@ -153,7 +169,7 @@
 				
 				var url = Ext.urlDecode(query);        
 				var code = url.locale || serverConfig.defaultLanguage || "en";
-				var langData = [['en', 'English'],['fr','Français'],['it','Italiano']];
+				var langData = [['en', 'English'],['fr','Français'],['it','Italiano'],['de','Deutsch']];
 				
 							
 				// ////////////////////////////////////////////////////
@@ -168,15 +184,25 @@
 					data:[
 						['en','English','viewer','en','English language'],
 						['fr','Français','viewer','fr','Franch language'],
-						['it','Italiano','viewer','it','Italian language'] 
+						['it','Italiano','viewer','it','Italian language'] ,
+						['de','Deutsch','viewer','de','Deutsch language']
 					]
 				});
-                var appTabs = new Ext.TabPanel({
-                    region: 'center',
-                    border : false,
-                    id : 'appTabs',
-                    enableTabScroll: true
-                });         
+				
+                var appTabsOpts = {
+                        region: 'center',
+                        border : false,
+                        id : 'appTabs',
+                        enableTabScroll: true
+                    };
+                    
+                if(!serverConfig.tab && !serverConfig.cswconfig){
+                    appTabsOpts.layout = 'fit';
+                    appTabs = new Ext.Panel(appTabsOpts); 
+                }else{
+                    appTabs = new Ext.TabPanel(appTabsOpts); 
+                }
+                      
 
                 var aboutButton = new Ext.Button({
                     text: GeoExplorer.prototype.appInfoText,
@@ -205,7 +231,7 @@
                     iconCls: "icon-geosol",
                     width : 150,
                     handler: function(btn){
-                        window.open('http://geo-solutions.it/contact/', '_blank');
+                        window.open('http://www.geo-solutions.it/contact/', '_blank');
                     }
                 });    
                 
@@ -226,16 +252,21 @@
                 });
                 
                 app = new GeoExplorer.Viewer({
+				    defaultLanguage: serverConfig.defaultLanguage,	
+                    customPanels: serverConfig.customPanels,
                     proxy: proxy,
+					viewerTools: serverConfig.viewerTools,
+					disableLayerChooser:serverConfig.disableLayerChooser,
                     defaultSourceType: "gxp_wmssource",
                     renderToTab : 'appTabs',
-					xmlJsonTranslateService: "http://localhost:8080/xmlJsonTranslate/",
+                    portalConfig: serverConfig.portalConfig,
+					geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),	 
                     about: {
                         title: "Custom Map",
                         'abstract': "Custom Map",
                         contact: "<a href='#'>#</a>."
                     },
-                    sources: {
+                    sources: serverConfig.gsSources || {
                         google: {
                             ptype: "gxp_googlesource"
                         }
@@ -265,8 +296,7 @@
 			      url: customConfigName ? "config/" + customConfigName + ".js"  : "config/viewerConfig.js",
 				  method: 'GET',
 				  success: function(response, opts){      
-					    
-					  
+					    					  
 					  try{
 						  serverConfig = Ext.util.JSON.decode(response.responseText);
 					  }catch(e){
@@ -280,9 +310,7 @@
 					  
 					  if(serverConfig){
 					      proxy = location.host.indexOf('localhost:8081') != -1 ? "/proxy/?url=" : serverConfig.proxy; 
-						  geoStoreBaseURL = serverConfig.geoStoreBase;                  
-						  customSources = serverConfig.gsSources;
-
+						  
 						  // ///////////////////////////////////////////////  
 						  // Run the application when browser is ready
 						  // ///////////////////////////////////////////////
@@ -302,6 +330,7 @@
     </script>
     </head>
     <body>
-        <% render content %>       
+        <% render content %>
+		<div style="visibility:hidden"><canvas id="printcanvas" /></div>
     </body>
 </html>

@@ -1,6 +1,9 @@
 {
-   "geoStoreBase":"http://localhost:8080/geostore/rest/",
-   "proxy":"/http_proxy/proxy/?url=",
+    "geoStoreBase":"",
+    "proxy":"/http_proxy/proxy/?url=",
+    "portalConfig":{
+		"header":false
+	},
     "gsSources": {
         "google": {
             "ptype": "gxp_googlesource"
@@ -25,15 +28,12 @@
 	
 	"customTools":[
 		{
-			"actions": ["->"], 
-			"actionTarget": "paneltbar"
-		}, {
-			"ptype": "gxp_googlegeocoder",
-			"outputConfig": {
-				"emptyText": "Google GeoCoder"
-			},
-			"outputTarget":"paneltbar",
-			"index": 26
+			"ptype": "gxp_mouseposition"
+		},{
+			"ptype": "gxp_geolocationmenu",
+			"outputTarget": "paneltbar",
+			"toggleGroup": "toolGroup",
+			"index": 23
 		}
 	]
 }

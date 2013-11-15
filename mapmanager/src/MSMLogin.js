@@ -259,7 +259,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
         var auth= 'Basic ' + Base64.encode(user+':'+pass);
         Ext.Ajax.request({
             method: 'GET',
-            url: config.baseUrl + '/geostore/rest/users/user/details/',
+            url: (config.baseUrl || 'http://' + window.location.host ) + '/geostore/rest/users/user/details/',
             scope: this,
             headers: {
                 'Accept': 'application/json',
@@ -286,10 +286,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 this.grid.getBottomToolbar().doRefresh();
                 this.grid.plugins.collapseAll();
                 this.grid.getBottomToolbar().openMapComposer.enable();
-				if ( this.role === 'ADMIN' ){
 					this.grid.openUserManagerButton.enable();
-				}
-				
             },
             failure: function(response, form, action) {
                 Ext.MessageBox.show({

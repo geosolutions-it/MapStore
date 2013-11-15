@@ -15,7 +15,8 @@
 		/* this time we have very large space for the height */ 
 		height:20000em;
 	}
-	#scroll {
+	#scroll,#gallery {
+	    background:url(../images/bg_gallery.png)  no-repeat; 
 		position:relative;
 		height:345px;
 		overflow:hidden;
@@ -24,10 +25,17 @@
 		-webkit-border-radius:5px;
 		width: 920px !important;
 	}
-	#tools {
+	#tools,#samples {
 		width:9999em;
 		position:absolute;
 		height:280px;
+	}
+	#gallerywrapper{
+		position:relative;
+		
+		overflow:visible;overflow-x:visible;
+		padding: 0px 0px 0px 0px;
+	
 	}
 	.tool {
 		float:left;
@@ -36,6 +44,7 @@
 		background-repeat:no-repeat;
 		background-position:0 0px;
 	}
+	
 	/*.details*/ .slidecontent {
 		/*position:absolute;
 		 sovrascrivi style base 

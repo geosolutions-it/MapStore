@@ -40,6 +40,13 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
      */
     source: null,
     
+    /** api: config[wps]
+     * The WPSManager instance.
+     */
+    wps: null,
+
+    map: null,
+    
     /** api: config[sameOriginStyling]
      *  ``Boolean``
      *  Only allow editing of styles for layers whose sources have a URL that
@@ -92,15 +99,18 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
     cacheText: "Cache",
     cacheFieldText: "Use cached version",
     stylesText: "Styles",
+    summaryText: "Statistics",
+    summaryInfoText: "Current Viewport Raster Statistics",
+    refreshText: "Refresh",
     
     initComponent: function() {
-        
         this.addEvents(
             /** api: event[change]
              *  Fires when the ``layerRecord`` is changed using this dialog.
              */
             "change"
         );
+		
         this.items = [
             this.createAboutPanel(),
             this.createDisplayPanel()
@@ -125,7 +135,25 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
             }
             this.items.push(this.createStylesPanel(url));
         }
-
+        
+        // add statistics Tab only for raster layers
+		if(this.wps){
+			var containsRasterKwrds = false;
+			for(var i=0; i<this.layerRecord.get("keywords").length; i++) {
+				if (this.layerRecord.get("keywords")[i].toUpperCase() === "WCS"    || 
+					this.layerRecord.get("keywords")[i].toUpperCase() === "RASTER" || 
+					this.layerRecord.get("keywords")[i].toUpperCase() === "TIF"    || 
+					this.layerRecord.get("keywords")[i].toUpperCase() === "TIFF"   || 
+					this.layerRecord.get("keywords")[i].toUpperCase() === "GEOTIFF") {
+					containsRasterKwrds = true;
+				}
+			}		
+		
+			if (!this.layerRecord.get("queryable") || containsRasterKwrds) {
+				this.items.push(this.createRasterSummaryPanel());
+			}
+		}
+		
         gxp.WMSLayerPanel.superclass.initComponent.call(this);
     },
 
@@ -389,8 +417,224 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                 }
             }]
         };
-    }    
+    },    
 
+	loadMaskMsg: "Fetching data..",
+	noDataMsg: "No data available in current view",
+    showMask: function(cmp) {
+        if(!this.loadMask) this.loadMask = new Ext.LoadMask(cmp.getEl(), {msg: this.loadMaskMsg});
+        this.loadMask.show();
+    },
+    
+    hideMask: function() {
+		if(this.loadMask){
+			this.loadMask.hide();
+		}
+    },
+    
+    /** private: createRasterSummaryPanel
+     *  Creates the Raster WPS Summary panel.
+     */
+    area:	  null,
+	count: 	  null,
+	min: 	  null,
+	max: 	  null,
+	sum: 	  null,
+	avg: 	  null,
+	stddev:   null,
+	riskarea: null,
+	
+    createRasterSummaryPanel: function() {
+		this.area		= " - ";
+		this.count		= " - ";
+		this.min		= " - ";
+		this.max		= " - ";
+		this.sum		= " - ";
+		this.avg		= " - ";
+		this.stddev		= " - ";
+    	
+    	
+    	var onRefreshButtonClicked = function() {                    
+			var extent  = this.map.getExtent().toGeometry();
+			var crs     = this.map.getProjection();
+			var projection = this.map.getProjectionObject();
+			
+			var poly = new OpenLayers.Geometry.MultiPolygon(extent);
+			var area = poly.getGeodesicArea( projection );
+			var inPerDisplayUnit = OpenLayers.INCHES_PER_UNIT["km"];
+			
+			if(inPerDisplayUnit){
+				var inPerMapUnit = OpenLayers.INCHES_PER_UNIT["m"];
+				area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
+			}
+			
+			// nmi -> area = (area.toFixed(2) * 1000 * 0.000539956803);
+			area = Math.round(area*100)/100; 
+			
+			var requestObject = {
+				type: "raw",
+				inputs:{
+					layerName: new OpenLayers.WPSProcess.LiteralData({
+						value: this.layerRecord.get("name")
+					}),
+					areaOfInterest: new OpenLayers.WPSProcess.ComplexData({
+						value: extent.toString(),
+						mimeType: "application/wkt"
+					}),
+					aoiCRS: new OpenLayers.WPSProcess.LiteralData({
+						value: crs
+					})
+				},
+				outputs: [{
+					identifier: "result",
+					mimeType: "text/xml"
+				}]
+			};
+			
+			this.showMask(Ext.getCmp("statsTab"));
+			
+			var me = this;
+			this.wps.execute("gs:RasterStatistics", requestObject,
+				function(response){
+					var fc = OpenLayers.Format.XML.prototype.read.apply(this, [response]);
+					var fid = OpenLayers.Ajax.getElementsByTagNameNS(fc, "http://www.opengis.net/gml","gml", "RasterStatistics")[0];
+					
+					if(!fid){
+						var wpsError = new OpenLayers.Format.WPSExecute().read(response);
+						
+						if(wpsError && wpsError.executeResponse.status){
+							var ex = wpsError.executeResponse.status.exception.exceptionReport.exceptions[0];
+							if(ex){
+								Ext.Msg.show({
+									title: ex.code,
+									msg: ex.texts[0] ,
+									buttons: Ext.Msg.OK,
+									icon: Ext.MessageBox.ERROR
+								});
+							}
+						}
+					} else {
+						// TODO: is there a better way to get these data?
+						var count_tag = OpenLayers.Ajax.getElementsByTagNameNS(fid, "http://www.opengis.net/gml","gml", "count");
+						if(count_tag.length > 0){
+							Ext.getCmp("areaStatsTextField").setValue(area + " km2");
+							Ext.getCmp("countStatsTextField").setValue(OpenLayers.Ajax.getElementsByTagNameNS(fid, "http://www.opengis.net/gml","gml", "count")[0].childNodes[0].data);
+							Ext.getCmp("minStatsTextField").setValue(OpenLayers.Ajax.getElementsByTagNameNS(fid, "http://www.opengis.net/gml","gml", "min")[0].childNodes[0].data);
+							Ext.getCmp("maxStatsTextField").setValue(OpenLayers.Ajax.getElementsByTagNameNS(fid, "http://www.opengis.net/gml","gml", "max")[0].childNodes[0].data);
+							Ext.getCmp("sumStatsTextField").setValue(OpenLayers.Ajax.getElementsByTagNameNS(fid, "http://www.opengis.net/gml","gml", "sum")[0].childNodes[0].data);
+							Ext.getCmp("avgStatsTextField").setValue(OpenLayers.Ajax.getElementsByTagNameNS(fid, "http://www.opengis.net/gml","gml", "avg")[0].childNodes[0].data);
+							Ext.getCmp("stddevStatsTextField").setValue(OpenLayers.Ajax.getElementsByTagNameNS(fid, "http://www.opengis.net/gml","gml", "stddev")[0].childNodes[0].data);
+							
+							if (OpenLayers.Ajax.getElementsByTagNameNS(fid, "http://www.opengis.net/gml","gml", "riskarea")[0]) {
+								var riskArea = OpenLayers.Ajax.getElementsByTagNameNS(fid, "http://www.opengis.net/gml","gml", "riskarea")[0].childNodes[0].data;
+								if (!(riskArea === " - "))
+									Ext.getCmp("riskareaStatsTextField").setValue(riskArea + " km2");
+							}
+						}else{
+							Ext.getCmp("areaStatsTextField").setValue(me.noDataMsg);
+							Ext.getCmp("countStatsTextField").setValue(me.noDataMsg);
+							Ext.getCmp("minStatsTextField").setValue(me.noDataMsg);
+							Ext.getCmp("maxStatsTextField").setValue(me.noDataMsg);
+							Ext.getCmp("sumStatsTextField").setValue(me.noDataMsg);
+							Ext.getCmp("avgStatsTextField").setValue(me.noDataMsg);
+							Ext.getCmp("stddevStatsTextField").setValue(me.noDataMsg);
+							Ext.getCmp("riskareaStatsTextField").setValue(me.noDataMsg);
+						}           
+					}
+					
+					me.hideMask();
+				},
+				this
+			);
+		}
+    	
+     	return {
+            title: this.summaryText,
+            id: "statsTab",
+            layout: "form",
+            style: "padding: 10px",
+            items: [{
+                xtype: "label",
+            	text: this.summaryInfoText,
+            	cls: "riskSummaryInfoText"
+            },
+            {
+                xtype: "textfield",
+                id: "areaStatsTextField",
+                fieldLabel: "area",
+                anchor: "99%",
+                value: this.area,
+                readOnly: true
+            },
+            {
+                xtype: "textfield",
+                id: "countStatsTextField",
+                fieldLabel: "count",
+                anchor: "99%",
+                value: this.count,
+                readOnly: true
+            },
+            {
+                xtype: "textfield",
+                id: "minStatsTextField",
+                fieldLabel: "min",
+                anchor: "99%",
+                value: this.min,
+                readOnly: true
+            },
+            {
+                xtype: "textfield",
+                id: "maxStatsTextField",
+                fieldLabel: "max",
+                anchor: "99%",
+                value: this.max,
+                readOnly: true
+            },
+            {
+                xtype: "textfield",
+                id: "sumStatsTextField",
+                fieldLabel: "sum",
+                anchor: "99%",
+                value: this.sum,
+                readOnly: true
+            },
+            {
+                xtype: "textfield",
+                id: "avgStatsTextField",
+                fieldLabel: "avg",
+                anchor: "99%",
+                value: this.avg,
+                readOnly: true
+            },
+            {
+                xtype: "textfield",
+                id: "stddevStatsTextField",
+                fieldLabel: "stddev",
+                anchor: "99%",
+                value: this.stddev,
+                readOnly: true
+            },
+            {
+                xtype: "textfield",
+                id: "riskareaStatsTextField",
+                fieldLabel: "riskarea",
+                anchor: "99%",
+                value: this.riskarea,
+                readOnly: true
+            }],
+            bbar:[{
+                tooltip: this.refreshText,
+                overflowText: this.refreshText,
+                iconCls: 'x-tbar-loading',
+                handler: onRefreshButtonClicked,
+                scope: this
+            }],
+            listeners: {
+            	scope: this,
+            	render: onRefreshButtonClicked
+            }
+        }
+    }
 });
 
 Ext.reg('gxp_wmslayerpanel', gxp.WMSLayerPanel); 

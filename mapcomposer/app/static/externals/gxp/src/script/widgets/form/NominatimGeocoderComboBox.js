@@ -106,8 +106,8 @@ gxp.form.NominatimGeocoderComboBox = Ext.extend(Ext.form.ComboBox, {
 				callbackParam:'json_callback'
 		});
        this.store = new Ext.data.JsonStore({
-			combo:this,
-			proxy:this.proxy,
+			combo: this,
+			proxy: this.proxy,
 			root: this.root,
 			messageProperty: 'crs',
 			autoLoad: false,
@@ -141,19 +141,18 @@ gxp.form.NominatimGeocoderComboBox = Ext.extend(Ext.form.ComboBox, {
 			},
 			listeners:{
 				beforeload: function(store){
-
 					var bounds;
 					if(this.bounded == "max"){
-						bounds = app.mapPanel.map.getMaxExtent();
+						bounds = this.target.mapPanel.map.getMaxExtent();
 					}else if(!this.bounded =="current"){
-						bounds = app.mapPanel.map.getExtent();
+						bounds = this.target.mapPanel.map.getExtent();
 					}else{
-						bounds= this.bounds;
+						bounds = this.bounds;
 					}
 					if(bounds){
 						//bounds.transform( app.mapPanel.map.getProjectionObject() ,new OpenLayers.Projection("EPSG:4326"));
 						//required format for viewbox=<left>,<top>,<right>,<bottom>
-						var viewbox= bounds.left+ ',' + bounds.top + ',' +bounds.right+ ',' +bounds.bottom;
+						var viewbox= bounds.left + ',' + bounds.top + ',' + bounds.right + ',' + bounds.bottom;
 						store.setBaseParam( 'viewbox ',viewbox );
 					}
 					

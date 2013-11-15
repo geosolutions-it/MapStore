@@ -157,10 +157,24 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
     refreshText: "Refresh",
     /**
     * Property: beforePageText
-    * {string} string to add in DeleteMap tooltip
+    * {string} The text displayed before the input item (defaults to 'Page')
     * 
     */
     beforePageText: 'Page',
+   /**
+    * Property: afterPageText
+    * {string} Customizable piece of the default paging text (defaults to 'of {0}')
+    * 
+    */
+	afterPageText : "of {0}",
+	
+	/**
+    * Property: resizerText
+    * {string} text for the maps per page combo
+    * 
+    */
+	resizerText: "Maps per page",
+	
     /**
      * Method: initComponent
      * Initializes the component
@@ -215,5 +229,11 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
                  this.grid.plugins.collapseAll();
             }
         });
+		
+		this.plugins = (this.plugins || []);
+		this.plugins.push(new Ext.ux.plugin.PagingToolbarResizer( {
+			options : [ 10, 20, 50, 100 ],
+			displayText: this.resizerText
+		}));
     }
 });

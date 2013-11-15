@@ -35,14 +35,8 @@ GeoExt.Lang.add("fr", {
     },  
 
     "GeoExplorer.Composer.prototype": {
-        loadMapText: "Importer une carte ou un fichier KML",
-        saveMapText: "Exporter une carte",
         exportMapText: "Publier une carte",
-		loadMapEmptyText: "Sélectionnez un fichier KML ou de contexte",
-		loadMapUploadText: "Chargement...",
 		uploadText: "Télécharger",
-		loadMapWindowTitle: 'formulaire de téléchargement de  fichier',
-		loadMapErrorText:'Erreur de chargement de fichier',
         toolsTitle: "Sélectionner l`application à inclure dans la barre d`outils",
         previewText: "Previsualiser",
         backText: "Retour en arrière",
@@ -53,12 +47,7 @@ GeoExt.Lang.add("fr", {
         passwordFieldText: "Mot de passe",
         fullScreenText: "Plein écran",
         cswMsg: 'Chargement...',
-	    uploadWaitMsg: 'Chargement de le fichier de contexte...',
-		uploadErrorTitle: 'Erreur de téléchargement de fichiers',
-		uploadEmptyText: 'Sélectionnez un fichier de contexte',
-		uploadWinTitle: 'Formulaire de téléchargement',
 		cswFailureAddLayer: ' La couche ne peuvent pas être ajoutés à la carte',
-		uploadButtonText: 'Charger',
         alertEmbedTitle: 'Attention',
         alertEmbedText: "Enregistrer la carte avant d'utiliser l'outil 'Publier la carte'",
 	    cswZoomToExtentMsg: "BBOX pas disponible",
@@ -90,8 +79,7 @@ GeoExt.Lang.add("fr", {
 	    removeOverlaysMenuText: "Retirer des superpositions",
 	    removeOverlaysActionTip: "Supprime toutes les superpositions de la carte",
 	    removeOverlaysConfirmationText: "Etes-vous sûr de vouloir supprimer tous les calques chargés de la carte?"
-    },
-    
+    },    
 	
     "gxp.plugins.BingSource.prototype": {
         title: "Bing couvertures",
@@ -183,8 +171,17 @@ GeoExt.Lang.add("fr", {
     "gxp.plugins.WMSGetFeatureInfo.prototype": {
         infoActionTip: "Obtenir des infos sur l`entité",
         popupTitle: "Info sur l`entité",
-		noDataMsg: "Aucune donnée n'a été renvoyée par le serveur"
-    },  
+		noDataMsg: "Aucune donnée n'a été renvoyée par le serveur",
+		maskMessage: "Obtenir des infos sur l`entité..."
+    }, 
+	
+	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
+        infoActionTip: "Obtenir des infos sur l`entité",
+        popupTitle: "Info sur l`entité",
+		noDataMsg: "Aucune donnée n'a été renvoyée par le serveur",
+		maskMessage: "Obtenir des infos sur l`entité...",
+		activeActionTip:"Obtenir des infos sur l`entité sélectionnée"
+    }, 	
 
     "gxp.plugins.Zoom.prototype": {
         zoomInMenuText: "Zoom Avant",
@@ -219,7 +216,12 @@ GeoExt.Lang.add("fr", {
         transparentText: "Transparent",
         cacheText: "Cache",
         cacheFieldText: "Utiliser la version mise en cache",
-        stylesText: "Styles"
+        stylesText: "Styles",
+        summaryText: "Statistiques",
+        summaryInfoText: "Current Viewport Raster Statistics",
+        loadMaskMsg: "Chargement des donnees ...",
+        noDataMsg: "Pas de données disponibles en la vue actuelle",
+        refreshText: "Actualiser"
     },  
 
     "gxp.NewSourceWindow.prototype": {
@@ -255,7 +257,15 @@ GeoExt.Lang.add("fr", {
 	    saveDefaultContextActionTip: "Enregistrer contexte Carte.",
 	    contextSaveSuccessString: "Sauver le contexte est géré.",
 	    contextSaveFailString: "Sauver le contexte a échoué.",
-	    contextMsg: "Chargement..."
+	    contextMsg: "Chargement...",
+		userLabel: "Utilisateur",	
+		passwordLabel: "Mot de passe", 	
+		loginLabel: "Connexion",	
+		mapMetadataTitle: "Insérer les métadonnées de la carte",	
+		mapMedatataSetTitle: "Métadonnées de la carte",	
+		mapNameLabel: "Nom",	
+		mapDescriptionLabel: "Description",
+		addResourceButtonText: "Ajouter Carte"
     },
     "gxp.plugins.GeoReferences.prototype":{
         initialText: "Sélectionner une zone",
@@ -278,8 +288,23 @@ GeoExt.Lang.add("fr", {
         legendOnSeparatePageText: "Légende sur une page distincte?",
         compactLegendText: "Légende compact?",	
         emptyCommentText: "Entrer des commentaires d'ici.",
-        creatingPdfText: "Création PDF..."
+        creatingPdfText: "Création PDF...",
+		graticuleFieldLabelText: 'Réticule actif',
+		defaultTabText: "Défaut",
+		legendTabText: "Légende"
     },
+	
+	"GeoExt.ux.LegendStylePanel.prototype":{
+		iconsSizeText: "Taille des icônes",
+		fontSizeText: "Taille de la police",
+		fontFamilyText: "Famille de polices",
+		forceLabelsText: "Force Étiquettes",
+		dpiText: "Dpi",
+		fontStyleText: "Le style de police",
+		fontEditorText: "Etiquette config",
+		sizeText: "Taille"
+    },
+	
     "gxp.plugins.GeonetworkSearch.prototype":{
         geonetworkSearchText: "Afficher les métadonnées",
         geonetworkSearchActionTip: "Afficher les métadonnées"
@@ -301,14 +326,21 @@ GeoExt.Lang.add("fr", {
           passwordFieldText: "Mot de passe"
     },
 	
-	"gxp.plugins.FeatureGrid.prototype": {
+    "gxp.plugins.FeatureGrid.prototype": {
         displayFeatureText: "Afficher sur la carte",
         firstPageTip: "Première page",
         previousPageTip: "Page précédente",
         zoomPageExtentTip: "Zoom sur la page",
         nextPageTip: "Page suivante",
-        nextPageTip: "Dernière page",
-        totalMsg: "Total: {0} records"
+        lastPageTip: "Dernière page",
+        title: "Entités",
+        totalMsg: "Total: {0} entités",
+        displayExportCSVText: "Exporter au format CSV",
+        exportCSVSingleText: "Une seule page",
+        exportCSVMultipleText: "Toutes les pages",
+        failedExportCSV: "Impossible de trouver la réponse pour le format de sortie CSV",
+        invalidParameterValueErrorText: "Valeur de paramètre non valide",
+		zoomToFeature: "Zoom sur Feature"
     },
 	
 	"gxp.plugins.QueryForm.prototype": {
@@ -322,19 +354,60 @@ GeoExt.Lang.add("fr", {
         cancelButtonText: "Remettre",
         noFeaturesTitle: "Pas de correspondance",
         noFeaturesMessage: "Votre requête n'a retourné aucun résultat.",
-        title: "Rechercher",
-        northLabel:"Nord",
-        westLabel:"Ouest",
-        eastLabel:"Est",
-        southLabel:"Sud",
-        setAoiText: "FixéROI",
-        setAoiTooltip: "Activer le contrôle TextBox pour dessiner un ROI (BOX) sur la carte",
+        title: "Rechercher",        
         attributeEnablement: "Requête par attributs",
         attributeEnablementMsg: "Invalid search Type! To use this you have to select 'Feature' type and to select a vector layer before.",
         searchType: "Réglages de base",
         typeLabel: "Type",
-        featureLabel: "Max Features"
+        featureLabel: "Max Features" 
     },
+    
+    "gxp.plugins.BBOXQueryForm.prototype": {
+        selectionMethodFieldSetComboTitle: "Méthode de sélection",
+        comboEmptyText: "Sélectionner une méthode..",
+        comboSelectionMethodLabel: "Sélection",
+        comboPolygonSelection: 'Polygon',
+        comboCircleSelection: 'Arrondissez',
+        comboBBOXSelection: 'BBox',
+		errorBBOXText: "Le BBox choisi n'est pas valide!",
+        errorDrawPolygonText: "Vous devez dessiner le polygone",
+        errorDrawCircleText: "Vous devez dessiner le cercle",     
+        errorDrawTitle: "Demande erreur",
+		errorBufferTitle: "Le tampon est incorrecte",
+		errorBufferText: "Le tampon sélectionné n'est pas valide!",
+		areaLabel: "Région",	
+		perimeterLabel: "Perimetro",	
+		radiusLabel: "Perimeter",	
+		centroidLabel: "Centroid",	
+		selectionSummary: "Résumé de Sélection"
+    },
+	
+    "gxp.widgets.form.BufferFieldset.prototype": {
+		bufferFieldLabel: "Gamme de tampon",
+		bufferFieldSetTitle: "Tampon",
+		coordinatePickerLabel: "Coordonnées",
+		draweBufferTooltip: "Dessinez le tampon"
+	},
+    
+    "gxp.form.BBOXFieldset.prototype":{
+        northLabel:"Nord",
+        westLabel:"Ouest",
+        eastLabel:"Est",
+        southLabel:"Sud",
+        waitEPSGMsg: "S'il vous plaît attendre...",
+        setAoiText: "FixéROI",
+        setAoiTooltip: "Activer le contrôle TextBox pour dessiner un ROI (BBox) sur la carte",
+        title: "Région d'Intérêt"
+    },
+    
+    "gxp.FilterBuilder.prototype":{
+        preComboText: "égaler",
+        postComboText: "de ce qui suit:",
+        addConditionText: "ajouter la condition",
+        addGroupText: "ajouter un groupe",
+        removeConditionText: "suppression de la condition"
+    },
+    
     "gxp.EmbedMapDialog.prototype": {
         publishMessage: "Votre carte est prête à être publiée sur le web! Il suffit de copier le code HTML ci-dessous pour intégrer la carte dans votre site web:",
         heightLabel: "Hauteur",
@@ -356,7 +429,8 @@ GeoExt.Lang.add("fr", {
         buttonText: "Adresse",
         emptyText: "Adresse...",
 		errorMsg: "Aucune adresse trouvée",
-		waitMsg: "S'il vous plaît attendre..."
+		waitMsg: "S'il vous plaît attendre...",
+		addressTitle: "Adresse trouvée"
     },
 	"gxp.form.WFSSearchComboBox.prototype": {
 		emptyText:"Rechercher",
@@ -372,5 +446,146 @@ GeoExt.Lang.add("fr", {
 		switchActionTip : "Changement de langue",
 		switchConfirmationText : "Vous êtes certain que vous souhaitez modifier la langue?"//Vous êtes certain que vous souhaitez modifier la langue? toutes les données non enregistrées seront a perdu?"
 
+	},
+	"gxp.plugins.MarkerEditor.prototype":{
+		markerName:'Markers',
+		copyText:'Copiez le texte ci-dessous et le coller dans le "Importer Marqueurs" fenêtre dans un second temps ...',
+		pasteText:'Collez le texte dans la zone de texte et cliquez sur imoport.',
+		addToTheMapText:'Ajouter à la carte',
+		updateText: 'Mettre à jour',
+		resetText:'Remettre',
+		removeText:'Enlever',
+		compositeFieldTitle:  'Titre',
+		compositeFieldLabel: 'étiquette',
+		coordinatesText: 'Coordonnées',
+		contentText: 'Teneur',
+		gridColTitle: 'Titre',
+		gridColLabel: 'étiquette',
+		gridColLat: 'Lat',
+		gridColLon: 'Lon',
+		gridColContent: 'Teneur',	
+		exportBtn:  "Marqueurs d'exportation",
+		importBtn: "Marqueurs d'importation",
+		removeAllBnt: 'Supprimer tout',
+		markerChooserTitle:'Choisissez un marqueur',
+		useThisMarkerText:'Utilisez cette Marker',
+		selectMarkerText:'Marker Select',
+		insertImageText:'«Insérer une image',
+		imageUrlText:'URL de l\'image',
+		importGeoJsonText:'Importer GeoJSON',
+		errorText:"Error",
+		notWellFormedText:"Le texte que vous avez ajouté n'est pas bien formé Veuillez le vérifier"
+	},
+	
+	"gxp.widgets.form.CoordinatePicker.prototype":{
+	    fieldLabel: 'Coordonnées',
+		pointSelectionButtionTip: 'Cliquez pour activer la sélection du collimateur',
+		latitudeEmptyText: 'Latitude',
+		longitudeEmptyText: 'Longitude'
+	},
+
+	"gxp.plugins.AddLayer.prototype":{
+		waitMsg: "S'il vous plaît attendre...",
+		capabilitiesFailureMsg: " La couche peut pas être ajouté à la carte"
+    },
+        
+    "gxp.plugins.Geolocate.prototype":{
+        geolocateMenuText: "Géolocaliser",
+        geolocateTooltip: "Localiser mon poste",
+        trackMenuText: "Suivre position",
+        trackTooltip: "Suivre ma position",
+        waitMsg: "Recherche...",
+        errorMsg: "Ce navigateur ne supporte pas Géolocalisation"
+    },
+    
+	"gxp.plugins.GeoLocationMenu.prototype":{
+        initialText: "Sélectionner une zone",
+        menuText: "Codification Géographique",
+        tooltip: "Codification Géographique",
+        addMarkerTooltip: "Réinitialiser Marker",
+        emptyText: "Géocoder...",
+        buttonText: "Adresse",
+        emptyText: "Adresse...",
+		errorMsg: "Aucune adresse trouvée",
+		waitMsg: "S'il vous plaît attendre...",
+		addressTitle: "Adresse trouvée",
+		geolocate: {
+			geolocateMenuText: "Géolocaliser",
+			geolocateTooltip: "Localiser mon poste",
+			trackMenuText: "Suivre position",
+			trackTooltip: "Suivre ma position",
+			waitMsg: "Recherche...",
+			errorMsg: "Ce navigateur ne supporte pas Géolocalisation"
+		},
+		actionText: "Géolocalisations"
+    },
+	
+    "gxp.plugins.ImportExport.prototype":{
+        importexportLabel: "Import / Export",
+	    labels:{
+                "map": {
+                    "saveText" : "Exportez la Carte",
+                    "loadText" : "Importer la Carte",
+                    "uploadWindowTitle" : "Importez le fichier de contexte de carte",
+                    "downloadWindowTitle" : "Exporter le fichier de contexte de carte"
+                },
+                "kml/kmz": {
+                    "saveText" : "Export KML",
+                    "loadText" : "Importer KML/KMZ",
+                    "uploadWindowTitle" : "Importez KML/KMZ fichier",
+                    "downloadWindowTitle" : "Export KML fichier",
+                    "kmlExportTitleText": "KML/KMZ Export",
+                    "layerEmptyText": "La couche sélectionnée est vide",
+                    "notVectorlayerText": "S'il vous plaît sélectionner seulement couche vectoriel",
+                    "notLayerSelectedText": "S'il vous plaît sélectionner un couche vectoriel"
+                } 
+        }
+    },
+   
+    "gxp.MapFileUploadPanel" :{
+		fileLabel: "Fichier de la carte",
+		fieldEmptyText: "Recherchez les fichiers de carte contexte ...",
+		uploadText: "Envoyez",
+		waitMsgText: "Téléchargement de vos données ...",
+		resetText: "Rréinitialiser",
+		failedUploadingTitle: "Téléchargement de fichier erreur"
+    },
+   
+    "gxp.MapFileDownloadPanel" :{
+		buttonText: "Exportez la Carte",
+		filenameLabel: "Carte nom de fichier",
+		waitMsgText: "Générer fichier de mappage de contexte ...",
+		resetText: "Rréinitialiser",
+		failedUploadingTitle: "Impossible de générer un fichier de la carte",
+		saveErrorText: "Économie d'Trouble:"
+    },
+   
+    "gxp.KMLFileDownloadPanel" :{
+		buttonText: "Exporter",
+		filenameLabel: "Nom du fichier KML",
+		waitMsgText: "Génération KML ...",
+		invalidFileExtensionText: "L'extension du fichier doit être:",
+		resetText: "Rréinitialiser",
+		failedUploadingTitle: "Impossible de générer le fichier KML"
+    },
+   
+    "gxp.KMLFileUploadPanel" :{
+		fileLabel: "Le fichier KML",
+		fieldEmptyText: "Rechercher des fichiers KML ou KMZ ...",
+		uploadText: "Envoyez",
+		waitMsgText: "Téléchargement de vos données ...",
+		invalidFileExtensionText: "File extension must be one of: ",
+		resetText: "Rréinitialiser",
+		failedUploadingTitle: "Téléchargement de fichier erreur",
+		layerNameLabel: "Nom de la couche"
+    },
+
+	"gxp.plugins.PrintSnapshot.prototype" :{
+		noSupportedLayersErrorMsg: "Une erreur s'est produite lors de la génération de la carte Instantané: pas de couches en charge ont été trouvés!",
+		generatingErrorMsg: "Une erreur s'est produite lors de la génération de la carte Snapshot",
+		printStapshotTitle: "Imprimer Snapshot",
+		serverErrorMsg: "Une erreur s'est produite lors de la génération de la carte Snapshot: Erreur de serveur",
+		menuText: "Snapshot",
+		tooltip: "Snapshot"
 	}
 });

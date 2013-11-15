@@ -110,7 +110,7 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
      *  Text for no features alert message (i18n)
      */
     noFeaturesMessage: "Your query did not return any results.",
-
+   
     /** api: config[actions]
      *  ``Object`` By default, this tool creates a "Query" action to trigger
      *  the output of this tool's form. Set to null if you want to include
@@ -183,15 +183,17 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
             bbar: ["->", {
                 text: this.cancelButtonText,
                 iconCls: "cancel",
+                scope: this,
                 handler: function() {
+                    this.resetFeatureManager();
                     var ownerCt = this.outputTarget ? queryForm.ownerCt :
                         queryForm.ownerCt.ownerCt;
                     if (ownerCt && ownerCt instanceof Ext.Window) {
                         ownerCt.hide();
                     } else {
-                        addAttributeFilter(
+                        addFilterBuilder(
                             featureManager, featureManager.layerRecord,
-                            featureManater.schema
+                            featureManager.schema
                         );
                     }
                 }
@@ -283,6 +285,11 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
     getFormattedMapExtent: function() {
         var extent = this.target.mapPanel.map.getExtent();
         return extent && extent.toArray().join(", ");
+    },
+    
+    resetFeatureManager: function(){
+        this.target.tools[this.featureManager].featureStore.removeAll();  
+        this.target.tools[this.featureManager].clearFeatures();  
     }
         
 });

@@ -404,7 +404,7 @@
 	 * Return:
 	 * 
 	 */
-	ContentProvider.prototype.create = function(item, callback){
+	ContentProvider.prototype.create = function(item, callback, failureCallback){
 		var uri = new Uri({'url':this.baseUrl_});
 		var data = this.beforeSave( item );
 		
@@ -426,7 +426,9 @@
 	       },
 	       failure:  function(response, opts){
 	       		console.log(response);
-				
+				if(typeof(failureCallback) === 'function') {
+                    failureCallback(response);
+                } else {
 				// ////////////////////////////////////////////////// //
 				// TODO: Refactor this code externalize the           // 
 			    //	     Msg definition for the i18n                  //
@@ -436,6 +438,7 @@
 					buttons: Ext.Msg.OK,
 					icon: Ext.MessageBox.ERROR
 				});	
+	       }
 	       }
 	    });
 	};
@@ -599,7 +602,7 @@
 					  +'<role>' + data.role + '</role></User>';
 			return xml;
 		},
-
+        
 		//TODO beforeUpdate
 	
 		afterFind: function(json){

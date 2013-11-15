@@ -34,14 +34,8 @@ GeoExt.Lang.add("en", {
     },
     
     "GeoExplorer.Composer.prototype": {
-        loadMapText: "Import a Map file",
-        saveMapText: "Export Map",
         exportMapText: "Publish Map",
-		loadMapEmptyText: "Select a Map context file",
-		loadMapUploadText: "Uploading your file...",
 		uploadText: "Upload",
-		loadMapWindowTitle: 'File Upload Form',
-		loadMapErrorText:'File Upload Error',
         toolsTitle: "Choose tools to include in the toolbar:",
         previewText: "Preview",
         backText: "Back",
@@ -52,12 +46,7 @@ GeoExt.Lang.add("en", {
         passwordFieldText: "Password",
         fullScreenText: "Full Screen",
         cswMsg: 'Loading...',
-		uploadWaitMsg: 'Uploading your context file...',
-		uploadErrorTitle: 'File Upload Error',
-		uploadEmptyText: 'Select a Map context file',
-		uploadWinTitle: 'File Upload Form',
 		cswFailureAddLayer: ' The layer cannot be added to the map',
-		uploadButtonText: 'Upload',
         alertEmbedTitle: 'Attention',
         alertEmbedText: "Save the map before using the 'Publish Map' tool",
 	    cswZoomToExtentMsg: "BBOX not available",
@@ -182,7 +171,16 @@ GeoExt.Lang.add("en", {
     "gxp.plugins.WMSGetFeatureInfo.prototype": {
         infoActionTip: "Get Feature Info",
         popupTitle: "Feature Info",
-		noDataMsg: "No data returned from the server"
+		noDataMsg: "No data returned from the server",
+		maskMessage: "Getting Feature Info..."
+    },
+	
+	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
+        infoActionTip: "Get Feature Info",
+        popupTitle: "Feature Info",
+		noDataMsg: "No data returned from the server",
+		maskMessage: "Getting Feature Info...",
+		activeActionTip:"Active info on selected layer"
     },
 
     "gxp.plugins.Zoom.prototype": {
@@ -218,7 +216,12 @@ GeoExt.Lang.add("en", {
         transparentText: "Transparent",
         cacheText: "Cache",
         cacheFieldText: "Use cached version",
-        stylesText: "Styles"
+        stylesText: "Styles",
+        summaryText: "Statistics",
+        summaryInfoText: "Current Viewport Raster Statistics",
+        loadMaskMsg: "Fetching data ...",
+        noDataMsg: "No data available in current view",
+        refreshText: "Refresh"
     },
 
     "gxp.NewSourceWindow.prototype": {
@@ -255,7 +258,15 @@ GeoExt.Lang.add("en", {
 	    saveDefaultContextActionTip: "Save Map context",
 	    contextSaveSuccessString: "Context saved succesfully",
 	    contextSaveFailString: "Context not saved succesfully",
-	    contextMsg: "Loading..."
+	    contextMsg: "Loading...",
+		userLabel: "User",	
+		passwordLabel: "Password", 	
+		loginLabel: "Login",	
+		mapMetadataTitle: "Insert Map Metadata",	
+		mapMedatataSetTitle: "Map Metadata",	
+		mapNameLabel: "Name",	
+		mapDescriptionLabel: "Description",
+		addResourceButtonText: "Add Map"
     },
     "gxp.plugins.GeoReferences.prototype": {
         initialText: "Select an area",
@@ -277,8 +288,23 @@ GeoExt.Lang.add("en", {
         legendOnSeparatePageText: "Legend on separate page?",
         compactLegendText: "Compact legend?",	
         emptyCommentText: "Enter comments here.",
-        creatingPdfText: "Creating PDF..."
+        creatingPdfText: "Creating PDF...",
+		graticuleFieldLabelText: 'Active graticule',
+		defaultTabText: "Default",
+		legendTabText: "Legend"
     },
+	
+    "GeoExt.ux.LegendStylePanel.prototype":{
+		iconsSizeText: "Icons size",
+		fontSizeText: "Font size",
+		fontFamilyText: "Font Family",
+		forceLabelsText: "Force label",
+		dpiText: "Dpi",
+		fontStyleText: "Font style",
+		fontEditorText: "Label config",
+		sizeText: "Size"
+    },
+	
     "gxp.plugins.GeonetworkSearch.prototype":{
         geonetworkSearchText: "View metadata",
         geonetworkSearchActionTip: "View metadata"
@@ -304,8 +330,15 @@ GeoExt.Lang.add("en", {
         previousPageTip: "Previous page",
         zoomPageExtentTip: "Zoom to page extent",
         nextPageTip: "Next page",
-        nextPageTip: "Last page",
-        totalMsg: "Total: {0} records"
+        lastPageTip: "Last page",
+        title: "Features",
+        totalMsg: "Total: {0} records",
+        displayExportCSVText: "Export to CSV",
+        exportCSVSingleText: "Single Page",
+        exportCSVMultipleText: "Whole Page",
+        failedExportCSV: "Failed to find response for output format CSV",
+        invalidParameterValueErrorText: "Invalid Parameter Value",
+		zoomToFeature: "Zoom To Feature"
     },
     "gxp.plugins.QueryForm.prototype": {
         queryActionText: "Query",
@@ -319,18 +352,59 @@ GeoExt.Lang.add("en", {
         noFeaturesTitle: "No Match",
         noFeaturesMessage: "Your query did not return any results.",
         title: "Search",
+        attributeEnablement: "Query by Attribute",
+        attributeEnablementMsg: "Invalid search Type! To use this you have to select 'Feature' type and to select a vector layer before.",
+        searchType: "Base Settings",
+        typeLabel: "Type",
+        featureLabel: "Max Features"     
+    },   
+
+    "gxp.plugins.BBOXQueryForm.prototype": {
+        selectionMethodFieldSetComboTitle: "Set Selection Method",
+        comboEmptyText: "Select a method..",
+        comboSelectionMethodLabel: "Selection",
+        comboPolygonSelection: 'Polygon',
+        comboCircleSelection: 'Circle',
+        comboBBOXSelection: 'Bounding Box',
+		errorBBOXText: "The selected BBox is invalid!",
+        errorDrawPolygonText: "You have to draw a Polygon",
+        errorDrawCircleText: "You have to draw a Circle",     
+        errorDrawTitle: "Query error",
+	    errorBufferTitle: "Buffer Error",
+		errorBufferText: "The selected buffer is invalid!",
+		areaLabel: "Area",	
+		perimeterLabel: "Perimeter",	
+		radiusLabel: "Radius",	
+		centroidLabel: "Cenroid",	
+		selectionSummary: "Selection Summary"
+	},
+	
+    "gxp.widgets.form.BufferFieldset.prototype": {
+		bufferFieldLabel: "Buffer Range",
+		bufferFieldSetTitle: "Buffer",
+		coordinatePickerLabel: "Coordinates",
+		draweBufferTooltip: "Draw the Buffer"
+	},
+    
+    "gxp.form.BBOXFieldset.prototype":{
         northLabel:"North",
         westLabel:"West",
         eastLabel:"East",
         southLabel:"South",
         setAoiText: "SetROI",
-        setAoiTooltip: "Enable the SetBox control to draw a ROI (BBOX) on the map",
-        attributeEnablement: "Query by Attribute",
-        attributeEnablementMsg: "Invalid search Type! To use this you have to select 'Feature' type and to select a vector layer before.",
-        searchType: "Base Settings",
-        typeLabel: "Type",
-        featureLabel: "Max Features"
+        waitEPSGMsg: "Please Wait...",
+        setAoiTooltip: "Enable the SetBox control to draw a ROI (BBox) on the map",
+        title: "Region of Interest"
     },
+    
+    "gxp.FilterBuilder.prototype":{
+        preComboText: "Match",
+        postComboText: "of the following:",
+        addConditionText: "add condition",
+        addGroupText: "add group",
+        removeConditionText: "remove condition"
+    },
+    
     "gxp.EmbedMapDialog.prototype": {
         publishMessage: "Your map is ready to be published to the web! Simply copy the following HTML to embed the map in your website:",
         heightLabel: "Height",
@@ -352,7 +426,8 @@ GeoExt.Lang.add("en", {
         buttonText: "Address",
         emptyText: "Address...",
 		errorMsg: "No address found",
-		waitMsg: "Wait please..."
+		waitMsg: "Wait please...",
+		addressTitle: "Address found"
     },
 	"gxp.form.WFSSearchComboBox.prototype": {
 		emptyText:"Search",
@@ -367,6 +442,149 @@ GeoExt.Lang.add("en", {
 	"gxp.form.LanguageSwitcher.prototype":{
 		switchActionTip : "Switch Language",
 		switchConfirmationText : "Are you sure to change Language?"//Are you sure to change Language? All unsaved data will be lost
+	},
+	
+	"gxp.plugins.MarkerEditor.prototype":{
+		markerName:'Markers',
+		copyText:'Copy the text below and paste it in  the "Import Markers" window in a second time ...',
+		pasteText:'Paste the text in the text area and click on imoport.',
+		addToTheMapText:'Add To the Map',
+		updateText: 'Update',
+		resetText:'Reset',
+		removeText:'Remove',
+		compositeFieldTitle:  'Title',
+		compositeFieldLabel: 'Label',
+		coordinatesText: 'Coordinates',
+		contentText: 'Content',
+		gridColTitle: 'Title',
+		gridColLabel: 'Label',
+		gridColLat: 'Lat',
+		gridColLon: 'Lon',
+		gridColContent: 'Content',	
+		exportBtn:  'Export Markers',
+		importBtn: 'Import Markers',
+		removeAllBnt: 'Remove All',
+		markerChooserTitle:'Choose a marker',
+		useThisMarkerText:'Use this Marker',
+		selectMarkerText:'Select Marker',
+		insertImageText:'Insert Image',
+		imageUrlText:'Image URL',
+		importGeoJsonText:'Import GeoJson',
+		errorText:"Error",
+		notWellFormedText:"The Text you added is not well formed. Please check it"
+	},
+	
+	"gxp.widgets.form.CoordinatePicker.prototype":{
+	    fieldLabel: 'Coordinates',
+		pointSelectionButtionTip: 'Click to enable point selection',
+		latitudeEmptyText: 'Latitude',
+		longitudeEmptyText: 'Longitude'
+	},
+	
+	"gxp.plugins.AddLayer.prototype":{
+		waitMsg: "Please Wait ...",
+		capabilitiesFailureMsg: " The layer cannot be added to the map"
+    },
+    
+    "gxp.plugins.Geolocate.prototype":{
+        geolocateMenuText: "Geolocate",
+        geolocateTooltip: "Locate my position",
+        trackMenuText: "Track Position",
+        trackTooltip: "Track my position",
+        waitMsg: "Locating...",
+        errorMsg: "Geolocation is not supported by your browser"
+    },
+	
+	"gxp.plugins.GeoLocationMenu.prototype": {
+	    initialText: "Select an area",
+        menuText: "GeoReferences",
+        tooltip: "GeoReferences",
+        addMarkerTooltip: "Reset Marker",
+        emptyText: "Geocoder...",
+        buttonText: "Address",
+        emptyText: "Address...",
+		errorMsg: "No address found",
+		waitMsg: "Wait please...",
+		addressTitle: "Address found",
+		geolocate: {
+			"geolocateMenuText": "Geolocate",
+			"geolocateTooltip": "Locate my position",
+			"trackMenuText": "Track Position",
+			"trackTooltip": "Track my position",
+			"waitMsg": "Locating...",
+			"errorMsg": "Geolocation is not supported by your browser"
+		},
+		actionText: "GeoLocations"
+    },
+    
+    "gxp.plugins.ImportExport.prototype":{
+        importexportLabel: "Import / Export",
+		labels: {
+			"map": {
+				"saveText" : "Export Map",
+				"loadText" : "Import Map",
+				"uploadWindowTitle" : "Import Map Context file",
+				"downloadWindowTitle" : "Export Map Context file"
+			},
+			"kml/kmz": {
+				"saveText" : "Export KML",
+				"loadText" : "Import KML/KMZ",
+				"uploadWindowTitle" : "Import KML/KMZ file",
+				"downloadWindowTitle" : "Export KML file",
+				"kmlExportTitleText": "KML/KMZ Export",
+				"layerEmptyText": "The selected Layer is empty",
+				"notVectorlayerText": "Please select only Vector Layer",
+				"notLayerSelectedText": "Please select a Vector Layer"
+			} 
+        }
+    },
+   
+    "gxp.MapFileUploadPanel" :{
+		fileLabel: "Map file",
+		fieldEmptyText: "Browse for Map context files...",
+		uploadText: "Upload",
+		waitMsgText: "Uploading your data...",
+		resetText: "Reset",
+		failedUploadingTitle: "File Upload Error"
+    },
+   
+    "gxp.MapFileDownloadPanel" :{
+		buttonText: "Export Map",
+		filenameLabel: "Map file name",
+		fieldEmptyText: "context.map",
+		waitMsgText: "Generating Map Context File...",
+		resetText: "Reset",
+		failedUploadingTitle: "Cannot generate Map file",
+		saveErrorText: "Trouble saving: "
+    },
+   
+    "gxp.KMLFileDownloadPanel" :{
+		buttonText: "Export",
+		filenameLabel: "KML file name",
+		fieldEmptyText: "export.kml",
+		waitMsgText: "Generating KML...",
+		invalidFileExtensionText: "File extension must be one of: ",
+		resetText: "Reset",
+		failedUploadingTitle: "Cannot generate KML file"
+    },
+   
+    "gxp.KMLFileUploadPanel" :{
+		fileLabel: "KML file",
+		fieldEmptyText: "Browse for KML or KMZ files...",
+		uploadText: "Upload",
+		waitMsgText: "Uploading your data...",
+		invalidFileExtensionText: "File extension must be one of: ",
+		resetText: "Reset",
+		failedUploadingTitle: "Cannot upload file",
+		layerNameLabel: "Layer Name"
+    },
 
+	"gxp.plugins.PrintSnapshot.prototype" :{
+		noSupportedLayersErrorMsg: "Error occurred while generating the Map Snapshot: No Supported Layers have been found!",
+		generatingErrorMsg: "Error occurred while generating the Map Snapshot",
+		printStapshotTitle: "Print Snapshot",
+		serverErrorMsg: "Error occurred while generating the Map Snapshot: Server Error",
+		menuText: "Snapshot",
+		tooltip: "Snapshot"
 	}
 });
