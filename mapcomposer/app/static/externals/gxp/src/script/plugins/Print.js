@@ -111,104 +111,11 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
      *  Flag indicates that we need to add landscape control for the default tab
      **/
     addLandscapeControl: false,
-    
-    /** api: config[offsetByScale]
-     *  ``Object`` Force to change the lat and lon offset for the graticule fixed to the scale 
-     */
-    offsetByScale:{
-        20000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 180,
-            latOffsetX: -270,
-            latOffsetY: 2
-        },
-        10000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 180,
-            latOffsetX: -270,
-            latOffsetY: 2
-        },
-        4000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 50,
-            latOffsetX: -50,
-            latOffsetY: 2
-        },
-        2000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 50,
-            latOffsetX: -50,
-            latOffsetY: 2
-        },
-        1000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 50,
-            latOffsetX: -50,
-            latOffsetY: 2
-        },
-        500000:{
-            lonOffsetX: 0,
-            lonOffsetY: 50,
-            latOffsetX: -50,
-            latOffsetY: 2
-        },
-        200000:{
-            lonOffsetX: 0,
-            lonOffsetY: 100,
-            latOffsetX: -150,
-            latOffsetY: 2
-        },
-        100000:{
-            lonOffsetX: 0,
-            lonOffsetY: 100,
-            latOffsetX: -150,
-            latOffsetY: 2
-        },
-        50000:{
-            lonOffsetX: 0,
-            lonOffsetY: 100,
-            latOffsetX: -150,
-            latOffsetY: 2
-        },
-        20000:{
-            lonOffsetX: 0,
-            lonOffsetY: 200,
-            latOffsetX: -245,
-            latOffsetY: 2
-        },
-        10000:{
-            lonOffsetX: 0,
-            lonOffsetY: 200,
-            latOffsetX: -245,
-            latOffsetY: 2
-        },
-        5000:{
-            lonOffsetX: 0,
-            lonOffsetY: 200,
-            latOffsetX: -245,
-            latOffsetY: 2
-        },
-        2000:{
-            lonOffsetX: 0,
-            lonOffsetY: 45,
-            latOffsetX: -45,
-            latOffsetY: 2
-        },
-        1000:{
-            lonOffsetX: 0,
-            lonOffsetY: 45,
-            latOffsetX: -45,
-            latOffsetY: 2
-        },
-        500:{
-            lonOffsetX: 0,
-            lonOffsetY: 45,
-            latOffsetX: -45,
-            latOffsetY: 2
-        }
-    },
-    
-    
+
+    /** api: config[bboxFit]
+     *  Flag indicates that the mapPanel is fixed by bbox (not by scale)
+     **/
+    bboxFit: false,
 
     /** private: method[constructor]
      */
@@ -379,10 +286,10 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                             addFormParameters: this.appendLegendOptions,
                             // Add graticule option
                             addGraticuleControl: this.addGraticuleControl,
-                            // Add graticule offset by scale
-                            offsetByScale: this.offsetByScale,
                             // Add landscape control
                             addLandscapeControl: this.addLandscapeControl,
+                            // BBox fit
+                            bboxFit: this.bboxFit,
                             listeners: {
                                 scope: this,
                                 "afterrender": function() {
@@ -410,12 +317,15 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                                 }
                             },
                             printMapPanel: {
+                                // BBox fit
+                                bboxFit: this.bboxFit,
                                 map: Ext.applyIf({
                                     controls: [
                                         //UNCOMMENT TO ADD CONTROLS TO PRINT PREVIEW
-                                        //new OpenLayers.Control.Navigation(),
-                                        //new OpenLayers.Control.PanPanel(),
-                                        //new OpenLayers.Control.ZoomPanel(),
+                                        // CAUTION: For bboxFit option = true you can't active it
+                                        // new OpenLayers.Control.Navigation(),
+                                        // new OpenLayers.Control.PanPanel(),
+                                        // new OpenLayers.Control.ZoomPanel(),
                                         new OpenLayers.Control.Attribution()
                                     ],
                                     eventListeners: {

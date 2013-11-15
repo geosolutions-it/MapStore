@@ -176,6 +176,11 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
      *  Print in landscape mode
      **/
     landscape: false,
+
+    /** api: config[bboxFit]
+     *  Flag indicates that the mapPanel is fixed by bbox (not by scale)
+     **/
+    bboxFit: false,
     
     /** private: method[initComponent]
      */
@@ -183,6 +188,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         var printMapPanelOptions = {
             sourceMap: this.sourceMap,
             printProvider: this.printProvider,
+            bboxFit: this.bboxFit,
             width : 400
         };
         if(this.printMapPanel) {
@@ -552,17 +558,14 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         var scaleLine = new OpenLayers.Control.ScaleLine();
         this.printMapPanel.map.addControl(scaleLine);
         scaleLine.activate();
-        
-        return new Ext.Panel({
-            cls: "gx-map-overlay",
-            layout: "column",
-            width: 235,
-            bodyStyle: "padding:5px",
-            items: [{
+        var items = [{
                 xtype: "box",
                 el: scaleLine.div,
                 width: scaleLine.maxWidth
-            }, {
+            }];
+        if(!this.bboxFit){
+            // hide scale for not bboxFit
+            items.push({
                 xtype: "container",
                 layout: "form",
                 style: "padding: .2em 5px 0 0;",
@@ -587,13 +590,21 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                         printPage: this.printMapPanel.printPage
                     })
                 }
-            }, {
-                xtype: "box",
-                autoEl: {
-                    tag: "div",
-                    cls: "gx-northarrow"
-                }
-            }],
+            });
+        }
+        items.push({
+            xtype: "box",
+            autoEl: {
+                tag: "div",
+                cls: "gx-northarrow"
+            }
+        });
+        return new Ext.Panel({
+            cls: "gx-map-overlay",
+            layout: "column",
+            width: 235,
+            bodyStyle: "padding:5px",
+            items: items,
             listeners: {
                 "render": function() {
                     function stop(evt){evt.stopPropagation();}
@@ -653,14 +664,6 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
               visible: true
         });
 
-        // Fixme: Remove graticule active and add another one with this listener!!
-        this.printMapPanel.printPage.on({
-            change: function(mods){
-                Ext.apply(graticule, this.calculateLonLatOffsets(mods));
-            }, 
-            scope: this
-        });
-
         var map = this.printMapPanel.map;
         var ctrl = this.sourceMap.getControlsByClass("OpenLayers.Control.Graticule");
 
@@ -688,149 +691,6 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             cls : "gx-item-margin-left",
             scope: this
         });
-    },
-    
-    /** api: config[offsetByScale]
-     *  ``Object`` Force to change the lat and lon offset for the graticule fixed to the scale 
-     */
-    offsetByScale:{
-        20000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 180,
-            latOffsetX: -270,
-            latOffsetY: 2
-        },
-        10000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 180,
-            latOffsetX: -270,
-            latOffsetY: 2
-        },
-        4000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 50,
-            latOffsetX: -50,
-            latOffsetY: 2
-        },
-        2000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 50,
-            latOffsetX: -50,
-            latOffsetY: 2
-        },
-        1000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 50,
-            latOffsetX: -50,
-            latOffsetY: 2
-        },
-        500000:{
-            lonOffsetX: 0,
-            lonOffsetY: 50,
-            latOffsetX: -50,
-            latOffsetY: 2
-        },
-        200000:{
-            lonOffsetX: 0,
-            lonOffsetY: 100,
-            latOffsetX: -150,
-            latOffsetY: 2
-        },
-        100000:{
-            lonOffsetX: 0,
-            lonOffsetY: 100,
-            latOffsetX: -150,
-            latOffsetY: 2
-        },
-        50000:{
-            lonOffsetX: 0,
-            lonOffsetY: 100,
-            latOffsetX: -150,
-            latOffsetY: 2
-        },
-        20000:{
-            lonOffsetX: 0,
-            lonOffsetY: 200,
-            latOffsetX: -245,
-            latOffsetY: 2
-        },
-        10000:{
-            lonOffsetX: 0,
-            lonOffsetY: 200,
-            latOffsetX: -245,
-            latOffsetY: 2
-        },
-        5000:{
-            lonOffsetX: 0,
-            lonOffsetY: 200,
-            latOffsetX: -245,
-            latOffsetY: 2
-        },
-        2000:{
-            lonOffsetX: 0,
-            lonOffsetY: 45,
-            latOffsetX: -45,
-            latOffsetY: 2
-        },
-        1000:{
-            lonOffsetX: 0,
-            lonOffsetY: 45,
-            latOffsetX: -45,
-            latOffsetY: 2
-        },
-        500:{
-            lonOffsetX: 0,
-            lonOffsetY: 45,
-            latOffsetX: -45,
-            latOffsetY: 2
-        }
-    },
-    
-    /** api: method[calculateLonLatOffsets]
-     *  This method it's only necesary because the final bbox is not the same that the map preview. Remove it when this is fixed
-     *  :returns: ``Object`` with the offsets for the graticule
-     */
-    calculateLonLatOffsets: function (mods){
-
-        // Obtain the offset stored
-        if(mods 
-            && mods.scale){
-            var scale = mods.scale.get("value");
-            if(this.offsetByScale[scale])
-                return this.offsetByScale[scale];
-        }
-
-        var lonOffsetX = 0;
-        var lonOffsetY = 100;
-        var latOffsetX = -150;
-        var latOffsetY = 2;
-
-        // the scale is not recognized. try to adjust
-        if(mods 
-            && mods.feature
-            && mods.feature.geometry
-            && mods.feature.geometry.getBounds()){
-            var boundsArray = mods.feature.geometry.getBounds().toArray();
-
-            var xOffset = boundsArray[2] - boundsArray[0];
-            var yOffset = boundsArray[3] - boundsArray[1];
-
-            lonOffsetY = (Math.floor(xOffset * 10) + 1);
-            latOffsetX =  - (Math.floor(yOffset * 10) + 1);
-            if(lonOffsetY < 100){
-                lonOffsetY = 100 + (xOffset* 1000);
-            }
-            if(latOffsetX >  -100){
-                latOffsetX =  -100 - (yOffset* 1000);
-            }
-        }
-
-        return {
-            lonOffsetX: lonOffsetX,
-            lonOffsetY: lonOffsetY,
-            latOffsetX: latOffsetX,
-            latOffsetY: latOffsetY
-         };
     }
     
 });
