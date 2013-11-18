@@ -304,6 +304,15 @@ GeoExt.Lang.add("fr", {
 		fontEditorText: "Etiquette config",
 		sizeText: "Taille"
     },
+    
+    "GeoExt.ux.GraticuleStylePanel.prototype":{
+        graticuleFieldLabelText: 'Réticule actif',
+        sizeText: "Taille",
+        colorText: "Couleur",
+        fontFamilyText: "Famille de polices",
+        fontStyleText: "Le style de police",
+        fontEditorText: "Etiquette config"
+    },
 	
     "gxp.plugins.GeonetworkSearch.prototype":{
         geonetworkSearchText: "Afficher les métadonnées",

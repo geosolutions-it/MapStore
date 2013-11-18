@@ -214,10 +214,9 @@
 			"printService": "http://localhost:8080/geoserver/pdf/",
 			"legendPanelId": "legendPanel",
 			"appendLegendOptions": true,
-			"addGraticuleControl": false,
+			"addGraticuleControl": true,
 			"legendOnSeparatePage": true,
 			"addLandscapeControl": true,
-    		"bboxFit": true,
 			"actionTarget":{
 			    "target": "paneltbar",
 				"index":4

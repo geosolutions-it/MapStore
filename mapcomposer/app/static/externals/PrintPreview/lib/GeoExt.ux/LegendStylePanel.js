@@ -189,13 +189,7 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                             listeners: {
                                 select: function(combo, record) {
                                     var value = record.get("field1");
-                                    combo.ownerCt.ownerCt.fieldSet.items.keys.forEach(function(key){
-                                        var formParam = combo.ownerCt.ownerCt.fieldSet.items.get(key);
-                                        if(formParam.name == "fontName"){
-                                            formParam.setValue(value);
-                                            return;
-                                        }
-                                    });
+                                    this.setFieldsetValue("fontName", value);
                                 },
                                 scope: this
                             }
@@ -211,14 +205,9 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                             listeners: {
                                 change: function(field, value) {
                                     value = parseFloat(value);
-                                    field.ownerCt.ownerCt.fieldSet.items.keys.forEach(function(key){
-                                        var formParam = field.ownerCt.ownerCt.fieldSet.items.get(key);
-                                        if(formParam.name == "fontSize"){
-                                            formParam.setValue(value);
-                                            return;
-                                        }
-                                    });
-                                }
+                                    this.setFieldsetValue("fontSize", value);
+                                },
+                                scope:this
                             }
                         }, {
                             // now you only add italic *OR* bold, if this change, change listener!!
@@ -231,23 +220,19 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                                 toggle: function(button, pressed) {
                                     var value = pressed ? "bold" : "normal";
                                     if(pressed){
-                                        button.ownerCt.items.keys.forEach(function(key){
+                                        for(var i = 0; i < button.ownerCt.items.keys.length; i++){
+                                            var key = button.ownerCt.items.keys[i];
                                             var formParam = button.ownerCt.items.get(key);
                                             if(formParam.id != button.id
                                                 && formParam.group == button.group){
                                                 formParam.toggle(false);
                                                 return;
                                             }
-                                        });
+                                        };
                                     }
-                                    button.ownerCt.ownerCt.fieldSet.items.keys.forEach(function(key){
-                                        var formParam = button.ownerCt.ownerCt.fieldSet.items.get(key);
-                                        if(formParam.name == "fontStyle"){
-                                            formParam.setValue(value);
-                                            return;
-                                        }
-                                    });
-                                }
+                                    this.setFieldsetValue("fontStyle", value);
+                                },
+                                scope:this
                             }
                         }, {
                             // now you only add italic *OR* bold, if this change, change listener!!
@@ -260,23 +245,18 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                                 toggle: function(button, pressed) {
                                     var value = pressed ? "italic" : "normal";
                                     if(pressed){
-                                        button.ownerCt.items.keys.forEach(function(key){
+                                        for(var i = 0; i < button.ownerCt.items.keys.length; i++){
+                                            var key = button.ownerCt.items.keys[i];
                                             var formParam = button.ownerCt.items.get(key);
                                             if(formParam.id != button.id
                                                 && formParam.group == button.group){
                                                 formParam.toggle(false);
-                                                return;
                                             }
-                                        });
-                                    }
-                                    button.ownerCt.ownerCt.fieldSet.items.keys.forEach(function(key){
-                                        var formParam = button.ownerCt.ownerCt.fieldSet.items.get(key);
-                                        if(formParam.name == "fontStyle"){
-                                            formParam.setValue(value);
-                                            return;
                                         }
-                                    });
-                                }
+                                    }
+                                    this.setFieldsetValue("fontStyle", value);
+                                },
+                                scope:this
                             }
                         }]
                 },
@@ -305,7 +285,8 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                                     formParam.setValue(value ? "on" : "off");
                                 }
                             });
-                        }
+                        },
+                        scope:this
                     }
                 },
 			    fontAntiAliasing: {
@@ -319,14 +300,10 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                     value: "8",
                     listeners:{
                         change: function (numberField, value){
-                            numberField.ownerCt.items.keys.forEach(function(key){
-                                var formParam = numberField.ownerCt.items.get(key);
-                                if(formParam.name == "height"
-                                    || formParam.name == "width"){
-                                    formParam.setValue(value);
-                                }
-                            });
-                        }
+                            this.setFieldsetValue("height", value);
+                            this.setFieldsetValue("width", value);
+                        },
+                        scope:this
                     }
                 },
                 forceLabels: {
@@ -351,6 +328,17 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
         GeoExt.ux.LegendStylePanel.superclass.constructor.apply(this, arguments);
     },
 
+    // private:. set value on fieldset
+    setFieldsetValue: function(paramName, value){
+        for(var i = 0; i < this.fieldSet.fieldSet.items.keys.length; i++){
+            var key =this.fieldSet.fieldSet.items.keys[i];
+            var formParam = this.fieldSet.items.get(key);
+            if(formParam.name == paramName){
+                formParam.setValue(value);
+                return;
+            }
+        }
+    },
 
     /** api: method[writeFormParameters]
      *  :arg spec: ``Map`` With the information of the print
@@ -359,12 +347,13 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
     writeFormParameters: function(spec){
         if(this.fieldSet){
             // copy the form fieldset
-            this.fieldSet.items.keys.forEach(function(key){
+            for(var i = 0; i < this.fieldSet.fieldSet.items.keys.length; i++){
+                var key = this.fieldSet.fieldSet.items.keys[i];
                 var formParam = this.fieldSet.items.get(key);
                 if(formParam.name.indexOf(this.ignoreLegendParametersKey) < 0){
                     spec[formParam.name] = formParam.getValue();
                 }
-            }, this);
+            };
         }else{
             // copy the default value
             for(var field in this.formParameters){

@@ -304,6 +304,15 @@ GeoExt.Lang.add("en", {
 		fontEditorText: "Label config",
 		sizeText: "Size"
     },
+    
+    "GeoExt.ux.GraticuleStylePanel.prototype":{
+        graticuleFieldLabelText: 'Active graticule',
+        sizeText: "Font size",
+        colorText: "Color",
+        fontFamilyText: "Font Family",
+        fontStyleText: "Font style",
+        fontEditorText: "Label config"
+    },
 	
     "gxp.plugins.GeonetworkSearch.prototype":{
         geonetworkSearchText: "View metadata",
