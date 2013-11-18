@@ -1,4 +1,4 @@
-﻿/**
+/**
 * Copyright (c) 2008-2011 The Open Planning Project
 *
 * Published under the GPL license.
