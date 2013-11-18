@@ -1,4 +1,4 @@
- #===========================================================================
+#===========================================================================
 # allowed DPIs
 #===========================================================================
 dpis:
@@ -56,7 +56,7 @@ layouts:
           items:
             - !image
               maxWidth: 782
-              url: '${configDir}/print_header.png'
+              url: 'http://localhost:8080/acque/geoserver/www/print/acque_print_header.png'
         - !map
           width: 592
           height: 420
@@ -146,7 +146,7 @@ layouts:
           items:
             - !image
               maxWidth: 782
-              url: '${configDir}/print_header.png'
+              url: 'http://localhost:8080/acque/geoserver/www/print/acque_print_header.png'
         - !map
           width: 592
           height: 420
@@ -220,7 +220,7 @@ layouts:
               vertAlign: middle
               maxSize: 200
               type: 'bar sub'
-              intervals: 5                  
+              intervals: 5    			  
   #===========================================================================
   A4_no_legend :
   #===========================================================================
@@ -236,7 +236,7 @@ layouts:
           items:
             - !image
               maxWidth: 782
-              url: '${configDir}/print_header.png'
+              url: 'http://localhost:8080/acque/geoserver/www/print/acque_print_header.png'
         - !map
           width: 780
           height: 420
@@ -301,7 +301,7 @@ layouts:
           items:
             - !image
               maxWidth: 782
-              url: '${configDir}/print_header.png'
+              url: 'http://localhost:8080/acque/geoserver/www/print/acque_print_header.png'
         - !map
           width: 780
           height: 420
@@ -380,7 +380,7 @@ layouts:
               classIndentation: 5
               classFontSize: 8
               classSpace: 4
-              backgroundColor: #ffffff      
+              backgroundColor: #ffffff  	
   #===========================================================================
   A4_2_pages_compact_legend :
   #===========================================================================
@@ -396,7 +396,7 @@ layouts:
           items:
             - !image
               maxWidth: 782
-              url: 'http://localhost:8080/geoserver/www/print/print_header.png'
+              url: 'http://localhost:8080/acque/geoserver/www/print/acque_print_header.png'
         - !map
           width: 780
           height: 420
@@ -475,28 +475,28 @@ layouts:
               classIndentation: 5
               classFontSize: 8
               classSpace: 4
-              backgroundColor: #ffffff                
+              backgroundColor: #ffffff  			  
   #===========================================================================
   A3 :
   #===========================================================================
     mainPage:
       rotation: true
-      pageSize: 842 595
+      pageSize: 1190 842
       landscape: false
       items:
         - !columns
-          absoluteX: 30
-          absoluteY: 575
-          width: 782
+          absoluteX: 42
+          absoluteY: 814
+          width: 1105
           items:
             - !image
-              maxWidth: 782
-              url: '${configDir}/print_header.png'
+              maxWidth: 1105
+              url: 'http://localhost:8080/acque/geoserver/www/print/acque_print_header.png'
         - !map
-          width: 592
-          height: 420
-          absoluteX:30
-          absoluteY:495
+          width: 837
+          height: 594
+          absoluteX:42
+          absoluteY:700
         #legend panel            
         - !columns               
           config:
@@ -508,10 +508,10 @@ layouts:
                 padding: 4
                 backgroundColor: white
                 vertAlign: bottom
-          widths: [170]
-          absoluteX: 642
-          absoluteY: 495
-          width: 170
+          widths: [241]
+          absoluteX: 907
+          absoluteY: 700
+          width: 240
           items:
             - !legends
               #maxIconWidth: 160
@@ -533,23 +533,23 @@ layouts:
               url: 'file://${configDir}/Arrow_North_CFCF.svg'
               rotation: '${rotation}'          
         - !columns
-          absoluteX: 30
-          absoluteY: 55
-          width: 782
-          widths: [240, 300, 240]
+          absoluteX: 42
+          absoluteY: 78
+          width: 1105
+          widths: [340, 424, 340]
           items:
             - !columns
               nbColumns: 1
               items:
                 - !text
-                  width: 300
+                  width: 424
                   text: '${comment}'  
                   fontEncoding: Cp1252
                   fontSize: 9                     
                   align: left
                   vertAlign: middle               
                 - !text
-                  width: 300
+                  width: 424
                   text: '${now MM.dd.yyyy}'  
                   fontEncoding: Cp1252
                   fontSize: 9                     
@@ -571,22 +571,22 @@ layouts:
   #===========================================================================
     mainPage:
       rotation: true
-      pageSize: 842 595
+      pageSize: 1190 842
       landscape: false
       items:
         - !columns
-          absoluteX: 30
-          absoluteY: 575
-          width: 782
+          absoluteX: 42
+          absoluteY: 814
+          width: 1105
           items:
             - !image
-              maxWidth: 782
-              url: '${configDir}/print_header.png'        
+              maxWidth: 1105
+              url: 'http://localhost:8080/acque/geoserver/www/print/acque_print_header.png'
         - !map
-          width: 592
-          height: 420
-          absoluteX:30
-          absoluteY:495
+          width: 837
+          height: 594
+          absoluteX:42
+          absoluteY:700
         #legend panel            
         - !columns               
           config:
@@ -599,9 +599,9 @@ layouts:
                 backgroundColor: white
                 vertAlign: bottom
           widths: [170]
-          absoluteX: 642
-          absoluteY: 495
-          width: 170
+          absoluteX: 907
+          absoluteY: 700
+          width: 240
           items:
             - !legends
               maxIconWidth: 160
@@ -613,8 +613,8 @@ layouts:
               classSpace: 4
               backgroundColor: #ffffff   
         - !columns
-          absoluteX: 590
-          absoluteY: 140
+          absoluteX: 834
+          absoluteY: 198
           width: 40
           items:
             - !image
@@ -623,23 +623,23 @@ layouts:
               url: 'file://${configDir}/Arrow_North_CFCF.svg'
               rotation: '${rotation}'          
         - !columns
-          absoluteX: 30
-          absoluteY: 55
-          width: 782
-          widths: [240, 300, 240]
+          absoluteX: 42
+          absoluteY: 78
+          width: 1105
+          widths: [339, 423, 339]
           items:
             - !columns
               nbColumns: 1
               items:
                 - !text
-                  width: 300
+                  width: 424
                   text: '${comment}'  
                   fontEncoding: Cp1252
                   fontSize: 9                     
                   align: left
                   vertAlign: middle               
                 - !text
-                  width: 300
+                  width: 424
                   text: '${now MM.dd.yyyy}'  
                   fontEncoding: Cp1252
                   fontSize: 9                     
@@ -655,31 +655,31 @@ layouts:
               vertAlign: middle
               maxSize: 200
               type: 'bar sub'
-              intervals: 5                  
+              intervals: 5    			  
   #===========================================================================
   A3_no_legend :
   #===========================================================================
     mainPage:
       rotation: true
-      pageSize: 842 595
+      pageSize: 1190 842
       landscape: false
       items:
         - !columns
-          absoluteX: 30
-          absoluteY: 575
-          width: 782
+          absoluteX: 42
+          absoluteY: 814
+          width: 1105
           items:
             - !image
-              maxWidth: 782
-              url: '${configDir}/print_header.png '
+              maxWidth: 1105
+              url: 'http://localhost:8080/acque/geoserver/www/print/acque_print_header.png'
         - !map
-          width: 780
-          height: 420
-          absoluteX:30
-          absoluteY:495
+          width: 1102
+          height: 594
+          absoluteX:42
+          absoluteY:700
         - !columns
-          absoluteX: 750
-          absoluteY: 140
+          absoluteX: 1060
+          absoluteY: 198
           width: 40
           items:
             - !image
@@ -688,23 +688,23 @@ layouts:
               url: 'file://${configDir}/Arrow_North_CFCF.svg'
               rotation: '${rotation}'          
         - !columns
-          absoluteX: 30
-          absoluteY: 55
-          width: 782
-          widths: [240, 300, 240]
+          absoluteX: 42
+          absoluteY: 78
+          width: 1105
+          widths: [339, 424, 339]
           items:
             - !columns
               nbColumns: 1
               items:
                 - !text
-                  width: 300
+                  width: 424
                   text: '${comment}'  
                   fontEncoding: Cp1252
                   fontSize: 9                     
                   align: left
                   vertAlign: middle               
                 - !text
-                  width: 300
+                  width: 424
                   text: '${now MM.dd.yyyy}'  
                   fontEncoding: Cp1252
                   fontSize: 9                     
@@ -726,25 +726,25 @@ layouts:
   #===========================================================================
     mainPage:
       rotation: true
-      pageSize: 842 595
+      pageSize: 1190 842
       landscape: false
       items:
         - !columns
-          absoluteX: 30
-          absoluteY: 575
-          width: 782
+          absoluteX: 42
+          absoluteY: 814
+          width: 1105
           items:
             - !image
-              maxWidth: 782
-              url: '${configDir}/print_header.png'
+              maxWidth: 1105
+              url: 'http://localhost:8080/acque/geoserver/www/print/acque_print_header.png'
         - !map
-          width: 780
-          height: 420
-          absoluteX:30
-          absoluteY:495
+          width: 1102
+          height: 594
+          absoluteX:42
+          absoluteY:700
         - !columns
-          absoluteX: 750
-          absoluteY: 140
+          absoluteX: 1070
+          absoluteY: 198
           width: 40
           items:
             - !image
@@ -753,23 +753,23 @@ layouts:
               url: 'file://${configDir}/Arrow_North_CFCF.svg'
               rotation: '${rotation}'          
         - !columns
-          absoluteX: 30
-          absoluteY: 55
-          width: 782
-          widths: [240, 300, 240]
+          absoluteX: 42
+          absoluteY: 78
+          width: 1105
+          widths: [339, 424, 339]
           items:
             - !columns
               nbColumns: 1
               items:
                 - !text
-                  width: 300
+                  width: 424
                   text: '${comment}'  
                   fontEncoding: Cp1252
                   fontSize: 9                     
                   align: left
                   vertAlign: middle               
                 - !text
-                  width: 300
+                  width: 424
                   text: '${now MM.dd.yyyy}'  
                   fontEncoding: Cp1252
                   fontSize: 9                     
@@ -788,7 +788,7 @@ layouts:
               intervals: 5
     lastPage:
       rotation: true
-      pageSize: 595 842 
+      pageSize: 842 1190 
       landscape: false
       items: 
         #legend panel            
@@ -803,9 +803,9 @@ layouts:
                 backgroundColor: white
                 vertAlign: bottom
           widths: [220]
-          absoluteX: 30
-          absoluteY: 800
-          width: 220
+          absoluteX: 42
+          absoluteY: 1132
+          width: 311
           items:
             - !legends
               #maxIconWidth: 16
@@ -815,31 +815,31 @@ layouts:
               classIndentation: 5
               classFontSize: 8
               classSpace: 4
-              backgroundColor: #ffffff      
+              backgroundColor: #ffffff  	
   #===========================================================================
   A3_2_pages_compact_legend :
   #===========================================================================
     mainPage:
       rotation: true
-      pageSize: 842 595
+      pageSize: 842 1190
       landscape: false
       items:
         - !columns
-          absoluteX: 30
-          absoluteY: 575
-          width: 782
+          absoluteX: 42
+          absoluteY: 814
+          width: 1105
           items:
             - !image
-              maxWidth: 782
-              url: '${configDir}/print_header.png'
+              maxWidth: 1105
+              url: 'http://localhost:8080/acque/geoserver/www/print/acque_print_header.png'
         - !map
-          width: 780
-          height: 420
-          absoluteX:30
-          absoluteY:495
+          width: 1102
+          height: 594
+          absoluteX:42
+          absoluteY:700
         - !columns
-          absoluteX: 750
-          absoluteY: 140
+          absoluteX: 1070
+          absoluteY: 198
           width: 40
           items:
             - !image
@@ -848,23 +848,23 @@ layouts:
               url: 'file://${configDir}/Arrow_North_CFCF.svg'
               rotation: '${rotation}'          
         - !columns
-          absoluteX: 30
-          absoluteY: 55
-          width: 782
-          widths: [240, 300, 240]
+          absoluteX: 42
+          absoluteY: 78
+          width: 1105
+          widths: [339, 424, 339]
           items:
             - !columns
               nbColumns: 1
               items:
                 - !text
-                  width: 300
+                  width: 424
                   text: '${comment}'  
                   fontEncoding: Cp1252
                   fontSize: 9                     
                   align: left
                   vertAlign: middle               
                 - !text
-                  width: 300
+                  width: 424
                   text: '${now MM.dd.yyyy}'  
                   fontEncoding: Cp1252
                   fontSize: 9                     
@@ -883,7 +883,7 @@ layouts:
               intervals: 5
     lastPage:
       rotation: true
-      pageSize: 595 842 
+      pageSize: 1190 842
       landscape: false
       items: 
         #legend panel            
@@ -898,8 +898,8 @@ layouts:
                 backgroundColor: white
                 vertAlign: bottom
           widths: [220]
-          absoluteX: 30
-          absoluteY: 800
+          absoluteX: 42
+          absoluteY: 1132
           width: 220
           items:
             - !legends
