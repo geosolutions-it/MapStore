@@ -217,6 +217,7 @@
 			"addGraticuleControl": false,
 			"legendOnSeparatePage": true,
 			"addLandscapeControl": true,
+    		"bboxFit": true,
 			"actionTarget":{
 			    "target": "paneltbar",
 				"index":4
