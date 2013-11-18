@@ -43,8 +43,8 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
     defaultTabText: "Default",
     /** api: config[legendTabText] ``String`` i18n */
     legendTabText: "Legend",
-    /** api: config[graticuleFieldLabelText] ``String`` i18n */
-    graticuleFieldLabelText: 'Active graticule',
+    /** api: config[graticuleTabText] ``String`` i18n */
+    graticuleTabText: "Graticule",
     /** api: config[landscapeText] ``String`` i18n */
     landscapeText: 'Landscape',
     /* end i18n */
@@ -181,6 +181,11 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
      *  Flag indicates that the mapPanel is fixed by bbox (not by scale)
      **/
     bboxFit: false,
+
+    /** api: config[graticuleOptions]
+     *  `Object` map with default parameters for the `OpenLayer.Control.Graticule` control when this.addGraticuleControl is enabled
+     **/
+    graticuleOptions: {},
     
     /** private: method[initComponent]
      */
@@ -425,13 +430,11 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 checkItems.push(landscapeCheckbox);
             }
 
-            this.addGraticuleControl && checkItems.push(this.getGraticuleCheckBox());  
-
             panelElements.push({
                 xtype: "container",
                 layout: "form",
                 cls: "x-form-item",
-                        style:"text-align:left",
+                style:"text-align:left",
                 items: checkItems
             });
         }
@@ -447,31 +450,11 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             })
         });
 
-        if(this.addFormParameters){
-            // use the flag
-            var tabItems = [];
-            tabItems.push(new Ext.form.FormPanel({
-                title: this.defaultTabText,
-                autoHeight: true,
-                border: false,
-                defaults: {
-                    anchor: "100%"
-                },
-                items: panelElements
-            }));
-            tabItems.push(new Ext.form.FormPanel({
-                title: this.legendTabText,
-                autoHeight: true,
-                border: false,
-                defaults: {
-                    anchor: "100%"
-                },
-                items: [this.getFormParamatersFieldset()]
-            }));
-            
+        // Tab it's active if we need to add style or graticule panel
+        if(this.addFormParameters || this.addGraticuleControl){
             return new Ext.TabPanel({
                 activeTab: 0,
-                items: tabItems
+                items: this.getTabItems(panelElements)
             });
         }else{
             return new Ext.form.FormPanel({
@@ -485,19 +468,59 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         }
     },
     
-    /** api: method[getFormParamatersFieldset]
-     *  :arg extraParameters: ``Map`` Optional parameters to show in the form panel
-     *  :arg overrideConfig: ``Map`` Optional config for the form panel
-     *  :returns: ``FormPanel`` with text fields composed by this.formParameters 
-     *  and extraParameters initialized with the values of the map
+    /** api: method[getTabItems]
+     *  :`panelElements`: `Object` with elements for the default tab
+     *  :return: ``Array`` with tab items for the print preview 
      */
-    getFormParamatersFieldset: function(extraParameters, overrideConfig){
-        this.legendStylePanel = new GeoExt.ux.LegendStylePanel({
-            extraParameters: extraParameters,
-            overrideConfig: overrideConfig,
-            printMapPanel: this.printMapPanel
-        });
-        return this.legendStylePanel;
+    getTabItems: function(panelElements){
+
+        var tabItems = [];
+        // Default tab
+        tabItems.push(new Ext.form.FormPanel({
+            title: this.defaultTabText,
+            autoHeight: true,
+            border: false,
+            defaults: {
+                anchor: "100%"
+            },
+            items: panelElements
+        }));
+
+        // Legend style tab
+        if(this.addFormParameters){
+            this.legendStylePanel = new GeoExt.ux.LegendStylePanel({
+                printMapPanel: this.printMapPanel
+            });
+            tabItems.push(new Ext.form.FormPanel({
+                title: this.legendTabText,
+                autoHeight: true,
+                border: false,
+                defaults: {
+                    anchor: "100%"
+                },
+                items: [this.legendStylePanel]
+            }));
+        }
+
+        // Graticule style tab
+        if(this.addGraticuleControl){
+            this.graticulePanel = new GeoExt.ux.GraticuleStylePanel({
+                sourceMap: this.sourceMap,
+                mapPanel: this.printMapPanel,
+                map: this.printMapPanel.map,
+                graticuleOptions: this.graticuleOptions
+            });
+            tabItems.push(new Ext.form.FormPanel({
+                title: this.graticuleTabText,
+                autoHeight: true,
+                border: false,
+                defaults: {
+                    anchor: "100%"
+                },
+                items: [this.graticulePanel]
+            }));
+        }
+        return tabItems;
     },
 
     updateLayout: function() {
@@ -650,47 +673,6 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         }
         this.printMapPanel.un("resize", this.updateSize, this);
         GeoExt.ux.PrintPreview.superclass.beforeDestroy.apply(this, arguments);
-    },
-    
-    /** api: method[getGraticuleCheckBox]
-     *  :returns: ``Checkbox`` to put on or off the graticule inside the printPanel
-     */
-    getGraticuleCheckBox: function(){
-        //This code is the similar that Graticule control.
-        var graticule = new OpenLayers.Control.Graticule({ 
-              //targetSize: 600,
-              displayInLayerSwitcher: false,
-              labelled: true, 
-              visible: true
-        });
-
-        var map = this.printMapPanel.map;
-        var ctrl = this.sourceMap.getControlsByClass("OpenLayers.Control.Graticule");
-
-        return  new Ext.form.Checkbox({
-            name: "graticuleTool",
-            checked: ctrl && ctrl > 1 && ctrl[0].active,
-            boxLabel: this.graticuleFieldLabelText,
-            hideLabel: true,
-            // hidden:true,
-            ctCls: "gx-item-nowrap",
-            handler: function(cb, value) {
-                if(map){
-                    ctrl = map.getControlsByClass("OpenLayers.Control.Graticule");
-                    if(ctrl < 1)
-                        map.addControl(graticule); 
-                    else
-                        graticule = ctrl[0];
-                    if(value){
-                        graticule.activate();
-                    }else{
-                        graticule.deactivate();
-                    } 
-                }
-            },
-            cls : "gx-item-margin-left",
-            scope: this
-        });
     }
     
 });

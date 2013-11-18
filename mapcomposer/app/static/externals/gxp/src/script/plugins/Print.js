@@ -103,7 +103,8 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
     appendLegendOptions: false,
 
     /** api: config[addGraticuleControl]
-     *  Flag indicates that we need to add graticule control to the default options
+     *  Flag indicates that we need to add graticule control to the default options. 
+     *  If you put this control to true, bboxFit it's also enabled.
      **/
     addGraticuleControl: false,
 
@@ -117,6 +118,11 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
      **/
     bboxFit: false,
 
+    /** api: config[graticuleOptions]
+     *  `Object` map with default parameters for the `OpenLayer.Control.Graticule` control when this.addGraticuleControl is enabled
+     **/
+    graticuleOptions: {},
+
     /** private: method[constructor]
      */
     constructor: function(config) {
@@ -126,6 +132,11 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
     /** api: method[addActions]
      */
     addActions: function() {
+
+        // force bboxFit if graticule control it's enabled
+        if(this.addGraticuleControl){
+            this.bboxFit = true;
+        }
 
         // don't add any action if there is no print service configured
         if (this.printService !== null) {
@@ -290,6 +301,8 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                             addLandscapeControl: this.addLandscapeControl,
                             // BBox fit
                             bboxFit: this.bboxFit,
+                            // Graticule options
+                            graticuleOptions: this.graticuleOptions,
                             listeners: {
                                 scope: this,
                                 "afterrender": function() {

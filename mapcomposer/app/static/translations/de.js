@@ -325,6 +325,15 @@ GeoExt.Lang.add("de", {
 		fontEditorText: "Label-Config",
 		sizeText: "Größe"
     },
+    
+    "GeoExt.ux.GraticuleStylePanel.prototype":{
+        graticuleFieldLabelText: 'Aktive Raster',
+        sizeText: "Größe",
+        colorText: "Farbe",
+        fontFamilyText: "Schriftfamilie",
+        fontStyleText: "Schriftschnitt",
+        fontEditorText: "Label-Config"
+    },
 
     "gxp.plugins.GeonetworkSearch.prototype":{
         geonetworkSearchText: "Metadaten Anzeigen",
