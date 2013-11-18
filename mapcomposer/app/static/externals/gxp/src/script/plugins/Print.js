@@ -195,8 +195,18 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                     var layers = getSupportedLayers();
                     var supported = layers.supported;
                     var notSupported = layers.notSupported;
+
+                    // Calculate active supported layers (not visible layers can't be printed)
+                    var activeSupportedLayers = supported.length;
+                    if(supported.length > 0){
+                        for(var i = 0; i < supported.length; i++){
+                            if(!supported[i].getVisibility()){
+                                activeSupportedLayers--;
+                            }
+                        }
+                    }
                     
-                    if (supported.length > 0) {
+                    if (activeSupportedLayers > 0) {
 
                         var notIgnorable = getNotIgnorable(notSupported, this.ignoreLayers);
                         if( notIgnorable.length > 0 ){
