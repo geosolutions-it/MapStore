@@ -77,3 +77,11 @@
      background-position: center;
      background-repeat: no-repeat;
 }
+
+/* Turn off GPU Support only for browsers that use WebKit (like Google Chrome) 
+becose this may interfere with UI widgets visibility */
+img.olTileImage {
+    -webkit-transform: inherit;
+    -webkit-backface-visibility: inherit;
+    -webkit-perspective: inherit;
+}
