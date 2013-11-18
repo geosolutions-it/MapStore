@@ -9,7 +9,8 @@ var urls = [
     [(/^\/(composer)/), require("./root/composer").app],
 	[(/^\/(wps)/), require("./root/wps").app],                // to test WPS plugin
 	[(/^\/(test)/), require("./root/test").app],              // to test the MapStore Viewport
-    [(/^\/(viewer(.html)?)/), require("./root/viewer").app]
+    [(/^\/(viewer(.html)?)/), require("./root/viewer").app],
+    [(/^\/(debug(.js)?)/), require("./root/debug").app]
 ];
 
 var debug_proxy = java.lang.System.getProperty("app.debug.proxy");
