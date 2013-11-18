@@ -607,16 +607,16 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
      */
     getAbsoluteUrl: function(url) {
         var a;
-        if(Ext.isIE) {
+        /*if(Ext.isIE) {
             a = document.createElement("<a href='" + url + "'/>");
             a.style.display = "none";
             document.body.appendChild(a);
             a.href = a.href;
             document.body.removeChild(a);
-        } else {
+        } else {*/
             a = document.createElement("a");
             a.href = url;
-        }
+        //}
         return a.href;
     },
     
