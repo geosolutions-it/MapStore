@@ -431,11 +431,20 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
         
         var encodedPages = [];
         Ext.each(pages, function(page) {
-            encodedPages.push(Ext.apply({
-                center: [page.center.lon, page.center.lat],
-                scale: page.scale.get("value"),
-                rotation: page.rotation
-            }, page.customParams));
+            if(page.bbox){
+                // only bbox fix!!
+                encodedPages.push(Ext.apply({
+                    bbox: page.bbox.toArray(),
+                    rotation: page.rotation
+                }, page.customParams));
+            }else{
+                // default: use center and scale!!
+                encodedPages.push(Ext.apply({
+                    center: [page.center.lon, page.center.lat],
+                    scale: page.scale.get("value"),
+                    rotation: page.rotation
+                }, page.customParams));
+            }
         }, this);
         jsonData.pages = encodedPages;
         
@@ -598,16 +607,16 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
      */
     getAbsoluteUrl: function(url) {
         var a;
-        if(Ext.isIE) {
+        /*if(Ext.isIE) {
             a = document.createElement("<a href='" + url + "'/>");
             a.style.display = "none";
             document.body.appendChild(a);
             a.href = a.href;
             document.body.removeChild(a);
-        } else {
+        } else {*/
             a = document.createElement("a");
             a.href = url;
-        }
+        //}
         return a.href;
     },
     

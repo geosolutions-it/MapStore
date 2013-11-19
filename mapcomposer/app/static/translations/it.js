@@ -327,6 +327,15 @@ GeoExt.Lang.add("it", {
 		fontEditorText: "Config. Etichette",
 		sizeText: "Dimensione"
     },
+    
+    "GeoExt.ux.GraticuleStylePanel.prototype":{
+        graticuleFieldLabelText: 'Attiva griglia',
+        sizeText: "Dimensione",
+        colorText: "Colore",
+        fontFamilyText: "Famiglia Font",
+        fontStyleText: "Stile Font",
+        fontEditorText: "Config. Etichette"
+    },
 
     "gxp.plugins.GeonetworkSearch.prototype":{
         geonetworkSearchText: "Visualizza metadati",

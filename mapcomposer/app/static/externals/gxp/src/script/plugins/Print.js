@@ -103,7 +103,8 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
     appendLegendOptions: false,
 
     /** api: config[addGraticuleControl]
-     *  Flag indicates that we need to add graticule control to the default options
+     *  Flag indicates that we need to add graticule control to the default options. 
+     *  If you put this control to true, bboxFit it's also enabled.
      **/
     addGraticuleControl: false,
 
@@ -111,104 +112,16 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
      *  Flag indicates that we need to add landscape control for the default tab
      **/
     addLandscapeControl: false,
-    
-    /** api: config[offsetByScale]
-     *  ``Object`` Force to change the lat and lon offset for the graticule fixed to the scale 
-     */
-    offsetByScale:{
-        20000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 180,
-            latOffsetX: -270,
-            latOffsetY: 2
-        },
-        10000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 180,
-            latOffsetX: -270,
-            latOffsetY: 2
-        },
-        4000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 50,
-            latOffsetX: -50,
-            latOffsetY: 2
-        },
-        2000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 50,
-            latOffsetX: -50,
-            latOffsetY: 2
-        },
-        1000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 50,
-            latOffsetX: -50,
-            latOffsetY: 2
-        },
-        500000:{
-            lonOffsetX: 0,
-            lonOffsetY: 50,
-            latOffsetX: -50,
-            latOffsetY: 2
-        },
-        200000:{
-            lonOffsetX: 0,
-            lonOffsetY: 100,
-            latOffsetX: -150,
-            latOffsetY: 2
-        },
-        100000:{
-            lonOffsetX: 0,
-            lonOffsetY: 100,
-            latOffsetX: -150,
-            latOffsetY: 2
-        },
-        50000:{
-            lonOffsetX: 0,
-            lonOffsetY: 100,
-            latOffsetX: -150,
-            latOffsetY: 2
-        },
-        20000:{
-            lonOffsetX: 0,
-            lonOffsetY: 200,
-            latOffsetX: -245,
-            latOffsetY: 2
-        },
-        10000:{
-            lonOffsetX: 0,
-            lonOffsetY: 200,
-            latOffsetX: -245,
-            latOffsetY: 2
-        },
-        5000:{
-            lonOffsetX: 0,
-            lonOffsetY: 200,
-            latOffsetX: -245,
-            latOffsetY: 2
-        },
-        2000:{
-            lonOffsetX: 0,
-            lonOffsetY: 45,
-            latOffsetX: -45,
-            latOffsetY: 2
-        },
-        1000:{
-            lonOffsetX: 0,
-            lonOffsetY: 45,
-            latOffsetX: -45,
-            latOffsetY: 2
-        },
-        500:{
-            lonOffsetX: 0,
-            lonOffsetY: 45,
-            latOffsetX: -45,
-            latOffsetY: 2
-        }
-    },
-    
-    
+
+    /** api: config[bboxFit]
+     *  Flag indicates that the mapPanel is fixed by bbox (not by scale)
+     **/
+    bboxFit: false,
+
+    /** api: config[graticuleOptions]
+     *  `Object` map with default parameters for the `OpenLayer.Control.Graticule` control when this.addGraticuleControl is enabled
+     **/
+    graticuleOptions: {},
 
     /** private: method[constructor]
      */
@@ -219,6 +132,11 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
     /** api: method[addActions]
      */
     addActions: function() {
+
+        // force bboxFit if graticule control it's enabled
+        if(this.addGraticuleControl){
+            this.bboxFit = true;
+        }
 
         // don't add any action if there is no print service configured
         if (this.printService !== null) {
@@ -277,8 +195,18 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                     var layers = getSupportedLayers();
                     var supported = layers.supported;
                     var notSupported = layers.notSupported;
+
+                    // Calculate active supported layers (not visible layers can't be printed)
+                    var activeSupportedLayers = supported.length;
+                    if(supported.length > 0){
+                        for(var i = 0; i < supported.length; i++){
+                            if(!supported[i].getVisibility()){
+                                activeSupportedLayers--;
+                            }
+                        }
+                    }
                     
-                    if (supported.length > 0) {
+                    if (activeSupportedLayers > 0) {
 
                         var notIgnorable = getNotIgnorable(notSupported, this.ignoreLayers);
                         if( notIgnorable.length > 0 ){
@@ -379,10 +307,12 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                             addFormParameters: this.appendLegendOptions,
                             // Add graticule option
                             addGraticuleControl: this.addGraticuleControl,
-                            // Add graticule offset by scale
-                            offsetByScale: this.offsetByScale,
                             // Add landscape control
                             addLandscapeControl: this.addLandscapeControl,
+                            // BBox fit
+                            bboxFit: this.bboxFit,
+                            // Graticule options
+                            graticuleOptions: this.graticuleOptions,
                             listeners: {
                                 scope: this,
                                 "afterrender": function() {
@@ -410,12 +340,15 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                                 }
                             },
                             printMapPanel: {
+                                // BBox fit
+                                bboxFit: this.bboxFit,
                                 map: Ext.applyIf({
                                     controls: [
                                         //UNCOMMENT TO ADD CONTROLS TO PRINT PREVIEW
-                                        //new OpenLayers.Control.Navigation(),
-                                        //new OpenLayers.Control.PanPanel(),
-                                        //new OpenLayers.Control.ZoomPanel(),
+                                        // CAUTION: For bboxFit option = true you can't active it
+                                        // new OpenLayers.Control.Navigation(),
+                                        // new OpenLayers.Control.PanPanel(),
+                                        // new OpenLayers.Control.ZoomPanel(),
                                         new OpenLayers.Control.Attribution()
                                     ],
                                     eventListeners: {

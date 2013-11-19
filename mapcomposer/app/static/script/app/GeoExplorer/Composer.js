@@ -24,11 +24,9 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     backText: "Back",
     nextText: "Next",
     fullScreenText: "Full Screen",	
-
     cswFailureAddLayer: ' The layer cannot be added to the map',
     alertEmbedTitle: "Attention",
-    alertEmbedText: "Save the map before using the 'Publish Map' tool",
-	
+    alertEmbedText: "Save the map before using the 'Publish Map' tool",	
 	cswZoomToExtentMsg: "BBOX not available",
 	cswZoomToExtent: "CSW Zoom To Extent",
 	
@@ -171,11 +169,28 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		
 		config.tools.push({
 			actions: ["-"], actionTarget: "paneltbar"
-		}, {
-			ptype: "gxp_saveDefaultContext",
-			actionTarget: {target: "paneltbar", index: 24},
-			needsAuthorization: true
 		});
+		
+		// ////////////////////////////////////////////////////////////
+		// Check if the Save plugin already exists (for example this 
+		// could be exists in an imported configuraztion file (.map), 
+		// see the ImportExport plugin).
+		// ////////////////////////////////////////////////////////////
+		var savePlugin = false;
+		for(i=0; i<config.tools.length; i++){
+			if(config.tools[i]["ptype"] == "gxp_saveDefaultContext"){
+				var savePlugin = true;
+				break;
+			}
+		}
+		
+		if(!savePlugin){
+			config.tools.push({
+				ptype: "gxp_saveDefaultContext",
+				actionTarget: {target: "paneltbar", index: 24},
+				needsAuthorization: true
+			});
+		}
         
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);
     },

@@ -43,8 +43,8 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
     defaultTabText: "Default",
     /** api: config[legendTabText] ``String`` i18n */
     legendTabText: "Legend",
-    /** api: config[graticuleFieldLabelText] ``String`` i18n */
-    graticuleFieldLabelText: 'Active graticule',
+    /** api: config[graticuleTabText] ``String`` i18n */
+    graticuleTabText: "Graticule",
     /** api: config[landscapeText] ``String`` i18n */
     landscapeText: 'Landscape',
     /* end i18n */
@@ -176,6 +176,16 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
      *  Print in landscape mode
      **/
     landscape: false,
+
+    /** api: config[bboxFit]
+     *  Flag indicates that the mapPanel is fixed by bbox (not by scale)
+     **/
+    bboxFit: false,
+
+    /** api: config[graticuleOptions]
+     *  `Object` map with default parameters for the `OpenLayer.Control.Graticule` control when this.addGraticuleControl is enabled
+     **/
+    graticuleOptions: {},
     
     /** private: method[initComponent]
      */
@@ -183,6 +193,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         var printMapPanelOptions = {
             sourceMap: this.sourceMap,
             printProvider: this.printProvider,
+            bboxFit: this.bboxFit,
             width : 400
         };
         if(this.printMapPanel) {
@@ -419,13 +430,11 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 checkItems.push(landscapeCheckbox);
             }
 
-            this.addGraticuleControl && checkItems.push(this.getGraticuleCheckBox());  
-
             panelElements.push({
                 xtype: "container",
                 layout: "form",
                 cls: "x-form-item",
-                        style:"text-align:left",
+                style:"text-align:left",
                 items: checkItems
             });
         }
@@ -441,31 +450,11 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             })
         });
 
-        if(this.addFormParameters){
-            // use the flag
-            var tabItems = [];
-            tabItems.push(new Ext.form.FormPanel({
-                title: this.defaultTabText,
-                autoHeight: true,
-                border: false,
-                defaults: {
-                    anchor: "100%"
-                },
-                items: panelElements
-            }));
-            tabItems.push(new Ext.form.FormPanel({
-                title: this.legendTabText,
-                autoHeight: true,
-                border: false,
-                defaults: {
-                    anchor: "100%"
-                },
-                items: [this.getFormParamatersFieldset()]
-            }));
-            
+        // Tab it's active if we need to add style or graticule panel
+        if(this.addFormParameters || this.addGraticuleControl){
             return new Ext.TabPanel({
                 activeTab: 0,
-                items: tabItems
+                items: this.getTabItems(panelElements)
             });
         }else{
             return new Ext.form.FormPanel({
@@ -479,19 +468,59 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         }
     },
     
-    /** api: method[getFormParamatersFieldset]
-     *  :arg extraParameters: ``Map`` Optional parameters to show in the form panel
-     *  :arg overrideConfig: ``Map`` Optional config for the form panel
-     *  :returns: ``FormPanel`` with text fields composed by this.formParameters 
-     *  and extraParameters initialized with the values of the map
+    /** api: method[getTabItems]
+     *  :`panelElements`: `Object` with elements for the default tab
+     *  :return: ``Array`` with tab items for the print preview 
      */
-    getFormParamatersFieldset: function(extraParameters, overrideConfig){
-        this.legendStylePanel = new GeoExt.ux.LegendStylePanel({
-            extraParameters: extraParameters,
-            overrideConfig: overrideConfig,
-            printMapPanel: this.printMapPanel
-        });
-        return this.legendStylePanel;
+    getTabItems: function(panelElements){
+
+        var tabItems = [];
+        // Default tab
+        tabItems.push(new Ext.form.FormPanel({
+            title: this.defaultTabText,
+            autoHeight: true,
+            border: false,
+            defaults: {
+                anchor: "100%"
+            },
+            items: panelElements
+        }));
+
+        // Legend style tab
+        if(this.addFormParameters){
+            this.legendStylePanel = new GeoExt.ux.LegendStylePanel({
+                printMapPanel: this.printMapPanel
+            });
+            tabItems.push(new Ext.form.FormPanel({
+                title: this.legendTabText,
+                autoHeight: true,
+                border: false,
+                defaults: {
+                    anchor: "100%"
+                },
+                items: [this.legendStylePanel]
+            }));
+        }
+
+        // Graticule style tab
+        if(this.addGraticuleControl){
+            this.graticulePanel = new GeoExt.ux.GraticuleStylePanel({
+                sourceMap: this.sourceMap,
+                mapPanel: this.printMapPanel,
+                map: this.printMapPanel.map,
+                graticuleOptions: this.graticuleOptions
+            });
+            tabItems.push(new Ext.form.FormPanel({
+                title: this.graticuleTabText,
+                autoHeight: true,
+                border: false,
+                defaults: {
+                    anchor: "100%"
+                },
+                items: [this.graticulePanel]
+            }));
+        }
+        return tabItems;
     },
 
     updateLayout: function() {
@@ -552,17 +581,14 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         var scaleLine = new OpenLayers.Control.ScaleLine();
         this.printMapPanel.map.addControl(scaleLine);
         scaleLine.activate();
-        
-        return new Ext.Panel({
-            cls: "gx-map-overlay",
-            layout: "column",
-            width: 235,
-            bodyStyle: "padding:5px",
-            items: [{
+        var items = [{
                 xtype: "box",
                 el: scaleLine.div,
                 width: scaleLine.maxWidth
-            }, {
+            }];
+        if(!this.bboxFit){
+            // hide scale for not bboxFit
+            items.push({
                 xtype: "container",
                 layout: "form",
                 style: "padding: .2em 5px 0 0;",
@@ -587,13 +613,21 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                         printPage: this.printMapPanel.printPage
                     })
                 }
-            }, {
-                xtype: "box",
-                autoEl: {
-                    tag: "div",
-                    cls: "gx-northarrow"
-                }
-            }],
+            });
+        }
+        items.push({
+            xtype: "box",
+            autoEl: {
+                tag: "div",
+                cls: "gx-northarrow"
+            }
+        });
+        return new Ext.Panel({
+            cls: "gx-map-overlay",
+            layout: "column",
+            width: 235,
+            bodyStyle: "padding:5px",
+            items: items,
             listeners: {
                 "render": function() {
                     function stop(evt){evt.stopPropagation();}
@@ -639,198 +673,6 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         }
         this.printMapPanel.un("resize", this.updateSize, this);
         GeoExt.ux.PrintPreview.superclass.beforeDestroy.apply(this, arguments);
-    },
-    
-    /** api: method[getGraticuleCheckBox]
-     *  :returns: ``Checkbox`` to put on or off the graticule inside the printPanel
-     */
-    getGraticuleCheckBox: function(){
-        //This code is the similar that Graticule control.
-        var graticule = new OpenLayers.Control.Graticule({ 
-              //targetSize: 600,
-              displayInLayerSwitcher: false,
-              labelled: true, 
-              visible: true
-        });
-
-        // Fixme: Remove graticule active and add another one with this listener!!
-        this.printMapPanel.printPage.on({
-            change: function(mods){
-                Ext.apply(graticule, this.calculateLonLatOffsets(mods));
-            }, 
-            scope: this
-        });
-
-        var map = this.printMapPanel.map;
-        var ctrl = this.sourceMap.getControlsByClass("OpenLayers.Control.Graticule");
-
-        return  new Ext.form.Checkbox({
-            name: "graticuleTool",
-            checked: ctrl && ctrl > 1 && ctrl[0].active,
-            boxLabel: this.graticuleFieldLabelText,
-            hideLabel: true,
-            // hidden:true,
-            ctCls: "gx-item-nowrap",
-            handler: function(cb, value) {
-                if(map){
-                    ctrl = map.getControlsByClass("OpenLayers.Control.Graticule");
-                    if(ctrl < 1)
-                        map.addControl(graticule); 
-                    else
-                        graticule = ctrl[0];
-                    if(value){
-                        graticule.activate();
-                    }else{
-                        graticule.deactivate();
-                    } 
-                }
-            },
-            cls : "gx-item-margin-left",
-            scope: this
-        });
-    },
-    
-    /** api: config[offsetByScale]
-     *  ``Object`` Force to change the lat and lon offset for the graticule fixed to the scale 
-     */
-    offsetByScale:{
-        20000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 180,
-            latOffsetX: -270,
-            latOffsetY: 2
-        },
-        10000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 180,
-            latOffsetX: -270,
-            latOffsetY: 2
-        },
-        4000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 50,
-            latOffsetX: -50,
-            latOffsetY: 2
-        },
-        2000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 50,
-            latOffsetX: -50,
-            latOffsetY: 2
-        },
-        1000000:{
-            lonOffsetX: 0,
-            lonOffsetY: 50,
-            latOffsetX: -50,
-            latOffsetY: 2
-        },
-        500000:{
-            lonOffsetX: 0,
-            lonOffsetY: 50,
-            latOffsetX: -50,
-            latOffsetY: 2
-        },
-        200000:{
-            lonOffsetX: 0,
-            lonOffsetY: 100,
-            latOffsetX: -150,
-            latOffsetY: 2
-        },
-        100000:{
-            lonOffsetX: 0,
-            lonOffsetY: 100,
-            latOffsetX: -150,
-            latOffsetY: 2
-        },
-        50000:{
-            lonOffsetX: 0,
-            lonOffsetY: 100,
-            latOffsetX: -150,
-            latOffsetY: 2
-        },
-        20000:{
-            lonOffsetX: 0,
-            lonOffsetY: 200,
-            latOffsetX: -245,
-            latOffsetY: 2
-        },
-        10000:{
-            lonOffsetX: 0,
-            lonOffsetY: 200,
-            latOffsetX: -245,
-            latOffsetY: 2
-        },
-        5000:{
-            lonOffsetX: 0,
-            lonOffsetY: 200,
-            latOffsetX: -245,
-            latOffsetY: 2
-        },
-        2000:{
-            lonOffsetX: 0,
-            lonOffsetY: 45,
-            latOffsetX: -45,
-            latOffsetY: 2
-        },
-        1000:{
-            lonOffsetX: 0,
-            lonOffsetY: 45,
-            latOffsetX: -45,
-            latOffsetY: 2
-        },
-        500:{
-            lonOffsetX: 0,
-            lonOffsetY: 45,
-            latOffsetX: -45,
-            latOffsetY: 2
-        }
-    },
-    
-    /** api: method[calculateLonLatOffsets]
-     *  This method it's only necesary because the final bbox is not the same that the map preview. Remove it when this is fixed
-     *  :returns: ``Object`` with the offsets for the graticule
-     */
-    calculateLonLatOffsets: function (mods){
-
-        // Obtain the offset stored
-        if(mods 
-            && mods.scale){
-            var scale = mods.scale.get("value");
-            if(this.offsetByScale[scale])
-                return this.offsetByScale[scale];
-        }
-
-        var lonOffsetX = 0;
-        var lonOffsetY = 100;
-        var latOffsetX = -150;
-        var latOffsetY = 2;
-
-        // the scale is not recognized. try to adjust
-        if(mods 
-            && mods.feature
-            && mods.feature.geometry
-            && mods.feature.geometry.getBounds()){
-            var boundsArray = mods.feature.geometry.getBounds().toArray();
-
-            var xOffset = boundsArray[2] - boundsArray[0];
-            var yOffset = boundsArray[3] - boundsArray[1];
-
-            lonOffsetY = (Math.floor(xOffset * 10) + 1);
-            latOffsetX =  - (Math.floor(yOffset * 10) + 1);
-            if(lonOffsetY < 100){
-                lonOffsetY = 100 + (xOffset* 1000);
-            }
-            if(latOffsetX >  -100){
-                latOffsetX =  -100 - (yOffset* 1000);
-            }
-        }
-
-        return {
-            lonOffsetX: lonOffsetX,
-            lonOffsetY: lonOffsetY,
-            latOffsetX: latOffsetX,
-            latOffsetY: latOffsetY
-         };
     }
     
 });
