@@ -163,6 +163,12 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
      */
     changeMatrixResponseErrorDialogText: "There was an error processing the request.",
     
+    /** api: config[renderToTab]
+     *  ``Boolean``
+     *  Whether or not render to a Tab. Applies only on Tab enabled View (see MapStore config)
+     */
+    renderToTab: true,
+    
     /** api: config[requestTimeout]
      *  ``Integer``
      *  Timeout for the WPS request
@@ -187,8 +193,20 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
      *  WPS Manager Plugin ID .
      */
     wpsManagerID: null,
-    
+
     //private
+
+    // Begin i18n.
+    northLabel:"North",
+    westLabel:"West",
+    eastLabel:"East",
+    southLabel:"South",
+    aoiFieldSetTitle: "Region Of Interest",
+    setAoiText: "SetROI",
+    setAoiTooltip: 'Enable the SetBox control to draw a ROI (BBOX) on the map',
+    chgMatrixFieldSetTitle: 'Change Matrix Inputs',
+    // End i18n.
+
     win: null,
     formPanel: null,
     wpsManager: null,
@@ -205,190 +223,408 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 
     },
 
-    /** 
-     * api: method[addActions]
+	/** private: method[addOutput]
+     *  :arg config: ``Object``
      */
-    addActions: function() {
-        var actions = gxp.plugins.ChangeMatrix.superclass.addActions.apply(this, [{
-            iconCls: "icon-changematrix",
-            disabled: false,
-            tooltip: this.changeMatrixActionTip,
-            handler: function() {
-                var me = this;
-                
-                if(me.win)
-                    me.win.destroy();
-                    
-                var rasterLayersStoreData = [];
-                for(var i = 0; i < this.rasterLayers.length; i++) {
-                    rasterLayersStoreData.push([this.rasterLayers[i]]);
-                }
-                
-                var classesData = [];
-                for(var i = 0; i < this.classes.length; i++) {
-                    classesData.push([this.classes[i]]);
-                }
-                var classesStore = new Ext.data.ArrayStore({
-                    fields: ['name'],
-                    data: classesData
-                });
-                var selectedClassesStore = new Ext.data.ArrayStore({
-                    fields: ['name'],
-                    data: []
-                });
-                
-                me.formPanel = new Ext.form.FormPanel({
-                    id: 'change-matrix-form-panel',
-                    width: 335,
-                    height: 360,
-                    items: [
-                        {
-                            xtype: 'itemselector',
-                            fieldLabel: this.changeMatrixClassesFieldLabel,
-                            imagePath: 'theme/app/img/ux/',
-                            name: 'classesselector',
-                            anchor: '100%',
-                            drawUpIcon: false,
-                            iconDown: 'selectall2.gif',
-                            drawTopIcon: false,
-                            //drawBotIcon: false,
-                            iconBottom: 'deselectall2.gif',
-                            height: 250,
-                            multiselects: [{
-                                flex: 1,
-                                store: classesStore,
-                                height: 250,
-                                valueField: 'name',
-                                displayField: 'name'
-                            },{
-                                flex: 1,
-                                store: selectedClassesStore,
-                                height: 250,
-                                valueField: 'name',
-                                displayField: 'name'
-                            }],
-                            down: function() {
-                                var leftMultiSelect = this.fromMultiselect,
-                                    rightMultiSelect = this.toMultiselect;
-
-                                leftMultiSelect.view.selectRange(0, classesStore.getCount());
-                                this.fromTo();
-
-                                leftMultiSelect.view.clearSelections();
-                                rightMultiSelect.view.clearSelections();
-                            },
-                            toBottom: function() {
-                                var leftMultiSelect = this.fromMultiselect,
-                                    rightMultiSelect = this.toMultiselect;
-
-                                rightMultiSelect.view.selectRange(0, selectedClassesStore.getCount());
-                                this.toFrom();
-
-                                leftMultiSelect.view.clearSelections();
-                                rightMultiSelect.view.clearSelections();
-                            }
-                        },{
-                            xtype: 'combo',
-                            name: 'raster',
-                            forceSelection: true,
-                            editable: false,
-                            fieldLabel: this.changeMatrixRasterFieldLabel,
-                            mode: 'local',
-                            store: new Ext.data.ArrayStore({
-                                fields: ['name'],
-                                data: rasterLayersStoreData
-                            }),
-                            valueField: 'name',
-                            displayField: 'name',
-                            validator: function(value) {
-                                if(Ext.isEmpty(value)) return me.changeMatrixEmptyLayer
-                                return true;
-                            }
-                        },{
-                            xtype: 'textfield',
-                            name: 'filterT0',
-                            fieldLabel: this.changeMatrixCQLFilterT0FieldLabel,
-                            validator: function(value) {
-                                if(Ext.isEmpty(value)) return me.changeMatrixEmptyFilter
-                                return true;
-                            }
-                        },{
-                            xtype: 'textfield',
-                            name: 'filterT1',
-                            fieldLabel: this.changeMatrixCQLFilterT1FieldLabel,
-                            validator: function(value) {
-                                if(Ext.isEmpty(value)) return me.changeMatrixEmptyFilter
-                                return true;
-                            }
-                        }
-                    ],
-                    buttons: [
-                        {
-                            text: this.changeMatrixResetButtonText,
-                            iconCls: 'gxp-icon-removelayers',
-                            handler: function() {
-                                me.formPanel.getForm().reset();
-                            }
-                        },{
-                            text: this.changeMatrixSubmitButtonText,
-                            iconCls: 'gxp-icon-zoom-next',
-                            id: 'change-matrix-submit-button',
-                            handler: function() {
-                                var form = me.formPanel.getForm();
-                                
-                                if(!form.isValid()) {
-                                    return Ext.Msg.alert(me.changeMatrixInvalidFormDialogTitle, me.changeMatrixInvalidFormDialogText);
-                                }
-                                
-                                // get form params
-                                var params = form.getFieldValues();
-
-                                //get an array of the selected classes from the CheckBoxGroup
-                                if(selectedClassesStore.getCount() == 0) {
-                                    return Ext.Msg.alert(me.changeMatrixEmptyClassesDialogTitle, me.changeMatrixEmptyClassesDialogText);
-                                }
-                                var selectedClasses = [];
-                                selectedClassesStore.each(function(record) {
-                                    selectedClasses.push(record.get('name'));
-                                });
-                                params.classes = selectedClasses;
-                                
-                                //get the current extent
-                                var map = me.target.mapPanel.map;
-                                var currentExtent = map.getExtent();
-                                //change the extent projection if it differs from 4326
-                                if(map.getProjection() != 'EPSG:4326') {
-                                    currentExtent.transform(map.getProjectionObject(),
-                                        new OpenLayers.Projection('EPSG:4326'));
-                                }
-                                //transform to a Geometry (instead of Bounds)
-                                params.roi = currentExtent.toGeometry();
-                                
-                                me.startWPSRequest(params);
-                            }
-                        }
-                    ]
-                });
-
-                me.win = new Ext.Window({
-                    width: 355,
-                    height: 410,
-                    layout: 'fit',
-                    title: this.changeMatrixDialogTitle,
-                    constrainHeader: true,
-                    renderTo: this.target.mapPanel.body,
-                    items: [ me.formPanel ]
-                });
-                
-                me.win.show();
-                
-                me.loadingMask = new Ext.LoadMask(Ext.get('change-matrix-form-panel'), 'Loading..');
-            },
-            scope: this
-        }]);
+    addOutput: function(config) {
+        // ///////////////////
+        // Initialize data
+        // ///////////////////
+    	var me = this;
+    	
+    	var rasterLayersStoreData = [];
+        for(var i = 0; i < this.rasterLayers.length; i++) {
+            rasterLayersStoreData.push([this.rasterLayers[i]]);
+        }
         
-        return actions;
+        var classesData = [];
+        for(var i = 0; i < this.classes.length; i++) {
+            classesData.push([this.classes[i]]);
+        }
+        var classesStore = new Ext.data.ArrayStore({
+            fields: ['name'],
+            data: classesData
+        });
+        var selectedClassesStore = new Ext.data.ArrayStore({
+            fields: ['name'],
+            data: []
+        });
+
+		// the map 
+		var map = this.target.mapPanel.map;
+		map.enebaleMapEvent = true;
+
+		// the spatialFilterOptions
+	    me.spatialFilterOptions = {
+			lonMax: 20037508.34,   //90,
+			lonMin: -20037508.34,  //-90,
+			latMax: 20037508.34,   //180,
+			latMin: -20037508.34  //-180
+	    };
+		
+        // ///////////////////
+        // The ROI Select Fieldset
+        // ///////////////////
+
+        this.northField = new Ext.form.NumberField({
+              fieldLabel: this.northLabel,
+              id: "NorthBBOX",
+              width: 100,
+              minValue: this.spatialFilterOptions.lonMin,
+              maxValue: this.spatialFilterOptions.lonMax,
+              decimalPrecision: 5,
+              allowDecimals: true,
+              hideLabel : false                    
+        });
+        
+        this.westField = new Ext.form.NumberField({
+              fieldLabel: this.westLabel,
+              id: "WestBBOX",
+              width: 100,
+              minValue: this.spatialFilterOptions.latMin,
+              maxValue: this.spatialFilterOptions.latMax,
+              decimalPrecision: 5,
+              allowDecimals: true,
+              hideLabel : false                    
+        });
+        
+        this.eastField = new Ext.form.NumberField({
+              fieldLabel: this.eastLabel,
+              id: "EastBBOX",
+              width: 100,
+              minValue: this.spatialFilterOptions.latMin,
+              maxValue: this.spatialFilterOptions.latMax,
+              decimalPrecision: 5,
+              allowDecimals: true,
+              hideLabel : false                    
+        });
+              
+        this.southField = new Ext.form.NumberField({
+              fieldLabel: this.southLabel,
+              id: "SouthBBOX",
+              width: 100,
+              minValue: this.spatialFilterOptions.lonMin,
+              maxValue: this.spatialFilterOptions.lonMax,
+              decimalPrecision: 5,
+              allowDecimals: true,
+              hideLabel : false                    
+        });
+                  
+        //
+        // Geographical Filter Field Set
+        //        
+        var selectAOI = new OpenLayers.Control.SetBox({      
+            map: map,    
+            onChangeAOI: function(){
+                var aoiArray = this.currentAOI.split(',');
+                
+                document.getElementById('WestBBOX').value = aoiArray[0];
+                document.getElementById('SouthBBOX').value = aoiArray[1];
+                document.getElementById('EastBBOX').value = aoiArray[2];
+                document.getElementById('NorthBBOX').value = aoiArray[3];
+            } 
+        }); 
+        
+        map.addControl(selectAOI);
+        
+        this.aoiButton = new Ext.Button({
+              text: this.setAoiText,
+              tooltip: this.setAoiTooltip,
+              enableToggle: true,
+              toggleGroup: this.toggleGroup,
+              iconCls: 'aoi-button',
+              height: 50,
+              width: 50,
+              listeners: {
+                  scope: this, 
+                  toggle: function(button, pressed) {
+                     if(pressed){
+                     
+                          //
+                          // Reset the previous control
+                          //
+                          var aoiLayer = map.getLayersByName("AOI")[0];
+                          
+                          if(aoiLayer)
+                              map.removeLayer(aoiLayer);
+                          
+                          if(this.northField.isDirty() && this.southField.isDirty() && 
+                              this.eastField.isDirty() && this.westField.isDirty()){
+                              this.northField.reset();
+                              this.southField.reset();
+                              this.eastField.reset();
+                              this.westField.reset();
+                          }
+
+                          //
+                          // Activating the new control
+                          //                          
+                          selectAOI.activate();
+                      }else{
+                          selectAOI.deactivate();
+                      }
+                  }
+              }
+        });
+              
+        this.spatialFieldSet = new Ext.form.FieldSet({
+            title: this.aoiFieldSetTitle,
+            autoHeight: true,
+			hidden: false,
+			autoWidth:true,
+			collapsed: false,
+			checkboxToggle: true,
+            autoHeight: true,
+            layout: 'table',
+            layoutConfig: {
+                columns: 3
+            },
+            listeners: {
+				scope: this,
+				afterrender: function(cmp){
+					cmp.collapse(true);
+				}
+			},
+            defaults: {
+                // applied to each contained panel
+                bodyStyle:'padding:5px;'
+            },
+            bodyCssClass: 'aoi-fields',
+            items: [
+                {
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    labelAlign: "top",
+                    border: false,
+                    colspan: 3,
+                    items: [
+                        this.northField
+                    ]
+                },{
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    labelAlign: "top",
+                    border: false,
+                    items: [
+                        this.westField
+                    ]
+                },{
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    border: false,
+                    items: [
+                        this.aoiButton
+                    ]                
+                },{
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    labelAlign: "top",
+                    border: false,
+                    items: [
+                       this.eastField
+                    ]
+                },{
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    labelAlign: "top",
+                    border: false,
+                    colspan: 3,
+                    items: [
+                        this.southField
+                    ]
+                }
+            ]
+        });
+        
+        // ///////////////////
+        // The main form
+        // ///////////////////
+    	this.chgMatrixForm = new Ext.form.FormPanel({
+            id: 'change-matrix-form-panel',
+            width: 355,
+            height: 380,
+            autoScroll:true,
+            items: [
+				this.spatialFieldSet,
+				{
+					title: this.chgMatrixFieldSetTitle,
+					xtype:'fieldset',
+					autoWidth:true,
+					layout:'form',
+					defaultType: 'numberfield',
+					bodyStyle:'padding:5px',
+					defaults:{				
+						width: 150							
+					},
+					items:[
+		                {
+		                    xtype: 'itemselector',
+		                    fieldLabel: this.changeMatrixClassesFieldLabel,
+		                    imagePath: 'theme/app/img/ux/',
+		                    name: 'classesselector',
+		                    anchor: '100%',
+		                    drawUpIcon: false,
+		                    iconDown: 'selectall2.gif',
+		                    drawTopIcon: false,
+		                    //drawBotIcon: false,
+		                    iconBottom: 'deselectall2.gif',
+		                    height: 250,
+		                    multiselects: [{
+		                        flex: 1,
+		                        store: classesStore,
+		                        height: 250,
+		                        valueField: 'name',
+		                        displayField: 'name'
+		                    },{
+		                        flex: 1,
+		                        store: selectedClassesStore,
+		                        height: 250,
+		                        valueField: 'name',
+		                        displayField: 'name'
+		                    }],
+		                    down: function() {
+		                        var leftMultiSelect = this.fromMultiselect,
+		                            rightMultiSelect = this.toMultiselect;
+		
+		                        leftMultiSelect.view.selectRange(0, classesStore.getCount());
+		                        this.fromTo();
+		
+		                        leftMultiSelect.view.clearSelections();
+		                        rightMultiSelect.view.clearSelections();
+		                    },
+		                    toBottom: function() {
+		                        var leftMultiSelect = this.fromMultiselect,
+		                            rightMultiSelect = this.toMultiselect;
+		
+		                        rightMultiSelect.view.selectRange(0, selectedClassesStore.getCount());
+		                        this.toFrom();
+		
+		                        leftMultiSelect.view.clearSelections();
+		                        rightMultiSelect.view.clearSelections();
+		                    }
+		                },{
+		                    xtype: 'combo',
+		                    name: 'raster',
+		                    forceSelection: true,
+		                    editable: false,
+		                    fieldLabel: this.changeMatrixRasterFieldLabel,
+		                    mode: 'local',
+		                    store: new Ext.data.ArrayStore({
+		                        fields: ['name'],
+		                        data: rasterLayersStoreData
+		                    }),
+		                    valueField: 'name',
+		                    displayField: 'name',
+		                    validator: function(value) {
+		                        if(Ext.isEmpty(value)) return me.changeMatrixEmptyLayer
+		                        return true;
+		                    }
+		                },{
+		                    xtype: 'textfield',
+		                    name: 'filterT0',
+		                    fieldLabel: this.changeMatrixCQLFilterT0FieldLabel,
+		                    validator: function(value) {
+		                        if(Ext.isEmpty(value)) return me.changeMatrixEmptyFilter
+		                        return true;
+		                    }
+		                },{
+		                    xtype: 'textfield',
+		                    name: 'filterT1',
+		                    fieldLabel: this.changeMatrixCQLFilterT1FieldLabel,
+		                    validator: function(value) {
+		                        if(Ext.isEmpty(value)) return me.changeMatrixEmptyFilter
+		                        return true;
+		                    }
+		                }
+					]
+				}
+            ],
+            bbar: new Ext.Toolbar({
+				items:[
+                {
+                    text: this.changeMatrixResetButtonText,
+                    iconCls: 'gxp-icon-removelayers',
+                    handler: function() {
+                        me.chgMatrixForm.getForm().reset();
+                    }
+                },{
+                    text: this.changeMatrixSubmitButtonText,
+                    iconCls: 'gxp-icon-zoom-next',
+                    id: 'change-matrix-submit-button',
+                    handler: function() {
+                        var form = me.chgMatrixForm.getForm();
+                        
+                        if(!form.isValid()) {
+                            return Ext.Msg.alert(me.changeMatrixInvalidFormDialogTitle, me.changeMatrixInvalidFormDialogText);
+                        }
+                        
+                        // get form params
+                        var params = form.getFieldValues();
+
+                        //get an array of the selected classes from the CheckBoxGroup
+                        if(selectedClassesStore.getCount() == 0) {
+                            return Ext.Msg.alert(me.changeMatrixEmptyClassesDialogTitle, me.changeMatrixEmptyClassesDialogText);
+                        }
+                        var selectedClasses = [];
+                        selectedClassesStore.each(function(record) {
+                            selectedClasses.push(record.get('name'));
+                        });
+                        params.classes = selectedClasses;
+                        
+                        //get the current extent
+                        var map = me.target.mapPanel.map;
+                        var currentExtent = map.getExtent();
+                        //transform to a Geometry (instead of Bounds)
+                        if (me.spatialFieldSet.collapsed !== true) {
+                        	var roi = new OpenLayers.Bounds(
+                                me.westField.getValue()  ? me.westField.getValue()  : me.spatialFilterOptions.lonMin, 
+                                me.southField.getValue() ? me.southField.getValue() : me.spatialFilterOptions.latMin, 
+                                me.eastField.getValue()  ? me.eastField.getValue()  : me.spatialFilterOptions.lonMax, 
+                                me.northField.getValue() ? me.northField.getValue() : me.spatialFilterOptions.latMax
+                             );
+                             
+                             var bbox = roi;
+                             if(!bbox)
+                                bbox = map.getExtent();
+                                
+                             currentExtent = bbox;
+                        }
+
+                        //change the extent projection if it differs from 4326
+                        if(map.getProjection() != 'EPSG:4326') {
+                            currentExtent.transform(map.getProjectionObject(),
+                                new OpenLayers.Projection('EPSG:4326'));
+                        }
+                        // set ROI parameter
+                        params.roi = currentExtent.toGeometry();
+                        
+                        me.startWPSRequest(params);
+                    }
+                }
+            ]})
+        });
+		
+        // ///////////////////
+        // Create the control panel
+        // ///////////////////
+		var cpanel = new Ext.Panel({
+            border: false,
+            layout: "fit",
+            disabled: false,
+			autoScroll:true,
+            title: this.title,
+			items: [
+			  this.chgMatrixForm
+			]
+        });
+        config = Ext.apply(cpanel, config || {});
+        
+        // ///////////////////
+        // Call super class addOutput method and return the panel instance
+        // ///////////////////
+        return gxp.plugins.ChangeMatrix.superclass.addOutput.call(this, config);
     },
+    
     
     startWPSRequest: function(params) {
         var me = this;
@@ -424,12 +660,11 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
         };
         
         me.handleRequestStart();
-        
+
         me.wpsManager.execute('gs:ChangeMatrix', requestObject, me.showResultsGrid, this);
     },
     
     showResultsGrid: function(responseText) {
-    
         this.handleRequestStop();
         
         try {
@@ -440,8 +675,11 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 
         var grid = this.createResultsGrid(responseData);
         
+        /*
+         * Check if tabs exists and if we are allowed to render to a tab or a floating window
+         */
         var hasTabPanel = false;
-        if(this.target.renderToTab) {
+        if(this.target.renderToTab && this.renderToTab) {
             var container = Ext.getCmp(this.target.renderToTab);
             if(container.isXType('tabpanel')) hasTabPanel = true;
         }
@@ -460,8 +698,8 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
             grid.title = undefined;
             
             this.resultWin = new Ext.Window({
-                width: 350,
-                height: 350,
+                width: 450,
+                height: 450,
                 layout: 'fit',
                 title: this.changeMatrixResultsTitle,
                 constrainHeader: true,
@@ -571,6 +809,8 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
     },
     
     handleTimeout: function() {
+    	if (!this.loadingMask) 
+    		this.loadingMask = new Ext.LoadMask(Ext.get('change-matrix-form-panel'), 'Loading..');
         this.loadingMask.hide();
         Ext.getCmp('change-matrix-submit-button').enable();
         Ext.Msg.alert(this.changeMatrixTimeoutDialogTitle, this.changeMatrixTimeoutDialogText);
@@ -579,6 +819,8 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
     handleRequestStart: function() {
         var me = this;
         
+    	if (!this.loadingMask) 
+    		this.loadingMask = new Ext.LoadMask(Ext.get('change-matrix-form-panel'), 'Loading..');
         me.loadingMask.show();
         var submitButton = Ext.getCmp('change-matrix-submit-button');
         if(submitButton) submitButton.disable();
@@ -587,6 +829,8 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
     },
     
     handleRequestStop: function() {
+    	if (!this.loadingMask) 
+    		this.loadingMask = new Ext.LoadMask(Ext.get('change-matrix-form-panel'), 'Loading..');
         this.loadingMask.hide();
         var submitButton = Ext.getCmp('change-matrix-submit-button');
         if(submitButton) submitButton.enable();

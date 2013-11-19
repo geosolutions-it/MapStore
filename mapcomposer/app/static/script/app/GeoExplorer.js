@@ -55,6 +55,9 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     titleText: "Title",
     saveErrorText: "Trouble saving: ",
     
+    southPanelTitle: 'Data Grids',
+    eastPanelTitle: 'Control Panel',
+    
     bookmarkText: "XML Map Context",
     permakinkText: 'XML',
     
@@ -515,10 +518,70 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             tbar: this.toolbar
         });
 		
-        var portalPanels = [this.mapPanelContainer, westPanel];
+		// /////////////////////////////////////////////////////////////////
+		// Change Matrix Panels : START
+		// /////////////////////////////////////////////////////////////////
+		/**
+		 * The followings are custom panels for the ChangeMatrix visualization
+		 */
+		// The Data Grid Panel: used to list the available resources
+		var southPanel = new Ext.Panel({
+            border: false,
+            layout: "fit",
+            id: 'south',
+            region: "south",
+            height: 200,
+            split: true,
+            collapsible: true,
+            //collapseMode: "mini",
+            collapsed: false,
+            header: true,
+			title: this.southPanelTitle
+            /*listeners: {
+                 "expand": function(){
+                     var grid=Ext.getCmp("wfsGridPanel");
+                     if(grid){
+                         var lastOptions = grid.store.lastOptions;
+                         grid.store.reload(lastOptions);
+                         grid.getView().refresh();
+                     }
+                 }
+            },*/
+        });
+        // The ChangeMatrix Control Panel: contains the CHG-MX operations and forms.
+        var estPanel = new Ext.Panel({
+            border: false,
+            layout: "border",
+            id:'east',
+            region: "east",
+            width: 355,
+			//minWidth:455,
+            split: true,
+            collapsible: true,
+            //collapseMode: "mini",
+            collapsed: false,
+            header: true,
+			title: this.eastPanelTitle,
+			items: [
+                {xtype: 'panel', id: 'eastcontrolpanel', layout: 'fit', region: 'center', autoScroll: true}
+            ]
+        });
+		// /////////////////////////////////////////////////////////////////
+		// Change Matrix Panels : END
+		// /////////////////////////////////////////////////////////////////
+        
+        var portalPanels = [this.mapPanelContainer, westPanel, estPanel, southPanel];
 		
 		//collect additional panels to add them after init portal
-		var additionalPanels = [];
+		var additionalPanels = [
+			// /////////////////////////////////////////////////////////////////
+			// Change Matrix Custom Sub-Panels : START
+			// /////////////////////////////////////////////////////////////////
+			{xtype: 'tabpanel', activeTab: 0, region: 'center', id: 'outcomelaylistpanel', autoScroll: true, border: false, target: 'south'}
+			// /////////////////////////////////////////////////////////////////
+			// Change Matrix Custom Sub-Panels : END
+			// /////////////////////////////////////////////////////////////////
+		];
 		
         if(this.customPanels){
 			var toPortal = [];
@@ -1253,7 +1316,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     },
     
     /** private: method[getState]
-     *  :returns: ``Òbject`` the state of the viewer
+     *  :returns: ``ï¿½bject`` the state of the viewer
      */
     getState: function() {
         var state = GeoExplorer.superclass.getState.apply(this, arguments);

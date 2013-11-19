@@ -2,11 +2,12 @@
    "geoStoreBase":"http://localhost:8080/geostore/rest/",
    "proxy":"/proxy/?url=",
    "defaultLanguage": "en",
+   "tab": true,
    "gsSources":{ 
    		"jrc": {
 			"ptype": "gxp_wmssource",
 			"title": "JRC GeoServer",
-			"url": "http://84.33.1.22/geoserver/ows"
+			"url": "http://localhost:8180/geoserver/ows"
 		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
@@ -35,19 +36,9 @@
 		],
 		"layers": [
 			{
-				"source": "bing",
-				"title": "Bing Aerial",
-				"name": "Aerial",
-				"group": "background"
-			}, {
 				"source": "osm",
 				"title": "Open Street Map",
 				"name": "mapnik",
-				"group": "background"
-			},{
-				"source": "mapquest",
-				"title": "MapQuest OpenStreetMap",
-				"name": "osm",
 				"group": "background"
 			},{
 				"source": "google",
@@ -63,6 +54,16 @@
 				"source": "google",
 				"title": "Google Hybrid",
 				"name": "HYBRID",
+				"group": "background"
+			},{
+				"source": "bing",
+				"title": "Bing Aerial",
+				"name": "Aerial",
+				"group": "background"
+			},{
+				"source": "mapquest",
+				"title": "MapQuest OpenStreetMap",
+				"name": "osm",
 				"group": "background"
 			},{
                 "source": "jrc",
@@ -106,8 +107,8 @@
 	"customTools":[{
            "ptype": "gxp_wpsmanager",
            "id": "wpsManager",
-           "url": "http://84.33.1.22/geoserver/wps",
-           "geostoreUrl": "http://84.33.1.22/geostore/rest",
+           "url": "http://localhost:8180/geoserver/wps",
+           "geostoreUrl": "http://localhost:8080/geostore/rest",
            "geostoreUser": "admin",
            "geostorePassword": "admin",
            "geostoreProxy": "/proxy?url="
@@ -116,20 +117,16 @@
             "actionTarget": "paneltbar"
         },{
             "ptype": "gxp_changematrix",
-            "actionTarget": {"target": "paneltbar", "index": 27},
+            "outputTarget": "eastcontrolpanel",
             "wpsManagerID": "wpsManager",
             "rasterLayers": ["it.geosolutions:unina"],
             "classes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43]
         },{
+        	"ptype": "gxp_georeferences",
+        	"outputTarget": "paneltbar"
+        },{
             "actions": ["->"],
             "actionTarget": "paneltbar"
-        },{
-			"ptype": "gxp_googlegeocoder",
-			"outputConfig": {
-				"emptyText": "Google GeoCoder"
-			},
-			"outputTarget":"paneltbar",
-			"index": 26
-		}
+        }
 	]
 }
