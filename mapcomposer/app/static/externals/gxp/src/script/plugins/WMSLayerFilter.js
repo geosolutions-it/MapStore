@@ -277,6 +277,9 @@ gxp.plugins.WMSLayerFilter = Ext.extend(gxp.plugins.Tool, {
                 cql_filter:filter
             
             });
+			if(this.updateInfoTools){
+				this.updateInfoControls(layerRecord.getLayer(),filter);
+			}
         }
     },
     /**
@@ -388,7 +391,21 @@ gxp.plugins.WMSLayerFilter = Ext.extend(gxp.plugins.Tool, {
         //add filters to the list 
         return filter ||"";   
     
-    }
+    },
+	updateInfoControls: function(layer,filter){
+		var controls = app.mapPanel.map.getControlsByClass("OpenLayers.Control.WMSGetFeatureInfo");
+		for(var i = 0; i < controls.length; i++){
+			if( controls[i].layers.length ==1 && controls[i].layers[0]==layer){
+				
+				if (controls[i].vendorParams){
+					controls[i].vendorParams.cql_filter=filter;
+				}else{
+					controls[i].vendorParams={cql_filter:filter};
+				}
+			
+			}
+		}
+	}
 });
 
 Ext.preg(gxp.plugins.WMSLayerFilter.prototype.ptype, gxp.plugins.WMSLayerFilter);

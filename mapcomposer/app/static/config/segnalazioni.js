@@ -127,7 +127,7 @@
                 "styles":"avviso", 
                 "group": "Avvisi",
                 "visibility": true,
-                "buffer":16,
+                "buffer":10,
                 "tiled":false
 			}
 		]
@@ -269,6 +269,7 @@
 		},{
 			"ptype": "gxp_wms_layer_filter",
             "outputTarget":"filter",
+			"updateInfoTools":true,
                 "filterFieldsets":[
                    {
                       "ref":"state",
