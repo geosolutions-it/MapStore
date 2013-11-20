@@ -373,27 +373,28 @@ layouts:
                 padding: 4
                 backgroundColor: white
                 vertAlign: bottom
-          widths: [220]
+          widths: [800]
           absoluteX: 30
           absoluteY: 800
-          width: 220
+          width: 800
           items:
             - !legends      
               failOnBrokenUrl: false
               horizontalAlignment: left
               iconMaxWidth: 0
-              iconMaxHeight: 0
+              iconMaxHeight: 700
               maxHeight: 750
-              maxColumns: 3
-              maxWidth: 500
+              maxColumns: 1
+              maxWidth: 800
               layerSpace: 5
               layerFontSize: 12
               classIndentation: 5
               classFontSize: 8
               classSpace: 4
-              backgroundColor: #ffffff   
+              backgroundColor: #ffffff                
               reorderColumns: true    
               dontBreakItems: true  
+              overflow: true
   #===========================================================================
   A4_2_pages_legend_landscape :
   #===========================================================================
@@ -484,9 +485,9 @@ layouts:
               failOnBrokenUrl: false
               horizontalAlignment: left
               iconMaxWidth: 0
-              iconMaxHeight: 0
+              iconMaxHeight: 500
               maxHeight: 535
-              maxColumns: 5
+              maxColumns: 2
               maxWidth: 780
               layerSpace: 5
               layerFontSize: 12
@@ -496,6 +497,7 @@ layouts:
               backgroundColor: #ffffff   
               reorderColumns: true    
               dontBreakItems: true    
+              overflow: true
   #===========================================================================
   A4_2_pages_compact_legend :
   #===========================================================================
@@ -1027,19 +1029,19 @@ layouts:
                 padding: 4
                 backgroundColor: white
                 vertAlign: bottom
-          widths: [220]
-          absoluteX: 42
-          absoluteY: 1132
-          width: 311
+          widths: [440]
+          absoluteX: 30
+          absoluteY: 1050
+          width: 440
           items:
             - !legends      
               failOnBrokenUrl: false
               horizontalAlignment: left
               iconMaxWidth: 0
-              iconMaxHeight: 0
-              maxHeight: 750
-              maxColumns: 3
-              maxWidth: 500
+              iconMaxHeight: 1050
+              maxHeight: 1050
+              maxColumns: 2
+              maxWidth: 800
               layerSpace: 5
               layerFontSize: 12
               classIndentation: 5
@@ -1048,6 +1050,7 @@ layouts:
               backgroundColor: #ffffff 
               reorderColumns: true    
               dontBreakItems: true    
+              overflow: true
   #===========================================================================
   A3_2_pages_legend_landscape :
   #===========================================================================
@@ -1131,17 +1134,17 @@ layouts:
                 vertAlign: bottom
           absoluteX:30
           absoluteY: 800
-          width: 1050
-          widths: [1050]
+          width: 780
+          widths: [780]
           items:
             - !legends      
               failOnBrokenUrl: false
               horizontalAlignment: left
               iconMaxWidth: 0
-              iconMaxHeight: 0
-              maxHeight: 800
-              maxColumns: 5
-              maxWidth: 1050
+              iconMaxHeight: 700
+              maxHeight: 700
+              maxColumns: 3
+              maxWidth: 1200
               layerSpace: 5
               layerFontSize: 12
               classIndentation: 5
@@ -1150,6 +1153,7 @@ layouts:
               backgroundColor: #ffffff   
               reorderColumns: true    
               dontBreakItems: true       
+              overflow: true
   #===========================================================================
   A3_2_pages_compact_legend :
   #===========================================================================
