@@ -151,8 +151,7 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
 						"&HEIGHT=" + height +
 						"&CQL_FILTER=" + filters.join(";");
 						
-                	var pattern = /(.+:\/\/)?([^\/]+)(\/.*)*/i;
-					var mHost = pattern.exec(me.service);
+					var mHost = me.service.split("/");
                 	
                 	var img = new Image();
                 	
