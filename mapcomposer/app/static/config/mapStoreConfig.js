@@ -266,6 +266,7 @@
         "dataUrl":"http://84.33.2.75/geoserver/ows",
 		"factorsurl":"http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
 		"highChartExportUrl" :"http://84.33.2.75/highcharts-export/",
+		"areaFilter": "province NOT IN ('DISPUTED TERRITORY','DISPUTED AREA')",
 		"titleText": "Agromet Variables",
 		  "outputConfig":{
 			 "id":"Agromet"
