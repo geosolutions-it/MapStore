@@ -1270,6 +1270,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 		delete state.viewerTools;
 		delete state.georeferences;
 		delete state.customPanels;
+		delete state.portalConfig;
+		delete state.disableLayerChooser;
 		
         return state;
     }

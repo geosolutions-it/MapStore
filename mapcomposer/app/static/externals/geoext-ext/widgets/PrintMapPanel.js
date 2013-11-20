@@ -159,6 +159,11 @@ GeoExt.PrintMapPanel = Ext.extend(GeoExt.MapPanel, {
      *  ``Number``
      */
     currentZoom: null,
+
+    /** api: config[bboxFit]
+     *  Flag indicates that the mapPanel is fixed by bbox (not by scale)
+     **/
+    bboxFit: false,
     
     /**
      * private: method[initComponent]
@@ -172,11 +177,38 @@ GeoExt.PrintMapPanel = Ext.extend(GeoExt.MapPanel, {
         if (!this.map) {
             this.map = {};
         }
+
+
+        var options = {};        
+        if(this.bboxFit){
+            options = this.sourceMap.options ? this.sourceMap.options : {};
+            // load resolutions and scales from the source map!!
+            if(!options.scales || !options.resolutions){
+                var resolutions = [];
+                var scales = [];
+                var scaleStore = new GeoExt.data.ScaleStore({
+                    map: this.sourceMap
+                });
+                scaleStore.each(function(scale){
+                    resolutions.push(scale.get("resolution"));
+                    scales.push(scale.get("scale"));
+                });
+                Ext.apply(options, {
+                    scales: scales,
+                    resolutions: resolutions,
+                    numZoomLevels: this.sourceMap.numZoomLevels
+                });
+            }
+        }
+
         Ext.applyIf(this.map, {
             projection: this.sourceMap.getProjection(),
             maxExtent: this.sourceMap.getMaxExtent(),
             maxResolution: this.sourceMap.getMaxResolution(),
-            units: this.sourceMap.getUnits()
+            center: this.sourceMap.center,
+            options: options,
+            units: this.sourceMap.getUnits(),
+            numZoomLevels: this.sourceMap.numZoomLevels
         });
         
         if(!(this.printProvider instanceof GeoExt.data.PrintProvider)) {
@@ -187,8 +219,10 @@ GeoExt.PrintMapPanel = Ext.extend(GeoExt.MapPanel, {
             printProvider: this.printProvider
         });
         
-        this.previewScales = new Ext.data.Store();
-        this.previewScales.add(this.printProvider.scales.getRange());        
+        if(!this.bboxFit){
+            this.previewScales = new Ext.data.Store();
+            this.previewScales.add(this.printProvider.scales.getRange());        
+        }
         
         this.layers = [];
 
@@ -202,6 +236,12 @@ GeoExt.PrintMapPanel = Ext.extend(GeoExt.MapPanel, {
         this.extent = this.sourceMap.getExtent();
         
         GeoExt.PrintMapPanel.superclass.initComponent.call(this);
+
+        if(this.bboxFit){
+            // var scale = this.printPage.scale;
+            // scale.setDisabled(true);
+            this.printPage.fitToBBox(this.sourceMap.getExtent());
+        }
     },
     
     /** private: method[bind]
@@ -213,7 +253,8 @@ GeoExt.PrintMapPanel = Ext.extend(GeoExt.MapPanel, {
 
         this.printPage.fit(this.sourceMap);
 
-        if (this.initialConfig.limitScales === true) {
+        if (this.initialConfig.limitScales === true 
+                && !this.bboxFit) {
             this.on("resize", this.calculatePreviewScales, this);
             this.calculatePreviewScales();
         }
@@ -247,37 +288,49 @@ GeoExt.PrintMapPanel = Ext.extend(GeoExt.MapPanel, {
      *  of the print page into account.
      */
     adjustSize: function(width, height) {        
-        var printSize = this.printProvider.layout.get("size");
-        var ratio = printSize.width / printSize.height;
-        // respect width & height when sizing according to the print page's
-        // aspect ratio - do not exceed either, but don't take values for
-        // granted if container is configured with autoWidth or autoHeight.
-        var ownerCt = this.ownerCt;
-        var targetWidth = (ownerCt && ownerCt.autoWidth) ? 0 :
-            (width || this.initialConfig.width);
-        var targetHeight = (ownerCt && ownerCt.autoHeight) ? 0 :
-            (height || this.initialConfig.height);
-        if (targetWidth) {
-            height = targetWidth / ratio;
-            if (targetHeight && height > targetHeight) {
+        if(this.bboxFit){
+            // Use half map size
+            var mapSize = this.sourceMap.getSize();
+            return {width: mapSize.w/2, height:  mapSize.h/2};
+        }else{
+            var printSize = this.printProvider.layout.get("size");
+            var ratio = printSize.width / printSize.height;
+            // respect width & height when sizing according to the print page's
+            // aspect ratio - do not exceed either, but don't take values for
+            // granted if container is configured with autoWidth or autoHeight.
+            var ownerCt = this.ownerCt;
+            var targetWidth = (ownerCt && ownerCt.autoWidth) ? 0 :
+                (width || this.initialConfig.width);
+            var targetHeight = (ownerCt && ownerCt.autoHeight) ? 0 :
+                (height || this.initialConfig.height);
+            if (targetWidth) {
+                height = targetWidth / ratio;
+                if (targetHeight && height > targetHeight) {
+                    height = targetHeight;
+                    width = height * ratio;
+                } else {
+                    width = targetWidth;
+                }
+            } else if (targetHeight) {
+                width = targetHeight * ratio;
                 height = targetHeight;
-                width = height * ratio;
-            } else {
-                width = targetWidth;
             }
-        } else if (targetHeight) {
-            width = targetHeight * ratio;
-            height = targetHeight;
-        }
 
-        return {width: width, height: height};
+            return {width: width, height: height};
+        }
     },
     
     /** private: method[fitZoom]
      *  Fits this PrintMapPanel's zoom to the print scale.
      */
     fitZoom: function() {
-        if (!this._updating && this.printPage.scale) {
+        if(!this._updating && this.printPage.bbox){
+            this._updating = true;
+            var printBounds = this.printPage.bbox;
+            // using this.sourceMap.zoom - 1
+            this.map.moveTo(printBounds, this.sourceMap.zoom - 1);
+            delete this._updating;
+        }else if (!this._updating && this.printPage.scale) {
             this._updating = true;
             var printBounds = this.printPage.getPrintExtent(this.map);
             this.currentZoom = this.map.getZoomForExtent(printBounds);
