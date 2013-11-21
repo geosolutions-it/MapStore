@@ -52,7 +52,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 				case  "Production" : varparam ='prod';break;
 				case "Yield" : varparam= 'yield';break;
 			}
-            var region_list=values.region_list.replace('\\,',',');
+            var region_list=values.region_list.replace(/\\,/g   ,',');
 			var yieldFactor = fieldValues.production_unit == "000 bales" ? 170 : 1000;
             //set up cql_filter
 			var cql_filter="1=1";
