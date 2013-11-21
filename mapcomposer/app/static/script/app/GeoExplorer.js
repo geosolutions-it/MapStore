@@ -165,6 +165,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 showMinorMeasures: true,
                 singleLine: false,
                 abbreviateLabel: false,
+				showMousePosition: config.scaleOverlayUnits ? (config.scaleOverlayUnits.showMousePosition === true ? true : false) : false,
                 enableSetScaleUnits: config.scaleOverlayUnits ? true : false
             });
 		}else{

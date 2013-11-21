@@ -84,6 +84,8 @@ gxp.AdvancedScaleOverlay = Ext.extend(Ext.Panel, {
 
     /** i18n */
     zoomLevelText: "Zoom level",
+	
+	showMousePosition: false,
 
     /** private: method[initComponent]
      *  Initialize the component.
@@ -179,7 +181,6 @@ gxp.AdvancedScaleOverlay = Ext.extend(Ext.Panel, {
         }, this);
         
         this.scaleLinePanel.on('render', function(){
-        	var mousePositionControl = this.map.getControlsByClass('OpenLayers.Control.MousePosition');
             var scaleBarControl  = this.map.getControlsByClass('OpenLayers.Control.ScaleBar');
             
 			if(topOutUnits && topInUnits && bottomInUnits && bottomOutUnits){
@@ -187,14 +188,7 @@ gxp.AdvancedScaleOverlay = Ext.extend(Ext.Panel, {
                 this.map.removeControl(scaleBarControl[0]);
             }
 			
-            var mousePosition = new OpenLayers.Control.MousePosition({
-                /*prefix: '<a target="_blank" ' +
-                        'href="http://spatialreference.org/ref/epsg/4326/">' +
-                        'EPSG:4326</a> lon/lat: ',*/
-                separator: ' : ',
-                numDigits: 3,
-                div: this.scaleLinePanel.getEl().dom
-            });
+
 
 			if (topOutUnits != "hide") {
 	            var scalebar = new OpenLayers.Control.ScaleBar({
@@ -211,8 +205,21 @@ gxp.AdvancedScaleOverlay = Ext.extend(Ext.Panel, {
             	scalebar.activate();
             }
 			
-            this.map.addControl(mousePosition);
-            mousePosition.activate();
+			if(this.showMousePosition === true){
+			    var mousePositionControl = this.map.getControlsByClass('OpenLayers.Control.MousePosition');
+				
+				var mousePosition = new OpenLayers.Control.MousePosition({
+					/*prefix: '<a target="_blank" ' +
+							'href="http://spatialreference.org/ref/epsg/4326/">' +
+							'EPSG:4326</a> lon/lat: ',*/
+					separator: ' : ',
+					numDigits: 3,
+					div: this.scaleLinePanel.getEl().dom
+				});
+				
+			    this.map.addControl(mousePosition);
+				mousePosition.activate();
+			}		
         }, this);
 
         this.add(this.scaleLinePanel);
