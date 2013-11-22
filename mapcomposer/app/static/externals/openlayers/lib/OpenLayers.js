@@ -399,8 +399,8 @@
                 "OpenLayers/Lang/en.js",
                 "OpenLayers/Spherical.js",
                 "OpenLayers/TileManager.js",
-                "OpenLayers/WPSClient.js",
-                "OpenLayers/WPSProcess.js"
+                "OpenLayers/WPSClient.js"/*,
+                "OpenLayers/WPSProcess.js"*/
             ]; // etc.
         }
 

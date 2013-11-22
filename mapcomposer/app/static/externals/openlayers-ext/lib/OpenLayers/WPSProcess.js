@@ -13,7 +13,7 @@
  * requires OpenLayers/Format/WKT.js
  * requires OpenLayers/Format/GeoJSON.js
  * requires OpenLayers/Format/WPSExecute.js
- * requires OpenLayers/RequestExt.js
+ * requires OpenLayers/Request.js
  */
 
 /**
@@ -254,7 +254,7 @@ OpenLayers.WPSProcess = OpenLayers.Class({
                     // all chained processes are added as references now, so
                     // let's proceed.
                     
-                    OpenLayers.RequestExt.POST({
+                    OpenLayers.Request.POST({
                         url: me.client.servers[me.server].url,
                         data: new OpenLayers.Format.WPSExecute().write(me.description),
                         headers: options.headers || undefined,

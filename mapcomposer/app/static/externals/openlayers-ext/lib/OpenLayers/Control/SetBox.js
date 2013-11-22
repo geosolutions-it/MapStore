@@ -1,6 +1,6 @@
 /**
- * @requires OpenLayers/Control.js
- * @requires OpenLayers/Handler/Box.js
+ * requires OpenLayers/Control.js
+ * requires OpenLayers/Handler/Box.js
  */
 
 /**
