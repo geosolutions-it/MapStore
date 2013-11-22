@@ -304,7 +304,7 @@
 		        "fillOpacity":0
 		    },
 		  "defaultAreaTypeMap": "district",
-		  "disclaimerText": "Disclaimer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sed viverra neque. Sed in quam urna. Sed posuere nulla nec lectus convallis suscipit. Etiam bibendum lectus ultrices lobortis feugiat. Quisque nibh sem, ultrices gravida gravida cursus, ullamcorper pellentesque magna. Ut aliquam mauris ac neque ultrices porta. Nam molestie eget magna.",
+		  "disclaimerText": "Disclaimer: Data, information and products in this report are provided \"as is\", without warranty of any kind, either express or implied. All rights are reserved by the Government of Pakistan",
 		  "outputTarget":"nrl"
 	   },{
 		  "ptype":"gxp_printreporthelper",
