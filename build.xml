@@ -249,7 +249,7 @@
 		<!-- remove servicebox configuration file from servicebox.war -->
         <zip destfile="${release.dir}/mapstore/webapps/tmp.war"> 
                 <zipfileset src="${release.dir}/mapstore/webapps/servicebox.war"> 
-                        <exclude name="**/app.properties" /> 
+                        <exclude name="**/servicebox.properties" /> 
                 </zipfileset> 
         </zip> 
         <move file="${release.dir}/mapstore/webapps/tmp.war" tofile="${release.dir}/mapstore/webapps/servicebox.war" /> 
