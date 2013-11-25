@@ -4,21 +4,6 @@
    "defaultLanguage": "en",
    "advancedScaleOverlay": true,
    "gsSources":{ 
-   		"geosolutions": {
-			"ptype": "gxp_wmssource",
-			"url": "http://localhost:8080/geoserver/wms",
-			"title": "GeoSolutions GeoServer",
-			"SRS": "EPSG:900913",
-			"version":"1.1.1",
-		    "layersCachedExtent": [
-				-20037508.34,-20037508.34,
-				20037508.34,20037508.34
-			],
-			"layerBaseParams":{
-				"FORMAT":"image/png8",
-				"TILED":true
-			}
-		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
 		}, 
