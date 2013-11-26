@@ -290,6 +290,7 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
      */
     constructor: function(config) {
 	    if(config.geolocate || config.enableDefaultGeolocate === true){
+            this.geolocate = Ext.applyIf(config.geolocate,this.geolocate);
 			this.enableGeoLocateTool = true;
 		}
         
@@ -347,6 +348,7 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
 		this.reverseGeoCoderButton = new Ext.Button(
 			Ext.apply({
 				enableToggle: true,
+				toggleGroup: this.toggleGroup,
 				width: this.geoButtonsWidth,
 				text: this.buttonText,
 				tooltip: this.buttonText,
@@ -406,6 +408,7 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
 		    //text: this.actionText,
             iconCls: "gxp-icon-geolocationmenu",
             tooltip: this.menuTooltip,
+			toggleGroup: this.toggleGroup,
             menu: this.menu
         });
 
@@ -476,7 +479,7 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
                     this.target.mapPanel.getEl().unmask();
                     Ext.Msg.show({
 						title : "Geolocation",
-						msg : this.errorMsg
+						msg : this.geolocate ? this.geolocate.errorMsg :  this.geolocateErrorMsg || this.errorMsg
 					});
                 },
                 scope: this
@@ -541,6 +544,7 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
             data :  this.target.georeferences
         });
 		
+		this.geoRefListener;
         var georeferencesSelector = new Ext.form.ComboBox({
             store: georeferencesStore,
             displayField: 'name',
@@ -554,7 +558,15 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
             resizable: true,
             listeners: {
 			    scope: this,
-                select: function(cb, record, index) {                
+                select: function(cb, record, index) {   
+					
+					//
+					// Every time a reference is selected clean the previous listener in order to avoid event queue
+					//	
+					if(this.geoRefListener){
+						this.target.mapPanel.map.events.unregister("moveend", this, this.geoRefListener);
+					}
+					
                     var center,
 					bbox = new OpenLayers.Bounds.fromString(record.get('geometry')),      	
                     
@@ -629,10 +641,19 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
 					} else {
 						this.target.mapPanel.map.zoomToExtent(bbox);                    
 					}
+					
+					//
+					// The georeference combo should be cleaned if the current extent change
+					//						
+					this.geoRefListener = function(){
+						cb.reset();
+					};
+					
+					this.target.mapPanel.map.events.register("moveend", this, this.geoRefListener);
                 }
             }
         });
-        
+		
         return georeferencesSelector;
 	},
 	

@@ -110,7 +110,7 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
      *  Text for no features alert message (i18n)
      */
     noFeaturesMessage: "Your query did not return any results.",
-
+   
     /** api: config[actions]
      *  ``Object`` By default, this tool creates a "Query" action to trigger
      *  the output of this tool's form. Set to null if you want to include
@@ -289,6 +289,7 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
     
     resetFeatureManager: function(){
         this.target.tools[this.featureManager].featureStore.removeAll();  
+        this.target.tools[this.featureManager].clearFeatures();  
     }
         
 });

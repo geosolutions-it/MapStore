@@ -131,12 +131,17 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
 			this.masking = false;
 			
             queryableLayers.each(function(x){                
-                
+                var vendorParams = {};
+                Ext.apply(vendorParams, x.getLayer().vendorParams || this.vendorParams || {});
+                if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
+                    vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale  : 'locale:' + GeoExt.Lang.locale;
+                }
                 var control = new OpenLayers.Control.WMSGetFeatureInfo({
                     url: x.getLayer().url,
                     queryVisible: true,
                     layers: [x.getLayer()],
-                    vendorParams: x.getLayer().vendorParams || this.vendorParams,
+                    vendorParams: vendorParams,
+                    authentication: this.authentication,
                     eventListeners: {
                         beforegetfeatureinfo: function(evt) {
 							//first getFeatureInfo in chain
@@ -260,6 +265,7 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
 			}
 			var items = this.useTabPanel ? [{
 				xtype: 'tabpanel',
+				enableTabScroll: true,
 				activeTab: 0,
 				items: [item]
 			}] : [item];

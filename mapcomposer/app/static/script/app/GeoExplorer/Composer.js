@@ -24,11 +24,9 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     backText: "Back",
     nextText: "Next",
     fullScreenText: "Full Screen",	
-
     cswFailureAddLayer: ' The layer cannot be added to the map',
     alertEmbedTitle: "Attention",
-    alertEmbedText: "Save the map before using the 'Publish Map' tool",
-	
+    alertEmbedText: "Save the map before using the 'Publish Map' tool",	
 	cswZoomToExtentMsg: "BBOX not available",
 	cswZoomToExtent: "CSW Zoom To Extent",
 	
@@ -63,15 +61,14 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		                    style: 'padding:5px',                  
 		                    baseParams: {
 		                        LEGEND_OPTIONS: 'forceLabels:on;fontSize:10',
-		                        WIDTH: 12, HEIGHT: 12
+		                        WIDTH: 20, HEIGHT: 20
 		                    }
 		                }
 		            }
 		        }, {
 		            ptype: "gxp_addlayers",
 		            actionTarget: "tree.tbar",
-					id: "addlayers",
-		            upload: true
+					id: "addlayers"
 		        }, {
 		            ptype: "gxp_removelayer",
 		            actionTarget: ["tree.tbar", "layertree.contextMenu"]
@@ -130,10 +127,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		        }, {
 		            actions: ["-"], actionTarget: "paneltbar"
 		        }, {
-		            ptype: "gxp_saveDefaultContext",
-		            actionTarget: {target: "paneltbar", index: 24},
-					needsAuthorization: true
-		        }, {
 		            ptype: "gxp_googleearth",
 		            actionTarget: {target: "paneltbar", index: 25}
 		        }
@@ -144,17 +137,24 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				for(var c=0; c < config.customTools.length; c++)
 				{
 					var toolIsDefined = false;
-					for(var t=0; t < config.tools.length; t++)
+                    var t=0;
+					for(t=0; t < config.tools.length; t++)
 					{
 						//plugin already defined
 						if( config.tools[t]['ptype'] && config.tools[t]['ptype'] == config.customTools[c]['ptype'] ) {
-							toolIsDefined = true;
-							break;
+                            toolIsDefined = true;
+                            if(config.customTools[c].forceMultiple){
+                                config.tools.push(config.customTools[c])
+                            }else{
+                                config.tools[t]=config.customTools[c];
+                            }
+                            break;
 						}
 					}
 				
-					if(!toolIsDefined)
-						config.tools.push(config.customTools[c]);
+					if(!toolIsDefined){
+                        config.tools.push(config.customTools[c])
+                    }
 				}
 			}
 			
@@ -166,6 +166,31 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 actionTarget: {target: "paneltbar", index: 22}
             })
         }
+		
+		config.tools.push({
+			actions: ["-"], actionTarget: "paneltbar"
+		});
+		
+		// ////////////////////////////////////////////////////////////
+		// Check if the Save plugin already exists (for example this 
+		// could be exists in an imported configuraztion file (.map), 
+		// see the ImportExport plugin).
+		// ////////////////////////////////////////////////////////////
+		var savePlugin = false;
+		for(i=0; i<config.tools.length; i++){
+			if(config.tools[i]["ptype"] == "gxp_saveDefaultContext"){
+				var savePlugin = true;
+				break;
+			}
+		}
+		
+		if(!savePlugin){
+			config.tools.push({
+				ptype: "gxp_saveDefaultContext",
+				actionTarget: {target: "paneltbar", index: 24},
+				needsAuthorization: true
+			});
+		}
         
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);
     },
@@ -194,8 +219,12 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 handler: function(button, evt){
                     if(button.pressed){
                         Ext.getCmp('tree').findParentByType('panel').collapse();
+						Ext.getCmp('east').collapse();
+						Ext.getCmp('south').collapse();
                     } else {
                         Ext.getCmp('tree').findParentByType('panel').expand();
+						Ext.getCmp('east').expand();
+						Ext.getCmp('south').expand();
                     }
                 }
             });
@@ -228,36 +257,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         
         return tools;
 
-    },
-    
-    /** private: method[viewMetadata]
-     */
-    viewMetadata: function(url, uuid, title){
-        var tabPanel = Ext.getCmp(this.renderToTab);
-        
-        var tabs = tabPanel.find('title', title);
-        if(tabs && tabs.length > 0){
-            tabPanel.setActiveTab(tabs[0]); 
-        }else{
-            var metaURL = url.indexOf("uuid") != -1 ? url : url + '?uuid=' + uuid;
-            
-            var meta = new Ext.Panel({
-                title: title,
-                layout:'fit', 
-                tabTip: title,
-                closable: true,
-                items: [ 
-                    new Ext.ux.IFrameComponent({ 
-                        url: metaURL 
-                    }) 
-                ]
-            });
-            
-            tabPanel.add(meta);
-			meta.items.first().on('render', function() {
-				this.addLoadingMask(meta.items.first());
-			},this);						
-        }
     },
 	
 	/** private: method[addLoadingMask]
@@ -299,7 +298,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     /** private: method[showEmbedWindow]
      */
     showEmbedWindow: function() {        
-	    if (this.mapId == -1 || (this.modified == true && authorization == true)){
+	    if (this.mapId == -1 || (this.modified == true && this.auth == true)){
             Ext.MessageBox.show({
                 title: this.alertEmbedTitle,
                 msg: this.alertEmbedText,

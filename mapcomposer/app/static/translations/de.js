@@ -208,7 +208,12 @@ GeoExt.Lang.add("de", {
         transparentText: "Transparenz",
         cacheText: "Cache",
         cacheFieldText: " Benutze die Cache-Version",
-        stylesText: "Stil"
+        stylesText: "Stil",
+		summaryText: "Statistik",
+        summaryInfoText: "Aktuelles Ansichtsfenster Raster Statistik",
+        loadMaskMsg: "Daten abrufen ...",
+        noDataMsg: "Keine Daten vorhanden in aktuellen Ansicht",
+        refreshText: "Erfrischen"
     },
 
     "gxp.WMSStylesDialog.prototype": {
@@ -272,7 +277,15 @@ GeoExt.Lang.add("de", {
 	    saveDefaultContextActionTip: "Karten-Kontext speichern",
 	    contextSaveSuccessString: "Kontext richtig gespeichert",
 	    contextSaveFailString: "Kontext nicht richtig gespeichert",
-	    contextMsg: "Loading..."
+	    contextMsg: "Loading...",
+		userLabel: "Benutzer",	
+		passwordLabel: "Kennwort", 	
+		loginLabel: "Anmelden",	
+		mapMetadataTitle: "Legen Karte Metadaten",	
+		mapMedatataSetTitle: "Karte Metadaten",	
+		mapNameLabel: "Name",	
+		mapDescriptionLabel: "Beschreibung",
+		addResourceButtonText: "In Map"
     },
 	
     "gxp.plugins.GeoReferences.prototype": {
@@ -297,7 +310,30 @@ GeoExt.Lang.add("de", {
 	    legendOnSeparatePageText: "Legende auf eigener Seite?",
 	    compactLegendText: "Kompakte Legende?",	
 	    emptyCommentText: "Kommentare hier einfügen.",
-	    creatingPdfText: "Erstellung der PDF-Datei..."
+	    creatingPdfText: "Erstellung der PDF-Datei...",
+		graticuleFieldLabelText: 'Aktive Raster',
+		defaultTabText: "Default",
+		legendTabText: "Legend"
+    },
+	
+	"GeoExt.ux.LegendStylePanel.prototype":{
+		iconsSizeText: "Icons Größe",
+		fontSizeText: "Schriftgröße",
+		fontFamilyText: "Schriftfamilie",
+		forceLabelsText: "Force-Label",
+		dpiText: "Dpi",
+		fontStyleText: "Schriftschnitt",
+		fontEditorText: "Label-Config",
+		sizeText: "Größe"
+    },
+    
+    "GeoExt.ux.GraticuleStylePanel.prototype":{
+        graticuleFieldLabelText: 'Aktive Raster',
+        sizeText: "Größe",
+        colorText: "Farbe",
+        fontFamilyText: "Schriftfamilie",
+        fontStyleText: "Schriftschnitt",
+        fontEditorText: "Label-Config"
     },
 
     "gxp.plugins.GeonetworkSearch.prototype":{
@@ -337,7 +373,13 @@ GeoExt.Lang.add("de", {
         nextPageTip: "Nächste Seite",
         lastPageTip: "Letzte Seite",
         title: "Zeilen",
-        totalMsg: "Insgesamt: {0} Zeilen"
+        totalMsg: "Insgesamt: {0} Zeilen",
+        displayExportCSVText: "Export to CSV",
+        exportCSVSingleText: "einzelne Seite",
+        exportCSVMultipleText: "Alle Seite",
+        failedExportCSV: "Fehler beim Ansprechen für Ausgabeformat CSV finden",
+        invalidParameterValueErrorText: "Ungültige Parameter Wert",
+		zoomToFeature: "Zoom auf Funktionen"
     },
 	
     "gxp.plugins.QueryForm.prototype": {
@@ -359,14 +401,41 @@ GeoExt.Lang.add("de", {
         featureLabel: "Max Features"
     },
     
-     "gxp.form.BBOXFieldset.prototype":{
+	"gxp.plugins.BBOXQueryForm.prototype": {
+        selectionMethodFieldSetComboTitle: "Verfahren zur Auswahl",
+        comboEmptyText: "Wählen Sie eine Methode..",
+        comboSelectionMethodLabel: "Auswahl",
+        comboPolygonSelection: 'Polygon',
+        comboCircleSelection: 'Rund',
+        comboBBOXSelection: 'BBox',
+		errorBBOXText: "Die BBox ausgewählt ist ungültig!",
+        errorDrawPolygonText: "Sie müssen das Polygon zeichnen",
+        errorDrawCircleText: "Sie müssen den Kreis ziehen",     
+        errorDrawTitle: "Antrag Fehler",
+		errorBufferTitle: "Der Buffer ist falsch",
+		errorBufferText: "Der ausgewählte Buffer ist ungültig!",
+		areaLabel: "Bereich",	
+		perimeterLabel: "Perimeter",	
+		radiusLabel: "Raggio",	
+		centroidLabel: "Radius",	
+		selectionSummary: "Zusammenfassung Selection"
+    },
+	
+	"gxp.widgets.form.BufferFieldset.prototype": {
+		bufferFieldLabel: "Reichweite von Buffer",
+		bufferFieldSetTitle: "Buffer",
+		coordinatePickerLabel: "Koordinaten",
+		draweBufferTooltip: "Zeichnen Sie die Buffer"
+	},
+	
+    "gxp.form.BBOXFieldset.prototype":{
         northLabel:"Norden",
         westLabel:"Westen",
         eastLabel:"Osten",
         southLabel:"Süden",
         waitEPSGMsg: "Bitte warten...",
         setAoiText: "ROI eingeben",
-        setAoiTooltip: "SetBox-Kontrolle aktivieren um eine ROI (BBOX) auf der Karte zu zeichnen",
+        setAoiTooltip: "SetBox-Kontrolle aktivieren um eine ROI (BBox) auf der Karte zu zeichnen",
         title: "Region of interest"
     },
     
@@ -558,7 +627,7 @@ GeoExt.Lang.add("de", {
 		failedUploadingTitle: "Kann Datei nicht hochladen",
 		layerNameLabel: "Layername"
 	},
-
+	
 	"gxp.plugins.SearchComune.prototype":{
 		waitMsg: 'Bitte warten ...',	
 		titleError: 'Fehler',	
@@ -612,6 +681,14 @@ GeoExt.Lang.add("de", {
 		griesText: 'Gries',		
 		pEdText: 'Bauparzelle',
 		pFondText: 'Grundparzelle'
-	}
+	},
 
+	"gxp.plugins.PrintSnapshot.prototype" :{
+		noSupportedLayersErrorMsg: "Fehler beim Erzeugen der Karte Snapshot: Nein Unterstützte Ebenen gefunden!",
+		generatingErrorMsg: "Fehler beim Erzeugen der Karte Snapshot",
+		printStapshotTitle: "Drucken Snapshot",
+		serverErrorMsg: "Fehler beim Erzeugen der Karte Snapshot: Server Error",
+		menuText: "Snapshot",
+		tooltip: "Snapshot"
+	}
 });

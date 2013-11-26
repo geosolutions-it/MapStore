@@ -67,7 +67,7 @@ color:#FFF;}
 #osdi h1{ float:left; width:440px; height:75px; background:url(../images/sprite.png) -10px -268px;/*opensdisuite.png) no-repeat*/ overflow:hidden; margin:23px 0 0 20px; }
 #osdi #box{ float:right; width:135px; height:200px; background:url(../images/sprite.png) -307px -366px;/*box_opensdi.png*/ overflow:hidden;	margin-top:115px; }
 #osdi #logo span, #osdi h1 span, #osdi #box span { margin:-300px; }
-#osdi_content{ float:right; width:445px; height:300px; margin-right:17px; overflow:hidden; color:#ccc; font-family:Arial; font-size:20px; line-height:26px; text-align:justify; }
+#osdi_content{ float:right; width:445px; height:200px; margin-right:17px; overflow:hidden; color:#ccc; font-family:Arial; font-size:20px; line-height:26px; text-align:justify; }
 #osdi_content p{ margin:0; line-height:normal; font-size:18px; }
 #osdi_content a { color:#3c6; text-decoration:none;}
 #osdi_content a:hover { color:#fff; text-decoration:underline;} /*verde #3c6 - blue#39c */
@@ -89,6 +89,10 @@ padding:10px;margin:10px 0; border:0px; font-size:18px; color:#666;
 #vedisotto{clear: left; color:#CCC; float: left; font-size: 16px; margin: 50px 0px 0px 9px; width:520px; }
 #vedisotto a{color:#3c6; text-decoration:none;}
 #vedisotto a:hover{color:#FFF; text-decoration:underline;}
+
+#libslink{clear: left; color:#FF0000; font-size: 32px; margin: 0 auto; width:520px; }
+#libslink a{color:#FF0000; text-decoration:none;}
+#libslink a:hover{color:#FFF; text-decoration:underline;}
 
 
 
@@ -165,7 +169,7 @@ padding:10px;margin:10px 0; border:0px; font-size:18px; color:#666;
 .blue{color:#39c;}
 img{ border:0;}
 a { color:#3c6; text-decoration:none;}
-a:hover { color:#333; text-decoration:underline;}
+a:hover { color:#FFF; text-decoration:underline;}
 
 
 

@@ -20,7 +20,7 @@
 
 /**
  * @requires plugins/Tool.js
- * @requires widgets/form/WFSSearch<ComboBox.js
+ * @requires widgets/form/WFSSearchComboBox.js
  */
 
 /** api: (define)
@@ -58,7 +58,7 @@ Ext.namespace("gxp.plugins");
      *  to use as geometry.
      */
 	zoom: 8,
-	
+
     ////////////////////////////////////////////////////////////
     // Respectivily the Sizes, grafic sources and offsets of
     // the marker and it's background (typically shadow).
@@ -81,6 +81,10 @@ Ext.namespace("gxp.plugins");
 	*/
     markerFadeoutDelay: 3,   
     
+    /** api: add separator at the start
+	*  allowed values: false (null), 'start','end'
+	*/
+    separator:false,
     init: function(target) {
 
         var combo = new gxp.form.WFSSearchComboBox(Ext.apply({
@@ -120,7 +124,21 @@ Ext.namespace("gxp.plugins");
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-    	var controls = (this.markerFadeoutEnable===false) ? ['-', this.removeMarkerBtn, this.combo] : ['-', this.combo];
+        
+    	var controls = (!this.markerFadeoutEnable && !this.noButton) ? [ this.removeMarkerBtn, this.combo] : [this.combo];
+        if(this.separator){
+            switch(this.separator){
+                case 'start':
+                    controls.unshift("-");
+                    break;
+                case'end' :
+                    controls.push("-");
+                default:
+                    break;
+            
+            }
+        }
+        
         return gxp.plugins.WFSSearchBox.superclass.addOutput.call(this, controls);
     },
     
@@ -196,7 +214,7 @@ Ext.namespace("gxp.plugins");
 				if(location instanceof OpenLayers.Geometry.Point) {
 					map.setCenter(center, this.zoom);
 				}else{
-					map.zoomToExtent(bounds, true);
+					map.setCenter(center,this.zoom);
 				}
 				
 				if(this.markerFadeoutEnable===true)

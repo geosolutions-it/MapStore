@@ -1,17 +1,23 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="X-UA-Compatible" content="IE=7" />
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>MapStore</title>
-<meta http-equiv="content-language" content="en">
+	<head>
+		<!--meta http-equiv="X-UA-Compatible" content="IE=8" /-->
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>MapStore - GeoSolutions</title>
+		<meta name="keywords" content="GeoSolutions, GIS, GeoServer, GeoTools, GDAL, GEO, Java, J2EE, JEE, JEE5, C, C++ LBS, OGC, Open Source, FOSS4G, GFOSS, SIG, SIT, LBS, Location, Geospatial, Professional Services, GeoServer Professional Support, Professional, Professionale, GeoServer Application Development, GeoServer Italia, GeoServer Italy, GeoServer Europe, Supporto Professionale GeoServer, Supporto Professionale GeoTools, GeoServer Training, GeoTools Training, GeoBatch,MapStore" />
+		<meta name="description" content="MapStore, crea, salva e condividi in modo semplice ed intuitivo mappe e mashup creati selezionando dati da server come Google Maps, OpenStreetMap o da server forniti dalla propria organizzazione o da terzi secondo standard riconosciuti." />
+		<meta name="author" content="Riccardo Fabiani">
+		<meta name="copyright" content="GeoSolutions S.A.S. 2012" />
+		<meta http-equiv="content-language" content="en" />
 
-<link rel="shortcut icon" href="theme/images/favicon.ico" type="image/x-icon">
+		<link rel="shortcut icon" href="theme/images/favicon.ico" type="image/x-icon">
 
         <!-- All css -->
         <link rel="stylesheet" type="text/css" href="lib/ext/resources/css/ext-all.css" />
         <link rel="stylesheet" type="text/css" href="lib/ext/resources/css/xtheme-gray.css" />
         <link rel="stylesheet" type="text/css" href="theme/css/mapstoremanager.css" />
+        <link rel="stylesheet" type="text/css" href="theme/css/dropdown.css" />
+
         <link href="theme/css/style.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="theme/css/slide.css" type="text/css" media="all" charset="utf-8"><!--GeoSolutions SLIDE-->
 		<!-- gallery buttons -->
@@ -36,18 +42,18 @@
         <!--script type="text/javascript" src="https://apis.google.com/js/client.js"></script-->
 
         <!-- MapStoreManager scripts -->
-<script type="text/javascript" src="src/config.js"></script>
+		<script type="text/javascript" src="src/config.js"></script>
 
-<script type="text/javascript" src="src/mapmanager.js"></script>
+		<script type="text/javascript" src="src/mapmanager.js"></script>
         
         <!--script type="text/javascript" src="src/MSMLogin.js"></script>
-<script type="text/javascript" src="src/MSMGridPanel.js"></script>
-<script type="text/javascript" src="src/MSMIframe.js"></script>
-<script type="text/javascript" src="src/MSMPagingToolbar.js"></script>
-<script type="text/javascript" src="src/MSMPanel.js"></script>
-<script type="text/javascript" src="src/MSMUserManager.js"></script>
-<script type="text/javascript" src="src/MSMUtil.js"></script>
--->
+		<script type="text/javascript" src="src/MSMGridPanel.js"></script>
+		<script type="text/javascript" src="src/MSMIframe.js"></script>
+		<script type="text/javascript" src="src/MSMPagingToolbar.js"></script>
+		<script type="text/javascript" src="src/MSMPanel.js"></script>
+		<script type="text/javascript" src="src/MSMUserManager.js"></script>
+		<script type="text/javascript" src="src/MSMUtil.js"></script>
+		-->
         <script type="text/javascript" src="src/init.js"></script>
 
         <!-- translation data -->
@@ -62,129 +68,134 @@
             overflow-y: auto;}
         </style>
 
-<script type="text/javascript">
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-15797497-6']);
-_gaq.push(['_trackPageview']);
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-15797497-6']);
+			_gaq.push(['_trackPageview']);
 
-(function() {
-var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-})();
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
 
-function validate(form_id,email) {
+			function validate(form_id,email) {
 
-var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-var address = document.forms[form_id].elements[email].value;
-if(reg.test(address) == false) {
+				var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+				var address = document.forms[form_id].elements[email].value;
+				if(reg.test(address) == false) {
+					alert('Invalid Email Address');
+					return false;
+				}
+			}
+		</script>
+	</head>
 
-alert('Invalid Email Address');
-return false;
-}
-}
-</script>
+	<body>	
+		<div id="fb-root"></div>
+		<div id="wrap">		
+			<br>
+			<div id="plans" class="plans">
+				<a name="pianisupporto">&nbsp;</a>
+	  
+				<!-- SOCIAL -->
+				<div style="float:right; margin:25px 0;">
+					<a href="http://opensdi.geo-solutions.it/" class="twitter-share-button" data-count="horizontal" data-via="geosolutions_it" data-lang="it">Tweet</a>
+					<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+				
+					<!-- Inserisci questo tag nel punto in cui desideri eseguire il rendering del pulsante +1 -->
+					<g:plusone></g:plusone>
+					
+					<!-- Inserisci questa chiamata di rendering dove ritieni appropriato -->
+					<script type="text/javascript">
+					  window.___gcfg = {lang: 'it'};
+					
+					  (function() {
+						var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+						po.src = 'https://apis.google.com/js/plusone.js';
+						var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+					  })();
+					</script>
+				</div>
+				<h2>Put MapStore to the tests!</h2>
+			</div>
+	  
+			<div id="topic-grid" align="center"></div>
+			<div style="/*clear:both;*/min-height:50px;" class="plans">&nbsp;</div>
+			<div id="closecontent"></div>
+		</div>
 
+		<!--div id="footer">
+			<ul id="footersocial">
+				<li><a href="https://plus.google.com/u/0/100131944378031878024/posts" title="Google+" id="gp">Google+</a></li>
+				<li><a href="http://twitter.com/geosolutions_it/" title="Twitter" id="tw">Twitter</a></li>
+			</ul>
+			<p align="center"><b><a href="http://www.geo-solutions.it">GeoSolutions s.a.s.</a></b> &bull; Via Poggio alle Viti 1187 - 55054 Massarosa (Lucca) - Italy</p>
+			<p align="center"><a href="mailto:info@geo-solutions.it">info@geo-solutions.it</a> &bull; <a href="http://www.geo-solutions.it">www.geo-solutions.it</a> &bull; Tel: 0039 0584 962313 &bull; Fax: 0039 0584 1660272</p>
+		</div-->
+	<!--/div-->
 
-</head>
+		<script type="text/javascript">
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-15797497-7']);
+		  _gaq.push(['_trackPageview']);
 
-<body>
+		  (function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+		</script>
+	</body>
 
-<div id="wrap">
-
-  </br>
-
-  <!-- /Gallery SLIDE -->
-
-  <div id="plans" class="plans"><a name="pianisupporto">&nbsp;</a>
-  
-    <!-- SOCIAL -->
-     
-   <h2>Map Manager</h2>
-    
-  </div>
-  
-  <div id="topic-grid" align="center"></div>
-  <div style="/*clear:both;*/min-height:50px;" class="plans">&nbsp;</div>
-  <div id="closecontent"></div>
-  </div>
-
- 
-</div>
-
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-15797497-7']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script>
-</body>
-
-<!-- GeoSolutions SLIDE -->
-<script src="theme/js/jquery.js" type="text/javascript"></script>
-<script type="text/javascript" charset="utf-8">
-        /*jQuery(function($) {
-$.getScript('/static/js/prettify.js', function(){
-prettyPrint();
-});
-});*/
-
+	<!-- GeoSolutions SLIDE -->
+	<script src="theme/js/jquery.js" type="text/javascript"></script>
+	<script type="text/javascript" charset="utf-8">
         $('.langlink').click(function() {
-var lang = $(this).html();
-$('#langval').val(lang);
-$('#target').submit();
-});
+			var lang = $(this).html();
+			$('#langval').val(lang);
+			$('#target').submit();
+		});
+	</script>
+	
+	<script type="text/javascript">
+		// initialize scrollable and return the programming API
 
-        </script>
-<script type="text/javascript">
-// initialize scrollable and return the programming API
+		var scrollable = $("#scroll").scrollable({
+			items: '#tools',
+			size: 1,
+			clickable: false,
+			circular: true
+		});
 
-var scrollable = $("#scroll").scrollable({
-items: '#tools',
-size: 1,
-clickable: false,
-circular: true
+		// use the navigator plugin
+		var api = scrollable.navigator({api: true});
 
-});
+		// use the autoscroll plugin
+		var autoscroll = scrollable.autoscroll({autoplay: true, loop: true, interval:8000});
 
-// use the navigator plugin
-var api = scrollable.navigator({api: true});
+		var gallery = $("#gallery").scrollable({
+			items: '#samples',
+			size: 1,
+			clickable: false,
+			circular: true
+		});
 
-// use the autoscroll plugin
-var autoscroll = scrollable.autoscroll({autoplay: true, loop: true, interval:8000});
+		// use the navigator plugin
+		var api = gallery.navigator({api: true});
 
-var gallery = $("#gallery").scrollable({
-items: '#samples',
-size: 1,
-clickable: false,
-circular: true
+		// use the autoscroll plugin
+		var autoscroll = gallery.autoscroll({autoplay: true, loop: true, interval:8000});
+	</script>
+	<!-- / GeoSolutions SLIDE -->
 
-});
+	<script type="text/javascript" charset="utf-8">
+		var mapManagerLanguage = 'en';
+	</script>
 
-// use the navigator plugin
-var api = gallery.navigator({api: true});
-
-// use the autoscroll plugin
-var autoscroll = gallery.autoscroll({autoplay: true, loop: true, interval:8000});
-
-
-</script>
-<!-- / GeoSolutions SLIDE -->
-
-<script type="text/javascript" charset="utf-8">
-var mapManagerLanguage = 'en';
-</script>
-
-<!-- 4 PIANI SUPPORTO -->
-<script src="theme/js/jquery-ui.min.js"></script>
-    <script>
-    
-    
+	<!-- 4 PIANI SUPPORTO -->
+	<script src="theme/js/jquery-ui.min.js"></script>
+    <script>    
         $(document).ready(function() {
                     
             /* 4 PIANI */
@@ -234,14 +245,12 @@ var mapManagerLanguage = 'en';
               document.getElementById('p2').style.background='';
               document.getElementById('p3').style.background='';
               document.getElementById('p4').style.background='url(images/selector.png) center no-repeat';
-            });
-            
-            
+            });           
         });
-        
     </script>
+	
     <!-- mostranascondi + - "campi tabella" -->
     <script type="text/javascript" src="theme/js/public_smo_scripts.js"></script>
-<!-- /4 PIANI SUPPORTO -->
-
+	<!-- /4 PIANI SUPPORTO -->
+	
 </html>

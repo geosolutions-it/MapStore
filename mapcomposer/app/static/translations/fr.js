@@ -79,8 +79,7 @@ GeoExt.Lang.add("fr", {
 	    removeOverlaysMenuText: "Retirer des superpositions",
 	    removeOverlaysActionTip: "Supprime toutes les superpositions de la carte",
 	    removeOverlaysConfirmationText: "Etes-vous sûr de vouloir supprimer tous les calques chargés de la carte?"
-    },
-    
+    },    
 	
     "gxp.plugins.BingSource.prototype": {
         title: "Bing couvertures",
@@ -217,7 +216,12 @@ GeoExt.Lang.add("fr", {
         transparentText: "Transparent",
         cacheText: "Cache",
         cacheFieldText: "Utiliser la version mise en cache",
-        stylesText: "Styles"
+        stylesText: "Styles",
+        summaryText: "Statistiques",
+        summaryInfoText: "Current Viewport Raster Statistics",
+        loadMaskMsg: "Chargement des donnees ...",
+        noDataMsg: "Pas de données disponibles en la vue actuelle",
+        refreshText: "Actualiser"
     },  
 
     "gxp.NewSourceWindow.prototype": {
@@ -253,7 +257,15 @@ GeoExt.Lang.add("fr", {
 	    saveDefaultContextActionTip: "Enregistrer contexte Carte.",
 	    contextSaveSuccessString: "Sauver le contexte est géré.",
 	    contextSaveFailString: "Sauver le contexte a échoué.",
-	    contextMsg: "Chargement..."
+	    contextMsg: "Chargement...",
+		userLabel: "Utilisateur",	
+		passwordLabel: "Mot de passe", 	
+		loginLabel: "Connexion",	
+		mapMetadataTitle: "Insérer les métadonnées de la carte",	
+		mapMedatataSetTitle: "Métadonnées de la carte",	
+		mapNameLabel: "Nom",	
+		mapDescriptionLabel: "Description",
+		addResourceButtonText: "Ajouter Carte"
     },
     "gxp.plugins.GeoReferences.prototype":{
         initialText: "Sélectionner une zone",
@@ -276,8 +288,32 @@ GeoExt.Lang.add("fr", {
         legendOnSeparatePageText: "Légende sur une page distincte?",
         compactLegendText: "Légende compact?",	
         emptyCommentText: "Entrer des commentaires d'ici.",
-        creatingPdfText: "Création PDF..."
+        creatingPdfText: "Création PDF...",
+		graticuleFieldLabelText: 'Réticule actif',
+		defaultTabText: "Défaut",
+		legendTabText: "Légende"
     },
+	
+	"GeoExt.ux.LegendStylePanel.prototype":{
+		iconsSizeText: "Taille des icônes",
+		fontSizeText: "Taille de la police",
+		fontFamilyText: "Famille de polices",
+		forceLabelsText: "Force Étiquettes",
+		dpiText: "Dpi",
+		fontStyleText: "Le style de police",
+		fontEditorText: "Etiquette config",
+		sizeText: "Taille"
+    },
+    
+    "GeoExt.ux.GraticuleStylePanel.prototype":{
+        graticuleFieldLabelText: 'Réticule actif',
+        sizeText: "Taille",
+        colorText: "Couleur",
+        fontFamilyText: "Famille de polices",
+        fontStyleText: "Le style de police",
+        fontEditorText: "Etiquette config"
+    },
+	
     "gxp.plugins.GeonetworkSearch.prototype":{
         geonetworkSearchText: "Afficher les métadonnées",
         geonetworkSearchActionTip: "Afficher les métadonnées"
@@ -307,7 +343,13 @@ GeoExt.Lang.add("fr", {
         nextPageTip: "Page suivante",
         lastPageTip: "Dernière page",
         title: "Entités",
-        totalMsg: "Total: {0} entités"
+        totalMsg: "Total: {0} entités",
+        displayExportCSVText: "Exporter au format CSV",
+        exportCSVSingleText: "Une seule page",
+        exportCSVMultipleText: "Toutes les pages",
+        failedExportCSV: "Impossible de trouver la réponse pour le format de sortie CSV",
+        invalidParameterValueErrorText: "Valeur de paramètre non valide",
+		zoomToFeature: "Zoom sur Feature"
     },
 	
 	"gxp.plugins.QueryForm.prototype": {
@@ -321,16 +363,40 @@ GeoExt.Lang.add("fr", {
         cancelButtonText: "Remettre",
         noFeaturesTitle: "Pas de correspondance",
         noFeaturesMessage: "Votre requête n'a retourné aucun résultat.",
-        title: "Rechercher",
-        
+        title: "Rechercher",        
         attributeEnablement: "Requête par attributs",
         attributeEnablementMsg: "Invalid search Type! To use this you have to select 'Feature' type and to select a vector layer before.",
         searchType: "Réglages de base",
         typeLabel: "Type",
-        featureLabel: "Max Features"
+        featureLabel: "Max Features" 
     },
     
-    
+    "gxp.plugins.BBOXQueryForm.prototype": {
+        selectionMethodFieldSetComboTitle: "Méthode de sélection",
+        comboEmptyText: "Sélectionner une méthode..",
+        comboSelectionMethodLabel: "Sélection",
+        comboPolygonSelection: 'Polygon',
+        comboCircleSelection: 'Arrondissez',
+        comboBBOXSelection: 'BBox',
+		errorBBOXText: "Le BBox choisi n'est pas valide!",
+        errorDrawPolygonText: "Vous devez dessiner le polygone",
+        errorDrawCircleText: "Vous devez dessiner le cercle",     
+        errorDrawTitle: "Demande erreur",
+		errorBufferTitle: "Le tampon est incorrecte",
+		errorBufferText: "Le tampon sélectionné n'est pas valide!",
+		areaLabel: "Région",	
+		perimeterLabel: "Perimetro",	
+		radiusLabel: "Perimeter",	
+		centroidLabel: "Centroid",	
+		selectionSummary: "Résumé de Sélection"
+    },
+	
+    "gxp.widgets.form.BufferFieldset.prototype": {
+		bufferFieldLabel: "Gamme de tampon",
+		bufferFieldSetTitle: "Tampon",
+		coordinatePickerLabel: "Coordonnées",
+		draweBufferTooltip: "Dessinez le tampon"
+	},
     
     "gxp.form.BBOXFieldset.prototype":{
         northLabel:"Nord",
@@ -339,7 +405,7 @@ GeoExt.Lang.add("fr", {
         southLabel:"Sud",
         waitEPSGMsg: "S'il vous plaît attendre...",
         setAoiText: "FixéROI",
-        setAoiTooltip: "Activer le contrôle TextBox pour dessiner un ROI (BOX) sur la carte",
+        setAoiTooltip: "Activer le contrôle TextBox pour dessiner un ROI (BBox) sur la carte",
         title: "Région d'Intérêt"
     },
     
@@ -521,5 +587,14 @@ GeoExt.Lang.add("fr", {
 		resetText: "Rréinitialiser",
 		failedUploadingTitle: "Téléchargement de fichier erreur",
 		layerNameLabel: "Nom de la couche"
-    }
+    },
+
+	"gxp.plugins.PrintSnapshot.prototype" :{
+		noSupportedLayersErrorMsg: "Une erreur s'est produite lors de la génération de la carte Instantané: pas de couches en charge ont été trouvés!",
+		generatingErrorMsg: "Une erreur s'est produite lors de la génération de la carte Snapshot",
+		printStapshotTitle: "Imprimer Snapshot",
+		serverErrorMsg: "Une erreur s'est produite lors de la génération de la carte Snapshot: Erreur de serveur",
+		menuText: "Snapshot",
+		tooltip: "Snapshot"
+	}
 });

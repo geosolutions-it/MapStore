@@ -139,7 +139,10 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			//
 			if(this.target.renderToTab && this.enableViewTab){
 				var portalContainer = Ext.getCmp(this.target.renderToTab);
-				portalContainer.setActiveTab(1);
+				
+				if(portalContainer instanceof Ext.TabPanel){
+					portalContainer.setActiveTab(1);
+				}				
 			}					
 						
 			// //////////////////////////

@@ -78,11 +78,16 @@ gxp.KMLFileDownloadPanel = Ext.extend(Ext.FormPanel, {
                 this.filename = Ext.getCmp("filename").getValue();
                 //var content = Ext.getCmp("content").getValue();
                 //var map = this.map;
+				
+				var pattern = /(.+:\/\/)?([^\/]+)(\/.*)*/i;
+				var mHost = pattern.exec(this.service);
+				var mUrl = this.service + 'FileDownloader';
+		
                 var form = this.getForm();
                 if (form.isValid()) {
                     // application/x-www-form-urlencoded
                     form.submit({
-                        url: this.service + 'FileDownloader', 
+                        url: mHost[2] == location.host ? mUrl : self.composer.proxy + mUrl,
                         submitEmptyText: false,
                         waitMsg: this.waitMsgText,
                         waitMsgTarget: true,

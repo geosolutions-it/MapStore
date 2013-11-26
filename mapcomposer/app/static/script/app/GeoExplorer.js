@@ -151,93 +151,123 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             this.auth = false;
         }
 		
-		this.mapItems = [
-            {
+		this.mapItems = [];
+		
+		if(config.advancedScaleOverlay){
+			this.mapItems.push({
+                xtype: "gxp_advancedscaleoverlay",
+                topOutUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topOutUnits : null,
+                topInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topInUnits : null,
+                bottomInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.bottomInUnits : null,
+                bottomOutUnits: config.scaleOverlayUnits ? config.bottomOutUnits : null,
+                divisions: 2,
+                subdivisions: 2,
+                showMinorMeasures: true,
+                singleLine: false,
+                abbreviateLabel: false,
+				showMousePosition: config.scaleOverlayUnits ? (config.scaleOverlayUnits.showMousePosition === true ? true : false) : false,
+                enableSetScaleUnits: config.scaleOverlayUnits ? true : false
+            });
+		}else{
+			this.mapItems.push({
                 xtype: "gxp_scaleoverlay",
                 topOutUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topOutUnits : null,
                 topInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topInUnits : null,
                 bottomInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.bottomInUnits : null,
                 bottomOutUnits: config.scaleOverlayUnits ? config.bottomOutUnits : null,
                 enableSetScaleUnits: config.scaleOverlayUnits ? true : false
-            }, {
-                xtype: "gx_zoomslider",
-                vertical: true,
-                height: 100,
-                plugins: new GeoExt.ZoomSliderTip({
-                    template: this.zoomSliderText
-                })
-            }
-        ];
+            });
+		}		
+		
+		this.mapItems.push({
+			xtype: "gx_zoomslider",
+			vertical: true,
+			height: 100,
+			plugins: new GeoExt.ZoomSliderTip({
+				template: this.zoomSliderText
+			})
+		});
         
 		// ///////////////////////////////////////////////////////////////////////////////////
         // both the Composer and the Viewer need to know about the viewerTools
         // First row in each object is needed to correctly render a tool in the treeview
         // of the embed map dialog. TODO: make this more flexible so this is not needed.
 		// ////////////////////////////////////////////////////////////////////////////////////
-        config.viewerTools = [
-            {
-                leaf: true, 
-                text: gxp.plugins.ZoomToExtent.prototype.tooltip, 
-                checked: true, 
-                iconCls: gxp.plugins.ZoomToExtent.prototype.iconCls,
-                ptype: "gxp_zoomtoextent"
-            }, {
-                leaf: true, 
-                text: gxp.plugins.Navigation.prototype.tooltip, 
-                checked: true, 
-                iconCls: "gxp-icon-pan",
-                ptype: "gxp_navigation", 
-                toggleGroup: this.toggleGroup
-            }, {
-                actions: ["-"], checked: true
-            }, {
-                leaf: true, 
-                text: gxp.plugins.ZoomBox.prototype.zoomInTooltip + " / " + gxp.plugins.ZoomBox.prototype.zoomOutTooltip, 
-                checked: true, 
-                iconCls: "gxp-icon-zoombox-in",
-                numberOfButtons: 2,
-                ptype: "gxp_zoombox", 
-                toggleGroup: this.toggleGroup
-            }, {
-                leaf: true, 
-                text: gxp.plugins.Zoom.prototype.zoomInTooltip + " / " + gxp.plugins.Zoom.prototype.zoomOutTooltip, 
-                checked: true, 
-                iconCls: "gxp-icon-zoom-in",
-                numberOfButtons: 2,
-                ptype: "gxp_zoom"
-            }, {
-                actions: ["-"], checked: true
-            }, {
-                leaf: true, 
-                text: gxp.plugins.NavigationHistory.prototype.previousTooltip + " / " + gxp.plugins.NavigationHistory.prototype.nextTooltip, 
-                checked: true, 
-                iconCls: "gxp-icon-zoom-previous",
-                numberOfButtons: 2,
-                ptype: "gxp_navigationhistory"
-            }, {
-                actions: ["-"], checked: true
-            }, {
-                leaf: true, 
-                text: gxp.plugins.WMSGetFeatureInfo.prototype.infoActionTip, 
-                checked: true, 
-                iconCls: "gxp-icon-getfeatureinfo",
-                ptype: "gxp_wmsgetfeatureinfo", 
-                toggleGroup: this.toggleGroup
-            }, {
-                actions: ["-"], checked: true
-            }, {
-                leaf: true, 
-                text: gxp.plugins.Measure.prototype.measureTooltip, 
-                checked: true, 
-                iconCls: "gxp-icon-measure-length",
-                ptype: "gxp_measure", 
-                controlOptions: {immediate: true},
-                toggleGroup: this.toggleGroup
-            }, {
-                actions: ["-"], checked: true
-            }
-        ];
-
+		if(!config.viewerTools){
+			config.viewerTools = [
+				{
+					leaf: true, 
+					text: gxp.plugins.AddLayers.prototype.addActionTip, 
+					checked: true, 
+					iconCls: gxp.plugins.AddLayers.prototype.iconCls,
+					ptype: "gxp_addlayers"
+				},
+				{
+					actions: ["-"], checked: true
+				},
+				{
+					leaf: true, 
+					text: gxp.plugins.ZoomToExtent.prototype.tooltip, 
+					checked: true, 
+					iconCls: gxp.plugins.ZoomToExtent.prototype.iconCls,
+					ptype: "gxp_zoomtoextent"
+				}, {
+					leaf: true, 
+					text: gxp.plugins.Navigation.prototype.tooltip, 
+					checked: true, 
+					iconCls: "gxp-icon-pan",
+					ptype: "gxp_navigation", 
+					toggleGroup: this.toggleGroup
+				}, {
+					actions: ["-"], checked: true
+				}, {
+					leaf: true, 
+					text: gxp.plugins.ZoomBox.prototype.zoomInTooltip + " / " + gxp.plugins.ZoomBox.prototype.zoomOutTooltip, 
+					checked: true, 
+					iconCls: "gxp-icon-zoombox-in",
+					numberOfButtons: 2,
+					ptype: "gxp_zoombox", 
+					toggleGroup: this.toggleGroup
+				}, {
+					leaf: true, 
+					text: gxp.plugins.Zoom.prototype.zoomInTooltip + " / " + gxp.plugins.Zoom.prototype.zoomOutTooltip, 
+					checked: true, 
+					iconCls: "gxp-icon-zoom-in",
+					numberOfButtons: 2,
+					ptype: "gxp_zoom"
+				}, {
+					actions: ["-"], checked: true
+				}, {
+					leaf: true, 
+					text: gxp.plugins.NavigationHistory.prototype.previousTooltip + " / " + gxp.plugins.NavigationHistory.prototype.nextTooltip, 
+					checked: true, 
+					iconCls: "gxp-icon-zoom-previous",
+					numberOfButtons: 2,
+					ptype: "gxp_navigationhistory"
+				}, {
+					actions: ["-"], checked: true
+				}, {
+					leaf: true, 
+					text: gxp.plugins.WMSGetFeatureInfo.prototype.infoActionTip, 
+					checked: true, 
+					iconCls: "gxp-icon-getfeatureinfo",
+					ptype: "gxp_wmsgetfeatureinfo", 
+					toggleGroup: this.toggleGroup
+				}, {
+					actions: ["-"], checked: true
+				}, {
+					leaf: true, 
+					text: gxp.plugins.Measure.prototype.measureTooltip, 
+					checked: true, 
+					iconCls: "gxp-icon-measure-length",
+					ptype: "gxp_measure", 
+					controlOptions: {immediate: true},
+					toggleGroup: this.toggleGroup
+				}, {
+					actions: ["-"], checked: true
+				}
+			];
+		}
         
 		if(config.customTools)
 		{
@@ -248,12 +278,18 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 				{
 					if( config.viewerTools[t]['ptype'] && config.viewerTools[t]['ptype'] == config.customTools[c]['ptype'] ) {	//plugin already defined
 						toolIsDefined = true;
+                        if(config.customTools[c].forceMultiple){
+                            config.viewerTools.push(config.customTools[c])
+                        }else{
+                            config.viewerTools[t]=config.customTools[c];
+                        }
 						break;
 					}
 				}
 			
-				if(!toolIsDefined)
-					config.viewerTools.push(config.customTools[c]);
+				if(!toolIsDefined){
+                    config.viewerTools.push(config.customTools[c])
+                }
 			}
 		} 
         
@@ -334,6 +370,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         var config = Ext.util.JSON.decode(json);        
         if(config && config.map){
             config.isLoadedFromConfigFile = true;
+			config = Ext.applyIf(config, this.initialConfig);
             app = new GeoExplorer.Composer(config, this.mapId, this.auth, this.fScreen);
         }else{
             Ext.Msg.show({
@@ -476,30 +513,32 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 border: false
             },
             items: [
-                this.mapPanel
-                ,googleEarthPanel
+                this.mapPanel,
+                googleEarthPanel
             ],
             activeItem: 0,
             tbar: this.toolbar
         });
-        var portalPanels = [this.mapPanelContainer,
-                    westPanel];
+		
+        var portalPanels = [this.mapPanelContainer, westPanel];
+		
 		//collect additional panels to add them after init portal
-		var additionalPanels=[];
+		var additionalPanels = [];
+		
         if(this.customPanels){
-			var toPortal=[];
-			var pans =this.customPanels;
-			for (var i =0; i < pans.length;i++){
+			var toPortal = [];
+			var pans = this.customPanels;
+			for (var i = 0; i < pans.length; i++){
 				if(pans[i].target){
-					additionalPanels.push(pans[i]);
-					
+					additionalPanels.push(pans[i]);					
 				}else{
 					toPortal.push(pans[i]);
 				}
 			}
 			
-            var portalPanels =portalPanels.concat(toPortal);
+            var portalPanels = portalPanels.concat(toPortal);
         }
+		
         this.portalItems = [{
             region: "center",
             layout: "border",            
@@ -507,8 +546,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         }];
         
         GeoExplorer.superclass.initPortal.apply(this, arguments);  
-		for(var i =0;i< additionalPanels.length;i++){
-			var target =Ext.getCmp(additionalPanels[i].target);
+		for(var i = 0; i< additionalPanels.length; i++){
+			var target = Ext.getCmp(additionalPanels[i].target);
 			target.add(additionalPanels[i]);
 			target.doLayout();
 		}
@@ -524,6 +563,68 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             "-"
         ];
         return tools;
+    },
+	
+	/** private: method[viewMetadata]
+     */
+    viewMetadata: function(url, uuid, title){
+		var portalContainer = Ext.getCmp(this.renderToTab);
+		
+		var metaURL = url.indexOf("uuid") != -1 ? url : url + '?uuid=' + uuid;
+		
+		var metaPanelOptions = {
+			title: title,
+			items: [ 
+				new Ext.ux.IFrameComponent({ 
+					url: metaURL 
+				}) 
+			]
+		};
+				
+		if(portalContainer instanceof Ext.TabPanel){
+			var tabPanel = portalContainer;
+			
+			var tabs = tabPanel.find('title', title);
+			if(tabs && tabs.length > 0){
+				tabPanel.setActiveTab(tabs[0]); 
+			}else{				
+			
+				metaPanelOptions = Ext.applyIf(metaPanelOptions, {
+					layout:'fit', 
+					tabTip: title,
+					closable: true
+				});
+				
+				var meta = new Ext.Panel(metaPanelOptions);
+				
+				tabPanel.add(meta);
+				meta.items.first().on('render', function() {
+					this.addLoadingMask(meta.items.first());
+				},this);						
+			}
+		}else{		
+		
+			metaPanelOptions = Ext.applyIf(metaPanelOptions, {
+			    layout:'fit', 
+				height: 600
+			});
+			
+			var meta = new Ext.Panel(metaPanelOptions);
+			
+			var metaWin = new Ext.Window({									
+				title: "MetaData",
+				closable: true,
+				width: 800,
+				height: 630,
+				resizable: true,				
+				draggable: true,
+				items: [
+					meta
+				]									
+			});
+			
+			metaWin.show();
+		}
     },
 
     /** private: method[saveAndExport]
@@ -1161,8 +1262,22 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      */
     getState: function() {
         var state = GeoExplorer.superclass.getState.apply(this, arguments);
-        // Don't persist tools
+        
+		// ///////////////////////////////////////////
+		// Don't persist unnecessary components. 
+		// Only the map details are mandatory, other
+        // elements are merged from the default 
+		// configuration.
+		// ///////////////////////////////////////////
+		
         delete state.tools;
+		delete state.customTools;
+		delete state.viewerTools;
+		delete state.georeferences;
+		delete state.customPanels;
+		delete state.portalConfig;
+		delete state.disableLayerChooser;
+		
         return state;
     }
 });
