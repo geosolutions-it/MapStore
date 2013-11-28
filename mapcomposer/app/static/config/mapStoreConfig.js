@@ -501,8 +501,8 @@
         "index": 28,
         "geoStoreBase":"http://localhost:8082/geostore/rest/",
         "proxy":"/proxy/?url=",
-        "geoStoreUser": "super",
-        "geoStorePassword": "super"
+        "geoStoreUser": "base",
+        "geoStorePassword": "base"
     },
     {
         "ptype": "gxp_tabpanelwfsgrids",

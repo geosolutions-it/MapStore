@@ -127,6 +127,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
 	
         if(this.user && this.password){
             headers['Authorization']= 'Basic ' + Base64.encode(this.user + ':' + this.password);
+            headers['AJP_Shib-Identita-CodiceFiscale'] = this.user;
         }
 	
         var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;

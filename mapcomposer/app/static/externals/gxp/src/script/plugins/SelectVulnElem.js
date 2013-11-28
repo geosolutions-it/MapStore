@@ -66,6 +66,12 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
      *  Text for Select All Elements (i18n).
      */
     addToMapButtonText: "Aggiungi alla mappa",    
+    
+    errorTitle: "Errore",
+    
+    onlyOneCategoryError: "Selezionare elementi da una sola categoria",
+    
+    noElementsError: "Selezionare almeno un elemento",
 
     /** private: property[iconCls]
      */
@@ -214,7 +220,11 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
                         "name": "severeness",
                         "mapping": "id_bersaglio"
                     }],
-                    proxy: processingPane.getWFSStoreProxy(processingPane.bersFeature, undefined, "id_bersaglio"),
+                    proxy: processingPane.getWFSStoreProxy(processingPane.bersFeature, new OpenLayers.Filter.Comparison({
+                        type: OpenLayers.Filter.Comparison.GREATER_THAN,
+                        property: 'id_bersaglio',
+                        value: 0
+                    }), "id_bersaglio"),
                     autoLoad: false
                 });
                 nothumanstargetStore.on('load', function (str, records) {
@@ -228,11 +238,12 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
                     Ext.each(records, function (record) {
                         var flg_umano = parseInt(record.get("flg_umano"));
                         var id = parseInt(record.get("id_bersaglio"));
+                        
                         allIDsArray.push(id);
                         allDescsMap[id] = record.get("name");
                         record.set("layer", layers[parseInt(id)]);
                         record.set("property", 'calc_formula_tot');
-                        record.set("humans", flg_umano == 1 ? true : false);
+                        record.set("humans", flg_umano == 1 && id != '0' ? true : false);
 
                         var code = "-1";
 
@@ -298,7 +309,7 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
 
                 var xg = Ext.grid;
 
-                var humansGrid = new xg.GridPanel({
+                this.humansGrid = new xg.GridPanel({
                     id: 'id_humansGrid',
                     flex: 1,
                     split: true,
@@ -323,7 +334,7 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
                     }
                 });
 
-                var notHumansGrid = new xg.GridPanel({
+                this.notHumansGrid = new xg.GridPanel({
                     id: 'id_notHumansGrid',
                     flex: 1,
                     split: true,
@@ -353,7 +364,7 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
                     xtype: 'container',
                     layout: 'vbox',
                     autoScroll: true,
-                    items: [humansGrid, notHumansGrid]
+                    items: [this.humansGrid, this.notHumansGrid]
                 });
 
                 var selectVulnElem = actions[0];
@@ -390,36 +401,36 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
                 
                         },
                         handler: function(){
-                            var syntView = app.tools["syntheticview"];
-                            var newLayers=[];
-                            
-                            /*var status = this.getStatus();        
-                            
-                            var bounds = this.getBounds(status, map);
-                            
-                            if(syntView.originalRiskLayers === null) {
-                                syntView.storeOriginalRiskLayers();
+                            if(this.humansGrid.getSelectionModel().hasSelection() && this.notHumansGrid.getSelectionModel().hasSelection()) {
+                                Ext.Msg.show({
+                                    title: this.errorTitle,
+                                    buttons: Ext.Msg.OK,                
+                                    msg: this.onlyOneCategoryError,
+                                    icon: Ext.MessageBox.ERROR,
+                                    scope: this
+                                }); 
+                            } else if(!this.humansGrid.getSelectionModel().hasSelection() && !this.notHumansGrid.getSelectionModel().hasSelection()) {
+                                Ext.Msg.show({
+                                    title: this.errorTitle,
+                                    buttons: Ext.Msg.OK,                
+                                    msg: this.noElementsError,
+                                    icon: Ext.MessageBox.ERROR,
+                                    scope: this
+                                }); 
+                            } else {
+                                var coverages = [];
+                                var grid = this.humansGrid.getSelectionModel().hasSelection() ? this.humansGrid : this.notHumansGrid;
+                                var layerName = this.humansGrid.getSelectionModel().hasSelection() ? "vulnerabili_umani" : "vulnerabili_ambientali";
+                                Ext.each(grid.getSelectionModel().getSelections(), function(record) {
+                                    coverages.push(record.get('layer') + '_mosaic');
+                                });
+                                
+                                var syntView = app.tools["syntheticview"];
+                                
+                                syntView.addVulnLayer(coverages,layerName,"Vulnerabilita",["Targets","Bersagli","Cibles","Betroffene Elemente"]);
+                                viewWin.close();
                             }
                             
-                            this.enableDisableRoads(!status.formulaInfo.dependsOnArcs);
-                            
-                            syntView.removeRiskLayers(map);
-                            
-                            // remove analytic view layers (buffers, targets, selected targets)
-                            syntView.removeAnalyticViewLayers(map);     
-                            syntView.disableSouthPanel();        
-                            
-                            syntView.processingDone = true;
-                            
-                            Ext.getCmp('warning_message').setValue('');
-                            
-                            var scale = this.getMapScale();
-                            if(scale <= this.analiticViewScale) {
-                                Ext.getCmp("analytic_view").enable();
-                            }*/
-                            
-                            syntView.addVulnLayer(newLayers,"rischio","Vulnerabilita",["Targets","Bersagli","Cibles","Ziele"]);
-                            syntView.target.mapPanel.layers.add(newLayers);
                         }
                     }]
                 });
