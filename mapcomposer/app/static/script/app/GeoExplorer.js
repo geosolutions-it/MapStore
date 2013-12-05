@@ -55,7 +55,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     titleText: "Title",
     saveErrorText: "Trouble saving: ",
     
-    southPanelTitle: 'Data Grids',
+    //southPanelTitle: 'Data Grids',
     eastPanelTitle: 'Control Panel',
     
     bookmarkText: "XML Map Context",
@@ -533,11 +533,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             height: 200,
             split: true,
             collapsible: true,
-            //collapseMode: "mini",
-            collapsed: false,
+            collapseMode: "mini",
+            collapsed: true,
             header: true,
-			title: this.southPanelTitle
-            /*listeners: {
+            listeners: {
                  "expand": function(){
                      var grid=Ext.getCmp("wfsGridPanel");
                      if(grid){
@@ -546,7 +545,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                          grid.getView().refresh();
                      }
                  }
-            },*/
+            },
         });
         // The ChangeMatrix Control Panel: contains the CHG-MX operations and forms.
         var estPanel = new Ext.Panel({
@@ -577,7 +576,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 			// /////////////////////////////////////////////////////////////////
 			// Change Matrix Custom Sub-Panels : START
 			// /////////////////////////////////////////////////////////////////
-			{xtype: 'tabpanel', activeTab: 0, region: 'center', id: 'outcomelaylistpanel', autoScroll: true, border: false, target: 'south'}
+			//{xtype: 'tabpanel', activeTab: 0, region: 'center', id: 'outcomelaylistpanel', autoScroll: true, border: false, target: 'south'}
 			// /////////////////////////////////////////////////////////////////
 			// Change Matrix Custom Sub-Panels : END
 			// /////////////////////////////////////////////////////////////////

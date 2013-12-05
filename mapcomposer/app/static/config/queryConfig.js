@@ -242,7 +242,7 @@
 		  },
 		  "outputTarget": "south",
 		  "showExportCSV": true
-	    }, {
+	    },{
 		  "ptype": "gxp_bboxqueryform",
 		  "featureManager": "featuremanager",
 		  "featureGridContainer": "south",

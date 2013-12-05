@@ -117,6 +117,14 @@ body {
     background-image: url(img/geosilk/measure.png);
 }
 
+.icon-piechart {
+    background-image: url(img/silk/pie-chart-icon.png);
+}
+
+.data-table {
+    background-image: url(img/silk/data_table.png);
+}
+
 .icon-measure-length {
     background-image: url(img/geosilk/ruler.png) !important;
 }

@@ -307,6 +307,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 gnURL: config.gnURL,
                 source: config.source,
                 properties: "gxp_wmslayerpanel",
+                times: "times" in config ? config.times : null,
+                elevations: "elevations" in config ? config.elevations : null,
                 fixed: config.fixed,
                 selected: "selected" in config ? config.selected : false,
                 layer: layer
@@ -322,9 +324,11 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 				{name: "title", type: "string"},
                 {name: "properties", type: "string"},
                 {name: "fixed", type: "boolean"},
-                {name: "selected", type: "boolean"}
+                {name: "selected", type: "boolean"},
+                {name: "times", type: "string"},
+                {name: "elevations", type: "string"}
             ];
-			
+
             original.fields.each(function(field) {
                 fields.push(field);
             });
@@ -637,8 +641,34 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
         };
                 
         var keywords = record.get("keywords");
+        var dimensions = record.get("dimensions");
         var identifiers = record.get("identifiers") || undefined;        
         defaultProps.stylesAvail = record.get("styles");
+        
+        if(dimensions) {
+        	// ////////
+        	// looking for time dimension
+        	// ////////
+        	if (dimensions.time && dimensions.time.values) {
+        		if (dimensions.time.values.length>0) {
+        			var time=new Object();
+        			
+        			time.times=dimensions.time.values.join();
+        			
+        			defaultProps = Ext.applyIf(defaultProps, time);
+        		}
+        	}
+
+        	if (dimensions.elevation && dimensions.elevation.values) {
+        		if (dimensions.elevation.values.length>0) {
+        			var elevation=new Object();
+        			
+        			elevation.elevations=dimensions.time.values.join();
+        			
+        			defaultProps = Ext.applyIf(defaultProps, elevation);
+        		}
+        	}
+        }
                 
         if(keywords.length>0 || !this.isEmptyObject(identifiers)){
             var props=new Object();
