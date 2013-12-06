@@ -2,6 +2,7 @@
    "geoStoreBase": "",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
+   "advancedScaleOverlay": true,
    "gsSources":{ 
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
@@ -87,7 +88,9 @@
     },
 	"customTools":[
 		{
-			"ptype": "gxp_mouseposition"
+		   "ptype": "gxp_mouseposition",
+		   "displayProjectionCode":"EPSG:4326",
+		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
 		}, {
 			"ptype": "gxp_metadataexplorer",
 			"id": "metadataexplorer",
@@ -107,22 +110,12 @@
                         {"name": "MAPAS", "url": "http://mapas.mma.gov.br/geonetwork/srv/en/csw", "description" : "MAPAS"}
                     ],
                 "dcProperty": "title",
-                "initialBBox": {
-                    "minx": 11.145,
-                    "miny": 43.718,
-                    "maxx": 11.348,
-                    "maxy": 43.84
-                },
                 "cswVersion": "2.0.2",
                 "filterVersion": "1.1.0",
                 "start": 1,
                 "limit": 10,
                 "timeout": 60000
             }            
-		}, {
-			"ptype": "gxp_addlayer",
-			"showCapabilitiesGrid": true,
-			"id": "addlayer"
 		}, {
 			"actions": ["-"], 
 			"actionTarget": "paneltbar"

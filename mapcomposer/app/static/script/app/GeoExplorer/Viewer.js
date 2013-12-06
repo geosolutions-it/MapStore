@@ -146,17 +146,20 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
      * Create the various parts that compose the layout.
      */
     createTools: function() {
+		if(!this.disableLayerChooser){
         var tools = GeoExplorer.Viewer.superclass.createTools.apply(this, arguments);
+		
+			var layerChooser = new Ext.Button({
+				//tooltip: 'Layer Switcher',	//TODO uncomment in ExtJS >= 4.1, http://goo.gl/x1c5X
+				iconCls: 'icon-layer-switcher',
+				menu: new gxp.menu.LayerMenu({
+					layers: this.mapPanel.layers
+				})
+			});
+			tools.unshift(layerChooser);
+		}
 
-        var layerChooser = new Ext.Button({
-			//tooltip: 'Layer Switcher',	//TODO uncomment in ExtJS >= 4.1, http://goo.gl/x1c5X
-            iconCls: 'icon-layer-switcher',
-            menu: new gxp.menu.LayerMenu({
-                layers: this.mapPanel.layers
-            })
-        });
-
-        tools.unshift(layerChooser);
+        
 
         return tools;
     }

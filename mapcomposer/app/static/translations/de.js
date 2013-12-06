@@ -208,7 +208,12 @@ GeoExt.Lang.add("de", {
         transparentText: "Transparenz",
         cacheText: "Cache",
         cacheFieldText: " Benutze die Cache-Version",
-        stylesText: "Stil"
+        stylesText: "Stil",
+		summaryText: "Statistik",
+        summaryInfoText: "Aktuelles Ansichtsfenster Raster Statistik",
+        loadMaskMsg: "Daten abrufen ...",
+        noDataMsg: "Keine Daten vorhanden in aktuellen Ansicht",
+        refreshText: "Erfrischen"
     },
 
     "gxp.WMSStylesDialog.prototype": {
@@ -305,7 +310,30 @@ GeoExt.Lang.add("de", {
 	    legendOnSeparatePageText: "Legende auf eigener Seite?",
 	    compactLegendText: "Kompakte Legende?",	
 	    emptyCommentText: "Kommentare hier einfügen.",
-	    creatingPdfText: "Erstellung der PDF-Datei..."
+	    creatingPdfText: "Erstellung der PDF-Datei...",
+		graticuleFieldLabelText: 'Aktive Raster',
+		defaultTabText: "Default",
+		legendTabText: "Legend"
+    },
+	
+	"GeoExt.ux.LegendStylePanel.prototype":{
+		iconsSizeText: "Icons Größe",
+		fontSizeText: "Schriftgröße",
+		fontFamilyText: "Schriftfamilie",
+		forceLabelsText: "Force-Label",
+		dpiText: "Dpi",
+		fontStyleText: "Schriftschnitt",
+		fontEditorText: "Label-Config",
+		sizeText: "Größe"
+    },
+    
+    "GeoExt.ux.GraticuleStylePanel.prototype":{
+        graticuleFieldLabelText: 'Aktive Raster',
+        sizeText: "Größe",
+        colorText: "Farbe",
+        fontFamilyText: "Schriftfamilie",
+        fontStyleText: "Schriftschnitt",
+        fontEditorText: "Label-Config"
     },
 
     "gxp.plugins.GeonetworkSearch.prototype":{
@@ -599,7 +627,7 @@ GeoExt.Lang.add("de", {
 		failedUploadingTitle: "Kann Datei nicht hochladen",
 		layerNameLabel: "Layername"
 	},
-
+	
 	"gxp.plugins.SearchComune.prototype":{
 		waitMsg: 'Bitte warten ...',	
 		titleError: 'Fehler',	
@@ -674,6 +702,14 @@ GeoExt.Lang.add("de", {
 		errorData1: 'Geben Sie ein gültiges Beginn- und Enddatum ein.',
 		errorData2: 'Das Beginndatum ist größer als das Enddatum.',		
 		errorLayer: 'Besetzungen Eben nicht gefunden: '
-	}
+	},
 
+	"gxp.plugins.PrintSnapshot.prototype" :{
+		noSupportedLayersErrorMsg: "Fehler beim Erzeugen der Karte Snapshot: Nein Unterstützte Ebenen gefunden!",
+		generatingErrorMsg: "Fehler beim Erzeugen der Karte Snapshot",
+		printStapshotTitle: "Drucken Snapshot",
+		serverErrorMsg: "Fehler beim Erzeugen der Karte Snapshot: Server Error",
+		menuText: "Snapshot",
+		tooltip: "Snapshot"
+	}
 });

@@ -2,6 +2,7 @@
    "geoStoreBase": "",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "it",
+   "advancedScaleOverlay": true,
    "proj4jsDefs": {"EPSG:25832": "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs"},
    "gsSources":{ 
 		"bolzano": {
@@ -87,7 +88,17 @@
 				"group": "background"
 			},{
 				"source": "bolzano",
-				"title": "Ortofoto Bolzano/Bozen",
+				"title": "Ortofoto 2013 Bolzano/Bozen",
+				"name": "Cartografia:ortofoto2013",
+			    "layersCachedExtent": [
+					1252344.2712499984,5850795.892246094,1271912.1504882798,5870363.771484375
+				],
+				"group": "background",
+				"transparent": false,
+				"format": "image/jpeg"
+			},{
+				"source": "bolzano",
+				"title": "Ortofoto 2010 Bolzano/Bozen",
 				"name": "Cartografia:ortofoto_2010",
 			    "layersCachedExtent": [
 					1252344.2712499984,5850795.892246094,1271912.1504882798,5870363.771484375
@@ -95,74 +106,6 @@
 				"group": "background",
 				"transparent": false,
 				"format": "image/jpeg"
-			}, {
-				"source":"bolzano",
-				"name":"Cartografia:particelle",
-				"title":"Parzellen",
-				"group":"Catasto_Kataster",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Cartografia:C_VESTIZIONI",
-				"title":"Zierlinien",
-				"group":"Catasto_Kataster",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Cartografia:C_SIMBOLI",
-				"title":"Symbole",
-				"group":"Catasto_Kataster",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Ambiente:Isolato",
-				"title":"Wohnblöcke",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Ambiente:Edifici",
-				"title":"Gebäude"
-			}, {
-				"source":"bolzano",
-				"name":"Cartografia:civici",
-				"title":"Hausnummern",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Cartografia:fiumi",
-				"title":"Flüsse",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Cartografia:ferrovia",
-				"title":"Eisenbahn"
-			}, {
-				"source":"bolzano",
-				"name":"Ambiente:grafo",
-				"title":"Strassennetz",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Cartografia:autostrada",
-				"title":"Autobahn",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Ambiente:quartieri",
-				"title":"Stadtviertel",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Ambiente:poi",
-				"title":"In der Umgebung",
-				"layersCachedExtent": [
-					1252344.2712499984,5831228.013007812,1291480.0297265612,5870363.771484375
-				]
-			}, {
-				"source":"bolzano",
-				"name":"Cartografia:Confine_comunale",
-				"title":"Gemeindegrenze",
-				"visibility": false
 			}
 		]
 	},
@@ -279,54 +222,58 @@
 			"ptype": "gxp_measure", "toggleGroup": "toolGroup",
 			"actionTarget": {"target": "paneltbar", "index": 21}
 		}, {
-			"ptype": "gxp_print",
+			"ptype":"gxp_print",
 			"customParams":{
 				"outputFilename":"mapstore-print"
 			},
-			"printService": "http://geoserver:8080/geoserver/pdf/",
-			"legendPanelId": "legendPanel",
+			"ignoreLayers": "Google Hybrid,Bing Aerial,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
+			"printService":"http://localhost:8080/geoserver/pdf/",
+			"addGraticuleControl": false,
+			"addLandscapeControl": true,
+			"appendLegendOptions": true,
+			"legendPanelId":"legendPanel",
 			"actionTarget":{
-			    "target": "paneltbar",
+				"target":"paneltbar",
 				"index":4
 			}
-	    }, {
-				"ptype": "gxp_searchvia",
-				"outputTarget": "searchpanel",
-				"serviceUrl": "http://geoserver:8080/GeoInfo/",
-				"selectionProperties": {
-					"wmsURL": "http://geoserver:8080/geoserver/",
-						"selectionLayerTitle": "Selection Layer",
-						"selectionLayerCiviciName": "Cartografia:civici",
-						"selectionLayerViaName": "Ambiente:grafo",
-						"filterCiviciAttribute": "ID",
-						"selectionCiviciStyle": "highlight_point",
-						"filterViaAttribute": "ID_STRASSE",
-						"selectionViaStyle": "highlight"
-				}
 		}, {
-				"ptype": "gxp_searchcatasto",
-				"outputTarget": "searchpanel",
-				"serviceUrl": "http://geoserver:8080/GeoInfo/",
-				"selectionProperties": {
-					"wmsURL": "http://geoserver:8080/geoserver/",
+			"ptype": "gxp_searchvia",
+			"outputTarget": "searchpanel",
+			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
+			"selectionProperties": {
+				"wmsURL": "http://sit.comune.bolzano.it/geoserver/",
+					"selectionLayerTitle": "Selection Layer",
+					"selectionLayerCiviciName": "Cartografia:civici",
+					"selectionLayerViaName": "Ambiente:grafo",
+					"filterCiviciAttribute": "ID",
+					"selectionCiviciStyle": "highlight_point",
+					"filterViaAttribute": "ID_STRASSE",
+					"selectionViaStyle": "highlight"
+			}
+		}, {
+			"ptype": "gxp_searchcatasto",
+			"outputTarget": "searchpanel",
+			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
+			"selectionProperties": {
+				"wmsURL": "http://sit.comune.bolzano.it/geoserver/",
 					"selectionLayerTitle": "Selection Layer"
-				}
+			}
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": false,
 			"id": "addlayer"
 		}, {
-		  "ptype": "gxp_featuremanager",
-		  "id": "featuremanager"
+		    "ptype": "gxp_featuremanager",
+		    "id": "featuremanager"
 	    }, {
-		  "ptype": "gxp_featuregrid",
-		  "featureManager": "featuremanager",
-		  "outputConfig": {
+		    "ptype": "gxp_featuregrid",
+		    "featureManager": "featuremanager",
+		    "outputConfig": {
 			  "id": "featuregrid",
 			  "title": "Features"
-		  },
-		  "outputTarget": "south",
-		  "showExportCSV": true
+		    },
+		    "outputTarget": "south",
+		    "showExportCSV": true
 	    }, {
 		  "ptype": "gxp_bboxqueryform",
 		  "featureManager": "featuremanager",
@@ -356,6 +303,10 @@
 				"distanceUnits": "m"
 			  }
 		  }
-	    }
+	    }, {
+		   "ptype": "gxp_mouseposition",
+		   "displayProjectionCode":"EPSG:4326",
+		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
+		}
 	]
 }

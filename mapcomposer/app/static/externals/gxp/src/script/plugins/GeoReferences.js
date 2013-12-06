@@ -218,11 +218,10 @@ gxp.plugins.GeoReferences = Ext.extend(gxp.plugins.Tool, {
         });
 		
 		map.events.register("zoomend", this, function(){
-			alert("eco");
 			this.georeferencesSelector.reset();
 		});
         
-        var actions = [georeferencesSelector];
+        var actions = [this.georeferencesSelector];
         return gxp.plugins.GeoReferences.superclass.addActions.apply(this, [actions]);
     }
 });

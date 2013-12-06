@@ -15,6 +15,7 @@
 				20037508.34,20037508.34
 			],
 			"layerBaseParams":{
+				"buffer":20,
 				"FORMAT":"image/png8",
 				"TILED":true
 			}
@@ -289,22 +290,26 @@
 			"ptype": "gxp_measure", "toggleGroup": "toolGroup",
 			"actionTarget": {"target": "paneltbar", "index": 21}
 		}, {
-			"ptype": "gxp_print",
+			"ptype":"gxp_print",
 			"customParams":{
 				"outputFilename":"mapstore-print"
 			},
-			"printService": "http://geoserver:8080/geoserver/pdf/",
-			"legendPanelId": "legendPanel",
+			"ignoreLayers": "Google Hybrid,Bing Aerial,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
+			"printService":"http://localhost:8080/geoserver/pdf/",
+			"addGraticuleControl": false,
+			"addLandscapeControl": true,
+			"appendLegendOptions": true,
+			"legendPanelId":"legendPanel",
 			"actionTarget":{
-			    "target": "paneltbar",
+				"target":"paneltbar",
 				"index":4
 			}
-        }, {
+		}, {
 			"ptype": "gxp_searchcosap",			
-			"serviceUrl": "http://geoserver:8080/GeoInfo/",
+			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
 			"outputTarget": "searchpanel",
 			"selectionProperties": {
-			    "wmsURL": "http://geoserver:8080/geoserver",
+			    "wmsURL": "http://sit.comune.bolzano.it/geoserver",
 				"selectionLayerTitle": "Selection Layer",
 				"selectionLayerCiviciName": "Cartografia:civici",
 				"selectionLayerViaName": "Ambiente:grafo",

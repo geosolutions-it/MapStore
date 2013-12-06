@@ -216,7 +216,12 @@ GeoExt.Lang.add("fr", {
         transparentText: "Transparent",
         cacheText: "Cache",
         cacheFieldText: "Utiliser la version mise en cache",
-        stylesText: "Styles"
+        stylesText: "Styles",
+        summaryText: "Statistiques",
+        summaryInfoText: "Current Viewport Raster Statistics",
+        loadMaskMsg: "Chargement des donnees ...",
+        noDataMsg: "Pas de données disponibles en la vue actuelle",
+        refreshText: "Actualiser"
     },  
 
     "gxp.NewSourceWindow.prototype": {
@@ -283,8 +288,32 @@ GeoExt.Lang.add("fr", {
         legendOnSeparatePageText: "Légende sur une page distincte?",
         compactLegendText: "Légende compact?",	
         emptyCommentText: "Entrer des commentaires d'ici.",
-        creatingPdfText: "Création PDF..."
+        creatingPdfText: "Création PDF...",
+		graticuleFieldLabelText: 'Réticule actif',
+		defaultTabText: "Défaut",
+		legendTabText: "Légende"
     },
+	
+	"GeoExt.ux.LegendStylePanel.prototype":{
+		iconsSizeText: "Taille des icônes",
+		fontSizeText: "Taille de la police",
+		fontFamilyText: "Famille de polices",
+		forceLabelsText: "Force Étiquettes",
+		dpiText: "Dpi",
+		fontStyleText: "Le style de police",
+		fontEditorText: "Etiquette config",
+		sizeText: "Taille"
+    },
+    
+    "GeoExt.ux.GraticuleStylePanel.prototype":{
+        graticuleFieldLabelText: 'Réticule actif',
+        sizeText: "Taille",
+        colorText: "Couleur",
+        fontFamilyText: "Famille de polices",
+        fontStyleText: "Le style de police",
+        fontEditorText: "Etiquette config"
+    },
+	
     "gxp.plugins.GeonetworkSearch.prototype":{
         geonetworkSearchText: "Afficher les métadonnées",
         geonetworkSearchActionTip: "Afficher les métadonnées"
@@ -558,5 +587,14 @@ GeoExt.Lang.add("fr", {
 		resetText: "Rréinitialiser",
 		failedUploadingTitle: "Téléchargement de fichier erreur",
 		layerNameLabel: "Nom de la couche"
-    }
+    },
+
+	"gxp.plugins.PrintSnapshot.prototype" :{
+		noSupportedLayersErrorMsg: "Une erreur s'est produite lors de la génération de la carte Instantané: pas de couches en charge ont été trouvés!",
+		generatingErrorMsg: "Une erreur s'est produite lors de la génération de la carte Snapshot",
+		printStapshotTitle: "Imprimer Snapshot",
+		serverErrorMsg: "Une erreur s'est produite lors de la génération de la carte Snapshot: Erreur de serveur",
+		menuText: "Snapshot",
+		tooltip: "Snapshot"
+	}
 });

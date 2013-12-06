@@ -216,7 +216,12 @@ GeoExt.Lang.add("en", {
         transparentText: "Transparent",
         cacheText: "Cache",
         cacheFieldText: "Use cached version",
-        stylesText: "Styles"
+        stylesText: "Styles",
+        summaryText: "Statistics",
+        summaryInfoText: "Current Viewport Raster Statistics",
+        loadMaskMsg: "Fetching data ...",
+        noDataMsg: "No data available in current view",
+        refreshText: "Refresh"
     },
 
     "gxp.NewSourceWindow.prototype": {
@@ -283,8 +288,32 @@ GeoExt.Lang.add("en", {
         legendOnSeparatePageText: "Legend on separate page?",
         compactLegendText: "Compact legend?",	
         emptyCommentText: "Enter comments here.",
-        creatingPdfText: "Creating PDF..."
+        creatingPdfText: "Creating PDF...",
+		graticuleFieldLabelText: 'Active graticule',
+		defaultTabText: "Default",
+		legendTabText: "Legend"
     },
+	
+    "GeoExt.ux.LegendStylePanel.prototype":{
+		iconsSizeText: "Icons size",
+		fontSizeText: "Font size",
+		fontFamilyText: "Font Family",
+		forceLabelsText: "Force label",
+		dpiText: "Dpi",
+		fontStyleText: "Font style",
+		fontEditorText: "Label config",
+		sizeText: "Size"
+    },
+    
+    "GeoExt.ux.GraticuleStylePanel.prototype":{
+        graticuleFieldLabelText: 'Active graticule',
+        sizeText: "Font size",
+        colorText: "Color",
+        fontFamilyText: "Font Family",
+        fontStyleText: "Font style",
+        fontEditorText: "Label config"
+    },
+	
     "gxp.plugins.GeonetworkSearch.prototype":{
         geonetworkSearchText: "View metadata",
         geonetworkSearchActionTip: "View metadata"
@@ -557,5 +586,14 @@ GeoExt.Lang.add("en", {
 		resetText: "Reset",
 		failedUploadingTitle: "Cannot upload file",
 		layerNameLabel: "Layer Name"
-    }
+    },
+
+	"gxp.plugins.PrintSnapshot.prototype" :{
+		noSupportedLayersErrorMsg: "Error occurred while generating the Map Snapshot: No Supported Layers have been found!",
+		generatingErrorMsg: "Error occurred while generating the Map Snapshot",
+		printStapshotTitle: "Print Snapshot",
+		serverErrorMsg: "Error occurred while generating the Map Snapshot: Server Error",
+		menuText: "Snapshot",
+		tooltip: "Snapshot"
+	}
 });

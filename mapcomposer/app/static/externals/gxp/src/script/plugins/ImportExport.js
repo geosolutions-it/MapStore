@@ -52,6 +52,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
     
     /** i18n */
     importexportLabel: "Import / Export",
+	
     labels:{
         "map": {
             "saveText" : "Export Map",
@@ -143,7 +144,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                 handler: function() {
                     self.exportFile(this.fileType)
                 },
-                	iconCls: this.iconClsDefault[type].iconClsExport
+                iconCls: this.iconClsDefault[type].iconClsExport
             });
           
             actions.push({
@@ -153,9 +154,8 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                 handler: function() {    
                     self.importFile(this.fileType);
                 },
-                	iconCls: this.iconClsDefault[type].iconClsImport
-            });
-          
+                iconCls: this.iconClsDefault[type].iconClsImport
+            });          
         }
         
         var menu = new Ext.SplitButton({
@@ -184,13 +184,11 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                     Ext.ButtonToggleMgr.register(button);
                 }
             },
-            menu: new Ext.menu.Menu({
-                
-                 tooltip: "test",
+            menu: new Ext.menu.Menu({                
+                tooltip: "test",
                 items: actions
             })
-        });
-        
+        });        
         
         // return gxp.plugins.ImportExport.superclass.addActions.apply(this, [actions]);
         return gxp.plugins.ImportExport.superclass.addActions.apply(this, [menu]);
@@ -279,10 +277,10 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
         var layer;
         var self = this;
         var map = this.target.mapPanel.map;       
-        try{
+        try {
             layer = (this.exportConf["kml/kmz"].layer) ? this.exportConf["kml/kmz"].layer : this.target.selectedLayer.data.layer;
         }catch (ex){
-            layer= null;
+            layer = null;
         }        
      
         if(layer){
@@ -300,8 +298,8 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                     }
                         
                     if(map.getProjection() != "EPSG:4326"){
-                        var formatWKT= new OpenLayers.Format.WKT();
-                        var transformRequest={
+                        /*var formatWKT = new OpenLayers.Format.WKT();
+                        var transformRequest = {
                             sourceCRS: map.getProjection(),
                             targetCRS: "EPSG:4326",
                             sourceType: "WKT",
@@ -311,8 +309,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                   
                         Ext.Ajax.request({
                             url: this.service+"/Transform" ,
-                            method: 'POST',
-                       
+                            method: 'POST',                       
                             jsonData: transformRequest,
                             scope: this,
                             success: function(response, opts){
@@ -344,33 +341,44 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                                     icon: Ext.MessageBox.ERROR
                                 });
                             }
-                        });
-                    
-                    }else
-                        self.exportKMLFeatures(features);  
-                }else
+                        });*/
+						
+						for(var i=0; i<features.length; i++){
+							if(features[i] && features[i].geometry){
+								features[i].geometry = features[i].geometry.transform(map.getProjection(), new OpenLayers.Projection("EPSG:4326"));
+							}
+						} 
+
+						self.exportKMLFeatures(features); 						
+                    }else{
+						self.exportKMLFeatures(features);  
+					}
+                }else{
                     Ext.Msg.show({
                         title: this.labels["kml/kmz"].kmlExportTitleText,
                         msg: this.labels["kml/kmz"].layerEmptyText,
                         buttons: Ext.Msg.OK,
                         icon: Ext.MessageBox.INFO
-                    });  
-            } else
+                    });
+				}
+            }else{
                 Ext.Msg.show({
                     title: this.labels["kml/kmz"].kmlExportTitleText,
                     msg: this.labels["kml/kmz"].notVectorlayerText,
                     buttons: Ext.Msg.OK,
                     icon: Ext.MessageBox.INFO
-                });  
-        }else
+                });
+			}
+        }else{
             Ext.Msg.show({
                 title: this.labels["kml/kmz"].kmlExportTitleText,
                 msg: this.labels["kml/kmz"].notLayerSelectedText,
                 buttons: Ext.Msg.OK,
                 icon: Ext.MessageBox.INFO
-            }); 
+            });
+		}
                 
-    //self.exportButton.toggle( false );
+		//self.exportButton.toggle( false );
     },
     
     exportKMLFeatures: function(features){
@@ -439,8 +447,10 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
         });		
 		
         form.on("uploadcomplete", function addKMLToLayer(caller, response){
-            // the code to access the uploaded file
-            var code = response.code;
+            // ////////////////////////////////////////////
+			// The code to access the uploaded file
+            // ////////////////////////////////////////////
+			var code = response.code;
             var nfname = response.nfname;
             var url = response.url;
                     
@@ -450,6 +460,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             var appMask = new Ext.LoadMask(Ext.getBody(), {
                 msg:"Please wait, loading..."
             });
+			
             appMask.show();
 							
             Ext.Ajax.request({
@@ -465,15 +476,17 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                     var format = new OpenLayers.Format.KML({
                         extractStyles: true, 
                         extractAttributes: true/*,
-                                maxDepth: 2,
-                                internalProjection: new OpenLayers.Projection(map.getProjection()),
-                                externalProjection: new OpenLayers.Projection("EPSG:4326")*/
+						maxDepth: 2,
+						internalProjection: new OpenLayers.Projection(map.getProjection()),
+						externalProjection: new OpenLayers.Projection("EPSG:4326")*/
                     });
 									
                     var features = format.read(response.responseText);
                     var displayFeatures= new Array;
                     if(features){
-                        // for imported features create a string represention of their value
+					    // /////////////////////////////////////////////////////////////////////
+                        // For imported features create a string represention of their value
+						// /////////////////////////////////////////////////////////////////////
                         for (var i=0; i<features.length; i++){
                             if(features[i].geometry){
                                 var attributes = features[i].attributes;
@@ -489,7 +502,11 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                         }
                                 
                         if(map.getProjection() != "EPSG:4326"){
-                            var formatWKT= new OpenLayers.Format.WKT();
+                            /*// //////////////////////////////////////////////////////////////////////////
+							// This code interact directly with ServiceBox in order to manage 
+							// coordinate translations between kml 4326 and current map CRS, server side
+							// ////////////////////////////////////////////////////////////////////////////
+							var formatWKT = new OpenLayers.Format.WKT();
                             var transformRequest={
                                 sourceCRS: "EPSG:4326",
                                 targetCRS: map.getProjection(),
@@ -500,17 +517,18 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                   
                             Ext.Ajax.request({
                                 url: self.service+"/Transform" ,
-                                method: 'POST',
-                       
+                                method: 'POST',                       
                                 jsonData: transformRequest,
                                 scope: this,
                                 success: function(response, opts){
                                     var targetFeatures;
                                     try{
-                                        targetFeatures=formatWKT.read(response.responseText);  
-                                        for (var i=0; i<targetFeatures.length; i++){
-                                            displayFeatures[i].geometry=targetFeatures[i].geometry;
-                                        }
+                                        targetFeatures = formatWKT.read(response.responseText); 
+										
+										// TODO: fix this.
+                                        //for (var i=0; i<targetFeatures.length; i++){
+                                        //    displayFeatures[i].geometry = targetFeatures[i].geometry; 
+                                        //}
                                     } catch (ex){
                                         Ext.Msg.show({
                                             title: self.kmlImportTitleText,
@@ -522,8 +540,8 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                                         return;
                                     }
                                         
-                                    layer.addFeatures(displayFeatures);
-                                
+                                    //layer.addFeatures(displayFeatures);
+                                    layer.addFeatures(targetFeatures);									
                                 },
                                 failure:  function(response, opts){
                                     Ext.Msg.show({
@@ -533,9 +551,23 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                                         icon: Ext.MessageBox.ERROR
                                     });
                                 }
-                            });  
-                        }else
+                            });*/  
+							
+							for(var i=0; i<displayFeatures.length; i++){
+								if(displayFeatures[i] && displayFeatures[i].geometry){
+									displayFeatures[i].geometry = displayFeatures[i].geometry.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjection());
+								}
+							}
+							
+							layer.addFeatures( displayFeatures );
+                        }else{
                             layer.addFeatures( displayFeatures );
+						}
+						
+						if(layer){
+							var extent = layer.getDataExtent();
+							map.zoomToExtent(extent);
+						}						
                     }else{
                         Ext.Msg.show({
                             title: self.kmlImportTitleText,

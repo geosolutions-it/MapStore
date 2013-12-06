@@ -33,7 +33,9 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 	cercaText: 'Cerca',
 	
 	cosapTitle: 'Ricerca Occupazioni',
-	
+
+	layerCosapTitle: 'Occupazioni Area',
+	layerCosapLogoTitle: 'Occupazioni Icone',
 	
 	viaText: "Via",
 	civicoText: "N. Civico",
@@ -331,20 +333,18 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 		
 		
 		apptarget.mapPanel.map.events.register('preaddlayer', apptarget.mapPanel.map, function (e) {
-			if (e.layer && e.layer.params) {
-				if ((e.layer.params.LAYERS == 'Cosap:occupazioni_concessioni') || 
-					(e.layer.params.LAYERS == 'Cosap:occupazioni_logo')){
-					var aDate = new Date();
-					
-					//Impostazione di un filtro iniziale.
-					e.layer.vendorParams =  {
-						"cql_filter": "APER_DATA_INIZIO <= '"+ aDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + aDate.format('Y-m-d') + "'"
-					};
-					
-					e.layer.mergeNewParams({
-						"cql_filter": "APER_DATA_INIZIO <= '"+ aDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + aDate.format('Y-m-d') + "'"
-					});
-				}
+			if ((e.layer.name == 'Occupazioni Area') || 
+			    (e.layer.name == 'Occupazioni Icone')){
+				var aDate = new Date();
+				
+				//Impostazione di un filtro iniziale.
+				e.layer.vendorParams =  {
+					"cql_filter": "APER_DATA_INIZIO <= '"+ aDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + aDate.format('Y-m-d') + "'"
+				};
+				
+				e.layer.mergeNewParams({
+					"cql_filter": "APER_DATA_INIZIO <= '"+ aDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + aDate.format('Y-m-d') + "'"
+				});
 			}
 		});
 		

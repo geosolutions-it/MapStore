@@ -43,7 +43,16 @@ gxp.plugins.MousePosition = Ext.extend(gxp.plugins.Tool, {
      *  The map where to show the watermark.
      */
     map: null,
-	
+    /**
+     *api: config[config]
+     * custom configuration to pass to the control
+     */
+    config:{},
+    /**
+     *api: config[customCss]
+     * custom css to pass to the control
+     */
+	customCss:"",
 	/** private: method[constructor]
      */
     constructor: function(config) {
@@ -71,7 +80,14 @@ gxp.plugins.MousePosition = Ext.extend(gxp.plugins.Tool, {
      *  Create the map position control and add it to the map.
      */
     addMousePosition: function() {
-        this.map.addControl(new OpenLayers.Control.MousePosition());	
+        var config = this.config;
+        //set display code
+        if(this.displayProjectionCode){
+            config.displayProjection = new OpenLayers.Projection(this.displayProjectionCode);
+        }
+        config.prefix="<span style=\""+this.customCss+"\">" + (config.prefix || "");
+        config.suffix= (config.suffix || "")+ "</span>"
+        this.map.addControl(new OpenLayers.Control.MousePosition(config));	
     }
 });
 

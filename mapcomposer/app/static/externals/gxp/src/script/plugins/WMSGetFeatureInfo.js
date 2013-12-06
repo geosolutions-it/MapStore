@@ -141,6 +141,7 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                     queryVisible: true,
                     layers: [x.getLayer()],
                     vendorParams: vendorParams,
+                    authentication: this.authentication,
                     eventListeners: {
                         beforegetfeatureinfo: function(evt) {
 							//first getFeatureInfo in chain
@@ -264,6 +265,7 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
 			}
 			var items = this.useTabPanel ? [{
 				xtype: 'tabpanel',
+				enableTabScroll: true,
 				activeTab: 0,
 				items: [item]
 			}] : [item];
