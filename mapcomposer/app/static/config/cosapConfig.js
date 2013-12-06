@@ -2,7 +2,6 @@
    "geoStoreBase": "http://sit.comune.bolzano.it/geostore/rest/",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "it",
-   "advancedScaleOverlay": true,
    "proj4jsDefs": {"EPSG:25832": "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs"},
    "gsSources":{ 
 		"bolzano": {
@@ -16,6 +15,7 @@
 				20037508.34,20037508.34
 			],
 			"layerBaseParams":{
+				"buffer":20,
 				"FORMAT":"image/png8",
 				"TILED":true
 			}
@@ -88,17 +88,7 @@
 				"group": "background"
 			},{
 				"source": "bolzano",
-				"title": "Ortofoto 2013 Bolzano/Bozen",
-				"name": "Cartografia:ortofoto2013",
-			    "layersCachedExtent": [
-					1252344.2712499984,5850795.892246094,1271912.1504882798,5870363.771484375
-				],
-				"group": "background",
-				"transparent": false,
-				"format": "image/jpeg"
-			},{
-				"source": "bolzano",
-				"title": "Ortofoto 2010 Bolzano/Bozen",
+				"title": "Ortofoto Bolzano/Bozen",
 				"name": "Cartografia:ortofoto_2010",
 			    "layersCachedExtent": [
 					1252344.2712499984,5850795.892246094,1271912.1504882798,5870363.771484375
@@ -106,216 +96,7 @@
 				"group": "background",
 				"transparent": false,
 				"format": "image/jpeg"
-			},{
-				"source":"bolzano",
-				"name":"Cartografia:particelle",
-				"title":"Particelle",
-				"visibility":false,
-				"opacity":1,
-				"group":"Catasto_Kataster",
-				"selected":false,
-				"format":"image/png8",
-				"styles":"particelle2_it",
-				"transparent":true
-			 },
-			 {
-				"source":"bolzano",
-				"name":"Cartografia:C_VESTIZIONI",
-				"title":"Vestizioni",
-				"visibility":false,
-				"opacity":1,
-				"group":"Catasto_Kataster",
-				"selected":false,
-				"format":"image/png8",
-				"styles":"cl000arc_it",
-				"transparent":true
-			 },
-			 {
-				"source":"bolzano",
-				"name":"Cartografia:C_SIMBOLI",
-				"title":"Simboli",
-				"visibility":false,
-				"opacity":1,
-				"group":"Catasto_Kataster",
-				"selected":false,
-				"format":"image/png8",
-				"styles":"cs000_it",
-				"transparent":true
-			 },
-			 {
-				"source":"bolzano",
-				"name":"puc:U_GROUND_VIABILITA",
-				"title":"U_GROUND_VIABILITA",
-				"visibility":true,
-				"opacity":0.88,
-				"group":"Puc",
-				"selected":false,
-				"format":"image/png8",
-				"styles":"u_ground_viabilita_it",
-				"transparent":true
-			 },
-			 {
-				"source":"bolzano",
-				"name":"puc:U_GROUND_ZONE_TUTELA",
-				"title":"U_GROUND_ZONE_TUTELA",
-				"visibility":true,
-				"opacity":0.84,
-				"group":"Puc",
-				"selected":false,
-				"format":"image/png8",
-				"styles":"u_ground_zone_tutela_it",
-				"transparent":true
-			 },
-			 {
-				"source":"bolzano",
-				"name":"puc:U_GROUND_ZONE_VERDI",
-				"title":"U_GROUND_ZONE_VERDI",
-				"visibility":true,
-				"opacity":0.86,
-				"group":"Puc",
-				"selected":false,
-				"format":"image/png8",
-				"styles":"u_ground_zone_verdi_it",
-				"transparent":true
-			 },
-			 {
-				"source":"bolzano",
-				"name":"puc:U_GROUND_INSEDIAMENTI",
-				"title":"U_GROUND_INSEDIAMENTI",
-				"visibility":true,
-				"opacity":0.89,
-				"group":"Puc",
-				"selected":false,
-				"format":"image/png8",
-				"styles":"u_ground_insediamenti_it",
-				"transparent":true
-			 },
-			 {
-				"source":"bolzano",
-				"name":"puc:U_COMMON",
-				"title":"U_COMMON",
-				"visibility":true,
-				"opacity":0.83,
-				"group":"Puc",
-				"selected":false,
-				"format":"image/png8",
-				"styles":"u_common_it",
-				"transparent":true
-			 },
-			 {
-				"source":"bolzano",
-				"name":"puc:U_OVER",
-				"title":"U_OVER",
-				"visibility":true,
-				"opacity":0.79,
-				"group":"Puc",
-				"selected":false,
-				"format":"image/png8",
-				"styles":"u_over_it",
-				"transparent":true
-			 },
-			 {
-				"source":"bolzano",
-				"name":"puc:U_LINE",
-				"title":"U_LINE",
-				"visibility":true,
-				"opacity":1,
-				"group":"Puc",
-				"selected":false,
-				"format":"image/png8",
-				"styles":"u_line_it",
-				"transparent":true
-			 },
-			 {
-				"source":"bolzano",
-				"name":"puc:U_SYMBOL",
-				"title":"U_SYMBOL",
-				"visibility":true,
-				"opacity":1,
-				"group":"Puc",
-				"selected":false,
-				"format":"image/png8",
-				"styles":"u_symbol_it",
-				"transparent":true
-			 },
-			 {
-				"source":"bolzano",
-				"name":"Ambiente:num_var1",
-				"title":"num_var1",
-				"visibility":true,
-				"opacity":1,
-				"group":"Puc",
-				"selected":false,
-				"format":"image/png8",
-				"styles":"variante_puc",
-				"transparent":true
-			 },
-			 {
-				"source":"bolzano",
-				"name":"Cartografia:PUC_FERROVIA",
-				"title":"Ferrovia",
-				"visibility":false,
-				"opacity":1,
-				"selected":false,
-				"format":"image/png8",
-				"styles":"ferrovia_puc_it",
-				"transparent":true
-			 },
-			 {
-				"source":"bolzano",
-				"name":"Ambiente:Edifici_PUC",
-				"title":"Edifici",
-				"visibility":false,
-				"opacity":1,
-				"selected":false,
-				"format":"image/png8",
-				"styles":"edifici_puc",
-				"transparent":true
-			 },
-			 {
-				"source":"bolzano",
-				"name":"Cartografia:civici",
-				"title":"Numeri Civici",
-				"visibility":false,
-				"opacity":1,
-				"selected":false,
-				"format":"image/png8",
-				"styles":"civici2_it",
-				"transparent":true
-			 },
-			 {
-				"source":"bolzano",
-				"name":"Cartografia:GRAFO_STRADALE_PUC",
-				"title":"Grafo Stradale",
-				"visibility":false,
-				"opacity":1,
-				"selected":false,
-				"format":"image/png8",
-				"styles":"grafo_puc_it",
-				"transparent":true
-			 },
-			 {
-				"source":"bolzano",
-				"name":"Cartografia:autostrada",
-				"title":"Autostrada",
-				"visibility":false,
-				"opacity":1,
-				"selected":false,
-				"format":"image/png8",
-				"styles":"autostrada_it",
-				"transparent":true
-			 },
-			 {
-				"source":"bolzano",
-				"name":"Cartografia:CONFINE_COMUNALE_PUC",
-				"title":"Confine Comunale",
-				"visibility":true,
-				"opacity":1,
-				"selected":false,
-				"format":"image/png8",
-				"styles":"confine_comunale_puc_it",
-				"transparent":true
-			 }
+			}
 		]
 	},
 	"customPanels":[
@@ -366,7 +147,7 @@
 				"defaults": {
 					"style": "padding:5px",                  
 					"baseParams": {
-						"LEGEND_OPTIONS": "dpi:150;forceLabels:on;fontSize:10;minSymbolSize:28"						
+						"LEGEND_OPTIONS": "dpi:150;forceLabels:on;fontSize:10;minSymbolSize:28"	
 					}
 				}
 			}
@@ -421,9 +202,9 @@
 			"actions": ["-"], "actionTarget": "paneltbar"
 		}, {
 			"ptype": "gxp_wmsgetfeatureinfo_menu", 
-			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
-			"useTabPanel": true,
-			"toggleGroup": "toolGroup",
+            "regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
+		    "useTabPanel": true,
+            "toggleGroup": "toolGroup",
 			"actionTarget": {"target": "paneltbar", "index": 20}
 		}, {
 			"actions": ["-"], "actionTarget": "paneltbar"
@@ -446,43 +227,35 @@
 				"index":4
 			}
 		}, {
-			"ptype": "gxp_searchvia",
-			"outputTarget": "searchpanel",
+			"ptype": "gxp_searchcosap",			
 			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
-			"selectionProperties": {
-				"wmsURL": "http://sit.comune.bolzano.it/geoserver/",
-					"selectionLayerTitle": "Selection Layer",
-					"selectionLayerCiviciName": "Cartografia:civici",
-					"selectionLayerViaName": "Ambiente:grafo",
-					"filterCiviciAttribute": "ID",
-					"selectionCiviciStyle": "highlight_point",
-					"filterViaAttribute": "ID_STRASSE",
-					"selectionViaStyle": "highlight"
-			}
-		}, {
-			"ptype": "gxp_searchcatasto",
 			"outputTarget": "searchpanel",
-			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
 			"selectionProperties": {
-				"wmsURL": "http://sit.comune.bolzano.it/geoserver/",
-					"selectionLayerTitle": "Selection Layer"
+			    "wmsURL": "http://sit.comune.bolzano.it/geoserver",
+				"selectionLayerTitle": "Selection Layer",
+				"selectionLayerCiviciName": "Cartografia:civici",
+				"selectionLayerViaName": "Ambiente:grafo",
+				"filterCiviciAttribute": "ID",
+				"selectionCiviciStyle": "highlight_point",
+				"filterViaAttribute": "ID_STRASSE",
+				"selectionViaStyle": "highlight"
 			}
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": false,
 			"id": "addlayer"
-		}, {
-		    "ptype": "gxp_featuremanager",
-		    "id": "featuremanager"
+		},  {
+		  "ptype": "gxp_featuremanager",
+		  "id": "featuremanager"
 	    }, {
-		    "ptype": "gxp_featuregrid",
-		    "featureManager": "featuremanager",
-		    "outputConfig": {
+		  "ptype": "gxp_featuregrid",
+		  "featureManager": "featuremanager",
+		  "outputConfig": {
 			  "id": "featuregrid",
 			  "title": "Features"
-		    },
-		    "outputTarget": "south",
-		    "showExportCSV": true
+		  },
+		  "outputTarget": "south",
+		  "showExportCSV": true
 	    }, {
 		  "ptype": "gxp_bboxqueryform",
 		  "featureManager": "featuremanager",
@@ -512,10 +285,6 @@
 				"distanceUnits": "m"
 			  }
 		  }
-	    }, {
-		   "ptype": "gxp_mouseposition",
-		   "displayProjectionCode":"EPSG:4326",
-		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
-		}
+	    }
 	]
 }

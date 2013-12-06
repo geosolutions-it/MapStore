@@ -30,8 +30,8 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 	cercaText: 'Cerca',
 	
 	cosapTitle: 'Ricerca Occupazioni',
-	layerCosapTitle: 'occupazioni_concessioni',
-	layerCosapLogoTitle: 'occupazioni_logo',
+	layerCosapTitle: 'Occupazioni Area',
+	layerCosapLogoTitle: 'Occupazioni Icone',
 	
 	viaText: "Via",
 	civicoText: "N. Civico",
@@ -316,8 +316,8 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 		
 		
 		apptarget.mapPanel.map.events.register('preaddlayer', apptarget.mapPanel.map, function (e) {
-			if ((e.layer.name == 'occupazioni_concessioni') || 
-			    (e.layer.name == 'occupazioni_logo')){
+			if ((e.layer.name == 'Occupazioni Area') || 
+			    (e.layer.name == 'Occupazioni Icone')){
 				var aDate = new Date();
 				
 				//Impostazione di un filtro iniziale.
