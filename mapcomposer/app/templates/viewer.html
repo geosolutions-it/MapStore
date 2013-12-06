@@ -18,6 +18,11 @@
 		
 		<!-- Externatls OpenLayers libraries to manage other extensions -->
 		<script type="text/javascript" src="script/OpenLayersExt.js"></script> 
+        
+        <!-- Ask RingoJS for debug status -->
+        <script type="text/javascript" src="debug.js"></script> 
+		
+		<link rel="stylesheet" type="text/css" href="theme/app/openlayers.css" />
 
         <!-- GeoExt resources -->
         <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/popup.css">
@@ -25,6 +30,9 @@
         <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/gxtheme-gray.css">
         <script type="text/javascript" src="script/GeoExt.js"></script> 
 
+		<!-- canvg-1.2 resources -->
+		<script type="text/javascript" src="script/canvg-1.2.js"></script> 
+		
         <!-- gxp resources -->
         <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
         <script type="text/javascript" src="script/gxp.js"></script> 
@@ -68,17 +76,6 @@
 		  </div>
 		</div>
 		-->	
-		
-		<!-- This defines the OpenLayers.Control.MousePosition CSS -->
-		<style>
-			.olControlMousePosition {
-				top: 5px !important;
-				right: 5px !important;
-				font-size: 3em;
-				color: lightgrey;
-				height: 20px;
-			}
-		</style>
 	
         <script>
             
@@ -237,7 +234,7 @@
                     iconCls: "icon-geosol",
                     width : 150,
                     handler: function(btn){
-                        window.open('http://geo-solutions.it/contact/', '_blank');
+                        window.open('http://www.geo-solutions.it/contact/', '_blank');
                     }
                 });    */
                 
@@ -262,6 +259,8 @@
 				    defaultLanguage: serverConfig.defaultLanguage,	
                     customPanels: serverConfig.customPanels,
                     proxy: proxy,
+					viewerTools: serverConfig.viewerTools,
+					disableLayerChooser:serverConfig.disableLayerChooser,
                     defaultSourceType: "gxp_wmssource",
                     renderToTab : 'appTabs',
                     portalConfig: serverConfig.portalConfig,
@@ -314,8 +313,8 @@
 					  }
 					  
 					  if(serverConfig){
-					      proxy = location.host.indexOf('localhost:8081') != -1 ? "/proxy/?url=" : serverConfig.proxy; 
-
+					      proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy; 
+						  
 						  // ///////////////////////////////////////////////  
 						  // Run the application when browser is ready
 						  // ///////////////////////////////////////////////
@@ -335,6 +334,7 @@
     </script>
     </head>
     <body>
-        <% render content %>       
+        <% render content %>
+		<div style="visibility:hidden"><canvas id="printcanvas" /></div>
     </body>
 </html>

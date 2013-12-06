@@ -106,6 +106,15 @@ OpenLayers.Control.Graticule = OpenLayers.Class(OpenLayers.Control, {
     gratLayer: null,
 
     /**
+     * APIProperty: lonOffsetY
+     * {Integer} The offset for the X axis of the longitude parameters
+     */
+    lonOffsetX : 0,
+    lonOffsetY : 2,
+    latOffsetX: -2,
+    latOffsetY: 2,
+
+    /**
      * Constructor: OpenLayers.Control.Graticule
      * Create a new graticule control to display a grid of latitude longitude
      * lines.
@@ -321,8 +330,8 @@ OpenLayers.Control.Graticule = OpenLayers.Class(OpenLayers.Control, {
                     value: lon,
                     label: this.labelled?OpenLayers.Util.getFormattedLonLat(lon, "lon", this.labelFormat):"",
                     labelAlign: "cb",
-                    xOffset: 0,
-                    yOffset: 2
+                    xOffset: this.lonOffsetX,
+                    yOffset: this.lonOffsetY
                 }; 
                 this.gratLayer.addFeatures(new OpenLayers.Feature.Vector(labelPos,labelAttrs));
             }
@@ -361,8 +370,8 @@ OpenLayers.Control.Graticule = OpenLayers.Class(OpenLayers.Control, {
                     value: lat,
                     label: this.labelled?OpenLayers.Util.getFormattedLonLat(lat, "lat", this.labelFormat):"",
                     labelAlign: "rb",
-                    xOffset: -2,
-                    yOffset: 2
+                    xOffset: this.latOffsetX,
+                    yOffset: this.latOffsetY
                 }; 
                 this.gratLayer.addFeatures(new OpenLayers.Feature.Vector(labelPos,labelAttrs));
             }

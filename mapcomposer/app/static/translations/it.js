@@ -210,7 +210,12 @@ GeoExt.Lang.add("it", {
         transparentText: "Trasparenza",
         cacheText: "Cache",
         cacheFieldText: "Usa versione in cache",
-        stylesText: "Stile"
+        stylesText: "Stile",
+        summaryText: "Statistiche",
+        summaryInfoText: "Statistiche Raster nella Viewport corrente",
+        loadMaskMsg: "Caricamento ...",
+        noDataMsg: "Nessun dato disponibile per la vista corrente",
+        refreshText: "Aggiorna"
     },
 
     "gxp.WMSStylesDialog.prototype": {
@@ -307,7 +312,30 @@ GeoExt.Lang.add("it", {
 	    legendOnSeparatePageText: "Legenda in una pagina separata?",
 	    compactLegendText: "Legenda compatta?",	
 	    emptyCommentText: "Inserisci qui i commenti.",
-	    creatingPdfText: "Creazione del file PDF..."
+	    creatingPdfText: "Creazione del file PDF...",
+		graticuleFieldLabelText: 'Attiva griglia',
+		defaultTabText: "Predefinito",
+		legendTabText: "Legenda"
+    },
+	
+	"GeoExt.ux.LegendStylePanel.prototype":{
+		iconsSizeText: "Dimensione Icone",
+		fontSizeText: "Dimensione Font",
+		fontFamilyText: "Famiglia Font",
+		forceLabelsText: "Forza etichette",
+		dpiText: "Dpi",
+		fontStyleText: "Stile Font",
+		fontEditorText: "Config. Etichette",
+		sizeText: "Dimensione"
+    },
+    
+    "GeoExt.ux.GraticuleStylePanel.prototype":{
+        graticuleFieldLabelText: 'Attiva griglia',
+        sizeText: "Dimensione",
+        colorText: "Colore",
+        fontFamilyText: "Famiglia Font",
+        fontStyleText: "Stile Font",
+        fontEditorText: "Config. Etichette"
     },
 
     "gxp.plugins.GeonetworkSearch.prototype":{
@@ -585,7 +613,7 @@ GeoExt.Lang.add("it", {
 		failedUploadingTitle: "Impossibile completare l'upload del file",
 		layerNameLabel: "Nome del Layer"
 	},
-	
+
 	"gxp.plugins.SearchComune.prototype":{
 		waitMsg: 'Si prega di attendere ...',	
 		titleError: 'Errore',	
@@ -660,5 +688,14 @@ GeoExt.Lang.add("it", {
 		errorData1: 'Inserire una data di inizio e una data fine valida.',
 		errorData2: 'La data di inizio è maggiore della data di fine.',		
 		errorLayer: 'Layer occupazioni non definito: '
-	}
+	},
+	
+	"gxp.plugins.PrintSnapshot.prototype" :{
+		noSupportedLayersErrorMsg: "Si è verificato un errore durante la generazione della mappa Snapshot: Nessun layer è supportato !",
+		generatingErrorMsg: "Si è verificato un errore durante la generazione della mappa Snapshot",
+		printStapshotTitle: "Stampa Snapshot",
+		serverErrorMsg: "Verificato un errore durante la generazione della mappa Snapshot: Errore del server",
+		menuText: "Snapshot",
+		tooltip: "Snapshot"
+	}	
 });

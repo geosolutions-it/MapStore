@@ -151,103 +151,123 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             this.auth = false;
         }
 		
-		this.mapItems = [
-            {
+		this.mapItems = [];
+		
+		if(config.advancedScaleOverlay){
+			this.mapItems.push({
+                xtype: "gxp_advancedscaleoverlay",
+                topOutUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topOutUnits : null,
+                topInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topInUnits : null,
+                bottomInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.bottomInUnits : null,
+                bottomOutUnits: config.scaleOverlayUnits ? config.bottomOutUnits : null,
+                divisions: 2,
+                subdivisions: 2,
+                showMinorMeasures: true,
+                singleLine: false,
+                abbreviateLabel: false,
+				showMousePosition: config.scaleOverlayUnits ? (config.scaleOverlayUnits.showMousePosition === true ? true : false) : false,
+                enableSetScaleUnits: config.scaleOverlayUnits ? true : false
+            });
+		}else{
+			this.mapItems.push({
                 xtype: "gxp_scaleoverlay",
                 topOutUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topOutUnits : null,
                 topInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topInUnits : null,
                 bottomInUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.bottomInUnits : null,
                 bottomOutUnits: config.scaleOverlayUnits ? config.bottomOutUnits : null,
                 enableSetScaleUnits: config.scaleOverlayUnits ? true : false
-            }, {
-                xtype: "gx_zoomslider",
-                vertical: true,
-                height: 100,
-                plugins: new GeoExt.ZoomSliderTip({
-                    template: this.zoomSliderText
-                })
-            }
-        ];
+            });
+		}		
+		
+		this.mapItems.push({
+			xtype: "gx_zoomslider",
+			vertical: true,
+			height: 100,
+			plugins: new GeoExt.ZoomSliderTip({
+				template: this.zoomSliderText
+			})
+		});
         
 		// ///////////////////////////////////////////////////////////////////////////////////
         // both the Composer and the Viewer need to know about the viewerTools
         // First row in each object is needed to correctly render a tool in the treeview
         // of the embed map dialog. TODO: make this more flexible so this is not needed.
 		// ////////////////////////////////////////////////////////////////////////////////////
-        config.viewerTools = [
-		    {
-                leaf: true, 
-                text: gxp.plugins.AddLayers.prototype.addActionTip, 
-                checked: true, 
-                iconCls: gxp.plugins.AddLayers.prototype.iconCls,
-                ptype: "gxp_addlayers"
-            },
-			{
-                actions: ["-"], checked: true
-            },
-            {
-                leaf: true, 
-                text: gxp.plugins.ZoomToExtent.prototype.tooltip, 
-                checked: true, 
-                iconCls: gxp.plugins.ZoomToExtent.prototype.iconCls,
-                ptype: "gxp_zoomtoextent"
-            }, {
-                leaf: true, 
-                text: gxp.plugins.Navigation.prototype.tooltip, 
-                checked: true, 
-                iconCls: "gxp-icon-pan",
-                ptype: "gxp_navigation", 
-                toggleGroup: this.toggleGroup
-            }, {
-                actions: ["-"], checked: true
-            }, {
-                leaf: true, 
-                text: gxp.plugins.ZoomBox.prototype.zoomInTooltip + " / " + gxp.plugins.ZoomBox.prototype.zoomOutTooltip, 
-                checked: true, 
-                iconCls: "gxp-icon-zoombox-in",
-                numberOfButtons: 2,
-                ptype: "gxp_zoombox", 
-                toggleGroup: this.toggleGroup
-            }, {
-                leaf: true, 
-                text: gxp.plugins.Zoom.prototype.zoomInTooltip + " / " + gxp.plugins.Zoom.prototype.zoomOutTooltip, 
-                checked: true, 
-                iconCls: "gxp-icon-zoom-in",
-                numberOfButtons: 2,
-                ptype: "gxp_zoom"
-            }, {
-                actions: ["-"], checked: true
-            }, {
-                leaf: true, 
-                text: gxp.plugins.NavigationHistory.prototype.previousTooltip + " / " + gxp.plugins.NavigationHistory.prototype.nextTooltip, 
-                checked: true, 
-                iconCls: "gxp-icon-zoom-previous",
-                numberOfButtons: 2,
-                ptype: "gxp_navigationhistory"
-            }, {
-                actions: ["-"], checked: true
-            }, {
-                leaf: true, 
-                text: gxp.plugins.WMSGetFeatureInfo.prototype.infoActionTip, 
-                checked: true, 
-                iconCls: "gxp-icon-getfeatureinfo",
-                ptype: "gxp_wmsgetfeatureinfo", 
-                toggleGroup: this.toggleGroup
-            }, {
-                actions: ["-"], checked: true
-            }, {
-                leaf: true, 
-                text: gxp.plugins.Measure.prototype.measureTooltip, 
-                checked: true, 
-                iconCls: "gxp-icon-measure-length",
-                ptype: "gxp_measure", 
-                controlOptions: {immediate: true},
-                toggleGroup: this.toggleGroup
-            }, {
-                actions: ["-"], checked: true
-            }
-        ];
-
+		if(!config.viewerTools){
+			config.viewerTools = [
+				{
+					leaf: true, 
+					text: gxp.plugins.AddLayers.prototype.addActionTip, 
+					checked: true, 
+					iconCls: gxp.plugins.AddLayers.prototype.iconCls,
+					ptype: "gxp_addlayers"
+				},
+				{
+					actions: ["-"], checked: true
+				},
+				{
+					leaf: true, 
+					text: gxp.plugins.ZoomToExtent.prototype.tooltip, 
+					checked: true, 
+					iconCls: gxp.plugins.ZoomToExtent.prototype.iconCls,
+					ptype: "gxp_zoomtoextent"
+				}, {
+					leaf: true, 
+					text: gxp.plugins.Navigation.prototype.tooltip, 
+					checked: true, 
+					iconCls: "gxp-icon-pan",
+					ptype: "gxp_navigation", 
+					toggleGroup: this.toggleGroup
+				}, {
+					actions: ["-"], checked: true
+				}, {
+					leaf: true, 
+					text: gxp.plugins.ZoomBox.prototype.zoomInTooltip + " / " + gxp.plugins.ZoomBox.prototype.zoomOutTooltip, 
+					checked: true, 
+					iconCls: "gxp-icon-zoombox-in",
+					numberOfButtons: 2,
+					ptype: "gxp_zoombox", 
+					toggleGroup: this.toggleGroup
+				}, {
+					leaf: true, 
+					text: gxp.plugins.Zoom.prototype.zoomInTooltip + " / " + gxp.plugins.Zoom.prototype.zoomOutTooltip, 
+					checked: true, 
+					iconCls: "gxp-icon-zoom-in",
+					numberOfButtons: 2,
+					ptype: "gxp_zoom"
+				}, {
+					actions: ["-"], checked: true
+				}, {
+					leaf: true, 
+					text: gxp.plugins.NavigationHistory.prototype.previousTooltip + " / " + gxp.plugins.NavigationHistory.prototype.nextTooltip, 
+					checked: true, 
+					iconCls: "gxp-icon-zoom-previous",
+					numberOfButtons: 2,
+					ptype: "gxp_navigationhistory"
+				}, {
+					actions: ["-"], checked: true
+				}, {
+					leaf: true, 
+					text: gxp.plugins.WMSGetFeatureInfo.prototype.infoActionTip, 
+					checked: true, 
+					iconCls: "gxp-icon-getfeatureinfo",
+					ptype: "gxp_wmsgetfeatureinfo", 
+					toggleGroup: this.toggleGroup
+				}, {
+					actions: ["-"], checked: true
+				}, {
+					leaf: true, 
+					text: gxp.plugins.Measure.prototype.measureTooltip, 
+					checked: true, 
+					iconCls: "gxp-icon-measure-length",
+					ptype: "gxp_measure", 
+					controlOptions: {immediate: true},
+					toggleGroup: this.toggleGroup
+				}, {
+					actions: ["-"], checked: true
+				}
+			];
+		}
         
 		if(config.customTools)
 		{
@@ -350,6 +370,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         var config = Ext.util.JSON.decode(json);        
         if(config && config.map){
             config.isLoadedFromConfigFile = true;
+			config = Ext.applyIf(config, this.initialConfig);
             app = new GeoExplorer.Composer(config, this.mapId, this.auth, this.fScreen);
         }else{
             Ext.Msg.show({
@@ -1254,6 +1275,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 		delete state.viewerTools;
 		delete state.georeferences;
 		delete state.customPanels;
+		delete state.portalConfig;
+		delete state.disableLayerChooser;
 		
         return state;
     }

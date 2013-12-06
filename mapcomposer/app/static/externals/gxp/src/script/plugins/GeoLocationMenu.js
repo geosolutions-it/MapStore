@@ -348,6 +348,7 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
 		this.reverseGeoCoderButton = new Ext.Button(
 			Ext.apply({
 				enableToggle: true,
+				toggleGroup: this.toggleGroup,
 				width: this.geoButtonsWidth,
 				text: this.buttonText,
 				tooltip: this.buttonText,

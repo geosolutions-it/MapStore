@@ -256,6 +256,7 @@ OpenLayers.WPSProcess = OpenLayers.Class({
                     
                     OpenLayers.Request.POST({
                         url: me.client.servers[me.server].url,
+                        headers: options.headers || undefined,
                         data: new OpenLayers.Format.WPSExecute().write(me.description),
                         success: function(response) {
                             

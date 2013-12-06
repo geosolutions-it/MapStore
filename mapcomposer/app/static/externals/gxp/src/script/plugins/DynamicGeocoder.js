@@ -82,7 +82,7 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
 	 *  duration in seconds
 	 */
     markerFadeoutDelay: 5,  
-    
+    fadeOut:true,
 	/** private: method[createCombo]
      *  Creates a new *GeocoderCombo, using the given geocoder type.
      */
@@ -232,8 +232,9 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
 			//
 			// Fade out for the marker icon.
 			//
-			Ext.get(markers.id).fadeOut({ endOpacity: 0.01, duration: this.markerFadeoutDelay});	//fadeout marker, no change 0.01
-
+            if(this.fadeOut){
+                Ext.get(markers.id).fadeOut({ endOpacity: 0.01, duration: this.markerFadeoutDelay});	//fadeout marker, no change 0.01
+            }
 		} else {
 			map.setCenter(location.bounds);
 		}        

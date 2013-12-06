@@ -133,7 +133,8 @@ OpenLayers.WPSClient = OpenLayers.Class({
         process.execute({
             inputs: options.inputs,
             success: options.success,
-            scope: options.scope
+            scope: options.scope,
+            headers: options.headers
         });
     },
     
