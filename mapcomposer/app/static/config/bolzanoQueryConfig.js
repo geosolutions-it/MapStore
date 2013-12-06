@@ -356,6 +356,19 @@
 				"distanceUnits": "m"
 			  }
 		  }
-	    }
+	    }, {
+			"ptype": "gxp_overviewmap",
+			"layers": [
+				{
+					"source":"bolzano",
+					"name":"Cartografia:Confine_comunale",
+					"title":"Confine_comunale"
+				}, {
+					"source":"bolzano",
+					"name":"Ambiente:quartieri",
+					"title":"quartieri"
+				}
+			]
+		}
 	]
 }

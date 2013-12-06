@@ -222,7 +222,8 @@ gxp.plugins.SearchCatasto = Ext.extend(gxp.plugins.Tool, {
 											var customParams = {
 												cql_filter: "NUM='" + particella +"' AND COM=" + comCat,
 												styles: 'highlight_polygon',
-												displayInLayerSwitcher: false
+												displayInLayerSwitcher: false,
+												enableLang: false
 											};
 		
 											var opts = {
