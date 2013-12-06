@@ -227,7 +227,7 @@
 				"outputFilename":"mapstore-print"
 			},
 			"ignoreLayers": "Google Hybrid,Bing Aerial,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
-			"printService":"http://localhost:8080/geoserver/pdf/",
+			"printService":"http://geoserver:8080/geoserver/pdf/",
 			"addGraticuleControl": false,
 			"addLandscapeControl": true,
 			"appendLegendOptions": true,
