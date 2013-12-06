@@ -318,8 +318,44 @@
                       "customConfig":{
                          "hideLabel":false
                       }
-                   },
-                   {
+                   },{
+                      "ref":"tipo",
+                      "label":"Tipo",
+                      "xtype":"checkboxgroup",
+                      "checked":false,
+                      "columns":2,
+                      "checkboxes":[
+                         {
+                            "boxLabel":"Numero verde",
+                            "checked":true,
+                            "cql_filter":"CodAvvisoTipo  = 'AE'"
+                         },
+                         {
+                            "boxLabel":"Telecontrollo",
+                            "checked":true,
+                            "cql_filter":"CodAvvisoTipo  = 'AT'"
+                         },
+                         {
+                            "boxLabel":"Manutenzione",
+                            "checked":true,
+                            "cql_filter":"CodAvvisoTipo  = 'AI'"
+                         },
+                         {
+                            "boxLabel":"Laboratorio",
+                            "checked":true,
+                            "cql_filter":"CodAvvisoTipo  = 'AL'"
+                         },
+                         {
+                            "boxLabel":"Giro d'impianto",
+                            "checked":true,
+                            "cql_filter":"CodAvvisoTipo  = 'AG'"
+                         }
+                      ],
+                      "emptyFilter":"1=0",
+                      "customConfig":{
+                         "hideLabel":false
+                      }
+                   },{
                       "ref":"apertura",
                       "label":"Data Apertura",
                       "xtype":"radiogroup",
