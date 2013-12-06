@@ -299,7 +299,7 @@
                             "cql_filter":"IDAvvisoStato = 3"
                          },
                          {
-                            "boxLabel":"Ripristino Stradale",
+                            "boxLabel":"Chiusura",
                             "checked":false,
                             "cql_filter":"IDAvvisoStato = 4"
                          },
