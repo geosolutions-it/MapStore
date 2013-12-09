@@ -45,7 +45,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
     ptype: "nrl_agromet",
 	/** i18n **/
 	outputTypeText:'Output Type',
-	areaFilter: "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
+	areaFilter: "province NOT IN ('DISPUTED TERRITORY','DISPUTED AREA')",
 	seasonText:'Season',
     titleText:'AgroMet',
 	/** layer Name **/
