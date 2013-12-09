@@ -165,7 +165,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                                         submitButton.destroy();
                                         delete submitButton;
                                         this.output.addButton({              
-                                            url: this.dataUrl,//TODO externalize this
+                                            url: this.dataUrl,
                                             xtype: 'gxp_nrlCropStatusTabButton',
                                             ref: '../submitButton',
                                             highChartExportUrl: this.highChartExportUrl,
@@ -184,6 +184,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                                         delete submitButton;
                                         this.output.addButton({               
                                             xtype: 'gxp_nrlCropStatusChartButton',
+                                            url: this.dataUrl,
                                             ref: '../submitButton',
                                             highChartExportUrl: this.highChartExportUrl,
                                             target:this.target,
@@ -215,6 +216,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 						},{
 							xtype:'nrl_single_aoi_selector',
 							target:this.target,
+                            layerStyle:this.layerStyle,
                             name:'region_list',
 							ref:'singleFeatureSelector',
 							featureSelectorConfigs:this.featureSelectorConfigs,
