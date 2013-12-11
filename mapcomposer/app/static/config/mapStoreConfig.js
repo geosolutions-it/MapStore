@@ -212,7 +212,6 @@
 		{
 			"ptype": "gxp_zoomtoextent",
 			"extent": [	6770799.251963,2705604.806669,8826743.330978,4442826.247111 ],
-			"tooltip":"zoom to Pakistan Extent",
 			"actionTarget": {"target": "paneltbar", "index": 2}
 		 },{
 		  "ptype":"gxp_print",
@@ -249,7 +248,7 @@
 	   },
 	   {
 		  "ptype":"nrl_crop_data",
-         "layerStyle":{"strokeColor":"red","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
+		"layerStyle":{"strokeColor":"red","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
           "dataUrl":"http://84.33.2.75/geoserver/ows",
 		  "rangesUrl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
 		  "highChartExportUrl" :"http://84.33.2.75/highcharts-export/",
@@ -264,7 +263,7 @@
 		  "outputTarget":"nrl"
 	   },{
 	    "ptype":"nrl_agromet",
-        "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
+            "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
         "dataUrl":"http://84.33.2.75/geoserver/ows",
 		"factorsurl":"http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
 		"highChartExportUrl" :"http://84.33.2.75/highcharts-export/",
@@ -276,14 +275,12 @@
 		  },
 		  "outputTarget":"nrl"
 	  },{
-		 "ptype":"nrl_crop_status",
-         "layerStyle":{"strokeColor":"blue","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
+		"ptype":"nrl_crop_status",
+            "layerStyle":{"strokeColor":"blue","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"},
 		 "factorsurl":"http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
          "rangesUrl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
 		 "dataUrl":"http://84.33.2.75/geoserver/ows",
 		 "highChartExportUrl" :"http://84.33.2.75/highcharts-export/",
-          "layerStyle":{"strokeColor":"yellow","strokeWidth":1,"fillOpacity":0.3,"cursor":"pointer"},
-
 		  "outputConfig":{
 			 "id":"nrlCropStatus"
 			 
@@ -310,6 +307,7 @@
 		    },
 		  "defaultAreaTypeMap": "district",
 		  "disclaimerText": "Disclaimer: Data, information and products in this report are provided \"as is\", without warranty of any kind, either express or implied. All rights are reserved by the Government of Pakistan",
+
 		  "outputTarget":"nrl"
 	   },{
 		  "ptype":"gxp_printreporthelper",
