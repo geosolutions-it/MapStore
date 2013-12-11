@@ -201,11 +201,11 @@
             "jiffleStyle" : "jiffle_style",
             "showSelectionSummary" : "true",
             "defaultStyle" : {
-			  "strokeColor": "#ee9900",
-			  "fillColor"  : "#ee9900",
-			  "fillOpacity": 0.4,
-			  "strokeWidth": 1
-			},
+		        "fillColor"   : "#FFFFFF",
+		        "strokeColor" : "#FF0000",
+		        "fillOpacity" : 0.5,
+		        "strokeWidth" : 1
+		    },
             "selectStyle" : {
 		        "fillColor"   : "#FFFFFF",
 		        "strokeColor" : "#FF0000",
@@ -213,11 +213,17 @@
 		        "strokeWidth" : 1
 		    },
 			"temporaryStyle" : {
-		        "fillColor"   : "#FFFFFF",
-		        "strokeColor" : "#FF0000",
-		        "fillOpacity" : 0.5,
-		        "strokeWidth" : 1
-		    },
+				  "strokeColor": "#ee9900",
+				  "fillColor": "#ee9900",
+				  "fillOpacity": 0.4,
+				  "strokeWidth": 1
+			 },
+		    "bufferOptions": {
+				"minValue": 1,
+				"maxValue": 1000000,
+				"decimalPrecision": 2,
+				"distanceUnits": "m"
+			 },
 			"classesIndexes" : [
 				[1, "Aeroporti"],
 				[2, "Aree a pascolo naturale e praterie d'alta quota"],

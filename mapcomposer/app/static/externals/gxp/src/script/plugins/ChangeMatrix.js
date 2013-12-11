@@ -278,102 +278,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 	},
 
 	// Begin i18n.
-	/** api: config[comboEmptyText]
-	 * ``String``
-	 * Text for empty Combo Selection Method (i18n).
-	 */
-	comboEmptyText : "Select a method..",
 
-	/** api: config[comboSelectionMethodLabel]
-	 * ``String``
-	 * Text for Label Combo Selection Method (i18n).
-	 */
-	comboSelectionMethodLabel : "Selection",
-
-	/** api: config[comboPolygonSelection]
-	 * ``String``
-	 * Text for Label Polygon (i18n).
-	 */
-	comboPolygonSelection : 'Polygon',
-
-	/** api: config[comboBBOXSelection]
-	 * ``String``
-	 * Text for Label BBOX (i18n).
-	 */
-	comboBBOXSelection : 'BBOX',
-
-	/** api: config[northLabel]
-	 * ``String``
-	 * Text for Label North (i18n).
-	 */
-	northLabel : "North",
-
-	/** api: config[westLabel]
-	 * ``String``
-	 * Text for Label West (i18n).
-	 */
-	westLabel : "West",
-
-	/** api: config[eastLabel]
-	 * ``String``
-	 * Text for Label East (i18n).
-	 */
-	eastLabel : "East",
-
-	/** api: config[southLabel]
-	 * ``String``
-	 * Text for Label South (i18n).
-	 */
-	southLabel : "South",
-
-	/** api: config[aoiFieldSetTitle]
-	 * ``String``
-	 * Text for ROI FieldSet Title (i18n).
-	 */
-	aoiFieldSetTitle : "Region Of Interest",
-
-	/** api: config[setAoiText]
-	 * ``String``
-	 * Text for empty Combo Selection Method (i18n).
-	 */
-	setAoiText : "SetROI",
-
-	/** api: config[setAoiTooltip]
-	 * ``String``
-	 * Text for empty Combo Selection Method (i18n).
-	 */
-	setAoiTooltip : 'Enable the SetBox control to draw a ROI (BBOX) on the map',
-
-	/** api: config[areaLabel]
-	 * ``String``
-	 * Text for the Selection Summary Area Label (i18n).
-	 */
-	areaLabel: "Area",
-	
-	/** api: config[perimeterLabel]
-	 * ``String``
-	 * Text for the Selection Summary Perimeter Label (i18n).
-	 */
-	perimeterLabel: "Perimeter",
-	
-	/** api: config[radiusLabel]
-	 * ``String``
-	 * Text for the Selection Summary Radius Label (i18n).
-	 */
-	radiusLabel: "Radius",
-	
-	/** api: config[centroidLabel]
-	 * ``String``
-	 * Text for the Selection Summary Centroid Label (i18n).
-	 */
-	centroidLabel: "Centroid",
-	
-	/** api: config[selectionSummary]
-	 * ``String``
-	 * Text for the Selection Summary (i18n).
-	 */
-	selectionSummary: "Selection Summary",
-	
 	/** api: config[chgMatrixFieldSetTitle]
 	 * ``String``
 	 * Text for empty Combo Selection Method (i18n).
@@ -436,6 +341,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 	resultWin : null,
 	loadingMask : null,
 	errorTimer : null,
+	roiFieldSet : null,
 
 	/**
 	 *
@@ -511,400 +417,17 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 		var map = this.target.mapPanel.map;
 		map.enebaleMapEvent = true;
 
-		// the spatialFilterOptions
-		me.spatialFilterOptions = {
-			lonMax : 20037508.34, //90,
-			lonMin : -20037508.34, //-90,
-			latMax : 20037508.34, //180,
-			latMin : -20037508.34 //-180
+		me.roiFieldSet = {
+				ref: 'roiFieldSet',
+				xtype:'gxp_spatial_selector_field',
+				mapPanel: this.target.mapPanel,
+				showSelectionSummary: this.showSelectionSummary,
+				defaultStyle: this.defaultStyle,
+				selectStyle: this.selectStyle,
+				temporaryStyle: this.temporaryStyle,
+				bufferOptions: this.bufferOptions
 		};
-
-		// ///////////////////
-		// The ROI Select Fieldset
-		// ///////////////////
-
-		this.northField = new Ext.form.NumberField({
-			fieldLabel : this.northLabel,
-			id : "NorthBBOX",
-			width : 80,
-			minValue : this.spatialFilterOptions.lonMin,
-			maxValue : this.spatialFilterOptions.lonMax,
-			decimalPrecision : 5,
-			allowDecimals : true,
-			hideLabel : false
-		});
-
-		this.westField = new Ext.form.NumberField({
-			fieldLabel : this.westLabel,
-			id : "WestBBOX",
-			width : 80,
-			minValue : this.spatialFilterOptions.latMin,
-			maxValue : this.spatialFilterOptions.latMax,
-			decimalPrecision : 5,
-			allowDecimals : true,
-			hideLabel : false
-		});
-
-		this.eastField = new Ext.form.NumberField({
-			fieldLabel : this.eastLabel,
-			id : "EastBBOX",
-			width : 80,
-			minValue : this.spatialFilterOptions.latMin,
-			maxValue : this.spatialFilterOptions.latMax,
-			decimalPrecision : 5,
-			allowDecimals : true,
-			hideLabel : false
-		});
-
-		this.southField = new Ext.form.NumberField({
-			fieldLabel : this.southLabel,
-			id : "SouthBBOX",
-			width : 80,
-			minValue : this.spatialFilterOptions.lonMin,
-			maxValue : this.spatialFilterOptions.lonMax,
-			decimalPrecision : 5,
-			allowDecimals : true,
-			hideLabel : false
-		});
-
-		//
-		// Geographical Filter Field Set
-		//
-		var selectAOI = new OpenLayers.Control.SetBox({
-			map : map,
-			aoiStyle : new OpenLayers.StyleMap({
-				"default" : this.defaultStyle,
-				"select": this.selectStyle,
-				"temporary": this.temporaryStyle
-			}),
-			onChangeAOI : function() {
-				var aoiArray = this.currentAOI.split(',');
-
-				document.getElementById('WestBBOX').value = aoiArray[0];
-				document.getElementById('SouthBBOX').value = aoiArray[1];
-				document.getElementById('EastBBOX').value = aoiArray[2];
-				document.getElementById('NorthBBOX').value = aoiArray[3];
-				
-				var bounds = new OpenLayers.Bounds(aoiArray);
-				me.addFeatureSummary('bbox', bounds);
-			}
-		});
-
-		map.addControl(selectAOI);
-
-		this.aoiButton = new Ext.Button({
-			text : this.setAoiText,
-			tooltip : this.setAoiTooltip,
-			enableToggle : true,
-			toggleGroup : this.toggleGroup,
-			iconCls : 'aoi-button',
-			height : 50,
-			width : 50,
-			listeners : {
-				scope : this,
-				toggle : function(button, pressed) {
-					if (pressed) {
-
-						//
-						// Reset the previous control
-						//
-						var aoiLayer = map.getLayersByName("AOI")[0];
-
-						if (aoiLayer)
-							map.removeLayer(aoiLayer);
-
-						if (this.northField.isDirty() && this.southField.isDirty() && this.eastField.isDirty() && this.westField.isDirty()) {
-							this.northField.reset();
-							this.southField.reset();
-							this.eastField.reset();
-							this.westField.reset();
-						}
-
-						//
-						// Activating the new control
-						//
-						selectAOI.activate();
-					} else {
-						selectAOI.deactivate();
-					}
-				}
-			}
-		});
-
-		this.spatialFieldSet = new Ext.form.FieldSet({
-			//title: this.aoiFieldSetTitle,
-			autoHeight : true,
-			hidden : false,
-			autoWidth : true,
-			autoScroll : false,
-			collapsed : false,
-			checkboxToggle : false,
-			autoHeight : true,
-			layout : 'table',
-			layoutConfig : {
-				columns : 3
-			},
-			listeners : {
-				scope : this,
-				afterrender : function(cmp) {
-					//cmp.collapse(true);
-					//cmp.hide();
-					//cmp.disable();
-				}
-			},
-			defaults : {
-				// applied to each contained panel
-				bodyStyle : 'padding:3px;'
-			},
-			bodyCssClass : 'aoi-fields',
-			items : [{
-				layout : "form",
-				cellCls : 'spatial-cell',
-				labelAlign : "top",
-				border : false,
-				colspan : 3,
-				items : [this.northField]
-			}, {
-				layout : "form",
-				cellCls : 'spatial-cell',
-				labelAlign : "top",
-				border : false,
-				items : [this.westField]
-			}, {
-				layout : "form",
-				cellCls : 'spatial-cell',
-				border : false,
-				items : [this.aoiButton]
-			}, {
-				layout : "form",
-				cellCls : 'spatial-cell',
-				labelAlign : "top",
-				border : false,
-				items : [this.eastField]
-			}, {
-				layout : "form",
-				cellCls : 'spatial-cell',
-				labelAlign : "top",
-				border : false,
-				colspan : 3,
-				items : [this.southField]
-			}]
-		});
-
-		// ///////////////////////////////////////////
-		// ROI Complex FieldSet
-		// ///////////////////////////////////////////
-		this.roiFieldSet = new Ext.form.FieldSet({
-			title : this.aoiFieldSetTitle,
-			autoHeight : true,
-			hidden : false,
-			autoWidth : true,
-			collapsed : false,
-			checkboxToggle : true,
-			autoHeight : true,
-			layout : 'table',
-			layoutConfig : {
-				columns : 1
-			},
-			listeners : {
-				scope : this,
-				afterrender : function(cmp) {
-					cmp.collapse(true);
-				},
-				collapse : function(cmp) {
-					// //////////////////////////
-					// Reset the previous control
-					// //////////////////////////
-					var aoiLayer = map.getLayersByName("AOI")[0];
-
-					if (aoiLayer)
-						map.removeLayer(aoiLayer);
-
-					selectAOI.deactivate();
-					if (this.aoiButton.pressed) {
-						this.aoiButton.toggle();
-					}
-				}
-			},
-			bodyCssClass : 'aoi-fields',
-
-			items : [{
-				xtype : 'combo',
-				anchor : '100%',
-				id : 'selectionMethod_id',
-				ref : '../outputType',
-				fieldLabel : this.comboSelectionMethodLabel,
-				typeAhead : true,
-				triggerAction : 'all',
-				lazyRender : false,
-				mode : 'local',
-				name : 'roiSelectionMethod',
-				forceSelected : true,
-				emptyText : this.comboEmptyText,
-				allowBlank : false,
-				autoLoad : true,
-				displayField : 'label',
-				valueField : 'value',
-				value : 'bbox',
-				width : 275,
-				editable : false,
-				readOnly : false,
-				store : new Ext.data.JsonStore({
-					fields : [{
-						name : 'name',
-						dataIndex : 'name'
-					}, {
-						name : 'label',
-						dataIndex : 'label'
-					}, {
-						name : 'value',
-						dataIndex : 'value'
-					}],
-					data : [{
-						name : 'BBOX',
-						label : this.comboBBOXSelection,
-						value : 'bbox'
-					}, {
-						name : 'Polygon',
-						label : this.comboPolygonSelection,
-						value : 'polygon'
-					}]
-				}),
-				listeners : {
-					select : function(c, record, index) {
-
-						// For every enabled tool in the toolbar, toggle the button off (deactivating the tool)
-						// Then add a listener on 'click' and 'menushow' to reset the BBoxQueryForm to disable all active tools
-						var disabledItems = [];
-
-						me.target.toolbar.items.each(function(item) {
-							if (!item.disabled) {
-								disabledItems.push(item);
-							}
-						});
-
-						for (var i = 0; i < disabledItems.length; i++) {
-							if (disabledItems[i].toggleGroup) {
-								if (disabledItems[i].scope && disabledItems[i].scope.actions) {
-									for (var a = 0; a < disabledItems[i].scope.actions.length; a++) {
-										disabledItems[i].scope.actions[a].toggle(false);
-
-										if (disabledItems[i].scope.actions[a].menu) {
-											for (var b = 0; b < disabledItems[i].scope.actions[a].menu.items.items.length; b++) {
-												disabledItems[i].scope.actions[a].menu.items.items[b].disable();
-											}
-										}
-
-										disabledItems[i].scope.actions[a].on({
-											"click" : function(evt) {
-												if (me.draw) {
-													me.draw.deactivate();
-												};
-												// TODO 'Circle' and 'Poligon' tool have no other visual way to display
-												// their statuses (active, not active), apart from the combobox
-												// The clearValue() is intended to tell user that the tool is not enabled
-												//me.output[0].outputType.clearValue();
-
-											},
-											"menushow" : function(evt) {
-												var menuItems = evt.menu.items.items;
-												for (var i = 0; i < menuItems.length; i++) {
-													menuItems[i].enable();
-												}
-												if (me.draw) {
-													me.draw.deactivate();
-												};
-												//me.output[0].outputType.clearValue();
-											},
-											scope : this
-										});
-									}
-								}
-							}
-						}
-
-						// //////////////////////////
-						// Reset the previous control
-						// //////////////////////////
-						var aoiLayer = map.getLayersByName("AOI")[0];
-
-						if (aoiLayer)
-							map.removeLayer(aoiLayer);
-
-						if (this.aoiButton.pressed) {
-							this.aoiButton.toggle();
-						}
-
-						// //////////////////////////
-						// Which control we selected?
-						// //////////////////////////
-						var outputValue = c.getValue();
-						if (me.draw) {
-							me.draw.deactivate();
-						};
-						if (me.drawings) {
-							me.drawings.destroyFeatures();
-						};
-						if (me.filterCircle) {
-							me.filterCircle = new OpenLayers.Filter.Spatial({});
-						};
-						if (me.filterPolygon) {
-							me.filterPolygon = new OpenLayers.Filter.Spatial({});
-						};
-
-						// /////////////////////////
-						// Must activate/deactivate
-						//   the right controls...
-						// /////////////////////////
-						if (outputValue == 'bbox') {
-							me.spatialFieldSet.show();
-							me.spatialFieldSet.enable();
-						} else if (outputValue == 'polygon') {
-							me.spatialFieldSet.hide();
-							me.spatialFieldSet.disable();
-							
-							me.drawings = new OpenLayers.Layer.Vector({}, {
-								displayInLayerSwitcher : false,
-								styleMap : new OpenLayers.StyleMap({
-									"default" : this.defaultStyle,
-									"select": this.selectStyle,
-									"temporary": this.temporaryStyle
-								})
-							});
-
-							me.target.mapPanel.map.addLayer(me.drawings);
-
-							me.draw = new OpenLayers.Control.DrawFeature(me.drawings, OpenLayers.Handler.Polygon);
-
-							// disable pan while drawing
-							// TODO: make it configurable
-							me.draw.handler.stopDown = true;
-							me.draw.handler.stopUp = true;
-
-							me.target.mapPanel.map.addControl(me.draw);
-							me.draw.activate();
-
-							me.drawings.events.on({
-								"featureadded" : function(event) {
-									me.filterPolygon = event.feature.geometry;
-									
-									me.addFeatureSummary(outputValue, event.feature);
-								},
-								"beforefeatureadded" : function(event) {
-									me.drawings.destroyFeatures();
-								}
-							});
-
-						} else {
-							me.spatialFieldset.hide();
-							me.spatialFieldset.disable();
-						}
-					},
-					scope : this
-				}
-			}, me.spatialFieldSet]
-		});
-
+		
 		// ///////////////////
 		// The main form
 		// ///////////////////
@@ -942,7 +465,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 					displayField : 'title',
 					validator : function(value) {
 						if (Ext.isEmpty(value))
-							return me.changeMatrixEmptyLayer
+							return me.changeMatrixEmptyLayer;
 						return true;
 					},
 					listeners : {
@@ -970,6 +493,9 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 							}
 						},
 						beforeselect : function(combo, record, index) {
+							me.chgMatrixForm.roiFieldSet.removeFeatureSummary();
+							me.chgMatrixForm.roiFieldSet.reset();
+							me.chgMatrixForm.roiFieldSet.collapse();
 							me.chgMatrixForm.getForm().reset();
 						},
 						select : function(combo, record, index) {
@@ -1033,7 +559,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 					displayField : 'time',
 					validator : function(value) {
 						if (Ext.isEmpty(value))
-							return me.changeMatrixEmptyFilter
+							return me.changeMatrixEmptyFilter;
 						return true;
 					}
 				}, {
@@ -1053,7 +579,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 					displayField : 'time',
 					validator : function(value) {
 						if (Ext.isEmpty(value))
-							return me.changeMatrixEmptyFilter
+							return me.changeMatrixEmptyFilter;
 						return true;
 					}
 				}, {
@@ -1135,12 +661,16 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 					 rightMultiSelect.view.clearSelections();
 					 }*/
 				}]
-			}, this.roiFieldSet],
+			}, 
+			me.roiFieldSet],
 			bbar : new Ext.Toolbar({
 				items : ["->", {
 					text : this.changeMatrixResetButtonText,
 					iconCls : 'gxp-icon-removelayers',
 					handler : function() {
+						me.chgMatrixForm.roiFieldSet.removeFeatureSummary();
+						me.chgMatrixForm.roiFieldSet.reset();
+						me.chgMatrixForm.roiFieldSet.collapse();
 						me.chgMatrixForm.getForm().reset();
 					}
 				}, {
@@ -1150,12 +680,12 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 					handler : function() {
 						var form = me.chgMatrixForm.getForm();
 
-						if (!form.isValid()) {
+						/*if (!form.isValid()) {
 							return Ext.Msg.alert(me.changeMatrixInvalidFormDialogTitle, me.changeMatrixInvalidFormDialogText);
-						}
+						}*/
 						
-						me.removeFeatureSummary();
-						
+						me.chgMatrixForm.roiFieldSet.removeFeatureSummary();
+
 						// get form params
 						var params = form.getFieldValues();
 
@@ -1189,8 +719,8 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 						var map = me.target.mapPanel.map;
 						var currentExtent = map.getExtent();
 						//transform to a Geometry (instead of Bounds)
-						if (me.roiFieldSet.collapsed !== true) {
-							var outputValue = me.roiFieldSet.get('selectionMethod_id').getValue();
+						if (me.chgMatrixForm.roiFieldSet.collapsed !== true) {
+							/*var outputValue = me.roiFieldSet.get('selectionMethod_id').getValue();
 
 							if (outputValue == 'bbox') {
 								var roi = new OpenLayers.Bounds(me.westField.getValue() ? me.westField.getValue() : me.spatialFilterOptions.lonMin, me.southField.getValue() ? me.southField.getValue() : me.spatialFilterOptions.latMin, me.eastField.getValue() ? me.eastField.getValue() : me.spatialFilterOptions.lonMax, me.northField.getValue() ? me.northField.getValue() : me.spatialFilterOptions.latMax);
@@ -1223,7 +753,8 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 								}
 								// set ROI parameter
 								params.roi = currentExtent.toGeometry();
-							}
+							}*/
+							params.roi = me.chgMatrixForm.roiFieldSet.currentExtent;
 						} else {
 							//change the extent projection if it differs from 4326
 							if (map.getProjection() != 'EPSG:4326') {
@@ -2051,194 +1582,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 			submitButton.enable();
 		if (this.errorTimer)
 			clearTimeout(this.errorTimer);
-	},
-
-	//// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////
-	//// ROI Added Features Summary and Geometry Functions
-	////
-	//// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-     * Method: getArea
-     *
-     * Parameters:
-     * geometry - {<OpenLayers.Geometry>}
-     * units - {String} Unit abbreviation
-     *
-     * Returns:
-     * {Float} The geometry area in the given units.
-     */
-    getArea: function(geometry, units) {
-        var area, geomUnits;
-		area = geometry.getGeodesicArea(this.target.mapPanel.map.getProjectionObject());
-		geomUnits = "m";
-
-        var inPerDisplayUnit = OpenLayers.INCHES_PER_UNIT[units];
-        if(inPerDisplayUnit) {
-            var inPerMapUnit = OpenLayers.INCHES_PER_UNIT[geomUnits];
-            area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
-        }
-        return area;
-    },
-
-    /**
-     * Method: getLength
-     *
-     * Parameters:
-     * geometry - {<OpenLayers.Geometry>}
-     * units - {String} Unit abbreviation
-     *
-     * Returns:
-     * {Float} The geometry length in the given units.
-     */
-    getLength: function(geometry, units) {
-        var length, geomUnits;
-		length = geometry.getGeodesicLength(this.target.mapPanel.map.getProjectionObject());
-		geomUnits = "m";
-        
-        var inPerDisplayUnit = OpenLayers.INCHES_PER_UNIT[units];
-        if(inPerDisplayUnit) {
-            var inPerMapUnit = OpenLayers.INCHES_PER_UNIT[geomUnits];
-            length *= (inPerMapUnit / inPerDisplayUnit);
-        }
-        return length;
-    },
-	
-   /**
-	* api: method[removeFeatureSummary]
-	*/
-	removeFeatureSummary: function(){
-		if(this.featureSummary){
-			this.featureSummary.destroy();
-		}		
-	    
-		var map = this.target.mapPanel.map;
-		var layer = map.getLayersByName("bboxqf-circleCentroid")[0];
-		if(layer){
-            map.removeLayer(layer);
-		}
-	},
-	
-   /**
-	* api: method[addFeatureSummary]
-	*/
-	addFeatureSummary: function(outputValue, obj){
-		if(this.showSelectionSummary){
-			this.removeFeatureSummary();
-		
-			var geometry;
-			if(obj instanceof OpenLayers.Bounds){
-				geometry = obj.toGeometry();
-			}else if(obj instanceof OpenLayers.Feature.Vector){
-				geometry = obj.geometry;
-			}
-			
-			var summary = "", metricUnit = "km";
-			
-			var area = this.getArea(geometry, metricUnit);
-			if(area){
-				summary += this.areaLabel + ": " + area + " " + metricUnit + '<sup>2</sup>' + '<br />';
-			}
-			
-			var selectionType = outputValue;
-			switch(selectionType){
-				case 'polygon':
-				case 'bbox':
-					var perimeter = this.getLength(geometry, metricUnit);
-					if(perimeter){
-						summary += this.perimeterLabel + ": " + perimeter + " " + metricUnit + '<br />';
-					}
-					break;
-				case 'circle':
-				case 'buffer':
-					var radius = Math.sqrt(area/Math.PI);
-					if(radius){
-						summary += this.radiusLabel + ": " + radius + " " + metricUnit + '<br />';
-					}
-					
-					// //////////////////////////////////////////////////////////
-					// Draw also the circle center as a part of summary report
-					// //////////////////////////////////////////////////////////
-					var circleSelectionCentroid = geometry.getCentroid();
-					
-					if(circleSelectionCentroid){
-						var lon = circleSelectionCentroid.x.toFixed(3);
-						var lat = circleSelectionCentroid.y.toFixed(3);
-						summary += this.centroidLabel + ": " + lon + " (Lon) " + lat + " (Lat)" +'<br />';
-					}
-					
-					if(selectionType == "circle"){
-						var options = {};
-						var centroidStyle = {
-							pointRadius: 4,
-							graphicName: "cross",
-							fillColor: "#FFFFFF",
-							strokeColor: "#FF0000",
-							fillOpacity: 0.5,
-							strokeWidth: 2
-						};
-						
-						if(centroidStyle){
-							var style = new OpenLayers.Style(centroidStyle);
-							var options = {styleMap: style};
-						}
-
-						var circleCentroidLayer = new OpenLayers.Layer.Vector("bboxqf-circleCentroid", options);
-
-						var pointFeature = new OpenLayers.Feature.Vector(circleSelectionCentroid);
-						circleCentroidLayer.addFeatures([pointFeature]);
-						
-						circleCentroidLayer.displayInLayerSwitcher = false;
-						this.target.mapPanel.map.addLayer(circleCentroidLayer);  
-					}
-					
-					break;				
-			}
-			
-			this.featureSummary = new Ext.ToolTip({
-				xtype: 'tooltip',
-				target: Ext.getBody(),
-				html: summary,
-				title: this.selectionSummary,
-				autoHide: false,
-				closable: true,
-				draggable: false,
-				mouseOffset: [0, 0],
-				showDelay: 1,
-				listeners: {
-					scope: this,
-					hide: function(cmp) {
-						this.featureSummary.destroy();
-					}
-				}
-			});			
-			
-			var vertex = geometry.getVertices()
-			var point;
-			if(obj instanceof OpenLayers.Bounds){
-				point = vertex[1];
-			}else if(obj instanceof OpenLayers.Feature.Vector){
-				point = vertex[vertex.length - 1];
-			}
-			
-			var px = this.target.mapPanel.map.getPixelFromLonLat(new OpenLayers.LonLat(point.x, point.y));			
-			var p0 = this.target.mapPanel.getPosition();
-			
-			this.featureSummary.targetXY = [p0[0] + px.x, p0[1] + px.y];
-			this.featureSummary.show();
-		}
 	}
-	//// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////
-	//// 
-	////
-	//// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 });
 
