@@ -23,10 +23,6 @@
             "ptype": "gxp_wmssource",
             "title": "Destination GeoServer",
             "version":"1.1.1",
-            "layersCachedExtent": [
-                    0.0, 5009377.085000,
-                    1252344.2712499984, 6261721.356249999
-            ],
             "url": "http://localhost:8080/geoserver/destination/ows",
             "layerBaseParams": {
                 "TILED": true,                
@@ -257,7 +253,16 @@
             "name": "Regione Piemonte", 
             "url": "http://www.ruparpiemonte.it/geocatalogorp/geonetworkrp/srv/it/csw", 
             "description": "Regione Piemonte"
-        }                
+        },
+        {
+            "name": "Provincia di Bolzano", 
+            "url": "http://sdi.provincia.bz.it/geonetwork/srv/it/csw", 
+            "description": "Provincia di Bolzano"
+        },{
+            "name": "PTA", 
+            "url": "http://www.gruppoiit.lispa.it/geoportal/csw",
+            "description": "PTA"
+        }    
         ],
         "dcProperty": "title",
         "initialBBox": {

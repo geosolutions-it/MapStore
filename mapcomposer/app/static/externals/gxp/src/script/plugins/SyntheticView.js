@@ -47,12 +47,15 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     saveProcessingNameFieldsetTitle: "Elaborazione",
     saveProcessingNameLabel: "Nome",
     saveProcessingDescriptionLabel: "Descrizione",
+    saveProcessingAggregationLabel: "Aggregazione",
     saveProcessingButtonText: "Salva Elaborazione",
     saveProcessingWinTitle: "Nuova Elaborazione",
 
     loadButton: "Carica Elaborazione",
     loadProcessingNameHeader: 'Name',
     loadProcessingDescriptionHeader: 'Descrizione',
+    loadProcessingCreationHeader: 'Creato',
+    loadProcessingValidHeader: 'Rigenerabile',
     removeProcessingTooltip: 'Rimuovi Elaborazione',
     removeProcessingMsgTitle: "Eliminazione Elaborazione",
     removeProcessingMsg: "Vuoi eliminare l'elaborazione? L'azione è irreversibile!",
@@ -757,7 +760,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         id: item.id
                     });                                            
                     me.geoStore.getEntityByID(geostoreAttribute, function(result) {
-                        me.resourceList[count].attributeDesc = result.AttributeList.Attribute.name;
+                        var attributes = Ext.isArray(result.AttributeList.Attribute) ? result.AttributeList.Attribute : [result.AttributeList.Attribute];
+                        Ext.each(attributes, function(attribute) {
+                            if(attribute.name === 'valid') {
+                                me.resourceList[count].valid = attribute.value;
+                            } else {
+                                me.resourceList[count].attributeDesc = attribute.value;
+                            }
+                        });
                         count--;
                         if(newarray.length > 0) {
                             processOne();
@@ -912,6 +922,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                         name: fields.elab_description,
                                         type:"STRING",
                                         value:fields.elab_description
+                                    },{
+                                        name: "valid",
+                                        type:"STRING",
+                                        value:"true"
                                     }],
                                     category: 'processing',
                                     store: jsonStatus
@@ -1115,7 +1129,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     var resourceDataReader = new Ext.data.ArrayReader({}, [
                                            {name: 'id', type: 'int', mapping: 'id'},
                                            {name: 'name', type: 'string', mapping: 'description'},
-                                           {name: 'descrizione', type: 'string', mapping: 'attributeDesc'}
+                                           {name: 'descrizione', type: 'string', mapping: 'attributeDesc'},
+                                           {name: 'creazione', type: 'date', mapping: 'creation'},
+                                           {name: 'valido', type: 'bool', mapping: 'valid'}
                                     ]);
                                     
                                     this.resourceDataStore = new Ext.data.Store({
@@ -1176,6 +1192,21 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                                     width : 120,
                                                     sortable : true,
                                                     dataIndex: 'descrizione'
+                                                },{
+                                                    header: me.loadProcessingCreationHeader,
+                                                    width : 120,
+                                                    sortable : true,
+                                                    dataIndex: 'creazione',
+                                                    xtype: 'datecolumn',
+                                                    format: 'd/m/Y H:i:s'
+                                                },{
+                                                    header: me.loadProcessingValidHeader,
+                                                    width : 50,
+                                                    sortable : true,
+                                                    dataIndex: 'valido',
+                                                    trueText: 'v',
+                                                    falseText:' ',
+                                                    xtype: 'booleancolumn'
                                                 },{
                                                     xtype: 'actioncolumn',
                                                     width: 20,
@@ -1338,11 +1369,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         disabled: true,
                         handler: function(){
                         
+                            
                             var me=this;
                             
                             this.downloadUserUUID = this.UUID.uuid4();
                             
                             var executeDownload = function() {
+                                var aggregation = Ext.getCmp('diag-combo-aggregation').getValue();
+                                var aggregationLayer = 'siig_geo_' + (aggregation < 3 ? 'ln' : 'pl') + '_arco_' + aggregation;
                                 var map = me.target.mapPanel.map;
                                 var status = me.status;
                                 var targetId = me.getChosenTarget(status);
@@ -1404,7 +1438,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                             method:'POST', mimeType: 'text/xml', 
                                             body: {
                                                 wfs: {
-                                                    featureType: 'destination:siig_geo_ln_arco_1', 
+                                                    featureType: 'destination:'+aggregationLayer, 
                                                     version: '1.1.0',
                                                     filter: filter
                                                 }
@@ -1533,6 +1567,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                         name: fields.elab_description,
                                         type:"STRING",
                                         value:fields.elab_description
+                                    },{
+                                        name: "valid",
+                                        type:"STRING",
+                                        value:"true"
                                     }],                                    
                                     category: 'download',
                                     store: downloadUrl
@@ -1583,6 +1621,26 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                                 name: "elab_description",
                                                 readOnly: false,
                                                 hideLabel : false
+                                            },{
+                                                xtype: 'combo',
+                                                id: 'diag-combo-aggregation',
+                                                name: 'elab_aggregation',
+                                                fieldLabel: me.saveProcessingAggregationLabel,
+                                                typeAhead: true,
+                                                triggerAction: 'all',
+                                                lazyRender:true,
+                                                mode: 'local',
+                                                store: new Ext.data.ArrayStore({
+                                                    id: 0,
+                                                    fields: [
+                                                        'id',
+                                                        'text'
+                                                    ],
+                                                    data: [[1, '100 metri'], [2, '500 metri'],[3, 'Griglia']]
+                                                }),
+                                                value: 1,
+                                                valueField: 'id',
+                                                displayField: 'text'
                                             }
                                         ]
                                     }
@@ -1650,7 +1708,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     var resourceDataReader = new Ext.data.ArrayReader({}, [
                                            {name: 'id', type: 'int', mapping: 'id'},
                                            {name: 'name', type: 'string', mapping: 'description'},
-                                           {name: 'description', type: 'string', mapping: 'attributeDesc'}
+                                           {name: 'description', type: 'string', mapping: 'attributeDesc'},
+                                           {name: 'creazione', type: 'date', mapping: 'creation'},
+                                           {name: 'valido', type: 'bool', mapping: 'valid'}
                                     ]);
                                     
                                     this.downloadResourceDataStore = new Ext.data.Store({
@@ -1702,6 +1762,21 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                                     width : 120,
                                                     sortable : true,
                                                     dataIndex: 'description'
+                                                },{
+                                                    header: me.loadProcessingCreationHeader,
+                                                    width : 120,
+                                                    sortable : true,
+                                                    dataIndex: 'creazione',
+                                                    xtype: 'datecolumn',
+                                                    format: 'd/m/Y H:i:s'
+                                                },{
+                                                    header: me.loadProcessingValidHeader,
+                                                    width : 50,
+                                                    sortable : true,
+                                                    dataIndex: 'valido',
+                                                    trueText: 'v',
+                                                    falseText:' ',
+                                                    xtype: 'booleancolumn'
                                                 },{
                                                     xtype: 'actioncolumn',
                                                     width: 20,
@@ -2569,18 +2644,20 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }, true));
     },*/
 
-    addVulnLayer: function(layers,layerName,title, group) {
+    addVulnLayer: function(layers,layerName,title, group, hasThema) {
         if(this.vulnerabilityLayer) {
             this.removeLayersByName(this.target.mapPanel.map,[this.vulnerabilityLayer]);
         }
         this.vulnerabilityLayer = layerName;
-        var env = "coverages:"+layers.join(',');
+        var env = "coverages:"+layers.join(',')+";low:3;medium:10;max:100";
         var record = this.createLayerRecord({
             name: layerName,
             title: title, 
             tiled: false,
             params: {                                                                
-                env: env
+                env: env,
+                defaultenv: env,
+                riskPanel: hasThema
             }
         }, true, undefined, undefined, group);
         

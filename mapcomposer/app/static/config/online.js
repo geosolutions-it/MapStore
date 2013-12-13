@@ -253,6 +253,15 @@
 			"name": "Regione Piemonte",
 			"url": "http://www.ruparpiemonte.it/geocatalogorp/geonetworkrp/srv/it/csw",
 			"description": "Regione Piemonte"
+        },
+        {
+            "name": "Provincia di Bolzano", 
+            "url": "http://sdi.provincia.bz.it/geonetwork/srv/it/csw", 
+            "description": "Provincia di Bolzano"
+        },{
+            "name": "PTA", 
+            "url": "http://www.gruppoiit.lispa.it/geoportal/csw",
+            "description": "PTA"
         }                
         ],
 		"dcProperty": "title",

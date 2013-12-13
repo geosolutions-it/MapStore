@@ -183,7 +183,7 @@ OpenLayers.Format.WPSDescribeProcess = OpenLayers.Class(
                 format.mimeType = this.getChildValue(node);
             }
         },
-        "ows": OpenLayers.Format.OWSCommon.v1_1_0_ext.prototype.readers["ows"]
+        "ows": OpenLayers.Format.OWSCommon.v1_1_0.prototype.readers["ows"]
     },
     
     CLASS_NAME: "OpenLayers.Format.WPSDescribeProcess" 

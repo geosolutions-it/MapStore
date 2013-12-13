@@ -8,7 +8,7 @@
  */
 
 /**
- * Class: OpenLayers.Format.OWSCommon.v1_ext
+ * Class: OpenLayers.Format.OWSCommon.v1
  * Common readers and writers for OWSCommon v1.X formats
  *
  * Inherits from:
@@ -20,7 +20,7 @@
  *      Development version after the version 2.12 stable
  * ---------------------------------------------------------  
  */
-OpenLayers.Format.OWSCommon.v1_ext = OpenLayers.Class(OpenLayers.Format.XML, {
+OpenLayers.Format.OWSCommon.v1 = OpenLayers.Class(OpenLayers.Format.XML, {
    
     /**
      * Property: regExes
@@ -319,6 +319,6 @@ OpenLayers.Format.OWSCommon.v1_ext = OpenLayers.Class(OpenLayers.Format.XML, {
         }
     },
 
-    CLASS_NAME: "OpenLayers.Format.OWSCommon.v1_ext"
+    CLASS_NAME: "OpenLayers.Format.OWSCommon.v1"
 
 });

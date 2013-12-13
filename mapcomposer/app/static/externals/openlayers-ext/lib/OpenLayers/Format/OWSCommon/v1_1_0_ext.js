@@ -8,11 +8,11 @@
  */
 
 /**
- * Class: OpenLayers.Format.OWSCommon.v1_1_0_ext
+ * Class: OpenLayers.Format.OWSCommon.v1_1_0
  * Parser for OWS Common version 1.1.0.
  *
  * Inherits from:
- *  - <OpenLayers.Format.OWSCommon.v1_ext>
+ *  - <OpenLayers.Format.OWSCommon.v1>
  *  
  *  
  * ---------------------------------------------------------
@@ -20,7 +20,7 @@
  *      Development version after the version 2.12 stable
  * ---------------------------------------------------------  
  */
-OpenLayers.Format.OWSCommon.v1_1_0_ext = OpenLayers.Class(OpenLayers.Format.OWSCommon.v1_ext, {
+OpenLayers.Format.OWSCommon.v1_1_0 = OpenLayers.Class(OpenLayers.Format.OWSCommon.v1, {
 
     /**
      * Property: namespaces
@@ -75,7 +75,7 @@ OpenLayers.Format.OWSCommon.v1_1_0_ext = OpenLayers.Class(OpenLayers.Format.OWSC
             "SupportedCRS": function(node, obj) {
                 obj.supportedCRS = this.getChildValue(node);
             }
-        }, OpenLayers.Format.OWSCommon.v1_ext.prototype.readers["ows"])
+        }, OpenLayers.Format.OWSCommon.v1.prototype.readers["ows"])
     },
 
     /**
@@ -114,9 +114,9 @@ OpenLayers.Format.OWSCommon.v1_1_0_ext = OpenLayers.Class(OpenLayers.Format.OWSC
                 });
                 return node;
             }
-        }, OpenLayers.Format.OWSCommon.v1_ext.prototype.writers["ows"])
+        }, OpenLayers.Format.OWSCommon.v1.prototype.writers["ows"])
     },
 
-    CLASS_NAME: "OpenLayers.Format.OWSCommon.v1_1_0_ext"
+    CLASS_NAME: "OpenLayers.Format.OWSCommon.v1_1_0"
 
 });
