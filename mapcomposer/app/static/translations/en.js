@@ -595,5 +595,42 @@ GeoExt.Lang.add("en", {
         allNotHumanTargetTitle: "All environmental targets",
         selectAllTitle: "SELECT ALL",
         addToMapButtonText: "Add to map"
+	},
+
+	"gxp.plugins.GateTimeSliderTab.prototype":{
+        gateLabel: 'Gate',
+        gateSelection: 'Gate selection',
+        gatePanelTitle: "Real time data - Gate",
+        gateStatGridStart: "Start Date Statistics",
+        gateStatGridEnd: "End Date Statistics",
+        gateStatGridRoute: "Route",
+        gateStatGridDirection: "Direction",
+        gateStatGridKemler: "Kemler Cod",
+        gateStatGridOnu: "Onu Cod",
+        gateStatGridAmount: "Amount",
+        gateElementText: "Element",
+        gateElementsText: "Elements",
+        gateTotalRenderer: "total",
+        gateStatFieldsetTitle: "Precomputed statistical data",
+        gateStartDateText: 'Start date',
+        gateEndDateText: 'End Date',
+        gateViewTimeGateButtonText: 'View gate data',
+        gateInfoTimeTitle: "View gate data",
+        gateInfoTimeMsg: "Select a time interval!",    
+        gateTimeSelectorTitle: "Select a time interval",    
+        gateSliderFieldsetTitle: "Free selection data",
+        gateTimeGridDetectionDate: "Detection Date",
+        gateAveragePerHourRenderer: 'Average per hour',
+        gateTimeGridHourTimeZone: "Hour Time Zone",
+        gateTimeGridMinuteTimeZone: "Minute Time Zone",
+        gateTimeGridReceptionDate: "Date of receipt",
+        gateTimeGridRoute: "Route",
+        gateTimeGridDirection: "Direction",
+        gateTimeGridKemler: "Kemler Cod",
+        gateTimeGridOnu: "Onu Cod"
+	},
+
+	"gxp.widgets.button.SelectFeatureButton.prototype":{
+        tooltip: "Select the Gate by clicking on the map"
 	}
 });

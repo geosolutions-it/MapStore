@@ -24,11 +24,7 @@
 			"title": "Destination GeoServer",
 			"version": "1.1.1",
 			"url": "http://destination.geo-solutions.it/geoserver_test/destination/ows",
-			"SRS": "EPSG:3857",
-		    "layersCachedExtent": [
-                    0.0, 5009377.085000,
-                    1252344.2712499984, 6261721.356249999
-			],            
+			"SRS": "EPSG:3857",         
 			"layerBaseParams": {
 				"TILED": true,
 				"TILESORIGIN": "-180,-90"
@@ -252,6 +248,14 @@
 			"tiled": true,
             "group": ["Roads","Strade","Strade"," Straßen"],
 			"visibility": false
+        },{
+			"source": "destination",
+			"title": "Gate",
+			"name": "siig_gate_geo_gate",
+			"displayInLayerSwitcher": true,
+			"tiled": true,
+            "group": ["Real time data","Dati in tempo reale","Données en temps réel","Echtzeitdaten"],
+			"visibility": true
         }
         ]
 	},
@@ -521,6 +525,17 @@
         "proxy":"/proxy/?url=",
         "geoStoreUser": "super",
         "geoStorePassword": "super"
+	},
+	{
+		"ptype": "gxp_gatetimeslidertab",
+        "id": "gatetimeslidertab",
+        "wfsUrl":"http://destination.geo-solutions.it/geoserver_test/ows",
+        "wfsVersion": "1.1.0",
+        "destinationNS": "destination",
+        "statisticFeature": "siig_gate_t_dato_statistico",
+        "timeFeature": "siig_gate_t_dato",        
+        "layerGates":"siig_gate_geo_gate",     
+        "outputTarget": "east"
 	},
 	{
 		"ptype": "gxp_tabpanelwfsgrids",
