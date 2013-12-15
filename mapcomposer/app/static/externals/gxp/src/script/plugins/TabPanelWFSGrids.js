@@ -223,12 +223,12 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
             
             /** api: method[loadGrids]
              */    
-            loadGrids: function(attributeName, attributeValue, projection, viewParams, tplData, extraRecords) {
+            loadGrids: function(attributeName, attributeValue, projection, viewParams, tplData, extraRecords,noAlert) {
                 this.removeAllGrids();
                 var grids = this.hideAllBut(attributeName, attributeValue);
                 
                                 
-                if(grids.length === 0) {
+                if(grids.length === 0 && !noAlert) {
                     Ext.Msg.show({
                         title: 'Avviso',
                         msg: me.noRecordFoundLabel,

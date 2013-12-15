@@ -93,6 +93,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
     cacheFieldText: "Use cached version",
     stylesText: "Styles",
     sliderRischioText: "Rischio",
+    sliderVulnerablesText: "Elementi Vulnerabili",
     sliderRischioSocialeText: "Sociale",
     sliderRischioAmbientaleText: "Ambientale",
     minRangeSliderText: "Basso",
@@ -362,6 +363,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         var checkEnv = ["low","medium","max","lowsociale","mediumsociale","maxsociale","lowambientale","mediumambientale","maxambientale"];
         
         var hasBoth = false;        
+        var isVulnerables = false;        
         
         for (var i = 0;i<sliderEnv.length;i++){
             if (checkEnv.indexOf(sliderEnv[i].split(":")[0]) != -1){
@@ -369,6 +371,9 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                     hasBoth = true;
                 }               
                 envArray.push(sliderEnv[i]);
+            }
+            if(sliderEnv[i].indexOf('coverages') === 0) {
+                isVulnerables = true;
             }
         }
         
@@ -438,7 +443,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         });
         
         var sliderFiledRischioPanel=new gxp.form.SliderRangesFieldSet({
-            title: this.sliderRischioText,
+            title: isVulnerables ? this.sliderVulnerablesText : this.sliderRischioText,
             id:"rischio_panel",    
             labels: true,
             multiSliderConf:{
@@ -494,7 +499,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         
         }else {
             riskPanel = [{   
-				title: this.sliderRischioText,
+				title: isVulnerables ? this.sliderVulnerablesText : this.sliderRischioText,
 				listeners: {
 					activate: function(p){
 					   sliderFiledRischioPanel.render(Ext.get('rischio_ambientale_slider_panel'));
@@ -546,6 +551,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                     var checkEnv = ["low","medium","max","lowsociale","mediumsociale","maxsociale","lowambientale","mediumambientale","maxambientale"];
                     
                     var hasBoth = false;
+                    var isVulnerables = false;
                     
                     for (var i = 0;i<sliderDefaultEnv.length;i++){
                         if (checkEnv.indexOf(sliderDefaultEnv[i].split(":")[0]) != -1){

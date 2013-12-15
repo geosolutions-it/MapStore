@@ -515,13 +515,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         viewParams = "bounds:" + bounds;
         
         if(this.isSingleTarget(status)) {
-            wfsGrid.loadGrids(["id", "type"], [status.target['id_bersaglio'], 'all'], syntView.selectionLayerProjection, viewParams);                                
+            wfsGrid.loadGrids(["id", "type"], [status.target['id_bersaglio'], 'all'], syntView.selectionLayerProjection, viewParams,undefined,undefined,true);                                
         } else if(this.isAllHumanTargets(status)) {
-            wfsGrid.loadGrids("type", ['umano', 'all'], syntView.selectionLayerProjection, viewParams);
+            wfsGrid.loadGrids("type", ['umano', 'all'], syntView.selectionLayerProjection, viewParams,undefined,undefined,true);
         } else if(this.isAllNotHumanTargets(status)) {
-            wfsGrid.loadGrids("type", ['ambientale','all'], syntView.selectionLayerProjection, viewParams);
+            wfsGrid.loadGrids("type", ['ambientale','all'], syntView.selectionLayerProjection, viewParams,undefined,undefined,true);
         } else {
-            wfsGrid.loadGrids(null ,null , syntView.selectionLayerProjection, viewParams);
+            wfsGrid.loadGrids(null ,null , syntView.selectionLayerProjection, viewParams,undefined,undefined,true);
         }
         
     },
