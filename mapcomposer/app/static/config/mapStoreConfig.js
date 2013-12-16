@@ -261,7 +261,13 @@
         },{
             "name": "PTA", 
             "url": "http://www.gruppoiit.lispa.it/geoportal/csw",
-            "description": "PTA"
+            "description": "PTA",
+            "metaDataOptions":{
+ 				"base":"http://www.gruppoiit.lispa.it/geoportal/catalog/search/resource/details.page",
+ 				"idParam":"uuid",
+ 				"idIndex":0
+ 			}
+
         }    
         ],
         "dcProperty": "title",
