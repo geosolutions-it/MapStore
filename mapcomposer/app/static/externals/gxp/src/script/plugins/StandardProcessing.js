@@ -538,8 +538,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         if((enable && syntView.simulationEnabled) || (!enable && !syntView.simulationEnabled)) {
 
             syntView.simulationLoaded = true;
-
-            this.updateSimulationTabPabel(wfsGrid,syntView,map);
+            if(enable) {
+                this.updateSimulationTabPabel(wfsGrid,syntView,map);
+            }
                 
             return;
         }
@@ -1474,8 +1475,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             }]
         });
         
-        //containerTab.add(this.panel);
-        containerTab.insert(1, this.panel);
+        containerTab.add(this.panel);
         containerTab.setActiveTab(this.panel);
 
         

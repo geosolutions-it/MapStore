@@ -14,7 +14,8 @@ destination.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
 	layerStyle:{
         strokeColor: "blue",
         strokeWidth: 1,
-        fillOpacity:0.6        
+        fillOpacity:0.6,
+        'pointRadius': 20
     },
     startConfig:'gate',
     featureSelectorConfigs:{
@@ -23,7 +24,7 @@ destination.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
         xtype: 'gxp_searchboxcombo',
             anchor:'100%',
             fieldLabel: 'Gate',
-            url: "http://destination.geo-solutions.it/geoserver_test/ows?",
+            url: "",
             predicate:"ILIKE",
             sortBy:"id_gate",
 			ref:'singleSelector',

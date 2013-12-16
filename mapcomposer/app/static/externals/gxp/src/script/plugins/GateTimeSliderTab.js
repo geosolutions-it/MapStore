@@ -61,6 +61,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
     gateStatGridStart: "Data Inizio Stat",
     gateStatGridEnd: "Data Fine Stat",
     gateStatGridRoute: "Corsia",
+    gateStatGridInterval: "Intervallo",
     gateStatGridDirection: "Direzione",
     gateStatGridKemler: "Kemler Cod",
     gateStatGridOnu: "Onu Cod",
@@ -77,23 +78,32 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
     gateTimeSelectorTitle: "Seleziona intervallo temporale",    
     gateSliderFieldsetTitle: "Dati a scelta libera",
     gateTimeGridDetectionDate: "Data rilevamento",
-    gateAveragePerHourRenderer: 'Media Oraria',
-    gateTimeGridHourTimeZone: "Ora fuso orario",
-    gateTimeGridMinuteTimeZone: "Minuto fuso orario",
+    gateAggregationAveragePerHour: "Media Oraria",
+    gateAggregationTotal: "Totale",
+    gateTimeGridHourTimeZone: "Ora",
+    gateTimeGridMinuteTimeZone: "Minuto",
     gateTimeGridReceptionDate: "Data Ricezione",
     gateTimeGridRoute: "Corsia",
     gateTimeGridDirection: "Direzione",
     gateTimeGridKemler: "Kemler Cod",
     gateTimeGridOnu: "Onu Cod",
+    gateViewAllDataText: 'Tutte le statistiche',
+    aggregationSelectorLabel: "Statistica",
+    intervalSelectorLabel: "Intervallo",
     /** End i18n */
+    
+    currentAggregation: "mediaOraria",
+    currentInterval: "Ultimo mese",
     
     hilightLayerName: "Gate_Selection_Layer",
     
 	layerStyle:{
-        strokeColor: "blue",
+        strokeColor: "purple",
         strokeWidth: 2,
         fillOpacity:0.6,
-        cursor: "pointer"
+        graphicName: "circle",
+        cursor: "pointer",
+        pointRadius: 10
     },    
 
 	featureSelectorConfigs:{
@@ -149,7 +159,11 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
     addOutput: function(config) {
     
         var me = this;
-
+        
+        this.summaryLabels = {
+            'mediaOraria': this.gateAggregationAveragePerHour,
+            'count': this.gateAggregationTotal
+        },
         this.featureSelectorConfigs.base.url = this.wfsUrl;
         this.featureSelectorConfigs.base.fieldLabel = this.gateLabel;
         
@@ -214,6 +228,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
     },
     
     addTimePanelTab: function(feature){
+        this.currentGate = feature;
         var realTimeGateTab = Ext.getCmp("realTimeGateTab_id");
         
         var statData = Ext.getCmp('statdatafset');
@@ -221,26 +236,47 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
         
         var containerTab = Ext.getCmp('realTimeGateTab_id');
 
-        this.filter= new OpenLayers.Filter.Comparison({
+        this.filter = new OpenLayers.Filter.Comparison({
             type: OpenLayers.Filter.Comparison.EQUAL_TO,
             property: "fk_gate",
-            value: feature
+            value: this.currentGate
         });
+        
+        var statisticsFilter = this.buildStatisticsFilter();
                 
         if (!statData){
-            containerTab.add(this.buildStatisticsData(this.filter));
+            containerTab.add(this.buildStatisticsData(statisticsFilter));
             containerTab.add(this.buildSliderData());
             containerTab.doLayout();
         }else{            
-            this.statisticStore.proxy = this.getWFSStoreProxy(this.statisticFeature,this.filter);
+            this.statisticStore.proxy = this.getWFSStoreProxy(this.statisticFeature,statisticsFilter);
             this.statisticStore.load();
             
             if(this.gateTimeGrid){
                 this.gateTimeGrid.hide();
             }
+            if(this.gateTimeAggregationSelector) {
+                this.gateTimeAggregationSelector.hide();
+            }
         }
     },
 
+    buildStatisticsFilter: function() {
+        return new OpenLayers.Filter.Logical({
+            type: OpenLayers.Filter.Logical.AND,
+            filters: [new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                property: "fk_gate",
+                value: this.currentGate
+            }),new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                property: "description",
+                value: this.currentInterval
+            })
+            ]
+        });
+    },
+    
     buildStatisticsData: function(filter){
     
         var me = this;
@@ -265,7 +301,8 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                         "mapping": "data_stat_fine"
               },{
                         "name": "flg_corsia",              
-                        "mapping": "flg_corsia"
+                        "mapping": "flg_corsia",
+                        "type": "int"
               },{
                         "name": "direzione",              
                         "mapping": "direzione"
@@ -278,13 +315,48 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
               },{
                         "name": "quantita",              
                         "mapping": "quantita"
+              },{
+                        "name": "description",              
+                        "mapping": "description"
               }],
              proxy: this.getWFSStoreProxy(this.statisticFeature,filter), 
              autoLoad: true,
-             //groupField: 'fk_gate',
+             groupField: 'fk_gate',
              groupOnSort: false,
              remoteGroup: false             
        });
+       
+       this.intervalSelector = new Ext.form.ComboBox({
+                fieldLabel: this.intervalSelectorLabel,
+                width: 150,
+                hideLabel : false,
+                store: new Ext.data.ArrayStore({
+                    fields: ['interval', 'description'],
+                    data :  [
+                    ['Ultimo mese', 'Ultimo mese'],
+                    ['Ultimo anno', 'Ultimo anno']
+                    ]
+                }), 
+                valueField: 'interval',
+                displayField: 'description',   
+                lastQuery: '',
+                typeAhead: true,
+                mode: 'local',
+                forceSelection: true,
+                triggerAction: 'all',
+                selectOnFocus:true,            
+                value: 'Ultimo mese',
+                listeners: {
+                    scope: this,                
+                    
+                    select: function(combo, record, index) {
+                        this.currentInterval = record.get('interval');
+                        var filter = this.buildStatisticsFilter();
+                        this.statisticStore.proxy = this.getWFSStoreProxy(this.statisticFeature,filter);
+                        this.statisticStore.reload();
+                    }
+                }          
+            });
        
         this.statisticGrid= new Ext.grid.GridPanel({
             id: 'statisticgate_grid_id',    
@@ -298,7 +370,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
             loadMask: true,
             cm: new Ext.grid.ColumnModel({
                 columns: [{
-                    header: "fk_gate",
+                    header: this.gateViewAllDataText,
                     width: 120,
                     sortable: true,
                     dataIndex: 'fk_gate',
@@ -309,13 +381,23 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                     width: 120,
                     sortable: true,
                     dataIndex: 'data_stat_inizio',
-                    groupable: false
+                    groupable: false,
+                    hidden: true,
+                    renderer: Ext.util.Format.dateRenderer('d-m-Y')
                 },{
                     header: this.gateStatGridEnd,
                     width: 120,
                     sortable: true,
                     dataIndex: 'data_stat_fine',
-                    groupable: false
+                    hidden: true,
+                    groupable: false,
+                    renderer: Ext.util.Format.dateRenderer('d-m-Y')
+                },{
+                    header: this.gateStatGridInterval,
+                    width: 120,
+                    sortable: true,
+                    hidden: true,
+                    dataIndex: 'description'
                 },{
                     header: this.gateStatGridRoute,
                     width: 120,
@@ -359,6 +441,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
             },*/
             listeners: {
                 afterrender: function (grid) {
+                    grid.getStore().filter('description', this.currentInterval);
                     grid.getStore().load();
                 }
             },
@@ -375,6 +458,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                 bodyStyle:'padding:5px;'
             },
             items: [
+                this.intervalSelector,
                 this.statisticGrid
             ]
         });
@@ -488,23 +572,37 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
         
         // Custom summary function to calculate average per hour
         Ext.ux.grid.GroupSummary.Calculations['mediaOraria'] = function(v, record, field, data){
-        
             var count = data[field+'count'] ? ++data[field+'count'] : (data[field+'count'] = 1);
             
-            var v = OpenLayers.Date.parse(record.data[field]).getTime();
+            /*var v = OpenLayers.Date.parse(record.data[field]).getTime();
             var q = OpenLayers.Date.parse(record.data[field]).getTime();
             
             var min = data[field+'min'] === undefined ? (data[field+'min'] = v) : data[field+'min'];
             var max = data[field+'max'] === undefined ? (data[field+'max'] = q) : data[field+'max'];
-            
-            var mediaOraria = count <= 1 ? 0 : (count / Math.round(((q > max ? (data[field+'min'] = q) : max) - (v < min ? (data[field+'min'] = v) : min)) / 3600000));
+            */
+            var mediaOraria = 0;
+            var endtime = Ext.getCmp('endtime').getValue().getTime();
+            var starttime = Ext.getCmp('starttime').getValue().getTime();
+            if(count >= 1) {
+                mediaOraria = (count / Math.round((endtime - starttime) / 3600000));
+            }
             
             return Math.round10(mediaOraria,-4);
 
         };
         
+        Ext.ux.grid.GroupSummary.Calculations['gate'] = function(v, record, field, data){
+            return Ext.ux.grid.GroupSummary.Calculations[me.currentAggregation].call(this, v, record, field, data);
+        };
+        
         // defina Group Summary plugin
-        var summary = new Ext.ux.grid.GroupSummary();   
+        var summary = new Ext.ux.grid.GroupSummary({
+            cellTpl: new Ext.XTemplate(
+                '<tpl if="id == \'1\'"><td class="x-grid3-col x-grid3-cell x-grid3-td-{id} {css}" style="{style}">',
+                '<div class="x-grid3-cell-inner x-grid3-col-{id}" unselectable="on">{value}</div>',
+                "</td></tpl>"
+            )
+        });   
         
         if(!this.gateTimeGrid){
     
@@ -530,7 +628,8 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                             "mapping": "data_ricezione"
                   },{
                             "name": "flg_corsia",              
-                            "mapping": "flg_corsia"
+                            "mapping": "flg_corsia",
+                            "type": "int"
                   },{
                             "name": "direzione",              
                             "mapping": "direzione"
@@ -572,10 +671,11 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                         sortable: true,
                         dataIndex: 'data_rilevamento',
                         groupable: false,
-                        summaryType: 'mediaOraria',
+                        renderer: Ext.util.Format.dateRenderer('d-m-Y'),
+                        summaryType: 'gate',
                         summaryRenderer: function(v, params, data){
                             //return ((v === 0 || v > 1) ? '(Media Oraria: ' + v +')' : '(Media Oraria 1)');
-                            return ('(' + me.gateAveragePerHourRenderer + ': ' + v +')');
+                            return ('(' + me.summaryLabels[me.currentAggregation] + ': ' + v +')');
                         }
                     },{
                         header: this.gateTimeGridHourTimeZone,
@@ -594,6 +694,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                         width: 120,
                         sortable: true,
                         dataIndex: 'data_ricezione',
+                        renderer: Ext.util.Format.dateRenderer('d-m-Y H:i:s'),
                         groupable: false
                     },{
                         header: this.gateTimeGridRoute,
@@ -632,11 +733,43 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                 scope: this
             });    
         
-            var timeDataFieldSet = Ext.getCmp('timedatafset');
+            this.gateTimeAggregationSelector = new Ext.form.ComboBox({
+                fieldLabel: this.aggregationSelectorLabel,
+                width: 150,
+                hideLabel : false,
+                store: new Ext.data.ArrayStore({
+                    fields: ['summary', 'description'],
+                    data :  [
+                    ['count', this.gateAggregationTotal],
+                    ['mediaOraria', this.gateAggregationAveragePerHour]
+                    ]
+                }), 
+                valueField: 'summary',
+                displayField: 'description',   
+                lastQuery: '',
+                typeAhead: true,
+                mode: 'local',
+                forceSelection: true,
+                triggerAction: 'all',
+                selectOnFocus:true,            
+                value: 'mediaOraria',
+                listeners: {
+                    scope: this,                
+                    
+                    select: function(combo, record, index) {
+                        this.currentAggregation = record.get('summary');
+                        this.gateTimeGrid.getView().refresh();
+                    }
+                }          
+            });
+        
+            var timeDataFieldSet = Ext.getCmp('timedatafset');            
+            timeDataFieldSet.add(this.gateTimeAggregationSelector);
             timeDataFieldSet.add(this.gateTimeGrid);
             timeDataFieldSet.doLayout(false,true);
         }else{
             this.gateTimeGrid.show();
+            this.gateTimeAggregationSelector.show();
             this.timeStore.proxy = this.getWFSStoreProxy(this.timeFeature,filter);
             this.timeStore.load();        
         }
