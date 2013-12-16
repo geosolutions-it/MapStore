@@ -422,8 +422,14 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
                                 var grid = this.humansGrid.getSelectionModel().hasSelection() ? this.humansGrid : this.notHumansGrid;
                                 var layerName = this.humansGrid.getSelectionModel().hasSelection() ? "vulnerabili_umani" : "vulnerabili_ambientali";
                                 Ext.each(grid.getSelectionModel().getSelections(), function(record) {
-                                    coverages.push(record.get('layer') + '_mosaic');
-                                });
+                                    if(this.humansGrid.getSelectionModel().hasSelection()) {
+                                        Ext.each(['ao','rp','rl','bz','ti'], function(partner) {
+                                            coverages.push(record.get('layer') + '_' + partner);
+                                        });
+                                    } else {
+                                        coverages.push(record.get('layer') + '_mosaic');
+                                    }
+                                },this);
                                 
                                 var syntView = app.tools["syntheticview"];
                                 

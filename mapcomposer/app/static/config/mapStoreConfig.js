@@ -250,7 +250,7 @@
 			"displayInLayerSwitcher": true,
 			"tiled": true,
             "group": ["Real time data","Dati in tempo reale","Données en temps réel","Echtzeitdaten"],
-			"visibility": true
+			"visibility": false
         }
         ]
     },
@@ -544,7 +544,7 @@
 	{
 		"ptype": "gxp_gatetimeslidertab",
         "id": "gatetimeslidertab",
-        "wfsUrl":"http://destination.geo-solutions.it/geoserver_test/ows",
+        "wfsUrl":"http://localhost:8080/geoserver/ows",
         "wfsVersion": "1.1.0",
         "destinationNS": "destination",
         "statisticFeature": "siig_gate_t_dato_statistico",
