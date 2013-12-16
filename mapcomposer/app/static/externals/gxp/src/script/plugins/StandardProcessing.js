@@ -1475,7 +1475,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             }]
         });
         
-        containerTab.add(this.panel);
+        //containerTab.add(this.panel);
+        containerTab.insert(1,this.panel);
         containerTab.setActiveTab(this.panel);
 
         

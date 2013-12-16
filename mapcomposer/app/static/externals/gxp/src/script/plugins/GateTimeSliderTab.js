@@ -90,6 +90,8 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
     gateViewAllDataText: 'Tutte le statistiche',
     aggregationSelectorLabel: "Statistica",
     intervalSelectorLabel: "Intervallo",
+    gateLastMonthText: 'Ultimo mese',
+    gateLastYearText: 'Ultimo anno',    
     /** End i18n */
     
     currentAggregation: "mediaOraria",
@@ -283,7 +285,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
         //http://dev.sencha.com/deploy/ext-3.4.0/examples/grid/totals.html
         
         // utilize custom extension for Group Summary
-        var summary = new Ext.ux.grid.GroupSummary();    
+        var summaryStat = new Ext.ux.grid.GroupSummary();    
         
         this.statisticStore= new (Ext.extend(Ext.data.GroupingStore, new GeoExt.data.FeatureStoreMixin))({
              id: "statisticStore",
@@ -333,8 +335,8 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                 store: new Ext.data.ArrayStore({
                     fields: ['interval', 'description'],
                     data :  [
-                    ['Ultimo mese', 'Ultimo mese'],
-                    ['Ultimo anno', 'Ultimo anno']
+                    ['Ultimo mese', this.gateLastMonthText],
+                    ['Ultimo anno', this.gateLastYearText]
                     ]
                 }), 
                 valueField: 'interval',
@@ -430,8 +432,9 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                     }
                 }]
             }),
-            plugins: summary,
+            plugins: summaryStat,
             view: new Ext.grid.GroupingView({
+                id:'statViewId',
                 forceFit: true,
                 // custom grouping text template to display the number of items per group
                 groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "' + me.gateElementsText + '" : "' + me.gateElementText + '"]})'
@@ -596,13 +599,13 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
         };
         
         // defina Group Summary plugin
-        var summary = new Ext.ux.grid.GroupSummary({
+        var summaryTime = new Ext.ux.grid.GroupSummary(/*{
             cellTpl: new Ext.XTemplate(
                 '<tpl if="id == \'1\'"><td class="x-grid3-col x-grid3-cell x-grid3-td-{id} {css}" style="{style}">',
                 '<div class="x-grid3-cell-inner x-grid3-col-{id}" unselectable="on">{value}</div>',
                 "</td></tpl>"
             )
-        });   
+        }*/);   
         
         if(!this.gateTimeGrid){
     
@@ -718,9 +721,10 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                         dataIndex: 'codice_onu'
                     }]
                 }),
-                plugins: summary,
+                plugins: summaryTime,
                 view: new Ext.grid.GroupingView({
                     forceFit: true,
+                    id:'timeViewId',
                     startCollapsed: true, 
                     // custom grouping text template to display the number of items per group
                     groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "' + me.gateElementsText + '" : "' + me.gateElementText + '"]})'

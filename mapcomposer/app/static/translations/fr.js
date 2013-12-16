@@ -617,17 +617,32 @@ GeoExt.Lang.add("fr", {
         gateTimeSelectorTitle: "Sélectionner un intervalle de temps",    
         gateSliderFieldsetTitle: "Données de sélection libre",
         gateTimeGridDetectionDate: "Date de détection",
-        gateAveragePerHourRenderer: 'En moyenne par heure',
-        gateTimeGridHourTimeZone: "heure Time Zone",
-        gateTimeGridMinuteTimeZone: "Minute Time Zone",
+        gateAggregationAveragePerHour: 'En moyenne par heure',
+        gateAggregationTotal: "Total",        
+        gateTimeGridHourTimeZone: "Heure",
+        gateTimeGridMinuteTimeZone: "Minute",
         gateTimeGridReceptionDate: "Date de réception",
         gateTimeGridRoute: "Voie",
         gateTimeGridDirection: "Direction",
         gateTimeGridKemler: "Kemler Cod",
-        gateTimeGridOnu: "Onu Cod"
+        gateTimeGridOnu: "Onu Cod",
+        gateViewAllDataText: 'Toutes les statistiques',
+        aggregationSelectorLabel: "Statistiques",
+        intervalSelectorLabel: "Intervalle",
+        gateLastMonthText: 'Le mois dernier',
+        gateLastYearText: 'L\'année dernière'   
 	},
 
 	"gxp.widgets.button.SelectFeatureButton.prototype":{
         tooltip: "Sélectionner la Gate en cliquant sur ​​la carte"
-	}
+	},
+    
+    "Ext.grid.GroupingView.prototype":{
+        columnsText : 'Columns',
+        emptyGroupText : '(aucun)',
+        groupByText : 'Groupe par ce champ',
+        showGroupsText : 'Montrez Groupes',       
+        sortAscText : "Trier en ordre croissant",
+        sortDescText : "Trier en ordre décroissant"
+    }    
 });
