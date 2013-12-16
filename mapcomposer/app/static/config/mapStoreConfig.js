@@ -36,8 +36,8 @@
         "center": [1103893.13597286, 5651406.520669],
         "zoom": 7,
         "maxExtent": [
-        456125.02434063, 5403020.7962146,
-        1323838.1693132, 5887325.807362
+				-20037508.34,-20037508.34,
+				20037508.34,20037508.34
         ],
         "layers": [                      
             
@@ -243,6 +243,14 @@
             "tiled": true,
             "group": ["Roads","Strade","Strade"," Straßen"],
             "visibility": false
+        },{
+			"source": "destination",
+			"title": "Gate",
+			"name": "siig_gate_geo_gate",
+			"displayInLayerSwitcher": true,
+			"tiled": true,
+            "group": ["Real time data","Dati in tempo reale","Données en temps réel","Echtzeitdaten"],
+			"visibility": true
         }
         ]
     },
@@ -446,6 +454,24 @@
             "target":"paneltbar",
             "index":21
         }
+    },{
+        "ptype":"gxp_playback",
+        "outputTarget": "map",
+        "playbackMode": "range",
+        "showIntervals": false,
+        "labelButtons": false,
+        "settingsButton": true,
+        "rateAdjuster": false,
+        "dynamicRange": false,
+        "timeFormat": "l, F d, Y g:i:s A",
+        "outputConfig": {
+            "controlConfig":{
+                "step": 1,
+                "units": "Hours",
+                "range": ["2013-11-03T01:00:00.000Z", "2013-11-04T00:00:00.000Z"],
+                "frameRate": 1
+            }
+        }
     },        
     {
         "actions": ["->"], 
@@ -515,6 +541,17 @@
         "geoStoreUser": "base",
         "geoStorePassword": "base"
     },
+	{
+		"ptype": "gxp_gatetimeslidertab",
+        "id": "gatetimeslidertab",
+        "wfsUrl":"http://destination.geo-solutions.it/geoserver_test/ows",
+        "wfsVersion": "1.1.0",
+        "destinationNS": "destination",
+        "statisticFeature": "siig_gate_t_dato_statistico",
+        "timeFeature": "siig_gate_t_dato",        
+        "layerGates":"siig_gate_geo_gate",     
+        "outputTarget": "east"
+	},
     {
         "ptype": "gxp_tabpanelwfsgrids",
         "outputTarget": "featurelist",

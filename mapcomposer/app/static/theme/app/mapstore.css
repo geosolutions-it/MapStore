@@ -169,6 +169,14 @@ div#homelogos ul li a:hover {
     padding-top: 50px;
 }
 
+.icon-map-add{
+	background-image: url(img/silk/map_add.png);
+}
+
+.icon-view-gate{
+	background-image: url(img/silk/application_view_detail.png);
+}
+
 #warning_message {
     font-weight: bold;
     font-size: 15px;

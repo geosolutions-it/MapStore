@@ -592,5 +592,42 @@ GeoExt.Lang.add("it", {
         allNotHumanTargetTitle: "Tutti i Bersagli Ambientali",
         selectAllTitle: "SELEZIONA TUTTO",
         addToMapButtonText: "Aggiungi alla mappa"
-	}
+	},
+
+	"gxp.plugins.GateTimeSliderTab.prototype":{
+        gateLabel: 'Gate',
+        gateSelection: 'Selezione Gate',
+        gatePanelTitle: "Dati in tempo reale - Gate",
+        gateStatGridStart: "Data Inizio Statistiche",
+        gateStatGridEnd: "Data Fine Statistiche",
+        gateStatGridRoute: "Corsia",
+        gateStatGridDirection: "Direzione",
+        gateStatGridKemler: "Kemler Cod",
+        gateStatGridOnu: "Onu Cod",
+        gateStatGridAmount: "Quantita",
+        gateElementText: "Elemento",
+        gateElementsText: "Elementi",
+        gateTotalRenderer: "Totale",
+        gateStatFieldsetTitle: "Dati Statistici precalcolati",
+        gateStartDateText: 'Data inizio',
+        gateEndDateText: 'Data fine',
+        gateViewTimeGateButtonText: 'Visualizza dati Gate',
+        gateInfoTimeTitle: "Visualizzazione dati Gate",
+        gateInfoTimeMsg: "Selezionare un intervallo temporale!",    
+        gateTimeSelectorTitle: "Seleziona intervallo temporale",    
+        gateSliderFieldsetTitle: "Dati a scelta libera",
+        gateTimeGridDetectionDate: "Data rilevamento",
+        gateAveragePerHourRenderer: 'Media Oraria',
+        gateTimeGridHourTimeZone: "Ora fuso orario",
+        gateTimeGridMinuteTimeZone: "Minuto fuso orario",
+        gateTimeGridReceptionDate: "Data Ricezione",
+        gateTimeGridRoute: "Corsia",
+        gateTimeGridDirection: "Direzione",
+        gateTimeGridKemler: "Kemler Cod",
+        gateTimeGridOnu: "Onu Cod"
+	},
+
+	"gxp.widgets.button.SelectFeatureButton.prototype":{
+        tooltip: "Seleziona il Gate cliccando sulla mappa"
+	}      
 });

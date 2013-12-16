@@ -5,9 +5,9 @@
 
 /**
  * requires OpenLayers/Format/XML.js
- * requires OpenLayers/Format/OWSCommon/v1_1_0_ext.js
+ * requires OpenLayers/Format/OWSCommon/v1_1_0.js
  * requires OpenLayers/Format/WCSGetCoverage.js
- * requires OpenLayers/Format/WFST/v1_1_0_ext.js
+ * requires OpenLayers/Format/WFST/v1_1_0.js
  */
 
 /**
@@ -334,7 +334,7 @@ OpenLayers.Format.WPSExecute = OpenLayers.Class(OpenLayers.Format.XML,
                                 }
                             },
                             "wcs": OpenLayers.Format.WCSGetCoverage.prototype.writers.wcs,
-                            "wfs": OpenLayers.Format.WFST.v1_1_0_ext.prototype.writers.wfs,
+                            "wfs": OpenLayers.Format.WFST.v1_1_0.prototype.writers.wfs,
                             "ogc": OpenLayers.Format.Filter.v1_1_0.prototype.writers.ogc,
                             "ows": OpenLayers.Format.OWSCommon.v1_1_0.prototype.writers.ows,
                             "gml": OpenLayers.Format.GML.v3.prototype.writers.gml

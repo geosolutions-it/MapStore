@@ -592,5 +592,42 @@ GeoExt.Lang.add("fr", {
         allNotHumanTargetTitle: "Toutes les cibles environnementales",
         selectAllTitle: "SELECT ALL",
         addToMapButtonText: "Ajouter à la carte"
+	},
+
+	"gxp.plugins.GateTimeSliderTab.prototype":{
+        gateLabel: 'Gate',
+        gateSelection: 'Gate sélection',
+        gatePanelTitle: "Données en temps réel - Gate",
+        gateStatGridStart: "Date de début des statistiques",
+        gateStatGridEnd: "Date de fin de Statistique",
+        gateStatGridRoute: "Voie",
+        gateStatGridDirection: "Direction",
+        gateStatGridKemler: "Kemler Cod",
+        gateStatGridOnu: "Onu Cod",
+        gateStatGridAmount: "Montant",
+        gateElementText: "élément",
+        gateElementsText: "éléments",
+        gateTotalRenderer: "total",
+        gateStatFieldsetTitle: "Données statistiques précalculé",
+        gateStartDateText: 'date de début',
+        gateEndDateText: 'date de fin',
+        gateViewTimeGateButtonText: 'Afficher les données de gate',
+        gateInfoTimeTitle: "Afficher les données de gate",
+        gateInfoTimeMsg: "Sélectionner un intervalle de temps!",    
+        gateTimeSelectorTitle: "Sélectionner un intervalle de temps",    
+        gateSliderFieldsetTitle: "Données de sélection libre",
+        gateTimeGridDetectionDate: "Date de détection",
+        gateAveragePerHourRenderer: 'En moyenne par heure',
+        gateTimeGridHourTimeZone: "heure Time Zone",
+        gateTimeGridMinuteTimeZone: "Minute Time Zone",
+        gateTimeGridReceptionDate: "Date de réception",
+        gateTimeGridRoute: "Voie",
+        gateTimeGridDirection: "Direction",
+        gateTimeGridKemler: "Kemler Cod",
+        gateTimeGridOnu: "Onu Cod"
+	},
+
+	"gxp.widgets.button.SelectFeatureButton.prototype":{
+        tooltip: "Sélectionner la Gate en cliquant sur ​​la carte"
 	}
 });
