@@ -350,14 +350,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
 					},
                     change: function(slider, value) {
 						var time = times[value-1];
-						/*if(value == 1) {
-							time = "1954-01-01T00:00:00.000Z";
-						} else if (value == 2) {
-						    time = "2000-01-01T00:00:00.000Z";
-						}else {
-							time = "2006-01-01T00:00:00.000Z";
-						}*/
-						
+                        
                         layer.mergeNewParams({
                             time: time
                         });
