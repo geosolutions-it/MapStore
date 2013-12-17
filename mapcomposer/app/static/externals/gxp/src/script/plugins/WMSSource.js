@@ -226,6 +226,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             var original = this.store.getAt(index);
 
             var layer = original.getLayer();
+            layer.url = layer.url.replace('SERVICE=WMS&', '');
 
             /**
              * TODO: The WMSCapabilitiesReader should allow for creation

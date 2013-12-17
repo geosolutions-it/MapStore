@@ -266,6 +266,15 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 				handler : function(gpanel, rowIndex, colIndex) {
 					var store = gpanel.getStore();
 					var record = store.getAt(rowIndex);
+					if (!(record.data.itemStatus === 'COMPLETED')) {
+						Ext.Msg.show({
+						   title: this.detailsTooltip,
+						   msg: record.data.itemStatusMessage,
+						   buttons: Ext.Msg.OK,
+						   icon: Ext.MessageBox.WARNING
+						});
+						return;
+					}
 					var responseData = JSON.parse(record.get('changeMatrix'));
 
 					var changeMatrixTool=me.target.tools['changeMatrixTool'];

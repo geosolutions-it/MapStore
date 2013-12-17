@@ -447,7 +447,7 @@ OpenLayers.WPSProcess = OpenLayers.Class({
             output = this.description.processOutputs[opt.outputIndex || 0];
             this.description.responseForm.rawDataOutput= {
                 identifier: output.identifier,
-                mimeType: output.mimeType/*this.findMimeType(output.complexOutput.supported.formats, opt.supportedFormats)*/
+                mimeType: opt.mimeType/*this.findMimeType(output.complexOutput.supported.formats, opt.supportedFormats)*/
             }  
         }else{
             this.description.responseForm.responseDocument= {

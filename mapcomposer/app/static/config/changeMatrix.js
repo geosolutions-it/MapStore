@@ -122,7 +122,6 @@
           "resizable": true,
           "collapsed": false,
           "collapsible": true,
-          "collapseMode": "mini",
           "header": true
      }],
     
@@ -141,7 +140,7 @@
             "wfsURL": "http://localhost:8180/geoserver/wfs",
             "featureType": "changematrix",
             "featureNS": "http://www.geo-solutions.it", 
-            "pageSize": 50,
+            "pageSize": 10,
             "autoRefreshInterval": 3000,
             "srsName": "EPSG:32632", 
             "version": "1.1.0",
@@ -195,11 +194,44 @@
             "ptype": "gxp_changematrix",
             "id" : "changeMatrixTool",
             "outputTarget": "eastcontrolpanel",
+            "wfsChangeMatrisGridPanel": "wfsChangeMatrisGridPanel",
+            "requestTimeout": 5000,
             "wpsManagerID": "wpsManager",
+            "wpsUnionProcessID" : "JTS:union",
+            "wpsBufferProcessID" : "JTS:buffer",
+            "spatialOutputCRS" : "EPSG:4326",
+            "wfsBaseURL" : "http://localhost:8180/geoserver/wfs?",
+            "geocoderTypeName" : "it.geosolutions:geocoder",
+            "geocoderTypeTpl" : "<tpl for=\".\"><hr><div class=\"search-item\"><h3>{name}</span></h3>Parent: {custom}</div></tpl>",
+            "geocoderTypeRecordModel":[
+                    {
+                            "name":"id",
+                            "mapping":"id"
+                    },
+                    {
+                            "name":"name",
+                            "mapping":"properties.name"
+                    },
+                    {
+                            "name":"custom",
+                            "mapping":"properties.parent"
+                    },
+                    {
+                            "name":"geometry",
+                            "mapping":"geometry"
+                    }
+            ],
+		 	"geocoderTypeSortBy":"name",
+		 	"geocoderTypeQueriableAttributes":[
+				"name"
+			],
+			"geocoderTypeDisplayField":"name",
+			"geocoderTypePageSize" : 10,
             "storeName" : "unina_ds",
             "typeName" : "changematrix",
             "jiffleStyle" : "jiffle_style",
             "showSelectionSummary" : "true",
+            "zoomToCurrentExtent" : "true",
             "defaultStyle" : {
 		        "fillColor"   : "#FFFFFF",
 		        "strokeColor" : "#FF0000",
@@ -217,7 +249,16 @@
 				  "fillColor": "#ee9900",
 				  "fillOpacity": 0.4,
 				  "strokeWidth": 1
-			 },
+			},
+			"labelStyle" : {
+				"fontColor": "#a52505",
+				"fontSize": "18px",
+				"fontFamily": "Courier New, monospace",
+				"fontWeight": "bold",
+				"label": "${label}",
+				"labelOutlineColor": "white",
+				"labelOutlineWidth": 5
+			},
 		    "bufferOptions": {
 				"minValue": 1,
 				"maxValue": 1000000,

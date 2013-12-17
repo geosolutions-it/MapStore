@@ -26,6 +26,14 @@
     background-image: url(img/silk/shape_square.png) !important;
 }
 
+.execution-cls{
+	background-image: url(img/silk/add.png) !important;
+}
+
+.execution-cls-delete{
+	background-image: url(img/geosilk/erase.png) !important;
+}
+
 .x-btn .add {
     background-image: url(img/silk/add.png);
 }

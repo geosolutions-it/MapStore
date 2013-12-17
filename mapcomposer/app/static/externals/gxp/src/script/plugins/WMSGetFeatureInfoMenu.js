@@ -248,7 +248,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 
 				// Obtain info format
             	var infoFormat = this.getInfoFormat(x);
-				
+
                 var control = new OpenLayers.Control.WMSGetFeatureInfo({
                     url: l.url,
                     queryVisible: true,

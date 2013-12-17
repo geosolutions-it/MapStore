@@ -138,11 +138,11 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 	 */
 	changeMatrixInvalidFormDialogTitle : "Error",
 
-	/** api: config[changeMatrixEmptyClassesDialogText]
+	/** api: config[changeMatrixInvalidFormDialogText]
 	 *  ``String``
 	 *  Form validation messages: No classes selected (dialog content) (i18n).
 	 */
-	changeMatrixInvalidFormDialogText : "Please correct the form errors",
+	changeMatrixInvalidFormDialogText : "All ChangeMatrix Inputs are mandatory!",
 
 	/** api: config[changeMatrixTimeoutDialogTitle]
 	 *  ``String``
@@ -173,12 +173,18 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 	 *  Whether or not render to a Tab. Applies only on Tab enabled View (see MapStore config)
 	 */
 	renderToTab : true,
-
+	
+	/** api: config[wfsChangeMatrisGridPanel]
+	 *  ``String``
+	 *  Timeout for the WPS request
+	 */
+	wfsChangeMatrisGridPanel: null,
+	
 	/** api: config[requestTimeout]
 	 *  ``Integer``
 	 *  Timeout for the WPS request
 	 */
-	requestTimeout : 90000,
+	requestTimeout : 5000,
 
 	/** api: config[rasterLayers]
 	 *  ``String[]``
@@ -204,6 +210,89 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 	 */
 	wpsManagerID : null,
 	
+	/** api: config[wpsUnionProcessID]
+	 *  ``String``
+	 *  ID of the WPS Union Process .
+	 */
+	wpsUnionProcessID : 'JTS:union',
+
+	/** api: config[wpsBufferProcessID]
+	 *  ``String``
+	 *  ID of the WPS Buffer Process .
+	 */
+	wpsBufferProcessID : 'JTS:buffer',
+
+	/** api: config[wfsBaseURL]
+	 *  ``String``
+	 *  WFS Base URL .
+	 */
+	wfsBaseURL : "http://localhost:8180/geoserver/wfs?",
+
+	// //////////////////////////////////////////////////////////////
+	// GeoCoding Panel Config
+	// //////////////////////////////////////////////////////////////
+	
+	/** api: config[geocoderTypeName]
+	 *  ``String``
+	 *  geocoderTypeName .
+	 */
+	geocoderTypeName : "it.geosolutions:geocoder_limits",
+
+	/** api: config[geocoderTypeTpl]
+	 *  ``String``
+	 *  geocoderTypeTpl .
+	 */
+	geocoderTypeTpl : "<tpl for=\".\"><hr><div class=\"search-item\"><h3>{name}</span></h3>{name}</div></tpl>",
+	
+	/** api: config[geocoderTypeRecordModel]
+	 *  ``Object``
+	 *  geocoderTypeRecordModel .
+	 */
+	geocoderTypeRecordModel:[
+ 		{
+		   name:"id",
+		   mapping:"id"
+		},
+		{
+	   		name:"name",
+	   		mapping:"properties.name"
+		},
+		{
+	   		name:"geometry",
+	   		mapping:"geometry"
+		}
+ 	],
+
+	/** api: config[geocoderTypeSortBy]
+	 *  ``String``
+	 *  geocoderTypeSortBy .
+	 */
+	geocoderTypeSortBy:"name",
+
+	/** api: config[geocoderTypeQueriableAttributes]
+	 *  ``Object``
+	 *  geocoderTypeQueriableAttributes .
+	 */
+	geocoderTypeQueriableAttributes:[
+		"name"
+	],
+
+	/** api: config[geocoderTypeDisplayField]
+	 *  ``String``
+	 *  geocoderTypeDisplayField .
+	 */
+	geocoderTypeDisplayField:"name",
+
+	/** api: config[geocoderTypePageSize]
+	 *  ``Integer``
+	 *  geocoderTypePageSize .
+	 */
+	geocoderTypePageSize : 10,
+	
+	// //////////////////////////////////////////////////////////////
+	// END - GeoCoding Panel Config
+	// //////////////////////////////////////////////////////////////
+			
 	/** api: config[storeName]
 	 *  ``String``
 	 *  Store Name for WFS logging on Change Matrix Process .
@@ -244,10 +333,20 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 	 */
 	showSelectionSummary: true,
 
+	/** api: config[zoomToCurrentExtent]
+	 *  ``Boolean``
+	 */
+	zoomToCurrentExtent: true,
+
 	/** api: config[geodesic]
 	 *  ``Boolean``
 	 */
 	geodesic: true,
+	
+	/** api: config[spatialOutputCRS]
+	 *  ``String``
+	 */
+	spatialOutputCRS: "EPSG:4326",
 	
 	/** api: config[style]
 	 *  ``Object``
@@ -277,6 +376,16 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 		"graphicZIndex": 2
 	},
 
+	labelStyle : {
+		'fontColor': '#a52505',
+		'fontSize': "14px",
+		'fontFamily': "Courier New, monospace",
+		'fontWeight': "bold",
+		'label': '${label}',
+		'labelOutlineColor': "white",
+		'labelOutlineWidth': 5
+	},
+	
 	// Begin i18n.
 
 	/** api: config[chgMatrixFieldSetTitle]
@@ -421,11 +530,26 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 				ref: 'roiFieldSet',
 				xtype:'gxp_spatial_selector_field',
 				mapPanel: this.target.mapPanel,
+				loadingMaskId: 'change-matrix-form-panel',
+				wpsManager: this.wpsManager,
+				wpsUnionProcessID: this.wpsUnionProcessID,
+				wpsBufferProcessID: this.wpsBufferProcessID,
+				wfsBaseURL: this.wfsBaseURL,
+				spatialOutputCRS: this.spatialOutputCRS,
 				showSelectionSummary: this.showSelectionSummary,
+				zoomToCurrentExtent: this.zoomToCurrentExtent,
 				defaultStyle: this.defaultStyle,
 				selectStyle: this.selectStyle,
 				temporaryStyle: this.temporaryStyle,
-				bufferOptions: this.bufferOptions
+				labelStyle: this.labelStyle,
+				bufferOptions: this.bufferOptions,
+				geocoderTypeName: this.geocoderTypeName,
+				geocoderTypeTpl: this.geocoderTypeTpl,
+				geocoderTypeRecordModel: this.geocoderTypeRecordModel,
+				geocoderTypeSortBy: this.geocoderTypeSortBy,
+				geocoderTypeQueriableAttributes: this.geocoderTypeQueriableAttributes,
+				geocoderTypeDisplayField: this.geocoderTypeDisplayField,
+				geocoderTypePageSize: this.geocoderTypePageSize
 		};
 		
 		// ///////////////////
@@ -437,10 +561,12 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 			height : 380,
 			autoScroll : true,
 			labelAlign : 'top',
+			
 			items : [{
 				title : this.chgMatrixFieldSetTitle,
 				xtype : 'fieldset',
 				autoWidth : true,
+				collapsible : true,
 				layout : 'form',
 				defaultType : 'numberfield',
 				bodyStyle : 'padding:5px',
@@ -449,6 +575,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 				},
 				items : [{
 					xtype : "combo",
+					id   : 'rasterComboBox',
 					name : 'raster',
 					fieldLabel : this.changeMatrixRasterFieldLabel,
 					lazyInit : true,
@@ -473,8 +600,8 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 						keyup : function(field) {
 							var me = this, value = field.getValue();
 
-							if (me.layerTimeout)
-								clearTimeout(me.layerTimeout);
+							/*if (me.layerTimeout)
+								clearTimeout(me.layerTimeout);*/
 
 							if (value) {
 								me.layerTimeout = setTimeout(function() {
@@ -544,6 +671,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 					}
 				}, {
 					xtype : "combo",
+					id   : 'filterT0ComboBox',
 					name : 'filterT0',
 					fieldLabel : this.changeMatrixCQLFilterT0FieldLabel,
 					lazyInit : true,
@@ -564,6 +692,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 					}
 				}, {
 					xtype : "combo",
+					id   : 'filterT1ComboBox',
 					name : 'filterT1',
 					fieldLabel : this.changeMatrixCQLFilterT1FieldLabel,
 					lazyInit : true,
@@ -679,10 +808,31 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 					id : 'change-matrix-submit-button',
 					handler : function() {
 						var form = me.chgMatrixForm.getForm();
-
-						/*if (!form.isValid()) {
-							return Ext.Msg.alert(me.changeMatrixInvalidFormDialogTitle, me.changeMatrixInvalidFormDialogText);
-						}*/
+						var formIsValid = true;
+						
+						for (var itm = 0; itm < form.items.items.length; itm++) {
+							switch (form.items.items[itm].id) {
+								case "rasterComboBox":
+								case "filterT0ComboBox":
+								case "filterT1ComboBox":
+									if (!form.items.items[itm].getValue() || form.items.items[itm].getValue() === "") {
+										formIsValid = false;
+									}
+								default:
+									continue;
+							}
+						}
+						
+						if (!formIsValid) {
+							//return Ext.Msg.alert(me.changeMatrixInvalidFormDialogTitle, me.changeMatrixInvalidFormDialogText);
+							return Ext.Msg.show({
+									   title: me.changeMatrixInvalidFormDialogTitle,
+									   msg: me.changeMatrixInvalidFormDialogText,
+									   buttons: Ext.Msg.OK,
+									   icon: Ext.MessageBox.WARNING,
+									   scope: me
+									});
+						}
 						
 						me.chgMatrixForm.roiFieldSet.removeFeatureSummary();
 
@@ -706,7 +856,14 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 						// ///////////////
 						var classesSelectorExStore = Ext.getCmp("classesselector").storeTo;
 						if (classesSelectorExStore.getCount() == 0) {
-							return Ext.Msg.alert(me.changeMatrixEmptyClassesDialogTitle, me.changeMatrixEmptyClassesDialogText);
+							//return Ext.Msg.alert(me.changeMatrixEmptyClassesDialogTitle, me.changeMatrixEmptyClassesDialogText);
+							return Ext.Msg.show({
+									   title: me.changeMatrixEmptyClassesDialogTitle,
+									   msg: me.changeMatrixEmptyClassesDialogText,
+									   buttons: Ext.Msg.OK,
+									   icon: Ext.MessageBox.WARNING,
+									   scope: me
+									});
 						}
 						var selectedClasses = [];
 						classesSelectorExStore.each(function(record) {
@@ -967,19 +1124,14 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 
 		me.wpsManager.execute('gs:ChangeMatrix', requestObject, me.showResultsGrid, this);
 		
-		var wfsGrid = Ext.getCmp('wfsChangeMatrisGridPanel');
-		if(wfsGrid) {
-			var lastOptions = wfsGrid.store.lastOptions;
-         	wfsGrid.store.reload(lastOptions);
-         	wfsGrid.getView().refresh();
-		}
+		//me.handleRequestStop();
 	},
 
 	/**
 	 *
 	 */
 	showResultsGrid : function(responseText) {
-		this.handleRequestStop();
+		//this.handleRequestStop();
 
 		var wfsGrid = Ext.getCmp('wfsChangeMatrisGridPanel');
 		if(wfsGrid) {
@@ -1548,7 +1700,14 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 			this.loadingMask = new Ext.LoadMask(Ext.get('change-matrix-form-panel'), 'Loading..');
 		this.loadingMask.hide();
 		Ext.getCmp('change-matrix-submit-button').enable();
-		Ext.Msg.alert(this.changeMatrixTimeoutDialogTitle, this.changeMatrixTimeoutDialogText);
+		//Ext.Msg.alert(this.changeMatrixTimeoutDialogTitle, this.changeMatrixTimeoutDialogText);
+		
+		var wfsGrid = Ext.getCmp(this.wfsChangeMatrisGridPanel);
+		if(wfsGrid) {
+			var lastOptions = wfsGrid.store.lastOptions;
+         	wfsGrid.store.reload(lastOptions);
+         	wfsGrid.getView().refresh();
+		}		
 	},
 
 	/**
@@ -1580,8 +1739,8 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 		var submitButton = Ext.getCmp('change-matrix-submit-button');
 		if (submitButton)
 			submitButton.enable();
-		if (this.errorTimer)
-			clearTimeout(this.errorTimer);
+		/*if (this.errorTimer)
+			clearTimeout(this.errorTimer);*/
 	}
 
 });
