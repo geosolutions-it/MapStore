@@ -288,6 +288,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
      */
     createDisplayPanel: function() {
         var record = this.layerRecord;
+        var times = (record.data.times ? record.data.times.split(',') : null);
         var layer = record.getLayer();
         var opacity = layer.opacity;
         if(opacity == null) {
@@ -320,7 +321,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
 				return "Year " + text;
 			}
 		});
-	
+
         return {
             title: this.displayText,
             style: {"padding": "10px"},
@@ -331,14 +332,15 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                 name: "time",
                 fieldLabel: "Time",
                 minValue: 1,
-				maxValue: 3,	
-				value: 3,
+				maxValue: (times?times.length:1),	
+				value: (times?times.length:1),
+				disabled: (times?false:true),
                 anchor: "99%",
                 isFormField: true,
 				plugins: tip,
                 listeners: {
 					render: function(cmp){
-						var time = "2006-01-01T00:00:00.000Z";
+						var time = times[times.length-1];
 						
 						layer.mergeNewParams({
                             time: time
@@ -347,15 +349,14 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                         this.fireEvent("change");
 					},
                     change: function(slider, value) {
-					
-						var time;
-						if(value == 1){
+						var time = times[value-1];
+						/*if(value == 1) {
 							time = "1954-01-01T00:00:00.000Z";
-						}if (value == 2){
+						} else if (value == 2) {
 						    time = "2000-01-01T00:00:00.000Z";
-						}else{
+						}else {
 							time = "2006-01-01T00:00:00.000Z";
-						}
+						}*/
 						
                         layer.mergeNewParams({
                             time: time

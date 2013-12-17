@@ -26,10 +26,10 @@ Ext.namespace("gxp.plugins");
  *    Plugin for showing the properties of a selected layer from the map.
  */
 gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
-    
+
     /** api: ptype = gxp_layerproperties */
     ptype: "gxp_layerproperties",
-    
+
     /** api: config[menuText]
      *  ``String``
      *  Text for layer properties menu item (i18n).
@@ -41,13 +41,13 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
      *  Text for layer properties action tooltip (i18n).
      */
     toolTip: "Layer Properties",
-	
+
 	/** api: config[wpsmanager]
      *  ``String``
      *  The WPS Manager tool ID in order to enable statistics Tab.
      */
 	wpsmanager: null,
-    
+
     /** api: config[layerPanelConfig]
      *  ``Object`` Additional configuration options for the layer type specific
      *  properties panels, keyed by xtype, e.g.:
@@ -58,7 +58,7 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
      *          "gxp_wmslayerpanel": {rasterStyling: true}
      *      }
      */
-    
+
     constructor: function(config) {
         gxp.plugins.LayerProperties.superclass.constructor.apply(this, arguments);
         if (!this.outputConfig) {
@@ -68,7 +68,7 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
             };
         }
     },
-        
+
     /** api: method[addActions]
      */
     addActions: function() {
@@ -92,7 +92,7 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
         }, this);
         return actions;
     },
-    
+
     addOutput: function(config) {
         config = config || {};
         var record = this.target.selectedLayer;
@@ -112,7 +112,7 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
 		if(this.wpsmanager){
 			this.wpsManager = this.target.tools[this.wpsmanager];
 		}
-		
+
         return gxp.plugins.LayerProperties.superclass.addOutput.call(this, Ext.apply({
             xtype: xtype,
             authorized: this.target.isAuthorized(),
@@ -125,7 +125,7 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
                 autoHeight: this.outputConfig.autoHeight
             }
         }, config));
-    }        
+    }
 });
 
 Ext.preg(gxp.plugins.LayerProperties.prototype.ptype, gxp.plugins.LayerProperties);
