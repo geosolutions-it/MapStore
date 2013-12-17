@@ -161,7 +161,9 @@ summaryRenderer: function(v, params, data){
             s.firstChild.style.width = tw;
             cells = s.firstChild.rows[0].childNodes;
             for(j = 0; j < wlen; j++){
-                cells[j].style.width = ws[j];
+                if(cells[j]) {
+                    cells[j].style.width = ws[j];
+                }
             }
         }
     },

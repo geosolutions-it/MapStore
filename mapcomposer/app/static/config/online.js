@@ -40,10 +40,6 @@
 				-20037508.34,-20037508.34,
 				20037508.34,20037508.34
         ],
-        "restrictedExtent": [
-				-20037508.34,-20037508.34,
-				20037508.34,20037508.34
-        ],        
         "layers": [                      
             
         {
@@ -255,7 +251,7 @@
 			"displayInLayerSwitcher": true,
 			"tiled": true,
             "group": ["Real time data","Dati in tempo reale","Données en temps réel","Echtzeitdaten"],
-			"visibility": true
+			"visibility": false
         }
         ]
 	},
@@ -274,7 +270,13 @@
         },{
             "name": "PTA", 
             "url": "http://www.gruppoiit.lispa.it/geoportal/csw",
-            "description": "PTA"
+            "description": "PTA",
+            "metaDataOptions":{
+ 				"base":"http://www.gruppoiit.lispa.it/geoportal/catalog/search/resource/details.page",
+ 				"idParam":"uuid",
+ 				"idIndex":0
+ 			}
+
         }                
         ],
 		"dcProperty": "title",

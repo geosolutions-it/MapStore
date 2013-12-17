@@ -599,13 +599,13 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
         };
         
         // defina Group Summary plugin
-        var summaryTime = new Ext.ux.grid.GroupSummary(/*{
+        var summaryTime = new Ext.ux.grid.GroupSummary({
             cellTpl: new Ext.XTemplate(
                 '<tpl if="id == \'1\'"><td class="x-grid3-col x-grid3-cell x-grid3-td-{id} {css}" style="{style}">',
                 '<div class="x-grid3-cell-inner x-grid3-col-{id}" unselectable="on">{value}</div>',
                 "</td></tpl>"
             )
-        }*/);   
+        });
         
         if(!this.gateTimeGrid){
     
