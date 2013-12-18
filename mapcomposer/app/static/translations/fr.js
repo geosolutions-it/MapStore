@@ -644,5 +644,27 @@ GeoExt.Lang.add("fr", {
         showGroupsText : 'Montrez Groupes',       
         sortAscText : "Trier en ordre croissant",
         sortDescText : "Trier en ordre décroissant"
+    },
+
+    "gxp.plugins.FeatureEditor.prototype":{
+        createFeatureActionTip: "Créer une nouvelle Gate",
+        createFeatureActionText: "Créer une nouvelle Gate",
+        editFeatureActionTip: "Modifier Gate existante",
+        editFeatureActionText: "Modifier Gate existante"
+    },
+    
+    "gxp.FeatureEditPopup.prototype":{
+        closeMsgTitle: 'Voulez-vous enregistrer les modifications?',
+        closeMsg: 'Vous avez des modifications non enregistrées. Voulez-vous sauver?',
+        deleteMsgTitle: 'Retirez la Gate?',
+        deleteMsg: 'Etes-vous sûr de vouloir supprimer la Gate?',
+        editButtonText: 'Modification',
+        editButtonTooltip: 'Faites la Gate modifiable',
+        deleteButtonText: 'Supprimer',
+        deleteButtonTooltip: 'Supprimer la Gate',
+        cancelButtonText: 'Annuler',
+        cancelButtonTooltip: 'Arrêtez édition, annuler les modifications',
+        saveButtonText: 'Sauver',
+        saveButtonTooltip: 'Enregistrer les modifications'
     }    
 });

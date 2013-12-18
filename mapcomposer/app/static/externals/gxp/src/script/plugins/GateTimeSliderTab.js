@@ -166,10 +166,25 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
         this.summaryLabels = {
             'mediaOraria': this.gateAggregationAveragePerHour,
             'count': this.gateAggregationTotal
-        },
-        this.featureSelectorConfigs.base.url = this.wfsUrl;
-        this.featureSelectorConfigs.base.fieldLabel = this.gateLabel;
+        };
         
+        this.editorFieldSet = new Ext.form.FieldSet({
+            title: "Gate Editor",
+            id: 'editorfieldset',
+            autoHeight: true,
+            autoScroll: true,
+            bbar: [],
+            defaults: {
+                // applied to each contained panel
+                bodyStyle:'padding:5px;'
+            }
+        });
+        
+        var fieldSetBottomToolbar = this.editorFieldSet.getBottomToolbar();
+        fieldSetBottomToolbar.addClass("my-toolbar");        
+        
+        this.featureSelectorConfigs.base.url = this.wfsUrl;
+        this.featureSelectorConfigs.base.fieldLabel = this.gateLabel;        
         this.featureSelectorConfigs.gate.typeName = this.layerGates;
         
         this.singleGateSelector = {
@@ -193,6 +208,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
             closable: false,
             labelWidth: '10px',
             items:[
+                this.editorFieldSet,
                 this.singleGateSelector
             ]
         });
@@ -617,6 +633,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                 "</td></tpl>"
             )
         });
+
         
         if(!this.gateTimeGrid){
     
