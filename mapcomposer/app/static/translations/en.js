@@ -647,5 +647,27 @@ GeoExt.Lang.add("en", {
         showGroupsText : 'Show in Groups',       
         sortAscText : "Sort Ascending",
         sortDescText : "Sort Descending"
+    },
+
+    "gxp.plugins.FeatureEditor.prototype":{
+        createFeatureActionTip: "Create a new feature",
+        createFeatureActionText: "Create a new feature",
+        editFeatureActionTip: "Edit existing feature",
+        editFeatureActionText: "Edit existing feature"
+    },
+    
+    "gxp.FeatureEditPopup.prototype":{
+        closeMsgTitle: 'Save Changes?',
+        closeMsg: 'This feature has unsaved changes. Would you like to save your changes?',
+        deleteMsgTitle: 'Delete Feature?',
+        deleteMsg: 'Are you sure you want to delete this feature?',
+        editButtonText: 'Edit',
+        editButtonTooltip: 'Make this feature editable',
+        deleteButtonText: 'Delete',
+        deleteButtonTooltip: 'Delete this feature',
+        cancelButtonText: 'Cancel',
+        cancelButtonTooltip: 'Stop editing, discard changes',
+        saveButtonText: 'Save',
+        saveButtonTooltip: 'Save changes'
     }    
 });
