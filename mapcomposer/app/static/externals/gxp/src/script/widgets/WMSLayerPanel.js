@@ -309,16 +309,13 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         
 		var tip = new Ext.slider.Tip({
 			getText: function(thumb){
-				var text;
-				if(thumb.value == 1){ 
-					text = 1954;
-				}else if(thumb.value == 2){
-					text = 2000;
-				}else{
-					text = 2006;
+				if (times) {					
+					var text = times[thumb.value-1];
+					return "time : " + text;
 				}
-					
-				return "Year " + text;
+				else {
+					return '';
+				}
 			}
 		});
 
@@ -340,21 +337,23 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
 				plugins: tip,
                 listeners: {
 					render: function(cmp){
-						var time = times[times.length-1];
-						
-						layer.mergeNewParams({
-                            time: time
-                        });
-
+						if(times) {
+							var time = times[times.length-1];
+							
+							layer.mergeNewParams({
+	                            time: time
+	                        });							
+						}
                         this.fireEvent("change");
 					},
                     change: function(slider, value) {
-						var time = times[value-1];
-                        
-                        layer.mergeNewParams({
-                            time: time
-                        });
-
+						if(times) {
+							var time = times[value-1];
+	                        
+	                        layer.mergeNewParams({
+	                            time: time
+	                        });
+	                    }	
                         this.fireEvent("change");
                     },
                     scope: this
