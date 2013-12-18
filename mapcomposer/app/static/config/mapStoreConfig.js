@@ -548,6 +548,7 @@
         "wfsVersion": "1.1.0",
         "destinationNS": "destination",
         "statisticFeature": "siig_gate_t_dato_statistico",
+        "intervalsFeature": "siig_gate_d_intervalli",
         "timeFeature": "siig_gate_t_dato",        
         "layerGates":"siig_gate_geo_gate",     
         "outputTarget": "east"
