@@ -93,6 +93,10 @@ body {
     background-image: url(img/silk/application_view_gallery.png);
 }
 
+.x-btn .icon-changematrix {
+    background-image: url(img/silk/application_side_expand.png);
+}
+
 .x-btn .icon-save {
     background-image: url(img/geosilk/map_save.png);
 }
@@ -111,6 +115,14 @@ body {
 
 .x-btn .icon-measure {
     background-image: url(img/geosilk/measure.png);
+}
+
+.icon-piechart {
+    background-image: url(img/silk/pie-chart-icon.png);
+}
+
+.data-table {
+    background-image: url(img/silk/data_table.png);
 }
 
 .icon-measure-length {
