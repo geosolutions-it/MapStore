@@ -107,18 +107,36 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
      */
     displayBBOXInLayerSwitcher: false,
 
-    /**
-     * Property: selectStyle
-     * {Object} Configuration of OpenLayer.Style. 
-     *    used to highlight the BBOX
-     *     
-     */
-    selectStyle:{
-        fillColor: "#0000FF",
-        strokeColor: "#0000FF",
-        fillOpacity:0.5,
-        strokeWidth:2
-    },
+    /** api: config[defaultStyle]
+	 *  ``Object``
+	 */
+	defaultStyle : {
+		"strokeColor" : "#ee9900",
+		"fillColor" : "#ee9900",
+		"fillOpacity" : 0.4,
+		"strokeWidth" : 1
+	},
+
+	/** api: config[selectStyle]
+	 *  ``Object``
+	 */
+	selectStyle : {
+		"strokeColor" : "#ee9900",
+		"fillColor" : "#ee9900",
+		"fillOpacity" : 0.4,
+		"strokeWidth" : 1
+	},
+
+	/** api: config[temporaryStyle]
+	 *  ``Object``
+	 */
+	temporaryStyle : {
+		"pointRadius" : 6,
+		"fillColor" : "#FF00FF",
+		"strokeColor" : "#FF00FF",
+		"label" : "Select",
+		"graphicZIndex" : 2
+	},
 
     // start i18n
     northLabel:"North",
@@ -178,7 +196,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         this.westField = new Ext.form.NumberField({
             fieldLabel: this.westLabel,
             id: me.id+"_WestBBOX",
-            width: 100,
+            width: 70,
             allowBlank: false,
           /*  minValue: this.spatialFilterOptions.latMin,
             maxValue: this.spatialFilterOptions.latMax,*/
@@ -190,7 +208,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         this.eastField = new Ext.form.NumberField({
             fieldLabel: this.eastLabel,
             id: me.id+"_EastBBOX",
-            width: 100,
+            width: 70,
             allowBlank: false,
           /*  minValue: this.spatialFilterOptions.latMin,
             maxValue: this.spatialFilterOptions.latMax,*/
@@ -245,7 +263,6 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
                         //
                         // Activating the new control
                         //   
-                        
                         this.selectBBOX.activate();
                     }else{
                         this.selectBBOX.deactivate();
@@ -301,22 +318,28 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             this.title += " <a href='#' id='"+me.id+"_bboxAOI-set-EPSG'>["+this.bboxProjection.getCode()+"]</a>";
         
         this.listeners = {
-            "afterlayout": function(){
+           "afterlayout": function(){
                 Ext.get(me.id+"_bboxAOI-set-EPSG").addListener("click", me.openEPSGWin, me);  
 				var baseProj = me.map.getProjection();
 				var projection = baseProj ? baseProj : me.map.projection; 				
                 me.mapProjection = new OpenLayers.Projection(projection);
-                    
                 me.selectBBOX = new OpenLayers.Control.SetBox({      
                     map: me.map,       
                     layerName: me.layerName,
                     displayInLayerSwitcher: me.displayBBOXInLayerSwitcher,
                     boxDivClassName: "olHandlerBoxZoomBox_"+me.id,
-                    aoiStyle: new OpenLayers.StyleMap(me.selectStyle),
-                    onChangeAOI: function(){  
-                        me.setBBOX(new OpenLayers.Bounds.fromString(this.currentAOI)); 
+                    aoiStyle: new OpenLayers.StyleMap({
+						"default" : me.defaultStyle,
+						"select": me.selectStyle,
+						"temporary": me.temporaryStyle
+					}),
+                    onChangeAOI: function(){
+                    	var bounds = new OpenLayers.Bounds.fromString(this.currentAOI);  
+                        me.setBBOX(bounds); 
                         this.deactivate();
                         me.bboxButton.toggle();
+                        
+                        me.fireEvent('onChangeAOI', bounds);
                     } 
                 }); 
         
@@ -361,7 +384,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         this.eastField.reset();
         this.westField.reset(); 
 
-		this.fireEvent('unselect', this);		
+		this.fireEvent('unselect', this);
     },
     
     /** public: method[setBBOX]
