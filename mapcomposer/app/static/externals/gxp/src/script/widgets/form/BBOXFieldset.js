@@ -318,7 +318,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             this.title += " <a href='#' id='"+me.id+"_bboxAOI-set-EPSG'>["+this.bboxProjection.getCode()+"]</a>";
         
         this.listeners = {
-            "afterlayout": function(){
+           "afterlayout": function(){
                 Ext.get(me.id+"_bboxAOI-set-EPSG").addListener("click", me.openEPSGWin, me);  
 				var baseProj = me.map.getProjection();
 				var projection = baseProj ? baseProj : me.map.projection; 				

@@ -230,8 +230,8 @@
             "storeName" : "unina_ds",
             "typeName" : "changematrix",
             "jiffleStyle" : "jiffle_style",
-            "showSelectionSummary" : "true",
-            "zoomToCurrentExtent" : "true",
+            "showSelectionSummary" : true,
+            "zoomToCurrentExtent" : false,
             "defaultStyle" : {
 		        "fillColor"   : "#FFFFFF",
 		        "strokeColor" : "#FF0000",

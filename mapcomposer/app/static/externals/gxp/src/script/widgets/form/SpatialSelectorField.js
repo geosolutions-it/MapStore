@@ -658,9 +658,9 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 											var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
 											Ext.applyIf(vector_style, this.labelStyle);
 											
-									        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoderDrawings",
+									        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoder",
 												{
-													displayInLayerSwitcher:false,
+													displayInLayerSwitcher:true,
 													styleMap : new OpenLayers.StyleMap({
 														"default"   : vector_style,
 														"select"    : vector_style,
@@ -740,9 +740,9 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 															var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
 															Ext.applyIf(vector_style, this.labelStyle);
 															
-													        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoderDrawings",
+													        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoder",
 																{
-																	displayInLayerSwitcher:false,
+																	displayInLayerSwitcher:true,
 																	styleMap : new OpenLayers.StyleMap({
 																		"default"   : vector_style,
 																		"select"    : vector_style,
@@ -1022,28 +1022,27 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 							/**
 							 * Create Polygon Selector
 							 */
-							if (!me.drawings) {
-								me.drawings = new OpenLayers.Layer.Vector({}, {
-									displayInLayerSwitcher : false,
-									styleMap : new OpenLayers.StyleMap({
-										"default" : this.defaultStyle,
-										"select" : this.selectStyle,
-										"temporary" : this.temporaryStyle
-									})
-								});
+							me.drawings = new OpenLayers.Layer.Vector({}, 
+							{
+								displayInLayerSwitcher : false,
+								styleMap : new OpenLayers.StyleMap({
+									"default" : this.defaultStyle,
+									"select" : this.selectStyle,
+									"temporary" : this.temporaryStyle
+								})
+							});
 
-								me.drawings.events.on({
-									"featureadded" : function(event) {
-										me.addFeatureSummary(outputValue, event.feature);
-										me.setCurrentExtent(outputValue, event.feature);
-									},
-									"beforefeatureadded" : function(event) {
-										me.drawings.destroyFeatures();
-									}
-								});
-		
-								me.map.addLayer(me.drawings);
-							}
+							me.drawings.events.on({
+								"featureadded" : function(event) {
+									me.addFeatureSummary(outputValue, event.feature);
+									me.setCurrentExtent(outputValue, event.feature);
+								},
+								"beforefeatureadded" : function(event) {
+									me.drawings.destroyFeatures();
+								}
+							});
+	
+							me.map.addLayer(me.drawings);
 	
 							me.draw = new OpenLayers.Control.DrawFeature(me.drawings, OpenLayers.Handler.Polygon);
 	
@@ -1053,9 +1052,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 							me.draw.handler.stopUp = true;
 	
 							me.map.addControl(me.draw);
-	
-							if (me.draw)
-								me.draw.activate();
+							me.draw.activate();
 						} else if(outputValue == 'circle') {
 							/**
 							 * RESET State
@@ -1083,30 +1080,28 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 							/**
 							 * Create Circle Selector
 							 */
-							if (!me.drawings) {
-	                            me.drawings = new OpenLayers.Layer.Vector({},
-									{
-										displayInLayerSwitcher:false,
-										styleMap : new OpenLayers.StyleMap({
-											"default" : this.defaultStyle,
-											"select" : this.selectStyle,
-											"temporary" : this.temporaryStyle
-										})
-									}
-								);
+                            me.drawings = new OpenLayers.Layer.Vector({},
+								{
+									displayInLayerSwitcher:false,
+									styleMap : new OpenLayers.StyleMap({
+										"default" : this.defaultStyle,
+										"select" : this.selectStyle,
+										"temporary" : this.temporaryStyle
+									})
+								}
+							);
 
-	                            me.drawings.events.on({
-	                                "featureadded": function(event) {
-										me.addFeatureSummary(outputValue, event.feature);
-										me.setCurrentExtent(outputValue, event.feature);
-	                                },                                
-	                                "beforefeatureadded": function(event) {
-	                                    me.drawings.destroyFeatures();
-	                                }
-	                            });                                 
-                            
-                            	me.map.addLayer(me.drawings);
-                           }
+                            me.drawings.events.on({
+                                "featureadded": function(event) {
+									me.addFeatureSummary(outputValue, event.feature);
+									me.setCurrentExtent(outputValue, event.feature);
+                                },                                
+                                "beforefeatureadded": function(event) {
+                                    me.drawings.destroyFeatures();
+                                }
+                            });                                 
+                        
+                        	me.map.addLayer(me.drawings);
                            
                             var polyOptions = {sides: 100};
                             
@@ -1246,8 +1241,8 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		if (aoiLayer)
 			me.map.removeLayer(aoiLayer);
 
-		if (this.aoiButton && this.aoiButton.pressed) {
-			this.aoiButton.toggle();
+		if (me.aoiButton && me.aoiButton.pressed) {
+			me.aoiButton.toggle();
 		}
 
 		if(me.spatialFieldSet) {
@@ -1286,7 +1281,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		};
 		if (me.filterPolygon) {
 			me.filterPolygon = new OpenLayers.Filter.Spatial({});
-		};		
+		};
 	},
 	
 	//// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1522,7 +1517,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		if ( obj instanceof OpenLayers.Bounds) {
 			geometry = obj.toGeometry();
 		} else if ( obj instanceof OpenLayers.Feature.Vector) {
-			geometry = obj.geometry;
+			geometry = obj.geometry.clone();
 		} else if (outputValue == 'geocoder' && obj) {
 			var store = obj;
 			var records = store.getRange();
@@ -1540,9 +1535,9 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 						var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
 						Ext.applyIf(vector_style, this.labelStyle);
 						
-				        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoderDrawings",
+				        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoder",
 							{
-								displayInLayerSwitcher:false,
+								displayInLayerSwitcher:true,
 								styleMap : new OpenLayers.StyleMap({
 									"default"   : vector_style,
 									"select"    : vector_style,
@@ -1557,8 +1552,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 					
 	                // create some attributes for the feature
 					var attributes = {name: record.data.location, label: record.data.location};
-					var feature = new OpenLayers.Feature.Vector(geometry, attributes);
-	                me.geocoderDrawings.addFeatures([feature]);
+	                me.geocoderDrawings.addFeatures([new OpenLayers.Feature.Vector(geometry.clone(), attributes)]);
 				}
 			} else {
 				var geoms = [];
@@ -1572,9 +1566,9 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 							var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
 							Ext.applyIf(vector_style, this.labelStyle);
 							
-					        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoderDrawings",
+					        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoder",
 								{
-									displayInLayerSwitcher:false,
+									displayInLayerSwitcher:true,
 									styleMap : new OpenLayers.StyleMap({
 										"default"   : vector_style,
 										"select"    : vector_style,
@@ -1589,7 +1583,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 						
 		                // create some attributes for the feature
 						var attributes = {name: record.data.location, label: record.data.location};
-		                me.geocoderDrawings.addFeatures([new OpenLayers.Feature.Vector(feature, attributes)]);
+		                me.geocoderDrawings.addFeatures([new OpenLayers.Feature.Vector(feature.clone(), attributes)]);
 					}
 				}
 				
@@ -1626,7 +1620,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		} else if (geometry) {
 			me.currentExtent = geometry;
 
-			if (me.zoomToCurrentExtent) {
+			if (me.zoomToCurrentExtent || outputValue == 'geocoder' || outputValue == 'wps') {
 				var dataExtent = me.currentExtent.getBounds();
 				me.map.zoomToExtent(dataExtent, closest=false);
 			}
@@ -1636,7 +1630,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 				me.currentExtent.transform(me.map.getProjectionObject(), new OpenLayers.Projection(me.spatialOutputCRS));
 			}
 		} else {
-			me.currentExtent = me.map.getExtent();
+			me.currentExtent = (JSON.parse(JSON.stringify(me.map.getExtent())));
 
 			if (me.zoomToCurrentExtent) {
 				var dataExtent = me.currentExtent.toGeometry().getBounds();
