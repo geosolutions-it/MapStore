@@ -163,14 +163,14 @@ GeoExt.Lang.add("de", {
     },
 
     "gxp.plugins.WMSGetFeatureInfo.prototype": {
-        infoActionTip: "Feature Info erhalten",
-        popupTitle: "Feature Info",
+        infoActionTip: "Info erhalten",
+        popupTitle: "Info",
 		noDataMsg: "Keine Daten vom Server erhalten"
     },
 	
 	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
-        infoActionTip: "Feature Info erhalten",
-        popupTitle: "Feature Info",
+        infoActionTip: "Informationen erhalten",
+        popupTitle: "Info",
 		noDataMsg: "Keine Daten vom Server erhalten",
 		activeActionTip: "Informationen über ausgewählte Schicht"
     },
@@ -685,8 +685,8 @@ GeoExt.Lang.add("de", {
 	},
 	
 	"gxp.plugins.SearchCosap.prototype":{
-		layerCosapTitle: 'Besetzungen Fläche',
-		layerCosapLogoTitle: 'Besetzungen Symbole',
+		layerCosapTitle: 'Besetzung Fläche',
+		layerCosapLogoTitle: 'Besetzung Symbole',
 		waitMsg: "Bitte warten ...",	
 		titleError: "Fehler",	
 		cercaText: 'Suche',		
@@ -711,5 +711,13 @@ GeoExt.Lang.add("de", {
 		serverErrorMsg: "Fehler beim Erzeugen der Karte Snapshot: Server Error",
 		menuText: "Snapshot",
 		tooltip: "Snapshot"
+	},
+	
+	"gxp.plugins.HelpButton.prototype" :{
+		menuText: "Hilfe",
+		text: "Hilfe",
+		title: "Hilfe",
+		tooltip: "Hilfe öffnen",
+		fileName: "help_de.pdf"
 	}
 });

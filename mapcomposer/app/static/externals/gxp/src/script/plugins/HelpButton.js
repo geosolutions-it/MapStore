@@ -49,6 +49,8 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
     title:'Help Window',
     iconCls:'gx-help',
     tooltip:'Open the Help Window',
+	link:'',
+	fileName: '',
     /** end of i18n */
     /** api: config[description]
      *  ``String`` Html to show in the window
@@ -87,16 +89,21 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
         return gxp.plugins.HelpButton.superclass.addActions.apply(this, [actions]);
     },
     showHelp:function(){
+		if (this.fileName == 'help_de.pdf') {
+			new Ext.Window(Ext.apply({
+			   layout:'fit',
+			   title: this.title,
+			   border:false,
+			   autoScroll:false,
+			   items:{html: '<img align="center" src="http://sit.comune.bolzano.it/GeoInfo/img/work_in_progress.png"/>', autoScroll:true,bodyStyle:'padding:10px'},
+			   modal:true,
+			   height:300
+			},this.windowOptions)).show();
+		} else{
+			window.open(this.link + this.fileName);
+		}
+		
         
-        new Ext.Window(Ext.apply({
-           layout:'fit',
-           title: this.title,
-           border:false,
-           autoScroll:false,
-           items:{html: this.description, autoScroll:true,bodyStyle:'padding:10px'},
-           modal:true,
-           height:200
-        },this.windowOptions)).show();
     }
     
 });

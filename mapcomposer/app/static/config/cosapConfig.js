@@ -2,11 +2,12 @@
    "geoStoreBase": "",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "it",
+   "advancedScaleOverlay": true,
    "proj4jsDefs": {"EPSG:25832": "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs"},
    "gsSources":{ 
 		"bolzano": {
 			"ptype": "gxp_wmssource",
-			"url": "http://geoserver:8080/geoserver/ows",
+			"url": "http://sit.comune.bolzano.it/geoserver/ows",
 			"title": "Bolzano GeoServer",
 			"SRS": "EPSG:900913",
 			"version":"1.1.1",
@@ -294,7 +295,7 @@
 				"outputFilename":"mapstore-print"
 			},
 			"ignoreLayers": "Google Hybrid,Bing Aerial,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
-			"printService":"http://geoserver:8080/geoserver/pdf/",
+			"printService":"http://sit.comune.bolzano.it/geoserver/pdf/",
 			"addGraticuleControl": false,
 			"addLandscapeControl": true,
 			"appendLegendOptions": true,
@@ -362,6 +363,32 @@
 				"distanceUnits": "m"
 			  }
 		  }
-	    }
+	    }, {
+		   "ptype": "gxp_mouseposition",
+		   "displayProjectionCode":"EPSG:25832",
+		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
+		},
+		{
+			"ptype": "gxp_overviewmap",
+			"layers": [
+				{
+					"wmsserver":"http://sit.comune.bolzano.it/geoserver/Cartografia/wms",
+					"name":"Cartografia:Confine_comunale"							
+				}, {
+					"wmsserver":"http://sit.comune.bolzano.it/geoserver/Ambiente/wms",
+					"name":"Ambiente:quartieri"
+				}, {
+					"wmsserver":"http://sit.comune.bolzano.it/geoserver/Cartografia/wms",
+					"name":"Cartografia:ferrovia"
+				}, {
+					"wmsserver":"http://sit.comune.bolzano.it/geoserver/Cartografia/wms",
+					"name":"Cartografia:autostrada"
+				}
+			]
+		},
+		{
+			"ptype": "gxp_help",
+			"link": "http://sit.comune.bolzano.it/GeoInfo/help/"
+		}
 	]
 }

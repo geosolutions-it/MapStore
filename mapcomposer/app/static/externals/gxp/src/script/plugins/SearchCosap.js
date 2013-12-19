@@ -333,17 +333,23 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 		
 		
 		apptarget.mapPanel.map.events.register('preaddlayer', apptarget.mapPanel.map, function (e) {
-			if ((e.layer.name == 'Occupazioni Area') || 
-			    (e.layer.name == 'Occupazioni Icone')){
+		
+		
+			// if ((e.layer.name == 'Occupazioni Area') || 
+			    // (e.layer.name == 'Occupazioni Icone')){
+			if ((e.layer.params && e.layer.params.LAYERS == 'Cosap:occupazioni_logo') || 
+			    (e.layer.params && e.layer.params.LAYERS == 'Cosap:occupazioni_concessioni')){
 				var aDate = new Date();
 				
 				//Impostazione di un filtro iniziale.
 				e.layer.vendorParams =  {
-					"cql_filter": "APER_DATA_INIZIO <= '"+ aDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + aDate.format('Y-m-d') + "'"
+					"cql_filter": "APER_DATA_INIZIO <= '"+ aDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + aDate.format('Y-m-d') + "'",
+					"buffer": 20
 				};
 				
 				e.layer.mergeNewParams({
-					"cql_filter": "APER_DATA_INIZIO <= '"+ aDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + aDate.format('Y-m-d') + "'"
+					"cql_filter": "APER_DATA_INIZIO <= '"+ aDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + aDate.format('Y-m-d') + "'",
+					"buffer": 20
 				});
 			}
 		});

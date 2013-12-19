@@ -74,13 +74,9 @@ gxp.plugins.OverviewMap = Ext.extend(gxp.plugins.Tool, {
 			projection: this.map.getProjection()
 		};
 		
-		var overviewLayers = null;
+		var overviewLayers = [];
 		
-		/* if(this.layers){
-			overviewLayers = this.layers;
-		} else {
-			overviewLayers = baseLayer;
-		} */
+		
 		
 		var aLayer = new OpenLayers.Layer.WMS(
                         "Cartografia:Confine_comunale", 
@@ -127,14 +123,48 @@ gxp.plugins.OverviewMap = Ext.extend(gxp.plugins.Tool, {
                             isBaseLayer: false
                         } 
                     );
+					
+		if(this.layers){
+			for (var i=0; i < this.layers.length; i++) {
+				
+				if (i == 0) {
+					overviewLayers.push(new OpenLayers.Layer.WMS(
+							this.layers[i].name, 
+							this.layers[i].wmsserver,                        
+							{
+								LAYERS: this.layers[i].name
+							},
+							{
+								isBaseLayer: true
+							} 
+						));
+				} else {
+					overviewLayers.push(new OpenLayers.Layer.WMS(
+							this.layers[i].name, 
+							this.layers[i].wmsserver,                        
+							{
+								LAYERS: this.layers[i].name,
+								transparent: true
+							},
+							{
+								isBaseLayer: false
+							} 
+						));
+				}
+			}
+		} else {
+			overviewLayers.push(baseLayer);
+		} 			
 		
 		var overview = new OpenLayers.Control.OverviewMap({
 			maximized: true,
 			mapOptions: OpenLayers.Util.extend(mapOptions, {
 				maxExtent: this.map.getMaxExtent()
 			}),
-			layers: [aLayer, bLayer, dLayer, cLayer]
+			layers: overviewLayers
 		});
+		
+		
 		
 		// if (this.layers){
 			// var addLayer = apptarget.tools["addlayer"];

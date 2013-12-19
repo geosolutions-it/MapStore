@@ -111,7 +111,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
     
     compactLegend: false,
     
-    legendOnSeparatePage: false,
+    legendOnSeparatePage: true,
     
     /** api: config[mapTitle]
      *  ``String`` An optional title to set for the mapTitle field when
@@ -190,6 +190,9 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
     /** private: method[initComponent]
      */
     initComponent: function() {
+		this.legendOnSeparatePage = true;
+		this.landscape = true;	
+		
         var printMapPanelOptions = {
             sourceMap: this.sourceMap,
             printProvider: this.printProvider,
@@ -361,7 +364,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         if(this.legend) {
             var legendOnSeparatePageCheckbox = new Ext.form.Checkbox({
                 name: "legend",
-                checked: this.legendOnSeparatePage,
+                checked: true,
                 boxLabel: this.legendOnSeparatePageText,
                 hideLabel: true,
                 ctCls: "gx-item-nowrap",
@@ -414,10 +417,10 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             if(this.addLandscapeControl){
                 var landscapeCheckbox = new Ext.form.Checkbox({
                     name: "landscape",
-                    checked: this.landscape,
+                    checked: true,
                     boxLabel: this.landscapeText,
                     hideLabel: true,
-                    disabled: !this.legendOnSeparatePage,
+                    disabled: false,
                     ctCls: "gx-item-nowrap",
                     handler: function(cb, checked) {
                         this.landscape = checked;

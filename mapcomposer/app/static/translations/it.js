@@ -163,18 +163,18 @@ GeoExt.Lang.add("it", {
     },
 
     "gxp.plugins.WMSGetFeatureInfo.prototype": {
-        infoActionTip: "Recupera Feature Info",
-        popupTitle: "Feature Info",
+        infoActionTip: "Recupera Informazioni",
+        popupTitle: "Informazioni Feature",
 		noDataMsg: "Nessun dato è stato ritornato dal server",
-		maskMessage: "Recupero Feature Info..."
+		maskMessage: "Recupero Informazioni..."
     },
 	
 	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
-        infoActionTip: "Recupera Feature Info",
-        popupTitle: "Feature Info",
+        infoActionTip: "Recupera Informazioni",
+        popupTitle: "Informazioni Feature",
 		noDataMsg: "Nessun dato è stato ritornato dal server",
-		maskMessage: "Recupero Feature Info...",
-		activeActionTip:"Feature Info sul layer selezionato"
+		maskMessage: "Recupero Informazioni...",
+		activeActionTip:"Informazioni sul layer selezionato"
     },
 
     "gxp.plugins.Zoom.prototype": {
@@ -697,5 +697,13 @@ GeoExt.Lang.add("it", {
 		serverErrorMsg: "Verificato un errore durante la generazione della mappa Snapshot: Errore del server",
 		menuText: "Snapshot",
 		tooltip: "Snapshot"
-	}	
+	},
+	
+	"gxp.plugins.HelpButton.prototype" :{
+		menuText: "Guida",
+		text: "Aiuto",
+		title: "Guida",
+		tooltip: "Apri la guida",
+		fileName: "help_it.pdf"
+	}
 });

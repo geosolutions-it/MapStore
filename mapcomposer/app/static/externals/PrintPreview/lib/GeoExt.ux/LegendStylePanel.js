@@ -200,7 +200,7 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                             xtype: "numberfield",
                             allowNegative: false,
                             emptyText: OpenLayers.Renderer.defaultSymbolizer.fontSize,
-                            value: 8,
+                            value: 10,
                             width: 30,
                             listeners: {
                                 change: function(field, value) {
@@ -269,7 +269,7 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                 fontSize: {
                     xtype: "textfield",
                     fieldLabel: "fontSizeText",
-                    value: "8",
+                    value: "10",
                     hidden: true
                 },
                 _ignore_forceLabel: {
@@ -297,7 +297,7 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                 minSymbolSize: {
                     xtype: "numberfield",
                     fieldLabel: "iconsSizeText",
-                    value: "8",
+                    value: "24",
                     listeners:{
                         change: function (numberField, value){
                             this.setFieldsetValue("height", value);
@@ -319,13 +319,18 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                     value: "96"
                 }
             }
-        });
+        });			
+		
         Ext.apply(this, this.getFormParamatersFieldsetConfig());
         this.fieldSet = this;
         // var formConfig = this.getFormParamatersFieldsetConfig();
         // this.fieldSet = new Ext.form.FormPanel(formConfig);
         // this.items = [this.fieldSet];
         GeoExt.ux.LegendStylePanel.superclass.constructor.apply(this, arguments);
+		
+		this.setFieldsetValue("height", 24);
+        this.setFieldsetValue("width", 24);
+		this.setFieldsetValue("fontStyle", 10);
     },
 
     // private:. set value on fieldset
