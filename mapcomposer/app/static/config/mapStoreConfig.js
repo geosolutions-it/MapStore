@@ -547,15 +547,20 @@
         "wfsUrl":"http://localhost:8080/geoserver/ows",
         "wfsVersion": "1.1.0",
         "destinationNS": "destination",
-        "statisticFeature": "siig_gate_t_dato_statistico",
+        "statisticFeature": "gate_stats",
         "intervalsFeature": "siig_gate_d_intervalli",
-        "timeFeature": "siig_gate_t_dato",        
-        "layerGates":"siig_gate_geo_gate",     
+        "timeFeature": "gate_data",        
+        "layerGates":"siig_gate_geo_gate",
+        "nativeSrs": "EPSG:32632",
         "outputTarget": "east"
 	}, {
         "ptype": "gxp_featuremanager",
         "id": "featuremanager",
         "paging": false,
+        "authentication": {
+            "user": "super",
+            "password": "super"
+        },
         "layer": {
             "source": "destination",
             "name": "siig_gate_geo_gate"

@@ -641,6 +641,13 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                             fields.push(field);
                         }
                     }, this);
+                    
+                    var headers;
+                    if(this.authentication) {
+                        headers = {
+                            "Authorization":  "Basic " + Base64.encode(this.authentication.user + ":" + this.authentication.password)
+                        };
+                    }
                     var protocolOptions = {
                         srsName: this.target.mapPanel.map.getProjection(),
                         url: schema.url,
@@ -658,7 +665,8 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                         fields: fields,
                         proxy: {
                             protocol: {
-                                outputFormat: this.format 
+                                outputFormat: this.format,
+                                headers: headers
                             }
                         },
                         maxFeatures: this.maxFeatures,

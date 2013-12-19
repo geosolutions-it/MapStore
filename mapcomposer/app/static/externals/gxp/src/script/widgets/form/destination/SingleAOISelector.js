@@ -81,6 +81,7 @@ destination.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
                 target:this.target,
                 layerStyle:this.layerStyle,
 				vendorParams:this.vendorParams,
+                nativeSrs : this.nativeSrs,
                 name:this.name,
                 bubbleEvents:['update']
             },this.featureSelectorConfigs[type],this.featureSelectorConfigs.base

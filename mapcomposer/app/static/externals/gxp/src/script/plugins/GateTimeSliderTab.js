@@ -191,6 +191,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
             xtype:'dest_single_aoi_selector',
             title: this.gateSelection,
             target:this.target,
+            nativeSrs: this.nativeSrs,
             name:'region_list',
             ref:'singleFeatureSelector',
             featureSelectorConfigs:this.featureSelectorConfigs,
@@ -324,7 +325,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                         "type": "int"
               },{
                         "name": "direzione",              
-                        "mapping": "direzione"
+                        "mapping": "flg_direzione"
               },{
                         "name": "codice_kemler",              
                         "mapping": "codice_kemler"
@@ -334,9 +335,6 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
               },{
                         "name": "quantita",              
                         "mapping": "quantita"
-              },{
-                        "name": "description",              
-                        "mapping": "description"
               }],
              proxy: this.getWFSStoreProxy(this.statisticFeature,filter), 
              autoLoad: true,
@@ -421,12 +419,6 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                     hidden: true,
                     groupable: false,
                     renderer: Ext.util.Format.dateRenderer('d-m-Y')
-                },{
-                    header: this.gateStatGridInterval,
-                    width: 120,
-                    sortable: true,
-                    hidden: true,
-                    dataIndex: 'description'
                 },{
                     header: this.gateStatGridRoute,
                     width: 120,
@@ -663,7 +655,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                             "type": "int"
                   },{
                             "name": "direzione",              
-                            "mapping": "direzione"
+                            "mapping": "flg_direzione"
                   },{
                             "name": "codice_kemler",              
                             "mapping": "codice_kemler"

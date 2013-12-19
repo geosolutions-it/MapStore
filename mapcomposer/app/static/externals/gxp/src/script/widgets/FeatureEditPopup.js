@@ -344,12 +344,22 @@ gxp.FeatureEditPopup = Ext.extend(GeoExt.Popup, {
         var ucExcludeFields = this.excludeFields ?
             this.excludeFields.join(",").toUpperCase().split(",") : [];
             
+        var propertyNames;
+        if(this.renamedFields) {
+            propertyNames = {};
+            for(var key in this.renamedFields) {
+                if(this.renamedFields.hasOwnProperty(key)) {
+                    propertyNames[key] = this.renamedFields[key][GeoExt.Lang.getLocaleIndex()];
+                }
+            }
+        }
         var me = this;
         this.grid = new Ext.grid.PropertyGrid({
             border: false,
             source: feature.attributes,
             customEditors: customEditors,
             customRenderers: customRenderers,
+            propertyNames: propertyNames,
             viewConfig: {
                 forceFit: true,
                 getRowClass: function(record) {
@@ -357,28 +367,6 @@ gxp.FeatureEditPopup = Ext.extend(GeoExt.Popup, {
                         return "x-hide-nosize";
                     }
                     
-                    var locCode= GeoExt.Lang.locale;
-                    var locCodeIndex;
-                    
-                    switch (locCode){
-                        case 'en':
-                            locCodeIndex = 1;
-                        break;
-                        case 'it':
-                            locCodeIndex = 2;
-                        break;
-                        case 'fr':
-                            locCodeIndex = 3;
-                        break;
-                        case 'de':
-                            locCodeIndex = 4;
-                        break;                        
-                    }
-                    
-                    // rename field name
-                    if(me.renamedFields[record.data.name]){
-                        record.data.name = me.renamedFields[record.data.name][locCodeIndex-1];
-                    }                    
                 }
             },
             listeners: {
