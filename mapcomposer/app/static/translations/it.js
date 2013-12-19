@@ -597,7 +597,7 @@ GeoExt.Lang.add("it", {
 	"gxp.plugins.GateTimeSliderTab.prototype":{
         gateLabel: 'Gate',
         gateSelection: 'Selezione Gate',
-        gatePanelTitle: "Dati in tempo reale - Gate",
+        gatePanelTitle: "Dati in tempo reale-Gate",
         gateStatGridStart: "Data Inizio Statistiche",
         gateStatGridEnd: "Data Fine Statistiche",
         gateStatGridRoute: "Corsia",

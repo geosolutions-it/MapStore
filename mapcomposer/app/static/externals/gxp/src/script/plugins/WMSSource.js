@@ -901,12 +901,12 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             for(var k=0; k<keywords.length; k++){
                 var keyword = keywords[k].value;
                         
-                if(keyword.indexOf("uuid") != -1){
+                if(keyword && keyword.indexOf("uuid") != -1){
                     props.uuid = keyword.substring(keyword.indexOf("uuid="));
                     props.uuid = keyword.split("=")[1];
                 }  
                         
-                if(keyword.indexOf(locCode+"=") == 0){
+                if(keyword && keyword.indexOf(locCode+"=") == 0){
                     props.title = keyword.split("=")[1];
                 }     
             }

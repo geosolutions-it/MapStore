@@ -94,6 +94,7 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
             settingsButton:this.settingsButton,
             rateAdjuster:this.rateAdjuster,
             dynamicRange:this.dynamicRange,
+			hidden: this.toolbarHidden,
             looped:this.looped,
             autoPlay:this.autoStart,
             optionsWindow: new Ext.Window({
@@ -162,12 +163,12 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
 			this.timeManager.events.register('play', this, 
 					function(){ 
                         //call function in composer.js to disable al functionality
-                        this.target.disableAllFunc();  
+                        //this.target.disableAllFunc();  
 					});	
 			this.timeManager.events.register('stop', this, 
 					function(){ 
                         //call function in composer.js to disable al functionality
-                        this.target.enableAllFunc();  
+                        //this.target.enableAllFunc();  
 					});	
 	    }
 		return this.timeManager;
