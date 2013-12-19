@@ -654,6 +654,7 @@ GeoExt.Lang.add("fr", {
     },
     
     "gxp.FeatureEditPopup.prototype":{
+        title: 'Gate',
         closeMsgTitle: 'Voulez-vous enregistrer les modifications?',
         closeMsg: 'Vous avez des modifications non enregistrées. Voulez-vous sauver?',
         deleteMsgTitle: 'Retirez la Gate?',

@@ -657,6 +657,7 @@ GeoExt.Lang.add("en", {
     },
     
     "gxp.FeatureEditPopup.prototype":{
+        title: 'Gate',
         closeMsgTitle: 'Save Changes?',
         closeMsg: 'This feature has unsaved changes. Would you like to save your changes?',
         deleteMsgTitle: 'Delete Feature?',
