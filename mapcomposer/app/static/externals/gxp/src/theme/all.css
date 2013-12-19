@@ -486,3 +486,23 @@ div.olMap div.gx-overlay-playback {
     top: 4px;
     left:-14px;
 }
+
+.obu-filter-reset{
+	background-image: url(img/decline.png) !important;
+}
+
+.obu-filter-apply{
+	background-image: url(img/accept.png) !important;
+}
+
+.obu-clear-button{
+	background-image: url(img/decline.png) !important;
+}
+
+.playback-save{
+	background-image: url(img/accept.png) !important;
+}
+
+.playback-cancel{
+	background-image: url(img/decline.png) !important;
+}

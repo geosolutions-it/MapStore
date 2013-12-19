@@ -241,7 +241,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                     var uuidKey;
                     for(var k=0; k<keywords.length; k++){
                         var keyword = keywords[k].value;
-                        if(keyword.indexOf("uuid") != -1){
+                        if(keyword && keyword.indexOf("uuid") != -1){
                           uuidKey = keyword.substring(keyword.indexOf("uuid="));
                           uuidKey = keyword.split("=")[1];
                         }                      
