@@ -51,6 +51,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
     wfsVersion: null,
     destinationNS: null,
     statisticFeature: null,
+    intervalsFeature: null,
     timeFeature: null,
     layerGates: null,
 
@@ -95,7 +96,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
     /** End i18n */
     
     currentAggregation: "mediaOraria",
-    currentInterval: "Ultimo mese",
+    currentInterval: 1,
     
     hilightLayerName: "Gate_Selection_Layer",
     
@@ -165,10 +166,25 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
         this.summaryLabels = {
             'mediaOraria': this.gateAggregationAveragePerHour,
             'count': this.gateAggregationTotal
-        },
-        this.featureSelectorConfigs.base.url = this.wfsUrl;
-        this.featureSelectorConfigs.base.fieldLabel = this.gateLabel;
+        };
         
+        this.editorFieldSet = new Ext.form.FieldSet({
+            title: "Gate Editor",
+            id: 'editorfieldset',
+            autoHeight: true,
+            autoScroll: true,
+            bbar: [],
+            defaults: {
+                // applied to each contained panel
+                bodyStyle:'padding:5px;'
+            }
+        });
+        
+        var fieldSetBottomToolbar = this.editorFieldSet.getBottomToolbar();
+        fieldSetBottomToolbar.addClass("my-toolbar");        
+        
+        this.featureSelectorConfigs.base.url = this.wfsUrl;
+        this.featureSelectorConfigs.base.fieldLabel = this.gateLabel;        
         this.featureSelectorConfigs.gate.typeName = this.layerGates;
         
         this.singleGateSelector = {
@@ -192,6 +208,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
             closable: false,
             labelWidth: '10px',
             items:[
+                this.editorFieldSet,
                 this.singleGateSelector
             ]
         });
@@ -272,7 +289,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                 value: this.currentGate
             }),new OpenLayers.Filter.Comparison({
                 type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                property: "description",
+                property: "fk_interval",
                 value: this.currentInterval
             })
             ]
@@ -328,17 +345,28 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
              remoteGroup: false             
        });
        
+       var intervalsStore= new GeoExt.data.FeatureStore({ 
+             id: "intervalsStore",
+             fields: [{
+                        "name": "interval",              
+                        "mapping": "id_intervallo"
+              },{
+                        "name": "description",              
+                        "mapping": "descrizione_" + GeoExt.Lang.locale
+              }],
+             proxy: this.getWFSStoreProxy(this.intervalsFeature) , 
+             autoLoad: true 
+       });
+       
+       intervalsStore.on('load', function(store, records, options) {
+            this.intervalSelector.setValue(records[0].get('interval'));
+        }, this);
+       
        this.intervalSelector = new Ext.form.ComboBox({
                 fieldLabel: this.intervalSelectorLabel,
                 width: 150,
                 hideLabel : false,
-                store: new Ext.data.ArrayStore({
-                    fields: ['interval', 'description'],
-                    data :  [
-                    ['Ultimo mese', this.gateLastMonthText],
-                    ['Ultimo anno', this.gateLastYearText]
-                    ]
-                }), 
+                store: intervalsStore, 
                 valueField: 'interval',
                 displayField: 'description',   
                 lastQuery: '',
@@ -347,7 +375,6 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                 forceSelection: true,
                 triggerAction: 'all',
                 selectOnFocus:true,            
-                value: 'Ultimo mese',
                 listeners: {
                     scope: this,                
                     
@@ -444,8 +471,8 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
             },*/
             listeners: {
                 afterrender: function (grid) {
-                    grid.getStore().filter('description', this.currentInterval);
-                    grid.getStore().load();
+                    /*grid.getStore().filter('description', this.currentInterval);
+                    grid.getStore().load();*/
                 }
             },
             scope: this
@@ -606,6 +633,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                 "</td></tpl>"
             )
         });
+
         
         if(!this.gateTimeGrid){
     

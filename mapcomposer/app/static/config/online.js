@@ -547,7 +547,28 @@
         "timeFeature": "siig_gate_t_dato",        
         "layerGates":"siig_gate_geo_gate",     
         "outputTarget": "east"
-	},
+	}, {
+        "ptype": "gxp_featuremanager",
+        "id": "featuremanager",
+        "paging": false,
+        "layer": {
+            "source": "destination",
+            "name": "siig_gate_geo_gate"
+        }
+    }, {
+        "ptype": "gxp_featureeditor",
+        "featureManager": "featuremanager",
+        "autoLoadFeatures": true,
+        "actionTarget":"editorfieldset.bbar",
+        "toggleGroup": "toolGroup",
+        "renamedFields": {
+            "id_gate": ["Id","Id","Id","Id"],
+            "descrizione": ["Description","Descrizione","Description","Beschreibung"],
+            "collocazione": ["Collocation","Collocazione","Collocation","Collocation"],
+            "data_inizio_validita": ["Start Validity","Inizio Validita","Lancer Validité","Starten Gültigkeit"],
+            "data_fine_validita": ["End Validity","Fine Validita","Validité de Fin","End Gültigkeit"]
+        }
+    },
 	{
 		"ptype": "gxp_tabpanelwfsgrids",
 		"outputTarget": "featurelist",

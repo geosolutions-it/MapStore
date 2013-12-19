@@ -54,7 +54,8 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  ``String``
      *  Create new feature text.
      */
-    
+     createFeatureActionText: "Create a new feature",
+     
     /** api: config[editFeatureActionTip]
      *  ``String``
      *  Tooltip string for edit existing feature action (i18n).
@@ -65,7 +66,14 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  ``String``
      *  Modify feature text.
      */
-
+    editFeatureActionText: "Edit existing feature",
+    
+    /** api: config[renamedFields]
+     *  ``object`` field to rename
+     *  by default.
+     */    
+    renamedFields: null,    
+    
     /** api: config[outputTarget]
      *  ``String`` By default, the FeatureEditPopup will be added to the map.
      */
@@ -314,6 +322,7 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
                         vertexRenderIntent: "vertex",
                         readOnly: this.readOnly,
                         fields: this.fields,
+                        renamedFields: this.renamedFields,
                         excludeFields: this.excludeFields,
                         editing: feature.state === OpenLayers.State.INSERT,
                         schema: this.schema,
