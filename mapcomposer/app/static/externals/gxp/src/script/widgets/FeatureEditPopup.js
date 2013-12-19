@@ -22,7 +22,7 @@
 Ext.namespace("gxp");
 gxp.FeatureEditPopup = Ext.extend(GeoExt.Popup, {
     
-    /** i18n **/
+    /** Start i18n **/
     closeMsgTitle: 'Save Changes?',
     closeMsg: 'This feature has unsaved changes. Would you like to save your changes?',
     deleteMsgTitle: 'Delete Feature?',
@@ -35,6 +35,18 @@ gxp.FeatureEditPopup = Ext.extend(GeoExt.Popup, {
     cancelButtonTooltip: 'Stop editing, discard changes',
     saveButtonText: 'Save',
     saveButtonTooltip: 'Save changes',
+    
+    /** api: config[title]
+     *  ``String`` Title of the popuop
+     */    
+    title: 'Gate',    
+    /** End i18n **/
+    
+    /** api: config[renamedFields]
+     *  ``object`` field to rename
+     *  by default.
+     */    
+    renamedFields: null,
     
     /** private config overrides **/
     layout: "fit",
@@ -227,6 +239,7 @@ gxp.FeatureEditPopup = Ext.extend(GeoExt.Popup, {
                 }
                 var value = feature.attributes[name];
                 var fieldCfg = GeoExt.form.recordToField(r);
+                
                 var listeners;
                 if (typeof value == "string") {
                     var format;
@@ -330,6 +343,8 @@ gxp.FeatureEditPopup = Ext.extend(GeoExt.Popup, {
         
         var ucExcludeFields = this.excludeFields ?
             this.excludeFields.join(",").toUpperCase().split(",") : [];
+            
+        var me = this;
         this.grid = new Ext.grid.PropertyGrid({
             border: false,
             source: feature.attributes,
@@ -341,6 +356,29 @@ gxp.FeatureEditPopup = Ext.extend(GeoExt.Popup, {
                     if (ucExcludeFields.indexOf(record.get("name").toUpperCase()) !== -1) {
                         return "x-hide-nosize";
                     }
+                    
+                    var locCode= GeoExt.Lang.locale;
+                    var locCodeIndex;
+                    
+                    switch (locCode){
+                        case 'en':
+                            locCodeIndex = 1;
+                        break;
+                        case 'it':
+                            locCodeIndex = 2;
+                        break;
+                        case 'fr':
+                            locCodeIndex = 3;
+                        break;
+                        case 'de':
+                            locCodeIndex = 4;
+                        break;                        
+                    }
+                    
+                    // rename field name
+                    if(me.renamedFields[record.data.name]){
+                        record.data.name = me.renamedFields[record.data.name][locCodeIndex-1];
+                    }                    
                 }
             },
             listeners: {

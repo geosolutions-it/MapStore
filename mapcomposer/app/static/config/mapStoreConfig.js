@@ -565,7 +565,14 @@
         "featureManager": "featuremanager",
         "autoLoadFeatures": true,
         "actionTarget":"editorfieldset.bbar",
-        "toggleGroup": "toolGroup"
+        "toggleGroup": "toolGroup",
+        "renamedFields": {
+            "id_gate": ["Id","Id","Id","Id"],
+            "descrizione": ["Description","Descrizione","Description","Beschreibung"],
+            "collocazione": ["Collocation","Collocazione","Collocation","Collocation"],
+            "data_inizio_validita": ["Start Validity","Inizio Validita","Lancer Validité","Starten Gültigkeit"],
+            "data_fine_validita": ["End Validity","Fine Validita","Validité de Fin","End Gültigkeit"]
+        }
     },
     {
         "ptype": "gxp_tabpanelwfsgrids",
