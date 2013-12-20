@@ -556,14 +556,15 @@
         "destinationNS": "destination",
         "statisticFeature": "siig_gate_t_dato_statistico",
         "timeFeature": "siig_gate_t_dato",        
-        "layerGates":"siig_gate_geo_gate",     
+        "layerGates":"siig_gate_geo_gate",    
+        "layerGatesTitle":"Gate", 		
         "outputTarget": "east"
 	},
     {
 		"ptype": "gxp_obu",
         "id": "destinationobu",
         "outputTarget": "east",
-		"layerToFilter": "siig_geo_obu",
+		"layerToFilter": "OBU",
 		"layerTrackTitle": "obu_track",
 		"layerTrackName": "siig_geo_obu_line",
 		"layerTrackUrl": "http://destination.geo-solutions.it/geoserver_test/destination/ows"
