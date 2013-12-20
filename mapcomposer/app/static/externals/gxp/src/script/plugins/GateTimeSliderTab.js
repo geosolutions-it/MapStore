@@ -150,6 +150,32 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
     constructor: function(config) {
         gxp.plugins.GateTimeSliderTab.superclass.constructor.apply(this, arguments);            
     },
+	
+	/** private: method[init]
+     *  :arg target: ``Object``
+	 * 
+	 *  Provide the initialization code defining necessary listeners and controls.
+     */
+	init: function(target) {
+		target.on({
+		    scope: this,
+			'ready' : function(){					
+				//
+				// Show the Time Slider only when this tool is activated 
+				//
+			    this.controlPanel.on("show", function(){
+					//
+					// Make visible the OBU layer if it is deactivated inside the layertree
+					//
+					var track = this.target.mapPanel.map.getLayersByName(this.layerGatesTitle)[0];
+					if(track && !track.getVisibility()){
+						track.setVisibility(true);
+					}
+				}, this);
+			}
+		});
+		return gxp.plugins.GateTimeSliderTab.superclass.init.apply(this, arguments);
+	},
 
     /** private: method[destroy]
      */

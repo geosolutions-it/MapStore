@@ -139,6 +139,14 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 					if(this.playbackTool && this.playbackTool.playbackToolbar){
 						this.playbackTool.playbackToolbar.show();
 					}
+					
+					//
+					// Make visible the OBU layer if it is deactivated inside the layertree
+					//
+					var track = this.target.mapPanel.map.getLayersByName(this.layerToFilter)[0];
+					if(track && !track.getVisibility()){
+						track.setVisibility(true);
+					}
 				}, this);
 				
 				//
@@ -557,12 +565,12 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 						    // ///////////////////////////
 							// Obu Track
 							// ///////////////////////////
-							if(!this.trackCheckBox.disabled && this.trackCheckBox.getValue()){
-							    var track  = this.target.mapPanel.map.getLayersByName(this.layerTrackName)[0];
-								if(track){
-									this.target.mapPanel.map.removeLayer(track);
-								}
+							var track  = this.target.mapPanel.map.getLayersByName(this.layerTrackName)[0];
+							if(track){
+								this.target.mapPanel.map.removeLayer(track);
+							}
 								
+							if(!this.trackCheckBox.disabled && this.trackCheckBox.getValue()){								
 								var customParams = {
 									viewparams: "semirimorchio:" + this.selectIdCombo.getValue(),
 									displayInLayerSwitcher: false
