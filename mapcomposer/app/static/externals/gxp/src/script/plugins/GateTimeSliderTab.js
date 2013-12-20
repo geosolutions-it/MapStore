@@ -93,6 +93,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
     intervalSelectorLabel: "Intervallo",
     gateLastMonthText: 'Ultimo mese',
     gateLastYearText: 'Ultimo anno',    
+    unauthorizedLabel: 'Funzione non disponibile con questo profilo',
     /** End i18n */
     
     currentAggregation: "mediaOraria",
@@ -173,6 +174,11 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
             id: 'editorfieldset',
             autoHeight: true,
             autoScroll: true,
+            items:[{
+                xtype:'label',
+                id:'feature_edit_unauthorized',
+                text:this.unauthorizedLabel
+            }],
             bbar: [],
             defaults: {
                 // applied to each contained panel

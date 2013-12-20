@@ -469,7 +469,7 @@ div.olMap div.gx-overlay-playback {
 }
 
 .gx_timeslider div.x-slider-thumb{
-    background-position:1;
+    background-position:1 1;
     cursor: pointer;
 }
 .gx_timeslider div.x-slider-min-thumb{

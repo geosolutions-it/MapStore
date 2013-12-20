@@ -251,6 +251,15 @@
 			"tiled": true,
             "group": ["Real time data","Dati in tempo reale","Données en temps réel","Echtzeitdaten"],
 			"visibility": false
+        },{
+			"source": "destination",
+			"title": "Obu",
+			"name": "siig_geo_obu",
+			"styles": "obu-point",
+			"displayInLayerSwitcher": true,
+			"tiled": true,
+            "group": ["Real time data","Dati in tempo reale","Données en temps réel","Echtzeitdaten"],
+			"visibility": false
         }
         ]
     },
@@ -456,6 +465,8 @@
         }
     },{
         "ptype":"gxp_playback",
+		"id": "destination_playback",
+		"toolbarHidden": true,
         "outputTarget": "map",
         "playbackMode": "range",
         "showIntervals": false,
@@ -466,10 +477,10 @@
         "timeFormat": "l, F d, Y g:i:s A",
         "outputConfig": {
             "controlConfig":{
-                "step": 1,
-                "units": "Hours",
-                "range": ["2013-11-03T01:00:00.000Z", "2013-11-04T00:00:00.000Z"],
-                "frameRate": 1
+                "step": 2,
+                "units": "Minutes",
+                "range": ["2012-11-20T07:40:00.000Z", "2012-11-22T00:00:00.000Z"],
+                "frameRate": 3
             }
         }
     },        
@@ -556,6 +567,7 @@
 	}, {
         "ptype": "gxp_featuremanager",
         "id": "featuremanager",
+        "wfsUrl":"http://localhost:8080/geoserver/ows",
         "paging": false,
         "authentication": {
             "user": "super",
@@ -565,7 +577,22 @@
             "source": "destination",
             "name": "siig_gate_geo_gate"
         }
-    }, {
+    },
+    {
+		"ptype": "gxp_obu",
+        "id": "destinationobu",
+        "outputTarget": "east",
+		"layerToFilter": "OBU",
+		"layerTrackTitle": "obu_track",
+		"layerTrackName": "siig_geo_obu_line",
+		"layerTrackUrl": "http://localhost:8080/geoserver/destination/ows"
+	},
+	{
+		"ptype": "gxp_addlayer",
+		"showCapabilitiesGrid": false,
+		"id": "addlayer"
+	},
+    {
         "ptype": "gxp_featureeditor",
         "featureManager": "featuremanager",
         "autoLoadFeatures": true,
@@ -573,6 +600,10 @@
         "toggleGroup": "toolGroup",
         "renamedFields": {
             "id_gate": ["Id","Id","Id","Id"],
+            "fk_partner": ["Partner","Partner","Partner","Partner"],
+            "fk_server": ["Server","Server","Server","Server"],
+            "concessionaria_sito": ["Concessionaria","Concessionaria","Concessionaria","Concessionaria"],
+            "nr_corsie_carreggiata": ["Corsie","Corsie","Corsie","Corsie"],
             "descrizione": ["Description","Descrizione","Description","Beschreibung"],
             "collocazione": ["Collocation","Collocazione","Collocation","Collocation"],
             "data_inizio_validita": ["Start Validity","Inizio Validita","Lancer Validité","Starten Gültigkeit"],

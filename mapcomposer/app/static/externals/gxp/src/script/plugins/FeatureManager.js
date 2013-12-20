@@ -401,7 +401,27 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             return true;
         }
     },
-
+    getAuthentication: function() {
+        var headers;
+        if(this.authentication) {
+            headers = {
+                 "Authorization":  "Basic " + Base64.encode(this.authentication.user + ":" + this.authentication.password)
+            };
+        }
+        return headers;
+    },
+    onWritable: function(callback, scope) {      
+        OpenLayers.Request.GET({
+            url: this.wfsUrl,
+            params: {service: "WFS", version:"1.1.0",request:"Transaction"},
+            headers: this.getAuthentication(),
+            callback: function(request) {
+                if(callback) {
+                    callback.call(scope,request.status && request.status < 400);
+                }
+            }
+        });
+    },
     /** api: method[getPageExtent]
      *  :returns: ``OpenLayers.Bounds`` the bounds of the current page
      *
@@ -642,12 +662,6 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                         }
                     }, this);
                     
-                    var headers;
-                    if(this.authentication) {
-                        headers = {
-                            "Authorization":  "Basic " + Base64.encode(this.authentication.user + ":" + this.authentication.password)
-                        };
-                    }
                     var protocolOptions = {
                         srsName: this.target.mapPanel.map.getProjection(),
                         url: schema.url,
@@ -666,7 +680,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                         proxy: {
                             protocol: {
                                 outputFormat: this.format,
-                                headers: headers
+                                headers: this.getAuthentication()
                             }
                         },
                         maxFeatures: this.maxFeatures,

@@ -25,35 +25,35 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 	
 	title: "Dati in tempo reale-Obu",
 	
-	filterTitle: "Filter Data",
+	filterTitle: "Filtro",
 	
-	fieldIDLabel: "Vehicle ID",
+	fieldIDLabel: "Semirimorchio",
 	
-	fieldTypeLabel: "Vehicle Type",
+	fieldTypeLabel: "Tipo Evento",
 	
-	idEmptyText: "Search by Vehicle Id",
+	idEmptyText: "Cerca per semirimorchio",
 	
-	typeEmptyText: "Search by Vehicle Type",
+	typeEmptyText: "Cerca per tipo evento",
 	
-	velocityRange: "Velocity Range",
+	velocityRange: "Intervallo velocita",
 	
-	velocityMin: "Velocity Min",
+	velocityMin: "Min",
 	
-	velocityMax: "Velocity Max",
+	velocityMax: "Max",
 	
-	descriptionRange: "Direction Range",
+	descriptionRange: "Intervallo direzione",
 	
-	descriptionMin: "Direction Min",
+	descriptionMin: "Min",
 	
-	descriptionMax: "Direction Max",
+	descriptionMax: "Max",
 	
-	graphicStyle: "Graphic Style",
+	graphicStyle: "Tematizzazione",
 	
-	showTrack: "Show Track",
+	showTrack: "Mostra traccia",
 	
-	styleData: "Style Data",
+	styleData: "Visualizzazione",
 	
-	applyText: "Apply",
+	applyText: "Applica",
 	
     // End i18n.
 	
@@ -105,7 +105,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 	
 	styleStore: [
 		"obu-point",
-		"obu-point-velocity",
+		"obu-point-speed",
 		"obu-point-direction"
 	],
 	
@@ -413,7 +413,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 					iconCls: "obu-filter-apply",
 					handler: function(){
 						var cql = "";
-						var formValid = false;
+						var formValid = true;
 						
 						//
 						// ID check before apply
@@ -428,8 +428,9 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 							if(this.selectIdCombo.isValid() && count > 0){
 								var id = this.selectIdCombo.getValue();
 								cql += "semirimorchio='" + id + "' "; 
-								formValid = true;
-						    }
+						    } else {
+                                formValid = false;
+                            }
 						}
 						
 						//
@@ -445,8 +446,9 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 							if(this.selectTypeCombo.isValid() && count > 0){
 								var type = this.selectTypeCombo.getValue();
 								cql += cql != "" ? " AND tipo='" + type + "'" : "tipo='" + type + "'"; 
-						   		formValid = true;
-						    }
+						    } else {
+                                formValid = false;
+                            }
 						}
 						
 						//
@@ -480,15 +482,17 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 							if(vmaxField.isValid()){
 								var vmax = vmaxField.getValue();	
 								cql += cql != "" ? " AND velocita <= " + vmax : " velocita <= " + vmax; 
-								formValid = true;
-							}
+							} else {
+                                formValid = false;
+                            }
 
 						}else if(vminField.isDirty()){
 							if(vminField.isValid()){
 								var vmin = vminField.getValue();	
 								cql += cql != "" ? " AND velocita >= " + vmin : " velocita >= " + vmin;
-								formValid = true;
-							}
+							} else {
+                                formValid = false;
+                            }
 						}	
 						
 						//
@@ -511,25 +515,28 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 								}
 								cql += " )";
 								
-								if(dminField.isValid() || dmaxField.isValid()){
-									formValid = true;
-								}	
+								if(!dminField.isValid() && !dmaxField.isValid()){
+                                    formValid = false;
+                                }
 							}else{
 								dminField.markInvalid();
 								dmaxField.markInvalid();
+                                formValid = false;
 							}							
 						}else if(dmaxField.isDirty()){	
 							if(dmaxField.isValid()){
 								var dmax = dmaxField.getValue();	
 								cql += cql != "" ?  " AND direzione <= " + dmax : " direzione <= " + dmax; 
-								formValid = true;
-							}
+							} else {
+                                formValid = false;
+                            }
 						}else if(dminField.isDirty()){
 							if(dminField.isValid()){
 								var dmin = dminField.getValue();	
 								cql += cql != "" ?  " AND direzione >= " + dmin : " direzione >= " + dmin;
-								formValid = true;
-							}	
+							} else {
+                                formValid = false;
+                            }
 						}	
 
 						if(formValid){

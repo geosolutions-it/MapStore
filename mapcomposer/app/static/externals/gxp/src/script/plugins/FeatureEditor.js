@@ -154,7 +154,7 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
         var popup;
         var featureManager = this.target.tools[this.featureManager];
         var featureLayer = featureManager.featureLayer;
-
+        
         // optionally set up snapping
         var snapId = this.snappingAgent;
         if (snapId) {
@@ -421,9 +421,17 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
             deactivateOnDisable: true,
             map: this.target.mapPanel.map
         })]);
-
-        featureManager.on("layerchange", this.onLayerChange, this);
         
+        featureManager.on("layerchange", this.onLayerChange, this);
+        if(featureManager.onWritable(function(writable) {
+            if(!writable) {
+                Ext.each(this.actions, function(action) {
+                    action.items[0].hide();
+                }, this);
+            } else {
+                Ext.getCmp('feature_edit_unauthorized').hide();
+            }
+        }, this));
         return actions;
     },
     
