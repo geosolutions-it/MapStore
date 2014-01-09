@@ -227,6 +227,8 @@
 			],
 			"geocoderTypeDisplayField":"name",
 			"geocoderTypePageSize" : 10,
+			"source": "jrc",
+			"nsPrefix": "it.geosolutions",
             "storeName" : "unina_ds",
             "typeName" : "changematrix",
             "jiffleStyle" : "jiffle_style",

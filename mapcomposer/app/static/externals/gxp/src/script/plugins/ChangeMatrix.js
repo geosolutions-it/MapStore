@@ -292,7 +292,19 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 	// //////////////////////////////////////////////////////////////
 	// END - GeoCoding Panel Config
 	// //////////////////////////////////////////////////////////////
-			
+
+	/** api: config[source]
+	 *  ``String``
+	 *  ChangeMatrix Layer Source .
+	 */
+	source : null,
+
+	/** api: config[nsPrefix]
+	 *  ``String``
+	 *  ChangeMatrix Layer NS Prefix .
+	 */
+	nsPrefix : null,
+
 	/** api: config[storeName]
 	 *  ``String``
 	 *  Store Name for WFS logging on Change Matrix Process .
@@ -1468,8 +1480,51 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 											/**
 											 * Dynamically create the layer
 											 */
-											var layer = new OpenLayers.Layer.WMS(
-													"[ref]"+me.interactiveChgMatrixLabel+" - "+gridRowLabel,
+				                            //create the properties
+				                            var name = "[ref]"+me.interactiveChgMatrixLabel+" - "+gridRowLabel;
+    										var src;				                            
+											for (var id in me.target.layerSources) {
+												  var s = me.target.layerSources[id];    
+												  
+												  // //////////////////////////////////////////
+												  // Checking if source URL aldready exists
+												  // //////////////////////////////////////////
+												  if(s != undefined && s.id == me.source){
+													  src = s;
+													  break;
+												  }
+											} 
+				                            
+				                            if (src) {
+					                            var props ={
+					                            			source: me.target.layerSources.jrc.id,
+					                                        name: me.nsPrefix+":"+rasterName,
+					                                        url: me.wpsManager.url.replace("wps","wms"),
+					                                        title: name,
+					                                        tiled:true,
+					                                        layers: rasterName,
+					                                        env: "dataEnv:ref="+referenceClassIndex+",cur=0"
+					                                };
+
+												src.on('ready', function(){
+													me.addLayerRecord(src, props);
+												}, me);
+												
+											    var index = src.store.findExact("name", me.nsPrefix+":"+rasterName);
+												
+												if (index < 0) {
+													// ///////////////////////////////////////////////////////////////
+													// In this case is necessary reload the local store to refresh 
+													// the getCapabilities records 
+													// ///////////////////////////////////////////////////////////////
+													src.store.reload();
+												}else{
+													me.addLayerRecord(src, props);
+												}
+				                            }
+											    										
+											/* var layer = new OpenLayers.Layer.WMS(
+													name,
     												me.wpsManager.url.replace("wps","wms"),
     												{
     													layers: rasterName, 
@@ -1480,8 +1535,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
     													isBaseLayer:false
     												}
     										);
-    										
-    										map.addLayer(layer);
+    										map.addLayer(layer); */
     										
     										/*
 											 * Check if tabs exists and if so switch to View Tab 
@@ -1515,7 +1569,50 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 											/**
 											 * Dynamically create the layer
 											 */
-											var layer = new OpenLayers.Layer.WMS(
+				                            //create the properties
+				                            var name = "[cur]"+me.interactiveChgMatrixLabel+" - "+gridColLabel;
+    										var src;				                            
+											for (var id in me.target.layerSources) {
+												  var s = me.target.layerSources[id];    
+												  
+												  // //////////////////////////////////////////
+												  // Checking if source URL aldready exists
+												  // //////////////////////////////////////////
+												  if(s != undefined && s.id == me.source){
+													  src = s;
+													  break;
+												  }
+											} 
+				                            
+				                            if (src) {
+					                            var props ={
+					                            			source: me.target.layerSources.jrc.id,
+					                                        name: me.nsPrefix+":"+rasterName,
+					                                        url: me.wpsManager.url.replace("wps","wms"),
+					                                        title: name,
+					                                        tiled:true,
+					                                        layers: rasterName,
+					                                        env: "dataEnv:ref=0,cur="+currClassIndex
+					                                };
+
+												src.on('ready', function(){
+													me.addLayerRecord(src, props);
+												}, me);
+												
+											    var index = src.store.findExact("name", me.nsPrefix+":"+rasterName);
+												
+												if (index < 0) {
+													// ///////////////////////////////////////////////////////////////
+													// In this case is necessary reload the local store to refresh 
+													// the getCapabilities records 
+													// ///////////////////////////////////////////////////////////////
+													src.store.reload();
+												}else{
+													me.addLayerRecord(src, props);
+												}
+				                            }
+
+											/* var layer = new OpenLayers.Layer.WMS(
 													"[cur]"+me.interactiveChgMatrixLabel+" - "+gridColLabel,
     												me.wpsManager.url.replace("wps","wms"), 
     												{
@@ -1527,8 +1624,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
     													isBaseLayer:false
     												}
     										);
-    										
-    										map.addLayer(layer);
+    										map.addLayer(layer); */
 
     										/*
 											 * Check if tabs exists and if so switch to View Tab 
@@ -1719,6 +1815,61 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 		return changeMatrixOutcomeTabPanel;
 	},
 
+	/**  
+	 * api: method[addLayerRecord]
+     */
+	addLayerRecord: function(src, props){
+		var record = src.createLayerRecord(props);   
+				  
+		if (record) {
+			var layerStore = this.target.mapPanel.layers;  
+			layerStore.add([record]);
+
+			modified = true; // TODO: refactor this
+
+			// Merge Params
+            var layerObject = record.get("layer");
+            if (layerObject){
+                layerObject.mergeNewParams({
+                    env : props.env
+                });
+            }
+					
+		    //
+			// If tabs are used the View tab is Activated
+			//
+			if(this.target.renderToTab && this.enableViewTab){
+				var portalContainer = Ext.getCmp(this.target.renderToTab);
+				
+				if(portalContainer instanceof Ext.TabPanel){
+					portalContainer.setActiveTab(1);
+				}				
+			}					
+						
+			// //////////////////////////
+			// Zoom To Layer extent
+			// //////////////////////////
+			var layer = record.get('layer');
+			var extent = layer.restrictedExtent || layer.maxExtent || this.target.mapPanel.map.maxExtent;
+			var map = this.target.mapPanel.map;
+
+			// ///////////////////////////
+			// Respect map properties
+			// ///////////////////////////
+			var restricted = map.restrictedExtent || map.maxExtent;
+			if (restricted) {
+				extent = new OpenLayers.Bounds(
+					Math.max(extent.left, restricted.left),
+					Math.max(extent.bottom, restricted.bottom),
+					Math.min(extent.right, restricted.right),
+					Math.min(extent.top, restricted.top)
+				);
+			}
+
+			map.zoomToExtent(extent, true);
+		}
+	},
+	
 	/**
 	 *
 	 */
