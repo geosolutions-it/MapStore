@@ -225,10 +225,10 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 			this.trackCheckEnable(combo ? combo.getValue() : undefined);
 		}, this);
 		
-		this.selectIdCombo.addListener("keyup", function(field, evt){
+		/*this.selectIdCombo.addListener("keyup", function(field, evt){
 			var value = field.getValue();		
 			this.trackCheckEnable(value);
-		}, this);
+		}, this);*/
 
 		this.selectTypeCombo = new gxp.form.WFSSearchComboBox({
 			name: "selectTypeCombo",
@@ -421,8 +421,9 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 					iconCls: "obu-filter-apply",
 					handler: function(){
 						var cql = "";
-						var formValid = true;
-						
+						var formValid = true;						
+						var filter = [];
+
 						//
 						// ID check before apply
 						//
@@ -435,7 +436,8 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 							
 							if(this.selectIdCombo.isValid() && count > 0){
 								var id = this.selectIdCombo.getValue();
-								cql += "semirimorchio='" + id + "' "; 
+								var idFilter = "semirimorchio='" + id + "' "; 
+								filter.push(idFilter);
 						    } else {
                                 formValid = false;
                             }
@@ -453,7 +455,8 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 							
 							if(this.selectTypeCombo.isValid() && count > 0){
 								var type = this.selectTypeCombo.getValue();
-								cql += cql != "" ? " AND tipo='" + type + "'" : "tipo='" + type + "'"; 
+								var typeFilter = "tipo='" + type + "'";
+								filter.push(typeFilter);
 						    } else {
                                 formValid = false;
                             }
@@ -464,32 +467,31 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 						//
 						var vminField = Ext.getCmp("vminField");
 						var vmaxField = Ext.getCmp("vmaxField");
+						var vIntervalFilter;
 						if(vminField.isDirty() && vmaxField.isDirty()){
 							var vmin = vminField.getValue();
 							var vmax = vmaxField.getValue();
 							
-							if(vmin < vmax){
-								cql += " AND ( ";
-								if(vminField.isValid()){
-									cql += "velocita >= " + vmin;
+							if(vminField.isValid() && vmaxField.isValid()){
+								if(vmin < vmax){
+									vIntervalFilter = "( ";
+									vIntervalFilter += "velocita >= " + vmin;
+									vIntervalFilter += " AND velocita <= " + vmax;
+									vIntervalFilter += " )";
+									filter.push(vIntervalFilter);
+								}else{
+									//vminField.markInvalid();
+									vmaxField.markInvalid();
+									formValid = false;
 								}
-								
-								if(vmaxField.isValid()){
-									cql += " AND velocita <= " + vmax;
-								}
-								cql += " )";
-								
-								if(vminField.isValid() || vmaxField.isValid()){
-									formValid = true;
-								}	
 							}else{
-								vminField.markInvalid();
-								vmaxField.markInvalid();
+								formValid = false;
 							}							
 						}else if(vmaxField.isDirty()){	
 							if(vmaxField.isValid()){
 								var vmax = vmaxField.getValue();	
-								cql += cql != "" ? " AND velocita <= " + vmax : " velocita <= " + vmax; 
+								vIntervalFilter = "velocita <= " + vmax; 
+								filter.push(vIntervalFilter);
 							} else {
                                 formValid = false;
                             }
@@ -497,7 +499,8 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 						}else if(vminField.isDirty()){
 							if(vminField.isValid()){
 								var vmin = vminField.getValue();	
-								cql += cql != "" ? " AND velocita >= " + vmin : " velocita >= " + vmin;
+								vIntervalFilter = "velocita >= " + vmin;
+								filter.push(vIntervalFilter);
 							} else {
                                 formValid = false;
                             }
@@ -508,44 +511,49 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 						//
 						var dminField = Ext.getCmp("dminField");
 						var dmaxField = Ext.getCmp("dmaxField");
+						var dIntervalFilter;
 						if(dminField.isDirty() && dmaxField.isDirty()){
 							var dmin = dminField.getValue();
 							var dmax = dmaxField.getValue();
 							
-							if(dmin < dmax){
-								cql += " AND ( ";
-								if(dminField.isValid()){
-									cql += "direzione >= " + dmin;
+							if(dminField.isValid() && dmaxField.isValid()){
+								if(dmin < dmax){
+									dIntervalFilter = "( ";
+									dIntervalFilter += "direzione >= " + dmin;
+									dIntervalFilter += " AND direzione <= " + dmax;
+									dIntervalFilter += " )";
+									filter.push(dIntervalFilter);
+								}else{
+									//dminField.markInvalid();
+									dmaxField.markInvalid();
+									formValid = false;
 								}
-								
-								if(dmaxField.isValid()){
-									cql += cql != "" ? " AND direzione <= " + dmax : " direzione <= " + dmax;
-								}
-								cql += " )";
-								
-								if(!dminField.isValid() && !dmaxField.isValid()){
-                                    formValid = false;
-                                }
 							}else{
-								dminField.markInvalid();
-								dmaxField.markInvalid();
-                                formValid = false;
+								formValid = false;
 							}							
 						}else if(dmaxField.isDirty()){	
 							if(dmaxField.isValid()){
 								var dmax = dmaxField.getValue();	
-								cql += cql != "" ?  " AND direzione <= " + dmax : " direzione <= " + dmax; 
+								dIntervalFilter = "direzione <= " + dmax; 
+								filter.push(dIntervalFilter);
 							} else {
                                 formValid = false;
                             }
 						}else if(dminField.isDirty()){
 							if(dminField.isValid()){
 								var dmin = dminField.getValue();	
-								cql += cql != "" ?  " AND direzione >= " + dmin : " direzione >= " + dmin;
+								dIntervalFilter = "direzione >= " + dmin;
+								filter.push(dIntervalFilter);
 							} else {
                                 formValid = false;
                             }
 						}	
+						
+						if(filter.length > 0){
+							cql = filter.join(" AND ");
+						}else{
+							formValid = false;
+						}					
 
 						if(formValid){
 							// ///////////////////////////
@@ -556,6 +564,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 							};
 							
 							if(cql && cql != ""){
+								alert(cql);
 								params.CQL_FILTER = cql;
 							}
 							
@@ -586,6 +595,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 								var addLayer = this.target.tools["addlayer"];
 								addLayer.addLayer(opts);
 							}
+							
 						}else{										
 							Ext.Msg.show({
 								title: "Form Validation",
