@@ -654,14 +654,14 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 							}
 							if (classDataIndex < me.classes.length) {
 								var classesDataStore = [];
-								
+
 								for (var cc=0;cc<me.classes[classDataIndex].values.length;cc++) {
-									for (var ci=0;ci<me.classesIndexes.length;ci++) {
-										if (me.classesIndexes[ci][0] == me.classes[classDataIndex].values[cc])
-											classesDataStore.push(me.classesIndexes[ci]);
+									for (var ci=0;ci<me.classesIndexes[me.classes[classDataIndex].level-1][1].length;ci++) {
+										if (me.classesIndexes[me.classes[classDataIndex].level-1][1][ci][0] == me.classes[classDataIndex].values[cc])
+											classesDataStore.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][ci]);
 									}
 								}
-								
+
 								itemClassSelector.storeFrom.loadData(classesDataStore, false);
 							}
 						},
@@ -1077,12 +1077,24 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 	startWPSRequest : function(params) {
 		var me = this;
 
+		var classDataIndex = 0;
+		for ( classDataIndex = 0; classDataIndex < me.classes.length; classDataIndex++) {
+			if (me.classes[classDataIndex].layer == params.raster)
+				break;
+		}
+		
+		var layerLevel = "";
+		if (classDataIndex < me.classes.length) {
+			layerLevel = "_L" + me.classes[classDataIndex].level;
+		}
+		var jiffleStyle = me.jiffleStyle + layerLevel;
+		
 		var inputs = {
 			name : new OpenLayers.WPSProcess.LiteralData({
 				value : params.raster
 			}),
 			defaultStyle : new OpenLayers.WPSProcess.LiteralData({
-				value : me.jiffleStyle
+				value : jiffleStyle
 			}),
 			storeName : new OpenLayers.WPSProcess.LiteralData({
 				value : me.storeName
@@ -1145,8 +1157,12 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 		} catch(e) {
 			return Ext.Msg.alert(this.changeMatrixResponseErrorDialogTitle, this.changeMatrixResponseErrorDialogText);
 		}
-
-		var grid = this.createResultsGrid(responseData.changeMatrix, responseData.rasterName);
+		
+		if (!responseData.referenceName) {
+			return;
+		}
+		
+		var grid = this.createResultsGrid(responseData.changeMatrix, responseData.rasterName, responseData.referenceName);
 
 		/*
 		 * Check if tabs exists and if we are allowed to render to a tab or a floating window
@@ -1191,7 +1207,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 	 *
 	 * @param {Object} data
 	 */
-	guessIndexes : function(data) {
+	guessIndexes : function(data, classDataIndex) {
 		var changeMatrix = data;
 		var xs = [], ys = [];
 		axisy = [], axisx = [];
@@ -1234,7 +1250,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 			// ////////////////////
 			// To be changed with this.classes values
 			// ////////////////////
-			matrix[i][0] = this.classesIndexes[axisx[i]-1][1];
+			matrix[i][0] = this.classesIndexes[this.classes[classDataIndex].level-1][1][axisx[i]-1][1];
 			axisx[i] = axisx[i] + "";
 
 			// ///////////////////
@@ -1266,9 +1282,20 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 	 *
 	 * @param {Object} data
 	 */
-	createResultsGrid : function(data, rasterName) {
+	createResultsGrid : function(data, rasterName, referenceName) {
 		var me = this;
-		var settings = this.guessIndexes(data);
+		
+		//layer level
+		var classDataIndex = 0;
+		for ( classDataIndex = 0; classDataIndex < me.classes.length; classDataIndex++) {
+			if (me.classes[classDataIndex].layer == referenceName)
+				break;
+		}
+		if (classDataIndex >= me.classes.length) {
+			return;
+		}
+		
+		var settings = this.guessIndexes(data, classDataIndex);
 
 		//store
 		var changeMatrixStore = new Ext.data.ArrayStore({
@@ -1293,7 +1320,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 			// To be changed with this.classes values
 			// ////////////////////
 			colmodel.push({
-				header : (typeof parseInt(settings.fields[i]) === 'number' && parseInt(settings.fields[i]) % 1 == 0?this.classesIndexes[parseInt(settings.fields[i])-1][1]:settings.fields[i]),
+				header : (typeof parseInt(settings.fields[i]) === 'number' && parseInt(settings.fields[i]) % 1 == 0?this.classesIndexes[me.classes[classDataIndex].level-1][1][parseInt(settings.fields[i])-1][1]:settings.fields[i]),
 				dataIndex : settings.fields[i]
 			});
 		}
@@ -1381,7 +1408,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 											var total = data.substring(data.indexOf("> ")+2);
 											for (var r=1;r<record.json.length-1;r++) {
 												var dataItem = [];
-												dataItem.push(me.classesIndexes[grid.getColumnModel().getDataIndex(r)-1][1]);
+												dataItem.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][grid.getColumnModel().getDataIndex(r)-1][1]);
 												dataItem.push(parseFloat(record.json[r])*100/parseFloat(total));
 												dataSeries.push(dataItem);
 											}
@@ -1430,9 +1457,9 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 											 * Style ENV Parameter
 											 */
 											var referenceClassIndex = 0;
-											for (var ci=0;ci<me.classesIndexes.length;ci++) {
-												if (me.classesIndexes[ci][1] == gridRowLabel) {
-													referenceClassIndex=me.classesIndexes[ci][0];
+											for (var ci=0;ci<me.classesIndexes[me.classes[classDataIndex].level-1][1].length;ci++) {
+												if (me.classesIndexes[me.classes[classDataIndex].level-1][1][ci][1] == gridRowLabel) {
+													referenceClassIndex=me.classesIndexes[me.classes[classDataIndex].level-1][1][ci][0];
 												}
 											}
 											
@@ -1477,9 +1504,9 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 											 * Style ENV Parameter
 											 */
 											var currClassIndex = 0;
-											for (var ci=0;ci<me.classesIndexes.length;ci++) {
-												if (me.classesIndexes[ci][1] == gridColLabel) {
-													currClassIndex=me.classesIndexes[ci][0];
+											for (var ci=0;ci<me.classesIndexes[me.classes[classDataIndex].level-1][1].length;ci++) {
+												if (me.classesIndexes[me.classes[classDataIndex].level-1][1][ci][1] == gridColLabel) {
+													currClassIndex=me.classesIndexes[me.classes[classDataIndex].level-1][1][ci][0];
 												}
 											}
 											

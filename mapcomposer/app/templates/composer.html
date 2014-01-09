@@ -211,7 +211,11 @@
 			// ////////////////////////////////////////////////////
 			var languageSelector = new gxp.form.LanguageSwitcher({
 				currentContext:code,
-				saveMessage:authorization
+				saveMessage:authorization,
+				data:[
+					['en','English','','en','English language'],
+					['it','Italiano','','it','Italian language'] 
+				]
 			});
 			
             var appTabsOpts = {

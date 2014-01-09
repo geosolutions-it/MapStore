@@ -279,7 +279,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 
 					var changeMatrixTool=me.target.tools['changeMatrixTool'];
                     if(changeMatrixTool){
-						var grid = changeMatrixTool.createResultsGrid(responseData.changeMatrix, responseData.rasterName);
+						var grid = changeMatrixTool.createResultsGrid(responseData.changeMatrix, responseData.rasterName, record.data.referenceName);
 						/*
 						 * Check if tabs exists and if we are allowed to render to a tab or a floating window
 						 */
