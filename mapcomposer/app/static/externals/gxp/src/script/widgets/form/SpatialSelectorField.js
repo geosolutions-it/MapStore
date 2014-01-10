@@ -660,7 +660,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 											
 									        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoder",
 												{
-													displayInLayerSwitcher:true,
+													displayInLayerSwitcher:false,
 													styleMap : new OpenLayers.StyleMap({
 														"default"   : vector_style,
 														"select"    : vector_style,
@@ -742,7 +742,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 															
 													        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoder",
 																{
-																	displayInLayerSwitcher:true,
+																	displayInLayerSwitcher:false,
 																	styleMap : new OpenLayers.StyleMap({
 																		"default"   : vector_style,
 																		"select"    : vector_style,
@@ -1537,7 +1537,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 						
 				        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoder",
 							{
-								displayInLayerSwitcher:true,
+								displayInLayerSwitcher:false,
 								styleMap : new OpenLayers.StyleMap({
 									"default"   : vector_style,
 									"select"    : vector_style,
@@ -1568,7 +1568,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 							
 					        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoder",
 								{
-									displayInLayerSwitcher:true,
+									displayInLayerSwitcher:false,
 									styleMap : new OpenLayers.StyleMap({
 										"default"   : vector_style,
 										"select"    : vector_style,

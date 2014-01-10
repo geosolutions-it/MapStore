@@ -37,44 +37,48 @@
 		"layers": [
 			{
 				"source": "osm",
-				"title": "Open Street Map",
-				"name": "mapnik",
-				"group": "background"
+				"title" : "Open Street Map",
+				"name"  : "mapnik",
+				"group" : "background"
 			},{
 				"source": "google",
-				"title": "Google Roadmap",
-				"name": "ROADMAP",
-				"group": "background"
+				"title" : "Google Roadmap",
+				"name"  : "ROADMAP",
+				"group" : "background"
 			},{
 				"source": "google",
-				"title": "Google Terrain",
-				"name": "TERRAIN",
-				"group": "background"
+				"title" : "Google Terrain",
+				"name"  : "TERRAIN",
+				"group" : "background"
 			},{
 				"source": "google",
-				"title": "Google Hybrid",
-				"name": "HYBRID",
-				"group": "background"
+				"title" : "Google Hybrid",
+				"name"  : "HYBRID",
+				"group" : "background"
 			},{
 				"source": "bing",
-				"title": "Bing Aerial",
-				"name": "Aerial",
-				"group": "background"
+				"title" : "Bing Aerial",
+				"name"  : "Aerial",
+				"group" : "background"
 			},{
 				"source": "mapquest",
-				"title": "MapQuest OpenStreetMap",
-				"name": "osm",
-				"group": "background"
+				"title" : "MapQuest OpenStreetMap",
+				"name"  : "osm",
+				"group" : "background"
 			},{
                 "source": "jrc",
-				"title": "Corine Land Cover (unina)",
-				"name": "it.geosolutions:unina_",
-				"tiled" : false
+                "group" : "Corine Land Cover",
+				"title" : "Corine Land Cover (unina)",
+				"name"  : "it.geosolutions:unina_",
+				"tiled" : false,
+				"visibility": false
             },{
                 "source": "jrc",
-				"title": "Touring Land Cover (unina2)",
-				"name": "it.geosolutions:unina",
-				"tiled" : false
+                "group" : "Touring Land Cover",
+				"title" : "Touring Land Cover (unina2)",
+				"name"  : "it.geosolutions:unina",
+				"tiled" : false,
+				"visibility": true
             }
 		]
 	},

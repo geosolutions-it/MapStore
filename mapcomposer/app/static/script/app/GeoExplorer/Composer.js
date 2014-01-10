@@ -124,12 +124,12 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		        }, {
 		            ptype: "gxp_measure", toggleGroup: this.toggleGroup,
 		            actionTarget: {target: "paneltbar", index: 21}
-		        }, {
+		        }/*, {
 		            actions: ["-"], actionTarget: "paneltbar"
 		        }, {
 		            ptype: "gxp_googleearth",
 		            actionTarget: {target: "paneltbar", index: 25}
-		        }
+		        }*/
 		    ];
 
 			if(config.customTools)
