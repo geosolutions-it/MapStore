@@ -1022,8 +1022,8 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 				var group = record.get("group");
 				var name = record.get("name");
 				var sourceId = record.data.source;
-
-				if (group !== "background" && name) {
+				
+				if (group && name && group !== "background") {
 					data = this.buildLayerRecord(data, record, sourceId);
 				}
 			}
@@ -1047,7 +1047,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 				break;
 			}
 
-			var recordData = [sourceId, record.data.title, record.data.name, record.id, srs, record.data.uuid, record.data.times, record.data.gnURL];
+			var recordData = [sourceId, record.data.name, record.data.name, record.id, srs, record.data.uuid, record.data.times, record.data.gnURL];
 
 			// ////////////////////////////////////////////////////
 			// The keyword control is necessary in order         //
