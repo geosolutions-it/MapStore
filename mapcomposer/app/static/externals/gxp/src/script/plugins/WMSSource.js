@@ -280,7 +280,26 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             // use all params from original
             params = Ext.applyIf(params, layer.params);
 
-            layer = new OpenLayers.Layer.WMS(
+			// /////////////////////////////////////////////////////////
+			// Checking if the OpenLayers transition should be 
+			// disabled (transitionEffect: null).
+			//
+			// (see also 
+			// https://github.com/openlayers/openlayers/blob/master/notes/2.13.md#layergrid-resize-transitions-by-default).
+			//
+			// In this case also the zoomMethod must be setted to null 
+			// in Map configuration (see widgets/Viewer.js).
+			// /////////////////////////////////////////////////////////
+			var transitionEffect = "resize";
+			if(this.target.map.animatedZooming){
+				if(this.target.map.animatedZooming.transitionEffect == null){
+					transitionEffect = null;
+				}else{
+					transitionEffect = this.target.map.animatedZooming.transitionEffect;
+				}
+			}
+            
+			layer = new OpenLayers.Layer.WMS(
                 config.title || config.name, 
                 layer.url, 
                 params, {
@@ -294,7 +313,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     opacity: ("opacity" in config) ? config.opacity : 1,
                     buffer: ("buffer" in config) ? config.buffer : 1,
                     projection: layerProjection,
-                    vendorParams: config.vendorParams
+                    vendorParams: config.vendorParams,
+					transitionEffect: transitionEffect
                 }
 			);
 

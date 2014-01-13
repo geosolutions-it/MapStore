@@ -412,7 +412,7 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
         
         // split initial map configuration into map and panel config
         if (this.initialConfig.map) {
-            var props = "theme,controls,resolutions,projection,units,maxExtent,restrictedExtent,maxResolution,numZoomLevels".split(",");
+            var props = "theme,controls,resolutions,projection,units,maxExtent,restrictedExtent,maxResolution,numZoomLevels,animatedZooming".split(",");
             var prop;
             for (var i=props.length-1; i>=0; --i) {
                 prop = props[i];
@@ -422,6 +422,25 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
                 };
             }
         }
+		
+		// /////////////////////////////////////////////////////////
+		// Checking if the OpenLayers animated zooming should be 
+		// disabled (zoomMethod: null).
+		//
+		// (see also 
+		// https://github.com/openlayers/openlayers/blob/master/notes/2.13.md#map-animated-zooming-and-gpu-support).
+		//
+		// In this case also the transitionEffect must be setted to 
+		// null in Layer configuration (see plugins/WMSSource.js).
+		// /////////////////////////////////////////////////////////
+		var zoomMethod = OpenLayers.Easing.Quad.easeOut;
+		if(mapConfig.animatedZooming){
+			if(mapConfig.animatedZooming.zoomMethod == null){
+				zoomMethod = null;
+			}else{
+				zoomMethod = mapConfig.animatedZooming.zoomMethod;
+			}
+		}
 
         this.mapPanel = new GeoExt.MapPanel(Ext.applyIf({
             map: Ext.applyIf({
@@ -438,7 +457,8 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
                 ],
                 maxExtent: mapConfig.maxExtent ? OpenLayers.Bounds.fromArray(mapConfig.maxExtent) : undefined,
                 restrictedExtent: mapConfig.restrictedExtent ? OpenLayers.Bounds.fromArray(mapConfig.restrictedExtent) : undefined,
-                numZoomLevels: mapConfig.numZoomLevels || 20
+                numZoomLevels: mapConfig.numZoomLevels || 20,
+				zoomMethod: zoomMethod
             }, mapConfig),
             center: config.center && new OpenLayers.LonLat(config.center[0], config.center[1]),
             resolutions: config.resolutions,
