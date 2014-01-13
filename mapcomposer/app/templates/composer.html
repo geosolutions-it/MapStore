@@ -326,7 +326,7 @@
             };*/
 
             app = new GeoExplorer.Composer({
-				advancedScaleOverlay: serverConfig.advancedScaleOverlay,
+				advancedScaleOverlay: serverConfig.advancedScaleOverlay || false,
 				defaultLanguage: serverConfig.defaultLanguage,	
                 customPanels: serverConfig.customPanels,
                 modified: false,
@@ -343,7 +343,6 @@
                 },
                 sources: sources,
 				scaleOverlayUnits: serverConfig.scaleOverlayUnits,
-				showGraticule: false,
                 georeferences: georeferences_data,
                 map: serverConfig.map,
 				customTools: serverConfig.customTools
