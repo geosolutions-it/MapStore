@@ -269,7 +269,7 @@ UserManagerView = Ext.extend(
 				
 				
 				// assets used within the interface
-				var ASSET = {
+				var ASSET = this.ASSET  || {
 				    delete_icon: './theme/img/user_delete.png',
 				    edit_icon: './theme/img/user_edit.png'
 				};

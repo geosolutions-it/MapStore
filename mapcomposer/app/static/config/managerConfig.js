@@ -8,6 +8,10 @@
       "via":"geosolutions_it",
       "hashtags":""
    },
+   "ASSET":{
+        "delete_icon": "./externals/mapmanager/theme/img/user_delete.png",
+        "edit_icon": "./externals/mapmanager/theme/img/user_edit.png"
+   },
    "locales":[
       [
          "en",

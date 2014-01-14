@@ -769,9 +769,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 					   layout: "fit",
 					   items: new UserManagerView({
 					   			login: grid.login,
+                                ASSET: grid.config.ASSET,
 								auth: grid.login.getToken(),
 								url: grid.geoBaseUsersUrl,
-                            searchUrl: grid.geoSearchUsersUrl,
+                                searchUrl: grid.geoSearchUsersUrl,
 								mapUrl: grid.geoBaseMapsUrl,
 								gridPanelBbar: grid.getBottomToolbar(),
 								autoWidth: true,
