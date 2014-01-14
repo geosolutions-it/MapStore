@@ -1,0 +1,29 @@
+﻿{
+   "baseUrl":"",
+   "composerUrl":"/",
+   "start":0,
+   "limit":20,
+   "msmTimeout":30000,
+   "twitter":{
+      "via":"geosolutions_it",
+      "hashtags":""
+   },
+   "locales":[
+      [
+         "en",
+         "English"
+      ],
+      [
+         "it",
+         "Italiano"
+      ],
+      [
+         "fr",
+         "Français"
+      ],
+      [
+         "de",
+         "Deutsch"
+      ]
+   ]
+}

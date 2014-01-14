@@ -1,7 +1,4 @@
 {
-   "geoStoreBase": "",
-   "proxy":"/http_proxy/proxy/?url=",
-   "defaultLanguage": "en",
    "advancedScaleOverlay": true,
    "gsSources":{ 
 		"mapquest": {

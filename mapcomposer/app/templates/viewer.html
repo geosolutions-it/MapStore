@@ -52,6 +52,9 @@
 		<link rel="stylesheet" type="text/css" href="externals/csw/css/csw.css">
 		<script type="text/javascript" src="script/metadataexplorer.js"></script>
         
+        <!-- common data  -->
+        <script type="text/javascript" src="config/common/localConfig.js"></script>
+
         <!-- translation data  -->
         <script type="text/javascript" src="translations/en.js"></script>
         <script type="text/javascript" src="translations/fr.js"></script>
@@ -312,7 +315,9 @@
 					  }
 					  
 					  if(serverConfig){
-					      proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy; 
+                          //apply the local default configuration if not present.
+						  serverConfig = Ext.applyIf(serverConfig,localConfig);
+						  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy; 
 						  
 						  // ///////////////////////////////////////////////  
 						  // Run the application when browser is ready
