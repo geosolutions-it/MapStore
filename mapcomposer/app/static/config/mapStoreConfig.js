@@ -128,6 +128,17 @@
 			"outputTarget": "paneltbar",
 			"toggleGroup": "toolGroup",
 			"index": 23
-		}
+		}, {
+			"actions": ["->"], 
+			"actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_help",
+			"actionTarget": "paneltbar",
+			"text": "Help",
+			"tooltip":"MapStore Guide",
+			"index": 24,
+			"showOnStartup": false,
+			"fileDocURL": "MapStore-Help.pdf"
+        }
 	]
 }
