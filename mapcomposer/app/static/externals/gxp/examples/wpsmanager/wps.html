@@ -190,5 +190,39 @@
                 </tr>
             </table>
         </div>
+        <br>
+        <br>
+        <div id="download">
+            <table class="gridtable">
+                <tr>
+                    <th colspan="2">Test JTS:pointN WPS process</th>
+                </tr>
+               
+                <tr>
+                    <th>
+                        WKT geometry Input
+                    </th>
+                    <td>
+                        <textarea id="geometry2" cols="40" rows="4">LINESTRING(0 0, 1 1)</textarea>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th>
+                        Point #
+                    </th>
+                    <td>
+                        <input id="pointN" type="text" value="1"/>
+                    </td>
+                </tr>
+
+                <tr>                    
+                    <td colspan="2">
+                       
+                        <button onclick="wpsManager.execute('JTS:pointN', getDownloadRequest(), function() {}, downloadCallback)"> Send Execute Asynchronus </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </body>
 </html>

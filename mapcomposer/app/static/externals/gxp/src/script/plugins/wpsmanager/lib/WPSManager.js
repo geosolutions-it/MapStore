@@ -80,6 +80,11 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
 	
 	silentErrors: false,
     
+    /** api: config[pollingInterval] 
+     *  ``Number`` polling interval in milliseconds for the download callback
+     */
+	pollingInterval: 1000,
+    
 
     /** private: method[constructor]
      */
@@ -167,6 +172,35 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
         } 
     },
     
+    /** api: method[onDownloadReady]
+     *
+     *  Attaches an event on an asynchronous process call, waiting for
+     *  a download link to be available.
+     *  :arg instanceID: ``String`` instance ID of the process to query
+     *  :arg success: ``Function`` callback to call when the
+     *      download link is ready. 
+     *  :arg failure: ``Function`` callback to call when the
+     *      download link is not available or an error occurs in the process. 
+     *  :arg scope: ``Object`` scope object for the callbacks
+     */
+    onDownloadReady: function(instanceID, success, failure, scope) {
+        var pollingFun = function() {
+            var me = this;
+            this.getExecuteInstance(instanceID, true, function(instance) {
+                if(instance.description.status === 'Process Failed') {
+                    if(failure)
+                        failure.call(scope, instance);
+                } else if(instance.description.status === 'Process Succeeded') {
+                    if(success)
+                        success.call(scope, instance.metadata, instance);
+                } else {
+                    Ext.defer(pollingFun, me.pollingInterval, me);
+                }
+            });
+            
+        };
+        Ext.defer(pollingFun, this.pollingInterval, this);
+    },
     
     
     /** api: method[getExecuteInstance]
@@ -192,19 +226,20 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
                 statusInfo.status == "Process Accepted" ||
                 statusInfo.status == "Process Paused") && update){ 
                   
-                var updateCallback= function(instanceID){
+                var updateCallback= function(){
                     me.geoStoreClient.getEntityByID({
                         type: "resource", 
                         id: instanceID
                     }, function(resource){
                         
-                        var instance= resource;
-                        instance.store= Ext.util.JSON.decode(resource.store);
-                        instance.description= Ext.util.JSON.decode(resource.description);
+                        var instance= resource.Resource;
+                        if(instance.store)
+                            instance.store= Ext.util.JSON.decode(instance.store);
+                        instance.description= Ext.util.JSON.decode(instance.description);
                         callback.call(me, instance);
                     });  
                 }   
-                this.updateInstance(instance.Resource.name, null, null,
+                me.updateInstance(instance.Resource.name, null, null,
                     statusInfo.statusLocation, updateCallback); 
                
             }else
@@ -348,7 +383,12 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
      *                                                  OpenLayers.WPSProcess.BoundingBoxData
      *                                                  OpenLayers.WPSProcess.ReferenceData
      *                              - outputs: ``Array`` Mandatory. Array of OpenLayers.WPSProcess.Output Object
-     *                           
+     *   
+     *  :arg callback: ``Function`` optional callback, called when the execute has been
+     *                  successfully called
+     *  :arg savedInfoCallback: ``Function`` optional callback, called when the execute 
+     *                  has been successfully called and initial status of and asynch call
+     *                  has been saved on GeoStore
      *  :returns: ``String`` Execute instance ID.
      *  
      *   Send Execute Process request.
@@ -368,7 +408,7 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
      *				};
      *  
      */
-    execute: function(processName, executeRequest, callback) {
+    execute: function(processName, executeRequest, callback, savedInfoCallback) {
 		var process = this.wpsClient.getProcess('opengeo', processName);    
         var instanceName=null;
         var executeOptions;
@@ -383,9 +423,10 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
         }   
         instanceName=this.getInstanceName(processName);
         executeOptions.scope= this;
+
         executeOptions.success= function(response, processInstance){
-            me.responseManager(response, processInstance);
-            callback.call(this, response);
+            me.responseManager(response, processInstance, savedInfoCallback);
+            callback.call(this, response, processInstance);
         };
        
         executeOptions.processInstance=instanceName;
@@ -429,6 +470,11 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
                 };
             }else{
 				var executeResponse= executeProcessResponse.executeResponse;
+                if(executeResponse.processOutputs && executeResponse.processOutputs.length > 0) {
+                    if(executeResponse.processOutputs[0].reference) {
+                        resourceInstance.metadata = executeResponse.processOutputs[0].reference.href;
+                    }
+                }
                 if(executeResponse.processSucceeded){
                     stautsInfo={
                         status: "Process Succeeded",
@@ -480,7 +526,7 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
                         me.fireEvent("geostorefailure", this, "Geostore: creation WPS Instance Error"); 
                     }else{
                         if(meCallback)
-                            meCallback.call(this,instanceIndex, instancesStatusUpdated);
+                            meCallback.call(this,instanceIndex, instancesStatusUpdated, entityID);
                     }
                 }/*, function(){
                     me.fireEvent("geostorefailure", this); 
