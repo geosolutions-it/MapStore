@@ -90,7 +90,7 @@
     <script>
         
         var app;        
-        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false;
+        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false; var bbox;
 		
         // ///////////////////////////////////////////////////////////////
         // Custom variables from the mapStoreConfig user configuration file 
@@ -128,6 +128,13 @@
 									break;
 					case "config":	
 									customConfigName = param[1];
+									break;
+					case "bbox": 
+									try{
+										bbox = new OpenLayers.Bounds.fromString(param[1]);
+									}catch(e){
+										bbox = undefined;
+									} 
 									break;
 					default :       
 									//mapIdentifier = -1;
@@ -358,6 +365,9 @@
                 }, 
                 'ready' : function(){
                     app.modified = false;
+					
+				    if(bbox)
+						app.mapPanel.map.zoomToExtent(bbox, true);
                 }
             });
 	    };

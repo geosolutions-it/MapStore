@@ -18,15 +18,10 @@
 GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 
     // Begin i18n.
-    exportMapText: "Publish Map",
-    toolsTitle: "Choose tools to include in the toolbar:",
-    previewText: "Preview",
     backText: "Back",
     nextText: "Next",
     fullScreenText: "Full Screen",	
     cswFailureAddLayer: ' The layer cannot be added to the map',
-    alertEmbedTitle: "Attention",
-    alertEmbedText: "Save the map before using the 'Publish Map' tool",	
 	cswZoomToExtentMsg: "BBOX not available",
 	cswZoomToExtent: "CSW Zoom To Extent",
 	
@@ -187,7 +182,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		if(!savePlugin){
 			config.tools.push({
 				ptype: "gxp_saveDefaultContext",
-				actionTarget: {target: "paneltbar", index: 24},
+				actionTarget: {target: "paneltbar", index: 21},
 				needsAuthorization: true
 			});
 		}
@@ -218,9 +213,41 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 enableToggle: true,
                 handler: function(button, evt){
                     if(button.pressed){
-                        Ext.getCmp('tree').findParentByType('panel').collapse();
+                       var tree = Ext.getCmp('tree');
+						if(tree){
+							var panel = tree.findParentByType('panel');
+							if(panel){
+								panel.collapse();
+							}							
+						}	
+						
+						var east = Ext.getCmp('east');
+						if(east){
+							east.collapse();
+						}
+						
+						var south = Ext.getCmp('south');
+						if(south){
+							south.collapse();
+						}
                     } else {
-                        Ext.getCmp('tree').findParentByType('panel').expand();
+                        var tree = Ext.getCmp('tree');
+						if(tree){
+							var panel = tree.findParentByType('panel');
+							if(panel){
+								panel.expand();
+							}							
+						}						
+						
+						var east = Ext.getCmp('east');
+						if(east){
+							east.expand();
+						}
+						
+						var south = Ext.getCmp('south');
+						if(south){
+							south.expand();
+						}
                     }
                 }
             });
@@ -236,19 +263,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 			});
 
 			tools.unshift(layerChooser);
-		}
-        
-		if(this.mapId && this.mapId != -1){
-			tools.push(new Ext.Button({
-				tooltip: this.exportMapText,
-				handler: function() {
-					this.showEmbedWindow();
-				},
-				scope: this,
-				iconCls: 'icon-export'
-			}));
-			
-			tools.push('-');
 		}
         
         return tools;
@@ -272,105 +286,5 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				loading.hide();
 			};
 		}
-	},
-
-    /** private: method[openPreview]
-     */
-    openPreview: function(embedMap) {
-        var preview = new Ext.Window({
-            title: this.previewText,
-            layout: "fit",
-            resizable: false,
-            items: [{border: false, html: embedMap.getIframeHTML()}]
-        });
-        preview.show();
-        var body = preview.items.get(0).body;
-        var iframe = body.dom.firstChild;
-        var loading = new Ext.LoadMask(body);
-        loading.show();
-        Ext.get(iframe).on('load', function() { loading.hide(); });
-    },
-
-    /** private: method[showEmbedWindow]
-     */
-    showEmbedWindow: function() {        
-	    if (this.mapId == -1 || (this.modified == true && this.auth == true)){
-            Ext.MessageBox.show({
-                title: this.alertEmbedTitle,
-                msg: this.alertEmbedText,
-                buttons: Ext.MessageBox.OK,
-                animEl: 'mb4',
-                icon: Ext.MessageBox.WARNING,
-                scope: this
-            });
-        }else{
-           var toolsArea = new Ext.tree.TreePanel({title: this.toolsTitle, 
-               autoScroll: true,
-               root: {
-                   nodeType: 'async', 
-                   expanded: true, 
-                   children: this.viewerTools
-               }, 
-               rootVisible: false,
-               id: 'geobuilder-0'
-           });
-
-           var previousNext = function(incr){
-               var l = Ext.getCmp('geobuilder-wizard-panel').getLayout();
-               var i = l.activeItem.id.split('geobuilder-')[1];
-               var next = parseInt(i, 10) + incr;
-               l.setActiveItem(next);
-               Ext.getCmp('wizard-prev').setDisabled(next==0);
-               Ext.getCmp('wizard-next').setDisabled(next==1);
-               if (incr == 1) {
-                   this.saveAndExport();
-               }
-           };
-           
-           var curLang = OpenLayers.Util.getParameters()["locale"] || 'en';            
-           
-           var embedMap = new gxp.EmbedMapDialog({
-               id: 'geobuilder-1',
-               url: "viewer" + "?locale=" + curLang + "&bbox=" + this.mapPanel.map.getExtent() + "&mapId=" + this.mapId
-           });
-
-           var wizard = {
-               id: 'geobuilder-wizard-panel',
-               border: false,
-               layout: 'card',
-               activeItem: 0,
-               defaults: {border: false, hideMode: 'offsets'},
-               /*bbar: [{
-                   id: 'preview',
-                   text: this.previewText,
-                   handler: function() {
-                       //this.saveAndExport(this.openPreview.createDelegate(this, [embedMap]));
-                       this.openPreview(embedMap);
-                   },
-                   scope: this
-               }, '->', {
-                   id: 'wizard-prev',
-                   text: this.backText,
-                   handler: previousNext.createDelegate(this, [-1]),
-                   scope: this,
-                   disabled: true
-               },{
-                   id: 'wizard-next',
-                   text: this.nextText,
-                   handler: previousNext.createDelegate(this, [1]),
-                   scope: this
-               }],*/
-
-               items: [embedMap]
-               //items: [toolsArea, embedMap]
-           };
-
-           new Ext.Window({
-                layout: 'fit',
-                width: 500, height: 300,
-                title: this.exportMapText,
-                items: [wizard]
-           }).show();
-        }
-    }
+	}
 });
