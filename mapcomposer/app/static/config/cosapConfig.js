@@ -316,7 +316,12 @@
 				"filterCiviciAttribute": "ID",
 				"selectionCiviciStyle": "highlight_point",
 				"filterViaAttribute": "ID_STRASSE",
-				"selectionViaStyle": "highlight"
+				"selectionViaStyle": "highlight",
+				"wsCosapName": "Cosap",
+				"layerCosapName": "occupazioni_concessioni",
+				"layerCosapLogoName": "occupazioni_logo",	
+				"layerCosapTitle": "Occupazioni Area",
+				"layerCosapLogoTitle": "Occupazioni Icone"
 			}
 		}, {
 			"ptype": "gxp_addlayer",

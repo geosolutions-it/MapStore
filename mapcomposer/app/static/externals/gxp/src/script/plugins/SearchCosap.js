@@ -25,17 +25,11 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 	
 	serviceUrl: null,
 	
-	layerCosapTitle: 'occupazioni_concessioni',
-	layerCosapLogoTitle: 'occupazioni_logo',
-	
 	waitMsg: "Si prega di attendere ...",	
 	titleError: "Errore",	
 	cercaText: 'Cerca',
 	
-	cosapTitle: 'Ricerca Occupazioni',
-
-	layerCosapTitle: 'Occupazioni Area',
-	layerCosapLogoTitle: 'Occupazioni Icone',
+	cosapTitle: 'Ricerca Occupazioni',	
 	
 	viaText: "Via",
 	civicoText: "N. Civico",
@@ -63,7 +57,7 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 	*/
 	init: function(target) {
 		gxp.plugins.SearchCosap.superclass.init.apply(this, arguments);
-				
+		
 	},
 
     /** 
@@ -205,7 +199,7 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 					   }
 					   
 
-					   var cosapLayers = [this.layerCosapTitle, this.layerCosapLogoTitle];	
+					   var cosapLayers = [this.selectionProperties.layerCosapTitle, this.selectionProperties.layerCosapLogoTitle];	
 					   for (var i=0; i<cosapLayers.length; i++) {
 						   var cosapLayer = apptarget.mapPanel.map.getLayersByName(cosapLayers[i])[0];
 						   if(cosapLayer){
@@ -337,8 +331,8 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 		
 			// if ((e.layer.name == 'Occupazioni Area') || 
 			    // (e.layer.name == 'Occupazioni Icone')){
-			if ((e.layer.params && e.layer.params.LAYERS == 'Cosap:occupazioni_logo') || 
-			    (e.layer.params && e.layer.params.LAYERS == 'Cosap:occupazioni_concessioni')){
+			if ((e.layer.params && e.layer.params.LAYERS ==  me.selectionProperties.wsCosapName  +':' + me.selectionProperties.layerCosapLogoName) || 
+			    (e.layer.params && e.layer.params.LAYERS == me.selectionProperties.wsCosapName  +':' + me.selectionProperties.layerCosapName)){
 				var aDate = new Date();
 				
 				//Impostazione di un filtro iniziale.

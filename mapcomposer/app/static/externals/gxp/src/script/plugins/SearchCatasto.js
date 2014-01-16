@@ -115,6 +115,10 @@ gxp.plugins.SearchCatasto = Ext.extend(gxp.plugins.Tool, {
 		dsParticelle.setBaseParam('comcat', '613');		
 		dsParticelle.setBaseParam('tipo', 'partedif');
 		
+		var me = this;
+		
+		var particellaExtent;
+		
 		var catastoForm = new Ext.form.FormPanel({
 			header: true,
 			border: true,
@@ -193,82 +197,172 @@ gxp.plugins.SearchCatasto = Ext.extend(gxp.plugins.Tool, {
 						var tipoPart = Ext.getCmp('tipoPartBox').getValue();
 						
 						
-						if (particella && comCat && tipoPart) {
-							var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
-							mask.show();
-							
-							Ext.Ajax.request({
-								url: this.serviceUrl + 'BoundsServlet?tipo=particella&codice=' + particella + '&comcat=' + comCat + '&tipopart=' + tipoPart,
-								scope: this,
-								success: function(response, opts) {
-									mask.hide();
-									var obj = Ext.decode(response.responseText);
-									var bounds = obj.bounds;
-									var comProjection = new OpenLayers.Projection("EPSG:25832"); 
-									var googleProjection = new OpenLayers.Projection("EPSG:900913");
-									
-									var comBounds = new OpenLayers.Bounds(bounds.x1, bounds.y1, bounds.x2, bounds.y2);
-									var newBounds = comBounds.transform(comProjection, googleProjection);
-									
-									//
-									// Add the WMS layer
-									//
-									var addLayer = apptarget.tools["addlayer"];
-									if(bounds && addLayer){
-										var selectionLayerName = 'Cartografia:particelle';
-										
-										var layer = apptarget.mapPanel.map.getLayersByName(this.selectionProperties.selectionLayerTitle)[0];
-										if(!layer){
-											var customParams = {
-												cql_filter: "NUM='" + particella +"' AND COM=" + comCat,
-												styles: 'highlight_polygon',
-												displayInLayerSwitcher: false,
-												enableLang: false
-											};
-		
-											var opts = {
-												msLayerTitle: this.selectionProperties.selectionLayerTitle,
-												msLayerName: selectionLayerName,
-												wmsURL: this.selectionProperties.wmsURL,
-												customParams: customParams
-											};
-											
-											addLayer.addLayer(opts);
-										}else{
-											layer.mergeNewParams({
-												"cql_filter": "NUM='" + particella +"' AND COM=" + comCat,
-												"layers": selectionLayerName,
-												"styles": 'highlight_polygon'
-											});
-										}
-									}
-									
-									apptarget.mapPanel.map.zoomToExtent(newBounds);
-								},
-								failure: function(response, opts) {
-									mask.hide();
-									
-									Ext.Msg.show({
-										  title: this.titleError,
-										  msg: response.responseText + " - " + response.status,
-										  width: 300,
-										  icon: Ext.MessageBox.WARNING
-									});
-									
-									console.log('server-side failure with status code ' + response.status);
-								}
-							});
-						}
+						zoomCatasto(particella, comCat, tipoPart, this.serviceUrl, this.selectionProperties, this.waitMsg, this.titleError, apptarget);
 					}
 				}
             ]
+		});			
+		
+		apptarget.mapPanel.map.events.register('addlayer', apptarget.mapPanel.map, function (e) {
+				    
+			if (Ext.urlDecode(window.location.search.substring(1)).searchType && Ext.urlDecode(window.location.search.substring(1)).searchType == 'catasto') {
+				//if (! me.particellaExtent) {
+					var particella =  Ext.urlDecode(window.location.search.substring(1)).particella;
+					var comCat =  Ext.urlDecode(window.location.search.substring(1)).comCat;
+					var tipoPart =  Ext.urlDecode(window.location.search.substring(1)).tipoPart;
+					
+					zoomCatasto(particella, comCat, tipoPart, me.serviceUrl, me.selectionProperties, me.waitMsg, me.titleError, apptarget);
+				//}
+				
+				//apptarget.mapPanel.map.zoomToExtent(me.particellaExtent);
+			}
+			
 		});
 		
-        
 		var panel = gxp.plugins.SearchCatasto.superclass.addOutput.call(this, catastoForm);
         return panel;
     }
         
 });
+
+function zoomCatasto(particella, comCat, tipoPart, serviceUrl, selectionProperties, waitMsg, titleError, apptarget) {
+	if (particella && comCat && tipoPart) {
+		var mask = new Ext.LoadMask(Ext.getBody(), {msg: waitMsg});
+		mask.show();		
+		
+		Ext.Ajax.request({
+			url: serviceUrl + 'BoundsServlet?tipo=particella&codice=' + particella + '&comcat=' + comCat + '&tipopart=' + tipoPart,			
+			success: function(response, opts) {
+				mask.hide();
+				var obj = Ext.decode(response.responseText);
+				var bounds = obj.bounds;
+				var comProjection = new OpenLayers.Projection("EPSG:25832"); 
+				var googleProjection = new OpenLayers.Projection("EPSG:900913");
+				
+				var comBounds = new OpenLayers.Bounds(bounds.x1, bounds.y1, bounds.x2, bounds.y2);
+				var newBounds = comBounds.transform(comProjection, googleProjection);
+				
+				//
+				// Add the WMS layer
+				//
+				var addLayer = apptarget.tools["addlayer"];
+				if(bounds && addLayer){
+					var selectionLayerName = 'Cartografia:particelle';
+					
+					var layer = apptarget.mapPanel.map.getLayersByName(selectionProperties.selectionLayerTitle)[0];
+					if(!layer){
+						var customParams = {
+							cql_filter: "NUM='" + particella +"' AND COM=" + comCat,
+							styles: 'highlight_polygon',
+							displayInLayerSwitcher: false,
+							enableLang: false
+						};
+
+						var opts = {
+							msLayerTitle: selectionProperties.selectionLayerTitle,
+							msLayerName: selectionLayerName,
+							wmsURL: selectionProperties.wmsURL,
+							customParams: customParams
+						};
+						
+						addLayer.addLayer(opts);
+					}else{
+						layer.mergeNewParams({
+							"cql_filter": "NUM='" + particella +"' AND COM=" + comCat,
+							"layers": selectionLayerName,
+							"styles": 'highlight_polygon'
+						});
+					}
+				}
+				
+				apptarget.mapPanel.map.zoomToExtent(newBounds);
+			},
+			failure: function(response, opts) {
+				mask.hide();
+				
+				Ext.Msg.show({
+					  title: this.titleError,
+					  msg: response.responseText + " - " + response.status,
+					  width: 300,
+					  icon: Ext.MessageBox.WARNING
+				});
+				
+				console.log('server-side failure with status code ' + response.status);
+			}
+		});
+	}
+}
+
+
+function getParticellaExtent(particella, comCat, tipoPart, serviceUrl, selectionProperties, waitMsg, titleError, apptarget) {
+	if (particella && comCat && tipoPart) {
+		var mask = new Ext.LoadMask(Ext.getBody(), {msg: waitMsg});
+		mask.show();
+		
+		var retExtent;
+		
+		Ext.Ajax.request({
+			url: serviceUrl + 'BoundsServlet?tipo=particella&codice=' + particella + '&comcat=' + comCat + '&tipopart=' + tipoPart,			
+			success: function(response, opts) {
+				mask.hide();
+				var obj = Ext.decode(response.responseText);
+				var bounds = obj.bounds;
+				var comProjection = new OpenLayers.Projection("EPSG:25832"); 
+				var googleProjection = new OpenLayers.Projection("EPSG:900913");
+				
+				var comBounds = new OpenLayers.Bounds(bounds.x1, bounds.y1, bounds.x2, bounds.y2);
+				var newBounds = comBounds.transform(comProjection, googleProjection);
+				
+				//
+				// Add the WMS layer
+				//
+				var addLayer = apptarget.tools["addlayer"];
+				if(bounds && addLayer){
+					var selectionLayerName = 'Cartografia:particelle';
+					
+					var layer = apptarget.mapPanel.map.getLayersByName(selectionProperties.selectionLayerTitle)[0];
+					if(!layer){
+						var customParams = {
+							cql_filter: "NUM='" + particella +"' AND COM=" + comCat,
+							styles: 'highlight_polygon',
+							displayInLayerSwitcher: false,
+							enableLang: false
+						};
+
+						var opts = {
+							msLayerTitle: selectionProperties.selectionLayerTitle,
+							msLayerName: selectionLayerName,
+							wmsURL: selectionProperties.wmsURL,
+							customParams: customParams
+						};
+						
+						addLayer.addLayer(opts);
+					}else{
+						layer.mergeNewParams({
+							"cql_filter": "NUM='" + particella +"' AND COM=" + comCat,
+							"layers": selectionLayerName,
+							"styles": 'highlight_polygon'
+						});
+					}
+				}
+				
+				retExtent = newBounds;				
+			},
+			failure: function(response, opts) {
+				mask.hide();
+				
+				Ext.Msg.show({
+					  title: this.titleError,
+					  msg: response.responseText + " - " + response.status,
+					  width: 300,
+					  icon: Ext.MessageBox.WARNING
+				});
+				
+				console.log('server-side failure with status code ' + response.status);
+			}
+		});
+		return retExtent;
+	}
+}
 
 Ext.preg(gxp.plugins.SearchCatasto.prototype.ptype, gxp.plugins.SearchCatasto);
