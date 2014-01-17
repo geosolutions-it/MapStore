@@ -35,7 +35,7 @@ Ext.namespace("gxp");
  */
 gxp.plugins.OverviewMap = Ext.extend(gxp.plugins.Tool, {
 
-    /** api: ptype = gxp_mouseposition */
+    /** api: ptype = gxp_overviewmap */
     ptype: "gxp_overviewmap",
 	
 	/** api: config[map]
@@ -44,7 +44,15 @@ gxp.plugins.OverviewMap = Ext.extend(gxp.plugins.Tool, {
      */
     map: null,
 	
+	/** api: config[layers]
+     *  ``Array`` 
+     *  The layers to add to the overview panel.
+     */
 	layers: null,
+	
+	/** api: config[maximized] 
+     */
+	maximized: true,
     
     /** api: method[init]
      *  :arg target: ``Object`` The object initializing this plugin.
@@ -64,113 +72,43 @@ gxp.plugins.OverviewMap = Ext.extend(gxp.plugins.Tool, {
     addOverviewMap: function() {
 		this.map = this.target.mapPanel.map;
 		
-		var baseLayer = new OpenLayers.Layer.Google(
-            "Google Hybrid",
-            {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20}
-        )
-		
 		var mapOptions = {
 			maxExtent: this.map.getMaxExtent(), 
 			projection: this.map.getProjection()
 		};
 		
-		var overviewLayers = [];
-		
-		
-		
-		var aLayer = new OpenLayers.Layer.WMS(
-                        "Cartografia:Confine_comunale", 
-                        "http://sit.comune.bolzano.it/geoserver/Cartografia/wms",                        
-                        {
-                            LAYERS: "Cartografia:Confine_comunale"
-                        },
-                        {
-                            isBaseLayer: true
-                        } 
-                    );
-		var bLayer = new OpenLayers.Layer.WMS(
-                        "Ambiente:quartieri", 
-                        "http://sit.comune.bolzano.it/geoserver/Ambiente/wms",                        
-                        {
-                            LAYERS: "Ambiente:quartieri",
-							transparent: true
-                        },
-                        {
-                            isBaseLayer: false
-                        } 
-                    );	
-					
-		var dLayer = new OpenLayers.Layer.WMS(
-                        "Cartografia:ferrovia", 
-                        "http://sit.comune.bolzano.it/geoserver/Cartografia/wms",                        
-                        {
-                            LAYERS: "Cartografia:ferrovia",
-							transparent: true
-                        },
-                        {
-                            isBaseLayer: false
-                        } 
-                    );			
-			
-		var cLayer = new OpenLayers.Layer.WMS(
-                        "Cartografia:autostrada", 
-                        "http://sit.comune.bolzano.it/geoserver/Cartografia/wms",                        
-                        {
-                            LAYERS: "Cartografia:autostrada",
-							transparent: true
-                        },
-                        {
-                            isBaseLayer: false
-                        } 
-                    );
+		var overviewLayers = [];		
 					
 		if(this.layers){
-			for (var i=0; i < this.layers.length; i++) {
-				
-				if (i == 0) {
-					overviewLayers.push(new OpenLayers.Layer.WMS(
-							this.layers[i].name, 
-							this.layers[i].wmsserver,                        
-							{
-								LAYERS: this.layers[i].name
-							},
-							{
-								isBaseLayer: true
-							} 
-						));
-				} else {
-					overviewLayers.push(new OpenLayers.Layer.WMS(
-							this.layers[i].name, 
-							this.layers[i].wmsserver,                        
-							{
-								LAYERS: this.layers[i].name,
-								transparent: true
-							},
-							{
-								isBaseLayer: false
-							} 
-						));
+			for (var i=0; i < this.layers.length; i++) {				
+				if(this.layers[i]){					
+					var layer = new OpenLayers.Layer.WMS(
+						this.layers[i].title, 
+						this.layers[i].wmsserver,                        
+						this.layers[i].parameters,
+						this.layers[i].options
+					);
+					
+					overviewLayers.push(layer);
 				}
 			}
 		} else {
+			var baseLayer = new OpenLayers.Layer.Google(
+				"Google Hybrid",
+				{type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20}
+			);
+
 			overviewLayers.push(baseLayer);
 		} 			
 		
 		var overview = new OpenLayers.Control.OverviewMap({
-			maximized: true,
+			maximized: this.maximized,
 			mapOptions: OpenLayers.Util.extend(mapOptions, {
 				maxExtent: this.map.getMaxExtent()
 			}),
 			layers: overviewLayers
 		});
-		
-		
-		
-		// if (this.layers){
-			// var addLayer = apptarget.tools["addlayer"];
-			
-		// }
-	   
+
 		this.map.addControl(overview);
     }
 });

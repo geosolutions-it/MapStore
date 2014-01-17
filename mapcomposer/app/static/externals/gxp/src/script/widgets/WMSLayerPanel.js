@@ -288,6 +288,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
      */
     createDisplayPanel: function() {
         var record = this.layerRecord;
+        var times = (record.data.times ? record.data.times.split(',') : null);
         var layer = record.getLayer();
         var opacity = layer.opacity;
         if(opacity == null) {

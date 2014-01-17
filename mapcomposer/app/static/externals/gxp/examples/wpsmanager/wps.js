@@ -51,6 +51,8 @@ onReady=(function() {
     el=document.getElementById("geostoreproxy");
     el.appendChild(document.createTextNode(geostoreProxy));
     
+    OpenLayers.ProxyHost = wpsProxy;
+    
     wpsManager = new gxp.plugins.WPSManager({
         id: "wpsTest",
         url: wpsURL,
@@ -86,6 +88,27 @@ function executeCallback(instanceOrRawData){
  		icon: Ext.Msg.INFO
     });
     setTimeout("getInstances(false)", 1000);
+}
+
+function downloadCallback(index, status, id){
+  
+    wpsManager.onDownloadReady(id, function(url) {
+         
+         Ext.Msg.show({
+            title: "Download" ,
+            msg: '<a href="' + url + '" target="_blank">Click here to download</a>',
+            buttons: Ext.Msg.OK,
+            icon: Ext.Msg.INFO
+         });
+    }, function() {
+        Ext.Msg.show({
+            title: "Error" ,
+            msg: 'Error executing process',
+            buttons: Ext.Msg.OK,
+            icon: Ext.Msg.ERROR
+         });
+    });
+
 }
 
 function getSyncRequest(){
@@ -130,6 +153,29 @@ function getAsyncRequest(){
         outputs: [{
             identifier: "result",
             mimeType: "text/xml"
+        
+        }]
+    };
+
+}
+
+function getDownloadRequest(){
+    return {
+        storeExecuteResponse: true,
+        lineage:  true,
+        status: true,
+        inputs:{
+            geom: new OpenLayers.WPSProcess.ComplexData({
+               value: document.getElementById("geometry2").value,
+               mimeType: "application/wkt"
+            }),
+
+            index: new OpenLayers.WPSProcess.LiteralData({value:parseInt(document.getElementById("pointN").value, 10)})
+        },
+        outputs: [{
+            identifier: "result" + (new Date()).getTime(),
+            mimeType: "text/xml; subtype=gml/3.1.1",
+            asReference: true
         
         }]
     };

@@ -29,10 +29,7 @@ GeoExt.Lang.add("it", {
     },
     
     "GeoExplorer.Composer.prototype": {
-        exportMapText: "Pubblicazione Mappa",
 		uploadText: "Caricamento",
-        toolsTitle: "Scegliere gli strumenti da includere nella barra:",
-        previewText: "Anteprima",
         backText: "Precedente",
         nextText: "Prossimo",
         loginText: "Login",
@@ -42,8 +39,6 @@ GeoExt.Lang.add("it", {
         fullScreenText: "Schermo Intero",
         cswMsg: 'Caricamento...',
 		cswFailureAddLayer: ' Il layer non può essere aggiunto alla mappa',
-        alertEmbedTitle: 'Attenzione',
-        alertEmbedText: "Salvare la mappa prima di utilizzare il tool 'Pubblicazione Mappa'",
 	    cswZoomToExtentMsg: "BBOX non disponibile",
 		cswZoomToExtent: "CSW Zoom all'estensione"
     },
@@ -703,7 +698,18 @@ GeoExt.Lang.add("it", {
 		menuText: "Guida",
 		text: "Aiuto",
 		title: "Guida",
-		tooltip: "Apri la guida",
-		fileName: "help_it.pdf"
+		tooltip: "Apri la guida"
+	},
+	
+	"gxp.plugins.EmbedMapDialog.prototype" :{
+		exportMapText: "Collega Mappa",		
+		toolsTitle: "Scegliere gli strumenti da includere nella barra:",		
+		alertEmbedTitle: "Attenzione",		
+		alertEmbedText: "Salvare la mappa prima di utilizzare il tool 'Pubblicazione Mappa'",			
+		previewText: "Anteprima",				
+		embedCodeTitle: "Codice da Incorporare",
+		embedURL: "URL diretto",		
+		urlLabel: "URL",
+		showMapTooltip: "Mostra in una nuova finestra"
 	}
 });

@@ -48,9 +48,11 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
     text:'Help', 
     title:'Help Window',
     iconCls:'gx-help',
-    tooltip:'Open the Help Window',
-	link:'',
-	fileName: '',
+    tooltip:'Open the Help Window',	
+	
+	link: '',	
+	fileName: 'help',
+
     /** end of i18n */
     /** api: config[description]
      *  ``String`` Html to show in the window
@@ -83,12 +85,19 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
             scope: this
         }];
         if(this.showOnStartup){
-            this.target.on('ready',this.showHelp,this);
+            this.target.on('ready', this.showHelp,this);
         
         }
         return gxp.plugins.HelpButton.superclass.addActions.apply(this, [actions]);
     },
+	
     showHelp:function(){
+	
+		var locCode = GeoExt.Lang.locale;
+        var code = locCode || this.target.defaultLanguage;
+		
+		this.fileName = code == "it" ? this.fileName + "_it.pdf" : this.fileName + "_de.pdf";
+		
 		if (this.fileName == 'help_de.pdf') {
 			new Ext.Window(Ext.apply({
 			   layout:'fit',
@@ -102,9 +111,7 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
 		} else{
 			window.open(this.link + this.fileName);
 		}
-		
-        
-    }
-    
+    }    
 });
+
 Ext.preg(gxp.plugins.HelpButton.prototype.ptype, gxp.plugins.HelpButton);

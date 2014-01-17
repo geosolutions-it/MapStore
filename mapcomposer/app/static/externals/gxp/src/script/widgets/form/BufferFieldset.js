@@ -132,6 +132,8 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 		this.coordinatePicker = new gxp.widgets.form.CoordinatePicker({
 			map: this.map,
 			fieldLabel: this.coordinatePickerLabel,
+			latitudeEmptyText: this.latitudeEmptyText,
+			longitudeEmptyText: this.longitudeEmptyText,
 			outputSRS: this.outputSRS,
 			//selectStyle: this.selectStyle,
 			toggleGroup: this.toggleGroup,

@@ -91,7 +91,7 @@
     <script>
         
         var app;        
-        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false;
+        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false; var bbox;
 		
         // ///////////////////////////////////////////////////////////////
         // Custom variables from the mapStoreConfig user configuration file 
@@ -129,6 +129,13 @@
 									break;
 					case "config":	
 									customConfigName = param[1];
+									break;
+					case "bbox": 
+									try{
+										bbox = new OpenLayers.Bounds.fromString(param[1]);
+									}catch(e){
+										bbox = undefined;
+									} 
 									break;
 					default :       
 									//mapIdentifier = -1;
@@ -314,7 +321,7 @@
             };*/
 
             app = new GeoExplorer.Composer({
-				advancedScaleOverlay: serverConfig.advancedScaleOverlay,
+				advancedScaleOverlay: serverConfig.advancedScaleOverlay || false,
 				defaultLanguage: serverConfig.defaultLanguage,	
                 customPanels: serverConfig.customPanels,
                 modified: false,
@@ -331,7 +338,6 @@
                 },
                 sources: sources,
 				scaleOverlayUnits: serverConfig.scaleOverlayUnits,
-				showGraticule: false,
                 georeferences: georeferences_data,
                 cswconfig: serverConfig.cswconfig,
                 map: serverConfig.map,
@@ -349,17 +355,21 @@
                 'ready' : function(){
                     app.modified = false;
 					
-					var eastPanel = Ext.getCmp('east');
+					/*var eastPanel = Ext.getCmp('east');
 					var southPanel = Ext.getCmp('south');
 					if(eastPanel && southPanel){
 						eastPanel.collapse();
 						southPanel.collapse();
-					}
+					}*/
 					
 					/*app.mapPanel.map.events.register("moveend", app.mapPanel.map, function(){
 						var extent = app.mapPanel.map.getExtent().toBBOX();
 						alert(extent);
 					});*/
+					
+				    if(bbox){
+						app.mapPanel.map.zoomToExtent(bbox, true);
+					}
                 }
             });
 	    };
@@ -383,7 +393,7 @@
 				  
 				  if(serverConfig){
 					  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy; 
-
+					
 					  // ///////////////////////////////////////////////  
 					  // Run the application when browser is ready
 					  // ///////////////////////////////////////////////

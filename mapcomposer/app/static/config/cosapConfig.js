@@ -370,30 +370,62 @@
 		  }
 	    }, {
 		   "ptype": "gxp_mouseposition",
-		   "displayProjectionCode":"EPSG:25832",
+		   "displayProjectionCode":"EPSG:4326",
 		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
-		},
-		{
+		}, {
 			"ptype": "gxp_overviewmap",
+			"maximized": true,
 			"layers": [
 				{
-					"wmsserver":"http://sit.comune.bolzano.it/geoserver/Cartografia/wms",
-					"name":"Cartografia:Confine_comunale"							
+					"wmsserver": "http://sit.comune.bolzano.it/geoserver/Cartografia/wms",
+					"title": "Confine_comunale",
+					"parameters":{
+						"layers": "Cartografia:Confine_comunale"
+					},
+					"options":{
+						"isBaseLayer": true
+					}
 				}, {
 					"wmsserver":"http://sit.comune.bolzano.it/geoserver/Ambiente/wms",
-					"name":"Ambiente:quartieri"
+					"title":"Quartieri",
+					"parameters":{
+						"transparent": true,
+						"layers": "Ambiente:quartieri"
+					},
+					"options":{
+						"isBaseLayer": false
+					}
 				}, {
 					"wmsserver":"http://sit.comune.bolzano.it/geoserver/Cartografia/wms",
-					"name":"Cartografia:ferrovia"
+					"title":"Ferrovia",
+					"parameters":{
+						"transparent": true,
+						"layers": "Cartografia:ferrovia"
+					},
+					"options":{
+						"isBaseLayer": false
+					}
 				}, {
 					"wmsserver":"http://sit.comune.bolzano.it/geoserver/Cartografia/wms",
-					"name":"Cartografia:autostrada"
+					"title":"Autostrada",
+					"parameters":{
+						"transparent": true,
+						"layers": "Cartografia:autostrada"
+					},
+					"options":{
+						"isBaseLayer": false
+					}
 				}
 			]
-		},
-		{
+		}, {
 			"ptype": "gxp_help",
-			"link": "http://sit.comune.bolzano.it/GeoInfo/help/"
+			"link": "http://sit.comune.bolzano.it/GeoInfo/help/",
+			"actionTarget": {"target": "paneltbar", "index": 22}
+		}, {
+			"ptype": "gxp_embedmapdialog",
+			"actionTarget": {"target": "paneltbar", "index": 2},
+			"embeddedTemplateName": "composer",
+			"showDirectURL": true
 		}
 	]
 }

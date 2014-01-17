@@ -226,6 +226,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             var original = this.store.getAt(index);
 
             var layer = original.getLayer();
+            layer.url = layer.url.replace('SERVICE=WMS&', '');
 
             /**
              * TODO: The WMSCapabilitiesReader should allow for creation
@@ -280,7 +281,26 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             // use all params from original
             params = Ext.applyIf(params, layer.params);
 
-            layer = new OpenLayers.Layer.WMS(
+			// /////////////////////////////////////////////////////////
+			// Checking if the OpenLayers transition should be 
+			// disabled (transitionEffect: null).
+			//
+			// (see also 
+			// https://github.com/openlayers/openlayers/blob/master/notes/2.13.md#layergrid-resize-transitions-by-default).
+			//
+			// In this case also the zoomMethod must be setted to null 
+			// in Map configuration (see widgets/Viewer.js).
+			// /////////////////////////////////////////////////////////
+			var transitionEffect = "resize";
+			if(this.target.map.animatedZooming){
+				if(this.target.map.animatedZooming.transitionEffect == null){
+					transitionEffect = null;
+				}else{
+					transitionEffect = this.target.map.animatedZooming.transitionEffect;
+				}
+			}
+            
+			layer = new OpenLayers.Layer.WMS(
                 config.title || config.name, 
                 layer.url, 
                 params, {
@@ -294,7 +314,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     opacity: ("opacity" in config) ? config.opacity : 1,
                     buffer: ("buffer" in config) ? config.buffer : 1,
                     projection: layerProjection,
-                    vendorParams: config.vendorParams
+                    vendorParams: config.vendorParams,
+					transitionEffect: transitionEffect
                 }
 			);
 
@@ -307,6 +328,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 gnURL: config.gnURL,
                 source: config.source,
                 properties: "gxp_wmslayerpanel",
+                times: "times" in config ? config.times : null,
+                elevations: "elevations" in config ? config.elevations : null,
                 fixed: config.fixed,
                 selected: "selected" in config ? config.selected : false,
                 layer: layer
@@ -322,9 +345,11 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 				{name: "title", type: "string"},
                 {name: "properties", type: "string"},
                 {name: "fixed", type: "boolean"},
-                {name: "selected", type: "boolean"}
+                {name: "selected", type: "boolean"},
+                {name: "times", type: "string"},
+                {name: "elevations", type: "string"}
             ];
-			
+
             original.fields.each(function(field) {
                 fields.push(field);
             });
@@ -637,8 +662,34 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
         };
                 
         var keywords = record.get("keywords");
+        var dimensions = record.get("dimensions");
         var identifiers = record.get("identifiers") || undefined;        
         defaultProps.stylesAvail = record.get("styles");
+        
+        if(dimensions) {
+        	// ////////
+        	// looking for time dimension
+        	// ////////
+        	if (dimensions.time && dimensions.time.values) {
+        		if (dimensions.time.values.length>0) {
+        			var time=new Object();
+        			
+        			time.times=dimensions.time.values.join();
+        			
+        			defaultProps = Ext.applyIf(defaultProps, time);
+        		}
+        	}
+
+        	if (dimensions.elevation && dimensions.elevation.values) {
+        		if (dimensions.elevation.values.length>0) {
+        			var elevation=new Object();
+        			
+        			elevation.elevations=dimensions.time.values.join();
+        			
+        			defaultProps = Ext.applyIf(defaultProps, elevation);
+        		}
+        	}
+        }
                 
         if(keywords.length>0 || !this.isEmptyObject(identifiers)){
             var props=new Object();

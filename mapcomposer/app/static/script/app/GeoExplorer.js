@@ -1278,6 +1278,15 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 		delete state.portalConfig;
 		delete state.disableLayerChooser;
 		
+		delete state.modified;
+		delete state.proxy;
+		delete state.geoStoreBaseURL;
+		delete state.renderToTab;
+		delete state.advancedScaleOverlay;
+		delete state.about;
+		delete state.defaultLanguage;
+		delete state.scaleOverlayUnits;
+		
         return state;
     }
 });
