@@ -3,6 +3,7 @@
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
    "advancedScaleOverlay": true,
+   "actionToolScale": "medium",
    "gsSources":{ 
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
@@ -130,9 +131,8 @@
 			"actionTarget": "paneltbar"
 		}, {
 			"ptype": "gxp_geolocationmenu",
-			"outputTarget": "paneltbar",
-			"toggleGroup": "toolGroup",
-			"index": 23
+			"actionTarget": {"target": "paneltbar", "index": 23},
+			"toggleGroup": "toolGroup"
 		}, {
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"

@@ -211,6 +211,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 id: "full-screen-button",
                 iconCls: "icon-fullscreen",
                 enableToggle: true,
+				scale: this.actionToolScale,
                 handler: function(button, evt){
                     if(button.pressed){
                        var tree = Ext.getCmp('tree');

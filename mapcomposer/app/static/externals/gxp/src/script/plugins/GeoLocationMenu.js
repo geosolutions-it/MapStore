@@ -35,6 +35,7 @@ Ext.namespace("gxp.plugins");
 /** api: constructor
  *  .. class:: GeoLocationMenu(config)
  *
+ *  Author: Tobia Di Pisa at tobia.dipisa@geo-solutions.it
  */   
 gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
     
@@ -379,7 +380,7 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
 	
 	/** api: method[addOutput]
      */
-    addOutput: function(config) {
+    addActions: function(config) {
 		var geoReferences = this.buildGeoRerencesAction();
 		var reverseGeocoder = this.reverseGeoCoderButton;
 		var dynamicGeocoder = this.comboContainer;
@@ -412,7 +413,7 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
             menu: this.menu
         });
 
-        return gxp.plugins.GeoLocationMenu.superclass.addOutput.call(this, [this.button]);
+        return gxp.plugins.GeoLocationMenu.superclass.addActions.call(this, [this.button]);
     },
 	
     /** private: method[createGeolocateControl]
