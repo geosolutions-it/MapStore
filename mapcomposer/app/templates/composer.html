@@ -93,7 +93,7 @@
     <script>
         
         var app;        
-        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false;
+        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false; var bbox;
 		
         // ///////////////////////////////////////////////////////////////
         // Custom variables from the mapStoreConfig user configuration file 
@@ -131,6 +131,13 @@
 									break;
 					case "config":	
 									customConfigName = param[1];
+									break;
+					case "bbox": 
+									try{
+										bbox = new OpenLayers.Bounds.fromString(param[1]);
+									}catch(e){
+										bbox = undefined;
+									} 
 									break;
 					default :       
 									//mapIdentifier = -1;
@@ -331,6 +338,7 @@
             app = new GeoExplorer.Composer({
 				advancedScaleOverlay: serverConfig.advancedScaleOverlay || false,
 				defaultLanguage: serverConfig.defaultLanguage,	
+				actionToolScale: serverConfig.actionToolScale || "small",
                 customPanels: serverConfig.customPanels,
                 modified: false,
                 proxy: proxy,
@@ -361,6 +369,9 @@
                 }, 
                 'ready' : function(){
                     app.modified = false;
+					
+				    if(bbox)
+						app.mapPanel.map.zoomToExtent(bbox, true);
                 }
             });
 	    };

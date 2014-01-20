@@ -216,6 +216,30 @@ gxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
      */
     addActions: function(actions) {
         actions = actions || this.actions;
+		
+		// ////////////////////////////////////////////////
+		// Assign the action tool dimension using 'scale'
+		// ////////////////////////////////////////////////
+		if(actions){
+			if(actions.length){
+				for(var k=0; k<actions.length; k++){
+					if(actions[k]){
+						if(actions[k] instanceof GeoExt.Action && actions[k].initialConfig){
+							actions[k].initialConfig.scale = this.target.actionToolScale;
+						}else{
+							actions[k].scale = this.target.actionToolScale;
+						}						
+					}
+				}
+			}else{
+				if(actions instanceof GeoExt.Action && actions.initialConfig){
+					actions.initialConfig.scale = this.target.actionToolScale;
+				}else{
+					actions.scale = this.target.actionToolScale;
+				}	
+			}
+		}
+		
         if (!actions || this.actionTarget === null) {
             // add output immediately if we have no actions to trigger it
             this.addOutput();

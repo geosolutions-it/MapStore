@@ -36,6 +36,8 @@ Ext.namespace("gxp.plugins");
  *  .. class:: AddGroup(config)
  *
  *    Plugin for adding a new group on layer tree.
+ *
+ *  Author: Tobia Di Pisa at tobia.dipisa@geo-solutions.it
  */
 gxp.plugins.AddGroup = Ext.extend(gxp.plugins.Tool, {
     

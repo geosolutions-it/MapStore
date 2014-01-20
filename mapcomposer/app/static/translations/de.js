@@ -28,10 +28,7 @@ GeoExt.Lang.add("de", {
     },
     
     "GeoExplorer.Composer.prototype": {
-        exportMapText: "Kartenveröffentlichung",
 		uploadText: "Upload",
-        toolsTitle: "Werkzeuge auswählen die der Leiste hinzu zufügen sind:",
-        previewText: "Vorschau",
         backText: "Zurück",
         nextText: "Nächste",
         loginText: "Login",
@@ -41,8 +38,6 @@ GeoExt.Lang.add("de", {
         fullScreenText: "Vollbild",
         cswMsg: 'Loading...',
 		cswFailureAddLayer: 'Die Schicht kann der Karte nicht hinzugefügt werden',
-        alertEmbedTitle: 'Achtung',
-        alertEmbedText: "Zuerst di Karte speichern und dann erst das Werkzeug 'Kartenveröffentlichung' benützen",
 	    cswZoomToExtentMsg: "BBOX nicht verfügbar",
 		cswZoomToExtent: "CSW Zoom erweitern"
     },
@@ -634,5 +629,17 @@ GeoExt.Lang.add("de", {
 		serverErrorMsg: "Fehler beim Erzeugen der Karte Snapshot: Server Error",
 		menuText: "Snapshot",
 		tooltip: "Snapshot"
+	},
+	
+	"gxp.plugins.EmbedMapDialog.prototype" :{
+		exportMapText: "Link Map",		
+		toolsTitle: "Werkzeuge auswählen die der Leiste hinzu zufügen sind:",		
+		alertEmbedTitle: "Achtung",		
+		alertEmbedText: "Zuerst di Karte speichern und dann erst das Werkzeug 'Kartenveröffentlichung' benützen",			
+		previewText: "Vorschau",				
+		embedCodeTitle: "Embed Code",
+		embedURL: "Direct URL",		
+		urlLabel: "URL",
+		showMapTooltip: "In einem neuen Fenster anzeigen"
 	}
 });

@@ -259,6 +259,7 @@
                 
                 app = new GeoExplorer.Viewer({
 				    defaultLanguage: serverConfig.defaultLanguage,	
+					actionToolScale: serverConfig.actionToolScale || "small",
                     customPanels: serverConfig.customPanels,
                     proxy: proxy,
 					viewerTools: serverConfig.viewerTools,
