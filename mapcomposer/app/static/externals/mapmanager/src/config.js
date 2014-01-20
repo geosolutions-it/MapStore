@@ -28,7 +28,7 @@
  * baseUrl
  * 
  * {string} http proxy url
- * proxyUrl
+ * proxy
  * 
  * {number} start param for the first page load
  * start
@@ -39,20 +39,30 @@
  * {number} msmTimeout param for set ajax request timeout
  * msmTimeout
  *
- *  Examples of urls
+ * {string} baseUrl:
+ *   setiing this property you will have all the application configured as the following
+ *   Examples of urls with localhost:8080 set as default url: 
  *
  *      map composer   http://localhost:8080/mapcomposer/
  *      user details (used in login)  http://localhost:8080/geostore/rest/users/user/details/
  *      resource (i.e. maps) search   http://localhost:8080/geostore/rest/extjs/search/
  *      resource rest endpoint  http://localhost:8080/geostore/rest/resources
  *      user rest endpoint  http://localhost:8080/geostore/rest/users
+ *      
+ *      You can override these URLs adding the following attributes to the config object:
+ *          "geoStoreBase":"http://mapstore.geo-solutions.it/geostore/rest/"
+                overrides the geostore base url: all the requests to geostore will use this base
+ *          "socialUrl":"http://mapstore.geo-solutions.it/mapcomposer/",
+                url to the public mapcomposer. used to create social links
+ *          "composerUrl":"/",
+                the local composer url to test.
  * 
  */
 
 var config = {
 
 	baseUrl: '',
-	proxyUrl: '/http_proxy/proxy/?url=',
+	proxy: '/http_proxy/proxy/?url=',
 
 	//googleApi: 'AIzaSyBFz0tyDgG_SmT8Qmw1UFmOJuHgW4Z8nEw',
 	//update key here: https://code.google.com/apis/console/#project:385384104319:access

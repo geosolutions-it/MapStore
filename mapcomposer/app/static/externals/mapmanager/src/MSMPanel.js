@@ -81,6 +81,16 @@ MSMPanel = Ext.extend(Ext.Panel, {
      * Initializes the component
      * 
      */
+     
+     
+     /**
+     * Property: renderMapToTab
+     * {string} the id of the Ext.TabPanel to use to render the map iframe
+     * if not present, the Composer/Viewer will be rendered into a window.
+     * 
+     */ 
+    renderMapToTab: null,
+    
     initComponent : function() {
 
         this.items = new MSMGridPanel({
@@ -89,6 +99,7 @@ MSMPanel = Ext.extend(Ext.Panel, {
             msmTimeout:this.config.msmTimeout,
             lang: this.lang,
             config: this.config,
+            renderMapToTab: this.renderMapToTab,
             langSelector: this.langSelector
         });
         

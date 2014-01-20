@@ -163,12 +163,20 @@
                 id: 'mapManagerPanel',
                 config: config,
                 lang: code,
+                renderMapToTab: 'mainTabPanel',
                 langSelector: languageSelector
 
             });
             new Ext.Viewport({
                 layout:'fit',
-                items:{xtype: 'tabpanel',items:[msmPanel],activeTab:0}
+                items:{
+                    xtype: 'tabpanel',
+                    id:'mainTabPanel',
+                    items:[msmPanel],
+                    enableTabScroll : true,
+                    activeTab:0
+                    
+                }
                 });
         };
         

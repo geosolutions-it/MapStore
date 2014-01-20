@@ -426,6 +426,13 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	shortUrls: new Object(),
 	
     /**
+     * Property: renderMapToTab
+     * {string} the id of the Ext.TabPanel to use to render the map iframe
+     * if not present, the Composer/Viewer will be rendered into a window.
+     * 
+     */ 
+    renderMapToTab: null,
+    /**
     * Constructor: initComponent 
     * Initializes the component
     * 
@@ -442,6 +449,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 		// Init useful URLs
 		// /////////////////////////
 		this.murl = config.composerUrl || ( baseUrl + 'mapcomposer/');
+        this.socialUrl = config.socialUrl || ( baseUrl );
 		this.geoBaseUsersUrl= geoStoreBase + 'users';
 		this.geoBaseMapsUrl = geoStoreBase + 'resources';
 		this.geoSearchUrl = geoStoreBase + 'extjs/search/';
@@ -895,9 +903,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 					}
 					
 					var iframeTitle = (userProfile == "&auth=true" ? grid.IframeComposerTitle : grid.IframeViewerTitle) + desc;
-					
-                    var iframe = new Ext.IframeWindow({
-                        id:'idMapManager',
+                    var iframeconfig = {
                         width:900,
                         height:650,
                         collapsible:false,
@@ -926,11 +932,11 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                 }
                                 document.body.scrollTop = scrollTop;
 							},
-                            afterRender: function(){
+                            afterRender: function(p){
                                 function setAuth(){
                                     var userAuth = grid.store.proxy.getConnection().defaultHeaders;
                                     if(userAuth && userProfile == '&auth=true'){
-                                        var mapIframe = document.getElementById('mapiframe');
+                                        var mapIframe = document.getElementById(p.iframeId);
                                         if (mapIframe.contentWindow.app){
                                             mapIframe.contentWindow.app.setAuthHeaders(userAuth.Authorization);
                                             clearTimeout(timer);
@@ -939,8 +945,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                 };
                                 var timer = setInterval(setAuth, 3000);
                             },
-                            beforeClose: function(){
-                                var mapIframe = document.getElementById('mapiframe');
+                            beforeClose: function(p){
+                                var mapIframe = document.getElementById(p.iframeId);
                                 var modified = mapIframe.contentWindow.app.modified;
                                 
                                 if (modified == true && userProfile == '&auth=true'){
@@ -972,10 +978,24 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                 }
                             }
                         }
-                    });
-                scrollTop = Ext.getBody().getScroll().top;
-                Ext.get(grid.mapManagerContainer).setDisplayed('none');
-                iframe.show();
+                    };
+                var iframe;
+                if(grid.renderMapToTab){
+                    iframe = new Ext.IframeTab(iframeconfig);
+                    var target = Ext.getCmp(grid.renderMapToTab);
+                    if(target){
+                        target.add(iframe);
+                        if(target.xtype=='tabpanel'){
+                            target.setActiveTab(iframe);
+                        }
+                    }
+                }else{
+                    iframe = new Ext.IframeWindow(iframeconfig);
+                    scrollTop = Ext.getBody().getScroll().top;
+                    Ext.get(grid.mapManagerContainer).setDisplayed('none');
+                    iframe.show();
+                
+                }
             },
 			
             // ////////////////////////////
@@ -987,7 +1007,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				
 					getSocialLinksId: function(mapid,name,description) {
 					
-						var divid = mapid + '_social_div', longUrl = grid.murl + 'viewer?locale=' + grid.lang + '&mapId=' + mapid;
+						var divid = mapid + '_social_div', longUrl = grid.socialUrl + 'viewer?locale=' + grid.lang + '&mapId=' + mapid;
 							
 						var shortener = new Google.Shortener({
 								config: grid.config
@@ -1068,10 +1088,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									tw.setAttribute('data-url', shortUrl);
 									tw.setAttribute('data-count', 'horizontal');
 									tw.setAttribute('data-via', config.twitter.via);
-									tw.setAttribute('data-lang', grid.lang);									
-                                    tw.setAttribute('data-text', name+'/'+description);	
+									tw.setAttribute('data-lang', grid.lang);
+                                    tw.setAttribute('data-text', name+'/'+description);
                                     if(config.twitter.hashtags) {
-                                        tw.setAttribute('data-hashtags', config.twitter.hashtags);	
+                                        tw.setAttribute('data-hashtags', config.twitter.hashtags);
                                     }
 									
 									var twcell = document.createElement('td');
@@ -1284,7 +1304,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     * 
                     */
                     MapComposerEM : function(id, values) {
-                        Ext.get(id).on('click', function(e){							
+                        Ext.get(id).on('click', function(e){
                             var idMap = values.id,
                             	desc = values.name;
 							
@@ -1602,8 +1622,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 		// //////////////////////////////////////////////////
         this.store.load({
             params:{
-                start: (this.start),
-                limit: (this.limit)
+                start: this.start,
+                limit: this.limit
             }
         });
 		

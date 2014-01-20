@@ -27,9 +27,10 @@
  */
 Ext.IframeWindow = Ext.extend(Ext.Window, {
     onRender: function() {
+        this.iframeId= Ext.id();
         this.bodyCfg = {
             tag: 'iframe',
-            id: 'mapiframe',
+            id:this.iframeId,
             src: this.src,
             cls: this.bodyCls,
             style: {
@@ -37,6 +38,35 @@ Ext.IframeWindow = Ext.extend(Ext.Window, {
             }
         };
         Ext.IframeWindow.superclass.onRender.apply(this, arguments);
+        var myMask = new Ext.LoadMask(this.getEl(), {msg:"Please wait..."});
+        myMask.show();
+        this.body.on('load',function(){
+            myMask.hide();
+        });
+    }
+});
+
+Ext.IframeTab = Ext.extend(Ext.Panel, {
+   
+    waitMsg: "please wait...<br/>opening the selected map",
+    onRender: function(ct) {
+        
+        this.iframeId= Ext.id();
+        this.bodyCfg = {
+            tag: 'iframe',
+            id:this.iframeId,
+            src: this.src,
+            cls: this.bodyCls,
+            style: {
+                border: '0px none'
+            }
+        };
+        Ext.IframeTab.superclass.onRender.apply(this, arguments);
+        var myMask = new Ext.LoadMask(this.getEl(), {msg:this.waitMsg});
+        myMask.show();
+        this.body.on('load',function(){
+            myMask.hide();
+        });
     }
 });
 
