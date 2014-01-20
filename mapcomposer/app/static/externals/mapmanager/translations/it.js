@@ -50,6 +50,7 @@ GeoExt.Lang.add("it", {
         msgFailureDeleteMapBody: "Qualcosa di sbagliato è accaduto",
         IframeViewerTitle: "Visore Mappa - ",
         IframeComposerTitle: "Editor Mappa - ",
+        IframeWaitMsg :"Caricamento della mappa ...",
 		showMapTooltip: "Mostra in una nuova finestra",
 		embedCodeTitle: "Codice da Incorporare",
 		embedURL: "URL diretto",		

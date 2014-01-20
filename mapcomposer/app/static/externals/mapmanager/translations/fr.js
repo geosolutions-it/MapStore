@@ -50,6 +50,7 @@ GeoExt.Lang.add("fr", {
         msgFailureDeleteMapBody: "Quelque chose ne va arrivé",
         IframeViewerTitle: "Map viewer",
         IframeComposerTitle: "Map Editor- ",		
+        IframeWaitMsg :"Chargement de la carte ...",
 		showMapTooltip: "Voir dans une nouvelle fenêtre",
 		embedCodeTitle: "Intégrer le code",
 		embedURL: "URL directe",	

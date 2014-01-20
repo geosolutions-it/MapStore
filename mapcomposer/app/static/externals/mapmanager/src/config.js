@@ -51,11 +51,21 @@
  *      
  *      You can override these URLs adding the following attributes to the config object:
  *          "geoStoreBase":"http://mapstore.geo-solutions.it/geostore/rest/"
-                overrides the geostore base url: all the requests to geostore will use this base
+ *              overrides the geostore base url: all the requests to geostore will use this base
  *          "socialUrl":"http://mapstore.geo-solutions.it/mapcomposer/",
-                url to the public mapcomposer. used to create social links
+ *              url to the public mapcomposer. used to create social links
  *          "composerUrl":"/",
-                the local composer url to test.
+ *              the local composer url to test.
+ *              
+ *  {string} 
+ *  ASSETS :The icons to use for the user Manager, if they use a different path.
+ *  example : {
+ *      "delete_icon": "./externals/mapmanager/theme/img/user_delete.png",
+ *      "edit_icon": "./externals/mapmanager/theme/img/user_edit.png"
+ * }
+ * 
+ * {array} array of arrays containing parameter to pass to the url and related string to show in the switcher
+ * locales
  * 
  */
 

@@ -399,6 +399,13 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * {string} set Composer window title
      * 
      */ 
+      /**
+    * Property: IframeWaitMsg
+    * {string} set Viewer window loading message
+    * 
+    */        
+    IframeWaitMsg: "Loading map...",
+ 
     lang: "en",
     /**
      * Property: ajaxHeader
@@ -904,6 +911,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 					
 					var iframeTitle = (userProfile == "&auth=true" ? grid.IframeComposerTitle : grid.IframeViewerTitle) + desc;
                     var iframeconfig = {
+                        waitMsg: grid.IframeWaitMsg,
                         width:900,
                         height:650,
                         collapsible:false,
