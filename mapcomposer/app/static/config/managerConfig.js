@@ -29,5 +29,9 @@
          "de",
          "Deutsch"
       ]
-   ]
+   ],
+   "embedLink": {
+		"embeddedTemplateName": "viewer",
+		"showDirectURL": true
+	}
 }

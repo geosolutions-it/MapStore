@@ -84,6 +84,9 @@ MSMPanel = Ext.extend(Ext.Panel, {
     initComponent : function() {
 
         this.items = new MSMGridPanel({
+            start: this.config.start,
+            limit: this.config.limit,
+            msmTimeout:this.config.msmTimeout,
             lang: this.lang,
             config: this.config,
             langSelector: this.langSelector

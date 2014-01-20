@@ -230,3 +230,7 @@ left: 80px !important;
     padding: 10px 10px 5px 10px;
     margin-bottom: 0;
 }
+
+.gx-map-go{
+    background-image: url(../img/map_go.png);
+}

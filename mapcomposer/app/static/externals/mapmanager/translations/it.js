@@ -49,7 +49,12 @@ GeoExt.Lang.add("it", {
         msgFailureDeleteMapTitle: "Failed",
         msgFailureDeleteMapBody: "Qualcosa di sbagliato è accaduto",
         IframeViewerTitle: "Visore Mappa - ",
-        IframeComposerTitle: "Editor Mappa - "
+        IframeComposerTitle: "Editor Mappa - ",
+		showMapTooltip: "Mostra in una nuova finestra",
+		embedCodeTitle: "Codice da Incorporare",
+		embedURL: "URL diretto",		
+		urlLabel: "URL",
+		exportMapText: "Collega Mappa"		
     },
     "MSMPagingToolbar.prototype": {
         desc: "Nuova Mappa",
@@ -114,5 +119,16 @@ GeoExt.Lang.add("it", {
 		userAlreadyTaken: 'Nome utente presente',
 		titleConfirmDeleteMsg: "Confirma cancellazione utente",
 		textConfirmDeleteMsg: "Sei sicuro di voler eliminare questo utente?"
-	}
+	},
+	
+	"EmbedMapDialog.prototype": {
+        publishMessage: "La mappa è pronta per essere pubblicata sul web! Basta copiare il seguente codice HTML per visualizzare la mappa nel proprio sito web:",
+        heightLabel: "Altezza",
+        widthLabel: "Larghezza",
+        mapSizeLabel: "Dimensione della Mappa",
+        miniSizeLabel: "Mini",
+        smallSizeLabel: "Piccola",
+        premiumSizeLabel: "Premium",
+        largeSizeLabel: "Grande"
+    }
 });

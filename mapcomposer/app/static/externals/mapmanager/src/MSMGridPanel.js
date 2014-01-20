@@ -803,30 +803,79 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			 */
 			showEmbedWindow: function(mapId, mapDesc) {        							   
 				   
-			   var curLang = mapManagerLanguage || 'en';            
+			    var curLang = this.grid.lang || 'en';            
+			    var url = this.grid.config.embedLink.embeddedTemplateName + "?locale=" + curLang + "&mapId=" + mapId
 			   
-			   var embedMap = new EmbedMapDialog({
+			    var embedMap = new EmbedMapDialog({
 				   id: 'geobuilder-1',
-				   url: "viewer" + "?locale=" + curLang + "&mapId=" + mapId
-			   });
+				   url: url
+			    });
+			   
+			    var snippetFieldSet = new Ext.form.FieldSet({
+					title: grid.embedCodeTitle,
+					items:[
+						embedMap
+					]
+			    });
+		   
+			    var urlField = new Ext.form.TextField({
+					fieldLabel: grid.urlLabel,
+					labelStyle: 'font-weight:bold;',
+					width: 350,
+					value: embedMap.getAbsoluteUrl(url).replace(/\/mapstore\//g,"/mapcomposer/"),
+					selectOnFocus: true,
+					readOnly: true
+			    }); 
+				
+			    var urlCompositeField = new Ext.form.CompositeField({
+					items:[
+						urlField,
+						{
+							xtype: 'button',
+							tooltip: grid.showMapTooltip,
+							iconCls: "gx-map-go",
+							width: 20,
+							handler: function(){
+								var u = urlField.getValue();
+								window.open(u);
+							}
+						}
+					]
+			    });
+		   
+			    var directURL = new Ext.form.FieldSet({
+					title: grid.embedURL,
+					labelWidth: 50,
+					items:[
+						urlCompositeField
+					],
+					bodyStyle: 'padding: 15px'
+			    });
+		   
+				wizardItems = [snippetFieldSet];
+				
+				if(this.grid.config.embedLink.showDirectURL === true){
+					wizardItems.push(directURL);
+				}
 
-			   var wizard = {
-				   id: 'geobuilder-wizard-panel',
-				   border: false,
-				   layout: 'card',
-				   activeItem: 0,
-				   defaults: {border: false, hideMode: 'offsets'},				   
-				   items: [embedMap]				   
-			   };
+			    var wizard = {
+				    id: 'geobuilder-wizard-panel',
+				   //border: false,
+				   //layout: 'card',
+				   //activeItem: 0,
+				   //defaults: {border: false, hideMode: 'offsets'},				   
+				   //items: [embedMap]	
+					items: [wizardItems]
+			    };
 
-			   new Ext.Window({
+			    new Ext.Window({
 					layout: 'fit',
-					width: 500, height: 300,
+					width: 500, 
+					height: this.grid.config.embedLink.showDirectURL === true ? 345 : 245,
 					title: mapDesc,
 					items: [wizard]
-			   }).show();
-			},
-			
+			    }).show();
+			},			
 			
             /**
              * Private: openMapComposer 
@@ -951,7 +1000,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									// Inject social links within the div element
 									// ///////////////////////////////////////////////
 									var socialDiv = document.getElementById( divid );
-									
+									var config = grid.config;
 									// //////////////////////////////////////////////////
 									// We need a table, otherwise IE7 does not display 
 									// the button correctly
@@ -1403,7 +1452,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 restful: true,
                 method : 'GET',
                 disableCaching: true,
-                timeout: (config.msmTimeout)?(config.msmTimeout):(this.msmTimeout),
+                timeout: this.msmTimeout,
                 success: function (result) {
 				    // ///////////////////////////////////////
 					// Hack to generate short urls
@@ -1482,7 +1531,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
         });
 
         this.bbar = new MSMPagingToolbar({
-            pageSize : (config.limit)?(config.limit):(this.limit),
+            pageSize : this.limit,
             store : this.store,
             grid: this,
             displayInfo: true,
@@ -1553,8 +1602,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 		// //////////////////////////////////////////////////
         this.store.load({
             params:{
-                start: (config.start)?(config.start):(this.start),
-                limit: (config.limit)?(config.limit):(this.limit)
+                start: (this.start),
+                limit: (this.limit)
             }
         });
 		

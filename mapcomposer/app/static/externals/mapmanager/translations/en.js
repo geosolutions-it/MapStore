@@ -49,7 +49,12 @@ GeoExt.Lang.add("en", {
         msgFailureDeleteMapTitle: "Failed",
         msgFailureDeleteMapBody: "Something wrong has appened",
         IframeViewerTitle: "Map Viewer - ",
-        IframeComposerTitle: "Map Composer - "        
+        IframeComposerTitle: "Map Composer - ",
+		showMapTooltip: "Show in a new Window",
+		embedCodeTitle: "Embed Code",
+		embedURL: "Direct URL",	
+		urlLabel: "URL",
+		exportMapText: "Link Map"		
     },
     "MSMPagingToolbar.prototype": {
         desc: "New Map",
@@ -114,5 +119,16 @@ GeoExt.Lang.add("en", {
 		textSelectRole: 'Select a role...',
 		titleConfirmDeleteMsg: "Confirm delete user",
 		textConfirmDeleteMsg: "Are you sure you want to delete this user?"	
-	}
+	},
+	
+	"EmbedMapDialog.prototype": {
+        publishMessage: "Your map is ready to be published to the web! Simply copy the following HTML to embed the map in your website:",
+        heightLabel: "Height",
+        widthLabel: "Width",
+        mapSizeLabel: "Map Size",
+        miniSizeLabel: "Mini",
+        smallSizeLabel: "Small",
+        premiumSizeLabel: "Premium",
+        largeSizeLabel: "Large"
+    }
 });

@@ -68,7 +68,13 @@ var config = {
         hashtags: ''
     },
 	
-	locales: [['en', 'English'],['it','Italiano'],['fr','Français'],['de','Deutsch']]
+	locales: [['en', 'English'],['it','Italiano'],['fr','Français'],['de','Deutsch']],
+	
+	embedLink: {
+		embeddedTemplateName: "viewer",
+		showDirectURL: true
+	}
+	
 };
 
 
