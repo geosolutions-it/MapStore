@@ -3,7 +3,6 @@
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
    "advancedScaleOverlay": true,
-   "actionToolScale": "medium",
    "gsSources":{ 
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"

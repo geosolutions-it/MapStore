@@ -1282,6 +1282,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 		delete state.about;
 		delete state.defaultLanguage;
 		delete state.scaleOverlayUnits;
+		delete state.actionToolScale;
 		
         return state;
     }
