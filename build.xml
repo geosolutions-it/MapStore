@@ -6,9 +6,7 @@
     </description>
 
     <property name="composerbuild" location="mapcomposer/build"/>
-	<property name="managerbuild" location="mapmanager/build"/>
 	<property name="release.dir" location="build"/>
-	<property name="manager.war.name" value="mapstore"/>
     <property name="ringojs.dir" location="externals/ringojs"/>
     <property name="ringojs.version" value="0.7.0-geosolutions"/>
     <property name="ringojs.run" location="${ringojs.dir}/lib/ringojs-run-${ringojs.version}.jar"/>
@@ -60,13 +58,6 @@
             <arg line="-o ${composerbuild}/${ant.project.name}/WEB-INF/app/static/script mapcomposer/buildjs.cfg"/>
         </java>
 		
-        <!-- mapmanager -->
-        <mkdir dir="${managerbuild}/mapstore/src"/>
-        <java jar="${ringojs.run}" fork="true" failonerror="true">
-            <sysproperty key="ringo.home" path="${ringojs.dir}"/>
-            <arg path="externals/buildkit/lib/buildkit/build.js"/>
-            <arg line="-o ${managerbuild}/mapstore/src mapmanager/buildjs.cfg"/>
-        </java>
 
     </target>
     
@@ -75,7 +66,6 @@
     <target name="redist">
 
         <mkdir dir="${composerbuild}/${ant.project.name}"/>
-		<mkdir dir="${managerbuild}/mapstore"/>
         
         <copy todir="${composerbuild}/${ant.project.name}">
             <fileset dir="mapcomposer/src/main/webapp/">
@@ -133,40 +123,26 @@
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/colorpicker/css">
             <fileset dir="mapcomposer/app/static/externals/colorpicker/css"/>
         </copy>
-
-        <!-- MAP MANAGER -->
-		
-		<!-- copy Lib resources -->
-        <copy todir="${managerbuild}/mapstore/lib">
-            <fileset dir="mapmanager/lib"/>
+        <!-- copy mapmanager css  -->
+        <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/mapmanager/theme/css">
+            <fileset file="mapcomposer/app/static/externals/mapmanager/theme/css/mapstoremanager.css"
+            />
         </copy>
-		
-		<!-- copy theme resources -->
-        <copy todir="${managerbuild}/mapstore/theme">
-            <fileset dir="mapmanager/theme"/>
+        <!-- copy mapmanager img  -->
+        <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/mapmanager/theme/img">
+            <fileset dir="mapcomposer/app/static/externals/mapmanager/theme/img"
+            />
         </copy>
-		
-		<!-- copy i18n resources -->
-        <copy todir="${managerbuild}/mapstore/translations">
-            <fileset dir="mapmanager/translations"/>
+        <!-- copy i18n resources -->
+        <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/mapmanager/translations">
+            <fileset dir="mapcomposer/app/static/externals/mapmanager/translations"/>
         </copy>
-		
-		<!-- copy html resources -->
-		<copy file="mapmanager/index.html" tofile="${managerbuild}/mapstore/index.html"/>
-		<copy file="mapmanager/mapstore.html" tofile="${managerbuild}/mapstore/mapstore.html"/>
-		
-		<!-- copy config resources -->
-		<copy file="mapmanager/src/config.js" tofile="${managerbuild}/mapstore/src/config.js"/>
-		<copy file="mapmanager/src/init.js" tofile="${managerbuild}/mapstore/src/init.js"/>
 		
     </target>
 
     <target name="war" depends="dist">
         <war destfile="${composerbuild}/${ant.project.name}.war">
             <fileset dir="${composerbuild}/${ant.project.name}"/>
-        </war>
-		<war destfile="${managerbuild}/${manager.war.name}.war" needxmlfile='false'>
-            <fileset dir="${managerbuild}/${manager.war.name}"/>
         </war>
     </target>
 
@@ -202,7 +178,6 @@
     <target name="clean" description="remove previous composerbuild">
         <delete dir="${ringojs.dir}"/>
         <delete dir="${composerbuild}"/>
-		<delete dir="${managerbuild}"/>
 		<delete dir="${release.dir}"/>
     </target>
     
@@ -218,10 +193,7 @@
             <fileset file="${composerbuild}/${ant.project.name}.war">
             </fileset>
         </copy>
-        <copy todir="${release.dir}/mapstore/webapps">
-            <fileset file="${managerbuild}/${manager.war.name}.war">
-            </fileset>
-        </copy>
+        
         <copy todir="${release.dir}/mapstore">
             <fileset file="license.txt">
             </fileset>
@@ -254,18 +226,6 @@
         </zip> 
         <move file="${release.dir}/mapstore/webapps/tmp.war" tofile="${release.dir}/mapstore/webapps/servicebox.war" /> 
         
-        <!-- replace mapmanager home html file -->
-        <zip destfile="${release.dir}/mapstore/webapps/tmp.war"> 
-                <zipfileset src="${release.dir}/mapstore/webapps/mapstore.war"> 
-                        <exclude name="*.html" /> 
-                </zipfileset> 
-        </zip> 
-        <zip destfile="${release.dir}/mapstore/webapps/tmp.war" update="true">
-            <zipfileset dir="mapmanager/release" 
-                includes="*.html" />
-        </zip>
-        <move file="${release.dir}/mapstore/webapps/tmp.war" tofile="${release.dir}/mapstore/webapps/mapstore.war" /> 
-		
         <echo file="${release.dir}/mapstore/VERSION.txt">
 			MapStore Version: ${mapstore.version}
 			GeoStore Version: ${geostore.version}
