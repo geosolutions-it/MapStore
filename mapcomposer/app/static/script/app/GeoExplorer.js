@@ -577,7 +577,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     viewMetadata: function(url, uuid, title){
 		var portalContainer = Ext.getCmp(this.renderToTab);
 		
-		var metaURL = url.indexOf("uuid") != -1 ? url : url + '?uuid=' + uuid;
+		var metaURL = url.indexOf("uuid") != -1 ? url : url + 'metadata.show?uuid=' + uuid;
 		
 		var metaPanelOptions = {
 			title: title,

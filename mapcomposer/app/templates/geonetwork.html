@@ -426,7 +426,7 @@
 				customTools: serverConfig.customTools
             }, mapIdentifier, authorization, fullScreen);   
             
-			app.viewMetadata = function(url, uuid, title){
+			/*app.viewMetadata = function(url, uuid, title){
 				var tabPanel = Ext.getCmp(this.renderToTab);
 				
 				var tabs = tabPanel.find('title', title);
@@ -445,7 +445,7 @@
 						this.addLoadingMask(meta.items.first());
 					},this);						
 				}
-			};
+			};*/
 			
             app.on({
                 'portalready' : function() {              	

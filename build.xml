@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="mapcomposer" default="dist" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+<project name="mapstore" default="dist" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
     <description>
         MapStore Build File
@@ -193,6 +193,10 @@
             <fileset file="${composerbuild}/${ant.project.name}.war">
             </fileset>
         </copy>
+		
+		<!-- Replace the default context jetty file -->
+		<delete file="${release.dir}/mapstore/contexts/context.xml"/>
+		<copy file="mapcomposer/release/manager/context.xml" tofile="${release.dir}/mapstore/contexts/context.xml"/>
         
         <copy todir="${release.dir}/mapstore">
             <fileset file="license.txt">
@@ -233,29 +237,24 @@
 			servicebox Version: ${servicebox.version}
 		</echo>
     </target>
-
+	
 	<target name="gnrelease" depends="release">      
-		<!-- Remove the old mapstore war -->
-	    <delete file="${release.dir}/mapstore/webapps/mapstore.war"/>
-		
+	
 		<!-- Get GeoNetwork war -->
         <get src="http://demo.geo-solutions.it/share/github/mapstore/downloads/war/geonetwork/${geonetwork.version}/geonetwork-${geonetwork.version}.war" dest="${release.dir}/mapstore/webapps/geonetwork.war"/>
         
-		<!-- Remove mapcomposer ringo configuration file from mapcomposer.war to enable geonetwork node -->
+		<!-- Remove mapcomposer ringo configuration file from mapstore.war to enable geonetwork node -->
         <zip destfile="${release.dir}/mapstore/webapps/tmp.war"> 
-                <zipfileset src="${release.dir}/mapstore/webapps/mapcomposer.war"> 
+                <zipfileset src="${release.dir}/mapstore/webapps/mapstore.war"> 
                         <exclude name="**/WEB-INF/app/config.js" /> 
                 </zipfileset> 
-				<zipfileset dir="mapcomposer/release" includes="config.js" prefix="WEB-INF/app"/>
+				<zipfileset dir="mapcomposer/release/geonetwork/" includes="config.js" prefix="WEB-INF/app"/>
         </zip> 
         <move file="${release.dir}/mapstore/webapps/tmp.war" tofile="${release.dir}/mapstore/webapps/mapstore.war" /> 
 		
-		<!-- Delete the old mapcomposer war -->
-		<delete file="${release.dir}/mapstore/webapps/mapcomposer.war"/>
-		
 		<!-- Replace the default context jetty file -->
 		<delete file="${release.dir}/mapstore/contexts/context.xml"/>
-		<copy file="mapcomposer/release/context.xml" tofile="${release.dir}/mapstore/contexts/context.xml"/>
+		<copy file="mapcomposer/release/geonetwork/context.xml" tofile="${release.dir}/mapstore/contexts/context.xml"/>
 		
 	    <!-- Replace the logo GIF in GeoNetwork using the Geosolutions logo -->
         <zip destfile="${release.dir}/mapstore/webapps/tmp.war"> 

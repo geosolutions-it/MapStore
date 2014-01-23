@@ -177,7 +177,7 @@
                     activeTab:0
                     
                 }
-                });
+            });
         };
         
         Ext.Ajax.request({
@@ -197,10 +197,27 @@
                   }
                   
                   if(serverConfig){
-                      //apply the local default configuration if not present.
-                      serverConfig = Ext.applyIf(serverConfig,localConfig);
-                      proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy; 
-                      OpenLayers.ProxyHost = this.proxy; //Explicit because this application doesn't include
+				      // ////////////////////////////////////////////////////////
+                      // Apply the local default configuration if not present.
+					  // ////////////////////////////////////////////////////////
+                      serverConfig = Ext.applyIf(serverConfig, localConfig);
+					  
+					  if(!serverConfig.geoStoreBase || serverConfig.geoStoreBase == ""){
+						serverConfig.geoStoreBase = 'http://' + window.location.host + '/geostore/rest/';
+					  }
+					  
+					  if(!serverConfig.composerUrl || serverConfig.composerUrl == ""){
+						serverConfig.composerUrl = "composer"; 
+					  }
+					  
+					  if(!serverConfig.socialUrl || serverConfig.socialUrl == ""){
+						serverConfig.socialUrl = 'http://' + window.location.host;
+					  }
+                      
+					  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy; 
+					  
+                      OpenLayers.ProxyHost = this.proxy; // Explicit because this application doesn't include
+					  
                       // ///////////////////////////////////////////////  
                       // Run the application when browser is ready
                       // ///////////////////////////////////////////////

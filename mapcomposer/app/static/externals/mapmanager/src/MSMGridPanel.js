@@ -90,12 +90,6 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     */
     purl: null,
     /**
-    * Property: geoBaseUrl
-    * {url} rest/resources URL
-    * 
-    */
-    geoBaseUrl: null,
-    /**
     * Property: purldel
     * {url} rest/resources/resource URL
     * 
@@ -449,14 +443,14 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
         var searchString = '*';
 		var config = this.config;
-		var baseUrl = config.baseUrl || 'http://' + window.location.host;
-		var geoStoreBase = config.geoStoreBase || (baseUrl +"/geostore/rest/");
+		var geoStoreBase = config.geoStoreBase;
 
 		// /////////////////////////
 		// Init useful URLs
 		// /////////////////////////
-		this.murl = config.composerUrl || ( baseUrl + 'mapcomposer/');
-        this.socialUrl = config.socialUrl || ( baseUrl );
+		this.murl = config.composerUrl;
+        this.socialUrl = config.socialUrl;
+		
 		this.geoBaseUsersUrl= geoStoreBase + 'users';
 		this.geoBaseMapsUrl = geoStoreBase + 'resources';
 		this.geoSearchUrl = geoStoreBase + 'extjs/search/';
@@ -816,8 +810,11 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
 			/** private: method[showEmbedWindow]
 			 */
-			showEmbedWindow: function(mapId, mapDesc) {        							   
-				   
+			showEmbedWindow: function(mapId, mapDesc) {  
+				if(grid.embedWindow){
+					grid.embedWindow.close();
+				}
+				
 			    var curLang = this.grid.lang || 'en';            
 			    var url = this.grid.config.embedLink.embeddedTemplateName + "?locale=" + curLang + "&mapId=" + mapId
 			   
@@ -837,7 +834,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 					fieldLabel: grid.urlLabel,
 					labelStyle: 'font-weight:bold;',
 					width: 350,
-					value: embedMap.getAbsoluteUrl(url).replace(/\/mapstore\//g,"/mapcomposer/"),
+					value: embedMap.getAbsoluteUrl(url),
 					selectOnFocus: true,
 					readOnly: true
 			    }); 
@@ -883,7 +880,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 					items: [wizardItems]
 			    };
 
-			    new Ext.Window({
+			    grid.embedWindow = new Ext.Window({
 					layout: 'fit',
 					width: 500, 
 					height: this.grid.config.embedLink.showDirectURL === true ? 345 : 245,

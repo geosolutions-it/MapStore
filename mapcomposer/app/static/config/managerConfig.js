@@ -1,6 +1,6 @@
 ﻿{
-   "baseUrl":"",
-   "composerUrl":"/",
+   "composerUrl":"",
+   "socialUrl":"",
    "start":0,
    "limit":20,
    "msmTimeout":30000,

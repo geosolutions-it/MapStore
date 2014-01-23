@@ -122,9 +122,8 @@
 			"actionTarget": "paneltbar"
 		}, {
 			"ptype": "gxp_geolocationmenu",
-			"outputTarget": "paneltbar",
-			"toggleGroup": "toolGroup",
-			"index": 23
+			"actionTarget": {"target": "paneltbar", "index": 23},
+			"toggleGroup": "toolGroup"
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
