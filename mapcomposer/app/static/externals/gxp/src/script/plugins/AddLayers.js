@@ -165,6 +165,8 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
     selectedSource: null,
 	
 	iconCls: "gxp-icon-addlayers",
+	
+	hideByDefault: false,
 
     /** private: method[constructor]
      */
@@ -192,6 +194,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             text: this.addActionText,
             menuText: this.addActionMenuText,
             disabled: true,
+			hidden: this.hideByDefault,
             iconCls: "gxp-icon-addlayers",
             handler : this.showCapabilitiesGrid,
             scope: this
