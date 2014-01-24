@@ -350,6 +350,38 @@ gxp.util = {
         return function(data) {
             return MD5_hexhash(data);
         };
-    })()
+    })(),
+
+    /** api: function[getResponseFailureMessage]
+     *  :arg response: ``Object`` Response received
+     *  :return: ``String`` A single string representing the error.
+     *
+     *  Get a string message from a service box action fail.
+     */ 
+    getResponseFailureServiceBoxMessage: function (response){
+        // obtain responseText
+        var errorMessage = response ? response.responseText: null;
+        if(response && response.responseText){
+            try{
+                var errorObject = JSON.parse(errorMessage);
+                /*
+                 * The format of the error object is:
+                 * {
+                 *      "errorMessage":"message",
+                 *      "details":{`details map`},
+                 *      "errorCode":`code of the error`,
+                 *      "success":false
+                 * }
+                 * 
+                 * @see Utilities#JSON_MODEL on ServiceBox
+                 */
+                // TODO: here we can use the the errorCode to obtain localized messages
+                errorMessage = errorObject.errorMessage;
+            }catch(e) {
+                // use responseText   
+            }
+        }
+        return errorMessage;
+    }
 
 };
