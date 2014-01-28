@@ -139,17 +139,18 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
                 			}
                 		}
                 	}
-                	
-                	var gsURL = baseURL + 
-                	    "LAYERS=" + supportedLayers.join(",") +
-                		"&FORMAT=" + encodeURIComponent("image/png") + 
-						"&SRS=" + srsID +  
-						"&VERSION=1.1.1" +
-						"&REQUEST=GetMap" +
-						"&BBOX=" + encodeURIComponent(extent.toBBOX())+
-						"&WIDTH=" + width +
-						"&HEIGHT=" + height +
-						"&CQL_FILTER=" + filters.join(";");
+                    
+                    var gsURL = baseURL + 
+                        "SERVICE=WMS" +
+                        "&LAYERS=" + supportedLayers.join(",") +
+                        "&FORMAT=" + encodeURIComponent("image/png") + 
+                        "&SRS=" + srsID +  
+                        "&VERSION=1.1.1" +
+                        "&REQUEST=GetMap" +
+                        "&BBOX=" + encodeURIComponent(extent.toBBOX())+
+                        "&WIDTH=" + width +
+                        "&HEIGHT=" + height +
+                        "&CQL_FILTER=" + filters.join(";");
 						
                 	var mHost = me.service.split("/");
 					
