@@ -42,7 +42,7 @@ Ext.IframeWindow = Ext.extend(Ext.Window, {
         Ext.IframeWindow.superclass.onRender.apply(this, arguments);
         var myMask;
         if(this.waitMsg){
-            myMask = new Ext.LoadMask(this.getEl(), {msg:this.waitMsg});
+            myMask = new Ext.LoadMask(Ext.getBody(), {msg:this.waitMsg});
             myMask.show();
         }
         this.body.on('load',function(){

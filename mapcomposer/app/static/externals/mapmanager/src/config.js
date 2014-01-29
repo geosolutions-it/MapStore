@@ -69,7 +69,7 @@
  * 
  */
 
-var config = {
+/*var config = {
 
 	baseUrl: '',
 	proxy: '/http_proxy/proxy/?url=',
@@ -95,6 +95,59 @@ var config = {
 		showDirectURL: true
 	}
 	
+};*/
+
+var config = {
+	
+	geoStoreBase: "http://localhost:8080/geostore/rest/",
+   
+    proxy: "/http_proxy/proxy/?url=",
+   
+    defaultLanguage: "en",
+   
+    composerUrl: "/mapcomposer",
+   
+    socialUrl: "",
+   
+    start: 0,
+   
+    limit: 20,
+   
+    msmTimeout: 30000,
+   
+    twitter:{
+      "via":"geosolutions_it",
+      "hashtags":""
+    },
+   
+    ASSET:{
+        "delete_icon": "theme/img/user_delete.png",
+        "edit_icon": "theme/img/user_edit.png"
+    },
+   
+    locales:[
+      [
+         "en",
+         "English"
+      ],
+      [
+         "it",
+         "Italiano"
+      ],
+      [
+         "fr",
+         "Français"
+      ],
+      [
+         "de",
+         "Deutsch"
+      ]
+    ],
+   
+    embedLink: {
+		"embeddedTemplateName": "viewer",
+		"showDirectURL": true
+	}
 };
 
 

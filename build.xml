@@ -44,25 +44,78 @@
           <fileset refid="dependency.fileset" />
           <!-- This mapper strips off all leading directory information -->
           <mapper type="flatten" />
-        </copy>        
-
+        </copy>
     </target>
     
     <target name="buildjs" depends="init">
-
+		<delete dir="${composerbuild}"/>
+		
 	    <!-- mapcomposer -->
         <mkdir dir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/script"/>
         <java jar="${ringojs.run}" fork="true" failonerror="true">
             <sysproperty key="ringo.home" path="${ringojs.dir}"/>
             <arg path="externals/buildkit/lib/buildkit/build.js"/>
             <arg line="-o ${composerbuild}/${ant.project.name}/WEB-INF/app/static/script mapcomposer/buildjs.cfg"/>
-        </java>
-		
-
+        </java>	
     </target>
     
-    <target name="dist" depends=" test, buildjs, redist"/>
-    
+    <target name="dist" depends="test, buildjs, redist"/>
+	
+	<!--  SITE START  -->	
+	<target name="site" depends="dist">
+		<move file="${composerbuild}/${ant.project.name}" tofile="${composerbuild}/mapcomposer"/>
+		<mkdir dir="${composerbuild}/${ant.project.name}"/>
+		
+		<!-- site -->
+        <mkdir dir="${composerbuild}/${ant.project.name}/src"/>
+        <java jar="${ringojs.run}" fork="true" failonerror="true">
+            <sysproperty key="ringo.home" path="${ringojs.dir}"/>
+            <arg path="externals/buildkit/lib/buildkit/build.js"/>
+            <arg line="-o ${composerbuild}/mapstore/src mapcomposer/app/static/externals/mapmanager/buildjs.cfg"/>
+        </java>	
+		
+		<!-- MAP MANAGER -->
+		
+		<!-- copy Ext resources -->
+        <copy todir="${composerbuild}/${ant.project.name}/lib/ext">		
+		    <fileset dir="mapcomposer/app/static/externals/ext">
+				<exclude name="**/ux/**"/>
+            </fileset>
+        </copy>
+		
+		<!-- copy Lib resources -->
+        <copy todir="${composerbuild}/${ant.project.name}/lib">
+            <fileset dir="mapcomposer/app/static/externals/mapmanager/lib"/>
+        </copy>
+		
+		<!-- copy theme resources -->
+        <copy todir="${composerbuild}/${ant.project.name}/theme">
+            <fileset dir="mapcomposer/app/static/externals/mapmanager/theme"/>
+        </copy>
+		
+		<!-- copy i18n resources -->
+        <copy todir="${composerbuild}/${ant.project.name}/translations">
+            <fileset dir="mapcomposer/app/static/externals/mapmanager/translations"/>
+        </copy>
+		
+		<!-- copy html resources -->
+		<copy file="mapcomposer/app/static/externals/mapmanager/index.html" tofile="${composerbuild}/${ant.project.name}/index.html"/>
+		<copy file="mapcomposer/app/static/externals/mapmanager/mapstore.html" tofile="${composerbuild}/${ant.project.name}/mapstore.html"/>
+		
+		<!-- copy config resources -->
+		<copy file="mapcomposer/app/static/externals/mapmanager/src/config.js" tofile="${composerbuild}/${ant.project.name}/src/config.js"/>
+		<copy file="mapcomposer/app/static/externals/mapmanager/src/init.js" tofile="${composerbuild}/${ant.project.name}/src/init.js"/>
+		
+		<!-- Build the final WARs files-->
+		<war destfile="${composerbuild}/mapcomposer.war">
+            <fileset dir="${composerbuild}/mapcomposer"/>
+        </war>
+		<war destfile="${composerbuild}/${ant.project.name}.war" needxmlfile='false'>
+            <fileset dir="${composerbuild}/${ant.project.name}"/>
+        </war>
+    </target>
+    <!-- SITE END -->
+	
     <target name="redist">
 
         <mkdir dir="${composerbuild}/${ant.project.name}"/>
@@ -85,7 +138,9 @@
 		
         <!-- copy Ext resources -->
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/ext">
-            <fileset dir="mapcomposer/app/static/externals/ext"/>
+            <fileset dir="mapcomposer/app/static/externals/ext">
+				<exclude name="**/ux/**"/>
+			</fileset>
         </copy>
         <!-- copy OpenLayers resources -->
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/openlayers/theme">
@@ -136,8 +191,7 @@
         <!-- copy i18n resources -->
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/mapmanager/translations">
             <fileset dir="mapcomposer/app/static/externals/mapmanager/translations"/>
-        </copy>
-		
+        </copy>		
     </target>
 
     <target name="war" depends="dist">
