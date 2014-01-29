@@ -62,7 +62,10 @@
     <!-- geocoding data  -->
     <script type="text/javascript" src="data/georeferences.js"></script>
     
-	<!-- translation data  -->
+    <!-- common data  -->
+    <script type="text/javascript" src="config/common/localConfig.js"></script>
+    
+    <!-- translation data  -->
     <script type="text/javascript" src="translations/en.js"></script>
     <script type="text/javascript" src="translations/fr.js"></script>
     <script type="text/javascript" src="translations/it.js"></script>
@@ -423,7 +426,7 @@
 				customTools: serverConfig.customTools
             }, mapIdentifier, authorization, fullScreen);   
             
-			app.viewMetadata = function(url, uuid, title){
+			/*app.viewMetadata = function(url, uuid, title){
 				var tabPanel = Ext.getCmp(this.renderToTab);
 				
 				var tabs = tabPanel.find('title', title);
@@ -442,7 +445,7 @@
 						this.addLoadingMask(meta.items.first());
 					},this);						
 				}
-			};
+			};*/
 			
             app.on({
                 'portalready' : function() {              	
@@ -563,6 +566,8 @@
 				  }
 				  
 				  if(serverConfig){
+					  //apply the local default configuration if not present.
+					  serverConfig = Ext.applyIf(serverConfig,localConfig);
 					  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy; 
 					  
 					  // ///////////////////////////////////////////////  

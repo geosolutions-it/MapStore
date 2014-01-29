@@ -1,6 +1,4 @@
 {
-    "geoStoreBase":"",
-    "proxy":"/http_proxy/proxy/?url=",
 	"portalConfig":{
 		"header":false
 	},
@@ -24,5 +22,66 @@
         }],
         "center": [1250000.000000, 5370000.000000],
         "zoom": 5
-    }
+    },	
+	"disableLayerChooser":true,
+
+	"viewerTools":[
+	   {	
+		  "leaf":true,
+		  "checked": true,
+		  "ptype":"gxp_zoomtoextent"
+          
+	   },{
+		  "leaf":true,
+		  "checked": true,
+		  "iconCls":"gxp-icon-pan",
+		  "ptype":"gxp_navigation"
+	   },{
+		  "actions":[
+			 "-"
+		  ]
+	   },{
+	      "leaf":true,
+		  "checked": true,
+		  "numberOfButtons":2,
+		  "ptype":"gxp_zoombox"
+	   },{
+	      "leaf":true,
+		  "checked": true,
+		  "iconCls":"gxp-icon-zoom-in",
+		  "numberOfButtons":2,
+		  "ptype":"gxp_zoom"
+	   },{
+		  "leaf":true,
+		  "checked": true,
+		  "actions":[
+			 "-"
+		  ]
+	   },{
+		  "leaf":true,
+		  "checked": true,
+		  "numberOfButtons":2,
+		  "ptype":"gxp_navigationhistory"
+	   },{
+		   "leaf":true,
+		  "checked": true,
+		  "actions":[
+			 "-"
+		  ]
+	   }
+   ],
+   "customTools":[{
+		  "ptype":"gxp_print",
+		  "customParams":{
+			 "outputFilename":"mapstore-print"
+		  },
+		  "printService":"http://84.33.2.75/geoserver/pdf/",
+		  "legendPanelId":"legendPanel",
+		  "ignoreLayers":["WFSSearch","Marker"],
+		  "appendLegendOptions":true,
+		  "actionTarget":{
+			 "target":"paneltbar",
+			 "index":4
+		  }
+	   }]
 }
