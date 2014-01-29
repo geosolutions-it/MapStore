@@ -179,6 +179,7 @@ gxp.MapFileDownloadPanel = Ext.extend(Ext.FormPanel, {
                     this.appMask.hide();
                     this.fireEvent("downloadcomplete", this, null);
                 }else{
+                    this.appMask.hide();
                     Ext.Msg.show({
                         title: this.failedUploadingTitle,
                         msg: request.statusText,

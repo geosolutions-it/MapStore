@@ -142,10 +142,9 @@ gxp.KMLFileUploadPanel = Ext.extend(Ext.FormPanel, {
                         //reset: true,
                         scope: this,
                         failure: function(form, action){
-                            
                             Ext.Msg.show({
                                 title: this.failedUploadingTitle,
-                                msg: action.responseText,
+                                msg: gxp.util.getResponseFailureServiceBoxMessage(action.response),
                                 buttons: Ext.Msg.OK,
                                 icon: Ext.MessageBox.ERROR
                             });
