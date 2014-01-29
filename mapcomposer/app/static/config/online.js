@@ -1,6 +1,6 @@
 {
 	"geoStoreBase": "http://localhost:8080/geostore/rest/",
-	"proxy": "/proxy/?url=",
+    "proxy":"/http_proxy/proxy/?url=",
 	"defaultLanguage": "it",
 	"embedding": false,
 	"gsSources": {
@@ -543,7 +543,7 @@
 		"wfsVersion": "1.1.0",
 		"destinationNS": "destination",
 		"index": 28,
-        "geoStoreBase":"http://localhost:8080/geostore/rest/",
+        "geoStoreBase":"http://destination.geo-solutions.it/geostore/rest/",
         "proxy":"/proxy/?url="
 	},
 	{
@@ -555,7 +555,8 @@
         "statisticFeature": "gate_stats",
         "intervalsFeature": "siig_gate_d_intervalli",
         "timeFeature": "gate_data",        
-        "layerGates":"siig_gate_geo_gate",     
+        "layerGates":"siig_gate_geo_gate",    
+        "layerGatesTitle":"Gate",
         "nativeSrs": "EPSG:32632",
         "outputTarget": "east"
 	}, {

@@ -562,6 +562,7 @@
         "intervalsFeature": "siig_gate_d_intervalli",
         "timeFeature": "gate_data",        
         "layerGates":"siig_gate_geo_gate",
+        "layerGatesTitle":"Gate",
         "nativeSrs": "EPSG:32632",
         "outputTarget": "east"
 	}, {

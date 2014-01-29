@@ -205,7 +205,7 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                     if (isSupported(layer)) {
                         supported.push(layer);
                     } else {
-                        if(layer.getVisibility()){
+                        if(layer.getVisibility() && layer.name){
                             notSupported.push(layer.name);
                         }
                     }

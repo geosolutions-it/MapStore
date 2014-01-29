@@ -317,7 +317,7 @@ gxp.plugins.GoogleSource.loader = new (Ext.extend(Ext.util.Observable, {
                     version: 3.3,
                     nocss: "true",
                     callback: "gxp.plugins.GoogleSource.loader.onScriptLoad",
-                    other_params: options.otherParams
+                    other_params: options.otherParams + '&language=' + GeoExt.Lang.locale
                 }]
             })
         };

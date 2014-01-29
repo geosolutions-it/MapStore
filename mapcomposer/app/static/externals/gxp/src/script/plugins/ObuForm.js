@@ -551,9 +551,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 						
 						if(filter.length > 0){
 							cql = filter.join(" AND ");
-						}else{
-							formValid = false;
-						}					
+						}				
 
 						if(formValid){
 							// ///////////////////////////
@@ -563,10 +561,11 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 								STYLES: this.styleCombo.getValue()
 							};
 							
-							if(cql && cql != ""){
-								alert(cql);
+							if(cql){
 								params.CQL_FILTER = cql;
-							}
+							} else {
+                                params.CQL_FILTER = "INCLUDE";
+                            }
 							
 							var layer = this.target.mapPanel.map.getLayersByName(this.layerToFilter)[0];
 							layer.mergeNewParams(params);
