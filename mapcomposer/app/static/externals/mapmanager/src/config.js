@@ -145,7 +145,7 @@ var config = {
     ],
    
     embedLink: {
-		"embeddedTemplateName": "viewer",
+		"embeddedTemplateName": "/mapcomposer/viewer",
 		"showDirectURL": true
 	}
 };
