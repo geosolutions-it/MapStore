@@ -139,17 +139,18 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
                 			}
                 		}
                 	}
-                	
-                	var gsURL = baseURL + 
-                	    "LAYERS=" + supportedLayers.join(",") +
-                		"&FORMAT=" + encodeURIComponent("image/png") + 
-						"&SRS=" + srsID +  
-						"&VERSION=1.1.1" +
-						"&REQUEST=GetMap" +
-						"&BBOX=" + encodeURIComponent(extent.toBBOX())+
-						"&WIDTH=" + width +
-						"&HEIGHT=" + height +
-						"&CQL_FILTER=" + filters.join(";");
+                    
+                    var gsURL = baseURL + 
+                        "SERVICE=WMS" +
+                        "&LAYERS=" + supportedLayers.join(",") +
+                        "&FORMAT=" + encodeURIComponent("image/png") + 
+                        "&SRS=" + srsID +  
+                        "&VERSION=1.1.1" +
+                        "&REQUEST=GetMap" +
+                        "&BBOX=" + encodeURIComponent(extent.toBBOX())+
+                        "&WIDTH=" + width +
+                        "&HEIGHT=" + height +
+                        "&CQL_FILTER=" + filters.join(";");
 						
                 	var mHost = me.service.split("/");
 					
@@ -209,14 +210,23 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
 						    scope: this,
 						    success: function(response, opts){
 								if (response.readyState == 4 && response.status == 200){
-									var fname = "mapstore-snapshot.png";
-									
-									var mUrl = me.service + "UploadCanvas";
-										mUrl = mHost[2] == location.host ? mUrl + "?ID=" + response.responseText + "&fn=" + fname : proxy + encodeURIComponent(mUrl + "?ID=" + response.responseText + "&fn=" + fname);
-									
-									window.location.assign(mUrl);
-									enableSaving = true;
-									
+								    if(response.responseText && response.responseText.indexOf("\"success\":false") < 0){
+								        var fname = "mapstore-snapshot.png";
+								    
+								        var mUrl = me.service + "UploadCanvas";
+								            mUrl = mHost[2] == location.host ? mUrl + "?ID=" + response.responseText + "&fn=" + fname : proxy + encodeURIComponent(mUrl + "?ID=" + response.responseText + "&fn=" + fname);
+								        
+								        window.location.assign(mUrl);
+								        enableSaving = true;
+								    }else{
+								        // this error should go to failure
+								        Ext.Msg.show({
+								             title: me.printStapshotTitle,
+								             msg: me.generatingErrorMsg + " " + gxp.util.getResponseFailureServiceBoxMessage(response),
+								             width: 300,
+								             icon: Ext.MessageBox.ERROR
+								        });
+								    }
 								}else if (response.status != 200){
 									Ext.Msg.show({
 										 title: 'Print Snapshot',
@@ -228,8 +238,8 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
 						    },
 						    failure:  function(response, opts){
 								Ext.Msg.show({
-									 title: this.printStapshotTitle,
-									 msg: this.generatingErrorMsg + " " + e,
+									 title: me.printStapshotTitle,
+									 msg: me.generatingErrorMsg + " " + gxp.util.getResponseFailureServiceBoxMessage(response),
 									 width: 300,
 									 icon: Ext.MessageBox.ERROR
 								});
