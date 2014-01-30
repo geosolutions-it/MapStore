@@ -130,7 +130,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 	init: function(target) {
 		target.on({
 		    scope: this,
-			'ready' : function(){					
+			'ready' : function(){
 				//
 				// Show the Time Slider only when this tool is activated 
 				//
@@ -157,6 +157,14 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 					if(this.playbackTool && this.playbackTool.playbackToolbar){
 						this.playbackTool.playbackToolbar.hide();
 					}
+                    
+					//
+					// Make active the OBU layer if it is activated inside the layertree
+					//
+					var track = this.target.mapPanel.map.getLayersByName(this.layerToFilter)[0];
+					if(track && track.getVisibility()){
+						track.setVisibility(false);
+					}                    
 				}, this);
 			}
 		});
