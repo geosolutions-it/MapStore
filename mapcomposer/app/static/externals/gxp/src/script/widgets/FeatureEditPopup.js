@@ -549,9 +549,19 @@ gxp.FeatureEditPopup = Ext.extend(GeoExt.Popup, {
             buttons: Ext.Msg.YESNO,
             fn: function(button) {
                 if(button === "yes") {
-                    this.setFeatureState(OpenLayers.State.DELETE);
+                
+                    // New logic to update data_cancellazione with current data instead of delete feature
+                    this.setFeatureState(OpenLayers.State.UPDATE);
+                    this.startEditing();
+                    this.feature.attributes.data_cancellazione = new Date();
                     this.fireEvent("featuremodified", this, this.feature);
+                    this.stopEditing(true);
                     this.close();
+                    
+                    // Old logic to delete feature
+                    /*this.setFeatureState(OpenLayers.State.DELETE);
+                    this.fireEvent("featuremodified", this, this.feature);
+                    this.close();*/
                 }
             },
             scope: this,

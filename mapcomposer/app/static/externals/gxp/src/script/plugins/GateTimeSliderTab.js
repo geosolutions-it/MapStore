@@ -88,6 +88,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
     gateTimeGridDirection: "Direzione",
     gateTimeGridKemler: "Kemler Cod",
     gateTimeGridOnu: "Onu Cod",
+    gateStatGridDescOnu: "Onu Desc",
     gateViewAllDataText: 'Tutte le statistiche',
     aggregationSelectorLabel: "Statistica",
     intervalSelectorLabel: "Intervallo",
@@ -159,7 +160,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
 	init: function(target) {
 		target.on({
 		    scope: this,
-			'ready' : function(){					
+			'ready' : function(){
 				//
 				// Show the Time Slider only when this tool is activated 
 				//
@@ -167,11 +168,21 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
 					//
 					// Make visible the OBU layer if it is deactivated inside the layertree
 					//
-					var track = this.target.mapPanel.map.getLayersByName(this.layerGatesTitle)[0];
-					if(track && !track.getVisibility()){
-						track.setVisibility(true);
+					var gates = this.target.mapPanel.map.getLayersByName(this.layerGatesTitle)[0];
+					if(gates && !gates.getVisibility()){
+						gates.setVisibility(true);
 					}
 				}, this);
+                
+			    this.controlPanel.on("hide", function(){
+					//
+					// Make visible the OBU layer if it is deactivated inside the layertree
+					//
+					var gates = this.target.mapPanel.map.getLayersByName(this.layerGatesTitle)[0];
+					if(gates && gates.getVisibility()){
+						gates.setVisibility(false);
+					}
+				}, this);                
 			}
 		});
 		return gxp.plugins.GateTimeSliderTab.superclass.init.apply(this, arguments);
@@ -365,6 +376,9 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                         "name": "codice_onu",              
                         "mapping": "codice_onu"
               },{
+                        "name": "descrizione_onu",              
+                        "mapping": "descizione_onu"
+              },{
                         "name": "quantita",              
                         "mapping": "quantita"
               }],
@@ -471,6 +485,11 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                     width: 120,
                     sortable: true,
                     dataIndex: 'codice_onu'
+                },{
+                    header: this.gateStatGridDescOnu,
+                    width: 120,
+                    sortable: true,
+                    dataIndex: 'descrizione_onu'
                 },{
                     header: this.gateStatGridAmount,
                     width: 120,
@@ -680,7 +699,9 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                             "mapping": "minuto_fuso_orario"
                   },{
                             "name": "data_ricezione",              
-                            "mapping": "data_ricezione"
+                            "mapping": "data_ricezione"/*,
+                            "type": "date",
+                            "dateFormat": 'timestamp'*/
                   },{
                             "name": "flg_corsia",              
                             "mapping": "flg_corsia",
@@ -694,7 +715,10 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                   },{
                             "name": "codice_onu",              
                             "mapping": "codice_onu"
-                  }],
+                  },{
+                            "name": "descrizione_onu",              
+                            "mapping": "descizione_onu"
+                 }],
                  proxy: this.getWFSStoreProxy(this.timeFeature,filter), 
                  autoLoad: true,
                  groupField: 'flg_corsia',
@@ -749,7 +773,11 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                         width: 120,
                         sortable: true,
                         dataIndex: 'data_ricezione',
-                        renderer: Ext.util.Format.dateRenderer('d-m-Y H:i:s'),
+                        renderer: function(date){
+                            var newDate = OpenLayers.Date.parse(date);
+                            var d = Ext.util.Format.date(newDate,"d-m-Y H:i:s")
+                            return d;
+                        },
                         groupable: false
                     },{
                         header: this.gateTimeGridRoute,
@@ -771,6 +799,11 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                         width: 120,
                         sortable: true,
                         dataIndex: 'codice_onu'
+                    },{
+                        header: this.gateStatGridDescOnu,
+                        width: 120,
+                        sortable: true,
+                        dataIndex: 'descrizione_onu'
                     }]
                 }),
                 plugins: summaryTime,

@@ -27,7 +27,7 @@ GeoExt.Lang.add("en", {
         elabStandardLabel: "processing Standard",
         totalRiskLabel: "total risk",
         humanTitle:'Social', 
-        resultsLabel: "Risultato Elaborazione",         
+        resultsLabel: "Processing result",         
         notHumanTitle:'environmental', 
         defaultExtentLabel: "Regione Piemonte",
         targetsTextBotton: "Targets",
@@ -52,6 +52,7 @@ GeoExt.Lang.add("en", {
         saveProcessingDescriptionLabel: "Description",
         saveProcessingButtonText: "Save Processing",
         saveProcessingWinTitle: "New Processinge",
+        saveProcessingAggregationLabel: "Aggregation",
         loadButton: "Upload Processing",
         loadProcessingNameHeader: 'Name',
         loadProcessingDescriptionHeader: 'Description',
@@ -69,7 +70,11 @@ GeoExt.Lang.add("en", {
         loadDownloadProcessingWinTitle: "Download Processing",
         loadDownloadProcessingButtonText: "Download Processing",
         failureAchieveResourceTitle: "Error",
-        failureAchieveResourceMsg: "There are no processing saved for this user"
+        failureAchieveResourceMsg: "There are no processing saved for this user",
+        loadProcessingValidHeader: 'Regenerable',
+        loadProcessingCreationHeader: 'Created',
+        downloadFileLabel: 'Download',
+        deleteDownloadError: 'The download can not be deleted. Remove it anyway?'
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Processing",
@@ -104,7 +109,7 @@ GeoExt.Lang.add("en", {
         invalidAOI: "The coordinates of the area of interest are not valid.",
         bboxTooBig: "The selected area is too big and the server may take a long time to respond. If you want to continue anyway, press OK.",
         weatherLabel: "Weather",  
-        temporalLabel: "thunderstorms",
+        temporalLabel: "Time conditions",
         conditionsFielSetLabel: "terms",   
         allClassOption: "All categories",
         allSostOption: "All substances",
@@ -670,5 +675,24 @@ GeoExt.Lang.add("en", {
         cancelButtonTooltip: 'Stop editing, discard changes',
         saveButtonText: 'Save',
         saveButtonTooltip: 'Save changes'
+    },
+    
+    "gxp.plugins.ObuForm.prototype":{
+        title: "Real time data-Obu",
+        filterTitle: "Filter",
+        fieldIDLabel: "Semitrailer",
+        fieldTypeLabel: "Event Type",
+        idEmptyText: "Search for Semitrailer",
+        typeEmptyText: "Search by event type",
+        velocityRange: "Speed Range",
+        velocityMin: "Min",
+        velocityMax: "Max",
+        descriptionRange: "Range direction",
+        descriptionMin: "Min",
+        descriptionMax: "Max",
+        graphicStyle: "Theming",
+        showTrack: "Show track",
+        styleData: "Viewing",
+        applyText: "Apply"
     }    
 });
