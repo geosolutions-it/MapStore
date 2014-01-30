@@ -28,7 +28,7 @@ GeoExt.Lang.add("fr", {
         elabStandardLabel: "Processing Standard",
         totalRiskLabel: "Le risque total",
         humanTitle:'social',    
-        resultsLabel: "Risultato Elaborazione", 
+        resultsLabel: "Résultat de traitement", 
         notHumanTitle:'l\'environnement', 
         defaultExtentLabel: "Regione Piemonte",
         targetsTextBotton: "Cibles",
@@ -53,6 +53,7 @@ GeoExt.Lang.add("fr", {
         saveProcessingDescriptionLabel: "Description",
         saveProcessingButtonText: "Enregistrer Processing",
         saveProcessingWinTitle: "Nouveau traitemente",
+        saveProcessingAggregationLabel: "Agrégation",
         loadButton: "Téléchargez traitement",
         loadProcessingNameHeader: 'Nom',
         loadProcessingDescriptionHeader: 'Description',
@@ -70,7 +71,11 @@ GeoExt.Lang.add("fr", {
         loadDownloadProcessingWinTitle: "Téléchargez traitement",
         loadDownloadProcessingButtonText: "Téléchargez traitement",
         failureAchieveResourceTitle: "Erreur",
-        failureAchieveResourceMsg: "Il n'y a aucun traitement enregistré pour cet utilisateur"
+        failureAchieveResourceMsg: "Il n'y a aucun traitement enregistré pour cet utilisateur",
+        loadProcessingValidHeader: 'Régénérable',
+        loadProcessingCreationHeader: 'Etabli',
+        downloadFileLabel: 'Décharge',
+        deleteDownloadError: 'Le téléchargement ne peut pas être supprimé. Retirez-le de toute façon?'
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Traitement",
@@ -667,5 +672,24 @@ GeoExt.Lang.add("fr", {
         cancelButtonTooltip: 'Arrêtez édition, annuler les modifications',
         saveButtonText: 'Sauver',
         saveButtonTooltip: 'Enregistrer les modifications'
+    },
+    
+    "gxp.plugins.ObuForm.prototype":{
+        title: "Données en temps réel-Obu",
+        filterTitle: "Filtre",
+        fieldIDLabel: "Semi-remorque",
+        fieldTypeLabel: "Type d'événement",
+        idEmptyText: "Recherche pour Semi-remorque",
+        typeEmptyText: "Recherche par type d'événement",
+        velocityRange: "Gamme de vitesse",
+        velocityMin: "Min",
+        velocityMax: "Max",
+        descriptionRange: "Direction de Gamme",
+        descriptionMin: "Min",
+        descriptionMax: "Max",
+        graphicStyle: "Thématisation",
+        showTrack: "Afficher piste",
+        styleData: "Affichage",
+        applyText: "Appliquer"
     }    
 });

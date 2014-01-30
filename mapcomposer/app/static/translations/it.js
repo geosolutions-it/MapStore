@@ -49,6 +49,7 @@ GeoExt.Lang.add("it", {
         saveProcessingDescriptionLabel: "Descrizione",
         saveProcessingButtonText: "Salva Elaborazione",
         saveProcessingWinTitle: "Nuova Elaborazione",
+        saveProcessingAggregationLabel: "Aggregazione",
         loadButton: "Carica Elaborazione",
         loadProcessingNameHeader: 'Nome',
         loadProcessingDescriptionHeader: 'Descrizione',
@@ -66,7 +67,11 @@ GeoExt.Lang.add("it", {
         loadDownloadProcessingWinTitle: "Download Elaborazione",
         loadDownloadProcessingButtonText: "Download Elaborazione",
         failureAchieveResourceTitle: "Errore",
-        failureAchieveResourceMsg: "Non ci sono elaborazioni salvate per questo utente"
+        failureAchieveResourceMsg: "Non ci sono elaborazioni salvate per questo utente",
+        loadProcessingValidHeader: 'Rigenerabile',
+        loadProcessingCreationHeader: 'Creato',
+        downloadFileLabel: 'Scarica il file',
+        deleteDownloadError: 'Il download non può essere cancellato. Rimuoverlo ugualmente?'
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Elaborazione",
@@ -667,5 +672,24 @@ GeoExt.Lang.add("it", {
         cancelButtonTooltip: 'Stop editing, annullare modifiche',
         saveButtonText: 'Salva',
         saveButtonTooltip: 'Salva le modifiche'
+    },
+    
+    "gxp.gxp.plugins.ObuForm.prototype":{
+        title: "Dati in tempo reale-Obu",
+        filterTitle: "Filtro",
+        fieldIDLabel: "Semirimorchio",
+        fieldTypeLabel: "Tipo Evento",
+        idEmptyText: "Cerca per semirimorchio",
+        typeEmptyText: "Cerca per tipo evento",
+        velocityRange: "Intervallo velocità",
+        velocityMin: "Min",
+        velocityMax: "Max",
+        descriptionRange: "Intervallo direzione",
+        descriptionMin: "Min",
+        descriptionMax: "Max",
+        graphicStyle: "Tematizzazione",
+        showTrack: "Mostra traccia",
+        styleData: "Visualizzazione",
+        applyText: "Applica"
     }    
 });

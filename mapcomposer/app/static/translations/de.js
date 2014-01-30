@@ -24,7 +24,7 @@ GeoExt.Lang.add("de", {
         elabStandardLabel: "Standardbearbeitung",
         totalRiskLabel: "Total Risiko",
         humanTitle:'Sozial', 
-        resultsLabel: "",        
+        resultsLabel: "Verarbeitungsergebnis",        
         notHumanTitle:'Umweltschutz', 
         defaultExtentLabel: "Regione Piemonte",
         targetsTextBotton: "Treffer",
@@ -49,6 +49,7 @@ GeoExt.Lang.add("de", {
         saveProcessingDescriptionLabel: "Beschreibung",
         saveProcessingButtonText: "Speichern Verarbeitung",
         saveProcessingWinTitle: "New Verarbeitung",
+        saveProcessingAggregationLabel: "Anhäufung",
         loadButton: "Hochladen Verarbeitung",
         loadProcessingNameHeader: 'Name',
         loadProcessingDescriptionHeader: 'Beschreibung',
@@ -66,7 +67,11 @@ GeoExt.Lang.add("de", {
         loadDownloadProcessingWinTitle: "Herunterladen Verarbeitung",
         loadDownloadProcessingButtonText: "Herunterladen Verarbeitung",
         failureAchieveResourceTitle: "Fehler",
-        failureAchieveResourceMsg: "Es gibt keine Verarbeitung für diesen Benutzer gespeichert"
+        failureAchieveResourceMsg: "Es gibt keine Verarbeitung für diesen Benutzer gespeichert",
+        loadProcessingValidHeader: 'Regenerierbaren',
+        loadProcessingCreationHeader: 'Erstellt',
+        downloadFileLabel: 'Entlastung',
+        deleteDownloadError: 'Der Download kann nicht gelöscht werden. Entfernen Sie das überhaupt?'
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Bearbeitung",
@@ -666,5 +671,24 @@ GeoExt.Lang.add("de", {
         cancelButtonTooltip: 'Bearbeitung beenden, Änderungen rückgängig zu machen',
         saveButtonText: 'Sparen',
         saveButtonTooltip: 'Speichern Sie die Änderungen'
+    },
+    
+    "gxp.plugins.ObuForm.prototype":{
+        title: "Echtzeitdaten-Obu",
+        filterTitle: "Filter",
+        fieldIDLabel: "Anhänger",
+        fieldTypeLabel: "Ereignistyp",
+        idEmptyText: "Anhänger suchen",
+        typeEmptyText: "Suche nach Ereignistyp",
+        velocityRange: "Drehzahlbereich",
+        velocityMin: "Min",
+        velocityMax: "Max",
+        descriptionRange: "Bereich Richtung",
+        descriptionMin: "Min",
+        descriptionMax: "Max",
+        graphicStyle: "Theming",
+        showTrack: "Track anzeigen",
+        styleData: "Besichtigung",
+        applyText: "Anwenden"
     }    	
 });
