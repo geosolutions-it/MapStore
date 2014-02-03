@@ -95,6 +95,11 @@
         var app;        
         var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false; var bbox;
 		
+		// /////////////////////////////////////////////////////
+		// Extra parameters to add layers at startup
+		// /////////////////////////////////////////////////////
+		var layName; var layTitle; var wmsurl;
+		
         // ///////////////////////////////////////////////////////////////
         // Custom variables from the mapStoreConfig user configuration file 
         // ///////////////////////////////////////////////////////////////
@@ -128,6 +133,16 @@
 										fullScreen = true; 
 									else 
 										fullScreen = false; 
+									break;
+					case "layName" : 
+									layName = param[1]; 
+									break;
+					case "layTitle" : 
+									layTitle = param[1]; 
+									break;
+					case "wmsurl" : 
+									wmsurl = param[1]; 
+									wmsurl = decodeURIComponent(wmsurl);
 									break;
 					case "config":	
 									customConfigName = param[1];
@@ -370,10 +385,43 @@
                 'ready' : function(){
                     app.modified = false;
 					
-				    if(bbox)
+					// ///////////////////////////////////////////////////
+					// Visualizing metadata tab and layer at startup 
+					// ///////////////////////////////////////////////////
+					if(layName && wmsurl){
+						var title = layTitle ? layTitle : layName;
+						
+						addMSLayer(
+							title,
+							layName,
+							wmsurl
+						);
+					}
+						
+				    if(bbox){
 						app.mapPanel.map.zoomToExtent(bbox, true);
+					}
                 }
             });
+			
+		   /**
+			* Add a WMS layer from GeoNetwork 
+			*
+			* TODO: Check the API using a MapServer URL as wmsURL.
+			*/
+			addMSLayer = function(msLayerTitle, msLayerName, wmsURL){
+				var addLayer = app.tools["addlayer"];
+				
+				var options = {
+					msLayerTitle: msLayerTitle,
+					msLayerName: msLayerName,
+					wmsURL: wmsURL
+				};
+				
+				addLayer.addLayer(
+					options
+				);
+			};
 	    };
 
 	    Ext.Ajax.request({
