@@ -1,7 +1,5 @@
 {
-   "geoStoreBase": "",
-   "proxy":"/http_proxy/proxy/?url=",
-   "defaultLanguage": "en",
+
    "gsSources":{ 
    		"geosolutions": {
 			"ptype": "gxp_wmssource",

@@ -508,7 +508,7 @@ Section -FinishSection
   ;Create shortcuts
   CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\MapStore Homepage.lnk" "http://mapstore.geo-solutions.it"
-  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\MapStore Admin Page.lnk" "http://localhost:$Port/mapstore/"
+  CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\MapStore Admin Page.lnk" "http://localhost:$Port/mapstore/manager"
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
 
   SetOutPath "$INSTDIR\"
