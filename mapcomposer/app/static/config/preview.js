@@ -1,7 +1,5 @@
 {
-    "geoStoreBase":"",
-    "proxy":"/http_proxy/proxy/?url=",
-	"disableLayerChooser": false,
+	"disableLayerChooser": true,
 	"portalConfig":{
 		"header":false
 	},
@@ -48,7 +46,7 @@
 			"leaf":true,
 			"text":"Add layers",
 			"checked":true,
-			"hideByDefault": false,
+			"hideByDefault": true,
 			"iconCls":"gxp-icon-addlayers",
 			"ptype":"gxp_addlayers"
 		}, {
