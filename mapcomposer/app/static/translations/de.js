@@ -23,9 +23,9 @@ GeoExt.Lang.add("de", {
         temporalLabel: "Zeitliche Bedingungen",
         elabStandardLabel: "Standardbearbeitung",
         totalRiskLabel: "Total Risiko",
-        humanTitle:'Sozial', 
+        humanTitle:'Soziales', 
         resultsLabel: "Verarbeitungsergebnis",        
-        notHumanTitle:'Umweltschutz', 
+        notHumanTitle:'Umwelt', 
         defaultExtentLabel: "Regione Piemonte",
         targetsTextBotton: "Treffer",
         areaDamageTextBotton: "Schadensbereich",
@@ -133,7 +133,7 @@ GeoExt.Lang.add("de", {
     },
     "gxp.plugins.WFSGrid.prototype": {
         displayMsgPaging: "Bestandteil {0} - {1} of {2}",
-        emptyMsg: "No Bestandteil gefunden",
+        emptyMsg: "Kein Bestandteil gefunden",
         loadMsg: "Bitte warten...",
         addTooltip: "Neues Element hinzufügen",
         addLayerTooltip: "Layer hinzufügen zu Karte",
@@ -204,6 +204,10 @@ GeoExt.Lang.add("de", {
         alertEmbedText: "Zuerst di Karte speichern und dann erst das Werkzeug 'Kartenveröffentlichung' benützen",
 	    cswZoomToExtentMsg: "BBOX nicht verfügbar",
 		cswZoomToExtent: "CSW Zoom erweitern"
+    },
+    
+    "CSWPanel.prototype": {
+        title: "Metadaten - Explorer"
     },
 
     "gxp.menu.LayerMenu.prototype": {
@@ -653,8 +657,8 @@ GeoExt.Lang.add("de", {
     "gxp.plugins.FeatureEditor.prototype":{
         createFeatureActionTip: "Neues Gate hinzufügen",
         createFeatureActionText: "Neues Gate hinzufügen",
-        editFeatureActionTip: "Bearbeiten Sie vorhandene Gate",
-        editFeatureActionText: "Bearbeiten Sie vorhandene Gate"
+        editFeatureActionTip: "Vorhandene Gates bearbeiten",
+        editFeatureActionText: "Vorhandene Gates bearbeiten"
     },
     
     "gxp.FeatureEditPopup.prototype":{
@@ -675,20 +679,20 @@ GeoExt.Lang.add("de", {
     
     "gxp.plugins.ObuForm.prototype":{
         title: "Echtzeitdaten-Obu",
-        filterTitle: "Filter",
-        fieldIDLabel: "Anhänger",
+        filterTitle: "Fahrzeug",
+        fieldIDLabel: "Suche nach Fahrzeug",
         fieldTypeLabel: "Ereignistyp",
-        idEmptyText: "Anhänger suchen",
+        idEmptyText: "Suche nach Fahrzeug",
         typeEmptyText: "Suche nach Ereignistyp",
-        velocityRange: "Drehzahlbereich",
+        velocityRange: "Geschwindigkeitsintervall",
         velocityMin: "Min",
         velocityMax: "Max",
-        descriptionRange: "Bereich Richtung",
+        descriptionRange: "Richtungsintervall",
         descriptionMin: "Min",
         descriptionMax: "Max",
-        graphicStyle: "Theming",
-        showTrack: "Track anzeigen",
-        styleData: "Besichtigung",
+        graphicStyle: "Tematisierung",
+        showTrack: "Route anzeigen",
+        styleData: "Richtungsintervall",
         applyText: "Anwenden"
     }    	
 });

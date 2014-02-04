@@ -246,7 +246,7 @@
         },{
 			"source": "destination",
 			"title": "Gate",
-			"name": "siig_gate_geo_gate",
+			"name": "gate_geo",
 			"displayInLayerSwitcher": true,
 			"tiled": true,
             "group": ["Real time data","Dati in tempo reale","Données en temps réel","Echtzeitdaten"],
@@ -258,6 +258,7 @@
 			"styles": "obu-point",
 			"displayInLayerSwitcher": true,
 			"tiled": true,
+            "time" : "2014-01-31T14:50:10.229Z",
             "group": ["Real time data","Dati in tempo reale","Données en temps réel","Echtzeitdaten"],
 			"visibility": false
         }
@@ -285,6 +286,15 @@
  				"idIndex":0
  			}
 
+        }, {
+            "name": "GeoPortale Cooperazione Regione Piemonte", 
+            "url": "http://www.geoportale.piemonte.it/cooperazione/geocatalogocop/srv/it/csw.rndt", 
+            "description": "GeoPortale Cooperazione Regione Piemonte",
+            "metaDataOptions":{
+ 				"base":"http://www.geoportale.piemonte.it/cooperazione/geocatalogocop/srv/it/metadata.show",
+ 				"idParam":"uuid"
+ 			}
+        
         }    
         ],
         "dcProperty": "title",
@@ -561,7 +571,7 @@
         "statisticFeature": "gate_stats",
         "intervalsFeature": "siig_gate_d_intervalli",
         "timeFeature": "gate_data",        
-        "layerGates":"siig_gate_geo_gate",
+        "layerGates":"gate_geo",
         "layerGatesTitle":"Gate",
         "nativeSrs": "EPSG:32632",
         "outputTarget": "east"
@@ -586,7 +596,8 @@
 		"layerToFilter": "OBU",
 		"layerTrackTitle": "obu_track",
 		"layerTrackName": "siig_geo_obu_line",
-		"layerTrackUrl": "http://localhost:8080/geoserver/destination/ows"
+		"layerTrackUrl": "http://localhost:8080/geoserver/destination/ows",
+        "wfsUrl": "http://localhost:8080/geoserver/ows?"
 	},
 	{
 		"ptype": "gxp_addlayer",
@@ -599,6 +610,7 @@
         "autoLoadFeatures": true,
         "actionTarget":"editorfieldset.bbar",
         "toggleGroup": "toolGroup",
+        "excludeFields": ["data_cancellazione"],
         "renamedFields": {
             "id_gate": ["Id","Id","Id","Id"],
             "fk_partner": ["Partner","Partner","Partner","Partner"],
@@ -1586,55 +1598,55 @@
                             "dataIndex": "id"
                         },
                         {
-                            "header": ["Partner","Partner","Partner","Partner"],
+                            "header": ["Partner","Partner","Partner","Projektpartner"],
                             "dataIndex": "partner"
                         },
                         {
-                            "header": ["Tipo Densità Veicolare","Tipo Densità Veicolare","Tipo Densità Veicolare","Tipo Densità Veicolare"],
+                            "header": ["Vehicular density type","Tipo Densità Veicolare","Tipo Densità Veicolare","Quelle DTV"],
                             "dataIndex": "tipo_densita"
                         },
                         {
-                            "header": ["Densità Veicolare","Densità Veicolare","Densità Veicolare","Densità Veicolare"],
+                            "header": ["Vehicular density","Densità Veicolare","Densità Veicolare","Durchschnittlicher Tagesverkehr (DTV)"],
                             "dataIndex": "densita_veicolare"
                         },
                         {
-                            "header": ["Tipo Velocità Media","Tipo Velocità Media","Tipo Velocità Media","Tipo Velocità Media"],
+                            "header": ["Average speed type","Tipo Velocità Media","Tipo Velocità Media","Quelle Mittlere Geschwindigkeit"],
                             "dataIndex": "tipo_velocita"
                         },
                         {
-                            "header": ["Velocità Media","Velocità Media","Velocità Media","Velocità Media"],
+                            "header": ["Average speed","Velocità Media","Velocità Media","Mittlere Geschwindigkeit"],
                             "dataIndex": "velocita_media"
                         },
                         {
-                            "header": ["Flag Corsie","Flag Corsie","Flag Corsie","Flag Corsie"],
+                            "header": ["Lanes Flag","Flag Corsie","Flag Corsie","Quelle Fahrbahnen"],
                             "dataIndex": "flg_nr_corsie"
                         },
                         {
-                            "header": ["N. Corsie","N. Corsie","N. Corsie","N. Corsie"],
+                            "header": ["Lanes #","N. Corsie","N. Corsie","Anzahl der Fahrbahnen"],
                             "dataIndex": "nr_corsie"
                         },
                         {
-                            "header": ["Flag Incidenti","Flag Incidenti","Flag Incidenti","Flag Incidenti"],
+                            "header": ["Accidents Flag","Flag Incidenti","Flag Incidenti","Quelle der Unfälle"],
                             "dataIndex": "flg_nr_incidenti"
                         },
                         {
-                            "header": ["N. Incidenti","N. Incidenti","N. Incidenti","alle Unfälle"],
+                            "header": ["Accidents #","N. Incidenti","N. Incidenti","Anzahl der Unfälle"],
                             "dataIndex": "nr_incidenti"
                         },
                         {
-                            "header": ["N. Incidenti Elab.","N. Incidenti Elab.","N. Incidenti Elab.","N. Incidenti Elab."],
+                            "header": ["Processed Accidents","N. Incidenti Elab.","N. Incidenti Elab.","Anzahl der Unfälle nachbearbeitet"],
                             "dataIndex": "nr_incidenti_elab"
                         },
                         {
-                            "header": ["Lunghezza","Lunghezza","Lunghezza","Lunghezza"],
+                            "header": ["Length","Lunghezza","Lunghezza","Länge"],
                             "dataIndex": "lunghezza"
                         },
                         {
-                            "header": ["Elenco Dissesti","Elenco Dissesti","Elenco Dissesti","Elenco Dissesti"],
+                            "header": ["Instabilities list","Elenco Dissesti","Elenco Dissesti","Quelle Gefahrenzonenkategorisierung"],
                             "dataIndex": "elenco_dissesti"
                         }
                     ],
-                    "title": ["Archi", "Archi", "Archi", "Segmente"],
+                    "title": ["Roads", "Archi", "Archi", "Segmente"],
                     "id": 1,
                     "name": "ARCHI",
                     "type": "all"
@@ -2919,15 +2931,15 @@
                     ],
                     "columns": [
                         {
-                            "header": ["Fascia", "Fascia", "Fascia", "Bereich"],
+                            "header": ["Area", "Fascia",  "Bande", "Bereich"],
                             "dataIndex": "name"
                         },
                         {
-                            "header": ["Distanza", "Distanza", "Distanza", "Distanz"],
+                            "header": ["Distance", "Distanza", "Distance", "Distanz"],
                             "dataIndex": "distanza"
                         }
                     ],
-                    "title": ["Aree di danno", "Aree di danno", "Aree di danno", "Schadensbereiche"],
+                    "title": ["Damage areas", "Aree di danno",  "Des zones de dommages", "Schadensbereiche"],
                     "id": 1,
                     "name": "DAMAGEAREA",
                     "type": "all",

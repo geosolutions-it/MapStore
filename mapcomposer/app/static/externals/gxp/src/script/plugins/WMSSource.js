@@ -493,6 +493,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 					ELEVATION: config.elevation,
                     VIEWPARAMS: config.viewparams,
                     ENV: config.env,
+                    TIME: config.time,
                     RISKPANEL: config.riskPanel,
                     DEFAULTENV: config.env                    
 	            }, this.layerBaseParams);

@@ -58,23 +58,24 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
     // End i18n.
 	
 	wfsComboSize: 200,
+    
+    wfsUrl: "http://destination.geo-solutions.it/geoserver_test/ows?",
 	
 	search: {
 	    pageSize: 10,
 		predicate: "ILIKE",
-		wfsUrl: "http://destination.geo-solutions.it/geoserver_test/ows?",
 		query: [{
-		        typeName: "siig_geo_obu",
+		        typeName: "siig_obu_semirimorchio",
 				queriableAttributes: [
 					"semirimorchio"  
 				],
-				sortBy: "id",
+				sortBy: "semirimorchio",
 				displayField: "semirimorchio",	
 				tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{semirimorchio}</span></h3></div></tpl>",
 				recordModel:[
 					{
-						name:"id",
-						mapping:"id"
+						name:"semirimorchio",
+						mapping:"properties.semirimorchio"
 					},
 					{
 						name: "semirimorchio",
@@ -190,7 +191,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 			width: this.wfsComboSize,
 			flex: 1,
 			fieldLabel: this.fieldIDLabel,
-			url: this.search.wfsUrl,
+			url: this.wfsUrl,
 			typeName: this.search.query[0].typeName,
 			predicate: this.search.predicate,
 			recordModel: this.search.query[0].recordModel,
@@ -250,7 +251,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 			width: this.wfsComboSize,
 			flex: 1,
 			fieldLabel: this.fieldTypeLabel,
-			url: this.search.wfsUrl,
+			url: this.wfsUrl,
 			typeName: this.search.query[1].typeName,
 			predicate: this.search.predicate,
 			recordModel: this.search.query[1].recordModel,
@@ -587,8 +588,10 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 							}
 								
 							if(!this.trackCheckBox.disabled && this.trackCheckBox.getValue()){								
+                                var times = (this.playbackTool.timeManager.layers[0].params.TIME || this.playbackTool.timeManager.layers[0].params.time).split('/');
 								var customParams = {
-									viewparams: "semirimorchio:" + this.selectIdCombo.getValue(),
+									//viewparams: "semirimorchio:" + this.selectIdCombo.getValue() + ";start_date:" +OpenLayers.Date.toISOString(this.playbackTool.timeManager.timeSpans[0].end || this.playbackTool.timeManager.range[0])+ ";end_date:" + OpenLayers.Date.toISOString(this.playbackTool.timeManager.currentTime),
+                                    viewparams: "semirimorchio:" + this.selectIdCombo.getValue() + ";start_date:" +times[0]+ ";end_date:" + times[1],
 									displayInLayerSwitcher: false
 								};
 								

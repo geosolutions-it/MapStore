@@ -273,7 +273,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
          var elaborazioneFilter= new OpenLayers.Filter.Comparison({
             type: OpenLayers.Filter.Comparison.EQUAL_TO,
-            property: this.destinationNS + ":id_elaborazione",
+            property: "id_elaborazione",
             value: 1
          });
          
@@ -1103,7 +1103,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     if(classe != "0"){
                        var filter= new OpenLayers.Filter.Comparison({
                             type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                            property: this.destinationNS + ":fk_classe_adr",
+                            property: "fk_classe_adr",
                             value: classe
                         });
                         
@@ -1173,7 +1173,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 
                     var filter= new OpenLayers.Filter.Comparison({
                         type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                        property: this.destinationNS + ":id_sostanza",
+                        property: "id_sostanza",
                         value: sost
                     });
                     me.resetCombos([me.accident]);
