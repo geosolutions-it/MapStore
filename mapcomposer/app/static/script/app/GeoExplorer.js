@@ -248,15 +248,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 					actions: ["-"], checked: true
 				}, {
 					leaf: true, 
-					text: gxp.plugins.WMSGetFeatureInfo.prototype.infoActionTip, 
-					checked: true, 
-					iconCls: "gxp-icon-getfeatureinfo",
-					ptype: "gxp_wmsgetfeatureinfo", 
-					toggleGroup: this.toggleGroup
-				}, {
-					actions: ["-"], checked: true
-				}, {
-					leaf: true, 
 					text: gxp.plugins.Measure.prototype.measureTooltip, 
 					checked: true, 
 					iconCls: "gxp-icon-measure-length",
