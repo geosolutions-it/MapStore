@@ -201,6 +201,7 @@
             "wfsChangeMatrisGridPanel": "wfsChangeMatrisGridPanel",
             "requestTimeout": 5000,
             "wpsManagerID": "wpsManager",
+            "wpsChgMatrixProcessName" : "gs:ChangeMatrix",
             "wpsUnionProcessID" : "JTS:union",
             "wpsBufferProcessID" : "JTS:buffer",
             "spatialOutputCRS" : "EPSG:4326",

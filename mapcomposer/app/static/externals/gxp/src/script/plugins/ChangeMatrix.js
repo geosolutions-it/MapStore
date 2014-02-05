@@ -210,6 +210,12 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 	 */
 	wpsManagerID : null,
 	
+	/** api: config[wpsChgMatrixProcessName]
+	 *  ``String``
+	 *  ID of the WPS Change Matrix Process .
+	 */
+	wpsChgMatrixProcessName: 'gs:ChangeMatrix',
+	
 	/** api: config[wpsUnionProcessID]
 	 *  ``String``
 	 *  ID of the WPS Union Process .
@@ -925,6 +931,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 							}*/
 							params.roi = me.chgMatrixForm.roiFieldSet.currentExtent;
 						} else {
+							//currentExtent = map.getMaxExtent();
 							//change the extent projection if it differs from 4326
 							if (map.getProjection() != 'EPSG:4326') {
 								currentExtent.transform(map.getProjectionObject(), new OpenLayers.Projection('EPSG:4326'));
@@ -1146,7 +1153,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 
 		me.handleRequestStart();
 
-		me.wpsManager.execute('gs:ChangeMatrix', requestObject, me.showResultsGrid, this);
+		me.wpsManager.execute(me.wpsChgMatrixProcessName, requestObject, me.showResultsGrid, this);
 		
 		//me.handleRequestStop();
 	},
