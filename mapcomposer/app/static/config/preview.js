@@ -1,5 +1,5 @@
 {
-	"disableLayerChooser": true,
+	"disableLayerChooser": false,
 	"portalConfig":{
 		"header":false
 	},
