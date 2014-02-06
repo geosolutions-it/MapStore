@@ -4,8 +4,8 @@
 		"header":false
 	},
     "gsSources": {
-        "google": {
-            "ptype": "gxp_googlesource"
+        "osm": {
+            "ptype": "gxp_osmsource"
         }
     },
     "map":{
@@ -16,11 +16,11 @@
             20037508.34, 20037508.34
         ],
         "layers": [{
-            "source": "google",
-            "title": "Google Hybrid",
-            "name": "HYBRID",
-            "group": "background"
-        }],
+				"source": "osm",
+				"title": "Open Street Map",
+				"name": "mapnik",
+				"group": "background"
+		}],
         "center": [1250000.000000, 5370000.000000],
         "zoom": 5
     },
