@@ -688,7 +688,9 @@ GeoExt.Lang.add("it", {
 		geocodingFieldEmptyText : "Inserisci Località...",
 		geocodingFieldBtnAddTooltip : "Aggiungi una Località alla lista",
 		geocodingFieldBtnDelTooltip : "Pulisci...",
-		selectionSummary : "Sommario delle Selezioni"
+		selectionSummary : "Sommario delle Selezioni",
+        geocoderSelectorsLabels: ['Unione delle geometrie', 'Lista della Area Amministrativa', 'Subs della Area Amministrativa'],
+        selectionReturnTypeLabel: "Tipo di selezione"
 	},
 	
 	"gxp.plugins.WFSGrid.prototype" :{
