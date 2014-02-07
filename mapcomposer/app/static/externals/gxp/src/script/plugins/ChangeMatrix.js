@@ -366,6 +366,12 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 	 */
 	spatialOutputCRS: "EPSG:4326",
 	
+	/** api: config[selectReturnType]
+	 *  ``Boolean``
+	 *  Allow return type on the geocoder.
+	 */
+	selectReturnType: false,
+	
 	/** api: config[style]
 	 *  ``Object``
 	 */
@@ -567,7 +573,8 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 				geocoderTypeSortBy: this.geocoderTypeSortBy,
 				geocoderTypeQueriableAttributes: this.geocoderTypeQueriableAttributes,
 				geocoderTypeDisplayField: this.geocoderTypeDisplayField,
-				geocoderTypePageSize: this.geocoderTypePageSize
+				geocoderTypePageSize: this.geocoderTypePageSize,
+				selectReturnType: this.selectReturnType
 		};
 		
 		// ///////////////////

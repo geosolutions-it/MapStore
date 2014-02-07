@@ -663,7 +663,9 @@ GeoExt.Lang.add("en", {
 		geocodingFieldEmptyText : "Type Location here...",
 		geocodingFieldBtnAddTooltip : "Add Location to the List",
 		geocodingFieldBtnDelTooltip : "Clear Field",
-		selectionSummary : "Selection Summary"
+		selectionSummary : "Selection Summary",
+        geocoderSelectorsLabels: ['Geometry Union', 'Administrative Area List', 'Administrative Area Subs'],
+        selectionReturnTypeLabel: "Return Type"
 	},
 	
 	"gxp.plugins.WFSGrid.prototype" :{
