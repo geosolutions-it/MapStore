@@ -179,7 +179,8 @@
 		}, {
 			"ptype": "gxp_print",
 			"customParams":{
-				"outputFilename":"mapstore-print"
+				"outputFilename":"mapstore-print",
+				"geodetic": true
 			},
 			"printService": "http://sit.comune.bolzano.it/geoserver/pdf/",
 			"legendPanelId": "legendPanel",
