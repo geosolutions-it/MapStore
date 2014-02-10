@@ -36,7 +36,7 @@ Ext.namespace("gxp.plugins");
  *
  *    Show a change matrix of changes between two rasters
  */
-gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
+gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.TableableTool, {
 
 	/** api: ptype = gxp_changematrix */
 	ptype : "gxp_changematrix",
@@ -487,10 +487,57 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 
 	},
 
-	/** private: method[addOutput]
+	/** private: method[getPanel]
 	 *  :arg config: ``Object``
+	 *  Obtain the final panel with all tabs or a tab panel
 	 */
-	addOutput : function(config) {
+	getPanel: function(config){
+
+		// Recursive case: Generate Tab panels 
+		if(this.splitPanels && this.panelsConfig){
+			var items = [];
+			// One panel for each panelsConfig;
+			if(this.panelsConfig){
+				for(var i = 0; i< this.panelsConfig.length; i++){
+					var newTab = new gxp.plugins.ChangeMatrix();
+					// copy all general config
+					Ext.apply(newTab, this);
+					// We need to generate another 
+					// one with the configuration in this.panelsConfig[i]
+					Ext.apply(newTab, this.panelsConfig[i]);
+					// Set splitPanels to false to force base case
+					newTab.splitPanels = false;
+					// copy target
+					newTab.target = this.target;
+					// generate new id
+					newTab.id = this.id + "_tab_" + i;
+					items.push(newTab.getPanel());
+				}	
+			}
+
+			// The final configuration is a TabPanel
+			var tabPanel = new Ext.TabPanel({
+			    renderTo: Ext.getBody(),
+			    activeTab: 0,
+			    items: items
+			});
+
+			// use tabPanel with the recursive tabs
+			config = Ext.apply(tabPanel, config || {});
+		}else{
+			// Base case: not use tabPanel
+			config = Ext.apply(this.generatePanel(), config || {});
+		}
+
+		return config;
+
+	},
+
+	/** private: method[generatePanel]
+	 *  Generate a panel with the configuration present on this
+	 */
+	generatePanel: function(){
+
 		// /////////////////////////////////////
 		// Stores Array stores definitions.
 		// /////////////////////////////////////
@@ -552,9 +599,10 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 
 		me.roiFieldSet = {
 				ref: 'roiFieldSet',
+				id: me.id + '_roiFieldSet',
 				xtype:'gxp_spatial_selector_field',
 				mapPanel: this.target.mapPanel,
-				loadingMaskId: 'change-matrix-form-panel',
+				loadingMaskId: me.id + '_change-matrix-form-panel',
 				wpsManager: this.wpsManager,
 				wpsUnionProcessID: this.wpsUnionProcessID,
 				wpsBufferProcessID: this.wpsBufferProcessID,
@@ -581,7 +629,8 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 		// The main form
 		// ///////////////////
 		this.chgMatrixForm = new Ext.form.FormPanel({
-			id : 'change-matrix-form-panel',
+			ref : 'change-matrix-form-panel',
+			id: me.id + '_change-matrix-form-panel',
 			width : 355,
 			height : 380,
 			autoScroll : true,
@@ -600,7 +649,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 				},
 				items : [{
 					xtype : "combo",
-					id   : 'rasterComboBox',
+					ref   : 'rasterComboBox',
 					name : 'raster',
 					fieldLabel : this.changeMatrixRasterFieldLabel,
 					lazyInit : true,
@@ -669,7 +718,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 							// //////////////////////////////////////////////////
 							// Populate the itemselector classes
 							// //////////////////////////////////////////////////
-							var itemClassSelector = Ext.getCmp('classesselector');
+							var itemClassSelector = Ext.getCmp(me.id + '_classesselector');
 							itemClassSelector.storeTo.removeAll();
 							itemClassSelector.storeFrom.removeAll();
 							var classDataIndex = 0;
@@ -696,7 +745,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 					}
 				}, {
 					xtype : "combo",
-					id   : 'filterT0ComboBox',
+					ref   : 'filterT0ComboBox',
 					name : 'filterT0',
 					fieldLabel : this.changeMatrixCQLFilterT0FieldLabel,
 					lazyInit : true,
@@ -717,7 +766,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 					}
 				}, {
 					xtype : "combo",
-					id   : 'filterT1ComboBox',
+					ref   : 'filterT1ComboBox',
 					name : 'filterT1',
 					fieldLabel : this.changeMatrixCQLFilterT1FieldLabel,
 					lazyInit : true,
@@ -757,8 +806,10 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 					// ItemSelector Ex
 					// ///////////////
 					imagesDir : 'theme/app/img/ux/',
-					id : 'classesselector',
+					ref : 'classesselector',
+					id: me.id + '_classesselector',
 					name : 'classesselector',
+					boxMaxWidth: 330,
 					anchor : '100%',
 
 					// ///////////////
@@ -830,13 +881,14 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 				}, {
 					text : this.changeMatrixSubmitButtonText,
 					iconCls : 'gxp-icon-zoom-next',
-					id : 'change-matrix-submit-button',
+					ref : 'change-matrix-submit-button',
+					id : me.id + '_change-matrix-submit-button',
 					handler : function() {
 						var form = me.chgMatrixForm.getForm();
 						var formIsValid = true;
 						
 						for (var itm = 0; itm < form.items.items.length; itm++) {
-							switch (form.items.items[itm].id) {
+							switch (form.items.items[itm].ref) {
 								case "rasterComboBox":
 								case "filterT0ComboBox":
 								case "filterT1ComboBox":
@@ -879,7 +931,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 						// ///////////////
 						// ItemSelector Ex
 						// ///////////////
-						var classesSelectorExStore = Ext.getCmp("classesselector").storeTo;
+						var classesSelectorExStore = Ext.getCmp(me.id + '_classesselector').storeTo;
 						if (classesSelectorExStore.getCount() == 0) {
 							//return Ext.Msg.alert(me.changeMatrixEmptyClassesDialogTitle, me.changeMatrixEmptyClassesDialogText);
 							return Ext.Msg.show({
@@ -952,6 +1004,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 				}]
 			})
 		});
+		
 
 		// ///////////////////
 		// Create the control panel
@@ -964,13 +1017,494 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 			title : this.title,
 			items : [this.chgMatrixForm]
 		});
-		config = Ext.apply(cpanel, config || {});
 
-		// ///////////////////
-		// Call super class addOutput method and return the panel instance
-		// ///////////////////
-		return gxp.plugins.ChangeMatrix.superclass.addOutput.call(this, config);
+		return cpanel;
 	},
+
+	// /** private: method[addOutput]
+	//  *  :arg config: ``Object``
+	//  */
+	// addOutput : function(config) {
+	// 	// /////////////////////////////////////
+	// 	// Stores Array stores definitions.
+	// 	// /////////////////////////////////////
+	// 	this.layerStore = new Ext.data.ArrayStore({
+	// 		fields : ["source", "title", "name", "olid", "crs", "uuid", "times", {
+	// 			name : "isLayerGroup",
+	// 			type : 'boolean'
+	// 		}],
+	// 		data : []
+	// 	});
+
+	// 	this.timeValuesStore = new Ext.data.ArrayStore({
+	// 		fields : ["time"],
+	// 		data : []
+	// 	});
+
+	// 	// ///////////////////
+	// 	// Initialize data
+	// 	// ///////////////////
+	// 	var me = this;
+
+	// 	/*var rasterLayersStoreData = [];
+	// 	for(var i = 0; i < this.rasterLayers.length; i++) {
+	// 	rasterLayersStoreData.push([this.rasterLayers[i]]);
+	// 	}*/
+
+	// 	// ///////////////
+	// 	// ItemSelector
+	// 	// ///////////////
+	// 	/*var classesData = [];
+	// 	for(var i = 0; i < this.classes.length; i++) {
+	// 	classesData.push([this.classes[i]]);
+	// 	}
+	// 	var classesStore = new Ext.data.ArrayStore({
+	// 	fields: ['name'],
+	// 	data: classesData,
+	// 	sortInfo: {
+	// 	field: 'name',
+	// 	direction: 'ASC'
+	// 	}
+	// 	});
+	// 	var selectedClassesStore = new Ext.data.ArrayStore({
+	// 	fields: ['name'],
+	// 	data: [],
+	// 	sortInfo: {
+	// 	field: 'name',
+	// 	direction: 'ASC'
+	// 	}
+	// 	});*/
+
+	// 	// ///////////////
+	// 	// ItemSelector Ex
+	// 	// ///////////////
+	// 	var data = [];
+
+	// 	// the map
+	// 	var map = this.target.mapPanel.map;
+	// 	map.enebaleMapEvent = true;
+
+	// 	me.roiFieldSet = {
+	// 			ref: 'roiFieldSet',
+	// 			xtype:'gxp_spatial_selector_field',
+	// 			mapPanel: this.target.mapPanel,
+	// 			loadingMaskId: 'change-matrix-form-panel',
+	// 			wpsManager: this.wpsManager,
+	// 			wpsUnionProcessID: this.wpsUnionProcessID,
+	// 			wpsBufferProcessID: this.wpsBufferProcessID,
+	// 			wfsBaseURL: this.wfsBaseURL,
+	// 			spatialOutputCRS: this.spatialOutputCRS,
+	// 			showSelectionSummary: this.showSelectionSummary,
+	// 			zoomToCurrentExtent: this.zoomToCurrentExtent,
+	// 			defaultStyle: this.defaultStyle,
+	// 			selectStyle: this.selectStyle,
+	// 			temporaryStyle: this.temporaryStyle,
+	// 			labelStyle: this.labelStyle,
+	// 			bufferOptions: this.bufferOptions,
+	// 			geocoderTypeName: this.geocoderTypeName,
+	// 			geocoderTypeTpl: this.geocoderTypeTpl,
+	// 			geocoderTypeRecordModel: this.geocoderTypeRecordModel,
+	// 			geocoderTypeSortBy: this.geocoderTypeSortBy,
+	// 			geocoderTypeQueriableAttributes: this.geocoderTypeQueriableAttributes,
+	// 			geocoderTypeDisplayField: this.geocoderTypeDisplayField,
+	// 			geocoderTypePageSize: this.geocoderTypePageSize,
+	// 			selectReturnType: this.selectReturnType
+	// 	};
+		
+	// 	// ///////////////////
+	// 	// The main form
+	// 	// ///////////////////
+	// 	this.chgMatrixForm = new Ext.form.FormPanel({
+	// 		id : 'change-matrix-form-panel',
+	// 		width : 355,
+	// 		height : 380,
+	// 		autoScroll : true,
+	// 		labelAlign : 'top',
+			
+	// 		items : [{
+	// 			title : this.chgMatrixFieldSetTitle,
+	// 			xtype : 'fieldset',
+	// 			autoWidth : true,
+	// 			collapsible : true,
+	// 			layout : 'form',
+	// 			defaultType : 'numberfield',
+	// 			bodyStyle : 'padding:5px',
+	// 			defaults : {
+	// 				width : 200
+	// 			},
+	// 			items : [{
+	// 				xtype : "combo",
+	// 				id   : 'rasterComboBox',
+	// 				name : 'raster',
+	// 				fieldLabel : this.changeMatrixRasterFieldLabel,
+	// 				lazyInit : true,
+	// 				mode : 'local',
+	// 				triggerAction : 'all',
+	// 				store : this.layerStore,
+	// 				emptyText : "Select an item ...",
+	// 				labelSeparator : ':' + '<span style="color: #918E8F; padding-left: 2px;">*</span>',
+	// 				editable : true,
+	// 				resizable : true,
+	// 				allowBlank : false,
+	// 				readOnly : false,
+	// 				valueField : 'name',
+	// 				displayField : 'title',
+	// 				validator : function(value) {
+	// 					if (Ext.isEmpty(value))
+	// 						return me.changeMatrixEmptyLayer;
+	// 					return true;
+	// 				},
+	// 				listeners : {
+	// 					scope : this,
+	// 					keyup : function(field) {
+	// 						var me = this, value = field.getValue();
+
+	// 						/*if (me.layerTimeout)
+	// 							clearTimeout(me.layerTimeout);*/
+
+	// 						if (value) {
+	// 							me.layerTimeout = setTimeout(function() {
+	// 								me.layerStore.filterBy(function(rec, recId) {
+	// 									var name = rec.get("name").trim().toLowerCase();
+	// 									if (name.indexOf(value) > -1) {
+	// 										me.formPanel.layerCombo.expand();
+	// 										return true;
+	// 									} else {
+	// 										return false;
+	// 									}
+	// 								});
+	// 							}, 100);
+	// 						} else {
+	// 							me.layerStore.clearFilter();
+	// 						}
+	// 					},
+	// 					beforeselect : function(combo, record, index) {
+	// 						me.chgMatrixForm.roiFieldSet.removeFeatureSummary();
+	// 						me.chgMatrixForm.roiFieldSet.reset();
+	// 						me.chgMatrixForm.roiFieldSet.collapse();
+	// 						me.chgMatrixForm.getForm().reset();
+	// 					},
+	// 					select : function(combo, record, index) {
+	// 						// //////////////////////////////////////////////////
+	// 						// Populate time filters combo boxes.
+	// 						// //////////////////////////////////////////////////
+	// 						var data = [];
+	// 						if (record.get('times') && !Ext.isEmpty(record.get('times'))) {
+	// 							var times = record.get('times').split(',');
+	// 							for (var i = 0; i < times.length; i++) {
+	// 								var recordData = ["time = '" + times[i] + "'"];
+	// 								data.push(recordData);
+	// 							}
+	// 						}
+
+	// 						this.timeValuesStore.removeAll();
+	// 						this.timeValuesStore.loadData(data, false);
+
+	// 						// //////////////////////////////////////////////////
+	// 						// Populate the itemselector classes
+	// 						// //////////////////////////////////////////////////
+	// 						var itemClassSelector = Ext.getCmp('classesselector');
+	// 						itemClassSelector.storeTo.removeAll();
+	// 						itemClassSelector.storeFrom.removeAll();
+	// 						var classDataIndex = 0;
+	// 						for ( classDataIndex = 0; classDataIndex < me.classes.length; classDataIndex++) {
+	// 							if (me.classes[classDataIndex].layer == record.get('name'))
+	// 								break;
+	// 						}
+	// 						if (classDataIndex < me.classes.length) {
+	// 							var classesDataStore = [];
+
+	// 							for (var cc=0;cc<me.classes[classDataIndex].values.length;cc++) {
+	// 								for (var ci=0;ci<me.classesIndexes[me.classes[classDataIndex].level-1][1].length;ci++) {
+	// 									if (me.classesIndexes[me.classes[classDataIndex].level-1][1][ci][0] == me.classes[classDataIndex].values[cc])
+	// 										classesDataStore.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][ci]);
+	// 								}
+	// 							}
+
+	// 							itemClassSelector.storeFrom.loadData(classesDataStore, false);
+	// 						}
+	// 					},
+	// 					beforequery : function() {
+	// 						this.reloadLayers();
+	// 					}
+	// 				}
+	// 			}, {
+	// 				xtype : "combo",
+	// 				id   : 'filterT0ComboBox',
+	// 				name : 'filterT0',
+	// 				fieldLabel : this.changeMatrixCQLFilterT0FieldLabel,
+	// 				lazyInit : true,
+	// 				mode : 'local',
+	// 				triggerAction : 'all',
+	// 				store : this.timeValuesStore,
+	// 				emptyText : "Select one time instant ...",
+	// 				labelSeparator : ':' + '<span style="color: #918E8F; padding-left: 2px;">*</span>',
+	// 				editable : true,
+	// 				resizable : true,
+	// 				allowBlank : false,
+	// 				readOnly : false,
+	// 				displayField : 'time',
+	// 				validator : function(value) {
+	// 					if (Ext.isEmpty(value))
+	// 						return me.changeMatrixEmptyFilter;
+	// 					return true;
+	// 				}
+	// 			}, {
+	// 				xtype : "combo",
+	// 				id   : 'filterT1ComboBox',
+	// 				name : 'filterT1',
+	// 				fieldLabel : this.changeMatrixCQLFilterT1FieldLabel,
+	// 				lazyInit : true,
+	// 				mode : 'local',
+	// 				triggerAction : 'all',
+	// 				store : this.timeValuesStore,
+	// 				emptyText : "Select one time instant ...",
+	// 				labelSeparator : ':' + '<span style="color: #918E8F; padding-left: 2px;">*</span>',
+	// 				editable : true,
+	// 				resizable : true,
+	// 				allowBlank : false,
+	// 				readOnly : false,
+	// 				displayField : 'time',
+	// 				validator : function(value) {
+	// 					if (Ext.isEmpty(value))
+	// 						return me.changeMatrixEmptyFilter;
+	// 					return true;
+	// 				}
+	// 			}, {
+	// 				// ///////////////
+	// 				// ItemSelector
+	// 				// ///////////////
+	// 				// xtype: 'itemselector',
+
+	// 				// ///////////////
+	// 				// ItemSelector Ex
+	// 				// ///////////////
+	// 				xtype : 'itemselectorex',
+	// 				fieldLabel : this.changeMatrixClassesFieldLabel,
+
+	// 				// ///////////////
+	// 				// ItemSelector
+	// 				// ///////////////
+	// 				//imagePath: 'theme/app/img/ux/',
+
+	// 				// ///////////////
+	// 				// ItemSelector Ex
+	// 				// ///////////////
+	// 				imagesDir : 'theme/app/img/ux/',
+	// 				id : 'classesselector',
+	// 				name : 'classesselector',
+	// 				anchor : '100%',
+
+	// 				// ///////////////
+	// 				// ItemSelector Ex
+	// 				// ///////////////
+	// 				store : storeFrom = new Ext.data.ArrayStore({
+	// 					idIndex : 0,
+	// 					data : [],
+	// 					fields : ['value', 'text'],
+	// 					autoDestroy : true
+	// 				})
+
+	// 				// ///////////////
+	// 				// ItemSelector
+	// 				// ///////////////
+	// 				/* drawUpIcon: false,
+	// 				 iconDown: 'selectall2.gif',
+	// 				 drawTopIcon: false,
+	// 				 iconBottom: 'deselectall2.gif',
+	// 				 height: 350,
+	// 				 multiselects: [{
+	// 				 flex: 1,
+	// 				 store: classesStore,
+	// 				 ddReorder: true,
+	// 				 height: 350,
+	// 				 valueField: 'name',
+	// 				 displayField: 'name'
+	// 				 },{
+	// 				 flex: 1,
+	// 				 store: selectedClassesStore,
+	// 				 ddReorder: true,
+	// 				 height: 350,
+	// 				 valueField: 'name',
+	// 				 displayField: 'name'
+	// 				 }],
+	// 				 down: function() {
+	// 				 var leftMultiSelect = this.fromMultiselect,
+	// 				 rightMultiSelect = this.toMultiselect;
+
+	// 				 leftMultiSelect.view.selectRange(0, classesStore.getCount());
+	// 				 this.fromTo();
+
+	// 				 leftMultiSelect.view.clearSelections();
+	// 				 rightMultiSelect.view.clearSelections();
+	// 				 },
+	// 				 toBottom: function() {
+	// 				 var leftMultiSelect = this.fromMultiselect,
+	// 				 rightMultiSelect = this.toMultiselect;
+
+	// 				 rightMultiSelect.view.selectRange(0, selectedClassesStore.getCount());
+	// 				 this.toFrom();
+
+	// 				 leftMultiSelect.view.clearSelections();
+	// 				 rightMultiSelect.view.clearSelections();
+	// 				 }*/
+	// 			}]
+	// 		}, 
+	// 		me.roiFieldSet],
+	// 		bbar : new Ext.Toolbar({
+	// 			items : ["->", {
+	// 				text : this.changeMatrixResetButtonText,
+	// 				iconCls : 'gxp-icon-removelayers',
+	// 				handler : function() {
+	// 					me.chgMatrixForm.roiFieldSet.removeFeatureSummary();
+	// 					me.chgMatrixForm.roiFieldSet.reset();
+	// 					me.chgMatrixForm.roiFieldSet.collapse();
+	// 					me.chgMatrixForm.getForm().reset();
+	// 				}
+	// 			}, {
+	// 				text : this.changeMatrixSubmitButtonText,
+	// 				iconCls : 'gxp-icon-zoom-next',
+	// 				id : 'change-matrix-submit-button',
+	// 				handler : function() {
+	// 					var form = me.chgMatrixForm.getForm();
+	// 					var formIsValid = true;
+						
+	// 					for (var itm = 0; itm < form.items.items.length; itm++) {
+	// 						switch (form.items.items[itm].id) {
+	// 							case "rasterComboBox":
+	// 							case "filterT0ComboBox":
+	// 							case "filterT1ComboBox":
+	// 								if (!form.items.items[itm].getValue() || form.items.items[itm].getValue() === "") {
+	// 									formIsValid = false;
+	// 								}
+	// 							default:
+	// 								continue;
+	// 						}
+	// 					}
+						
+	// 					if (!formIsValid) {
+	// 						//return Ext.Msg.alert(me.changeMatrixInvalidFormDialogTitle, me.changeMatrixInvalidFormDialogText);
+	// 						return Ext.Msg.show({
+	// 								   title: me.changeMatrixInvalidFormDialogTitle,
+	// 								   msg: me.changeMatrixInvalidFormDialogText,
+	// 								   buttons: Ext.Msg.OK,
+	// 								   icon: Ext.MessageBox.WARNING,
+	// 								   scope: me
+	// 								});
+	// 					}
+						
+	// 					me.chgMatrixForm.roiFieldSet.removeFeatureSummary();
+
+	// 					// get form params
+	// 					var params = form.getFieldValues();
+
+	// 					//get an array of the selected classes from the CheckBoxGroup
+	// 					// ///////////////
+	// 					// ItemSelector
+	// 					// ///////////////
+	// 					/*if(selectedClassesStore.getCount() == 0) {
+	// 					return Ext.Msg.alert(me.changeMatrixEmptyClassesDialogTitle, me.changeMatrixEmptyClassesDialogText);
+	// 					}
+	// 					var selectedClasses = [];
+	// 					selectedClassesStore.each(function(record) {
+	// 					selectedClasses.push(record.get('name'));
+	// 					});*/
+
+	// 					// ///////////////
+	// 					// ItemSelector Ex
+	// 					// ///////////////
+	// 					var classesSelectorExStore = Ext.getCmp("classesselector").storeTo;
+	// 					if (classesSelectorExStore.getCount() == 0) {
+	// 						//return Ext.Msg.alert(me.changeMatrixEmptyClassesDialogTitle, me.changeMatrixEmptyClassesDialogText);
+	// 						return Ext.Msg.show({
+	// 								   title: me.changeMatrixEmptyClassesDialogTitle,
+	// 								   msg: me.changeMatrixEmptyClassesDialogText,
+	// 								   buttons: Ext.Msg.OK,
+	// 								   icon: Ext.MessageBox.WARNING,
+	// 								   scope: me
+	// 								});
+	// 					}
+	// 					var selectedClasses = [];
+	// 					classesSelectorExStore.each(function(record) {
+	// 						selectedClasses.push(record.get('field1') ? record.get('field1') : record.get('value'));
+	// 					});
+
+	// 					params.classes = selectedClasses;
+
+	// 					//get the current extent
+	// 					var map = me.target.mapPanel.map;
+	// 					var currentExtent = map.getExtent();
+	// 					//transform to a Geometry (instead of Bounds)
+	// 					if (me.chgMatrixForm.roiFieldSet.collapsed !== true) {
+	// 						/*var outputValue = me.roiFieldSet.get('selectionMethod_id').getValue();
+
+	// 						if (outputValue == 'bbox') {
+	// 							var roi = new OpenLayers.Bounds(me.westField.getValue() ? me.westField.getValue() : me.spatialFilterOptions.lonMin, me.southField.getValue() ? me.southField.getValue() : me.spatialFilterOptions.latMin, me.eastField.getValue() ? me.eastField.getValue() : me.spatialFilterOptions.lonMax, me.northField.getValue() ? me.northField.getValue() : me.spatialFilterOptions.latMax);
+
+	// 							var bbox = roi;
+	// 							if (!bbox)
+	// 								bbox = map.getExtent();
+
+	// 							currentExtent = bbox;
+
+	// 							//change the extent projection if it differs from 4326
+	// 							if (map.getProjection() != 'EPSG:4326') {
+	// 								currentExtent.transform(map.getProjectionObject(), new OpenLayers.Projection('EPSG:4326'));
+	// 							}
+	// 							// set ROI parameter
+	// 							params.roi = currentExtent.toGeometry();
+	// 						} else if (outputValue == 'polygon' && me.filterPolygon) {
+	// 							currentExtent = me.filterPolygon;
+
+	// 							//change the extent projection if it differs from 4326
+	// 							if (map.getProjection() != 'EPSG:4326') {
+	// 								currentExtent.transform(map.getProjectionObject(), new OpenLayers.Projection('EPSG:4326'));
+	// 							}
+	// 							// set ROI parameter
+	// 							params.roi = currentExtent;
+	// 						} else {
+	// 							//change the extent projection if it differs from 4326
+	// 							if (map.getProjection() != 'EPSG:4326') {
+	// 								currentExtent.transform(map.getProjectionObject(), new OpenLayers.Projection('EPSG:4326'));
+	// 							}
+	// 							// set ROI parameter
+	// 							params.roi = currentExtent.toGeometry();
+	// 						}*/
+	// 						params.roi = me.chgMatrixForm.roiFieldSet.currentExtent;
+	// 					} else {
+	// 						//currentExtent = map.getMaxExtent();
+	// 						//change the extent projection if it differs from 4326
+	// 						if (map.getProjection() != 'EPSG:4326') {
+	// 							currentExtent.transform(map.getProjectionObject(), new OpenLayers.Projection('EPSG:4326'));
+	// 						}
+	// 						// set ROI parameter
+	// 						params.roi = currentExtent.toGeometry();
+	// 					}
+
+	// 					me.startWPSRequest(params);
+	// 				}
+	// 			}]
+	// 		})
+	// 	});
+
+	// 	// ///////////////////
+	// 	// Create the control panel
+	// 	// ///////////////////
+	// 	var cpanel = new Ext.Panel({
+	// 		border : false,
+	// 		layout : "fit",
+	// 		disabled : false,
+	// 		autoScroll : true,
+	// 		title : this.title,
+	// 		items : [this.chgMatrixForm]
+	// 	});
+	// 	config = Ext.apply(cpanel, config || {});
+
+	// 	// ///////////////////
+	// 	// Call super class addOutput method and return the panel instance
+	// 	// ///////////////////
+	// 	return gxp.plugins.ChangeMatrix.superclass.addOutput.call(this, config);
+	// },
 
 	/** private: method[reloadLayers]
 	 *
@@ -1889,9 +2423,9 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 	 */
 	handleTimeout : function() {
 		if (!this.loadingMask)
-			this.loadingMask = new Ext.LoadMask(Ext.get('change-matrix-form-panel'), 'Loading..');
+			this.loadingMask = new Ext.LoadMask(Ext.get(this.id + '_change-matrix-form-panel'), 'Loading..');
 		this.loadingMask.hide();
-		Ext.getCmp('change-matrix-submit-button').enable();
+		Ext.getCmp(this.id + '_change-matrix-submit-button').enable();
 		//Ext.Msg.alert(this.changeMatrixTimeoutDialogTitle, this.changeMatrixTimeoutDialogText);
 		
 		var wfsGrid = Ext.getCmp(this.wfsChangeMatrisGridPanel);
@@ -1909,9 +2443,9 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 		var me = this;
 
 		if (!this.loadingMask)
-			this.loadingMask = new Ext.LoadMask(Ext.get('change-matrix-form-panel'), 'Loading..');
+			this.loadingMask = new Ext.LoadMask(Ext.get(this.id + '_change-matrix-form-panel'), 'Loading..');
 		me.loadingMask.show();
-		var submitButton = Ext.getCmp('change-matrix-submit-button');
+		var submitButton = Ext.getCmp(this.id + '_change-matrix-submit-button');
 		if (submitButton)
 			submitButton.disable();
 		if (me.errorTimer)
@@ -1926,9 +2460,9 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.Tool, {
 	 */
 	handleRequestStop : function() {
 		if (!this.loadingMask)
-			this.loadingMask = new Ext.LoadMask(Ext.get('change-matrix-form-panel'), 'Loading..');
+			this.loadingMask = new Ext.LoadMask(Ext.get(this.id + '_change-matrix-form-panel'), 'Loading..');
 		this.loadingMask.hide();
-		var submitButton = Ext.getCmp('change-matrix-submit-button');
+		var submitButton = Ext.getCmp(this.id + '_change-matrix-submit-button');
 		if (submitButton)
 			submitButton.enable();
 		/*if (this.errorTimer)

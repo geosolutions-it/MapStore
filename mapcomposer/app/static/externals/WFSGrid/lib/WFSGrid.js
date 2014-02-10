@@ -26,7 +26,7 @@ Ext.namespace("gxp.plugins");
  *
  *    Plugin for displaying WFS features in a grid.
  */
-gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
+gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 
 	/** api: ptype = gxp_wfsgrid */
 	ptype : "gxp_wfsgrid",
@@ -127,6 +127,9 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 
 	featureFields : null,
 	geometryType : null,
+
+	// config for the details action
+	featureTypeDetails: null,
 
 	/** private: method[constructor]
 	 */
@@ -254,6 +257,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 	/** private: method[getDetailsAction]
 	 */
 	getDetailsAction : function(actionConf) {
+		//TODO: Improve this to allow different output handling
 		var me = this;
 		return {
 			xtype : 'actioncolumn',
@@ -275,7 +279,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 						});
 						return;
 					}
-					var responseData = JSON.parse(record.get('changeMatrix'));
+					var responseData = JSON.parse(record.get(me.featureTypeDetails));
 
 					var changeMatrixTool=me.target.tools['changeMatrixTool'];
                     if(changeMatrixTool){
@@ -425,7 +429,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 
 	/** api: method[addOutput]
 	 */
-	addOutput : function(config) {
+	getPanelContent : function(config) {
 		var me = this;
 		var kk;
 
@@ -485,7 +489,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 		});
 
 		config = Ext.apply(wfsGridPanel, config || {});
-		var wfsGrid = gxp.plugins.WFSGrid.superclass.addOutput.call(this, config);
+		//var wfsGrid = gxp.plugins.WFSGrid.superclass.getPanel.call(this, config);
+		var wfsGrid = config;
 
 		this.getSchema(function(schema) {
 			this.featureFields = new Array();
