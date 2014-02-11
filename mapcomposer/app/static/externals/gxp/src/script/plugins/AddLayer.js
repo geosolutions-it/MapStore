@@ -105,28 +105,37 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 	/**  
 	 * api: method[addLayerRecord]
      */
-	addLayerRecord: function(){
-		  
+	addLayerRecord: function(options, source){
+		
+		var msLayerTitle = options.msLayerTitle;
+		var msLayerName = options.msLayerName;
+		//var wmsURL = options.wmsURL;
+		var gnUrl = options.gnUrl;
+		var enableViewTab = options.enableViewTab;
+		var msLayerUUID = options.msLayerUUID;
+		var gnLangStr = options.gnLangStr;
+		var customParams = options.customParams;
+		
 		var props = {
-			name: this.msLayerName,
-			title: this.msLayerTitle,
-			source: this.source.id
+			name: msLayerName,
+			title: msLayerTitle,
+			source: source.id
 		};
 		
-		if(this.customParams){
+		if(customParams){
 			props = Ext.applyIf(
 				props,
-				this.customParams
+				customParams
 			);
 		}
 		  
-		if(this.msLayerUUID)
-			props.uuid = this.msLayerUUID;
+		if(msLayerUUID)
+			props.uuid = msLayerUUID;
 		
-		if(this.gnUrl && this.gnLangStr)
-			props.gnURL = this.gnUrl + "srv/" + this.gnLangStr + "/";
+		if(gnUrl && gnLangStr)
+			props.gnURL = gnUrl + "srv/" + gnLangStr + "/";
 		  
-		var record = this.source.createLayerRecord(props);   
+		var record = source.createLayerRecord(props);   
 				  
 		if (record) {
 			var layerStore = this.target.mapPanel.layers;  
@@ -137,7 +146,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 		    //
 			// If tabs are used the View tab is Activated
 			//
-			if(this.target.renderToTab && this.enableViewTab){
+			if(this.target.renderToTab && enableViewTab){
 				var portalContainer = Ext.getCmp(this.target.renderToTab);
 				
 				if(portalContainer instanceof Ext.TabPanel){
@@ -196,61 +205,61 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 	addLayer: function(options){		
 		var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
 		
-		this.msLayerTitle = options.msLayerTitle;
-		this.msLayerName = options.msLayerName;
-		this.wmsURL = options.wmsURL;
-		this.gnUrl = options.gnUrl;
-		this.enableViewTab = options.enableViewTab;
-		this.msLayerUUID = options.msLayerUUID;
-		this.gnLangStr = options.gnLangStr;
-		this.customParams = options.customParams;
+		var msLayerTitle = options.msLayerTitle;
+		var msLayerName = options.msLayerName;
+		var wmsURL = options.wmsURL;
+		var gnUrl = options.gnUrl;
+		var enableViewTab = options.enableViewTab;
+		var msLayerUUID = options.msLayerUUID;
+		var gnLangStr = options.gnLangStr;
+		var customParams = options.customParams;
 				
-		this.source = this.checkLayerSource(this.wmsURL);
+		var source = this.checkLayerSource(wmsURL);
 
-		if(this.source){
+		if(source){
 		
-			if(!this.source.loaded){
-				this.source.on('ready', function(){
+			if(!source.loaded){
+				source.on('ready', function(){
 					mask.hide();
-					this.target.layerSources[this.source.id].loaded = true; 
-					this.addLayerRecord();
+					this.target.layerSources[source.id].loaded = true; 
+					this.addLayerRecord(options, source);
 					
 					if(this.useEvents)
 						this.fireEvent('ready');
 				}, this);
 			}
 			
-		    var index = this.source.store.findExact("name", this.msLayerName);
+		    var index = source.store.findExact("name", msLayerName);
 			
 			if (index < 0) {
 				// ///////////////////////////////////////////////////////////////
 				// In this case is necessary reload the local store to refresh 
 				// the getCapabilities records 
 				// ///////////////////////////////////////////////////////////////
-				this.source.store.reload();
+				source.store.reload();
 			}else{
-				this.addLayerRecord();
+				this.addLayerRecord(options, source);
 			}
 		}else{
 			mask.show();
-			this.addSource(this.wmsURL, true);
+			this.addSource(wmsURL, true, options);
 		}
 	},
 
 	/**  
 	 * api: method[addSource]
      */
-	addSource: function(wmsURL, showLayer){			
-		this.wmsURL = wmsURL;
+	addSource: function(wmsURL, showLayer, options){			
+		//this.wmsURL = wmsURL;
 		
-		this.source = this.checkLayerSource(this.wmsURL);
+		var source = this.checkLayerSource(wmsURL);
 
-		if(!this.source){
+		if(!source){
 			var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
 			mask.show();
 		  
-			this.source = this.target.addLayerSource({
-				config: {url: this.wmsURL}, // assumes default of gx_wmssource
+			source = this.target.addLayerSource({
+				config: {url: wmsURL}, // assumes default of gx_wmssource
 				//
 				// Waiting GetCapabilities response from the server.
 				//	
@@ -308,9 +317,9 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 					
 					mask.hide();
 					
-					this.target.layerSources[this.source.id].loaded = true;
-					if(showLayer){						
-						this.addLayerRecord();
+					this.target.layerSources[source.id].loaded = true;
+					if(showLayer && options){						
+						this.addLayerRecord(options, source);
 					}
 					
 					if(this.useEvents)
