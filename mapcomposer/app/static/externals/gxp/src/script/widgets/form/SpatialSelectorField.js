@@ -1364,7 +1364,10 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 				if (aoiLayer)
 					me.map.removeLayer(aoiLayer);
 
-				me.spatialFieldSet.selectBBOX.deactivate();
+				if(me.spatialFieldSet.selectBBOX){
+					me.spatialFieldSet.selectBBOX.deactivate();
+				}
+				
 				if (me.draw) {
 					me.draw.deactivate();
 				}

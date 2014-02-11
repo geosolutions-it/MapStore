@@ -7,7 +7,7 @@
    		"jrc": {
 			"ptype": "gxp_wmssource",
 			"title": "JRC GeoServer",
-			"url": "http://localhost:8180/geoserver/ows"
+			"url": "http://localhost:8080/geoserver/ows"
 		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
@@ -68,17 +68,45 @@
 			},{
                 "source": "jrc",
                 "group" : "Corine Land Cover",
-				"title" : "Corine Land Cover (unina)",
-				"name"  : "it.geosolutions:unina_",
+				"title" : "Corine Land Cover (unina) vector",
+				"name"  : "it.geosolutions:unina_vector",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
-                "group" : "Touring Land Cover",
-				"title" : "Touring Land Cover (unina2)",
-				"name"  : "it.geosolutions:unina",
+                "group" : "Corine Land Cover",
+				"title" : "Corine Land Cover (unina)",
+				"name"  : "it.geosolutions:corine",
 				"tiled" : false,
 				"visibility": true
+            },{
+                "source": "jrc",
+                "group" : "Touring Land Cover",
+				"title" : "Touring Land Cover (unina2)",
+				"name"  : "it.geosolutions:touring",
+				"tiled" : false,
+				"visibility": true
+            },{
+                "source": "jrc",
+                "group" : "Corine Land Cover",
+				"title" : "Corina Land Cover L1",
+				"name"  : "it.geosolutions:corine_L1",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "jrc",
+                "group" : "Corine Land Cover",
+				"title" : "Corina Land Cover L2",
+				"name"  : "it.geosolutions:corine_L2",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "jrc",
+                "group" : "Corine Land Cover",
+				"title" : "Corina Land Cover L3",
+				"name"  : "it.geosolutions:corine_L3",
+				"tiled" : false,
+				"visibility": false
             }
 		]
 	},
@@ -132,7 +160,7 @@
 	"customTools":[{
            "ptype": "gxp_wpsmanager",
            "id": "wpsManager",
-           "url": "http://localhost:8180/geoserver/wps",
+           "url": "http://localhost:8080/geoserver/wps",
            "geostoreUrl": "http://localhost:8080/geostore/rest",
            "geostoreUser": "admin",
            "geostorePassword": "admin",
@@ -141,7 +169,7 @@
             "ptype": "gxp_wfsgrid",
             "addLayerTool": "addlayer",
 	        "id": "wfsChangeMatrisGridPanel",
-            "wfsURL": "http://localhost:8180/geoserver/wfs",
+            "wfsURL": "http://localhost:8080/geoserver/wfs",
             "featureType": "changematrix",
             "featureNS": "http://www.geo-solutions.it", 
             "pageSize": 10,
@@ -211,78 +239,80 @@
             "outputTarget": "eastcontrolpanel",
             "wfsChangeMatrisGridPanel": "wfsChangeMatrisGridPanel",
             "requestTimeout": 5000,
-            "wpsManagerID": "wpsManager",
+       		"wpsManagerID": "wpsManager",
+            "geocoderConfig": {
+	            "wpsBufferProcessID" : "JTS:buffer",
+	            "wfsBaseURL" : "http://localhost:8080/geoserver/wfs?",
+	            "spatialOutputCRS" : "EPSG:4326",
+	            "showSelectionSummary" : true,
+	            "zoomToCurrentExtent" : false,
+	            "defaultStyle" : {
+			        "fillColor"   : "#FFFFFF",
+			        "strokeColor" : "#FF0000",
+			        "fillOpacity" : 0.5,
+			        "strokeWidth" : 1
+			    },
+	            "selectStyle" : {
+			        "fillColor"   : "#FFFFFF",
+			        "strokeColor" : "#FF0000",
+			        "fillOpacity" : 0.5,
+			        "strokeWidth" : 1
+			    },
+				"temporaryStyle" : {
+					  "strokeColor": "#ee9900",
+					  "fillColor": "#ee9900",
+					  "fillOpacity": 0.4,
+					  "strokeWidth": 1
+				},
+				"labelStyle" : {
+					"fontColor": "#a52505",
+					"fontSize": "18px",
+					"fontFamily": "Courier New, monospace",
+					"fontWeight": "bold",
+					"label": "${label}",
+					"labelOutlineColor": "white",
+					"labelOutlineWidth": 5
+				},
+			    "bufferOptions": {
+					"minValue": 1,
+					"maxValue": 1000000,
+					"decimalPrecision": 2,
+					"distanceUnits": "m"
+				 },
+	            "geocoderTypeName" : "it.geosolutions:geocoder",
+	            "geocoderTypeTpl" : "<tpl for=\".\"><hr><div class=\"search-item\"><h3>{name}</span></h3>Parent: {custom}</div></tpl>",
+	            "geocoderTypeRecordModel":[
+	                    {
+	                            "name":"id",
+	                            "mapping":"id"
+	                    },
+	                    {
+	                            "name":"name",
+	                            "mapping":"properties.name"
+	                    },
+	                    {
+	                            "name":"custom",
+	                            "mapping":"properties.parent"
+	                    },
+	                    {
+	                            "name":"geometry",
+	                            "mapping":"geometry"
+	                    }
+	            ],
+			 	"geocoderTypeSortBy":"name",
+			 	"geocoderTypeQueriableAttributes":[
+					"name"
+				],
+				"geocoderTypeDisplayField":"name",
+				"geocoderTypePageSize" : 10
+            },
             "wpsChgMatrixProcessName" : "gs:ChangeMatrix",
             "wpsUnionProcessID" : "JTS:union",
-            "wpsBufferProcessID" : "JTS:buffer",
-            "spatialOutputCRS" : "EPSG:4326",
-            "wfsBaseURL" : "http://localhost:8180/geoserver/wfs?",
-            "geocoderTypeName" : "it.geosolutions:geocoder",
-            "geocoderTypeTpl" : "<tpl for=\".\"><hr><div class=\"search-item\"><h3>{name}</span></h3>Parent: {custom}</div></tpl>",
-            "geocoderTypeRecordModel":[
-                    {
-                            "name":"id",
-                            "mapping":"id"
-                    },
-                    {
-                            "name":"name",
-                            "mapping":"properties.name"
-                    },
-                    {
-                            "name":"custom",
-                            "mapping":"properties.parent"
-                    },
-                    {
-                            "name":"geometry",
-                            "mapping":"geometry"
-                    }
-            ],
-		 	"geocoderTypeSortBy":"name",
-		 	"geocoderTypeQueriableAttributes":[
-				"name"
-			],
-			"geocoderTypeDisplayField":"name",
-			"geocoderTypePageSize" : 10,
 			"source": "jrc",
 			"nsPrefix": "it.geosolutions",
             "storeName" : "unina_ds",
             "typeName" : "changematrix",
             "jiffleStyle" : "jiffle_style",
-            "showSelectionSummary" : true,
-            "zoomToCurrentExtent" : false,
-            "defaultStyle" : {
-		        "fillColor"   : "#FFFFFF",
-		        "strokeColor" : "#FF0000",
-		        "fillOpacity" : 0.5,
-		        "strokeWidth" : 1
-		    },
-            "selectStyle" : {
-		        "fillColor"   : "#FFFFFF",
-		        "strokeColor" : "#FF0000",
-		        "fillOpacity" : 0.5,
-		        "strokeWidth" : 1
-		    },
-			"temporaryStyle" : {
-				  "strokeColor": "#ee9900",
-				  "fillColor": "#ee9900",
-				  "fillOpacity": 0.4,
-				  "strokeWidth": 1
-			},
-			"labelStyle" : {
-				"fontColor": "#a52505",
-				"fontSize": "18px",
-				"fontFamily": "Courier New, monospace",
-				"fontWeight": "bold",
-				"label": "${label}",
-				"labelOutlineColor": "white",
-				"labelOutlineWidth": 5
-			},
-		    "bufferOptions": {
-				"minValue": 1,
-				"maxValue": 1000000,
-				"decimalPrecision": 2,
-				"distanceUnits": "m"
-			 },
 			"classesIndexes" : [
 			  [1,[
 				[1, "Water bodies"],
@@ -355,17 +385,24 @@
 			 ]]
 			],
             "classes": [
-            	{"layer": "it.geosolutions:unina",  "level": 1, "values": [1,2,3,4,5]},
-            	{"layer": "it.geosolutions:unina_", "level": 3, "values": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43]}
+            	{"layer": "it.geosolutions:corine_L1",  "level": 1, "values": [1,2,3,4,5]},
+            	{"layer": "it.geosolutions:corine_L2", "level": 3, "values": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43]}
             ],
             "splitPanels": true,
             "panelsConfig": [{
             	"title": "Change Matrix",
-            	"id" : "changeMatrixTool1"
+            	"id" : "changeMatrixTool1",
+            	"geocoderConfig": {
+            		"selectReturnType": false
+            	},
+            	"xtype": "gxp_changematrixpanel"
         	},{
-            	"title": "Change Matrix 2",
-            	"id" : "changeMatrixTool2",
-            	"selectReturnType": true
+            	"title": "Soil Sealing",
+            	"id" : "soilsealingtool",
+            	"geocoderConfig": {
+            		"selectReturnType": true
+            	},
+            	"xtype": "gxp_soilpanel"
             }]
         },{
         	"ptype": "gxp_georeferences",
