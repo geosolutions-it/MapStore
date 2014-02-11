@@ -141,6 +141,10 @@ var config = {
       [
          "de",
          "Deutsch"
+      ],
+      [
+         "es",
+         "Español"
       ]
     ],
    
