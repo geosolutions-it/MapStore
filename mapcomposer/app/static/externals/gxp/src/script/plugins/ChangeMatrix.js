@@ -506,10 +506,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.TableableTool, {
 	 *  Generate a panel with the configuration present on this
 	 */
 	generatePanel: function(config){
-		var panelConfig = {
-			id : this.id + '_panel',
-			items : [this.getPanelContent(config)]
-		};
+		var panelConfig = {};
 		Ext.apply(panelConfig, this.panelConfig);
 		panelConfig.title = this.title;
 
@@ -517,6 +514,12 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.TableableTool, {
 		if(config){
 			Ext.apply(panelConfig, config);
 		}
+
+		// override properties
+		Ext.apply(panelConfig, {
+			id : this.id + '_panel',
+			items : [this.getPanelContent(config)]
+		});
 
 		panelConfig.target = this.target;
 		panelConfig.wpsManager = this.wpsManager;

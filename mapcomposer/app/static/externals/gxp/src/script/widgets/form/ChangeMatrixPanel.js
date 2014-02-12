@@ -36,77 +36,12 @@ Ext.namespace("gxp.widgets.form");
  *
  *    Show a change matrix of changes between two rasters
  */
-gxp.widgets.form.ChangeMatrixPanel = Ext.extend(Ext.Panel, {
+gxp.widgets.form.ChangeMatrixPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel, {
 
 	/** api: xtype = gxp_changematrixpanel */
 	xtype : "gxp_changematrixpanel",
 
-	/** api: config[changeMatrixActionTip]
-	 *  ``String``
-	 *  Text for add action tooltip (i18n).
-	 */
-	changeMatrixActionTip : "Get a change matrix for a raster layer",
-
-	/** api: config[changeMatrixDialogTitle]
-	 *  ``String``
-	 *  Title of the changeMatrix form window (i18n).
-	 */
-	changeMatrixDialogTitle : "Change matrix",
-
-	/** api: config[changeMatrixClassesFieldLabel]
-	 *  ``String``
-	 *  Text for the Classes field label (i18n).
-	 */
-	changeMatrixClassesFieldLabel : "Classes",
-
-	/** api: config[changeMatrixRasterFieldLabel]
-	 *  ``String``
-	 *  Text for the Raster field label (i18n).
-	 */
-	changeMatrixRasterFieldLabel : "Raster Layer",
-
-	/** api: config[changeMatrixCQLFilterT0FieldLabel]
-	 *  ``String``
-	 *  Text for the CQL Filter T0 field label (i18n).
-	 */
-	changeMatrixCQLFilterT0FieldLabel : "Time Filter (reference)",
-
-	/** api: config[changeMatrixCQLFilterT1FieldLabel]
-	 *  ``String``
-	 *  Text for the CQL Filter T1 field label (i18n).
-	 */
-	changeMatrixCQLFilterT1FieldLabel : "Time Filter (current)",
-
-	/** api: config[changeMatrixResetButtonText]
-	 *  ``String``
-	 *  Text for the changeMatrix form submit button (i18n).
-	 */
-	changeMatrixSubmitButtonText : "Submit",
-
-	/** api: config[changeMatrixResetButtonText]
-	 *  ``String``
-	 *  Text for the changeMatrix form reset button (i18n).
-	 */
-	changeMatrixResetButtonText : "Reset",
-
-	/** api: config[changeMatrixResultsTitle]
-	 *  ``String``
-	 *  Text for the changeMatrix results container (i18n).
-	 */
-	changeMatrixResultsTitle : "Change Matrix",
-
-	// form errors
-	/** api: config[changeMatrixEmptyLayer]
-	 *  ``String``
-	 *  Form validation messages: No layers selected (i18n).
-	 */
-	changeMatrixEmptyLayer : "Please select a raster layer",
-
-	/** api: config[changeMatrixEmptyFilter]
-	 *  ``String``
-	 *  Form validation messages: Empty filter (i18n).
-	 */
-	changeMatrixEmptyFilter : "Please specify both time filters",
+	/** i18n **/
 
 	/** api: config[changeMatrixEmptyClassesDialogTitle]
 	 *  ``String``
@@ -156,840 +91,103 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(Ext.Panel, {
 	 */
 	changeMatrixResponseErrorDialogText : "There was an error processing the request.",
 
-	/** api: config[renderToTab]
-	 *  ``Boolean``
-	 *  Whether or not render to a Tab. Applies only on Tab enabled View (see MapStore config)
-	 */
-	renderToTab : true,
-	
-	/** api: config[wfsChangeMatrisGridPanel]
-	 *  ``String``
-	 *  Timeout for the WPS request
-	 */
-	wfsChangeMatrisGridPanel: null,
-	
-	/** api: config[requestTimeout]
-	 *  ``Integer``
-	 *  Timeout for the WPS request
-	 */
-	requestTimeout : 5000,
+	/** EoF i18n **/
 
-	/** api: config[rasterLayers]
-	 *  ``String[]``
-	 *  Array of available raster layers.
-	 */
-	rasterLayers : null,
-
-	/** api: config[classesIndexes]
-	 *  ``String[]``
-	 *  Array of classesIndexes.
-	 */
-	classesIndexes : null,
-
-	/** api: config[classes]
-	 *  ``Object``
-	 *  Array of classes.
-	 */
-	classes : null,
-
-	/** api: config[wpsManagerID]
-	 *  ``String``
-	 *  WPS Manager Plugin ID .
-	 */
-	wpsManagerID : null,
-	
-	/** api: config[wpsChgMatrixProcessName]
-	 *  ``String``
-	 *  ID of the WPS Change Matrix Process .
-	 */
-	wpsChgMatrixProcessName: 'gs:ChangeMatrix',
-	
-	/** api: config[wpsUnionProcessID]
-	 *  ``String``
-	 *  ID of the WPS Union Process .
-	 */
-	wpsUnionProcessID : 'JTS:union',
-
-	/** api: config[wpsBufferProcessID]
-	 *  ``String``
-	 *  ID of the WPS Buffer Process .
-	 */
-	wpsBufferProcessID : 'JTS:buffer',
-
-	/** api: config[wfsBaseURL]
-	 *  ``String``
-	 *  WFS Base URL .
-	 */
-	wfsBaseURL : "http://localhost:8180/geoserver/wfs?",
-
-	// //////////////////////////////////////////////////////////////
-	// GeoCoding Panel Config
-	// //////////////////////////////////////////////////////////////
-	
-	/** api: config[geocoderTypeName]
-	 *  ``String``
-	 *  geocoderTypeName .
-	 */
-	geocoderTypeName : "it.geosolutions:geocoder_limits",
-
-	/** api: config[geocoderTypeTpl]
-	 *  ``String``
-	 *  geocoderTypeTpl .
-	 */
-	geocoderTypeTpl : "<tpl for=\".\"><hr><div class=\"search-item\"><h3>{name}</span></h3>{name}</div></tpl>",
-	
-	/** api: config[geocoderTypeRecordModel]
-	 *  ``Object``
-	 *  geocoderTypeRecordModel .
-	 */
-	geocoderTypeRecordModel:[
- 		{
-		   name:"id",
-		   mapping:"id"
-		},
-		{
-	   		name:"name",
-	   		mapping:"properties.name"
-		},
-		{
-	   		name:"geometry",
-	   		mapping:"geometry"
-		}
- 	],
-
-	/** api: config[geocoderTypeSortBy]
-	 *  ``String``
-	 *  geocoderTypeSortBy .
-	 */
-	geocoderTypeSortBy:"name",
-
-	/** api: config[geocoderTypeQueriableAttributes]
-	 *  ``Object``
-	 *  geocoderTypeQueriableAttributes .
-	 */
-	geocoderTypeQueriableAttributes:[
-		"name"
-	],
-
-	/** api: config[geocoderTypeDisplayField]
-	 *  ``String``
-	 *  geocoderTypeDisplayField .
-	 */
-	geocoderTypeDisplayField:"name",
-
-	/** api: config[geocoderTypePageSize]
-	 *  ``Integer``
-	 *  geocoderTypePageSize .
-	 */
-	geocoderTypePageSize : 10,
-	
-	// //////////////////////////////////////////////////////////////
-	// END - GeoCoding Panel Config
-	// //////////////////////////////////////////////////////////////
-
-	/** api: config[source]
-	 *  ``String``
-	 *  ChangeMatrix Layer Source .
-	 */
-	source : null,
-
-	/** api: config[nsPrefix]
-	 *  ``String``
-	 *  ChangeMatrix Layer NS Prefix .
-	 */
-	nsPrefix : null,
-
-	/** api: config[storeName]
-	 *  ``String``
-	 *  Store Name for WFS logging on Change Matrix Process .
-	 */
-	storeName : null,
-	
-	/** api: config[typeName]
-	 *  ``String``
-	 *  Type Name for WFS logging on Change Matrix Process .
-	 */
-	typeName : null,
-	
-	/** api: config[jiffleStyle]
-	 *  ``String``
-	 *  Jiffle Style for the Raster returned by the Change Matrix Process .
-	 */
-	jiffleStyle : null,
-	
-	//private
-
-	/** api: config[layerStore]
-	 *  ``Object``
-	 */
-	layerStore : null,
-
-	/** api: config[timeValuesStore]
-	 *  ``Object``
-	 */
-	timeValuesStore : null,
-
-	/** api: config[selectedLayer]
-	 *  ``Object``
-	 */
-	selectedLayer : null,
-	
-	/** api: config[showSelectionSummary]
-	 *  ``Boolean``
-	 */
-	showSelectionSummary: true,
-
-	/** api: config[zoomToCurrentExtent]
-	 *  ``Boolean``
-	 */
-	zoomToCurrentExtent: true,
-
-	/** api: config[geodesic]
-	 *  ``Boolean``
-	 */
-	geodesic: true,
-	
-	/** api: config[spatialOutputCRS]
-	 *  ``String``
-	 */
-	spatialOutputCRS: "EPSG:4326",
-	
-	/** api: config[selectReturnType]
-	 *  ``Boolean``
-	 *  Allow return type on the geocoder.
-	 */
-	selectReturnType: false,
-	
-	/** api: config[style]
-	 *  ``Object``
-	 */
-	defaultStyle : {
-	  "strokeColor": "#ee9900",
-	  "fillColor": "#ee9900",
-	  "fillOpacity": 0.4,
-	  "strokeWidth": 1
-	},
-	
-	/** api: config[selectStyle]
-	 *  ``Object``
-	 */
-	selectStyle : {
-	  "strokeColor": "#ee9900",
-	  "fillColor": "#ee9900",
-	  "fillOpacity": 0.4,
-	  "strokeWidth": 1
+	generateItems: function(config){
+		return [{
+    		title: this.timeSelectionTitleText,
+    		layout : 'form',
+	        items: this.getTimeSelectionItems(config)
+	    },{
+    		title: this.clcLevelTitleText,
+    		layout : 'fit',
+	        items: this.getCclLevelItems(config)
+	    },{
+    		title: this.clcLegendBuilderTitleText,
+			layout : 'table',
+			columns: 1,
+	        items: this.getCclLegendItems(config)
+	    },{
+    		title: this.roiTitleText,
+			layout : 'vBox',
+	        items: this.getRoiItems(config)
+	    }];
 	},
 
-	temporaryStyle : {
-		"pointRadius": 6,
-		"fillColor": "#FF00FF",
-		"strokeColor": "#FF00FF",
-		"label": "Select",
-		"graphicZIndex": 2
-	},
-
-	labelStyle : {
-		'fontColor': '#a52505',
-		'fontSize': "14px",
-		'fontFamily': "Courier New, monospace",
-		'fontWeight': "bold",
-		'label': '${label}',
-		'labelOutlineColor': "white",
-		'labelOutlineWidth': 5
-	},
-	
-	// Begin i18n.
-
-	/** api: config[chgMatrixFieldSetTitle]
-	 * ``String``
-	 * Text for empty Combo Selection Method (i18n).
-	 */
-	chgMatrixFieldSetTitle : 'Change Matrix Inputs',
-
-	/** api: config[scatterChartTabTitle]
-	 * ``String``
-	 * Text for Scatter Chart Tab Panel (i18n).
-	 */
-	scatterChartTabTitle : "Scatter Chart",
-
-	/** api: config[pieChartMenuLabel]
-	 * ``String``
-	 * Text for the Change Matrix Grid Menu Label (i18n).
-	 */
-	pieChartMenuLabel : "Print Pie Chart",
-	
-	/** api: config[interactiveChgMatrixLabel]
-	 * ``String``
-	 * Text for the Change Matrix Menu Label (i18n).
-	 */
-	interactiveChgMatrixLabel : "Interactive Change Matrix",
-	
-	/** api: config[pieChartTabTitle]
-	 * ``String``
-	 * Text for Pie Chart Tab Panel (i18n).
-	 */
-	pieChartTabTitle : "Pie Chart",
-	
-	/** api: config[scatterChartTitle]
-	 * ``String``
-	 * Text for Scatter Chart Main Title (i18n).
-	 */
-	scatterChartTitle : "Reference Versus Current Classes",
-
-	/** api: config[scatterChartSubTitle]
-	 * ``String``
-	 * Text for Scatter Chart Sub Title (i18n).
-	 */
-	scatterChartSubTitle : " - ChangeMatrix Process - ",
-
-	/** api: config[scatterChartYAxisLabel]
-	 * ``String``
-	 * Text for Scatter Chart Y-Axis (i18n).
-	 */
-	scatterChartYAxisLabel : "Current",
-
-	/** api: config[scatterChartXAxisLabel]
-	 * ``String``
-	 * Text for Scatter Chart X-Axis (i18n).
-	 */
-	scatterChartXAxisLabel : "Reference",
-	
-	// End i18n.
-
-	win : null,
-	formPanel : null,
-	wpsManager : null,
-	resultWin : null,
-	loadingMask : null,
-	errorTimer : null,
-	roiFieldSet : null,
-
-	/**
-	 * Geocoder configuration
-	 **/ 
-	geocoderConfig:{
-		wpsUnionProcessID: null,
-		wpsBufferProcessID: null,
-		wfsBaseURL: null,
-		spatialOutputCRS: null,
-		showSelectionSummary: null,
-		zoomToCurrentExtent: null,
-		defaultStyle: null,
-		selectStyle: null,
-		temporaryStyle: null,
-		labelStyle: null,
-		bufferOptions: null,
-		geocoderTypeName: null,
-		geocoderTypeTpl: null,
-		geocoderTypeRecordModel: null,
-		geocoderTypeSortBy: null,
-		geocoderTypeQueriableAttributes: null,
-		geocoderTypeDisplayField: null,
-		geocoderTypePageSize: null,
-		selectReturnType: false
-	},
-
-	/** private: method[initComponent]
-	 *  Generate a panel with the configuration present on this
-	 */
-	constructor: function(config){
-
-		// default panel config
-		var panelConfig = {};
-		Ext.apply(panelConfig, config || {});
-
-		// copy configuration
-		Ext.apply(this, panelConfig);
-
-		// /////////////////////////////////////
-		// Stores Array stores definitions.
-		// /////////////////////////////////////
-		this.layerStore = new Ext.data.ArrayStore({
-			fields : ["source", "title", "name", "olid", "crs", "uuid", "times", {
-				name : "isLayerGroup",
-				type : 'boolean'
-			}],
-			data : []
-		});
-
-		this.timeValuesStore = new Ext.data.ArrayStore({
-			fields : ["time"],
-			data : []
-		});
-
-		// ///////////////////
-		// Initialize data
-		// ///////////////////
+	submitForm: function() {
 		var me = this;
+		var form = me.getForm();
+		var formIsValid = true;
+		
+		for (var itm = 0; itm < form.items.items.length; itm++) {
+			switch (form.items.items[itm].ref) {
+				case "rasterComboBox":
+				case "filterT0ComboBox":
+				case "filterT1ComboBox":
+					if (!form.items.items[itm].getValue() || form.items.items[itm].getValue() === "") {
+						formIsValid = false;
+					}
+				default:
+					continue;
+			}
+		}
+		
+		if (!formIsValid) {
+			//return Ext.Msg.alert(me.changeMatrixInvalidFormDialogTitle, me.changeMatrixInvalidFormDialogText);
+			return Ext.Msg.show({
+					   title: me.changeMatrixInvalidFormDialogTitle,
+					   msg: me.changeMatrixInvalidFormDialogText,
+					   buttons: Ext.Msg.OK,
+					   icon: Ext.MessageBox.WARNING,
+					   scope: me
+					});
+		}
+		
+		me.roiFieldSet.removeFeatureSummary();
+
+		// get form params
+		var params = form.getFieldValues();
 
 		// ///////////////
 		// ItemSelector Ex
 		// ///////////////
-		var data = [];
-
-		// the map
-		var map = this.target.mapPanel.map;
-		map.enebaleMapEvent = true;
-
-		me.roiFieldSet = {
-				ref: 'roiFieldSet',
-				id: me.id + '_roiFieldSet',
-				xtype:'gxp_spatial_selector_field',
-				mapPanel: this.target.mapPanel,
-				loadingMaskId: me.id + '_change-matrix-form-panel',
-				wpsManager: this.wpsManager,
-				wpsUnionProcessID: this.geocoderConfig.wpsUnionProcessID,
-				wpsBufferProcessID: this.geocoderConfig.wpsBufferProcessID,
-				wfsBaseURL: this.geocoderConfig.wfsBaseURL,
-				spatialOutputCRS: this.geocoderConfig.spatialOutputCRS,
-				showSelectionSummary: this.geocoderConfig.showSelectionSummary,
-				zoomToCurrentExtent: this.geocoderConfig.zoomToCurrentExtent,
-				defaultStyle: this.geocoderConfig.defaultStyle,
-				selectStyle: this.geocoderConfig.selectStyle,
-				temporaryStyle: this.geocoderConfig.temporaryStyle,
-				labelStyle: this.geocoderConfig.labelStyle,
-				bufferOptions: this.geocoderConfig.bufferOptions,
-				geocoderTypeName: this.geocoderConfig.geocoderTypeName,
-				geocoderTypeTpl: this.geocoderConfig.geocoderTypeTpl,
-				geocoderTypeRecordModel: this.geocoderConfig.geocoderTypeRecordModel,
-				geocoderTypeSortBy: this.geocoderConfig.geocoderTypeSortBy,
-				geocoderTypeQueriableAttributes: this.geocoderConfig.geocoderTypeQueriableAttributes,
-				geocoderTypeDisplayField: this.geocoderConfig.geocoderTypeDisplayField,
-				geocoderTypePageSize: this.geocoderConfig.geocoderTypePageSize,
-				selectReturnType: this.geocoderConfig.selectReturnType
-		};
-		
-		// ///////////////////
-		// The main form
-		// ///////////////////
-		this.chgMatrixForm = new Ext.form.FormPanel({
-			ref : 'change-matrix-form-panel',
-			id: me.id + '_change-matrix-form-panel',
-			width : 355,
-			height : 380,
-			autoScroll : true,
-			labelAlign : 'top',
-			
-			items : [{
-				title : this.chgMatrixFieldSetTitle,
-				xtype : 'fieldset',
-				autoWidth : true,
-				collapsible : true,
-				layout : 'form',
-				defaultType : 'numberfield',
-				bodyStyle : 'padding:5px',
-				defaults : {
-					width : 200
-				},
-				items : [{
-					xtype : "combo",
-					ref   : 'rasterComboBox',
-					name : 'raster',
-					fieldLabel : this.changeMatrixRasterFieldLabel,
-					lazyInit : true,
-					mode : 'local',
-					triggerAction : 'all',
-					store : this.layerStore,
-					emptyText : "Select an item ...",
-					labelSeparator : ':' + '<span style="color: #918E8F; padding-left: 2px;">*</span>',
-					editable : true,
-					resizable : true,
-					allowBlank : false,
-					readOnly : false,
-					valueField : 'name',
-					displayField : 'title',
-					validator : function(value) {
-						if (Ext.isEmpty(value))
-							return me.changeMatrixEmptyLayer;
-						return true;
-					},
-					listeners : {
-						scope : this,
-						keyup : function(field) {
-							var me = this, value = field.getValue();
-
-							if (value) {
-								me.layerTimeout = setTimeout(function() {
-									me.layerStore.filterBy(function(rec, recId) {
-										var name = rec.get("name").trim().toLowerCase();
-										if (name.indexOf(value) > -1) {
-											me.formPanel.layerCombo.expand();
-											return true;
-										} else {
-											return false;
-										}
-									});
-								}, 100);
-							} else {
-								me.layerStore.clearFilter();
-							}
-						},
-						beforeselect : function(combo, record, index) {
-							me.chgMatrixForm.roiFieldSet.removeFeatureSummary();
-							me.chgMatrixForm.roiFieldSet.reset();
-							me.chgMatrixForm.roiFieldSet.collapse();
-							me.chgMatrixForm.getForm().reset();
-						},
-						select : function(combo, record, index) {
-							// //////////////////////////////////////////////////
-							// Populate time filters combo boxes.
-							// //////////////////////////////////////////////////
-							var data = [];
-							if (record.get('times') && !Ext.isEmpty(record.get('times'))) {
-								var times = record.get('times').split(',');
-								for (var i = 0; i < times.length; i++) {
-									var recordData = ["time = '" + times[i] + "'"];
-									data.push(recordData);
-								}
-							}
-
-							this.timeValuesStore.removeAll();
-							this.timeValuesStore.loadData(data, false);
-
-							// //////////////////////////////////////////////////
-							// Populate the itemselector classes
-							// //////////////////////////////////////////////////
-							var itemClassSelector = Ext.getCmp(me.id + '_classesselector');
-							itemClassSelector.storeTo.removeAll();
-							itemClassSelector.storeFrom.removeAll();
-							var classDataIndex = 0;
-							for ( classDataIndex = 0; classDataIndex < me.classes.length; classDataIndex++) {
-								if (me.classes[classDataIndex].layer == record.get('name'))
-									break;
-							}
-							if (classDataIndex < me.classes.length) {
-								var classesDataStore = [];
-
-								for (var cc=0;cc<me.classes[classDataIndex].values.length;cc++) {
-									for (var ci=0;ci<me.classesIndexes[me.classes[classDataIndex].level-1][1].length;ci++) {
-										if (me.classesIndexes[me.classes[classDataIndex].level-1][1][ci][0] == me.classes[classDataIndex].values[cc])
-											classesDataStore.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][ci]);
-									}
-								}
-
-								itemClassSelector.storeFrom.loadData(classesDataStore, false);
-							}
-						},
-						beforequery : function() {
-							this.reloadLayers();
-						}
-					}
-				}, {
-					xtype : "combo",
-					ref   : 'filterT0ComboBox',
-					name : 'filterT0',
-					fieldLabel : this.changeMatrixCQLFilterT0FieldLabel,
-					lazyInit : true,
-					mode : 'local',
-					triggerAction : 'all',
-					store : this.timeValuesStore,
-					emptyText : "Select one time instant ...",
-					labelSeparator : ':' + '<span style="color: #918E8F; padding-left: 2px;">*</span>',
-					editable : true,
-					resizable : true,
-					allowBlank : false,
-					readOnly : false,
-					displayField : 'time',
-					validator : function(value) {
-						if (Ext.isEmpty(value))
-							return me.changeMatrixEmptyFilter;
-						return true;
-					}
-				}, {
-					xtype : "combo",
-					ref   : 'filterT1ComboBox',
-					name : 'filterT1',
-					fieldLabel : this.changeMatrixCQLFilterT1FieldLabel,
-					lazyInit : true,
-					mode : 'local',
-					triggerAction : 'all',
-					store : this.timeValuesStore,
-					emptyText : "Select one time instant ...",
-					labelSeparator : ':' + '<span style="color: #918E8F; padding-left: 2px;">*</span>',
-					editable : true,
-					resizable : true,
-					allowBlank : false,
-					readOnly : false,
-					displayField : 'time',
-					validator : function(value) {
-						if (Ext.isEmpty(value))
-							return me.changeMatrixEmptyFilter;
-						return true;
-					}
-				}, {
-					// ///////////////
-					// ItemSelector Ex
-					// ///////////////
-					xtype : 'itemselectorex',
-					fieldLabel : this.changeMatrixClassesFieldLabel,
-
-					// ///////////////
-					// ItemSelector
-					// ///////////////
-					//imagePath: 'theme/app/img/ux/',
-
-					// ///////////////
-					// ItemSelector Ex
-					// ///////////////
-					imagesDir : 'theme/app/img/ux/',
-					ref : 'classesselector',
-					id: me.id + '_classesselector',
-					name : 'classesselector',
-					boxMaxWidth: 330,
-					anchor : '100%',
-
-					// ///////////////
-					// ItemSelector Ex
-					// ///////////////
-					store : storeFrom = new Ext.data.ArrayStore({
-						idIndex : 0,
-						data : [],
-						fields : ['value', 'text'],
-						autoDestroy : true
-					})
-				}]
-			}, 
-			me.roiFieldSet],
-			bbar : new Ext.Toolbar({
-				items : ["->", {
-					text : this.changeMatrixResetButtonText,
-					iconCls : 'gxp-icon-removelayers',
-					handler : function() {
-						me.chgMatrixForm.roiFieldSet.removeFeatureSummary();
-						me.chgMatrixForm.roiFieldSet.reset();
-						me.chgMatrixForm.roiFieldSet.collapse();
-						me.chgMatrixForm.getForm().reset();
-					}
-				}, {
-					text : this.changeMatrixSubmitButtonText,
-					iconCls : 'gxp-icon-zoom-next',
-					ref : 'change-matrix-submit-button',
-					id : me.id + '_change-matrix-submit-button',
-					handler : function() {
-						var form = me.chgMatrixForm.getForm();
-						var formIsValid = true;
-						
-						for (var itm = 0; itm < form.items.items.length; itm++) {
-							switch (form.items.items[itm].ref) {
-								case "rasterComboBox":
-								case "filterT0ComboBox":
-								case "filterT1ComboBox":
-									if (!form.items.items[itm].getValue() || form.items.items[itm].getValue() === "") {
-										formIsValid = false;
-									}
-								default:
-									continue;
-							}
-						}
-						
-						if (!formIsValid) {
-							//return Ext.Msg.alert(me.changeMatrixInvalidFormDialogTitle, me.changeMatrixInvalidFormDialogText);
-							return Ext.Msg.show({
-									   title: me.changeMatrixInvalidFormDialogTitle,
-									   msg: me.changeMatrixInvalidFormDialogText,
-									   buttons: Ext.Msg.OK,
-									   icon: Ext.MessageBox.WARNING,
-									   scope: me
-									});
-						}
-						
-						me.chgMatrixForm.roiFieldSet.removeFeatureSummary();
-
-						// get form params
-						var params = form.getFieldValues();
-
-						// ///////////////
-						// ItemSelector Ex
-						// ///////////////
-						var classesSelectorExStore = Ext.getCmp(me.id + '_classesselector').storeTo;
-						if (classesSelectorExStore.getCount() == 0) {
-							//return Ext.Msg.alert(me.changeMatrixEmptyClassesDialogTitle, me.changeMatrixEmptyClassesDialogText);
-							return Ext.Msg.show({
-									   title: me.changeMatrixEmptyClassesDialogTitle,
-									   msg: me.changeMatrixEmptyClassesDialogText,
-									   buttons: Ext.Msg.OK,
-									   icon: Ext.MessageBox.WARNING,
-									   scope: me
-									});
-						}
-						var selectedClasses = [];
-						classesSelectorExStore.each(function(record) {
-							selectedClasses.push(record.get('field1') ? record.get('field1') : record.get('value'));
-						});
-
-						params.classes = selectedClasses;
-
-						//get the current extent
-						var map = me.target.mapPanel.map;
-						var currentExtent = map.getExtent();
-						//transform to a Geometry (instead of Bounds)
-						if (me.chgMatrixForm.roiFieldSet.collapsed !== true) {
-							params.roi = me.chgMatrixForm.roiFieldSet.currentExtent;
-						} else {
-							//currentExtent = map.getMaxExtent();
-							//change the extent projection if it differs from 4326
-							if (map.getProjection() != 'EPSG:4326') {
-								currentExtent.transform(map.getProjectionObject(), new OpenLayers.Projection('EPSG:4326'));
-							}
-							// set ROI parameter
-							params.roi = currentExtent.toGeometry();
-						}
-
-						me.startWPSRequest(params);
-					}
-				}]
-			})
-		});
-		
-
-		// ///////////////////
-		// Create the control panel
-		// ///////////////////
-		// var cpanel = new Ext.Panel({
-		// 	border : false,
-		// 	layout : "fit",
-		// 	disabled : false,
-		// 	autoScroll : true,
-		// 	title : this.title,
-		// 	items : [this.chgMatrixForm]
-		// });
-
-
-		Ext.apply(panelConfig, {
-			border : false,
-			layout : "fit",
-			disabled : false,
-			autoScroll : true,
-			title : this.title,
-			items : [this.chgMatrixForm]
+		var classesSelectorExStore = Ext.getCmp(me.id + '_classesselector').storeTo;
+		if (classesSelectorExStore.getCount() == 0) {
+			//return Ext.Msg.alert(me.changeMatrixEmptyClassesDialogTitle, me.changeMatrixEmptyClassesDialogText);
+			return Ext.Msg.show({
+					   title: me.changeMatrixEmptyClassesDialogTitle,
+					   msg: me.changeMatrixEmptyClassesDialogText,
+					   buttons: Ext.Msg.OK,
+					   icon: Ext.MessageBox.WARNING,
+					   scope: me
+					});
+		}
+		var selectedClasses = [];
+		classesSelectorExStore.each(function(record) {
+			selectedClasses.push(record.get('field1') ? record.get('field1') : record.get('value'));
 		});
 
-		gxp.widgets.form.ChangeMatrixPanel.superclass.constructor.call(this, panelConfig);
-	},
+		params.classes = selectedClasses;
 
-	/** private: method[reloadLayers]
-	 *
-	 *  When the Layers Combo Box is expanded the function provides the Store
-	 *  synchronization with other WMS possibly added in the meantime.
-	 */
-	reloadLayers : function(callback) {
-		var data = [];
-		if (this.layersFromAllCapabilities) {
-			// /////////////////////////////////////////////////
-			// The code below allows layers selection from all
-			// loaded sources of type 'gxp_wmssource'.
-			// /////////////////////////////////////////////////
-
-			var source;
-			var layerSources = this.target.layerSources;
-
-			for (var id in layerSources) {
-				source = layerSources[id];
-
-				// //////////////////////////////////////////////
-				// Slide the array of WMS and concatenates the
-				// layers Records for the Store
-				// //////////////////////////////////////////////
-				switch(source.ptype) {
-					case "gxp_mapquestsource":
-						continue;
-					case "gxp_osmsource":
-						continue;
-					case "gxp_googlesource":
-						continue;
-					case "gxp_bingsource":
-						continue;
-					case "gxp_olsource":
-						continue;
-					case "gxp_wmssource":
-						var store = source.store;
-						if (store) {
-							var records = store.getRange();
-
-							var size = store.getCount();
-							for (var i = 0; i < size; i++) {
-								var record = records[i];
-								var sourceId = id;
-								data = this.buildLayerRecord(data, record, sourceId);
-							}
-						}
-				}
-			}
+		//get the current extent
+		var map = me.target.mapPanel.map;
+		var currentExtent = map.getExtent();
+		//transform to a Geometry (instead of Bounds)
+		if (me.roiFieldSet.collapsed !== true) {
+			params.roi = me.roiFieldSet.currentExtent;
 		} else {
-			// /////////////////////////////////////////////////
-			// The code below allows layers selection only from
-			// overlays in layetree.
-			// /////////////////////////////////////////////////
-
-			var overlays = this.target.mapPanel.layers;
-			var size = overlays.getCount();
-			var records = overlays.getRange();
-
-			for (var i = 0; i < size; i++) {
-				var record = records[i];
-
-				var group = record.get("group");
-				var name = record.get("name");
-				var sourceId = record.data.source;
-				
-				if (group && name && group !== "background") {
-					data = this.buildLayerRecord(data, record, sourceId);
-				}
+			//currentExtent = map.getMaxExtent();
+			//change the extent projection if it differs from 4326
+			if (map.getProjection() != 'EPSG:4326') {
+				currentExtent.transform(map.getProjectionObject(), new OpenLayers.Projection('EPSG:4326'));
 			}
+			// set ROI parameter
+			params.roi = currentExtent.toGeometry();
 		}
 
-		this.layerStore.removeAll();
-		this.layerStore.loadData(data, false);
-	},
+		params.raster = params.raster.inputValue;
 
-	/** private: method[buildLayerRecord]
-	 *
-	 *  Create the layer record for layers combobox.
-	 */
-	buildLayerRecord : function(data, record, sourceId) {
-		if (record) {
-			var bbox = record.get("bbox");
-
-			var srs;
-			for (var crs in bbox) {
-				srs = bbox[crs].srs;
-				break;
-			}
-
-			var recordData = [sourceId, record.data.name, record.data.name, record.id, srs, record.data.uuid, record.data.times, record.data.gnURL];
-
-			// ////////////////////////////////////////////////////
-			// The keyword control is necessary in order         //
-			// to markup a layers as Raster or Vector in order   //
-			// to set a proper format in the 'Format' combo box. //
-			// ////////////////////////////////////////////////////
-
-			var keywords = record.get("keywords");
-			if (keywords) {
-				if (keywords.length == 0) {
-					recordData.push(false);
-					// wcs
-					recordData.push(false);
-					// wfs
-					recordData.push(false);
-					// wpsdownload
-					recordData.push(true);
-					// isLayerGroup
-				} else {
-					for (var k = 0; k < keywords.length; k++) {
-						var keyword = keywords[k].value || keywords[k];
-
-						if (keyword.indexOf("WCS") != -1) {
-							recordData.push(true);
-							break;
-						}
-					}
-				}
-			}
-			data.push(recordData);
-		}
-
-		return data;
+		me.startWPSRequest(params);
 	},
 
 	/**
@@ -1008,7 +206,7 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(Ext.Panel, {
 		if (classDataIndex < me.classes.length) {
 			layerLevel = "_L" + me.classes[classDataIndex].level;
 		}
-		var jiffleStyle = me.jiffleStyle + layerLevel;
+		var jiffleStyle = me.geocoderConfig.jiffleStyle + layerLevel;
 		
 		var inputs = {
 			name : new OpenLayers.WPSProcess.LiteralData({
@@ -1018,10 +216,10 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(Ext.Panel, {
 				value : jiffleStyle
 			}),
 			storeName : new OpenLayers.WPSProcess.LiteralData({
-				value : me.storeName
+				value : me.geocoderConfig.storeName
 			}),
 			typeName : new OpenLayers.WPSProcess.LiteralData({
-				value : me.typeName
+				value : me.geocoderConfig.typeName
 			}),
 			referenceFilter : new OpenLayers.WPSProcess.ComplexData({
 				value : params.filterT0,
@@ -1055,7 +253,7 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(Ext.Panel, {
 
 		me.handleRequestStart();
 
-		me.wpsManager.execute(me.wpsChgMatrixProcessName, requestObject, me.showResultsGrid, this);
+		me.wpsManager.execute(me.geocoderConfig.wpsChgMatrixProcessName, requestObject, me.showResultsGrid, this);
 		
 		//me.handleRequestStop();
 	},
@@ -1066,7 +264,7 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(Ext.Panel, {
 	showResultsGrid : function(responseText) {
 		//this.handleRequestStop();
 
-		var wfsGrid = Ext.getCmp('wfsChangeMatrisGridPanel');
+		var wfsGrid = Ext.getCmp(this.geocoderConfig.targetResultGridId);
 		if(wfsGrid) {
 			var lastOptions = wfsGrid.store.lastOptions;
          	wfsGrid.store.reload(lastOptions);
@@ -1198,6 +396,122 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(Ext.Panel, {
 		};
 
 	},
+
+	//FIXME: Split this component to another one. @ee WFSGrid
+
+	
+	// Begin i18n.
+
+	/** api: config[chgMatrixFieldSetTitle]
+	 * ``String``
+	 * Text for empty Combo Selection Method (i18n).
+	 */
+	chgMatrixFieldSetTitle : 'Change Matrix Inputs',
+
+	/** api: config[scatterChartTabTitle]
+	 * ``String``
+	 * Text for Scatter Chart Tab Panel (i18n).
+	 */
+	scatterChartTabTitle : "Scatter Chart",
+
+	/** api: config[pieChartMenuLabel]
+	 * ``String``
+	 * Text for the Change Matrix Grid Menu Label (i18n).
+	 */
+	pieChartMenuLabel : "Print Pie Chart",
+	
+	/** api: config[interactiveChgMatrixLabel]
+	 * ``String``
+	 * Text for the Change Matrix Menu Label (i18n).
+	 */
+	interactiveChgMatrixLabel : "Interactive Change Matrix",
+	
+	/** api: config[pieChartTabTitle]
+	 * ``String``
+	 * Text for Pie Chart Tab Panel (i18n).
+	 */
+	pieChartTabTitle : "Pie Chart",
+	
+	/** api: config[scatterChartTitle]
+	 * ``String``
+	 * Text for Scatter Chart Main Title (i18n).
+	 */
+	scatterChartTitle : "Reference Versus Current Classes",
+
+	/** api: config[scatterChartSubTitle]
+	 * ``String``
+	 * Text for Scatter Chart Sub Title (i18n).
+	 */
+	scatterChartSubTitle : " - ChangeMatrix Process - ",
+
+	/** api: config[scatterChartYAxisLabel]
+	 * ``String``
+	 * Text for Scatter Chart Y-Axis (i18n).
+	 */
+	scatterChartYAxisLabel : "Current",
+
+	/** api: config[scatterChartXAxisLabel]
+	 * ``String``
+	 * Text for Scatter Chart X-Axis (i18n).
+	 */
+	scatterChartXAxisLabel : "Reference",
+
+	/** api: config[changeMatrixActionTip]
+	 *  ``String``
+	 *  Text for add action tooltip (i18n).
+	 */
+	changeMatrixActionTip : "Get a change matrix for a raster layer",
+
+	/** api: config[changeMatrixDialogTitle]
+	 *  ``String``
+	 *  Title of the changeMatrix form window (i18n).
+	 */
+	changeMatrixDialogTitle : "Change matrix",
+
+	/** api: config[changeMatrixClassesFieldLabel]
+	 *  ``String``
+	 *  Text for the Classes field label (i18n).
+	 */
+	changeMatrixClassesFieldLabel : "Classes",
+
+	/** api: config[changeMatrixRasterFieldLabel]
+	 *  ``String``
+	 *  Text for the Raster field label (i18n).
+	 */
+	changeMatrixRasterFieldLabel : "Raster Layer",
+
+	/** api: config[changeMatrixCQLFilterT0FieldLabel]
+	 *  ``String``
+	 *  Text for the CQL Filter T0 field label (i18n).
+	 */
+	changeMatrixCQLFilterT0FieldLabel : "Time Filter (reference)",
+
+	/** api: config[changeMatrixCQLFilterT1FieldLabel]
+	 *  ``String``
+	 *  Text for the CQL Filter T1 field label (i18n).
+	 */
+	changeMatrixCQLFilterT1FieldLabel : "Time Filter (current)",
+
+	/** api: config[changeMatrixResetButtonText]
+	 *  ``String``
+	 *  Text for the changeMatrix form submit button (i18n).
+	 */
+	changeMatrixSubmitButtonText : "Submit",
+
+	/** api: config[changeMatrixResetButtonText]
+	 *  ``String``
+	 *  Text for the changeMatrix form reset button (i18n).
+	 */
+	changeMatrixResetButtonText : "Reset",
+
+	/** api: config[changeMatrixResultsTitle]
+	 *  ``String``
+	 *  Text for the changeMatrix results container (i18n).
+	 */
+	changeMatrixResultsTitle : "Change Matrix",
+
+
+	// EoF i18n
 
 	/**
 	 *
@@ -1398,7 +712,7 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(Ext.Panel, {
 												  // //////////////////////////////////////////
 												  // Checking if source URL aldready exists
 												  // //////////////////////////////////////////
-												  if(s != undefined && s.id == me.source){
+												  if(s != undefined && s.id == me.geocoderConfig.source){
 													  src = s;
 													  break;
 												  }
@@ -1407,7 +721,7 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(Ext.Panel, {
 				                            if (src) {
 					                            var props ={
 					                            			source: me.target.layerSources.jrc.id,
-					                                        name: me.nsPrefix+":"+rasterName,
+					                                        name: me.geocoderConfig.nsPrefix+":"+rasterName,
 					                                        url: me.wpsManager.url.replace("wps","wms"),
 					                                        title: name,
 					                                        tiled:true,
@@ -1419,7 +733,7 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(Ext.Panel, {
 													me.addLayerRecord(src, props);
 												}, me);
 												
-											    var index = src.store.findExact("name", me.nsPrefix+":"+rasterName);
+											    var index = src.store.findExact("name", me.geocoderConfig.nsPrefix+":"+rasterName);
 												
 												if (index < 0) {
 													// ///////////////////////////////////////////////////////////////
@@ -1431,20 +745,6 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(Ext.Panel, {
 													me.addLayerRecord(src, props);
 												}
 				                            }
-											    										
-											/* var layer = new OpenLayers.Layer.WMS(
-													name,
-    												me.wpsManager.url.replace("wps","wms"),
-    												{
-    													layers: rasterName, 
-    													transparent:"true",
-    													env: "dataEnv:ref="+referenceClassIndex+",cur=0"
-    												}, 
-    												{
-    													isBaseLayer:false
-    												}
-    										);
-    										map.addLayer(layer); */
     										
     										/*
 											 * Check if tabs exists and if so switch to View Tab 
@@ -1520,20 +820,6 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(Ext.Panel, {
 													me.addLayerRecord(src, props);
 												}
 				                            }
-
-											/* var layer = new OpenLayers.Layer.WMS(
-													"[cur]"+me.interactiveChgMatrixLabel+" - "+gridColLabel,
-    												me.wpsManager.url.replace("wps","wms"), 
-    												{
-    													layers: rasterName, 
-    													transparent:"true",
-    													env: "dataEnv:ref=0,cur="+currClassIndex
-    												}, 
-    												{
-    													isBaseLayer:false
-    												}
-    										);
-    										map.addLayer(layer); */
 
     										/*
 											 * Check if tabs exists and if so switch to View Tab 
@@ -1784,9 +1070,9 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(Ext.Panel, {
 	 */
 	handleTimeout : function() {
 		if (!this.loadingMask)
-			this.loadingMask = new Ext.LoadMask(Ext.get(this.id + '_change-matrix-form-panel'), 'Loading..');
+			this.loadingMask = new Ext.LoadMask(Ext.get(this.id), 'Loading..');
 		this.loadingMask.hide();
-		Ext.getCmp(this.id + '_change-matrix-submit-button').enable();
+		Ext.getCmp(this.id + '_submit-button').enable();
 		//Ext.Msg.alert(this.changeMatrixTimeoutDialogTitle, this.changeMatrixTimeoutDialogText);
 		
 		var wfsGrid = Ext.getCmp(this.wfsChangeMatrisGridPanel);
@@ -1804,9 +1090,9 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(Ext.Panel, {
 		var me = this;
 
 		if (!this.loadingMask)
-			this.loadingMask = new Ext.LoadMask(Ext.get(this.id + '_change-matrix-form-panel'), 'Loading..');
+			this.loadingMask = new Ext.LoadMask(Ext.get(this.id), 'Loading..');
 		me.loadingMask.show();
-		var submitButton = Ext.getCmp(this.id + '_change-matrix-submit-button');
+		var submitButton = Ext.getCmp(this.id + '_submit-button');
 		if (submitButton)
 			submitButton.disable();
 		if (me.errorTimer)
@@ -1821,22 +1107,23 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(Ext.Panel, {
 	 */
 	handleRequestStop : function() {
 		if (!this.loadingMask)
-			this.loadingMask = new Ext.LoadMask(Ext.get(this.id + '_change-matrix-form-panel'), 'Loading..');
+			this.loadingMask = new Ext.LoadMask(Ext.get(this.id), 'Loading..');
 		this.loadingMask.hide();
-		var submitButton = Ext.getCmp(this.id + '_change-matrix-submit-button');
+		var submitButton = Ext.getCmp(this.id + '_submit-button');
 		if (submitButton)
 			submitButton.enable();
 		/*if (this.errorTimer)
 			clearTimeout(this.errorTimer);*/
-	},
-
-	initComponent: function(config){
-		// copy runtime dependencies
-		this.roiFieldSet.mapPanel = this.target.mapPanel;
-		Ext.apply(this.roiFieldSet, this.geocoderConfig);
-
-		gxp.widgets.form.ChangeMatrixPanel.superclass.initComponent.call(this, config);
 	}
+	// ,
+
+	// initComponent: function(config){
+	// 	// copy runtime dependencies
+	// 	this.roiFieldSet.mapPanel = this.target.mapPanel;
+	// 	Ext.apply(this.roiFieldSet, this.geocoderConfig);
+
+	// 	gxp.widgets.form.ChangeMatrixPanel.superclass.initComponent.call(this, config);
+	// }
 
 });
 

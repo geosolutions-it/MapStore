@@ -145,7 +145,7 @@
 	"customPanels":[{
           "xtype": "panel",
           "border": false,
-          "title": "Change Matrix Runs",
+          "title": "Processes Workspace",
           "id": "outcomelaylistpanel",
           "region": "south",
           "height": 250,
@@ -219,12 +219,10 @@
         	"featureTypeDetails": "changeMatrix",
             "panelsConfig": [{
             	"title": "Change Matrix Runs",
-            	"id" : "changeMatrixRuns1",
             	"featureType": "changematrix"
         	},{
-            	"title": "Change Matrix Runs 2",
-            	"id" : "changeMatrixRuns2",
-            	"featureType": "changematrix2"
+            	"title": "Soil Sealing Runs",
+            	"featureType": "changematrix"
             }]
         },{
             "ptype": "gxp_addlayer",
@@ -304,15 +302,15 @@
 					"name"
 				],
 				"geocoderTypeDisplayField":"name",
-				"geocoderTypePageSize" : 10
+				"geocoderTypePageSize" : 10,
+	            "wpsChgMatrixProcessName" : "gs:ChangeMatrix",
+	            "wpsUnionProcessID" : "JTS:union",
+				"source": "jrc",
+				"nsPrefix": "it.geosolutions",
+	            "storeName" : "unina_ds",
+	            "typeName" : "changematrix",
+	            "jiffleStyle" : "jiffle_style"
             },
-            "wpsChgMatrixProcessName" : "gs:ChangeMatrix",
-            "wpsUnionProcessID" : "JTS:union",
-			"source": "jrc",
-			"nsPrefix": "it.geosolutions",
-            "storeName" : "unina_ds",
-            "typeName" : "changematrix",
-            "jiffleStyle" : "jiffle_style",
 			"classesIndexes" : [
 			  [1,[
 				[1, "Water bodies"],
@@ -391,14 +389,13 @@
             "splitPanels": true,
             "panelsConfig": [{
             	"title": "Change Matrix",
-            	"id" : "changeMatrixTool1",
             	"geocoderConfig": {
-            		"selectReturnType": false
+            		"selectReturnType": false,
+            		"targetResultGridId": "wfsChangeMatrisGridPanel_tab_0"
             	},
             	"xtype": "gxp_changematrixpanel"
         	},{
             	"title": "Soil Sealing",
-            	"id" : "soilsealingtool",
             	"geocoderConfig": {
             		"selectReturnType": true
             	},

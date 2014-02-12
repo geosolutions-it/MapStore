@@ -538,6 +538,9 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		// ///////////////////
 		var me = this;
 
+		var itemsWidth = this.width ? (this.width - 25): 250;
+		// var itemsWidth = 250;
+
 		// i18n for geocoderSelectors
 		if(this.geocoderSelectorsLabels && this.geocoderSelectors){
 			for(var i = 0; i < this.geocoderSelectorsLabels.length; i++){
@@ -557,17 +560,14 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		// Return type options
 		this.returnTypeFieldSet = new Ext.form.FieldSet({
 			title : this.selectionReturnTypeLabel,
-			autoWidth : true,
+			autoWidth : this.autoWidth,
 			layout : 'form',
 			hidden: true,
 			defaultType : 'numberfield',
 			bodyStyle : 'padding:5px',
-			defaults : {
-				width : 255
-			},
 			items : [{
 				xtype : 'combo',
-				anchor : '100%',
+				// anchor : '100%',
 				id : me.id  +'_returnType_id',
 				ref : '../returnType',
 				fieldLabel : this.comboSelectionMethodLabel,
@@ -583,7 +583,6 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 				displayField : 'label',
 				valueField : 'value',
 				value : 'default',
-				width : 255,
 				editable : false,
 				readOnly : false,
 				store : new Ext.data.JsonStore({
@@ -618,7 +617,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		// Selection method combo
 		var selectionMethodCombo = {
 				xtype : 'combo',
-				anchor : '100%',
+				// anchor : '100%',
 				id : this.id + '_selectionMethod_id',
 				ref : '../outputType',
 				fieldLabel : this.comboSelectionMethodLabel,
@@ -634,7 +633,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 				displayField : 'label',
 				valueField : 'value',
 				value : 'bbox',
-				width : 255,
+				width : itemsWidth - 30,
 				editable : false,
 				readOnly : false,
 				store : new Ext.data.JsonStore({
@@ -899,6 +898,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		// ///////////////////////////////////////////
 		var confbbox = {
             map: this.map,
+			width : itemsWidth,
             outputSRS : this.map.projection,
             spatialFilterOptions: this.spatialFilterOptions,
             checkboxToggle: false,
@@ -932,7 +932,8 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		// Spatial Buffer Selector FieldSet
 		// ///////////////////////////////////////////
 		this.bufferFieldSet = new gxp.widgets.form.BufferFieldset({
-			anchor: '100%',
+			// anchor: '100%',
+			width : itemsWidth,
 			ref: "bufferFieldset",
 			collapsed : false,
 			hidden: true,
@@ -1215,8 +1216,11 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 				 	displayField:this.geocoderTypeDisplayField,
 				 	pageSize:this.geocoderTypePageSize,
 				 	tpl:this.geocoderTypeTpl
+				 // 	,
+				 // 	width: itemsWidth / 2 - 10,
+				 // 	autoWidth: this.autoWidth,
+					// labelWidth: 0
 			  	}
-			  	
             };
 			var wfsComboBox = new gxp.form.WFSSearchComboBox(Ext.apply({
 				listeners : {
@@ -1225,7 +1229,8 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 			}, wfssearchboxConf.outputConfig)); 
 
             
-	        this.geocodingField = new Ext.form.CompositeField({		
+	        this.geocodingField = new Ext.form.CompositeField({
+	        	// layout: 'form',
 				labelWidth: 110,
 				items: [
 	                /*{
@@ -1307,9 +1312,12 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		    //
 		    this.geocodingFieldSet = new Ext.form.FieldSet({
 	            title: this.geocodingFieldSetTitle,
-				autoHeight: 342,
+				// autoHeight: 342,
+				width : itemsWidth,
+				autoHeight: this.autoHeight,
 				collapsed: false,
 				hidden: true,
+				layout: 'anchor',
 				listeners: {
 					disable: function(){
 						this.hide();
@@ -1331,12 +1339,13 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		me.items = [{
 			title : this.selectionMethodLabel,
 			xtype : 'fieldset',
-			autoWidth : true,
+			autoWidth : this.autoWidth,
 			layout : 'form',
+			width : itemsWidth,
 			defaultType : 'numberfield',
 			bodyStyle : 'padding:5px',
 			defaults : {
-				width : 255
+				width : itemsWidth
 			},
 			items : [selectionMethodCombo]
 		},
@@ -1353,7 +1362,9 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		me.listeners = {
 			scope : me,
 			afterrender : function(cmp) {
-				cmp.collapse(true);
+				if(this.collapsed){
+					cmp.collapse(true);	
+				}
 			},
 			collapse : function(cmp) {
 				// //////////////////////////
