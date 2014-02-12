@@ -160,6 +160,11 @@ div#homelogos ul li a:hover {
     background-image: url(img/geosilk/server_table.png);
 }
 
+/* gxp_wmsgetfeatureinfo */
+.getfeatureinfo-icon{
+   background-image: url(img/silk/information.png) !important;
+}
+
 /* marker selector*/
 #images-view .x-panel-body{
 	background: white;
