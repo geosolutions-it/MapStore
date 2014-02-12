@@ -28,6 +28,10 @@
       [
          "de",
          "Deutsch"
+      ],
+      [
+         "es",
+         "Español"
       ]
    ],
    "embedLink": {
