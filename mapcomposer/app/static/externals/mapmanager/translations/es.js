@@ -2,11 +2,11 @@
  * Copyright (c) 2009-2010 The Open Planning Project
  */
 
-GeoExt.Lang.add("en", {
+GeoExt.Lang.add("es", {
     "MSMGridPanel.prototype": {
         msg: "Cargando...",
         textSearch: "Buscar",
-        tooltipSearch: "Reiniciar todos los filtros",
+        tooltipSearch: "Buscar en los resultados",
         textReset: "Reiniciar",
         tooltipReset: "Reiniciar todos los filtros",
         gridResourceId: "Id del Recurso",
@@ -14,7 +14,7 @@ GeoExt.Lang.add("en", {
         gridOwner: "Propietario",
         gridDescription: "Descripción",
         gridDateCreation: "Fecha de creación",
-        gridLastUpdate: "Última actualizaicón",
+        gridLastUpdate: "Última actualización",
         errorTitle: "Fallo en la petición",
         errorMsg_500: "¡El servidor ha devuelto un código HTTP 500! </br></br>¡Compruebe el log!",
         errorMsg_501: "¡El servidor ha devuelto un código HTTP 501! </br></br>¡El servidor no soporta todo lo necesario para completar la petición!",
@@ -93,8 +93,8 @@ GeoExt.Lang.add("en", {
 		textName: 'Nombre',
 		textPassword: 'Contraseña',
 		textPasswordEdit: 'Nueva Contraseña',
-		textPasswordConf: 'Confirmar COntraseña',
-		textPasswordConfError: 'COntraseña sin confirmar', 		
+		textPasswordConf: 'Confirmar Contraseña',
+		textPasswordConfError: 'Contraseña sin confirmar', 		
 		textBlankUserName: 'El nombre no puede ser nulo',
 		textBlankPw: 'La contraseña no puede ser nula',
 		textBlankRole: 'Debe seleccionar una regla',		
@@ -104,7 +104,7 @@ GeoExt.Lang.add("en", {
 		beforePageText: "Página",
 		afterPageText : "de {0}",
 		textRole: 'Rol',
-		tooltipDelete: 'Boorrar este usuario',
+		tooltipDelete: 'Borrar este usuario',
 		textDelete: 'Borrar',
 		tooltipSave: 'Salvar este usuario',
 		textSave: 'Salvar',
