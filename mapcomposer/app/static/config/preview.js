@@ -16,11 +16,11 @@
             20037508.34, 20037508.34
         ],
         "layers": [{
-				"source": "osm",
-				"title": "Open Street Map",
-				"name": "mapnik",
-				"group": "background"
-		}],
+		"source": "osm",
+		"title": "Open Street Map",
+		"name": "mapnik",
+		"group": "background"
+        }],
         "center": [1250000.000000, 5370000.000000],
         "zoom": 5
     },
@@ -32,7 +32,7 @@
 		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
 		}, {
 			"ptype": "gxp_addlayer",
-			"showCapabilitiesGrid": false,
+			"showCapabilitiesGrid": true,
 			"id": "addlayer"
 		}, {
 			"ptype": "gxp_geolocationmenu",

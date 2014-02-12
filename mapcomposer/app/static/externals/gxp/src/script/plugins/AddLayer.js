@@ -175,7 +175,35 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			}
 
 			map.zoomToExtent(extent, true);
+		}else{
+			//
+			// Show the capabilities grid if any layers was not found
+			//
+			this.showCapGrid(source.id);
 		}
+	},
+	
+	showCapGrid: function(sourceId){
+		var addLayerAction = this.target.tools["addlayers"];
+		
+		// 
+		// Show the capabilities grid
+		//
+		if(this.showCapabilitiesGrid === true){
+			addLayerAction.showCapabilitiesGrid();
+			
+			//
+			// Select the required source 'sourceId' 
+			//
+			var combo = addLayerAction.getSourceComboBox();
+			
+			var store = combo.getStore();
+			
+			var index = store.find('id', sourceId);
+			var record = store.getAt(index);
+			
+			combo.onSelect(record, 0);
+		}	
 	},
 
     /**  
@@ -309,7 +337,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 						
 						var store = combo.getStore();
 						
-						var index = store.find('id', this.source.id);
+						var index = store.find('id', source.id);
 						var record = store.getAt(index);
 						
 						combo.onSelect(record, 0);
