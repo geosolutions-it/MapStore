@@ -101,6 +101,11 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		geocoderTypePageSize: null,
 		selectReturnType: null
 	},
+
+    /** api: config[clcLevelsConfig]
+     *  ``Object`` CLC levels configuration
+     */
+	clcLevelsConfig: null,
     
     /** api: config[defaultAction]
      *  ``Object`` Time selection set disable elements
@@ -425,12 +430,27 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
                 var i = 0;
                 me.rasterComboBox.items = [];
                 for (var i = 0; i < records.length; i++) {
-                    me.rasterComboBox.items.push({
-                    	boxLabel: records[i].get('title'), 
-                    	name: 'raster', 
-                    	inputValue: records[i].get('name'),
-                    	recordValue: records[i]
-                    })
+                	var boxLabel = records[i].get('title'); 
+                	var inputValue = records[i].get('name');
+                	var append = true;
+                	if (me.clcLevelsConfig 
+                		&& me.clcLevelsConfig.filter
+                		&& inputValue.indexOf(me.clcLevelsConfig.filter) < 0){
+                		append = false;
+                	}else if (me.clcLevelsConfig 
+                		&& me.clcLevelsConfig.filter
+                		&& inputValue.indexOf(me.clcLevelsConfig.filter) > -1
+                		&& me.clcLevelsConfig.decorator){
+            			boxLabel = String.format(me.clcLevelsConfig.decorator, inputValue.split(me.clcLevelsConfig.filter)[1]);
+                	}
+                	if(append){
+	                    me.rasterComboBox.items.push({
+	                    	boxLabel: boxLabel, 
+	                    	name: 'raster', 
+	                    	inputValue: inputValue,
+	                    	recordValue: records[i]
+	                    });	
+                	}
                 }
                 me.rasterComboBox.doLayout();
             });

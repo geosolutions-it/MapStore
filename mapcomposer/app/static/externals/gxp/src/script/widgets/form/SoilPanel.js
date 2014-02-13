@@ -98,9 +98,15 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				4: false,
 				5: false
 			},
+			filterT1ComboBox: false
+		},
+		'sealingIndexImpervious':{
 			rasterComboBox: true,
-			filterT1ComboBox: false,
 			classesselector: true
+		},
+		'sealingIndexCLC':{
+			rasterComboBox: false,
+			classesselector: false
 		},
 		'default':{
 			sealingIndexCLC:{
@@ -121,6 +127,14 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			filterT1ComboBox: false,
 			classesselector: false
 		}
+	},
+
+    /** api: config[clcLevelsConfig]
+     *  ``Object`` CLC levels cconfiguration
+     */
+	clcLevelsConfig:{
+		filter: 'corine_L',
+		decorator: 'Corine Land Cover Level {0}'
 	},
 
     /** api: method[generateItems]
@@ -170,7 +184,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			layout : 'fit',
 			defaultType : 'radiogroup',
 			items : [{
-				ref   : '/sealingIndexCLC',
+				ref   : '../../sealingIndexCLC',
 				id: me.id + "_sealingIndexCLC",
 	            cls: 'x-check-group-alt',
 				name : 'sealingIndex',
@@ -205,7 +219,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			layout : 'fit',
 			defaultType : 'radiogroup',
 			items : [{
-				ref   : '/sealingIndexImpervious',
+				ref   : '../../sealingIndexImpervious',
 				id: me.id + "_sealingIndexImpervious",
 	            cls: 'x-check-group-alt',
 				name : 'sealingIndex',
@@ -264,8 +278,28 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
     /** api: method[selectTimeIndex]
      *  Callback when a time selection item is selected
      */
-	sealingIndexSelect: function(){
-		//TODO: Something?
+	sealingIndexSelect: function(parent, selected){
+		if(parent 
+			&& parent.ref){
+			// Enable or disable elements based on parent.ref
+			var selectedType = parent.ref.replace("../../", "");
+			this.enableOrDisableElements(selectedType);
+			// If is a sealingIndexImpervious, expand ROI
+			if(selectedType == 'sealingIndexImpervious'){
+				// disable check on the other radiogroup
+				this.sealingIndexCLC.items.each(function(item){
+					item.checked = false;
+				});
+				this.activeElementByTitle(this.roiTitleText);
+			}else{
+				// disable check on the other radiogroup
+				this.sealingIndexImpervious.items.each(function(item){
+					item.checked = false;
+				});
+				// Active next accordion: TODO: change to clcLevelTitleText
+				this.activeElementByTitle(this.clcLegendBuilderTitleText);
+			}
+		}
 	},
 
     /** api: method[submitForm]
