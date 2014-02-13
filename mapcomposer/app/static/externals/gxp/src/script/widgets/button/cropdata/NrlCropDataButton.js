@@ -89,7 +89,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
         var data2 = this.form.output.getForm().getFieldValues();
         
         var regionList = data.region_list.toLowerCase();
-        var commodity = data.crop.toLowerCase();
+        var commodity = data2.crop; // fixes #66 issue;
         var season = data.season.toLowerCase();
         var granType = data.areatype;
         var fromYear = data.startYear;

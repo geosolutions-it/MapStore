@@ -121,7 +121,7 @@ Ext.namespace('gxp.charts');
         var data2 = this.form.output.getForm().getFieldValues();
         
         var regionList = data.region_list ? data.region_list.toLowerCase() : null;//this.defaultRegionList.toLowerCase();
-        var commodity = data.crop.toLowerCase();
+        var commodity = data2.crop; // fixes #66 issue
         var season = data.season.toLowerCase();
         var granType = data.areatype.toLowerCase() == "pakistan" ? "province": data.areatype.toLowerCase();
         var fromYear = data.startYear;
