@@ -131,6 +131,12 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 	// config for the details action
 	featureTypeDetails: null,
 
+
+	/** api: config[wfsResumeID]
+	 *  ``String`` identifier for the WFS Resume tool 
+	 */
+	wfsResumeID: "gxp_wfsresume",
+
 	/** private: method[constructor]
 	 */
 	constructor : function(config) {
@@ -281,9 +287,10 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 					}
 					var responseData = JSON.parse(record.get(me.featureTypeDetails));
 
-					var changeMatrixTool=me.target.tools['changeMatrixTool'];
-                    if(changeMatrixTool){
-						var grid = changeMatrixTool.createResultsGrid(responseData.changeMatrix, responseData.rasterName, record.data.referenceName);
+					var wfsResumeTool = me.target.tools[me.wfsResumeID];
+                    if(wfsResumeTool){
+                    	var grid = wfsResumeTool.createResultsGrid(responseData.changeMatrix, responseData.rasterName, record.data.referenceName);
+						// var grid = changeMatrixTool.createResultsGrid(responseData.changeMatrix, responseData.rasterName, record.data.referenceName);
 						/*
 						 * Check if tabs exists and if we are allowed to render to a tab or a floating window
 						 */

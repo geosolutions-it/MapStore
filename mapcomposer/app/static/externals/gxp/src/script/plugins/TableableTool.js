@@ -109,7 +109,7 @@ gxp.plugins.TableableTool = Ext.extend(gxp.plugins.Tool, {
 					newTab.target = this.target;
 					// generate new id
 					newTab.id = this.id + "_tab_" + i;
-					items.push(newTab.getPanel());
+					items.push(newTab.getPanel(this.panelsConfig[i]));
 				}	
 			}
 
@@ -147,7 +147,11 @@ gxp.plugins.TableableTool = Ext.extend(gxp.plugins.Tool, {
 			Ext.apply(panelConfig, config);
 		}
 
-		return new Ext.Panel(panelConfig);
+		if(!panelConfig.xtype){
+			panelConfig.xtype = "panel";
+		}
+
+		return Ext.create(panelConfig);
 	},
 
 	/** private: method[getPanelContent]
