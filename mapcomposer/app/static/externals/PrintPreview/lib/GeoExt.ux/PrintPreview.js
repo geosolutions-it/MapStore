@@ -431,10 +431,11 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             }
 
             panelElements.push({
-                xtype: "container",
+                //xtype: "container",
                 layout: "form",
                 cls: "x-form-item",
-                style:"text-align:left",
+                style:"text-align:left;padding:0px;",
+                bodyStyle: 'padding:4px',
                 items: checkItems
             });
         }

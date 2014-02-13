@@ -63,8 +63,9 @@ GeoExt.ux.GraticuleStylePanel = Ext.extend(Ext.Panel, {
         border: false,    
         layout: "form",
         cls: "x-form-item",
-        style:"text-align:left",
-        ref: 'fieldSet'
+        style:"text-align:left;padding:0px;",
+        ref: 'fieldSet',
+        bodyStyle: 'padding:4px'
     },
 
     /** api: config[deactivate]
@@ -151,91 +152,42 @@ GeoExt.ux.GraticuleStylePanel = Ext.extend(Ext.Panel, {
 
     // private: Get label style control
     getLabelStyleControl: function(){
+
+        // is bold?
+        var isBold = false;
+        if(this.graticuleControl.labelSymbolizer.fontWeight && this.graticuleControl.labelSymbolizer.fontWeight == "bold"){
+            isBold = true;
+        }
+        
+        // is italic?
+        var isItalic = false;
+        if(this.graticuleControl.labelSymbolizer.fontStyle && this.graticuleControl.labelSymbolizer.fontStyle == "italic"){
+            isItalic = true;
+        }
+
+        // set default style for the graticule
+        var defaultTextStyle = {
+            fontStyle: isBold ? "bold" : isItalic ? "italic" : "normal", 
+            fontName: this.graticuleControl.labelSymbolizer.fontFamily || "Verdana", 
+            fontSize: this.graticuleControl.labelSymbolizer.fontSize || 8
+        };
+
         this.textSymbolizer = {
-            cls: "x-html-editor-tb",
+            xtype: "gxp_text_style_field",
             fieldLabel: this.fontEditorText,
-            style: "background: transparent; border: none; padding: 0 0em 0.5em;",
-            xtype: "toolbar",
             ref: "textSymbolizer",
             disabled: this.deactivate,
-            items: [{
-                    xtype: "gxp_fontcombo",
-                    fonts: this.fonts || undefined,
-                    width: 110,
-                    value: this.graticuleControl.labelSymbolizer.fontFamily || "Verdana",
-                    listeners: {
-                        select: function(combo, record) {
-                            var value = record.get("field1");
-                            this.setSymbolizerParam("fontFamily", value);
-                        },
-                        scope: this
+            defaultStyle: defaultTextStyle,
+            listeners:{
+                change: function(fieldSet, textStyle){
+                    if(!!textStyle){
+                        for(var key in textStyle){
+                            this.setSymbolizerParam(key, textStyle[key]);
+                        }
                     }
-                }, {
-                    xtype: "tbtext",
-                    text: this.sizeText + ": "
-                }, {
-                    xtype: "numberfield",
-                    allowNegative: false,
-                    emptyText: OpenLayers.Renderer.defaultSymbolizer.fontSize,
-                    value: this.graticuleControl.labelSymbolizer.fontSize || 8,
-                    width: 30,
-                    listeners: {
-                        change: function(field, value) {
-                            value = parseFloat(value);
-                            this.setSymbolizerParam("fontSize", value);
-                        },
-                        scope:this
-                    }
-                }, {
-                    // now you only add italic *OR* bold, if this change, change listener!!
-                    enableToggle: true,
-                    cls: "x-btn-icon",
-                    iconCls: "x-edit-bold",
-                    pressed: this.graticuleControl.labelSymbolizer.fontWeight && this.graticuleControl.labelSymbolizer.fontWeight == "bold",
-                    group: "fontWeight",
-                    listeners: {
-                        toggle: function(button, pressed) {
-                            var value = pressed ? "bold" : "normal";
-                            if(pressed){
-                                for(var i = 0; i < button.ownerCt.items.keys.length; i++){
-                                    var key = button.ownerCt.items.keys[i];
-                                    var formParam = button.ownerCt.items.get(key);
-                                    if(formParam.id != button.id
-                                        && formParam.group == button.group){
-                                        formParam.toggle(false);
-                                        return;
-                                    }
-                                };
-                            }
-                            this.setSymbolizerParam("fontWeight", value);
-                        },
-                        scope:this
-                    }
-                }, {
-                    // now you only add italic *OR* bold, if this change, change listener!!
-                    enableToggle: true,
-                    cls: "x-btn-icon",
-                    iconCls: "x-edit-italic",
-                    pressed: this.graticuleControl.labelSymbolizer.fontStyle && this.graticuleControl.labelSymbolizer.fontStyle == "italic",
-                    group: "fontStyle",
-                    listeners: {
-                        toggle: function(button, pressed) {
-                            var value = pressed ? "italic" : "normal";
-                            if(pressed){
-                                for(var i = 0; i < button.ownerCt.items.keys.length; i++){
-                                    var key = button.ownerCt.items.keys[i];
-                                    var formParam = button.ownerCt.items.get(key);
-                                    if(formParam.id != button.id
-                                        && formParam.group == button.group){
-                                        formParam.toggle(false);
-                                    }
-                                }
-                            }
-                            this.setSymbolizerParam("fontStyle", value);
-                        },
-                        scope:this
-                    }
-                }]
+                }, 
+                scope:this
+            }
         };
 
         return this.textSymbolizer;
@@ -334,8 +286,7 @@ GeoExt.ux.GraticuleStylePanel = Ext.extend(Ext.Panel, {
         return  new Ext.form.Checkbox({
             name: "graticuleTool",
             checked: !this.deactivate,
-            boxLabel: this.graticuleFieldLabelText,
-            hideLabel: true,
+            fieldLabel: this.graticuleFieldLabelText,
             ref: "checkbox",
             ctCls: "gx-item-nowrap",
             handler: function(cb, value) {
