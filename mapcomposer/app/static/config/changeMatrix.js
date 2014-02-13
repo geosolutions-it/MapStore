@@ -389,6 +389,7 @@
             "splitPanels": true,
             "panelsConfig": [{
             	"title": "Change Matrix",
+            	"clcLevelMode": "combobox",
             	"geocoderConfig": {
             		"selectReturnType": false,
             		"targetResultGridId": "wfsChangeMatrisGridPanel_tab_0"
@@ -404,6 +405,10 @@
         },{
         	"ptype": "gxp_georeferences",
         	"actionTarget": "paneltbar"
+        },{
+        	"ptype": "gxp_wfsresume",
+        	"id": "gxp_wfsresume",
+        	"url": "http://localhost:8080/geoserver/wms?"
         },{
             "actions": ["->"],
             "actionTarget": "paneltbar"

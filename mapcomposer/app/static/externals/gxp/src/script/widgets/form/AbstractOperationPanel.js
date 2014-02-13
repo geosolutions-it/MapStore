@@ -49,22 +49,6 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 	currentTimeFieldLabel: 'Reference time',
 	referenceTimeFieldLabel: 'Current time', 
 
-	// First fieldset
-	basedOnCLCText: 'Based on CLC',
-	coverText: 'Coefficiente Copertura',
-	changingTaxText: 'Tasso di Variazione',
-	marginConsumeText: 'Consumo Marginale del Suolo',
-	sprawlText: 'Sprawl Urbano',
-
-	// Second fieldset
-	basedOnImperviousnessText: 'Based on Imperviousness',
-	urbanDispersionText: 'Dispersione Urbana',
-	edgeDensityText: 'Edge Density',
-	urbanDiffusionText: 'Diffusione Urbana',
-	framesText: 'Frammentazione',
-	consumeOnlyText: 'Consumo Suolo',
-	consumeOnlyConfText: 'Coefficiente Ambientale Cons. Suolo',
-
 	// Years text
 	oneYearText: 'one year',
 	twoYearsText: 'two years',
@@ -73,18 +57,29 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 	submitButtonText: 'Submit',
 	resetButtonText: 'Reset',
 
+	/** api: config[changeMatrixEmptyFilter]
+	 *  ``String``
+	 *  Form validation messages: Empty filter (i18n).
+	 */
+	changeMatrixEmptyFilter : "Please specify both time filters",
+
 	/** EoF i18n **/
 
-	// cclLevelMode: 'another',
-	cclLevelMode: 'radiogroup',
+	// clcLevelMode: 'another',
+    
+    /** api: config[clcLevelMode]
+     *  ``String`` Geocoder configuration for the ROI and WPS procces
+     */
+	clcLevelMode: 'radiogroup',
 	useAccordion: true,
 
+	// layout config
 	layout: 'form',
 	labelAlign: 'top',
-
-	/**
-	 * Geocoder configuration
-	 **/ 
+    
+    /** api: config[defaultAction]
+     *  ``Object`` Geocoder configuration for the ROI and WPS procces
+     */
 	geocoderConfig:{
 		wpsUnionProcessID: null,
 		wpsBufferProcessID: null,
@@ -106,72 +101,15 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		geocoderTypePageSize: null,
 		selectReturnType: null
 	},
-
-	/**
-	 * Time selection set disable elements
-	 **/ 
+    
+    /** api: config[defaultAction]
+     *  ``Object`` Time selection set disable elements
+     */
 	enableOrDisableConfig:{
-		1:{
-			sealingIndexCLC:{
-				0: false,
-				1: true,
-				2: true,
-				3: true
-			},
-			sealingIndexImpervious:{
-				0: false,
-				1: false,
-				2: false,
-				3: false,
-				4: true,
-				5: true
-			},
-			rasterComboBox: false,
-			filterT1ComboBox: true,
-			classesselector: false
-		},
-		2:{
-			sealingIndexCLC:{
-				0: false,
-				1: false,
-				2: false,
-				3: false
-			},
-			sealingIndexImpervious:{
-				0: false,
-				1: false,
-				2: false,
-				3: false,
-				4: false,
-				5: false
-			},
-			rasterComboBox: true,
-			filterT1ComboBox: false,
-			classesselector: true
-		},
-		'default':{
-			sealingIndexCLC:{
-				0: false,
-				1: false,
-				2: false,
-				3: false
-			},
-			sealingIndexImpervious:{
-				0: false,
-				1: false,
-				2: false,
-				3: false,
-				4: false,
-				5: false
-			},
-			rasterComboBox: false,
-			filterT1ComboBox: false,
-			classesselector: false
-		}
 	},
 
-	/** private: method[initComponent]
-	 *  Generate a panel with the configuration present on this
+	/** private: method[constructor]
+	 *  Prepare the layout for the panel
 	 */
 	constructor: function(config){
 
@@ -210,6 +148,10 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		gxp.widgets.form.AbstractOperationPanel.superclass.constructor.call(this, panelConfig);
 	},
 
+
+	/** api: method[initComponent]
+	 *  Generate a panel with the configuration present on this
+	 */
 	initComponent: function(config){
 		var me = this;
 
@@ -273,30 +215,53 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		gxp.widgets.form.AbstractOperationPanel.superclass.initComponent.call(this, config);
 	},
 
+    /** api: method[generateItems]
+     *  :arg config: ``String`` Configuration to be applied on this
+     *  :returns: ``Array`` items for the form.
+     *  Override it on custom panels
+     */
 	generateItems: function(config){
-		return [{
-    		title: this.timeSelectionTitleText,
-    		// layout : 'fit',
-	        items: this.getTimeSelectionItems(config)
-	    },{
-    		title: this.soilSealingIndexTitleText,
-	        items: this.getSealingIndexItems(config)
-	    },{
-    		title: this.clcLevelTitleText,
-    		layout : 'fit',
-	        items: this.getCclLevelItems(config)
-	    },{
-    		title: this.clcLegendBuilderTitleText,
-			layout : 'table',
-			columns: 1,
-	        items: this.getCclLegendItems(config)
-	    },{
-    		title: this.roiTitleText,
-			layout : 'vBox',
-	        items: this.getRoiItems(config)
-	    }];
+		return [];
 	},
 
+    /** api: method[submitForm]
+     *  Submit form. To be overrided on custom elements
+     */
+	submitForm: function() {
+		console.log("TODO");
+	},
+
+    /** api: method[resetForm]
+     *  Reset form.
+     */
+	resetForm: function(){
+		if(this.roiFieldSet.rendered){
+			this.roiFieldSet.removeFeatureSummary();
+			this.roiFieldSet.reset();
+			this.roiFieldSet.collapse();	
+		}
+		this.getForm().reset();
+		this.enableOrDisableElements('default');
+	},
+    
+    /** api: method[activeElementByTitle]
+     *  :arg title: ``String`` Title for the item to be expanded
+     *  Expand the item with the `title` on this panel.
+     */
+	activeElementByTitle: function(title){
+		if(this.items && this.items.each){
+			this.items.each(function (item){
+				if(item.title == title){
+					item.expand();
+				}
+			});
+		}
+	},
+
+    /** api: method[enableOrDisableElements]
+     *  :arg config: ``String`` Configuration to be applied on this
+     *  Enable or disable elements on this based on `this.enableOrDisableConfig`
+     */
 	enableOrDisableElements: function(config){
 		if(this.enableOrDisableConfig
 				&& this.enableOrDisableConfig[config]){
@@ -330,6 +295,11 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 			}
 	},
 
+    /** api: method[getTimeSelectionItems]
+     *  :arg config: ``String`` for this element. Unused
+     *  :returns: ``Array`` items for the timeSelection element.
+     *  Obtain time selection elements.
+     */
 	getTimeSelectionItems: function(config){
 		var me = this;
 		var onElementSelect = function(el, selected, index) {
@@ -342,6 +312,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 	            xtype: 'radiogroup',
 				ref   : '/yearsSelection',
 	            cls: 'x-check-group-alt',
+				id   : me.id + '_yearsSelection',
 				name : 'years',
             	columns: 1,
             	items:[{
@@ -384,6 +355,10 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 					if (Ext.isEmpty(value))
 						return me.changeMatrixEmptyFilter;
 					return true;
+				},
+				listeners : {
+					scope : this,
+					select : me.selectTimeIndex
 				}
 			}, {
 				xtype : "combo",
@@ -406,160 +381,32 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 					if (Ext.isEmpty(value))
 						return me.changeMatrixEmptyFilter;
 					return true;
+				},
+				listeners : {
+					scope : me,
+					select : me.selectTimeIndex
 				}
 			}]
 		}];
 	},
 
-	getSealingIndexItems: function(config){
-
-		var me = this;
-		var onElementSelect = function(el, selected, index) {
-			//TODO
-		};
-
-		return [{
-			title : this.basedOnCLCText,
-			xtype : 'fieldset',
-			autoWidth : true,
-			collapsible : false,
-			layout : 'fit',
-			defaultType : 'radiogroup',
-			items : [{
-				ref   : '/sealingIndexCLC',
-				id: me.id + "_sealingIndexCLC",
-	            cls: 'x-check-group-alt',
-				name : 'sealingIndex',
-            	columns: 1,
-            	items:[{
-                	boxLabel: this.coverText, 
-                	name: 'sealingIndex', 
-                	inputValue: this.coverText
-                },{
-                	boxLabel: this.changingTaxText, 
-                	name: 'sealingIndex', 
-                	inputValue: this.changingTaxText
-                },{
-                	boxLabel: this.marginConsumeText, 
-                	name: 'sealingIndex', 
-                	inputValue: this.marginConsumeText
-                },{
-                	boxLabel: this.sprawlText, 
-                	name: 'sealingIndex', 
-                	inputValue: this.sprawlText
-                }],
-            	listeners:{
-            		change: onElementSelect
-            	}
-            }]
-        },{
-			title : this.basedOnImperviousnessText,
-			xtype : 'fieldset',
-			autoWidth : true,
-			collapsible : false,
-			layout : 'fit',
-			defaultType : 'radiogroup',
-			items : [{
-				ref   : '/sealingIndexImpervious',
-				id: me.id + "_sealingIndexImpervious",
-	            cls: 'x-check-group-alt',
-				name : 'sealingIndex',
-            	columns: 1,
-			    defaults: {
-			        // applied to each contained panel
-			        bodyStyle: 'padding:15px'
-			    },
-            	items:[{
-                	boxLabel: this.urbanDispersionText, 
-                	name: 'sealingIndex', 
-                	inputValue: this.urbanDispersionText
-                },{
-                	boxLabel: this.edgeDensityText, 
-                	name: 'sealingIndex', 
-                	inputValue: this.edgeDensityText
-                },{
-                	boxLabel: this.urbanDiffusionText, 
-                	name: 'sealingIndex', 
-                	inputValue: this.urbanDiffusionText
-                },{
-                	boxLabel: this.framesText, 
-                	name: 'sealingIndex', 
-                	inputValue: this.framesText
-                },{
-                	boxLabel: this.consumeOnlyText, 
-                	name: 'sealingIndex', 
-                	inputValue: this.consumeOnlyText
-                },{
-                	boxLabel: this.consumeOnlyConfText, 
-                	name: 'sealingIndex', 
-                	inputValue: this.consumeOnlyConfText
-                }],
-            	listeners:{
-            		change: onElementSelect
-            	}
-            }]
-        }];
+    /** api: method[selectTimeIndex]
+     *  Callback when a time selection item is selected. To be overrided on custom panels
+     */
+	selectTimeIndex: function(){
 	},
 
+    /** api: method[getCclLevelItems]
+     *  :arg config: ``Object`` Configuration for this. Unused
+     *  :returns: ``Array`` items for the CLC level element.
+     *  Obtain CLC level elements.
+     */
 	getCclLevelItems: function(config){
 		var me = this;
 
 		var cclLevelItem0;
 
-		// Select a layer record as CCL
-		var onElementSelect = function(el, selected, index) {
-
-			// clean
-			me.roiFieldSet.removeFeatureSummary();
-			me.roiFieldSet.reset();
-
-			// get layer record from the selected element
-			var record = selected;
-			if(!selected.get){
-				record = selected.recordValue;
-			}
-
-			// //////////////////////////////////////////////////
-			// Populate time filters combo boxes.
-			// //////////////////////////////////////////////////
-			var data = [];
-			if (record.get('times') && !Ext.isEmpty(record.get('times'))) {
-				var times = record.get('times').split(',');
-				for (var i = 0; i < times.length; i++) {
-					var recordData = ["time = '" + times[i] + "'"];
-					data.push(recordData);
-				}
-			}
-
-			me.timeValuesStore.removeAll();
-			me.timeValuesStore.loadData(data, false);
-
-			// //////////////////////////////////////////////////
-			// Populate the itemselector classes
-			// //////////////////////////////////////////////////
-			var itemClassSelector = Ext.getCmp(me.id + '_classesselector');
-			itemClassSelector.storeTo.removeAll();
-			itemClassSelector.storeFrom.removeAll();
-			var classDataIndex = 0;
-			for ( classDataIndex = 0; classDataIndex < me.classes.length; classDataIndex++) {
-				if (me.classes[classDataIndex].layer == record.get('name'))
-					break;
-			}
-			if (classDataIndex < me.classes.length) {
-				var classesDataStore = [];
-
-				for (var cc=0;cc<me.classes[classDataIndex].values.length;cc++) {
-					for (var ci=0;ci<me.classesIndexes[me.classes[classDataIndex].level-1][1].length;ci++) {
-						if (me.classesIndexes[me.classes[classDataIndex].level-1][1][ci][0] == me.classes[classDataIndex].values[cc])
-							classesDataStore.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][ci]);
-					}
-				}
-
-				itemClassSelector.storeFrom.loadData(classesDataStore, false);
-			}
-		};
-
-		if(this.cclLevelMode == 'radiogroup'){
+		if(this.clcLevelMode == 'radiogroup'){
 			cclLevelItem0 = {
 	            xtype: 'radiogroup',
 	            fieldLabel: this.clcLevelTitleText,
@@ -569,7 +416,8 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 				name : 'raster',
             	columns: 1,
             	listeners:{
-            		change: onElementSelect
+            		change: me.onLayerSelect,
+            		scope: this
             	}
 	        };    
 
@@ -642,7 +490,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 						//me.roiFieldSet.collapse();
 						me.getForm().reset();
 					},
-					select : onElementSelect,
+					select : me.onLayerSelect,
 					beforequery : function() {
 						this.reloadLayers();
 					}
@@ -652,6 +500,70 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		return [cclLevelItem0];
 	},
 
+    /** api: method[onLayerSelect]
+     *  :arg el: ``Object`` Component
+     *  :arg selected: ``Object`` Selected element
+     *  Select a layer record as CLC level and initialize needed items on the form
+     */
+	onLayerSelect: function(el, selected, index) {
+		var me = this;
+
+		// clean
+		this.roiFieldSet.removeFeatureSummary();
+		this.roiFieldSet.reset();	
+
+		// get layer record from the selected element
+		var record = selected;
+		if(!selected.get){
+			record = selected.recordValue;
+		}
+
+		// //////////////////////////////////////////////////
+		// Populate time filters combo boxes.
+		// //////////////////////////////////////////////////
+		var data = [];
+		if (record.get('times') && !Ext.isEmpty(record.get('times'))) {
+			var times = record.get('times').split(',');
+			for (var i = 0; i < times.length; i++) {
+				var recordData = ["time = '" + times[i] + "'"];
+				data.push(recordData);
+			}
+		}
+
+		me.timeValuesStore.removeAll();
+		me.timeValuesStore.loadData(data, false);
+
+		// //////////////////////////////////////////////////
+		// Populate the itemselector classes
+		// //////////////////////////////////////////////////
+		var itemClassSelector = Ext.getCmp(me.id + '_classesselector');
+		itemClassSelector.storeTo.removeAll();
+		itemClassSelector.storeFrom.removeAll();
+		var classDataIndex = 0;
+		for ( classDataIndex = 0; classDataIndex < me.classes.length; classDataIndex++) {
+			if (me.classes[classDataIndex].layer == record.get('name'))
+				break;
+		}
+		if (classDataIndex < me.classes.length) {
+			var classesDataStore = [];
+
+			for (var cc=0;cc<me.classes[classDataIndex].values.length;cc++) {
+				for (var ci=0;ci<me.classesIndexes[me.classes[classDataIndex].level-1][1].length;ci++) {
+					if (me.classesIndexes[me.classes[classDataIndex].level-1][1][ci][0] == me.classes[classDataIndex].values[cc])
+						classesDataStore.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][ci]);
+				}
+			}
+
+			itemClassSelector.storeFrom.loadData(classesDataStore, false);
+		}
+		me.activeElementByTitle(me.timeSelectionTitleText);
+	},
+
+    /** api: method[getCclLegendItems]
+     *  :arg config: ``Object`` Configuration for this. Unused
+     *  :returns: ``Array`` items for the CLC legend element.
+     *  Obtain CLC legend elements.
+     */
 	getCclLegendItems: function(config){
 		var me = this;
 		return [{
@@ -688,6 +600,12 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		}];
 	},
 
+
+    /** api: method[getRoiItems]
+     *  :arg config: ``Object`` Configuration for this. Unused
+     *  :returns: ``Array`` items for the ROI element.
+     *  Obtain ROI elements.
+     */
 	getRoiItems: function(config){
 		// Fieldset configurtions
 		var roiFieldSetConfig = {
@@ -721,6 +639,11 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		return [roiFieldSetConfig]
 	},
 
+    /** api: method[generateBbar]
+     *  :arg config: ``Object`` Configuration for this. Unused
+     *  :returns: ``Ext.Toolbar`` for the buttom bar.
+     *  Obtain buttom bar.
+     */
 	generateBbar: function(config){
 		var me = this;
 
@@ -739,20 +662,6 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 					scope:this
 				}]
 		});
-	},
-
-	submitForm: function() {
-		console.log("TODO");
-	},
-
-	resetForm: function(){
-		if(this.roiFieldSet.rendered){
-			this.roiFieldSet.removeFeatureSummary();
-			this.roiFieldSet.reset();
-			this.roiFieldSet.collapse();	
-		}
-		this.getForm().reset();
-		this.enableOrDisableElements('default');
 	},
 
 	/** private: method[reloadLayers]

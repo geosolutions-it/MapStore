@@ -41,7 +41,236 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	/** api: xtype = gxp_soilpanel */
 	xtype : "gxp_soilpanel",
 
+	/** i18n **/
+	// First fieldset
+	basedOnCLCText: 'Based on CLC',
+	coverText: 'Coefficiente Copertura',
+	changingTaxText: 'Tasso di Variazione',
+	marginConsumeText: 'Consumo Marginale del Suolo',
+	sprawlText: 'Sprawl Urbano',
 
+	// Second fieldset
+	basedOnImperviousnessText: 'Based on Imperviousness',
+	urbanDispersionText: 'Dispersione Urbana',
+	edgeDensityText: 'Edge Density',
+	urbanDiffusionText: 'Diffusione Urbana',
+	framesText: 'Frammentazione',
+	consumeOnlyText: 'Consumo Suolo',
+	consumeOnlyConfText: 'Coefficiente Ambientale Cons. Suolo',
+
+	/** EoF i18n **/
+    
+    /** api: config[defaultAction]
+     *  ``Object`` Time selection set disable elements
+     */
+	enableOrDisableConfig:{
+		1:{
+			sealingIndexCLC:{
+				0: false,
+				1: true,
+				2: true,
+				3: true
+			},
+			sealingIndexImpervious:{
+				0: false,
+				1: false,
+				2: false,
+				3: false,
+				4: true,
+				5: true
+			},
+			rasterComboBox: false,
+			filterT1ComboBox: true,
+			classesselector: false
+		},
+		2:{
+			sealingIndexCLC:{
+				0: false,
+				1: false,
+				2: false,
+				3: false
+			},
+			sealingIndexImpervious:{
+				0: false,
+				1: false,
+				2: false,
+				3: false,
+				4: false,
+				5: false
+			},
+			rasterComboBox: true,
+			filterT1ComboBox: false,
+			classesselector: true
+		},
+		'default':{
+			sealingIndexCLC:{
+				0: false,
+				1: false,
+				2: false,
+				3: false
+			},
+			sealingIndexImpervious:{
+				0: false,
+				1: false,
+				2: false,
+				3: false,
+				4: false,
+				5: false
+			},
+			rasterComboBox: false,
+			filterT1ComboBox: false,
+			classesselector: false
+		}
+	},
+
+    /** api: method[generateItems]
+     *  :arg config: ``String`` Configuration to be applied on this
+     *  :returns: ``Array`` items for the form.
+     *  Custom elements for the soil sealing panel
+     */
+	generateItems: function(config){
+		return [{
+    		title: this.timeSelectionTitleText,
+    		// layout : 'fit',
+	        items: this.getTimeSelectionItems(config)
+	    },{
+    		title: this.soilSealingIndexTitleText,
+	        items: this.getSealingIndexItems(config)
+	    },{
+    		title: this.clcLevelTitleText,
+    		layout : 'fit',
+	        items: this.getCclLevelItems(config)
+	    },{
+    		title: this.clcLegendBuilderTitleText,
+			layout : 'table',
+			columns: 1,
+	        items: this.getCclLegendItems(config)
+	    },{
+    		title: this.roiTitleText,
+			layout : 'vBox',
+	        items: this.getRoiItems(config)
+	    }];
+	},
+
+
+    /** api: method[getSealingIndexItems]
+     *  :arg config: ``String`` for this element. Unused
+     *  :returns: ``Array`` items for the sealing index element.
+     *  Obtain sealing index elements.
+     */
+	getSealingIndexItems: function(config){
+
+		var me = this;
+
+		return [{
+			title : this.basedOnCLCText,
+			xtype : 'fieldset',
+			autoWidth : true,
+			collapsible : false,
+			layout : 'fit',
+			defaultType : 'radiogroup',
+			items : [{
+				ref   : '/sealingIndexCLC',
+				id: me.id + "_sealingIndexCLC",
+	            cls: 'x-check-group-alt',
+				name : 'sealingIndex',
+            	columns: 1,
+            	items:[{
+                	boxLabel: this.coverText, 
+                	name: 'sealingIndex', 
+                	inputValue: this.coverText
+                },{
+                	boxLabel: this.changingTaxText, 
+                	name: 'sealingIndex', 
+                	inputValue: this.changingTaxText
+                },{
+                	boxLabel: this.marginConsumeText, 
+                	name: 'sealingIndex', 
+                	inputValue: this.marginConsumeText
+                },{
+                	boxLabel: this.sprawlText, 
+                	name: 'sealingIndex', 
+                	inputValue: this.sprawlText
+                }],
+            	listeners:{
+            		change: this.sealingIndexSelect,
+            		scope: this
+            	}
+            }]
+        },{
+			title : this.basedOnImperviousnessText,
+			xtype : 'fieldset',
+			autoWidth : true,
+			collapsible : false,
+			layout : 'fit',
+			defaultType : 'radiogroup',
+			items : [{
+				ref   : '/sealingIndexImpervious',
+				id: me.id + "_sealingIndexImpervious",
+	            cls: 'x-check-group-alt',
+				name : 'sealingIndex',
+            	columns: 1,
+			    defaults: {
+			        // applied to each contained panel
+			        bodyStyle: 'padding:15px'
+			    },
+            	items:[{
+                	boxLabel: this.urbanDispersionText, 
+                	name: 'sealingIndex', 
+                	inputValue: this.urbanDispersionText
+                },{
+                	boxLabel: this.edgeDensityText, 
+                	name: 'sealingIndex', 
+                	inputValue: this.edgeDensityText
+                },{
+                	boxLabel: this.urbanDiffusionText, 
+                	name: 'sealingIndex', 
+                	inputValue: this.urbanDiffusionText
+                },{
+                	boxLabel: this.framesText, 
+                	name: 'sealingIndex', 
+                	inputValue: this.framesText
+                },{
+                	boxLabel: this.consumeOnlyText, 
+                	name: 'sealingIndex', 
+                	inputValue: this.consumeOnlyText
+                },{
+                	boxLabel: this.consumeOnlyConfText, 
+                	name: 'sealingIndex', 
+                	inputValue: this.consumeOnlyConfText
+                }],
+            	listeners:{
+            		change: this.sealingIndexSelect,
+            		scope: this
+            	}
+            }]
+        }];
+	},
+
+    /** api: method[selectTimeIndex]
+     *  Callback when a time selection item is selected
+     */
+	selectTimeIndex: function(){
+		var filter0 = Ext.getCmp(this.id + '_filterT0ComboBox');
+		var filter1 = Ext.getCmp(this.id + '_filterT1ComboBox');
+		var yearsSelection = Ext.getCmp(this.id + '_yearsSelection');
+		if(filter0  && filter0.getValue() 
+			&& filter1 && filter1.getValue()
+			&& yearsSelection && yearsSelection.getValue()){
+			this.activeElementByTitle(this.soilSealingIndexTitleText);
+		}
+	},
+
+    /** api: method[selectTimeIndex]
+     *  Callback when a time selection item is selected
+     */
+	sealingIndexSelect: function(){
+		//TODO: Something?
+	},
+
+    /** api: method[submitForm]
+     *  Submit form. FIXME: include new functionalities
+     */
 	submitForm: function() {
 		console.log("TODO Soil panel");
 	}
