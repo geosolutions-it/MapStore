@@ -289,8 +289,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 
 					var wfsResumeTool = me.target.tools[me.wfsResumeID];
                     if(wfsResumeTool){
-                    	var grid = wfsResumeTool.createResultsGrid(responseData.changeMatrix, responseData.rasterName, record.data.referenceName);
-						// var grid = changeMatrixTool.createResultsGrid(responseData.changeMatrix, responseData.rasterName, record.data.referenceName);
+                    	var grid = wfsResumeTool.createResultsGrid(responseData, responseData.rasterName, record.data.referenceName, me.featureType);
 						/*
 						 * Check if tabs exists and if we are allowed to render to a tab or a floating window
 						 */

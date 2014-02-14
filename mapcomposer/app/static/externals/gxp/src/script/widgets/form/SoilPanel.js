@@ -306,7 +306,210 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
      *  Submit form. FIXME: include new functionalities
      */
 	submitForm: function() {
-		console.log("TODO Soil panel");
+		//TODO: Get result from WPS process
+		var responseData = this.getFakeResponse();
+
+
+		var me = this;
+		var wfsResumeTool = this.target.tools['gxp_wfsresume'];
+        if(wfsResumeTool){
+        	var grid = wfsResumeTool.createResultsGrid(responseData, 'soilsealing', 'soilsealing', 'soilsealing');
+        	// var grid = wfsResumeTool.createResultsGrid(this.defaultInput2, 'soilsealing', 'soilsealing', 'soilsealing');
+			var hasTabPanel = false;
+			if (me.target.renderToTab) {
+				var container = Ext.getCmp(me.target.renderToTab);
+				if (container.isXType('tabpanel'))
+					hasTabPanel = true;
+			}
+	
+			if (hasTabPanel) {
+				if (grid.win)
+					grid.win.destroy();
+				var now = new Date();
+				grid.title += ' - ' + Ext.util.Format.date(now, 'H:i:s');
+				container.add(grid);
+				container.setActiveTab(container.items.length - 1);
+			} else {
+				if (me.resultWin)
+					me.resultWin.destroy();
+	
+				//remove title to avoid double header
+				grid.title = undefined;
+	
+				me.resultWin = new Ext.Window({
+					width : 450,
+					height : 450,
+					layout : 'fit',
+					title : grid.changeMatrixResultsTitle,
+					constrainHeader : true,
+					renderTo : me.target.mapPanel.body,
+					items : [grid]
+				});
+				me.resultWin.show();
+			}
+			//if(this.win) this.win.destroy();
+			grid.doLayout();
+        }
+	},
+
+	// TODO: Remove all code before this one
+	defaultInput: {
+	  "index": {
+	    "id": 1,
+	    "name": "Coverage Ratio (Demo)"
+	  },
+	  "refTime": {
+	    "time": "2000-01-01",
+	    "output": {
+	      "admUnits": [
+	        "Pisa",
+	        "Livorno"
+	      ],
+	      "clcLevels": [
+	        "Class-1",
+	        "Class-2",
+	        "Class-3"
+	      ],
+	      "values": [
+	        [
+	          20,
+	          30,
+	          50
+	        ],
+	        [
+	          12,
+	          63,
+	          25
+	        ]
+	      ]
+	    }
+	  }
+	},
+
+	defaultInput2: {
+	  "index": {
+	    "id": 1,
+	    "name": "Coverage Ratio (Demo)"
+	  },
+	  "refTime": {
+	    "time": "2000-01-01",
+	    "output": {
+	      "admUnits": [
+	        "Pisa",
+	        "Livorno"
+	      ],
+	      "clcLevels": [
+	        "Class-1",
+	        "Class-2",
+	        "Class-3"
+	      ],
+	      "values": [
+	        [
+	          20,
+	          30,
+	          50
+	        ],
+	        [
+	          12,
+	          63,
+	          25
+	        ]
+	      ]
+	    }
+	  },
+	  "curTime": {
+	    "time": "2006-01-01",
+	    "output": {
+	      "admUnits": [
+	        "Pisa",
+	        "Livorno"
+	      ],
+	      "clcLevels": [
+	        "Class-1",
+	        "Class-2",
+	        "Class-3"
+	      ],
+	      "values": [
+	        [
+	          10,
+	          40,
+	          50
+	        ],
+	        [
+	          32,
+	          21,
+	          47
+	        ]
+	      ]
+	    }
+	  }
+	},
+
+	getFakeResponse: function(){
+		var responseData = null;
+		var values = this.getForm().getValues();
+		try{
+			var adminUnits = [];
+			// TODO: change it if localited!!
+			if(values.roiSelectionMethod != "Administrative Areas" 
+				|| values.roiReturnMethod == 'Geometry Union'){
+				adminUnits.push(values.roiSelectionMethod);
+			}else{
+				var selectedAreas = this.roiFieldSet.getSelectedAreas().split(this.roiFieldSet.selectedAreasSeparator);
+				for (var i = 0; i < selectedAreas.length; i++){
+					var areaAndParent = selectedAreas[i].split(this.roiFieldSet.selectedAreaParentSeparator);
+					adminUnits.push(areaAndParent[0] + " - " + areaAndParent[1]);
+				}
+			}
+			// Generate random values
+			var clcLevels = values.classesselector.split(",");
+			var clcValues = this.fakeValuesGenerator(adminUnits, clcLevels);
+			var responseData = {
+			  "index": {
+			    "id": 1,
+			    "name": "Coverage Ratio"
+			  },
+			  "refTime": {
+			    "time": values.filterT0,
+			    "output": {
+			      "admUnits": adminUnits,
+			      "clcLevels": clcLevels,
+			      "values": clcValues
+			    }
+			  }
+			};
+			if(values.filterT1){
+				var clcValuesT1 = this.fakeValuesGenerator(adminUnits, clcLevels);
+				responseData["curTime"] = {
+				    "time": values.filterT1,
+				    "output": {
+				      "admUnits": adminUnits,
+				      "clcLevels": clcLevels,
+				      "values": clcValuesT1
+				    }
+			  	};
+			}
+		}catch(e){
+			if(values.years && values.years == 2){
+				responseData = this.defaultInput2;
+			}else{
+				responseData = this.defaultInput;
+			}
+		}
+		return responseData;
+	},
+
+	fakeValuesGenerator: function(adminUnits, clcLevels){
+		// Generate random values
+		var clcValues = [];
+		for(var i = 0; i < adminUnits.length; i++){
+			var clcValue = [];
+			for(var j = 0; j < clcLevels.length; j++){
+				clcValue.push(Math.floor((Math.random()*100)+1));
+			}
+			clcValues.push(clcValue);
+		}
+		return clcValues;
 	}
 
 });

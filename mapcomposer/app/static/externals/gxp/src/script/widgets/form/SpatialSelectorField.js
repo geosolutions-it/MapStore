@@ -1681,8 +1681,6 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 	 * api: method[setCurrentExtent]
 	 */
 	setCurrentExtent : function(outputValue, obj) {
-		// clean selected areas
-		this.selectedAreas = [];
 
 		var me = this;
 		var geometry;
@@ -1691,6 +1689,9 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		} else if ( obj instanceof OpenLayers.Feature.Vector) {
 			geometry = obj.geometry.clone();
 		} else if (outputValue == 'geocoder' && obj) {
+			// clean selected areas
+			this.selectedAreas = [];
+			
 			var store = obj;
 			var records = store.getRange();
 			var size = store.getCount();
