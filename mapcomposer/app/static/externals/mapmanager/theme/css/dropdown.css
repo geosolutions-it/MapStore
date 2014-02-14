@@ -13,7 +13,7 @@ way to fit your requirements.
 .menu ul {padding:0; margin:0; font-size:35px; }
 .menu ul li {float:left; position:relative;color:#3c6;}
 .menu ul li ul {display: none;}
-
+#header .menu  ul{list-style-type: none;}
 /* specific to non IE browsers */
 .menu ul li:hover ul{background:rgb(83, 83, 83);}
 .menu ul li:hover ul {display:inline; position:absolute; top:40px; left:0; overflow:visible; font-size:20px;text-align:left;}
