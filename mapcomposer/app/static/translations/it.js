@@ -666,5 +666,20 @@ GeoExt.Lang.add("it", {
         selectionSummary : "Sommario delle Selezioni",
         geocoderSelectorsLabels: ['Unione delle geometrie', 'Lista delle Area Amministrative', 'Area Amministrativa e sottoaree'],
         selectionReturnTypeLabel: "Tipo di selezione"
+    },
+    
+    "gxp.plugins.WFSGrid.prototype":{
+        displayMsgPaging: "Visualizzazione elementi {0} - {1} of {2}",
+        emptyMsg: "Nessun elemento da visualizzare",
+        loadMsg: "Attendere prego...",
+        zoomToTooltip: 'Zoom all\'elemento'        
+    },
+    
+    "gxp.plugins.TabPanelWFSGrids.prototype":{
+        zoomToTooltip: 'Zoom all\'elemento',
+        displayMsgPaging: "Visualizzazione elementi {0} - {1} of {2}",
+        emptyMsg: "Nessun elemento da visualizzare",
+        loadMsg: "Attendere prego...",
+        noRecordFoundLabel: "Nessun elemento trovato"
     }
 });

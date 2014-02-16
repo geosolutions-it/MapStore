@@ -641,5 +641,19 @@ GeoExt.Lang.add("en", {
         selectionSummary : "Selection Summary",
         geocoderSelectorsLabels: ['Geometry Union', 'Administrative Area List', 'Administrative Area Subs'],
         selectionReturnTypeLabel: "Return Type"
+    },
+    
+    "gxp.plugins.WFSGrid.prototype":{
+        displayMsgPaging: "Displaying topics {0} - {1} of {2}",
+        emptyMsg: "No topics to display",
+        loadMsg: "Please Wait...",
+        zoomToTooltip: 'Zoom to topic'        
+    },
+    
+    "gxp.plugins.TabPanelWFSGrids.prototype":{
+        displayMsgPaging: "Elements {0} - {1} of {2}",
+        emptyMsg: "No elements found",
+        noRecordFoundLabel: "No elements found",
+        loadMsg: "Loading ..."
     }
 });

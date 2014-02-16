@@ -86,6 +86,7 @@
         "plugins/Print.js",
         "plugins/PrintSnapshot.js",
         "plugins/WMSFilterView.js",
+        "plugins/WFSGrid.js",
         "locale/es.js",
         "locale/ca.js"
     );
