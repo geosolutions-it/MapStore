@@ -36,6 +36,8 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
     /** api: ptype = gx_legendstyle */
     xtype: "gx_legendstyle",
     
+    bodyStyle: 'padding: 4px;',
+    
     /* begin i18n */
     /** api: config[iconsSizeText] ``String`` i18n */
     iconsSizeText: "Icons size",
@@ -61,16 +63,30 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
     /** api: config[fieldsetConfig]
      *  Default configuration for the fieldset.
      **/
-    fieldsetConfig:{
+    /*fieldsetConfig:{
         // Form parameters
-        // anchor:'100%',
-        layout: "fit",
+        anchor:'100%',
         border: false,    
-        layout: "form"
+        layout: "form",
+        
         // ,
-        // collapsible:true,
-        // collapsed:true
-    },
+        // layout: 'column',
+        // defaults: {columnWidth: 0.5},
+        // width: 550,
+        // defaults: {
+        //     columnWidth: '0.5',
+        //     border: false,
+        //     layout:'form'   
+        // }
+    },*/
+    fieldsetConfig:{
+        border: false,    
+        layout: "form",
+        cls: "x-form-item",
+        style:"text-align:left",
+        ref: 'fieldSet',
+        labelWidth: 120
+    },    
 
     /** api: config[addFormParameters]
      *  Flag indicates that we need to add the form parameters fieldset or not
@@ -176,89 +192,20 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                     value: "normal",
                     hidden : true  
                 },
-                _ignore_fontEditor: {
-                    cls: "x-html-editor-tb",
+                _ignore_fontEditor:{
+                    xtype: "gxp_text_style_field",
                     fieldLabel: "fontEditorText",
-                    style: "background: transparent; border: none; padding: 0 0em 0.5em;",
-                    xtype: "toolbar",
-                    items: [{
-                            xtype: "gxp_fontcombo",
-                            fonts: this.fonts || undefined,
-                            width: 110,
-                            value: "Verdana",
-                            listeners: {
-                                select: function(combo, record) {
-                                    var value = record.get("field1");
-                                    this.setFieldsetValue("fontName", value);
-                                },
-                                scope: this
+                    elementSizes : [80, 20, 20, 20],
+                    listeners:{
+                        change: function(fieldSet, textStyle){
+                            if(!!textStyle){
+                                for(var key in textStyle){
+                                    this.setFieldsetValue(key, textStyle[key]);
+                                }
                             }
-                        }, {
-                            xtype: "tbtext",
-                            text: this.sizeText + ": "
-                        }, {
-                            xtype: "numberfield",
-                            allowNegative: false,
-                            emptyText: OpenLayers.Renderer.defaultSymbolizer.fontSize,
-                            value: 8,
-                            width: 30,
-                            listeners: {
-                                change: function(field, value) {
-                                    value = parseFloat(value);
-                                    this.setFieldsetValue("fontSize", value);
-                                },
-                                scope:this
-                            }
-                        }, {
-                            // now you only add italic *OR* bold, if this change, change listener!!
-                            enableToggle: true,
-                            cls: "x-btn-icon",
-                            iconCls: "x-edit-bold",
-                            pressed: false,
-                            group: "fontStyle",
-                            listeners: {
-                                toggle: function(button, pressed) {
-                                    var value = pressed ? "bold" : "normal";
-                                    if(pressed){
-                                        for(var i = 0; i < button.ownerCt.items.keys.length; i++){
-                                            var key = button.ownerCt.items.keys[i];
-                                            var formParam = button.ownerCt.items.get(key);
-                                            if(formParam.id != button.id
-                                                && formParam.group == button.group){
-                                                formParam.toggle(false);
-                                                return;
-                                            }
-                                        };
-                                    }
-                                    this.setFieldsetValue("fontStyle", value);
-                                },
-                                scope:this
-                            }
-                        }, {
-                            // now you only add italic *OR* bold, if this change, change listener!!
-                            enableToggle: true,
-                            cls: "x-btn-icon",
-                            iconCls: "x-edit-italic",
-                            pressed: false,
-                            group: "fontStyle",
-                            listeners: {
-                                toggle: function(button, pressed) {
-                                    var value = pressed ? "italic" : "normal";
-                                    if(pressed){
-                                        for(var i = 0; i < button.ownerCt.items.keys.length; i++){
-                                            var key = button.ownerCt.items.keys[i];
-                                            var formParam = button.ownerCt.items.get(key);
-                                            if(formParam.id != button.id
-                                                && formParam.group == button.group){
-                                                formParam.toggle(false);
-                                            }
-                                        }
-                                    }
-                                    this.setFieldsetValue("fontStyle", value);
-                                },
-                                scope:this
-                            }
-                        }]
+                        }, 
+                        scope:this
+                    }
                 },
                 fontName: {
                     xtype: "textfield",
@@ -277,6 +224,7 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                     fieldLabel: "forceLabelsText", 
                     name: "_ignore_forceLabel",
                     checked: false,
+                    
                     listeners:{
                         change: function (chk, value){
                             chk.ownerCt.fieldSet.items.keys.forEach(function(key){

@@ -131,6 +131,18 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
      *  parameters in the requests (e.g. {buffer: 10}).
      */
      
+    /** api: config[infoPanelId]
+     *  ``string``
+     *  Optional id of panel to show the getFeatureInfo instead of popup
+     */
+     infoPanelId: null,
+     
+    /** api: config[disableAfterClick]
+     *  ``Boolean``
+     *  
+     */
+     disableAfterClick: false,
+     
     /** api: method[addActions]
      */
     addActions: function() {
@@ -275,6 +287,9 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 							if(layersToQuery === 0) {
 								this.unmask();
 								started=false;
+                                
+                                if(this.disableAfterClick)
+                                    this.button.toggle();                                
 								
 							}
 
@@ -282,14 +297,14 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                             if (infoFormat == "text/html") {
                                 var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
                                 if (match && match[1].match(this.regex)) {
-                                    this.displayPopup(evt, title, match[1]);
+                                    !this.infoPanelId ? this.displayPopup(evt, title, match[1]) : this.displayInfoInPanel(evt, title, match[1], this.infoPanelId);
                                     atLeastOneResponse = true;
                                 }
                             } else if (infoFormat == "text/plain") {
-                                this.displayPopup(evt, title, '<pre>' + evt.text + '</pre>');
+                                !this.infoPanelId ? this.displayPopup(evt, title, '<pre>' + evt.text + '</pre>') : this.displayInfoInPanel(evt, title, '<pre>' + evt.text + '</pre>', this.infoPanelId);
                                 atLeastOneResponse = true;
                             } else if (evt.features && evt.features.length > 0) {
-                                this.displayPopup(evt, title, null, null, null, evt.features);
+                                !this.infoPanelId ? this.displayPopup(evt, title, null, null, null, evt.features) : this.displayInfoInPanel(evt, title, null, this.infoPanelId, evt.features);
                                 atLeastOneResponse = true;
                             // no response at all
                             } else if(layersToQuery === 0 && !atLeastOneResponse) {
@@ -355,11 +370,13 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
      *  Clear all popups openned. Fixes issue #178.
      */
     closePopups: function(){
-        if(this.closePrevious){
-            for(var key in this.popupCache) {
-                if(this.popupCache.hasOwnProperty(key)) {
-                    this.popupCache[key].close();
-                    delete this.popupCache[key];
+        if(!this.infoPanelId){
+            if(this.closePrevious){
+                for(var key in this.popupCache) {
+                    if(this.popupCache.hasOwnProperty(key)) {
+                        this.popupCache[key].close();
+                        delete this.popupCache[key];
+                    }
                 }
             }
         }
@@ -368,12 +385,14 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 	/** private: method[removeAllPopups] removes all open popups
      */
     removeAllPopups: function(evt, title, text) {
-		for(var key in this.popupCache) {
-			if(this.popupCache.hasOwnProperty(key)) {
-				this.popupCache[key].close();
-				delete this.popupCache[key];
-			}
-		}
+        if(!this.infoPanelId){
+            for(var key in this.popupCache) {
+                if(this.popupCache.hasOwnProperty(key)) {
+                    this.popupCache[key].close();
+                    delete this.popupCache[key];
+                }
+            }
+        }
 	},
 	
     /** private: method[displayPopup]
@@ -415,6 +434,57 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
         }
 		        
         popup.doLayout();
+    },
+    
+    /** private: method[displayInfoInPanel]
+     * :arg evt: the event object from a 
+     *     :class:`OpenLayers.Control.GetFeatureInfo` control
+     * :arg title: a String to use for the title of the results section 
+     *     reporting the info to the user
+     * :arg text: ``String`` Body text.
+     * :arg infoPanel: ``String`` id of panel where show the getFeatureInfo.
+     */
+    displayInfoInPanel: function(evt, title, text, infoPanel, features) {
+    
+        var infoPanel = Ext.getCmp(infoPanel);
+        var infoPanelItems;
+        var popupKey = evt.xy.x + "." + evt.xy.y;
+
+        var item = this.getPopupItem(text, title, features);
+
+        if (!(popupKey in this.popupCache)) {
+            var items = this.useTabPanel ? [{
+                xtype: 'tabpanel',
+                enableTabScroll: true,
+                activeTab: 0,
+                items: [item]
+            }] : [item];
+
+            infoPanelItems = this.addOutput({
+                xtype: "panel",
+                border: false,
+                id: "infoPanelItemsId",
+                region: "north",
+                layout: this.useTabPanel ? "fit" : "accordion",
+                items: items,
+                split:true,
+                header: false
+            });
+
+            infoPanel.add(infoPanelItems);
+            this.popupCache[popupKey] = infoPanelItems;
+
+        }else{
+
+            infoPanelItems = this.popupCache[popupKey];
+            var container = this.useTabPanel ? infoPanelItems.items.first() : infoPanelItems;
+            container.add(item);
+
+        }
+
+        infoPanel.expand(true);
+        infoPanel.doLayout(false, true);
+
     },
 
     /** private: method[cachePopup]
@@ -580,7 +650,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
         var cleanup = function() {
             if (tooltip) {
                 tooltip.destroy();
-            }  
+            }
         };
         
         var vendorParams = {};
@@ -610,20 +680,29 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                 },
                 eventListeners:{
                     scope:this,
-                    
+
                     getfeatureinfo:function(evt){
                         cleanup();
+                        
+                        var disableAfterClick = this.disableAfterClick;
+                        var button = this.button;
+                        
+                        setTimeout(function(){
+                            if(disableAfterClick)
+                                button.toggle();
+                        }, 300);
+
                         // Issue #91
                         var title = x.get("title") || x.get("name");
                         if (infoFormat == "text/html") {
                             var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
                             if (match && !match[1].match(/^\s*$/)) {
-                                this.displayPopup(evt, title, match[1]);
+                                !this.infoPanelId ? this.displayPopup(evt, title, match[1]) : this.displayInfoInPanel(evt, title, match[1], this.infoPanelId);
                             }
                         } else if (infoFormat == "text/plain") {
-                            this.displayPopup(evt, title, '<pre>' + evt.text + '</pre>');
+                            !this.infoPanelId ? this.displayPopup(evt, title, '<pre>' + evt.text + '</pre>') : this.displayInfoInPanel(evt, title, '<pre>' + evt.text + '</pre>', this.infoPanelId);
                         } else if (evt.features && evt.features.length > 0) {
-                            this.displayPopup(evt, title, null, null, null, evt.features);
+                            !this.infoPanelId ? this.displayPopup(evt, title, null, null, null, evt.features) : this.displayInfoInPanel(evt, title, null, this.infoPanelId, evt.features);
                         } 
                     },deactivate: cleanup
                 }
