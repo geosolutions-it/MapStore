@@ -602,7 +602,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 			// ItemSelector Ex
 			// ///////////////
 			imagesDir : 'theme/app/img/ux/',
-			ref : 'classesselector',
+			ref : '../classesselector',
 			id: me.id + '_classesselector',
 			name : 'classesselector',
 			boxMaxWidth: 330,

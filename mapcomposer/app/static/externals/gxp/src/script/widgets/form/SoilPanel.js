@@ -58,6 +58,17 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	consumeOnlyText: 'Consumo Suolo',
 	consumeOnlyConfText: 'Coefficiente Ambientale Cons. Suolo',
 
+	// Validation
+	invalidFormDialogText: "Please review the form fields:<ul>",
+	invalidFormTitleText: "Error",
+	invalidYearsFormDialogText: "Years range not selected",
+	invalidROIFormDialogText: "ROI not selected",
+	invalidCLCLevelFormDialogText: "CLC level not selected",
+	invalidClassesFormDialogText: "CLC Level builder not selected",
+	invalidSealingIndexFormDialogText: "Soil Sealing index not selected",
+	invalidRange0IndexFormDialogText: "Reference time not selected",
+	invalidRange1IndexFormDialogText: "Current time not selected",
+
 	/** EoF i18n **/
     
     /** api: config[defaultAction]
@@ -306,9 +317,98 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
      *  Submit form. FIXME: include new functionalities
      */
 	submitForm: function() {
-		//TODO: Get result from WPS process
-		var responseData = this.getFakeResponse();
+		if(this.validate()){
+			//TODO: Get result from WPS process
+			var responseData = this.getFakeResponse();
+			this.showResult(responseData);
+		}
+	},
 
+    /** api: method[validate]
+     *  Validate form content after commit
+     */
+	validate: function(){
+		var form = this.getForm();
+		var values = form.getValues();
+		var valid = true;
+		var msg = this.invalidFormDialogText;
+
+		// Time selection validation
+		if(values.years){
+			switch(parseInt(values.years)){
+				case 2:
+					if(values.filterT1){
+						valid = valid && true;
+					}else{
+						valid = false;
+						msg += "<li>" + this.invalidRange1IndexFormDialogText + "</li>";
+					}
+				default: 
+					if(values.filterT0){
+						valid = valid && true;
+					}else{
+						valid = false;
+						msg += "<li>" + this.invalidRange0IndexFormDialogText + "</li>";
+					}
+			}
+		}else{
+			msg += "<li>" + this.invalidYearsFormDialogText + "</li>";
+			valid = false;
+		}
+
+		// Soil Sealing index validation
+		if(values.sealingIndex){
+			valid = valid && true;
+		}else{
+			valid = false;
+			msg += "<li>" + this.invalidSealingIndexFormDialogText + "</li>";
+		}
+
+		// CLC Level  validation
+		if(this.rasterComboBox.disabled || values.raster){
+			valid = valid && true;
+		}else{
+			valid = false;
+			msg += "<li>" + this.invalidCLCLevelFormDialogText + "</li>";
+		}
+
+		// CLC Level builder validation
+		if(this.classesselector.disabled || values.classesselector){
+			valid = valid && true;
+		}else{
+			valid = false;
+			msg += "<li>" + this.invalidClassesFormDialogText + "</li>";
+		}
+
+		// ROI validation
+		if(this.roiFieldSet.getSelectedAreas()){
+			valid = valid && true;
+		}else{
+			valid = false;
+			msg += "<li>" + this.invalidROIFormDialogText + "</li>";
+		}
+
+		// Show message if is invalid
+		if(!valid){
+			msg += "</ul>";
+			Ext.Msg.show({
+			   title: this.invalidFormTitleText,
+			   msg: msg,
+			   width: 250,
+			   buttons: Ext.Msg.OK,
+			   icon: Ext.MessageBox.WARNING,
+			   scope: this
+			});
+		}
+		return valid;
+	},
+
+    /** api: method[showResult]
+     *  :arg config: ``Object`` with the response of the process
+     *  Show result as tabpanel. It uses the ´gxp_wfsresume´ plugin.
+     */
+	showResult: function(responseData){
+		// Show resume of the response data
 		var me = this;
 		var wfsResumeTool = this.target.tools['gxp_wfsresume'];
         if(wfsResumeTool){
@@ -466,7 +566,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			var responseData = {
 			  "index": {
 			    "id": 1,
-			    "name": "Coverage Ratio"
+			    "name": values.sealingIndex
 			  },
 			  "refTime": {
 			    "time": values.filterT0,
@@ -512,31 +612,33 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	},
 
 	fakeLevelsGenerator: function(values){
-		var referenceName = values.raster;
-		//layer level
-		var classDataIndex = 0;
-		for ( classDataIndex = 0; classDataIndex < this.classes.length; classDataIndex++) {
-			if (this.classes[classDataIndex].layer == referenceName)
-				break;
-		}
-		if (classDataIndex >= this.classes.length) {
-			return values.classesselector.split(",");
-		}else{
-			var classes = [];
-			var classesSelected = values.classesselector.split(",");
-			for(var i = 0; i < classesSelected.length; i++){
-				var classIndex = parseInt(classesSelected[i]);
-				for(var j = 0; j < this.classesIndexes[classDataIndex][1].length; j++){
-					if(this.classesIndexes[classDataIndex][1][j][0] == classIndex){
-						classes.push(this.classesIndexes[classDataIndex][1][j][1]);
-						break;
+		try{
+			var referenceName = values.raster;
+			//layer level
+			var classDataIndex = 0;
+			for ( classDataIndex = 0; classDataIndex < this.classes.length; classDataIndex++) {
+				if (this.classes[classDataIndex].layer == referenceName)
+					break;
+			}
+			if (classDataIndex >= this.classes.length) {
+				return values.classesselector.split(",");
+			}else{
+				var classes = [];
+				var classesSelected = values.classesselector.split(",");
+				for(var i = 0; i < classesSelected.length; i++){
+					var classIndex = parseInt(classesSelected[i]);
+					for(var j = 0; j < this.classesIndexes[classDataIndex][1].length; j++){
+						if(this.classesIndexes[classDataIndex][1][j][0] == classIndex){
+							classes.push(this.classesIndexes[classDataIndex][1][j][1]);
+							break;
+						}
 					}
 				}
+				return classes;
 			}
-			return classes;
+		}catch(e){
+			return values.classesselector.split(",");
 		}
-
-		return values.classesselector.split(",");
 	}
 
 });
