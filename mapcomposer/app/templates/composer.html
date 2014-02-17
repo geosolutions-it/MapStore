@@ -409,9 +409,13 @@
 							if(layersList){
 								var layers = layersList.split("#");
 								for(var i=0; i<layers.length; i++){
-									var layer = layers[i];
-									var lname = layer.split(",")[0];
-									var lwms = decodeURIComponent(layer.split(",")[1]);
+									var keys = layers[i];
+									
+									keys = unescape(keys);
+									keys = Ext.util.JSON.decode(keys);
+									
+									var lname = keys.layer;
+									var lwms = decodeURIComponent(keys.wms);
 									
 									addMSLayer(
 										lname,
