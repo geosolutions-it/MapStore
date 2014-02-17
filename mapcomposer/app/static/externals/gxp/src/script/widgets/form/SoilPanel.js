@@ -309,7 +309,6 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		//TODO: Get result from WPS process
 		var responseData = this.getFakeResponse();
 
-
 		var me = this;
 		var wfsResumeTool = this.target.tools['gxp_wfsresume'];
         if(wfsResumeTool){
@@ -462,7 +461,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				}
 			}
 			// Generate random values
-			var clcLevels = values.classesselector.split(",");
+			var clcLevels =this.fakeLevelsGenerator(values);
 			var clcValues = this.fakeValuesGenerator(adminUnits, clcLevels);
 			var responseData = {
 			  "index": {
@@ -510,6 +509,34 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			clcValues.push(clcValue);
 		}
 		return clcValues;
+	},
+
+	fakeLevelsGenerator: function(values){
+		var referenceName = values.raster;
+		//layer level
+		var classDataIndex = 0;
+		for ( classDataIndex = 0; classDataIndex < this.classes.length; classDataIndex++) {
+			if (this.classes[classDataIndex].layer == referenceName)
+				break;
+		}
+		if (classDataIndex >= this.classes.length) {
+			return values.classesselector.split(",");
+		}else{
+			var classes = [];
+			var classesSelected = values.classesselector.split(",");
+			for(var i = 0; i < classesSelected.length; i++){
+				var classIndex = parseInt(classesSelected[i]);
+				for(var j = 0; j < this.classesIndexes[classDataIndex][1].length; j++){
+					if(this.classesIndexes[classDataIndex][1][j][0] == classIndex){
+						classes.push(this.classesIndexes[classDataIndex][1][j][1]);
+						break;
+					}
+				}
+			}
+			return classes;
+		}
+
+		return values.classesselector.split(",");
 	}
 
 });
