@@ -309,7 +309,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		// Main Tab Panel
 		// ///////////////////////////////////////
 		var outcomeTabPanel = new Ext.TabPanel({
-			title : this.defaultTitle,
+			title : data.index && data.index.name ? data.index.name: this.defaultTitle,
 			// height : 300,
 			// width : 300,
 			closable : true,

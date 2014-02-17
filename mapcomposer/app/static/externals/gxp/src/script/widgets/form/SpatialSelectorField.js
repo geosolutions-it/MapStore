@@ -2015,6 +2015,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		var outputValue = this.outputType.getValue();
 		var returnType = this.returnType.getValue();
 		if (outputValue == 'geocoder') {
+			selectedAreas = null;
 			if(returnType == 'subs' || returnType == 'list'){
 				selectedAreas = "";
 				for(var i = 0; i< this.selectedAreas.length; i++){
