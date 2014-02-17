@@ -84,5 +84,27 @@
 	}
 	
 	.navi img{ margin-top:10px;}
-	
+/* Gallery */
+#thumbs-gallery{
+    position: absolute;
+    top: 300px;
+    width: 100%;
+    margin: 0 auto;
+}
+#thumbs-gallery .navi{
+    float:none;
+    margin: 0 auto;
+    width:600px;
+}
+.navi a.gallery-nav-item{
+    width:22px;
+    height:22px;
+    background:url(../images/bullet-green.png) 0 -22px;
+    background-repeat: no-repeat;
+    overflow:hidden;
+}
+.navi  li.active a.gallery-nav-item{
+    background:url(../images/bullet-green.png) 0 0;
+    background-repeat: no-repeat;
+}
 /* / GeoSolutions SLIDE */
