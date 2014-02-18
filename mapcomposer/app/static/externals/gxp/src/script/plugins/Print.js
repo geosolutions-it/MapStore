@@ -118,6 +118,11 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
      **/
     bboxFit: false,
 
+    /** api: config[bboxFit]
+     *  Flag indicates that the printed map is fixed by bbox to the current preview (allow use scale, but really uses the preview extend)
+     **/
+    bboxPreviewFit: false,
+
     /** api: config[graticuleOptions]
      *  `Object` map with default parameters for the `OpenLayer.Control.Graticule` control when this.addGraticuleControl is enabled
      **/
@@ -133,9 +138,9 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
      */
     addActions: function() {
 
-        // force bboxFit if graticule control it's enabled
-        if(this.addGraticuleControl){
-            this.bboxFit = true;
+        // force bboxPreviewFit if graticule control it's enabled and bboxFit is not enabled
+        if(this.addGraticuleControl && !this.bboxFit){
+            this.bboxPreviewFit = true;
         }
 
         // don't add any action if there is no print service configured
@@ -311,6 +316,8 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                             addLandscapeControl: this.addLandscapeControl,
                             // BBox fit
                             bboxFit: this.bboxFit,
+                            // BBox preview fit
+                            bboxPreviewFit: this.bboxPreviewFit,
                             // Graticule options
                             graticuleOptions: this.graticuleOptions,
                             listeners: {

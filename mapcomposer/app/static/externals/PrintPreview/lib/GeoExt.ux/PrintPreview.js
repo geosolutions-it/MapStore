@@ -182,6 +182,11 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
      **/
     bboxFit: false,
 
+    /** api: config[bboxFit]
+     *  Flag indicates that the printed map is fixed by bbox to the current preview (allow use scale, but really uses the preview extend)
+     **/
+    bboxPreviewFit: false,
+
     /** api: config[graticuleOptions]
      *  `Object` map with default parameters for the `OpenLayer.Control.Graticule` control when this.addGraticuleControl is enabled
      **/
@@ -194,6 +199,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             sourceMap: this.sourceMap,
             printProvider: this.printProvider,
             bboxFit: this.bboxFit,
+            bboxPreviewFit: this.bboxPreviewFit,
             width : 400
         };
         if(this.printMapPanel) {

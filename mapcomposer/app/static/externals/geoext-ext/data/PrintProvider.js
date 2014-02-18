@@ -172,6 +172,11 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
      */
     layout: null,
 
+    /** api: config[fitToBbox]
+     *  ``Boolean`` Flag to fit the print preview to the exact extent of the print preview map. 
+     */
+    fitToBbox: false,
+
     /** private:  method[constructor]
      *  Private constructor override.
      */
@@ -437,7 +442,13 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                     bbox: page.bbox.toArray(),
                     rotation: page.rotation
                 }, page.customParams));
-            }else{
+            }else if(this.fitToBbox){
+                // fit to bbox of print preview
+                encodedPages.push(Ext.apply({
+                    bbox: map.getExtent().toArray(),
+                    rotation: page.rotation
+                }, page.customParams));
+            }else {
                 // default: use center and scale!!
                 encodedPages.push(Ext.apply({
                     center: [page.center.lon, page.center.lat],

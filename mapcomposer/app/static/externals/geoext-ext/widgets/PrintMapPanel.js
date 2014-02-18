@@ -164,6 +164,11 @@ GeoExt.PrintMapPanel = Ext.extend(GeoExt.MapPanel, {
      *  Flag indicates that the mapPanel is fixed by bbox (not by scale)
      **/
     bboxFit: false,
+
+    /** api: config[bboxFit]
+     *  Flag indicates that the printed map is fixed by bbox to the current preview (allow use scale, but really uses the preview extend)
+     **/
+    bboxPreviewFit: false,
     
     /**
      * private: method[initComponent]
@@ -200,6 +205,11 @@ GeoExt.PrintMapPanel = Ext.extend(GeoExt.MapPanel, {
                 });
             }
         }
+
+        // Apply fitToBbox
+        Ext.apply(this.printProvider,{
+            fitToBbox: this.bboxPreviewFit
+        });
 
         Ext.applyIf(this.map, {
             projection: this.sourceMap.getProjection(),
