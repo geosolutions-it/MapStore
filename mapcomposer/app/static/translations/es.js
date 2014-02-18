@@ -602,5 +602,19 @@ GeoExt.Lang.add("es", {
 		embedURL: "URL directa",		
 		urlLabel: "URL",
 		showMapTooltip: "Mostar en una nueva ventana"
-	}
+	},
+    
+    "gxp.plugins.WFSGrid.prototype":{
+        displayMsgPaging: "Elementos {0} - {1} of {2}",
+        emptyMsg: "No se han encontrado elementos",
+        loadMsg: "Loading ...",
+        zoomToTooltip: "Zoom al bersaglio"       
+    },
+    
+    "gxp.plugins.TabPanelWFSGrids.prototype":{
+        displayMsgPaging: "Elementos {0} - {1} of {2}",
+        emptyMsg: "No se han encontrado elementos",
+        noRecordFoundLabel: "No se han encontrado elementos",
+        loadMsg: "Loading ..."
+    }
 });

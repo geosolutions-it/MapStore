@@ -641,5 +641,19 @@ GeoExt.Lang.add("de", {
 		embedURL: "Direct URL",		
 		urlLabel: "URL",
 		showMapTooltip: "In einem neuen Fenster anzeigen"
-	}
+	},
+    
+    "gxp.plugins.WFSGrid.prototype":{
+        displayMsgPaging: "Bestandteil {0} - {1} of {2}",
+        emptyMsg: "Kein Bestandteil gefunden",
+        loadMsg: "Bitte warten...",
+        zoomToTooltip: "Zoom auf das Ziel"  
+    },
+    
+    "gxp.plugins.TabPanelWFSGrids.prototype":{
+        displayMsgPaging: "Bestandteil {0} - {1} von {2}",
+        emptyMsg: "No Bestandteil gefunden",
+        noRecordFoundLabel: "Kein Bestandteil gefunden",
+        loadMsg: "Bitte warten..."
+    }
 });
