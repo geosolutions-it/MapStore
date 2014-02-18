@@ -265,6 +265,17 @@
 				"selectionLayerTitle": "Selection Layer"
 			}
 		}, {
+			"ptype": "gxp_searchservizio",
+			"outputTarget": "searchpanel",
+			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
+			"selectionProperties": {
+				"wmsURL": "http://sit.comune.bolzano.it/geoserver/",
+				"selectionLayerTitle": "Selection Layer",				
+				"selectionLayerServizioName": "Cartografia:SERVIZI_RICERCA",								
+				"filterServizioAttribute": "SERV_ID",
+				"selectionServizioStyle": "highlight_point"
+			}
+		},{
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": false,
 			"id": "addlayer"

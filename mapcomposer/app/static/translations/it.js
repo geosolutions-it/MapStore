@@ -685,6 +685,17 @@ GeoExt.Lang.add("it", {
 		errorLayer: 'Layer occupazioni non definito: '
 	},
 	
+	"gxp.plugins.SearchServizio.prototype":{
+		waitMsg: "Si prega di attendere ...",	
+		titleError: "Errore",		
+		serviziText: "Servizio",
+		serviziLang: "it",		
+		serviziTitle: "Servizio",
+		cercaText: "Cerca",
+		serviziEmpty: "Inserisci nome servizio",		
+		serviziToolTip: "Digitare nome servizio"
+	},
+	
 	"gxp.plugins.PrintSnapshot.prototype" :{
 		noSupportedLayersErrorMsg: "Si è verificato un errore durante la generazione della mappa Snapshot: Nessun layer è supportato !",
 		generatingErrorMsg: "Si è verificato un errore durante la generazione della mappa Snapshot",

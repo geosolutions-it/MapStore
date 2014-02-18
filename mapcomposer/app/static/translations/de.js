@@ -698,6 +698,17 @@ GeoExt.Lang.add("de", {
 		errorData2: 'Das Beginndatum ist größer als das Enddatum.',		
 		errorLayer: 'Besetzungen Eben nicht gefunden: '
 	},
+	
+	"gxp.plugins.SearchServizio.prototype":{
+		waitMsg: "Bitte warten ...",	
+		titleError: "Fehler",		
+		serviziText: "Dienst",
+		serviziLang: "de",		
+		serviziTitle: "Dienst",
+		cercaText: "Suche",
+		serviziEmpty: "Dienstname einfügen",		
+		serviziToolTip: "Dienstname eingeben"
+	},
 
 	"gxp.plugins.PrintSnapshot.prototype" :{
 		noSupportedLayersErrorMsg: "Fehler beim Erzeugen der Karte Snapshot: Nein Unterstützte Ebenen gefunden!",

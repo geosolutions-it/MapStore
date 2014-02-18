@@ -186,7 +186,7 @@
           "region": "south",
           "layout": "fit",
           "height": 330,
-          "collapsed": false,
+          "collapsed": true,
           "collapsible": true,
           "header": true
       },{
@@ -198,7 +198,7 @@
           "height": 500,
           "region": "east",
           "layout": "fit",
-          "collapsed": false,
+          "collapsed": true,
           "collapsible": true,
           "header": true
       }
@@ -280,9 +280,12 @@
 			"actions": ["-"], "actionTarget": "paneltbar"
 		}, {
 			"ptype": "gxp_wmsgetfeatureinfo_menu", 
-            "regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
-		    "useTabPanel": true,
-            "toggleGroup": "toolGroup",
+			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
+			"useTabPanel": true,
+			"toggleGroup": "toolGroup",
+			"vendorParams": {
+				"buffer": 20
+			},
 			"actionTarget": {"target": "paneltbar", "index": 20}
 		}, {
 			"actions": ["-"], "actionTarget": "paneltbar"
@@ -371,7 +374,7 @@
 		  }
 	    }, {
 		   "ptype": "gxp_mouseposition",
-		   "displayProjectionCode":"EPSG:4326",
+		   "displayProjectionCode":"EPSG:25832",
 		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
 		}, {
 			"ptype": "gxp_overviewmap",
