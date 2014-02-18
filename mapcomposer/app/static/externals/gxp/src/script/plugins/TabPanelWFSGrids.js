@@ -245,16 +245,19 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                     grids[i].addOutput({},i === 0);
                     //grids[i].tplData = tplData;
                     grids[i].save = {};
-                    grids[i].onEmpty=function(grid) {                        
-                        // no record found message
-                        var noRecordFoundEl = grid.wfsGrid.el.child('.x-grid3-scroller');
-                        var dh = Ext.DomHelper;
-                        dh.append(noRecordFoundEl,{
-                            'tag': 'div',
-                            'cls': me.noRecordFoundCls,
-                            'html': me.noRecordFoundLabel
-                        });
-                    }; 
+                    grids[i].onEmpty=function(grid) {
+                        // if is empty, show no record found when it's rendered                        
+                        grid.wfsGrid.on("render", function (){
+                            // no record found message
+                            var noRecordFoundEl = grid.wfsGrid.el.child('.x-grid3-scroller');
+                            var dh = Ext.DomHelper;
+                            dh.append(noRecordFoundEl,{
+                                'tag': 'div',
+                                'cls': me.noRecordFoundCls,
+                                'html': me.noRecordFoundLabel
+                            });    
+                         });
+                     }; 
                     grids[i].onFill=function(grid) {                        
                         // no record found message
                         var noRecordEl = grid.wfsGrid.el.child('.x-grid3-scroller .'+me.noRecordFoundCls);
