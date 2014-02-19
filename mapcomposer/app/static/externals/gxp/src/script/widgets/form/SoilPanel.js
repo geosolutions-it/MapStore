@@ -571,6 +571,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			  "refTime": {
 			    "time": values.filterT0,
 			    "output": {
+			      "referenceName": values.raster,
 			      "admUnits": adminUnits,
 			      "clcLevels": clcLevels,
 			      "values": clcValues
@@ -582,6 +583,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				responseData["curTime"] = {
 				    "time": values.filterT1,
 				    "output": {
+			          "referenceName": values.raster,
 				      "admUnits": adminUnits,
 				      "clcLevels": clcLevels,
 				      "values": clcValuesT1
@@ -612,33 +614,33 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	},
 
 	fakeLevelsGenerator: function(values){
-		try{
-			var referenceName = values.raster;
-			//layer level
-			var classDataIndex = 0;
-			for ( classDataIndex = 0; classDataIndex < this.classes.length; classDataIndex++) {
-				if (this.classes[classDataIndex].layer == referenceName)
-					break;
-			}
-			if (classDataIndex >= this.classes.length) {
-				return values.classesselector.split(",");
-			}else{
-				var classes = [];
-				var classesSelected = values.classesselector.split(",");
-				for(var i = 0; i < classesSelected.length; i++){
-					var classIndex = parseInt(classesSelected[i]);
-					for(var j = 0; j < this.classesIndexes[classDataIndex][1].length; j++){
-						if(this.classesIndexes[classDataIndex][1][j][0] == classIndex){
-							classes.push(this.classesIndexes[classDataIndex][1][j][1]);
-							break;
-						}
-					}
-				}
-				return classes;
-			}
-		}catch(e){
+		// try{
+		// 	var referenceName = values.raster;
+		// 	//layer level
+		// 	var classDataIndex = 0;
+		// 	for ( classDataIndex = 0; classDataIndex < this.classes.length; classDataIndex++) {
+		// 		if (this.classes[classDataIndex].layer == referenceName)
+		// 			break;
+		// 	}
+		// 	if (classDataIndex >= this.classes.length) {
+		// 		return values.classesselector.split(",");
+		// 	}else{
+		// 		var classes = [];
+		// 		var classesSelected = values.classesselector.split(",");
+		// 		for(var i = 0; i < classesSelected.length; i++){
+		// 			var classIndex = parseInt(classesSelected[i]);
+		// 			for(var j = 0; j < this.classesIndexes[classDataIndex][1].length; j++){
+		// 				if(this.classesIndexes[classDataIndex][1][j][0] == classIndex){
+		// 					classes.push(this.classesIndexes[classDataIndex][1][j][1]);
+		// 					break;
+		// 				}
+		// 			}
+		// 		}
+		// 		return classes;
+		// 	}
+		// }catch(e){
 			return values.classesselector.split(",");
-		}
+		// }
 	}
 
 });

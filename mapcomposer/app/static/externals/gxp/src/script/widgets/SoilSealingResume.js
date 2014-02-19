@@ -274,25 +274,27 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		// Bar chart tab
 		var barChartItems = [];
 		var barChartTitle = this.barChartTitleText;
+		var clcLevels = this.getLevels(data.refTime.output.referenceName, data.refTime.output.clcLevels);
 		barChartItems.push(
 			this.generateColumnChart(
 				this.referenceTimeTitleText, 
 				data.refTime.time, 
 				refTimeColChartsData, 
 				{
-					categories: data.refTime.output.clcLevels
+					categories: clcLevels
 				}, {
 					min: 0
 				})
 		);
 		if(curTimeColChartsData){
+			var clcLevels1 = this.getLevels(data.curTime.output.referenceName, data.curTime.output.clcLevels);
 			barChartItems.push(
 				this.generateColumnChart(
 					this.currentTimeTitleText, 
 					data.curTime.time, 
 					curTimeColChartsData, 
 					{
-						categories: data.curTime.output.clcLevels
+						categories: clcLevels
 					}, {
 						min: 0
 					})
@@ -334,11 +336,14 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			&& yearData.clcLevels 
 			&& yearData.values
 			&& yearData.admUnits.length == yearData.values.length){
+			var clcLevels = this.getLevels(yearData.referenceName, yearData.clcLevels);
 			for(var i = 0; i < yearData.admUnits.length; i++){
 				if(yearData.clcLevels.length == yearData.values[i].length){
 					var pieChartData = [];
-					for(var j = 0; j < yearData.clcLevels.length; j++){
-						pieChartData.push([yearData.clcLevels[j], yearData.values[i][j]]);
+					// for(var j = 0; j < yearData.clcLevels.length; j++){
+					for(var j = 0; j < clcLevels.length; j++){
+						//pieChartData.push([yearData.clcLevels[j], yearData.values[i][j]]);
+						pieChartData.push([clcLevels[j], yearData.values[i][j]]);
 					}
 					chartsData.push(pieChartData);
 				}
@@ -507,6 +512,35 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 				xAxis: xAxis
 			}
 		});
+	},
+
+	getLevels: function(referenceName, clcLevels){
+		try{
+			//layer level
+			var classDataIndex = 0;
+			for ( classDataIndex = 0; classDataIndex < this.classes.length; classDataIndex++) {
+				if (this.classes[classDataIndex].layer == referenceName)
+					break;
+			}
+			if (classDataIndex >= this.classes.length) {
+				return clcLevels;
+			}else{
+				var classes = [];
+				var classesSelected = clcLevels;
+				for(var i = 0; i < classesSelected.length; i++){
+					var classIndex = parseInt(classesSelected[i]);
+					for(var j = 0; j < this.classesIndexes[classDataIndex][1].length; j++){
+						if(this.classesIndexes[classDataIndex][1][j][0] == classIndex){
+							classes.push(this.classesIndexes[classDataIndex][1][j][1]);
+							break;
+						}
+					}
+				}
+				return classes;
+			}
+		}catch(e){
+			return clcLevels;
+		}
 	}
 
 });
