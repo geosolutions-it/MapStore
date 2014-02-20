@@ -195,7 +195,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         gxp.plugins.SyntheticView.superclass.constructor.apply(this, arguments);            
     },
     
-    radiusData : {
+    // sostanza -> scenario -> entity -> humans (1,2,3,4) or nothumans (5) [
+    radiusData: {
+    },
+    
+    /*radiusData : {
          "1":{
             "E" : {
                 "L": { "humans": [15,32,51,75],        "notHumans": [15,8,8,8,null,null]},
@@ -288,7 +292,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 "G": { "humans": [null,null,null,null],"notHumans": [null,null,null,25,25,25]}
             }
         }
-    },
+    },*/
          
 
     /** private: method[init]
@@ -2236,7 +2240,82 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }
         });
         
+        this.loadRadiusData();
+        
         return this.controlPanel;
+        
+        
+    },
+    
+    loadRadiusData: function() {
+        var radiusStore= new GeoExt.data.FeatureStore({ 
+             id: "radiusStore",
+             fields: [{
+                        "name": "id_sostanza",              
+                        "mapping": "id_sostanza"
+              },{
+                        "name": "id_scenario",              
+                        "mapping": "id_scenario"
+              },{
+                        "name": "flg_lieve",              
+                        "mapping": "flg_lieve"
+              },{
+                        "name": "id_gravita",              
+                        "mapping": "id_gravita"
+              },{
+                        "name": "id_bersaglio",              
+                        "mapping": "id_bersaglio"
+              },{
+                        "name": "fk_distanza",              
+                        "mapping": "fk_distanza"
+              }],
+             proxy: new GeoExt.data.ProtocolProxy({ 
+                protocol: new OpenLayers.Protocol.WFS({ 
+                    url: this.wfsURL, 
+                    featureType: 'siig_r_area_danno', 
+                    readFormat: new OpenLayers.Format.GeoJSON(),
+                    featureNS: this.destinationNS, 
+                    outputFormat: "application/json",
+                    version: this.wfsVersion
+                }) 
+             }), 
+             autoLoad: true 
+       });
+       var idSostanza, idScenario, flgLieve, idGravita, idBersaglio, distanza;
+       radiusStore.on('load', function(str, records) {
+            Ext.each(records, function(record) {
+                idSostanza = record.get('id_sostanza') + '';
+                idScenario = record.get('id_scenario') + '';
+                flgLieve = parseInt(record.get('flg_lieve'), 10) === 0 ? 'L' : 'G'; 
+                idGravita = parseInt(record.get('id_gravita'), 10);
+                idBersaglio = parseInt(record.get('id_bersaglio'), 10);
+                distanza = parseInt(record.get('fk_distanza'), 10);
+                
+                var sostanzaObj = this.radiusData[idSostanza];
+                if(!sostanzaObj) {
+                    sostanzaObj = {};
+                    this.radiusData[idSostanza] = sostanzaObj;
+                }
+               
+                var scenarioObj = sostanzaObj[idScenario];
+                if(!scenarioObj) {
+                    scenarioObj = {
+                        "L": { "humans": [0,0,0,0],        "notHumans": [null,null,null,null,null,null,null]},
+                        "G": { "humans": [0,0,0,0],      "notHumans": [null,null,null,null,null,null,null]}
+                    };
+                    sostanzaObj[idScenario] = scenarioObj;
+                }
+                
+                var entityObj = scenarioObj[flgLieve];
+                var distanceArr = (idGravita === 5 ? entityObj["notHumans"] : entityObj["humans"]);
+                
+                var distancePos = (idGravita === 5 ? idBersaglio - 10 : (idGravita - 1));
+                
+                distanceArr[distancePos] = distanza;
+            }, this);
+            
+            
+       }, this);
     },
     
     /*loadRoadsGrid: function() {
@@ -3378,7 +3457,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     parseAcc: function(sost,radius){
         for (acc in this.radiusData[sost]){
-            if(this.status.accident.value == "0" || acc === this.status.accident.value){
+            if(this.status.accident.value == "0" || acc === this.status.accident.id +""){
                 this.parseSer(sost,acc,radius);
             }
         }                   
