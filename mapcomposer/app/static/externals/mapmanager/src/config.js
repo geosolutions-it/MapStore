@@ -71,11 +71,11 @@
 
 /*var config = {
 
-	baseUrl: '',
-	proxy: '/http_proxy/proxy/?url=',
+  baseUrl: '',
+  proxy: '/http_proxy/proxy/?url=',
 
-	//googleApi: 'AIzaSyBFz0tyDgG_SmT8Qmw1UFmOJuHgW4Z8nEw',
-	//update key here: https://code.google.com/apis/console/#project:385384104319:access
+  //googleApi: 'AIzaSyBFz0tyDgG_SmT8Qmw1UFmOJuHgW4Z8nEw',
+  //update key here: https://code.google.com/apis/console/#project:385384104319:access
     
     start: 0,
 
@@ -87,25 +87,25 @@
         via: 'geosolutions_it',
         hashtags: ''
     },
-	
-	locales: [['en', 'English'],['it','Italiano'],['fr','Français'],['de','Deutsch']],
-	
-	embedLink: {
-		embeddedTemplateName: "viewer",
-		showDirectURL: true
-	}
-	
+  
+  locales: [['en', 'English'],['it','Italiano'],['fr','Français'],['de','Deutsch']],
+  
+  embedLink: {
+    embeddedTemplateName: "viewer",
+    showDirectURL: true
+  }
+  
 };*/
 
 var config = {
-	
-	geoStoreBase: "http://localhost:8080/geostore/rest/",
+  
+  geoStoreBase: "http://mapstore.geo-solutions.it/geostore/rest/",
    
     proxy: "/http_proxy/proxy/?url=",
    
     defaultLanguage: "en",
    
-    composerUrl: "/mapcomposer",
+    composerUrl: "/mapcomposer/",
    
     socialUrl: "",
    
@@ -149,9 +149,8 @@ var config = {
     ],
    
     embedLink: {
-		"embeddedTemplateName": "/mapcomposer/viewer",
-		"showDirectURL": true
-	}
+    "embeddedTemplateName": "/mapcomposer/viewer",
+    "showDirectURL": true
+  }
 };
-
 
