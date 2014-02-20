@@ -99,13 +99,13 @@
 
 var config = {
 	
-	geoStoreBase: "http://localhost:8080/geostore/rest/",
+	geoStoreBase: "http://mapstore.geo-solutions.it/geostore/rest/",
    
     proxy: "/http_proxy/proxy/?url=",
    
     defaultLanguage: "en",
    
-    composerUrl: "/mapcomposer",
+    composerUrl: "/mapcomposer/",
    
     socialUrl: "",
    
@@ -149,7 +149,7 @@ var config = {
     ],
    
     embedLink: {
-		"embeddedTemplateName": "/mapcomposer/viewer",
+		"embeddedTemplateName": "/mapcomposer/",
 		"showDirectURL": true
 	}
 };
