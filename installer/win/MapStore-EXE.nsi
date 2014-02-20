@@ -2,7 +2,7 @@
 
 ; Define your application name
 !define APPNAME "MapStore"
-!define VERSION "1.5"
+!define VERSION "1.5-SNAPSHOT"
 ;!define LONGVERSION "2.0.0.0"
 !define APPNAMEANDVERSION "${APPNAME} ${VERSION}"
 
