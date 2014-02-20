@@ -103,6 +103,8 @@ var config = {
    
     proxy: "/http_proxy/proxy/?url=",
    
+    proxyUrl: "/http_proxy/proxy/?url=",
+   
     defaultLanguage: "en",
    
     composerUrl: "/mapcomposer",
@@ -149,7 +151,7 @@ var config = {
     ],
    
     embedLink: {
-		"embeddedTemplateName": "/mapcomposer/viewer",
+		"embeddedTemplateName": "/mapcomposer/",
 		"showDirectURL": true
 	}
 };
