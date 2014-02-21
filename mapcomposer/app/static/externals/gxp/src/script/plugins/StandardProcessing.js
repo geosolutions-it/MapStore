@@ -300,6 +300,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         "name": "udm",              
                         "mapping": "udm_" + GeoExt.Lang.locale
               },{
+                        "name": "udm_soc",              
+                        "mapping": "udm_" + GeoExt.Lang.locale + "_soc"
+              },{
+                        "name": "udm_env",              
+                        "mapping": "udm_" + GeoExt.Lang.locale + "_env"
+              },{
                         "name": "visibile",              
                         "mapping": "flg_visibile"
               },{
@@ -1879,7 +1885,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         obj.formulaDesc = this.formula.getEl().getValue();
         var formulaRec = this.formula.store.getAt(this.formula.store.findExact("id_formula",obj.formula));
         
-        obj.formulaUdm = formulaRec.get('udm');
+        obj.formulaUdm = [formulaRec.get('udm'), formulaRec.get('udm_soc'), formulaRec.get('udm_env')];
         
         obj.formulaInfo = {
             dependsOnTarget: formulaRec.get('bersagli_tutti') > 0 || formulaRec.get('bersagli_umani') > 0 || formulaRec.get('bersagli_ambientali') > 0,
