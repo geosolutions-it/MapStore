@@ -89,7 +89,7 @@
 			// /////////////////////////////////////////////////////
 			// Extra parameters to add layers at startup
 			// /////////////////////////////////////////////////////
-			var layName; var layTitle; var wmsurl;
+			var layName; var layTitle; var wmsurl; var gsturl;
 		
 			// ///////////////////////////////////////////////////////////////
             // Custom variables from the mapStoreConfig user configuration file 
@@ -129,6 +129,10 @@
 						case "wmsurl" : 
 									wmsurl = param[1]; 
 									wmsurl = decodeURIComponent(wmsurl);
+									break;
+						case "gsturl" : 
+									gsturl = param[1]; 
+									gsturl = decodeURIComponent(gsturl);
 									break;
                         case "config":
 									customConfigName = param[1];
@@ -283,6 +287,10 @@
                         bbar : bbarItems
                     }]
                 });
+				
+				if(gsturl){
+					serverConfig.geoStoreBase = gsturl;
+				}
                 
                 app = new GeoExplorer.Viewer({
 				    defaultLanguage: serverConfig.defaultLanguage,	

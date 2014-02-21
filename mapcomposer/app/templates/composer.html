@@ -98,7 +98,7 @@
 		// /////////////////////////////////////////////////////
 		// Extra parameters to add layers at startup
 		// /////////////////////////////////////////////////////
-		var layName; var layTitle; var wmsurl;
+		var layName; var layTitle; var wmsurl; var gsturl;
 		
         // ///////////////////////////////////////////////////////////////
         // Custom variables from the mapStoreConfig user configuration file 
@@ -143,6 +143,10 @@
 					case "wmsurl" : 
 									wmsurl = param[1]; 
 									wmsurl = decodeURIComponent(wmsurl);
+									break;
+					case "gsturl" : 
+									gsturl = param[1]; 
+									gsturl = decodeURIComponent(gsturl);
 									break;
 					case "useCookies" : 
 									useCookies = param[1]; 
@@ -353,6 +357,10 @@
                 'Authorization' : auth
             };*/
 
+			if(gsturl){
+				serverConfig.geoStoreBase = gsturl;
+			}
+			
             app = new GeoExplorer.Composer({
 				advancedScaleOverlay: serverConfig.advancedScaleOverlay || false,
 				defaultLanguage: serverConfig.defaultLanguage,	
