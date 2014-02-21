@@ -1407,6 +1407,9 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		return gxp.widgets.form.SpatialSelectorField.superclass.initComponent.call(this);
 	},
 
+	// Temp key to update status when reset
+	updating: false,
+
 	reset: function() {
 		var me = this;
 		// //////////////////////////
@@ -1458,6 +1461,13 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		if (me.filterPolygon) {
 			me.filterPolygon = new OpenLayers.Filter.Spatial({});
 		};
+
+		// select default type
+		if(this.rendered && !this.updating){
+			this.updating = true;
+			this.outputType.fireEvent("select", this.outputType, this.defaultSelectionMethod);	
+			this.updating = false;
+		}
 	},
 	
 	//// //////////////////////////////////////////////////////////////////////////////////////////////////////////////

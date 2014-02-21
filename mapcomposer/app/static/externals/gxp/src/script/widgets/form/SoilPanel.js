@@ -42,6 +42,8 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	xtype : "gxp_soilpanel",
 
 	/** i18n **/
+	clcLevelTitleText: 'CLS Levels / Urban Grids',
+
 	// LUC (land use/cover)
 	basedOnCLCText: 'Based on CLC',
 	coverText: 'Coefficiente Copertura',
@@ -77,43 +79,23 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
      */
 	enableOrDisableConfig:{
 		1:{
-			sealingIndexCLC:{
-				0: false,
-				1: true,
-				2: true,
-				3: true
-			},
-			sealingIndexImpervious:{
-				0: false,
-				1: false,
-				2: false,
-				3: false,
-				4: true,
-				5: true
-			},
+			// sealingIndexCLC:{
+			// 	1: true,
+			// 	2: true,
+			// 	3: true
+			// },
+			// sealingIndexImpervious:{
+			// 	4: true,
+			// 	5: true
+			// },
 			rasterComboBox: false,
 			filterT1ComboBox: true,
 			classesselector: false
 		},
 		2:{
-			sealingIndexCLC:{
-				0: false,
-				1: false,
-				2: false,
-				3: false
-			},
-			sealingIndexImpervious:{
-				0: false,
-				1: false,
-				2: false,
-				3: false,
-				4: false,
-				5: false
-			},
 			filterT1ComboBox: false
 		},
 		'sealingIndexImpervious':{
-			rasterComboBox: true,
 			classesselector: true
 		},
 		'sealingIndexCLC':{
@@ -138,6 +120,38 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			rasterComboBox: false,
 			filterT1ComboBox: false,
 			classesselector: false
+		},
+		'clcLevels':{
+			sealingIndexCLC:{
+				0: false,
+				1: false,
+				2: false,
+				3: false
+			},
+			sealingIndexImpervious:{
+				0: true,
+				1: true,
+				2: true,
+				3: true,
+				4: true,
+				5: true
+			}
+		},
+		'impervious':{
+			sealingIndexCLC:{
+				0: true,
+				1: true,
+				2: true,
+				3: true
+			},
+			sealingIndexImpervious:{
+				0: false,
+				1: false,
+				2: false,
+				3: false,
+				4: false,
+				5: false
+			}
 		}
 	},
     
@@ -187,10 +201,13 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
     /** api: config[clcLevelsConfig]
      *  ``Object`` CLC levels cconfiguration
      */
-	clcLevelsConfig:{
+	clcLevelsConfig:[{
 		filter: 'corine_L',
 		decorator: 'Corine Land Cover Level {0}'
-	},
+	},{
+		filter: 'urban_grids',
+		decorator: 'Imperviousness'
+	}],
 
     /** private: config[clcLevelsConfig]
      *  ``Object`` Translated index names by id
@@ -228,16 +245,16 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
      */
 	generateItems: function(config){
 		return [{
+    		title: this.clcLevelTitleText,
+    		layout : 'fit',
+	        items: this.getCclLevelItems(config)
+	    },{
     		title: this.timeSelectionTitleText,
     		// layout : 'fit',
 	        items: this.getTimeSelectionItems(config)
 	    },{
     		title: this.soilSealingIndexTitleText,
 	        items: this.getSealingIndexItems(config)
-	    },{
-    		title: this.clcLevelTitleText,
-    		layout : 'fit',
-	        items: this.getCclLevelItems(config)
 	    },{
     		title: this.clcLegendBuilderTitleText,
 			layout : 'table',
@@ -250,6 +267,24 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	    }];
 	},
 
+    /** api: method[onLayerSelect]
+     *  :arg el: ``Object`` Component
+     *  :arg selected: ``Object`` Selected element
+     *  Select a layer record as CLC level and initialize needed items on the form
+     */
+	onLayerSelect: function(el, selected, index) {
+
+		if(selected.inputValue 
+			// the filter for clc levels is 0
+			&& selected.inputValue.indexOf(this.clcLevelsConfig[0].filter) > -1){
+			this.enableOrDisableElements('clcLevels');
+		}else{
+			// should be impervious index
+			this.enableOrDisableElements('impervious');
+		}
+
+		gxp.widgets.form.SoilPanel.superclass.onLayerSelect.call(this, el, selected, index);
+	},
 
     /** api: method[getSealingIndexItems]
      *  :arg config: ``String`` for this element. Unused
@@ -353,8 +388,10 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		var filter1 = Ext.getCmp(this.id + '_filterT1ComboBox');
 		var yearsSelection = Ext.getCmp(this.id + '_yearsSelection');
 		if(filter0  && filter0.getValue() 
-			&& filter1 && filter1.getValue()
-			&& yearsSelection && yearsSelection.getValue()){
+			&& yearsSelection && yearsSelection.getValue()
+			&& yearsSelection.getValue().inputValue
+			&& (yearsSelection.getValue().inputValue == 1 
+				||  filter1 && filter1.getValue())){
 			this.activeElementByTitle(this.soilSealingIndexTitleText);
 		}
 	},
@@ -513,7 +550,10 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		// Show resume of the response data
 		var me = this;
 		var wfsResumeTool = this.target.tools['gxp_wfsresume'];
-        if(wfsResumeTool){
+        if(wfsResumeTool 
+        	&& responseData
+        	&& responseData.index 
+			&& responseData.index.id){
         	var grid = wfsResumeTool.createResultsGrid(responseData, 'soilsealing', 'soilsealing', 'soilsealing');
         	// var grid = wfsResumeTool.createResultsGrid(this.defaultInput2, 'soilsealing', 'soilsealing', 'soilsealing');
 			var hasTabPanel = false;
@@ -603,12 +643,25 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		}
 
 		// Generate classes elements
-		var classes = params.classesselector.split(",");
-		for (var i = 0; i < classes.length; i++) {
-			inputs.classes.push(new OpenLayers.WPSProcess.LiteralData({
-				value : classes[i]
-			}));
+		var processName;
+		if(params.classesselector){
+			// soil sealing
+			var classes = params.classesselector.split(",");
+			for (var i = 0; i < classes.length; i++) {
+				inputs.classes.push(new OpenLayers.WPSProcess.LiteralData({
+					value : classes[i]
+				}));
+			}
+			processName = this.geocoderConfig.wpsProcessName;
+		}else{
+			// impervious
+			inputs.classes = null;
+			inputs.imperviousnessLayer = new OpenLayers.WPSProcess.LiteralData({
+				value : this.geocoderConfig.imperviousnessLayer
+			});
+			processName = this.geocoderConfig.imperviousnessProccessName;
 		}
+		
 
 		var requestObject = {
 			type : "raw",
@@ -621,7 +674,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 
 		this.handleRequestStart();
 
-		this.wpsManager.execute(this.geocoderConfig.wpsProcessName, requestObject, this.showResult, this);
+		this.wpsManager.execute(processName, requestObject, this.showResult, this);
 	}
 
 });

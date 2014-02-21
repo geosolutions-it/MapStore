@@ -47,160 +47,13 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 	currentTimeTitleText: 'Current Time',
 	administrativeUnitsTitleText: 'Administrative Units',
 	barChartTitleText: 'Bar Chart',
+	intervalTitleText: 'Time interval',
 	// EoF i18n
     
     /** api: config[url]
      *  ``String`` URL for the layer creation
      */
 	url: null,
-
-    /** api: config[columnsChartConfig]
-     *  ``Object`` Default configuration for the column chart
-     */
-	columnsChartConfig: {
-		animation : true,
-		animShift : true,
-		chartConfig : {
-			chart : {
-				type : 'column'
-			},
-			yAxis: {
-				min: 0
-			}
-		}
-	},
-
-    /** api: config[pieChartConfig]
-     *  ``Object`` Default configuration for the pie chart
-     */
-	pieChartConfig: {
-		animation : true,
-		animShift : true,
-		series : [{
-			type : 'pie'
-		}],
-		chartConfig : {
-			chart : {
-				plotBackgroundColor : null,
-				plotBorderWidth : null,
-				plotShadow : true,
-				spacingBottom : 65
-			},
-			tooltip : {
-                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y:.1f} %</b></td></tr>',
-                footerFormat: '</table>',
-                shared: true,
-                useHTML: true
-			},
-			plotOptions : {
-				pie : {
-					allowPointSelect : true,
-					cursor : 'pointer',
-					dataLabels : {
-						enabled : true,
-						color : '#000000',
-						connectorColor : '#000000'
-						// ,
-						// format : '<b>{point.name}</b>: {point.percentage:.4f} %'
-					}
-				}
-			}
-		}
-	},
-
-	defaultInput: {
-	  "index": {
-	    "id": 1,
-	    "name": "Coverage Ratio"
-	  },
-	  "refTime": {
-	    "time": "2000-01-01",
-	    "output": {
-	      "admUnits": [
-	        "Pisa",
-	        "Livorno"
-	      ],
-	      "clcLevels": [
-	        "Class-1",
-	        "Class-2",
-	        "Class-3"
-	      ],
-	      "values": [
-	        [
-	          20,
-	          30,
-	          50
-	        ],
-	        [
-	          12,
-	          63,
-	          25
-	        ]
-	      ]
-	    }
-	  }
-	},
-
-	defaultInput2: {
-	  "index": {
-	    "id": 1,
-	    "name": "Coverage Ratio"
-	  },
-	  "refTime": {
-	    "time": "2000-01-01",
-	    "output": {
-	      "admUnits": [
-	        "Pisa",
-	        "Livorno"
-	      ],
-	      "clcLevels": [
-	        "Class-1",
-	        "Class-2",
-	        "Class-3"
-	      ],
-	      "values": [
-	        [
-	          20,
-	          30,
-	          50
-	        ],
-	        [
-	          12,
-	          63,
-	          25
-	        ]
-	      ]
-	    }
-	  },
-	  "curTime": {
-	    "time": "2006-01-01",
-	    "output": {
-	      "admUnits": [
-	        "Pisa",
-	        "Livorno"
-	      ],
-	      "clcLevels": [
-	        "Class-1",
-	        "Class-2",
-	        "Class-3"
-	      ],
-	      "values": [
-	        [
-	          10,
-	          40,
-	          50
-	        ],
-	        [
-	          32,
-	          21,
-	          47
-	        ]
-	      ]
-	    }
-	  }
-	},
 
 	/** private: method[addOutput]
 	 *  :arg config: ``Object``
@@ -236,40 +89,48 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		var me = this;
 		var refTimePieChartsData = null, curTimePieChartsData = null, 
 			refTimeColChartsData = null, curTimeColChartsData = null;
+		var referenceTimeTitle = this.referenceTimeTitleText;
 
 		// Generate data for the charts
 		if(data && data.index && data.refTime){
 			var title = data.index.name || this.defaultTitle;
 			refTimePieChartsData = this.getPieChartsData(data.refTime.output);
 			refTimeColChartsData = this.getColChartsSeries(data.refTime.output);
-			if(data.curTime){
+			if(data.curTime 
+				// check if it have values (is not an array with [0])
+				&& this.validData(data.curTime.output)){
 				// 2 years
 				curTimePieChartsData = this.getPieChartsData(data.curTime.output);
 				curTimeColChartsData = this.getColChartsSeries(data.curTime.output);
+			}else if(data.curTime){
+				data.refTime.time += " - " + data.curTime.time;
+				referenceTimeTitle = this.intervalTitleText;
 			}
 		}
 
-		// Administrative units tab
-		var adminUnitsItems = [];
-		for(var i = 0; i < data.refTime.output.admUnits.length; i++){
-			var unitItems = [];
-			unitItems.push(this.generatePieChart(this.referenceTimeTitleText, data.refTime.time, refTimePieChartsData[i]));
-			if(curTimePieChartsData){
-				unitItems.push(this.generatePieChart(this.currentTimeTitleText, data.curTime.time, curTimePieChartsData[i]));
+		// Administrative units tab only for index 1
+		if(data.index.id == 1){
+			var adminUnitsItems = [];
+			for(var i = 0; i < data.refTime.output.admUnits.length; i++){
+				var unitItems = [];
+				unitItems.push(this.generatePieChart(this.referenceTimeTitleText, data.refTime.time, refTimePieChartsData[i]));
+				if(curTimePieChartsData){
+					unitItems.push(this.generatePieChart(this.currentTimeTitleText, data.curTime.time, curTimePieChartsData[i]));
+				}
+				adminUnitsItems.push({
+					title: data.refTime.output.admUnits[i],
+					items: unitItems
+				});
 			}
-			adminUnitsItems.push({
-				title: data.refTime.output.admUnits[i],
-				items: unitItems
-			});
+			var adminUnitsTab = new Ext.Panel({
+				border : false,
+				layout : "accordion",
+				disabled : false,
+				autoScroll : false,
+				title : this.administrativeUnitsTitleText,
+				items: adminUnitsItems
+			});	
 		}
-		var adminUnitsTab = new Ext.Panel({
-			border : false,
-			layout : "accordion",
-			disabled : false,
-			autoScroll : false,
-			title : this.administrativeUnitsTitleText,
-			items: adminUnitsItems
-		});
 
 		// Bar chart tab
 		var barChartItems = [];
@@ -277,7 +138,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		var clcLevels = this.getLevels(data.refTime.output.referenceName, data.refTime.output.clcLevels);
 		barChartItems.push(
 			this.generateColumnChart(
-				this.referenceTimeTitleText, 
+				referenceTimeTitle, 
 				data.refTime.time, 
 				refTimeColChartsData, 
 				{
@@ -300,12 +161,20 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 					})
 			);
 		}else{
-			barChartTitle += " - " + this.referenceTimeTitleText;
+			barChartTitle += " - " + referenceTimeTitle;
 		}
 		var barChartTab = new Ext.Panel({
 			title : barChartTitle,
 			items: barChartItems
 		});
+
+		// Generated items
+		var items = [];
+		if(adminUnitsTab){
+			items.push(adminUnitsTab);
+		}
+		items.push(barChartTab);
+
 
 		// ///////////////////////////////////////
 		// Main Tab Panel
@@ -317,13 +186,34 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			closable : true,
 			renderTo : Ext.getBody(),
 			activeTab : 0,
-			items : [adminUnitsTab, barChartTab]
+			items : items
 		});
 		
 		// ///////////////////////////////////////
 		// Drawing the Panel
 		// ///////////////////////////////////////
 		return outcomeTabPanel;
+	},
+
+    /** api: method[validData]
+     *  :arg yearData: ``Object`` Data in the year
+     *  :returns: ``Boolean`` True if there are some data different to 0 and false otherwise.
+     */
+	validData: function(yearData){
+		var valid = false;
+		var chartsSeries = [];
+		if(yearData.admUnits 
+			&& yearData.clcLevels 
+			&& yearData.values
+			&& yearData.admUnits.length == yearData.values.length){
+			for(var i = 0; i < yearData.admUnits.length; i++){
+				if(yearData.values[i] != 0){
+					valid = true;
+					break;
+				}
+			}
+		}
+		return valid;
 	},
 
     /** api: method[getPieChartsData]

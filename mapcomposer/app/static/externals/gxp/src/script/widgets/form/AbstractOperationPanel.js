@@ -447,26 +447,10 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
                 var i = 0;
                 me.rasterComboBox.items = [];
                 for (var i = 0; i < records.length; i++) {
-                	var boxLabel = records[i].get('title'); 
-                	var inputValue = records[i].get('name');
-                	var append = true;
-                	if (me.clcLevelsConfig 
-                		&& me.clcLevelsConfig.filter
-                		&& inputValue.indexOf(me.clcLevelsConfig.filter) < 0){
-                		append = false;
-                	}else if (me.clcLevelsConfig 
-                		&& me.clcLevelsConfig.filter
-                		&& inputValue.indexOf(me.clcLevelsConfig.filter) > -1
-                		&& me.clcLevelsConfig.decorator){
-            			boxLabel = String.format(me.clcLevelsConfig.decorator, inputValue.split(me.clcLevelsConfig.filter)[1]);
-                	}
-                	if(append){
-	                    me.rasterComboBox.items.push({
-	                    	boxLabel: boxLabel, 
-	                    	name: 'raster', 
-	                    	inputValue: inputValue,
-	                    	recordValue: records[i]
-	                    });	
+                	// delegate to getRasterItem
+                	var item = me.getRasterItem(records[i]);
+                	if(item != null){
+	                    me.rasterComboBox.items.push(item);	
                 	}
                 }
                 me.rasterComboBox.doLayout();
@@ -535,6 +519,46 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 			};
 		}
 		return [cclLevelItem0];
+	},
+
+    /** api: method[getRasterItem]
+     *  :arg record: ``Object`` Record element
+     *  :returns: ``Object`` item to be added or null if couldn't be added
+     */
+	getRasterItem: function(record){
+    	var boxLabel = record.get('title'); 
+    	var inputValue = record.get('name');
+    	var append = true;
+
+    	// Filter and decorate the record
+    	if (this.clcLevelsConfig
+    		&& this.clcLevelsConfig.length){
+    		append = false;
+    		for (var i = 0; i < this.clcLevelsConfig.length; i++){
+    			var filterConfig = this.clcLevelsConfig[i];
+    			if (inputValue.indexOf(filterConfig.filter) > -1){
+    				append = true;
+    				if(filterConfig.decorator){
+						boxLabel = String.format(filterConfig.decorator, inputValue.split(filterConfig.filter)[1]);
+					}
+					break;
+    			}
+
+    		}
+    	}
+
+    	// return the item or null otherwise
+    	if(append){
+            return {
+            	boxLabel: boxLabel, 
+            	name: 'raster', 
+            	inputValue: inputValue,
+            	recordValue: record
+            };	
+    	}else{
+    		return null;
+    	}
+
 	},
 
     /** api: method[onLayerSelect]

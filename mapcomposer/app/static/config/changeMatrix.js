@@ -107,6 +107,20 @@
 				"name"  : "it.geosolutions:corine_L3",
 				"tiled" : false,
 				"visibility": false
+            },{
+                "source": "jrc",
+                "group" : "Urban Grids",
+				"title" : "Urban Grids",
+				"name"  : "it.geosolutions:urban_grids",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "jrc",
+                "group" : "Urban Grids",
+				"title" : "Imperviousness",
+				"name"  : "it.geosolutions:imperviousness",
+				"tiled" : false,
+				"visibility": false
             }
 		]
 	},
@@ -404,7 +418,9 @@
             		"typeName": "soilsealing",
             		"geocoderLayer": "geocoder",
             		"geocoderPopulationLayer": "geocoder_population",
-            		"defaultStyle": "raster"
+            		"defaultStyle": "raster",
+            		"imperviousnessProccessName": "gs:SoilSealingImperviousness",
+            		"imperviousnessLayer": "imperviousness"
             	},
             	"xtype": "gxp_soilpanel"
             }]
