@@ -63,9 +63,21 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 	 */
 	changeMatrixEmptyFilter : "Please specify both time filters",
 
+	/** api: config[geocoderSelectorsLabels]
+	 * ``Array`` of ``String``
+	 * Label text for the return types selection (i18n).
+	 */
+	geocoderSelectorsLabels: ['Administrative Area List', 'Administrative Area Subs'],
+
 	/** EoF i18n **/
 
 	// clcLevelMode: 'another',
+	
+	/** api: config[requestTimeout]
+	 *  ``Integer``
+	 *  Timeout for the WPS request
+	 */
+	requestTimeout : 5000,
     
     /** api: config[clcLevelMode]
      *  ``String`` Geocoder configuration for the ROI and WPS procces
@@ -112,6 +124,11 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
      */
 	enableOrDisableConfig:{
 	},
+    
+    /** api: config[roiFieldSetConfig]
+     *  ``Object`` Configuration to overwrite roifieldset config
+     */
+	roiFieldSetConfig: {},
 
 	/** private: method[constructor]
 	 *  Prepare the layout for the panel
@@ -620,7 +637,6 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		}];
 	},
 
-
     /** api: method[getRoiItems]
      *  :arg config: ``Object`` Configuration for this. Unused
      *  :returns: ``Array`` items for the ROI element.
@@ -652,6 +668,8 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 				// 	layout: 'hbox'
 				// }
 		};
+
+		Ext.apply(roiFieldSetConfig, this.roiFieldSetConfig);
 
 		// copy runtime dependencies
 		roiFieldSetConfig.mapPanel = this.target.mapPanel;
@@ -807,6 +825,57 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		}
 
 		return data;
+	},
+	
+	/**
+	 *
+	 */
+	handleTimeout : function() {
+		if (!this.loadingMask)
+			this.loadingMask = new Ext.LoadMask(Ext.get(this.id), 'Loading..');
+		this.loadingMask.hide();
+		Ext.getCmp(this.id + '_submit-button').enable();
+		//Ext.Msg.alert(this.changeMatrixTimeoutDialogTitle, this.changeMatrixTimeoutDialogText);
+		
+		var wfsGrid = Ext.getCmp(this.wfsChangeMatrisGridPanel);
+		if(wfsGrid) {
+			var lastOptions = wfsGrid.store.lastOptions;
+         	wfsGrid.store.reload(lastOptions);
+         	wfsGrid.getView().refresh();
+		}		
+	},
+
+	/**
+	 *
+	 */
+	handleRequestStart : function() {
+		var me = this;
+
+		if (!this.loadingMask)
+			this.loadingMask = new Ext.LoadMask(Ext.get(this.id), 'Loading..');
+		me.loadingMask.show();
+		var submitButton = Ext.getCmp(this.id + '_submit-button');
+		if (submitButton)
+			submitButton.disable();
+		if (me.errorTimer)
+			clearTimeout(me.errorTimer);
+		me.errorTimer = setTimeout(function() {
+			me.handleTimeout();
+		}, me.requestTimeout);
+	},
+
+	/**
+	 *
+	 */
+	handleRequestStop : function() {
+		if (!this.loadingMask)
+			this.loadingMask = new Ext.LoadMask(Ext.get(this.id), 'Loading..');
+		this.loadingMask.hide();
+		var submitButton = Ext.getCmp(this.id + '_submit-button');
+		if (submitButton)
+			submitButton.enable();
+		/*if (this.errorTimer)
+			clearTimeout(this.errorTimer);*/
 	}
 
 });

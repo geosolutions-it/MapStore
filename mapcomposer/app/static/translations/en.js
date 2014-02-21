@@ -678,5 +678,30 @@ GeoExt.Lang.add("en", {
 		detailsHeaderName : "Property Name",
 		detailsHeaderValue : "Property Value",
 		detailsWinTitle : "Details",
-	}
+	},
+
+    "gxp.widgets.form.SoilPanel.prototype":{
+        basedOnCLCText: 'Based on CLC',
+        coverText: 'Coverage coefficient',
+        changingTaxText: 'Rate of Change',
+        marginConsumeText: 'Marginal Land Take',
+        sprawlText: 'Urban Sprawl Indicator',
+        basedOnImperviousnessText: 'Based on Imperviousness',
+        urbanDispersionText: 'Urban Dispersion',
+        edgeDensityText: 'Edge Density',
+        urbanDiffusionText: 'Dispersive Urban Growth',
+        framesText: 'Fragmentation',
+        consumeOnlyText: 'Land Take',
+        consumeOnlyConfText: 'Environmental Impact of Land Take',
+        invalidFormDialogText: "Please review the form fields:<ul>",
+        invalidFormTitleText: "Error",
+        invalidYearsFormDialogText: "Years range not selected",
+        invalidROIFormDialogText: "ROI not selected",
+        invalidCLCLevelFormDialogText: "CLC level not selected",
+        invalidClassesFormDialogText: "CLC Level builder not selected",
+        invalidSealingIndexFormDialogText: "Soil Sealing index not selected",
+        invalidRange0IndexFormDialogText: "Reference time not selected",
+        invalidRange1IndexFormDialogText: "Current time not selected"
+    }
+
 });

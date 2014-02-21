@@ -423,57 +423,6 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(gxp.widgets.form.AbstractOperati
 		}
 		//if(this.win) this.win.destroy();
 		grid.doLayout();
-	},
-	
-	/**
-	 *
-	 */
-	handleTimeout : function() {
-		if (!this.loadingMask)
-			this.loadingMask = new Ext.LoadMask(Ext.get(this.id), 'Loading..');
-		this.loadingMask.hide();
-		Ext.getCmp(this.id + '_submit-button').enable();
-		//Ext.Msg.alert(this.changeMatrixTimeoutDialogTitle, this.changeMatrixTimeoutDialogText);
-		
-		var wfsGrid = Ext.getCmp(this.wfsChangeMatrisGridPanel);
-		if(wfsGrid) {
-			var lastOptions = wfsGrid.store.lastOptions;
-         	wfsGrid.store.reload(lastOptions);
-         	wfsGrid.getView().refresh();
-		}		
-	},
-
-	/**
-	 *
-	 */
-	handleRequestStart : function() {
-		var me = this;
-
-		if (!this.loadingMask)
-			this.loadingMask = new Ext.LoadMask(Ext.get(this.id), 'Loading..');
-		me.loadingMask.show();
-		var submitButton = Ext.getCmp(this.id + '_submit-button');
-		if (submitButton)
-			submitButton.disable();
-		if (me.errorTimer)
-			clearTimeout(me.errorTimer);
-		me.errorTimer = setTimeout(function() {
-			me.handleTimeout();
-		}, me.requestTimeout);
-	},
-
-	/**
-	 *
-	 */
-	handleRequestStop : function() {
-		if (!this.loadingMask)
-			this.loadingMask = new Ext.LoadMask(Ext.get(this.id), 'Loading..');
-		this.loadingMask.hide();
-		var submitButton = Ext.getCmp(this.id + '_submit-button');
-		if (submitButton)
-			submitButton.enable();
-		/*if (this.errorTimer)
-			clearTimeout(this.errorTimer);*/
 	}
 
 });

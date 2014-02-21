@@ -42,14 +42,14 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	xtype : "gxp_soilpanel",
 
 	/** i18n **/
-	// First fieldset
+	// LUC (land use/cover)
 	basedOnCLCText: 'Based on CLC',
 	coverText: 'Coefficiente Copertura',
 	changingTaxText: 'Tasso di Variazione',
 	marginConsumeText: 'Consumo Marginale del Suolo',
 	sprawlText: 'Sprawl Urbano',
 
-	// Second fieldset
+	// Second fieldset (impervious)
 	basedOnImperviousnessText: 'Based on Imperviousness',
 	urbanDispersionText: 'Dispersione Urbana',
 	edgeDensityText: 'Edge Density',
@@ -68,6 +68,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	invalidSealingIndexFormDialogText: "Soil Sealing index not selected",
 	invalidRange0IndexFormDialogText: "Reference time not selected",
 	invalidRange1IndexFormDialogText: "Current time not selected",
+	wpsError: "Error on WPS Process",
 
 	/** EoF i18n **/
     
@@ -139,6 +140,49 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			classesselector: false
 		}
 	},
+    
+    /** api: config[roiFieldSetConfig]
+     *  ``Object`` Configuration to overwrite roifieldset config
+     */
+	roiFieldSetConfig: {
+		/** api: config[defaultSelectionMethod]
+		 *  ``String``
+		 *  Default selection method enabled. @see this.spatialSelectors
+		 */
+		defaultSelectionMethod: 'geocoder',
+		/** api: config[spatialSelectors]
+		 *  ``Object``
+		 * Enable/disable spatial selectors options.
+		 */
+		spatialSelectors : [{
+			name  : 'GeoCoder',
+			label : 'Administrative Areas',
+			value : 'geocoder'
+		}],
+		/** api: config[defaultReturnType]
+		 *  ``String``
+		 *  Default return type enabled. @see this.geocoderSelectors
+		 */
+		defaultReturnType: 'list',
+		/** api: config[geocoderSelectorsLabels]
+		 * ``Array`` of ``String``
+		 * Label text for the return types selection (i18n).
+		 */
+		geocoderSelectorsLabels: this.geocoderSelectorsLabels,
+		/** api: config[geocoderSelectors]
+		 *  ``Object``
+		 *  Options for the geocoder return types selections.
+		 */
+	 	geocoderSelectors : [{
+			name  : 'List',
+			label : 'Administrative Area List',
+			value : 'list'
+		}, {
+			name  : 'Subs',
+			label : 'Administrative Area Subs',
+			value : 'subs'
+		}]
+	},
 
     /** api: config[clcLevelsConfig]
      *  ``Object`` CLC levels cconfiguration
@@ -146,6 +190,35 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	clcLevelsConfig:{
 		filter: 'corine_L',
 		decorator: 'Corine Land Cover Level {0}'
+	},
+
+    /** private: config[clcLevelsConfig]
+     *  ``Object`` Translated index names by id
+     */
+	translatedIndexNames:{},
+
+
+	/** api: method[initComponent]
+	 *  Generate a panel with the configuration present on this
+	 */
+	initComponent: function(config){
+
+		// Use translations
+		Ext.apply(this.translatedIndexNames,{
+			1: this.coverText,
+			2: this.changingTaxText,
+			3: this.marginConsumeText,
+			4: this.sprawlText,
+			5: this.urbanDispersionText,
+			6: this.edgeDensityText,
+			7: this.urbanDiffusionText,
+			8: this.framesText,
+			9: this.consumeOnlyText,
+			10: this.consumeOnlyConfText,
+
+		})
+
+		gxp.widgets.form.SoilPanel.superclass.initComponent.call(this, config);
 	},
 
     /** api: method[generateItems]
@@ -203,19 +276,19 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
             	items:[{
                 	boxLabel: this.coverText, 
                 	name: 'sealingIndex', 
-                	inputValue: this.coverText
+                	inputValue: 1
                 },{
                 	boxLabel: this.changingTaxText, 
                 	name: 'sealingIndex', 
-                	inputValue: this.changingTaxText
+                	inputValue: 2
                 },{
                 	boxLabel: this.marginConsumeText, 
                 	name: 'sealingIndex', 
-                	inputValue: this.marginConsumeText
+                	inputValue: 3
                 },{
                 	boxLabel: this.sprawlText, 
                 	name: 'sealingIndex', 
-                	inputValue: this.sprawlText
+                	inputValue: 4
                 }],
             	listeners:{
             		change: this.sealingIndexSelect,
@@ -242,27 +315,27 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
             	items:[{
                 	boxLabel: this.urbanDispersionText, 
                 	name: 'sealingIndex', 
-                	inputValue: this.urbanDispersionText
+                	inputValue: 5
                 },{
                 	boxLabel: this.edgeDensityText, 
                 	name: 'sealingIndex', 
-                	inputValue: this.edgeDensityText
+                	inputValue: 6
                 },{
                 	boxLabel: this.urbanDiffusionText, 
                 	name: 'sealingIndex', 
-                	inputValue: this.urbanDiffusionText
+                	inputValue: 7
                 },{
                 	boxLabel: this.framesText, 
                 	name: 'sealingIndex', 
-                	inputValue: this.framesText
+                	inputValue: 8
                 },{
                 	boxLabel: this.consumeOnlyText, 
                 	name: 'sealingIndex', 
-                	inputValue: this.consumeOnlyText
+                	inputValue: 9
                 },{
                 	boxLabel: this.consumeOnlyConfText, 
                 	name: 'sealingIndex', 
-                	inputValue: this.consumeOnlyConfText
+                	inputValue: 10
                 }],
             	listeners:{
             		change: this.sealingIndexSelect,
@@ -319,8 +392,10 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	submitForm: function() {
 		if(this.validate()){
 			//TODO: Get result from WPS process
-			var responseData = this.getFakeResponse();
-			this.showResult(responseData);
+			// var responseData = this.getFakeResponse();
+			// var params = this.getWPSParams();
+			// this.showResult(responseData);
+			this.startWPSRequest(this.getForm().getValues());
 		}
 	},
 
@@ -404,10 +479,37 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	},
 
     /** api: method[showResult]
-     *  :arg config: ``Object`` with the response of the process
+     *  :arg data: ``Object`` with the response of the process
      *  Show result as tabpanel. It uses the ´gxp_wfsresume´ plugin.
      */
-	showResult: function(responseData){
+	showResult: function(data){
+		// request stop
+		this.handleRequestStop();
+
+		// decode data if is encoded
+		var responseData = data;
+		if(responseData && !responseData.index){
+			try{
+				responseData = JSON.parse(responseData);
+			}catch (e){
+				Ext.Msg.show({
+				   title: this.wpsError,
+				   msg: data,
+				   width: 250,
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.WARNING,
+				   scope: this
+				});
+			}
+		}
+
+		// get translated name of the index
+		if(responseData.index 
+			&& responseData.index.id 
+			&& this.translatedIndexNames[responseData.index.id]){
+			responseData.index.name = this.translatedIndexNames[responseData.index.id];
+		}
+
 		// Show resume of the response data
 		var me = this;
 		var wfsResumeTool = this.target.tools['gxp_wfsresume'];
@@ -451,196 +553,75 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
         }
 	},
 
-	// TODO: Remove all code before this one
-	defaultInput: {
-	  "index": {
-	    "id": 1,
-	    "name": "Coverage Ratio (Demo)"
-	  },
-	  "refTime": {
-	    "time": "2000-01-01",
-	    "output": {
-	      "admUnits": [
-	        "Pisa",
-	        "Livorno"
-	      ],
-	      "clcLevels": [
-	        "Class-1",
-	        "Class-2",
-	        "Class-3"
-	      ],
-	      "values": [
-	        [
-	          20,
-	          30,
-	          50
-	        ],
-	        [
-	          12,
-	          63,
-	          25
-	        ]
-	      ]
-	    }
-	  }
-	},
+	/**
+	 *
+	 */
+	startWPSRequest : function(params) {
+		
+		// get inputs
+		var inputs = {
+			name : new OpenLayers.WPSProcess.LiteralData({
+				value : params.raster
+			}),
+			defaultStyle : new OpenLayers.WPSProcess.LiteralData({
+				value : this.geocoderConfig.defaultStyle
+			}),
+			storeName : new OpenLayers.WPSProcess.LiteralData({
+				value : this.geocoderConfig.storeName
+			}),
+			typeName : new OpenLayers.WPSProcess.LiteralData({
+				value : this.geocoderConfig.typeName
+			}),
+			referenceFilter : new OpenLayers.WPSProcess.ComplexData({
+				value : params.filterT0,
+				mimeType : 'text/plain; subtype=cql'
+			}),
+			index: new OpenLayers.WPSProcess.LiteralData({
+				value : params.sealingIndex
+			}),
+			geocoderLayer: new OpenLayers.WPSProcess.LiteralData({
+				value : this.geocoderConfig.geocoderLayer
+			}),
+			geocoderPopulationLayer: new OpenLayers.WPSProcess.LiteralData({
+				value : this.geocoderConfig.geocoderPopulationLayer
+			}),
+			admUnits: new OpenLayers.WPSProcess.LiteralData({
+				value : this.roiFieldSet.getSelectedAreas()
+			}),
+			admUnitSelectionType: new OpenLayers.WPSProcess.LiteralData({
+				value : this.roiFieldSet.returnType != null && this.roiFieldSet.returnType == 'subs' ? "AU_SUBS" : "AU_LIST"
+			}),
+			classes : []
+		};
 
-	defaultInput2: {
-	  "index": {
-	    "id": 1,
-	    "name": "Coverage Ratio (Demo)"
-	  },
-	  "refTime": {
-	    "time": "2000-01-01",
-	    "output": {
-	      "admUnits": [
-	        "Pisa",
-	        "Livorno"
-	      ],
-	      "clcLevels": [
-	        "Class-1",
-	        "Class-2",
-	        "Class-3"
-	      ],
-	      "values": [
-	        [
-	          20,
-	          30,
-	          50
-	        ],
-	        [
-	          12,
-	          63,
-	          25
-	        ]
-	      ]
-	    }
-	  },
-	  "curTime": {
-	    "time": "2006-01-01",
-	    "output": {
-	      "admUnits": [
-	        "Pisa",
-	        "Livorno"
-	      ],
-	      "clcLevels": [
-	        "Class-1",
-	        "Class-2",
-	        "Class-3"
-	      ],
-	      "values": [
-	        [
-	          10,
-	          40,
-	          50
-	        ],
-	        [
-	          32,
-	          21,
-	          47
-	        ]
-	      ]
-	    }
-	  }
-	},
-
-	getFakeResponse: function(){
-		var responseData = null;
-		var values = this.getForm().getValues();
-		try{
-			var adminUnits = [];
-			// TODO: change it if localited!!
-			if(values.roiSelectionMethod != "Administrative Areas" 
-				|| values.roiReturnMethod == 'Geometry Union'){
-				adminUnits.push(values.roiSelectionMethod);
-			}else{
-				var selectedAreas = this.roiFieldSet.getSelectedAreas().split(this.roiFieldSet.selectedAreasSeparator);
-				for (var i = 0; i < selectedAreas.length; i++){
-					var areaAndParent = selectedAreas[i].split(this.roiFieldSet.selectedAreaParentSeparator);
-					adminUnits.push(areaAndParent[0] + " - " + areaAndParent[1]);
-				}
-			}
-			// Generate random values
-			var clcLevels =this.fakeLevelsGenerator(values);
-			var clcValues = this.fakeValuesGenerator(adminUnits, clcLevels);
-			var responseData = {
-			  "index": {
-			    "id": 1,
-			    "name": values.sealingIndex
-			  },
-			  "refTime": {
-			    "time": values.filterT0,
-			    "output": {
-			      "referenceName": values.raster,
-			      "admUnits": adminUnits,
-			      "clcLevels": clcLevels,
-			      "values": clcValues
-			    }
-			  }
-			};
-			if(values.filterT1){
-				var clcValuesT1 = this.fakeValuesGenerator(adminUnits, clcLevels);
-				responseData["curTime"] = {
-				    "time": values.filterT1,
-				    "output": {
-			          "referenceName": values.raster,
-				      "admUnits": adminUnits,
-				      "clcLevels": clcLevels,
-				      "values": clcValuesT1
-				    }
-			  	};
-			}
-		}catch(e){
-			if(values.years && values.years == 2){
-				responseData = this.defaultInput2;
-			}else{
-				responseData = this.defaultInput;
-			}
+		// add curTime
+		if(params.filterT1){
+			inputs.nowFilter = new OpenLayers.WPSProcess.ComplexData({
+				value : params.filterT1,
+				mimeType : 'text/plain; subtype=cql'
+			});
 		}
-		return responseData;
-	},
 
-	fakeValuesGenerator: function(adminUnits, clcLevels){
-		// Generate random values
-		var clcValues = [];
-		for(var i = 0; i < adminUnits.length; i++){
-			var clcValue = [];
-			for(var j = 0; j < clcLevels.length; j++){
-				clcValue.push(Math.floor((Math.random()*100)+1));
-			}
-			clcValues.push(clcValue);
+		// Generate classes elements
+		var classes = params.classesselector.split(",");
+		for (var i = 0; i < classes.length; i++) {
+			inputs.classes.push(new OpenLayers.WPSProcess.LiteralData({
+				value : classes[i]
+			}));
 		}
-		return clcValues;
-	},
 
-	fakeLevelsGenerator: function(values){
-		// try{
-		// 	var referenceName = values.raster;
-		// 	//layer level
-		// 	var classDataIndex = 0;
-		// 	for ( classDataIndex = 0; classDataIndex < this.classes.length; classDataIndex++) {
-		// 		if (this.classes[classDataIndex].layer == referenceName)
-		// 			break;
-		// 	}
-		// 	if (classDataIndex >= this.classes.length) {
-		// 		return values.classesselector.split(",");
-		// 	}else{
-		// 		var classes = [];
-		// 		var classesSelected = values.classesselector.split(",");
-		// 		for(var i = 0; i < classesSelected.length; i++){
-		// 			var classIndex = parseInt(classesSelected[i]);
-		// 			for(var j = 0; j < this.classesIndexes[classDataIndex][1].length; j++){
-		// 				if(this.classesIndexes[classDataIndex][1][j][0] == classIndex){
-		// 					classes.push(this.classesIndexes[classDataIndex][1][j][1]);
-		// 					break;
-		// 				}
-		// 			}
-		// 		}
-		// 		return classes;
-		// 	}
-		// }catch(e){
-			return values.classesselector.split(",");
-		// }
+		var requestObject = {
+			type : "raw",
+			inputs : inputs,
+			outputs : [{
+				identifier : "result",
+				mimeType : "application/json"
+			}]
+		};
+
+		this.handleRequestStart();
+
+		this.wpsManager.execute(this.geocoderConfig.wpsProcessName, requestObject, this.showResult, this);
 	}
 
 });

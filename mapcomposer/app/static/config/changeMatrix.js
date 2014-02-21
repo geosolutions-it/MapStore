@@ -398,7 +398,13 @@
         	},{
             	"title": "Soil Sealing",
             	"geocoderConfig": {
-            		"selectReturnType": true
+            		"selectReturnType": true,
+            		"wpsProcessName": "gs:SoilSealingCLC",
+            		"storeName": "unina_ds",
+            		"typeName": "soilsealing",
+            		"geocoderLayer": "geocoder",
+            		"geocoderPopulationLayer": "geocoder_population",
+            		"defaultStyle": "raster"
             	},
             	"xtype": "gxp_soilpanel"
             }]

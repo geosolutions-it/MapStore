@@ -404,6 +404,18 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 	 *  Allow return type on the geocoder.
 	 */
 	selectReturnType: false,
+	
+	/** api: config[defaultSelectionMethod]
+	 *  ``String``
+	 *  Default selection method enabled. @see this.spatialSelectors
+	 */
+	defaultSelectionMethod: 'bbox',
+	
+	/** api: config[defaultReturnType]
+	 *  ``String``
+	 *  Default return type enabled. @see this.geocoderSelectors
+	 */
+	defaultReturnType: 'default',
      
 	// //////////////////////////////////////////////////////////////
 	// GeoCoding Panel i18N
@@ -582,7 +594,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 				autoLoad : true,
 				displayField : 'label',
 				valueField : 'value',
-				value : 'default',
+				value : this.defaultReturnType,
 				editable : false,
 				readOnly : false,
 				store : new Ext.data.JsonStore({
@@ -632,7 +644,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 				autoLoad : true,
 				displayField : 'label',
 				valueField : 'value',
-				value : 'bbox',
+				value : this.defaultSelectionMethod,
 				width : itemsWidth - 30,
 				editable : false,
 				readOnly : false,
@@ -1365,6 +1377,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 				if(this.collapsed){
 					cmp.collapse(true);	
 				}
+				this.outputType.fireEvent("select", this.outputType, this.defaultSelectionMethod);
 			},
 			collapse : function(cmp) {
 				// //////////////////////////

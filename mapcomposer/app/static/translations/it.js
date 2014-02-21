@@ -703,5 +703,30 @@ GeoExt.Lang.add("it", {
 		detailsHeaderName : "Nome della Proprietà",
 		detailsHeaderValue : "Valore della Proprietà",
 		detailsWinTitle : "Dettagli",
-	}
+	},
+
+    "gxp.widgets.form.SoilPanel.prototype":{
+        basedOnCLCText: 'Based on CLC',
+        coverText: 'Coverage coefficient',
+        changingTaxText: 'Tasso di Variazione',
+        marginConsumeText: 'Consumo Marginale del Suolo',
+        sprawlText: 'Sprawl Urbano',
+        basedOnImperviousnessText: 'Based on Imperviousness',
+        urbanDispersionText: 'Dispersione Urbana',
+        edgeDensityText: 'Edge Density',
+        urbanDiffusionText: 'Diffusione Urbana',
+        framesText: 'Frammentazione',
+        consumeOnlyText: 'Consumo Suolo',
+        consumeOnlyConfText: 'Coefficiente Ambientale Cons. Suolo',
+        invalidFormDialogText: "Please review the form fields:<ul>",
+        invalidFormTitleText: "Errore",
+        invalidYearsFormDialogText: "Years range not selected",
+        invalidROIFormDialogText: "ROI not selected",
+        invalidCLCLevelFormDialogText: "CLC level not selected",
+        invalidClassesFormDialogText: "CLC Level builder not selected",
+        invalidSealingIndexFormDialogText: "Soil Sealing index not selected",
+        invalidRange0IndexFormDialogText: "Reference time not selected",
+        invalidRange1IndexFormDialogText: "Current time not selected"
+    }
+
 });
