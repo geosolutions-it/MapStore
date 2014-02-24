@@ -379,9 +379,18 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			// the filter for clc levels is 0
 			&& selected.inputValue.indexOf(this.clcLevelsConfig[0].filter) > -1){
 			this.enableOrDisableElements('clcLevels');
+			// disable imperviousness items
+			this.imperviousness.items.each(function(item){
+				item.checked = false;
+			});
+			// for(var key in this.imperviousness.ite)
 		}else if(selected){
 			// should be impervious index
 			this.enableOrDisableElements('impervious');
+			// disable clc levels
+			this.clcLevels.items.each(function(item){
+				item.checked = false;
+			});
 		}
 
 		gxp.widgets.form.SoilPanel.superclass.onLayerSelect.call(this, el, selected, index);
@@ -754,8 +763,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			}),
 			admUnitSelectionType: new OpenLayers.WPSProcess.LiteralData({
 				value : this.roiFieldSet.returnType != null && this.roiFieldSet.returnType == 'subs' ? "AU_SUBS" : "AU_LIST"
-			}),
-			classes : []
+			})
 		};
 
 		// Subindex for 7
@@ -773,15 +781,19 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			});
 		}
 
-		// Generate classes elements
+		
 		var processName;
-		if(params.classesselector){
+		if(index < 5){
 			// soil sealing
-			var classes = params.classesselector.split(",");
-			for (var i = 0; i < classes.length; i++) {
-				inputs.classes.push(new OpenLayers.WPSProcess.LiteralData({
-					value : classes[i]
-				}));
+			if(params.classesselector && params.classesselector.split){
+				// Generate classes elements
+				var classes = params.classesselector.split(",");
+				inputs.classes = [];
+				for (var i = 0; i < classes.length; i++) {
+					inputs.classes.push(new OpenLayers.WPSProcess.LiteralData({
+						value : classes[i]
+					}));
+				}	
 			}
 			processName = this.geocoderConfig.wpsProcessName;
 		}else{
