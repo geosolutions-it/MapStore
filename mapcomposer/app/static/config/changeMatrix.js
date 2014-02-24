@@ -419,7 +419,7 @@
             		"typeName": "soilsealing",
             		"geocoderLayer": "geocoder",
             		"geocoderPopulationLayer": "geocoder_population",
-            		"defaultStyle": "raster",
+            		"defaultProcessStyle": "raster",
             		"imperviousnessProccessName": "gs:SoilSealingImperviousness",
             		"imperviousnessLayer": "imperviousness"
             	},

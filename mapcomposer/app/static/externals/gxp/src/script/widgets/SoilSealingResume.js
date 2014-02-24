@@ -143,9 +143,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 				refTimeColChartsData, 
 				{
 					categories: clcLevels
-				}, {
-					min: 0
-				})
+				}, {})
 		);
 		if(curTimeColChartsData){
 			var clcLevels1 = this.getLevels(data.curTime.output.referenceName, data.curTime.output.clcLevels);
@@ -156,9 +154,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 					curTimeColChartsData, 
 					{
 						categories: clcLevels
-					}, {
-						min: 0
-					})
+					}, {})
 			);
 		}else{
 			barChartTitle += " - " + referenceTimeTitle;

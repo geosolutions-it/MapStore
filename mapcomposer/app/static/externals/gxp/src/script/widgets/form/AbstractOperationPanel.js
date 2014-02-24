@@ -293,17 +293,19 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 					var component = Ext.getCmp(this.id + '_' + key);
 					if(component 
 						&& this.enableOrDisableConfig[config][key] instanceof Object){
-						// iterate on configured items
-						for(var item in this.enableOrDisableConfig[config][key]){
-							// enable or disable
-							if(component.rendered 
-								&& component.items
-								&& component.items.items
-								&& component.items.items[item]){
-								component.items.items[item].setDisabled(this.enableOrDisableConfig[config][key][item]);
-							}else if(component.items
-									&& component.items[item]){
-								component.items[item].disabled = this.enableOrDisableConfig[config][key][item];
+						if(!component.disabled){
+							// iterate on configured items
+							for(var item in this.enableOrDisableConfig[config][key]){
+								// enable or disable
+								if(component.rendered 
+									&& component.items
+									&& component.items.items
+									&& component.items.items[item]){
+									component.items.items[item].setDisabled(this.enableOrDisableConfig[config][key][item]);
+								}else if(component.items
+										&& component.items[item]){
+									component.items[item].disabled = this.enableOrDisableConfig[config][key][item];
+								}
 							}
 						}
 					}else if(component){
@@ -359,7 +361,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 			defaultType : 'numberfield',
 			items : [{
 				xtype : "combo",
-				ref   : 'filterT0ComboBox',
+				ref   : '../../filterT0ComboBox',
 				id   : me.id + '_filterT0ComboBox',
 				name : 'filterT0',
 				fieldLabel : this.referenceTimeFieldLabel,
@@ -385,7 +387,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 				}
 			}, {
 				xtype : "combo",
-				ref   : 'filterT1ComboBox',
+				ref   : '../../filterT1ComboBox',
 				id   : me.id + '_filterT1ComboBox',
 				name : 'filterT1',
 				fieldLabel : this.currentTimeFieldLabel,
@@ -533,6 +535,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 	getRasterItem: function(record){
     	var boxLabel = record.get('title'); 
     	var inputValue = record.get('name');
+    	var filterFound = null;
     	var append = true;
 
     	// Filter and decorate the record
@@ -543,6 +546,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
     			var filterConfig = this.clcLevelsConfig[i];
     			if (inputValue.indexOf(filterConfig.filter) > -1){
     				append = true;
+					filterFound = filterConfig;
     				if(filterConfig.decorator){
 						boxLabel = String.format(filterConfig.decorator, inputValue.split(filterConfig.filter)[1]);
 					}
@@ -558,7 +562,8 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
             	boxLabel: boxLabel, 
             	name: 'raster', 
             	inputValue: inputValue,
-            	recordValue: record
+            	recordValue: record,
+            	filterFound: filterFound
             };	
     	}else{
     		return null;
@@ -709,7 +714,8 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		};
 
 		// Apply screen config
-		if(window.innerHeight < 1000){
+		// if(window.innerHeight < 1000){ // FIXME: Fix roi border
+		if(false){
 			Ext.apply(roiFieldSetConfig, lowScreensConfig);
 		}else{
 			Ext.apply(roiFieldSetConfig, longScreensConfig);

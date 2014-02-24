@@ -42,7 +42,8 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	xtype : "gxp_soilpanel",
 
 	/** i18n **/
-	clcLevelTitleText: 'CLS Levels / Urban Grids',
+	clcLevelTitleText: 'CLC Levels / Urban Grids',
+	imperviousnessText: 'Imperviousness',
 
 	// LUC (land use/cover)
 	basedOnCLCText: 'Based on CLC',
@@ -79,20 +80,38 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
      */
 	enableOrDisableConfig:{
 		1:{
-			// sealingIndexCLC:{
-			// 	1: true,
-			// 	2: true,
-			// 	3: true
-			// },
-			// sealingIndexImpervious:{
-			// 	4: true,
-			// 	5: true
-			// },
-			rasterComboBox: false,
+			sealingIndexCLC:{
+				0: false,
+				1: true,
+				2: true,
+				3: true
+			},
+			sealingIndexImpervious:{
+				0: false,
+				1: false,
+				2: false,
+				3: false,
+				4: true,
+				5: true
+			},
 			filterT1ComboBox: true,
 			classesselector: false
 		},
 		2:{
+			sealingIndexCLC:{
+				0: false,
+				1: false,
+				2: false,
+				3: false
+			},
+			sealingIndexImpervious:{
+				0: false,
+				1: false,
+				2: false,
+				3: false,
+				4: false,
+				5: false
+			},
 			filterT1ComboBox: false
 		},
 		'sealingIndexImpervious':{
@@ -122,36 +141,12 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			classesselector: false
 		},
 		'clcLevels':{
-			sealingIndexCLC:{
-				0: false,
-				1: false,
-				2: false,
-				3: false
-			},
-			sealingIndexImpervious:{
-				0: true,
-				1: true,
-				2: true,
-				3: true,
-				4: true,
-				5: true
-			}
+			sealingIndexCLC: false,
+			sealingIndexImpervious: true
 		},
 		'impervious':{
-			sealingIndexCLC:{
-				0: true,
-				1: true,
-				2: true,
-				3: true
-			},
-			sealingIndexImpervious:{
-				0: false,
-				1: false,
-				2: false,
-				3: false,
-				4: false,
-				5: false
-			}
+			sealingIndexCLC: true,
+			sealingIndexImpervious: false
 		}
 	},
     
@@ -206,7 +201,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		decorator: 'Corine Land Cover Level {0}'
 	},{
 		filter: 'urban_grids',
-		decorator: 'Imperviousness'
+		decorator: 'Urban Grids'
 	}],
 
     /** private: config[clcLevelsConfig]
@@ -267,11 +262,91 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	    }];
 	},
 
+    /** api: method[getCclLevelItems]
+     *  :arg config: ``Object`` Configuration for this. Unused
+     *  :returns: ``Array`` items for the CLC level element.
+     *  Obtain CLC level elements.
+     */
+	getCclLevelItems: function(config){
+		var me = this;
+
+		// Divide in two fieldset
+	    this.layerStore.on('load', function (t, records, options) {
+            me.clcLevels.items = [];
+            me.imperviousness.items = [];
+            for (var i = 0; i < records.length; i++) {
+            	// delegate to getRasterItem
+            	var item = me.getRasterItem(records[i]);
+            	if(item != null){
+            		if(item.filterFound == me.clcLevelsConfig[0]){
+            			me.clcLevels.items.push(item);
+            		}else{
+            			me.imperviousness.items.push(item);
+            		}
+            	}
+            }
+            me.clcLevels.doLayout();
+            me.imperviousness.doLayout();
+        });
+
+	    this.target.on('ready', function(){
+			me.reloadLayers();
+	    });
+
+		return [{
+			title : this.clcLevelTitleText,
+			xtype : 'fieldset',
+			ref   : '/rasterComboBox',
+			id   : me.id + '_rasterComboBox',
+			autoWidth : true,
+			autoHeight : true,
+			collapsible : false,
+			layout : 'fit',
+			defaultType : 'radiogroup',
+			items : [{
+				ref   : '../../clcLevels',
+				id: me.id + "clcLevels",
+	            cls: 'x-check-group-alt',
+				name : 'raster',
+            	columns: 1,
+            	listeners:{
+            		change: me.onLayerSelect,
+            		scope: this
+            	}
+            }]
+        },{
+			title : this.imperviousnessText,
+			xtype : 'fieldset',
+			autoWidth : true,
+			autoHeight : true,
+			collapsible : false,
+			layout : 'fit',
+			defaultType : 'radiogroup',
+			items : [{
+				ref   : '../../imperviousness',
+				id: me.id + "imperviousness",
+	            cls: 'x-check-group-alt',
+				name : 'raster',
+            	columns: 1,
+			    defaults: {
+			        // applied to each contained panel
+			        bodyStyle: 'padding:15px'
+			    },
+            	listeners:{
+            		change: me.onLayerSelect,
+            		scope: this
+            	}
+            }]
+        }];
+	},
+
     /** api: method[resetForm]
      *  Reset form.
      */
 	resetForm: function(){
 		gxp.widgets.form.SoilPanel.superclass.resetForm.call(this);
+		this.filterT0ComboBox.reset();
+		this.filterT1ComboBox.reset();
 		this.activeElementByTitle(this.clcLevelTitleText);
 	},
 
@@ -281,6 +356,18 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
      *  Select a layer record as CLC level and initialize needed items on the form
      */
 	onLayerSelect: function(el, selected, index) {
+
+		// Reset another elements
+		this.yearsSelection.reset();
+		this.filterT0ComboBox.reset();
+		this.filterT1ComboBox.reset();
+		this.sealingIndexCLC.reset();
+		this.sealingIndexImpervious.reset();
+		this.classesselector.reset();
+		if(this.roiFieldSet.rendered){
+			this.roiFieldSet.removeFeatureSummary();
+			this.roiFieldSet.reset();
+		}
 
 		if(selected && selected.inputValue 
 			// the filter for clc levels is 0
@@ -612,7 +699,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				value : params.raster
 			}),
 			defaultStyle : new OpenLayers.WPSProcess.LiteralData({
-				value : this.geocoderConfig.defaultStyle
+				value : this.geocoderConfig.defaultProcessStyle
 			}),
 			storeName : new OpenLayers.WPSProcess.LiteralData({
 				value : this.geocoderConfig.storeName
