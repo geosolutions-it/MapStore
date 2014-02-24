@@ -222,8 +222,8 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 		});
 		for (var i = 0; i < changeMatrix.length; i++) {
 			var el = changeMatrix[i];
-			var x = axisx.indexOf(el[xAttribute]);
-			var y = axisx.indexOf(el[yAttribute]);
+			var y = axisx.indexOf(el[xAttribute]);
+			var x = axisx.indexOf(el[yAttribute]);
 			matrix[x][y + 1] = el[dataAttribute];
 
 			// Partial Sum
