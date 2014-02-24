@@ -188,7 +188,8 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 				title : this.title,
 			    defaults: {
 			        // applied to each contained panel
-			        bodyStyle: 'padding:15px'
+			        bodyStyle: 'padding:15px',
+					autoScroll : true
 			        // ,
 			        // layout: 'form'
 			    },
@@ -260,7 +261,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		if(this.roiFieldSet.rendered){
 			this.roiFieldSet.removeFeatureSummary();
 			this.roiFieldSet.reset();
-			this.roiFieldSet.collapse();	
+			//this.roiFieldSet.collapse();	
 		}
 		this.getForm().reset();
 		this.enableOrDisableElements('default');
@@ -492,6 +493,10 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 						if (value) {
 							me.layerTimeout = setTimeout(function() {
 								me.layerStore.filterBy(function(rec, recId) {
+				                	var item = me.getRasterItem(rec);
+				                	if(item == null){
+				                		return false
+				                	}
 									var name = rec.get("name").trim().toLowerCase();
 									if (name.indexOf(value) > -1) {
 										me.formPanel.layerCombo.expand();
@@ -575,49 +580,51 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 
 		// get layer record from the selected element
 		var record = selected;
-		if(!selected.get){
-			record = selected.recordValue;
-		}
-
-		// //////////////////////////////////////////////////
-		// Populate time filters combo boxes.
-		// //////////////////////////////////////////////////
-		var data = [];
-		if (record.get('times') && !Ext.isEmpty(record.get('times'))) {
-			var times = record.get('times').split(',');
-			for (var i = 0; i < times.length; i++) {
-				var recordData = ["time = '" + times[i] + "'"];
-				data.push(recordData);
+		if(selected){
+			if(!selected.get){
+				record = selected.recordValue;
 			}
-		}
 
-		me.timeValuesStore.removeAll();
-		me.timeValuesStore.loadData(data, false);
-
-		// //////////////////////////////////////////////////
-		// Populate the itemselector classes
-		// //////////////////////////////////////////////////
-		var itemClassSelector = Ext.getCmp(me.id + '_classesselector');
-		itemClassSelector.storeTo.removeAll();
-		itemClassSelector.storeFrom.removeAll();
-		var classDataIndex = 0;
-		for ( classDataIndex = 0; classDataIndex < me.classes.length; classDataIndex++) {
-			if (me.classes[classDataIndex].layer == record.get('name'))
-				break;
-		}
-		if (classDataIndex < me.classes.length) {
-			var classesDataStore = [];
-
-			for (var cc=0;cc<me.classes[classDataIndex].values.length;cc++) {
-				for (var ci=0;ci<me.classesIndexes[me.classes[classDataIndex].level-1][1].length;ci++) {
-					if (me.classesIndexes[me.classes[classDataIndex].level-1][1][ci][0] == me.classes[classDataIndex].values[cc])
-						classesDataStore.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][ci]);
+			// //////////////////////////////////////////////////
+			// Populate time filters combo boxes.
+			// //////////////////////////////////////////////////
+			var data = [];
+			if (record.get('times') && !Ext.isEmpty(record.get('times'))) {
+				var times = record.get('times').split(',');
+				for (var i = 0; i < times.length; i++) {
+					var recordData = ["time = '" + times[i] + "'"];
+					data.push(recordData);
 				}
 			}
 
-			itemClassSelector.storeFrom.loadData(classesDataStore, false);
+			me.timeValuesStore.removeAll();
+			me.timeValuesStore.loadData(data, false);
+
+			// //////////////////////////////////////////////////
+			// Populate the itemselector classes
+			// //////////////////////////////////////////////////
+			var itemClassSelector = Ext.getCmp(me.id + '_classesselector');
+			itemClassSelector.storeTo.removeAll();
+			itemClassSelector.storeFrom.removeAll();
+			var classDataIndex = 0;
+			for ( classDataIndex = 0; classDataIndex < me.classes.length; classDataIndex++) {
+				if (me.classes[classDataIndex].layer == record.get('name'))
+					break;
+			}
+			if (classDataIndex < me.classes.length) {
+				var classesDataStore = [];
+
+				for (var cc=0;cc<me.classes[classDataIndex].values.length;cc++) {
+					for (var ci=0;ci<me.classesIndexes[me.classes[classDataIndex].level-1][1].length;ci++) {
+						if (me.classesIndexes[me.classes[classDataIndex].level-1][1][ci][0] == me.classes[classDataIndex].values[cc])
+							classesDataStore.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][ci]);
+					}
+				}
+
+				itemClassSelector.storeFrom.loadData(classesDataStore, false);
+			}
+			me.activeElementByTitle(me.timeSelectionTitleText);	
 		}
-		me.activeElementByTitle(me.timeSelectionTitleText);
 	},
 
     /** api: method[getCclLegendItems]
@@ -667,7 +674,8 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
      *  Obtain ROI elements.
      */
 	getRoiItems: function(config){
-		// Fieldset configurtions
+
+		// Fieldset configuration
 		var roiFieldSetConfig = {
 				ref: '/roiFieldSet',
 				id: this.id + '_roiFieldSet',
@@ -675,23 +683,37 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 				xtype:'gxp_spatial_selector_field',
 				loadingMaskId: this.id,
 				wpsManager: this.wpsManager
-				// ,
-				// boxMaxWidth: 250
-				,
-				autoHeight: false
-				,
-				autoWidth: false
-				,
-				width: 320
-				,
-				collapsed : false,
-				checkboxToggle : false,
-				collapsible : false
-				// ,
-				// defaults: {
-				// 	layout: 'hbox'
-				// }
 		};
+
+		// configuration for low screens
+		var lowScreensConfig = {
+			// scrollable configuration with 200 px: 
+			height: 200,
+			autoScroll: true,
+			autoHeight: false,
+			autoWidth: false,
+			collapsed : false,
+			checkboxToggle : false,
+			collapsible : false
+		};
+
+		// configuration for long screens
+		var longScreensConfig = {
+			// not scrollable and visible: 
+			autoHeight: false,
+			autoWidth: false,
+			width: 320,
+			collapsed : false,
+			checkboxToggle : false,
+			collapsible : false
+		};
+
+		// Apply screen config
+		if(window.innerHeight < 1000){
+			Ext.apply(roiFieldSetConfig, lowScreensConfig);
+		}else{
+			Ext.apply(roiFieldSetConfig, longScreensConfig);
+		}
 
 		Ext.apply(roiFieldSetConfig, this.roiFieldSetConfig);
 
@@ -845,7 +867,11 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 					}
 				}
 			}
-			data.push(recordData);
+			var item = this.getRasterItem(record);
+        	if(item != null){
+        		recordData[1] = item.boxLabel;
+				data.push(recordData);
+        	}
 		}
 
 		return data;
