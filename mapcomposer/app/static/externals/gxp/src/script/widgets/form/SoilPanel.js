@@ -526,8 +526,15 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				this.sealingIndexImpervious.items.each(function(item){
 					item.checked = false;
 				});
-				// Active next accordion: TODO: change to clcLevelTitleText
-				this.activeElementByTitle(this.clcLegendBuilderTitleText);
+				if(selected.inputValue == 3 || selected.inputValue == 4){
+					this.classesselector.setDisabled(true);
+					// Active next accordion: roiTitleText
+					this.activeElementByTitle(this.roiTitleText);
+				}else{
+					this.classesselector.setDisabled(false);
+					// Active next accordion: clcLevelBuilder
+					this.activeElementByTitle(this.clcLegendBuilderTitleText);
+				}
 			}
 		}
 	},
@@ -753,7 +760,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 
 		// Subindex for 7
 		if(subIndex){
-			inputs.subIndex = new OpenLayers.WPSProcess.LiteralData({
+			inputs.subindex = new OpenLayers.WPSProcess.LiteralData({
 				value : subIndex
 			});
 		}

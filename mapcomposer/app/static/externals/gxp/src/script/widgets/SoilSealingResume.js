@@ -136,15 +136,29 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		var barChartItems = [];
 		var barChartTitle = this.barChartTitleText;
 		var clcLevels = this.getLevels(data.refTime.output.referenceName, data.refTime.output.clcLevels);
+
+		// Prepare xAxis
+		var xAxis = {
+			categories: clcLevels
+		};
+		if(clcLevels.length == 0){
+			xAxis.categories = [data.index.name];
+		}
+
+		// yAxis
+		var yAxis = {};
+
+		// reference time chart
 		barChartItems.push(
 			this.generateColumnChart(
 				referenceTimeTitle, 
 				data.refTime.time, 
 				refTimeColChartsData, 
-				{
-					categories: clcLevels
-				}, {})
+				xAxis, 
+				yAxis)
 		);
+
+		// curr time chart
 		if(curTimeColChartsData){
 			var clcLevels1 = this.getLevels(data.curTime.output.referenceName, data.curTime.output.clcLevels);
 			barChartItems.push(
@@ -152,13 +166,14 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 					this.currentTimeTitleText, 
 					data.curTime.time, 
 					curTimeColChartsData, 
-					{
-						categories: clcLevels
-					}, {})
+					xAxis, 
+					yAxis)
 			);
 		}else{
 			barChartTitle += " - " + referenceTimeTitle;
 		}
+
+		// bar charts
 		var barChartTab = new Ext.Panel({
 			title : barChartTitle,
 			items: barChartItems
