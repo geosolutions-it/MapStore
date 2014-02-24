@@ -188,7 +188,8 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 				title : this.title,
 			    defaults: {
 			        // applied to each contained panel
-			        bodyStyle: 'padding:15px'
+			        bodyStyle: 'padding:15px',
+					autoScroll : true
 			        // ,
 			        // layout: 'form'
 			    },
@@ -673,7 +674,8 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
      *  Obtain ROI elements.
      */
 	getRoiItems: function(config){
-		// Fieldset configurtions
+
+		// Fieldset configuration
 		var roiFieldSetConfig = {
 				ref: '/roiFieldSet',
 				id: this.id + '_roiFieldSet',
@@ -681,23 +683,37 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 				xtype:'gxp_spatial_selector_field',
 				loadingMaskId: this.id,
 				wpsManager: this.wpsManager
-				// ,
-				// boxMaxWidth: 250
-				,
-				autoHeight: false
-				,
-				autoWidth: false
-				,
-				width: 320
-				,
-				collapsed : false,
-				checkboxToggle : false,
-				collapsible : false
-				// ,
-				// defaults: {
-				// 	layout: 'hbox'
-				// }
 		};
+
+		// configuration for low screens
+		var lowScreensConfig = {
+			// scrollable configuration with 200 px: 
+			height: 200,
+			autoScroll: true,
+			autoHeight: false,
+			autoWidth: false,
+			collapsed : false,
+			checkboxToggle : false,
+			collapsible : false
+		};
+
+		// configuration for long screens
+		var longScreensConfig = {
+			// not scrollable and visible: 
+			autoHeight: false,
+			autoWidth: false,
+			width: 320,
+			collapsed : false,
+			checkboxToggle : false,
+			collapsible : false
+		};
+
+		// Apply screen config
+		if(window.innerHeight < 1000){
+			Ext.apply(roiFieldSetConfig, lowScreensConfig);
+		}else{
+			Ext.apply(roiFieldSetConfig, longScreensConfig);
+		}
 
 		Ext.apply(roiFieldSetConfig, this.roiFieldSetConfig);
 
