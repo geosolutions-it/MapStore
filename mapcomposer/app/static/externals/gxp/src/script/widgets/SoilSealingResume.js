@@ -308,6 +308,9 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			subtitle : {
 				text : subTitle
 			},
+		    scrollbar: {
+		        enabled: true
+		    },
 			xAxis: xAxis,
 			yAxis: yAxis || columnsChartConfig.chartConfig.yAxis
 		});
@@ -381,8 +384,10 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			animation : true,
 			animShift : true,
 			series : series,
+			animShift: true,
 			chartConfig : {
 				chart : {
+					zoomType: 'x',
 					type : 'column'
 				},
 				title : {

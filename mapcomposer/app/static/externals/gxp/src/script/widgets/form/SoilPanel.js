@@ -91,8 +91,10 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				1: false,
 				2: false,
 				3: false,
-				4: true,
-				5: true
+				4: false,
+				5: false,
+				6: true,
+				7: true
 			},
 			filterT1ComboBox: true,
 			classesselector: false
@@ -110,7 +112,9 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				2: false,
 				3: false,
 				4: false,
-				5: false
+				5: false,
+				6: false,
+				7: false
 			},
 			filterT1ComboBox: false
 		},
@@ -134,7 +138,9 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				2: false,
 				3: false,
 				4: false,
-				5: false
+				5: false,
+				6: false,
+				7: false
 			},
 			rasterComboBox: false,
 			filterT1ComboBox: false,
@@ -451,9 +457,17 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
                 	name: 'sealingIndex', 
                 	inputValue: 6
                 },{
-                	boxLabel: this.urbanDiffusionText, 
+                	boxLabel: this.urbanDiffusionText + ' (a)', 
                 	name: 'sealingIndex', 
-                	inputValue: 7
+                	inputValue: 71
+                },{
+                	boxLabel: this.urbanDiffusionText + ' (b)', 
+                	name: 'sealingIndex', 
+                	inputValue: 72
+                },{
+                	boxLabel: this.urbanDiffusionText + ' (c)', 
+                	name: 'sealingIndex', 
+                	inputValue: 73
                 },{
                 	boxLabel: this.framesText, 
                 	name: 'sealingIndex', 
@@ -692,6 +706,14 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	 *
 	 */
 	startWPSRequest : function(params) {
+
+		// index and subindex for 7
+		var index = params.sealingIndex;
+		var subIndex = null;
+		if(index > 70){
+			subIndex = index == 71 ? 'a' : index == 72 ? 'b' : 'c';
+			index = 7;
+		}
 		
 		// get inputs
 		var inputs = {
@@ -712,7 +734,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				mimeType : 'text/plain; subtype=cql'
 			}),
 			index: new OpenLayers.WPSProcess.LiteralData({
-				value : params.sealingIndex
+				value : index
 			}),
 			geocoderLayer: new OpenLayers.WPSProcess.LiteralData({
 				value : this.geocoderConfig.geocoderLayer
@@ -728,6 +750,13 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			}),
 			classes : []
 		};
+
+		// Subindex for 7
+		if(subIndex){
+			inputs.subIndex = new OpenLayers.WPSProcess.LiteralData({
+				value : subIndex
+			});
+		}
 
 		// add curTime
 		if(params.filterT1){
