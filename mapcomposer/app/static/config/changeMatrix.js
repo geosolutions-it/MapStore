@@ -67,20 +67,6 @@
 				"group" : "background"
 			},{
                 "source": "jrc",
-                "group" : "Corine Land Cover",
-				"title" : "Corine Land Cover (unina) vector",
-				"name"  : "it.geosolutions:unina_vector",
-				"tiled" : false,
-				"visibility": false
-            },{
-                "source": "jrc",
-                "group" : "Corine Land Cover",
-				"title" : "Corine Land Cover (unina)",
-				"name"  : "it.geosolutions:corine",
-				"tiled" : false,
-				"visibility": true
-            },{
-                "source": "jrc",
                 "group" : "Touring Land Cover",
 				"title" : "Touring Land Cover (unina2)",
 				"name"  : "it.geosolutions:touring",
