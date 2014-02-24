@@ -260,7 +260,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		if(this.roiFieldSet.rendered){
 			this.roiFieldSet.removeFeatureSummary();
 			this.roiFieldSet.reset();
-			this.roiFieldSet.collapse();	
+			//this.roiFieldSet.collapse();	
 		}
 		this.getForm().reset();
 		this.enableOrDisableElements('default');
@@ -579,49 +579,51 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 
 		// get layer record from the selected element
 		var record = selected;
-		if(!selected.get){
-			record = selected.recordValue;
-		}
-
-		// //////////////////////////////////////////////////
-		// Populate time filters combo boxes.
-		// //////////////////////////////////////////////////
-		var data = [];
-		if (record.get('times') && !Ext.isEmpty(record.get('times'))) {
-			var times = record.get('times').split(',');
-			for (var i = 0; i < times.length; i++) {
-				var recordData = ["time = '" + times[i] + "'"];
-				data.push(recordData);
+		if(selected){
+			if(!selected.get){
+				record = selected.recordValue;
 			}
-		}
 
-		me.timeValuesStore.removeAll();
-		me.timeValuesStore.loadData(data, false);
-
-		// //////////////////////////////////////////////////
-		// Populate the itemselector classes
-		// //////////////////////////////////////////////////
-		var itemClassSelector = Ext.getCmp(me.id + '_classesselector');
-		itemClassSelector.storeTo.removeAll();
-		itemClassSelector.storeFrom.removeAll();
-		var classDataIndex = 0;
-		for ( classDataIndex = 0; classDataIndex < me.classes.length; classDataIndex++) {
-			if (me.classes[classDataIndex].layer == record.get('name'))
-				break;
-		}
-		if (classDataIndex < me.classes.length) {
-			var classesDataStore = [];
-
-			for (var cc=0;cc<me.classes[classDataIndex].values.length;cc++) {
-				for (var ci=0;ci<me.classesIndexes[me.classes[classDataIndex].level-1][1].length;ci++) {
-					if (me.classesIndexes[me.classes[classDataIndex].level-1][1][ci][0] == me.classes[classDataIndex].values[cc])
-						classesDataStore.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][ci]);
+			// //////////////////////////////////////////////////
+			// Populate time filters combo boxes.
+			// //////////////////////////////////////////////////
+			var data = [];
+			if (record.get('times') && !Ext.isEmpty(record.get('times'))) {
+				var times = record.get('times').split(',');
+				for (var i = 0; i < times.length; i++) {
+					var recordData = ["time = '" + times[i] + "'"];
+					data.push(recordData);
 				}
 			}
 
-			itemClassSelector.storeFrom.loadData(classesDataStore, false);
+			me.timeValuesStore.removeAll();
+			me.timeValuesStore.loadData(data, false);
+
+			// //////////////////////////////////////////////////
+			// Populate the itemselector classes
+			// //////////////////////////////////////////////////
+			var itemClassSelector = Ext.getCmp(me.id + '_classesselector');
+			itemClassSelector.storeTo.removeAll();
+			itemClassSelector.storeFrom.removeAll();
+			var classDataIndex = 0;
+			for ( classDataIndex = 0; classDataIndex < me.classes.length; classDataIndex++) {
+				if (me.classes[classDataIndex].layer == record.get('name'))
+					break;
+			}
+			if (classDataIndex < me.classes.length) {
+				var classesDataStore = [];
+
+				for (var cc=0;cc<me.classes[classDataIndex].values.length;cc++) {
+					for (var ci=0;ci<me.classesIndexes[me.classes[classDataIndex].level-1][1].length;ci++) {
+						if (me.classesIndexes[me.classes[classDataIndex].level-1][1][ci][0] == me.classes[classDataIndex].values[cc])
+							classesDataStore.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][ci]);
+					}
+				}
+
+				itemClassSelector.storeFrom.loadData(classesDataStore, false);
+			}
+			me.activeElementByTitle(me.timeSelectionTitleText);	
 		}
-		me.activeElementByTitle(me.timeSelectionTitleText);
 	},
 
     /** api: method[getCclLegendItems]

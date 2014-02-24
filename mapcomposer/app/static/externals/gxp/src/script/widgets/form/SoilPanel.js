@@ -267,6 +267,14 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	    }];
 	},
 
+    /** api: method[resetForm]
+     *  Reset form.
+     */
+	resetForm: function(){
+		gxp.widgets.form.SoilPanel.superclass.resetForm.call(this);
+		this.activeElementByTitle(this.clcLevelTitleText);
+	},
+
     /** api: method[onLayerSelect]
      *  :arg el: ``Object`` Component
      *  :arg selected: ``Object`` Selected element
@@ -274,11 +282,11 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
      */
 	onLayerSelect: function(el, selected, index) {
 
-		if(selected.inputValue 
+		if(selected && selected.inputValue 
 			// the filter for clc levels is 0
 			&& selected.inputValue.indexOf(this.clcLevelsConfig[0].filter) > -1){
 			this.enableOrDisableElements('clcLevels');
-		}else{
+		}else if(selected){
 			// should be impervious index
 			this.enableOrDisableElements('impervious');
 		}
