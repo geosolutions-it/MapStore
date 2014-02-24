@@ -505,6 +505,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             xtype: 'actioncolumn',
             sortable : false, 
             width: 30,
+            toggleGroup: "toolGroup",
             items: [{
                 icon   : this.startEditToIconPath,  
                 tooltip: this.startEditToTooltip,
@@ -793,7 +794,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         };
     },*/    
 
-    /** private: method[getStartEditTargetsGeomAction]
+    /** private: method[getRemoveTargetAction]
      */    
     getRemoveTargetAction: function(actionConf){
         var sourceSRS=actionConf.sourceSRS;
@@ -844,98 +845,180 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             
         };
     },
-    
-    editTargetGeometry: function(actionConf, grid, rowIndex, colIndex) {
-        var me = this;
-        var record = grid.getStore().getAt(rowIndex);                    
-       
-        me.currentRecord = me.save[record.get("id")];
-        if(!me.currentRecord) {
-            me.currentRecord = {
-                id: record.get("id"),
-                value: record.get("value"),
-                oldvalue: record.get("value"),
-                newfeature: record.data["new"] || false,
-                geometry: record.data.feature.geometry,
-                oldgeometry: record.data.feature.geometry
-            };
-            me.save[record.get("id")] = me.currentRecord;
-        }
-        
-        var selectionModel = grid.getSelectionModel();
-        selectionModel.unlock();
-        
-        var oldRow = selectionModel.getSelected();
-        if(oldRow){
-            if(oldRow.get("fid") != record.get("fid")){
-                //alert("vuoi salvare?");
-                me.removeGeometry(actionConf.layerName, oldRow.get("fid"));
-                if(me.modifyControl) {
-                    me.modifyControl.deactivate();
-                }
-            }
-        }
-        
-        selectionModel.clearSelections(false);
-        selectionModel.selectRow( rowIndex, false );
-        
-        var map = this.target.mapPanel.map;
-        
-        //perform displayGeometry
-        var geom = me.getGeometry(record,actionConf.sourceSRS);
-       
-        var layerStyle= {
-            strokeColor: "#FF0000",
-            strokeWidth: 3,
-            fillColor: "#00FFFF",
-            fillOpacity: 0.8
-        };
-        
-        var targetLayer = me.displayEditGeometry(actionConf.layerName, 
-            record.get("fid"),
-            geom, layerStyle);
-            
-        targetLayer.events.unregister("featureunselected", targetLayer, selected);    
-        
-        var selected = function(){
-            //alert("attenzione");
-            targetLayer.events.unregister("featureunselected", targetLayer, selected);
-            
-        };
-        
-        targetLayer.events.register("featureunselected", targetLayer, selected);
 
-        me.modifyControl = geom ? 
-                            new OpenLayers.Control.ModifyFeature(targetLayer, {clickout: false,toggle: false ,createVertices: true}) : 
-                            new OpenLayers.Control.DrawFeature(targetLayer, OpenLayers.Handler.Polygon);
 
-        targetLayer.events.on({
-            "featureadded": function(event) {
-                me.modifyControl.deactivate();
-            },                                
-            "beforefeatureadded": function(event) {
-                //alert("beforefeatureadded");  
+    enableTools: function(){
+        var disabledItems = [];
+        app.toolbar.items.each(function(item) {
+            if (item.disabled) {
+                disabledItems.push(item);
             }
         });
-                                
-        map.addControl(me.modifyControl);
-        if(geom) {
-            me.modifyControl.mode = OpenLayers.Control.ModifyFeature.RESHAPE;
-        }
         
-        me.modifyControl.activate();
+        // For every enabled tool in the toolbar, toggle the button off (deactivating the tool)
+        // Then add a listener on 'click' and 'menushow' to reset the BBoxQueryForm to disable all active tools
+        for (var i = 0;i<disabledItems.length;i++){
+            if(disabledItems[i].toggleGroup){
+                if(disabledItems[i].scope && disabledItems[i].scope.actions){
+                    for(var a = 0;a<disabledItems[i].scope.actions.length;a++){
+                        //disabledItems[i].scope.actions[a].toggle(false);
+                        disabledItems[i].scope.actions[a].enable();
+                        
+                        if (disabledItems[i].scope.actions[a].menu){
+                            for(var b = 0;b<disabledItems[i].scope.actions[a].menu.items.items.length;b++){
+                                disabledItems[i].scope.actions[a].menu.items.items[b].enable();
+                            }
+                        }
+
+                        disabledItems[i].scope.actions[a].on({
+                            "click": function(evt) {
+                                 if (me.modifyControl) {me.modifyControl.deactivate();};
+                                 // TODO 'Circle' and 'Poligon' tool have no other visual way to display
+                                 // their statuses (active, not active), apart from the combobox
+                                 // The clearValue() is intended to tell user that the tool is not enabled
+                                 //me.output[0].outputType.clearValue();
+
+                            },
+                            "menushow": function(evt) {
+                                var menuItems = evt.menu.items.items;
+                                for (var i = 0;i<menuItems.length;i++){
+                                    menuItems[i].enable();
+                                }
+                                 if (me.modifyControl) {me.modifyControl.deactivate();};
+                                 //me.output[0].outputType.clearValue();
+                            },
+                            scope: this
+                        });
+                    }
+                }                    
+            }
+        } 
+    }, 
         
-        var selectFeature = targetLayer.getFeaturesByAttribute("id",record.get("fid"));
+    editTargetGeometry: function(actionConf, button, rowIndex, colIndex, newFeature) {
+        /*var me = this;
+        var record = grid.getStore().getAt(rowIndex);*/
+
+        var me = this;
+        var record;
+        var grid = this.wfsGrid;
+        /*var actionConf = {};
+        actionConf.layerName = me.layerEditName;
+        actionConf.sourceSRS = me.sourceEditSRS;*/
+
+        var selectionModel = grid.getSelectionModel();
         
-        if(geom) {
-            me.modifyControl.selectFeature(selectFeature[0]);                    
+        if(selectionModel.hasSelection()){
+            if(!newFeature){
+                this.tbar.items.items[2].enable();  
+                this.tbar.items.items[3].enable();  
+            }else{
+                this.tbar.items.items[1].disable();              
+            }
+            
+            var selection = selectionModel.getSelected();
+            record = selection; //grid.getStore().getAt(rowIndex);
+                            
+            me.currentRecord = me.save[record.get("id")];
+            if(!me.currentRecord) {
+                me.currentRecord = {
+                    id: record.get("id"),
+                    value: record.get("value"),
+                    oldvalue: record.get("value"),
+                    newfeature: record.data["new"] || false,
+                    geometry: record.data.feature.geometry,
+                    oldgeometry: record.data.feature.geometry
+                };
+                me.save[record.get("id")] = me.currentRecord;
+            }
+            
+            var selectionModel = grid.getSelectionModel();
+            //selectionModel.unlock();
+            selectionModel.lock();
+            
+            var oldRow = selectionModel.getSelected();
+            if(oldRow){
+                if(oldRow.get("fid") != record.get("fid")){
+                    //alert("vuoi salvare?");
+                    me.removeGeometry(actionConf.layerName, oldRow.get("fid"));
+                    if(me.modifyControl) {
+                        me.modifyControl.deactivate();
+                    }
+                }
+            }
+            
+            //selectionModel.clearSelections(false);
+            //selectionModel.selectRow( rowIndex, false );
+            
+            var map = this.target.mapPanel.map;
+            
+            //perform displayGeometry
+            var geom = me.getGeometry(record,actionConf.sourceSRS);
+           
+            var layerStyle= {
+                strokeColor: "#FF0000",
+                strokeWidth: 3,
+                fillColor: "#00FFFF",
+                fillOpacity: 0.8
+            };
+            
+            var targetLayer = me.displayEditGeometry(actionConf.layerName, 
+                record.get("fid"),
+                geom, layerStyle);
+                
+            targetLayer.events.unregister("featureunselected", targetLayer, selected);    
+            
+            var selected = function(){
+                //alert("attenzione");
+                targetLayer.events.unregister("featureunselected", targetLayer, selected);
+                
+            };
+            
+            targetLayer.events.register("featureunselected", targetLayer, selected);
+
+            me.modifyControl = geom ? 
+                                new OpenLayers.Control.ModifyFeature(targetLayer, {clickout: false,toggle: false ,createVertices: true}) : 
+                                new OpenLayers.Control.DrawFeature(targetLayer, OpenLayers.Handler.Polygon);
+
+            targetLayer.events.on({
+                "featureadded": function(event) {
+                    me.modifyControl.deactivate();
+                    me.tbar.items.items[3].enable();
+                    me.tbar.items.items[2].enable();  
+                    me.tbar.items.items[1].enable();  
+                    me.tbar.items.items[0].toggle(false);
+                    me.tbar.items.items[2].toggle(true);
+                    selectionModel.unlock();                   
+                    me.enableTools();                    
+                },                                
+                "beforefeatureadded": function(event) {
+                    //alert("beforefeatureadded");  
+                }
+            });
+                                    
+            map.addControl(me.modifyControl);
+            if(geom) {
+                me.modifyControl.mode = OpenLayers.Control.ModifyFeature.RESHAPE;
+            }
+            
+            me.modifyControl.activate();
+            
+            var selectFeature = targetLayer.getFeaturesByAttribute("id",record.get("fid"));
+            
+            if(geom) {
+                me.modifyControl.selectFeature(selectFeature[0]);                    
+            
+                //perform ZoomAction
+                var geometry = me.getGeometry(record,actionConf.sourceSRS);
+                me.oldExtent = map.getExtent();
+                map.zoomToExtent(geometry.getBounds());
+            } else {
+                me.oldExtent = null;
+            }
         
-            //perform ZoomAction
-            var geometry = me.getGeometry(record,actionConf.sourceSRS);
-            me.oldExtent = map.getExtent();
-            map.zoomToExtent(geometry.getBounds());
-        } else {
-            me.oldExtent = null;
+        }else{
+            button.toggle(false);
+            alert("Devi selezionare una riga!!!");
         }
         
     },
@@ -1411,10 +1494,10 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                         break;
                     /*case "startedit_targets":
                         me.wfsColumns.push(me.getStartEditTargetsAction(me.actionColumns[kk]));
-                        break;*/
+                        break;
                     case "starteditgeom_targets":
                         me.wfsColumns.push(me.getStartEditTargetsGeomAction(me.actionColumns[kk]));
-                        break;                        
+                        break;  */                      
                     case "remove_target":
                         me.wfsColumns.push(me.getRemoveTargetAction(me.actionColumns[kk]));
                         break;                        
@@ -1630,8 +1713,9 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             }
             
          };
+ 
         
-        var addNewTarget = function() {
+        var disableTools = function(){
             var disabledItems = [];
             this.app.toolbar.items.each(function(item) {
                 if (!item.disabled) {
@@ -1645,7 +1729,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 if(disabledItems[i].toggleGroup){
                     if(disabledItems[i].scope && disabledItems[i].scope.actions){
                         for(var a = 0;a<disabledItems[i].scope.actions.length;a++){
-                            disabledItems[i].scope.actions[a].toggle(false);
+                            //disabledItems[i].scope.actions[a].toggle(false);
+                            disabledItems[i].scope.actions[a].disable();
                             
                             if (disabledItems[i].scope.actions[a].menu){
                                 for(var b = 0;b<disabledItems[i].scope.actions[a].menu.items.items.length;b++){
@@ -1675,7 +1760,13 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                         }
                     }                    
                 }
-            }        
+            } 
+        }         
+        
+        var addNewTarget = function() {
+            
+            disableTools();
+            
             var store = wfsGridPanel.getStore();
             var record = new store.recordType({
                 "geometry": "",
@@ -1694,14 +1785,17 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             selectionModel.clearSelections(false);
             selectionModel.selectRow( 0, false );
             
-            me.editTargetGeometry({layerName:"Bersaglio Selezionato Editing",sourceSRS:'EPSG:32632'}, wfsGridPanel, 0, 0);
+            selectionModel.lock();
+             
+            me.editTargetGeometry({layerName:"Bersaglio Selezionato Editing",sourceSRS:'EPSG:32632'}, wfsGridPanel, 0, 0, true);
         }
         
-        if(this.allowAdd) {
+        /*if(this.allowAdd) {
             bbar = new Ext.Toolbar({
                 items:[{
                     icon   : this.addIconPath,  
                     tooltip: this.addTooltip,
+                    toggleGroup: "pippo",
                     scope: this,
                     handler: function() {
                         if(me.isEmpty) {                            
@@ -1716,6 +1810,195 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     }
 
                 }]
+            });
+        }*/
+        
+        if(this.allowEdit) {
+            this.tbar = new Ext.Toolbar({
+                id: this.id+"_toolbar",
+                name: "editToolbar",
+                items:[{
+                    icon   : this.addIconPath,  
+                    xtype: 'button',
+                    tooltip: this.addTooltip,
+                    text: this.addTooltip,
+                    toggleGroup: "toolGroup",
+                    enableToggle: true,
+                    allowDepress: false,
+                    scope: this,
+                    toggleHandler: function(button, pressed) {
+                        //var stopButton = Ext.getCmp("stopEditButtonId");                    
+                        if (pressed) {
+                            if(me.isEmpty) {                            
+                                me.isEmpty = false;
+                                if(me.onFill) {
+                                    me.onFill.call(null, me);
+                                }
+                                totalHandler(1, addNewTarget);
+                            } else {
+                                addNewTarget();
+                            }
+                        }
+                    }                      
+                    /*handler: function() {
+                        if(me.isEmpty) {                            
+                            me.isEmpty = false;
+                            if(me.onFill) {
+                                me.onFill.call(null, me);
+                            }
+                            totalHandler(1, addNewTarget);
+                        } else {
+                            addNewTarget();
+                        }
+                    }*/
+
+                },{
+                    icon   : this.startEditGeomToIconPath,  
+                    xtype: 'button',
+                    tooltip: this.startEditGeomToTooltip,
+                    text: "Start Edit",
+                    toggleGroup: "toolGroup",
+                    enableToggle: true,
+                    allowDepress: false,
+                    scope: this,
+                    toggleHandler: function(button, pressed) {
+                        var stopButton = Ext.getCmp("stopEditButtonId");                    
+                        if (pressed) {
+                            this.editTargetGeometry.createDelegate(this, [{layerName:this.layerEditName,sourceSRS:this.sourceEditSRS},button], 0).call();
+                        }
+                    }                    
+                },{
+                    icon   : this.stopEditGeomToIconPath,  
+                    xtype: 'button',
+                    tooltip: this.stopEditGeomToTooltip,
+                    text: "Stop Edit",
+                    toggleGroup: "toolGroup",
+                    enableToggle: false,
+                    allowDepress: true,
+                    disabled: true,
+                    pressed : false,
+                    scope: this,
+                    handler: function(){
+                    
+                    },
+                    toggleHandler: function(button, pressed) {
+                        var me = this;                    
+                        if (pressed && me.modifyControl) {
+
+                            var record;
+                            var grid = wfsGridPanel;
+                            var actionConf = {};
+                            actionConf.layerName = me.layerEditName;
+                            actionConf.sourceSRS = me.sourceEditSRS;
+
+                            var selectionModel = grid.getSelectionModel();
+                            var selection = selectionModel.getSelected();
+                            record = selection; //grid.getStore().getAt(rowIndex);
+
+
+                            selectionModel.unlock();
+                            var simulationStyleChanged= {
+                                strokeColor: "#FFFF00",
+                                strokeWidth: 3,
+                                fillColor: "#FFFF00",
+                                fillOpacity: 0.5
+                            };
+                            var simulationStyleAdded= {
+                                strokeColor: "#00FF00",
+                                strokeWidth: 3,
+                                fillColor: "#00FF00",
+                                fillOpacity: 0.5
+                            };
+                            var oldRow = selectionModel.getSelected();
+                            if(oldRow && oldRow.get("fid") != record.get("fid")){                        
+                                //alert("vuoi salvare?");
+                                me.removeGeometry(actionConf.layerName, oldRow.get("fid"));
+                                me.removeGeometry(actionConf.layerName, record.get("fid"));                                       
+                                me.modifyControl.deactivate();
+                                //return;
+                            }else{
+                                if(me.modifyControl){
+                                me.modifyControl.deactivate();
+                                
+                                var map = this.target.mapPanel.map;
+                                                                                       
+                                var layerStyle= {
+                                    strokeColor: "#FF0000",
+                                    strokeWidth: 3,
+                                    fillColor: "#00FFFF",
+                                    fillOpacity: 0.8
+                                };
+                                
+                                targetLayer = map.getLayersByName(actionConf.layerName)[0];
+                                /*targetLayer = me.displayEditGeometry(actionConf.layerName, 
+                                    record.get("fid"),
+                                    geom, layerStyle);*/
+                                    
+                                var originSelectionModel = me.wfsGrid.getSelectionModel();
+                                    //var record1 = originSelectionModel.getSelected();
+                                var destSRS = map.getProjectionObject();
+                                    
+                                    if(targetLayer.features[0]){
+                                        var geometry = me.getGeometryEdit(targetLayer.features[0].geometry,actionConf.sourceSRS,destSRS.projCode);
+                                                //record1.data.feature.geometry = geometry;   
+
+                                        selectionModel.clearSelections(false);
+                                                
+                                        //selectionModel.selectRow( rowIndex, false );
+                                        var checkEqualGeom = geometry.equals(me.currentRecord.geometry);
+                                        if(!checkEqualGeom){
+                                            me.currentRecord.geometry = geometry;
+                                            me.save[me.currentRecord.id] = me.currentRecord;
+                                            me.persistEditGeometry(me.currentRecord.newfeature ? "Bersagli aggiunti" : "Bersagli modificati", //"simulation_added" : "simulation_changed", 
+                                            record.get("fid"), 
+                                            targetLayer.features[0].geometry, me.currentRecord.newfeature ? simulationStyleAdded : simulationStyleChanged);
+                                        }
+                                                                        
+                                        
+                                        me.removeGeometry(actionConf.layerName, record.get("fid"));
+                                        if(me.oldExtent) {
+                                            map.zoomToExtent(me.oldExtent);
+                                        }
+                                    }
+                                }                                
+                            }
+                            this.tbar.items.items[2].toggle();  
+                            this.tbar.items.items[2].disable();  
+                            this.tbar.items.items[3].disable();
+                            
+                            this.tbar.items.items[0].enable();
+                        }
+                    }
+                },{
+                icon   : this.resetEditGeomToIconPath,  
+                tooltip: this.resetEditGeomToTooltip,
+                text: this.resetEditGeomToTooltip,
+                disabled: true,
+                pressed : false,
+                scope: this,
+                handler: function(){
+                    var me = this;
+                    var actionConf = {};
+                    actionConf.layerName = me.layerEditName;
+                    actionConf.sourceSRS = me.sourceEditSRS;                
+                    var map = this.target.mapPanel.map;
+                    var targetLayer = map.getLayersByName(actionConf.layerName)[0];
+                    targetLayer.removeAllFeatures();
+                    
+                    this.tbar.items.items[2].toggle(false);  
+                    this.tbar.items.items[2].disable();                     
+                    this.tbar.items.items[1].toggle(false);  
+                    this.tbar.items.items[3].disable();                      
+                    this.tbar.items.items[0].enable();
+                    
+                    var grid = wfsGridPanel;
+
+                    var selectionModel = grid.getSelectionModel();
+
+                    selectionModel.unlock();                    
+
+                }
+            }]
             });
         }
         
@@ -1740,7 +2023,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             colModel: new Ext.grid.ColumnModel({
                 columns: []
             }),
-            bbar: bbar,
+            tbar: this.tbar,
+            //bbar: bbar,
             scope: this,
             listeners: {
                 afteredit : function(object) {
