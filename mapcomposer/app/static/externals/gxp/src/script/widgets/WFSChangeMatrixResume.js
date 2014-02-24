@@ -399,7 +399,8 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 												var dataItem = [];
 												dataItem.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][grid.getColumnModel().getDataIndex(r)-1][1]);
 												dataItem.push(parseFloat(record.json[r])*100/parseFloat(total));
-												dataSeries.push(dataItem);
+												if (dataItem[0] != gridRowLabel)
+													dataSeries.push(dataItem);
 											}
 											
 											/**
@@ -423,7 +424,8 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 												var row = grid.getStore().getAt(r-1);
 												dataItem.push(row.json[0]);
 												dataItem.push(parseFloat(row.json[columnIndex])*100/parseFloat(total));
-												dataSeries.push(dataItem);
+												if (dataItem[0] != gridColLabel)
+													dataSeries.push(dataItem);
 											}
 											
 											/**
@@ -539,7 +541,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 												  // //////////////////////////////////////////
 												  // Checking if source URL aldready exists
 												  // //////////////////////////////////////////
-												  if(s != undefined && s.id == me.source){
+												  if(s != undefined && s.id == me.geocoderConfig.source){
 													  src = s;
 													  break;
 												  }
