@@ -492,6 +492,10 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 						if (value) {
 							me.layerTimeout = setTimeout(function() {
 								me.layerStore.filterBy(function(rec, recId) {
+				                	var item = me.getRasterItem(rec);
+				                	if(item == null){
+				                		return false
+				                	}
 									var name = rec.get("name").trim().toLowerCase();
 									if (name.indexOf(value) > -1) {
 										me.formPanel.layerCombo.expand();
@@ -845,7 +849,11 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 					}
 				}
 			}
-			data.push(recordData);
+			var item = this.getRasterItem(record);
+        	if(item != null){
+        		recordData[1] = item.boxLabel;
+				data.push(recordData);
+        	}
 		}
 
 		return data;

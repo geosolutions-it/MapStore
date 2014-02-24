@@ -93,6 +93,14 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(gxp.widgets.form.AbstractOperati
 
 	/** EoF i18n **/
 
+    /** api: config[clcLevelsConfig]
+     *  ``Object`` CLC levels cconfiguration
+     */
+	clcLevelsConfig:[{
+		filter: 'corine_L',
+		decorator: 'Corine Land Cover Level {0}'
+	}],
+
 	// clcLevelMode: 'combobox',
 
 	initComponent:function(config){
