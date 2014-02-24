@@ -535,14 +535,16 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				this.sealingIndexImpervious.items.each(function(item){
 					item.checked = false;
 				});
-				if(selected.inputValue == 3 || selected.inputValue == 4){
-					this.classesselector.setDisabled(true);
-					// Active next accordion: roiTitleText
-					this.activeElementByTitle(this.roiTitleText);
-				}else{
-					this.classesselector.setDisabled(false);
-					// Active next accordion: clcLevelBuilder
-					this.activeElementByTitle(this.clcLegendBuilderTitleText);
+				if(selected && selected.inputValue){
+					if(selected.inputValue == 3 || selected.inputValue == 4){
+						this.classesselector.setDisabled(true);
+						// Active next accordion: roiTitleText
+						this.activeElementByTitle(this.roiTitleText);
+					}else{
+						this.classesselector.setDisabled(false);
+						// Active next accordion: clcLevelBuilder
+						this.activeElementByTitle(this.clcLegendBuilderTitleText);
+					}	
 				}
 			}
 		}
@@ -785,7 +787,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		var processName;
 		if(index < 5){
 			// soil sealing
-			if(params.classesselector && params.classesselector.split){
+			if(!this.classesselector.disabled && params.classesselector && params.classesselector.split){
 				// Generate classes elements
 				var classes = params.classesselector.split(",");
 				inputs.classes = [];
