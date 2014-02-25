@@ -761,7 +761,9 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				value : this.roiFieldSet.getSelectedAreas()
 			}),
 			admUnitSelectionType: new OpenLayers.WPSProcess.LiteralData({
-				value : this.roiFieldSet.returnType != null && this.roiFieldSet.returnType == 'subs' ? "AU_SUBS" : "AU_LIST"
+				value : this.roiFieldSet.returnType != null 
+					&& this.roiFieldSet.returnType.getValue 
+					&& this.roiFieldSet.returnType.getValue() == 'subs' ? "AU_SUBS" : "AU_LIST"
 			})
 		};
 
