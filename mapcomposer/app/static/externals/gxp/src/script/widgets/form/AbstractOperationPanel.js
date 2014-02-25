@@ -690,18 +690,6 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 				wpsManager: this.wpsManager
 		};
 
-		// configuration for low screens
-		var lowScreensConfig = {
-			// scrollable configuration with 200 px: 
-			height: 200,
-			autoScroll: true,
-			autoHeight: false,
-			autoWidth: false,
-			collapsed : false,
-			checkboxToggle : false,
-			collapsible : false
-		};
-
 		// configuration for long screens
 		var longScreensConfig = {
 			// not scrollable and visible: 
@@ -713,20 +701,29 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 			collapsible : false
 		};
 
-		// Apply screen config
-		if($(window).height() < 800){ // FIXME: Fix roi border
-		// if(false){
-			Ext.apply(roiFieldSetConfig, lowScreensConfig);
-		}else{
-			Ext.apply(roiFieldSetConfig, longScreensConfig);
-		}
-
+		// apply config
+		Ext.apply(roiFieldSetConfig, longScreensConfig);
 		Ext.apply(roiFieldSetConfig, this.roiFieldSetConfig);
 
 		// copy runtime dependencies
 		roiFieldSetConfig.mapPanel = this.target.mapPanel;
 		Ext.apply(roiFieldSetConfig, this.geocoderConfig);
-		return [roiFieldSetConfig]
+		// return [roiFieldSetConfig];
+
+		// Envelop in a panel to show scrollbar
+		if($(window).height() < 800){
+			return {
+	            xtype: 'panel',
+				autoHeight: false,
+				autoWidth: false,
+	            height: 400,
+				forceFit: true,
+	            autoScroll: true,
+	        	items:[roiFieldSetConfig]
+	        };
+		}else{
+			return [roiFieldSetConfig];
+		}
 	},
 
     /** api: method[generateBbar]
