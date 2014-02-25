@@ -214,13 +214,22 @@ gxp.GoogleEarthPanel = Ext.extend(Ext.Panel, {
                     var link = this.earth.createLink('kl_' + name);
                     
                     //ows = ows.replace(/\?.*/, '');
-                    ows = ows.replace(/ows\?.*/, 'wms');
+                   
                     
                     var params = lyr.params;
-                    
-                    var kmlPath = '/kml?mode=refresh&layers=' + params.LAYERS +
-                        "&styles=" + params.STYLES;
-                    var khref = ows + kmlPath;
+
+					//remove parameters
+					ows = ows.split('?')[0];
+					//replace trailing /ows or /ows/ with /
+					ows = ows.replace(/\/ows[\/]??$/, '/');
+					//replace trailing wms or wms/ with /
+					ows = ows.replace(/\/wms[\/]??$/, '/');
+					//add the standard path for kml
+					ows+='wms/kml?';
+					var kmlParams = 'mode=refresh&layers=' + params.LAYERS +
+                        "&styles=" + ( params.STYLES ? params.STYLES : "" );
+					//TODO add other allowed parameters
+                    var khref = ows + kmlParams;
                     
                     link.setHref(khref);
                     networkLink = this.earth.createNetworkLink('nl_' + name);

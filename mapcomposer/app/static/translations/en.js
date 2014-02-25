@@ -126,7 +126,8 @@ GeoExt.Lang.add("en", {
         mediumRiskLabel: "average Risk",
         highRiskLabel: "high Risk",
         notVisibleOnArcsMessage: "Formula not visible at this scale",
-        notVisibleOnGridMessage: "Formula not visible at this scale"
+        notVisibleOnGridMessage: "Formula not visible at this scale",
+        selectionAreaLabel: "Selected Area"
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Elements {0} - {1} of {2}",
@@ -152,7 +153,9 @@ GeoExt.Lang.add("en", {
         stopEditGeomToTooltip: "Stop Edit Feature",
         resetEditGeomToTooltip: "Reset Edit Feature",
         removeMessage: "Remove",
-        removeTitle:"Are you sure you want to remove the element?"
+        removeTitle:"Are you sure you want to remove the element?",
+        noEditElementSelectionTitle: "Select an item",
+        noEditElementSelectionMsg: "You must select an item!!!"
     },
     
     "GeoExplorer.prototype": {
@@ -694,5 +697,48 @@ GeoExt.Lang.add("en", {
         showTrack: "Show track",
         styleData: "Viewing",
         applyText: "Apply"
+    },
+    "gxp.PlaybackToolbar.prototype": {
+        playLabel: "Play",
+        playTooltip: "Play",
+        stopLabel: "Stop",
+        stopTooltip: "Stop",
+        fastforwardLabel: "FFWD",
+        fastforwardTooltip: "Double Speed Playback",
+        backLabel:'Back',
+        backTooltip:'Draw back One Frame',            
+        nextLabel: "Next",
+        nextTooltip: "Advance One Frame",
+        resetLabel: "Reset",
+        resetTooltip: "Weather Stations last update",
+        loopLabel: "Loop",
+        loopTooltip: "Continously loop the animation",
+        normalTooltip: "Return to normal playback",
+        pauseLabel: "Pause",
+        pauseTooltip: "Pause"
+    },
+    "gxp.PlaybackOptionsPanel.prototype": {
+        titleText: "Date & Time Options",
+        rangeFieldsetText: "Time Range",
+        animationFieldsetText: "Animation Options",
+        startText: "Start",
+        endText: "End",
+        saveText: 'Save',
+        cancelText: 'Cancel',         
+        listOnlyText: "Use Exact List Values Only",
+        stepText: "Animation Step",
+        unitsText: "Animation Units",
+        frameRateText:'Animation Delay (s)',        
+        noUnitsText: "Snap To Time List",
+        loopText: "Loop Animation",
+        reverseText: "Reverse Animation",
+        rangeChoiceText: "Choose the range for the time control",
+        rangedPlayChoiceText: "Playback Mode",
+        secondsText: 'Seconds', 
+        minutesText: 'Minutes', 
+        hoursText: 'Hours', 
+        daysText: 'Days', 
+        monthsText: 'Months', 
+        yearsText: 'Years'        
     }    
 });

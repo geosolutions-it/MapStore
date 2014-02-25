@@ -242,7 +242,7 @@
 			"name": "grafo_stradale",
 			"displayInLayerSwitcher": true,
 			"tiled": true,
-            "group": ["Roads","Strade","Strade"," Straßen"],
+            "group": ["Roads","Strade","Routes"," Straßen"],
 			"visibility": false
         },{
 			"source": "destination",
@@ -469,7 +469,16 @@
 			"target": "paneltbar",
 			"index": 21
 		}
-	},{
+	},
+	{
+        "actions":[
+        "-"
+        ],
+		"actionTarget": "paneltbar"
+	}, {
+        "ptype": "gxp_googleearth",
+        "actionTarget": {"target": "paneltbar", "index": 22}
+    },{
         "ptype":"gxp_playback",
 		"id": "destination_playback",
 		"toolbarHidden": true,
@@ -587,7 +596,12 @@
 		"layerTrackTitle": "obu_track",
 		"layerTrackName": "siig_geo_obu_line",
 		"layerTrackUrl": "http://destination.geo-solutions.it/geoserver_test/destination/ows",
-		"wfsUrl": "http://destination.geo-solutions.it/geoserver_test/ows?"
+		"wfsUrl": "http://destination.geo-solutions.it/geoserver_test/ows?",
+        "styleRenamedStore": [
+            ["Obu points","Obu punti","Obu points","Obu punkte"],
+            ["Obu points speed","Obu punti velocità","Obu points vitesse","Obu punkte Geschwindigkeit"],
+            ["Obu points direction","Obu punti direzione","Obu point direction","Obu punkte Richtung"]
+        ]
 	},
 	{
 		"ptype": "gxp_addlayer",

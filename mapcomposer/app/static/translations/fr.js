@@ -127,7 +127,8 @@ GeoExt.Lang.add("fr", {
         mediumRiskLabel: "risque moyen",
         highRiskLabel: "risque élevé",
         notVisibleOnArcsMessage: "Formula pas visible à cette échelle",
-        notVisibleOnGridMessage: "Formula pas visible à cette échellee"
+        notVisibleOnGridMessage: "Formula pas visible à cette échellee",
+        selectionAreaLabel: "Zone sélectionnée"
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Elements {0} - {1} of {2}",
@@ -153,7 +154,9 @@ GeoExt.Lang.add("fr", {
         stopEditGeomToTooltip: "Stop Edit Feature",
         resetEditGeomToTooltip: "Arrêtez Modifier Feature",
         removeMessage: "supprimer",
-        removeTitle:"Êtes-vous sûr de vouloir supprimer cet élément?"
+        removeTitle:"Êtes-vous sûr de vouloir supprimer cet élément?",
+        noEditElementSelectionTitle: "Sélectionnez un élément",
+        noEditElementSelectionMsg: "Vous devez sélectionner un élément!!!"
     },
     "GeoExplorer.prototype": {
         zoomSliderText: "<div> Niveau de zoom: {zoom}</div><div Echelle: 1:{scale}</div>",
@@ -595,7 +598,7 @@ GeoExt.Lang.add("fr", {
         tooltip: "Afficher les éléments vulnérables",
         allHumanTargetTitle: "Toutes les cibles humaines",
         allNotHumanTargetTitle: "Toutes les cibles environnementales",
-        selectAllTitle: "SELECT ALL",
+        selectAllTitle: "TOUT SÉLECT",
         addToMapButtonText: "Ajouter à la carte"
 	},
 
@@ -691,5 +694,48 @@ GeoExt.Lang.add("fr", {
         showTrack: "Afficher piste",
         styleData: "Affichage",
         applyText: "Appliquer"
+    },
+    "gxp.PlaybackToolbar.prototype": {
+        playLabel: "Jouer",
+        playTooltip: "Jouer",
+        stopLabel: "Stop",
+        stopTooltip: "Stop",
+        fastforwardLabel: "FFWD",
+        fastforwardTooltip: "Lecture à double vitesse",
+        backLabel:'Arrière',
+        backTooltip:"Reculer d'une image",            
+        nextLabel: "Suivant",
+        nextTooltip: "Avancer d'une image",
+        resetLabel: "Remettre",
+        resetTooltip: "Stations météo dernière mise à jour",
+        loopLabel: "Boucle",
+        loopTooltip: "Continuellement en boucle l'animation",
+        normalTooltip: "Retour à la normale playback",
+        pauseLabel: "Pause",
+        pauseTooltip: "Pause"
+    },
+    "gxp.PlaybackOptionsPanel.prototype": {
+        titleText: "Options de date et heure",
+        rangeFieldsetText: "Intervalle de temps",
+        animationFieldsetText: "Options d'Animation",
+        startText: "Commencer",
+        endText: "Fin",
+        saveText: 'Sauver',
+        cancelText: 'Annuler',         
+        listOnlyText: "Utilisez Liste des valeurs exact uniquement",
+        stepText: "Étape animation",
+        unitsText: "Unités d'animation",
+        frameRateText:'Retard Animation (s)',        
+        noUnitsText: "Aligner sur la Liste Temps",
+        loopText: "Animation en boucle",
+        reverseText: "Inverser animation",
+        rangeChoiceText: "Choisissez la gamme pour le contrôle du temps",
+        rangedPlayChoiceText: "Playback Mode",
+        secondsText: 'Secondes', 
+        minutesText: 'Minutes', 
+        hoursText: 'Heures', 
+        daysText: 'Journées', 
+        monthsText: 'Mois', 
+        yearsText: 'Ans'        
     }    
 });

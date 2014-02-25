@@ -123,7 +123,8 @@ GeoExt.Lang.add("it", {
         mediumRiskLabel: "Medio Rischio",
         highRiskLabel: "Alto Rischio",
         notVisibleOnArcsMessage: "Formula non visibile a questa scala",
-        notVisibleOnGridMessage: "Formula non visibile a questa scala"
+        notVisibleOnGridMessage: "Formula non visibile a questa scala",
+        selectionAreaLabel: "Area Selezionata"
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Elementi {0} - {1} di {2}",
@@ -149,7 +150,9 @@ GeoExt.Lang.add("it", {
         stopEditGeomToTooltip: "Termina modifica Feature",
         resetEditGeomToTooltip: "Annulla modifica Feature",
         removeMessage: "Rimuovi",
-        removeTitle:"Sei sicuro di voler eliminare la feature?"
+        removeTitle:"Sei sicuro di voler eliminare la feature?",
+        noEditElementSelectionTitle: "Seleziona un elemento",
+        noEditElementSelectionMsg: "Devi selezionare un elemento!!!"
     },
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Livello di Zoom: {zoom}</div><div>Scala: 1:{scale}</div>",
@@ -691,5 +694,48 @@ GeoExt.Lang.add("it", {
         showTrack: "Mostra traccia",
         styleData: "Visualizzazione",
         applyText: "Applica"
+    },
+    "gxp.PlaybackToolbar.prototype": {
+        playLabel: "Play",
+        playTooltip: "Play",
+        stopLabel: "Stop",
+        stopTooltip: "Stop",
+        fastforwardLabel: "FFWD",
+        fastforwardTooltip: "Doppia velocità di animazione",
+        backLabel:'Indietro',
+        backTooltip:'Diminuisci di uno step',            
+        nextLabel: "Avanti",
+        nextTooltip: "Avanza di uno step",
+        resetLabel: "Reset",
+        resetTooltip: "Stazioni ultimo aggiornamento",
+        loopLabel: "Loop",
+        loopTooltip: "Animazione continua",
+        normalTooltip: "Ritorno alla riproduzione normale",
+        pauseLabel: "Pausa",
+        pauseTooltip: "Pausa"
+    },
+    "gxp.PlaybackOptionsPanel.prototype": {
+        titleText: "Opzioni Data e Tempo",
+        rangeFieldsetText: "Intervallo di tempo",
+        animationFieldsetText: "Opzioni di animazione",
+        startText: "Inizio",
+        endText: "Fine",
+        saveText: 'Salva',
+        cancelText: 'Cancella',        
+        listOnlyText: "Utilizzare solamente l'elenco dei valori esatti",
+        stepText: "Step animazione",
+        unitsText: "Unità animazione",
+        frameRateText:'Velocità animazione (s)',
+        noUnitsText: "Snap To Time List",
+        loopText: "Animazione continua",
+        reverseText: "Inverti animazione",
+        rangeChoiceText: "Choose the range for the time control",
+        rangedPlayChoiceText: "Playback Mode",
+        secondsText: 'Secondi', 
+        minutesText: 'Minuti', 
+        hoursText: 'Ore', 
+        daysText: 'Giorni', 
+        monthsText: 'Mesi', 
+        yearsText: 'Anni'
     }    
 });

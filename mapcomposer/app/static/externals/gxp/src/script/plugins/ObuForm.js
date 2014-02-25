@@ -104,12 +104,19 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 		]
 	},
 	
-	styleStore: [
-		"obu-point",
-		"obu-point-speed",
-		"obu-point-direction"
-	],
-	
+	styleStore: {
+        fields: [
+            'obu-value',
+            'obu-text'
+        ],
+        data: [
+            ["obu-point", 'obu-point'],
+            ["obu-point-speed", 'obu-point-speed'],
+            ["obu-point-direction", 'obu-point-direction']]
+	},
+
+    styleRenamedStore: null,
+    
 	layerTrackTitle: "obu_track",
 	
 	layerTrackName: "siig_geo_obu_line",
@@ -393,15 +400,25 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 			]
 		});
 		
+        if(this.styleRenamedStore) {
+            for(var i = 0; i<this.styleStore.data.length; i++){
+                this.styleStore.data[i][1] = this.styleRenamedStore[i][GeoExt.Lang.getLocaleIndex()];            
+            }
+        }
+        
 		this.styleCombo = new Ext.form.ComboBox({
+            typeAhead: true,
+            lazyRender:true,        
 			fieldLabel: this.graphicStyle,
 			width: 200,
 			allowBlank: false,
 			mode: 'local',
 		    triggerAction: 'all',
 			editable: false,
-			value: this.styleStore[0],
-			store: this.styleStore
+            displayField: "obu-text",
+            valueField: "obu-value",
+			value: this.styleStore.data[0][0],
+			store: new Ext.data.ArrayStore(this.styleStore)
 		});
 		
 		this.trackCheckBox = new Ext.form.Checkbox({
@@ -621,11 +638,12 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 					iconCls: "obu-filter-reset",
 					scope: this,
 					handler: function(){
+                        var defaultStyle = this.styleCombo.getStore().getAt(0).get("obu-value");
 						this.formPanel.form.reset();
 					    var layer = this.target.mapPanel.map.getLayersByName(this.layerToFilter)[0];
 						layer.mergeNewParams({
 							CQL_FILTER: "INCLUDE",
-							STYLES: this.styleStore[0]
+							STYLES: defaultStyle,
 						});
 						
 						this.trackCheckEnable(undefined);
