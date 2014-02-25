@@ -532,13 +532,17 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 	generateBar: function(config, title){
 		// generate bar for add layers
 		var items = [];
-		var item0 = this.generateBarItem(config.refTime, this.referenceTimeTitleText, title);
-		var item1 = this.generateBarItem(config.curTime, this.currentTimeTitleText, title);
+		var item0 = this.generateBarItem(config.refTime.output.layerName, this.referenceTimeTitleText, title);
+		var item1 = this.generateBarItem(config.curTime.output.layerName, this.currentTimeTitleText, title);
 		if(item0){
 			items.push(item0);
 		}
+		if(config.diffImageName){
+			var item = this.generateBarItem(config.diffImageName, 'Diff', title);
+			items.push(item);
+		}
 		if(item1){
-			items.push("->");
+			//items.push("->");
 			items.push(item1);
 		}
 		if(items.length > 0){
@@ -551,14 +555,13 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 	},
 
     /** api: method[generateButtom]
-     *  :arg yearData: ``Object`` Configuration for the year
+     *  :arg layerName: ``Object`` Configuration for the layer name
      *  :arg timeName: ``String`` Name for the add layer buttom
      *  :arg title: ``String`` Title for the layer
      *  :returns: ``Ext.Toolbar`` for the buttom bar.
      *  Obtain bar item.
      */
-	generateBarItem: function(yearData, timeName, title){
-		var layerName = yearData && yearData.output ? yearData.output.layerName : null;
+	generateBarItem: function(layerName, timeName, title){
 		var layerTitle = title && timeName ? title + " - " + timeName: layerName;
 		if(layerName && layerName != ""){
 			return {
