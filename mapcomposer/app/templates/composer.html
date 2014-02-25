@@ -284,7 +284,28 @@
                 handler: function(btn){
                     window.open('http://www.geo-solutions.it/contact/', '_blank');
                 }
-            });    
+            });  
+
+            var headerConfig = {
+                border: false,
+                header: false,
+                html:  [
+                    '<div align="center" style="background-image:url(theme/app/img/banner/bgimg.jpg);background-repeat: repeat;width:100%;height:100%">',
+                        '<img  src="theme/app/img/banner/header.png" style="float:left", height="107"/>',
+                    '</div>'                 
+                ],  
+                region: 'north',
+                collapsible: true,
+                collapsed: false,
+                collapseMode:  'mini',
+                hideCollapseTool: true,
+                split: true,
+                animCollapse : false,
+                minHeight: 90,
+                maxHeight: 90,
+                height: 109,
+                id : 'header'
+            };
 			
             var appViewport = new Ext.Viewport({
                 id: 'appVieport',
@@ -295,7 +316,7 @@
                     layout : 'border',
                     border : false,
                     header : false,                    
-                    items : [appTabs],                            
+                    items : [headerConfig, appTabs],                            
                     bbar : [
                       poweredByGeoSol, ' ', aboutButton, '->',languageSelector
                     ]

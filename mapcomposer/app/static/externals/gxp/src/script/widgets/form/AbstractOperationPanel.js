@@ -714,8 +714,8 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		};
 
 		// Apply screen config
-		// if(window.innerHeight < 1000){ // FIXME: Fix roi border
-		if(false){
+		if(window.innerHeight < 800){ // FIXME: Fix roi border
+		// if(false){
 			Ext.apply(roiFieldSetConfig, lowScreensConfig);
 		}else{
 			Ext.apply(roiFieldSetConfig, longScreensConfig);

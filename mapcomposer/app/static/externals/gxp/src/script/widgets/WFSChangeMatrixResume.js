@@ -158,6 +158,9 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
      */
 	url: null,
 
+	// default: render to tab
+	renderToTab: true,
+
 	/** private: method[addOutput]
 	 *  :arg config: ``Object``
 	 */

@@ -3,6 +3,9 @@
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
    "tab": true,
+   "portalConfig":{
+		"header":true
+   },
    "gsSources":{ 
    		"jrc": {
 			"ptype": "gxp_wmssource",
@@ -216,13 +219,14 @@
                 }
             ],
             "splitPanels": true,
-        	"featureTypeDetails": "changeMatrix",
             "panelsConfig": [{
             	"title": "Change Matrix Runs",
-            	"featureType": "changematrix"
+            	"featureType": "changematrix",
+        		"featureTypeDetails": "changeMatrix"
         	},{
             	"title": "Soil Sealing Runs",
-            	"featureType": "changematrix"
+            	"featureType": "soilsealing",
+        		"featureTypeDetails": "soilIndex"
             }]
         },{
             "ptype": "gxp_addlayer",
@@ -406,8 +410,13 @@
             		"geocoderLayer": "geocoder",
             		"geocoderPopulationLayer": "geocoder_population",
             		"defaultProcessStyle": "raster",
+            		"styleSelection": {
+            			"3": "sprawl",
+            			"4": "sprawl"
+            		},
             		"imperviousnessProccessName": "gs:SoilSealingImperviousness",
-            		"imperviousnessLayer": "imperviousness"
+            		"imperviousnessLayer": "imperviousness",
+            		"targetResultGridId": "wfsChangeMatrisGridPanel_tab_1"
             	},
             	"xtype": "gxp_soilpanel"
             }]

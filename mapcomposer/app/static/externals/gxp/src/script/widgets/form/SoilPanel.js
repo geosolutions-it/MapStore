@@ -57,6 +57,9 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	urbanDispersionText: 'Dispersione Urbana',
 	edgeDensityText: 'Edge Density',
 	urbanDiffusionText: 'Diffusione Urbana',
+	urbanDiffusionAText: 'Urban Area',
+	urbanDiffusionBText: 'Highest Polygon Ratio',
+	urbanDiffusionCText: 'Other Polygons Ratio',
 	framesText: 'Frammentazione',
 	consumeOnlyText: 'Consumo Suolo',
 	consumeOnlyConfText: 'Coefficiente Ambientale Cons. Suolo',
@@ -74,6 +77,9 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	wpsError: "Error on WPS Process",
 
 	/** EoF i18n **/
+
+	// show result grid when done. Default is false
+	showResultOnDone: false,
     
     /** api: config[defaultAction]
      *  ``Object`` Time selection set disable elements
@@ -209,35 +215,6 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		filter: 'urban_grids',
 		decorator: 'Urban Grids'
 	}],
-
-    /** private: config[clcLevelsConfig]
-     *  ``Object`` Translated index names by id
-     */
-	translatedIndexNames:{},
-
-
-	/** api: method[initComponent]
-	 *  Generate a panel with the configuration present on this
-	 */
-	initComponent: function(config){
-
-		// Use translations
-		Ext.apply(this.translatedIndexNames,{
-			1: this.coverText,
-			2: this.changingTaxText,
-			3: this.marginConsumeText,
-			4: this.sprawlText,
-			5: this.urbanDispersionText,
-			6: this.edgeDensityText,
-			7: this.urbanDiffusionText,
-			8: this.framesText,
-			9: this.consumeOnlyText,
-			10: this.consumeOnlyConfText,
-
-		})
-
-		gxp.widgets.form.SoilPanel.superclass.initComponent.call(this, config);
-	},
 
     /** api: method[generateItems]
      *  :arg config: ``String`` Configuration to be applied on this
@@ -466,15 +443,15 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
                 	name: 'sealingIndex', 
                 	inputValue: 6
                 },{
-                	boxLabel: this.urbanDiffusionText + ' (a)', 
+                	boxLabel: this.urbanDiffusionAText, 
                 	name: 'sealingIndex', 
                 	inputValue: 71
                 },{
-                	boxLabel: this.urbanDiffusionText + ' (b)', 
+                	boxLabel: this.urbanDiffusionBText, 
                 	name: 'sealingIndex', 
                 	inputValue: 72
                 },{
-                	boxLabel: this.urbanDiffusionText + ' (c)', 
+                	boxLabel: this.urbanDiffusionCText, 
                 	name: 'sealingIndex', 
                 	inputValue: 73
                 },{
@@ -667,57 +644,62 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			}
 		}
 
-		// get translated name of the index
-		if(responseData.index 
-			&& responseData.index.id 
-			&& this.translatedIndexNames[responseData.index.id]){
-			responseData.index.name = this.translatedIndexNames[responseData.index.id];
+		// Refresh wfs grid
+		if(this.geocoderConfig.targetResultGridId){
+			var wfsGrid = Ext.getCmp(this.geocoderConfig.targetResultGridId);
+			if(wfsGrid && wfsGrid.rendered) {
+				var lastOptions = wfsGrid.store.lastOptions;
+	         	wfsGrid.store.reload(lastOptions);
+	         	wfsGrid.getView().refresh();
+			}
 		}
 
-		// Show resume of the response data
-		var me = this;
-		var wfsResumeTool = this.target.tools['gxp_wfsresume'];
-        if(wfsResumeTool 
-        	&& responseData
-        	&& responseData.index 
-			&& responseData.index.id){
-        	var grid = wfsResumeTool.createResultsGrid(responseData, 'soilsealing', 'soilsealing', 'soilsealing');
-        	// var grid = wfsResumeTool.createResultsGrid(this.defaultInput2, 'soilsealing', 'soilsealing', 'soilsealing');
-			var hasTabPanel = false;
-			if (me.target.renderToTab) {
-				var container = Ext.getCmp(me.target.renderToTab);
-				if (container.isXType('tabpanel'))
-					hasTabPanel = true;
-			}
-	
-			if (hasTabPanel) {
-				if (grid.win)
-					grid.win.destroy();
-				var now = new Date();
-				grid.title += ' - ' + Ext.util.Format.date(now, 'H:i:s');
-				container.add(grid);
-				container.setActiveTab(container.items.length - 1);
-			} else {
-				if (me.resultWin)
-					me.resultWin.destroy();
-	
-				//remove title to avoid double header
-				grid.title = undefined;
-	
-				me.resultWin = new Ext.Window({
-					width : 450,
-					height : 450,
-					layout : 'fit',
-					title : grid.changeMatrixResultsTitle,
-					constrainHeader : true,
-					renderTo : me.target.mapPanel.body,
-					items : [grid]
-				});
-				me.resultWin.show();
-			}
-			//if(this.win) this.win.destroy();
-			grid.doLayout();
-        }
+		if(this.showResultOnDone){
+			// Show resume of the response data
+			var me = this;
+			var wfsResumeTool = this.target.tools['gxp_wfsresume'];
+	        if(wfsResumeTool 
+	        	&& responseData
+	        	&& responseData.index 
+				&& responseData.index.id){
+	        	var grid = wfsResumeTool.createResultsGrid(responseData, 'soilsealing', 'soilsealing', 'soilsealing');
+	        	// var grid = wfsResumeTool.createResultsGrid(this.defaultInput2, 'soilsealing', 'soilsealing', 'soilsealing');
+				var hasTabPanel = false;
+				if (me.target.renderToTab) {
+					var container = Ext.getCmp(me.target.renderToTab);
+					if (container.isXType('tabpanel'))
+						hasTabPanel = true;
+				}
+		
+				if (hasTabPanel) {
+					if (grid.win)
+						grid.win.destroy();
+					var now = new Date();
+					grid.title += ' - ' + Ext.util.Format.date(now, 'H:i:s');
+					container.add(grid);
+					container.setActiveTab(container.items.length - 1);
+				} else {
+					if (me.resultWin)
+						me.resultWin.destroy();
+		
+					//remove title to avoid double header
+					grid.title = undefined;
+		
+					me.resultWin = new Ext.Window({
+						width : 450,
+						height : 450,
+						layout : 'fit',
+						title : grid.changeMatrixResultsTitle,
+						constrainHeader : true,
+						renderTo : me.target.mapPanel.body,
+						items : [grid]
+					});
+					me.resultWin.show();
+				}
+				//if(this.win) this.win.destroy();
+				grid.doLayout();
+	        }
+		}
 	},
 
 	/**
@@ -732,6 +714,19 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			subIndex = index == 71 ? 'a' : index == 72 ? 'b' : 'c';
 			index = 7;
 		}
+
+		// default style
+		var style = this.geocoderConfig.defaultProcessStyle;
+		if(index 
+			&& this.geocoderConfig.styleSelection
+			&& this.geocoderConfig.styleSelection[index]){
+			if(subIndex
+				&& this.geocoderConfig.styleSelection[index][subIndex]){
+				style = this.geocoderConfig.styleSelection[index][subIndex];
+			}else{
+				style = this.geocoderConfig.styleSelection[index];
+			}
+		}
 		
 		// get inputs
 		var inputs = {
@@ -739,7 +734,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				value : params.raster
 			}),
 			defaultStyle : new OpenLayers.WPSProcess.LiteralData({
-				value : this.geocoderConfig.defaultProcessStyle
+				value : style
 			}),
 			storeName : new OpenLayers.WPSProcess.LiteralData({
 				value : this.geocoderConfig.storeName
@@ -773,6 +768,8 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			inputs.subindex = new OpenLayers.WPSProcess.LiteralData({
 				value : subIndex
 			});
+			// TODO: removeIt
+			this._subindex = subIndex;
 		}
 
 		// add curTime

@@ -123,6 +123,10 @@ gxp.widgets.WFSResume = Ext.extend(gxp.plugins.Tool, {
 			url: this.url,
 			target: this.target
 		});
+		// init component
+		if(showResumeWidget.initComponent){
+			showResumeWidget.initComponent();	
+		}
 		return showResumeWidget.createResultsGrid(data, rasterName, referenceName, featureType);
 	}
 

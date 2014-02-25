@@ -40,7 +40,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 
 	/** api: ptype = gxp_soilsealingresume */
 	ptype : "gxp_soilsealingresume",
-	
+
 	// Begin i18n.
 	defaultTitle: 'Coverage Ratio',
 	referenceTimeTitleText: 'Reference Time',
@@ -48,12 +48,66 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 	administrativeUnitsTitleText: 'Administrative Units',
 	barChartTitleText: 'Bar Chart',
 	intervalTitleText: 'Time interval',
+	addLayerButtonText: "Add '{0}' layer",
+	// LUC (land use/cover)
+	basedOnCLCText: 'Based on CLC',
+	coverText: 'Coefficiente Copertura',
+	changingTaxText: 'Tasso di Variazione',
+	marginConsumeText: 'Consumo Marginale del Suolo',
+	sprawlText: 'Sprawl Urbano',
+	// Second fieldset (impervious)
+	basedOnImperviousnessText: 'Based on Imperviousness',
+	urbanDispersionText: 'Dispersione Urbana',
+	edgeDensityText: 'Edge Density',
+	urbanDiffusionText: 'Diffusione Urbana',
+	urbanDiffusionAText: 'Urban Area',
+	urbanDiffusionBText: 'Highest Polygon Ratio',
+	urbanDiffusionCText: 'Other Polygons Ratio',
+	framesText: 'Frammentazione',
+	consumeOnlyText: 'Consumo Suolo',
+	consumeOnlyConfText: 'Coefficiente Ambientale Cons. Suolo',
 	// EoF i18n
     
     /** api: config[url]
      *  ``String`` URL for the layer creation
      */
 	url: null,
+
+    /** private: config[clcLevelsConfig]
+     *  ``Object`` Translated index names by id
+     */
+	translatedIndexNames:{},
+
+
+	/** api: method[initComponent]
+	 *  Generate a panel with the configuration present on this
+	 */
+	initComponent: function(config){
+
+		// Use translations
+		Ext.apply(this.translatedIndexNames,{
+			1: this.coverText,
+			2: this.changingTaxText,
+			3: this.marginConsumeText,
+			4: this.sprawlText,
+			5: this.urbanDispersionText,
+			6: this.edgeDensityText,
+			7: {
+				"a": this.urbanDiffusionAText,
+				"b": this.urbanDiffusionBText,
+				"c": this.urbanDiffusionCText
+			},
+			8: this.framesText,
+			9: this.consumeOnlyText,
+			10: this.consumeOnlyConfText,
+
+		});
+
+		if(gxp.widgets.SoilSealingResume.superclass.initComponent){
+			gxp.widgets.SoilSealingResume.superclass.initComponent.call(this, config);	
+		}
+	},
+
 
 	/** private: method[addOutput]
 	 *  :arg config: ``Object``
@@ -90,6 +144,19 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		var refTimePieChartsData = null, curTimePieChartsData = null, 
 			refTimeColChartsData = null, curTimeColChartsData = null;
 		var referenceTimeTitle = this.referenceTimeTitleText;
+
+		// get translated name of the index
+		if(data.index 
+			&& data.index.id 
+			&& this.translatedIndexNames[data.index.id]){
+			if(this.translatedIndexNames[data.index.id] instanceof Object){
+				if(data.index.subindex){
+					data.index.name = this.translatedIndexNames[data.index.id][data.index.subindex];
+				}
+			}else{
+				data.index.name = this.translatedIndexNames[data.index.id];	
+			}
+		}
 
 		// Generate data for the charts
 		if(data && data.index && data.refTime){
@@ -145,8 +212,14 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			xAxis.categories = [data.index.name];
 		}
 
+		// title for the layers and the tab
+		var title = data.index && data.index.name ? data.index.name: this.defaultTitle;
+
 		// yAxis
 		var yAxis = {};
+
+		// add layers bar
+		var addLayersBar = this.generateBar(data, title);
 
 		// reference time chart
 		barChartItems.push(
@@ -175,6 +248,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 
 		// bar charts
 		var barChartTab = new Ext.Panel({
+			tbar: addLayersBar,
 			title : barChartTitle,
 			items: barChartItems
 		});
@@ -191,7 +265,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		// Main Tab Panel
 		// ///////////////////////////////////////
 		var outcomeTabPanel = new Ext.TabPanel({
-			title : data.index && data.index.name ? data.index.name: this.defaultTitle,
+			title : title,
 			// height : 300,
 			// width : 300,
 			closable : true,
@@ -446,6 +520,158 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			}
 		}catch(e){
 			return clcLevels;
+		}
+	},
+
+    /** api: method[generateBar]
+     *  :arg config: ``Object`` Response data
+     *  :arg title: ``String`` Title for the layers
+     *  :returns: ``Ext.Toolbar`` for the bar or null if it's not need
+     *  Obtain bar.
+     */
+	generateBar: function(config, title){
+		// generate bar for add layers
+		var items = [];
+		var item0 = this.generateBarItem(config.refTime, this.referenceTimeTitleText, title);
+		var item1 = this.generateBarItem(config.curTime, this.currentTimeTitleText, title);
+		if(item0){
+			items.push(item0);
+		}
+		if(item1){
+			items.push("->");
+			items.push(item1);
+		}
+		if(items.length > 0){
+			return new Ext.Toolbar({
+				items : items
+			});
+		}else{
+			null;
+		}
+	},
+
+    /** api: method[generateButtom]
+     *  :arg yearData: ``Object`` Configuration for the year
+     *  :arg timeName: ``String`` Name for the add layer buttom
+     *  :arg title: ``String`` Title for the layer
+     *  :returns: ``Ext.Toolbar`` for the buttom bar.
+     *  Obtain bar item.
+     */
+	generateBarItem: function(yearData, timeName, title){
+		var layerName = yearData && yearData.output ? yearData.output.layerName : null;
+		var layerTitle = title && timeName ? title + " - " + timeName: layerName;
+		if(layerName && layerName != ""){
+			return {
+				text : String.format(this.addLayerButtonText, timeName),
+				iconCls : 'gxp-icon-addlayers',
+				handler : function(){
+					var src;				                            
+					for (var id in this.target.layerSources) {
+						  var s = this.target.layerSources[id];    
+						  
+						  // //////////////////////////////////////////
+						  // Checking if source URL aldready exists
+						  // //////////////////////////////////////////
+						  if(s != undefined && s.id == this.geocoderConfig.source){
+							  src = s;
+							  break;
+						  }
+					} 				
+                    var props ={
+                    			source: this.target.layerSources.jrc.id,
+                                name: layerName,
+                                url: this.url,
+                                title: layerTitle,
+                                tiled:true,
+                                layers: layerName
+                        };
+												
+				    var index = src.store.findExact("name", layerName);
+					
+					if (index < 0) {
+						src.on('ready', function(){
+							this.addLayerRecord(src, props);
+						}, this);
+						// ///////////////////////////////////////////////////////////////
+						// In this case is necessary reload the local store to refresh 
+						// the getCapabilities records 
+						// ///////////////////////////////////////////////////////////////
+						src.store.reload();
+					}else{
+						this.addLayerRecord(src, props);
+					}
+
+					/*
+					 * Check if tabs exists and if so switch to View Tab 
+					 */
+					var hasTabPanel = false;
+					if (this.target.renderToTab) {
+						var container = Ext.getCmp(this.target.renderToTab);
+						if (container.isXType('tabpanel'))
+							hasTabPanel = true;
+					}
+			
+					if (hasTabPanel) {
+						if (this.win)
+							this.win.destroy();
+						if(container)
+							container.setActiveTab(0);
+					}
+				},
+				scope:this
+			};
+		}else{
+			return null;
+		}
+	},
+
+	/**  
+	 * api: method[addLayerRecord]
+     */
+	addLayerRecord: function(src, props){
+		var record = src.createLayerRecord(props);   
+				  
+		if (record) {
+			var layerStore = this.target.mapPanel.layers;  
+			layerStore.add([record]);
+
+			modified = true; // TODO: refactor this
+
+			// Merge Params
+            var layerObject = record.get("layer");
+					
+		    //
+			// If tabs are used the View tab is Activated
+			//
+			if(this.target.renderToTab && this.enableViewTab){
+				var portalContainer = Ext.getCmp(this.target.renderToTab);
+				
+				if(portalContainer instanceof Ext.TabPanel){
+					portalContainer.setActiveTab(1);
+				}				
+			}					
+						
+			// //////////////////////////
+			// Zoom To Layer extent
+			// //////////////////////////
+			var layer = record.get('layer');
+			var extent = layer.restrictedExtent || layer.maxExtent || this.target.mapPanel.map.maxExtent;
+			var map = this.target.mapPanel.map;
+
+			// ///////////////////////////
+			// Respect map properties
+			// ///////////////////////////
+			var restricted = map.restrictedExtent || map.maxExtent;
+			if (restricted) {
+				extent = new OpenLayers.Bounds(
+					Math.max(extent.left, restricted.left),
+					Math.max(extent.bottom, restricted.bottom),
+					Math.min(extent.right, restricted.right),
+					Math.min(extent.top, restricted.top)
+				);
+			}
+
+			map.zoomToExtent(extent, true);
 		}
 	}
 

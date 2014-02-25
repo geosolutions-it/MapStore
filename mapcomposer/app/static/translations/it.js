@@ -727,6 +727,31 @@ GeoExt.Lang.add("it", {
         invalidSealingIndexFormDialogText: "Soil Sealing index not selected",
         invalidRange0IndexFormDialogText: "Reference time not selected",
         invalidRange1IndexFormDialogText: "Current time not selected"
+    },
+
+    "gxp.widgets.SoilSealingResume.prototype":{
+        defaultTitle: 'Coverage coefficient',
+        referenceTimeTitleText: 'Reference Time',
+        currentTimeTitleText: 'Current Time',
+        administrativeUnitsTitleText: 'Administrative Units',
+        barChartTitleText: 'Bar Chart',
+        intervalTitleText: 'Time interval',
+        addLayerButtonText: "Add '{0}' layer",
+        basedOnCLCText: 'Based on CLC',
+        coverText: 'Coverage coefficient',
+        changingTaxText: 'Tasso di Variazione',
+        marginConsumeText: 'Consumo Marginale del Suolo',
+        sprawlText: 'Sprawl Urbano',
+        basedOnImperviousnessText: 'Based on Imperviousness',
+        urbanDispersionText: 'Dispersione Urbana',
+        edgeDensityText: 'Edge Density',
+        urbanDiffusionText: 'Diffusione Urbana',
+        urbanDiffusionAText: 'Urban Area',
+        urbanDiffusionBText: 'Highest Polygon Ratio',
+        urbanDiffusionCText: 'Other Polygons Ratio',
+        framesText: 'Frammentazione',
+        consumeOnlyText: 'Consumo Suolo',
+        consumeOnlyConfText: 'Coefficiente Ambientale Cons. Suolo'
     }
 
 });
