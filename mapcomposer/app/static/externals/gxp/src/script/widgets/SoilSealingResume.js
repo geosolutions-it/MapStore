@@ -175,10 +175,16 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			}
 		}
 
+		var adminUnitsTabs;
+
 		// Administrative units tab only for index 1
 		if(data.index.id == 1){
+			adminUnitsTabs = [];
 			var adminUnitsItems = [];
+			var tabIndex = 1;
+			var tabItemIndex = -1;
 			for(var i = 0; i < data.refTime.output.admUnits.length; i++){
+				tabItemIndex++;
 				var unitItems = [];
 				unitItems.push(this.generatePieChart(this.referenceTimeTitleText, data.refTime.time, refTimePieChartsData[i]));
 				if(curTimePieChartsData){
@@ -188,15 +194,36 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 					title: data.refTime.output.admUnits[i],
 					items: unitItems
 				});
+				if(tabItemIndex == 9){
+					var adminUnitsTab = new Ext.Panel({
+						border : false,
+						layout : "accordion",
+						disabled : false,
+						autoScroll : false,
+						title : this.administrativeUnitsTitleText + " - " + tabIndex,
+						items: adminUnitsItems
+					});
+					adminUnitsTabs.push(adminUnitsTab);
+					adminUnitsItems = [];
+					tabItemIndex = -1;
+					tabIndex++;
+				}
 			}
-			var adminUnitsTab = new Ext.Panel({
-				border : false,
-				layout : "accordion",
-				disabled : false,
-				autoScroll : false,
-				title : this.administrativeUnitsTitleText,
-				items: adminUnitsItems
-			});	
+			if(tabItemIndex<9){
+				var admUnitsTitle = this.administrativeUnitsTitleText;
+				if(tabIndex > 1){
+					admUnitsTitle += " - " + tabIndex;
+				}
+				var adminUnitsTab = new Ext.Panel({
+					border : false,
+					layout : "accordion",
+					disabled : false,
+					autoScroll : true,
+					title : admUnitsTitle,
+					items: adminUnitsItems
+				});
+				adminUnitsTabs.push(adminUnitsTab);
+			}
 		}
 
 		// Bar chart tab
@@ -255,8 +282,10 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 
 		// Generated items
 		var items = [];
-		if(adminUnitsTab){
-			items.push(adminUnitsTab);
+		if(adminUnitsTabs && adminUnitsTabs.length > 0){
+			for(var i = 0; i < adminUnitsTabs.length; i++){
+				items.push(adminUnitsTabs);	
+			}
 		}
 		items.push(barChartTab);
 
@@ -532,8 +561,23 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 	generateBar: function(config, title){
 		// generate bar for add layers
 		var items = [];
-		var item0 = this.generateBarItem(config.refTime.output.layerName, this.referenceTimeTitleText, title);
-		var item1 = this.generateBarItem(config.curTime.output.layerName, this.currentTimeTitleText, title);
+		var item1 = null, item0 = null;
+
+		// ref time layer
+		if(config.refTime
+			&& config.refTime.output
+			&& config.refTime.output.layerName){
+			item0 = this.generateBarItem(config.refTime.output.layerName, this.referenceTimeTitleText, title);	
+		}
+
+		// curr time layer
+		if(config.curTime
+			&& config.curTime.output
+			&& config.curTime.output.layerName){
+			item1 = this.generateBarItem(config.curTime.output.layerName, this.currentTimeTitleText, title);	
+		}
+
+		// push items
 		if(item0){
 			items.push(item0);
 		}
@@ -545,6 +589,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			//items.push("->");
 			items.push(item1);
 		}
+
+		// return toolbar if exist one add layer button
 		if(items.length > 0){
 			return new Ext.Toolbar({
 				items : items
