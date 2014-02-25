@@ -180,33 +180,6 @@
             "srsName": "EPSG:32632", 
             "version": "1.1.0",
             "outputTarget": "outcomelaylistpanel",
-            "columns" : [
-            	{
-                    "header": "Status", 
-                    "dataIndex": "itemStatus",
-                    "sortable": true
-                },{
-                    "header": "Reference Name", 
-                    "dataIndex": "referenceName",
-                    "sortable": true
-                },{
-                    "header": "Start Date", 
-                    "dataIndex": "runBegin",
-                    "sortable": true
-                },{
-                    "header": "End Date", 
-                    "dataIndex": "runEnd",
-                    "sortable": true
-                },{
-                    "header": "Filter (reference)", 
-                    "dataIndex": "referenceFilter",
-                    "sortable": true
-                },{
-                    "header": "Filter (current)", 
-                    "dataIndex": "nowFilter",
-                    "sortable": true
-                }
-            ],
             "actionColumns" : [
                 {
                  "type": "details",
@@ -222,11 +195,77 @@
             "panelsConfig": [{
             	"title": "Change Matrix Runs",
             	"featureType": "changematrix",
-        		"featureTypeDetails": "changeMatrix"
+        		"featureTypeDetails": "changeMatrix",
+	            "columns" : [
+	            	{
+	                    "header": "Status", 
+	                    "dataIndex": "itemStatus",
+	                    "sortable": true
+	                },{
+	                    "header": "Reference Name", 
+	                    "dataIndex": "referenceName",
+	                    "sortable": true
+	                },{
+	                    "header": "Start Date", 
+	                    "dataIndex": "runBegin",
+	                    "sortable": true
+	                },{
+	                    "header": "End Date", 
+	                    "dataIndex": "runEnd",
+	                    "sortable": true
+	                },{
+	                    "header": "Filter (reference)", 
+	                    "dataIndex": "referenceFilter",
+	                    "sortable": true
+	                },{
+	                    "header": "Filter (current)", 
+	                    "dataIndex": "nowFilter",
+	                    "sortable": true
+	                }
+	            ]
         	},{
             	"title": "Soil Sealing Runs",
             	"featureType": "soilsealing",
-        		"featureTypeDetails": "soilIndex"
+        		"featureTypeDetails": "soilIndex",
+	            "columns" : [
+	            	{
+	                    "header": "Status", 
+	                    "dataIndex": "itemStatus",
+	                    "sortable": true
+	                },{
+	                    "header": "Reference Name", 
+	                    "dataIndex": "referenceName",
+	                    "sortable": true
+	                },{
+	                    "header": "Index", 
+	                    "dataIndex": "index",
+	                    "sortable": true
+	                },{
+	                    "header": "SubIndex", 
+	                    "dataIndex": "subindex",
+	                    "sortable": true
+	                },{
+	                    "header": "Classes", 
+	                    "dataIndex": "classes",
+	                    "sortable": true
+	                },{
+	                    "header": "Start Date", 
+	                    "dataIndex": "runBegin",
+	                    "sortable": true
+	                },{
+	                    "header": "End Date", 
+	                    "dataIndex": "runEnd",
+	                    "sortable": true
+	                },{
+	                    "header": "Filter (reference)", 
+	                    "dataIndex": "referenceFilter",
+	                    "sortable": true
+	                },{
+	                    "header": "Filter (current)", 
+	                    "dataIndex": "nowFilter",
+	                    "sortable": true
+	                }
+	            ]
             }]
         },{
             "ptype": "gxp_addlayer",
