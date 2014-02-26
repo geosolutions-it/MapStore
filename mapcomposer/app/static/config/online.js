@@ -242,7 +242,7 @@
 			"name": "grafo_stradale",
 			"displayInLayerSwitcher": true,
 			"tiled": true,
-            "group": ["Roads","Strade","Strade"," Straßen"],
+            "group": ["Roads","Strade","Routes"," Straßen"],
 			"visibility": false
         },{
 			"source": "destination",
@@ -469,7 +469,16 @@
 			"target": "paneltbar",
 			"index": 21
 		}
-	},{
+	},
+	{
+        "actions":[
+        "-"
+        ],
+		"actionTarget": "paneltbar"
+	}, {
+        "ptype": "gxp_googleearth",
+        "actionTarget": {"target": "paneltbar", "index": 22}
+    },{
         "ptype":"gxp_playback",
 		"id": "destination_playback",
 		"toolbarHidden": true,
@@ -587,7 +596,12 @@
 		"layerTrackTitle": "obu_track",
 		"layerTrackName": "siig_geo_obu_line",
 		"layerTrackUrl": "http://destination.geo-solutions.it/geoserver_test/destination/ows",
-		"wfsUrl": "http://destination.geo-solutions.it/geoserver_test/ows?"
+		"wfsUrl": "http://destination.geo-solutions.it/geoserver_test/ows?",
+        "styleRenamedStore": [
+            ["Obu points","Obu punti","Obu points","Obu punkte"],
+            ["Obu points speed","Obu punti velocità","Obu points vitesse","Obu punkte Geschwindigkeit"],
+            ["Obu points direction","Obu punti direzione","Obu point direction","Obu punkte Richtung"]
+        ]
 	},
 	{
 		"ptype": "gxp_addlayer",
@@ -1780,7 +1794,9 @@
                     "id": 1,
                     "type": "umano",
                     "noPaging": true,
-                    "allowAdd": true,                    
+                    "allowEdit": true,
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632",                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -1789,12 +1805,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -1859,7 +1869,9 @@
                     "id": 2,
                     "type": "umano",
                     "noPaging": true,
-                    "allowAdd": true,
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632", 
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -1868,12 +1880,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -1958,7 +1964,9 @@
                     "id": 4,
                     "type": "umano",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632", 
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -1967,12 +1975,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2076,7 +2078,9 @@
                     "id": 5,
                     "type": "umano",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632",  
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2085,12 +2089,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2178,7 +2176,9 @@
                     "id": 6,
                     "type": "umano",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632",  
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2187,12 +2187,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2288,7 +2282,9 @@
                     "id": 7,
                     "type": "umano",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632", 
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2297,12 +2293,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2365,7 +2355,9 @@
                     "id": 10,
                     "type": "ambientale",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632", 
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2374,12 +2366,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2442,7 +2428,9 @@
                     "id": 11,
                     "type": "ambientale",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632", 
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2451,12 +2439,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2527,7 +2509,9 @@
                     "id": 12,
                     "type": "ambientale",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632",   
+                    "allowEdit": true,                    
 		"actionColumns": [{
 			"type": "checkDisplay",
 			"layerName": "Bersaglio Selezionato",
@@ -2536,12 +2520,6 @@
 		{
 			"type": "zoom",
 			"sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2604,7 +2582,9 @@
                     "id": 13,
                     "type": "ambientale",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632", 
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2613,12 +2593,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2713,7 +2687,9 @@
                     "name": "ACQUE SUPERFICIALI",
                     "type": "ambientale",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632",  
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2722,12 +2698,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2798,7 +2768,9 @@
                     "name": "ACQUE SOTTERRANEE",
                     "type": "ambientale",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632",  
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2807,12 +2779,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2875,7 +2841,9 @@
                     "name": "BENI CULTURALI",
                     "type": "ambientale",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632", 
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2884,12 +2852,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",

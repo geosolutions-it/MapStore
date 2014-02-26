@@ -79,6 +79,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     geostoreElab: null,
     geostoreFormula: null,
     geostoreTemporal: null,    
+    selectionAreaLabel: "Area Selezionata", 
     // End i18n.
         
     cellViewScale: 500010,
@@ -1959,7 +1960,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         if(this.aoiFieldset.isDirty()){
             obj.roi = {
-                label: "Area Selezionata", 
+                label: this.selectionAreaLabel,
                 bbox : this.aoiFieldset.getAOIMapBounds()
             };    
         }else{

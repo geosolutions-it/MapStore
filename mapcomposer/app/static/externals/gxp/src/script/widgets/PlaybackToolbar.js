@@ -93,7 +93,8 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
      */
     initComponent: function() {
         if(!this.playbackActions){
-            this.playbackActions = ["settings","slider","reset","currenttime","back","next","play","fastforward","loop"]; 
+            //this.playbackActions = ["settings","slider","reset","currenttime","back","next","play","fastforward","loop"]; 
+            this.playbackActions = ["settings","slider","reset","back","next","play","fastforward","loop"]; 
         }
         if(!this.control){
             this.control = this.buildTimeManager();
