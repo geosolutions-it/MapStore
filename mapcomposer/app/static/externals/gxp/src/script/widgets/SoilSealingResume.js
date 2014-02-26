@@ -73,11 +73,20 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
      */
 	url: null,
 
-    /** private: config[clcLevelsConfig]
+    /** private: config[translatedIndexNames]
      *  ``Object`` Translated index names by id
      */
 	translatedIndexNames:{},
 
+    /** private: config[splitAdmUnitsInTabs]
+     *  ``Boolean`` Flag to split admin units by 10 units
+     */
+	splitAdmUnitsInTabs: false,
+
+    /** private: config[pieChartHeight]
+     *  ``Integer`` Pie chart height on administrative units
+     */
+	pieChartHeight: 400,
 
 	/** api: method[initComponent]
 	 *  Generate a panel with the configuration present on this
@@ -194,7 +203,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 					title: data.refTime.output.admUnits[i],
 					items: unitItems
 				});
-				if(tabItemIndex == 9){
+				if(this.splitAdmUnitsInTabs && tabItemIndex == 9){
 					var adminUnitsTab = new Ext.Panel({
 						border : false,
 						layout : "accordion",
@@ -209,7 +218,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 					tabIndex++;
 				}
 			}
-			if(tabItemIndex<9){
+			if(!this.splitAdmUnitsInTabs || tabItemIndex<9){
 				var admUnitsTitle = this.administrativeUnitsTitleText;
 				if(tabIndex > 1){
 					admUnitsTitle += " - " + tabIndex;
@@ -220,7 +229,28 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 					disabled : false,
 					autoScroll : true,
 					title : admUnitsTitle,
-					items: adminUnitsItems
+					items: adminUnitsItems,
+					defaults: {
+						listeners:{
+							// resize inner divs to make it visible for long accordions
+							render:function(panel){
+								try{
+									var pieCharts = panel.items.length;
+									var panelJQ = $('#' + panel.id);
+									var item = panelJQ.find("div.x-panel-bwrap");
+									item.height(this.pieChartHeight * pieCharts);
+									var innerBody = panelJQ.find("div.x-panel-body");
+									panel.on("bodyresize", function(){
+										innerBody.height(this.pieChartHeight * pieCharts);
+									}, this);
+								}catch (e){
+									// error on resizing: could not occur
+									console.error("Error on panel accordion resizing");
+								}
+							},
+							scope: this
+						}
+					}
 				});
 				adminUnitsTabs.push(adminUnitsTab);
 			}
