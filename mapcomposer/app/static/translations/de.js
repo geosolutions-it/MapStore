@@ -71,7 +71,10 @@ GeoExt.Lang.add("de", {
         loadProcessingValidHeader: 'Regenerierbaren',
         loadProcessingCreationHeader: 'Erstellt',
         downloadFileLabel: 'Entlastung',
-        deleteDownloadError: 'Der Download kann nicht gelöscht werden. Entfernen Sie das überhaupt?'
+        deleteDownloadError: 'Der Download kann nicht gelöscht werden. Entfernen Sie das überhaupt?',
+        meter100Text: '100 metern',
+        meter500Text: '500 metern',
+        GrigliaText: 'Gitter'
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Bearbeitung",
@@ -123,7 +126,8 @@ GeoExt.Lang.add("de", {
         mediumRiskLabel: "Durchschnittliche Risiko",
         highRiskLabel: "hohes Risiko",
         notVisibleOnArcsMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein",
-        notVisibleOnGridMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein"
+        notVisibleOnGridMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein",
+        selectionAreaLabel: "Gewählter Bereich"
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Bestandteil {0} - {1} von {2}",
@@ -149,7 +153,9 @@ GeoExt.Lang.add("de", {
         stopEditGeomToTooltip: "Stoppen bearbeiten Feature",
         resetEditGeomToTooltip: "Zurücksetzen bearbeiten Feature",
         removeMessage: "Entfernen",
-        removeTitle:"Sind Sie sicher, dass Sie dieses Element löschen?"
+        removeTitle:"Sind Sie sicher, dass Sie dieses Element löschen?",
+        noEditElementSelectionTitle: "Wählen Sie ein Element",
+        noEditElementSelectionMsg: "Sie müssen ein Element auswählen!!!"
     },
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Zoomlevel: {zoom}</div><div>Maßstab: 1:{scale}</div>",
@@ -598,7 +604,7 @@ GeoExt.Lang.add("de", {
         tooltip: "Anzeige Gefährdete Elements",
         allHumanTargetTitle: "Alle menschlichen Ziele",
         allNotHumanTargetTitle: "Alle Umweltziele",
-        selectAllTitle: "SELECT ALL",
+        selectAllTitle: "ALLE WÄHLEN",
         addToMapButtonText: "In den Karte"
 	},
 
@@ -694,5 +700,46 @@ GeoExt.Lang.add("de", {
         showTrack: "Route anzeigen",
         styleData: "Richtungsintervall",
         applyText: "Anwenden"
+    },
+    "gxp.PlaybackToolbar.prototype": {
+        playLabel: "Wiedergabe",
+        playTooltip: "Wiedergabe",
+        stopLabel: "Stopp",
+        stopTooltip: "Stopp",
+        fastforwardLabel: "FFWD",
+        fastforwardTooltip: "Double Speed​​-Wiedergabe",
+        backLabel:'Zurück',
+        backTooltip:'Zeichnen Sie ein Bild zurück',            
+        nextLabel: "Nächste",
+        nextTooltip: "Ein Bild vor",
+        loopLabel: "Schleife",
+        loopTooltip: "Stufenlos Schleife die Animation",
+        normalTooltip: "Rückkehr zur normalen Wiedergabe",
+        pauseLabel: "Pause",
+        pauseTooltip: "Pause"
+    },
+    "gxp.PlaybackOptionsPanel.prototype": {
+        titleText: "Datum & Zeit",
+        rangeFieldsetText: "Zeitbereich",
+        animationFieldsetText: "Animationsoptionen",
+        startText: "Starten",
+        endText: "Ende",
+        saveText: 'Sparen',
+        cancelText: 'Stornieren',         
+        listOnlyText: "Verwenden Sie Genaue Werte-Liste nur",
+        stepText: "Zeichentrick Schritt",
+        unitsText: "Zeichentrick-Einheiten",
+        frameRateText:'Zeichentrick-Verzögerung (s)',        
+        noUnitsText: "Snap To Zeitliste",
+        loopText: "Loop-Animation",
+        reverseText: "Reverse-Zeichentrick",
+        rangeChoiceText: "Wählen Sie den Bereich für die Zeitsteuerung",
+        rangedPlayChoiceText: "Wiedergabemodus",
+        secondsText: 'Sekunden', 
+        minutesText: 'Protokoll', 
+        hoursText: 'Stunden', 
+        daysText: 'Tage', 
+        monthsText: 'Monate', 
+        yearsText: 'Jahre'        
     }    	
 });

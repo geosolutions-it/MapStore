@@ -92,6 +92,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     simMsg: 'Modifica dei parametri di simulazione non possibile a questa scala. Zoomare fino a scala 1:17061',
     downloadFileLabel: 'Scarica il file',
     deleteDownloadError: 'Il download non può essere cancellato. Rimuoverlo ugualmente?',
+    meter100Text: '100 metri',
+    meter500Text: '500 metri',
+    GrigliaText: 'Griglia',
     // End i18n.
         
     id: "syntheticview",
@@ -107,13 +110,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     bufferLayerNameNotHuman: "buffer_not_human",    
     damageBufferLayer: "damage_buffer",
     
-    bufferLayerTitle: ["Buffer Areas", "Aree di danno", "Aree di danno", "Schadensbereich"],    
-    targetLayerTitle: ["Targets", "Bersagli", "Bersagli", "Betroffene Elemente"],
-    humanRiskLayerTitle: ["Total Human Risk", "Rischio Totale Sociale", "Rischio Totale Sociale", "Rischio Totale Sociale"],
-    notHumanRiskLayerTitle: ["Total Environment Risk", "Rischio Totale Ambientale", "Rischio Totale Ambientale", "Rischio Totale Ambientale"],
-    combinedRiskLayerTitle: ["Total Risk - Human and Environment", "Rischio Totale Sociale - Ambientale", "Rischio Totale Sociale - Ambientale", "Rischio Totale Sociale - Ambientale"],
-    humanTargets: ["Human Targets", "Bersagli umani", "Bersagli umani", "Anthropologische Elemente"],
-    notHumanTargets: ["Environment Targets", "Bersagli ambientali", "Bersagli ambientali", "Umweltelemente"],
+    bufferLayerTitle: ["Buffer Areas", "Aree di danno", "Domaines de dommages", "Schadensbereich"],    
+    targetLayerTitle: ["Targets", "Bersagli", "Cibles", "Betroffene Elemente"],
+    humanRiskLayerTitle: ["Total Human Risk", "Rischio Totale Sociale", "Risque humain total", "Gesamtpersonalrisiko"],
+    notHumanRiskLayerTitle: ["Total Environment Risk", "Rischio Totale Ambientale", "Risque total de l'environnement", "Gesamt Umwelt Risiko"],
+    combinedRiskLayerTitle: ["Total Risk - Human and Environment", "Rischio Totale Sociale - Ambientale", "Risque Total - humaine et de l'environnement", "Total Risk - Mensch und Umwelt"],
+    humanTargets: ["Human Targets", "Bersagli umani", "Cibles humaines", "Anthropologische Elemente"],
+    notHumanTargets: ["Environment Targets", "Bersagli ambientali", "Les objectifs d'Environnement", "Umweltelemente"],
     humanRiskLayer: "rischio_totale_sociale",    
     notHumanRiskLayer: "rischio_totale_ambientale",    
     combinedRiskLayer: "rischio_totale",    
@@ -1639,7 +1642,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                                         'id',
                                                         'text'
                                                     ],
-                                                    data: [[1, '100 metri'], [2, '500 metri'],[3, 'Griglia']]
+                                                    data: [[1, me.meter100Text], [2, me.meter500Text],[3, me.GrigliaText]]
                                                 }),
                                                 value: 1,
                                                 valueField: 'id',

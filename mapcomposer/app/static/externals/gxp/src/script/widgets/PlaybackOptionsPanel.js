@@ -46,6 +46,8 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
     animationFieldsetText: "Animation Options",
     startText:'Start',
     endText:'End',
+    saveText: 'Save',
+    cancelText: 'Cancel',    
     listOnlyText:'Use Exact List Values Only',
     stepText:'Animation Step',
     unitsText:'Animation Units',
@@ -55,6 +57,12 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
     reverseText:'Reverse Animation',
     rangeChoiceText:'Choose the range for the time control',
     rangedPlayChoiceText:'Playback Mode',
+    secondsText: 'Seconds',
+    minutesText: 'Minutes',
+    hoursText: 'Hours',
+    daysText: 'Days',
+    monthsText: 'Months',
+    yearsText: 'Years',    
     
     /** private: method[initComponent]
      */
@@ -139,12 +147,12 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
                         anchor:'-5',
                         //TODO: i18n these time units
                         store: [
-                            [OpenLayers.TimeUnit.SECONDS,'Seconds'], 
-                            [OpenLayers.TimeUnit.MINUTES,'Minutes'], 
-                            [OpenLayers.TimeUnit.HOURS,'Hours'], 
-                            [OpenLayers.TimeUnit.DAYS,'Days'], 
-                            [OpenLayers.TimeUnit.MONTHS,"Months"], 
-                            [OpenLayers.TimeUnit.YEARS,'Years']
+                                        [OpenLayers.TimeUnit.SECONDS, this.secondsText],
+                                        [OpenLayers.TimeUnit.MINUTES, this.minutesText],
+                                        [OpenLayers.TimeUnit.HOURS, this.hoursText],
+                                        [OpenLayers.TimeUnit.DAYS, this.daysText],
+                                        [OpenLayers.TimeUnit.MONTHS, this.monthsText],
+                                        [OpenLayers.TimeUnit.YEARS, this.yearsText]
                         ],
                         valueNotFoundText:this.noUnitsText,
                         mode:'local',
@@ -188,12 +196,12 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
             ],
             listeners:{'show':this.populateForm,scope:this},
             bbar: [{
-                text: 'Save',
+                text: this.saveText, //'Save',
 				iconCls: 'playback-save',
                 handler: this.saveValues,
                 scope: this
             }, {
-                text: 'Cancel',
+                text: this.cancelText, //'Cancel',
 				iconCls: 'playback-cancel',
                 handler: this.cancelChanges,
                 scope: this
