@@ -1,5 +1,5 @@
     {
-    "geoStoreBase":"@@@@geostore_base_url@@@@",
+    "geoStoreBase":"http://localhost:8082/geostore/rest/",
     "proxy":"/http_proxy/proxy/?url=",
     "defaultLanguage": "it",
     "embedding": false,
@@ -23,7 +23,7 @@
             "ptype": "gxp_wmssource",
             "title": "Destination GeoServer",
             "version":"1.1.1",
-            "url": "http://@@@@domain_url@@@@/geoserver/destination/ows",
+            "url": "http://localhost:8080/geoserver/destination/ows",
             "layerBaseParams": {
                 "TILED": true,                
                 "format": "image/png8"
@@ -523,7 +523,7 @@
             "outputFilename":"mapstore-print"
         },
         "ignoreLayers": "Google Hybrid,Bing Aerial,Nessuno sfondo,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
-        "printService":"http://@@@@domain_url@@@@/geoserver/pdf/",
+        "printService":"http://localhost:8080/geoserver/pdf/",
         "legendPanelId":"legendPanel",
         "actionTarget":{
             "target":"paneltbar",
@@ -547,17 +547,17 @@
         "selectionLayerTitle": "Rischio Totale",             
         "bufferLayerNameHuman": "buffer_human",
         "bufferLayerNameNotHuman": "buffer_not_human",
-        "selectionLayerBaseURL": "http://@@@@domain_url@@@@/geoserver/destination/wms",
+        "selectionLayerBaseURL": "http://localhost:8080/geoserver/destination/wms",
         "selectionLayerProjection": "EPSG:32632",
         "geometryName": "geometria",
         "accidentTipologyName": "tipologia",
-        "wfsURL": "http://@@@@domain_url@@@@/geoserver/destination/wfs",
-        "wpsURL": "http://@@@@domain_url@@@@/geoserver/wps",        
+        "wfsURL": "http://localhost:8080/geoserver/destination/wfs",
+        "wpsURL": "http://localhost:8080/geoserver/wps",        
         "wpsStore": "destination",        
         "wfsVersion" : "1.1.0",
         "destinationNS": "destination",
         "index": 28,
-        "geoStoreBase":"http://@@@@geostore_base_url@@@@/geostore/rest/",
+        "geoStoreBase":"http://localhost:8082/geostore/rest/",
         "proxy":"/proxy/?url=",
         "geoStoreUser": "base",
         "geoStorePassword": "base"
@@ -565,7 +565,7 @@
 	{
 		"ptype": "gxp_gatetimeslidertab",
         "id": "gatetimeslidertab",
-        "wfsUrl":"http://@@@@domain_url@@@@/geoserver/ows",
+        "wfsUrl":"http://localhost:8080/geoserver/ows",
         "wfsVersion": "1.1.0",
         "destinationNS": "destination",
         "statisticFeature": "gate_stats",
@@ -578,7 +578,7 @@
 	}, {
         "ptype": "gxp_featuremanager",
         "id": "featuremanager",
-        "wfsUrl":"http://@@@@domain_url@@@@/geoserver/ows",
+        "wfsUrl":"http://localhost:8080/geoserver/ows",
         "paging": false,
         "authentication": {
             "user": "super",
@@ -596,8 +596,8 @@
 		"layerToFilter": "OBU",
 		"layerTrackTitle": "obu_track",
 		"layerTrackName": "siig_geo_obu_line",
-		"layerTrackUrl": "http://@@@@domain_url@@@@/geoserver/destination/ows",
-        "wfsUrl": "http://@@@@domain_url@@@@/geoserver/ows?"
+		"layerTrackUrl": "http://localhost:8080/geoserver/destination/ows",
+        "wfsUrl": "http://localhost:8080/geoserver/ows?"
 	},
 	{
 		"ptype": "gxp_addlayer",
@@ -627,7 +627,7 @@
         "ptype": "gxp_tabpanelwfsgrids",
         "outputTarget": "featurelist",
         "srsName" : "EPSG:32632",
-        "wfsURL": "http://@@@@domain_url@@@@/geoserver/destination/wfs",
+        "wfsURL": "http://localhost:8080/geoserver/destination/wfs",
         "panels": {
             "targets": {
                 "Popolazione residente": {

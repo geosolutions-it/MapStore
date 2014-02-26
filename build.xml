@@ -1,48 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="mapcomposer" default="dist" basedir=".">
+<project name="mapcomposer" default="default" basedir=".">
 
     <description>
         MapStore Build File
     </description>
 
     <property name="composerbuild" location="mapcomposer/build"/>
-	<property name="managerbuild" location="mapmanager/build"/>
-	<property name="manager.war.name" value="mapstore"/>
+    <property name="managerbuild" location="mapmanager/build"/>
+    <property name="manager.war.name" value="mapstore"/>
     <property name="app.proxy.geoserver" value=""/>
-	<property name="app.debug.proxy" value="true"/>
+    <property name="app.debug.proxy" value="true"/>
     <property name="app.port" value="8081"/>
 
-    <target name="init">
+	<target name="default" description="Verifica se eseguire il build per un solo environment specificato a linea di commando con -Dtarget=${target} o per tutti gli environment">
+      <condition property="first-call" value="distribution">
+        <not>
+          <equals arg1="${target}" arg2="$${target}" /> 
+        </not>
+      </condition>
+      <condition property="first-call" value="all-target">
+        <equals arg1="${target}" arg2="$${target}" /> 
+      </condition>
+      <echo message="target: ${target}" /> 
+      <echo message="first-call: ${first-call}" /> 
+      <antcall target="${first-call}" /> 
+    </target>
+    
+	<target name="distribution" depends="init" description="Crea i pacchetti per la distribuzione">
+		<antcall target="package-all">
+            <param name="target" value="${target}" /> 
+        </antcall>
+    </target>
+    
+	<target name="package-all" description="Crea tutti gli archivi">
+        <echo message="packaging all for target : ${target}" /> 
+        <antcall target="war">
+        <param name="target" value="${target}" /> 
+    </antcall>
+ </target>
 
+    <target name="init">
+         <loadproperties srcFile="buildfiles/${target}.properties" /> 
+         <loadproperties srcFile="buildfiles/build.properties" /> 
+		 <echo message="load buildfiles/${target}.properties"/>
         <!--echo message="pulling in submodules"/>
-        <exec executable="git" failonerror="true">
-            <arg line="submodule init"/>
-        </exec>
-        <exec executable="git" failonerror="true">
-            <arg line="submodule sync"/>
-        </exec>
-        <exec executable="git" failonerror="true">
-            <arg line="submodule update"/>
-        </exec-->
+		<exec executable="git" failonerror="true">
+		<arg line="submodule init"/>
+		</exec>
+		<exec executable="git" failonerror="true">
+		<arg line="submodule sync"/>
+		</exec>
+		<exec executable="git" failonerror="true">
+		<arg line="submodule update"/>
+		</exec-->
 
         <echo message="building ringo jars"/>
         <ant dir="externals/ringojs" target="jar"/>
         <!--copy todir="externals/ringojs/lib" flatten="true" includeEmptyDirs="false">
-            <fileset dir="lib"/>
-        </copy-->
+<fileset dir="lib"/>
+</copy-->
 
     </target>
     
     <target name="buildjs">
 
-	    <!-- mapcomposer -->
+<!-- mapcomposer -->
         <mkdir dir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/script"/>
         <java jar="externals/ringojs/run.jar" fork="true" failonerror="true">
             <sysproperty key="ringo.home" path="externals/ringojs"/>
             <arg path="externals/buildkit/lib/buildkit/build.js"/>
             <arg line="-o ${composerbuild}/${ant.project.name}/WEB-INF/app/static/script mapcomposer/buildjs.cfg"/>
         </java>
-		
+
         <!-- mapmanager -->
         <mkdir dir="${managerbuild}/mapstore/src"/>
         <java jar="externals/ringojs/run.jar" fork="true" failonerror="true">
@@ -56,26 +85,31 @@
     <target name="dist" depends=" test, buildjs, redist"/>
     
     <target name="redist">
-
+ 
+        <delete dir="${composerbuild}/${ant.project.name}" />
         <mkdir dir="${composerbuild}/${ant.project.name}"/>
-		<mkdir dir="${managerbuild}/mapstore"/>
+        <mkdir dir="${managerbuild}/mapstore"/>
         
         <copy todir="${composerbuild}/${ant.project.name}">
             <fileset dir="mapcomposer/src/main/webapp/">
             </fileset>
         </copy>
-        <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/lib" flatten="true" includeEmptyDirs="false">
+		
+		
+		<copy todir="${composerbuild}/${ant.project.name}/WEB-INF/lib" flatten="true" includeEmptyDirs="false">
             <fileset dir="externals/ringojs/lib"/>
         </copy>
+		
+		
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app">
             <fileset dir="mapcomposer/app">
                 <exclude name="**/externals/**"/>
                 <exclude name="**/script/**"/>
             </fileset>
         </copy>
-		
-		<!-- MAP COMPOSER -->
-		
+
+<!-- MAP COMPOSER -->
+
         <!-- copy Ext resources -->
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/ext">
             <fileset dir="mapcomposer/app/static/externals/ext"/>
@@ -96,7 +130,7 @@
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/PrintPreview/resources">
             <fileset dir="mapcomposer/app/static/externals/PrintPreview/resources"/>
         </copy>
-        <!-- copy metadataexplorer css  -->
+        <!-- copy metadataexplorer css -->
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/csw/css">
             <fileset dir="mapcomposer/app/static/externals/csw/css"/>
         </copy>
@@ -108,47 +142,52 @@
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/csw/i18n">
             <fileset dir="mapcomposer/app/static/externals/csw/i18n"/>
         </copy>
-		<!-- copy colorpicker img -->
+<!-- copy colorpicker img -->
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/colorpicker/img">
             <fileset dir="mapcomposer/app/static/externals/colorpicker/img"/>
         </copy>
-	    <!-- copy colorpicker css -->
+<!-- copy colorpicker css -->
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/colorpicker/css">
             <fileset dir="mapcomposer/app/static/externals/colorpicker/css"/>
         </copy>
 
-        <!-- MAP MANAGER -->
+		<replace file="${composerbuild}/${ant.project.name}/WEB-INF/app/static/config/mapStoreConfig.js" token="@@@@geostore_base_url@@@@" value="${geostore_base_url}" />
+		<replace file="${composerbuild}/${ant.project.name}/WEB-INF/app/static/config/mapStoreConfig.js" token="@@@@domain_url@@@@" value="${domain_url}" />
+        
 		
-		<!-- copy Lib resources -->
+        <!-- MAP MANAGER -->
+
+<!-- copy Lib resources -->
         <copy todir="${managerbuild}/mapstore/lib">
             <fileset dir="mapmanager/lib"/>
         </copy>
-		
-		<!-- copy theme resources -->
+
+<!-- copy theme resources -->
         <copy todir="${managerbuild}/mapstore/theme">
             <fileset dir="mapmanager/theme"/>
         </copy>
-		
-		<!-- copy i18n resources -->
+
+<!-- copy i18n resources -->
         <copy todir="${managerbuild}/mapstore/translations">
             <fileset dir="mapmanager/translations"/>
         </copy>
-		
-		<!-- copy html resources -->
+
+<!-- copy html resources -->
         <copyfile src="mapmanager/index.html" dest="${managerbuild}/mapstore/index.html"/>
-		<copyfile src="mapmanager/mapstore.html" dest="${managerbuild}/mapstore/mapstore.html"/>
-		
-		<!-- copy config resources -->
-		<copyfile src="mapmanager/src/config.js" dest="${managerbuild}/mapstore/src/config.js"/>
-		<copyfile src="mapmanager/src/init.js" dest="${managerbuild}/mapstore/src/init.js"/>
-		
+<copyfile src="mapmanager/mapstore.html" dest="${managerbuild}/mapstore/mapstore.html"/>
+
+<!-- copy config resources -->
+<copyfile src="mapmanager/src/config.js" dest="${managerbuild}/mapstore/src/config.js"/>
+<copyfile src="mapmanager/src/init.js" dest="${managerbuild}/mapstore/src/init.js"/>
+
     </target>
 
     <target name="war" depends="dist">
+	    <echo message="make ${composerbuild}/${ant.project.name}.war and ${managerbuild}/${manager.war.name}.war" /> 
         <war destfile="${composerbuild}/${ant.project.name}.war">
             <fileset dir="${composerbuild}/${ant.project.name}"/>
         </war>
-		<war destfile="${managerbuild}/${manager.war.name}.war" needxmlfile='false'>
+        <war destfile="${managerbuild}/${manager.war.name}.war" needxmlfile='false'>
             <fileset dir="${managerbuild}/${manager.war.name}"/>
         </war>
     </target>
@@ -156,7 +195,7 @@
     <target name="debug">
         <java jar="externals/ringojs/run.jar" fork="true">
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
-			<sysproperty key="app.debug.proxy" value="${app.debug.proxy}"/>
+<sysproperty key="app.debug.proxy" value="${app.debug.proxy}"/>
             <sysproperty key="ringo.home" path="externals/ringojs"/>
             <!-- <jvmarg value="-XX:+HeapDumpOnOutOfMemoryError"/> -->
             <arg path="mapcomposer/app/main.js"/>
@@ -167,7 +206,7 @@
     <target name="debugall">
         <java jar="externals/ringojs/run.jar" fork="true">
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
-			<sysproperty key="app.debug.proxy" value="${app.debug.proxy}"/>
+<sysproperty key="app.debug.proxy" value="${app.debug.proxy}"/>
             <sysproperty key="ringo.home" path="externals/ringojs"/>
             <arg value="-d"/>
             <arg path="mapcomposer/app/main.js"/>
@@ -184,7 +223,7 @@
 
     <target name="clean" description="remove previous composerbuild">
         <delete dir="${composerbuild}"/>
-		<delete dir="${managerbuild}"/>
+<delete dir="${managerbuild}"/>
     </target>
 
 </project>
