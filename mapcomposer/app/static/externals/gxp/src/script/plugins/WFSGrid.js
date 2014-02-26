@@ -410,21 +410,22 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 scope: this,				
                 rowdeselect: function (selMod, rowIndex, record){
-                
-                    if(selMod.getCount() === 0 || selMod.getCount() > 1){
-                        this.tbar.items.items[1].disable();
-                    }else{
-                        this.tbar.items.items[1].enable();
+                    if(this.tbar){
+                        if(selMod.getCount() === 0 || selMod.getCount() > 1){
+                            this.tbar.items.items[1].disable();
+                        }else{
+                            this.tbar.items.items[1].enable();
+                        }
                     }
-                    
                     me.removeGeometry(actionConf.layerName, record.get("fid"));
                 },
                 rowselect: function(selMod, rowIndex, record) {
-                
-                    if(selMod.getCount() === 1){
-                        this.tbar.items.items[1].enable();
-                    }else{
-                        this.tbar.items.items[1].disable();
+                    if(this.tbar){                    
+                        if(selMod.getCount() === 1){
+                            this.tbar.items.items[1].enable();
+                        }else{
+                            this.tbar.items.items[1].disable();
+                        }
                     }
                     
                     var geom = me.getGeometry(record,actionConf.sourceSRS);
@@ -675,7 +676,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         };
     },
 
-    /** private: method[getStartEditTargetsAction]
+    /* private: method[getStartEditTargetsAction]
      
     getStartEditTargetsAction: function(actionConf){
         var sourceSRS=actionConf.sourceSRS;
@@ -918,10 +919,6 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         var me = this;
         var record;
         var grid = this.wfsGrid;
-        /*var actionConf = {};
-        actionConf.layerName = me.layerEditName;
-        actionConf.sourceSRS = me.sourceEditSRS;*/
-
         var selectionModel = grid.getSelectionModel();
         
         if(selectionModel.hasSelection() && selectionModel.getCount() === 1){
@@ -1047,8 +1044,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
     },
 
     
-    /** private: method[getStartEditTargetsGeomAction]
-     */    
+    /* private: method[getStartEditTargetsGeomAction]
+        
     getStartEditTargetsGeomAction: function(actionConf){
         var sourceSRS=actionConf.sourceSRS;
         var me= this;
@@ -1107,9 +1104,9 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                         };
                         
                         targetLayer = map.getLayersByName(actionConf.layerName)[0];
-                        /*targetLayer = me.displayEditGeometry(actionConf.layerName, 
-                            record.get("fid"),
-                            geom, layerStyle);*/
+                        //targetLayer = me.displayEditGeometry(actionConf.layerName, 
+                        //    record.get("fid"),
+                        //    geom, layerStyle);
                             
                         var originSelectionModel = me.wfsGrid.getSelectionModel();
                             //var record1 = originSelectionModel.getSelected();
@@ -1155,7 +1152,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 }
             }]  
         };
-    },    
+    }, */    
                 
 		
     getGeometry: function(rec, sourceSRS){
@@ -1892,9 +1889,6 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     disabled: true,
                     pressed : false,
                     scope: this,
-                    handler: function(){
-                    
-                    },
                     toggleHandler: function(button, pressed) {
                         var me = this;                    
                         if (pressed && me.modifyControl) {
@@ -1907,7 +1901,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 
                             var selectionModel = grid.getSelectionModel();
                             var selection = selectionModel.getSelected();
-                            record = selection; //grid.getStore().getAt(rowIndex);
+                            record = selection;
 
 
                             selectionModel.unlock();
@@ -1966,6 +1960,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                             me.persistEditGeometry(me.currentRecord.newfeature ? "Bersagli aggiunti" : "Bersagli modificati", //"simulation_added" : "simulation_changed", 
                                             record.get("fid"), 
                                             targetLayer.features[0].geometry, me.currentRecord.newfeature ? simulationStyleAdded : simulationStyleChanged);
+                                            
+                                            //perform geometry substitution
                                             record.setFeature(me.currentRecord);
                                         }
                                                                         
