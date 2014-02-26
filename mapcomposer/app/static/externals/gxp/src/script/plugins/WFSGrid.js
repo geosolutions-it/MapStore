@@ -410,9 +410,23 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 scope: this,				
                 rowdeselect: function (selMod, rowIndex, record){
+                
+                    if(selMod.getCount() === 0 || selMod.getCount() > 1){
+                        this.tbar.items.items[1].disable();
+                    }else{
+                        this.tbar.items.items[1].enable();
+                    }
+                    
                     me.removeGeometry(actionConf.layerName, record.get("fid"));
                 },
-                rowselect: function(check, rowIndex, record) {
+                rowselect: function(selMod, rowIndex, record) {
+                
+                    if(selMod.getCount() === 1){
+                        this.tbar.items.items[1].enable();
+                    }else{
+                        this.tbar.items.items[1].disable();
+                    }
+                    
                     var geom = me.getGeometry(record,actionConf.sourceSRS);
                     me.displayGeometry(actionConf.layerName, 
                         record.get("fid"),
@@ -910,8 +924,9 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 
         var selectionModel = grid.getSelectionModel();
         
-        if(selectionModel.hasSelection()){
+        if(selectionModel.hasSelection() && selectionModel.getCount() === 1){
             if(!newFeature){
+                this.tbar.items.items[0].disable();
                 this.tbar.items.items[2].enable();  
                 this.tbar.items.items[3].enable();  
             }else{
@@ -1021,9 +1036,9 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         }else{
             button.toggle(false);
             Ext.Msg.show({
-                title: "Seleziona un elemento",
+                title: "Editing Bersaglio",
                 buttons: Ext.Msg.OK,
-                msg: "Devi selezionare un elemento!!!",
+                msg: "Devi selezionare solamente un Bersaglio!!!",
                 icon: Ext.MessageBox.INFO,
                 scope: this
             });             
@@ -1855,11 +1870,15 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     toggleGroup: "toolGroup",
                     enableToggle: true,
                     allowDepress: false,
+                    disabled: true,
                     scope: this,
                     toggleHandler: function(button, pressed) {
                         var stopButton = Ext.getCmp("stopEditButtonId");                    
                         if (pressed) {
+                            disableTools();
                             this.editTargetGeometry.createDelegate(this, [{layerName:this.layerEditName,sourceSRS:this.sourceEditSRS},button], 0).call();
+                        }else{
+                            this.enableTools();
                         }
                     }                    
                 },{
@@ -1947,7 +1966,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                             me.persistEditGeometry(me.currentRecord.newfeature ? "Bersagli aggiunti" : "Bersagli modificati", //"simulation_added" : "simulation_changed", 
                                             record.get("fid"), 
                                             targetLayer.features[0].geometry, me.currentRecord.newfeature ? simulationStyleAdded : simulationStyleChanged);
-                                            //record.set("feature.geometry",me.currentRecord.geometry);
+                                            record.setFeature(me.currentRecord);
                                         }
                                                                         
                                         
@@ -1963,6 +1982,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                             this.tbar.items.items[2].disable();  
                             this.tbar.items.items[3].disable();                            
                             this.tbar.items.items[0].enable();
+                            this.tbar.items.items[1].disable();
                             
                         }
                     }
@@ -2025,11 +2045,11 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             scope: this,
             listeners: {
                 afteredit : function(object) {
-                    /*row = object.row;
+                    row = object.row;
                     unitGrid = Ext.getCmp(this.id);
                     rowview = unitGrid.getView().getRow(row);
                     changecss = Ext.get(rowview);
-                    changecss.addClass('change-row');*/
+                    changecss.addClass('change-row');
                     
                     var id = object.record.get("id");
                     var currentRecord = me.save[id];
@@ -2071,6 +2091,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             //sortInfo: {field: "runEnd", direction: "DESC"},
             id: this.id+"_store",
             fields: this.featureFields
+                
             
         });
         
