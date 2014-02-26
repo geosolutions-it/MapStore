@@ -71,7 +71,10 @@ GeoExt.Lang.add("de", {
         loadProcessingValidHeader: 'Regenerierbaren',
         loadProcessingCreationHeader: 'Erstellt',
         downloadFileLabel: 'Entlastung',
-        deleteDownloadError: 'Der Download kann nicht gelöscht werden. Entfernen Sie das überhaupt?'
+        deleteDownloadError: 'Der Download kann nicht gelöscht werden. Entfernen Sie das überhaupt?',
+        meter100Text: '100 metern',
+        meter500Text: '500 metern',
+        GrigliaText: 'Gitter'
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Bearbeitung",

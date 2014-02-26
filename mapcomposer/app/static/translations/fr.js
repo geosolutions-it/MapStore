@@ -75,7 +75,10 @@ GeoExt.Lang.add("fr", {
         loadProcessingValidHeader: 'Régénérable',
         loadProcessingCreationHeader: 'Etabli',
         downloadFileLabel: 'Décharge',
-        deleteDownloadError: 'Le téléchargement ne peut pas être supprimé. Retirez-le de toute façon?'
+        deleteDownloadError: 'Le téléchargement ne peut pas être supprimé. Retirez-le de toute façon?',
+        meter100Text: '100 mètres',
+        meter500Text: '500 mètres',
+        GrigliaText: 'Réseau'
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Traitement",

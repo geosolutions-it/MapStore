@@ -92,6 +92,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     simMsg: 'Modifica dei parametri di simulazione non possibile a questa scala. Zoomare fino a scala 1:17061',
     downloadFileLabel: 'Scarica il file',
     deleteDownloadError: 'Il download non può essere cancellato. Rimuoverlo ugualmente?',
+    meter100Text: '100 metri',
+    meter500Text: '500 metri',
+    GrigliaText: 'Griglia',
     // End i18n.
         
     id: "syntheticview",
@@ -1635,7 +1638,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                                         'id',
                                                         'text'
                                                     ],
-                                                    data: [[1, '100 metri'], [2, '500 metri'],[3, 'Griglia']]
+                                                    data: [[1, me.meter100Text], [2, me.meter500Text],[3, me.GrigliaText]]
                                                 }),
                                                 value: 1,
                                                 valueField: 'id',

@@ -74,7 +74,10 @@ GeoExt.Lang.add("en", {
         loadProcessingValidHeader: 'Regenerable',
         loadProcessingCreationHeader: 'Created',
         downloadFileLabel: 'Download',
-        deleteDownloadError: 'The download can not be deleted. Remove it anyway?'
+        deleteDownloadError: 'The download can not be deleted. Remove it anyway?',
+        meter100Text: '100 meters',
+        meter500Text: '500 meters',
+        GrigliaText: 'Grid'
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Processing",
