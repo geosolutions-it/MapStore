@@ -46,8 +46,16 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 	/* ptype = gxp_spatial_geocoding_selector */
 	ptype : 'gxp_spatial_geocoding_selector',
 
-	// Parameters for the combo
+	/** api: config[name]
+	 *  ``String``
+	 *  Name to show on the combo box of the spatial selected.
+	 */
 	name  : 'Geocoding',
+
+	/** api: config[label]
+	 *  ``String``
+	 *  Label to show on the combo box of the spatial selected.
+	 */
 	label : 'Geocoding',
 
 	/** api: config[geocodingPanelBtnSelectAllTxt]
@@ -179,12 +187,6 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 	 */
 	wpsUnionProcessID : 'JTS:union',
 
-	/** api: config[wpsBufferProcessID]
-	 *  ``String``
-	 *  ID of the WPS Buffer Process .
-	 */
-	wpsBufferProcessID : 'JTS:buffer',
-
 	/** api: config[labelStyle]
 	 *  ``Object``
 	 *  Label style for the features founds.
@@ -199,7 +201,17 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
         labelOutlineWidth: 5
     },
 
+	/** api: config[wpsManagerID]
+	 *  ``String``
+	 *  Id of the WPS Manager to be used for the union. If it's null, or the tool is not found, it will disable the multiple selection
+	 */
 	wpsManagerID: "wpsManager",
+
+	/** api: config[multipleSelection]
+	 *  ``Boolean``
+	 *  Append a grid and allow multiple WFS record selections. It needs a WPS manager configured.
+	 */
+	multipleSelection: true,
 
     /** api: method[addOutput]
      */
@@ -208,6 +220,10 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
     	var me = this;
 
     	this.wpsManager = this.target.tools[this.wpsManagerID];
+
+    	if(!this.wpsManager){
+    		this.multipleSelection = false;
+    	}
 
     	me.map = me.target.mapPanel.map;
 
@@ -223,226 +239,229 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
             ]
         });
 
-		//
-        // The Location Grid Panel
-        //
-		this.geocodingPanel = new Ext.grid.GridPanel({
-            // layout: 'fit',
-            store: store,
-			bbar: {
-				xtype: 'toolbar',
-				items: [
-					{
-						tooltip: this.geocodingPanelBtnSelectAllTxt,
-						ref: 'selectAllButton',
-						cls: 'x-btn-text-icon',
-						icon : 'theme/app/img/silk/check_all.png',
-						scope: this,
-						handler: function() {
-							var store = this.geocodingPanel.getStore();
-							var records = store.getRange();
-							var size = store.getCount();
+		// if the multipleSelection is disabled, we don't need the geocodingPanel
+        if(this.multipleSelection){
+			//
+	        // The Location Grid Panel
+	        //
+			this.geocodingPanel = new Ext.grid.GridPanel({
+	            // layout: 'fit',
+	            store: store,
+				bbar: {
+					xtype: 'toolbar',
+					items: [
+						{
+							tooltip: this.geocodingPanelBtnSelectAllTxt,
+							ref: 'selectAllButton',
+							cls: 'x-btn-text-icon',
+							icon : 'theme/app/img/silk/check_all.png',
+							scope: this,
+							handler: function() {
+								var store = this.geocodingPanel.getStore();
+								var records = store.getRange();
+								var size = store.getCount();
 
-							for (var i = 0; i < size; i++) {
-								var record = records[i];
+								for (var i = 0; i < size; i++) {
+									var record = records[i];
 
-								var checked = record.get("check");
-								if (!checked) {
-									record.set("check", true);
-								}
-							}
-						}
-					},
-					{
-						tooltip: this.geocodingPanelBtnDeSelectAllTxt,
-						ref: 'selectAllButton',
-						cls: 'x-btn-text-icon',
-						icon : 'theme/app/img/silk/un_check_all.png',
-						scope: this,
-						handler: function() {
-							var store = this.geocodingPanel.getStore();
-							var records = store.getRange();
-							var size = store.getCount();
-
-							for (var i = 0; i < size; i++) {
-								var record = records[i];
-
-								var checked = record.get("check");
-								if (checked) {
-									record.set("check", false);
-								}
-							}
-						}
-					},
-					'-',
-					'->',
-					{
-						tooltip: this.geocodingPanelBtnRefreshTxt,
-						ref: 'refreshButton',
-						cls: 'x-btn-text-icon',
-						icon : 'theme/app/img/geosilk/vector_add.png',
-						scope: this,
-						handler: function() {
-							var store = this.geocodingPanel.getStore();
-							var records = store.getRange();
-							var size = store.getCount();
-
-							if(me.geocoderDrawings) me.geocoderDrawings.destroyFeatures();
-
-							for (var i = 0; i < size; i++) {
-								var record = records[i];
-
-								if (record && record.data.geometry) {
-									var feature = OpenLayers.Geometry.fromWKT(record.data.geometry);
-
-									if(!me.geocoderDrawings) {
-										var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
-										Ext.applyIf(vector_style, this.labelStyle);
-
-								        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoder",
-											{
-												displayInLayerSwitcher:false,
-												styleMap : new OpenLayers.StyleMap({
-													"default"   : vector_style,
-													"select"    : vector_style,
-													"temporary" : this.temporaryStyle
-												})
-											}
-										);
-										me.geocoderDrawings.refresh({force:true});
-
-								        me.map.addLayer(me.geocoderDrawings);
+									var checked = record.get("check");
+									if (!checked) {
+										record.set("check", true);
 									}
-
-					                // create some attributes for the feature
-									var attributes = {name: record.data.location, label: record.data.location};
-					                me.geocoderDrawings.addFeatures([new OpenLayers.Feature.Vector(feature, attributes)]);
 								}
 							}
-						}
-					},
-					{
-						tooltip: this.geocodingPanelBtnDestroyTxt,
-						ref: 'destroyButton',
-						cls: 'x-btn-text-icon',
-						icon : 'theme/app/img/geosilk/vector_delete.png',
-						scope: this,
-						handler: function() {
-							if(me.geocoderDrawings) {
-								me.geocoderDrawings.destroyFeatures();
-							}								
-						}
-					},
-					'-',
-					{
-						ref: 'deleteButton',
-						tooltip: this.geocodingPanelBtnDeleteTxt,
-						iconCls: 'delete',
-						scope: this,
-						handler: function() {
-							var store = this.geocodingPanel.getStore();
-							var records = store.getRange();
-							var size = store.getCount();
+						},
+						{
+							tooltip: this.geocodingPanelBtnDeSelectAllTxt,
+							ref: 'selectAllButton',
+							cls: 'x-btn-text-icon',
+							icon : 'theme/app/img/silk/un_check_all.png',
+							scope: this,
+							handler: function() {
+								var store = this.geocodingPanel.getStore();
+								var records = store.getRange();
+								var size = store.getCount();
 
-							var checkedRecords = [];
+								for (var i = 0; i < size; i++) {
+									var record = records[i];
 
-							for (var i = 0; i < size; i++) {
-								var record = records[i];
-
-								var checked = record.get("check");
-								if (checked) {
-									checkedRecords.push(record);
+									var checked = record.get("check");
+									if (checked) {
+										record.set("check", false);
+									}
 								}
 							}
+						},
+						'-',
+						'->',
+						{
+							tooltip: this.geocodingPanelBtnRefreshTxt,
+							ref: 'refreshButton',
+							cls: 'x-btn-text-icon',
+							icon : 'theme/app/img/geosilk/vector_add.png',
+							scope: this,
+							handler: function() {
+								var store = this.geocodingPanel.getStore();
+								var records = store.getRange();
+								var size = store.getCount();
 
-							if(checkedRecords.length > 0){
-								Ext.Msg.show({
-								   title: this.geocodingPanelMsgRemRunningTitle,
-								   msg: this.geocodingPanelMsgRemRunningMsg,
-								   buttons: Ext.Msg.OKCANCEL,
-								   fn: function(btn){
-										if(btn == 'ok'){
-											store.remove(checkedRecords);
+								if(me.geocoderDrawings) me.geocoderDrawings.destroyFeatures();
 
-											if(me.geocoderDrawings) {
-												me.geocoderDrawings.destroyFeatures();
-											}
+								for (var i = 0; i < size; i++) {
+									var record = records[i];
 
-											var records = store.getRange();
-											var size = store.getCount();
+									if (record && record.data.geometry) {
+										var feature = OpenLayers.Geometry.fromWKT(record.data.geometry);
 
-											for (var i = 0; i < size; i++) {
-												var record = records[i];
+										if(!me.geocoderDrawings) {
+											var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
+											Ext.applyIf(vector_style, this.labelStyle);
 
-												if (record && record.data.geometry) {
-													var feature = OpenLayers.Geometry.fromWKT(record.data.geometry);
-
-													if(!me.geocoderDrawings) {
-														var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
-														Ext.applyIf(vector_style, this.labelStyle);
-
-												        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoder",
-															{
-																displayInLayerSwitcher:false,
-																styleMap : new OpenLayers.StyleMap({
-																	"default"   : vector_style,
-																	"select"    : vector_style,
-																	"temporary" : this.temporaryStyle
-																})
-															}
-														);
-														me.geocoderDrawings.refresh({force:true});
-
-												        me.map.addLayer(me.geocoderDrawings);
-													}
-
-									                // create some attributes for the feature
-													var attributes = {name: record.data.location, label: record.data.location};
-									                me.geocoderDrawings.addFeatures([new OpenLayers.Feature.Vector(feature, attributes)]);
+									        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoder",
+												{
+													displayInLayerSwitcher:false,
+													styleMap : new OpenLayers.StyleMap({
+														"default"   : vector_style,
+														"select"    : vector_style,
+														"temporary" : this.temporaryStyle
+													})
 												}
-											}
+											);
+											me.geocoderDrawings.refresh({force:true});
 
-											this.setCurrentExtent('geocoder', store);
-										} 
-									},
-								   icon: Ext.MessageBox.WARNING,
-								   scope: this
-								});              
+									        me.map.addLayer(me.geocoderDrawings);
+										}
+
+						                // create some attributes for the feature
+										var attributes = {name: record.data.location, label: record.data.location};
+						                me.geocoderDrawings.addFeatures([new OpenLayers.Feature.Vector(feature, attributes)]);
+									}
+								}
+							}
+						},
+						{
+							tooltip: this.geocodingPanelBtnDestroyTxt,
+							ref: 'destroyButton',
+							cls: 'x-btn-text-icon',
+							icon : 'theme/app/img/geosilk/vector_delete.png',
+							scope: this,
+							handler: function() {
+								if(me.geocoderDrawings) {
+									me.geocoderDrawings.destroyFeatures();
+								}								
+							}
+						},
+						'-',
+						{
+							ref: 'deleteButton',
+							tooltip: this.geocodingPanelBtnDeleteTxt,
+							iconCls: 'delete',
+							scope: this,
+							handler: function() {
+								var store = this.geocodingPanel.getStore();
+								var records = store.getRange();
+								var size = store.getCount();
+
+								var checkedRecords = [];
+
+								for (var i = 0; i < size; i++) {
+									var record = records[i];
+
+									var checked = record.get("check");
+									if (checked) {
+										checkedRecords.push(record);
+									}
+								}
+
+								if(checkedRecords.length > 0){
+									Ext.Msg.show({
+									   title: this.geocodingPanelMsgRemRunningTitle,
+									   msg: this.geocodingPanelMsgRemRunningMsg,
+									   buttons: Ext.Msg.OKCANCEL,
+									   fn: function(btn){
+											if(btn == 'ok'){
+												store.remove(checkedRecords);
+
+												if(me.geocoderDrawings) {
+													me.geocoderDrawings.destroyFeatures();
+												}
+
+												var records = store.getRange();
+												var size = store.getCount();
+
+												for (var i = 0; i < size; i++) {
+													var record = records[i];
+
+													if (record && record.data.geometry) {
+														var feature = OpenLayers.Geometry.fromWKT(record.data.geometry);
+
+														if(!me.geocoderDrawings) {
+															var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
+															Ext.applyIf(vector_style, this.labelStyle);
+
+													        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoder",
+																{
+																	displayInLayerSwitcher:false,
+																	styleMap : new OpenLayers.StyleMap({
+																		"default"   : vector_style,
+																		"select"    : vector_style,
+																		"temporary" : this.temporaryStyle
+																	})
+																}
+															);
+															me.geocoderDrawings.refresh({force:true});
+
+													        me.map.addLayer(me.geocoderDrawings);
+														}
+
+										                // create some attributes for the feature
+														var attributes = {name: record.data.location, label: record.data.location};
+										                me.geocoderDrawings.addFeatures([new OpenLayers.Feature.Vector(feature, attributes)]);
+													}
+												}
+
+												this.setCurrentExtent('geocoder', store);
+											} 
+										},
+									   icon: Ext.MessageBox.WARNING,
+									   scope: this
+									});              
+								}
 							}
 						}
-					}
-				]
-			},
-            columns: [
-				{
-					xtype: 'checkcolumn',
-					header: '',
-					dataIndex: 'check',
-					width: 20
-				}, {
-                    id       : 'location',
-                    header   : this.geocodingPanelLocationHeader, 
-                    width    : this.geocodingPanelLocationSize, 
-                    sortable : this.geocodingPanelLocationSortable, 
-                    dataIndex: 'location'
-                }, {
-                    id       : 'custom',
-                    header   : this.geocodingPanelCustomHeader,
-                    width    : this.geocodingPanelCustomSize, 
-                    sortable : this.geocodingPanelCustomSortable, 
-                    dataIndex: 'custom'
-                }, {
-                    id       : 'geometry',
-                    header   : this.geocodingPanelGeometryHeader, 
-                    width    : this.geocodingPanelGeometrySize, 
-                    sortable : this.geocodingPanelGeometrySortable, 
-                    dataIndex: 'geometry'
-                }
-            ],
-            height: 300,
-            title: this.geocodingPanelTitle,
-            scope: this
-        });
+					]
+				},
+	            columns: [
+					{
+						xtype: 'checkcolumn',
+						header: '',
+						dataIndex: 'check',
+						width: 20
+					}, {
+	                    id       : 'location',
+	                    header   : this.geocodingPanelLocationHeader, 
+	                    width    : this.geocodingPanelLocationSize, 
+	                    sortable : this.geocodingPanelLocationSortable, 
+	                    dataIndex: 'location'
+	                }, {
+	                    id       : 'custom',
+	                    header   : this.geocodingPanelCustomHeader,
+	                    width    : this.geocodingPanelCustomSize, 
+	                    sortable : this.geocodingPanelCustomSortable, 
+	                    dataIndex: 'custom'
+	                }, {
+	                    id       : 'geometry',
+	                    header   : this.geocodingPanelGeometryHeader, 
+	                    width    : this.geocodingPanelGeometrySize, 
+	                    sortable : this.geocodingPanelGeometrySortable, 
+	                    dataIndex: 'geometry'
+	                }
+	            ],
+	            height: 300,
+	            title: this.geocodingPanelTitle,
+	            scope: this
+	        });
+        }
 
 		//
         // The GeoCoder Search Field
@@ -466,8 +485,8 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 				scope : this
 			}
 		}, wfssearchboxConf.outputConfig)); 
+		this.wfsComboBox = wfsComboBox;
 
-        
         this.geocodingField = new Ext.form.CompositeField({
         	// layout: 'form',
 			labelWidth: 110,
@@ -479,41 +498,8 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
                     iconCls : "execution-cls",
                     width   : 23,
 					scope   : this,
-					handler : function(){
-						var store = wfsComboBox.store;
-						var records = store.getRange();
-						var size = store.getCount();
-
-						var sameRecords = [];
-						for(var i=0; i<size; i++){
-							var record = records[i];
-
-							var location = record.get("geometry");								
-
-							// save parent
-							var parent = record.get("custom");
-							me.parentLocations[location] = parent;
-
-							if(location === wfsComboBox.getValue()){
-								sameRecords.push(record);
-							}
-						}
-
-						if (sameRecords.length == 0) {
-							if (wfsComboBox.getValue() && wfsComboBox.getGeometry()) {
-								this.geocodingPanel.store.add(new store.recordType({
-									location : wfsComboBox.getValue(),
-									custom   : wfsComboBox.getCustom ? wfsComboBox.getCustom(): null,
-									geometry : wfsComboBox.getGeometry()
-								}));
-
-								wfsComboBox.geometry = null;
-
-								me.setCurrentExtent('geocoder', this.geocodingPanel.store);
-							}
-						}
-					}
-                },{
+					handler : this.onBtnAdd
+				},{
                     xtype   : 'button',
                     tooltip : this.geocodingFieldBtnDelTooltip,
                     iconCls : "execution-cls-delete",
@@ -521,10 +507,19 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 					scope   : this,
 					handler : function(){
 						wfsComboBox.reset();
+						if(!this.multipleSelection){
+							this.reset();
+						}
 					}
 				}
 			]
 		});
+
+        // items could be the geocoding combo or this one and the geocodingPanel if the multiple selection is enabled
+		var items = [this.geocodingField]
+		if(this.multipleSelection){
+			items.push(this.geocodingPanel);
+		}
 
 	    //
 	    // The Full GeoCoder FieldSet
@@ -541,15 +536,88 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 					this.show();
 				}
 			},
-			items: [
-			    this.geocodingField,
-				this.geocodingPanel
-			]
+			items: items
         });
 
         this.output = this.geocodingFieldSet;
 
     	return this.output;
+    },
+
+	/**
+	 * api: method[onBtnAdd]
+	 * Handler for add button of the WFS combo box.
+	 */
+    onBtnAdd: function(){
+    	var wfsComboBox = this.wfsComboBox;
+		var store = wfsComboBox.store;
+		var records = store.getRange();
+		var size = store.getCount();
+
+		var sameRecords = [];
+		for(var i=0; i<size; i++){
+			var record = records[i];
+
+			var location = record.get("geometry");								
+
+			// save parent
+			var parent = record.get("custom");
+			this.parentLocations[location] = parent;
+
+			if(location === wfsComboBox.getValue()){
+				sameRecords.push(record);
+			}
+		}
+
+		if (sameRecords.length == 0) {
+			var data = {
+				location : wfsComboBox.getValue(),
+				custom   : wfsComboBox.getCustom ? wfsComboBox.getCustom(): null,
+				geometry : wfsComboBox.getGeometry()
+			};
+			if (wfsComboBox.getValue() && wfsComboBox.getGeometry()) {
+				if(this.multipleSelection){
+					this.geocodingPanel.store.add(new store.recordType(data));
+					wfsComboBox.geometry = null;
+					this.setCurrentExtent('geocoder', this.geocodingPanel.store);
+				}else{
+					// clean selected areas
+					this.selectedAreas = [];
+					var wktGeometry = data.geometry;
+					if(!this.geocoderDrawings) {
+						var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
+						Ext.applyIf(vector_style, this.labelStyle);
+
+				        this.geocoderDrawings = new OpenLayers.Layer.Vector("geocoder",
+							{
+								displayInLayerSwitcher:false,
+								styleMap : new OpenLayers.StyleMap({
+									"default"   : vector_style,
+									"select"    : vector_style,
+									"temporary" : this.temporaryStyle
+								})
+							}
+						);
+						this.geocoderDrawings.refresh({force:true});
+
+				        this.map.addLayer(this.geocoderDrawings);
+					}
+
+	                // create some attributes for the feature
+					var attributes = {name: data.location, label: data.location};
+
+					var geometry = new OpenLayers.Format.WKT().read(wktGeometry).geometry;
+
+					// save element data
+					this.selectedAreas.push(data);
+
+	                this.geocoderDrawings.addFeatures([new OpenLayers.Feature.Vector(geometry.clone(), attributes)]);
+
+	                // set current Geometry
+					this.setCurrentGeometry(geometry);
+				}
+			}
+		}
     },
 
 	/**
@@ -715,6 +783,7 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 		if(this.geocoderDrawings){
 			this.geocoderDrawings.removeAllFeatures();
 		}
+		this.setCurrentGeometry(null);
     }
 });
 

@@ -46,18 +46,49 @@ gxp.plugins.spatialselector.SpatialSelector = Ext.extend(gxp.plugins.Tool, {
 	/* ptype = gxp_spatial_selector */
 	ptype : 'gxp_spatial_selector',
 
-	// configurations
-	layoutConfig: {
+	/** api: config[layoutConfig]
+	 *  ``Object``
+	 *  Configuration for the output layout.
+	 */
 
-	},
+    /** api: config[spatialSelectorsConfig]
+     * ``Object``
+     * Spatial selector pluggins configurations.
+     */
+    spatialSelectorsConfig:{
+        bbox:{
+            ptype : 'gxp_spatial_bbox_selector'
+        },
+        buffer:{
+            ptype : 'gxp_spatial_buffer_selector'
+        },
+        circle:{
+            ptype : 'gxp_spatial_circle_selector',
+            zoomToCurrentExtent : true
+        },
+        polygon:{
+            ptype : 'gxp_spatial_polygon_selector'
+        }
+    },
 
-	spatialSelectorsConfig:{
-
-	},
+    /** api: config[defaultSelectionMethod]
+     * ``String``
+     * Default selector method to be selected in this.spatialSelectorsConfig.
+     */
 	defaultSelectionMethod: null,
+
+    /** api: config[filterGeometryName]
+     * ``String``
+     * Property name to prepate the filter.
+     */
 	filterGeometryName: null,
 
 	/** i18n **/
+
+	/** api: config[titleText]
+	 * ``String``
+	 * Title for the output (i18n).
+	 */
 	titleText: "Spatial Selector",
 
 	/** api: config[title]
@@ -79,7 +110,9 @@ gxp.plugins.spatialselector.SpatialSelector = Ext.extend(gxp.plugins.Tool, {
 	comboSelectionMethodLabel : "Selection",
 	/** EoF i18n **/
 
-	// init spatialSelectors 
+	/** api: method[constructor]
+	 * Init spatialSelectors .
+	 */
 	constructor : function(config) {
 		// default layout configuration
 		this.layoutConfig = {
@@ -147,8 +180,6 @@ gxp.plugins.spatialselector.SpatialSelector = Ext.extend(gxp.plugins.Tool, {
 			autoLoad : true,
 			displayField : 'label',
 			valueField : 'value',
-			// value : this.defaultSelectionMethod,
-			// width : itemsWidth - 30,
 			editable : false,
 			readOnly : false,
 			store : new Ext.data.JsonStore({
@@ -202,7 +233,9 @@ gxp.plugins.spatialselector.SpatialSelector = Ext.extend(gxp.plugins.Tool, {
     	return layout;
     },
 
-    // reset 
+	/** api: method[reset]
+	 * Reset the state of the Spatial Selector.
+	 */
     reset: function(){
     	if(this.spatialSelectors){
 	    	for (var key in this.spatialSelectors){
@@ -218,17 +251,27 @@ gxp.plugins.spatialselector.SpatialSelector = Ext.extend(gxp.plugins.Tool, {
     	}
     },
 
-	// Generate filter
+	/** api: method[getQueryFilter]
+     *  :returns: ``Object`` filter to perform a WFS query
+	 * Generate a filter for the selected method
+	 */
 	getQueryFilter: function(){
 		if(this.activeMethod){
 			this.activeMethod.filterGeometryName = this.filterGeometryName;
 			return this.activeMethod.getQueryFilter();
 		}else{
-			return null;
+			return new OpenLayers.Filter.Spatial({
+				type: OpenLayers.Filter.Spatial.BBOX,
+				property: this.filterGeometryName,
+				value: this.target.mapPanel.map.getExtent()
+			});
 		}
 	},
 
-	// Generate filter
+	/** api: method[getGeometry]
+     *  :returns: ``Object`` Geometry selected
+	 * Obtain selected geometry
+	 */
 	getGeometry: function(){
 		if(this.activeMethod){
 			return this.activeMethod.currentGeometry;

@@ -46,8 +46,16 @@ gxp.plugins.spatialselector.PolygonSpatialSelectorMethod = Ext.extend(gxp.plugin
 	/* ptype = gxp_spatial_polygon_selector */
 	ptype : 'gxp_spatial_polygon_selector',
 
-	// Parameters for the combo
+	/** api: config[name]
+	 *  ``String``
+	 *  Name to show on the combo box of the spatial selected.
+	 */
 	name  : 'Polygon',
+
+	/** api: config[label]
+	 *  ``String``
+	 *  Label to show on the combo box of the spatial selected.
+	 */
 	label : 'Polygon',
 
 	// trigger action when activate the plugin

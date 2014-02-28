@@ -46,8 +46,16 @@ gxp.plugins.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.plugins.s
 	/* ptype = gxp_spatial_bbox_selector */
 	ptype : 'gxp_spatial_bbox_selector',
 
-	// Parameters for the combo
+	/** api: config[name]
+	 *  ``String``
+	 *  Name to show on the combo box of the spatial selected.
+	 */
 	name  : 'BBOX',
+
+	/** api: config[label]
+	 *  ``String``
+	 *  Label to show on the combo box of the spatial selected.
+	 */
 	label : 'Bounding Box',
 
 	/** api: config[spatialFilterOptions ]

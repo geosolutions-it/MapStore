@@ -54,14 +54,41 @@ Ext.namespace('gxp.plugins.spatialselector');
  */
 gxp.plugins.spatialselector.SpatialSelectorMethod = Ext.extend(gxp.plugins.Tool, {
 
-	// common parameters
-	currentGeometry: null,
-	currentFilter: null,
-	filterGeometryName: null,
-	output: null,
+	/** api: config[name]
+	 *  ``String``
+	 *  Name to show on the combo box of the spatial selected.
+	 */
+
+	/** api: config[label]
+	 *  ``String``
+	 *  Label to show on the combo box of the spatial selected.
+	 */
+
+	/** api: config[output]
+	 *  ``Object``
+	 *  Output for this plugin
+	 */
+
+	/** api: config[currentGeometry]
+	 *  ``Object``
+	 *  Selected geometry
+	 */
+
+	/** api: config[filterGeometryName]
+	 *  ``Object``
+	 *  Parameter to perform the filter
+	 */
+
+	/** api: config[hideWhenDeactivate]
+	 *  ``Boolean``
+	 *  Flag to hide output when the selection method is deactivated. Default is true
+	 */
 	hideWhenDeactivate: true,
-	label: "Spatial selector",
-	name: "Spatial selector",
+
+	/** api: config[zoomToCurrentExtent]
+	 *  ``Boolean``
+	 *  Flag to zoom the current map to the selected geometry when you select one. Default is false
+	 */
 	zoomToCurrentExtent: false,
 
 	/** api: config[defaultStyle]
@@ -102,7 +129,10 @@ gxp.plugins.spatialselector.SpatialSelectorMethod = Ext.extend(gxp.plugins.Tool,
 		return gxp.plugins.spatialselector.SpatialSelectorMethod.superclass.constructor.call(this, arguments);
 	},
 
-	// Generate a item for the combobox
+	/** api: method[getSelectionMethodItem]
+     *  :returns: ``Object`` For the selection type combo
+	 * Generate a item for the selection type combo
+	 */
 	getSelectionMethodItem: function(){
         return {
         	label: this.label, 
@@ -110,24 +140,36 @@ gxp.plugins.spatialselector.SpatialSelectorMethod = Ext.extend(gxp.plugins.Tool,
         };
 	},
 
-	// Generate filter
+	/** api: method[getQueryFilter]
+     *  :returns: ``Object`` filter to perform a WFS query
+	 * Generate a filter for the selected method
+	 */
 	getQueryFilter: function(){
-		this.currentFilter = new OpenLayers.Filter.Spatial({
-			type: OpenLayers.Filter.Spatial.INTERSECTS,
-			property:  this.filterGeometryName,
-			value: this.currentGeometry,
-			bounds: this.currentGeometry.getBounds()
-		});
+		if(this.currentGeometry){
+			this.currentFilter = new OpenLayers.Filter.Spatial({
+				type: OpenLayers.Filter.Spatial.INTERSECTS,
+				property:  this.filterGeometryName,
+				value: this.currentGeometry,
+				bounds: this.currentGeometry.getBounds()
+			});
+		}else{
+	        this.currentFilter = null;
+		}
 
 		return this.currentFilter;
 	},
 
-	// trigger action when activate the plugin
+	/** api: method[activate]
+     *  Trigger action when activate the plugin
+	 */
 	activate: function(){
 		this.reset();
 		if(this.output){
 			if(this.output.setDisabled){
 				this.output.setDisabled(false);	
+			}
+			if(this.output.doLayout){
+				this.output.doLayout();
 			}
 			if(this.hideWhenDeactivate && this.output.show){
 				this.output.show();
@@ -137,7 +179,9 @@ gxp.plugins.spatialselector.SpatialSelectorMethod = Ext.extend(gxp.plugins.Tool,
 		}
 	},
 
-	// trigger action when deactivate the plugin
+	/** api: method[deactivate]
+     *  Trigger action when deactivate the plugin
+	 */
 	deactivate: function(){
 		this.reset();
 		if(this.output){
@@ -156,13 +200,19 @@ gxp.plugins.spatialselector.SpatialSelectorMethod = Ext.extend(gxp.plugins.Tool,
     	// TODO: Override it on plugins
     },
 
+	/** api: method[reset]
+     *  Trigger action when reset the plugin
+	 */
     reset: function(){
     	// TODO: Override it on plugins	
     	this.currentGeometry = null;
     	this.currentFilter = null;
     },
 
-    // set current geometry
+	/** api: method[reset]
+     *  :arg geometry: ``Object`` The geometry to be setted as current geometry.
+     *  Set current geometry
+	 */
     setCurrentGeometry: function(geometry){
 		this.currentGeometry = geometry;
     	if (geometry) {

@@ -46,8 +46,16 @@ gxp.plugins.spatialselector.BufferSpatialSelectorMethod = Ext.extend(gxp.plugins
 	/* ptype = gxp_spatial_buffer_selector */
 	ptype : 'gxp_spatial_buffer_selector',
 
-	// Parameters for the combo
+	/** api: config[name]
+	 *  ``String``
+	 *  Name to show on the combo box of the spatial selected.
+	 */
 	name  : 'Buffer',
+
+	/** api: config[label]
+	 *  ``String``
+	 *  Label to show on the combo box of the spatial selected.
+	 */
 	label : 'Buffer',
 
     /**
