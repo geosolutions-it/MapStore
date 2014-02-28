@@ -120,7 +120,7 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 	 *  ``String``
 	 *  geocoderTypeTpl .
 	 */
-	geocoderTypeTpl : "<tpl for=\".\"><hr><div class=\"search-item\"><h3>{name}</span></h3>{name}</div></tpl>",
+	geocoderTypeTpl : "<tpl for=\".\"><hr><div class=\"search-item\"><h3>{name}</span></h3>{custom}</div></tpl>",
 
 	/** api: config[geocoderTypeRecordModel]
 	 *  ``Object``

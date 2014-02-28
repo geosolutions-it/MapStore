@@ -222,7 +222,7 @@
 		                },
 		                {
 		                    "name":"custom",
-		                    "mapping":"properties.parent"
+		                    "mapping":"properties.SUB_REGION"
 		                },
 		                {
 		                    "name":"geometry",
@@ -231,7 +231,7 @@
 		            ],
 		            "geocoderTypeSortBy":null,
 		            "geocoderTypeQueriableAttributes":[
-		                "STATE_NAME"
+		                "STATE_NAME", "SUB_REGION"
 		            ],
 		            "spatialOutputCRS": "EPSG:4326",
 		            "wpsBufferProcessID": "JTS:buffer",

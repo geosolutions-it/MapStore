@@ -49,7 +49,6 @@ gxp.plugins.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.plugins.s
 	// Parameters for the combo
 	name  : 'BBOX',
 	label : 'Bounding Box',
-	value : 'bbox',
 
 	/** api: config[spatialFilterOptions ]
 	 *  ``Object``
@@ -124,14 +123,13 @@ gxp.plugins.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.plugins.s
             // width: 300,
 
 		    // start i18n
-      //       title: this.setAoiTitle,
-		    // northLabel:this.northLabel,
-		    // westLabel:this.westLabel,
-		    // eastLabel:this.eastLabel,
-		    // southLabel:this.southLabel,
-		    // setAoiText: this.setAoiText,
-		    // setAoiTooltip: this.setAoiTooltip,
-		    // title: this.setAoiTitle,
+            title: this.setAoiTitle,
+		    northLabel:this.northLabel,
+		    westLabel:this.westLabel,
+		    eastLabel:this.eastLabel,
+		    southLabel:this.southLabel,
+		    setAoiText: this.setAoiText,
+		    setAoiTooltip: this.setAoiTooltip,
 		    waitEPSGMsg: "Please Wait...",
 		    listeners : {
 		    	"onChangeAOI" : function(bounds) {
