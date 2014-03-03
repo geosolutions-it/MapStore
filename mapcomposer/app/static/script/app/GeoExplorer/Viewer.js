@@ -50,6 +50,12 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
 		
         config.tools = tools;
         
+        if(config.removeTools) {
+            for(var r=0; r < config.removeTools.length; r++) {
+                config.tools = this.removeTool(config.tools, config.removeTools[r]);
+            }
+        }
+        
 		if(config.customTools)
 		{
 			for(var c=0; c < config.customTools.length; c++)

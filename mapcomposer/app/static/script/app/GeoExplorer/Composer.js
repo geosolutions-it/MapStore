@@ -40,12 +40,14 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		    config.tools = [
 		        {
 		            ptype: "gxp_layertree",
+                    id: "layertree_plugin",
 		            outputConfig: {
 		                id: "layertree"
 		            },
 		            outputTarget: "tree"
 		        }, {
 		            ptype: "gxp_legend",
+                    id: "legend_plugin",
 		            outputTarget: 'legend',
 		            outputConfig: {
 		                autoScroll: true
@@ -62,71 +64,107 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            }
 		        }, {
 		            ptype: "gxp_addlayers",
+                    id: "addlayers_plugin",
 		            actionTarget: "tree.tbar",
 					id: "addlayers"
 		        }, {
 		            ptype: "gxp_removelayer",
+                    id: "removelayer_plugin",
 		            actionTarget: ["tree.tbar", "layertree.contextMenu"]
 		        }, {
 		            ptype: "gxp_removeoverlays",
+                    id: "removeoverlays_plugin",
 		            actionTarget: "tree.tbar"
 		        }, {
 		            ptype: "gxp_addgroup",
+                    id: "addgroup_plugin",
 		            actionTarget: "tree.tbar"
 		        }, {
 		            ptype: "gxp_removegroup",
+                    id: "removegroup_plugin",
 		            actionTarget: ["tree.tbar", "layertree.contextMenu"]
 		        }, {
 		            ptype: "gxp_groupproperties",
+                    id: "groupproperties_plugin",
 		            actionTarget: ["tree.tbar", "layertree.contextMenu"]
 		        }, {
 		            ptype: "gxp_layerproperties",
+                    id: "layerproperties_plugin",
 		            actionTarget: ["tree.tbar", "layertree.contextMenu"]
 		        }, {
 		            ptype: "gxp_zoomtolayerextent",
+                    id: "zoomtolayerextent_plugin",
 		            actionTarget: {target: "layertree.contextMenu", index: 0}
 		        },{
 		            ptype:"gxp_geonetworksearch",
+                    id: "geonetworksearch_plugin",
 		            actionTarget: ["layertree.contextMenu"]
 		        }, {
 		            ptype: "gxp_zoomtoextent",
+                    id: "zoomextent_plugin",
 		            actionTarget: {target: "paneltbar", index: 15}
 		        }, {
-		            ptype: "gxp_navigation", toggleGroup: this.toggleGroup,
+		            ptype: "gxp_navigation", 
+                    id: "navigation_plugin",
+                    toggleGroup: this.toggleGroup,
 		            actionTarget: {target: "paneltbar", index: 16}
 		        }, {
-		            actions: ["-"], actionTarget: "paneltbar"
+                    id: "zoombox_separator",
+		            actions: ["-"], 
+                    actionTarget: "paneltbar"
 		        }, {
-		            ptype: "gxp_zoombox", toggleGroup: this.toggleGroup,
+		            ptype: "gxp_zoombox", 
+                    id: "zoombox_plugin",
+                    toggleGroup: this.toggleGroup,
 		            actionTarget: {target: "paneltbar", index: 17}
 		        }, {
 		            ptype: "gxp_zoom",
+                    id: "zoom_plugin",
 		            actionTarget: {target: "paneltbar", index: 18}
 		        }, {
-		            actions: ["-"], actionTarget: "paneltbar"
+                    id: "navigationhistory_separator",
+		            actions: ["-"], 
+                    actionTarget: "paneltbar"
 		        }, {
 		            ptype: "gxp_navigationhistory",
+                    id: "navigationhistory_plugin",
 		            actionTarget: {target: "paneltbar", index: 19}
 		        }, {
-		            actions: ["-"], actionTarget: "paneltbar"
+                    id: "wmsgetfeatureinfo_menu_separator",
+		            actions: ["-"], 
+                    actionTarget: "paneltbar"
 		        }, {
 		            ptype: "gxp_wmsgetfeatureinfo_menu", 
+                    id: "wmsgetfeatureinfo_plugin",
 					toggleGroup: this.toggleGroup,
 					useTabPanel: true,
 		            actionTarget: {target: "paneltbar", index: 20}
 		        }, {
-		            actions: ["-"], actionTarget: "paneltbar"
+                    id: "measure_separator",
+		            actions: ["-"], 
+                    actionTarget: "paneltbar"
 		        }, {
-		            ptype: "gxp_measure", toggleGroup: this.toggleGroup,
+		            ptype: "gxp_measure", 
+                    id: "measure_plugin",
+                    toggleGroup: this.toggleGroup,
 		            actionTarget: {target: "paneltbar", index: 21}
 		        }, {
-		            actions: ["-"], actionTarget: "paneltbar"
+                    id: "googleearth_separator",
+		            actions: ["-"], 
+                    actionTarget: "paneltbar"
 		        }, {
 		            ptype: "gxp_googleearth",
+                    id: "googleearth_plugin",
 		            actionTarget: {target: "paneltbar", index: 25}
 		        }
 		    ];
 
+            if(config.removeTools) {
+                for(var r=0; r < config.removeTools.length; r++) {
+                    config.tools = this.removeTool(config.tools, config.removeTools[r]);
+                }
+            }
+            
 			if(config.customTools)
 			{
 				for(var c=0; c < config.customTools.length; c++)
@@ -158,6 +196,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         if (config.showGraticule == true){
             config.tools.push({
                 ptype: "gxp_graticule",
+                id: "graticule_plugin",
                 actionTarget: {target: "paneltbar", index: 22}
             })
         }
@@ -182,6 +221,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		if(!savePlugin){
 			config.tools.push({
 				ptype: "gxp_saveDefaultContext",
+                id: "saveDefaultContext_plugin",
 				actionTarget: {target: "paneltbar", index: 21},
 				needsAuthorization: true
 			});
@@ -196,6 +236,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         this.loginButton = null;
         GeoExplorer.Composer.superclass.destroy.apply(this, arguments);
     },
+    
     
     /**
      * api: method[createTools]
