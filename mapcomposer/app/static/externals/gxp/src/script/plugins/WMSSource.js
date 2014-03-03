@@ -271,7 +271,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
         
             // use all params from sources layerBaseParams option
             var params = Ext.applyIf({
-                STYLES: styles,
+                STYLES: styles || "",
                 FORMAT: config.format,
                 TRANSPARENT: config.transparent,
                 CQL_FILTER: config.cql_filter,
