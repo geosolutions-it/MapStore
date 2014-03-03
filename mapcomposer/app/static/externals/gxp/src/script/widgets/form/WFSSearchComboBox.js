@@ -281,7 +281,9 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 			}
 			if (record && record.data.geometry) {
 				var wkt_options = {};
-				var geojson_format = new OpenLayers.Format.GeoJSON();
+				var geojson_format = new OpenLayers.Format.GeoJSON({
+					ignoreExtraDims: true
+				});
 				var testFeature = geojson_format.read(record.data.geometry);
 				var wkt = new OpenLayers.Format.WKT(wkt_options);
 				var out = wkt.write(testFeature);

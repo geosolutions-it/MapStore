@@ -516,6 +516,12 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 				]
 			});	
 		}else{
+			this.geocodingField = new Ext.form.CompositeField({
+				labelWidth: 110,
+				items: [
+	               wfsComboBox
+				]
+			});	
 			this.geocodingField = wfsComboBox;
 			wfsComboBox.on("select", this.onBtnAdd, this);
 		}
@@ -523,8 +529,12 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 
         // items could be the geocoding combo or this one and the geocodingPanel if the multiple selection is enabled
 		var items = [this.geocodingField]
+		var layout = null;
 		if(this.multipleSelection){
 			items.push(this.geocodingPanel);
+			layout = "anchor";
+		}else{
+			layout = "fit";
 		}
 
 	    //
@@ -533,7 +543,7 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 	    this.geocodingFieldSet = new Ext.form.FieldSet({
             title: this.name,
 			collapsed: false,
-			layout: 'anchor',
+			layout: layout,
 			listeners: {
 				disable: function(){
 					this.hide();
