@@ -213,6 +213,12 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 	 */
 	multipleSelection: true,
 
+	/** api: config[searchComboOutputFormat]
+	 *  ``String``
+	 *  Output format for the WFS search combo request
+	 */
+	searchComboOutputFormat: 'application/json',
+
     /** api: method[addOutput]
      */
     addOutput: function() {
@@ -477,7 +483,8 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 			 	queriableAttributes:this.geocoderTypeQueriableAttributes,
 			 	displayField:this.geocoderTypeDisplayField,
 			 	pageSize:this.geocoderTypePageSize,
-			 	tpl:this.geocoderTypeTpl
+			 	tpl:this.geocoderTypeTpl,
+			 	outputFormat:this.searchComboOutputFormat
 		  	}
         };
 		var wfsComboBox = new gxp.form.WFSSearchComboBox(Ext.apply({
