@@ -260,6 +260,12 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 			];
 		}
         
+        if(config.removeTools) {
+            for(var r=0; r < config.removeTools.length; r++) {
+                config.tools = this.removeTool(config.tools, config.removeTools[r]);
+            }
+        }
+        
 		if(config.customTools)
 		{
 			for(var c=0; c < config.customTools.length; c++)
@@ -297,6 +303,30 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         GeoExplorer.superclass.constructor.apply(this, arguments);
     }, 
 
+    /**
+     * api: method[removeTool]
+     * Remove a tool for the given tools list.
+     */
+    removeTool: function(tools, tool) {
+        if(Ext.isString(tool)) {
+            tool = {
+                id: tool
+            };
+        }
+        var collection = new Ext.util.MixedCollection();
+        collection.addAll(tools);
+        for(var propName in tool) {
+            if(tool.hasOwnProperty(propName)) {
+                var pos = collection.findIndex(propName, tool[propName]);
+                if(pos !== -1) {
+                    collection.removeAt(pos);
+                }
+            }
+        }
+        
+        return collection.getRange();
+    },
+    
     loadConfig: function(config) {
 
         if(config.isLoadedFromConfigFile){
