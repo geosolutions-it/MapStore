@@ -487,33 +487,39 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 		}, wfssearchboxConf.outputConfig)); 
 		this.wfsComboBox = wfsComboBox;
 
-        this.geocodingField = new Ext.form.CompositeField({
-        	// layout: 'form',
-			labelWidth: 110,
-			items: [
-               wfsComboBox,
-                {
-                    xtype   : 'button',
-                    tooltip : this.geocodingFieldBtnAddTooltip,
-                    iconCls : "execution-cls",
-                    width   : 23,
-					scope   : this,
-					handler : this.onBtnAdd
-				},{
-                    xtype   : 'button',
-                    tooltip : this.geocodingFieldBtnDelTooltip,
-                    iconCls : "execution-cls-delete",
-                    width   : 23,
-					scope   : this,
-					handler : function(){
-						wfsComboBox.reset();
-						if(!this.multipleSelection){
-							this.reset();
+		if(this.multipleSelection){
+			this.geocodingField = new Ext.form.CompositeField({
+	        	// layout: 'form',
+				labelWidth: 110,
+				items: [
+	               wfsComboBox,
+	                {
+	                    xtype   : 'button',
+	                    tooltip : this.geocodingFieldBtnAddTooltip,
+	                    iconCls : "execution-cls",
+	                    width   : 23,
+						scope   : this,
+						handler : this.onBtnAdd
+					},{
+	                    xtype   : 'button',
+	                    tooltip : this.geocodingFieldBtnDelTooltip,
+	                    iconCls : "execution-cls-delete",
+	                    width   : 23,
+						scope   : this,
+						handler : function(){
+							wfsComboBox.reset();
+							if(!this.multipleSelection){
+								this.reset();
+							}
 						}
 					}
-				}
-			]
-		});
+				]
+			});	
+		}else{
+			this.geocodingField = wfsComboBox;
+			wfsComboBox.on("select", this.onBtnAdd, this);
+		}
+        
 
         // items could be the geocoding combo or this one and the geocodingPanel if the multiple selection is enabled
 		var items = [this.geocodingField]
@@ -525,7 +531,7 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 	    // The Full GeoCoder FieldSet
 	    //
 	    this.geocodingFieldSet = new Ext.form.FieldSet({
-            title: this.geocodingFieldSetTitle,
+            title: this.name,
 			collapsed: false,
 			layout: 'anchor',
 			listeners: {
@@ -601,6 +607,8 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 						this.geocoderDrawings.refresh({force:true});
 
 				        this.map.addLayer(this.geocoderDrawings);
+					}else{
+						this.geocoderDrawings.removeAllFeatures();
 					}
 
 	                // create some attributes for the feature
@@ -776,6 +784,16 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 
 		this.setCurrentGeometry(new OpenLayers.Format.WKT().read(responseText).geometry);
 	},
+
+	/** api: method[deactivate]
+     *  Trigger action when deactivate the plugin
+	 */
+	deactivate: function(){
+		gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod.superclass.deactivate.call(this);
+		if(this.geocoderDrawings){
+			this.geocoderDrawings.removeAllFeatures();
+		}
+	},						
 
     // Reset method
     reset: function(){
