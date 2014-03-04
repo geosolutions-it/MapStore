@@ -240,7 +240,7 @@
 		  "outputTarget": "south",
 		  "showExportCSV": true
 	    }, {
-		  "ptype": "gxp_bboxqueryform",
+		  "ptype": "gxp_spatialqueryform",
 		  "featureManager": "featuremanager",
 		  "featureGridContainer": "south",
 		  "outputTarget": "east",
@@ -267,6 +267,21 @@
 				"decimalPrecision": 2,
 				"distanceUnits": "m"
 			  }
+		  },
+		  "spatialSelectorsConfig":{
+		        "bbox":{
+		            "ptype": "gxp_spatial_bbox_selector"
+		        },
+		        "buffer":{
+		            "ptype": "gxp_spatial_buffer_selector"
+		        },
+		        "circle":{
+		            "ptype": "gxp_spatial_circle_selector",
+		            "zoomToCurrentExtent": true
+		        },
+		        "polygon":{
+		            "ptype": "gxp_spatial_polygon_selector"
+		        }
 		  }
 	    }
 	]
