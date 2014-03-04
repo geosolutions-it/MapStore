@@ -690,6 +690,14 @@ GeoExt.Lang.add("it", {
         comboSelectionMethodLabel : "Selezione"
     },
     
+    "gxp.plugins.spatialselector.SpatialSelectorMethod.prototype" :{
+        areaLabel : "Area",
+        perimeterLabel : "Perimetro",
+        radiusLabel : "Raggio",
+        centroidLabel : "Centroide",
+        selectionSummary: "Sommario delle Selezioni"
+    },
+    
     "gxp.plugins.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
         name  : 'BBOX',
         label : 'Bounding Box',

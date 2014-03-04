@@ -380,7 +380,7 @@ GeoExt.Lang.add("es", {
 		perimeterLabel: "Perímetro",	
 		radiusLabel: "Radio",	
 		centroidLabel: "Centroide",	
-		selectionSummary: "Selección de Sumario"
+		selectionSummary: "Sumario de la Selección"
 	},
 	
     "gxp.widgets.form.BufferFieldset.prototype": {
@@ -623,6 +623,14 @@ GeoExt.Lang.add("es", {
         selectionMethodLabel : "Método de selección",
         comboEmptyText : "Seleccione un Método..",
         comboSelectionMethodLabel : "Seleccione"
+    },
+    
+    "gxp.plugins.spatialselector.SpatialSelectorMethod.prototype" :{
+        areaLabel: "Área",  
+        perimeterLabel: "Perímetro",    
+        radiusLabel: "Radio",   
+        centroidLabel: "Centroide", 
+        selectionSummary: "Sumario de la Selección"
     },
     
     "gxp.plugins.spatialselector.BBOXSpatialSelectorMethod.prototype" :{

@@ -194,7 +194,26 @@ gxp.plugins.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.plugins.s
 			if (this.zoomToCurrentExtent) {
 				this.target.mapPanel.map.zoomToExtent(bounds, closest=false);
 			}
+
+			this.addFeatureSummary(bounds.toGeometry());
 		} 
+    },
+
+	/** api: method[getSummary]
+     *  :arg geometry: ``Object`` The geometry to be setted as current geometry.
+     *  Obtain selection summary
+	 */
+    getSummary: function(geometry){
+
+		var summary = gxp.plugins.spatialselector.BBOXSpatialSelectorMethod.superclass.getSummary.call(this, geometry);
+		var metricUnit = "km";
+
+		var perimeter = this.getLength(geometry, metricUnit);
+		if (perimeter) {
+			summary += this.perimeterLabel + ": " + perimeter + " " + metricUnit + '<br />';
+		}
+
+		return summary;
     }
 });
 

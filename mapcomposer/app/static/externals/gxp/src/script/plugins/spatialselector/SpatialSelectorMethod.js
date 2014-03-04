@@ -95,32 +95,67 @@ gxp.plugins.spatialselector.SpatialSelectorMethod = Ext.extend(gxp.plugins.Tool,
 	 *  ``Object``
 	 */
 	defaultStyle : {
-		"strokeColor" : "#ee9900",
-		"fillColor" : "#ee9900",
-		"fillOpacity" : 0.4,
-		"strokeWidth" : 1
+        "fillColor"   : "#FFFFFF",
+        "strokeColor" : "#FF0000",
+        "fillOpacity" : 0.5,
+        "strokeWidth" : 1
 	},
 
 	/** api: config[selectStyle]
 	 *  ``Object``
 	 */
 	selectStyle : {
-		"strokeColor" : "#ee9900",
-		"fillColor" : "#ee9900",
-		"fillOpacity" : 0.4,
-		"strokeWidth" : 1
+        "fillColor"   : "#FFFFFF",
+        "strokeColor" : "#FF0000",
+        "fillOpacity" : 0.5,
+        "strokeWidth" : 1
 	},
 
 	/** api: config[temporaryStyle]
 	 *  ``Object``
 	 */
 	temporaryStyle : {
-		"pointRadius" : 6,
-		"fillColor" : "#FF00FF",
-		"strokeColor" : "#FF00FF",
-		"label" : "Select",
-		"graphicZIndex" : 2
+		"strokeColor": "#ee9900",
+		"fillColor": "#ee9900",
+		"fillOpacity": 0.4,
+		"strokeWidth": 1
 	},
+	
+	/** api: config[showSelectionSummary]
+	 *  ``Boolean``
+	 *  Whether we want to show or not the selection summary as a pop-up on the map.
+	 */
+	showSelectionSummary : true,
+
+	/** api: config[areaLabel]
+	 * ``String``
+	 * Text for the Selection Summary Area Label (i18n).
+	 */
+	areaLabel : "Area",
+
+	/** api: config[perimeterLabel]
+	 * ``String``
+	 * Text for the Selection Summary Perimeter Label (i18n).
+	 */
+	perimeterLabel : "Perimeter",
+
+	/** api: config[selectionSummary]
+	 * ``String``
+	 * Text for the Selection Summary (i18n).
+	 */
+	selectionSummary : "Selection Summary",
+
+	/** api: config[radiusLabel]
+	 * ``String``
+	 * Text for the Selection Summary Radius Label (i18n).
+	 */
+	radiusLabel : "Radius",
+
+	/** api: config[centroidLabel]
+	 * ``String``
+	 * Text for the Selection Summary Centroid Label (i18n).
+	 */
+	centroidLabel : "Centroid",
 
 	// init spatialSelectors 
 	constructor : function(config) {
@@ -204,12 +239,15 @@ gxp.plugins.spatialselector.SpatialSelectorMethod = Ext.extend(gxp.plugins.Tool,
      *  Trigger action when reset the plugin
 	 */
     reset: function(){
-    	// TODO: Override it on plugins	
     	this.currentGeometry = null;
     	this.currentFilter = null;
+
+		if(this.featureSummary && this.featureSummary.isVisible()){
+			this.featureSummary.hide();
+		}
     },
 
-	/** api: method[reset]
+	/** api: method[setCurrentGeometry]
      *  :arg geometry: ``Object`` The geometry to be setted as current geometry.
      *  Set current geometry
 	 */
@@ -221,6 +259,113 @@ gxp.plugins.spatialselector.SpatialSelectorMethod = Ext.extend(gxp.plugins.Tool,
 				var dataExtent = geometry.getBounds();
 				this.target.mapPanel.map.zoomToExtent(dataExtent, closest=false);
 			}
+
+			this.addFeatureSummary(geometry);
 		} 
-    }
+    },
+
+	/** api: method[addFeatureSummary]
+     *  :arg geometry: ``Object`` The geometry to be setted as current geometry.
+     *  Add feature summary if needed
+	 */
+    addFeatureSummary: function(geometry){
+		if(this.showSelectionSummary){
+			if(this.featureSummary && this.featureSummary.isVisible()){
+				this.featureSummary.hide();
+			}
+			this.featureSummary = new Ext.ToolTip({
+				xtype : 'tooltip',
+				target : Ext.getBody(),
+				html : this.getSummary(geometry),
+				title : this.selectionSummary,
+				autoHide : false,
+				closable : true,
+				draggable : false,
+				mouseOffset : [0, 0],
+				showDelay : 1,
+				listeners : {
+					scope : this,
+					hide : function(cmp) {
+						this.featureSummary.destroy();
+					}
+				}
+			});
+
+			var vertex = geometry.getVertices();
+			var point;
+			if ( geometry instanceof OpenLayers.Bounds) {
+				point = vertex[1];
+			} else{
+				point = vertex[vertex.length - 1];
+			}
+
+			var px = this.target.mapPanel.map.getPixelFromLonLat(new OpenLayers.LonLat(point.x, point.y));
+			var p0 = this.target.mapPanel.getPosition();
+
+			this.featureSummary.targetXY = [p0[0] + px.x, p0[1] + px.y];
+			this.featureSummary.show();
+		}
+    },
+
+	/** api: method[getSummary]
+     *  :arg geometry: ``Object`` The geometry to be setted as current geometry.
+     *  Obtain selection summary
+	 */
+    getSummary: function(geometry){
+
+		var summary = "", metricUnit = "km";
+
+		var area = this.getArea(geometry, metricUnit);
+		if (area) {
+			summary += this.areaLabel + ": " + area + " " + metricUnit + '<sup>2</sup>' + '<br />';
+		}
+
+		return summary;
+    },
+
+	/**
+	 * Method: getArea
+	 *
+	 * Parameters:
+	 * geometry - {<OpenLayers.Geometry>}
+	 * units - {String} Unit abbreviation
+	 *
+	 * Returns:
+	 * {Float} The geometry area in the given units.
+	 */
+	getArea : function(geometry, units) {
+		var area, geomUnits;
+		area = geometry.getGeodesicArea(this.target.mapPanel.map.getProjectionObject());
+		geomUnits = "m";
+
+		var inPerDisplayUnit = OpenLayers.INCHES_PER_UNIT[units];
+		if (inPerDisplayUnit) {
+			var inPerMapUnit = OpenLayers.INCHES_PER_UNIT[geomUnits];
+			area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
+		}
+		return area;
+	},
+
+	/**
+	 * Method: getLength
+	 *
+	 * Parameters:
+	 * geometry - {<OpenLayers.Geometry>}
+	 * units - {String} Unit abbreviation
+	 *
+	 * Returns:
+	 * {Float} The geometry length in the given units.
+	 */
+	getLength : function(geometry, units) {
+		var length, geomUnits;
+		length = geometry.getGeodesicLength(this.target.mapPanel.map.getProjectionObject());
+		geomUnits = "m";
+
+		var inPerDisplayUnit = OpenLayers.INCHES_PER_UNIT[units];
+		if (inPerDisplayUnit) {
+			var inPerMapUnit = OpenLayers.INCHES_PER_UNIT[geomUnits];
+			length *= (inPerMapUnit / inPerDisplayUnit);
+		}
+		return length;
+	}
 });

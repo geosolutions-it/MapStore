@@ -69,7 +69,81 @@ gxp.plugins.spatialselector.CircleSpatialSelectorMethod = Ext.extend(gxp.plugins
                 handlerOptions: polyOptions
             }
         );
-	}
+	},
+
+    // Reset method
+    reset: function(){
+		gxp.plugins.spatialselector.CircleSpatialSelectorMethod.superclass.reset.call(this);
+		if(this.circleCentroidLayer){
+			this.circleCentroidLayer.removeAllFeatures();
+		}
+    },
+
+	/** api: method[getSummary]
+     *  :arg geometry: ``Object`` The geometry to be setted as current geometry.
+     *  Obtain selection summary
+	 */
+    getSummary: function(geometry){
+
+		var summary = "", metricUnit = "km";
+
+		var area = this.getArea(geometry, metricUnit);
+		if (area) {
+			summary += this.areaLabel + ": " + area + " " + metricUnit + '<sup>2</sup>' + '<br />';
+		}
+
+		var radius = Math.sqrt(area / Math.PI);
+		if (radius) {
+			summary += this.radiusLabel + ": " + radius + " " + metricUnit + '<br />';
+		}
+
+		// //////////////////////////////////////////////////////////
+		// Draw also the circle center as a part of summary report
+		// //////////////////////////////////////////////////////////
+		var circleSelectionCentroid = geometry.getCentroid();
+
+		if (circleSelectionCentroid) {
+			var lon = circleSelectionCentroid.x.toFixed(3);
+			var lat = circleSelectionCentroid.y.toFixed(3);
+			var xField = this.target.mapPanel.map.projection == "EPSG:4326" ? "Lon" : "X";
+			var yField = this.target.mapPanel.map.projection == "EPSG:4326" ? "Lat" : "Y";
+			summary += this.centroidLabel + ": " + lon + " ("+xField+") " + lat + " ("+yField+")" + '<br />';
+		}
+
+		var options = {};
+		var centroidStyle = {
+			pointRadius : 4,
+			graphicName : "cross",
+			fillColor : "#FFFFFF",
+			strokeColor : "#FF0000",
+			fillOpacity : 0.5,
+			strokeWidth : 2
+		};
+
+		if (centroidStyle) {
+			var style = new OpenLayers.Style(centroidStyle);
+			var options = {
+				styleMap : style
+			};
+		}
+
+		var circleCentroidLayer = null;
+		if(!this.circleCentroidLayer){
+			circleCentroidLayer = new OpenLayers.Layer.Vector("bboxqf-circleCentroid", options);
+			this.circleCentroidLayer = circleCentroidLayer;
+			this.target.mapPanel.map.addLayer(circleCentroidLayer);
+		}else{
+			circleCentroidLayer = this.circleCentroidLayer;
+			this.circleCentroidLayer.removeAllFeatures();
+		}
+
+		var pointFeature = new OpenLayers.Feature.Vector(circleSelectionCentroid);
+		circleCentroidLayer.addFeatures([pointFeature]);
+
+		circleCentroidLayer.displayInLayerSwitcher = false;
+
+		return summary;
+    }
 });
 
 Ext.preg(gxp.plugins.spatialselector.CircleSpatialSelectorMethod.prototype.ptype, gxp.plugins.spatialselector.CircleSpatialSelectorMethod);
