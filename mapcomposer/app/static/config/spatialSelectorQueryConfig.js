@@ -171,33 +171,17 @@
 		  "showSelectionSummary": true,
 		  "actions": null,
 		  "id": "bboxquery",
-		  "outputConfig":{
-			  "outputSRS": "EPSG:900913",
-			  "selectStyle":{
-				  "strokeColor": "#ee9900",
-				  "fillColor": "#ee9900",
-				  "fillOpacity": 0.4,
-				  "strokeWidth": 1
-			  },
-			  "spatialFilterOptions": {	
-				  "lonMax": 20037508.34,   
-				  "lonMin": -20037508.34,
-				  "latMax": 20037508.34,   
-				  "latMin": -20037508.34  
-			  },
-			  "bufferOptions": {
-				"minValue": 1,
-				"maxValue": 1000,
-				"decimalPrecision": 2,
-				"distanceUnits": "m"
-			  }
-		  },
 		  "spatialSelectorsConfig":{
 		        "bbox":{
 		            "ptype": "gxp_spatial_bbox_selector"
 		        },
 		        "buffer":{
-		            "ptype": "gxp_spatial_buffer_selector"
+		            "ptype": "gxp_spatial_buffer_selector",
+					"bufferOptions": {
+						"minValue": 1,
+						"maxValue": 10000,
+						"decimalPrecision": 2
+					}
 		        },
 		        "circle":{
 		            "ptype": "gxp_spatial_circle_selector",

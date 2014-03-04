@@ -256,7 +256,7 @@ gxp.plugins.spatialselector.SpatialSelector = Ext.extend(gxp.plugins.Tool, {
 	 * Generate a filter for the selected method
 	 */
 	getQueryFilter: function(){
-		if(this.activeMethod){
+		if(this.activeMethod && this.activeMethod.currentGeometry){
 			this.activeMethod.filterGeometryName = this.filterGeometryName;
 			return this.activeMethod.getQueryFilter();
 		}else{
