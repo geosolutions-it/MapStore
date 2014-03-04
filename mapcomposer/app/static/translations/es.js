@@ -380,7 +380,7 @@ GeoExt.Lang.add("es", {
 		perimeterLabel: "Perímetro",	
 		radiusLabel: "Radio",	
 		centroidLabel: "Centroide",	
-		selectionSummary: "Selección de Sumario"
+		selectionSummary: "Sumario de la Selección"
 	},
 	
     "gxp.widgets.form.BufferFieldset.prototype": {
@@ -616,5 +616,71 @@ GeoExt.Lang.add("es", {
         emptyMsg: "No se han encontrado elementos",
         noRecordFoundLabel: "No se han encontrado elementos",
         loadMsg: "Loading ..."
+    },
+    
+    "gxp.plugins.spatialselector.SpatialSelector.prototype" :{
+        titleText : "Región de interés",
+        selectionMethodLabel : "Método de selección",
+        comboEmptyText : "Seleccione un Método..",
+        comboSelectionMethodLabel : "Seleccione"
+    },
+    
+    "gxp.plugins.spatialselector.SpatialSelectorMethod.prototype" :{
+        areaLabel: "Área",  
+        perimeterLabel: "Perímetro",    
+        radiusLabel: "Radio",   
+        centroidLabel: "Centroide", 
+        selectionSummary: "Sumario de la Selección"
+    },
+    
+    "gxp.plugins.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
+        name  : 'BBOX',
+        label : 'Extensión',
+        northLabel : "Norte",
+        westLabel : "Oeste",
+        eastLabel : "Este",
+        southLabel : "Sur",
+        setAoiTitle : "Bounding Box",
+        setAoiText : "Dibujar",
+        setAoiTooltip : "Habilita el control que permite dibujar una ROI (Extensión) en el mapa"
+    },
+    
+    "gxp.plugins.spatialselector.BufferSpatialSelectorMethod.prototype" :{
+        name  : 'Buffer',
+        label : 'Buffer',
+        latitudeEmptyText : 'Y',
+        longitudeEmptyText : 'X'
+    },
+    
+    "gxp.plugins.spatialselector.CircleSpatialSelectorMethod.prototype" :{
+        name  : 'Círculo',
+        label : 'Círculo'
+    },
+    
+    "gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod.prototype" :{
+        name  : 'Geocoding',
+        label : 'Geocoding',
+        geocodingFieldSetTitle : "GeoCoder",
+        geocodingPanelTitle : "Seleccionar Geometrías",
+        geocodingPanelBtnRefreshTxt : "Mostrar Geometrías",
+        geocodingPanelBtnDestroyTxt : "Ocultar Geometrías",
+        geocodingPanelBtnDeleteTxt : "Borrar Localización",
+        geocodingPanelLocationHeader: "Localización",
+        geocodingPanelCustomHeader: "Padre",
+        geocodingPanelGeometryHeader: "Geometría WKT",
+        geocodingPanelBtnSelectAllTxt : "Seleccionar todo", 
+        geocodingPanelBtnDeSelectAllTxt : "Deseleccionar todo", 
+        geocodingPanelMsgRemRunningTitle : "Borrar Localizaciones",
+        geocodingPanelMsgRemRunningMsg : "¿Está seguro de borrar las localizaciones de la lista?",
+        geocodingFieldLabel : "Buscar una Locaclización",
+        geocodingFieldEmptyText : "Escriba una Localización aquí...",
+        geocodingFieldBtnAddTooltip : "Añadir Localización a la lista",
+        geocodingFieldBtnDelTooltip : "Limpiar campo",
+        selectionSummary : "Sumario de la selección"
+    },
+    
+    "gxp.plugins.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
+        name  : 'Polígono',
+        label : 'Polígono'
     }
 });
