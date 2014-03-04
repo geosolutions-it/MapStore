@@ -278,17 +278,6 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             },
             scope: this
         });
-		
-		// ////////////////////////////////////////////
-		// In some cases when the container 
-		// is collapsed at startup, sub components are 
-		// not rendered. So we force the layout 
-		// of them.
-		// ////////////////////////////////////////////
-		queryForm.ownerCt.on("expand", function(panel){
-			this.bufferFieldSet.doLayout(); 
-			this.bboxFielset.doLayout(); 
-		}, this);
         
         return queryForm;
     }
