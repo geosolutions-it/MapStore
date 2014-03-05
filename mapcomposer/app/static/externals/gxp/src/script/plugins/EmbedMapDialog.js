@@ -215,7 +215,8 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
 		   if(this.showDirectURL === true){
 				wizardItems.push(directURL);
 		   }
-		   if(this.showQRCode ==true){
+           var showQR = this.showQRCode ==true && !Ext.isIE7 && !Ext.isIE8 && !Ext.isIE6;
+		   if(showQR){
             var qrCodePanel = this.createQrCodePanel(this.target.geoStoreBaseURL + "data/" + target.mapId );
             wizardItems.push(qrCodePanel);
            }
@@ -255,7 +256,7 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
                 layout: 'fit',
                 width: 500, 
                 
-				height: 245 +  (this.showDirectURL == true? 100 : 0) + (this.showQRCode  ? this.qrCodeSize + 60 :0),
+				height: 245 +  (this.showDirectURL == true? 100 : 0) + (showQR  ? this.qrCodeSize + 60 :0),
                 title: this.exportMapText,
                 items: [wizard]
            }).show();
