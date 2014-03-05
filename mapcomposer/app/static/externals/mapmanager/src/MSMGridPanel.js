@@ -869,7 +869,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				if(this.grid.config.embedLink.showDirectURL === true){
 					wizardItems.push(directURL);
 				}
-                if(this.grid.config.embedLink.showQRCode === true){
+                var showQR = (this.grid.config.embedLink.showQRCode ==true && !Ext.isIE7 && !Ext.isIE8 && !Ext.isIE6);
+                if(showQR){
                     qrcodePanel =embedMap.createQrCodePanel(this.grid.config.geoStoreBase + "data/"+ mapId); 
                     wizardItems.push(qrcodePanel);
                 }
@@ -886,7 +887,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			    grid.embedWindow = new Ext.Window({
 					layout: 'fit',
 					width: 500, 
-                    height: 245 +  (this.grid.config.embedLink.showDirectURL  == true? 100 : 0) + (this.grid.config.embedLink.showQRCode  ? embedMap.qrCodeSize + 60 :0),
+                    height: 245 +  (this.grid.config.embedLink.showDirectURL  == true? 100 : 0) + (showQR  ? embedMap.qrCodeSize + 60 :0),
 
 					//height: this.grid.config.embedLink.showDirectURL === true ? 345 : 245,
 					title: mapDesc,
