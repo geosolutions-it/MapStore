@@ -601,7 +601,11 @@ GeoExt.Lang.add("en", {
 		embedCodeTitle: "Embed Code",
 		embedURL: "Direct URL",		
 		urlLabel: "URL",
-		showMapTooltip: "Show in a new Window"
+		showMapTooltip: "Show in a new Window",
+        loadMapText: "Load this Map (install application first)",
+        downloadAppText: "install Application",
+        loadInMapStoreMobileText: "Mobile",
+        openImageInANewTab: "Open Image in a New Tab"
 	},
     
     "gxp.widgets.form.SpatialSelectorField.prototype" :{

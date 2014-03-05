@@ -818,10 +818,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			    var curLang = this.grid.lang || 'en';            
 			    var url = this.grid.config.embedLink.embeddedTemplateName + "?locale=" + curLang + "&mapId=" + mapId
 			   
-			    var embedMap = new EmbedMapDialog({
+			    var embedMap = new EmbedMapDialog(Ext.applyIf({
 				   id: 'geobuilder-1',
 				   url: url
-			    });
+			    },this.grid.config.embedLink));
 			   
 			    var snippetFieldSet = new Ext.form.FieldSet({
 					title: grid.embedCodeTitle,
@@ -869,7 +869,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				if(this.grid.config.embedLink.showDirectURL === true){
 					wizardItems.push(directURL);
 				}
-
+                if(this.grid.config.embedLink.showQRCode === true){
+                    qrcodePanel =embedMap.createQrCodePanel(this.grid.config.geoStoreBase + "data/"+ mapId); 
+                    wizardItems.push(qrcodePanel);
+                }
 			    var wizard = {
 				    id: 'geobuilder-wizard-panel',
 				   //border: false,
@@ -883,7 +886,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			    grid.embedWindow = new Ext.Window({
 					layout: 'fit',
 					width: 500, 
-					height: this.grid.config.embedLink.showDirectURL === true ? 345 : 245,
+                    height: 245 +  (this.grid.config.embedLink.showDirectURL  == true? 100 : 0) + (this.grid.config.embedLink.showQRCode  ? embedMap.qrCodeSize + 60 :0),
+
+					//height: this.grid.config.embedLink.showDirectURL === true ? 345 : 245,
 					title: mapDesc,
 					items: [wizard]
 			    }).show();

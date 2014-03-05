@@ -55,7 +55,7 @@ GeoExt.Lang.add("en", {
 		embedCodeTitle: "Embed Code",
 		embedURL: "Direct URL",	
 		urlLabel: "URL",
-		exportMapText: "Link Map"		
+		exportMapText: "Link Map"
     },
     "MSMPagingToolbar.prototype": {
         desc: "New Map",
@@ -130,6 +130,10 @@ GeoExt.Lang.add("en", {
         miniSizeLabel: "Mini",
         smallSizeLabel: "Small",
         premiumSizeLabel: "Premium",
-        largeSizeLabel: "Large"
+        largeSizeLabel: "Large",
+        loadMapText: "Load this Map (install application first)",
+        downloadAppText: "install Application",
+        loadInMapStoreMobileText: "Mobile",
+        openImageInANewTab: "Open Image in a New Tab"
     }
 });

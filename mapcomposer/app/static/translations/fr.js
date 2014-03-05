@@ -421,6 +421,7 @@ GeoExt.Lang.add("fr", {
         smallSizeLabel: "Petit",
         premiumSizeLabel: "Premium",
         largeSizeLabel: "Grand"
+        
     },
     "gxp.plugins.GoogleGeocoder.prototype": {
         addMarkerTooltip: "Réinitialiser Marker"
@@ -602,7 +603,11 @@ GeoExt.Lang.add("fr", {
 		embedCodeTitle: "Intégrer le code",
 		embedURL: "URL directe",		
 		urlLabel: "URL",
-		showMapTooltip: "Voir dans une nouvelle fenêtre"
+		showMapTooltip: "Voir dans une nouvelle fenêtre",
+        loadMapText: "Chargez ce Plan (installer application avant)", 
+        downloadAppText: "installer l'application", 
+        loadInMapStoreMobileText: "Mobile",
+        openImageInANewTab: "Ouvrir une image dans un nouvel onglet"
 	},
     
     "gxp.plugins.WFSGrid.prototype":{

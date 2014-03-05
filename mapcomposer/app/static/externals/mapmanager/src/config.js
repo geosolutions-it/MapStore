@@ -150,7 +150,8 @@ var config = {
    
     embedLink: {
     "embeddedTemplateName": "/mapcomposer/viewer",
-    "showDirectURL": true
+    "showDirectURL": true,
+    "showQRCode":true
   }
 };
 
