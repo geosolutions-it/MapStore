@@ -399,7 +399,20 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * 
     */        
     IframeWaitMsg: "Loading map...",
- 
+    
+    /**
+     * QR_Code mobile text
+     */
+    mobileText:"Mobile",
+    installApplicationText:"Install Android Application",
+    loadThisSourceText:"Add this source to MapStore Mobile",
+    scanThisApplicationText:"Scan this QR code to Install MapStore for Android",
+    scanThisSourceText:"Scan this QR code to add this source to your MapStore Mobile application. You need to install MapStore for Android before",
+    
+    /**
+     * Property: lang
+     * {string} set the language of the grid
+     */
     lang: "en",
     /**
      * Property: ajaxHeader
@@ -490,6 +503,114 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 }
             }
         });
+        // //////////////
+        // QR CODE MENU 
+        // //////////////
+        var showQR = (this.config.embedLink.showQRCode ==true && !Ext.isIE7 && !Ext.isIE8 && !Ext.isIE6);
+        var size = config.embedLink.qrCodeSize;
+        
+        this.QRCodeMenu=Ext.apply({config:config}, {
+        text: this.mobileText,
+        disabled: !showQR,
+        iconCls: 'ic_mobile',
+        menu: {
+            xtype: 'menu',
+            plain: true,
+            
+                items: [{
+                    text: this.installApplicationText,
+                    iconCls: 'ic_qrcode',
+                    scope:this,
+                    handler: function(menu){
+                        
+                        var win = new Ext.Window({
+                            title: menu.text,
+                            layout:'hbox',
+                            url:config.embedLink.appDownloadUrl,
+                            minWidth: size,
+                            minHeight: size,
+                            resizable: true,
+                            modal: true,
+                            items:[{
+                                xtype:'panel',
+                                width:size,
+                                height:size,
+                                ref:'qrcode',
+                                border:false
+                            },{
+                                bodyStyle:'padding:20px',
+                                xtype:'panel',
+                                html:this.scanThisSourceText,
+                                height:size
+                            }],
+
+                            listeners: {
+                                afterrender:function(win){
+                                    var qrCodePanel = win.qrcode;
+                                     var code = new QRCode(
+                                        win.qrcode.body, 
+                                        {
+                                            text:win.url,
+                                            width: size,
+                                            height: size
+                                        });
+                                    qrCodePanel.code = code;
+                                    
+                                }
+                            }
+                        });
+                        win.show();
+                    }
+                },{
+                    iconCls: 'ic_qrcode',
+                    text: this.loadThisSourceText,
+                    tooltip: 'Share This Source',
+                    scope:this,
+                    handler:function(menu){
+                       var win = new Ext.Window({
+                            title: menu.text,
+                            layout:'hbox',
+                            url:config.geoStoreBase.replace("http://","mapstoresource://"),
+                            minWidth: size,
+                            minHeight: size,
+                            resizable: false,
+                            modal: true,
+                            items:[{
+                                xtype:'panel',
+                                width:size,
+                                height:size,
+                                ref:'qrcode',
+                                border:false
+                            },{
+                                bodyStyle:'padding:20px',
+                                xtype:'panel',
+                                html:this.scanThisApplicationText,
+                                height:size
+                            }],
+
+                            listeners: {
+                                afterrender:function(win){
+                                    var qrCodePanel = win.qrcode;
+                                     var code = new QRCode(
+                                        win.qrcode.body, 
+                                        {
+                                            text:win.url,
+                                            width: size,
+                                            height: size
+                                        });
+                                    qrCodePanel.code = code;
+                                    
+                                }
+                            }
+                        });
+                        win.show();
+                    }
+                }]
+            }
+        });
+        // //////////////
+        // ROW EXPANDER 
+        // //////////////
         
         var grid = this;
 
@@ -1616,7 +1737,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     grid.getBottomToolbar().doRefresh();
                     expander.collapseAll();
                 } 
-            },'->',
+            },this.QRCodeMenu,'->',
 			this.login.userLabel,
 			'-',
 			this.openUserManagerButton,

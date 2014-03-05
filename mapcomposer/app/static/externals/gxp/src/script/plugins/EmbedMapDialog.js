@@ -310,7 +310,7 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
             },{
                 xtype:'button',
                 text:this.openImageInANewTab,
-                ref:'../open',
+                ref: '../open',
                 handler: function(btn){
                             var data = qrCodePanel.body.dom.lastChild.getAttribute("src");
                             data.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
@@ -327,8 +327,8 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
         });
         
          var fieldset = new Ext.form.FieldSet({
-                layout:'column',
-                height:this.qrCodeSize + 60,
+                layout: 'column',
+                height: this.qrCodeSize + 60,
 				title: this.loadInMapStoreMobileText,
 				items:[
                     qrCodePanel,

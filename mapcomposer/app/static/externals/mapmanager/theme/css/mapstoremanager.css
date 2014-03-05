@@ -130,6 +130,14 @@ display:block;
     background-image: url(../img/delete.png) !important;
 }
 
+.ic_mobile {
+    background-image: url(../img/mobile.png) !important;
+}
+
+.ic_qrcode {
+    background-image: url(../img/qrcode.png) !important;
+}
+
 .pencil .x-btn-text {
     background-image: url(../img/pencil.png);
 }
