@@ -628,7 +628,7 @@ GeoExt.Lang.add("it", {
 		urlLabel: "URL",
 		showMapTooltip: "Mostra in una nuova finestra",
         loadMapText: "Carica Mappa",
-        downloadAppText: "istalla applicazione Android",
+        downloadAppText: "installa applicazione Android",
         loadInMapStoreMobileText:'Mobile',
         openImageInANewTab: "Apri immagine in una nuova tab"
 	},

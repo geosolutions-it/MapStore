@@ -56,7 +56,12 @@ GeoExt.Lang.add("de", {
 		embedCodeTitle: "Embed Code",
 		embedURL: "Direct URL",			
 		urlLabel: "URL",
-		exportMapText: "Link Map"
+		exportMapText: "Link Map",
+        mobileText: "Mobile", 
+        installApplicationText: "Install Android-Anwendung", 
+        loadThisSourceText: "Fügen Sie diese Quelle zum Mapstore Mobile",
+        scanThisApplicationText: "Scannen Sie diesen QR Code Mapstore für Android installieren", 
+        scanThisSourceText: "Scan diesen QR-Code, um diese Quelle zu deinen Mapstore Mobile-Anwendung hinzufügen, müssen Sie Mapstore für Android installieren, bevor."
     },
     "MSMPagingToolbar.prototype": {
         desc: "Neue Karte",

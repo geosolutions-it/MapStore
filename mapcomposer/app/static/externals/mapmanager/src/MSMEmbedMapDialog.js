@@ -294,6 +294,7 @@ EmbedMapDialog = Ext.extend(Ext.Container, {
         
          var fieldset = new Ext.form.FieldSet({
                 layout:'column',
+                iconCls: 'ic_mobile',
                 height:this.qrCodeSize + 60,
 				title: this.loadInMapStoreMobileText,
 				items:[

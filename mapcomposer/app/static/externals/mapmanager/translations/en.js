@@ -55,7 +55,12 @@ GeoExt.Lang.add("en", {
 		embedCodeTitle: "Embed Code",
 		embedURL: "Direct URL",	
 		urlLabel: "URL",
-		exportMapText: "Link Map"
+		exportMapText: "Link Map",
+        mobileText:"Mobile",
+        installApplicationText:"Install Android Application",
+        loadThisSourceText:"Add this source to MapStore Mobile",
+        scanThisApplicationText:"Scan this QR code to Install MapStore for Android",
+        scanThisSourceText:"Scan this QR code to add this source to your MapStore Mobile application. You need to install MapStore for Android before"
     },
     "MSMPagingToolbar.prototype": {
         desc: "New Map",
@@ -132,7 +137,7 @@ GeoExt.Lang.add("en", {
         premiumSizeLabel: "Premium",
         largeSizeLabel: "Large",
         loadMapText: "Load this Map (install application first)",
-        downloadAppText: "install Application",
+        downloadAppText: "Install Application",
         loadInMapStoreMobileText: "Mobile",
         openImageInANewTab: "Open Image in a New Tab"
     }
