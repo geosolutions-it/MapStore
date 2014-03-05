@@ -640,7 +640,11 @@ GeoExt.Lang.add("de", {
 		embedCodeTitle: "Embed Code",
 		embedURL: "Direct URL",		
 		urlLabel: "URL",
-		showMapTooltip: "In einem neuen Fenster anzeigen"
+		showMapTooltip: "In einem neuen Fenster anzeigen",
+        loadMapText: "Load this Map (installieren Sie zuerst die Anwendung)", 
+        downloadAppText: "Die Anwendung Installieren", 
+        loadInMapStoreMobileText: "Mobile",
+        openImageInANewTab: "Bild in einem neuen Tab"
 	},
     
     "gxp.plugins.WFSGrid.prototype":{

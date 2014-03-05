@@ -626,7 +626,11 @@ GeoExt.Lang.add("it", {
 		embedCodeTitle: "Codice da Incorporare",
 		embedURL: "URL diretto",		
 		urlLabel: "URL",
-		showMapTooltip: "Mostra in una nuova finestra"
+		showMapTooltip: "Mostra in una nuova finestra",
+        loadMapText: "Carica Mappa",
+        downloadAppText: "istalla applicazione Android",
+        loadInMapStoreMobileText:'Mobile',
+        openImageInANewTab: "Apri immagine in una nuova tab"
 	},
 
     "gxp.widgets.form.SpatialSelectorField.prototype" :{

@@ -64,6 +64,19 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
 	
 	showDirectURL: true,
 	
+    /**QR Code add-ons
+    */
+    loadMapText: 'Load this Map (install application first)',
+    downloadAppText: 'Install Application',
+    loadInMapStoreMobileText:'Mobile',
+    openImageInANewTab: "Open Image in a New Tab",
+    showQRCode: true,
+    
+    qrCodeSize:128,
+    
+    appDownloadUrl:"http://demo.geo-solutions.it/share/mapstoremobile/MapStoreMobile.apk",
+    
+    
     /** 
      * api: method[addActions]
      */
@@ -147,8 +160,9 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
                }
            };*/
            
-           var curLang = OpenLayers.Util.getParameters()["locale"] || 'en';       		   
-           var url = this.embeddedTemplateName + "?locale=" + curLang + "&bbox=" + target.mapPanel.map.getExtent() + "&mapId=" + target.mapId;
+           var curLang = OpenLayers.Util.getParameters()["locale"] || 'en';
+           var qstring = "?locale=" + curLang + "&bbox=" + target.mapPanel.map.getExtent() + "&mapId=" + target.mapId;
+           var url = this.embeddedTemplateName + qstring;
 		   
            var embedMap = new gxp.EmbedMapDialog({
                id: 'geobuilder-1',
@@ -201,7 +215,11 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
 		   if(this.showDirectURL === true){
 				wizardItems.push(directURL);
 		   }
-		   
+		   if(this.showQRCode ==true){
+            var qrCodePanel = this.createQrCodePanel(this.target.geoStoreBaseURL + "data/" + target.mapId );
+            wizardItems.push(qrCodePanel);
+           }
+           
            var wizard = {
                id: 'geobuilder-wizard-panel',
                /*border: false,
@@ -236,12 +254,90 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
            new Ext.Window({
                 layout: 'fit',
                 width: 500, 
-				height: this.showDirectURL === true ? 345 : 245,
+                
+				height: 245 +  (this.showDirectURL == true? 100 : 0) + (this.showQRCode  ? this.qrCodeSize + 60 :0),
                 title: this.exportMapText,
                 items: [wizard]
            }).show();
+           
         }
-    }        
+        
+    },
+    
+    /**
+     * create the QR Code panel.
+     * This functionality is available only for IE9+,Google Chrome,Mozilla Firefox
+     */
+    createQrCodePanel: function(url){
+         url = url.replace("http://","mapstore://");
+         var size = this.qrCodeSize;
+         var qrCodePanel = new Ext.Panel({
+            ref:'qrcode',
+            columnWidth: '.35',
+            height:this.qrCodeSize,
+            width:this.qrCodeSize,
+            border:false,
+            listeners:{
+                afterrender:function(qrCodePanel){
+                    var code = new QRCode(qrCodePanel.body, 
+                        {text:url,
+                        width: size,
+                        height: size
+                    });
+                    qrCodePanel.code = code;
+                }
+            }
+         });
+            
+         var choose = new Ext.form.RadioGroup({
+            ref:'radio',
+            autoHeight: true,
+            columns: 1,
+            columnWidth: '.65',
+            defaultType: 'radio', // each item will be a radio button
+            items:[
+            {
+                checked: true,
+                boxLabel: this.loadMapText,
+                name: 'qr_code',
+                inputValue: url
+            },{
+                labelSeparator: '',
+                boxLabel: this.downloadAppText,
+                name: 'qr_code',
+                inputValue: this.appDownloadUrl
+            },{
+                xtype:'button',
+                text:this.openImageInANewTab,
+                ref:'../open',
+                handler: function(btn){
+                            var data = qrCodePanel.body.dom.lastChild.getAttribute("src");
+                            data.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+                            window.open(data,'_blank');
+                        }
+            }],
+            listeners:{
+                change: function(radio,checked){
+                    var qr = qrCodePanel.code;
+                    qr.clear();
+                    qr.makeCode(checked.inputValue);
+                }
+            }
+        });
+        
+         var fieldset = new Ext.form.FieldSet({
+                layout:'column',
+                height:this.qrCodeSize + 60,
+				title: this.loadInMapStoreMobileText,
+				items:[
+                    qrCodePanel,
+					choose
+				],
+				bodyStyle: 'padding: 15px'
+		   });
+        return fieldset;
+    
+    }
 });
 
 Ext.preg(gxp.plugins.EmbedMapDialog.prototype.ptype, gxp.plugins.EmbedMapDialog);

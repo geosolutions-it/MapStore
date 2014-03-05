@@ -601,7 +601,11 @@ GeoExt.Lang.add("es", {
 		embedCodeTitle: "Código embebido",
 		embedURL: "URL directa",		
 		urlLabel: "URL",
-		showMapTooltip: "Mostar en una nueva ventana"
+		showMapTooltip: "Mostar en una nueva ventana",
+        loadMapText: "Cargar el mapa", 
+        downloadAppText: "Cargar este mapa (instalar la aplicación primero)", 
+        loadInMapStoreMobileText: "Mobile",
+        openImageInANewTab: "Abrir imagen en una nueva pestaña"
 	},
     
     "gxp.plugins.WFSGrid.prototype":{

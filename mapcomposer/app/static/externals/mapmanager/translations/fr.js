@@ -130,6 +130,10 @@ GeoExt.Lang.add("fr", {
         miniSizeLabel: "Mini",
         smallSizeLabel: "Petit",
         premiumSizeLabel: "Premium",
-        largeSizeLabel: "Grand"
+        largeSizeLabel: "Grand",
+        loadMapText: "Chargez ce Plan (installer application avant)", 
+        downloadAppText: "installer l'application", 
+        loadInMapStoreMobileText: "Mobile",
+        openImageInANewTab: "Ouvrir une image dans un nouvel onglet"
     }
 });

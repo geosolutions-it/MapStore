@@ -81,6 +81,19 @@ EmbedMapDialog = Ext.extend(Ext.Container, {
      */
     widthField: null,
     
+    
+    
+    /**QR Code add-ons
+    */
+    loadMapText: 'Load Map',
+    downloadAppText: 'install Android Application',
+    loadInMapStoreMobileText:'load in MapStoreMobile',
+    openImageInANewTab: "Open Image in a New Tab",
+    showQRCode: true,
+    qrCodeSize:128,
+    appDownloadUrl:"http://demo.geo-solutions.it/share/mapstoremobile/MapStoreMobile.apk",
+    
+    
     /** private: method[initComponent]
      */
     initComponent: function() {
@@ -217,6 +230,80 @@ EmbedMapDialog = Ext.extend(Ext.Container, {
                 scope: this
             }
         };
+    },
+    /**
+     * create the QR Code panel.
+     * This functionality is available only for IE9+,Google Chrome,Mozilla Firefox
+     */
+    createQrCodePanel: function(url){
+         url = url.replace("http://","mapstore://");
+         var size = this.qrCodeSize;
+         var qrCodePanel = new Ext.Panel({
+            ref:'qrcode',
+            columnWidth: '.35',
+            height:this.qrCodeSize,
+            width:this.qrCodeSize,
+            border:false,
+            listeners:{
+                afterrender:function(qrCodePanel){
+                    var code = new QRCode(qrCodePanel.body, 
+                        {text:url,
+                        width: size,
+                        height: size
+                    });
+                    qrCodePanel.code = code;
+                }
+            }
+         });
+            
+         var choose = new Ext.form.RadioGroup({
+            ref:'radio',
+            autoHeight: true,
+            columns: 1,
+            columnWidth: '.65',
+            defaultType: 'radio', // each item will be a radio button
+            items:[
+            {
+                checked: true,
+                boxLabel: this.loadMapText,
+                name: 'qr_code',
+                inputValue: url
+            },{
+                labelSeparator: '',
+                boxLabel: this.downloadAppText,
+                name: 'qr_code',
+                inputValue: this.appDownloadUrl
+            },{
+                xtype:'button',
+                text:this.openImageInANewTab,
+                ref:'../open',
+                handler: function(btn){
+                            var data = qrCodePanel.body.dom.lastChild.getAttribute("src");
+                            data.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+                            window.open(data,'_blank');
+                        }
+            }],
+            listeners:{
+                change: function(radio,checked){
+                    var qr = qrCodePanel.code;
+                    qr.clear();
+                    qr.makeCode(checked.inputValue);
+                }
+            }
+        });
+        
+         var fieldset = new Ext.form.FieldSet({
+                layout:'column',
+                height:this.qrCodeSize + 60,
+				title: this.loadInMapStoreMobileText,
+				items:[
+                    qrCodePanel,
+					choose
+				],
+				bodyStyle: 'padding: 15px'
+		   });
+        return fieldset;
+    
     }
 });
 

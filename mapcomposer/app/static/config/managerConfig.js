@@ -36,6 +36,8 @@
    ],
    "embedLink": {
 		"embeddedTemplateName": "viewer",
-		"showDirectURL": true
+		"showDirectURL": true,
+        "showQRCode":true,
+        "qrCodeSize":128
 	}
 }
