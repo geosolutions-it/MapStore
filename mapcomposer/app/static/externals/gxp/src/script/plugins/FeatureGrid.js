@@ -77,6 +77,14 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             addGeometry: true
         }
     },
+
+    /** api: config[exportAction]
+     *  ``String`` Export action type. 
+     *  It can be `button` (append one button for each export format) 
+     *  or `window` (append only one button `Export` and show options in a new window).
+     *  Default is `window`.
+     */
+    exportAction: "window",
     
     /** api: config[displayMode]
      *  ``String`` Should we display all features on the map, or only the ones
@@ -106,6 +114,11 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  the underlying feature manager. Default is false.
      */
     selectOnMap: false,
+    
+    /** api: config[comboFormatTpl]
+     *  ``String`` Tpl for the export combo in the export window.
+     */
+    comboFormatTpl: "<tpl for=\".\"><div class=\"x-combo-list-item gxp-icon-featuregrid-export {iconCls}\">{name}</div></tpl>",
     
     /** api: config[displayFeatureText]
      * ``String``
@@ -190,6 +203,36 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  String template for showing total number of records (i18n).
      */
     totalMsg: "Total: {0} records",
+
+    /** api: config[comboFormatMethodLabel]
+     *  ``String``
+     *  String for the export format label (i18n).
+     */
+    comboFormatMethodLabel: "Format",
+
+    /** api: config[comboFormatEmptyText]
+     *  ``String``
+     *  String for the export format empty combo (i18n).
+     */
+    comboFormatEmptyText: "Please, select format",
+
+    /** api: config[noFormatTitleText]
+     *  ``String``
+     *  SString for the unselected format title (i18n).
+     */
+    noFormatTitleText: "Incorrect format",
+
+    /** api: config[noFormatBodyText]
+     *  ``String``
+     *  String for the unselected format body (i18n).
+     */
+    noFormatBodyText: "Please, select a valid format",
+
+    /** api: config[exportTitleText]
+     *  ``String``
+     *  String for the Export button i18n).
+     */
+    exportTitleText: "Export",
     
     /** api: config[title]
      *  ``String``
@@ -313,18 +356,22 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
 
         // Export formats 
         if(this.exportFormats){
-            var appendedCSVExporter = false;
-            for (var i = 0; i < this.exportFormats.length; i++){
-                var format = this.exportFormats[i];
-                // Retrocompatibilty
-                if(format == "CSV"){
-                    appendedCSVExporter = true;
+            if(this.exportAction == 'window'){
+                bbar.push(this.getExportWindowButton());
+            }else{
+                var appendedCSVExporter = false;
+                for (var i = 0; i < this.exportFormats.length; i++){
+                    var format = this.exportFormats[i];
+                    // Retrocompatibilty
+                    if(format == "CSV"){
+                        appendedCSVExporter = true;
+                    }
+                    bbar.push(this.getExportButton(format));
                 }
-                bbar.push(this.getExportButton(format));
-            }
-            // Retrocompatibilty
-            if(!appendedCSVExporter && this.showExportCSV){
-                bbar.push(this.getExportButton("CSV"));
+                // Retrocompatibilty
+                if(!appendedCSVExporter && this.showExportCSV){
+                    bbar.push(this.getExportButton("CSV"));
+                }
             }
         }else{
             // Retrocompatibilty
@@ -346,9 +393,13 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                     var onClear = OpenLayers.Function.bind(function() {
                         this.showExportCSV ? this.output[0].exportCSVButton.disable() : {};
                         if(this.exportFormats){
-                            for (var i = 0; i < this.exportFormats.length; i++){
-                                var format = this.exportFormats[i];
-                                this.output[0]["export" + format + "Button"].disable();
+                            if(this.exportAction == 'window'){
+                                this.output[0]["exportButton"].disable();
+                            }else{
+                                for (var i = 0; i < this.exportFormats.length; i++){
+                                    var format = this.exportFormats[i];
+                                    this.output[0]["export" + format + "Button"].disable();
+                                }
                             }
                         }
                         this.displayTotalResults();
@@ -359,9 +410,13 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                     var onPopulate = OpenLayers.Function.bind(function() {
                         this.showExportCSV ? this.output[0].exportCSVButton.enable() : {};
                         if(this.exportFormats){
-                            for (var i = 0; i < this.exportFormats.length; i++){
-                                var format = this.exportFormats[i];
-                                this.output[0]["export" + format + "Button"].enable();
+                            if(this.exportAction == 'window'){
+                                this.output[0]["exportButton"].enable();
+                            }else{
+                                for (var i = 0; i < this.exportFormats.length; i++){
+                                    var format = this.exportFormats[i];
+                                    this.output[0]["export" + format + "Button"].enable();
+                                }
                             }
                         }
                         this.displayTotalResults();
@@ -441,7 +496,132 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         }, this);
         
         return featureGrid;
-    },    
+    },
+
+    /** api: method[getExportWindowButton]
+     *  Generate a export button to open a new dialog with the configured formats
+     */    
+    getExportWindowButton: function(){
+        var exportWindow = this.exportWindow;
+        if(!exportWindow){
+            var formatStore = [];
+            var appendedCSVExporter = false;
+            for (var i = 0; i < this.exportFormats.length; i++){
+                var format = this.exportFormats[i];
+                // Retrocompatibilty
+                if(format == "CSV"){
+                    appendedCSVExporter = true;
+                }
+                formatStore.push({
+                    name: format,
+                    value: format,
+                    iconCls: "gxp-icon-" + format.toLowerCase() + "export"
+                });
+            }
+            // Retrocompatibilty
+            if(!appendedCSVExporter && this.showExportCSV){
+                formatStore.push({
+                    name: "CSV",
+                    value: "CSV",
+                    iconCls: "gxp-icon-csvexport-single"
+                });
+            }
+            var selectionFormatCombo = {
+                xtype : 'combo',
+                width: 179,
+                fieldLabel : this.comboFormatMethodLabel,
+                typeAhead : true,
+                triggerAction : 'all',
+                lazyRender : false,
+                mode : 'local',
+                name : 'format',
+                forceSelected : true,
+                emptyText : this.comboFormatEmptyText,
+                allowBlank : false,
+                autoLoad : true,
+                displayField : 'name',
+                valueField : 'value',
+                editable : false,
+                readOnly : false,
+                tpl: this.comboFormatTpl,
+                listConfig: {
+                      getInnerTpl: function(displayField) {
+                        return '<div class="{iconCls}"> {' + displayField + '}' + "</div>";
+                      }
+                },
+                store : new Ext.data.JsonStore({
+                    fields : [{
+                        name : 'name',
+                        dataIndex : 'name'
+                    }, {
+                        name : 'value',
+                        dataIndex : 'value'
+                    }, {
+                        name : 'iconCls',
+                        dataIndex : 'iconCls'
+                    }],
+                    data : formatStore
+                })
+            };
+            exportWindow = new Ext.Window({
+                title: this.exportTitleText,
+                width: 300,
+                closeAction: 'hide',
+                items: [{
+                    xtype: 'form',
+                    ref: "form",
+                    items: [selectionFormatCombo],
+                    bbar: ["->", {
+                        iconCls: "gxp-icon-csvexport-single",
+                        text: this.exportCSVSingleText,
+                        handler: function() {
+                            if(this.exportWindow.form.getForm().isValid()){
+                                var format = this.exportWindow.form.getForm().getValues().format;
+                                this.export(false, format);
+                            }else{
+                                Ext.Msg.show({
+                                    title: this.noFormatTitleText,
+                                    msg: this.noFormatBodyText,
+                                    buttons: Ext.Msg.OK,
+                                    icon: Ext.MessageBox.ERROR
+                                }); 
+                            }
+                        },
+                        scope: this
+                    },{
+                        iconCls: "gxp-icon-csvexport-multiple",
+                        text: this.exportCSVMultipleText,
+                        handler: function() {
+                            if(this.exportWindow.form.getForm().isValid()){
+                                var format = this.exportWindow.form.getForm().getValues().format;
+                                this.export(false, format);
+                            }else{
+                                Ext.Msg.show({
+                                    title: this.noFormatTitleText,
+                                    msg: this.noFormatBodyText,
+                                    buttons: Ext.Msg.OK,
+                                    icon: Ext.MessageBox.ERROR
+                                }); 
+                            }
+                        },
+                        scope: this
+                    }]
+                }]
+            });
+            this.exportWindow = exportWindow;
+        }
+        return {
+            text: this.exportTitleText,
+            xtype: 'button',
+            disabled: true,
+            iconCls: "gxp-icon-csvexport",
+            ref: "../exportButton",
+            handler:function() {                    
+                this.exportWindow.show();
+            },
+            scope: this
+        };
+    }, 
 
     /** api: method[getExportButton]
      *  Generate a export button for an specific format
