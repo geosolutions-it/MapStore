@@ -693,6 +693,7 @@ GeoExt.Lang.add("it", {
     "gxp.plugins.spatialselector.SpatialSelectorMethod.prototype" :{
         areaLabel : "Area",
         perimeterLabel : "Perimetro",
+        lengthLabel: "Lunghezza",
         radiusLabel : "Raggio",
         centroidLabel : "Centroide",
         selectionSummary: "Sommario delle Selezioni"

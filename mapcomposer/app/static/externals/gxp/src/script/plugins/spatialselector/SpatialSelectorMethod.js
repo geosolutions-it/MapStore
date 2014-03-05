@@ -133,6 +133,12 @@ gxp.plugins.spatialselector.SpatialSelectorMethod = Ext.extend(gxp.plugins.Tool,
 	 */
 	areaLabel : "Area",
 
+	/** api: config[lengthLabel]
+	 * ``String``
+	 * Text for the Selection Summary Perimeter Label (i18n).
+	 */
+	lengthLabel : "Length",
+
 	/** api: config[perimeterLabel]
 	 * ``String``
 	 * Text for the Selection Summary Perimeter Label (i18n).
@@ -261,6 +267,7 @@ gxp.plugins.spatialselector.SpatialSelectorMethod = Ext.extend(gxp.plugins.Tool,
 			}
 
 			this.addFeatureSummary(geometry);
+			this.output.fireEvent("geometrySelect", geometry);
 		} 
     },
 
@@ -316,8 +323,13 @@ gxp.plugins.spatialselector.SpatialSelectorMethod = Ext.extend(gxp.plugins.Tool,
 		var summary = "", metricUnit = "km";
 
 		var area = this.getArea(geometry, metricUnit);
+		var length = this.getLength(geometry, metricUnit);
 		if (area) {
 			summary += this.areaLabel + ": " + area + " " + metricUnit + '<sup>2</sup>' + '<br />';
+		}else if (length) {
+			summary += this.lengthLabel + ": " + length + " " + metricUnit + '<br />';
+		}else if(geometry instanceof OpenLayers.Geometry.Point){
+			summary += "X: " + geometry.x + ", Y:" + geometry.y + '<sup>2</sup>' + '<br />';
 		}
 
 		return summary;
@@ -335,13 +347,16 @@ gxp.plugins.spatialselector.SpatialSelectorMethod = Ext.extend(gxp.plugins.Tool,
 	 */
 	getArea : function(geometry, units) {
 		var area, geomUnits;
-		area = geometry.getGeodesicArea(this.target.mapPanel.map.getProjectionObject());
-		geomUnits = "m";
+		area = geometry.getArea();
+		if(area > 0){
+			area = geometry.getGeodesicArea(this.target.mapPanel.map.getProjectionObject());
+			geomUnits = "m";
 
-		var inPerDisplayUnit = OpenLayers.INCHES_PER_UNIT[units];
-		if (inPerDisplayUnit) {
-			var inPerMapUnit = OpenLayers.INCHES_PER_UNIT[geomUnits];
-			area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
+			var inPerDisplayUnit = OpenLayers.INCHES_PER_UNIT[units];
+			if (inPerDisplayUnit) {
+				var inPerMapUnit = OpenLayers.INCHES_PER_UNIT[geomUnits];
+				area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
+			}
 		}
 		return area;
 	},
@@ -358,13 +373,16 @@ gxp.plugins.spatialselector.SpatialSelectorMethod = Ext.extend(gxp.plugins.Tool,
 	 */
 	getLength : function(geometry, units) {
 		var length, geomUnits;
-		length = geometry.getGeodesicLength(this.target.mapPanel.map.getProjectionObject());
-		geomUnits = "m";
+		length = geometry.getLength();
+		if(length){
+			length = geometry.getGeodesicLength(this.target.mapPanel.map.getProjectionObject());
+			geomUnits = "m";
 
-		var inPerDisplayUnit = OpenLayers.INCHES_PER_UNIT[units];
-		if (inPerDisplayUnit) {
-			var inPerMapUnit = OpenLayers.INCHES_PER_UNIT[geomUnits];
-			length *= (inPerMapUnit / inPerDisplayUnit);
+			var inPerDisplayUnit = OpenLayers.INCHES_PER_UNIT[units];
+			if (inPerDisplayUnit) {
+				var inPerMapUnit = OpenLayers.INCHES_PER_UNIT[geomUnits];
+				length *= (inPerMapUnit / inPerDisplayUnit);
+			}
 		}
 		return length;
 	}
