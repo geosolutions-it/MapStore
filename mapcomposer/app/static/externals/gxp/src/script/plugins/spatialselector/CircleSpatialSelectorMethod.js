@@ -123,7 +123,8 @@ gxp.plugins.spatialselector.CircleSpatialSelectorMethod = Ext.extend(gxp.plugins
 		if (centroidStyle) {
 			var style = new OpenLayers.Style(centroidStyle);
 			var options = {
-				styleMap : style
+				styleMap : style,
+				displayInLayerSwitcher: false
 			};
 		}
 

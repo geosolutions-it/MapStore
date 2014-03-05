@@ -283,3 +283,17 @@ table.featureInfo caption{
 	top: 0;
 	left: 0;
 }
+
+/* excel_export */
+.x-btn .gxp-icon-excelexport, .x-menu-item .gxp-icon-excelexport {
+    background-image: url(img/silk/page_excel.png) !important;
+}
+
+.x-btn .gxp-icon-excel2007export, .x-menu-item .gxp-icon-excel2007export {
+    background-image: url(img/silk/page_excel.png) !important;
+}
+
+/* shp_export */
+.x-btn .gxp-icon-shape-zipexport, .x-menu-item .gxp-icon-shape-zipexport {
+    background-image: url(img/silk/page_white_zip.png) !important;
+}
