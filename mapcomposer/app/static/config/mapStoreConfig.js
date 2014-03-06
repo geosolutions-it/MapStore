@@ -161,13 +161,6 @@
 			"showCapabilitiesGrid": true,
 			"id": "addlayer"
 		}, {
-			"actions": ["-"], 
-			"actionTarget": "paneltbar"
-		}, {
-			"ptype": "gxp_geolocationmenu",
-			"actionTarget": {"target": "paneltbar", "index": 23},
-			"toggleGroup": "toolGroup"
-		}, {
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
 		}, {
@@ -458,5 +451,6 @@
                 }
             }
     }
-	]
+	],
+	"removeTools":["zoombox_plugin", "googleearth_separator", "googleearth_plugin"]
 }
