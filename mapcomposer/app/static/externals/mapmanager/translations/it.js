@@ -137,7 +137,7 @@ GeoExt.Lang.add("it", {
         premiumSizeLabel: "Premium",
         largeSizeLabel: "Grande",
         loadMapText: "Carica Mappa",
-        downloadAppText: "installa applicazione Android",
+        downloadAppText: "Installa Applicazione Android",
         loadInMapStoreMobileText:'Mobile',
         openImageInANewTab: "Apri immagine in una nuova tab"
     }
