@@ -540,7 +540,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             },{
                                 bodyStyle:'padding:20px',
                                 xtype:'panel',
-                                html:this.scanThisSourceText,
+                                html:this.scanThisApplicationText,
                                 height:size
                             }],
 
@@ -584,7 +584,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             },{
                                 bodyStyle:'padding:20px',
                                 xtype:'panel',
-                                html:this.scanThisApplicationText,
+                                html:this.scanThisSourceText,
                                 height:size
                             }],
 
