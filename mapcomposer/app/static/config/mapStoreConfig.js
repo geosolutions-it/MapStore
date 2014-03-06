@@ -450,6 +450,21 @@
                     "zoomToCurrentExtent": false
                 }
             }
+    },{
+        "ptype":"gxp_print",
+        "customParams":{
+            "outputFilename":"mapstore-print"
+        },
+        "ignoreLayers": "Google Hybrid,Bing Aerial,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
+        "printService":"http://localhost:8080/geoserver/pdf/",
+        "legendPanelId":"legendPanel",
+        "actionTarget":{
+            "target":"paneltbar",
+            "index":4
+        },
+        "addLandscapeControl": true,
+        "appendLegendOptions": true,
+        "addGraticuleControl": true
     }
 	],
 	"removeTools":["zoombox_plugin", "googleearth_separator", "googleearth_plugin"]
