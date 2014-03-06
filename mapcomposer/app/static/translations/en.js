@@ -603,7 +603,7 @@ GeoExt.Lang.add("en", {
 		urlLabel: "URL",
 		showMapTooltip: "Show in a new Window",
         loadMapText: "Load this Map (install application first)",
-        downloadAppText: "install Application",
+        downloadAppText: "Install Application",
         loadInMapStoreMobileText: "Mobile",
         openImageInANewTab: "Open Image in a New Tab"
 	},
