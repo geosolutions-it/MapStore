@@ -338,11 +338,16 @@ GeoExt.Lang.add("es", {
         title: "Entidades",
         totalMsg: "Total: {0} entidades",
         displayExportCSVText: "Exportar a CSV",
-        exportCSVSingleText: "Página singular",
+        exportCSVSingleText: "Página actual",
         exportCSVMultipleText: "Toda la página",
         failedExportCSV: "Error al encontrar una respuesta para la exportación a CSV",
         invalidParameterValueErrorText: "Valor de los parámetros inválido",
-		zoomToFeature: "Zoom a Entidad"
+		zoomToFeature: "Zoom a Entidad",
+        comboFormatMethodLabel: "Formato",
+        comboFormatEmptyText: "Por favor, seleccione un formato",
+        noFormatTitleText: "Formato inválido",
+        noFormatBodyText: "Por favor, seleccione un formato válido",
+        exportTitleText: "Exportar"
     },
     "gxp.plugins.QueryForm.prototype": {
         queryActionText: "Consultar",
