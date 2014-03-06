@@ -283,3 +283,41 @@ table.featureInfo caption{
 	top: 0;
 	left: 0;
 }
+
+/* Feature grid Export */
+.gxp-icon-featuregrid-export {
+    background-position-x: 2px !important;
+    background-position-y: 4px !important;
+    padding-left: 20px;
+    padding-top: 5px;
+    height: 20px;
+}
+
+/* csv_export */
+.gxp-icon-csvexport{
+    background: transparent url(img/silk/page_white_text.png) no-repeat;
+}
+
+/* excel_export */
+.x-btn .gxp-icon-excelexport, .x-menu-item .gxp-icon-excelexport{
+    background-image: url(img/silk/page_excel.png) !important;
+}
+.gxp-icon-excelexport {
+    background: transparent url(img/silk/page_excel.png) no-repeat;
+}
+
+/* excel2007_export */
+.x-btn .gxp-icon-excel2007export, .x-menu-item .gxp-icon-excel2007export{
+    background-image: url(img/silk/page_white_office.png) !important;
+}
+.gxp-icon-excel2007export {
+    background: transparent url(img/silk/page_white_office.png) no-repeat;
+}
+
+/* shp_export */
+.x-btn .gxp-icon-shape-zipexport, .x-menu-item .gxp-icon-shape-zipexport{
+    background-image: url(img/silk/page_white_zip.png) !important;
+}
+.gxp-icon-shape-zipexport {
+    background: transparent url(img/silk/page_white_zip.png) no-repeat;
+}
