@@ -19,7 +19,7 @@
  */
 
 /**
- * @requires plugins/spatialselector/SpatialSelectorMethod.js
+ * @requires widgets/form/spatialselector/SpatialSelectorMethod.js
  */
  
 /**
@@ -27,24 +27,24 @@
  */
 
 /** api: (define)
- *  module = gxp.plugins.spatialselector
+ *  module = gxp.widgets.form.spatialselector
  *  class = BBOXSpatialSelectorMethod
  */
 
 /** api: (extends)
- *  plugins/spatialselector/SpatialSelectorMethod.js
+ *  widgets/form/spatialselector/SpatialSelectorMethod.js
  */
-Ext.namespace('gxp.plugins.spatialselector');
+Ext.namespace('gxp.widgets.form.spatialselector');
 
 /** api: constructor
  *  .. class:: BBOXSpatialSelectorMethod(config)
  *
  *    Plugin for spatial selection based on BBOX fieldset
  */
-gxp.plugins.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.plugins.spatialselector.SpatialSelectorMethod, {
+gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.widgets.form.spatialselector.SpatialSelectorMethod, {
 
-	/* ptype = gxp_spatial_bbox_selector */
-	ptype : 'gxp_spatial_bbox_selector',
+	/* xtype = gxp_spatial_bbox_selector */
+	xtype : 'gxp_spatial_bbox_selector',
 
 	/** api: config[name]
 	 *  ``String``
@@ -111,9 +111,10 @@ gxp.plugins.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.plugins.s
 	 */
 	setAoiTooltip : 'Enable the SetBox control to draw a ROI (Bounding Box) on the map',
 
-    /** api: method[addOutput]
+    /** private: method[initComponent]
+     *  Override
      */
-    addOutput: function() {
+    initComponent: function() {   
 
 		// ///////////////////////////////////////////
 		// Spatial AOI Selector FieldSet
@@ -129,6 +130,7 @@ gxp.plugins.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.plugins.s
             selectStyle: this.selectStyle,
             temporaryStyle: this.temporaryStyle,
             // width: 300,
+            anchor: "100%",
 
 		    // start i18n
             title: this.setAoiTitle,
@@ -149,7 +151,9 @@ gxp.plugins.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.plugins.s
 
     	this.output = new gxp.form.BBOXFieldset(confbbox);
 
-    	return this.output;
+    	this.items = [this.output];
+
+        gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.superclass.initComponent.call(this);
     },
 
     // Generate filter
@@ -165,7 +169,7 @@ gxp.plugins.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.plugins.s
 
 	// trigger action when activate the plugin
 	activate: function(){
-		gxp.plugins.spatialselector.BBOXSpatialSelectorMethod.superclass.activate.call(this);
+		gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.superclass.activate.call(this);
 		if(this.output){
 			this.output.enable();
 		}
@@ -173,7 +177,7 @@ gxp.plugins.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.plugins.s
 
 	// trigger action when deactivate the plugin
 	deactivate: function(){
-		gxp.plugins.spatialselector.BBOXSpatialSelectorMethod.superclass.deactivate.call(this);
+		gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.superclass.deactivate.call(this);
 		if(this.output){
     		this.output.removeBBOXLayer();
 			this.output.disable();
@@ -182,8 +186,9 @@ gxp.plugins.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.plugins.s
 
     // Reset method
     reset: function(){
-		gxp.plugins.spatialselector.BBOXSpatialSelectorMethod.superclass.reset.call(this);
+		gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.superclass.reset.call(this);
     	this.output.removeBBOXLayer();
+    	this.output.reset();
     },
 
     // set current geometry
@@ -205,7 +210,7 @@ gxp.plugins.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.plugins.s
 	 */
     getSummary: function(geometry){
 
-		var summary = gxp.plugins.spatialselector.BBOXSpatialSelectorMethod.superclass.getSummary.call(this, geometry);
+		var summary = gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.superclass.getSummary.call(this, geometry);
 		var metricUnit = "km";
 
 		var perimeter = this.getLength(geometry, metricUnit);
@@ -217,4 +222,4 @@ gxp.plugins.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.plugins.s
     }
 });
 
-Ext.preg(gxp.plugins.spatialselector.BBOXSpatialSelectorMethod.prototype.ptype, gxp.plugins.spatialselector.BBOXSpatialSelectorMethod);
+Ext.reg(gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.prototype.xtype, gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod);

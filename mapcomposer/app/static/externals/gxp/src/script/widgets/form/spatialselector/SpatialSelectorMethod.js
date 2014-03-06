@@ -19,11 +19,11 @@
  */
 
 /**
- * @include plugins/spatialselector/BBOXSpatialSelectorMethod.js
- * @include plugins/spatialselector/BufferSpatialSelectorMethod.js
- * @include plugins/spatialselector/CircleSpatialSelectorMethod.js
- * @include plugins/spatialselector/GeocoderSpatialSelectorMethod.js
- * @include plugins/spatialselector/PolygonSpatialSelectorMethod.js
+ * @include widgets/form/spatialselector/BBOXSpatialSelectorMethod.js
+ * @include widgets/form/spatialselector/BufferSpatialSelectorMethod.js
+ * @include widgets/form/spatialselector/CircleSpatialSelectorMethod.js
+ * @include widgets/form/spatialselector/GeocoderSpatialSelectorMethod.js
+ * @include widgets/form/spatialselector/PolygonSpatialSelectorMethod.js
  */
  
 /**
@@ -31,14 +31,14 @@
  */
 
 /** api: (define)
- *  module = gxp.plugins.spatialselector
+ *  module = gxp.widgets.form.spatialselector
  *  class = SpatialSelectorMethod
  */
 
 /** api: (extends)
- *  plugins/Tool.js
+ *  Container.js
  */
-Ext.namespace('gxp.plugins.spatialselector');
+Ext.namespace('gxp.widgets.form.spatialselector');
 
 /** api: constructor
  *  .. class:: SpatialSelectorMethod(config)
@@ -52,7 +52,7 @@ Ext.namespace('gxp.plugins.spatialselector');
  *       <li>PolygonSpatialSelectorMethod: `gxp_spatial_polygon_selector` ptype</li>
  * 	  </ul>
  */
-gxp.plugins.spatialselector.SpatialSelectorMethod = Ext.extend(gxp.plugins.Tool, {
+gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Container, {
 
 	/** api: config[name]
 	 *  ``String``
@@ -167,8 +167,22 @@ gxp.plugins.spatialselector.SpatialSelectorMethod = Ext.extend(gxp.plugins.Tool,
 	constructor : function(config) {
 		Ext.apply(this, config);
 		
-		return gxp.plugins.spatialselector.SpatialSelectorMethod.superclass.constructor.call(this, arguments);
+		return gxp.widgets.form.spatialselector.SpatialSelectorMethod.superclass.constructor.call(this, arguments);
 	},
+
+    /** private: method[initComponent]
+     *  Override
+     */
+    initComponent: function(config) {   
+
+		Ext.apply(this, config);
+
+		if(!this.output){
+			this.output = this;
+		}
+
+        gxp.widgets.form.spatialselector.SpatialSelectorMethod.superclass.initComponent.call(this);
+    },
 
 	/** api: method[getSelectionMethodItem]
      *  :returns: ``Object`` For the selection type combo

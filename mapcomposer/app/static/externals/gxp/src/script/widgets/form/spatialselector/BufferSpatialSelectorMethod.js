@@ -19,7 +19,7 @@
  */
 
 /**
- * @requires plugins/spatialselector/SpatialSelectorMethod.js
+ * @requires widgets/form/spatialselector/SpatialSelectorMethod.js
  */
  
 /**
@@ -27,24 +27,24 @@
  */
 
 /** api: (define)
- *  module = gxp.plugins.spatialselector
+ *  module = gxp.widgets.form.spatialselector
  *  class = BufferSpatialSelectorMethod
  */
 
 /** api: (extends)
- *  plugins/spatialselector/SpatialSelectorMethod.js
+ *  widgets/form/spatialselector/SpatialSelectorMethod.js
  */
-Ext.namespace('gxp.plugins.spatialselector');
+Ext.namespace('gxp.widgets.form.spatialselector');
 
 /** api: constructor
  *  .. class:: BufferSpatialSelectorMethod(config)
  *
  *    Plugin for spatial selection based on buffer fieldset
  */
-gxp.plugins.spatialselector.BufferSpatialSelectorMethod = Ext.extend(gxp.plugins.spatialselector.SpatialSelectorMethod, {
+gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod = Ext.extend(gxp.widgets.form.spatialselector.SpatialSelectorMethod, {
 
-	/* ptype = gxp_spatial_buffer_selector */
-	ptype : 'gxp_spatial_buffer_selector',
+	/* xtype = gxp_spatial_buffer_selector */
+	xtype : 'gxp_spatial_buffer_selector',
 
 	/** api: config[name]
 	 *  ``String``
@@ -81,9 +81,9 @@ gxp.plugins.spatialselector.BufferSpatialSelectorMethod = Ext.extend(gxp.plugins
 		"distanceUnits": "m"
 	 },
 
-    /** api: method[addOutput]
+    /** api: method[initComponent]
      */
-    addOutput: function() {
+    initComponent: function() {
 		// ///////////////////////////////////////////
 		// Spatial Buffer Selector FieldSet
 		// ///////////////////////////////////////////
@@ -109,12 +109,14 @@ gxp.plugins.spatialselector.BufferSpatialSelectorMethod = Ext.extend(gxp.plugins
 
     	this.output = confbuffer;
 
-    	return this.output;
+    	this.items = [this.output];
+
+        gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.superclass.initComponent.call(this);
     },
 
 	// trigger action when activate the plugin
 	activate: function(){
-		gxp.plugins.spatialselector.BufferSpatialSelectorMethod.superclass.activate.call(this);
+		gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.superclass.activate.call(this);
 		if(this.output){
 			this.output.enable();
 			if(Ext.isIE){
@@ -125,7 +127,7 @@ gxp.plugins.spatialselector.BufferSpatialSelectorMethod = Ext.extend(gxp.plugins
 
 	// trigger action when deactivate the plugin
 	deactivate: function(){
-		gxp.plugins.spatialselector.BufferSpatialSelectorMethod.superclass.deactivate.call(this);
+		gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.superclass.deactivate.call(this);
 		if(this.output){
 			this.output.resetPointSelection();
 			this.output.coordinatePicker.toggleButton(false);
@@ -136,7 +138,7 @@ gxp.plugins.spatialselector.BufferSpatialSelectorMethod = Ext.extend(gxp.plugins
 
     // Reset method
     reset: function(){
-		gxp.plugins.spatialselector.BufferSpatialSelectorMethod.superclass.reset.call(this);
+		gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.superclass.reset.call(this);
 		if(this.output){
 			this.output.resetPointSelection();
 			this.output.coordinatePicker.toggleButton(false);
@@ -173,4 +175,4 @@ gxp.plugins.spatialselector.BufferSpatialSelectorMethod = Ext.extend(gxp.plugins
     }
 });
 
-Ext.preg(gxp.plugins.spatialselector.BufferSpatialSelectorMethod.prototype.ptype, gxp.plugins.spatialselector.BufferSpatialSelectorMethod);
+Ext.reg(gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.prototype.xtype, gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod);

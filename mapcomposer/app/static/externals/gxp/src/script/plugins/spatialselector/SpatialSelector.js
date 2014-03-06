@@ -19,7 +19,7 @@
  */
 
 /**
- * @requires plugins/spatialselector/SpatialSelectorMethod.js
+ * @requires widgets/form/spatialselector/SpatialSelectorMethod.js
  */
  
 /**
@@ -116,7 +116,7 @@ gxp.plugins.spatialselector.SpatialSelector = Ext.extend(gxp.plugins.Tool, {
 	constructor : function(config) {
 		// default layout configuration
 		this.layoutConfig = {
-    		xtype: "fieldset",
+    		xtype: "container",
     		hidden: true
 		};
 
@@ -130,22 +130,11 @@ gxp.plugins.spatialselector.SpatialSelector = Ext.extend(gxp.plugins.Tool, {
 			for (var key in this.spatialSelectorsConfig){
 				var spConfig = this.spatialSelectorsConfig[key];
 				spConfig.target = this.target;
-				if(spConfig.id 
-					&& this.target 
-					&& this.target.tools
-					&& this.target.tools[spConfig.id]){
-					this.spatialSelectors[key] = this.target.tools[spConfig.id];
-				}else{
-					var plugin = Ext.ComponentMgr.createPlugin(spConfig);
-					if(this.target 
-						&& this.target.tools){
-						this.target.tools[spConfig.id] = plugin;
-					}
-					this.spatialSelectors[key] = plugin;
-					var selectorItem = plugin.getSelectionMethodItem();
-					selectorItem.value = key;
-					this.spatialSelectorsItems.push(selectorItem);
-				}
+				var plugin = Ext.create(spConfig);
+				this.spatialSelectors[key] = plugin;
+				var selectorItem = plugin.getSelectionMethodItem();
+				selectorItem.value = key;
+				this.spatialSelectorsItems.push(selectorItem);
 			}	
 		}
 		
@@ -217,7 +206,7 @@ gxp.plugins.spatialselector.SpatialSelector = Ext.extend(gxp.plugins.Tool, {
 		});
     	if(this.spatialSelectors){
 	    	for (var key in this.spatialSelectors){
-	    		var output = this.spatialSelectors[key].addOutput();
+	    		var output = this.spatialSelectors[key];
 	    		if(output){
 					layout.items.push(output);
 	    		}

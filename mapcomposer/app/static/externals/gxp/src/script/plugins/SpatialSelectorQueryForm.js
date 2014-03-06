@@ -87,7 +87,10 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         this.spatialSelector = new gxp.plugins.spatialselector.SpatialSelector({
             target: target,
             layoutConfig: {
-                xtype: 'fieldset'
+                xtype: 'container',
+                defaults:{
+                    layout: "form"
+                }
             },
             spatialSelectorsConfig: spatialSelectorsConfig
         });
