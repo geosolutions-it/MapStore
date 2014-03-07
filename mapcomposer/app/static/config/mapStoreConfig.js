@@ -216,20 +216,20 @@
 		  },
 		  "spatialSelectorsConfig":{
 		        "bbox":{
-		            "ptype": "gxp_spatial_bbox_selector"
+		            "xtype": "gxp_spatial_bbox_selector"
 		        },
 		        "buffer":{
-		            "ptype": "gxp_spatial_buffer_selector"
+		            "xtype": "gxp_spatial_buffer_selector"
 		        },
 		        "circle":{
-		            "ptype": "gxp_spatial_circle_selector",
+		            "xtype": "gxp_spatial_circle_selector",
 		            "zoomToCurrentExtent": true
 		        },
 		        "polygon":{
-		            "ptype": "gxp_spatial_polygon_selector"
+		            "xtype": "gxp_spatial_polygon_selector"
 		        },
 		        "municipi":{
-		            "ptype": "gxp_spatial_geocoding_selector",
+		            "xtype": "gxp_spatial_geocoding_selector",
 		            "multipleSelection": false,
 		            "name": "Municipi",
 		            "label": "Municipi",
@@ -263,7 +263,7 @@
 		            "zoomToCurrentExtent": true
 		        },
 		        "unita":{
-		            "ptype": "gxp_spatial_geocoding_selector",
+		            "xtype": "gxp_spatial_geocoding_selector",
 		            "multipleSelection": false,
 		            "name": "Unita Urbanistiche",
 		            "label": "Unita Urbanistiche",
@@ -297,7 +297,7 @@
 		            "zoomToCurrentExtent": true
 		        },
 		        "civici_cod":{
-		            "ptype": "gxp_spatial_geocoding_selector",
+		            "xtype": "gxp_spatial_geocoding_selector",
 		            "multipleSelection": false,
 					"name" : "Civici Cod",
 					"label" : "Civici Cod",
@@ -331,7 +331,7 @@
 		            "zoomToCurrentExtent": true
 		        },
 		        "strada":{
-		            "ptype": "gxp_spatial_geocoding_selector",
+		            "xtype": "gxp_spatial_geocoding_selector",
 		            "multipleSelection": false,
 					"name" : "Strada",
 					"label" : "Strada",
@@ -384,7 +384,7 @@
             },
             "spatialSelectorsConfig":{
                 "name":{
-                    "ptype": "gxp_spatial_geocoding_selector",
+                    "xtype": "gxp_spatial_geocoding_selector",
                     "showSelectionSummary": false,
                     "multipleSelection": false,
                     "searchComboOutputFormat": "json",
@@ -417,7 +417,7 @@
                     "zoomToCurrentExtent": false
                 },
                 "number":{
-                    "ptype": "gxp_spatial_geocoding_selector",
+                    "xtype": "gxp_spatial_geocoding_selector",
                     "showSelectionSummary": false,
                     "multipleSelection": false,
                     "searchComboOutputFormat": "json",
