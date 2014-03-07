@@ -19,7 +19,7 @@
  */
 
 /**
- * @requires plugins/spatialselector/SpatialSelectorMethod.js
+ * @requires widgets/form/spatialselector/SpatialSelectorMethod.js
  */
  
 /**
@@ -27,24 +27,24 @@
  */
 
 /** api: (define)
- *  module = gxp.plugins.spatialselector
+ *  module = gxp.widgets.form.spatialselector
  *  class = GeocoderSpatialSelectorMethod
  */
 
 /** api: (extends)
- *  plugins/spatialselector/SpatialSelectorMethod.js
+ *  widgets/form/spatialselector/SpatialSelectorMethod.js
  */
-Ext.namespace('gxp.plugins.spatialselector');
+Ext.namespace('gxp.widgets.form.spatialselector');
 
 /** api: constructor
  *  .. class:: GeocoderSpatialSelectorMethod(config)
  *
  *    Plugin for spatial selection based on WFS search combobox
  */
-gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugins.spatialselector.SpatialSelectorMethod, {
+gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.widgets.form.spatialselector.SpatialSelectorMethod, {
 
-	/* ptype = gxp_spatial_geocoding_selector */
-	ptype : 'gxp_spatial_geocoding_selector',
+	/* xtype = gxp_spatial_geocoding_selector */
+	xtype : 'gxp_spatial_geocoding_selector',
 
 	/** api: config[name]
 	 *  ``String``
@@ -219,9 +219,9 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 	 */
 	searchComboOutputFormat: 'application/json',
 
-    /** api: method[addOutput]
+    /** api: method[initComponent]
      */
-    addOutput: function() {
+    initComponent: function() {
 
     	var me = this;
 
@@ -564,7 +564,9 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 
         this.output = this.geocodingFieldSet;
 
-    	return this.output;
+    	this.items = [this.output];
+
+        gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod.superclass.initComponent.call(this);
     },
 
 	/**
@@ -806,7 +808,7 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
      *  Trigger action when deactivate the plugin
 	 */
 	deactivate: function(){
-		gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod.superclass.deactivate.call(this);
+		gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod.superclass.deactivate.call(this);
 		if(this.geocoderDrawings){
 			this.geocoderDrawings.removeAllFeatures();
 		}
@@ -814,7 +816,7 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
 
     // Reset method
     reset: function(){
-		gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod.superclass.reset.call(this);
+		gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod.superclass.reset.call(this);
 		if(this.geocoderDrawings){
 			this.geocoderDrawings.removeAllFeatures();
 		}
@@ -822,4 +824,4 @@ gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.plugi
     }
 });
 
-Ext.preg(gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod.prototype.ptype, gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod);
+Ext.reg(gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod.prototype.xtype, gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod);
