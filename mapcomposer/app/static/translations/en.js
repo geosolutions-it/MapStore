@@ -492,7 +492,7 @@ GeoExt.Lang.add("en", {
 	
 	"gxp.plugins.AddLayer.prototype":{
 		waitMsg: "Please Wait ...",
-		capabilitiesFailureMsg: " The layer cannot be added to the map"
+		capabilitiesFailureMsg: " The WMS Capabilities cannot be added due to problems service side"
     },
     
     "gxp.plugins.Geolocate.prototype":{

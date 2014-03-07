@@ -38,6 +38,13 @@
 			"useTabPanel": true,
 			"toggleGroup": "toolGroup",
 			"actionTarget": {"target": "paneltbar", "index": 24}
+		}, {
+			"ptype": "gxp_addlayer",
+			"showCapabilitiesGrid": true,
+			"useEvents": false,
+			"showReport": false,
+			"directAddLayer": false,
+			"id": "addlayer"
 		}
 	]
 }

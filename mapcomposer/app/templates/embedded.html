@@ -30,37 +30,30 @@
         <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/gxtheme-gray.css">
         <script type="text/javascript" src="script/GeoExt.js"></script> 
 
-		<!-- canvg-1.2 resources -->
-		<script type="text/javascript" src="script/canvg-1.2.js"></script> 
+		<!-- canvg-1.2 resources 
+		<script type="text/javascript" src="script/canvg-1.2.js"></script> -->
 		
         <!-- gxp resources -->
         <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
         <script type="text/javascript" src="script/gxp.js"></script> 
 
-        <!-- GeoExplorer resources -->
+        <!-- GeoExplorer resources  -->
         <link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
         <link rel="stylesheet" type="text/css" href="theme/app/mapstore.css" />
         <!--[if IE]><link rel="stylesheet" type="text/css" href="theme/app/ie.css"/><![endif]-->        
 
         <script type="text/javascript" src="script/GeoExplorer.js"></script>
-        <script type="text/javascript" src="script/ux.js"></script>
-        
-        <!-- geocoding data  -->
-        <script type="text/javascript" src="data/georeferences.js"></script>
 		
-		<!-- csw resources -->
-		<link rel="stylesheet" type="text/css" href="externals/csw/css/csw.css">
-		<script type="text/javascript" src="script/metadataexplorer.js"></script>
+		<!-- UX libraries -->
+        <script type="text/javascript" src="script/ux.js"></script>
         
         <!-- common data  -->
         <script type="text/javascript" src="config/common/localConfig.js"></script>
 
         <!-- translation data  -->
         <script type="text/javascript" src="translations/en.js"></script>
-        <script type="text/javascript" src="translations/fr.js"></script>
-        <script type="text/javascript" src="translations/it.js"></script>
-        <script type="text/javascript" src="translations/de.js"></script>
-    	<script type="text/javascript" src="translations/es.js"></script>
+
+		<script type="text/javascript" src="AddLayer.js"></script>
 		
 		<!-- uncomment to have  welcome screen
         <script type="text/javascript">
@@ -84,7 +77,7 @@
         <script>
             
             var app;
-            var modified = false; var mapIdentifier = -1; var fullScreen = false; var bbox; var languageSelector = true; var useCookies;
+            var modified = false; var mapIdentifier = -1; var bbox;
 			
 			// /////////////////////////////////////////////////////
 			// Extra parameters to add layers at startup
@@ -134,17 +127,8 @@
 									gsturl = param[1]; 
 									gsturl = decodeURIComponent(gsturl);
 									break;
-						case "useCookies" : 
-									useCookies = param[1]; 
-									break;
                         case "config":
 									customConfigName = param[1];
-									break;
-						case "langSelector" : 
-									if(param[1] == 'true') 
-										languageSelector = true; 
-									else 
-										languageSelector = false; 
 									break;
 						default : 
 									//mapIdentifier = -1;
@@ -182,17 +166,6 @@
                 }
 				
                 gxp.plugins.ZoomToExtent.prototype.closest = false;
-
-				Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
-					 onRender : function(ct, position){
-						  this.el = ct.createChild({
-							tag: 'iframe',
-							id: 'iframe-'+ this.id,
-							frameBorder: 0, 
-							src: this.url
-						  });
-					 }
-				});
             
 				// //////////////////////////////////////////////////////            
 				// Setting the locale based on query string parameter
@@ -204,7 +177,7 @@
 				
 				var url = Ext.urlDecode(query);        
 				var code = url.locale || serverConfig.defaultLanguage || "en";
-				var langData = [['en', 'English'],['fr','Français'],['it','Italiano'],['de','Deutsch']];
+				var langData = [['en', 'English']];
 				
 							
 				// ////////////////////////////////////////////////////
@@ -214,68 +187,19 @@
 					GeoExt.Lang.set(code);
 				}
 				
-				var languageSelector = new gxp.form.LanguageSwitcher({
-					currentContext:code,
-					data:[
-						['en','English','viewer','en','English language'],
-						['fr','Français','viewer','fr','Franch language'],
-						['it','Italiano','viewer','it','Italian language'] ,
-						['de','Deutsch','viewer','de','Deutsch language']
-					]
-				});
-				
                 var appTabsOpts = {
-                        region: 'center',
-                        border : false,
-                        id : 'appTabs',
-                        enableTabScroll: true
-                    };
+					region: 'center',
+					border : false,
+					id : 'appTabs',
+					enableTabScroll: true
+				};
                     
-                if(!serverConfig.tab && !serverConfig.cswconfig){
+                if(!serverConfig.tab){
                     appTabsOpts.layout = 'fit';
                     appTabs = new Ext.Panel(appTabsOpts); 
                 }else{
                     appTabs = new Ext.TabPanel(appTabsOpts); 
                 }
-                      
-
-                var aboutButton = new Ext.Button({
-                    text: GeoExplorer.prototype.appInfoText,
-                    iconCls: "icon-geoexplorer",
-                    handler: function(){
-                        var appInfo = new Ext.Panel({
-                            header: false,
-                            html: "<iframe style='border: none; height: 100%; width: 100%' src='about.html' frameborder='0' border='0'><a target='_blank' href='about.html'>"+ GeoExplorer.prototype.aboutText+"</a> </iframe>"
-                        });
-
-                        var win = new Ext.Window({
-                            title:  GeoExplorer.prototype.aboutThisMapText,
-                            modal: true,
-                            layout: "fit",
-                            width: 360,
-                            height: 360,
-                            items: [appInfo]
-                        });
-                        
-                        win.show();
-                    }
-                });
-                
-                var poweredByGeoSol = new Ext.Button({
-                    tooltip: 'Powered by GeoSolutions',
-                    iconCls: "icon-geosol",
-                    width : 150,
-                    handler: function(btn){
-                        window.open('http://www.geo-solutions.it/about/contacts/', '_blank');
-                    }
-                });    
-                
-				var bbarItems = [poweredByGeoSol, ' ', aboutButton];
-				
-				if(languageSelector === true){
-					bbarItems.push('->');
-					bbarItems.push(languageSelector);
-				}
                 
 				var appViewport = new Ext.Viewport({
                     id: 'appVieport',
@@ -286,8 +210,7 @@
                         layout : 'border',
                         border : false,
                         header : false,                    
-                        items : [appTabs],                            
-                        bbar : bbarItems
+                        items : [appTabs]
                     }]
                 });
 				
@@ -298,14 +221,11 @@
                 app = new GeoExplorer.Viewer({
 				    defaultLanguage: serverConfig.defaultLanguage,	
 					actionToolScale: serverConfig.actionToolScale || "small",
-                    customPanels: serverConfig.customPanels,
                     proxy: proxy,
 					viewerTools: serverConfig.viewerTools,
-                    removeTools: serverConfig.removeTools,
 					disableLayerChooser:serverConfig.disableLayerChooser,
                     defaultSourceType: "gxp_wmssource",
                     renderToTab : 'appTabs',
-                    portalConfig: serverConfig.portalConfig,
 					geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),	 
                     about: {
                         title: "Custom Map",
@@ -313,74 +233,38 @@
                         contact: "<a href='#'>#</a>."
                     },
                     sources: serverConfig.gsSources || {
-                        google: {
-                            ptype: "gxp_googlesource"
+                        bing: {
+                            ptype: "gxp_bingsource"
                         }
                     },
-                    georeferences: georeferences_data,
                     map: serverConfig.map,
 					customTools: serverConfig.customTools
                 }, mapIdentifier, false, fullScreen);   
                 
                 app.on({
                     'portalready' : function(){                    	
-                        if(fullScreen){
-		                    var westPanel = Ext.getCmp('west');
-		                    westPanel.setActiveTab('legend');
-		                    westPanel.hideTabStripItem('tree');
-                        }
+
                     }, 
                     'ready' : function(){
                         app.modified = false;
 						
+						Ext.getCmp('paneltbar').hide();
+						
 						// ///////////////////////////////////////////////////
 						// Visualizing metadata tab and layer at startup 
 						// ///////////////////////////////////////////////////
-						if(layName && wmsurl || useCookies){
+						
+						if(layName && wmsurl){
 							var addLayer = app.tools["addlayer"];
 							
-							if(addLayer){
-								if(useCookies){
-									var opener = window.opener;
-									
-									var cookie = opener.document.cookie;
-									
-									var cookies = cookie.split(";");
-									var layersList;
-									for(var i=0; i<cookies.length; i++){
-										if(cookies[i].indexOf(useCookies) != -1){
-											layersList = cookies[i].split("=")[1];
-										}
-									}
-									
-									if(layersList){
-										var layers = layersList.split("#");								
+							if(addLayer){						
+								var title = layTitle ? layTitle : layName;
 								
-										for(var i=0; i<layers.length; i++){
-											var keys = layers[i];
-											
-											keys = unescape(keys);
-											keys = Ext.util.JSON.decode(keys);
-											
-											var lname = keys.layer;
-											var lwms = decodeURIComponent(keys.wms);
-											
-											addMSLayer(
-												lname,
-												lname,
-												lwms
-											);
-										}																
-									}
-								}else{
-									var title = layTitle ? layTitle : layName;
-									
-									addMSLayer(
-										title,
-										layName,
-										wmsurl
-									);
-								}
+								addMSLayer(
+									title,
+									layName,
+									wmsurl
+								);
 							}else{
 								Ext.Msg.show({
 									title: "Add Layer",
@@ -396,7 +280,7 @@
 						}
                     }
                 });
-
+				
 				/**
 				* Add a WMS layer from GeoNetwork 
 				*
@@ -418,7 +302,7 @@
             };			
                 
 			Ext.Ajax.request({
-			      url: customConfigName ? "config/" + customConfigName + ".js"  : "config/viewerConfig.js",
+			      url: customConfigName ? "config/" + customConfigName + ".js"  : "config/preview.js",
 				  method: 'GET',
 				  success: function(response, opts){      
 					    					  

@@ -238,11 +238,11 @@
 			});
 			
             var appTabsOpts = {
-                        region: 'center',
-                        border : false,
-                        id : 'appTabs',
-                        enableTabScroll: true
-                    };
+				region: 'center',
+				border : false,
+				id : 'appTabs',
+				enableTabScroll: true
+			};
             
             //check if MetadataExplorer plugin is defined in customTools configuration
             var customToolsME = [];
@@ -399,49 +399,60 @@
                     app.modified = false;
 					
 					// ///////////////////////////////////////////////////
-					// Visualizing metadata tab and layer at startup 
+					// Visualizing metadata tab and layers at startup 
 					// ///////////////////////////////////////////////////
 					if(layName && wmsurl || useCookies){
-
-						if(useCookies){
-							var opener = window.opener;
-							
-							var cookie = opener.document.cookie;
-							
-							var cookies = cookie.split(";");
-							var layersList;
-							for(var i=0; i<cookies.length; i++){
-								if(cookies[i].indexOf(useCookies) != -1){
-									layersList = cookies[i].split("=")[1];
+						var addLayer = app.tools["addlayer"];
+						
+						if(addLayer){							
+							if(useCookies){
+								var opener = window.opener;
+								
+								var cookie = opener.document.cookie;
+								
+								var cookies = cookie.split(";");
+								var layersList;
+								for(var i=0; i<cookies.length; i++){
+									if(cookies[i].indexOf(useCookies) != -1){
+										layersList = cookies[i].split("=")[1];
+									}
 								}
-							}
+								
+								if(layersList){
+									var layers = layersList.split("#");								
 							
-							if(layersList){
-								var layers = layersList.split("#");
-								for(var i=0; i<layers.length; i++){
-									var keys = layers[i];
-									
-									keys = unescape(keys);
-									keys = Ext.util.JSON.decode(keys);
-									
-									var lname = keys.layer;
-									var lwms = decodeURIComponent(keys.wms);
-									
-									addMSLayer(
-										lname,
-										lname,
-										lwms
-									);
+									for(var i=0; i<layers.length; i++){
+										var keys = layers[i];
+										
+										keys = unescape(keys);
+										keys = Ext.util.JSON.decode(keys);
+										
+										var lname = keys.layer;
+										var lwms = decodeURIComponent(keys.wms);
+										
+										addMSLayer(
+											lname,
+											lname,
+											lwms
+										);
+									}																
 								}
+							}else{
+								var title = layTitle ? layTitle : layName;
+								
+								addMSLayer(
+									title,
+									layName,
+									wmsurl
+								);
 							}
 						}else{
-							var title = layTitle ? layTitle : layName;
-							
-							addMSLayer(
-								title,
-								layName,
-								wmsurl
-							);
+							Ext.Msg.show({
+								 title: "Add Layer",
+								 msg: "AddLayer plugin missing in configuration!",
+								 width: 300,
+								 icon: Ext.MessageBox.ALERT
+							});  
 						}
 					}
 						
@@ -460,8 +471,8 @@
 				var addLayer = app.tools["addlayer"];
 				
 				var options = {
-					msLayerTitle: msLayerTitle,
-					msLayerName: msLayerName,
+					msLayerTitle: unescape(msLayerTitle),
+					msLayerName: unescape(msLayerName),
 					wmsURL: wmsURL
 				};
 				

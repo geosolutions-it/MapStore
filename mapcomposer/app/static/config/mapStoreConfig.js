@@ -28,21 +28,6 @@
 		],
 		"layers": [
 			{
-				"source": "bing",
-				"title": "Bing Aerial",
-				"name": "Aerial",
-				"group": "background"
-			}, {
-				"source": "osm",
-				"title": "Open Street Map",
-				"name": "mapnik",
-				"group": "background"
-			},{
-				"source": "mapquest",
-				"title": "MapQuest OpenStreetMap",
-				"name": "osm",
-				"group": "background"
-			},{
 				"source": "google",
 				"title": "Google Roadmap",
 				"name": "ROADMAP",
@@ -56,6 +41,26 @@
 				"source": "google",
 				"title": "Google Hybrid",
 				"name": "HYBRID",
+				"group": "background"
+			},{
+				"source": "mapquest",
+				"title": "MapQuest OpenStreetMap",
+				"name": "osm",
+				"group": "background"
+			},{
+				"source": "osm",
+				"title": "Open Street Map",
+				"name": "mapnik",
+				"group": "background"
+			},{
+				"source": "bing",
+				"title": "Bing Aerial",
+				"name": "Aerial",
+				"group": "background"
+			},{
+				"source": "bing",
+				"title": "Bing Aerial With Labels",
+				"name": "AerialWithLabels",
 				"group": "background"
 			}
 		]
@@ -121,6 +126,9 @@
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
+			"useEvents": false,
+			"showReport": false,
+			"directAddLayer": false,
 			"id": "addlayer"
 		}, {
 			"actions": ["-"], 
