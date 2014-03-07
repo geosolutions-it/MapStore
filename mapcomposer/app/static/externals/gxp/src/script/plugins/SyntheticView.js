@@ -126,7 +126,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     humanTitle:'Sociale',    
     notHumanTitle:'Ambientale',    
     originalRiskLayers: null,    
-    severeness: [["High mortality","Starting lethality","IRREVERSIBLE INJURIES","REVERSIBLE INJURIES","Environmental"], ["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","Ambientale"],     ["MORTALITÉ ÉLEVÉE","DÉBUT DE MORTALITÉ","LÉSIONS IRRÉVERSIBLES","LÉSIONS RÉVERSIBLES","Ambientale"], ["Hohe Letalität","Beginn Letalität","Irreversible Verletzungen","Reversiblie Verletzungen","Umweltschäden"]],
+    severeness: [["High mortality","Starting lethality","IRREVERSIBLE INJURIES","REVERSIBLE INJURIES","Environmental"], ["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","Ambientale"],     ["MORTALITÉ ÉLEVÉE","DÉBUT DE MORTALITÉ","LÉSIONS IRRÉVERSIBLES","LÉSIONS RÉVERSIBLES","Environmental"], ["Hohe Letalität","Beginn Letalität","Irreversible Verletzungen","Reversiblie Verletzungen","Umweltschäden"]],
     
     selectedTargetLayer: "Bersaglio Selezionato",
     selectedTargetLayerEditing: "Bersaglio Selezionato Editing",
