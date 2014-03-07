@@ -23,7 +23,7 @@
 			"ptype": "gxp_wmssource",
 			"title": "Destination GeoServer",
 			"version": "1.1.1",
-			"url": "http://destination.geo-solutions.it/geoserver_test/destination/ows",
+			"url": "http://destination.geo-solutions.it/geoserver_test_2/destination/ows",
 			"SRS": "EPSG:3857",         
 			"layerBaseParams": {
 				"TILED": true,
@@ -346,6 +346,7 @@
     },{
 		"ptype": "gxp_addlayers",
 		"actionTarget": "tree.tbar",
+        "id": "addlayers",
 		"upload": true
     }, {
 		"ptype": "gxp_removelayer",
@@ -476,9 +477,6 @@
         ],
 		"actionTarget": "paneltbar"
 	}, {
-        "ptype": "gxp_googleearth",
-        "actionTarget": {"target": "paneltbar", "index": 22}
-    },{
         "ptype":"gxp_playback",
 		"id": "destination_playback",
 		"toolbarHidden": true,
@@ -528,7 +526,7 @@
             "outputFilename":"mapstore-print"
         },
         "ignoreLayers": "Google Hybrid,Bing Aerial,Nessuno sfondo,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
-        "printService":"http://destination.geo-solutions.it/geoserver_test/pdf/",
+        "printService":"http://destination.geo-solutions.it/geoserver_test_2/pdf/",
         "legendPanelId":"legendPanel",
         "actionTarget":{
             "target":"paneltbar",
@@ -551,13 +549,13 @@
 		"selectionLayerTitle": "Rischio Totale",
 		"bufferLayerNameHuman": "buffer_human",
 		"bufferLayerNameNotHuman": "buffer_not_human",
-		"selectionLayerBaseURL": "http://destination.geo-solutions.it/geoserver_test/destination/wms",
+		"selectionLayerBaseURL": "http://destination.geo-solutions.it/geoserver_test_2/destination/wms",
 		"selectionLayerProjection": "EPSG:32632",
 		"geometryName": "geometria",
 		"accidentTipologyName": "tipologia",
-		"wfsURL": "http://destination.geo-solutions.it/geoserver_test/destination/wfs",
-		"wpsURL": "http://destination.geo-solutions.it/geoserver_test/wps",
-		"downloadBaseUrl": "http://destination.geo-solutions.it/geoserver_test/www/downloads/",
+		"wfsURL": "http://destination.geo-solutions.it/geoserver_test_2/destination/wfs",
+		"wpsURL": "http://destination.geo-solutions.it/geoserver_test_2/wps",
+		"downloadBaseUrl": "http://destination.geo-solutions.it/geoserver_test_2/www/downloads/",
 		"wpsStore": "destination",
 		"wfsVersion": "1.1.0",
 		"destinationNS": "destination",
@@ -568,7 +566,7 @@
 	{
 		"ptype": "gxp_gatetimeslidertab",
         "id": "gatetimeslidertab",
-        "wfsUrl":"http://destination.geo-solutions.it/geoserver_test/ows",
+        "wfsUrl":"http://destination.geo-solutions.it/geoserver_test_2/ows",
         "wfsVersion": "1.1.0",
         "destinationNS": "destination",
         "statisticFeature": "gate_stats",
@@ -581,7 +579,7 @@
 	}, {
         "ptype": "gxp_featuremanager",
         "id": "featuremanager",
-        "wfsUrl":"http://destination.geo-solutions.it/geoserver_test/ows",
+        "wfsUrl":"http://destination.geo-solutions.it/geoserver_test_2/ows",
         "paging": false,
         "layer": {
             "source": "destination",
@@ -595,8 +593,8 @@
 		"layerToFilter": "OBU",
 		"layerTrackTitle": "obu_track",
 		"layerTrackName": "siig_geo_obu_line",
-		"layerTrackUrl": "http://destination.geo-solutions.it/geoserver_test/destination/ows",
-		"wfsUrl": "http://destination.geo-solutions.it/geoserver_test/ows?",
+		"layerTrackUrl": "http://destination.geo-solutions.it/geoserver_test_2/destination/ows",
+		"wfsUrl": "http://destination.geo-solutions.it/geoserver_test_2/ows?",
         "styleRenamedStore": [
             ["Obu points","Obu punti","Obu points","Obu punkte"],
             ["Obu points speed","Obu punti velocità","Obu points vitesse","Obu punkte Geschwindigkeit"],
@@ -605,7 +603,7 @@
 	},
 	{
 		"ptype": "gxp_addlayer",
-		"showCapabilitiesGrid": false,
+		"showCapabilitiesGrid": true,
 		"id": "addlayer"
 	},
     {
@@ -631,7 +629,7 @@
 		"ptype": "gxp_tabpanelwfsgrids",
 		"outputTarget": "featurelist",
 		"srsName": "EPSG:32632",
-		"wfsURL": "http://destination.geo-solutions.it/geoserver_test/wfs",
+		"wfsURL": "http://destination.geo-solutions.it/geoserver_test_2/wfs",
 		"panels": {
 			"targets": {
 				"Popolazione residente": {
@@ -1602,51 +1600,51 @@
 						"dataIndex": "id"
 					},
 					{
-                            "header": ["Partner","Partner","Partner","Projektpartner"],
+                            "header": ["Partner","Partner","Partenaire","Projektpartner"],
                             "dataIndex": "partner"
                         },
                         {
-                            "header": ["Vehicular density type","Tipo Densità Veicolare","Tipo Densità Veicolare","Quelle DTV"],
+                            "header": ["Vehicular density type","Tipo Densità Veicolare","Type de densité des véhicules","Quelle DTV"],
                             "dataIndex": "tipo_densita"
                         },
                         {
-                            "header": ["Vehicular density","Densità Veicolare","Densità Veicolare","Durchschnittlicher Tagesverkehr (DTV)"],
+                            "header": ["Vehicular density","Densità Veicolare","Densité de véhicules","Durchschnittlicher Tagesverkehr (DTV)"],
                             "dataIndex": "densita_veicolare"
                         },
                         {
-                            "header": ["Average speed type","Tipo Velocità Media","Tipo Velocità Media","Quelle Mittlere Geschwindigkeit"],
+                            "header": ["Average speed type","Tipo Velocità Media","Type de support Vitesse","Quelle Mittlere Geschwindigkeit"],
                             "dataIndex": "tipo_velocita"
 					},
 					{
-                            "header": ["Average speed","Velocità Media","Velocità Media","Mittlere Geschwindigkeit"],
+                            "header": ["Average speed","Velocità Media","Vitesse moyenne","Mittlere Geschwindigkeit"],
                             "dataIndex": "velocita_media"
                         },
                         {
-                            "header": ["Lanes Flag","Flag Corsie","Flag Corsie","Quelle Fahrbahnen"],
+                            "header": ["Lanes Flag","Flag Corsie","Lanes de drapeau","Quelle Fahrbahnen"],
                             "dataIndex": "flg_nr_corsie"
                         },
                         {
-                            "header": ["Lanes #","N. Corsie","N. Corsie","Anzahl der Fahrbahnen"],
+                            "header": ["Lanes #","N. Corsie","Nombre de voies","Anzahl der Fahrbahnen"],
                             "dataIndex": "nr_corsie"
                         },
                         {
-                            "header": ["Accidents Flag","Flag Incidenti","Flag Incidenti","Quelle der Unfälle"],
+                            "header": ["Accidents Flag","Flag Incidenti","Accidents de drapeau","Quelle der Unfälle"],
                             "dataIndex": "flg_nr_incidenti"
                         },
                         {
-                            "header": ["Accidents #","N. Incidenti","N. Incidenti","Anzahl der Unfälle"],
+                            "header": ["Accidents #","N. Incidenti","Nombre d'incidents","Anzahl der Unfälle"],
                             "dataIndex": "nr_incidenti"
                         },
                         {
-                            "header": ["Processed Accidents","N. Incidenti Elab.","N. Incidenti Elab.","Anzahl der Unfälle nachbearbeitet"],
+                            "header": ["Processed Accidents","N. Incidenti Elab.","Nombre transformés accidents","Anzahl der Unfälle nachbearbeitet"],
                             "dataIndex": "nr_incidenti_elab"
                         },
                         {
-                            "header": ["Length","Lunghezza","Lunghezza","Länge"],
+                            "header": ["Length","Lunghezza","Longueur","Länge"],
                             "dataIndex": "lunghezza"
                         },
                         {
-                            "header": ["Instabilities list","Elenco Dissesti","Elenco Dissesti","Quelle Gefahrenzonenkategorisierung"],
+                            "header": ["Instabilities list","Elenco Dissesti","Liste des échecs","Quelle Gefahrenzonenkategorisierung"],
                             "dataIndex": "elenco_dissesti"
                         }
                     ],

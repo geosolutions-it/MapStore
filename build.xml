@@ -86,7 +86,7 @@
     
     <target name="redist">
  
-        <delete dir="${composerbuild}/${ant.project.name}" />
+        
         <mkdir dir="${composerbuild}/${ant.project.name}"/>
         <mkdir dir="${managerbuild}/mapstore"/>
         

@@ -241,7 +241,7 @@
             "name": "grafo_stradale",
             "displayInLayerSwitcher": true,
             "tiled": true,
-            "group": ["Roads","Strade","Strade"," Straßen"],
+            "group": ["Roads","Strade","Routes"," Straßen"],
             "visibility": false
         },{
 			"source": "destination",
@@ -345,6 +345,7 @@
     },{
         "ptype": "gxp_addlayers",
         "actionTarget": "tree.tbar",
+        "id": "addlayers",
         "upload": true
     }, {
         "ptype": "gxp_removelayer",
@@ -450,10 +451,6 @@
     {
         "ptype":"gxp_wmsgetfeatureinfo",
         "useTabPanel": true,
-        "authentication": {
-            "user": "super",
-            "password": "super"
-        },
         "toggleGroup":"toolGroup",
         "actionTarget":{
             "target":"paneltbar",
@@ -473,6 +470,12 @@
             "target":"paneltbar",
             "index":21
         }
+	},
+	{
+        "actions":[
+        "-"
+        ],
+		"actionTarget": "paneltbar"
     },{
         "ptype":"gxp_playback",
 		"id": "destination_playback",
@@ -520,7 +523,8 @@
     {
         "ptype":"gxp_print",
         "customParams":{
-            "outputFilename":"mapstore-print"
+            "outputFilename":"mapstore-print",
+            "forwardHeaders":["Authorization", "Shib-Iride-IdentitaDigitale"]
         },
         "ignoreLayers": "Google Hybrid,Bing Aerial,Nessuno sfondo,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
         "printService":"http://@@@@domain_url@@@@/geoserver/pdf/",
@@ -553,14 +557,13 @@
         "accidentTipologyName": "tipologia",
         "wfsURL": "http://@@@@domain_url@@@@/geoserver/destination/wfs",
         "wpsURL": "http://@@@@domain_url@@@@/geoserver/wps",        
+		"downloadBaseUrl": "http://@@@@domain_url@@@@/geoserver/www/downloads/",
         "wpsStore": "destination",        
         "wfsVersion" : "1.1.0",
         "destinationNS": "destination",
         "index": 28,
         "geoStoreBase":"http://@@@@geostore_base_url@@@@/geostore/rest/",
-        "proxy":"/proxy/?url=",
-        "geoStoreUser": "base",
-        "geoStorePassword": "base"
+        "proxy":"/http_proxy/proxy/?url="
     },
 	{
 		"ptype": "gxp_gatetimeslidertab",
@@ -580,10 +583,6 @@
         "id": "featuremanager",
         "wfsUrl":"http://@@@@domain_url@@@@/geoserver/ows",
         "paging": false,
-        "authentication": {
-            "user": "super",
-            "password": "super"
-        },
         "layer": {
             "source": "destination",
             "name": "siig_gate_geo_gate"
@@ -597,11 +596,16 @@
 		"layerTrackTitle": "obu_track",
 		"layerTrackName": "siig_geo_obu_line",
 		"layerTrackUrl": "http://@@@@domain_url@@@@/geoserver/destination/ows",
-        "wfsUrl": "http://@@@@domain_url@@@@/geoserver/ows?"
+        "wfsUrl": "http://@@@@domain_url@@@@/geoserver/ows?",
+        "styleRenamedStore": [
+            ["Obu points","Obu punti","Obu points","Obu punkte"],
+            ["Obu points speed","Obu punti velocità","Obu points vitesse","Obu punkte Geschwindigkeit"],
+            ["Obu points direction","Obu punti direzione","Obu point direction","Obu punkte Richtung"]
+        ]
 	},
 	{
 		"ptype": "gxp_addlayer",
-		"showCapabilitiesGrid": false,
+		"showCapabilitiesGrid": true,
 		"id": "addlayer"
 	},
     {
@@ -1598,51 +1602,51 @@
                             "dataIndex": "id"
                         },
                         {
-                            "header": ["Partner","Partner","Partner","Projektpartner"],
+                            "header": ["Partner","Partner","Partenaire","Projektpartner"],
                             "dataIndex": "partner"
                         },
                         {
-                            "header": ["Vehicular density type","Tipo Densità Veicolare","Tipo Densità Veicolare","Quelle DTV"],
+                            "header": ["Vehicular density type","Tipo Densità Veicolare","Type de densité des véhicules","Quelle DTV"],
                             "dataIndex": "tipo_densita"
                         },
                         {
-                            "header": ["Vehicular density","Densità Veicolare","Densità Veicolare","Durchschnittlicher Tagesverkehr (DTV)"],
+                            "header": ["Vehicular density","Densità Veicolare","Densité de véhicules","Durchschnittlicher Tagesverkehr (DTV)"],
                             "dataIndex": "densita_veicolare"
                         },
                         {
-                            "header": ["Average speed type","Tipo Velocità Media","Tipo Velocità Media","Quelle Mittlere Geschwindigkeit"],
+                            "header": ["Average speed type","Tipo Velocità Media","Type de support Vitesse","Quelle Mittlere Geschwindigkeit"],
                             "dataIndex": "tipo_velocita"
                         },
                         {
-                            "header": ["Average speed","Velocità Media","Velocità Media","Mittlere Geschwindigkeit"],
+                            "header": ["Average speed","Velocità Media","Vitesse moyenne","Mittlere Geschwindigkeit"],
                             "dataIndex": "velocita_media"
                         },
                         {
-                            "header": ["Lanes Flag","Flag Corsie","Flag Corsie","Quelle Fahrbahnen"],
+                            "header": ["Lanes Flag","Flag Corsie","Lanes de drapeau","Quelle Fahrbahnen"],
                             "dataIndex": "flg_nr_corsie"
                         },
                         {
-                            "header": ["Lanes #","N. Corsie","N. Corsie","Anzahl der Fahrbahnen"],
+                            "header": ["Lanes #","N. Corsie","Nombre de voies","Anzahl der Fahrbahnen"],
                             "dataIndex": "nr_corsie"
                         },
                         {
-                            "header": ["Accidents Flag","Flag Incidenti","Flag Incidenti","Quelle der Unfälle"],
+                            "header": ["Accidents Flag","Flag Incidenti","Accidents de drapeau","Quelle der Unfälle"],
                             "dataIndex": "flg_nr_incidenti"
                         },
                         {
-                            "header": ["Accidents #","N. Incidenti","N. Incidenti","Anzahl der Unfälle"],
+                            "header": ["Accidents #","N. Incidenti","Nombre d'incidents","Anzahl der Unfälle"],
                             "dataIndex": "nr_incidenti"
                         },
                         {
-                            "header": ["Processed Accidents","N. Incidenti Elab.","N. Incidenti Elab.","Anzahl der Unfälle nachbearbeitet"],
+                            "header": ["Processed Accidents","N. Incidenti Elab.","Nombre transformés accidents","Anzahl der Unfälle nachbearbeitet"],
                             "dataIndex": "nr_incidenti_elab"
                         },
                         {
-                            "header": ["Length","Lunghezza","Lunghezza","Länge"],
+                            "header": ["Length","Lunghezza","Longueur","Länge"],
                             "dataIndex": "lunghezza"
                         },
                         {
-                            "header": ["Instabilities list","Elenco Dissesti","Elenco Dissesti","Quelle Gefahrenzonenkategorisierung"],
+                            "header": ["Instabilities list","Elenco Dissesti","Liste des échecs","Quelle Gefahrenzonenkategorisierung"],
                             "dataIndex": "elenco_dissesti"
                         }
                     ],
@@ -1790,7 +1794,9 @@
                     "id": 1,
                     "type": "umano",
                     "noPaging": true,
-                    "allowAdd": true,                    
+                    "allowEdit": true,
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632",                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -1799,12 +1805,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -1869,7 +1869,9 @@
                     "id": 2,
                     "type": "umano",
                     "noPaging": true,
-                    "allowAdd": true,
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632", 
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -1878,12 +1880,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -1968,7 +1964,9 @@
                     "id": 4,
                     "type": "umano",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632", 
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -1977,12 +1975,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2086,7 +2078,9 @@
                     "id": 5,
                     "type": "umano",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632",  
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2095,12 +2089,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2188,7 +2176,9 @@
                     "id": 6,
                     "type": "umano",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632",  
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2197,12 +2187,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2298,7 +2282,9 @@
                     "id": 7,
                     "type": "umano",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632", 
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2307,12 +2293,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2375,7 +2355,9 @@
                     "id": 10,
                     "type": "ambientale",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632", 
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2384,12 +2366,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2452,7 +2428,9 @@
                     "id": 11,
                     "type": "ambientale",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632", 
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2461,12 +2439,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2537,7 +2509,9 @@
                     "id": 12,
                     "type": "ambientale",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632",   
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2546,12 +2520,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2614,7 +2582,9 @@
                     "id": 13,
                     "type": "ambientale",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632", 
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2623,12 +2593,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2723,7 +2687,9 @@
                     "name": "ACQUE SUPERFICIALI",
                     "type": "ambientale",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632",  
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2732,12 +2698,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2808,7 +2768,9 @@
                     "name": "ACQUE SOTTERRANEE",
                     "type": "ambientale",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632",  
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2817,12 +2779,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
@@ -2885,7 +2841,9 @@
                     "name": "BENI CULTURALI",
                     "type": "ambientale",
                     "noPaging": true,
-                    "allowAdd": true,   
+                    "layerEditName": "Bersaglio Selezionato Editing",
+                    "sourceEditSRS": "EPSG:32632", 
+                    "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
@@ -2894,12 +2852,6 @@
                     {
                         "type": "zoom",
                         "sourceSRS": "EPSG:32632"
-                    },
-                    {
-                        "type": "starteditgeom_targets",
-                        "layerName": "Bersaglio Selezionato Editing",
-                        "sourceSRS": "EPSG:32632",
-                        "width": 20
                     },
                     {
                         "type": "remove_target",
