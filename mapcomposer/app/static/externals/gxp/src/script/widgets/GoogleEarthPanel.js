@@ -208,9 +208,9 @@ gxp.GoogleEarthPanel = Ext.extend(Ext.Panel, {
                 var name = lyr.id;
                 var networkLink;
                 
-                if (this.layerCache[name]) {
+                /*if (this.layerCache[name]) {
                     networkLink = this.layerCache[name];
-                } else {
+                } else {*/
                     var link = this.earth.createLink('kl_' + name);
                     
                     //ows = ows.replace(/\?.*/, '');
@@ -228,6 +228,12 @@ gxp.GoogleEarthPanel = Ext.extend(Ext.Panel, {
 					ows+='wms/kml?';
 					var kmlParams = 'mode=refresh&layers=' + params.LAYERS +
                         "&styles=" + ( params.STYLES ? params.STYLES : "" );
+                    if(params.ENV) {
+                        kmlParams += "&env=" + encodeURIComponent(params.ENV);
+                    }
+                    if(params.VIEWPARAMS) {
+                        kmlParams += "&viewparams=" + encodeURIComponent(params.VIEWPARAMS);
+                    }
 					//TODO add other allowed parameters
                     var khref = ows + kmlParams;
                     
@@ -236,7 +242,7 @@ gxp.GoogleEarthPanel = Ext.extend(Ext.Panel, {
                     networkLink.setName(name);
                     networkLink.set(link, false, false);
                     this.layerCache[name] = networkLink;
-               	}
+               	//}
                	
                 networkLink.setVisibility(lyr.getVisibility());
 

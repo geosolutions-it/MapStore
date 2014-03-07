@@ -261,7 +261,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             baseParams.VERSION = this.version;
         }
 
-        var lazy = this.isLazy();
+        var lazy = false; //this.isLazy();
         
         this.store = new GeoExt.data.WMSCapabilitiesStore({
             // Since we want our parameters (e.g. VERSION) to override any in the 
