@@ -465,6 +465,23 @@
         "addLandscapeControl": true,
         "appendLegendOptions": true,
         "addGraticuleControl": true
+    },{
+            "ptype": "gxp_spatial_selector_reverse_geocoder",
+            "outputTarget": "west",
+            "url": "http://geoserver.comune.genova.it/geoserver/wfs",
+		    "maxFeatures": 10,
+		    "streetfeatureNS": "CTC",
+		    "typeName": "CIVICI_COD_TOPON_SUB",
+		    "featureNS": "SITGEO",
+		    "geometryName": "GEOMETRY",
+		    "streetPropertyName": "COD_STRADA",
+		    "numberPropertyName": "COD_TOPON",
+            "layoutConfig":{
+                "xtype": "form",
+                "buttonAlign": "right",
+                "autoScroll":true,
+                "frame":true
+            }
     }
 	],
 	"removeTools":["zoombox_plugin", "googleearth_separator", "googleearth_plugin"]
