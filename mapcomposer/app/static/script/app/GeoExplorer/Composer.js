@@ -298,6 +298,12 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 									  }
                                   },
                                   viewMap: function(el){       
+                                      var mapInfo = el.layers;
+                                      var uuid = el.uuid;
+                                      var gnURL = el.gnURL;
+                                      var title = el.title;
+                                      var locale = GeoExt.Lang.locale;
+                                      
                                       var mask = new Ext.LoadMask(Ext.getBody(), {msg:this.cswMsg});
                                       mask.show();
                                                                   
@@ -308,85 +314,27 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                                       
                                       for(var i=0; i<mapInfo.length; i++){
                                           var wms = mapInfo[i].wms;    
-                                          
-                                          var source;
-                                          for (var id in app.layerSources) {
-                                              var src = app.layerSources[id];    
-                                              var url  = src.initialConfig.url; 
-                                              //
-                                              // Checking if source url aldready exists
-                                              //
-                                              if(url && url.indexOf(wms) != -1)
-                                                  source = src;
-                                          }                                  
-                                          
                                           var layer = mapInfo[i].layer;
                                           
-                                          //
-                                          // Adding a new record to existing store
-                                          //
-                                          var addLayer = function(s){
-                                              var record = s.createLayerRecord({
-                                                  name: layer,
-                                                  title: title,
-                                                  source : s.id, // TODO: to check this
-                                                  gnURL: gnURL,
-                                                  uuid: uuid
-                                              });    
-                                                          
-                                              var layerStore = app.mapPanel.layers;  
-                                                            
-                                              if (record) {
-                                                  layerStore.add([record]);
-                                                  modified = true;
-                                              }  
-                                          }
-                                          
-                                          //
-                                          // Adding the sources only if exists
-                                          //
-                                          if(!source){
-                                              var sourceOpt = {
-                                                  config: {
-                                                      url: wms
-                                                  }
-                                              };
-                                              
-                                              source = viewer.addLayerSource(sourceOpt);
-                                              
-                                              //
-                                              // Waiting GetCapabilities response from the server.
-                                              //
-                                              source.on('ready', function(){
-                                                  addLayer(source);  
-                                                  mask.hide();
-                                              });
-                                              
-                                              //
-                                              // To manage failure in GetCapabilities request (invalid request url in 
-                                              // GeoNetwork configuration or server error).
-                                              //
-                                              source.on('failure', function(src, msg){
-                                                  //
-                                                  // Removing layer source from sources ?
-                                                  //
-                                                  //for (var id in app.layerSources) {
-                                                  //    if(id.indexOf(source.id) != -1)
-                                                  //        app.layerSources[id] = null;    
-                                                  //}  
-                                                  
-                                                  mask.hide();
-                                                  
-                                                  Ext.Msg.show({
-                                                      title: 'GetCapabilities',
-                                                      msg: msg + viewer.cswFailureAddLayer,
-                                                      width: 300,
-                                                      icon: Ext.MessageBox.ERROR
-                                                  });  
-                                              });
+                                          var addLayer = viewer.tools["addlayer"];
+                                          if(!layer){
+                                                addLayer.addSource(
+                                                    wms
+                                                );	
                                           }else{
-                                              addLayer(source); 
-                                              mask.hide();
+                                                var options = {
+                                                    msLayerTitle: title,
+                                                    msLayerName: layer,
+                                                    wmsURL: wms,
+                                                    gnUrl: gnURL,
+                                                    enableViewTab: true,
+                                                    msLayerUUID: uuid,
+                                                    gnLangStr: locale == 'en-EN' ? "en" : (locale == 'de-DE' ? "de" : (locale == 'fr-FR' ? "fr" : (locale == 'es-ES' ? "es": "it")))
+                                                };
+                                                
+                                                addLayer.addLayer(
+                                                    options
+                                                );
                                           }
                                       }
                                   }
