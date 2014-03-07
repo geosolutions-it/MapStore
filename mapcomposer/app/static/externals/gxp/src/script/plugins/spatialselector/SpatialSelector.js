@@ -57,17 +57,17 @@ gxp.plugins.spatialselector.SpatialSelector = Ext.extend(gxp.plugins.Tool, {
      */
     spatialSelectorsConfig:{
         bbox:{
-            ptype : 'gxp_spatial_bbox_selector'
+            xtype : 'gxp_spatial_bbox_selector'
         },
         buffer:{
-            ptype : 'gxp_spatial_buffer_selector'
+            xtype : 'gxp_spatial_buffer_selector'
         },
         circle:{
-            ptype : 'gxp_spatial_circle_selector',
+            xtype : 'gxp_spatial_circle_selector',
             zoomToCurrentExtent : true
         },
         polygon:{
-            ptype : 'gxp_spatial_polygon_selector'
+            xtype : 'gxp_spatial_polygon_selector'
         }
     },
 

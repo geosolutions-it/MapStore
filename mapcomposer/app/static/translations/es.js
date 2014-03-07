@@ -631,7 +631,14 @@ GeoExt.Lang.add("es", {
         lengthLabel: "Longitud",   
         radiusLabel: "Radio",   
         centroidLabel: "Centroide", 
-        selectionSummary: "Sumario de la Selección"
+        selectionSummary: "Sumario de la Selección",
+        geometryOperationText: "Operación espacial",
+        geometryOperationEmptyText: "Seleccion una operación",
+        distanceTitleText: "Distancia",
+        distanceUnitsTitleText: "Unidad de distancia",
+        noOperationTitleText: "Operación inválida",
+        noOperationMsgText: "Por favor, seleccione una operación para realizar la consulta",
+        noCompleteMsgText: "Por favor, complete el formulario para realizar la consulta"
     },
     
     "gxp.plugins.spatialselector.BBOXSpatialSelectorMethod.prototype" :{

@@ -89,6 +89,7 @@ gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod = Ext.extend(gxp.wi
 		// ///////////////////////////////////////////
 		var confbuffer = new gxp.widgets.form.BufferFieldset({
 			id: this.id + "bufferFieldset",
+			ref: "bufferFieldset",
 			map: this.target.mapPanel.map,
 			minValue: this.bufferOptions.minValue,
             maxValue: this.bufferOptions.maxValue,
@@ -107,9 +108,9 @@ gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod = Ext.extend(gxp.wi
 			this.setCurrentGeometry(null);
 		}, this);
 
-    	this.output = confbuffer;
+    	this.output = this;
 
-    	this.items = [this.output];
+    	this.items = [confbuffer];
 
         gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.superclass.initComponent.call(this);
     },
@@ -129,8 +130,8 @@ gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod = Ext.extend(gxp.wi
 	deactivate: function(){
 		gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.superclass.deactivate.call(this);
 		if(this.output){
-			this.output.resetPointSelection();
-			this.output.coordinatePicker.toggleButton(false);
+			this.bufferFieldset.resetPointSelection();
+			this.bufferFieldset.coordinatePicker.toggleButton(false);
 			this.output.hide();
 			this.output.disable();
 		}
@@ -140,8 +141,8 @@ gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod = Ext.extend(gxp.wi
     reset: function(){
 		gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.superclass.reset.call(this);
 		if(this.output){
-			this.output.resetPointSelection();
-			this.output.coordinatePicker.toggleButton(false);
+			this.bufferFieldset.resetPointSelection();
+			this.bufferFieldset.coordinatePicker.toggleButton(false);
 		}
     },
 

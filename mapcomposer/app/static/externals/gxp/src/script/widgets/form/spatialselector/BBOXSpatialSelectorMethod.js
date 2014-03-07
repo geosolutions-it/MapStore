@@ -143,7 +143,7 @@ gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.widg
 		    waitEPSGMsg: "Please Wait...",
 		    listeners : {
 		    	"onChangeAOI" : function(bounds) {
-					this.setCurrentGeometry(bounds);
+					this.setCurrentGeometry(bounds.toGeometry());
 		    	},
 		    	scope: this
 		    }
@@ -154,17 +154,6 @@ gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.widg
     	this.items = [this.output];
 
         gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.superclass.initComponent.call(this);
-    },
-
-    // Generate filter
-    getQueryFilter: function() {
-        this.currentFilter = new OpenLayers.Filter.Spatial({
-			type: OpenLayers.Filter.Spatial.BBOX,
-			property: this.filterGeometryName,
-			value: this.output.getBBOXBounds()
-		});
-
-        return this.currentFilter;
     },
 
 	// trigger action when activate the plugin
@@ -189,19 +178,6 @@ gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.widg
 		gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.superclass.reset.call(this);
     	this.output.removeBBOXLayer();
     	this.output.reset();
-    },
-
-    // set current geometry
-    setCurrentGeometry: function(bounds){
-    	if (bounds) {
-			this.currentGeometry = bounds;
-
-			if (this.zoomToCurrentExtent) {
-				this.target.mapPanel.map.zoomToExtent(bounds, closest=false);
-			}
-
-			this.addFeatureSummary(bounds.toGeometry());
-		} 
     },
 
 	/** api: method[getSummary]

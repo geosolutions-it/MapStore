@@ -127,6 +127,38 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 	 */
 	showSelectionSummary : true,
 
+	/** api: config[addGeometryOperation]
+	 *  ``Boolean``
+	 *  Append geometry operation as fieldset.
+	 */
+	addGeometryOperation: true,
+
+	/** api: config[geometryOperations]
+	 *  ``Array``
+	 *  With allowed geometry operations.
+	 */
+	geometryOperations:[{
+		name: "INTERSECTS",
+		label: "INTERSECTS",
+		value: OpenLayers.Filter.Spatial.INTERSECTS
+	},{
+		name: "BBOX",
+		label: "BBOX",
+		value: OpenLayers.Filter.Spatial.BBOX
+	},{
+		name: "CONTAINS",
+		label: "CONTAINS",
+		value: OpenLayers.Filter.Spatial.CONTAINS
+	},{
+		name: "DWITHIN",
+		label: "DWITHIN",
+		value: OpenLayers.Filter.Spatial.DWITHIN
+	},{
+		name: "WITHIN",
+		label: "WITHIN",
+		value: OpenLayers.Filter.Spatial.WITHIN
+	}],
+
 	/** api: config[areaLabel]
 	 * ``String``
 	 * Text for the Selection Summary Area Label (i18n).
@@ -163,7 +195,49 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 	 */
 	centroidLabel : "Centroid",
 
-	// init spatialSelectors 
+	/** api: config[geometryOperationText]
+	 * ``String``
+	 * Text for the Geometry Operation Label (i18n).
+	 */
+	geometryOperationText: "Geometry operation",
+
+	/** api: config[geometryOperationEmptyText]
+	 * ``String``
+	 * Text for the empty geometry operation combo (i18n).
+	 */
+	geometryOperationEmptyText: "Select a operation",
+
+	/** api: config[distanceTitleText]
+	 * ``String``
+	 * Text for the Distance field label (i18n).
+	 */
+	distanceTitleText: "Distance",
+
+	/** api: config[centroidLabel]
+	 * ``String``
+	 * Text for distance unit field label (i18n).
+	 */
+	distanceUnitsTitleText: "Distance units",
+
+	/** api: config[noOperationTitleText]
+	 * ``String``
+	 * Text for no valud operation title msg (i18n).
+	 */
+	noOperationTitleText: "No valid operation",
+
+	/** api: config[noOperationMsgText]
+	 * ``String``
+	 * Text for no operation msg (i18n).
+	 */
+	noOperationMsgText: "Please, select an operation before query",
+
+	/** api: config[noCompleteMsgText]
+	 * ``String``
+	 * Text msg for no complete form (i18n).
+	 */
+	noCompleteMsgText: "Please, complete form before query",
+
+	// init spatialSelector method
 	constructor : function(config) {
 		Ext.apply(this, config);
 		
@@ -179,6 +253,18 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 
 		if(!this.output){
 			this.output = this;
+		}
+
+		if(this.addGeometryOperation){
+			if (!this.items){
+				this.items = [];
+			}
+			this.items.push({
+				xtype: 'fieldset',
+				title: this.geometryOperationText,
+				items: [this.getGeometryOperationCombo()]
+			});
+			this.items.push(this.getDistanceFieldset());
 		}
 
         gxp.widgets.form.spatialselector.SpatialSelectorMethod.superclass.initComponent.call(this);
@@ -200,13 +286,69 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 	 * Generate a filter for the selected method
 	 */
 	getQueryFilter: function(){
+		var operation = null;
+		if(this.addGeometryOperation){
+			if(this.geometryOperation.isValid()){
+				operation = this.geometryOperation.getValue();
+			}else{
+                Ext.Msg.show({
+                    title: this.noOperationTitleText,
+                    msg: this.noOperationMsgText,
+                    buttons: Ext.Msg.OK,
+                    icon: Ext.MessageBox.ERROR
+                });
+				return null;
+			}
+		}else{
+			operation = OpenLayers.Filter.Spatial.INTERSECTS;
+		}
 		if(this.currentGeometry){
-			this.currentFilter = new OpenLayers.Filter.Spatial({
-				type: OpenLayers.Filter.Spatial.INTERSECTS,
-				property:  this.filterGeometryName,
-				value: this.currentGeometry,
-				bounds: this.currentGeometry.getBounds()
-			});
+			switch (operation){
+				case OpenLayers.Filter.Spatial.CONTAINS:
+				case OpenLayers.Filter.Spatial.INTERSECTS:
+					this.currentFilter = new OpenLayers.Filter.Spatial({
+						type: operation,
+						property:  this.filterGeometryName,
+						value: this.currentGeometry,
+						bounds: this.currentGeometry.getBounds()
+					});
+					break;
+				case OpenLayers.Filter.Spatial.WITHIN:
+					this.currentFilter = new OpenLayers.Filter.Spatial({
+						type: operation,
+						property:  this.filterGeometryName,
+						value: this.currentGeometry
+					});
+					break;
+				case OpenLayers.Filter.Spatial.DWITHIN:
+					if(this.distance.isValid()
+						&& this.dunits.isValid()){
+						this.currentFilter = new OpenLayers.Filter.Spatial({
+							type: operation,
+							property:  this.filterGeometryName,
+					        distanceUnits: this.dunits.getValue(),
+					        distance: this.distance.getValue(),
+							value: this.currentGeometry
+						});
+					}else{
+		                Ext.Msg.show({
+		                    title: this.noOperationTitleText,
+		                    msg: this.noCompleteMsgText,
+		                    buttons: Ext.Msg.OK,
+		                    icon: Ext.MessageBox.ERROR
+		                });
+		                return null;
+					}
+					break;
+				case OpenLayers.Filter.Spatial.BBOX:
+				default: 
+					this.currentFilter = new OpenLayers.Filter.Spatial({
+						type: OpenLayers.Filter.Spatial.BBOX,
+						property:  this.filterGeometryName,
+						value: this.currentGeometry.getBounds()
+					});
+			}
+			
 		}else{
 	        this.currentFilter = null;
 		}
@@ -219,19 +361,8 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 	 */
 	activate: function(){
 		this.reset();
-		if(this.output){
-			if(this.output.setDisabled){
-				this.output.setDisabled(false);	
-			}
-			if(this.output.doLayout){
-				this.output.doLayout();
-			}
-			if(this.hideWhenDeactivate && this.output.show){
-				this.output.show();
-			}
-		}else{
-			this.output = this.addOutput();
-		}
+		this.doLayout();
+		this.show();
 	},
 
 	/** api: method[deactivate]
@@ -239,14 +370,7 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 	 */
 	deactivate: function(){
 		this.reset();
-		if(this.output){
-			if(this.output.setDisabled){
-				this.output.setDisabled(true);	
-			}
-			if(this.hideWhenDeactivate && this.output.hide){
-				this.output.hide();
-			}
-		}
+		this.hide();
 	},
 
     /** api: method[addOutput]
@@ -399,5 +523,80 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 			}
 		}
 		return length;
+	},
+
+	/** api: method[getGeometryOperationCombo]
+     *  Obtain the geometry operation combo
+	 */
+	getGeometryOperationCombo : function() {
+		var geometryOperationMethodCombo = {
+			xtype : 'combo',
+			ref : '../geometryOperation',
+			fieldLabel : this.geometryOperationText,
+			typeAhead : true,
+			triggerAction : 'all',
+			lazyRender : false,
+			mode : 'local',
+			name : 'geometryOperation',
+			forceSelected : true,
+			emptyText : this.geometryOperationEmptyText,
+			allowBlank : false,
+			autoLoad : true,
+			displayField : 'label',
+			valueField : 'value',
+			editable : false,
+			readOnly : false,
+			store : new Ext.data.JsonStore({
+				fields : [{
+					name : 'name',
+					dataIndex : 'name'
+				}, {
+					name : 'label',
+					dataIndex : 'label'
+				}, {
+					name : 'value',
+					dataIndex : 'value'
+				}],
+				data : this.geometryOperations
+			}),
+			listeners : {
+				// SHOW /Hide distance units for DWITHIN
+				select : function(c, record, index) {
+					if(c.getValue() == OpenLayers.Filter.Spatial.DWITHIN){
+						this.distanceFieldset.show();
+					}else if(this.distanceFieldset.isVisible()){
+						this.distanceFieldset.hide();
+					}
+				},
+				scope : this
+			}
+		};
+		return geometryOperationMethodCombo;
+	},
+
+	/** api: method[getDistanceFieldset]
+     *  Obtain the distance fieldset for DWITHIN
+	 */
+	getDistanceFieldset: function(){
+		return {
+			xtype: 'fieldset',
+			title: this.distanceTitleText,
+			ref: "distanceFieldset",
+			hidden: true,
+			items: [{
+				xtype: "textfield",
+				fieldLabel: this.distanceUnitsTitleText,
+				name: "dunits",
+				ref: "../dunits",
+				value: this.target.mapPanel.map.units,
+				allowBlank: false
+			},{
+				xtype: "numberfield",
+				fieldLabel: this.distanceTitleText,
+				name: "distance",
+				ref: "../distance",
+				allowBlank: false
+			}]
+		}
 	}
 });
