@@ -108,59 +108,148 @@
 		]
 	},
     "customPanels":[
-	      {
-	          "xtype": "panel",
-	          "title": "FeatureGrid",      
-	          "border": false,
-	          "id": "south",
-	          "region": "south",
-	          "layout": "fit",
-	          "height": 330,
-	          "collapsed": false,
-	          "collapsible": true,
-	          "header": true
-	      },{
-	          "xtype": "panel",
-	          "title": "Query Panel",         
-	          "border": false,
-	          "id": "east",
-	          "width": 400,
-	          "height": 500,
-	          "region": "east",
-	          "layout": "fit",
-	          "collapsed": false,
-	          "split": true,
-	          "collapsible": true,
-	          "header": true
-	      }
-    ],	
+        {
+            "xtype": "tabpanel",
+            "title": "Data Viewer",
+            "border": false,
+            "id": "south",
+            "region": "south",
+            "split":true,
+            "height": 330,
+            "collapsed": true,
+            "collapsible": true,
+            "activeItem": 0,
+            "header": true,
+            "items": [
+            {
+                "xtype": "container",
+                "title": "Feature Grid",
+                "border": false,
+                "layout": "fit",
+                "id": "featuregrid"
+            },{
+                "xtype": "container",
+                "title": "Metadata Explorer",
+                "iconCls": "csw-viewer",             
+                "border": false,
+                "layout": "fit",
+                "id": "metadata"
+            }
+            ]
+        },
+        {
+              "xtype": "panel",
+              "title": "Query Panel",        
+              "border": false,
+              "id": "east",
+              "width": 400,
+              "height": 500,
+              "region": "east",
+              "layout": "fit",
+              "collapsed": false,
+              "split": true,
+              "collapsible": true,
+              "header": true
+        }
+        
+    ],
+    "removeTools": ["googleearth_plugin", "googleearth_separator", "zoombox_plugin"],
 	"scaleOverlayUnits":{
         "bottomOutUnits":"nmi",    
         "bottomInUnits":"nmi",    
         "topInUnits":"m",    
         "topOutUnits":"km"
     },
-	"customTools":[{
-           "ptype": "gxp_wpsmanager",
-           "id": "wpsManager",
-           "url": "http://localhost:8080/geoserver/wps",
-           "geostoreUrl": "http://localhost:8080/geostore/rest",
-           "geostoreUser": "admin",
-           "geostorePassword": "admin",
-           "geostoreProxy": "/http_proxy/proxy?url="
-        },{
+	"customTools":[
+		{
+            "ptype":"gxp_print",
+            "customParams":{
+                "outputFilename":"mapstore-print",
+                "geodetic": true
+            },
+            "ignoreLayers": "Google Hybrid,Bing Aerial,Nessuno sfondo,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
+            "printService":"http://vm-gistest1/geoserver/pdf/",
+            "legendPanelId":"legendPanel",
+            "actionTarget":{
+                "target":"paneltbar",
+                "index":4
+            }
+        },
+		{
 			"ptype": "gxp_embedmapdialog",
 			"actionTarget": {"target": "paneltbar", "index": 2},
 			"embeddedTemplateName": "viewer",
 			"showDirectURL": true
-		}, {
+		}, 
+		{
+            "ptype": "gxp_featuremanager",
+            "id": "featuremanager",
+            "paging": false,
+            "autoLoadFeatures": true
+        },
+        {
+            "ptype": "gxp_featureeditor",
+            "featureManager": "featuremanager",
+            "autoLoadFeatures": true
+        },
+        {
+            "ptype": "gxp_featuregrid",
+            "featureManager": "featuremanager",
+        	"layout": "form",
+            "outputConfig": {
+                "loadMask": true
+            },
+            "outputTarget": "featuregrid",
+			"exportFormats": ["CSV","shape-zip","excel", "excel2007"],
+			"exportAction": "window",
+			"outputTarget": "featuregrid"
+        },
+		{
 		   "ptype": "gxp_mouseposition",
 		   "displayProjectionCode":"EPSG:4326",
 		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
+		},{
+			"ptype": "gxp_metadataexplorer",
+			"id": "metadataexplorer",
+            "outputTarget": "metadata",
+			"saveState": true,
+            "cswconfig": {
+                "catalogs": [
+                        {"name": "CSI Piemonte", "url": "http://www.ruparpiemonte.it/geocatalogorp/geonetworkrp/srv/it/csw", "description": "GeoPortale della Regione Piemonte"},
+                        {"name": "Comune di Firenze", "url": "http://datigis.comune.fi.it/geonetwork/srv/it/csw", "description": "GeoPortale del Comune di Firenze"},
+                        {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina", "metaDataOptions":{"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page","idParam":"uuid","idIndex":0}},
+                        {"name": "Treviso", "url": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw", "description": "Treviso Geonetwork"},
+                        {"name": "kscNet", "url": "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw", "description": "kscNet"},
+                        {"name": "CSI-CGIAR", "url": "http://geonetwork.csi.cgiar.org/geonetwork/srv/en/csw", "description" : "CSI-CGIAR"},
+                        {"name": "EauFrance", "url": "http://sandre.eaufrance.fr/geonetwork/srv/fr/csw", "description" : "EauFrance"},
+                        {"name": "SOPAC", "url": "http://geonetwork.sopac.org/geonetwork/srv/en/csw", "description" : "SOPAC"},
+                        {"name": "SADC", "url": "http://www.sadc.int/geonetwork/srv/en/csw", "description" : "SADC"},
+                        {"name": "MAPAS", "url": "http://mapas.mma.gov.br/geonetwork/srv/en/csw", "description" : "MAPAS"}
+                    ],
+                "dcProperty": "title",
+                "initialBBox": {
+                    "minx": 11.145,
+                    "miny": 43.718,
+                    "maxx": 11.348,
+                    "maxy": 43.84
+                },
+                "cswVersion": "2.0.2",
+                "filterVersion": "1.1.0",
+                "start": 1,
+                "limit": 10,
+                "timeout": 60000
+            }            
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
 			"id": "addlayer"
+		}, {
+			"actions": ["-"], 
+			"actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_geolocationmenu",
+			"actionTarget": {"target": "paneltbar", "index": 23},
+			"toggleGroup": "toolGroup"
 		}, {
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
@@ -172,21 +261,7 @@
 			"index": 24,
 			"showOnStartup": false,
 			"fileDocURL": "MapStore-Help.pdf"
-		}, {
-		  "ptype": "gxp_featuremanager",
-		  "id": "featuremanager",
-		  "maxFeatures": 10
-	    }, {
-		  "ptype": "gxp_featuregrid",
-		  "featureManager": "featuremanager",
-		  "outputConfig": {
-			  "id": "featuregrid",
-			  "title": "Features"
-		  },
-		  "outputTarget": "south",
-		  "exportFormats": ["CSV","shape-zip","excel", "excel2007"],
-		  "exportAction": "window"
-	    }, {
+        }, {
 		  "ptype": "gxp_spatialqueryform",
 		  "featureManager": "featuremanager",
 		  "featureGridContainer": "south",
@@ -428,7 +503,5 @@
         	"index": 4  
         }
     }
-    
-	],
-	"removeTools":["zoombox_plugin", "googleearth_separator", "googleearth_plugin"]
+	]
 }
