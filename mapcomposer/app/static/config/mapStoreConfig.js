@@ -4,7 +4,7 @@
    		"default": {
 			"ptype": "gxp_wmssource",
 			"title": "Default GeoServer",
-			"url": "http://192.168.0.192:8080/geoserver/ows",
+			"url": "http://localhost:8080/geoserver/ows",
 			"SRS": "EPSG:900913",
 			"version":"1.1.1"
 		},
@@ -380,7 +380,7 @@
             "outputFilename":"mapstore-print"
         },
         "ignoreLayers": "Google Hybrid,Bing Aerial,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
-        "printService":"http://192.168.0.192:8080/geoserver/pdf/",
+        "printService":"http://localhost:8080/geoserver/pdf/",
         "legendPanelId":"legendPanel",
         "actionTarget":{
             "target":"paneltbar",
