@@ -4,7 +4,7 @@
    		"default": {
 			"ptype": "gxp_wmssource",
 			"title": "Default GeoServer",
-			"url": "http://localhost:8080/geoserver/ows",
+			"url": "http://192.168.0.192:8080/geoserver/ows",
 			"SRS": "EPSG:900913",
 			"version":"1.1.1"
 		},
@@ -125,7 +125,7 @@
                 "xtype": "container",
                 "title": "Feature Grid",
                 "border": false,
-                "layout": "fit",
+                "layout": "form",
                 "id": "featuregrid"
             },{
                 "xtype": "container",
@@ -197,6 +197,7 @@
             "featureManager": "featuremanager",
         	"layout": "form",
             "outputConfig": {
+            	"height": 240,
                 "loadMask": true
             },
             "outputTarget": "featuregrid",
@@ -379,7 +380,7 @@
             "outputFilename":"mapstore-print"
         },
         "ignoreLayers": "Google Hybrid,Bing Aerial,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
-        "printService":"http://localhost:8080/geoserver/pdf/",
+        "printService":"http://192.168.0.192:8080/geoserver/pdf/",
         "legendPanelId":"legendPanel",
         "actionTarget":{
             "target":"paneltbar",
