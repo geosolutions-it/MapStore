@@ -129,6 +129,7 @@
 	          "region": "east",
 	          "layout": "fit",
 	          "collapsed": false,
+	          "split": true,
 	          "collapsible": true,
 	          "header": true
 	      }
@@ -295,74 +296,6 @@
 		            "spatialOutputCRS": "EPSG:3003",
 		            "geocoderTypePageSize": 10,
 		            "zoomToCurrentExtent": true
-		        },
-		        "civici_cod":{
-		            "xtype": "gxp_spatial_geocoding_selector",
-		            "multipleSelection": false,
-					"name" : "Civici Cod",
-					"label" : "Civici Cod",
-					"searchComboOutputFormat": "json",
-		            "wfsBaseURL": "http://geoserver.comune.genova.it/geoserver/wfs",
-		            "geocoderTypeName": "SITGEO:CIVICI_COD_TOPON_SUB",
-		            "geocoderTypeRecordModel":[
-		                {
-		                    "name":"id",
-		                    "mapping":"id"
-		                },
-		                {
-		                    "name":"name",
-		                    "mapping":"properties.COD_STRADA"
-		                },
-		                {
-		                    "name":"custom",
-		                    "mapping":"properties.COD_TOPON"
-		                },
-		                {
-		                    "name":"geometry",
-		                    "mapping":"geometry"
-		                }
-		            ],
-		            "geocoderTypeSortBy":null,
-		            "geocoderTypeQueriableAttributes":[
-		                "COD_STRADA", "COD_TOPON"
-		            ],
-		            "spatialOutputCRS": "EPSG:3003",
-		            "geocoderTypePageSize": 10,
-		            "zoomToCurrentExtent": true
-		        },
-		        "strada":{
-		            "xtype": "gxp_spatial_geocoding_selector",
-		            "multipleSelection": false,
-					"name" : "Strada",
-					"label" : "Strada",
-					"searchComboOutputFormat": "json",
-		            "wfsBaseURL": "http://geoserver.comune.genova.it/geoserver/wfs",
-		            "geocoderTypeName": "CTC:V_ASTE_STRADALI_TOPONIMO_SUB",
-		            "geocoderTypeRecordModel":[
-		                {
-		                    "name":"id",
-		                    "mapping":"id"
-		                },
-		                {
-		                    "name":"name",
-		                    "mapping":"properties.NOMEVIA"
-		                },
-		                {
-		                    "name":"custom",
-		                    "mapping":"properties.COD_STRADA"
-		                },
-		                {
-		                    "name":"geometry",
-		                    "mapping":"geometry"
-		                }
-		            ],
-		            "geocoderTypeSortBy":null,
-		            "geocoderTypeQueriableAttributes":[
-		                "COD_STRADA", "NOMEVIA"
-		            ],
-		            "spatialOutputCRS": "EPSG:3003",
-		            "geocoderTypePageSize": 10,
-		            "zoomToCurrentExtent": true
 		        }
 	      }
     	},{
@@ -485,6 +418,15 @@
 	            }
 		    }
     	}
+    },{
+        "ptype": "gxp_zoombox",
+        "id": "custom_zoombox_plugin", 
+        "toggleGroup": "toolGroup",
+        "appendZoomOut": false,
+        "actionTarget": {
+        	"target": "paneltbar", 
+        	"index": 4  
+        }
     }
     
 	],
