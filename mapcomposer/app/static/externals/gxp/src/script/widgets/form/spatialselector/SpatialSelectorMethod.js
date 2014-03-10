@@ -159,6 +159,12 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 		value: OpenLayers.Filter.Spatial.WITHIN
 	}],
 
+	/** api: config[defaultGeometryOperation]
+	 *  ``String``
+	 *  Default geometry operation selected.
+	 */
+	defaultGeometryOperation: OpenLayers.Filter.Spatial.INTERSECTS,
+
 	/** api: config[areaLabel]
 	 * ``String``
 	 * Text for the Selection Summary Area Label (i18n).
@@ -539,6 +545,7 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 			mode : 'local',
 			name : 'geometryOperation',
 			forceSelected : true,
+			value: this.defaultGeometryOperation,
 			emptyText : this.geometryOperationEmptyText,
 			allowBlank : false,
 			autoLoad : true,
