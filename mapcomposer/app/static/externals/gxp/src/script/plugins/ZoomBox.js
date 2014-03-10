@@ -65,6 +65,18 @@ gxp.plugins.ZoomBox = Ext.extend(gxp.plugins.Tool, {
      *  Text for zoom out action tooltip (i18n).
      */
     zoomOutTooltip: "Zoom Box Out",
+
+    /** api: config[appendZoomIn]
+     * ``Boolean``
+     * Flag to append zoomIn. Default it's true
+     */
+    appendZoomIn: true,
+
+    /** api: config[appendZoomOut]
+     * ``Boolean``
+     * Flag to append zoomOut. Default it's true
+     */
+    appendZoomOut: true,
     
     /** private: method[constructor]
      */
@@ -79,8 +91,12 @@ gxp.plugins.ZoomBox = Ext.extend(gxp.plugins.Tool, {
         var zoomBoxIn = new OpenLayers.Control.ZoomBox({out:false});        
         var zoomBoxOut = new OpenLayers.Control.ZoomBox({out:true});
         
-        this.target.mapPanel.map.addControl(zoomBoxIn);
-        this.target.mapPanel.map.addControl(zoomBoxOut);
+        if(this.appendZoomIn){
+            this.target.mapPanel.map.addControl(zoomBoxIn);   
+        }
+        if(this.appendZoomOut){
+            this.target.mapPanel.map.addControl(zoomBoxOut);
+        }
         
         var zoomInButton = new Ext.Button({
             menuText: this.zoomInBoxMenuText,
@@ -93,7 +109,7 @@ gxp.plugins.ZoomBox = Ext.extend(gxp.plugins.Tool, {
                 toggle: function(button, pressed) {
                     if(pressed){
                         //zoomOutButton.toggle(false);
-                        zoomBoxOut.deactivate();
+                        this.appendZoomOut && zoomBoxOut.deactivate();
                         zoomBoxIn.activate();  
                     }else{
                         zoomBoxIn.deactivate();
@@ -114,7 +130,7 @@ gxp.plugins.ZoomBox = Ext.extend(gxp.plugins.Tool, {
                 toggle: function(button, pressed) {
                     if(pressed){
                         //zoomInButton.toggle(false);
-                        zoomBoxIn.deactivate();
+                        this.appendZoomIn && zoomBoxIn.deactivate();
                         zoomBoxOut.activate();
                     }else{
                         zoomBoxOut.deactivate();
@@ -123,8 +139,12 @@ gxp.plugins.ZoomBox = Ext.extend(gxp.plugins.Tool, {
             },
             scope: this
         });
-        
-        var actions = [zoomInButton, zoomOutButton];
+
+        // make configurable the zoom actions append
+        var actions = [];
+        this.appendZoomIn && actions.push(zoomInButton);
+        this.appendZoomOut && actions.push(zoomOutButton);
+
         return gxp.plugins.ZoomBox.superclass.addActions.apply(this, [actions]);
     }
   
