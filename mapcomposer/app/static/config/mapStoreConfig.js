@@ -365,92 +365,7 @@
 		            "zoomToCurrentExtent": true
 		        }
 	      }
-    	}, {
-            "ptype": "gxp_spatial_selector_geocoder",
-            "outputTarget": "west",
-            "text": "Geocoder",
-            "layoutConfig":{
-                "xtype": "form",
-                "buttonAlign": "right",
-                "autoScroll":true,
-                "frame":true
-            },
-            "crossParameters":{
-                "name": {
-                    "COD_STRADA":{
-                        "number": "COD_STRADA"
-                    }
-                }
-            },
-            "spatialSelectorsConfig":{
-                "name":{
-                    "xtype": "gxp_spatial_geocoding_selector",
-                    "showSelectionSummary": false,
-                    "multipleSelection": false,
-                    "searchComboOutputFormat": "json",
-                    "wfsBaseURL": "http://geoserver.comune.genova.it/geoserver/wfs",
-                    "geocoderTypeName": "CTC:V_ASTE_STRADALI_TOPONIMO_SUB",
-                    "geocoderTypeRecordModel":[
-                        {
-                            "name":"id",
-                            "mapping":"id"
-                        },
-                        {
-                            "name":"name",
-                            "mapping":"properties.NOMEVIA"
-                        },
-                        {
-                            "name":"custom",
-                            "mapping":"properties.COD_STRADA"
-                        },
-                        {
-                            "name":"geometry",
-                            "mapping":"geometry"
-                        }
-                    ],
-                    "geocoderTypeSortBy":null,
-                    "geocoderTypeQueriableAttributes":[
-                        "COD_STRADA", "NOMEVIA"
-                    ],
-                    "spatialOutputCRS": "EPSG:3003",
-                    "geocoderTypePageSize": 10,
-                    "zoomToCurrentExtent": false
-                },
-                "number":{
-                    "xtype": "gxp_spatial_geocoding_selector",
-                    "showSelectionSummary": false,
-                    "multipleSelection": false,
-                    "searchComboOutputFormat": "json",
-                    "wfsBaseURL": "http://geoserver.comune.genova.it/geoserver/wfs",
-                    "geocoderTypeName": "SITGEO:CIVICI_COD_TOPON_SUB",
-                    "geocoderTypeRecordModel":[
-                        {
-                            "name":"id",
-                            "mapping":"id"
-                        },
-                        {
-                            "name":"name",
-                            "mapping":"properties.COD_STRADA"
-                        },
-                        {
-                            "name":"custom",
-                            "mapping":"properties.COD_TOPON"
-                        },
-                        {
-                            "name":"geometry",
-                            "mapping":"geometry"
-                        }
-                    ],
-                    "geocoderTypeSortBy":null,
-                    "geocoderTypeQueriableAttributes":[
-                        "COD_STRADA", "COD_TOPON"
-                    ],
-                    "spatialOutputCRS": "EPSG:3003",
-                    "geocoderTypePageSize": 10,
-                    "zoomToCurrentExtent": false
-                }
-            }
-    },{
+    	},{
         "ptype":"gxp_print",
         "customParams":{
             "outputFilename":"mapstore-print"
@@ -466,23 +381,112 @@
         "appendLegendOptions": true,
         "addGraticuleControl": true
     },{
-            "ptype": "gxp_spatial_selector_reverse_geocoder",
-            "outputTarget": "west",
-            "url": "http://geoserver.comune.genova.it/geoserver/wfs",
-		    "maxFeatures": 10,
-		    "streetfeatureNS": "CTC",
-		    "typeName": "CIVICI_COD_TOPON_SUB",
-		    "featureNS": "SITGEO",
-		    "geometryName": "GEOMETRY",
-		    "streetPropertyName": "COD_STRADA",
-		    "numberPropertyName": "COD_TOPON",
-            "layoutConfig":{
-                "xtype": "form",
-                "buttonAlign": "right",
-                "autoScroll":true,
-                "frame":true
-            }
+    	"ptype": "gxp_spatial_selector_locator",
+        "outputTarget": "west",
+    	"pluginsConfig":{
+    		"geocoder":{
+	            "ptype": "gxp_spatial_selector_geocoder",
+	            "layoutConfig":{
+	                "xtype": "form",
+	                "buttonAlign": "right",
+	                "autoScroll":true,
+	                "frame":true
+	            },
+	            "crossParameters":{
+	                "name": {
+	                    "COD_STRADA":{
+	                        "number": "COD_STRADA"
+	                    }
+	                }
+	            },
+	            "spatialSelectorsConfig":{
+	                "name":{
+	                    "xtype": "gxp_spatial_geocoding_selector",
+	                    "showSelectionSummary": false,
+	                    "multipleSelection": false,
+	                    "searchComboOutputFormat": "json",
+	                    "wfsBaseURL": "http://geoserver.comune.genova.it/geoserver/wfs",
+	                    "geocoderTypeName": "CTC:V_ASTE_STRADALI_TOPONIMO_SUB",
+	                    "geocoderTypeRecordModel":[
+	                        {
+	                            "name":"id",
+	                            "mapping":"id"
+	                        },
+	                        {
+	                            "name":"name",
+	                            "mapping":"properties.NOMEVIA"
+	                        },
+	                        {
+	                            "name":"custom",
+	                            "mapping":"properties.COD_STRADA"
+	                        },
+	                        {
+	                            "name":"geometry",
+	                            "mapping":"geometry"
+	                        }
+	                    ],
+	                    "geocoderTypeSortBy":null,
+	                    "geocoderTypeQueriableAttributes":[
+	                        "COD_STRADA", "NOMEVIA"
+	                    ],
+	                    "spatialOutputCRS": "EPSG:3003",
+	                    "geocoderTypePageSize": 10,
+	                    "zoomToCurrentExtent": false
+	                },
+	                "number":{
+	                    "xtype": "gxp_spatial_geocoding_selector",
+	                    "showSelectionSummary": false,
+	                    "multipleSelection": false,
+	                    "searchComboOutputFormat": "json",
+	                    "wfsBaseURL": "http://geoserver.comune.genova.it/geoserver/wfs",
+	                    "geocoderTypeName": "SITGEO:CIVICI_COD_TOPON_SUB",
+	                    "geocoderTypeRecordModel":[
+	                        {
+	                            "name":"id",
+	                            "mapping":"id"
+	                        },
+	                        {
+	                            "name":"name",
+	                            "mapping":"properties.COD_STRADA"
+	                        },
+	                        {
+	                            "name":"custom",
+	                            "mapping":"properties.COD_TOPON"
+	                        },
+	                        {
+	                            "name":"geometry",
+	                            "mapping":"geometry"
+	                        }
+	                    ],
+	                    "geocoderTypeSortBy":null,
+	                    "geocoderTypeQueriableAttributes":[
+	                        "COD_STRADA", "COD_TOPON"
+	                    ],
+	                    "spatialOutputCRS": "EPSG:3003",
+	                    "geocoderTypePageSize": 10,
+	                    "zoomToCurrentExtent": false
+	                }
+	            }
+	    	}, "reverse": {
+	            "ptype": "gxp_spatial_selector_reverse_geocoder",
+	            "url": "http://geoserver.comune.genova.it/geoserver/wfs",
+			    "maxFeatures": 10,
+			    "streetfeatureNS": "CTC",
+			    "typeName": "CIVICI_COD_TOPON_SUB",
+			    "featureNS": "SITGEO",
+			    "geometryName": "GEOMETRY",
+			    "streetPropertyName": "COD_STRADA",
+			    "numberPropertyName": "COD_TOPON",
+	            "layoutConfig":{
+	                "xtype": "form",
+	                "buttonAlign": "right",
+	                "autoScroll":true,
+	                "frame":true
+	            }
+		    }
+    	}
     }
+    
 	],
 	"removeTools":["zoombox_plugin", "googleearth_separator", "googleearth_plugin"]
 }
