@@ -120,7 +120,7 @@ gxp.plugins.spatialselector.Geocoder = Ext.extend(gxp.plugins.Tool, {
     		xtype: "panel",
     		layout: "form",
     		defaults:{
-    			layout:"fieldfet"
+    			layout:"fieldset"
     		}
 		};
 
