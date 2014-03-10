@@ -388,8 +388,8 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
 
         config = Ext.apply({
             xtype: "gxp_featuregrid",
-			actionTooltip: this.zoomToFeature,
-			map: this.target.mapPanel.map,
+            actionTooltip: this.zoomToFeature,
+            map: this.target.mapPanel.map,
             sm: new GeoExt.grid.FeatureSelectionModel(smCfg),
             autoScroll: true,
             title: this.title,
@@ -451,28 +451,28 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 scope: this
             },
             contextMenu: new Ext.menu.Menu({items: [{
-				text: this.zoomToFeature,
-				tooltip: this.zoomToFeature,
-				iconCls: 'gxp-icon-zoom-to',
-				scope: this,
-				handler: function(cmp){
-					var grid = this.output[0];
-					var selection = grid.getSelectionModel().getSelections()[0];
-					var feature = selection.data.feature;
-					if(feature){
-						var bounds = feature.geometry.getBounds();
-						if(bounds){
-							this.target.mapPanel.map.zoomToExtent(bounds);
-							
-							var showButton = Ext.getCmp("showButton");
-							if(!showButton.pressed){
-								showButton.toggle(true);
-								this.selectControl.select(feature);
-							}
-						}
-					}
-				}				
-			}]})
+                text: this.zoomToFeature,
+                tooltip: this.zoomToFeature,
+                iconCls: 'gxp-icon-zoom-to',
+                scope: this,
+                handler: function(cmp){
+                    var grid = this.output[0];
+                    var selection = grid.getSelectionModel().getSelections()[0];
+                    var feature = selection.data.feature;
+                    if(feature){
+                        var bounds = feature.geometry.getBounds();
+                        if(bounds){
+                            this.target.mapPanel.map.zoomToExtent(bounds);
+                            
+                            var showButton = Ext.getCmp("showButton");
+                            if(!showButton.pressed){
+                                showButton.toggle(true);
+                                this.selectControl.select(feature);
+                            }
+                        }
+                    }
+                }               
+            }]})
         }, config || {});
         var featureGrid = gxp.plugins.FeatureGrid.superclass.addOutput.call(this, config);
         
@@ -584,7 +584,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                         handler: function() {
                             if(this.exportWindow.form.getForm().isValid()){
                                 var format = this.exportWindow.form.getForm().getValues().format;
-                                this.export(false, format);
+                                this.exportAction(false, format);
                             }else{
                                 Ext.Msg.show({
                                     title: this.noFormatTitleText,
@@ -601,7 +601,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                         handler: function() {
                             if(this.exportWindow.form.getForm().isValid()){
                                 var format = this.exportWindow.form.getForm().getValues().format;
-                                this.export(false, format);
+                                this.exportAction(false, format);
                             }else{
                                 Ext.Msg.show({
                                     title: this.noFormatTitleText,
@@ -648,7 +648,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                     iconCls: "gxp-icon-csvexport-single",
                     text: this.exportCSVSingleText,
                     handler: function() {                    
-                        this.me.export(true, this.format);
+                        this.me.exportAction(true, this.format);
                     },
                     scope: {
                         me: this,
@@ -658,7 +658,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                     iconCls: "gxp-icon-csvexport-multiple",
                     text: this.exportCSVMultipleText,
                     handler: function() {                    
-                        this.me.export(false, this.format);
+                        this.me.exportAction(false, this.format);
                     },
                     scope: {
                         me: this,
@@ -669,9 +669,9 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         };
     },
 
-    /** api: method[export]
+    /** api: method[exportAction]
      */    
-    export: function(single, outputFormat){
+    exportAction: function(single, outputFormat){
     
         var featureManager = this.target.tools[this.featureManager];
         var grid = this.output[0];
