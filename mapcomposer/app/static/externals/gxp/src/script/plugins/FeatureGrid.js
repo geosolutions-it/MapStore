@@ -239,6 +239,12 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  Feature Grid title.
      */
     title: "Features",
+    
+    /** api: config[defaultComboFormatValue]
+     *  ``String``
+     *  Default output format selection for export. Default is 'CSV'
+     */
+    defaultComboFormatValue: "CSV",
 	
 	zoomToFeature: "Zoom To Feature",
 
@@ -537,6 +543,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 name : 'format',
                 forceSelected : true,
                 emptyText : this.comboFormatEmptyText,
+                value : this.defaultComboFormatValue,
                 allowBlank : false,
                 autoLoad : true,
                 displayField : 'name',
