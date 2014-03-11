@@ -395,6 +395,19 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 						this.target.layerSources[source.id].loaded = true; 
 						this.addLayerRecord(options, source);
 					}, this);
+					// add listener if layer source fail to append the layer source error information
+					if(this.useEvents){
+						source.on('failure', function(){
+							mask.hide();
+							var report = {
+								name: options.msLayerName,
+								url: source.url,
+								type: "service",
+								msg: this.capabilitiesFailureMsg
+							};
+							this.fireEvent('ready', undefined, report);
+						}, this);
+					}
 				}
 				
 				var index = source.store.findExact("name", msLayerName);
