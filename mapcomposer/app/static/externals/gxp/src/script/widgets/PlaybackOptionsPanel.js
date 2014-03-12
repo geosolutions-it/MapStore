@@ -24,7 +24,7 @@ Ext.namespace("gxp");
  *   
  *      A panel for displaying and modifiying the configuration options for the PlaybackToolbar.
  */
-gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
+gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
     
     /** api: config[viewer]
      *  ``gxp.Viewer``
@@ -37,9 +37,11 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
     /** api: config[timeManager]
      *  ``OpenLayers.Control.TimeManager``
      */
-    
+    title: "Date & Time Options",
     layout: "fit",
-
+    collapsible: true,
+    collapsed: false,
+    height: 360,   
     /** i18n */
     titleText: "Date & Time Options",
     rangeFieldsetText: "Time Range",
@@ -69,7 +71,8 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
     initComponent: function() {
         var config = Ext.applyIf(this.initialConfig,{
             //minHeight:400,
-            minWidth:275,
+            
+            //minWidth:275,         
             ref:'optionsPanel',
             items:[
             {
@@ -78,7 +81,7 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
                 autoScroll: true,
                 ref:'form',
                 border:false,
-                bodyStyle: "padding: 10px",
+                //bodyStyle: "padding: 10px",
                 labelWidth:10,
                 defaultType: 'textfield',
                 items: [{
@@ -90,8 +93,23 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
                         xtype: 'displayfield',
                         text: this.rangeChoiceText
                     }, {
-                        fieldLabel: this.startText,
-                        //format: "d-m-Y",  
+                                    //fieldLabel: this.startText,
+                                    //format: "Y-m-d",
+                                    xtype: 'xdatetime',
+                                    id: 'startDate_ID',
+                                    fieldLabel: this.startText,
+                                    //width:360,
+                                    anchor: '-18',
+                                    timeFormat: 'H:i:s',
+                                    timeConfig: {
+                                        altFormats: 'H:i:s',
+                                        allowBlank: true
+                                    },
+                                    dateFormat: 'd-m-Y',
+                                    dateConfig: {
+                                        altFormats: 'd-m-Y|Y-n-d',
+                                        allowBlank: true
+                                    },
                         listeners: {
                             'select': this.setStartTime,
                             'change': this.setStartTime,
@@ -99,8 +117,23 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
                         },
                         ref: '../../rangeStartField'
                     }, {
-                        fieldLabel: this.endText,
-                        //format: "d-m-Y",  
+                                    //fieldLabel: this.endText,
+                                    //format: "Y-m-d",
+                                    xtype: 'xdatetime',
+                                    id: 'endDate_ID',
+                                    fieldLabel: this.endText,
+                                    //width:360,
+                                    anchor: '-18',
+                                    timeFormat: 'H:i:s',
+                                    timeConfig: {
+                                        altFormats: 'H:i:s',
+                                        allowBlank: true
+                                    },
+                                    dateFormat: 'd-m-Y',
+                                    dateConfig: {
+                                        altFormats: 'd-m-Y|Y-n-d',
+                                        allowBlank: true
+                                    },
                         listeners: {
                             'select': this.setEndTime,
                             'change': this.setEndTime,
@@ -111,7 +144,7 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
                 }, {
                     xtype: 'fieldset',
                     title: this.animationFieldsetText,
-                    labelWidth:120,
+                    labelWidth:130,
                     items: [
                    /* {
                       boxLabel:this.listOnlyText,
@@ -194,7 +227,10 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
                 }*/]
             }
             ],
-            listeners:{'show':this.populateForm,scope:this},
+            listeners:{
+                'afterrender':this.populateForm,
+                scope:this
+            },
             bbar: [{
                 text: this.saveText, //'Save',
 				iconCls: 'playback-save',

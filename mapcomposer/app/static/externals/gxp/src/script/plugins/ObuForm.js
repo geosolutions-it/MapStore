@@ -54,10 +54,12 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 	styleData: "Visualizzazione",
 	
 	applyText: "Applica",
+    
+    timeSliderDataTitle: "Data",
 	
     // End i18n.
 	
-	wfsComboSize: 200,
+	wfsComboSize: 180,
     
     wfsUrl: "http://destination.geo-solutions.it/geoserver_test/ows?",
 	
@@ -139,15 +141,22 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 		target.on({
 		    scope: this,
 			'ready' : function(){
+           
 				//
 				// Show the Time Slider only when this tool is activated 
 				//
 			    this.formPanel.on("show", function(){
 					this.playbackTool = this.target.tools["destination_playback"];
 					if(this.playbackTool && this.playbackTool.playbackToolbar){
+                        
+                        //populate timeslider settings panel with values
+                        this.formPanel.optionsPanel.timeManager = this.playbackTool.playbackToolbar.control;
+                        this.formPanel.optionsPanel.playbackToolbar = this.playbackTool.playbackToolbar;
+                        
 						this.playbackTool.playbackToolbar.show();
+                        
 					}
-					
+               
 					//
 					// Make visible the OBU layer if it is deactivated inside the layertree
 					//
@@ -315,7 +324,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
                 {
                     xtype: 'numberfield',
 					id: "vminField",	
-					width: 90,
+					width: 80,
 					fieldLabel: this.velocityRange,
                     emptyText: this.velocityMin,
                     flex: 1
@@ -328,7 +337,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
                 }, {
                     xtype: 'numberfield',
 					id: "vmaxField",	
-					width: 90,
+					width: 80,
                     emptyText: this.velocityMax,
                     flex: 1
                 }, {
@@ -354,7 +363,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
                 {
                     xtype: 'numberfield',
 					id: "dminField",	
-					width: 90,
+					width: 80,
 					fieldLabel: this.descriptionRange,
                     emptyText: this.descriptionMin,
                     flex: 1
@@ -367,7 +376,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
                 }, {
                     xtype: 'numberfield',
 					id: "dmaxField",	
-					width: 90,
+					width: 80,
                     emptyText: this.descriptionMax,
                     flex: 1
                 }, {
@@ -390,6 +399,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 	    // /////////////////////////////////////
 		// FieldSet definitions.
 		// /////////////////////////////////////
+        
 		this.filterData = new Ext.form.FieldSet({
 			title: this.filterTitle,
 			items: [
@@ -436,6 +446,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 		
 	    this.container = new Ext.form.FieldSet({
 			items: [
+                //this.timeSliderData,
 				this.filterData,
 				this.styleData
 			],
@@ -654,8 +665,10 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 		
 	    var opuForm = new Ext.form.FormPanel({
 			title: this.title,
+            layout: 'form',
 			items:[
-				this.container
+				this.container,
+                {xtype: 'gxp_playbackoptions'} //add timeslider settings panel to obuForm panel
 			]
 		});
 		
