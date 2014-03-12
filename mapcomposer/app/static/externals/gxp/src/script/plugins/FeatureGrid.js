@@ -584,7 +584,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                         handler: function() {
                             if(this.exportWindow.form.getForm().isValid()){
                                 var format = this.exportWindow.form.getForm().getValues().format;
-                                this.exportAction(false, format);
+                                this.doExport(false, format);
                             }else{
                                 Ext.Msg.show({
                                     title: this.noFormatTitleText,
@@ -601,7 +601,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                         handler: function() {
                             if(this.exportWindow.form.getForm().isValid()){
                                 var format = this.exportWindow.form.getForm().getValues().format;
-                                this.exportAction(false, format);
+                                this.doExport(false, format);
                             }else{
                                 Ext.Msg.show({
                                     title: this.noFormatTitleText,
@@ -648,7 +648,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                     iconCls: "gxp-icon-csvexport-single",
                     text: this.exportCSVSingleText,
                     handler: function() {                    
-                        this.me.exportAction(true, this.format);
+                        this.me.doExport(true, this.format);
                     },
                     scope: {
                         me: this,
@@ -658,7 +658,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                     iconCls: "gxp-icon-csvexport-multiple",
                     text: this.exportCSVMultipleText,
                     handler: function() {                    
-                        this.me.exportAction(false, this.format);
+                        this.me.doExport(false, this.format);
                     },
                     scope: {
                         me: this,
@@ -669,9 +669,9 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         };
     },
 
-    /** api: method[exportAction]
+    /** api: method[doExport]
      */    
-    exportAction: function(single, outputFormat){
+    doExport: function(single, outputFormat){
     
         var featureManager = this.target.tools[this.featureManager];
         var grid = this.output[0];
