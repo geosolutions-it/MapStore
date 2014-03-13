@@ -43,7 +43,7 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
     collapsed: false,
     height: 360,   
     /** i18n */
-    titleText: "Date & Time Options",
+    optionTitleText: "Date & Time Options",
     rangeFieldsetText: "Time Range",
     animationFieldsetText: "Animation Options",
     startText:'Start',
@@ -72,7 +72,8 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
         var config = Ext.applyIf(this.initialConfig,{
             //minHeight:400,
             
-            //minWidth:275,         
+            //minWidth:275,
+            title: this.optionTitleText,
             ref:'optionsPanel',
             items:[
             {

@@ -150,6 +150,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 					if(this.playbackTool && this.playbackTool.playbackToolbar){
                         
                         //populate timeslider settings panel with values
+                        //this.formPanel.doLayout(false,true);
                         this.formPanel.optionsPanel.timeManager = this.playbackTool.playbackToolbar.control;
                         this.formPanel.optionsPanel.playbackToolbar = this.playbackTool.playbackToolbar;
                         
@@ -445,6 +446,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 		});
 		
 	    this.container = new Ext.form.FieldSet({
+            layout: 'anchor',
 			items: [
                 //this.timeSliderData,
 				this.filterData,
@@ -663,13 +665,15 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 			]
 		});
 		
-	    var opuForm = new Ext.form.FormPanel({
+	    var opuForm = new Ext.Panel({
 			title: this.title,
-            layout: 'form',
+            layout: 'anchor',
 			items:[
 				this.container,
-                {xtype: 'gxp_playbackoptions'} //add timeslider settings panel to obuForm panel
-			]
+                {
+                    xtype: 'gxp_playbackoptions' //add timeslider settings panel to obuForm panel
+                } 
+			]          
 		});
 		
 		this.formPanel = opuForm;

@@ -721,7 +721,7 @@ GeoExt.Lang.add("en", {
         pauseTooltip: "Pause"
     },
     "gxp.PlaybackOptionsPanel.prototype": {
-        titleText: "Date & Time Options",
+        optionTitleText: "Date & Time Options",
         rangeFieldsetText: "Time Range",
         animationFieldsetText: "Animation Options",
         startText: "Start",
