@@ -94,7 +94,8 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
     initComponent: function() {
         if(!this.playbackActions){
             //this.playbackActions = ["settings","slider","reset","currenttime","back","next","play","fastforward","loop"]; 
-            this.playbackActions = ["settings","slider","reset","back","next","play","fastforward","loop"]; 
+            //this.playbackActions = ["settings","slider","reset","back","next","play","fastforward","loop"]; 
+            this.playbackActions = ["slider","reset","back","next","play","fastforward","loop"]; 
         }
         if(!this.control){
             this.control = this.buildTimeManager();
@@ -229,8 +230,8 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
 		this.btnFastforward.disable();
 		this.slider.disable();
         this.slider.sliderTip.hide();
-        this.btnSettings.disable();
-        this.btnCurrentTime.disable();
+        //this.btnSettings.disable();
+        //this.btnCurrentTime.disable();
         this.btnBack.disable();
 	},
 	
@@ -243,8 +244,8 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
         }
 		this.slider.enable();
         this.slider.sliderTip.show();
-        this.btnSettings.enable();
-        this.btnCurrentTime.enable();
+        //this.btnSettings.enable();
+        //this.btnCurrentTime.enable();
         this.btnBack.enable();
 	},
 
@@ -487,8 +488,8 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
                 this.btnLoop.disable();
                 this.btnFastforward.disable();
                 this.slider.disable();
-                this.btnSettings.disable();
-                this.btnCurrentTime.disable();
+                //this.btnSettings.disable();
+                //this.btnCurrentTime.disable();
                 this.btnBack.disable();                
                 //don't start playing again if it is already playing
                 this.control.stepType = "next";
@@ -504,8 +505,8 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
                 this.btnLoop.enable();
                 this.btnFastforward.enable();
                 this.slider.enable();
-                this.btnSettings.enable();
-                this.btnCurrentTime.enable();
+                //this.btnSettings.enable();
+                //this.btnCurrentTime.enable();
                 this.btnBack.enable();             
             //if(this.control.timer){
                 //don't stop playing again if it is already stopped

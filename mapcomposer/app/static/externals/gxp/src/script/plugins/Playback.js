@@ -97,7 +97,7 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
 			hidden: this.toolbarHidden,
             looped:this.looped,
             autoPlay:this.autoStart,
-            optionsWindow: new Ext.Window({
+            /*optionsWindow: new Ext.Window({
                 title: gxp.PlaybackOptionsPanel.prototype.titleText,
                 width: 350,
                 height: 425,
@@ -116,7 +116,7 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
                         optsPanel.fireEvent('hide', optsPanel);
                     }
                 }
-            })
+            })*/
         });
         var toolbar = gxp.plugins.Playback.superclass.addOutput.call(this,config); 
         this.relayEvents(toolbar,['timechange','rangemodified']);
