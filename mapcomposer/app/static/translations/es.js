@@ -636,7 +636,8 @@ GeoExt.Lang.add("es", {
     
     "gxp.plugins.spatialselector.SpatialSelectorMethod.prototype" :{
         areaLabel: "Área",  
-        perimeterLabel: "Perímetro",    
+        perimeterLabel: "Perímetro", 
+        lengthLabel: "Longitud",   
         radiusLabel: "Radio",   
         centroidLabel: "Centroide", 
         selectionSummary: "Sumario de la Selección"
@@ -691,5 +692,17 @@ GeoExt.Lang.add("es", {
     "gxp.plugins.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
         name  : 'Polígono',
         label : 'Polígono'
+    },
+    
+    "gxp.plugins.spatialselector.Geocoder.prototype" :{
+        titleText: "Callejero",
+        searchText: "Buscar",
+        searchTpText: "Localiza la dirección en el mapa",
+        resetText: "Reiniciar",
+        resetTpText: "Reinicia la búsqueda por localización",
+        translatedKeys: {
+            "name": "Calle",
+            "number": "Número"
+        }
     }
 });
