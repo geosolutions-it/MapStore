@@ -79,7 +79,94 @@
     </div>
 	-->	
     <script>
+
+    
+		// fix for IE7 and IE8
+		if (!Date.prototype.toISOString) {
+		    Date.prototype.toISOString = function() {
+		        function pad(n) { return n < 10 ? '0' + n : n }
+		        return this.getUTCFullYear() + '-'
+		            + pad(this.getUTCMonth() + 1) + '-'
+		            + pad(this.getUTCDate()) + 'T'
+		            + pad(this.getUTCHours()) + ':'
+		            + pad(this.getUTCMinutes()) + ':'
+		            + pad(this.getUTCSeconds()) + 'Z';
+		    };
+		}
         
+		// see http://stackoverflow.com/questions/11020658/javascript-json-date-parse-in-ie7-ie8-returns-nan
+		var D= new Date('2011-06-02T09:34:29+02:00');
+	    if(!D || +D!== 1307000069000){
+	        Date.fromISO= function(s){
+	            var day, tz,
+	            rx=/^(\d{4}\-\d\d\-\d\d([tT][\d:\.]*)?)([zZ]|([+\-])(\d\d):(\d\d))?$/,
+	            p= rx.exec(s) || [];
+	            if(p[1]){
+	                day= p[1].split(/\D/);
+	                for(var i= 0, L= day.length; i<L; i++){
+	                    day[i]= parseInt(day[i], 10) || 0;
+	                };
+	                day[1]-= 1;
+	                day= new Date(Date.UTC.apply(Date, day));
+	                if(!day.getDate()) return NaN;
+	                if(p[5]){
+	                    tz= (parseInt(p[5], 10)*60);
+	                    if(p[6]) tz+= parseInt(p[6], 10);
+	                    if(p[4]== '+') tz*= -1;
+	                    if(tz) day.setUTCMinutes(day.getUTCMinutes()+ tz);
+	                }
+	                return day;
+	            }
+	            return NaN;
+	        }
+	    }
+	    else{
+	        Date.fromISO= function(s){
+	            return new Date(s);
+	        }
+	    }
+        
+        /**
+         * fix timezone handling for date picker
+         *
+         * The getValue function always returns 00:00:00 as time. So if a form
+         * got filled with a date like 2008-10-01T21:00:00 the form returns
+         * 2008-10-01T00:00:00 although the user did not change the fieled.
+         *
+         * In a multi timezone context this is fatal! When a user in a certain
+         * timezone set a date (just a date and no time information), this
+         * means in his timezone the time range from 2008-10-01T00:00:00
+         * to 2008-10-01T23:59:59. _BUT_ for an other user sitting in a
+         * different timezone it means e.g. the time range from
+         * 2008-10-01T02:00:00 to 2008-10-02T21:59:59.
+         *
+         * So on the one hand we need to make shure, that the date picker
+         * only returns changed datetime information when the user did a
+         * change.
+         */
+         
+        /**
+         * @private
+         */
+        Ext.form.DateField.prototype.setValue = function(date){
+            // preserv original datetime information
+            this.fullDateTime = date;
+            Ext.form.DateField.superclass.setValue.call(this,
+            this.formatDate(this.parseDate(date)));
+        };
+         
+        /**
+         * @private
+         */
+            Ext.form.DateField.prototype.getValue = function(){
+            //var value = this.parseDate(Ext.form.DateField.superclass.getValue.call(this));
+         
+            // return the value that was set (has time information when unchanged in client)
+            // and not just the date part!
+            value =  this.fullDateTime;
+            return value || "";
+        };      
+                
         var app;        
         var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false;
 		

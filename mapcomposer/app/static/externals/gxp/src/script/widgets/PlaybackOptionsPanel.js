@@ -41,7 +41,7 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
     layout: "fit",
     collapsible: true,
     collapsed: false,
-    height: 360,   
+    height: 400,   
     /** i18n */
     optionTitleText: "Date & Time Options",
     rangeFieldsetText: "Time Range",
@@ -49,7 +49,8 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
     startText:'Start',
     endText:'End',
     saveText: 'Save',
-    cancelText: 'Cancel',    
+    cancelText: 'Cancel',  
+    rangeText: 'Range',     
     listOnlyText:'Use Exact List Values Only',
     stepText:'Animation Step',
     unitsText:'Animation Units',
@@ -175,6 +176,16 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
                             scope: this
                         },
                         ref: '../../stepValueField'
+                    },{
+                        fieldLabel: this.rangeText,
+                        xtype: 'numberfield',
+                        anchor:'-25',
+                        enableKeyEvents:true,
+                        listeners: {
+                            'change': this.setRange,
+                            scope: this
+                        },
+                        ref: '../../rangeValueField'
                     }, {
                         fieldLabel: this.unitsText,
                         xtype: 'combo',
@@ -262,16 +273,26 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
         this.timeManager.fixedRange=true;
         this.rangeEndField.setMinValue(date);
         
+        this.timeManager.nowtime(false,this.timeManager.rangeStep,OpenLayers.Date.toISOString(this.timeManager.range[0]));
+        
     },
     setEndTime:function(cmp,date){
         this.timeManager.setEnd(date);
         this.timeManager.fixedRange=true;
         this.rangeStartField.setMaxValue(date);
+        
+        this.timeManager.nowtime(false,this.timeManager.rangeStep,OpenLayers.Date.toISOString(this.timeManager.range[0]));
     },
     toggleListMode: function(cmp, checked){
         this.stepValueField.setDisabled(checked);
         this.stepUnitsField.setDisabled(checked);
         this.timeManager.snapToIntervals = checked;
+    },
+    setRange:function(cmp,newVal,oldVal){
+    
+        var range = newVal;
+        this.timeManager.nowtime(false,range,OpenLayers.Date.toISOString(this.timeManager.range[0]));
+        
     },
     setUnits:function(cmp,record,index){
         var units = record.get('field1');
@@ -358,6 +379,8 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
             this.playbackModeField.originalValue = playbackMode;
             this.loopModeCheck.setValue(this.timeManager.loop);
             this.loopModeCheck.originalValue=this.timeManager.loop;
+            this.rangeValueField.setValue(this.timeManager.rangeStep);
+            this.rangeValueField.originalValue = this.timeManager.rangeStep;            
             // this.reverseModeCheck.setValue(this.timeManager.step<0);
             // this.reverseModeCheck.originalValue=this.reverseModeCheck.getValue();
             //set min and max for not negative ranges.

@@ -146,6 +146,15 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 				// Show the Time Slider only when this tool is activated 
 				//
 			    this.formPanel.on("show", function(){
+                
+					//
+					// Make visible the OBU layer if it is deactivated inside the layertree
+					//
+					var track = this.target.mapPanel.map.getLayersByName(this.layerToFilter)[0];
+					if(track && !track.getVisibility()){
+						track.setVisibility(true);
+					}
+                    
 					this.playbackTool = this.target.tools["destination_playback"];
 					if(this.playbackTool && this.playbackTool.playbackToolbar){
                         
@@ -156,15 +165,23 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
                         
 						this.playbackTool.playbackToolbar.show();
                         
+                        var end = OpenLayers.Date.parse(this.playbackTool.playbackToolbar.control.layers[0].metadata.timeInterval[0][1]);
+                        var start = OpenLayers.Date.parse(this.playbackTool.playbackToolbar.control.layers[0].metadata.timeInterval[0][0]);
+                        
+                        this.playbackTool.playbackToolbar.control.setEnd(OpenLayers.Date.parse(this.playbackTool.playbackToolbar.control.layers[0].metadata.timeInterval[0][1]));
+                       // this.playbackTool.playbackToolbar.control.fixedRange=true;
+                        
+                        this.playbackTool.playbackToolbar.control.setStart(OpenLayers.Date.parse(this.playbackTool.playbackToolbar.control.layers[0].metadata.timeInterval[0][0]));
+                        //this.playbackTool.playbackToolbar.control.fixedRange=true;
+                        
+                        this.playbackTool.playbackToolbar.control.setRange([start,end]);
+                        
+                        //this.playbackTool.playbackToolbar.control.events.triggerEvent("rangemodified");  
+                        
+                        this.playbackTool.playbackToolbar.control.nowtime(false,this.playbackTool.playbackToolbar.control.rangeStep,this.playbackTool.playbackToolbar.control.layers[0].metadata.timeInterval[0][0]);                        
+                        
 					}
                
-					//
-					// Make visible the OBU layer if it is deactivated inside the layertree
-					//
-					var track = this.target.mapPanel.map.getLayersByName(this.layerToFilter)[0];
-					if(track && !track.getVisibility()){
-						track.setVisibility(true);
-					}
 				}, this);
 				
 				//
