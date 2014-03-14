@@ -146,10 +146,6 @@ gxp.plugins.spatialselector.Geocoder = Ext.extend(gxp.plugins.Tool, {
 					spConfig["name"] = this.translatedKeys[key];
 				}
 				var plugin = Ext.create(spConfig);
-				if(this.target 
-					&& this.target.tools){
-					this.target.tools[spConfig.id] = plugin;
-				}
 				this.spatialSelectors[key] = plugin;
 				var selectorItem = plugin.getSelectionMethodItem();
 				selectorItem.value = key;
