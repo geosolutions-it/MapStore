@@ -146,17 +146,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 				// Show the Time Slider only when this tool is activated 
 				//
 			    this.formPanel.on("show", function(){
-					this.playbackTool = this.target.tools["destination_playback"];
-					if(this.playbackTool && this.playbackTool.playbackToolbar){
-                        
-                        //populate timeslider settings panel with values
-                        this.formPanel.optionsPanel.timeManager = this.playbackTool.playbackToolbar.control;
-                        this.formPanel.optionsPanel.playbackToolbar = this.playbackTool.playbackToolbar;
-                        
-						this.playbackTool.playbackToolbar.show();
-                        
-					}
-               
+                
 					//
 					// Make visible the OBU layer if it is deactivated inside the layertree
 					//
@@ -164,6 +154,34 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 					if(track && !track.getVisibility()){
 						track.setVisibility(true);
 					}
+                    
+					this.playbackTool = this.target.tools["destination_playback"];
+					if(this.playbackTool && this.playbackTool.playbackToolbar){
+                        
+                        //populate timeslider settings panel with values
+                        //this.formPanel.doLayout(false,true);
+                        this.formPanel.optionsPanel.timeManager = this.playbackTool.playbackToolbar.control;
+                        this.formPanel.optionsPanel.playbackToolbar = this.playbackTool.playbackToolbar;
+                        
+						this.playbackTool.playbackToolbar.show();
+                        
+                        var end = OpenLayers.Date.parse(this.playbackTool.playbackToolbar.control.layers[0].metadata.timeInterval[0][1]);
+                        var start = OpenLayers.Date.parse(this.playbackTool.playbackToolbar.control.layers[0].metadata.timeInterval[0][0]);
+                        
+                        this.playbackTool.playbackToolbar.control.setEnd(OpenLayers.Date.parse(this.playbackTool.playbackToolbar.control.layers[0].metadata.timeInterval[0][1]));
+                       // this.playbackTool.playbackToolbar.control.fixedRange=true;
+                        
+                        this.playbackTool.playbackToolbar.control.setStart(OpenLayers.Date.parse(this.playbackTool.playbackToolbar.control.layers[0].metadata.timeInterval[0][0]));
+                        //this.playbackTool.playbackToolbar.control.fixedRange=true;
+                        
+                        this.playbackTool.playbackToolbar.control.setRange([start,end]);
+                        
+                        //this.playbackTool.playbackToolbar.control.events.triggerEvent("rangemodified");  
+                        
+                        this.playbackTool.playbackToolbar.control.nowtime(false,this.playbackTool.playbackToolbar.control.rangeStep,this.playbackTool.playbackToolbar.control.layers[0].metadata.timeInterval[0][0]);                        
+                        
+					}
+               
 				}, this);
 				
 				//
@@ -445,6 +463,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 		});
 		
 	    this.container = new Ext.form.FieldSet({
+            layout: 'anchor',
 			items: [
                 //this.timeSliderData,
 				this.filterData,
@@ -663,13 +682,15 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 			]
 		});
 		
-	    var opuForm = new Ext.form.FormPanel({
+	    var opuForm = new Ext.Panel({
 			title: this.title,
-            layout: 'form',
+            layout: 'anchor',
 			items:[
 				this.container,
-                {xtype: 'gxp_playbackoptions'} //add timeslider settings panel to obuForm panel
-			]
+                {
+                    xtype: 'gxp_playbackoptions' //add timeslider settings panel to obuForm panel
+                } 
+			]          
 		});
 		
 		this.formPanel = opuForm;

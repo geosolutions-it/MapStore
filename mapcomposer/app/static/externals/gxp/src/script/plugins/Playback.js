@@ -144,7 +144,7 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
         this.target.on('ready',function() {
             this._ready += 1;
             if (this._ready > 1) {
-                this.addOutput();
+                this.addOutput();                
 				self.target.fireEvent("timemanager");
                 self.getTimeManager();
             }
