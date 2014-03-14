@@ -146,6 +146,14 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                     select: function(combo, record) {
                         this.items.get(2).enable();
                         this.filter.type = record.get("value");
+                        // Ilike (ignore case)
+                        if(this.filter.type == "ilike"){
+                            this.filter.type = OpenLayers.Filter.Comparison.LIKE;
+                            this.filter.matchCase = false;
+                        }else{
+                            // default matches case. See OpenLayers.Filter.Comparison#matchCase
+                            this.filter.matchCase = true;
+                        }
                         this.fireEvent("change", this.filter);
                     },
                     scope: this
