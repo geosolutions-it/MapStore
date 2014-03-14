@@ -176,7 +176,7 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
                             scope: this
                         },
                         ref: '../../stepValueField'
-                    },{
+                    },/*{
                         fieldLabel: this.rangeText,
                         xtype: 'numberfield',
                         anchor:'-25',
@@ -186,7 +186,7 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
                             scope: this
                         },
                         ref: '../../rangeValueField'
-                    }, {
+                    }, */{
                         fieldLabel: this.unitsText,
                         xtype: 'combo',
                         anchor:'-5',
@@ -272,16 +272,16 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
         this.timeManager.setStart(date);
         this.timeManager.fixedRange=true;
         this.rangeEndField.setMinValue(date);
-        
-        this.timeManager.nowtime(false,this.timeManager.rangeStep,OpenLayers.Date.toISOString(this.timeManager.range[0]));
+        this.timeManager.events.triggerEvent("rangemodified");
+        this.timeManager.nowtime(false,this.timeManager.step,OpenLayers.Date.toISOString(this.timeManager.range[0]));
         
     },
     setEndTime:function(cmp,date){
         this.timeManager.setEnd(date);
         this.timeManager.fixedRange=true;
         this.rangeStartField.setMaxValue(date);
-        
-        this.timeManager.nowtime(false,this.timeManager.rangeStep,OpenLayers.Date.toISOString(this.timeManager.range[0]));
+        this.timeManager.events.triggerEvent("rangemodified");
+        this.timeManager.nowtime(false,this.timeManager.step,OpenLayers.Date.toISOString(this.timeManager.range[0]));
     },
     toggleListMode: function(cmp, checked){
         this.stepValueField.setDisabled(checked);
@@ -299,11 +299,14 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
         if(this.timeManager.units != units){
             this.timeManager.units = units;
             if(this.playbackToolbar.playbackMode != 'track'){
-                this.timeManager.incrementTime();
-                
+                this.timeManager.incrementTime();                
+        
                 // prende la data di inizio e la data di fine del pannello
                 // e invoca la funzione setRange di timeManager per ricalcolare i valori della slide
-                this.timeManager.setRange([this.timeManager.range[0],this.timeManager.range[1]]);
+                this.timeManager.events.triggerEvent("rangemodified");
+                
+                this.timeManager.nowtime(false,this.timeManager.step,OpenLayers.Date.toISOString(this.timeManager.range[0]));
+                //this.timeManager.setRange([this.timeManager.range[0],this.timeManager.range[1]]);
                 this.timeManager.fixedRange=true;             
 
             }
@@ -315,11 +318,15 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
             if(this.playbackToolbar.playbackMode == 'range' && 
                 this.timeManager.rangeInterval != newVal){
                     this.timeManager.rangeInterval = newVal;
-                    this.timeManager.incrementTime(newVal);
-                    
+                    this.timeManager.incrementTime(newVal);                    
+                   
                     // prende la data di inizio e la data di fine del pannello
                     // e invoca la funzione setRange di timeManager per ricalcolare i valori della slide
-                    this.timeManager.setRange([this.timeManager.range[0],this.timeManager.range[1]]);
+                    
+                    this.timeManager.events.triggerEvent("rangemodified");
+                    
+                    this.timeManager.nowtime(false,newVal,OpenLayers.Date.toISOString(this.timeManager.range[0]));
+                    //this.timeManager.setRange([this.timeManager.range[0],this.timeManager.range[1]]);
                     this.timeManager.fixedRange=true;                              
                     
             }
@@ -379,8 +386,10 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
             this.playbackModeField.originalValue = playbackMode;
             this.loopModeCheck.setValue(this.timeManager.loop);
             this.loopModeCheck.originalValue=this.timeManager.loop;
-            this.rangeValueField.setValue(this.timeManager.rangeStep);
-            this.rangeValueField.originalValue = this.timeManager.rangeStep;            
+            
+            /*this.rangeValueField.setValue(this.timeManager.rangeStep);
+            this.rangeValueField.originalValue = this.timeManager.rangeStep;*/
+            
             // this.reverseModeCheck.setValue(this.timeManager.step<0);
             // this.reverseModeCheck.originalValue=this.reverseModeCheck.getValue();
             //set min and max for not negative ranges.
@@ -401,7 +410,17 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
         this.form.getForm().items.each(function(field){
             field.setValue(field.originalValue);
         });
+
+        //Reset all fields values to original values
+        var end = OpenLayers.Date.parse(this.timeManager.layers[0].metadata.timeInterval[0][1]);
+        var start = OpenLayers.Date.parse(this.timeManager.layers[0].metadata.timeInterval[0][0]);
         
+        this.timeManager.setEnd(OpenLayers.Date.parse(this.timeManager.layers[0].metadata.timeInterval[0][1]));        
+        this.timeManager.setStart(OpenLayers.Date.parse(this.timeManager.layers[0].metadata.timeInterval[0][0]));
+        
+        this.timeManager.setRange([start,end]);
+        this.timeManager.nowtime(false,this.stepValueField.getValue(),this.timeManager.layers[0].metadata.timeInterval[0][0]);  
+                        
         this.saveValues();
     }
 });

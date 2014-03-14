@@ -120,6 +120,18 @@ OpenLayers.TimeAgent.WMS = OpenLayers.Class(OpenLayers.TimeAgent, {
             else {
                 minTime = this.range[0];
             }
+
+            if(minTime >= time){
+                    this.timeManager.rangeInterval = this.timeManager.step;
+                    this.timeManager.incrementTime(this.timeManager.step);
+
+                    this.timeManager.events.triggerEvent("rangemodified");
+                    
+                    var addRange = this.timeManager.addRangeStep(minTime, this.timeManager.step);
+                    
+                    time = new Date(addRange.getTime());                    
+            }
+            
             isotime = OpenLayers.Date.toISOString(minTime) + '/' + OpenLayers.Date.toISOString(time);
         }
         else if(layer.metadata.timeInterval[0] instanceof Date && this.intervalMode != "exact") {
@@ -155,7 +167,7 @@ OpenLayers.TimeAgent.WMS = OpenLayers.Class(OpenLayers.TimeAgent, {
         }
 	*/
     },
-
+    
     /**
      *
      * @param {Object} testDate

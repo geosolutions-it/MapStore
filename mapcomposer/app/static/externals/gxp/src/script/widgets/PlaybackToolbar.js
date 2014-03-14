@@ -414,7 +414,7 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
             }
         }
         else {
-            debugger;
+            //debugger;
             var rangedPlayInterval = this.rangedPlayInterval || this.buildRangedPlayInterval();
             if(this.playbackMode == "range") {
                 Ext.apply(this.controlConfig, {
@@ -459,7 +459,7 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
     },
     
     buildRangedPlayInterval: function() {
-        return this.controlConfig.rangeStep;// * this.getRangeMultiplier(this.controlConfig.units);
+        return this.controlConfig.step; //this.controlConfig.rangeStep;// * this.getRangeMultiplier(this.controlConfig.units);
     },
     
     getRangeMultiplier: function(units) {
