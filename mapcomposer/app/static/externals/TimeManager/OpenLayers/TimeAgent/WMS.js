@@ -120,14 +120,16 @@ OpenLayers.TimeAgent.WMS = OpenLayers.Class(OpenLayers.TimeAgent, {
             else {
                 minTime = this.range[0];
             }
-            
+
             if(minTime >= time){
                     this.timeManager.rangeInterval = this.timeManager.step;
                     this.timeManager.incrementTime(this.timeManager.step);
 
                     this.timeManager.events.triggerEvent("rangemodified");
                     
-                    this.timeManager.nowtime(false,this.timeManager.step,OpenLayers.Date.toISOString(this.timeManager.range[0]));
+                    var addRange = this.timeManager.addRangeStep(minTime, this.timeManager.step);
+                    
+                    time = new Date(addRange.getTime());                    
             }
             
             isotime = OpenLayers.Date.toISOString(minTime) + '/' + OpenLayers.Date.toISOString(time);
@@ -165,7 +167,7 @@ OpenLayers.TimeAgent.WMS = OpenLayers.Class(OpenLayers.TimeAgent, {
         }
 	*/
     },
-
+    
     /**
      *
      * @param {Object} testDate
