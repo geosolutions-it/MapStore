@@ -159,7 +159,6 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 					if(this.playbackTool && this.playbackTool.playbackToolbar){
                         
                         //populate timeslider settings panel with values
-                        //this.formPanel.doLayout(false,true);
                         this.formPanel.optionsPanel.timeManager = this.playbackTool.playbackToolbar.control;
                         this.formPanel.optionsPanel.playbackToolbar = this.playbackTool.playbackToolbar;
                         
@@ -169,16 +168,11 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
                         var start = OpenLayers.Date.parse(this.playbackTool.playbackToolbar.control.layers[0].metadata.timeInterval[0][0]);
                         
                         this.playbackTool.playbackToolbar.control.setEnd(OpenLayers.Date.parse(this.playbackTool.playbackToolbar.control.layers[0].metadata.timeInterval[0][1]));
-                       // this.playbackTool.playbackToolbar.control.fixedRange=true;
                         
                         this.playbackTool.playbackToolbar.control.setStart(OpenLayers.Date.parse(this.playbackTool.playbackToolbar.control.layers[0].metadata.timeInterval[0][0]));
-                        //this.playbackTool.playbackToolbar.control.fixedRange=true;
                         
                         this.playbackTool.playbackToolbar.control.setRange([start,end]);
-                        
-                        //this.playbackTool.playbackToolbar.control.events.triggerEvent("rangemodified");  
-                        
-                        this.playbackTool.playbackToolbar.control.nowtime(false,this.playbackTool.playbackToolbar.control.rangeStep,this.playbackTool.playbackToolbar.control.layers[0].metadata.timeInterval[0][0]);                        
+                        this.playbackTool.playbackToolbar.control.nowtime(false,this.playbackTool.playbackToolbar.control.step,this.playbackTool.playbackToolbar.control.layers[0].metadata.timeInterval[0][0]);                        
                         
 					}
                

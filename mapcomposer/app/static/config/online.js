@@ -258,7 +258,7 @@
 			"name": "siig_geo_obu",
 			"styles": "obu-point",
 			"displayInLayerSwitcher": true,
-			"tiled": true,
+			"tiled": false,
             "time" : "2014-01-31T14:50:10.229Z",
             "group": ["Real time data","Dati in tempo reale","Données en temps réel","Echtzeitdaten"],
 			"visibility": false
@@ -493,8 +493,7 @@
                 "step": 2,
                 "units": "Minutes",
                 "range": ["2012-11-20T07:40:00.000Z", "2012-11-22T00:00:00.000Z"],
-                "frameRate": 3,
-                "rangeStep":2
+                "frameRate": 3
             }
         }
     },
