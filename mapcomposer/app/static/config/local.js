@@ -488,7 +488,7 @@
         "playbackMode": "range",
         "showIntervals": false,
         "labelButtons": false,
-        "settingsButton": true,
+        "settingsButton": false,
         "rateAdjuster": false,
         "dynamicRange": false,
         "timeFormat": "l, F d, Y g:i:s A",
@@ -497,7 +497,8 @@
                 "step": 2,
                 "units": "Minutes",
                 "range": ["2012-11-20T07:40:00.000Z", "2012-11-22T00:00:00.000Z"],
-                "frameRate": 3
+                "frameRate": 3,
+                "rangeStep":2
             }
         }
     },        

@@ -414,16 +414,18 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
             }
         }
         else {
+            debugger;
+            var rangedPlayInterval = this.rangedPlayInterval || this.buildRangedPlayInterval();
             if(this.playbackMode == "range") {
                 Ext.apply(this.controlConfig, {
                     agentOptions : {
                         'WMS' : {
                             rangeMode : 'range',
-                            rangeInterval : this.rangedPlayInterval
+                            rangeInterval : rangedPlayInterval
                         },
                         'Vector' : {
                             rangeMode : 'range',
-                            rangeInterval : this.rangedPlayInterval
+                            rangeInterval : rangedPlayInterval
                         }
                     }
                 });
@@ -454,6 +456,35 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
             this.fireEvent('rangemodified', this, ctl.range);
         }
         return ctl;
+    },
+    
+    buildRangedPlayInterval: function() {
+        return this.controlConfig.rangeStep;// * this.getRangeMultiplier(this.controlConfig.units);
+    },
+    
+    getRangeMultiplier: function(units) {
+        var multiplier = 1;
+        switch (units) {
+            case OpenLayers.TimeUnit.SECONDS:
+                multiplier = 1000;
+                break;
+            case OpenLayers.TimeUnit.MINUTES:
+                multiplier = 60000;
+                break;
+            case OpenLayers.TimeUnit.HOURS:
+                multiplier = 3600000;
+                break;
+            case OpenLayers.TimeUnit.DAYS:
+                multiplier = 86400000;
+                break;
+            case OpenLayers.TimeUnit.MONTHS:
+                multiplier = 2592000000;
+                break;
+            case OpenLayers.TimeUnit.YEARS:
+                multiplier = 31104000000;
+                break;
+        }
+        return multiplier;
     },
     
 /** BUTTON HANDLERS **/    

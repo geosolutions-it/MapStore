@@ -950,7 +950,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
 
         currentTimeUTC = Date.fromISO( start ); 
         
-        var nowStaz = this.addHours(currentTimeUTC, newRange);
+        var nowStaz = this.addRangeStep(currentTimeUTC, newRange);
         
         var newTime = new Date(nowStaz.getTime());
         this.setNow(newTime,"curTime");
@@ -962,9 +962,30 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
     pad: function (n){
         return n < 10 ? '0' + n : n 
     },     
-    addHours: function(data, ore) {
-            return new Date(data.getTime() + ore * 3600000)
-        },
+    addRangeStep: function(data, step) {
+        var multiplier = 1;
+        switch (this.units) {
+            case OpenLayers.TimeUnit.SECONDS:
+                multiplier = 1000;
+                break;
+            case OpenLayers.TimeUnit.MINUTES:
+                multiplier = 60000;
+                break;
+            case OpenLayers.TimeUnit.HOURS:
+                multiplier = 3600000;
+                break;
+            case OpenLayers.TimeUnit.DAYS:
+                multiplier = 86400000;
+                break;
+            case OpenLayers.TimeUnit.MONTHS:
+                multiplier = 2592000000;
+                break;
+            case OpenLayers.TimeUnit.YEARS:
+                multiplier = 31104000000;
+                break;
+        }
+        return new Date(data.getTime() + step * multiplier)
+    },
     
 	/**
 	 * Method: buildTimeAgents

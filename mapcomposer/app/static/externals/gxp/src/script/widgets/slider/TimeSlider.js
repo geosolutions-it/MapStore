@@ -397,8 +397,11 @@ gxp.slider.TimeSlider = Ext.extend(Ext.slider.MultiSlider, {
                         break;
                 }
                 for (var i = 0, len = timeManager.timeAgents.length; i < len; i++) {
-                    if(timeManager.timeAgents[i].rangeMode == 'range'){    
-                        timeManager.timeAgents[i].rangeInterval = (slider.thumbs[0].value - value) / adj;    
+                    if(timeManager.timeAgents[i].rangeMode == 'range'){
+                        var range = (slider.thumbs[0].value - value) / adj;
+                        if(range > 0) {
+                            timeManager.timeAgents[i].rangeInterval = range;    
+                        }
                     }
                 }
                 if(!silent){

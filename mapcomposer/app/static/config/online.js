@@ -494,7 +494,7 @@
                 "units": "Minutes",
                 "range": ["2012-11-20T07:40:00.000Z", "2012-11-22T00:00:00.000Z"],
                 "frameRate": 3,
-                "rangeStep":10
+                "rangeStep":2
             }
         }
     },
