@@ -883,6 +883,9 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                 // take the smaller one of the two
                 extent = layer.maxExtent;
             }
+        }else if (!extent && layer.maxExtent){
+            // Allow filter without specific extent
+            extent = layer.maxExtent;
         }
         return extent;
     },

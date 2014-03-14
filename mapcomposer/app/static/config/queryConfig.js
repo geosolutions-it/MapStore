@@ -238,7 +238,7 @@
 			  "title": "Features"
 		  },
 		  "outputTarget": "south",
-		  "showExportCSV": true
+		  "exportFormats": ["CSV","shape-zip"]
 	    }, {
 		  "ptype": "gxp_spatialqueryform",
 		  "featureManager": "featuremanager",
@@ -249,10 +249,10 @@
 		  "id": "bboxquery",
 		  "spatialSelectorsConfig":{
 		        "bbox":{
-		            "ptype": "gxp_spatial_bbox_selector"
+		            "xtype": "gxp_spatial_bbox_selector"
 		        },
 		        "buffer":{
-		            "ptype": "gxp_spatial_buffer_selector",
+		            "xtype": "gxp_spatial_buffer_selector",
 					"bufferOptions": {
 						"minValue": 1,
 						"maxValue": 10000,
@@ -261,11 +261,11 @@
 					}
 		        },
 		        "circle":{
-		            "ptype": "gxp_spatial_circle_selector",
+		            "xtype": "gxp_spatial_circle_selector",
 		            "zoomToCurrentExtent": true
 		        },
 		        "polygon":{
-		            "ptype": "gxp_spatial_polygon_selector"
+		            "xtype": "gxp_spatial_polygon_selector"
 		        }
 		  }
 	    }
