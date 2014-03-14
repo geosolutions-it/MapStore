@@ -673,15 +673,23 @@ GeoExt.Lang.add("en", {
         comboSelectionMethodLabel : "Selection"
     },
     
-    "gxp.plugins.spatialselector.SpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.SpatialSelectorMethod.prototype" :{
         areaLabel : "Area",
         perimeterLabel : "Perimeter",
+        lengthLabel: "Length",
         radiusLabel : "Radius",
         centroidLabel : "Centroid",
-        selectionSummary: "Selection Summary"
+        selectionSummary: "Selection Summary",
+        geometryOperationText: "Geometry operation",
+        geometryOperationEmptyText: "Select a operation",
+        distanceTitleText: "Distance",
+        distanceUnitsTitleText: "Distance units",
+        noOperationTitleText: "No valid operation",
+        noOperationMsgText: "Please, select an operation before query",
+        noCompleteMsgText: "Please, complete form before query"
     },
     
-    "gxp.plugins.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
         name  : 'BBOX',
         label : 'Bounding Box',
         northLabel : "North",
@@ -693,19 +701,19 @@ GeoExt.Lang.add("en", {
         setAoiTooltip : "Enable the SetBox control to draw a ROI (Bounding Box) on the map"
     },
     
-    "gxp.plugins.spatialselector.BufferSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.prototype" :{
         name  : 'Buffer',
         label : 'Buffer',
         latitudeEmptyText : 'Y',
         longitudeEmptyText : 'X'
     },
     
-    "gxp.plugins.spatialselector.CircleSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod.prototype" :{
         name  : 'Circle',
         label : 'Circle'
     },
     
-    "gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod.prototype" :{
         name  : 'Geocoding',
         label : 'Geocoding',
         geocodingFieldSetTitle : "GeoCoder",
@@ -727,8 +735,20 @@ GeoExt.Lang.add("en", {
         selectionSummary : "Selection Summary"
     },
     
-    "gxp.plugins.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
         name  : 'Polygon',
         label : 'Polygon'
+    },
+    
+    "gxp.plugins.spatialselector.Geocoder.prototype" :{
+        titleText: "Geocoder",
+        searchText: "Search",
+        searchTpText: "Search selected location and zoom in on map",
+        resetText: "Reset",
+        resetTpText: "Reset location search",
+        translatedKeys: {
+            "name": "Street",
+            "number": "Number"
+        }
     }
 });

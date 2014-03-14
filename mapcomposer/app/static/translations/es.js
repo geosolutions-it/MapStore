@@ -634,15 +634,23 @@ GeoExt.Lang.add("es", {
         comboSelectionMethodLabel : "Seleccione"
     },
     
-    "gxp.plugins.spatialselector.SpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.SpatialSelectorMethod.prototype" :{
         areaLabel: "Área",  
-        perimeterLabel: "Perímetro",    
+        perimeterLabel: "Perímetro", 
+        lengthLabel: "Longitud",   
         radiusLabel: "Radio",   
         centroidLabel: "Centroide", 
-        selectionSummary: "Sumario de la Selección"
+        selectionSummary: "Sumario de la Selección",
+        geometryOperationText: "Operación espacial",
+        geometryOperationEmptyText: "Seleccion una operación",
+        distanceTitleText: "Distancia",
+        distanceUnitsTitleText: "Unidad de distancia",
+        noOperationTitleText: "Operación inválida",
+        noOperationMsgText: "Por favor, seleccione una operación para realizar la consulta",
+        noCompleteMsgText: "Por favor, complete el formulario para realizar la consulta"
     },
     
-    "gxp.plugins.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
         name  : 'BBOX',
         label : 'Extensión',
         northLabel : "Norte",
@@ -654,19 +662,19 @@ GeoExt.Lang.add("es", {
         setAoiTooltip : "Habilita el control que permite dibujar una ROI (Extensión) en el mapa"
     },
     
-    "gxp.plugins.spatialselector.BufferSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.prototype" :{
         name  : 'Buffer',
         label : 'Buffer',
         latitudeEmptyText : 'Y',
         longitudeEmptyText : 'X'
     },
     
-    "gxp.plugins.spatialselector.CircleSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod.prototype" :{
         name  : 'Círculo',
         label : 'Círculo'
     },
     
-    "gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod.prototype" :{
         name  : 'Geocoding',
         label : 'Geocoding',
         geocodingFieldSetTitle : "GeoCoder",
@@ -688,8 +696,20 @@ GeoExt.Lang.add("es", {
         selectionSummary : "Sumario de la selección"
     },
     
-    "gxp.plugins.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
         name  : 'Polígono',
         label : 'Polígono'
+    },
+    
+    "gxp.plugins.spatialselector.Geocoder.prototype" :{
+        titleText: "Callejero",
+        searchText: "Buscar",
+        searchTpText: "Localiza la dirección en el mapa",
+        resetText: "Reiniciar",
+        resetTpText: "Reinicia la búsqueda por localización",
+        translatedKeys: {
+            "name": "Calle",
+            "number": "Número"
+        }
     }
 });

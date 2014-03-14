@@ -19,7 +19,7 @@
  */
 
 /**
- * @include plugins/spatialselector/SpatialSelectorMethod.js
+ * @include widgets/form/spatialselector/SpatialSelectorMethod.js
  */
  
 /**
@@ -27,24 +27,24 @@
  */
 
 /** api: (define)
- *  module = gxp.plugins.spatialselector
+ *  module = gxp.widgets.form.spatialselector
  *  class = PolygonSpatialSelectorMethod
  */
 
 /** api: (extends)
- *  plugins/spatialselector/SpatialSelectorMethod.js
+ *  widgets/form/spatialselector/SpatialSelectorMethod.js
  */
-Ext.namespace('gxp.plugins.spatialselector');
+Ext.namespace('gxp.widgets.form.spatialselector');
 
 /** api: constructor
  *  .. class:: PolygonSpatialSelectorMethod(config)
  *
  *    Plugin for spatial selection based on simple polygon
  */
-gxp.plugins.spatialselector.PolygonSpatialSelectorMethod = Ext.extend(gxp.plugins.spatialselector.SpatialSelectorMethod, {
+gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod = Ext.extend(gxp.widgets.form.spatialselector.SpatialSelectorMethod, {
 
-	/* ptype = gxp_spatial_polygon_selector */
-	ptype : 'gxp_spatial_polygon_selector',
+	/* xtype = gxp_spatial_polygon_selector */
+	xtype : 'gxp_spatial_polygon_selector',
 
 	/** api: config[name]
 	 *  ``String``
@@ -60,7 +60,7 @@ gxp.plugins.spatialselector.PolygonSpatialSelectorMethod = Ext.extend(gxp.plugin
 
 	// trigger action when activate the plugin
 	activate: function(){
-		gxp.plugins.spatialselector.PolygonSpatialSelectorMethod.superclass.activate.call(this);
+		gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod.superclass.activate.call(this);
 
 		/**
 		 * Create Polygon Selector
@@ -109,7 +109,7 @@ gxp.plugins.spatialselector.PolygonSpatialSelectorMethod = Ext.extend(gxp.plugin
 
 	// trigger action when deactivate the plugin
 	deactivate: function(){
-		gxp.plugins.spatialselector.PolygonSpatialSelectorMethod.superclass.deactivate.call(this);
+		gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod.superclass.deactivate.call(this);
 		if(this.draw){
 			this.draw.deactivate();	
 		}
@@ -121,7 +121,7 @@ gxp.plugins.spatialselector.PolygonSpatialSelectorMethod = Ext.extend(gxp.plugin
 
     // Reset method
     reset: function(){
-		gxp.plugins.spatialselector.PolygonSpatialSelectorMethod.superclass.reset.call(this);
+		gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod.superclass.reset.call(this);
 		if(this.drawings){
 			this.drawings.removeAllFeatures();
 		}
@@ -133,7 +133,7 @@ gxp.plugins.spatialselector.PolygonSpatialSelectorMethod = Ext.extend(gxp.plugin
 	 */
     getSummary: function(geometry){
 
-		var summary = gxp.plugins.spatialselector.BBOXSpatialSelectorMethod.superclass.getSummary.call(this, geometry);
+		var summary = gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.superclass.getSummary.call(this, geometry);
 		var metricUnit = "km";
 
 		var perimeter = this.getLength(geometry, metricUnit);
@@ -145,4 +145,4 @@ gxp.plugins.spatialselector.PolygonSpatialSelectorMethod = Ext.extend(gxp.plugin
     }
 });
 
-Ext.preg(gxp.plugins.spatialselector.PolygonSpatialSelectorMethod.prototype.ptype, gxp.plugins.spatialselector.PolygonSpatialSelectorMethod);
+Ext.reg(gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod.prototype.xtype, gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod);

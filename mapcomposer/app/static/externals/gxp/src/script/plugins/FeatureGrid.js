@@ -62,7 +62,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  ``Array`` With the extra formats to download.
      *  For example: "CSV","shape-zip","excel", "excel2007"
      */
-    exportFormats: [],
+    exportFormats: null,
 
     /** api: config[exportFormatsConfig]
      *  ``Object`` With specific configuration by export format.
@@ -239,8 +239,20 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  Feature Grid title.
      */
     title: "Features",
+    
+    /** api: config[defaultComboFormatValue]
+     *  ``String``
+     *  Default output format selection for export. Default is 'CSV'
+     */
+    defaultComboFormatValue: "CSV",
 	
 	zoomToFeature: "Zoom To Feature",
+    
+    /** api: config[exportDoubleCheck]
+     *  ``Boolean``
+     *  Do check on feature grid export (one to show a possible error and another one to download the file)
+     */
+     exportDoubleCheck: true,
 
     /** private: method[displayTotalResults]
      */
@@ -382,8 +394,8 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
 
         config = Ext.apply({
             xtype: "gxp_featuregrid",
-			actionTooltip: this.zoomToFeature,
-			map: this.target.mapPanel.map,
+            actionTooltip: this.zoomToFeature,
+            map: this.target.mapPanel.map,
             sm: new GeoExt.grid.FeatureSelectionModel(smCfg),
             autoScroll: true,
             title: this.title,
@@ -391,7 +403,6 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             listeners: {
                 "added": function(cmp, ownerCt) {
                     var onClear = OpenLayers.Function.bind(function() {
-                        this.showExportCSV ? this.output[0].exportCSVButton.disable() : {};
                         if(this.exportFormats){
                             if(this.exportAction == 'window'){
                                 this.output[0]["exportButton"].disable();
@@ -401,6 +412,8 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                                     this.output[0]["export" + format + "Button"].disable();
                                 }
                             }
+                        }else if(this.showExportCSV){
+                            this.output[0].exportCSVButton.disable();
                         }
                         this.displayTotalResults();
                         this.selectOnMap && this.selectControl.deactivate();
@@ -408,7 +421,6 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                             ownerCt.collapse();
                     }, this);
                     var onPopulate = OpenLayers.Function.bind(function() {
-                        this.showExportCSV ? this.output[0].exportCSVButton.enable() : {};
                         if(this.exportFormats){
                             if(this.exportAction == 'window'){
                                 this.output[0]["exportButton"].enable();
@@ -418,6 +430,8 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                                     this.output[0]["export" + format + "Button"].enable();
                                 }
                             }
+                        }else if(this.showExportCSV){
+                            this.output[0].exportCSVButton.enable();
                         }
                         this.displayTotalResults();
                         this.selectOnMap && this.selectControl.activate();
@@ -445,28 +459,28 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 scope: this
             },
             contextMenu: new Ext.menu.Menu({items: [{
-				text: this.zoomToFeature,
-				tooltip: this.zoomToFeature,
-				iconCls: 'gxp-icon-zoom-to',
-				scope: this,
-				handler: function(cmp){
-					var grid = this.output[0];
-					var selection = grid.getSelectionModel().getSelections()[0];
-					var feature = selection.data.feature;
-					if(feature){
-						var bounds = feature.geometry.getBounds();
-						if(bounds){
-							this.target.mapPanel.map.zoomToExtent(bounds);
-							
-							var showButton = Ext.getCmp("showButton");
-							if(!showButton.pressed){
-								showButton.toggle(true);
-								this.selectControl.select(feature);
-							}
-						}
-					}
-				}				
-			}]})
+                text: this.zoomToFeature,
+                tooltip: this.zoomToFeature,
+                iconCls: 'gxp-icon-zoom-to',
+                scope: this,
+                handler: function(cmp){
+                    var grid = this.output[0];
+                    var selection = grid.getSelectionModel().getSelections()[0];
+                    var feature = selection.data.feature;
+                    if(feature){
+                        var bounds = feature.geometry.getBounds();
+                        if(bounds){
+                            this.target.mapPanel.map.zoomToExtent(bounds);
+                            
+                            var showButton = Ext.getCmp("showButton");
+                            if(!showButton.pressed){
+                                showButton.toggle(true);
+                                this.selectControl.select(feature);
+                            }
+                        }
+                    }
+                }               
+            }]})
         }, config || {});
         var featureGrid = gxp.plugins.FeatureGrid.superclass.addOutput.call(this, config);
         
@@ -537,6 +551,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 name : 'format',
                 forceSelected : true,
                 emptyText : this.comboFormatEmptyText,
+                value : this.defaultComboFormatValue,
                 allowBlank : false,
                 autoLoad : true,
                 displayField : 'name',
@@ -577,7 +592,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                         handler: function() {
                             if(this.exportWindow.form.getForm().isValid()){
                                 var format = this.exportWindow.form.getForm().getValues().format;
-                                this.export(false, format);
+                                this.doExport(false, format);
                             }else{
                                 Ext.Msg.show({
                                     title: this.noFormatTitleText,
@@ -594,7 +609,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                         handler: function() {
                             if(this.exportWindow.form.getForm().isValid()){
                                 var format = this.exportWindow.form.getForm().getValues().format;
-                                this.export(false, format);
+                                this.doExport(false, format);
                             }else{
                                 Ext.Msg.show({
                                     title: this.noFormatTitleText,
@@ -641,7 +656,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                     iconCls: "gxp-icon-csvexport-single",
                     text: this.exportCSVSingleText,
                     handler: function() {                    
-                        this.me.export(true, this.format);
+                        this.me.doExport(true, this.format);
                     },
                     scope: {
                         me: this,
@@ -651,7 +666,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                     iconCls: "gxp-icon-csvexport-multiple",
                     text: this.exportCSVMultipleText,
                     handler: function() {                    
-                        this.me.export(false, this.format);
+                        this.me.doExport(false, this.format);
                     },
                     scope: {
                         me: this,
@@ -662,9 +677,9 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         };
     },
 
-    /** api: method[export]
+    /** api: method[doExport]
      */    
-    export: function(single, outputFormat){
+    doExport: function(single, outputFormat){
     
         var featureManager = this.target.tools[this.featureManager];
         var grid = this.output[0];
@@ -714,58 +729,70 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 "&outputFormat="+ outputFormat;
         this.url =  url;
 
-        OpenLayers.Request.POST({
-            url: this.url,
-            data: this.xml,
-            callback: function(request) {
+        if(this.exportDoubleCheck){
+            OpenLayers.Request.POST({
+                url: this.url,
+                data: this.xml,
+                callback: function(request) {
 
-                if(request.status == 200){
-                
-                    try
-                      {
-                            var serverError = Ext.util.JSON.decode(request.responseText);
-                            Ext.Msg.show({
-                                title: this.invalidParameterValueErrorText,
-                                msg: "outputFormat: " + outputFormat + "</br></br>" +
-                                     failedExport + "</br></br>" +
-                                     "Error: " + serverError.exceptions[0].text,
-                                buttons: Ext.Msg.OK,
-                                icon: Ext.MessageBox.ERROR
-                            });                        
-                      }
-                    catch(err)
-                      {
-                            //        
-                            //delete other iframes appended
-                            //
-                            if(document.getElementById("downloadIFrame")) {
-                                document.body.removeChild( document.getElementById("downloadIFrame") ); 
-                            }
-                            
-                            //
-                            //Create an hidden iframe for forced download
-                            //
-                            var elemIF = document.createElement("iframe"); 
-                            elemIF.setAttribute("id","downloadIFrame");
+                    if(request.status == 200){
+                    
+                        try
+                          {
+                                var serverError = Ext.util.JSON.decode(request.responseText);
+                                Ext.Msg.show({
+                                    title: this.invalidParameterValueErrorText,
+                                    msg: "outputFormat: " + outputFormat + "</br></br>" +
+                                         failedExport + "</br></br>" +
+                                         "Error: " + serverError.exceptions[0].text,
+                                    buttons: Ext.Msg.OK,
+                                    icon: Ext.MessageBox.ERROR
+                                });                        
+                          }
+                        catch(err)
+                          {
+                            // submit filter in a standard form (before check)
+                            this.doDownloadPost(this.url, this.xml);
+                          }
+                          
+                    }else{
+                        Ext.Msg.show({
+                            title: failedExport,
+                            msg: request.statusText,
+                            buttons: Ext.Msg.OK,
+                            icon: Ext.MessageBox.ERROR
+                        });
+                    }
+                },
+                scope: this
+            });   
+        }else{
+            // submit filter in a standard form to skip double check
+            this.doDownloadPost(this.url, this.xml);
+        }     
 
-                            var mUrl = this.url + "&filter=" + this.xml;
-                            elemIF.src = mUrl; 
-                            elemIF.style.display = "none"; 
-                            document.body.appendChild(elemIF); 
-                      }
-                      
-                }else{
-                    Ext.Msg.show({
-                        title: failedExport,
-                        msg: request.statusText,
-                        buttons: Ext.Msg.OK,
-                        icon: Ext.MessageBox.ERROR
-                    });
-                }
-            },
-            scope: this
-        });        
+    },
 
+    /** api: method[doDownloadPost]
+     */    
+    doDownloadPost: function(url, data){
+        //        
+        //delete other iframes appended
+        //
+        if(document.getElementById(this.downloadFormId)) {
+            document.body.removeChild(document.getElementById(this.downloadFormId)); 
+        }
+        // submit form with filter
+        var form = document.createElement("form");
+        form.setAttribute("id", this.downloadFormId);
+        form.setAttribute("method", "POST");
+        form.setAttribute("action", url);
+        var hiddenField = document.createElement("input");      
+        hiddenField.setAttribute("name", "filter");
+        hiddenField.setAttribute("value", data);
+        form.appendChild(hiddenField);
+        document.body.appendChild(form);
+        form.submit(); 
     }
     
 });

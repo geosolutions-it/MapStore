@@ -19,7 +19,7 @@
  */
 
 /**
- * @requires plugins/spatialselector/SpatialSelectorMethod.js
+ * @requires widgets/form/spatialselector/SpatialSelectorMethod.js
  */
  
 /**
@@ -27,24 +27,24 @@
  */
 
 /** api: (define)
- *  module = gxp.plugins.spatialselector
+ *  module = gxp.widgets.form.spatialselector
  *  class = BufferSpatialSelectorMethod
  */
 
 /** api: (extends)
- *  plugins/spatialselector/SpatialSelectorMethod.js
+ *  widgets/form/spatialselector/SpatialSelectorMethod.js
  */
-Ext.namespace('gxp.plugins.spatialselector');
+Ext.namespace('gxp.widgets.form.spatialselector');
 
 /** api: constructor
  *  .. class:: CircleSpatialSelectorMethod(config)
  *
  *    Plugin for spatial selection based on circle drawing
  */
-gxp.plugins.spatialselector.CircleSpatialSelectorMethod = Ext.extend(gxp.plugins.spatialselector.PolygonSpatialSelectorMethod, {
+gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod = Ext.extend(gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod, {
 
-	/* ptype = gxp_spatial_circle_selector */
-	ptype : 'gxp_spatial_circle_selector',
+	/* xtype = gxp_spatial_circle_selector */
+	xtype : 'gxp_spatial_circle_selector',
 
 	/** api: config[name]
 	 *  ``String``
@@ -73,7 +73,7 @@ gxp.plugins.spatialselector.CircleSpatialSelectorMethod = Ext.extend(gxp.plugins
 
     // Reset method
     reset: function(){
-		gxp.plugins.spatialselector.CircleSpatialSelectorMethod.superclass.reset.call(this);
+		gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod.superclass.reset.call(this);
 		if(this.circleCentroidLayer){
 			this.circleCentroidLayer.removeAllFeatures();
 		}
@@ -147,4 +147,4 @@ gxp.plugins.spatialselector.CircleSpatialSelectorMethod = Ext.extend(gxp.plugins
     }
 });
 
-Ext.preg(gxp.plugins.spatialselector.CircleSpatialSelectorMethod.prototype.ptype, gxp.plugins.spatialselector.CircleSpatialSelectorMethod);
+Ext.reg(gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod.prototype.xtype, gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod);
