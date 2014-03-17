@@ -78,8 +78,8 @@ gxp.slider.TimeSlider = Ext.extend(Ext.slider.MultiSlider, {
             [new Ext.slider.Tip({getText:this.getThumbText})]);
 
         this.listeners = Ext.applyIf(this.listeners || {}, {
-            'changecomplete' : this.onSliderChangeComplete,
-            //'change' : this.onSliderChangeComplete,
+            //'changecomplete' : this.onSliderChangeComplete,
+            'change' : this.onSliderChangeComplete,
             'dragstart' : function() {
                 if(this.timeManager.timer) {
                     this.timeManager.stop();
@@ -290,6 +290,12 @@ gxp.slider.TimeSlider = Ext.extend(Ext.slider.MultiSlider, {
             sliderInfo.interval = Math.round((sliderInfo.maxValue - sliderInfo.minValue) / this.timeManager.intervals.length);
         }
         this.setTimeFormat(gxp.PlaybackToolbar.guessTimeFormat(sliderInfo.interval));
+        
+        for (var i = 0, len = slider.timeManager.timeAgents.length; i < len; i++) {
+            if(slider.timeManager.timeAgents[i].rangeMode == 'range'){
+                slider.timeManager.timeAgents[i].rangeInterval = 0;    
+            }
+        }
     },
 
     setThumbStyles : function() {
@@ -399,9 +405,7 @@ gxp.slider.TimeSlider = Ext.extend(Ext.slider.MultiSlider, {
                 for (var i = 0, len = timeManager.timeAgents.length; i < len; i++) {
                     if(timeManager.timeAgents[i].rangeMode == 'range'){
                         var range = (slider.thumbs[0].value - value) / adj;
-                        if(range > 0) {
-                            timeManager.timeAgents[i].rangeInterval = range;    
-                        }
+                        timeManager.timeAgents[i].rangeInterval = range;    
                     }
                 }
                 if(!silent){

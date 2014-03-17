@@ -110,7 +110,10 @@ OpenLayers.TimeAgent.WMS = OpenLayers.Class(OpenLayers.TimeAgent, {
             if(this.rangeMode == 'range') {
                 minTime = new Date(time.getTime());
                 if(this.timeManager.units) {
-                    if (this.timeManager.units == "Days"){
+                    if(this.rangeInterval < this.timeManager.step) {
+                        this.rangeInterval = this.timeManager.step;
+                    }
+                    if (this.timeManager.units == "Days"){                        
                         minTime['setUTCDate'](time['getUTCDate']() - this.rangeInterval);
                     }else{
                         minTime['setUTC'+this.timeManager.units](time['getUTC'+this.timeManager.units]() - this.rangeInterval);
@@ -121,7 +124,7 @@ OpenLayers.TimeAgent.WMS = OpenLayers.Class(OpenLayers.TimeAgent, {
                 minTime = this.range[0];
             }
 
-            if(minTime >= time){
+            /*if(minTime >= time){
                     this.timeManager.rangeInterval = this.timeManager.step;
                     this.timeManager.incrementTime(this.timeManager.step);
 
@@ -130,7 +133,7 @@ OpenLayers.TimeAgent.WMS = OpenLayers.Class(OpenLayers.TimeAgent, {
                     var addRange = this.timeManager.addRangeStep(minTime, this.timeManager.step);
                     
                     time = new Date(addRange.getTime());                    
-            }
+            }*/
             
             isotime = OpenLayers.Date.toISOString(minTime) + '/' + OpenLayers.Date.toISOString(time);
         }
