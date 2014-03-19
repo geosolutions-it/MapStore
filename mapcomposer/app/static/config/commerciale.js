@@ -285,6 +285,7 @@
           "defaultResolutionIndex":1,
           "defaultLayoutIndex":1,
 		  "ignoreLayers":["WFSSearch","Marker","WFSsearchMarker","GeoRefMarker","GeoLocation"],
+		  "appendLegendOptions": true,
 		  "actionTarget":{
 			 "target":"paneltbar",
 			 "index":4

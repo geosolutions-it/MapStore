@@ -158,7 +158,7 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
      *  * rotation - ``Boolean`` indicates if rotation is supported
      */
     layouts: null,
-	fullLayouts: null,
+    fullLayouts: null,
     
     /** api: property[dpi]
      *  ``Ext.data.Record`` the record for the currently used resolution.
@@ -171,6 +171,11 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
      *  use ``setLayout`` to set the value.
      */
     layout: null,
+
+    /** api: config[fitToBbox]
+     *  ``Boolean`` Flag to fit the print preview to the exact extent of the print preview map. 
+     */
+    fitToBbox: false,
 
     /** private:  method[constructor]
      *  Private constructor override.
@@ -414,7 +419,7 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
 
         var pagesLayer = pages[0].feature.layer;
         var encodedLayers = [];
-		
+        
         // ensure that the baseLayer is the first one in the encoded list
         var layers = map.layers.concat();
         layers.remove(map.baseLayer);
@@ -431,11 +436,26 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
         
         var encodedPages = [];
         Ext.each(pages, function(page) {
-            encodedPages.push(Ext.apply({
-                center: [page.center.lon, page.center.lat],
-                scale: page.scale.get("value"),
-                rotation: page.rotation
-            }, page.customParams));
+            if(page.bbox){
+                // only bbox fix!!
+                encodedPages.push(Ext.apply({
+                    bbox: page.bbox.toArray(),
+                    rotation: page.rotation
+                }, page.customParams));
+            }else if(this.fitToBbox){
+                // fit to bbox of print preview
+                encodedPages.push(Ext.apply({
+                    bbox: map.getExtent().toArray(),
+                    rotation: page.rotation
+                }, page.customParams));
+            }else {
+                // default: use center and scale!!
+                encodedPages.push(Ext.apply({
+                    center: [page.center.lon, page.center.lat],
+                    scale: page.scale.get("value"),
+                    rotation: page.rotation
+                }, page.customParams));
+            }
         }, this);
         jsonData.pages = encodedPages;
         
@@ -467,8 +487,13 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
             if (!rendered) {
                 legend.destroy();
             }
-            jsonData.legends = encodedLegends;						
-			
+            jsonData.legends = encodedLegends;                      
+            
+        }
+
+        // Append forwardHeaders if not included. TODO: check it
+        if(!jsonData.forwardHeaders){
+            jsonData.forwardHeaders = [];
         }
 
         if(this.method === "GET") {
@@ -544,20 +569,21 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
     loadStores: function() {
         this.scales.loadData(this.capabilities);
         this.dpis.loadData(this.capabilities);
-		
-		var caps2 = { layouts : []};
-		var layouts = this.capabilities.layouts;
-		
-		this.fullLayouts.loadData({'layouts' : layouts});
-		
-		for(var i=0; i < layouts.length; i++){
-			var layout = layouts[i];
-			// > -1) && !(layout.name.indexOf("pages") > -1)
-			if(!(layout.name.indexOf("_legend") > 0)){
-				caps2.layouts.push(layout);
-			}
-		}
-		
+        
+        var caps2 = { layouts : []};
+        var layouts = this.capabilities.layouts;
+        
+        this.fullLayouts.loadData({'layouts' : layouts});
+        
+        for(var i=0; i < layouts.length; i++){
+            var layout = layouts[i];
+            // > -1) && !(layout.name.indexOf("pages") > -1)
+            if(!(layout.name.indexOf("_legend") > 0) 
+                && !(layout.name.indexOf("_landscape") > 0)){
+                caps2.layouts.push(layout);
+            }
+        }
+        
         this.layouts.loadData(caps2);
         
         this.setLayout(this.layouts.getAt(this.defaultLayoutIndex ||0));
@@ -597,16 +623,16 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
      */
     getAbsoluteUrl: function(url) {
         var a;
-        if(Ext.isIE) {
+        /*if(Ext.isIE) {
             a = document.createElement("<a href='" + url + "'/>");
             a.style.display = "none";
             document.body.appendChild(a);
             a.href = a.href;
             document.body.removeChild(a);
-        } else {
+        } else {*/
             a = document.createElement("a");
             a.href = url;
-        }
+        //}
         return a.href;
     },
     
@@ -705,12 +731,12 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                 };
             },
             "Vector": function(layer) {
-        		
-        		if(!layer.features.length) {
+                
+                if(!layer.features.length) {
                     return;
                 }
 
-        		var encFeatures = [];
+                var encFeatures = [];
                 var encStyles = {};
                 var features = layer.features;
                 var featureFormat = new OpenLayers.Format.GeoJSON();
@@ -765,8 +791,13 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
             "gx_wmslegend": function(legend) {
                 var enc = this.encoders.legends.base.call(this, legend);
                 var icons = [];
+
                 for(var i=1, len=legend.items.getCount(); i<len; ++i) {
-                    icons.push(this.getAbsoluteUrl(legend.items.get(i).url));
+                    // replace legend parameters if it's needed
+                    var url = this.getAbsoluteUrl(legend.items.get(i).url);
+                    icons.push(this.changeLegendParameters && this.legendStylePanel?
+                        this.legendStylePanel.getLegendUrl(legend.items.get(i).itemId, null, legend)
+                        : url);
                 }
                 enc[0].classes[0] = {
                     name: "",
