@@ -303,15 +303,38 @@ GeoExt.Lang.add("it", {
     },
 
     "GeoExt.ux.PrintPreview.prototype":{
-	    paperSizeText: "Dimensioni del foglio:",
-	    resolutionText: "Risoluzione:",
-	    printText: "Stampa",
-	    emptyTitleText: "Inserisci qui il titolo della mappa.",
-	    includeLegendText: "Includere la legenda?",
-	    legendOnSeparatePageText: "Legenda in una pagina separata?",
-	    compactLegendText: "Legenda compatta?",	
-	    emptyCommentText: "Inserisci qui i commenti.",
-	    creatingPdfText: "Creazione del file PDF..."
+        paperSizeText: "Dimensioni del foglio:",
+        resolutionText: "Risoluzione:",
+        printText: "Stampa",
+        emptyTitleText: "Inserisci qui il titolo della mappa.",
+        includeLegendText: "Includere la legenda?",
+        legendOnSeparatePageText: "Legenda in una pagina separata?",
+        compactLegendText: "Legenda compatta?", 
+        emptyCommentText: "Inserisci qui i commenti.",
+        creatingPdfText: "Creazione del file PDF...",
+        graticuleFieldLabelText: 'Attiva griglia',
+        defaultTabText: "Predefinito",
+        legendTabText: "Legenda"
+    },
+
+    "GeoExt.ux.LegendStylePanel.prototype":{
+        iconsSizeText: "Dimensione Icone",
+        fontSizeText: "Dimensione Font",
+        fontFamilyText: "Famiglia Font",
+        forceLabelsText: "Forza etichette",
+        dpiText: "Dpi",
+        fontStyleText: "Stile Font",
+        fontEditorText: "Config. Etichette",
+        sizeText: "Dimensione"
+    },
+    
+    "GeoExt.ux.GraticuleStylePanel.prototype":{
+        graticuleFieldLabelText: 'Attiva griglia',
+        sizeText: "Dimensione",
+        colorText: "Colore",
+        fontFamilyText: "Famiglia Font",
+        fontStyleText: "Stile Font",
+        fontEditorText: "Config. Etichette"
     },
 
     "gxp.plugins.GeonetworkSearch.prototype":{
