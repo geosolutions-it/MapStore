@@ -223,7 +223,7 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                     xtype: "checkbox",
                     fieldLabel: "forceLabelsText", 
                     name: "_ignore_forceLabel",
-                    checked: false,
+                    checked: true,
                     
                     listeners:{
                         change: function (chk, value){
@@ -258,7 +258,7 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                     // Managed as a checkbox
                     xtype: "textfield",
                     fieldLabel: "forceLabelsText",
-                    value: "off",
+                    value: "on",
                     hidden: true
                 },
                 dpi: {
