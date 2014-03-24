@@ -826,7 +826,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
                     }
 				}
 				
-				var magicString = 'org.geoserver.wps.gs.ClusterManagerProcess_-ExecutionStatusExt';
+				var magicString = 'org.geoserver.wps.gs.ClusterManagerProcess$ExecutionStatusExt';
 				
 				if((element instanceof Object) && (magicString in element)){
 					var x = element[magicString];
@@ -2486,7 +2486,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
             var element =  this.parseResponse(response);
             		
 			if(element instanceof Object){
-				var magicString = 'org.geoserver.wps.gs.ClusterManagerProcess_-ExecutionStatusExt';
+				var magicString = 'org.geoserver.wps.gs.ClusterManagerProcess$ExecutionStatusExt';
 				
 				try{
 					if(!(magicString in element)){
