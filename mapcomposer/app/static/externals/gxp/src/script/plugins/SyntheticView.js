@@ -2261,7 +2261,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         "mapping": "id_scenario"
               },{
                         "name": "flg_lieve",              
-                        "mapping": "flg_lieve"
+                        "mapping": "flg_lieve",
+                        "type": "int"
               },{
                         "name": "id_gravita",              
                         "mapping": "id_gravita"
