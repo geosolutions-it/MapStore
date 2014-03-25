@@ -419,7 +419,7 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
         var layers = map.layers.concat();
         layers.remove(map.baseLayer);
         layers.unshift(map.baseLayer);
-
+        
         Ext.each(layers, function(layer){
             if(layer !== pagesLayer && layer.getVisibility() === true) {
                 var enc = this.encodeLayer(layer);
@@ -579,6 +579,14 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                     return;
                 }
                 encLayer = this.encoders.layers[c].call(this, layer);
+                
+                var replaceURL = this.providerOptions && this.providerOptions.replaceURL ? this.providerOptions.replaceURL : [];
+                if(encLayer && encLayer.baseURL && replaceURL && replaceURL.length > 0) {
+                    for(var count = 0, l = replaceURL.length ; count < l; count++) {
+                        encLayer.baseURL = encLayer.baseURL.replace(replaceURL[count].from , replaceURL[count].to);
+                    }
+                }
+                
                 this.fireEvent("encodelayer", this, layer, encLayer);
                 break;
             }
@@ -763,8 +771,15 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
             "gx_wmslegend": function(legend) {
                 var enc = this.encoders.legends.base.call(this, legend);
                 var icons = [];
-                for(var i=1, len=legend.items.getCount(); i<len; ++i) {
-                    icons.push(this.getAbsoluteUrl(legend.items.get(i).url));
+                var replaceURL = this.providerOptions && this.providerOptions.replaceURL ? this.providerOptions.replaceURL : [];
+                for(var i=1, len=legend.items.getCount(); i<len; ++i) {                    
+                    var url = this.getAbsoluteUrl(legend.items.get(i).url);
+                    if(url && replaceURL.length > 0) {
+                        for(var count = 0, l = replaceURL.length ; count < l; count++) {
+                            url = url.replace(replaceURL[count].from , replaceURL[count].to);
+                        }
+                    }
+                    icons.push(url);
                 }
                 enc[0].classes[0] = {
                     name: "",

@@ -526,6 +526,12 @@
     },
     {
         "ptype":"gxp_print",
+        "providerOptions": {
+            "replaceURL": [{
+                "from": "http://localhost:8080/geoserver",
+                "to": "http://mbarto-geosol:8080/geoserver"
+            }]
+        },
         "customParams":{
             "outputFilename":"mapstore-print",
             "forwardHeaders":["Authorization", "Shib-Iride-IdentitaDigitale"]

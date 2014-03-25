@@ -1,5 +1,5 @@
     {
-    "geoStoreBase":"@@@@geostore_base_url@@@@",
+    "geoStoreBase":@@@@geostore_base_url@@@@,
     "proxy":"/http_proxy/proxy/?url=",
     "defaultLanguage": "it",
     "embedding": false,
@@ -257,7 +257,7 @@
 			"name": "siig_geo_obu",
 			"styles": "obu-point",
 			"displayInLayerSwitcher": true,
-			"tiled": true,
+			"tiled": false,
             "time" : "2014-01-31T14:50:10.229Z",
             "group": ["Real time data","Dati in tempo reale","Données en temps réel","Echtzeitdaten"],
 			"visibility": false
@@ -484,7 +484,7 @@
         "playbackMode": "range",
         "showIntervals": false,
         "labelButtons": false,
-        "settingsButton": true,
+        "settingsButton": false,
         "rateAdjuster": false,
         "dynamicRange": false,
         "timeFormat": "l, F d, Y g:i:s A",
@@ -522,6 +522,12 @@
     },
     {
         "ptype":"gxp_print",
+        "providerOptions": {
+            "replaceURL": [{
+                "from": "http://destinationpa.csi.it/geoserver",
+                "to": "http://localhost:8080/geoserver"
+            }]
+        },
         "customParams":{
             "outputFilename":"mapstore-print",
             "forwardHeaders":["Authorization", "Shib-Iride-IdentitaDigitale"]
@@ -562,7 +568,7 @@
         "wfsVersion" : "1.1.0",
         "destinationNS": "destination",
         "index": 28,
-        "geoStoreBase":"http://@@@@geostore_base_url@@@@/geostore/rest/",
+        "geoStoreBase":@@@@geostore_base_url@@@@,
         "proxy":"/http_proxy/proxy/?url="
     },
 	{
