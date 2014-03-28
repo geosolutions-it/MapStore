@@ -4,9 +4,9 @@
 		"header":false
 	},
     "gsSources": {
-        "osm": {
-            "ptype": "gxp_osmsource"
-        }
+		"bing": {
+			"ptype": "gxp_bingsource" 
+		}
     },
     "map":{
         "projection": "EPSG:900913",
@@ -15,12 +15,14 @@
             -20037508.34, -20037508.34,
             20037508.34, 20037508.34
         ],
-        "layers": [{
-		"source": "osm",
-		"title": "Open Street Map",
-		"name": "mapnik",
-		"group": "background"
-        }],
+        "layers": [
+			{
+				"source": "bing",
+				"title": "Bing Aerial",
+				"name": "AerialWithLabels",
+				"group": "background"
+			}
+		],
         "center": [1250000.000000, 5370000.000000],
         "zoom": 5
     },
@@ -33,6 +35,9 @@
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
+			"useEvents": false,
+			"showReport": false,
+			"directAddLayer": false,
 			"id": "addlayer"
 		}, {
 			"ptype": "gxp_geolocationmenu",

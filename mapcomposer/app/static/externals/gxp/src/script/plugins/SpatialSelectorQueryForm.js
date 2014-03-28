@@ -87,7 +87,10 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         this.spatialSelector = new gxp.plugins.spatialselector.SpatialSelector({
             target: target,
             layoutConfig: {
-                xtype: 'fieldset'
+                xtype: 'container',
+                defaults:{
+                    layout: "form"
+                }
             },
             spatialSelectorsConfig: spatialSelectorsConfig
         });
@@ -107,6 +110,8 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 		var me = this;
 
         var spatialSelector = this.spatialSelector;
+
+        var spatialSelectorOutput = this.spatialSelector.addOutput();
 		
         config = Ext.apply({
             border: false,
@@ -115,7 +120,20 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             autoScroll: true,
             id: this.getFormId(),
             items: [
-            this.spatialSelector.addOutput(),
+            {
+                xtype: "fieldset",
+                ref: "spatialSelectorFieldset",
+                title: spatialSelectorOutput.title,
+                checkboxToggle: true,
+                collapsed : false,
+                items: [spatialSelectorOutput],
+                listeners: {
+                    scope: this,
+                    expand: function(panel){
+                        panel.doLayout();
+                    }
+                }
+            },
             {
                 xtype: "fieldset",
                 ref: "attributeFieldset",
@@ -163,22 +181,38 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 					if(container){
 						container.expand();
 					}
+                    // Collect all selected filters
                     var filters = new Array();
+                    
+                    if(queryForm.spatialSelectorFieldset && !queryForm.spatialSelectorFieldset.collapsed){
+                        var currentFilter = this.spatialSelector.getQueryFilter();   
+                        if (currentFilter) {
+                            filters.push(currentFilter);
+                        }
+                    }
 
-
-                    var currentFilter = this.spatialSelector.getQueryFilter();
-                    if (currentFilter) {
-                        filters.push(currentFilter);
+                    if(queryForm.filterBuilder && !queryForm.filterBuilder.collapsed){
                         var attributeFilter = queryForm.filterBuilder.getFilter();
                         attributeFilter && filters.push(attributeFilter);
+                    }
+
+                    if(filters.length > 0){
                         this.featureManagerTool.loadFeatures(filters.length > 1 ?
                             new OpenLayers.Filter.Logical({
                                 type: OpenLayers.Filter.Logical.AND,
                                 filters: filters
                             }) :
                             filters[0]
-                        );  
-                     }
+                        );    
+                    }else{
+                        Ext.Msg.show({
+                            title: "No filter selected",
+                            msg: "You must select at least one filter",
+                            buttons: Ext.Msg.OK,
+                            icon: Ext.MessageBox.ERROR
+                        }); 
+                    }
+                      
                 },
                 scope: this
             }]

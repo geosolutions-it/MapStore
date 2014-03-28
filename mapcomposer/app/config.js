@@ -11,6 +11,7 @@ var urls = [
 	[(/^\/(wps)/), require("./root/wps").app],                // to test WPS plugin
 	[(/^\/(test)/), require("./root/test").app],              // to test the MapStore Viewport
     [(/^\/(viewer(.html)?)/), require("./root/viewer").app],
+	[(/^\/(embedded(.html)?)/), require("./root/embedded").app],
     [(/^\/(debug(.js)?)/), require("./root/debug").app]
 ];
 
