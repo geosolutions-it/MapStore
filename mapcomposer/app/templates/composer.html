@@ -94,7 +94,7 @@
 	
     <script>
 		var app;        
-        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false; var bbox; var useCookies;
+        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false; var bbox; var useCookies; var templateId;
 		
 		// /////////////////////////////////////////////////////
 		// Extra parameters to add layers at startup
@@ -162,6 +162,13 @@
 										bbox = undefined;
 									} 
 									break;
+					case "configId": 
+									try{
+										templateId = parseInt(param[1]);
+									}catch(e){
+										templateId = -1;
+									} 
+									break;
 					default :       
 									//mapIdentifier = -1;
 									//authorization = false;
@@ -210,8 +217,8 @@
                       });
                  }
             });
-            
-			// //////////////////////////////////////////////////////            
+			
+		    // //////////////////////////////////////////////////////            
             // Setting the locale based on query string parameter
             // //////////////////////////////////////////////////////
 			var query = location.search;        
@@ -229,20 +236,12 @@
                 GeoExt.Lang.set(code);
             }
 			
-			// ////////////////////////////////////////////////////
-			// Setting the language selector
-			// ////////////////////////////////////////////////////
-			var languageSelector = new gxp.form.LanguageSwitcher({
-				currentContext:code,
-				saveMessage:authorization
-			});
-			
             var appTabsOpts = {
 				region: 'center',
 				border : false,
 				id : 'appTabs',
 				enableTabScroll: true
-			};
+            };
             
             //check if MetadataExplorer plugin is defined in customTools configuration
             var customToolsME = [];
@@ -270,56 +269,72 @@
             }else{
                 appTabs = new Ext.TabPanel(appTabsOpts); 
             }
-
-			var iframe = "<iframe style='border: none; height: 100%; width: 100%' src='about.html' frameborder='0' border='0'>" + 
-						 "<a target='_blank' href='about.html'>" + GeoExplorer.prototype.aboutText + "</a> </iframe>";
-						 
-            var aboutButton = new Ext.Button({
-                text: GeoExplorer.prototype.appInfoText,
-                iconCls: "icon-geoexplorer",
-                handler: function(){
-                    var appInfo = new Ext.Panel({
-                        header: false,
-                        html: iframe
-                    });
-
-                    var win = new Ext.Window({
-                        title:  GeoExplorer.prototype.aboutThisMapText,
-                        modal: true,
-                        layout: "fit",
-                        width: 360,
-                        height: 360,
-                        items: [appInfo]
-                    });
-                    
-                    win.show();
-                }
-            });
-            
-            var poweredByGeoSol = new Ext.Button({
-                tooltip: 'Powered by GeoSolutions',
-                iconCls: "icon-geosol",
-                width : 150,
-                handler: function(btn){
-                    window.open('http://www.geo-solutions.it/about/contacts/', '_blank');
-                }
-            });    
 			
-            var appViewport = new Ext.Viewport({
-                id: 'appVieport',
-                layout:'fit',
-                border:false,
-                items: [{
-                    region : 'center',
-                    layout : 'border',
-                    border : false,
-                    header : false,                    
-                    items : [appTabs],                            
-                    bbar : [
-                      poweredByGeoSol, ' ', aboutButton, '->',languageSelector
-                    ]
-                }]
-            });
+			var header = serverConfig.header;
+			var footer = serverConfig.footer;
+			
+			var viewport = {
+					id: 'appVieport',
+					layout: 'fit',
+					border: false
+			};
+
+			// in header and footer, we need numbers, not strings
+			var parseKnowIntegers = function(section){
+				var knownInteger = {'height':true, 'maxHeight': true, 'minWidth':true};
+				for(var key in knownInteger){
+					if(section[key]){
+						try{
+							section[key] = parseInt(section[key]);	
+						}catch (e){
+							// unknown parameter value
+						}
+					}	
+				}
+				return section;
+			}
+			
+			if(header || footer){
+				var north = {
+					header: false,
+					region: 'north',
+					id: 'msheader'
+				};
+			
+				if(header){
+					north = Ext.applyIf(north, (header.container ? parseKnowIntegers(header.container) : {}));
+					north.html = (header.css || '') + (header.html || '');
+				}
+				
+			    var south = {
+					header: false,
+					region: 'south',
+					id: 'msfooter'
+				};
+				
+				if(footer){
+					south = Ext.applyIf(south, (footer.container ? parseKnowIntegers(footer.container) : {}));
+					south.html = (footer.css || '') + (footer.html || '');
+				}
+				
+				viewport.items = [{
+					region: 'center',
+					layout: 'border',
+					border: false,
+					header: false, 
+					items: [north, appTabs, south]
+				}];
+			}else{
+				viewport.items = [{
+					region: 'center',
+					layout: 'border',
+					border: false,
+					header: false,                    
+					items: [appTabs]
+				}]
+			}			
+			
+			var appViewport = new Ext.Viewport(viewport);
             
             // /////////////////////////////////////////////////////////////
             // Parsing WMS servers Sources for getCapabilities operation
@@ -385,7 +400,7 @@
                 georeferences: georeferences_data,
                 map: serverConfig.map,
 				customTools: serverConfig.customTools
-            }, mapIdentifier, authorization, fullScreen);   
+            }, mapIdentifier, authorization, fullScreen, templateId);   
             
             app.on({
                 'portalready' : function() {              	
@@ -489,6 +504,7 @@
 				  
 				  try{
 					  serverConfig = Ext.util.JSON.decode(response.responseText);
+					  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy;
 				  }catch(e){
 					  Ext.Msg.show({
 							title: "Startup",
@@ -497,16 +513,67 @@
 							icon: Ext.MessageBox.ERROR
 					  });
 				  }
-				  
-				  if(serverConfig){
-					  //apply the local default configuration if not present.
-					  serverConfig = Ext.applyIf(serverConfig,localConfig);
-					  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy; 
 
-					  // ///////////////////////////////////////////////  
-					  // Run the application when browser is ready
-					  // ///////////////////////////////////////////////
-					  Ext.onReady(onReady);
+				  // load template config
+				  if(templateId){
+				  		// include proxy and/or geoStoreBase
+				  		var templateLoadUrl = (serverConfig && serverConfig.geoStoreBase ? serverConfig.geoStoreBase : ('http://' + window.location.host + '/geostore/rest/')) + "data/" + templateId;
+				  		if(proxy){
+				  			templateLoadUrl = proxy + templateLoadUrl;
+				  		}
+						Ext.Ajax.request({
+							url: templateLoadUrl,
+							method: 'GET',
+							success: function(response, opts){          
+							  
+							  var templateConfig;
+							  try{
+								  templateConfig = Ext.util.JSON.decode(response.responseText);
+							  }catch(e){
+								  Ext.Msg.show({
+										title: "Startup",
+										msg: "An error occurred while parsing the template configuration: " + response.status,
+										buttons: Ext.Msg.OK,
+										icon: Ext.MessageBox.ERROR
+								  });
+							  }
+							  
+							  if(serverConfig){
+								  //apply the local default configuration if not present.
+								  serverConfig = Ext.applyIf(serverConfig,localConfig);
+								  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy;
+
+								  // apply the template config
+								  if(templateConfig){
+								  	Ext.apply(serverConfig, templateConfig);
+								  }
+
+								  // ///////////////////////////////////////////////  
+								  // Run the application when browser is ready
+								  // ///////////////////////////////////////////////
+								  Ext.onReady(onReady);
+							  }
+							},
+							failure:  function(response, opts){
+							  Ext.Msg.show({
+									title: "Startup",
+									msg: "An error occurred while getting the template configuration: " + response.status,
+									buttons: Ext.Msg.OK,
+									icon: Ext.MessageBox.ERROR
+							  });
+							}
+						});
+				  }else{
+					  if(serverConfig){
+						  //apply the local default configuration if not present.
+						  serverConfig = Ext.applyIf(serverConfig,localConfig);
+						  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy; 
+
+						  // ///////////////////////////////////////////////  
+						  // Run the application when browser is ready
+						  // ///////////////////////////////////////////////
+						  Ext.onReady(onReady);
+					  }
 				  }
 			  },
 			  failure:  function(response, opts){

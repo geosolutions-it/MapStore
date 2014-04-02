@@ -1,0 +1,503 @@
+/*
+ *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * Class: MSMTemplatePanel
+ * Template editor panel.
+ * 
+ * Inherits from:
+ *  - <Ext.form.FormPanel>
+ *
+ */
+MSMTemplatePanel = Ext.extend(Ext.Panel, {
+
+ 	/** xtype = msm_templatepanel **/
+	xtype: "msm_templatepanel",
+
+	/** i18n **/
+	title: 'Template Editor',
+    headerTitleText: "Header",
+    footerTitleText: "Footer",
+    sectionContentTitleText: "{0} content",
+    sectionCSSTitleText: 'CSS Style',
+    sectionLayoutConfigTitleText: "Layout config",
+    borderText: 'Border',
+    animeCollapseText: 'Anim. Collapse',
+    hideCollapseText: 'Hide Collapse',
+    splitText: 'Split',
+    collapsibleText: 'Collapsible',
+    collapseModeText: 'Collapse Mode',
+	widthText: 'Width',
+	heightText: 'Height',
+	minWidthText: 'Min Width',
+	maxHeightText: 'Max Height',
+    failSuccessTitle: 'Error',
+    mapMetadataTitle: "Save a template",
+    mapMedatataSetTitle: "",
+    mapNameLabel: "Name",
+    mapDescriptionLabel: "Description", 
+    addResourceButtonText: "Save",
+    templateSuccessMsgText: "Saved succesfully",
+    templateSuccessTitleText: "OK",
+    /** EoF i18n **/
+
+	/** api: config[collapseModes]
+	 *  ``Array``
+	 *  With allowed collapse modes.
+	 */
+	collapseModes:[{
+		name: "default",
+		label: "default",
+		value: "default"
+	},{
+		name: "mini",
+		label: "mini",
+		value: "mini"
+	}],
+
+	// container to get form values
+	formContainer: null,
+
+	// login information
+	login: null,
+
+	// base url for update
+	geoStoreBase: null,
+    
+    /** api: config[actionURL]
+     *  ``String``
+     *  URL to the extJSbrowser of OpenSDI-Manager2
+     */
+    actionURL: "/opensdi2-manager/fileManager/extJSbrowser",
+
+    /**
+    * Constructor: initComponent 
+    * Initializes the component
+    * 
+    */
+    initComponent : function() {
+
+    	this.items = [{
+			xtype: 'compositefield',
+			fieldLabel: "Template Name",
+			items:[{
+				xtype: "textfield",
+				name: "templateName"
+			},{
+				xtype: "button",
+				text: "New",
+				handler: this.onReset, 
+				scope: this
+			},{
+				xtype: "button",
+				text: "Save",
+				handler: this.onSave, 
+				scope: this
+			}]
+		},{
+			xtype: "textfield",
+			name: "id",
+			hidden: true
+		},{
+			xtype: "textfield",
+			name: "description",
+			hidden: true
+		},{
+    		xtype: 'tabpanel',
+    		activeTab: 0,
+			items:[this.getTemplateSectionEditor('header'), this.getTemplateSectionEditor('footer')]
+		}];
+		
+        MSMTemplatePanel.superclass.initComponent.call(this, arguments);
+    },
+
+    loadData: function(templateData){
+		var form = this.formContainer.getForm();
+    	// reset old content
+    	form.reset();
+		// Restore basic data
+		form.setValues({
+			// name/id/description
+			templateName: templateData.name,
+			id: templateData.id,
+			description: templateData.description
+		});
+		// Restore more data
+		try{
+			var values = templateData.data && !templateData.data.footer ? JSON.parse(templateData.data): templateData.data;
+			// form.loadRecord({
+			form.setValues({
+				// header
+				header: values.header.html,
+				headerCSS: this.cleanupStyle(values.header.css),
+				headerBorder: values.header.container.border ? "on" : "off",
+				headerChk: values.header.container.header ? "on" : "off",
+				headerCollapsible: values.header.container.collapsible ? "on" : "off",
+				headerCollapseMode: values.header.container.collapseMode,
+				headerHideCollapse: values.header.container.hideCollapseTool ? "on" : "off",
+				headerSplit: values.header.container.split ? "on" : "off",
+				headerAnimeCollapse: values.header.container.animCollapse ? "on" : "off",
+				headerMinWidth: values.header.container.minWidth,
+				headerMaxHeight: values.header.container.maxHeight,
+				headerHeight: values.header.container.height,
+				// footer
+				footer: values.footer.html,
+				footerCSS: this.cleanupStyle(values.footer.css),
+				footerBorder: values.footer.container.border ? "on" : "off",
+				footerChk: values.footer.container.footer ? "on" : "off",
+				footerCollapsible: values.footer.container.collapsible ? "on" : "off",
+				footerCollapseMode: values.footer.container.collapseMode,
+				footerHideCollapse: values.footer.container.hideCollapseTool ? "on" : "off",
+				footerSplit: values.footer.container.split ? "on" : "off",
+				footerAnimeCollapse: values.footer.container.animCollapse ? "on" : "off",
+				footerMinWidth: values.footer.container.minWidth,
+				footerMaxHeight: values.footer.container.maxHeight,
+				footerHeight: values.footer.container.height
+			});
+		}catch (e){
+			console.error("Error parsing template data");
+		}
+    },
+
+	// remove <style> and </style> tags
+    cleanupStyle: function(cssText){
+    	if(cssText){
+    		if(cssText.indexOf("<style>") > -1){
+    			cssText = cssText.replace("<style>", "");
+    		}
+    		if(cssText.indexOf("</style>") > -1){
+    			cssText = cssText.replace("</style>", "");
+    		}
+    	}
+    	return cssText;
+    },
+
+    onReset: function(){
+    	// reset form content
+    	this.formContainer.getForm().reset();
+    },
+
+    onSave: function(){
+    	var values = this.formContainer.getForm().getValues();
+    	var templateConfig = {
+    		"header": {
+			   "html": values.header,
+			   "css": this.getStyle(values.headerCSS),
+			   "container": {
+					"border": values.headerBorder && values.headerBorder == "on",
+					"header": values.headerChk && values.headerChk == "on",
+					"collapsible": values.headerCollapsible && values.headerCollapsible == "on",
+					"collapseMode":  values.headerCollapseMode,
+					"hideCollapseTool": values.headerHideCollapse && values.headerHideCollapse == "on",
+					"split": values.headerSplit && values.headerSplit == "on",
+					"animCollapse": values.headerAnimeCollapse && values.headerAnimeCollapse == "on",
+					"minWidth": values.headerMinWidth,
+					"maxHeight": values.headerMaxHeight,
+					"height": values.headerHeight
+			   }
+			},   
+    		"footer": {
+			   "html": values.footer,
+			   "css": this.getStyle(values.footerCSS),
+			   "container": {
+					"border": values.footerBorder && values.footerBorder == "on",
+					"header": values.footerChk && values.footerChk == "on",
+					"collapsible": values.footerCollapsible && values.footerCollapsible == "on",
+					"collapseMode":  values.footerCollapseMode,
+					"hideCollapseTool": values.footerHideCollapse && values.footerHideCollapse == "on",
+					"split": values.footerSplit && values.footerSplit == "on",
+					"animCollapse": values.footerAnimeCollapse && values.footerAnimeCollapse == "on",
+					"minWidth": values.footerMinWidth,
+					"maxHeight": values.footerMaxHeight,
+					"height": values.footerHeight
+			   }
+			}
+    	};
+
+		var blob = JSON.stringify(templateConfig);
+        if(!values.id){
+        	this.doCreate(values, templateConfig, blob);
+        }else{
+			this.doUpdate(values.id, blob);
+        }
+    },
+
+	// include <style> and </style> tags
+    getStyle: function(cssText){
+    	if(cssText){
+    		if(cssText.indexOf("<style>") < 0){
+    			cssText = "<style>" + cssText;
+    		}
+    		if(cssText.indexOf("</style>") < 0){
+    			cssText += "</style>";
+    		}
+    	}
+    	return cssText;
+    },
+
+    // operation to save new templates
+    doCreate: function(values, templateConfig, blob){
+
+    	var me = this;
+		
+        var win = new Ext.Window({
+		    title: this.mapMetadataTitle,
+            width: 415,
+            height: 200,
+            resizable: false,
+            items: [
+                new Ext.form.FormPanel({
+                    width: 400,
+                    height: 150,
+                    ref: "formPanel",
+                    items: [
+                        {
+                          xtype: 'fieldset',
+                          title: this.mapMedatataSetTitle,
+                          items: [
+                              {
+                                    xtype: 'textfield',
+                                    width: 120,
+                                    name: "name",
+                                    fieldLabel: this.mapNameLabel,
+                          			value: values.templateName
+                              }, {
+                                    xtype: 'textarea',
+                                    width: 200,
+                                    name: "description",
+                                    fieldLabel: this.mapDescriptionLabel,
+                                    readOnly: false,
+                                    hideLabel : false,
+                                    allowBlank: false,
+                          			value: values.description
+                              },{
+									xtype: "textfield",
+									name: "id",
+									hidden: true,
+                          			value: values.id
+							  }
+                          ]
+                        }
+                    ]
+                })
+            ],
+            bbar: new Ext.Toolbar({
+                items:[
+                    '->',
+                    {
+                        text: this.addResourceButtonText,
+                        iconCls: "gxp-icon-addgroup-button",
+                        scope: this,
+                        handler: function(){      
+                            win.hide(); 
+
+                            var saveValues = win.formPanel.getForm().getValues();
+
+                        	this.templates.create({ 
+									name: saveValues.name, 
+									owner: me.login.username,
+									description: saveValues.description,
+									blob: blob
+								}, 
+								function success(response){                                                                            
+									Ext.Msg.show({
+									   title: me.templateSuccessTitleText,
+									   msg: me.templateSuccessMsgText,
+									   buttons: Ext.Msg.OK,
+									   icon: Ext.MessageBox.INFO
+									});
+									me.fireEvent("success");
+								},
+								function failure(response) {
+									Ext.Msg.show({
+									   title: me.failSuccessTitle,
+									   msg: me.userAlreadyTaken,
+									   buttons: Ext.Msg.OK,
+									   icon: Ext.MessageBox.ERROR
+									});
+									me.fireEvent("failure");
+					    	});
+                            
+                            win.destroy(); 
+                        }
+                    }
+                ]
+            })
+        });
+        
+        win.show();
+    },
+    
+    // operation to update template content
+    doUpdate: function(templateId, blob){    
+
+        var method = 'PUT';
+	  	var contentType = 'application/json';
+
+        Ext.Ajax.request({
+			url: this.geoStoreBase + "data/" + templateId,
+           method: method,
+           headers:{
+              'Content-Type' : contentType,
+              'Accept' : 'application/json, text/plain, text/xml',
+              'Authorization' : this.auth
+           },
+           params: blob,
+           scope: this,
+           success: function(response, opts){                                                                       
+				Ext.Msg.show({
+				   title: this.templateSuccessTitleText,
+				   msg: this.templateSuccessMsgText,
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.INFO
+				});
+				this.fireEvent("success");
+           },
+           failure:  function(response, opts){
+				Ext.Msg.show({
+				   title: this.failSuccessTitle,
+				   msg: this.userAlreadyTaken,
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.ERROR
+				});
+				this.fireEvent("failure");
+           }
+        }); 
+    },
+
+    getTemplateSectionEditor: function(section){
+    	var title = section == "header" ? this.headerTitleText: section == "footer" ? this.footerTitleText: section;
+    	var sectionContentTitleText = String.format(this.sectionContentTitleText, title);
+    	return {
+			title: title,
+			layout: "form",
+			items:[{
+				xtype: "fieldset",
+				title: sectionContentTitleText,
+				height: 240,
+				items:[{
+					xtype: "extendedhtmleditor",
+					name: section,
+					actionURL: this.actionURL,
+					height: 190,
+					width: 530
+				}]
+			},{
+				xtype: "fieldset",
+				title: this.sectionCSSTitleText,
+				height: 240,
+				items:[{
+					xtype: "textarea",
+					name: section + "CSS",
+					height: 190,
+					width: 530
+				}]
+			},{
+				xtype: "fieldset",
+				text: this.sectionLayoutConfigTitleText,
+				layout: "table",
+				layoutConfig: { 
+                    columns: 2 
+                }, 
+                defaults: {
+					layout: "form"
+                },
+				items:[{
+					xtype: "container",
+					items:[{
+						xtype: "checkbox",
+						fieldLabel: this.borderText,
+						name: section + "Border"
+					},{
+						xtype: "checkbox",
+						fieldLabel: title,
+						name: section + "Chk"
+					},{
+						xtype: "checkbox",
+						fieldLabel: this.collapsibleText,
+						name: section + "Collapsible"
+					},{
+						xtype: "checkbox",
+						fieldLabel: this.animeCollapseText,
+						name: section + "AnimeCollapse"
+					},{
+						xtype: "checkbox",
+						fieldLabel: this.hideCollapseText,
+						name: section + "HideCollapse"
+					},{
+						xtype: "checkbox",
+						fieldLabel: this.splitText,
+						name: section + "Split"
+					}]
+				},{
+					xtype: "container",
+					items:[{
+						xtype: "combo",
+						fieldLabel: this.collapseModeText,
+						name: section + "CollapseMode",
+						mode : 'local',
+						lazyRender : false,
+						allowBlank : false,
+						typeAhead : true,
+						triggerAction : 'all',
+						forceSelected : true,
+						autoLoad : true,
+						displayField : 'label',
+						valueField : 'value',
+						editable : false,
+						readOnly : false,
+						store : new Ext.data.JsonStore({
+							fields : [{
+								name : 'name',
+								dataIndex : 'name'
+							}, {
+								name : 'label',
+								dataIndex : 'label'
+							}, {
+								name : 'value',
+								dataIndex : 'value'
+							}],
+							data : this.collapseModes
+						})
+					},{
+						xtype: "numberfield",
+						fieldLabel: this.widthText,
+						name: section + "Width"
+					},{
+						xtype: "numberfield",
+						fieldLabel: this.heightText,
+						name: section + "Height"
+					},{
+						xtype: "numberfield",
+						fieldLabel: this.minWidthText,
+						name: section + "MinWidth"
+					},{
+						xtype: "numberfield",
+						fieldLabel: this.maxHeightText,
+						name: section + "MaxHeight"
+					}]
+				}]
+			}]
+		};
+    }
+});
+
+/** api: xtype = msm_templatepanel */
+Ext.reg(MSMTemplatePanel.prototype.xtype, MSMTemplatePanel);

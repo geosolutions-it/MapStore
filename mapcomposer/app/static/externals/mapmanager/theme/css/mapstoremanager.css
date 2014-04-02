@@ -1,3 +1,7 @@
+@import url("carousel.css");
+@import url("ext.plupload.css");
+@import url("extendedhtmleditor.css");
+
 a.button{
 background:url(img/button.gif);
 display:block;
@@ -33,7 +37,7 @@ text-indent:30px;
 display:block;
 }
 .delete{
-background:url(img/delete.gif) no-repeat 10px 8px;
+background:url(../img/delete.png) no-repeat 10px 8px;
 text-indent:30px;
 display:block;
 }

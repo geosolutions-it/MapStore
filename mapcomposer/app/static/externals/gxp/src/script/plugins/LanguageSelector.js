@@ -1,10 +1,22 @@
 /**
-* Copyright (c) 2008-2011 The Open Planning Project
-*
-* Published under the GPL license.
-* See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
-* of the license.
-*/
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /**
  * @requires plugins/Tool.js
@@ -23,35 +35,12 @@ Ext.namespace("gxp.plugins");
 /** api: constructor
  *  .. class:: LanguageSelector(config)
  *
- *    Provides an action for zooming to an extent.  If not configured with a 
- *    specific extent, the action will zoom to the map's visible extent.
+ *  Author: Tobia Di Pisa at tobia.dipisa@geo-solutions.it
  */
 gxp.plugins.LanguageSelector = Ext.extend(gxp.plugins.Tool, {
     
-    /** api: ptype = gxp_zoomtoextent */
-    ptype: "gxp_languageselector",
-    
-    /** api: config[buttonText]
-     *  ``String`` Text to show next to the zoom button
-     */
-
-    /** api: config[initialText]
-     *  ``String``
-     *  Initial text for combo box).
-     */
-    initialLanguage: 'en',
-     
-    /** api: config[menuText]
-     *  ``String``
-     *  Text for zoom menu item (i18n).
-     */
-    menuText: "Select language",
-
-    /** api: config[tooltip]
-     *  ``String``
-     *  Text for zoom action tooltip (i18n).
-     */
-    tooltip: "Select language",    
+    /** api: ptype = gxp_languageselector */
+    ptype: "gxp_languageselector", 
     
     /** private: method[constructor]
      */
@@ -62,62 +51,26 @@ gxp.plugins.LanguageSelector = Ext.extend(gxp.plugins.Tool, {
     /** api: method[addActions]
      */
     addActions: function() {
-        var store = new Ext.data.ArrayStore({
-            fields: ['code', 'name'],
-            data :  this.data
-        });
-
+		// //////////////////////////////////////////////////////            
+		// Setting the locale based on query string parameter
+		// //////////////////////////////////////////////////////
+		var query = location.search;        
+		if(query && query.substr(0,1) === "?"){
+			query = query.substring(1);
+		}
+		
+		var url = Ext.urlDecode(query);        
+		var code = url.locale || this.target.defaultLanguage || "en";			
+		
+		// ////////////////////////////////////////////////////
+		// Setting the language selector
+		// ////////////////////////////////////////////////////
+		var languageSelector = new gxp.form.LanguageSwitcher({
+			currentContext: code,
+			saveMessage: this.target.auth
+		});
         
-        var query = location.search;        
-        if(query && query.substr(0,1) === "?"){
-            query = query.substring(1);
-        }
-        
-        var url = Ext.urlDecode(query);        
-        var code = url.locale;   
-
-        if(!code){
-            code = this.initialLanguage;
-        }
-        
-        var initialLanguageString;
-                
-        //check if code is valid
-        if(code){
-            Ext.each(this.data, function(rec){
-                if(rec[0] === code.toLowerCase()){
-                    initialLanguageString = rec[1];
-                    return;
-                }
-            });
-        } 
-        
-        if(!initialLanguageString){
-            initialLanguageString = "English";
-        }
-        
-        var languageSelector = new Ext.form.ComboBox({
-            store: store,
-            displayField: 'name',
-            typeAhead: true,
-            mode: 'local',
-            forceSelection: true,
-            triggerAction: 'all',
-            emptyText: initialLanguageString,
-            selectOnFocus:false,
-            editable: false,
-            width: 100,
-            listeners: {
-                select: function(cb, record, index) {
-                    var code = record.get('code');
-                    if(code){
-                        location.replace('../?locale='+code);
-                    }                    
-                }
-            }
-        });
-        
-        var actions = [languageSelector];
+        var actions = ['->', languageSelector];
         return gxp.plugins.LanguageSelector.superclass.addActions.apply(this, [actions]);
     }
         

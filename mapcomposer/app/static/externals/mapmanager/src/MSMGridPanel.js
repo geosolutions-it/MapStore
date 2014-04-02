@@ -446,6 +446,22 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
      * 
      */ 
     renderMapToTab: null,
+
+    userMamanagerId: "id_usermanager_grid",
+    templateManagerId: "id_templatemanager",
+
+    adminPanelsTargetTab : null,
+
+    defaultSearchString: '*',
+    // defaultSearchString: '',
+
+    /**
+     * Property: extraAttributes
+     * {string} Extra attributes for the resume
+     * 
+     */ 
+    extraAttributes: "templateId",
+
     /**
     * Constructor: initComponent 
     * Initializes the component
@@ -454,7 +470,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     initComponent : function() {
 
 
-        var searchString = '*';
+        var searchString = this.defaultSearchString;
 		var config = this.config;
 		var geoStoreBase = config.geoStoreBase;
 
@@ -466,8 +482,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 		
 		this.geoBaseUsersUrl= geoStoreBase + 'users';
 		this.geoBaseMapsUrl = geoStoreBase + 'resources';
-		this.geoSearchUrl = geoStoreBase + 'extjs/search/';
+		this.geoSearchUrl = geoStoreBase + 'extjs/search/category/MAP/';
+        // this.geoSearchUrl = geoStoreBase + 'extjs/search/';
         this.geoSearchUsersUrl = geoStoreBase + 'extjs/search/users';
+        this.geoSearchCategoriesUrl = geoStoreBase + 'extjs/search/category';
         
 		// ///////////////////////////////////
         // Inizialization of MSMLogin class
@@ -476,6 +494,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
             grid: this,
             geoStoreBase : geoStoreBase
         });
+
+        // Add listeners for login and logout
+        this.login.on("login", this.onLogin, this);
+        this.login.on("logout", this.onLogout, this);
 		
 		// //////////////////////////////////////////////////////////
         // An object that contains the string to search the resource
@@ -488,7 +510,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     if (e.getKey() == e.ENTER) {
                         searchString = grid.inputSearch.getValue();
                         if(searchString==null || searchString == 'undefined' || searchString == ''){
-                            searchString = '*';
+                            searchString = grid.defaultSearchString;
                         }
                         grid.getBottomToolbar().bindStore(grid.store, true);
                         grid.getBottomToolbar().doRefresh();
@@ -691,13 +713,15 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
              * name - {string} name of the Map
              * mapId - {number} id of Map
              * desc - {string} description of the Map
+             * templateId - {number} id of the template selected for the map
              * 
              */
-            metadataEdit: function(mapId, name, desc) {
+            metadataEdit: function(mapId, name, desc, templateId) {
             
             	var formMetadata = new Ext.form.FormPanel({
                             width: 400,
                             height: 150,
+                            ref: "formPanel",
                             items: [
                                 {
                                   xtype: 'fieldset',
@@ -717,6 +741,20 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                             id: 'diag-text-description',
                                             fieldLabel: grid.gridDescription,
                                             value: desc                
+                                      },
+                                      {
+                                        xtype: "msm_templatecombobox",
+                                        ref: "../templateCombo",
+                                        templatesCategoriesUrl: grid.geoSearchCategoriesUrl + "/TEMPLATE",
+                                        auth: grid.auth,
+                                        listeners: {
+                                            storeload: function(store, combo){
+                                                if(templateId){
+                                                    combo.setValue(templateId);
+                                                }
+                                            },
+                                            scope: this
+                                        }
                                       }
                                   ]
                                 }
@@ -759,6 +797,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                     
                                     var mapName = Ext.getCmp("diag-text-field").getValue();        
                                     var mapDescription = Ext.getCmp("diag-text-description").getValue();
+                                    var templateId = win.formPanel.templateCombo.getValue();
                                     
 									// /////////////////////////////////////
 									// Get info about logged user if any
@@ -792,7 +831,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 										mapId, 
 										{
 											name:mapName, 
-											description: mapDescription
+											description: mapDescription,
+                                            // add the template id
+                                            templateId: templateId
 										},
 										function(data){ // Callback function
 											 var reload = function(){
@@ -891,7 +932,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
              * 
              */
 			openUserManager: function() {
-				if(this.grid.login.role === 'ADMIN') {                   
+				if(this.grid.login.role === 'ADMIN') {
+
 					var win = new Ext.Window({
 					   title: grid.textUserManager,
 					   iconCls: "open_usermanager",
@@ -925,7 +967,6 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             forceFit: true
                         }
                     });
-                    
                 }
 			},
 
@@ -1023,15 +1064,20 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
              * userProfile - {string} define if users are in edit or in view mode
              * idMap - {number} id of Map to open
              * desc - {string} description of the Map
+             * templateId - {number} id of selected template
              * 
              */
-            openMapComposer : function(mapUrl, userProfile, idMap, desc) {
+            openMapComposer : function(mapUrl, userProfile, idMap, desc, templateId) {
                     var scrollTop;
 					var src = mapUrl + '?locale=' + grid.lang + userProfile;
 					
 					if(idMap != -1){
 						src += '&mapId=' + idMap;
 					}
+                    
+                    if(templateId != -1){
+                        src += '&configId=' + templateId;
+                    }
 					
 					var iframeTitle = (userProfile == "&auth=true" ? grid.IframeComposerTitle : grid.IframeViewerTitle) + desc;
                     var iframeconfig = {
@@ -1069,7 +1115,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                     var userAuth = grid.store.proxy.getConnection().defaultHeaders;
                                     if(userAuth && userProfile == '&auth=true'){
                                         var mapIframe = document.getElementById(p.iframeId);
-                                        if (mapIframe.contentWindow.app){
+                                        if (mapIframe
+                                            && mapIframe.contentWindow
+                                            && mapIframe.contentWindow.app){
                                             mapIframe.contentWindow.app.setAuthHeaders(userAuth.Authorization);
                                             clearTimeout(timer);
                                         }
@@ -1408,7 +1456,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             var mapId = values.id;
                             var name = values.name;
                             var desc = values.description;
-                            expander.metadataEdit(mapId, name, desc);
+                            expander.metadataEdit(mapId, name, desc, values.templateId);
                         });
                     },
 					
@@ -1421,10 +1469,15 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     * 
                     */
                     MapComposerVM : function(id, values, userProfile) {
+                        // Read template id for view map
+                        var templateId = null;
+                        if(userProfile != "&auth=true"){
+                            templateId = values.templateId;
+                        }
                         Ext.get(id).on('click', function(e){
                             var idMap = values.id,
                             	desc = values.name;
-                            expander.openMapComposer(grid.murl, userProfile, idMap, desc);
+                            expander.openMapComposer(grid.murl, userProfile, idMap, desc, templateId);
                         });
                     },
 					
@@ -1597,6 +1650,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     },{
                         name: "canDelete",
                         type: "boolean"
+                    },{
+                        name: "templateId",
+                        type: "string"
                     }
             ],
             proxy: new Ext.data.HttpProxy({
@@ -1651,23 +1707,23 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 failure: function (result) {
                     switch(result.status) {
                         case 500:
-                        searchString = '*';
+                        searchString = grid.defaultSearchString;
                         grid.alertMsgServerError(grid.errorMsg_500);
                         break;
                         case 501:
-                        searchString = '*';                        
+                        searchString = grid.defaultSearchString;                        
                         grid.alertMsgServerError(grid.errorMsg_501);
                         break;
                         case 401: 
-                        searchString = '*';
+                        searchString = grid.defaultSearchString;
                         grid.alertMsgServerError(grid.errorMsg_404);
                         break;
                         case -1: 
-                        searchString = '*';
+                        searchString = grid.defaultSearchString;
                         grid.alertMsgServerError(grid.errorMsg_timeout);
                         break;  
                         default: 
-                        searchString = '*';                        
+                        searchString = grid.defaultSearchString;                        
                         grid.alertMsgServerError(grid.errorMsg_500);
                     }
                 },
@@ -1687,6 +1743,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
             store : this.store,
             grid: this,
             displayInfo: true,
+            templatesCategoriesUrl: this.geoSearchCategoriesUrl + "/TEMPLATE",
+            auth: this.auth,
             listeners: {
                 scope: this,
                 change: function(){
@@ -1716,7 +1774,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
             handler: function() {  
                     searchString = grid.inputSearch.getValue();
                     if(searchString==null || searchString == 'undefined'  || searchString == ''){
-                        searchString = '*';
+                        searchString = grid.defaultSearchString;
                     }
                     grid.getBottomToolbar().bindStore(grid.store, true);
                     grid.getBottomToolbar().doRefresh();
@@ -1730,7 +1788,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
             disabled: true,
             handler : function() {
                     grid.inputSearch.setValue('');
-                    searchString = '*';
+                    searchString = grid.defaultSearchString;
                     Ext.getCmp('searchBtn').disable();
                     Ext.getCmp('clearBtn').disable();
                     grid.getBottomToolbar().bindStore(grid.store, true);
@@ -1739,8 +1797,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 } 
             },this.QRCodeMenu,'->',
 			this.login.userLabel,
-			'-',
-			this.openUserManagerButton,
+			// '-',
+			// this.openUserManagerButton,
 			'-',
 			this.login.loginButton,
 			'-',
@@ -1762,7 +1820,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
         MSMGridPanel.superclass.initComponent.call(this, arguments);
     },
     
-    /**
+   /**
     * getUrl
     * 
     * searchString - {string} string to search through the resources of geostore
@@ -1770,6 +1828,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     */
     getUrl : function(srcStr) {
         var r = this.geoSearchUrl +  '*' + srcStr.replace(/\s+/g,"*") + '*';
+        if(this.extraAttributes){
+            r += "/" + this.extraAttributes
+        }
         return r;
     },
     
@@ -1780,15 +1841,16 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * 
     */
     alertMsgServerError : function(msgStatusCode){
-        Ext.MessageBox.show({
-            title: this.errorTitle,
-            msg: msgStatusCode,
-            buttons: Ext.MessageBox.OK,
-            fn: this.resetSearchTool,
-            animEl: 'mb4',
-            icon: Ext.MessageBox.ERROR,
-            scope: this
-        });
+        console.log(msgStatusCode);
+        // Ext.MessageBox.show({
+        //     title: this.errorTitle,
+        //     msg: msgStatusCode,
+        //     buttons: Ext.MessageBox.OK,
+        //     fn: this.resetSearchTool,
+        //     animEl: 'mb4',
+        //     icon: Ext.MessageBox.ERROR,
+        //     scope: this
+        // });
     },
 
     /**
@@ -2051,5 +2113,84 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 		tpl += '<div id=\'{[this.getSocialLinksId(values.id,values.name,values.description)]}\' style=\'float:left\'></div>';
         
 		return tpl;
-	}
+	},
+
+    /** private: method[onLogin]
+     *  Listener with actions to be executed when an user makes login.
+     */
+    onLogin: function(user){
+
+        var userManagerPanel = new UserManagerView ({
+            id: this.userMamanagerId,
+            iconCls: "open_usermanager",
+            login: this.login,
+            ASSET: this.config.ASSET,
+            auth: this.login.getToken(),
+            url: this.geoBaseUsersUrl,
+            searchUrl: this.geoSearchUsersUrl,
+            mapUrl: this.geoBaseMapsUrl,
+            gridPanelBbar: this.getBottomToolbar(),
+            autoWidth: true,
+            viewConfig: {
+                forceFit: true
+            },
+            renderMapToTab: this.adminPanelsTargetTab
+        });
+
+        var templatePanel = new MSMTemplateManager({
+            id: this.templateManagerId,
+            auth: this.login.getToken(),
+            login: this.login,
+            searchUrl: this.geoSearchCategoriesUrl,
+            url: this.geoBaseMapsUrl,
+            geoStoreBase: this.config.geoStoreBase,
+            adminUrl: this.config.adminUrl
+        });
+
+        if(this.adminPanelsTargetTab){
+            if(this.login.role == 'ADMIN'){
+                userManagerPanel.title = this.textUserManager;
+                Ext.getCmp(this.adminPanelsTargetTab).add(userManagerPanel);
+                Ext.getCmp(this.adminPanelsTargetTab).add(templatePanel);
+            }else{
+                // is added on UserManagerView.showEditUserWindow
+            }
+
+        }else{
+            userManagerPanel.id = "_hidden" + this.userMamanagerId;
+            var win = new Ext.Window({
+               id: this.userMamanagerId,
+               title: this.textUserManager,
+               iconCls: "open_usermanager",
+               width: 430, height: 215, resizable: true, modal: true,
+               layout: "fit",
+               items: [userManagerPanel
+                ,templatePanel // add here?
+               ]
+            });
+            win.show();
+        }
+    },
+
+    /** private: method[onLogout]
+     *  Listener with actions to be executed when an user makes logout.
+     */
+    onLogout: function(){
+        // user manager
+        if(Ext.getCmp(this.userMamanagerId)){
+            if(this.renderMapToTab && Ext.getCmp(this.userMamanagerId)){
+                Ext.getCmp(this.renderMapToTab).remove(Ext.getCmp(this.userMamanagerId));   
+            }else if(Ext.getCmp(this.userMamanagerId)){
+                Ext.getCmp(this.userMamanagerId).close();
+            }
+        }
+        // template manager
+        if(Ext.getCmp(this.templateManagerId)){
+            if(this.renderMapToTab && Ext.getCmp(this.templateManagerId)){
+                Ext.getCmp(this.renderMapToTab).remove(Ext.getCmp(this.templateManagerId)); 
+            }else if(Ext.getCmp(this.templateManagerId)){
+                Ext.getCmp(this.userMamanagerId).close();
+            }
+        }
+    }
 });

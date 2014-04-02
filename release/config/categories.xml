@@ -3,4 +3,7 @@
     <Category>
         <name>MAP</name>
     </Category>
+    <Category>
+        <name>TEMPLATE</name>
+    </Category>
 </CategoryList>

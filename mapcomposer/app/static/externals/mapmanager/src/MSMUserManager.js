@@ -259,6 +259,19 @@ UserManagerView = Ext.extend(
 			
 			mapUrl: null, 
 
+			/**
+			 * Property: successTitle
+			 * {string} User update information
+			 * 
+			 */		
+			successTitle: "User updated",
+			/**
+			 * Property: validFormMsg
+			 * {string} default for message to show on user information update
+			 * 
+			 */		
+			validFormMsg: "The user information has been updated",
+
             
 			/**
 		    * Constructor: initComponent 
@@ -500,7 +513,7 @@ UserManagerView = Ext.extend(
 						}
 					};
 
-				this.showEditUserWindow = function(userdata) {
+				this.showEditUserWindow = function(userdata, renderToTab) {
 					
 					var userDataFields = [{
 									            xtype: 'hidden',
@@ -573,97 +586,165 @@ UserManagerView = Ext.extend(
 												             data:[['1', 'USER'], ['2', 'ADMIN']]
 												          })
 	                                      }];
-					
-					var formEdit = new Ext.form.FormPanel({
-						  // width: 415, height: 200, border:false,
-						  frame:true,  border:false,
-						  items: [{
-								  xtype: 'fieldset',
-								  id: 'name-field-set',
-								  border: false,
-								  items: userDataFields
-								  }]
-					   });
-						
-					var winEdit = new Ext.Window({
-						width: 415, height: 200, resizable: false, modal: true, border:false, plain:true,
-						closeAction: 'hide', layout: 'fit', 
-						title: userManager.textEditUserTitle,
-						items: [ formEdit ],
-						listeners: {
-							afterRender: function(){
-								formEdit.getForm().clearInvalid();
-							},
-							hide: function(){
-								formEdit.getForm().reset();
-								winEdit.destroy();
-							}
-						},
-						bbar: new Ext.Toolbar({
-								 items:[
-										'->',
-										{
-											text: userManager.textSave,
-											tooltip: userManager.tooltipSave,
-											iconCls: "accept",
-											id: "user-addbutton",
-											scope: this,
-											handler: function(){      
 
-												var useridField = Ext.getCmp("userid-hidden"); 
-												var nameField = Ext.getCmp("user-textfield");
-												var passwordField = Ext.getCmp("password-textfield");
-												var passwordConfField = Ext.getCmp("passwordconf-textfield");
-												var roleDropdown = Ext.getCmp("role-dropdown"); 
+					// for user is the tab content!!
+					if(renderToTab){
+						var formEdit = new Ext.form.FormPanel({
+							  title: userManager.textEditUserTitle,
+							  iconCls: userManager.iconCls,
+							  frame:true,  border:false,
+							  id: userManager.id,
+							  items: [{
+									  xtype: 'fieldset',
+									  id: 'name-field-set',
+									  border: false,
+									  items: userDataFields
+							  }],
+							  bbar: new Ext.Toolbar({
+									 items:[
+											'->',
+											{
+												text: userManager.textSave,
+												tooltip: userManager.tooltipSave,
+												iconCls: "accept",
+												id: "user-addbutton",
+												scope: this,
+												handler: function(){      
 
-												if ( nameField.isValid(false) &&
-													 passwordField.isValid(false) &&
-													 passwordConfField.isValid(false) &&
-													 (passwordField.getValue() == passwordConfField.getValue()) &&
-													 (isAdmin ? roleDropdown.isValid(false) : true)
-													)
-												{
-													userManager.users.update( useridField.getValue(),
-															{ name: nameField.getValue(), 
-															  password:passwordField.getValue(), 
-															  role:roleDropdown.getValue() }, 
-															  function(response) {
-																winEdit.hide();
-																formEdit.getForm().reset();
-                                                                if(typeof(userManager.reload) === 'function') {
-																// refresh the store
-																userManager.reload();
-                                                                }
-																winEdit.destroy();
-															});
-							
-						
-												} else {
-													  Ext.Msg.show({
-												       title: userManager.failSuccessTitle,
-												       msg: userManager.invalidFormMsg,
-												       buttons: Ext.Msg.OK,
-												       icon: Ext.MessageBox.ERROR
-												    });
+													var useridField = Ext.getCmp("userid-hidden"); 
+													var nameField = Ext.getCmp("user-textfield");
+													var passwordField = Ext.getCmp("password-textfield");
+													var passwordConfField = Ext.getCmp("passwordconf-textfield");
+													var roleDropdown = Ext.getCmp("role-dropdown"); 
+
+													if ( nameField.isValid(false) &&
+														 passwordField.isValid(false) &&
+														 passwordConfField.isValid(false) &&
+														 (passwordField.getValue() == passwordConfField.getValue()) &&
+														 (isAdmin ? roleDropdown.isValid(false) : true)
+														)
+													{
+														userManager.users.update( useridField.getValue(),
+																{ name: nameField.getValue(), 
+																  password:passwordField.getValue(), 
+																  role:roleDropdown.getValue() }, 
+																  function(response) {
+																	formEdit.getForm().reset();
+																	Ext.Msg.show({
+																		title: userManager.successTitle,
+																		msg: userManager.validFormMsg,
+																		buttons: Ext.Msg.OK,
+																		icon: Ext.MessageBox.INFO
+																	});
+																});
+													} else {
+														  Ext.Msg.show({
+													       title: userManager.failSuccessTitle,
+													       msg: userManager.invalidFormMsg,
+													       buttons: Ext.Msg.OK,
+													       icon: Ext.MessageBox.ERROR
+													    });
+													}
 												}
 											}
-										},
-										{
-											text: userManager.textCancel,
-											tooltip: userManager.tooltipCancel,
-											iconCls: "close",
-											id: "user-cancelbutton",
-											scope: this,
-											handler: function(){      
-												winEdit.hide(); 
-												// do nothing
-												winEdit.destroy(); 
-											}
-										}
-									]
-								})
+										]
+									})
 						});
-						winEdit.show();						   
+						Ext.getCmp(renderToTab).add(formEdit);
+					}else{
+					
+						var formEdit = new Ext.form.FormPanel({
+							  // width: 415, height: 200, border:false,
+							  frame:true,  border:false,
+							  items: [{
+									  xtype: 'fieldset',
+									  id: 'name-field-set',
+									  border: false,
+									  items: userDataFields
+									  }]
+						});
+
+						// for admin it shows the window
+						var winEdit = new Ext.Window({
+							width: 415, height: 200, resizable: false, modal: true, border:false, plain:true,
+							closeAction: 'hide', layout: 'fit', 
+							title: userManager.textEditUserTitle,
+							items: [ formEdit ],
+							listeners: {
+								afterRender: function(){
+									formEdit.getForm().clearInvalid();
+								},
+								hide: function(){
+									formEdit.getForm().reset();
+									winEdit.destroy();
+								}
+							},
+							bbar: new Ext.Toolbar({
+									 items:[
+											'->',
+											{
+												text: userManager.textSave,
+												tooltip: userManager.tooltipSave,
+												iconCls: "accept",
+												id: "user-addbutton",
+												scope: this,
+												handler: function(){      
+
+													var useridField = Ext.getCmp("userid-hidden"); 
+													var nameField = Ext.getCmp("user-textfield");
+													var passwordField = Ext.getCmp("password-textfield");
+													var passwordConfField = Ext.getCmp("passwordconf-textfield");
+													var roleDropdown = Ext.getCmp("role-dropdown"); 
+
+													if ( nameField.isValid(false) &&
+														 passwordField.isValid(false) &&
+														 passwordConfField.isValid(false) &&
+														 (passwordField.getValue() == passwordConfField.getValue()) &&
+														 (isAdmin ? roleDropdown.isValid(false) : true)
+														)
+													{
+														userManager.users.update( useridField.getValue(),
+																{ name: nameField.getValue(), 
+																  password:passwordField.getValue(), 
+																  role:roleDropdown.getValue() }, 
+																  function(response) {
+																	winEdit.hide();
+																	formEdit.getForm().reset();
+	                                                                if(typeof(userManager.reload) === 'function') {
+																	// refresh the store
+																	userManager.reload();
+	                                                                }
+																	winEdit.destroy();
+																});
+								
+							
+													} else {
+														  Ext.Msg.show({
+													       title: userManager.failSuccessTitle,
+													       msg: userManager.invalidFormMsg,
+													       buttons: Ext.Msg.OK,
+													       icon: Ext.MessageBox.ERROR
+													    });
+													}
+												}
+											},
+											{
+												text: userManager.textCancel,
+												tooltip: userManager.tooltipCancel,
+												iconCls: "close",
+												id: "user-cancelbutton",
+												scope: this,
+												handler: function(){      
+													winEdit.hide(); 
+													// do nothing
+													winEdit.destroy(); 
+												}
+											}
+										]
+									})
+							});
+							winEdit.show();	
+					}					   
 					};	
 					
                     // create a content provider with init options
@@ -776,7 +857,8 @@ UserManagerView = Ext.extend(
 							               
 							               userManager.showEditUserWindow(userdata);
 							               //open edit user data window				
-							            }
+							            }, 
+							            scope: this
 							        }]
 						        }
 						    ]});		
@@ -799,7 +881,7 @@ UserManagerView = Ext.extend(
                             restful: true,
                             method : 'GET',
                             disableCaching: true,
-                            failure: function (result) {
+                            failure: function (response) {
                                 console.error(response); 
                                   Ext.Msg.show({
                                    title: userManager.failSuccessTitle,
@@ -844,7 +926,7 @@ UserManagerView = Ext.extend(
 
 					var userdata = {id: this.login.userid, name: this.login.username, role: this.login.role };
 
-					userManager.showEditUserWindow(userdata);
+					userManager.showEditUserWindow(userdata, this.renderMapToTab);
 				
 				}
 				

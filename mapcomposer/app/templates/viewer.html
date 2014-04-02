@@ -140,12 +140,6 @@
                         case "config":
 									customConfigName = param[1];
 									break;
-						case "langSelector" : 
-									if(param[1] == 'true') 
-										languageSelector = true; 
-									else 
-										languageSelector = false; 
-									break;
 						default : 
 									//mapIdentifier = -1;
 					}
@@ -214,16 +208,6 @@
 					GeoExt.Lang.set(code);
 				}
 				
-				var languageSelector = new gxp.form.LanguageSwitcher({
-					currentContext:code,
-					data:[
-						['en','English','viewer','en','English language'],
-						['fr','Français','viewer','fr','Franch language'],
-						['it','Italiano','viewer','it','Italian language'] ,
-						['de','Deutsch','viewer','de','Deutsch language']
-					]
-				});
-				
                 var appTabsOpts = {
                         region: 'center',
                         border : false,
@@ -236,46 +220,7 @@
                     appTabs = new Ext.Panel(appTabsOpts); 
                 }else{
                     appTabs = new Ext.TabPanel(appTabsOpts); 
-                }
-                      
-
-                var aboutButton = new Ext.Button({
-                    text: GeoExplorer.prototype.appInfoText,
-                    iconCls: "icon-geoexplorer",
-                    handler: function(){
-                        var appInfo = new Ext.Panel({
-                            header: false,
-                            html: "<iframe style='border: none; height: 100%; width: 100%' src='about.html' frameborder='0' border='0'><a target='_blank' href='about.html'>"+ GeoExplorer.prototype.aboutText+"</a> </iframe>"
-                        });
-
-                        var win = new Ext.Window({
-                            title:  GeoExplorer.prototype.aboutThisMapText,
-                            modal: true,
-                            layout: "fit",
-                            width: 360,
-                            height: 360,
-                            items: [appInfo]
-                        });
-                        
-                        win.show();
-                    }
-                });
-                
-                var poweredByGeoSol = new Ext.Button({
-                    tooltip: 'Powered by GeoSolutions',
-                    iconCls: "icon-geosol",
-                    width : 150,
-                    handler: function(btn){
-                        window.open('http://www.geo-solutions.it/about/contacts/', '_blank');
-                    }
-                });    
-                
-				var bbarItems = [poweredByGeoSol, ' ', aboutButton];
-				
-				if(languageSelector === true){
-					bbarItems.push('->');
-					bbarItems.push(languageSelector);
-				}
+                }  
                 
 				var appViewport = new Ext.Viewport({
                     id: 'appVieport',
@@ -286,8 +231,7 @@
                         layout : 'border',
                         border : false,
                         header : false,                    
-                        items : [appTabs],                            
-                        bbar : bbarItems
+                        items : [appTabs]
                     }]
                 });
 				
