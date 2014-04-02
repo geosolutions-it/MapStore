@@ -27,6 +27,9 @@
  */
 UserManagerView = Ext.extend(
 		Ext.grid.GridPanel, {
+
+		 	/** xtype = msm_usermanager **/
+		    xtype: "msm_usermanager",
 			
 			/**
 		     * Property: id
@@ -965,3 +968,6 @@ UserManagerView = Ext.extend(
 		    border:false
 		  		
 	    });
+
+/** api: xtype = msm_usermanager */
+Ext.reg(UserManagerView.prototype.xtype, UserManagerView);

@@ -34,6 +34,56 @@
          "Español"
       ]
    ],
+   "tools":[{
+        "ptype": "sn_mapmanager",
+        "loginManager": "loginTool",
+        "actionTarget":null
+    },{
+        "ptype": "sn_login",
+        "pluginId": "loginTool",
+        "actionTarget":{
+          "target": "north.tbar",
+          "index": 2
+        }
+    },{
+        "ptype": "sn_languageselector",
+        "actionTarget":{
+          "target": "north.tbar",
+          "index": 6
+        }
+    }],
+   "loggedTools":[{
+        "ptype": "sn_mapmanager",
+        "loginManager": "loginTool",
+        "actionTarget": null
+    },{
+        "ptype": "sn_templatemanager",
+        "loginManager": "loginTool",
+        "actionTarget":{
+          "target": "north.tbar",
+          "index": 0 
+        }
+    },{
+        "ptype": "sn_usermanager",
+        "loginManager": "loginTool",
+        "actionTarget":{
+          "target": "north.tbar",
+          "index": 1 
+        }
+    },{
+        "ptype": "sn_login",
+        "pluginId": "loginTool",
+        "actionTarget":{
+          "target": "north.tbar",
+          "index": 4
+        }
+    },{
+        "ptype": "sn_languageselector",
+        "actionTarget":{
+          "target": "north.tbar",
+          "index": 8
+        }
+    }],
    "embedLink": {
 		"embeddedTemplateName": "viewer",
 		"showDirectURL": true,

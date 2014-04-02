@@ -28,6 +28,9 @@
  */
 MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
 
+ 	/** xtype = msm_templatemanager **/
+    xtype: "msm_templatemanager",
+
 	title: 'Template manager',
     
     /** api: config[adminUrl]
@@ -202,3 +205,6 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
 		});
     }
 });
+
+/** api: xtype = msm_templatemanager */
+Ext.reg(MSMTemplateManager.prototype.xtype, MSMTemplateManager);

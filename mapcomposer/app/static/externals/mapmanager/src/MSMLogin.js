@@ -219,13 +219,15 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                     this.username = user.User.name;
                     this.role = user.User.role;
                     this.showLogout(user.User.name);
-                    this.grid.render();
-                    this.grid.store.proxy.getConnection().defaultHeaders = {'Accept': 'application/json'};                
-                    this.grid.getBottomToolbar().bindStore(this.grid.store, true);
-                    this.grid.getBottomToolbar().doRefresh();
-                    this.grid.plugins.collapseAll();
-                    this.grid.getBottomToolbar().openMapComposer.enable();
-                    this.grid.openUserManagerButton.enable();
+                    // if(this.grid){
+                    //     this.grid.render();
+                    //     this.grid.store.proxy.getConnection().defaultHeaders = {'Accept': 'application/json'};                
+                    //     this.grid.getBottomToolbar().bindStore(this.grid.store, true);
+                    //     this.grid.getBottomToolbar().doRefresh();
+                    //     this.grid.plugins.collapseAll();
+                    //     this.grid.getBottomToolbar().openMapComposer.enable();
+                    //     this.grid.openUserManagerButton.enable();
+                    // }
                     this.fireEvent("login", this.username);
                 }else{
                     // invalid user state
@@ -274,10 +276,10 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
     logout: function() {
 
         // Remove authorization token
-        this.grid.store.proxy.getConnection().defaultHeaders = {
-            "Accept": "application/json", 
-            "Authorization": null
-        };
+        // this.grid.store.proxy.getConnection().defaultHeaders = {
+        //     "Accept": "application/json", 
+        //     "Authorization": null
+        // };
 
         // do logout in spring security
         Ext.Ajax.request({
@@ -301,11 +303,13 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
         this.token = null;
         this.userid = null;
         this.username = null;
-        this.grid.getBottomToolbar().bindStore(this.grid.store, true);
-        this.grid.getBottomToolbar().doRefresh();
-        this.grid.plugins.collapseAll()
-        this.grid.getBottomToolbar().openMapComposer.disable();
-        this.grid.openUserManagerButton.disable();
+        // if(this.grid){
+        //     this.grid.getBottomToolbar().bindStore(this.grid.store, true);
+        //     this.grid.getBottomToolbar().doRefresh();
+        //     this.grid.plugins.collapseAll()
+        //     this.grid.getBottomToolbar().openMapComposer.disable();
+        //     this.grid.openUserManagerButton.disable();
+        // }
         this.showLogin();
     },
 
@@ -367,13 +371,15 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
 					this.username = user.User.name;
 					this.role = user.User.role;
 				}
-				this.grid.render();
-                this.grid.store.proxy.getConnection().defaultHeaders = {'Accept': 'application/json', "Authorization": auth};                
-                this.grid.getBottomToolbar().bindStore(this.grid.store, true);
-                this.grid.getBottomToolbar().doRefresh();
-                this.grid.plugins.collapseAll();
-                this.grid.getBottomToolbar().openMapComposer.enable();
-				this.grid.openUserManagerButton.enable();
+                // if(this.grid){
+                //     this.grid.render();
+                //     this.grid.store.proxy.getConnection().defaultHeaders = {'Accept': 'application/json', "Authorization": auth};                
+                //     this.grid.getBottomToolbar().bindStore(this.grid.store, true);
+                //     this.grid.getBottomToolbar().doRefresh();
+                //     this.grid.plugins.collapseAll();
+                //     this.grid.getBottomToolbar().openMapComposer.enable();
+                //     this.grid.openUserManagerButton.enable();
+                // }
                 this.fireEvent("login", this.username);
             },
             failure: function(response, form, action) {
