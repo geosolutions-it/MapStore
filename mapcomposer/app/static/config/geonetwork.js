@@ -128,6 +128,13 @@
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
 			"id": "addlayer"
+		}, {
+			"ptype": "gxp_about",
+			"poweredbyURL": "http://www.geo-solutions.it/about/contacts/",
+			"actionTarget": {"target": "panelbbar", "index": 1}
+		}, {
+			"ptype": "gxp_languageselector",
+			"actionTarget": {"target": "panelbbar", "index": 3}
 		}
 	]
 }

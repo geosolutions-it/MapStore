@@ -218,14 +218,6 @@
                 GeoExt.Lang.set(code);
             }
 			
-			// ////////////////////////////////////////////////////
-			// Setting the language selector
-			// ////////////////////////////////////////////////////
-			var languageSelector = new gxp.form.LanguageSwitcher({
-				currentContext:code,
-				saveMessage:authorization
-			});
-			
 			// ///////////////////////////////////////////
 			// Defining the GeoNetwork panel properties
 			// ///////////////////////////////////////////
@@ -320,7 +312,7 @@
 			// ///////////////////////////////////
 			// Header definition
 			// ///////////////////////////////////
-			var headerContent = [
+			/*var headerContent = [
 					'			<div class="topbanner">',
 					'				<div class="main">',
 					'					<div class="header">',
@@ -329,11 +321,11 @@
 					'					</div>',
 					'				</div>',
 					'			</div>'
-				    /*'<div>',
-					'<div style="float:right"><img src="theme/app/img/fdh/fdh_left-banner_en.gif" usemap="#IM_left-banner"  border="0" /></div>',
-					'<div style="float:left"><img src="theme/app/img/fdh/fdh_right-banner_en.jpg" usemap="#IM_right-banner"  border="0" /></div>',
-					'</div>'*/
-			];
+			];*/
+			
+			var headerContent = serverConfig.header || '';
+			
+			var footerContent = serverConfig.footer || '';
 			
             var appViewport = new Ext.Viewport({
                 id: 'appVieport',
@@ -358,10 +350,7 @@
                       maxHeight: 140,
                       height: 140,
                       id : 'msheader'
-                    },appTabs],                            
-                    bbar : [
-                      poweredByGeoSol, ' ', aboutButton, '->',languageSelector
-                    ]
+                    },appTabs]
                 }]
             });
             

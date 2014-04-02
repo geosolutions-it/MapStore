@@ -540,16 +540,39 @@
 			// ///////////////////////////////////////
 			// Wrap new map within an xml envelop
 			// ///////////////////////////////////////
+			var addedAttributes = false;
 			var xml = '<Resource>';
-			if (data.owner) 
+			if (data.owner){
 				xml += 
 				'<Attributes>' +
 					'<attribute>' +
 						'<name>owner</name>' +
 						'<type>STRING</type>' +
 						'<value>' + data.owner + '</value>' +
-					'</attribute>' +
-				'</Attributes>';
+					'</attribute>';
+				addedAttributes = true;
+			}
+
+			// Add template id
+			if(data.templateId){
+				if(!addedAttributes){
+					// open attributes
+					xml += '<Attributes>';
+					addedAttributes = true;
+				}
+				xml += 
+                    '<attribute>' +
+                      '<name>templateId</name>' +
+                      '<type>STRING</type>' +
+                      '<value>' + data.templateId + '</value>' +
+                    '</attribute>';
+			}
+
+			// close attributes
+			if(addedAttributes){
+				xml += '</Attributes>';
+			}
+				
 			xml +=
 				'<description>' + data.description + '</description>' +
 				'<metadata></metadata>' +
@@ -638,6 +661,101 @@
 		this.config = options.config;
 		this.onFailure_ = Ext.emptyFn;
 	};
+
+	/**
+	 * Class: GeoStore.Maps
+	 *
+	 * CRUD methods for maps in GeoStore
+	 * Inherits from:
+	 *  - <GeoStore.ContentProvider>
+	 *
+	 */
+	var Templates = GeoStore.Templates = ContentProvider.extend({
+		initialize: function(){
+			this.resourceNamePrefix_ = 'resource';
+		},
+		beforeDeleteByFilter: function(data){
+			var xmlFilter = "<AND>" +
+								"<ATTRIBUTE>" + 
+									"<name>" + 
+										data.name + 
+									"</name>" +
+									"<operator>" + data.operator + "</operator>" + 
+									"<type>" + data.type + "</type>" +
+									"<value>" + 
+										data.value + 
+									"</value>" + 
+								"</ATTRIBUTE>" + 
+							"</AND>";
+			return xmlFilter;
+		},
+		deleteByFilter: function(filterData, callback){
+			var data = this.beforeDeleteByFilter(filterData);
+			var uri = this.baseUrl_;
+			
+			Ext.Ajax.request({
+			   url: uri,
+			   method: 'DELETE',
+			   headers:{
+				  'Content-Type' : 'text/xml',
+				  'Authorization' : this.authorization_
+			   },
+			   params: data,
+			   scope: this,
+			   success: function(response, opts){
+					callback(response);
+			   },
+			   failure:  function(response, opts) {
+			   }
+			});		
+		},
+		beforeSave: function(data){
+			// ///////////////////////////////////////
+			// Wrap new map within an xml envelop
+			// ///////////////////////////////////////
+			var xml = '<Resource>';
+			if (data.owner) 
+				xml += 
+				'<Attributes>' +
+					'<attribute>' +
+						'<name>owner</name>' +
+						'<type>STRING</type>' +
+						'<value>' + data.owner + '</value>' +
+					'</attribute>' +
+				'</Attributes>';
+			xml +=
+				'<description>' + data.description + '</description>' +
+				'<metadata></metadata>' +
+				'<name>' + data.name + '</name>';
+			if (data.blob)
+			  xml+=
+				'<category>' +
+					'<name>TEMPLATE</name>' +
+				'</category>' +
+				'<store>' +
+					'<data><![CDATA[ ' + data.blob + ' ]]></data>' +
+				'</store>';
+				
+			xml += '</Resource>';
+			return xml;
+		},
+		afterFind: function(json){
+			
+			if ( json.Resource ){
+				var data = new Object;
+				data.owner = json.Resource.Attributes.attribute.value;
+				data.description = json.Resource.description;
+				data.name = json.Resource.name;
+				data.blob = json.Resource.data.data;
+				data.id = json.Resource.id;
+				data.creation = json.Resource.creation;		
+				data.lastUpdate = json.Resource.lastUpdate;	
+				return data;			
+			} else {
+				this.onFailure_('cannot parse response');
+			}
+		}
+    });
 
 	/** 
 	 * Function: shorten

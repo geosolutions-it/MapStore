@@ -312,6 +312,8 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
             else
                 Ext.getCmp("resource-addbutton").disable();
         };
+
+        var templateId = this.target.templateId;
 		
         var win = new Ext.Window({
 		    title: this.mapMetadataTitle,
@@ -375,11 +377,16 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
                             var resourceXML = 
 								'<Resource>' +
 									'<Attributes>' +
-										'<attribute>' +
-											'<name>owner</name>' +
-											'<type>STRING</type>' +
-											'<value>' + owner + '</value>' +
-										'</attribute>' +
+                    '<attribute>' +
+                      '<name>owner</name>' +
+                      '<type>STRING</type>' +
+                      '<value>' + owner + '</value>' +
+                    '</attribute>' +
+                    '<attribute>' +
+                      '<name>templateId</name>' +
+                      '<type>STRING</type>' +
+                      '<value>' + templateId + '</value>' +
+                    '</attribute>' +
 									'</Attributes>' +
 									'<description>' + mapDescription + '</description>' +
 									'<metadata></metadata>' +
