@@ -19,20 +19,20 @@
  */
  
 /** api: (define)
- *  module = sn.plugins
+ *  module = mxp.plugins
  *  class = LanguageSelector
  */
-Ext.ns("sn.plugins");
+Ext.ns("mxp.plugins");
 
 /** api: constructor
  *  .. class:: LanguageSelector(config)
  *
  *    Simple languague selector for SN Manager
  */
-sn.plugins.LanguageSelector = Ext.extend(sn.plugins.Tool, {
+mxp.plugins.LanguageSelector = Ext.extend(mxp.plugins.Tool, {
     
-    /** api: ptype = sn_languageselector */
-    ptype: "sn_languageselector",
+    /** api: ptype = mxp_languageselector */
+    ptype: "mxp_languageselector",
 
     /** api: method[addActions]
      */
@@ -40,7 +40,7 @@ sn.plugins.LanguageSelector = Ext.extend(sn.plugins.Tool, {
 
         code = this.target.config.code;
 
-        return sn.plugins.LanguageSelector.superclass.addActions.apply(this, [new Ext.form.ComboBox({
+        return mxp.plugins.LanguageSelector.superclass.addActions.apply(this, [new Ext.form.ComboBox({
             store: new Ext.data.ArrayStore({
                 fields: ['code', 'name'],
                 data :  this.target.config.langData
@@ -80,4 +80,4 @@ sn.plugins.LanguageSelector = Ext.extend(sn.plugins.Tool, {
     }
 });
 
-Ext.preg(sn.plugins.LanguageSelector.prototype.ptype, sn.plugins.LanguageSelector);
+Ext.preg(mxp.plugins.LanguageSelector.prototype.ptype, mxp.plugins.LanguageSelector);

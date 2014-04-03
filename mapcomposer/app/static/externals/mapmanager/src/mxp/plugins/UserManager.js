@@ -19,28 +19,37 @@
  */
  
 /** api: (define)
- *  module = sn.plugins
- *  class = Tool
- *  base_link = `Ext.util.Observable <http://extjs.com/deploy/dev/docs/?class=Ext.util.Observable>`_
+ *  module = mxp.plugins
+ *  class = UserManager
  */
-Ext.ns("sn.plugins");
+Ext.ns("mxp.plugins");
 
 /** api: constructor
- *  .. class:: TemplateManager(config)
+ *  .. class:: UserManager(config)
  *
- *    Open a template manager
+ *    Open a user manager panel
  */
-sn.plugins.TemplateManager = Ext.extend(sn.plugins.Tool, {
+mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
     
-    /** api: ptype = sn_templatemanager */
-    ptype: "sn_templatemanager",
+    /** api: ptype = mxp_usermanager */
+    ptype: "mxp_usermanager",
 
-    buttonText: "Templates",
-    tooltipText: "Open templates manager",
-
-    loginManager: null,    
+    buttonText: "User manager",
+    tooltipText: "Open user manager",
 
     setActiveOnOutput: true,
+
+    loginManager: null, 
+
+    // default configuration for the output
+    outputConfig: {
+        closable: true,
+        closeAction: 'close',
+        autoWidth: true,
+        viewConfig: {
+            forceFit: true
+        }       
+    },
 
     /** api: method[addActions]
      */
@@ -57,7 +66,7 @@ sn.plugins.TemplateManager = Ext.extend(sn.plugins.Tool, {
 
         var actions = [thisButton];
 
-        return sn.plugins.TemplateManager.superclass.addActions.apply(this, [actions]);
+        return mxp.plugins.UserManager.superclass.addActions.apply(this, [actions]);
     },
     
     /** api: method[addOutput]
@@ -76,22 +85,22 @@ sn.plugins.TemplateManager = Ext.extend(sn.plugins.Tool, {
                 this.loginManager && this.target.currentTools[this.loginManager] 
                 ? this.target.currentTools[this.loginManager] : null;
 
-        // create a template panel
-    	this.outputConfig = {
-            xtype: "msm_templatemanager",
-            id: this.target.templateManagerId,
+        // create a user manager panel
+    	Ext.apply(this.outputConfig, {
+            xtype: "msm_usermanager",
+            iconCls: "open_usermanager",
+            title: this.buttonText,
+            id: this.target.userMamanagerId,
+            ASSET: this.target.config.ASSET,
             auth: login.login.getToken(),
             login: login.login,
-            searchUrl: this.target.geoSearchCategoriesUrl,
-            url: this.target.geoBaseMapsUrl,
-            geoStoreBase: this.target.config.geoStoreBase,
-            closable: true,
-            closeAction: 'close',
-            adminUrl: this.target.config.adminUrl    		
-    	};
+            searchUrl: this.target.geoSearchUsersUrl,
+            url: this.target.geoBaseUsersUrl,
+            geoStoreBase: this.target.config.geoStoreBase
+    	});
 
-        return sn.plugins.TemplateManager.superclass.addOutput.apply(this, arguments);
+        return mxp.plugins.UserManager.superclass.addOutput.apply(this, arguments);
     }
 });
 
-Ext.preg(sn.plugins.TemplateManager.prototype.ptype, sn.plugins.TemplateManager);
+Ext.preg(mxp.plugins.UserManager.prototype.ptype, mxp.plugins.UserManager);

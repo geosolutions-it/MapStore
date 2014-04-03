@@ -19,24 +19,24 @@
  */
 
 /** api: (define)
- *  module = sn.widgets
- *  class = SNManagerViewport
+ *  module = mxp.widgets
+ *  class = ManagerViewport
  *  base_link = `Ext.Viewport <http://extjs.com/deploy/dev/docs/?class=Ext.Viewport>`_
  */
-Ext.ns('sn.widgets');
+Ext.ns('mxp.widgets');
 
 /**
- * Class: SNManagerViewport
- * Viewport for the SN Manager application
+ * Class: ManagerViewport
+ * Viewport for the Manager application
  * 
  * Inherits from:
  *  - <Ext.Viewport>
  *
  */
-sn.widgets.SNManagerViewport = Ext.extend(Ext.Viewport, {
+mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
 
-    /** api: xtype = sn_viewport */
-    xtype: "sn_viewport",
+    /** api: xtype = mxp_viewport */
+    xtype: "mxp_viewport",
 
     /**
      * Property: config
@@ -107,7 +107,7 @@ sn.widgets.SNManagerViewport = Ext.extend(Ext.Viewport, {
 
         this.items = mergedItems;
         
-        sn.widgets.SNManagerViewport.superclass.initComponent.call(this, arguments);
+        mxp.widgets.ManagerViewport.superclass.initComponent.call(this, arguments);
 
         this.initTools();
         this.fireEvent("portalready");
@@ -174,5 +174,5 @@ sn.widgets.SNManagerViewport = Ext.extend(Ext.Viewport, {
     }
 });
 
-/** api: xtype = sn_viewport */
-Ext.reg(sn.widgets.SNManagerViewport.prototype.xtype, sn.widgets.SNManagerViewport);
+/** api: xtype = mxp_viewport */
+Ext.reg(mxp.widgets.ManagerViewport.prototype.xtype, mxp.widgets.ManagerViewport);

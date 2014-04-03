@@ -19,20 +19,20 @@
  */
  
 /** api: (define)
- *  module = sn.plugins
+ *  module = mxp.plugins
  *  class = Login
  */
-Ext.ns("sn.plugins");
+Ext.ns("mxp.plugins");
 
 /** api: constructor
  *  .. class:: Login(config)
  *
  *    Login Plugin
  */
-sn.plugins.Login = Ext.extend(sn.plugins.Tool, {
+mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
     
-    /** api: ptype = sn_login */
-    ptype: "sn_login",
+    /** api: ptype = mxp_login */
+    ptype: "mxp_login",
 
     buttonText: "Login",
 
@@ -59,7 +59,7 @@ sn.plugins.Login = Ext.extend(sn.plugins.Tool, {
             Ext.create({xtype: 'tbseparator'}),
             this.login.loginButton];
 
-        return sn.plugins.TemplateManager.superclass.addActions.apply(this, [actions]);
+        return mxp.plugins.TemplateManager.superclass.addActions.apply(this, [actions]);
     },
 
     /** private: method[onLogin]
@@ -79,4 +79,4 @@ sn.plugins.Login = Ext.extend(sn.plugins.Tool, {
     }
 });
 
-Ext.preg(sn.plugins.Login.prototype.ptype, sn.plugins.Login);
+Ext.preg(mxp.plugins.Login.prototype.ptype, mxp.plugins.Login);

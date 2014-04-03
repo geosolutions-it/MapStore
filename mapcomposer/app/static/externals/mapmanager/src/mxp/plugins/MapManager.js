@@ -19,20 +19,20 @@
  */
  
 /** api: (define)
- *  module = sn.plugins
+ *  module = mxp.plugins
  *  class = MapManager
  */
-Ext.ns("sn.plugins");
+Ext.ns("mxp.plugins");
 
 /** api: constructor
  *  .. class:: MapManager(config)
  *
  *    Open the map manager
  */
-sn.plugins.MapManager = Ext.extend(sn.plugins.Tool, {
+mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
     
-    /** api: ptype = sn_mapmanager */
-    ptype: "sn_mapmanager",
+    /** api: ptype = mxp_mapmanager */
+    ptype: "mxp_mapmanager",
 
     buttonText: "Map manager",
     tooltipText: "Open map manager",
@@ -43,13 +43,8 @@ sn.plugins.MapManager = Ext.extend(sn.plugins.Tool, {
 
     // default configuration for the output
     outputConfig: {
-        xtype: 'msm_mapgrid',
-        iconCls: "server_map",
         renderMapToTab: 'mainTabPanel',
         adminPanelsTargetTab : 'mainTabPanel',
-        // closable: true,
-        // closeAction: 'close',
-        // autoWidth: true,
         viewConfig: {
             forceFit: true
         }       
@@ -71,7 +66,7 @@ sn.plugins.MapManager = Ext.extend(sn.plugins.Tool, {
         var actions = [thisButton];
         // var actions = [];
 
-        return sn.plugins.MapManager.superclass.addActions.apply(this, [actions]);
+        return mxp.plugins.MapManager.superclass.addActions.apply(this, [actions]);
 
         this.addOutput(this);
     },
@@ -94,6 +89,8 @@ sn.plugins.MapManager = Ext.extend(sn.plugins.Tool, {
 
         // create a map manager panel
     	Ext.apply(this.outputConfig, {
+            xtype: 'msm_mapgrid',
+            iconCls: "server_map",
             title: this.buttonText,
             start: this.target.config.start,
             limit: this.target.config.limit,
@@ -120,7 +117,7 @@ sn.plugins.MapManager = Ext.extend(sn.plugins.Tool, {
             }, this);
         }
 
-        return sn.plugins.MapManager.superclass.addOutput.apply(this, arguments);
+        return mxp.plugins.MapManager.superclass.addOutput.apply(this, arguments);
     },
 
     applyLoggin: function(username){
@@ -163,8 +160,8 @@ sn.plugins.MapManager = Ext.extend(sn.plugins.Tool, {
         login.removeListener("logout", this.onLogout, this);
         this.removeListener("outputadded", this.applyLoggedState, this);
 
-        return sn.plugins.MapManager.superclass.remove.apply(this, arguments);
+        return mxp.plugins.MapManager.superclass.remove.apply(this, arguments);
     }
 });
 
-Ext.preg(sn.plugins.MapManager.prototype.ptype, sn.plugins.MapManager);
+Ext.preg(mxp.plugins.MapManager.prototype.ptype, mxp.plugins.MapManager);

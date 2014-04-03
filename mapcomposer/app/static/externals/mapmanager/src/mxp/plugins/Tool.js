@@ -19,24 +19,24 @@
  */
  
 /** api: (define)
- *  module = sn.plugins
+ *  module = mxp.plugins
  *  class = Tool
  *  base_link = `Ext.util.Observable <http://extjs.com/deploy/dev/docs/?class=Ext.util.Observable>`_
  */
-Ext.ns("sn.plugins");
+Ext.ns("mxp.plugins");
 
 /** api: constructor
  *  .. class:: Tool(config)
  *
  *    Base class for plugins that add tool functionality to
- *    :class:`sn.widgets.SNManagerViewport`. These plugins are used by adding configuration 
+ *    :class:`mxp.widgets.SNManagerViewport`. These plugins are used by adding configuration 
  *    objects for them to the ``tools`` array of the viewer's config object,
  *    using their ``ptype``. Based on `gxp.plugins.Tool`.
  */   
-sn.plugins.Tool = Ext.extend(Ext.util.Observable, {
+mxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
     
-    /** api: ptype = sn_tool */
-    ptype: "sn_tool",
+    /** api: ptype = mxp_tool */
+    ptype: "mxp_tool",
     
     /** api: config[autoActivate]
      *  ``Boolean`` Set to false if the tool should be initialized without
@@ -148,7 +148,7 @@ sn.plugins.Tool = Ext.extend(Ext.util.Observable, {
     
     /** private: property[target]
      *  ``Object``
-     *  The :class:`sn.widgets.SNManagerViewport` that this plugin is plugged into.
+     *  The :class:`mxp.widgets.SNManagerViewport` that this plugin is plugged into.
      */
      
     /** private: property[actions]
@@ -176,7 +176,7 @@ sn.plugins.Tool = Ext.extend(Ext.util.Observable, {
              *  Fired when the tool is activated.
              *
              *  Listener arguments:
-             *  * tool - :class:`sn.plugins.Tool` the activated tool
+             *  * tool - :class:`mxp.plugins.Tool` the activated tool
              */
             "activate",
 
@@ -184,7 +184,7 @@ sn.plugins.Tool = Ext.extend(Ext.util.Observable, {
              *  Fired when the tool is deactivated.
              *
              *  Listener arguments:
-             *  * tool - :class:`sn.plugins.Tool` the deactivated tool
+             *  * tool - :class:`mxp.plugins.Tool` the deactivated tool
              */
             "deactivate",
 
@@ -192,7 +192,7 @@ sn.plugins.Tool = Ext.extend(Ext.util.Observable, {
              *  Fired when the addActions method is completed.
              *
              *  Listener arguments:
-             *  * tool - :class:`sn.plugins.Tool` the tool
+             *  * tool - :class:`mxp.plugins.Tool` the tool
              */
             "actionsadded",
 
@@ -205,7 +205,7 @@ sn.plugins.Tool = Ext.extend(Ext.util.Observable, {
             "outputadded"
         );
         
-        sn.plugins.Tool.superclass.constructor.apply(this, arguments);
+        mxp.plugins.Tool.superclass.constructor.apply(this, arguments);
     },
     
     /** private: method[init]
@@ -372,10 +372,11 @@ sn.plugins.Tool = Ext.extend(Ext.util.Observable, {
                 closeAction: "hide",
                 autoHeight: !outputConfig.height,
                 layout: outputConfig.height ? "fit" : undefined,
-                items: [{
-                    defaults: {autoHeight: !outputConfig.height}
-                }]
-            }, outputConfig)).show().items.get(0);
+                defaults: {
+                    autoHeight: !outputConfig.height
+                },
+                items: [outputConfig]
+            })).show().items.get(0);
         }
         var component = container.add(config);            
         if (component instanceof Ext.Window) {
@@ -461,4 +462,4 @@ sn.plugins.Tool = Ext.extend(Ext.util.Observable, {
     
 });
 
-Ext.preg(sn.plugins.Tool.prototype.ptype, sn.plugins.Tool);
+Ext.preg(mxp.plugins.Tool.prototype.ptype, mxp.plugins.Tool);
