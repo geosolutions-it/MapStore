@@ -111,6 +111,9 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
 
         this.initTools();
         this.fireEvent("portalready");
+
+        // load config if present
+        this.reloadConfig();
     },
     
     initTools: function() {
@@ -147,6 +150,102 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
         }
     },
 
+    /** private: method[reloadConfig]
+     *  Load existing configs available for the user logged/GUEST
+     */
+    reloadConfig: function(){
+        this.adminConfigStore = new Ext.data.JsonStore({
+            root: 'results',
+            autoLoad: true,
+            totalProperty: 'totalCount',
+            successProperty: 'success',
+            idProperty: 'id',
+            fields: [
+                'id',
+                'name'
+            ],
+            proxy: new Ext.data.HttpProxy({
+                url: this.config.geoStoreBase + 'extjs/search/category/ADMINCONFIG',
+                restful: true,
+                method : 'GET',
+                disableCaching: true,
+                failure: function (response) {
+                    Ext.Msg.show({
+                       title: "Error",
+                       msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+                       buttons: Ext.Msg.OK,
+                       icon: Ext.MessageBox.ERROR
+                    });                                
+                },
+                defaultHeaders: {'Accept': 'application/json', 'Authorization' : this.auth}
+            }),
+            listeners:{
+                load: this.adminConfigLoad,
+                scope: this
+            }
+        });
+    },
+
+    /** private: method[adminConfigLoad]
+     *  Load the admin config from the configuration present on the store
+     */
+    adminConfigLoad: function(store){
+        if(store && store.getCount && store.getCount() > 0){
+            var pendingConfig = store.getCount();
+            var tools = [];
+            store.each(function(item){
+                var url = this.config.geoStoreBase + "data/" + item.get("id");
+                Ext.Ajax.request({
+                    method: 'GET',
+                    scope: this,
+                    url: url,
+                    proxy: new Ext.data.HttpProxy({
+                        restful: true,
+                        method : 'GET',
+                        disableCaching: true,
+                        failure: function (response) {
+                            console.error("Error getting config");
+                            pendingConfig--;
+                            this.applyUserConfig(pendingConfig, tools);
+                        },
+                        defaultHeaders: {'Accept': 'application/json', 'Authorization' : this.auth}
+                    }),
+                    success: function(response, opts){
+                        pendingConfig--;
+                        var pluginsConfig;
+                        try{
+                            pluginsConfig = Ext.util.JSON.decode(response.responseText);
+                            if(pluginsConfig && pluginsConfig.length > 0){
+                                for(var i = 0; i < pluginsConfig.length; i++) {
+                                    tools.push(pluginsConfig[i]);
+                                }   
+                            }
+                            this.applyUserConfig(pendingConfig, tools);
+                        }catch(e){
+                            console.error("Error getting config");
+                        }
+                    },
+                    failure:  function(response, opts){
+                        pendingConfig--;
+                        console.error("Error getting config");
+                        this.applyUserConfig(pendingConfig, tools);
+                    }
+                });
+            }, this);
+        }
+    },
+
+    /** private: method[applyUserConfig]
+     *  Apply tools available for logged user
+     */
+    applyUserConfig: function(pendingConfig, tools){
+        if(pendingConfig == 0 && tools && tools.length > 0){
+            this.cleanTools();
+            this.loadTools(tools);
+            this.fireEvent("portalready");   
+        }
+    },
+
     /** private: method[onLogin]
      *  Listener with actions to be executed when an user makes login.
      */
@@ -155,7 +254,11 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
             this.cleanTools();
             this.auth = user;
             this.logged = true;
-            this.loadTools(this.initialConfig.loggedTools);
+
+            // reload config
+            this.reloadConfig();
+
+            this.initialConfig.loggedTools && this.loadTools(this.initialConfig.loggedTools);
             this.fireEvent("portalready");   
         }
     },

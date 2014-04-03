@@ -135,7 +135,8 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
 
     applyLoggedState: function(output){
         if(output){
-            output.on("activate", function(){
+            if(output.rendered && output.isVisible && output.isVisible()){
+                // rendered and visible
                 output.render();
                 output.store.proxy.getConnection().defaultHeaders = {'Accept': 'application/json'};                
                 output.getBottomToolbar().bindStore(output.store, true);
@@ -143,7 +144,18 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
                 output.plugins.collapseAll();
                 output.getBottomToolbar().openMapComposer.enable();
                 output.openUserManagerButton.enable();
-            });
+            }else{
+                // Tab not enabled, wait for activate
+                output.on("activate", function(){
+                    output.render();
+                    output.store.proxy.getConnection().defaultHeaders = {'Accept': 'application/json'};                
+                    output.getBottomToolbar().bindStore(output.store, true);
+                    output.getBottomToolbar().doRefresh();
+                    output.plugins.collapseAll();
+                    output.getBottomToolbar().openMapComposer.enable();
+                    output.openUserManagerButton.enable();
+                });   
+            }
         }
     },
     
