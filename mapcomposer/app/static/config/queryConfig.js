@@ -240,35 +240,50 @@
 		  "outputTarget": "south",
 		  "exportFormats": ["CSV","shape-zip"]
 	    }, {
-		  "ptype": "gxp_spatialqueryform",
-		  "featureManager": "featuremanager",
-		  "featureGridContainer": "south",
-		  "outputTarget": "east",
-		  "showSelectionSummary": true,
-		  "actions": null,
-		  "id": "bboxquery",
-		  "spatialSelectorsConfig":{
-		        "bbox":{
-		            "xtype": "gxp_spatial_bbox_selector"
-		        },
-		        "buffer":{
-		            "xtype": "gxp_spatial_buffer_selector",
-					"bufferOptions": {
-						"minValue": 1,
-						"maxValue": 10000,
-						"decimalPrecision": 2,
-						"distanceUnits": "km"
-					}
-		        },
-		        "circle":{
-		            "xtype": "gxp_spatial_circle_selector",
-		            "zoomToCurrentExtent": true
-		        },
-		        "polygon":{
-		            "xtype": "gxp_spatial_polygon_selector"
-		        }
-		  }
-	    }, {
+          "ptype": "gxp_spatialqueryform",
+          "featureManager": "featuremanager",
+          "featureGridContainer": "south",
+          "outputTarget": "east",
+          "showSelectionSummary": true,
+          "actions": null,
+          "id": "bboxquery",
+          "outputConfig":{
+                  "outputSRS": "EPSG:900913",
+                  "selectStyle":{
+                          "strokeColor": "#ee9900",
+                          "fillColor": "#ee9900",
+                          "fillOpacity": 0.4,
+                          "strokeWidth": 1
+                  },
+                  "spatialFilterOptions": {    
+                          "lonMax": 20037508.34,  
+                          "lonMin": -20037508.34,
+                          "latMax": 20037508.34,  
+                          "latMin": -20037508.34  
+                  },
+                  "bufferOptions": {
+                        "minValue": 1,
+                        "maxValue": 1000,
+                        "decimalPrecision": 2,
+                        "distanceUnits": "m"
+                  }
+          },
+          "spatialSelectorsConfig":{
+                "bbox":{
+                    "xtype": "gxp_spatial_bbox_selector"
+                },
+                "buffer":{
+                    "xtype": "gxp_spatial_buffer_selector"
+                },
+                "circle":{
+                    "xtype": "gxp_spatial_circle_selector",
+                    "zoomToCurrentExtent": true
+                },
+                "polygon":{
+                    "xtype": "gxp_spatial_polygon_selector"
+                }
+              }
+        }, {
 			"ptype": "gxp_about",
 			"poweredbyURL": "http://www.geo-solutions.it/about/contacts/",
 			"actionTarget": {"target": "panelbbar", "index": 1}
