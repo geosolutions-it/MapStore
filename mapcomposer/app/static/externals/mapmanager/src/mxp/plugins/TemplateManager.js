@@ -88,9 +88,13 @@ mxp.plugins.TemplateManager = Ext.extend(mxp.plugins.Tool, {
             url: this.target.geoBaseMapsUrl,
             geoStoreBase: this.target.config.geoStoreBase,
             closable: true,
-            closeAction: 'close',
-            adminUrl: this.target.config.adminUrl
+            closeAction: 'close'
         });
+        if(this.target.config.adminUrl){
+            Ext.apply(this.outputConfig, {
+                adminUrl: this.target.config.adminUrl
+            }); 
+        }
 
         return mxp.plugins.TemplateManager.superclass.addOutput.apply(this, arguments);
     }

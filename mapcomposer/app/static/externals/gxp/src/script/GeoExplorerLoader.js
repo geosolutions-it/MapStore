@@ -174,7 +174,7 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
                 this.loadData(null, item.get("id"), "loadcustomconfig");
             }, this);
         }else{
-
+            this.fireEvent("configfinished", config);
         }
     },
 
