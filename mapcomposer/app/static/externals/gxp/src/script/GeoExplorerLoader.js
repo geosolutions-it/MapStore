@@ -39,7 +39,7 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
 
         this.config = config || {};
         this.mapId = mapId;
-        this.auth = auth;
+        this.auth = decodeURI(auth);
         this.fScreen = fScreen;
         this.templateId = templateId;
         this.geoStoreBaseURL = config != null ? config.geoStoreBaseURL : null;
@@ -115,9 +115,11 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
      *  Load existing configs available for the user logged/GUEST
      */
     loadCustomConfigs: function(){
+        var config = this.config;
+        var me = this;
         this.adminConfigStore = new Ext.data.JsonStore({
             root: 'results',
-            autoLoad: true,
+            autoLoad: false,
             totalProperty: 'totalCount',
             successProperty: 'success',
             idProperty: 'id',
@@ -132,15 +134,19 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
                 disableCaching: true,
                 failure: function (response) {
                     // no custom configs available
-                    this.fireEvent("configfinished", config);                                
-                },
-                defaultHeaders: {'Accept': 'application/json', 'Authorization' : this.auth}
+                    me.fireEvent("configfinished", config);                                
+                }
             }),
             listeners:{
                 load: this.adminConfigLoad,
                 scope: this
             }
         });
+        this.adminConfigStore.proxy.getConnection().defaultHeaders= {
+            'Accept': 'application/json', 
+            'Authorization' : this.auth
+        };
+        this.adminConfigStore.load();
     },
 
     /** private: method[adminConfigLoad]

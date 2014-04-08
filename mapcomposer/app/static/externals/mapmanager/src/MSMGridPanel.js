@@ -1104,7 +1104,11 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 							},
                             afterRender: function(p){
                                 function setAuth(){
-                                    var userAuth = grid.store.proxy.getConnection().defaultHeaders;
+                                    var userAuth = grid
+                                        && grid.store
+                                        && grid.store.proxy
+                                        && grid.store.proxy.getConnection()
+                                        && grid.store.proxy.getConnection().defaultHeaders ? grid.store.proxy.getConnection().defaultHeaders: null;
                                     if(userAuth && userProfile == '&auth=true'){
                                         var mapIframe = document.getElementById(p.iframeId);
                                         if (mapIframe

@@ -124,6 +124,12 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
         for(var id in this.currentTools){
             this.currentTools[id].remove();
         }
+        var mainPanel = Ext.getCmp("mainTabPanel");
+        try{
+            mainPanel.removeAll();
+        }catch (e){
+            // FIXME: some error here
+        }
         this.currentTools = {};
     },
     
@@ -156,7 +162,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
     reloadConfig: function(){
         this.adminConfigStore = new Ext.data.JsonStore({
             root: 'results',
-            autoLoad: true,
+            autoLoad: false,
             totalProperty: 'totalCount',
             successProperty: 'success',
             idProperty: 'id',
@@ -176,14 +182,18 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
                        buttons: Ext.Msg.OK,
                        icon: Ext.MessageBox.ERROR
                     });                                
-                },
-                defaultHeaders: {'Accept': 'application/json', 'Authorization' : this.auth}
+                }
             }),
             listeners:{
                 load: this.adminConfigLoad,
                 scope: this
             }
         });
+        this.adminConfigStore.proxy.getConnection().defaultHeaders= {
+            'Accept': 'application/json', 
+            'Authorization' : this.auth
+        };
+        this.adminConfigStore.load();
     },
 
     /** private: method[adminConfigLoad]
@@ -249,17 +259,19 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
     /** private: method[onLogin]
      *  Listener with actions to be executed when an user makes login.
      */
-    onLogin: function(user){
-        if(!this.logged){
+    onLogin: function(user, auth){
+        if(!this.logged && user){
             this.cleanTools();
-            this.auth = user;
+            this.auth = auth ? auth: this.auth;
             this.logged = true;
+
+            this.defaultHeaders = {
+                'Accept': 'application/json', 
+                'Authorization' : this.auth
+            };
 
             // reload config
             this.reloadConfig();
-
-            this.initialConfig.loggedTools && this.loadTools(this.initialConfig.loggedTools);
-            this.fireEvent("portalready");   
         }
     },
 
@@ -268,9 +280,19 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
      */
     onLogout: function(){
         if(this.logged){
+            this.auth = null;
+
+            // FIXME: Sometimes it doesn't work
+            // Remove cookie for production instances
+            this.defaultHeaders = {
+                'Accept': 'application/json',
+                'Authorization' : "",
+                'Set-Cookie': ""    
+            };
+            Ext.util.Cookies.clear();
+
             this.cleanTools();
             this.initTools();
-            this.auth = null;
             this.logged = false;
             this.fireEvent("portalready");   
         }

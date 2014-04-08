@@ -132,6 +132,10 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
             
             sortInfo: { field: "name", direction: "ASC" }
 		 });
+        store.proxy.getConnection().defaultHeaders = {
+            'Accept': 'application/json', 
+            'Authorization' : this.auth
+        };
 
 		var expander = new Ext.ux.grid.RowExpander({
             /**

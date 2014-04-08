@@ -100,7 +100,7 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
             langSelector: this.target.config.langSelector,
             ASSET: this.target.config.ASSET,
             login: login.login,
-            auth: login.login ? login.login.getToken(): null,
+            auth: this.target.auth,
             searchUrl: this.target.geoSearchUsersUrl,
             url: this.target.geoBaseUsersUrl,
             geoStoreBase: this.target.config.geoStoreBase

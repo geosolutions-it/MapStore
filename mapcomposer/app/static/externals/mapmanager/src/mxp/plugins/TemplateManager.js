@@ -82,7 +82,7 @@ mxp.plugins.TemplateManager = Ext.extend(mxp.plugins.Tool, {
         Ext.apply(this.outputConfig, {
             xtype: "msm_templatemanager",
             id: this.target.templateManagerId,
-            auth: login.login.getToken(),
+            auth: this.target.auth,
             login: login.login,
             searchUrl: this.target.geoSearchCategoriesUrl,
             url: this.target.geoBaseMapsUrl,

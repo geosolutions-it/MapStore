@@ -264,7 +264,7 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
     templateText: "Template",
 
     onAddMap: function(){
-        var userProfile = '&auth=true';
+        var userProfile = '&auth=' + (this.grid.auth ? encodeURI(this.grid.auth) : "false");
         var idMap = -1;
         var me = this;
         

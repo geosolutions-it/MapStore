@@ -124,10 +124,12 @@
 									} 
 									break;
 					case "auth" : 
-									if(param[1] == 'true') 
-										authorization = true; 
-									else 
-										authorization = false; 
+									authorization = param[1]; 
+									if(param.length > 2){
+										for(var i = 2; i < param.length; i++){
+											authorization += "=";
+										}
+									}
 									break;
 					case "fullScreen" : 
 									if(param[1] == 'true') 
