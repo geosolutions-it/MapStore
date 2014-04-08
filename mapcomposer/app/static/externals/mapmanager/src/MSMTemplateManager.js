@@ -145,7 +145,7 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
 	    			formContainer: this,
 	    			login: this.login,
 	    			geoStoreBase: this.geoStoreBase,
-	    			actionURL: this.adminUrl + "fileManager/extJSbrowser",
+	    			actionURL: this.adminUrl + "mvc/fileManager/extJSbrowser",
 	    			listeners:{
 	    				success: function(){
 	    					// refresh the grid

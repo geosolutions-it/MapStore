@@ -96,7 +96,8 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
             login: login.login,
             searchUrl: this.target.geoSearchUsersUrl,
             url: this.target.geoBaseUsersUrl,
-            geoStoreBase: this.target.config.geoStoreBase
+            geoStoreBase: this.target.config.geoStoreBase,
+            renderMapToTab: this.outputTarget
     	});
 
         return mxp.plugins.UserManager.superclass.addOutput.apply(this, arguments);

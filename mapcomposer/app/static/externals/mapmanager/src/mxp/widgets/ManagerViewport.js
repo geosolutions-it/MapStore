@@ -55,19 +55,24 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
      *  ``Array`` Custom tools to include by default
      */
 
-    /** api: loggedTools[tools]
+    /** api: config[tools]
      *  ``Array`` Custom tools to include in a logged user. TODO: Remove when load logged tools.
      */
 
-    /** api: loggedTools[currentTools]
+    /** api: config[currentTools]
      *  ``Array`` Current active tools.
      */
     currentTools: {},
 
-    /** private: loggedTools[logged]
+    /** private: config[logged]
      *  ``Boolean`` Login status. By default false.
      */
     logged: false, 
+
+    /** private: config[pluggableByUserGroupConfig]
+     *  ``Boolean`` Try to get ADMINCONFIG from geostore when an user is logged. By default false.
+     */
+    pluggableByUserGroupConfig: false,
     
     initComponent : function() {
 
@@ -75,6 +80,9 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
         this.initialConfig = {};
         Ext.apply(this.initialConfig, this);
         Ext.apply(this.initialConfig, this.config);
+
+        // copy pluggableByUserGroupConfig config
+        this.pluggableByUserGroupConfig = this.initialConfig.pluggableByUserGroupConfig;
 
         // /////////////////////////
         // Init useful URLs
@@ -160,40 +168,45 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
      *  Load existing configs available for the user logged/GUEST
      */
     reloadConfig: function(){
-        this.adminConfigStore = new Ext.data.JsonStore({
-            root: 'results',
-            autoLoad: false,
-            totalProperty: 'totalCount',
-            successProperty: 'success',
-            idProperty: 'id',
-            fields: [
-                'id',
-                'name'
-            ],
-            proxy: new Ext.data.HttpProxy({
-                url: this.config.geoStoreBase + 'extjs/search/category/ADMINCONFIG',
-                restful: true,
-                method : 'GET',
-                disableCaching: true,
-                failure: function (response) {
-                    Ext.Msg.show({
-                       title: "Error",
-                       msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
-                       buttons: Ext.Msg.OK,
-                       icon: Ext.MessageBox.ERROR
-                    });                                
+        if(this.pluggableByUserGroupConfig){
+            this.adminConfigStore = new Ext.data.JsonStore({
+                root: 'results',
+                autoLoad: false,
+                totalProperty: 'totalCount',
+                successProperty: 'success',
+                idProperty: 'id',
+                fields: [
+                    'id',
+                    'name'
+                ],
+                proxy: new Ext.data.HttpProxy({
+                    url: this.config.geoStoreBase + 'extjs/search/category/ADMINCONFIG',
+                    restful: true,
+                    method : 'GET',
+                    disableCaching: true,
+                    failure: function (response) {
+                        Ext.Msg.show({
+                           title: "Error",
+                           msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+                           buttons: Ext.Msg.OK,
+                           icon: Ext.MessageBox.ERROR
+                        });                                
+                    }
+                }),
+                listeners:{
+                    load: this.adminConfigLoad,
+                    scope: this
                 }
-            }),
-            listeners:{
-                load: this.adminConfigLoad,
-                scope: this
-            }
-        });
-        this.adminConfigStore.proxy.getConnection().defaultHeaders= {
-            'Accept': 'application/json', 
-            'Authorization' : this.auth
-        };
-        this.adminConfigStore.load();
+            });
+            this.adminConfigStore.proxy.getConnection().defaultHeaders= {
+                'Accept': 'application/json', 
+                'Authorization' : this.auth
+            };
+            this.adminConfigStore.load();
+        }else{
+            // Load default config
+            this.adminConfigLoad(null);
+        }
     },
 
     /** private: method[adminConfigLoad]
@@ -202,47 +215,101 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
     adminConfigLoad: function(store){
         if(store && store.getCount && store.getCount() > 0){
             var pendingConfig = store.getCount();
-            var tools = [];
-            store.each(function(item){
-                var url = this.config.geoStoreBase + "data/" + item.get("id");
-                Ext.Ajax.request({
-                    method: 'GET',
-                    scope: this,
-                    url: url,
-                    proxy: new Ext.data.HttpProxy({
-                        restful: true,
-                        method : 'GET',
-                        disableCaching: true,
-                        failure: function (response) {
-                            console.error("Error getting config");
-                            pendingConfig--;
-                            this.applyUserConfig(pendingConfig, tools);
-                        },
-                        defaultHeaders: {'Accept': 'application/json', 'Authorization' : this.auth}
-                    }),
-                    success: function(response, opts){
-                        pendingConfig--;
-                        var pluginsConfig;
-                        try{
-                            pluginsConfig = Ext.util.JSON.decode(response.responseText);
-                            if(pluginsConfig && pluginsConfig.length > 0){
-                                for(var i = 0; i < pluginsConfig.length; i++) {
-                                    tools.push(pluginsConfig[i]);
-                                }   
-                            }
-                            this.applyUserConfig(pendingConfig, tools);
-                        }catch(e){
-                            console.error("Error getting config");
+            // TODO: use config to extent this functionality
+            var config = {
+                tools: this.initialConfig.loggedTools
+            };
+            this.on("loadcustomconfig", function(customConfig){
+                pendingConfig--;
+                if(customConfig && customConfig instanceof Array){
+                    // now only add tools
+                    config["tools"] = this.addAll(customConfig, config["tools"]);
+                }else if(customConfig && customConfig instanceof Object){
+                    // in the future we can add different configs (removeTools, headers...?)
+                    for(var key in customConfig) {
+                        if(!config[key]){
+                            config[key] = customConfig[key];
+                        }else if(config[key] instanceof Array){
+                            config[key] = this.addAll(customConfig[key], config[key]);
+                        }else if(config[key] instanceof Object){
+                            Ext.apply(config[key], customConfig[key]);
+                        }else{
+                            config[key] = customConfig[key];
                         }
-                    },
-                    failure:  function(response, opts){
-                        pendingConfig--;
-                        console.error("Error getting config");
-                        this.applyUserConfig(pendingConfig, tools);
-                    }
-                });
+                    }   
+                }
+                // TODO: use config to extent this functionality
+                this.applyUserConfig(pendingConfig, config.tools);
+            });
+            store.each(function(item){
+                this.loadData(null, item.get("id"), "loadcustomconfig");
             }, this);
+        }else{
+            // load default logged tools
+            this.applyUserConfig(0, this.initialConfig.loggedTools);
         }
+    },
+
+    /** private: method[loadData]
+     *  Load a configuration from an url
+     */
+    loadData: function (url, dataId, eventListener){
+        var url = (url ? url: this.initialConfig.geoStoreBase + "data/" + dataId);
+        if(url.indexOf("/") != 0){
+            url = this.initialConfig.proxy + url;
+        }
+        Ext.Ajax.request({
+            method: 'GET',
+            scope: this,
+            url: url,
+            success: function(response, opts){
+                try{
+                    var loadedConfig = Ext.util.JSON.decode(response.responseText);
+                    this.fireEvent(eventListener, loadedConfig);
+                }catch(e){
+                    console.error("Error getting config");
+                    this.fireEvent(eventListener, {});
+                }
+            },
+            failure:  function(response, opts){
+                console.error("Error getting config");
+                    this.fireEvent(eventListener, {});
+            }
+        });
+    },
+
+    /** private: method[addAll]
+     */
+    addAll: function(toAdd, target){
+        var componentsNotPresent = [];
+        if(toAdd instanceof Array){
+            for(var i = 0; i < toAdd.length; i++){
+                if(!this.isAlreadyPresent(toAdd[i], target)){
+                    componentsNotPresent.push(toAdd[i]);
+                }
+            }   
+        }else if(toAdd instanceof Object){
+            if(!this.isAlreadyPresent(toAdd, target)){
+                componentsNotPresent.push(toAdd);
+            }
+        }
+        return target.concat(componentsNotPresent);
+    },
+
+    /** private: method[isAlreadyPresent]
+     */
+    isAlreadyPresent: function(element, elements){
+        //TODO: checkall, now only check ptype
+        var isAlreadyPresent = false;
+        if(elements && element){
+            for(var i = 0; i < elements.length; i++){
+                if(elements[i].ptype == element.ptype){
+                    isAlreadyPresent = true;   
+                    break;
+                }
+            }
+        }
+        return isAlreadyPresent;
     },
 
     /** private: method[applyUserConfig]
@@ -282,14 +349,11 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
         if(this.logged){
             this.auth = null;
 
-            // FIXME: Sometimes it doesn't work
-            // Remove cookie for production instances
+            // Remove headers
             this.defaultHeaders = {
                 'Accept': 'application/json',
                 'Authorization' : "",
-                'Set-Cookie': ""    
             };
-            Ext.util.Cookies.clear();
 
             this.cleanTools();
             this.initTools();

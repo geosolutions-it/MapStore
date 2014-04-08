@@ -117,6 +117,10 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
     loadCustomConfigs: function(){
         var config = this.config;
         var me = this;
+        var url = this.geoStoreBaseURL + 'extjs/search/category/MAPSTORECONFIG';
+        if(url.indexOf("/") != 0){
+            url = this.proxy + url;
+        }
         this.adminConfigStore = new Ext.data.JsonStore({
             root: 'results',
             autoLoad: false,
@@ -128,7 +132,7 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
                 'name'
             ],
             proxy: new Ext.data.HttpProxy({
-                url: this.proxy + this.geoStoreBaseURL + 'extjs/search/category/MAPSTORECONFIG',
+                url: url,
                 restful: true,
                 method : 'GET',
                 disableCaching: true,
@@ -188,7 +192,10 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
      *  Load a configuration from an url
      */
     loadData: function (url, dataId, eventListener){
-        var url = this.proxy + (url ? url: this.geoStoreBaseURL + "data/" + dataId);
+        var url = (url ? url: this.geoStoreBaseURL + "data/" + dataId);
+        if(url.indexOf("/") != 0){
+            url = this.proxy + url;
+        }
         Ext.Ajax.request({
             method: 'GET',
             scope: this,
