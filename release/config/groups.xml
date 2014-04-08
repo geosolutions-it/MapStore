@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<UserGroupList>
+	<UserGroup>
+		<groupName>allresources</groupName>
+		<restUsers />
+		<id />
+	</UserGroup>
+	<UserGroup>
+		<groupName>poweruser</groupName>
+		<restUsers>poweruser</restUsers>
+		<id />
+	</UserGroup>
+</UserGroupList>
