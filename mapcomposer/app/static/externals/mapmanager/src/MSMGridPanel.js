@@ -1071,7 +1071,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         src += '&configId=' + templateId;
                     }
 					
-					var iframeTitle = (userProfile == "&auth=true" ? grid.IframeComposerTitle : grid.IframeViewerTitle) + desc;
+					var iframeTitle = (!(userProfile == "&auth=false") ? grid.IframeComposerTitle : grid.IframeViewerTitle) + desc;
                     var iframeconfig = {
                         waitMsg: grid.IframeWaitMsg,
                         width:900,
@@ -1381,6 +1381,11 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     */
                     getButtonVMId: function(values,button,userProfile) {
                         var result = Ext.id()+button;
+
+                        if(userProfile == "&auth=true"){
+                            // copy auth for mapstore
+                            userProfile = "&auth=" + encodeURI(grid.auth);   
+                        }
 						
 						// //////////////////////////////////////
                         // Adds listener for view and edit map
@@ -1467,7 +1472,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     MapComposerVM : function(id, values, userProfile) {
                         // Read template id for view map
                         var templateId = null;
-                        if(userProfile != "&auth=true"){
+                        if(userProfile == "&auth=false"){
                             templateId = values.templateId;
                         }
                         Ext.get(id).on('click', function(e){
