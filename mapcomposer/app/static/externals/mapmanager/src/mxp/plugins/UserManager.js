@@ -59,7 +59,8 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
             text: this.buttonText,
             tooltip: this.tooltipText,
             handler: function() { 
-            	this.addOutput();                        
+                // add output if not present
+                this.addOutput();
             },
             scope: this
         });
@@ -99,6 +100,29 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
             geoStoreBase: this.target.config.geoStoreBase,
             renderMapToTab: this.outputTarget
     	});
+
+        // In user information the output is generated in the component and we can't check the item.initialConfig.
+        if(this.output.length > 0
+            && this.outputTarget){
+            for(var i = 0; i < this.output.length; i++){
+                if(this.output[i].ownerCt
+                    && this.output[i].ownerCt.xtype 
+                    && this.output[i].ownerCt.xtype == "tabpanel"
+                    && !this.output[i].isDestroyed){
+                    var outputConfig = config || this.outputConfig;
+                    // Not duplicate tabs
+                    for(var index = 0; index < this.output[i].ownerCt.items.items.length; index++){
+                        var item = this.output[i].ownerCt.items.items[index];
+                        // only check iconCls
+                        var isCurrentItem = "open_usermanager" == item.initialConfig["iconCls"];
+                        if(isCurrentItem){
+                            this.output[i].ownerCt.setActiveTab(index);
+                            return;
+                        }
+                    } 
+                }
+            }
+        }
 
         return mxp.plugins.UserManager.superclass.addOutput.apply(this, arguments);
     }

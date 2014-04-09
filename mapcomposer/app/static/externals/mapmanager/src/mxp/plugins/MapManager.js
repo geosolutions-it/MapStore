@@ -106,10 +106,11 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
             geoStoreBase: this.target.config.geoStoreBase
     	});
 
+        // apply headers on grid
+        this.on("outputadded", this.applyLoggedState, this);
+
         // apply login state on grid
-        if(login.login && login.login.username){
-            this.on("outputadded", this.applyLoggedState, this);
-        }else if(login && !login.login){
+        if(login && !login.login){
             login.on("actionsadded", function(login){
                 this.login = login;
                 login.on("login", this.applyLoggin, this);
@@ -119,7 +120,10 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
 
         return mxp.plugins.MapManager.superclass.addOutput.apply(this, arguments);
     },
-
+    
+    /** api: method[applyLoggin]
+     *  If an user is logged, apply user information to the grid
+     */
     applyLoggin: function(username){
         if(this.output){
             for(var i = 0; i < this.output.length; i++){
@@ -132,7 +136,10 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
             }
         }
     },
-
+    
+    /** api: method[applyLoggedState]
+     *  Apply target headers on grid
+     */
     applyLoggedState: function(output){
         if(output){
             if(output.rendered && output.isVisible && output.isVisible()){
@@ -154,7 +161,7 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
                     output.plugins.collapseAll();
                     output.getBottomToolbar().openMapComposer.enable();
                     output.openUserManagerButton.enable();
-                });   
+                }, this);   
             }
         }
     },

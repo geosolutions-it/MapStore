@@ -109,6 +109,12 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      * 
      */
     defaultType:'textfield',
+    /**
+     * Property: statelessSession
+     * {Boolean} If the session is stateless is not needed check user details at startup
+     * 
+     */
+    statelessSession: true,
      
     /** private: method[constructor]
      */
@@ -183,7 +189,11 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
             };
         }
 
-        this.getLoginInformation();
+        if(!this.statelessSession || this.token){
+            this.getLoginInformation();   
+        }else{
+            this.showLogin();
+        }
         
         MSMLogin.superclass.initComponent.call(this, arguments);
     },
@@ -209,7 +219,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                     this.fireEvent("login", this.username);
                 }else{
                     // invalid user state
-                    this.showLogin();            
+                    this.showLogin();
                 }
             },
             failure: function(response, form, action) {
@@ -252,19 +262,22 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      *  Log out the current user from the application.
      */
     logout: function() {
-
-        // do logout in spring security
-        Ext.Ajax.request({
-            method: 'GET',
-            url: this.geoStoreBase.replace("/rest/", "/j_spring_security_logout"),
-            scope: this,
-            success: function(response, form, action) {
-                this.invalidateLoginState();
-            },
-            failure: function(response, form, action) {
-                this.invalidateLoginState();
-            }
-        });
+        if(this.statelessSession){
+            this.invalidateLoginState();
+        }else{
+            // do logout in spring security
+            Ext.Ajax.request({
+                method: 'GET',
+                url: this.geoStoreBase.replace("/rest/", "/j_spring_security_logout"),
+                scope: this,
+                success: function(response, form, action) {
+                    this.invalidateLoginState();
+                },
+                failure: function(response, form, action) {
+                    this.invalidateLoginState();
+                }
+            });
+        }
     },
     
     /** private: method[invalidateLoginState]

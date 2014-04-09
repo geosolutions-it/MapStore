@@ -159,6 +159,12 @@ mxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
      *  ``Array`` output added by this container
      */
     output: null,
+
+
+    /** api: config[notDuplicateOutputs]
+     *  ``Boolean`` Flag to indicate that this tool couldn't duplicate in the tab panel.
+     */
+     notDuplicateOutputs: true,
      
     /** private: method[constructor]
      */
@@ -353,9 +359,37 @@ mxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
      *  called and/or overridden by subclasses.
      */
     addOutput: function(config) {
+
         if (!config && !this.outputConfig) {
             // nothing to do here for tools that don't have any output
             return;
+        }
+
+        if(this.notDuplicateOutputs
+            && this.output.length > 0
+            && this.outputTarget){
+            for(var i = 0; i < this.output.length; i++){
+                if(this.output[i].ownerCt
+                    && this.output[i].ownerCt.xtype 
+                    && this.output[i].ownerCt.xtype == "tabpanel"
+                    && !this.output[i].isDestroyed){
+                    var outputConfig = config || this.outputConfig;
+                    // Not duplicate tabs
+                    for(var index = 0; index < this.output[i].ownerCt.items.items.length; index++){
+                        var item = this.output[i].ownerCt.items.items[index];
+                        var isCurrentItem = true;
+                        for (var key in outputConfig){
+                            if(outputConfig[key]){
+                                isCurrentItem = isCurrentItem && (outputConfig[key] == item.initialConfig[key]);
+                            }
+                        }
+                        if(isCurrentItem){
+                            this.output[i].ownerCt.setActiveTab(index);
+                            return;
+                        }
+                    }
+                }
+            }
         }
 
         config = config || {};
@@ -384,9 +418,13 @@ mxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
         } else {
             try{
                 if(container.xtype && container.xtype == "tabpanel"){
+                    var index = container.items.length - 1;
                     if(this.setActiveOnOutput){
-                        container.setActiveTab(container.items.length - 1);
+                        container.setActiveTab(index);
                     }
+                    // save ownerCt and index in the output
+                    component.ownerCt = container;
+                    component.tabIndex = index;
                 }
                 container.doLayout();
             }catch (e){

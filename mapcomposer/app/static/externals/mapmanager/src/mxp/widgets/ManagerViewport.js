@@ -117,7 +117,6 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
         
         mxp.widgets.ManagerViewport.superclass.initComponent.call(this, arguments);
 
-        this.initTools();
         this.fireEvent("portalready");
 
         // load config if present
@@ -246,7 +245,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
             }, this);
         }else{
             // load default logged tools
-            this.applyUserConfig(0, this.initialConfig.loggedTools);
+            this.applyUserConfig(0, this.logged ? this.initialConfig.loggedTools : this.initialConfig.tools);
         }
     },
 
