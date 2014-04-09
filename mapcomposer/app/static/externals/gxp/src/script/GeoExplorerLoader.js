@@ -39,7 +39,7 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
 
         this.config = config || {};
         this.mapId = mapId;
-        this.auth = decodeURI(auth);
+        this.auth = auth ? decodeURI(auth): null;
         this.fScreen = fScreen;
         this.templateId = templateId;
         this.geoStoreBaseURL = config != null ? config.geoStoreBaseURL : null;

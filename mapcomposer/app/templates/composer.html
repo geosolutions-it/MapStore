@@ -402,7 +402,7 @@
                 georeferences: georeferences_data,
                 map: serverConfig.map,
 				customTools: serverConfig.customTools
-            }, mapIdentifier, authorization, fullScreen, templateId);   
+            }, mapIdentifier, authorization && authorization == "false" ? null: authorization, fullScreen, templateId);   
             
             app.on({
                 'portalready' : function() {              	
