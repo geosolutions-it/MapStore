@@ -177,7 +177,8 @@
 						serverConfig.socialUrl = 'http://' + window.location.host;
 					  }
                       
-					  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy; 
+					  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy;
+                      serverConfig.proxy = proxy;
 					  
                       OpenLayers.ProxyHost = this.proxy; // Explicit because this application doesn't include
 					  
