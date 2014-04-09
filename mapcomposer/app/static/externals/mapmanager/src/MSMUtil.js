@@ -342,8 +342,15 @@
 		var data = this.beforeSave(item);
 		var uri = new Uri({'url':this.baseUrl_});
 		uri.appendPath( this.resourceNamePrefix_ ).appendId( pk );
+
+		// remove appended "?" without parameters
+		var url = uri.toString();
+		if(url.indexOf("?") == url.length - 1){
+			url = url.replace("?", "");
+		}
+
 		var Request = Ext.Ajax.request({
-	       url: uri.toString(),
+	       url: url,
 	       method: 'PUT',
 	       headers: {
 	          'Content-Type' : 'text/xml',
@@ -358,7 +365,7 @@
 	       failure:  function(response, opts){
 				this.onFailure_(response);
 	       }
-	    });		
+	    });
 	};	
 	
 	/** 
@@ -374,8 +381,15 @@
 	ContentProvider.prototype.deleteByPk = function(pk, callback){
 		var uri = new Uri({'url':this.baseUrl_});
 		uri.appendPath( this.resourceNamePrefix_ ).appendId( pk );
+
+		// remove appended "?" without parameters
+		var url = uri.toString();
+		if(url.indexOf("?") == url.length - 1){
+			url = url.replace("?", "");
+		}
+
 		var Request = Ext.Ajax.request({
-	       url: uri.toString(),
+	       url: url,
 	       method: 'DELETE',
 	       headers:{
 	          'Content-Type' : 'application/json',

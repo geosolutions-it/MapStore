@@ -737,6 +737,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                       {
                                         xtype: "msm_templatecombobox",
                                         ref: "../templateCombo",
+                                        allowBlank: true,
                                         templatesCategoriesUrl: grid.geoSearchCategoriesUrl + "/TEMPLATE",
                                         auth: grid.auth,
                                         listeners: {
@@ -807,7 +808,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									var geostore = new GeoStore.Maps({
 										authorization: auth,
 										url: url
-									}).failure( function(data){ 
+									}).failure( function(response){ 
 										Ext.Msg.show({
 											 title: grid.metadataFailSuccessTitle,
 											 msg: response.statusText + "(status " + response.status + "):  " + response.responseText,

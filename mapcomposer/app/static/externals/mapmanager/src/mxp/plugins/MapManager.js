@@ -149,8 +149,13 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
                 output.getBottomToolbar().bindStore(output.store, true);
                 output.getBottomToolbar().doRefresh();
                 output.plugins.collapseAll();
-                output.getBottomToolbar().openMapComposer.enable();
-                output.openUserManagerButton.enable();
+                if(this.target.auth){
+                    output.getBottomToolbar().openMapComposer.enable();
+                    output.openUserManagerButton.enable();
+                }else{
+                    output.getBottomToolbar().openMapComposer.disable();
+                    output.openUserManagerButton.disable();
+                }
             }else{
                 // Tab not enabled, wait for activate
                 output.on("activate", function(){
@@ -159,8 +164,13 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
                     output.getBottomToolbar().bindStore(output.store, true);
                     output.getBottomToolbar().doRefresh();
                     output.plugins.collapseAll();
-                    output.getBottomToolbar().openMapComposer.enable();
-                    output.openUserManagerButton.enable();
+                    if(this.target.auth){
+                        output.getBottomToolbar().openMapComposer.enable();
+                        output.openUserManagerButton.enable();
+                    }else{
+                        output.getBottomToolbar().openMapComposer.disable();
+                        output.openUserManagerButton.disable();
+                    }
                 }, this);   
             }
         }
