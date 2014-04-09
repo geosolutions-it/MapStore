@@ -44,6 +44,7 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
     ptype: "gxp_geostore_account",
     displayAttributes:['Name','Surname','email'],
     usernameLabel:'User Name',
+    scrollable:true,
     notAllowedAttributes:['UUID'],
     userTemplate: [ '<style>',
                 '#account_details td{padding:5px;width: 200px;padding-left: 7px;color: #fff;text-shadow: 2px 2px 2px #666;}',
@@ -55,16 +56,26 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
             '<table id="account_details" style="margin:0 auto;" cellspacing="0" cellpadding="0" border=0>',
             '<tbody><tr>',
             '<th colspan="2" style="text-align:center;font-weight:bold">Account Details</th>',
+            // commons
            '</tr>',
             '<tr class="even">',
             '<td class="b">User Name</td>',
             '<td>{name}</td>',
             '</tr>',
-            
+            // attributes 
             '<tpl for="attribute">', 
                 '<tr class="{[xindex % 2 == 0 ? \"even\" : \"odd\"]}">',
                 '<td class="b">{name}</td>',
                 '<td>{value}</td>',
+                '</tr>',
+            '</tpl>',
+            // groups
+            '<tr>',
+            '<th colspan="2" style="text-align:center;font-weight:bold">Groups</th>',
+            '<tr>',
+             '<tpl for="groups">', 
+                '<tr class="{[xindex % 2 == 0 ? \"even\" : \"odd\"]}">',
+                '<td colspan=2 >{groupName}</td>',
                 '</tr>',
             '</tpl>',
             '</tbody></table>',
@@ -80,7 +91,13 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
         if(!(user.attribute instanceof Array)){
             user.attribute = [user.attribute];
         }
-        
+         // make the userattribute always an array
+        if(!user.groups){
+            user.groups = [];
+        }
+        if(!(user.groups instanceof Array)){
+            user.attribute = [user.attribute];
+        }
         //remove attributes not allowed to display
         if(this.notAllowedAttributes){
             var attributes = [];
@@ -97,18 +114,20 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
                 }
             }
             user.attribute = attributes;
-        }
-       
+        }                      
+
         var controlPanel = {
             xtype: "panel",
             title: "My Account",
-            iconCls: "user-icon",             
+            iconCls: "user-icon",  
             header: false,
             items:[{
+
                 forceFit: true,
                 border:false,
                 ref:'grid',
                 region:'center',
+                autoscroll:true,
                 html: new Ext.XTemplate(this.userTemplate).apply(user)
             }]
         };
