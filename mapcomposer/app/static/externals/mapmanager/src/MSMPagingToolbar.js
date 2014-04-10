@@ -190,6 +190,19 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
     * 
     */
     addMapControls: true,
+
+    /** i18n **/
+    createMapText: "Create",
+    createMapTitleText: "Create a new map",
+    templateSeleccionErrorText: "Please select a template before create the map",
+    templateText: "Template",
+    
+    /**
+    * Property: checkTemplateId
+    * {boolean} Check if you must select a template id. Default it's false.
+    * 
+    */
+    checkTemplateId: false,
 	
     /**
      * Method: initComponent
@@ -258,13 +271,8 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
         }
     },
 
-    createMapText: "Create",
-    createMapTitleText: "Create a new map",
-    templateSeleccionErrorText: "Please select a template before create the map",
-    templateText: "Template",
-
     onAddMap: function(){
-        var userProfile = '&auth=true';
+        var userProfile = '&auth=' + (this.grid.auth ? encodeURI(this.grid.auth) : "false");
         var idMap = -1;
         var me = this;
         
@@ -295,7 +303,7 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
                         handler: function(){      
                             var templateId = win.formPanel.templateCombo.getValue();
 
-                            if(templateId){
+                            if(!this.checkTemplateId || (this.checkTemplateId && templateId)){
                                 win.hide(); 
         
                                 this.grid.plugins.openMapComposer(this.grid.murl, userProfile, idMap, this.desc, templateId);

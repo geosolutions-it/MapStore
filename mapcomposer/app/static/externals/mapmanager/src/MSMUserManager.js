@@ -27,6 +27,9 @@
  */
 UserManagerView = Ext.extend(
 		Ext.grid.GridPanel, {
+
+		 	/** xtype = msm_usermanager **/
+		    xtype: "msm_usermanager",
 			
 			/**
 		     * Property: id
@@ -593,6 +596,8 @@ UserManagerView = Ext.extend(
 							  title: userManager.textEditUserTitle,
 							  iconCls: userManager.iconCls,
 							  frame:true,  border:false,
+				              closable: true,
+				              closeAction: 'close',
 							  id: userManager.id,
 							  items: [{
 									  xtype: 'fieldset',
@@ -965,3 +970,6 @@ UserManagerView = Ext.extend(
 		    border:false
 		  		
 	    });
+
+/** api: xtype = msm_usermanager */
+Ext.reg(UserManagerView.prototype.xtype, UserManagerView);

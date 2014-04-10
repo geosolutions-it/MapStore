@@ -85,7 +85,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
      *  ``String``
      *  URL to the extJSbrowser of OpenSDI-Manager2
      */
-    actionURL: "/opensdi2-manager/fileManager/extJSbrowser",
+    actionURL: "/opensdi2-manager/mvc/fileManager/extJSbrowser",
 
     /**
     * Constructor: initComponent 

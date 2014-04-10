@@ -124,10 +124,12 @@
 									} 
 									break;
 					case "auth" : 
-									if(param[1] == 'true') 
-										authorization = true; 
-									else 
-										authorization = false; 
+									authorization = param[1]; 
+									if(param.length > 2){
+										for(var i = 2; i < param.length; i++){
+											authorization += "=";
+										}
+									}
 									break;
 					case "fullScreen" : 
 									if(param[1] == 'true') 
@@ -400,7 +402,7 @@
                 georeferences: georeferences_data,
                 map: serverConfig.map,
 				customTools: serverConfig.customTools
-            }, mapIdentifier, authorization, fullScreen, templateId);   
+            }, mapIdentifier, authorization && authorization == "false" ? null: authorization, fullScreen, templateId);   
             
             app.on({
                 'portalready' : function() {              	
@@ -497,94 +499,23 @@
 			};
 	    };
 
-	    Ext.Ajax.request({
-			  url: customConfigName ? "config/" + customConfigName + ".js"  : "config/mapStoreConfig.js",
-			  method: 'GET',
-			  success: function(response, opts){          
-				  
-				  try{
-					  serverConfig = Ext.util.JSON.decode(response.responseText);
-					  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy;
-				  }catch(e){
-					  Ext.Msg.show({
-							title: "Startup",
-							msg: "An error occurred while parsing the external configuration: " + response.status,
-							buttons: Ext.Msg.OK,
-							icon: Ext.MessageBox.ERROR
-					  });
-				  }
+	    // geostore base
+	    if(!serverConfig){
+	    	serverConfig = {};
+	    }
+		serverConfig.geoStoreBaseURL = serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/');
 
-				  // load template config
-				  if(templateId){
-				  		// include proxy and/or geoStoreBase
-				  		var templateLoadUrl = (serverConfig && serverConfig.geoStoreBase ? serverConfig.geoStoreBase : ('http://' + window.location.host + '/geostore/rest/')) + "data/" + templateId;
-				  		if(proxy){
-				  			templateLoadUrl = proxy + templateLoadUrl;
-				  		}
-						Ext.Ajax.request({
-							url: templateLoadUrl,
-							method: 'GET',
-							success: function(response, opts){          
-							  
-							  var templateConfig;
-							  try{
-								  templateConfig = Ext.util.JSON.decode(response.responseText);
-							  }catch(e){
-								  Ext.Msg.show({
-										title: "Startup",
-										msg: "An error occurred while parsing the template configuration: " + response.status,
-										buttons: Ext.Msg.OK,
-										icon: Ext.MessageBox.ERROR
-								  });
-							  }
-							  
-							  if(serverConfig){
-								  //apply the local default configuration if not present.
-								  serverConfig = Ext.applyIf(serverConfig,localConfig);
-								  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy;
+		// use GeoExplorerLoader to load configuration files
+		var loader = new GeoExplorerLoader(serverConfig, customConfigName, mapStoreDebug, mapIdentifier, authorization, fullScreen, templateId);
+		loader.on("configfinished", function (config){
+              //apply the loaded configuration.
+              serverConfig = Ext.applyIf(serverConfig, config);
+              proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy;
 
-								  // apply the template config
-								  if(templateConfig){
-								  	Ext.apply(serverConfig, templateConfig);
-								  }
+              //ready to create GeoExplorer
+              Ext.onReady(onReady);
+		});
 
-								  // ///////////////////////////////////////////////  
-								  // Run the application when browser is ready
-								  // ///////////////////////////////////////////////
-								  Ext.onReady(onReady);
-							  }
-							},
-							failure:  function(response, opts){
-							  Ext.Msg.show({
-									title: "Startup",
-									msg: "An error occurred while getting the template configuration: " + response.status,
-									buttons: Ext.Msg.OK,
-									icon: Ext.MessageBox.ERROR
-							  });
-							}
-						});
-				  }else{
-					  if(serverConfig){
-						  //apply the local default configuration if not present.
-						  serverConfig = Ext.applyIf(serverConfig,localConfig);
-						  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy; 
-
-						  // ///////////////////////////////////////////////  
-						  // Run the application when browser is ready
-						  // ///////////////////////////////////////////////
-						  Ext.onReady(onReady);
-					  }
-				  }
-			  },
-			  failure:  function(response, opts){
-				  Ext.Msg.show({
-						title: "Startup",
-						msg: "An error occurred while getting the external configuration: " + response.status,
-						buttons: Ext.Msg.OK,
-						icon: Ext.MessageBox.ERROR
-				  });
-		      }
-	    });        
     </script>
 
 	<div style="visibility:hidden"><canvas id="printcanvas" /></div>

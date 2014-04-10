@@ -109,6 +109,12 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      * 
      */
     defaultType:'textfield',
+    /**
+     * Property: statelessSession
+     * {Boolean} If the session is stateless is not needed check user details at startup
+     * 
+     */
+    statelessSession: true,
      
     /** private: method[constructor]
      */
@@ -136,25 +142,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
         
         Ext.apply(this, {  
             monitorValid:true,
-            trackResetOnLoad : true,/*
-            errorReader: {
-                read: function(response) {
-                    var success = false;
-                    var records = [];
-                    if (response.status === 200) {
-                        success = true;
-                    } else {
-                        records = [
-                            {data: {id: "loginUsername", msg: this.loginErrorText}},
-                            {data: {id: "loginPassword", msg: this.loginErrorText}}
-                        ];
-                    }
-                    return {
-                        success: success,
-                        records: records
-                    };
-                }
-            },*/
+            trackResetOnLoad : true,
             items:[{  
                 fieldLabel: this.userFieldText,
                 name:'loginUsername', 
@@ -194,7 +182,18 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
             cls: 'user-role-label'
         });
 
-        this.getLoginInformation();
+        if(!this.defaultHeaders){
+            this.defaultHeaders = {
+                'Accept': 'application/json',
+                'Authorization': this.token
+            };
+        }
+
+        if(!this.statelessSession || this.token){
+            this.getLoginInformation();   
+        }else{
+            this.showLogin();
+        }
         
         MSMLogin.superclass.initComponent.call(this, arguments);
     },
@@ -208,9 +207,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
             method: 'GET',
             url: this.geoStoreBase + 'users/user/details/',
             scope: this,
-            headers: {
-                'Accept': 'application/json'
-            },
+            headers: this.defaultHeaders,
             success: function(response, form, action) {
                 
                 var user = Ext.util.JSON.decode(response.responseText);
@@ -219,17 +216,10 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                     this.username = user.User.name;
                     this.role = user.User.role;
                     this.showLogout(user.User.name);
-                    this.grid.render();
-                    this.grid.store.proxy.getConnection().defaultHeaders = {'Accept': 'application/json'};                
-                    this.grid.getBottomToolbar().bindStore(this.grid.store, true);
-                    this.grid.getBottomToolbar().doRefresh();
-                    this.grid.plugins.collapseAll();
-                    this.grid.getBottomToolbar().openMapComposer.enable();
-                    this.grid.openUserManagerButton.enable();
                     this.fireEvent("login", this.username);
                 }else{
                     // invalid user state
-                    this.showLogin();            
+                    this.showLogin();
                 }
             },
             failure: function(response, form, action) {
@@ -272,25 +262,22 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      *  Log out the current user from the application.
      */
     logout: function() {
-
-        // Remove authorization token
-        this.grid.store.proxy.getConnection().defaultHeaders = {
-            "Accept": "application/json", 
-            "Authorization": null
-        };
-
-        // do logout in spring security
-        Ext.Ajax.request({
-            method: 'GET',
-            url: this.geoStoreBase.replace("/rest/", "/j_spring_security_logout"),
-            scope: this,
-            success: function(response, form, action) {
-                this.invalidateLoginState();
-            },
-            failure: function(response, form, action) {
-                this.invalidateLoginState();
-            }
-        });
+        if(this.statelessSession){
+            this.invalidateLoginState();
+        }else{
+            // do logout in spring security
+            Ext.Ajax.request({
+                method: 'GET',
+                url: this.geoStoreBase.replace("/rest/", "/j_spring_security_logout"),
+                scope: this,
+                success: function(response, form, action) {
+                    this.invalidateLoginState();
+                },
+                failure: function(response, form, action) {
+                    this.invalidateLoginState();
+                }
+            });
+        }
     },
     
     /** private: method[invalidateLoginState]
@@ -301,12 +288,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
         this.token = null;
         this.userid = null;
         this.username = null;
-        this.grid.getBottomToolbar().bindStore(this.grid.store, true);
-        this.grid.getBottomToolbar().doRefresh();
-        this.grid.plugins.collapseAll()
-        this.grid.getBottomToolbar().openMapComposer.disable();
-        this.grid.openUserManagerButton.disable();
-        this.showLogin();
+        this.showLogin(true);
     },
 
     /** 
@@ -344,6 +326,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
         var pass = fields.loginPassword;
         var user = fields.loginUsername;
         var auth= 'Basic ' + Base64.encode(user+':'+pass);
+
         Ext.Ajax.request({
             method: 'GET',
             url: this.geoStoreBase + 'users/user/details/',
@@ -367,14 +350,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
 					this.username = user.User.name;
 					this.role = user.User.role;
 				}
-				this.grid.render();
-                this.grid.store.proxy.getConnection().defaultHeaders = {'Accept': 'application/json', "Authorization": auth};                
-                this.grid.getBottomToolbar().bindStore(this.grid.store, true);
-                this.grid.getBottomToolbar().doRefresh();
-                this.grid.plugins.collapseAll();
-                this.grid.getBottomToolbar().openMapComposer.enable();
-				this.grid.openUserManagerButton.enable();
-                this.fireEvent("login", this.username);
+                this.fireEvent("login", this.username, auth);
             },
             failure: function(response, form, action) {
                 Ext.MessageBox.show({
