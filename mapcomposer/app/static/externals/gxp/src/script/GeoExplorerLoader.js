@@ -42,7 +42,7 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
         this.auth = auth ? decodeURI(auth): null;
         this.fScreen = fScreen;
         this.templateId = templateId;
-        this.geoStoreBaseURL = config != null ? config.geoStoreBaseURL : null;
+        this.geoStoreBaseURL = config != null && config.geoStoreBaseURL ? config.geoStoreBaseURL : ('http://' + window.location.host + '/geostore/rest/');
         this.mapStoreDebug = mapStoreDebug;
         this.proxy = "";
         
@@ -104,7 +104,12 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
                 Ext.apply(this.config, config);
                 this.loadCustomConfigs();
             });
-            this.loadData(null, templateId, "loadtemplateconfig");    
+            // template can be a config file or a geostore resource
+            if(typeof(templateId) == "number"){
+                this.loadData(null, templateId, "loadtemplateconfig");
+            }else{
+                this.loadData("config/" + templateId + ".js", null, "loadtemplateconfig");
+            }
         }else{
             this.loadCustomConfigs();
         }
@@ -118,7 +123,7 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
         var config = this.config;
         var me = this;
         var url = this.geoStoreBaseURL + 'extjs/search/category/MAPSTORECONFIG';
-        if(url.indexOf("/") != 0){
+        if(url.indexOf("http") == 0){
             url = this.proxy + url;
         }
         this.adminConfigStore = new Ext.data.JsonStore({
@@ -193,7 +198,7 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
      */
     loadData: function (url, dataId, eventListener){
         var url = (url ? url: this.geoStoreBaseURL + "data/" + dataId);
-        if(url.indexOf("/") != 0){
+        if(url.indexOf("http") == 0){
             url = this.proxy + url;
         }
         Ext.Ajax.request({
