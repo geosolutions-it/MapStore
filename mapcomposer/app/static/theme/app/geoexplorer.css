@@ -321,3 +321,7 @@ table.featureInfo caption{
 .gxp-icon-shape-zipexport {
     background: transparent url(img/silk/page_white_zip.png) no-repeat;
 }
+
+.user-icon{
+    background-image: url(img/silk/user.png);
+}
