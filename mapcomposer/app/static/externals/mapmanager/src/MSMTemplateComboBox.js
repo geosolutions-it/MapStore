@@ -79,6 +79,11 @@
 	        	scope: this
 	        }
     	};
+    	
+        this.store.proxy.getConnection().defaultHeaders = {
+            'Accept': 'application/json', 
+            'Authorization' : this.auth
+        };
 		
         MSMTemplateComboBox.superclass.initComponent.call(this, arguments);
 	}
