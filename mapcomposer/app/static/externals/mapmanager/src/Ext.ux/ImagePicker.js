@@ -208,7 +208,7 @@ Ext.ux.ImagePicker = Ext.extend(Ext.FormPanel, {
      */
     getUploadUrl: function(){
         // Include proxy host for plupload (not ExtJS proxy supported)
-        var uploadURL = this.actionURL + "/../upload";
+        var uploadURL = this.actionURL.replace("extJSbrowser", "upload");
         var checkUrl = this.actionURL;
         var index0 = checkUrl.indexOf("://");
         if(index0 > -1){
@@ -217,7 +217,7 @@ Ext.ux.ImagePicker = Ext.extend(Ext.FormPanel, {
             var this_host = document.URL.split("://")[1];
             this_host = this_host.substring(0, this_host.indexOf("/"));
             if(checkUrl != this_host){
-                uploadURL =  OpenLayers.ProxyHost + this.actionURL + "/../upload"; 
+                uploadURL =  OpenLayers.ProxyHost + uploadURL; 
             }
         }
 
