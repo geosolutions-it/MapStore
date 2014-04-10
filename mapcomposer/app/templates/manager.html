@@ -122,60 +122,20 @@
             if (GeoExt.Lang) {
                     GeoExt.Lang.set(code);
             }
-            
-            var languageSelector = new Ext.form.ComboBox({
-                store: new Ext.data.ArrayStore({
-                    fields: ['code', 'name'],
-                    data :  langData
-                }),
-                displayField: 'name',
-                typeAhead: true,
-                mode: 'local',
-                forceSelection: true,
-                triggerAction: 'all',
-                emptyText: initialLanguageString,
-                selectOnFocus:false,
-                editable: false,
-                width: 100,
-                listeners: {
-                    beforeselect: function(cb, record, index){
-                       if(code == record.get('code')){
-                            return false;
-                       }
-                    },                    
-                    select: function(cb, record, index) {         
-                       var code = record.get('code');
-                    
-                       var query = location.search;        
-                       if(query && query.substr(0,1) === "?"){
-                            query = query.substring(1);
-                       }  
-                       
-                       var url = Ext.urlDecode(query);
 
-                       if(code){
-                           location.replace(
-                               location.pathname + '?locale=' + code);                                   
-                       }
-                    }
-                }
+            // Apply config for lang selector
+            Ext.apply(config,{
+                langData: langData,
+                initialLanguageString: initialLanguageString,
+                code: code
             });
-            
-            var msmPanel = new MSMPanel ({
-                xtype: 'panel',
-                id: 'mapManagerPanel',
-                config: config,
-                lang: code,
-                renderMapToTab: 'mainTabPanel',
-                langSelector: languageSelector,
-                adminPanelsTargetTab : 'mainTabPanel'
-            });
-            new Ext.Viewport({
+            new mxp.widgets.ManagerViewport({
                 layout:'fit',
+                config: config,
                 items:{
                     xtype: 'tabpanel',
                     id:'mainTabPanel',
-                    items:[msmPanel],
+                    items:[],
                     enableTabScroll : true,
                     activeTab:0
                     
@@ -217,7 +177,8 @@
 						serverConfig.socialUrl = 'http://' + window.location.host;
 					  }
                       
-					  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy; 
+					  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy;
+                      serverConfig.proxy = proxy;
 					  
                       OpenLayers.ProxyHost = this.proxy; // Explicit because this application doesn't include
 					  
