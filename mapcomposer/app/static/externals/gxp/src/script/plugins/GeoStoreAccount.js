@@ -88,6 +88,9 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
        user = Ext.apply( user , this.user);
        
         // make the userattribute always an array
+        if(!user.attribute){
+            user.attribute = [];
+        }
         if(!(user.attribute instanceof Array)){
             user.attribute = [user.attribute];
         }
@@ -118,19 +121,71 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
 
         var controlPanel = {
             xtype: "panel",
+            layout: 'border',
             title: "My Account",
             iconCls: "user-icon",  
             header: false,
             items:[{
-
+                region:'center',
                 forceFit: true,
                 border:false,
-                ref:'grid',
-                region:'center',
+                ref:'general',
                 autoscroll:true,
                 html: new Ext.XTemplate(this.userTemplate).apply(user)
-            }]
+                }
+            ]
         };
+        if (this.displayPanels){
+            controlPanel.items.push({
+                ref:'attributes',
+                layout:'fit',
+                forcefit:true,
+                title:'Attributes',
+                region:'south',
+                xtype:'grid',
+                columns: [
+                    {header: "name", width: 120, dataIndex: 'name', sortable: true},
+                    {header: "value", width: 180, dataIndex: 'value', sortable: true}
+                ],
+                store : new Ext.data.JsonStore({
+                    data: user,
+                    root:'attribute',
+                    fields: [{
+                        name: 'name',
+                        type: 'string'
+                    }, {
+                        name: 'value',
+                        type: 'string'
+                    }]
+                })
+            });
+            controlPanel.items.push({
+                ref:'groups',
+                layout:'fit',
+                forcefit:true,
+                title:'Groups',
+                region:'center',
+                xtype:'grid',
+                columns: [
+                    {header: "id", width: 180, dataIndex: 'id', sortable: true},
+                    {header: "name", width: 120, dataIndex: 'groupName', sortable: true}
+                    
+                ],
+                store : new Ext.data.JsonStore({
+                    data: user,
+                    root:'groups',
+                    fields: [{
+                        name: 'groupName',
+                        type: 'string'
+                    }, {
+                        name: 'id',
+                        type: 'integer'
+                    }]
+                })
+            });
+        
+        }
+        
         this.output = gxp.plugins.GeoStoreAccount.superclass.addOutput.call(this, Ext.apply(controlPanel,config));
 		
 		//hide selection layer on tab change

@@ -540,7 +540,7 @@
                             }
                         }
                     }else{
-                        if(login.user.attribute.name == "UUID"){
+                        if(login.user.attribute && login.user.attribute.name == "UUID"){
                            serverConfig.gsSources[authSource].url = insertParam(serverConfig.gsSources[authSource].url,authParam,login.user.attribute.value);
                         }
                     }
