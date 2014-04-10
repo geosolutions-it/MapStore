@@ -596,6 +596,8 @@ UserManagerView = Ext.extend(
 							  title: userManager.textEditUserTitle,
 							  iconCls: userManager.iconCls,
 							  frame:true,  border:false,
+				              closable: true,
+				              closeAction: 'close',
 							  id: userManager.id,
 							  items: [{
 									  xtype: 'fieldset',
