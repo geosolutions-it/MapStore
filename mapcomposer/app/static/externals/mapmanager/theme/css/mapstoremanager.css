@@ -246,3 +246,20 @@ left: 80px !important;
 .gx-map-go{
     background-image: url(../img/map_go.png);
 }
+
+.template_manger_ic{
+    background-image: url(../img/layout.png);
+}
+
+.group_ic{
+    background-image: url(../img/group.png);
+}
+.group_add_ic{
+    background-image: url(../img/group_add.png);
+}
+.group_delete_ic{
+    background-image: url(../img/group_delete.png);
+}
+.group_edit_ic{
+    background-image: url(../img/group_edit.png);
+}

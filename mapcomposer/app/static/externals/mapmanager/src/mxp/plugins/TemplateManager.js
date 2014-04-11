@@ -47,6 +47,7 @@ mxp.plugins.TemplateManager = Ext.extend(mxp.plugins.Tool, {
     addActions: function() {
         
         var thisButton = new Ext.Button({
+            iconCls:'template_manger_ic',
             text: this.buttonText,
             tooltip: this.tooltipText,
             handler: function() { 
@@ -80,6 +81,7 @@ mxp.plugins.TemplateManager = Ext.extend(mxp.plugins.Tool, {
 
         // create a template manager panel
         Ext.apply(this.outputConfig, {
+             iconCls:'template_manger_ic',
             xtype: "msm_templatemanager",
             id: this.target.templateManagerId,
             auth: this.target.auth,

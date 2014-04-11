@@ -36,6 +36,8 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
 
     buttonText: "User manager",
     tooltipText: "Open user manager",
+    groupsText: "Groups",
+    usersText: "Users",
 
     setActiveOnOutput: true,
 
@@ -57,6 +59,7 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
         
         var thisButton = new Ext.Button({
             text: this.buttonText,
+            iconCls:'open_usermanager',
             tooltip: this.tooltipText,
             handler: function() { 
                 // add output if not present
@@ -87,10 +90,11 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
                 ? this.target.currentTools[this.loginManager] : null;
 
         // create a user manager panel
-    	Ext.apply(this.outputConfig, {
+        var usermanager = {
+            region:'center',
             xtype: "msm_usermanager",
+            title: this.usersText,
             iconCls: "open_usermanager",
-            title: this.buttonText,
             id: this.target.userMamanagerId,
             ASSET: this.target.config.ASSET,
             auth: login.login.getToken(),
@@ -99,6 +103,35 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
             url: this.target.geoBaseUsersUrl,
             geoStoreBase: this.target.config.geoStoreBase,
             renderMapToTab: this.outputTarget
+    	};
+        var groupManager = {
+            region:'south',
+            xtype: "msm_usermanager",
+            iconCls: "group_ic",
+            title: this.groupsText,
+            id: this.target.userMamanagerId,
+            ASSET: this.target.config.ASSET,
+            auth: login.login.getToken(),
+            login: login.login,
+            searchUrl: this.target.geoSearchUsersUrl,
+            url: this.target.geoBaseUsersUrl,
+            geoStoreBase: this.target.config.geoStoreBase,
+            renderMapToTab: this.outputTarget
+    	};
+    	Ext.apply(this.outputConfig, {
+            xtype: "panel",
+            iconCls: "open_usermanager",
+            title: this.buttonText,
+            id: this.target.userMamanagerId,
+            xtype: 'panel',
+            layout: 'border',
+            auth: login.login.getToken(),
+            login: login.login,
+            searchUrl: this.target.geoSearchUsersUrl,
+            url: this.target.geoBaseUsersUrl,
+            geoStoreBase: this.target.config.geoStoreBase,
+            renderMapToTab: this.outputTarget,
+            items:[usermanager/*,groupManager*/]
     	});
 
         // In user information the output is generated in the component and we can't check the item.initialConfig.

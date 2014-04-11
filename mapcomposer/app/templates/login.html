@@ -527,24 +527,28 @@
                 },
                 loginSuccess: function(response){
                     //set the authkey for GeoServer
-                    var authSource =  'gs';
-                    var authParam = 'authkey';
+                    var authSource =  '';
+                    var authParam = '';
+                    var autkey;
                     if(serverConfig.loginConfig){
-                        var authSource = serverConfig.loginConfig.authSource || 'gs';
+                        var authSource = serverConfig.loginConfig.authSource || '';
                         var authParam = serverConfig.loginConfig.authParam || 'authkey';
                     }
-                    if(login.user.attribute instanceof Array){
-                        for(var i = 0 ; i < login.user.attribute.length ; i++ ){
-                            if( login.user.attribute[i].name == "UUID" ){
-                            serverConfig.gsSources[authSource].url = insertParam(serverConfig.gsSources[authSource].url,authParam,login.user.attribute[i].value);
+                    
+                        if(login.user.attribute instanceof Array){
+                            for(var i = 0 ; i < login.user.attribute.length ; i++ ){
+                                if( login.user.attribute[i].name == "UUID" ){
+                                    authkey = login.user.attribute[i].value;
+                                }
+                            }
+                        }else{
+                            if(login.user.attribute && login.user.attribute.name == "UUID"){
+                               authkey = login.user.attribute.value;
                             }
                         }
-                    }else{
-                        if(login.user.attribute && login.user.attribute.name == "UUID"){
-                           serverConfig.gsSources[authSource].url = insertParam(serverConfig.gsSources[authSource].url,authParam,login.user.attribute.value);
-                        }
+                    if (serverConfig.gsSources[authSource] && authkey){
+                        serverConfig.gsSources[authSource].url = insertParam(serverConfig.gsSources[authSource].url,authParam,authkey);
                     }
-                    
                     //this.target.setIconClass("gxp-icon-logout");
                     this.logged=true;
                     initComposer();

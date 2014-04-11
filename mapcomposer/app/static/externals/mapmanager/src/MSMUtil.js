@@ -126,11 +126,13 @@
 	 * {String}
 	 */
 	Uri.prototype.toString = function(){
-		this.uri_ += '?';
-		for (key in this.params_){
-			this.uri_ += key + '=' + this.params_[key] + '&';
-		}
-		return this.uri_;
+        //check parameters
+        var uri = this.uri_;
+            uri += '?';
+            for (var key in this.params_){
+                uri += key + '=' + this.params_[key] + '&';
+            }
+		return uri;
 	};
 
 	/**
@@ -265,7 +267,9 @@
 		// Build the uri to invoke
 		// ///////////////////////////////////////////////////////
 		var uri = new Uri({'url': this.baseUrl_ });
+        
 		uri.appendPath( this.resourceNamePrefix_ ).appendId( pk );
+        //add param options
 		if (params_opt){
 			for( name in params_opt ){
 				uri.addParam( name, params_opt[name] );
@@ -638,10 +642,20 @@
 		initialize: function(){
 			this.resourceNamePrefix_ = 'user';
 		},
+        
 		beforeSave: function(data){
+            var newPassword = data.password ? '<newPassword>'+ data.password + '</newPassword>' :'';
+            var attribute = '';
+            //generate attributes from the key:'value' object data.attribute
+            if(data.attribute){
+                for (var i in data.attribute ){
+                    attribute += '<attribute><name>'+i+'</name><value>'+data.attribute[i]+'</value></attribute>'
+                }
+            }
 			// wrap new user within an xml envelop
 			var xml = '<User><name>' + data.name +'</name>'
-					  +'<newPassword>'+ data.password + '</newPassword>'
+					  + newPassword 
+                      + attribute 
 					  +'<role>' + data.role + '</role></User>';
 			return xml;
 		},
@@ -662,10 +676,30 @@
 					obj.name = user.name;
 					obj.password = '';
 					obj.role = user.role;
+                    obj.attribute = user.attribute;
 					data.push( obj ); 
 				}
 				return data;
-			} else {
+			} else if(json.User){
+                var user = json.User;
+					var obj = new Object;
+					obj.id = user.id;
+					obj.name = user.name;
+					obj.password = '';
+					obj.role = user.role;
+                    if(user.attribute){
+                        obj.attribute = {};
+                        if( user.attribute instanceof Array){
+                            for(var i = 0; i < user.attribute.length;i++){
+                                obj.attribute[user.attribute[i].name] = user.attribute[i].value;
+                            }
+                        }else{
+                            obj.attribute[user.attribute.name=user.attribute.value];
+                        }
+                    } //TODO groups
+                    return obj;
+                
+            }else{
 				this.onFailure_('cannot parse response');
 			}
 		}

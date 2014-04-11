@@ -25,8 +25,7 @@
  * Inherits from:
  *  - <Ext.grid.GridPanel>
  */
-UserManagerView = Ext.extend(
-		Ext.grid.GridPanel, {
+UserManagerView = Ext.extend(Ext.grid.GridPanel, {
 
 		 	/** xtype = msm_usermanager **/
 		    xtype: "msm_usermanager",
@@ -274,7 +273,65 @@ UserManagerView = Ext.extend(
 			 * 
 			 */		
 			validFormMsg: "The user information has been updated",
-
+            customFields:[{
+                        xtype: 'textfield',
+                        anchor:'90%',
+                        id: 'email',
+                        allowBlank: false,
+                        blankText: 'email',
+                        name: 'attribute.email',
+                        fieldLabel: 'email',
+                        inputType: 'email',
+                        value: ''
+                  },{
+                        xtype: 'textfield',
+                        anchor:'90%',
+                        id: 'attribute.company',
+                        blankText: 'Company',
+                        fieldLabel: 'Company',
+                        inputType: 'text',
+                        value: ''
+                        
+                  },{
+                        xtype: 'textfield',
+                        anchor:'90%',
+                        id: 'attribute.company',
+                        blankText: 'Company',
+                        fieldLabel: 'Company',
+                        inputType: 'text',
+                        value: ''
+                        
+                  },{
+                        xtype: 'textfield',
+                        anchor:'90%',
+                        id: 'phone',
+                        allowBlank: false,
+                        blankText: '123 456 768',
+                        name: 'attribute.phone',
+                        fieldLabel: 'Telephone Number',
+                        inputType: 'text',
+                        value: ''
+                        
+                  },{
+                        xtype: 'textfield',
+                        anchor:'90%',
+                        id: 'address',
+                        name: 'attribute.address',
+                        fieldLabel: 'Address',
+                        inputType: 'text',
+                        value: ''
+                        
+                  },{
+                        xtype: 'textarea',
+                        anchor:'90%',
+                        id: 'notes',
+                        name: 'attribute.notes',
+                        blankText: 'Notes',
+                        fieldLabel: 'Notes',
+                        inputType: 'text',
+                        value: ''
+                        
+                  }],
             
 			/**
 		    * Constructor: initComponent 
@@ -340,7 +397,102 @@ UserManagerView = Ext.extend(
 						},
                         scope: this
 				};
-
+                var userDataFields =[{
+                        xtype: 'textfield',
+                        anchor:'90%',
+                        id: 'user-textfield',
+                        allowBlank: false,
+                        blankText: userManager.textBlankUserName,
+                        fieldLabel: userManager.textName,
+                        value: '',
+                        listeners: {
+                          beforeRender: function(field) {
+                            field.focus(false, 1000);
+                          }
+                        }
+                  },
+                  {
+                        xtype: 'textfield',
+                        anchor:'90%',
+                        id: 'password-textfield',
+                        allowBlank: false,
+                        blankText: userManager.textBlankPw,
+                        fieldLabel: userManager.textPassword,
+                        inputType:'password',
+                        value: ''                
+                  },
+                  {
+                        xtype: 'textfield',
+                        anchor:'90%',
+                        id: 'password-confirm-textfield',
+                        allowBlank: false,
+                        blankText: userManager.textBlankPw,
+                        invalidText: userManager.textPasswordConfError,
+                        fieldLabel: userManager.textPasswordConf,
+                        validator: function(value){
+                            var passwordField = Ext.getCmp("password-textfield");
+                            
+                            if(passwordField.getValue() == value){
+                                return true;
+                            }else{
+                                return false;
+                            } 
+                        },
+                        inputType:'password',
+                        value: ''                
+                  },
+                  {
+                        xtype: 'combo',
+                        displayField:'role',
+                        anchor:'90%',
+                        allowBlank: false,
+                        editable: false,
+                        blankText: userManager.textBlankRole,
+                        valueField:'role',
+                        emptyText: userManager.textSelectRole,
+                        allowBlank: false,
+                        triggerAction: 'all',
+                        mode: 'local',
+                        id: 'role-dropdown',
+                        fieldLabel: userManager.textRole,
+                        store: new Ext.data.SimpleStore({
+                             fields:['id', 'role'],
+                             data:[['1', 'USER'], ['2', 'ADMIN']]
+                        })
+                  }	];
+                  var newUserTabPanel = {
+                        xtype:'tabpanel',
+                        activeTab: 0,
+                        deferredRender: false,
+                        items:[{
+                              frame:true,
+                              layout:'form',
+                              id: 'name-field-set',
+                              ref:'../general',
+                              border: false,
+                              title:"General",
+                              items: userDataFields
+                            },{
+                              xtype: 'panel',
+                              frame:true,
+                              layout:'form',
+                              ref:'../attributes',
+                              id: 'attributes-field-set',
+                              title:"Attributes",//i18n
+                              border: false,
+                              autoScroll:true,
+                              items: userManager.customFields
+                            },{
+                              xtype: 'panel',
+                              frame:true,
+                              layout:'form',
+                              ref:'../groups',
+                              id: 'groups-field-set',
+                              title:"Groups",//i18n
+                              border: false
+                              
+                            }]
+                };
 				// button to open the add user window
 				this.addUserButton = {
 						id: 'id_addUser_button',
@@ -352,84 +504,13 @@ UserManagerView = Ext.extend(
 				        handler : function(){
 							// form in user add window
 							var form = new Ext.form.FormPanel({
-								    // width: 415, height: 200, border:false,
+								    layout:'fit',
 								    frame:true,  border:false,
-								    items: [
-										{
-										  xtype: 'fieldset',
-										  id: 'name-field-set',
-										  border:false,
-										  items: [
-											  {
-													xtype: 'textfield',
-													width: 150,
-													id: 'user-textfield',
-													allowBlank: false,
-													blankText: userManager.textBlankUserName,
-													fieldLabel: userManager.textName,
-													value: '',
-													listeners: {
-													  beforeRender: function(field) {
-														field.focus(false, 1000);
-													  }
-													}
-											  },
-											  {
-													xtype: 'textfield',
-													width: 150,
-													id: 'password-textfield',
-													allowBlank: false,
-													blankText: userManager.textBlankPw,
-													fieldLabel: userManager.textPassword,
-													inputType:'password',
-													value: ''                
-											  },
-											  {
-													xtype: 'textfield',
-													width: 150,
-													id: 'password-confirm-textfield',
-													allowBlank: false,
-													blankText: userManager.textBlankPw,
-													invalidText: userManager.textPasswordConfError,
-													fieldLabel: userManager.textPasswordConf,
-													validator: function(value){
-														var passwordField = Ext.getCmp("password-textfield");
-														
-														if(passwordField.getValue() == value){
-															return true;
-														}else{
-															return false;
-														} 
-													},
-													inputType:'password',
-													value: ''                
-											  },
-											  {
-													xtype: 'combo',
-													displayField:'role',
-													width: 150,
-													allowBlank: false,
-													editable: false,
-													blankText: userManager.textBlankRole,
-													valueField:'role',
-													emptyText: userManager.textSelectRole,
-													allowBlank: false,
-													triggerAction: 'all',
-													mode: 'local',
-													id: 'role-dropdown',
-													fieldLabel: userManager.textRole,
-													store: new Ext.data.SimpleStore({
-														 fields:['id', 'role'],
-														 data:[['1', 'USER'], ['2', 'ADMIN']]
-													})
-											  }	
-										  ]
-										}
-									]
+								    items: [newUserTabPanel]
 						});
 
 						var winAdd = new Ext.Window({
-					           width: 415, height: 200, resizable: false, modal: true, border:false, plain:true,
+					           width: 415, height: 300, resizable: true, modal: true, border:false, plain:true,
 							   closeAction: 'hide', layout: 'fit', 
 					           title: userManager.textAddUserTitle,
 					           items: [ form ],
@@ -456,33 +537,40 @@ UserManagerView = Ext.extend(
 					 									var nameField = Ext.getCmp("user-textfield");
 														var passwordField = Ext.getCmp("password-textfield");
 														var passwordConfirmField = Ext.getCmp("password-confirm-textfield");
-														
 														var roleDropdown = Ext.getCmp("role-dropdown"); 
-
-														if ( nameField.isValid(false) &&
-													           passwordField.isValid(false) &&
-													              roleDropdown.isValid(false) &&
-																	passwordField.getValue() == passwordConfirmField.getValue()){
-																	
-																userManager.users.create( 
-																	{ name: nameField.getValue(), 
-																	  password:passwordField.getValue(), 
-																	  role:roleDropdown.getValue() }, 
-                                                                        function success(response){                                                                            
-																		winAdd.hide();
-																        form.getForm().reset();
-																		// refresh the store
-                                                                            userManager.reload();
-																		winAdd.destroy();
-                                                                        },
-                                                                        function failure(response) {
-																 Ext.Msg.show({
-							                                       title: userManager.failSuccessTitle,
-							                                       msg: userManager.userAlreadyTaken,
-							                                       buttons: Ext.Msg.OK,
-							                                       icon: Ext.MessageBox.ERROR
-							                                    });
-                                                            });																														
+                                                        // Check Form Validity
+														if ( form.getForm().isValid() && passwordField.getValue() == passwordConfirmField.getValue()){
+                                                            var values = form.getForm().getValues();
+                                                            //get attributes with name attribute.<att_name>
+                                                            var attribute = {};
+                                                            for(var name in values ){
+                                                                var arr = name.split('.');
+                                                                if(arr.length >1 && arr[0]=='attribute'){
+                                                                    attribute[arr[1]] = values[name];
+                                                                }
+                                                            }
+                                                            // Save user
+                                                            userManager.users.create({ 
+                                                                    name: nameField.getValue(), 
+                                                                    password:passwordField.getValue(), 
+                                                                    role:roleDropdown.getValue(),
+                                                                    attribute: attribute
+                                                                }, 
+                                                                function success(response){                                                                            
+                                                                    winAdd.hide();
+                                                                    form.getForm().reset();
+                                                                    // refresh the store
+                                                                    userManager.reload();
+                                                                    winAdd.destroy();
+                                                                },
+                                                                function failure(response) {
+                                                                     Ext.Msg.show({
+                                                                       title: userManager.failSuccessTitle,
+                                                                       msg: userManager.userAlreadyTaken,
+                                                                       buttons: Ext.Msg.OK,
+                                                                       icon: Ext.MessageBox.ERROR
+                                                                    });
+                                                            });
 														
 														} else {
 															Ext.Msg.show({
@@ -525,7 +613,7 @@ UserManagerView = Ext.extend(
 									      },
 										  {
 									            xtype: 'textfield',
-									            width: 150,
+									            anchor:'90%',
 									            id: 'user-textfield',
 									            disabled: true,
 												allowBlank: false,
@@ -540,19 +628,28 @@ UserManagerView = Ext.extend(
 									      },
 									      {
 									            xtype: 'textfield',
-									            width: 150,
+									            anchor:'90%',
 									            id: 'password-textfield',
-												allowBlank: false,
+												allowBlank: true,
 												blankText: userManager.textBlankPw,
 									            fieldLabel: userManager.textPasswordEdit,
 												inputType:'password',
-									            value: '' //TODO set from record               
+									            value: '',
+                                                validator: function() {
+
+									            	if( Ext.getCmp('password-textfield').getValue() == 
+									            		Ext.getCmp('passwordconf-textfield').getValue()
+									            		)
+									            		return true;
+									            	else
+									            		return userManager.textPasswordConfError;
+									            }
 									      },
 									      {
 									            xtype: 'textfield',
-									            width: 150,
+									            anchor:'90%',
 									            id: 'passwordconf-textfield',
-												allowBlank: false,
+												allowBlank: true,
 												blankText: userManager.textPasswordConf,
 									            fieldLabel: userManager.textPasswordConf,
 												inputType: 'password',
@@ -570,7 +667,7 @@ UserManagerView = Ext.extend(
 									      {
 	                                            xtype: 'combo',
 												displayField:'role',
-												width: 150,
+												anchor:'90%',
 												disabled: !isAdmin,	//limit only to admin
 												allowBlank: false,
 												editable: false,
@@ -589,8 +686,40 @@ UserManagerView = Ext.extend(
 												             data:[['1', 'USER'], ['2', 'ADMIN']]
 												          })
 	                                      }];
-
+                    //userDataFields.push(userManager.customFields);
 					// for user is the tab content!!
+                    var userFormTabPanel ={
+                        xtype:'tabpanel',
+                        activeTab: 0,
+                        deferredRender: false,
+                        items:[{
+                              frame:true,
+                              layout:'form',
+                              id: 'name-field-set',
+                              border: false,
+                              title:"General",
+                              items: userDataFields
+                            },{
+                              xtype: 'panel',
+                              frame:true,
+                              ref:'../attribute',
+                              layout:'form',
+                              id: 'attributes-field-set',
+                              title:"Attributes",//i18n
+                              border: false,
+                              autoScroll:true,
+                              items: userManager.customFields
+                            },{
+                              xtype: 'panel',
+                              frame:true,
+                              layout:'form',
+                              id: 'groups-field-set',
+                              title:"Groups",//i18n
+                              border: false,
+                              autoScroll:true,
+                              html:'not implemented'
+                            }]
+						};
 					if(renderToTab){
 						var formEdit = new Ext.form.FormPanel({
 							  title: userManager.textEditUserTitle,
@@ -599,12 +728,8 @@ UserManagerView = Ext.extend(
 				              closable: true,
 				              closeAction: 'close',
 							  id: userManager.id,
-							  items: [{
-									  xtype: 'fieldset',
-									  id: 'name-field-set',
-									  border: false,
-									  items: userDataFields
-							  }],
+							  items: [userFormTabPanel],
+                              
 							  bbar: new Ext.Toolbar({
 									 items:[
 											'->',
@@ -659,19 +784,36 @@ UserManagerView = Ext.extend(
 					}else{
 					
 						var formEdit = new Ext.form.FormPanel({
-							  // width: 415, height: 200, border:false,
-							  frame:true,  border:false,
-							  items: [{
-									  xtype: 'fieldset',
-									  id: 'name-field-set',
-									  border: false,
-									  items: userDataFields
-									  }]
+							  //width: 415, height: 200, border:false,
+							  frame:true,  border:false,layout:'fit',
+                              items: [userFormTabPanel],
+                              listeners:{
+                                afterrender: function(){
+                                    //populate attribute fields
+                                    for( var attrname in userdata.attribute ){
+                                        var field = formEdit.getForm().findField('attribute.' + attrname); 
+                                        // if the attribute is present populate the field
+                                        if(field){
+                                            field.setValue(userdata.attribute[attrname]);
+                                        // if not present, create a dummy hidden field for it
+                                        }else{
+                                            formEdit.add({
+									            xtype: 'hidden',
+                                                name:'attribute.' + attrname,
+									            value: userdata.attribute[attrname]
+									      })
+                                        }
+                                    }
+                                }
+                              
+                              }
+                          
+							  
 						});
 
 						// for admin it shows the window
 						var winEdit = new Ext.Window({
-							width: 415, height: 200, resizable: false, modal: true, border:false, plain:true,
+							width: 415, height: 300, resizable: true, modal: true, border:false, plain:true,
 							closeAction: 'hide', layout: 'fit', 
 							title: userManager.textEditUserTitle,
 							items: [ formEdit ],
@@ -694,24 +836,29 @@ UserManagerView = Ext.extend(
 												id: "user-addbutton",
 												scope: this,
 												handler: function(){      
-
+                                                
 													var useridField = Ext.getCmp("userid-hidden"); 
 													var nameField = Ext.getCmp("user-textfield");
 													var passwordField = Ext.getCmp("password-textfield");
 													var passwordConfField = Ext.getCmp("passwordconf-textfield");
 													var roleDropdown = Ext.getCmp("role-dropdown"); 
-
-													if ( nameField.isValid(false) &&
-														 passwordField.isValid(false) &&
-														 passwordConfField.isValid(false) &&
-														 (passwordField.getValue() == passwordConfField.getValue()) &&
-														 (isAdmin ? roleDropdown.isValid(false) : true)
-														)
-													{
+                                                    var form = formEdit.getForm();
+                                                    var values = form.getValues();
+													if ( form.isValid() && (passwordField.getValue() == passwordConfField.getValue()) && (isAdmin ? roleDropdown.isValid(false) : true) ){
+                                                        var values = form.getValues();
+                                                            //get attributes with name attribute.<att_name>
+                                                            var attribute = {};
+                                                            for(var name in values ){
+                                                                var arr = name.split('.');
+                                                                if(arr.length >1 && arr[0]=='attribute'){
+                                                                    attribute[arr[1]] = values[name];
+                                                                }
+                                                            }
 														userManager.users.update( useridField.getValue(),
 																{ name: nameField.getValue(), 
 																  password:passwordField.getValue(), 
-																  role:roleDropdown.getValue() }, 
+																  role:roleDropdown.getValue(),
+                                                                  attribute:attribute}, 
 																  function(response) {
 																	winEdit.hide();
 																	formEdit.getForm().reset();
@@ -835,10 +982,7 @@ UserManagerView = Ext.extend(
 														};
 														
 														geostore.deleteByFilter(filterData, function(response){
-															userManager.gridPanelBbar.doRefresh();
-															
 															// ------ DELETE USER ------- //
-															
 															userManager.users.deleteByPk( record.get('id'), function(data){
 																// refresh the store
 																userManager.reload();
@@ -857,10 +1001,17 @@ UserManagerView = Ext.extend(
 							            tooltip: userManager.tooltipEdit,
 							            handler: function(grid, rowIndex, colIndex) {
 							               var record = grid.store.getAt(rowIndex);
-			
+    
 							               var userdata = {id: record.get('id'), name: record.data.name, role: record.data.role };
+                                           var loadMask = new Ext.LoadMask(Ext.getBody(), {msg:'Wait message'});
+                                           loadMask.show();
+							               userManager.users.findByPk( record.get('id'), function(data){
+																// refresh the store
+                                                                console.log(data);
+																userManager.showEditUserWindow(data);
+                                                                loadMask.hide();
+															},{includeattributes:true});
 							               
-							               userManager.showEditUserWindow(userdata);
 							               //open edit user data window				
 							            }, 
 							            scope: this
@@ -915,7 +1066,7 @@ UserManagerView = Ext.extend(
 				
                     this.bbar = paging;					
 								
-                    userManager.reload = function() {                        
+                    userManager.reload = function() {
                         userManager.store.reload();
                     };
                     
