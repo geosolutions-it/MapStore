@@ -350,7 +350,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
 					this.username = user.User.name;
 					this.role = user.User.role;
 				}
-                this.fireEvent("login", this.username, auth);
+                this.fireEvent("login", this.username, auth, user.User);
             },
             failure: function(response, form, action) {
                 Ext.MessageBox.show({

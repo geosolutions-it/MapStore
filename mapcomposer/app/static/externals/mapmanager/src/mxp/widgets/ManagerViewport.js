@@ -245,7 +245,11 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
             }, this);
         }else{
             // load default logged tools
-            this.applyUserConfig(0, this.logged ? this.initialConfig.loggedTools : this.initialConfig.tools);
+            var applyConfig = this.logged ? this.initialConfig.loggedTools : this.initialConfig.tools;
+            if(this.initialConfig.adminTools && this.user && this.user.role=='ADMIN'){
+                applyConfig =this.initialConfig.adminTools;
+            }
+            this.applyUserConfig(0,applyConfig);
         }
     },
 
@@ -325,9 +329,10 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
     /** private: method[onLogin]
      *  Listener with actions to be executed when an user makes login.
      */
-    onLogin: function(user, auth){
+    onLogin: function(user, auth, details){
         if(!this.logged && user){
             this.cleanTools();
+            this.user = details;
             this.auth = auth ? auth: this.auth;
             this.logged = true;
 

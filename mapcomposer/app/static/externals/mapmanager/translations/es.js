@@ -95,6 +95,9 @@ GeoExt.Lang.add("es", {
         loginFormTitle: "Por favor, lóguese"
     },
     "UserManagerView.prototype":{
+        textGeneral: "General", 
+        textAttributes: "atributos", 
+        textGroups: "Grupos",
 		textName: 'Nombre',
 		textPassword: 'Contraseña',
 		textPasswordEdit: 'Nueva Contraseña',

@@ -232,6 +232,10 @@ display:block;
 left: 80px !important;
 
 }
+/* Background for items selected in multiselect */
+.ux-mselect-selected{
+    background-color: rgb(204, 204, 204);
+}
 
 .embed-field-label {
     font-weight: bold;
@@ -263,3 +267,13 @@ left: 80px !important;
 .group_edit_ic{
     background-image: url(../img/group_edit.png);
 }
+
+.vcard_ic{
+    background-image: url(../img/vcard.png);
+}
+
+.information_ic{
+    background-image: url(../img/information.png);
+}
+}
+

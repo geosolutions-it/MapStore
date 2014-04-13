@@ -102,8 +102,10 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
             searchUrl: this.target.geoSearchUsersUrl,
             url: this.target.geoBaseUsersUrl,
             geoStoreBase: this.target.config.geoStoreBase,
-            renderMapToTab: this.outputTarget
+            renderMapToTab: this.outputTarget,
+            header:false
     	};
+        //TODO
         var groupManager = {
             region:'south',
             xtype: "msm_usermanager",
@@ -127,10 +129,6 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
             layout: 'border',
             auth: login.login.getToken(),
             login: login.login,
-            searchUrl: this.target.geoSearchUsersUrl,
-            url: this.target.geoBaseUsersUrl,
-            geoStoreBase: this.target.config.geoStoreBase,
-            renderMapToTab: this.outputTarget,
             items:[usermanager/*,groupManager*/]
     	});
 
@@ -156,7 +154,6 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
                 }
             }
         }
-
         return mxp.plugins.UserManager.superclass.addOutput.apply(this, arguments);
     }
 });

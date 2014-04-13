@@ -652,10 +652,23 @@
                     attribute += '<attribute><name>'+i+'</name><value>'+data.attribute[i]+'</value></attribute>'
                 }
             }
+            var groups = '';
+            groups = '<groups>';
+            if(data.groups){
+                groups = '<groups>';
+                for(var i = 0;i< data.groups.length;i++){
+                    groups += '<group><groupName>' + data.groups[i].groupName + '</groupName></group>';
+                }
+                
+            }else{
+               
+            }
+            groups +=  '</groups>';
 			// wrap new user within an xml envelop
 			var xml = '<User><name>' + data.name +'</name>'
 					  + newPassword 
                       + attribute 
+                      +groups
 					  +'<role>' + data.role + '</role></User>';
 			return xml;
 		},
@@ -696,7 +709,14 @@
                         }else{
                             obj.attribute[user.attribute.name=user.attribute.value];
                         }
-                    } //TODO groups
+                    } 
+                    if (user.groups && user.groups.group){
+                        if(user.groups.group instanceof Array){
+                            obj.groups = user.groups.group;
+                        }else{
+                            obj.groups = [user.groups.group];
+                        }
+                    } 
                     return obj;
                 
             }else{

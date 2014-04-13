@@ -1,5 +1,5 @@
-/**
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+/*
+ *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -17,32 +17,31 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * @author Lorenzo Natali, Tobia Di Pisa
- */
-
-/**
- * @requires plugins/Tool.js
- */
-
+ 
 /** api: (define)
- *  module = gxp.plugins
- *  class = GeoStoreAccount
+ *  module = mxp.plugins
+ *  class = MyAccount
  */
-
-/** api: (extends)
- *  plugins/Tool.js
- */
-Ext.namespace("gxp.plugins");
+Ext.ns("mxp.plugins");
 
 /** api: constructor
- *  .. class:: GeoStoreAccount(config)
+ *  .. class:: MyAccount(config)
  *
- *    Plugin for adding a GeoStoreAccount Module to a :class:`gxp.Viewer`.
- */   
-gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
-    ptype: "gxp_geostore_account",
-    displayAttributes:['Name','Surname','email'],
+ *    Open a My Account panel
+ */
+mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
+    
+    /** api: ptype = mxp_usermanager */
+    ptype: "mxp_myaccount",
+
+    buttonText: "My Account",
+    tooltipText: "My Account details",
+    groupsText: "Groups",
+    usersText: "Users",
+
+    setActiveOnOutput: true,
+
+    loginManager: null, 
     usernameLabel:'User Name',
     scrollable:true,
     notAllowedAttributes:['UUID'],
@@ -81,10 +80,40 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
             '</tbody></table>',
         '</tpl>',
     '</div>'],
+    // default configuration for the output
+    outputConfig: {
+        closable: true,
+        closeAction: 'close',
+        autoWidth: true,
+        viewConfig: {
+            forceFit: true
+        }       
+    },
+
+    /** api: method[addActions]
+     */
+    addActions: function() {
+        
+        var thisButton = new Ext.Button({
+            text: this.buttonText,
+            iconCls:'vcard_ic',
+            tooltip: this.tooltipText,
+            handler: function() { 
+                // add output if not present
+                this.addOutput();
+            },
+            scope: this
+        });
+
+        var actions = [thisButton];
+
+        return mxp.plugins.MyAccount.superclass.addActions.apply(this, [actions]);
+    },
+    
     addOutput: function(config) {
         target =this.target;
         //create a copy of the user
-        var user = {};
+        var user = this.target.user || {};
        user = Ext.apply( user , this.user);
        
         // make the userattribute always an array
@@ -95,7 +124,7 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
             user.attribute = [user.attribute];
         }
          // make the userattribute always an array
-         if(!user.groups){
+        if(!user.groups){
             user.groups = {};
         }
         if(!user.groups.group){
@@ -104,8 +133,6 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
         if(!(user.groups.group instanceof Array)){
             user.groups.group = [user.groups.group];
         }
-        
-        console.log(user);
         //remove attributes not allowed to display
         if(this.notAllowedAttributes){
             var attributes = [];
@@ -123,12 +150,16 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
             }
             user.attribute = attributes;
         }                      
-
+        //add the strings to the template object
+        user.strings = {
+            groups:this.groupsText,
+            accountDetailsText: this.accountDetailsText
+        }
         var controlPanel = {
             xtype: "panel",
             layout: 'border',
             title: "My Account",
-            iconCls: "user-icon",  
+            iconCls: "vcard_ic",  
             header: false,
             items:[{
                 region:'center',
@@ -191,18 +222,13 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
         
         }
         
-        this.output = gxp.plugins.GeoStoreAccount.superclass.addOutput.call(this, Ext.apply(controlPanel,config));
+        this.output = mxp.plugins.MyAccount.superclass.addOutput.call(this, Ext.apply(controlPanel,config));
 		
 		//hide selection layer on tab change
 		
 		return this.output;
 		
-	},
-    /**
-     * Parse the User attribute and returns an Extjs Compatible object for records
-     */ 
-    parseAttributes: function(){
-    
-    }
- });
- Ext.preg(gxp.plugins.GeoStoreAccount.prototype.ptype, gxp.plugins.GeoStoreAccount);
+	}
+});
+
+Ext.preg(mxp.plugins.MyAccount.prototype.ptype, mxp.plugins.MyAccount);

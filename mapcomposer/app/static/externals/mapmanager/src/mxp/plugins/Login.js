@@ -67,9 +67,9 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
     /** private: method[onLogin]
      *  Listener with actions to be executed when an user makes login.
      */
-    onLogin: function(user, auth){
-        this.target.onLogin(user, auth);
-        this.fireEvent("login", user, auth);
+    onLogin: function(user, auth, details){
+        this.target.onLogin(user, auth, details);
+        this.fireEvent("login", user, auth, details);
     },
 
     /** private: method[onLogout]
