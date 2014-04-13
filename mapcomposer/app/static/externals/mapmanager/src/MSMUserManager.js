@@ -216,6 +216,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
 
             invalidFormMsg: 'Some fields are invalid or empty',
             userAlreadyTaken: 'User is already taken',
+            textManageGroups: 'Manage Groups',
 
             /**
             * Property: url
@@ -255,20 +256,17 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
             /**
             * Property: beforePageText
             * {string} The text displayed before the input item (defaults to 'Page')
-            * 
             */
             beforePageText: 'Page',
             /**
             * Property: afterPageText
             * {string} Customizable piece of the default paging text (defaults to 'of {0}')
-            * 
             */
             afterPageText : "of {0}",
 
             /**
             * Property: auth
             * {string} auth token to access geostore services
-            * 
             */
             auth: null,
 
@@ -541,7 +539,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                     ]});		
 				
 					// the top bar of the user manager window
-					this.tbar = [ this.inputSearch, this.searchButton, this.resetSearchButton, '-', this.createAddUserButton() ];
+					this.tbar = [ this.inputSearch, this.searchButton, this.resetSearchButton, '-', this.createAddUserButton(),"->",this.createManageGroupsButton() ];
 
 					// data store
 					this.store = new Ext.data.JsonStore({
@@ -831,7 +829,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
 						id: 'id_addUser_button',
 						scope: this,
 						disabled: false,
-				 		text: this.textAddUser,
+				 		text: this.textAddUserTitle,
 						tooltip: this.tooltipAddUser,
 						iconCls: 'user_add',
 				        handler : function(){
@@ -917,7 +915,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                                                     winAdd.hide();
                                                                     form.getForm().reset();
                                                                     // refresh the store
-                                                                    userManager.reload();
+                                                                    userManager.store.reload();
                                                                     winAdd.destroy();
                                                                 },
                                                                 function failure(response) {
@@ -1102,6 +1100,8 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                             anchor:'100%',
                             imagePath: 'externals/ext/ux/images/',
                             multiselects:[{
+                                scrollable:true,
+                                autoScroll:true,
                                 width: 175,
                                 height: 200,
                                 valueField:'groupName',
@@ -1113,7 +1113,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                     idProperty: 'id',
                                     fields: ['id','groupName', 'description'],
                                     proxy: new Ext.data.HttpProxy({
-                                        url: "http://localhost:9190/geostore/rest/usersgroup/",
+                                        url: this.geoStoreBase + "usersgroup/",
                                         restful: true,
                                         method : 'GET',
                                         disableCaching: true,
@@ -1299,9 +1299,435 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                         });
                         winEdit.show();	
                                        
+            },
+            createManageGroupsButton : function(){
+                var um = this;
+                return {
+                    xtype:'button',
+                    iconCls:'group_ic',
+                    text: um.textManageGroups,//TODO i18n
+                    handler:function(){
+                        var groupView = {
+                            xtype:'msm_usergroupmanager',
+                            geoStoreBase:um.geoStoreBase,
+                            auth: um.auth,
+                            layout:'fit'
+                        };
+                        // for admin it shows the window
+                        var wingroup = new Ext.Window({
+                            iconCls:'group_ic',
+                            title:um.textGroups,
+                            width: 500, height: 500, 
+                            resizable: true, 
+                            modal: true, 
+                            border:false,
+                            plain:true,
+                            closeAction: 'hide', 
+                            layout: 'fit', 
+                            items: groupView
+                        });
+                        wingroup.show();
+                    }
+                };
             }
 		  		
 });
 
 /** api: xtype = msm_usermanager */
 Ext.reg(UserManagerView.prototype.xtype, UserManagerView);
+// ****************************************************************
+// UserGroup manager 
+// ****************************************************************
+/**
+ * Class: MSMUserGroupManager
+ * this view represents the usergroup manager
+ * Inherits from:
+ *  - <Ext.grid.GridPanel>
+ */
+MSMUserGroupManager = Ext.extend(Ext.grid.GridPanel, {
+
+    xtype: 'msm_usergroupmanager',
+    
+    //i18n
+    textGroupName: 'Group Name',
+    textId: 'Id',
+    textDescription: 'Description',
+    textAddGroupButton: 'Create a New Group',
+    groupNameAlreadyTaken: 'Group Name already taken',
+    titleConfirmDeleteMsg: "Confirm delete group",
+    textConfirmDeleteMsg: "Are you sure you want to delete this group?",
+    textName:'Name',
+    textRole:'Role',
+    textGroup:'Group',
+    textUsers:'Users',
+    textSave:'Save',
+    textClose:'Close',
+    textDetails: 'Details',
+    tooltipGroupInfo:'Informations about this group',
+    tooltipDelete:'Delete this Group',
+    // end of i18n
+    /**
+    * Property: auth
+    * {string} auth token to access geostore services
+    */
+    auth: null,
+    /**
+    * Property: geoStoreBase
+    * {string} the base geoStore string
+    */
+    geoStoreBase:null,
+    loadMask:true,  
+    stripeRows: true,
+    autoExpandColumn: 'description',
+    stateful: true,
+    initComponent: function(){
+        //groups store (not pagination support because of extjs needs total count to use the pagination bar
+        this.store = new Ext.data.JsonStore({
+            autoDestroy: true,
+            autoLoad:true,
+            root: 'UserGroupList.UserGroup || []',
+            idProperty: 'id',
+            fields: ['id','groupName', 'description'],
+            proxy: new Ext.data.HttpProxy({
+                url: this.geoStoreBase + "usersgroup/",
+                restful: true,
+                method : 'GET',
+                disableCaching: true,
+                sortInfo: { field: "groupName", direction: "ASC" },
+                defaultHeaders: {'Accept': 'application/json', 'Authorization' : this.auth},
+                failure: function (response) {
+                    console.error(response); 
+                      Ext.Msg.show({
+                       title: this.failSuccessTitle,
+                       msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+                       buttons: Ext.Msg.OK,
+                       icon: Ext.MessageBox.ERROR
+                    })                                
+                }
+            })
+        });
+        //this object allows to save,get and delete groups
+        this.groups = new GeoStore.UserGroups(
+                    { authorization: this.auth,
+                      url: this.geoStoreBase + 'usersgroup',
+                    }).failure( function(response){ 
+                        console.error(response); 
+                          Ext.Msg.show({
+                           title: this.failSuccessTitle,
+                           msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+                           buttons: Ext.Msg.OK,
+                           icon: Ext.MessageBox.ERROR
+                        });
+                    } );
+        // the top bar contains a button to create groups
+        this.tbar=[{
+            iconCls:'group_add_ic',
+            text:this.textAddGroupButton,
+            handler: this.createNewGroupWindow,
+            scope:this
+        }];
+       
+        //create the column model of the grid
+        this.cm = new Ext.grid.ColumnModel({
+            columns: [{
+                    id       :'id',
+                    header   : this.textId, 
+                    sortable : true, 
+                    dataIndex: 'id',
+                    hidden   : true
+                },{
+                    id       :'groupName',
+                    header   : this.textGroupName, 
+                    sortable : true, 
+                    dataIndex: 'groupName',
+                    hidden   : false
+                },{
+                    id       :'description',
+                    header   : this.textDescription, 
+                    sortable : true, 
+                    dataIndex: 'description',
+                    hidden   : false,
+                    renderer: function(value, p, record){
+                        
+                            var xf = Ext.util.Format;
+                            return '<p>' + xf.ellipsis(xf.stripTags(value), 50) +   '</p>';
+                    } 
+                },{
+                    xtype:'actioncolumn',
+                    width: 35,
+                    items:[ {
+                        iconCls:'group_delete_ic',
+                        width:25,
+                        tooltip: this.tooltipDelete,
+                        scope:this,
+                        getClass: function(v, meta, rec) {
+                          if(rec.get('groupName') == "allresources" || rec.get('groupName') == "anyone") {
+                              return 'x-hide-display';
+                          }else{
+                            return 'x-grid-center-icon action_column_btn';
+                          }
+                        },
+                        handler: this.deleteRow 
+                    }]
+                },{
+                    xtype:'actioncolumn',
+                    width: 35,
+                    items:[ {
+                        iconCls:'information_ic',
+                        width:25,
+                        tooltip: this.tooltipGroupInfo,
+                        scope:this,
+                        getClass: function(v, meta, rec) {
+                          if(rec.get('groupName') == "allresources" || rec.get('groupName') == "anyone") {
+                              return 'x-hide-display';
+                          }else{
+                            return 'x-grid-center-icon action_column_btn';
+                          }
+                        },
+                        handler: this.groupDetails 
+                    }]
+                }]
+        });
+        //call superclass initComponent
+        MSMUserGroupManager.superclass.initComponent.call(this, arguments);
+    },
+    /**
+    * private: method[createNewGroupWindow]
+    * Shows a new Window that allows to create a new Group
+    */
+    createNewGroupWindow: function(){
+       var ugmanager = this;
+       var  winnewgroup = new Ext.Window({
+                    iconCls:'group_add_ic',
+                    title:this.textAddGroupButton,
+                    width: 300, height: 200, 
+                    minWidth:250,
+                    minHeight:200,
+                    resizable: true, 
+                    modal: true, 
+                    border:false,
+                    plain:true,
+                    closeAction: 'hide', 
+                    layout: 'fit', 
+                    items: [{
+                        layout:'form',
+                        xtype:'form',
+                        frame:true,  
+                        border:false,
+                        ref:'form',
+                        buttons:[{
+                                text:ugmanager.textSave,
+                                iconCls:'accept',
+                                ref:'../save',
+                                handler:function(btn){
+                                    var form = btn.refOwner.getForm();
+                                     if(form.isValid()){
+                                        var values = form.getValues();
+                                        ugmanager.groups.create({
+                                            groupName: values.groupName,
+                                            description: values.description,
+                                            },function success(response){                                                                            
+                                                winnewgroup.hide();
+                                                form.reset();
+                                                // refresh the store
+                                                ugmanager.store.reload();
+                                                winnewgroup.destroy();
+                                            },
+                                            function failure(response) {
+                                                 Ext.Msg.show({
+                                                   title: ugmanager.failSuccessTitle,
+                                                   msg: ugmanager.groupNameAlreadyTaken,
+                                                   buttons: Ext.Msg.OK,
+                                                   icon: Ext.MessageBox.ERROR
+                                                });
+                                        });
+                                    }
+                                  
+                                }
+                            },{
+                                text:ugmanager.textClose,
+                                iconCls:'close',
+                                ref:'../close',
+                                handler:function(){
+                                    winnewgroup.close();
+                                }
+                            }
+                        ],
+                        items:[{
+                            xtype:'textfield',
+                            anchor:'90%',
+                            name:'groupName',
+                            fieldLabel:ugmanager.textGroupName,
+                            allowBlank:false
+                        },{
+                            xtype:'textarea',
+                            anchor:'90%',
+                            name:'description',
+                            fieldLabel:ugmanager.textDescription,
+                            allowBlank:true
+                        }]
+                    }]
+        });
+        winnewgroup.show();
+            
+    },
+    /**
+    * private: method[deleteRow]
+    * Delete a row from the grid with rowIndex as second parameter
+    */ 
+    deleteRow:function(grid, rowIndex, colIndex) {
+        var record = grid.store.getAt(rowIndex);
+        //show the confirm message
+        Ext.Msg.confirm(
+            grid.titleConfirmDeleteMsg,
+            grid.textConfirmDeleteMsg,
+            function(btn) {
+                if(btn=='yes') {
+                        // ------ DELETE Group ------- //
+                        grid.groups.deleteByPk( record.get('id'), function(data){
+                        // refresh the store
+                        grid.store.reload();
+                        });
+                    
+                }
+            });
+    } ,
+    /**
+    * private: method[groupDetails]
+    * Shows the window with group details.
+    */ 
+    groupDetails:function(grid, rowIndex, colIndex) {
+        var record = grid.store.getAt(rowIndex);
+
+        //get the group with the id taken from the record
+        grid.groups.findByPk( record.get('id'), function(data){
+            var ugForm = {
+                layout:'form',
+                xtype:'form',
+                title: grid.textDetails,
+                iconCls:'information_ic',
+                frame:true,
+                border:false,
+                ref:'form',
+                // the PUT method is not available for now.
+                // remove the comment and test it once implemented
+                /*buttons:[{
+                        text:grid.textSave,
+                        iconCls:'accept',
+                        ref:'../save',
+                        handler:function(btn){
+                            var form = btn.refOwner.getForm();
+                             if(form.isValid()){
+                                var values = form.getValues();
+                                grid.groups.update(data.id,{
+                                    groupName: values.groupName,
+                                    description: values.description,
+                                    },function success(response){                                                                            
+                                        winnewgroup.hide();
+                                        form.reset();
+                                        // refresh the store
+                                        grid.store.reload();
+                                        winnewgroup.destroy();
+                                    },
+                                    function failure(response) {
+                                         Ext.Msg.show({
+                                           title: grid.failSuccessTitle,
+                                           msg: grid.groupNameAlreadyTaken,
+                                           buttons: Ext.Msg.OK,
+                                           icon: Ext.MessageBox.ERROR
+                                        });
+                                });
+                            }
+                          
+                        }
+                    },{
+                        text:grid.textClose,
+                        iconCls:'close',
+                        ref:'../close',
+                        handler:function(){
+                            winnewgroup.close();
+                        }
+                    }
+                ],*/
+                items:[{
+                    xtype:'hidden',
+                    anchor:'90%',
+                    name:'id',
+                    value: data.id
+                },{
+                    xtype:'textfield',
+                    anchor:'90%',
+                    name:'groupName',
+                    value: data.groupName,
+                    readOnly:true,
+                    fieldLabel:grid.textGroupName,
+                    allowBlank:false
+                },{
+                    xtype:'textarea',
+                    anchor:'90%',
+                    name:'description',
+                    readOnly:true,
+                    value: data.description,
+                    fieldLabel:grid.textDescription,
+                    allowBlank:true
+                }]
+            };
+            var users=[];
+            //get the users
+            if(data.restUsers instanceof Array){
+                users= data.restUsers 
+            }else if(data.restUsers){
+                users = [data.restUsers];
+            }
+            //grid with users associated with the group
+            var usersPanel = {
+                autoExpandColumn:'name',
+                xtype:'grid',
+                iconCls:'group_link_ic',
+                headers:false,
+                columns:[{
+                        id:'name',
+                        dataIndex:'name',
+                        header:grid.textName
+                    },{
+                        id:'role',
+                        dataIndex:'role',
+                        header:grid.textRole
+                    }],
+                layout:'fit',
+                store: new Ext.data.JsonStore({
+                    fields:['name','role'],
+                    autoDestroy:true,
+                    data:users
+                }),
+                title: grid.textUsers
+            }
+            
+            // tab panel with group info and members
+            var groupInfoTabPanel ={
+                xtype:'tabpanel',
+                activeTab:0,
+                items:[ugForm,usersPanel]
+                
+            }
+            //the window will contain the group info and members tabs
+           var wingroup = new Ext.Window({
+                iconCls:'group_ic',
+                title:data.groupName,
+                width: 300, height: 200, 
+                resizable: true, 
+                modal: true, 
+                border:false,
+                plain:true,
+                closeAction: 'hide', 
+                layout: 'fit', 
+                items: [groupInfoTabPanel]
+            });
+            wingroup.show();
+        });
+ 
+    }  
+});
+
+/** api: xtype = msm_usergroupmanager */
+Ext.reg(MSMUserGroupManager.prototype.xtype, MSMUserGroupManager);

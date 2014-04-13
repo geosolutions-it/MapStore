@@ -724,6 +724,77 @@
 			}
 		}
 	});
+    /**
+	 * Class: GeoStore.Users
+	 *
+	 * CRUD methods for users in GeoStore
+	 * Inherits from:
+	 *  - <GeoStore.ContentProvider>
+	 *
+	 */
+	var UserGroups = GeoStore.UserGroups = ContentProvider.extend({
+		initialize: function(){
+			this.resourceNamePrefix_ = 'group';
+		},
+        
+		beforeSave: function(data){
+            var description
+           if(data.description){
+            description='<description>' + data.description + '</description>'
+           }
+			// wrap new user within an xml envelop
+			var xml = '<UserGroup><groupName>' + data.groupName +'</groupName>'
+					  + description 
+					  + '</UserGroup>';
+			return xml;
+		},
+        
+		//TODO beforeUpdate
+	
+		afterFind: function(json){
+			 if ( json.UserGroupList ){
+				var data = [];
+				if ( json.UserGroupList.UserGroup.length === undefined){
+					data.push(json.UserGroupList.UserGroup);
+					return data;
+				}
+				for (var i=0; i< json.UserGroupList.UserGroup.length; i++){
+					var group = json.UserGroupList.UserGroup[i];
+					var obj = {};
+					obj.id = obj.id;
+					obj.groupName = group.groupName;
+                    obj.description = group.description;
+                    if(group.restUsers){
+                        if(group.restUsers.User instanceof Array){
+                            obj.restUsers = group.restUsers.User;
+                        }else if (group.restUsers.User){
+                            obj.restUsers = [group.restUsers.User];
+                        }
+                    }
+					data.push( obj ); 
+				}
+				return data;
+			} else if(json.UserGroup){
+                var group = json.UserGroup;
+					var obj = {};
+					obj.id = group.id;
+					obj.groupName = group.groupName;
+					obj.description = group.description;
+                    obj.restUsers = group.restUsers;
+                    if(group.restUsers){
+                        if(group.restUsers.User instanceof Array){
+                            obj.restUsers = group.restUsers.User;
+                        }else if (group.restUsers.User){
+                            obj.restUsers = [group.restUsers.User];
+                        }
+                    }
+                    return obj;
+                
+            }else{
+				this.onFailure_('cannot parse response');
+			}
+		}
+	});
 	
 	/**
 	 * Class: Google.Shortener

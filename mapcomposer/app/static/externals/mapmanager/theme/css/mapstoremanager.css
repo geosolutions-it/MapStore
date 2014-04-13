@@ -236,6 +236,14 @@ left: 80px !important;
 .ux-mselect-selected{
     background-color: rgb(204, 204, 204);
 }
+/** NEEDED TO MAKE MULTISELECT SCROLL **/
+.ux-mselect{
+    overflow:auto;
+    background:white;
+    position:relative; /* for calculating scroll offsets */
+    zoom:1;
+    overflow:auto;  
+}
 
 .embed-field-label {
     font-weight: bold;
@@ -267,7 +275,12 @@ left: 80px !important;
 .group_edit_ic{
     background-image: url(../img/group_edit.png);
 }
-
+.group_go_ic{
+    background-image: url(../img/group_go.png);
+}
+.group_link_ic{
+    background-image: url(../img/group_link.png);
+}
 .vcard_ic{
     background-image: url(../img/vcard.png);
 }
@@ -275,5 +288,9 @@ left: 80px !important;
 .information_ic{
     background-image: url(../img/information.png);
 }
+.action_column_btn{
+    background-repeat: no-repeat;
+    width:20px;
+    height:20px;
 }
 
