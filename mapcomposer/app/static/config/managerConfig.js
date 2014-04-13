@@ -57,31 +57,38 @@
         "loginManager": "loginTool",
         "actionTarget": null
     },{
-        "ptype": "mxp_usermanager",
+        "ptype": "mxp_templatemanager",
         "loginManager": "loginTool",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 1 
+          "index": 0
         }
     },{
         "ptype": "mxp_myaccount",
         "loginManager": "loginTool",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 1 
+          "index": 1
+        }
+    },{
+        "ptype": "mxp_usermanager",
+        "loginManager": "loginTool",
+        "actionTarget":{
+          "target": "north.tbar",
+          "index": 2
         }
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 4
+          "index": 5
         }
     },{
         "ptype": "mxp_languageselector",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 8
+          "index": 10
         }
     }],
     "loggedTools":[{
