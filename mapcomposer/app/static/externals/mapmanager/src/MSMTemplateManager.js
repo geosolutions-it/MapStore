@@ -87,7 +87,7 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
         // create a content provider with init options
 		this.templates = new GeoStore.Templates({
 			authorization: this.auth,
-			url: this.url,
+			url: this.url
 			}).failure( function(response){ 
 				Ext.Msg.show({
                    title: me.failSuccessTitle,

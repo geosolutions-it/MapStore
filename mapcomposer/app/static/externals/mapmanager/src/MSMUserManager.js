@@ -1100,8 +1100,6 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                             anchor:'100%',
                             imagePath: 'externals/ext/ux/images/',
                             multiselects:[{
-                                scrollable:true,
-                                autoScroll:true,
                                 width: 175,
                                 height: 200,
                                 valueField:'groupName',
@@ -1407,9 +1405,9 @@ MSMUserGroupManager = Ext.extend(Ext.grid.GridPanel, {
             })
         });
         //this object allows to save,get and delete groups
-        this.groups = new GeoStore.UserGroups(
-                    { authorization: this.auth,
-                      url: this.geoStoreBase + 'usersgroup',
+        this.groups = new GeoStore.UserGroups({ 
+                      authorization: this.auth,
+                      url: this.geoStoreBase + 'usersgroup'
                     }).failure( function(response){ 
                         console.error(response); 
                           Ext.Msg.show({
@@ -1525,7 +1523,7 @@ MSMUserGroupManager = Ext.extend(Ext.grid.GridPanel, {
                                         var values = form.getValues();
                                         ugmanager.groups.create({
                                             groupName: values.groupName,
-                                            description: values.description,
+                                            description: values.description
                                             },function success(response){                                                                            
                                                 winnewgroup.hide();
                                                 form.reset();

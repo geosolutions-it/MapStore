@@ -356,7 +356,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
             // Remove headers
             this.defaultHeaders = {
                 'Accept': 'application/json',
-                'Authorization' : "",
+                'Authorization' : ""
             };
 
             this.cleanTools();
