@@ -667,7 +667,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 					    var layer = this.target.mapPanel.map.getLayersByName(this.layerToFilter)[0];
 						layer.mergeNewParams({
 							CQL_FILTER: "INCLUDE",
-							STYLES: defaultStyle,
+							STYLES: defaultStyle
 						});
 						
 						this.trackCheckEnable(undefined);
