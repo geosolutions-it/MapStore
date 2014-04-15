@@ -40,7 +40,13 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
     usersText: "Users",
 
     setActiveOnOutput: true,
-
+     changePassword:'Change Password',
+    textPassword: 'Password',
+    textPasswordConf: 'Confirm Password',
+    textSubmit: 'Submit',
+    textCancel: 'Cancel',
+    textPasswordChangeSuccess: 'Password Changed',
+    textErrorPasswordChange: 'ErrorChangingPassowd',
     loginManager: null, 
     usernameLabel:'User Name',
     scrollable:true,
@@ -111,10 +117,14 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
     },
     
     addOutput: function(config) {
+        this.login = this.target.login ? this.target.login: 
+                this.loginManager && this.target.currentTools[this.loginManager] 
+                ? this.target.currentTools[this.loginManager] : null;
         target =this.target;
         //create a copy of the user
         var user = this.target.user || {};
        user = Ext.apply( user , this.user);
+       this.user = user;
        
         // make the userattribute always an array
         if(!user.attribute){
@@ -159,6 +169,7 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
             xtype: "panel",
             layout: 'border',
             title: "My Account",
+            tbar: ["->",this.getChangePasswordTool()],
             iconCls: "vcard_ic",  
             header: false,
             items:[{
@@ -228,7 +239,128 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
 		
 		return this.output;
 		
-	}
+	},
+    getChangePasswordTool: function(){
+        var tool =this;
+        return {
+            width: 100,
+            xtype: 'box',
+            autoEl: {
+                children: [{
+                  tag: 'a',
+                  href: '#',
+                  cn: this.changePassword
+                }]
+            },
+            listeners: {
+                render: function(c){
+                    c.el.select('a').on('click', function(){
+                        tool.showChangePwWindow();
+                    });
+                }
+            }
+        }
+    },
+    showChangePwWindow: function(){
+        var name = this.user.name;
+
+        var formEdit = new Ext.form.FormPanel({
+            xtype:'form',
+            layout:'form',
+            ref:'form',
+            frame:true,  border:false,
+            items: [{
+                xtype: 'hidden',
+                name: 'name',
+                value: this.user.name
+            },{
+                    xtype: 'textfield',
+                    anchor:'90%',
+                    id: 'password-textfield',
+                    allowBlank: false,
+                    ref:'../password',
+                    name:'password',
+                    blankText: this.textBlankPw,
+                    fieldLabel: this.textPassword,
+                    inputType:'password',
+                    value: ''                
+            },{
+                    xtype: 'textfield',
+                    anchor:'90%',
+                    id: 'password-confirm-textfield',
+                    ref:'../passwordconfirm',
+                    allowBlank: false,
+                    blankText: this.textBlankPw,
+                    invalidText: this.textPasswordConfError,
+                    fieldLabel: this.textPasswordConf,
+                    validator: function(value){
+                        if(this.refOwner.password.getValue() == value){
+                            return value && value !="" ;
+                        }else{
+                            return false;
+                        } 
+                    },
+                    inputType:'password',
+                    value: ''                
+              }]
+        });
+            
+        var userObj = this.user;
+        var me = this;
+        var win = new Ext.Window({
+            iconCls:'user_edit',
+            width: 320, height: 140, resizable: true, modal: true, border:false, plain:true,
+            closeAction: 'destroy', layout: 'fit', 
+            title: this.textChangePassword,
+            items: [ formEdit ],
+            buttons:[{
+                text: this.textSubmit,
+                
+                handler:function(){
+                    var form = win.form.getForm();
+                    if(form.isValid()){
+                        var user = form.getValues().name;
+                        var pass = form.getValues().password;
+                        Ext.Ajax.request({
+                          headers : {
+                                'Authorization' : me.login.login.getToken(),
+                                'Content-Type' : 'text/xml'
+                          },
+                          url: me.target.geoBaseUsersUrl + '/user/' + userObj.id,
+                          method: 'PUT',
+                          params: '<User><newPassword>'+pass+'</newPassword></User>',
+                          success: function(response, opts){
+                            me.login.login.auth  = 'Basic ' + Base64.encode(user + ':' + pass);
+                            //TODO notify tools
+                            win.close();
+                            Ext.MessageBox.show({
+                                msg: me.textPasswordChangeSuccess,
+                                buttons: Ext.MessageBox.OK,
+                                animEl: 'mb4',
+                                icon: Ext.MessageBox.SUCCESS
+                            });
+                          },
+                          failure:function(response,opts){
+                            Ext.MessageBox.show({
+                                title: me.textErrorTitle,
+                                msg: me.textErrorPasswordChange,
+                                buttons: Ext.MessageBox.OK,
+                                animEl: 'mb4',
+                                icon: Ext.MessageBox.WARNING
+                            });
+                          }
+                        });
+                    }
+                }
+            },{
+                text:this.textCancel,
+                handler:function(){
+                    win.close();
+                }
+            }]
+        })
+        win.show();
+    }
 });
 
 Ext.preg(mxp.plugins.MyAccount.prototype.ptype, mxp.plugins.MyAccount);

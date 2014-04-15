@@ -44,7 +44,16 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
     ptype: "gxp_geostore_account",
     displayAttributes:['Name','Surname','email'],
     usernameLabel:'User Name',
+    changePassword:'Change Password',
+    textPassword: 'Password',
+    textPasswordConf: 'Confirm Password',
+    textSubmit: 'Submit',
+    textCancel: 'Cancel',
+    textPasswordChangeSuccess: 'Password Changed',
+    textErrorPasswordChange: 'Error Changing Password',
     scrollable:true,
+    geoStoreBase: null,
+    auth: null,
     notAllowedAttributes:['UUID'],
     userTemplate: [ '<style>',
                 '#account_details td{padding:5px;width: 200px;padding-left: 7px;color: #fff;text-shadow: 2px 2px 2px #666;}',
@@ -105,7 +114,6 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
             user.groups.group = [user.groups.group];
         }
         
-        console.log(user);
         //remove attributes not allowed to display
         if(this.notAllowedAttributes){
             var attributes = [];
@@ -123,12 +131,12 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
             }
             user.attribute = attributes;
         }                      
-
         var controlPanel = {
             xtype: "panel",
             layout: 'border',
             title: "My Account",
             iconCls: "user-icon",  
+            tbar: ["->",this.getChangePasswordTool()],
             header: false,
             items:[{
                 region:'center',
@@ -203,6 +211,127 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
      */ 
     parseAttributes: function(){
     
+    },
+    getChangePasswordTool: function(){
+        var tool =this;
+        return {
+            width: 100,
+            xtype: 'box',
+            autoEl: {
+                children: [{
+                  tag: 'a',
+                  href: '#',
+                  cn: this.changePassword
+                }]
+            },
+            listeners: {
+                render: function(c){
+                    c.el.select('a').on('click', function(){
+                        tool.showChangePwWindow();
+                    });
+                }
+            }
+        }
+    },
+    showChangePwWindow: function(){
+        var name = this.user.name;
+
+        var formEdit = new Ext.form.FormPanel({
+            xtype:'form',
+            layout:'form',
+            ref:'form',
+            frame:true,  border:false,
+            items: [{
+                xtype: 'hidden',
+                name: 'name',
+                value: this.user.name
+            },{
+                    xtype: 'textfield',
+                    anchor:'90%',
+                    id: 'password-textfield',
+                    allowBlank: false,
+                    ref:'../password',
+                    name:'password',
+                    blankText: this.textBlankPw,
+                    fieldLabel: this.textPassword,
+                    inputType:'password',
+                    value: ''                
+            },{
+                    xtype: 'textfield',
+                    anchor:'90%',
+                    id: 'password-confirm-textfield',
+                    ref:'../passwordconfirm',
+                    allowBlank: false,
+                    blankText: this.textBlankPw,
+                    invalidText: this.textPasswordConfError,
+                    fieldLabel: this.textPasswordConf,
+                    validator: function(value){
+                        if(this.refOwner.password.getValue() == value){
+                            return value && value !="" ;
+                        }else{
+                            return false;
+                        } 
+                    },
+                    inputType:'password',
+                    value: ''                
+              }]
+        });
+            
+        var userObj = this.user;
+        var me = this;
+        var win = new Ext.Window({
+            iconCls:'user_edit',
+            width: 320, height: 140, resizable: true, modal: true, border:false, plain:true,
+            closeAction: 'destroy', layout: 'fit', 
+            title: this.textChangePassword,
+            items: [ formEdit ],
+            buttons:[{
+                text: this.textSubmit,
+                
+                handler:function(){
+                    var form = win.form.getForm();
+                    if(form.isValid()){
+                        var user = form.getValues().name;
+                        var pass = form.getValues().password;
+                        Ext.Ajax.request({
+                          headers : {
+                                'Authorization' : me.auth,
+                                'Content-Type' : 'text/xml'
+                          },
+                          url: me.geoStoreBase + 'users/user/' + userObj.id,
+                          method: 'PUT',
+                          params: '<User><newPassword>'+pass+'</newPassword></User>',
+                          success: function(response, opts){
+                            me.auth  = 'Basic ' + Base64.encode(user + ':' + pass);
+                            //TODO notify tools
+                            win.close();
+                            Ext.MessageBox.show({
+                                msg: me.textPasswordChangeSuccess,
+                                buttons: Ext.MessageBox.OK,
+                                animEl: 'mb4',
+                                icon: Ext.MessageBox.SUCCESS
+                            });
+                          },
+                          failure:function(response,opts){
+                            Ext.MessageBox.show({
+                                title: me.textErrorTitle,
+                                msg: me.textErrorPasswordChange,
+                                buttons: Ext.MessageBox.OK,
+                                animEl: 'mb4',
+                                icon: Ext.MessageBox.WARNING
+                            });
+                          }
+                        });
+                    }
+                }
+            },{
+                text:this.textCancel,
+                handler:function(){
+                    win.close();
+                }
+            }]
+        })
+        win.show();
     }
  });
  Ext.preg(gxp.plugins.GeoStoreAccount.prototype.ptype, gxp.plugins.GeoStoreAccount);
