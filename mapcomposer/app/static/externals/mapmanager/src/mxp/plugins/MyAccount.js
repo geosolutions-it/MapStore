@@ -47,6 +47,7 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
     textCancel: 'Cancel',
     textPasswordChangeSuccess: 'Password Changed',
     textErrorPasswordChange: 'ErrorChangingPassowd',
+    textConfirmChangePassword: 'Are you sure to change the Password? You will have to log in again after this operation',
     loginManager: null, 
     usernameLabel:'User Name',
     scrollable:true,
@@ -319,37 +320,44 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
                 handler:function(){
                     var form = win.form.getForm();
                     if(form.isValid()){
-                        var user = form.getValues().name;
-                        var pass = form.getValues().password;
-                        Ext.Ajax.request({
-                          headers : {
-                                'Authorization' : me.login.login.getToken(),
-                                'Content-Type' : 'text/xml'
-                          },
-                          url: me.target.geoBaseUsersUrl + '/user/' + userObj.id,
-                          method: 'PUT',
-                          params: '<User><newPassword>'+pass+'</newPassword></User>',
-                          success: function(response, opts){
-                            me.login.login.auth  = 'Basic ' + Base64.encode(user + ':' + pass);
-                            //TODO notify tools
-                            win.close();
-                            Ext.MessageBox.show({
-                                msg: me.textPasswordChangeSuccess,
-                                buttons: Ext.MessageBox.OK,
-                                animEl: 'mb4',
-                                icon: Ext.MessageBox.SUCCESS
+                    Ext.Msg.confirm(me.textConfirmChangePasswordTitle,
+                    me.textConfirmChangePassword,
+                    function(btn){
+                        if (btn === 'yes') {
+                            var user = form.getValues().name;
+                            var pass = form.getValues().password;
+                            Ext.Ajax.request({
+                              headers : {
+                                    'Authorization' : me.login.login.getToken(),
+                                    'Content-Type' : 'text/xml'
+                              },
+                              url: me.target.geoBaseUsersUrl + '/user/' + userObj.id,
+                              method: 'PUT',
+                              params: '<User><newPassword>'+pass+'</newPassword></User>',
+                              success: function(response, opts){
+                                me.login.login.auth  = 'Basic ' + Base64.encode(user + ':' + pass);
+                                me.login.login.logout();
+                                win.close();
+                                Ext.MessageBox.show({
+                                    msg: me.textPasswordChangeSuccess,
+                                    buttons: Ext.MessageBox.OK,
+                                    animEl: 'mb4',
+                                    icon: Ext.MessageBox.SUCCESS
+                                });
+                              },
+                              failure:function(response,opts){
+                                Ext.MessageBox.show({
+                                    title: me.textErrorTitle,
+                                    msg: me.textErrorPasswordChange,
+                                    buttons: Ext.MessageBox.OK,
+                                    animEl: 'mb4',
+                                    icon: Ext.MessageBox.WARNING
+                                });
+                              }
                             });
-                          },
-                          failure:function(response,opts){
-                            Ext.MessageBox.show({
-                                title: me.textErrorTitle,
-                                msg: me.textErrorPasswordChange,
-                                buttons: Ext.MessageBox.OK,
-                                animEl: 'mb4',
-                                icon: Ext.MessageBox.WARNING
-                            });
-                          }
-                        });
+                        }
+                    });
+                        
                     }
                 }
             },{
