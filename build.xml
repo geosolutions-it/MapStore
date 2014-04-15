@@ -180,7 +180,7 @@
         </copy>
         <!-- copy mapmanager css  -->
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/mapmanager/theme/css">
-            <fileset file="mapcomposer/app/static/externals/mapmanager/theme/css/mapstoremanager.css"
+            <fileset file="mapcomposer/app/static/externals/mapmanager/theme/css/"
             />
         </copy>
         <!-- copy mapmanager img  -->
@@ -188,9 +188,9 @@
             <fileset dir="mapcomposer/app/static/externals/mapmanager/theme/img"
             />
         </copy>
-         <!-- copy ux img  -->
+        <!-- copy ux img  -->
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/ext/ux/images">
-            <fileset dir="mapcomposer/app/static/externals/ext/ux/images"/>
+            <fileset dir="mapcomposer/app/static/externals/mapmanager/externals/ext/ux/images"/>
         </copy>
         <!-- copy i18n resources -->
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/mapmanager/translations">
