@@ -312,7 +312,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     ratio: config.ratio || 1,
                     visibility: ("visibility" in config) ? config.visibility : true,
                     opacity: ("opacity" in config) ? config.opacity : 1,
-                    buffer: ("buffer" in config) ? config.buffer : 1,
+                    buffer: ("buffer" in config) ? config.buffer : 0,
                     projection: layerProjection,
                     vendorParams: config.vendorParams,
 					transitionEffect: transitionEffect
