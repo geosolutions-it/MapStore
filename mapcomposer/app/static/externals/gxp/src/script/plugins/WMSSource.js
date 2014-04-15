@@ -291,7 +291,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 			// In this case also the zoomMethod must be setted to null 
 			// in Map configuration (see widgets/Viewer.js).
 			// /////////////////////////////////////////////////////////
-			var transitionEffect = "resize";
+			var transitionEffect = null;
 			if(this.target.map.animatedZooming){
 				if(this.target.map.animatedZooming.transitionEffect == null){
 					transitionEffect = null;
@@ -312,7 +312,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     ratio: config.ratio || 1,
                     visibility: ("visibility" in config) ? config.visibility : true,
                     opacity: ("opacity" in config) ? config.opacity : 1,
-                    buffer: ("buffer" in config) ? config.buffer : 1,
+                    buffer: ("buffer" in config) ? config.buffer : 0,
                     projection: layerProjection,
                     vendorParams: config.vendorParams,
 					transitionEffect: transitionEffect
