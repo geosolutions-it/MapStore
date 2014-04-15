@@ -779,7 +779,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                         idProperty: 'id',
                                         fields: ['id','groupName', 'description'],
                                         proxy: new Ext.data.HttpProxy({
-                                            url: this.geoStoreBase + "usersgroup/",
+                                            url: this.geoStoreBase + "usergroups/",
                                             restful: true,
                                             method : 'GET',
                                             disableCaching: true,
@@ -1111,7 +1111,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                     idProperty: 'id',
                                     fields: ['id','groupName', 'description'],
                                     proxy: new Ext.data.HttpProxy({
-                                        url: this.geoStoreBase + "usersgroup/",
+                                        url: this.geoStoreBase + "usergroups/",
                                         restful: true,
                                         method : 'GET',
                                         disableCaching: true,
@@ -1387,7 +1387,7 @@ MSMUserGroupManager = Ext.extend(Ext.grid.GridPanel, {
             idProperty: 'id',
             fields: ['id','groupName', 'description'],
             proxy: new Ext.data.HttpProxy({
-                url: this.geoStoreBase + "usersgroup/",
+                url: this.geoStoreBase + "usergroups/",
                 restful: true,
                 method : 'GET',
                 disableCaching: true,
@@ -1407,7 +1407,7 @@ MSMUserGroupManager = Ext.extend(Ext.grid.GridPanel, {
         //this object allows to save,get and delete groups
         this.groups = new GeoStore.UserGroups({ 
                       authorization: this.auth,
-                      url: this.geoStoreBase + 'usersgroup'
+                      url: this.geoStoreBase + 'usergroups'
                     }).failure( function(response){ 
                         console.error(response); 
                           Ext.Msg.show({

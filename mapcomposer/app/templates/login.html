@@ -503,6 +503,18 @@
                 qs = kvp.join('&'); 
                 return urlpices[0] + '?' + qs;
             }
+            var testSameOrigin = function (url) {
+
+                var loc = window.location,
+                    a = document.createElement('a');
+
+                a.href = url;
+
+                return a.hostname == loc.hostname &&
+                       a.port == loc.port &&
+                       a.protocol == loc.protocol;
+            }
+            var loginService = testSameOrigin(serverConfig.geoStoreBase) ? serverConfig.geoStoreBase + "users/user/details?includeattributes=true" : proxy + encodeURIComponent(serverConfig.geoStoreBase + "users/user/details?includeattributes=true");
             var login = new gxp.plugins.GeoStoreLogin({
                 draggable:false,
                 closable: false,
@@ -513,6 +525,7 @@
                     Ext.getCmp('paneltbar').items.each(function(tool) {
                         if (tool.needsAuthorization === true) {
                             tool.enable();	
+                            tool.auth=login.token;
                         }           
                     },this);
                     
@@ -559,7 +572,9 @@
                         login.loginSync();
                          var myAccount = new gxp.plugins.GeoStoreAccount({
                             outputTarget:'appTabs',
-                            user:login.user
+                            user:login.user,
+                            auth:login.token,
+                            geoStoreBase : serverConfig.geoStoreBase
                          });
                          myAccount.addOutput();
                          
