@@ -303,29 +303,32 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
             border:false,
             /**
             * Property: customFields
-            * {string} additional Fields to place in the Information panel
+            * {string} additional Fields to place in the Information panel.
+            * NOTE: limit to 255 user attributes
             * 
             */	
             customFields:[{
                 xtype: 'textfield',
                 anchor:'90%',
                 id: 'email',
-                allowBlank: false,
+                maxLength:255,
                 blankText: 'email',
                 name: 'attribute.email',
                 fieldLabel: 'email',
-                inputType: 'email',
+                inputType: 'text',
+                vtype:'email',
                 value: ''
             },{
                 xtype: 'textfield',
                 anchor:'90%',
+                maxLength:255,
                 id: 'attribute.company',
                 blankText: 'Company',
                 fieldLabel: 'Company',
                 inputType: 'text',
                 value: ''
                 
-            },{
+            }/*,{
                 xtype: 'datefield',
                 anchor:'90%',
                 id: 'expires',
@@ -334,10 +337,11 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                 inputType: 'text',
                 value: ''
                 
-            },{
+            }*/,{
                 xtype: 'textarea',
                 anchor:'90%',
                 id: 'notes',
+                maxLength:255,
                 name: 'attribute.notes',
                 blankText: 'Notes',
                 fieldLabel: 'Notes',
@@ -345,6 +349,11 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                 value: ''
                 
             }],
+            /**
+             * Property: showEnabled
+             * Show 'enabled' property of the user as a checkbox and allows to change it
+             */
+            showEnabled:false,
             
 			/**
 		    * Constructor: initComponent 
@@ -438,12 +447,14 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                         {
                             id       :'name',
                             header   : userManager.textName, 
+                            maxLength:20,
                             sortable : true, 
                             dataIndex: 'name'
                         },
                         {
                             header   : userManager.textPassword, 
                             sortable : false, 
+                            maxLength:255,
                             dataIndex: 'password',
                             hidden   : true
                         },
@@ -660,6 +671,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                         xtype: 'textfield',
                         anchor:'90%',
                         id: 'user-textfield',
+                        maxLength:20,
                         allowBlank: false,
                         blankText: this.textBlankUserName,
                         fieldLabel: this.textName,
@@ -674,6 +686,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                         xtype: 'textfield',
                         anchor:'90%',
                         id: 'password-textfield',
+                        maxLength:255,
                         allowBlank: false,
                         blankText: this.textBlankPw,
                         fieldLabel: this.textPassword,
@@ -685,6 +698,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                         anchor:'90%',
                         id: 'password-confirm-textfield',
                         allowBlank: false,
+                        maxLength:255,
                         blankText: this.textBlankPw,
                         invalidText: this.textPasswordConfError,
                         fieldLabel: this.textPasswordConf,
@@ -720,6 +734,10 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                              data:[['1', 'USER'], ['2', 'ADMIN']]
                         })
                   }	];
+                  if( this.showEnabled ) {
+                     userDataFields.push({xtype:'checkbox',fieldLabel:this.textEmabled || "Enabled",name:'enabled',checked:true,uncheckedValue: 'false'});
+
+                  }
                   
                   var newUserTabPanel = {
                         xtype:'tabpanel',
@@ -883,7 +901,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
 														var roleDropdown = Ext.getCmp("role-dropdown"); 
                                                         // Check Form Validity
 														if ( form.getForm().isValid() && passwordField.getValue() == passwordConfirmField.getValue()){
-                                                            var values = form.getForm().getValues();
+                                                            var values = form.getForm().getFieldValues();
                                                             //get attributes with name attribute.<att_name>
                                                             var attribute = {};
                                                             for(var name in values ){
@@ -903,13 +921,15 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                                                 groups.push({groupName:arr[i]});
                                                               }
                                                             }
+                                                            
                                                             // Save user
                                                             userManager.users.create({ 
                                                                     name: nameField.getValue(), 
                                                                     password:passwordField.getValue(), 
                                                                     role:roleDropdown.getValue(),
                                                                     attribute: attribute,
-                                                                    groups: groups
+                                                                    groups: groups,
+                                                                    enabled: values.enabled 
                                                                 }, 
                                                                 function success(response){                                                                            
                                                                     winAdd.hide();
@@ -980,6 +1000,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                             anchor:'90%',
                             id: 'user-textfield',
                             disabled: true,
+                            maxLength:20,
                             allowBlank: false,
                             blankText: userManager.textBlankUserName,
                             fieldLabel: userManager.textName,
@@ -993,6 +1014,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                       {
                             xtype: 'textfield',
                             anchor:'90%',
+                            maxLength:255,
                             id: 'password-textfield',
                             allowBlank: true,
                             blankText: userManager.textBlankPw,
@@ -1012,6 +1034,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                       {
                             xtype: 'textfield',
                             anchor:'90%',
+                            maxLength:255,
                             id: 'passwordconf-textfield',
                             allowBlank: true,
                             blankText: userManager.textPasswordConf,
@@ -1050,6 +1073,9 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                          data:[['1', 'USER'], ['2', 'ADMIN']]
                                       })
                       }];
+                 if( this.showEnabled ) {
+                     userDataFields.push({xtype:'checkbox',fieldLabel:this.textEmabled || "Enabled",name:'enabled',checked:userdata.enabled});
+                  }
                 // for user is the tab content!!
                 var userFormTabPanel ={
                     xtype:'tabpanel',
@@ -1230,9 +1256,9 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                                 var passwordConfField = Ext.getCmp("passwordconf-textfield");
                                                 var roleDropdown = Ext.getCmp("role-dropdown"); 
                                                 var form = formEdit.getForm();
-                                                var values = form.getValues();
+                                                var values = form.getFieldValues();
                                                 if ( form.isValid() && (passwordField.getValue() == passwordConfField.getValue()) && (isAdmin ? roleDropdown.isValid(false) : true) ){
-                                                    var values = form.getValues();
+                                                    
                                                     //get attributes with name attribute.<att_name>
                                                     var attribute = {};
                                                     for(var name in values ){
@@ -1257,7 +1283,8 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                                               password:passwordField.getValue(), 
                                                               role:roleDropdown.getValue(),
                                                               attribute:attribute,
-                                                              groups:groups
+                                                              groups:groups,
+                                                              enabled: values.enabled //only if present
                                                             }, 
                                                               function(response) {
                                                                 winEdit.hide();
@@ -1435,12 +1462,14 @@ MSMUserGroupManager = Ext.extend(Ext.grid.GridPanel, {
                     hidden   : true
                 },{
                     id       :'groupName',
+                    maxLength: 20,
                     header   : this.textGroupName, 
                     sortable : true, 
                     dataIndex: 'groupName',
                     hidden   : false
                 },{
                     id       :'description',
+                    maxLength: 200,
                     header   : this.textDescription, 
                     sortable : true, 
                     dataIndex: 'description',
@@ -1459,7 +1488,7 @@ MSMUserGroupManager = Ext.extend(Ext.grid.GridPanel, {
                         tooltip: this.tooltipDelete,
                         scope:this,
                         getClass: function(v, meta, rec) {
-                          if(rec.get('groupName') == "allresources" || rec.get('groupName') == "anyone") {
+                          if( rec.get('groupName') == "everyone") {
                               return 'x-hide-display';
                           }else{
                             return 'x-grid-center-icon action_column_btn';
@@ -1476,7 +1505,7 @@ MSMUserGroupManager = Ext.extend(Ext.grid.GridPanel, {
                         tooltip: this.tooltipGroupInfo,
                         scope:this,
                         getClass: function(v, meta, rec) {
-                          if(rec.get('groupName') == "allresources" || rec.get('groupName') == "anyone") {
+                          if( /*rec.get('groupName') == "everyone"*/false) {
                               return 'x-hide-display';
                           }else{
                             return 'x-grid-center-icon action_column_btn';
@@ -1498,7 +1527,8 @@ MSMUserGroupManager = Ext.extend(Ext.grid.GridPanel, {
        var  winnewgroup = new Ext.Window({
                     iconCls:'group_add_ic',
                     title:this.textAddGroupButton,
-                    width: 300, height: 200, 
+                    width: 300,
+                    height: 200, 
                     minWidth:250,
                     minHeight:200,
                     resizable: true, 
@@ -1555,6 +1585,7 @@ MSMUserGroupManager = Ext.extend(Ext.grid.GridPanel, {
                             xtype:'textfield',
                             anchor:'90%',
                             name:'groupName',
+                            maxLength:20,                            
                             fieldLabel:ugmanager.textGroupName,
                             allowBlank:false
                         },{
@@ -1562,6 +1593,7 @@ MSMUserGroupManager = Ext.extend(Ext.grid.GridPanel, {
                             anchor:'90%',
                             name:'description',
                             fieldLabel:ugmanager.textDescription,
+                            maxLength:200,
                             allowBlank:true
                         }]
                     }]

@@ -664,8 +664,13 @@
                
             }
             groups +=  '</groups>';
+            var enabled = '';
+            if(data.enabled!=undefined){
+                enabled = '<enabled>' + (data.enabled ? 'true' : 'false')  + '</enabled>'
+            }
 			// wrap new user within an xml envelop
 			var xml = '<User><name>' + data.name +'</name>'
+                      + enabled 
 					  + newPassword 
                       + attribute 
                       +groups
@@ -690,6 +695,7 @@
 					obj.password = '';
 					obj.role = user.role;
                     obj.attribute = user.attribute;
+                    obj.enabled = user.enabled;
 					data.push( obj ); 
 				}
 				return data;
@@ -700,6 +706,7 @@
 					obj.name = user.name;
 					obj.password = '';
 					obj.role = user.role;
+                    obj.enabled = user.enabled;
                     if(user.attribute){
                         obj.attribute = {};
                         if( user.attribute instanceof Array){
@@ -725,9 +732,9 @@
 		}
 	});
     /**
-	 * Class: GeoStore.Users
+	 * Class: GeoStore.UserGroups
 	 *
-	 * CRUD methods for users in GeoStore
+	 * CRUD methods for UserGroups in GeoStore
 	 * Inherits from:
 	 *  - <GeoStore.ContentProvider>
 	 *
