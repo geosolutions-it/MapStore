@@ -93,6 +93,15 @@
 	-->
 	
     <script>
+		// ///////////////////////////////////////////////
+		// This fragment allow to retrieve a content body 
+		// of a POST request from Ringo.
+		// ///////////////////////////////////////////////
+        var content = <% content %>;
+		if(content && content.data){
+			console.log(content);
+		}   
+		
 		var app;        
         var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false; var bbox; var useCookies; var templateId;
 		
@@ -418,13 +427,16 @@
 					// ///////////////////////////////////////////////////
 					// Visualizing metadata tab and layers at startup 
 					// ///////////////////////////////////////////////////
-					if(layName && wmsurl || useCookies){
-						var addLayer = app.tools["addlayer"];
-						
-						if(addLayer){							
-							if(useCookies){
+					var addLayer = app.tools["addlayer"];
+					
+					if(addLayer){							
+						if(useCookies || content.data){
+							var layersList;
+							
+							if(content.data){
+								layersList = content.data;
+							}else if(useCookies){
 								var opener = window.opener;
-								
 								var cookie = opener.document.cookie;
 								
 								var cookies = cookie.split(";");
@@ -434,43 +446,42 @@
 										layersList = cookies[i].split("=")[1];
 									}
 								}
-								
-								if(layersList){
-									var layers = layersList.split("#");								
-							
-									for(var i=0; i<layers.length; i++){
-										var keys = layers[i];
-										
-										keys = unescape(keys);
-										keys = Ext.util.JSON.decode(keys);
-										
-										var lname = keys.layer;
-										var lwms = decodeURIComponent(keys.wms);
-										
-										addMSLayer(
-											lname,
-											lname,
-											lwms
-										);
-									}																
-								}
-							}else{
-								var title = layTitle ? layTitle : layName;
-								
-								addMSLayer(
-									title,
-									layName,
-									wmsurl
-								);
 							}
-						}else{
-							Ext.Msg.show({
-								 title: "Add Layer",
-								 msg: "AddLayer plugin missing in configuration!",
-								 width: 300,
-								 icon: Ext.MessageBox.ALERT
-							});  
+								
+							if(layersList){
+								var layers = layersList.split("#");
+								for(var i=0; i<layers.length; i++){
+									var keys = layers[i];
+									
+									keys = unescape(keys);
+									keys = Ext.util.JSON.decode(keys);
+									
+									var lname = keys.layer;
+									var lwms = decodeURIComponent(keys.wms);
+									
+									addMSLayer(
+										lname,
+										lname,
+										lwms
+									);
+								}
+							}
+						}else if(layName && wmsurl){
+							var title = layTitle ? layTitle : layName;
+							
+							addMSLayer(
+								title,
+								layName,
+								wmsurl
+							);
 						}
+					}else{
+						Ext.Msg.show({
+							 title: "Add Layer",
+							 msg: "AddLayer plugin missing in configuration!",
+							 width: 300,
+							 icon: Ext.MessageBox.ALERT
+						});  
 					}
 						
 				    if(bbox){

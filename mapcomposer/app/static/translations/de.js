@@ -659,5 +659,13 @@ GeoExt.Lang.add("de", {
         emptyMsg: "No Bestandteil gefunden",
         noRecordFoundLabel: "Kein Bestandteil gefunden",
         loadMsg: "Bitte warten..."
+    },
+	
+	"gxp.plugins.ResourceStatus.prototype":{
+		rootNodeText: "Ressourcen Import",
+		serviceErrorTitle: "Dienstfehler",
+		tabTitle: "Importiert",
+		layerNodeName: "Levels",
+		serviceNodeName: "Service"
     }
 });
