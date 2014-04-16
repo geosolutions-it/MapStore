@@ -349,6 +349,10 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                 value: ''
                 
             }],
+            /**
+             * Property: showEnabled
+             * Show 'enabled' property of the user as a checkbox and allows to change it
+             */
             showEnabled:false,
             
 			/**

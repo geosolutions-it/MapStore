@@ -40,6 +40,7 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
     usersText: "Users",
 
     setActiveOnOutput: true,
+    showEnabled: false,
 
     loginManager: null, 
 
@@ -103,7 +104,8 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
             url: this.target.geoBaseUsersUrl,
             geoStoreBase: this.target.config.geoStoreBase,
             renderMapToTab: this.outputTarget,
-            header:false
+            header:false,
+            showEnabled:this.showEnabled
     	};
         //TODO
         var groupManager = {
