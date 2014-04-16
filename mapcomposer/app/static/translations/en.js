@@ -750,5 +750,13 @@ GeoExt.Lang.add("en", {
             "name": "Street",
             "number": "Number"
         }
+    },
+	
+	"gxp.plugins.ResourceStatus.prototype":{
+		rootNodeText: "Imported Resources",
+		serviceErrorTitle: "Service Error",
+		tabTitle: "Imported",
+		layerNodeName: "Layers",
+		serviceNodeName: "Services"
     }
 });

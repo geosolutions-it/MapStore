@@ -6,6 +6,26 @@
     background-image: url(img/silk/map.png);
 }
 
+.x-tree-node-leaf  .gx-tree-resource-icon {
+    background-image: url(img/accept.png);
+}
+
+.x-tree-node-leaf  .gx-tree-resource-icon-error {
+    background-image: url(img/decline.png);
+}
+
+.x-tree-node-leaf  .gx-tree-resource-icon-layer-disabled {
+    background-image: url(img/silk/exclamation.png);
+}
+
+.x-tree-node-leaf  .gx-tree-resource-icon-add {
+    background-image: url(img/silk/add.png);
+}
+
+.x-tree-node-leaf  .gx-tree-resource-folder-icon{
+	background-image: url(img/silk/folder.png);
+}
+
 /* position the zoom slider within map panel */
 .gx-zoomslider {
     top: 90px;

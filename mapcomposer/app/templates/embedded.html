@@ -98,19 +98,19 @@
 				if(param[0]){
 					switch ( param[0] ) {
 						case "mapId": 
-										try {
-											mapIdentifier = parseInt(param[1]);
-										}catch(e){
-											mapIdentifier = -1;
-										} 
-										break;
+									try {
+										mapIdentifier = parseInt(param[1]);
+									}catch(e){
+										mapIdentifier = -1;
+									} 
+									break;
 						case "bbox": 
-										try{
-											bbox = new OpenLayers.Bounds.fromString(param[1]);
-										}catch(e){
-											bbox = undefined;
-										} 
-										break;
+									try{
+										bbox = new OpenLayers.Bounds.fromString(param[1]);
+									}catch(e){
+										bbox = undefined;
+									} 
+									break;
 						case "layName" : 
 									layName = param[1]; 
 									break;
@@ -151,8 +151,7 @@
 				// ////////////////////////////
                 if( typeof(Proj4js)!="undefined" && !(serverConfig.proj4jsDefs===undefined) ){
                     for(var name in serverConfig.proj4jsDefs){
-                        Proj4js.defs[name] = serverConfig.proj4jsDefs[name];
-                    
+                        Proj4js.defs[name] = serverConfig.proj4jsDefs[name];                    
                     }
                 }
 				
@@ -175,8 +174,7 @@
 				
 				var url = Ext.urlDecode(query);        
 				var code = url.locale || serverConfig.defaultLanguage || "en";
-				var langData = [['en', 'English']];
-				
+				var langData = [['en', 'English']];				
 							
 				// ////////////////////////////////////////////////////
 				// Setting the language code for the GeoExt tools
@@ -224,6 +222,7 @@
 					disableLayerChooser:serverConfig.disableLayerChooser,
                     defaultSourceType: "gxp_wmssource",
                     renderToTab : 'appTabs',
+					portalConfig: serverConfig.portalConfig,
 					geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),	 
                     about: {
                         title: "Custom Map",
@@ -247,6 +246,7 @@
                         app.modified = false;
 						
 						Ext.getCmp('paneltbar').hide();
+						Ext.getCmp('panelbbar').hide();
 						
 						// ///////////////////////////////////////////////////
 						// Visualizing metadata tab and layer at startup 
