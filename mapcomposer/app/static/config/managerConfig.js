@@ -39,17 +39,23 @@
         "loginManager": "loginTool",
         "actionTarget":null
     },{
+        "ptype": "mxp_servicemanager",
+        "actionTarget":{
+          "target": "north.tbar",
+          "index": 0
+        }
+    },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 2
+          "index": 3
         }
     },{
         "ptype": "mxp_languageselector",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 6
+          "index": 7
         }
     }],
    "adminTools":[{

@@ -1,6 +1,8 @@
 @import url("carousel.css");
 @import url("ext.plupload.css");
 @import url("extendedhtmleditor.css");
+@import url("filebrowser.css");
+@import url("filebrowser2.css");
 
 a.button{
 background:url(img/button.gif);
