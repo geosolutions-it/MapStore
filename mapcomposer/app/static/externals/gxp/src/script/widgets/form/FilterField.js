@@ -116,7 +116,15 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             listeners: {
                 select: function(combo, record) {
                     this.items.get(1).enable();
+                    this.items.get(1).reset();
+                    
                     this.filter.property = record.get("name");
+
+                    for(var i = 1;i<this.items.length;i++){
+                        this.items.items[i].reset();
+                    }
+                    
+                    this.filter.value = null;
                     
                     //get type from record to update xtype    
                     var type = record.get("type");
