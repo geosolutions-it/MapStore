@@ -120,8 +120,9 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                     
                     this.filter.property = record.get("name");
 
-                    for(var i = 1;i<this.items.length;i++){
+                    for(var i = 2;i<this.items.length;i++){
                         this.items.items[i].reset();
+                        this.items.items[i].disable();
                     }
                     
                     this.filter.value = null;
@@ -332,8 +333,6 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
         
                     }
                     this.doLayout();
-            
-                    //me.callParent();  
                     this.fireEvent("change", this.filter, this);
                 },
                 // workaround for select event not being fired when tab is hit

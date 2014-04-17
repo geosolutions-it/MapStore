@@ -251,8 +251,9 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 						while(items[i]){
 							items[i].reset();
 							
-							items[i].items.get(1).disable();
-							items[i].items.get(2).disable();
+                            for(var c = 1;c<items[i].items.items.length;c++){
+                                items[i].items.get(c).disable();                            
+                            }
 
 							filter.value = null;
 							i++;
