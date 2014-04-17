@@ -73,7 +73,12 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
     initComponent: function() {
     
         var me = this;
-        
+        if (!this.dateFormat) {
+            this.dateFormat = Ext.form.DateField.prototype.format;
+        }
+        if (!this.timeFormat) {
+            this.timeFormat = Ext.form.TimeField.prototype.format;
+        }        
         if(!this.filter) {
             this.filter = this.createDefaultFilter();
         }
@@ -118,23 +123,8 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                     this.fieldType = type.split(":").pop();    
                     
                     if (this.type.value === OpenLayers.Filter.Comparison.BETWEEN) {
-                        
-                        switch(this.fieldType) {
-                            case "string":
-                                this.items.get(2).hide();
-                                this.items.get(3).hide();
-                                this.items.get(4).hide();                                
-                                this.items.get(5).hide();
-                                this.items.get(6).show();
-                                this.items.get(7).hide();
-                                this.items.get(8).hide();
-                                this.items.get(9).hide();
-                                this.items.get(10).show();
-                                this.items.get(11).hide();
-                                this.items.get(12).hide();
-                                this.items.get(13).hide();
-                            break;
-                            case "dateTime":
+                    
+                        if(this.fieldType === "string"){
                                 this.items.get(2).hide();
                                 this.items.get(3).hide();
                                 this.items.get(4).hide();                                
@@ -144,11 +134,13 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                                 this.items.get(8).hide();
                                 this.items.get(9).hide();
                                 this.items.get(10).hide();
-                                this.items.get(11).show();
-                                this.items.get(12).hide();
+                                this.items.get(11).hide();
+                                this.items.get(12).show();
                                 this.items.get(13).hide();
-                            break;
-                            case "double":
+                                this.items.get(14).hide();
+                                this.items.get(15).hide();
+                                this.items.get(16).hide();
+                        }else if(this.fieldType === "date"){
                                 this.items.get(2).hide();
                                 this.items.get(3).hide();
                                 this.items.get(4).hide();                                
@@ -159,10 +151,12 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                                 this.items.get(9).hide();
                                 this.items.get(10).hide();
                                 this.items.get(11).hide();
-                                this.items.get(12).show();
-                                this.items.get(13).hide();
-                            break;
-                            case "int":
+                                this.items.get(12).hide();
+                                this.items.get(13).show();
+                                this.items.get(14).hide();
+                                this.items.get(15).hide();
+                                this.items.get(16).hide();                        
+                        }else if(this.fieldType === "dateTime"){
                                 this.items.get(2).hide();
                                 this.items.get(3).hide();
                                 this.items.get(4).hide();                                
@@ -174,14 +168,63 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                                 this.items.get(10).hide();
                                 this.items.get(11).hide();
                                 this.items.get(12).hide();
-                                this.items.get(13).show();
-                            break;                            
+                                this.items.get(13).hide();
+                                this.items.get(14).show();
+                                this.items.get(15).hide();
+                                this.items.get(16).hide();                        
+                        }else if(this.fieldType === "double" || this.fieldType === "decimal" || this.fieldType === "float"){
+                                this.items.get(2).hide();
+                                this.items.get(3).hide();
+                                this.items.get(4).hide();                                
+                                this.items.get(5).hide();
+                                this.items.get(6).hide();
+                                this.items.get(7).hide();
+                                this.items.get(8).hide();
+                                this.items.get(9).hide();
+                                this.items.get(10).show();
+                                this.items.get(11).hide();
+                                this.items.get(12).hide();
+                                this.items.get(13).hide();
+                                this.items.get(14).hide();
+                                this.items.get(15).show();
+                                this.items.get(16).hide();                        
+                        }else if(this.fieldType === "int" || this.fieldType === "integer" || this.fieldType === "long" || this.fieldType === "short"){
+                                this.items.get(2).hide();
+                                this.items.get(3).hide();
+                                this.items.get(4).hide();                                
+                                this.items.get(5).hide();
+                                this.items.get(6).hide();
+                                this.items.get(7).hide();
+                                this.items.get(8).hide();
+                                this.items.get(9).hide();
+                                this.items.get(10).hide();
+                                this.items.get(11).show();
+                                this.items.get(12).hide();
+                                this.items.get(13).hide();
+                                this.items.get(14).hide();
+                                this.items.get(15).hide();
+                                this.items.get(16).show();                        
+                        }else{
+                                this.items.get(2).hide();
+                                this.items.get(3).hide();
+                                this.items.get(4).hide();                                
+                                this.items.get(5).hide();
+                                this.items.get(6).hide();
+                                this.items.get(7).show();
+                                this.items.get(8).hide();
+                                this.items.get(9).hide();
+                                this.items.get(10).hide();
+                                this.items.get(11).hide();
+                                this.items.get(12).show();
+                                this.items.get(13).hide();
+                                this.items.get(14).hide();
+                                this.items.get(15).hide();
+                                this.items.get(16).hide();                        
                         }
                         
                     } else {
-                        
-                        switch(this.fieldType) {
-                            case "string":
+                    
+                        if(this.fieldType === "string"){
                                 this.items.get(2).show();
                                 this.items.get(3).hide();
                                 this.items.get(4).hide();                                
@@ -194,8 +237,10 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                                 this.items.get(11).hide();
                                 this.items.get(12).hide();
                                 this.items.get(13).hide();
-                            break;
-                            case "dateTime":
+                                this.items.get(14).hide();
+                                this.items.get(15).hide();
+                                this.items.get(16).hide();
+                        }else if(this.fieldType === "date"){
                                 this.items.get(2).hide();
                                 this.items.get(3).show();
                                 this.items.get(4).hide();                                
@@ -208,8 +253,10 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                                 this.items.get(11).hide();
                                 this.items.get(12).hide();
                                 this.items.get(13).hide();
-                            break;
-                            case "double":            
+                                this.items.get(14).hide();
+                                this.items.get(15).hide();
+                                this.items.get(16).hide();                      
+                        }else if(this.fieldType === "dateTime"){
                                 this.items.get(2).hide();
                                 this.items.get(3).hide();
                                 this.items.get(4).show();                                
@@ -222,8 +269,10 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                                 this.items.get(11).hide();
                                 this.items.get(12).hide();
                                 this.items.get(13).hide();
-                            break;
-                            case "int":            
+                                this.items.get(14).hide();
+                                this.items.get(15).hide();
+                                this.items.get(16).hide();                       
+                        }else if(this.fieldType === "double" || this.fieldType === "decimal" || this.fieldType === "float"){
                                 this.items.get(2).hide();
                                 this.items.get(3).hide();
                                 this.items.get(4).hide();                                
@@ -236,13 +285,47 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                                 this.items.get(11).hide();
                                 this.items.get(12).hide();
                                 this.items.get(13).hide();
-                            break;    
-                        }           
+                                this.items.get(14).hide();
+                                this.items.get(15).hide();
+                                this.items.get(16).hide();                       
+                        }else if(this.fieldType === "int" || this.fieldType === "integer" || this.fieldType === "long" || this.fieldType === "short"){
+                                this.items.get(2).hide();
+                                this.items.get(3).hide();
+                                this.items.get(4).hide();                                
+                                this.items.get(5).hide();
+                                this.items.get(6).show();
+                                this.items.get(7).hide();
+                                this.items.get(8).hide();
+                                this.items.get(9).hide();
+                                this.items.get(10).hide();
+                                this.items.get(11).hide();
+                                this.items.get(12).hide();
+                                this.items.get(13).hide();
+                                this.items.get(14).hide();
+                                this.items.get(15).hide();
+                                this.items.get(16).hide();                        
+                        }else{
+                                this.items.get(2).show();
+                                this.items.get(3).hide();
+                                this.items.get(4).hide();                                
+                                this.items.get(5).hide();
+                                this.items.get(6).hide();
+                                this.items.get(7).hide();
+                                this.items.get(8).hide();
+                                this.items.get(9).hide();
+                                this.items.get(10).hide();
+                                this.items.get(11).hide();
+                                this.items.get(12).hide();
+                                this.items.get(13).hide();
+                                this.items.get(14).hide();
+                                this.items.get(15).hide();
+                                this.items.get(16).hide();                        
+                        }                        
+        
                     }
                     this.doLayout();
             
                     //me.callParent();  
-        
                     this.fireEvent("change", this.filter, this);
                 },
                 // workaround for select event not being fired when tab is hit
@@ -312,6 +395,19 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
      * Creates a panel config containing filter parts.
      */
     createFilterItems: function(type) {
+        
+        var types = {
+            "xsd:boolean": "boolean",
+            "xsd:int": "int",
+            "xsd:integer": "int",
+            "xsd:short": "int",
+            "xsd:long": "int",
+            "xsd:date": "date",
+            "xsd:string": "string",
+            "xsd:float": "float",
+            "xsd:double": "float"
+        };     
+    
         this.fieldType = type.split(":").pop();    
     
         var isBetween = this.filter.type === OpenLayers.Filter.Comparison.BETWEEN;
@@ -393,7 +489,8 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             
         var itemsNumberDoubleFieldDefault = Ext.applyIf({
             xtype: "numberfield",
-            allowDecimals:true
+            allowDecimals:true,
+            decimalPrecision: 10
         },defaultItemsProp);
         
         var itemsNumberIntFieldDefault = Ext.applyIf({
@@ -403,8 +500,40 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
 
         var itemsDateFieldDefault = Ext.applyIf({
             xtype: "datefield",
-            width: 70
+            width: 70,
+            format: this.dateFormat
         },defaultItemsProp);
+        
+        var itemsDateTimeFieldDefault = Ext.applyIf({
+            xtype: "datefield",
+            width: 70,
+            format: 'c'
+        },defaultItemsProp);        
+        
+        /*var itemsBooleanFieldDefault = Ext.applyIf({
+            xtype: 'combo',
+            width: 60,
+            typeAhead: true,
+            triggerAction: 'all',
+            lazyRender:false,
+            mode: 'local',
+            autoLoad:true,
+            displayField: 'text',
+            valueField:'value',
+            value:'false',
+            readOnly:false,
+            editable: false,
+            store: new Ext.data.ArrayStore({
+                fields: [
+                    'value',
+                    'text'
+                ],
+                data: [
+                    ['false', 'FALSE'],
+                    ['true', 'TRUE']
+                ]
+            })
+        },defaultItemsProp);*/
             
         var itemsTextFieldLowerBoundary = Ext.apply({
                     xtype: "textfield",
@@ -419,13 +548,15 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
         var itemsNumberDoubleFieldLowerBoundary = Ext.apply({
                     xtype: "numberfield",
                     //id: "items_number_lowerBoundary",
-                    allowDecimals:true
+                    allowDecimals:true,
+                    decimalPrecision: 10
                 },lowerBoundaryDefaultItemsProp);
 
         var itemsNumberDoubleFieldUpperBoundary = Ext.apply({
                     xtype: "numberfield",
                     //id: "items_number_upperBoundary",
-                    allowDecimals:true
+                    allowDecimals:true,
+                    decimalPrecision: 10
                 },upperBoundaryDefaultItemsProp);
                 
         var itemsNumberIntFieldLowerBoundary = Ext.apply({
@@ -442,25 +573,27 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
 
         var itemsDateFieldLowerBoundary = Ext.apply({
                     xtype: "datefield",
-                    width: 70
+                    width: 70,
+                    format: this.dateFormat
                 },lowerBoundaryDefaultItemsProp);
 
         var itemsDateFieldUpperBoundary = Ext.apply({
                     xtype: "datefield",
-                    width: 70
+                    width: 70,
+                    format: this.dateFormat
                 },upperBoundaryDefaultItemsProp);
                 
-        var types = {
-            "xsd:boolean": "boolean",
-            "xsd:int": "int",
-            "xsd:integer": "int",
-            "xsd:short": "int",
-            "xsd:long": "int",
-            "xsd:date": "date",
-            "xsd:string": "string",
-            "xsd:float": "float",
-            "xsd:double": "float"
-        }; 
+        var itemsDateTimeFieldLowerBoundary = Ext.apply({
+                    xtype: "datefield",
+                    width: 70,
+                    format: 'c'
+                },lowerBoundaryDefaultItemsProp);
+
+        var itemsDateTimeFieldUpperBoundary = Ext.apply({
+                    xtype: "datefield",
+                    width: 70,
+                    format: 'c'
+                },upperBoundaryDefaultItemsProp);                
         
         return [
             this.attributesComboConfig, Ext.applyIf({
@@ -484,28 +617,58 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                         this.items.get(11).enable();
                         this.items.get(12).enable();                        
                         this.items.get(13).enable();                        
+                        this.items.get(14).enable();
+                        this.items.get(15).enable();
+                        this.items.get(16).enable();
                         
                         this.setFilterType(record.get("value"),this.fieldType);
                         this.fireEvent("change", this.filter, this);
+                    },
+                    expand: function(combo) {
+                        var store = combo.getStore();
+                        store.clearFilter();
+                        if(this.fieldType === "date" || this.fieldType === "dateTime" || this.fieldType === "time" || this.fieldType === "int" || this.fieldType === "double" || this.fieldType === "decimal" || this.fieldType === "integer" || this.fieldType === "long" || this.fieldType === "float" || this.fieldType === "short"){
+                            store.filter([
+                              {
+                                fn   : function(record) {
+                                    return (record.get('name') === "=") || (record.get('name') === "<>") || (record.get('name') === "<") || (record.get('name') === ">") || (record.get('name') === "<=") || (record.get('name') === ">=") || (record.get('name') === "between");
+                                },
+                                scope: this
+                              }                      
+                            ]);
+                        }/*else if(this.fieldType === "boolean"){
+                            store.filter([
+                              {
+                                fn   : function(record) {
+                                    return (record.get('name') === "=");
+                                },
+                                scope: this
+                              }                      
+                            ]);
+                        }*/ 
                     },
                     scope: this
                 }
             }, this.comparisonComboConfig),
             
                 itemsTextFieldDefault, //(2)
-                itemsDateFieldDefault, //(3) 
-                itemsNumberDoubleFieldDefault, //(4)
-                itemsNumberIntFieldDefault, //(5)
+                itemsDateFieldDefault, //(3)
+                itemsDateTimeFieldDefault, //(4)
+                //itemsBooleanFieldDefault, //()
+                itemsNumberDoubleFieldDefault, //(5)
+                itemsNumberIntFieldDefault, //(6)
                 
-                itemsTextFieldLowerBoundary, //(6)
-                itemsDateFieldLowerBoundary, //(7)                
-                itemsNumberDoubleFieldLowerBoundary, //(8)
-                itemsNumberIntFieldLowerBoundary, //(9)
+                itemsTextFieldLowerBoundary, //(7)
+                itemsDateFieldLowerBoundary, //(8)
+                itemsDateTimeFieldLowerBoundary, //(9)                
+                itemsNumberDoubleFieldLowerBoundary, //(10)
+                itemsNumberIntFieldLowerBoundary, //(11)
                 
-                itemsTextFieldUpperBoundary, //(10)
-                itemsDateFieldUpperBoundary, //(11)                
-                itemsNumberDoubleFieldUpperBoundary, //(12)
-                itemsNumberIntFieldUpperBoundary //(13)
+                itemsTextFieldUpperBoundary, //(12)
+                itemsDateFieldUpperBoundary, //(13)                
+                itemsDateTimeFieldUpperBoundary, //(14)
+                itemsNumberDoubleFieldUpperBoundary, //(15)
+                itemsNumberIntFieldUpperBoundary //(16)
         ];
     },
     
@@ -520,83 +683,117 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             // default matches case. See OpenLayers.Filter.Comparison#matchCase
             this.filter.matchCase = true;
         }
-        
+
         if (type === OpenLayers.Filter.Comparison.BETWEEN) {
             
-            switch(fieldType) {
-                case "string":
-                    this.items.get(2).hide();
-                    this.items.get(3).hide();
-                    this.items.get(4).hide();
-                    this.items.get(5).hide();                      
-                    this.items.get(6).show();
-                    this.items.get(10).show();
-                break;
-                case "dateTime":
-                    this.items.get(2).hide();
-                    this.items.get(3).hide();
-                    this.items.get(4).hide();  
-                    this.items.get(5).hide();  
-                    this.items.get(7).show();
-                    this.items.get(11).show();
-                break;
-                case "double":
-                    this.items.get(2).hide();
-                    this.items.get(3).hide();
-                    this.items.get(4).hide();  
-                    this.items.get(5).hide();  
-                    this.items.get(8).show();
-                    this.items.get(12).show();
-                break;
-                case "int":
-                    this.items.get(2).hide();
-                    this.items.get(3).hide();
-                    this.items.get(4).hide();  
-                    this.items.get(5).hide();
-                    this.items.get(9).show();
-                    this.items.get(13).show();
-                break;                
-            }
+            if(this.fieldType === "string"){
+                this.items.get(2).hide();
+                this.items.get(3).hide();
+                this.items.get(4).hide();
+                this.items.get(5).hide();
+                this.items.get(6).hide();
+                this.items.get(7).show();
+                this.items.get(12).show();
+            }else if(this.fieldType === "date"){
+                this.items.get(2).hide();
+                this.items.get(3).hide();
+                this.items.get(4).hide();
+                this.items.get(5).hide();
+                this.items.get(6).hide(); 
+                this.items.get(8).show();
+                this.items.get(13).show();            
+            }else if(this.fieldType === "dateTime"){
+                this.items.get(2).hide();
+                this.items.get(3).hide();
+                this.items.get(4).hide();
+                this.items.get(5).hide();
+                this.items.get(6).hide();
+                this.items.get(9).show();
+                this.items.get(14).show();               
+            }else if(this.fieldType === "double" || this.fieldType === "decimal" || this.fieldType === "float"){
+                this.items.get(2).hide();
+                this.items.get(3).hide();
+                this.items.get(4).hide();
+                this.items.get(5).hide();
+                this.items.get(6).hide();
+                this.items.get(10).show();
+                this.items.get(15).show();               
+            }else if(this.fieldType === "int" || this.fieldType === "integer" || this.fieldType === "long" || this.fieldType === "short"){
+                this.items.get(2).hide();
+                this.items.get(3).hide();
+                this.items.get(4).hide();
+                this.items.get(5).hide();
+                this.items.get(6).hide();
+                this.items.get(11).show();
+                this.items.get(16).show();                        
+            }else{
+                this.items.get(2).hide();
+                this.items.get(3).hide();
+                this.items.get(4).hide();
+                this.items.get(5).hide();
+                this.items.get(6).hide();
+                this.items.get(7).show();
+                this.items.get(12).show();            
+            }            
             
         } else {
-            
-            switch(fieldType) {
-                case "string":
-                    this.items.get(2).show();
-                    this.items.get(3).hide();
-                    this.items.get(4).hide();
-                    this.items.get(5).hide();
-                    
-                    this.items.get(6).hide();
-                    this.items.get(10).hide();
-                break;
-                case "dateTime":
-                    this.items.get(2).hide();
-                    this.items.get(3).show();
-                    this.items.get(4).hide();  
-                    this.items.get(5).hide();
-                    
-                    this.items.get(7).hide();
-                    this.items.get(11).hide();
-                break;
-                case "double":            
-                    this.items.get(2).hide();
-                    this.items.get(3).hide();
-                    this.items.get(4).show();
-                    this.items.get(5).hide();
-                    
-                    this.items.get(8).hide();
-                    this.items.get(12).hide();
-                break;
-                case "int":            
-                    this.items.get(2).hide();
-                    this.items.get(3).hide();
-                    this.items.get(4).hide();
-                    this.items.get(5).show();
-                    this.items.get(9).hide();
-                    this.items.get(13).hide();
-                break;                
-            }           
+
+            if(this.fieldType === "string"){
+                this.items.get(2).show();
+                this.items.get(3).hide();
+                this.items.get(4).hide();
+                this.items.get(5).hide();
+                this.items.get(6).hide();
+                
+                this.items.get(7).hide();
+                this.items.get(12).hide();
+            }else if(this.fieldType === "date"){
+                this.items.get(2).hide();
+                this.items.get(3).show();
+                this.items.get(4).hide();
+                this.items.get(5).hide();
+                this.items.get(6).hide();
+                
+                this.items.get(8).hide();
+                this.items.get(13).hide();            
+            }else if(this.fieldType === "dateTime"){
+                this.items.get(2).hide();
+                this.items.get(3).hide();
+                this.items.get(4).show();
+                this.items.get(5).hide();
+                this.items.get(6).hide();
+                
+                this.items.get(9).hide();
+                this.items.get(14).hide();        
+            }else if(this.fieldType === "double" || this.fieldType === "decimal" || this.fieldType === "float"){
+                this.items.get(2).hide();
+                this.items.get(3).hide();
+                this.items.get(4).hide();
+                this.items.get(5).show();
+                this.items.get(6).hide();                    
+                
+                this.items.get(10).hide();
+                this.items.get(15).hide();              
+            }else if(this.fieldType === "int" || this.fieldType === "integer" || this.fieldType === "long" || this.fieldType === "short"){
+                this.items.get(2).hide();
+                this.items.get(3).hide();
+                this.items.get(4).hide();
+                this.items.get(5).hide();
+                this.items.get(6).show();
+                
+                this.items.get(11).hide();
+                this.items.get(16).hide();
+            }else{
+                this.items.get(2).show();
+                this.items.get(3).hide();
+                this.items.get(4).hide();
+                this.items.get(5).hide();
+                this.items.get(6).hide();
+                
+                this.items.get(7).hide();
+                this.items.get(12).hide();         
+            }          
+ 
         }
         this.doLayout();
     },
