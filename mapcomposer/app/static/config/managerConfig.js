@@ -57,13 +57,6 @@
         "loginManager": "loginTool",
         "actionTarget": null
     },{
-        "ptype": "mxp_templatemanager",
-        "loginManager": "loginTool",
-        "actionTarget":{
-          "target": "north.tbar",
-          "index": 0
-        }
-    },{
         "ptype": "mxp_myaccount",
         "loginManager": "loginTool",
         "actionTarget":{
@@ -72,6 +65,7 @@
         }
     },{
         "ptype": "mxp_usermanager",
+        "showEnabled":true,
         "loginManager": "loginTool",
         "actionTarget":{
           "target": "north.tbar",
