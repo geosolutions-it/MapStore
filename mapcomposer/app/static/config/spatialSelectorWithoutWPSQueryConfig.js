@@ -1,5 +1,5 @@
 {
-   "advancedScaleOverlay": false,
+   "scaleOverlayMode": "basic",
    "gsSources":{ 
    		"default": {
 			"ptype": "gxp_wmssource",

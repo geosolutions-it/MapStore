@@ -465,7 +465,7 @@
             };*/
 
             app = new GeoExplorer.Composer({  
-				advancedScaleOverlay: serverConfig.advancedScaleOverlay || false,
+				scaleOverlayMode : serverConfig.scaleOverlayMode || (serverConfig.advancedScaleOverlay ? 'advanced' : 'basic'),
                 defaultLanguage: serverConfig.defaultLanguage,		
 				actionToolScale: serverConfig.actionToolScale || "small",
 				geonetwork: true, // hidden/private config only used for the geonetwork use case

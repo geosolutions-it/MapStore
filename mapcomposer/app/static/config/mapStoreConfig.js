@@ -1,6 +1,6 @@
 {
    
-   "advancedScaleOverlay": false,
+   "scaleOverlayMode": "basic",
    "gsSources":{ 
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
