@@ -100,12 +100,12 @@ Ext.extend(Ext.ux.FileTreeMenu, Ext.menu.Menu, {
   /**
    * @cfg {String} deleteKeyName text for delete item shortcut
    */
-  ,deleteKeyName:'Suppr.'
+  ,deleteKeyName:'Delete.'
 
   /**
    * @cfg {String} deleteText text for delete item
    */
-  ,deleteText:'Suprimer'
+  ,deleteText:'Delete'
 
   /**
    * @cfg {String} expandIconCls icon class for expand all item
@@ -125,7 +125,7 @@ Ext.extend(Ext.ux.FileTreeMenu, Ext.menu.Menu, {
   /**
    * @cfg {String} newdirText text for new directory item
    */
-  ,newdirText:'Nouveau dossier'
+  ,newdirText:'New Folder'
 
   /**
    * @cfg {String} openBlankIconCls icon class for open in new window item
@@ -145,7 +145,7 @@ Ext.extend(Ext.ux.FileTreeMenu, Ext.menu.Menu, {
   /**
    * @cfg {String} openDwnldText text for download item
    */
-  ,openDwnldText:'Telecharger'
+  ,openDwnldText:'Download'
 
   /**
    * @cfg {String} openIconCls icon class for open submenu
@@ -195,7 +195,7 @@ Ext.extend(Ext.ux.FileTreeMenu, Ext.menu.Menu, {
 	/**
 	 * @cfg {String} renameText text for rename item
 	 */
-	,renameText: 'Renommer'
+	,renameText: 'Rename'
 
 	/**
 	 * @cfg {String} uploadFileText text for upload file item

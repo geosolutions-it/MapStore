@@ -18,7 +18,7 @@ background-image:url(../img/fb/computer_link.png) !important;
 
 .icon-upload { 
 background-image:url(../img/fb/up.png) !important;
-background-position:0px 1px !important;
+background-position:0px 1px !important; 
 }
 
 .icon-folder-add {
@@ -177,7 +177,7 @@ background-image:url(../img/fb/file_48.png) !important;
     height:51px;
     background-repeat: no-repeat;
     background-color: #FFFFFF;
-    background-image:url(../img/fb/document.png);
+    background-image:url(../img/fb/file_48.png);
     border:1px solid #ffffff;
     background-position:50% 2px;
 }
@@ -223,4 +223,41 @@ background-image:url(../img/fb/file_48.png) !important;
 	padding-left:20px;
 	margin:10px;
 }
+/* *** FILE EXTENSIONS *** */
+/* Use the following schema for icons with file-<extension> */
+/* pdf */
+.x-tree-node-leaf .x-tree-node-icon.file.file-pdf , .x-grid3-cell-inner .file-pdf {
+    background-image:url("../img/fb/extensions/16/pdf.png");
+}
+.browser-view .thumb .item.file.file-pdf {
+    background-image:url("../img/fb/extensions/48/pdf.png") !important;;
+}
 
+/* xml */
+.x-tree-node-leaf .x-tree-node-icon.file.file-xml , .x-grid3-cell-inner .file-xml {
+    background-image:url("../img/fb/extensions/16/xml.png");
+}
+.browser-view .thumb .item.file.file-xml {
+    background-image:url("../img/fb/extensions/48/xml.png") !important;;
+}
+/* jpg */
+.x-tree-node-leaf .x-tree-node-icon.file.file-jpg , .x-grid3-cell-inner .file-jpg {
+    background-image:url("../img/fb/extensions/16/jpg.png");
+}
+.browser-view .thumb .item.file.file-jpg {
+    background-image:url("../img/fb/extensions/48/jpg.png") !important;;
+}
+/* png */
+.x-tree-node-leaf .x-tree-node-icon.file.file-png , .x-grid3-cell-inner .file-png {
+    background-image:url("../img/fb/extensions/16/jpg.png");
+}
+.browser-view .thumb .item.file.file-png {
+    background-image:url("../img/fb/extensions/48/jpg.png") !important;;
+}
+/* gif */
+.x-tree-node-leaf .x-tree-node-icon.file.file-gif , .x-grid3-cell-inner .file-gif {
+    background-image:url("../img/fb/extensions/16/jpg.png");
+}
+.browser-view .thumb .item.file.file-gif {
+    background-image:url("../img/fb/extensions/48/jpg.png") !important;;
+}

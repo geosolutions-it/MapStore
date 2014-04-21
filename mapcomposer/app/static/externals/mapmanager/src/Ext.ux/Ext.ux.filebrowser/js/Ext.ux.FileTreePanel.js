@@ -276,7 +276,8 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 
 			// create root node
 			 root:new Ext.tree.AsyncTreeNode({
-				 text:this.rootText
+                id:'/',
+				 text: '/'  
 				,folder:this.rootPath
 				,rootVisible:this.rootVisible
 				,allowDrag:false

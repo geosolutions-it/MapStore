@@ -145,10 +145,13 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
                         if (this.enableUpload) {
                             var item = new Ext.menu.Item({
                                 text:this.uploadText,
+                                iconCls:'icon-upload',
                                 scope: this,
                                 handler: function(){
 
                                     var pluploadPanel = new Ext.ux.PluploadPanel({
+                                        autoScroll:true,
+                                        layout:'fit',
                                         url: this.uploadUrl,
                                         multipart: this.pluploadMultipart,
                                         listeners:{
@@ -177,6 +180,7 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
                                         title: this.uploadText,
                                         width: this.pluploadWindowWidth,
                                         height: this.pluploadWindowHeigth,
+                                        layout:'fit',
                                         resizable: this.pluploadWindowResizable,
                                         items: [pluploadPanel]
                                     });
@@ -715,7 +719,7 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
         //         }
         //     }
         // }
-        return node.id;
+        return node.getPath("text");
     }
 
 });

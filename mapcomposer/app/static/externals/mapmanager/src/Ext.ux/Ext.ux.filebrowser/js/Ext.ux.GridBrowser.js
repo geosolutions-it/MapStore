@@ -3,6 +3,8 @@ Ext.ux.GridBrowser = Ext.extend(Ext.grid.GridPanel, {
     border:false
 
     ,enableHdMenu:false
+    
+    ,fileCls:'file'
 
     ,viewConfig: {forceFit:true}
 
@@ -11,7 +13,7 @@ Ext.ux.GridBrowser = Ext.extend(Ext.grid.GridPanel, {
     ,initComponent:function() {
 
         this.cm = new Ext.grid.ColumnModel([
-            {id:"id", header:"Label", dataIndex:"text", sortable:true, renderer:this.fileRenderer}
+            {id:"id", header:"Label", dataIndex:"text", sortable:true, renderer:{fn:this.fileRenderer,scope:this}}
 	        ,{header:"Size", dataIndex:"size", align:"right", fixed:true, width:100, sortable:true, renderer:this.sizeRenderer}
         ]);
 
@@ -58,8 +60,9 @@ Ext.ux.GridBrowser = Ext.extend(Ext.grid.GridPanel, {
 
     ,fileRenderer:function(value, metaData, record) {
         var html = "";
+        
         if (record.data.leaf != undefined && record.data.leaf === true)
-            html += '<div class="row-file '+record.data.iconCls+'" style="padding:2px 0 1px 20px;">'+value+'</div>';
+            html += '<div class="row-file '+ this.getFileCls(value) +'" style="padding:2px 0 1px 20px;">'+value+'</div>';
         else html += '<div class="icon-row-folder">'+value+'</div>';
         return html;
     }
@@ -67,9 +70,10 @@ Ext.ux.GridBrowser = Ext.extend(Ext.grid.GridPanel, {
     ,getDragDropText : function(){
         var records = this.selModel.getSelections();
         var html = "";
+        var gridbrowser = this;
         Ext.each(records, function(record) {
             var iconCls = record.get("leaf") === true ? "row-file" : "icon-row-folder";
-            html += '<div class="'+iconCls+' '+record.get("iconCls")+'">'+record.get("text")+'</div>';
+            html += '<div class="'+iconCls+' '+ gridbrowser.getFileCls(value) +'">'+record.get("text")+'</div>';
         }, this);
         return html;
     }
@@ -152,6 +156,15 @@ Ext.ux.GridBrowser = Ext.extend(Ext.grid.GridPanel, {
             }
         });
 
-    }
+    },
+    getFileCls:function(name) {
+		var atmp = name.split('.');
+		if(1 === atmp.length) {
+			return this.fileCls;
+		}
+		else {
+			return this.fileCls + '-' + atmp.pop().toLowerCase();
+		}
+	}
 
 });

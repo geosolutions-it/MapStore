@@ -7,8 +7,8 @@
 
 Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
     constructor: function(config) {
-
-        this.autoScroll = false;
+        
+        this.autoScroll = true;
         this.bodyCssClass = 'x-plupload-body';
 
         this.success = [];
@@ -76,7 +76,7 @@ Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
                 new Ext.Button({
                     text: config.addButtonText || 'Add files',
                     itemId: 'addButton',
-                    iconCls: config.addButtonCls,
+                    iconCls: config.addButtonCls || 'add_ic',
                     disabled: true
                 }),
                 new Ext.Button({
@@ -85,7 +85,7 @@ Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
                     scope: this,
                     disabled: true,
                     itemId: 'start',
-                    iconCls: config.uploadButtonCls
+                    iconCls: config.uploadButtonCls || 'inbox-upload_ic'
                 }),
                 new Ext.Button({
                     text: config.cancelButtonText || 'Cancel',
@@ -93,24 +93,24 @@ Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
                     scope: this,
                     disabled: true,
                     itemId: 'cancel',
-                    iconCls: config.cancelButtonCls
+                    iconCls: config.cancelButtonCls  || 'decline_ic'
                 }),
                 new Ext.SplitButton({
                     text: config.deleteButtonText || 'Remove',
                     handler: this.onDeleteSelected,
                     menu: new Ext.menu.Menu({
                         items: [
-                            {text: config.deleteSelectedText || '<b>Remove selected</b>', handler: this.onDeleteSelected, scope: this },
+                            {text: config.deleteSelectedText || '<b>Remove selected</b>', handler: this.onDeleteSelected, scope: this, iconCls: 'delete_ic' },
                             '-',
-                            {text: config.deleteUploadedText || 'Remove uploaded', handler: this.onDeleteUploaded, scope: this },
+                            {text: config.deleteUploadedText || 'Remove uploaded', handler: this.onDeleteUploaded, scope: this, iconCls: 'broom_ic'  },
                             '-',
-                            {text: config.deleteAllText || 'Remove all', handler: this.onDeleteAll, scope: this }
+                            {text: config.deleteAllText || 'Remove all', handler: this.onDeleteAll, scope: this,iconCls: 'broom_exclamation_ic'  }
                         ]
                     }),
                     scope: this,
                     disabled: true,
                     itemId: 'delete',
-                    iconCls: config.deleteButtonCls
+                    iconCls: config.deleteButtonCls || 'delete_ic'
                 })
             ]
         });
@@ -119,6 +119,8 @@ Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
             store: this.store,
             tpl: this.viewTpl,
             multiSelect: true,
+            layout:'fit',
+            autoScroll:true,
             overClass: 'plupload_over',
             selectedClass: 'plupload_selected',
             itemSelector: 'dl',
@@ -186,7 +188,7 @@ Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
             runtimes: this.runtimes || runtimes,
             browse_button: this.getTopToolbar().getComponent('addButton').getEl().dom.id,
             container: this.getTopToolbar().getEl().dom.id,
-            max_file_size: this.max_file_size || '10mb',
+            max_file_size: this.max_file_size || '3gb',
             resize: this.resize || '',
             flash_swf_url: this.flash_swf_url || '',
             silverlight_xap_url: this.silverlight_xap_url || '',

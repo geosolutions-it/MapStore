@@ -3,6 +3,7 @@
 @import url("extendedhtmleditor.css");
 @import url("filebrowser.css");
 @import url("filebrowser2.css");
+@import url("plupload.css");
 
 a.button{
 background:url(img/button.gif);
@@ -265,6 +266,10 @@ left: 80px !important;
     background-image: url(../img/layout.png);
 }
 
+.update_manager_ic{
+    background-image: url(../img/database_gear.png);
+}
+
 .group_ic{
     background-image: url(../img/group.png);
 }
@@ -290,6 +295,8 @@ left: 80px !important;
 .information_ic{
     background-image: url(../img/information.png);
 }
+
+
 .action_column_btn{
     background-repeat: no-repeat;
     width:20px;

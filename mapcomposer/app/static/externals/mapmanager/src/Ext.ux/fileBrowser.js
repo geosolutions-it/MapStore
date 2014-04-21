@@ -865,6 +865,7 @@ Ext.extend(Ext.ux.fileBrowser, Ext.Panel, {
 	actionDo : function(config){
 		var connection = new Ext.data.Connection().request({
 			url: config.url ? config.url : this.actionURL,
+            defaultHeaders: this.defaultHeaders,
 			method: "POST",
 			params: Ext.isDefined(config.params)?config.params:{},
 			form : Ext.isDefined(config.form)?config.form:false,

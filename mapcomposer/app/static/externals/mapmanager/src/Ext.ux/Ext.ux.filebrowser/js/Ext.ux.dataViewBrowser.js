@@ -12,11 +12,24 @@ Ext.ux.dataViewBrowser = Ext.extend(Ext.DataView, {
             '<tpl for=".">',
             '<div class="thumb-wrap" id="{id}">',
             '<div class="thumb">',
-            '<div class="item {values.iconCls}"></div>',
+            '<div class="item {values.iconCls} {[this.getFileCls(values)]}"></div>',
             '</div>',
             '<span class="x-editable" ext:qtip="{values.text}">{[fm.ellipsis(values.text, 12)]}</span></div>',
             '</tpl>',
             '<div class="x-clear"></div>'
+            ,{
+                fileCls:'file',
+                getFileCls:function(values) {
+                    var name = values.text;
+                    var atmp = name.split('.');
+                    if(1 === atmp.length) {
+                        return '';
+                    }
+                    else {
+                        return this.fileCls + '-' + atmp.pop().toLowerCase();
+                    }
+                }
+            }
         );
 
         //        this.DragSelect = new Ext.DataView.DragSelector();
@@ -69,7 +82,7 @@ Ext.ux.dataViewBrowser = Ext.extend(Ext.DataView, {
             ,getDragData: function(e) {
                 var sourceEl = e.getTarget(v.itemSelector, 10);
                 if (sourceEl) {
-                    var node = Ext.DomHelper.createDom({tag:"div", class:"browser-view"});
+                    var node = Ext.DomHelper.createDom({tag:"div", "class":"browser-view"});
                     var clearNode = Ext.DomHelper.createDom({tag:"div", style:"clear:both"});
                     d = sourceEl.cloneNode(true);
                     d.id = Ext.id();
