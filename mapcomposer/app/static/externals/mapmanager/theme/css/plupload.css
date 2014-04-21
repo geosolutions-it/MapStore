@@ -1,0 +1,18 @@
+.broom_ic{
+    background-image: url(../img/broom.png);
+}
+.broom_exclamation_ic{
+    background-image: url(../img/broom_exclamation.png);
+}
+.delete_ic{
+    background-image: url(../img/delete.png);
+}
+.decline_ic{
+    background-image: url(../img/decline.png);
+}
+.inbox-upload_ic{
+    background-image: url(../img/inbox-upload.png);
+}
+.add_ic{
+    background-image: url(../img/add.png);
+}

@@ -43,13 +43,13 @@
         "pluginId": "loginTool",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 2
+          "index": 3
         }
     },{
         "ptype": "mxp_languageselector",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 6
+          "index": 7
         }
     }],
    "adminTools":[{
@@ -76,13 +76,13 @@
         "pluginId": "loginTool",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 5
+          "index": 10
         }
     },{
         "ptype": "mxp_languageselector",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 10
+          "index": 20
         }
     }],
     "loggedTools":[{

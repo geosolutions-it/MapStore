@@ -166,7 +166,9 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 		
 		this.mapItems = [];
 		
-		if(config.advancedScaleOverlay){
+        var scaleOverlayMode = config.scaleOverlayMode || 'basic';
+        
+		if(scaleOverlayMode === 'advanced'){
 			this.mapItems.push({
                 xtype: "gxp_advancedscaleoverlay",
                 topOutUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topOutUnits : null,
@@ -181,7 +183,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 				showMousePosition: config.scaleOverlayUnits ? (config.scaleOverlayUnits.showMousePosition === true ? true : false) : false,
                 enableSetScaleUnits: config.scaleOverlayUnits ? true : false
             });
-		}else{
+		}else if(scaleOverlayMode === 'basic') {
 			this.mapItems.push({
                 xtype: "gxp_scaleoverlay",
                 topOutUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topOutUnits : null,

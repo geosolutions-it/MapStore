@@ -389,7 +389,7 @@
 			}
 			
             app = new GeoExplorer.Composer({
-				advancedScaleOverlay: serverConfig.advancedScaleOverlay || false,
+                scaleOverlayMode : serverConfig.scaleOverlayMode || (serverConfig.advancedScaleOverlay ? 'advanced' : 'basic'),
 				defaultLanguage: serverConfig.defaultLanguage,	
 				actionToolScale: serverConfig.actionToolScale || "small",
                 customPanels: serverConfig.customPanels,
