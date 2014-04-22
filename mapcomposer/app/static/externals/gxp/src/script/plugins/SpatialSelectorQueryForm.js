@@ -256,6 +256,8 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                             }
 
 							filter.value = null;
+                            filter.lowerBoundary = null;
+                            filter.upperBoundary = null;
 							i++;
 						}
 					}

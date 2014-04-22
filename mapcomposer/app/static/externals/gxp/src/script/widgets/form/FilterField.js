@@ -126,6 +126,8 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                     }
                     
                     this.filter.value = null;
+                    this.filter.upperBoundary = null;
+                    this.filter.lowerBoundary = null;
                     
                     //get type from record to update xtype    
                     var type = record.get("type");
@@ -402,6 +404,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
      * Creates a panel config containing filter parts.
      */
     createFilterItems: function(type) {
+        var me = this;
         
         var types = {
             "xsd:boolean": "boolean",
@@ -414,7 +417,17 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             "xsd:float": "float",
             "xsd:double": "float"
         };     
-    
+        
+        // Add the additional 'advanced' VTypes
+        /*Ext.apply(Ext.form.VTypes, {
+            clearDateFilter : function(val, field) {
+                if (val === "") {
+                    me.filter.value = null;
+                    me.fireEvent("change", me.filter, me);
+                }
+            }
+        });*/
+        
         this.fieldType = type.split(":").pop();    
     
         var isBetween = this.filter.type === OpenLayers.Filter.Comparison.BETWEEN;
@@ -508,12 +521,14 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
         var itemsDateFieldDefault = Ext.applyIf({
             xtype: "datefield",
             width: 70,
+            allowBlank: false,
             format: this.dateFormat
         },defaultItemsProp);
         
         var itemsDateTimeFieldDefault = Ext.applyIf({
             xtype: "datefield",
             width: 70,
+            allowBlank: false,
             format: 'c'
         },defaultItemsProp);        
         
@@ -581,27 +596,31 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
         var itemsDateFieldLowerBoundary = Ext.apply({
                     xtype: "datefield",
                     width: 70,
+                    allowBlank: false,
                     format: this.dateFormat
                 },lowerBoundaryDefaultItemsProp);
 
         var itemsDateFieldUpperBoundary = Ext.apply({
                     xtype: "datefield",
                     width: 70,
+                    allowBlank: false,
                     format: this.dateFormat
                 },upperBoundaryDefaultItemsProp);
                 
         var itemsDateTimeFieldLowerBoundary = Ext.apply({
                     xtype: "datefield",
                     width: 70,
+                    allowBlank: false,
                     format: 'c'
                 },lowerBoundaryDefaultItemsProp);
 
         var itemsDateTimeFieldUpperBoundary = Ext.apply({
                     xtype: "datefield",
                     width: 70,
+                    allowBlank: false,
                     format: 'c'
-                },upperBoundaryDefaultItemsProp);                
-        
+                },upperBoundaryDefaultItemsProp);
+                
         return [
             this.attributesComboConfig, Ext.applyIf({
                 xtype: "gxp_comparisoncombo",

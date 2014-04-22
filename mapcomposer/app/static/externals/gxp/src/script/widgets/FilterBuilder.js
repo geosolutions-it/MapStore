@@ -222,15 +222,15 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
                             filter = child;
                             break;
                         }
-                    //} else if(!child || child.type === null || child.property === null || child[filter.type === OpenLayers.Filter.Comparison.BETWEEN ? "lowerBoundary" : "value"] === null) {
-                    } else if(!child || child.type === null || child.property === null || child.type === (OpenLayers.Filter.Comparison.BETWEEN ? "lowerBoundary" : "value") === null) {
+                    //} else if(!child || child.type === null || child.property === null || child[filter.type === OpenLayers.Filter.Comparison.BETWEEN ? "lowerBoundary" : "value"] === null || child[filter.type === OpenLayers.Filter.Comparison.BETWEEN ? "upperBoundary" : "value"] === null) {
+                    } else if(!child || child.type === null || child[child.property] === null || child[child.type === OpenLayers.Filter.Comparison.BETWEEN ? "lowerBoundary" : "value"] === null || child[child.type === OpenLayers.Filter.Comparison.BETWEEN ? "upperBoundary" : "value"] === null ) {
                         filter = false;
                         break;
                     }
                 }
             }
         } else {
-            if(!filter || filter.type === null || filter.property === null || filter[filter.type === OpenLayers.Filter.Comparison.BETWEEN ? "lowerBoundary" : "value"] === null) {
+            if(!filter || filter.type === null || filter.property === null || filter[filter.type === OpenLayers.Filter.Comparison.BETWEEN ? "lowerBoundary" : "value"] === null || filter[filter.type === OpenLayers.Filter.Comparison.BETWEEN ? "upperBoundary" : "value"] === null) {
                 filter = false;
             }
         }
