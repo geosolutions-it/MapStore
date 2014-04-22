@@ -184,6 +184,7 @@ Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
             runtimes = "silverlight," + runtimes; 
         }
         this.uploader = new plupload.Uploader({
+            headers : this.auth ? {'Authorization': this.auth}: null,
             url: this.url,
             runtimes: this.runtimes || runtimes,
             browse_button: this.getTopToolbar().getComponent('addButton').getEl().dom.id,

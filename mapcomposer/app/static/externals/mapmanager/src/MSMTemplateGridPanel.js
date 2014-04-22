@@ -127,15 +127,11 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
                        icon: Ext.MessageBox.ERROR
                     });                                
                 },
-                defaultHeaders: {'Accept': 'application/json', 'Authorization' : this.auth}
+                headers: {'Accept': 'application/json', 'Authorization' : this.auth}
             }),
             
             sortInfo: { field: "name", direction: "ASC" }
 		 });
-        store.proxy.getConnection().defaultHeaders = {
-            'Accept': 'application/json', 
-            'Authorization' : this.auth
-        };
 
 		var expander = new Ext.ux.grid.RowExpander({
             /**
