@@ -146,7 +146,7 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
             if(output.rendered && output.isVisible && output.isVisible()){
                 // rendered and visible
                 output.render();
-                output.store.proxy.getConnection().defaultHeaders = this.target.defaultHeaders;
+                output.store.proxy.headers = this.target.defaultHeaders;
                 output.getBottomToolbar().bindStore(output.store, true);
                 output.getBottomToolbar().doRefresh();
                 output.plugins.collapseAll();
@@ -161,7 +161,7 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
                 // Tab not enabled, wait for activate
                 output.on("activate", function(){
                     output.render();
-                    output.store.proxy.getConnection().defaultHeaders = this.target.defaultHeaders;
+                    output.store.proxy.headers = this.target.defaultHeaders;
                     output.getBottomToolbar().bindStore(output.store, true);
                     output.getBottomToolbar().doRefresh();
                     output.plugins.collapseAll();

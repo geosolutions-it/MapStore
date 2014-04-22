@@ -205,6 +205,10 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
                     restful: true,
                     method : 'GET',
                     disableCaching: true,
+                    headers:{
+                        'Accept': 'application/json', 
+                        'Authorization' : this.auth
+                    },
                     failure: function (response) {
                         Ext.Msg.show({
                            title: "Error",
@@ -219,10 +223,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
                     scope: this
                 }
             });
-            this.adminConfigStore.proxy.getConnection().defaultHeaders= {
-                'Accept': 'application/json', 
-                'Authorization' : this.auth
-            };
+            
             this.adminConfigStore.load();
         }else{
             // Load default config

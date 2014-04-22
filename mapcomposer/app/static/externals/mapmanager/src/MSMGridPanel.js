@@ -1206,14 +1206,12 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                 document.body.scrollTop = scrollTop;
 							},
                             afterRender: function(p){
-                                function setAuth(){
+                                function setAuth(){//TODO the composer will get the auth from the window. not this way 
                                     var userAuth = grid
                                         && grid.store
                                         && grid.store.proxy
-                                        && grid.store.proxy.getConnection()
-                                        && grid.store.proxy.getConnection().defaultHeaders ? grid.store.proxy.getConnection().defaultHeaders: null;
-										
-                                    if(userAuth && userProfile != '&auth=false'){
+                                        && grid.store.proxy.headers ? grid.store.proxy.getConnection().headers: null;
+                                    if(userAuth && userProfile == '&auth=true'){
                                         var mapIframe = document.getElementById(p.iframeId);
                                         if (mapIframe
                                             && mapIframe.contentWindow
@@ -1771,48 +1769,16 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 method : 'GET',
                 disableCaching: true,
                 timeout: this.msmTimeout,
+                listeners:{
+                    beforeload: function(proxy,params){
+                        if(grid.login){
+                            proxy.conn.headers['Authorization'] = grid.login.getToken();
+                        }else if(proxy.conn.headers && proxy.conn.headers['Authorization']){
+                            delete proxy.conn.headers['Authorization'];
+                        }
+                    }
+                },
                 success: function (result) {
-				    // ///////////////////////////////////////
-					// Hack to generate short urls
-					// it is not a good solution!
-					// ////////////////////////////////////////
-					/*var maps = Ext.util.JSON.decode(result.responseText).results;
-					for (var i=0; i<maps.length; i++){
-						var map = maps[i];
-						var mapid = map.id;
-						// //////////////////////////////////////////////////
-						// Verify if we already have this uri in cache
-						// //////////////////////////////////////////////////
-						if ( grid.shortUrls[mapid] === undefined ){
-						    // /////////////////////////////////////////////
-							// Send a request to shorten urls for Twitter
-							// /////////////////////////////////////////////
-							var longUrl = config.mcUrl + '?locale=' + grid.lang + '&amp;auth=false&amp;fullScreen=true&amp;mapId='+mapid;
-							
-							// /////////////////////////////////////////
-							// REPLACE config.mcUrl WITH this.murl !!!
-							// /////////////////////////////////////////
-							// console.log('sent ' + longUrl);
-							var shortener = new Google.Shortener({
-								appid: config.googleApi
-							}).failure(function(response){
-								console.error(response);
-							});
-							
-							var infamous = 	function(num){
-								var result = function(response){
-									grid.shortUrls[ num ] = response.id;
-									console.log('created short url ' + grid.shortUrls[num] + ' for map ' + num);
-								};
-								return result;
-							};
-							
-							shortener.shorten(
-								longUrl,
-								infamous(mapid)
-							);
-						}
-					}*/
                 },
                 failure: function (result) {
                     switch(result.status) {
@@ -1837,7 +1803,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         grid.alertMsgServerError(grid.errorMsg_500);
                     }
                 },
-                defaultHeaders: this.ajaxHeader
+                headers: this.ajaxHeader
             }),
             listeners:{
                 beforeload:function(store, options){

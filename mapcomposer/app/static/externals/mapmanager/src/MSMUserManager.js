@@ -614,7 +614,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                    icon: Ext.MessageBox.ERROR
                                 });                                
                             },
-                            headers: defaultHeaders
+                            headers: {'Accept': 'application/json', 'Authorization' : userManager.auth}
                         })
                         
 					});
@@ -842,7 +842,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                             method : 'GET',
                                             disableCaching: true,
                                             sortInfo: { field: "groupName", direction: "ASC" },
-                                            headers: defaultHeaders,
+                                            headers: {'Accept': 'application/json', 'Authorization' : this.auth},
                                             failure: function (response) {
                                                 console.error(response); 
                                                   Ext.Msg.show({
@@ -1196,7 +1196,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                         method : 'GET',
                                         disableCaching: true,
                                         sortInfo: { field: "groupName", direction: "ASC" },
-                                        headers: defaultHeaders,
+                                        headers: {'Accept': 'application/json', 'Authorization' : userManager.auth},
                                         failure: function (response) {
                                             console.error(response); 
                                               Ext.Msg.show({
@@ -1487,7 +1487,7 @@ MSMUserGroupManager = Ext.extend(Ext.grid.GridPanel, {
                 method : 'GET',
                 disableCaching: true,
                 sortInfo: { field: "groupName", direction: "ASC" },
-                headers: defaultHeaders,
+                headers: {'Accept': 'application/json', 'Authorization' : this.auth},
                 failure: function (response) {
                     console.error(response); 
                       Ext.Msg.show({

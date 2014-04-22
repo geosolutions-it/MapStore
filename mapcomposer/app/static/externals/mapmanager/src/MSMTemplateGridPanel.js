@@ -139,7 +139,10 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
             
             sortInfo: { field: "name", direction: "ASC" }
 		 });
+<<<<<<< HEAD
         
+=======
+>>>>>>> 76fef00... fixed default authentication propagation from tools
 
 		var expander = new Ext.ux.grid.RowExpander({
             /**
