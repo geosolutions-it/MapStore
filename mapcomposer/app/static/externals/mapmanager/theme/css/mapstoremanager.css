@@ -295,11 +295,27 @@ left: 80px !important;
 .information_ic{
     background-image: url(../img/information.png);
 }
+.refresh_ic{
+    background-image: url(../img/arrow_refresh.png);
+}
 
-
+.delete_ic {
+    background:url(../img/delete.png)
+}
 .action_column_btn{
     background-repeat: no-repeat;
     width:20px;
     height:20px;
+}
+
+/* simple colors for rows red green yellow  */
+.row-red {
+    background-color: rgb(255, 134, 134);
+}
+.row-green {
+    background-color: rgb(178, 235, 178);
+}
+.row-yellow  {
+    background-color: rgb(255, 255, 161);
 }
 

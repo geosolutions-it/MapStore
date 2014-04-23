@@ -172,6 +172,9 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
 			url: this.geoStoreBase + "data/" + templateId,
 			method: 'GET',
 			scope: this,
+            headers:{
+                'Authorization' : this.auth
+            },
 			success: function(response, opts){      
 			  
 				var templateConfig;
