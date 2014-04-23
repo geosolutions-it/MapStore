@@ -62,10 +62,10 @@ gxp.plugins.EnableLabel = Ext.extend(gxp.plugins.Tool, {
             scope: this,
             toggleHandler: function(button, pressed) {
                     if (pressed) {
-                        this.enabelDisableLabel(true,this.strWithLabels);
+                        this.enabelDisableLabel(true);
                         this.updateTooltip(this.actions[0],this.actionTipDisable);
                     } else {
-                        this.enabelDisableLabel(false,"");
+                        this.enabelDisableLabel(false);
                         this.updateTooltip(this.actions[0],this.actionTipEnable);
                     }
              }
@@ -75,21 +75,35 @@ gxp.plugins.EnableLabel = Ext.extend(gxp.plugins.Tool, {
     },
     enabelDisableLabel: function(check,labels){
     
-        var map = this.target.mapPanel.map;
-        var mapPanel = this.target.mapPanel;
-        var layer;
-        var style;
+        var layers = this.target.mapPanel.layers;
+
+        layers.each(function(record) {
         
-        for (var i=0, len=map.layers.length; i<len; ++i) {
-            if(map.layers[i].params && map.layers[i].params.STYLES){
-                layer = map.layers[i];
-                style = layer.params.STYLES;
-                layer.mergeNewParams({
-                    STYLES: check ? style + labels : style.replace(this.strWithLabels,labels)
-                });  
-            }
-        }    
-    
+            var styles = record.get("styles");
+            
+            if(styles){
+                for (var key in styles){
+                    if(styles.hasOwnProperty(key)){
+                        var layer = record.get("layer");                    
+                        var obj = styles[key];
+                        var sld = obj.name.search(this.strWithLabels);
+                        if(sld != -1){
+                            if(check){                            
+                                layer.mergeNewParams({
+                                    STYLES: obj.name
+                                });                                
+                            }else{       
+                                layer.mergeNewParams({
+                                    STYLES: layer.params.STYLES.replace(this.strWithLabels,"")
+                                });
+                            }
+                        }
+                    }    
+                }
+            
+            }        
+        },this)
+        
     },
     updateTooltip: function(action,text){
         action.items[0].setTooltip(text);
