@@ -534,7 +534,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                    var record = grid.store.getAt(rowIndex);
 
                                    var userdata = {id: record.get('id'), name: record.data.name, role: record.data.role };
-                                   var loadMask = new Ext.LoadMask(Ext.getBody(), {msg:'Wait message'});
+                                   var loadMask = new Ext.LoadMask(Ext.getBody(), {msg:'Wait'});
                                    loadMask.show();
                                    userManager.users.findByPk( record.get('id'), function(data){
                                                         // refresh the store

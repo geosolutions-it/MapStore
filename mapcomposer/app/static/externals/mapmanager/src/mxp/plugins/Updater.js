@@ -81,35 +81,61 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
         
         this.outputConfig = this.outputConfig || {};
 
-        var actionURL = this.actionURL ? this.actionURL : // the action URL is configured in th plugin
-            this.target.adminUrl ? this.target.adminUrl + "mvc/fileManager/extJSbrowser" : // use relative path from adminUrl
-            "/opensdi2-manager/mvc/fileManager/extJSbrowser"; // by default search on root opensdi-manager2
-
         var uploadUrl = this.uploadUrl ? this.uploadUrl : // the upload URL is configured in th plugin
             this.target.adminUrl ? this.target.adminUrl + "mvc/fileManager/upload" : // use relative path from adminUrl
             "/opensdi2-manager/mvc/fileManager/upload"; // by default search on root opensdi-manager2
-        Ext.apply(this.outputConfig, {
-            defaultHeaders: "Authentication : " + this.auth,
-            xtype: "FileBrowser",
+            
+        var me = this;
+        var pluploadPanel = {
+            xtype:'pluploadpanel',
+            region:'west',
+            autoScroll:true,
+            width:400,
+            ref:'uploader',
+            collapsible:true,   
+            url: proxy + uploadUrl,
+            multipart: true,
+            auth: this.auth,
+            listeners:{
+                beforestart:function() {
+                    var multipart_params =  pluploadPanel.multipart_params || {};
+                    //TODO add multipart_params
+                    pluploadPanel.multipart_params = multipart_params;
+                },
+                fileUploaded:function(file) {
+                    var pan =this;
+                    setTimeout(function(){pan.refOwner.grid.store.load()},5000);
+                },
+                uploadcomplete:function() {
+                    var pan =this;
+                    setTimeout(function(){pan.refOwner.grid.store.load()},5000);
+                }
+            }
+        }
+        Ext.apply(this.outputConfig,{   
             layout: 'border',
+            xtype:'panel',
             closable: true,
             closeAction: 'close',
-            autoWidth: true,
             iconCls: "update_manager_ic",  
             header: false,
+            deferredReneder:false,
             viewConfig: {
                 forceFit: true
             },
             title: this.buttonText,
-            rootText:"root",
-            // layout: "fit",
-            // path:"root",
-            readOnly:false,
-            enableBrowser:true,
-            enableUpload:true,
-            uploadUrl: proxy + uploadUrl, //TODO: check if same source
-            
-            url: actionURL
+            items:[
+                {
+                    xtype:'mxp_geobatch_consumer_grid',
+                    layout:'fit',
+                    autoScroll:true,
+                    auth: this.auth,
+                    autoWidth:true,
+                    region:'center',
+                    ref:'grid'
+                },  
+                pluploadPanel
+            ]
         });
 
         return mxp.plugins.Updater.superclass.addOutput.apply(this, arguments);

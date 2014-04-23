@@ -258,6 +258,10 @@
     background-image: url(img/silk/find.png);
 }
 
+.x-btn .gxp-icon-map-filter, .x-menu-item .gxp-map-filter { 
+    background-image: url(img/silk/map_filter.png);
+}
+
 /* gxp_selectfeature */
 .x-btn .gxp-icon-selectfeature, .x-menu-item .gxp-icon-selectfeature { 
     background-image: url(img/silk/cursor.png);

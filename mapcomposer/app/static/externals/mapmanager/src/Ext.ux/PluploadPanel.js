@@ -6,6 +6,13 @@
  */
 
 Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
+
+    /* basic plupload configuration */
+    runtimes: 'gears,browserplus,html5,silverlight,flash',
+    flash_swf_url: "../externals/mapmanager/theme/img/plupload/plupload.flash.swf",
+    silverlight_xap_url: "../externals/mapmanager/theme/img/plupload/plupload.silverlight.xap",
+    chunk_size: "2mb",
+
     constructor: function(config) {
         
         this.autoScroll = true;
@@ -176,13 +183,7 @@ Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
         this.uploader.start();
     },
     initialize_uploader: function () {
-        var runtimes = 'gears,browserplus,html5';
-        if ( this.flash_swf_url ) {
-            runtimes = "flash," + runtimes; 
-        }
-        if ( this.silverlight_xap_url ) {
-            runtimes = "silverlight," + runtimes; 
-        }
+        var runtimes = 'gears,browserplus,html5,silverlight,flash';
         this.uploader = new plupload.Uploader({
             headers : this.auth ? {'Authorization': this.auth}: null,
             url: this.url,
@@ -328,7 +329,9 @@ Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
     },
     FileUploaded: function(uploader, file, status) {
         var response = Ext.util.JSON.decode( status.response );
-        if ( response.success == true || status.status == 200) {
+        // flash runtime don't return response
+        if (uploader.runtime == "flash" 
+                || (response.success == true || status.status == 200)) {
             file.server_error = 0;
             this.success.push(file);
         }
