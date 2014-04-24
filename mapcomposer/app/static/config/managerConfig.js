@@ -71,6 +71,14 @@
           "target": "north.tbar",
           "index": 2
         }
+     },{
+         "ptype": "mxp_updater",
+         "geoBatchRestURL":"http://localhost:8083/facade/geobatch/rest/",
+         "uploadUrl":"http://localhost:8083/mvc/admin/updater/upload",
+         "actionTarget":{
+           "target": "north.tbar",
+           "index": 3
+         }
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
