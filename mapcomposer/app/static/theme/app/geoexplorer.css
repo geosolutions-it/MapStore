@@ -40,7 +40,9 @@ body {
 .x-tree-node-expanded img.gx-folder {
     background: url(../../externals/ext/resources/images/default/tree/folder-open.gif);
 }
-
+.x-tree-node-leaf .gx-tree-filterlayer-icon{
+    background-image: url(img/geosilk/vector_filter.png);
+}
 .x-btn .login {
     background-image: url(img/silk/door_in.png);
 }

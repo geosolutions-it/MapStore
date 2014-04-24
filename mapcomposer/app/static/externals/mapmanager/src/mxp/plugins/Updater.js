@@ -127,6 +127,7 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
             items:[
                 {
                     xtype:'mxp_geobatch_consumer_grid',
+                    geoBatchRestURL: this.geoBatchRestURL,
                     layout:'fit',
                     autoScroll:true,
                     auth: this.auth,
