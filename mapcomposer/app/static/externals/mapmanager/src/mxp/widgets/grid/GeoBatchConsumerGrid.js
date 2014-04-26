@@ -49,26 +49,42 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
     /** api: xtype = mxp_viewport */
     xtype: "mxp_geobatch_consumer_grid",
     
-   
-    flowId: 'ds2ds_zip2pg',
     /**
-     * configuration: the final url for the consumers will be <geoBatchRestURL>flows/<flowId>/consumers
-     */
+	 * Property: flowId
+	 * {string} the GeoBatch flow name to manage
+	 */	
+    flowId: 'ds2ds_zip2pg',
+     /**
+	 * Property: geoBatchRestURL
+	 * {string} the GeoBatch ReST Url
+	 */
     geoBatchRestURL: 'http://localhost:8080/geobatch/rest/',
+    /**
+	 * Property: GWCRestURL
+	 * {string} the GWC ReST Url. If present, a button
+     * that allows to manage GWC layers to clean tile cache will be present
+	 */
+    GWCRestURL: null,
+    autoload:true,
+    /* i18n */
     statusText: 'Status',
     startDateText: 'StartDate',
     startFileText:'File',
     refreshText:'Refresh',
     descriptionText:'Description',
-    autoload:true,
     tooltipDelete: 'Clear this',
     tooltipLog: 'Check Log',
     autoExpandColumn: 'description',
     clearFinishedText: 'Clear Finished',
     loadingMessage: 'Loading...',
+    cleanMaskMessage:'Removing consumer data...',
     textConfirmDeleteMsg: 'Do you confirm you want to delete event consumer with UUID:{uuid} ? ',
     errorDeleteConsumerText:'There was an error while deleting consumer',
     confirmClearText: 'Do you really want to remove all consumers with SUCCESS or FAIL state?',
+    GWCButtonLabel: 'Tile Cache',
+    /* end of i18n */
+    //extjs grid specific config
+    autoload:true,
     loadMask:true,
     viewConfig: {
         getRowClass: function(record, index) {
@@ -169,7 +185,17 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
                     });
                 }
         }];
-        
+        if(this.GWCRestURL){
+            this.bbar =[
+            {
+                text:this.GWCButtonLabel,
+                iconCls:'gwc_ic',
+                GWCRestURL:this.GWCRestURL,
+                handler: this.showGWCGridWin,
+                scope:this
+            }
+        ]
+        }
         this.columns= [
             {id: 'uuid', header: "ID", width: 220, dataIndex: 'uuid', sortable: true},
             {id: 'status', header: this.statusText, width: 100, dataIndex: 'status', sortable: true},
@@ -219,6 +245,12 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
         ],
         mxp.widgets.GeoBatchConsumerGrid.superclass.initComponent.call(this, arguments);
     },
+    /**
+     *    private: method[confirmCleanRow] show the confirm message to remove a consumer
+     *      * grid : the grid
+     *      * rowIndex: the index of the row 
+     *      * colIndex: the actioncolumn index
+     */
     confirmCleanRow: function(grid, rowIndex, colIndex){
          var record =  grid.getStore().getAt(rowIndex);
          var uuid = record.get('uuid');
@@ -248,6 +280,12 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
                 }
             });
     },
+    /**
+     *    private: method[checkLog] show the log of a consumer
+     *      * grid : the grid
+     *      * rowIndex: the index of the row 
+     *      * colIndex: the actioncolumn index
+     */
     checkLog: function(grid, rowIndex, colIndex){
         var record =  grid.getStore().getAt(rowIndex);
         var uuid = record.get('uuid');
@@ -257,7 +295,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
                     iconCls:'information_ic',
                     title:this.tooltipLog,
                     width: 700,
-                    height: 700, 
+                    height: 600, 
                     minWidth:250,
                     minHeight:200,
                     layout:'fit',
@@ -313,6 +351,13 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
         });
         win.show();
     },
+     /**
+     *    private: method[deleteConsumer] deletes a consumer
+     *      * uuid : the uuid of the consumer
+     *      * successCallback: function to call in case of success 
+     *      * errorCallback: function to call in case of error
+     *      * scope: the scope of the callbacks (optional)
+     */
     deleteConsumer: function(uuid,successCallback,errorCallback,scope){
         
         var url = this.geoBatchRestURL + "consumers/" + uuid + "/clean";
@@ -328,10 +373,13 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
         });
         
     },
+    /**
+     *    private: method[clearFinished] deletes all the consumers with SUCCESS or FAIL status
+     */
     clearFinished: function(){
         var me =this;
         var count = 0,error=false;
-        var loadMask = new Ext.LoadMask(Ext.getBody(), {msg:me.loadingMessage});
+        var loadMask = new Ext.LoadMask(Ext.getBody(), {msg:me.cleanMaskMessage});
         var finish =function(){
             loadMask.hide();
             if(error){
@@ -349,6 +397,8 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
             count--;
             if(count == 0){
                 finish();
+            }else{
+                loadMask.hide();
             }
         };
         var errorCallback = function(){
@@ -373,6 +423,36 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
                 me.deleteConsumer(rec.get('uuid'),successCallback,errorCallback,me);
             }
         });
+    },
+     /**
+     *    private: method[showGWCGridWin] show the GWC manage window
+     */
+    showGWCGridWin:function(){
+            
+        var w = new Ext.Window({
+                iconCls:'gwc_ic',
+                title:this.tooltipLog,
+                width: 700,
+                height: 600, 
+                minWidth:250,
+                minHeight:200,
+                layout:'fit',
+                autoScroll:false,
+                closeAction:'hide',
+                maximizable: true, 
+                modal:true,
+                resizable:true,
+                draggable:true,
+            items:{
+                xtype:'mxp_gwc_grid',
+                layout:'fit',
+                autoScroll:true,
+                auth: this.auth,
+                autoWidth:true,
+                ref:'gwc'
+            } 
+        });
+        w.show();
     }
     
 });
