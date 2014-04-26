@@ -75,6 +75,7 @@
          "ptype": "mxp_updater",
          "geoBatchRestURL":"http://localhost:8083/facade/geobatch/rest/",
          "uploadUrl":"http://localhost:8083/mvc/admin/updater/upload",
+         "GWCRestURL":"http://localhost:8083/facade/geoserver/gwc/rest",
          "actionTarget":{
            "target": "north.tbar",
            "index": 3
