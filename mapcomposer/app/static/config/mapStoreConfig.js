@@ -1,22 +1,7 @@
 {
    
    "scaleOverlayMode": "basic",
-   "gsSources":{
-   		"default": {
-			"ptype": "gxp_wmssource",
-			"url": "http://localhost:8080/geoserver/ows",
-			"title": "GeoSolutions GeoServer",
-			"SRS": "EPSG:900913",
-			"version":"1.1.1",
-		    "layersCachedExtent": [
-				-20037508.34,-20037508.34,
-				20037508.34,20037508.34
-			],
-			"layerBaseParams":{
-				"FORMAT":"image/png8",
-				"TILED":true
-			}
-		},   
+   "gsSources":{ 
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
 		}, 
@@ -153,13 +138,6 @@
 			"ptype": "gxp_geolocationmenu",
 			"actionTarget": {"target": "paneltbar", "index": 23},
 			"toggleGroup": "toolGroup"
-		}, {
-			"actions": ["-"], 
-			"actionTarget": "paneltbar"
-		}, {
-			"ptype": "gxp_enablelabel",
-            "strWithLabels": "_with_labels",
-			"actionTarget": {"target": "paneltbar", "index": 23}
 		}, {
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
