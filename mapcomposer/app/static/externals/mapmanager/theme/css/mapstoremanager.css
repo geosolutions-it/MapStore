@@ -318,4 +318,7 @@ left: 80px !important;
 .row-yellow  {
     background-color: rgb(255, 255, 161);
 }
+.gwc_ic{
+    background-image: url(../img/gwc.png);
+}
 

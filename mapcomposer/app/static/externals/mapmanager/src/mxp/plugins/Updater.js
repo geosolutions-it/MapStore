@@ -28,19 +28,21 @@ Ext.ns("mxp.plugins");
 /** api: constructor
  *  .. class:: Updater(config)
  *
- *    Open a file browser that can update layers
+ *    Open a plugin to interact with GeoBatch 
+ *    and OpenSDI Mangager to :
+ *    * upload files
+ *    * obtain information and clean consumers for a particular flow
  */
 mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
     
-    /** api: ptype = mxp_servicemanager */
+    /** api: ptype = mxp_updater */
     ptype: "mxp_updater",
 
     buttonText: "Updater",
 
     loginManager: null,    
     setActiveOnOutput: true,
-    actionURL: null,
-
+    
     /** api: method[addActions]
      */
     addActions: function() {
@@ -128,6 +130,7 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
                 {
                     xtype:'mxp_geobatch_consumer_grid',
                     geoBatchRestURL: this.geoBatchRestURL,
+                    GWCRestURL: this.GWCRestURL,
                     layout:'fit',
                     autoScroll:true,
                     auth: this.auth,

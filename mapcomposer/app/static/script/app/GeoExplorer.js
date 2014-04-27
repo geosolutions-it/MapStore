@@ -1349,10 +1349,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
         // use white list to save current state
         var currentState = {};
+        var state = GeoExplorer.superclass.getState.apply(this, arguments);
         if(this.stateWhiteList){
             for (var i = 0; i < this.stateWhiteList.length; i++){
                 var key = this.stateWhiteList[i];
-                currentState[key] = this[key];
+                currentState[key] = state[key];
             }
         }else{
             // use black list

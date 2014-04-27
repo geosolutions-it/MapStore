@@ -64,8 +64,7 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
 	layout:'border',
 	// layout:'column',
 	defaults: {
-	    split: true,
-	    bodyStyle: 'padding:15px'
+	    split: true
 	},
 
     categoryName: "TEMPLATE",
@@ -99,46 +98,44 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
 
     	this.items.push({
     		xtype: "panel",
-    		region:"center",
-			autoScroll: true,
+    		region:"west",
+            width:420,
+            layout:'fit',
+            collapsible:true,
     		items:[{
-            	columnWidth: 0.50,
-				// xtype: 'container',
-				layout: 'fit',
-				items: [{
-					layout: 'fit',
+                    
 					xtype: 'msm_templategrid',
 					searchUrl: this.searchUrl,
-					ref: "../../templateGrid",
+					ref: "../templateGrid",
 					categoryName: this.categoryName,
 					auth: this.auth,
 					pageSize: this.pageSize,
 	    			login: this.login,
 	    			geoBaseMapsUrl: this.url,
-			scope: this,
+                    scope: this,
 		            listeners: {
 		            	'rowclick': this.templateClick, 
 			            scope: this
 		            }
 				}]
-			}]
     	});
 
 		this.items.push({
     		xtype: "panel",
-    		width:700,
-    		region: 'east',
+    		
+    		region: 'center',
     		ref: "east",
     		// split: true,
-	    	collapsible: true,
+	    	collapsible: false,
 			autoScroll: true,
     		// collapseMode: "mini",
     		items:[{
             	// columnWidth: 0.50,
     			xtype: 'tabpanel',
 	    		activeTab: 0,
-				// autoScroll: true,
+				// 
 	    		items:[{
+                    autoScroll: true,
 	    			xtype: "msm_templatepanel",
     				ref: "../../templatePanel",
 	    			templates: this.templates,

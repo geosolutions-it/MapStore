@@ -65,7 +65,7 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
     categoryName: "TEMPLATE",
 	currentFilter: "",
 	auth: null,
-
+    autoExpandColumn:'name',
     /**
     * Constructor: initComponent 
     * Initializes the component
@@ -227,34 +227,35 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
 		Ext.apply(this, {
 			store: store,
-			autoHeight: true,
 			cm: new Ext.grid.ColumnModel({
 				columns: [ expander,
-	        	{
+	        	/*{
 	            	id       :'id',
 	            	header   : this.textId, 
 	            	sortable : true, 
 	            	dataIndex: 'id'
-	        	},
+	        	},*/
 		        {
 		            id       :'name',
 		            header   : this.textName, 
 		            sortable : true, 
 		            dataIndex: 'name'
 		        },
-		        {
+		        /*{
 		            header   : this.textOwner, 
 		            sortable : true, 
 		            dataIndex: 'owner'
-		        },
+		        },*/
 		        {
 		            header   : this.textCreation, 
-		            sortable : true, 
+		            sortable : true,
+                    width: 135,
 		            dataIndex: 'creation'
 		        },
 		        {
 		            header   : this.textLastUpdate, 
 		            sortable : true, 
+                    width: 135,
 		            dataIndex: 'lastUpdate'
 		        }
 		    ]}),		
