@@ -190,7 +190,6 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
             {
                 text:this.GWCButtonLabel,
                 iconCls:'gwc_ic',
-                GWCRestURL:this.GWCRestURL,
                 handler: this.showGWCGridWin,
                 scope:this
             }
@@ -445,6 +444,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
                 draggable:true,
             items:{
                 xtype:'mxp_gwc_grid',
+				GWCRestURL:this.GWCRestURL,
                 layout:'fit',
                 autoScroll:true,
                 auth: this.auth,
