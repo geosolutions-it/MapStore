@@ -38,13 +38,13 @@
 
     <script type="text/javascript" src="script/gxp.js"></script> 
 
-    <script type="text/javascript" src="script/proj4js.js"></script>
-	<script type="text/javascript" src="script/projCodes.js"></script>
+    <!--script type="text/javascript" src="script/proj4js.js"></script-->
+	<!--script type="text/javascript" src="script/projCodes.js"></script-->
 
     <!-- GeoExplorer resources -->
     <link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
     <link rel="stylesheet" type="text/css" href="theme/app/mapstore.css" />
-   
+    <link rel="stylesheet" type="text/css" href="theme/app/custom.css" />
 	
 	<!-- Advanced Scalebar CSS -->
 	<!--link rel="stylesheet" type="text/css" href="theme/app/scalebar-fat.css" /-->
@@ -180,7 +180,13 @@
 		
         var onReady = function(){
 
-            
+            Ext.BLANK_IMAGE_URL = (function() {
+                    if (Ext.isIE8 || Ext.isGecko || Ext.isOpera || Ext.isChrome) {
+                        return "data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
+                    } else {
+                        return "theme/app/img/blank.gif";
+                    }
+            })();
 
             OpenLayers.ImgPath = "externals/openlayers/theme/default/img/";
 			
@@ -362,6 +368,11 @@
                       icon: Ext.MessageBox.ERROR
                 });
             }
+ 
+			/*var auth = 'Basic ' + Base64.encode('admin:admin');
+			      Ext.Ajax.defaultHeaders = {
+                'Authorization' : auth
+            };*/
 
 			if(gsturl){
 				serverConfig.geoStoreBase = gsturl;
@@ -409,7 +420,7 @@
                         if(layName && wmsurl || useCookies){
                             var addLayer = app.tools["addlayer"];
                             
-                            if(addLayer){
+                            if(addLayer){							
                                 if(useCookies){
                                     var opener = window.opener;
                                     
@@ -424,7 +435,7 @@
                                     }
                                     
                                     if(layersList){
-                                        var layers = layersList.split("#");
+                                        var layers = layersList.split("#");								
                                 
                                         for(var i=0; i<layers.length; i++){
                                             var keys = layers[i];
@@ -440,7 +451,7 @@
                                                 lname,
                                                 lwms
                                             );
-                                        }
+                                        }																
                                     }
                                 }else{
                                     var title = layTitle ? layTitle : layName;
@@ -466,134 +477,114 @@
                         }
                     }
                 });
-                return app;
 			}
-            // this function add a parameter to an url
-            function insertParam(url, key, value) {
-                key = encodeURI(key); value = encodeURI(value);
-                var urlpices = url.split('?');
-                var qs = '';
-                if(urlpices.length > 1){
-                   qs =  urlpices[1];
-                }
-                var kvp = qs.substr(1).split('&');
-                var i=kvp.length; var x; while(i--) 
-                {
-                    x = kvp[i].split('=');
-                    if (x[0]==key)
-                    {
-                        x[1] = value;
-                        kvp[i] = x.join('=');
-                        break;
-                    }
-                }
-                if(i<0) {kvp[kvp.length] = [key,value].join('=');}
-                //this will reload the page, it's likely better to store this until finished
-                qs = kvp.join('&'); 
-                return urlpices[0] + '?' + qs;
-            }
-            var testSameOrigin = function (url) {
+            var login = new Ext.FormPanel({
+                labelWidth:80, 
+                frame:true, 
+                title:'Please Login', 
+                defaultType:'textfield',
+                monitorValid:true,
+                // Specific attributes for the text fields for username / password. 
+                // The "name" attribute defines the name of variables sent to the server.
+                items:[{ 
+                        fieldLabel:'Username', 
+                        name:'loginUsername', 
+                        allowBlank:false 
+                    },{ 
+                        fieldLabel:'Password', 
+                        name:'loginPassword', 
+                        inputType:'password', 
+                        allowBlank:false 
+                    }],
+           
+                buttons:[{ 
+                        text:'Login',
+                        formBind: true,	 
+                        // Function that fires when user clicks the button 
+                        handler:function(){ 
+                            var form = login.getForm();
+                            var fields = form.getValues();
+                            
+                            var pass = fields.password;
+                            var user = fields.username;
+                            if (this.isDummy) return this.dummyLogin(user, pass);
+                            var auth = 'Basic ' + Base64.encode(user + ':' + pass);
 
-                var loc = window.location,
-                    a = document.createElement('a');
+                            this.mask = new Ext.LoadMask(this.panel.getEl(), {msg: this.loginLoadingMask});
+                            this.mask.show();
 
-                a.href = url;
+                            Ext.Ajax.request({
+                                method: 'GET',
+                                url: this.loginService,
+                                scope: this,
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Authorization' : auth
+                                },
+                                success: function(response, form, action) {
+                                    this.mask.hide();            
+                                    this.win.hide();
 
-                return a.hostname == loc.hostname &&
-                       a.port == loc.port &&
-                       a.protocol == loc.protocol;
-            }
-            var loginService = testSameOrigin(serverConfig.geoStoreBase) ? serverConfig.geoStoreBase + "users/user/details?includeattributes=true" : proxy + encodeURIComponent(serverConfig.geoStoreBase + "users/user/details?includeattributes=true");
-            var login = new gxp.plugins.GeoStoreLogin({
-                draggable:false,
-                closable: false,
-                actionTarget: {target: "paneltbar",index: 40},
-                loginService:  proxy + encodeURIComponent(serverConfig.geoStoreBase + "users/user/details?includeattributes=true"),
-                loginSync: function(){
-                    
-                    Ext.getCmp('paneltbar').items.each(function(tool) {
-                        if (tool.needsAuthorization === true) {
-                            tool.enable();	
-                            tool.auth=login.token;
-                        }           
-                    },this);
-                    
-                    this.loginAction.disable();
-                    this.loginAction.setHidden(true);
-                    this.logoutAction.show();
-                    
-                    this.logoutAction.enable();
-                    //this.target.setIconClass("gxp-icon-logout");
-                    this.logged=true;
-                    this.win.close();
-                
-                },
-                loginSuccess: function(response){
-                    //set the authkey for GeoServer
-                    var authSource =  '';
-                    var authParam = '';
-                    var authkey;
-                    if(serverConfig.loginConfig){
-                        var authSource = serverConfig.loginConfig.authSource || '';
-                        var authParam = serverConfig.loginConfig.authParam || 'authkey';
-                    }
-                    
-                        if(login.user.attribute instanceof Array){
-                            for(var i = 0 ; i < login.user.attribute.length ; i++ ){
-                                if( login.user.attribute[i].name == "UUID" ){
-                                    authkey = login.user.attribute[i].value;
+                                    this.panel.getForm().reset();
+
+                                    try{
+                                        var user = Ext.util.JSON.decode(response.responseText);
+                                    }catch(e){
+                                         Ext.MessageBox.show({
+                                            title: this.loginErrorTitle,
+                                            msg: this.loginParseErrorText,
+                                            buttons: Ext.MessageBox.OK,
+                                            animEl: 'mb4',
+                                            icon: Ext.MessageBox.WARNING
+                                        });
+                                        return;
+                                    }
+
+                                    this.loginSuccess();
+
+                                    // save auth info
+                                    this.token = auth;
+                                    if (user.User) {
+                                        this.userid = user.User.id;//TODO geostore don't return user id! in details request
+                                        this.username = user.User.name;
+                                        this.role = user.User.role;
+                                    }
+                                },
+                                failure: function(response, form, action) {
+                                    this.mask.hide(); 
+                                    Ext.MessageBox.show({
+                                        title: this.loginErrorTitle,
+                                        msg: this.loginErrorText,
+                                        buttons: Ext.MessageBox.OK,
+                                        animEl: 'mb4',
+                                        icon: Ext.MessageBox.WARNING
+                                    });
+
+                                    this.panel.uname.markInvalid({
+                                        "loginUsername": this.loginErrorText
+                                    });
+
+                                    this.panel.pwd.markInvalid({
+                                        "loginPassword": this.loginErrorText
+                                    });
                                 }
-                            }
-                        }else{
-                            if(login.user.attribute && login.user.attribute.name == "UUID"){
-                               authkey = login.user.attribute.value;
-                            }
-                        }
-                    if (serverConfig.gsSources[authSource] && authkey){
-                        serverConfig.gsSources[authSource].url = insertParam(serverConfig.gsSources[authSource].url,authParam,authkey);
-                    }
-                    //this.target.setIconClass("gxp-icon-logout");
-                    this.logged=true;
-                    initComposer();
-                     
-                    app.on('ready',function(){
-                        login.target = Ext.getCmp('paneltbar');
-                        login.addActions();
-                        login.loginSync();
-                         var myAccount = new gxp.plugins.GeoStoreAccount({
-                            outputTarget:'appTabs',
-                            user:login.user,
-                            auth:login.token,
-                            geoStoreBase : serverConfig.geoStoreBase
-                         });
-                         myAccount.addOutput();
-                         
-                         
-                    });
-                   
-                    
-                   
-                    
-                },
-                showLogout : function(){
-                    var logoutFunction = function(buttonId, text,opt){        
-                        if(buttonId === 'ok'){ 
-                           location.reload();
-                        }
-                    }
-                    
-                    Ext.Msg.show({
-                       title: this.logoutTitle,
-                       msg: this.logoutText,
-                       buttons: Ext.Msg.OKCANCEL,
-                       fn: logoutFunction,
-                       icon: Ext.MessageBox.QUESTION,
-                       scope: this
-                    });        
-                }
-
+                            }); 
+                        } 
+                    }]
             });
-            login.showLoginDialog();
+            
+            var win = new Ext.Window({
+                layout:'fit',
+                width:300,
+                height:150,
+                closable: false,
+                resizable: false,
+                plain: true,
+                border: false,
+                items: [login]
+            });
+            win.show();
+            
 		   /**
 			* Add a WMS layer from GeoNetwork 
 			*
