@@ -1,0 +1,5 @@
+dn: cn=va-sp,ou=groups,dc=mariss,dc=egeos,dc=it
+objectClass: posixGroup
+objectClass: top
+cn: va-sp
+gidNumber: 153

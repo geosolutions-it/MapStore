@@ -1,0 +1,5 @@
+dn: cn=sn-manager,ou=groups,dc=mariss,dc=egeos,dc=it
+objectClass: posixGroup
+objectClass: top
+cn: sn-manager
+gidNumber: 150

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       
+    <!-- URL facade -->
+    <bean name="urlFacade" class="it.geosolutions.opensdi2.service.impl.URLFacadeImpl">
+    	<!-- Default proxy -->
+    	<property name="proxy"><ref bean="proxyService"/></property>
+    	<property name="urlsWrapped">
+	    	<map>
+		        <entry key="geostore" value="http://localhost/geostore" />
+		    </map> 
+	    </property>
+    	<!-- Customized proxied -->
+    	<property name="customizedProxies">
+	    	<map>
+		        <entry key="geostore" value-ref="geostoreProxyService" />
+		    </map>
+    	</property>
+    </bean>
+    
+    <!-- Geostore proxy config. No callbacks configured.  -->
+    <bean id="geostoreProxyService" class="it.geosolutions.httpproxy.service.impl.ProxyServiceImpl">
+    	<property name="proxyConfig" ref="proxyConfig"></property>
+    	<property name="proxyHelper" ref="proxyHelper"></property>
+    	<property name="callbacks">
+            <list>
+            	<!-- Uncomment it if you want to activate a user interceptor 
+            	and you need to enable the -PuserInterception maven profile -->
+            	<ref bean="userCreationInterceptor" />
+            </list>
+    	</property>
+    </bean>
+    
+    <!-- User creation interceptor for GeoStore 
+    you need to enable the -PuserInterception maven profile -->
+    <bean name="userCreationInterceptor" class="it.geosolutions.httpproxy.callback.UserCreationIterceptor">
+    	<property name="interceptedURL" value="http://localhost/geostore/rest/users/"/>
+    	<property name="userInterceptors">
+            <list> 
+                <bean class="it.geosolutions.opensdi2.service.impl.ScriptsUserInterceptorImpl">
+                	<property name="createUserScript" value="create_user"/>
+                	<property name="updateUserScript" value="modify_user"/>
+                	<property name="deleteUserScript" value="remove_user"/>
+                	<property name="passwordEncoding" value="{SSHA}"/>
+                	<property name="geoStoreClient">
+                		<bean class="it.geosolutions.geostore.services.rest.AdministratorGeoStoreClient">
+					      <property name="geostoreRestUrl" value="http://localhost/geostore"></property>
+					      <property name="username" value="admin"></property>
+					      <property name="password" value="admin"></property>
+					    </bean>
+    				</property>
+                </bean>
+            </list>
+    	</property>
+    </bean>
+    
+</beans>

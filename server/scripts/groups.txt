@@ -1,0 +1,50 @@
+# extended LDIF
+#
+# LDAPv3
+# base <ou=groups,dc=mariss,dc=egeos,dc=it> with scope subtree
+# filter: (objectclass=*)
+# requesting: ALL
+#
+
+# groups, mariss.egeos.it
+dn: ou=groups,dc=mariss,dc=egeos,dc=it
+objectClass: organizationalUnit
+ou: groups
+postalCode: 10000
+
+# sn-manager, groups, mariss.egeos.it
+dn: cn=sn-manager,ou=groups,dc=mariss,dc=egeos,dc=it
+objectClass: posixGroup
+objectClass: top
+cn: sn-manager
+gidNumber: 150
+
+# va-sp, groups, mariss.egeos.it
+dn: cn=va-sp,ou=groups,dc=mariss,dc=egeos,dc=it
+objectClass: posixGroup
+objectClass: top
+cn: va-sp
+gidNumber: 153
+memberUid: afabiani
+memberUid: THEUSERNAME
+
+# csp, groups, mariss.egeos.it
+dn: cn=csp,ou=groups,dc=mariss,dc=egeos,dc=it
+objectClass: posixGroup
+objectClass: top
+cn: csp
+gidNumber: 151
+
+# endusers, groups, mariss.egeos.it
+dn: cn=endusers,ou=groups,dc=mariss,dc=egeos,dc=it
+objectClass: posixGroup
+objectClass: top
+cn: endusers
+gidNumber: 152
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 6
+# numEntries: 5
