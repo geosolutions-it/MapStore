@@ -30,16 +30,18 @@
 		}
    },
    
-   "advancedScaleOverlay": false,
+   "scaleOverlayMode": "basic",
    "gsSources":{ 
 		"gs": {
 			"ptype": "gxp_wmssource",
 			"title": "GeoServer HA",
+            "version":"1.1.1",
 			"projection":"EPSG:900913",
-			"url": "http://localhost:8080/geoserver/ows",
+			"url": "http://84.33.2.29/geoserver/ows",
 			"layersCachedExtent":[-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7],
 			"layerBaseParams": {
 					"TILED": true,
+                    "FORMAT":"image/png8",
 					"TILESORIGIN": "-20037508.34, -20037508.34"
             }
 		},
@@ -122,53 +124,121 @@
 				"source": "gs",
                 "group": "Natural Gas",
 				"title": "LNG Terminals",
-				"name": "Z0_Natural_Gas_1005:NG_LNG",
+				"name": "Natural_Gas:NG_LNG",
                 "visibility": false
 			},{
 				"source": "gs",
                 "group": "Natural Gas",
 				"title": "Natural Gas Compressors",
-				"name": "Z0_Natural_Gas_1005:NG_COMPR",
+				"name": "Natural_Gas:NG_COMPR",
                 "visibility": false
 			},{
 				"source": "gs",
                 "group": "Natural Gas",
 				"title": "Natural Gas Meter Points",
-				"name": "Z0_Natural_Gas_1005:NG_METER_POINTS",
+				"name": "Natural_Gas:NG_METER_POINTS",
                 "visibility": false
 			},{
 				"source": "gs",
                 "group": "Natural Gas",
 				"title": "Natural Gas Pipelines",
-				"name": "Z0_Natural_Gas_1005:NG_PIPE",
+				"name": "Natural_Gas:NG_PIPE",
                 "visibility": false
 			},{
 				"source": "gs",
                 "group": "Natural Gas",
 				"title":"Natural Gas Processing Plant",
-				"name": "Z0_Natural_Gas_1005:NG_PRPLANT",
+				"name": "Natural_Gas:NG_PRPLANT",
                 "visibility": false
 			},{
 				"source": "gs",
                 "group": "Natural Gas",
 				"title":"Natural Gas Storage",
-				"name": "Z0_Natural_Gas_1005:NG_STORAGE",
+				"name": "Natural_Gas:NG_STORAGE",
+                "visibility": false
+			},{
+				"source": "gs",
+                "group": "Common Interest",
+				"title":"Offshore Blocks",
+				"name": "Common_Interest:OFFSH_BLOCKS",
+                "visibility": false
+			},{
+				"source": "gs",
+                "group": "Common Interest",
+				"title":"Offshore Groups",
+				"name": "Common_Interest:OFFSH_GROUPS",
+                "visibility": false
+			},{
+				"source": "gs",
+                "group": "Common Interest",
+				"title": "Offshore Platforms",
+				"name": "Common_Interest:OFFSH_PLATF",
+                "visibility": false
+			},{
+				"source": "gs",
+                "group": "Common Interest",
+				"title":" Oil & Gas Basins",
+				"name": "Common_Interest:BASINS",
+                "visibility": false
+			},{
+				"source": "gs",
+                "group": "Common Interest",
+				"title": "Oil Gas Fields",
+				"name": "Common_Interest:OIL_GAS_FIELDS",
+                "visibility": false
+			},{
+				"source": "gs",
+                "group": "Common Interest",
+				"title": "PLSS Section",
+				"name": "Z0_PLSS_1004:PLSS_SEC",
+                "visibility": false
+			},{
+				"source": "gs",
+                "group": "Common Interest",
+				"title": "PLSS Township",
+				"name": "Z0_PLSS_1004:PLSS_TWN",
+                "visibility": false
+			},{
+				"source": "gs",
+                "group": "Common Interest",
+				"title": "Top Fields",
+				"name": "Common_Interest:TOP_FIELDS",
                 "visibility": false
 			}
 		]
 	},
-    	
-	"scaleOverlayUnits":{
-        "bottomOutUnits":"nmi",    
-        "bottomInUnits":"nmi",    
-        "topInUnits":"m",    
-        "topOutUnits":"km"
-    },
+    "customPanels":[
+      {
+          "xtype": "panel",
+          "title": "FeatureGrid",      
+          "border": false,
+          "id": "south",
+          "region": "south",
+          "layout": "fit",
+          "height": 330,
+          "collapsed": true,
+          "collapsible": true,
+          "header": true
+      },{
+          "xtype": "panel",
+          "title": "Query Panel",         
+          "border": false,
+          "id": "east",
+          "width": 400,
+          "height": 500,
+          "region": "east",
+          "layout": "fit",
+          "collapsed": false,
+          "collapsible": true,
+          "header": true
+      }
+    ],
+	
     "loginConfig":{
         "authSource":"gs",
         "authParam":"authkey"
     },
-      
+    "removeTools":["googleearth_plugin", "googleearth_separator"],
 	"customTools":[
 		{
 			"ptype": "gxp_embedmapdialog",
@@ -199,13 +269,13 @@
 		},{
 		  "ptype":"gxp_print",
 		  "customParams":{
-			 "outputFilename":"stampa",
+			 "outputFilename":"gwgwp-print",
             		 "forwardHeaders":[],
-                     "outputFormat":"png",
+                     "outputFormat":"pdf",
                      "geodetic": true
 		  },
 		  "appendLegendOptions": true,
-		  "printService":"http://localhost:8080/geoserver/pdf/",
+		  "printService":"http://84.33.2.29/geoserver/pdf/",
 		  "legendPanelId":"legendPanel",
           "defaultResolutionIndex":1,
           "defaultLayoutIndex":1,
@@ -215,9 +285,16 @@
 			 "target":"paneltbar",
 			 "index":4
 		  }
-	   }, {
+        },{
+             "ptype": "gxp_wmsgetfeatureinfo_menu",
+             "toggleGroup": "toolGroup",
+             "regex":"<table[^>]*>([\\s\\S]*)<\\/table>",
+             "useTabPanel": true,
+             "actionTarget": {"target": "paneltbar", "index": 20},
+              "vendorParams":{"buffer":10}
+         }, {
           "ptype":"gxp_printsnapshot",
-          "service": "http://localhost:8080/servicebox/",
+          "service": "http://84.33.2.29/servicebox/",
           "customParams":{
             "outputFilename":"mapstore-print"
           },
@@ -226,6 +303,10 @@
             "index":5
           }
       }, {
+			"ptype": "gxp_enablelabel",
+            "strWithLabels": "_with_labels",
+			"actionTarget": {"target": "paneltbar", "index": 21}
+		}, {
 			"ptype": "gxp_help",
 			"actionTarget": "paneltbar",
 			"text": "Help",
@@ -240,7 +321,62 @@
 		}, {
 			"ptype": "gxp_languageselector",
 			"actionTarget": {"target": "panelbbar", "index": 3}
-		}
+		}, {
+		  "ptype": "gxp_featuremanager",
+          "format": "GML2",
+		  "id": "featuremanager"
+	    }, {
+		  "ptype": "gxp_featuregrid",
+		  "featureManager": "featuremanager",
+		  "outputConfig": {
+			  "id": "featuregrid",
+			  "title": "Features"
+		  },
+		  "outputTarget": "south",
+		  "showExportCSV":false
+	    }, {
+          "ptype": "gxp_spatialqueryform",
+          "featureManager": "featuremanager",
+          "featureGridContainer": "south",
+          "outputTarget": "east",
+          "showSelectionSummary": true,
+          "actions": null,
+          "id": "bboxquery",
+          "filterLayer":true,
+          "outputConfig":{
+                  "outputSRS": "EPSG:900913",
+                  "selectStyle":{
+                          "strokeColor": "#ee9900",
+                          "fillColor": "#ee9900",
+                          "fillOpacity": 0.4,
+                          "strokeWidth": 1
+                  },
+                  "spatialFilterOptions": {    
+                          "lonMax": 20037508.34,  
+                          "lonMin": -20037508.34,
+                          "latMax": 20037508.34,  
+                          "latMin": -20037508.34  
+                  },
+                  "bufferOptions": {
+                        "minValue": 1,
+                        "maxValue": 1000,
+                        "decimalPrecision": 2,
+                        "distanceUnits": "m"
+                  }
+          },
+          "spatialSelectorsConfig":{
+                "bbox":{
+                    "xtype": "gxp_spatial_bbox_selector",
+                    "addGeometryOperation":false
+                },
+                
+                "circle":{
+                    "xtype": "gxp_spatial_circle_selector",
+                    "addGeometryOperation":false,
+                    "zoomToCurrentExtent": true
+                }
+              }
+        }
 
 	]
 }
