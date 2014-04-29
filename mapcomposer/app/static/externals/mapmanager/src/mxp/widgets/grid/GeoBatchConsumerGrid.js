@@ -430,7 +430,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
             
         var w = new Ext.Window({
                 iconCls:'gwc_ic',
-                title:this.tooltipLog,
+                title:this.GWCButtonLabel,
                 width: 700,
                 height: 600, 
                 minWidth:250,
