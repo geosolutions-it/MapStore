@@ -127,7 +127,7 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
                        icon: Ext.MessageBox.ERROR
                     });                                
                 },
-                headers: {'Accept': 'application/json', 'Authorization' : this.auth}
+                headers: this.target.defaultHeaders
             }),
             
             sortInfo: { field: "name", direction: "ASC" }

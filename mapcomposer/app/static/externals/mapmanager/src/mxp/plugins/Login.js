@@ -36,10 +36,23 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
 
     buttonText: "Login",
 
+    /**
+     * Property: statelessSession
+     * {Boolean} If the session is stateless is not needed check user details at startup
+     * 
+     */
+    statelessSession: true,
+    /**
+     * Property: externalHeaders
+     * {Boolean} Use external headers
+     * 
+     */
+    externalHeaders: true,
+
     /** api: method[addActions]
      */
     addActions: function() {
-        
+
         // ///////////////////////////////////
         // Inizialization of MSMLogin class
         // ///////////////////////////////////
@@ -47,14 +60,15 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
             // grid: this,
             geoStoreBase : this.target.config.geoStoreBase,
             token: this.target.auth,
-            defaultHeaders: this.target.defaultHeaders
+            defaultHeaders: this.target.defaultHeaders,
+            statelessSession: this.statelessSession,
+            externalHeaders: this.externalHeaders,
+            target: this.target
         });
 
         // Add listeners for login and logout
         this.login.on("login", this.onLogin, this);
         this.login.on("logout", this.onLogout, this);
-
-
 
         var actions = [
             this.login.userLabel,
@@ -68,6 +82,7 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
      *  Listener with actions to be executed when an user makes login.
      */
     onLogin: function(user, auth, details){
+        this.target.loggedOut = false;
         this.target.onLogin(user, auth, details);
         this.fireEvent("login", user, auth, details);
     },
@@ -76,8 +91,15 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
      *  Listener with actions to be executed when an user makes logout.
      */
     onLogout: function(){
+        this.target.loggedOut = true;
         this.target.onLogout();
-        this.fireEvent("logout");
+        if(this.externalHeaders){
+            this.fireEvent("logout");
+            //TODO: the authorization is not handled in the local form. Reload to show the external prompt
+            //window.location.reload();
+        }else{
+            this.fireEvent("logout");
+        }
     }
 });
 

@@ -115,6 +115,12 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      * 
      */
     statelessSession: true,
+    /**
+     * Property: externalHeaders
+     * {Boolean} Bind headers
+     * 
+     */
+    externalHeaders: true,
      
     /** private: method[constructor]
      */
@@ -184,12 +190,17 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
 
         if(!this.defaultHeaders){
             this.defaultHeaders = {
-                'Accept': 'application/json',
-                'Authorization': this.token
+                'Accept': 'application/json'
             };
+            
+            if(this.token && !this.externalHeaders){
+                this.defaultHeaders['Authorization'] = this.token;
+            }else if(this.externalHeaders && this.target.loggedOut){
+                this.defaultHeaders['Authorization'] = "";
+            }
         }
 
-        if(!this.statelessSession || this.token){
+        if(!this.statelessSession || this.token || this.externalHeaders){
             this.getLoginInformation();   
         }else{
             this.showLogin();
@@ -216,7 +227,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                     this.username = user.User.name;
                     this.role = user.User.role;
                     this.showLogout(user.User.name);
-                    this.fireEvent("login", this.username);
+                    this.fireEvent("login", this.username, null, user.User);
                 }else{
                     // invalid user state
                     this.showLogin();
@@ -262,7 +273,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      *  Log out the current user from the application.
      */
     logout: function() {
-        if(this.statelessSession){
+        if(this.statelessSession || this.externalHeaders){
             this.invalidateLoginState();
         }else{
             // do logout in spring security
@@ -383,6 +394,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      *  Show the login button.
      */
     showLogin: function() {
+        this.target.loggedOut = true;
         var text = this.loginText;
         var userLabel = '';
         var handler = this.showLoginForm;
@@ -394,6 +406,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      *  Show the logout button.
      */
     showLogout: function(user, role) {
+        this.target.loggedOut = false;
         var text = this.logoutText;
         var userLabel = new Ext.Template(this.ruleText).applyTemplate({user: user});
         var handler = this.logout;

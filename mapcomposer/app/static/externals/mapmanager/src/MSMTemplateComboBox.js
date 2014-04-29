@@ -70,7 +70,7 @@
 	                   icon: Ext.MessageBox.ERROR
 	                });                                
 	            },
-	            defaultHeaders: {'Accept': 'application/json', 'Authorization' : this.auth}
+	            defaultHeaders: this.target.defaultHeaders
 	        }),
 	        listeners:{
 	        	load: function(store){
@@ -79,11 +79,8 @@
 	        	scope: this
 	        }
     	};
-    	
-        this.store.proxy.getConnection().defaultHeaders = {
-            'Accept': 'application/json', 
-            'Authorization' : this.auth
-        };
+
+    	this.store.proxy.getConnection().defaultHeaders = this.target.defaultHeaders;
 		
         MSMTemplateComboBox.superclass.initComponent.call(this, arguments);
 	}

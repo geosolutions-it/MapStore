@@ -109,6 +109,7 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
 					ref: "../templateGrid",
 					categoryName: this.categoryName,
 					auth: this.auth,
+					target: this.target,
 					pageSize: this.pageSize,
 	    			login: this.login,
 	    			geoBaseMapsUrl: this.url,
@@ -141,6 +142,7 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
 	    			templates: this.templates,
 	    			formContainer: this,
 	    			login: this.login,
+					target: this.target,
 	    			geoStoreBase: this.geoStoreBase,
 	    			actionURL: this.adminUrl + "mvc/fileManager/extJSbrowser",
 	    			listeners:{

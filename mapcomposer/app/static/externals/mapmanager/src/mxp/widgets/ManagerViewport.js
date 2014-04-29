@@ -198,10 +198,12 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
                     scope: this
                 }
             });
-            this.adminConfigStore.proxy.getConnection().defaultHeaders= {
-                'Accept': 'application/json', 
-                'Authorization' : this.auth
-            };
+            if(this.auth){
+                this.adminConfigStore.proxy.getConnection().defaultHeaders= {
+                    'Accept': 'application/json', 
+                    'Authorization' : this.auth
+                };
+            }
             this.adminConfigStore.load();
         }else{
             // Load default config
@@ -337,10 +339,12 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
             this.auth = auth ? auth: this.auth;
             this.logged = true;
 
-            this.defaultHeaders = {
-                'Accept': 'application/json', 
-                'Authorization' : this.auth
-            };
+            if(this.auth){
+                this.adminConfigStore.proxy.getConnection().defaultHeaders= {
+                    'Accept': 'application/json', 
+                    'Authorization' : this.auth
+                };
+            }
 
             // reload config
             this.reloadConfig();

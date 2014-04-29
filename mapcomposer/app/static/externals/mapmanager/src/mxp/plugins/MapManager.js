@@ -125,7 +125,7 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
      *  If an user is logged, apply user information to the grid
      */
     applyLoggin: function(username){
-        if(this.output){
+        if(this.output && this.login.login && this.login.login.getToken()){
             for(var i = 0; i < this.output.length; i++){
                 this.output[i].login = this.login.login;
                 this.output[i].auth = this.login.login.getToken();
