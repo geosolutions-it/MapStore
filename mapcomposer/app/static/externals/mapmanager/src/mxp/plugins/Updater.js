@@ -39,6 +39,7 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
     ptype: "mxp_updater",
 
     buttonText: "Updater",
+	uploadFilesText:'Upload Files',
 
     loginManager: null,    
     setActiveOnOutput: true,
@@ -91,6 +92,8 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
         var pluploadPanel = {
             xtype:'pluploadpanel',
             region:'west',
+			iconCls:'inbox-upload_ic',
+			title:this.uploadFilesText,
             autoScroll:true,
             width:400,
             ref:'uploader',
