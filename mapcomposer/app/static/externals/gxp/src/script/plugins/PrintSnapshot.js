@@ -112,6 +112,7 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
                 	var srsID;
                 	var unSupportedLayers = [];
                 	var supportedLayers = [];
+					var supportedStyles = [];
                 	var vectorialLayers = [];
                 	var filters = [];
                 	for (var i = 0; i < layers.length; i++) {
@@ -119,6 +120,7 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
                 		if (layer.getVisibility()) {
                 			if (layer.url && layer instanceof OpenLayers.Layer.WMS) {
 	                			supportedLayers.push(layer.params.LAYERS);
+								supportedStyles.push(layer.params.STYLES ||'');
 	                			filters.push(layer.params.CQL_FILTER ? encodeURIComponent(layer.params.CQL_FILTER) : "INCLUDE");
 	                			
 	                			if (!baseURL) {
@@ -143,6 +145,7 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
                     var gsURL = baseURL + 
                         "SERVICE=WMS" +
                         "&LAYERS=" + supportedLayers.join(",") +
+						"&STYLES=" + supportedStyles.join(",") +
                         "&FORMAT=" + encodeURIComponent("image/png") + 
                         "&SRS=" + srsID +  
                         "&VERSION=1.1.1" +
@@ -155,7 +158,7 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
                 	var mHost = me.service.split("/");
 					
                 	var img = new Image();
-                	var loadMask = new Ext.LoadMask(Ext.getBody(), {msg:'Wait message'});
+                	var loadMask = new Ext.LoadMask(Ext.getBody(), {msg:'Please wait...'});
                     img.onError = function(){
                         loadMask.hide();
                         Ext.Msg.show({
