@@ -37,10 +37,6 @@
       ]
    ],
    "tools":[{
-        "ptype": "mxp_mapmanager",
-        "loginManager": "loginTool",
-        "actionTarget":null
-    },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
         "externalHeaders": true,
@@ -56,17 +52,6 @@
         }
     }],
    "adminTools":[{
-        "ptype": "mxp_mapmanager",
-        "loginManager": "loginTool",
-        "actionTarget": null
-    },{
-        "ptype": "mxp_templatemanager",
-        "loginManager": "loginTool",
-        "actionTarget":{
-          "target": "north.tbar",
-          "index": 0
-        }
-    },{
         "ptype": "mxp_myaccount",
         "loginManager": "loginTool",
         "actionTarget":{
@@ -96,10 +81,6 @@
         }
     }],
     "loggedTools":[{
-        "ptype": "mxp_mapmanager",
-        "loginManager": "loginTool",
-        "actionTarget": null
-    },{
         "ptype": "mxp_myaccount",
         "loginManager": "loginTool",
         "actionTarget":{

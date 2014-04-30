@@ -2,7 +2,7 @@
 <InitUserList>
     <User>
         <name>admin</name>
-        <newPassword>admin</newPassword>
+        <newPassword>theslap</newPassword>
         <role>ADMIN</role>
     </User>
     <User>
