@@ -167,6 +167,7 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
             accountDetailsText: this.accountDetailsText
         }
         var controlPanel = {
+			itemId:'my_account',
             xtype: "panel",
             layout: 'border',
             title: "My Account",
@@ -233,7 +234,28 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
             });
         
         }
-        
+        // In user information the output is generated in the component and we can't check the item.initialConfig.
+        if(this.output.length > 0
+            && this.outputTarget){
+            for(var i = 0; i < this.output.length; i++){
+                if(this.output[i].ownerCt
+                    && this.output[i].ownerCt.xtype 
+                    && this.output[i].ownerCt.xtype == "tabpanel"
+                    && !this.output[i].isDestroyed){
+                    var outputConfig = config || this.outputConfig;
+                    // Not duplicate tabs
+                    for(var index = 0; index < this.output[i].ownerCt.items.items.length; index++){
+                        var item = this.output[i].ownerCt.items.items[index];
+                        // only check iconCls
+                        var isCurrentItem = "my_account" == item.initialConfig["itemId"];
+                        if(isCurrentItem){
+                            this.output[i].ownerCt.setActiveTab(index);
+                            return;
+                        }
+                    } 
+                }
+            }
+        }
         this.output = mxp.plugins.MyAccount.superclass.addOutput.call(this, Ext.apply(controlPanel,config));
 		
 		//hide selection layer on tab change
