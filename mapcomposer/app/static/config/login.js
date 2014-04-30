@@ -34,10 +34,10 @@
    "gsSources":{ 
 		"gs": {
 			"ptype": "gxp_wmssource",
-			"title": "GeoServer HA",
+			"title": "GeoServer Hart Energy",
             "version":"1.1.1",
 			"projection":"EPSG:900913",
-			"url": "http://84.33.2.29/geoserver/ows",
+			"url": "http://he.geo-solutions.it/geoserver/ows",
 			"layersCachedExtent":[-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7],
 			"layerBaseParams": {
 					"TILED": true,
@@ -275,7 +275,7 @@
                      "geodetic": true
 		  },
 		  "appendLegendOptions": true,
-		  "printService":"http://84.33.2.29/geoserver/pdf/",
+		  "printService":"http://he.geo-solutions.it/geoserver/pdf/",
 		  "legendPanelId":"legendPanel",
           "defaultResolutionIndex":1,
           "defaultLayoutIndex":1,
@@ -294,7 +294,7 @@
               "vendorParams":{"buffer":10}
          }, {
           "ptype":"gxp_printsnapshot",
-          "service": "http://84.33.2.29/servicebox/",
+          "service": "http://he.geo-solutions.it/servicebox/",
           "customParams":{
             "outputFilename":"mapstore-print"
           },

@@ -34,7 +34,7 @@
    "gsSources":{ 
 		"gs": {
 			"ptype": "gxp_wmssource",
-			"title": "GeoServer HA",
+			"title": "GeoWebPortal Hart Energy", 
             "version":"1.1.1",
 			"projection":"EPSG:900913",
 			"url": "http://84.33.2.29/geoserver/ows",
@@ -207,33 +207,6 @@
 			}
 		]
 	},
-    "customPanels":[
-      {
-          "xtype": "panel",
-          "title": "FeatureGrid",      
-          "border": false,
-          "id": "south",
-          "region": "south",
-          "layout": "fit",
-          "height": 330,
-          "collapsed": true,
-          "collapsible": true,
-          "header": true
-      },{
-          "xtype": "panel",
-          "title": "Query Panel",         
-          "border": false,
-          "id": "east",
-          "width": 400,
-          "height": 500,
-          "region": "east",
-          "layout": "fit",
-          "collapsed": false,
-          "collapsible": true,
-          "header": true
-      }
-    ],
-	
     "loginConfig":{
         "authSource":"gs",
         "authParam":"authkey"
@@ -298,62 +271,6 @@
 		}, {
 			"ptype": "gxp_languageselector",
 			"actionTarget": {"target": "panelbbar", "index": 3}
-		}, {
-		  "ptype": "gxp_featuremanager",
-          "format": "GML2",
-		  "id": "featuremanager"
-	    }, {
-		  "ptype": "gxp_featuregrid",
-		  "featureManager": "featuremanager",
-		  "outputConfig": {
-			  "id": "featuregrid",
-			  "title": "Features"
-		  },
-		  "outputTarget": "south",
-		  "showExportCSV":false
-	    }, {
-          "ptype": "gxp_spatialqueryform",
-          "featureManager": "featuremanager",
-          "featureGridContainer": "south",
-          "outputTarget": "east",
-          "showSelectionSummary": true,
-          "actions": null,
-          "id": "bboxquery",
-          "filterLayer":true,
-          "outputConfig":{
-                  "outputSRS": "EPSG:900913",
-                  "selectStyle":{
-                          "strokeColor": "#ee9900",
-                          "fillColor": "#ee9900",
-                          "fillOpacity": 0.4,
-                          "strokeWidth": 1
-                  },
-                  "spatialFilterOptions": {    
-                          "lonMax": 20037508.34,  
-                          "lonMin": -20037508.34,
-                          "latMax": 20037508.34,  
-                          "latMin": -20037508.34  
-                  },
-                  "bufferOptions": {
-                        "minValue": 1,
-                        "maxValue": 1000,
-                        "decimalPrecision": 2,
-                        "distanceUnits": "m"
-                  }
-          },
-          "spatialSelectorsConfig":{
-                "bbox":{
-                    "xtype": "gxp_spatial_bbox_selector",
-                    "addGeometryOperation":false
-                },
-                
-                "circle":{
-                    "xtype": "gxp_spatial_circle_selector",
-                    "addGeometryOperation":false,
-                    "zoomToCurrentExtent": true
-                }
-              }
-        }
-
+		}
 	]
 }
