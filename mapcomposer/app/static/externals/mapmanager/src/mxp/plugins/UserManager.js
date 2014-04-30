@@ -124,6 +124,7 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
     	};
     	Ext.apply(this.outputConfig, {
             xtype: "panel",
+			itemId:'usermanager',
             iconCls: "open_usermanager",
             title: this.buttonText,
             id: this.target.userMamanagerId,
@@ -147,7 +148,7 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
                     for(var index = 0; index < this.output[i].ownerCt.items.items.length; index++){
                         var item = this.output[i].ownerCt.items.items[index];
                         // only check iconCls
-                        var isCurrentItem = "open_usermanager" == item.initialConfig["iconCls"];
+                        var isCurrentItem = "usermanager" == item.initialConfig["itemId"];
                         if(isCurrentItem){
                             this.output[i].ownerCt.setActiveTab(index);
                             return;
