@@ -231,6 +231,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     xtype: "gxp_filterbuilder",
                     ref: "../filterBuilder",
                     attributes: schema,
+                    validators: me.validators,
                     allowBlank: true,
                     allowGroups: false
                 });

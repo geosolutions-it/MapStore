@@ -379,6 +379,7 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
             filter: filter,
             columnWidth: 1,
             attributes: this.attributes,
+            validators: this.validators,
             allowBlank: group ? undefined : this.allowBlank,
             customizeFilterOnInit: group && false,
             caseInsensitiveMatch: this.caseInsensitiveMatch,
@@ -496,6 +497,7 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
                 columnWidth: 1,
                 filter: grandchild,
                 attributes: this.attributes,
+                validators: this.validators,
                 listeners: {
                     change: function() {
                         this.fireEvent("change", this);

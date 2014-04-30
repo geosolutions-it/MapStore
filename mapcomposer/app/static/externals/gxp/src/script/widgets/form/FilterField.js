@@ -69,10 +69,13 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
      * {Object}
      */
     attributesComboConfig: null,
-
-    initComponent: function() {
     
+    initComponent: function() {
+        
         var me = this;
+        
+        this.combineErrors = false;
+        
         if (!this.dateFormat) {
             this.dateFormat = Ext.form.DateField.prototype.format;
         }
@@ -129,10 +132,50 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                     this.filter.upperBoundary = null;
                     this.filter.lowerBoundary = null;
                     
+                    var feature = this.attributes.baseParams.TYPENAME.split(":")[1];
+                    
+                    for (var key in this.validators){
+                    
+                        if(this.validators.hasOwnProperty(feature)){
+                        
+                            for (var key in this.validators[feature]){
+                            
+                                if(this.validators[feature].hasOwnProperty(this.filter.property)){
+                                    
+                                    var text = this.validators[feature][this.filter.property].invalidText;
+                                    var type = this.validators[feature][this.filter.property].type;
+                                    var value = this.validators[feature][this.filter.property].value;
+                                    
+                                    var customValidationTest = new RegExp(value);
+                                    Ext.apply(Ext.form.VTypes, {
+                                        customValidation: function(v, field) {
+                                            return customValidationTest.test(v);
+                                        },
+                                        customValidationText: text
+                                    });
+                                    
+                                    Ext.apply(this.items.items[2],{vtype: "customValidation"});
+                                    Ext.apply(this.items.items[7],{vtype: "customValidation"});
+                                    Ext.apply(this.items.items[12],{vtype: "customValidation"});
+                                    
+                                }else{
+                                
+                                    Ext.apply(this.items.items[2],{vtype: null});
+                                    Ext.apply(this.items.items[7],{vtype: null});
+                                    Ext.apply(this.items.items[12],{vtype: null});
+                                    
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                    }                    
+
                     //get type from record to update xtype    
                     var type = record.get("type");
                     this.fieldType = type.split(":").pop();    
-                    
+                  
                     if (this.type.value === OpenLayers.Filter.Comparison.BETWEEN) {
                     
                         if(this.fieldType === "string"){
@@ -404,8 +447,10 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
      * Creates a panel config containing filter parts.
      */
     createFilterItems: function(type) {
+  
         var me = this;
         
+        //controllare il tipo booleano, con l'operatore LIKE e ILIKE da errore
         var types = {
             "xsd:boolean": "boolean",
             "xsd:int": "int",
@@ -417,16 +462,6 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             "xsd:float": "float",
             "xsd:double": "float"
         };     
-        
-        // Add the additional 'advanced' VTypes
-        /*Ext.apply(Ext.form.VTypes, {
-            clearDateFilter : function(val, field) {
-                if (val === "") {
-                    me.filter.value = null;
-                    me.fireEvent("change", me.filter, me);
-                }
-            }
-        });*/
         
         this.fieldType = type.split(":").pop();    
     
