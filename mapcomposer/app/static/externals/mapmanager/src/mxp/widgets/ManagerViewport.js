@@ -340,7 +340,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
             this.logged = true;
 
             if(this.auth){
-                this.adminConfigStore.proxy.getConnection().defaultHeaders= {
+                this.defaultHeaders = {
                     'Accept': 'application/json', 
                     'Authorization' : this.auth
                 };

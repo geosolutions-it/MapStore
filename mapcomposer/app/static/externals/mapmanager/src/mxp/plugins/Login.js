@@ -47,7 +47,7 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
      * {Boolean} Use external headers
      * 
      */
-    externalHeaders: true,
+    externalHeaders: false,
 
     /** api: method[addActions]
      */

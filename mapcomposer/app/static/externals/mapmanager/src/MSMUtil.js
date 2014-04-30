@@ -280,11 +280,7 @@
 		var Request = Ext.Ajax.request({
 	       url: uri.toString(), 
 	       method: 'GET',
-	       headers:{
-	          'Content-Type' : 'application/json',
-	          'Accept' : this.acceptTypes_,
-	          'Authorization' : this.authorization_
-	       },
+	       headers: this.getRequestHeaders(),
 	       scope: this,
 	       success: function(response, opts){
 				var data = self.afterFind( Ext.util.JSON.decode(response.responseText) ); 
@@ -295,6 +291,29 @@
 	       }
 	    });
 	};	
+
+	/** 
+	 * Function: getRequestHeaders
+	 * obtain request headers to perform a geostore action
+	 *
+	 * Parameters:
+	 * contentType - {String} content type if you need something different than 'application/json' (for example 'text/xml')
+	 * acceptTypes - {String} accept type if you need something different than this.acceptTypes_
+	 * authorization - {String} authorization if you need something different than this.authorization_
+	 * Return: headers {Object} to perform the request
+	 * 
+	 */
+	ContentProvider.prototype.getRequestHeaders = function(contentType, acceptTypes, authorization){
+		var headers = {
+			'Content-Type' : contentType ? contentType: 'application/json',
+			'Accept' : acceptTypes? acceptTypes : this.acceptTypes_
+		};
+		// only add authorization if it's present
+		if(this.authorization_ || authorization){
+			headers['Authorization'] = authorization ? authorization: this.authorization_;
+		}
+		return headers;
+	};
 
 	/** 
 	 * Function: find
@@ -315,11 +334,7 @@
 		var Request = Ext.Ajax.request({
 	       url: uri.toString(),
 	       method: 'GET',
-	       headers:{
-	          'Content-Type' : 'application/json',
-	          'Accept' : this.acceptTypes_,
-	          'Authorization' : this.authorization_
-	       },
+	       headers: this.getRequestHeaders(),
 	       scope: this,
 	       success: function(response, opts){
 				var data = self.afterFind( Ext.util.JSON.decode(response.responseText) );
@@ -356,11 +371,7 @@
 		var Request = Ext.Ajax.request({
 	       url: url,
 	       method: 'PUT',
-	       headers: {
-	          'Content-Type' : 'text/xml',
-	          'Accept' : this.acceptTypes_,
-	          'Authorization' : this.authorization_
-	       },
+	       headers: this.getRequestHeaders('text/xml'),
 	       scope: this,
 		   params: data,
 	       success: function(response, opts){
@@ -395,11 +406,7 @@
 		var Request = Ext.Ajax.request({
 	       url: url,
 	       method: 'DELETE',
-	       headers:{
-	          'Content-Type' : 'application/json',
-	          'Accept' : this.acceptTypes_,
-	          'Authorization' : this.authorization_
-	       },
+	       headers: this.getRequestHeaders(),
 	       scope: this,
 	       success: function(response, opts){
 				var json = Ext.util.JSON.decode(response.responseText);
@@ -438,11 +445,7 @@
 		var Request = Ext.Ajax.request({
 	       url: url,
 	       method: 'POST',
-	       headers:{
-	          'Content-Type' : 'text/xml',
-	          'Accept' : this.acceptTypes_,
-	          'Authorization' : this.authorization_
-	       },
+	       headers: this.getRequestHeaders('text/xml'),
 	       params: data,
 	       scope: this,
 	       success: function(response, opts){
@@ -547,10 +550,7 @@
 			Ext.Ajax.request({
 			   url: uri,
 			   method: 'DELETE',
-			   headers:{
-				  'Content-Type' : 'text/xml',
-				  'Authorization' : this.authorization_
-			   },
+	       	   headers: this.getRequestHeaders('text/xml'),
 			   params: data,
 			   scope: this,
 			   success: function(response, opts){
@@ -848,10 +848,7 @@
 			Ext.Ajax.request({
 			   url: uri,
 			   method: 'DELETE',
-			   headers:{
-				  'Content-Type' : 'text/xml',
-				  'Authorization' : this.authorization_
-			   },
+	       	   headers: this.getRequestHeaders('text/xml'),
 			   params: data,
 			   scope: this,
 			   success: function(response, opts){
