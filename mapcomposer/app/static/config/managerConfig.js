@@ -90,6 +90,7 @@
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
+        "externalHeaders": true,
         "actionTarget":{
           "target": "north.tbar",
           "index": 4
