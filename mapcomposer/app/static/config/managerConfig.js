@@ -61,6 +61,7 @@
     },{
         "ptype": "mxp_usermanager",
         "loginManager": "loginTool",
+        "addManageGroupsButton": false,
         "actionTarget":{
           "target": "north.tbar",
           "index": 2
