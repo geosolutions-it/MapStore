@@ -354,6 +354,12 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
              * Show 'enabled' property of the user as a checkbox and allows to change it
              */
             showEnabled:false,
+
+            /**
+             * Property: addManageGroupsButton
+             * Show 'Manage group' button. Default its true,
+             */
+            addManageGroupsButton: true,
             
 			/**
 		    * Constructor: initComponent 
@@ -550,7 +556,11 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                     ]});		
 				
 					// the top bar of the user manager window
-					this.tbar = [ this.inputSearch, this.searchButton, this.resetSearchButton, '-', this.createAddUserButton(),"->",this.createManageGroupsButton() ];
+					this.tbar = [ this.inputSearch, this.searchButton, this.resetSearchButton, '-', this.createAddUserButton(),"->"];
+
+                    if(this.addManageGroupsButton){
+                        this.tbar.push(this.createManageGroupsButton());
+                    }
 
 					// data store
 					this.store = new Ext.data.JsonStore({
