@@ -153,7 +153,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 					portalContainer.setActiveTab(1);
 				}				
 			}					
-			
+			if(!options.doNotZoom) {
 				// //////////////////////////
 				// Zoom To Layer extent
 				// //////////////////////////
@@ -175,6 +175,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 				}
 
 				map.zoomToExtent(extent, true);
+            }
 		}else{
 			//
 			// Show the capabilities grid if any layers was not found
@@ -242,7 +243,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 		var gnLangStr = options.gnLangStr;
 		var customParams = options.customParams;
 				
-		var source = this.checkLayerSource(this.wmsURL);
+		var source = this.checkLayerSource(options.wmsURL);
 
 		if(source){
 		

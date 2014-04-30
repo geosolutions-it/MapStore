@@ -640,7 +640,8 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 									msLayerTitle: this.layerTrackTitle,
 									msLayerName: this.layerTrackName,
 									wmsURL: this.layerTrackUrl,
-									customParams: customParams
+									customParams: customParams,
+                                    doNotZoom: true
 								};
 								
 								var addLayer = this.target.tools["addlayer"];
