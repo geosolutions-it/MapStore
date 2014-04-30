@@ -1,6 +1,8 @@
 ﻿{
    "composerUrl":"",
    "socialUrl":"",
+   "adminUrl":"/opensdi2-manager/",
+   "geoStoreBase":"/opensdi2-manager/facade/geostore/rest/",
    "start":0,
    "limit":20,
    "msmTimeout":30000,
@@ -41,6 +43,7 @@
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
+        "externalHeaders": true,
         "actionTarget":{
           "target": "north.tbar",
           "index": 3
@@ -80,6 +83,7 @@
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
+        "externalHeaders": true,
         "actionTarget":{
           "target": "north.tbar",
           "index": 10
