@@ -70,10 +70,11 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
         this.login.on("login", this.onLogin, this);
         this.login.on("logout", this.onLogout, this);
 
-        var actions = [
-            this.login.userLabel,
-            Ext.create({xtype: 'tbseparator'}),
-            this.login.loginButton];
+        // for external header, we don't need the login button
+        var actions = [this.login.userLabel, Ext.create({xtype: 'tbseparator'})];
+        if(!this.externalHeaders){
+            actions.push(this.login.loginButton);
+        }
 
         return mxp.plugins.TemplateManager.superclass.addActions.apply(this, [actions]);
     },
