@@ -39,6 +39,7 @@
 			"projection":"EPSG:900913",
 			"url": "http://84.33.2.29/geoserver/ows",
 			"layersCachedExtent":[-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7],
+			"authParam":"authkey",
 			"layerBaseParams": {
 					"TILED": true,
                     "FORMAT":"image/png8",
@@ -120,97 +121,9 @@
 				"name": "ROADMAP",
 				"group": "background",
                 "visibility": false
-			},{
-				"source": "gs",
-                "group": "Natural Gas",
-				"title": "LNG Terminals",
-				"name": "Natural_Gas:NG_LNG",
-                "visibility": false
-			},{
-				"source": "gs",
-                "group": "Natural Gas",
-				"title": "Natural Gas Compressors",
-				"name": "Natural_Gas:NG_COMPR",
-                "visibility": false
-			},{
-				"source": "gs",
-                "group": "Natural Gas",
-				"title": "Natural Gas Meter Points",
-				"name": "Natural_Gas:NG_METER_POINTS",
-                "visibility": false
-			},{
-				"source": "gs",
-                "group": "Natural Gas",
-				"title": "Natural Gas Pipelines",
-				"name": "Natural_Gas:NG_PIPE",
-                "visibility": false
-			},{
-				"source": "gs",
-                "group": "Natural Gas",
-				"title":"Natural Gas Processing Plant",
-				"name": "Natural_Gas:NG_PRPLANT",
-                "visibility": false
-			},{
-				"source": "gs",
-                "group": "Natural Gas",
-				"title":"Natural Gas Storage",
-				"name": "Natural_Gas:NG_STORAGE",
-                "visibility": false
-			},{
-				"source": "gs",
-                "group": "Common Interest",
-				"title":"Offshore Blocks",
-				"name": "Common_Interest:OFFSH_BLOCKS",
-                "visibility": false
-			},{
-				"source": "gs",
-                "group": "Common Interest",
-				"title":"Offshore Groups",
-				"name": "Common_Interest:OFFSH_GROUPS",
-                "visibility": false
-			},{
-				"source": "gs",
-                "group": "Common Interest",
-				"title": "Offshore Platforms",
-				"name": "Common_Interest:OFFSH_PLATF",
-                "visibility": false
-			},{
-				"source": "gs",
-                "group": "Common Interest",
-				"title":" Oil & Gas Basins",
-				"name": "Common_Interest:BASINS",
-                "visibility": false
-			},{
-				"source": "gs",
-                "group": "Common Interest",
-				"title": "Oil Gas Fields",
-				"name": "Common_Interest:OIL_GAS_FIELDS",
-                "visibility": false
-			},{
-				"source": "gs",
-                "group": "Common Interest",
-				"title": "PLSS Section",
-				"name": "Z0_PLSS_1004:PLSS_SEC",
-                "visibility": false
-			},{
-				"source": "gs",
-                "group": "Common Interest",
-				"title": "PLSS Township",
-				"name": "Z0_PLSS_1004:PLSS_TWN",
-                "visibility": false
-			},{
-				"source": "gs",
-                "group": "Common Interest",
-				"title": "Top Fields",
-				"name": "Common_Interest:TOP_FIELDS",
-                "visibility": false
 			}
 		]
 	},
-    "loginConfig":{
-        "authSource":"gs",
-        "authParam":"authkey"
-    },
     "removeTools":["googleearth_plugin", "googleearth_separator"],
 	"customTools":[
 		{
