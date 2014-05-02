@@ -205,16 +205,28 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
     getLoginInformation: function(){
         Ext.Ajax.request({
             method: 'GET',
-            url: this.geoStoreBase + 'users/user/details/',
+            url: this.geoStoreBase + 'users/user/details?includeattributes=true',
             scope: this,
             headers: this.defaultHeaders,
-            success: function(response, form, action) {
-                
+            success: function(response, form, action) {                
                 var user = Ext.util.JSON.decode(response.responseText);
                 if (user.User) {
                     this.userid = user.User.id;
                     this.username = user.User.name;
                     this.role = user.User.role;
+					
+					// //////////////////////////////////////////////////////////
+					// Save the user's details in session storage in order to 
+					// give these informations to the opened composer.
+					// //////////////////////////////////////////////////////////
+					var userDetails = {
+						token: this.token,
+						user: user.User
+					};
+					
+					sessionStorage.removeItem("userDetails");
+					sessionStorage["userDetails"] = Ext.util.JSON.encode(userDetails);
+					
                     this.showLogout(user.User.name);
                     this.fireEvent("login", this.username);
                 }else{
@@ -222,8 +234,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                     this.showLogin();
                 }
             },
-            failure: function(response, form, action) {
-        
+            failure: function(response, form, action) {        
                 this.showLogin();
             }
         });
@@ -335,8 +346,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 'Accept': 'application/json',
                 'Authorization' : auth
             },
-            success: function(response, form, action) {
-            
+            success: function(response, form, action) {            
                 this.win.hide();
                 this.getForm().reset();
                 

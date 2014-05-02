@@ -1089,8 +1089,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         src: src,
                         onEsc: Ext.emptyFn,
                         listeners: {
-						    close: function(p){
-								
+						    close: function(p){								
 								// //////////////////////////////////////////////
 								// To maintaing evantually the body scrollbar.
 								// //////////////////////////////////////////////
@@ -1110,7 +1109,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                         && grid.store.proxy
                                         && grid.store.proxy.getConnection()
                                         && grid.store.proxy.getConnection().defaultHeaders ? grid.store.proxy.getConnection().defaultHeaders: null;
-                                    if(userAuth && userProfile == '&auth=true'){
+										
+                                    if(userAuth && userProfile != '&auth=false'){
                                         var mapIframe = document.getElementById(p.iframeId);
                                         if (mapIframe
                                             && mapIframe.contentWindow
@@ -1125,8 +1125,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             beforeClose: function(p){
                                 var mapIframe = document.getElementById(p.iframeId);
                                 var modified = mapIframe.contentWindow.app.modified;
-                                
-                                if (modified == true && userProfile == '&auth=true'){
+
+                                if (modified == true && userProfile != '&auth=false'){
                                     if(!this.confirmClosed) {
                                         Ext.MessageBox.show({
                                             title: grid.msgSaveAlertTitle,
@@ -1135,8 +1135,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                             fn: function(btnId) {
                                                 if (btnId === 'yes') {
                                                     this.confirmClosed = true; 
-                                                    this[this.closeAction]();
-                                                    grid.getBottomToolbar().bindStore(grid.store, true);
+                                                    //TDP this[this.closeAction]();
+                                                    p.destroy();
+													grid.getBottomToolbar().bindStore(grid.store, true);
                                                     grid.getBottomToolbar().doRefresh();
                                                     expander.collapseAll();
                                                 }
@@ -1156,23 +1157,23 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             }
                         }
                     };
-                var iframe;
-                if(grid.renderMapToTab){
-                    iframe = new Ext.IframeTab(iframeconfig);
-                    var target = Ext.getCmp(grid.renderMapToTab);
-                    if(target){
-                        target.add(iframe);
-                        if(target.xtype=='tabpanel'){
-                            target.setActiveTab(iframe);
-                        }
-                    }
-                }else{
-                    iframe = new Ext.IframeWindow(iframeconfig);
-                    scrollTop = Ext.getBody().getScroll().top;
-                    Ext.get(grid.mapManagerContainer).setDisplayed('none');
-                    iframe.show();
-                
-                }
+					
+					var iframe;
+					if(grid.renderMapToTab){
+						iframe = new Ext.IframeTab(iframeconfig);
+						var target = Ext.getCmp(grid.renderMapToTab);
+						if(target){
+							target.add(iframe);
+							if(target.xtype=='tabpanel'){
+								target.setActiveTab(iframe);
+							}
+						}
+					}else{
+						iframe = new Ext.IframeWindow(iframeconfig);
+						scrollTop = Ext.getBody().getScroll().top;
+						Ext.get(grid.mapManagerContainer).setDisplayed('none');
+						iframe.show();                
+					}
             },
 			
             // ////////////////////////////

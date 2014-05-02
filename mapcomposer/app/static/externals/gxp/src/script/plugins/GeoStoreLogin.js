@@ -205,6 +205,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                 scope: this
             }]
         });
+		
         if(this.forgotPasswordService){
             this.panel.add({
                   width: 100,
@@ -226,6 +227,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
               }
             });
         }
+		
         this.win = new Ext.Window({
             iconCls:'user-icon',
             title: this.loginText,
@@ -283,9 +285,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                         icon: Ext.MessageBox.WARNING
                     });
                     return;
-                }
-				
-                
+                }               
 				
                 // save auth info
                 this.token = auth;
@@ -346,15 +346,17 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
     /** api: method[showLogout]
      * Shows the window for logout confirmation.
      */ 
-    showLogout : function(){
-    
+    showLogout : function(){    
         var logoutFunction = function(buttonId, text,opt){        
-            if(buttonId === 'ok'){ 
-                for(var tool in this.target.tools){            
-                    if(this.target.tools[tool].ptype == "gxp_nrl"){  
-                        this.target.tools[tool].disableData();
-                    }                          
-                }
+            if(buttonId === 'ok'){ 			
+				// Clear the sessionStorage
+				for(var i = 0; i < sessionStorage.length; i++) {
+					var key = sessionStorage.key(i);
+					if(key) {
+						sessionStorage.removeItem(key);
+					}
+				}
+				
                 this.loginAction.show();
                 this.loginAction.enable();
                 this.logoutAction.hide();
