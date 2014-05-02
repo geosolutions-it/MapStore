@@ -91,6 +91,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
         var geoStoreBase = config.geoStoreBase;
         this.murl = config.composerUrl;
         this.socialUrl = config.socialUrl;
+        this.adminUrl = config.adminUrl;
         
         this.geoBaseUsersUrl= geoStoreBase + 'users';
         this.geoBaseMapsUrl = geoStoreBase + 'resources';
