@@ -39,6 +39,7 @@
 			"projection":"EPSG:900913",
 			"url": "http://he.geo-solutions.it/geoserver/ows",
 			"layersCachedExtent":[-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7],
+			"authParam":"authkey",
 			"layerBaseParams": {
 					"TILED": true,
                     "FORMAT":"image/png8",
