@@ -53,13 +53,12 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
         // Add listeners for login and logout
         this.login.on("login", this.onLogin, this);
         this.login.on("logout", this.onLogout, this);
-
-
-
+		
         var actions = [
             this.login.userLabel,
             Ext.create({xtype: 'tbseparator'}),
-            this.login.loginButton];
+            this.login.loginButton
+		];
 
         return mxp.plugins.TemplateManager.superclass.addActions.apply(this, [actions]);
     },

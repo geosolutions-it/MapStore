@@ -159,6 +159,30 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             this.auth = false;
         }
 
+		// /////////////////////////////////////////////////////////////////////
+		// Get from the session storage the user's 
+		// details (only provided by the MapManager and the login template 
+		// currently)
+		//  
+		// TODO: The advice is to provide some missing refactor:
+		//
+		//	1- The MapManager should have only one Login class in 
+		//     order to avoid fragmentation of the code.
+		//	2- Using the code fragment below the GeoExplorer.setAuthHeaders 
+		//     in this class is unnecessary.
+		//	3- Each Viewer plugins should use the app.userDetails in order 
+		//     to perform operations that require auth.
+		//	4- The GeoStoreLogin tool should be improved in order to check 
+		//     if the sessionStorage["userDetails"] is 
+		//     present and create the app.userDetails if needed. 
+		//	5- The Login procedure provided inside the Login Template should 
+		//     be ported on a new plugin.
+		// ////////////////////////////////////////////////////////////////////////
+		var existingUserDetails = sessionStorage["userDetails"];
+		if(existingUserDetails){
+			this.userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
+		}
+			
         // Save template key
         if(templateId){
             this.templateId = templateId;

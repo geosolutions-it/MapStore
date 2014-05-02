@@ -366,6 +366,7 @@
 			if(gsturl){
 				serverConfig.geoStoreBase = gsturl;
 			}
+			
 			var initComposer = function(){
                 app = new GeoExplorer.Composer({
                     advancedScaleOverlay: serverConfig.advancedScaleOverlay || false,
@@ -468,132 +469,116 @@
                 });
                 return app;
 			}
-            // this function add a parameter to an url
-            function insertParam(url, key, value) {
-                key = encodeURI(key); value = encodeURI(value);
-                var urlpices = url.split('?');
-                var qs = '';
-                if(urlpices.length > 1){
-                   qs =  urlpices[1];
-                }
-                var kvp = qs.substr(1).split('&');
-                var i=kvp.length; var x; while(i--) 
-                {
-                    x = kvp[i].split('=');
-                    if (x[0]==key)
-                    {
-                        x[1] = value;
-                        kvp[i] = x.join('=');
-                        break;
-                    }
-                }
-                if(i<0) {kvp[kvp.length] = [key,value].join('=');}
-                //this will reload the page, it's likely better to store this until finished
-                qs = kvp.join('&'); 
-                return urlpices[0] + '?' + qs;
-            }
-            var testSameOrigin = function (url) {
+			
+			var testSameOrigin = function (url) {
+				var loc = window.location,
+					a = document.createElement('a');
 
-                var loc = window.location,
-                    a = document.createElement('a');
+				a.href = url;
 
-                a.href = url;
+				return a.hostname == loc.hostname &&
+					   a.port == loc.port &&
+					   a.protocol == loc.protocol;
+			}
+			
+			var loginService = testSameOrigin(serverConfig.geoStoreBase) ? serverConfig.geoStoreBase + 
+					"users/user/details?includeattributes=true" : proxy + encodeURIComponent(serverConfig.geoStoreBase 
+						+ "users/user/details?includeattributes=true");
+			
+			var login = new gxp.plugins.GeoStoreLogin({
+				draggable:false,
+				closable: false,
+				actionTarget: {target: "paneltbar",index: 40},
+				loginService:  proxy + encodeURIComponent(serverConfig.geoStoreBase + "users/user/details?includeattributes=true"),
+				loginSync: function(){
+					this.authorizedRoles = ["ROLE_ADMINISTRATOR"];
+					Ext.getCmp('paneltbar').items.each(function(tool) {
+						if (tool.needsAuthorization === true) {
+							tool.enable();	
+							tool.auth=login.token;
+						}           
+					},this);
+					
+					this.loginAction.disable();
+					this.loginAction.setHidden(true);
+					this.logoutAction.show();
+					this.logoutAction.enable();
+					this.logged = true;
+					
+					if(this.win){
+						this.win.close();
+					}				
+				},
+				loginSuccess: function(response){					
+					if(login.user){		
+						var uDetails = {
+							token: login.token,
+							user: login.user
+						};
+						
+						sessionStorage["userDetails"] = Ext.util.JSON.encode(uDetails);							
+						initComposer();
 
-                return a.hostname == loc.hostname &&
-                       a.port == loc.port &&
-                       a.protocol == loc.protocol;
-            }
-            var loginService = testSameOrigin(serverConfig.geoStoreBase) ? serverConfig.geoStoreBase + "users/user/details?includeattributes=true" : proxy + encodeURIComponent(serverConfig.geoStoreBase + "users/user/details?includeattributes=true");
-            var login = new gxp.plugins.GeoStoreLogin({
-                draggable:false,
-                closable: false,
-                actionTarget: {target: "paneltbar",index: 40},
-                loginService:  proxy + encodeURIComponent(serverConfig.geoStoreBase + "users/user/details?includeattributes=true"),
-                loginSync: function(){
-                    
-                    Ext.getCmp('paneltbar').items.each(function(tool) {
-                        if (tool.needsAuthorization === true) {
-                            tool.enable();	
-                            tool.auth=login.token;
-                        }           
-                    },this);
-                    
-                    this.loginAction.disable();
-                    this.loginAction.setHidden(true);
-                    this.logoutAction.show();
-                    
-                    this.logoutAction.enable();
-                    //this.target.setIconClass("gxp-icon-logout");
-                    this.logged=true;
-                    this.win.close();
-                
-                },
-                loginSuccess: function(response){
-                    //set the authkey for GeoServer
-                    var authSource =  '';
-                    var authParam = '';
-                    var authkey;
-                    if(serverConfig.loginConfig){
-                        var authSource = serverConfig.loginConfig.authSource || '';
-                        var authParam = serverConfig.loginConfig.authParam || 'authkey';
-                    }
-                    
-                        if(login.user.attribute instanceof Array){
-                            for(var i = 0 ; i < login.user.attribute.length ; i++ ){
-                                if( login.user.attribute[i].name == "UUID" ){
-                                    authkey = login.user.attribute[i].value;
-                                }
-                            }
-                        }else{
-                            if(login.user.attribute && login.user.attribute.name == "UUID"){
-                               authkey = login.user.attribute.value;
-                            }
-                        }
-                    if (serverConfig.gsSources[authSource] && authkey){
-                        serverConfig.gsSources[authSource].url = insertParam(serverConfig.gsSources[authSource].url,authParam,authkey);
-                    }
-                    //this.target.setIconClass("gxp-icon-logout");
-                    this.logged=true;
-                    initComposer();
-                     
-                    app.on('ready',function(){
-                        login.target = Ext.getCmp('paneltbar');
-                        login.addActions();
-                        login.loginSync();
-                         var myAccount = new gxp.plugins.GeoStoreAccount({
-                            outputTarget:'appTabs',
-                            user:login.user,
-                            auth:login.token,
-                            geoStoreBase : serverConfig.geoStoreBase
-                         });
-                         myAccount.addOutput();
-                         
-                         
-                    });
-                   
-                    
-                   
-                    
-                },
-                showLogout : function(){
-                    var logoutFunction = function(buttonId, text,opt){        
-                        if(buttonId === 'ok'){ 
-                           location.reload();
-                        }
-                    }
-                    
-                    Ext.Msg.show({
-                       title: this.logoutTitle,
-                       msg: this.logoutText,
-                       buttons: Ext.Msg.OKCANCEL,
-                       fn: logoutFunction,
-                       icon: Ext.MessageBox.QUESTION,
-                       scope: this
-                    });        
-                }
-
-            });
-            login.showLoginDialog();
+						app.on('ready',function(){
+							login.target = Ext.getCmp('paneltbar');
+							login.addActions();
+							login.loginSync();
+							 var myAccount = new gxp.plugins.GeoStoreAccount({
+								outputTarget:'appTabs',
+								user:login.user,
+								auth:login.token,
+								geoStoreBase : serverConfig.geoStoreBase
+							 });
+							 myAccount.addOutput();                        
+						});
+					}
+				},
+				showLogout : function(){
+					var logoutFunction = function(buttonId, text,opt){        
+						if(buttonId === 'ok'){ 						
+							// Clear the sessionStorage
+							for(var i = 0; i < sessionStorage.length; i++) {
+								var key = sessionStorage.key(i);
+								if(key) {
+									sessionStorage.removeItem(key);
+								}
+							}
+							
+							location.reload();
+						}
+					}
+					
+					Ext.Msg.show({
+					   title: this.logoutTitle,
+					   msg: this.logoutText,
+					   buttons: Ext.Msg.OKCANCEL,
+					   fn: logoutFunction,
+					   icon: Ext.MessageBox.QUESTION,
+					   scope: this
+					});        
+				}
+			});
+				
+			var existingUserDetails = sessionStorage["userDetails"];
+			if(!existingUserDetails){				
+				login.showLoginDialog();
+			}else{
+				initComposer();
+				
+				app.on('ready',function(){
+					login.target = Ext.getCmp('paneltbar');
+					login.addActions();
+					login.loginSync();
+					 var myAccount = new gxp.plugins.GeoStoreAccount({
+						outputTarget:'appTabs',
+						user: app.userDetails.user,
+						auth: app.userDetails.token,
+						geoStoreBase : serverConfig.geoStoreBase
+					 });
+					 myAccount.addOutput();                        
+				});
+			}
+			
 		   /**
 			* Add a WMS layer from GeoNetwork 
 			*
@@ -613,95 +598,28 @@
 				);
 			};
 	    };
+		
+	    // geostore base
+	    if(!serverConfig){
+	    	serverConfig = {};
+	    }
+		
+        serverConfig = Ext.applyIf(serverConfig, localConfig);
+		serverConfig.geoStoreBaseURL = serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/');
 
-	    Ext.Ajax.request({
-			  url: customConfigName ? "config/" + customConfigName + ".js"  : "config/login.js",
-			  method: 'GET',
-			  success: function(response, opts){          
-				  
-				  try{
-					  serverConfig = Ext.util.JSON.decode(response.responseText);
-					  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy;
-				  }catch(e){
-					  Ext.Msg.show({
-							title: "Startup",
-							msg: "An error occurred while parsing the external configuration: " + response.status,
-							buttons: Ext.Msg.OK,
-							icon: Ext.MessageBox.ERROR
-					  });
-				  }
 
-				  // load template config
-				  if(templateId){
-				  		// include proxy and/or geoStoreBase
-				  		var templateLoadUrl = (serverConfig && serverConfig.geoStoreBase ? serverConfig.geoStoreBase : ('http://' + window.location.host + '/geostore/rest/')) + "data/" + templateId;
-				  		if(proxy){
-				  			templateLoadUrl = proxy + templateLoadUrl;
-				  		}
-						Ext.Ajax.request({
-							url: templateLoadUrl,
-							method: 'GET',
-							success: function(response, opts){          
-							  
-							  var templateConfig;
-							  try{
-								  templateConfig = Ext.util.JSON.decode(response.responseText);
-							  }catch(e){
-								  Ext.Msg.show({
-										title: "Startup",
-										msg: "An error occurred while parsing the template configuration: " + response.status,
-										buttons: Ext.Msg.OK,
-										icon: Ext.MessageBox.ERROR
-								  });
-							  }
-							  
-							  if(serverConfig){
-								  //apply the local default configuration if not present.
-								  serverConfig = Ext.applyIf(serverConfig,localConfig);
-								  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy;
-
-								  // apply the template config
-								  if(templateConfig){
-								  	Ext.apply(serverConfig, templateConfig);
-								  }
-
-								  // ///////////////////////////////////////////////  
-								  // Run the application when browser is ready
-								  // ///////////////////////////////////////////////
-								  Ext.onReady(onReady);
-							  }
-							},
-							failure:  function(response, opts){
-							  Ext.Msg.show({
-									title: "Startup",
-									msg: "An error occurred while getting the template configuration: " + response.status,
-									buttons: Ext.Msg.OK,
-									icon: Ext.MessageBox.ERROR
-							  });
-							}
-						});
-				  }else{
-					  if(serverConfig){
-						  //apply the local default configuration if not present.
-						  serverConfig = Ext.applyIf(serverConfig,localConfig);
-						  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy; 
-
-						  // ///////////////////////////////////////////////  
-						  // Run the application when browser is ready
-						  // ///////////////////////////////////////////////
-						  Ext.onReady(onReady);
-					  }
-				  }
-			  },
-			  failure:  function(response, opts){
-				  Ext.Msg.show({
-						title: "Startup",
-						msg: "An error occurred while getting the external configuration: " + response.status,
-						buttons: Ext.Msg.OK,
-						icon: Ext.MessageBox.ERROR
-				  });
-		      }
-	    });        
+		// use GeoExplorerLoader to load configuration files
+		var loader = new GeoExplorerLoader(serverConfig, customConfigName || 'login', mapStoreDebug, mapIdentifier, 
+			authorization, fullScreen, templateId);
+		
+		loader.on("configfinished", function (config){
+              //apply the loaded configuration.
+              serverConfig = Ext.applyIf(serverConfig, config);
+              proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy;
+			  
+              //ready to create GeoExplorer
+              Ext.onReady(onReady);
+		});     
     </script>
 
 	<div style="visibility:hidden"><canvas id="printcanvas" /></div>
