@@ -9,9 +9,15 @@ Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
 
     /* basic plupload configuration */
     runtimes: 'gears,browserplus,html5,silverlight,flash',
-    flash_swf_url: "../externals/mapmanager/theme/img/plupload/plupload.flash.swf",
-    silverlight_xap_url: "../externals/mapmanager/theme/img/plupload/plupload.silverlight.xap",
+    default_flash_swf_url: "externals/mapmanager/theme/img/plupload/plupload.flash.swf",
+    default_silverlight_xap_url: "externals/mapmanager/theme/img/plupload/plupload.silverlight.xap",
     chunk_size: "2mb",
+
+    /**
+     * Force the URL for flash and silverlight resources
+     **/
+    flash_swf_url: null,
+    silverlight_xap_url: null,
 
     constructor: function(config) {
         
@@ -20,6 +26,16 @@ Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
 
         this.success = [];
         this.failed = [];
+
+        // Flash resource
+        if(!this.flash_swf_url){
+            this.flash_swf_url = document.location.href.substring(0,document.location.href.indexOf("manager")) + this.default_flash_swf_url;
+        }
+
+        // Silverlight resource
+        if(!this.silverlight_xap_url){
+            this.silverlight_xap_url = document.location.href.substring(0,document.location.href.indexOf("manager")) + this.default_silverlight_xap_url;
+        }
 
         this.viewTpl = new Ext.XTemplate(
             '<tpl for=".">',
