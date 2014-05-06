@@ -447,9 +447,10 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
         var treeNode = this.fileTreePanel.getNodeById(id);
         var text = treeNode.attributes.text;
         var menu = this.fileTreePanel.getContextMenu();
-        menu.setItemDisabled("open-dwnld", false);
-        menu.setItemDisabled("rename", false);
-        menu.setItemDisabled("delete", false);
+
+        // permission delegated on fileTreePanel.applyPermissionOnMenu
+        var p = this.fileTreePanel.applyPermissionOnMenu(treeNode, menu);
+
 	    menu.node = treeNode;
         menu.showAt(e.xy);
       }
@@ -457,9 +458,10 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
         var treeNode = this.fileTreePanel.getNodeById(this.historyCurrentId);
         var text = treeNode.attributes.text;
         var menu = this.fileTreePanel.getContextMenu();
-        menu.setItemDisabled("open-dwnld", true);
-        menu.setItemDisabled("rename", true);
-        menu.setItemDisabled("delete", true);
+
+        // permission delegated on fileTreePanel.applyPermissionOnMenu
+        var p = this.fileTreePanel.applyPermissionOnMenu(treeNode, menu);
+
 	    menu.node = treeNode;
         menu.showAt(e.xy);
       }
