@@ -189,6 +189,11 @@
             <fileset dir="mapcomposer/app/static/externals/mapmanager/theme/img"
             />
         </copy>
+        <!-- copy mapmanager media  -->
+        <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/mapmanager/theme/media">
+            <fileset dir="mapcomposer/app/static/externals/mapmanager/theme/media"
+            />
+        </copy>
         <!-- copy ux img  -->
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/ext/ux/images">
             <fileset dir="mapcomposer/app/static/externals/ext/ux/images"/>

@@ -87,6 +87,11 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
      */
     actionURL: "/opensdi2-manager/mvc/fileManager/extJSbrowser",
 
+    /** api: config[mediaContent]
+     *  ``String`` relative for the media content in the upload panel
+     */
+    mediaContent: null,
+
     /**
     * Constructor: initComponent 
     * Initializes the component
@@ -397,7 +402,8 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 					name: section,
 					actionURL: this.actionURL,
 					height: 190,
-					anchor:'100%'
+					anchor:'100%',
+            		mediaContent: this.mediaContent
 				}]
 			},{
 				xtype: "fieldset",
