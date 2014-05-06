@@ -154,6 +154,7 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
                                         layout:'fit',
                                         url: this.uploadUrl,
                                         multipart: this.pluploadMultipart,
+                                        mediaContent: this.mediaContent,
                                         listeners:{
                                             beforestart:function() {  
                                                 this.queuePanel.expand(false);
