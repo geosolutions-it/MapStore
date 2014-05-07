@@ -1,4 +1,4 @@
-/* setting font fixes combobox rendering issues in IE. See
+    /* setting font fixes combobox rendering issues in IE. See
  * http://extjs.com/forum/showthread.php?t=72505 */
 body {
     font-family:helvetica,tahoma,verdana,sans-serif;
@@ -326,4 +326,106 @@ table.featureInfo caption{
 
 .user-icon{
     background-image: url(img/silk/user.png);
+}
+
+/** Time manager **/
+.timeIcon{
+   background-image: url(img/silk/time.png);
+}
+
+/** gx_playbacktoolbar**/
+.x-btn .gxp-icon-reset{
+    background-image:url('img/silk/control_start_blue.png')
+}
+.x-btn .gxp-icon-back{
+    background-image:url('img/silk/control_start_blue.png')
+}
+.x-btn .gxp-icon-currenttime{
+    background-image:url('img/silk/time.png')
+}
+.x-btn .gxp-icon-settings{
+    background-image:url('img/silk/control_equalizer_blue.png')
+}
+.x-btn .gxp-icon-next{
+    background-image:url('img/silk/control_end_blue.png')
+}
+.x-btn .gxp-icon-last{
+    background-image:url('img/silk/control_end_blue.png')
+}
+.x-btn .gxp-icon-play{
+    background-image:url('img/silk/control_play_blue.png')
+}
+.x-btn .gxp-icon-pause{
+    background-image:url('img/silk/control_pause_blue.png')
+}
+.x-btn .gxp-icon-stop{
+    background-image:url('img/silk/control_stop_blue.png')
+}
+.x-btn .gxp-icon-loop{
+    background-image:url('img/silk/control_repeat_blue.png')
+}
+.x-btn .gxp-icon-ffwd{
+    background-image:url('img/silk/control_fastforward_blue.png')
+}
+.x-btn-over .gxp-icon-reset{
+    background-image:url('img/silk/control_start.png')
+}
+.x-btn-over .gxp-icon-settings{
+    background-image:url('img/silk/control_equalizer.png')
+}
+.x-btn-over .gxp-icon-next{
+    background-image:url('img/silk/control_end_blue.png')
+}
+.x-btn-over .gxp-icon-last{
+    background-image:url('img/silk/control_end.png')
+}
+.x-btn-over .gxp-icon-play{
+    background-image:url('img/silk/control_play.png')
+}
+.x-btn-over .gxp-icon-pause{
+    background-image:url('img/silk/control_pause.png')
+}
+.x-btn-over .gxp-icon-stop{
+    background-image:url('img/silk/control_stop.png')
+}
+.x-btn-over .gxp-icon-loop{
+    background-image:url('img/silk/control_repeat.png')
+}
+.x-btn-over .gxp-icon-ffwd,.x-item-disabled .gxp-icon-ffwd{
+    background-image:url('img/silk/control_fastforward.png')
+}
+.gx_timeslider div.x-slider-thumb{
+    background-position:1;
+    cursor: pointer;
+}
+.gx_timeslider div.x-slider-min-thumb{
+    background-image:url('img/silk/resultset_next.png');
+}
+.gx_timeslider div.x-slider-max-thumb{
+    background-image:url('img/silk/resultset_previous.png');
+}
+.gx_timeslider div.x-slider-tail-thumb{
+    background-image:url('img/silk/stop.png');
+    background-position:0;
+    width: 14px;
+    height: 14px;
+    top: 4px;
+    left:-14px;
+}
+
+/* gxp_wfsgrid */
+.addIcon{
+    background-image: url(img/silk/add.png);
+}
+
+/* gxp_downloadgrid */
+.deleteIcon {
+    width: 20px;
+    height: 20px;
+    margin-top: 0px;
+    margin-right: 0px;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(img/silk/delete.png);
 }

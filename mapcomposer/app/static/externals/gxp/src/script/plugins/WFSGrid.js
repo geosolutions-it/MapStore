@@ -136,9 +136,11 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
     emptyMsg: "No topics to display",
     loadMsg: "Please Wait...",
     zoomToTooltip: 'Zoom all\'elemento',
+    addToDownloadListTooltip: 'Add to download List',
     // end i18n
     
     zoomToIconPath: "theme/app/img/silk/map_magnify.png",
+    addToIconPath: "theme/app/img/silk/add.png",
     
     /** private: countFeature
      *  ``Integer``
@@ -201,6 +203,44 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 }
             }]  
         };
+    },
+    /** private: method[getZoomToAction]
+     */
+    addToDownloadChart: function(actionConf){
+        
+        return {
+            xtype: 'actioncolumn',
+            sortable : false, 
+            width: 10,
+            items: [{
+                icon: this.addToIconPath, 
+                tooltip: this.addToDownloadListTooltip,
+                scope: this,
+                handler: function(grid, rowIndex, colIndex) {
+                    var record = grid.store.getAt(rowIndex);
+                    this.fireEvent('itemAdded', record);
+                }
+            }]  
+         };
+    },
+    /** private: method[getZoomToAction]
+     */
+    zoomToTime: function(actionConf){
+        
+        return {
+            xtype: 'actioncolumn',
+            sortable : false, 
+            width: 10,
+            items: [{
+                iconCls: 'timeIcon', 
+                tooltip: this.zoomToTimeTooltip,
+                scope: this,
+                handler: function(grid, rowIndex, colIndex) {
+                    var record = grid.store.getAt(rowIndex);
+                    this.fireEvent('zoomToTime', record);
+                }
+            }]  
+         };
     },
     /** api: method[addOutput]
      */    
@@ -303,6 +343,12 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                         var checkModel=me.getCheckDisplayAction(me.actionColumns[kk]);
                         this.sm= checkModel;
                         me.wfsColumns.push(checkModel);
+                        break;
+                    case "addToDownloadChart":
+                        me.wfsColumns.push(me.addToDownloadChart(me.actionColumns[kk]));
+                        break; 
+                    case "zoomToTime":
+                        me.wfsColumns.push(me.zoomToTime(me.actionColumns[kk]));
                         break;   
                 }
             }

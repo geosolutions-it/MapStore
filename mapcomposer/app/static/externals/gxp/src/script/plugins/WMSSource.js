@@ -219,6 +219,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      *  Create a layer record given the config.
      */
     createLayerRecord: function(config) {
+
         var record;
 
         var index = this.store.findExact("name", config.name);
@@ -313,6 +314,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     visibility: ("visibility" in config) ? config.visibility : true,
                     opacity: ("opacity" in config) ? config.opacity : 1,
                     buffer: ("buffer" in config) ? config.buffer : 0,
+                    dimensions: original.data.dimensions,
                     projection: layerProjection,
                     vendorParams: config.vendorParams,
 					transitionEffect: transitionEffect
