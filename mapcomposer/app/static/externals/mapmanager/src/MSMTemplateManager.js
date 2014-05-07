@@ -74,6 +74,11 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
 	url: null,
 	searchUrl: null,
 
+    /** api: config[mediaContent]
+     *  ``String`` relative for the media content in the upload panel
+     */
+    mediaContent: null,
+
     /**
     * Constructor: initComponent 
     * Initializes the component
@@ -143,6 +148,7 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
 	    			login: this.login,
 	    			geoStoreBase: this.geoStoreBase,
 	    			actionURL: this.adminUrl + "mvc/fileManager/extJSbrowser",
+            		mediaContent: this.mediaContent,
 	    			listeners:{
 	    				success: function(){
 	    					// refresh the grid
