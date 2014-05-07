@@ -752,5 +752,13 @@ GeoExt.Lang.add("it", {
     "gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
         name  : 'Polygon',
         label : 'Polygon'
+    },
+	
+	"gxp.plugins.ResourceStatus.prototype":{
+		rootNodeText: "Risorse Importate",
+		serviceErrorTitle: "Errore Servizio",
+		tabTitle: "Importati",
+		layerNodeName: "Livelli",
+		serviceNodeName: "Servizi"
     }
 });

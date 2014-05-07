@@ -1,6 +1,9 @@
 @import url("carousel.css");
 @import url("ext.plupload.css");
 @import url("extendedhtmleditor.css");
+@import url("filebrowser.css");
+@import url("filebrowser2.css");
+@import url("plupload.css");
 
 a.button{
 background:url(img/button.gif);
@@ -232,6 +235,18 @@ display:block;
 left: 80px !important;
 
 }
+/* Background for items selected in multiselect */
+.ux-mselect-selected{
+    background-color: rgb(204, 204, 204);
+}
+/** NEEDED TO MAKE MULTISELECT SCROLL **/
+.ux-mselect{
+    overflow:auto;
+    background:white;
+    position:relative; /* for calculating scroll offsets */
+    zoom:1;
+    overflow:auto;  
+}
 
 .embed-field-label {
     font-weight: bold;
@@ -246,3 +261,64 @@ left: 80px !important;
 .gx-map-go{
     background-image: url(../img/map_go.png);
 }
+
+.template_manger_ic{
+    background-image: url(../img/layout.png);
+}
+
+.update_manager_ic{
+    background-image: url(../img/database_gear.png);
+}
+
+.group_ic{
+    background-image: url(../img/group.png);
+}
+.group_add_ic{
+    background-image: url(../img/group_add.png);
+}
+.group_delete_ic{
+    background-image: url(../img/group_delete.png);
+}
+.group_edit_ic{
+    background-image: url(../img/group_edit.png);
+}
+.group_go_ic{
+    background-image: url(../img/group_go.png);
+}
+.group_link_ic{
+    background-image: url(../img/group_link.png);
+}
+.vcard_ic{
+    background-image: url(../img/vcard.png);
+}
+
+.information_ic{
+    background-image: url(../img/information.png);
+}
+.refresh_ic{
+    background-image: url(../img/arrow_refresh.png);
+}
+
+.delete_ic {
+    background:url(../img/delete.png)
+}
+.action_column_btn{
+    background-repeat: no-repeat;
+    width:20px;
+    height:20px;
+}
+
+/* simple colors for rows red green yellow  */
+.row-red {
+    background-color: rgb(255, 134, 134);
+}
+.row-green {
+    background-color: rgb(178, 235, 178);
+}
+.row-yellow  {
+    background-color: rgb(255, 255, 161);
+}
+.gwc_ic{
+    background-image: url(../img/gwc.png);
+}
+

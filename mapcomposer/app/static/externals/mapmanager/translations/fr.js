@@ -95,6 +95,9 @@ GeoExt.Lang.add("fr", {
         loginFormTitle: "Authentifier"
     },
     "UserManagerView.prototype":{
+        textGeneral: "Général", 
+        textAttributes: "attributs", 
+        textGroups: "Groupes",
 		textName: "Nom",
 		textPassword: 'Mot de passe ',
 		textPasswordEdit: 'Nouveau mot de passe ',
@@ -124,9 +127,27 @@ GeoExt.Lang.add("fr", {
 		textSelectRole: 'Sélectionnez un rôle...',
 		userAlreadyTaken: "Nom de l'utilisateur present",
 		titleConfirmDeleteMsg: "Confirmer la suppression utilisateur",
-		textConfirmDeleteMsg: "Êtes-vous sûr de vouloir supprimer cet utilisateur?" 
+		textConfirmDeleteMsg: "Êtes-vous sûr de vouloir supprimer cet utilisateur?",
+        textManageGroups: "Gérer les groupes"
 	},
-    
+    "MSMUserGroupManager.prototype":{
+        textGroupName: "Nom de groupe",
+        textId: "Id",
+        textDescription: "Description",
+        textAddGroupButton: "Créer un nouveau groupe",
+        groupNameAlreadyTaken: "Nom du groupe déjà pris",
+        titleConfirmDeleteMsg: "Confirmer pour supprimer le groupe",
+        textConfirmDeleteMsg: "Etes-vous sûr de vouloir supprimer ce groupe?",
+        textName: "Nom",
+        textRole: "Rôle",
+        textGroup: "Groupe",
+        textUsers: "Utilisateurs",
+        textSave: "Enregistrer",
+        textClose: "Fermer",
+        textDetails: "Détails",
+        tooltipGroupInfo: "Informations sur ce groupe",
+        tooltipDelete: "Supprimer ce groupe"
+    },
     "EmbedMapDialog.prototype": {
         publishMessage: "Votre carte est prête à être publiée sur le web! Il suffit de copier le code HTML ci-dessous pour intégrer la carte dans votre site web:",
         heightLabel: "Hauteur",

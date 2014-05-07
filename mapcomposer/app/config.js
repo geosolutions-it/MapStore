@@ -4,6 +4,7 @@ var Request = require("ringo/webapp/request").Request;
 var urls = [
     [(/^\/(index(.html)?)?/), require("./root/index").app],
     //[(/^\/(login)/), require("./root/login").app],
+    [(/^\/(loginpage)/), require("./root/loginpage").app],
     //[(/^\/(maps(\/\d+)?)/), require("./root/maps").app],
 	//[(/^\/(geonetwork)/), require("./root/geonetwork").app],  // Enable this only for the GeoNetwork integration
     [(/^\/(composer)/), require("./root/composer").app],

@@ -126,11 +126,13 @@
 	 * {String}
 	 */
 	Uri.prototype.toString = function(){
-		this.uri_ += '?';
-		for (key in this.params_){
-			this.uri_ += key + '=' + this.params_[key] + '&';
-		}
-		return this.uri_;
+        //check parameters
+        var uri = this.uri_;
+            uri += '?';
+            for (var key in this.params_){
+                uri += key + '=' + this.params_[key] + '&';
+            }
+		return uri;
 	};
 
 	/**
@@ -265,7 +267,9 @@
 		// Build the uri to invoke
 		// ///////////////////////////////////////////////////////
 		var uri = new Uri({'url': this.baseUrl_ });
+        
 		uri.appendPath( this.resourceNamePrefix_ ).appendId( pk );
+        //add param options
 		if (params_opt){
 			for( name in params_opt ){
 				uri.addParam( name, params_opt[name] );
@@ -342,8 +346,15 @@
 		var data = this.beforeSave(item);
 		var uri = new Uri({'url':this.baseUrl_});
 		uri.appendPath( this.resourceNamePrefix_ ).appendId( pk );
+
+		// remove appended "?" without parameters
+		var url = uri.toString();
+		if(url.indexOf("?") == url.length - 1){
+			url = url.replace("?", "");
+		}
+
 		var Request = Ext.Ajax.request({
-	       url: uri.toString(),
+	       url: url,
 	       method: 'PUT',
 	       headers: {
 	          'Content-Type' : 'text/xml',
@@ -358,7 +369,7 @@
 	       failure:  function(response, opts){
 				this.onFailure_(response);
 	       }
-	    });		
+	    });
 	};	
 	
 	/** 
@@ -374,8 +385,15 @@
 	ContentProvider.prototype.deleteByPk = function(pk, callback){
 		var uri = new Uri({'url':this.baseUrl_});
 		uri.appendPath( this.resourceNamePrefix_ ).appendId( pk );
+
+		// remove appended "?" without parameters
+		var url = uri.toString();
+		if(url.indexOf("?") == url.length - 1){
+			url = url.replace("?", "");
+		}
+
 		var Request = Ext.Ajax.request({
-	       url: uri.toString(),
+	       url: url,
 	       method: 'DELETE',
 	       headers:{
 	          'Content-Type' : 'application/json',
@@ -407,12 +425,18 @@
 	ContentProvider.prototype.create = function(item, callback, failureCallback){
 		var uri = new Uri({'url':this.baseUrl_});
 		var data = this.beforeSave( item );
+
+		// remove appended "?" without parameters
+		var url = uri.toString();
+		if(url.indexOf("?") == url.length - 1){
+			url = url.replace("?", "");
+		}
 		
 		// ///////////////////////////////
 		// Build the Ajax request
 		// ///////////////////////////////
 		var Request = Ext.Ajax.request({
-	       url: uri.toString(),
+	       url: url,
 	       method: 'POST',
 	       headers:{
 	          'Content-Type' : 'text/xml',
@@ -618,10 +642,38 @@
 		initialize: function(){
 			this.resourceNamePrefix_ = 'user';
 		},
+        
 		beforeSave: function(data){
+            var newPassword = data.password ? '<newPassword>'+ data.password + '</newPassword>' :'';
+            var attribute = '';
+            //generate attributes from the key:'value' object data.attribute
+            if(data.attribute){
+                for (var i in data.attribute ){
+                    attribute += '<attribute><name>'+i+'</name><value>'+data.attribute[i]+'</value></attribute>'
+                }
+            }
+            var groups = '';
+            groups = '<groups>';
+            if(data.groups){
+                groups = '<groups>';
+                for(var i = 0;i< data.groups.length;i++){
+                    groups += '<group><groupName>' + data.groups[i].groupName + '</groupName></group>';
+                }
+                
+            }else{
+               
+            }
+            groups +=  '</groups>';
+            var enabled = '';
+            if(data.enabled!=undefined){
+                enabled = '<enabled>' + (data.enabled ? 'true' : 'false')  + '</enabled>'
+            }
 			// wrap new user within an xml envelop
 			var xml = '<User><name>' + data.name +'</name>'
-					  +'<newPassword>'+ data.password + '</newPassword>'
+                      + enabled 
+					  + newPassword 
+                      + attribute 
+                      +groups
 					  +'<role>' + data.role + '</role></User>';
 			return xml;
 		},
@@ -642,10 +694,110 @@
 					obj.name = user.name;
 					obj.password = '';
 					obj.role = user.role;
+                    obj.attribute = user.attribute;
+                    obj.enabled = user.enabled;
 					data.push( obj ); 
 				}
 				return data;
-			} else {
+			} else if(json.User){
+                var user = json.User;
+					var obj = new Object;
+					obj.id = user.id;
+					obj.name = user.name;
+					obj.password = '';
+					obj.role = user.role;
+                    obj.enabled = user.enabled;
+                    if(user.attribute){
+                        obj.attribute = {};
+                        if( user.attribute instanceof Array){
+                            for(var i = 0; i < user.attribute.length;i++){
+                                obj.attribute[user.attribute[i].name] = user.attribute[i].value;
+                            }
+                        }else{
+                            obj.attribute[user.attribute.name=user.attribute.value];
+                        }
+                    } 
+                    if (user.groups && user.groups.group){
+                        if(user.groups.group instanceof Array){
+                            obj.groups = user.groups.group;
+                        }else{
+                            obj.groups = [user.groups.group];
+                        }
+                    } 
+                    return obj;
+                
+            }else{
+				this.onFailure_('cannot parse response');
+			}
+		}
+	});
+    /**
+	 * Class: GeoStore.UserGroups
+	 *
+	 * CRUD methods for UserGroups in GeoStore
+	 * Inherits from:
+	 *  - <GeoStore.ContentProvider>
+	 *
+	 */
+	var UserGroups = GeoStore.UserGroups = ContentProvider.extend({
+		initialize: function(){
+			this.resourceNamePrefix_ = 'group';
+		},
+        
+		beforeSave: function(data){
+            var description
+           if(data.description){
+            description='<description>' + data.description + '</description>'
+           }
+			// wrap new user within an xml envelop
+			var xml = '<UserGroup><groupName>' + data.groupName +'</groupName>'
+					  + description 
+					  + '</UserGroup>';
+			return xml;
+		},
+        
+		//TODO beforeUpdate
+	
+		afterFind: function(json){
+			 if ( json.UserGroupList ){
+				var data = [];
+				if ( json.UserGroupList.UserGroup.length === undefined){
+					data.push(json.UserGroupList.UserGroup);
+					return data;
+				}
+				for (var i=0; i< json.UserGroupList.UserGroup.length; i++){
+					var group = json.UserGroupList.UserGroup[i];
+					var obj = {};
+					obj.id = obj.id;
+					obj.groupName = group.groupName;
+                    obj.description = group.description;
+                    if(group.restUsers){
+                        if(group.restUsers.User instanceof Array){
+                            obj.restUsers = group.restUsers.User;
+                        }else if (group.restUsers.User){
+                            obj.restUsers = [group.restUsers.User];
+                        }
+                    }
+					data.push( obj ); 
+				}
+				return data;
+			} else if(json.UserGroup){
+                var group = json.UserGroup;
+					var obj = {};
+					obj.id = group.id;
+					obj.groupName = group.groupName;
+					obj.description = group.description;
+                    obj.restUsers = group.restUsers;
+                    if(group.restUsers){
+                        if(group.restUsers.User instanceof Array){
+                            obj.restUsers = group.restUsers.User;
+                        }else if (group.restUsers.User){
+                            obj.restUsers = [group.restUsers.User];
+                        }
+                    }
+                    return obj;
+                
+            }else{
 				this.onFailure_('cannot parse response');
 			}
 		}

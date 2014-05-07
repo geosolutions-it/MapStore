@@ -95,6 +95,9 @@ GeoExt.Lang.add("it", {
         loginFormTitle: "Effettua l'autenticazione"
     },
     "UserManagerView.prototype":{
+        textGeneral:"Generale",
+        textAttributes:"Attributi",
+        textGroups:"Gruppi",
 		textName: 'Nome',
 		textPassword: 'Password',
 		textPasswordEdit: 'Nuova Password',
@@ -124,9 +127,27 @@ GeoExt.Lang.add("it", {
 		textSelectRole: 'Seleziona un ruolo...',
 		userAlreadyTaken: 'Nome utente presente',
 		titleConfirmDeleteMsg: "Confirma cancellazione utente",
-		textConfirmDeleteMsg: "Sei sicuro di voler eliminare questo utente?"
+		textConfirmDeleteMsg: "Sei sicuro di voler eliminare questo utente?",
+        textManageGroups: "Gestisci Gruppi"
 	},
-	
+	"MSMUserGroupManager.prototype":{
+        textGroupName: "Nome del Gruppo",
+        textId: "Id",
+        textDescription: "Descrizione",
+        textAddGroupButton: "Crea un nuovo gruppo",
+        groupNameAlreadyTaken: "Il nome del gruppo e già utilizzato",
+        titleConfirmDeleteMsg: "Conferma la cancellazione del gruppo",
+        textConfirmDeleteMsg: "Sei sicuro di voler cancellare questo gruppo?",
+        textName: "Nome",
+        textRole: "Ruolo",
+        textGroup: "Gruppo",
+        textUsers: "Utenti",
+        textSave: "Salva",
+        textClose: "Chiudi",
+        textDetails: "Dettagli",
+        tooltipGroupInfo: "Informazioni su questo gruppo",
+        tooltipDelete: "Cancella questo gruppo"
+    },
 	"EmbedMapDialog.prototype": {
         publishMessage: "La mappa è pronta per essere pubblicata sul web! Basta copiare il seguente codice HTML per visualizzare la mappa nel proprio sito web:",
         heightLabel: "Altezza",

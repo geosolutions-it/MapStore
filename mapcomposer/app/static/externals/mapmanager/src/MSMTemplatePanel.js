@@ -85,7 +85,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
      *  ``String``
      *  URL to the extJSbrowser of OpenSDI-Manager2
      */
-    actionURL: "/opensdi2-manager/fileManager/extJSbrowser",
+    actionURL: "/opensdi2-manager/mvc/fileManager/extJSbrowser",
 
     /**
     * Constructor: initComponent 
@@ -397,7 +397,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 					name: section,
 					actionURL: this.actionURL,
 					height: 190,
-					width: 530
+					anchor:'100%'
 				}]
 			},{
 				xtype: "fieldset",
@@ -407,19 +407,18 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 					xtype: "textarea",
 					name: section + "CSS",
 					height: 190,
-					width: 530
+					anchor:'100%'
 				}]
 			},{
 				xtype: "fieldset",
 				text: this.sectionLayoutConfigTitleText,
 				layout: "table",
-				layoutConfig: { 
-                    columns: 2 
-                }, 
+				 
                 defaults: {
 					layout: "form"
                 },
 				items:[{
+                    
 					xtype: "container",
 					items:[{
 						xtype: "checkbox",

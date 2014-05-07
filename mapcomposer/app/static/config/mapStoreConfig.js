@@ -1,35 +1,6 @@
 {
-   "header": {
-	   "html": "<div class='topbanner'><div class='logo-gs-white'><a href='http://www.geo-solutions.it/'><img src='theme/app/img/banner/geosolutions-logo-whitebg.png' alt='GeoSolutions'></a></div></div>",
-	   "css": "<style type='text/css'>div.topbanner{background-image: url(theme/app/img/banner/world-home.jpg);background-repeat:no-repeat;background-color:black;background-position:center top;height:100%;}div.topbanner .logo-gs-white{float:left;padding-top:25px;}div.topbanner .logo-ms-white{color: #33e366;font-family:'Verdana';font-style: oblique;font-size: 20px;font-weight: bold;float: right;padding-top: 50px;left: 10px;}</style>",
-	   "container": {
-			"border": false,
-			"header": false,
-			"collapsible": true,
-			"collapseMode":  "mini",
-			"hideCollapseTool": true,
-			"split": true,
-			"animCollapse": false,
-			"minHeight": 140,
-			"maxHeight": 140,
-			"height": 140
-	   }
-   },
    
-   "footer": {
-		"html": "",
-		"css": "",
-		"container": {
-			"border": false,
-			"header": false,
-			"split": true,
-			"minHeight": 50,
-			"maxHeight": 50,
-			"height": 50
-		}
-   },
-   
-   "advancedScaleOverlay": false,
+   "scaleOverlayMode": "basic",
    "gsSources":{ 
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"

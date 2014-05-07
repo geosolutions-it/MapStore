@@ -28,6 +28,9 @@
  */
 MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
 
+ 	/** xtype = msm_templatemanager **/
+    xtype: "msm_templatemanager",
+
 	title: 'Template manager',
     
     /** api: config[adminUrl]
@@ -61,8 +64,7 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
 	layout:'border',
 	// layout:'column',
 	defaults: {
-	    split: true,
-	    bodyStyle: 'padding:15px'
+	    split: true
 	},
 
     categoryName: "TEMPLATE",
@@ -84,7 +86,7 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
         // create a content provider with init options
 		this.templates = new GeoStore.Templates({
 			authorization: this.auth,
-			url: this.url,
+			url: this.url
 			}).failure( function(response){ 
 				Ext.Msg.show({
                    title: me.failSuccessTitle,
@@ -96,53 +98,51 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
 
     	this.items.push({
     		xtype: "panel",
-    		region:"center",
-			autoScroll: true,
+    		region:"west",
+            width:420,
+            layout:'fit',
+            collapsible:true,
     		items:[{
-            	columnWidth: 0.50,
-				// xtype: 'container',
-				layout: 'fit',
-				items: [{
-					layout: 'fit',
+                    
 					xtype: 'msm_templategrid',
 					searchUrl: this.searchUrl,
-					ref: "../../templateGrid",
+					ref: "../templateGrid",
 					categoryName: this.categoryName,
 					auth: this.auth,
 					pageSize: this.pageSize,
 	    			login: this.login,
 	    			geoBaseMapsUrl: this.url,
-			scope: this,
+                    scope: this,
 		            listeners: {
 		            	'rowclick': this.templateClick, 
 			            scope: this
 		            }
 				}]
-			}]
     	});
 
 		this.items.push({
     		xtype: "panel",
-    		width:700,
-    		region: 'east',
+    		
+    		region: 'center',
     		ref: "east",
     		// split: true,
-	    	collapsible: true,
+	    	collapsible: false,
 			autoScroll: true,
     		// collapseMode: "mini",
     		items:[{
             	// columnWidth: 0.50,
     			xtype: 'tabpanel',
 	    		activeTab: 0,
-				// autoScroll: true,
+				// 
 	    		items:[{
+                    autoScroll: true,
 	    			xtype: "msm_templatepanel",
     				ref: "../../templatePanel",
 	    			templates: this.templates,
 	    			formContainer: this,
 	    			login: this.login,
 	    			geoStoreBase: this.geoStoreBase,
-	    			actionURL: this.adminUrl + "fileManager/extJSbrowser",
+	    			actionURL: this.adminUrl + "mvc/fileManager/extJSbrowser",
 	    			listeners:{
 	    				success: function(){
 	    					// refresh the grid
@@ -169,6 +169,9 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
 			url: this.geoStoreBase + "data/" + templateId,
 			method: 'GET',
 			scope: this,
+            headers:{
+                'Authorization' : this.auth
+            },
 			success: function(response, opts){      
 			  
 				var templateConfig;
@@ -202,3 +205,6 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
 		});
     }
 });
+
+/** api: xtype = msm_templatemanager */
+Ext.reg(MSMTemplateManager.prototype.xtype, MSMTemplateManager);

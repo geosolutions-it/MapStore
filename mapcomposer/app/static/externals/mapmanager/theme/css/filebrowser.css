@@ -1,0 +1,51 @@
+.fbb_properties, .fbb_mode, .fbb_apply, .fbb_copy, .fbb_paste, .fbb_cut, .fbb_refresh, .fbb_upload, .fbb_download, .fbb_folder_delete, .fbb_folder_rename, .fbb_folder_add, .fbb_file_delete, .fbb_file_rename {background-image: url(../img/filebrowser.png)!important; background-repeat: no-repeat !important}
+
+.fbb_folder_delete {background-position: -48px -16px !important}
+.fbb_folder_rename {background-position: -48px -32px !important}
+.fbb_folder_add {background-position: -48px 0}
+.fbb_file_delete {background-position: -48px -16px !important}
+.fbb_file_rename {background-position: -48px -32px !important}
+.fbb_refresh {background-position: -48px -48px !important}
+.fbb_upload {background-position: -48px -80px !important}
+.fbb_download {background-position: -48px -64px !important}
+.fbb_copy {background-position: -48px -96px !important}
+.fbb_cut {background-position: -48px -112px !important}
+.fbb_paste {background-position: -48px -128px !important}
+.fbb_apply {background-position: -48px -144px !important}
+.fbb_mode {background-position: -48px -160px !important}
+.fbb_properties {background-position: -48px -176px !important}
+.fb_loading {background-image: url(../img/filebrowser-loading.gif); background-repeat: no-repeat; background-position: 50% 50%}
+
+.fb_thumb_wrap {float: left; margin: 4px; margin-right: 0; padding: 5px}
+.fb_thumb_wrap span {display: block; overflow: hidden; text-align: center}
+.fb_thumb {padding: 1px; height: 105px; width: 105px; display: table-cell; vertical-align: middle; text-align: center; border: solid 1px #dddddd}
+.fb_thumb_selected {background: #eff5fb; border:1px solid #99bbe8; padding: 4px}
+.fb_thumb_file {width: 48px; height: 48px; background: url(../img/filebrowser.png) 0 -192px no-repeat !important}
+
+.fb_thumb_avi 	{background-position: 0 0px !important}
+.fb_thumb_cvs 	{background-position: 0 -48px !important}
+.fb_thumb_doc 	{background-position: 0 -96px !important}
+.fb_thumb_docx 	{background-position: 0 -96px !important}
+.fb_thumb_exe 	{background-position: 0 -144px !important}
+.fb_thumb_com	{background-position: 0 -144px !important}
+.fb_thumb_gzip 	{background-position: 0 -240px !important}
+.fb_thumb_html 	{background-position: 0 -288px !important}
+.fb_thumb_htm 	{background-position: 0 -288px !important}
+.fb_thumb_xhtml {background-position: 0 -288px !important}
+.fb_thumb_mov 	{background-position: 0 -336px !important}
+.fb_thumb_mp3 	{background-position: 0 -384px !important}
+.fb_thumb_mpg 	{background-position: 0 -432px !important}
+.fb_thumb_mpeg 	{background-position: 0 -432px !important}
+.fb_thumb_ogg 	{background-position: 0 -480px !important}
+.fb_thumb_pdf 	{background-position: 0 -528px !important}
+.fb_thumb_ppt 	{background-position: 0 -576px !important}
+.fb_thumb_rar 	{background-position: 0 -624px !important}
+.fb_thumb_tar 	{background-position: 0 -672px !important}
+.fb_thumb_tgz 	{background-position: 0 -720px !important}
+.fb_thumb_txt 	{background-position: 0 -768px !important}
+.fb_thumb_wav 	{background-position: 0 -816px !important}
+.fb_thumb_wma 	{background-position: 0 -864px !important}
+.fb_thumb_wmv 	{background-position: 0 -912px !important}
+.fb_thumb_xls 	{background-position: 0 -960px !important}
+.fb_thumb_xlsx 	{background-position: 0 -960px !important}
+.fb_thumb_zip 	{background-position: 0 -1008px !important}

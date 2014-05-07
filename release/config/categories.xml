@@ -6,4 +6,10 @@
     <Category>
         <name>TEMPLATE</name>
     </Category>
+    <Category>
+        <name>ADMINCONFIG</name>
+    </Category>
+    <Category>
+        <name>MAPSTORECONFIG</name>
+    </Category>
 </CategoryList>

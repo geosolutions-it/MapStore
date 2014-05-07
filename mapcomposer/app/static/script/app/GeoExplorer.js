@@ -159,6 +159,30 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             this.auth = false;
         }
 
+		// /////////////////////////////////////////////////////////////////////
+		// Get from the session storage the user's 
+		// details (only provided by the MapManager and the login template 
+		// currently)
+		//  
+		// TODO: The advice is to provide some missing refactor:
+		//
+		//	1- The MapManager should have only one Login class in 
+		//     order to avoid fragmentation of the code.
+		//	2- Using the code fragment below the GeoExplorer.setAuthHeaders 
+		//     in this class is unnecessary.
+		//	3- Each Viewer plugins should use the app.userDetails in order 
+		//     to perform operations that require auth.
+		//	4- The GeoStoreLogin tool should be improved in order to check 
+		//     if the sessionStorage["userDetails"] is 
+		//     present and create the app.userDetails if needed. 
+		//	5- The Login procedure provided inside the Login Template should 
+		//     be ported on a new plugin.
+		// ////////////////////////////////////////////////////////////////////////
+		var existingUserDetails = sessionStorage["userDetails"];
+		if(existingUserDetails){
+			this.userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
+		}
+			
         // Save template key
         if(templateId){
             this.templateId = templateId;
@@ -166,7 +190,9 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 		
 		this.mapItems = [];
 		
-		if(config.advancedScaleOverlay){
+        var scaleOverlayMode = config.scaleOverlayMode || 'basic';
+        
+		if(scaleOverlayMode === 'advanced'){
 			this.mapItems.push({
                 xtype: "gxp_advancedscaleoverlay",
                 topOutUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topOutUnits : null,
@@ -181,7 +207,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 				showMousePosition: config.scaleOverlayUnits ? (config.scaleOverlayUnits.showMousePosition === true ? true : false) : false,
                 enableSetScaleUnits: config.scaleOverlayUnits ? true : false
             });
-		}else{
+		}else if(scaleOverlayMode === 'basic') {
 			this.mapItems.push({
                 xtype: "gxp_scaleoverlay",
                 topOutUnits: config.scaleOverlayUnits ? config.scaleOverlayUnits.topOutUnits : null,
@@ -1347,10 +1373,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
         // use white list to save current state
         var currentState = {};
+        var state = GeoExplorer.superclass.getState.apply(this, arguments);
         if(this.stateWhiteList){
             for (var i = 0; i < this.stateWhiteList.length; i++){
                 var key = this.stateWhiteList[i];
-                currentState[key] = this[key];
+                currentState[key] = state[key];
             }
         }else{
             // use black list

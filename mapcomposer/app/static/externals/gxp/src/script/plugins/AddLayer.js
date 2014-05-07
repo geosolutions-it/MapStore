@@ -85,6 +85,12 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
      */
 	showCapabilitiesGrid: false,
 	
+	/** api: property[showCapabilitiesGrid]
+     *  ``Boolean``
+     *  
+     */
+	disableAllNotifications: false,
+	
     /** api: property[directAddLayerProps]
      *  ``Boolean``
      *  
@@ -141,7 +147,9 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 		this.on({
 			scope: this,
 			'ready' : function(record, report){
-				if(this.showReport === true && this.directAddLayer === false){
+				if(this.showReport === true && this.directAddLayer === false 
+					&& this.disableAllNotifications === false){
+					
 					if(report){
 						exceptionReport.push(report);
 					}
@@ -212,12 +220,14 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
     },
 	
 	showMessages: function(title, report, type){
-		Ext.Msg.show({
-			 title: title,
-			 msg: unescape(report),
-			 width: 300,
-			 icon: type
-		});  
+		if(this.disableAllNotifications === false){
+			Ext.Msg.show({
+				 title: title,
+				 msg: unescape(report),
+				 width: 300,
+				 icon: type
+			});  
+		}
 	},
 	
 	/**  
@@ -295,8 +305,10 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			
 			report = {
 				name: msLayerName,
+				title: msLayerTitle,
 				type: "layer",
-				url: source.url
+				url: source.url,
+				id: source.id
 			};
 			
 		}else{
@@ -304,7 +316,8 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 				name: msLayerName,
 				title: source.title,
 				type: "service",
-				url: source.url
+				url: source.url,
+				id: source.id
 			};
 					
 			//
@@ -323,7 +336,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 		// 
 		// Show the capabilities grid
 		//
-		if(this.showCapabilitiesGrid === true){
+		if(this.showCapabilitiesGrid === true && this.disableAllNotifications === false){
 			addLayerAction.showCapabilitiesGrid();
 			
 			//
@@ -403,7 +416,8 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 								name: options.msLayerName,
 								url: source.url,
 								type: "service",
-								msg: this.capabilitiesFailureMsg
+								msg: this.capabilitiesFailureMsg,
+								id: source.id
 							};
 							this.fireEvent('ready', undefined, report);
 						}, this);
@@ -527,7 +541,9 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 					// 
 					// Show the capabilities grid
 					//
-					if(this.showCapabilitiesGrid === true && !showLayer){
+					if(this.showCapabilitiesGrid === true && !showLayer 
+						&& this.disableAllNotifications === false){
+						
 						addLayerAction.showCapabilitiesGrid();
 						
 						//
@@ -555,7 +571,8 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 						var report = {
 							name: options.msLayerName,
 							url: source.url,
-							type: "service"
+							type: "service",
+							id: source.id
 						};
 						
 						if(this.useEvents){
@@ -578,7 +595,8 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 						name: options.msLayerName,
 						url: source.url,
 						type: "service",
-						msg: this.capabilitiesFailureMsg + " - " + msg
+						msg: this.capabilitiesFailureMsg + " - " + msg,
+						id: source.id
 					};
 					
 					if(this.useEvents){
@@ -591,7 +609,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			// 
 			// Show the capabilities grid
 			//
-			if(this.showCapabilitiesGrid === true){
+			if(this.showCapabilitiesGrid === true && this.disableAllNotifications === false){
 				var addLayerAction = this.target.tools["addlayers"];
 				addLayerAction.showCapabilitiesGrid();
 				

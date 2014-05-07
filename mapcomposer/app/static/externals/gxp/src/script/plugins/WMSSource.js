@@ -137,11 +137,37 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             SERVICE: "WMS",
             REQUEST: "GetCapabilities"
         };
+		
         if (this.version) {
             baseParams.VERSION = this.version;
         }
         
-        this.store = new GeoExt.data.WMSCapabilitiesStore({
+	    // /////////////////////////////////////////////////////
+	    // Get the user's corrensponding authkey if present 
+	    // (see MSMLogin.getLoginInformation for more details)
+	    // /////////////////////////////////////////////////////
+		if(this.authParam && this.target.userDetails){
+			var userInfo = this.target.userDetails;
+			var authkey;
+			
+			if(userInfo.user.attribute instanceof Array){
+				for(var i = 0 ; i < userInfo.user.attribute.length ; i++ ){
+					if( userInfo.user.attribute[i].name == "UUID" ){
+						authkey = userInfo.user.attribute[i].value;
+					}
+				}
+			}else{
+				if(userInfo.user.attribute && userInfo.user.attribute.name == "UUID"){
+				   authkey = userInfo.user.attribute.value;
+				}
+			}
+
+			if(authkey){
+				baseParams[this.authParam] = authkey;
+			}
+		}
+        
+		this.store = new GeoExt.data.WMSCapabilitiesStore({
             // Since we want our parameters (e.g. VERSION) to override any in the 
             // given URL, we need to remove corresponding paramters from the 
             // provided URL.  Simply setting baseParams on the store is also not
@@ -291,7 +317,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 			// In this case also the zoomMethod must be setted to null 
 			// in Map configuration (see widgets/Viewer.js).
 			// /////////////////////////////////////////////////////////
-			var transitionEffect = "resize";
+			var transitionEffect = null;
 			if(this.target.map.animatedZooming){
 				if(this.target.map.animatedZooming.transitionEffect == null){
 					transitionEffect = null;
@@ -312,7 +338,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     ratio: config.ratio || 1,
                     visibility: ("visibility" in config) ? config.visibility : true,
                     opacity: ("opacity" in config) ? config.opacity : 1,
-                    buffer: ("buffer" in config) ? config.buffer : 1,
+                    buffer: ("buffer" in config) ? config.buffer : 0,
                     projection: layerProjection,
                     vendorParams: config.vendorParams,
 					transitionEffect: transitionEffect

@@ -2,7 +2,7 @@
    "geoStoreBase":"",
    "gnBaseUrl": "",
    "defaultLanguage": "it",
-   "advancedScaleOverlay": true,
+   "scaleOverlayMode": "advanced",
    "tab": true,
    "gsSources":{ 
 		"mapquest": {

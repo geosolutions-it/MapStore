@@ -93,6 +93,15 @@
 	-->
 	
     <script>
+		// ///////////////////////////////////////////////
+		// This fragment allow to retrieve a content body 
+		// of a POST request from Ringo.
+		// ///////////////////////////////////////////////
+        var content = <% content %>;
+		/*if(content && content.data){
+			console.log(content);
+		}*/   
+		
 		var app;        
         var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false; var bbox; var useCookies; var templateId;
 		
@@ -124,10 +133,12 @@
 									} 
 									break;
 					case "auth" : 
-									if(param[1] == 'true') 
-										authorization = true; 
-									else 
-										authorization = false; 
+									authorization = param[1]; 
+									if(param.length > 2){
+										for(var i = 2; i < param.length; i++){
+											authorization += "=";
+										}
+									}
 									break;
 					case "fullScreen" : 
 									if(param[1] == 'true') 
@@ -378,7 +389,7 @@
 			}
 			
             app = new GeoExplorer.Composer({
-				advancedScaleOverlay: serverConfig.advancedScaleOverlay || false,
+                scaleOverlayMode : serverConfig.scaleOverlayMode || (serverConfig.advancedScaleOverlay ? 'advanced' : 'basic'),
 				defaultLanguage: serverConfig.defaultLanguage,	
 				actionToolScale: serverConfig.actionToolScale || "small",
                 customPanels: serverConfig.customPanels,
@@ -400,7 +411,7 @@
                 georeferences: georeferences_data,
                 map: serverConfig.map,
 				customTools: serverConfig.customTools
-            }, mapIdentifier, authorization, fullScreen, templateId);   
+            }, mapIdentifier, authorization && authorization == "false" ? null: authorization, fullScreen, templateId);   
             
             app.on({
                 'portalready' : function() {              	
@@ -416,13 +427,16 @@
 					// ///////////////////////////////////////////////////
 					// Visualizing metadata tab and layers at startup 
 					// ///////////////////////////////////////////////////
-					if(layName && wmsurl || useCookies){
-						var addLayer = app.tools["addlayer"];
-						
-						if(addLayer){							
-							if(useCookies){
+					var addLayer = app.tools["addlayer"];
+					
+					if(addLayer){							
+						if(useCookies || content.data){
+							var layersList;
+							
+							if(content.data){
+								layersList = content.data;
+							}else if(useCookies){
 								var opener = window.opener;
-								
 								var cookie = opener.document.cookie;
 								
 								var cookies = cookie.split(";");
@@ -432,43 +446,42 @@
 										layersList = cookies[i].split("=")[1];
 									}
 								}
-								
-								if(layersList){
-									var layers = layersList.split("#");								
-							
-									for(var i=0; i<layers.length; i++){
-										var keys = layers[i];
-										
-										keys = unescape(keys);
-										keys = Ext.util.JSON.decode(keys);
-										
-										var lname = keys.layer;
-										var lwms = decodeURIComponent(keys.wms);
-										
-										addMSLayer(
-											lname,
-											lname,
-											lwms
-										);
-									}																
-								}
-							}else{
-								var title = layTitle ? layTitle : layName;
-								
-								addMSLayer(
-									title,
-									layName,
-									wmsurl
-								);
 							}
-						}else{
-							Ext.Msg.show({
-								 title: "Add Layer",
-								 msg: "AddLayer plugin missing in configuration!",
-								 width: 300,
-								 icon: Ext.MessageBox.ALERT
-							});  
+								
+							if(layersList){
+								var layers = layersList.split("#");
+								for(var i=0; i<layers.length; i++){
+									var keys = layers[i];
+									
+									keys = unescape(keys);
+									keys = Ext.util.JSON.decode(keys);
+									
+									var lname = keys.layer;
+									var lwms = decodeURIComponent(keys.wms);
+									
+									addMSLayer(
+										lname,
+										lname,
+										lwms
+									);
+								}
+							}
+						}else if(layName && wmsurl){
+							var title = layTitle ? layTitle : layName;
+							
+							addMSLayer(
+								title,
+								layName,
+								wmsurl
+							);
 						}
+					}else{
+						Ext.Msg.show({
+							 title: "Add Layer",
+							 msg: "AddLayer plugin missing in configuration!",
+							 width: 300,
+							 icon: Ext.MessageBox.ALERT
+						});  
 					}
 						
 				    if(bbox){
@@ -497,94 +510,26 @@
 			};
 	    };
 
-	    Ext.Ajax.request({
-			  url: customConfigName ? "config/" + customConfigName + ".js"  : "config/mapStoreConfig.js",
-			  method: 'GET',
-			  success: function(response, opts){          
-				  
-				  try{
-					  serverConfig = Ext.util.JSON.decode(response.responseText);
-					  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy;
-				  }catch(e){
-					  Ext.Msg.show({
-							title: "Startup",
-							msg: "An error occurred while parsing the external configuration: " + response.status,
-							buttons: Ext.Msg.OK,
-							icon: Ext.MessageBox.ERROR
-					  });
-				  }
+	    // geostore base
+	    if(!serverConfig){
+	    	serverConfig = {};
+	    }
+		
+        serverConfig = Ext.applyIf(serverConfig, localConfig);
+		serverConfig.geoStoreBaseURL = serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/');
 
-				  // load template config
-				  if(templateId){
-				  		// include proxy and/or geoStoreBase
-				  		var templateLoadUrl = (serverConfig && serverConfig.geoStoreBase ? serverConfig.geoStoreBase : ('http://' + window.location.host + '/geostore/rest/')) + "data/" + templateId;
-				  		if(proxy){
-				  			templateLoadUrl = proxy + templateLoadUrl;
-				  		}
-						Ext.Ajax.request({
-							url: templateLoadUrl,
-							method: 'GET',
-							success: function(response, opts){          
-							  
-							  var templateConfig;
-							  try{
-								  templateConfig = Ext.util.JSON.decode(response.responseText);
-							  }catch(e){
-								  Ext.Msg.show({
-										title: "Startup",
-										msg: "An error occurred while parsing the template configuration: " + response.status,
-										buttons: Ext.Msg.OK,
-										icon: Ext.MessageBox.ERROR
-								  });
-							  }
-							  
-							  if(serverConfig){
-								  //apply the local default configuration if not present.
-								  serverConfig = Ext.applyIf(serverConfig,localConfig);
-								  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy;
-
-								  // apply the template config
-								  if(templateConfig){
-								  	Ext.apply(serverConfig, templateConfig);
-								  }
-
-								  // ///////////////////////////////////////////////  
-								  // Run the application when browser is ready
-								  // ///////////////////////////////////////////////
-								  Ext.onReady(onReady);
-							  }
-							},
-							failure:  function(response, opts){
-							  Ext.Msg.show({
-									title: "Startup",
-									msg: "An error occurred while getting the template configuration: " + response.status,
-									buttons: Ext.Msg.OK,
-									icon: Ext.MessageBox.ERROR
-							  });
-							}
-						});
-				  }else{
-					  if(serverConfig){
-						  //apply the local default configuration if not present.
-						  serverConfig = Ext.applyIf(serverConfig,localConfig);
-						  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy; 
-
-						  // ///////////////////////////////////////////////  
-						  // Run the application when browser is ready
-						  // ///////////////////////////////////////////////
-						  Ext.onReady(onReady);
-					  }
-				  }
-			  },
-			  failure:  function(response, opts){
-				  Ext.Msg.show({
-						title: "Startup",
-						msg: "An error occurred while getting the external configuration: " + response.status,
-						buttons: Ext.Msg.OK,
-						icon: Ext.MessageBox.ERROR
-				  });
-		      }
-	    });        
+		// use GeoExplorerLoader to load configuration files
+		var loader = new GeoExplorerLoader(serverConfig, customConfigName, mapStoreDebug, mapIdentifier, 
+			authorization, fullScreen, templateId);
+		
+		loader.on("configfinished", function (config){
+              //apply the loaded configuration.
+              serverConfig = Ext.applyIf(serverConfig, config);
+              proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy;
+			  
+              //ready to create GeoExplorer
+              Ext.onReady(onReady);
+		});
     </script>
 
 	<div style="visibility:hidden"><canvas id="printcanvas" /></div>
