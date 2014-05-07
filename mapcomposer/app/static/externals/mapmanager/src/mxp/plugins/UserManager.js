@@ -44,6 +44,12 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
 
     loginManager: null, 
 
+    /**
+     * Property: addManageGroupsButton
+     * Show 'Manage group' button. Default its true,
+     */
+    addManageGroupsButton: true,
+
     // default configuration for the output
     outputConfig: {
         closable: true,
@@ -105,6 +111,8 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
             geoStoreBase: this.target.config.geoStoreBase,
             renderMapToTab: this.outputTarget,
             header:false,
+            addManageGroupsButton: this.addManageGroupsButton,
+            target: this.target,
             showEnabled:this.showEnabled
     	};
         //TODO
@@ -120,6 +128,7 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
             searchUrl: this.target.geoSearchUsersUrl,
             url: this.target.geoBaseUsersUrl,
             geoStoreBase: this.target.config.geoStoreBase,
+            target: this.target,
             renderMapToTab: this.outputTarget
     	};
     	Ext.apply(this.outputConfig, {

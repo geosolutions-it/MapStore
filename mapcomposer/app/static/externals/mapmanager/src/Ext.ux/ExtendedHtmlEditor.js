@@ -22,6 +22,11 @@ Ext.ux.ExtendedHtmlEditor = Ext.extend(Ext.form.HtmlEditor, {
      */
     enableImagePicker : true,
 
+    /** api: config[mediaContent]
+     *  ``String`` relative for the media content in the upload panel
+     */
+    mediaContent: null,
+
     /*
      * Protected method that will not generally be called directly. It
      * is called when the editor creates its toolbar. Override this method if you need to
@@ -212,7 +217,8 @@ Ext.ux.ExtendedHtmlEditor = Ext.extend(Ext.form.HtmlEditor, {
         
         // create an image picker form                
         var form = new Ext.ux.ImagePicker({
-            actionURL: self.actionURL
+            actionURL: self.actionURL,
+            mediaContent: this.mediaContent
         });
         
         // open a modal window

@@ -129,6 +129,7 @@ mxp.plugins.ServiceManager = Ext.extend(mxp.plugins.Tool, {
             enableBrowser:true,
             enableUpload:true,
             uploadUrl: uploadUrl,
+            mediaContent: this.target.initialConfig.mediaContent,
             url: actionURL
         });
 

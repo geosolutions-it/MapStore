@@ -354,6 +354,12 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
              * Show 'enabled' property of the user as a checkbox and allows to change it
              */
             showEnabled:false,
+
+            /**
+             * Property: addManageGroupsButton
+             * Show 'Manage group' button. Default its true,
+             */
+            addManageGroupsButton: true,
             
 			/**
 		    * Constructor: initComponent 
@@ -552,7 +558,14 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                     ]});		
 				
 					// the top bar of the user manager window
-					this.tbar = [ this.inputSearch, this.searchButton, this.resetSearchButton, '-', this.createAddUserButton(),"->",this.createManageGroupsButton() ];
+					this.tbar = [ this.inputSearch, this.searchButton, this.resetSearchButton, '-', this.createAddUserButton(),"->"];
+
+                    if(this.addManageGroupsButton){
+                        this.tbar.push(this.createManageGroupsButton());
+                    }
+
+                    var defaultHeaders = this.target.defaultHeaders || {};
+                    defaultHeaders['Accept'] = 'application/json';
 
 					// data store
 					this.store = new Ext.data.JsonStore({
@@ -579,7 +592,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                    icon: Ext.MessageBox.ERROR
                                 });                                
                             },
-                            headers: {'Accept': 'application/json', 'Authorization' : userManager.auth}
+                            headers: defaultHeaders
                         })
                         
 					});
@@ -669,6 +682,9 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
             * * Groups
             */
             createNewUserTabPanel: function(){
+                var defaultHeaders = this.target.defaultHeaders || {};
+                defaultHeaders['Accept'] = 'application/json';
+
                 var userDataFields =[{
                         xtype: 'textfield',
                         anchor:'90%',
@@ -804,7 +820,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                             method : 'GET',
                                             disableCaching: true,
                                             sortInfo: { field: "groupName", direction: "ASC" },
-                                            headers: {'Accept': 'application/json', 'Authorization' : this.auth},
+                                            headers: defaultHeaders,
                                             failure: function (response) {
                                                 console.error(response); 
                                                   Ext.Msg.show({
@@ -1078,6 +1094,9 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                  if( this.showEnabled ) {
                      userDataFields.push({xtype:'checkbox',fieldLabel:this.textEmabled || "Enabled",name:'enabled',checked:userdata.enabled});
                   }
+                // headers for the request
+                var defaultHeaders = this.target.defaultHeaders || {};
+                defaultHeaders['Accept'] = 'application/json';
                 // for user is the tab content!!
                 var userFormTabPanel ={
                     xtype:'tabpanel',
@@ -1144,7 +1163,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                         method : 'GET',
                                         disableCaching: true,
                                         sortInfo: { field: "groupName", direction: "ASC" },
-                                        headers: {'Accept': 'application/json', 'Authorization' : userManager.auth},
+                                        headers: defaultHeaders,
                                         failure: function (response) {
                                             console.error(response); 
                                               Ext.Msg.show({
@@ -1338,6 +1357,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                             xtype:'msm_usergroupmanager',
                             geoStoreBase:um.geoStoreBase,
                             auth: um.auth,
+                            target: um.target,
                             layout:'fit'
                         };
                         // for admin it shows the window
@@ -1408,6 +1428,8 @@ MSMUserGroupManager = Ext.extend(Ext.grid.GridPanel, {
     autoExpandColumn: 'description',
     stateful: true,
     initComponent: function(){
+        var defaultHeaders = this.target.defaultHeaders || {};
+        defaultHeaders['Accept'] = 'application/json';
         //groups store (not pagination support because of extjs needs total count to use the pagination bar
         this.store = new Ext.data.JsonStore({
             autoDestroy: true,
@@ -1421,7 +1443,7 @@ MSMUserGroupManager = Ext.extend(Ext.grid.GridPanel, {
                 method : 'GET',
                 disableCaching: true,
                 sortInfo: { field: "groupName", direction: "ASC" },
-                headers: {'Accept': 'application/json', 'Authorization' : this.auth},
+                headers: defaultHeaders,
                 failure: function (response) {
                     console.error(response); 
                       Ext.Msg.show({
