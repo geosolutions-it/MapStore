@@ -164,7 +164,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             this.templateId = templateId;
         }
 		
-		this.mapItems = [];
+		this.mapItems = [{
+                xtype: "gxp_timevisualization",
+                position: "position:relative;left:60px;top:10px;background-color:#0055BB;color:#FFFFFF;font-size: 12px;"
+            }];
 		
         var scaleOverlayMode = config.scaleOverlayMode || 'basic';
         

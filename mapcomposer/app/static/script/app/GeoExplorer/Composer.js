@@ -310,6 +310,163 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         return tools;
 
     },
+    /*
+     * private: method[disableAllFunc]
+     */    
+    disableAllFunc: function(){
+        var navigation = this.mapPanel.map.getControlsByClass('OpenLayers.Control.Navigation');
+        var panPanel = this.mapPanel.map.getControlsByClass('OpenLayers.Control.PanPanel');
+        var zoomPanel = this.mapPanel.map.getControlsByClass('OpenLayers.Control.ZoomPanel');
+     
+        navigation[0].deactivate();
+        navigation[1].deactivate();
+        panPanel[0].deactivate();
+        zoomPanel[0].deactivate();
+
+        for(var panel in this.portalItems[0].items){
+            if(this.portalItems[0].items[panel].id == "west"){         
+                this.portalItems[0].items[panel].disable();            
+            }
+            if(this.portalItems[0].items[panel].id == "east"){                                
+                this.portalItems[0].items[panel].disable();              
+            }        
+        }    
+
+   		var south = Ext.getCmp('south');
+		
+		if(south){
+			south.disable();
+		}
+        
+        for(var map in this.mapPanel.items.items){
+            if(this.mapPanel.items.items[map].xtype == "gx_zoomslider"){  
+                this.mapPanel.items.items[map].hide();
+            } 
+            if(this.mapPanel.items.items[map].xtype == "gxp_scaleoverlay"){  
+                this.mapPanel.items.items[map].hide();
+            }        
+        }                
+        
+        for(var items in this.toolbar.items.items){
+            if(this.toolbar.items.items[items].id == "full-screen-button"){
+                this.toolbar.items.items[items].disable();
+            }
+        }
+
+        for(var tool in this.tools){            
+            if(this.tools[tool].ptype == "gxp_measure"){  
+                this.tools[tool].actions[0].disable();
+            }               
+            if(this.tools[tool].ptype == "gxp_wmsgetfeatureinfo"){  
+                this.tools[tool].actions[0].disable();
+            }
+            if(this.tools[tool].ptype == "gxp_embedded_link"){  
+                this.tools[tool].actions[0].disable();
+            }            
+            if(this.tools[tool].ptype == "gxp_navigation"){  
+                this.tools[tool].actions[0].items[0].disable();
+            }                                                        
+            if(this.tools[tool].ptype == "gxp_navigationhistory"){  
+                this.tools[tool].actions[0].items[0].disable();
+                this.tools[tool].actions[1].items[0].disable();
+            }
+            if(this.tools[tool].ptype == "gxp_zoom"){  
+                this.tools[tool].actions[0].items[0].disable();
+                this.tools[tool].actions[1].items[0].disable();
+            }   
+            if(this.tools[tool].ptype == "gxp_zoombox"){  
+                this.tools[tool].actions[0].disable();
+                this.tools[tool].actions[1].disable();
+            }  
+            if(this.tools[tool].ptype == "gxp_zoomtoextent"){  
+                this.tools[tool].actions[0].items[0].disable();
+            }          
+            if(this.tools[tool].ptype == "gxp_zoomtolayerextent"){  
+                this.tools[tool].actions[0].items[0].disable();
+            }                
+        }
+    },
+    /*
+     * private: method[enableAllFunc]
+     */       
+    enableAllFunc: function(){
+        
+        var navigation = this.mapPanel.map.getControlsByClass('OpenLayers.Control.Navigation');
+        var panPanel = this.mapPanel.map.getControlsByClass('OpenLayers.Control.PanPanel');
+        var zoomPanel = this.mapPanel.map.getControlsByClass('OpenLayers.Control.ZoomPanel');
+ 
+        navigation[0].activate();
+        navigation[1].activate();
+        panPanel[0].activate();
+        zoomPanel[0].activate();
+
+        for(var panel in this.portalItems[0].items){
+            if(this.portalItems[0].items[panel].id == "west"){
+                this.portalItems[0].items[panel].enable();            
+            }
+            if(this.portalItems[0].items[panel].id == "east"){  
+                this.portalItems[0].items[panel].enable();
+            }       
+        }    
+
+		var south = Ext.getCmp('south');
+		
+		if(south){
+			south.enable();
+		}
+        
+        for(var a=0;a<this.mapPanel.items.items.length;a++){
+            if(this.mapPanel.items.items[a].xtype == "gx_zoomslider"){  
+                this.mapPanel.items.items[a].show();
+            } 
+            if(this.mapPanel.items.items[a].xtype == "gxp_scaleoverlay"){  
+                this.mapPanel.items.items[a].show();
+            }              
+        }    
+                                            
+        for(var items in this.toolbar.items.items){
+            if(this.toolbar.items.items[items].id == "full-screen-button"){
+                this.toolbar.items.items[items].enable();
+            }
+        }
+        
+        for(var tool in this.tools){        
+            if(this.tools[tool].ptype == "gxp_measure"){  
+                this.tools[tool].actions[0].enable();
+            }          
+            if(this.tools[tool].ptype == "gxp_wmsgetfeatureinfo"){  
+                this.tools[tool].actions[0].enable();
+            }            
+            if(this.tools[tool].ptype == "gxp_embedded_link"){  
+                this.tools[tool].actions[0].enable();
+            }            
+            if(this.tools[tool].ptype == "gxp_navigation"){  
+                this.tools[tool].actions[0].items[0].enable();
+            }                                                       
+            if(this.tools[tool].ptype == "gxp_navigationhistory"){
+                if (this.tools[tool].actions[0].control.active){
+                    this.tools[tool].actions[0].items[0].enable();
+                }
+                if (this.tools[tool].actions[1].control.active){
+                    this.tools[tool].actions[1].items[0].enable();
+                }
+            }
+            if(this.tools[tool].ptype == "gxp_zoom"){  
+                this.tools[tool].actions[0].items[0].enable();
+                this.tools[tool].actions[1].items[0].enable();
+            }   
+            if(this.tools[tool].ptype == "gxp_zoombox"){  
+                this.tools[tool].actions[0].enable();
+                this.tools[tool].actions[1].enable();
+            }  
+            if(this.tools[tool].ptype == "gxp_zoomtoextent"){  
+                this.tools[tool].actions[0].items[0].enable();
+            }   
+            if(this.tools[tool].ptype == "gxp_zoomtolayerextent"){  
+                this.tools[tool].actions[0].items[0].enable();
+            }                                                 
+        }
+    },
 	
 	/** private: method[addLoadingMask]
      */

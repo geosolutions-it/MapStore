@@ -2,6 +2,16 @@
    
    "scaleOverlayMode": "basic",
    "gsSources":{ 
+        "MARISS-Layers": {
+            "ptype": "gxp_wmssource",
+            "title": "MARISS", 
+            "version": "1.1.1",
+            "url": "http://84.33.2.74/geoserver/mariss/ows",
+			"layerBaseParams": {
+				"TILED": true,
+				"TILESORIGIN": "-180,-90" 
+			}
+        },
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
 		}, 
@@ -29,6 +39,26 @@
 		],
 		"layers": [
 			{
+				"source": "MARISS-Layers",
+				"title": "SAR-imagery",
+				"name": "TEM_QL__1P_mosaic",
+				"displayInLayerSwitcher": true,
+				"tiled": true
+			},
+			{
+				"source": "MARISS-Layers",
+				"title": "SAR-imagery-footprints",
+				"name": "TEM_QL__1P_mosaic_idx",
+				"displayInLayerSwitcher": true,
+				"tiled": true
+			},
+			{
+				"source": "MARISS-Layers",
+				"title": "SHIP-detection",
+				"name": "tem_sd__1p",
+				"displayInLayerSwitcher": true,
+				"tiled": true
+			},{
 				"source": "google",
 				"title": "Google Roadmap",
 				"name": "ROADMAP",
@@ -67,20 +97,38 @@
 		]
 	},
     "customPanels":[
-        {
+	      {
+	          "xtype": "panel",
+	          "title": "FeatureGrid",      
+	          "border": false,
+	          "id": "south",
+	          "region": "south",
+	          "layout": "fit",
+	          "height": 330,
+	          "collapsed": false,
+	          "collapsible": true,
+	          "header": true
+	      },{
             "xtype": "panel",
-            "title": "Metadata Explorer",
-            "iconCls": "csw-viewer",             
-            "border": false,
-            "id": "south",
-            "region": "south",
-            "layout": "fit",
-            "split":true,
-            "height": 330,
-            "collapsed": true,
-            "collapsible": true,
-            "ctCls": "south-panel",
-            "header": true
+	        "border": false,
+	        "id":"east",
+	        "region": "east",
+	        "width": 475,
+	        "split": true,
+	        "collapsible": true,
+			"collapsed": true,
+	        "collapseMode": "mini",
+			"activeTab":0,
+	        "header": false,
+	        "items": [{
+				"region": "center", 
+				"autoScroll": true, 
+				"tbar": [], 
+				"border": false, 
+				"id": "downloadlist", 
+				"title": "Download List",
+				"layout": "fit"
+			}]
         }
     ],	
 	"scaleOverlayUnits":{
@@ -99,31 +147,6 @@
 		   "ptype": "gxp_mouseposition",
 		   "displayProjectionCode":"EPSG:4326",
 		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
-		}, {
-			"ptype": "gxp_metadataexplorer",
-			"id": "metadataexplorer",
-            "outputTarget": "south",
-            "saveState":true,
-            "cswconfig": {
-                "catalogs": [
-                        {"name": "CSI Piemonte", "url": "http://www.ruparpiemonte.it/geocatalogorp/geonetworkrp/srv/it/csw", "description": "GeoPortale della Regione Piemonte"},
-                        {"name": "Comune di Firenze", "url": "http://datigis.comune.fi.it/geonetwork/srv/it/csw", "description": "GeoPortale del Comune di Firenze"},
-                        {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina", "metaDataOptions":{"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page","idParam":"uuid","idIndex":0}},
-                        {"name": "Treviso", "url": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw", "description": "Treviso Geonetwork"},
-                        {"name": "kscNet", "url": "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw", "description": "kscNet"},
-                        {"name": "CSI-CGIAR", "url": "http://geonetwork.csi.cgiar.org/geonetwork/srv/en/csw", "description" : "CSI-CGIAR"},
-                        {"name": "EauFrance", "url": "http://sandre.eaufrance.fr/geonetwork/srv/fr/csw", "description" : "EauFrance"},
-                        {"name": "SOPAC", "url": "http://geonetwork.sopac.org/geonetwork/srv/en/csw", "description" : "SOPAC"},
-                        {"name": "SADC", "url": "http://www.sadc.int/geonetwork/srv/en/csw", "description" : "SADC"},
-                        {"name": "MAPAS", "url": "http://mapas.mma.gov.br/geonetwork/srv/en/csw", "description" : "MAPAS"}
-                    ],
-                "dcProperty": "title",
-                "cswVersion": "2.0.2",
-                "filterVersion": "1.1.0",
-                "start": 1,
-                "limit": 10,
-                "timeout": 60000
-            }            
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
@@ -156,6 +179,90 @@
 		}, {
 			"ptype": "gxp_languageselector",
 			"actionTarget": {"target": "panelbbar", "index": 3}
-		}
+	    },{
+	      "actions": ["->"], 
+	      "actionTarget": "paneltbar"
+	    },{
+            "ptype":"gxp_playback",
+         	"outputTarget": "paneltbar",
+			"id": "playback",
+            "playbackMode": "range",
+            "showIntervals": false,
+            "labelButtons": true,
+            "settingsButton": true,
+            "rateAdjuster": false,
+            "dynamicRange": false,
+            "timeFormat": "l, F d, Y g:i:s A",
+            "outputConfig": {
+                "controlConfig":{
+                    "step": 15,
+                    "units": "Minutes",
+                    "range": ["2010-12-24T00:00:00.000Z", "2010-12-24T23:59:00.000Z"],
+                    "frameRate": 5
+                }
+            }
+       },{
+			"actions": ["->"], 
+			"actionTarget": "paneltbar"
+		},{
+			"ptype": "gxp_wfsgrid",
+			"id": "featuregrid",
+			"container": "panel",
+			"outputTarget": "south",
+			"wfsURL": "http://84.33.2.74/geoserver/mariss/wfs",
+			"featureType": "TEM_QL__1P_mosaic_idx",
+			"zoomToTooltip": "zoom to AOI",
+			"srsName": "EPSG:4326",
+			"fieldForSort": "time",
+			"sortDirection": "DESC",
+            "actionColumns" : [{
+	                "type": "checkDisplay",
+	                "layerName": "Highlight Layer",
+	                "sourceSRS": "EPSG:4326"
+	            },{
+	                "type": "zoom",
+	                "sourceSRS": "EPSG:4326"
+	            },{
+	                "type": "addToDownloadChart",
+	                "sourceSRS": "EPSG:4326"
+            }],
+            "fields": [
+                {
+                    "name": "time",
+                    "mapping": "time"
+                },
+                {
+                    "name": "location",      
+                    "mapping": "location"
+                }
+            ],
+			"columns" : [
+	            	{
+						"header": "filename",      
+						"dataIndex": "location",
+	                    "sortable": true
+	                },{
+						"header": "time",
+						"dataIndex": "time",
+	                    "sortable": true
+	                }
+	            ]
+		},{
+		   "ptype": "gxp_wpsmanager",
+		   "id": "wpsSPM",
+		   "url": "http://84.33.2.74/geoserver/wps",
+		   "geostoreUrl": "http://84.33.2.74/geostore/rest",
+		   "geostoreUser": "admin",
+		   "geostorePassword": "admin",
+		   "geostoreProxy": "/proxy?url=",
+		   "target": ""
+		},{
+	      "ptype": "gxp_downloadgrid",
+	      "id": "downloadgrid",
+	      "wfsGridId": "featuregrid",
+	      "container": "panel",
+	      "outputTarget": "downloadlist",
+	      "autoExpandPanel": "east"
+	    }
 	]
 }
