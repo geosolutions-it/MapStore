@@ -1,20 +1,5 @@
 {
    "gsSources":{
-        "destination": {
-           "ptype": "gxp_wmssource",
-           "url": "http://destination.geo-solutions.it/geoserver_test_2/ows",
-           "title": "Destination GeoServer",
-           "SRS": "EPSG:900913",
-           "version":"1.1.1",
-              "layersCachedExtent": [
-            -20037508.34,-20037508.34,
-            20037508.34,20037508.34
-           ],
-           "layerBaseParams":{
-            "FORMAT":"image/png8",
-            "TILED":true
-           }
-          },   
    		"default": {
 			"ptype": "gxp_wmssource",
 			"url": "http://localhost:8080/geoserver/ows",
@@ -296,13 +281,13 @@
                 }
           },
             "validators": {
-                "siig_gate_geo_gate": {
-                    "descrizione": {
+                "tasmania_cities": {
+                    "CITY_NAME": {
                         "type": "regex",
                         "value": "^([a-zA-Z0-9_\\.\\-])+\\@(([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+$",
                         "invalidText": "Inserire una email corretta"
                     },
-                    "concessionaria_sito": {
+                    "ADMIN_NAME": {
                         "type": "regex",
                         "value": "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b",
                         "invalidText": "IP non valido"

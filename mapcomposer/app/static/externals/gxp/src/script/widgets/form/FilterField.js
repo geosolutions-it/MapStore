@@ -70,6 +70,8 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
      */
     attributesComboConfig: null,
     
+    valid: null,
+    
     initComponent: function() {
         
         var me = this;
@@ -118,6 +120,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             value: this.filter.property,
             listeners: {
                 select: function(combo, record) {
+
                     this.items.get(1).enable();
                     this.items.get(1).reset();
                     
@@ -132,6 +135,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                     this.filter.upperBoundary = null;
                     this.filter.lowerBoundary = null;
                     
+                    //Add VTYPE validation according to validators config
                     var feature = this.attributes.baseParams.TYPENAME.split(":")[1];
                     
                     for (var key in this.validators){
@@ -170,8 +174,8 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                             
                         }
                         
-                    }                    
-
+                    }
+                    
                     //get type from record to update xtype    
                     var type = record.get("type");
                     this.fieldType = type.split(":").pop();    
@@ -490,7 +494,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             disabled: this.filter.type == null,
             hidden: !isBetween,
             value: this.filter.lowerBoundary,
-            tooltip: this.lowerBoundaryTip,
+            //tooltip: this.lowerBoundaryTip,
             grow: true,
             growMin: 30,
             ref: "lowerBoundary",
@@ -501,12 +505,12 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                     this.filter.lowerBoundary = value;
                     this.fireEvent("change", this.filter, this);
                 },
-                "render": function(c) {
+                /*"render": function(c) {
                     Ext.QuickTips.register({
                         target: c.getEl(),
                         text: this.lowerBoundaryTip
                     });
-                },
+                },*/
                 "autosize": function(field, width) {
                     field.setWidth(width);
                     field.ownerCt.doLayout();
@@ -528,12 +532,12 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                     this.filter.upperBoundary = value;
                     this.fireEvent("change", this.filter, this);
                 },
-                "render": function(c) {
+                /*"render": function(c) {
                     Ext.QuickTips.register({
                         target: c.getEl(),
                         text: this.upperBoundaryTip
                     });
-                },
+                },*/
                 scope: this
             }
         };

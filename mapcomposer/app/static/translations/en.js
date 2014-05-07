@@ -758,5 +758,12 @@ GeoExt.Lang.add("en", {
 		tabTitle: "Imported",
 		layerNodeName: "Layers",
 		serviceNodeName: "Services"
-    }
+    },
+	
+	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
+        noFilterSelectedMsgTitle: "No filter selected",    
+        noFilterSelectedMsgText: "You must select at least one filter",    
+        invalidRegexFieldMsgTitle: "Invalid Fields",    
+        invalidRegexFieldMsgText: "One or more fields are incorrect!"
+    } 
 });
