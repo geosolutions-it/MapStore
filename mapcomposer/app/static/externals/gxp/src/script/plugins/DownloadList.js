@@ -40,15 +40,6 @@ gxp.plugins.DownloadList = Ext.extend(gxp.plugins.Tool, {
 	downloadIconPath: "theme/app/img/ext/bottom2.gif",
 	
 	wpsClient: '',
-    
-    
-    /** api: config[wfsGridId]
-    *  ``String``
-    *  
-    */
-    wfsGridId: "wfsGridPanel",
-
-    autoExpandPanel: null,
 	
 	/** private: method[constructor]
     */
@@ -62,40 +53,7 @@ gxp.plugins.DownloadList = Ext.extend(gxp.plugins.Tool, {
 
 		this.grid = this.buildGrid();			
 		Ext.apply(this.grid, this.outputConfig || {} );
-        var output = gxp.plugins.DownloadList.superclass.addOutput.call(this, this.grid);   
-    	var me = this;
-
-    	var wfsGrid = this.target.tools[this.wfsGridId];
-
-    	if(wfsGrid){
-	    	wfsGrid.on({
-				'itemAdded': function(record){
-					var n = record.id.split(".");
-					var index = parseInt(n[n.length-1]);
-					if(!(me.grid.store.getById(index) === undefined)){
-						Ext.Msg.alert('Status', 'this AOI has been already added to the download list.');
-						return;
-					}
-					var el = {
-						filename: record.data.location
-					}
-					var newRecord = new me.grid.store.recordType(el, index);
-					me.grid.store.add(newRecord);
-					if(me.autoExpandPanel){
-						var autoExpandPanel = Ext.getCmp(me.autoExpandPanel);
-						if(autoExpandPanel && autoExpandPanel.collapsed)
-							autoExpandPanel.expand(true);
-					}
-				}
-				// ,
-				// 'zoomToTime': function(record){
-				// 	setAOITime(playback,record);
-				// 	handleTimeChange(playback.playbackToolbar.slider);
-				// }
-			});
-
-    	} 
-    	return output;    
+    	return gxp.plugins.DownloadList.superclass.addOutput.call(this, this.grid);    
     },
 	
 	buildGrid: function() {
