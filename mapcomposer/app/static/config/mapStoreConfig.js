@@ -185,6 +185,7 @@
 	    },{
             "ptype":"gxp_playback",
          	"outputTarget": "paneltbar",
+	      	"wfsGridId": "featuregrid",
 			"id": "playback",
             "playbackMode": "range",
             "showIntervals": false,
@@ -223,8 +224,31 @@
 	                "type": "zoom",
 	                "sourceSRS": "EPSG:4326"
 	            },{
-	                "type": "addToDownloadChart",
-	                "sourceSRS": "EPSG:4326"
+	                "type": "customAction",
+	                "actionConf": {
+	                	"xtype": "actioncolumn",
+	                	"sortable": false,
+	                	"width": 5,
+		                "actions":{
+		                	"itemAdded":{
+		                		"icon": "theme/app/img/silk/add.png",
+		                		"tooltip": "Add to download List"
+		                	}
+		                }
+	                }
+	            },{
+	                "type": "customAction",
+	                "actionConf": {
+	                	"xtype": "actioncolumn",
+	                	"sortable": false,
+	                	"width": 5,
+		                "actions":{
+		                	"zoomToTime":{
+		                		"icon": "theme/app/img/silk/time.png",
+		                		"tooltip": "Show the map only at this time"
+		                	}
+		                }
+	                }
             }],
             "fields": [
                 {
@@ -263,6 +287,13 @@
 	      "container": "panel",
 	      "outputTarget": "downloadlist",
 	      "autoExpandPanel": "east"
-	    }
+	    },{
+            "ptype":"gxp_custombinder",
+	      	"wfsGridId": "featuregrid",
+			"playbackId": "playback",
+			"downloadGridId": "downloadgrid",
+            "filterByExtent": false,
+	      	"autoExpandPanel": "east"
+       }
 	]
 }
