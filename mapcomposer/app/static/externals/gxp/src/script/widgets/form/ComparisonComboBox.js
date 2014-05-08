@@ -30,7 +30,8 @@ gxp.form.ComparisonComboBox = Ext.extend(Ext.form.ComboBox, {
         [OpenLayers.Filter.Comparison.GREATER_THAN_OR_EQUAL_TO, ">="],
         [OpenLayers.Filter.Comparison.LIKE, "like"],
         // simulate ilike operator (not match case)
-        ["ilike", "ilike"]
+        ["ilike", "ilike"],
+        [OpenLayers.Filter.Comparison.BETWEEN, "between"]
     ],
 
     allowBlank: false,
