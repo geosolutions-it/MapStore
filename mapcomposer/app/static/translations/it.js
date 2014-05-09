@@ -748,5 +748,20 @@ GeoExt.Lang.add("it", {
     "gxp.plugins.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
         name  : 'Polygon',
         label : 'Polygon'
-    }
+    },
+	
+	"gxp.plugins.ResourceStatus.prototype":{
+		rootNodeText: "Risorse Importate",
+		serviceErrorTitle: "Errore Servizio",
+		tabTitle: "Importati",
+		layerNodeName: "Livelli",
+		serviceNodeName: "Servizi"
+    },
+	
+	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
+        noFilterSelectedMsgTitle: "Nessun filtro selezionato",    
+        noFilterSelectedMsgText: "Devi selezionare almeno un filtro",    
+        invalidRegexFieldMsgTitle: "Campo non valido",    
+        invalidRegexFieldMsgText: "Uno o più campi non sono stati riempiti correttamente!"
+    }    
 });

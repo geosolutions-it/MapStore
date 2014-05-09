@@ -43,7 +43,21 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
     
     /** api: ptype = gxp_querybboxform */
     ptype: "gxp_spatialqueryform",
+<<<<<<< HEAD
 
+=======
+    
+    filterMapText: 'Filter Map',
+    
+    noFilterSelectedMsgTitle: "No filter selected",
+    
+    noFilterSelectedMsgText: "You must select at least one filter",
+    
+    invalidRegexFieldMsgTitle: "Invalid Fields",
+    
+    invalidRegexFieldMsgText: "One or more fields are incorrect!",    
+    
+>>>>>>> 64d3732... ISSUE 364 QueryForm bytype value widgets and optional validation
     /** api: config[spatialSelectorsConfig]
      * ``Object``
      * Spatial selector pluggins configurations. 
@@ -64,6 +78,18 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             ptype : 'gxp_spatial_polygon_selector'
         }
     },
+    
+    /** api: config[filterLayer]
+     * ``Object``
+     * Add controls to filter WMS layer using the filter
+     */
+    filterLayer: false,
+    
+    /** api: config[validators]
+     * ``Object``
+     * Add regex validator
+     */    
+    validators: {},
     
     init: function(target) {
         
@@ -184,6 +210,25 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     // Collect all selected filters
                     var filters = new Array();
                     
+                    //START
+                    //Check if there are some invalid field according to validators regex config
+                    var filterFieldItems = queryForm.filterBuilder.childFilterContainer;
+                    var filterFieldItem = filterFieldItems.findByType("gxp_filterfield");
+                    
+                    var f = 0;
+                    var invalidItems = 0;
+                    while(filterFieldItem[f]){
+                        for(var x = 0;x<filterFieldItem[f].items.items.length;x++){
+                            var validateItem = filterFieldItem[f].items.get(x);
+                            //if(!validateItem.isValid(true) && ( validateItem.vtype == "customValidationTextValue" || validateItem.vtype == "customValidationTextLowerBoundary" || validateItem.vtype == "customValidationTextUpperBundary")){
+                            if(!validateItem.isValid(true) && validateItem.vtype != null){
+                                invalidItems++;
+                            }
+                        }                        
+                        f++;
+                    }
+                    //END
+                        
                     if(queryForm.spatialSelectorFieldset && !queryForm.spatialSelectorFieldset.collapsed){
                         var currentFilter = this.spatialSelector.getQueryFilter();   
                         if (currentFilter) {
@@ -196,21 +241,30 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                         attributeFilter && filters.push(attributeFilter);
                     }
 
-                    if(filters.length > 0){
-                        this.featureManagerTool.loadFeatures(filters.length > 1 ?
-                            new OpenLayers.Filter.Logical({
-                                type: OpenLayers.Filter.Logical.AND,
-                                filters: filters
-                            }) :
-                            filters[0]
-                        );    
+                    if(invalidItems == 0){
+                        if(filters.length > 0){
+                            this.featureManagerTool.loadFeatures(filters.length > 1 ?
+                                new OpenLayers.Filter.Logical({
+                                    type: OpenLayers.Filter.Logical.AND,
+                                    filters: filters
+                                }) :
+                                filters[0]
+                            );    
+                        }else{
+                            Ext.Msg.show({
+                                title: this.noFilterSelectedMsgTitle,
+                                msg: this.noFilterSelectedMsgText,
+                                buttons: Ext.Msg.OK,
+                                icon: Ext.MessageBox.ERROR
+                            }); 
+                        }
                     }else{
                         Ext.Msg.show({
-                            title: "No filter selected",
-                            msg: "You must select at least one filter",
+                            title: this.invalidRegexFieldMsgTitle,
+                            msg: this.invalidRegexFieldMsgText,
                             buttons: Ext.Msg.OK,
                             icon: Ext.MessageBox.ERROR
-                        }); 
+                        });
                     }
                       
                 },
@@ -231,6 +285,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     xtype: "gxp_filterbuilder",
                     ref: "../filterBuilder",
                     attributes: schema,
+                    validators: me.validators,
                     allowBlank: true,
                     allowGroups: false
                 });
@@ -251,10 +306,13 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 						while(items[i]){
 							items[i].reset();
 							
-							items[i].items.get(1).disable();
-							items[i].items.get(2).disable();
+                            for(var c = 1;c<items[i].items.items.length;c++){
+                                items[i].items.get(c).disable();                            
+                            }
 
 							filter.value = null;
+                            filter.lowerBoundary = null;
+                            filter.upperBoundary = null;
 							i++;
 						}
 					}

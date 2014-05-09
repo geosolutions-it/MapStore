@@ -746,5 +746,22 @@ GeoExt.Lang.add("en", {
             "name": "Street",
             "number": "Number"
         }
-    }
+
+    },
+	
+	"gxp.plugins.ResourceStatus.prototype":{
+		rootNodeText: "Imported Resources",
+		serviceErrorTitle: "Service Error",
+		tabTitle: "Imported",
+		layerNodeName: "Layers",
+		serviceNodeName: "Services"
+    },
+	
+	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
+        noFilterSelectedMsgTitle: "No filter selected",    
+        noFilterSelectedMsgText: "You must select at least one filter",    
+        invalidRegexFieldMsgTitle: "Invalid Fields",    
+        invalidRegexFieldMsgText: "One or more fields are incorrect!"
+    } 
+
 });
