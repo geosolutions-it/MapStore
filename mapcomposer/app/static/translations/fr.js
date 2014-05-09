@@ -630,5 +630,12 @@ GeoExt.Lang.add("fr", {
 		tabTitle: "Importé",
 		layerNodeName: "Niveaux",
 		serviceNodeName: "Service"
-    }
+    },
+	
+	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
+        noFilterSelectedMsgTitle: "Pas de filtre sélectionné",    
+        noFilterSelectedMsgText: "Vous devez sélectionner au moins un filtre",    
+        invalidRegexFieldMsgTitle: "Domaine invalide",    
+        invalidRegexFieldMsgText: "Un ou plusieurs domaines sont incorrects!"
+    } 
 });
