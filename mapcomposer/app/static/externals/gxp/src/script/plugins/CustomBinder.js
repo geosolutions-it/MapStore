@@ -97,28 +97,7 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
             var timeFilter;
             var extentFilter;
 
-            if(this.filterByExtent){
-                map.events.register('moveend', map, function(){
-                    var extent = map.getExtent();
-                    extentFilter = extent.toBBOX();
-                    var bbox = extentFilter.split(",");
-                    var leftBottom = new OpenLayers.Geometry.Point(bbox[0],bbox[1]);
-                    leftBottom = leftBottom.transform(
-                        new OpenLayers.Projection(map.projection), new OpenLayers.Projection("EPSG:4326")
-                    );
-                    var rightTop = new OpenLayers.Geometry.Point(bbox[2],bbox[3]);
-                    rightTop = rightTop.transform(
-                        new OpenLayers.Projection(map.projection), new OpenLayers.Projection("EPSG:4326")
-                    );
-
-                    // extentFilter = leftBottom.x + "," + leftBottom.y + "," + rightTop.x + "," + rightTop.y;
-                    extentFilter = leftBottom.y + "," + leftBottom.x + "," + rightTop.y + "," + rightTop.x;
-
-                    wfsOutput.store.reload();
-                    wfsOutput.getView().refresh();
-                });
-            }
-
+            // support functions
             var buildTimeIntervalFilter = function (slider){
                 var minTimestamp = slider.getValues()[1];
                 var maxTimestamp = slider.getValues()[0];
@@ -182,6 +161,44 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
                 slider.setValue(1,max-86400000, true);
             };
 
+
+      
+            var getMinTime =  function (playback){
+                var minTimestamp = playback.playbackToolbar.slider.getValues()[1];
+                var dateMin = new Date();
+                dateMin.setTime(minTimestamp);
+                return dateMin.toISOString();
+              };
+              
+            var getMaxTime = function (playback){
+                var maxTimestamp = playback.playbackToolbar.slider.getValues()[0];
+                var dateMax = new Date();
+                dateMax.setTime(maxTimestamp);
+                return dateMax.toISOString();
+              };
+
+            if(this.filterByExtent){
+                map.events.register('moveend', map, function(){
+                    var extent = map.getExtent();
+                    extentFilter = extent.toBBOX();
+                    var bbox = extentFilter.split(",");
+                    var leftBottom = new OpenLayers.Geometry.Point(bbox[0],bbox[1]);
+                    leftBottom = leftBottom.transform(
+                        new OpenLayers.Projection(map.projection), new OpenLayers.Projection("EPSG:4326")
+                    );
+                    var rightTop = new OpenLayers.Geometry.Point(bbox[2],bbox[3]);
+                    rightTop = rightTop.transform(
+                        new OpenLayers.Projection(map.projection), new OpenLayers.Projection("EPSG:4326")
+                    );
+
+                    // extentFilter = leftBottom.x + "," + leftBottom.y + "," + rightTop.x + "," + rightTop.y;
+                    extentFilter = leftBottom.y + "," + leftBottom.x + "," + rightTop.y + "," + rightTop.x;
+
+                    wfsOutput.store.reload();
+                    wfsOutput.getView().refresh();
+                });
+            }
+
             wfsGrid.on({
                 'zoomToTime': function(record){
                     setAOITime(playback,record);
@@ -218,39 +235,178 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
                     handleTimeChange(playback.playbackToolbar.slider);
                 }
             });
-                    
-            playback.playbackToolbar.slider.on({
-                'dragend': function(slider, e){
-                    handleTimeChange(slider, e);
-                }
-            });
-            
-            playback.playbackToolbar.on({
-                'next': function(slider){
-                    handleTimeChange(slider);
-                },
+
+            if(playback.playbackToolbar){    
+                playback.playbackToolbar.slider.on({
+                    'dragend': function(slider, e){
+                        handleTimeChange(slider, e);
+                    }
+                });
                 
-                'back': function(slider){
-                    handleTimeChange(slider);
-                },
-                
-                'play': function(slider){
-                    handleTimeChange(slider);
-                },
-                
-                'fullRange': function(slider){
-                    playback.timeManager.clearTimer();
-                    setLatest24Hours(playback);
-                    handleTimeChange(playback.playbackToolbar.slider);
-                    /*var minTimestamp = slider.getValues()[1];
-                    var maxTimestamp = slider.getValues()[0];
-                    if(slider.maxValue ==  maxTimestamp && slider.minValue == minTimestamp){
+                playback.playbackToolbar.on({
+                    'next': function(slider){
                         handleTimeChange(slider);
-                    }*/
-                }
-                
-            });
+                    },
+                    
+                    'back': function(slider){
+                        handleTimeChange(slider);
+                    },
+                    
+                    'play': function(slider){
+                        handleTimeChange(slider);
+                    },
+                    
+                    'fullRange': function(slider){
+                        playback.timeManager.clearTimer();
+                        setLatest24Hours(playback);
+                        handleTimeChange(playback.playbackToolbar.slider);
+                        /*var minTimestamp = slider.getValues()[1];
+                        var maxTimestamp = slider.getValues()[0];
+                        if(slider.maxValue ==  maxTimestamp && slider.minValue == minTimestamp){
+                            handleTimeChange(slider);
+                        }*/
+                    }
+                    
+                });
+            }
         }
+
+
+
+
+        // WPS
+                    
+        var wpsClient = this.target.tools["wpsSPM"];
+
+        var appMask = new Ext.LoadMask(Ext.getBody(), {msg:"Please wait, loading..."});
+
+                    
+                    downloadGrid.on(
+                        'startDownload', function(fileNames){
+                            appMask.show();
+                            var workspace = new OpenLayers.WPSProcess.LiteralData({value:"mariss"});
+                            var mosaicStoreName = new OpenLayers.WPSProcess.LiteralData({value:"sar-data"});
+                            var shipLayerName = new OpenLayers.WPSProcess.LiteralData({value:"tem_sd__1p"});
+                            
+                            var fileList = '';
+                            function buildString(element, index, array) {
+                                fileList += element + ";";
+                            };
+                            fileNames.forEach(
+                                buildString
+                            );
+                            
+                            var granules = new OpenLayers.WPSProcess.LiteralData({value:fileList});
+                            var minTime = getMinTime(playback);
+                            var maxTime = getMaxTime(playback);
+                            var minTimeDTO = new OpenLayers.WPSProcess.LiteralData({value:minTime});
+                            var maxTimeDTO = new OpenLayers.WPSProcess.LiteralData({value:maxTime});
+                            // TODO Use complex Data to use a List
+                            //"world2_2012_0001.000.tif;world2_2013_0001.000.tif;world2_2014_0001.000.tif"
+                            //var granule1 = new OpenLayers.WPSProcess.LiteralData({value:"world2_2012_0001.000.tif"});
+                            //var granule2 = new OpenLayers.WPSProcess.LiteralData({value:"world2_2013_0001.000.tif"});
+                            //var granule3 = new OpenLayers.WPSProcess.LiteralData({value:"world2_2014_0001.000.tif"});
+                            //var granules = [granule1, granule2, granule3];
+                            //var complexGranules = new OpenLayers.WPSProcess.ComplexData(granules);
+
+                            var entity;
+                            var instanceID = wpsClient.execute('gs:Download',{
+                                "storeExecuteResponse": true,
+                                "lineage": true,
+                                "status": true,
+                                type: "data",
+                                "inputs": {
+                                    "MinTime": minTimeDTO,
+                                    "MaxTime": maxTimeDTO,
+                                    "Workspace": workspace,
+                                    "ImageMosaic Store Name": mosaicStoreName,
+                                    "Ship Detection Layer": shipLayerName,
+                                    "Granule Names": granules
+                                },
+                                "outputs": [{
+                                    "identifier": "result",
+                                    "mimeType" : "application/zip",
+                                    "asReference": true
+                                }]
+                            },function(){});
+                            
+                            var linkReceived = false;
+                            var updateFun = function() {
+                                wpsClient.getExecuteInstances('gs:Download',true,function(instance, statusInfo){
+                                    if(!linkReceived) {
+                                        if(statusInfo && statusInfo.status === 'Process Succeeded' && instance.name === instanceID) {
+                                            linkReceived = true;
+                                            clearInterval(interval);
+                                            Ext.Ajax.request({
+                                                url: statusInfo.statusLocation,
+                                                method: 'GET',
+                                                success: function(response){
+                                                    var format = new OpenLayers.Format.XML(); 
+                                                    var link;
+                                                    try{
+                                                        if(Ext.isIE){
+                                                            var elements = format.getElementsByTagNameNS(response.responseXML,'http://www.opengis.net/wps/1.0.0','*');
+                                                            var findReference = function(element, index, array){
+                                                                if(element.baseName == "Reference"){
+                                                                    link = element.getAttribute("href");
+                                                                }
+                                                            };
+                                                            elements.forEach(
+                                                                findReference
+                                                            );
+                                                        }
+                                                        else{
+                                                            link = format.getElementsByTagNameNS(response.responseXML,'http://www.opengis.net/wps/1.0.0','Reference')[0].getAttribute("href");
+                                                        }
+                                                    }
+                                                    catch(err){
+                                                    }
+                                                    if(!link){
+                                                        wpsClient.deleteExecuteInstance(instance.id, function() {});
+                                                        appMask.hide();
+                                                        Ext.Msg.alert('Error','An error occurs when try to parse the result document. Please try again.');                                          
+                                                    }
+                                                    else{
+                                                        wpsClient.deleteExecuteInstance(instance.id, function(){});
+                                                        appMask.hide();
+                                                        window.open(link,'_self');
+                                                        Ext.Msg.show({
+                                                           title:'Download',
+                                                           msg: 'Click <a href=\"' + link + '\">HERE</a> if the download doesn\'t start automatically',
+                                                           buttons: Ext.Msg.OK,
+                                                           fn: function(btn, text) {
+                                                                
+                                                           },
+                                                           icon: Ext.MessageBox.INFO
+                                                        });
+                                                    }
+                                                },
+                                                failure: function(response){
+                                                    wpsClient.deleteExecuteInstance(instance.id, function() {});
+                                                    appMask.hide();
+                                                    Ext.Msg.alert('Error','An error occur when try to get the URL of the requested resource. Please try again.');
+                                                }
+                                            });
+                                        }else if (statusInfo && statusInfo.status === 'Process Failed'){
+
+                                            clearInterval(interval);
+                                            appMask.hide();
+                                            Ext.Msg.show({
+                                               title:'Error on WPS execution',
+                                               msg: 'More information <a href=\"' + statusInfo.statusLocation + '\">HERE</a>',
+                                               icon: Ext.MessageBox.ERROR
+                                            });
+                                        }
+                                    }
+                                });
+                            };
+                            
+                            var interval = setInterval(updateFun,3000);
+                        }
+                    );
+
+
+
     }
 });
 

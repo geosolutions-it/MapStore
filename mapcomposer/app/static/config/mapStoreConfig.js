@@ -1,12 +1,13 @@
 {
    
    "scaleOverlayMode": "basic",
+   "geoStoreBase":"http://localhost/opensdi2-manager/facade/geostore/rest/",
    "gsSources":{ 
         "MARISS-Layers": {
             "ptype": "gxp_wmssource",
             "title": "MARISS", 
             "version": "1.1.1",
-            "url": "http://84.33.2.74/geoserver/mariss/ows",
+            "url": "http://84.33.2.24:10080/geoserver/mariss/ows",
 			"layerBaseParams": {
 				"TILED": true,
 				"TILESORIGIN": "-180,-90" 
@@ -210,7 +211,7 @@
 			"id": "featuregrid",
 			"container": "panel",
 			"outputTarget": "south",
-			"wfsURL": "http://84.33.2.74/geoserver/mariss/wfs",
+			"wfsURL": "http://84.33.2.24:10080/geoserver/mariss/wfs",
 			"featureType": "TEM_QL__1P_mosaic_idx",
 			"zoomToTooltip": "zoom to AOI",
 			"srsName": "EPSG:4326",
@@ -271,15 +272,16 @@
 	                    "sortable": true
 	                }
 	            ]
-		},{
-		   "ptype": "gxp_wpsmanager",
-		   "id": "wpsSPM",
-		   "url": "http://84.33.2.74/geoserver/wps",
-		   "geostoreUrl": "http://84.33.2.74/geostore/rest",
-		   "geostoreUser": "admin",
-		   "geostorePassword": "admin",
-		   "geostoreProxy": "/proxy?url=",
-		   "target": ""
+		},{                   
+			"ptype": "gxp_wpsmanager",
+			"id": "wpsSPM",
+			"url": "http://84.33.2.24:10080/geoserver/wps",
+			"geostoreUrl": "http://localhost/geostore/rest",
+			"geostoreUser": "admin",
+			"geostorePassword": "admin",
+			"geostoreProxy": "/proxy?url=",
+			"target": ""
+
 		},{
 	      "ptype": "gxp_downloadgrid",
 	      "id": "downloadgrid",
@@ -292,7 +294,7 @@
 	      	"wfsGridId": "featuregrid",
 			"playbackId": "playback",
 			"downloadGridId": "downloadgrid",
-            "filterByExtent": false,
+            "filterByExtent": true,
 	      	"autoExpandPanel": "east"
        }
 	]

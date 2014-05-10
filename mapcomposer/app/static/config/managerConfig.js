@@ -1,8 +1,8 @@
 ﻿{
    "composerUrl":"",
    "socialUrl":"",
-   "adminUrl":"/opensdi2-manager/",
-   "geoStoreBase":"/opensdi2-manager/facade/geostore/rest/",
+   "adminUrl":"http://localhost/opensdi2-manager/",
+   "geoStoreBase":"http://localhost/opensdi2-manager/facade/geostore/rest/",
    "start":0,
    "limit":20,
    "msmTimeout":30000,
