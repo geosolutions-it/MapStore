@@ -232,7 +232,7 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 	/**
 	 * @cfg {String} rootText Text to display for root node (defaults to 'Tree Root')
 	 */
-	,rootText:'Tree Root'
+	,rootText:'/'
 
 	/**
 	 * @cfg {Boolean} rootVisible true = root node visible, false = hidden (defaults to true)
@@ -261,6 +261,21 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 	,url:'filetree.php'
 	// }}}
 
+	/**
+	 * @cfg {Boolean} Chech node attributes to enable or disable operations.
+	 */
+	,checkNodeParameters:false
+
+	/**
+	 * @cfg {Number} Permission for the root folder in in linux mode (4 == 100 == r--; 7 == 111 == rwx)
+	 */
+	,rootPermission: 4
+
+	/**
+	 * @cfg {Number} Permission for other folders in in linux mode (4 == 100 == r--; 7 == 111 == rwx)
+	 */
+	,defaultPermission: 7
+
 	// overrides
 	// {{{
 	/**
@@ -277,10 +292,11 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 			// create root node
 			 root:new Ext.tree.AsyncTreeNode({
                 id:'/',
-				 text: '/'  
+				 text: this.rootText  
 				,folder:this.rootPath
 				,rootVisible:this.rootVisible
 				,allowDrag:false
+				,permission: this.rootPermission
 			})
 
 			// create treeEditor
@@ -874,6 +890,8 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 			if(this.baseParams) {
 				config.baseParams = this.baseParams;
 			}
+			// custom new dir config delegate
+			config.newdirText = this.newdirText;
 			this.contextmenu = new Ext.ux.FileTreeMenu(config);
 			this.contextmenu.on({click:{scope:this, fn:this.onContextClick}});
 
@@ -1489,33 +1507,8 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 
 		var menu = this.getContextMenu();
 		menu.node = node;
-        menu.setItemDisabled("open-dwnld", (node.isLeaf()?false:true));
-        menu.setItemDisabled("rename", false);
-        menu.setItemDisabled("delete", false);
 
-		// set node name
-//		menu.getItemByCmd('nodename').setText(Ext.util.Format.ellipsis(node.text, 22));
-
-		// enable/disable items depending on node clicked
-//		menu.setItemDisabled('open', !node.isLeaf());
-		//menu.setItemDisabled('reload', node.isLeaf());
-		//menu.setItemDisabled('expand', node.isLeaf());
-		//menu.setItemDisabled('collapse', node.isLeaf());
-		menu.setItemDisabled('delete', node === this.root || node.disabled);
-		menu.setItemDisabled('rename', this.readOnly || node === this.root || node.disabled);
-		menu.setItemDisabled('newdir', this.readOnly || (node.isLeaf() ? node.parentNode.disabled : node.disabled));
-		//menu.setItemDisabled('upload', node.isLeaf() ? node.parentNode.disabled : node.disabled);
-		//menu.setItemDisabled('upload-panel', node.isLeaf() ? node.parentNode.disabled : node.disabled);
-
-		// show/hide logic
-//		menu.getItemByCmd('open').setVisible(this.enableOpen);
-		menu.getItemByCmd('delete').setVisible(this.enableDelete);
-		menu.getItemByCmd('newdir').setVisible(this.enableNewDir);
-		menu.getItemByCmd('rename').setVisible(this.enableRename);
-		//menu.getItemByCmd('upload').setVisible(this.enableUpload);
-		//menu.getItemByCmd('upload-panel').setVisible(this.enableUpload);
-		//menu.getItemByCmd('sep-upload').setVisible(this.enableUpload);
-		//menu.getItemByCmd('sep-collapse').setVisible(this.enableNewDir || this.enableDelete || this.enableRename);
+		this.applyPermissionOnMenu(node, menu);
 
 		// select node
 		node.select();
@@ -1571,6 +1564,51 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 	,sendCmd:function(options) {
 	    Ext.apply(options.params, this.cmdParams);
 	    Ext.Ajax.request(options);
+	}
+
+	,getPermission: function(node){
+
+		var p = parseInt(node.attributes.permission ? node.attributes.permission + "" : this.defaultPermission).toString(2);
+
+		return {
+			r: p.charAt(0) == "1",
+			w: p.charAt(1) == "1",
+			x: p.charAt(2) == "1"
+		}
+
+	}
+
+	,applyPermissionOnMenu: function(node, menu){
+
+		var p = this.getPermission(node);
+
+        menu.setItemDisabled("open-dwnld", (node.isLeaf()?false:true));
+        menu.setItemDisabled("rename", false);
+        menu.setItemDisabled("delete", false);
+
+		// node cmd available
+		menu.setItemDisabled('delete', node === this.root || node.disabled || (this.checkNodeParameters && (!p.w || !node.attributes.canDelete)));
+		menu.setItemDisabled('rename', this.readOnly || node === this.root || node.disabled || (this.checkNodeParameters && (!p.w || !node.attributes.canRename)));
+		menu.setItemDisabled('newdir', this.readOnly || (node.isLeaf() ? node.parentNode.disabled : node.disabled) || (this.checkNodeParameters && (!p.w || !node.attributes.canCreateFolder)));
+
+		// upload is the item 6
+		if (this.checkNodeParameters && (!p.w || !node.attributes.canUpload)){
+			menu.items.get(6).setDisabled(true);
+		}else{
+			// console.log(menu.items.get(6));
+			menu.items.get(6).setDisabled(false);
+		}
+
+		// show/hide logic
+//		menu.getItemByCmd('open').setVisible(this.enableOpen);
+		menu.getItemByCmd('delete').setVisible(this.enableDelete);
+		menu.getItemByCmd('newdir').setVisible(this.enableNewDir);
+		menu.getItemByCmd('rename').setVisible(this.enableRename);
+		//menu.getItemByCmd('upload').setVisible(this.enableUpload);
+		//menu.getItemByCmd('upload-panel').setVisible(this.enableUpload);
+		//menu.getItemByCmd('sep-upload').setVisible(this.enableUpload);
+		//menu.getItemByCmd('sep-collapse').setVisible(this.enableNewDir || this.enableDelete || this.enableRename);
+
 	}
 
 }); // eo extend

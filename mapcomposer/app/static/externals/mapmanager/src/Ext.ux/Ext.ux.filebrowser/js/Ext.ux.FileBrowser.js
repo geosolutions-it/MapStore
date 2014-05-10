@@ -31,11 +31,29 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
     ,swfUrl:"../js/Ext.ux.upload/examples/swf/swfupload.swf"
     ,browserDDGroup:null
 
+    /**
+     * @cfg {Boolean} Chech node attributes to enable or disable operations.
+     */
+    ,checkNodeParameters:false
+
+    /**
+     * @cfg {Number} Permission for the root folder in in linux mode (4 == 100 == r--; 7 == 111 == rwx)
+     */
+    ,rootPermission: 4
+
+    /**
+     * @cfg {Number} Permission for other folders in in linux mode (4 == 100 == r--; 7 == 111 == rwx)
+     */
+    ,defaultPermission: 7
+
+    /**
+     * api:[ovrNewdirText]
+     * @cfg {String} Optional new Folder text for this operation
+     */
+
     ,initComponent:function() {
-        /*
-        ** FileTreePanel
-        */
-        this.fileTreePanel = new Ext.ux.FileTreePanel({
+
+        var treePanelConfig = {
             autoScroll:true
             ,readOnly:this.readOnly
             ,region:"center"
@@ -46,6 +64,9 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
             ,url:this.url
             ,ddGroup:this.browserDDGroup
             ,rootText:this.rootText
+            ,checkNodeParameters:this.checkNodeParameters
+            ,rootPermission: this.rootPermission
+            ,defaultPermission: this.defaultPermission
             //,cmdParams:{root:this.root}
             ,listeners:{
                 click:{scope:this, fn:this.treePanelClick}
@@ -63,10 +84,19 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
                     //this.enableUploadSystem();
                 }}
             }
-    	    ,onDblClick:function(node, e) {
-	        	return false;
-	        }
-        });
+            ,onDblClick:function(node, e) {
+                return false;
+            }
+        };
+
+        if(this.ovrNewdirText){
+            treePanelConfig.newdirText = this.ovrNewdirText;
+        }
+        
+        /*
+        ** FileTreePanel
+        */
+        this.fileTreePanel = new Ext.ux.FileTreePanel(treePanelConfig);
 /*
         this.fileTreePanel.loader.on("beforeload", function() {
             this.fileTreePanel.loader.baseParams.root = this.root;
@@ -258,7 +288,7 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
 
             this.dataViewStore = new Ext.data.JsonStore({
                 id:"id"
-                ,fields:["id", "text", "leaf", "size", "iconCls", "loaded", "expanded", "mtime"]
+                ,fields:["id", "text", "leaf", "size", "iconCls", "loaded", "expanded", "mtime", "permission"]
             });
 
             /*
@@ -417,9 +447,10 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
         var treeNode = this.fileTreePanel.getNodeById(id);
         var text = treeNode.attributes.text;
         var menu = this.fileTreePanel.getContextMenu();
-        menu.setItemDisabled("open-dwnld", false);
-        menu.setItemDisabled("rename", false);
-        menu.setItemDisabled("delete", false);
+
+        // permission delegated on fileTreePanel.applyPermissionOnMenu
+        var p = this.fileTreePanel.applyPermissionOnMenu(treeNode, menu);
+
 	    menu.node = treeNode;
         menu.showAt(e.xy);
       }
@@ -427,9 +458,10 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
         var treeNode = this.fileTreePanel.getNodeById(this.historyCurrentId);
         var text = treeNode.attributes.text;
         var menu = this.fileTreePanel.getContextMenu();
-        menu.setItemDisabled("open-dwnld", true);
-        menu.setItemDisabled("rename", true);
-        menu.setItemDisabled("delete", true);
+
+        // permission delegated on fileTreePanel.applyPermissionOnMenu
+        var p = this.fileTreePanel.applyPermissionOnMenu(treeNode, menu);
+
 	    menu.node = treeNode;
         menu.showAt(e.xy);
       }

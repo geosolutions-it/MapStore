@@ -59,7 +59,7 @@ Ext.ux.FileTreeMenu = function(config) {
             ,disabled:config.overView
             ,cmd:'delete'
         },{
-            text:this.newdirText + '... (Ctrl+N)'
+            text:(config.newdirText ? config.newdirText : this.newdirText) + '... (Ctrl+N)'
             ,iconCls:this.newdirIconCls
             ,cmd:'newdir'
         }]

@@ -59,6 +59,12 @@
           "index": 1
         }
     },{
+        "ptype": "mxp_servicemanager",
+        "actionTarget":{
+          "target": "north.tbar",
+          "index": 2
+        }
+    },{
         "ptype": "mxp_usermanager",
         "loginManager": "loginTool",
         "addManageGroupsButton": false,

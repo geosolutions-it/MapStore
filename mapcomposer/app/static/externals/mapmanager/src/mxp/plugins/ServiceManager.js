@@ -38,6 +38,8 @@ mxp.plugins.ServiceManager = Ext.extend(mxp.plugins.Tool, {
     buttonText: "Services",
     tooltipText: "Open service manager",
 
+    rootText: "VA-SPs",
+
     loginManager: null,    
     setActiveOnOutput: true,
     actionURL: null,
@@ -103,12 +105,12 @@ mxp.plugins.ServiceManager = Ext.extend(mxp.plugins.Tool, {
         this.outputConfig = this.outputConfig || {};
 
         var actionURL = this.actionURL ? this.actionURL: // the action URL is configured in th plugin
-            this.target.adminUrl ? this.target.adminUrl + "mvc/fileManager/extJSbrowser" : // use relative path from adminUrl
-            "/opensdi2-manager/mvc/fileManager/extJSbrowser"; // by default search on root opensdi-manager2
+            this.target.adminUrl ? this.target.adminUrl + "mvc/serviceManager/extJSbrowser" : // use relative path from adminUrl
+            "/opensdi2-manager/mvc/serviceManager/extJSbrowser"; // by default search on root opensdi-manager2
 
         var uploadUrl = this.uploadUrl ? this.uploadUrl: // the upload URL is configured in th plugin
-            this.target.adminUrl ? this.target.adminUrl + "mvc/fileManager/upload" : // use relative path from adminUrl
-            "/opensdi2-manager/mvc/fileManager/upload"; // by default search on root opensdi-manager2
+            this.target.adminUrl ? this.target.adminUrl + "mvc/serviceManager/upload" : // use relative path from adminUrl
+            "/opensdi2-manager/mvc/serviceManager/upload"; // by default search on root opensdi-manager2
 
         Ext.apply(this.outputConfig, {
             xtype: "FileBrowser",
@@ -129,7 +131,10 @@ mxp.plugins.ServiceManager = Ext.extend(mxp.plugins.Tool, {
             enableBrowser:true,
             enableUpload:true,
             uploadUrl: uploadUrl,
-            url: actionURL
+            url: actionURL,
+            // ovrNewdirText: "New Service ID",
+            rootText: this.rootText,
+            checkNodeParameters: true
         });
 
         return mxp.plugins.ServiceManager.superclass.addOutput.apply(this, arguments);
