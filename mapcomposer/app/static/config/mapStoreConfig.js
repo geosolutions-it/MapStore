@@ -1,7 +1,23 @@
 {
    
    "scaleOverlayMode": "basic",
-   "geoStoreBase":"http://localhost/opensdi2-manager/facade/geostore/rest/",
+   "geoStoreBase":"http://84.33.2.24/opensdi2-manager/facade/geostore/rest/",
+   "header":{
+        "container": {
+			"border": false,
+			"header": false,
+			"collapsible": true,
+			"collapseMode":  "mini",
+			"hideCollapseTool": true,
+			"split": true,
+			"animCollapse": false,
+			"minHeight": 80,
+			"maxHeight": 80,
+			"height": 80
+	   	},
+		"html":"<img style=\"position:absolute; top:0px; left:20px; z-index:1000\" src=\"theme/app/img/mariss_logo.jpg\" height=\"100%\"/><h1 style=\"color:grey; font-size:30px; position:absolute; top:20px; left:260px; z-index:1000\">MARISS Project</h1></div>",
+        "css": "<style>#msheader .x-panel-body .x-panel-body-noheader{padding:30px;background-color: #FFFFFF;}</style>"
+    },
    "gsSources":{ 
         "MARISS-Layers": {
             "ptype": "gxp_wmssource",
@@ -276,9 +292,7 @@
 			"ptype": "gxp_wpsmanager",
 			"id": "wpsSPM",
 			"url": "http://84.33.2.24:10080/geoserver/wps",
-			"geostoreUrl": "http://localhost/geostore/rest",
-			"geostoreUser": "admin",
-			"geostorePassword": "admin",
+			"geostoreUrl": "http://84.33.2.24/opensdi2-manager/facade/geostore/rest",
 			"geostoreProxy": "/proxy?url=",
 			"target": ""
 

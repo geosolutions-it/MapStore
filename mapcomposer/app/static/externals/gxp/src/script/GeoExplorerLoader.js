@@ -126,6 +126,12 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
         if(url.indexOf("http") == 0){
             url = this.proxy + url;
         }
+        var headers = {
+            'Accept': 'application/json'
+        };
+        if(this.auth){
+            headers['Authorization'] = this.auth;
+        }
         this.adminConfigStore = new Ext.data.JsonStore({
             root: 'results',
             autoLoad: false,
@@ -141,10 +147,7 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
                 restful: true,
                 method : 'GET',
                 disableCaching: true,
-                headers:{
-                    'Accept': 'application/json', 
-                    'Authorization' : this.auth
-                },
+                headers: headers,
                 failure: function (response) {
                     // no custom configs available
                     me.fireEvent("configfinished", config);                                

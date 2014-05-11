@@ -99,25 +99,32 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
         
         //OpenLayers.ProxyHost = (this.geostoreProxy) ? this.geostoreProxy : this.target.proxy;
         
-        if(! this.geoStoreClient)
-            this.geoStoreClient = new gxp.plugins.GeoStoreClient({
+        if(! this.geoStoreClient){
+            var geostoreClientConfig = {
                 url: (this.geostoreUrl) ? this.geostoreUrl : this.target.geoStoreBaseURL,
-                user: (this.geostoreUser) ? this.geostoreUser : this.target.geostoreUser,
-                password: (this.geostorePassword) ? this.geostorePassword : this.target.geostorePassword,
                 proxy: (this.geostoreProxy) ? this.geostoreProxy:this.target.proxy,
                 listeners: {
                     "geostorefailure": function(tool, msg){
-						if(!silentErrors){	
-							Ext.Msg.show({
-								title: "Geostore Exception",
-								msg: msg,
-								buttons: Ext.Msg.OK,
-								icon: Ext.Msg.ERROR
-							});
-						}
+                        if(!silentErrors){  
+                            Ext.Msg.show({
+                                title: "Geostore Exception",
+                                msg: msg,
+                                buttons: Ext.Msg.OK,
+                                icon: Ext.Msg.ERROR
+                            });
+                        }
                     }
                 }
-            }); 
+            };
+            // user and password if present
+            if(this.geostoreUser || this.target.geostoreUser){
+                geostoreClientConfig['user'] = (this.geostoreUser) ? this.geostoreUser : this.target.geostoreUser;
+            }
+            if(this.geostorePassword || this.target.geostorePassword){
+                geostoreClientConfig['password'] = (this.geostorePassword) ? this.geostorePassword : this.target.geostorePassword;
+            }
+            this.geoStoreClient = new gxp.plugins.GeoStoreClient(geostoreClientConfig); 
+        }
 
         var geoStore= this.geoStoreClient;
        
