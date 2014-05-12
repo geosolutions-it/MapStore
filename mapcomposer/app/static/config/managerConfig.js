@@ -1,8 +1,8 @@
 ﻿{
    "composerUrl":"",
    "socialUrl":"",
-   "adminUrl":"http://localhost/opensdi2-manager/",
-   "geoStoreBase":"http://localhost/opensdi2-manager/facade/geostore/rest/",
+   "adminUrl":"http://84.33.2.24/opensdi2-manager/",
+   "geoStoreBase":"http://84.33.2.24/opensdi2-manager/facade/geostore/rest/",
    "start":0,
    "limit":20,
    "msmTimeout":30000,
@@ -39,7 +39,7 @@
    "tools":[{
         "ptype": "mxp_mapviewer",
         "loginManager": "loginTool",
-        "mapStoreUrl": "http://localhost/MapStore",
+        "mapStoreUrl": "http://84.33.2.24/MapStore",
         "actionTarget":null
     },{
         "ptype": "mxp_login",
@@ -100,7 +100,7 @@
     "loggedTools":[{
         "ptype": "mxp_mapviewer",
         "loginManager": "loginTool",
-        "mapStoreUrl": "http://localhost/MapStore",
+        "mapStoreUrl": "http://84.33.2.24/MapStore",
         "actionTarget":null
     },{
         "ptype": "mxp_myaccount",

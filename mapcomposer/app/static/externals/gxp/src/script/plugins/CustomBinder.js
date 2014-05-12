@@ -54,6 +54,9 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
     */
     autoExpandPanel: null,
 
+    // relative hours on server
+    relativeHours: 1,
+
     addActions: function(actions){
         var self = this;
         this.target.on('ready',function() {
@@ -97,6 +100,9 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
             var timeFilter;
             var extentFilter;
 
+            //TODO: Fix it in another way
+            var relativeHours = this.relativeHours;
+
             // support functions
             var buildTimeIntervalFilter = function (slider){
                 var minTimestamp = slider.getValues()[1];
@@ -105,6 +111,9 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
                 var dateMax = new Date();
                 dateMin.setTime(minTimestamp);
                 dateMax.setTime(maxTimestamp);
+                // fix date time
+                dateMin.setTime(dateMin.setHours(dateMin.getHours() + relativeHours));
+                dateMax.setTime(dateMax.setHours(dateMax.getHours() + relativeHours));
                 return "time DURING " + dateMin.toISOString() +"/"+ dateMax.toISOString();
               };
     
@@ -176,6 +185,12 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
                 dateMax.setTime(maxTimestamp);
                 return dateMax.toISOString();
               };
+              
+            var setFullRange = function (playback){
+                playback.timeManager.clearTimer();
+                setLatest24Hours(playback);
+                handleTimeChange(playback.playbackToolbar.slider);
+            };
 
             if(this.filterByExtent){
                 map.events.register('moveend', map, function(){
@@ -257,18 +272,14 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
                     },
                     
                     'fullRange': function(slider){
-                        playback.timeManager.clearTimer();
-                        setLatest24Hours(playback);
-                        handleTimeChange(playback.playbackToolbar.slider);
-                        /*var minTimestamp = slider.getValues()[1];
-                        var maxTimestamp = slider.getValues()[0];
-                        if(slider.maxValue ==  maxTimestamp && slider.minValue == minTimestamp){
-                            handleTimeChange(slider);
-                        }*/
+                        setFullRange(playback);
                     }
                     
                 });
             }
+
+            // set full range by default
+            setFullRange(playback);
         }
 
 

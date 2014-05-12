@@ -876,7 +876,16 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 	 * returns (and lazy create) the context menu
 	 * @private
 	 */
-	,getContextMenu:function() {
+	,getContextMenu:function(selectedNode) {
+		// TODO: Generalize it
+		var newdirText = this.newdirText;
+		if(selectedNode){
+			if(!selectedNode.parentNode){
+				newdirText = "New VA-SP";
+			}else if(!selectedNode.parentNode.parentNode){
+				newdirText = "New ServiceID";
+			}
+		}
 		// lazy create context menu
 		if(!this.contextmenu) {
             config = {};
@@ -891,7 +900,7 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 				config.baseParams = this.baseParams;
 			}
 			// custom new dir config delegate
-			config.newdirText = this.newdirText;
+			config.newdirText = newdirText;
 			this.contextmenu = new Ext.ux.FileTreeMenu(config);
 			this.contextmenu.on({click:{scope:this, fn:this.onContextClick}});
 
@@ -901,6 +910,8 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 				// ,allfinished:{scope:this, fn:this.onAllFinished}
 			// });
 			// this.uploadPanel.setUrl(this.uploadUrl || this.url);
+		}else{
+			this.contextmenu.getItemByCmd("newdir").setText(newdirText);
 		}
 		return this.contextmenu;
 	} // eo function getContextMenu
@@ -1505,7 +1516,7 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 			return;
 		}
 
-		var menu = this.getContextMenu();
+		var menu = this.getContextMenu(node);
 		menu.node = node;
 
 		this.applyPermissionOnMenu(node, menu);

@@ -431,7 +431,7 @@ mxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
                 // FIXME: for tab do layout it fails
             }
         }
-        this.output.push(component);
+        this.output && this.output.push && this.output.push(component);
         this.fireEvent("outputadded", component);
         return component;
     },

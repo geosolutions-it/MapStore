@@ -77,7 +77,7 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
                 ,download:{scope:this, fn:this.downloadItem}
                 ,rename:{scope:this, fn:this.renameItem}
                 ,nodemove:{scope:this, fn:this.renameItem}
-                ,newdir:{scope:this, fn:this.reload}
+                ,newdir:{scope:this, fn:this.newdir}
                 ,render:{scope:this, fn:function(){
                     //this.fileTreePanel.loader.baseParams.root = this.root;
                     this.fileTreePanel.setReadOnly(this.readOnly);
@@ -568,6 +568,12 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
         node && node.eachChild(this.setdataViewElement, this);
         this.dataViewStore.add(this.tmpRecords);
       }
+    }
+
+    // on new dir callback, we reload the parent node
+    ,newdir: function(tree, node){
+        if(node && node.parentNode && node.parentNode.reload)
+            node.parentNode.reload();
     }
 
     ,reload:function() {

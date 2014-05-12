@@ -49,34 +49,11 @@ mxp.plugins.ServiceManager = Ext.extend(mxp.plugins.Tool, {
     addActions: function() {
         
         var thisButton = new Ext.Button({
-            // iconCls:'template_manger_ic', // TODO: icon
+            iconCls:'service_manager_ic',
             text: this.buttonText,
             tooltip: this.tooltipText,
             handler: function() { 
-                this.addOutput(); 
-
-                // Uncomment this code to see the alternative fb
-                // var actionURL = this.actionURL ? this.actionURL: // the action URL is configured in th plugin
-                //     this.target.adminUrl ? this.target.adminUrl + "mvc/fileManager/extJSbrowser" : // use relative path from adminUrl
-                //     "/opensdi2-manager/mvc/fileManager/extJSbrowser"; // by default search on root opensdi-manager2
-
-
-                // Ext.apply(this.outputConfig, {
-                //     xtype: "filebrowserpanel",
-                //     title: this.buttonText + " 2",
-                //     actionURL: actionURL,
-                //     layout: 'border',
-                //     closable: true,
-                //     closeAction: 'close',
-                //     autoWidth: true,
-                //     // iconCls: "template_manger_ic",  // TODO: icon
-                //     header: false,
-                //     viewConfig: {
-                //         forceFit: true
-                //     }
-                // });
-
-                // mxp.plugins.ServiceManager.superclass.addOutput.apply(this);
+                this.addOutput();
             },
             scope: this
         });
@@ -118,6 +95,7 @@ mxp.plugins.ServiceManager = Ext.extend(mxp.plugins.Tool, {
             closable: true,
             closeAction: 'close',
             autoWidth: true,
+            _serviceManager: true,
             // iconCls: "template_manger_ic",  // TODO: icon
             header: false,
             viewConfig: {
@@ -136,6 +114,29 @@ mxp.plugins.ServiceManager = Ext.extend(mxp.plugins.Tool, {
             rootText: this.rootText,
             checkNodeParameters: true
         });
+
+        // Check hidden key '_serviceManager' to don't duplicate view
+        if(this.output.length > 0
+            && this.outputTarget){
+            for(var i = 0; i < this.output.length; i++){
+                if(this.output[i].ownerCt
+                    && this.output[i].ownerCt.xtype 
+                    && this.output[i].ownerCt.xtype == "tabpanel"
+                    && !this.output[i].isDestroyed){
+                    var outputConfig = config || this.outputConfig;
+                    // Not duplicate tabs
+                    for(var index = 0; index < this.output[i].ownerCt.items.items.length; index++){
+                        var item = this.output[i].ownerCt.items.items[index];
+                        // only check iconCls
+                        var isCurrentItem = item.initialConfig["_serviceManager"];
+                        if(isCurrentItem){
+                            this.output[i].ownerCt.setActiveTab(index);
+                            return;
+                        }
+                    } 
+                }
+            }
+        }
 
         return mxp.plugins.ServiceManager.superclass.addOutput.apply(this, arguments);
     }
