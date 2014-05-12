@@ -37,6 +37,11 @@
       ]
    ],
    "tools":[{
+        "ptype": "mxp_mapviewer",
+        "loginManager": "loginTool",
+        "mapStoreUrl": "http://localhost/MapStore",
+        "actionTarget":null
+    },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
         "externalHeaders": true,
@@ -52,6 +57,11 @@
         }
     }],
    "adminTools":[{
+        "ptype": "mxp_mapviewer",
+        "loginManager": "loginTool",
+        "mapStoreUrl": "http://84.33.2.24/mapstore/",
+        "actionTarget":null
+    },{
         "ptype": "mxp_myaccount",
         "loginManager": "loginTool",
         "actionTarget":{
@@ -88,6 +98,11 @@
         }
     }],
     "loggedTools":[{
+        "ptype": "mxp_mapviewer",
+        "loginManager": "loginTool",
+        "mapStoreUrl": "http://localhost/MapStore",
+        "actionTarget":null
+    },{
         "ptype": "mxp_myaccount",
         "loginManager": "loginTool",
         "actionTarget":{
