@@ -193,208 +193,9 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                     //get type from record to update xtype    
                     var type = record.get("type");
                     this.fieldType = type.split(":").pop();    
-                  
-                    if (this.type.value === OpenLayers.Filter.Comparison.BETWEEN) {
                     
-                        if(this.fieldType === "string"){
-                                this.items.get(2).hide();
-                                this.items.get(3).hide();
-                                this.items.get(4).hide();                                
-                                this.items.get(5).hide();
-                                this.items.get(6).hide();
-                                this.items.get(7).show();
-                                this.items.get(8).hide();
-                                this.items.get(9).hide();
-                                this.items.get(10).hide();
-                                this.items.get(11).hide();
-                                this.items.get(12).show();
-                                this.items.get(13).hide();
-                                this.items.get(14).hide();
-                                this.items.get(15).hide();
-                                this.items.get(16).hide();
-                        }else if(this.fieldType === "date"){
-                                this.items.get(2).hide();
-                                this.items.get(3).hide();
-                                this.items.get(4).hide();                                
-                                this.items.get(5).hide();
-                                this.items.get(6).hide();
-                                this.items.get(7).hide();
-                                this.items.get(8).show();
-                                this.items.get(9).hide();
-                                this.items.get(10).hide();
-                                this.items.get(11).hide();
-                                this.items.get(12).hide();
-                                this.items.get(13).show();
-                                this.items.get(14).hide();
-                                this.items.get(15).hide();
-                                this.items.get(16).hide();                        
-                        }else if(this.fieldType === "dateTime"){
-                                this.items.get(2).hide();
-                                this.items.get(3).hide();
-                                this.items.get(4).hide();                                
-                                this.items.get(5).hide();
-                                this.items.get(6).hide();
-                                this.items.get(7).hide();
-                                this.items.get(8).hide();
-                                this.items.get(9).show();
-                                this.items.get(10).hide();
-                                this.items.get(11).hide();
-                                this.items.get(12).hide();
-                                this.items.get(13).hide();
-                                this.items.get(14).show();
-                                this.items.get(15).hide();
-                                this.items.get(16).hide();                        
-                        }else if(this.fieldType === "double" || this.fieldType === "decimal" || this.fieldType === "float"){
-                                this.items.get(2).hide();
-                                this.items.get(3).hide();
-                                this.items.get(4).hide();                                
-                                this.items.get(5).hide();
-                                this.items.get(6).hide();
-                                this.items.get(7).hide();
-                                this.items.get(8).hide();
-                                this.items.get(9).hide();
-                                this.items.get(10).show();
-                                this.items.get(11).hide();
-                                this.items.get(12).hide();
-                                this.items.get(13).hide();
-                                this.items.get(14).hide();
-                                this.items.get(15).show();
-                                this.items.get(16).hide();                        
-                        }else if(this.fieldType === "int" || this.fieldType === "integer" || this.fieldType === "long" || this.fieldType === "short"){
-                                this.items.get(2).hide();
-                                this.items.get(3).hide();
-                                this.items.get(4).hide();                                
-                                this.items.get(5).hide();
-                                this.items.get(6).hide();
-                                this.items.get(7).hide();
-                                this.items.get(8).hide();
-                                this.items.get(9).hide();
-                                this.items.get(10).hide();
-                                this.items.get(11).show();
-                                this.items.get(12).hide();
-                                this.items.get(13).hide();
-                                this.items.get(14).hide();
-                                this.items.get(15).hide();
-                                this.items.get(16).show();                        
-                        }else{
-                                this.items.get(2).hide();
-                                this.items.get(3).hide();
-                                this.items.get(4).hide();                                
-                                this.items.get(5).hide();
-                                this.items.get(6).hide();
-                                this.items.get(7).show();
-                                this.items.get(8).hide();
-                                this.items.get(9).hide();
-                                this.items.get(10).hide();
-                                this.items.get(11).hide();
-                                this.items.get(12).show();
-                                this.items.get(13).hide();
-                                this.items.get(14).hide();
-                                this.items.get(15).hide();
-                                this.items.get(16).hide();                        
-                        }
-                        
-                    } else {
-                    
-                        if(this.fieldType === "string"){
-                                this.items.get(2).show();
-                                this.items.get(3).hide();
-                                this.items.get(4).hide();                                
-                                this.items.get(5).hide();
-                                this.items.get(6).hide();
-                                this.items.get(7).hide();
-                                this.items.get(8).hide();
-                                this.items.get(9).hide();
-                                this.items.get(10).hide();
-                                this.items.get(11).hide();
-                                this.items.get(12).hide();
-                                this.items.get(13).hide();
-                                this.items.get(14).hide();
-                                this.items.get(15).hide();
-                                this.items.get(16).hide();
-                        }else if(this.fieldType === "date"){
-                                this.items.get(2).hide();
-                                this.items.get(3).show();
-                                this.items.get(4).hide();                                
-                                this.items.get(5).hide();
-                                this.items.get(6).hide();
-                                this.items.get(7).hide();
-                                this.items.get(8).hide();
-                                this.items.get(9).hide();
-                                this.items.get(10).hide();
-                                this.items.get(11).hide();
-                                this.items.get(12).hide();
-                                this.items.get(13).hide();
-                                this.items.get(14).hide();
-                                this.items.get(15).hide();
-                                this.items.get(16).hide();                      
-                        }else if(this.fieldType === "dateTime"){
-                                this.items.get(2).hide();
-                                this.items.get(3).hide();
-                                this.items.get(4).show();                                
-                                this.items.get(5).hide();
-                                this.items.get(6).hide();
-                                this.items.get(7).hide();
-                                this.items.get(8).hide();
-                                this.items.get(9).hide();
-                                this.items.get(10).hide();
-                                this.items.get(11).hide();
-                                this.items.get(12).hide();
-                                this.items.get(13).hide();
-                                this.items.get(14).hide();
-                                this.items.get(15).hide();
-                                this.items.get(16).hide();                       
-                        }else if(this.fieldType === "double" || this.fieldType === "decimal" || this.fieldType === "float"){
-                                this.items.get(2).hide();
-                                this.items.get(3).hide();
-                                this.items.get(4).hide();                                
-                                this.items.get(5).show();
-                                this.items.get(6).hide();
-                                this.items.get(7).hide();
-                                this.items.get(8).hide();
-                                this.items.get(9).hide();
-                                this.items.get(10).hide();
-                                this.items.get(11).hide();
-                                this.items.get(12).hide();
-                                this.items.get(13).hide();
-                                this.items.get(14).hide();
-                                this.items.get(15).hide();
-                                this.items.get(16).hide();                       
-                        }else if(this.fieldType === "int" || this.fieldType === "integer" || this.fieldType === "long" || this.fieldType === "short"){
-                                this.items.get(2).hide();
-                                this.items.get(3).hide();
-                                this.items.get(4).hide();                                
-                                this.items.get(5).hide();
-                                this.items.get(6).show();
-                                this.items.get(7).hide();
-                                this.items.get(8).hide();
-                                this.items.get(9).hide();
-                                this.items.get(10).hide();
-                                this.items.get(11).hide();
-                                this.items.get(12).hide();
-                                this.items.get(13).hide();
-                                this.items.get(14).hide();
-                                this.items.get(15).hide();
-                                this.items.get(16).hide();                        
-                        }else{
-                                this.items.get(2).show();
-                                this.items.get(3).hide();
-                                this.items.get(4).hide();                                
-                                this.items.get(5).hide();
-                                this.items.get(6).hide();
-                                this.items.get(7).hide();
-                                this.items.get(8).hide();
-                                this.items.get(9).hide();
-                                this.items.get(10).hide();
-                                this.items.get(11).hide();
-                                this.items.get(12).hide();
-                                this.items.get(13).hide();
-                                this.items.get(14).hide();
-                                this.items.get(15).hide();
-                                this.items.get(16).hide();                        
-                        }                        
+                    this.setFilterType(type,this.fieldType);
         
-                    }
                     this.doLayout();
                     this.fireEvent("change", this.filter, this);
                 },
@@ -686,22 +487,9 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                 value: this.filter.type,
                 listeners: {
                     select: function(combo, record) {
-                    
-                        this.items.get(2).enable();                        
-                        this.items.get(3).enable();
-                        this.items.get(4).enable();                        
-                        this.items.get(5).enable();
-                        this.items.get(6).enable();                        
-                        this.items.get(7).enable();
-                        this.items.get(8).enable();                        
-                        this.items.get(9).enable();
-                        this.items.get(10).enable();
-                        this.items.get(11).enable();
-                        this.items.get(12).enable();                        
-                        this.items.get(13).enable();                        
-                        this.items.get(14).enable();
-                        this.items.get(15).enable();
-                        this.items.get(16).enable();
+                        for(var i = 2;i<this.items.items.length;i++){
+                            this.items.get(i).enable();
+                        }                     
                         
                         this.setFilterType(record.get("value"),this.fieldType);
                         this.fireEvent("change", this.filter, this);
@@ -769,111 +557,105 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
         if (type === OpenLayers.Filter.Comparison.BETWEEN) {
             
             if(this.fieldType === "string"){
-                this.items.get(2).hide();
-                this.items.get(3).hide();
-                this.items.get(4).hide();
-                this.items.get(5).hide();
-                this.items.get(6).hide();
-                this.items.get(7).show();
-                this.items.get(12).show();
+                for(var x = 2;x<this.items.items.length;x++){
+                    if(x==7 ||x==12){
+                        this.items.get(x).show();
+                    }else{
+                        this.items.get(x).hide();
+                    }
+                }              
             }else if(this.fieldType === "date"){
-                this.items.get(2).hide();
-                this.items.get(3).hide();
-                this.items.get(4).hide();
-                this.items.get(5).hide();
-                this.items.get(6).hide(); 
-                this.items.get(8).show();
-                this.items.get(13).show();            
+                for(var x = 2;x<this.items.items.length;x++){
+                    if(x==8 ||x==13){
+                        this.items.get(x).show();
+                    }else{
+                        this.items.get(x).hide();
+                    }
+                }             
             }else if(this.fieldType === "dateTime"){
-                this.items.get(2).hide();
-                this.items.get(3).hide();
-                this.items.get(4).hide();
-                this.items.get(5).hide();
-                this.items.get(6).hide();
-                this.items.get(9).show();
-                this.items.get(14).show();               
+                for(var x = 2;x<this.items.items.length;x++){
+                    if(x==9 ||x==14){
+                        this.items.get(x).show();
+                    }else{
+                        this.items.get(x).hide();
+                    }
+                }             
             }else if(this.fieldType === "double" || this.fieldType === "decimal" || this.fieldType === "float"){
-                this.items.get(2).hide();
-                this.items.get(3).hide();
-                this.items.get(4).hide();
-                this.items.get(5).hide();
-                this.items.get(6).hide();
-                this.items.get(10).show();
-                this.items.get(15).show();               
+                for(var x = 2;x<this.items.items.length;x++){
+                    if(x==10 ||x==15){
+                        this.items.get(x).show();
+                    }else{
+                        this.items.get(x).hide();
+                    }
+                }             
             }else if(this.fieldType === "int" || this.fieldType === "integer" || this.fieldType === "long" || this.fieldType === "short"){
-                this.items.get(2).hide();
-                this.items.get(3).hide();
-                this.items.get(4).hide();
-                this.items.get(5).hide();
-                this.items.get(6).hide();
-                this.items.get(11).show();
-                this.items.get(16).show();                        
+                for(var x = 2;x<this.items.items.length;x++){
+                    if(x==11 ||x==16){
+                        this.items.get(x).show();
+                    }else{
+                        this.items.get(x).hide();
+                    }
+                }             
             }else{
-                this.items.get(2).hide();
-                this.items.get(3).hide();
-                this.items.get(4).hide();
-                this.items.get(5).hide();
-                this.items.get(6).hide();
-                this.items.get(7).show();
-                this.items.get(12).show();            
+                for(var x = 2;x<this.items.items.length;x++){
+                    if(x==7 ||x==12){
+                        this.items.get(x).show();
+                    }else{
+                        this.items.get(x).hide();
+                    }
+                }             
             }            
             
         } else {
 
             if(this.fieldType === "string"){
-                this.items.get(2).show();
-                this.items.get(3).hide();
-                this.items.get(4).hide();
-                this.items.get(5).hide();
-                this.items.get(6).hide();
-                
-                this.items.get(7).hide();
-                this.items.get(12).hide();
+                for(var x = 2;x<this.items.items.length;x++){
+                    if(x==2){
+                        this.items.get(x).show();
+                    }else{
+                        this.items.get(x).hide();
+                    }
+                }             
             }else if(this.fieldType === "date"){
-                this.items.get(2).hide();
-                this.items.get(3).show();
-                this.items.get(4).hide();
-                this.items.get(5).hide();
-                this.items.get(6).hide();
-                
-                this.items.get(8).hide();
-                this.items.get(13).hide();            
+                for(var x = 2;x<this.items.items.length;x++){
+                    if(x==3){
+                        this.items.get(x).show();
+                    }else{
+                        this.items.get(x).hide();
+                    }
+                }                
             }else if(this.fieldType === "dateTime"){
-                this.items.get(2).hide();
-                this.items.get(3).hide();
-                this.items.get(4).show();
-                this.items.get(5).hide();
-                this.items.get(6).hide();
-                
-                this.items.get(9).hide();
-                this.items.get(14).hide();        
+                for(var x = 2;x<this.items.items.length;x++){
+                    if(x==4){
+                        this.items.get(x).show();
+                    }else{
+                        this.items.get(x).hide();
+                    }
+                }                
             }else if(this.fieldType === "double" || this.fieldType === "decimal" || this.fieldType === "float"){
-                this.items.get(2).hide();
-                this.items.get(3).hide();
-                this.items.get(4).hide();
-                this.items.get(5).show();
-                this.items.get(6).hide();                    
-                
-                this.items.get(10).hide();
-                this.items.get(15).hide();              
+                for(var x = 2;x<this.items.items.length;x++){
+                    if(x==5){
+                        this.items.get(x).show();
+                    }else{
+                        this.items.get(x).hide();
+                    }
+                }                
             }else if(this.fieldType === "int" || this.fieldType === "integer" || this.fieldType === "long" || this.fieldType === "short"){
-                this.items.get(2).hide();
-                this.items.get(3).hide();
-                this.items.get(4).hide();
-                this.items.get(5).hide();
-                this.items.get(6).show();
-                
-                this.items.get(11).hide();
-                this.items.get(16).hide();
+                for(var x = 2;x<this.items.items.length;x++){
+                    if(x==6){
+                        this.items.get(x).show();
+                    }else{
+                        this.items.get(x).hide();
+                    }
+                }                
             }else{
-                this.items.get(2).show();
-                this.items.get(3).hide();
-                this.items.get(4).hide();
-                this.items.get(5).hide();
-                this.items.get(6).hide();
-                
-                this.items.get(7).hide();
-                this.items.get(12).hide();         
+                for(var x = 2;x<this.items.items.length;x++){
+                    if(x==2){
+                        this.items.get(x).show();
+                    }else{
+                        this.items.get(x).hide();
+                    }
+                }                
             }          
  
         }
