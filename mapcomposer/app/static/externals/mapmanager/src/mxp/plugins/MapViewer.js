@@ -38,6 +38,8 @@ mxp.plugins.MapViewer = Ext.extend(mxp.plugins.Tool, {
     tooltipText: "Open the default map viewer",
     iframeWaitText: "Please wait...",
     iframeViewerTitleText: "Map",
+    
+    iconCls: "server_map",
 
     loginManager: null, 
 
@@ -110,6 +112,7 @@ mxp.plugins.MapViewer = Ext.extend(mxp.plugins.Tool, {
             
             var iframeconfig = {
                 // xtype: "panel",
+                iconCls: this.iconCls,
                 waitMsg: this.iframeWaitText,
                 width:900,
                 height:650,

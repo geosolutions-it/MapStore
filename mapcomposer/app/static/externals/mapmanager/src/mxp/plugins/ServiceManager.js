@@ -35,10 +35,12 @@ mxp.plugins.ServiceManager = Ext.extend(mxp.plugins.Tool, {
     /** api: ptype = mxp_servicemanager */
     ptype: "mxp_servicemanager",
 
+    // i18n
     buttonText: "Services",
     tooltipText: "Open service manager",
-
     rootText: "VA-SPs",
+
+    iconCls:'service_manager_ic',
 
     loginManager: null,    
     setActiveOnOutput: true,
@@ -49,7 +51,7 @@ mxp.plugins.ServiceManager = Ext.extend(mxp.plugins.Tool, {
     addActions: function() {
         
         var thisButton = new Ext.Button({
-            iconCls:'service_manager_ic',
+            iconCls: this.iconCls,
             text: this.buttonText,
             tooltip: this.tooltipText,
             handler: function() { 
@@ -90,6 +92,7 @@ mxp.plugins.ServiceManager = Ext.extend(mxp.plugins.Tool, {
             "/opensdi2-manager/mvc/serviceManager/upload"; // by default search on root opensdi-manager2
 
         Ext.apply(this.outputConfig, {
+            iconCls: this.iconCls,
             xtype: "FileBrowser",
             layout: 'border',
             closable: true,

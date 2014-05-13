@@ -85,6 +85,11 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
      */
 	pollingInterval: 1000,
     
+    /** api: config[checkLocation] 
+     *  ``Boolean`` If true it check if status location is on this.url 
+     *  host before check the status. 
+     */
+    checkLocation: false,
 
     /** private: method[constructor]
      */
@@ -162,7 +167,7 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
      *  Get All WPS Execute Process instances. All asyncrhonous Execute instances not completed are updated.      
      */
     getExecuteInstances: function(process, update, callback) {
-        var me= this;    
+        var me= this; 
         if(process == null){
             this.geoStoreClient.getCategoryResources(this.id, 
                 function(instances){
@@ -333,33 +338,78 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
         updateCallback.call(this, instances.length-1, statusUpdated);
     },
     
-    
     /** private: method[updateInstance]
      */
     updateInstance: function(instanceName, statusUpdated, instanceIndex, statusLocation, callback){
-        var me= this;
 
-        Ext.Ajax.request({
-            url: statusLocation,
-            method: 'GET',
-            success: function(response, opts){  
-                var responseObj=new OpenLayers.Format.WPSExecute().read(response.responseText);
-                me.responseManager(responseObj,instanceName, callback, statusUpdated, instanceIndex);
-            },
-            failure:  function(response, opts){
-				if(!me.silentErrors){
-					Ext.Msg.show({
-						title: "Instance Update Status Exception",
-						msg: response,
-						buttons: Ext.Msg.OK,
-						icon: Ext.Msg.ERROR
-					});
-				}
-            }
-        });
+        if(this.checkedUrloOnWPS(statusLocation)){
+            var me= this;
+
+            Ext.Ajax.request({
+                url: statusLocation,
+                method: 'GET',
+                success: function(response, opts){  
+                    var responseObj=new OpenLayers.Format.WPSExecute().read(response.responseText);
+                    me.responseManager(responseObj,instanceName, callback, statusUpdated, instanceIndex);
+                },
+                failure:  function(response, opts){
+                    if(!me.silentErrors){
+                        Ext.Msg.show({
+                            title: "Instance Update Status Exception",
+                            msg: response,
+                            buttons: Ext.Msg.OK,
+                            icon: Ext.Msg.ERROR
+                        });
+                    }
+                }
+            });
+        }
      
     },
     
+    
+    /** private: method[updateInstance]
+     */
+    checkedUrloOnWPS: function(url){
+
+        var check = true;
+
+        // only check it if the flag it's true
+        if(this.checkLocation){
+
+            // get server url with port and without
+            var wpsUrl = this.url;
+            var wpsUrlPort = this.url;
+            var port = 80;
+            var protocol = wpsUrlPort.split("://")[0];
+            var host = wpsUrlPort.split("://")[1].split("/")[0];
+
+            // url is http://host:port/gs_url
+            if(host.indexOf(":") < 0){
+                // url is http://host/gs_url , append port 80
+                var hostUrl = wpsUrlPort.split("://")[1].substring(wpsUrlPort.split("://")[1].split("/")[0].length);
+                wpsUrlPort = protocol + "://" + host + ":" + port;
+                wpsUrl = protocol + "://" + host;
+            }else{
+                // url is http://host:port/gs_url , check if port is 80
+                host = host.split(":")[0];
+                port = parseInt(host.split(":")[1]);
+                if(port != 80){
+                    wpsUrl = wpsUrlPort;
+                }else{
+                    wpsUrl = protocol + "://" + host;
+                }
+            }
+
+            check = false;
+            if((url.indexOf(wpsUrl) == 0) || url.indexOf(wpsUrlPort) == 0){
+                check = true;
+            }
+        }
+
+        return check;
+     
+    },
 
     /** private: method[getPrefixInstanceName]
      */
