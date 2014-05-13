@@ -1,9 +1,5 @@
 {
-   "geoStoreBase":"",
-   "gnBaseUrl": "",
-   "defaultLanguage": "it",
-   "scaleOverlayMode": "none",
-   "tab": true,
+   "advancedScaleOverlay": false,
    "gsSources":{ 
    		"comunege": {
 			"ptype": "gxp_wmssource",
@@ -31,9 +27,7 @@
 	"map": {
 		"projection": "EPSG:900913",
 		"units": "m",
-		"zoom":5,
-        "numZoomLevels":21,
-        
+		"zoom": 5,
 		"extent": [
 			962337.0596294437, 5523110.328076044, 1014934.9764326633, 5547342.6306190565
 		],
@@ -78,7 +72,7 @@
 				"tiled" : false,
 				"visibility": true
 				
-			}
+            }
 		]
 	},
     "customPanels":[
@@ -123,10 +117,10 @@
               "collapsed": false,
               "split": true,
               "collapsible": true,
-            "header": true
+              "header": true
         }
         
-    ],	
+    ],
     "removeTools": ["googleearth_plugin", "googleearth_separator", "zoombox_plugin", "navigationhistory_plugin", "navigationhistory_separator"],
 	"scaleOverlayUnits":{
         "bottomOutUnits":"nmi",    
@@ -441,7 +435,7 @@
 	            }
 		    }
     	}
-		}, {
+    },{
         "ptype": "gxp_zoombox",
         "id": "custom_zoombox_plugin", 
         "toggleGroup": "toolGroup",
@@ -450,6 +444,6 @@
         	"target": "paneltbar", 
         	"index": 4  
         }
-		}
+    }
 	]
 }

@@ -43,9 +43,6 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
     
     /** api: ptype = gxp_querybboxform */
     ptype: "gxp_spatialqueryform",
-<<<<<<< HEAD
-
-=======
     
     filterMapText: 'Filter Map',
     
@@ -57,7 +54,6 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
     
     invalidRegexFieldMsgText: "One or more fields are incorrect!",    
     
->>>>>>> 64d3732... ISSUE 364 QueryForm bytype value widgets and optional validation
     /** api: config[spatialSelectorsConfig]
      * ``Object``
      * Spatial selector pluggins configurations. 
