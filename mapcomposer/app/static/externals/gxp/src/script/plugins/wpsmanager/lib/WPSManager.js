@@ -105,7 +105,7 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
                 proxy: (this.geostoreProxy) ? this.geostoreProxy:this.target.proxy,
                 listeners: {
                     "geostorefailure": function(tool, msg){
-                        if(!silentErrors){  
+                        if(!this.silentErrors){  
                             Ext.Msg.show({
                                 title: "Geostore Exception",
                                 msg: msg,
@@ -347,7 +347,7 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
                 me.responseManager(responseObj,instanceName, callback, statusUpdated, instanceIndex);
             },
             failure:  function(response, opts){
-				if(!silentErrors){
+				if(!me.silentErrors){
 					Ext.Msg.show({
 						title: "Instance Update Status Exception",
 						msg: response,

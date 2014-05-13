@@ -294,6 +294,7 @@
 			"url": "http://84.33.2.24/geoserver/wps",
 			"geostoreUrl": "http://84.33.2.24/opensdi2-manager/facade/geostore/rest",
 			"geostoreProxy": "/proxy?url=",
+			"silentErrors": true,
 			"target": ""
 
 		},{

@@ -49,6 +49,11 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
     */
     wfsGridId: "wfsGridPanel",
     
+    /** api: config[wpsManagerId]
+    *  ``String`` wps manager component id to bind
+    */
+    wpsManagerId: "wpsSPM",
+    
     /** api: config[autoExpandPanel]
     *  ``String`` panel that contains download grid panel
     */
@@ -56,6 +61,16 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
 
     // relative hours on server
     relativeHours: 1,
+
+    // max wps checks. If the download process takes too much time, break it. A -1 value means no limit
+    maxWpsChecks: 10000,
+
+    defaultWorkspaceName: "mariss",
+    defaultMosaicStoreName: "sar-data",
+    defaultShipLayerName: "tem_sd__1p",
+    defaultDownloadProcess: "gs:Download",
+
+    waitText: "Please wait, loading...",
 
     addActions: function(actions){
         var self = this;
@@ -68,6 +83,20 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
         var playback = this.target.tools[this.playbackId]; 
         var downloadGrid = this.target.tools[this.downloadGridId];
         var wfsGrid = this.target.tools[this.wfsGridId];
+
+        // common functions
+        var getMinTime =  function (playback){
+            var minTimestamp = playback.playbackToolbar.slider.getValues()[1];
+            var dateMin = new Date();
+            dateMin.setTime(minTimestamp);
+            return dateMin.toISOString();
+        };  
+        var getMaxTime = function (playback){
+            var maxTimestamp = playback.playbackToolbar.slider.getValues()[0];
+            var dateMax = new Date();
+            dateMax.setTime(maxTimestamp);
+            return dateMax.toISOString();
+        };
 
         if(wfsGrid && downloadGrid){
             wfsGrid.on({
@@ -169,22 +198,6 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
                 // red thumbs
                 slider.setValue(1,max-86400000, true);
             };
-
-
-      
-            var getMinTime =  function (playback){
-                var minTimestamp = playback.playbackToolbar.slider.getValues()[1];
-                var dateMin = new Date();
-                dateMin.setTime(minTimestamp);
-                return dateMin.toISOString();
-              };
-              
-            var getMaxTime = function (playback){
-                var maxTimestamp = playback.playbackToolbar.slider.getValues()[0];
-                var dateMax = new Date();
-                dateMax.setTime(maxTimestamp);
-                return dateMax.toISOString();
-              };
               
             var setFullRange = function (playback){
                 playback.timeManager.clearTimer();
@@ -220,8 +233,6 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
                     handleTimeChange(playback.playbackToolbar.slider);
                 }
             });
-
-
 
             wfsOutput.store.on(
                 'beforeload', function(store,options){
@@ -286,138 +297,150 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
 
 
         // WPS
+        var wpsClient = this.target.tools[this.wpsManagerId];
+        if(wpsClient && downloadGrid && playback)
+            this.addDownloadProcessHandler(wpsClient, downloadGrid, playback, getMinTime, getMaxTime);
+
+    },
+
+    addDownloadProcessHandler: function(wpsClient, downloadGrid, playback, getMinTime, getMaxTime, downloadProcessName, workspaceName, mosaicStoreName, shipLayerName){
+
+        // download process name
+        var downloadProcess = downloadProcessName ? downloadProcessName : this.defaultDownloadProcess;
+        // common parameters
+        var workspace = new OpenLayers.WPSProcess.LiteralData({value:workspaceName ? workspaceName : this.defaultWorkspaceName});
+        var mosaicStoreName = new OpenLayers.WPSProcess.LiteralData({value:mosaicStoreName ? mosaicStoreName : this.defaultMosaicStoreName});
+        var shipLayerName = new OpenLayers.WPSProcess.LiteralData({value:shipLayerName ? shipLayerName : this.defaultShipLayerName});
+        // app mask
+        var appMask = new Ext.LoadMask(Ext.getBody(), {msg:this.waitText});
+        // tries
+        var tries = 0;
+        var maxWpsChecks = this.maxWpsChecks;
                     
-        var wpsClient = this.target.tools["wpsSPM"];
+        downloadGrid.on(
+            'startDownload', function(fileNames){
+                appMask.show();
+                
+                var fileList = '';
+                function buildString(element, index, array) {
+                    fileList += element + ";";
+                };
+                fileNames.forEach(
+                    buildString
+                );
+                
+                var granules = new OpenLayers.WPSProcess.LiteralData({value:fileList});
+                var minTime = getMinTime(playback);
+                var maxTime = getMaxTime(playback);
+                var minTimeDTO = new OpenLayers.WPSProcess.LiteralData({value:minTime});
+                var maxTimeDTO = new OpenLayers.WPSProcess.LiteralData({value:maxTime});
+                // TODO Use complex Data to use a List
+                //"world2_2012_0001.000.tif;world2_2013_0001.000.tif;world2_2014_0001.000.tif"
+                //var granule1 = new OpenLayers.WPSProcess.LiteralData({value:"world2_2012_0001.000.tif"});
+                //var granule2 = new OpenLayers.WPSProcess.LiteralData({value:"world2_2013_0001.000.tif"});
+                //var granule3 = new OpenLayers.WPSProcess.LiteralData({value:"world2_2014_0001.000.tif"});
+                //var granules = [granule1, granule2, granule3];
+                //var complexGranules = new OpenLayers.WPSProcess.ComplexData(granules);
 
-        var appMask = new Ext.LoadMask(Ext.getBody(), {msg:"Please wait, loading..."});
+                var entity;
+                var instanceID = wpsClient.execute(downloadProcess,{
+                    "storeExecuteResponse": true,
+                    "lineage": true,
+                    "status": true,
+                    type: "data",
+                    "inputs": {
+                        "MinTime": minTimeDTO,
+                        "MaxTime": maxTimeDTO,
+                        "Workspace": workspace,
+                        "ImageMosaic Store Name": mosaicStoreName,
+                        "Ship Detection Layer": shipLayerName,
+                        "Granule Names": granules
+                    },
+                    "outputs": [{
+                        "identifier": "result",
+                        "mimeType" : "application/zip",
+                        "asReference": true
+                    }]
+                },function(){});
+                
+                var linkReceived = false;
 
-                    
-                    downloadGrid.on(
-                        'startDownload', function(fileNames){
-                            appMask.show();
-                            var workspace = new OpenLayers.WPSProcess.LiteralData({value:"mariss"});
-                            var mosaicStoreName = new OpenLayers.WPSProcess.LiteralData({value:"sar-data"});
-                            var shipLayerName = new OpenLayers.WPSProcess.LiteralData({value:"tem_sd__1p"});
-                            
-                            var fileList = '';
-                            function buildString(element, index, array) {
-                                fileList += element + ";";
-                            };
-                            fileNames.forEach(
-                                buildString
-                            );
-                            
-                            var granules = new OpenLayers.WPSProcess.LiteralData({value:fileList});
-                            var minTime = getMinTime(playback);
-                            var maxTime = getMaxTime(playback);
-                            var minTimeDTO = new OpenLayers.WPSProcess.LiteralData({value:minTime});
-                            var maxTimeDTO = new OpenLayers.WPSProcess.LiteralData({value:maxTime});
-                            // TODO Use complex Data to use a List
-                            //"world2_2012_0001.000.tif;world2_2013_0001.000.tif;world2_2014_0001.000.tif"
-                            //var granule1 = new OpenLayers.WPSProcess.LiteralData({value:"world2_2012_0001.000.tif"});
-                            //var granule2 = new OpenLayers.WPSProcess.LiteralData({value:"world2_2013_0001.000.tif"});
-                            //var granule3 = new OpenLayers.WPSProcess.LiteralData({value:"world2_2014_0001.000.tif"});
-                            //var granules = [granule1, granule2, granule3];
-                            //var complexGranules = new OpenLayers.WPSProcess.ComplexData(granules);
-
-                            var entity;
-                            var instanceID = wpsClient.execute('gs:Download',{
-                                "storeExecuteResponse": true,
-                                "lineage": true,
-                                "status": true,
-                                type: "data",
-                                "inputs": {
-                                    "MinTime": minTimeDTO,
-                                    "MaxTime": maxTimeDTO,
-                                    "Workspace": workspace,
-                                    "ImageMosaic Store Name": mosaicStoreName,
-                                    "Ship Detection Layer": shipLayerName,
-                                    "Granule Names": granules
-                                },
-                                "outputs": [{
-                                    "identifier": "result",
-                                    "mimeType" : "application/zip",
-                                    "asReference": true
-                                }]
-                            },function(){});
-                            
-                            var linkReceived = false;
-                            var updateFun = function() {
-                                wpsClient.getExecuteInstances('gs:Download',true,function(instance, statusInfo){
-                                    if(!linkReceived) {
-                                        if(statusInfo && statusInfo.status === 'Process Succeeded' && instance.name === instanceID) {
-                                            linkReceived = true;
-                                            clearInterval(interval);
-                                            Ext.Ajax.request({
-                                                url: statusInfo.statusLocation,
-                                                method: 'GET',
-                                                success: function(response){
-                                                    var format = new OpenLayers.Format.XML(); 
-                                                    var link;
-                                                    try{
-                                                        if(Ext.isIE){
-                                                            var elements = format.getElementsByTagNameNS(response.responseXML,'http://www.opengis.net/wps/1.0.0','*');
-                                                            var findReference = function(element, index, array){
-                                                                if(element.baseName == "Reference"){
-                                                                    link = element.getAttribute("href");
-                                                                }
-                                                            };
-                                                            elements.forEach(
-                                                                findReference
-                                                            );
-                                                        }
-                                                        else{
-                                                            link = format.getElementsByTagNameNS(response.responseXML,'http://www.opengis.net/wps/1.0.0','Reference')[0].getAttribute("href");
-                                                        }
+                // wait for complete execution
+                var updateFun = function() {
+                    wpsClient.getExecuteInstances(downloadProcess,true,function(instance, statusInfo){
+                        if(!linkReceived) {
+                            if(statusInfo && statusInfo.status === 'Process Succeeded' && instance.name === instanceID) {
+                                linkReceived = true;
+                                clearInterval(interval);
+                                Ext.Ajax.request({
+                                    url: statusInfo.statusLocation,
+                                    method: 'GET',
+                                    success: function(response){
+                                        var format = new OpenLayers.Format.XML(); 
+                                        var link;
+                                        try{
+                                            if(Ext.isIE){
+                                                var elements = format.getElementsByTagNameNS(response.responseXML,'http://www.opengis.net/wps/1.0.0','*');
+                                                var findReference = function(element, index, array){
+                                                    if(element.baseName == "Reference"){
+                                                        link = element.getAttribute("href");
                                                     }
-                                                    catch(err){
-                                                    }
-                                                    if(!link){
-                                                        wpsClient.deleteExecuteInstance(instance.id, function() {});
-                                                        appMask.hide();
-                                                        Ext.Msg.alert('Error','An error occurs when try to parse the result document. Please try again.');                                          
-                                                    }
-                                                    else{
-                                                        wpsClient.deleteExecuteInstance(instance.id, function(){});
-                                                        appMask.hide();
-                                                        window.open(link,'_self');
-                                                        Ext.Msg.show({
-                                                           title:'Download',
-                                                           msg: 'Click <a href=\"' + link + '\">HERE</a> if the download doesn\'t start automatically',
-                                                           buttons: Ext.Msg.OK,
-                                                           fn: function(btn, text) {
-                                                                
-                                                           },
-                                                           icon: Ext.MessageBox.INFO
-                                                        });
-                                                    }
-                                                },
-                                                failure: function(response){
-                                                    wpsClient.deleteExecuteInstance(instance.id, function() {});
-                                                    appMask.hide();
-                                                    Ext.Msg.alert('Error','An error occur when try to get the URL of the requested resource. Please try again.');
-                                                }
-                                            });
-                                        }else if (statusInfo && statusInfo.status === 'Process Failed'){
-
-                                            clearInterval(interval);
+                                                };
+                                                elements.forEach(
+                                                    findReference
+                                                );
+                                            }
+                                            else{
+                                                link = format.getElementsByTagNameNS(response.responseXML,'http://www.opengis.net/wps/1.0.0','Reference')[0].getAttribute("href");
+                                            }
+                                        }
+                                        catch(err){
+                                        }
+                                        if(!link){
+                                            wpsClient.deleteExecuteInstance(instance.id, function() {});
                                             appMask.hide();
+                                            Ext.Msg.alert('Error','An error occurs when try to parse the result document. Please try again.');                                          
+                                        }
+                                        else{
+                                            wpsClient.deleteExecuteInstance(instance.id, function(){});
+                                            appMask.hide();
+                                            window.open(link,'_self');
                                             Ext.Msg.show({
-                                               title:'Error on WPS execution',
-                                               msg: 'More information <a href=\"' + statusInfo.statusLocation + '\">HERE</a>',
-                                               icon: Ext.MessageBox.ERROR
+                                               title:'Download',
+                                               msg: 'Click <a href=\"' + link + '\">HERE</a> if the download doesn\'t start automatically',
+                                               buttons: Ext.Msg.OK,
+                                               fn: function(btn, text) {
+                                                    
+                                               },
+                                               icon: Ext.MessageBox.INFO
                                             });
                                         }
+                                    },
+                                    failure: function(response){
+                                        wpsClient.deleteExecuteInstance(instance.id, function() {});
+                                        appMask.hide();
+                                        Ext.Msg.alert('Error','An error occur when try to get the URL of the requested resource. Please try again.');
                                     }
                                 });
-                            };
-                            
-                            var interval = setInterval(updateFun,3000);
+                            }else if (statusInfo && statusInfo.status === 'Process Failed'){
+                                tries++;
+                                if(maxWpsChecks > 0 && tries > maxWpsChecks){
+                                    clearInterval(interval);
+                                    appMask.hide();
+                                    Ext.Msg.show({
+                                       title:'Error on WPS execution',
+                                       msg: 'More information <a href=\"' + statusInfo.statusLocation + '\">HERE</a>',
+                                       icon: Ext.MessageBox.ERROR
+                                    });   
+                                }
+                            }
                         }
-                    );
-
-
-
+                    });
+                };
+                
+                var interval = setInterval(updateFun,3000);
+            }
+        );
     }
 });
 
