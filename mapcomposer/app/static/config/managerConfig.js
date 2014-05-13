@@ -53,7 +53,7 @@
         "ptype": "mxp_languageselector",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 7
+          "index": 4
         }
     }],
    "adminTools":[{
@@ -62,25 +62,18 @@
         "mapStoreUrl": "http://84.33.2.24/mapstore/",
         "actionTarget":null
     },{
-        "ptype": "mxp_myaccount",
-        "loginManager": "loginTool",
-        "actionTarget":{
-          "target": "north.tbar",
-          "index": 1
-        }
-    },{
-        "ptype": "mxp_servicemanager",
-        "actionTarget":{
-          "target": "north.tbar",
-          "index": 2
-        }
-    },{
         "ptype": "mxp_usermanager",
         "loginManager": "loginTool",
         "addManageGroupsButton": false,
         "actionTarget":{
           "target": "north.tbar",
-          "index": 2
+          "index": 0
+        }
+    },{
+        "ptype": "mxp_servicemanager",
+        "actionTarget":{
+          "target": "north.tbar",
+          "index": 1
         }
     },{
         "ptype": "mxp_login",
@@ -88,13 +81,13 @@
         "externalHeaders": true,
         "actionTarget":{
           "target": "north.tbar",
-          "index": 10
+          "index": 5
         }
     },{
         "ptype": "mxp_languageselector",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 20
+          "index": 8
         }
     }],
     "loggedTools":[{
@@ -103,25 +96,18 @@
         "mapStoreUrl": "http://84.33.2.24/mapstore/",
         "actionTarget":null
     },{
-        "ptype": "mxp_myaccount",
-        "loginManager": "loginTool",
-        "actionTarget":{
-          "target": "north.tbar",
-          "index": 1 
-        }
-    },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
         "externalHeaders": true,
         "actionTarget":{
           "target": "north.tbar",
-          "index": 4
+          "index": 3
         }
     },{
         "ptype": "mxp_languageselector",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 8
+          "index": 5
         }
     }],
    "embedLink": {
