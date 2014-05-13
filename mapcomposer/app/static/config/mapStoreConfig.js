@@ -1,17 +1,10 @@
 {
-   "advancedScaleOverlay": false,
+   "scaleOverlayMode": "none",
    "gsSources":{ 
-   		"default": {
-			"ptype": "gxp_wmssource",
-			"title": "Default GeoServer",
-			"url": "http://localhost:8080/geoserver/ows",
-			"SRS": "EPSG:900913",
-			"version":"1.1.1"
-		},
    		"comunege": {
 			"ptype": "gxp_wmssource",
 			"title": "Comune Genova",
-			"url": "http://geoserver.comune.genova.it/geoserver/ows",
+			"url": "http://vm-gistest1/geoserver/ows",
 			"SRS": "EPSG:900913",
 			"version":"1.1.1"
 		},
@@ -35,10 +28,28 @@
 		"projection": "EPSG:900913",
 		"units": "m",
 		"zoom": 5,
+        "numZoomLevels":21,
+        
 		"extent": [
-			931098.140119,5507555.468098,1043537.008711,5558080.343788
+			962337.0596294437, 5523110.328076044, 1014934.9764326633, 5547342.6306190565
+		],
+		"restrictedExtent": [
+			962337.0596294437, 5523110.328076044, 1014934.9764326633, 5547342.6306190565
 		],
 		"layers": [
+			{
+				"source": "ol",
+				"group": "background",
+				"title": "Nessuno sfondo",
+				"fixed": true,
+				"type": "OpenLayers.Layer",
+				"visibility": false,
+				"args": [
+					"Nessuno sfondo", {
+					"visibility": false
+				}
+				]
+			},
 			{
 				"source": "bing",
 				"title": "Bing Aerial",
@@ -48,62 +59,21 @@
 				"source": "osm",
 				"title": "Open Street Map",
 				"name": "mapnik",
-				"group": "background"
+				"group": "background",
+				"visibility": true
 			},{
 				"source": "mapquest",
 				"title": "MapQuest OpenStreetMap",
 				"name": "osm",
 				"group": "background"
 			},{
-				"source": "google",
-				"title": "Google Roadmap",
-				"name": "ROADMAP",
-				"group": "background"
-			},{
-				"source": "google",
-				"title": "Google Terrain",
-				"name": "TERRAIN",
-				"group": "background"
-			},{
-				"source": "google",
-				"title": "Google Hybrid",
-				"name": "HYBRID",
-				"group": "background"
-			},{
-                "source": "default",
-                "group" : "Overlays",
-				"title" : "States",
-				"name"  : "topp:states",
-				"tiled" : false,
-				"visibility": true
-            },{
-                "source": "default",
+                "source": "comunege",
                 "group" : "Comune di Genova",
-				"title" : "Municipi",
-				"name"  : "TOPONOMASTICA:MUNICIPI",
+				"title" : "Circoscrizioni",
+				"name"  : "CTC:circoscrizioni",
 				"tiled" : false,
 				"visibility": true
-            },{
-                "source": "default",
-                "group" : "Comune di Genova",
-				"title" : "Unita Urb",
-				"name"  : "TOPONOMASTICA:UNITA_URBANISTICHE",
-				"tiled" : false,
-				"visibility": true
-            },{
-                "source": "default",
-                "group" : "Comune di Genova",
-				"title" : "Civici Cod",
-				"name"  : "SITGEO:CIVICI_COD_TOPON_SUB",
-				"tiled" : false,
-				"visibility": true
-            },{
-                "source": "default",
-                "group" : "Comune di Genova",
-				"title" : "Toponimo",
-				"name"  : "CTC:V_ASTE_STRADALI_TOPONIMO_SUB",
-				"tiled" : false,
-				"visibility": true
+				
             }
 		]
 	},
@@ -153,7 +123,7 @@
         }
         
     ],
-    "removeTools": ["googleearth_plugin", "googleearth_separator", "zoombox_plugin"],
+    "removeTools": ["googleearth_plugin", "googleearth_separator", "zoombox_plugin", "navigationhistory_plugin", "navigationhistory_separator"],
 	"scaleOverlayUnits":{
         "bottomOutUnits":"nmi",    
         "bottomInUnits":"nmi",    
@@ -161,20 +131,6 @@
         "topOutUnits":"km"
     },
 	"customTools":[
-		{
-            "ptype":"gxp_print",
-            "customParams":{
-                "outputFilename":"mapstore-print",
-                "geodetic": true
-            },
-            "ignoreLayers": "Google Hybrid,Bing Aerial,Nessuno sfondo,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
-            "printService":"http://vm-gistest1/geoserver/pdf/",
-            "legendPanelId":"legendPanel",
-            "actionTarget":{
-                "target":"paneltbar",
-                "index":4
-            }
-        },
 		{
 			"ptype": "gxp_embedmapdialog",
 			"actionTarget": {"target": "paneltbar", "index": 2},
@@ -186,11 +142,18 @@
             "id": "featuremanager",
             "paging": false,
             "autoLoadFeatures": true
-        },
+        }, {
+			"actions": ["-"], 
+			"actionTarget": "paneltbar"
+		},
         {
             "ptype": "gxp_featureeditor",
             "featureManager": "featuremanager",
-            "autoLoadFeatures": true
+            "autoLoadFeatures": true,
+            "actionTarget":{
+                "target":"paneltbar",
+                "index":24
+            }
         },
         {
             "ptype": "gxp_featuregrid",
@@ -248,10 +211,6 @@
 			"actions": ["-"], 
 			"actionTarget": "paneltbar"
 		}, {
-			"ptype": "gxp_geolocationmenu",
-			"actionTarget": {"target": "paneltbar", "index": 23},
-			"toggleGroup": "toolGroup"
-		}, {
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
 		}, {
@@ -259,7 +218,7 @@
 			"actionTarget": "paneltbar",
 			"text": "Help",
 			"tooltip":"MapStore Guide",
-			"index": 24,
+			"index": 25,
 			"showOnStartup": false,
 			"fileDocURL": "MapStore-Help.pdf"
         }, {
@@ -311,7 +270,7 @@
 		            "name": "Municipi",
 		            "label": "Municipi",
 					"searchComboOutputFormat": "json",
-		            "wfsBaseURL": "http://geoserver.comune.genova.it/geoserver/wfs",
+		            "wfsBaseURL": "http://vm-gistest1/geoserver/wfs",
 		            "geocoderTypeName": "TOPONOMASTICA:MUNICIPI",
 		            "geocoderTypeRecordModel":[
 		                {
@@ -323,17 +282,13 @@
 		                    "mapping":"properties.NOME_MUNIC"
 		                },
 		                {
-		                    "name":"custom",
-		                    "mapping":"properties.COD_MUNIC"
-		                },
-		                {
 		                    "name":"geometry",
 		                    "mapping":"geometry"
 		                }
 		            ],
 		            "geocoderTypeSortBy":null,
 		            "geocoderTypeQueriableAttributes":[
-		                "NOME_MUNIC", "COD_MUNIC", "ID1"
+		                "NOME_MUNIC"
 		            ],
 		            "spatialOutputCRS": "EPSG:4326",
 		            "geocoderTypePageSize": 10,
@@ -357,17 +312,13 @@
 		                    "mapping":"properties.NOME_UU"
 		                },
 		                {
-		                    "name":"custom",
-		                    "mapping":"properties.COD_UU"
-		                },
-		                {
 		                    "name":"geometry",
 		                    "mapping":"geometry"
 		                }
 		            ],
 		            "geocoderTypeSortBy":null,
 		            "geocoderTypeQueriableAttributes":[
-		                "NOME_UU", "COD_UU", "ID1"
+		                "NOME_UU"
 		            ],
 		            "spatialOutputCRS": "EPSG:3003",
 		            "geocoderTypePageSize": 10,
@@ -380,7 +331,7 @@
             "outputFilename":"mapstore-print"
         },
         "ignoreLayers": "Google Hybrid,Bing Aerial,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
-        "printService":"http://localhost:8080/geoserver/pdf/",
+        "printService":"http://vm-gistest1/geoserver/pdf/",
         "legendPanelId":"legendPanel",
         "actionTarget":{
             "target":"paneltbar",
@@ -426,10 +377,6 @@
 	                            "mapping":"properties.NOMEVIA"
 	                        },
 	                        {
-	                            "name":"custom",
-	                            "mapping":"properties.COD_STRADA"
-	                        },
-	                        {
 	                            "name":"geometry",
 	                            "mapping":"geometry"
 	                        }
@@ -456,11 +403,7 @@
 	                        },
 	                        {
 	                            "name":"name",
-	                            "mapping":"properties.COD_STRADA"
-	                        },
-	                        {
-	                            "name":"custom",
-	                            "mapping":"properties.COD_TOPON"
+	                            "mapping":"properties.NUMERO"
 	                        },
 	                        {
 	                            "name":"geometry",
@@ -469,7 +412,7 @@
 	                    ],
 	                    "geocoderTypeSortBy":null,
 	                    "geocoderTypeQueriableAttributes":[
-	                        "COD_STRADA", "COD_TOPON"
+	                        "NUMERO"
 	                    ],
 	                    "spatialOutputCRS": "EPSG:3003",
 	                    "geocoderTypePageSize": 10,
@@ -485,7 +428,7 @@
 			    "featureNS": "SITGEO",
 			    "geometryName": "GEOMETRY",
 			    "streetPropertyName": "COD_STRADA",
-			    "numberPropertyName": "COD_TOPON",
+			    "numberPropertyName": "NUMERO",
 	            "layoutConfig":{
 	                "xtype": "form",
 	                "buttonAlign": "right",
