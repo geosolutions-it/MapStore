@@ -44,7 +44,22 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
     /**
      * @cfg {Number} Permission for other folders in in linux mode (4 == 100 == r--; 7 == 111 == rwx)
      */
-    ,defaultPermission: 7
+    ,defaultPermission: 7,
+
+    /** i18n **/
+    uploadText: "Upload",
+    previousText: "Previous",
+    nextText: "Next",
+    parentFolderText: "Parent folder",
+    refreshText: "Refresh",
+    toolsText: "Tools",
+    /** EoF i18n **/
+
+    /**
+     * api:[addRefreshButton]
+     * @cfg {Boolean} Optional add refresh button for this operation. Default is true
+     */
+    addRefreshButton: true
 
     /**
      * api:[ovrNewdirText]
@@ -161,7 +176,6 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
             }];
 
             // Plupload params --> TODO: put as config
-            this.uploadText = "Upload";
             this.pluploadWindowWidth = 400;
             this.pluploadWindowHeigth = 300;
             this.pluploadWindowResizable = false;
@@ -339,29 +353,46 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
                 ,{text:"List", view:"list", iconCls:"icon-list", handler:this.switchView, scope:this}
             ];
 
-            this.tbar = new Ext.Toolbar({
-                items:[{
-                    tooltip:"Previous"
+            var toolBarItems = [{
+                    tooltip:this.previousText
                     ,iconCls:"icon-previous"
                     ,disabled:true
                     ,handler:this.historyPrevious
-                    ,scope:this
+                    ,scope:this,
+                    id: this.id + "_previous"
                 }, {
-                    tooltip:"Next"
+                    tooltip:this.nextText
                     ,iconCls:"icon-next"
                     ,disabled:true
                     ,handler:this.historyNext
-                    ,scope:this
+                    ,scope:this,
+                    id: this.id + "_next"
                 }, "-", {
-                    tooltip:"Parent folder"
+                    tooltip:this.parentFolderText
                     ,iconCls:"icon-up"
                     ,handler:this.folderUp
                     ,scope:this
-                }, "->", {
-                    text:"Tools"
-                    ,iconCls:"icon-wrench"
-                    ,menu:this.toolsMenuItems
-                }]
+                }];
+
+            if(this.addRefreshButton){
+                toolBarItems.push("-");
+                toolBarItems.push({
+                    tooltip:this.refreshText,
+                    iconCls:"icon-refresh",
+                    handler: this.refreshTree,
+                    scope: this
+                });
+            }
+
+            toolBarItems.push("->");
+            toolBarItems.push({
+                text:this.toolsText,
+                iconCls:"icon-wrench",
+                menu:this.toolsMenuItems
+            });
+
+            this.tbar = new Ext.Toolbar({
+                items: toolBarItems
             });
 
             this.browser = new Ext.Panel({
@@ -525,23 +556,36 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
 
 
     ,historyPrevious:function() {
+
         var treeNode = this.fileTreePanel.getNodeById(this.historyPreviousId[this.historyPreviousId.length - 1]);
-        if (!this.historyNextId.length) this.getTopToolbar().items.items[2].enable();
+        if (!this.historyNextId.length){
+            Ext.getCmp(this.id + "_next") && Ext.getCmp(this.id + "_next").enable && Ext.getCmp(this.id + "_next").enable();
+        }
         this.historyNextId.push(this.historyCurrentId);
         this.historyPreviousId.pop();
-        if (!this.historyPreviousId.length) this.getTopToolbar().items.items[0].disable();
-        treeNode.select();
-        this.fileTreePanel.fireEvent("click", treeNode, {history:true});
+        if (!this.historyPreviousId.length){
+            Ext.getCmp(this.id + "_previous") && Ext.getCmp(this.id + "_previous").disable && Ext.getCmp(this.id + "_previous").disable();
+        }
+        if(treeNode){
+            treeNode.select();
+            this.fileTreePanel.fireEvent("click", treeNode, {history:true});
+        }
     }
 
     ,historyNext:function() {
         var treeNode = this.fileTreePanel.getNodeById(this.historyNextId[this.historyNextId.length - 1]);
-        if (!this.historyPreviousId.length) this.getTopToolbar().items.items[0].enable();
+        if (!this.historyPreviousId.length){
+            Ext.getCmp(this.id + "_previous") && Ext.getCmp(this.id + "_previous").disable && Ext.getCmp(this.id + "_previous").enable();
+        }
         this.historyPreviousId.push(this.historyCurrentId);
         this.historyNextId.pop();
-        if (!this.historyNextId.length) this.getTopToolbar().items.items[2].disable();
-        treeNode.select();
-        this.fileTreePanel.fireEvent("click", treeNode, {history:true});
+        if (!this.historyNextId.length){
+            Ext.getCmp(this.id + "_next") && Ext.getCmp(this.id + "_next").enable && Ext.getCmp(this.id + "_next").disable();
+        }
+        if(treeNode){
+            treeNode.select();
+            this.fileTreePanel.fireEvent("click", treeNode, {history:true});
+        }
     }
 
     ,setdataViewElement:function(node) {
@@ -758,6 +802,48 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
         //     }
         // }
         return node.getPath("text");
+    },
+
+    /** api: method[refreshTree]
+     *  Refresh tree panel and restore current status if posible
+     */
+    refreshTree: function(){
+        var me = this;
+
+        // save current status
+        var expandedNodes = {};
+        var selectedNode = nodePath;
+        for(var nodePath in me.fileTreePanel.nodeHash){
+            if(me.fileTreePanel.nodeHash[nodePath].isExpanded()){
+                expandedNodes[nodePath] = true;
+            }
+            if(me.fileTreePanel.nodeHash[nodePath].isSelected()){
+                selectedNode = nodePath;
+            }
+        }
+
+        // reload status node by node
+        var reloadFunction = function(node){
+            // remove listener
+            node.removeListener("load", this);
+            // refresh nodes expanded;
+            for(var nodePath in expandedNodes){
+                if(me.fileTreePanel.nodeHash[nodePath] && !me.fileTreePanel.nodeHash[nodePath].expanded){
+                    me.fileTreePanel.nodeHash[nodePath].on("load", reloadFunction, me.fileTreePanel.nodeHash[nodePath]);
+                    me.fileTreePanel.nodeHash[nodePath].expand();
+                }
+            }
+            // click on the last node if is present
+            if(selectedNode && me.fileTreePanel.nodeHash[selectedNode]){
+                // me.fileTreePanel.nodeHash[selectedNode].select();
+                me.fileTreePanel.fireEvent("click", me.fileTreePanel.nodeHash[selectedNode], {history:false});
+                selectedNode = null;
+            }
+        }
+
+        // reload root node
+        me.fileTreePanel.root.on("load", reloadFunction, me.fileTreePanel.root);
+        me.fileTreePanel.root.reload();
     }
 
 });
