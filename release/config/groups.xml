@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <UserGroupList>
-	<UserGroup>
-		<groupName>allresources</groupName>
-		<restUsers />
-		<id />
-	</UserGroup>
-	<UserGroup>
-		<groupName>poweruser</groupName>
-		<restUsers>poweruser</restUsers>
-		<id />
-	</UserGroup>
+        <UserGroup>
+                <groupName>sn-manager</groupName>
+                <restUsers />
+                <id />
+        </UserGroup>
+        <UserGroup>
+                <groupName>va-sp</groupName>
+                <restUsers />
+                <id />
+        </UserGroup>
+        <UserGroup>
+                <groupName>csp</groupName>
+                <restUsers />
+                <id />
+        </UserGroup>
+        <UserGroup>
+                <groupName>endusers</groupName>
+                <restUsers />
+                <id />
+        </UserGroup>
 </UserGroupList>

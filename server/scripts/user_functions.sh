@@ -3,23 +3,58 @@
 source setenv.sh
 source ldap_functions.sh
 
+
 function ftp_allow_conf {
   cat <<- EOF
   <Directory $FTP_DIR>
-		  AllowOverwrite on
-		  GroupOwner nobody
-		  UserOwner nobody
-	  <Limit  ALL>
-		  AllowGroup sn-manager
-		  AllowUser $USERNAME
-		  DenyAll
-	  </Limit>
-	  <Limit  READ DIRS LIST>
-		  AllowGroup sn-manager
-		  AllowUser $USERNAME
-		  DenyAll
-	  </Limit>
+      AllowOverwrite on
+      GroupOwner nobody
+      UserOwner nobody
+    <Limit  ALL>
+      AllowGroup sn-manager
+      AllowUser $USERNAME
+      DenyAll
+    </Limit>
+    <Limit  READ DIRS LIST>
+      AllowGroup sn-manager
+      AllowUser $USERNAME
+      DenyAll
+    </Limit>
   </Directory>
+EOF
+}
+
+function modify_ldap_user_conf {
+  cat <<- EOF
+dn: uid=$USERNAME,ou=people,dc=mariss,dc=egeos,dc=it
+changetype: modify
+replace: cn
+cn: $NAME $SURNAME
+
+dn: uid=$USERNAME,ou=people,dc=mariss,dc=egeos,dc=it
+changetype: modify
+replace: givenName
+givenName: $NAME
+
+dn: uid=$USERNAME,ou=people,dc=mariss,dc=egeos,dc=it
+changetype: modify
+replace: mail
+mail: $EMAIL
+
+dn: uid=$USERNAME,ou=people,dc=mariss,dc=egeos,dc=it
+changetype: modify
+replace: sn
+sn: $SURNAME
+
+dn: uid=$USERNAME,ou=people,dc=mariss,dc=egeos,dc=it
+changetype: modify
+replace: uid
+uid: $USERNAME
+
+dn: uid=$USERNAME,ou=people,dc=mariss,dc=egeos,dc=it
+changetype: modify
+replace: userPassword
+userPassword: $PASS
 EOF
 }
 
@@ -59,7 +94,7 @@ EOF
 
 function usage {
   echo "USAGE:"
-  echo "      USERNAME="THEUSERNAME" NAME="THENAME" SURNAME="THESURNAME" EMAIL="THEMAIL" PASS="THEPASS" [LOGFILE="THELOGFILE.log"] $0"
+  echo "      USERNAME="THEUSERNAME" NAME="THENAME" SURNAME="THESURNAME" EMAIL="THEMAIL" PASS="THEPASS" $0"
   echo "Generate the pass with slappasswd -h {SSHA} -s %pwd%"
 }
 
