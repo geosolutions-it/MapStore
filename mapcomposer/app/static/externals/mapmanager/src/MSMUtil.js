@@ -815,9 +815,9 @@
 	};
 
 	/**
-	 * Class: GeoStore.Maps
+	 * Class: GeoStore.Templates
 	 *
-	 * CRUD methods for maps in GeoStore
+	 * CRUD methods for templates in GeoStore
 	 * Inherits from:
 	 *  - <GeoStore.ContentProvider>
 	 *
@@ -906,6 +906,91 @@
 			} else {
 				this.onFailure_('cannot parse response');
 			}
+		}
+    });
+
+	/**
+	 * Class: GeoStore.Categories
+	 *
+	 * CRUD methods for categories in GeoStore
+	 * Inherits from:
+	 *  - <GeoStore.ContentProvider>
+	 *
+	 */
+	var Categories = GeoStore.Categories = ContentProvider.extend({
+		initialize: function(){
+			this.resourceNamePrefix_ = 'category';
+		},
+		deleteByFilter: function(filterData, callback){
+			var uri = this.baseUrl_;
+			
+			Ext.Ajax.request({
+			   url: uri,
+			   method: 'DELETE',
+			   headers:{
+				  'Content-Type' : 'text/xml',
+				  'Authorization' : this.authorization_
+			   },
+			   scope: this,
+			   success: function(response, opts){
+					callback(response);
+			   },
+			   failure:  function(response, opts) {
+			   }
+			});		
+		},
+		beforeSave: function(data){
+			// ///////////////////////////////////////
+			// Wrap new map within an xml envelop
+			// ///////////////////////////////////////
+			var xml = "<Category><name>" + data.name + "</name></Category>";
+			return xml;
+		},
+		afterFind: function(json){
+			
+			if ( json.Category ){
+				var data = new Object;
+				data.name = json.Resource.name;
+				return data;			
+			} else if (json.CategoryList && json.CategoryList.Category){
+				return json.CategoryList.Category;			
+			} else {
+				this.onFailure_('cannot parse response');
+			}
+		},
+		/** 
+		 * Function: find
+		 * find all elements in async mode
+		 *
+		 * Parameters:
+		 * callback - {Function}
+		 * Return:
+		 * 
+		 */
+		findByName: function(name, callback){
+			var uri = new Uri({'url':this.baseUrl_ + "/" + name});
+			
+			// ////////////////////
+			// Build a request
+			// ////////////////////
+			var self = this;
+			var Request = Ext.Ajax.request({
+		       url: uri.toString(),
+		       method: 'GET',
+		       headers:{
+		          'Content-Type' : 'application/json',
+		          'Accept' : this.acceptTypes_,
+		          'Authorization' : this.authorization_
+		       },
+		       scope: this,
+		       success: function(response, opts){
+					var data = self.afterFind( Ext.util.JSON.decode(response.responseText) );
+					callback(data);
+		       },
+		       failure:  function(response, opts){
+		       		var json = Ext.util.JSON.decode(response.responseText);
+		       }
+		    });		
 		}
     });
 
