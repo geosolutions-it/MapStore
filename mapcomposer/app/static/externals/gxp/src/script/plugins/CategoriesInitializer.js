@@ -38,6 +38,7 @@ gxp.plugins.CategoriesInitializer = Ext.extend(gxp.plugins.Tool,{
     /** i18n **/
     geostoreInitializationTitleText: "Initializing Fail",
     geostoreInitializationText: "Geostore response is not the expected",
+    notInitializedCategories: "Missing categories: '{0}'. Do you want to create it?",
     /** EoF i18n **/
 
     /** api: config[silentErrors] 
@@ -48,17 +49,22 @@ gxp.plugins.CategoriesInitializer = Ext.extend(gxp.plugins.Tool,{
     /** api: config[geostoreUser] 
      *  ``String`` GeoStore administrator user name
      */
-    geostoreUser: null,
+    geostoreUser: "admin",
 
     /** api: config[geostorePassword] 
      *  ``String`` GeoStore administrator user password
      */
-    geostorePassword: null,
+    geostorePassword: "admin",
 
     /** api: config[neededCategories] 
      *  ``Array`` Name of categories to be initialized in an array
      */
-    neededCategories: ["TEMPLATES", "MAPS", "MAPSTORECONFIG"],
+    neededCategories: ["TEMPLATE", "MAP", "MAPSTORECONFIG"],
+
+    /** api: config[confirmCategoryCreation] 
+     *  ``Boolean`` Ask the user to create `this.neededCategories` if not present
+     */
+    confirmCategoryCreation: true,
 
     /** private: method[init]
      */
@@ -116,9 +122,33 @@ gxp.plugins.CategoriesInitializer = Ext.extend(gxp.plugins.Tool,{
     },
 
     /** api: method[createCategories]
-     *  Create categories with the names in this.categoryNames
+     *  Create categories with the names in this.categoryNames if the confirm is not enabled or if the user confirm the creation
      */
     createCategories: function(categoryNames){
+        if(categoryNames.length > 0){
+
+            if(!this.confirmCategoryCreation){
+                this.createCategoriesConfirmed(categoryNames);
+            }else{
+                var me = this;
+                var notInitializedCategories = String.format(this.notInitializedCategories, categoryNames);
+                Ext.MessageBox.confirm(
+                   this.geostoreInitializationTitleText,
+                   notInitializedCategories,
+                   function(response){
+                        if(response == "yes"){
+                            me.createCategoriesConfirmed(categoryNames);
+                        }
+                   }
+                );    
+            }   
+        }
+    },
+
+    /** api: method[createCategoriesConfirmed]
+     *  Create categories with the names in this.categoryNames without checks
+     */
+    createCategoriesConfirmed: function(categoryNames){
         for(var i = 0; i < categoryNames.length; i++){
             var category = new OpenLayers.GeoStore.Category({
                 name: categoryNames[i]

@@ -38,6 +38,7 @@ mxp.plugins.CategoriesInitializer = Ext.extend(mxp.plugins.Tool, {
     /** i18n **/
     geostoreInitializationTitleText: "Initializing Fail",
     geostoreInitializationText: "Geostore response is not the expected",
+    notInitializedCategories: "Missing categories: '{0}'. Do you want to create it?",
     /** EoF i18n **/
 
     /** api: config[silentErrors] 
@@ -61,7 +62,12 @@ mxp.plugins.CategoriesInitializer = Ext.extend(mxp.plugins.Tool, {
     /** api: config[neededCategories] 
      *  ``Array`` Name of categories to be initialized in an array
      */
-    neededCategories: ["TEMPLATES", "MAPS"],
+    neededCategories: ["TEMPLATE", "MAP"],
+
+    /** api: config[confirmCategoryCreation] 
+     *  ``Boolean`` Ask the user to create `this.neededCategories` if not present
+     */
+    confirmCategoryCreation: true,
 
     /** private: method[init]
      */
@@ -118,9 +124,33 @@ mxp.plugins.CategoriesInitializer = Ext.extend(mxp.plugins.Tool, {
     },
 
     /** api: method[createCategories]
-     *  Create categories with the names in this.categoryNames
+     *  Create categories with the names in this.categoryNames if the confirm is not enabled or if the user confirm the creation
      */
     createCategories: function(categoryNames){
+        if(categoryNames.length > 0){
+
+            if(!this.confirmCategoryCreation){
+                this.createCategoriesConfirmed(categoryNames);
+            }else{
+                var me = this;
+                var notInitializedCategories = String.format(this.notInitializedCategories, categoryNames);
+                Ext.MessageBox.confirm(
+                   this.geostoreInitializationTitleText,
+                   notInitializedCategories,
+                   function(response){
+                        if(response == "yes"){
+                            me.createCategoriesConfirmed(categoryNames);
+                        }
+                   }
+                );    
+            }   
+        }
+    },
+
+    /** api: method[createCategoriesConfirmed]
+     *  Create categories with the names in this.categoryNames without checks
+     */
+    createCategoriesConfirmed: function(categoryNames){
         for(var i = 0; i < categoryNames.length; i++){
             this.categories.create({
                 name: categoryNames[i]
