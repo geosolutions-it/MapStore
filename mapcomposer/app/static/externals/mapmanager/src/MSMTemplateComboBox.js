@@ -33,7 +33,7 @@
 
     // i18n
     fieldLabel: "Template",
-    emptyText: "No template",
+    emptyText: "Default Template",
 
     // base config
     typeAhead: true,
