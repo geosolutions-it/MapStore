@@ -765,5 +765,10 @@ GeoExt.Lang.add("en", {
         noFilterSelectedMsgText: "You must select at least one filter",    
         invalidRegexFieldMsgTitle: "Invalid Fields",    
         invalidRegexFieldMsgText: "One or more fields are incorrect!"
+    },
+	
+	"gxp.plugins.FeatureManager.prototype":{
+        noValidWmsVersionMsgTitle: 'No valid WMS version',    
+        noValidWmsVersionMsgText: "The queryForm plugin doesn't work with WMS Source version: "
     } 
 });

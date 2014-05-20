@@ -767,5 +767,10 @@ GeoExt.Lang.add("it", {
         noFilterSelectedMsgText: "Devi selezionare almeno un filtro",    
         invalidRegexFieldMsgTitle: "Campo non valido",    
         invalidRegexFieldMsgText: "Uno o più campi non sono stati riempiti correttamente!"
-    }    
+    },
+	
+	"gxp.plugins.FeatureManager.prototype":{
+        noValidWmsVersionMsgTitle: 'Versione WMS non valida',    
+        noValidWmsVersionMsgText: "Il plugin queryForm non funziona con una sorgente WMS versione: "
+    }
 });
