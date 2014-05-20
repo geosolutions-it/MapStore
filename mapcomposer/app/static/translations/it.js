@@ -1,6 +1,10 @@
 /**
  * Copyright (c) 2009-2010 The Open Planning Project
  */
+/*
+	NOTE: configuration customization could override
+	these strings
+*/
 
 GeoExt.Lang.add("it", {
     "GeoExplorer.prototype": {
@@ -644,7 +648,7 @@ GeoExt.Lang.add("it", {
         southLabel : "Sud",
         setAoiTitle : "Bounding Box",
         setAoiText : "Disegna",
-        setAoiTooltip : "Enable the SetBox control to draw a ROI (Bounding Box) on the map",
+        setAoiTooltip : "Abilita il controllo SetBox per disegnare l'area d'interesse (Bounding Box) sulla mappa",
         areaLabel : "Area",
         perimeterLabel : "Perimetro",
         radiusLabel : "Raggio",
@@ -712,7 +716,7 @@ GeoExt.Lang.add("it", {
         southLabel : "Sud",
         setAoiTitle : "Bounding Box",
         setAoiText : "Disegna",
-        setAoiTooltip : "Enable the SetBox control to draw a ROI (Bounding Box) on the map"
+        setAoiTooltip : "Abilita il controllo SetBox per disegnare l'area d'interesse (Bounding Box) sulla mappa"
     },
     
     "gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.prototype" :{
@@ -723,8 +727,8 @@ GeoExt.Lang.add("it", {
     },
     
     "gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod.prototype" :{
-        name  : 'Circle',
-        label : 'Circle'
+        name  : 'Cerchio',
+        label : 'Cerchio'
     },
     
     "gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod.prototype" :{
@@ -750,8 +754,20 @@ GeoExt.Lang.add("it", {
     },
     
     "gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
-        name  : 'Polygon',
-        label : 'Polygon'
+        name  : 'Poligono',
+        label : 'Poligono'
+    },
+
+    "gxp.plugins.spatialselector.Geocoder.prototype" :{
+        titleText: "Geocoder",
+        searchText: "Ricerca",
+        searchTpText: "Ricerca la zona selezionata ed esegui lo zoom sulla mappa",
+        resetText: "Azzeramento",
+        resetTpText: "Azzeramento ricerca zona",
+        translatedKeys: {
+            "name": "Strada",
+            "number": "Numero"
+        }
     },
 	
 	"gxp.plugins.ResourceStatus.prototype":{
