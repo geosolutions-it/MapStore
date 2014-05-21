@@ -632,8 +632,13 @@ gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.
 
 	                // create some attributes for the feature
 					var attributes = {name: data.location, label: data.location};
-
-					var geometry = new OpenLayers.Format.WKT().read(wktGeometry).geometry;
+                    var geometry = new OpenLayers.Format.WKT().read(wktGeometry);
+                    // patch for geometrycollection basic support
+                    if(Ext.isArray(geometry) && geometry.length > 0) {
+                        geometry = geometry[0].geometry;
+                    } else {
+                        geometry = geometry.geometry;
+                    }
 
 					// save element data
 					this.selectedAreas.push(data);
