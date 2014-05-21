@@ -704,7 +704,14 @@ GeoExt.Lang.add("it", {
         lengthLabel: "Lunghezza",
         radiusLabel : "Raggio",
         centroidLabel : "Centroide",
-        selectionSummary: "Sommario delle Selezioni"
+        selectionSummary: "Sommario delle Selezioni",
+        geometryOperationText: "Operazione geometrica",
+        geometryOperationEmptyText: "Seleziona una operazione",
+        distanceTitleText: "Distanza",
+        distanceUnitsTitleText: "Unità di misura",
+        noOperationTitleText: "Operazione non valida",
+        noOperationMsgText: "Prego, selezionare una operazione prima di eseguire la query",
+        noCompleteMsgText: "Prego, completare il riempimento della form prima di eseguire la query"
     },
     
     "gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
