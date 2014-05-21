@@ -322,3 +322,7 @@ left: 80px !important;
     background-image: url(../img/gwc.png);
 }
 
+/* Resource permission */
+.lock_ic{
+    background-image: url(../img/lock.png);
+}

@@ -802,6 +802,88 @@
 			}
 		}
 	});
+
+    /**
+	 * Class: GeoStore.ResourcePermission
+	 *
+	 * CRUD methods for Security rules for a resource in GeoStore
+	 * Inherits from:
+	 *  - <GeoStore.ContentProvider>
+	 *
+	 */
+	var ResourcePermission = GeoStore.ResourcePermission = ContentProvider.extend({
+		initialize: function(){
+			this.resourceNamePrefix_ = 'securityrule';
+		},
+        
+		beforeSave: function(data){
+			// wrap security rule list
+			var xml = '<SecurityRuleList>';
+			if(data && data.length > 0){
+				for(var i = 0; i < data.length; i++){
+					var rule = data[i];
+					// valid rule
+					if(rule && (rule.user || rule.group)){
+						xml += 
+						'<SecurityRule>' +
+							'<canRead>' + rule.canRead + '</canRead>' +
+							'<canWrite>' + rule.canWrite + '</canWrite>';
+						if(rule.user){
+							xml += 
+								'<user>' + 
+									'<id>' + rule.user.id + '</id>' +
+									'<name>' + rule.user.name + '</name>' +
+								'</user>';
+						} else if(rule.group){
+							xml += 
+								'<group>' + 
+									'<id>' + rule.group.id + '</id>' +
+									'<groupName>' + rule.group.groupName + '</groupName>' +
+								'</group>';
+						}
+
+						xml += 
+							'</SecurityRule>';
+					}
+				}
+			}
+
+			xml += '</SecurityRuleList>';
+
+
+			return xml;
+		},
+	
+		afterFind: function(json){
+			 if ( json.SecurityRuleList ){
+				var data = [];
+				for (var i=0; i< json.SecurityRuleList.length; i++){
+					data.push(this.afterFind(json.SecurityRuleList[i])); 
+				}
+				return data;
+			} else if(json.SecurityRule){
+                var rule = json.SecurityRule;
+					var obj = {};
+					obj.canRead = rule.canRead;
+					obj.canWrite = rule.canWrite;
+					if(rule.user && rule.user.id){
+						obj.user = {
+							id: rule.user.id,
+							name: rule.user.name
+						};
+					}else if(rule.group && rule.group.id){
+						obj.group = {
+							id: rule.group.id,
+							groupName: rule.group.groupName
+						};
+					}
+                    return obj;
+                
+            }else{
+				this.onFailure_('cannot parse response');
+			}
+		}
+	});
 	
 	/**
 	 * Class: Google.Shortener

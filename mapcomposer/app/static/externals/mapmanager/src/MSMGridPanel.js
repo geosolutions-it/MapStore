@@ -403,6 +403,24 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * 
     */        
     IframeWaitMsg: "Loading map...",
+    /**
+    * Property: mapPermissionText
+    * {string} set permission button text
+    * 
+    */        
+    mapPermissionText: "Permission",
+    /**
+    * Property: tooltipMapPermissionText
+    * {string} set permission button tooltip
+    * 
+    */        
+    tooltipMapPermissionText: "Edit map permissions by group",
+    /**
+    * Property: mapPermissionTitleText
+    * {string} set permission window title
+    * 
+    */        
+    mapPermissionTitleText: "Map Permission",
     
     /**
      * QR_Code mobile text
@@ -779,6 +797,21 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     bbar: new Ext.Toolbar({
                         items:[
                             '->',
+                            {
+                                text: grid.mapPermissionText,
+                                tooltip: grid.tooltipMapPermissionText,
+                                iconCls: 'lock_ic',
+                                handler: function(){
+                                    var  winnPermission = new mxp.widgets.ResourceGroupPermissionWindow({
+                                        resourceId: mapId,
+                                        title: grid.mapPermissionTitleText,
+                                        auth: grid.auth,
+                                        geostoreURL: grid.config.geoStoreBase
+                                    });
+                                    winnPermission.show();
+                                },
+                                scope:this
+                            },
                             {
                                 text: grid.textSubmitEditMetadata,
                                 tooltip: grid.tooltipSubmitEditMetadata,
