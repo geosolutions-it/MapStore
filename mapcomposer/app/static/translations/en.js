@@ -765,5 +765,16 @@ GeoExt.Lang.add("en", {
         noFilterSelectedMsgText: "You must select at least one filter",    
         invalidRegexFieldMsgTitle: "Invalid Fields",    
         invalidRegexFieldMsgText: "One or more fields are incorrect!"
-    } 
+    },
+    
+    "gxp.plugins.CategoriesInitializer.prototype":{
+        geostoreInitializationTitleText: "Initializing Fail",
+        geostoreInitializationText: "Geostore response is not the expected",
+        notInitializedCategories: "Missing categories: '{0}'. Do you want to create it?",
+        userFieldText: "User",
+        passwordFieldText: "Password",
+        acceptText: "Create",
+        cancelText: "Cancel",
+        notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>Missing categories: '{0}'. <br/><br/> Please add administrator credentials or contact with the administrator</div>"
+    }
 });

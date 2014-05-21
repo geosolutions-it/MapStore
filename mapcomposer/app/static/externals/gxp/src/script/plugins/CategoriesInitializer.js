@@ -39,6 +39,11 @@ gxp.plugins.CategoriesInitializer = Ext.extend(gxp.plugins.Tool,{
     geostoreInitializationTitleText: "Initializing Fail",
     geostoreInitializationText: "Geostore response is not the expected",
     notInitializedCategories: "Missing categories: '{0}'. Do you want to create it?",
+    userFieldText: "User",
+    passwordFieldText: "Password",
+    acceptText: "Create",
+    cancelText: "Cancel",
+    notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>Missing categories: '{0}'. <br/><br/> Please add administrator credentials or contact with the administrator</div>",
     /** EoF i18n **/
 
     /** api: config[silentErrors] 
@@ -66,15 +71,24 @@ gxp.plugins.CategoriesInitializer = Ext.extend(gxp.plugins.Tool,{
      */
     confirmCategoryCreation: true,
 
+    /** api: config[credentialsMode] 
+     *  ``Boolean`` Ask user admin credentials for categories initializing
+     */
+    askForcredentials: true,
+
     /** private: method[init]
      */
     init: function(target){
         gxp.plugins.CategoriesInitializer.superclass.init.apply(this, arguments); 
 
-        // // initialize geostore client
+        // initialize geostore client
         var me = this;
+        this.geostoreUrl = (this.geostoreUrl) ? this.geostoreUrl : this.target.geoStoreBaseURL;
+        if(this.geostoreUrl && this.geostoreUrl.charAt(this.geostoreUrl.length -1) == "/"){
+            this.geostoreUrl = this.geostoreUrl.substring(0, this.geostoreUrl.length - 1);
+        }
         this.geoStoreClient = new gxp.plugins.GeoStoreClient({
-            url: (this.geostoreUrl) ? this.geostoreUrl : this.target.geoStoreBaseURL,
+            url: this.geostoreUrl,
             user: (this.geostoreUser) ? this.geostoreUser : this.target.geostoreUser,
             password: (this.geostorePassword) ? this.geostorePassword : this.target.geostorePassword,
             proxy: (this.geostoreProxy) ? this.geostoreProxy:this.target.proxy,
@@ -126,11 +140,92 @@ gxp.plugins.CategoriesInitializer = Ext.extend(gxp.plugins.Tool,{
      */
     createCategories: function(categoryNames){
         if(categoryNames.length > 0){
+            var me = this;
 
-            if(!this.confirmCategoryCreation){
+            if(this.askForcredentials){
+                var notInitializedCategoriesWithCredentials = String.format(this.notInitializedCategoriesWithCredentials, categoryNames);
+               
+                //the window will contain the user administrator credentials
+                var winCredentials = new Ext.Window({
+                    iconCls:'user-icon',
+                    title: this.geostoreInitializationTitleText,
+                    width: 300, height: 250, 
+                    resizable: true, 
+                    modal: true, 
+                    border:false,
+                    plain:true,
+                    closeAction: 'close', 
+                    layout: 'fit', 
+                    items: [{
+                        xtype: "form",
+                        width: 300, height: 200, 
+                        layout: "form",
+                        items:[{
+                            xtype: "textfield",
+                            fieldLabel: this.userFieldText,
+                            name:'user', 
+                            allowBlank:false,
+                            listeners: {
+                              beforeRender: function(field) {
+                                field.focus(false, 1000);
+                              }
+                            }
+                        },{  
+                            xtype: "textfield",
+                            fieldLabel:this.passwordFieldText, 
+                            name:'pass', 
+                            inputType:'password', 
+                            allowBlank:false
+                        },{
+                            html: notInitializedCategoriesWithCredentials
+                        }],
+                        buttons:[{ 
+                            text: this.acceptText,
+                            iconCls: 'icon-addlayers',
+                            formBind: true,
+                            scope: this,
+                            handler: function(button){
+                                if(button.ownerCt.ownerCt.getForm().isValid()){
+                                    var credentials = button.ownerCt.ownerCt.getForm().getValues();
+                                    // load categories manager with credentials
+                                    me.geoStoreClient = new gxp.plugins.GeoStoreClient({
+                                        url: me.geostoreUrl,
+                                        user: credentials.user,
+                                        password: credentials.pass,
+                                        proxy: (me.geostoreProxy) ? me.geostoreProxy:me.target.proxy,
+                                        listeners: {
+                                            "geostorefailure": function(tool, msg){
+                                                if(!me.silentErrors){  
+                                                    // not found!!
+                                                    Ext.Msg.show({
+                                                       title: me.geostoreInitializationTitleText,
+                                                       msg: me.geostoreInitializationText + ": " + msg,
+                                                       buttons: Ext.Msg.OK,
+                                                       icon: Ext.MessageBox.ERROR
+                                                    });
+                                                }
+                                            }
+                                        }
+                                    }); 
+                                    me.createCategoriesConfirmed(categoryNames)
+                                    winCredentials.close();   
+                                }
+                            }
+                        },{ 
+                            text: this.cancelText,
+                            iconCls: 'icon-removelayers',
+                            formBind: true,
+                            scope: this,
+                            handler: function(a, b, c){
+                                winCredentials.close();
+                            }
+                        }]
+                    }]
+                });
+                winCredentials.show();
+            }else if(!this.confirmCategoryCreation){
                 this.createCategoriesConfirmed(categoryNames);
             }else{
-                var me = this;
                 var notInitializedCategories = String.format(this.notInitializedCategories, categoryNames);
                 Ext.MessageBox.confirm(
                    this.geostoreInitializationTitleText,
