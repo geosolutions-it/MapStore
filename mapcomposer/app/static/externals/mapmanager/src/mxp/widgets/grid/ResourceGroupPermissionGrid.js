@@ -51,6 +51,7 @@ mxp.widgets.ResourceGroupPermissionGrid = Ext.extend(Ext.grid.GridPanel, {
     refreshText: "Refresh grid",
     addText: "Add a new security rule based on user groups",
     addNewSecurityRuleTitleText: "Create a new Security Rule",
+    editSecurityRuleTitleText: "Edit Security Rule for group '{0}'",
     groupNameTitleText: "Error", 
     groupNameExistsText: 'Already exists a rule for this group name, please select another one or edit his rule',
     groupNameIncompleteText: 'Not group selected. Please select one before save.',
@@ -290,8 +291,8 @@ mxp.widgets.ResourceGroupPermissionGrid = Ext.extend(Ext.grid.GridPanel, {
         var me = this;
 
         var winnewgroup = new Ext.Window({
-            iconCls:'group_add_ic',
-            title:this.addNewSecurityRuleTitleText,
+            iconCls: selectedGroup ? 'group_edit_ic' : 'group_add_ic',
+            title: selectedGroup ? String.format(this.editSecurityRuleTitleText, selectedGroup): this.addNewSecurityRuleTitleText,
             width: 280,
             height: 145, 
             resizable: true, 

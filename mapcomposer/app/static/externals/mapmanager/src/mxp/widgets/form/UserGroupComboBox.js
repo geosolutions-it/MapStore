@@ -48,12 +48,25 @@
     // select  by default by name
     defaultSelection: null,
 
+    // by default the combo include all groups in the system (include everyone group)
+    showAll: true,
+
     initComponent: function(){
 
         // headers
         var defaultHeaders = {'Accept': 'application/json'};
     	if(this.auth){
     		defaultHeaders['Authorization'] = this.auth;
+    	}
+
+    	// add all
+    	var url = this.url;
+    	if(this.showAll){
+    		if(url.indexOf("?")<0){
+    			url += "?all=true";
+    		}else{
+    			url += "&all=true";
+    		}
     	}
 
     	this.store = {
@@ -66,7 +79,7 @@
 	            {name:'name', mapping:'groupName'}
 	        ],
 	        proxy: new Ext.data.HttpProxy({
-	            url: this.url,
+	            url: url,
 	            restful: true,
 	            method : 'GET',
 	            disableCaching: true,
@@ -88,8 +101,6 @@
 	        	scope: this
 	        }
     	};
-    	
-        this.store.proxy.getConnection().defaultHeaders = defaultHeaders;
 		
         UserGroupComboBox.superclass.initComponent.call(this, arguments);
 	},
