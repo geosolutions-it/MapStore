@@ -491,6 +491,24 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     */
     initComponent : function() {
 
+        // mocked login when is not present. Fixes error for 
+        if(!this.login){
+            this.login = {
+                role: "GUEST",
+                getCurrentUser: function(){
+                    return null;
+                },
+                getToken: function(){
+                    return null;
+                },
+                getCurrentUser: function(){
+                    return null;
+                },
+                isGuest: function(){
+                    return true;
+                }
+            };
+        }
 
         var searchString = this.defaultSearchString;
 		var config = this.config;
@@ -806,7 +824,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                         resourceId: mapId,
                                         title: grid.mapPermissionTitleText,
                                         auth: grid.auth,
-                                        geostoreURL: grid.config.geoStoreBase
+                                        geostoreURL: grid.config.geoStoreBase,
+                                        target: grid.target
                                     });
                                     winnPermission.show();
                                 },

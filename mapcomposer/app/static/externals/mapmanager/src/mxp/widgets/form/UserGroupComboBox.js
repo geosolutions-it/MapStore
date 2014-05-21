@@ -18,6 +18,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** api: (define)
+ *  module = mxp.form
+ *  class = UserGroupComboBox
+ *  
+ */
+Ext.ns('mxp.form');
+
 /**
  * Class: UserGroupComboBox
  * User group simple combobox
@@ -26,7 +33,7 @@
  *  - <Ext.form.ComboBox>
  *
  */
- UserGroupComboBox = Ext.extend(Ext.form.ComboBox, {
+mxp.form.UserGroupComboBox = Ext.extend(Ext.form.ComboBox, {
 
  	/** xtype = msm_usergroupcombobox **/
     xtype: "msm_usergroupcombobox",
@@ -61,7 +68,7 @@
 
     	// add all
     	var url = this.url;
-    	if(this.showAll){
+    	if(url && this.showAll){
     		if(url.indexOf("?")<0){
     			url += "?all=true";
     		}else{
@@ -69,30 +76,16 @@
     		}
     	}
 
+    	// If user is admin, load the groups from geostore url, otherwise load from user context
+    	var userIsAdmin = this.target && this.target.user && this.target.user.role == "ADMIN";
+
+    	// store 
     	this.store = {
-	        xtype: "jsonstore",
-	        root: 'UserGroupList.UserGroup',
-	        autoLoad: true,
-	        idProperty: 'id',
+			xtype: "jsonstore",
 	        fields: [
 	            {name:'id', mapping:'id'},
 	            {name:'name', mapping:'groupName'}
 	        ],
-	        proxy: new Ext.data.HttpProxy({
-	            url: url,
-	            restful: true,
-	            method : 'GET',
-	            disableCaching: true,
-	            failure: function (response) {
-	                  Ext.Msg.show({
-	                   title: "Error",
-	                   msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
-	                   buttons: Ext.Msg.OK,
-	                   icon: Ext.MessageBox.ERROR
-	                });                                
-	            },
-	            defaultHeaders: defaultHeaders
-	        }),
 	        listeners:{
 	        	load: function(store){
 	        		this.fireEvent("storeload", store, this);
@@ -101,8 +94,49 @@
 	        	scope: this
 	        }
     	};
+
+    	if(userIsAdmin){
+    		// load from geostore
+    		Ext.apply(this.store,{
+				xtype: "jsonstore",
+		        idProperty: 'id',
+	        	root: 'UserGroupList.UserGroup',
+	        	autoLoad: true,
+    			proxy: new Ext.data.HttpProxy({
+		            url: url,
+		            restful: true,
+		            method : 'GET',
+		            disableCaching: true,
+		            failure: function (response) {
+		                Ext.Msg.show({
+		                   title: "Error",
+		                   msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+		                   buttons: Ext.Msg.OK,
+		                   icon: Ext.MessageBox.ERROR
+		                });
+		            },
+		            defaultHeaders: defaultHeaders
+		        })
+    		});
+    	}else{
+    		// load user groups from user logged details
+    		this.autoLoad = true;
+    		this.mode = 'local';
+    		var data = [];
+    		if(this.target.user.groups.group && this.target.user.groups.group.length){
+    			// it have more than one group
+    			data = this.target.user.groups.group;
+    		}else if(this.target.user.groups.group){
+    			// only one group
+    			data.push(this.target.user.groups.group);
+    		}
+    		Ext.apply(this.store,{
+    			mode: "local",
+    			data: data
+    		});
+    	}
 		
-        UserGroupComboBox.superclass.initComponent.call(this, arguments);
+        mxp.form.UserGroupComboBox.superclass.initComponent.call(this, arguments);
 	},
 
 	/**
@@ -122,4 +156,4 @@
 });
 
 /** api: xtype = msm_usergroupcombobox */
-Ext.reg(UserGroupComboBox.prototype.xtype, UserGroupComboBox);
+Ext.reg(mxp.form.UserGroupComboBox.prototype.xtype, mxp.form.UserGroupComboBox);

@@ -68,8 +68,6 @@ mxp.widgets.ResourceGroupPermissionGrid = Ext.extend(Ext.grid.GridPanel, {
     confirmDeleteTitleText: "Delete Security Rule",
     confirmDeleteText: "Do you really want to delete the rule for the '{0}' group?",
     /* end of i18n */
-
-    // autoExpandColumn: 'description',
     
     //extjs grid specific config
     autoload:true,
@@ -173,7 +171,17 @@ mxp.widgets.ResourceGroupPermissionGrid = Ext.extend(Ext.grid.GridPanel, {
                         if(this.auth){
                             a.proxy.conn.headers['Authorization'] = this.auth;
                         }
-                    }  
+                    }
+                },
+                load: function(store){
+                    // only show rows with groupName (hide users' rows)
+                    var index = 0;
+                    store.each(function (record){
+                        if(record.get("groupName") == null || record.get("groupName") == ""){
+                            this.getView().getRow(index).style.display = 'none';
+                        }
+                        index++;
+                    }, this);
                 },
                 scope:this
             }
@@ -218,14 +226,15 @@ mxp.widgets.ResourceGroupPermissionGrid = Ext.extend(Ext.grid.GridPanel, {
         }];       
         this.columns= [{
                 header: this.textGroupName, 
-                width: 70, 
+                width: 150, 
                 dataIndex: 'groupName',
                 sortable: true
-            },{
-                header: this.textUserName, 
-                width: 70, 
-                dataIndex: 'userName',
-                sortable: true
+            // Not show users' rows
+            // },{
+            //     header: this.textUserName, 
+            //     width: 70, 
+            //     dataIndex: 'userName',
+            //     sortable: true
             },{
                 id: 'canRead', 
                 header: this.textCanRead, 
@@ -337,7 +346,8 @@ mxp.widgets.ResourceGroupPermissionGrid = Ext.extend(Ext.grid.GridPanel, {
                     value: selectedGroup,
                     readOnly: selectedGroup != null,
                     maxLength:200,
-                    allowBlank:true
+                    allowBlank:true,
+                    target: this.target
                 },{
                     xtype:'checkbox',
                     anchor:'90%',
@@ -490,7 +500,8 @@ mxp.widgets.ResourceGroupPermissionWindow = Ext.extend(Ext.Window,{
             resourceId: this.resourceId,
             height: 200, 
             auth: this.auth,
-            geostoreURL: this.geostoreURL
+            geostoreURL: this.geostoreURL,
+            target: this.target
         }];
         mxp.widgets.ResourceGroupPermissionWindow.superclass.initComponent.call(this, arguments);
     }
