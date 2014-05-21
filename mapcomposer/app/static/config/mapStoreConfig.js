@@ -271,15 +271,15 @@
 		            "label": "Municipi",
 					"searchComboOutputFormat": "json",
 		            "wfsBaseURL": "http://vm-gistest1/geoserver/wfs",
-		            "geocoderTypeName": "TOPONOMASTICA:MUNICIPI",
+		            "geocoderTypeName": "SITGEO:V_MUNICIPI",
 		            "geocoderTypeRecordModel":[
 		                {
 		                    "name":"id",
-		                    "mapping":"id"
+		                    "mapping":"ID"
 		                },
 		                {
 		                    "name":"name",
-		                    "mapping":"properties.NOME_MUNIC"
+		                    "mapping":"properties.NOME_MUNICIPIO"
 		                },
 		                {
 		                    "name":"geometry",
@@ -288,7 +288,7 @@
 		            ],
 		            "geocoderTypeSortBy":null,
 		            "geocoderTypeQueriableAttributes":[
-		                "NOME_MUNIC"
+		                "NOME_MUNICIPIO"
 		            ],
 		            "spatialOutputCRS": "EPSG:4326",
 		            "geocoderTypePageSize": 10,
@@ -300,12 +300,12 @@
 		            "name": "Unita Urbanistiche",
 		            "label": "Unita Urbanistiche",
 					"searchComboOutputFormat": "json",
-		            "wfsBaseURL": "http://geoserver.comune.genova.it/geoserver/wfs",
-		            "geocoderTypeName": "TOPONOMASTICA:UNITA_URBANISTICHE",
+		            "wfsBaseURL": "http://vm-gistest1/geoserver/wfs",
+		            "geocoderTypeName": "SITGEO:V_UNITA_URBANISTICHE",
 		            "geocoderTypeRecordModel":[
 		                {
 		                    "name":"id",
-		                    "mapping":"id"
+		                    "mapping":"ID"
 		                },
 		                {
 		                    "name":"name",
@@ -313,7 +313,7 @@
 		                },
 		                {
 		                    "name":"geometry",
-		                    "mapping":"geometry"
+		                    "mapping":"geometry "
 		                }
 		            ],
 		            "geocoderTypeSortBy":null,
@@ -365,12 +365,12 @@
 	                    "showSelectionSummary": false,
 	                    "multipleSelection": false,
 	                    "searchComboOutputFormat": "json",
-	                    "wfsBaseURL": "http://geoserver.comune.genova.it/geoserver/wfs",
-	                    "geocoderTypeName": "CTC:V_ASTE_STRADALI_TOPONIMO_SUB",
+	                    "wfsBaseURL": "http://vm-gistest1/geoserver/wfs",
+	                    "geocoderTypeName": "SITGEO:V_ASTE_STRADALI_TOPONIMO_SUB",
 	                    "geocoderTypeRecordModel":[
 	                        {
 	                            "name":"id",
-	                            "mapping":"id"
+	                            "mapping":"ID"
 	                        },
 	                        {
 	                            "name":"name",
@@ -383,7 +383,7 @@
 	                    ],
 	                    "geocoderTypeSortBy":null,
 	                    "geocoderTypeQueriableAttributes":[
-	                        "COD_STRADA", "NOMEVIA"
+	                        "NOMEVIA"
 	                    ],
 	                    "spatialOutputCRS": "EPSG:3003",
 	                    "geocoderTypePageSize": 10,
@@ -394,16 +394,16 @@
 	                    "showSelectionSummary": false,
 	                    "multipleSelection": false,
 	                    "searchComboOutputFormat": "json",
-	                    "wfsBaseURL": "http://geoserver.comune.genova.it/geoserver/wfs",
-	                    "geocoderTypeName": "SITGEO:CIVICI_COD_TOPON_SUB",
+	                    "wfsBaseURL": "http://vm-gistest1/geoserver/wfs",
+	                    "geocoderTypeName": "SITGEO:CIVICI_COD_TOPON",
 	                    "geocoderTypeRecordModel":[
 	                        {
 	                            "name":"id",
-	                            "mapping":"id"
+	                            "mapping":"ID"
 	                        },
 	                        {
 	                            "name":"name",
-	                            "mapping":"properties.NUMERO"
+	                            "mapping":"properties.TESTO"
 	                        },
 	                        {
 	                            "name":"geometry",
@@ -412,7 +412,7 @@
 	                    ],
 	                    "geocoderTypeSortBy":null,
 	                    "geocoderTypeQueriableAttributes":[
-	                        "NUMERO"
+	                        "TESTO"
 	                    ],
 	                    "spatialOutputCRS": "EPSG:3003",
 	                    "geocoderTypePageSize": 10,
@@ -421,14 +421,14 @@
 	            }
 	    	}, "reverse": {
 	            "ptype": "gxp_spatial_selector_reverse_geocoder",
-	            "url": "http://geoserver.comune.genova.it/geoserver/wfs",
+	            "url": "http://vm-gistest1/geoserver/wfs",
 			    "maxFeatures": 10,
-			    "streetfeatureNS": "CTC",
-			    "typeName": "CIVICI_COD_TOPON_SUB",
+			    "streetfeatureNS": "SITGEO",
+			    "typeName": "CIVICI_CON_STRADE",
 			    "featureNS": "SITGEO",
 			    "geometryName": "GEOMETRY",
-			    "streetPropertyName": "COD_STRADA",
-			    "numberPropertyName": "NUMERO",
+			    "streetPropertyName": "DESVIA",
+			    "numberPropertyName": "TESTO",
 	            "layoutConfig":{
 	                "xtype": "form",
 	                "buttonAlign": "right",
