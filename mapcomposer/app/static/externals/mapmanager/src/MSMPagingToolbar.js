@@ -278,12 +278,17 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
         
         var win = new Ext.Window({
             title: this.createMapTitleText,
-            width: 415,
-            resizable: false,
-            items: [
-                new Ext.form.FormPanel({
-                    width: 400,
-                    ref: "formPanel",
+            width: 325,
+            height: 100,
+            resizable: true,
+            plain: true,
+            layout: "fit",
+            items: [{
+                xtype: "form",
+                layout: "fit",
+                ref: "formPanel",
+                items: [{
+                    layout: "form",
                     items: [{
                         xtype: "msm_templatecombobox",
                         ref: "templateCombo",
@@ -291,8 +296,8 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
                         templatesCategoriesUrl: this.templatesCategoriesUrl,
                         auth: this.auth
                     }]
-                })
-            ],
+                }]
+            }],
             bbar: new Ext.Toolbar({
                 items:[
                     '->',
