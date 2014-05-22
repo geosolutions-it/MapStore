@@ -64,7 +64,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 	 */
 	collapseModes:[{
 		name: "default",
-		label: "default",
+		label: "none",
 		value: "default"
 	},{
 		name: "mini",
@@ -456,6 +456,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 					items:[{
 						xtype: "combo",
 						fieldLabel: this.collapseModeText,
+						width: 128,
 						name: section + "CollapseMode",
 						mode : 'local',
 						lazyRender : false,
@@ -466,6 +467,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 						autoLoad : true,
 						displayField : 'label',
 						valueField : 'value',
+						value: 'default',
 						editable : false,
 						readOnly : false,
 						store : new Ext.data.JsonStore({
