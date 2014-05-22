@@ -64,7 +64,7 @@ gxp.plugins.CategoriesInitializer = Ext.extend(gxp.plugins.Tool,{
     /** api: config[neededCategories] 
      *  ``Array`` Name of categories to be initialized in an array
      */
-    neededCategories: ["TEMPLATE", "MAP", "MAPSTORECONFIG"],
+    neededCategories: ["TEMPLATE", "MAP", "MAPSTORECONFIG", "ADMINCONFIG"],
 
     /** api: config[confirmCategoryCreation] 
      *  ``Boolean`` Ask the user to create `this.neededCategories` if not present
