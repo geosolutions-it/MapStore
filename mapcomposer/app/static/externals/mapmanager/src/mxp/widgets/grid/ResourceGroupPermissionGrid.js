@@ -380,7 +380,7 @@ mxp.widgets.ResourceGroupPermissionGrid = Ext.extend(Ext.grid.GridPanel, {
                 // security rule model
                 var obj = {
                     canRead: record.data.canRead,
-                    canWrite: record.data.canRead
+                    canWrite: record.data.canWrite
                 };
                 if(record.data.userId && record.data.userId != ""){
                     obj.user = {
