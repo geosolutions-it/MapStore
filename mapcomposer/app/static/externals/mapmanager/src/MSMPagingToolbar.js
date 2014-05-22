@@ -203,6 +203,14 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
     * 
     */
     checkTemplateId: false,
+    
+    /**
+    * Property: addExpandCollapseControls
+    * {boolean} add expand and collapse buttons for maps grid.
+    * Default it's true
+    * 
+    */
+    addExpandCollapseControls: true,
 	
     /**
      * Method: initComponent
@@ -235,30 +243,32 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
                 handler: this.onAddMap
             });   
         }
-        
-        //add expandAll buttons    
-        this.expandAll = this.addButton({
-            id: 'id_expandAll_button',
-            text: this.textExpandAll,
-            scope: this,
-            iconCls: 'row_expand',
-            tooltip: this.tooltipExpandAll,
-            handler: function(){
-                this.grid.plugins.expandAll();
-            }
-        });
-        
-        //add collapseAll buttons    
-        this.collapseAll = this.addButton({
-            id: 'id_collapseAll_button',
-            text: this.textCollapseAll,
-            scope: this,
-            iconCls: 'row_collapse',
-            tooltip: this.tooltipCollapseAll,
-            handler: function(){
-                 this.grid.plugins.collapseAll();
-            }
-        });
+
+        if(this.addExpandCollapseControls){
+            //add expandAll buttons    
+            this.expandAll = this.addButton({
+                id: 'id_expandAll_button',
+                text: this.textExpandAll,
+                scope: this,
+                iconCls: 'row_expand',
+                tooltip: this.tooltipExpandAll,
+                handler: function(){
+                    this.grid.plugins.expandAll();
+                }
+            });
+            
+            //add collapseAll buttons    
+            this.collapseAll = this.addButton({
+                id: 'id_collapseAll_button',
+                text: this.textCollapseAll,
+                scope: this,
+                iconCls: 'row_collapse',
+                tooltip: this.tooltipCollapseAll,
+                handler: function(){
+                     this.grid.plugins.collapseAll();
+                }
+            });
+        }
 		
 		this.plugins = (this.plugins || []);
 

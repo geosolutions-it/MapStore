@@ -35,7 +35,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 	title: 'Template Editor',
     headerTitleText: "Header",
     footerTitleText: "Footer",
-    sectionContentTitleText: "{0} content",
+    sectionContentTitleText: "{0} Content",
     sectionCSSTitleText: 'CSS Style',
     sectionLayoutConfigTitleText: "Layout config",
     borderText: 'Border',

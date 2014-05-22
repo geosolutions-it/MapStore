@@ -36,7 +36,7 @@ mxp.plugins.TemplateManager = Ext.extend(mxp.plugins.Tool, {
     ptype: "mxp_templatemanager",
 
     buttonText: "Templates",
-    tooltipText: "Open templates manager",
+    tooltipText: "Open Templates Manager",
 
     loginManager: null,    
 
