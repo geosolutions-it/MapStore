@@ -449,7 +449,6 @@
 				callback(response.responseText);
 	       },
 	       failure:  function(response, opts){
-	       		console.log(response);
 				if(typeof(failureCallback) === 'function') {
                     failureCallback(response);
                 } else {

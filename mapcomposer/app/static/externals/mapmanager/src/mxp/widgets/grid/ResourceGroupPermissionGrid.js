@@ -431,6 +431,11 @@ mxp.widgets.ResourceGroupPermissionGrid = Ext.extend(Ext.grid.GridPanel, {
                         break;
                     }
                 }
+                // reset buttons and selection
+                this.selectedGroup = null;
+                this.selectedRecord = null;
+                Ext.getCmp(this.id + "_edit_button").disable();
+                Ext.getCmp(this.id + "_delete_button").disable();
             }else{
                 // try to create one rule for a group that already exists
                 Ext.Msg.show({
@@ -444,12 +449,13 @@ mxp.widgets.ResourceGroupPermissionGrid = Ext.extend(Ext.grid.GridPanel, {
 
             // save
             var me = this;
-            this.resourcePermission.create(finalPermissions, function(response){
+            var callback = function(response){
                 me.store.load();
                 if(winnewgroup){
                     winnewgroup.close();
                 }
-            });
+            };
+            this.resourcePermission.create(finalPermissions, callback, callback);
         }else{
             // Couldn't create without group
             Ext.Msg.show({
