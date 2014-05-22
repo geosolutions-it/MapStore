@@ -322,7 +322,13 @@ left: 80px !important;
     background-image: url(../img/gwc.png);
 }
 
+
 /* mxp_categoryinitializer */
 .initCategoriesMessage{
     padding: 20px;
+}
+/* Resource permission */
+.lock_ic{
+    background-image: url(../img/lock.png);
+
 }

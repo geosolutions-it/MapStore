@@ -103,7 +103,8 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
             auth: this.target.auth,
             searchUrl: this.target.geoSearchUsersUrl,
             url: this.target.geoBaseUsersUrl,
-            geoStoreBase: this.target.config.geoStoreBase
+            geoStoreBase: this.target.config.geoStoreBase,
+            target: this.target
     	});
 
         // apply headers on grid
