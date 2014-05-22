@@ -771,5 +771,16 @@ GeoExt.Lang.add("es", {
 	"gxp.plugins.FeatureManager.prototype":{
         noValidWmsVersionMsgTitle: 'WMS versión no válida',    
         noValidWmsVersionMsgText: "El plugin QueryForm no funciona con una versión origen WMS: "
-    } 
+    },
+
+    "gxp.plugins.CategoriesInitializer.prototype":{
+        geostoreInitializationTitleText: "Error en la inicialización",
+        geostoreInitializationText: "La respuesta de GeoStore no es la esperada",
+        notInitializedCategories: "Faltan gategorías: '{0}'. ¿Quiere crearlas?",
+        userFieldText: "Usuario",
+        passwordFieldText: "Contraseña",
+        acceptText: "Crear",
+        cancelText: "Cancelar",
+        notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>Si es administrador introduzca sus credenciales para crear las categorías: '{0}'</div>"
+    }
 });

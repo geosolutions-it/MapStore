@@ -322,3 +322,7 @@ left: 80px !important;
     background-image: url(../img/gwc.png);
 }
 
+/* mxp_categoryinitializer */
+.initCategoriesMessage{
+    padding: 20px;
+}
