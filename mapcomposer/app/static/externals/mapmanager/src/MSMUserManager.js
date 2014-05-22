@@ -558,7 +558,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                     ]});		
 				
 					// the top bar of the user manager window
-					this.tbar = [ this.inputSearch, this.searchButton, this.resetSearchButton, '-', this.createAddUserButton(),"->"];
+					this.tbar = [ this.inputSearch, this.searchButton, this.resetSearchButton, '-', this.createAddUserButton(),"-"];
 
                     if(this.addManageGroupsButton){
                         this.tbar.push(this.createManageGroupsButton());
