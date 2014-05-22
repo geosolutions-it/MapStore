@@ -301,9 +301,6 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                     this.filter.value = value;
                     this.fireEvent("change", this.filter, this);
                 },
-                "blur": function(field){
-                
-                },
                 scope: this
             }   
         };
@@ -323,12 +320,6 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                     this.filter.lowerBoundary = value;
                     this.fireEvent("change", this.filter, this);
                 },
-                /*"render": function(c) {
-                    Ext.QuickTips.register({
-                        target: c.getEl(),
-                        text: this.lowerBoundaryTip
-                    });
-                },*/
                 "autosize": function(field, width) {
                     field.setWidth(width);
                     field.ownerCt.doLayout();
@@ -350,12 +341,6 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                     this.filter.upperBoundary = value;
                     this.fireEvent("change", this.filter, this);
                 },
-                /*"render": function(c) {
-                    Ext.QuickTips.register({
-                        target: c.getEl(),
-                        text: this.upperBoundaryTip
-                    });
-                },*/
                 scope: this
             }
         };
@@ -388,65 +373,34 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             allowBlank: false,
             format: 'c'
         },defaultItemsProp);        
-        
-        /*var itemsBooleanFieldDefault = Ext.applyIf({
-            xtype: 'combo',
-            width: 60,
-            typeAhead: true,
-            triggerAction: 'all',
-            lazyRender:false,
-            mode: 'local',
-            autoLoad:true,
-            displayField: 'text',
-            valueField:'value',
-            value:'false',
-            readOnly:false,
-            editable: false,
-            store: new Ext.data.ArrayStore({
-                fields: [
-                    'value',
-                    'text'
-                ],
-                data: [
-                    ['false', 'FALSE'],
-                    ['true', 'TRUE']
-                ]
-            })
-        },defaultItemsProp);*/
             
         var itemsTextFieldLowerBoundary = Ext.apply({
-                    xtype: "textfield",
-                    //id: "items_string_lowerBoundary"
+                    xtype: "textfield"
                 },lowerBoundaryDefaultItemsProp);
 
         var itemsTextFieldUpperBoundary = Ext.apply({
-                    xtype: "textfield",
-                    //id: "items_string_upperBoundary"
+                    xtype: "textfield"
                 },upperBoundaryDefaultItemsProp);
 
         var itemsNumberDoubleFieldLowerBoundary = Ext.apply({
                     xtype: "numberfield",
-                    //id: "items_number_lowerBoundary",
                     allowDecimals:true,
                     decimalPrecision: 10
                 },lowerBoundaryDefaultItemsProp);
 
         var itemsNumberDoubleFieldUpperBoundary = Ext.apply({
                     xtype: "numberfield",
-                    //id: "items_number_upperBoundary",
                     allowDecimals:true,
                     decimalPrecision: 10
                 },upperBoundaryDefaultItemsProp);
                 
         var itemsNumberIntFieldLowerBoundary = Ext.apply({
                     xtype: "numberfield",
-                    //id: "items_number_lowerBoundary",
                     allowDecimals:false
                 },lowerBoundaryDefaultItemsProp);
 
         var itemsNumberIntFieldUpperBoundary = Ext.apply({
                     xtype: "numberfield",
-                    //id: "items_number_upperBoundary",
                     allowDecimals:false
                 },upperBoundaryDefaultItemsProp);                
 
@@ -506,16 +460,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                                 scope: this
                               }                      
                             ]);
-                        }/*else if(this.fieldType === "boolean"){
-                            store.filter([
-                              {
-                                fn   : function(record) {
-                                    return (record.get('name') === "=");
-                                },
-                                scope: this
-                              }                      
-                            ]);
-                        }*/ 
+                        }
                     },
                     scope: this
                 }
