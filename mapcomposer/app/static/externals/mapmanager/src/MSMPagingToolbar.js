@@ -301,7 +301,7 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
                     layout: "form",
                     items: [{
                         xtype: "msm_templatecombobox",
-                        ref: "templateCombo",
+                        ref: "../templateCombo",
                         name: "templateId",
                         templatesCategoriesUrl: this.templatesCategoriesUrl,
                         auth: this.auth
