@@ -60,7 +60,10 @@ GeoExt.Lang.add("en", {
         installApplicationText:"Install Android Application",
         loadThisSourceText:"Add this source to MapStore Mobile",
         scanThisApplicationText:"Scan this QR code to Install MapStore for Android",
-        scanThisSourceText:"Scan this QR code to add this source to your MapStore Mobile application. You need to install MapStore for Android before"
+        scanThisSourceText:"Scan this QR code to add this source to your MapStore Mobile application. You need to install MapStore for Android before",
+        mapPermissionText: "Permission",
+        tooltipMapPermissionText: "Edit map permissions by group",
+        mapPermissionTitleText: "Map Permission"
     },
     "MSMPagingToolbar.prototype": {
         desc: "New Map",
@@ -161,5 +164,32 @@ GeoExt.Lang.add("en", {
         downloadAppText: "Install Application",
         loadInMapStoreMobileText: "Mobile",
         openImageInANewTab: "Open Image in a New Tab"
+    },
+    "mxp.form.UserGroupComboBox.prototype":{
+        fieldLabel: "User group"
+    },
+    "mxp.widgets.ResourceGroupPermissionGrid.prototype":{
+        refreshText: "Refresh grid",
+        addText: "Add a new security rule based on user groups",
+        addNewSecurityRuleTitleText: "Create a new Security Rule",
+        editSecurityRuleTitleText: "Edit Security Rule for group '{0}'",
+        groupNameTitleText: "Error", 
+        groupNameExistsText: 'Already exists a rule for this group name, please select another one or edit his rule',
+        groupNameIncompleteText: 'Not group selected. Please select one before save.',
+        textSave:'Save',
+        textClose:'Close',
+        textGroupName: 'Group',
+        textUserName: 'User',
+        textCanRead: 'Can Read',
+        textCanWrite: 'Can Write',
+        editText: "Edit selected security rule",
+        deleteText: "Delete selected security rule",
+        trueBooleanText: "Yes",
+        falseBooleanText: "No",
+        confirmDeleteTitleText: "Delete Security Rule",
+        confirmDeleteText: "Do you really want to delete the rule for the '{0}' group?"
+    },
+    "mxp.widgets.ResourceGroupPermissionWindow.prototype":{
+        title:"Resource permissions"
     }
 });
