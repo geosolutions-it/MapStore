@@ -34,8 +34,8 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
     /** api: ptype = mxp_usermanager */
     ptype: "mxp_usermanager",
 
-    buttonText: "User manager",
-    tooltipText: "Open user manager",
+    buttonText: "User Manager",
+    tooltipText: "Open User Manager",
     groupsText: "Groups",
     usersText: "Users",
 
