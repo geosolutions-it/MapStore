@@ -276,6 +276,16 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 	 */
 	,defaultPermission: 7
 
+	/**
+	 * @cfg {Object} Create node button text by level. You can customize the node creation text by level with 
+	 *    a specific configuration like that:
+	 *    createNodeTextByLevel:{
+	 * 	       0: "New VA-SP",
+	 * 	       1: "New ServiceID"
+	 *    }
+	 */
+	,createNodeTextByLevel: null
+
 	// overrides
 	// {{{
 	/**
@@ -870,6 +880,7 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 
 		form.submit();
 	}
+
 	// }}}
 	// {{{
 	/**
@@ -877,15 +888,21 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 	 * @private
 	 */
 	,getContextMenu:function(selectedNode) {
-		// TODO: Generalize it
 		var newdirText = this.newdirText;
-		if(selectedNode){
-			if(!selectedNode.parentNode){
-				newdirText = "New VA-SP";
-			}else if(!selectedNode.parentNode.parentNode){
-				newdirText = "New ServiceID";
+
+		// use node text by level
+		if(this.createNodeTextByLevel){
+			var level = 0;
+			var parentNode = selectedNode? selectedNode.parentNode: null;
+			while(parentNode){
+				parentNode = parentNode.parentNode;
+				level++;
 			}
+			// this level is customized named
+			if(this.createNodeTextByLevel[level])
+				newdirText = this.createNodeTextByLevel[level];
 		}
+
 		// lazy create context menu
 		if(!this.contextmenu) {
             config = {};

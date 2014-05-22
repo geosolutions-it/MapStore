@@ -66,6 +66,16 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
      * @cfg {String} Optional new Folder text for this operation
      */
 
+    /**
+     * api:[createNodeTextByLevel]
+     * @cfg {Object} Create node button text by level. You can customize the node creation text by level with 
+     *    a specific configuration like that:
+     *    createNodeTextByLevel:{
+     *         0: "New VA-SP",
+     *         1: "New ServiceID"
+     *    }
+     */
+
     ,initComponent:function() {
 
         var treePanelConfig = {
@@ -80,6 +90,7 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
             ,ddGroup:this.browserDDGroup
             ,rootText:this.rootText
             ,checkNodeParameters:this.checkNodeParameters
+            ,createNodeTextByLevel: this.createNodeTextByLevel
             ,rootPermission: this.rootPermission
             ,defaultPermission: this.defaultPermission
             //,cmdParams:{root:this.root}
