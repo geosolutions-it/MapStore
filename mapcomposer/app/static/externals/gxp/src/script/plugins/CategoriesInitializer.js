@@ -43,7 +43,7 @@ gxp.plugins.CategoriesInitializer = Ext.extend(gxp.plugins.Tool,{
     passwordFieldText: "Password",
     acceptText: "Create",
     cancelText: "Cancel",
-    notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>Missing categories: '{0}'. <br/><br/> Please add administrator credentials or contact with the administrator</div>",
+    notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>If you are an administrator please insert your credentials to create these categories: '{0}'</div>",
     /** EoF i18n **/
 
     /** api: config[silentErrors] 
@@ -115,24 +115,29 @@ gxp.plugins.CategoriesInitializer = Ext.extend(gxp.plugins.Tool,{
      *  Check if the category names are present and create it if not found
      */
     checkAndCreateCategories: function(categoryNames){
-
         var me = this;
         this.geoStoreClient.getEntities({type: "category"}, function(categories){
-            for(var i = 0; i < categories.length; i++){
+            var toCreate = [];
+            for(var j = 0; j < categoryNames.length; j++){
                 var found = false;
-                for(var j = 0; j < categoryNames.length; j++){
-                    if(categories[i].name == categoryNames[j]){
-                        found = true;
-                        break;
+                if(categories.length){
+                    // is an array
+                    for(var i = 0; i < categories.length; i++){
+                        if(categories[i].name == categoryNames[j]){
+                            found = true;
+                            break;
+                        }
                     }
+                }else if (categories.name){
+                    // is only one and not in an array
+                    found = categories.name == categoryNames[j];
                 }
-                if(found){
-                    categoryNames.remove(categories[i].name);
+                if(!found){
+                    toCreate.push(categoryNames[j]);
                 }
             }
-            me.createCategories(categoryNames);
+            me.createCategories(toCreate);
         });
-
     },
 
     /** api: method[createCategories]
@@ -149,7 +154,7 @@ gxp.plugins.CategoriesInitializer = Ext.extend(gxp.plugins.Tool,{
                 var winCredentials = new Ext.Window({
                     iconCls:'user-icon',
                     title: this.geostoreInitializationTitleText,
-                    width: 300, height: 250, 
+                    width: 300, height: 200, 
                     resizable: true, 
                     modal: true, 
                     border:false,

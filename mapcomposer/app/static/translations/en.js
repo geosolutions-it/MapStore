@@ -775,6 +775,6 @@ GeoExt.Lang.add("en", {
         passwordFieldText: "Password",
         acceptText: "Create",
         cancelText: "Cancel",
-        notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>Missing categories: '{0}'. <br/><br/> Please add administrator credentials or contact with the administrator</div>"
+        notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>If you are an administrator please insert your credentials to create these categories: '{0}'</div>"
     }
 });
