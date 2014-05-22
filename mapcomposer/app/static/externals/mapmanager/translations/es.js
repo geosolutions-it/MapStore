@@ -161,5 +161,15 @@ GeoExt.Lang.add("es", {
         downloadAppText: "Cargar este mapa (instalar la aplicación primero)", 
         loadInMapStoreMobileText: "Mobile",
         openImageInANewTab: "Abrir imagen en una nueva pestaña"
+    },
+    "mxp.plugins.CategoriesInitializer.prototype":{
+        geostoreInitializationTitleText: "Error en la inicialización",
+        geostoreInitializationText: "La respuesta de GeoStore no es la esperada",
+        notInitializedCategories: "Faltan gategorías: '{0}'. ¿Quiere crearlas?",
+        userFieldText: "Usuario",
+        passwordFieldText: "Contraseña",
+        acceptText: "Crear",
+        cancelText: "Cancelar",
+        notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>Si es administrador introduzca sus credenciales para crear las categorías: '{0}'</div>"
     }
 });

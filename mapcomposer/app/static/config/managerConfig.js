@@ -40,6 +40,8 @@
         "loginManager": "loginTool",
         "actionTarget":null
     },{
+        "ptype": "mxp_categoryinitializer"
+    },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
         "actionTarget":{
