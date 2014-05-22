@@ -965,14 +965,14 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
 			/** private: method[showEmbedWindow]
 			 */
-			showEmbedWindow: function(mapId, mapDesc) {  
+			showEmbedWindow: function(mapId, mapDesc, templateId) {  
 				if(grid.embedWindow){
 					grid.embedWindow.close();
 				}
 				
-			    var curLang = this.grid.lang || 'en';            
+			    var curLang = this.grid.lang || 'en';          
 			    var url = this.grid.config.embedLink.embeddedTemplateName + "?locale=" + curLang + "&mapId=" + mapId
-			   
+			
 			    var embedMap = new EmbedMapDialog(Ext.applyIf({
 				   id: 'geobuilder-1',
 				   url: url
@@ -1009,12 +1009,46 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 						}
 					]
 			    });
+				
+				var composerUrl = url;
+			    if(templateId){
+					composerUrl += "&configId=" + templateId;
+					if(composerUrl.indexOf("viewer") != -1){
+						composerUrl = composerUrl.replace(/viewer/, "composer");
+					}					
+				}
+				
+				var urlComposerField = new Ext.form.TextField({
+					fieldLabel: grid.urlLabel,
+					labelStyle: 'font-weight:bold;',
+					width: 350,
+					value: embedMap.getAbsoluteUrl(composerUrl),
+					selectOnFocus: true,
+					readOnly: true
+			    }); 
+				
+				var urlComposerComposite = new Ext.form.CompositeField({
+					items:[
+						urlComposerField,
+						{
+							xtype: 'button',
+							tooltip: grid.showMapTooltip,
+							iconCls: "gx-map-go",
+							width: 20,
+							handler: function(){
+								var u = urlComposerField.getValue();
+								window.open(u);
+							}
+						}
+					]
+			    });
 		   
 			    var directURL = new Ext.form.FieldSet({
 					title: grid.embedURL,
 					labelWidth: 50,
 					items:[
-						urlCompositeField
+						urlCompositeField,
+						urlComposerComposite
 					],
 					bodyStyle: 'padding: 15px'
 			    });
@@ -1495,8 +1529,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         Ext.get(id).on('click', function(e){
                             var idMap = values.id,
                             	desc = values.name;
+								templateId = values.templateId;
 							
-                            expander.showEmbedWindow(idMap, desc);
+                            expander.showEmbedWindow(idMap, desc, templateId);
                         });
                     },
 					
