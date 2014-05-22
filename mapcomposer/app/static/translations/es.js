@@ -5,6 +5,7 @@
 	NOTE: configuration customization could override
 	these strings
 */
+
 GeoExt.Lang.add("es", {
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Nivel de zoom: {zoom}</div><div>Escala: 1:{scale}</div>",
@@ -612,6 +613,45 @@ GeoExt.Lang.add("es", {
         loadInMapStoreMobileText: "Mobile",
         openImageInANewTab: "Abrir imagen en una nueva pestaña"
 	},
+
+    "gxp.widgets.form.SpatialSelectorField.prototype" :{
+        title : "Región de Interés",
+        selectionMethodLabel : "Método de selección",
+        comboEmptyText : "Seleccione un método..",
+        comboSelectionMethodLabel : "Selección",
+        northLabel : "Norte",
+        westLabel : "Oeste",
+        eastLabel : "Este",
+        southLabel : "Sur",
+        setAoiTitle : "Bounding Box",
+        setAoiText : "Dibuja",
+        setAoiTooltip : "Permita al control de SetBox dibujar un ROI (Saltando la Caja) sobre el mapa",
+        areaLabel : "Área",
+        perimeterLabel : "Perímetro",
+        radiusLabel : "Rayo",
+        centroidLabel : "Centroide",
+        latitudeEmptyText : 'Y',
+        longitudeEmptyText : 'X',
+        geocodingFieldSetTitle : "GeoCoder",
+        geocodingPanelTitle : "Elegir una Localidad",
+        geocodingPanelBtnRefreshTxt : "Enseña Geometrías",
+        geocodingPanelBtnDestroyTxt : "Escondes Geometrías",
+        geocodingPanelBtnDeleteTxt : "Remueves Localidad",
+        geocodingPanelLocationHeader: "Localidad",
+        geocodingPanelCustomHeader: "Pariente",
+        geocodingPanelGeometryHeader: "WKT de la Geometría",
+        geocodingPanelBtnSelectAllTxt : "Selecciona Todo", 
+        geocodingPanelBtnDeSelectAllTxt : "Deseleziona Todo", 
+        geocodingPanelMsgRemRunningTitle : "Remueves Localidad",
+        geocodingPanelMsgRemRunningMsg : "¿Quieres remover las Localidades seleccionadas por la lista?",
+        geocodingFieldLabel : "Busca una Localidad",
+        geocodingFieldEmptyText : "Insertas Localidad...",
+        geocodingFieldBtnAddTooltip : "Añades una Localidad a la lista",
+        geocodingFieldBtnDelTooltip : "Limpias...",
+        selectionSummary : "Sumario de las Selecciones",
+        geocoderSelectorsLabels: ['Unión de las geometrías', 'Lista de los Área Administrativa', 'Área Administrativa y sottoaree'],
+        selectionReturnTypeLabel: "Tipo de selección"
+    },
     
     "gxp.plugins.WFSGrid.prototype":{
         displayMsgPaging: "Elementos {0} - {1} of {2}",
