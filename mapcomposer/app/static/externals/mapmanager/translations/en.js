@@ -161,5 +161,15 @@ GeoExt.Lang.add("en", {
         downloadAppText: "Install Application",
         loadInMapStoreMobileText: "Mobile",
         openImageInANewTab: "Open Image in a New Tab"
+    },
+    "mxp.plugins.CategoriesInitializer.prototype":{
+        geostoreInitializationTitleText: "Initializing Fail",
+        geostoreInitializationText: "Geostore response is not the expected",
+        notInitializedCategories: "Missing categories: '{0}'. Do you want to create it?",
+        userFieldText: "User",
+        passwordFieldText: "Password",
+        acceptText: "Create",
+        cancelText: "Cancel",
+        notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>Missing categories: '{0}'. <br/><br/> Please add administrator credentials or contact with the administrator</div>"
     }
 });
