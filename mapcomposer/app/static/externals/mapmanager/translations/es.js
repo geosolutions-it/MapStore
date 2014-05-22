@@ -60,7 +60,10 @@ GeoExt.Lang.add("es", {
         installApplicationText: "Instalar aplicación Android", 
         loadThisSourceText: "Agregar esta fuente para MapStore Mobile", 
         scanThisApplicationText: "Lea este código QR para instalar MapStore para Android", 
-        scanThisSourceText: "Lea este código QR para añadir esta fuente a su aplicación MapStore Mobile Necesita instalar MapStore para Android antes."
+        scanThisSourceText: "Lea este código QR para añadir esta fuente a su aplicación MapStore Mobile Necesita instalar MapStore para Android antes.",
+        mapPermissionText: "Permisos",
+        tooltipMapPermissionText: "Edita los permisos sobre mapa por grupo de usuarios",
+        mapPermissionTitleText: "Permisos sobre el mapa"
     },
     "MSMPagingToolbar.prototype": {
         desc: "Nuevo Mapa",
@@ -161,5 +164,32 @@ GeoExt.Lang.add("es", {
         downloadAppText: "Cargar este mapa (instalar la aplicación primero)", 
         loadInMapStoreMobileText: "Mobile",
         openImageInANewTab: "Abrir imagen en una nueva pestaña"
+    },
+    "mxp.form.UserGroupComboBox.prototype":{
+        fieldLabel: "Grupo"
+    },
+    "mxp.widgets.ResourceGroupPermissionGrid.prototype":{
+        refreshText: "Refrescar tabla",
+        addText: "Añade una nueva regla de seguridad basada en un grupo de usuario",
+        addNewSecurityRuleTitleText: "Añadir Regla de Seguridad",
+        editSecurityRuleTitleText: "Editar la Regla de Seguridad para el grupo '{0}'",
+        groupNameTitleText: "Error", 
+        groupNameExistsText: 'Ya existe una regla para este grupo, por favor, seleccione otro grupo o edite la regla',
+        groupNameIncompleteText: 'No ha seleccionado un grupo. Por favor, seleccione uno para salvar la regla',
+        textSave:'Guardar',
+        textClose:'Cerrar',
+        textGroupName: 'Grupo',
+        textUserName: 'Usuario',
+        textCanRead: 'Puede Leer',
+        textCanWrite: 'Puede Escribir',
+        editText: "Edita la regla de seguridad sleeccionada",
+        deleteText: "Borra la regla de seguridad sleeccionada",
+        trueBooleanText: "Sí",
+        falseBooleanText: "No",
+        confirmDeleteTitleText: "Borrar Regla de Seguridad",
+        confirmDeleteText: "¿Desea borrar realmente la regla de seguridad para el grupo '{0}'?"
+    },
+    "mxp.widgets.ResourceGroupPermissionWindow.prototype":{
+        title: "Permisos sobre el recurso"
     }
 });

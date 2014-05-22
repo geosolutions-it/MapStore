@@ -403,6 +403,24 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * 
     */        
     IframeWaitMsg: "Loading map...",
+    /**
+    * Property: mapPermissionText
+    * {string} set permission button text
+    * 
+    */        
+    mapPermissionText: "Permission",
+    /**
+    * Property: tooltipMapPermissionText
+    * {string} set permission button tooltip
+    * 
+    */        
+    tooltipMapPermissionText: "Edit map permissions by group",
+    /**
+    * Property: mapPermissionTitleText
+    * {string} set permission window title
+    * 
+    */        
+    mapPermissionTitleText: "Map Permission",
     
     /**
      * QR_Code mobile text
@@ -473,6 +491,24 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     */
     initComponent : function() {
 
+        // mocked login when is not present. Fixes error for 
+        if(!this.login){
+            this.login = {
+                role: "GUEST",
+                getCurrentUser: function(){
+                    return null;
+                },
+                getToken: function(){
+                    return null;
+                },
+                getCurrentUser: function(){
+                    return null;
+                },
+                isGuest: function(){
+                    return true;
+                }
+            };
+        }
 
         var searchString = this.defaultSearchString;
 		var config = this.config;
@@ -779,6 +815,22 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     bbar: new Ext.Toolbar({
                         items:[
                             '->',
+                            {
+                                text: grid.mapPermissionText,
+                                tooltip: grid.tooltipMapPermissionText,
+                                iconCls: 'lock_ic',
+                                handler: function(){
+                                    var  winnPermission = new mxp.widgets.ResourceGroupPermissionWindow({
+                                        resourceId: mapId,
+                                        title: grid.mapPermissionTitleText,
+                                        auth: grid.auth,
+                                        geostoreURL: grid.config.geoStoreBase,
+                                        target: grid.target
+                                    });
+                                    winnPermission.show();
+                                },
+                                scope:this
+                            },
                             {
                                 text: grid.textSubmitEditMetadata,
                                 tooltip: grid.tooltipSubmitEditMetadata,
