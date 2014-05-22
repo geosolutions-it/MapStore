@@ -637,5 +637,10 @@ GeoExt.Lang.add("fr", {
         noFilterSelectedMsgText: "Vous devez sélectionner au moins un filtre",    
         invalidRegexFieldMsgTitle: "Domaine invalide",    
         invalidRegexFieldMsgText: "Un ou plusieurs domaines sont incorrects!"
+    },
+	
+	"gxp.plugins.FeatureManager.prototype":{
+        noValidWmsVersionMsgTitle: 'WMS Version invalide',    
+        noValidWmsVersionMsgText: "Le queryForm plugin ne fonctionne pas avec la version une source WMS: "
     } 
 });

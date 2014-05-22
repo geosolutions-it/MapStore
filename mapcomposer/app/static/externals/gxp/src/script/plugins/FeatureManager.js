@@ -35,6 +35,18 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
     
     /** api: ptype = gxp_featuremanager */
     ptype: "gxp_featuremanager",
+
+    /** api: config[noValidWmsVersionMsgTitle]
+     *  ``String``
+     *  Title string for no valid WMS version (i18n).
+     */    
+    noValidWmsVersionMsgTitle: 'No valid WMS version',
+    
+    /** api: config[noValidWmsVersionMsgText]
+     *  ``String``
+     *  Text string for no valid WMS version (i18n).
+     */    
+    noValidWmsVersionMsgText: "The queryForm plugin doesn't work with WMS Source version: ",   
     
     /** api: config[maxFeatures]
      *  ``Number`` Default is 100
@@ -611,6 +623,18 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         if (source && source instanceof gxp.plugins.WMSSource) {
             source.getSchema(record, function(schema) {
                 if (schema === false) {
+                
+                    //information about why selected layers are not queriable.                
+                    var layer = record.get("layer");
+                    var wmsVersion = layer.params.VERSION;
+                    Ext.MessageBox.show({
+                        title: this.noValidWmsVersionMsgTitle,
+                        msg: this.noValidWmsVersionMsgText + wmsVersion,
+                        buttons: Ext.Msg.OK,
+                        animEl: 'elId',
+                        icon: Ext.MessageBox.INFO
+                    });
+                    
                     this.clearFeatureStore();
                 } else {
                     var fields = [], geometryName;
