@@ -512,7 +512,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 					items:[{
 						xtype: "combo",
 						fieldLabel: this.collapseModeText,
-						width: 128,
+						width: 150,
 						name: section + "CollapseMode",
 						mode : 'local',
 						lazyRender : false,
@@ -542,18 +542,22 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 					},{
 						xtype: "numberfield",
 						fieldLabel: this.widthText,
+						width: 150,
 						name: section + "Width"
 					},{
 						xtype: "numberfield",
 						fieldLabel: this.heightText,
+						width: 150,
 						name: section + "Height"
 					},{
 						xtype: "numberfield",
 						fieldLabel: this.minWidthText,
+						width: 150,
 						name: section + "MinWidth"
 					},{
 						xtype: "numberfield",
 						fieldLabel: this.maxHeightText,
+						width: 150,
 						name: section + "MaxHeight"
 					}]
 				}]
