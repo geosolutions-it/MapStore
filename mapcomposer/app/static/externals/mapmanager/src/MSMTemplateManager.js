@@ -108,7 +108,7 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
             layout:'fit',
             collapsible:true,
     		items:[{
-                    
+                    target:this.target,
 					xtype: 'msm_templategrid',
 					searchUrl: this.searchUrl,
 					ref: "../templateGrid",
@@ -141,6 +141,7 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
 				// 
 	    		items:[{
                     autoScroll: true,
+					target:this.target,
 	    			xtype: "msm_templatepanel",
     				ref: "../../templatePanel",
 	    			templates: this.templates,

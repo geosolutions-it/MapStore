@@ -84,6 +84,7 @@ mxp.plugins.TemplateManager = Ext.extend(mxp.plugins.Tool, {
              iconCls:'template_manger_ic',
             xtype: "msm_templatemanager",
             id: this.target.templateManagerId,
+			target:this.target,
             auth: this.target.auth,
             login: login.login,
             searchUrl: this.target.geoSearchCategoriesUrl,
