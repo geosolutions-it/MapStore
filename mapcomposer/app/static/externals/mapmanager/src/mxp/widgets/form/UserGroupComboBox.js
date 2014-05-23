@@ -147,7 +147,7 @@ mxp.form.UserGroupComboBox = Ext.extend(Ext.form.ComboBox, {
 	loadDefault: function(store){
 		if(this.defaultSelection){
 			store.each(function(record){
-				if(this.defaultSelection == record.json.name){
+				if(this.defaultSelection == record.get("name") || this.defaultSelection == record.get("groupName")){
 					this.setValue(record.get("id"));
 				}
 			}, this);	
