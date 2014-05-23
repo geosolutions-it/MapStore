@@ -16,6 +16,7 @@
     <property name="mapstore.version" value="1.6-SNAPSHOT"/>
     <property name="geostore.version" value="1.2-SNAPSHOT"/>
 	<property name="geonetwork.version" value="2.6.5-SNAPSHOT"/>
+	<property name="opensdi2.version" value="1.0-SNAPSHOT"/>
 
     <property name="app.proxy.geoserver" value=""/>
 	<property name="app.debug.proxy" value="true"/>
@@ -269,7 +270,8 @@
         <get src="http://maven.geo-solutions.it/it/geosolutions/servicebox/${servicebox.version}/servicebox-${servicebox.version}.war" dest="${release.dir}/mapstore/webapps/servicebox.war"/>        
         <get src="http://maven.geo-solutions.it/it/geosolutions/geostore/geostore-webapp/${geostore.version}/geostore-webapp-${geostore.version}.war" dest="${release.dir}/mapstore/webapps/geostore.war"/>        
         <get src="http://maven.geo-solutions.it/proxy/http_proxy/${httpproxy.version}/http_proxy-${httpproxy.version}.war" dest="${release.dir}/mapstore/webapps/http_proxy.war"/>
-        
+        <get src="http://maven.geo-solutions.it/it/geosolutions/opensdi2/opensdi2-web/${opensdi2.version}/opensdi2-web-${opensdi2.version}.war" dest="${release.dir}/mapstore/webapps/opensdi2-manager.war"/>
+		
         <!-- remove datasource configuration file from geostore.war -->
         <zip destfile="${release.dir}/mapstore/webapps/tmp.war"> 
                 <zipfileset src="${release.dir}/mapstore/webapps/geostore.war"> 
@@ -294,12 +296,21 @@
                 </zipfileset> 
         </zip> 
         <move file="${release.dir}/mapstore/webapps/tmp.war" tofile="${release.dir}/mapstore/webapps/servicebox.war" /> 
+		
+	    <!-- remove opensdi2-manager configuration file from opensdi2-manager.war -->
+        <zip destfile="${release.dir}/mapstore/webapps/tmp.war"> 
+                <zipfileset src="${release.dir}/mapstore/webapps/opensdi2-manager.war"> 
+                        <exclude name="**/opensdi-config-ovr.properties" /> 
+                </zipfileset> 
+        </zip> 
+        <move file="${release.dir}/mapstore/webapps/tmp.war" tofile="${release.dir}/mapstore/webapps/opensdi2-manager.war" /> 
         
         <echo file="${release.dir}/mapstore/VERSION.txt">
 			MapStore Version: ${mapstore.version}
 			GeoStore Version: ${geostore.version}
 			HttpProxy Version: ${httpproxy.version}
 			servicebox Version: ${servicebox.version}
+			opensdi2-manager Version: ${opensdi2.version}
 		</echo>
     </target>
 	

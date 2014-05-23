@@ -175,7 +175,7 @@ GeoExt.Lang.add("en", {
         acceptText: "Create",
         cancelText: "Cancel",
         notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>If you are an administrator please insert your credentials to create these categories: '{0}'</div>"
-	}
+	},
     "mxp.form.UserGroupComboBox.prototype":{
         fieldLabel: "User group"
     },
