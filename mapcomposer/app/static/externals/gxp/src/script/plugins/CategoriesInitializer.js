@@ -54,12 +54,12 @@ gxp.plugins.CategoriesInitializer = Ext.extend(gxp.plugins.Tool,{
     /** api: config[geostoreUser] 
      *  ``String`` GeoStore administrator user name
      */
-    geostoreUser: "admin",
+    //geostoreUser: "admin",
 
     /** api: config[geostorePassword] 
      *  ``String`` GeoStore administrator user password
      */
-    geostorePassword: "admin",
+    //geostorePassword: "admin",
 
     /** api: config[neededCategories] 
      *  ``Array`` Name of categories to be initialized in an array

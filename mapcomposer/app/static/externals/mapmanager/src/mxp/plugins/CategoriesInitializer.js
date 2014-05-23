@@ -59,10 +59,10 @@ mxp.plugins.CategoriesInitializer = Ext.extend(mxp.plugins.Tool, {
     /** api: config[adminCredentials] 
      *  ``Object`` GeoStore administrator user name and password
      */
-    adminCredentials: {
+    /*adminCredentials: {
         user: "admin",
         pass: "admin"
-    },
+    },*/
 
     /** api: config[neededCategories] 
      *  ``Array`` Name of categories to be initialized in an array
