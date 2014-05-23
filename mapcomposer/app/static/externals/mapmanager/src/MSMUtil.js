@@ -565,6 +565,8 @@
 			// ///////////////////////////////////////
 			var addedAttributes = false;
 			var xml = '<Resource>';
+			
+			/** This can remove all the attributes if present !!! do it in a better way as soon as possible **/
 			if (data.owner){
 				xml += 
 				'<Attributes>' +
@@ -575,21 +577,7 @@
 					'</attribute>';
 				addedAttributes = true;
 			}
-
-			// Add template id
-			if(data.templateId){
-				if(!addedAttributes){
-					// open attributes
-					xml += '<Attributes>';
-					addedAttributes = true;
-				}
-				xml += 
-                    '<attribute>' +
-                      '<name>templateId</name>' +
-                      '<type>STRING</type>' +
-                      '<value>' + data.templateId + '</value>' +
-                    '</attribute>';
-			}
+			
 
 			// close attributes
 			if(addedAttributes){

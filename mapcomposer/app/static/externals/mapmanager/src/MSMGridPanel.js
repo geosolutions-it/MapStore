@@ -878,7 +878,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 											name:mapName, 
 											description: mapDescription,
                                             // add the template id
-                                            templateId: templateId
+                                            //templateId: templateId
 										},
 										function(data){ // Callback function
 											 var reload = function(){
@@ -886,15 +886,32 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 													grid.getBottomToolbar().doRefresh();
 													expander.collapseAll();
 											  };
-
-											  Ext.Msg.show({
-												   title: grid.metadataSaveSuccessTitle,
-												   msg: data.statusText + " - " + grid.metadataSaveSuccessMsg,
-												   buttons: Ext.Msg.OK,
-												   fn: reload,
-												   icon: Ext.MessageBox.OK,
-												   scope: this
-											  });
+											  //save the template Id updating the attribute
+										      if(templateId){
+												var updateAttributeUrl  = geoStoreBase + "resources/resource/"+mapId+"/attributes/templateId/"+ templateId;
+												Ext.Ajax.request({
+												   url: updateAttributeUrl,
+												   method: 'PUT',
+												   headers:{
+													  'Authorization' : auth
+												   },
+												   scope: this,
+												   success: function(response, opts){
+														Ext.Msg.show({
+															   title: grid.metadataSaveSuccessTitle,
+															   msg: data.statusText + " - " + grid.metadataSaveSuccessMsg,
+															   buttons: Ext.Msg.OK,
+															   fn: reload,
+															   icon: Ext.MessageBox.OK,
+															   scope: this
+														  });
+												   },
+												   failure:  function(response, opts) {
+														grid.alertMsgServerError();
+												   }
+												});
+											  }
+											  
 										}
 									);
 
@@ -1210,7 +1227,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             },
                             beforeClose: function(p){
                                 var mapIframe = document.getElementById(p.iframeId);
-                                var modified = mapIframe.contentWindow.app.modified;
+                                var modified;
+								if(mapIframe.contentWindow.app){
+									modified = mapIframe.contentWindow.app.modified;
+								}
 
                                 if (modified == true && userProfile != '&auth=false'){
                                     if(!this.confirmClosed) {
