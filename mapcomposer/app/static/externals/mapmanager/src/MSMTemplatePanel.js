@@ -32,23 +32,23 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 	xtype: "msm_templatepanel",
 
 	/** i18n **/
-	title: 'Template Editor',
+	title: "Template Editor",
     headerTitleText: "Header",
     footerTitleText: "Footer",
     sectionContentTitleText: "{0} Content",
-    sectionCSSTitleText: 'CSS Style',
+    sectionCSSTitleText: "CSS Style",
     sectionLayoutConfigTitleText: "Layout config",
-    borderText: 'Border',
-    animeCollapseText: 'Anim. Collapse',
-    hideCollapseText: 'Hide Collapse',
-    splitText: 'Split',
-    collapsibleText: 'Collapsible',
-    collapseModeText: 'Collapse Mode',
-	widthText: 'Width',
-	heightText: 'Height',
-	minWidthText: 'Min Width',
-	maxHeightText: 'Max Height',
-    failSuccessTitle: 'Error',
+    borderText: "Border",
+    animeCollapseText: "Anim. Collapse",
+    hideCollapseText: "Hide Collapse",
+    splitText: "Split",
+    collapsibleText: "Collapsible",
+    collapseModeText: "Collapse Mode",
+	widthText: "Width",
+	heightText: "Height",
+	minWidthText: "Min Width",
+	maxHeightText: "Max Height",
+    failSuccessTitle: "Error",
     mapMetadataTitle: "Save a template",
     mapMedatataSetTitle: "",
     mapNameLabel: "Name",
@@ -56,6 +56,8 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
     addResourceButtonText: "Save",
     templateSuccessMsgText: "Saved succesfully",
     templateSuccessTitleText: "OK",
+    newTemplateText: "New",
+    saveTemplateText: "Save",
     /** EoF i18n **/
 
 	/** api: config[collapseModes]
@@ -107,12 +109,12 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 				name: "templateName"
 			},{
 				xtype: "button",
-				text: "New",
+				text: this.newTemplateText,
 				handler: this.onReset, 
 				scope: this
 			},{
 				xtype: "button",
-				text: "Save",
+				text: this.saveTemplateText,
 				handler: this.onSave, 
 				scope: this
 			}]

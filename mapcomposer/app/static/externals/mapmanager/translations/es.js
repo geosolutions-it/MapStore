@@ -13,8 +13,8 @@ GeoExt.Lang.add("es", {
         gridName: "Nombre",
         gridOwner: "Propietario",
         gridDescription: "Descripción",
-        gridDateCreation: "Fecha de creación",
-        gridLastUpdate: "Última actualización",
+        gridDateCreation: "Fecha De Creación",
+        gridLastUpdate: "Última Actualización",
         errorTitle: "Fallo en la petición",
         errorMsg_500: "¡El servidor ha devuelto un código HTTP 500! </br></br>¡Compruebe el log!",
         errorMsg_501: "¡El servidor ha devuelto un código HTTP 501! </br></br>¡El servidor no soporta todo lo necesario para completar la petición!",
@@ -23,6 +23,8 @@ GeoExt.Lang.add("es", {
 		textUserManager: 'Administración de usuarios',
         textViewMap: '', //"View Map",
         tooltipViewMap: "Ver Mapa",
+        textEmbedMap: '', //"Embed Map",
+        tooltipEmbedMap: "Insertar Mapa",
         textCopyMap: '', //"Clone Map",
         tooltipCopyMap: "Clonar Mapa",
         textEditMap: '', //"Edit Map",
@@ -52,7 +54,7 @@ GeoExt.Lang.add("es", {
         IframeComposerTitle: "Editor del Map - ",
         IframeWaitMsg :"Cargando mapa",
 		showMapTooltip: "Mostrar en una nueva ventana",
-		embedCodeTitle: "Código embebido",
+		embedCodeTitle: "Código Embebido",
 		embedURL: "URL directa",	
 		urlLabel: "URL",
 		exportMapText: "Enlazar Mapa",
@@ -99,7 +101,7 @@ GeoExt.Lang.add("es", {
     },
     "UserManagerView.prototype":{
         textGeneral: "General", 
-        textAttributes: "atributos", 
+        textAttributes: "Atributos", 
         textGroups: "Grupos",
 		textName: 'Nombre',
 		textPassword: 'Contraseña',
@@ -123,7 +125,7 @@ GeoExt.Lang.add("es", {
 		textCancel: 'Cancelar',
 		invalidFormMsg: 'Algunos campos son inválidos',
 		textAddUser: '', 
-		textAddUserTitle: 'Añadir usuario',
+		textAddUserTitle: 'Añadir Usuario',
 		tooltipAddUser: 'Crear un nuevo usuario',
 		textTitle: 'Administrador de Usuarios',
 		tooltipSearch: "Buscar",
@@ -137,7 +139,7 @@ GeoExt.Lang.add("es", {
         textGroupName: "Nombre del grupo",
         textId: "Id",
         textDescription: "Descripción",
-        textAddGroupButton: "Crear un nuevo grupo",
+        textAddGroupButton: "Crear Un Nuevo Grupo",
         groupNameAlreadyTaken: "Nombre del grupo ya tomadas",
         titleConfirmDeleteMsg: "Confirme que quiere eliminar el grupo",
         textConfirmDeleteMsg: "¿Está seguro que desea eliminar este grupo?",
@@ -202,5 +204,59 @@ GeoExt.Lang.add("es", {
     },
     "mxp.widgets.ResourceGroupPermissionWindow.prototype":{
         title: "Permisos sobre el recurso"
-    }
+    },
+    "MSMTemplatePanel.prototype":{
+        title: "Editor de Plantillas",
+        headerTitleText: "Encabezamiento",
+        footerTitleText: "Pie de página",
+        sectionContentTitleText: "Contenido de {0}",
+        sectionCSSTitleText: "Estilo CSS",
+        sectionLayoutConfigTitleText: "Configuración de Layout",
+        borderText: "Margen",
+        animeCollapseText: "Anim. Plega",
+        hideCollapseText: "Ocultar Plega",
+        splitText: "División",
+        collapsibleText: "Plegable",
+        collapseModeText: "Modo Plega",
+        widthText: "Ancho",
+        heightText: "Altura",
+        minWidthText: "Min Ancho",
+        maxHeightText: "Max Altura",
+        failSuccessTitle: "Error",
+        mapMetadataTitle: "Guardar Plantilla",
+        mapMedatataSetTitle: "",
+        mapNameLabel: "Nombre",
+        mapDescriptionLabel: "Descripción", 
+        addResourceButtonText: "Guardar",
+        templateSuccessMsgText: "Guardado con éxito",
+        templateSuccessTitleText: "OK",
+	    newTemplateText: "Nuevo",
+	    saveTemplateText: "Guardar"
+    },
+	"MSMTemplateGridPanel.prototype":{
+		textId: "Id",
+		textName: "Nombre",
+		textOwner: "Propietario",
+		textCreation: "Fecha de creación",
+		textLastUpdate: "Última Actualización", 
+	    tooltipSearch: "Escriba un nombre para buscar",
+	    textReset: "Reset",
+	    tooltipReset: "Búsqueda limpio",
+	    failSuccessTitle: "Error",
+	    resizerText: "Plantillas por página",
+	    tooltipDelete: "Eliminar Plantilla",
+		deleteTemplateTitleText: "Atención",
+		deleteTemplateBodyText: "¿Quieres eliminar esta Plantilla?"
+	},
+    "mxp.plugins.MapManager.prototype":{
+        buttonText: "Gestor De Mapa",
+        tooltipText: "Abrir Gestor De Mapa"
+    },
+    "mxp.plugins.TemplateManager.prototype":{
+        buttonText: "Plantillas",
+        tooltipText: "Abrir Gestor De Plantillas"
+    },
+	"MSMTemplateManager.prototype":{
+		title: "Gestor De Plantillas"
+	}
 });

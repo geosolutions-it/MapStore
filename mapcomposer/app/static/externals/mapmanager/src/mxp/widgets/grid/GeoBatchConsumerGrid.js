@@ -94,7 +94,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
             } else if (c == 'RUNNING') {
                 return 'row-yellow';
             }else if (c == 'FAIL'){
-                return 'row-red'
+                return 'row-red';
             }
         }
     },
@@ -132,7 +132,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
                 fields: [{name: 'status', mapping: '@status'},
                    'uuid',
                    'startDate',
-                   'description'],
+                   'description']
             }),
             listeners:{
                 beforeload: function(a,b,c){

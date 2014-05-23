@@ -293,7 +293,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * {string} string to add in EditMetadata button
     * 
     */
-    textSubmitEditMetadata: '', //'Update',
+    textSubmitEditMetadata: 'Update',
 
     /**
     * Property: titleConfirmCloseEditMetadata
