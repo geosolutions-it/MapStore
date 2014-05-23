@@ -156,7 +156,7 @@ mxp.widgets.ResourceGroupPermissionGrid = Ext.extend(Ext.grid.GridPanel, {
                     },{
                         name: 'groupId', 
                         mapping: 'group/id'
-                    }],
+                    }]
             }),
             listeners:{
                 beforeload: function(a,b,c){
