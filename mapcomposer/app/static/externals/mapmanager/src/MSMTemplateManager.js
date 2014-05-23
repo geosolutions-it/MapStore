@@ -31,7 +31,7 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
  	/** xtype = msm_templatemanager **/
     xtype: "msm_templatemanager",
 
-	title: 'Template Manager',
+	title: "Template Manager",
     
     /** api: config[adminUrl]
      *  ``String``

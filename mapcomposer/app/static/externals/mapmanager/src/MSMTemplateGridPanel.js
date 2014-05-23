@@ -40,7 +40,7 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
     tooltipSearch: "Type a name to search",
     textReset: "Reset",
     tooltipReset: "Clean search",
-    failSuccessTitle: 'Error',
+    failSuccessTitle: "Error",
     resizerText: "Templates per page",
     tooltipDelete: "Delete template",
 	deleteTemplateTitleText: "Attention",
