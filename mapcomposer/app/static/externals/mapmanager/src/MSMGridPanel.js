@@ -1145,7 +1145,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			    grid.embedWindow = new Ext.Window({
 					layout: 'fit',
 					width: 500, 
-                    height: 245 +  (this.grid.config.embedLink.showDirectURL  == true? 100 : 0) + (showQR  ? embedMap.qrCodeSize + 60 :0),
+                    height: 245 +  (this.grid.config.embedLink.showDirectURL  == true? 150 : 0) + (showQR  ? embedMap.qrCodeSize + 60 :0),
 
 					//height: this.grid.config.embedLink.showDirectURL === true ? 345 : 245,
 					title: mapDesc,
@@ -1292,7 +1292,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 					getSocialLinksId: function(mapid,name,description) {
 					
 						var divid = mapid + '_social_div', longUrl = grid.socialUrl + 'viewer?locale=' + grid.lang + '&mapId=' + mapid;
-							
+
 						var shortener = new Google.Shortener({
 								config: grid.config
 							}).failure(function(resp) {
