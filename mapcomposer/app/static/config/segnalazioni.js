@@ -9,7 +9,7 @@
         "gsacque": {
 			"ptype": "gxp_wmssource",
 			"title": "Acque GeoServer",
-			"url": "http://10.80.4.45/geoserver/ows",
+			"url": "http://10.80.4.43/geoserver/ows",
 			"layerBaseParams": {
 					"TILED": true,
                     "FORMAT":"image/png8",
@@ -257,13 +257,10 @@
             "displayProjectionCode":"EPSG:4326",
             "customCss": "text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
 		},{
-            "actions":[
-			 "-"
-		  ]
-       },{
 			"ptype": "gxp_dynamicgeocoder",
 			"outputTarget": "paneltbar",
 			"toggleGroup": "toolGroup",
+            "outputConfig":{"width":450},
             "fadeOut":false,
 			"index": 23
 		},{
