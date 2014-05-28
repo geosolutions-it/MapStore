@@ -131,6 +131,12 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
      */
     autoLoad: true,
     
+    /**
+     * api: config[xy]
+     * ``Boolean`` Order of the GeoJson coordinate coordinate true:(x,y) or false:(y,x)
+     */ 
+    xy: true,
+    
     // start i18n
     displayMsgPaging: "Displaying topics {0} - {1} of {2}",
     emptyMsg: "No topics to display",
@@ -733,7 +739,9 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             +"&typeName="+this.featureType                
             +"&srs="+this.srsName
             +otherParams,
-            format: new OpenLayers.Format.GeoJSON()
+            format: new OpenLayers.Format.GeoJSON({
+                xy: this.xy
+            })
         }); 
         
         return protocol;

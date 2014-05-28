@@ -33,6 +33,13 @@ OpenLayers.Format.GeoJSON = OpenLayers.Class(OpenLayers.Format.JSON, {
     ignoreExtraDims: false,
     
     /**
+     * APIProperty: xy
+     * {Boolean} Order of the GeoJson coordinate coordinate true:(x,y) or false:(y,x)
+     * Changing is not recommended, a new Format should be instantiated.
+     */ 
+    xy: true,
+    
+    /**
      * Constructor: OpenLayers.Format.GeoJSON
      * Create a new parser for GeoJSON.
      *
@@ -278,7 +285,12 @@ OpenLayers.Format.GeoJSON = OpenLayers.Class(OpenLayers.Format.JSON, {
                   array.length != 2) {
                     throw "Only 2D points are supported: " + array;
             }
-            return new OpenLayers.Geometry.Point(array[0], array[1]);
+
+            if(this.xy){
+                return new OpenLayers.Geometry.Point(array[0], array[1]);
+            }else{
+                return new OpenLayers.Geometry.Point(array[1], array[0]);
+            }
         },
         
         /**

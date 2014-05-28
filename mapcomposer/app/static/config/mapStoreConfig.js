@@ -233,10 +233,17 @@
 			"srsName": "EPSG:4326",
 			"fieldForSort": "time",
 			"sortDirection": "DESC",
+			"xy": false,
             "actionColumns" : [{
 	                "type": "checkDisplay",
 	                "layerName": "Highlight Layer",
-	                "sourceSRS": "EPSG:4326"
+	                "sourceSRS": "EPSG:4326",
+	                "style":{
+		                "strokeColor": "#FF0000",
+		                "strokeWidth": 2,
+		                "fillColor": "#FFFFFF",
+		                "fillOpacity": 0.2
+		            }
 	            },{
 	                "type": "zoom",
 	                "sourceSRS": "EPSG:4326"
