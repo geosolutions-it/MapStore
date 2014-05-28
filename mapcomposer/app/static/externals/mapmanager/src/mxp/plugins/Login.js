@@ -71,10 +71,7 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
         this.login.on("logout", this.onLogout, this);
 
         // for external header, we don't need the login button
-        var actions = [this.login.userLabel, Ext.create({xtype: 'tbseparator'})];
-        if(!this.externalHeaders){
-            actions.push(this.login.loginButton);
-        }
+        var actions = [this.login.userLabel, Ext.create({xtype: 'tbseparator'}), this.login.loginButton];
 
         return mxp.plugins.TemplateManager.superclass.addActions.apply(this, [actions]);
     },
@@ -93,11 +90,36 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
      */
     onLogout: function(){
         this.target.loggedOut = true;
-        this.target.onLogout();
+
         if(this.externalHeaders){
-            this.fireEvent("logout");
-            //TODO: the authorization is not handled in the local form. Reload to show the external prompt
-            //window.location.reload();
+            // clean the authentication and refresh page
+            var refreshUrl = window.location.href;
+            var geostoreUrl = this.target.initialConfig.geoStoreBase;
+            function logout() {
+                var xmlhttp;
+                if (window.XMLHttpRequest) {
+                      xmlhttp = new XMLHttpRequest();
+                }
+                // code for IE
+                else if (window.ActiveXObject) {
+                  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                if (window.ActiveXObject) {
+                  // IE clear HTTP Authentication
+                  document.execCommand("ClearAuthenticationCache");
+                  window.location.href = refreshUrl;
+                } else {
+                    xmlhttp.open("GET", geostoreUrl, true, "logout", "logout");
+                    xmlhttp.send("");
+                    xmlhttp.onreadystatechange = function() {
+                        if (xmlhttp.readyState == 4) {
+                            window.location.href= refreshUrl;
+                        }
+                    }
+                }
+                return false;
+            }
+            logout();
         }else{
             this.fireEvent("logout");
         }
