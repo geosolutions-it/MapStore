@@ -415,12 +415,12 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
         },defaultItemsProp);*/
             
         var itemsTextFieldLowerBoundary = Ext.apply({
-                    xtype: "textfield",
+                    xtype: "textfield"
                     //id: "items_string_lowerBoundary"
                 },lowerBoundaryDefaultItemsProp);
 
         var itemsTextFieldUpperBoundary = Ext.apply({
-                    xtype: "textfield",
+                    xtype: "textfield"
                     //id: "items_string_upperBoundary"
                 },upperBoundaryDefaultItemsProp);
 
