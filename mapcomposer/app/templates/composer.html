@@ -413,7 +413,9 @@
 				scaleOverlayUnits: serverConfig.scaleOverlayUnits,
                 georeferences: georeferences_data,
                 map: serverConfig.map,
-				customTools: serverConfig.customTools
+				customTools: serverConfig.customTools,
+				user: serverConfig.user,
+				config: serverConfig
             }, mapIdentifier, authorization && authorization == "false" ? null: authorization, fullScreen, templateId);   
             
             app.on({

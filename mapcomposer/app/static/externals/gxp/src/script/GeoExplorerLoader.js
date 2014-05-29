@@ -31,6 +31,13 @@
  *     Prepare a GeoExplorer configuration based on some custom configurations
  */
 var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {  
+
+    /**
+     * Property: externalHeaders
+     * {Boolean} Use external headers
+     * 
+     */
+    externalHeaders: false,
    
 
     /** private: method[constructor]
@@ -45,6 +52,7 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
         this.geoStoreBaseURL = config != null && config.geoStoreBaseURL ? config.geoStoreBaseURL : ('http://' + window.location.host + '/geostore/rest/');
         this.mapStoreDebug = mapStoreDebug;
         this.proxy = "";
+        this.externalHeaders = this.config.externalHeaders;
         
         this.addEvents(
             /** api: event[loaddefaultconfig]
@@ -75,6 +83,20 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
         this.loadDefaultConfig(customConfigName, mapStoreDebug);
     },
 
+    /** private: method[loadConfiguration]
+     *  Load configuration
+     */
+    loadConfiguration: function(customConfigName, mapStoreDebug){
+        var serverConfig = this.config;
+        var templateId = this.templateId;
+
+        if(this.externalHeaders){
+            this.externalHeadersConfig(customConfigName, mapStoreDebug);
+        }else{
+            this.loadDefaultConfig(customConfigName, mapStoreDebug);
+        }
+    },
+
     /** private: method[loadDefaultConfig]
      *  Load default configuration
      */
@@ -86,10 +108,44 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
             Ext.apply(this.config, config);
             this.geoStoreBaseURL = config != null && config.geoStoreBase ? config.geoStoreBase : this.geoStoreBaseURL;
             this.proxy = this.mapStoreDebug === true ? "/proxy/?url=" : config.proxy ? config.proxy : "";
-            this.loadTemplateConfig();
+            if(this.config.externalHeaders){
+                this.loadUserInformation();
+            }else{
+                this.loadTemplateConfig();
+            }
         });
 
         this.loadData(customConfigName ? "config/" + customConfigName + ".js"  : "config/mapStoreConfig.js", null, "loaddefaultconfig");      
+    },
+
+   /** private: method[externalHeadersConfig]
+    *  Get the login information if available, store username and load custom configuration
+    */ 
+    loadUserInformation: function(){
+        var headers = {
+            'Accept': 'application/json'
+        };
+        if(this.auth){
+            headers['Authorization'] = this.auth;
+        }
+        Ext.Ajax.request({
+            method: 'GET',
+            url: this.geoStoreBaseURL + 'users/user/details/',
+            scope: this,
+            headers: headers,
+            success: function(response, form, action) {
+                var user = Ext.util.JSON.decode(response.responseText);
+                if (user.User) {
+                    Ext.apply(this.config,{
+                        user: user.User
+                    });
+                }
+                this.loadTemplateConfig();
+            },
+            failure: function(response, form, action) {
+                this.loadTemplateConfig();
+            }
+        });
     },
 
     /** private: method[loadTemplateConfig]

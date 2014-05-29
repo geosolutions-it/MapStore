@@ -26,6 +26,11 @@
         <role>ADMIN</role>
     </User>
     <User>
+        <name>myuser</name>
+        <newPassword>myuser</newPassword>
+        <role>USER</role>
+    </User>
+    <User>
         <name>user</name>
         <newPassword>user</newPassword>
         <role>USER</role>

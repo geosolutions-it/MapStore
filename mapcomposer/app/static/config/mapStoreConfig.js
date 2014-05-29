@@ -1,7 +1,9 @@
 {
    
    "scaleOverlayMode": "basic",
+   "adminUrl":"http://mariss.geo-solutions.it/opensdi2-manager/",
    "geoStoreBase":"http://mariss.geo-solutions.it/opensdi2-manager/facade/geostore/rest/",
+   "externalHeaders": true,
    "header":{
         "container": {
 			"border": false,
@@ -319,6 +321,15 @@
 			"downloadGridId": "downloadgrid",
             "filterByExtent": true,
 	      	"autoExpandPanel": "east"
+       },{
+            "ptype": "gxp_planeditor",
+            "outputTarget": "west",
+            "layoutConfig":{
+                "xtype": "form",
+                "buttonAlign": "right",
+                "autoScroll":true,
+                "frame":true
+            }
        }
 	]
 }
