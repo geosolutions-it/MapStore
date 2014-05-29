@@ -313,14 +313,14 @@
 		                },
 		                {
 		                    "name":"geometry",
-		                    "mapping":"geometry "
+		                    "mapping":"geometry"
 		                }
 		            ],
 		            "geocoderTypeSortBy":null,
 		            "geocoderTypeQueriableAttributes":[
 		                "NOME_UU"
 		            ],
-		            "spatialOutputCRS": "EPSG:3003",
+		            "spatialOutputCRS": "EPSG:4326",
 		            "geocoderTypePageSize": 10,
 		            "zoomToCurrentExtent": true
 		        }
