@@ -345,6 +345,24 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
               },{
                         "name": "tema_max",              
                         "mapping": "tema_max"
+              },{
+                        "name": "tema_low_soc",              
+                        "mapping": "tema_low_soc"
+              },{
+                        "name": "tema_medium_soc",              
+                        "mapping": "tema_medium_soc"
+              },{
+                        "name": "tema_max_soc",              
+                        "mapping": "tema_max_soc"
+              },{
+                        "name": "tema_low_env",              
+                        "mapping": "tema_low_env"
+              },{
+                        "name": "tema_medium_env",              
+                        "mapping": "tema_medium_env"
+              },{
+                        "name": "tema_max_env",              
+                        "mapping": "tema_max_env"
               }],
              proxy: this.getWFSStoreProxy(this.formulaFeature, null, 'ordine_visibilita') , 
              autoLoad: true 
@@ -1989,13 +2007,17 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         obj.seriousness = this.getComboRecord(this.seriousness).data; //this.seriousness.getValue();
         
         if(formulaRec) {
-            var low = parseFloat(formulaRec.get('tema_low'));
-            var medium = parseFloat(formulaRec.get('tema_medium'));
-            var max = parseFloat(formulaRec.get('tema_max'));
+            var low_soc = parseFloat(formulaRec.get('tema_low_soc') || formulaRec.get('tema_low'));
+            var medium_soc = parseFloat(formulaRec.get('tema_medium_soc') || formulaRec.get('tema_medium'));
+            var max_soc = parseFloat(formulaRec.get('tema_max_soc') || formulaRec.get('tema_max'));
+            
+            var low_env = parseFloat(formulaRec.get('tema_low_env') || formulaRec.get('tema_low'));
+            var medium_env = parseFloat(formulaRec.get('tema_medium_env') || formulaRec.get('tema_medium'));
+            var max_env = parseFloat(formulaRec.get('tema_max_env') || formulaRec.get('tema_max'));
             
             obj.themas = {
-                'sociale': [low,medium,max], //Ext.getCmp('rischio_sociale_multislider').getValues(),
-                'ambientale': [low,medium,max] //Ext.getCmp('rischio_ambientale_multislider').getValues()
+                'sociale': [low_soc,medium_soc,max_soc], //Ext.getCmp('rischio_sociale_multislider').getValues(),
+                'ambientale': [low_env,medium_env,max_env] //Ext.getCmp('rischio_ambientale_multislider').getValues()
             };
         } else if(obj.processing === 4) {
             // damage calculus
