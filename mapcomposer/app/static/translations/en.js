@@ -544,7 +544,13 @@ GeoExt.Lang.add("en", {
 				"layerEmptyText": "The selected Layer is empty",
 				"notVectorlayerText": "Please select only Vector Layer",
 				"notLayerSelectedText": "Please select a Vector Layer"
-			} 
+			},
+            "geojson": {
+                "saveText" : "Export GeoJSON",
+                "loadText" : "Import GeoJSON",
+                "uploadWindowTitle" : "Import GeoJSON file",
+                "downloadWindowTitle" : "Export GeoJSON file"
+            }  
         }
     },
    

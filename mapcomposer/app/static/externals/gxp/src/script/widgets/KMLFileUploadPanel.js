@@ -137,9 +137,11 @@ gxp.KMLFileUploadPanel = Ext.extend(Ext.FormPanel, {
                         this.url += 'KMZUploader';
                         break;
                     default:
+                        // now by default it try to use FileUploader
+                        this.url += 'FileUploader';
                         // this code should not be executed
-                        console.log('unknown extention: cannot upload file.');
-                        return;
+                        // console.log('unknown extention: cannot upload file.');
+                        // return;
                 }
 			
                 var map = this.map;

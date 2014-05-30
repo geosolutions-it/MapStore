@@ -70,8 +70,21 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             "layerEmptyText": "The selected Layer is empty",
             "notVectorlayerText": "Please select only Vector Layer",
             "notLayerSelectedText": "Please select a Vector Layer"
-        } 
+        },
+    
+        "geojson": {
+            "saveText" : "Export GeoJSON",
+            "loadText" : "Import GeoJSON",
+            "uploadWindowTitle" : "Import GeoJSON file",
+            "downloadWindowTitle" : "Export GeoJSON file"
+        }  
     },
+    defaultSaveText: "Export {0}",
+    defaultLoadText: "Import {0}",
+    defaultUploadWindowTitle: "Import {0} file",
+    defaultDownloadWindowTitle: "Export {0} file",
+    defaultTitleText: "{0} Export",
+    defaultEmptyLayerMessageText: "The selected Layer is empty",
     /** end i18n */
     
     /** api: config[exportConf]
@@ -87,9 +100,21 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             alternativeStyle: false,
             layer: null,
             dontAskForLayerName: false
-        }        
+        },    
+        "geojson": {
+            panelConfig:{
+                fieldEmptyText: "Browse for GeoJSON files...",
+                validFileExtensions: [".json", ".geojson"],
+                deafultLayerName: null,
+                dontAskForLayerName: false
+            }
+        }
     },    
-
+    
+    /** api: config[zoomToLayerExtent]
+     *  ``Boolean``
+     *  Flag to zoom to the imported layer extent
+     */
     zoomToLayerExtent:true,
     
     /**
@@ -103,6 +128,10 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             iconClsExport:  "gxp-icon-export-map"
         },
         "kml/kmz": {
+            iconClsImport:  "gxp-icon-import-kml",
+            iconClsExport:  "gxp-icon-export-kml" 
+        },
+        "geojson": {
             iconClsImport:  "gxp-icon-import-kml",
             iconClsExport:  "gxp-icon-export-kml" 
         }
@@ -160,9 +189,18 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
         
         for(var i=0; i< this.types.length; i++){
             type=this.types[i];
+
+            // get labels
+            var saveText = String.format(this.defaultSaveText, type);
+            var loadText = String.format(this.defaultLoadText, type);
+            if(this.labels[type]){
+                saveText = this.labels[type].saveText ? this.labels[type].saveText : saveText;
+                loadText = this.labels[type].loadText ? this.labels[type].loadText : loadText;
+            }
+
             actions.push({
-                tooltip: this.labels[type].saveText,
-                text: this.labels[type].saveText,
+                tooltip: saveText,
+                text: saveText,
                 fileType: type,
                 handler: function() {
                     self.exportFile(this.fileType)
@@ -171,8 +209,8 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             });
           
             actions.push({
-                tooltip: this.labels[type].loadText,
-                text: this.labels[type].loadText,
+                tooltip: loadText,
+                text: loadText,
                 fileType: type,
                 handler: function() {    
                     self.importFile(this.fileType);
@@ -225,6 +263,8 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             case "kml/kmz":
                 this.exportKML();
                 break;
+            default:
+                this.exportLayerFile(type);
         } 
     },
     
@@ -236,6 +276,8 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             case "kml/kmz":
                 this.importKML();
                 break;
+            default:
+                this.importLayerFile(type);
         }
     },
         
@@ -402,6 +444,136 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
 		}
                 
 		//self.exportButton.toggle( false );
+    },
+    
+    exportLayerFile: function(type){
+        var layer;
+        var self = this;
+        var map = this.target.mapPanel.map;       
+        try {
+            layer = (this.exportConf[type].layer) ? this.exportConf[type].layer : this.target.selectedLayer.data.layer;
+        }catch (ex){
+            layer = null;
+        }
+
+        // title and message
+        var titleText = String.format(this.defaultTitleText, type);
+        var messageText = this.defaultEmptyLayerMessageText;
+        if(this.labels[type]){
+            titleText = this.labels[type].exportTitleText ? this.labels[type].exportTitleText : titleText;
+            messageText = this.labels[type].messageText ? this.labels[type].messageText : messageText;
+        }
+     
+        if(layer){
+            var features = new Array;
+            if(layer instanceof OpenLayers.Layer.Vector){
+                        
+                if(layer.features.length>0){
+                            
+                    for (var i=0; i<layer.features.length; i++){
+                        var feature = layer.features[i].clone();
+                        if(feature.geometry){
+                            feature.attributes.name = feature.attributes.name || '';
+                            features.push( feature ); 
+                        }
+                    }
+                        
+                    if(map.getProjection() != "EPSG:4326"){
+                        
+                        for(var i=0; i<features.length; i++){
+                            if(features[i] && features[i].geometry){
+                                features[i].geometry = features[i].geometry.transform(map.getProjection(), new OpenLayers.Projection("EPSG:4326"));
+                            }
+                        } 
+
+                        self.exportLayerFeatures(features, type);
+                    }else{
+                        self.exportLayerFeatures(features, type);  
+                    }
+                }else{
+                    Ext.Msg.show({
+                        title: titleText,
+                        msg: messageText,
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.MessageBox.INFO
+                    });
+                }
+            }else{
+                Ext.Msg.show({
+                    title: titleText,
+                    msg: messageText,
+                    buttons: Ext.Msg.OK,
+                    icon: Ext.MessageBox.INFO
+                });
+            }
+        }else{
+            Ext.Msg.show({
+                title: titleText,
+                msg: messageText,
+                buttons: Ext.Msg.OK,
+                icon: Ext.MessageBox.INFO
+            });
+        }
+                
+        //self.exportButton.toggle( false );
+    },
+
+    getExportFormat: function(type){
+        switch(type){
+            case "kml/kmz":{
+                return new OpenLayers.Format.KML({
+                    'extractStyles':true
+                });
+                break;
+            }
+            case "geojson":{
+                return new OpenLayers.Format.GeoJSON();
+                break;
+            }
+        }
+
+    },
+    
+    exportLayerFeatures: function(features, type){
+        
+        // get format
+        var format = this.getExportFormat(type);
+
+        // create string from layer features
+        var layerContent = format.write( features );
+        
+        // create an upload file form
+        var exportPanelConfig =  {
+            service: this.service,
+            composer: this.target,
+            content: kmlContent
+        };
+        var form = new gxp.KMLFileDownloadPanel(exportPanelConfig);
+        
+        // open a modal window
+        var win = new Ext.Window({
+            closable:true,
+            title: this.labels[type].downloadWindowTitle,
+            iconCls: this.iconClsDefault[type].iconClsExport,
+            border:false,
+            modal: true, 
+            bodyBorder: false,
+            resizable: false,
+            width: 500,
+            items: [ form ]
+        });
+                                    
+        // application/x-www-form-urlencoded
+                    
+        form.on("uploadcomplete", function addKMLToLayer(caller, response){
+            var code = response.code;
+            var filename = response.filename;
+            // force browser download
+            location.href = this.service+'FileDownloader?code=' + code +'&filename='+filename;
+            win.destroy();
+        });
+        
+        win.show();        
     },
     
     exportKMLFeatures: function(features){
@@ -617,6 +789,141 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
         });
         // show window
         win.show();
+    },
+    
+    importLayerFile: function(type){
+        var self = this;
+        var map = this.target.mapPanel.map;
+
+        // create an upload file form
+        var panelConfig = {
+            xtype: "gxp_kmlfileuploadpanel",
+            service: this.service,
+            composer: this.target
+        };
+        Ext.apply(panelConfig,this.exportConf[type].panelConfig);                
+        var form = Ext.create(panelConfig);
+        
+        // open a modal window
+        var win = new Ext.Window({
+            closable:true,
+            title: this.labels[type].uploadWindowTitle,
+            iconCls: this.iconClsDefault[type].iconClsImport,
+            border:false,
+            modal: true, 
+            bodyBorder: false,
+            resizable: false,
+            width: 500,
+            items: [ form ]
+        });     
+        
+        form.on("uploadcomplete", function addKMLToLayer(caller, response){
+            // ////////////////////////////////////////////
+            // The code to access the uploaded file
+            // ////////////////////////////////////////////
+            var code = response.code;
+            var nfname = response.nfname;
+            var url = response.url;
+                    
+            var layer = self.createLayer( self.target.mapPanel.map, caller.getLayerName());
+            url += '?' + 'code=' + code + '&filename=' + nfname;
+               
+            var appMask = new Ext.LoadMask(Ext.getBody(), {
+                msg:"Please wait, loading..."
+            });
+            
+            appMask.show();
+                            
+            Ext.Ajax.request({
+                url: url ,
+                method: 'GET',
+                headers:{
+                    'Content-Type' : 'application/xml'
+                },
+                scope: this,
+                success: function(response, opts){
+                    appMask.hide();
+
+                    var format = this.getImportFormat(type);
+                                    
+                    var features = format.read(response.responseText);
+                    var displayFeatures= new Array;
+                    if(features){
+                        // /////////////////////////////////////////////////////////////////////
+                        // For imported features create a string represention of their value
+                        // /////////////////////////////////////////////////////////////////////
+                        for (var i=0; i<features.length; i++){
+                            if(features[i].geometry){
+                                var attributes = features[i].attributes;
+                                for (var attributeName in attributes ){
+                                    if (typeof attributes[attributeName] == "object") {
+                                        if (attributes[attributeName].value) {
+                                            attributes[attributeName] = attributes[attributeName].value;
+                                        }
+                                    }  
+                                }
+                                displayFeatures.push( features[i] ); 
+                            }  
+                        }
+                                
+                        if(map.getProjection() != "EPSG:4326"){
+                            
+                            for(var i=0; i<displayFeatures.length; i++){
+                                if(displayFeatures[i] && displayFeatures[i].geometry){
+                                    displayFeatures[i].geometry = displayFeatures[i].geometry.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjection());
+                                }
+                            }
+                            
+                            layer.addFeatures( displayFeatures );
+                        }else{
+                            layer.addFeatures( displayFeatures );
+                        }
+                        
+                        if(layer && self.zoomToLayerExtent){
+                            var extent = layer.getDataExtent();
+                            map.zoomToExtent(extent);
+                        }
+                        self.fireEvent("layerloaded", layer);
+                    }else{
+                        Ext.Msg.show({
+                            title: self.kmlImportTitleText,
+                            msg: self.kmlImportErrorText,
+                            buttons: Ext.Msg.OK,
+                            icon: Ext.MessageBox.ERROR
+                        });
+                    }
+                },
+                failure:  function(response, opts){
+                    Ext.Msg.show({
+                        title: self.kmlImportTitleText,
+                        msg: self.kmlImportErrorText+" . " + response.responseText,
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.MessageBox.ERROR
+                    });
+                }
+            });
+
+            // destroy the window
+            win.destroy();
+        });
+        // show window
+        win.show();
+    },
+
+    getImportFormat: function(type){
+        switch(type){
+            case "kml/kmz":{
+                return new OpenLayers.Format.KML({
+                    extractStyles: true, 
+                    extractAttributes: true
+                });
+                break;
+            }
+            case "geojson":{
+                return new OpenLayers.Format.GeoJSON();
+                break;
+            }
+        }
     },
         
     /**
