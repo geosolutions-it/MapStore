@@ -844,7 +844,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                 success: function(response, opts){
                     appMask.hide();
 
-                    var format = this.getImportFormat(type);
+                    var format = self.getImportFormat(type);
                                     
                     var features = format.read(response.responseText);
                     var displayFeatures= new Array;
