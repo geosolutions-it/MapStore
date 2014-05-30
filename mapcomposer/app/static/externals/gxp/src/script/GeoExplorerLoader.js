@@ -260,10 +260,17 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
         if(url.indexOf("http") == 0){
             url = this.proxy + url;
         }
+        var headers = {
+            'Accept': 'application/json'
+        };
+        if(this.auth){
+            headers['Authorization'] = this.auth;
+        }
         Ext.Ajax.request({
             method: 'GET',
             scope: this,
             url: url,
+            headers: headers,
             success: function(response, opts){
                 try{
                     var loadedConfig = Ext.util.JSON.decode(response.responseText);

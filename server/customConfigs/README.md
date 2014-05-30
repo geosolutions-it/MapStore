@@ -13,7 +13,7 @@ curl -u admin:admin -XPOST -H 'Content-type: text/xml' -d  <Category><name>MAPST
 
 Related to VA-CSP role users. Add it with:
 
-curl -u admin:admin -XPOST -H 'Content-type: text/xml' -d '<Resource><Attributes><attribute><name>owner</name><type>STRING</type><value>admin</value></attribute></Attributes><description>VA-CSP custom configuration</description><metadata></metadata><name>VA-SPConfigMapStore</name><category><name>MAPSTORECONFIG</name></category><store><data><![CDATA[{"customTools":[{"ptype":"gxp_planeditor","outputTarget":"west","source":"MARISS-Layers","downloadUploadedSHP":false,"auxiliaryLayerName":"Draft Layer","displayAuxiliaryLayerInLayerSwitcher":false,"layoutConfig":{"xtype":"form","buttonAlign":"right","autoScroll":true,"frame":true} },{"ptype":"gxp_importexport","id":"gxp_importexport","service":"http://mariss.geo-solutions.it/opensdi2-manager/","types":["kml/kmz"],"exportConf":{"kml/kmz":{"layerName":"Draft Layer","alternativeStyle":false,"dontAskForLayerName":true}}}]}]]></data></store></Resource>' http://localhost:9191/geostore/rest/resources
+curl -u admin:admin -XPOST -H 'Content-type: text/xml' -d '<Resource><Attributes><attribute><name>owner</name><type>STRING</type><value>admin</value></attribute></Attributes><description>VA-CSP custom configuration</description><metadata></metadata><name>VA-SPConfigMapStore</name><category><name>MAPSTORECONFIG</name></category><store><data><![CDATA[{"customTools":[{"ptype":"gxp_planeditor","outputTarget":"west","source":"MARISS-Layers","downloadUploadedSHP":false,"auxiliaryLayerName":"Draft Layer","displayAuxiliaryLayerInLayerSwitcher":false,"layoutConfig":{"xtype":"form","buttonAlign":"right","autoScroll":true,"frame":true} },{"ptype":"gxp_importexport","id":"gxp_importexport","service":"http://mariss.geo-solutions.it/opensdi2-manager/","types":["kml/kmz"],"exportConf":{"kml/kmz":{"layerName":"Draft Layer","alternativeStyle":false,"dontAskForLayerName":true},"geojson":{"panelConfig":{"fieldEmptyText":"Browse for GeoJSON files...","validFileExtensions": [".json", ".geojson"],"deafultLayerName": "Draft Layer","dontAskForLayerName": true}},"shp":{"panelConfig":{"fieldEmptyText":"Browse for SHP files...","validFileExtensions": [".shp"],"deafultLayerName":"Draft Layer","dontAskForLayerName": true}}}}]}]]></data></store></Resource>' http://localhost:9191/geostore/rest/resources
 
 It includes  this custom configuration for this role: 
 
@@ -42,7 +42,15 @@ It includes  this custom configuration for this role:
 	            "layerName": "Draft Layer",
 	            "alternativeStyle": false,
 	            "dontAskForLayerName": true
-	        }        
+	        }, 
+            "shp": {
+                "panelConfig":{
+                    "fieldEmptyText": "Browse for SHP files...",
+                    "validFileExtensions": [".shp"],
+                    "deafultLayerName": "Draft Layer",
+                    "dontAskForLayerName": true
+                }
+            }       
 	     }
 	 }
     ]

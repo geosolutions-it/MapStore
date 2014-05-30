@@ -130,8 +130,7 @@ gxp.KMLFileUploadPanel = Ext.extend(Ext.FormPanel, {
 				
                 var ext = this.filename.slice(-4).toLowerCase();
                 switch( ext ){
-                    case '.json':
-                    case '.geojson':
+                    case 'json':
                     case '.kml':
                         this.url += 'FileUploader';
                         break;

@@ -219,21 +219,21 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                     menu: {
                         xtype: 'menu',
                         items: [{
-                            text: importer.labels["kml/kmz"].loadText : importer.labels["kml/kmz"].loadText : "Import KML/KMZ",
+                            text: importer.labels["kml/kmz"].loadText ? importer.labels["kml/kmz"].loadText : "Import KML/KMZ",
                             iconCls: importer.iconClsDefault["kml/kmz"].iconClsExport,
                             handler: function() {
                                 this.onButtonClicked("import", "KML");
                             },
                             scope: this
                         },{
-                            text: importer.labels["geojson"].loadText : importer.labels["geojson"].loadText : "Import GeoJSON",
+                            text: importer.labels["geojson"].loadText ? importer.labels["geojson"].loadText : "Import GeoJSON",
                             iconCls: importer.iconClsDefault["geojson"].iconClsExport,
                             handler: function() {
                                 this.onButtonClicked("import", "GeoJSON");
                             },
                             scope: this
                         },{
-                            text: importer.labels["shp"].loadText : importer.labels["shp"].loadText : "Import SHP",
+                            text: importer.labels["shp"].loadText ? importer.labels["shp"].loadText : "Import SHP",
                             iconCls: importer.iconClsDefault["shp"].iconClsExport,
                             handler: function() {
                                 this.onButtonClicked("import", "SHP");

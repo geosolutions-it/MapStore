@@ -112,6 +112,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             panelConfig:{
                 fieldEmptyText: "Browse for GeoJSON files...",
                 validFileExtensions: [".json", ".geojson"],
+                fileLabel: "JSON file",
                 deafultLayerName: null,
                 dontAskForLayerName: false
             }
@@ -120,6 +121,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             panelConfig:{
                 fieldEmptyText: "Browse for SHP files...",
                 validFileExtensions: [".shp"],
+                fileLabel: "SHP file",
                 deafultLayerName: null,
                 dontAskForLayerName: false
             }
@@ -131,6 +133,13 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
      *  Flag to zoom to the imported layer extent
      */
     zoomToLayerExtent:true,
+
+    
+    /** api: config[hiddenComponent]
+     *  ``Boolean``
+     *  Flag to don't add actions
+     */
+    hiddenComponent: true,
     
     /**
      * private: config[iconClsDefault]
@@ -210,8 +219,8 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             type=this.types[i];
 
             // get labels
-            var saveText = String.format(this.defaultSaveText, type);
-            var loadText = String.format(this.defaultLoadText, type);
+            var saveText = String.format(this.defaultSaveText, type.toUpperCase());
+            var loadText = String.format(this.defaultLoadText, type.toUpperCase());
             if(this.labels[type]){
                 saveText = this.labels[type].saveText ? this.labels[type].saveText : saveText;
                 loadText = this.labels[type].loadText ? this.labels[type].loadText : loadText;
@@ -269,9 +278,12 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                 items: actions
             })
         });        
-        
-        // return gxp.plugins.ImportExport.superclass.addActions.apply(this, [actions]);
-        return gxp.plugins.ImportExport.superclass.addActions.apply(this, [menu]);
+
+        if(this.hiddenComponent){
+            return gxp.plugins.ImportExport.superclass.addActions.apply(this, []);
+        }else{
+            return gxp.plugins.ImportExport.superclass.addActions.apply(this, [menu]);
+        }
     },
 	
     exportFile: function(type){
@@ -818,16 +830,16 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
         var panelConfig = {
             xtype: "gxp_kmlfileuploadpanel",
             service: this.service,
-            composer: this.target
+            composer: this.target,
+            fileLabel: type.toUpperCase() + " file"
         };
         Ext.apply(panelConfig,this.exportConf[type].panelConfig);                
         var form = Ext.create(panelConfig);
 
-        var uploadWindowTitle = String.format(this.defaultUploadWindowTitle, type);
-        var iconCls = "";
-        if(this.iconClsDefault[type]){
-            uploadWindowTitle = this.iconClsDefault[type].uploadWindowTitle ? this.iconClsDefault[type].uploadWindowTitle : uploadWindowTitle;
-            iconCls = this.iconClsDefault[type].iconClsImport;
+        var uploadWindowTitle = String.format(this.defaultUploadWindowTitle, type.toUpperCase());
+        var iconCls = this.iconClsDefault[type] ? this.iconClsDefault[type].iconClsImport : "";
+        if(this.exportConf[type]){
+            uploadWindowTitle = this.exportConf[type].uploadWindowTitle ? this.exportConf[type].uploadWindowTitle : uploadWindowTitle;
         }
         
         // open a modal window
