@@ -540,6 +540,12 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 break;
             }
             case 'GeoJSON':{
+                var importer = this.target.tools[this.importExportID];
+                if(importer){
+                    importer["exportConf"]["geojson"]["layer"] = this.draftLayer;
+                    importer.importLayerFile("geojson");
+                }
+                break;
             }
             case 'SHP':{
             }
@@ -709,7 +715,13 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
 
         // from the draft features
         for(var i = 0; i < this.draftFeatures.length; i++){
-            components.push(this.draftFeatures[i].geometry);
+            if(this.draftFeatures[i].geometry instanceof OpenLayers.Geometry.MultiPolygon && this.draftFeatures[i].geometry.components){
+                for(var j = 0; j < this.draftFeatures[i].geometry.components.length; j++){
+                    components.push(this.draftFeatures[i].geometry.components[j]);
+                }
+            }else{
+                components.push(this.draftFeatures[i].geometry);
+            }
             if(!currentAOI){
                 currentAOI = this.draftFeatures[i];
             }
