@@ -429,3 +429,17 @@ table.featureInfo caption{
     background-position: center;
     background-image: url(img/silk/delete.png);
 }
+
+/* gxp_importexport */
+.gxp-icon-import-json {
+    background-image: url(img/silk/page_code.png) !important;
+}
+.gxp-icon-export-json {
+    background-image: url(img/silk/page_white_code.png) !important;
+}
+.gxp-icon-import-shp {
+    background-image: url(img/silk/compress.png) !important;
+}
+.gxp-icon-export-shp {
+    background-image: url(img/silk/page_white_zip.png) !important;
+}

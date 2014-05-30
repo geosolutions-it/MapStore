@@ -550,6 +550,12 @@ GeoExt.Lang.add("en", {
                 "loadText" : "Import GeoJSON",
                 "uploadWindowTitle" : "Import GeoJSON file",
                 "downloadWindowTitle" : "Export GeoJSON file"
+            } ,
+            "shp": {
+                "saveText" : "Export SHP",
+                "loadText" : "Import SHP",
+                "uploadWindowTitle" : "Import SHP file",
+                "downloadWindowTitle" : "Export SHP file"
             }  
         }
     },

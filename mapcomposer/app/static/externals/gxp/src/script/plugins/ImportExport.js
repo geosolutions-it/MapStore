@@ -77,6 +77,13 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             "loadText" : "Import GeoJSON",
             "uploadWindowTitle" : "Import GeoJSON file",
             "downloadWindowTitle" : "Export GeoJSON file"
+        },
+    
+        "shp": {
+            "saveText" : "Export SHP",
+            "loadText" : "Import SHP",
+            "uploadWindowTitle" : "Import SHP file",
+            "downloadWindowTitle" : "Export SHP file"
         }  
     },
     defaultSaveText: "Export {0}",
@@ -108,6 +115,14 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                 deafultLayerName: null,
                 dontAskForLayerName: false
             }
+        },    
+        "shp": {
+            panelConfig:{
+                fieldEmptyText: "Browse for SHP files...",
+                validFileExtensions: [".shp"],
+                deafultLayerName: null,
+                dontAskForLayerName: false
+            }
         }
     },    
     
@@ -132,8 +147,12 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
             iconClsExport:  "gxp-icon-export-kml" 
         },
         "geojson": {
-            iconClsImport:  "gxp-icon-import-kml",
-            iconClsExport:  "gxp-icon-export-kml" 
+            iconClsImport:  "gxp-icon-import-json",
+            iconClsExport:  "gxp-icon-export-json" 
+        },
+        "shp": {
+            iconClsImport:  "gxp-icon-import-shp",
+            iconClsExport:  "gxp-icon-export-shp" 
         }
     },
     
@@ -803,12 +822,19 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
         };
         Ext.apply(panelConfig,this.exportConf[type].panelConfig);                
         var form = Ext.create(panelConfig);
+
+        var uploadWindowTitle = String.format(this.defaultUploadWindowTitle, type);
+        var iconCls = "";
+        if(this.iconClsDefault[type]){
+            uploadWindowTitle = this.iconClsDefault[type].uploadWindowTitle ? this.iconClsDefault[type].uploadWindowTitle : uploadWindowTitle;
+            iconCls = this.iconClsDefault[type].iconClsImport;
+        }
         
         // open a modal window
         var win = new Ext.Window({
             closable:true,
-            title: this.labels[type].uploadWindowTitle,
-            iconCls: this.iconClsDefault[type].iconClsImport,
+            title: uploadWindowTitle,
+            iconCls: iconCls,
             border:false,
             modal: true, 
             bodyBorder: false,
@@ -920,6 +946,10 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                 break;
             }
             case "geojson":{
+                return new OpenLayers.Format.GeoJSON();
+                break;
+            }
+            case "shp":{
                 return new OpenLayers.Format.GeoJSON();
                 break;
             }
