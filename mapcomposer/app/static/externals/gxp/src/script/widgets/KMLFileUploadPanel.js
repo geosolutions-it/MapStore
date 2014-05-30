@@ -56,6 +56,13 @@ gxp.KMLFileUploadPanel = Ext.extend(Ext.FormPanel, {
      */
     validFileExtensions: [".kml", ".kmz"],
     
+    /** api: config[dontAskForLayerName]
+     *  ``Boolean``
+     *  Flag to hide layer name field (usefull when you want to import KML content to a known layer). 
+     *  Default it's false.
+     */
+    dontAskForLayerName: false,
+    
     /** api: config[url]
      *  ``String``
      *  URL for upload service.
@@ -77,12 +84,14 @@ gxp.KMLFileUploadPanel = Ext.extend(Ext.FormPanel, {
     initComponent: function() {
         var self = this;
         
-        this.layerNameField= new Ext.form.TextField({
-           id: "layerName", 
-           fieldLabel: this.layerNameLabel,
-           value: this.deafultLayerName,
-           allowBlank: false
-        });
+        if(!this.dontAskForLayerName){
+            this.layerNameField= new Ext.form.TextField({
+               id: "layerName", 
+               fieldLabel: this.layerNameLabel,
+               value: this.deafultLayerName,
+               allowBlank: false
+            });
+        }
         
         this.items = [{
             xtype: "fileuploadfield",
@@ -103,8 +112,11 @@ gxp.KMLFileUploadPanel = Ext.extend(Ext.FormPanel, {
                 }
             },
             validator: this.fileNameValidator.createDelegate(this)
-        }, this.layerNameField
-        ];
+        }];
+
+        if(!this.dontAskForLayerName){
+            this.items.push(this.layerNameField);
+        }
         
         this.buttons = [{
             text: this.uploadText,
@@ -218,10 +230,10 @@ gxp.KMLFileUploadPanel = Ext.extend(Ext.FormPanel, {
     },
     
     /** api: method[getLayerName]
-     *  :returns: ``String``  Return the value of layerName field.
+     *  :returns: ``String``  Return the value of layerName field or default layer name if layerNameField is not present
      */
      getLayerName: function() {
-         return this.layerNameField.getValue();
+         return !this.dontAskForLayerName ? this.layerNameField.getValue() : this.deafultLayerName;
      }
 
 });

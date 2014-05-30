@@ -85,9 +85,12 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
         "kml/kmz": {
             layerName: null,
             alternativeStyle: false,
-            layer: null
+            layer: null,
+            dontAskForLayerName: false
         }        
     },    
+
+    zoomToLayerExtent:true,
     
     /**
      * private: config[iconClsDefault]
@@ -110,6 +113,26 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
      */
     constructor: function(config) {
         gxp.plugins.ImportExport.superclass.constructor.apply(this, arguments); 
+    },
+    
+    /** private: method[initComponent]
+     */
+    initComponent: function() {
+        
+        this.addEvents(
+
+            /**
+             * Event: layerloaded
+             * Fires upon successful layer data import.
+             *
+             * Listener arguments:
+             * layer - {OpenLayer.Layer} Layer with the data loaded.
+             */
+            "layerloaded"
+        ); 
+
+        gxp.ImportExport.superclass.initComponent.call(this);
+
     },
 	
     /** api: method[init]
@@ -420,7 +443,7 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
         });
 		
         win.show();        
-    },    
+    },
     
     importKML: function(){
         var self = this;
@@ -430,7 +453,8 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
         var form = new gxp.KMLFileUploadPanel({
             service: this.service,
 			composer: this.target,
-            deafultLayerName: this.exportConf["kml/kmz"].layerName
+            deafultLayerName: this.exportConf["kml/kmz"].layerName,
+            dontAskForLayerName: this.exportConf["kml/kmz"].dontAskForLayerName
         });
 		
         // open a modal window
@@ -564,10 +588,11 @@ gxp.plugins.ImportExport = Ext.extend(gxp.plugins.Tool, {
                             layer.addFeatures( displayFeatures );
 						}
 						
-						if(layer){
+						if(layer && self.zoomToLayerExtent){
 							var extent = layer.getDataExtent();
 							map.zoomToExtent(extent);
-						}						
+						}
+                        self.fireEvent("layerloaded", layer);
                     }else{
                         Ext.Msg.show({
                             title: self.kmlImportTitleText,
