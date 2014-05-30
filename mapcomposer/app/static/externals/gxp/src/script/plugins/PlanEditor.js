@@ -55,7 +55,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
     resetText: "Reset",
     confirmText: "Confirm",
     importButtonText: "Import",
-    importTooltipText: "Import a shap file, KML or GeoJSON as AOI",
+    importTooltipText: "Import a shape file, KML or GeoJSON as AOI",
     editTooltipText: "Edit current AOI in the map",
     saveTooltipText: "Save current AOI status",
     drawTooltipText: "Draw a new polygon to be included in current service's AOI",
@@ -81,6 +81,11 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
     */
     addLayerID: "addlayer",
     
+    /** api: config[importExportID]
+    *  ``String`` Import export plugin id
+    */
+    importExportID: "gxp_importexport",
+    
     /** api: config[source]
     *  ``String`` source of the layer
     */
@@ -99,7 +104,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
     },
 
     // custom parameters.
-    auxiliaryLayerName: "Polygon Layer",
+    auxiliaryLayerName: "Draft Layer",
     displayAuxiliaryLayerInLayerSwitcher: false,
     addWMSLayer: false,
     layerURL: null,
@@ -142,6 +147,14 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
     /** api: method[addOutput]
      */
     addOutput: function() {
+
+        // bind importer for SHP/GEOJSON/KML/KMZ import
+        var importer = this.target.tools[this.importExportID];
+        if(importer){
+            importer.on("layerloaded", this.saveDraftFeatures, this);
+        }else{
+            console.error("ImportExport plugin not found");
+        }
 
         // generate backend urls based on this.target.config.adminUrl
         var adminUrl = this.target.config.adminUrl;
@@ -196,12 +209,37 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 buttons:[{
                     text: this.importButtonText,
                     id: this.id + "_import_button",
-                    iconCls: "gx-map-add",
+                    iconCls: "gxp-icon-importexport",
                     tooltip: this.importTooltipText,
-                    handler: function() {
-                        this.onButtonClicked("import");
-                    },
-                    scope: this
+                    menu: {
+                        xtype: 'menu',
+                        items: [{
+                            text: importer.labels["kml/kmz"].loadText,
+                            iconCls: importer.iconClsDefault["kml/kmz"].iconClsExport,
+                            handler: function() {
+                                this.onButtonClicked("import", "KML");
+                            },
+                            scope: this
+                        },{
+                            text: 'GeoJSON',
+                            // TODO: Change implement on import/export
+                            // text: importer.labels["GeoJSON"].loadText,
+                            // iconCls: importer.iconClsDefault["GeoJSON"].iconClsExport,
+                            handler: function() {
+                                this.onButtonClicked("import", "GeoJSON");
+                            },
+                            scope: this
+                        },{
+                            text: 'SHP',
+                            // TODO: Change implement on import/export
+                            // text: importer.labels["SHP"].loadText,
+                            // iconCls: importer.iconClsDefault["GeoJSON"].iconClsExport,
+                            handler: function() {
+                                this.onButtonClicked("import", "SHP");
+                            },
+                            scope: this
+                        }]
+                    }
                 },{
                     text: this.editButtonText,
                     id: this.id + "_edit_button",
@@ -295,7 +333,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
    /** private: method[onButtonClicked]
     *  Listener to handle a button click
     */ 
-    onButtonClicked: function(buttonId){
+    onButtonClicked: function(buttonId, options){
         this.mode = buttonId;
         switch (buttonId){
             case 'edit':{
@@ -319,7 +357,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 break;
             }
             case 'import':{
-                this.onImport();
+                this.onImport(options);
                 break;
             }
             default:{
@@ -490,14 +528,26 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
    /** private: method[onImport]
     *  Callback called when the import button is clicked.
     */ 
-    onImport: function(){
-        // TODO: Implement it
-        Ext.Msg.show({
-            title: "Not available",
-            msg: "This functionality is not currently available. Work in progress",
-            buttons: Ext.Msg.OK,
-            icon: Ext.MessageBox.INFO
-        });
+    onImport: function(format){
+        switch (format){
+            case 'KML':{
+                this.importKML();
+                break;
+            }
+            case 'GeoJSON':{
+            }
+            case 'SHP':{
+            }
+            default:{
+                // TODO: Implement other formats
+                Ext.Msg.show({
+                    title: "Not available",
+                    msg: "This functionality is not currently available. Work in progress",
+                    buttons: Ext.Msg.OK,
+                    icon: Ext.MessageBox.INFO
+                });
+            }
+        }
     },
 
    /** private: method[checkMode]
@@ -523,6 +573,8 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 break;
             }
             case 'editComplete':{
+            }
+            case 'import':{
             }
             case 'draw':{
                 Ext.getCmp(this.id + "_edit_button").enable();
@@ -902,6 +954,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 "&request=GetFeature" +
                 "&typeName=" + this.layerName +
                 "&exceptions=application/json" +
+                "&cql_filter=service_name='" + this.currentServiceName + "'" +
                 "&outputFormat="+ outputFormat;
         url = this.submitUrl + encodeURIComponent(exportUrl) + "&user="+user + "&service="+service;
 
@@ -970,6 +1023,42 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         form.appendChild(hiddenField);
         document.body.appendChild(form);
         form.submit(); 
+    },
+
+    /** api: method[importKML]
+     *  Import a KML or KMZ file as AOI
+     */  
+    importKML: function(){
+        var importer = this.target.tools[this.importExportID];
+        if(importer){
+            importer["exportConf"]["kml/kmz"]["layer"] = this.draftLayer;
+            importer.importKML();
+        }
+    },
+
+    /** api: method[importKML]
+     *  Save imported features. Check the features imported and merge into draft layer
+     */  
+    saveDraftFeatures: function(layer){
+        var importedFeatures = 0;
+        var failFeatures = [];
+        // from the draft layer
+        for(var i = 0; i < layer.features.length; i++){
+            if(layer.features[i].geometry 
+                && (layer.features[i].geometry instanceof OpenLayers.Geometry.MultiPolygon
+                    || layer.features[i].geometry instanceof OpenLayers.Geometry.Polygon)){
+                this.draftFeatures.push(layer.features[i]);
+                importedFeatures++;
+            }else{
+                failFeatures.push(layer.features[i]);
+            }
+        }
+        // only merge imported and remove the others. TODO: show message
+        layer.removeFeatures(failFeatures);
+        if(importedFeatures > 0 ){
+            this.mergeDraftFeatures();
+            this.checkMode();
+        }
     }
 });
 

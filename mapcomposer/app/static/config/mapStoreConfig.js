@@ -321,15 +321,6 @@
 			"downloadGridId": "downloadgrid",
             "filterByExtent": true,
 	      	"autoExpandPanel": "east"
-       },{
-            "ptype": "gxp_planeditor",
-            "outputTarget": "west",
-            "layoutConfig":{
-                "xtype": "form",
-                "buttonAlign": "right",
-                "autoScroll":true,
-                "frame":true
-            }
        }
 	]
 }
