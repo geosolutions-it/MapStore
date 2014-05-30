@@ -102,6 +102,11 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
             displayInLayerSwitcher: false
         }
     },
+    
+   /** api: config[exportVersion]
+    *  ``String`` Version for the layer export.
+    */
+    exportVersion: "1.0.0",
 
     // custom parameters.
     auxiliaryLayerName: "Draft Layer",
@@ -950,7 +955,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         // Url generation
         var exportUrl = this.layerURL;
         exportUrl += "?service=WFS" +
-                "&version=" + this.wfsVersion +
+                "&version=" + (this.exportVersion ? this.exportVersion : this.wfsVersion) +
                 "&request=GetFeature" +
                 "&typeName=" + this.layerName +
                 "&exceptions=application/json" +
