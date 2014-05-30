@@ -219,26 +219,22 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                     menu: {
                         xtype: 'menu',
                         items: [{
-                            text: importer.labels["kml/kmz"].loadText,
+                            text: importer.labels["kml/kmz"].loadText : importer.labels["kml/kmz"].loadText : "Import KML/KMZ",
                             iconCls: importer.iconClsDefault["kml/kmz"].iconClsExport,
                             handler: function() {
                                 this.onButtonClicked("import", "KML");
                             },
                             scope: this
                         },{
-                            text: 'GeoJSON',
-                            // TODO: Change implement on import/export
-                            // text: importer.labels["GeoJSON"].loadText,
-                            // iconCls: importer.iconClsDefault["GeoJSON"].iconClsExport,
+                            text: importer.labels["geojson"].loadText : importer.labels["geojson"].loadText : "Import GeoJSON",
+                            iconCls: importer.iconClsDefault["geojson"].iconClsExport,
                             handler: function() {
                                 this.onButtonClicked("import", "GeoJSON");
                             },
                             scope: this
                         },{
-                            text: 'SHP',
-                            // TODO: Change implement on import/export
-                            // text: importer.labels["SHP"].loadText,
-                            // iconCls: importer.iconClsDefault["GeoJSON"].iconClsExport,
+                            text: importer.labels["shp"].loadText : importer.labels["shp"].loadText : "Import SHP",
+                            iconCls: importer.iconClsDefault["shp"].iconClsExport,
                             handler: function() {
                                 this.onButtonClicked("import", "SHP");
                             },
@@ -548,6 +544,12 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 break;
             }
             case 'SHP':{
+                var importer = this.target.tools[this.importExportID];
+                if(importer){
+                    importer["exportConf"]["shp"]["layer"] = this.draftLayer;
+                    importer.importLayerFile("shp");
+                }
+                break;
             }
             default:{
                 // TODO: Implement other formats
@@ -1064,6 +1066,10 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
             if(layer.features[i].geometry 
                 && (layer.features[i].geometry instanceof OpenLayers.Geometry.MultiPolygon
                     || layer.features[i].geometry instanceof OpenLayers.Geometry.Polygon)){
+                // clean fid if exists
+                if(layer.features[i].fid){
+                    delete layer.features[i].fid;
+                }
                 this.draftFeatures.push(layer.features[i]);
                 importedFeatures++;
             }else{
