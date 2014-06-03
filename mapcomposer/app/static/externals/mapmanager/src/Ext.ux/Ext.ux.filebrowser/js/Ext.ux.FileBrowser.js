@@ -453,6 +453,7 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
 //          Ext.fly(this.StatusBarSize.getEl()).addClass('x-status-text-panel').createChild({cls:'spacer'});
 //          Ext.fly(this.StatusBarDetails.getEl()).addClass('x-status-text-panel').createChild({cls:'spacer'});
         }
+        this.customizeTree();
       }
       ,dialogComplete:function(){this.onDialogComplete();}
       ,queueComplete:function(){this.onQueueComplete();}
@@ -804,6 +805,59 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
         return node.getPath("text");
     },
 
+    /** api: method[decorateNode]
+     *  Decorate each node.
+     */
+    decorateNode: function(node){
+        // only decorate on second level(Services) with child AOI.zip
+        if(node.parentNode 
+            && node.parentNode.parentNode
+            && node.childNodes){
+            for (var i = 0; i < node.childNodes.length; i++){
+                if(node.childNodes[i].text == "AOI.zip"){
+                    var el = node.getUI().getEl();
+                    el.style.border = "red 1px solid";
+                    el.title = "Service '" + node.text + "' have a confirmed AOI";
+                    break;
+                }
+            }
+        }
+
+    },
+
+    /** api: method[customizeTree]
+     *  Costumize the tree expanding and customizing nodes as we need
+     */
+    customizeTree: function(){
+
+        var me = this;
+        var currentLoadingNodes = 1;
+
+        // reload status node by node
+        var reloadFunction = function(node){
+            // remove listener
+            node.removeListener("load", this);
+            // expanded nodes until the service level;
+            if(node.childNodes 
+                && (!node.parentNode
+                    || !node.parentNode.parentNode)){
+                for (var i = 0; i < node.childNodes.length; i++){
+                    if(!node.childNodes[i].isLeaf()){
+                        node.childNodes[i].on("load", reloadFunction, node.childNodes[i]);
+                        node.childNodes[i].expand();   
+                    }
+                }
+            }
+
+            // decorate the node
+            me.decorateNode(node);
+        }
+
+        // reload root node
+        me.fileTreePanel.root.on("load", reloadFunction, me.fileTreePanel.root);
+
+    },
+
     /** api: method[refreshTree]
      *  Refresh tree panel and restore current status if posible
      */
@@ -814,7 +868,16 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
         var expandedNodes = {};
         var selectedNode = nodePath;
         for(var nodePath in me.fileTreePanel.nodeHash){
-            if(me.fileTreePanel.nodeHash[nodePath].isExpanded()){
+            // only alert on second level(Services) with children
+            var node = me.fileTreePanel.nodeHash[nodePath];
+            var shouldBeExpanded = false;
+            if((!node.parentNode 
+                || !node.parentNode.parentNode
+                || !node.parentNode.parentNode.parentNode)
+                && !node.isLeaf()){
+                shouldBeExpanded = true;
+            }
+            if(me.fileTreePanel.nodeHash[nodePath].isExpanded() || shouldBeExpanded){
                 expandedNodes[nodePath] = true;
             }
             if(me.fileTreePanel.nodeHash[nodePath].isSelected()){
@@ -844,7 +907,7 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
         // reload root node
         me.fileTreePanel.root.on("load", reloadFunction, me.fileTreePanel.root);
         me.fileTreePanel.root.reload();
-    }
+    },
 
 });
 
