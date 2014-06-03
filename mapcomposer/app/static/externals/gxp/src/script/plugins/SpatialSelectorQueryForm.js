@@ -87,6 +87,12 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
      */    
     validators: {},
     
+    /** api: config[autoComplete]
+     * ``Object``
+     * Adds autocomplete support for text fields, allows specifying the sources that support autocomplete.
+     */    
+    autoComplete: null,
+    
     init: function(target) {
         
         var me = this;
@@ -214,10 +220,15 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     var f = 0;
                     var invalidItems = 0;
                     while(filterFieldItem[f]){
-                        for(var x = 0;x<filterFieldItem[f].items.items.length;x++){
-                            var validateItem = filterFieldItem[f].items.get(x);
+                    
+                        var formItems = filterFieldItem[f].innerCt.findBy(function(c) {
+                            return c.isFormField;
+                        });
+                    
+                        for(var x = 0;x<formItems.length;x++){
+                            var validateItem = formItems[x];
                             //if(!validateItem.isValid(true) && ( validateItem.vtype == "customValidationTextValue" || validateItem.vtype == "customValidationTextLowerBoundary" || validateItem.vtype == "customValidationTextUpperBundary")){
-                            if(!validateItem.isValid(true) && validateItem.vtype != null){
+                            if(!validateItem.isValid(true)){
                                 invalidItems++;
                             }
                         }                        
@@ -273,6 +284,8 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         var methodSelection = this.output[0].outputType;
         
         this.addFilterBuilder = function(mgr, rec, schema) {			
+            // is current source enabled for autoComplete ?
+            var autoComplete = rec && me.autoComplete && me.autoComplete.sources && me.autoComplete.sources.indexOf(rec.get('source')) !== -1;
             queryForm.attributeFieldset.removeAll();
             queryForm.setDisabled(!schema);
 			
@@ -282,6 +295,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     ref: "../filterBuilder",
                     attributes: schema,
                     validators: me.validators,
+                    autoComplete: autoComplete,
                     allowBlank: true,
                     allowGroups: false
                 });
