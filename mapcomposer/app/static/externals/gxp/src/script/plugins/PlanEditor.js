@@ -126,7 +126,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
     displayAuxiliaryLayerInLayerSwitcher: false,
     addWMSLayer: false,
     layerURL: null,
-    addFeatureTable: false,
+    addFeatureTable: true,
     wfsVersion: "1.1.0",
     defaultGeometryName: "the_geom",
     defaultFeatureNS: "http://mariss.it",
@@ -717,17 +717,22 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
 
     loadAcqData: function(acqList){
 
-
-        // refresh filter on WFS grid
-        if(this.addFeatureTable){
-
-            if(!this.grid){
-                var grid = this.getFeatureGrid();
-                acqList.add(grid);
-            }else{
-                this.refreshFeatureGrid();
-            }
+        if(!this.grid){
+            var grid = this.getFeatureGrid();
+            acqList.add(grid);
+        }else{
+            this.refreshFeatureGrid();
         }
+        // // refresh filter on WFS grid
+        // if(this.addFeatureTable){
+
+        //     if(!this.grid){
+        //         var grid = this.getFeatureGrid();
+        //         acqList.add(grid);
+        //     }else{
+        //         this.refreshFeatureGrid();
+        //     }
+        // }
     },
 
     onFeatureAdded: function(controlReturns){
