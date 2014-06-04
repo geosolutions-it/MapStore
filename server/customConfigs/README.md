@@ -66,3 +66,67 @@ Then check the resources available for one user in the group:
 curl -u CSP:CSP -XGET -H 'Content-type: text/xml' http://localhost:9191/geostore/rest/resources
 
 Or insert in db: `insert into gs_security values({idResourceSec}, true, true, {va-sp-id}, {idResource}, null);`
+
+curl -u admin:theslap -XPOST -H 'Content-type: text/xml' -d '<Resource><Attributes><attribute><name>owner</name><type>STRING</type><value>admin</value></attribute></Attributes><description>VA-CSP custom configuration</description><metadata></metadata><name>VA-SPConfigMapStore</name><category><name>MAPSTORECONFIG</name></category><store><data><![CDATA[{"customTools":[{"ptype":"gxp_planeditor","outputTarget":"west","source":"MARISS-Layers","downloadUploadedSHP":false,"auxiliaryLayerName":"Draft Layer","displayAuxiliaryLayerInLayerSwitcher":false,"layoutConfig":{"xtype":"form","buttonAlign":"right","autoScroll":true,"frame":true} },{"ptype":"gxp_importexport","id":"gxp_importexport","service":"http://mariss.geo-solutions.it/opensdi2-manager/","types":["kml/kmz","geojson","shp"],"exportConf":{"kml/kmz":{"layerName":"Draft Layer","alternativeStyle":false,"dontAskForLayerName":true},"geojson":{"panelConfig":{"fieldEmptyText":"Browse for GeoJSON files...","validFileExtensions": [".json", ".geojson"],"deafultLayerName": "Draft Layer","dontAskForLayerName": true}},"shp":{"panelConfig":{"fieldEmptyText":"Browse for SHP files...","validFileExtensions": [".shp"],"deafultLayerName":"Draft Layer","dontAskForLayerName": true}}}}]}]]></data></store></Resource>' http://mariss.geo-solutions.it/geostore/rest/resources/53
+
+
+
+
+curl -u admin:theslap -XPOST -H 'Content-type: text/xml' -d '<Resource><Attributes><attribute><name>owner</name><type>STRING</type><value>admin</value></attribute></Attributes><description>VA-CSP custom configuration</description><metadata></metadata><name>VA-SPConfigMapStore</name><category><name>MAPSTORECONFIG</name></category><store><data><![CDATA[{"customTools":[{"ptype":"gxp_planeditor","outputTarget":"west","source":"MARISS-Layers","downloadUploadedSHP":false,"auxiliaryLayerName":"Draft Layer","displayAuxiliaryLayerInLayerSwitcher":false,"layoutConfig":{"xtype":"form","buttonAlign":"right","autoScroll":true,"frame":true} },{"ptype":"gxp_importexport","id":"gxp_importexport","service":"http://mariss.geo-solutions.it/opensdi2-manager/","types":["kml/kmz"],"exportConf":{"kml/kmz":{"layerName":"Draft Layer","alternativeStyle":false,"dontAskForLayerName":true},"geojson":{"panelConfig":{"fieldEmptyText":"Browse for GeoJSON files...","validFileExtensions": [".json", ".geojson"],"deafultLayerName": "Draft Layer","dontAskForLayerName": true}},"shp":{"panelConfig":{"fieldEmptyText":"Browse for SHP files...","validFileExtensions": [".shp"],"deafultLayerName":"Draft Layer","dontAskForLayerName": true}}}}]}]]></data></store></Resource>' http://mariss.geo-solutions.it/geostore/rest/resources
+
+{
+    "customTools": [
+        {
+            "auxiliaryLayerName": "Draft Layer", 
+            "displayAuxiliaryLayerInLayerSwitcher": false, 
+            "downloadUploadedSHP": false, 
+            "layoutConfig": {
+                "autoScroll": true, 
+                "buttonAlign": "right", 
+                "frame": true, 
+                "xtype": "form"
+            }, 
+            "outputTarget": "west", 
+            "ptype": "gxp_planeditor", 
+            "source": "MARISS-Layers"
+        }, 
+        {
+            "exportConf": {
+                "geojson": {
+                    "panelConfig": {
+                        "deafultLayerName": "Draft Layer", 
+                        "dontAskForLayerName": true, 
+                        "fieldEmptyText": "Browse for GeoJSON files...", 
+                        "validFileExtensions": [
+                            ".json", 
+                            ".geojson"
+                        ]
+                    }
+                }, 
+                "kml/kmz": {
+                    "alternativeStyle": false, 
+                    "dontAskForLayerName": true, 
+                    "layerName": "Draft Layer"
+                }, 
+                "shp": {
+                    "panelConfig": {
+                        "deafultLayerName": "Draft Layer", 
+                        "dontAskForLayerName": true, 
+                        "fieldEmptyText": "Browse for SHP files...", 
+                        "validFileExtensions": [
+                            ".shp"
+                        ]
+                    }
+                }
+            }, 
+            "id": "gxp_importexport", 
+            "ptype": "gxp_importexport", 
+            "service": "http://mariss.geo-solutions.it/opensdi2-manager/", 
+            "types": [
+                "kml/kmz", 
+                "geojson", 
+                "shp"
+            ]
+        }
+    ]
+}

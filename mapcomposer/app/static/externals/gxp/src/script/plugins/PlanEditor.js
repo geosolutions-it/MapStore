@@ -38,7 +38,8 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         start: "Start",
         end: "End",
         sensor: "Sensor",
-        sensor_mode: "SensorMode"
+        sensor_mode: "SensorMode",
+        ships: "Ships count"
     },
     serviceText: "Service",
     submitFailTitleText: "Fail",
@@ -63,7 +64,14 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
     resetTooltipText: "Clean lastest changes and optionally remove all saved AOI for the selected service",
     defaultMessage: "Select a service to edit AOI",
     commitedMessage: "Commited AOI, You can't edit it any more",
+    acqListMessage: "Acquisition list already generated, You can't edit it any more",
     selectedMessage: "Edit and commit the AOI",
+    defaultPanelTitleText: "Editor",
+    acquisitionPanelTitleText: "Acquisition List",
+    exportAcqListText: "Export",
+    exportAcqListTooltipText: "Export current acquisition list to GML2 format",
+    emptyAcqListText: "Not available acquisition list yet",
+    acqListTipText: "Click on each record you want to confirm as 'Acquisition List' and press on 'Export' button",
     /** api: config[failedExport]
      * ``String``
      * Text for Export error (i18n).
@@ -95,6 +103,11 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
     *  ``String`` layer name for the edit
     */
     layerName: "aois",
+    
+    /** api: config[acq_list]
+    *  ``String`` layer for the acquisition list
+    */
+    layerAcqListName: "acq_list",
 
     // options for the WMS layer on addLayers plugin
     layerOptions: {
@@ -120,7 +133,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
     defaultProjection: "EPSG:4326",
 
     // hidden form id to download SHP on confirm
-    downloadFormId: "shp_downloader",
+    downloadFormId: "__shp_downloader_",
     // flag to download the confirmed SHP when it's confirmed
     downloadUploadedSHP: false,
 
@@ -147,6 +160,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
     STATUS:{
         DRAFT: "DRAFT",
         COMMITED: "COMMITED",
+        ACQ_LIST_SAVED: "ACQ_LIST_SAVED"
     },
     
     /** api: method[addOutput]
@@ -167,129 +181,154 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         this.servicesUrl = adminUrl + "mvc/serviceManager/extJSbrowser?action=get_folderlist&folder=";
         // submit service.
         this.submitUrl = adminUrl + "mvc/serviceManager/confirmServiceAOI?url=";
+        // submit service.
+        this.submitAcqUrl = adminUrl + "mvc/serviceManager/confirmServiceAcqPlan?url=";
+
+        var serviceSelectorConfig = {
+            xtype: "compositefield",
+            items:[{
+                xtype: "combo",
+                fieldLabel: this.serviceText,
+                name: "service",
+                valueField: 'text',
+                displayField: 'text',
+                autoLoad : true,
+                triggerAction : 'all',
+                width: 100,
+                store: new Ext.data.JsonStore({
+                    url: this.getServicesUrl(),
+                    fields : ["id", "text", "leaf", "size", "iconCls", "loaded", "expanded", "mtime", "permission"]
+                }),
+                listeners : {
+                    select : function(c, record, index) {
+                        var service = c.getValue();
+                        this.onSelectService(service, this.viewPanel);
+                    },
+                    scope : this
+                }
+
+            },{
+                id: this.id + "_message",
+                html: this.defaultMessage,
+                style: {
+                    "padding-top": "4px",
+                },
+                flex: 1 
+            }]
+        };
+
+        var planFormPanelConfig = {
+            xtype: "gxp_planeditorpanel",
+            disabled: true,
+            buttons:[{
+                text: this.importButtonText,
+                id: this.id + "_import_button",
+                iconCls: "gxp-icon-importexport",
+                tooltip: this.importTooltipText,
+                menu: {
+                    xtype: 'menu',
+                    items: [{
+                        text: importer.labels["kml/kmz"].loadText ? importer.labels["kml/kmz"].loadText : "Import KML/KMZ",
+                        iconCls: importer.iconClsDefault["kml/kmz"].iconClsExport,
+                        handler: function() {
+                            this.onButtonClicked("import", "KML");
+                        },
+                        scope: this
+                    },{
+                        text: importer.labels["geojson"].loadText ? importer.labels["geojson"].loadText : "Import GeoJSON",
+                        iconCls: importer.iconClsDefault["geojson"].iconClsExport,
+                        handler: function() {
+                            this.onButtonClicked("import", "GeoJSON");
+                        },
+                        scope: this
+                    },{
+                        text: importer.labels["shp"].loadText ? importer.labels["shp"].loadText : "Import SHP",
+                        iconCls: importer.iconClsDefault["shp"].iconClsExport,
+                        handler: function() {
+                            this.onButtonClicked("import", "SHP");
+                        },
+                        scope: this
+                    }]
+                }
+            },{
+                text: this.editButtonText,
+                id: this.id + "_edit_button",
+                iconCls: "gx-map-edit",
+                tooltip: this.editTooltipText,
+                handler: function() {
+                    this.onButtonClicked("edit");
+                },
+                scope: this
+            },{
+                text: this.saveButtonText,
+                id: this.id + "_save_button",
+                disabled: true,
+                iconCls: "icon-save",
+                tooltip: this.saveTooltipText,
+                handler: function() {
+                    this.onButtonClicked("save");
+                },
+                scope: this
+            },{
+                text: this.drawButtonText,
+                id: this.id + "_draw_button",
+                iconCls: "gx-map-add",
+                tooltip: this.drawTooltipText,
+                handler: function() {
+                    this.onButtonClicked("draw");
+                },
+                scope: this
+            },{
+                text: this.confirmText,
+                scope: this,
+                iconCls: "save",
+                tooltip: this.confirmTooltipText,
+                id: this.id + "_confirm_button",
+                handler: function(){
+                    this.onButtonClicked("confirm");
+                }
+            },{
+                text: this.resetText,
+                iconCls: "deleteIcon",
+                tooltip: this.resetTooltipText,
+                scope: this,
+                id: this.id + "_reset_button",
+                handler: function(){
+                    this.onButtonClicked("reset");
+                }
+            }],
+            listeners:{
+                render: this.onPanelRender,
+                scope:this
+            }
+        };
 
         // configure output
         var outputConfig = {
             xtype: 'panel',
             title: this.titleText,
-            layout: "form",
+            layout: "accordion",
+            defaults:{
+                xtype: 'panel',
+                layout: "form"    
+            },
+            // layout: "form",
+            autoScroll: true,
             style: {
                 "padding-top": "10px",
             },
             items:[{
-                xtype: "compositefield",
-                items:[{
-                    xtype: "combo",
-                    fieldLabel: this.serviceText,
-                    name: "service",
-                    valueField: 'text',
-                    displayField: 'text',
-                    autoLoad : true,
-                    triggerAction : 'all',
-                    width: 100,
-                    store: new Ext.data.JsonStore({
-                        url: this.getServicesUrl(),
-                        fields : ["id", "text", "leaf", "size", "iconCls", "loaded", "expanded", "mtime", "permission"]
-                    }),
-                    listeners : {
-                        select : function(c, record, index) {
-                            var service = c.getValue();
-                            this.onSelectService(service, this.viewPanel);
-                        },
-                        scope : this
-                    }
-
-                },{
-                    id: this.id + "_message",
-                    html: this.defaultMessage,
-                    style: {
-                        "padding-top": "4px",
-                    },
-                    flex: 1 
-                }]
+                title: this.defaultPanelTitleText,
+                autoScroll: true,
+                id: this.id + "_editor",
+                items:[serviceSelectorConfig,planFormPanelConfig]
             },{
-                xtype: "gxp_planeditorpanel",
-                layout: "form",
-                disabled: true,
-                buttons:[{
-                    text: this.importButtonText,
-                    id: this.id + "_import_button",
-                    iconCls: "gxp-icon-importexport",
-                    tooltip: this.importTooltipText,
-                    menu: {
-                        xtype: 'menu',
-                        items: [{
-                            text: importer.labels["kml/kmz"].loadText ? importer.labels["kml/kmz"].loadText : "Import KML/KMZ",
-                            iconCls: importer.iconClsDefault["kml/kmz"].iconClsExport,
-                            handler: function() {
-                                this.onButtonClicked("import", "KML");
-                            },
-                            scope: this
-                        },{
-                            text: importer.labels["geojson"].loadText ? importer.labels["geojson"].loadText : "Import GeoJSON",
-                            iconCls: importer.iconClsDefault["geojson"].iconClsExport,
-                            handler: function() {
-                                this.onButtonClicked("import", "GeoJSON");
-                            },
-                            scope: this
-                        },{
-                            text: importer.labels["shp"].loadText ? importer.labels["shp"].loadText : "Import SHP",
-                            iconCls: importer.iconClsDefault["shp"].iconClsExport,
-                            handler: function() {
-                                this.onButtonClicked("import", "SHP");
-                            },
-                            scope: this
-                        }]
-                    }
-                },{
-                    text: this.editButtonText,
-                    id: this.id + "_edit_button",
-                    iconCls: "gx-map-edit",
-                    tooltip: this.editTooltipText,
-                    handler: function() {
-                        this.onButtonClicked("edit");
-                    },
-                    scope: this
-                },{
-                    text: this.saveButtonText,
-                    id: this.id + "_save_button",
-                    disabled: true,
-                    iconCls: "icon-save",
-                    tooltip: this.saveTooltipText,
-                    handler: function() {
-                        this.onButtonClicked("save");
-                    },
-                    scope: this
-                },{
-                    text: this.drawButtonText,
-                    id: this.id + "_draw_button",
-                    iconCls: "gx-map-add",
-                    tooltip: this.drawTooltipText,
-                    handler: function() {
-                        this.onButtonClicked("draw");
-                    },
-                    scope: this
-                },{
-                    text: this.confirmText,
-                    scope: this,
-                    iconCls: "save",
-                    tooltip: this.confirmTooltipText,
-                    id: this.id + "_confirm_button",
-                    handler: function(){
-                        this.onButtonClicked("confirm");
-                    }
-                },{
-                    text: this.resetText,
-                    iconCls: "deleteIcon",
-                    tooltip: this.resetTooltipText,
-                    scope: this,
-                    id: this.id + "_reset_button",
-                    handler: function(){
-                        this.onButtonClicked("reset");
-                    }
-                }],
-                listeners:{
-                    render: this.onPanelRender,
+                title: this.acquisitionPanelTitleText,
+                id: this.id + "_acqlist",
+                autoScroll: true,
+                items:[],
+                listeners: {
+                    beforeexpand: this.loadAcqData,
                     scope:this
                 }
             }],
@@ -598,14 +637,14 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 break;
             }
             case 'confirm':{
-                this.viewPanel.disable();
-                Ext.getCmp(this.id + "_edit_button").disable();
-                Ext.getCmp(this.id + "_save_button").disable();
-                Ext.getCmp(this.id + "_draw_button").disable();
-                Ext.getCmp(this.id + "_reset_button").disable();
-                Ext.getCmp(this.id + "_confirm_button").disable();
-                Ext.getCmp(this.id + "_message").getEl().dom.innerText = this.commitedMessage;
-                break;
+                // this.viewPanel.disable();
+                // Ext.getCmp(this.id + "_edit_button").disable();
+                // Ext.getCmp(this.id + "_save_button").disable();
+                // Ext.getCmp(this.id + "_draw_button").disable();
+                // Ext.getCmp(this.id + "_reset_button").disable();
+                // Ext.getCmp(this.id + "_confirm_button").disable();
+                // Ext.getCmp(this.id + "_message").getEl().dom.innerText = this.commitedMessage;
+                // break;
             }
             case 'aoiEdit':{
                 var msg = Ext.getCmp(this.id + "_message");
@@ -614,9 +653,20 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                     this.viewPanel.disable();
                     msg.getEl().dom.innerText = this.commitedMessage;
                     // Ext.getCmp(this.id + "_message").setText(this.commitedMessage);
+                    Ext.getCmp(this.id + "_acqlist").enable();
+                    // Ext.getCmp(this.id + "_acqlist").expand();
+                }else if(this.currentStatus == this.STATUS.ACQ_LIST_SAVED){
+                    // disable all buttons
+                    this.viewPanel.disable();
+                    msg.getEl().dom.innerText = this.acqListMessage;
+                    Ext.getCmp(this.id + "_acqlist").collapse();
+                    Ext.getCmp(this.id + "_acqlist").disable();
+                    Ext.getCmp(this.id + "_editor").expand();
+                    // Ext.getCmp(this.id + "_message").setText(this.acqListMessage);
                 }else{
                     this.viewPanel.enable();
                     msg.getEl().dom.innerText = this.selectedMessage;
+                    Ext.getCmp(this.id + "_acqlist").disable();
                     // Ext.getCmp(this.id + "_message").setText(this.selectedMessage);
                     // Edit is enabled only if already exists an AOI.
                     if(this.wfsLayer 
@@ -663,15 +713,20 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         this.resetAuxiliaryContent();
 
         this.viewPanel.enable();
+    },
+
+    loadAcqData: function(acqList){
+
 
         // refresh filter on WFS grid
         if(this.addFeatureTable){
-            if(this.grid){
-                this.viewPanel.remove(this.getFeatureGrid());
-                this.grid = null;
+
+            if(!this.grid){
+                var grid = this.getFeatureGrid();
+                acqList.add(grid);
+            }else{
+                this.refreshFeatureGrid();
             }
-            this.viewPanel.add(this.getFeatureGrid());
-            this.viewPanel.doLayout();
         }
     },
 
@@ -740,11 +795,10 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
             state: currentAOI.fid ? OpenLayers.State.UPDATE : OpenLayers.State.INSERT,
             attributes:{
                 service_name: this.currentServiceName,
-                // TODO: get date time from form
-                start: values.dateStart ? dateStart.toISOString(): "",
-                end: values.dateEnd ? dateEnd.toISOString(): "",
-                sensor: values.sensor,
-                sensor_mode: values.sensorMode,
+                start: values.dateStart ? dateStart.toISOString(): currentAOI.attributes.start,
+                end: values.dateEnd ? dateEnd.toISOString(): currentAOI.attributes.end,
+                sensor: values.sensor ? values.sensor : currentAOI.attributes.sensor,
+                sensor_mode: values.sensorMode ? values.sensorMode : currentAOI.attributes.sensor_mode,
                 status: this.currentStatus
             }
         });
@@ -758,7 +812,160 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         this.draftFeatures = [];
     },
 
+    refreshFeatureGrid: function(){
+        if(!this.grid){
+            // Feature grid
+            this.grid = this.getFeatureGrid();
+        }else{
+            Ext.getCmp(this.id + "_export_acq_button").disable();
+            if(this.grid.store.proxy.protocol.filter != this.getCurrentFilter()){
+                this.grid.store = new GeoExt.data.FeatureStore({
+                layer: this.acqListLayer,
+                fields: [
+                    {name: "service_name", type: "string"},
+                    {name: "start", type: "string"},
+                    {name: "end", type: "string"},
+                    {name: "sensor", type: "string"},
+                    {name: "sensor_mode", type: "string"}
+                ],
+                proxy: new GeoExt.data.ProtocolProxy({
+                    url: this.layerURL,
+                    protocol: new OpenLayers.Protocol.WFS({
+                        version: this.wfsVersion,
+                        url: this.layerURL,
+                        featureType: this.layerAcqListName,
+                        geometryName: this.defaultGeometryName,
+                        featureNS: this.defaultFeatureNS,
+                        srsName: this.defaultProjection,
+                        filter: this.getCurrentFilter()
+                    })
+                }),
+                autoLoad: true,
+                listeners:{
+                    load:function(){
+                        try{
+                            if(this.grid
+                                && this.grid.getView
+                                && this.grid.getView().refresh){
+                                this.grid.getView().refresh();
+                            }
+                        }catch (e){
+                            // TODO: why? console.log(e);
+                        }
+                    },
+                    scope: this
+                }
+            });
+            }
+            // this.grid.store.proxy.protocol.filter = this.getCurrentFilter();
+        }
+        return this.grid;
+    },
+
     getFeatureGrid: function(){
+        if(this.addFeatureTable && !this.grid){
+            // Feature grid
+            this.grid = new Ext.grid.GridPanel({
+                // xtype: "grid",
+                // title: "Feature Table",
+                height: 300,
+                sm: new GeoExt.grid.FeatureSelectionModel(),
+                // viewConfig: {
+                //     emptyText: this.emptyAcqListText
+                // },
+                store: new GeoExt.data.FeatureStore({
+                    layer: this.acqListLayer,
+                    fields: [
+                        {name: "service_name", type: "string"},
+                        {name: "ships", type: "number"},
+                        {name: "start", type: "string"},
+                        {name: "end", type: "string"},
+                        {name: "sensor", type: "string"},
+                        {name: "sensor_mode", type: "string"}
+                    ],
+                    proxy: new GeoExt.data.ProtocolProxy({
+                        url: this.layerURL,
+                        protocol: new OpenLayers.Protocol.WFS({
+                            version: this.wfsVersion,
+                            url: this.layerURL,
+                            featureType: this.layerAcqListName,
+                            geometryName: this.defaultGeometryName,
+                            featureNS: this.defaultFeatureNS,
+                            srsName: this.defaultProjection,
+                            filter: this.getCurrentFilter()
+                        })
+                    }),
+                    autoLoad: true
+                }),
+                columns: [
+                    // {header: this.columnsHeadersText["service_name"], dataIndex: "service_name"},
+                    {header: this.columnsHeadersText["ships"], dataIndex: "ships", sortable: true},
+                    {header: this.columnsHeadersText["start"], dataIndex: "start", sortable: true},
+                    {header: this.columnsHeadersText["end"], dataIndex: "end", sortable: true},
+                    {header: this.columnsHeadersText["sensor"], dataIndex: "sensor", sortable: true},
+                    {header: this.columnsHeadersText["sensor_mode"], dataIndex: "sensor_mode", sortable: true}
+                ],
+                listeners:{
+                    rowclick: function(grid, rowIndex, columnIndex, e) {
+                        var selModel = grid.getSelectionModel();
+                        if(selModel.getCount() == 0){
+                            Ext.getCmp(this.id + "_export_acq_button").disable();
+                        }else{
+                            Ext.getCmp(this.id + "_export_acq_button").enable();
+                        }
+                    },
+                    scope:this
+                },
+                // tbar: [],
+                bbar:["->",
+                {
+                    text: this.exportAcqListText,
+                    id: this.id + "_export_acq_button",
+                    disabled: true,
+                    iconCls: "icon-save",
+                    tooltip: this.exportAcqListTooltipText,
+                    handler: function() {
+                        var me = this;
+                        var submitStatusToWFS = function(){
+                            // change status
+                            me.currentStatus = me.STATUS.ACQ_LIST_SAVED;
+                            // merge draft features to wfs layer
+                            me.mergeDraftFeatures();
+
+                            // send WFS transaction
+                            me.saveStrategy.save();
+
+                            // update current form status
+                            me.checkMode();
+                        };
+
+                        // filter by selected features 
+                        var fids = "";
+                        var selModel = this.grid.getSelectionModel(); 
+                        var selectedRecords = selModel.getSelections();
+                        for(var i = 0; i < selectedRecords.length; i++){
+                            var record = selectedRecords[i];
+                            if(record
+                                && record.data
+                                && record.data.fid){
+                                fids += "'" + record.data.fid + "',";
+                            }
+                        }
+                        fids = fids.substring(0, fids.length -1);
+
+                        this.doExportAndSaveStatus("GML2", me.STATUS.ACQ_LIST_SAVED, this.layerAcqListName, this.submitAcqUrl, false, null, fids);
+
+                        // this.doExportLayer("GML2", this.layerAcqListName, this.submitAcqUrl, false, submitStatusToWFS, fids);
+                        // open the GML on a popup: this.doExportLayer("GML2", this.layerAcqListName, null, true, null, fids);
+                    },
+                    scope: this
+                }]
+            });
+        }
+        return this.grid;
+    },
+
+    getFeatureGridOld: function(){
         if(this.addFeatureTable && !this.grid){
             // Feature grid
             this.grid = new Ext.grid.GridPanel({
@@ -828,6 +1035,11 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
             this.target.mapPanel.map.removeLayer(this.wfsLayer);    
         }
 
+        // acq_list layer
+        if(this.acqListLayer){
+            this.target.mapPanel.map.removeLayer(this.acqListLayer);
+        }
+
         // addMSLayer(this.layerName, this.layerName, this.target.sources[this.source].url);
         var addLayer = this.target.tools[this.addLayerID];
         var source = this.target.sources[this.source];
@@ -875,12 +1087,29 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
             style: this.defaultLayerStyle
         });
 
+        // acqListLayer
+        this.acqListLayer = new OpenLayers.Layer.Vector(this.layerName, {
+            displayInLayerSwitcher: this.displayAuxiliaryLayerInLayerSwitcher,
+            protocol: new OpenLayers.Protocol.WFS({
+                version: this.wfsVersion,
+                url: this.layerURL,
+                featureType: this.layerAcqListName,
+                geometryName: this.defaultGeometryName,
+                featureNS: this.defaultFeatureNS,
+                srsName: this.defaultProjection
+            }),
+            filter: this.getCurrentFilter(),
+            projection: this.defaultProjection,
+            style: this.defaultLayerStyle
+        });
+
         var me = this;
         this.wfsLayer.events.register("loadend", this.wfsLayer, function (e) {
             me.loadWFSData();
             me.checkMode();
         });
         this.target.mapPanel.map.addLayer(this.wfsLayer);
+        this.target.mapPanel.map.addLayer(this.acqListLayer);
     },
 
     onSaveFail: function(){
@@ -938,10 +1167,18 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
      */    
     doExport: function(outputFormat){
 
+        // do export for a new COMMITED status
+        this.doExportAndSaveStatus(outputFormat);
+    },      
+
+    /** api: method[doExportAndSaveStatus]
+     */    
+    doExportAndSaveStatus: function(outputFormat, newStatus, layerName, submitUrl, downloadGenerated, submitCallback, fids){
+
         var me = this;
         var submitStatusToWFS = function(){
             // change status
-            me.currentStatus = me.STATUS.COMMITED;
+            me.currentStatus = newStatus ? newStatus : me.STATUS.COMMITED;
             // merge draft features to wfs layer
             me.mergeDraftFeatures();
 
@@ -950,7 +1187,18 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
 
             // update current form status
             me.checkMode();
-        }
+        };
+
+        this.doExportLayer(outputFormat, layerName ? layerName : this.layerName, submitUrl ? submitUrl : this.submitUrl, 
+            downloadGenerated ? downloadGenerated : this.downloadUploadedSHP, submitCallback ? submitCallback : submitStatusToWFS, fids);
+    },  
+
+    /** api: method[doExportLayer]
+     *  Export a layer in a format. Optionally submitted to backend and/or downloaded in an iframe
+     */    
+    doExportLayer: function(outputFormat, layerName, submitUrl, downloadGenerated, submitCallback, fids){
+
+        var me = this;
         
         var filter = this.getCurrentFilter();
         
@@ -966,16 +1214,29 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         var user = this.target.user.name;
         var service = this.currentServiceName.substring(user.length +1);
 
+        var cql_filter;
+        if(fids){
+            cql_filter = "id in (" + fids  + ")";
+            cql_filter = encodeURIComponent(cql_filter);
+        }else{
+            cql_filter = "service_name='" + this.currentServiceName + "'";
+        }
+
         // Url generation
         var exportUrl = this.layerURL;
         exportUrl += "?service=WFS" +
                 "&version=" + (this.exportVersion ? this.exportVersion : this.wfsVersion) +
                 "&request=GetFeature" +
-                "&typeName=" + this.layerName +
+                "&typeName=" + layerName +
                 "&exceptions=application/json" +
-                "&cql_filter=service_name='" + this.currentServiceName + "'" +
+                "&cql_filter=" + cql_filter +
                 "&outputFormat="+ outputFormat;
-        url = this.submitUrl + encodeURIComponent(exportUrl) + "&user="+user + "&service="+service;
+
+        if(submitUrl){
+            url =  submitUrl + encodeURIComponent(exportUrl) + "&user="+user + "&service="+service;
+        }else{
+            url = exportUrl;
+        }
 
         // submit the SHP        
         OpenLayers.Request.POST({
@@ -985,7 +1246,9 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
 
                 if(request.status == 200){
                     //submit status
-                    submitStatusToWFS();
+                    if(submitUrl && submitCallback){
+                        submitCallback();
+                    }
                 
                     try
                       {
@@ -1001,7 +1264,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                       }
                     catch(err)
                       {
-                        if(this.downloadUploadedSHP){
+                        if(downloadGenerated){
                             // submit filter in a standard form (before check)
                             this.doDownloadPost(exportUrl, xml);
                         }
@@ -1022,7 +1285,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
     },
 
     /** api: method[doDownloadPost]
-     *  This method is used only if this.downloadUploadedSHP is true
+     *  This method is used to downlad a gnerated file
      */    
     doDownloadPost: function(url, data){
         //        
@@ -1036,10 +1299,11 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         form.setAttribute("id", this.downloadFormId);
         form.setAttribute("method", "POST");
         form.setAttribute("action", url);
-        var hiddenField = document.createElement("input");      
-        hiddenField.setAttribute("name", "filter");
-        hiddenField.setAttribute("value", data);
-        form.appendChild(hiddenField);
+        // var hiddenField = document.createElement("input");      
+        // hiddenField.setAttribute("name", "filter");
+        // hiddenField.setAttribute("value", data);
+        // form.appendChild(hiddenField);
+        form.target = "_blank";
         document.body.appendChild(form);
         form.submit(); 
     },
