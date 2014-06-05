@@ -120,7 +120,26 @@ OpenLayers.TimeAgent.WMS = OpenLayers.Class(OpenLayers.TimeAgent, {
             else {
                 minTime = this.range[0];
             }
+            // default
             isotime = OpenLayers.Date.toISOString(minTime) + '/' + OpenLayers.Date.toISOString(time);
+
+            // fix by layer. why we need it?
+            if(layer.name != "SAR-imagery"){
+                var relativeHours = 1
+                var dateMin = new Date();
+                var dateMax = new Date();
+                dateMin.setTime(minTime);
+                dateMax.setTime(time);
+                // fix date time
+                dateMin.setTime(dateMin.setHours(dateMin.getHours() + relativeHours));
+                dateMax.setTime(dateMax.setHours(dateMax.getHours() + relativeHours));
+                var fixedisotime = OpenLayers.Date.toISOString(dateMin) + '/' + OpenLayers.Date.toISOString(dateMax);
+                // console.log(layer.name);
+                // console.log(isotime);
+                // console.log(fixedisotime);
+                isotime = fixedisotime;
+            }
+            
         }
         else if(layer.metadata.timeInterval[0] instanceof Date && this.intervalMode != "exact") {
             //find where this time fits into
