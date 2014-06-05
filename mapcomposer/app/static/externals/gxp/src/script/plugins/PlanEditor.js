@@ -43,9 +43,19 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
     },
     serviceText: "Service",
     submitFailTitleText: "Fail",
-    submitFailText: "An error occur while saving current AOI",
+    submitFailText: "An error occur while saving",
     submitSuccessTitleText: "Saved",
-    submitSuccessText: "Current AOI has been saved",
+    submitSuccessText: "Save succesfully",
+    submitFailByModeText:{
+        save: "An error occur while saving current AOI",
+        confirm: "An error occur while confirming current AOI",
+        confirmAcqList: "An error occur while saving current acquisition list"
+    },
+    submitSuccessByModeText: {
+        save: "Current AOI has been saved",
+        confirm: "Current AOI has been confirmed",
+        confirmAcqList: "Selected acquisition list has been saved"
+    },
     notValidFailTitleText: "Fail",
     notValidFailText: "Please complete the form before save",
     confirmRemoteDeleteTitleText: "Remove AOI",
@@ -303,11 +313,36 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
             }
         };
 
+        var accordionConfig = {
+            xtype: 'panel',
+            // title: this.titleText,
+            layout: "accordion",
+            id: this.id + "_accordion",
+            height: 500,
+            defaults:{
+                xtype: 'panel',
+                layout: "form"    
+            },
+            autoScroll: true,
+            items:[{
+                title: this.defaultPanelTitleText,
+                autoScroll: true,
+                id: this.id + "_editor",
+                items:[planFormPanelConfig]
+            },{
+                title: this.acquisitionPanelTitleText,
+                id: this.id + "_acqlist",
+                autoScroll: true,
+                items:[]
+            }]
+        };
+
         // configure output
         var outputConfig = {
             xtype: 'panel',
             title: this.titleText,
-            layout: "accordion",
+            id: this.id + "_output",
+            // layout: "vbox",
             defaults:{
                 xtype: 'panel',
                 layout: "form"    
@@ -317,20 +352,17 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
             style: {
                 "padding-top": "10px",
             },
+            layout: {
+                type: 'vbox',
+                align : 'stretch',  
+                pack  : 'start'
+            },
             items:[{
-                title: this.defaultPanelTitleText,
-                autoScroll: true,
-                id: this.id + "_editor",
-                items:[serviceSelectorConfig,planFormPanelConfig]
+                items: [serviceSelectorConfig],
+                height: 30
             },{
-                title: this.acquisitionPanelTitleText,
-                id: this.id + "_acqlist",
-                autoScroll: true,
-                items:[],
-                listeners: {
-                    beforeexpand: this.loadAcqData,
-                    scope:this
-                }
+                items:[accordionConfig],
+                flex: 1
             }],
             listeners:{
                 activate: function(){
@@ -348,12 +380,23 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                             ownerPanel.ownerCt.doLayout();
                         }
                     }
+                    this.fixPanelHeight();
                 },
                 scope:this
             }
-        }
+        };
+
         Ext.apply(outputConfig, this.outputConfig || {} );
         return gxp.plugins.PlanEditor.superclass.addOutput.call(this, outputConfig);    
+    },
+
+    fixPanelHeight: function(){
+        var accordion = Ext.getCmp(this.id + "_accordion");
+        var output = Ext.getCmp(this.id + "_output");
+        var accordionLength = output.getHeight() - (accordion.items.length* 21);
+        // accordion.setHeight(output.getHeight() - 30);
+        accordion.setHeight(accordionLength);
+
     },
 
    /** private: method[onPanelRender]
@@ -375,6 +418,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
     */ 
     onButtonClicked: function(buttonId, options){
         this.mode = buttonId;
+        this.checkMode();
         switch (buttonId){
             case 'edit':{
                 this.onEdit();
@@ -607,6 +651,13 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
     */ 
     checkMode: function(){
         var panel = this.viewPanel;
+
+        // change message for WFS commits
+        this.currentSubmitFailTitleText = this.submitFailTitleText;
+        this.currentSubmitSuccessTitleText = this.submitSuccessTitleText;
+        this.currentSubmitFailText = this.submitFailByModeText[this.mode] ? this.submitFailByModeText[this.mode] : this.submitFailText;
+        this.currentSubmitSuccessText = this.submitSuccessByModeText[this.mode] ? this.submitSuccessByModeText[this.mode] : this.submitSuccessText;
+
         switch (this.mode){
             case 'save':{
                 Ext.getCmp(this.id + "_edit_button").enable();
@@ -636,15 +687,9 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 Ext.getCmp(this.id + "_confirm_button").enable();
                 break;
             }
+            case 'confirmAcqList':{
+            }
             case 'confirm':{
-                // this.viewPanel.disable();
-                // Ext.getCmp(this.id + "_edit_button").disable();
-                // Ext.getCmp(this.id + "_save_button").disable();
-                // Ext.getCmp(this.id + "_draw_button").disable();
-                // Ext.getCmp(this.id + "_reset_button").disable();
-                // Ext.getCmp(this.id + "_confirm_button").disable();
-                // Ext.getCmp(this.id + "_message").getEl().dom.innerText = this.commitedMessage;
-                // break;
             }
             case 'aoiEdit':{
                 var msg = Ext.getCmp(this.id + "_message");
@@ -712,27 +757,21 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         // add the auxiliary layers
         this.resetAuxiliaryContent();
 
-        this.viewPanel.enable();
+        // this.viewPanel.enable();
+        this.loadAcqData();
     },
 
-    loadAcqData: function(acqList){
-
-        if(!this.grid){
-            var grid = this.getFeatureGrid();
+   /** private: method[loadAcqData]
+    *  Load acquisition list data
+    */ 
+    loadAcqData: function(){
+        var acqList = Ext.getCmp(this.id + "_acqlist");
+        if(!this.acqListgrid){
+            var grid = this.getAcqListGrid();
             acqList.add(grid);
         }else{
-            this.refreshFeatureGrid();
+            this.refreshAcqListGrid();
         }
-        // // refresh filter on WFS grid
-        // if(this.addFeatureTable){
-
-        //     if(!this.grid){
-        //         var grid = this.getFeatureGrid();
-        //         acqList.add(grid);
-        //     }else{
-        //         this.refreshFeatureGrid();
-        //     }
-        // }
     },
 
     onFeatureAdded: function(controlReturns){
@@ -817,62 +856,66 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         this.draftFeatures = [];
     },
 
-    refreshFeatureGrid: function(){
-        if(!this.grid){
+   /** private: method[refreshAcqListGrid]
+    *  Refresh acquisition list data with a new store based on selected service
+    */ 
+    refreshAcqListGrid: function(){
+        if(!this.acqListgrid){
             // Feature grid
-            this.grid = this.getFeatureGrid();
+            this.acqListgrid = this.getAcqListGrid();
         }else{
             Ext.getCmp(this.id + "_export_acq_button").disable();
-            if(this.grid.store.proxy.protocol.filter != this.getCurrentFilter()){
-                this.grid.store = new GeoExt.data.FeatureStore({
-                layer: this.acqListLayer,
-                fields: [
-                    {name: "service_name", type: "string"},
-                    {name: "start", type: "string"},
-                    {name: "end", type: "string"},
-                    {name: "sensor", type: "string"},
-                    {name: "sensor_mode", type: "string"}
-                ],
-                proxy: new GeoExt.data.ProtocolProxy({
-                    url: this.layerURL,
-                    protocol: new OpenLayers.Protocol.WFS({
-                        version: this.wfsVersion,
+            if(this.acqListgrid.store.proxy.protocol.filter != this.getCurrentFilter()){
+                this.acqListgrid.store = new GeoExt.data.FeatureStore({
+                    layer: this.acqListLayer,
+                    fields: [
+                        {name: "service_name", type: "string"},
+                        {name: "ships", type: "number"},
+                        {name: "start", type: "string"},
+                        {name: "end", type: "string"},
+                        {name: "sensor", type: "string"},
+                        {name: "sensor_mode", type: "string"}
+                    ],
+                    proxy: new GeoExt.data.ProtocolProxy({
                         url: this.layerURL,
-                        featureType: this.layerAcqListName,
-                        geometryName: this.defaultGeometryName,
-                        featureNS: this.defaultFeatureNS,
-                        srsName: this.defaultProjection,
-                        filter: this.getCurrentFilter()
-                    })
-                }),
-                autoLoad: true,
-                listeners:{
-                    load:function(){
-                        try{
-                            if(this.grid
-                                && this.grid.getView
-                                && this.grid.getView().refresh){
-                                this.grid.getView().refresh();
+                        protocol: new OpenLayers.Protocol.WFS({
+                            version: this.wfsVersion,
+                            url: this.layerURL,
+                            featureType: this.layerAcqListName,
+                            geometryName: this.defaultGeometryName,
+                            featureNS: this.defaultFeatureNS,
+                            srsName: this.defaultProjection,
+                            filter: this.getCurrentFilter()
+                        })
+                    }),
+                    autoLoad: true,
+                    listeners:{
+                        load:function(){
+                            try{
+                                if(this.acqListgrid
+                                    && this.acqListgrid.getView
+                                    && this.acqListgrid.getView().refresh){
+                                    this.acqListgrid.getView().refresh();
+                                }
+                            }catch (e){
+                                // TODO: why? console.log(e);
                             }
-                        }catch (e){
-                            // TODO: why? console.log(e);
-                        }
-                    },
-                    scope: this
-                }
-            });
+                        },
+                        scope: this
+                    }
+                });
             }
-            // this.grid.store.proxy.protocol.filter = this.getCurrentFilter();
         }
-        return this.grid;
+        return this.acqListgrid;
     },
 
-    getFeatureGrid: function(){
-        if(this.addFeatureTable && !this.grid){
+   /** private: method[refreshAcqListGrid]
+    *  Get acquisition list grid based on selected service
+    */ 
+    getAcqListGrid: function(){
+        if(this.addFeatureTable && !this.acqListgrid){
             // Feature grid
-            this.grid = new Ext.grid.GridPanel({
-                // xtype: "grid",
-                // title: "Feature Table",
+            this.acqListgrid = new Ext.grid.GridPanel({
                 height: 300,
                 sm: new GeoExt.grid.FeatureSelectionModel(),
                 // viewConfig: {
@@ -931,6 +974,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                     tooltip: this.exportAcqListTooltipText,
                     handler: function() {
                         var me = this;
+                        this.mode = "confirmAcqList";
                         var submitStatusToWFS = function(){
                             // change status
                             me.currentStatus = me.STATUS.ACQ_LIST_SAVED;
@@ -946,7 +990,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
 
                         // filter by selected features 
                         var fids = "";
-                        var selModel = this.grid.getSelectionModel(); 
+                        var selModel = this.acqListgrid.getSelectionModel(); 
                         var selectedRecords = selModel.getSelections();
                         for(var i = 0; i < selectedRecords.length; i++){
                             var record = selectedRecords[i];
@@ -967,51 +1011,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 }]
             });
         }
-        return this.grid;
-    },
-
-    getFeatureGridOld: function(){
-        if(this.addFeatureTable && !this.grid){
-            // Feature grid
-            this.grid = new Ext.grid.GridPanel({
-                // xtype: "grid",
-                title: "Feature Table",
-                height: 150,
-                sm: new GeoExt.grid.FeatureSelectionModel(),
-                store: new GeoExt.data.FeatureStore({
-                    layer: this.wfsLayer,
-                    fields: [
-                        {name: "service_name", type: "string"},
-                        {name: "start", type: "string"},
-                        {name: "end", type: "string"},
-                        {name: "sensor", type: "string"},
-                        {name: "sensor_mode", type: "string"}
-                    ],
-                    proxy: new GeoExt.data.ProtocolProxy({
-                        url: this.layerURL,
-                        protocol: new OpenLayers.Protocol.WFS({
-                            version: this.wfsVersion,
-                            url: this.layerURL,
-                            featureType: this.layerName,
-                            geometryName: this.defaultGeometryName,
-                            featureNS: this.defaultFeatureNS,
-                            srsName: this.defaultProjection,
-                            filter: this.getCurrentFilter()
-                        })
-                    }),
-                    autoLoad: true
-                }),
-                columns: [
-                    {header: this.columnsHeadersText["service_name"], dataIndex: "service_name"},
-                    {header: this.columnsHeadersText["start"], dataIndex: "start"},
-                    {header: this.columnsHeadersText["end"], dataIndex: "end"},
-                    {header: this.columnsHeadersText["sensor"], dataIndex: "sensor"},
-                    {header: this.columnsHeadersText["sensor_mode"], dataIndex: "sensor_mode"}
-                ],
-                bbar: []
-            });
-        }
-        return this.grid;
+        return this.acqListgrid;
     },
 
    /** private: method[resetAuxiliaryContent]
@@ -1119,8 +1119,10 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
 
     onSaveFail: function(){
         Ext.Msg.show({
-            title: this.submitFailTitleText,
-            msg: this.submitFailText,
+            // title: this.submitFailTitleText,
+            // msg: this.submitFailText,
+            title: this.currentSubmitFailTitleText,
+            msg: this.currentSubmitFailText,
             buttons: Ext.Msg.OK,
             icon: Ext.MessageBox.ERROR
         });
@@ -1128,8 +1130,10 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
 
     onSaveSuccess: function(){
         Ext.Msg.show({
-            title: this.submitSuccessTitleText,
-            msg: this.submitSuccessText,
+            // title: this.submitSuccessTitleText,
+            // msg: this.submitSuccessText,
+            title: this.currentSubmitSuccessTitleText,
+            msg: this.currentSubmitSuccessText,
             buttons: Ext.Msg.OK,
             icon: Ext.MessageBox.INFO
         });
