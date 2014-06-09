@@ -1,8 +1,8 @@
 {
    
    "scaleOverlayMode": "basic",
-   "adminUrl":"http://mariss.geo-solutions.it/opensdi2-manager/",
-   "geoStoreBase":"http://mariss.geo-solutions.it/opensdi2-manager/facade/geostore/rest/",
+   "adminUrl":"http://localhost/opensdi2-manager/",
+   "geoStoreBase":"http://localhost/opensdi2-manager/facade/geostore/rest/",
    "externalHeaders": true,
    "header":{
         "container": {
@@ -25,7 +25,7 @@
             "ptype": "gxp_wmssource",
             "title": "MARISS", 
             "version": "1.1.1",
-            "url": "http://mariss.geo-solutions.it/geoserver/mariss/ows",
+            "url": "http://localhost/geoserver/mariss/ows",
 			"layerBaseParams": {
 				"TILED": true,
 				"TILESORIGIN": "-180,-90" 
@@ -224,80 +224,7 @@
        },{
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
-		},{
-			"ptype": "gxp_wfsgrid",
-			"id": "featuregrid",
-			"container": "panel",
-			"outputTarget": "south",
-			"wfsURL": "http://mariss.geo-solutions.it/geoserver/mariss/wfs",
-			"featureType": "TEM_QL__1P_mosaic_idx",
-			"zoomToTooltip": "zoom to AOI",
-			"srsName": "EPSG:4326",
-			"fieldForSort": "time",
-			"sortDirection": "DESC",
-			"xy": false,
-            "actionColumns" : [{
-	                "type": "checkDisplay",
-	                "layerName": "Highlight Layer",
-	                "sourceSRS": "EPSG:4326",
-	                "style":{
-		                "strokeColor": "#FF0000",
-		                "strokeWidth": 2,
-		                "fillColor": "#FFFFFF",
-		                "fillOpacity": 0.2
-		            }
-	            },{
-	                "type": "zoom",
-	                "sourceSRS": "EPSG:4326"
-	            },{
-	                "type": "customAction",
-	                "actionConf": {
-	                	"xtype": "actioncolumn",
-	                	"sortable": false,
-	                	"width": 5,
-		                "actions":{
-		                	"itemAdded":{
-		                		"icon": "theme/app/img/silk/add.png",
-		                		"tooltip": "Add to download List"
-		                	}
-		                }
-	                }
-	            },{
-	                "type": "customAction",
-	                "actionConf": {
-	                	"xtype": "actioncolumn",
-	                	"sortable": false,
-	                	"width": 5,
-		                "actions":{
-		                	"zoomToTime":{
-		                		"icon": "theme/app/img/silk/time.png",
-		                		"tooltip": "Show the map only at this time"
-		                	}
-		                }
-	                }
-            }],
-            "fields": [
-                {
-                    "name": "time",
-                    "mapping": "time"
-                },
-                {
-                    "name": "location",      
-                    "mapping": "location"
-                }
-            ],
-			"columns" : [
-	            	{
-						"header": "File Name",      
-						"dataIndex": "location",
-	                    "sortable": true
-	                },{
-						"header": "Time",
-						"dataIndex": "time",
-	                    "sortable": true
-	                }
-	            ]
-		},{                   
+		},{             
 			"ptype": "gxp_wpsmanager",
 			"id": "wpsSPM",
 			"url": "http://mariss.geo-solutions.it/geoserver/wps",
@@ -308,19 +235,88 @@
 			"target": ""
 
 		},{
-	      "ptype": "gxp_downloadgrid",
-	      "id": "downloadgrid",
-	      "wfsGridId": "featuregrid",
-	      "container": "panel",
-	      "outputTarget": "downloadlist",
-	      "autoExpandPanel": "east"
-	    },{
-            "ptype":"gxp_custombinder",
-	      	"wfsGridId": "featuregrid",
-			"playbackId": "playback",
-			"downloadGridId": "downloadgrid",
-            "filterByExtent": true,
-	      	"autoExpandPanel": "east"
-	 }
+            "ptype": "gxp_planeditor",
+            "outputTarget": "west",
+            "source": "MARISS-Layers",
+            "downloadUploadedSHP": false,
+            "auxiliaryLayerName": "Draft Layer",
+            "displayAuxiliaryLayerInLayerSwitcher": false,
+            "addFeatureTable": true,
+            "layoutConfig":{
+                "xtype": "form",
+                "buttonAlign": "right",
+                "autoScroll":true,
+                "frame":true
+            }
+       }, {
+	     "ptype": "gxp_importexport",
+	     "id": "gxp_importexport",
+	     "service": "http://mariss.geo-solutions.it/opensdi2-manager/",
+	     "types": ["kml/kmz"],
+	     "exportConf":{
+	        "kml/kmz": {
+	            "layerName": "Draft Layer",
+	            "alternativeStyle": false,
+	            "dontAskForLayerName": true
+	        }, 
+            "shp": {
+                "panelConfig":{
+                    "fieldEmptyText": "Browse for SHP files...",
+                    "validFileExtensions": [".shp"],
+                    "deafultLayerName": "Draft Layer",
+                    "dontAskForLayerName": true
+                }
+            }       
+	     }
+	 },{
+		  "ptype": "gxp_featuregrid",
+		  "featureManager": "featuremanager",
+		  "outputConfig": {
+			  "id": "featuregrid",
+			  "title": "Features"
+		  },
+		  "outputTarget": "south",
+		  "showExportCSV": true,
+		  "exportFormats": ["GML2","shape-zip", "CSV"],
+		  "exportFormatsConfig":{
+		        "shape-zip": {
+		            "addGeometry": true
+		        },
+		        "GML2": {
+		            "addGeometry": true
+		        }
+		   }
+    }, {
+		  "ptype": "gxp_featuremanager",
+		  "id": "featuremanager"
+     },{
+		  "ptype": "gxp_spatialqueryform",
+		  "featureManager": "featuremanager",
+		  "featureGridContainer": "south",
+		  "outputTarget": "east",
+		  "showSelectionSummary": true,
+		  "actions": null,
+		  "id": "bboxquery",
+		  "spatialSelectorsConfig":{
+		        "bbox":{
+		            "xtype": "gxp_spatial_bbox_selector"
+		        },
+		        "buffer":{
+		            "xtype": "gxp_spatial_buffer_selector",
+					"bufferOptions": {
+						"minValue": 1,
+						"maxValue": 10000,
+						"decimalPrecision": 2
+					}
+		        },
+		        "circle":{
+		            "xtype": "gxp_spatial_circle_selector",
+		            "zoomToCurrentExtent": true
+		        },
+		        "polygon":{
+		            "xtype": "gxp_spatial_polygon_selector"
+		        }
+	      }
+    	}
 	]
 }

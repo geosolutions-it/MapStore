@@ -47,7 +47,7 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
      * {Boolean} Use external headers
      * 
      */
-    externalHeaders: false,
+    externalHeaders: true,
 
     /** api: method[addActions]
      */
@@ -92,10 +92,21 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
         this.target.loggedOut = true;
 
         if(this.externalHeaders){
+            // TODO: Fix login/ logout page for IE
             // clean the authentication and refresh page
             var refreshUrl = window.location.href;
+            var loginPageUrl = "http://mariss.geo-solutions.it/mapstore/loginpage";
+            // var loginPageUrl = this.target.initialConfig.adminUrl.replace("opensdi2-manager/", "mapstore/loginpage");
             var geostoreUrl = this.target.initialConfig.geoStoreBase;
             function logout() {
+
+                // if (window.ActiveXObject) {
+                //   // IE clear HTTP Authentication
+                //   document.execCommand("ClearAuthenticationCache");
+                // }
+
+                // window.location.href= loginPageUrl;
+
                 var xmlhttp;
                 if (window.XMLHttpRequest) {
                       xmlhttp = new XMLHttpRequest();
@@ -109,13 +120,13 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
                   document.execCommand("ClearAuthenticationCache");
                   window.location.href = refreshUrl;
                 } else {
-                    xmlhttp.open("GET", geostoreUrl, true, "logout", "logout");
-                    xmlhttp.send("");
-                    xmlhttp.onreadystatechange = function() {
-                        if (xmlhttp.readyState == 4) {
-                            window.location.href= refreshUrl;
-                        }
-                    }
+                    // xmlhttp.open("GET", geostoreUrl, true, "logout", "logout");
+                    // xmlhttp.send("");
+                    // xmlhttp.onreadystatechange = function() {
+                    //     if (xmlhttp.readyState == 4) {
+                            window.location.href= loginPageUrl;
+                    //     }
+                    // }
                 }
                 return false;
             }
