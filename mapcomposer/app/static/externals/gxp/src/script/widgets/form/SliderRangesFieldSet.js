@@ -64,12 +64,15 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
         this.multiSlider= new gxp.form.SliderRangesField(this.multiSliderConf);
 		this.multiSlider.on('change', function(slider, value, thumb) {
 			if(this.numericFields){
-				Ext.getCmp(thumb.id+"_minValue").setValue(thumb.minValue);
-				Ext.getCmp(thumb.id+"_maxValue").setValue(thumb.value);
-				
-				if(thumb.index < multi.thumbs.length-1) {
-					Ext.getCmp(multi.thumbs[thumb.index+1].id+"_minValue").setValue(thumb.value+1);
+                var curValue = Ext.getCmp(thumb.id+"_value").getValue();
+                // change value only if over precision
+                if(Math.abs(curValue - thumb.value) > thumb.slider.increment) { 
+                    Ext.getCmp(thumb.id+"_value").setValue(thumb.value);
                 }
+				
+				/*if(thumb.index < multi.thumbs.length-1) {
+					Ext.getCmp(multi.thumbs[thumb.index+1].id+"_minValue").setValue(thumb.value+1);
+                }*/
 			}
 			if(this.labels) {
 				Ext.getCmp(this.id+'_labels').setValue(this.labelsTpl.apply(this.multiSlider));
@@ -86,7 +89,7 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
         this.autoHeight= true;
         this.layout='table';
         this.layoutConfig= {
-            columns: 3
+            columns: 7
         };
         this.items = [];
         
@@ -97,7 +100,7 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
                     cellCls: 'spatial-cell',
                     labelAlign: "top",
                     border: false,
-                    colspan: 3,
+                    colspan: 7,
                     items: [this.multiSlider]
                 });
 		this.configureNumericFields();
@@ -125,9 +128,85 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
 	
 	configureNumericFields: function() {
 		if(this.numericFields){
-            var minValue,maxValue, id, rangeName, index;
+            this.items.push({
+                layout: "form",
+                cellCls: 'spatial-cell',
+                labelAlign: "top",
+                border: false,
+                colspan: 1,
+                items: [
+                new Ext.form.NumberField({
+                    width: 40,
+                    disabled: true,
+                    id: this.id+"_minValue",
+                    value: this.multiSlider.minValue,
+                    decimalPrecision: 10
+                })]
+            });
+            var thumbs = this.multiSlider.thumbs;
+            for(var i=0; i< thumbs.length; i++){
+                
+                this.items.push({
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    labelAlign: "top",
+                    border: false,
+                    colspan: 1,
+                    items: [{
+                       xtype: "label",     
+                       text: thumbs[i].name       
+                    }]
+                    
+                });
+                
+                this.items.push({
+                    layout: "form",
+                    cellCls: 'spatial-cell',
+                    labelAlign: "top",
+                    border: false,
+                    colspan: 1,
+                    items: [
+                    new Ext.form.NumberField({
+                        width: 40,
+                        id: thumbs[i].id+"_value",
+                        value: thumbs[i].maxValue,
+                        decimalPrecision: 10
+                    })]
+                });
+            }
+            
+            this.items.push({
+                layout: "form",
+                cellCls: 'spatial-cell',
+                labelAlign: "top",
+                border: false,
+                colspan: 1,
+                items: [{
+                   xtype: "label",     
+                   text: this.multiSlider.ranges[this.multiSlider.ranges.length -1].name
+                }]
+                
+            });
+            
+            this.items.push({
+                layout: "form",
+                cellCls: 'spatial-cell',
+                labelAlign: "top",
+                border: false,
+                colspan: 1,
+                items: [
+                new Ext.form.NumberField({
+                    width: 40,
+                    id: this.id+"_maxValue",
+                    value: this.multiSlider.maxValue,
+                    decimalPrecision: 10
+                })]
+            });
+        
+            /*var minValue,maxValue, id, rangeName, index;
             var mindis= false, maxdis=false;
             var thumbs=this.multiSlider.thumbs;
+            var multi = this.multiSlider;
             for(var i=0; i< thumbs.length; i++){
                 mindis= (i==0) ? true: false;
                // maxdis= (i==thumbs.length-1) ? true: false;
@@ -149,8 +228,8 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
                         disabled: mindis,
                         id: id+"_minValue",
                         value: minValue,
-                        minValue: multi.minValue,
-                        maxValue: multi.maxValue,
+                        minValue: minValue,
+                        maxValue: maxValue,
                         listeners:{
                             "change": function(it, newValue){
                                 
@@ -198,7 +277,7 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
                         }
                     })]
                 });
-            }
+            }*/
                        
         }
 	}

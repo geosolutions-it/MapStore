@@ -382,7 +382,8 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         var sliderFiledRischioSocialePanel=new gxp.form.SliderRangesFieldSet({
             title: this.sliderRischioSocialeText,
             id:"rischio_sociale_panel",    
-            labels: true,
+            //labels: true,
+            numericFields: true,
             multiSliderConf:{
                 vertical : false,
                 anchor: "99%",
@@ -413,7 +414,8 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         var sliderFiledRischioAmbientalePanel=new gxp.form.SliderRangesFieldSet({
             title: this.sliderRischioAmbientaleText,
             id:"rischio_ambientale_panel",    
-            labels: true,
+            //labels: true,
+            numericFields: true,
             multiSliderConf:{
                 vertical : false,
                 anchor: "99%",
@@ -445,7 +447,8 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         var sliderFiledRischioPanel=new gxp.form.SliderRangesFieldSet({
             title: isVulnerables ? this.sliderVulnerablesText : this.sliderRischioText,
             id:"rischio_panel",    
-            labels: true,
+            //labels: true,
+            numericFields: true,
             multiSliderConf:{
                 vertical : false,
                 anchor: "99%",
@@ -577,36 +580,41 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                     
                     if (hasBoth){
 
-                        Ext.getCmp('rischio_sociale_panel_multislider').setValue(0,defaultEnvArray.length > 3 ? parseFloat(defaultEnvArray[3].split(":")[1]) : parseFloat(defaultEnvArray[0].split(":")[1]));
-                        Ext.getCmp('rischio_sociale_panel_multislider').setValue(1,defaultEnvArray.length > 3 ? parseFloat(defaultEnvArray[4].split(":")[1]) : parseFloat(defaultEnvArray[1].split(":")[1]));
-
-                        Ext.getCmp('rischio_ambientale_panel_multislider').setValue(0,defaultEnvArray.length > 3 ? parseFloat(defaultEnvArray[3].split(":")[1]) : parseFloat(defaultEnvArray[0].split(":")[1]));
-                        Ext.getCmp('rischio_ambientale_panel_multislider').setValue(1,defaultEnvArray.length > 3 ? parseFloat(defaultEnvArray[4].split(":")[1]) : parseFloat(defaultEnvArray[1].split(":")[1]));
-
-                        var socialMin = Ext.getCmp('rischio_sociale_panel_multislider').getValue(0);
-                        var socialMax = Ext.getCmp('rischio_sociale_panel_multislider').getValue(1);
-                        var maxValueSociale = Ext.getCmp('rischio_sociale_panel_multislider').maxValue;
+                        var socialMin = parseFloat(defaultEnvArray[0].split(":")[1]);
+                        var socialMedium = parseFloat(defaultEnvArray[1].split(":")[1]);
+                        var socialMax = parseFloat(defaultEnvArray[2].split(":")[1]);
+                    
+                        Ext.getCmp('rischio_sociale_panel_multislider').setValue(0, socialMin);
+                        Ext.getCmp('rischio_sociale_panel_multislider').setValue(1, socialMedium);
+                        Ext.getCmp('rischio_sociale_panel_multislider').maxValue = socialMax;
+                        Ext.getCmp('rischio_sociale_panel_maxValue').setValue(socialMax);
                         
-                        var ambMin = Ext.getCmp('rischio_ambientale_panel_multislider').getValue(0);
-                        var ambMax = Ext.getCmp('rischio_ambientale_panel_multislider').getValue(1);
-                        var maxValueAmbientale = Ext.getCmp('rischio_ambientale_panel_multislider').maxValue;
-
+                        var ambMin = defaultEnvArray.length > 3 ? parseFloat(defaultEnvArray[3].split(":")[1]) : parseFloat(defaultEnvArray[0].split(":")[1]);
+                        var ambMedium = defaultEnvArray.length > 3 ? parseFloat(defaultEnvArray[4].split(":")[1]) : parseFloat(defaultEnvArray[1].split(":")[1]);
+                        var ambMax = defaultEnvArray.length > 3 ? parseFloat(defaultEnvArray[5].split(":")[1]) : parseFloat(defaultEnvArray[2].split(":")[1]);
                         
+                        Ext.getCmp('rischio_ambientale_panel_multislider').setValue(0, ambMin);
+                        Ext.getCmp('rischio_ambientale_panel_multislider').setValue(1, ambMedium);
+                        Ext.getCmp('rischio_ambientale_panel_multislider').maxValue = ambMax;
+                        Ext.getCmp('rischio_ambientale_panel_maxValue').setValue(ambMax);
+
                         layer.mergeNewParams({
-                            ENV: envStringa+"lowsociale:"+socialMin+";mediumsociale:"+socialMax+";maxsociale:"+maxValueSociale+";lowambientale:"+ambMin+";mediumambientale:"+ambMax+";maxambientale:"+maxValueAmbientale
+                            ENV: envStringa+"lowsociale:"+socialMin+";mediumsociale:"+socialMedium+";maxsociale:"+socialMax+";lowambientale:"+ambMin+";mediumambientale:"+ambMedium+";maxambientale:"+ambMax
                         }); 
                         
                     } else {
+                        var min = parseFloat(sliderDefaultEnv[0].split(":")[1]);
+                        var medium = parseFloat(sliderDefaultEnv[1].split(":")[1]);
+                        var max = parseFloat(sliderDefaultEnv[2].split(":")[1]);
                         
-                        Ext.getCmp('rischio_panel_multislider').setValue(0,parseFloat(sliderDefaultEnv[0].split(":")[1]));
-                        Ext.getCmp('rischio_panel_multislider').setValue(1,parseFloat(sliderDefaultEnv[1].split(":")[1]));
-                                               
-                        var min = Ext.getCmp('rischio_panel_multislider').getValue(0);
-                        var max = Ext.getCmp('rischio_panel_multislider').getValue(1);    
-                        var maxValue = Ext.getCmp('rischio_panel_multislider').maxValue;                         
+                        Ext.getCmp('rischio_panel_multislider').setValue(0, min);
+                        Ext.getCmp('rischio_panel_multislider').setValue(1, medium);
+                        
+                        Ext.getCmp('rischio_panel_multislider').maxValue = max;                  
+                        Ext.getCmp('rischio_panel_maxValue').setValue(max);
                         
                         layer.mergeNewParams({
-                            ENV: envStringa+"low:"+min+";medium:"+max+";max:"+maxValue
+                            ENV: envStringa+"low:"+min+";medium:"+medium+";max:"+max
                         });                          
                         
                     }
@@ -633,24 +641,41 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                     var envStringa = envArray.join(";") == "" ? "" : envArray.join(";")+";";
                     
                     if (hasBoth){
-                    
-                        var maxValueSociale = Ext.getCmp('rischio_sociale_panel_multislider').maxValue;
-                        var maxValueAmbientale = Ext.getCmp('rischio_ambientale_panel_multislider').maxValue;
+                        var maxValueSociale, maxValueAmbientale, socialMin, socialMax, ambMin, ambMax;
                         
-                        var socialMin = Ext.getCmp('rischio_sociale_panel_multislider').getValue(0);
-                        var socialMax = Ext.getCmp('rischio_sociale_panel_multislider').getValue(1);
-                        var ambMin = Ext.getCmp('rischio_ambientale_panel_multislider').getValue(0);
-                        var ambMax = Ext.getCmp('rischio_ambientale_panel_multislider').getValue(1);
-
+                        if(Ext.getCmp('rischio_sociale_panel').numericFields || Ext.getCmp('rischio_ambientale_panel').numericFields) {
+                           maxValueSociale = parseFloat(Ext.getCmp('rischio_sociale_panel_maxValue').getValue());
+                           maxValueAmbientale = parseFloat(Ext.getCmp('rischio_ambientale_panel_maxValue').getValue());
+                           
+                           socialMin = parseFloat(Ext.getCmp(Ext.getCmp('rischio_sociale_panel').multiSlider.thumbs[0].id + '_value').getValue());
+                           socialMax = parseFloat(Ext.getCmp(Ext.getCmp('rischio_sociale_panel').multiSlider.thumbs[1].id + '_value').getValue());
+                           ambMin = parseFloat(Ext.getCmp(Ext.getCmp('rischio_ambientale_panel').multiSlider.thumbs[0].id + '_value').getValue());
+                           ambMax = parseFloat(Ext.getCmp(Ext.getCmp('rischio_ambientale_panel').multiSlider.thumbs[1].id + '_value').getValue());
+                        } else {
+                           maxValueSociale = Ext.getCmp('rischio_sociale_panel_multislider').maxValue;
+                           maxValueAmbientale = Ext.getCmp('rischio_ambientale_panel_multislider').maxValue;
+                            
+                           socialMin = Ext.getCmp('rischio_sociale_panel_multislider').getValue(0);
+                           socialMax = Ext.getCmp('rischio_sociale_panel_multislider').getValue(1);
+                           ambMin = Ext.getCmp('rischio_ambientale_panel_multislider').getValue(0);
+                           ambMax = Ext.getCmp('rischio_ambientale_panel_multislider').getValue(1);
+                        }
                         
                         layer.mergeNewParams({
                             ENV: envStringa+"lowsociale:"+socialMin+";mediumsociale:"+socialMax+";maxsociale:"+maxValueSociale+";lowambientale:"+ambMin+";mediumambientale:"+ambMax+";maxambientale:"+maxValueAmbientale
                         });                        
                         
                     } else {
-                        var maxValue = Ext.getCmp('rischio_panel_multislider').maxValue;
-                        var min = Ext.getCmp('rischio_panel_multislider').getValue(0);
-                        var max = Ext.getCmp('rischio_panel_multislider').getValue(1);                
+                        var maxValue, min, max;
+                        if(Ext.getCmp('rischio_panel').numericFields) {
+                            maxValue = parseFloat(Ext.getCmp('rischio_panel_maxValue').getValue());
+                            min = parseFloat(Ext.getCmp(Ext.getCmp('rischio_panel').multiSlider.thumbs[0].id + '_value').getValue());
+                            max = parseFloat(Ext.getCmp(Ext.getCmp('rischio_panel').multiSlider.thumbs[1].id + '_value').getValue());
+                        } else {
+                            maxValue = Ext.getCmp('rischio_panel_multislider').maxValue;
+                            min = Ext.getCmp('rischio_panel_multislider').getValue(0);
+                            max = Ext.getCmp('rischio_panel_multislider').getValue(1);                
+                        }
                         
                         layer.mergeNewParams({
                             ENV: envStringa+"low:"+min+";medium:"+max+";max:"+maxValue

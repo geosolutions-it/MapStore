@@ -59,7 +59,7 @@ gxp.form.SliderRangesField = Ext.extend(Ext.slider.MultiSlider, {
         if(this.thumbs.length == 0)
            thumbConf.minValue= multiSlider.minValue;
         else
-           thumbConf.minValue= multiSlider.thumbs[this.thumbs.length-1].maxValue+1;
+           thumbConf.minValue= multiSlider.thumbs[this.thumbs.length-1].maxValue+this.increment;
          
         thumbConf.value= thumbConf.maxValue;
         
