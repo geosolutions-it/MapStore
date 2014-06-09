@@ -105,23 +105,27 @@ OpenLayers.TimeAgent.WMS = OpenLayers.Class(OpenLayers.TimeAgent, {
     },
 
     applyTime : function(layer, time) {
-        var isotime, minTime;
+        var isotime, minTime, maxTime;
         if(this.rangeMode && layer.metadata.allowRange !== false) {
             if(this.rangeMode == 'range') {
                 minTime = new Date(time.getTime());
+                minTime.setHours(minTime.getHours() + 1);
+                maxTime = new Date(minTime.getTime());
                 if(this.timeManager.units) {
                     if(this.rangeInterval < this.timeManager.step) {
                         this.rangeInterval = this.timeManager.step;
                     }
                     if (this.timeManager.units == "Days"){                        
-                        minTime['setUTCDate'](time['getUTCDate']() - this.rangeInterval);
+                        minTime['setUTCDate'](maxTime['getUTCDate']() - this.rangeInterval);
                     }else{
-                        minTime['setUTC'+this.timeManager.units](time['getUTC'+this.timeManager.units]() - this.rangeInterval);
+                        minTime['setUTC'+this.timeManager.units](maxTime['getUTC'+this.timeManager.units]() - this.rangeInterval);
+                        maxTime['setUTC'+this.timeManager.units](maxTime['getUTC'+this.timeManager.units]() + 1);
                     }
                 }
             }
             else {
                 minTime = this.range[0];
+                maxTime = new Date(time.getTime());
             }
 
             /*if(minTime >= time){
@@ -135,7 +139,7 @@ OpenLayers.TimeAgent.WMS = OpenLayers.Class(OpenLayers.TimeAgent, {
                     time = new Date(addRange.getTime());                    
             }*/
             
-            isotime = OpenLayers.Date.toISOString(minTime) + '/' + OpenLayers.Date.toISOString(time);
+            isotime = OpenLayers.Date.toISOString(minTime) + '/' + OpenLayers.Date.toISOString(maxTime);
         }
         else if(layer.metadata.timeInterval[0] instanceof Date && this.intervalMode != "exact") {
             //find where this time fits into

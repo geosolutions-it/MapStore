@@ -79,7 +79,7 @@ gxp.slider.TimeSlider = Ext.extend(Ext.slider.MultiSlider, {
 
         this.listeners = Ext.applyIf(this.listeners || {}, {
             //'changecomplete' : this.onSliderChangeComplete,
-            'change' : this.onSliderChangeComplete,
+            'changecomplete' : this.onSliderChangeComplete,
             'dragstart' : function() {
                 if(this.timeManager.timer) {
                     this.timeManager.stop();
