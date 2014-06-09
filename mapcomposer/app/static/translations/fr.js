@@ -7,6 +7,9 @@
 */
 
 GeoExt.Lang.add("fr", {
+    "gxp.plugins.HelpButton.prototype": {
+        tooltip:"SIIG - mode d'emploi"
+    },
 	"gxp.plugins.SyntheticView.prototype": {
         title: "Vue synthétique",
         elaborazioneLabel: "Traitement standard",

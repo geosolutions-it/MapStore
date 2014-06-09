@@ -248,7 +248,7 @@
 			"title": "Gate",
 			"name": "gate_geo",
 			"displayInLayerSwitcher": true,
-			"tiled": true,
+			"tiled": false,
             "group": ["Real time data","Dati in tempo reale","Données en temps réel","Echtzeitdaten"],
 			"visibility": false
         },{
@@ -517,6 +517,13 @@
             "width": "200"
         },
         "index": 23
+    }, {
+			"ptype": "gxp_help",
+			"actionTarget": "paneltbar",
+ 			"text": "Help",
+			"index": 25,
+			"showOnStartup": false,
+			"fileDocURL": "Manuale Utente SIIG_${locale}.pdf"
     },
     {
         "actions":[

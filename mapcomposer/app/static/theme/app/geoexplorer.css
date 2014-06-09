@@ -261,6 +261,10 @@ font-family: tahoma, arial, helvetica, sans-serif;
     background-image: url(img/silk/eye.png);
 }
 
+.gx-help{
+   background-image: url(img/silk/help.png);
+}
+
 .gx-field-label {
     font-weight: bold;
     margin: 4px;

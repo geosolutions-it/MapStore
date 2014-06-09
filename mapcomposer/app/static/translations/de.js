@@ -3,6 +3,9 @@
  */
 
 GeoExt.Lang.add("de", {
+    "gxp.plugins.HelpButton.prototype": {
+        tooltip:"SIIG - Bedienungsanleitung"
+    },
 	"gxp.plugins.SyntheticView.prototype": {
         title: "Übersicht",
         elaborazioneLabel: "Art der Bearbeitung",

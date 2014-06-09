@@ -6,6 +6,9 @@
 	these strings
 */
 GeoExt.Lang.add("en", {
+    "gxp.plugins.HelpButton.prototype": {
+        tooltip:"SIIG - User Manual"
+    },
     "gxp.plugins.SyntheticView.prototype": {
         title: "Synthetic View",
         elaborazioneLabel: "Processing choice",
