@@ -132,6 +132,39 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
             //TODO: Fix it in another way
             var relativeHours = this.relativeHours;
 
+            // IE 8 fix
+            if ( !Date.prototype.toISOString ) {
+
+                ( function() {
+                    function pad(number) {
+                        var r = String(number);
+                        if ( r.length === 1 ) {
+                            r = '0' + r;
+                        }
+                        return r;
+                    }
+                    Date.prototype.toISOString = function() {
+                        return this.getUTCFullYear()
+                            + '-' + pad( this.getUTCMonth() + 1 )
+                            + '-' + pad( this.getUTCDate() )
+                            + 'T' + pad( this.getUTCHours() )
+                            + ':' + pad( this.getUTCMinutes() )
+                            + ':' + pad( this.getUTCSeconds() )
+                            + '.' + String( (this.getUTCMilliseconds()/1000).toFixed(3) ).slice( 2, 5 )
+                            + 'Z';
+                    };
+
+                }() );
+            }
+            // parser to fix IE 8 bug
+            var dateFromISO8601 = function (isoDateString) {
+              var parts = isoDateString.match(/\d+/g);
+              var isoTime = Date.UTC(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
+              var isoDate = new Date(isoTime);
+
+              return isoDate;
+            };
+
             // support functions
             var buildTimeIntervalFilter = function (slider){
                 var minTimestamp = slider.getValues()[1];
@@ -143,21 +176,26 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
                 // fix date time
                 dateMin.setTime(dateMin.setHours(dateMin.getHours() + relativeHours));
                 dateMax.setTime(dateMax.setHours(dateMax.getHours() + relativeHours));
-                return "time DURING " + dateMin.toISOString() +"/"+ dateMax.toISOString();
+                var retString = "time DURING ";
+                retString += dateMin.toISOString();
+                retString += "/";
+                retString += dateMax.toISOString();
+                return retString;
               };
     
               var setAOITime = function (playback,record){
                 var slider = playback.playbackToolbar.slider;
                 var minTimestamp = slider.getValues()[1];
                 var maxTimestamp = slider.getValues()[0];
-                var newTime = new Date(record.data.time).getTime();
+                var dateNewTime = new Date(record.data.time);
+                var newTime = dateFromISO8601(record.data.time).getTime();
                 if(newTime > maxTimestamp){
                     //grey thumb
                     slider.setValue(0, newTime+500000, true);
                     // red thumbs
                     slider.setValue(1, newTime-500000, true);
                 }
-                else{
+                else if (newTime){
                     slider.setValue(1, newTime-500000, true);
                     slider.setValue(0, newTime+500000, true);
                 }

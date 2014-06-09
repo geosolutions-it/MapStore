@@ -123,9 +123,10 @@ OpenLayers.TimeAgent.WMS = OpenLayers.Class(OpenLayers.TimeAgent, {
             // default
             isotime = OpenLayers.Date.toISOString(minTime) + '/' + OpenLayers.Date.toISOString(time);
 
-            // fix by layer. why we need it?
+            // FIXME: fix by layer. why we need it?
             if(layer.name != "SAR-imagery"){
-                var relativeHours = 1
+                // add relative hours to make the filter works.
+                var relativeHours = 1;
                 var dateMin = new Date();
                 var dateMax = new Date();
                 dateMin.setTime(minTime);
@@ -134,9 +135,6 @@ OpenLayers.TimeAgent.WMS = OpenLayers.Class(OpenLayers.TimeAgent, {
                 dateMin.setTime(dateMin.setHours(dateMin.getHours() + relativeHours));
                 dateMax.setTime(dateMax.setHours(dateMax.getHours() + relativeHours));
                 var fixedisotime = OpenLayers.Date.toISOString(dateMin) + '/' + OpenLayers.Date.toISOString(dateMax);
-                // console.log(layer.name);
-                // console.log(isotime);
-                // console.log(fixedisotime);
                 isotime = fixedisotime;
             }
             
