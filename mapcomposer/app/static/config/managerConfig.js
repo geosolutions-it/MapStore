@@ -1,8 +1,8 @@
 ﻿{
    "composerUrl":"",
    "socialUrl":"",
-   "adminUrl":"http://localhost/opensdi2-manager/",
-   "geoStoreBase":"http://localhost/opensdi2-manager/facade/geostore/rest/",
+   "adminUrl":"http://mariss.geo-solutions.it/opensdi2-manager/",
+   "geoStoreBase":"http://mariss.geo-solutions.it/opensdi2-manager/facade/geostore/rest/",
    "start":0,
    "limit":20,
    "msmTimeout":30000,
@@ -39,7 +39,7 @@
    "tools":[{
         "ptype": "mxp_mapviewer",
         "loginManager": "loginTool",
-        "mapStoreUrl": "http://localhost/mapstore",
+        "mapStoreUrl": "http://mariss.geo-solutions.it/mapstore",
         "actionTarget":null
     },{
         "ptype": "mxp_login",
@@ -59,7 +59,7 @@
    "adminTools":[{
         "ptype": "mxp_mapviewer",
         "loginManager": "loginTool",
-        "mapStoreUrl": "http://localhost/mapstore",
+        "mapStoreUrl": "http://mariss.geo-solutions.it/mapstore",
         "actionTarget":null
     },{
         "ptype": "mxp_usermanager",
@@ -93,7 +93,7 @@
     "loggedTools":[{
         "ptype": "mxp_mapviewer",
         "loginManager": "loginTool",
-        "mapStoreUrl": "http://localhost/mapstore",
+        "mapStoreUrl": "http://mariss.geo-solutions.it/mapstore",
         "actionTarget":null
     },{
         "ptype": "mxp_login",

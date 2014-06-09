@@ -1,8 +1,8 @@
 {
    
    "scaleOverlayMode": "basic",
-   "adminUrl":"http://localhost/opensdi2-manager/",
-   "geoStoreBase":"http://localhost/opensdi2-manager/facade/geostore/rest/",
+   "adminUrl":"http://mariss.geo-solutions.it/opensdi2-manager/",
+   "geoStoreBase":"http://mariss.geo-solutions.it/opensdi2-manager/facade/geostore/rest/",
    "externalHeaders": true,
    "header":{
         "container": {
@@ -25,7 +25,7 @@
             "ptype": "gxp_wmssource",
             "title": "MARISS", 
             "version": "1.1.1",
-            "url": "http://localhost/geoserver/mariss/ows",
+            "url": "http://mariss.geo-solutions.it/geoserver/mariss/ows",
 			"layerBaseParams": {
 				"TILED": true,
 				"TILESORIGIN": "-180,-90" 
@@ -288,11 +288,11 @@
             ],
 			"columns" : [
 	            	{
-						"header": "filename",      
+						"header": "File Name",      
 						"dataIndex": "location",
 	                    "sortable": true
 	                },{
-						"header": "time",
+						"header": "Time",
 						"dataIndex": "time",
 	                    "sortable": true
 	                }
@@ -321,40 +321,6 @@
 			"downloadGridId": "downloadgrid",
             "filterByExtent": true,
 	      	"autoExpandPanel": "east"
-       },{
-            "ptype": "gxp_planeditor",
-            "outputTarget": "west",
-            "source": "MARISS-Layers",
-            "downloadUploadedSHP": false,
-            "auxiliaryLayerName": "Draft Layer",
-            "displayAuxiliaryLayerInLayerSwitcher": false,
-            "addFeatureTable": true,
-            "layoutConfig":{
-                "xtype": "form",
-                "buttonAlign": "right",
-                "autoScroll":true,
-                "frame":true
-            }
-       }, {
-	     "ptype": "gxp_importexport",
-	     "id": "gxp_importexport",
-	     "service": "http://mariss.geo-solutions.it/opensdi2-manager/",
-	     "types": ["kml/kmz"],
-	     "exportConf":{
-	        "kml/kmz": {
-	            "layerName": "Draft Layer",
-	            "alternativeStyle": false,
-	            "dontAskForLayerName": true
-	        }, 
-            "shp": {
-                "panelConfig":{
-                    "fieldEmptyText": "Browse for SHP files...",
-                    "validFileExtensions": [".shp"],
-                    "deafultLayerName": "Draft Layer",
-                    "dontAskForLayerName": true
-                }
-            }       
-	     }
 	 }
 	]
 }
