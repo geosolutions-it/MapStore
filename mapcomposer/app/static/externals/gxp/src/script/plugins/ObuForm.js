@@ -87,10 +87,10 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 			},{
 				typeName: "siig_d_obu_tipo",
 				queriableAttributes: [
-					"descrizione"  
+					"descrizione_${locale}"
 				],
 				sortBy: "id_tipo",
-				displayField: "descrizione",	
+				displayField: "descrizione_${locale}",
 				tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{descrizione}</span></h3></div></tpl>",
 				recordModel:[
 					{
@@ -99,7 +99,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 					},
 					{
 						name: "descrizione",
-						mapping: "properties.descrizione"
+						mapping: "properties.descrizione_${locale}"
 					} 
 				]
 			}
@@ -200,6 +200,21 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 		return gxp.plugins.ObuForm.superclass.init.apply(this, arguments);
 	},
 	
+    addLocaleSupport: function(obj) {
+        if(Ext.isArray(obj)) {
+            for(var i = 0, l=obj.length; i<l; i++) {
+                obj[i] = this.addLocaleSupport(obj[i]);
+            }
+        } else if(Ext.isObject(obj)) {
+            for(var key in obj) {
+                obj[key] = this.addLocaleSupport(obj[key]);
+            }
+       } else if(Ext.isString(obj)) {
+            return obj.replace('${locale}', GeoExt.Lang.locale);
+       }
+       return obj;
+    },
+    
 	/** private: method[addOutput]
      *  :arg config: ``Object``
 	 * 
@@ -222,12 +237,12 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 			url: this.wfsUrl,
 			typeName: this.search.query[0].typeName,
 			predicate: this.search.predicate,
-			recordModel: this.search.query[0].recordModel,
-			queriableAttributes: this.search.query[0].queriableAttributes,
+			recordModel: this.addLocaleSupport(this.search.query[0].recordModel),
+			queriableAttributes: this.addLocaleSupport(this.search.query[0].queriableAttributes),
 			sortBy: this.search.query[0].sortBy,
-			displayField: this.search.query[0].displayField,
+			displayField: this.addLocaleSupport(this.search.query[0].displayField),
 			pageSize: this.search.pageSize,
-			tpl: this.search.query[0].tpl,
+			tpl: this.addLocaleSupport(this.search.query[0].tpl),
 			emptyText: this.idEmptyText,
 			resizable: true
 		});	
@@ -282,13 +297,13 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 			url: this.wfsUrl,
 			typeName: this.search.query[1].typeName,
 			predicate: this.search.predicate,
-			recordModel: this.search.query[1].recordModel,
-			queriableAttributes: this.search.query[1].queriableAttributes,
+			recordModel: this.addLocaleSupport(this.search.query[1].recordModel),
+			queriableAttributes: this.addLocaleSupport(this.search.query[1].queriableAttributes),
 			sortBy: this.search.query[1].sortBy,
-			displayField: this.search.query[1].displayField,
+			displayField: this.addLocaleSupport(this.search.query[1].displayField),
 			valueField: "tipo",
 			pageSize: this.search.pageSize,
-			tpl: this.search.query[1].tpl,
+			tpl: this.addLocaleSupport(this.search.query[1].tpl),
 			emptyText: this.typeEmptyText,
 			resizable: true
 		});	

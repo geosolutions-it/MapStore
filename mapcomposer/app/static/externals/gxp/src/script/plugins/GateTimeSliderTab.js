@@ -377,7 +377,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                         "mapping": "codice_onu"
               },{
                         "name": "descrizione_onu",              
-                        "mapping": "descrizione_onu"
+                        "mapping": "descrizione_onu_" + GeoExt.Lang.locale
               },{
                         "name": "quantita",              
                         "mapping": "quantita"
@@ -717,7 +717,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                             "mapping": "codice_onu"
                   },{
                             "name": "descrizione_onu",              
-                            "mapping": "descrizione_onu"
+                            "mapping": "descrizione_onu_" + GeoExt.Lang.locale
                  }],
                  proxy: this.getWFSStoreProxy(this.timeFeature,filter), 
                  autoLoad: true,
