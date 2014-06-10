@@ -43,6 +43,7 @@
         "plugins/GoogleSource.js",
         "plugins/OLSource.js",
         "plugins/MapQuestSource.js",
+        "plugins/WMTSSource.js",
         "plugins/StyleWriter.js",
         "plugins/GeoServerStyleWriter.js",
         "plugins/Tool.js",
