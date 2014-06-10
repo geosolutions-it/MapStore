@@ -322,7 +322,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     loadConfig: function(config) {
 
         if(config.isLoadedFromConfigFile){
-          this.applyConfig(config);
+          this.loadThemas(config);
         } else {
             
             var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
@@ -348,20 +348,167 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                     if(addConfig){
                         if(addConfig.data){    
                             addConfig = Ext.util.JSON.decode(addConfig.data);
-                            this.applyConfig(Ext.applyIf(addConfig, config));
+                            this.loadThemas(Ext.applyIf(addConfig, config));
                         }else{        
-                            this.applyConfig(Ext.applyIf(addConfig, config));
+                            this.loadThemas(Ext.applyIf(addConfig, config));
                         }
                     } else {
-                        this.applyConfig(config);
+                        this.loadThemas(config);
                     }
 
                },
                failure: function(response, opts){
-                  this.applyConfig(config);
+                  this.loadThemas(config);
                }
             });        
         }
+    },
+    
+    loadThemas: function(config) {
+        var formulaCfg;
+        var layers;
+        Ext.each(config.tools, function(tool) {
+            if(tool.ptype === 'gxp_syntheticview') {
+                formulaCfg = tool;
+                layers = config.map.layers;
+            }
+        },this);
+        
+        
+        
+        var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
+        var mHost=pattern.exec(formulaCfg.wfsURL);
+		
+        var wfsUrl = formulaCfg.wfsURL;
+        var url = mHost[2] == location.host ? wfsUrl : proxy + wfsUrl;
+       
+        var formulaStore= new GeoExt.data.FeatureStore({ 
+             id: "formulaStore",
+             idProperty: "id_formula",
+             fields: [{
+                        "name": "id_formula",              
+                        "mapping": "id_formula"
+              },{
+                        "name": "id_elaborazione",              
+                        "mapping": "id_elaborazione"
+              },{
+                        "name": "name",              
+                        "mapping": "descrizione_" + GeoExt.Lang.locale
+              },{
+                        "name": "udm",              
+                        "mapping": "udm_" + GeoExt.Lang.locale
+              },{
+                        "name": "udm_soc",              
+                        "mapping": "udm_" + GeoExt.Lang.locale + "_soc"
+              },{
+                        "name": "udm_env",              
+                        "mapping": "udm_" + GeoExt.Lang.locale + "_env"
+              },{
+                        "name": "visibile",              
+                        "mapping": "flg_visibile"
+              },{
+                        "name": "ambito_territoriale",              
+                        "mapping": "ambito_territoriale"
+              },{
+                        "name": "condizioni_temporali",              
+                        "mapping": "condizioni_temporali"
+              },{
+                        "name": "condizioni_meteo",              
+                        "mapping": "condizioni_meteo"
+              },{
+                        "name": "bersagli_tutti",              
+                        "mapping": "bersagli_tutti"
+              },{
+                        "name": "bersagli_umani",              
+                        "mapping": "bersagli_umani"
+              },{
+                        "name": "bersagli_ambientali",              
+                        "mapping": "bersagli_ambientali"
+              },{
+                        "name": "sostanze",              
+                        "mapping": "sostanze"
+              },{
+                        "name": "incidenti",              
+                        "mapping": "incidenti"
+              },{
+                        "name": "gravita",              
+                        "mapping": "gravita"
+              },{
+                        "name": "tema_low",              
+                        "mapping": "tema_low"
+              },{
+                        "name": "tema_medium",              
+                        "mapping": "tema_medium"
+              },{
+                        "name": "tema_max",              
+                        "mapping": "tema_max"
+              },{
+                        "name": "tema_low_soc",              
+                        "mapping": "tema_low_soc"
+              },{
+                        "name": "tema_medium_soc",              
+                        "mapping": "tema_medium_soc"
+              },{
+                        "name": "tema_max_soc",              
+                        "mapping": "tema_max_soc"
+              },{
+                        "name": "tema_low_env",              
+                        "mapping": "tema_low_env"
+              },{
+                        "name": "tema_medium_env",              
+                        "mapping": "tema_medium_env"
+              },{
+                        "name": "tema_max_env",              
+                        "mapping": "tema_max_env"
+              }],
+             proxy: this.getWFSStoreProxy(url, formulaCfg.wfsVersion, formulaCfg.destinationNS, 'formule', null, 'ordine_visibilita')
+       });
+       formulaStore.on('load', function(store, records, options) {
+
+            var rischioFormula = store.getAt(store.findExact('id_formula',26));
+            Ext.each(layers, function(layer) {
+                if(layer.env) {
+                    
+                    if(layer.name.indexOf('sociale') !== -1) {
+                        layer.env = "low:" + (rischioFormula.get('tema_low_soc') || rischioFormula.get('tema_low')) + ";medium:" + (rischioFormula.get('tema_medium_soc') || rischioFormula.get('tema_medium')) + ";max:" + (rischioFormula.get('tema_max_soc') || rischioFormula.get('tema_max'));
+                    } else if(layer.name.indexOf('ambientale') !== -1) {
+                        layer.env = "low:" + (rischioFormula.get('tema_low_env') || rischioFormula.get('tema_low')) + ";medium:" + (rischioFormula.get('tema_medium_env') || rischioFormula.get('tema_medium')) + ";max:" + (rischioFormula.get('tema_max_env') || rischioFormula.get('tema_env'));
+                    } else {
+                        layer.env = "lowsociale:" + (rischioFormula.get('tema_low_soc') || rischioFormula.get('tema_low')) + ";mediumsociale:" + (rischioFormula.get('tema_medium_soc') || rischioFormula.get('tema_medium')) + ";maxsociale:" + (rischioFormula.get('tema_max_soc') || rischioFormula.get('tema_max')) +
+                            ";lowambientale:" + (rischioFormula.get('tema_low_env') || rischioFormula.get('tema_low')) + ";mediumambientale:" + (rischioFormula.get('tema_medium_env') || rischioFormula.get('tema_medium')) + ";maxambientale:" + (rischioFormula.get('tema_max_env') || rischioFormula.get('tema_env'));
+                    }
+                }
+            });
+            this.applyConfig(config);
+       }, this);
+       formulaStore.load();
+    },
+    
+    getWFSStoreProxy: function(wfsURL, wfsVersion, namespc, featureName, filter, sortBy){
+        var filterProtocol=new OpenLayers.Filter.Logical({
+            type: OpenLayers.Filter.Logical.AND,
+            filters: new Array()
+        });
+        if(filter) {
+            if(filter.type== "FID")
+                filterProtocol=filter;
+           else
+              filterProtocol.filters.push(filter);
+        }
+        var proxy= new GeoExt.data.ProtocolProxy({ 
+            protocol: new OpenLayers.Protocol.WFS({ 
+                url: wfsURL, 
+                featureType: featureName, 
+                readFormat: new OpenLayers.Format.GeoJSON(),
+                featureNS: namespc, 
+                filter: filterProtocol, 
+                outputFormat: "application/json",
+                version: wfsVersion,
+                sortBy: sortBy || undefined
+            }) 
+        });
+        return proxy;         
+        
     },
     
     loadUserConfig: function(json){
