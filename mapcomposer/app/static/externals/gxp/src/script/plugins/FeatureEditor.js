@@ -74,6 +74,12 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
      */    
     renamedFields: null,    
     
+    /** api: config[fidFields]
+     *  ``object`` fields to use for fid of features
+     *  by default.
+     */ 
+    fidFields: {},
+    
     /** api: config[outputTarget]
      *  ``String`` By default, the FeatureEditPopup will be added to the map.
      */
@@ -339,6 +345,10 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
                                 }
                             },
                             "featuremodified": function(popup, feature) {
+                                var fidField = this.fidFields[featureStore.featureType];
+                                if(fidField && !feature.fid) {
+                                    feature.fid = feature.attributes[fidField];
+                                }
                                 popup.disable();
                                 featureStore.on({
                                     write: {

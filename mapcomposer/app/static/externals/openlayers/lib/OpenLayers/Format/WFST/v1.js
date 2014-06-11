@@ -302,7 +302,8 @@ OpenLayers.Format.WFST.v1 = OpenLayers.Class(OpenLayers.Format.XML, {
                 var options = obj.options;
                 var node = this.createElementNSPlus("wfs:Insert", {
                     attributes: {
-                        handle: options && options.handle
+                        handle: options && options.handle,
+                        idgen: feature.fid ? "UseExisting" : undefined
                     }
                 });
                 this.srsName = this.getSrsName(feature);

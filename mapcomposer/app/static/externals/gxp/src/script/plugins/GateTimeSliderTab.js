@@ -286,6 +286,15 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
             
         },this);
         
+        var featureManager = this.target.tools["featuremanager"];
+        featureManager.on("layerchange", function() {
+            featureManager.featureStore.on('write', function() {
+                this.target.mapPanel.layers.getAt(
+                    this.target.mapPanel.layers.find('name',this.layerGates)
+                ).get('layer').redraw(true);
+            }, this);
+        }, this);
+        
         return this.controlPanel
        
     },

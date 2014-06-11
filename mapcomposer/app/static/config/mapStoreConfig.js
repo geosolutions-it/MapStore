@@ -638,6 +638,9 @@
             "collocazione": ["Collocation","Collocazione","Collocation","Collocation"],
             "data_inizio_validita": ["Start Validity","Inizio Validita","Lancer Validité","Starten Gültigkeit"],
             "data_fine_validita": ["End Validity","Fine Validita","Validité de Fin","End Gültigkeit"]
+        },
+        "fidFields": {
+            "siig_gate_geo_gate": "id_gate"
         }
     },
     {
