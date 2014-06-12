@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csn:dataPackage
+ xmlns:csn="http://www.emsa.europa.eu/csndc" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.emsa.europa.eu/csndc http://www.emsa.europa.eu/schemas/csndc/DataPackage/csndc_pkg.xsd">
+  <csn:packageInfo>
+     <csn:packageId>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DER</csn:packageId>
+     <csn:packageType>SAR_DERIVED</csn:packageType>
+     <csn:operationType>NOMINAL</csn:operationType>
+     <csn:dataPackageDescription>SAR derived package</csn:dataPackageDescription>
+  </csn:packageInfo>
+     <csn:eoProduct>
+        <csn:identifier>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721</csn:identifier>
+     </csn:eoProduct>
+  <csn:detectedShips total="16">
+     <csn:detectedShipReference>
+        <csn:identifier>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_1</csn:identifier>
+        <csn:fileName>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_1.xml</csn:fileName>
+     </csn:detectedShipReference>
+     <csn:detectedShipReference>
+        <csn:identifier>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_2</csn:identifier>
+        <csn:fileName>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_2.xml</csn:fileName>
+     </csn:detectedShipReference>
+     <csn:detectedShipReference>
+        <csn:identifier>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_3</csn:identifier>
+        <csn:fileName>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_3.xml</csn:fileName>
+     </csn:detectedShipReference>
+     <csn:detectedShipReference>
+        <csn:identifier>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_4</csn:identifier>
+        <csn:fileName>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_4.xml</csn:fileName>
+     </csn:detectedShipReference>
+     <csn:detectedShipReference>
+        <csn:identifier>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_5</csn:identifier>
+        <csn:fileName>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_5.xml</csn:fileName>
+     </csn:detectedShipReference>
+     <csn:detectedShipReference>
+        <csn:identifier>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_6</csn:identifier>
+        <csn:fileName>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_6.xml</csn:fileName>
+     </csn:detectedShipReference>
+     <csn:detectedShipReference>
+        <csn:identifier>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_7</csn:identifier>
+        <csn:fileName>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_7.xml</csn:fileName>
+     </csn:detectedShipReference>
+     <csn:detectedShipReference>
+        <csn:identifier>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_8</csn:identifier>
+        <csn:fileName>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_8.xml</csn:fileName>
+     </csn:detectedShipReference>
+     <csn:detectedShipReference>
+        <csn:identifier>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_9</csn:identifier>
+        <csn:fileName>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_9.xml</csn:fileName>
+     </csn:detectedShipReference>
+     <csn:detectedShipReference>
+        <csn:identifier>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_10</csn:identifier>
+        <csn:fileName>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_10.xml</csn:fileName>
+     </csn:detectedShipReference>
+     <csn:detectedShipReference>
+        <csn:identifier>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_11</csn:identifier>
+        <csn:fileName>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_11.xml</csn:fileName>
+     </csn:detectedShipReference>
+     <csn:detectedShipReference>
+        <csn:identifier>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_12</csn:identifier>
+        <csn:fileName>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_12.xml</csn:fileName>
+     </csn:detectedShipReference>
+     <csn:detectedShipReference>
+        <csn:identifier>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_13</csn:identifier>
+        <csn:fileName>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_13.xml</csn:fileName>
+     </csn:detectedShipReference>
+     <csn:detectedShipReference>
+        <csn:identifier>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_14</csn:identifier>
+        <csn:fileName>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_14.xml</csn:fileName>
+     </csn:detectedShipReference>
+     <csn:detectedShipReference>
+        <csn:identifier>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_15</csn:identifier>
+        <csn:fileName>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_15.xml</csn:fileName>
+     </csn:detectedShipReference>
+     <csn:detectedShipReference>
+        <csn:identifier>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_16</csn:identifier>
+        <csn:fileName>TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DS_16.xml</csn:fileName>
+     </csn:detectedShipReference>
+  </csn:detectedShips>
+</csn:dataPackage>

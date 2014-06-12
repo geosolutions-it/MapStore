@@ -134,6 +134,11 @@
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-imagemosaic</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+  			 <artifactId>gt-xml</artifactId>
+        	<version>${gt.version}</version>
+		</dependency>
 
 		<!-- =========================================================== -->
 
