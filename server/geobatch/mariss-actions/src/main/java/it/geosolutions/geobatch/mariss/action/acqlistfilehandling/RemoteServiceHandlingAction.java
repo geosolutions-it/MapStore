@@ -541,8 +541,10 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
 			processor.setServiceName(service);
 			processor.setProjection(4326); // TODO: make it configurable
 			try {
+				updateProgress(1, "Starting ingestion for file " + inputFile.getName());
 				msg = processor.processCSVFile(inputFile, configuration
 						.getCsvSeparator().charAt(0));
+				updateProgress(100, msg);
 			} catch (IOException e) {
 				LOGGER.error(
 						"Error processing CSV file for the acquisition list", e);
@@ -551,6 +553,11 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
 		return msg;
 	}
 
+	/**
+	 * Save progress information for a task
+	 * @param progress
+	 * @param msg
+	 */
 	protected void updateProgress(float progress, String msg) {
 		listenerForwarder.setProgress(progress);
 		listenerForwarder.setTask(msg);

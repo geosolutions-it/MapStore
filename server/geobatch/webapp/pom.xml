@@ -259,8 +259,8 @@
 						<configuration>
 							<artifactItems>
 								<artifactItem>
-									<groupId>it.geosolutions.geobatch</groupId>
-									<artifactId>mariss-action-csvingest</artifactId>
+									<groupId>it.geosolutions.mariss</groupId>
+									<artifactId>gb-mariss-actions</artifactId>
 									<version>${project.version}</version>
 									<!--<classifier>flowdata</classifier> -->
 									<type>jar</type>

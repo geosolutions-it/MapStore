@@ -24,9 +24,9 @@
         <listenerId>Cumulator</listenerId>
 
         <RemoteServiceHandlingConfiguration>
-            <id>gate_file_handling</id>
-            <name>XML gate FTP reader/writter</name>
-            <description>Ingesting xml files into the DB</description>
+            <id>remote_service_handling</id>
+            <name>Remote FTP service reader/writter</name>
+            <description>Ingesting service data into the DB</description>
             <listenerConfigurations/>
             <failIgnored>false</failIgnored>
             <purgeData>true</purgeData>
@@ -67,7 +67,6 @@
                 </dataStore>
             </outputFeature>
             <projectOnMappings>false</projectOnMappings>
-            <ignorePks>false</ignorePks>
             <attributeMappings/>
             <remoteBrowserConfiguration>
               <dataTransferMethod />
@@ -77,7 +76,7 @@
               <zipFileName></zipFileName>
               <ftpserverPWD>password</ftpserverPWD>
               <ftpserverUSR>user</ftpserverUSR>
-              <ftpserverHost>localhost</ftpserverHost>
+              <ftpserverHost>mariss-server</ftpserverHost>
               <ftpserverPort>22</ftpserverPort>
               <connectMode>ACTIVE</connectMode>
               <localTempDir>/tmp</localTempDir>
@@ -89,13 +88,15 @@
             <!-- Basic configuration -->
             <storeLocal>true</storeLocal>
             <deleteDownloadedFiles>false</deleteDownloadedFiles>
-            <inputRemotePath>/tmp</inputRemotePath>
+            <inputRemotePath>/share/ftp</inputRemotePath>
             <!-- <filePattern>^([0-9]{2})[_-]([0-9]{8})[_-]([0-9]{6}).xml$</filePattern> -->
             <checkIfExists>true</checkIfExists>
             <!-- Paths configuration -->
-            <inputPath>/tmp/SIIG/Acquisiti</inputPath>
-            <succesPath>/tmp/SIIG/Elaborati</succesPath>
-            <failPath>/tmp/SIIG/Scarti</failPath>
+            <inputPath>/tmp/ingestion/working</inputPath>
+            <succesPath>/tmp/ingestion/ok</succesPath>
+            <failPath>/tmp/ingestion/fail</failPath>
+            <!-- CSV separator -->
+            <csvSeparator>,</csvSeparator>
             <!-- Table for the acq_list -->
             <acqListTypeName>acq_list</acqListTypeName>
             <!-- Listeners -->
