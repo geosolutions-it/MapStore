@@ -23,7 +23,11 @@ gxp.data.WMTSCapabilitiesReader = Ext.extend(Ext.data.DataReader, {
                 recordType || meta.fields || [
                     {name: "name", type: "string"},
                     {name: "title", type: "string"},
-                    {name: "tileMapUrl", type: "string"}
+                    {name: "abstract", type: "string"},
+                    {name: "tileMapUrl", type: "string"},
+                    {name: "properties", type: "string"},
+                    {name: "formats", type: "auto"},
+                    {name: "styles", type: "auto"},
                 ]);
         }
         gxp.data.WMTSCapabilitiesReader.superclass.constructor.call(
@@ -58,12 +62,33 @@ gxp.data.WMTSCapabilitiesReader = Ext.extend(Ext.data.DataReader, {
             }
             return maxExtent;
     },
+    getEncodingStyle: function(response) {
+        var operationsMetadata = response.operationsMetadata;
+        if (operationsMetadata.GetTile &&
+                operationsMetadata.GetTile.dcp &&
+                operationsMetadata.GetTile.dcp.http &&
+                operationsMetadata.GetTile.dcp.http.get &&
+                operationsMetadata.GetTile.dcp.http.get[0].constraints &&
+                operationsMetadata.GetTile.dcp.http.get[0].constraints.GetEncoding &&
+                operationsMetadata.GetTile.dcp.http.get[0].constraints.GetEncoding.allowedValues &&
+                operationsMetadata.GetTile.dcp.http.get[0].constraints.GetEncoding.allowedValues.KVP &&
+                operationsMetadata.GetTile.dcp.http.get[0].constraints.GetEncoding.allowedValues.KVP==true) {
+                    return "KVP";
+        }
+        else if (response.serviceMetadataUrl 
+            && response.serviceMetadataUrl.href
+            && response.serviceMetadataUrl.href.indexOf("?") === -1) {
+            return "REST";
+        }
+        return null;
+    },
     readRecords: function(data) {
-        var records = [], i, ii, j, jj, url, proj, projStr;
+        var records = [], i, ii, j, jj, url, proj, projStr, encoding;
         if (typeof data === "string" || data.nodeType) {
             data = this.meta.format.read(data);
             this.raw = data;
-            if (data.contents) {
+            encoding = this.getEncodingStyle(data);
+            if (encoding!=null && data.contents) {
                 if (data.contents.layers && data.contents.tileMatrixSets) {
                     for (i=0, ii=data.contents.layers.length; i<ii; i++) { // loop on layers
                         var layer=data.contents.layers[i];
@@ -99,6 +124,7 @@ gxp.data.WMTSCapabilitiesReader = Ext.extend(Ext.data.DataReader, {
                                             var config = {
                                                     name: layer.title,
                                                     layer: layer.identifier,
+                                                    requestEncoding: encoding,
                                                     url: this.meta.baseUrl.split("?")[0],
                                                     style: style,
                                                     matrixSet: layer.tileMatrixSetLinks[j].tileMatrixSet,
@@ -111,11 +137,25 @@ gxp.data.WMTSCapabilitiesReader = Ext.extend(Ext.data.DataReader, {
                                                     config["format"]=layer.formats[curFormat];
                                                 }
                                             }
+                                            if (encoding=="REST" &&
+                                                layer.resourceUrl &&
+                                                layer.resourceUrl.tile &&
+                                                layer.resourceUrl.tile.template) {
+                                                config.url = layer.resourceUrl.tile.template;
+                                            }
+                                            else {
+                                                config.url = this.meta.baseUrl.split("?")[0];
+                                            }
                                             records.push(new this.recordType({
                                                 layer: new OpenLayers.Layer.WMTS(config),
                                                 title: layer.title,
+                                                abstract: layer.abstract,
+                                                source: null,
                                                 name: layer.identifier,
-                                                tileMapUrl: this.meta.baseUrl
+                                                tileMapUrl: config.url,
+                                                properties: "gxp_wmtslayerpanel",
+                                                formats: layer.formats,
+                                                styles: layer.styles
                                             }));
                                         }
                                 }
@@ -169,10 +209,6 @@ gxp.plugins.WMTSSource = Ext.extend(gxp.plugins.LayerSource, {
     constructor: function(config) {
         gxp.plugins.WMTSSource.superclass.constructor.apply(this, arguments);
         this.format = new OpenLayers.Format.WMTSCapabilities();
-        /*
-        if (this.url.slice(-1) !== '/') {
-            this.url = this.url + '/';
-        }*/
     },
     /** private: method
      */

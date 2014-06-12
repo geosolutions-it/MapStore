@@ -43,7 +43,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
      *  ``String``
      *  Message to display when an invalid URL is entered (i18n).
      */
-    invalidURLText: "Enter a valid URL to a WMS endpoint (e.g. http://example.com/geoserver/wms)",
+    invalidURLText: "Enter a valid URL to a WMS/WMTS/TMS endpoint (e.g. http://example.com/geoserver/wms)",
 
     /** api: config[contactingServerText]
      *  ``String``
@@ -100,8 +100,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
                 store: [
                     ['WMS', 'Web Map Service (WMS)'], 
                     ['WMTS', 'Web Map Tile Service (WMTS)'], 
-                    ['TMS', 'Tiled Map Service (TMS)'],
-                    ['REST', 'ArcGIS REST Service (REST)']    
+                    ['TMS', 'Tiled Map Service (TMS)'] 
                 ]
             }, this.urlTextField],
             border: false,
