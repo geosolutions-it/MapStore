@@ -15,7 +15,7 @@ CREATE TABLE dlr_ships
   image character varying(255),
   image_type character varying(255),
   speed double precision,
-  includeInReport boolean,
+  include_in_report boolean,
   external_id character varying(255),
   CONSTRAINT dlr_ships_pk PRIMARY KEY (fid),
   CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4326)
