@@ -252,6 +252,11 @@
       </dependency>
       <dependency>
         <groupId>it.geosolutions.mariss</groupId>
+        <artifactId>gb-mariss-schemas</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.mariss</groupId>
         <artifactId>gb-mariss-ingestion</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -1946,6 +1951,7 @@
   <!-- =========================================================== -->
   
   <modules>
+    <module>mariss-schemas</module>
     <module>mariss-ingestion-logic</module>
     <module>mariss-actions</module>
     <module>webapp</module>

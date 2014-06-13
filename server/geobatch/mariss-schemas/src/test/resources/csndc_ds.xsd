@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 sp2 (http://www.altova.com) by Christian Ceprani (Advanced Computer Systems) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:csn="http://www.emsa.europa.eu/csndc" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows/1.1" targetNamespace="http://www.emsa.europa.eu/csndc" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.9.5">
+	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/feature.xsd"/>
+	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gmlBase.xsd"/>
+	<xs:import namespace="http://www.opengis.net/ows/1.1" schemaLocation="http://schemas.opengis.net/ows/1.1.0/owsServiceProvider.xsd"/>
+	<xs:include schemaLocation="./csndc_os.xsd"/>
+	<xs:element name="Ship" type="csn:ShipType" substitutionGroup="gml:_Feature">
+		<xs:annotation>
+			<xs:documentation>Ships detected on a EO scene</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="ShipType">
+		<xs:annotation>
+			<xs:documentation>Ship observed in the original satellite image</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gml:AbstractFeatureType">
+				<xs:sequence>
+					<xs:element name="id" type="xs:string"/>
+					<xs:element name="includeInReport" type="xs:boolean" default="false">
+						<xs:annotation>
+							<xs:documentation>If true the ship observation will be included in report</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="gml:pos"/>
+					<xs:element name="positionAccuracyVector" type="csn:PositionAccuracyVectorType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A position accuracy vector to express any uncertainity in the determination of the vessel position. For example a doppler-effect originated error can be expressed here.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="timeStamp" type="xs:dateTime">
+						<xs:annotation>
+							<xs:documentation>The date and time of the observation expressed in ISO8601 format (e.g. '2003-04-01T13:01:02' )</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="heading" type="xs:integer" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Route direction (expressed as as [0,360] deegree value where 0=360=Geographical North)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="speed" type="xs:double" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Speed (expressed in m/s)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="length" type="xs:double" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Length (expressed in meters)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="lengthError" type="xs:double" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Error in the estimation of ship length (expressed in meters)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="width" type="xs:double" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Width (expressed in meters)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="widthError" type="xs:double" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Error in the estimation of ship width (expressed in meters)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="confidenceLevel" type="xs:double" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Confidence level (expressed as a percentage)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="imageIdentifier" type="csn:ImageType" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>The unique identifier of the original EO image used in which the ship has been detected</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="detectionParameters" type="csn:DetectionParametersType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Set of parameters calculated during the vessel detection</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="shipThumbnail" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Name of the thumbnail image file (jpg) with the ship</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- Position Accuracy Vector Type  -->
+	<!-- ===================================================================== -->
+	<xs:complexType name="PositionAccuracyVectorType">
+		<xs:annotation>
+			<xs:documentation>Accuracy vector defined by mean of two metric components, x and y (expressed in linear meters). Shall be used by SP to express any uncertainty in the detected vessel position. It is, for example, suitable to express doppler effect originated uncertainty.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="x" type="xs:integer">
+				<xs:annotation>
+					<xs:documentation>East-west component of the accuracy vector expressed in linear meters</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="y" type="xs:integer">
+				<xs:annotation>
+					<xs:documentation>North-south component of the accuracy vector expressed in linear meters</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- Detection Parameters Type  -->
+	<!-- ===================================================================== -->
+	<xs:complexType name="DetectionParametersType">
+		<xs:annotation>
+			<xs:documentation>Set of parameters calculated for the target during the vessel detection</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="RCS" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>Radar cross section value expressed in meters squared</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="maxPixelValue" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>Max pixel value</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

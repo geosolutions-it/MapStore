@@ -1,0 +1,72 @@
+<jxb:bindings version="2.0"
+      xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+      xmlns:xs="http://www.w3.org/2001/XMLSchema" >
+
+<jxb:bindings schemaLocation="http://www.w3.org/1999/xlink.xsd" node="/xs:schema">
+
+    <jxb:bindings node="//xs:attributeGroup[@name='locatorAttrs']">
+        <jxb:bindings node=".//xs:attribute[@ref='xlink:title']">
+            <jxb:property name="title1"/>
+        </jxb:bindings>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:attributeGroup[@name='arcAttrs']">           
+        <jxb:bindings node=".//xs:attribute[@ref='xlink:title']">
+            <jxb:property name="title2"/>
+        </jxb:bindings>            
+    </jxb:bindings>        
+
+    <jxb:bindings schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/geometryPrimitives.xsd" node="/xs:schema">
+     <jxb:bindings node="//xs:element[@name='_Solid']">
+        <jxb:factoryMethod name="gmlAbstractSolidElementFactory" />
+     </jxb:bindings>
+     <jxb:bindings node="//xs:element[@name='Ring']">
+        <jxb:factoryMethod name="gmlAbstractRingElementFactory" />
+     </jxb:bindings>
+     <jxb:bindings node="//xs:element[@name='Surface']">
+        <jxb:factoryMethod name="gmlSurfaceElementFactory" />
+     </jxb:bindings>
+    </jxb:bindings>        
+
+    <jxb:bindings schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/defaultStyle.xsd" node="/xs:schema">
+     <jxb:bindings node="//xs:element[@name='topologyStyle']">
+        <jxb:factoryMethod name="gmlAbstractTopologyStyleElementFactory" />
+     </jxb:bindings>
+     <jxb:bindings node="//xs:element[@name='_Style']">
+        <jxb:factoryMethod name="gmlAbstractStyleElementFactory" />
+     </jxb:bindings>
+     <jxb:bindings node="//xs:element[@name='GeometryStyle']">
+        <jxb:factoryMethod name="gmlAbstractGeometryStyleElementFactory" />
+     </jxb:bindings>
+     <jxb:bindings node="//xs:element[@name='GraphStyle']">
+        <jxb:factoryMethod name="gmlAbstractGraphStyleElementFactory" />
+     </jxb:bindings>
+     <jxb:bindings node="//xs:element[@name='FeatureStyle']">
+        <jxb:factoryMethod name="gmlAbstractFeatureStyleElementFactory" />
+     </jxb:bindings>
+     <jxb:bindings node="//xs:element[@name='LabelStyle']">
+        <jxb:factoryMethod name="gmlAbstractLabelStyleElementFactory" />
+     </jxb:bindings>
+    </jxb:bindings>       
+
+    <jxb:bindings schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/geometryBasic0d1d.xsd" node="/xs:schema">
+     <jxb:bindings node="//xs:element[@name='_Curve']">
+        <jxb:factoryMethod name="gmlAbstractCurveElementFactory" />
+     </jxb:bindings>
+    </jxb:bindings>       
+
+    <jxb:bindings schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/geometryBasic2d.xsd" node="/xs:schema">
+     <jxb:bindings node="//xs:element[@name='_Surface']">
+        <jxb:factoryMethod name="gmlAbstractSurfaceElementFactory" />
+     </jxb:bindings>
+    </jxb:bindings>       
+
+    <jxb:bindings schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/feature.xsd" node="/xs:schema">
+     <jxb:bindings node="//xs:element[@name='FeatureCollection']">
+        <jxb:factoryMethod name="gmlAbstractFeatureCollectionElementFactory" />
+     </jxb:bindings>
+    </jxb:bindings>
+
+</jxb:bindings>
+
+</jxb:bindings>

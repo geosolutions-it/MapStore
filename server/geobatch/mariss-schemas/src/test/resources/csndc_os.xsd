@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 rel. 2 sp2 (http://www.altova.com) by Christian Ceprani (Advanced Computer Systems S.p.A.) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:csn="http://www.emsa.europa.eu/csndc" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows/1.1" targetNamespace="http://www.emsa.europa.eu/csndc" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.9.5">
+	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/feature.xsd"/>
+	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gmlBase.xsd"/>
+	<xs:import namespace="http://www.opengis.net/ows/1.1" schemaLocation="http://schemas.opengis.net/ows/1.1.0/owsServiceProvider.xsd"/>
+	<xs:element name="OilSpill" type="csn:OilSpillType" substitutionGroup="gml:_Feature">
+		<xs:annotation>
+			<xs:documentation>Oil Spill root element for a generic Oil Spill observation or prediction</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="OilSpillType">
+		<xs:annotation>
+			<xs:documentation>Oil Spill feature description</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gml:AbstractFeatureType">
+				<xs:sequence>
+					<xs:element name="eventid" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>Unique identifier of the Oil Spill event. For predicted Oil Spills this refers to the observed Oil Spill originating the prediction. </xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="origin" type="csn:OriginType">
+						<xs:annotation>
+							<xs:documentation>Observation origin</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="center" type="gml:PointType">
+						<xs:annotation>
+							<xs:documentation>The center of the Oil Spill expressed as a gml:pos in lat/lon coordinates</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="geometry" type="gml:GeometryArrayPropertyType">
+						<xs:annotation>
+							<xs:documentation>This is an array of geometries (to allow for the description of many slicks in the same oil spill). In case of just one slick, this element will be made of a single gml geometry element. 
+Any valid gml geoemtry element could be used but preferred structure is: gml:Polygon/gml:exterior/gml:LinearRing/gml:posList
+Extension attributes of individual slicks has to be specified exploiting the optional element gml:metaDataProperty of gml:Polygon. Specifically the gml:metaDataProperty element is expected to host a csn:extension element.
+</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="timeStamp" type="xs:dateTime">
+						<xs:annotation>
+							<xs:documentation>The date and time of the observation/prediction expressed in ISO8601 format (e.g. '2003-04-01T13:01:02' )</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="dataSource" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Who provided the observation/prediction</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="extension" type="csn:OilSpillExtensionType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Extension parameters of the Oil Spill</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="locationClassification" type="csn:LocationClassificationType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Region and country classification</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="distanceFromCoast" type="gml:LengthType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Approximate distance from nearest coastline.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="keywords" type="ows:KeywordsType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Valid keywords for free-text search</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="imageIdentifier" type="csn:ImageType" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>The unique identifier of the original EO image(s) used to identify the Oil Spill</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<!-- after CDR: 'reliabilityIndex' renamed to 'classificationLevel' -->
+					<xs:element name="classificationLevel" type="xs:double" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The probability/confidence that this is a real Oil Spill. Expressed as a number in the [0,1] range. Referring to the A/B classification used in the CSNDC, 0 stands for 'B' and 1 stands for 'A'</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="composition" type="csn:OilSpillCompositionType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Oil type and age information</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="auxiliaryDataRef" type="csn:AuxiliaryDataReferenceArrayType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>References (as URI) to auxiliary data , images, etc. The csn:auxiliaryData element contains an open structure to accomodate any additional file including oil spill clip images. For a clip image, the ./csn:dataKey element is set to ' OS_CLIP_IMAGE'  and the ./csn:dataReference element is set to the file name of the clip image file. </xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="possibleSources" type="csn:PossibleSourcesType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Possible sources for the OS</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="analysisSpecific" type="csn:SlickTechParametersType" minOccurs="0"/>
+					<xs:element name="inSituInformation" type="csn:InSituInformationType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>In Situ validation information</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="meteoConditions" type="csn:MeteoConditionsType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Sea and wind information associated to the oil spill</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="relatedEvents" type="csn:RelatedEventsType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Events that can be put in relation with this one</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- Oil Spill Extension -->
+	<!-- ===================================================================== -->
+	<xs:complexType name="OilSpillExtensionType" mixed="true">
+		<xs:annotation>
+			<xs:documentation>Extension and shape parameters associated with the Oil Spill</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="true">
+			<xs:extension base="gml:AbstractMetaDataType">
+				<xs:sequence>
+					<xs:element name="area" type="csn:AreaType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Area of the Oil Spill expressed as m2.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<!--					<xs:element name="perimeter" type="csn:LengthType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Perimeter of the Oil Spil expressed as Km</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+after CDR:   Width and Length instead of Perimeter
+-->
+					<xs:element name="length" type="csn:LengthType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Length of the Oil Spil expressed as m</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="width" type="csn:LengthType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Width of the Oil Spil expressed as m</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<!-- Added after analysis of the Alerting capabilities of CSN-DC -->
+					<xs:element name="alignedWithTrack" type="xs:boolean" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Shape of slick aligned with track</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="orientation" type="csn:OrientationType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Orientation of the Oil Spil</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="volume" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Volume of the Oil Spill in m3</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="0-10"/>
+								<xs:enumeration value="10-100"/>
+								<xs:enumeration value="&gt;100"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="thickness" type="gml:MeasureType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Thickness of the Oil Spill in mm</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- Oil Spill Composition -->
+	<!-- ===================================================================== -->
+	<xs:complexType name="OilSpillCompositionType" mixed="true">
+		<xs:annotation>
+			<xs:documentation>Composition and age parameters associated with the Oil Spill</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="true">
+			<xs:extension base="gml:AbstractMetaDataType">
+				<xs:sequence>
+					<xs:element name="oilType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Composition of the Oil</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Light"/>
+								<xs:enumeration value="Medium"/>
+								<xs:enumeration value="Heavy"/>
+								<xs:enumeration value="OTHER"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="oilSubType" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Sub type of Oil</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="age" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Age of Oil in days</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="&lt;1"/>
+								<xs:enumeration value="1-3"/>
+								<xs:enumeration value="&gt;3"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- Auxiliary data reference -->
+	<!-- ===================================================================== -->
+	<xs:complexType name="AuxiliaryDataReferenceArrayType">
+		<xs:annotation>
+			<xs:documentation>Array of auxiliary data related to the Oil Spill (for example images) </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="auxiliaryData" type="csn:AuxiliaryDataReferenceType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AuxiliaryDataReferenceType" mixed="true">
+		<xs:annotation>
+			<xs:documentation>Auxiliary data related to the Oil Spill. E.g. the link to an image or other file</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent mixed="true">
+			<xs:extension base="gml:AbstractMetaDataType">
+				<xs:sequence>
+					<xs:element name="dataKey" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>Key/identifier of a specific auxiliary data</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="dataReference" type="xs:anyURI">
+						<xs:annotation>
+							<xs:documentation>URI references to auxiliary data</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="dataDescription" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Descripton of auxiliary data</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- Sources -->
+	<!-- ===================================================================== -->
+	<xs:complexType name="PossibleSourcesType">
+		<xs:annotation>
+			<xs:documentation>Source of the observed spill</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<!-- Added after analysis of Alerting function-->
+			<xs:element name="vesselConnected" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="identifier" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- Image -->
+	<!-- ===================================================================== -->
+	<xs:complexType name="ImageType">
+		<xs:annotation>
+			<xs:documentation>EO Image identifier in which the spill is observed</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="type" type="csn:SensorType"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="SensorType">
+		<xs:annotation>
+			<xs:documentation>EO Sensor Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SAR"/>
+			<xs:enumeration value="VIS-IR"/>
+			<xs:enumeration value="OTHER"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- ===================================================================== -->
+	<!-- Specific Information -->
+	<!-- ===================================================================== -->
+	<!-- after CDR: renamed from 'SpecificInformationArrayPropertyType' to 'SlickTechParametersType' -->
+	<xs:complexType name="SlickTechParametersType">
+		<xs:annotation>
+			<xs:documentation>Array of ad-hoc analysis metadata.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="slickTechParameter" type="csn:SlickTechParameterType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- after CDR: renamed from 'SpecificInformationType' to 'SlickTechParameterType' -->
+	<xs:complexType name="SlickTechParameterType">
+		<xs:sequence>
+			<!-- after CDR: renamed from 'specificAttribute' to 'parameter' -->
+			<xs:element name="parameter" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Container for ad-hoc analysis information. The 'parameter' describes the name of the attribute/parameter. For example, Shape_characteristics, Contrast_characteristics, Edge_characteristics... </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<!-- after CDR: renamed from 'specificValue' to 'value' -->
+			<xs:element name="value" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Container for ad-hoc analysys information. The 'value' describes the value of the attribute (see 'parameter').</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<!-- after CDR: renamed from 'specificDescription' to 'description' -->
+			<xs:element name="description" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Container for ad-hoc analysys information. The 'description' describes in human readable text the meaning and the unit of measure of the attribute (see 'parameter'). This is optional.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="importance" type="csn:SlickParameterImportanceType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A number from 0 to 1 to specify the relative (percentage) importance of the parameter in determining the classification of the Oil Spill. This is optional.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- IN SITU information -->
+	<!-- ===================================================================== -->
+	<xs:complexType name="InSituInformationType">
+		<xs:sequence>
+			<xs:element name="inSituValidation" type="csn:InSituValidationType">
+				<xs:annotation>
+					<xs:documentation>In Situ validation specifying if Oil Spill presence has been verified</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="inSituValidationBody" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>In Situ validation body: who actually verified the OS presence</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="notes" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Free text for notes and observations</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="InSituValidationType">
+		<xs:annotation>
+			<xs:documentation>In Situ validation specifying if Oil Spill presence has been verified in facts</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="OS_VERIFIED"/>
+			<xs:enumeration value="OS_NOT_VERIFIED"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- ===================================================================== -->
+	<!-- Observation Origin -->
+	<!-- ===================================================================== -->
+	<xs:simpleType name="OriginType">
+		<xs:annotation>
+			<xs:documentation>Observation origin of the Oil Spill.  It could be EXPECTED meaning that the presence of the Oil Spill is expected as part of a test dataset or insitu independent observation, or DETECTED meaning that the presence of the Oil Spill has been actually detected by the original EO image classification. It is predicted when it comes from a DTOS prediction service.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="EXPECTED"/>
+			<xs:enumeration value="DETECTED"/>
+			<xs:enumeration value="PREDICTED"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- ===================================================================== -->
+	<!-- Meteo conditions  -->
+	<!-- ===================================================================== -->
+	<xs:complexType name="MeteoConditionsType">
+		<xs:sequence>
+			<xs:element name="meteoWind" type="csn:WindConditionType" minOccurs="0"/>
+			<xs:element name="SARWind" type="csn:WindConditionType" minOccurs="0"/>
+			<xs:element name="sea" type="csn:SeaConditionType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WindConditionType">
+		<xs:annotation>
+			<xs:documentation>Wind condition associated to the area of the spill</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<!-- after CDR: added DataSource and Type -->
+			<xs:element name="dataSource" type="xs:string" minOccurs="0"/>
+			<xs:element name="dataType" type="xs:string" minOccurs="0"/>
+			<xs:element name="windIntensity" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>Wind intensity expressed in meters/second</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="windDirection" type="xs:integer">
+				<xs:annotation>
+					<xs:documentation>Wind direction expressed as [0,360] deegree value where 0=360=Geographical North, clockwise. Following the nautical habit, this is intended as the direction from which the wind is flowing.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SeaConditionType">
+		<xs:annotation>
+			<xs:documentation>Sea condition associated to the area of spill</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<!-- after CDR: added DataSource and Type -->
+			<xs:element name="dataSource" type="xs:string" minOccurs="0"/>
+			<xs:element name="dataType" type="xs:string" minOccurs="0"/>
+			<xs:element name="waveHeight" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Height of the waves expressed in meters</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="waveLength" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Length of the waves expressed in meters</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="waveDirection" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Direction of the waves expressed as [0,360] deegree value where 0=360=Geographical North, clockwise </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="currentIntensity" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Intensity of the current expressed in meters/second</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="currentDirection" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Direction of the current expressed as [0,360] deegree value where 0=360=Geographical North, clockwise. Following the nautical habit, this is intended as the direction toward which the current is flowing.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- Area, Length and Orientation types  -->
+	<!-- ===================================================================== -->
+	<xs:complexType name="AreaType">
+		<xs:annotation>
+			<xs:documentation>Value of Oil Spill spatial area quantity. Uses the AreaType with the restriction that the unit of measure referenced by uom must be square meters</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:restriction base="gml:AreaType"/>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="LengthType">
+		<xs:annotation>
+			<xs:documentation>Linear length of spill's perimeter. Uses the LengthType with the restriction that the unit of measure referenced by uom must be meters</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:restriction base="gml:LengthType"/>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="OrientationType">
+		<xs:annotation>
+			<xs:documentation>Orientation of Oil Spill</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:restriction base="gml:AngleType"/>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- Location Classification -->
+	<!-- ===================================================================== -->
+	<xs:complexType name="LocationClassificationType" mixed="true">
+		<xs:annotation>
+			<xs:documentation>Classification of OS location in terms of countries</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<!-- after CDR: 'region' is removed -->
+			<!-- after CDR: cardinality changes from 1 to n -->
+			<xs:element name="country" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Country</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- Related events -->
+	<!-- ===================================================================== -->
+	<xs:complexType name="RelatedEventsType">
+		<xs:annotation>
+			<xs:documentation>Other events to be put in relation with this one</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="alreadyInPreviousImage" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="identifier" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- Slick Tech Parameter Importance Type -->
+	<!-- ===================================================================== -->
+	<xs:simpleType name="SlickParameterImportanceType">
+		<xs:annotation>
+			<xs:documentation>Relative importance of a parameter in determining the oil spill classification. It is the percentage weight of the parameter in classifying the oil spill expressed as a number in the 0 (not used) to 1 (most important) range.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:double">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

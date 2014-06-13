@@ -21,9 +21,18 @@
  */
 package it.geosolutions.geobatch.mariss.ingestion.product;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JUnit test for {@link DataPackageIngestionProcessor} process
@@ -31,17 +40,42 @@ import org.junit.Test;
  * @author adiaz
  */
 public class DataPackageIngestionProcessorTest {
+
+	protected final static Logger LOGGER = LoggerFactory
+			.getLogger(DataPackageIngestionProcessorTest.class);
 	
-	private String filePathTest = "target/test-classes/TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_PCK.xml";
+	private String filePathTest = "target/test-classes/TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DER.zip";
+	
+	DataStore dataStore = null;
+	DataPackageIngestionProcessor processor = null;
+	String typeName = "dlr_ships";
+	String userName = "userName";
+	String serviceName = "serviceName";
+	
+	private Map<String, Serializable> getConnectionParameters(){
+		Map<String, Serializable> params = new HashMap<String, Serializable>();
+		//TODO: load from properties
+		params.put("dbtype", "postgis");
+		params.put("host", "localhost");
+		params.put("port", 5432);
+		params.put("schema", "public");
+		params.put("database", "mariss");
+		params.put("user", "mariss");
+		params.put("passwd", "mariss");
+		return params;
+	}
 
 	/**
 	 * Create the processor
-	 * 
-	 * @return processor ready to process data packages
 	 */
-	private DataPackageIngestionProcessor generateProcessor(){
-		// TODO: configure processor 
-		return new DataPackageIngestionProcessor();
+	@Before
+	public void generateProcessor(){
+		try {
+			dataStore = DataStoreFinder.getDataStore(getConnectionParameters());
+			processor = new DataPackageIngestionProcessor(dataStore, typeName, userName, serviceName);
+		} catch (IOException e) {
+			LOGGER.error("Error creating the store", e);
+		}
 	}
 
 	/**
@@ -51,7 +85,14 @@ public class DataPackageIngestionProcessorTest {
 	 */
 	@Test
 	public void parseTest() throws Exception {
-		DataPackageIngestionProcessor processor = generateProcessor();
-		processor.process(new File(filePathTest));
+		processor.doProcess(filePathTest);
+	}
+	
+	/**
+	 * Dispose datastore
+	 */
+	@After
+	public void dispose(){
+		dataStore.dispose();
 	}
 }
