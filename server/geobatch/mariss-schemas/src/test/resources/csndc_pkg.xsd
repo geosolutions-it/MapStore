@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 rel. 2 sp2 (http://www.altova.com) by Christian Ceprani (Advanced Computer Systems S.p.A.) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:csn="http://www.emsa.europa.eu/csndc" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows/1.1" targetNamespace="http://www.emsa.europa.eu/csndc" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.9.5">
+	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/feature.xsd"/>
+	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gmlBase.xsd"/>
+	<xs:import namespace="http://www.opengis.net/ows/1.1" schemaLocation="http://schemas.opengis.net/ows/1.1.0/owsServiceProvider.xsd"/>
+	<xs:element name="dataPackage" type="csn:DataPackageType">
+		<xs:annotation>
+			<xs:documentation>Namespace for CSN-DC data package from Service Providers.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="DataPackageType">
+		<xs:sequence>
+			<xs:element ref="csn:packageInfo">
+				<xs:annotation>
+					<xs:documentation>Package info</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="csn:eoProduct">
+				<xs:annotation>
+					<xs:documentation>References of the EO product contained in the package if any.Only one EO product is expected in a package.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice>
+				<xs:element ref="csn:oilSpills" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Description of the package content in terms of OS found/processed (if any).</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:sequence>
+					<xs:element ref="csn:detectedShips" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Description of the package content in terms of Detected Ships found (if any).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="csn:sarDerivedData" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Description of the package content in terms of SAR derived data.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:element ref="csn:qualityNotification" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Description of the image quality notification info contained in the package if any. Only one quality notification file is supposed to be present in a single package.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="csn:qualityReport" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Description of the quality report contained in the package if any. Only one quality report file is supposed to be present in a single package.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="csn:processRequest" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Description of the process request contained in the package if any. Only one process request file is supposed to be present in a single package.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- DataPackage -->
+	<!-- ===================================================================== -->
+	<xs:element name="packageInfo" type="csn:PackageInfoType"/>
+	<xs:complexType name="PackageInfoType">
+		<xs:annotation>
+			<xs:documentation>Specify the data package attributes</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="packageId" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Specify a reference identifier for the data package</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="packageType">
+				<xs:annotation>
+					<xs:documentation>Specify type of data package (one of OS_WARNING, EO_PRODUCT,OS_NOTIFICATION, SAR_DERIVED, QUALITY_NOTIFICATION or QUALITY_REPORT, PROCESS_REQUEST, PROCESS_RESPONSE)</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="OS_WARNING"/>
+						<xs:enumeration value="EO_PRODUCT"/>
+						<xs:enumeration value="OS_NOTIFICATION"/>
+						<xs:enumeration value="SAR_DERIVED"/>
+						<xs:enumeration value="QUALITY_NOTIFICATION"/>
+						<xs:enumeration value="QUALITY_REPORT"/>
+						<xs:enumeration value="PROCESS_REQUEST"/>
+						<xs:enumeration value="PROCESS_RESPONSE"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="operationType">
+				<xs:annotation>
+					<xs:documentation>Specify if the data package is part of a reference test data set or not (one of TEST or NOMINAL)</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="TEST"/>
+						<xs:enumeration value="NOMINAL"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="dataPackageDescription" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>An optional description for the data package</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- EOProduct : -->
+	<!-- ===================================================================== -->
+	<xs:element name="eoProduct" type="csn:EOProductType"/>
+	<xs:complexType name="EOProductType">
+		<xs:annotation>
+			<xs:documentation>Specify the data package attributes</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="csn:identifier">
+				<xs:annotation>
+					<xs:documentation>EO product external identifier. This ID shall match with the uid of the EO product described in the eop namespace.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="csn:fileName" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- OillSpillAnalysis -->
+	<!-- ===================================================================== -->
+	<xs:element name="oilSpills" type="csn:OilSpillsType"/>
+	<xs:complexType name="OilSpillsType">
+		<xs:annotation>
+			<xs:documentation>Describes main results of the Oil Spill Analysis performed on the scene</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="csn:oilSpillReference" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of references to the Oil Spills detected in the scene</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="total" type="xs:integer" use="required">
+			<xs:annotation>
+				<xs:documentation>Total number of oil spills found/processed</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- OilSpillReferences : -->
+	<!-- ===================================================================== -->
+	<xs:element name="oilSpillReference" type="csn:OilSpillReferenceType"/>
+	<xs:complexType name="OilSpillReferenceType">
+		<xs:sequence>
+			<xs:element ref="csn:identifier">
+				<xs:annotation>
+					<xs:documentation>Reference to the observed oil spill. This ID shall match with the uid of the Oil Spill feature described by GML file according to csndc_os.xsd schema.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="csn:fileName" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Reference to the GML file describing the OS feature</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- Detected Ships : -->
+	<!-- ===================================================================== -->
+	<xs:element name="detectedShips" type="csn:DetectedShipsType"/>
+	<xs:complexType name="DetectedShipsType">
+		<xs:annotation>
+			<xs:documentation>GML files describing observed in the original satellite image</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="csn:detectedShipReference" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of references to the Ships detected in the scene</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="total" type="xs:integer" use="required">
+			<xs:annotation>
+				<xs:documentation>Total number of detected ships found.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- DetectedShipsReferences : -->
+	<!-- ===================================================================== -->
+	<xs:element name="detectedShipReference" type="csn:DetectedShipReferenceType"/>
+	<xs:complexType name="DetectedShipReferenceType">
+		<xs:annotation>
+			<xs:documentation>GML files describing observed in the original satellite image</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="csn:identifier">
+				<xs:annotation>
+					<xs:documentation>Reference to the detected ship. This ID shall match with the identifier of the Detected Ship feature described by GML file according to csndc_ds.xsd schema.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="csn:fileName" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Reference to GML file describing the Detected Ship feature</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- SAR Derived data : -->
+	<!-- ===================================================================== -->
+	<xs:element name="sarDerivedData" type="csn:SARDerivedDataType"/>
+	<xs:complexType name="SARDerivedDataType">
+		<xs:annotation>
+			<xs:documentation>NetCDF files describing meteo features (wind, wave) derived from the original satellite image</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="csn:sarDerivedDataReference" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of references to the meteo conditions derived from the SAR image</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- SARDerivedReference : -->
+	<!-- ===================================================================== -->
+	<xs:element name="sarDerivedDataReference" type="csn:SARDerivedDataReferenceType"/>
+	<xs:complexType name="SARDerivedDataReferenceType">
+		<xs:annotation>
+			<xs:documentation>NetCDF file describing a meteo feature (wind, wave) derived from the original satellite image</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="sarDerivedFeature" type="csn:SARDerivedFeatureType">
+				<xs:annotation>
+					<xs:documentation>Type of derived data</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="csn:fileName">
+				<xs:annotation>
+					<xs:documentation>Filename of the NetCDF file describing the SAR derived data</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="SARDerivedFeatureType">
+		<xs:annotation>
+			<xs:documentation>NetCDF file describing a meteo feature (wind, wave) derived from the original satellite image</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="WIND"/>
+			<xs:enumeration value="WAVE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- ===================================================================== -->
+	<!-- Quality -->
+	<!-- ===================================================================== -->
+	<xs:element name="qualityNotification" type="csn:QualityType"/>
+	<xs:element name="qualityReport" type="csn:QualityType"/>
+	<xs:complexType name="QualityType">
+		<xs:annotation>
+			<xs:documentation>Specify the data package quality info file</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="csn:identifier">
+				<xs:annotation>
+					<xs:documentation>Identifier of the quality file. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="csn:fileName">
+				<xs:annotation>
+					<xs:documentation>Reference to quality file in the Package</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- Process -->
+	<!-- ===================================================================== -->
+	<xs:element name="processRequest" type="csn:ProcessRequestType"/>
+	<xs:complexType name="ProcessRequestType">
+		<xs:annotation>
+			<xs:documentation>Specify the process request file</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="csn:identifier">
+				<xs:annotation>
+					<xs:documentation>Identifier of the process request</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="csn:fileName">
+				<xs:annotation>
+					<xs:documentation>Reference to process request file in the Package</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ===================================================================== -->
+	<!-- Miscellaneous properties -->
+	<!-- ===================================================================== -->
+	<xs:element name="identifier">
+		<xs:annotation>
+			<xs:documentation>Identifier for metadata item</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="fileName">
+		<xs:annotation>
+			<xs:documentation>Reference to filename in the Package</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+</xs:schema>

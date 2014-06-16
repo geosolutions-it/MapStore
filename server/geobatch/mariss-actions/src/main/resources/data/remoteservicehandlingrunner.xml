@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+
+    <id>remoteservicehandlingrunner</id>
+
+    <name>Remote service data ingestion from FTP server</name>
+    <description>Data ingestion for services on MARISS project. Current version reads the acquisition list from the FTP server</description>
+
+    <autorun>true</autorun>
+
+    <EventGeneratorConfiguration>
+        <serviceID>fsEventGeneratorService</serviceID>
+        <wildCard>*.*</wildCard>
+        <watchDirectory>remoteservicehandlingrunner/in</watchDirectory>
+        <osType>OS_UNDEFINED</osType>
+        <eventType>POLLING_EVENT</eventType>
+        <!-- Executed once an hour  -->
+        <interval>0 0 * * * ?</interval>
+    </EventGeneratorConfiguration>
+
+    <EventConsumerConfiguration>
+
+        <listenerId>ConsumerLogger0</listenerId>
+        <listenerId>Cumulator</listenerId>
+
+        <RemoteServiceHandlingConfiguration>
+            <id>remote_service_handling</id>
+            <name>Remote FTP service reader/writter</name>
+            <description>Ingesting service data into the DB</description>
+            <listenerConfigurations/>
+            <failIgnored>false</failIgnored>
+            <purgeData>true</purgeData>
+            <outputFeature>
+                <dataStore>
+                   <entry>
+                     <string>dbtype</string>
+                     <string>postgis</string>
+                   </entry>
+                   <entry>
+                     <string>host</string>
+                     <string>localhost</string>
+                   </entry>
+                   <entry>
+                     <string>port</string>
+                     <string>5432</string>
+                   </entry>
+                   <entry>
+                     <string>database</string>
+                     <string>mariss</string>
+                   </entry>
+                   <entry>
+                     <string>database</string>
+                     <string>mariss</string>
+                   </entry>
+                   <entry>
+                     <string>schema</string>
+                     <string>public</string>
+                   </entry>
+                   <entry>
+                     <string>user</string>
+                     <string>mariss</string>
+                   </entry>
+                   <entry>
+                     <string>passwd</string>
+                     <string>mariss</string>
+                   </entry>
+                </dataStore>
+            </outputFeature>
+            <projectOnMappings>false</projectOnMappings>
+            <attributeMappings/>
+            <remoteBrowserConfiguration>
+              <dataTransferMethod />
+              <serverProtocol>sftp</serverProtocol>
+              <timeout>5000</timeout>
+              <zipInput>false</zipInput>
+              <zipFileName></zipFileName>
+              <ftpserverPWD>password</ftpserverPWD>
+              <ftpserverUSR>user</ftpserverUSR>
+              <ftpserverHost>mariss-server</ftpserverHost>
+              <ftpserverPort>22</ftpserverPort>
+              <connectMode>ACTIVE</connectMode>
+              <localTempDir>/tmp</localTempDir>
+              <operationId>Download</operationId>
+              <id>monitorize</id>
+              <description>SFTP inner configuration</description>
+              <name>sftpConfiguration</name>
+            </remoteBrowserConfiguration>
+            <!-- Basic configuration -->
+            <storeLocal>true</storeLocal>
+            <deleteDownloadedFiles>false</deleteDownloadedFiles>
+            <inputRemotePath>/share/ftp</inputRemotePath>
+            <!-- <filePattern>^([0-9]{2})[_-]([0-9]{8})[_-]([0-9]{6}).xml$</filePattern> -->
+            <checkIfExists>true</checkIfExists>
+            <!-- Paths configuration -->
+            <inputPath>/tmp/ingestion/working</inputPath>
+            <succesPath>/tmp/ingestion/ok</succesPath>
+            <failPath>/tmp/ingestion/fail</failPath>
+            <!-- CSV separator -->
+            <csvSeparator>,</csvSeparator>
+            <!-- Table for the acq_list -->
+            <acqListTypeName>acq_list</acqListTypeName>
+            <!-- Listeners -->
+            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>Cumulator</listenerId>
+        </RemoteServiceHandlingConfiguration>
+
+    </EventConsumerConfiguration>
+
+    <ListenerConfigurations>
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger0</id>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
+            <appendToListenerForwarder>true</appendToListenerForwarder>
+        </LoggingProgressListener>
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>Cumulator</id>
+            <appendToListenerForwarder>true</appendToListenerForwarder>
+        </CumulatingProgressListener>
+    </ListenerConfigurations>
+
+</FlowConfiguration>

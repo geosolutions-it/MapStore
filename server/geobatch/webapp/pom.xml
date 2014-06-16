@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ======================================================================= 
+	Maven Project Configuration File GeoSolutions GeoBatch Project http://geobatch.geo-solutions.it 
+	Version: 0.1 pom.xml 63 2011-05-02 18:55:57Z ccancellieri $ ======================================================================= -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>it.geosolutions.mariss</groupId>
+		<artifactId>geobatch-mariss-root</artifactId>
+		<version>1.4-SNAPSHOT</version>
+	</parent>
+
+	<!-- =========================================================== -->
+	<!-- Module Description -->
+	<!-- =========================================================== -->
+	<groupId>it.geosolutions.geobatch</groupId>
+	<artifactId>gb-mariss-geobatch</artifactId>
+	<packaging>war</packaging>
+
+	<name>MARISS GeoBatch webapp</name>
+	<description>GeoSolutions GeoBatch Application</description>
+	<organization>
+		<name>GeoSolutions</name>
+	</organization>
+
+	<properties>
+		<flow.dir>geobatch/WEB-INF/</flow.dir>
+
+		<!--<root.basedir>${basedir}/../../</root.basedir> -->
+		<!-- JETTY jar classpath -->
+		<geobatch_starter.classpath>${geobatch_starter.dir}/WEB-INF/lib/</geobatch_starter.classpath>
+	</properties>
+	<!-- =========================================================== -->
+	<!-- Dependencies -->
+	<!-- =========================================================== -->
+
+	<!-- ============================== -->
+	<!-- Custom MARISS stuff -->
+	<!-- ============================== -->
+
+	<dependencies>
+
+		<dependency>
+			<groupId>it.geosolutions.mariss</groupId>
+			<artifactId>gb-mariss-actions</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-action-ds2ds</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- ============================== -->
+		<!-- GeoBatch modules -->
+		<!-- ============================== -->
+
+		<dependency>
+			<groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-web-core</artifactId>
+			<type>war</type>
+			<scope>runtime</scope>
+			<version>1.4-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-web-core</artifactId>
+			<classifier>classes</classifier>
+			<version>1.4-SNAPSHOT</version>
+		</dependency>
+
+		<!-- ============================== -->
+		<!-- GeoBatch actions -->
+		<!-- ============================== -->
+
+		<dependency>
+			<groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-action-imagemosaic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-action-taskexecutor</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-action-shapefile</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-action-geotiff</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-action-geoserver</artifactId>
+		</dependency>
+
+		<!-- ============================== -->
+		<!-- GeoBatch services -->
+		<!-- ============================== -->
+
+		<dependency>
+			<groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-rest-impl</artifactId>
+		</dependency>
+		<!-- Provides class org.apache.cxf.transport.servlet.CXFServlet when the 
+			rest profile is not enabled -->
+		<!-- <dependency> <groupId>org.apache.cxf</groupId> <artifactId>cxf-rt-bindings-http</artifactId> 
+			<scope>test</scope> </dependency> -->
+
+		<!-- ============================== -->
+		<!-- -->
+		<!-- ============================== -->
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+		</dependency>
+
+		<!-- ============================== -->
+		<!-- log4j -->
+		<!-- ============================== -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- ============================== -->
+		<!-- Platform -->
+		<!-- ============================== -->
+
+		<!-- ============================== -->
+		<!-- Test: JETTY -->
+		<!-- ============================== -->
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jsp-2.1</artifactId>
+			<scope>test</scope>
+			<!-- <exclusions> -->
+			<!-- <exclusion> -->
+			<!-- <groupId>javax.servlet.jsp</groupId> -->
+			<!-- <artifactId>jsp-api</artifactId> -->
+			<!-- </exclusion> -->
+			<!-- </exclusions> -->
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-http</artifactId>
+			<!--<scope>test</scope> -->
+		</dependency>
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+
+		<!-- <dependency> <groupId>org.apache.cxf</groupId> <artifactId>cxf-api</artifactId> 
+			</dependency> -->
+	</dependencies>
+
+	<build>
+
+		<finalName>geobatch</finalName>
+		<plugins>
+			<plugin>
+				<inherited>true</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.2</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<dependencies>
+					<!-- dependency> <groupId>it.geosolutions.geobatch</groupId> <artifactId>gb-application</artifactId> 
+						<version>${project.version}</version> <type>test-jar</type> </dependency -->
+				</dependencies>
+				<!-- The configuration of the plugin -->
+				<configuration>     <!-- Configuration of the archiver -->
+					<archive>       <!-- Manifest specific configuration -->
+						<manifest>  <!-- Classpath is added to the manifest of the created jar file. -->
+							<addClasspath>true</addClasspath>
+							<!-- Configures the classpath prefix. This configuration option is 
+								used to specify that all needed libraries are found under lib/ directory. -->
+							<classpathPrefix>${geobatch_starter.classpath}</classpathPrefix>
+							<!-- Specifies the main class of the application -->
+							<mainClass>it.geosolutions.geobatch.jetty.Start</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<inherited>true</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<warName>geobatch</warName>
+					<!--<outputDirectory>${site.outdir}</outputDirectory> -->
+					<!--<webappDirectory>${project.build.directory}/geobatch</webappDirectory> -->
+					<overlays>
+						<overlay>
+							<groupId>it.geosolutions.geobatch</groupId>
+							<artifactId>gb-web-core</artifactId>
+							<excludes>
+								<exclude>WEB-INF/classes/**/*</exclude> <!-- imported as jar -->
+								<exclude>WEB-INF/lib/**/*</exclude>     <!-- imported as dependencies -->
+							</excludes>
+						</overlay>
+					</overlays>
+				</configuration>
+
+				<executions>
+					<execution>
+						<id>install</id>
+						<phase>package</phase>
+						<goals>
+							<goal>war</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>site</id>
+						<phase>site</phase>
+						<goals>
+							<goal>war</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>unpack_csv</id>
+						<phase>package</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>it.geosolutions.mariss</groupId>
+									<artifactId>gb-mariss-actions</artifactId>
+									<version>${project.version}</version>
+									<!--<classifier>flowdata</classifier> -->
+									<type>jar</type>
+									<overWrite>false</overWrite>
+									<outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+									<includes>data/**</includes>
+								</artifactItem>
+							</artifactItems>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<version>6.1.26</version>
+				<configuration>
+					<contextPath>geobatch</contextPath>
+					<connectors>
+						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+							<port>${jetty.port}</port>
+							<maxIdleTime>10000</maxIdleTime>
+						</connector>
+					</connectors>
+					<contextPath>geobatch</contextPath>
+					<webAppSourceDirectory>${project.build.directory}/geobatch</webAppSourceDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<profiles>
+		<!-- GB-SERVICES==================================================== -->
+
+	</profiles>
+</project>

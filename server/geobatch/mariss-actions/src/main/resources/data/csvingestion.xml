@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+
+	<id>csvingestion</id>
+	<description>Ingest CSV files</description>
+	<name>CSV file ingestion</name>
+
+	<autorun>true</autorun>
+
+	<EventGeneratorConfiguration>
+		<serviceID>fsEventGeneratorService</serviceID>
+		<wildCard>*.csv</wildCard>
+		<watchDirectory>csvingestion/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+	</EventGeneratorConfiguration>
+
+	<EventConsumerConfiguration>
+		<CSVIngestConfiguration>
+			<id>csv</id>
+			<name>CSVIngestion</name>
+			<description>Ingest CSV data</description>
+			<!-- Listeners -->
+			<listenerId>ConsumerLogger0</listenerId>
+			<listenerId>Cumulator</listenerId>
+			<listenerId>Status</listenerId>
+		</CSVIngestConfiguration>
+	</EventConsumerConfiguration>
+
+
+	<ListenerConfigurations>
+		<LoggingProgressListener>
+			<serviceID>loggingListenerService</serviceID>
+			<id>ConsumerLogger0</id>
+			<loggerName>it.geosolutions.ConsLogger</loggerName>
+			<appendToListenerForwarder>true</appendToListenerForwarder>
+		</LoggingProgressListener>
+		<CumulatingProgressListener>
+			<serviceID>cumulatingListenerService</serviceID>
+			<id>Cumulator</id>
+			<appendToListenerForwarder>true</appendToListenerForwarder>
+		</CumulatingProgressListener>
+        <StatusProgressListener>
+            <serviceID>statusListenerService</serviceID>
+            <id>Status</id>
+			<appendToListenerForwarder>true</appendToListenerForwarder>
+        </StatusProgressListener>
+	</ListenerConfigurations>
+
+</FlowConfiguration>
