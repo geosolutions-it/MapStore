@@ -532,7 +532,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                 icon   : ASSET.edit_icon, 
                                 tooltip: userManager.tooltipEdit,
                                 getClass: function(v, meta, rec) {
-                                  if(rec.get('role')=='GUEST') {
+                                  if(rec.get('name') == "admin" || rec.get('role')=='GUEST') {
                                       return 'x-hide-display';
                                   }
                                 },

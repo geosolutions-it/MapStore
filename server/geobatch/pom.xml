@@ -1,0 +1,1959 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ======================================================================= 
+	GeoSolutions GeoBatch Project http://geobatch.geo-solutions.it Copyright 
+	(C) 2008-2011 GeoSolutions S.A.S. http://www.geo-solutions.it -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <!-- =========================================================== -->
+  <!-- Project Description -->
+  <!-- =========================================================== -->
+  <groupId>it.geosolutions.mariss</groupId>
+  <artifactId>geobatch-mariss-root</artifactId>
+  <packaging>pom</packaging>
+
+  <version>1.4-SNAPSHOT</version>
+
+  <name>MARISS GeoBatch Root</name>
+  <description>
+        Welcome to the home page of the GeoSolutions GeoBatch build process
+        In the left side bar you should see a list of active modules,
+        visit each for more details on the status of each module.
+  </description>
+  <inceptionYear>2013</inceptionYear>
+
+  <url>http://geobatch.geo-solutions.it</url>
+
+  <organization>
+    <name>GeoSolutions</name>
+    <url>http://www.geo-solutions.it</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>Lesser General Public License (GPLv3 + Classpath exception)</name>
+      <url>http://www.gnu.org/licenses/gpl.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:[fetch=]git@github.com:geosolutions-it/geobatch.git[push=]git@github.com:geosolutions-it/geobatch.git</connection>
+    <url>https://github.com/geosolutions-it/geobatch</url>
+  </scm>
+  <ciManagement>
+    <system>jenkins</system>
+    <url>http://ci.geo-solutions.it/</url>
+  </ciManagement>
+  <distributionManagement>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>geosolutions</id>
+      <url>ftp://maven.geo-solutions.it</url>
+    </repository>
+    <site>
+      <id>demo.geosolutions</id>
+      <url>scp://demo.geo-solutions.it/var/www/share/github/geobatch/download/all/</url>
+    </site>
+  </distributionManagement>
+
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/geosolutions-it/geobatch/issues</url>
+  </issueManagement>
+
+  <mailingLists>
+    <mailingList>
+      <name>GeoBatch User List</name>
+      <post>geobatch-user@googlegroups.com</post>
+      <archive>http://groups.google.com/group/geobatch-user/topics</archive>
+    </mailingList>
+    <mailingList>
+      <name>GeoBatch Developer List</name>
+      <post>geobatch-devel@googlegroups.com</post>
+      <archive>http://groups.google.com/group/geobatch-devel/topics</archive>
+    </mailingList>
+  </mailingLists>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <root.basedir>${project.basedir}</root.basedir>
+    <site.basedir>${root.basedir}/build/</site.basedir>
+    <site.outdir>${site.basedir}/${project.version}/</site.outdir>
+
+    <doc.sphinx.source>${root.basedir}/doc/source/</doc.sphinx.source>
+    <doc.sphinx.outdir>${site.outdir}/doc/</doc.sphinx.outdir>
+
+    <geostore.version>1.1.0</geostore.version>
+
+    <gt.version>10-SNAPSHOT</gt.version>
+    <gb.version>1.4-SNAPSHOT</gb.version>
+    <imageio-ext.version>1.2-M102011</imageio-ext.version>
+    <spring.version>3.0.3.RELEASE</spring.version>
+    <spring.security.version>3.0.3.RELEASE</spring.security.version>
+    <hibernate.version>3.3.1.GA</hibernate.version>
+    <hibernate.commons.version>3.1.0.GA</hibernate.commons.version>
+    <camel.version>2.9.0</camel.version>
+    <slf4j.version>1.5.11</slf4j.version>
+    <jt.version>1.2.0</jt.version>
+    <jetty.version>6.1.14</jetty.version>
+    <nelios.restlet.version>1.1.10</nelios.restlet.version>
+    <cxf-version>2.5.8</cxf-version>
+
+    <dao.type>xstream</dao.type>    <!-- the default dao type -->
+    <allow.test.skip>true</allow.test.skip>
+    <allow.test.failure.ignore>false</allow.test.failure.ignore>
+    <extensive.tests>false</extensive.tests>
+    <interactive.tests>false</interactive.tests>
+    <online.skip.pattern>**/*OnlineTest.java</online.skip.pattern>
+    <stress.skip.pattern>**/*StressTest.java</stress.skip.pattern>
+    <test.maxHeapSize>512M</test.maxHeapSize>
+    <src.output>${basedir}/target</src.output>
+    <jetty.port>10091</jetty.port>
+  </properties>
+  
+  <!-- Profiles set on the command-line overwrite default properties. -->
+  <profiles>
+    <profile>
+      <id>extensive.tests</id>
+      <properties>
+        <extensive.tests>true</extensive.tests>
+      </properties>
+    </profile>
+    <profile>
+      <id>interactive.tests</id>
+      <properties>
+        <interactive.tests>true</interactive.tests>
+      </properties>
+    </profile>
+    <profile>
+      <id>site.build</id>
+      <properties>
+        <allow.test.skip>false</allow.test.skip>
+        <allow.test.failure.ignore>true</allow.test.failure.ignore>
+        <extensive.tests>true</extensive.tests>
+      </properties>
+    </profile>
+    <profile>
+      <id>online</id>
+      <properties>
+        <online.skip.pattern>disabled</online.skip.pattern>
+      </properties>
+    </profile>
+    <profile>
+      <id>stress</id>
+      <properties>
+        <stress.skip.pattern>disabled</stress.skip.pattern>
+      </properties>
+    </profile>
+    <profile>
+      <id>java6</id>
+      <activation>
+        <jdk>1.6</jdk>
+      </activation>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.9</version>
+            <configuration>
+              <source>1.6</source>
+              <reportOutputDirectory>${site.outdir}/</reportOutputDirectory>
+              <outputDirectory>${site.outdir}</outputDirectory>
+              <destDir>javadoc</destDir>
+            </configuration>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+    <profile>
+      <id>javadoc</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.9</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <source>1.6</source>
+                  <outputDirectory>${site.outdir}</outputDirectory>
+                  <reportOutputDirectory>${site.outdir}/</reportOutputDirectory>
+                  <destDir>javadoc</destDir>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- deploy libs -->
+    <profile>
+      <id>deployJar</id>
+      <activation>
+        <property>
+          <name>deployJar</name>
+        </property>
+      </activation>
+      <modules>
+        <module>deploy</module>
+      </modules>
+    </profile>
+  </profiles>
+  <!-- =========================================================== -->
+  <!-- Developers and Contributors -->
+  <!-- =========================================================== -->
+  <developers>
+    <developer>
+      <name>Simone Giannecchini</name>
+      <id>simboss</id>
+      <email>simone.giannecchini@geo-solutions.it</email>
+      <organization>GeoSolutions</organization>
+    </developer>
+    <developer>
+      <name>Alessio Fabiani</name>
+      <id>alessio</id>
+      <email>alessio.fabiani@geo-solutions.it</email>
+      <organization>GeoSolutions</organization>
+    </developer>
+    <developer>
+      <name>Emanuele Tajariol</name>
+      <id>etj</id>
+      <email>etj@geo-solutions.it</email>
+      <organization>GeoSolutions</organization>
+    </developer>
+    <developer>
+      <name>Carlo Cancellieri</name>
+      <id>ccancellieri</id>
+      <email>carlo.cancellieri@geo-solutions.it</email>
+      <organization>GeoSolutions</organization>
+    </developer>
+  </developers>
+  <contributors>
+	</contributors>
+  <!-- =========================================================== -->
+  <!-- Dependency Management -->
+  <!-- If a POM declares one of those dependencies, then it -->
+  <!-- will use the version specified here. Otherwise, those -->
+  <!-- dependencies are ignored. -->
+  <!-- =========================================================== -->
+  <dependencyManagement>
+    <dependencies>
+      <!-- Internal -->
+      <dependency>
+        <groupId>it.geosolutions.mariss</groupId>
+        <artifactId>gb-mariss-actions</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.mariss</groupId>
+        <artifactId>gb-mariss-schemas</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.mariss</groupId>
+        <artifactId>gb-mariss-ingestion</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!--============================================================= -->
+      <!-- Geobatch =================================================== -->
+      <!--============================================================= -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-application</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-core-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-core-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-users</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+	  <dependency>
+        <groupId>net.sourceforge.hatbox</groupId>
+        <artifactId>hatbox</artifactId>
+        <version>1.0.b9</version>
+      </dependency>
+	  
+      <!-- gb-users DEPENDENCY -->
+      <dependency>
+        <groupId>cglib</groupId>
+        <artifactId>cglib</artifactId>
+        <version>2.2.2</version>
+      </dependency>
+      <!-- gb-users DEPENDENCY -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-fs-catalog</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- gb-fsm -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-fsm-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-fsm-plugin</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- FSM IMPLEMENTATIONS -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-fsm-quartz</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.quartz-scheduler</groupId>
+        <artifactId>quartz</artifactId>
+        <version>2.1.6</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-dao</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-dao-xstream-base</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-dao-xstream</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-alias-registry-base</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-alias-registry</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-pending-actions</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-gui</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- CAMEL -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-camel</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+	  <!-- DataStore2DataStore -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-ds2ds</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- XSTREAM Action -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-xstream</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- GEOTIFF -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-geotiff</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- FreeMarker -->
+      <dependency>
+        <groupId>org.freemarker</groupId>
+        <artifactId>freemarker</artifactId>
+        <!-- Latest 2.3.x (not 2.4.x), at least 2.3.16 -->
+        <version>2.3.19</version>
+      </dependency>
+      <!-- tools -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-tools</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- tools -->
+      <!-- Apache Tika -->
+      <dependency>
+        <groupId>org.apache.tika</groupId>
+        <artifactId>tika-core</artifactId>
+        <version>0.8</version>
+      </dependency>
+      <!-- Apache Commons Compress -->
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>1.1</version>
+      </dependency>
+      <!-- Apache Ant Task-->
+      <dependency>
+        <groupId>org.apache.ant</groupId>
+        <artifactId>ant</artifactId>
+        <version>1.7.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.ant</groupId>
+        <artifactId>ant-launcher</artifactId>
+        <version>1.7.1</version>
+      </dependency>
+      <!-- Apache IO Utils -->
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.1</version>
+      </dependency>
+      <!-- geotools -->
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-main</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <!-- netcdf-java -->
+      <!--=============================================================-->
+      <!-- NetCDF =====================================================-->
+      <!--=============================================================-->
+
+      <dependency>
+         <groupId>edu.ucar</groupId>
+	 <artifactId>netcdf</artifactId>
+	 <version>4.2.32</version>
+	<exclusions>
+	   <exclusion>
+             <groupId>org.slf4j</groupId>
+	     <artifactId>slf4j-log4j12</artifactId>
+           </exclusion>
+	</exclusions>
+      </dependency>
+      <!-- xml -->
+      <dependency>
+        <groupId>org.jdom</groupId>
+        <artifactId>jdom</artifactId>
+        <version>1.1</version>
+      </dependency>
+      <!-- log -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.17</version>
+      </dependency>
+      <!--================================================================= -->
+      <!-- TOOLS MODULES -->
+      <!--================================================================= -->
+      <dependency>
+        <groupId>it.geosolutions.tools</groupId>
+        <artifactId>tools-commons</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.tools</groupId>
+        <artifactId>tools-io</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.tools</groupId>
+        <artifactId>tools-ant</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.tools</groupId>
+        <artifactId>tools-compress</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.tools</groupId>
+        <artifactId>tools-netcdf</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.tools</groupId>
+        <artifactId>tools-geotools</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.tools</groupId>
+        <artifactId>tools-freemarker</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>tools-geobatch</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-tools</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- gb-action-commons -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-commons</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- action-freemarker -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-freemarker</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Java Octave -->
+      <dependency>
+        <groupId>dk.ange.octave</groupId>
+        <artifactId>javaoctave</artifactId>
+        <version>0.6.1</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-octave</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-octave-fileinfileout</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-taskexecutor</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-shapefile</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-geoserver</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-geonetwork</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-geostore</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-ftp</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.ftpserver</groupId>
+        <artifactId>ftpserver-core</artifactId>
+        <version>1.0.6</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-imagemosaic</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-ftp-support</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-ftp-server</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-registry</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+    <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-rest-api</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-rest-impl</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-rest-test</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+
+      <!-- scripting Action ================================ -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-scripting</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!--dependency>
+        <groupId>javax.script</groupId>
+        <artifactId>script-api</artifactId>
+        <version>1.0</version>
+        <classifier>jdk14</classifier>
+      </dependency-->
+      <dependency>
+        <groupId>net.sf.retrotranslator</groupId>
+        <artifactId>retrotranslator-runtime</artifactId>
+        <version>1.2.9</version>
+      </dependency>
+      <!-- groovy -->
+      <dependency>
+        <groupId>javax.script</groupId>
+        <artifactId>groovy-engine</artifactId>
+        <version>1.1</version>
+        <classifier>jdk14</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-all</artifactId>
+        <version>2.0.6</version>
+      </dependency>
+      <!-- ruby -->
+      <dependency>
+        <groupId>javax.script</groupId>
+        <artifactId>jruby-engine</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>jruby</groupId>
+        <artifactId>jruby</artifactId>
+        <version>0.9.8</version>
+      </dependency>
+      <!-- jython -->
+      <dependency>
+        <groupId>javax.script</groupId>
+        <artifactId>jython-engine</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.python</groupId>
+        <artifactId>jython</artifactId>
+        <version>2.5.3</version>
+      </dependency>
+      <!-- END Scripting =========================================== -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-splitting</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- GeoServer REST Manager ==================================== -->
+      <dependency>
+        <groupId>it.geosolutions</groupId>
+        <artifactId>geoserver-manager</artifactId>
+        <version>1.6-SNAPSHOT</version>
+      </dependency>
+      <!-- =========================================================== -->
+      <!-- GeoStore -->
+      <!-- =========================================================== -->
+      <dependency>
+        <groupId>it.geosolutions.geostore</groupId>
+        <artifactId>geostore-model</artifactId>
+        <version>${geostore.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geostore</groupId>
+        <artifactId>geostore-services-api</artifactId>
+        <version>${geostore.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geostore</groupId>
+        <artifactId>geostore-rest-api</artifactId>
+        <version>${geostore.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geostore</groupId>
+        <artifactId>geostore-rest-client</artifactId>
+        <version>${geostore.version}</version>
+      </dependency>
+      <!--============================================================= -->
+      <!-- Spring Framework =========================================== -->
+      <!--============================================================= -->
+      <dependency>
+        <!-- used by: pending/gb-action-ais -->
+        <groupId>org.springframework</groupId>
+        <artifactId>spring</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${spring.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aop</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${spring.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context-support</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc-struts</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-expression</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-tx</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-jdbc</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-orm</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <!-- ============================== -->
+      <!-- Spring Security -->
+      <!-- ============================== -->
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-acl</artifactId>
+        <version>${spring.security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-cas-client</artifactId>
+        <version>${spring.security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-config</artifactId>
+        <version>${spring.security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-core</artifactId>
+        <version>${spring.security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-taglibs</artifactId>
+        <version>${spring.security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-web</artifactId>
+        <version>${spring.security.version}</version>
+      </dependency>
+      <!-- SCOPE TEST -->
+      <!--============================================================= -->
+      <!-- =========================================== -->
+      <!--============================================================= -->
+      <dependency>
+        <groupId>taglibs</groupId>
+        <artifactId>standard</artifactId>
+        <version>1.1.2</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>jstl</artifactId>
+        <version>1.2</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet.jsp</groupId>
+        <artifactId>jsp-api</artifactId>
+        <version>2.1</version>
+      </dependency>
+      <!-- Jetty -->
+      <dependency>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty-plugin</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty-util</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jsp-2.1</artifactId>
+        <version>${jetty.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl104-over-slf4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.javassist</groupId>
+        <artifactId>javassist</artifactId>
+        <version>3.13.0-GA</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>2.5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.aspectj</groupId>
+        <artifactId>aspectjrt</artifactId>
+        <version>1.7.1</version>
+      </dependency>
+      <!--============================================================= -->
+      <!-- GeoTools =================================================== -->
+      <!--============================================================= -->
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-api</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-imagemosaic</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-cql</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-main</artifactId>
+        <version>${gt.version}</version>
+        <!--exclusions>
+					<exclusion>
+					  <groupId>jdom</groupId>
+				    <artifactId>jdom</artifactId>
+					</exclusion>
+				</exclusions-->
+      </dependency>
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-referencing</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-metadata</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-coverage</artifactId>
+        <version>${gt.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>it.geosolutions.imageio-ext</groupId>
+            <artifactId>imageio-ext-tiff</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-coveragetools</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-epsg-hsql</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-data</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-jdbc</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-shapefile</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-arcgrid</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-geotiff</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.geotools.jdbc</groupId>
+        <artifactId>gt-jdbc-postgis</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.geotools.jdbc</groupId>
+        <artifactId>gt-jdbc-oracle</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+	  <dependency>
+	   <groupId>org.geotools.jdbc</groupId>
+	   <artifactId>gt-jdbc-h2</artifactId>
+	   <version>${gt.version}</version>
+	  </dependency>
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-matfile5</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <!--============================================================= -->
+      <!-- imageio-ext ================================================ -->
+      <!--============================================================= -->
+      <dependency>
+        <groupId>it.geosolutions.imageio-ext</groupId>
+        <artifactId>imageio-ext-tiff</artifactId>
+        <version>${imageio-ext.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.imageio-ext</groupId>
+        <artifactId>imageio-ext-arcgrid</artifactId>
+        <version>${imageio-ext.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.imageio-ext</groupId>
+        <artifactId>imageio-ext-streams</artifactId>
+        <version>${imageio-ext.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.imageio-ext</groupId>
+        <artifactId>imageio-ext-utilities</artifactId>
+        <version>${imageio-ext.version}</version>
+      </dependency>
+      <!--============================================================= -->
+      <!-- Java Advanced Imaging (JAI) ================================ -->
+      <!--============================================================= -->
+      <dependency>
+        <groupId>javax.media</groupId>
+        <artifactId>jai_core</artifactId>
+        <version>1.1.3</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.media</groupId>
+        <artifactId>jai_codec</artifactId>
+        <version>1.1.3</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.media</groupId>
+        <artifactId>jai_imageio</artifactId>
+        <version>1.1</version>
+      </dependency>
+      <!-- JAI TOols -->
+      <dependency>
+        <!--<groupId>com.googlecode.jaitools</groupId> -->
+        <groupId>org.jaitools</groupId>
+        <artifactId>jt-zonalstats</artifactId>
+        <version>${jt.version}</version>
+      </dependency>
+      <!--============================================================= -->
+      <!-- Mathematic, geometries, SVG... ============================= -->
+      <!--============================================================= -->
+      <dependency>
+        <groupId>java3d</groupId>
+        <artifactId>vecmath</artifactId>
+        <version>1.3.1</version>
+      </dependency>
+      <dependency>
+        <groupId>com.vividsolutions</groupId>
+        <artifactId>jts</artifactId>
+        <version>1.11</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wkb4j</groupId>
+        <artifactId>wkb4j</artifactId>
+        <version>1.0-RC1</version>
+      </dependency>
+      <!--============================================================= -->
+      <!-- XML ======================================================= -->
+      <!--============================================================= -->
+      <!-- XStream -->
+      <dependency>
+        <groupId>com.thoughtworks.xstream</groupId>
+        <artifactId>xstream</artifactId>
+        <version>1.4.2</version>
+      </dependency>
+      <dependency>
+        <groupId>jdom</groupId>
+        <artifactId>jdom</artifactId>
+        <version>1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>net.sf.saxon</groupId>
+        <artifactId>saxon</artifactId>
+        <version>9.1.0.2</version>
+      </dependency>
+      <dependency>
+        <groupId>net.sf.saxon</groupId>
+        <artifactId>saxon-dom</artifactId>
+        <version>9.1.0.2</version>
+      </dependency>
+      <dependency>
+        <groupId>net.sf.saxon</groupId>
+        <artifactId>saxon-jdom</artifactId>
+        <version>9.1.0.2</version>
+      </dependency>
+      <!--============================================================= -->
+      <!-- Apache ===================================================== -->
+      <!--============================================================= -->
+      <dependency>
+        <groupId>oro</groupId>
+        <artifactId>oro</artifactId>
+        <version>2.0.8</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.ant</groupId>
+        <artifactId>ant</artifactId>
+        <version>1.8.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.ant</groupId>
+        <artifactId>ant-launcher</artifactId>
+        <version>1.8.4</version>
+      </dependency>
+      <!--============================================================= -->
+      <!-- Apache commons ============================================= -->
+      <!--============================================================= -->
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.1</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-cli</groupId>
+        <artifactId>commons-cli</artifactId>
+        <version>2.0-gt2-pre1</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>2.1</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <version>3.2.1</version>
+        <!-- Same as the dependency in commons-pool -->
+      </dependency>
+      <dependency>
+        <groupId>commons-pool</groupId>
+        <artifactId>commons-pool</artifactId>
+        <version>1.3</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils</artifactId>
+        <version>1.8.3</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>commons-httpclient</groupId>
+        <artifactId>commons-httpclient</artifactId>
+        <version>3.1</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>commons-dbcp</groupId>
+        <artifactId>commons-dbcp</artifactId>
+        <version>1.4</version>
+      </dependency>
+
+      <!-- ============================================================ -->
+      <!-- === SLF4J ================================================== -->
+      <!-- ============================================================ -->
+      <!-- As an author of a library built with Maven2, you might want to test 
+				your application using a binding, say slf4j-log4j12 or logback-classic, without 
+				forcing log4j or logback-classic as a dependency upon your users. As of SLF4J 
+				version 1.3, this quite easy to accomplish. But first, since your library's 
+				code depends on the SLF4J API you will need to declare slf4j-api as a compile-time 
+				(default scope) dependency. Limiting the transitivity of the SLF4J binding 
+				used in your tests can be accomplished by declaring the scope of the SLF4J-binding 
+				dependency as "test". Here is an example: -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <!-- commons-logging can be rather simply and conveniently excluded as 
+				a dependency by declaring it in the provided scope within the pom.xml file 
+				of your project. The actual commons-logging classes would be provided by 
+				jcl-over-slf4j. This translates into the following pom file snippet: -->
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>1.1.1</version>
+        <scope>provided</scope>
+      </dependency>
+      <!-- ============================================================ -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch.services</groupId>
+        <artifactId>gb-jmx</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- CAMEL ============================================= -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-jms</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-core</artifactId>
+        <version>${camel.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-quartz</artifactId>
+        <version>${camel.version}</version>
+      </dependency>
+      <!-- required by both client and server -->
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-jms</artifactId>
+        <version>${camel.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-spring</artifactId>
+        <version>${camel.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.activemq</groupId>
+        <artifactId>activemq-camel</artifactId>
+        <version>5.2.0</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <!-- xbean is required for ActiveMQ broker configuration in the spring 
+				xml file -->
+      <dependency>
+        <groupId>org.apache.xbean</groupId>
+        <artifactId>xbean-spring</artifactId>
+        <version>3.6</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+        <!--<version>${spring.version}</version> -->
+      </dependency>
+      <!--============================================================= -->
+      <!-- restlet ==================================================== -->
+      <!--============================================================= -->
+
+        <dependency>
+          <groupId>org.restlet.jee</groupId>
+          <artifactId>org.restlet</artifactId>
+          <version>2.1.1</version>
+        </dependency>
+
+        <dependency>
+          <groupId>org.restlet.jee</groupId>
+          <artifactId>org.restlet.ext.spring</artifactId>
+          <version>2.1.1</version>
+        </dependency>
+        <dependency>
+          <groupId>org.restlet.jee</groupId>
+          <artifactId>org.restlet.ext.servlet</artifactId>
+          <version>2.1.1</version>
+        </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.jettison</groupId>
+        <artifactId>jettison</artifactId>
+        <version>1.3.3</version>
+      </dependency>
+      <!--============================================================= -->
+      <!-- JSON lib ================================================== -->
+      <!--============================================================= -->
+      <dependency>
+        <groupId>net.sf.json-lib</groupId>
+        <artifactId>json-lib</artifactId>
+        <version>2.4</version>
+        <classifier>jdk15</classifier>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <!--============================================================= -->
+      <!-- Hibernate ================================================== -->
+      <!--============================================================= -->
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>ejb3-persistence</artifactId>
+        <version>1.0.2.GA</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-annotations</artifactId>
+        <version>${hibernate.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-commons-annotations</artifactId>
+        <version>${hibernate.commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-c3p0</artifactId>
+        <version>${hibernate.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>${hibernate.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernatespatial</groupId>
+        <artifactId>hibernate-spatial-postgis</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <!-- H2 DATABASE ======================================================= -->
+      <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>1.3.170</version>
+      </dependency>
+      <!-- POSTGRES - POSTGIS ======================================================= -->
+      <dependency>
+        <groupId>org.postgis</groupId>
+        <artifactId>postgis-jdbc</artifactId>
+        <version>1.5.1</version>
+      </dependency>
+      <dependency>
+        <groupId>postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>9.1-901.jdbc3</version>
+      </dependency>
+      <!-- ORACLE ======================================================= -->
+      <dependency>
+        <artifactId>ojdbc14</artifactId>
+        <groupId>com.oracle</groupId>
+        <version>10.2.0.3.0</version>
+      </dependency>
+      
+
+      <!-- =========================================================== -->
+      <!--     APACHE CXF                                              -->
+      <!-- =========================================================== -->
+      <dependency>
+          <groupId>javax.xml.ws</groupId>
+          <artifactId>jaxws-api</artifactId>
+          <version>2.2.8</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>javax.jws</groupId>
+                  <artifactId>jsr181-api</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-bindings-http</artifactId>
+          <version>${cxf-version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-transports-http</artifactId>
+          <version>${cxf-version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-transports-http-jetty</artifactId>
+          <version>${cxf-version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-frontend-jaxws</artifactId>
+          <version>${cxf-version}</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>org.apache.geronimo.specs</groupId>
+                  <artifactId>geronimo-annotation_1.0_spec</artifactId>
+              </exclusion>
+              <exclusion>
+                  <groupId>org.apache.geronimo.specs</groupId>
+                  <artifactId>geronimo-javamail_1.4_spec</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-bindings-soap</artifactId>
+          <version>${cxf-version}</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>org.apache.geronimo.specs</groupId>
+                  <artifactId>geronimo-javamail_1.4_spec</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-databinding-aegis</artifactId>
+          <version>${cxf-version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+          <version>${cxf-version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-ws-security</artifactId>
+          <version>${cxf-version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-core</artifactId>
+          <version>${cxf-version}</version>
+      </dependency>
+
+      <!--============================================================= -->
+      <!-- TEST STUFF ================================================= -->
+      <!--============================================================= -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${spring.version}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <!--================================================================= -->
+      <!-- TEST -->
+      <!--================================================================= -->
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-sample-data</artifactId>
+        <version>${gt.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.11</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.easymock</groupId>
+        <artifactId>easymock</artifactId>
+        <version>3.1</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.easymock</groupId>
+        <artifactId>easymockclassextension</artifactId>
+        <version>3.1</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.mockrunner</groupId>
+        <artifactId>mockrunner</artifactId>
+        <version>0.3.6</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- ===LOG4J==================================================== -->
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.17</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- ===LOG4J==================================================== -->
+    </dependencies>
+  </dependencyManagement>
+  <!-- =========================================================== -->
+  <!-- Dependencies to be inherited by all modules. -->
+  <!-- =========================================================== -->
+  <dependencies>
+    <!-- ============================== -->
+    <!-- slf4j -->
+    <!-- ============================== -->
+    <!-- commons-logging can be rather simply and conveniently excluded as 
+			a dependency by declaring it in the provided scope within the pom.xml file 
+			of your project. The actual commons-logging classes would be provided by 
+			jcl-over-slf4j. This translates into the following pom file snippet: -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <!--============================================================= -->
+    <!-- TEST STUFF ================================================= -->
+    <!--============================================================= -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-sample-data</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymockclassextension</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.mockrunner</groupId>
+      <artifactId>mockrunner</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <!-- TODO: the resources stuff hardcodes paths to source + test directories, 
+			we should be able to use some properties here -->
+    <resources>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+        <includes>
+          <include>**/*.txt</include>
+          <include>**/*.sql</include>
+          <include>**/*.html</include>
+          <include>**/*.xsd</include>
+          <include>**/*.xsl</include>
+          <include>**/*.xml</include>
+          <include>**/*.utf</include>
+          <include>**/*.prj</include>
+          <include>**/*.py</include>
+          <include>**/*.properties</include>
+          <include>**/*.query</include>
+          <include>**/*.xquery</include>
+          <include>**/*.serialized</include>
+          <include>META-INF/*.jai</include>
+          <include>META-INF/mailcap</include>
+          <include>META-INF/services/**</include>
+          <include>applicationContext.xml</include>
+          <include>**/*.ftl</include>
+          <include>**/placeholder</include>
+          <!-- used for otherwise empty dirs -->
+        </includes>
+        <excludes>
+          <exclude>**/doc-files/**</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>${basedir}/src/test/resources</directory>
+        <includes>
+          <include>META-INF/services/**</include>
+          <include>**/test-data/**</include>
+          <include>**/*.groovy</include>
+          <include>**/*.html</include>
+          <include>**/*.xsd</include>
+          <include>**/*.xsl</include>
+          <include>**/*.xml</include>
+          <include>**/*.csv</include>
+          <include>**/*.sld</include>
+          <include>**/*.svg</include>
+          <include>**/*.gml</include>
+          <include>**/*.wkt</include>
+          <include>**/*.txt</include>
+          <include>**/*.sql</include>
+          <include>**/*.png</include>
+          <include>**/*.prj</include>
+          <include>**/*.py</include>
+          <include>**/*.properties</include>
+          <include>**/*.serialized</include>
+          <include>**/*.ftl</include>
+          <include>**/*.tif</include>
+          <include>**/*.tiff</include>
+          <include>**/*.zip</include>
+          <include>**/placeholder</include>
+          <!-- used for otherwise empty dirs -->
+        </includes>
+        <excludes>
+          <exclude>**/doc-files/**</exclude>
+        </excludes>
+      </testResource>
+    </testResources>
+    <plugins>
+      <!-- ======================================================= -->
+      <!-- Compilation. -->
+      <!-- ======================================================= -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.5.1</version>
+        <configuration>
+          <source>1.6</source>
+          <!-- The -source argument for the Java compiler. -->
+          <target>1.6</target>
+          <!-- The -target argument for the Java compiler. -->
+          <debug>true</debug>
+          <!-- Whether to include debugging information. -->
+          <encoding>UTF-8</encoding>
+          <!-- The -encoding argument for the Java compiler. -->
+        </configuration>
+      </plugin>
+      <!-- ======================================================= -->
+      <!-- Tests. -->
+      <!-- ======================================================= -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*Test.java</include>
+          </includes>
+          <!-- <excludes> <exclude>${online.skip.pattern}</exclude> <exclude>${stress.skip.pattern}</exclude> 
+						<exclude>${test.exclude.pattern}</exclude> </excludes> -->
+          <argLine>-Xmx${test.maxHeapSize} -Djava.awt.headless=${java.awt.headless}</argLine>
+          <!-- Ignores test failure only if we are generating a -->
+          <!-- report for publication on the web site. See the -->
+          <!-- profiles section at the begining of this pom.xml file. -->
+          <testFailureIgnore>
+						${allow.test.failure.ignore}
+				        </testFailureIgnore>
+          <!-- The two following options have the opposite value of what we would 
+						like. They are that way because they don't seem to work as expected with 
+						Surefire 2.3. TODO: Try again when Surefire 2.4 will be available. -->
+          <!-- Option to print summary of test suites or just print the test cases 
+						that has errors. -->
+          <printSummary>true</printSummary>
+          <!-- Redirect the unit test standard output to a file. -->
+          <redirectTestOutputToFile>false</redirectTestOutputToFile>
+        </configuration>
+      </plugin>
+      <!-- code coverage -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- eclipse ide integration -->
+      <plugin>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <additionalProjectnatures>
+            <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
+          </additionalProjectnatures>
+          <!--additionalBuildcommands>
+            <buildcommand>org.springframework.ide.eclipse.core.springbuilder</buildcommand>
+          </additionalBuildcommands>
+          <downloadSources>true</downloadSources>
+          <downloadJavadocs>true</downloadJavadocs-->
+        </configuration>
+      </plugin>
+      <!-- ======================================================= -->
+      <!-- JAR packaging. -->
+      <!-- ======================================================= -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+            </manifest>
+          </archive>
+        </configuration>
+        <executions>
+          <!-- Creates a jar containing only settings files === -->
+          <execution>
+            <id>packFlowSettings</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>flowsettings</classifier>
+              <includes>
+                <include>settings/**</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- ======================================================= -->
+      <!-- Source packaging. -->
+      <!-- ======================================================= -->
+      <plugin>
+        <inherited>true</inherited>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.2.1</version>
+        <configuration>
+          <attach>false</attach>
+        </configuration>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- versioning -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <tagNameFormat>v@{project.version}</tagNameFormat>
+        </configuration>
+      </plugin>
+      <!-- site -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.2</version>
+        <configuration>
+          <locales>en</locales>
+          <!--outputDirectory>${site.outdir}/maven</outputDirectory-->
+          <inputDirectory>${site.basedir}</inputDirectory>
+          <!-- site to deploy -->
+        </configuration>
+      </plugin>
+      <!-- sphinx -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+	<version>1.7</version>
+        <executions>
+          <execution>
+            <id>build-docs</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+	      <target>
+                <exec executable="sphinx-build">
+                  <arg value="-b"/>
+                  <arg value="html"/>
+                  <arg value="${doc.sphinx.source}"/>
+                  <arg value="${doc.sphinx.outdir}"/>
+                </exec>
+	      </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    <!-- EXTENSIONS -->
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ftp</artifactId>
+        <version>2.3</version>
+      </extension>
+    </extensions>
+  </build>
+  <!-- ================================================================== -->
+  <!-- Repositories. This is where Maven looks for dependencies. The -->
+  <!-- Maven repository is implicit and doesn't need to be specified. -->
+  <!-- ================================================================== -->
+  <repositories>
+    <repository>
+      <id>geosolutions</id>
+      <name>GeoSolutions Repository</name>
+      <url>http://maven.geo-solutions.it</url>
+    </repository>
+    <repository>
+      <id>osgeo</id>
+      <name>OsGEO Repository</name>
+      <url>http://download.osgeo.org/webdav/geotools/</url>
+    </repository>
+    <repository>
+      <id>geotoolkit</id>
+      <name>Geotk, GeoAPI and dependencies</name>
+      <url>http://maven.geotoolkit.org/</url>
+    </repository>
+    <repository>
+      <id>opengeo</id>
+      <name>OpenGeo Maven Repository</name>
+      <url>http://repo.opengeo.org</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>java.net</id>
+      <name>java.net Repository</name>
+      <url>http://download.java.net/maven/2/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+    <repository>
+      <id>camel.internal.maven.repository</id>
+      <name>Camel internal Maven Repo</name>
+      <url>http://svn.apache.org/repos/asf/camel/m2-repo</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+    <repository>
+      <id>Hibernate Spatial repo</id>
+      <url>http://www.hibernatespatial.org/repository</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+    <repository>
+      <id>maven-restlet</id>
+      <name>Public online Restlet repository</name>
+      <url>http://maven.restlet.org</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+    <repository>
+      <id>official maven 1</id>
+      <name>Public online maven repository</name>
+      <url>http://repo1.maven.org/maven2</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+    <repository>
+      <id>official maven 2</id>
+      <name>Public online maven repository</name>
+      <url>http://repo2.maven.org/maven2</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+  </repositories>
+  <!-- =========================================================== -->
+  <!-- Plugin repositories. -->
+  <!-- This is where Maven looks for plugin dependencies. -->
+  <!-- =========================================================== -->
+  <pluginRepositories>
+    <pluginRepository>
+      <id>codehaus-snapshot-plugins</id>
+      <name>codehaus-shapshot-plugins</name>
+      <url>http://snapshots.repository.codehaus.org/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </pluginRepository>
+    <pluginRepository>
+      <id>repo.geosolutions</id>
+      <name>geosolutions Repository</name>
+      <url>http://maven.geo-solutions.it/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <!-- =========================================================== -->
+  <!-- Modules for the build in approximate dependency order -->
+  <!-- =========================================================== -->
+  
+  <modules>
+    <module>mariss-schemas</module>
+    <module>mariss-ingestion-logic</module>
+    <module>mariss-actions</module>
+    <module>webapp</module>
+  </modules>
+</project>
