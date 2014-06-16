@@ -181,13 +181,16 @@
         </copy>
         <!-- copy mapmanager css  -->
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/mapmanager/theme/css">
-
             <fileset dir="mapcomposer/app/static/externals/mapmanager/theme/css/"
             />
         </copy>
         <!-- copy mapmanager img  -->
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/mapmanager/theme/img">
             <fileset dir="mapcomposer/app/static/externals/mapmanager/theme/img"
+            />
+        </copy>
+		<copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/mapmanager/theme/images/carousel">
+            <fileset dir="mapcomposer/app/static/externals/mapmanager/theme/images/carousel"
             />
         </copy>
         <!-- copy mapmanager media  -->
