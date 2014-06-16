@@ -199,9 +199,10 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 	 */
 	private String ingestData(List<String> processedShips,
 			List<String> inPackageShips, List<ShipType> ships, File tifFile) {
-		// TODO: ingest tiff
-		LOGGER.info("Tif file is  --> " + tifFile);
-		LOGGER.info("Ships are  --> " + ships);
+		if(LOGGER.isTraceEnabled()){
+			LOGGER.trace("Tif file is  --> " + tifFile);
+			LOGGER.trace("Ships are  --> " + ships);
+		}
 		List<SimpleFeature> shipList = new LinkedList<SimpleFeature>();
 		for (ShipType ship : ships) {
 			SimpleFeature feature = createShipData(ship);

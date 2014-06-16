@@ -22,6 +22,7 @@
 package it.geosolutions.geobatch.mariss.action.acqlistfilehandling;
 
 import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
+import it.geosolutions.geobatch.imagemosaic.ImageMosaicConfiguration;
 import it.geosolutions.geobatch.mariss.action.csv.CSVIngestConfiguration;
 import it.geosolutions.geobatch.remoteBrowser.configuration.RemoteBrowserConfiguration;
 
@@ -89,7 +90,25 @@ private String succesPath;
  */
 private String failPath;
 
+/**
+ * Type name for the acquistion list
+ */
 private String acqListTypeName;
+
+/**
+ * Image mosaic configuration for the DLR product ingestion
+ */
+private ImageMosaicConfiguration dlrProductsIMConfiguration;
+
+/**
+ * Image mosaic folder for the DLR tif ingestion
+ */
+private String dlrProductsTiffFolder;
+
+/**
+ * Type name for the DLR product ingestion
+ */
+private String dlrProductIngestionTypeName;
 
 public RemoteServiceHandlingConfiguration(String id, String name, String description) {
     super(id, name, description);
@@ -264,6 +283,49 @@ public String getAcqListTypeName() {
  */
 public void setAcqListTypeName(String acqListTypeName) {
 	this.acqListTypeName = acqListTypeName;
+}
+
+/**
+ * @return the dlrProductsIMConfiguration
+ */
+public ImageMosaicConfiguration getDlrProductsIMConfiguration() {
+	return dlrProductsIMConfiguration;
+}
+
+/**
+ * @param dlrProductsIMConfiguration the dlrProductsIMConfiguration to set
+ */
+public void setDlrProductsIMConfiguration(
+		ImageMosaicConfiguration dlrProductsIMConfiguration) {
+	this.dlrProductsIMConfiguration = dlrProductsIMConfiguration;
+}
+
+/**
+ * @return the dlrProductsTiffFolder
+ */
+public String getDlrProductsTiffFolder() {
+	return dlrProductsTiffFolder;
+}
+
+/**
+ * @param dlrProductsTiffFolder the dlrProductsTiffFolder to set
+ */
+public void setDlrProductsTiffFolder(String dlrProductsTiffFolder) {
+	this.dlrProductsTiffFolder = dlrProductsTiffFolder;
+}
+
+/**
+ * @return the dlrProductIngestionTypeName
+ */
+public String getDlrProductIngestionTypeName() {
+	return dlrProductIngestionTypeName;
+}
+
+/**
+ * @param dlrProductIngestionTypeName the dlrProductIngestionTypeName to set
+ */
+public void setDlrProductIngestionTypeName(String dlrProductIngestionTypeName) {
+	this.dlrProductIngestionTypeName = dlrProductIngestionTypeName;
 }
 
 }

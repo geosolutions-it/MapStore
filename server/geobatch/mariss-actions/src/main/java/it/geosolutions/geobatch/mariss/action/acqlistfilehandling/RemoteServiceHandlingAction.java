@@ -32,6 +32,7 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.mariss.dao.impl.GenericFeatureDaoImpl;
 import it.geosolutions.geobatch.mariss.ingestion.csv.CSVAcqListProcessor;
+import it.geosolutions.geobatch.mariss.ingestion.product.DataPackageIngestionProcessor;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,6 +71,8 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
 	private RemoteServiceHandlingConfiguration configuration;
 
 	private final String ACQ_LIST_FOLDER = "ACQ_LIST";
+
+	private final String PRODUCTS_FOLDER = "PRODUCTS";
 
 	public RemoteServiceHandlingAction(
 			final RemoteServiceHandlingConfiguration configuration)
@@ -510,7 +513,9 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
 		// TODO: add known folders for other ingestions
 		if (ACQ_LIST_FOLDER.equals(folder)) {
 			return true;
-		} else {
+		} else if(PRODUCTS_FOLDER.equals(folder)){
+			return true;
+		} else{
 			return false;
 		}
 	}
@@ -548,6 +553,24 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
 			} catch (IOException e) {
 				LOGGER.error(
 						"Error processing CSV file for the acquisition list", e);
+			}
+		}else if(PRODUCTS_FOLDER.equals(folder)){
+			String filePath = inputFile.getAbsolutePath();
+			// DLR product ingestion processor
+			DataPackageIngestionProcessor dataPackageProcessor = new DataPackageIngestionProcessor(
+				dataStore, configuration.getDlrProductIngestionTypeName(),
+				user, service, configuration.getDlrProductsTiffFolder());
+			dataPackageProcessor.setImageMosaicConfiguration(configuration.getDlrProductsIMConfiguration());
+			// TODO: other products ingestion
+			try {
+				// DLR product ingestion
+				if(dataPackageProcessor.canProcess(filePath)){
+					msg = dataPackageProcessor.doProcess(filePath);
+				}
+			} catch (IOException e) {
+				msg = "Error processing DLR product ingestion";
+				LOGGER.error(
+						msg, e);
 			}
 		}
 		return msg;

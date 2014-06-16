@@ -1916,6 +1916,10 @@
         <enabled>true</enabled>
       </releases>
     </repository>
+    <repository>
+      <id>jboss-releases</id>
+      <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
+    </repository>
   </repositories>
   <!-- =========================================================== -->
   <!-- Plugin repositories. -->

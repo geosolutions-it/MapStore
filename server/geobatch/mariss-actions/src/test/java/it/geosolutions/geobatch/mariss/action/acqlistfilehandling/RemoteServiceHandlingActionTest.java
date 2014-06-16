@@ -25,6 +25,8 @@ import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
 import it.geosolutions.geobatch.destination.common.utils.RemoteBrowserProtocol;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPActionConfiguration.FTPConnectMode;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPActionConfiguration.Operation;
+import it.geosolutions.geobatch.imagemosaic.ImageMosaicConfiguration;
+import it.geosolutions.geobatch.imagemosaic.config.DomainAttribute;
 import it.geosolutions.geobatch.remoteBrowser.configuration.RemoteBrowserConfiguration;
 
 import java.io.File;
@@ -32,6 +34,7 @@ import java.io.Serializable;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -64,6 +67,39 @@ public class RemoteServiceHandlingActionTest {
 		params.put("user", "mariss");
 		params.put("passwd", "mariss");
 		return params;
+	}
+	
+	/**
+	 * Connection for the local geoserver for test
+	 * @return
+	 */
+	private ImageMosaicConfiguration getImageMosaicConfiguration(){
+		ImageMosaicConfiguration imConfig = new ImageMosaicConfiguration(null, null, null);
+		//TODO: load from properties
+		imConfig.setAllowMultithreading(true);
+		imConfig.setBackgroundValue("NaN");
+		imConfig.setUseJaiImageRead(true);
+		imConfig.setDefaultNamespace("mariss");
+		imConfig.setDefaultStyle("raster");
+		imConfig.setCrs("EPSG:4326");
+		imConfig.setDatastorePropertiesPath("EXTERNAL");
+		imConfig.setGeoserverUID("admin");
+		imConfig.setGeoserverPWD("geoserver");
+		imConfig.setGeoserverURL("http://localhost:8080/geoserver");
+		imConfig.setTileSizeH(512);
+		imConfig.setTileSizeW(512);
+
+		DomainAttribute domainAttribute = new DomainAttribute();
+		domainAttribute.setDimensionName("time");
+		domainAttribute.setAttribName("time");
+		domainAttribute.setRegEx("<![CDATA[(?<=[a-Z])[0-9]{8}(?=_.*tif)]]>");
+		domainAttribute.setEndRangeAttribName("endtime");
+		domainAttribute.setEndRangeRegEx("<![CDATA[(?<=[a-Z][0-9]{8}_)[0-9]{8}(?=.*tif)]]>");
+		List<DomainAttribute> domainAttributes = new LinkedList<DomainAttribute>();
+		domainAttributes.add(domainAttribute);
+		imConfig.setDomainAttributes(domainAttributes);
+		
+		return imConfig;
 	}
 
 	/**
@@ -113,6 +149,9 @@ public class RemoteServiceHandlingActionTest {
 		configuration.setInputPath("/tmp/ingestion/working");
 		configuration.setSuccesPath("/tmp/ingestion/out/ok");
 		configuration.setFailPath("/tmp/ingestion/out/fail");
+		configuration.setDlrProductsIMConfiguration(getImageMosaicConfiguration());
+		configuration.setDlrProductIngestionTypeName("dlr_ships");
+		configuration.setDlrProductsTiffFolder("/opt/gs_ext_data/TDX1_SAR__MGD_RE___SM_S_SRA");
 		
 		return configuration;
 	}
