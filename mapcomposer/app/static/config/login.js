@@ -219,11 +219,12 @@
           "height": 330,
           "collapsed": true,
           "collapsible": true,
+		  "collapseMode":"mini",
           "header": true
       },{
           "xtype": "panel",
           "title": "Query Panel",         
-          "border": false,
+          "border": true,
           "id": "east",
           "width": 400,
           "height": 500,
@@ -231,6 +232,7 @@
           "layout": "fit",
           "collapsed": false,
           "collapsible": true,
+		  "collapseMode":"mini",
           "header": true
       }
     ],
@@ -316,10 +318,6 @@
 			"showOnStartup": false,
 			"fileDocURL": "MapStore-Help.pdf"
         }, {
-			"ptype": "gxp_about",
-			"poweredbyURL": "http://www.geo-solutions.it/about/contacts/",
-			"actionTarget": {"target": "panelbbar", "index": 1}
-		}, {
 			"ptype": "gxp_languageselector",
 			"actionTarget": {"target": "panelbbar", "index": 3}
 		}, {
