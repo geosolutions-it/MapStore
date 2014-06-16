@@ -101,6 +101,7 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
             url: proxy + uploadUrl,
             multipart: true,
             auth: this.auth,
+			mediaContent: this.target.initialConfig.mediaContent,
             listeners:{
                 beforestart:function() {
                     var multipart_params =  pluploadPanel.multipart_params || {};
