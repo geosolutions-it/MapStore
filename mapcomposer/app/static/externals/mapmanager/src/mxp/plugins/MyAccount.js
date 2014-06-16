@@ -256,11 +256,10 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
                 }
             }
         }
-        this.output = mxp.plugins.MyAccount.superclass.addOutput.call(this, Ext.apply(controlPanel,config));
 		
 		//hide selection layer on tab change
 		
-		return this.output;
+		return mxp.plugins.MyAccount.superclass.addOutput.call(this, Ext.apply(controlPanel,config));
 		
 	},
     getChangePasswordTool: function(){

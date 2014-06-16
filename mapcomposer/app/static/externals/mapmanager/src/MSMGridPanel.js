@@ -293,7 +293,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * {string} string to add in EditMetadata button
     * 
     */
-    textSubmitEditMetadata: '', //'Update',
+    textSubmitEditMetadata: 'Update',
 
     /**
     * Property: titleConfirmCloseEditMetadata
@@ -403,6 +403,24 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     * 
     */        
     IframeWaitMsg: "Loading map...",
+    /**
+    * Property: mapPermissionText
+    * {string} set permission button text
+    * 
+    */        
+    mapPermissionText: "Permission",
+    /**
+    * Property: tooltipMapPermissionText
+    * {string} set permission button tooltip
+    * 
+    */        
+    tooltipMapPermissionText: "Edit map permissions by group",
+    /**
+    * Property: mapPermissionTitleText
+    * {string} set permission window title
+    * 
+    */        
+    mapPermissionTitleText: "Map Permission",
     
     /**
      * QR_Code mobile text
@@ -473,6 +491,24 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     */
     initComponent : function() {
 
+        // mocked login when is not present. Fixes error for 
+        if(!this.login){
+            this.login = {
+                role: "GUEST",
+                getCurrentUser: function(){
+                    return null;
+                },
+                getToken: function(){
+                    return null;
+                },
+                getCurrentUser: function(){
+                    return null;
+                },
+                isGuest: function(){
+                    return true;
+                }
+            };
+        }
 
         var searchString = this.defaultSearchString;
 		var config = this.config;
@@ -780,6 +816,22 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         items:[
                             '->',
                             {
+                                text: grid.mapPermissionText,
+                                tooltip: grid.tooltipMapPermissionText,
+                                iconCls: 'lock_ic',
+                                handler: function(){
+                                    var  winnPermission = new mxp.widgets.ResourceGroupPermissionWindow({
+                                        resourceId: mapId,
+                                        title: grid.mapPermissionTitleText,
+                                        auth: grid.auth,
+                                        geostoreURL: grid.config.geoStoreBase,
+                                        target: grid.target
+                                    });
+                                    winnPermission.show();
+                                },
+                                scope:this
+                            },
+                            {
                                 text: grid.textSubmitEditMetadata,
                                 tooltip: grid.tooltipSubmitEditMetadata,
                                 iconCls: "accept",
@@ -826,7 +878,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 											name:mapName, 
 											description: mapDescription,
                                             // add the template id
-                                            templateId: templateId
+                                            //templateId: templateId
 										},
 										function(data){ // Callback function
 											 var reload = function(){
@@ -834,15 +886,32 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 													grid.getBottomToolbar().doRefresh();
 													expander.collapseAll();
 											  };
-
-											  Ext.Msg.show({
-												   title: grid.metadataSaveSuccessTitle,
-												   msg: data.statusText + " - " + grid.metadataSaveSuccessMsg,
-												   buttons: Ext.Msg.OK,
-												   fn: reload,
-												   icon: Ext.MessageBox.OK,
-												   scope: this
-											  });
+											  //save the template Id updating the attribute
+										      if(templateId){
+												var updateAttributeUrl  = geoStoreBase + "resources/resource/"+mapId+"/attributes/templateId/"+ templateId;
+												Ext.Ajax.request({
+												   url: updateAttributeUrl,
+												   method: 'PUT',
+												   headers:{
+													  'Authorization' : auth
+												   },
+												   scope: this,
+												   success: function(response, opts){
+														Ext.Msg.show({
+															   title: grid.metadataSaveSuccessTitle,
+															   msg: data.statusText + " - " + grid.metadataSaveSuccessMsg,
+															   buttons: Ext.Msg.OK,
+															   fn: reload,
+															   icon: Ext.MessageBox.OK,
+															   scope: this
+														  });
+												   },
+												   failure:  function(response, opts) {
+														grid.alertMsgServerError();
+												   }
+												});
+											  }
+											  
 										}
 									);
 
@@ -965,14 +1034,14 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
 			/** private: method[showEmbedWindow]
 			 */
-			showEmbedWindow: function(mapId, mapDesc) {  
+			showEmbedWindow: function(mapId, mapDesc, templateId) {  
 				if(grid.embedWindow){
 					grid.embedWindow.close();
 				}
 				
-			    var curLang = this.grid.lang || 'en';            
+			    var curLang = this.grid.lang || 'en';          
 			    var url = this.grid.config.embedLink.embeddedTemplateName + "?locale=" + curLang + "&mapId=" + mapId
-			   
+			
 			    var embedMap = new EmbedMapDialog(Ext.applyIf({
 				   id: 'geobuilder-1',
 				   url: url
@@ -1009,12 +1078,46 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 						}
 					]
 			    });
+				
+				var composerUrl = url;
+			    if(templateId){
+					composerUrl += "&configId=" + templateId;
+					if(composerUrl.indexOf("viewer") != -1){
+						composerUrl = composerUrl.replace(/viewer/, "composer");
+					}					
+				}
+				
+				var urlComposerField = new Ext.form.TextField({
+					fieldLabel: grid.urlLabel,
+					labelStyle: 'font-weight:bold;',
+					width: 350,
+					value: embedMap.getAbsoluteUrl(composerUrl),
+					selectOnFocus: true,
+					readOnly: true
+			    }); 
+				
+				var urlComposerComposite = new Ext.form.CompositeField({
+					items:[
+						urlComposerField,
+						{
+							xtype: 'button',
+							tooltip: grid.showMapTooltip,
+							iconCls: "gx-map-go",
+							width: 20,
+							handler: function(){
+								var u = urlComposerField.getValue();
+								window.open(u);
+							}
+						}
+					]
+			    });
 		   
 			    var directURL = new Ext.form.FieldSet({
 					title: grid.embedURL,
 					labelWidth: 50,
 					items:[
-						urlCompositeField
+						urlCompositeField,
+						urlComposerComposite
 					],
 					bodyStyle: 'padding: 15px'
 			    });
@@ -1042,7 +1145,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			    grid.embedWindow = new Ext.Window({
 					layout: 'fit',
 					width: 500, 
-                    height: 245 +  (this.grid.config.embedLink.showDirectURL  == true? 100 : 0) + (showQR  ? embedMap.qrCodeSize + 60 :0),
+                    height: 245 +  (this.grid.config.embedLink.showDirectURL  == true? 150 : 0) + (showQR  ? embedMap.qrCodeSize + 60 :0),
 
 					//height: this.grid.config.embedLink.showDirectURL === true ? 345 : 245,
 					title: mapDesc,
@@ -1122,7 +1225,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             },
                             beforeClose: function(p){
                                 var mapIframe = document.getElementById(p.iframeId);
-                                var modified = mapIframe.contentWindow.app.modified;
+                                var modified;
+								if(mapIframe.contentWindow.app){
+									modified = mapIframe.contentWindow.app.modified;
+								}
 
                                 if (modified == true && userProfile != '&auth=false'){
                                     if(!this.confirmClosed) {
@@ -1184,7 +1290,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 					getSocialLinksId: function(mapid,name,description) {
 					
 						var divid = mapid + '_social_div', longUrl = grid.socialUrl + 'viewer?locale=' + grid.lang + '&mapId=' + mapid;
-							
+
 						var shortener = new Google.Shortener({
 								config: grid.config
 							}).failure(function(resp) {
@@ -1493,8 +1599,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         Ext.get(id).on('click', function(e){
                             var idMap = values.id,
                             	desc = values.name;
+								templateId = values.templateId;
 							
-                            expander.showEmbedWindow(idMap, desc);
+                            expander.showEmbedWindow(idMap, desc, templateId);
                         });
                     },
 					

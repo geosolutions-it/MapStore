@@ -5,6 +5,7 @@
 	NOTE: configuration customization could override
 	these strings
 */
+
 GeoExt.Lang.add("en", {
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Zoom Level: {zoom}</div><div>Scale: 1:{scale}</div>",
@@ -758,5 +759,28 @@ GeoExt.Lang.add("en", {
 		tabTitle: "Imported",
 		layerNodeName: "Layers",
 		serviceNodeName: "Services"
+    },
+	
+	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
+        noFilterSelectedMsgTitle: "No filter selected",    
+        noFilterSelectedMsgText: "You must select at least one filter",    
+        invalidRegexFieldMsgTitle: "Invalid Fields",    
+        invalidRegexFieldMsgText: "One or more fields are incorrect!"
+    },
+	
+	"gxp.plugins.FeatureManager.prototype":{
+        noValidWmsVersionMsgTitle: 'No valid WMS version',    
+        noValidWmsVersionMsgText: "The queryForm plugin doesn't work with WMS Source version: "
+    },
+    
+    "gxp.plugins.CategoriesInitializer.prototype":{
+        geostoreInitializationTitleText: "Initializing Fail",
+        geostoreInitializationText: "Geostore response is not the expected",
+        notInitializedCategories: "Missing categories: '{0}'. Do you want to create it?",
+        userFieldText: "User",
+        passwordFieldText: "Password",
+        acceptText: "Create",
+        cancelText: "Cancel",
+        notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>If you are an administrator please insert your credentials to create these categories: '{0}'</div>"
     }
 });

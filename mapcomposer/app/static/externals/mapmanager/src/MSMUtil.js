@@ -449,7 +449,6 @@
 				callback(response.responseText);
 	       },
 	       failure:  function(response, opts){
-	       		console.log(response);
 				if(typeof(failureCallback) === 'function') {
                     failureCallback(response);
                 } else {
@@ -566,6 +565,8 @@
 			// ///////////////////////////////////////
 			var addedAttributes = false;
 			var xml = '<Resource>';
+			
+			/** This can remove all the attributes if present !!! do it in a better way as soon as possible **/
 			if (data.owner){
 				xml += 
 				'<Attributes>' +
@@ -576,21 +577,7 @@
 					'</attribute>';
 				addedAttributes = true;
 			}
-
-			// Add template id
-			if(data.templateId){
-				if(!addedAttributes){
-					// open attributes
-					xml += '<Attributes>';
-					addedAttributes = true;
-				}
-				xml += 
-                    '<attribute>' +
-                      '<name>templateId</name>' +
-                      '<type>STRING</type>' +
-                      '<value>' + data.templateId + '</value>' +
-                    '</attribute>';
-			}
+			
 
 			// close attributes
 			if(addedAttributes){
@@ -802,6 +789,88 @@
 			}
 		}
 	});
+
+    /**
+	 * Class: GeoStore.ResourcePermission
+	 *
+	 * CRUD methods for Security rules for a resource in GeoStore
+	 * Inherits from:
+	 *  - <GeoStore.ContentProvider>
+	 *
+	 */
+	var ResourcePermission = GeoStore.ResourcePermission = ContentProvider.extend({
+		initialize: function(){
+			this.resourceNamePrefix_ = 'securityrule';
+		},
+        
+		beforeSave: function(data){
+			// wrap security rule list
+			var xml = '<SecurityRuleList>';
+			if(data && data.length > 0){
+				for(var i = 0; i < data.length; i++){
+					var rule = data[i];
+					// valid rule
+					if(rule && (rule.user || rule.group)){
+						xml += 
+						'<SecurityRule>' +
+							'<canRead>' + rule.canRead + '</canRead>' +
+							'<canWrite>' + rule.canWrite + '</canWrite>';
+						if(rule.user){
+							xml += 
+								'<user>' + 
+									'<id>' + rule.user.id + '</id>' +
+									'<name>' + rule.user.name + '</name>' +
+								'</user>';
+						} else if(rule.group){
+							xml += 
+								'<group>' + 
+									'<id>' + rule.group.id + '</id>' +
+									'<groupName>' + rule.group.groupName + '</groupName>' +
+								'</group>';
+						}
+
+						xml += 
+							'</SecurityRule>';
+					}
+				}
+			}
+
+			xml += '</SecurityRuleList>';
+
+
+			return xml;
+		},
+	
+		afterFind: function(json){
+			 if ( json.SecurityRuleList ){
+				var data = [];
+				for (var i=0; i< json.SecurityRuleList.length; i++){
+					data.push(this.afterFind(json.SecurityRuleList[i])); 
+				}
+				return data;
+			} else if(json.SecurityRule){
+                var rule = json.SecurityRule;
+					var obj = {};
+					obj.canRead = rule.canRead;
+					obj.canWrite = rule.canWrite;
+					if(rule.user && rule.user.id){
+						obj.user = {
+							id: rule.user.id,
+							name: rule.user.name
+						};
+					}else if(rule.group && rule.group.id){
+						obj.group = {
+							id: rule.group.id,
+							groupName: rule.group.groupName
+						};
+					}
+                    return obj;
+                
+            }else{
+				this.onFailure_('cannot parse response');
+			}
+		}
+	});
 	
 	/**
 	 * Class: Google.Shortener
@@ -815,9 +884,9 @@
 	};
 
 	/**
-	 * Class: GeoStore.Maps
+	 * Class: GeoStore.Templates
 	 *
-	 * CRUD methods for maps in GeoStore
+	 * CRUD methods for templates in GeoStore
 	 * Inherits from:
 	 *  - <GeoStore.ContentProvider>
 	 *
@@ -906,6 +975,91 @@
 			} else {
 				this.onFailure_('cannot parse response');
 			}
+		}
+    });
+
+	/**
+	 * Class: GeoStore.Categories
+	 *
+	 * CRUD methods for categories in GeoStore
+	 * Inherits from:
+	 *  - <GeoStore.ContentProvider>
+	 *
+	 */
+	var Categories = GeoStore.Categories = ContentProvider.extend({
+		initialize: function(){
+			this.resourceNamePrefix_ = 'category';
+		},
+		deleteByFilter: function(filterData, callback){
+			var uri = this.baseUrl_;
+			
+			Ext.Ajax.request({
+			   url: uri,
+			   method: 'DELETE',
+			   headers:{
+				  'Content-Type' : 'text/xml',
+				  'Authorization' : this.authorization_
+			   },
+			   scope: this,
+			   success: function(response, opts){
+					callback(response);
+			   },
+			   failure:  function(response, opts) {
+			   }
+			});		
+		},
+		beforeSave: function(data){
+			// ///////////////////////////////////////
+			// Wrap new map within an xml envelop
+			// ///////////////////////////////////////
+			var xml = "<Category><name>" + data.name + "</name></Category>";
+			return xml;
+		},
+		afterFind: function(json){
+			
+			if ( json.Category ){
+				var data = new Object;
+				data.name = json.Resource.name;
+				return data;			
+			} else if (json.CategoryList && json.CategoryList.Category){
+				return json.CategoryList.Category;			
+			} else {
+				this.onFailure_('cannot parse response');
+			}
+		},
+		/** 
+		 * Function: find
+		 * find all elements in async mode
+		 *
+		 * Parameters:
+		 * callback - {Function}
+		 * Return:
+		 * 
+		 */
+		findByName: function(name, callback){
+			var uri = new Uri({'url':this.baseUrl_ + "/" + name});
+			
+			// ////////////////////
+			// Build a request
+			// ////////////////////
+			var self = this;
+			var Request = Ext.Ajax.request({
+		       url: uri.toString(),
+		       method: 'GET',
+		       headers:{
+		          'Content-Type' : 'application/json',
+		          'Accept' : this.acceptTypes_,
+		          'Authorization' : this.authorization_
+		       },
+		       scope: this,
+		       success: function(response, opts){
+					var data = self.afterFind( Ext.util.JSON.decode(response.responseText) );
+					callback(data);
+		       },
+		       failure:  function(response, opts){
+		       		var json = Ext.util.JSON.decode(response.responseText);
+		       }
+		    });		
 		}
     });
 

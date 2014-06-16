@@ -94,7 +94,7 @@
     <script>
         
         var app;        
-        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false; var templateId = "defaultTemplate";
+        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false;
 		
 		// /////////////////////////////////////////////////////
 		// Extra parameters to manage geonetwork integration
@@ -151,13 +151,6 @@
 					case "config":	
 									customConfigName = param[1];
 									break;
-                    case "configId": 
-                                    try{
-                                        templateId = parseInt(param[1]);
-                                    }catch(e){
-                                        templateId = -1;
-                                    } 
-                                    break;
 					default :       
 									//mapIdentifier = -1;
 									//authorization = false;
@@ -224,6 +217,14 @@
 			if (GeoExt.Lang) {
                 GeoExt.Lang.set(code);
             }
+			
+			// ////////////////////////////////////////////////////
+			// Setting the language selector
+			// ////////////////////////////////////////////////////
+			var languageSelector = new gxp.form.LanguageSwitcher({
+				currentContext:code,
+				saveMessage:authorization
+			});
 			
 			// ///////////////////////////////////////////
 			// Defining the GeoNetwork panel properties
@@ -314,78 +315,12 @@
                 handler: function(btn){
                     window.open('http://www.geo-solutions.it/about/contacts/', '_blank');
                 }
-            }); 
-            
-            var header = serverConfig.header;
-            var footer = serverConfig.footer;
-            
-            var viewport = {
-                    id: 'appVieport',
-                    layout: 'fit',
-                    border: false
-            };
-
-            // in header and footer, we need numbers, not strings
-            var parseKnowIntegers = function(section){
-                var knownInteger = {'height':true, 'maxHeight': true, 'minWidth':true};
-                for(var key in knownInteger){
-                    if(section[key]){
-                        try{
-                            section[key] = parseInt(section[key]);  
-                        }catch (e){
-                            // unknown parameter value
-                        }
-                    }   
-                }
-                return section;
-            }
-            
-            if(header || footer){
-                var north = {
-                    header: false,
-                    region: 'north',
-                    id: 'msheader'
-                };
-            
-                if(header){
-                    north = Ext.applyIf(north, (header.container ? parseKnowIntegers(header.container) : {}));
-                    north.html = (header.css || '') + (header.html || '');
-                }
-                
-                var south = {
-                    header: false,
-                    region: 'south',
-                    id: 'msfooter'
-                };
-                
-                if(footer){
-                    south = Ext.applyIf(south, (footer.container ? parseKnowIntegers(footer.container) : {}));
-                    south.html = (footer.css || '') + (footer.html || '');
-                }
-                
-                viewport.items = [{
-                    region: 'center',
-                    layout: 'border',
-                    border: false,
-                    header: false, 
-                    items: [north, appTabs, south]
-                }];
-            }else{
-                viewport.items = [{
-                    region: 'center',
-                    layout: 'border',
-                    border: false,
-                    header: false,                    
-                    items: [appTabs]
-                }]
-            }           
-            
-            var appViewport = new Ext.Viewport(viewport);   
+            });    
 			
 			// ///////////////////////////////////
 			// Header definition
 			// ///////////////////////////////////
-			/*var headerContent = [
+			var headerContent = [
 					'			<div class="topbanner">',
 					'				<div class="main">',
 					'					<div class="header">',
@@ -394,38 +329,41 @@
 					'					</div>',
 					'				</div>',
 					'			</div>'
-			];*/
+				    /*'<div>',
+					'<div style="float:right"><img src="theme/app/img/fdh/fdh_left-banner_en.gif" usemap="#IM_left-banner"  border="0" /></div>',
+					'<div style="float:left"><img src="theme/app/img/fdh/fdh_right-banner_en.jpg" usemap="#IM_right-banner"  border="0" /></div>',
+					'</div>'*/
+			];
 			
-			// var headerContent = serverConfig.header || '';
-			
-			// var footerContent = serverConfig.footer || '';
-			
-   //          var appViewport = new Ext.Viewport({
-   //              id: 'appVieport',
-   //              layout:'fit',
-   //              border:false,
-   //              items: [{
-   //                  region : 'center',
-   //                  layout : 'border',
-   //                  border : false,
-   //                  header : false,                    
-   //                  items : [{
-   //                    border: false,
-   //                    header: false,
-   //                    html:  headerContent,
-   //                    region: 'north',
-   //                    collapsible: true,
-   //                    collapseMode:  'mini',
-   //                    hideCollapseTool: true,
-   //                    split: true,
-   //                    animCollapse : false,
-   //                    minHeight: 140,
-   //                    maxHeight: 140,
-   //                    height: 140,
-   //                    id : 'msheader'
-   //                  },appTabs]
-   //              }]
-   //          });
+            var appViewport = new Ext.Viewport({
+                id: 'appVieport',
+                layout:'fit',
+                border:false,
+                items: [{
+                    region : 'center',
+                    layout : 'border',
+                    border : false,
+                    header : false,                    
+                    items : [{
+                      border: false,
+                      header: false,
+                      html:  headerContent,
+                      region: 'north',
+                      collapsible: true,
+                      collapseMode:  'mini',
+                      hideCollapseTool: true,
+                      split: true,
+                      animCollapse : false,
+                      minHeight: 140,
+                      maxHeight: 140,
+                      height: 140,
+                      id : 'msheader'
+                    },appTabs],                            
+                    bbar : [
+                      poweredByGeoSol, ' ', aboutButton, '->',languageSelector
+                    ]
+                }]
+            });
             
             // /////////////////////////////////////////////////////////////
             // Parsing WMS servers Sources for getCapabilities operation
@@ -488,7 +426,7 @@
                 georeferences: georeferences_data,
                 map: serverConfig.map,
 				customTools: serverConfig.customTools
-            }, mapIdentifier, authorization && authorization == "false" ? null: authorization, fullScreen, templateId);   
+            }, mapIdentifier, authorization, fullScreen);   
             
 			/*app.viewMetadata = function(url, uuid, title){
 				var tabPanel = Ext.getCmp(this.renderToTab);
@@ -613,17 +551,42 @@
 			};
 	    };
 
-        // use GeoExplorerLoader to load configuration files
-        var loader = new GeoExplorerLoader(serverConfig, customConfigName ? customConfigName: "geonetwork", mapStoreDebug, mapIdentifier, authorization, fullScreen, templateId);
-        loader.on("configfinished", function (config){
-              //apply the loaded configuration.
-              serverConfig = Ext.applyIf(serverConfig || {}, config);
-              proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy;
-
-              //ready to create GeoExplorer
-              Ext.onReady(onReady);
-        });
-
+	    Ext.Ajax.request({
+			  url: customConfigName ? "config/" + customConfigName + ".js"  : "config/geonetwork.js",
+			  method: 'GET',
+			  success: function(response, opts){          
+				  
+				  try{
+					  serverConfig = Ext.util.JSON.decode(response.responseText);
+				  }catch(e){
+					  Ext.Msg.show({
+							title: "Startup",
+							msg: "An error occurred while parsing the external configuration: " + response.status,
+							buttons: Ext.Msg.OK,
+							icon: Ext.MessageBox.ERROR
+					  });
+				  }
+				  
+				  if(serverConfig){
+					  //apply the local default configuration if not present.
+					  serverConfig = Ext.applyIf(serverConfig,localConfig);
+					  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy; 
+					  
+					  // ///////////////////////////////////////////////  
+					  // Run the application when browser is ready
+					  // ///////////////////////////////////////////////
+					  Ext.onReady(onReady);
+				  }
+			  },
+			  failure:  function(response, opts){
+				  Ext.Msg.show({
+						title: "Startup",
+						msg: "An error occurred while getting the external configuration: " + response.status,
+						buttons: Ext.Msg.OK,
+						icon: Ext.MessageBox.ERROR
+				  });
+		      }
+	    });        
     </script>
 
 	<div style="visibility:hidden"><canvas id="printcanvas" /></div>

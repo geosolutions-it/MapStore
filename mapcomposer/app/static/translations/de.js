@@ -1,6 +1,10 @@
 /**
  * Copyright (c) 2009-2010 The Open Planning Project
  */
+/*
+	NOTE: configuration customization could override
+	these strings
+*/
 
 GeoExt.Lang.add("de", {
     "GeoExplorer.prototype": {
@@ -646,6 +650,45 @@ GeoExt.Lang.add("de", {
         loadInMapStoreMobileText: "Mobile",
         openImageInANewTab: "Bild in einem neuen Tab"
 	},
+
+    "gxp.widgets.form.SpatialSelectorField.prototype" :{
+        title : "Gebiet vom Interesse",
+        selectionMethodLabel : "Methode der Auswahl",
+        comboEmptyText : "Sie wählen eine Methode aus..",
+        comboSelectionMethodLabel : "Auswahl",
+        northLabel : "Nördlich",
+        westLabel : "Westen",
+        eastLabel : "Osten",
+        southLabel : "Südwärts",
+        setAoiTitle : "Bounding Box",
+        setAoiText : "Es zieht(zeichnet)",
+        setAoiTooltip : "Ermöglichen Sie der SetBox-Kontrolle, einen ROI (zu ziehen(zeichnen), Kasten) auf der Karte Springend",
+        areaLabel : "Gebiet",
+        perimeterLabel : "Umkreis",
+        radiusLabel : "Strahl",
+        centroidLabel : "Centroide",
+        latitudeEmptyText : 'Y',
+        longitudeEmptyText : 'X',
+        geocodingFieldSetTitle : "GeoCoder",
+        geocodingPanelTitle : "Einen Platz zu wählen",
+        geocodingPanelBtnRefreshTxt : "Es zeigt Geometrie",
+        geocodingPanelBtnDestroyTxt : "Sie verbergen Geometrie",
+        geocodingPanelBtnDeleteTxt : "Sie entfernen Platz",
+        geocodingPanelLocationHeader: "Platz",
+        geocodingPanelCustomHeader: "Verwandter",
+        geocodingPanelGeometryHeader: "WKT der Geometrie",
+        geocodingPanelBtnSelectAllTxt : "Es wählt Alles auso", 
+        geocodingPanelBtnDeSelectAllTxt : "Sie entfernen die ganze Auswahl", 
+        geocodingPanelMsgRemRunningTitle : "Sie entfernen Platz",
+        geocodingPanelMsgRemRunningMsg : "Wollen Sie die durch die Liste ausgewählten Plätze entfernen?",
+        geocodingFieldLabel : "Es sucht nach einem Platz",
+        geocodingFieldEmptyText : "Sie fügen Platz ein...",
+        geocodingFieldBtnAddTooltip : "Sie fügen einen Platz zur Liste hinzu",
+        geocodingFieldBtnDelTooltip : "Sie reinigen...",
+        selectionSummary : "Zusammenfassung der Auswahlen",
+        geocoderSelectorsLabels: ['Union der Geometrie', 'Liste der Administrativen Gebiete', 'Administratives Gebiet und sottoaree'],
+        selectionReturnTypeLabel: "Typ der Auswahl"
+    },
     
     "gxp.plugins.WFSGrid.prototype":{
         displayMsgPaging: "Bestandteil {0} - {1} of {2}",
@@ -660,6 +703,92 @@ GeoExt.Lang.add("de", {
         noRecordFoundLabel: "Kein Bestandteil gefunden",
         loadMsg: "Bitte warten..."
     },
+
+    "gxp.plugins.spatialselector.SpatialSelector.prototype" :{
+        titleText : "Gebiet vom Interesse",
+        selectionMethodLabel : "Methode der Auswahl",
+        comboEmptyText : "Sie wählen eine Methode aus..",
+        comboSelectionMethodLabel : "Auswahl"
+    },
+    
+    "gxp.widgets.form.spatialselector.SpatialSelectorMethod.prototype" :{
+        areaLabel : "Gebiet",
+        perimeterLabel : "Umkreis",
+        lengthLabel: "Länge",
+        radiusLabel : "Strahl",
+        centroidLabel : "Centroide",
+        selectionSummary: "Zusammenfassung der Auswahlen",
+        geometryOperationText: "Geometrie-Operation",
+        geometryOperationEmptyText: "Wählen Sie eine Operation(Betrieb) aus",
+        distanceTitleText: "Entfernung",
+        distanceUnitsTitleText: "Entfernungseinheiten",
+        noOperationTitleText: "Keine gültige Operation(Betrieb)",
+        noOperationMsgText: "Wählen Sie bitte eine Operation(Betrieb) vor Frage aus",
+        noCompleteMsgText: "Ergänzen Sie bitte Form(Formular) vor Frage"        
+    },
+    
+    "gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
+        name  : 'BBOX',
+        label : 'Bounding Box',
+        northLabel : "Nördlich",
+        westLabel : "Westen",
+        eastLabel : "Osten",
+        southLabel : "Südwärts",
+        setAoiTitle : "Bounding Box",
+        setAoiText : "Es zieht(zeichnet)",
+        setAoiTooltip : "Ermöglichen Sie der SetBox-Kontrolle, einen ROI (zu ziehen(zeichnen), Kasten) auf der Karte Springend"
+    },
+    
+    "gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.prototype" :{
+        name  : 'Buffer',
+        label : 'Buffer',
+        latitudeEmptyText : 'Y',
+        longitudeEmptyText : 'X'
+    },
+    
+    "gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod.prototype" :{
+        name  : 'Kreis',
+        label : 'Kreis'
+    },
+    
+    "gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod.prototype" :{
+        name  : 'Geocoding',
+        label : 'Geocoding',
+        geocodingFieldSetTitle : "GeoCoder",
+        geocodingPanelTitle : "Einen Platz zu wählen",
+        geocodingPanelBtnRefreshTxt : "Es zeigt Geometrie",
+        geocodingPanelBtnDestroyTxt : "Sie verbergen Geometrie",
+        geocodingPanelBtnDeleteTxt : "Sie entfernen Platz",
+        geocodingPanelLocationHeader: "Platz",
+        geocodingPanelCustomHeader: "Verwandter",
+        geocodingPanelGeometryHeader: "WKT der Geometrie",
+        geocodingPanelBtnSelectAllTxt : "Es wählt Alles aus", 
+        geocodingPanelBtnDeSelectAllTxt : "Sie entfernen alle Auswahlen", 
+        geocodingPanelMsgRemRunningTitle : "Sie entfernen Platz",
+        geocodingPanelMsgRemRunningMsg : "Wollen Sie die durch die Liste ausgewählten Plätze entfernen?",
+        geocodingFieldLabel : "Es sucht nach einem Platz",
+        geocodingFieldEmptyText : "Sie fügen Platz ein...",
+        geocodingFieldBtnAddTooltip : "Sie fügen einen Platz zur Liste hinzu",
+        geocodingFieldBtnDelTooltip : "Sie reinigen...",
+        selectionSummary : "Zusammenfassung der Auswahlen"
+    },
+    
+    "gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
+        name  : 'Polygon',
+        label : 'Polygon'
+    },
+
+    "gxp.plugins.spatialselector.Geocoder.prototype" :{
+        titleText: "Geocoder",
+        searchText: "Suche",
+        searchTpText: "Suche wählte Ort und Steilflug in auf Karte aus",
+        resetText: "Neu fassen",
+        resetTpText: "Neu gefasste Ort-Suche",
+        translatedKeys: {
+            "name": "Straße",
+            "number": "Zahl(Nummer)"
+        }
+    },
 	
 	"gxp.plugins.ResourceStatus.prototype":{
 		rootNodeText: "Ressourcen Import",
@@ -667,5 +796,17 @@ GeoExt.Lang.add("de", {
 		tabTitle: "Importiert",
 		layerNodeName: "Levels",
 		serviceNodeName: "Service"
-    }
+    },
+	
+	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
+        noFilterSelectedMsgTitle: "Keinen Filter ausgewählt",    
+        noFilterSelectedMsgText: "Sie müssen mindestens einen Filter auswählen",    
+        invalidRegexFieldMsgTitle: "Ungültige Domänen",    
+        invalidRegexFieldMsgText: "Eine oder mehrere Domänen sind falsch!"
+    },
+	
+	"gxp.plugins.FeatureManager.prototype":{
+        noValidWmsVersionMsgTitle: 'WMS Version ungültig',    
+        noValidWmsVersionMsgText: "Die Queryform-Plugin nicht mit WMS Source Version arbeiten: "
+    } 
 });

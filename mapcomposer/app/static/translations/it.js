@@ -1,6 +1,10 @@
 /**
  * Copyright (c) 2009-2010 The Open Planning Project
  */
+/*
+	NOTE: configuration customization could override
+	these strings
+*/
 
 GeoExt.Lang.add("it", {
     "GeoExplorer.prototype": {
@@ -644,7 +648,7 @@ GeoExt.Lang.add("it", {
         southLabel : "Sud",
         setAoiTitle : "Bounding Box",
         setAoiText : "Disegna",
-        setAoiTooltip : "Enable the SetBox control to draw a ROI (Bounding Box) on the map",
+        setAoiTooltip : "Abilita il controllo SetBox per disegnare l'area d'interesse (Bounding Box) sulla mappa",
         areaLabel : "Area",
         perimeterLabel : "Perimetro",
         radiusLabel : "Raggio",
@@ -700,7 +704,14 @@ GeoExt.Lang.add("it", {
         lengthLabel: "Lunghezza",
         radiusLabel : "Raggio",
         centroidLabel : "Centroide",
-        selectionSummary: "Sommario delle Selezioni"
+        selectionSummary: "Sommario delle Selezioni",
+        geometryOperationText: "Operazione geometrica",
+        geometryOperationEmptyText: "Seleziona una operazione",
+        distanceTitleText: "Distanza",
+        distanceUnitsTitleText: "Unità di misura",
+        noOperationTitleText: "Operazione non valida",
+        noOperationMsgText: "Prego, selezionare una operazione prima di eseguire la query",
+        noCompleteMsgText: "Prego, completare il riempimento della form prima di eseguire la query"
     },
     
     "gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
@@ -712,7 +723,7 @@ GeoExt.Lang.add("it", {
         southLabel : "Sud",
         setAoiTitle : "Bounding Box",
         setAoiText : "Disegna",
-        setAoiTooltip : "Enable the SetBox control to draw a ROI (Bounding Box) on the map"
+        setAoiTooltip : "Abilita il controllo SetBox per disegnare l'area d'interesse (Bounding Box) sulla mappa"
     },
     
     "gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.prototype" :{
@@ -723,8 +734,8 @@ GeoExt.Lang.add("it", {
     },
     
     "gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod.prototype" :{
-        name  : 'Circle',
-        label : 'Circle'
+        name  : 'Cerchio',
+        label : 'Cerchio'
     },
     
     "gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod.prototype" :{
@@ -750,8 +761,20 @@ GeoExt.Lang.add("it", {
     },
     
     "gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
-        name  : 'Polygon',
-        label : 'Polygon'
+        name  : 'Poligono',
+        label : 'Poligono'
+    },
+
+    "gxp.plugins.spatialselector.Geocoder.prototype" :{
+        titleText: "Geocoder",
+        searchText: "Ricerca",
+        searchTpText: "Ricerca la zona selezionata ed esegui lo zoom sulla mappa",
+        resetText: "Azzeramento",
+        resetTpText: "Azzeramento ricerca zona",
+        translatedKeys: {
+            "name": "Strada",
+            "number": "Numero"
+        }
     },
 	
 	"gxp.plugins.ResourceStatus.prototype":{
@@ -760,5 +783,17 @@ GeoExt.Lang.add("it", {
 		tabTitle: "Importati",
 		layerNodeName: "Livelli",
 		serviceNodeName: "Servizi"
+    },
+	
+	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
+        noFilterSelectedMsgTitle: "Nessun filtro selezionato",    
+        noFilterSelectedMsgText: "Devi selezionare almeno un filtro",    
+        invalidRegexFieldMsgTitle: "Campo non valido",    
+        invalidRegexFieldMsgText: "Uno o più campi non sono stati riempiti correttamente!"
+    },
+	
+	"gxp.plugins.FeatureManager.prototype":{
+        noValidWmsVersionMsgTitle: 'Versione WMS non valida',    
+        noValidWmsVersionMsgText: "Il plugin queryForm non funziona con una sorgente WMS versione: "
     }
 });

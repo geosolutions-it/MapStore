@@ -23,6 +23,8 @@ GeoExt.Lang.add("en", {
 		textUserManager: 'User Manager',
         textViewMap: '', //"View Map",
         tooltipViewMap: "View Map",
+        textEmbedMap: '', //"Embed Map",
+        tooltipEmbedMap: "Embed Map",
         textCopyMap: '', //"Clone Map",
         tooltipCopyMap: "Clone Map",
         textEditMap: '', //"Edit Map",
@@ -60,7 +62,10 @@ GeoExt.Lang.add("en", {
         installApplicationText:"Install Android Application",
         loadThisSourceText:"Add this source to MapStore Mobile",
         scanThisApplicationText:"Scan this QR code to Install MapStore for Android",
-        scanThisSourceText:"Scan this QR code to add this source to your MapStore Mobile application. You need to install MapStore for Android before"
+        scanThisSourceText:"Scan this QR code to add this source to your MapStore Mobile application. You need to install MapStore for Android before",
+        mapPermissionText: "Permissions",
+        tooltipMapPermissionText: "Edit map permissions by group",
+        mapPermissionTitleText: "Map Permissions"
     },
     "MSMPagingToolbar.prototype": {
         desc: "New Map",
@@ -120,7 +125,7 @@ GeoExt.Lang.add("en", {
 		textCancel: 'Cancel',
 		invalidFormMsg: 'Some fields are invalid',
 		textAddUser: '', 
-		textAddUserTitle: 'Add user',
+		textAddUserTitle: 'Add User',
 		tooltipAddUser: 'Create a new user',
 		textTitle: 'User Manager',
 		tooltipSearch: "Search",
@@ -134,7 +139,7 @@ GeoExt.Lang.add("en", {
         textGroupName: "Group Name",
         textId: "Id",
         textDescription: "Description",
-        textAddGroupButton: "Create a New Group",
+        textAddGroupButton: "Create A New Group",
         groupNameAlreadyTaken: "Group Name already taken",
         titleConfirmDeleteMsg: "Confirm delete group",
         textConfirmDeleteMsg: "Are you sure you want to delete this group?",
@@ -161,5 +166,97 @@ GeoExt.Lang.add("en", {
         downloadAppText: "Install Application",
         loadInMapStoreMobileText: "Mobile",
         openImageInANewTab: "Open Image in a New Tab"
-    }
+    },
+
+    "mxp.plugins.CategoriesInitializer.prototype":{
+        geostoreInitializationTitleText: "Initialization Failed",
+        geostoreInitializationText: "Geostore response is not the expected",
+        notInitializedCategories: "Missing categories: '{0}'. Do you want to create it?",
+        userFieldText: "User",
+        passwordFieldText: "Password",
+        acceptText: "Create",
+        cancelText: "Cancel",
+        notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>If you are an administrator please insert your credentials to create these categories: '{0}'</div>"
+	},
+    "mxp.form.UserGroupComboBox.prototype":{
+        fieldLabel: "User Group"
+    },
+    "mxp.widgets.ResourceGroupPermissionGrid.prototype":{
+        refreshText: "Refresh grid",
+        addText: "Add a new security rule based on user groups",
+        addNewSecurityRuleTitleText: "Create A New Security Rule",
+        editSecurityRuleTitleText: "Edit Security Rule for group '{0}'",
+        groupNameTitleText: "Error", 
+        groupNameExistsText: 'Already exists a rule for this group name, please select another one or edit this rule',
+        groupNameIncompleteText: 'No group selected. Please select one before save.',
+        textSave:'Save',
+        textClose:'Close',
+        textGroupName: 'Group',
+        textUserName: 'User',
+        textCanRead: 'Can Read',
+        textCanWrite: 'Can Write',
+        editText: "Edit selected security rule",
+        deleteText: "Delete selected security rule",
+        trueBooleanText: "Yes",
+        falseBooleanText: "No",
+        confirmDeleteTitleText: "Delete Security Rule",
+        confirmDeleteText: "Do you really want to delete the rule for the '{0}' group?"
+    },
+    "mxp.widgets.ResourceGroupPermissionWindow.prototype":{
+        title:"Resource Permissions"
+    },
+    "MSMTemplatePanel.prototype":{
+        title: "Template Editor",
+        headerTitleText: "Header",
+        footerTitleText: "Footer",
+        sectionContentTitleText: "{0} Content",
+        sectionCSSTitleText: "CSS Style",
+        sectionLayoutConfigTitleText: "Layout config",
+        borderText: "Border",
+        animeCollapseText: "Anim. Collapse",
+        hideCollapseText: "Hide Collapse",
+        splitText: "Split",
+        collapsibleText: "Collapsible",
+        collapseModeText: "Collapse Mode",
+        widthText: "Width",
+        heightText: "Height",
+        minWidthText: "Min Width",
+        maxHeightText: "Max Height",
+        failSuccessTitle: "Error",
+        mapMetadataTitle: "Save a template",
+        mapMedatataSetTitle: "",
+        mapNameLabel: "Name",
+        mapDescriptionLabel: "Description", 
+        addResourceButtonText: "Save",
+        templateSuccessMsgText: "Saved Succesfully",
+        templateSuccessTitleText: "OK",
+	    newTemplateText: "New",
+	    saveTemplateText: "Save"
+    },
+	"MSMTemplateGridPanel.prototype":{
+		textId: "Id",
+		textName: "Name",
+		textOwner: "Owner",
+		textCreation: "Creation Date",
+		textLastUpdate: "Last Update", 
+	    tooltipSearch: "Type a name to search",
+	    textReset: "Reset",
+	    tooltipReset: "Clean search",
+	    failSuccessTitle: "Error",
+	    resizerText: "Templates per page",
+	    tooltipDelete: "Delete template",
+		deleteTemplateTitleText: "Attention",
+		deleteTemplateBodyText: "Do you want to delete this template?"
+	},
+    "mxp.plugins.MapManager.prototype":{
+        buttonText: "Map Manager",
+        tooltipText: "Open Map Manager"
+    },
+    "mxp.plugins.TemplateManager.prototype":{
+        buttonText: "Templates",
+        tooltipText: "Open Templates Manager"
+    },
+	"MSMTemplateManager.prototype":{
+		title: "Template Manager"
+	}
 });

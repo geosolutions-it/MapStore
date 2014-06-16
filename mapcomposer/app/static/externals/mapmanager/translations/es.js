@@ -13,8 +13,8 @@ GeoExt.Lang.add("es", {
         gridName: "Nombre",
         gridOwner: "Propietario",
         gridDescription: "Descripción",
-        gridDateCreation: "Fecha de creación",
-        gridLastUpdate: "Última actualización",
+        gridDateCreation: "Fecha De Creación",
+        gridLastUpdate: "Última Actualización",
         errorTitle: "Fallo en la petición",
         errorMsg_500: "¡El servidor ha devuelto un código HTTP 500! </br></br>¡Compruebe el log!",
         errorMsg_501: "¡El servidor ha devuelto un código HTTP 501! </br></br>¡El servidor no soporta todo lo necesario para completar la petición!",
@@ -23,6 +23,8 @@ GeoExt.Lang.add("es", {
 		textUserManager: 'Administración de usuarios',
         textViewMap: '', //"View Map",
         tooltipViewMap: "Ver Mapa",
+        textEmbedMap: '', //"Embed Map",
+        tooltipEmbedMap: "Insertar Mapa",
         textCopyMap: '', //"Clone Map",
         tooltipCopyMap: "Clonar Mapa",
         textEditMap: '', //"Edit Map",
@@ -52,7 +54,7 @@ GeoExt.Lang.add("es", {
         IframeComposerTitle: "Editor del Map - ",
         IframeWaitMsg :"Cargando mapa",
 		showMapTooltip: "Mostrar en una nueva ventana",
-		embedCodeTitle: "Código embebido",
+		embedCodeTitle: "Código Embebido",
 		embedURL: "URL directa",	
 		urlLabel: "URL",
 		exportMapText: "Enlazar Mapa",
@@ -60,7 +62,10 @@ GeoExt.Lang.add("es", {
         installApplicationText: "Instalar aplicación Android", 
         loadThisSourceText: "Agregar esta fuente para MapStore Mobile", 
         scanThisApplicationText: "Lea este código QR para instalar MapStore para Android", 
-        scanThisSourceText: "Lea este código QR para añadir esta fuente a su aplicación MapStore Mobile Necesita instalar MapStore para Android antes."
+        scanThisSourceText: "Lea este código QR para añadir esta fuente a su aplicación MapStore Mobile Necesita instalar MapStore para Android antes.",
+        mapPermissionText: "Permisos",
+        tooltipMapPermissionText: "Edita los permisos sobre mapa por grupo de usuarios",
+        mapPermissionTitleText: "Permisos sobre el mapa"
     },
     "MSMPagingToolbar.prototype": {
         desc: "Nuevo Mapa",
@@ -96,7 +101,7 @@ GeoExt.Lang.add("es", {
     },
     "UserManagerView.prototype":{
         textGeneral: "General", 
-        textAttributes: "atributos", 
+        textAttributes: "Atributos", 
         textGroups: "Grupos",
 		textName: 'Nombre',
 		textPassword: 'Contraseña',
@@ -120,7 +125,7 @@ GeoExt.Lang.add("es", {
 		textCancel: 'Cancelar',
 		invalidFormMsg: 'Algunos campos son inválidos',
 		textAddUser: '', 
-		textAddUserTitle: 'Añadir usuario',
+		textAddUserTitle: 'Añadir Usuario',
 		tooltipAddUser: 'Crear un nuevo usuario',
 		textTitle: 'Administrador de Usuarios',
 		tooltipSearch: "Buscar",
@@ -134,7 +139,7 @@ GeoExt.Lang.add("es", {
         textGroupName: "Nombre del grupo",
         textId: "Id",
         textDescription: "Descripción",
-        textAddGroupButton: "Crear un nuevo grupo",
+        textAddGroupButton: "Crear Un Nuevo Grupo",
         groupNameAlreadyTaken: "Nombre del grupo ya tomadas",
         titleConfirmDeleteMsg: "Confirme que quiere eliminar el grupo",
         textConfirmDeleteMsg: "¿Está seguro que desea eliminar este grupo?",
@@ -161,5 +166,97 @@ GeoExt.Lang.add("es", {
         downloadAppText: "Cargar este mapa (instalar la aplicación primero)", 
         loadInMapStoreMobileText: "Mobile",
         openImageInANewTab: "Abrir imagen en una nueva pestaña"
-    }
+    },
+
+    "mxp.plugins.CategoriesInitializer.prototype":{
+        geostoreInitializationTitleText: "Error en la inicialización",
+        geostoreInitializationText: "La respuesta de GeoStore no es la esperada",
+        notInitializedCategories: "Faltan gategorías: '{0}'. ¿Quiere crearlas?",
+        userFieldText: "Usuario",
+        passwordFieldText: "Contraseña",
+        acceptText: "Crear",
+        cancelText: "Cancelar",
+        notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>Si es administrador introduzca sus credenciales para crear las categorías: '{0}'</div>"
+	},
+    "mxp.form.UserGroupComboBox.prototype":{
+        fieldLabel: "Grupo"
+    },
+    "mxp.widgets.ResourceGroupPermissionGrid.prototype":{
+        refreshText: "Refrescar tabla",
+        addText: "Añade una nueva regla de seguridad basada en un grupo de usuario",
+        addNewSecurityRuleTitleText: "Añadir Regla de Seguridad",
+        editSecurityRuleTitleText: "Editar la Regla de Seguridad para el grupo '{0}'",
+        groupNameTitleText: "Error", 
+        groupNameExistsText: 'Ya existe una regla para este grupo, por favor, seleccione otro grupo o edite la regla',
+        groupNameIncompleteText: 'No ha seleccionado un grupo. Por favor, seleccione uno para salvar la regla',
+        textSave:'Guardar',
+        textClose:'Cerrar',
+        textGroupName: 'Grupo',
+        textUserName: 'Usuario',
+        textCanRead: 'Puede Leer',
+        textCanWrite: 'Puede Escribir',
+        editText: "Edita la regla de seguridad sleeccionada",
+        deleteText: "Borra la regla de seguridad sleeccionada",
+        trueBooleanText: "Sí",
+        falseBooleanText: "No",
+        confirmDeleteTitleText: "Borrar Regla de Seguridad",
+        confirmDeleteText: "¿Desea borrar realmente la regla de seguridad para el grupo '{0}'?"
+    },
+    "mxp.widgets.ResourceGroupPermissionWindow.prototype":{
+        title: "Permisos sobre el recurso"
+    },
+    "MSMTemplatePanel.prototype":{
+        title: "Editor de Plantillas",
+        headerTitleText: "Encabezamiento",
+        footerTitleText: "Pie de página",
+        sectionContentTitleText: "Contenido de {0}",
+        sectionCSSTitleText: "Estilo CSS",
+        sectionLayoutConfigTitleText: "Configuración de Layout",
+        borderText: "Margen",
+        animeCollapseText: "Anim. Plega",
+        hideCollapseText: "Ocultar Plega",
+        splitText: "División",
+        collapsibleText: "Plegable",
+        collapseModeText: "Modo Plega",
+        widthText: "Ancho",
+        heightText: "Altura",
+        minWidthText: "Min Ancho",
+        maxHeightText: "Max Altura",
+        failSuccessTitle: "Error",
+        mapMetadataTitle: "Guardar Plantilla",
+        mapMedatataSetTitle: "",
+        mapNameLabel: "Nombre",
+        mapDescriptionLabel: "Descripción", 
+        addResourceButtonText: "Guardar",
+        templateSuccessMsgText: "Guardado con éxito",
+        templateSuccessTitleText: "OK",
+	    newTemplateText: "Nuevo",
+	    saveTemplateText: "Guardar"
+    },
+	"MSMTemplateGridPanel.prototype":{
+		textId: "Id",
+		textName: "Nombre",
+		textOwner: "Propietario",
+		textCreation: "Fecha de creación",
+		textLastUpdate: "Última Actualización", 
+	    tooltipSearch: "Escriba un nombre para buscar",
+	    textReset: "Reset",
+	    tooltipReset: "Búsqueda limpio",
+	    failSuccessTitle: "Error",
+	    resizerText: "Plantillas por página",
+	    tooltipDelete: "Eliminar Plantilla",
+		deleteTemplateTitleText: "Atención",
+		deleteTemplateBodyText: "¿Quieres eliminar esta Plantilla?"
+	},
+    "mxp.plugins.MapManager.prototype":{
+        buttonText: "Gestor De Mapa",
+        tooltipText: "Abrir Gestor De Mapa"
+    },
+    "mxp.plugins.TemplateManager.prototype":{
+        buttonText: "Plantillas",
+        tooltipText: "Abrir Gestor De Plantillas"
+    },
+	"MSMTemplateManager.prototype":{
+		title: "Gestor De Plantillas"
+	}
 });
