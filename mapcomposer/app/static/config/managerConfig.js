@@ -127,6 +127,7 @@
           "index": 8
         }
     }],
+	"mediaContent":"./externals/mapmanager/theme/media/",
    "embedLink": {
 		"embeddedTemplateName": "viewer",
 		"showDirectURL": true,
