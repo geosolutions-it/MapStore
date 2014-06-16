@@ -19,7 +19,15 @@
  */
 package it.geosolutions.geobatch.mariss.ingestion.product;
 
+import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.imagemosaic.ImageMosaicAction;
+import it.geosolutions.geobatch.imagemosaic.ImageMosaicCommand;
+import it.geosolutions.geobatch.imagemosaic.ImageMosaicConfiguration;
+
+import java.io.File;
 import java.io.IOException;
+import java.util.EventObject;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.geotools.data.DataStore;
@@ -62,6 +70,8 @@ public abstract class ProductIngestionProcessor {
 	protected String userName;
 	protected String serviceName;
 	protected int projection = 4326;
+	protected String targetTifFolder;
+	protected ImageMosaicConfiguration imageMosaicConfiguration = null;
 
 	/*
 	 * GeometryFactory will be used to create the geometry attribute of each
@@ -102,6 +112,11 @@ public abstract class ProductIngestionProcessor {
 		this(dataStore, typeName);
 		this.userName = userName;
 		this.serviceName = serviceName;
+	}
+	
+	public ProductIngestionProcessor(DataStore dataStore, String typeName, String userName, String serviceName, String targetTifFolder){
+		this(dataStore, typeName, userName, serviceName);
+		this.targetTifFolder = targetTifFolder;
 	}
 	
 	/**
@@ -181,6 +196,43 @@ public abstract class ProductIngestionProcessor {
 	 */
 	public void setWorkingDir(String workingDir) {
 		this.workingDir = workingDir;
+	}
+
+	/**
+	 * Insert a new image to the mosaic located on targetTifFolder
+	 * @param file
+	 */
+    protected void addImageMosaic(File file) {
+    	
+    	List<File> files = new LinkedList<File>();
+    	files.add(file);
+        
+    	ImageMosaicCommand imc = new ImageMosaicCommand(new File(targetTifFolder), files, null);
+        
+    	// execute the action
+		ImageMosaicAction tifIngestionAction = new ImageMosaicAction(imageMosaicConfiguration);
+		LinkedList<EventObject> evts = new LinkedList<EventObject>();
+		evts.add(new EventObject(imc));
+		try {
+			tifIngestionAction.execute(evts);
+		} catch (ActionException e) {
+			LOGGER.error("Could'nt insert the tif file", e);
+		}
+    }
+
+	/**
+	 * @return the imageMosaicConfiguration
+	 */
+	public ImageMosaicConfiguration getImageMosaicConfiguration() {
+		return imageMosaicConfiguration;
+	}
+
+	/**
+	 * @param imageMosaicConfiguration the imageMosaicConfiguration to set
+	 */
+	public void setImageMosaicConfiguration(
+			ImageMosaicConfiguration imageMosaicConfiguration) {
+		this.imageMosaicConfiguration = imageMosaicConfiguration;
 	}
 
 }

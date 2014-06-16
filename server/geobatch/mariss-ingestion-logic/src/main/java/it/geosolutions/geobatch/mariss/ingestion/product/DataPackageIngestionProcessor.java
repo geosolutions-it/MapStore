@@ -99,6 +99,10 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 			String userName, String serviceName) {
 		super(dataStore, typeName, userName, serviceName);
 	}
+	
+	public DataPackageIngestionProcessor(DataStore dataStore, String typeName, String userName, String serviceName, String targetTifFolder){
+		super(dataStore, typeName, userName, serviceName, targetTifFolder);
+	}
 
 	/**
 	 * Process a GML file
@@ -205,11 +209,22 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 				shipList.add(feature);
 			}
 		}
-		;
+		// persist the ship list
 		persist(shipList);
+		if(tifFile != null){
+			// add the image mosaic
+			addImageMosaic(tifFile);
+		}
 		return "Succesfully insert of " + shipList.size() + " ships";
 	}
 
+	/**
+	 * Create the ship feature with the XML data parsed
+	 * 
+	 * @param shipData
+	 * 
+	 * @return SimpleFeature ready to insert
+	 */
 	public SimpleFeature createShipData(ShipType shipData) {
 		SimpleFeature feature = null;
 		try {
