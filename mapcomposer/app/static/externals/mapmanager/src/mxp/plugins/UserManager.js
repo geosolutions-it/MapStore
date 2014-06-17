@@ -38,7 +38,8 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
     tooltipText: "Open User Manager",
     groupsText: "Groups",
     usersText: "Users",
-
+    /** number of users for a page  **/
+    pageSize: 20,
     setActiveOnOutput: true,
     showEnabled: false,
 
@@ -101,6 +102,7 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
             region:'center',
             xtype: "msm_usermanager",
             title: this.usersText,
+            pageSize: this.pageSize,
             iconCls: "open_usermanager",
             id: this.target.userMamanagerId,
             ASSET: this.target.config.ASSET,
