@@ -925,7 +925,18 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                                             for(var name in values ){
                                                                 var arr = name.split('.');
                                                                 if(arr.length >1 && arr[0]=='attribute'){
-                                                                    attribute[arr[1]] = values[name];
+                                                                    //special behiviour for dates
+                                                                    var value =values[name];
+                                                                    if(value instanceof Date){
+                                                                      var field = form.findField(name);
+                                                                      if(field && field.format){
+                                                                        attribute[arr[1]] = value.format(field.format);
+                                                                      }else{
+                                                                        attribute[arr[1]] = value;
+                                                                      }
+                                                                    }else{
+                                                                      attribute[arr[1]] = value;
+                                                                    }
                                                                 }
                                                             }
                                                             //create groups;
@@ -1285,7 +1296,18 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                                     for(var name in values ){
                                                         var arr = name.split('.');
                                                         if(arr.length >1 && arr[0]=='attribute'){
-                                                            attribute[arr[1]] = values[name];
+                                                            //special behiviour for dates
+                                                            var value =values[name];
+                                                            if(value instanceof Date){
+                                                              var field = form.findField(name);
+                                                              if(field && field.format){
+                                                                attribute[arr[1]] = value.format(field.format);
+                                                              }else{
+                                                                attribute[arr[1]] = value;
+                                                              }
+                                                            }else{
+                                                              attribute[arr[1]] = value
+                                                            }
                                                         }
                                                     }
                                                     //create groups;

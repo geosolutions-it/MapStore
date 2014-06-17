@@ -114,7 +114,11 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
             addManageGroupsButton: this.addManageGroupsButton,
             target: this.target,
             showEnabled:this.showEnabled
-    	};
+        };
+        //add custom fields
+        if(this.customFields){
+          usermanager.customFields= this.customFields;
+        }
         //TODO
         var groupManager = {
             region:'south',
@@ -130,10 +134,10 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
             geoStoreBase: this.target.config.geoStoreBase,
             target: this.target,
             renderMapToTab: this.outputTarget
-    	};
-    	Ext.apply(this.outputConfig, {
+        };
+        Ext.apply(this.outputConfig, {
             xtype: "panel",
-			itemId:'usermanager',
+        itemId:'usermanager',
             iconCls: "open_usermanager",
             title: this.buttonText,
             id: this.target.userMamanagerId,
