@@ -87,6 +87,12 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
      */    
     validators: {},
     
+    /** api: config[autoComplete]
+     * ``Object``
+     * Adds autocomplete support for text fields, allows specifying the sources that support autocomplete.
+     */    
+    autoComplete: null,
+    
     init: function(target) {
         
         var me = this;
@@ -134,84 +140,68 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         var spatialSelector = this.spatialSelector;
 
         var spatialSelectorOutput = this.spatialSelector.addOutput();
-        //create bbar buttons
-        var bbarButtons =[];
-        if(this.filterLayer){
-            bbarButtons.push({
-                text: this.filterMapText,
-                iconCls: "gxp-icon-map-filter",
-                handler: function() {
+		
+        config = Ext.apply({
+            border: false,
+            bodyStyle: "padding: 10px",
+            layout: "form",
+            autoScroll: true,
+            id: this.getFormId(),
+            items: [
+            {
+                xtype: "fieldset",
+                ref: "spatialSelectorFieldset",
+                title: spatialSelectorOutput.title,
+                checkboxToggle: true,
+                collapsed : false,
+                items: [spatialSelectorOutput],
+                listeners: {
+                    scope: this,
+                    expand: function(panel){
+                        panel.doLayout();
+                    }
+                }
+            },
+            {
+                xtype: "fieldset",
+                ref: "attributeFieldset",
+                title: this.queryByAttributesText,
+                checkboxToggle: true,
+                collapsed : true,
+				listeners: {
+					scope: this,
+					expand: function(panel){
+						panel.doLayout();
+					}
+				}
+            }],
+            bbar: ["->", {   
+                scope: this,    
+                text: this.cancelButtonText,
+                iconCls: "cancel",
+                handler: function() {                
+                    this.resetFeatureManager();
+                    this.spatialSelector.reset();
 					
-                    // Collect all selected filters
-                    var filters = new Array();
-                    
-                    if(queryForm.spatialSelectorFieldset && !queryForm.spatialSelectorFieldset.collapsed){
-                        var currentFilter = this.spatialSelector.getQueryFilter();   
-                        if (currentFilter) {
-                            //convert filter into native srs
-                            //get native srs
-                            var rec  = this.featureManagerTool.layerRecord;
-                            var bbox = rec.get('bbox');
-                            var nativeSRS;
-                            for(var c in bbox) {
-                                
-                                if(c && c.indexOf('EPSG')==0) nativeSRS = c;
-                            }
-                            currentFilter = currentFilter.clone();
-                            currentFilter.value.transform(this.target.mapPanel.map.getProjectionObject(),new OpenLayers.Projection(nativeSRS));
-                            filters.push(currentFilter);
-                        }
-                    }
-
-                    if(queryForm.filterBuilder && !queryForm.filterBuilder.collapsed){
-                        var attributeFilter = queryForm.filterBuilder.getFilter();
-                        //TODO replace * with % in strings
-                        if(attributeFilter){
-                            var attributeFilter = attributeFilter.clone();
-                            //inspect tree of filters
-                            var replaceLikeStrings = function(node,oldc,newc){
-                                var oldc = oldc || '*';
-                                var newc = newc || '%';
-                                if(node.filters){
-                                    for(var i = 0;i< node.filters.length; i++){
-                                        replaceLikeStrings(node.filters[i],oldc,newc);
-                                    }
-                                }else if (node.type== "~"){
-                                    //replace all
-                                    node.value = node.value.split(oldc).join(newc);
-                                    
-                                }
-                            }
-                            replaceLikeStrings(attributeFilter);
-                            
-                        }
-                        attributeFilter && filters.push(attributeFilter);
-                    }
-
-                    if(filters.length > 0){
-                         
-                         var filter =  filters.length > 1 ? new OpenLayers.Filter.Logical({
-                                type: OpenLayers.Filter.Logical.AND,
-                                filters: filters
-                            }) :
-                            filters[0];
-                            if(this.target.tools.layertree_plugin){
-                                var selmodel = this.target.tools.layertree_plugin.output[0].selModel;
-                                var node =selmodel.getSelectedNode();
-                                node.setIconCls('gx-tree-filterlayer-icon');
-                            }
-                            this.featureManagerTool.layerRecord.getLayer().mergeNewParams({cql_filter:filter.toString()}); 
-                    }else{
-                        var layer = this.featureManagerTool.layerRecord.getLayer(); 
-                        delete layer.params.CQL_FILTER;
-                        layer.redraw();
-                    }
-                      
-                },
-                scope: this
-            });
-        }
-		bbarButtons.push( [{
+                    var methodSelection = this.output[0].outputType;
+					
+                    if (me.draw) {me.draw.deactivate();};
+                    if (me.drawings) {me.drawings.destroyFeatures();};
+                    if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({});};
+                    if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({});};    
+					
+                    var ownerCt = this.outputTarget ? queryForm.ownerCt :
+                        queryForm.ownerCt.ownerCt;
+                    if (ownerCt && ownerCt instanceof Ext.Window) {
+                        ownerCt.hide();
+                    } else {
+                        this.addFilterBuilder(
+                            this.featureManagerTool, this.featureManagerTool.layerRecord,
+                            this.featureManagerTool.schema
+                        ); 
+                    }                    
+                }
+            }, {
                 text: this.queryActionText,
                 iconCls: "gxp-icon-find",
                 handler: function() {
@@ -230,10 +220,15 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     var f = 0;
                     var invalidItems = 0;
                     while(filterFieldItem[f]){
-                        for(var x = 0;x<filterFieldItem[f].items.items.length;x++){
-                            var validateItem = filterFieldItem[f].items.get(x);
+                    
+                        var formItems = filterFieldItem[f].innerCt.findBy(function(c) {
+                            return c.isFormField;
+                        });
+                    
+                        for(var x = 0;x<formItems.length;x++){
+                            var validateItem = formItems[x];
                             //if(!validateItem.isValid(true) && ( validateItem.vtype == "customValidationTextValue" || validateItem.vtype == "customValidationTextLowerBoundary" || validateItem.vtype == "customValidationTextUpperBundary")){
-                            if(!validateItem.isValid(true) && validateItem.vtype != null){
+                            if(!validateItem.isValid(true)){
                                 invalidItems++;
                             }
                         }                        
@@ -281,84 +276,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                       
                 },
                 scope: this
-            },"->",{   
-                scope: this,    
-                text: this.cancelButtonText,
-                iconCls: "cancel",
-                handler: function() {                
-                    this.resetFeatureManager();
-                    this.spatialSelector.reset();
-                    
-					
-                    var methodSelection = this.output[0].outputType;
-					
-                    if (me.draw) {me.draw.deactivate();};
-                    if (me.drawings) {me.drawings.destroyFeatures();};
-                    if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({});};
-                    if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({});};    
-					
-                    var ownerCt = this.outputTarget ? queryForm.ownerCt :
-                        queryForm.ownerCt.ownerCt;
-                    if (ownerCt && ownerCt instanceof Ext.Window) {
-                        ownerCt.hide();
-                    } else {
-                        this.addFilterBuilder(
-                            this.featureManagerTool, this.featureManagerTool.layerRecord,
-                            this.featureManagerTool.schema
-                        ); 
-                    }
-                    if(me.filterLayer){
-                        var layer = this.featureManagerTool.layerRecord.getLayer(); 
-                        delete layer.params.CQL_FILTER;
-                        if(this.target.tools.layertree_plugin){
-                            var selmodel = this.target.tools.layertree_plugin.output[0].selModel;
-                            var node =selmodel.getSelectedNode();
-                            node.setIconCls('gx-tree-layer-icon');
-                        }
-                        layer.redraw();
-                    }
-                     spatialSelector.filterGeometryName = this.featureStore
-                        && this.featureStore.geometryName
-                        ? this.featureManagerTool.featureStore.geometryName : this.featureManagerTool.featureStore.geometryName ;
-                        
-                }
-            }]);
-        
-        config = Ext.apply({
-            border: false,
-            bodyStyle: "padding: 10px",
-            layout: "form",
-            autoScroll: true,
-            id: this.getFormId(),
-            items: [
-            {
-                xtype: "fieldset",
-                ref: "spatialSelectorFieldset",
-                title: spatialSelectorOutput.title,
-                checkboxToggle: true,
-                collapsed : false,
-                items: [spatialSelectorOutput],
-                listeners: {
-                    scope: this,
-                    expand: function(panel){
-                        panel.doLayout();
-                    }
-                }
-            },
-            {
-                xtype: "fieldset",
-                ref: "attributeFieldset",
-                title: this.queryByAttributesText,
-                checkboxToggle: true,
-                collapsed : true,
-				listeners: {
-					scope: this,
-					expand: function(panel){
-						panel.doLayout();
-					}
-				}
-            }],
-            bbar: [bbarButtons ]
+            }]
         }, config || {});
 		
         var queryForm = gxp.plugins.QueryForm.superclass.addOutput.call(this, config);
@@ -366,6 +284,8 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         var methodSelection = this.output[0].outputType;
         
         this.addFilterBuilder = function(mgr, rec, schema) {			
+            // is current source enabled for autoComplete ?
+            var autoComplete = rec && me.autoComplete && me.autoComplete.sources && me.autoComplete.sources.indexOf(rec.get('source')) !== -1;
             queryForm.attributeFieldset.removeAll();
             queryForm.setDisabled(!schema);
 			
@@ -375,6 +295,8 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     ref: "../filterBuilder",
                     attributes: schema,
                     validators: me.validators,
+                    autoComplete: autoComplete,
+                    autoCompleteCfg: me.autoComplete || {},
                     allowBlank: true,
                     allowGroups: false
                 });
