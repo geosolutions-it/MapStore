@@ -268,10 +268,15 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             // compatible projection that equals the map projection. This helps
             // us in dealing with the different EPSG codes for web mercator.
             var layerProjection = this.getProjection(original);
-
+			if (layerProjection) {
+                layer.addOptions({projection: layerProjection});
+            }
+			
             var projCode = projection.getCode();
             var nativeExtent = original.get("bbox")[projCode];
-            var swapAxis = layer.params.VERSION >= "1.3" && !!layer.yx[projCode];
+
+            //var swapAxis = layer.params.VERSION >= "1.3" && !!layer.yx[projCode];
+			var swapAxis = layer.params.VERSION >= "1.3" && layer.reverseAxisOrder();
             var maxExtent = 
             (nativeExtent && OpenLayers.Bounds.fromArray(nativeExtent.bbox, swapAxis)) || 
             OpenLayers.Bounds.fromArray(original.get("llbbox")).transform(new OpenLayers.Projection("EPSG:4326"), projection);
@@ -279,7 +284,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 			// ///////////////////////////////////////////////////////////////////////////////////////////
 			// 'layersCachedExtent' property can be defined for source and/or a single 
 			// layer configuration when we use GeoWebCache integration in GeoServer. 
-			// GeoServer getCapabilities request return only bounds in 4326 and natice CRS so, if the 
+			// GeoServer getCapabilities request return only bounds in 4326 and native CRS so, if the 
 			// map CRS is 900913 the transformed bounds is not aligned with the google standard 
 			// gridset defined in GeoServer.
 			// //////////////////////////////////////////////////////////////////////////////////////////
