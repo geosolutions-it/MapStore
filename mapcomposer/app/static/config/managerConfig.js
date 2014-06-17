@@ -70,6 +70,7 @@
     },{
         "ptype": "mxp_usermanager",
         "showEnabled":true,
+        "pageSize":20,
         "customFields":[{
                 "xtype": "textfield",
                 "anchor":"90%",
