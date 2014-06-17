@@ -109,6 +109,20 @@ mxp.plugins.MapViewer = Ext.extend(mxp.plugins.Tool, {
     getMapComposer : function(mapUrl) {
             var scrollTop;
             var src = mapUrl;
+
+            // apply lang code selected
+            if(this.target.initialConfig.lang){
+                if(src.indexOf("?") > -1){
+                    src += "&";
+                }else{
+                    if (!(this.target.initialConfig.proxy == "/proxy/?url=")){
+                        // is not debug. TODO: solve it in another way
+                        src += "/";
+                    }
+                    src += "?";
+                }
+                src += "locale=" + this.target.initialConfig.lang;
+            }
             
             var iframeconfig = {
                 // xtype: "panel",

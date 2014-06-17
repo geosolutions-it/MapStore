@@ -71,6 +71,8 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
     defaultDownloadProcess: "gs:Download",
 
     waitText: "Please wait, loading...",
+    aoiAlreadyAddedTitleText: 'Status',
+    aoiAlreadyAddedMsgText: 'This AOI has been already added to the download list.',
 
     addActions: function(actions){
         var self = this;
@@ -98,19 +100,22 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
             return dateMax.toISOString();
         };
 
+        // AOI already added i18n
+        var aoiAlreadyAddedTitleText = me.aoiAlreadyAddedTitleText;
+        var aoiAlreadyAddedMsgText = me.aoiAlreadyAddedMsgText;
+
         if(wfsGrid && downloadGrid){
             wfsGrid.on({
                 'itemAdded': function(record){
-                    var n = record.id.split(".");
-                    var index = parseInt(n[n.length-1]);
-                    if(!(downloadGrid.grid.store.getById(index) === undefined)){
-                        Ext.Msg.alert('Status', 'this AOI has been already added to the download list.');
+                    var fileName = record.data.location;
+                    if(!(downloadGrid.grid.store.getById(fileName) === undefined)){
+                        Ext.Msg.alert(aoiAlreadyAddedTitleText, aoiAlreadyAddedMsgText);
                         return;
                     }
                     var el = {
                         filename: record.data.location
                     }
-                    var newRecord = new downloadGrid.grid.store.recordType(el, index);
+                    var newRecord = new downloadGrid.grid.store.recordType(el, fileName);
                     downloadGrid.grid.store.add(newRecord);
                     if(me.autoExpandPanel){
                         var autoExpandPanel = Ext.getCmp(me.autoExpandPanel);
@@ -354,6 +359,10 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
         // tries
         var tries = 0;
         var maxWpsChecks = this.maxWpsChecks;
+
+        // var updateFunInterval = 30000;
+        // var updateFunInterval = 3000;
+        var updateFunInterval = 10000;
                     
         downloadGrid.on(
             'startDownload', function(fileNames){
@@ -476,7 +485,7 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
                     });
                 };
                 
-                var interval = setInterval(updateFun,3000);
+                var interval = setInterval(updateFun, updateFunInterval);
             }
         );
     }

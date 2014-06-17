@@ -484,25 +484,38 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
         }
 
         var callSuccess= function(response, opts){
-            var jsonResponse= Ext.util.JSON.decode(response.responseText);
+
             var entities= new Array();
             var entitiesObj;
-            
-            if(jsonResponse.ResourceList)
-                entitiesObj= jsonResponse.ResourceList.Resource;
-            if(jsonResponse.UsersList)
-                entitiesObj= jsonResponse.UsersList.User; 
-                
-            if(entitiesObj)
-                if(entitiesObj instanceof Array)
-                    for(var entity in entitiesObj){
-                        if(! isNaN(entity)){
-                            entities.push(entitiesObj[entity]);
+            // check response before parsing
+            if(response
+                && response.responseText
+                && response.responseText != ""){
+                var jsonResponse = null;
+                try{
+                    jsonResponse= Ext.util.JSON.decode(response.responseText);
+                    var entities= new Array();
+                    var entitiesObj;
+                    
+                    if(jsonResponse.ResourceList)
+                        entitiesObj= jsonResponse.ResourceList.Resource;
+                    if(jsonResponse.UsersList)
+                        entitiesObj= jsonResponse.UsersList.User; 
+                        
+                    if(entitiesObj)
+                        if(entitiesObj instanceof Array)
+                            for(var entity in entitiesObj){
+                                if(! isNaN(entity)){
+                                    entities.push(entitiesObj[entity]);
+                                }
+                            }
+                        else{
+                            entities.push(entitiesObj);
                         }
-                    }
-                else{
-                    entities.push(entitiesObj);
+                }catch (e){
+                    console.error("Error parsing geostore response");
                 }
+            }
 
             success.call(this, entities);
         };

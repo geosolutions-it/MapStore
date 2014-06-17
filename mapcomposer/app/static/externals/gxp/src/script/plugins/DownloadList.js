@@ -75,7 +75,7 @@ gxp.plugins.DownloadList = Ext.extend(gxp.plugins.Tool, {
 			colModel: new Ext.grid.ColumnModel({
 				
 				columns: [
-					{id: 'filename', header: 'filename', width: 85, sortable: true},
+					{id: 'filename', header: 'File Name', width: 85, sortable: true},
 					{
 						xtype:'actioncolumn',
 						width: 15,

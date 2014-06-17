@@ -403,6 +403,11 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
 
             check = false;
             if((url.indexOf(wpsUrl) == 0) || url.indexOf(wpsUrlPort) == 0){
+                // FIXME: why needed?
+                if(url.indexOf("mapstore/manager") > -1 || url.indexOf("geoserver") == -1){
+                    // console.log("This url: " + url + " mustn't be checked");
+                    return false;
+                }
                 check = true;
             }
         }
@@ -566,17 +571,21 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
         geoStore.getLikeName(resourceInstance, function(resources){
             if(resources.length > 0){
                 resourceInstance.id=resources[0].id;
-                geoStore.updateEntity(resourceInstance, function(entityID){
-                    if(! entityID){
-                        geoStore.fireEvent("geostorefailure", this, "Geostore: update WPS Instance Error"); 
-                    }else{
-                        if(meCallback)
-                            meCallback.call(this,instanceIndex, instancesStatusUpdated);
-                    }
-                }/*, function(){
-                    me.fireEvent("geostorefailure", this); 
-                }*/);
-                
+                // check if current resource is updating and wait for the response to skip integrity errors
+                if(!me._updatingResources[resourceInstance.id]){
+                    me._updatingResources[resourceInstance.id] = true,
+                    geoStore.updateEntity(resourceInstance, function(entityID){
+                        delete me._updatingResources[resourceInstance.id];
+                        if(! entityID){
+                            geoStore.fireEvent("geostorefailure", this, "Geostore: update WPS Instance Error"); 
+                        }else{
+                            if(meCallback)
+                                meCallback.call(this,instanceIndex, instancesStatusUpdated);
+                        }
+                    }, function(){
+                        delete me._updatingResources[resourceInstance.id];
+                    });
+                }
             }else{
                 geoStore.createEntity(resourceInstance, function(entityID){
                     if(! entityID){
@@ -595,7 +604,10 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
         }*/); 
       
         return instanceInfo;
-    }
+    },
+
+    // hidden lock by resourceId
+    _updatingResources:{}
     
 });
 
