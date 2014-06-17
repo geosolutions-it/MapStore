@@ -115,7 +115,7 @@ mxp.form.UserGroupComboBox = Ext.extend(Ext.form.ComboBox, {
 		                   icon: Ext.MessageBox.ERROR
 		                });
 		            },
-		            defaultHeaders: defaultHeaders
+		            headers: defaultHeaders
 		        })
     		});
     	}else{
