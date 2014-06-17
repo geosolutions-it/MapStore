@@ -40,7 +40,8 @@
         "loginManager": "loginTool",
         "actionTarget":null
     },{
-        "ptype": "mxp_categoryinitializer"
+        "ptype": "mxp_categoryinitializer",
+         "neededCategories": ["TEMPLATE", "MAP"],
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
@@ -69,6 +70,48 @@
     },{
         "ptype": "mxp_usermanager",
         "showEnabled":true,
+        "customFields":[{
+                "xtype": "textfield",
+                "anchor":"90%",
+                "id": "email",
+                "maxLength":255,
+                "blankText": "email",
+                "name": "attribute.email",
+                "fieldLabel": "email",
+                "inputType": "text",
+                "vtype": "email",
+                "value": ""
+            },{
+                "xtype": "textfield",
+                "anchor":"90%",
+                "maxLength":255,
+                "id": "attribute.company",
+                "blankText": "Company",
+                "fieldLabel": "Company",
+                "inputType": "text",
+                "value": ""
+                
+            },{
+                "xtype": "datefield",
+                "anchor":"90%",
+                "id": "expires",
+                "name": "attribute.expires",
+                "fieldLabel": "Expiring Date",
+                "inputType": "text",
+                "value": ""
+                
+            },{
+                "xtype": "textarea",
+                "anchor":"90%",
+                "id": "notes",
+                "maxLength":255,
+                "name": "attribute.notes",
+                "blankText": "Notes",
+                "fieldLabel": "Notes",
+                "inputType": "text",
+                "value": ""
+                
+            }],
         "loginManager": "loginTool",
         "actionTarget":{
           "target": "north.tbar",
