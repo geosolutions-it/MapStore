@@ -326,6 +326,9 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                         this.filter.lowerBoundary = combo.getValue();
                         this.fireEvent("change", this.filter);
                     },
+                    beforequery: function(evt) {
+                        evt.combo.store.baseParams.start = 0;
+                    },
                     scope: this
                 },
                 width: 50,
@@ -352,6 +355,9 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                     select: function(combo, record) {
                         this.filter.upperBoundary = combo.getValue();
                         this.fireEvent("change", this.filter);
+                    },
+                    beforequery: function(evt) {
+                        evt.combo.store.baseParams.start = 0;
                     },
                     blur: function(combo) {
                         this.filter.upperBoundary = combo.getValue();
