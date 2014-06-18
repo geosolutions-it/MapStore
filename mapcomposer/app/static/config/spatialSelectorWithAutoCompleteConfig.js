@@ -175,7 +175,8 @@
 		  "id": "bboxquery",
           "autoComplete": {
             "sources": ["default"],
-            "url": "http://localhost:8080/geoserver/wps"
+            "url": "http://localhost:8080/geoserver/wps",
+            "pageSize": 10
           },
           
 		  "spatialSelectorsConfig":{
