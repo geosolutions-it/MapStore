@@ -115,7 +115,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
     
     addAutocompleteStore: function(config) {
         var uniqueValuesStore = new gxp.data.WPSUniqueValuesStore({
-            pageSize: this.pageSize
+            pageSize: this.autoCompleteCfg.pageSize || this.pageSize
         });
         
         this.initUniqueValuesStore(uniqueValuesStore, this.autoCompleteCfg.url || this.attributes.url, this.attributes.baseParams.TYPENAME, this.attributes.format.namespaces, this.filter.property);
@@ -273,7 +273,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                 xtype: "gxp_wpsuniquevaluescb",
                 mode: "remote", // required as the combo store shouldn't be loaded before a field name is selected
                 //store: this.uniqueValuesStore,
-                pageSize: this.pageSize,
+                pageSize: this.autoCompleteCfg.pageSize || this.pageSize,
                 typeAhead: false,
                 forceSelection: false,
                 remoteSort: true,
@@ -291,6 +291,9 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                     blur: function(combo) {
                         this.filter.value = combo.getValue();
                         this.fireEvent("change", this.filter);
+                    },
+                    beforequery: function(evt) {
+                        evt.combo.store.baseParams.start = 0;
                     },
                     scope: this
                 },
@@ -304,7 +307,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                 xtype: "gxp_wpsuniquevaluescb",
                 mode: "remote", // required as the combo store shouldn't be loaded before a field name is selected
                 //store: this.uniqueValuesStore,
-                pageSize: this.pageSize,
+                pageSize: this.autoCompleteCfg.pageSize || this.pageSize,
                 typeAhead: false,
                 forceSelection: false,
                 remoteSort: true,
@@ -323,6 +326,9 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                         this.filter.lowerBoundary = combo.getValue();
                         this.fireEvent("change", this.filter);
                     },
+                    beforequery: function(evt) {
+                        evt.combo.store.baseParams.start = 0;
+                    },
                     scope: this
                 },
                 width: 50,
@@ -335,7 +341,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                 xtype: "gxp_wpsuniquevaluescb",
                 mode: "remote", // required as the combo store shouldn't be loaded before a field name is selected
                 //store: this.uniqueValuesStore,
-                pageSize: this.pageSize,
+                pageSize: this.autoCompleteCfg.pageSize || this.pageSize,
                 typeAhead: false,
                 forceSelection: false,
                 remoteSort: true,
@@ -349,6 +355,9 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                     select: function(combo, record) {
                         this.filter.upperBoundary = combo.getValue();
                         this.fireEvent("change", this.filter);
+                    },
+                    beforequery: function(evt) {
+                        evt.combo.store.baseParams.start = 0;
                     },
                     blur: function(combo) {
                         this.filter.upperBoundary = combo.getValue();
@@ -548,271 +557,6 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
         return new OpenLayers.Filter.Comparison({matchCase: !this.caseInsensitiveMatch});
     },
     
-    
-    /**
-     * Method: createFilterItems
-     * Creates a panel config containing filter parts.
-     */
-    createFilterItems: function(type) {
-        var me = this;
-        this.uniqueValuesStore = new gxp.data.WPSUniqueValuesStore({
-            pageSize: this.pageSize
-        });
-        
-        this.fieldType = type.split(":").pop();    
-    
-        var isBetween = this.filter.type === OpenLayers.Filter.Comparison.BETWEEN;
-
-        
-                
-        var itemsTextFieldDefault = Ext.applyIf({
-            xtype: "textfield"
-        },defaultItemsProp);
-        
-        var itemsTextFieldAutocomplete = Ext.applyIf({
-            xtype: "gxp_wpsuniquevaluescb",
-                mode: "remote", // required as the combo store shouldn't be loaded before a field name is selected
-                store: this.uniqueValuesStore,
-                disabled: true,
-                value: this.filter.value,
-                pageSize: this.pageSize,
-                typeAhead: false,
-                forceSelection: false,
-                remoteSort: true,
-                triggerAction: "all",
-                allowBlank: this.allowBlank,
-                displayField: "value",
-                valueField: "value",
-                minChars: 1,
-                resizable: true,
-                listeners: {
-                    select: function(combo, record) {
-                        this.filter.value = combo.getValue();
-                        this.fireEvent("change", this.filter);
-                    },
-                    blur: function(combo) {
-                        this.filter.value = combo.getValue();
-                        this.fireEvent("change", this.filter);
-                    },
-                    scope: this
-                },
-                width: 80,
-                listWidth: 250,
-                grow: true,
-                growMin: 50,
-                anchor: "100%"
-        },defaultItemsProp);
-        
-        var itemsLowerAutocomplete = Ext.applyIf({
-            xtype: "gxp_wpsuniquevaluescb",
-                mode: "remote", // required as the combo store shouldn't be loaded before a field name is selected
-                store: this.uniqueValuesStore,
-                disabled: true,
-                value: this.filter.lowerBoundary,
-                pageSize: this.pageSize,
-                typeAhead: false,
-                forceSelection: false,
-                remoteSort: true,
-                triggerAction: "all",
-                allowBlank: this.allowBlank,
-                displayField: "value",
-                valueField: "value",
-                minChars: 1,
-                resizable: true,
-                listeners: {
-                    select: function(combo, record) {
-                        this.filter.lowerBoundary = combo.getValue();
-                        this.fireEvent("change", this.filter);
-                    },
-                    blur: function(combo) {
-                        this.filter.lowerBoundary = combo.getValue();
-                        this.fireEvent("change", this.filter);
-                    },
-                    scope: this
-                },
-                width: 50,
-                listWidth: 250,
-                grow: true,
-                growMin: 50,
-                anchor: "100%"
-        },defaultItemsProp);
-        
-        var itemsUpperAutocomplete = Ext.applyIf({
-            xtype: "gxp_wpsuniquevaluescb",
-                mode: "remote", // required as the combo store shouldn't be loaded before a field name is selected
-                store: this.uniqueValuesStore,
-                disabled: true,
-                value: this.filter.upperBoundary,
-                pageSize: this.pageSize,
-                typeAhead: false,
-                forceSelection: false,
-                remoteSort: true,
-                triggerAction: "all",
-                allowBlank: this.allowBlank,
-                displayField: "value",
-                valueField: "value",
-                minChars: 1,
-                resizable: true,
-                listeners: {
-                    select: function(combo, record) {
-                        this.filter.upperBoundary = combo.getValue();
-                        this.fireEvent("change", this.filter);
-                    },
-                    blur: function(combo) {
-                        this.filter.upperBoundary = combo.getValue();
-                        this.fireEvent("change", this.filter);
-                    },
-                    scope: this
-                },
-                width: 50,
-                listWidth: 250,
-                grow: true,
-                growMin: 50,
-                anchor: "100%"
-        },defaultItemsProp);
-        
-            
-        var itemsNumberDoubleFieldDefault = Ext.applyIf({
-            xtype: "numberfield",
-            allowDecimals:true,
-            decimalPrecision: 10
-        },defaultItemsProp);
-        
-        var itemsNumberIntFieldDefault = Ext.applyIf({
-            xtype: "numberfield",
-            allowDecimals:false
-        },defaultItemsProp);        
-
-        var itemsDateFieldDefault = Ext.applyIf({
-            xtype: "datefield",
-            width: 70,
-            allowBlank: false,
-            format: this.dateFormat
-        },defaultItemsProp);
-        
-        var itemsDateTimeFieldDefault = Ext.applyIf({
-            xtype: "datefield",
-            width: 70,
-            allowBlank: false,
-            format: 'c'
-        },defaultItemsProp);        
-        
-        /*var itemsBooleanFieldDefault = Ext.applyIf({
-            xtype: 'combo',
-            width: 60,
-            typeAhead: true,
-            triggerAction: 'all',
-            lazyRender:false,
-            mode: 'local',
-            autoLoad:true,
-            displayField: 'text',
-            valueField:'value',
-            value:'false',
-            readOnly:false,
-            editable: false,
-            store: new Ext.data.ArrayStore({
-                fields: [
-                    'value',
-                    'text'
-                ],
-                data: [
-                    ['false', 'FALSE'],
-                    ['true', 'TRUE']
-                ]
-            })
-        },defaultItemsProp);*/
-            
-        var itemsTextFieldLowerBoundary = Ext.apply({
-                    xtype: "textfield"
-                    //id: "items_string_lowerBoundary"
-                },lowerBoundaryDefaultItemsProp);
-
-        var itemsTextFieldUpperBoundary = Ext.apply({
-                    xtype: "textfield"
-                    //id: "items_string_upperBoundary"
-                },upperBoundaryDefaultItemsProp);
-
-        var itemsNumberDoubleFieldLowerBoundary = Ext.apply({
-                    xtype: "numberfield",
-                    //id: "items_number_lowerBoundary",
-                    allowDecimals:true,
-                    decimalPrecision: 10
-                },lowerBoundaryDefaultItemsProp);
-
-        var itemsNumberDoubleFieldUpperBoundary = Ext.apply({
-                    xtype: "numberfield",
-                    //id: "items_number_upperBoundary",
-                    allowDecimals:true,
-                    decimalPrecision: 10
-                },upperBoundaryDefaultItemsProp);
-                
-        var itemsNumberIntFieldLowerBoundary = Ext.apply({
-                    xtype: "numberfield",
-                    //id: "items_number_lowerBoundary",
-                    allowDecimals:false
-                },lowerBoundaryDefaultItemsProp);
-
-        var itemsNumberIntFieldUpperBoundary = Ext.apply({
-                    xtype: "numberfield",
-                    //id: "items_number_upperBoundary",
-                    allowDecimals:false
-                },upperBoundaryDefaultItemsProp);                
-
-        var itemsDateFieldLowerBoundary = Ext.apply({
-                    xtype: "datefield",
-                    width: 70,
-                    allowBlank: false,
-                    format: this.dateFormat
-                },lowerBoundaryDefaultItemsProp);
-
-        var itemsDateFieldUpperBoundary = Ext.apply({
-                    xtype: "datefield",
-                    width: 70,
-                    allowBlank: false,
-                    format: this.dateFormat
-                },upperBoundaryDefaultItemsProp);
-                
-        var itemsDateTimeFieldLowerBoundary = Ext.apply({
-                    xtype: "datefield",
-                    width: 70,
-                    allowBlank: false,
-                    format: 'c'
-                },lowerBoundaryDefaultItemsProp);
-
-        var itemsDateTimeFieldUpperBoundary = Ext.apply({
-                    xtype: "datefield",
-                    width: 70,
-                    allowBlank: false,
-                    format: 'c'
-                },upperBoundaryDefaultItemsProp);
-                
-        return [
-            this.attributesComboConfig, 
-            
-                itemsTextFieldDefault, //(2)
-                itemsDateFieldDefault, //(3)
-                itemsDateTimeFieldDefault, //(4)
-                //itemsBooleanFieldDefault, //()
-                itemsNumberDoubleFieldDefault, //(5)
-                itemsNumberIntFieldDefault, //(6)
-                
-                itemsTextFieldLowerBoundary, //(7)
-                itemsDateFieldLowerBoundary, //(8)
-                itemsDateTimeFieldLowerBoundary, //(9)                
-                itemsNumberDoubleFieldLowerBoundary, //(10)
-                itemsNumberIntFieldLowerBoundary, //(11)
-                
-                itemsTextFieldUpperBoundary, //(12)
-                itemsDateFieldUpperBoundary, //(13)                
-                itemsDateTimeFieldUpperBoundary, //(14)
-                itemsNumberDoubleFieldUpperBoundary, //(15)
-                itemsNumberIntFieldUpperBoundary, //(16)
-                itemsTextFieldAutocomplete, //(17)
-                itemsLowerAutocomplete, //(18)
-                itemsUpperAutocomplete //(19)
-        ];
-    },
-    
     initUniqueValuesStore: function(store, url, layerName, namespaces, fieldName) {
         var wpsUrl = url;
         if (url.indexOf('wfs?', url.length - 'wfs?'.length) !== -1) {
@@ -839,7 +583,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                 fieldName: fieldName
             },
             start: 0,
-            limit: this.pageSize
+            limit: this.autoCompleteCfg.pageSize || this.pageSize
         };
         store.setWPSParams(params);
     },
