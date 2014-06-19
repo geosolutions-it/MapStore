@@ -1,0 +1,263 @@
+
+/* ICONS
+***********************************************************************************************************************/
+
+.icon-close {
+    background: transparent url(../img/cross.png) no-repeat 0px 0px !important;
+    height:15px !important;
+    width:15px !important;
+}
+
+.icon-wrench {
+    background-image:url(../img/fb/wrench.png) !important;
+}
+
+.icon-computer-link { 
+background-image:url(../img/fb/computer_link.png) !important;
+}
+
+.icon-upload { 
+background-image:url(../img/fb/up.png) !important;
+background-position:0px 1px !important; 
+}
+
+.icon-folder-add {
+background-image:url(../img/fb/folder_add.png) !important;
+}
+
+.icon-collapse-all {
+background-image:url(../img/fb/collapse-all.gif) !important;
+}
+
+.icon-expand-all {
+background-image:url(../img/fb/expand-all.gif) !important;
+}
+
+.icon-open-blank {
+background-image:url(../img/fb/application_cascade.png) !important;
+}
+
+.icon-open-download {
+background-image:url(../img/fb/application_put.png) !important;
+}
+
+.icon-open {
+background-image:url(../img/fb/application_go.png) !important;
+}
+
+.icon-open-popup {
+background-image:url(../img/fb/application_double.png) !important;
+}
+
+.icon-open-self {
+background-image:url(../img/fb/application.png) !important;
+}
+
+.icon-refresh {
+background-image:url(../img/fb/arrow_refresh.png) !important;
+}
+
+.icon-pencil {
+background-image:url(../img/fb/pencil.png) !important;
+}
+
+.icon-cross {
+background-image:url(../img/fb/cross.png) !important;
+}
+
+.icon-upload {
+background-image:url(../img/fb/up.png) !important;
+}
+
+.icon-plus {
+background-image:url(../img/fb/add.png) !important;
+}
+
+.icon-folder-explore {
+background-image:url(../img/fb/folder_explore.png) !important;
+}
+
+.icon-up {
+background-image:url(../img/fb/arrow_up.png) !important;
+}
+
+.icon-previous {
+background-image:url(../img/fb/resultset_previous.png) !important;
+}
+
+.icon-next {
+background-image:url(../img/fb/resultset_next.png) !important;
+}
+
+.icon-view {
+background-image:url(../img/fb/application_view_tile.png) !important;
+}
+
+.icon-list {
+background-image:url(../img/fb/application_view_list.png) !important;
+}
+
+.icon-row-file {
+padding-left:20px;
+background-position:0 -2px;
+background-image:url(../img/fb/leaf.gif) !important;
+background-repeat:no-repeat;
+}
+
+.icon-row-folder {
+padding-left:20px;
+background-position:0 -2px;
+background-image:url("../img/fb/folder_16.png") !important;
+background-repeat:no-repeat;
+}
+
+.x-tree-node-collapsed .x-tree-node-icon, .row-folder {
+background-image:url(../img/fb/folder_16.png)  ;
+}
+
+.x-tree-node-expanded .x-tree-node-icon {
+background-image:url(../img/fb/folder-open_16.png) ;
+}
+
+.x-tree-node-leaf .x-tree-node-icon, .row-file {
+background-image:url("../img/fb/file_16.png");
+}
+
+.thumb .folder {
+    background-image:url(../img/fb/folder_64.png) !important;
+    background-position:50% -8px !important;
+}
+
+.thumb .file {
+background-image:url(../img/fb/file_48.png) !important;
+}
+
+.row-file, .row-folder {
+  padding-left:20px;
+  padding-top:3px;
+  background-repeat: no-repeat;
+}
+
+.image-preview div {
+  padding:0px !important;
+  cursor: default !important;
+}
+
+/* Remove toolbar background not found
+.image-preview .x-toolbar {
+  padding:1px !important;
+  background:#D0DEF0 url(http://lib.chewam.com/ext/resources/images/default/toolbar/bg.gif) repeat-x scroll left top;
+  filter : alpha(opacity=80);
+  -moz-opacity : 0.8;
+  opacity : 0.8;
+}*/
+
+.image-preview .x-toolbar div {
+  border:0px;
+}
+
+.x-dd-drag-proxy {
+    background-color:#FFFFFF;
+}
+
+/* DATAVIEW
+***********************************************************************************************************************/
+
+
+.browser-view .x-panel-body{
+	background: white;
+	font: 11px Arial, Helvetica, sans-serif;
+}
+.browser-view .thumb{
+	background: #FFFFFF;
+	padding: 3px;
+}
+.browser-view .thumb .item {
+    width:70px;
+    height:51px;
+    background-repeat: no-repeat;
+    background-color: #FFFFFF;
+    background-image:url(../img/fb/file_48.png);
+    border:1px solid #ffffff;
+    background-position:50% 2px;
+}
+.browser-view .thumb img{
+	height: 60px;
+	width: 80px;
+}
+.browser-view .thumb-wrap{
+	float: left;
+	margin: 4px;
+	margin-right: 0;
+    border:1px solid white;
+	xpadding: 5px;
+}
+.browser-view .thumb-wrap span{
+	display: block;
+	overflow: hidden;
+	text-align: center;
+    font:13px arial,tahoma,helvetica,sans-serif;
+}
+
+/* Remove  background not found
+.browser-view .x-view-over{
+    border:1px solid #dddddd;
+    background: #efefef url("../img/fb/row-over.png") repeat-x left top;
+	xpadding: 4px;
+}*/
+
+.browser-view .x-view-selected{
+	background: #eff5fb url("../img/fb/selected.gif") no-repeat right bottom;
+	border:1px solid #99bbe8;
+	xpadding: 4px;
+}
+.browser-view .x-view-selected .thumb, .browser-view .x-view-over .thumb {
+	background:transparent;
+}
+
+.browser-view .loading-indicator {
+	font-size:11px;
+	background-image:url("../img/loading.gif");
+	background-repeat: no-repeat;
+	background-position: left;
+	padding-left:20px;
+	margin:10px;
+}
+/* *** FILE EXTENSIONS *** */
+/* Use the following schema for icons with file-<extension> */
+/* pdf */
+.x-tree-node-leaf .x-tree-node-icon.file.file-pdf , .x-grid3-cell-inner .file-pdf {
+    background-image:url("../img/fb/extensions/16/pdf.png");
+}
+.browser-view .thumb .item.file.file-pdf {
+    background-image:url("../img/fb/extensions/48/pdf.png") !important;;
+}
+
+/* xml */
+.x-tree-node-leaf .x-tree-node-icon.file.file-xml , .x-grid3-cell-inner .file-xml {
+    background-image:url("../img/fb/extensions/16/xml.png");
+}
+.browser-view .thumb .item.file.file-xml {
+    background-image:url("../img/fb/extensions/48/xml.png") !important;;
+}
+/* jpg */
+.x-tree-node-leaf .x-tree-node-icon.file.file-jpg , .x-grid3-cell-inner .file-jpg {
+    background-image:url("../img/fb/extensions/16/jpg.png");
+}
+.browser-view .thumb .item.file.file-jpg {
+    background-image:url("../img/fb/extensions/48/jpg.png") !important;;
+}
+/* png */
+.x-tree-node-leaf .x-tree-node-icon.file.file-png , .x-grid3-cell-inner .file-png {
+    background-image:url("../img/fb/extensions/16/jpg.png");
+}
+.browser-view .thumb .item.file.file-png {
+    background-image:url("../img/fb/extensions/48/jpg.png") !important;;
+}
+/* gif */
+.x-tree-node-leaf .x-tree-node-icon.file.file-gif , .x-grid3-cell-inner .file-gif {
+    background-image:url("../img/fb/extensions/16/jpg.png");
+}
+.browser-view .thumb .item.file.file-gif {
+    background-image:url("../img/fb/extensions/48/jpg.png") !important;;
+}

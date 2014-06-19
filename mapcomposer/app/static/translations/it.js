@@ -1,6 +1,10 @@
 /**
  * Copyright (c) 2009-2010 The Open Planning Project
  */
+/*
+	NOTE: configuration customization could override
+	these strings
+*/
 
 GeoExt.Lang.add("it", {
     "GeoExplorer.prototype": {
@@ -721,6 +725,170 @@ GeoExt.Lang.add("it", {
 		embedCodeTitle: "Codice da Incorporare",
 		embedURL: "URL diretto",		
 		urlLabel: "URL",
-		showMapTooltip: "Mostra in una nuova finestra"
-	}
+		showMapTooltip: "Mostra in una nuova finestra",
+        loadMapText: "Carica Mappa",
+        downloadAppText: "Installa Applicazione Android",
+        loadInMapStoreMobileText:'Mobile',
+        openImageInANewTab: "Apri immagine in una nuova tab"
+	},
+
+    "gxp.widgets.form.SpatialSelectorField.prototype" :{
+        title : "Regione di Interesse",
+        selectionMethodLabel : "Metodo di Selezione",
+        comboEmptyText : "Selezionate un Metodo..",
+        comboSelectionMethodLabel : "Selezione",
+        northLabel : "Nord",
+        westLabel : "Ovest",
+        eastLabel : "Est",
+        southLabel : "Sud",
+        setAoiTitle : "Bounding Box",
+        setAoiText : "Disegna",
+        setAoiTooltip : "Abilita il controllo SetBox per disegnare l'area d'interesse (Bounding Box) sulla mappa",
+        areaLabel : "Area",
+        perimeterLabel : "Perimetro",
+        radiusLabel : "Raggio",
+        centroidLabel : "Centroide",
+        latitudeEmptyText : 'Y',
+        longitudeEmptyText : 'X',
+        geocodingFieldSetTitle : "GeoCoder",
+        geocodingPanelTitle : "Scegliere una Località",
+        geocodingPanelBtnRefreshTxt : "Mostra Geometrie",
+        geocodingPanelBtnDestroyTxt : "Nascondi Geometrie",
+        geocodingPanelBtnDeleteTxt : "Rimuovi Località",
+        geocodingPanelLocationHeader: "Località",
+        geocodingPanelCustomHeader: "Parente",
+        geocodingPanelGeometryHeader: "WKT della Geometria",
+        geocodingPanelBtnSelectAllTxt : "Seleziona Tutto", 
+        geocodingPanelBtnDeSelectAllTxt : "Deseleziona Tutto", 
+        geocodingPanelMsgRemRunningTitle : "Rimuovi Località",
+        geocodingPanelMsgRemRunningMsg : "Vuoi rimuovere le Località selezionate dalla lista?",
+        geocodingFieldLabel : "Cerca una Località",
+        geocodingFieldEmptyText : "Inserisci Località...",
+        geocodingFieldBtnAddTooltip : "Aggiungi una Località alla lista",
+        geocodingFieldBtnDelTooltip : "Pulisci...",
+        selectionSummary : "Sommario delle Selezioni",
+        geocoderSelectorsLabels: ['Unione delle geometrie', 'Lista delle Area Amministrative', 'Area Amministrativa e sottoaree'],
+        selectionReturnTypeLabel: "Tipo di selezione"
+    },
+    
+    "gxp.plugins.WFSGrid.prototype":{
+        displayMsgPaging: "Visualizzazione elementi {0} - {1} of {2}",
+        emptyMsg: "Nessun elemento da visualizzare",
+        loadMsg: "Attendere prego...",
+        zoomToTooltip: 'Zoom all\'elemento'        
+    },
+    
+    "gxp.plugins.TabPanelWFSGrids.prototype":{
+        zoomToTooltip: 'Zoom all\'elemento',
+        displayMsgPaging: "Visualizzazione elementi {0} - {1} of {2}",
+        emptyMsg: "Nessun elemento da visualizzare",
+        loadMsg: "Attendere prego...",
+        noRecordFoundLabel: "Nessun elemento trovato"
+    },
+    
+    "gxp.plugins.spatialselector.SpatialSelector.prototype" :{
+        titleText : "Regione di Interesse",
+        selectionMethodLabel : "Metodo di Selezione",
+        comboEmptyText : "Selezionate un Metodo..",
+        comboSelectionMethodLabel : "Selezione"
+    },
+    
+    "gxp.widgets.form.spatialselector.SpatialSelectorMethod.prototype" :{
+        areaLabel : "Area",
+        perimeterLabel : "Perimetro",
+        lengthLabel: "Lunghezza",
+        radiusLabel : "Raggio",
+        centroidLabel : "Centroide",
+        selectionSummary: "Sommario delle Selezioni",
+        geometryOperationText: "Operazione geometrica",
+        geometryOperationEmptyText: "Seleziona una operazione",
+        distanceTitleText: "Distanza",
+        distanceUnitsTitleText: "Unità di misura",
+        noOperationTitleText: "Operazione non valida",
+        noOperationMsgText: "Prego, selezionare una operazione prima di eseguire la query",
+        noCompleteMsgText: "Prego, completare il riempimento della form prima di eseguire la query"
+    },
+    
+    "gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
+        name  : 'BBOX',
+        label : 'Bounding Box',
+        northLabel : "Nord",
+        westLabel : "Ovest",
+        eastLabel : "Est",
+        southLabel : "Sud",
+        setAoiTitle : "Bounding Box",
+        setAoiText : "Disegna",
+        setAoiTooltip : "Abilita il controllo SetBox per disegnare l'area d'interesse (Bounding Box) sulla mappa"
+    },
+    
+    "gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.prototype" :{
+        name  : 'Buffer',
+        label : 'Buffer',
+        latitudeEmptyText : 'Y',
+        longitudeEmptyText : 'X'
+    },
+    
+    "gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod.prototype" :{
+        name  : 'Cerchio',
+        label : 'Cerchio'
+    },
+    
+    "gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod.prototype" :{
+        name  : 'Geocoding',
+        label : 'Geocoding',
+        geocodingFieldSetTitle : "GeoCoder",
+        geocodingPanelTitle : "Scegliere una Località",
+        geocodingPanelBtnRefreshTxt : "Mostra Geometrie",
+        geocodingPanelBtnDestroyTxt : "Nascondi Geometrie",
+        geocodingPanelBtnDeleteTxt : "Rimuovi Località",
+        geocodingPanelLocationHeader: "Località",
+        geocodingPanelCustomHeader: "Parente",
+        geocodingPanelGeometryHeader: "WKT della Geometria",
+        geocodingPanelBtnSelectAllTxt : "Seleziona Tutto", 
+        geocodingPanelBtnDeSelectAllTxt : "Deseleziona Tutto", 
+        geocodingPanelMsgRemRunningTitle : "Rimuovi Località",
+        geocodingPanelMsgRemRunningMsg : "Vuoi rimuovere le Località selezionate dalla lista?",
+        geocodingFieldLabel : "Cerca una Località",
+        geocodingFieldEmptyText : "Inserisci Località...",
+        geocodingFieldBtnAddTooltip : "Aggiungi una Località alla lista",
+        geocodingFieldBtnDelTooltip : "Pulisci...",
+        selectionSummary : "Sommario delle Selezioni"
+    },
+    
+    "gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
+        name  : 'Poligono',
+        label : 'Poligono'
+    },
+
+    "gxp.plugins.spatialselector.Geocoder.prototype" :{
+        titleText: "Geocoder",
+        searchText: "Ricerca",
+        searchTpText: "Ricerca la zona selezionata ed esegui lo zoom sulla mappa",
+        resetText: "Azzeramento",
+        resetTpText: "Azzeramento ricerca zona",
+        translatedKeys: {
+            "name": "Strada",
+            "number": "Numero"
+        }
+    },
+	
+	"gxp.plugins.ResourceStatus.prototype":{
+		rootNodeText: "Risorse Importate",
+		serviceErrorTitle: "Errore Servizio",
+		tabTitle: "Importati",
+		layerNodeName: "Livelli",
+		serviceNodeName: "Servizi"
+    },
+	
+	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
+        noFilterSelectedMsgTitle: "Nessun filtro selezionato",    
+        noFilterSelectedMsgText: "Devi selezionare almeno un filtro",    
+        invalidRegexFieldMsgTitle: "Campo non valido",    
+        invalidRegexFieldMsgText: "Uno o più campi non sono stati riempiti correttamente!"
+    },
+	
+	"gxp.plugins.FeatureManager.prototype":{
+        noValidWmsVersionMsgTitle: 'Versione WMS non valida',    
+        noValidWmsVersionMsgText: "Il plugin queryForm non funziona con una sorgente WMS versione: "
+    }
 });

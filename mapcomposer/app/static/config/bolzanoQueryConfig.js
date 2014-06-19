@@ -1,7 +1,4 @@
 {
-   "geoStoreBase": "",
-   "proxy":"/http_proxy/proxy/?url=",
-   "defaultLanguage": "it",
    "advancedScaleOverlay": true,
    "proj4jsDefs": {"EPSG:25832": "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs"},
    "gsSources":{ 
@@ -18,7 +15,8 @@
 			"layerBaseParams":{
 				"FORMAT": "image/png8",
 				"TILED": true
-			}
+			},
+            "authParam":"authkey"
 		},
 		"mapquest": {
 				"ptype": "gxp_mapquestsource"
@@ -131,7 +129,8 @@
 			"height": 500,
 			"region": "east",
 			"layout": "fit",
-			"collapsed": true,
+			"collapsed": false,
+			"split": true,
 			"collapsible": true,
 			"header": true
         }
@@ -247,7 +246,7 @@
 			"outputTarget": "searchpanel",
 			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
 			"selectionProperties": {
-				"wmsURL": "http://sit.comune.bolzano.it/geoserver/",
+				"wmsURL": "http://sit.comune.bolzano.it/geoserver/ows",
 				"selectionLayerTitle": "Selection Layer",
 				"selectionLayerCiviciName": "Cartografia:civici",
 				"selectionLayerViaName": "Ambiente:grafo",
@@ -261,7 +260,7 @@
 			"outputTarget": "searchpanel",
 			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
 			"selectionProperties": {
-				"wmsURL": "http://sit.comune.bolzano.it/geoserver/",
+				"wmsURL": "http://sit.comune.bolzano.it/geoserver/ows",
 				"selectionLayerTitle": "Selection Layer"
 			}
 		}, {
@@ -270,7 +269,8 @@
 			"id": "addlayer"
 		}, {
 			"ptype": "gxp_featuremanager",
-			"id": "featuremanager"
+			"id": "featuremanager",
+			"pagingType": 1
 		}, {
 			"ptype": "gxp_featuregrid",
 			"featureManager": "featuremanager",
@@ -281,35 +281,77 @@
 			"outputTarget": "south",
 			"showExportCSV": true
 		}, {
-			"ptype": "gxp_bboxqueryform",
-			"featureManager": "featuremanager",
-			"featureGridContainer": "south",
-			"outputTarget": "east",
-			"showSelectionSummary": true,
-			"actions": null,
-			"id": "bboxquery",
-			"outputConfig":{
-				"outputSRS": "EPSG:900913",
-				"selectStyle":{
-					"strokeColor": "#ee9900",
-					"fillColor": "#ee9900",
-					"fillOpacity": 0.4,
-					"strokeWidth": 1
-				},
-				"spatialFilterOptions": {        
-					"lonMax": 20037508.34,   
-					"lonMin": -20037508.34,
-					"latMax": 20037508.34,   
-					"latMin": -20037508.34  
-				},
-				"bufferOptions": {
-					"minValue": 1,
-					"maxValue": 1000,
-					"decimalPrecision": 2,
-					"distanceUnits": "m"
-				}
+		    "ptype": "gxp_spatialqueryform",
+		    "featureManager": "featuremanager",
+		    "featureGridContainer": "south",
+		    "outputTarget": "east",
+		    "showSelectionSummary": true,
+		    "actions": null,
+		    "id": "bboxquery",
+            "autoComplete": {
+				"sources": ["bolzano"],
+				"pageSize": 10
+			},      
+            "outputConfig":{
+                  "selectStyle":{
+                          "strokeColor": "#ee9900",
+                          "fillColor": "#ee9900",
+                          "fillOpacity": 0.4,
+                          "strokeWidth": 1
+                  }
+            },	
+			"spatialSelectorsConfig":{
+		        "bbox":{
+		            "xtype": "gxp_spatial_bbox_selector"
+		        },
+		        "buffer":{
+		            "xtype": "gxp_spatial_buffer_selector",
+					"bufferOptions": {
+						"minValue": 1,
+						"maxValue": 10000,
+						"decimalPrecision": 2
+					}
+		        },
+		        "circle":{
+		            "xtype": "gxp_spatial_circle_selector",
+		            "zoomToCurrentExtent": true
+		        },
+		        "polygon":{
+		            "xtype": "gxp_spatial_polygon_selector"
+		        },
+		        "geocoder":{
+		            "xtype": "gxp_spatial_geocoding_selector",
+		            "multipleSelection": false,
+		            "wfsBaseURL": "http://sit.comune.bolzano.it/geoserver/wfs?",
+		            "geocoderTypeName": "Ambiente:grafo",
+		            "geocoderTypeRecordModel":[
+		                {
+		                    "name":"id",
+		                    "mapping":"id"
+		                },
+		                {
+		                    "name":"name",
+		                    "mapping":"properties.TEXT_I"
+		                },
+		                {
+		                    "name":"custom",
+		                    "mapping":"properties.ID_STRASSE"
+		                },
+		                {
+		                    "name":"geometry",
+		                    "mapping":"geometry"
+		                }
+		            ],
+		            "geocoderTypeSortBy": null,
+		            "geocoderTypeQueriableAttributes":[
+		                "TEXT_I", "ID_STRASSE"
+		            ],
+		            "spatialOutputCRS": "EPSG:4326",
+		            "geocoderTypePageSize": 10,
+		            "zoomToCurrentExtent": false
+		        }
 			}
-		}, {
+    	}, {
 		   "ptype": "gxp_mouseposition",
 		   "displayProjectionCode":"EPSG:25832",
 		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
@@ -367,6 +409,9 @@
 			"actionTarget": {"target": "paneltbar", "index": 2},
 			"embeddedTemplateName": "composer",
 			"showDirectURL": true
+		}, {
+			"ptype": "gxp_languageselector",
+			"actionTarget": {"target": "panelbbar", "index": 3}
 		}
     ]
 }

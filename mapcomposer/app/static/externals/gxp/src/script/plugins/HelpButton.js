@@ -38,8 +38,9 @@ Ext.namespace("gxp.plugins");
  *    Plugin for adding a custom help button to MapStore. This will show an help window
  *    The HelpButton tool can be configured by setting this tool's 
  *    ``outputConfig`` property.
- */
- 
+ *
+ *  Author: Tobia Di Pisa at tobia.dipisa@geo-solutions.it
+ */ 
 gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
     ptype:'gxp_help',
      

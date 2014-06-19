@@ -1,9 +1,8 @@
 {
    "geoStoreBase":"",
    "gnBaseUrl": "",
-   "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "it",
-   "advancedScaleOverlay": true,
+   "scaleOverlayMode": "advanced",
    "tab": true,
    "gsSources":{ 
 		"mapquest": {
@@ -132,9 +131,8 @@
 			"actionTarget": "paneltbar"
 		}, {
 			"ptype": "gxp_geolocationmenu",
-			"outputTarget": "paneltbar",
-			"toggleGroup": "toolGroup",
-			"index": 23
+			"actionTarget": {"target": "paneltbar", "index": 23},
+			"toggleGroup": "toolGroup"
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,

@@ -433,7 +433,7 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
 		// In this case also the transitionEffect must be setted to 
 		// null in Layer configuration (see plugins/WMSSource.js).
 		// /////////////////////////////////////////////////////////
-		var zoomMethod = OpenLayers.Easing.Quad.easeOut;
+		var zoomMethod = null;
 		if(mapConfig.animatedZooming){
 			if(mapConfig.animatedZooming.zoomMethod == null){
 				zoomMethod = null;

@@ -4,12 +4,15 @@ var Request = require("ringo/webapp/request").Request;
 var urls = [
     [(/^\/(index(.html)?)?/), require("./root/index").app],
     //[(/^\/(login)/), require("./root/login").app],
+    [(/^\/(loginpage)/), require("./root/loginpage").app],
     //[(/^\/(maps(\/\d+)?)/), require("./root/maps").app],
 	//[(/^\/(geonetwork)/), require("./root/geonetwork").app],  // Enable this only for the GeoNetwork integration
     [(/^\/(composer)/), require("./root/composer").app],
+    [(/^\/(manager)/), require("./root/manager").app],
 	[(/^\/(wps)/), require("./root/wps").app],                // to test WPS plugin
 	[(/^\/(test)/), require("./root/test").app],              // to test the MapStore Viewport
     [(/^\/(viewer(.html)?)/), require("./root/viewer").app],
+	[(/^\/(embedded(.html)?)/), require("./root/embedded").app],
     [(/^\/(debug(.js)?)/), require("./root/debug").app]
 ];
 

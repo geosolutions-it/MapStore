@@ -160,6 +160,11 @@ div#homelogos ul li a:hover {
     background-image: url(img/geosilk/server_table.png);
 }
 
+/* gxp_wmsgetfeatureinfo */
+.getfeatureinfo-icon{
+   background-image: url(img/silk/information.png) !important;
+}
+
 /* marker selector*/
 #images-view .x-panel-body{
 	background: white;
@@ -213,4 +218,9 @@ div#homelogos ul li a:hover {
     float:left !important;
     height:14px; /*change from 13px to 14px*/
     width:13px;
+}
+
+/* gxp_categoryinitializer */
+.initCategoriesMessage{
+    padding: 20px;
 }

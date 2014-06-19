@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+    <!--meta http-equiv="X-UA-Compatible" content="IE=8" /-->
+    <title>Map Manager</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="shortcut icon" href="theme/app/img/favicon.ico">
+    
+     <!-- Ext resources -->
+    <link rel="stylesheet" type="text/css" href="externals/ext/resources/css/ext-all.css">
+    <link rel="stylesheet" type="text/css" href="externals/ext/resources/css/xtheme-gray.css">
+    <script type="text/javascript" src="externals/ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="externals/ext/ext-all.js"></script>
+    
+    <!-- OpenLayers resources -->
+    <link rel="stylesheet" type="text/css" href="externals/openlayers/theme/default/style.css">
+    <script type="text/javascript" src="script/OpenLayers.js"></script>
+    
+    <!-- Externatls OpenLayers libraries to manage other extensions -->
+    <script type="text/javascript" src="script/OpenLayersExt.js"></script> 
+    
+    <!-- Ask RingoJS for debug status -->
+    <script type="text/javascript" src="debug.js"></script> 
+    
+    <link rel="stylesheet" type="text/css" href="theme/app/openlayers.css" />
+
+    <!-- GeoExt resources -->
+    <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/popup.css">
+    <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/layerlegend.css">
+    <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/gxtheme-gray.css">
+    <script type="text/javascript" src="script/GeoExt.js"></script> 
+    
+    <!-- translation data  -->
+    <script type="text/javascript" src="externals/mapmanager/translations/en.js"></script>
+    <script type="text/javascript" src="externals/mapmanager/translations/fr.js"></script>
+    <script type="text/javascript" src="externals/mapmanager/translations/it.js"></script>
+    <script type="text/javascript" src="externals/mapmanager/translations/de.js"></script>
+    <script type="text/javascript" src="externals/mapmanager/translations/es.js"></script>
+    
+    <!-- MapStoreManager includes  -->
+    <script type="text/javascript" src="auth/base64.js"></script>
+    <link rel="stylesheet" type="text/css" href="externals/mapmanager/theme/css/mapstoremanager.css">
+    <script type="text/javascript" src="script/ux.js"></script>
+    <script type="text/javascript" src="script/mapmanager.js"></script>
+    <!-- QR Code -->
+    <script type="text/javascript" src="script/qrcodejs.js"></script>
+    <!-- common data  -->
+    <script type="text/javascript" src="config/common/localConfig.js"></script>
+   
+    
+
+    <script>
+        // ///////////////////////////////////////////////////////////////
+        // Custom variables from the mapStoreConfig user configuration file 
+        // ///////////////////////////////////////////////////////////////
+        var proxy; 
+        var serverConfig;
+        var customConfigName;
+        
+        // //////////////////////////////////////////////////
+        // Parsing the request to get the parameters
+        // //////////////////////////////////////////////////
+        var params = location.search.replace(/^\?/,'').replace(/&amp;/g,'&').split("&");
+        for (var j=0; j < params.length; j++) {
+            var param = params[j].split("=");
+            if(param[0]){
+                switch ( param[0] ) {
+                    case "mapId": 
+                                    try {
+                                        mapIdentifier = parseInt(param[1]);
+                                    }catch(e){
+                                        mapIdentifier = -1;
+                                    } 
+                                    break;
+                    case "bbox": 
+                                    try{
+                                        bbox = new OpenLayers.Bounds.fromString(param[1]);
+                                    }catch(e){
+                                        bbox = undefined;
+                                    } 
+                                    break;
+                    case "config":
+                                    customConfigName = param[1];
+                                    break;
+                    default : 
+                                    //mapIdentifier = -1;
+                }
+            }
+        }                      
+            
+        var onReady = function(){
+            
+            config = serverConfig;
+            Ext.QuickTips.init();
+            
+            var langData = config.locales;
+
+            var query = location.search;        
+            if(query && query.substr(0,1) === "?"){
+                query = query.substring(1);
+            }
+            
+            var url = Ext.urlDecode(query);     
+            var code = url.locale;   
+
+            if(!code){
+                code = config.defaultLanguage || config.locales[0][0];
+            }
+            
+            var initialLanguageString;
+                    
+            //check if code is valid
+            if(code){
+                Ext.each(langData, function(rec){
+                    if(rec[0] === code.toLowerCase()){
+                        initialLanguageString = rec[1];
+                        return;
+                    }
+                });
+            }            
+            
+            if (GeoExt.Lang) {
+                    GeoExt.Lang.set(code);
+            }
+
+            // Apply config for lang selector
+            Ext.apply(config,{
+                langData: langData,
+                initialLanguageString: initialLanguageString,
+                lang: code || defaultLanguage || "en",
+                code: code
+            });
+            new mxp.widgets.ManagerViewport({
+                layout:'fit',
+                config: config,
+                items:{
+                    xtype: 'tabpanel',
+                    id:'mainTabPanel',
+                    items:[],
+                    enableTabScroll : true,
+                    activeTab:0
+                    
+                }
+            });
+        };
+        
+        Ext.Ajax.request({
+              url: customConfigName ? "config/" + customConfigName + ".js"  : "config/managerConfig.js",
+              method: 'GET',
+              success: function(response, opts){      
+                                          
+                  try{
+                      serverConfig = Ext.util.JSON.decode(response.responseText);
+                  }catch(e){
+                      Ext.Msg.show({
+                            title: "Startup",
+                            msg: "An error occurred while parsing the external configuration: " + response.status,
+                            buttons: Ext.Msg.OK,
+                            icon: Ext.MessageBox.ERROR
+                      });
+                  }
+                  
+                  if(serverConfig){
+				      // ////////////////////////////////////////////////////////
+                      // Apply the local default configuration if not present.
+					  // ////////////////////////////////////////////////////////
+                      serverConfig = Ext.applyIf(serverConfig, localConfig);
+					  
+					  if(!serverConfig.geoStoreBase || serverConfig.geoStoreBase == ""){
+						serverConfig.geoStoreBase = 'http://' + window.location.host + '/geostore/rest/';
+					  }
+					  
+					  if(!serverConfig.composerUrl || serverConfig.composerUrl == ""){
+						serverConfig.composerUrl = "composer"; 
+					  }
+					  
+					  if(!serverConfig.socialUrl || serverConfig.socialUrl == ""){
+						serverConfig.socialUrl = 'http://' + window.location.host;
+					  }
+                      
+					  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy;
+                      serverConfig.proxy = proxy;
+					  
+                      OpenLayers.ProxyHost = this.proxy; // Explicit because this application doesn't include
+					  
+                      // ///////////////////////////////////////////////  
+                      // Run the application when browser is ready
+                      // ///////////////////////////////////////////////
+                      Ext.onReady(onReady);
+                  }
+              },
+              failure:  function(response, opts){
+                  Ext.Msg.show({
+                        title: "Startup",
+                        msg: "An error occurred while getting the external configuration: " + response.status,
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.MessageBox.ERROR
+                  });
+              }
+        });
+        
+    </script>
+    </head>
+    <body>
+        <% render content %>
+		<div id="wrap" style="visibility:hidden"></div>
+    </body>
+</html>

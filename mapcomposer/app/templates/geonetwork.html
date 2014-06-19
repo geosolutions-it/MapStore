@@ -62,11 +62,15 @@
     <!-- geocoding data  -->
     <script type="text/javascript" src="data/georeferences.js"></script>
     
-	<!-- translation data  -->
+    <!-- common data  -->
+    <script type="text/javascript" src="config/common/localConfig.js"></script>
+    
+    <!-- translation data  -->
     <script type="text/javascript" src="translations/en.js"></script>
     <script type="text/javascript" src="translations/fr.js"></script>
     <script type="text/javascript" src="translations/it.js"></script>
     <script type="text/javascript" src="translations/de.js"></script>
+    <script type="text/javascript" src="translations/es.js"></script>
 	
 	<!-- uncomment to have  welcome screen
 	<script type="text/javascript">
@@ -289,7 +293,7 @@
                 iconCls: "icon-geosol",
                 width : 150,
                 handler: function(btn){
-                    window.open('http://www.geo-solutions.it/contact/', '_blank');
+                    window.open('http://www.geo-solutions.it/about/contacts/', '_blank');
                 }
             });    
 			
@@ -379,13 +383,15 @@
             };*/
 
             app = new GeoExplorer.Composer({  
-				advancedScaleOverlay: serverConfig.advancedScaleOverlay,
+				scaleOverlayMode : serverConfig.scaleOverlayMode || (serverConfig.advancedScaleOverlay ? 'advanced' : 'basic'),
                 defaultLanguage: serverConfig.defaultLanguage,		
+				actionToolScale: serverConfig.actionToolScale || "small",
 				geonetwork: true, // hidden/private config only used for the geonetwork use case
                 customPanels:serverConfig.customPanels,
                 modified: false,
                 proxy: proxy,
 				tools: serverConfig.tools,
+                removeTools: serverConfig.removeTools,
                 geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),
                 portalConfig:serverConfig.portalConfig,
                 defaultSourceType: "gxp_wmssource",
@@ -397,14 +403,13 @@
                 },
                 sources: sources,
 				scaleOverlayUnits: serverConfig.scaleOverlayUnits,
-				//showGraticule: false,  //Set showGraticule property to true only if the map projection is EPSG:4326 
                 georeferences: georeferences_data,
                 cswconfig: serverConfig.cswconfig,
                 map: serverConfig.map,
 				customTools: serverConfig.customTools
             }, mapIdentifier, authorization, fullScreen);   
             
-			app.viewMetadata = function(url, uuid, title){
+			/*app.viewMetadata = function(url, uuid, title){
 				var tabPanel = Ext.getCmp(this.renderToTab);
 				
 				var tabs = tabPanel.find('title', title);
@@ -423,7 +428,7 @@
 						this.addLoadingMask(meta.items.first());
 					},this);						
 				}
-			};
+			};*/
 			
             app.on({
                 'portalready' : function() {              	
@@ -544,6 +549,8 @@
 				  }
 				  
 				  if(serverConfig){
+					  //apply the local default configuration if not present.
+					  serverConfig = Ext.applyIf(serverConfig,localConfig);
 					  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy; 
 					  
 					  // ///////////////////////////////////////////////  

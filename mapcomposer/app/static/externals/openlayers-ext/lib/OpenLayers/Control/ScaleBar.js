@@ -589,8 +589,8 @@ OpenLayers.Control.ScaleBar = OpenLayers.Class(OpenLayers.Control, {
                 if(!sheet.disabled) {
                     var allRules;
                     try {
-                        if(typeof(sheet.cssRules) == 'undefined') {
-                            if(typeof(sheet.rules) == 'undefined') {
+                        if(typeof(sheet.cssRules) == 'undefined' || sheet.cssRules == null) {
+                            if(typeof(sheet.rules) == 'undefined' || sheet.rules == null) {
                                 // can't get rules, keep looking
                                 continue;
                             } else {

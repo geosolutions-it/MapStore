@@ -4,6 +4,9 @@
         "util.js",
         "data/WFSFeatureStore.js",
         "data/WFSProtocolProxy.js",
+        "data/WPSUniqueValuesReader.js",
+        "data/WPSUniqueValuesProxy.js",
+        "data/WPSUniqueValuesStore.js",
         "menu/LayerMenu.js",
         "widgets/EmbedMapDialog.js",
         "widgets/FeatureEditPopup.js",
@@ -23,6 +26,7 @@
         "widgets/ScaleLimitPanel.js",
         "widgets/TextSymbolizer.js",
         "widgets/Viewer.js",
+        "widgets/form/WPSUniqueValuesCombo.js",
         "widgets/form/ComparisonComboBox.js",
         "widgets/form/ColorField.js",
         "widgets/form/FilterField.js",
@@ -86,6 +90,7 @@
         "plugins/Print.js",
         "plugins/PrintSnapshot.js",
         "plugins/WMSFilterView.js",
+        "plugins/WFSGrid.js",
         "locale/es.js",
         "locale/ca.js"
     );

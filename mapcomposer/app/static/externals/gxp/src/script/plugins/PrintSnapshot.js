@@ -62,7 +62,7 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
     /** api: config[noSupportedLayersErrorMsg]
      *  ``String``
      */
-	noSupportedLayersErrorMsg: "Error occurred while generating the Map Snapshot: No Supported Layers have been found!",
+	noSupportedLayersErrorMsg: "Supported Layers have been found!",
 	
 	/** api: config[generatingErrorMsg]
      *  ``String``
@@ -112,6 +112,7 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
                 	var srsID;
                 	var unSupportedLayers = [];
                 	var supportedLayers = [];
+					var supportedStyles = [];
                 	var vectorialLayers = [];
                 	var filters = [];
                 	for (var i = 0; i < layers.length; i++) {
@@ -119,6 +120,7 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
                 		if (layer.getVisibility()) {
                 			if (layer.url && layer instanceof OpenLayers.Layer.WMS) {
 	                			supportedLayers.push(layer.params.LAYERS);
+								supportedStyles.push(layer.params.STYLES ||'');
 	                			filters.push(layer.params.CQL_FILTER ? encodeURIComponent(layer.params.CQL_FILTER) : "INCLUDE");
 	                			
 	                			if (!baseURL) {
@@ -139,22 +141,33 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
                 			}
                 		}
                 	}
-                	
-                	var gsURL = baseURL + 
-                	    "LAYERS=" + supportedLayers.join(",") +
-                		"&FORMAT=" + encodeURIComponent("image/png") + 
-						"&SRS=" + srsID +  
-						"&VERSION=1.1.1" +
-						"&REQUEST=GetMap" +
-						"&BBOX=" + encodeURIComponent(extent.toBBOX())+
-						"&WIDTH=" + width +
-						"&HEIGHT=" + height +
-						"&CQL_FILTER=" + filters.join(";");
+                    
+                    var gsURL = baseURL + 
+                        "SERVICE=WMS" +
+                        "&LAYERS=" + supportedLayers.join(",") +
+						"&STYLES=" + supportedStyles.join(",") +
+                        "&FORMAT=" + encodeURIComponent("image/png") + 
+                        "&SRS=" + srsID +  
+                        "&VERSION=1.1.1" +
+                        "&REQUEST=GetMap" +
+                        "&BBOX=" + encodeURIComponent(extent.toBBOX())+
+                        "&WIDTH=" + width +
+                        "&HEIGHT=" + height +
+                        "&CQL_FILTER=" + filters.join(";");
 						
                 	var mHost = me.service.split("/");
 					
                 	var img = new Image();
-                	
+                	var loadMask = new Ext.LoadMask(Ext.getBody(), {msg:'Please wait...'});
+                    img.onError = function(){
+                        loadMask.hide();
+                        Ext.Msg.show({
+									 title: me.printStapshotTitle,
+									 msg: me.generatingErrorMsg,
+									 width: 300,
+									 icon: Ext.MessageBox.ERROR
+								});
+                    }
                 	img.onload = function(){
                     	//Draw
                     	canvas.width  = width;     // change if you have to add legend
@@ -208,15 +221,25 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
 						    params: canvasData,
 						    scope: this,
 						    success: function(response, opts){
+                                loadMask.hide();
 								if (response.readyState == 4 && response.status == 200){
-									var fname = "mapstore-snapshot.png";
-									
-									var mUrl = me.service + "UploadCanvas";
-										mUrl = mHost[2] == location.host ? mUrl + "?ID=" + response.responseText + "&fn=" + fname : proxy + encodeURIComponent(mUrl + "?ID=" + response.responseText + "&fn=" + fname);
-									
-									window.location.assign(mUrl);
-									enableSaving = true;
-									
+								    if(response.responseText && response.responseText.indexOf("\"success\":false") < 0){
+								        var fname = "mapstore-snapshot.png";
+								    
+								        var mUrl = me.service + "UploadCanvas";
+								            mUrl = mHost[2] == location.host ? mUrl + "?ID=" + response.responseText + "&fn=" + fname : proxy + encodeURIComponent(mUrl + "?ID=" + response.responseText + "&fn=" + fname);
+								        
+								        window.location.assign(mUrl);
+								        enableSaving = true;
+								    }else{
+								        // this error should go to failure
+								        Ext.Msg.show({
+								             title: me.printStapshotTitle,
+								             msg: me.generatingErrorMsg + " " + gxp.util.getResponseFailureServiceBoxMessage(response),
+								             width: 300,
+								             icon: Ext.MessageBox.ERROR
+								        });
+								    }
 								}else if (response.status != 200){
 									Ext.Msg.show({
 										 title: 'Print Snapshot',
@@ -227,9 +250,10 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
 								}					
 						    },
 						    failure:  function(response, opts){
+                                loadMask.hide();
 								Ext.Msg.show({
-									 title: this.printStapshotTitle,
-									 msg: this.generatingErrorMsg + " " + e,
+									 title: me.printStapshotTitle,
+									 msg: me.generatingErrorMsg + " " + gxp.util.getResponseFailureServiceBoxMessage(response),
 									 width: 300,
 									 icon: Ext.MessageBox.ERROR
 								});
@@ -237,14 +261,15 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
 						});
                     };
                     
-                    if (supportedLayers.length > 0)
+                    if (supportedLayers.length > 0){
                     	img.src = proxy + encodeURIComponent(gsURL);
-                   	else {
+                        loadMask.show();
+                   	}else {
                    		Ext.Msg.show({
 			                 title: this.printStapshotTitle,
 			                 msg: this.noSupportedLayersErrorMsg,
 			                 width: 300,
-			                 icon: Ext.MessageBox.ERROR
+			                 icon: Ext.MessageBox.WARNING
 			            });
                    	}
                 },

@@ -21,7 +21,7 @@ _RUNJAVA="$JAVA_HOME"/bin/java
 
 # if not told otherwise pump up the permgen
 if [ -z "$JAVA_OPTS" ]; then
-  export JAVA_OPTS="-XX:MaxPermSize=128m -Dgeostore-ovr=file:config/geostore-datasource-ovr.properties"
+  export JAVA_OPTS="-XX:MaxPermSize=128m -Dgeostore-ovr=file:config/geostore-datasource-ovr.properties -Dservicebox-ovr=file:config/servicebox-ovr.properties"
 fi 
 
 

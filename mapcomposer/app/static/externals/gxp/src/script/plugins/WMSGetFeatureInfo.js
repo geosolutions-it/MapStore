@@ -53,30 +53,30 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
      *  Title for info popup (i18n).
      */
     popupTitle: "Feature Info",
-	
-	/** api: config[closePrevious]
+    
+    /** api: config[closePrevious]
      *  ``Boolean``
      *  Close previous popups when opening a new one.
      */
-	closePrevious: true,
-	
-	/** api: config[loadingMask]
+    closePrevious: true,
+    
+    /** api: config[loadingMask]
      *  ``Boolean``
      *  Use a loading mask during get feature info.
      */
-	loadingMask: true,
-	
-	/** api: config[maskMessage]
+    loadingMask: true,
+    
+    /** api: config[maskMessage]
      *  ``String``
      *  Message for the loading mask.
      */
-	maskMessage: 'Getting info...',
-	
-	/** api: config[useTabPanel]
+    maskMessage: 'Getting info...',
+    
+    /** api: config[useTabPanel]
      *  ``Boolean``
      *  Use a loading mask during get feature info.
      */
-	useTabPanel: false,
+    useTabPanel: false,
     
     noDataMsg: "No data returned from the server",
     
@@ -85,6 +85,18 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
      *  Optional object with properties to be serialized as vendor specific
      *  parameters in the requests (e.g. {buffer: 10}).
      */
+     
+    /** api: config[infoPanelId]
+     *  ``string``
+     *  Optional id of panel to show the getFeatureInfo instead of popup
+     */
+     infoPanelId: null,
+     
+    /** api: config[disableAfterClick]
+     *  ``Boolean``
+     *  
+     */
+     disableAfterClick: false,
      
     /** api: method[addActions]
      */
@@ -110,8 +122,8 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
         var infoButton = this.actions[0].items[0];
 
         var info = {controls: []};
-		var layersToQuery = 0;
-		
+        var layersToQuery = 0;
+        
         var updateInfo = function() {
             var queryableLayers = this.target.mapPanel.layers.queryBy(function(x){
                 return x.get("queryable");
@@ -124,12 +136,12 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                 control.deactivate();  // TODO: remove when http://trac.openlayers.org/ticket/2130 is closed
                 control.destroy();
             }
-			
+            
             info.controls = [];
             var started = false;
             var atLeastOneResponse = false;
-			this.masking = false;
-			
+            this.masking = false;
+            
             queryableLayers.each(function(x){                
                 var vendorParams = {};
                 Ext.apply(vendorParams, x.getLayer().vendorParams || this.vendorParams || {});
@@ -144,40 +156,55 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                     authentication: this.authentication,
                     eventListeners: {
                         beforegetfeatureinfo: function(evt) {
-							//first getFeatureInfo in chain
-							if(!started){
-								started= true;
-								atLeastOneResponse=false;
-								layersToQuery=queryableLayers.length;
-							}
+                            //first getFeatureInfo in chain
+                            if(!started){
+                                started= true;
+                                atLeastOneResponse=false;
+                                layersToQuery=queryableLayers.length;
+                            }
                             
-							if(this.loadingMask && !this.masking) {
-								this.target.mapPanel.el.mask(this.maskMessage);
-								this.masking = true;
-							}
+                            if(this.loadingMask && !this.masking) {
+                                this.target.mapPanel.el.mask(this.maskMessage);
+                                this.masking = true;
+                            }
                         },
                         getfeatureinfo: function(evt) {
                             layersToQuery--;
-							//last get feature info in chain
-							if(layersToQuery === 0) {
-								this.unmask();
-								started=false;
-								
-							}
-							
-							// ////////////////////////////////////////////////////
-							// This function assume that teh body is empty in order 
-							// to return noDataMsg (no features)
-							// ////////////////////////////////////////////////////
+
+                            //last get feature info in chain
+                            if(layersToQuery === 0) {
+                                this.unmask();
+                                started=false;
+                                
+                                if(this.disableAfterClick)
+                                    infoButton.toggle();
+                                
+                            }
+                            
+                            // ////////////////////////////////////////////////////
+                            // This function assume that teh body is empty in order 
+                            // to return noDataMsg (no features)
+                            // ////////////////////////////////////////////////////
                             var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
                             if (match && !match[1].match(/^\s*$/)) {
                                 atLeastOneResponse = true;
-                                this.displayPopup(
-                                    evt, x.get("title") || x.get("name"), match[1], function() {
-										/*layersToQuery=0;
-										this.unmask();*/
-									}, this
-                                );
+                                
+                                if (this.infoPanelId){
+                                    this.displayInfoInPanel(
+                                        evt, x.get("title") || x.get("name"), match[1], function() {
+                                            /*layersToQuery=0;
+                                            this.unmask();*/
+                                        }, this, this.infoPanelId
+                                    );
+                                }else {
+                                    this.displayPopup(
+                                        evt, x.get("title") || x.get("name"), match[1], function() {
+                                            /*layersToQuery=0;
+                                            this.unmask();*/
+                                        }, this
+                                    );
+                                }
+                                
                             // no response at all
                             } else if(layersToQuery === 0 && !atLeastOneResponse) {
                                 Ext.Msg.show({
@@ -189,10 +216,10 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                             }
                             
                         },
-						nogetfeatureinfo: function(evt) {
-							layersToQuery--;							
-							this.unmask();							
-						},
+                        nogetfeatureinfo: function(evt) {
+                            layersToQuery--;                            
+                            this.unmask();                            
+                        },
                         scope: this
                     }
                 });
@@ -205,11 +232,12 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
 
         };
         
-		var updateInfoEvent = function() {
-			if(layersToQuery === 0) {
-				updateInfo.call(this);
-			}
-		};
+        var updateInfoEvent = function() {
+            if(layersToQuery === 0) {
+                updateInfo.call(this);
+            }
+        };
+        
         this.target.mapPanel.layers.on("update", updateInfoEvent, this);
         this.target.mapPanel.layers.on("add", updateInfoEvent, this);
         this.target.mapPanel.layers.on("remove", updateInfoEvent, this);
@@ -217,24 +245,24 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
         return actions;
     },
 
-	unmask: function() {
-		if(this.loadingMask) {
-			this.target.mapPanel.el.unmask();
-			this.masking = false;
-		}
-	},
-	
-	/** private: method[removeAllPopups] removes all open popups
+    unmask: function() {
+        if(this.loadingMask) {
+            this.target.mapPanel.el.unmask();
+            this.masking = false;
+        }
+    },
+    
+    /** private: method[removeAllPopups] removes all open popups
      */
     removeAllPopups: function(evt, title, text) {
-		for(var key in this.popupCache) {
-			if(this.popupCache.hasOwnProperty(key)) {
-				this.popupCache[key].close();
-				delete this.popupCache[key];
-			}
-		}
-	},
-	
+        for(var key in this.popupCache) {
+            if(this.popupCache.hasOwnProperty(key)) {
+                this.popupCache[key].close();
+                delete this.popupCache[key];
+            }
+        }
+    },
+    
     /** private: method[displayPopup]
      * :arg evt: the event object from a 
      *     :class:`OpenLayers.Control.GetFeatureInfo` control
@@ -245,31 +273,31 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
     displayPopup: function(evt, title, text, onClose, scope) {
         var popup;
         var popupKey = evt.xy.x + "." + evt.xy.y;
-						
-		var item = this.useTabPanel ? {
-			title: title,										
-			html: text,
-			autoScroll: true
-		} : {
-            title: title,			
-            layout: "fit",			
+                        
+        var item = this.useTabPanel ? {
+            title: title,                                        
+            html: text,
+            autoScroll: true
+        } : {
+            title: title,            
+            layout: "fit",            
             html: text,
             autoScroll: true,
             autoWidth: true,
             collapsible: true
         };
-						
+                        
         if (!(popupKey in this.popupCache)) {
-			if(this.closePrevious) {
-				this.removeAllPopups();
-			}
-			var items = this.useTabPanel ? [{
-				xtype: 'tabpanel',
-				enableTabScroll: true,
-				activeTab: 0,
-				items: [item]
-			}] : [item];
-			
+            if(this.closePrevious) {
+                this.removeAllPopups();
+            }
+            var items = this.useTabPanel ? [{
+                xtype: 'tabpanel',
+                enableTabScroll: true,
+                activeTab: 0,
+                items: [item]
+            }] : [item];
+            
             popup = this.addOutput({
                 xtype: "gx_popup",
                 title: this.popupTitle,
@@ -280,14 +308,14 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                 height: 320,
                 /*anchored: true,
                 unpinnable : true,*/
-				items: items,
+                items: items,
                 draggable: true,
                 listeners: {
                     close: (function(key) {
                         return function(panel){
-							if(onClose) {
-								onClose.call(scope);
-							}
+                            if(onClose) {
+                                onClose.call(scope);
+                            }
                             delete this.popupCache[key];
                         };
                     })(popupKey),
@@ -297,14 +325,76 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
             this.popupCache[popupKey] = popup;
         } else {
             popup = this.popupCache[popupKey];
-			
-			var container = this.useTabPanel ? popup.items.first() : popup;
-			container.add(item);
+            
+            var container = this.useTabPanel ? popup.items.first() : popup;
+            container.add(item);
         }
-		        
+                
         popup.doLayout();
-    }
+    },
     
+    /** private: method[displayInfoInPanel]
+     * :arg evt: the event object from a 
+     *     :class:`OpenLayers.Control.GetFeatureInfo` control
+     * :arg title: a String to use for the title of the results section 
+     *     reporting the info to the user
+     * :arg text: ``String`` Body text.
+     * :arg infoPanel: ``String`` id of panel where show the getFeatureInfo.
+     */
+    displayInfoInPanel: function(evt, title, text, onClose, scope, infoPanel) {
+    
+        var infoPanel = Ext.getCmp(infoPanel);
+        var infoPanelItems;
+        var popupKey = evt.xy.x + "." + evt.xy.y;
+
+        var item = this.useTabPanel ? {
+            title: title,
+            html: text,
+            autoScroll: true
+        } : {
+            title: title,
+            layout: "fit",
+            html: text,
+            autoScroll: true,
+            autoWidth: true,
+            collapsible: true
+        };
+
+        if (!(popupKey in this.popupCache)) {
+            var items = this.useTabPanel ? [{
+                xtype: 'tabpanel',
+                enableTabScroll: true,
+                activeTab: 0,
+                items: [item]
+            }] : [item];
+
+            infoPanelItems = this.addOutput({
+                xtype: "panel",
+                border: false,
+                id: "infoPanelItemsId",
+                region: "north",
+                layout: this.useTabPanel ? "fit" : "accordion",
+                items: items,
+                split:true,
+                header: false
+            });
+
+            infoPanel.add(infoPanelItems);
+            this.popupCache[popupKey] = infoPanelItems;
+
+        }else{
+
+            infoPanelItems = this.popupCache[popupKey];
+            var container = this.useTabPanel ? infoPanelItems.items.first() : infoPanelItems;
+            container.add(item);
+
+        }
+
+        infoPanel.expand(true);
+        infoPanel.doLayout(false, true);
+
+    }
+
 });
 
 Ext.preg(gxp.plugins.WMSGetFeatureInfo.prototype.ptype, gxp.plugins.WMSGetFeatureInfo);

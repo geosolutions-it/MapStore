@@ -1,8 +1,6 @@
 {
-   "geoStoreBase": "",
-   "proxy":"/http_proxy/proxy/?url=",
-   "defaultLanguage": "en",
-   "advancedScaleOverlay": true,
+   
+   "scaleOverlayMode": "basic",
    "gsSources":{ 
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
@@ -31,21 +29,6 @@
 		],
 		"layers": [
 			{
-				"source": "bing",
-				"title": "Bing Aerial",
-				"name": "Aerial",
-				"group": "background"
-			}, {
-				"source": "osm",
-				"title": "Open Street Map",
-				"name": "mapnik",
-				"group": "background"
-			},{
-				"source": "mapquest",
-				"title": "MapQuest OpenStreetMap",
-				"name": "osm",
-				"group": "background"
-			},{
 				"source": "google",
 				"title": "Google Roadmap",
 				"name": "ROADMAP",
@@ -59,6 +42,26 @@
 				"source": "google",
 				"title": "Google Hybrid",
 				"name": "HYBRID",
+				"group": "background"
+			},{
+				"source": "mapquest",
+				"title": "MapQuest OpenStreetMap",
+				"name": "osm",
+				"group": "background"
+			},{
+				"source": "osm",
+				"title": "Open Street Map",
+				"name": "mapnik",
+				"group": "background"
+			},{
+				"source": "bing",
+				"title": "Bing Aerial",
+				"name": "Aerial",
+				"group": "background"
+			},{
+				"source": "bing",
+				"title": "Bing Aerial With Labels",
+				"name": "AerialWithLabels",
 				"group": "background"
 			}
 		]
@@ -93,6 +96,8 @@
 			"embeddedTemplateName": "viewer",
 			"showDirectURL": true
 		}, {
+			"ptype": "gxp_categoryinitializer"
+		}, {
 		   "ptype": "gxp_mouseposition",
 		   "displayProjectionCode":"EPSG:4326",
 		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
@@ -122,13 +127,19 @@
                 "timeout": 60000
             }            
 		}, {
+			"ptype": "gxp_addlayer",
+			"showCapabilitiesGrid": true,
+			"useEvents": false,
+			"showReport": false,
+			"directAddLayer": false,
+			"id": "addlayer"
+		}, {
 			"actions": ["-"], 
 			"actionTarget": "paneltbar"
 		}, {
 			"ptype": "gxp_geolocationmenu",
-			"outputTarget": "paneltbar",
-			"toggleGroup": "toolGroup",
-			"index": 23
+			"actionTarget": {"target": "paneltbar", "index": 23},
+			"toggleGroup": "toolGroup"
 		}, {
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
@@ -140,6 +151,13 @@
 			"index": 24,
 			"showOnStartup": false,
 			"fileDocURL": "MapStore-Help.pdf"
-        }
+        }, {
+			"ptype": "gxp_about",
+			"poweredbyURL": "http://www.geo-solutions.it/about/contacts/",
+			"actionTarget": {"target": "panelbbar", "index": 1}
+		}, {
+			"ptype": "gxp_languageselector",
+			"actionTarget": {"target": "panelbbar", "index": 3}
+		}
 	]
 }

@@ -5,6 +5,7 @@
 	NOTE: configuration customization could override
 	these strings
 */
+
 GeoExt.Lang.add("en", {
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Zoom Level: {zoom}</div><div>Scale: 1:{scale}</div>",
@@ -342,7 +343,12 @@ GeoExt.Lang.add("en", {
         exportCSVMultipleText: "Whole Page",
         failedExportCSV: "Failed to find response for output format CSV",
         invalidParameterValueErrorText: "Invalid Parameter Value",
-		zoomToFeature: "Zoom To Feature"
+		zoomToFeature: "Zoom To Feature",
+        comboFormatMethodLabel: "Format",
+        comboFormatEmptyText: "Please, select format",
+        noFormatTitleText: "Incorrect format",
+        noFormatBodyText: "Please, select a valid format",
+        exportTitleText: "Export"
     },
     "gxp.plugins.QueryForm.prototype": {
         queryActionText: "Query",
@@ -487,7 +493,7 @@ GeoExt.Lang.add("en", {
 	
 	"gxp.plugins.AddLayer.prototype":{
 		waitMsg: "Please Wait ...",
-		capabilitiesFailureMsg: " The layer cannot be added to the map"
+		capabilitiesFailureMsg: " The WMS Capabilities cannot be added due to problems service side"
     },
     
     "gxp.plugins.Geolocate.prototype":{
@@ -601,6 +607,180 @@ GeoExt.Lang.add("en", {
 		embedCodeTitle: "Embed Code",
 		embedURL: "Direct URL",		
 		urlLabel: "URL",
-		showMapTooltip: "Show in a new Window"
-	}
+		showMapTooltip: "Show in a new Window",
+        loadMapText: "Load this Map (install application first)",
+        downloadAppText: "Install Application",
+        loadInMapStoreMobileText: "Mobile",
+        openImageInANewTab: "Open Image in a New Tab"
+	},
+    
+    "gxp.widgets.form.SpatialSelectorField.prototype" :{
+        title : "Region Of Interest",
+        selectionMethodLabel : "Selection Method",
+        comboEmptyText : "Select a method..",
+        comboSelectionMethodLabel : "Selection",
+        northLabel : "North",
+        westLabel : "West",
+        eastLabel : "East",
+        southLabel : "South",
+        setAoiTitle : "Bounding Box",
+        setAoiText : "Draw Box",
+        setAoiTooltip : "Enable the SetBox control to draw a ROI (Bounding Box) on the map",
+        areaLabel : "Area",
+        perimeterLabel : "Perimeter",
+        radiusLabel : "Radius",
+        centroidLabel : "Centroid",
+        latitudeEmptyText : 'Y',
+        longitudeEmptyText : 'X',
+        geocodingFieldSetTitle : "GeoCoder",
+        geocodingPanelTitle : "Selected Locations",
+        geocodingPanelBtnRefreshTxt : "Show Geometries",
+        geocodingPanelBtnDestroyTxt : "Hide Geometries",
+        geocodingPanelBtnDeleteTxt : "Delete Location",
+        geocodingPanelLocationHeader: "Location",
+        geocodingPanelCustomHeader: "Parent",
+        geocodingPanelGeometryHeader: "Geometry WKT",
+        geocodingPanelBtnSelectAllTxt : "Check All", 
+        geocodingPanelBtnDeSelectAllTxt : "Uncheck All", 
+        geocodingPanelMsgRemRunningTitle : "Remove a Locations",
+        geocodingPanelMsgRemRunningMsg : "Would you like to remove the selected locations from the list?",
+        geocodingFieldLabel : "Search a Location",
+        geocodingFieldEmptyText : "Type Location here...",
+        geocodingFieldBtnAddTooltip : "Add Location to the List",
+        geocodingFieldBtnDelTooltip : "Clear Field",
+        selectionSummary : "Selection Summary",
+        geocoderSelectorsLabels: ['Geometry Union', 'Administrative Area List', 'Administrative Area Subs'],
+        selectionReturnTypeLabel: "Return Type"
+    },
+    
+    "gxp.plugins.WFSGrid.prototype":{
+        displayMsgPaging: "Displaying topics {0} - {1} of {2}",
+        emptyMsg: "No topics to display",
+        loadMsg: "Please Wait...",
+        zoomToTooltip: 'Zoom to topic'        
+    },
+    
+    "gxp.plugins.TabPanelWFSGrids.prototype":{
+        displayMsgPaging: "Elements {0} - {1} of {2}",
+        emptyMsg: "No elements found",
+        noRecordFoundLabel: "No elements found",
+        loadMsg: "Loading ..."
+    },
+    
+    "gxp.plugins.spatialselector.SpatialSelector.prototype" :{
+        titleText : "Region Of Interest",
+        selectionMethodLabel : "Selection Method",
+        comboEmptyText : "Select a method..",
+        comboSelectionMethodLabel : "Selection"
+    },
+    
+    "gxp.widgets.form.spatialselector.SpatialSelectorMethod.prototype" :{
+        areaLabel : "Area",
+        perimeterLabel : "Perimeter",
+        lengthLabel: "Length",
+        radiusLabel : "Radius",
+        centroidLabel : "Centroid",
+        selectionSummary: "Selection Summary",
+        geometryOperationText: "Geometry operation",
+        geometryOperationEmptyText: "Select a operation",
+        distanceTitleText: "Distance",
+        distanceUnitsTitleText: "Distance units",
+        noOperationTitleText: "No valid operation",
+        noOperationMsgText: "Please, select an operation before query",
+        noCompleteMsgText: "Please, complete form before query"
+    },
+    
+    "gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
+        name  : 'BBOX',
+        label : 'Bounding Box',
+        northLabel : "North",
+        westLabel : "West",
+        eastLabel : "East",
+        southLabel : "South",
+        setAoiTitle : "Bounding Box",
+        setAoiText : "Draw Box",
+        setAoiTooltip : "Enable the SetBox control to draw a ROI (Bounding Box) on the map"
+    },
+    
+    "gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.prototype" :{
+        name  : 'Buffer',
+        label : 'Buffer',
+        latitudeEmptyText : 'Y',
+        longitudeEmptyText : 'X'
+    },
+    
+    "gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod.prototype" :{
+        name  : 'Circle',
+        label : 'Circle'
+    },
+    
+    "gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod.prototype" :{
+        name  : 'Geocoding',
+        label : 'Geocoding',
+        geocodingFieldSetTitle : "GeoCoder",
+        geocodingPanelTitle : "Selected Locations",
+        geocodingPanelBtnRefreshTxt : "Show Geometries",
+        geocodingPanelBtnDestroyTxt : "Hide Geometries",
+        geocodingPanelBtnDeleteTxt : "Delete Location",
+        geocodingPanelLocationHeader: "Location",
+        geocodingPanelCustomHeader: "Parent",
+        geocodingPanelGeometryHeader: "Geometry WKT",
+        geocodingPanelBtnSelectAllTxt : "Check All", 
+        geocodingPanelBtnDeSelectAllTxt : "Uncheck All", 
+        geocodingPanelMsgRemRunningTitle : "Remove a Locations",
+        geocodingPanelMsgRemRunningMsg : "Would you like to remove the selected locations from the list?",
+        geocodingFieldLabel : "Search a Location",
+        geocodingFieldEmptyText : "Type Location here...",
+        geocodingFieldBtnAddTooltip : "Add Location to the List",
+        geocodingFieldBtnDelTooltip : "Clear Field",
+        selectionSummary : "Selection Summary"
+    },
+    
+    "gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
+        name  : 'Polygon',
+        label : 'Polygon'
+    },
+    
+    "gxp.plugins.spatialselector.Geocoder.prototype" :{
+        titleText: "Geocoder",
+        searchText: "Search",
+        searchTpText: "Search selected location and zoom in on map",
+        resetText: "Reset",
+        resetTpText: "Reset location search",
+        translatedKeys: {
+            "name": "Street",
+            "number": "Number"
+        }
+    },
+	
+	"gxp.plugins.ResourceStatus.prototype":{
+		rootNodeText: "Imported Resources",
+		serviceErrorTitle: "Service Error",
+		tabTitle: "Imported",
+		layerNodeName: "Layers",
+		serviceNodeName: "Services"
+    },
+	
+	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
+        noFilterSelectedMsgTitle: "No filter selected",    
+        noFilterSelectedMsgText: "You must select at least one filter",    
+        invalidRegexFieldMsgTitle: "Invalid Fields",    
+        invalidRegexFieldMsgText: "One or more fields are incorrect!"
+    },
+	
+	"gxp.plugins.FeatureManager.prototype":{
+        noValidWmsVersionMsgTitle: 'No valid WMS version',    
+        noValidWmsVersionMsgText: "The queryForm plugin doesn't work with WMS Source version: "
+    },
+    
+    "gxp.plugins.CategoriesInitializer.prototype":{
+        geostoreInitializationTitleText: "Initializing Fail",
+        geostoreInitializationText: "Geostore response is not the expected",
+        notInitializedCategories: "Missing categories: '{0}'. Do you want to create it?",
+        userFieldText: "User",
+        passwordFieldText: "Password",
+        acceptText: "Create",
+        cancelText: "Cancel",
+        notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>If you are an administrator please insert your credentials to create these categories: '{0}'</div>"
+    }
 });

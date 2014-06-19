@@ -106,6 +106,14 @@ gxp.plugins.GoogleSource = Ext.extend(gxp.plugins.LayerSource, {
      *  default is "sensor=false"
      */
     otherParams: "sensor=false",
+    
+    /** api: config[localized]
+     *  ``Boolean``
+     *  Enables localization of Google Maps messages,
+     *  through the API "language=<lang>" parameter. The locale is taken from GeoExt.Lang.locale.
+     *  default is false.
+     */
+    localized: false,
 
     constructor: function(config) {
         this.config = config;
@@ -119,6 +127,7 @@ gxp.plugins.GoogleSource = Ext.extend(gxp.plugins.LayerSource, {
     createStore: function() {
         gxp.plugins.GoogleSource.loader.onLoad({
             otherParams: this.otherParams,
+            localized: this.localized,
             timeout: this.timeout,
             callback: this.syncCreateStore,
             errback: function() {
@@ -309,7 +318,10 @@ gxp.plugins.GoogleSource.loader = new (Ext.extend(Ext.util.Observable, {
      *  Called when all resources required by this plugin type have loaded.
      */
     loadScript: function(options) {
-
+        var otherParams = options.otherParams;
+        if(options.localized) {
+            otherParams += '&language=' + GeoExt.Lang.locale
+        }
         var params = {
             autoload: Ext.encode({
                 modules: [{
@@ -317,7 +329,7 @@ gxp.plugins.GoogleSource.loader = new (Ext.extend(Ext.util.Observable, {
                     version: 3.3,
                     nocss: "true",
                     callback: "gxp.plugins.GoogleSource.loader.onScriptLoad",
-                    other_params: options.otherParams
+                    other_params: otherParams
                 }]
             })
         };

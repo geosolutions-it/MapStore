@@ -50,6 +50,12 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
 		
         config.tools = tools;
         
+        if(config.removeTools) {
+            for(var r=0; r < config.removeTools.length; r++) {
+                config.tools = this.removeTool(config.tools, config.removeTools[r]);
+            }
+        }
+        
 		if(config.customTools)
 		{
 			for(var c=0; c < config.customTools.length; c++)
@@ -103,6 +109,7 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         
         this.on("ready", function() {
         	this.toolbar.enable();
+			this.bottom_toolbar.enable();
         }, this);
 
         this.mapPanelContainer = new Ext.Panel({
@@ -130,10 +137,18 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         if(this.customPanels){
             portalItems=portalItems.concat(this.customPanels);
         }
+		
+		this.bottom_toolbar = new Ext.Toolbar({
+            disabled: true,
+            id: 'panelbbar',
+			enableOverflow: true
+        });
+		
         this.portalItems = [{
             region: "center",
             layout: "border",
             tbar: this.toolbar,
+			bbar: this.bottom_toolbar,
             items: portalItems
         }];
         

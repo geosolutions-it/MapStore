@@ -1,47 +1,55 @@
 /* Pan- and Zoom- Panel Styles*/
 
 .olControlPanPanel div {
-    background-image:url(../../externals/ext/resources/images/gray/panel/tool-sprites.gif);
-    height:15px;
-    width:15px;
+    background-image:url(../../externals/ext/resources/images/gray/panel/tool-sprites-medium.gif);
+    height:23px;
+    width:23px;
     /* workaround for button height in IE */
     font-size:0px;
 }
 
 .olControlPanPanel .olControlPanNorthItemInactive {
-    background-position:15px -60px;
-    left:16px
+    background-position:0px -0px;
+    left:24px
 }
 .olControlPanPanel .olControlPanEastItemInactive {
-    background-position:15px -120px;
-    left: 30px;
-    top: 16px;
+    background-position:0px -69px;
+    left: 46px;
+    top: 24px;
 }
 .olControlPanPanel .olControlPanSouthItemInactive {
-    background-position:15px -75px;
-    left: 16px;
-    top: 32px;
+    background-position:0px -23px;
+    left: 24px;
+    top: 48px;
 }
 .olControlPanPanel .olControlPanWestItemInactive {
-    background-position:15px -105px;
+    background-position:0px -46px;
     left: 2px;
-    top: 16px;
+    top: 24px;
 }
 
 .olControlZoomPanel { 
-    left:21px;
+    top: 92px;
+    left:29px;
+}
+
+/*Took from GeoExplorer.js*/
+
+.gx-zoomslider {
+    left: 29px !important;
+    top: 119px !important;
 }
 
 .olControlZoomPanel div {
-    background-image:url(../../externals/ext/resources/images/gray/panel/tool-sprites.gif);
-    height:15px;
-    width:15px;
+    background-image:url(../../externals/ext/resources/images/gray/panel/tool-sprites-medium.gif);
+    height:23px;
+    width:23px;
     /* workaround for button height in IE */
     font-size:0px;
 }
 
 .olControlZoomPanel .olControlZoomInItemInactive {
-    background-position:15px -240px;
+    background-position:0px -92px;
 }
 
 .olControlZoomPanel .olControlZoomToMaxExtentItemInactive {
@@ -49,9 +57,30 @@
 }
 
 .olControlZoomPanel .olControlZoomOutItemInactive {
-    background-position:15px -255px;
-    top: 123px;
+    background-position:0px -115px;
+    top: 135px;
 }
+
+/* Took from xtheme-gray.css */
+
+.x-slider-vert .x-slider-thumb {
+    left: -4px;
+    width: 30px;
+}
+
+.x-slider-vert .x-slider-thumb {
+    background-image: url(../../externals/ext/resources/images/gray/slider/slider-v-thumb-medium.png);
+    cursor: pointer;
+}
+
+.x-slider-vert .x-slider-thumb-over {
+    background-position: 0px -14px;
+}
+
+.x-slider-vert .x-slider-thumb-drag {
+    background-position: 0px -28px;
+}
+
 
 .olControlScaleLine {
     font-family: tahoma,arial,helvetica,sans-serif;
