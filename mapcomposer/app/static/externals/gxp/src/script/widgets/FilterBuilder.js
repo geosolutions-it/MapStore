@@ -101,6 +101,22 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
      *  be added.
      */
     allowGroups: true,
+    
+    /**
+     * Property: attributesComboConfig
+     * {Object}
+     */
+    attributesComboConfig: null,
+    
+    /** api:config[autoComplete]
+     *  ``Boolean`` autocomplete enabled on text fields.
+     */
+    autoComplete: false,
+    
+    /** api:config[autoCompleteCfg]
+     *  ``Object`` autocomplete configuration object.
+     */
+    autoCompleteCfg: {},
 
     initComponent: function() {
         var defConfig = {
@@ -380,6 +396,8 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
             columnWidth: 1,
             attributes: this.attributes,
             validators: this.validators,
+            autoComplete: this.autoComplete,
+            autoCompleteCfg: this.autoCompleteCfg,
             allowBlank: group ? undefined : this.allowBlank,
             customizeFilterOnInit: group && false,
             caseInsensitiveMatch: this.caseInsensitiveMatch,
@@ -498,6 +516,8 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
                 filter: grandchild,
                 attributes: this.attributes,
                 validators: this.validators,
+                autoComplete: this.autoComplete,
+                autoCompleteCfg: this.autoCompleteCfg,
                 listeners: {
                     change: function() {
                         this.fireEvent("change", this);

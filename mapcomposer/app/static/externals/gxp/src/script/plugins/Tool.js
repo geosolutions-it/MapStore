@@ -227,7 +227,7 @@ gxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
 						if(actions[k] instanceof GeoExt.Action && actions[k].initialConfig){
 							actions[k].initialConfig.scale = this.target.actionToolScale;
 						}else{
-							actions[k].scale = this.target.actionToolScale;
+							actions[k].scale = this.target.actionToolScale || actions[k].scale;
 						}						
 					}
 				}
