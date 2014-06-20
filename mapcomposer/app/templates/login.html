@@ -1,14 +1,19 @@
 <% extends ./base.html %>
 <% subskin extrahead %>
     
-    <!-- MapStoreManager includes  -->
-    <script type="text/javascript" src="auth/base64.js"></script>
+    <!-- MapStoreManager includes only for login page  -->
     <link rel="stylesheet" type="text/css" href="externals/mapmanager/theme/css/mapstoremanager.css">
     <script type="text/javascript" src="script/ux.js"></script>
-    <script type="text/javascript" src="script/mapmanager.js"></script>
-    <!-- QR Code -->
-    <script type="text/javascript" src="script/qrcodejs.js"></script>
-    <!-- common data  -->
+    <script type="text/javascript" src="script/mapmanager.js"></script>       
+
+    <!-- Import it only for the GeoExploreLoader -->    
+    <script type="text/javascript" src="script/OpenLayers.js"></script>    
+    <script type="text/javascript" src="script/OpenLayersExt.js"></script> 
+    <script type="text/javascript" src="debug.js"></script>  
+    <script type="text/javascript" src="script/GeoExt.js"></script>
+    <script type="text/javascript" src="script/GeoExtExt.js"></script>
+    <script type="text/javascript" src="script/gxp.js"></script> 
+    <script type="text/javascript" src="script/GeoExplorer.js"></script>
     <script type="text/javascript" src="config/common/localConfig.js"></script>
 	
 	<!-- uncomment to have  welcome screen
@@ -30,208 +35,266 @@
     </div>
 	-->
 	
-    <script>
+    <script>        
+        
+        // the return url is on urlPath as 'returnUrl'. By default is /mapstore/manager
+        var returnUrl = "/mapstore/manager";
+        var customConfigName;
+        // var customConfigName = "mapStoreConfig.js";      
+        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false; var bbox; var useCookies; var templateId;
+        // //////////////////////////////////////////////////
+        // Parsing the request to get the parameters
+        // //////////////////////////////////////////////////
+        var params = location.search.replace(/^\?/,'').replace(/&amp;/g,'&').split("&");
+        for (var j=0; j < params.length; j++) {
+            var param = params[j].split("=");
+            if(param[0]){
+                switch ( param[0] ) {
+                    case "returnUrl": 
+                        returnUrl = param[1] 
+                        break;
+                    case "mapId": 
+                        try{
+                            mapIdentifier = parseInt(param[1]);
+                        }catch(e){
+                            mapIdentifier = -1;
+                        } 
+                        break;
+                    case "auth" : 
+                        authorization = param[1]; 
+                        if(param.length > 2){
+                            for(var i = 2; i < param.length; i++){
+                                authorization += "=";
+                            }
+                        }
+                        break;
+                    case "fullScreen" : 
+                        if(param[1] == 'true') 
+                            fullScreen = true; 
+                        else 
+                            fullScreen = false; 
+                        break;
+                    case "useCookies" : 
+                        useCookies = param[1]; 
+                        break;
+                    case "config":  
+                        customConfigName = param[1];
+                        break;
+                    case "bbox": 
+                        try{
+                            bbox = new OpenLayers.Bounds.fromString(param[1]);
+                        }catch(e){
+                            bbox = undefined;
+                        } 
+                        break;
+                    case "configId": 
+                        try{
+                            templateId = parseInt(param[1]);
+                        }catch(e){
+                            templateId = -1;
+                        } 
+                        break;
+                    default : 
+                }
+            }
+        }   
 
         Ext.onReady(function(){
 
-            // This login page it's a workaround for FF and Chrome, needs work for IE
+            // load header and footer config
+            var header, footer;
 
-            // This URL's are hardcoded to don't need access to other URL's (config) that should be securized
-            var geoStoreBase = "http://mariss.geo-solutions.it/geostore/rest/"; // the geostore base URL to get user details
-            var projectBase = "http://mariss.geo-solutions.it/mapstore/manager"; // the URL to be loaded when the user do the login
+            // show login window
+            var showLogin = function(){ 
+                // This login page needs an Apache HTTPD >= 2.4 and specific configuration
 
-            // empty MSMLogin only used for text
-            var loginWidget = new MSMLogin({
-                target:{},
-                statelessSession: true,
-                externalHeaders: false
-            });
+                // empty MSMLogin only used for text
+                var loginWidget = new MSMLogin({
+                    target:{},
+                    statelessSession: true,
+                    externalHeaders: false
+                });
 
-            // Open clear viewport with the header
-            var appTabs = new Ext.TabPanel({
-                region: 'center',
-                border : false,
-                id : 'appTabs',
-                enableTabScroll: true
-            });
-
-            // hardcoded header for MARISS
-            var header = {
-                "container": {
-                    "border": false,
-                    "header": false,
-                    "collapsible": true,
-                    "collapseMode":  "mini",
-                    "hideCollapseTool": true,
-                    "split": true,
-                    "animCollapse": false,
-                    "minHeight": 80,
-                    "maxHeight": 80,
-                    "height": 80
-                },
-                "html":"<img style=\"position:absolute; top:0px; left:20px; z-index:1000\" src=\"theme/app/img/mariss_logo.jpg\" height=\"100%\"/><h1 style=\"color:grey; font-size:30px; position:absolute; top:20px; left:260px; z-index:1000\">MARISS Project</h1></div>",
-                "css": "<style>#msheader .x-panel-body .x-panel-body-noheader{padding:30px;background-color: #FFFFFF;}</style>"
-            };
-            
-            var viewport = {
-                    id: 'appVieport',
-                    layout: 'fit',
-                    border: false
-            };
-
-            // in header and footer, we need numbers, not strings
-            var parseKnowIntegers = function(section){
-                var knownInteger = {'height':true, 'maxHeight': true, 'minWidth':true};
-                for(var key in knownInteger){
-                    if(section[key]){
-                        try{
-                            section[key] = parseInt(section[key]);  
-                        }catch (e){
-                            // unknown parameter value
-                        }
-                    }   
-                }
-                return section;
-            }
-            
-            if(header){
-                var north = {
-                    header: false,
-                    region: 'north',
-                    id: 'msheader'
-                };
-
-                north = Ext.applyIf(north, (header.container ? parseKnowIntegers(header.container) : {}));
-                north.html = (header.css || '') + (header.html || '');
-                
-                var south = {
-                    header: false,
-                    region: 'south',
-                    id: 'msfooter'
-                };
-                
-                viewport.items = [{
+                // Open clear viewport with the header
+                var appTabs = new Ext.TabPanel({
                     region: 'center',
-                    layout: 'border',
-                    border: false,
-                    header: false, 
-                    items: [north,appTabs,south]
-                }];
-            }         
+                    border : false,
+                    id : 'appTabs',
+                    enableTabScroll: true
+                });
+                
+                var viewport = {
+                        id: 'appVieport',
+                        layout: 'fit',
+                        border: false
+                };
+
+                // in header and footer, we need numbers, not strings
+                var parseKnowIntegers = function(section){
+                    var knownInteger = {'height':true, 'maxHeight': true, 'minWidth':true};
+                    for(var key in knownInteger){
+                        if(section[key]){
+                            try{
+                                section[key] = parseInt(section[key]);  
+                            }catch (e){
+                                // unknown parameter value
+                            }
+                        }   
+                    }
+                    return section;
+                }
             
-            var appViewport = new Ext.Viewport(viewport);
+                if(header || footer){
+                    var north = {
+                        header: false,
+                        region: 'north',
+                        id: 'msheader'
+                    };
+                
+                    if(header){
+                        north = Ext.applyIf(north, (header.container ? parseKnowIntegers(header.container) : {}));
+                        north.html = (header.css || '') + (header.html || '');
+                    }
+                    
+                    var south = {
+                        header: false,
+                        region: 'south',
+                        id: 'msfooter'
+                    };
+                    
+                    if(footer){
+                        south = Ext.applyIf(south, (footer.container ? parseKnowIntegers(footer.container) : {}));
+                        south.html = (footer.css || '') + (footer.html || '');
+                    }
+                    
+                    viewport.items = [{
+                        region: 'center',
+                        layout: 'border',
+                        border: false,
+                        header: false, 
+                        items: [north, appTabs, south]
+                    }];
+                }else{
+                    viewport.items = [{
+                        region: 'center',
+                        layout: 'border',
+                        border: false,
+                        header: false,                    
+                        items: [appTabs]
+                    }]
+                }       
+                
+                var appViewport = new Ext.Viewport(viewport);
 
-            /** 
-             * api: method[submitLogin]
-             * Submits the login and open the projectBase page
-             */ 
-            var submitLogin = function (form) {
+                /** 
+                 * api: method[submitLogin]
+                 * Submits the login and refresh the page is the response is correct
+                 */ 
+                var submitLogin = function (form) {
 
-                var fields = form.getValues();
-                var pass = fields.loginPassword;
-                var user = fields.loginUsername;
-                var auth= 'Basic ' + Base64.encode(user+':'+pass);
-
-                Ext.Ajax.request({
-                    method: 'GET',
-                    url: geoStoreBase + 'users/user/details/',
-                    scope: this,
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization' : auth
-                    },
-                    success: function(response, form, action) {
-                        // open project url
-                        var loginUrl = projectBase.replace("http://", "http://" + user + ":" + pass + "@");
-                        document.cookie = "Authorization=" + auth;
-
-                        // FIXME: IE fix. We need to handle it on server side
-                        if (window.ActiveXObject) {
-                          location.href = projectBase + "?user=" + user + "&password=" + pass;
-                        }else{
-                            location.href = loginUrl;
-                        }
-
-                        // // code for IE
-                        // if (window.ActiveXObject) {
-                        //   var xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-                        //   // IE clear HTTP Authentication
-                        //     xmlhttp.open("GET", projectBase, true, user, pass);
-                        //     // xmlhttp.setRequestHeader("Authorization", auth);
-                        //     xmlhttp.send("");
-                        //     xmlhttp.onreadystatechange = function() {
-                        //         if (xmlhttp.readyState == 4) {
-                        //             window.location.href= projectBase;
-                        //         }
-                        //     }
-                        // }else{
-                        //     location.href = loginUrl;
-                        // }
-                    },
-                    failure: function(response) {
-                        Ext.MessageBox.show({
-                            title: loginWidget.loginErrorTitle,
-                            msg: loginWidget.loginErrorText,
-                            buttons: Ext.MessageBox.OK,
-                            animEl: 'mb4',
-                            icon: Ext.MessageBox.WARNING
-                        });
-                        form.markInvalid({
-                            "loginUsername": loginWidget.loginErrorText,
-                            "loginPassword": loginWidget.loginErrorText
+                    if(form.isValid()){
+                        form.submit({
+                            url: returnUrl,
+                            success: function(form,action) {
+                                this.win.close();
+                                window.location.href = returnUrl;
+                            },
+                            failure: function(form,action){
+                                if(action &&
+                                    action.response &&
+                                    action.response.status == 200){
+                                    this.win.close();
+                                    window.location.href = returnUrl;
+                                } else {
+                                    Ext.MessageBox.show({
+                                        title: loginWidget.loginErrorTitle,
+                                        msg: loginWidget.loginErrorText,
+                                        buttons: Ext.MessageBox.OK,
+                                        animEl: 'mb4',
+                                        icon: Ext.MessageBox.WARNING
+                                    });
+                                    form.markInvalid({
+                                        "httpd_username": loginWidget.loginErrorText,
+                                        "httpd_password": loginWidget.loginErrorText
+                                    });
+                                }
+                            }
                         });
                     }
+                };
+
+                this.win = new Ext.Window({
+                    title: "Login",
+                    iconCls: 'user',
+                    layout: "form",
+                    width: 275,
+                    closable: false,
+                    height: 130,
+                    plain: true,
+                    border: false,
+                    modal: true,
+                    items: [{
+                        xtype:"form",
+                        layout:"form",
+                        items:[{  
+                            xtype: 'textfield',
+                            fieldLabel: loginWidget.userFieldText,
+                            name: "httpd_username",
+                            allowBlank:false,
+                            listeners: {
+                              beforeRender: function(field) {
+                                field.focus(false, 1000);
+                              }
+                            }
+                        },{  
+                            xtype: 'textfield',
+                            fieldLabel: loginWidget.passwordFieldText,
+                            name:'httpd_password', 
+                            inputType:'password', 
+                            allowBlank:false
+                        }],
+                        buttons:[{ 
+                            text: loginWidget.loginText,
+                            iconCls: 'login',
+                            formBind: true,
+                            handler: function(button){
+                                var form = button.ownerCt.ownerCt.getForm();
+                                submitLogin(form);
+                            }
+                        }],
+                        keys: [{ 
+                            key: [Ext.EventObject.ENTER],
+                            scope: this,
+                            handler: function(){
+                                submitLogin(this.win.items.items[0].getForm());
+                            }
+                        }]
+                    }]
                 });
+                this.win.show();  
             };
 
-            this.win = new Ext.Window({
-                title: "Login",
-                iconCls: 'user',
-                layout: "form",
-                width: 275,
-                closable: false,
-                height: 130,
-                plain: true,
-                border: false,
-                modal: true,
-                items: [{
-                    xtype:"form",
-                    layout:"form",
-                    items:[{  
-                        xtype: 'textfield',
-                        fieldLabel: loginWidget.userFieldText,
-                        name:'loginUsername', 
-                        allowBlank:false,
-                        listeners: {
-                          beforeRender: function(field) {
-                            field.focus(false, 1000);
-                          }
-                        }
-                    },{  
-                        xtype: 'textfield',
-                        fieldLabel: loginWidget.passwordFieldText,
-                        name:'loginPassword', 
-                        inputType:'password', 
-                        allowBlank:false
-                    }],
-                    buttons:[{ 
-                        // text: "Login",
-                        text: loginWidget.loginText,
-                        iconCls: 'login',
-                        formBind: true,
-                        handler: function(button){
-                            var form = button.ownerCt.ownerCt.getForm();
-                            submitLogin(form);
-                        }
-                    }],
-                    keys: [{ 
-                        key: [Ext.EventObject.ENTER],
-                        scope: this,
-                        handler: this.submitLogin
-                    }]
-                }]
+            // geostore base
+            var serverConfig;
+            if(!serverConfig){
+                serverConfig = {};
+            }
+            serverConfig = Ext.applyIf(serverConfig, localConfig);
+            serverConfig.geoStoreBaseURL = serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/');
+
+            // use GeoExplorerLoader to load configuration files and template data
+            var loader = new GeoExplorerLoader(serverConfig, customConfigName, mapStoreDebug, mapIdentifier, authorization, fullScreen, templateId);
+            loader.on("configfinished", function (config){
+                  //apply the loaded configuration.
+                  serverConfig = Ext.applyIf(serverConfig, config);
+                  proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy;
+                  header = serverConfig.header;
+                  footer = serverConfig.footer;
+
+                  // show the login
+                  showLogin();
             });
-            this.win.show();  
+            
         });    
     </script>
 

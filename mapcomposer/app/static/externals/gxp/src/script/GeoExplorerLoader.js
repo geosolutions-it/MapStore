@@ -134,8 +134,13 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
             scope: this,
             headers: headers,
             success: function(response, form, action) {
-                var user = Ext.util.JSON.decode(response.responseText);
-                if (user.User) {
+                var user;
+                try{
+                    user = Ext.util.JSON.decode(response.responseText);
+                }catch (e){
+                    // no user information
+                }
+                if (user && user.User) {
                     Ext.apply(this.config,{
                         user: user.User
                     });
@@ -211,6 +216,9 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
             }),
             listeners:{
                 load: this.adminConfigLoad,
+                loadexception: function(){
+                    this.fireEvent("configfinished", config);
+                },        
                 scope: this
             }
         });

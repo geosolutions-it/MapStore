@@ -16,6 +16,7 @@ There are two simply html pages:
 
 * redirectToHome.html --> Simply redirect to home page of the project for errors 404 and 403
 * login/index.html --> Login page based on bootstrap min for error 401
+* redirectToLogin.html --> Simply redirect to mapstore login page 401
 
 These pages are using absolute URLs to allow the load from all locations. It means that if you're trying to open:
 
@@ -24,6 +25,8 @@ These pages are using absolute URLs to allow the load from all locations. It mea
 * http://server/mapstore/manager
 * http://server/geoserver/mariss/wms
 
-without credentials, it's loaded the login page. Then there is no way to load the js and css resources in relative path.
+without credentials, it's loaded the login page. 
+
+You can select the bootstrap login or the mapstore login page. The default one is the mapstore login.
 
 Remember change the absolute URLs if you change the server name.
