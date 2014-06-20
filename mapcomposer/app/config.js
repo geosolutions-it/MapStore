@@ -6,6 +6,7 @@ var urls = [
     //[(/^\/(login)/), require("./root/login").app],
     //[(/^\/(maps(\/\d+)?)/), require("./root/maps").app],
     [(/^\/(composer)/), require("./root/composer").app],
+    [(/^\/(lose)/), require("./root/lose").app],
     [(/^\/(viewer(.html)?)/), require("./root/viewer").app]
 ];
 
