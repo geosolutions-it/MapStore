@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)http://mariss.geo-solutions.it/mapstore/loginpage -->
+<html class="  ext-strict"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <!--meta http-equiv="X-UA-Compatible" content="IE=8" /-->
+        <title>MARISS Login Page</title>
+
+        <!-- We need to use the absolute URL because this page it's loaded in different paths  -->
+        
+        <link rel="shortcut icon" href="http://mariss.geo-solutions.it/html/login/favicon.ico">
+		
+        <!-- Bootstrap CSS '-->
+        <link rel="stylesheet" href="http://mariss.geo-solutions.it/html/login/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://mariss.geo-solutions.it/html/login/bootstrap/css/bootstrap-theme.min.css">
+
+        <!-- Bootstrap/jquery JavaScript -->
+        <script src="http://mariss.geo-solutions.it/html/login/jquery.min.js"></script>
+        <script src="http://mariss.geo-solutions.it/html/login/bootstrap/js/bootstrap.min.js"></script>
+<body>
+
+    <!-- Login Header -->
+    <div class="page-header">
+       <img style="position:absolute; top:0px; left:20px; z-index:1000" 
+            src="http://mariss.geo-solutions.it/html/login/mariss_logo.jpg" 
+            width="146px"
+            height="80px"/>
+       <h1 style="color:grey; font-size:30px; position:absolute; top:20px; left:260px; z-index:1000">MARISS Project 
+          <small>European Maritime Security Services</small>
+       </h1>
+    </div>
+
+    <!-- Login form -->
+    <div class="container">
+      <form class="form-signin" role="form" method="POST">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <div class="form-group">
+          <label for="httpd_username">User: </label>
+          <input type="text" name="httpd_username" class="form-control" placeholder="User Name" required autofocus />
+        </div>
+        <div class="form-group">
+          <label for="httpd_password">Password: </label>
+          <input type="password" name="httpd_password" class="form-control" placeholder="Password" required />
+        </div>
+        <input type="hidden" name="httpd_method" value="POST" />
+        <input type="submit" class="btn btn-lg btn-primary btn-block" name="login" value="Login" />
+      </form>
+    </div> <!-- /container -->
+    
+
+</body>
+
+</html>

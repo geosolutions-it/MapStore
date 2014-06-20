@@ -3,6 +3,7 @@
    "socialUrl":"",
    "adminUrl":"http://mariss.geo-solutions.it/opensdi2-manager/",
    "geoStoreBase":"http://mariss.geo-solutions.it/opensdi2-manager/facade/geostore/rest/",
+   "externalLogoutUrl":"http://mariss.geo-solutions.it/logout",
    "start":0,
    "limit":20,
    "msmTimeout":30000,
