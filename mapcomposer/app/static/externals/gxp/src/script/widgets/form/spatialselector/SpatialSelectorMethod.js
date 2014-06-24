@@ -598,6 +598,7 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 				fieldLabel: this.distanceUnitsTitleText,
 				name: "dunits",
 				ref: "../dunits",
+				labelStyle: 'width: 130px;',
 				value: this.target.mapPanel.map.units,
 				allowBlank: false
 			},{
@@ -605,6 +606,7 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 				fieldLabel: this.distanceTitleText,
 				name: "distance",
 				ref: "../distance",
+				labelStyle: 'width: 130px;',
 				allowBlank: false
 			}]
 		}
