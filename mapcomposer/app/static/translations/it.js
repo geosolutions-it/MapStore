@@ -795,5 +795,13 @@ GeoExt.Lang.add("it", {
 	"gxp.plugins.FeatureManager.prototype":{
         noValidWmsVersionMsgTitle: 'Versione WMS non valida',    
         noValidWmsVersionMsgText: "Il plugin queryForm non funziona con una sorgente WMS versione: "
+    },
+    "gxp.data.WMTSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "Nessun layer disponibile su questo server nel sistema di coordinate della mappa",
+        warningTitle: "Attenzione"
+    },
+    "gxp.data.TMSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "Nessun layer disponibile su questo server nel sistema di coordinate della mappa",
+        warningTitle: "Attenzione"
     }
 });
