@@ -63,7 +63,8 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
 	/**
 	 * File separator
 	 */
-	private static String SEPARATOR = System.getProperty("file.separator");
+	private static String FTP_SEPARATOR = "/";
+	private static String LOCAL_SEPARATOR = File.separator;
 
 	/**
 	 * Action configuration
@@ -311,7 +312,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
 			// obtain service folders
 			List<String> serviceFolders = RemoteBrowserUtils.ls(serverProtocol,
 					serverUser, serverPWD, serverHost, serverPort, remotePath
-							+ SEPARATOR + user + SEPARATOR + service,
+							+ FTP_SEPARATOR + user + FTP_SEPARATOR + service,
 					connectMode, timeout, null, true);
 
 			// check and create the input dir if not found
@@ -322,50 +323,54 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
 			// For each file on the remote directory
 			for (String folder : serviceFolders) {
 
-				String relativeFolder = user + SEPARATOR + service + SEPARATOR
-						+ folder;
-
+				
+			    String localRelativeFolder = user + LOCAL_SEPARATOR + service + LOCAL_SEPARATOR
+                                    + folder;
+			    String remoteRelativeFolder = user + FTP_SEPARATOR + service + FTP_SEPARATOR
+			            + folder;
 				// prepare success and fail path
 				if (configuration.isStoreLocal()) {
+				    
 					// prepare success
 					if (!checkIfExists(configuration.getSuccesPath(),
-							relativeFolder)) {
-						mkdir(configuration.getSuccesPath(), relativeFolder);
+					        localRelativeFolder)) {
+						mkdir(configuration.getSuccesPath(), localRelativeFolder);
 					}
 					// prepare fail
 					if (!checkIfExists(configuration.getFailPath(),
-							relativeFolder)) {
-						mkdir(configuration.getFailPath(), relativeFolder);
+					        localRelativeFolder)) {
+						mkdir(configuration.getFailPath(), localRelativeFolder);
 					}
 				} else {
+				   
 					// prepare success
 					if (!checkIfExists(serverResultProtocol, serverResultUser,
 							serverResultHost, serverResultPWD,
 							serverResultPort, configuration.getSuccesPath(),
-							relativeFolder, resultConnectMode, resultTimeout)) {
+							remoteRelativeFolder, resultConnectMode, resultTimeout)) {
 						remotemkdir(serverResultProtocol, serverResultUser,
 								serverResultHost, serverResultPWD,
 								serverResultPort,
-								configuration.getSuccesPath(), relativeFolder,
+								configuration.getSuccesPath(), remoteRelativeFolder,
 								resultConnectMode, resultTimeout);
 					}
 					// prepare fail
 					if (!checkIfExists(serverResultProtocol, serverResultUser,
 							serverResultHost, serverResultPWD,
 							serverResultPort, configuration.getFailPath(),
-							relativeFolder, resultConnectMode, resultTimeout)) {
+							remoteRelativeFolder, resultConnectMode, resultTimeout)) {
 						remotemkdir(serverResultProtocol, serverResultUser,
 								serverResultHost, serverResultPWD,
 								serverResultPort, configuration.getFailPath(),
-								relativeFolder, resultConnectMode,
+								remoteRelativeFolder, resultConnectMode,
 								resultTimeout);
 					}
 				}
 				// check if it's observable
 				if (isObservableServiceFolder(folder)) {
 
-					String currentRemoteFolder = remotePath + SEPARATOR
-							+ relativeFolder;
+					String currentRemoteFolder = remotePath + FTP_SEPARATOR
+							+ remoteRelativeFolder;
 					// get files in the ACQ_LIST folder
 					List<String> fileNames = RemoteBrowserUtils.ls(
 							serverProtocol, serverUser, serverPWD, serverHost,
@@ -386,11 +391,11 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
 								exists = checkIfExists(inputDir, fileName)
 										| checkIfExists(
 												configuration.getSuccesPath()
-														+ relativeFolder,
+														+ localRelativeFolder,
 												fileName)
 										| checkIfExists(
 												configuration.getFailPath()
-														+ relativeFolder,
+														+ localRelativeFolder,
 												fileName);
 							} else {
 								exists = checkIfExists(serverResultProtocol,
@@ -404,7 +409,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
 												serverResultPWD,
 												serverResultPort,
 												configuration.getSuccesPath()
-														+ relativeFolder,
+														+ remoteRelativeFolder,
 												fileName, resultConnectMode,
 												resultTimeout)
 										| checkIfExists(serverResultProtocol,
@@ -413,7 +418,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
 												serverResultPWD,
 												serverResultPort,
 												configuration.getFailPath()
-														+ relativeFolder,
+														+ remoteRelativeFolder,
 												fileName, resultConnectMode,
 												resultTimeout);
 							}
@@ -426,8 +431,8 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
 							File inputFile = RemoteBrowserUtils.downloadFile(
 									serverProtocol, serverUser, serverPWD,
 									serverHost, serverPort, currentRemoteFolder
-											+ SEPARATOR + fileName, inputDir
-											+ SEPARATOR + fileName, timeout);
+											+ FTP_SEPARATOR + fileName, inputDir
+											+ FTP_SEPARATOR + fileName, timeout);
 
 							// process the file
 							if (inputFile.exists()) {
@@ -457,18 +462,18 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
 								if (!error) {
 									// success: put on success remote dir
 									targetPath = configuration.getSuccesPath()
-											+ relativeFolder;
+											+ localRelativeFolder;
 								} else {
 									// fail: put on fail remote dir
 									targetPath = configuration.getFailPath()
-											+ relativeFolder;
+											+ localRelativeFolder;
 								}
 
 								// result could be local or remote
 								if (configuration.isStoreLocal()) {
 									// move the the target path
 									inputFile.renameTo(new File(targetPath
-											+ SEPARATOR + inputFile.getName()));
+											+ LOCAL_SEPARATOR + inputFile.getName()));
 								} else {
 									// upload file
 									RemoteBrowserUtils.putFile(
@@ -477,7 +482,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
 											serverResultHost,
 											serverResultPWD,
 											serverResultPort,
-											targetPath + SEPARATOR
+											targetPath + FTP_SEPARATOR
 													+ inputFile.getName(),
 											inputFile.getAbsolutePath(),
 											resultConnectMode, resultTimeout);
@@ -620,7 +625,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
 			for (String user : users) {
 
 				List<String> services = RemoteBrowserUtils.ls(serverProtocol,
-						userName, password, host, port, rootPath + SEPARATOR
+						userName, password, host, port, rootPath + FTP_SEPARATOR
 								+ user, connectMode, timeout, pattern, true);
 
 				servicesByUser.put(user, services);
@@ -666,7 +671,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
 	 * @return
 	 */
 	private boolean checkIfExists(String inputDir, String fileName) {
-		File file = new File(inputDir + SEPARATOR + fileName);
+		File file = new File(inputDir + LOCAL_SEPARATOR + fileName);
 		return file.exists();
 	}
 
@@ -705,7 +710,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
 	 */
 	private void mkdir(String succesPath, String relativeFolder)
 			throws IOException {
-		FileUtils.forceMkdir(new File(succesPath + SEPARATOR + relativeFolder));
+		FileUtils.forceMkdir(new File(succesPath + LOCAL_SEPARATOR + relativeFolder));
 	}
 
 }
