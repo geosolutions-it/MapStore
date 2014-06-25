@@ -167,6 +167,50 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 	iconCls: "gxp-icon-addlayers",
 	
 	hideByDefault: false,
+    
+    /** api: config[availableSources]
+     *  ``Array``
+     *  List of available sources for Add Server, with related configuration.
+     */
+    availableSources: [
+        {
+            name: 'WMS',
+            description: 'Web Map Service (WMS)',
+            config: {
+                ptype : 'gxp_wmscsource'
+            }
+        },
+        {
+            name: 'WMTS-KVP',
+            description: 'Web Map Tile Service KVP (WMTS)',
+            config: {
+                ptype : 'gxp_wmtssource',
+                preferredEncoding : 'KVP'
+            }
+        },
+        {
+            name: 'WMTS-REST',
+            description: 'Web Map Tile Service REST (WMTS)',
+            config: {
+                ptype : 'gxp_wmtssource',
+                preferredEncoding : 'REST'
+            }
+        },
+        {
+            name: 'TMS',
+            description: 'Tiled Map Service (TMS)',
+            config: {
+                ptype : 'gxp_tmssource'
+            }
+        }
+    ],
+    
+    /** api: config[additionalSources]
+     *  ``Array``
+     *  List of sources to be added to default availableSources.
+     */
+    additionalSources: [],
+    
 
     /** private: method[constructor]
      */
@@ -359,13 +403,26 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             }));
         }
         
+        for(var count = 0, l = this.additionalSources.length; count < l; count++) {
+            this.availableSources.push(this.additionalSources[count]);
+        }
+        
         var newSourceWindow = new gxp.NewSourceWindow({
             modal: true,
+            availableSources: this.availableSources,
             listeners: {
-                "server-added": function(url) {
+                "server-added": function(url, type) {
                     newSourceWindow.setLoading();
+                    var sourceCfg;
+                    for(var count = 0, l = this.availableSources.length; count < l; count++) {
+                        var currentSource = this.availableSources[count];
+                        if(currentSource.name === type) {
+                            sourceCfg = Ext.apply({url: url}, currentSource.config);
+                        }
+                    }
+                    
                     this.target.addLayerSource({
-                        config: {url: url}, // assumes default of gx_wmssource
+                        config: sourceCfg,
                         callback: function(id) {
                             // add to combo and select
                             var record = new sources.recordType({
@@ -378,7 +435,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                         },
                         fallback: function(source, msg) {
                             newSourceWindow.setError(
-                                new Ext.Template(this.addLayerSourceErrorText).apply({msg: msg})
+                                new Ext.Template(this.addLayerSourceErrorText).apply({type: type, msg: msg})
                             );
                         },
                         scope: this

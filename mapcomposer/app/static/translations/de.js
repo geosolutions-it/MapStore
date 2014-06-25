@@ -808,5 +808,13 @@ GeoExt.Lang.add("de", {
 	"gxp.plugins.FeatureManager.prototype":{
         noValidWmsVersionMsgTitle: 'WMS Version ungültig',    
         noValidWmsVersionMsgText: "Die Queryform-Plugin nicht mit WMS Source Version arbeiten: "
-    } 
+    },
+    "gxp.data.WMTSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "Keine Schicht in der aktuellen Kartenprojektion ist auf diesem Server nicht verfügbar",
+        warningTitle: "Warnung"
+    },
+    "gxp.data.TMSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "Keine Schicht in der aktuellen Kartenprojektion ist auf diesem Server nicht verfügbar",
+        warningTitle: "Warnung"
+    }
 });

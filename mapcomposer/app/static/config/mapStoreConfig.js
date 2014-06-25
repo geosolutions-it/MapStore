@@ -96,7 +96,8 @@
 			"embeddedTemplateName": "viewer",
 			"showDirectURL": true
 		}, {
-			"ptype": "gxp_categoryinitializer"
+			"ptype": "gxp_categoryinitializer",
+            "silentErrors": true
 		}, {
 		   "ptype": "gxp_mouseposition",
 		   "displayProjectionCode":"EPSG:4326",
