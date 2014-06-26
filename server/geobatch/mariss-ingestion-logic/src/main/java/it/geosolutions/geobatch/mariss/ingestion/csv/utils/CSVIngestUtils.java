@@ -26,7 +26,9 @@ import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProcessException;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.util.StringUtils;
 
@@ -38,6 +40,36 @@ import org.springframework.util.StringUtils;
 public class CSVIngestUtils {
 
 static TimeFormat TIME_FORMAT = new TimeFormat(null, null, null, new TimeFormatConfiguration(null, null, null));
+
+/**
+ * Separator for each global parameter in the file name
+ */
+public static final String PARAMS_SEPARATOR = ",,,";
+
+/**
+ * Name-value for each global parameter in the file name
+ */
+public static final String NAME_VALUE_SEPARATOR = "===";
+
+/**
+ * Start of the parameters in the file name
+ */
+public static final String PARAMS_START = "PARAMS[";
+
+/**
+ * End of the parameters in the fileName
+ */
+public static final String PARAMS_END = "]_";
+
+/**
+ * Parameter name to save user global parameter in the file name
+ */
+public static final String USER_FILE_PARAMETER = "user";
+
+/**
+ * Parameter name to save service global parameter in the file name
+ */
+public static final String SERVICE_FILE_PARAMETER = "service";
 
 /**
  * Obtain a double value of a string or null if it's null or empty
@@ -78,6 +110,8 @@ public static Object parse(String origin, CSVPropertyType type)
     switch (type) {
     case INTEGER:
         return origin != null && origin.length() > 0 ? Integer.parseInt(origin): null;
+    case LONG:
+        return origin != null && origin.length() > 0 ? Long.parseLong(origin): null;
     case DOUBLE:
         return CSVIngestUtils.getDoubleValue(origin);
     case DATE_TIME:
@@ -109,6 +143,77 @@ public static List<String> sanitizeHeaders(String[] headers) throws IOException 
         }
     }
     return ret;
+}
+
+/**
+ * Include service and user names in the file name
+ * 
+ * @param fileName
+ * @param userName
+ * @param serviceName
+ * 
+ * @return file name with the parameters
+ */
+public static String getUserServiceFileName(String fileName, String userName, String serviceName){
+	Map<String, String> parameters = new HashMap<String, String>();
+	parameters.put(USER_FILE_PARAMETER, userName);
+	parameters.put(SERVICE_FILE_PARAMETER, serviceName);
+	return getParametersInName(fileName, parameters);
+}
+
+/**
+ * Obtain a new file name for a given parameters
+ * 
+ * @param fileName original
+ * @param parameters for the new name 
+ * 
+ * @return composition using {@link CSVIngestUtils#PARAMS_START}, 
+ * 	{@link CSVIngestUtils#PARAMS_SEPARATOR}, {@link CSVIngestUtils#NAME_VALUE_SEPARATOR}
+ * 	and {@link CSVIngestUtils#PARAMS_END}
+ */
+public static String getParametersInName(String fileName, Map<String, String> parameters){
+	String newName = fileName;
+	String paramsString = "";
+	if(parameters != null 
+			&& !parameters.isEmpty()){
+		paramsString += PARAMS_START;
+		int index = 0;
+		int size = parameters.keySet().size();
+		for(String name: parameters.keySet()){
+			index++;
+			paramsString += name + NAME_VALUE_SEPARATOR + parameters.get(name);
+			if(index < size){
+				paramsString += PARAMS_SEPARATOR;
+			}else{
+				paramsString += PARAMS_END;
+			}
+		}
+		newName = paramsString + newName;
+	}
+	return newName;
+}
+
+/**
+ * Get the parameters in the file name using {@link CSVIngestUtils#PARAMS_START}, 
+ * 	{@link CSVIngestUtils#PARAMS_SEPARATOR}, {@link CSVIngestUtils#NAME_VALUE_SEPARATOR}
+ * 	and {@link CSVIngestUtils#PARAMS_END}
+ * 
+ * @param fileName with the parameters
+ * 
+ * @return the Map with the pairs
+ */
+public static Map<String, String> getParametersFromName(String fileName){
+	Map<String, String> parameters = new HashMap<String, String>();
+	if(fileName.contains(PARAMS_START) 
+			&& fileName.contains(PARAMS_END)){
+		String partial = fileName.substring(fileName.indexOf(PARAMS_START)  + PARAMS_START.length());
+		partial = partial.substring(0, partial.indexOf(PARAMS_END));
+		String [] pairs = partial.split(PARAMS_SEPARATOR);
+		for(String nameValuePair: pairs){
+			parameters.put(nameValuePair.split(NAME_VALUE_SEPARATOR)[0], nameValuePair.split(NAME_VALUE_SEPARATOR)[1]);
+		}
+	}
+	return parameters;
 }
 
 }

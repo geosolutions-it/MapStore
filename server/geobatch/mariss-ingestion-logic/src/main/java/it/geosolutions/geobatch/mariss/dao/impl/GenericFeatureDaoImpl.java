@@ -44,7 +44,7 @@ public class GenericFeatureDaoImpl implements GenericDAO<SimpleFeature, Long> {
 	protected FeatureStore<SimpleFeatureType, SimpleFeature> source = null;
 	protected String[] pkNames = null;
 	String typeName = null;
-	Map<String,Object> connectionParam = null;
+	Map<String,Serializable> connectionParam = null;
 	DataStore dataStore = null;
 	
 	public GenericFeatureDaoImpl(){
@@ -64,13 +64,13 @@ public class GenericFeatureDaoImpl implements GenericDAO<SimpleFeature, Long> {
 		this.pkNames = pkNames;
 	}
 	
-	public GenericFeatureDaoImpl(Map<String,Object> connectionParam, String typeName){
+	public GenericFeatureDaoImpl(Map<String,Serializable> connectionParam, String typeName){
 		super ();
 		this.typeName = typeName;
 		this.connectionParam = connectionParam;
 	}
 	
-	public GenericFeatureDaoImpl(Map<String,Object> connectionParam, String typeName, String[] pkNames){
+	public GenericFeatureDaoImpl(Map<String,Serializable> connectionParam, String typeName, String[] pkNames){
 		this(connectionParam, typeName);
 		this.pkNames = pkNames;
 	}
@@ -223,7 +223,7 @@ public class GenericFeatureDaoImpl implements GenericDAO<SimpleFeature, Long> {
 	}
 
 	@Override
-	public void merge(SimpleFeature entity) {
+	public void merge(SimpleFeature entity) throws IOException {
 		
 		// get the update filter
 		Filter updateFilter = null;
@@ -273,6 +273,7 @@ public class GenericFeatureDaoImpl implements GenericDAO<SimpleFeature, Long> {
 		            } catch (Exception problem) {
 						LOGGER.error("Error on commit", problem);
 		                transaction.rollback();
+		                throw new IOException(problem);
 		            } finally {
 		                transaction.close();
 		            }
@@ -284,14 +285,16 @@ public class GenericFeatureDaoImpl implements GenericDAO<SimpleFeature, Long> {
 		        }
 			}catch (Exception e){
 				LOGGER.error("Error merging " + entity, e);
+	            throw new IOException(e);
 			}
 		}else{
 			LOGGER.error("Unable to merge "+entity);
+            throw new IOException("Unable to merge "+entity);
 		}
 	}
 
 	@Override
-	public void persist(SimpleFeature entity) {
+	public void persist(SimpleFeature entity) throws IOException{
 		try{
 	        /*
 	         * Write the feature to the current source
@@ -315,6 +318,7 @@ public class GenericFeatureDaoImpl implements GenericDAO<SimpleFeature, Long> {
 	            } catch (Exception problem) {
 					LOGGER.error("Error on commit", problem);
 	                transaction.rollback();
+	                throw new IOException(problem);
 	            } finally {
 	                transaction.close();
 	            }
@@ -326,6 +330,7 @@ public class GenericFeatureDaoImpl implements GenericDAO<SimpleFeature, Long> {
 	        }
 		}catch (Exception e){
 			LOGGER.error("Error on persist", e);
+            throw new IOException(e);
 		}
 	}
 
@@ -361,9 +366,7 @@ public class GenericFeatureDaoImpl implements GenericDAO<SimpleFeature, Long> {
 	@Override
 	public void prepare() {
 		try {
-			if(dataStore == null){
-				dataStore = DataStoreFinder.getDataStore(connectionParam);
-			}
+			dataStore = DataStoreFinder.getDataStore(connectionParam);
 			this.source = ((FeatureStore<SimpleFeatureType, SimpleFeature>) dataStore.getFeatureSource(typeName));
 			this.schema = dataStore.getSchema(typeName);
 		} catch (Exception e) {

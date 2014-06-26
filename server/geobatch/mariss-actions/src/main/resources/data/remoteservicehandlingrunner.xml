@@ -70,6 +70,11 @@
             <attributeMappings/>
             <remoteBrowserConfiguration>
               <dataTransferMethod />
+              <serverProtocol>local</serverProtocol>
+              <description>Local browser configuration</description>
+              <name>localBrowserConfiguration</name>
+              <dataTransferMethod />
+              <!-- Uncomment and configure this to use in a remote server 
               <serverProtocol>sftp</serverProtocol>
               <timeout>5000</timeout>
               <zipInput>false</zipInput>
@@ -83,7 +88,7 @@
               <operationId>Download</operationId>
               <id>monitorize</id>
               <description>SFTP inner configuration</description>
-              <name>sftpConfiguration</name>
+              <name>sftpConfiguration</name> -->
             </remoteBrowserConfiguration>
             <!-- Basic configuration -->
             <storeLocal>true</storeLocal>
@@ -95,10 +100,49 @@
             <inputPath>/tmp/ingestion/working</inputPath>
             <succesPath>/tmp/ingestion/ok</succesPath>
             <failPath>/tmp/ingestion/fail</failPath>
-            <!-- CSV separator -->
-            <csvSeparator>,</csvSeparator>
-            <!-- Table for the acq_list -->
-            <acqListTypeName>acq_list</acqListTypeName>
+            <!-- CSV ingestion path for the CSV Ingest action-->
+            <csvIngestionPath>csvingestion/in</csvIngestionPath>
+            <!-- Product ingestion -->
+            <dlrProductIngestionTypeName>dlr_ships</dlrProductIngestionTypeName>
+            <dlrProductsTiffFolder>gs_ext_data/TDX1_SAR__MGD_RE___SM_S_SRA</dlrProductsTiffFolder>
+            <dlrProductsIMConfiguration>
+              <description>ImageMosaicService</description>
+              <name>ImageMosaicService</name>
+              <crs>EPSG:4326</crs>
+              <dataTransferMethod>EXTERNAL</dataTransferMethod>
+              <geoserverPWD>geoserver</geoserverPWD>
+              <geoserverUID>admin</geoserverUID>
+              <geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+
+              <defaultNamespace>mariss</defaultNamespace>
+              <defaultStyle>raster</defaultStyle>
+
+              <backgroundValue>-9999</backgroundValue>
+              <outputTransparentColor></outputTransparentColor>
+              <inputTransparentColor></inputTransparentColor>
+              <allowMultithreading>true</allowMultithreading>
+              <useJaiImageRead>false</useJaiImageRead>
+              <tileSizeH>512</tileSizeH>
+              <tileSizeW>512</tileSizeW>
+
+              <NativeMinBoundingBoxX>-180</NativeMinBoundingBoxX>
+              <NativeMinBoundingBoxY>-90</NativeMinBoundingBoxY>
+              <NativeMaxBoundingBoxX>180</NativeMaxBoundingBoxX>
+              <NativeMaxBoundingBoxY>90</NativeMaxBoundingBoxY>
+
+              <latLonMinBoundingBoxX>-180</latLonMinBoundingBoxX>
+              <latLonMinBoundingBoxY>-90</latLonMinBoundingBoxY>
+              <latLonMaxBoundingBoxX>180</latLonMaxBoundingBoxX>
+              <latLonMaxBoundingBoxY>180</latLonMaxBoundingBoxY>
+
+              <!--NONE, REPROJECT_TO_DECLARED, FORCE_DECLARED -->
+              <projectionPolicy>NONE</projectionPolicy>
+              <!-- METADATA -->
+              <timeDimEnabled>true</timeDimEnabled>
+              <timeRegex>[0-9]{8}T[0-9]{9}Z(\?!.\*[0-9]{8}T[0-9]{9}Z.\*)</timeRegex>
+              <!-- LIST, CONTINUOUS_INTERVAL, DISCRETE_INTERVAL -->
+              <timePresentationMode>LIST</timePresentationMode>
+            </dlrProductsIMConfiguration>
             <!-- Listeners -->
             <listenerId>ConsumerLogger0</listenerId>
             <listenerId>Cumulator</listenerId>

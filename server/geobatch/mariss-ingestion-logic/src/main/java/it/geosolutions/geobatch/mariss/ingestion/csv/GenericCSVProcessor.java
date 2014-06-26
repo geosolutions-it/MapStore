@@ -94,16 +94,18 @@ public abstract T merge(T old, Object[] properties);
  * exceptions.
  * 
  * @param entity
+ * @throws IOException 
  */
-public abstract void save(T entity);
+public abstract void save(T entity) throws IOException;
 
 /**
  * Persists the entity. This method it's needed just to evict class cast
  * exceptions.
  * 
  * @param entity
+ * @throws IOException 
  */
-public abstract void persist(T entity);
+public abstract void persist(T entity) throws IOException;
 
 /**
  * CSV default generic processor. It insert a new entity for each row that don't

@@ -21,6 +21,7 @@
  */
 package it.geosolutions.geobatch.mariss.dao;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -69,15 +70,17 @@ public T searchByPK(String[] names, Serializable... pkObjects);
  * Update an entity
  * 
  * @param entity to be merged 
+ * @throws IOException 
  */
-public void merge(T entity);
+public void merge(T entity) throws IOException;
 
 /**
  * Create a new entity
  * 
  * @param entity to create
+ * @throws IOException 
  */
-public void persist(T entity);
+public void persist(T entity) throws IOException;
 
 /**
  * @return schema used on dao

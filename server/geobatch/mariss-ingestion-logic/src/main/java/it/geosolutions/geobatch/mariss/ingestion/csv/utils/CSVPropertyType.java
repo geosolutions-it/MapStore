@@ -26,5 +26,5 @@ package it.geosolutions.geobatch.mariss.ingestion.csv.utils;
  *
  */
 public enum CSVPropertyType {
-    IGNORE,INTEGER, DOUBLE, STRING, DATE_TIME
+    IGNORE,INTEGER, DOUBLE, STRING, DATE_TIME, LONG
 }

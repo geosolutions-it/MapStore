@@ -21,9 +21,9 @@
  */
 package it.geosolutions.geobatch.mariss.action.acqlistfilehandling;
 
+import it.geosolutions.geobatch.actions.ds2ds.Ds2dsConfiguration;
 import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
 import it.geosolutions.geobatch.imagemosaic.ImageMosaicConfiguration;
-import it.geosolutions.geobatch.mariss.action.csv.CSVIngestConfiguration;
 import it.geosolutions.geobatch.remoteBrowser.configuration.RemoteBrowserConfiguration;
 
 /**
@@ -32,7 +32,7 @@ import it.geosolutions.geobatch.remoteBrowser.configuration.RemoteBrowserConfigu
  * 
  * @author adiaz
  */
-public class RemoteServiceHandlingConfiguration extends CSVIngestConfiguration {
+public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
 
 /**
  * Configuration for the remote connection for the files to be ingested
@@ -91,11 +91,6 @@ private String succesPath;
 private String failPath;
 
 /**
- * Type name for the acquistion list
- */
-private String acqListTypeName;
-
-/**
  * Image mosaic configuration for the DLR product ingestion
  */
 private ImageMosaicConfiguration dlrProductsIMConfiguration;
@@ -109,6 +104,8 @@ private String dlrProductsTiffFolder;
  * Type name for the DLR product ingestion
  */
 private String dlrProductIngestionTypeName;
+
+private String csvIngestionPath;
 
 public RemoteServiceHandlingConfiguration(String id, String name, String description) {
     super(id, name, description);
@@ -272,20 +269,6 @@ public void setTimeFormatConfiguration(
 }
 
 /**
- * @return the acqListTypeName
- */
-public String getAcqListTypeName() {
-	return acqListTypeName;
-}
-
-/**
- * @param acqListTypeName the acqListTypeName to set
- */
-public void setAcqListTypeName(String acqListTypeName) {
-	this.acqListTypeName = acqListTypeName;
-}
-
-/**
  * @return the dlrProductsIMConfiguration
  */
 public ImageMosaicConfiguration getDlrProductsIMConfiguration() {
@@ -326,6 +309,20 @@ public String getDlrProductIngestionTypeName() {
  */
 public void setDlrProductIngestionTypeName(String dlrProductIngestionTypeName) {
 	this.dlrProductIngestionTypeName = dlrProductIngestionTypeName;
+}
+
+/**
+ * @return the csvIngestionPath
+ */
+public String getCsvIngestionPath() {
+	return csvIngestionPath;
+}
+
+/**
+ * @param csvIngestionPath the csvIngestionPath to set
+ */
+public void setCsvIngestionPath(String csvIngestionPath) {
+	this.csvIngestionPath = csvIngestionPath;
 }
 
 }

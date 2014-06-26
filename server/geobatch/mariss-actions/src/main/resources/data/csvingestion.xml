@@ -20,6 +20,63 @@
 			<id>csv</id>
 			<name>CSVIngestion</name>
 			<description>Ingest CSV data</description>
+			<!-- Connection to the database -->
+            <outputFeature>
+                <dataStore>
+                   <entry>
+                     <string>dbtype</string>
+                     <string>postgis</string>
+                   </entry>
+                   <entry>
+                     <string>host</string>
+                     <string>localhost</string>
+                   </entry>
+                   <entry>
+                     <string>port</string>
+                     <string>5432</string>
+                   </entry>
+                   <entry>
+                     <string>database</string>
+                     <string>mariss</string>
+                   </entry>
+                   <entry>
+                     <string>database</string>
+                     <string>mariss</string>
+                   </entry>
+                   <entry>
+                     <string>schema</string>
+                     <string>public</string>
+                   </entry>
+                   <entry>
+                     <string>user</string>
+                     <string>mari If you need differentss</string>
+                   </entry>
+                   <entry>
+                     <string>passwd</string>
+                     <string>mariss</string>
+                   </entry>
+                </dataStore>
+            </outputFeature>
+            <!-- the CSV separator is common to allow the processor detection based on headers -->
+            <csvSeparator>,</csvSeparator>
+            <!-- Processors configuration -->
+            <proccesorsConfiguration>
+            	<CSVProcessorConfiguration>
+            		<typeName>acq_list</typeName>
+            		<className>it.geosolutions.geobatch.mariss.ingestion.csv.CSVAcqListProcessor</className>
+            		<projection>4326</projection>
+            	</CSVProcessorConfiguration>
+            	<CSVProcessorConfiguration>
+            		<typeName>products_1to3</typeName>
+            		<className>it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes1To3Processor</className>
+            		<projection>4326</projection>
+            	</CSVProcessorConfiguration>
+            	<CSVProcessorConfiguration>
+            		<typeName>products_5</typeName>
+            		<className>it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes5Processor</className>
+            		<projection>4326</projection>
+            	</CSVProcessorConfiguration>
+            </proccesorsConfiguration>
 			<!-- Listeners -->
 			<listenerId>ConsumerLogger0</listenerId>
 			<listenerId>Cumulator</listenerId>

@@ -19,6 +19,8 @@
  */
 package it.geosolutions.geobatch.mariss.ingestion.product;
 
+import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVIngestUtils;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -75,6 +77,18 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 	private static final String Q_NAME_CONFIDENCE_LEVEL = "confidenceLevel";
 	private static final String Q_NAME_IMAGE_IDENTIFIER = "imageIdentifier";
 	private static final String Q_NAME_IMAGE_SPEED = "speed";
+	
+	/**
+	 * CSV products type 1 to 3 files must have this in the name
+	 */
+	public static final String CSV_TYPE_1_TO_3= "type_1to3";
+	
+	/**
+	 * CSV products type 5 files must have this in the name
+	 */
+	public static final String CSV_TYPE_5= "type_5";
+
+	private String csvIngestionPath;
 
 	// constructors
 	public DataPackageIngestionProcessor() {
@@ -112,7 +126,7 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 	 * @throws IOException
 	 */
 	public String processZip(String zipFile) throws IOException {
-		String msg = null;
+		String msg = "";
 
 		String zipPath = workingDir
 				+ zipFile.substring(zipFile.lastIndexOf(File.separator));
@@ -121,6 +135,7 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 		// parse zip content
 		File zipFolder = new File(zipPath);
 		if (zipFolder.exists() && zipFolder.isDirectory()) {
+			List<String> csvFiles = new LinkedList<String>();
 			List<String> processedShips = new LinkedList<String>();
 			List<String> inPackageShips = null;
 			List<ShipType> ships = new LinkedList<ShipType>();
@@ -135,14 +150,45 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 				} else if (fileName.endsWith(".tif")) {
 					// it should be the tiff
 					tifFile = file;
+				} else if (fileName.endsWith(".csv")) {
+					csvFiles.add(zipPath + File.separator + fileName);
 				}
 			}
-			msg = ingestData(processedShips, inPackageShips, ships, tifFile);
+			if(!csvFiles.isEmpty()){
+				msg = ingestData(csvFiles);
+			}
+			msg += ingestData(processedShips, inPackageShips, ships, tifFile);
 		} else {
 			throw new IOException(
 					"The file isn't a zip file or an error occur trying to decompress");
 		}
 
+		return msg;
+	}
+
+	/**
+	 * Ingestion for CSV files 
+	 * 
+	 * @param csvFiles
+	 * 
+	 * @return message with the reference of each ingestion	
+	 */
+	public String ingestData(List<String> csvFiles) {
+		String msg = "";
+		if(checkCSVFiles(csvFiles).isEmpty()){
+			for(String csv: csvFiles){
+				File inputFile = new File(csv);
+				try {
+					String csvFileName = CSVIngestUtils.getUserServiceFileName(inputFile.getName(), userName, serviceName);
+					FileUtils.copyFile(inputFile,
+							new File(getCsvIngestionPath()
+									+ File.separator + csvFileName));
+					msg += "Delegated on CSV ingestion for the file "+ inputFile.getName() + "\n";
+				} catch (IOException e) {
+					LOGGER.error("Error copying " + inputFile + " for the CSV ingestion", e);
+				}
+			}
+		}
 		return msg;
 	}
 
@@ -199,6 +245,7 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 	 */
 	private String ingestData(List<String> processedShips,
 			List<String> inPackageShips, List<ShipType> ships, File tifFile) {
+		String msg = "";
 		if(LOGGER.isTraceEnabled()){
 			LOGGER.trace("Tif file is  --> " + tifFile);
 			LOGGER.trace("Ships are  --> " + ships);
@@ -215,8 +262,18 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 		if(tifFile != null){
 			// add the image mosaic
 			addImageMosaic(tifFile);
+			// update msg
+			msg += "Added tif file " + tifFile + "\n"; 
 		}
-		return "Succesfully insert of " + shipList.size() + " ships";
+		
+		// update msg
+		if(shipList.size()  == 0){
+			msg += "No ship data ingested";
+		}else{
+			msg += "Succesfully insert of " + shipList.size() + " ships";
+		}
+		
+		return msg;
 	}
 
 	/**
@@ -378,6 +435,60 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 	@Override
 	public String doProcess(String filePath) throws IOException {
 		return processZip(filePath);
+	}
+
+	/**
+	 * Check if the CSV files are correct (have a type1to3 and type5 files)
+	 * 
+	 * @param csvFiles
+	 * 
+	 * @return not complete files
+	 */
+	public static List<String> checkCSVFiles(List<String> csvFiles) {
+		// check if each CSV file type 1 to 3 CSV has also a CSV file type 5 
+		List<String> csvType1To3 = new LinkedList<String>();
+		List<String> csvType5 = new LinkedList<String>();
+		List<String> csvNotCompleted = new LinkedList<String>();
+		
+		// distinct both lists
+		for(String name: csvFiles){
+			if(name.contains(CSV_TYPE_1_TO_3)){
+				csvType1To3.add(name);
+			}else if(name.contains(CSV_TYPE_5)){
+				csvType5.add(name);
+			}
+		}
+		
+		// check one by one
+		for(String name: csvType1To3){
+			String csv5File = name.replace(CSV_TYPE_1_TO_3, CSV_TYPE_5);
+			if(csvType5.contains(csv5File)){
+				// both files are available
+				csvType5.remove(csv5File);
+			}else{
+				// not available the CSV type 5
+				csvNotCompleted.add(name);
+			}
+		}
+		
+		// all files in csvType5 list haven't a CSV type 1 to 3
+		csvNotCompleted.addAll(csvType5);
+		
+		return csvNotCompleted;
+	}
+
+	/**
+	 * @return the csvIngestionPath
+	 */
+	public String getCsvIngestionPath() {
+		return csvIngestionPath;
+	}
+
+	/**
+	 * @param csvIngestionPath the csvIngestionPath to set
+	 */
+	public void setCsvIngestionPath(String csvIngestionPath) {
+		this.csvIngestionPath = csvIngestionPath;
 	}
 
 }

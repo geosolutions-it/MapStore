@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.catalog.impl;
 import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -84,6 +85,22 @@ private static final int MILLISECONDS_PER_MINUTE = 60000;
 private static final List<String> DEFAULT_PATTERNS;
 
 /**
+ * Date format lenient option @see {@link DateFormat#setLenient(boolean)}
+ */
+private boolean parseLenient = true;
+
+/**
+ * Date format time zone option @see {@link DateFormat#setTimeZone(TimeZone)}
+ */
+private TimeZone parseZone = null;
+
+/**
+ * Default option to parse a date. If true the length restriction is not used. 
+ * @see TimeFormat#getDate(String, boolean)
+ */
+private boolean checkAllPatern = true;
+
+/**
  * Default pattern according ISO-8601 standard copied from
  * https://github.com/geotools/geotools/blob/master/modules/plugin/imagemosaic/src/main/java/org/geotools/gce/imagemosaic/properties/time/TimeParser.java?source=cc
  */
@@ -132,6 +149,13 @@ static {
     
     // mariss acqlist format
     DEFAULT_PATTERNS.add("dd/MM/yyyy HH:mm:ss");
+    
+    // mariss CSV product format (type 1_to_3)
+    DEFAULT_PATTERNS.add("yyyy-MM-dd HH:mm:ss");
+
+    // mariss CSV product format (type 5)
+    DEFAULT_PATTERNS.add("MM/dd/yyyy HH:mm:ss aa");
+    
 };
 
 /**
@@ -270,11 +294,16 @@ public List<Date> parse(String value) throws ParseException {
  * validated.
  * 
  * @param value The date to parse.
+ * @param checkAll flag to skip the length restriction (allow to parse formats without 0 in a date like '1/1/2014' instead '01/01/2014')
  * @return A date found in the request.
  * @throws ParseException if the string can not be parsed.
  */
-public Date getDate(final String value) throws ParseException {
-    List<String> suitablePattern = splittedPatterns.get(value.length());
+public Date getDate(final String value, final boolean checkAll) throws ParseException {
+    List<String> suitablePattern = null;
+    // checkAll option
+    if(!checkAll){
+    	suitablePattern = splittedPatterns.get(value.length());
+    }
     // if the pattern is not found, try to parse with all patterns
     if (suitablePattern == null) {
         suitablePattern = new LinkedList<String>();
@@ -287,8 +316,11 @@ public Date getDate(final String value) throws ParseException {
         // rebuild formats at each parse, date formats are not thread safe
         final SimpleDateFormat format = new SimpleDateFormat(
                 suitablePattern.get(i));
-        format.setLenient(false);
-        format.setTimeZone(TimeZone.getTimeZone("Zulu"));
+        // parse options
+        format.setLenient(parseLenient);
+        if(this.parseZone != null){
+            format.setTimeZone(parseZone);	
+        }
 
         /*
          * We do not use the standard method DateFormat.parse(String), because
@@ -305,6 +337,19 @@ public Date getDate(final String value) throws ParseException {
 
     // Try to parse as XML Gregorian Calendar
     return getDateXMLGregorianCalendar(value);
+}
+
+/**
+ * Parses date given in parameter according the ISO-8601 standard. This
+ * parameter should follow a syntax defined in the {@link #DEFAULT_PATTERNS} array to be
+ * validated.
+ * 
+ * @param value The date to parse.
+ * @return A date found in the request.
+ * @throws ParseException if the string can not be parsed.
+ */
+public Date getDate(final String value) throws ParseException {
+    return getDate(value, checkAllPatern);
 }
 
 /**
@@ -631,6 +676,48 @@ public String getDate(Date date) {
  */
 public String getDate(Date date, int format) {
     return outputFormats.get(format).format(date);
+}
+
+/**
+ * @return the parseLenient
+ */
+public boolean isParseLenient() {
+	return parseLenient;
+}
+
+/**
+ * @param parseLenient the parseLenient to set
+ */
+public void setParseLenient(boolean parseLenient) {
+	this.parseLenient = parseLenient;
+}
+
+/**
+ * @return the parseZone
+ */
+public TimeZone getParseZone() {
+	return parseZone;
+}
+
+/**
+ * @param parseZone the parseZone to set
+ */
+public void setParseZone(TimeZone parseZone) {
+	this.parseZone = parseZone;
+}
+
+/**
+ * @return the checkAllPatern
+ */
+public boolean isCheckAllPatern() {
+	return checkAllPatern;
+}
+
+/**
+ * @param checkAllPatern the checkAllPatern to set
+ */
+public void setCheckAllPatern(boolean checkAllPatern) {
+	this.checkAllPatern = checkAllPatern;
 }
 
 }

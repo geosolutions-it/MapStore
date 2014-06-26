@@ -36,6 +36,7 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemOptions;
@@ -115,11 +116,15 @@ private static void initFsManager(int timeout) throws FileSystemException {
 public static File downloadFile(RemoteBrowserProtocol serverProtocol,
         String serverUser, String serverPWD, String serverHost, int serverPort,
         String remotePath, String localPath, int timeout) throws IOException {
-    initFsManager(timeout);
-    FileObject file = fsManager.resolveFile(
-            getURI(serverProtocol, serverUser, serverPWD, serverHost,
-                    serverPort, remotePath), fsOptions);
-    return downloadFile(file, localPath);
+	if(RemoteBrowserProtocol.local.equals(serverProtocol)){
+		return copyfile(remotePath, localPath);
+	}else{
+		initFsManager(timeout);
+	    FileObject file = fsManager.resolveFile(
+	            getURI(serverProtocol, serverUser, serverPWD, serverHost,
+	                    serverPort, remotePath), fsOptions);
+	    return downloadFile(file, localPath);
+	}
 }
 
 /**
@@ -146,12 +151,17 @@ public static void deleteFile(RemoteBrowserProtocol protocol, String user,
                 .deleteFileOrDirectory(host, fileName, false,
                         cleanRoot(filePath), user, password, port, connectMode,
                         timeout);
-    } else {
+    } else if (RemoteBrowserProtocol.sftp.equals(protocol)) {
         initFsManager(timeout);
         FileObject file = fsManager.resolveFile(
                 getURI(protocol, user, password, host, port, filePath
                         + SEPARATOR + fileName), fsOptions);
         file.delete();
+    }else{
+    	// delete the local file
+    	File file = new File(filePath
+                + SEPARATOR + fileName);
+    	file.delete();
     }
 }
 
@@ -245,8 +255,10 @@ public static List<String> ls(RemoteBrowserProtocol protocol, String userName,
 
     if (RemoteBrowserProtocol.ftp.equals(protocol)) {
         return ftpLS(userName, password, host, port, path, connectMode, timeout, pattern, foldersFlag);
-    } else {
+    } else if (RemoteBrowserProtocol.sftp.equals(protocol)) {
         return sftpLS(userName, password, host, port, path, timeout, pattern, foldersFlag);
+    } else {
+        return localLS(path, pattern, foldersFlag);
     }
 }
 
@@ -381,6 +393,43 @@ private static List<String> ftpLS(String userName, String password,
 }
 
 /**
+ * List for local protocol
+ * 
+ * @param userName 
+ * @param path local path
+ * @param pattern
+ * @param foldersFlag
+ * @return
+ */
+private static List<String> localLS(String path, Pattern pattern, Boolean foldersFlag) {
+	List<String> names = new LinkedList<String>();
+	File folder = new File(path);
+	if(folder.exists() && folder.isDirectory()){
+		for(String fileName: folder.list()){
+			boolean mustCheck = true;
+	    	if(foldersFlag != null){
+	    		if(foldersFlag.equals(new File(path + SEPARATOR + fileName).isDirectory())){
+	    			mustCheck = true;
+	    		}else{
+	    			mustCheck = false;
+	    		}
+	    	}
+	    	if(mustCheck){
+	            if(pattern != null){
+	                Matcher m = pattern.matcher(fileName);
+	                if (m.matches()) {
+	                    names.add(fileName);
+	                }
+	            }else{
+	                names.add(fileName);
+	            }
+	    	}
+		}
+	}
+	return names;
+}
+
+/**
  * Put file on a remote path
  * 
  * @param protocol
@@ -406,10 +455,13 @@ public static void putFile(RemoteBrowserProtocol protocol, String username,
         FTPHelperBare.putBinaryFileTo(host, localfile, cleanRoot(remotePath),
                 username, password, port, WriteMode.OVERWRITE, connectMode,
                 5000);
-    } else {
+    } else if (RemoteBrowserProtocol.sftp.equals(protocol)) {
         // SFTP put
         sftpPutFile(username, host, password, port, remotefile, localfile,
                 timeout);
+    }else{
+    	// local copy
+    	copyfile(localfile, remotefile);
     }
 }
 
@@ -492,6 +544,21 @@ public static File downloadFile(FileObject fo, String localPath)
     }
 
     return new File(localPath);
+}
+
+/**
+ * Copy a local file to a target folder
+ * @param originFile
+ * @param targetPath
+ * @return
+ * @throws IOException
+ */
+private static File copyfile(String originFile, String targetPath) throws IOException {
+
+	// copy to target path
+	FileUtils.copyFile(new File(originFile), new File(targetPath));
+
+    return new File(targetPath);
 }
 
 /**

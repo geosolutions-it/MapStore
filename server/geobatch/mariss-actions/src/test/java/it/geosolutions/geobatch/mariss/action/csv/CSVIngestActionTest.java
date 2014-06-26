@@ -24,8 +24,12 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.impl.TimeFormat;
 import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
 import it.geosolutions.geobatch.mariss.ingestion.csv.CSVAcqListProcessor;
+import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes1To3Processor;
+import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes5Processor;
+import it.geosolutions.geobatch.mariss.ingestion.csv.MarissCSVServiceProcessor;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -50,28 +54,52 @@ public class CSVIngestActionTest {
 	public CSVIngestActionTest() {
 		super();
 	}
+	
+	private Map<String, Serializable> getConnectionParameters(){
+		Map<String, Serializable> params = new HashMap<String, Serializable>();
+		params.put("dbtype", "postgis");
+		params.put("host", "localhost");
+		params.put("port", 5432);
+		params.put("schema", "public");
+		params.put("database", "mariss");
+		params.put("user", "mariss");
+		params.put("passwd", "mariss");
+		return params;
+	}
 
 	/**
 	 * Generate a CSVAcqListProcessor processor to test 
 	 * @return the processor
 	 */
 	private CSVAcqListProcessor getAcqProcessor() {
-		CSVAcqListProcessor processor = null;
+		return (CSVAcqListProcessor) getProcessor("acq_list", "CLS", "CLS1");
+	}
+
+	/**
+	 * Generate a MarissCSVServiceProcessor processor to test 
+	 * @return the processor
+	 */
+	private MarissCSVServiceProcessor getProcessor(String typeName, String userName, String serviceName) {
+		MarissCSVServiceProcessor processor = null;
 		try {
-			Map<String, Object> params = new HashMap<String, Object>();
-			params.put("dbtype", "postgis");
-			params.put("host", "localhost");
-			params.put("port", 5432);
-			params.put("schema", "public");
-			params.put("database", "mariss");
-			params.put("user", "mariss");
-			params.put("passwd", "mariss");
-			processor = new CSVAcqListProcessor(params, "acq_list",
-					new TimeFormat(null, null, "Time format default",
-							new TimeFormatConfiguration(null, null,
-									"Time format configuration")));
-			processor.setUserName("CLS");
-			processor.setServiceName("CLS1");
+			if("acq_list".equals(typeName)){
+				processor = new CSVAcqListProcessor(getConnectionParameters(), typeName,
+						new TimeFormat(null, null, "Time format default",
+								new TimeFormatConfiguration(null, null,
+										"Time format configuration")));
+			}else if("products_1to3".equals(typeName)){
+				processor = new CSVProductTypes1To3Processor(getConnectionParameters(), typeName,
+						new TimeFormat(null, null, "Time format default",
+								new TimeFormatConfiguration(null, null,
+										"Time format configuration")));
+			}else if("products_5".equals(typeName)){
+				processor = new CSVProductTypes5Processor(getConnectionParameters(), typeName,
+						new TimeFormat(null, null, "Time format default",
+								new TimeFormatConfiguration(null, null,
+										"Time format configuration")));
+			}
+			processor.setUserName(userName);
+			processor.setServiceName(serviceName);
 		} catch (Exception e) {
 			LOGGER.error("Error getting the processor", e);
 		}
@@ -90,6 +118,8 @@ public class CSVIngestActionTest {
 			CSVIngestAction action = new CSVIngestAction(
 					new CSVIngestConfiguration(null, null, null));
 			action.addProcessor(acqProcessor);
+			action.addProcessor(getProcessor("products_1to3", "CLS", "CLS1"));
+			action.addProcessor(getProcessor("products_5", "CLS", "CLS1"));
 			Queue<EventObject> events = new LinkedList<EventObject>();
 
 			for (File file : FileUtils.listFiles(new File("."),
