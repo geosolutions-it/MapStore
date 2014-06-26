@@ -712,6 +712,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 
 		// Envelop in a panel to show scrollbar
 		if($(window).height() < 800){
+			roiFieldSetConfig.ref = '../../roiFieldSet';
 			return {
 	            xtype: 'panel',
 				autoHeight: false,
