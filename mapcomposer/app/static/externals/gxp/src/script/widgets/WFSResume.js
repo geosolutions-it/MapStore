@@ -99,7 +99,7 @@ gxp.widgets.WFSResume = Ext.extend(gxp.plugins.Tool, {
      *  :arg featureType: ``String`` Name featureType requested
      *  :returns: ``Ext.Panel`` With the resume.
      */
-	createResultsGrid: function(data, rasterName, referenceName, featureType){
+	createResultsGrid: function(data, rasterName, refYear, nowYear, referenceName, featureType){
 		// Create instance for the configured plugin
 		var ptype = this.detaultPtype;
 		if(featureType 
@@ -127,7 +127,7 @@ gxp.widgets.WFSResume = Ext.extend(gxp.plugins.Tool, {
 		if(showResumeWidget.initComponent){
 			showResumeWidget.initComponent();	
 		}
-		return showResumeWidget.createResultsGrid(data, rasterName, referenceName, featureType);
+		return showResumeWidget.createResultsGrid(data, rasterName, refYear, nowYear, referenceName, featureType);
 	}
 
 });

@@ -349,7 +349,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		this.sealingIndexCLC.reset();
 		this.sealingIndexImpervious.reset();
 		this.classesselector.reset();
-		if(this.roiFieldSet.rendered){
+		if(this.roiFieldSet && this.roiFieldSet.rendered){
 			this.roiFieldSet.removeFeatureSummary();
 			this.roiFieldSet.reset();
 		}
@@ -599,7 +599,8 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		}
 
 		// ROI validation
-		if(this.roiFieldSet.getSelectedAreas()){
+		debugger
+		if(this.roiFieldSet && this.roiFieldSet.getSelectedAreas()){
 			valid = valid && true;
 		}else{
 			valid = false;

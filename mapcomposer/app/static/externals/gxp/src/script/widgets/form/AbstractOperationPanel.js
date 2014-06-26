@@ -258,7 +258,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
      *  Reset form.
      */
 	resetForm: function(){
-		if(this.roiFieldSet.rendered){
+		if(this.roiFieldSet && this.roiFieldSet.rendered){
 			this.roiFieldSet.removeFeatureSummary();
 			this.roiFieldSet.reset();
 			//this.roiFieldSet.collapse();	
@@ -497,7 +497,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 								me.layerStore.filterBy(function(rec, recId) {
 				                	var item = me.getRasterItem(rec);
 				                	if(item == null){
-				                		return false
+				                		return false;
 				                	}
 									var name = rec.get("name").trim().toLowerCase();
 									if (name.indexOf(value) > -1) {
@@ -513,9 +513,11 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 						}
 					},
 					beforeselect : function(combo, record, index) {
-						me.roiFieldSet.removeFeatureSummary();
-						me.roiFieldSet.reset();
-						//me.roiFieldSet.collapse();
+						if(me.roiFieldSet && me.roiFieldSet.rendered){
+							me.roiFieldSet.removeFeatureSummary();
+							me.roiFieldSet.reset();
+							//me.roiFieldSet.collapse();
+						}
 						me.getForm().reset();
 					},
 					select : me.onLayerSelect,
@@ -580,8 +582,10 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		var me = this;
 
 		// clean
-		this.roiFieldSet.removeFeatureSummary();
-		this.roiFieldSet.reset();	
+		if(this.roiFieldSet && this.roiFieldSet.rendered){
+			this.roiFieldSet.removeFeatureSummary();
+			this.roiFieldSet.reset();
+		}
 
 		// get layer record from the selected element
 		var record = selected;
@@ -712,6 +716,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 
 		// Envelop in a panel to show scrollbar
 		if($(window).height() < 800){
+			roiFieldSetConfig.ref = '../../roiFieldSet';
 			return {
 	            xtype: 'panel',
 				autoHeight: false,

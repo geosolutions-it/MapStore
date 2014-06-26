@@ -273,7 +273,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 	 *
 	 * @param {Object} responseData
 	 */
-	createResultsGrid : function(responseData, rasterName, referenceName) {
+	createResultsGrid : function(responseData, rasterName, refYear, nowYear, referenceName) {
 		var me = this;
 		var data = responseData.changeMatrix;
 		
@@ -461,7 +461,8 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 											 * Dynamically create the layer
 											 */
 				                            //create the properties
-				                            var name = "[ref]"+me.interactiveChgMatrixLabel+" - "+gridRowLabel;
+				                            //var name = "[ref]"+me.interactiveChgMatrixLabel+" - "+gridRowLabel;
+				                            var name = gridRowLabel+"("+refYear+" -> "+nowYear+")";
     										var src;				                            
 											for (var id in me.target.layerSources) {
 												  var s = me.target.layerSources[id];    
@@ -536,7 +537,8 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 											 * Dynamically create the layer
 											 */
 				                            //create the properties
-				                            var name = "[cur]"+me.interactiveChgMatrixLabel+" - "+gridColLabel;
+				                            //var name = "[cur]"+me.interactiveChgMatrixLabel+" - "+gridColLabel;
+				                            var name = gridColLabel+"("+nowYear+" -> "+refYear+")";
     										var src;				                            
 											for (var id in me.target.layerSources) {
 												  var s = me.target.layerSources[id];    
@@ -557,6 +559,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 					                                        url: me.url,
 					                                        title: name,
 					                                        tiled:true,
+					                                        group: "Nome del cazzo",
 					                                        layers: rasterName,
 					                                        env: "dataEnv:ref=0,cur="+currClassIndex
 					                                };

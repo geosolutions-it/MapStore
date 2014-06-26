@@ -148,7 +148,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
      *  :arg featureType: ``String`` Name featureType requested
      *  :returns: ``Ext.Panel`` With the resume.
      */
-	createResultsGrid : function(data, rasterName, referenceName) {
+	createResultsGrid : function(data, rasterName, refYear, nowYear, referenceName) {
 		var me = this;
 		var refTimePieChartsData = null, curTimePieChartsData = null, 
 			refTimeColChartsData = null, curTimeColChartsData = null;

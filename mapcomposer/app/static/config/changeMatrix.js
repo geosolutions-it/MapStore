@@ -1,6 +1,6 @@
 {
    "geoStoreBase":"http://localhost:8080/geostore/rest/",
-   "proxy":"/http_proxy/proxy/?url=",
+   "proxy":"/proxy/?url=",
    "defaultLanguage": "en",
    "tab": true,
    "portalConfig":{
@@ -167,7 +167,7 @@
            "geostoreUrl": "http://localhost:8080/geostore/rest",
            "geostoreUser": "admin",
            "geostorePassword": "admin",
-           "geostoreProxy": "/http_proxy/proxy?url="
+           "geostoreProxy": "/proxy?url="
         },{
             "ptype": "gxp_wfsgrid",
             "addLayerTool": "addlayer",

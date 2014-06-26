@@ -240,7 +240,9 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(gxp.widgets.form.AbstractOperati
 					});
 		}
 		
-		me.roiFieldSet.removeFeatureSummary();
+		if(me.roiFieldSet && me.roiFieldSet.rendered){
+			me.roiFieldSet.removeFeatureSummary();
+		}
 
 		// get form params
 		var params = form.getFieldValues();
@@ -270,7 +272,7 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(gxp.widgets.form.AbstractOperati
 		var map = me.target.mapPanel.map;
 		var currentExtent = map.getExtent();
 		//transform to a Geometry (instead of Bounds)
-		if (me.roiFieldSet.collapsed !== true) {
+		if (me.roiFieldSet && me.roiFieldSet.collapsed !== true) {
 			params.roi = me.roiFieldSet.currentExtent;
 		} else {
 			//currentExtent = map.getMaxExtent();

@@ -3,6 +3,9 @@
    "proxy":"/proxy/?url=",
    "defaultLanguage": "en",
    "tab": true,
+   "portalConfig":{
+		"header":true
+   },
    "gsSources":{ 
    		"jrc": {
 			"ptype": "gxp_wmssource",
@@ -67,20 +70,6 @@
 				"group" : "background"
 			},{
                 "source": "jrc",
-                "group" : "Corine Land Cover",
-				"title" : "Corine Land Cover (unina) vector",
-				"name"  : "it.geosolutions:unina_vector",
-				"tiled" : false,
-				"visibility": false
-            },{
-                "source": "jrc",
-                "group" : "Corine Land Cover",
-				"title" : "Corine Land Cover (unina)",
-				"name"  : "it.geosolutions:corine",
-				"tiled" : false,
-				"visibility": true
-            },{
-                "source": "jrc",
                 "group" : "Touring Land Cover",
 				"title" : "Touring Land Cover (unina2)",
 				"name"  : "it.geosolutions:touring",
@@ -105,6 +94,20 @@
                 "group" : "Corine Land Cover",
 				"title" : "Corina Land Cover L3",
 				"name"  : "it.geosolutions:corine_L3",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "jrc",
+                "group" : "Urban Grids",
+				"title" : "Urban Grids",
+				"name"  : "it.geosolutions:urban_grids",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "jrc",
+                "group" : "Urban Grids",
+				"title" : "Imperviousness",
+				"name"  : "it.geosolutions:imperviousness",
 				"tiled" : false,
 				"visibility": false
             }
@@ -177,33 +180,6 @@
             "srsName": "EPSG:32632", 
             "version": "1.1.0",
             "outputTarget": "outcomelaylistpanel",
-            "columns" : [
-            	{
-                    "header": "Status", 
-                    "dataIndex": "itemStatus",
-                    "sortable": true
-                },{
-                    "header": "Reference Name", 
-                    "dataIndex": "referenceName",
-                    "sortable": true
-                },{
-                    "header": "Start Date", 
-                    "dataIndex": "runBegin",
-                    "sortable": true
-                },{
-                    "header": "End Date", 
-                    "dataIndex": "runEnd",
-                    "sortable": true
-                },{
-                    "header": "Filter (reference)", 
-                    "dataIndex": "referenceFilter",
-                    "sortable": true
-                },{
-                    "header": "Filter (current)", 
-                    "dataIndex": "nowFilter",
-                    "sortable": true
-                }
-            ],
             "actionColumns" : [
                 {
                  "type": "details",
@@ -216,13 +192,80 @@
                 }
             ],
             "splitPanels": true,
-        	"featureTypeDetails": "changeMatrix",
             "panelsConfig": [{
             	"title": "Change Matrix Runs",
-            	"featureType": "changematrix"
+            	"featureType": "changematrix",
+        		"featureTypeDetails": "changeMatrix",
+	            "columns" : [
+	            	{
+	                    "header": "Status", 
+	                    "dataIndex": "itemStatus",
+	                    "sortable": true
+	                },{
+	                    "header": "Reference Name", 
+	                    "dataIndex": "referenceName",
+	                    "sortable": true
+	                },{
+	                    "header": "Start Date", 
+	                    "dataIndex": "runBegin",
+	                    "sortable": true
+	                },{
+	                    "header": "End Date", 
+	                    "dataIndex": "runEnd",
+	                    "sortable": true
+	                },{
+	                    "header": "Filter (reference)", 
+	                    "dataIndex": "referenceFilter",
+	                    "sortable": true
+	                },{
+	                    "header": "Filter (current)", 
+	                    "dataIndex": "nowFilter",
+	                    "sortable": true
+	                }
+	            ]
         	},{
             	"title": "Soil Sealing Runs",
-            	"featureType": "changematrix"
+            	"featureType": "soilsealing",
+        		"featureTypeDetails": "soilIndex",
+	            "columns" : [
+	            	{
+	                    "header": "Status", 
+	                    "dataIndex": "itemStatus",
+	                    "sortable": true
+	                },{
+	                    "header": "Reference Name", 
+	                    "dataIndex": "referenceName",
+	                    "sortable": true
+	                },{
+	                    "header": "Index", 
+	                    "dataIndex": "index",
+	                    "sortable": true
+	                },{
+	                    "header": "SubIndex", 
+	                    "dataIndex": "subindex",
+	                    "sortable": true
+	                },{
+	                    "header": "Classes", 
+	                    "dataIndex": "classes",
+	                    "sortable": true
+	                },{
+	                    "header": "Start Date", 
+	                    "dataIndex": "runBegin",
+	                    "sortable": true
+	                },{
+	                    "header": "End Date", 
+	                    "dataIndex": "runEnd",
+	                    "sortable": true
+	                },{
+	                    "header": "Filter (reference)", 
+	                    "dataIndex": "referenceFilter",
+	                    "sortable": true
+	                },{
+	                    "header": "Filter (current)", 
+	                    "dataIndex": "nowFilter",
+	                    "sortable": true
+	                }
+	            ]
             }]
         },{
             "ptype": "gxp_addlayer",
@@ -384,7 +427,8 @@
 			],
             "classes": [
             	{"layer": "it.geosolutions:corine_L1",  "level": 1, "values": [1,2,3,4,5]},
-            	{"layer": "it.geosolutions:corine_L2", "level": 3, "values": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43]}
+            	{"layer": "it.geosolutions:corine_L2", "level": 2, "values": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]},
+            	{"layer": "it.geosolutions:corine_L3", "level": 3, "values": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43]}
             ],
             "splitPanels": true,
             "panelsConfig": [{
@@ -398,7 +442,20 @@
         	},{
             	"title": "Soil Sealing",
             	"geocoderConfig": {
-            		"selectReturnType": true
+            		"selectReturnType": true,
+            		"wpsProcessName": "gs:SoilSealingCLC",
+            		"storeName": "unina_ds",
+            		"typeName": "soilsealing",
+            		"geocoderLayer": "geocoder",
+            		"geocoderPopulationLayer": "geocoder_population",
+            		"defaultProcessStyle": "raster",
+            		"styleSelection": {
+            			"3": "sprawl",
+            			"4": "sprawl"
+            		},
+            		"imperviousnessProccessName": "gs:SoilSealingImperviousness",
+            		"imperviousnessLayer": "imperviousness",
+            		"targetResultGridId": "wfsChangeMatrisGridPanel_tab_1"
             	},
             	"xtype": "gxp_soilpanel"
             }]
