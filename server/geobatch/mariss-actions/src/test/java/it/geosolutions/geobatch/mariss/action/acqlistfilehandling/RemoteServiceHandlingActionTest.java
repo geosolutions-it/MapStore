@@ -23,8 +23,6 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
 import it.geosolutions.geobatch.destination.common.utils.RemoteBrowserProtocol;
-import it.geosolutions.geobatch.ftp.client.configuration.FTPActionConfiguration.FTPConnectMode;
-import it.geosolutions.geobatch.ftp.client.configuration.FTPActionConfiguration.Operation;
 import it.geosolutions.geobatch.imagemosaic.ImageMosaicConfiguration;
 import it.geosolutions.geobatch.imagemosaic.config.DomainAttribute;
 import it.geosolutions.geobatch.remoteBrowser.configuration.RemoteBrowserConfiguration;
@@ -128,30 +126,34 @@ public class RemoteServiceHandlingActionTest {
 		FeatureConfiguration outputFeature = new FeatureConfiguration();
 		outputFeature.setDataStore(getConnectionParameters());
 		configuration.setOutputFeature(outputFeature);
-		configuration.setAcqListTypeName("acq_list");
 		RemoteBrowserConfiguration remoteBrowserConfiguration = new RemoteBrowserConfiguration(null, null, null);
-		remoteBrowserConfiguration.setServerProtocol(RemoteBrowserProtocol.sftp);
-		remoteBrowserConfiguration.setTimeout(5000);
-		remoteBrowserConfiguration.setZipInput(false);
-		remoteBrowserConfiguration.setZipFileName("");
-		remoteBrowserConfiguration.setFtpserverUSR("user");
-		remoteBrowserConfiguration.setFtpserverPWD("pwd");
-		remoteBrowserConfiguration.setFtpserverHost("localhost");
-		remoteBrowserConfiguration.setFtpserverPort(22);
-		remoteBrowserConfiguration.setConnectMode(FTPConnectMode.ACTIVE);
+		remoteBrowserConfiguration.setServerProtocol(RemoteBrowserProtocol.local);
+		configuration.setInputRemotePath("/share/ftp");
 		remoteBrowserConfiguration.setLocalTempDir("/tmp/ingestion");
-		remoteBrowserConfiguration.setOperationId(Operation.Download);
+		/*
+		 *  uncomment this configuration to use remote browsing 
+		 * remoteBrowserConfiguration.setServerProtocol(RemoteBrowserProtocol.sftp);
+		 * remoteBrowserConfiguration.setTimeout(5000);
+		 * remoteBrowserConfiguration.setZipInput(false);
+		 * remoteBrowserConfiguration.setZipFileName("");
+		 * remoteBrowserConfiguration.setFtpserverUSR("user");
+		 * remoteBrowserConfiguration.setFtpserverPWD("pwd");
+		 * remoteBrowserConfiguration.setFtpserverHost("mariss-server");
+		 * remoteBrowserConfiguration.setFtpserverPort(22);
+		 * remoteBrowserConfiguration.setConnectMode(FTPConnectMode.ACTIVE);
+		 * remoteBrowserConfiguration.setOperationId(Operation.Download);
+		 */
 		configuration.setRemoteBrowserConfiguration(remoteBrowserConfiguration);
-		configuration.setStoreLocal(true);
-		configuration.setDeleteDownloadedFiles(false);
-		configuration.setInputRemotePath("/tmp/ingestion/in");
-		configuration.setCheckIfExists(true);
 		configuration.setInputPath("/tmp/ingestion/working");
 		configuration.setSuccesPath("/tmp/ingestion/out/ok");
 		configuration.setFailPath("/tmp/ingestion/out/fail");
+		configuration.setStoreLocal(true);
+		configuration.setDeleteDownloadedFiles(false);
+		configuration.setCheckIfExists(true);
 		configuration.setDlrProductsIMConfiguration(getImageMosaicConfiguration());
 		configuration.setDlrProductIngestionTypeName("dlr_ships");
 		configuration.setDlrProductsTiffFolder("/opt/gs_ext_data/TDX1_SAR__MGD_RE___SM_S_SRA");
+		configuration.setCsvIngestionPath("csvingestion/in");
 		
 		return configuration;
 	}

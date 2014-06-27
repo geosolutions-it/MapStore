@@ -34,6 +34,6 @@ package it.geosolutions.geobatch.destination.common.utils;
  *
  */
 public enum RemoteBrowserProtocol{
-    ftp, sftp
+    ftp, sftp, local
 }
 

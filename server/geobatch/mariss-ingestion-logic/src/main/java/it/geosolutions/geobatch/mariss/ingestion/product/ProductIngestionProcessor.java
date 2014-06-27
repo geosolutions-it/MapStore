@@ -91,7 +91,9 @@ public abstract class ProductIngestionProcessor {
 		this.dataStore = dataStore;
 		try {
 			this.schema = dataStore.getSchema(this.typeName);
-			this.source = ((FeatureStore<SimpleFeatureType, SimpleFeature>) this.dataStore.getFeatureSource(this.typeName));
+			if(this.typeName != null){
+				this.source = ((FeatureStore<SimpleFeatureType, SimpleFeature>) this.dataStore.getFeatureSource(this.typeName));
+			}
 		} catch (IOException e) {
 			LOGGER.error("Error getting the schema", e);
 		}

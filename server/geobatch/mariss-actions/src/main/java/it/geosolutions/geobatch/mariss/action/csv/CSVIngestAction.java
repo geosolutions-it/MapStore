@@ -28,6 +28,7 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProcessException;
 import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProcessor;
+import it.geosolutions.geobatch.mariss.ingestion.csv.configuration.CSVProcessorConfiguration;
 import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVIngestUtils;
 
 import java.io.File;
@@ -70,10 +71,36 @@ public class CSVIngestAction extends BaseAction<EventObject> implements
 				&& this.configuration.getCsvSeparator().length() == 1;
 	}
 
+	/**
+	 * Check processors configuration
+	 */
 	private void checkInit() {
-		// TODO
-		// if(cropDescriptorDao == null)
-		// throw new IllegalStateException("cropDescriptorDao is null");
+		if(this.configuration.getProccesorsConfiguration() != null 
+				&& (this.processors == null || this.processors.isEmpty())){
+			// check the configuration for the processors
+			for(CSVProcessorConfiguration csvProcessorConfig: this.configuration.getProccesorsConfiguration()){
+				try {
+					@SuppressWarnings("unchecked")
+					Class<? extends CSVProcessor> processorClass = (Class<? extends CSVProcessor>) Class.forName(csvProcessorConfig.getClassName());
+					CSVProcessor processor = processorClass.newInstance();
+					// if it haven't an specific outputFeature, use the global
+					if(csvProcessorConfig.getOutputFeature() == null 
+							|| csvProcessorConfig.getOutputFeature().getDataStore() == null
+							|| csvProcessorConfig.getOutputFeature().getDataStore().isEmpty()){
+						csvProcessorConfig.setOutputFeature(this.configuration.getOutputFeature());
+					}
+					// if it haven't an specific time format configuration, use the global
+					if(csvProcessorConfig.getTimeFormatConfiguration() == null){
+						csvProcessorConfig.setTimeFormatConfiguration(this.configuration.getTimeFormatConfiguration());
+					}
+					// this method prepare the processor
+					processor.setConfiguration(csvProcessorConfig);
+					addProcessor(processor);
+				} catch (Exception e) {
+					LOGGER.error("Error creating the processor", e);
+				} 
+			}
+		}
 	}
 
 	/**
@@ -154,6 +181,7 @@ public class CSVIngestAction extends BaseAction<EventObject> implements
 			LOGGER.info("Processing CSV " + file.getName() + " with "
 					+ processor.getClass().getSimpleName());
 			try {
+				processor.setFileName(file.getName());
 				processor.process(reader);
 				String successMsg = "\n***************************************************"
 						+ "\n********** SUCCESS: CSV ingestion resume **********"
@@ -165,8 +193,14 @@ public class CSVIngestAction extends BaseAction<EventObject> implements
 						+ "\n* Records removed: "
 						+ processor.getRemoveCount()
 						+ "\n* Failed records: "
-						+ processor.getFailCount()
-						+ "\n***************************************************\n";
+						+ processor.getFailCount();
+				
+				if(processor.getConfiguration() != null){
+					successMsg += "\n* Type name: "
+									+ processor.getConfiguration().getTypeName();
+				}
+				
+				successMsg += "\n***************************************************\n";
 				LOGGER.info(successMsg);
 				listenerForwarder.progressing(99, successMsg);
 			} catch (CSVProcessException ex) {

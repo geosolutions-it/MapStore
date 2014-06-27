@@ -22,14 +22,28 @@
 package it.geosolutions.geobatch.mariss.action.csv;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import it.geosolutions.geobatch.actions.ds2ds.Ds2dsConfiguration;
+import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
+import it.geosolutions.geobatch.mariss.ingestion.csv.configuration.CSVProcessorConfiguration;
 
 /**
  */
 public class CSVIngestConfiguration extends Ds2dsConfiguration {	
 	
 	private String csvSeparator = ",";
+	
+	/**
+	 * Processor configurations
+	 */
+	private List<CSVProcessorConfiguration> proccesorsConfiguration = new ArrayList<CSVProcessorConfiguration>();
 
+	/**
+	 * Time format configuration for the ingestion
+	 */
+	private TimeFormatConfiguration timeFormatConfiguration;
 
 	public CSVIngestConfiguration(String id, String name, String description) {
 		super(id, name, description);
@@ -55,5 +69,39 @@ public class CSVIngestConfiguration extends Ds2dsConfiguration {
 	 */
 	public void setCsvSeparator(String csvSeparator) {
 		this.csvSeparator = csvSeparator;
+	}
+
+
+	/**
+	 * @return the proccesorsConfiguration
+	 */
+	public List<CSVProcessorConfiguration> getProccesorsConfiguration() {
+		return proccesorsConfiguration;
+	}
+
+
+	/**
+	 * @param proccesorsConfiguration the proccesorsConfiguration to set
+	 */
+	public void setProccesorsConfiguration(
+			List<CSVProcessorConfiguration> proccesorsConfiguration) {
+		this.proccesorsConfiguration = proccesorsConfiguration;
+	}
+
+
+	/**
+	 * @return the timeFormatConfiguration
+	 */
+	public TimeFormatConfiguration getTimeFormatConfiguration() {
+		return timeFormatConfiguration;
+	}
+
+
+	/**
+	 * @param timeFormatConfiguration the timeFormatConfiguration to set
+	 */
+	public void setTimeFormatConfiguration(
+			TimeFormatConfiguration timeFormatConfiguration) {
+		this.timeFormatConfiguration = timeFormatConfiguration;
 	}
 }

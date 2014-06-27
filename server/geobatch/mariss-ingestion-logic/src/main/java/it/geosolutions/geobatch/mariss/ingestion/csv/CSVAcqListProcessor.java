@@ -22,6 +22,7 @@ package it.geosolutions.geobatch.mariss.ingestion.csv;
 import it.geosolutions.geobatch.catalog.impl.TimeFormat;
 import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVPropertyType;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -63,22 +64,22 @@ public class CSVAcqListProcessor extends MarissCSVServiceProcessor {
 		super();
 	}
 
-	public CSVAcqListProcessor(Map<String, Object> connectionParam,
+	public CSVAcqListProcessor(Map<String, Serializable> connectionParam,
 			String typeName, String[] pkNames) {
 		super(connectionParam, typeName, pkNames);
 	}
 
-	public CSVAcqListProcessor(Map<String, Object> connectionParam,
+	public CSVAcqListProcessor(Map<String, Serializable> connectionParam,
 			String typeName) {
 		super(connectionParam, typeName);
 	}
 
-	public CSVAcqListProcessor(Map<String, Object> connectionParam,
+	public CSVAcqListProcessor(Map<String, Serializable> connectionParam,
 			String typeName, String[] pkNames, TimeFormat timeFormat) {
 		super(connectionParam, typeName, pkNames, timeFormat);
 	}
 
-	public CSVAcqListProcessor(Map<String, Object> connectionParam,
+	public CSVAcqListProcessor(Map<String, Serializable> connectionParam,
 			String typeName, TimeFormat timeFormat) {
 		super(connectionParam, typeName, timeFormat);
 	}
