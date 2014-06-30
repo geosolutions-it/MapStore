@@ -332,3 +332,10 @@ left: 80px !important;
     background-image: url(../img/lock.png);
 
 }
+/** schedule tasks **/
+.sheduled_task_ic{
+    background-image: url(../img/sheduled_task.png);
+}
+.clock_ic{
+    background-image: url(../img/clock.png) !important;;
+}

@@ -876,7 +876,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 										mapId, 
 										{
 											name:mapName, 
-											description: mapDescription,
+											description: mapDescription
                                             // add the template id
                                             //templateId: templateId
 										},

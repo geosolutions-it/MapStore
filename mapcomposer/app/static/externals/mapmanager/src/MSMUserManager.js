@@ -950,7 +950,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                                                     //special behiviour for dates
                                                                     var value =values[name];
                                                                     if(value instanceof Date){
-                                                                      var field = form.findField(name);
+                                                                      var field = form.getForm().findField(name);
                                                                       if(field && field.format){
                                                                         attribute[arr[1]] = value.format(field.format);
                                                                       }else{
