@@ -29,7 +29,6 @@
 		"units": "m",
 		"zoom": 5,
         "numZoomLevels":21,
-        
 		"extent": [
 			962337.0596294437, 5523110.328076044, 1014934.9764326633, 5547342.6306190565
 		],
@@ -73,7 +72,6 @@
 				"name"  : "CTC:circoscrizioni",
 				"tiled" : false,
 				"visibility": true
-				
             }
 		]
 	},
@@ -90,21 +88,22 @@
             "collapsible": true,
             "activeItem": 0,
             "header": true,
+			"hideMode": "offsets",
             "items": [
-            {
-                "xtype": "container",
-                "title": "Feature Grid",
-                "border": false,
-                "layout": "form",
-                "id": "featuregrid"
-            },{
-                "xtype": "container",
-                "title": "Metadata Explorer",
-                "iconCls": "csw-viewer",             
-                "border": false,
-                "layout": "fit",
-                "id": "metadata"
-            }
+				{
+					"xtype": "container",
+					"title": "Feature Grid",
+					"border": false,
+					"layout": "fit",
+					"id": "featuregrid"
+				},{
+					"xtype": "container",
+					"title": "Metadata Explorer",
+					"iconCls": "csw-viewer",             
+					"border": false,
+					"layout": "fit",
+					"id": "metadata"
+				}
             ]
         },
         {
@@ -140,8 +139,9 @@
 		{
             "ptype": "gxp_featuremanager",
             "id": "featuremanager",
-            "paging": false,
-            "autoLoadFeatures": true
+            "paging": true,
+			"pagingType": 1,
+            "autoLoadFeatures": false
         }, {
 			"actions": ["-"], 
 			"actionTarget": "paneltbar"
@@ -149,12 +149,21 @@
         {
             "ptype": "gxp_featureeditor",
             "featureManager": "featuremanager",
-            "autoLoadFeatures": true,
+			"toggleGroup": "toolGroup",
+            "autoLoadFeatures": false,
             "actionTarget":{
                 "target":"paneltbar",
                 "index":24
+            },
+			"snappingAgent": "snapping-agent"
+        },{
+			"ptype": "gxp_advancedsnappingagent",
+			"id": "snapping-agent",
+			"actionTarget":{
+                "target":"paneltbar",
+                "index":16
             }
-        },
+		},
         {
             "ptype": "gxp_featuregrid",
             "featureManager": "featuremanager",
@@ -166,7 +175,8 @@
             "outputTarget": "featuregrid",
 			"exportFormats": ["CSV","shape-zip","excel", "excel2007"],
 			"exportAction": "window",
-			"outputTarget": "featuregrid"
+			"outputTarget": "featuregrid",
+			"showNumberOfRecords": true
         },
 		{
 		   "ptype": "gxp_mouseposition",
@@ -446,6 +456,5 @@
         	"target": "paneltbar", 
         	"index": 4  
         }
-    }
-	]
+    }]
 }
