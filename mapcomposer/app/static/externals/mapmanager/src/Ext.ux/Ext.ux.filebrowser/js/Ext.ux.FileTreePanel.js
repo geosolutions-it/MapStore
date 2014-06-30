@@ -232,7 +232,7 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 	/**
 	 * @cfg {String} rootText Text to display for root node (defaults to 'Tree Root')
 	 */
-	,rootText:'Tree Root'
+	,rootText:'/'
 
 	/**
 	 * @cfg {Boolean} rootVisible true = root node visible, false = hidden (defaults to true)
@@ -261,6 +261,31 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 	,url:'filetree.php'
 	// }}}
 
+	/**
+	 * @cfg {Boolean} Chech node attributes to enable or disable operations.
+	 */
+	,checkNodeParameters:false
+
+	/**
+	 * @cfg {Number} Permission for the root folder in in linux mode (4 == 100 == r--; 7 == 111 == rwx)
+	 */
+	,rootPermission: 4
+
+	/**
+	 * @cfg {Number} Permission for other folders in in linux mode (4 == 100 == r--; 7 == 111 == rwx)
+	 */
+	,defaultPermission: 7
+
+	/**
+	 * @cfg {Object} Create node button text by level. You can customize the node creation text by level with 
+	 *    a specific configuration like that:
+	 *    createNodeTextByLevel:{
+	 * 	       0: "New VA-SP",
+	 * 	       1: "New ServiceID"
+	 *    }
+	 */
+	,createNodeTextByLevel: null
+
 	// overrides
 	// {{{
 	/**
@@ -277,10 +302,11 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 			// create root node
 			 root:new Ext.tree.AsyncTreeNode({
                 id:'/',
-				 text: '/'  
+				 text: this.rootText  
 				,folder:this.rootPath
 				,rootVisible:this.rootVisible
 				,allowDrag:false
+				,permission: this.rootPermission
 			})
 
 			// create treeEditor
@@ -854,13 +880,29 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 
 		form.submit();
 	}
+
 	// }}}
 	// {{{
 	/**
 	 * returns (and lazy create) the context menu
 	 * @private
 	 */
-	,getContextMenu:function() {
+	,getContextMenu:function(selectedNode) {
+		var newdirText = this.newdirText;
+
+		// use node text by level
+		if(this.createNodeTextByLevel){
+			var level = 0;
+			var parentNode = selectedNode? selectedNode.parentNode: null;
+			while(parentNode){
+				parentNode = parentNode.parentNode;
+				level++;
+			}
+			// this level is customized named
+			if(this.createNodeTextByLevel[level])
+				newdirText = this.createNodeTextByLevel[level];
+		}
+
 		// lazy create context menu
 		if(!this.contextmenu) {
             config = {};
@@ -874,6 +916,8 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 			if(this.baseParams) {
 				config.baseParams = this.baseParams;
 			}
+			// custom new dir config delegate
+			config.newdirText = newdirText;
 			this.contextmenu = new Ext.ux.FileTreeMenu(config);
 			this.contextmenu.on({click:{scope:this, fn:this.onContextClick}});
 
@@ -883,6 +927,8 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 				// ,allfinished:{scope:this, fn:this.onAllFinished}
 			// });
 			// this.uploadPanel.setUrl(this.uploadUrl || this.url);
+		}else{
+			this.contextmenu.getItemByCmd("newdir").setText(newdirText);
 		}
 		return this.contextmenu;
 	} // eo function getContextMenu
@@ -1346,7 +1392,7 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 
 				case 'download':
 				  window.open(path);
-//					this.downloadFile(path);
+				  //this.downloadFile(path);
 				break;
 			}
 
@@ -1487,52 +1533,16 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 			return;
 		}
 
-		var menu = this.getContextMenu();
+		var menu = this.getContextMenu(node);
 		menu.node = node;
-        menu.setItemDisabled("open-dwnld", (node.isLeaf()?false:true));
-        menu.setItemDisabled("rename", false);
-        menu.setItemDisabled("delete", false);
 
-		// set node name
-//		menu.getItemByCmd('nodename').setText(Ext.util.Format.ellipsis(node.text, 22));
-
-		// enable/disable items depending on node clicked
-//		menu.setItemDisabled('open', !node.isLeaf());
-		//menu.setItemDisabled('reload', node.isLeaf());
-		//menu.setItemDisabled('expand', node.isLeaf());
-		//menu.setItemDisabled('collapse', node.isLeaf());
-		menu.setItemDisabled('delete', node === this.root || node.disabled);
-		menu.setItemDisabled('rename', this.readOnly || node === this.root || node.disabled);
-		menu.setItemDisabled('newdir', this.readOnly || (node.isLeaf() ? node.parentNode.disabled : node.disabled));
-		//menu.setItemDisabled('upload', node.isLeaf() ? node.parentNode.disabled : node.disabled);
-		//menu.setItemDisabled('upload-panel', node.isLeaf() ? node.parentNode.disabled : node.disabled);
-
-		// show/hide logic
-//		menu.getItemByCmd('open').setVisible(this.enableOpen);
-		menu.getItemByCmd('delete').setVisible(this.enableDelete);
-		menu.getItemByCmd('newdir').setVisible(this.enableNewDir);
-		menu.getItemByCmd('rename').setVisible(this.enableRename);
-		//menu.getItemByCmd('upload').setVisible(this.enableUpload);
-		//menu.getItemByCmd('upload-panel').setVisible(this.enableUpload);
-		//menu.getItemByCmd('sep-upload').setVisible(this.enableUpload);
-		//menu.getItemByCmd('sep-collapse').setVisible(this.enableNewDir || this.enableDelete || this.enableRename);
+		this.applyPermissionOnMenu(node, menu);
 
 		// select node
 		node.select();
 		// show menu
 		menu.showAt(e.getXY());
-/*
-	   if(topAlign) {
-//			menu.showAt(menu.el.getAlignToXY(alignEl, 'tl-bl?'));
-//		  menu.el.getAlignToXY(alignEl, 'tl-bl?');
-		  menu.showAt(e.getXY());
-		}
-		else {
-//			menu.showAt(menu.el.getAlignToXY(alignEl, 'tl-tl?', [0, 18]));
-//		  menu.showAt(alignEl.getAnchorXY());
-		  		  menu.showAt(e.getXY());
-		}
-*/
+
 	} // eo function
 	// }}}
 	// {{{
@@ -1571,6 +1581,49 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 	,sendCmd:function(options) {
 	    Ext.apply(options.params, this.cmdParams);
 	    Ext.Ajax.request(options);
+	}
+
+	,getPermission: function(node){
+
+		var p = parseInt(node.attributes.permission ? node.attributes.permission + "" : this.defaultPermission).toString(2);
+
+		return {
+			r: p.charAt(0) == "1",
+			w: p.charAt(1) == "1",
+			x: p.charAt(2) == "1"
+		}
+
+	}
+	/**
+	 * Enable or disable menu items for a  node
+	 */
+	,applyPermissionOnMenu: function(node, menu){
+
+		var p = this.getPermission(node);
+
+		// default enabled
+        menu.setItemDisabled("open-dwnld", (node.isLeaf()?false:true));
+        menu.setItemDisabled("rename", false);
+        menu.setItemDisabled("delete", false);
+
+		// node cmd available based on node permissions
+		menu.setItemDisabled('delete', node === this.root || node.disabled || (this.checkNodeParameters && (!p.w || !node.attributes.canDelete)));
+		menu.setItemDisabled('rename', this.readOnly || node === this.root || node.disabled || (this.checkNodeParameters && (!p.w || !node.attributes.canRename)));
+		menu.setItemDisabled('newdir', this.readOnly || (node.isLeaf() ? node.parentNode.disabled : node.disabled) || (this.checkNodeParameters && (!p.w || !node.attributes.canCreateFolder)));
+
+		// upload is the item 6
+		if (this.checkNodeParameters && (!p.w || !node.attributes.canUpload)){
+			menu.items.get(6).setDisabled(true);
+		}else{
+			// console.log(menu.items.get(6));
+			menu.items.get(6).setDisabled(false);
+		}
+
+		// show/hide logic
+		menu.getItemByCmd('delete').setVisible(this.enableDelete);
+		menu.getItemByCmd('newdir').setVisible(this.enableNewDir);
+		menu.getItemByCmd('rename').setVisible(this.enableRename);
+
 	}
 
 }); // eo extend
