@@ -6,6 +6,11 @@
     background-image: url(img/silk/map.png);
 }
 
+/*gxp_advancedsnappingagent*/
+.snapping-button{
+    background-image: url(img/magnet.png) !important;
+}
+
 /* position the zoom slider within map panel */
 .gx-zoomslider {
     top: 90px;

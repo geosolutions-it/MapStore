@@ -344,7 +344,11 @@ GeoExt.Lang.add("fr", {
         exportCSVMultipleText: "Toutes les pages",
         failedExportCSV: "Impossible de trouver la réponse pour le format de sortie CSV",
         invalidParameterValueErrorText: "Valeur de paramètre non valide",
-		zoomToFeature: "Zoom sur Feature"
+		zoomToFeature: "Zoom sur Feature",
+		exportTitleText: "Pxportations",
+		pageLabel: "Page",
+		pageOfLabel: "sur",
+		totalRecordsLabel: "Nombre de Dossiers"
     },
 	
 	"gxp.plugins.QueryForm.prototype": {
@@ -632,5 +636,9 @@ GeoExt.Lang.add("fr", {
         noFilterSelectedMsgText: "Vous devez sélectionner au moins un filtre",    
         invalidRegexFieldMsgTitle: "Domaine invalide",    
         invalidRegexFieldMsgText: "Un ou plusieurs domaines sont incorrects!"
-    } 
+    },
+
+	"gxp.plugins.AdvancedSnappingAgent.prototype":{
+        tooltipText: "Activer/Désactiver Engagement"
+    }  
 });

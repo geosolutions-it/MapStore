@@ -347,7 +347,10 @@ GeoExt.Lang.add("es", {
         comboFormatEmptyText: "Por favor, seleccione un formato",
         noFormatTitleText: "Formato inválido",
         noFormatBodyText: "Por favor, seleccione un formato válido",
-        exportTitleText: "Exportar"
+        exportTitleText: "Exportar",
+		pageLabel: "Página",
+		pageOfLabel: "de",
+		totalRecordsLabel: "Registros Totales"
     },
     "gxp.plugins.QueryForm.prototype": {
         queryActionText: "Consultar",
@@ -722,5 +725,9 @@ GeoExt.Lang.add("es", {
         noFilterSelectedMsgText: "Debe seleccionar al menos un filtro",    
         invalidRegexFieldMsgTitle: "Dominios no válidoss",    
         invalidRegexFieldMsgText: "Uno o más dominios están rellenados correctamente!"
-    } 
+    },
+
+	"gxp.plugins.AdvancedSnappingAgent.prototype":{
+        tooltipText: "Activar/Desactivar Snapping"
+    }  
 });

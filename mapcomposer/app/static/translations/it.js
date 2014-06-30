@@ -368,7 +368,11 @@ GeoExt.Lang.add("it", {
         exportCSVMultipleText: "Tutte le pagine",
         failedExportCSV: "Impossibile esportare nel formato CSV",
         invalidParameterValueErrorText: "Valore parametro non valido",
-		zoomToFeature: "Zoom alla Feature"            
+		zoomToFeature: "Zoom alla Feature",
+		exportTitleText: "Esporta",
+		pageLabel: "Pagina",
+		pageOfLabel: "di",
+		totalRecordsLabel: "Elementi Totali"		
     },
 	
     "gxp.plugins.QueryForm.prototype": {
@@ -763,5 +767,9 @@ GeoExt.Lang.add("it", {
         noFilterSelectedMsgText: "Devi selezionare almeno un filtro",    
         invalidRegexFieldMsgTitle: "Campo non valido",    
         invalidRegexFieldMsgText: "Uno o più campi non sono stati riempiti correttamente!"
-    }    
+    },
+
+	"gxp.plugins.AdvancedSnappingAgent.prototype":{
+        tooltipText: "Abilita/Disabilita Aggancio"
+    }     
 });

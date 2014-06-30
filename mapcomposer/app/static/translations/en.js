@@ -307,8 +307,7 @@ GeoExt.Lang.add("en", {
         fontFamilyText: "Font Family",
         fontStyleText: "Font style",
         fontEditorText: "Label config"
-    },
-	
+    },	
     "gxp.plugins.GeonetworkSearch.prototype":{
         geonetworkSearchText: "View metadata",
         geonetworkSearchActionTip: "View metadata"
@@ -347,7 +346,10 @@ GeoExt.Lang.add("en", {
         comboFormatEmptyText: "Please, select format",
         noFormatTitleText: "Incorrect format",
         noFormatBodyText: "Please, select a valid format",
-        exportTitleText: "Export"
+        exportTitleText: "Export",
+		pageLabel: "Page",
+		pageOfLabel: "of",
+		totalRecordsLabel: "Total Records"
     },
     "gxp.plugins.QueryForm.prototype": {
         queryActionText: "Query",
@@ -762,6 +764,10 @@ GeoExt.Lang.add("en", {
         noFilterSelectedMsgText: "You must select at least one filter",    
         invalidRegexFieldMsgTitle: "Invalid Fields",    
         invalidRegexFieldMsgText: "One or more fields are incorrect!"
-    } 
+    },
+
+	"gxp.plugins.AdvancedSnappingAgent.prototype":{
+        tooltipText: "Enable/Disable Snapping"
+    } 	
 
 });
