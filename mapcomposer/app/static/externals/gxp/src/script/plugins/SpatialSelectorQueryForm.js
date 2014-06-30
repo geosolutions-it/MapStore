@@ -79,7 +79,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
      * ``Object``
      * Add controls to filter WMS layer using the filter
      */
-    filterLayer: false,
+    filterLayer: true,
     
     /** api: config[validators]
      * ``Object``
@@ -141,7 +141,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
          //create bbar buttons
         var bbarButtons = [];
         var spatialSelectorOutput = this.spatialSelector.addOutput();
-		
+
         if(this.filterLayer) {
             bbarButtons.push({
                 text: this.filterMapText,
