@@ -313,7 +313,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 									hiddenName:'groupId',
 									maxLength:200,
 									allowBlank:false,
-									target: me.target,
+									target: me.target
 									
 								}
                           ]

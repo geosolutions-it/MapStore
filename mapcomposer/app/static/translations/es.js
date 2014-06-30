@@ -348,7 +348,10 @@ GeoExt.Lang.add("es", {
         comboFormatEmptyText: "Por favor, seleccione un formato",
         noFormatTitleText: "Formato inválido",
         noFormatBodyText: "Por favor, seleccione un formato válido",
-        exportTitleText: "Exportar"
+        exportTitleText: "Exportar",
+		pageLabel: "Página",
+		pageOfLabel: "de",
+		totalRecordsLabel: "Registros Totales"
     },
     "gxp.plugins.QueryForm.prototype": {
         queryActionText: "Consultar",
@@ -782,5 +785,19 @@ GeoExt.Lang.add("es", {
         acceptText: "Crear",
         cancelText: "Cancelar",
         notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>Si es administrador introduzca sus credenciales para crear las categorías: '{0}'</div>"
-    }
+    },
+	
+    "gxp.data.WMTSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "No layer in the current map projection is available on this server",
+        warningTitle: "advertencia"
+    },
+	
+    "gxp.data.TMSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "No layer in the current map projection is available on this server",
+        warningTitle: "advertencia"
+    },
+	
+	"gxp.plugins.AdvancedSnappingAgent.prototype":{
+        tooltipText: "Activar/Desactivar Snapping"
+    }  
 });

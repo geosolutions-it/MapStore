@@ -246,6 +246,9 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      */
     defaultComboFormatValue: "CSV",
 	
+	/** api: config[zoomToFeature]
+     *  ``String``
+     */
 	zoomToFeature: "Zoom To Feature",
     
     /** api: config[exportDoubleCheck]
@@ -253,6 +256,21 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  Do check on feature grid export (one to show a possible error and another one to download the file)
      */
      exportDoubleCheck: true,
+	
+	/** api: config[pageLabel]
+     *  ``String``
+     */
+	pageLabel: "Page",
+	
+	/** api: config[pageOfLabel]
+     *  ``String``
+     */
+	pageOfLabel: "of",	
+	
+    /** api: config[totalRecordsLabel]
+     *  ``String``
+     */
+	totalRecordsLabel: "Total Records",
 
     /** private: method[displayTotalResults]
      */
@@ -313,23 +331,106 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         }
         this.displayItem = new Ext.Toolbar.TextItem({});
 
-        var bbar = (featureManager.paging ? [{
-                iconCls: "x-tbar-page-first",
-                ref: "../firstPageButton",
-                tooltip: this.firstPageTip,
-                disabled: true,
-                handler: function() {
-                    featureManager.setPage({index: 0});
-                }
-            }, {
-                iconCls: "x-tbar-page-prev",
-                ref: "../prevPageButton",
-                tooltip: this.previousPageTip,
-                disabled: true,
-                handler: function() {
-                    featureManager.previousPage();
-                }
-            }, {
+		var toolbarElements = [];
+		toolbarElements.push(
+			{
+				iconCls: "x-tbar-page-first",
+				ref: "../firstPageButton",
+				tooltip: this.firstPageTip,
+				disabled: true,
+				handler: function() {
+					featureManager.setPage({index: 0});
+				}
+			}, {
+				iconCls: "x-tbar-page-prev",
+				ref: "../prevPageButton",
+				tooltip: this.previousPageTip,
+				disabled: true,
+				handler: function() {
+					featureManager.previousPage();
+				}
+			}
+		);
+		
+		if(featureManager.pagingType == 1){
+			toolbarElements.push(				
+				'-'
+				, {
+					xtype: 'compositefield',
+					width: 120,
+					items: [{
+							xtype: 'label',
+							text: this.pageLabel,
+							autoWidth: true,
+							style: {
+								marginTop: '3px'
+							}
+						},{
+							ref: "../../currentPage",
+							xtype: "textfield",
+							width: 40,
+							value: "0",
+							disabled: true,
+							enableKeyEvents: true,
+							listeners:{
+								scope: this,
+								keypress: function(field, e){
+									var charCode = e.getCharCode();
+									if(charCode == 13){
+										var value = field.getValue();
+										featureManager.setPage({index: value - 1})
+									}
+								}
+							}
+						},{
+							xtype: 'label',
+							width: 15,
+							text: this.pageOfLabel,
+							style: {
+								marginTop: '3px'
+							}
+						},{
+							xtype: 'label',
+							ref: "../../numberOfPagesLabel",
+							width: 20,
+							text: '0',
+							style: {
+								marginTop: '3px'
+							}
+					}]
+				}
+			);
+			
+			if(this.showNumberOfRecords === true){
+				toolbarElements.push(
+					/*{
+						xtype: 'compositefield',
+						width: 120,
+						items: [*/{
+								xtype: 'label',
+								text: "{" + this.totalRecordsLabel + " - ",
+								autoWidth: true,
+								style: {
+									marginTop: '3px'
+								}
+							}, {
+								xtype: 'label',
+								ref: "../totalRecords",
+								width: 20,
+								text: "0}",
+								style: {
+									marginTop: '3px'
+								}
+							}
+						/*]
+					}*/
+				);
+			}
+		}
+		
+		toolbarElements.push(
+				'-',
+			{
                 iconCls: "gxp-icon-zoom-to",
                 ref: "../zoomToPageButton",
                 tooltip: this.zoomPageExtentTip,
@@ -338,7 +439,9 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 handler: function() {
                     map.zoomToExtent(featureManager.getPageExtent());
                 }
-            }, {
+            }, 
+				'-'
+			, {
                 iconCls: "x-tbar-page-next",
                 ref: "../nextPageButton",
                 tooltip: this.nextPageTip,
@@ -354,7 +457,14 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 handler: function() {
                     featureManager.setPage({index: "last"});
                 }
-            }, {xtype: 'tbspacer', width: 10}, this.displayItem] : []).concat(["->"].concat(!this.alwaysDisplayOnMap ? [{
+            }, {
+				xtype: 'tbspacer', 
+				width: 10
+			}, 
+			this.displayItem
+		);
+		
+        var bbar = (featureManager.paging ? [toolbarElements] : []).concat(["->"].concat(!this.alwaysDisplayOnMap ? [{
                 text: this.displayFeatureText,
                 id: "showButton",
                 iconCls: "gxp-icon-addtomap",
@@ -488,6 +598,10 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             featureManager.showLayer(this.id, this.displayMode);
         }
        
+	   // /////////////////////////////////////
+	   // FeatureManager events's listeners
+	   // /////////////////////////////////////
+	    var me = this;
         featureManager.paging && featureManager.on("setpage", function(mgr, condition, callback, scope, pageIndex, numPages) {
             var paging = (mgr.page && (mgr.page.numFeatures > 0)) || numPages > 1;
             featureGrid.zoomToPageButton.setDisabled(!paging);
@@ -497,9 +611,29 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             var next = (paging && (pageIndex !== numPages-1));
             featureGrid.lastPageButton.setDisabled(!next);
             featureGrid.nextPageButton.setDisabled(!next);
+			
+			if(featureManager.pagingType == 1){
+				featureGrid.currentPage.enable();
+				featureGrid.currentPage.setValue(featureManager.pageIndex + 1);
+				featureGrid.numberOfPagesLabel.setText(featureManager.numPages);
+				
+				if(me.showNumberOfRecords === true){
+					featureGrid.totalRecords.setText(featureManager.numberOfFeatures + "}");
+				}
+			}
         }, this);
                 
-        featureManager.on("layerchange", function(mgr, rec, schema) {
+        featureManager.on("layerchange", function(mgr, rec, schema) {		
+			if(featureManager.pagingType == 1){
+				featureGrid.currentPage.disable();
+				featureGrid.currentPage.setValue("0");
+				featureGrid.numberOfPagesLabel.setText("0");
+				
+				if(me.showNumberOfRecords === true){
+					featureGrid.totalRecords.setText("0}");
+				}
+			}
+			
             //TODO use schema instead of store to configure the fields
             var ignoreFields = ["feature", "state", "fid"];
             schema && schema.each(function(r) {
@@ -507,6 +641,18 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             });
             featureGrid.ignoreFields = ignoreFields;
             featureGrid.setStore(featureManager.featureStore, schema);
+        }, this);
+		
+		featureManager.on("clearfeatures", function(mgr, rec, schema) {		
+			if(featureManager.pagingType == 1){
+				featureGrid.currentPage.disable();
+				featureGrid.currentPage.setValue("0");
+				featureGrid.numberOfPagesLabel.setText("0");
+				
+				if(me.showNumberOfRecords === true){
+					featureGrid.totalRecords.setText("0}");
+				}
+			}
         }, this);
         
         return featureGrid;
