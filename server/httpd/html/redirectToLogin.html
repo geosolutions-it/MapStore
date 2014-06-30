@@ -6,7 +6,12 @@
         <title>MARISS Project</title>
         <script type="text/javascript">
    		  // Login. Redirect to 'http://mariss.geo-solutions.it/mapstore/manager' with the return url
-          window.location.href = "http://mariss.geo-solutions.it/mapstore/loginpage?returnUrl=" + window.location.href;
+   		  var returnUrl = window.location.href;
+   		  // fix incorrect return url in root access
+   		  if(returnUrl == "http://mariss.geo-solutions.it/"){
+   		  	returnUrl = "http://mariss.geo-solutions.it/mapstore/manager";
+   		  }
+   		  window.location.href = "http://mariss.geo-solutions.it/mapstore/loginpage?returnUrl=" + returnUrl;
         </script>
 <body>
 </body>
