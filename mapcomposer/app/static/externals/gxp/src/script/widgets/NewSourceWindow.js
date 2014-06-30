@@ -43,7 +43,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
      *  ``String``
      *  Message to display when an invalid URL is entered (i18n).
      */
-    invalidURLText: "Enter a valid URL to a WMS endpoint (e.g. http://example.com/geoserver/wms)",
+    invalidURLText: "Enter a valid URL to a WMS/WMTS/TMS endpoint (e.g. http://example.com/geoserver/wms)",
 
     /** api: config[contactingServerText]
      *  ``String``
@@ -71,6 +71,12 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
      * The error message set (for example, when adding the source failed)
      */
     error: null,
+    
+    /** api: config[availableSources]
+     *  ``Array``
+     *  List of available sources, with related configuration.
+     */
+    availableSources: [],
 
     /** api: event[server-added]
      * Fired with the URL that the user provided as a parameter when the form 
@@ -87,16 +93,35 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             msgTarget: "under",
             validator: this.urlValidator.createDelegate(this)
         });
-
+        
+        var store = [];
+        for(var count = 0, l = this.availableSources.length; count < l; count++) {
+            var source = this.availableSources[count];
+            store.push([source.name, source.description]);
+        }
+        
         this.form = new Ext.form.FormPanel({
-            items: [
-                this.urlTextField
-            ],
+            items: [{
+                xtype: 'combo',
+                width: 240,
+                name: 'type',
+                fieldLabel: "Type",
+                value: 'WMS',
+                mode: 'local',
+                triggerAction: 'all',
+                store: store
+            }, this.urlTextField],
             border: false,
             labelWidth: 30,
             bodyStyle: "padding: 5px",
             autoWidth: true,
-            autoHeight: true
+            autoHeight: true,
+            listeners: {
+                afterrender: function() {
+                    this.urlTextField.focus(false, true);
+                },
+                scope: this
+            }
         });
 
         this.bbar = [
@@ -115,7 +140,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
                     // Clear validation before trying again.
                     this.error = null;
                     if (this.urlTextField.validate()) {
-                        this.fireEvent("server-added", this.urlTextField.getValue());
+                        this.fireEvent("server-added", this.urlTextField.getValue(), this.form.getForm().findField('type').getValue());
                     }
                 },
                 scope: this

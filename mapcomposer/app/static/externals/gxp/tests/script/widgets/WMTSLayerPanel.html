@@ -11,23 +11,29 @@
        
         var layerRecord;
         
-        function createWMSLayerPanel() {
+        function createWMTSLayerPanel() {
             layerRecord = new GeoExt.data.LayerRecord({
-                layer: new OpenLayers.Layer.WMS()
+                layer: new OpenLayers.Layer.WMTS({
+                    url: "http://www.example.com",
+                    layer: "testLayer",
+                    style: "default",
+                    matrixSet: "0"
+                }),
+                styles: ["default"]
             });
-            return new gxp.WMSLayerPanel({layerRecord: layerRecord});
+            return new gxp.WMTSLayerPanel({layerRecord: layerRecord});
         }
         
         function destroy() {
             layerRecord.getLayer().destroy();
         }
         
-        function test_WMSLayerPanel(t) {
+        function test_WMTSLayerPanel(t) {
             t.plan(1);
             
-            var instance = createWMSLayerPanel();
+            var instance = createWMTSLayerPanel();
             
-            t.ok(instance instanceof gxp.WMSLayerPanel, "Instance created successfully");
+            t.ok(instance instanceof gxp.WMTSLayerPanel, "Instance created successfully");
             
             instance.destroy();
             destroy();

@@ -308,8 +308,7 @@ GeoExt.Lang.add("en", {
         fontFamilyText: "Font Family",
         fontStyleText: "Font style",
         fontEditorText: "Label config"
-    },
-	
+    },	
     "gxp.plugins.GeonetworkSearch.prototype":{
         geonetworkSearchText: "View metadata",
         geonetworkSearchActionTip: "View metadata"
@@ -348,7 +347,10 @@ GeoExt.Lang.add("en", {
         comboFormatEmptyText: "Please, select format",
         noFormatTitleText: "Incorrect format",
         noFormatBodyText: "Please, select a valid format",
-        exportTitleText: "Export"
+        exportTitleText: "Export",
+		pageLabel: "Page",
+		pageOfLabel: "of",
+		totalRecordsLabel: "Total Records"
     },
     "gxp.plugins.QueryForm.prototype": {
         queryActionText: "Query",
@@ -767,7 +769,7 @@ GeoExt.Lang.add("en", {
         invalidRegexFieldMsgTitle: "Invalid Fields",    
         invalidRegexFieldMsgText: "One or more fields are incorrect!"
     },
-	
+
 	"gxp.plugins.FeatureManager.prototype":{
         noValidWmsVersionMsgTitle: 'No valid WMS version',    
         noValidWmsVersionMsgText: "The queryForm plugin doesn't work with WMS Source version: "
@@ -782,5 +784,19 @@ GeoExt.Lang.add("en", {
         acceptText: "Create",
         cancelText: "Cancel",
         notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>If you are an administrator please insert your credentials to create these categories: '{0}'</div>"
-    }
+    },
+	
+    "gxp.data.WMTSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "No layer in the current map projection is available on this server",
+        warningTitle: "Warning"
+    },
+	
+    "gxp.data.TMSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "No layer in the current map projection is available on this server",
+        warningTitle: "Warning"
+    },
+	
+	"gxp.plugins.AdvancedSnappingAgent.prototype":{
+        tooltipText: "Enable/Disable Snapping"
+    } 	
 });
