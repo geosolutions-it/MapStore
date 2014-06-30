@@ -349,7 +349,10 @@ GeoExt.Lang.add("fr", {
         comboFormatEmptyText: "Veuillez sélectionner un format",
         noFormatTitleText: "Format incorrect",
         noFormatBodyText: "Veuillez sélectionner un format valide",
-        exportTitleText: "Exporter"
+        exportTitleText: "Exporter",
+		pageLabel: "Page",
+		pageOfLabel: "sur",
+		totalRecordsLabel: "Nombre de Dossiers"
     },
 	
 	"gxp.plugins.QueryForm.prototype": {
@@ -768,19 +771,22 @@ GeoExt.Lang.add("fr", {
         invalidRegexFieldMsgTitle: "Domaines invalides",    
         invalidRegexFieldMsgText: "Un ou plusieurs domaines sont incorrects!"
     },
-	
+
 	"gxp.plugins.FeatureManager.prototype":{
         noValidWmsVersionMsgTitle: 'Version de WMS invalide',    
         noValidWmsVersionMsgText: "L’extension queryForm ne fonctionne pas avec la version de cette source WMS: "
     },
+	
     "gxp.data.WMTSCapabilitiesReader.prototype" : {
         noLayerInProjectionError: "Aucune couche de la projection cartographique actuelle est disponible sur ce serveur",
         warningTitle: "avertissement"
     },
+	
     "gxp.data.TMSCapabilitiesReader.prototype" : {
         noLayerInProjectionError: "Aucune couche de la projection cartographique actuelle est disponible sur ce serveur",
         warningTitle: "avertissement"
     },
+	
 	"gxp.plugins.CategoriesInitializer.prototype":{
         geostoreInitializationTitleText: "L’initialisation a échoué",
         geostoreInitializationText: "La réponse Geostore n’est pas celle attendue",
@@ -790,7 +796,11 @@ GeoExt.Lang.add("fr", {
         acceptText: "Créer",
         cancelText: "Annuler",
         notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>Si vous êtes administrateur veuillez entrer vos crédits afin de créer ces catégories: '{0}'</div>"
-    }
+    },
+	
+	"gxp.plugins.AdvancedSnappingAgent.prototype":{
+        tooltipText: "Activer/Désactiver Engagement"
+    }  
 });
 
 

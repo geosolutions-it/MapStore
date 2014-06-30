@@ -377,7 +377,11 @@ GeoExt.Lang.add("de", {
         exportCSVMultipleText: "Alle Seite",
         failedExportCSV: "Fehler beim Ansprechen für Ausgabeformat CSV finden",
         invalidParameterValueErrorText: "Ungültige Parameter Wert",
-		zoomToFeature: "Zoom auf Funktionen"
+		zoomToFeature: "Zoom auf Funktionen",
+		exportTitleText: "Export",
+		pageLabel: "Seite",
+		pageOfLabel: "von",
+		totalRecordsLabel: "Einträge Insgesamt"
     },
 	
     "gxp.plugins.QueryForm.prototype": {
@@ -816,5 +820,9 @@ GeoExt.Lang.add("de", {
     "gxp.data.TMSCapabilitiesReader.prototype" : {
         noLayerInProjectionError: "Keine Schicht in der aktuellen Kartenprojektion ist auf diesem Server nicht verfügbar",
         warningTitle: "Warnung"
-    }
+    },
+
+	"gxp.plugins.AdvancedSnappingAgent.prototype":{
+        tooltipText: "Aktivieren/Deaktivieren Snapping"
+    }  
 });

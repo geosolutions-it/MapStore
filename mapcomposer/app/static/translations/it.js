@@ -372,7 +372,11 @@ GeoExt.Lang.add("it", {
         exportCSVMultipleText: "Tutte le pagine",
         failedExportCSV: "Impossibile esportare nel formato CSV",
         invalidParameterValueErrorText: "Valore parametro non valido",
-		zoomToFeature: "Zoom alla Feature"            
+		zoomToFeature: "Zoom alla Feature",
+		exportTitleText: "Esporta",
+		pageLabel: "Pagina",
+		pageOfLabel: "di",
+		totalRecordsLabel: "Elementi Totali"		
     },
 	
     "gxp.plugins.QueryForm.prototype": {
@@ -796,12 +800,18 @@ GeoExt.Lang.add("it", {
         noValidWmsVersionMsgTitle: 'Versione WMS non valida',    
         noValidWmsVersionMsgText: "Il plugin queryForm non funziona con una sorgente WMS versione: "
     },
+	
     "gxp.data.WMTSCapabilitiesReader.prototype" : {
         noLayerInProjectionError: "Nessun layer disponibile su questo server nel sistema di coordinate della mappa",
         warningTitle: "Attenzione"
     },
+	
     "gxp.data.TMSCapabilitiesReader.prototype" : {
         noLayerInProjectionError: "Nessun layer disponibile su questo server nel sistema di coordinate della mappa",
         warningTitle: "Attenzione"
-    }
+    },
+
+	"gxp.plugins.AdvancedSnappingAgent.prototype":{
+        tooltipText: "Abilita/Disabilita Aggancio"
+    }     
 });
