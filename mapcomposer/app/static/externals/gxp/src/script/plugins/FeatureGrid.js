@@ -400,32 +400,32 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
 					}]
 				}
 			);
-		}
-		
-		if(this.showNumberOfRecords === true){
-			toolbarElements.push(
-				/*{
-					xtype: 'compositefield',
-					width: 120,
-					items: [*/{
-							xtype: 'label',
-							text: "{" + this.totalRecordsLabel + " - ",
-							autoWidth: true,
-							style: {
-								marginTop: '3px'
+			
+			if(this.showNumberOfRecords === true){
+				toolbarElements.push(
+					/*{
+						xtype: 'compositefield',
+						width: 120,
+						items: [*/{
+								xtype: 'label',
+								text: "{" + this.totalRecordsLabel + " - ",
+								autoWidth: true,
+								style: {
+									marginTop: '3px'
+								}
+							}, {
+								xtype: 'label',
+								ref: "../totalRecords",
+								width: 20,
+								text: "0}",
+								style: {
+									marginTop: '3px'
+								}
 							}
-						}, {
-							xtype: 'label',
-							ref: "../totalRecords",
-							width: 20,
-							text: "0}",
-							style: {
-								marginTop: '3px'
-							}
-						}
-					/*]
-				}*/
-			);
+						/*]
+					}*/
+				);
+			}
 		}
 		
 		toolbarElements.push(
