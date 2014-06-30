@@ -78,7 +78,12 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 	 *  ``Object``
 	 *  Parameter to perform the filter
 	 */
-
+   
+   /** api: config[metricUnit]
+	 *  ``Object``
+	 *  The metric unit to display summary
+	 */
+  metricUnit :"km",
 	/** api: config[hideWhenDeactivate]
 	 *  ``Boolean``
 	 *  Flag to hide output when the selection method is deactivated. Default is true
@@ -467,7 +472,7 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 	 */
     getSummary: function(geometry){
 
-		var summary = "", metricUnit = "km";
+		var summary = "", metricUnit = this.metricUnit;
 
 		var area = this.getArea(geometry, metricUnit);
 		var length = this.getLength(geometry, metricUnit);

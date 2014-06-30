@@ -319,7 +319,11 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         
         this.listeners = {
            "afterlayout": function(){
-                Ext.get(me.id+"_bboxAOI-set-EPSG").addListener("click", me.openEPSGWin, me);  
+                var link = Ext.get(me.id+"_bboxAOI-set-EPSG");
+                if(link){
+                  link.addListener("click", me.openEPSGWin, me);  
+                }
+                
 				var baseProj = me.map.getProjection();
 				var projection = baseProj ? baseProj : me.map.projection; 				
                 me.mapProjection = new OpenLayers.Projection(projection);
@@ -505,7 +509,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
                 break;
                 
             default:
-               srsURL+= "/epsg/"+( +this.bboxProjection.getCode().split(":")[1]+"/"); 
+               srsURL+= "epsg/"+( +this.bboxProjection.getCode().split(":")[1]+"/"); 
             }
         }else
          srsURL=this.infoEPSGURL;
