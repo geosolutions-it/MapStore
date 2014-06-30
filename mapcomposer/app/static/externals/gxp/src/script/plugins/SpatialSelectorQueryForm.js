@@ -79,7 +79,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
      * ``Object``
      * Add controls to filter WMS layer using the filter
      */
-    filterLayer: false,
+    filterLayer: true,
     
     /** api: config[validators]
      * ``Object``
@@ -138,44 +138,86 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 		var me = this;
 
         var spatialSelector = this.spatialSelector;
-
+         //create bbar buttons
+        var bbarButtons = [];
         var spatialSelectorOutput = this.spatialSelector.addOutput();
-		
-        config = Ext.apply({
-            border: false,
-            bodyStyle: "padding: 10px",
-            layout: "form",
-            autoScroll: true,
-            id: this.getFormId(),
-            items: [
-            {
-                xtype: "fieldset",
-                ref: "spatialSelectorFieldset",
-                title: spatialSelectorOutput.title,
-                checkboxToggle: true,
-                collapsed : false,
-                items: [spatialSelectorOutput],
-                listeners: {
-                    scope: this,
-                    expand: function(panel){
-                        panel.doLayout();
+         if(this.filterLayer){
+            bbarButtons.push({
+                text: this.filterMapText,
+                iconCls: "gxp-icon-map-filter",
+                handler: function() {
+					
+                    // Collect all selected filters
+                    var filters = new Array();
+                    
+                    if(queryForm.spatialSelectorFieldset && !queryForm.spatialSelectorFieldset.collapsed){
+                        var currentFilter = this.spatialSelector.getQueryFilter();   
+                        if (currentFilter) {
+                            //convert filter into native srs
+                            //get native srs
+                            var rec  = this.featureManagerTool.layerRecord;
+                            var bbox = rec.get('bbox');
+                            var nativeSRS;
+                            for(var c in bbox) {
+                                
+                                if(c && c.indexOf('EPSG')==0) nativeSRS = c;
+                            }
+                            currentFilter = currentFilter.clone();
+                            currentFilter.value.transform(this.target.mapPanel.map.getProjectionObject(),new OpenLayers.Projection(nativeSRS));
+                            filters.push(currentFilter);
+                        }
                     }
-                }
-            },
-            {
-                xtype: "fieldset",
-                ref: "attributeFieldset",
-                title: this.queryByAttributesText,
-                checkboxToggle: true,
-                collapsed : true,
-				listeners: {
-					scope: this,
-					expand: function(panel){
-						panel.doLayout();
-					}
-				}
-            }],
-            bbar: ["->", {   
+
+                    if(queryForm.filterBuilder && !queryForm.filterBuilder.collapsed){
+                        var attributeFilter = queryForm.filterBuilder.getFilter();
+                        //TODO replace * with % in strings
+                        if(attributeFilter){
+                            var attributeFilter = attributeFilter.clone();
+                            //inspect tree of filters
+                            var replaceLikeStrings = function(node,oldc,newc){
+                                var oldc = oldc || '*';
+                                var newc = newc || '%';
+                                if(node.filters){
+                                    for(var i = 0;i< node.filters.length; i++){
+                                        replaceLikeStrings(node.filters[i],oldc,newc);
+                                    }
+                                }else if (node.type== "~"){
+                                    //replace all
+                                    node.value = node.value.split(oldc).join(newc);
+                                    
+                                }
+                            }
+                            replaceLikeStrings(attributeFilter);
+                            
+                        }
+                        attributeFilter && filters.push(attributeFilter);
+                    }
+
+                    if(filters.length > 0){
+                         
+                         var filter =  filters.length > 1 ? new OpenLayers.Filter.Logical({
+                                type: OpenLayers.Filter.Logical.AND,
+                                filters: filters
+                            }) :
+                            filters[0];
+                            if(this.target.tools.layertree_plugin){
+                                var selmodel = this.target.tools.layertree_plugin.output[0].selModel;
+                                var node =selmodel.getSelectedNode();
+                                node.setIconCls('gx-tree-filterlayer-icon');
+                            }
+                            this.featureManagerTool.layerRecord.getLayer().mergeNewParams({cql_filter:filter.toString()}); 
+                    }else{
+                        var layer = this.featureManagerTool.layerRecord.getLayer(); 
+                        delete layer.params.CQL_FILTER;
+                        layer.redraw();
+                    }
+                      
+                },
+                scope: this
+            });
+        }
+        bbarButtons.push("->");
+        bbarButtons.push({
                 scope: this,    
                 text: this.cancelButtonText,
                 iconCls: "cancel",
@@ -199,16 +241,31 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                             this.featureManagerTool, this.featureManagerTool.layerRecord,
                             this.featureManagerTool.schema
                         ); 
-                    }                    
+                    }   
+                    if(me.filterLayer){
+                        var layer = this.featureManagerTool.layerRecord.getLayer(); 
+                         delete layer.params.CQL_FILTER;
+                         if(this.target.tools.layertree_plugin){
+                             var selmodel = this.target.tools.layertree_plugin.output[0].selModel;
+                             var node =selmodel.getSelectedNode();
+                             node.setIconCls('gx-tree-layer-icon');
+                         }
+                         layer.redraw();
+                     }
+                      spatialSelector.filterGeometryName = this.featureStore
+                         && this.featureStore.geometryName
+                         ? this.featureManagerTool.featureStore.geometryName : this.featureManagerTool.featureStore.geometryName ;
+                         
                 }
-            }, {
+            });
+            bbarButtons.push({
                 text: this.queryActionText,
                 iconCls: "gxp-icon-find",
                 handler: function() {
-					var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
-					if(container){
-						container.expand();
-					}
+                    var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
+                    if(container){
+                      container.expand();
+                  }
                     // Collect all selected filters
                     var filters = new Array();
                     
@@ -276,7 +333,42 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                       
                 },
                 scope: this
-            }]
+            });
+        config = Ext.apply({
+            border: false,
+            bodyStyle: "padding: 10px",
+            layout: "form",
+            autoScroll: true,
+            id: this.getFormId(),
+            items: [
+            {
+                xtype: "fieldset",
+                ref: "spatialSelectorFieldset",
+                title: spatialSelectorOutput.title,
+                checkboxToggle: true,
+                collapsed : false,
+                items: [spatialSelectorOutput],
+                listeners: {
+                    scope: this,
+                    expand: function(panel){
+                        panel.doLayout();
+                    }
+                }
+            },
+            {
+                xtype: "fieldset",
+                ref: "attributeFieldset",
+                title: this.queryByAttributesText,
+                checkboxToggle: true,
+                collapsed : true,
+				listeners: {
+					scope: this,
+					expand: function(panel){
+						panel.doLayout();
+					}
+				}
+            }],
+            bbar: bbarButtons
         }, config || {});
 		
         var queryForm = gxp.plugins.QueryForm.superclass.addOutput.call(this, config);
