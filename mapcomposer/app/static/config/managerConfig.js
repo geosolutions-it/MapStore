@@ -135,6 +135,12 @@
            "index": 4
          }
     },{
+         "ptype": "mxp_he_expiring_task_status",
+         "actionTarget":{
+           "target": "north.tbar",
+           "index": 6
+         }
+    },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
         "actionTarget":{
