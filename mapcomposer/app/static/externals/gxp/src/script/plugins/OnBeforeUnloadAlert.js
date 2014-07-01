@@ -38,8 +38,11 @@ Ext.namespace("gxp.plugins");
  *    This tool check if the page is modified and show an alert with a message,
  *    before leaving.
  *    It checks the modified flag in the target
+<<<<<<< HEAD
  *	  modified: the modified flag
  *    safeLeaving: if set, the application is allowed to leave page without alert
+=======
+>>>>>>> add onbeforeupload plugin
  */   
 gxp.plugins.OnBeforeUnloadAlert = Ext.extend(gxp.plugins.Tool, {
     
