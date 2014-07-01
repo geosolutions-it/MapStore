@@ -244,50 +244,59 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 id: "full-screen-button",
                 iconCls: "icon-fullscreen",
                 enableToggle: true,
+				state:{},
+				tools:{},
 				scale: this.actionToolScale,
                 handler: function(button, evt){
                     if(button.pressed){
-
-						var south = Ext.getCmp('south');
-						if(south && !south.collapsed){
-							south.collapse();
-						}					
-                        
-						var east = Ext.getCmp('east');
-						if(east && !east.collapsed){
-							east.collapse();
-						}
-
-                        var tree = Ext.getCmp('tree');
-                        if(tree){
-                            var panel = tree.findParentByType('panel');
-                            if(panel && !panel.collapsed){
-                                panel.collapse();
-                            }							
-                        }
-
-                    } else {
-
-                        var south = Ext.getCmp('south');
-						if(south && south.collapsed){
-							south.expand();
-						}  					
-                        
-						var east = Ext.getCmp('east');
-						if(east && east.collapsed){
-							east.expand();                             
-						}
-
-                        var tree = Ext.getCmp('tree');
+                       var tree = Ext.getCmp('tree');
+					   
 						if(tree){
 							var panel = tree.findParentByType('panel');
-							if(panel && panel.collapsed){
-								panel.expand();
-							}							
+							if(panel){
+								button.saveState(panel);
+								panel.collapse(true);
+							}
+						}	
+						
+						var east = Ext.getCmp('east');
+						if(east){
+							button.saveState(east);
+							east.collapse(true);
+							
 						}
-                        
+						
+						var south = Ext.getCmp('south');
+						if(south){
+							button.saveState(south);
+							south.collapse(true);
+						}
+                    } else {
+						for(var tool in button.tools){
+							button.restoreState(button.tools[tool]);
+						}                        
                     }
-                }
+                },
+				//restore the previous state of the button
+				restoreState: function(panel){
+					if(!this.state) return;
+					var id = panel.getId();
+					var wasVisible = this.state[id];
+					if(panel && wasVisible){
+						panel.expand(true);
+					}
+				},
+				//save the state of the button
+				saveState: function(panel){
+					if(!this.state) return;
+					var id =panel.getId();
+					if(id){
+						this.state[id] = panel.isVisible();
+					}
+					if(!this.tools[id]){
+						this.tools[id] = panel;
+					}
+				}
             });
 
             tools.unshift(fullScreen);
