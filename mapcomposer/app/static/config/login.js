@@ -365,11 +365,16 @@
           },
           "spatialSelectorsConfig":{
                 "bbox":{
+                    
+                    "displayProjection": "EPSG:4326",
+                    "metricUnit":"mi",
                     "xtype": "gxp_spatial_bbox_selector",
                     "addGeometryOperation":false
                 },
                 
                 "circle":{
+                    "displayProjection": "EPSG:4326",
+                    "metricUnit":"mi",
                     "xtype": "gxp_spatial_circle_selector",
                     "addGeometryOperation":false,
                     "zoomToCurrentExtent": true
