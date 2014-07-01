@@ -74,8 +74,15 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
      */
     pluggableByUserGroupConfig: false,
     
+    /**
+     * api: config[loginDataStorage]
+     * {string} actually supports null or a value: "sessionStorage" to emulate the session
+     * persistence using the session storage object
+     */
+    loginDataStorage:null,
+    
     initComponent : function() {
-
+        
         // save initial config
         this.initialConfig = {};
         Ext.apply(this.initialConfig, this);
@@ -119,7 +126,21 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
         mxp.widgets.ManagerViewport.superclass.initComponent.call(this, arguments);
 
         this.fireEvent("portalready");
+        var user = this.restoreLoginState();
+        if(!this.logged && user){
+            var auth = user.token;
+            this.cleanTools();
+            this.user = user.user;
+            this.auth = auth ? auth: this.auth;
+            this.logged = true;
 
+            this.defaultHeaders = {
+                'Accept': 'application/json', 
+                'Authorization' : this.auth
+            };
+
+            
+        }
         // load config if present
         this.reloadConfig();
     },
@@ -247,7 +268,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
         }else{
             // load default logged tools
             var applyConfig = this.logged ? this.initialConfig.loggedTools : this.initialConfig.tools;
-            if(this.initialConfig.adminTools && this.user && this.user.role=='ADMIN'){
+            if( this.initialConfig.adminTools && this.user && this.user.role == 'ADMIN'){
                 applyConfig =this.initialConfig.adminTools;
             }
             this.applyUserConfig(0,applyConfig);
@@ -341,10 +362,11 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
                 'Accept': 'application/json', 
                 'Authorization' : this.auth
             };
-
+            this.saveLoginState();
             // reload config
             this.reloadConfig();
         }
+        
     },
 
     /** private: method[onLogout]
@@ -363,8 +385,45 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
             this.cleanTools();
             this.initTools();
             this.logged = false;
+            this.resetLoginState();
             this.fireEvent("portalready");   
         }
+    },
+
+    /** private: method[saveLoginState]
+     *  Save the login status in the session Storage.
+     */
+    saveLoginState: function(){
+      //TODO Update user data
+      if(sessionStorage && this.config.loginDataStorage){
+        sessionStorage["userDetails"] = this.user;
+      }
+      
+    },
+    
+    /** private: method[resetLoginState]
+     *  Reset the login status (on Logout)
+     */
+    resetLoginState: function(){
+      if(sessionStorage ){
+        sessionStorage.removeItem("userDetails");
+      }
+      
+    },
+    
+    /** private: method[restoreLoginState]
+     *  Load login status from the session storage.
+     */
+    restoreLoginState: function(){
+      if(sessionStorage && this.config.loginDataStorage){
+      var ud = sessionStorage["userDetails"];
+      
+        if(ud){
+          return Ext.util.JSON.decode(ud) ;
+        }
+      }
+      return null;
+        
     }
 });
 
