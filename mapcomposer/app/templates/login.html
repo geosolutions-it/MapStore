@@ -537,6 +537,8 @@
 							login.loginSync();
 							 var myAccount = new gxp.plugins.GeoStoreAccount({
 								outputTarget:'appTabs',
+                hideAttributes: ["UUID","notes"],
+                displayPanels:false,
 								user:login.user,
 								auth:login.token,
 								geoStoreBase : serverConfig.geoStoreBase
@@ -583,6 +585,8 @@
 					login.loginSync();
 					var myAccount = new gxp.plugins.GeoStoreAccount({
 						outputTarget:'appTabs',
+            hideAttributes: ["UUID","notes"],
+            displayPanels:false,
 						user: app.userDetails.user,
 						auth: app.userDetails.token,
 						geoStoreBase : serverConfig.geoStoreBase
