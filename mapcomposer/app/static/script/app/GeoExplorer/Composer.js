@@ -275,6 +275,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 						for(var tool in button.tools){
 							button.restoreState(button.tools[tool]);
 						}                        
+						}
                     }
                 },
 				//restore the previous state of the button
