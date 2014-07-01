@@ -173,6 +173,7 @@
 		  "showSelectionSummary": true,
 		  "actions": null,
 		  "id": "bboxquery",
+          "filterLayer": true,
           "autoComplete": {
             "sources": ["default"],
             "url": "http://localhost:8080/geoserver/wps",
