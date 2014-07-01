@@ -42,7 +42,7 @@ Ext.namespace("gxp.plugins");
  */   
 gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
     ptype: "gxp_geostore_account",
-    displayAttributes:['Name','Surname','email'],
+    //i18n
     usernameLabel:'User Name',
     changePassword:'Change Password',
     textPassword: 'Password',
@@ -51,10 +51,34 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
     textCancel: 'Cancel',
     textPasswordChangeSuccess: 'Password Changed',
     textErrorPasswordChange: 'Error Changing Password',
-    scrollable:true,
+    //config
     geoStoreBase: null,
     auth: null,
-    notAllowedAttributes:['UUID'],
+    scrollable:true,
+    /** api: config[displayPanels]
+     *  ``boolean`` use panels to see attributes instead of template
+     */
+    displayPanels:true,
+    
+    /** api: config[additionalControls]
+     *  ``Array``buttons to place in the right panel
+     */
+     additionalControls:null,
+     
+     /** api: config[controlsWidth]
+     *  ``integer``width of the `dditionalControls`
+     */
+     controlsWidth:200,
+     
+    /** api: config[hideAttributes]
+     *  ``Array`` user attributes to hide in the my account tab
+     */
+    hideAttributes:['UUID'],
+    
+    /** api: config[userTemplate]
+     *  ``Array`` XTemplate to display user page.
+     *  user is the root element. groups.group and attribute are arrays to iterate
+     */
     userTemplate: [ '<style>',
                 '#account_details td{padding:5px;width: 200px;padding-left: 7px;color: #fff;text-shadow: 2px 2px 2px #666;}',
                 '#account_details .b{font-weight:bold;}#account_details tr.even{background: #6a7064;}#account_details tr.odd{background: #bab29f;}',
@@ -90,6 +114,9 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
             '</tbody></table>',
         '</tpl>',
     '</div>'],
+    
+    /** api: method[addOutput]
+     */
     addOutput: function(config) {
         target =this.target;
         //create a copy of the user
@@ -115,12 +142,12 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
         }
         
         //remove attributes not allowed to display
-        if(this.notAllowedAttributes){
+        if(this.hideAttributes){
             var attributes = [];
             for( var i = 0 ; i < user.attribute.length ; i++){
                 remove = false;
-                for( var j = 0 ; j < this.notAllowedAttributes.length ; j++){ 
-                    if( user.attribute[i].name == this.notAllowedAttributes[j] ){
+                for( var j = 0 ; j < this.hideAttributes.length ; j++){ 
+                    if( user.attribute[i].name == this.hideAttributes[j] ){
                         remove = true; 
                         break;
                     }
@@ -148,17 +175,20 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
                 }
             ]
         };
+        //use panels instead of template
         if (this.displayPanels){
+            
             controlPanel.items.push({
                 ref:'attributes',
                 layout:'fit',
                 forcefit:true,
                 title:'Attributes',
-                region:'south',
+                region:'center',
                 xtype:'grid',
+                autoExpandColumn: "value",
                 columns: [
                     {header: "name", width: 120, dataIndex: 'name', sortable: true},
-                    {header: "value", width: 180, dataIndex: 'value', sortable: true}
+                    {id:'value',header: "value", width: 180, dataIndex: 'value', sortable: true}
                 ],
                 store : new Ext.data.JsonStore({
                     data: user,
@@ -176,17 +206,19 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
                 ref:'groups',
                 layout:'fit',
                 forcefit:true,
+                width: 400,
                 title:'Groups',
-                region:'center',
+                region:'west',
                 xtype:'grid',
+                autoExpandColumn: "groupName",
                 columns: [
-                    {header: "id", width: 180, dataIndex: 'id', sortable: true},
-                    {header: "name", width: 120, dataIndex: 'groupName', sortable: true}
+                    {header: "id", width: 100, dataIndex: 'id', sortable: true, hidden:true},
+                    {id: "groupName", header: "name", width: 180, dataIndex: 'groupName', sortable: true}
                     
                 ],
                 store : new Ext.data.JsonStore({
                     data: user,
-                    root:'groups',
+                    root:'groups.group',
                     fields: [{
                         name: 'groupName',
                         type: 'string'
@@ -197,6 +229,10 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
                 })
             });
         
+        }
+        // additional buttons support in the right panel
+        if(this.additionalControls){
+          controlPanel.items.push({region:'east',xtype:'panel',frame:true,width:this.controlsWidth,layout:'vbox',items:this.additionalControls});
         }
         
         this.output = gxp.plugins.GeoStoreAccount.superclass.addOutput.call(this, Ext.apply(controlPanel,config));
