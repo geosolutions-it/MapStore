@@ -64,6 +64,8 @@
     },{
         "ptype": "mxp_myaccount",
         "loginManager": "loginTool",
+        "displayPanels":false,
+        "hideAttributes":["UUID","notes"],
         "actionTarget":{
           "target": "north.tbar",
           "index": 1
@@ -146,6 +148,8 @@
     },{
         "ptype": "mxp_myaccount",
         "loginManager": "loginTool",
+        "displayPanels":false,
+        "hideAttributes":["UUID","notes"],
         "actionTarget":{
           "target": "north.tbar",
           "index": 1 
