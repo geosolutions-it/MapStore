@@ -72,7 +72,7 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
 
     waitText: "Please wait, loading...",
     aoiAlreadyAddedTitleText: 'Status',
-    aoiAlreadyAddedMsgText: 'This AOI has been already added to the download list.',
+    aoiAlreadyAddedMsgText: 'This item is already present in the download list.',
 
     addActions: function(actions){
         var self = this;
