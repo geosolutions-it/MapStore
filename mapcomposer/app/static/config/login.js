@@ -369,7 +369,8 @@
                     "displayProjection": "EPSG:4326",
                     "metricUnit":"mi",
                     "xtype": "gxp_spatial_bbox_selector",
-                    "addGeometryOperation":false
+                    "addGeometryOperation":false,
+                    "infoSRS":false
                 },
                 
                 "circle":{
@@ -377,9 +378,12 @@
                     "metricUnit":"mi",
                     "xtype": "gxp_spatial_circle_selector",
                     "addGeometryOperation":false,
-                    "zoomToCurrentExtent": true
+                    "zoomToCurrentExtent": false
                 }
               }
+        },
+        {
+          "ptype":"gxp_onpageunloadalert"
         }
 
 	]
