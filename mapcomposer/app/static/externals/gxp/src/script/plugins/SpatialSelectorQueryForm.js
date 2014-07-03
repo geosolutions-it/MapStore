@@ -371,12 +371,6 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 					scope: this,
 					expand: function(panel){
 						panel.doLayout();
-<<<<<<< HEAD
-					}
-				}
-            }],
-            bbar: bbarButtons
-=======
 					},
                     collapse: function(panel) {
                         if(this.filterBuilder) {
@@ -386,7 +380,6 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 				}
             }],
             bbar: bbarButtons 
->>>>>>> fix_auth_map_manager
         }, config || {});
 		
         var queryForm = gxp.plugins.QueryForm.superclass.addOutput.call(this, config);
