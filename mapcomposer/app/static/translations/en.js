@@ -607,7 +607,7 @@ GeoExt.Lang.add("en", {
 		changeMatrixCQLFilterT1FieldLabel : "Time Filter (current)",
 		changeMatrixSubmitButtonText : "Submit",
 		changeMatrixResetButtonText : "Reset",
-		changeMatrixResultsTitle : "Change Matrix",
+		changeMatrixResultsTitle : "Land Cover Change",
 		changeMatrixEmptyLayer : "Please select a raster layer",
 		changeMatrixEmptyFilter : "Please specify both time filters",
 		changeMatrixEmptyClassesDialogTitle : "Error",

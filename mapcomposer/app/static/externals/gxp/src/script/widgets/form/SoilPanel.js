@@ -261,12 +261,13 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
             me.imperviousness.items = [];
             for (var i = 0; i < records.length; i++) {
             	// delegate to getRasterItem
-            	var item = me.getRasterItem(records[i]);
+            	var item = me.getRasterItem(records[i], true);
             	if(item != null){
             		if(item.filterFound == me.clcLevelsConfig[0]){
-            			me.clcLevels.items.push(item);
-            		}else{
             			me.imperviousness.items.push(item);
+            		}
+            		else {
+            			me.clcLevels.items.push(item);
             		}
             	}
             }
@@ -275,7 +276,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
         });
 
 	    this.target.on('ready', function(){
-			me.reloadLayers();
+			me.reloadLayers(true);
 	    });
 
 		return [{
@@ -356,20 +357,20 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 
 		if(selected && selected.inputValue 
 			// the filter for clc levels is 0
-			&& selected.inputValue.indexOf(this.clcLevelsConfig[0].filter) > -1){
-			this.enableOrDisableElements('clcLevels');
-			// disable imperviousness items
-			this.imperviousness.items.each(function(item){
-				item.checked = false;
-			});
-			// for(var key in this.imperviousness.ite)
-		}else if(selected){
+			&& selected.inputValue.indexOf(this.clcLevelsConfig[0].filter) > -1) {
 			// should be impervious index
 			this.enableOrDisableElements('impervious');
 			// disable clc levels
 			this.clcLevels.items.each(function(item){
 				item.checked = false;
 			});
+		} else if(selected) {
+			this.enableOrDisableElements('clcLevels');
+			// disable imperviousness items
+			this.imperviousness.items.each(function(item){
+				item.checked = false;
+			});
+			// for(var key in this.imperviousness.ite)
 		}
 
 		gxp.widgets.form.SoilPanel.superclass.onLayerSelect.call(this, el, selected, index);
@@ -599,7 +600,6 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		}
 
 		// ROI validation
-		debugger
 		if(this.roiFieldSet && this.roiFieldSet.getSelectedAreas()){
 			valid = valid && true;
 		}else{

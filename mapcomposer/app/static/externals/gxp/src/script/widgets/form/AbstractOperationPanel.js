@@ -449,18 +449,21 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		    this.layerStore.on('load', function (t, records, options) {
                 var i = 0;
                 me.rasterComboBox.items = [];
+                
                 for (var i = 0; i < records.length; i++) {
                 	// delegate to getRasterItem
-                	var item = me.getRasterItem(records[i]);
+                	var item = me.getRasterItem(records[i], false);
                 	if(item != null){
-	                    me.rasterComboBox.items.push(item);	
+                		if(item.filterFound != me.clcLevelsConfig[0]) {
+	                		me.rasterComboBox.items.push(item);
+	                	}
                 	}
                 }
                 me.rasterComboBox.doLayout();
             });
 
 		    this.target.on('ready', function(){
-				me.reloadLayers();
+				me.reloadLayers(true);
 		    });
 
 		}else{
@@ -495,10 +498,11 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 						if (value) {
 							me.layerTimeout = setTimeout(function() {
 								me.layerStore.filterBy(function(rec, recId) {
-				                	var item = me.getRasterItem(rec);
+				                	var item = me.getRasterItem(rec, false);
 				                	if(item == null){
 				                		return false;
 				                	}
+
 									var name = rec.get("name").trim().toLowerCase();
 									if (name.indexOf(value) > -1) {
 										me.formPanel.layerCombo.expand();
@@ -522,10 +526,14 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 					},
 					select : me.onLayerSelect,
 					beforequery : function() {
-						this.reloadLayers();
+						this.reloadLayers(false);
 					}
 				}
 			};
+			
+			/*this.target.on('ready', function(){
+				me.reloadLayers(false);
+		    });*/
 		}
 		return [cclLevelItem0];
 	},
@@ -534,7 +542,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
      *  :arg record: ``Object`` Record element
      *  :returns: ``Object`` item to be added or null if couldn't be added
      */
-	getRasterItem: function(record){
+	getRasterItem: function(record, all){
     	var boxLabel = record.get('title'); 
     	var inputValue = record.get('name');
     	var filterFound = null;
@@ -547,12 +555,14 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
     		for (var i = 0; i < this.clcLevelsConfig.length; i++){
     			var filterConfig = this.clcLevelsConfig[i];
     			if (inputValue.indexOf(filterConfig.filter) > -1){
-    				append = true;
-					filterFound = filterConfig;
-    				if(filterConfig.decorator){
-						boxLabel = String.format(filterConfig.decorator, inputValue.split(filterConfig.filter)[1]);
+    				if (all || filterConfig.filter != 'urban_grids') {
+	    				append = true;
+						filterFound = filterConfig;
+	    				if(filterConfig.decorator){
+							boxLabel = String.format(filterConfig.decorator, inputValue.split(filterConfig.filter)[1]);
+						}
+						break;
 					}
-					break;
     			}
 
     		}
@@ -691,7 +701,16 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 				layout: 'table',
 				xtype:'gxp_spatial_selector_field',
 				loadingMaskId: this.id,
-				wpsManager: this.wpsManager
+				wpsManager: this.wpsManager,
+				autoHeight: true,
+				autoWidth: true,
+	            height: 400,
+				forceFit: true,
+	            autoScroll: true,
+				scrollable : {
+		          direction     : 'vertical',
+		          directionLock : true
+		        }
 		};
 
 		// configuration for long screens
@@ -715,20 +734,20 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		// return [roiFieldSetConfig];
 
 		// Envelop in a panel to show scrollbar
-		if($(window).height() < 800){
+		//if($(window).height() < 1000){
 			roiFieldSetConfig.ref = '../../roiFieldSet';
 			return {
 	            xtype: 'panel',
 				autoHeight: false,
 				autoWidth: false,
-	            height: 400,
+	            height: 320,
 				forceFit: true,
 	            autoScroll: true,
 	        	items:[roiFieldSetConfig]
 	        };
-		}else{
+		/*}else{
 			return [roiFieldSetConfig];
-		}
+		}*/
 	},
 
     /** api: method[generateBbar]
@@ -761,7 +780,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 	 *  When the Layers Combo Box is expanded the function provides the Store
 	 *  synchronization with other WMS possibly added in the meantime.
 	 */
-	reloadLayers : function(callback) {
+	reloadLayers : function(all, callback) {
 		var data = [];
 		if (this.layersFromAllCapabilities) {
 			// /////////////////////////////////////////////////
@@ -799,7 +818,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 							for (var i = 0; i < size; i++) {
 								var record = records[i];
 								var sourceId = id;
-								data = this.buildLayerRecord(data, record, sourceId);
+								data = this.buildLayerRecord(data, record, sourceId, all);
 							}
 						}
 				}
@@ -822,7 +841,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 				var sourceId = record.data.source;
 				
 				if (group && name && group !== "background") {
-					data = this.buildLayerRecord(data, record, sourceId);
+					data = this.buildLayerRecord(data, record, sourceId, all);
 				}
 			}
 		}
@@ -835,7 +854,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 	 *
 	 *  Create the layer record for layers combobox.
 	 */
-	buildLayerRecord : function(data, record, sourceId) {
+	buildLayerRecord : function(data, record, sourceId, all) {
 		if (record) {
 			var bbox = record.get("bbox");
 
@@ -875,7 +894,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 					}
 				}
 			}
-			var item = this.getRasterItem(record);
+			var item = this.getRasterItem(record, all);
         	if(item != null){
         		recordData[1] = item.boxLabel;
 				data.push(recordData);

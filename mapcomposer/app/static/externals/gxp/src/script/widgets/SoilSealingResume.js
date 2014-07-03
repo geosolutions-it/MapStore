@@ -655,17 +655,55 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 							  src = s;
 							  break;
 						  }
-					} 				
+					}
+					var group = "Soil Sealing";
                     var props ={
                     			source: this.target.layerSources.jrc.id,
                                 name: layerName,
                                 url: this.url,
                                 title: layerTitle,
                                 tiled:true,
+                                group: group,
                                 layers: layerName
                         };
 												
 				    var index = src.store.findExact("name", layerName);
+				    
+				    var tree = Ext.getCmp("layertree");
+				    var groupExists = false;
+				    for (var node=0; node<tree.root.childNodes.length; node++)
+				    	if (group == tree.root.childNodes[node].text)
+				    		groupExists = true;
+				    
+				    if (!groupExists) {
+				    	var node = new GeoExt.tree.LayerContainer({
+                            text: group,
+                            iconCls: "gxp-folder",
+                            expanded: true,
+                            checked: false,
+                            group: group == "default" ? undefined : group,
+                            loader: new GeoExt.tree.LayerLoader({
+                                baseAttrs: undefined,
+                                store: this.target.mapPanel.layers,
+                                filter: (function(group) {
+                                    return function(record) {
+                                        return (record.get("group") || "default") == group &&
+                                            record.getLayer().displayInLayerSwitcher == true;
+                                    };
+                                })(group)
+                            }),
+                            singleClickExpand: true,
+                            allowDrag: true,
+                            listeners: {
+                                append: function(tree, node) {
+                                    node.expand();
+                                }
+                            }
+                        });
+                        
+                        tree.root.insertBefore(node, tree.root.firstChild.nextSibling);
+
+				    }
 					
 					if (index < 0) {
 						src.on('ready', function(){

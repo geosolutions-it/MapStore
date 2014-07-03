@@ -159,6 +159,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 			featureNS : this.featureNS,
 			resultType : "hits",
 			filter : this.filter,
+			//outputFormat : "text/xml",
 			outputFormat : "application/json",
 			srsName : this.srsName,
 			version : this.version
@@ -437,6 +438,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 	 */
 	getPanelContent : function(config) {
 		var me = this;
+		me.setTotalRecord();
 		var kk;
 
 		var wfsGridPanel = new Ext.grid.GridPanel({
@@ -554,6 +556,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 						}
 						return;
 					}
+
 					o.totalRecords = me.countFeature;
 					var r = o.records, t = o.totalRecords || r.length;
 					if (!options || options.add !== true) {

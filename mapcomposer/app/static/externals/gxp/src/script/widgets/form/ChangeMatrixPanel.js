@@ -99,6 +99,9 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(gxp.widgets.form.AbstractOperati
 	clcLevelsConfig:[{
 		filter: 'corine_L',
 		decorator: 'Corine Land Cover Level {0}'
+	},{
+		filter: 'touring',
+		decorator: 'Touring Land Cover Level {0}'
 	}],
 
 	// clcLevelMode: 'combobox',
@@ -271,8 +274,9 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(gxp.widgets.form.AbstractOperati
 		//get the current extent
 		var map = me.target.mapPanel.map;
 		var currentExtent = map.getExtent();
+		
 		//transform to a Geometry (instead of Bounds)
-		if (me.roiFieldSet && me.roiFieldSet.collapsed !== true) {
+		if (me.roiFieldSet && me.roiFieldSet.collapsed !== true && me.roiFieldSet.outputType.value) {
 			params.roi = me.roiFieldSet.currentExtent;
 		} else {
 			//currentExtent = map.getMaxExtent();

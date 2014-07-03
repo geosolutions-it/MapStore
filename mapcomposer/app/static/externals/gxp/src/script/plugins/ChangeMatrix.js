@@ -488,11 +488,13 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.TableableTool, {
 			for(var i = 0; i< this.panelsConfig.length; i++){
 				var panelConfig = this.panelsConfig[i];
 				var geocoderPanelConfig = {};
+				//var clcLevelsPanelConfig = {};
 				// copy general
 				Ext.apply(geocoderPanelConfig, this.geocoderConfig || {});
 				// ovewrite specific
 				Ext.apply(geocoderPanelConfig, panelConfig.geocoderConfig || {});
 				// set on panel config
+				panelConfig.clcLevelsConfig = this.clcLevelsConfig;
 				panelConfig.geocoderConfig = geocoderPanelConfig;
 				panelConfig.wpsManager = this.wpsManager;
 			}	

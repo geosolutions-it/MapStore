@@ -149,7 +149,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 	 *  ``String``
 	 *  Text for the changeMatrix results container (i18n).
 	 */
-	changeMatrixResultsTitle : "Change Matrix",
+	changeMatrixResultsTitle : "Land Cover Change",
 
 	// EoF i18n
     
@@ -251,8 +251,8 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 			matrix[matrix.length-1][i + 1] = "<img src='theme/app/img/silk/information.png' style='vertical-align: middle;width: 16px;'/> " + matrix[matrix.length-1][i + 1];
 		}
 		
-		matrix[matrix.length-1][0] = "[Sum]";
-		axisx[matrix.length - 1] = "[Sum]";
+		matrix[matrix.length - 1][0] = "[Sum]";
+		axisx[matrix.length - 1]     = "[Sum]";
 
 		// descending x
 		// ascending y
@@ -323,13 +323,15 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 
 		colmodel[0].id = 'leftaxis';
 		// to assign css
-		colmodel[0].header = '-';
+		//colmodel[0].header = '-';
+		colmodel[0].header = refYear+' / '+nowYear;
 
 		// ///////////////////////////////////////
 		// Grid Panel
 		// ///////////////////////////////////////
 		var changeMatrixGridPanel = new Ext.grid.GridPanel({
-			title : this.changeMatrixResultsTitle,
+			//title : this.changeMatrixResultsTitle,
+			title : "Change Matrix",
 			store : changeMatrixStore,
 			height : 300,
 			width : 300,
@@ -391,8 +393,8 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 											/**
 											 * Reference -> Current
 											 */
-											pieChartTitle = me.scatterChartXAxisLabel + " -> " + me.scatterChartYAxisLabel;
-											pieChartSubTitle = " - " + gridRowLabel + " - ";
+											pieChartSubTitle = me.scatterChartXAxisLabel + "("+refYear+")" + " -> " + me.scatterChartYAxisLabel + "("+nowYear+")";
+											pieChartTitle = " - " + gridRowLabel + " - ";
 											
 											/**
 											 * Populate the data series by selecting the row dataset
@@ -400,10 +402,12 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 											var total = data.substring(data.indexOf("> ")+2);
 											for (var r=1;r<record.json.length-1;r++) {
 												var dataItem = [];
-												dataItem.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][grid.getColumnModel().getDataIndex(r)-1][1]);
-												dataItem.push(parseFloat(record.json[r])*100/parseFloat(total));
-												if (dataItem[0] != gridRowLabel)
-													dataSeries.push(dataItem);
+												if (parseFloat(record.json[r]) != 0) {
+													dataItem.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][grid.getColumnModel().getDataIndex(r)-1][1]);
+													dataItem.push(parseFloat(record.json[r])*100/parseFloat(total));
+													if (dataItem[0] != gridRowLabel)
+														dataSeries.push(dataItem);
+												}
 											}
 											
 											/**
@@ -415,8 +419,8 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 											/**
 											 * Reference -> Current
 											 */
-											pieChartTitle = me.scatterChartYAxisLabel + " -> " + me.scatterChartXAxisLabel;
-											pieChartSubTitle = " - " + gridColLabel + " - ";
+											pieChartSubTitle = me.scatterChartYAxisLabel + "("+nowYear+")" + " -> " + me.scatterChartXAxisLabel + "("+refYear+")";
+											pieChartTitle = " - " + gridColLabel + " - ";
 											
 											/**
 											 * Populate the data series by selecting the column dataset
@@ -425,10 +429,12 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 											for (var r=1;r<record.json.length-1;r++) {
 												var dataItem = [];
 												var row = grid.getStore().getAt(r-1);
-												dataItem.push(row.json[0]);
-												dataItem.push(parseFloat(row.json[columnIndex])*100/parseFloat(total));
-												if (dataItem[0] != gridColLabel)
-													dataSeries.push(dataItem);
+												if (parseFloat(row.json[columnIndex]) != 0) {
+													dataItem.push(row.json[0]);
+													dataItem.push(parseFloat(row.json[columnIndex])*100/parseFloat(total));
+													if (dataItem[0] != gridColLabel)
+														dataSeries.push(dataItem);
+												}
 											}
 											
 											/**
@@ -484,6 +490,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 					                                        title: name,
 					                                        tiled:true,
 					                                        layers: rasterName,
+					                                        group: me.interactiveChgMatrixLabel,
 					                                        env: "dataEnv:ref="+referenceClassIndex+",cur=0"
 					                                };
 
@@ -492,7 +499,44 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 												}, me);
 												
 											    var index = src.store.findExact("name", me.geocoderConfig.nsPrefix+":"+rasterName);
-												
+											    
+											    var tree = Ext.getCmp("layertree");
+											    var groupExists = false;
+											    for (var node=0; node<tree.root.childNodes.length; node++)
+											    	if (me.interactiveChgMatrixLabel == tree.root.childNodes[node].text)
+											    		groupExists = true;
+											    
+											    if (!groupExists) {
+											    	var group = me.interactiveChgMatrixLabel;
+											    	var node = new GeoExt.tree.LayerContainer({
+			                                            text: me.interactiveChgMatrixLabel,
+			                                            iconCls: "gxp-folder",
+			                                            expanded: true,
+			                                            checked: false,
+			                                            group: group == "default" ? undefined : group,
+			                                            loader: new GeoExt.tree.LayerLoader({
+			                                                baseAttrs: undefined,
+			                                                store: me.target.mapPanel.layers,
+			                                                filter: (function(group) {
+			                                                    return function(record) {
+			                                                        return (record.get("group") || "default") == group &&
+			                                                            record.getLayer().displayInLayerSwitcher == true;
+			                                                    };
+			                                                })(group)
+			                                            }),
+			                                            singleClickExpand: true,
+			                                            allowDrag: true,
+			                                            listeners: {
+			                                                append: function(tree, node) {
+			                                                    node.expand();
+			                                                }
+			                                            }
+			                                        });
+			                                        
+			                                        tree.root.insertBefore(node, tree.root.firstChild.nextSibling);
+
+											    }
+											    												
 												if (index < 0) {
 													// ///////////////////////////////////////////////////////////////
 													// In this case is necessary reload the local store to refresh 
@@ -559,8 +603,8 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 					                                        url: me.url,
 					                                        title: name,
 					                                        tiled:true,
-					                                        group: "Nome del cazzo",
 					                                        layers: rasterName,
+					                                        group: me.interactiveChgMatrixLabel,
 					                                        env: "dataEnv:ref=0,cur="+currClassIndex
 					                                };
 
@@ -569,7 +613,44 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 												}, me);
 												
 											    var index = src.store.findExact("name", me.geocoderConfig.nsPrefix+":"+rasterName);
-												
+
+											    var tree = Ext.getCmp("layertree");
+											    var groupExists = false;
+											    for (var node=0; node<tree.root.childNodes.length; node++)
+											    	if (me.interactiveChgMatrixLabel == tree.root.childNodes[node].text)
+											    		groupExists = true;
+											    
+											    if (!groupExists) {
+											    	var group = me.interactiveChgMatrixLabel;
+											    	var node = new GeoExt.tree.LayerContainer({
+			                                            text: me.interactiveChgMatrixLabel,
+			                                            iconCls: "gxp-folder",
+			                                            expanded: true,
+			                                            checked: false,
+			                                            group: group == "default" ? undefined : group,
+			                                            loader: new GeoExt.tree.LayerLoader({
+			                                                baseAttrs: undefined,
+			                                                store: me.target.mapPanel.layers,
+			                                                filter: (function(group) {
+			                                                    return function(record) {
+			                                                        return (record.get("group") || "default") == group &&
+			                                                            record.getLayer().displayInLayerSwitcher == true;
+			                                                    };
+			                                                })(group)
+			                                            }),
+			                                            singleClickExpand: true,
+			                                            allowDrag: true,
+			                                            listeners: {
+			                                                append: function(tree, node) {
+			                                                    node.expand();
+			                                                }
+			                                            }
+			                                        });
+			                                        
+			                                        tree.root.insertBefore(node, tree.root.firstChild.nextSibling);
+
+											    }
+											    
 												if (index < 0) {
 													// ///////////////////////////////////////////////////////////////
 													// In this case is necessary reload the local store to refresh 
@@ -628,7 +709,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 			series.push(data);
 		}
 
-		var changeMatrixScatterChart = this.generateScatterChart(settings, series);
+		var changeMatrixScatterChart = this.generateScatterChart(settings, series, refYear, nowYear);
 
 		// ///////////////////////////////////////
 		// Main Tab Panel
@@ -703,7 +784,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 		return changeMatrixOutcomeTabPanel;
 	},
 
-	generateScatterChart: function(settings, series){
+	generateScatterChart: function(settings, series, refYear, nowYear){
 		return new Ext.ux.HighChart({
 			title : this.scatterChartTabTitle,
 			animation : true,
@@ -724,7 +805,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 				yAxis : [{
 					title : {
 						enabled : true,
-						text : this.scatterChartYAxisLabel
+						text : this.scatterChartYAxisLabel + "("+nowYear+")"
 					},
 					gridLineWidth : 1,
 					style : {
@@ -746,7 +827,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 				xAxis : [{
 					title : {
 						enabled : true,
-						text : this.scatterChartXAxisLabel
+						text : this.scatterChartXAxisLabel + "("+refYear+")"
 					},
 					gridLineWidth : 1,
 					style : {

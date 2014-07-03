@@ -410,11 +410,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             collapseMode: "mini",
             header: false,
             items: [
-                { autoScroll: true, tbar: [], border: false, id: 'tree', title: this.layersText}, 
+                { autoScroll: true, tbar: [], border: false, id: 'tree', title: this.layersText}/*, 
                 {
                     xtype: "panel", layout: "fit", 
                     border: false, id: 'legend', title: this.legendText
-                }
+                }*/
             ]
         });
         
@@ -549,7 +549,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             },
         });
         // The ChangeMatrix Control Panel: contains the CHG-MX operations and forms.
-        var estPanel = new Ext.Panel({
+        /*var estPanel = new Ext.Panel({
             border: false,
             layout: "border",
             id:'east',
@@ -565,12 +565,12 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 			items: [
                 {xtype: 'panel', id: 'eastcontrolpanel', layout: 'fit', region: 'center', autoScroll: true}
             ]
-        });
+        });*/
 		// /////////////////////////////////////////////////////////////////
 		// Change Matrix Panels : END
 		// /////////////////////////////////////////////////////////////////
         
-        var portalPanels = [this.mapPanelContainer, westPanel, estPanel, southPanel];
+        var portalPanels = [this.mapPanelContainer, westPanel/*, estPanel*/, southPanel];
 		
 		//collect additional panels to add them after init portal
 		var additionalPanels = [

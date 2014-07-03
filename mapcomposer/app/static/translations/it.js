@@ -632,7 +632,7 @@ GeoExt.Lang.add("it", {
 		changeMatrixCQLFilterT1FieldLabel : "Filtro Temporale (corrente)",
 		changeMatrixSubmitButtonText : "Invia",
 		changeMatrixResetButtonText : "Resetta",
-		changeMatrixResultsTitle : "ChangeMatrix",
+		changeMatrixResultsTitle : "Land Cover Change",
 		changeMatrixEmptyLayer : "Prego, selezionare un layer raster",
 		changeMatrixEmptyFilter : "Prego, valorizzare entrambi i filtri trmporali",
 		changeMatrixEmptyClassesDialogTitle : "Errore",
