@@ -141,7 +141,9 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
          //create bbar buttons
         var bbarButtons = [];
         var spatialSelectorOutput = this.spatialSelector.addOutput();
-         if(this.filterLayer){
+
+		
+        if(this.filterLayer) {
             bbarButtons.push({
                 text: this.filterMapText,
                 iconCls: "gxp-icon-map-filter",
@@ -216,6 +218,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                 scope: this
             });
         }
+
         bbarButtons.push("->");
         bbarButtons.push({
                 scope: this,    
@@ -252,7 +255,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                          }
                          layer.redraw();
                      }
-                      spatialSelector.filterGeometryName = this.featureStore
+                     spatialSelector.filterGeometryName = this.featureStore
                          && this.featureStore.geometryName
                          ? this.featureManagerTool.featureStore.geometryName : this.featureManagerTool.featureStore.geometryName ;
                          
@@ -267,7 +270,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                       container.expand();
                   }
                     // Collect all selected filters
-                    var filters = new Array();
+                    var filters = [];
                     
                     //START
                     //Check if there are some invalid field according to validators regex config
@@ -352,6 +355,9 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     scope: this,
                     expand: function(panel){
                         panel.doLayout();
+                    },
+                    collapse: function(panel) {
+                        this.spatialSelector.reset();
                     }
                 }
             },
@@ -365,14 +371,25 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 					scope: this,
 					expand: function(panel){
 						panel.doLayout();
+<<<<<<< HEAD
 					}
 				}
             }],
             bbar: bbarButtons
+=======
+					},
+                    collapse: function(panel) {
+                        if(this.filterBuilder) {
+                            this.filterBuilder.reset();
+                        }
+                    }
+				}
+            }],
+            bbar: bbarButtons 
+>>>>>>> fix_auth_map_manager
         }, config || {});
 		
         var queryForm = gxp.plugins.QueryForm.superclass.addOutput.call(this, config);
-        
         var methodSelection = this.output[0].outputType;
         
         this.addFilterBuilder = function(mgr, rec, schema) {			
@@ -392,12 +409,12 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     allowBlank: true,
                     allowGroups: false
                 });
-				
+				me.filterBuilder = queryForm.filterBuilder;
 			   /**
 				* Overriding the removeCondition method in order to manage the 
 				* single filterfield reset.
 				*/
-				 queryForm.filterBuilder.removeCondition = function(item, filter) {
+				queryForm.filterBuilder.removeCondition = function(item, filter) {
 					var parent = this.filter.filters[0].filters;
 					if(parent.length > 1) {
 						parent.remove(filter);
@@ -420,6 +437,34 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 						}
 					}
 					
+					this.fireEvent("change", this);
+				};
+                
+                queryForm.filterBuilder.reset = function() {
+					var parent = this.filter.filters[0].filters;
+                    var items = this.findByType("gxp_filterfield");
+                    for(var i = 0; i < items.length; i++) {
+                        var item = items[i];
+                        if(i > 0) {
+                            parent.remove(item.filter);
+                            this.childFilterContainer.remove(item.ownerCt, true);
+                        } else {
+                            item.reset();
+							
+                            for(var c = 1;c<item.items.items.length;c++){
+                                if(item.items.get(c) instanceof Ext.Container) {
+                                    item.items.get(c).removeAll();
+                                } else {
+                                    item.items.get(c).disable();                            
+                                }
+                            }
+                            var filter = item.filter;
+							filter.value = null;
+                            filter.lowerBoundary = null;
+                            filter.upperBoundary = null;
+                        }
+                    }
+                    
 					this.fireEvent("change", this);
 				};
 				

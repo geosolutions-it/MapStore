@@ -19,6 +19,10 @@
  */
 
 /**
+ * @author Tobia Di Pisa at tobia.dipisa@geo-solutions.it
+ */
+ 
+/**
  * @requires plugins/Tool.js
  */
 
@@ -143,7 +147,7 @@ gxp.plugins.ResourceStatus = Ext.extend(gxp.plugins.Tool, {
 				if(this.layerTreePanel){
 					this.layerTreePanel.on({
 						'checkchange' : function(node, evt){
-							if(node.isLeaf()){
+							if(node.isLeaf() && node.attributes.layer.params){
 								var layerNode = this.treeRoot.findChild("name", node.attributes.layer.params.LAYERS, true);
 								
 								if(layerNode){	
@@ -152,7 +156,7 @@ gxp.plugins.ResourceStatus = Ext.extend(gxp.plugins.Tool, {
 							}
 						}, 
 						'beforeremove': function(tree, parent, node){
-							if(node.isLeaf()){
+							if(node.isLeaf() && node.attributes.layer.params){
 								var layerNode = this.treeRoot.findChild("name", node.attributes.layer.params.LAYERS, true);
 								
 								if(layerNode){			

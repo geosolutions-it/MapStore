@@ -134,7 +134,7 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
         
         //var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
         //var mHost=pattern.exec(geoStoreBaseURL);
-        
+        var plugin =this;
 		var saveContext = new Ext.Button({
 		    id: "save-context-button",
             menuText: this.saveDefaultContextMenuText,
@@ -142,7 +142,9 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
             disabled: false,
             tooltip: this.saveDefaultContextActionTip,
             handler: function() {	
-				  if(this.auth){
+                    
+				  if(this.target.auth){
+                      
 					  var configStr = Ext.util.JSON.encode(this.target.getState()); 
 					  
 					  if(this.target.mapId == -1){
@@ -158,7 +160,7 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
 						  var url = /*mHost[2] == location.host ? mUrl : this.target.proxy + */mUrl;
 						  var method = 'PUT';
 						  var contentType = 'application/json';
-						  var auth = this.auth;
+                          var auth = plugin.getAuth();
 						  this.save(url, method, contentType, configStr, auth);
 					  }
 				  }else{
@@ -314,7 +316,7 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
         };
 
         var templateId = this.target.templateId;
-		
+		var plugin = this;
         var win = new Ext.Window({
 		    title: this.mapMetadataTitle,
             width: 415,
@@ -369,9 +371,7 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
                             
                             var mapName = Ext.getCmp("diag-text-field").getValue();        
                             var mapDescription = Ext.getCmp("diag-text-description").getValue(); 
-                            
-							var auth = this.auth;
-							
+                            var auth = plugin.getAuth();
 							var owner = Base64.decode(auth.split(' ')[1]);
 							owner = owner.split(':')[0];
                             var resourceXML = 

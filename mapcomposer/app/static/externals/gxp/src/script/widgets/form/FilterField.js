@@ -509,6 +509,16 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             xtype: 'container',
             isFormField: true,
             isValid: function() { return true; },
+            reset: function() {
+                 this.eachItem(function(a) {
+                    a.reset()
+                });
+            },
+            eachItem: function(b, a) {
+                if (this.items && this.items.each) {
+                    this.items.each(b, a || this)
+                }
+            },
             layout  : 'hbox',            
             defaultMargins: '0 3 0 0',
             width: 100
