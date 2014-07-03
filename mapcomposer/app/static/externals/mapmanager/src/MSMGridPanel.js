@@ -1219,9 +1219,11 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                             mapIframe.contentWindow.app.setAuthHeaders(userAuth.Authorization);
                                             clearTimeout(timer);
                                         }
+
                                     }
                                 };
                                 var timer = setInterval(setAuth, 3000);
+                                
                             },
                             beforeClose: function(p){
                                 var mapIframe = document.getElementById(p.iframeId);
@@ -1490,7 +1492,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
                         if(userProfile == "&auth=true"){
                             // copy auth for mapstore
-                            userProfile = "&auth=" + encodeURI(grid.auth);   
+                            //userProfile = "&auth=" + encodeURI(grid.auth);   
                         }
 						
 						// //////////////////////////////////////
