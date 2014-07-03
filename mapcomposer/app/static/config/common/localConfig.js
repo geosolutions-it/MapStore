@@ -3,5 +3,6 @@
 var localConfig = {
    geoStoreBase: "",
    proxy:"/http_proxy/proxy/?url=",
+   adminUrl: "http://he.geo-solutions.it/opensdi2-manager",
    defaultLanguage: "en"
 };
