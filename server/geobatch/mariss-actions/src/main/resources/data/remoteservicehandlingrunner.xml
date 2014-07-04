@@ -102,7 +102,7 @@
             <!-- CSV ingestion path for the CSV Ingest action-->
             <csvIngestionPath>csvingestion/in</csvIngestionPath>
             <!-- Product ingestion -->
-            <dlrProductIngestionTypeName>dlr_ships</dlrProductIngestionTypeName>
+            <dlrProductIngestionTypeName>ships</dlrProductIngestionTypeName>
             <dlrProductsTiffFolder>/opt/gs_ext_data/TDX1_SAR__MGD_RE___SM_S_SRA</dlrProductsTiffFolder>
             <dlrProductsIMConfiguration>
               <description>ImageMosaicService</description>
@@ -154,7 +154,7 @@
     <name>Data package handling</name>
     <description>Ingesting service data into the DB from a compressed file</description>
     <csvIngestionPath>csvingestion/in</csvIngestionPath>
-    <typeName>dlr_ships</typeName>
+    <typeName>ships</typeName>
     <targetTifFolder>/opt/gs_ext_data/TDX1_SAR__MGD_RE___SM_S_SRA</targetTifFolder>
     <!-- Connection to the database for the ship ingestion -->
     <outputFeature>

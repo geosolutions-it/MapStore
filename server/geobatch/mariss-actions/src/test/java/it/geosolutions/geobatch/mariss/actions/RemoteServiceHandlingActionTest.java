@@ -192,7 +192,7 @@ public class RemoteServiceHandlingActionTest extends BaseNetCDFActionTest {
 	private DataPackageIngestionConfiguration getDataPackageConfiguration(){
 		DataPackageIngestionConfiguration configuration = new DataPackageIngestionConfiguration(null, null, null);
 		configuration.setTargetTifFolder("target");
-		configuration.setTypeName("dlr_ships");
+		configuration.setTypeName("ships");
 		configuration.setCsvIngestionPath("");
 		FeatureConfiguration outputFeature = new FeatureConfiguration();
 		outputFeature.setDataStore(getConnectionParameters());
@@ -263,7 +263,7 @@ public class RemoteServiceHandlingActionTest extends BaseNetCDFActionTest {
 		configuration.setDeleteDownloadedFiles(false);
 		configuration.setCheckIfExists(true);
 		configuration.setDlrProductsIMConfiguration(getImageMosaicConfiguration());
-		configuration.setDlrProductIngestionTypeName("dlr_ships");
+		configuration.setDlrProductIngestionTypeName("ships");
 		configuration.setDlrProductsTiffFolder("/opt/gs_ext_data/TDX1_SAR__MGD_RE___SM_S_SRA");
 		configuration.setCsvIngestionPath("csvingestion/in");
 		

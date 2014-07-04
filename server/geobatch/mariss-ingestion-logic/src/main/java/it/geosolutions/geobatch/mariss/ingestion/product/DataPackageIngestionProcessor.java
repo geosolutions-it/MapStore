@@ -336,9 +336,10 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 				// service name is composed by user and service
 				feature.setAttribute("service_name", userName + "@"
 						+ serviceName);
+
 				// other feature elements
 				feature.setAttribute("time", timestamp != null ? new Timestamp(
-						timestamp.getMillisecond()) : null);
+						timestamp.toGregorianCalendar().getTimeInMillis()) : null);
 				feature.setAttribute("heading", heading);
 				feature.setAttribute("length", length);
 				feature.setAttribute("width", width);
