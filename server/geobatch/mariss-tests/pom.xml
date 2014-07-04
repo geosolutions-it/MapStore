@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+        =======================================================================
+        Maven Project Configuration File GeoSolutions GeoBatch Project
+        http://geobatch.codehaus.org Version: $Id: pom.xml 382 2010-01-07
+        18:00:13Z dany111 $
+        =======================================================================
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+  
+    <parent>
+        <groupId>it.geosolutions.mariss</groupId>
+        <artifactId>geobatch-mariss-root</artifactId>    
+        <version>1.4-SNAPSHOT</version>
+    </parent>
+
+    <!-- =========================================================== -->
+    <!--     Module Description                                      -->
+    <!-- =========================================================== -->
+		<groupId>it.geosolutions.mariss</groupId>
+		<artifactId>gb-mariss-tests</artifactId>
+		<packaging>jar</packaging>
+
+    <name>GeoBatch MARISS - Test base</name>
+
+  	<!-- =========================================================== -->
+  	<!--     Dependency Management                                   -->
+  	<!-- =========================================================== -->
+  	<dependencies>
+      	<!-- Internal -->
+          <dependency>
+              <groupId>it.geosolutions.mariss</groupId>
+              <artifactId>gb-mariss-action-e-geos-metocs</artifactId>
+              <version>1.4-SNAPSHOT</version>
+          </dependency>
+
+          <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-fsm-core</artifactId>
+          </dependency>
+          
+          <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-alias-registry</artifactId>
+          </dependency>
+          <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-dao-xstream</artifactId>
+          </dependency>
+
+          <dependency>
+          	<groupId>org.springframework</groupId>
+          	<artifactId>spring-test</artifactId>
+          </dependency>
+
+          <dependency>
+          	<groupId>it.geosolutions.geobatch</groupId>
+    			<artifactId>gb-fs-catalog</artifactId>
+          </dependency>
+
+          <dependency>
+          	<groupId>it.geosolutions.imageio-ext</groupId>
+    			  <artifactId>imageio-ext-streams</artifactId>
+            <version>1.1-SNAPSHOT</version>
+          </dependency>
+          
+  	</dependencies>
+
+</project>

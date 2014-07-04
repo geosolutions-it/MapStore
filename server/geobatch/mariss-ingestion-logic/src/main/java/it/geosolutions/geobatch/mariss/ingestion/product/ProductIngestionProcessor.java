@@ -19,13 +19,15 @@
  */
 package it.geosolutions.geobatch.mariss.ingestion.product;
 
-import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.imagemosaic.ImageMosaicAction;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.imagemosaic.ImageMosaicCommand;
 import it.geosolutions.geobatch.imagemosaic.ImageMosaicConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,7 +54,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  * @author alejandro.diaz at geo-solutions.it
  * 
  */
-public abstract class ProductIngestionProcessor {
+public abstract class ProductIngestionProcessor extends BaseAction<EventObject>{
 
 	/** 
 	 * Working folder for the process
@@ -81,12 +83,25 @@ public abstract class ProductIngestionProcessor {
 
 	// constructors 
 	public ProductIngestionProcessor() {
-		super();
+		super(null, null, null);
+	}
+
+	public ProductIngestionProcessor(String id, String name, String description) {
+	    super(id, name, description);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public ProductIngestionProcessor(DataStore dataStore, String typeName){
 		this ();
+		prepare(dataStore, typeName);
+	}
+	
+	/**
+	 * Prepare the action to perform the process
+	 * @param dataStore
+	 * @param typeName
+	 */
+	@SuppressWarnings("unchecked")
+	protected void prepare(DataStore dataStore, String typeName) {
 		this.typeName = typeName;
 		this.dataStore = dataStore;
 		try {
@@ -98,7 +113,7 @@ public abstract class ProductIngestionProcessor {
 			LOGGER.error("Error getting the schema", e);
 		}
 	}
-	
+
 	public ProductIngestionProcessor(DataStore dataStore, String typeName, int projection){
 		this(dataStore, typeName);
 		this.projection = projection;
@@ -121,6 +136,11 @@ public abstract class ProductIngestionProcessor {
 		this.targetTifFolder = targetTifFolder;
 	}
 	
+	public ProductIngestionProcessor(
+			DataPackageIngestionConfiguration configuration) {
+		super(configuration);
+	}
+
 	/**
 	 * Check if this processor can process the file
 	 * @param filePath
@@ -136,7 +156,7 @@ public abstract class ProductIngestionProcessor {
 	 * @return message with the resume of the ingestion
 	 * @throws IOException
 	 */
-	public abstract String doProcess(String filePath) throws IOException;
+	public abstract Collection<? extends EventObject> doProcess(String filePath) throws IOException;
 
 	/**
 	 * Create a feature in the data store
@@ -203,24 +223,25 @@ public abstract class ProductIngestionProcessor {
 	/**
 	 * Insert a new image to the mosaic located on targetTifFolder
 	 * @param file
+	 * @return 
 	 */
-    protected void addImageMosaic(File file) {
-    	
+    protected EventObject addImageMosaic(File file) {
     	List<File> files = new LinkedList<File>();
     	files.add(file);
-        
     	ImageMosaicCommand imc = new ImageMosaicCommand(new File(targetTifFolder), files, null);
-        
-    	// execute the action
-		ImageMosaicAction tifIngestionAction = new ImageMosaicAction(imageMosaicConfiguration);
-		LinkedList<EventObject> evts = new LinkedList<EventObject>();
-		evts.add(new EventObject(imc));
-		try {
-			tifIngestionAction.execute(evts);
-		} catch (ActionException e) {
-			LOGGER.error("Could'nt insert the tif file", e);
-		}
+    	return new EventObject(imc);
     }
+
+    /**
+     * Add the NetCDF data
+     * @param imageFile
+     * @return 
+     */
+	protected EventObject addNetCDF(File imageFile) {
+		FileSystemEvent event = new FileSystemEvent(imageFile,
+				FileSystemEventType.FILE_ADDED);
+		return event;
+	}
 
 	/**
 	 * @return the imageMosaicConfiguration

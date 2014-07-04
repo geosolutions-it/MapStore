@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- =======================================================================    
+        Maven Project Configuration File
+
+        GeoSolutions GeoBach Project
+            http://www.geo-solutions.it/trac/IngestionEngine
+
+        Version: $Id: pom.xml 63 2008-04-04 11:22:11Z alessio $
+======================================================================= -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>it.geosolutions</groupId>
+        <artifactId>gb-mariss-action-emsa-parent</artifactId>
+        <version>1.4-SNAPSHOT</version>
+    </parent>
+
+    <groupId>it.geosolutions</groupId>
+    <artifactId>gb-action-emsa-actions</artifactId>
+    <packaging>jar</packaging>
+
+    <name>GeoBatch action: EMSA :: Main Flow Actions</name>
+
+    <url>http://maven.apache.org</url>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-action-emsa-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-action-scripting</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-action-splitting</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- TODO: check if needed <dependency>
+			<groupId>it.geosolutions</groupId>
+    		<artifactId>gb-action-registry-egeos</artifactId>
+            <version>${project.version}</version>
+        </dependency> -->
+        
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jaxen-jdom</artifactId>
+            <version>1.0-FCS</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jaxen-core</artifactId>
+            <version>1.0-FCS</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>saxpath</artifactId>
+            <version>1.0-FCS</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- GEOBATCH lib -->
+        <dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-main</artifactId>
+            <version>${gt.version}</version>
+            <type>jar</type>
+        </dependency>
+       <!--  <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-postgis</artifactId>
+            <version>${gt.version}</version>
+            <type>jar</type>
+        </dependency> -->
+        <dependency>
+            <groupId>org.geotools.jdbc</groupId>
+            <artifactId>gt-jdbc-postgis</artifactId>
+            <version>${gt.version}</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
+</project>
+

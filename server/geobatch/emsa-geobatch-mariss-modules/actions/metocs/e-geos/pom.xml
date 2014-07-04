@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+        =======================================================================
+        Maven Project Configuration File GeoSolutions GeoBatch Project
+        http://geobatch.codehaus.org Version: $Id: pom.xml 382 2010-01-07
+        18:00:13Z dany111 $
+        =======================================================================
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+  
+    <parent>
+        <groupId>it.geosolutions.mariss</groupId>
+  		<artifactId>emsa-geobatch-mariss-metocs</artifactId>
+        <version>1.4-SNAPSHOT</version>
+    </parent>
+
+    <!-- =========================================================== -->
+    <!--     Module Description                                      -->
+    <!-- =========================================================== -->
+		<groupId>it.geosolutions.mariss</groupId>
+		<artifactId>gb-mariss-action-e-geos-metocs</artifactId>
+		<packaging>jar</packaging>
+		<name>GeoBatch action: E-GEOS SAR Metocs</name>
+		<url>http://mvn.geo-solutions.it/maven_reports/ie/flowmanagers/</url>
+  
+	<scm>
+    <connection>scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</connection>
+		<url>http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</url>
+	</scm>
+  
+	<description>
+		GeoSolutions GeoBatch flow managers - E-GEOS SAR flow manager.
+	</description>
+
+	<licenses>
+		<license>
+			<name>Lesser General Public License (LGPL)</name>
+			<url>http://www.gnu.org/copyleft/lesser.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<!-- =========================================================== -->
+	<!--     Dependency Management                                   -->
+	<!-- =========================================================== -->
+	<dependencies>
+    	<!-- METOCS Commons -->
+        <dependency>
+            <groupId>it.geosolutions.mariss</groupId>
+    		    <artifactId>gb-mariss-action-metocs</artifactId>
+            <version>1.4-SNAPSHOT</version>
+            <exclusions>
+              <exclusion>
+                <groupId>essi-unidata</groupId>
+                <artifactId>netcdf-java</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>edu.ucar</groupId>
+                <artifactId>netcdf</artifactId>
+              </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- edu.ucar:netcdf:jar:4.2.32:compile -->
+        <dependency>
+          <groupId>edu.ucar</groupId>
+          <artifactId>netcdf</artifactId>
+          <version>4.3.21-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-fsm-core</artifactId>
+        </dependency>
+        
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-alias-registry</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-dao-xstream</artifactId>
+          <scope>test</scope>
+        </dependency>
+
+        <dependency>
+        	<groupId>org.springframework</groupId>
+        	<artifactId>spring-test</artifactId>
+          	<scope>test</scope>
+        </dependency>
+
+        <dependency>
+        	<groupId>it.geosolutions.geobatch</groupId>
+  			<artifactId>gb-fs-catalog</artifactId>
+          	<scope>test</scope>
+        </dependency>
+
+        <dependency>
+        	<groupId>it.geosolutions.imageio-ext</groupId>
+  			<artifactId>imageio-ext-streams</artifactId>
+          	<scope>test</scope>
+          	<version>1.1-SNAPSHOT</version>
+        </dependency>
+
+
+	</dependencies>
+
+</project>

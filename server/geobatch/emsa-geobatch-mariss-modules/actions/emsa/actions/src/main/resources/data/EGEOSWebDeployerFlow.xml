@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<id>EGEOSWebDeployerFlow</id>
+	<name>E-GEOS Web-Deployer Flow</name>
+	<description>E-GEOS Web Deployer Flow</description>
+
+	<workingDirectory>EGEOSworkingDir/WebDeployer</workingDirectory>
+	<autorun>true</autorun>
+
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>EGEOSworkingDir/WebDeployer/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>id</id>
+	        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>EGEOSWebDeployer</name>
+	</EventGeneratorConfiguration>
+
+    <EventConsumerConfiguration>
+		<id>EGEOSWebDeployer_config</id>
+		<name>EGEOSWebDeployer_config</name>
+		<description>EGEOS Web-Deployer Configuration</description>
+
+		<listenerId>EGEOSConsumerLoggerListener</listenerId>
+		<listenerId>EGEOSCumulatorListener</listenerId>
+        
+		<workingDirectory>EGEOSworkingDir/WebDeployer</workingDirectory>
+		<performBackup>false</performBackup>
+		<preserveInput>true</preserveInput>
+
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>((.*\.xml)|(.*\_PRO))</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>EGEOSWebDeployer</name>
+		</FileEventRule>
+
+		<EGEOSWebDeployerConfiguration>
+			<id>EGEOSWebDeployerConfiguration</id>
+			<description>EGEOS Web-Deployer Configuration</description>
+			<name>EGEOSWebDeployerConfiguration</name>
+			<workingDirectory>EGEOSworkingDir/WebDeployer</workingDirectory>
+
+			<listenerId>EGEOSActionLoggerListener</listenerId>
+			<listenerId>EGEOSActionStatusListener</listenerId>
+						
+			<serviceID>EGEOSWebDeployerService</serviceID>
+
+            <language>groovy</language>
+            <scriptFile>/home/tomcat/GEOBATCH_DATA_DIR/EMSA/EGEOSWebDeployer.groovy</scriptFile>
+<!--<scriptFile>/home/carlo/work/data/emsa/script/EGEOSWebDeployer.groovy</scriptFile>-->
+
+		    <properties/>
+            
+		</EGEOSWebDeployerConfiguration>
+		
+	</EventConsumerConfiguration>
+
+    <ListenerConfigurations>
+    	<StatusProgressListener>
+    		<serviceID>statusListenerService</serviceID>
+            <id>EGEOSActionStatusListener</id>
+    	</StatusProgressListener>
+        
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>EGEOSActionLoggerListener</id>
+
+            <loggerName>EGEOSActionLoggerListener</loggerName>
+        </LoggingProgressListener>
+
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>EGEOSConsumerLoggerListener</id>
+
+            <loggerName>EGEOSConsumerLoggerListener</loggerName>
+        </LoggingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>EGEOSCumulatorListener</id>
+        </CumulatingProgressListener>
+    </ListenerConfigurations>
+    
+</FlowConfiguration>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd" 
+       default-init-method="init" default-destroy-method="dispose">
+               
+    <context:annotation-config/>
+
+	<!-- Mocked configuration for the tests -->
+	<bean id="dataDirHandler" class="it.geosolutions.geobatch.catalog.file.MockedDataDirHandler">
+		<property name="baseConfigPath" value="src/test/resources/data" />
+	</bean>
+    	
+    <!-- Catalog Initialization -->
+    <bean id="catalog" class="it.geosolutions.geobatch.catalog.file.FileBasedCatalogImpl">
+	    <constructor-arg type="String"><value>catalog</value></constructor-arg>
+    	<constructor-arg type="String"><value>catalog</value></constructor-arg>
+    	<constructor-arg type="String"><value>File system based catalog</value></constructor-arg>
+        <property name="dataDirHandler" ref="dataDirHandler"/>
+	</bean>
+
+	<!-- Environment Initialization -->
+	<bean id="globalConfig" class="it.geosolutions.geobatch.global.MockedCatalogLoader"
+		depends-on="catalog">
+		<constructor-arg ref="catalog" />
+	</bean>
+
+</beans>

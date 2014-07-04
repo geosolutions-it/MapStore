@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<id>EGEOSGeoServerDeployerFlow</id>
+	<name>E-GEOS GeoServer-Deployer Flow</name>
+	<description>E-GEOS GeoServer-Deployer Flow</description>
+
+        <corePoolSize>2</corePoolSize>
+        <maximumPoolSize>2</maximumPoolSize>
+        <keepAliveTime>86400</keepAliveTime> <!--seconds-->
+        <workQueueSize>100</workQueueSize>
+
+	<workingDirectory>EGEOSworkingDir/GeoServerDeployer</workingDirectory>
+	<autorun>true</autorun>
+
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>EGEOSworkingDir/GeoServerDeployer/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>id</id>
+	        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>EGEOSGeoServerDeployer</name>
+	</EventGeneratorConfiguration>
+
+	<EventConsumerConfiguration>
+		<id>EGEOSGeoServerDeployer_config</id>
+		<name>EGEOSGeoServerDeployer_config</name>
+		<description>EGEOS GeoServer-Deployer Configuration</description>
+
+		<listenerId>EGEOSConsumerLoggerListener</listenerId>
+        	<listenerId>EGEOSCumulatorListener</listenerId>
+        
+		<workingDirectory>EGEOSworkingDir/GeoServerDeployer</workingDirectory>
+		<performBackup>false</performBackup>
+		<preserveInput>true</preserveInput>
+
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>((.*\.xml)|(.*_PRO))</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>EGEOSGeoServerDeployer</name>
+		</FileEventRule>
+
+		<EGEOSGeoServerDeployerConfiguration>
+			<id>EGEOSGeoServerDeployerConfiguration</id>
+			<description>EGEOS GeoServer-Deployer Configuration</description>
+			<name>EGEOSGeoServerDeployerConfiguration</name>
+
+			<workingDirectory>EGEOSworkingDir/GeoServerDeployer</workingDirectory>
+
+			<listenerId>EGEOSActionLoggerListener</listenerId>
+			<listenerId>EGEOSActionStatusListener</listenerId>
+						
+			<serviceID>EGEOSGeoServerDeployerService</serviceID>
+
+            <language>groovy</language>
+            <scriptFile>/home/tomcat/GEOBATCH_DATA_DIR/EMSA/EGEOSGeoServerDeployer.groovy</scriptFile>
+<!-- <scriptFile>/home/carlo/work/data/emsa/script/EGEOSGeoServerDeployer.groovy</scriptFile>-->
+
+			<properties>
+				  <!-- Where to put output folder(s) -->
+				  <entry>
+				    <string>sarImagesDataDir</string>
+				    <!--
+				    /emsa/out/nfs/sarImages/
+				    /home/carlo/work/data/emsa/sarImages
+				    /media/bigdisk/emsa/sarImages/
+				    -->
+				    <string>/emsa/out/nfs/sarImages/</string>
+				  </entry>
+				  <entry>
+                                    <string>sarDerivedDataDir</string>
+                                    <string>/emsa/out/nfs/sarDerived/</string>
+                                  </entry>
+
+				  <!-- CONNECTION PROPERTIES -->
+				  <entry>
+                                    <string>dataStoreProp</string>
+				    <!--relative to the working dir-->
+                                    <string>config/datastore.properties</string>
+                                  </entry>
+				  
+				  <!-- GEOTIFF Retiler -->
+				  <!-- GEOTIFF Retiler config-->
+				  <entry>
+				    <string>reTileH</string>
+				    <int>256</int>
+				  </entry>
+				  <entry>
+				    <string>reTileW</string>
+				    <int>256</int>
+				  </entry>
+				  <!-- GEOTIFF Overview config-->
+				  <entry>
+				    <string>downsampleStep</string>
+				    <int>2</int>
+				  </entry>
+				  <entry>
+				    <string>scaleAlgorithm</string>
+				    <string>Nearest</string>
+				  </entry>
+				  <entry>
+				    <string>numSteps</string>
+				    <int>10</int>
+				  </entry>
+				  <entry>
+				    <string>ovTileH</string>
+				    <int>256</int>
+				  </entry>
+				  <entry>
+				    <string>ovTileW</string>
+				    <int>256</int>
+				  </entry>
+				  
+			</properties>
+            
+		</EGEOSGeoServerDeployerConfiguration>
+		
+		<SplittingConfiguration>
+			<id>EMSA_split</id>
+			<description>EMSA Splitting Action</description>
+			<name>EMSASplit</name>
+			
+			<workingDirectory>EGEOSworkingDir/</workingDirectory>
+
+			<listenerId>EGEOSActionLoggerListener</listenerId>
+			<listenerId>EGEOSActionStatusListener</listenerId>
+						
+			<serviceID>splittingService</serviceID>
+
+			<serviceIDs>
+				<string>EGEOSSARWaveFlow</string>
+				<string>EGEOSSARWindFlow</string>
+				<string>EGEOSProImagemosaicFlow</string>
+			</serviceIDs>
+			
+		</SplittingConfiguration>
+		
+	</EventConsumerConfiguration>
+
+	<ListenerConfigurations>
+    	<StatusProgressListener>
+    		<serviceID>statusListenerService</serviceID>
+            <id>EGEOSActionStatusListener</id>
+    	</StatusProgressListener>
+        
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>EGEOSActionLoggerListener</id>
+
+            <loggerName>EGEOSActionLoggerListener</loggerName>
+        </LoggingProgressListener>
+
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>EGEOSConsumerLoggerListener</id>
+
+            <loggerName>EGEOSConsumerLoggerListener</loggerName>
+        </LoggingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>EGEOSCumulatorListener</id>
+        </CumulatingProgressListener>
+    </ListenerConfigurations>
+    
+</FlowConfiguration>

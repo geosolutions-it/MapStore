@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<id>egeos_imagemosaic_flow</id>
+	<name>Prepare ImageMosaic and publish</name>
+	<description>Create indexes and publish on GeoServer</description>
+
+	<workingDirectory>EGEOSProImagemosaicWorkingDir/</workingDirectory>
+	<autorun>true</autorun>
+
+	<EventGeneratorConfiguration>
+		<wildCard>*</wildCard>
+		<watchDirectory>EGEOSProImagemosaicWorkingDir/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>id</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</EventGeneratorConfiguration>
+
+    <EventConsumerConfiguration>
+		<id>egeos_image_mosaic_publish</id>
+		<name>dummy</name>
+		<description>dummy</description>
+
+		<listenerId>ImageMosaicConsumerLogger0</listenerId>
+        <listenerId>ImageMosaicCumulator0</listenerId>
+        
+		<workingDirectory>EGEOSProImagemosaicWorkingDir/in</workingDirectory>
+		<performBackup>false</performBackup>
+        <preserveInput>true</preserveInput>
+
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+<!-- this regex will matches files placed into a folder called sarImages -->
+			<regex>.*sarImages.*</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+
+		<ImageMosaicActionConfiguration>
+			<workingDirectory>EGEOSProImagemosaicWorkingDir/in</workingDirectory>
+			<crs>EPSG:4326</crs>
+			<envelope/>
+			<dataTransferMethod>EXTERNAL</dataTransferMethod>
+			<geoserverPWD>geoserver-e-geos_matera</geoserverPWD>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverURL>http://ows-csn.e-geos.it/geoserver/</geoserverURL>
+			<wmsPath>/</wmsPath>
+			<defaultNamespace>nurc</defaultNamespace>
+			<defaultStyle>raster</defaultStyle>
+			<styles/>
+			<datastorePropertiesPath>EGEOSProImagemosaicWorkingDir/datastore.properties</datastorePropertiesPath>
+			<timeRegex>[0-9]{8}T[0-9]{9}Z</timeRegex>
+			<!--<elevationRegex><![CDATA[(?<=_)(\\d{4}\\.\\d{3})(?=_)]]></elevationRegex>-->
+			<serviceID>ImageMosaicGeneratorService</serviceID>
+			<id>ImageMosaicService</id>
+			<description>ImageMosaicService</description>
+			<name>ImageMosaicService</name>
+		</ImageMosaicActionConfiguration>
+
+	</EventConsumerConfiguration>
+	
+    <ListenerConfigurations>
+    	<StatusProgressListener>
+    		<serviceID>statusListenerService</serviceID>
+            <id>ImageMosaicStatusActionLogger0</id>
+    	</StatusProgressListener>
+        
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ImageMosaicActionLogger0</id>
+
+            <loggerName>ImageMosaicActionLogger0</loggerName>
+        </LoggingProgressListener>
+
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ImageMosaicConsumerLogger0</id>
+
+            <loggerName>ImageMosaicConsumerLogger0</loggerName>
+        </LoggingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>ImageMosaicCumulator0</id>
+        </CumulatingProgressListener>
+    </ListenerConfigurations>
+    
+</FlowConfiguration>

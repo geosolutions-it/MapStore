@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ======================================================================= 
+    GeoSolutions GeoBatch Project http://geobatch.geo-solutions.it Copyright 
+    (C) 2008-2011 GeoSolutions S.A.S. http://www.geo-solutions.it -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+    <parent>
+        <groupId>it.geosolutions.mariss</groupId>
+        <artifactId>emsa-geobatch-mariss-modules</artifactId>
+        <version>1.4-SNAPSHOT</version>
+    </parent>
+
+  <!-- =========================================================== -->
+  <!-- Project Description -->
+  <!-- =========================================================== -->
+  <groupId>it.geosolutions.mariss</groupId>
+  <artifactId>emsa-geobatch-mariss-metocs</artifactId>
+  <packaging>pom</packaging>
+
+  <name>GeoBatch MARISS - EMSA modules - METOCS Actions</name>
+
+  <!-- =========================================================== -->
+  <!-- Modules for the build in approximate dependency order -->
+  <!-- =========================================================== -->
+  
+  <modules>
+    <module>commons</module>
+    <module>e-geos</module>
+  </modules>
+</project>

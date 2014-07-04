@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.nurc.nato.int/metocs"
+	xmlns:f="http://www.nurc.nato.int/metocs" elementFormDefault="qualified">
+
+	<element name="metocs">
+		<complexType>
+			<sequence>
+				<element name="metoc" type="f:metocElementType" maxOccurs="unbounded" />
+			</sequence>
+		</complexType>
+	</element>
+
+	<complexType name="metocElementType">
+		<sequence>
+			<element name="name" type="string" minOccurs="1"
+				maxOccurs="1" />
+			<element name="brief" type="string" minOccurs="1"
+				maxOccurs="1" />
+		</sequence>
+		<attribute name="defaultUom" type="string" use="required" />
+		<attribute name="type" use="required">
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="meteo"></enumeration>
+					<enumeration value="ocean"></enumeration>
+					<enumeration value="wave"></enumeration>
+				</restriction>
+			</simpleType>
+		</attribute>
+	</complexType>
+
+</schema>

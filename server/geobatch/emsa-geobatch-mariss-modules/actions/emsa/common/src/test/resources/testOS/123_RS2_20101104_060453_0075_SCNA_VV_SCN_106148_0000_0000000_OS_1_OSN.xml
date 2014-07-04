@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csn:OilSpill
+ xmlns:csn="http://www.emsa.europa.eu/csndc"
+ xmlns:gml="http://www.opengis.net/gml"
+ xmlns:ows="http://www.opengis.net/ows/1.1"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.emsa.europa.eu/csndc http://www.emsa.europa.eu/schemas/csndc/Features/csndc_os.xsd">
+  <csn:eventid>123_RS2_20101104_060453_0075_SCNA_VV_SCN_106148_0000_0000000_OS_1</csn:eventid>
+  <csn:origin>DETECTED</csn:origin>
+  <csn:center>
+   <gml:pos>40.366900 0.984300</gml:pos>
+  </csn:center>
+  <csn:geometry>
+   <gml:Polygon>
+    <gml:metaDataProperty>
+     <gml:GenericMetaData>
+      <csn:extension>
+       <csn:area uom="m2">72500.000000</csn:area>
+       <csn:length uom="m">1320.037800</csn:length>
+       <csn:width uom="m">54.922700</csn:width>
+      </csn:extension>
+     </gml:GenericMetaData>
+    </gml:metaDataProperty>
+    <gml:exterior>
+     <gml:LinearRing>
+      <gml:posList>
+       40.361546 0.988950  40.361988 0.989062  40.362431 0.989174  40.362785 0.989863  40.363228 0.989975  40.362873 0.989285  40.363396 0.988819  40.363838 0.988931  40.363922 0.988352  40.364449 0.987886  40.364891 0.987998  40.365330 0.988109  40.364975 0.987420  40.365501 0.986953  40.365940 0.987065  40.366383 0.987176  40.366909 0.986710  40.367435 0.986243  40.367962 0.985777  40.368484 0.985310  40.369011 0.984844  40.369453 0.984956  40.369095 0.984266  40.369179 0.983688  40.369267 0.983110  40.369350 0.982531  40.369873 0.982065  40.370232 0.982755  40.370148 0.983333  40.370064 0.983911  40.370590 0.983444  40.370674 0.982866  40.370316 0.982177  40.370842 0.981710  40.371284 0.981822  40.371723 0.981933  40.372082 0.982623  40.372166 0.982045  40.371723 0.981933  40.371284 0.981822  40.370842 0.981710  40.370399 0.981598  40.370045 0.980909  40.369686 0.980219  40.369328 0.979529  40.368889 0.979418  40.368530 0.978728  40.368446 0.979306  40.367920 0.979773  40.367836 0.980351  40.367752 0.980929  40.367226 0.981395  40.366699 0.981862  40.366615 0.982440  40.366089 0.982906  40.365650 0.982795  40.366005 0.983485  40.365479 0.983951  40.365040 0.983839  40.364956 0.984417  40.365395 0.984529  40.365921 0.984063  40.366280 0.984752  40.366196 0.985330  40.365669 0.985797  40.365227 0.985685  40.364700 0.986152  40.364262 0.986040  40.363735 0.986507  40.363651 0.987085  40.363125 0.987551  40.362598 0.988018  40.362156 0.987906  40.362598 0.988018  40.362957 0.988707  40.362431 0.989174  40.361988 0.989062  40.361546 0.988950  
+      </gml:posList>
+     </gml:LinearRing>
+    </gml:exterior>
+   </gml:Polygon>
+  </csn:geometry>
+  <csn:timeStamp>2010-11-04T06:04:53</csn:timeStamp>
+  <csn:extension>
+    <csn:area uom="m2">72500.000000</csn:area>
+    <csn:length uom="m">1320.037800</csn:length>
+    <csn:width uom="m">54.922700</csn:width>
+    <csn:alignedWithTrack>false</csn:alignedWithTrack>
+    <csn:orientation uom="degree">335.354556</csn:orientation>
+    <csn:volume>0-10</csn:volume>
+  </csn:extension>
+  <csn:locationClassification>
+    <csn:country>Spain</csn:country>
+  </csn:locationClassification>
+  <csn:imageIdentifier type="SAR">123_RS2_20101104_060453_0075_SCNA_VV_SCN_106148_0000_0000000</csn:imageIdentifier>
+  <csn:classificationLevel>0.200000</csn:classificationLevel>
+  <csn:composition>
+    <csn:oilType>OTHER</csn:oilType>
+    <csn:age>&lt;1</csn:age>
+  </csn:composition>
+  <csn:auxiliaryDataRef>
+    <csn:auxiliaryData>
+      <csn:dataKey>JPG_OS_1</csn:dataKey>
+      <csn:dataReference>RS2_20101104_060453_0075_SCNA_VV_SCN_106148_0000_0000000_2011-01-20_18-19-41_OSN_1.jpg</csn:dataReference>
+   </csn:auxiliaryData>
+</csn:auxiliaryDataRef>
+  <csn:possibleSources>
+    <csn:vesselConnected>false</csn:vesselConnected>
+  </csn:possibleSources>
+  <csn:meteoConditions>
+  </csn:meteoConditions>
+</csn:OilSpill>

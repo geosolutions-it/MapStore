@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-init-method="init" default-destroy-method="dispose"
+		xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <!-- File Server Harvester Configuration -->
+	<bean id="root" class="org.restlet.ext.spring.SpringRouter">
+        <property name="attachments">
+            <map>
+                <entry key="/publish/{file}">
+                    <bean class="org.restlet.ext.spring.SpringFinder">
+                        <lookup-method name="createResource" bean="publishResource" />
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <!-- restlet resources -->    
+    <bean id="publishResource" class="it.geosolutions.geobatch.metocs.utils.io.rest.PublishRestletResource">
+         <property name="config" ref="PublishingRestletGlobalConfig" /> 
+    </bean>
+    
+
+	<!-- Global Config -->
+	<bean id="PublishingRestletGlobalConfig" class="it.geosolutions.geobatch.metocs.utils.io.rest.PublishingRestletGlobalConfig">
+		<constructor-arg><value>filestorage</value></constructor-arg>
+	</bean>
+	
+	<!-- Temp storage cleanup -->
+	<!-- The actual scheduled task -->
+	<bean id="storageCleaner" class="it.geosolutions.geobatch.metocs.utils.io.rest.StorageCleaner">
+	    <property name="expirationDelay" value="300" /><!-- 300 seconds, 5 minutes -->
+	    <property name="config" ref="PublishingRestletGlobalConfig" />
+	</bean>
+	
+	 <!-- Definition of how often the scheduled task runs -->
+	  <bean id="storageCleanerTask"
+	    class="org.springframework.scheduling.timer.ScheduledTimerTask">
+	    <!-- wait 10 seconds before starting repeated execution -->
+	    <property name="delay" value="10000" />
+	    <!-- run every 60 seconds -->
+	    <property name="period" value="60000" />
+	    <property name="timerTask" ref="storageCleaner" />
+	  </bean>
+	  <!-- And finally the class that instantiates the scheduled tasks and makes them run -->
+	  <!-- bean id="storageCleanerTimerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean"
+	    lazy-init="false">
+	    <property name="scheduledTimerTasks">
+	      <list>
+	        <ref bean="storageCleanerTask" />
+	      </list>
+	    </property>
+	  </bean -->
+</beans>
