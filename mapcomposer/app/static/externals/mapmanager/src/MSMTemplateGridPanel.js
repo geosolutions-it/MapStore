@@ -139,7 +139,6 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
             
             sortInfo: { field: "name", direction: "ASC" }
 		 });
-        
 
 		var expander = new Ext.ux.grid.RowExpander({
             /**

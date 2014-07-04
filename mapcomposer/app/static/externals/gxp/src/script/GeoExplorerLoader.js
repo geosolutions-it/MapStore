@@ -39,7 +39,11 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
 
         this.config = config || {};
         this.mapId = mapId;
-        this.auth = auth ? decodeURI(auth): null;
+        
+        //TODO use getAuth method used in GeoExporer.js and Tool.js 
+        if(window.parent && window.parent.window && window.parent.window.manager && window.parent.window.manager.auth){
+          this.auth = window.parent.window.manager.auth;
+        }
         this.fScreen = fScreen;
         this.templateId = templateId;
         this.geoStoreBaseURL = config != null && config.geoStoreBaseURL ? config.geoStoreBaseURL : ('http://' + window.location.host + '/geostore/rest/');
