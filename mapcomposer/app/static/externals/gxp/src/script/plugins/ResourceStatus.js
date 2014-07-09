@@ -131,12 +131,13 @@ gxp.plugins.ResourceStatus = Ext.extend(gxp.plugins.Tool, {
 					westContainer.setActiveTab(tree);
 					
 					this.mask = new Ext.LoadMask(tree.getEl(), {msg: this.waitMsg});
-					this.mask.show();
+					//this.mask.show();
 				}	
 				
 				this.addLayerTool.on({
 					'ready' : function(records){
 						var layerRecords = [];
+						this.mask.show();
 						
 						for(var k=0; k<records.length; k++){
 							var record = records[k];
@@ -640,7 +641,8 @@ gxp.plugins.ResourceStatus = Ext.extend(gxp.plugins.Tool, {
 		// List oll layers inside the service
 		// //////////////////////////////////////////////
 		switch(source.ptype){
-			case "gxp_wmssource": 
+			case "gxp_wmssource":
+			case "gxp_wmtssource":
 				var store = source.store;
 				if (store) {
 					var records = store.getRange();

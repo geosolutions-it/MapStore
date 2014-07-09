@@ -550,9 +550,14 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 		if(!source){
 			var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
 			mask.show();
-		  
+			
+			var sourceOptions = {
+				url: wmsURL,
+				ptype: options.format == "wmts" ? "gxp_wmtssource" : "gxp_wmssource"
+			};
+			
 			source = this.target.addLayerSource({
-				config: {url: wmsURL}, // assumes default of gx_wmssource
+				config: sourceOptions, // assumes default of gx_wmssource
 				//
 				// Waiting GetCapabilities response from the server.
 				//	

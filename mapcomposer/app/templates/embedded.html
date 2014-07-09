@@ -80,7 +80,7 @@
 			// /////////////////////////////////////////////////////
 			// Extra parameters to add layers at startup
 			// /////////////////////////////////////////////////////
-			var layName; var layTitle; var wmsurl; var gsturl;
+			var layName; var layTitle; var wmsurl; var gsturl; var urlformat;
 		
 			// ///////////////////////////////////////////////////////////////
             // Custom variables from the mapStoreConfig user configuration file 
@@ -127,6 +127,9 @@
 									break;
                         case "config":
 									customConfigName = param[1];
+									break;
+						case "format":
+									urlformat = param[1];
 									break;
 						default : 
 									//mapIdentifier = -1;
@@ -262,7 +265,8 @@
 									msLayerTitle: unescape(title),
 									msLayerName: unescape(layName),
 									msGroupName: undefined, // TODO: not supported yet
-									wmsURL: wmsurl
+									wmsURL: wmsurl,
+									format: urlformat
 								}]);
 							}else{
 								Ext.Msg.show({

@@ -108,7 +108,7 @@
 		// /////////////////////////////////////////////////////
 		// Extra parameters to add layers at startup
 		// /////////////////////////////////////////////////////
-		var layName; var layTitle; var wmsurl; var gsturl;
+		var layName; var layTitle; var wmsurl; var gsturl; var urlformat;
 		
         // ///////////////////////////////////////////////////////////////
         // Custom variables from the mapStoreConfig user configuration file 
@@ -179,6 +179,9 @@
 									}catch(e){
 										templateId = -1;
 									} 
+									break;
+					case "format":
+									urlformat = param[1];
 									break;
 					default :       
 									//mapIdentifier = -1;
@@ -461,12 +464,14 @@
 									var lname = keys.layer;
 									var lwms = decodeURIComponent(keys.wms);
 									var pname = keys.pname;
+									var format = keys.format;
 									
 									resources.push({
 										msLayerTitle: lname,
 										msLayerName: lname,
 										msGroupName: pname,
-										wmsURL: lwms
+										wmsURL: lwms,
+										format: format
 									});
 								}
 								
@@ -474,12 +479,13 @@
 							}
 						}else if(layName && wmsurl){
 							var title = layTitle ? layTitle : layName;
-							
+
 							addMSLayer([{
 								msLayerTitle: unescape(title),
 								msLayerName: unescape(layName),
 								msGroupName: undefined, // TODO: not supported yet
-								wmsURL: wmsurl
+								wmsURL: wmsurl,
+								format: urlformat
 							}]);
 						}
 					}else{
