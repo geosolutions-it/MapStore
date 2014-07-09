@@ -258,11 +258,12 @@
 							if(addLayer){						
 								var title = layTitle ? layTitle : layName;
 								
-								addMSLayer(
-									title,
-									layName,
-									wmsurl
-								);
+								addMSLayer([{
+									msLayerTitle: unescape(title),
+									msLayerName: unescape(layName),
+									msGroupName: undefined, // TODO: not supported yet
+									wmsURL: wmsurl
+								}]);
 							}else{
 								Ext.Msg.show({
 									title: "Add Layer",
@@ -284,17 +285,11 @@
 				*
 				* TODO: Check the API using a MapServer URL as wmsURL.
 				*/
-				addMSLayer = function(msLayerTitle, msLayerName, wmsURL){
+				addMSLayer = function(resources){
 					var addLayer = app.tools["addlayer"];
 					
-					var options = {
-						msLayerTitle: unescape(msLayerTitle),
-						msLayerName: unescape(msLayerName),
-						wmsURL: wmsURL
-					};
-					
 					addLayer.addLayer(
-						options
+						resources
 					);
 				};
             };			

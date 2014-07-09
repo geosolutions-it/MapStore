@@ -36,7 +36,7 @@
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
 			"useEvents": false,
-			"showReport": false,
+			"showReport": "always",
 			"directAddLayer": false,
 			"id": "addlayer"
 		}, {
