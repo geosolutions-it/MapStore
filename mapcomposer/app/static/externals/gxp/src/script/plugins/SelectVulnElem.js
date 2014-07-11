@@ -76,6 +76,8 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
     /** private: property[iconCls]
      */
     iconCls: "icon-selectvulnelem",
+	
+	partners: ['ao','rp','rl','bz','ti'],
 
     /** private: method[constructor]
      */
@@ -427,9 +429,9 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
                                 var layerName = this.humansGrid.getSelectionModel().hasSelection() ? "vulnerabili_umani" : "vulnerabili_ambientali";
                                 Ext.each(grid.getSelectionModel().getSelections(), function(record) {
                                     if(this.humansGrid.getSelectionModel().hasSelection()) {
-                                        Ext.each(['ao','rp','rl','bz','ti'], function(partner) {
+                                        Ext.each(this.partners, function(partner) {
                                             coverages.push(record.get('layer') + '_' + partner);
-                                        });
+                                        },this);
                                     } else {
                                         coverages.push(record.get('layer') + '_mosaic');
                                     }
