@@ -321,15 +321,14 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
     loadConfig: function(config) {
 
-        if(config.isLoadedFromConfigFile){
+        if(config.isLoadedFromConfigFile || this.mapId === -1){
           this.loadThemas(config);
         } else {
-            
             var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
             var mHost=pattern.exec(geoStoreBaseURL);
 
             var mUrl = geoStoreBaseURL + "data/" + this.mapId;
-
+			
             Ext.Ajax.request({
                url: mHost[2] == location.host ? mUrl : proxy + mUrl,
                method: 'GET',
