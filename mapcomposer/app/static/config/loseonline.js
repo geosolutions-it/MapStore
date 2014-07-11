@@ -23,7 +23,7 @@
             "ptype": "gxp_wmssource",
             "title": "LOSE GeoServer",
             "version":"1.1.1",
-            "url": "http://localhost:8080/geoserver/lose/ows",
+            "url": "http://lose.geo-solutions.it/geoserver_lose/lose/ows",
             "layerBaseParams": {
                 "TILED": true,                
                 "format": "image/png8"
@@ -33,7 +33,7 @@
             "ptype": "gxp_wmscsource",
             "title": "LOSE GeoServer",
             "version":"1.1.1",
-            "url": "http://localhost:8080/geoserver/lose/wms",
+            "url": "http://lose.geo-solutions.it/geoserver_lose/lose/wms",
             "layerBaseParams": {
                 "TILED": true,                
                 "format": "image/png8"
@@ -519,7 +519,7 @@
         "ptype":"gxp_print",
         "providerOptions": {
             "replaceURL": [{
-                "from": "http://localhost:8080/geoserver",
+                "from": "http://lose.geo-solutions.it/geoserver_lose",
                 "to": "http://mbarto-geosol:8080/geoserver"
             }]
         },
@@ -528,7 +528,7 @@
             "forwardHeaders":["Authorization", "Shib-Iride-IdentitaDigitale"]
         },
         "ignoreLayers": "Google Hybrid,Bing Aerial,Nessuno sfondo,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
-        "printService":"http://localhost:8080/geoserver/pdf/",
+        "printService":"http://lose.geo-solutions.it/geoserver_lose/pdf/",
         "legendPanelId":"legendPanel",
         "actionTarget":{
             "target":"paneltbar",
@@ -554,12 +554,12 @@
         "bufferLayerNameHuman": "buffer_human",
         "bufferLayerNameNotHuman": "buffer_not_human",
 		"layerSourceName": "lose",
-        "selectionLayerBaseURL": "http://localhost:8080/geoserver/lose/wms",
+        "selectionLayerBaseURL": "http://lose.geo-solutions.it/geoserver_lose/lose/wms",
         "selectionLayerProjection": "EPSG:32632",
         "geometryName": "geometria",
         "accidentTipologyName": "tipologia",
-        "wfsURL": "http://localhost:8080/geoserver/lose/wfs",
-        "wpsURL": "http://localhost:8080/geoserver/wps",        
+        "wfsURL": "http://lose.geo-solutions.it/geoserver_lose/lose/wfs",
+        "wpsURL": "http://lose.geo-solutions.it/geoserver_lose/wps",        
         "wpsStore": "lose",        
         "wfsVersion" : "1.1.0",
         "destinationNS": "lose",
@@ -572,7 +572,7 @@
 	{
 		"ptype": "gxp_gatetimeslidertab",
         "id": "gatetimeslidertab",
-        "wfsUrl":"http://localhost:8080/geoserver/ows",
+        "wfsUrl":"http://lose.geo-solutions.it/geoserver_lose/ows",
         "wfsVersion": "1.1.0",
         "destinationNS": "lose",
         "statisticFeature": "gate_stats",
@@ -585,7 +585,7 @@
 	}, {
         "ptype": "gxp_featuremanager",
         "id": "featuremanager",
-        "wfsUrl":"http://localhost:8080/geoserver/ows",
+        "wfsUrl":"http://lose.geo-solutions.it/geoserver_lose/ows",
         "paging": false,
         "authentication": {
             "user": "super",
@@ -603,8 +603,8 @@
 		"layerToFilter": "OBU",
 		"layerTrackTitle": "obu_track",
 		"layerTrackName": "siig_geo_obu_line",
-		"layerTrackUrl": "http://localhost:8080/geoserver/lose/ows",
-        "wfsUrl": "http://localhost:8080/geoserver/ows?",
+		"layerTrackUrl": "http://lose.geo-solutions.it/geoserver_lose/lose/ows",
+        "wfsUrl": "http://lose.geo-solutions.it/geoserver_lose/ows?",
         "styleRenamedStore": [
             ["Obu points","Obu punti","Obu points","Obu punkte"],
             ["Obu points speed","Obu punti velocità","Obu points vitesse","Obu punkte Geschwindigkeit"],
@@ -642,7 +642,7 @@
         "ptype": "gxp_tabpanelwfsgrids",
         "outputTarget": "featurelist",
         "srsName" : "EPSG:32632",
-        "wfsURL": "http://localhost:8080/geoserver/lose/wfs",
+        "wfsURL": "http://lose.geo-solutions.it/geoserver_lose/lose/wfs",
         "panels": {
             "targets": {
                 "Popolazione residente": {
