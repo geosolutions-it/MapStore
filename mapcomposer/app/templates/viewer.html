@@ -312,6 +312,8 @@
 									
 								if(layersList){
 									var layers = layersList.split("#");
+									var resources = [];
+									
 									for(var i=0; i<layers.length; i++){
 										var keys = layers[i];
 										
@@ -320,22 +322,27 @@
 										
 										var lname = keys.layer;
 										var lwms = decodeURIComponent(keys.wms);
+										var pname = keys.pname;
 										
-										addMSLayer(
-											lname,
-											lname,
-											lwms
-										);
+										resources.push({
+											msLayerTitle: lname,
+											msLayerName: lname,
+											msGroupName: pname,
+											wmsURL: lwms
+										});
 									}
+									
+									addMSLayer(resources);
 								}
 							}else if(layName && wmsurl){
 								var title = layTitle ? layTitle : layName;
 								
-								addMSLayer(
-									title,
-									layName,
-									wmsurl
-								);
+								addMSLayer([{
+									msLayerTitle: unescape(title),
+									msLayerName: unescape(layName),
+									msGroupName: undefined, // TODO: not supported yet
+									wmsURL: wmsurl
+								}]);
 							}
 						}else{
 							Ext.Msg.show({
@@ -357,17 +364,11 @@
 				*
 				* TODO: Check the API using a MapServer URL as wmsURL.
 				*/
-				addMSLayer = function(msLayerTitle, msLayerName, wmsURL){
+				addMSLayer = function(resources){
 					var addLayer = app.tools["addlayer"];
 					
-					var options = {
-						msLayerTitle: unescape(msLayerTitle),
-						msLayerName: unescape(msLayerName),
-						wmsURL: wmsURL
-					};
-					
 					addLayer.addLayer(
-						options
+						resources
 					);
 				};
             };			

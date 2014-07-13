@@ -26,6 +26,19 @@
 	background-image: url(img/silk/folder.png);
 }
 
+.x-tree-node .service_error a span{
+	color: #ABAAA7;
+	font-style: italic;
+}
+
+.tree-icon-collapse-all {
+	background-image:url(img/collapse-all.gif) !important;
+}
+
+.tree-icon-expand-all {
+	background-image:url(img/expand-all.gif) !important;
+}
+
 /*gxp_advancedsnappingagent*/
 .snapping-button{
     background-image: url(img/magnet.png) !important;

@@ -63,6 +63,15 @@
 				"title": "Bing Aerial With Labels",
 				"name": "AerialWithLabels",
 				"group": "background"
+			},{
+				"source": "ol",
+				"group": "background",
+				"fixed": true,
+				"type": "OpenLayers.Layer",
+				"visibility": false,
+				"args": [
+					"None", {"visibility": false}
+				]
 			}
 		]
 	},
@@ -131,7 +140,7 @@
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
 			"useEvents": false,
-			"showReport": false,
+			"showReport": "never",
 			"directAddLayer": false,
 			"id": "addlayer"
 		}, {

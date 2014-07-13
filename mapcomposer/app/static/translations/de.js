@@ -798,8 +798,10 @@ GeoExt.Lang.add("de", {
 		rootNodeText: "Ressourcen Import",
 		serviceErrorTitle: "Dienstfehler",
 		tabTitle: "Importiert",
-		layerNodeName: "Levels",
-		serviceNodeName: "Service"
+		layerNodeName: "Ressourcen",
+		waitMsg: "Laden von Ressourcen ...",
+		expandAllText: "Alle Knoten Erweitern",
+		collapseAllText: "Alles Alle Knoten"
     },
 	
 	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
