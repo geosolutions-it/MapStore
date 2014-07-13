@@ -328,7 +328,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
                         text: this.addResourceButtonText,
                         iconCls: "accept",
                         scope: this,
-                        handler: function(){      
+                        handler: function(){
                             win.hide(); 
 
                             var saveValues = win.formPanel.getForm().getValues();
@@ -339,7 +339,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 									description: saveValues.description,
 									blob: blob
 								}, 
-								function success(response){                                                                            
+								function success(response){
 									//update security rule to make it public 
 									//response contains the id of the new resource
 									if(saveValues.groupId && response){
@@ -418,7 +418,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
            headers:{
               'Content-Type' : contentType,
               'Accept' : 'application/json, text/plain, text/xml',
-              'Authorization' : this.auth
+              'Authorization' : this.target.auth
            },
            params: blob,
            scope: this,
