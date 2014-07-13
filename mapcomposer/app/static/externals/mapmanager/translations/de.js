@@ -258,5 +258,27 @@ GeoExt.Lang.add("de", {
     },
 	"MSMTemplateManager.prototype":{
 		title: "Vorlage-Manager"
-	}
+	},
+    "mxp.widgets.GeoStoreResourceForm.prototype": {
+         dataFieldLabel: "Ressource", 
+         namelabel: "Name", 
+         textAttribute: "Attribute", 
+         textGeneral: "Allgemein" ,
+         description: "Beschreibung",
+         visibilityLabel: "Sichtbarkeit", 
+         textSave: "Speichern" ,
+         savingMessage: "Saving ...", 
+         loadingMessage: "Loading ..." ,
+         saveSuccessTitle: "Saved", 
+         saveSuccessMessage: "Ressourcen erfolgreich gespeichert",
+         failSaveTitle: "Fehler beim Speichern von Ressourcen", 
+         resourceNotValid: "Ressourcen nicht gültig", 
+         deleteSuccessMessage: "Ressourcen Erfolgreich gelöscht", 
+         permissionTitleText: "Berechtigungen" 
+     }, 
+     "mxp.widgets.GeoStoreCategoryManager.prototype": {
+         resourceListTitle: "Ressourcen",
+         emptyMessage: "Nein Ressource angezeigt werden", 
+         displayMessage: "Zeige {0} - {1} von {2}"
+     }
 });

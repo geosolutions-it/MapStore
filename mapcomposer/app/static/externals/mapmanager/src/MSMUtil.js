@@ -342,7 +342,7 @@
 	 * Return:
 	 * 
 	 */
-	ContentProvider.prototype.update = function(pk, item, callback){
+	ContentProvider.prototype.update = function(pk, item, callback, failureCallback){
 		var data = this.beforeSave(item);
 		var uri = new Uri({'url':this.baseUrl_});
 		uri.appendPath( this.resourceNamePrefix_ ).appendId( pk );
@@ -367,7 +367,11 @@
 				callback( response );
 	       },
 	       failure:  function(response, opts){
-				this.onFailure_(response);
+                if(failureCallback){
+                    failureCallback(response);
+                }else{
+                    this.onFailure_(response);
+                }
 	       }
 	    });
 	};	
@@ -508,6 +512,138 @@
 		return child;
 	};
 	
+	// /////////////////////////////////////////////////// //
+	// Init some content providers used in the application //
+	// /////////////////////////////////////////////////// //
+
+	/**
+	 * Class: GeoStore.Resource
+	 *
+	 * CRUD methods for Resources in GeoStore
+	 * Inherits from:
+	 *  - <GeoStore.ContentProvider>
+	 *
+	 */
+	GeoStore.Resource = ContentProvider.extend({
+		initialize: function(){
+			this.resourceNamePrefix_ = 'resource';
+		},
+		beforeDeleteByFilter: function(data){
+			var xmlFilter = "<AND>" +
+								"<ATTRIBUTE>" + 
+									"<name>" + 
+										data.name + 
+									"</name>" +
+									"<operator>" + data.operator + "</operator>" + 
+									"<type>" + data.type + "</type>" +
+									"<value>" + 
+										data.value + 
+									"</value>" + 
+								"</ATTRIBUTE>" + 
+							"</AND>";
+			return xmlFilter;
+		},
+		deleteByFilter: function(filterData, callback){
+			var data = this.beforeDeleteByFilter(filterData);
+			var uri = this.baseUrl_;
+			
+			Ext.Ajax.request({
+			   url: uri,
+			   method: 'DELETE',
+			   headers:{
+				  'Content-Type' : 'text/xml',
+				  'Authorization' : this.authorization_
+			   },
+			   params: data,
+			   scope: this,
+			   success: function(response, opts){
+					callback(response);
+			   },
+			   failure:  function(response, opts) {
+			   }
+			});		
+		},
+		beforeSave: function(data){
+			// ///////////////////////////////////////
+			// Wrap new map within an xml envelop
+			// ///////////////////////////////////////
+			var addedAttributes = false;
+			var xml = '<Resource>';
+			xml += '<name>' + data.name + '</name>';
+			xml += '<description>' + data.description + '</description>';
+			if(data.metadata){
+				xml += '<metadata>'+data.metadata+'</metadata>';
+			}
+				
+			/** This can remove all the attributes if present !!! do it in a better way as soon as possible **/
+			if (data.attributes){
+				xml += '<Attributes>';
+					
+				for(var att in data.attributes){
+					xml +=
+					'<attribute>' +
+						'<name>'+ att +'</name>' +
+						'<type>'+ (att["@type"] || 'STRING') + '</type>' +
+						'<value>' + data.attributes[att].value + '</value>' +
+					'</attribute>';
+				}
+				addedAttributes = true;
+					// close attributes
+				if(addedAttributes){
+					xml += '</Attributes>';
+				}
+			}
+
+			if(data.category){
+				 xml+= '<category>' +
+					'<name>' + data.category + '</name>' +
+				'</category>';
+			}
+			if (data.blob){
+				xml+='<store>' +
+					'<data><![CDATA[ ' + data.blob + ' ]]></data>' +
+				'</store>';
+			}
+			xml += '</Resource>';
+			return xml;
+		},
+		afterFind: function(json){
+			
+			if ( json.Resource ){
+                var resource = json.Resource;
+				var data = new Object;
+				data.description = resource.description;
+                data.id = resource.id;
+				data.name = resource.name;
+				data.creation = resource.creation;	
+                if(resource.category){
+                    data.category = resource.category.name
+                }
+                
+                
+                if(resource.data){
+                    data.blob = resource.data.data;
+                }
+				if(resource.Attributes && resource.Attributes.attribute && (resource.Attributes.attribute instanceof Array)){
+                    var attrarray = resource.Attributes.attribute;
+					for(var i = 0; i < attrarray.length;i++){
+                        if(!data.attributes){
+                            data.attributes ={};
+                        }
+						data.attributes[attrarray[i].name] = attrarray[i];
+					}
+				}else if(resource.Attributes && resource.Attributes.attribute){
+                    if(!data.attributes){
+                        data.attributes ={};
+                    }
+					data.attributes[resource.Attributes.attribute.name] = resource.Attributes.attribute;
+				}
+				return data;			
+			} else {
+				this.onFailure_('cannot parse response');
+			}
+		}
+    });
 	// /////////////////////////////////////////////////// //
 	// Init some content providers used in the application //
 	// /////////////////////////////////////////////////// //

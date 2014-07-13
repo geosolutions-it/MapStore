@@ -258,5 +258,27 @@ GeoExt.Lang.add("es", {
     },
 	"MSMTemplateManager.prototype":{
 		title: "Gestor De Plantillas"
-	}
+	},
+    "mxp.widgets.GeoStoreResourceForm.prototype": {
+         dataFieldLabel: "Recursos", 
+         nameLabel: "Nombre", 
+         textAttribute: "Atributos", 
+         textGeneral: "General", 
+         descriptionLabel: "Descripción", 
+         visibilityLabel: "Visibilidad", 
+         textSave: "Guardar", 
+         savingMessage: "Saving ...", 
+         loadingMessage: "Cargando ...", 
+         saveSuccessTitle: "Saved", 
+         saveSuccessMessage: "Recurso guardado con éxito", 
+         failSaveTitle: "recurso Saving Failed", 
+         resourceNotValid: "Recurso no válido", 
+         deleteSuccessMessage: "Eliminado Recurso éxito", 
+         permissionTitleText: "Permisos" 
+     },
+    "mxp.widgets.GeoStoreCategoryManager.prototype":{
+         resourceListTitle: "Recursos",
+         emptyMessage: "Ningún recurso para mostrar", 
+         mostrarMensaje: "Mostrando {0} - {1} de {2}" 
+    }
 });

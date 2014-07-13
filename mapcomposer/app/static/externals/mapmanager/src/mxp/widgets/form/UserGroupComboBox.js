@@ -77,8 +77,16 @@ mxp.form.UserGroupComboBox = Ext.extend(Ext.form.ComboBox, {
     	}
 
     	// If user is admin, load the groups from geostore url, otherwise load from user context
-    	var userIsAdmin = this.target && this.target.user && this.target.user.role == "ADMIN";
-
+        var role,groups;
+        if(sessionStorage && sessionStorage["userDetails"]){
+            var userDetails = sessionStorage["userDetails"];
+            userDetails = Ext.decode(userDetails);
+            role = userDetails.user.role;
+            groups = userDetails.user.groups.group;
+        }else{
+            role = this.target && this.target.user && this.target.user.role == "ADMIN";
+        }
+        var userIsAdmin = (role =="ADMIN");
     	// store 
     	this.store = {
 			xtype: "jsonstore",
@@ -123,13 +131,24 @@ mxp.form.UserGroupComboBox = Ext.extend(Ext.form.ComboBox, {
     		this.autoLoad = true;
     		this.mode = 'local';
     		var data = [];
-    		if(this.target.user.groups.group && this.target.user.groups.group.length){
-    			// it have more than one group
-    			data = this.target.user.groups.group;
-    		}else if(this.target.user.groups.group){
-    			// only one group
-    			data.push(this.target.user.groups.group);
-    		}
+            //if not alredy loaded from the session storage
+            if (!groups  && this.target){
+                    if(this.target.user.groups.group && this.target.user.groups.group.length){
+                    // it have more than one group
+                    data = this.target.user.groups.group;
+                }else if(this.target.user.groups.group){
+                    // only one group
+                    data.push(this.target.user.groups.group);
+                }
+            }else if(groups){
+                if(groups instanceof Array){
+                    data = groups;
+                }else{
+                    data = [groups] ;
+                }
+                
+            }
+    		
     		Ext.apply(this.store,{
     			mode: "local",
     			data: data
