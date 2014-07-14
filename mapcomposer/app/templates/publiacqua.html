@@ -1,0 +1,459 @@
+<% extends ./base.html %>
+<% subskin extrahead %>
+  
+    <!-- OpenLayers resources -->
+    <link rel="stylesheet" type="text/css" href="externals/openlayers/theme/default/style.css">
+
+
+	<!-- Basic OpenLayers libs -->
+    <script type="text/javascript" src="script/OpenLayers.js"></script>		
+	
+	<!-- Externatls OpenLayers libraries to manage other extensions -->
+	<script type="text/javascript" src="script/OpenLayersExt.js"></script> 
+	
+	<link rel="stylesheet" type="text/css" href="theme/app/openlayers.css" />
+	
+	<!-- colorpicker resources 
+    <link rel="stylesheet" type="text/css" href="externals/colorpicker/css/colorpicker.css">
+    <script type="text/javascript" src="script/colorpicker.js"></script> -->
+	
+    <!-- GeoExt resources -->
+    <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/popup.css">
+    <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/layerlegend.css">
+    <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/gxtheme-gray.css">
+    <script type="text/javascript" src="script/GeoExt.js"></script> 
+
+	<!-- PrintPreview resources -->
+    <link rel="stylesheet" type="text/css" href="externals/PrintPreview/resources/css/printpreview.css">
+    <script type="text/javascript" src="script/PrintPreview.js"></script> 
+
+	<script type="text/javascript" src="script/GeoExtExt.js"></script>
+
+	
+    <!-- canvg-1.2 resources -->
+	<script type="text/javascript" src="script/canvg-1.2.js"></script> 
+
+	
+    <!-- gxp resources -->
+    <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
+
+    <script type="text/javascript" src="script/gxp.js"></script> 
+
+    <script type="text/javascript" src="script/proj4js.js"></script>
+
+    <!-- GeoExplorer resources -->
+    <link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
+    <link rel="stylesheet" type="text/css" href="theme/app/mapstore.css" />
+	
+	<!-- Advanced Scalebar CSS -->
+	<!--link rel="stylesheet" type="text/css" href="theme/app/scalebar-fat.css" /-->
+    <link rel="stylesheet" type="text/css" href="theme/app/scalebar-thin.css" />
+	
+    <!--[if IE]><link rel="stylesheet" type="text/css" href="theme/app/ie.css"/><![endif]-->        
+
+    <script type="text/javascript" src="script/GeoExplorer.js"></script>
+    <script type="text/javascript" src="script/ux.js"></script>
+    
+    <!-- PrintPreview resources -->
+    <link rel="stylesheet" type="text/css" href="externals/PrintPreview/resources/css/printpreview.css">
+    <script type="text/javascript" src="script/PrintPreview.js"></script> 
+    
+    <!-- csw resources -->
+    <link rel="stylesheet" type="text/css" href="externals/csw/css/csw.css">
+    <script type="text/javascript" src="auth/base64.js"></script>
+    <script type="text/javascript" src="script/metadataexplorer.js"></script>
+    
+    <!-- geocoding data  -->
+    <script type="text/javascript" src="data/georeferences.js"></script>
+    
+	<!-- translation data  -->
+    <script type="text/javascript" src="translations/en.js"></script>
+    <script type="text/javascript" src="translations/fr.js"></script>
+    <script type="text/javascript" src="translations/it.js"></script>
+    <script type="text/javascript">
+    
+        Ext.onReady(function() {
+          setTimeout(function(){
+            Ext.get('loading').remove();
+            Ext.get('loading-mask').fadeOut({remove:true,duration:1});
+          }, 2000);
+        });
+    
+    </script>
+    
+    <div id="loading-mask" ></div>
+    <div id="loading" >
+      <div class="loading-indicator" style="background: url(theme/app/img/logo_publiacqua.png) no-repeat;background-position:center center; background-attachment:fixed;">
+      </div>
+    </div>
+
+    <script>
+        
+		
+        var app;        
+        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false;
+		
+        // ///////////////////////////////////////////////////////////////
+        // Custom variables from the mapStoreConfig user configuration file 
+        // ///////////////////////////////////////////////////////////////
+        var proxy; 
+        var serverConfig;
+        var customConfigName;		
+		
+        // //////////////////////////////////////////////////
+        // Parsing the request to get the parameters
+        // //////////////////////////////////////////////////
+        var params = location.search.replace(/^\?/,'').replace(/&amp;/g,'&').split("&");
+        for (var j=0; j < params.length; j++) {
+			var param = params[j].split("=");
+			if(param[0]){
+				switch ( param[0] ) {
+					case "mapId": 
+									try{
+										mapIdentifier = parseInt(param[1]);
+									}catch(e){
+										mapIdentifier = -1;
+									} 
+									break;
+					case "auth" : 
+									if(param[1] == 'true') 
+										authorization = true; 
+									else 
+										authorization = false; 
+									break;
+					case "fullScreen" : 
+									if(param[1] == 'true') 
+										fullScreen = true; 
+									else 
+										fullScreen = false; 
+									break;
+					case "config":	
+									customConfigName = param[1];
+									break;
+					default :       
+									//mapIdentifier = -1;
+									//authorization = false;
+									//fullScreen = false; 
+				}
+			}
+        }		
+		
+        var onReady = function(){
+		
+		
+		
+			
+			OpenLayers.Util.onImageLoadErrorColor = "transparent";
+            Ext.BLANK_IMAGE_URL = (function() {
+                    if (Ext.isIE8 || Ext.isGecko || Ext.isOpera || Ext.isChrome) {
+                        return "data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
+                    } else {
+                        return "theme/app/img/blank.gif";
+                    }
+            })();
+			if(Ext.isChrome){
+				
+			}else{
+				OpenLayers.IMAGE_RELOAD_ATTEMPTS = 2;
+				
+			}
+            OpenLayers.ImgPath = "externals/openlayers/theme/default/img/";
+			
+			// ////////////////////////////////
+            // Get Proj4js configuration 
+			// ////////////////////////////////
+            if( typeof(Proj4js)!="undefined" && !(serverConfig.proj4jsDefs===undefined) ){
+                for(var name in serverConfig.proj4jsDefs){
+                    Proj4js.defs[name] = serverConfig.proj4jsDefs[name];               
+                }
+            }
+            
+			// /////////////////////////////////////
+            // Get georeferences data to override
+			// /////////////////////////////////////
+            if (serverConfig.georeferences_data){
+                georeferences_data = serverConfig.georeferences_data;
+            }
+			
+            gxp.plugins.ZoomToExtent.prototype.closest = false;
+
+            Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
+                 onRender : function(ct, position){
+                      this.el = ct.createChild({
+                        tag: 'iframe',
+                        id: 'iframe-'+ this.id,
+                        frameBorder: 0, 
+                        src: this.url
+                      });
+                 }
+            });
+            
+			// //////////////////////////////////////////////////////            
+            // Setting the locale based on query string parameter
+            // //////////////////////////////////////////////////////
+			var query = location.search;        
+            if(query && query.substr(0,1) === "?"){
+                query = query.substring(1);
+            }
+            
+            var url = Ext.urlDecode(query);        
+            var code = url.locale || serverConfig.defaultLanguage || "en";			
+
+			// ////////////////////////////////////////////////////
+			// Setting the language code for the GeoExt tools
+			// ////////////////////////////////////////////////////
+			if (GeoExt.Lang) {
+                GeoExt.Lang.set(code);
+            }
+			
+			// ////////////////////////////////////////////////////
+			// Setting the language selector
+			// ////////////////////////////////////////////////////
+			var languageSelector = new gxp.form.LanguageSwitcher({
+				currentContext:code,
+				saveMessage:authorization
+			});
+			
+            var appTabsOpts = {
+                        region: 'center',
+                        border : false,
+                        id : 'appTabs',
+                        enableTabScroll: true
+                    };
+            
+            
+			/* To disable tabs add layout:'fit' and change type to Ext.Panel.
+			 * You have also to comment title property in this.portal
+			 */
+            var appTabs = new Ext.Panel({
+                region: 'center',
+				layout:'fit',
+				header:false,
+                border : false,
+                id : 'appTabs',
+                enableTabScroll: true
+            });         
+		
+
+            //check if MetadataExplorer plugin is defined in customTools configuration
+            var customToolsME = [];
+            if(serverConfig.customTools){
+                for(var cTools in serverConfig.customTools){
+                    if(serverConfig.customTools[cTools].ptype == "gxp_metadataexplorer"){  
+                        customToolsME.push(serverConfig.customTools[cTools].ptype);
+                    }
+                }
+            }
+            
+            //check if MetadataExplorer plugin is defined in tools configuration
+            var toolsME = [];                
+            if(serverConfig.tools){
+                for(var tools in serverConfig.tools){
+                    if(serverConfig.tools[tools].ptype == "gxp_metadataexplorer"){  
+                        toolsME.push(serverConfig.tools[tools].ptype);
+                    }
+                }
+            }            
+            
+            if(!serverConfig.tab && toolsME.length == 0 && customToolsME.length == 0){
+                appTabsOpts.layout = 'fit';
+                appTabs = new Ext.Panel(appTabsOpts); 
+            }else{
+                appTabs = new Ext.TabPanel(appTabsOpts); 
+            }
+
+			var iframe = "<iframe style='border: none; height: 100%; width: 100%' src='about.html' frameborder='0' border='0'>" + 
+						 "<a target='_blank' href='about.html'>" + GeoExplorer.prototype.aboutText + "</a> </iframe>";
+						 
+            var aboutButton = new Ext.Button({
+                text: GeoExplorer.prototype.appInfoText,
+                iconCls: "icon-geoexplorer",
+                handler: function(){
+                    var appInfo = new Ext.Panel({
+                        header: false,
+                        html: iframe
+                    });
+
+                    var win = new Ext.Window({
+                        title:  GeoExplorer.prototype.aboutThisMapText,
+                        modal: true,
+                        layout: "fit",
+                        width: 360,
+                        height: 360,
+                        items: [appInfo]
+                    });
+                    
+                    win.show();
+                }
+            });
+            
+            var poweredByGeoSol = new Ext.Button({
+                tooltip: 'Powered by GeoSolutions',
+                iconCls: "icon-geosol",
+                width : 150,
+                handler: function(btn){
+                    window.open('http://www.geo-solutions.it/contact/', '_blank');
+                }
+            });    
+			var bottombar =  [ poweredByGeoSol, ' ', aboutButton, '->',languageSelector ];
+
+			//context switcher
+			var contextSwitcher = new gxp.form.ContextSwitcher({
+				data:[["defaultConfiguration","Google/OSM","","","public context"]],
+				currentContext:customConfigName || "defaultConfiguration"
+				
+			
+			});
+			bottombar.push(contextSwitcher);
+			var headerContent = [
+					'<div id="headerbanner" style="background: url(theme/app/img/publiacqua_bg.png) -190px 0 no-repeat #bbe0ea;height:100%;">',
+					'<div id="left-banner"><img src="theme/app/img/publiacqua-mini.png"   height="86" border="0" /> </div>',
+					//'<div id="right-banner"><img src="theme/app/img/banner-right.png"  style="float:right"  border="0" /></div>',
+					'</div>'
+				];
+			var header = {
+							border: false,
+							header: false,
+							html:  headerContent,
+							region: 'north',
+							collapsible: true,
+							collapseMode:  'mini',
+							hideCollapseTool: true,
+							split: true,
+							animCollapse : false,
+							minHeight: 86,
+							maxHeight: 86,
+							height: 86,
+							id : 'HeaderTopBanner'
+						}
+            var appViewport = new Ext.Viewport({
+                id: 'appVieport',
+                layout:'fit',
+                border:false,
+                items: [{
+                    region : 'center',
+                    layout : 'border',
+                    border : false,
+                    header : false,                    
+                    items : [header,appTabs],                            
+                    bbar :bottombar
+                }]
+            });
+            
+            // /////////////////////////////////////////////////////////////
+            // Parsing WMS servers Sources for getCapabilities operation
+            // /////////////////////////////////////////////////////////////
+            try{
+                var sources = serverConfig.gsSources;
+            }catch(e){
+                sources = {
+                    mapquest: {
+                        ptype: "gxp_mapquestsource"
+                    },
+                    osm: {
+                        ptype: "gxp_osmsource"
+                    },
+                    google: {
+                        ptype: "gxp_googlesource"
+                    },
+                    bing: {
+                        ptype: "gxp_bingsource"
+                    },
+                    ol: {
+                        ptype: "gxp_olsource"
+                    }
+                };
+          
+                Ext.Msg.show({
+                      title: "Startup",
+                      msg: "An error occurred while parsing the CUSTOM GeoServer sources",
+                      buttons: Ext.Msg.OK,
+                      icon: Ext.MessageBox.ERROR
+                });
+            }
+ 
+			/*var auth = 'Basic ' + Base64.encode('admin:admin');
+			      Ext.Ajax.defaultHeaders = {
+                'Authorization' : auth
+            };*/
+
+            app = new GeoExplorer.Composer({
+				advancedScaleOverlay: serverConfig.advancedScaleOverlay,
+				defaultLanguage: serverConfig.defaultLanguage,	
+                customPanels: serverConfig.customPanels,
+                modified: false,
+                proxy: proxy,
+				tools: serverConfig.tools,
+				geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),
+                portalConfig: serverConfig.portalConfig,
+                defaultSourceType: "gxp_wmssource",
+                renderToTab : 'appTabs',
+                //printService:"http://localhost:8080/geoserver/pdf/",
+                //mapTitle: (code === 'en' ? 'View' : (code === 'fr' ? 'Veu' : 'Vista')),
+				mapTitle:'',
+                about: {
+                    title: "Custom Map",
+                    'abstract': "Custom Map",
+                    contact: "<a href='#'>#</a>."
+                },
+                sources: sources,
+				scaleOverlayUnits: serverConfig.scaleOverlayUnits,
+				showGraticule: false,
+                georeferences: georeferences_data,
+                map: serverConfig.map,
+				customTools: serverConfig.customTools
+            }, mapIdentifier, authorization, fullScreen);   
+            
+            app.on({
+                'portalready' : function() {              	
+                    if(fullScreen) {
+                        var westPanel = Ext.getCmp('west');
+                        westPanel.setActiveTab('legend');
+                        westPanel.hideTabStripItem('tree');
+                    }
+                }, 
+                'ready' : function(){
+                    app.modified = false;
+                }
+            });
+	    };
+
+	    Ext.Ajax.request({
+			  url: customConfigName ? "config/" + customConfigName + ".js"  : "config/publiacqua.js",
+			  method: 'GET',
+			  success: function(response, opts){          
+				  
+				  try{
+					  serverConfig = Ext.util.JSON.decode(response.responseText);
+				  }catch(e){
+					  Ext.Msg.show({
+							title: "Startup",
+							msg: "An error occurred while parsing the external configuration: " + response.status,
+							buttons: Ext.Msg.OK,
+							icon: Ext.MessageBox.ERROR
+					  });
+				  }
+				  
+				  if(serverConfig){
+					  proxy = location.host.indexOf('localhost:8081') != -1 ? "/proxy/?url=" : serverConfig.proxy; 
+
+					  // ///////////////////////////////////////////////  
+					  // Run the application when browser is ready
+					  // ///////////////////////////////////////////////f
+					  Ext.onReady(onReady);
+				  }
+			  },
+			  failure:  function(response, opts){
+				  Ext.Msg.show({
+						title: "Startup",
+						msg: "An error occurred while getting the external configuration: " + response.status,
+						buttons: Ext.Msg.OK,
+						icon: Ext.MessageBox.ERROR
+				  });
+		      }
+	    });
+        
+    </script>
+
+	<div style="visibility:hidden"><canvas id="printcanvas" /></div>
+

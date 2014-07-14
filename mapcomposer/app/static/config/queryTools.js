@@ -8,12 +8,12 @@
 			"title": "Acque GeoServer",
 			"projection":"EPSG:3003",
 			"url": "/geoserver/ows",
-			"version":"1.1.1",
+            "version":"1.1.1",
 			"layersCachedExtent":[-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7],
 			"layerBaseParams": {
 					
 					"TILED": true,
-                    "FORMAT":"image/png8"
+					"TILESORIGIN": "-20037508.34, -20037508.34"
             }
 		},       	
         "mapquest":{
@@ -23,7 +23,8 @@
 			"ptype": "gxp_osmsource"
 		},
 		"google": {
-			"ptype": "gxp_googlesource" 
+			"ptype": "gxp_googlesource",
+            "animationEnabled":false
 		},
 		"bing": {
             "ptype": "gxp_bingsource"
@@ -37,6 +38,7 @@
 
 	},
 	"map":{
+        "animatedZooming":{},
 		"projection": "EPSG:900913",
 		"units": "m",
 		"numZoomLevels":24,
@@ -61,16 +63,6 @@
 				"group": "background"
 			},{
 				"source": "gsacque",
-				"title": "Ctr2k - Publiacqua",
-				"name": "SW:ctr2k_pbq_pyramid",
-				"group": "background"				
-			},{
-				"source": "gsacque",
-				"title": "Ctr10k - Geoscopio",
-				"name": "geoscopio:rt_ctr.10k",
-				"group": "background"				
-			},{
-				"source": "gsacque",
 				"title": "Ctr2k - Acque",
 				"name": "SW:pyramid_ctr2k",
 				"group": "background"				
@@ -83,16 +75,19 @@
 				"source": "google",
 				"title": "Google Terrain",
 				"name": "TERRAIN",
+                "animationEnabled":false,
 				"group": "background"
 			},{
 				"source": "google",
 				"title": "Google Satellite",
 				"name": "SATELLITE",
+                "animationEnabled":false,
 				"group": "background"
 			},{
 				"source": "google",
 				"title": "Google Roadmap",
 				"name": "ROADMAP",
+                "animationEnabled":false,
 				"group": "background"
 			},{
 				"source": "mapquest",
@@ -318,50 +313,32 @@
 			},{
 				"source": "gsacque",
 				"title": "Da Depuratore (IT)",
-				"name": "postgis_sw:pia",
+				"name": "SW:it",
 				"group": "Punti Immissione in Ambiente",
-				"styles": "pia_da_depuratore",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Da Bypass Depuratore(IB)",
-				"name": "postgis_sw:pia",
+				"name": "SW:ib",
 				"group": "Punti Immissione in Ambiente",
-				"styles": "pia_da_bypass_depuratore",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Da Sfioratore(IS)",
-				"name": "postgis_sw:pia",
+				"name": "SW:is",
 				"group": "Punti Immissione in Ambiente",
-				"styles": "pia_da_scaricatore",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Da Sollevamento(IL)",
-				"name": "postgis_sw:pia",
+				"name": "SW:il",
 				"group": "Punti Immissione in Ambiente",
-				"styles": "pia_da_sollevamento",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Diretto(ID) fino a 200AE",
-				"name": "postgis_sw:pia",
+				"title": "Diretto(ID)",
+				"name": "SW:id",
 				"group": "Punti Immissione in Ambiente",
-				"styles": "id_ae_fino_a_200",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Diretto(ID) maggiore di 200AE",
-				"name": "postgis_sw:pia",
-				"group": "Punti Immissione in Ambiente",
-				"styles": "id_ae_magg200",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Siti - Catene Sfioratori",
-				"name": "postgis_sw:v_sito_cateneSF_con_infra",
-				"group": "Fognatura",
 				"visibility": false
 			},{
 				"source": "gsacque",
@@ -377,26 +354,14 @@
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Siti - Catene Sollevamenti",
-				"name": "postgis_sw:v_sito_cateneSL_con_infra",
-				"group": "Impianti Fgn",
-				"visibility": false
-			},{
-				"source": "gsacque",
 				"title": "Sollevamenti",
 				"name": "SW:sl",
 				"group": "Impianti Fgn",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Depuratori - Sezioni",
-				"name": "postgis_sw:v_de_sezioni",
-				"group": "Impianti Fgn",
-				"visibility": false
-			},{
-				"source": "gsacque",
 				"title": "Depuratori",
-				"name": "postgis_sw:de",
+				"name": "SW:de",
 				"group": "Impianti Fgn",
 				"visibility": false
 			},{
@@ -414,14 +379,8 @@
 			},{
 				"source": "gsacque",
 				"title": "Contatori",
-				"name": "postgis_sw:contator",
+				"name": "SW:contator",
 				"group": "Contatori",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Area di rispetto 200m",
-				"name": "postgis_sw:v_captazioni_buffer",
-				"group": "Captazioni",
 				"visibility": false
 			},{
 				"source": "gsacque",
@@ -492,7 +451,7 @@
 			},{
 				"source": "gsacque",
 				"title": "Depositi",
-				"name": "postgis_sw:ac",
+				"name": "SW:ac",
 				"group": "Impianti Acq",
 				"visibility": false
 			},{
@@ -503,27 +462,21 @@
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Siti Acq",
-				"name": "postgis_sw:v_sito_acq_con_infra",
+				"title": "Siti",
+				"name": "postgis_sw:v_sito_con_infra",
 				"group": "Impianti Acq",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Rete Acq - Non Trattata",
-				"name": "postgis_sw:v_acq_con_grezza",
-				"group": "Acquedotto",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Rete Acq - Trattata",
-				"name": "postgis_sw:v_acq_con_trattata",
+				"title": "Rete Acq",
+				"name": "SW:acq_con",
 				"group": "Acquedotto",
 				"visibility": false
 			}
 
 		]
 	},
-	"customPanels":[
+    "customPanels":[
       {
           "xtype": "panel",
           "title": "FeatureGrid",      
@@ -593,10 +546,8 @@
 		  "ptype":"gxp_wfssearchbox",
           "markerFadeoutEnable":false,
           "forceMultiple":true,
-		  "markerName":"GeoRefMarker",
           "separator":"start",
 		  "outputConfig":{
-	  		 "predicate":"ILIKE",
 			 "url":"/geoserver/postgis_sw/ows?",
 			 "emptyText":"Ricerca impianti",
 			 "typeName":"postgis_sw:wfs_search_impianti",
@@ -618,19 +569,19 @@
 				   "mapping":"properties.gestore"
 				},
 				{
-				   "name":"denominaz",
-				   "mapping":"properties.denominaz"
+				   "name":"denominazi",
+				   "mapping":"properties.denominazi"
 				}
 			 ],
 			 "sortBy":"codice_ato",
 			 "queriableAttributes":[
 				"codice_ato",
-				"denominaz"
+				"denominazi"
 			 ],
 			 "displayField":"codice_ato",
 			 "pageSize":10,
 			 "width":150,
-			 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{codice_ato}-{gestore}</span></h3>{denominaz}</div></tpl>"
+			 "tpl":"<tpl for=\".\"><div class=\"search-item\"><h3>{codice_ato}-{gestore}</span></h3>{denominazi}</div></tpl>"
 		  },
 		  "updateField":"geometry",
 		  "zoom":18,
@@ -639,13 +590,10 @@
 	   },{
 		  "ptype":"gxp_wfssearchbox",
           "markerFadeoutEnable":false,
-		  "markerName":"GeoRefMarker",
           "separator":"start",
           "forceMultiple":true,
           "noButton":true,
 		  "outputConfig":{
-
-	  		 "predicate":"ILIKE",
 			 "url":"/geoserver/postgis_sw/ows?",
 			 "emptyText":"Ricerca contatori",
 			 "typeName":"postgis_sw:wfs_search_contatori",
@@ -657,10 +605,6 @@
 				{
 				   "name":"geometry",
 				   "mapping":"geometry"
-				},
-				{
-				   "name":"impianto",
-				   "mapping":"properties.impianto"
 				},
 				{
 				   "name":"impianto2",
@@ -679,7 +623,7 @@
 				   "mapping":"properties.servizio"
 				}
 			 ],
-			 "sortBy":"impianto",
+			 "sortBy":"impianto2",
 			 "queriableAttributes":[
 				"impianto2",
 				"nominativo"
@@ -696,16 +640,12 @@
 	   },{
 		  "ptype":"gxp_print",
 		  "customParams":{
-			 "outputFilename":"stampa",
-            		 "forwardHeaders":[],
-					 "printHeader":"acque_print_header.png"
+			 "outputFilename":"stampa"
 		  },
-		  "appendLegendOptions": true,
 		  "printService":"/geoserver/pdf/",
 		  "legendPanelId":"legendPanel",
           "defaultResolutionIndex":1,
           "defaultLayoutIndex":1,
-	      "legendOnSeparatePage":true,
 		  "ignoreLayers":["WFSSearch","Marker","WFSsearchMarker","GeoRefMarker","GeoLocation"],
 		  "actionTarget":{
 			 "target":"paneltbar",
@@ -722,10 +662,10 @@
 			"ptype": "gxp_mouseposition",
             "displayProjectionCode":"EPSG:4326",
             "customCss": "text-shadow: 1px 0px 0px #686868, 1px 1px 0px #686868, 0px 1px 0px #686868,-1px 1px 0px #686868, -1px 0px 0px #686868, -1px -1px 0px #686868, 0px -1px 0px #686868, 1px -1px 0px #686868, 1px 4px 5px #aeaeae;color:white "
-		},{
+		}, {
                     "ptype": "gxp_featuremanager",
                     "id": "featuremanager"
-        },{
+        }, {
                     "ptype": "gxp_featuregrid",
                     "featureManager": "featuremanager",
                     "outputConfig": {

@@ -1,17 +1,16 @@
 {
-   "geoStoreBase":"http:/webgis.acque.net/geostore/rest/",
+   "geoStoreBase":"/geostore/rest/",
    "proxy":"../http_proxy/proxy/?url=",
    "defaultLanguage": "it",
    "gsSources":{ 
 		"gsacque": {
 			"ptype": "gxp_wmssource",
 			"title": "Acque GeoServer",
-			"url": "http://webgis.acque.net/geoserver/ows",
+			"url": "/geoserver/ows",
 			"projection":"EPSG:3003",
 			"layerBaseParams": {
 					"TILED": true,
-					"TILESORIGIN": "1394190.6211433, 4663756.8332024",
-					"buffer":10
+                   			 "FORMAT":"image/png8"
 			}
 		},
         "gsrt_ctr": {
@@ -269,32 +268,50 @@
 			},{
 				"source": "gsacque",
 				"title": "Da Depuratore (IT)",
-				"name": "SW:it",
+				"name": "postgis_sw:pia",
 				"group": "Punti Immissione in Ambiente",
+				"styles": "pia_da_depuratore",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Da Bypass Depuratore(IB)",
-				"name": "SW:ib",
+				"name": "postgis_sw:pia",
 				"group": "Punti Immissione in Ambiente",
+				"styles": "pia_da_bypass_depuratore",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Da Sfioratore(IS)",
-				"name": "SW:is",
+				"name": "postgis_sw:pia",
 				"group": "Punti Immissione in Ambiente",
+				"styles": "pia_da_scaricatore",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Da Sollevamento(IL)",
-				"name": "SW:il",
+				"name": "postgis_sw:pia",
 				"group": "Punti Immissione in Ambiente",
+				"styles": "pia_da_sollevamento",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Diretto(ID)",
-				"name": "SW:id",
+				"title": "Diretto(ID) fino a 200AE",
+				"name": "postgis_sw:pia",
 				"group": "Punti Immissione in Ambiente",
+				"styles": "id_ae_fino_a_200",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Diretto(ID) maggiore di 200AE",
+				"name": "postgis_sw:pia",
+				"group": "Punti Immissione in Ambiente",
+				"styles": "id_ae_magg200",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Siti - Catene Sfioratori",
+				"name": "postgis_sw:v_sito_cateneSF_con_infra",
+				"group": "Fognatura",
 				"visibility": false
 			},{
 				"source": "gsacque",
@@ -304,8 +321,20 @@
 				"visibility": false
 			},{
 				"source": "gsacque",
+				"title": "Siti - Catene sollevamenti",
+				"name": "postgis_sw:v_sito_cateneSL_con_infra",
+				"group": "Impianti Fgn",
+				"visibility": false
+			},{
+				"source": "gsacque",
 				"title": "Sollevamenti",
 				"name": "SW:sl",
+				"group": "Impianti Fgn",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Depuratori - Sezioni",
+				"name": "postgis_sw:v_de_sezioni",
 				"group": "Impianti Fgn",
 				"visibility": false
 			},{
@@ -325,6 +354,12 @@
 				"title": "Rete fgn",
 				"name": "postgis_sw:fgn_con",
 				"group": "Fognatura",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Area di rispetto 200m",
+				"name": "postgis_sw:v_captazioni_buffer",
+				"group": "Captazioni",
 				"visibility": false
 			},{
 				"source": "gsacque",
@@ -352,6 +387,12 @@
 				"visibility": false
 			},{
 				"source": "gsacque",
+				"title": "Siti Acq",
+				"name": "postgis_sw:v_sito_acq_con_infra",
+				"group": "Impianti Acq",
+				"visibility": false
+			},{
+				"source": "gsacque",
 				"title": "Potabilizzatori - Cloratori",
 				"name": "SW:pt",
 				"group": "Impianti Acq",
@@ -370,10 +411,15 @@
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Rete Acq",
-				"name": "SW:acq_con",
+				"title": "Rete Acq - Non Trattata",
+				"name": "postgis_sw:v_acq_con_grezza",
 				"group": "Acquedotto",
-				"transparent": true,
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Rete Acq - Trattata",
+				"name": "postgis_sw:v_acq_con_trattata",
+				"group": "Acquedotto",
 				"visibility": false
 			}
 
@@ -424,7 +470,8 @@
           "forceMultiple":true,
           "separator":"start",
 		  "outputConfig":{
-			 "url":"http://webgis.acque.net/geoserver/postgis_sw/ows?",
+			 "predicate":"ILIKE",	
+			 "url":"/geoserver/postgis_sw/ows?",
 			 "emptyText":"Ricerca impianti",
 			 "typeName":"postgis_sw:wfs_search_impianti",
 			 "recordModel":[
@@ -470,9 +517,10 @@
           "forceMultiple":true,
           "noButton":true,
 		  "outputConfig":{
-			 "url":"http://webgis.acque.net/geoserver/postgis_sw/ows?",
+		     "predicate":"ILIKE",
+			 "url":"/geoserver/postgis_sw/ows?",			 
 			 "emptyText":"Ricerca contatori",
-			 "typeName":"postgis_sw:wfs_search8",
+			 "typeName":"postgis_sw:wfs_search_contatori",
 			 "recordModel":[
 				{
 				   "name":"id",
@@ -483,15 +531,27 @@
 				   "mapping":"geometry"
 				},
 				{
+				   "name":"impianto",
+				   "mapping":"properties.impianto"
+				},
+				{
 				   "name":"impianto2",
 				   "mapping":"properties.impianto2"
 				},
 				{
 				   "name":"nominativo",
 				   "mapping":"properties.nominativo"
+				},
+				{
+				   "name":"gestore",
+				   "mapping":"properties.gestore"
+				},
+				{
+				   "name":"servizio",
+				   "mapping":"properties.servizio"
 				}
 			 ],
-			 "sortBy":"impianto2",
+			 "sortBy":"impianto",
 			 "queriableAttributes":[
 				"impianto2",
 				"nominativo"
@@ -506,26 +566,30 @@
 		  "outputTarget":"paneltbar",
 		  "index":31
 	   },{
-		  "ptype":"gxp_print",
-		  "customParams":{
-			 "outputFilename":"stampa"
-		  },
-		  "printService":"http://webgis.acque.net/geoserver/pdf/",
-		  "legendPanelId":"legendPanel",
+                  "ptype":"gxp_print",
+                  "customParams":{
+                         "outputFilename":"stampa",
+                         "forwardHeaders":[]
+                  },
+                  "appendLegendOptions": true,
+                  "printService":"/geoserver/pdf/",
+                  "legendPanelId":"legendPanel",
+	           "legendOnSeparatePage":true,
           "defaultResolutionIndex":1,
           "defaultLayoutIndex":1,
-		  "ignoreLayers":["WFSSearch","Marker","WFSsearchMarker","GeoRefMarker","GeoLocation"],
-		  "appendLegendOptions": true,
-		  "actionTarget":{
-			 "target":"paneltbar",
-			 "index":4
-		  }
-	   },{
+                  "ignoreLayers":["WFSSearch","Marker","WFSsearchMarker","GeoRefMarker","GeoLocation"],
+                  "actionTarget":{
+                         "target":"paneltbar",
+                         "index":4
+                  }
+           },{
             "ptype": "gxp_wmsgetfeatureinfo_menu", 
             "toggleGroup": "toolGroup",
             "regex":"<table[^>]*>([\\s\\S]*)<\\/table>",
             "useTabPanel": true,
-            "actionTarget": {"target": "paneltbar", "index": 20}
+            "actionTarget": {"target": "paneltbar", "index": 20},
+	     "vendorParams":{"buffer":10}
+
         },{
 			"ptype": "gxp_mouseposition",
             "displayProjectionCode":"EPSG:4326",

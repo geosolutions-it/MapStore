@@ -66,13 +66,13 @@
 				"group": "background"				
 			},{
 				"source": "gsacque",
-				"title": "Ctr10k - Geoscopio",
-				"name": "geoscopio:rt_ctr.10k",
+				"title": "Ctr2k - Acque",
+				"name": "SW:pyramid_ctr2k",
 				"group": "background"				
 			},{
 				"source": "gsacque",
-				"title": "Ctr2k - Acque",
-				"name": "SW:pyramid_ctr2k",
+				"title": "Ctr10k - Geoscopio",
+				"name": "geoscopio:rt_ctr.10k",
 				"group": "background"				
 			},{
 				"source": "bing",
@@ -99,98 +99,6 @@
 				"title": "MapQuest OpenStreetMap",
 				"name": "osm",
 				"group": "background"
-			},{
-				"source": "gsacque",
-				"title": "QU_2k",
-				"name": "SW:foglio_2k",
-				"group": "Altro",
-				"tiled": false,
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Lidar DTM",
-				"name": "SW:lidar_acque",
-				"group": "Lidar DTM",
-				"tiled": false,
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Lidar hillshade",
-				"name": "SW:lidar_acque_hillshade",
-				"group": "Lidar DTM",
-				"tiled": false,
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Lidar curve di livello 3mt",
-				"name": "postgis_sw:curve_lidar_3m",
-				"group": "Lidar DTM",				
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "2010",
-				"name": "SW:segnalazioni_qualita_2010",
-				"group": "Segnalazioni qualit&agrave; acqua",
-				"tiled": false,
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "2011",
-				"name": "SW:segnalazioni_qualita_2011",
-				"group": "Segnalazioni qualit&agrave; acqua",
-				"tiled": false,
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "2012",
-				"name": "SW:segnalazioni_qualita_2012",
-				"group": "Segnalazioni qualit&agrave; acqua",
-				"tiled": false,
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "2013",
-				"name": "SW:segnalazioni_qualita_2013",
-				"group": "Segnalazioni qualit&agrave; acqua",
-				"tiled": false,
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "QU_10k",
-				"name": "SW:foglio_10k",
-				"group": "Altro",
-				"tiled": false,
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Siti protetti - Zone umide di importanza internazionale (Ramsar)",
-				"name": "geoportale_nazionale:SP.SITIPROTETTI_RAMSAR_wgs84",
-				"group": "Geoportale nazionale",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Fogli catastali",
-				"name": "geoscopio:rt_cat.idcatbdfog.rt",
-				"group": "AdT Catasto Terreni",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Particelle catastali",
-				"name": "geoscopio:rt_cat.idcatpart.rt",
-				"group": "AdT Catasto Terreni",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Civici",
-				"name": "postgis_sw:civici",
-				"group": "Civici",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Prese Enel",
-				"name": "SW:enel",
-				"group": "Altro",
-				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Ristoro",
@@ -256,269 +164,449 @@
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Stato aggiornamento cartografico",
-				"name": "postgis_sw:v_comuni_cartografati_acq",
-				"group": "Acquedotto",
+				"title": "Quadro d'unione 10k",
+				"name": "SW:foglio_2k",
+				"group": "Altro",
+				"tiled": false,
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Interventi: riparazioni",
-				"name": "SW:riparazioni",
-				"group": "Acquedotto",
+				"title": "Quadro d'unione 10k",
+				"name": "SW:foglio_10k",
+				"group": "Altro",
+				"tiled": false,
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Condotte Eternit",
-				"name": "postgis_sw:acq_con",
-				"styles": "eternit_acque",
-				"group": "Acquedotto",
+				"title": "Siti protetti - Zone umide di importanza internazionale (Ramsar)",
+				"name": "geoportale_nazionale:SP.SITIPROTETTI_RAMSAR_wgs84",
+				"group": "Geoportale nazionale",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Manovre Acq",
-				"name": "SW:manovra",
-				"group": "Acquedotto",
+				"title": "Fogli catastali",
+				"name": "geoscopio:rt_cat.idcatbdfog.rt",
+				"group": "AdT Catasto Terreni",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Produttivi",
-				"name": "SW:produtt",
-				"group": "Fognatura",
+				"title": "Particelle catastali",
+				"name": "geoscopio:rt_cat.idcatpart.rt",
+				"group": "AdT Catasto Terreni",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Stato aggiornamento cartografico",
-				"name": "postgis_sw:v_comuni_cartografati_fgn",
-				"group": "Fognatura",
+				"title": "Civici",
+				"name": "postgis_sw:civici",
+				"group": "Civici",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "FG area rete",
-				"name": "SW:fg",
-				"group": "Fognatura",
+				"title": "Distretto limite",
+				"name": "publiacqua:distretto_limite",
+				"group": "ALTRE INFRASTRUTTURE",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Rete Sensibile",
-				"name": "postgis_sw:v_rete_sensibile",
-				"group": "Fognatura",
+				"title": "Edificio",
+				"name": "publiacqua:edificio_ubicazione",
+				"group": "ALTRE INFRASTRUTTURE",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Punto di prelievo",
+				"name": "publiacqua:punto_prelievo_ubicazione",
+				"group": "ALTRE INFRASTRUTTURE",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Servit&ugrave;",
+				"name": "publiacqua:servitu_asse",
+				"group": "ALTRE INFRASTRUTTURE",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "SITO limite EXTRASII",
+				"name": "publiacqua:sito_limite_extrasii",
+				"group": "ALTRE INFRASTRUTTURE",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "SITO ubicazione EXTRASII",
+				"name": "publiacqua:sito_ubicazione_extrasii",
+				"group": "ALTRE INFRASTRUTTURE",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "SITO ubicazione SERVIZIO",
+				"name": "publiacqua:sito_ubicazione_servizio",
+				"group": "ALTRE INFRASTRUTTURE",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "SITO limite SERVIZIO",
+				"name": "publiacqua:sito_limite_servizio",
+				"group": "ALTRE INFRASTRUTTURE",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "Utenza Enel",
+				"name": "publiacqua:utenza_enel_ubicazione",
+				"group": "ALTRE INFRASTRUTTURE",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "acq PUNTO DI INTERVENTO",
+				"name": "publiacqua:punto_intervento_ubicazione",
+				"group": "INTERVENTI",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "fgn PUNTO DI INTERVENTO",
+				"name": "publiacqua:fgn_punto_intervento_ubicazione",
+				"group": "INTERVENTI",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "fgn_impianto_di_sollevamento_limite",
+				"name": "publiacqua:fgn_impianto_di_sollevamento_limite",
+				"group": "ALTRI BACINI FGN",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "fgn_trattamento_limite",
+				"name": "publiacqua:fgn_trattamento_limite",
+				"group": "ALTRI BACINI FGN",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "fgn_punto_scarico_limite",
+				"name": "publiacqua:fgn_punto_scarico_limite",
+				"group": "ALTRI BACINI FGN",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "fgn_scarico_ingombro",
+				"name": "publiacqua:fgn_scarico_ingombro",
+				"group": "BACINI RACCOLTA FGN",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "fgn_rete_di_raccolta_limite",
+				"name": "publiacqua:fgn_rete_di_raccolta_limite",
+				"group": "BACINI RACCOLTA FGN",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "fgn_punto_scarico_ubicazione",
+				"name": "publiacqua:fgn_punto_scarico_ubicazione",
+				"group": "PUNTI SCARICO",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "fgn ALLACCIO",
+				"name": "publiacqua:fgn_allaccio_asse",
+				"group": "ALLACCI FGN",
+				"visibility": false
+			},{ 
+				"source": "gsacque",
+				"title": "fgn SIFONE",
+				"name": "publiacqua:fgn_sifone_ubicazione",
+				"group": "ALLACCI FGN",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "fgn UTENZA",
+				"name": "publiacqua:fgn_utenza_ubicazione",
+				"group": "UTENZE PRODUTTIVE",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "fgn CADITOIA",
+				"name": "publiacqua:fgn_caditoia_ubicazione",
+				"group": "CADITOIE",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "fgn_paratoia_ubicazione",
+				"name": "publiacqua:fgn_paratoia_ubicazione",
+				"group": "IMPIANTI FGN",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "fgn_impianto_di_sollevamento_ubicazione",
+				"name": "publiacqua:fgn_impianto_di_sollevamento_ubicazione",
+				"group": "IMPIANTI FGN",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "fgn_scarico_ubicazione",
+				"name": "publiacqua:fgn_scarico_ubicazione",
+				"group": "IMPIANTI FGN",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "fgn_trattamento_ubicazione",
+				"name": "publiacqua:fgn_trattamento_ubicazione",
+				"group": "IMPIANTI FGN",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "sito_limite_refluo",
+				"name": "publiacqua:sito_limite_refluo",
+				"group": "SITI FGN",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "sito_ubicazione_refluo",
+				"name": "publiacqua:sito_ubicazione_refluo",
+				"group": "SITI FGN",
 				"visibility": false
 			},{
 				"source": "gsacque",
 				"title": "Rete a Dispersione",
 				"name": "postgis_sw:v_rete_a_dispersione",
-				"group": "Fognatura",
+				"group": "FOGNATURA",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Valvole Acq",
-				"name": "SW:valvol",
-				"group": "Acquedotto",
+				"title": "fgn_camicia_asse",
+				"name": "publiacqua:fgn_camicia_asse",
+				"group": "FOGNATURA",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Da Depuratore (IT)",
-				"name": "postgis_sw:pia",
-				"group": "Punti Immissione in Ambiente",
-				"styles": "pia_da_depuratore",
+				"title": "fgn_chiusino_ubicazione",
+				"name": "publiacqua:fgn_chiusino_ubicazione",
+				"group": "FOGNATURA",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Da Bypass Depuratore(IB)",
-				"name": "postgis_sw:pia",
-				"group": "Punti Immissione in Ambiente",
-				"styles": "pia_da_bypass_depuratore",
+				"title": "fgn_condotta_asse",
+				"name": "publiacqua:fgn_condotta_asse",
+				"group": "FOGNATURA",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Da Sfioratore(IS)",
-				"name": "postgis_sw:pia",
-				"group": "Punti Immissione in Ambiente",
-				"styles": "pia_da_scaricatore",
+				"title": "fgn_misuratore_ubicazione",
+				"name": "publiacqua:fgn_misuratore_ubicazione",
+				"group": "FOGNATURA",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Da Sollevamento(IL)",
-				"name": "postgis_sw:pia",
-				"group": "Punti Immissione in Ambiente",
-				"styles": "pia_da_sollevamento",
+				"title": "fgn_pozzetto_ingombro",
+				"name": "publiacqua:fgn_pozzetto_ingombro",
+				"group": "FOGNATURA",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Diretto(ID) fino a 200AE",
-				"name": "postgis_sw:pia",
-				"group": "Punti Immissione in Ambiente",
-				"styles": "id_ae_fino_a_200",
+				"title": "fgn_pozzetto_ubicazione",
+				"name": "publiacqua:fgn_pozzetto_ubicazione",
+				"group": "FOGNATURA",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Diretto(ID) maggiore di 200AE",
-				"name": "postgis_sw:pia",
-				"group": "Punti Immissione in Ambiente",
-				"styles": "id_ae_magg200",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Siti - Catene Sfioratori",
-				"name": "postgis_sw:v_sito_cateneSF_con_infra",
-				"group": "Fognatura",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Sfioratori",
-				"name": "SW:sf",
-				"group": "Fognatura",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Allegati",
-				"name": "postgis_sw:v_allegati_fgn",
-				"group": "Fognatura",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Siti - Catene Sollevamenti",
-				"name": "postgis_sw:v_sito_cateneSL_con_infra",
-				"group": "Impianti Fgn",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Sollevamenti",
-				"name": "SW:sl",
-				"group": "Impianti Fgn",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Depuratori - Sezioni",
-				"name": "postgis_sw:v_de_sezioni",
-				"group": "Impianti Fgn",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Depuratori",
-				"name": "postgis_sw:de",
-				"group": "Impianti Fgn",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Versi",
-				"name": "SW:versi",
-				"group": "Fognatura",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Rete fgn",
-				"name": "postgis_sw:fgn_con",
-				"group": "Fognatura",
-				"visibility": false
-			},{
-				"source": "gsacque",
-				"title": "Contatori",
+				"title": "Contatori pbq no-D2",
 				"name": "postgis_sw:contator",
-				"group": "Contatori",
+				"group": "CONTATORI",
+				"styles": "contatori_publiacqua_noD2",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Area di rispetto 200m",
-				"name": "postgis_sw:v_captazioni_buffer",
-				"group": "Captazioni",
+				"title": "Contatori pbq-GEO",
+				"name": "postgis_sw:contator",
+				"group": "CONTATORI",
+				"styles": "contatori pbq-GEO",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Sorgenti",
-				"name": "SW:so",
-				"group": "Captazioni",
+				"title": "Contatori PBQ",
+				"name": "postgis_sw:contator",
+				"group": "CONTATORI",
+				"styles": "contatori_publiacqua",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Pozzi",
-				"name": "SW:po",
-				"group": "Captazioni",
+				"title": "allaccio_asse",
+				"name": "publiacqua:allaccio_asse",
+				"group": "ALLACCI ACQ",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Prese Fiume",
-				"name": "SW:fi",
-				"group": "Captazioni",
+				"title": "rubinetto_a_maschio_ubicazione",
+				"name": "publiacqua:rubinetto_a_maschio_ubicazione",
+				"group": "ALLACCI ACQ",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Prese Lago",
-				"name": "SW:la",
-				"group": "Captazioni",
+				"title": "camicia_asse",
+				"name": "publiacqua:camicia_asse",
+				"group": "ACQUEDOTTO",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Punto misura di pressione",
-				"name": "SW:punti_misura_pressione",
-				"group": "Acquedotto - Esercizio",
+				"title": "cavallotto_ubicazione",
+				"name": "publiacqua:cavallotto_ubicazione",
+				"group": "ACQUEDOTTO",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Aree sfociatura",
-				"name": "SW:aree_sfociatura",
-				"group": "Acquedotto - Esercizio",
+				"title": "chiusino_ubicazione",
+				"name": "publiacqua:chiusino_ubicazione",
+				"group": "ACQUEDOTTO",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Punti sfociatura",
-				"name": "SW:punti_sfociatura",
-				"group": "Acquedotto - Esercizio",
+				"title": "cloratore_ubicazione",
+				"name": "publiacqua:cloratore_ubicazione",
+				"group": "IMPIANTI ACQ",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Prelievo analisi",
-				"name": "postgis_sw:prelievo",
-				"group": "Acquedotto - qualit&agrave;",
+				"title": "diga_ingombro",
+				"name": "publiacqua:diga_ingombro",
+				"group": "IMPIANTI ACQ",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Aree qualit&agrave; - Durezza",
-				"name": "postgis_sw:v_risorsa_durezza",
-				"group": "Acquedotto - qualit&agrave;",
+				"title": "diga_ubicazione",
+				"name": "publiacqua:diga_ubicazione",
+				"group": "IMPIANTI ACQ",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Aree qualit&agrave;",
-				"name": "qualita:risorsa",
-				"group": "Acquedotto - qualit&agrave;",
+				"title": "fontanelloaq_ubicazione",
+				"name": "publiacqua:fontanelloaq_ubicazione",
+				"group": "FONTANELLI E IDRANTI",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Potabilizzatori - Cloratori",
-				"name": "SW:pt",
-				"group": "Impianti Acq",
+				"title": "fontanello_ubicazione",
+				"name": "publiacqua:fontanello_ubicazione",
+				"group": "FONTANELLI E IDRANTI",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Depositi",
-				"name": "postgis_sw:ac",
-				"group": "Impianti Acq",
+				"title": "idrante_ubicazione",
+				"name": "publiacqua:idrante_ubicazione",
+				"group": "FONTANELLI E IDRANTI",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Pompaggi",
-				"name": "SW:pg",
-				"group": "Impianti Acq",
+				"title": "impianto_di_pompaggio_ubicazione",
+				"name": "publiacqua:impianto_di_pompaggio_ubicazione",
+				"group": "IMPIANTI ACQ",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Siti Acq",
-				"name": "postgis_sw:v_sito_acq_con_infra",
-				"group": "Impianti Acq",
+				"title": "misuratore_ubicazione",
+				"name": "publiacqua:misuratore_ubicazione",
+				"group": "ACQUEDOTTO",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Rete Acq - Non Trattata",
-				"name": "postgis_sw:v_acq_con_grezza",
-				"group": "Acquedotto",
+				"title": "opera_di_accumulo_ubicazione",
+				"name": "publiacqua:opera_di_accumulo_ubicazione",
+				"group": "IMPIANTI ACQ",
 				"visibility": false
 			},{
 				"source": "gsacque",
-				"title": "Rete Acq - Trattata",
-				"name": "postgis_sw:v_acq_con_trattata",
-				"group": "Acquedotto",
+				"title": "impianto_di_potabilizzazione_ubicazione",
+				"name": "publiacqua:impianto_di_potabilizzazione_ubicazione",
+				"group": "IMPIANTI ACQ",
 				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "op_di_capt_corso_acqua_ubicazione",
+				"name": "publiacqua:op_di_capt_corso_acqua_ubicazione",
+				"group": "CAPTAZIONI",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "op_di_capt_lago_ubicazione",
+				"name": "publiacqua:op_di_capt_lago_ubicazione",
+				"group": "CAPTAZIONI",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "op_di_capt_sorgente_ubicazione",
+				"name": "publiacqua:op_di_capt_sorgente_ubicazione",
+				"group": "CAPTAZIONI",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "op_di_capt_pozzo_ubicazione",
+				"name": "publiacqua:op_di_capt_pozzo_ubicazione",
+				"group": "CAPTAZIONI",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "pcaditoia_ubicazione",
+				"name": "publiacqua:pcaditoia_ubicazione",
+				"group": "IMPIANTI ACQ",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "valv_scarico_sfiato_regolazione_ubicazione",
+				"name": "publiacqua:valv_scarico_sfiato_regolazione_ubicazione",
+				"group": "ACQUEDOTTO",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "rete_di_distribuzione_limite",
+				"name": "publiacqua:rete_di_distribuzione_limite",
+				"group": "BACINO DISTRIBUZIONE ACQ",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "organi_di_manovra_ubicazione_esito",
+				"name": "publiacqua:organi_di_manovra_ubicazione",
+				"styles": "organi_di_manovra_ubicazione_esito",
+				"group": "ACQUEDOTTO",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "organi_di_manovra_ubicazione",
+				"name": "publiacqua:organi_di_manovra_ubicazione",
+				"group": "ACQUEDOTTO",				
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "cameretta_ubicazione",
+				"name": "publiacqua:cameretta_ubicazione",
+				"group": "ACQUEDOTTO",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "cameretta_ingombro",
+				"name": "publiacqua:cameretta_ingombro",
+				"group": "ACQUEDOTTO",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "condotta_asse_wfm",
+				"name": "publiacqua:condotta_asse",				
+				"group": "ACQUEDOTTO",
+				"styles": "condotta_asse_wfm",
+				"visibility": true
+			},{
+				"source": "gsacque",
+				"title": "condotta_asse",
+				"name": "publiacqua:condotta_asse",
+				"group": "ACQUEDOTTO",
+				"visibility": true
+			},{
+				"source": "gsacque",
+				"title": "sito_limite_potabile",
+				"name": "publiacqua:sito_limite_potabile",
+				"group": "SITI ACQ",
+				"visibility": false
+			},{
+				"source": "gsacque",
+				"title": "sito_ubicazione_potabile",
+				"name": "publiacqua:sito_ubicazione_potabile",
+				"group": "SITI ACQ",
+				"visibility": true
 			}
 
 		]
@@ -593,7 +681,6 @@
 		  "ptype":"gxp_wfssearchbox",
           "markerFadeoutEnable":false,
           "forceMultiple":true,
-		  "markerName":"GeoRefMarker",
           "separator":"start",
 		  "outputConfig":{
 	  		 "predicate":"ILIKE",
@@ -639,7 +726,6 @@
 	   },{
 		  "ptype":"gxp_wfssearchbox",
           "markerFadeoutEnable":false,
-		  "markerName":"GeoRefMarker",
           "separator":"start",
           "forceMultiple":true,
           "noButton":true,
@@ -697,8 +783,8 @@
 		  "ptype":"gxp_print",
 		  "customParams":{
 			 "outputFilename":"stampa",
-            		 "forwardHeaders":[],
-					 "printHeader":"acque_print_header.png"
+			 "forwardHeaders":[],
+			 "printHeader":"publiacqua-print_header.png"
 		  },
 		  "appendLegendOptions": true,
 		  "printService":"/geoserver/pdf/",

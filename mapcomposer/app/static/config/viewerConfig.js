@@ -9,7 +9,7 @@
         "gsacque": {
 			"ptype": "gxp_wmssource",
 			"title": "Acque GeoServer",
-			"url": "http://10.80.4.45/geoserver/ows",
+			"url": "/geoserver/ows",
 			"layerBaseParams": {
 					"TILED": true,
 					"TILESORIGIN": "-20037508.34, -20037508.34",

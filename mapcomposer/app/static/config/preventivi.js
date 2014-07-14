@@ -1,5 +1,5 @@
 {
-   "geoStoreBase":"http://webgis.acque.net/geostore/rest/",
+   "geoStoreBase":"/geostore/rest/",
    "proxy":"../http_proxy/proxy/?url=",
    "defaultLanguage": "it",
    "gsSources":{ 
@@ -7,11 +7,11 @@
 			"ptype": "gxp_wmssource",
 			"title": "Acque GeoServer",
 			"projection":"EPSG:3003",
-			"url": "http://webgis.acque.net/geoserver/ows",
+			"url": "/geoserver/ows",
+			"layersCachedExtent":[-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7],
 			"layerBaseParams": {
 					"TILED": true,
-					"TILESORIGIN": "1046403.2, 5200006.1",
-					"buffer":10
+					"TILESORIGIN": "1046403.2, 5200006.1"
 			}
 		},        	
 		"mapquest": {
@@ -150,26 +150,31 @@
         },
         "index": 23
     },{
-		  "ptype":"gxp_print",
-		  "customParams":{
-			 "outputFilename":"stampa"
-		  },
-		  "printService":"http://webgis.acque.net/geoserver/pdf/",
-		  "legendPanelId":"legendPanel",
-          "defaultResolutionIndex":1,
-          "defaultLayoutIndex":1,
-		  "ignoreLayers":["WFSSearch","Marker","WFSsearchMarker","GeoRefMarker","GeoLocation"],
-		  "appendLegendOptions": true,
-		  "actionTarget":{
-			 "target":"paneltbar",
-			 "index":4
-		  }
-	   },{
+                  "ptype":"gxp_print",
+                  "customParams":{
+                         "outputFilename":"stampa",
+                         "forwardHeaders":[],
+						 "printHeader":"acque_print_header.png"
+                  },
+                  "appendLegendOptions": true,
+                  "printService":"/geoserver/pdf/",
+                  "legendPanelId":"legendPanel",
+         	 	"defaultResolutionIndex":1,
+         	 	"defaultLayoutIndex":1,
+	 	    "legendOnSeparatePage":true,
+                  "ignoreLayers":["WFSSearch","Marker","WFSsearchMarker","GeoRefMarker","GeoLocation"],
+                  "actionTarget":{
+                         "target":"paneltbar",
+                         "index":4
+                  }
+           },{
             "ptype": "gxp_wmsgetfeatureinfo_menu", 
             "toggleGroup": "toolGroup",
             "regex":"<table[^>]*>([\\s\\S]*)<\\/table>",
             "useTabPanel": true,
-            "actionTarget": {"target": "paneltbar", "index": 20}
+            "actionTarget": {"target": "paneltbar", "index": 20},
+	     "vendorParams":{"buffer":10}
+
         },{
 			"ptype": "gxp_mouseposition",
             "displayProjectionCode":"EPSG:4326",

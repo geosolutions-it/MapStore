@@ -9,12 +9,11 @@
         "gsacque": {
 			"ptype": "gxp_wmssource",
 			"title": "Acque GeoServer",
-			"url": "/geoserver/ows",
-			"layersCachedExtent":[-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7],
-
+			"url": "http://10.80.4.45/geoserver/ows",
+            "layersCachedExtent":[-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7],
 			"layerBaseParams": {
 					"TILED": true,
-                   			 "FORMAT":"image/png8"
+                    "FORMAT":"image/png8"
                     
 			}
 		},
@@ -41,7 +40,7 @@
     "map":{
         	"projection": "EPSG:900913",
 		"units": "m",
-		"numZoomLevels":20,
+		"numZoomLevels":21,
 		
 	    "center":[1230080.35, 5372357.1],
         "zoom":8,
@@ -84,7 +83,7 @@
                 "title": "Fognatura",
                 "name": "webgis:fgn_con",
                 "group": "Sedi Tecniche",
-                "visibility": true
+                "visibility": false
 			},{
                 "source": "gsacque",
                 "title": "Acquedotto",
@@ -256,19 +255,20 @@
 		},{
 			"ptype": "gxp_mouseposition",
             "displayProjectionCode":"EPSG:4326",
-            "customCss": "text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
-       		},{
+            "customCss": "text-shadow: 1px 0px 0px #686868, 1px 1px 0px #686868, 0px 1px 0px #686868,-1px 1px 0px #686868, -1px 0px 0px #686868, -1px -1px 0px #686868, 0px -1px 0px #686868, 1px -1px 0px #686868, 1px 4px 5px #aeaeae;color:white "
+		},{
+            "actions":[
+			 "-"
+		  ]
+       },{
 			"ptype": "gxp_dynamicgeocoder",
 			"outputTarget": "paneltbar",
 			"toggleGroup": "toolGroup",
-            "outputConfig":{"width":450},
-
             "fadeOut":false,
 			"index": 23
 		},{
 			"ptype": "gxp_wms_layer_filter",
             "outputTarget":"filter",
-			"updateInfoTools":true,
                 "filterFieldsets":[
                    {
                       "ref":"state",
@@ -298,7 +298,7 @@
                             "cql_filter":"IDAvvisoStato = 3"
                          },
                          {
-                            "boxLabel":"Chiusura",
+                            "boxLabel":"Ripristino Stradale",
                             "checked":false,
                             "cql_filter":"IDAvvisoStato = 4"
                          },
@@ -317,44 +317,8 @@
                       "customConfig":{
                          "hideLabel":false
                       }
-                   },{
-                      "ref":"tipo",
-                      "label":"Tipo",
-                      "xtype":"checkboxgroup",
-                      "checked":false,
-                      "columns":2,
-                      "checkboxes":[
-                         {
-                            "boxLabel":"Numero verde",
-                            "checked":true,
-                            "cql_filter":"CodAvvisoTipo  = 'AE'"
-                         },
-                         {
-                            "boxLabel":"Telecontrollo",
-                            "checked":true,
-                            "cql_filter":"CodAvvisoTipo  = 'AT'"
-                         },
-                         {
-                            "boxLabel":"Manutenzione",
-                            "checked":true,
-                            "cql_filter":"CodAvvisoTipo  = 'AI'"
-                         },
-                         {
-                            "boxLabel":"Laboratorio",
-                            "checked":true,
-                            "cql_filter":"CodAvvisoTipo  = 'AL'"
-                         },
-                         {
-                            "boxLabel":"Giro d'impianto",
-                            "checked":true,
-                            "cql_filter":"CodAvvisoTipo  = 'AG'"
-                         }
-                      ],
-                      "emptyFilter":"1=0",
-                      "customConfig":{
-                         "hideLabel":false
-                      }
-                   },{
+                   },
+                   {
                       "ref":"apertura",
                       "label":"Data Apertura",
                       "xtype":"radiogroup",
