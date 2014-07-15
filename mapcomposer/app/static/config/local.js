@@ -31,7 +31,7 @@
         },
         "destinationtiled": {
             "ptype": "gxp_wmscsource",
-            "title": "Destination GeoServer",
+            "title": "Destination GeoServer Tiled",
             "version":"1.1.1",
             "url": "http://localhost:8080/geoserver/destination/wms",
             "layerBaseParams": {
@@ -41,7 +41,7 @@
         },
         "externalstiled": {
             "ptype": "gxp_wmscsource",
-            "title": "Destination GeoServer",
+            "title": "External WMS Tiled",
             "version":"1.1.1",
             "url": "http://localhost:8080/geoserver/externals/wms",
             "layerBaseParams": {
