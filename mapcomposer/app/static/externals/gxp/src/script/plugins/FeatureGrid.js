@@ -256,7 +256,13 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  Do check on feature grid export (one to show a possible error and another one to download the file)
      */
      exportDoubleCheck: true,
-	
+     
+	/** api: config[exportCheckLimit]
+     *  ``integer``
+     *  if present, limit the number of feature to query for the first check
+     */
+     exportCheckLimit: null,
+     
 	/** api: config[pageLabel]
      *  ``String``
      */
@@ -271,6 +277,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  ``String``
      */
 	totalRecordsLabel: "Total Records",
+    filterPropertyNames: true,
 
     /** private: method[displayTotalResults]
      */
@@ -848,7 +855,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         var numColumns = colModel.getColumnCount(true);
         var propertyName = [];
         
-        for (var i=0; i<numColumns; i++){        
+        for (var i=1; i<numColumns; i++){        
             propertyName.push(colModel.getColumnHeader(i));
         }   
 
@@ -856,18 +863,20 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         
         // Url generation
         var url =  protocol.url;
+        var propertyNamesString = "";
         if(this.exportFormatsConfig[outputFormat]){
             // Read specific xonfiguration for the output format
             if(this.exportFormatsConfig[outputFormat].addGeometry){
                 propertyName.push(featureManager.featureStore.geometryName);
             }
             if(!this.exportFormatsConfig[outputFormat].exportAll){
-                url += "propertyName=" + propertyName.join(',') + "&";
+                propertyNamesString += "propertyName=" + propertyName.join(',') + "&";
             }
         }else{
-            url += "propertyName=" + propertyName.join(',') + "&";
+            propertyNamesString += "propertyName=" + propertyName.join(',') + "&";
         }
         url += "service=WFS" +
+                (this.filterPropertyNames ? "&" + propertyNamesString : "") +
                 "&version=" + protocol.version +
                 "&request=GetFeature" +
                 "&typeName=" + protocol.featureType +
@@ -876,18 +885,22 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         this.url =  url;
 
         if(this.exportDoubleCheck){
+            //show mask
+            var myMask = new Ext.LoadMask(Ext.getBody(), {msg:"Please wait..."});
+            myMask.show();
             OpenLayers.Request.POST({
-                url: this.url,
+                //add the maxFeatures attribute if present to the test request
+                url: this.url + (this.exportCheckLimit ? "&maxFeatures=" + this.exportCheckLimit :"") ,
                 data: this.xml,
                 callback: function(request) {
-
+                    myMask.hide();
                     if(request.status == 200){
                     
                         try
                           {
                                 var serverError = Ext.util.JSON.decode(request.responseText);
                                 Ext.Msg.show({
-                                    title: this.invalidParameterValueErrorText,
+                                    title: "Error",
                                     msg: "outputFormat: " + outputFormat + "</br></br>" +
                                          failedExport + "</br></br>" +
                                          "Error: " + serverError.exceptions[0].text,
@@ -898,7 +911,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                         catch(err)
                           {
                             // submit filter in a standard form (before check)
-                            this.doDownloadPost(this.url, this.xml);
+                            this.doDownloadPost(this.url, this.xml,outputFormat);
                           }
                           
                     }else{
@@ -914,13 +927,80 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             });   
         }else{
             // submit filter in a standard form to skip double check
-            this.doDownloadPost(this.url, this.xml);
+            this.doDownloadPost(this.url, this.xml,outputFormat);
         }     
 
     },
 
     /** api: method[doDownloadPost]
+     * create a dummy iframe and a form. Submit the form 
      */    
+     
+    doDownloadPost: function(url, data,outputFormat){
+        //        
+        //delete other iframes appended
+        //
+        if(document.getElementById(this.downloadFormId)) {
+            document.body.removeChild(document.getElementById(this.downloadFormId)); 
+        }
+        if(document.getElementById(this.downloadIframeId)) {
+            document.body.removeChild(document.getElementById(this.downloadIframeId));
+        }
+        // create iframe
+        var iframe = document.createElement("iframe");
+        iframe.setAttribute("style","visiblity:hidden;width:0px;height:0px;");
+        this.downloadIframeId = Ext.id();
+        iframe.setAttribute("id",this.downloadIframeId);
+        iframe.setAttribute("name",this.downloadIframeId);
+        document.body.appendChild(iframe);
+        iframe.onload = function(){
+            if(!iframe.contentWindow) return;
+            
+            var error ="";
+            var body = iframe.contentWindow.document.getElementsByTagName('body')[0];
+            var content ="";
+            if (body.textContent){
+              content = body.textContent;
+            }else{
+              content = body.innerText;
+            }
+            try{
+                var serverError = Ext.util.JSON.decode(content);
+                error = serverError.exceptions[0].text
+            }catch(err){
+                error = body.innerHTML || content;
+            }
+             Ext.Msg.show({
+                title: me.invalidParameterValueErrorText,
+                msg: "outputFormat: " + outputFormat + "</br></br>" +
+                      "</br></br>" +
+                     "Error: " + error,
+                buttons: Ext.Msg.OK,
+                icon: Ext.MessageBox.ERROR
+            });   
+        }
+        var me = this;
+        
+        // submit form with enctype = application/xml
+        var form = document.createElement("form");
+        this.downloadFormId = Ext.id();
+        form.setAttribute("id", this.downloadFormId);
+        form.setAttribute("method", "POST");
+        //this is to skip cross domain exception notifying the response body
+        var iframeURL = url.indexOf("http://") == 0 ? proxy + encodeURIComponent(url) : url;
+        form.setAttribute("action", iframeURL );
+        form.setAttribute("target",this.downloadIframeId);
+        
+        var hiddenField = document.createElement("input");      
+        hiddenField.setAttribute("name", "filter");
+        hiddenField.value= data;
+        form.appendChild(hiddenField);
+        document.body.appendChild(form);
+        form.submit(); 
+    } 
+    /** api: method[doDownloadPost]
+     */   
+/*     
     doDownloadPost: function(url, data){
         //        
         //delete other iframes appended
@@ -940,7 +1020,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         document.body.appendChild(form);
         form.submit(); 
     }
-    
+    */
 });
 
 Ext.preg(gxp.plugins.FeatureGrid.prototype.ptype, gxp.plugins.FeatureGrid);

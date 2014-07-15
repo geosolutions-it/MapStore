@@ -192,6 +192,9 @@ gxp.plugins.spatialselector.SpatialSelector = Ext.extend(gxp.plugins.Tool, {
 					var method = this.spatialSelectors[c.getValue()];//record.json.method;
 					method.activate();
 					this.activeMethod = method;
+                    setTimeout(function(){
+                        c.refOwner.doLayout();
+                    }, 500);
 				},
 				scope : this
 			}
