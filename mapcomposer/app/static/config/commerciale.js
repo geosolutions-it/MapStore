@@ -361,47 +361,71 @@
 			"ptype": "gxp_mouseposition",
             "displayProjectionCode":"EPSG:4326",
             "customCss": "text-shadow: 1px 0px 0px #686868, 1px 1px 0px #686868, 0px 1px 0px #686868,-1px 1px 0px #686868, -1px 0px 0px #686868, -1px -1px 0px #686868, 0px -1px 0px #686868, 1px -1px 0px #686868, 1px 4px 5px #aeaeae;color:white "
-		},{
-                    "ptype": "gxp_featuremanager",
-                    "id": "featuremanager"
-        },{
-                    "ptype": "gxp_featuregrid",
-                    "featureManager": "featuremanager",
-                    "outputConfig": {
-                        "id": "featuregrid",
-                        "title": "Features"
-                    },
-                    "outputTarget": "south",
-                    "showExportCSV": true
-        }, {
-                    "ptype": "gxp_bboxqueryform",
-                    "featureManager": "featuremanager",
-                    "outputTarget": "east",
-                    "actions": null,
-                    "id": "bboxquery",
-                    "outputConfig":{
-                        "toggleGroup": "toolGroup",
-                        "outputSRS": "EPSG:900913",
-                        "selectStyle":{
-                            "strokeColor": "#FF0000",
-                            "handlerFillColor": "#FFFFFF",
-                            "fillColor": "#FFFFFF",
-                            "fillOpacity":0,
-                            "strokeWidth":2
-                        },
-                "spatialFilterOptions": {   
-                 "lonMax": 20037508.34,   
-                 "lonMin": -20037508.34,
-                 "latMax": 20037508.34,   
-                 "latMin": -20037508.34  
+		}, {
+		  "ptype": "gxp_featuremanager",
+           "format": "GML2",
+		  "id": "featuremanager"
+	    }, {
+		  "ptype": "gxp_featuregrid",
+		  "featureManager": "featuremanager",
+          "exportCheckLimit":1,
+		  "outputConfig": {
+			  "id": "featuregrid"
+		  },
+		  "outputTarget": "south",
+          "showExportCSV":true
+	    }, {
+          "ptype": "gxp_spatialqueryform",
+          "featureManager": "featuremanager",
+          "featureGridContainer": "south",
+          "outputTarget": "east",
+          "actions": null,
+          "id": "bboxquery",
+          "outputConfig":{
+                  "outputSRS": "EPSG:900913",
+                  "selectStyle":{
+                          "strokeColor": "#ee9900",
+                          "fillColor": "#ee9900",
+                          "fillOpacity": 0.4,
+                          "strokeWidth": 1
+                  },
+                  "spatialFilterOptions": {    
+                          "lonMax": 20037508.34,  
+                          "lonMin": -20037508.34,
+                          "latMax": 20037508.34,  
+                          "latMin": -20037508.34  
+                  },
+                  "bufferOptions": {
+                        "minValue": 1,
+                        "maxValue": 1000,
+                        "decimalPrecision": 2,
+                        "distanceUnits": "m"
+                  }
+          },
+          "spatialSelectorsConfig":{
+                "bbox":{
+                    
+                    "displayProjection": "EPSG:4326",
+                    "metricUnit":"m",
+                    "xtype": "gxp_spatial_bbox_selector",
+                    "addGeometryOperation":false,
+                    "infoSRS":false
+
                 },
-                "bufferOptions": {
-                 "minValue": 1,
-                 "maxValue": 1000,
-                 "decimalPrecision": 2,
-                 "distanceUnits": "m"
-            }   
-                    }           
+                
+                "circle":{
+                    "displayProjection": "EPSG:4326",
+                    "metricUnit":"m",
+                    "xtype": "gxp_spatial_circle_selector",
+                    "zoomToCurrentExtent": false,
+                    "addGeometryOperation":false
+                },
+                "polygon":{
+		            "xtype": "gxp_spatial_polygon_selector",
+                    "zoomToCurrentExtent": false,
+                    "addGeometryOperation":false
+		        }
+              }
         }
 	],
     
