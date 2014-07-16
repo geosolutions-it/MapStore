@@ -193,7 +193,7 @@
             ],
             "splitPanels": true,
             "panelsConfig": [{
-            	"title": "Change Matrix Runs",
+            	"title": "Land Cover Runs",
             	"featureType": "changematrix",
         		"featureTypeDetails": "changeMatrix",
 	            "columns" : [
@@ -432,7 +432,7 @@
             ],
             "splitPanels": true,
             "panelsConfig": [{
-            	"title": "Change Matrix",
+            	"title": "Land Cover",
             	"clcLevelMode": "combobox",
             	"geocoderConfig": {
             		"selectReturnType": false,

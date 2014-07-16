@@ -54,6 +54,8 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 	twoYearsText: 'two years',
 
 	// bbar text
+	useCuda: false,
+	cudaCheckBoxText: 'CUDA',
 	submitButtonText: 'Submit',
 	resetButtonText: 'Reset',
 
@@ -759,18 +761,38 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		var me = this;
 
 		return new Ext.Toolbar({
-			items : ["->", {
+			items : [
+			    {
+                    xtype: "checkbox",
+                    checked: false,
+                    boxLabel: "<img src='theme/app/img/silk/nVidia.png' style='vertical-align: middle;width: 16px;'/> " + me.cudaCheckBoxText,
+                    listeners: {
+                        check: function(box, checked) {
+                        	if (checked) {
+                            	console.log(me.cudaCheckBoxText + " ON");
+                            	me.useCuda = true;
+                            } else {
+                            	console.log(me.cudaCheckBoxText + " OFF");
+                            	me.useCuda = false;
+                           }
+                        },
+                        scope: this
+                	}
+			    },
+			    "->", 
+			    {
 					text : this.resetButtonText,
 					iconCls : 'gxp-icon-removelayers',
 					handler : me.resetForm,
-					scope:this
-				}, {
+					scope: this
+				},
+				{
 					text : this.submitButtonText,
 					iconCls : 'gxp-icon-zoom-next',
 					ref : 'submit-button',
 					id : me.id + '_submit-button',
 					handler : me.submitForm,
-					scope:this
+					scope: this
 				}]
 		});
 	},
@@ -913,13 +935,15 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		this.loadingMask.hide();
 		Ext.getCmp(this.id + '_submit-button').enable();
 		//Ext.Msg.alert(this.changeMatrixTimeoutDialogTitle, this.changeMatrixTimeoutDialogText);
-		
-		var wfsGrid = Ext.getCmp(this.wfsChangeMatrisGridPanel);
-		if(wfsGrid) {
-			var lastOptions = wfsGrid.store.lastOptions;
-         	wfsGrid.store.reload(lastOptions);
-         	wfsGrid.getView().refresh();
-		}		
+		var me = this;
+		this.target.tools.wfsChangeMatrisGridPanel.setTotalRecord(function(){
+			var wfsGrid = Ext.getCmp(me.geocoderConfig.targetResultGridId);
+			if(wfsGrid) {
+				var lastOptions = wfsGrid.store.lastOptions;
+	         	wfsGrid.store.reload(lastOptions);
+	         	wfsGrid.getView().refresh();
+			}			
+		});
 	},
 
 	/**
@@ -931,11 +955,13 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		if (!this.loadingMask)
 			this.loadingMask = new Ext.LoadMask(Ext.get(this.id), 'Loading..');
 		me.loadingMask.show();
+		
 		var submitButton = Ext.getCmp(this.id + '_submit-button');
 		if (submitButton)
 			submitButton.disable();
 		if (me.errorTimer)
 			clearTimeout(me.errorTimer);
+			
 		me.errorTimer = setTimeout(function() {
 			me.handleTimeout();
 		}, me.requestTimeout);
@@ -948,11 +974,22 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 		if (!this.loadingMask)
 			this.loadingMask = new Ext.LoadMask(Ext.get(this.id), 'Loading..');
 		this.loadingMask.hide();
+		
 		var submitButton = Ext.getCmp(this.id + '_submit-button');
 		if (submitButton)
 			submitButton.enable();
 		/*if (this.errorTimer)
 			clearTimeout(this.errorTimer);*/
+		
+		var me = this;
+		this.target.tools.wfsChangeMatrisGridPanel.setTotalRecord(function(){
+			var wfsGrid = Ext.getCmp(me.geocoderConfig.targetResultGridId);
+			if(wfsGrid) {
+				var lastOptions = wfsGrid.store.lastOptions;
+	         	wfsGrid.store.reload(lastOptions);
+	         	wfsGrid.getView().refresh();
+			}			
+		});
 	}
 
 });

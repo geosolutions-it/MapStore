@@ -161,6 +161,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 			filter : this.filter,
 			//outputFormat : "text/xml",
 			outputFormat : "application/json",
+			maxFeatures : 1000000000,
 			srsName : this.srsName,
 			version : this.version
 		});
@@ -173,7 +174,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 			},
 			scope : this
 		});
-
+		
 		return this.countFeature;
 	},
 
@@ -443,6 +444,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 
 		var wfsGridPanel = new Ext.grid.GridPanel({
 			title : this.title,
+			header: false,
 			store : [],
 			id : this.id,
 			layout : "fit",
@@ -556,33 +558,42 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 						}
 						return;
 					}
-
-					o.totalRecords = me.countFeature;
-					var r = o.records, t = o.totalRecords || r.length;
-					if (!options || options.add !== true) {
-						if (this.pruneModifiedRecords) {
-							this.modified = [];
+					
+					var parent = me;
+					me = this;
+					parent.setTotalRecord(
+						function() {
+							
+							o.totalRecords = parent.countFeature;
+							var r = o.records, t = o.totalRecords || r.length;
+							if (!options || options.add !== true) {
+								if (me.pruneModifiedRecords) {
+									me.modified = [];
+								}
+								for (var i = 0, len = r.length; i < len; i++) {
+									r[i].join(me);
+								}
+								if (me.snapshot) {
+									me.data = me.snapshot;
+									delete me.snapshot;
+								}
+								me.clearData();
+								me.data.addAll(r);
+								me.totalLength = t;
+								me.applySort();
+								me.fireEvent('datachanged', me);
+							} else {
+								me.totalLength = Math.max(t, me.data.length + r.length);
+								me.add(r);
+							}
+							me.fireEvent('load', me, r, options);
+							if (options.callback) {
+								options.callback.call(options.scope || me, r, options, true);
+							}
+							
+							me = parent;
 						}
-						for (var i = 0, len = r.length; i < len; i++) {
-							r[i].join(this);
-						}
-						if (this.snapshot) {
-							this.data = this.snapshot;
-							delete this.snapshot;
-						}
-						this.clearData();
-						this.data.addAll(r);
-						this.totalLength = t;
-						this.applySort();
-						this.fireEvent('datachanged', this);
-					} else {
-						this.totalLength = Math.max(t, this.data.length + r.length);
-						this.add(r);
-					}
-					this.fireEvent('load', this, r, options);
-					if (options.callback) {
-						options.callback.call(options.scope || this, r, options, true);
-					}
+					);
 				},
 				proxy : new GeoExt.data.ProtocolProxy({
 					protocol : new OpenLayers.Protocol.WFS({

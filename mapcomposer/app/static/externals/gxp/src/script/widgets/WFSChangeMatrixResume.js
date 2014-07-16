@@ -47,7 +47,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 	 * ``String``
 	 * Text for empty Combo Selection Method (i18n).
 	 */
-	chgMatrixFieldSetTitle : 'Change Matrix Inputs',
+	chgMatrixFieldSetTitle : 'Land Cover Inputs',
 
 	/** api: config[scatterChartTabTitle]
 	 * ``String``
@@ -57,13 +57,13 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 
 	/** api: config[pieChartMenuLabel]
 	 * ``String``
-	 * Text for the Change Matrix Grid Menu Label (i18n).
+	 * Text for the Land Cover Grid Menu Label (i18n).
 	 */
 	pieChartMenuLabel : "Print Pie Chart",
 	
 	/** api: config[interactiveChgMatrixLabel]
 	 * ``String``
-	 * Text for the Change Matrix Menu Label (i18n).
+	 * Text for the Land Cover Menu Label (i18n).
 	 */
 	interactiveChgMatrixLabel : "Interactive Change Matrix",
 	
@@ -213,6 +213,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 		var yAttribute = "ref";
 		var dataAttribute = "pixels";
 
+		//axisx.push("");
 		for (var i = 0; i < changeMatrix.length; i++) {
 			var el = changeMatrix[i];
 			if (axisx.indexOf(el[xAttribute]) < 0) {
@@ -220,48 +221,55 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 			}
 
 		}
-		axisx.sort(function(a, b) {
+		/*axisx.sort(function(a, b) {
 			return parseInt(a) - parseInt(b)
-		});
+		});*/
 		for (var i = 0; i < changeMatrix.length; i++) {
 			var el = changeMatrix[i];
 			var y = axisx.indexOf(el[xAttribute]);
 			var x = axisx.indexOf(el[yAttribute]);
-			matrix[x][y + 1] = el[dataAttribute];
+			matrix[x+1][y+2] = el[dataAttribute];
 
 			// Partial Sum
-			matrix[x][matrix.length] = (matrix[x][matrix.length] && !isNaN(matrix[x][matrix.length]) ? matrix[x][matrix.length] : 0) + el[dataAttribute];
-			matrix[matrix.length-1][y + 1] = (matrix[matrix.length-1][y + 1] && !isNaN(matrix[matrix.length-1][y + 1]) ? matrix[matrix.length-1][y + 1] : 0) + el[dataAttribute];
+			matrix[x+1][1] = (matrix[x+1][1] && !isNaN(matrix[x+1][1]) ? matrix[x+1][1] : 0) + el[dataAttribute];
+			matrix[0][y+2] = (matrix[0][y+2] && !isNaN(matrix[0][y+2]) ? matrix[0][y+2] : 0) + el[dataAttribute];
 
 			// Total Sum
-			matrix[matrix.length-1][matrix.length] = (matrix[matrix.length-1][matrix.length] && !isNaN(matrix[matrix.length-1][matrix.length]) ? matrix[matrix.length-1][matrix.length] : 0) + el[dataAttribute];
+			matrix[0][1] = (matrix[0][1] && !isNaN(matrix[0][1]) ? matrix[0][1] : 0) + el[dataAttribute];
 		}
 
-		for (var i = 0; i < matrix.length - 1; i++) {
+		axisx.push(axisx[axisx.length - 1]);
+		for (var i = 1; i < matrix.length; i++) {
+			axisx[axisx.length - i] = axisx[axisx.length - i - 1] + "";
+		}
+		for (var i = 1; i < matrix.length; i++) {
 			// ////////////////////
 			// To be changed with this.classes values
 			// ////////////////////
-			matrix[i][0] = this.classesIndexes[this.classes[classDataIndex].level-1][1][axisx[i]-1][1];
-			axisx[i] = axisx[i] + "";
+			//console.log(axisx[i]);
+			var axisIdx = parseInt(axisx[i]) - 1;
+			if( axisIdx < 0 ) axisIdx = 0;
+			matrix[i][0] = this.classesIndexes[this.classes[classDataIndex].level-1][1][axisIdx][1];
 
 			// ///////////////////
 			// Adding Pie Chart buttons
 			// ///////////////////
-			matrix[i][matrix.length]       = "<img src='theme/app/img/silk/information.png' style='vertical-align: middle;width: 16px;'/> " + matrix[i][matrix.length];
-			matrix[matrix.length-1][i + 1] = "<img src='theme/app/img/silk/information.png' style='vertical-align: middle;width: 16px;'/> " + matrix[matrix.length-1][i + 1];
+			matrix[i][1]   = "<img src='theme/app/img/silk/information.png' alt='"+matrix[i][0]+"' style='vertical-align: middle;width: 16px;'/> " + matrix[i][1];
+			matrix[0][i+1] = "<img src='theme/app/img/silk/information.png' alt='"+matrix[i][0]+"' style='vertical-align: middle;width: 16px;'/> " + matrix[0][i+1];
 		}
-		
-		matrix[matrix.length - 1][0] = "[Sum]";
-		axisx[matrix.length - 1]     = "[Sum]";
-
+		matrix[0][0] = "[Sum]";
+		axisx.unshift(0);
+		axisx[1]     = "[Sum]";
+		console.log(axisx);
 		// descending x
 		// ascending y
 		//axisy.sort(function(a,b){return parseInt(b)-parseInt(a)});
 		var fields = [];
 		fields.push(" ");
-		for (var i = 0; i < axisx.length; i++) {
+		for (var i = 1; i <= axisx.length; i++) {
 			fields.push(axisx[i]);
 		}
+
 		return {
 			fields : fields,
 			data : matrix
@@ -390,17 +398,39 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 										var dataSeries = [];
 										// Check if either a row or a column has been clicked
 										if (gridColLabel == '[Sum]') { // Row
+
+											var total = data.substring(data.indexOf("> ")+2);
+											
+											/**
+											 * Search for the 'Now' total
+											 */
+											var total2;
+											var column = grid.getStore().getAt(0);
+											if (column.json[0] == '[Sum]') {
+												for (var c=1;c<column.json.length;c++) {
+													total2 = column.json[c]+"";
+													if (total2.indexOf("> ") > 0 && total2.indexOf("'"+gridRowLabel+"'") > 0) {
+														total2 = parseFloat(total2.substring(total2.indexOf("> ")+2));
+														break;
+													}
+													
+												}
+											}
+											
+											var diff = total2 - total;
+											var perc = (diff * 100)/total;
+											    perc = parseFloat(Math.round(perc * 100) / 100).toFixed(2);
+
 											/**
 											 * Reference -> Current
 											 */
+											pieChartTitle = " - " + gridRowLabel + " ("+perc+"%)- ";
 											pieChartSubTitle = me.scatterChartXAxisLabel + "("+refYear+")" + " -> " + me.scatterChartYAxisLabel + "("+nowYear+")";
-											pieChartTitle = " - " + gridRowLabel + " - ";
 											
 											/**
 											 * Populate the data series by selecting the row dataset
 											 */
-											var total = data.substring(data.indexOf("> ")+2);
-											for (var r=1;r<record.json.length-1;r++) {
+											for (var r=2;r<record.json.length;r++) {
 												var dataItem = [];
 												if (parseFloat(record.json[r]) != 0) {
 													dataItem.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][grid.getColumnModel().getDataIndex(r)-1][1]);
@@ -416,17 +446,37 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 											addPieChartToTabPanel(me.pieChartTabTitle, pieChartTitle, pieChartSubTitle, dataSeries);
 										}
 										else if (gridRowLabel == '[Sum]') { // Column
+
+											var total = data.substring(data.indexOf("> ")+2);
+											
+											/**
+											 * Search for the 'Now' total
+											 */
+											var total2;
+											for (var r=2;r<record.json.length;r++) {
+												var dataItem = [];
+												var row = grid.getStore().getAt(r-1);
+												total2 = row.json[1]+"";
+												if (total2.indexOf("> ") > 0 && total2.indexOf("'"+gridColLabel+"'") > 0) {
+													total2 = parseFloat(total2.substring(total2.indexOf("> ")+2));
+													break;
+												}
+											}
+											
+											var diff = total2 - total;
+											var perc = (diff * 100)/total;
+											    perc = parseFloat(Math.round(perc * 100) / 100).toFixed(2);
+
 											/**
 											 * Reference -> Current
 											 */
+											pieChartTitle = " - " + gridColLabel + " ("+perc+"%)- ";
 											pieChartSubTitle = me.scatterChartYAxisLabel + "("+nowYear+")" + " -> " + me.scatterChartXAxisLabel + "("+refYear+")";
-											pieChartTitle = " - " + gridColLabel + " - ";
 											
 											/**
 											 * Populate the data series by selecting the column dataset
 											 */
-											var total = data.substring(data.indexOf("> ")+2);
-											for (var r=1;r<record.json.length-1;r++) {
+											for (var r=2;r<record.json.length;r++) {
 												var dataItem = [];
 												var row = grid.getStore().getAt(r-1);
 												if (parseFloat(row.json[columnIndex]) != 0) {
@@ -694,10 +744,10 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 		// Scatter High-Chart Panel
 		// ///////////////////////////////////////
 		var series = [];
-		for (var d = 0; d < settings.data.length - 1; d++) {
+		for (var d = 1; d < settings.data.length; d++) {
 			var data = {};
 			var dataMatrix = [];
-			for (var dd = 0; dd < settings.data[d].length - 2; dd++) {
+			for (var dd = 1; dd < settings.data[d].length - 1; dd++) {
 				var dataRow = [];
 				dataRow.push(d + 1);
 				dataRow.push(dd + 1);

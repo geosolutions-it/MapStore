@@ -71,43 +71,43 @@
 			},{
                 "source": "jrc",
                 "group" : "Touring Land Cover",
-				"title" : "Touring Land Cover (unina2)",
-				"name"  : "it.geosolutions:touring",
+				"title" : "Touring Land Cover L3",
+				"name"  : "it.crisp:touring",
 				"tiled" : false,
 				"visibility": true
             },{
                 "source": "jrc",
                 "group" : "Corine Land Cover",
 				"title" : "Corina Land Cover L1",
-				"name"  : "it.geosolutions:corine_L1",
+				"name"  : "it.crisp:corine_L1",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
                 "group" : "Corine Land Cover",
 				"title" : "Corina Land Cover L2",
-				"name"  : "it.geosolutions:corine_L2",
+				"name"  : "it.crisp:corine_L2",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
                 "group" : "Corine Land Cover",
 				"title" : "Corina Land Cover L3",
-				"name"  : "it.geosolutions:corine_L3",
+				"name"  : "it.crisp:corine_L3",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
                 "group" : "Urban Grids",
 				"title" : "Urban Grids",
-				"name"  : "it.geosolutions:urban_grids",
+				"name"  : "it.crisp:urban_grids",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
                 "group" : "Urban Grids",
 				"title" : "Imperviousness",
-				"name"  : "it.geosolutions:imperviousness",
+				"name"  : "it.crisp:imperviousness",
 				"tiled" : false,
 				"visibility": false
             }
@@ -158,7 +158,23 @@
           "collapsed": false,
           "collapsible": true,
           "header": true
-     }],
+     },{
+        "xtype": "tabpanel",
+        "border": false,
+        "id": "east",
+        "region": "east",
+        "width": 355,
+        "split": true,
+        "collapsible": true,
+        "collapsed": false,
+        "header": true,
+        "activeItem": 0,
+        "hideMode": "offsets",
+        "items": [
+            {"xtype": "panel", "id": "legendcontrolpanel", "title": "Legend", "layout": "fit", "region": "center", "autoScroll": true},
+            {"xtype": "panel", "id": "eastcontrolpanel",   "title": "Toolbox", "layout": "fit", "region": "center", "autoScroll": true}
+        ]
+    }],
     
 	"customTools":[{
            "ptype": "gxp_wpsmanager",
@@ -174,7 +190,7 @@
 	        "id": "wfsChangeMatrisGridPanel",
             "wfsURL": "http://localhost:8080/geoserver/wfs",
             "featureType": "changematrix",
-            "featureNS": "http://www.geo-solutions.it", 
+            "featureNS": "http://www.crisp.it",
             "pageSize": 10,
             "autoRefreshInterval": 3000,
             "srsName": "EPSG:32632", 
@@ -193,7 +209,7 @@
             ],
             "splitPanels": true,
             "panelsConfig": [{
-            	"title": "Change Matrix Runs",
+            	"title": "Land Cover Change Runs",
             	"featureType": "changematrix",
         		"featureTypeDetails": "changeMatrix",
 	            "columns" : [
@@ -275,12 +291,39 @@
             "actions": ["-"],
             "actionTarget": "paneltbar"
         },{
+            "ptype": "gxp_legend",
+            "outputTarget": "legendcontrolpanel",
+            "outputConfig": {
+                "autoScroll": true
+            },
+            "legendConfig" : {
+                "legendPanelId" : "legendPanel",
+                "defaults": {
+                    "style": "padding:5px",                  
+                    "baseParams": {
+                        "LEGEND_OPTIONS": "forceLabels:on;fontSize:10",
+                        "WIDTH": 20, 
+                        "HEIGHT": 20
+                    }
+                }
+            }
+        },{
             "ptype": "gxp_changematrix",
             "id" : "changeMatrixTool",
             "outputTarget": "eastcontrolpanel",
             "wfsChangeMatrisGridPanel": "wfsChangeMatrisGridPanel",
             "requestTimeout": 5000,
        		"wpsManagerID": "wpsManager",
+       		"clcLevelsConfig": [{
+				"filter": "urban_grids",
+				"decorator": "Urban Grids"
+			},{
+				"filter": "corine_L",
+				"decorator": "Corine Land Cover Level {0}"
+			},{
+				"filter": "touring",
+				"decorator": "Touring Land Cover"
+			}],
             "geocoderConfig": {
 	            "wpsBufferProcessID" : "JTS:buffer",
 	            "wfsBaseURL" : "http://localhost:8080/geoserver/wfs?",
@@ -320,7 +363,7 @@
 					"decimalPrecision": 2,
 					"distanceUnits": "m"
 				 },
-	            "geocoderTypeName" : "it.geosolutions:geocoder",
+	            "geocoderTypeName" : "it.crisp:geocoder",
 	            "geocoderTypeTpl" : "<tpl for=\".\"><hr><div class=\"search-item\"><h3>{name}</span></h3>Parent: {custom}</div></tpl>",
 	            "geocoderTypeRecordModel":[
 	                    {
@@ -349,7 +392,7 @@
 	            "wpsChgMatrixProcessName" : "gs:ChangeMatrix",
 	            "wpsUnionProcessID" : "JTS:union",
 				"source": "jrc",
-				"nsPrefix": "it.geosolutions",
+				"nsPrefix": "it.crisp",
 	            "storeName" : "unina_ds",
 	            "typeName" : "changematrix",
 	            "jiffleStyle" : "jiffle_style"
@@ -426,13 +469,14 @@
 			 ]]
 			],
             "classes": [
-            	{"layer": "it.geosolutions:corine_L1",  "level": 1, "values": [1,2,3,4,5]},
-            	{"layer": "it.geosolutions:corine_L2", "level": 2, "values": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]},
-            	{"layer": "it.geosolutions:corine_L3", "level": 3, "values": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43]}
+            	{"layer": "it.crisp:corine_L1", "level": 1, "values": [1,2,3,4,5]},
+            	{"layer": "it.crisp:corine_L2", "level": 2, "values": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]},
+            	{"layer": "it.crisp:corine_L3", "level": 3, "values": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43]},
+            	{"layer": "it.crisp:touring", "level": 3, "values": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43]}
             ],
             "splitPanels": true,
             "panelsConfig": [{
-            	"title": "Change Matrix",
+            	"title": "Land Cover",
             	"clcLevelMode": "combobox",
             	"geocoderConfig": {
             		"selectReturnType": false,

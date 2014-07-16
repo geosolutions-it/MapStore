@@ -13,7 +13,7 @@ GeoExt.Lang.add("it", {
         titleText: "Titolo",
         zoomLevelText: "Livello di Zoom",
         saveErrorText: "Problemi di salvataggio: ",
-        eastPanelTitle: "Pannello di Controllo",
+        eastPanelTitle: "Toolbox",
         bookmarkText: "URL del Segnalibro",
         permakinkText: "Permalink",
         appInfoText: "Crediti",

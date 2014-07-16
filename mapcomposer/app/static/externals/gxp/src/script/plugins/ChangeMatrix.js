@@ -105,7 +105,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.TableableTool, {
 	 *  ``String``
 	 *  Text for the changeMatrix results container (i18n).
 	 */
-	changeMatrixResultsTitle : "Change Matrix",
+	changeMatrixResultsTitle : "Land Cover",
 
 	// form errors
 	/** api: config[changeMatrixEmptyLayer]
@@ -212,7 +212,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.TableableTool, {
 	
 	/** api: config[wpsChgMatrixProcessName]
 	 *  ``String``
-	 *  ID of the WPS Change Matrix Process .
+	 *  ID of the WPS Land Cover Process .
 	 */
 	wpsChgMatrixProcessName: 'gs:ChangeMatrix',
 	
@@ -313,19 +313,19 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.TableableTool, {
 
 	/** api: config[storeName]
 	 *  ``String``
-	 *  Store Name for WFS logging on Change Matrix Process .
+	 *  Store Name for WFS logging on Land Cover Process .
 	 */
 	storeName : null,
 	
 	/** api: config[typeName]
 	 *  ``String``
-	 *  Type Name for WFS logging on Change Matrix Process .
+	 *  Type Name for WFS logging on Land Cover Process .
 	 */
 	typeName : null,
 	
 	/** api: config[jiffleStyle]
 	 *  ``String``
-	 *  Jiffle Style for the Raster returned by the Change Matrix Process .
+	 *  Jiffle Style for the Raster returned by the Land Cover Process .
 	 */
 	jiffleStyle : null,
 	
@@ -416,7 +416,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.TableableTool, {
 	 * ``String``
 	 * Text for empty Combo Selection Method (i18n).
 	 */
-	chgMatrixFieldSetTitle : 'Change Matrix Inputs',
+	chgMatrixFieldSetTitle : 'Land Cover Inputs',
 
 	/** api: config[scatterChartTabTitle]
 	 * ``String``
@@ -426,13 +426,13 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.TableableTool, {
 
 	/** api: config[pieChartMenuLabel]
 	 * ``String``
-	 * Text for the Change Matrix Grid Menu Label (i18n).
+	 * Text for the Land Cover Grid Menu Label (i18n).
 	 */
 	pieChartMenuLabel : "Print Pie Chart",
 	
 	/** api: config[interactiveChgMatrixLabel]
 	 * ``String``
-	 * Text for the Change Matrix Menu Label (i18n).
+	 * Text for the Land Cover Menu Label (i18n).
 	 */
 	interactiveChgMatrixLabel : "Interactive Change Matrix",
 	

@@ -170,13 +170,13 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		// Generate data for the charts
 		if(data && data.index && data.refTime){
 			var title = data.index.name || this.defaultTitle;
-			refTimePieChartsData = this.getPieChartsData(data.refTime.output);
+			refTimePieChartsData = this.getPieChartsData(data.index.id, data.index.subindex, data.refTime.output);
 			refTimeColChartsData = this.getColChartsSeries(data.refTime.output);
 			if(data.curTime 
 				// check if it have values (is not an array with [0])
 				&& this.validData(data.curTime.output)){
 				// 2 years
-				curTimePieChartsData = this.getPieChartsData(data.curTime.output);
+				curTimePieChartsData = this.getPieChartsData(data.index.id, data.index.subindex, data.curTime.output);
 				curTimeColChartsData = this.getColChartsSeries(data.curTime.output);
 			}else if(data.curTime){
 				data.refTime.time += " - " + data.curTime.time;
@@ -259,18 +259,60 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		// Bar chart tab
 		var barChartItems = [];
 		var barChartTitle = this.barChartTitleText;
-		var clcLevels = this.getLevels(data.refTime.output.referenceName, data.refTime.output.clcLevels);
+		
+		var clcLevels;
+		if( data.index.id == 3 )
+		{
+			// Marginal Land Take
+			clcLevels = ["Land Use (ha/person)"];
+		}
+		else
+		{
+			clcLevels = this.getLevels(data.index.id, data.index.subindex, data.refTime.output.referenceName, data.refTime.output.clcLevels);
+		}
+
+		var indexUoM = "";
+		switch(data.index.id) {
+			case 1:
+			case 2:
+			case 5:
+				indexUoM = "%";
+				break;
+			case 3:
+				indexUoM = "ha/person";
+				break;
+			case 4:
+				indexUoM = "";
+				break;
+			case 6:
+				indexUoM = "m/ha";
+				break;
+			case 7:
+				if (data.index.subindex == "c") indexUoM = "ha";
+				else  indexUoM = "%";
+				break;
+			case 8:
+				indexUoM = "No pixels";
+				break;
+			case 9:
+				indexUoM = "ha/person";
+				break;
+			case 10:
+				indexUoM = "persons/year";
+				break;
+		}
 
 		// Prepare xAxis
 		var xAxis = {
 			categories: clcLevels
 		};
 		if(clcLevels.length == 0){
-			xAxis.categories = [data.index.name];
+			xAxis.categories = [data.index.name + " ("+indexUoM+")"];
 		}
 
 		// title for the layers and the tab
 		var title = data.index && data.index.name ? data.index.name: this.defaultTitle;
+		    title+= " ("+indexUoM+")";
 
 		// yAxis
 		var yAxis = {};
@@ -290,7 +332,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 
 		// curr time chart
 		if(curTimeColChartsData){
-			var clcLevels1 = this.getLevels(data.curTime.output.referenceName, data.curTime.output.clcLevels);
+			var clcLevels1 = this.getLevels(data.index.id, data.index.subindex, data.curTime.output.referenceName, data.curTime.output.clcLevels);
 			barChartItems.push(
 				this.generateColumnChart(
 					this.currentTimeTitleText, 
@@ -364,20 +406,21 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
      *  :arg yearData: ``Object`` Data in the year
      *  :returns: ``Array`` With the pie chart data.
      */
-	getPieChartsData: function(yearData){
+	getPieChartsData: function(indexId, subIndex, yearData){
 		var chartsData = [];
 		if(yearData.admUnits 
 			&& yearData.clcLevels 
 			&& yearData.values
 			&& yearData.admUnits.length == yearData.values.length){
-			var clcLevels = this.getLevels(yearData.referenceName, yearData.clcLevels);
+			var clcLevels = this.getLevels(indexId, subIndex, yearData.referenceName, yearData.clcLevels);
 			for(var i = 0; i < yearData.admUnits.length; i++){
 				if(yearData.clcLevels.length == yearData.values[i].length){
 					var pieChartData = [];
 					// for(var j = 0; j < yearData.clcLevels.length; j++){
 					for(var j = 0; j < clcLevels.length; j++){
 						//pieChartData.push([yearData.clcLevels[j], yearData.values[i][j]]);
-						pieChartData.push([clcLevels[j], yearData.values[i][j]]);
+						if( yearData.values[i][j] > 0 )
+							pieChartData.push([clcLevels[j], yearData.values[i][j]]);
 					}
 					chartsData.push(pieChartData);
 				}
@@ -553,7 +596,38 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		});
 	},
 
-	getLevels: function(referenceName, clcLevels){
+	getLevels: function(indexId, subIndex, referenceName, clcLevels){
+		var indexUoM = "";
+		switch(indexId) {
+			case 1:
+			case 2:
+			case 5:
+				indexUoM = "%";
+				break;
+			case 3:
+				indexUoM = "ha/person";
+				break;
+			case 4:
+				indexUoM = "";
+				break;
+			case 6:
+				indexUoM = "m/ha";
+				break;
+			case 7:
+				if (subIndex == "c") indexUoM = "ha";
+				else  indexUoM = "%";
+				break;
+			case 8:
+				indexUoM = "No pixels";
+				break;
+			case 9:
+				indexUoM = "ha/person";
+				break;
+			case 10:
+				indexUoM = "persons/year";
+				break;
+		}
+		
 		try{
 			//layer level
 			var classDataIndex = 0;
@@ -570,7 +644,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 					var classIndex = parseInt(classesSelected[i]);
 					for(var j = 0; j < this.classesIndexes[classDataIndex][1].length; j++){
 						if(this.classesIndexes[classDataIndex][1][j][0] == classIndex){
-							classes.push(this.classesIndexes[classDataIndex][1][j][1]);
+							classes.push(this.classesIndexes[classDataIndex][1][j][1] + "("+indexUoM+")");
 							break;
 						}
 					}

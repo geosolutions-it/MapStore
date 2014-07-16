@@ -1692,6 +1692,12 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		if (layer) {
 			map.removeLayer(layer);
 		}
+		
+		if (this.draw) {
+			this.draw.deactivate();
+			map.removeControl(this.draw);
+		}
+		
 	},
 
 	// selected areas

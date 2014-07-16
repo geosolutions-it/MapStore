@@ -113,7 +113,7 @@
 	"customPanels":[{
           "xtype": "panel",
           "border": false,
-          "title": "Change Matrix Runs",
+          "title": "Land Cover Runs",
           "id": "outcomelaylistpanel",
           "region": "south",
           "height": 250,

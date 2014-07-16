@@ -288,6 +288,12 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(gxp.widgets.form.AbstractOperati
 			params.roi = currentExtent.toGeometry();
 		}
 
+		if (this.useCuda) {
+			params.jcuda = true;
+		} else {
+			params.jcuda = false;
+		}
+		
 		// if is selected as radio group override raster name from the inputValue
 		if(this.clcLevelMode == 'radiogroup'){
 			params.raster = params.raster.inputValue;
@@ -339,6 +345,9 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(gxp.widgets.form.AbstractOperati
 				value : params.roi.toString(),
 				mimeType : 'application/wkt'
 			}),
+			JCUDA : new OpenLayers.WPSProcess.LiteralData({
+				value : params.jcuda.toString()
+			}),
 			classes : []
 		};
 
@@ -362,6 +371,13 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(gxp.widgets.form.AbstractOperati
 		me.wpsManager.execute(me.geocoderConfig.wpsChgMatrixProcessName, requestObject, me.showResultsGrid, this);
 		
 		//me.handleRequestStop();
+		
+		var wfsGrid = Ext.getCmp(me.geocoderConfig.targetResultGridId);
+		if(wfsGrid) {
+			var lastOptions = wfsGrid.store.lastOptions;
+         	wfsGrid.store.reload(lastOptions);
+         	wfsGrid.getView().refresh();
+		}
 	},
 
 	/**

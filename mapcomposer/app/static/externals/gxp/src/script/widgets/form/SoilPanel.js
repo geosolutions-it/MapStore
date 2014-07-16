@@ -445,18 +445,41 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
                 	boxLabel: this.edgeDensityText, 
                 	name: 'sealingIndex', 
                 	inputValue: 6
-                },{
-                	boxLabel: this.urbanDiffusionAText, 
-                	name: 'sealingIndex', 
-                	inputValue: 71
-                },{
-                	boxLabel: this.urbanDiffusionBText, 
-                	name: 'sealingIndex', 
-                	inputValue: 72
-                },{
-                	boxLabel: this.urbanDiffusionCText, 
-                	name: 'sealingIndex', 
-                	inputValue: 73
+                },
+                {
+                	title : this.urbanDiffusionText,
+					xtype : 'fieldset',
+					autoWidth : true,
+					collapsible : false,
+					layout : 'fit',
+					defaultType : 'radiogroup',
+					items : [{
+			            cls: 'x-check-group-alt',
+						name : 'sealingIndex',
+		            	columns: 1,
+					    defaults: {
+					        // applied to each contained panel
+					        bodyStyle: 'padding:1px'
+					    },
+					    items:
+		                [{
+		                	boxLabel: this.urbanDiffusionAText, 
+		                	name: 'sealingIndex', 
+		                	inputValue: 71
+		                },{
+		                	boxLabel: this.urbanDiffusionBText, 
+		                	name: 'sealingIndex', 
+		                	inputValue: 72
+		                },{
+		                	boxLabel: this.urbanDiffusionCText, 
+		                	name: 'sealingIndex', 
+		                	inputValue: 73
+		                }],
+		            	listeners:{
+		            		change: me.sealingIndexSelect,
+		            		scope: me
+		            	}
+		          	}]
                 },{
                 	boxLabel: this.framesText, 
                 	name: 'sealingIndex', 
@@ -539,6 +562,14 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			// var responseData = this.getFakeResponse();
 			// var params = this.getWPSParams();
 			// this.showResult(responseData);
+			
+			var wfsGrid = Ext.getCmp(this.geocoderConfig.targetResultGridId);
+			if(wfsGrid) {
+				var lastOptions = wfsGrid.store.lastOptions;
+	         	wfsGrid.store.reload(lastOptions);
+	         	wfsGrid.getView().refresh();
+			}
+			
 			this.startWPSRequest(this.getForm().getValues());
 		}
 	},

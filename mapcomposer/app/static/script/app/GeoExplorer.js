@@ -56,7 +56,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     saveErrorText: "Trouble saving: ",
     
     //southPanelTitle: 'Data Grids',
-    eastPanelTitle: 'Control Panel',
+    eastPanelTitle: 'Toolbox',
     
     bookmarkText: "XML Map Context",
     permakinkText: 'XML',
