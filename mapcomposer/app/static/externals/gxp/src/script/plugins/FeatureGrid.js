@@ -875,11 +875,14 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         }else{
             propertyNamesString += "propertyName=" + propertyName.join(',') + "&";
         }
+        //get the name space
+        var prefix = featureManager.layerRecord.get("prefix");
+        var namespace = (prefix && prefix !="")  ?  featureManager.layerRecord.get("prefix") + ":" : "";
         url += "service=WFS" +
                 (this.filterPropertyNames ? "&" + propertyNamesString : "") +
                 "&version=" + protocol.version +
                 "&request=GetFeature" +
-                "&typeName=" + protocol.featureType +
+                "&typeName=" + namespace + protocol.featureType +
                 "&exceptions=application/json" +
                 "&outputFormat="+ outputFormat;
         this.url =  url;
@@ -987,7 +990,9 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         form.setAttribute("id", this.downloadFormId);
         form.setAttribute("method", "POST");
         //this is to skip cross domain exception notifying the response body
-        var iframeURL = url.indexOf("http://") == 0 ? proxy + encodeURIComponent(url) : url;
+        var urlregex =/^https?:\/\//i;
+        //if absoulte url and do not contain the local host
+        var iframeURL = (!urlregex.test(url) || url.indexOf(location.host)>0) ? url :  proxy + encodeURIComponent(url);
         form.setAttribute("action", iframeURL );
         form.setAttribute("target",this.downloadIframeId);
         
