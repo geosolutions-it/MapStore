@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<people-service-profile xmlns="http://www.progettopeople.it/sirac/peopleserviceprofile" xmlns:psp="http://www.progettopeople.it/sirac/peopleserviceprofile" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.progettopeople.it/sirac/peopleserviceprofile serviceprofile.xsd">
+	<service category="sirac" subcategory="sirac" name="mapstore">
+		<security-profile>
+			<weakAuthentication>true</weakAuthentication>
+			<strongAuthentication>false</strongAuthentication>
+		</security-profile>
+		<authorization-profile>
+			<accessoUtentePeopleRegistrato enabled="true"/>
+			<accessoIntermediari enabled="true" all="true"/>
+		</authorization-profile>
+	</service>
+</people-service-profile>

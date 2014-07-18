@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+  
+    <groupId>it.geosolutions.opensdi2</groupId>
+    <artifactId>opensdi2-sirac</artifactId>
+    <version>1.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>OpenSDI Manager 2 - Modules - User Management</name>
+
+	<dependencies>
+        <!-- OpenSDI -->
+        <dependency>
+            <groupId>it.geosolutions.opensdi2</groupId>
+            <artifactId>opensdi2-core</artifactId>
+			<version>1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions.opensdi2</groupId>
+            <artifactId>opensdi2-user-management</artifactId>
+			<version>1.1-SNAPSHOT</version>
+        </dependency>
+		<!-- SiRAC -->
+		<dependency>
+            <groupId>it.people.sirac</groupId>
+            <artifactId>sirac-lib</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/libs/sirac_lib.jar</systemPath>
+        </dependency>
+		<dependency>
+            <groupId>it.people.sirac</groupId>
+            <artifactId>sirac-sso-lib</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/libs/sirac-sso-lib.jar</systemPath>
+        </dependency>
+		<dependency>
+            <groupId>it.people.sirac</groupId>
+            <artifactId>fe-framework</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/libs/fe_framework.jar</systemPath>
+        </dependency>
+        
+		<!-- Servlet -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+	</dependencies>
+
+</project>

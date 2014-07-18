@@ -5,6 +5,196 @@
    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
    version="2.5"> 
   <display-name>RingoJS App</display-name>
+	
+	<!-- SiRAC configuration -->
+	<context-param>
+		<param-name>people.sirac.error.page</param-name>
+		<param-value>/reserved/SiracError.jsp</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>showDetailInErrorPage</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>people.sirac.error.returnURL</param-name>
+		<param-value>http://localhost:8080/mapstore</param-value>
+	</context-param>
+ 
+  	<context-param>
+    	<param-name>authenticationResponseReceiverServiceTransferMode</param-name>
+    	<!--  Indicare FORWARD o POST -->
+    	<param-value>POST</param-value>
+  	</context-param>
+
+  	<context-param>
+	    <param-name>encryptAuthResponse</param-name>
+	    <!--  Indicare true o false -->
+	    <param-value>true</param-value>
+  	</context-param>
+
+  	<context-param>
+	    <param-name>encryptAuthResponseKeyFile</param-name>
+	    <!--  path relativo alla webapp -->
+	    <param-value>/keystore/encryptAuthResponse_Rijndael_256_PBEWithSHAAnd128BitRC4_100.key</param-value>
+  	</context-param>
+
+  	<context-param>
+    	<param-name>encryptAuthResponseKeyFilePassPhrase</param-name>
+    	<param-value>testpassphrase</param-value>
+  	</context-param>
+
+  	<context-param>
+	    <param-name>authResponseExpirationTime</param-name>
+	    <!--  expiration time in msec (usato solo nel caso di TransferMode=POST)-->
+	    <param-value>300000</param-value>
+  	</context-param>
+
+	<context-param>
+    	<param-name>authResponseExpirationDateTimeFormat</param-name>
+    	<param-value>yyyyMMdd'T'HH:mm:ss.SSSz</param-value>
+  	</context-param>
+
+  	<context-param>
+    	<param-name>ignoreAuthResponseExpirationTime</param-name>
+    	<param-value>false</param-value>
+  	</context-param>
+
+  	<context-param>
+    	<param-name>externalHostURL</param-name>
+    	<param-value>http://localhost:8080</param-value>
+  	</context-param>
+	
+	<filter>
+    	<filter-name>SIRAC-SSO Service Profile Loader Filter</filter-name>
+    	<filter-class>it.people.sirac.filters.GenericSiracServiceProfileLoaderFilter</filter-class>
+    	<init-param>
+      		<param-name>serviceProfileLocations</param-name>
+      		<param-value>/WEB-INF/classes/serviceProfile-list.properties</param-value>
+    	</init-param>
+  	</filter>
+
+	<filter>
+		<filter-name>SIRAC-SSO Authentication Filter</filter-name>
+		<filter-class>it.geosolutions.opensdi.sirac.AuthenticationFilter</filter-class>
+		<init-param>
+			<param-name>SIRACGatewayRedirectURL</param-name>
+			<param-value>https://localhost/sirac-sso/AuthGatewayWAYFService/spg1</param-value>
+		</init-param>
+		<init-param>
+			<param-name>assertionConsumerURL</param-name>
+			<param-value>https://localhost/sirac-sso/AssertionConsumerService</param-value>
+		</init-param>
+    	<init-param>
+	  		<param-name>postAuthRequestPage</param-name>
+      		<param-value>/LoginServlet</param-value>
+		</init-param>
+	</filter>
+
+  	<filter-mapping>
+    	<filter-name>SIRAC-SSO Service Profile Loader Filter</filter-name>
+    	<url-pattern>/login/*</url-pattern>
+  	</filter-mapping>
+  
+	<filter-mapping>
+	    <filter-name>SIRAC-SSO Authentication Filter</filter-name>
+	  	<url-pattern>/login/*</url-pattern>
+  	</filter-mapping>
+
+	<listener>
+		<listener-class>it.people.sirac.web.listeners.SessionListener</listener-class>
+	</listener>
+	
+	<listener>
+        <listener-class>it.geosolutions.opensdi.sirac.CleanSession</listener-class>
+    </listener>
+	
+	<servlet>
+		<servlet-name>CleanSessionServlet</servlet-name>
+		<servlet-class>it.people.sirac.web.InvalidateSessionServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+      <servlet-name>LoginServlet</servlet-name>
+      <servlet-class>it.geosolutions.opensdi.sirac.LoginServlet</servlet-class>
+	  <load-on-startup>1</load-on-startup>
+  	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>LoginServlet</servlet-name>
+		<url-pattern>/LoginServlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+      <servlet-name>AuthResponseReceiverService</servlet-name>
+      <display-name>Authentication Response Receiver Service</display-name>
+      <description>Authentication Response Receiver Service</description>
+      <servlet-class>it.people.sirac.web.GenericAuthenticationResponseReceiverServlet</servlet-class>
+	  <load-on-startup>1</load-on-startup>
+  	</servlet>
+
+	<servlet>
+    	<servlet-name>SSOGlobalLogoutGatewayService</servlet-name>
+    	<display-name>SIRAC SSO Global Logout Gateway</display-name>
+    	<description>SIRAC SSO Global Logout Gateway Service</description>
+    	<servlet-class>it.people.sirac.web.SSOGlobalLogoutGatewayServlet</servlet-class>
+    	<init-param>
+	    	<param-name>globalLogoutURL</param-name>
+   			<!-- URL assoluta -->
+   			<param-value>https://localhost/sirac-sso/SSOGlobalLogoutService</param-value>
+    	</init-param>
+    	<init-param>
+	    	<param-name>globalLogoutReturnURL</param-name>
+   			<!-- URL relativa -->
+   			<param-value>/mapstore</param-value>
+    	</init-param>
+  	</servlet>
+
+  	<servlet>
+	    <servlet-name>SSOLocalLogoutCallbackService</servlet-name>
+	    <display-name>SSOLocalLogoutCallbackService</display-name>
+	    <description>SSO Local Logout Callback Service</description>
+	    <servlet-class>it.geosolutions.opensdi.sirac.SSOLocalLogoutCallbackServlet</servlet-class>
+    	<init-param>
+	    	<param-name>SSOGlobalLogoutSuccessImagePath</param-name>
+   			<!-- URL relativa -->
+   			<param-value>images/ssoLogoutSuccess.jpg</param-value>
+    	</init-param>
+  	</servlet>
+  
+  	<servlet-mapping>
+		<servlet-name>CleanSessionServlet</servlet-name>
+		<url-pattern>/cleanSession</url-pattern>
+	</servlet-mapping>
+  
+  	<servlet-mapping>
+	    <servlet-name>AuthResponseReceiverService</servlet-name>
+	    <url-pattern>/AuthResponseReceiverService</url-pattern>
+  	</servlet-mapping>
+    
+  	<servlet-mapping>
+	    <servlet-name>SSOGlobalLogoutGatewayService</servlet-name>
+	    <url-pattern>/SSOGlobalLogoutGatewayService</url-pattern>
+  	</servlet-mapping>
+  
+  	<servlet-mapping>
+	    <servlet-name>SSOLocalLogoutCallbackService</servlet-name>
+	    <url-pattern>/SSOLocalLogoutService</url-pattern>
+  	</servlet-mapping>
+  
+  	<servlet-mapping>
+	    <servlet-name>SSOLocalLogoutCallbackService</servlet-name>
+	    <url-pattern>/ssolocalLogout</url-pattern>
+  	</servlet-mapping>
+	
+	<session-config>
+		<session-timeout>30</session-timeout>
+  	</session-config>
+	
+	<!-- END SiRAC configuration -->
+	
+  
     <servlet>
         <servlet-name>ringo</servlet-name>
         <servlet-class>org.ringojs.jsgi.JsgiServlet</servlet-class>
@@ -39,4 +229,48 @@
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
+	
+	<!-- OPENSDI -->
+	<!--  spring context loader -->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+	<servlet>
+		<servlet-name>mvc-dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>mvc-dispatcher</servlet-name>
+		<url-pattern>/mvc/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- REST Facade -->
+	<servlet>
+		<servlet-name>rest-facade</servlet-name>
+		<servlet-class>it.geosolutions.opensdi2.servlet.RestFacade</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>rest-facade</servlet-name>
+		<url-pattern>/facade/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- pick up all spring application contexts   -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/applicationContext.xml</param-value>
+    </context-param>
+    <!-- Spring Security -->
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy
+		</filter-class>
+	</filter>
+ 
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 </web-app>
