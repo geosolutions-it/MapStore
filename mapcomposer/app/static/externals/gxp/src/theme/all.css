@@ -1,3 +1,9 @@
+/* this is a hack! In order to show always the Message box on top (to use it define a cls: 'msg_floating' to the 'Ext.Msg.show' statement)*/
+.msg_floating {
+    position: absolute !important;
+    z-index: 1000000 !important;
+}
+
 .x-tree-node-leaf  .gx-tree-layer-icon {
     background-image: url(img/geosilk/vector.png);
 }

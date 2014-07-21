@@ -177,7 +177,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             name: 'WMS',
             description: 'Web Map Service (WMS)',
             config: {
-                ptype : 'gxp_wmscsource'
+                ptype : 'gxp_wmssource'
             }
         },
         {

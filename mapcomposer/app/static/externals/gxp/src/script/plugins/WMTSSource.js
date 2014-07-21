@@ -219,6 +219,7 @@ gxp.data.WMTSCapabilitiesReader = Ext.extend(Ext.data.DataReader, {
                   msg: this.noLayerInProjectionError,
                   buttons: Ext.Msg.OK,
                   width: 300,
+				  cls: 'msg_floating',
                   icon: Ext.MessageBox.WARNING
             });
         }
@@ -343,8 +344,27 @@ gxp.plugins.WMTSSource = Ext.extend(gxp.plugins.LayerSource, {
         if (index > -1) {
             var record = this.store.getAt(index);
             var layer = record.getLayer();
-            if (layer.matrixSet !== null) {
-                return record;
+            if (layer.matrixSet !== null) {			
+				// data for the new record
+				var data = Ext.applyIf({
+					group: config.group,
+					source: config.source
+				}, record.data);
+				
+				// add additional fields
+				var fields = [
+					{name: "group", type: "string"},
+					{name: "source", type: "string"}
+				];
+
+				record.fields.each(function(field) {
+					fields.push(field);
+				});
+
+				var Record = GeoExt.data.LayerRecord.create(fields);
+				var r = new Record(data, layer.id);
+			
+                return r;
             }
         }
     }
