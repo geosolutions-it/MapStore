@@ -851,14 +851,16 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         this.xml = new OpenLayers.Format.XML().write(node);
         
         var colModel = grid.getColumnModel();
-        
-        var numColumns = colModel.getColumnCount(true);
+        //get all columns and see if they are visible
+        var numColumns = colModel.getColumnCount(false);
         var propertyName = [];
         
-        for (var i=1; i<numColumns; i++){        
-            propertyName.push(colModel.getColumnHeader(i));
+        for (var i=0; i<numColumns; i++){
+            var header = colModel.getColumnHeader(i) ;
+            if( header && header != "" && !colModel.isHidden(i)){
+                propertyName.push(header);
+            }
         }   
-
         var failedExport = String.format(this.failedExport, outputFormat);
         
         // Url generation
