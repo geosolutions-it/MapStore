@@ -545,7 +545,7 @@
 									sessionStorage.removeItem(key);
 								}
 							}
-							
+							app.safeLeaving =true;
 							location.reload();
 						}
 					}
@@ -626,4 +626,3 @@
 		});     
     </script>
 
-	<div style="visibility:hidden"><canvas id="printcanvas" /></div>

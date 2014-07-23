@@ -349,7 +349,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
     showLogout : function(){    
         var logoutFunction = function(buttonId, text,opt){        
             if(buttonId === 'ok'){ 			
-				// Clear the sessionStorage
+				// Clear the sessionStorage	
 				for(var i = 0; i < sessionStorage.length; i++) {
 					var key = sessionStorage.key(i);
 					if(key) {
