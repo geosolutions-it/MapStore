@@ -38,6 +38,8 @@ Ext.namespace("gxp.plugins");
  *    This tool check if the page is modified and show an alert with a message,
  *    before leaving.
  *    It checks the modified flag in the target
+ *	  modified: the modified flag
+ *    safeLeaving: if set, the application is allowed to leave page without alert
  */   
 gxp.plugins.OnBeforeUnloadAlert = Ext.extend(gxp.plugins.Tool, {
     
@@ -63,10 +65,34 @@ gxp.plugins.OnBeforeUnloadAlert = Ext.extend(gxp.plugins.Tool, {
         }
         this.output = [];
         var me = this;
+		
+		// IE9 IE10 and IE11 sometimes call it twice
+		// so we have to set a flag to avoid multiple calls
+		// and prompt just once
+		var promptBeforeLeaving = true,
+		alreadPrompted = false,
+		timeoutID = 0,
+		reset = function () {
+			alreadPrompted = false;
+			timeoutID = 0;
+		};
         window.onbeforeunload = function(e) {
-          if(me.target.modified){
-            return me.alertMessage;
-          }
+			//SafeLeaving is a variable that GeoStoreLogin plugin have to set to 
+			//notify the user confirmed page leaving 
+			if (promptBeforeLeaving && !alreadPrompted) {
+				alreadPrompted = true;
+				timeoutID = setTimeout(reset, 2000);
+				if(me.target.modified && !me.target.safeLeaving){
+				//reset safeLeaving anyway
+				if (me.target.safeLeaving){
+					me.target.safeLeaving =false;
+				}
+				return me.alertMessage;
+			  }else if (me.target.safeLeaving){
+				me.target.safeLeaving =false;
+			  }
+			}
+          
         };
 
         gxp.plugins.OnBeforeUnloadAlert.superclass.constructor.apply(this, arguments);

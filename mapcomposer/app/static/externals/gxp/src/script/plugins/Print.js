@@ -145,7 +145,7 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
 
         // don't add any action if there is no print service configured
         if (this.printService !== null) {
-
+			var me = this;
             var printProvider = new GeoExt.data.PrintProvider({
                 defaultLayoutIndex:this.defaultLayoutIndex,
                 defaultResolutionIndex:this.defaultResolutionIndex,
@@ -153,10 +153,15 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                 customParams: this.customParams,
 				printParams: this.printParams,
                 autoLoad: false,
+				
                 listeners: {
+					beforedownload: function(){
+						me.target.safeLeaving =true;
+					},
                     beforeprint: function() {
                         // The print module does not like array params.
                         // TODO Remove when http://trac.geoext.org/ticket/216 is fixed.
+						
                         printWindow.items.get(0).printMapPanel.layers.each(function(l) {
                             var params = l.get("layer").params;
                             for(var p in params) {
