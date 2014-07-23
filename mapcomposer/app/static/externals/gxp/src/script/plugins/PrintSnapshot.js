@@ -78,7 +78,11 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
      *  ``String``
      */
 	serverErrorMsg: "Error occurred while generating the Map Snapshot: Server Error",
-
+	
+	/**
+	 * notSupportedTooltip
+	 */
+	notSupportedTooltip: "This tool is not supported by your browser",
     /** private: method[constructor]
      */
     constructor: function(config) {
@@ -89,14 +93,21 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
      */
     addActions: function() {
 		var me = this;
-		
+		var canvas = document.getElementById("printcanvas");
+		//disable tool if not supported 
+		var disabled = !(canvas && canvas.getContext);
     	var actions = gxp.plugins.Print.superclass.addActions.call(this, [{
                 menuText: this.menuText,
-                tooltip: this.tooltip,
+                tooltip: disabled ? this.notSupportedTooltip : this.tooltip,
                 iconCls: this.iconCls,
-                disabled: false,
-                handler: function() {
+                disabled: disabled,
+                handler: function(btn) {
                 	var canvas = document.getElementById("printcanvas");
+					if(!canvas.getContext){
+						alert("Your browser doesn't support this tool");
+						btn.setDisabled(true);
+						return;
+					}
                 	var mapPanel = this.target.mapPanel;
                 	var map = mapPanel.map;
                 	
@@ -228,7 +239,7 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
 								    
 								        var mUrl = me.service + "UploadCanvas";
 								            mUrl = mHost[2] == location.host ? mUrl + "?ID=" + response.responseText + "&fn=" + fname : proxy + encodeURIComponent(mUrl + "?ID=" + response.responseText + "&fn=" + fname);
-								        
+								        me.target.safeLeaving =true;
 								        window.location.assign(mUrl);
 								        enableSaving = true;
 								    }else{
