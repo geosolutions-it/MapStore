@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+        
+	<!-- Environment Initialization -->
+	<bean id="EMSAScriptingService" class="it.geosolutions.geobatch.action.egeos.emsa.EMSAService">
+		<constructor-arg type="String"><value>EMSAScriptingService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EMSAScriptingService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EMSAScriptingService</value></constructor-arg>
+    </bean>	      
+
+
+
+	<!-- Environment Initialization -->
+	<bean id="EGEOSWebDeployerService" class="it.geosolutions.geobatch.egeos.deployers.services.EGEOSWebDeployerService">
+		<constructor-arg type="String"><value>EGEOSWebDeployerService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EGEOSWebDeployerService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EGEOSWebDeployerService</value></constructor-arg>
+    </bean>
+
+	<bean id="EGEOSRegistryDeployerService" class="it.geosolutions.geobatch.egeos.deployers.services.EGEOSRegistryDeployerService">
+		<constructor-arg type="String"><value>EGEOSRegistryDeployerService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EGEOSRegistryDeployerService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EGEOSRegistryDeployerService</value></constructor-arg>
+    </bean>
+
+	<bean id="EGEOSGeoServerDeployerService" class="it.geosolutions.geobatch.egeos.deployers.services.EGEOSGeoServerDeployerService">
+		<constructor-arg type="String"><value>EGEOSGeoServerDeployerService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EGEOSGeoServerDeployerService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EGEOSGeoServerDeployerService</value></constructor-arg>
+    </bean>
+
+
+	<bean id="EGEOSAliasRegistrar" class="it.geosolutions.geobatch.egeos.deployers.actions.EGEOSAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+    
+</beans>

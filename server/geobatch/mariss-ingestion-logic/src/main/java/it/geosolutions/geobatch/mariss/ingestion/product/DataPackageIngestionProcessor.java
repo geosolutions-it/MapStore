@@ -19,20 +19,23 @@
  */
 package it.geosolutions.geobatch.mariss.ingestion.product;
 
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.actions.ds2ds.util.FeatureConfigurationUtil;
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVIngestUtils;
+import it.geosolutions.geobatch.mariss.ingestion.csv.utils.DecompressUtils;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.util.Enumeration;
+import java.util.Collection;
+import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.Map;
+import java.util.Queue;
 
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBElement;
@@ -40,9 +43,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import net.opengis.gml.DirectPositionType;
 
-import org.apache.commons.io.FileUtils;
 import org.geotools.data.DataStore;
-import org.geotools.graph.util.ZipUtil;
+import org.geotools.jdbc.JDBCDataStore;
 import org.opengis.feature.simple.SimpleFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,10 +64,16 @@ import eu.europa.emsa.csndc.ShipType;
  * @author alejandro.diaz at geo-solutions.it
  * 
  */
+@Action(configurationClass = DataPackageIngestionConfiguration.class)
 public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 
 	protected final static Logger LOGGER = LoggerFactory
 			.getLogger(DataPackageIngestionProcessor.class);
+
+	/**
+	 * Action configuration
+	 */
+	private DataPackageIngestionConfiguration configuration;
 
 	private static final String Q_NAME_ID = "id";
 	private static final String Q_NAME_INCLUDE_IN_REPORT = "includeInReport";
@@ -88,11 +96,26 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 	 */
 	public static final String CSV_TYPE_5= "type_5";
 
-	private String csvIngestionPath;
-
 	// constructors
+
+	public DataPackageIngestionProcessor(
+			final DataPackageIngestionConfiguration configuration)
+			throws IOException {
+		super(configuration);
+		this.configuration = configuration;
+		this.typeName = configuration.getTypeName();
+		this.userName = configuration.getUserName();
+		this.serviceName = configuration.getServiceName();
+		this.targetTifFolder = configuration.getTargetTifFolder();
+		this.imageMosaicConfiguration = configuration.getImageMosaicConfiguration();
+	}
+	
 	public DataPackageIngestionProcessor() {
 		super();
+	}
+
+	public DataPackageIngestionProcessor(String id, String name, String description) {
+	    super(id, name, description);
 	}
 
 	public DataPackageIngestionProcessor(DataStore dataStore, String typeName) {
@@ -113,8 +136,9 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 			String userName, String serviceName) {
 		super(dataStore, typeName, userName, serviceName);
 	}
-	
-	public DataPackageIngestionProcessor(DataStore dataStore, String typeName, String userName, String serviceName, String targetTifFolder){
+
+	public DataPackageIngestionProcessor(DataStore dataStore, String typeName,
+			String userName, String serviceName, String targetTifFolder) {
 		super(dataStore, typeName, userName, serviceName, targetTifFolder);
 	}
 
@@ -125,21 +149,26 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 	 * @return
 	 * @throws IOException
 	 */
-	public String processZip(String zipFile) throws IOException {
-		String msg = "";
+	public Collection<? extends EventObject> processCompressedFile(String compressedFile)
+			throws IOException {
+
+		// return object
+		final Queue<EventObject> ret = new LinkedList<EventObject>();
+		
+		String msg = null;
 
 		String zipPath = workingDir
-				+ zipFile.substring(zipFile.lastIndexOf(File.separator));
-		unzip(zipFile, zipPath, true);
+				+ compressedFile.substring(compressedFile
+						.lastIndexOf(File.separator));
+		DecompressUtils.decompress(compressedFile, zipPath, true);
 
 		// parse zip content
 		File zipFolder = new File(zipPath);
 		if (zipFolder.exists() && zipFolder.isDirectory()) {
-			List<String> csvFiles = new LinkedList<String>();
 			List<String> processedShips = new LinkedList<String>();
 			List<String> inPackageShips = null;
 			List<ShipType> ships = new LinkedList<ShipType>();
-			File tifFile = null;
+			File imageFile = null;
 			for (String fileName : zipFolder.list()) {
 				File file = new File(zipPath + File.separator + fileName);
 				if (fileName.endsWith("PKCS.xml")) {
@@ -147,49 +176,20 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 				} else if (fileName.endsWith(".xml")) {
 					processedShips.add(fileName);
 					ships.add(processShip(file));
-				} else if (fileName.endsWith(".tif")) {
-					// it should be the tiff
-					tifFile = file;
-				} else if (fileName.endsWith(".csv")) {
-					csvFiles.add(zipPath + File.separator + fileName);
+				} else if (fileName.endsWith(".tif")
+						|| fileName.endsWith(".nc")) {
+					// it should be the tiff or the NetCDF file
+					imageFile = file;
 				}
 			}
-			if(!csvFiles.isEmpty()){
-				msg = ingestData(csvFiles);
-			}
-			msg += ingestData(processedShips, inPackageShips, ships, tifFile);
+			ret.addAll(ingestData(processedShips, inPackageShips, ships, imageFile));
 		} else {
 			throw new IOException(
 					"The file isn't a zip file or an error occur trying to decompress");
 		}
 
-		return msg;
-	}
-
-	/**
-	 * Ingestion for CSV files 
-	 * 
-	 * @param csvFiles
-	 * 
-	 * @return message with the reference of each ingestion	
-	 */
-	public String ingestData(List<String> csvFiles) {
-		String msg = "";
-		if(checkCSVFiles(csvFiles).isEmpty()){
-			for(String csv: csvFiles){
-				File inputFile = new File(csv);
-				try {
-					String csvFileName = CSVIngestUtils.getUserServiceFileName(inputFile.getName(), userName, serviceName);
-					FileUtils.copyFile(inputFile,
-							new File(getCsvIngestionPath()
-									+ File.separator + csvFileName));
-					msg += "Delegated on CSV ingestion for the file "+ inputFile.getName() + "\n";
-				} catch (IOException e) {
-					LOGGER.error("Error copying " + inputFile + " for the CSV ingestion", e);
-				}
-			}
-		}
-		return msg;
+//		return msg;
+		return ret;
 	}
 
 	/**
@@ -243,11 +243,14 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 	 * @param tifFile
 	 * @return
 	 */
-	private String ingestData(List<String> processedShips,
-			List<String> inPackageShips, List<ShipType> ships, File tifFile) {
-		String msg = "";
-		if(LOGGER.isTraceEnabled()){
-			LOGGER.trace("Tif file is  --> " + tifFile);
+	private Collection<? extends EventObject> ingestData(List<String> processedShips,
+			List<String> inPackageShips, List<ShipType> ships, File imageFile) {
+
+		// return object
+		final Queue<EventObject> ret = new LinkedList<EventObject>();
+		
+		if (LOGGER.isTraceEnabled()) {
+			LOGGER.trace("Tif file is  --> " + imageFile);
 			LOGGER.trace("Ships are  --> " + ships);
 		}
 		List<SimpleFeature> shipList = new LinkedList<SimpleFeature>();
@@ -259,21 +262,17 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 		}
 		// persist the ship list
 		persist(shipList);
-		if(tifFile != null){
-			// add the image mosaic
-			addImageMosaic(tifFile);
-			// update msg
-			msg += "Added tif file " + tifFile + "\n"; 
+		if (imageFile != null) {
+			if (imageFile.getName().endsWith(".tif")) {
+				// add the image mosaic
+				ret.add(addImageMosaic(imageFile));
+			} else if (imageFile.getName().endsWith(".nc")) {
+				// add NetCDF image
+				ret.add(addNetCDF(imageFile));
+			}
 		}
-		
-		// update msg
-		if(shipList.size()  == 0){
-			msg += "No ship data ingested";
-		}else{
-			msg += "Succesfully insert of " + shipList.size() + " ships";
-		}
-		
-		return msg;
+//		return "Succesfully insert of " + shipList.size() + " ships";
+		return ret;
 	}
 
 	/**
@@ -337,9 +336,10 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 				// service name is composed by user and service
 				feature.setAttribute("service_name", userName + "@"
 						+ serviceName);
+
 				// other feature elements
 				feature.setAttribute("time", timestamp != null ? new Timestamp(
-						timestamp.getMillisecond()) : null);
+						timestamp.toGregorianCalendar().getTimeInMillis()) : null);
 				feature.setAttribute("heading", heading);
 				feature.setAttribute("length", length);
 				feature.setAttribute("width", width);
@@ -372,69 +372,21 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 	}
 
 	/**
-	 * Unzip the zip file in a folder checking and cleaning the target folder
-	 * 
-	 * @param zipFilename
-	 * @param outdir
-	 * @param cleanAndCreateFolder
-	 *            flag to clean and create the target folder
-	 * @throws IOException
+	 * Check file formats
 	 */
-	public static void unzip(String zipFilename, String outdir,
-			boolean cleanAndCreateFolder) throws IOException {
-		if (cleanAndCreateFolder) {
-			File zipFolder = new File(outdir);
-			if (zipFolder.exists()) {
-				FileUtils.deleteDirectory(zipFolder);
-			}
-			FileUtils.forceMkdir(zipFolder);
-		}
-		unzip(zipFilename, outdir);
-	}
-
-	/**
-	 * Unzip the file in a target folder. It fixes a bug for linux environments
-	 * on {@link ZipUtil#unzip(String, String)} using the File.separator instead
-	 * "\\"
-	 * 
-	 * @param zipFilename
-	 * @param outdir
-	 * @throws IOException
-	 */
-	public static void unzip(String zipFilename, String outdir)
-			throws IOException {
-		ZipFile zipFile = new ZipFile(zipFilename);
-		@SuppressWarnings("rawtypes")
-		Enumeration entries = zipFile.entries();
-
-		while (entries.hasMoreElements()) {
-			ZipEntry entry = (ZipEntry) entries.nextElement();
-			byte[] buffer = new byte[1024];
-			int len;
-
-			InputStream zipin = zipFile.getInputStream(entry);
-			BufferedOutputStream fileout = new BufferedOutputStream(
-					new FileOutputStream(outdir + File.separator
-							+ entry.getName()));
-
-			while ((len = zipin.read(buffer)) >= 0)
-				fileout.write(buffer, 0, len);
-
-			zipin.close();
-			fileout.flush();
-			fileout.close();
-		}
-	}
-
 	@Override
 	public boolean canProcess(String filePath) {
-		// TODO Auto-generated method stub
-		return true;
+		if(filePath.endsWith(".zip") 
+				|| filePath.endsWith(".tgz")){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 	@Override
-	public String doProcess(String filePath) throws IOException {
-		return processZip(filePath);
+	public Collection<? extends EventObject> doProcess(String filePath) throws IOException {
+		return processCompressedFile(filePath);
 	}
 
 	/**
@@ -477,18 +429,113 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
 		return csvNotCompleted;
 	}
 
-	/**
-	 * @return the csvIngestionPath
-	 */
-	public String getCsvIngestionPath() {
-		return csvIngestionPath;
+	@Override
+	public Queue<EventObject> execute(Queue<EventObject> events)
+			throws ActionException {
+
+		// return object
+		final Queue<EventObject> ret = new LinkedList<EventObject>();
+
+		while (events.size() > 0) {
+			final EventObject ev;
+			try {
+				if ((ev = events.remove()) != null) {
+					if (LOGGER.isTraceEnabled()) {
+						LOGGER.trace("Working on incoming event: "
+								+ ev.getSource());
+					}
+					if (ev instanceof FileSystemEvent) {
+						FileSystemEvent fileEvent = (FileSystemEvent) ev;
+						@SuppressWarnings("unused")
+						File file = fileEvent.getSource();
+						// Don't read configuration for the file, just
+						// this.outputfeature configuration
+						DataStore ds = FeatureConfigurationUtil
+								.createDataStore(configuration
+										.getOutputFeature());
+						if (ds == null) {
+							throw new ActionException(this,
+									"Can't find datastore ");
+						}
+						try {
+							if (!(ds instanceof JDBCDataStore)) {
+								throw new ActionException(this,
+										"Bad Datastore type "
+												+ ds.getClass().getName());
+							}
+							JDBCDataStore dataStore = (JDBCDataStore) ds;
+							dataStore.setExposePrimaryKeyColumns(true);
+//							doProcess(configuration, dataStore);
+//
+//							// pass the feature config to the next action
+//							ret.add(new FileSystemEvent(((FileSystemEvent) ev)
+//									.getSource(),
+//									FileSystemEventType.FILE_ADDED));
+							// return next events configurations
+							Queue<EventObject> resultEvents = doProcess(dataStore, file, (FileSystemEvent) ev);
+							ret.addAll(resultEvents);
+						} finally {
+							ds.dispose();
+						}
+					}
+
+					// add the event to the return
+					ret.add(ev);
+
+				} else {
+					if (LOGGER.isErrorEnabled()) {
+						LOGGER.error("Encountered a NULL event: SKIPPING...");
+					}
+					continue;
+				}
+			} catch (Exception ioe) {
+				final String message = "Unable to produce the output: "
+						+ ioe.getLocalizedMessage();
+				if (LOGGER.isErrorEnabled())
+					LOGGER.error(message, ioe);
+
+				throw new ActionException(this, message);
+			}
+		}
+		return ret;
 	}
 
-	/**
-	 * @param csvIngestionPath the csvIngestionPath to set
-	 */
-	public void setCsvIngestionPath(String csvIngestionPath) {
-		this.csvIngestionPath = csvIngestionPath;
+	private Queue<EventObject> doProcess(
+			JDBCDataStore dataStore,
+			File file,
+			FileSystemEvent orginalEvent) throws IOException {
+		
+		
+		LOGGER.info("Trying to process " + file.getName());
+
+		// return object
+		final Queue<EventObject> ret = new LinkedList<EventObject>();
+		
+		if(canProcess(file.getAbsolutePath())){
+			// get user name and service name from the name of the ingestion
+			String fileName = file.getName();
+			if(fileName != null){
+				Map<String, String> fileParameters = CSVIngestUtils.getParametersFromName(fileName);
+				if(fileParameters.containsKey(CSVIngestUtils.USER_FILE_PARAMETER)){
+					userName = fileParameters.get(CSVIngestUtils.USER_FILE_PARAMETER);
+				}
+				if(fileParameters.containsKey(CSVIngestUtils.SERVICE_FILE_PARAMETER)){
+					serviceName = fileParameters.get(CSVIngestUtils.SERVICE_FILE_PARAMETER);
+				}
+			}
+			prepare(dataStore, configuration.getTypeName());
+			ret.addAll(doProcess(file.getAbsolutePath()));
+		}else{
+			// is not processed in this action
+			ret.add(orginalEvent);
+		}
+		return ret;
+	}
+
+	@Override
+	public boolean checkConfiguration() {
+		// TODO Auto-generated method stub
+		return true;
 	}
 
 }

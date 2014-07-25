@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- =======================================================================    
+        Maven Project Configuration File
+
+        GeoSolutions GeoBach Project
+            http://www.geo-solutions.it/trac/IngestionEngine
+
+        Version: $Id: pom.xml 63 2008-04-04 11:22:11Z alessio $
+======================================================================= -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+  
+    <parent>
+        <groupId>it.geosolutions.mariss</groupId>
+        <artifactId>emsa-geobatch-mariss-modules</artifactId>   
+        <version>1.4-SNAPSHOT</version>
+    </parent>
+       
+    <!-- =========================================================== -->
+    <!--     Module Description                                      -->
+    <!-- =========================================================== -->
+    <groupId>it.geosolutions</groupId>
+    <artifactId>gb-mariss-action-emsa-parent</artifactId>
+    <packaging>pom</packaging>
+
+    <name>GeoBatch MARISS - EMSA modules - Actions - Parent Actions</name>
+    <description>
+        GeoSolutions GeoBatch base module for actions for global EMSA data management
+    </description>
+
+    <licenses>
+        <license>
+            <name>Lesser General Public License (GPL)</name>
+            <url>http://www.gnu.org/copyleft/lesser.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <modules>
+        <module>common</module>
+		<module>actions</module>
+    </modules>
+
+</project>

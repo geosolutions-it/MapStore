@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<id>EGEOSRegistryDeployerFlow</id>
+	<name>E-GEOS Registry-Deployer Flow</name>
+	<description>E-GEOS Registry-Deployer Flow</description>
+
+	<workingDirectory>EGEOSworkingDir/RegistryDeployer</workingDirectory>
+	<autorun>true</autorun>
+
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>EGEOSworkingDir/RegistryDeployer/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>id</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>EGEOSRegistryDeployer</name>
+	</EventGeneratorConfiguration>
+
+    <EventConsumerConfiguration>
+		<id>EGEOSRegistryDeployer_config</id>
+		<name>EGEOSRegistryDeployer_config</name>
+		<description>EGEOS Registry-Deployer Configuration</description>
+
+		<listenerId>EGEOSConsumerLoggerListener</listenerId>
+	        <listenerId>EGEOSCumulatorListener</listenerId>
+        
+		<workingDirectory>EGEOSworkingDir/RegistryDeployer</workingDirectory>
+		<performBackup>false</performBackup>
+		<preserveInput>true</preserveInput>
+
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.xml</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>EGEOSRegistryDeployer</name>
+		</FileEventRule>
+
+		<EGEOSRegistryDeployerConfiguration>
+			<id>EGEOSRegistryDeployerConfiguration</id>
+			<description>EGEOS Registry-Deployer Configuration</description>
+			<name>EGEOSRegistryDeployerConfiguration</name>
+			<workingDirectory>EGEOSworkingDir/RegistryDeployer/in</workingDirectory>
+				
+			<listenerId>EGEOSActionLoggerListener</listenerId>
+			<listenerId>EGEOSActionStatusListener</listenerId>
+						
+			<serviceID>EGEOSRegistryDeployerService</serviceID>
+
+            <language>groovy</language>
+            <scriptFile>/home/tomcat/GEOBATCH_DATA_DIR/EMSA/EGEOSRegistryDeployer.groovy</scriptFile>
+<!--<scriptFile>/home/carlo/work/data/emsa/script/EGEOSRegistryDeployer.groovy</scriptFile>-->
+
+		    <properties/>
+            
+		</EGEOSRegistryDeployerConfiguration>
+		
+	</EventConsumerConfiguration>
+
+    <ListenerConfigurations>
+    	<StatusProgressListener>
+    		<serviceID>statusListenerService</serviceID>
+            <id>EGEOSActionStatusListener</id>
+    	</StatusProgressListener>
+        
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>EGEOSActionLoggerListener</id>
+
+            <loggerName>EGEOSActionLoggerListener</loggerName>
+        </LoggingProgressListener>
+
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>EGEOSConsumerLoggerListener</id>
+
+            <loggerName>EGEOSConsumerLoggerListener</loggerName>
+        </LoggingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>EGEOSCumulatorListener</id>
+        </CumulatingProgressListener>
+    </ListenerConfigurations>
+    
+</FlowConfiguration>

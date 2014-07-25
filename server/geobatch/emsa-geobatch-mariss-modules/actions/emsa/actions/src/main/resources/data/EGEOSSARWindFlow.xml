@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<id>EGEOSSARWindFlow</id>
+	<description>E-GEOS-SARWindflow</description>
+	<name>E-GEOS-SARWindflow</name>
+
+	<workingDirectory>EGEOSworkingDir/SARWind/</workingDirectory>
+	<autorun>true</autorun>
+	
+	<EventConsumerConfiguration>
+	        <listenerId>ConsumerLogger0</listenerId>
+        	<listenerId>Cumulator</listenerId>
+
+		<workingDirectory>EGEOSworkingDir/SARWind/</workingDirectory>
+		<performBackup>false</performBackup>
+		<preserveInput>true</preserveInput>
+		
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*SAR_wnf\.nc.*</regex>
+			<id>EGEOSSARWind_r1</id>
+			<description>EGEOSSARWind rule</description>
+			<name>EGEOSSARWind</name>
+		</FileEventRule>
+
+		<MetocActionConfiguration>
+			<listenerId>StatusActionLogger0</listenerId>
+		        <listenerId>ActionLogger0</listenerId>
+
+			<workingDirectory>EGEOSworkingDir/SARWind/</workingDirectory>
+			<crs>EPSG:4326</crs>
+			<envelope/>
+			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
+			<metocHarvesterXMLTemplatePath>registry_work/config/NURC-2010/Super-Ensemble/Nurc-Cim_Schema/2010_07_13/example/iso-models-template.xml</metocHarvesterXMLTemplatePath>
+			<serviceID>SARWindGeneratorService</serviceID>
+			<id>EGEOSSARWind_a1</id>
+			<description>EGEOSSARWind</description>
+			<name>EGEOSSARWind_a1</name>
+		</MetocActionConfiguration>
+		
+		<NetcdfGeodetic2GeoTiff>
+			<listenerId>StatusActionLogger0</listenerId>
+		        <listenerId>ActionLogger0</listenerId>
+
+			<workingDirectory>EGEOSworkingDir/SARWind/</workingDirectory>
+			<layerParentDirectory>/emsa/out/nfs/sarDerived/</layerParentDirectory>
+
+			<crs>EPSG:4326</crs>
+			<envelope/>
+			<timeUnStampedOutputDir>true</timeUnStampedOutputDir>
+			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
+			<metocHarvesterXMLTemplatePath>registry_work/config/NURC-2010/Super-Ensemble/Nurc-Cim_Schema/2010_07_13/example/iso-models-template.xml</metocHarvesterXMLTemplatePath>
+			<serviceID>NetCDFCFGeodetic2GeoTIFFsGeneratorService</serviceID>
+			<id>EGEOSSARWind_a2</id>
+			<description>EGEOSSARWind NetCDFCFGeodetic2GeoTIFFs</description>
+			<name>EGEOSSARWind_a2</name>
+		</NetcdfGeodetic2GeoTiff>
+
+		<ImageMosaicActionConfiguration>
+			<listenerId>StatusActionLogger0</listenerId>
+		        <listenerId>ActionLogger0</listenerId>
+
+			<id>ImageMosaicService</id>
+			<description>EGEOSSARWind ImageMosaicService</description>
+			<name>EGEOSSARWind_ImageMosaicService</name>
+
+			<serviceID>ImageMosaicGeneratorService</serviceID>
+			<workingDirectory>EGEOSworkingDir/SARWind/</workingDirectory>
+
+                        <COARDS>false</COARDS>
+
+                        <NativeMinBoundingBoxX>-15</NativeMinBoundingBoxX>
+
+                        <NativeMinBoundingBoxY>28</NativeMinBoundingBoxY>
+
+                        <NativeMaxBoundingBoxX>38</NativeMaxBoundingBoxX>
+
+                        <NativeMaxBoundingBoxY>46</NativeMaxBoundingBoxY>
+
+                        <latLonMinBoundingBoxX>-15</latLonMinBoundingBoxX>
+
+                        <latLonMinBoundingBoxY>28</latLonMinBoundingBoxY>
+
+                        <latLonMaxBoundingBoxX>38</latLonMaxBoundingBoxX>
+
+                        <latLonMaxBoundingBoxY>46</latLonMaxBoundingBoxY>
+
+			<crs>EPSG:4326</crs>
+			<envelope/>
+			<dataTransferMethod>EXTERNAL</dataTransferMethod>
+			<geoserverPWD>geoserver-e-geos_matera</geoserverPWD>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverURL>http://ows-csn.e-geos.it/geoserver/</geoserverURL>
+			<wmsPath>/</wmsPath>
+			<defaultNamespace>emsa</defaultNamespace>
+			<defaultStyle>raster</defaultStyle>
+			
+			<backgroundValue>0</backgroundValue>
+                        <allowMultithreading>true</allowMultithreading>
+                        <useJaiImageRead>false</useJaiImageRead>
+                        <tileSizeH>256</tileSizeH>
+                        <tileSizeW>256</tileSizeW>
+
+                        <timeDimEnabled>true</timeDimEnabled>
+<!--                    <dirName>DIR</dirName>-->
+			<!-- LIST, CONTINUOUS_INTERVAL, DISCRETE_INTERVAL -->
+                        <timePresentationMode>CONTINUOUS_INTERVAL</timePresentationMode>
+
+			
+			<styles/>
+			<datastorePropertiesPath>EGEOSworkingDir/config/datastore.properties</datastorePropertiesPath>
+			<timeRegex>[0-9]{8}T[0-9]{9}Z(\?!.\*[0-9]{8}T[0-9]{9}Z.\*)</timeRegex>
+			<!-- elevationRegex><![CDATA[(?<=_)(\d{4}\.\d{3})(?=_)]]></elevationRegex -->
+			<!-- runtimeRegex><![CDATA[(?<=_)(\d{10})(?=_)]]></runtimeRegex -->
+		</ImageMosaicActionConfiguration>
+		
+		<id>EGEOSSARWind_id</id>
+		<description>EGEOSSARWind flow</description>
+		<name>EGEOSSARWind</name>
+	</EventConsumerConfiguration>
+	
+	<EventGeneratorConfiguration>
+		<wildCard>*</wildCard>
+		<watchDirectory>EGEOSworkingDir/SARWind/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>SARWind_EventGenerator_id</id>
+	        <serviceID>fsEventGeneratorService</serviceID>
+		<description>EGEOSSARWind event generator</description>
+		<name>EGEOSSARWind_EG</name>
+	</EventGeneratorConfiguration>
+
+    <ListenerConfigurations>
+    	<StatusProgressListener>
+		<serviceID>statusListenerService</serviceID>
+        	<id>StatusActionLogger0</id>
+    	</StatusProgressListener>
+    	
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ActionLogger0</id>
+
+            <loggerName>ActionLogger</loggerName>
+        </LoggingProgressListener>
+
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger0</id>
+
+            <loggerName>ConsLogger</loggerName>
+        </LoggingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>Cumulator</id>
+        </CumulatingProgressListener>
+    </ListenerConfigurations>	
+
+</FlowConfiguration>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csn:dataPackage
+ xmlns:csn="http://www.emsa.europa.eu/csndc" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.emsa.europa.eu/csndc http://www.emsa.europa.eu/schemas/csndc/DataPackage/csndc_pkg.xsd">
+  <csn:packageInfo>
+     <csn:packageId>123_RS2_20101104_060453_0075_SCNA_VV_SCN_106148_0000_0000000_OSN</csn:packageId>
+     <csn:packageType>OS_NOTIFICATION</csn:packageType>
+     <csn:operationType>TEST</csn:operationType>
+     <csn:dataPackageDescription>OS Notification package</csn:dataPackageDescription>
+  </csn:packageInfo>
+     <csn:eoProduct>
+        <csn:identifier>123_RS2_20101104_060453_0075_SCNA_VV_SCN_106148_0000_0000000</csn:identifier>
+     </csn:eoProduct>
+  <csn:oilSpills total="1">
+     <csn:oilSpillReference>
+        <csn:identifier>123_RS2_20101104_060453_0075_SCNA_VV_SCN_106148_0000_0000000_OS_1</csn:identifier>
+        <csn:fileName>123_RS2_20101104_060453_0075_SCNA_VV_SCN_106148_0000_0000000_OS_1_OSN.xml</csn:fileName>
+     </csn:oilSpillReference>
+  </csn:oilSpills>
+</csn:dataPackage>

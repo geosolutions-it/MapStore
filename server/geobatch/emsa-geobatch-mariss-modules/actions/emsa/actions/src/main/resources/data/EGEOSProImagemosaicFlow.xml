@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<id>EGEOSProImagemosaicFlow</id>
+	<name>Prepare ImageMosaic and publish</name>
+	<description>Create indexes and publish on GeoServer</description>
+
+	<workingDirectory>EGEOSProImagemosaicWorkingDir/</workingDirectory>
+	<autorun>true</autorun>
+
+	<EventGeneratorConfiguration>
+		<wildCard>*</wildCard>
+		<watchDirectory>EGEOSProImagemosaicWorkingDir/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>id</id>
+	        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>EGEOSProImagemosaicFlow_generator_sarImage</name>
+	</EventGeneratorConfiguration>
+
+    <EventConsumerConfiguration>
+		<id>egeos_ProImageMosaic</id>
+		<name>ProImageMosaic</name>
+		<description>ProImageMosaic</description>
+
+		<listenerId>ImageMosaicConsumerLogger0</listenerId>
+	        <listenerId>ImageMosaicCumulator0</listenerId>
+        
+		<workingDirectory>EGEOSProImagemosaicWorkingDir/in</workingDirectory>
+		<performBackup>false</performBackup>
+	        <preserveInput>true</preserveInput>
+
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+
+			<regex>.*pro_imagemosaic_cmd\.xml*</regex>
+
+			<id>EGEOSProImagemosaicFlow_consume_rule</id>
+			<description>EGEOSProImagemosaicFlow_consume_description</description>
+			<name>EGEOSProImagemosaicFlow_consume_sarImages</name>
+		</FileEventRule>
+
+<!-- 23 Feb 2011  -->
+<!--
+		<GeoTiffRetilerConfiguration>
+			<id>GeoTiffRetiler0</id>
+			<description>Flow to run gdal_translate operations</description>
+			<name>GdalTranslate overview action</name>
+			
+			<listenerId>RetilerGeoTIFFStatusActionLogger</listenerId>
+			<listenerId>RetilerGeoTIFFActionLogger</listenerId>
+			
+			<workingDirectory>EGEOSProImagemosaicWorkingDir</workingDirectory>
+			<serviceID>geoTiffRetilerService</serviceID>
+			
+			<tileH>256</tileH>
+			<tileW>256</tileW>
+			
+		</GeoTiffRetilerConfiguration>
+
+		<GeoTiffOverviewsEmbedderConfiguration>
+			<id>GeoTiffOverviewsEmbedder0</id>
+			<description>Flow to run gdal_translate operations</description>
+			<name>GdalTranslate overview action</name>
+			
+			<listenerId>OverviewGeoTIFFStatusActionLogger</listenerId>
+			<listenerId>OverviewGeoTIFFActionLogger</listenerId>
+			
+			<workingDirectory>EGEOSProImagemosaicWorkingDir</workingDirectory>
+			<serviceID>geotiffOverviewsEmbedderService</serviceID>
+			
+			<downsampleStep>2</downsampleStep>
+			<scaleAlgorithm>Average</scaleAlgorithm>
+			<numSteps>15</numSteps>
+			<tileH>256</tileH>
+			<tileW>256</tileW>			
+		</GeoTiffOverviewsEmbedderConfiguration>
+-->
+<!-- 23 Feb 2011 -->
+
+		<ImageMosaicActionConfiguration>
+			<workingDirectory>EGEOSProImagemosaicWorkingDir</workingDirectory>
+			<crs>EPSG:4326</crs>
+
+			<COARDS>false</COARDS>
+
+			<NativeMinBoundingBoxX>-15</NativeMinBoundingBoxX>
+
+			<NativeMinBoundingBoxY>28</NativeMinBoundingBoxY>
+
+			<NativeMaxBoundingBoxX>38</NativeMaxBoundingBoxX>
+
+			<NativeMaxBoundingBoxY>46</NativeMaxBoundingBoxY>
+
+			<latLonMinBoundingBoxX>-15</latLonMinBoundingBoxX>
+
+			<latLonMinBoundingBoxY>28</latLonMinBoundingBoxY>
+
+			<latLonMaxBoundingBoxX>38</latLonMaxBoundingBoxX>
+
+			<latLonMaxBoundingBoxY>46</latLonMaxBoundingBoxY>
+
+			<envelope/>
+			<dataTransferMethod>EXTERNAL</dataTransferMethod>
+			<geoserverPWD>geoserver-e-geos_matera</geoserverPWD>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverURL>http://ows-csn.e-geos.it/geoserver/</geoserverURL>
+			<wmsPath>/</wmsPath>
+			<defaultNamespace>nurc</defaultNamespace>
+			<defaultStyle>raster</defaultStyle>
+			<backgroundValue>0</backgroundValue>
+			<outputTransparentColor>000000</outputTransparentColor>
+			<inputTransparentColor>000000</inputTransparentColor>
+			<allowMultithreading>true</allowMultithreading>
+			<useJaiImageRead>false</useJaiImageRead>
+			<tileSizeH>256</tileSizeH>
+			<tileSizeW>256</tileSizeW>
+			
+			<timeDimEnabled>true</timeDimEnabled>
+<!--			<dirName>DIR</dirName>-->
+<!-- LIST, CONTINUOUS_INTERVAL, DISCRETE_INTERVAL -->
+			<timePresentationMode>CONTINUOUS_INTERVAL</timePresentationMode>
+			<styles/>
+			<datastorePropertiesPath>EGEOSProImagemosaicWorkingDir/datastore.properties</datastorePropertiesPath>
+			<timeRegex>[0-9]{8}T[0-9]{9}Z</timeRegex>
+			<serviceID>ImageMosaicGeneratorService</serviceID>
+			<id>ImageMosaicService</id>
+			<description>ImageMosaicService</description>
+			<name>ImageMosaicService</name>
+		</ImageMosaicActionConfiguration>
+
+	</EventConsumerConfiguration>
+	
+    <ListenerConfigurations>
+    	<StatusProgressListener>
+    		<serviceID>statusListenerService</serviceID>
+            <id>ImageMosaicStatusActionLogger0</id>
+    	</StatusProgressListener>
+        
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ImageMosaicActionLogger0</id>
+
+            <loggerName>ImageMosaicActionLogger0</loggerName>
+        </LoggingProgressListener>
+
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ImageMosaicConsumerLogger0</id>
+
+            <loggerName>ImageMosaicConsumerLogger0</loggerName>
+        </LoggingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>ImageMosaicCumulator0</id>
+        </CumulatingProgressListener>
+    </ListenerConfigurations>
+    
+</FlowConfiguration>
+

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<id>EMSAGroovyFlow</id>
+	<name>EMSAMainFlow-Scripting</name>
+	<description>EMSA Main Flow - Scripting</description>
+
+        <corePoolSize>3</corePoolSize>
+        <maximumPoolSize>3</maximumPoolSize>
+        <keepAliveTime>86400</keepAliveTime> <!--seconds-->
+        <workQueueSize>50</workQueueSize>
+
+	<workingDirectory>EMSAWorkingDir</workingDirectory>
+	<autorun>true</autorun>
+
+	<EventGeneratorConfiguration>
+		<wildCard>*</wildCard>
+		<watchDirectory>/emsa/in/ftp</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<!-- when dir is modified -->
+		<eventType>FILE_ADDED</eventType>
+		<monitorType>DEFAULT</monitorType>
+		<id>EMSAEventGenerator_id</id>
+    <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>EMSAGroovyFlow</name>
+	</EventGeneratorConfiguration>
+
+    <EventConsumerConfiguration>
+		<id>EMSAgroovy_config</id>
+		<name>EMSAGroovyConfig</name>
+		<description>EMSA Groovy Configuration Script</description>
+
+		<listenerId>EMSAConsumerLoggerListener</listenerId>
+	        <listenerId>EMSACumulatorListener</listenerId>
+        
+		<workingDirectory>EMSAWorkingDir</workingDirectory>
+		<performBackup>false</performBackup>
+        <preserveInput>true</preserveInput>
+<!--Rules List-->
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>PackagesReady.txt</regex>
+			<id>EMSAGroovyFlow_rule_1</id>
+			<description>EMSA rule</description>
+			<name>EMSAGroovyFlow</name>
+		</FileEventRule>
+<!--Actions List-->
+		<ScriptingConfiguration>
+			<id>EMSAgroovy_script</id>
+			<description>EMSA Groovy Script</description>
+			<name>EMSAGroovyScript</name>
+			
+			<listenerId>EMSAActionLoggerListener</listenerId>
+			<listenerId>EMSAActionStatusListener</listenerId>
+						
+			<serviceID>scriptingService</serviceID>
+
+            <language>groovy</language>
+            <scriptFile>/home/tomcat/GEOBATCH_DATA_DIR/EMSA/EMSA.groovy</scriptFile>
+<!--<scriptFile>/home/carlo/work/data/emsa/script/EMSA.groovy</scriptFile>-->
+
+		    <properties>
+				 <entry>
+				    <string>key0</string>
+				    <string>content0</string>
+				  </entry>
+			</properties>
+			
+		</ScriptingConfiguration>
+		
+		<SplittingConfiguration>
+			<id>EMSA_split</id>
+			<description>EMSA Splitting Action</description>
+			<name>EMSASplit</name>
+			
+			<listenerId>EMSAActionLoggerListener</listenerId>
+			<listenerId>EMSAActionStatusListener</listenerId>
+						
+			<serviceID>splittingService</serviceID>
+
+			<serviceIDs>
+				<string>EGEOSWebDeployerFlow</string>
+				<string>EGEOSRegistryDeployerFlow</string>
+				<string>EGEOSGeoServerDeployerFlow</string>
+			</serviceIDs>
+			
+		</SplittingConfiguration>
+
+	</EventConsumerConfiguration>
+	
+    <ListenerConfigurations>
+<!-- EMSAGroovyFlow -->        
+    	<StatusProgressListener>
+    		<serviceID>statusListenerService</serviceID>
+            <id>EMSAActionStatusListener</id>
+    	</StatusProgressListener>
+        
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>EMSAActionLoggerListener</id>
+
+            <loggerName>EMSAActionLoggerListener</loggerName>
+        </LoggingProgressListener>
+
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>EMSAConsumerLoggerListener</id>
+
+            <loggerName>EMSAConsumerLoggerListener</loggerName>
+        </LoggingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>EMSACumulatorListener</id>
+        </CumulatingProgressListener>
+        
+    </ListenerConfigurations>
+    
+</FlowConfiguration>

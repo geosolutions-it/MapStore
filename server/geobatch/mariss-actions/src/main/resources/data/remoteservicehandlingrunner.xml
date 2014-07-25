@@ -69,7 +69,6 @@
             <projectOnMappings>false</projectOnMappings>
             <attributeMappings/>
             <remoteBrowserConfiguration>
-              <dataTransferMethod />
               <serverProtocol>local</serverProtocol>
               <description>Local browser configuration</description>
               <name>localBrowserConfiguration</name>
@@ -97,14 +96,14 @@
             <!-- <filePattern>^([0-9]{2})[_-]([0-9]{8})[_-]([0-9]{6}).xml$</filePattern> -->
             <checkIfExists>true</checkIfExists>
             <!-- Paths configuration -->
-            <inputPath>/tmp/ingestion/working</inputPath>
-            <succesPath>/tmp/ingestion/ok</succesPath>
-            <failPath>/tmp/ingestion/fail</failPath>
+            <inputPath>/opt/gb_data_dir/serviceingestion/ingestion/working/</inputPath>
+            <succesPath>/opt/gb_data_dir/serviceingestion/ingestion/ok/</succesPath>
+            <failPath>/opt/gb_data_dir/serviceingestion/ingestion/fail/</failPath>
             <!-- CSV ingestion path for the CSV Ingest action-->
             <csvIngestionPath>csvingestion/in</csvIngestionPath>
             <!-- Product ingestion -->
-            <dlrProductIngestionTypeName>dlr_ships</dlrProductIngestionTypeName>
-            <dlrProductsTiffFolder>gs_ext_data/TDX1_SAR__MGD_RE___SM_S_SRA</dlrProductsTiffFolder>
+            <dlrProductIngestionTypeName>ships</dlrProductIngestionTypeName>
+            <dlrProductsTiffFolder>/opt/gs_ext_data/TDX1_SAR__MGD_RE___SM_S_SRA</dlrProductsTiffFolder>
             <dlrProductsIMConfiguration>
               <description>ImageMosaicService</description>
               <name>ImageMosaicService</name>
@@ -146,14 +145,268 @@
             <!-- Listeners -->
             <listenerId>ConsumerLogger0</listenerId>
             <listenerId>Cumulator</listenerId>
+        <listenerId>Status</listenerId>
         </RemoteServiceHandlingConfiguration>
+
+  <!-- Product ingestion -->
+  <DataPackageIngestionConfiguration>
+    <id>data_package_handling</id>
+    <name>Data package handling</name>
+    <description>Ingesting service data into the DB from a compressed file</description>
+    <csvIngestionPath>csvingestion/in</csvIngestionPath>
+    <typeName>ships</typeName>
+    <targetTifFolder>/opt/gs_ext_data/TDX1_SAR__MGD_RE___SM_S_SRA</targetTifFolder>
+    <!-- Connection to the database for the ship ingestion -->
+    <outputFeature>
+      <dataStore>
+         <entry>
+           <string>dbtype</string>
+           <string>postgis</string>
+         </entry>
+         <entry>
+           <string>host</string>
+           <string>localhost</string>
+         </entry>
+         <entry>
+           <string>port</string>
+           <string>5432</string>
+         </entry>
+         <entry>
+           <string>database</string>
+           <string>mariss</string>
+         </entry>
+         <entry>
+           <string>database</string>
+           <string>mariss</string>
+         </entry>
+         <entry>
+           <string>schema</string>
+           <string>public</string>
+         </entry>
+         <entry>
+           <string>user</string>
+           <string>mariss</string>
+         </entry>
+         <entry>
+           <string>passwd</string>
+           <string>mariss</string>
+         </entry>
+      </dataStore>
+    </outputFeature>
+    <imageMosaicConfiguration>
+      <description>ImageMosaicService</description>
+      <name>ImageMosaicService</name>
+      <crs>EPSG:4326</crs>
+      <dataTransferMethod>EXTERNAL</dataTransferMethod>
+      <geoserverPWD>geoserver</geoserverPWD>
+      <geoserverUID>admin</geoserverUID>
+      <geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+
+      <defaultNamespace>mariss</defaultNamespace>
+      <defaultStyle>raster</defaultStyle>
+
+      <backgroundValue>-9999</backgroundValue>
+      <outputTransparentColor></outputTransparentColor>
+      <inputTransparentColor></inputTransparentColor>
+      <allowMultithreading>true</allowMultithreading>
+      <useJaiImageRead>false</useJaiImageRead>
+      <tileSizeH>512</tileSizeH>
+      <tileSizeW>512</tileSizeW>
+
+      <NativeMinBoundingBoxX>-180</NativeMinBoundingBoxX>
+      <NativeMinBoundingBoxY>-90</NativeMinBoundingBoxY>
+      <NativeMaxBoundingBoxX>180</NativeMaxBoundingBoxX>
+      <NativeMaxBoundingBoxY>90</NativeMaxBoundingBoxY>
+
+      <latLonMinBoundingBoxX>-180</latLonMinBoundingBoxX>
+      <latLonMinBoundingBoxY>-90</latLonMinBoundingBoxY>
+      <latLonMaxBoundingBoxX>180</latLonMaxBoundingBoxX>
+      <latLonMaxBoundingBoxY>180</latLonMaxBoundingBoxY>
+
+      <!--NONE, REPROJECT_TO_DECLARED, FORCE_DECLARED -->
+      <projectionPolicy>NONE</projectionPolicy>
+      <!-- METADATA -->
+      <timeDimEnabled>true</timeDimEnabled>
+      <timeRegex>[0-9]{8}T[0-9]{9}Z(\?!.\*[0-9]{8}T[0-9]{9}Z.\*)</timeRegex>
+      <!-- LIST, CONTINUOUS_INTERVAL, DISCRETE_INTERVAL -->
+      <timePresentationMode>LIST</timePresentationMode>
+    </imageMosaicConfiguration>
+    <!-- Listeners -->
+    <listenerId>ConsumerLogger0</listenerId>
+    <listenerId>Cumulator</listenerId>
+    <listenerId>Status</listenerId>
+  </DataPackageIngestionConfiguration>
+
+  <CSVIngestConfiguration>
+    <id>csv</id>
+    <name>CSVIngestion</name>
+    <description>Ingest CSV data</description>
+    <!-- Connection to the database -->
+    <outputFeature>
+    <dataStore>
+       <entry>
+         <string>dbtype</string>
+         <string>postgis</string>
+       </entry>
+       <entry>
+         <string>host</string>
+         <string>localhost</string>
+       </entry>
+       <entry>
+         <string>port</string>
+         <string>5432</string>
+       </entry>
+       <entry>
+         <string>database</string>
+         <string>mariss</string>
+       </entry>
+       <entry>
+         <string>database</string>
+         <string>mariss</string>
+       </entry>
+       <entry>
+         <string>schema</string>
+         <string>public</string>
+       </entry>
+       <entry>
+         <string>user</string>
+         <string>mariss</string>
+       </entry>
+       <entry>
+         <string>passwd</string>
+         <string>mariss</string>
+       </entry>
+    </dataStore>
+    </outputFeature>
+    <!-- the CSV separator is common to allow the processor detection based on headers -->
+    <csvSeparator>,</csvSeparator>
+    <!-- Processors configuration -->
+    <proccesorsConfiguration>
+    <CSVProcessorConfiguration>
+      <typeName>acq_list</typeName>
+      <className>it.geosolutions.geobatch.mariss.ingestion.csv.CSVAcqListProcessor</className>
+      <projection>4326</projection>
+    </CSVProcessorConfiguration>
+    <CSVProcessorConfiguration>
+      <typeName>products_1to3</typeName>
+      <className>it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes1To3Processor</className>
+      <projection>4326</projection>
+    </CSVProcessorConfiguration>
+    <CSVProcessorConfiguration>
+      <typeName>products_5</typeName>
+      <className>it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes5Processor</className>
+      <projection>4326</projection>
+    </CSVProcessorConfiguration>
+    </proccesorsConfiguration>
+    <!-- Listeners -->
+    <listenerId>ConsumerLogger0</listenerId>
+    <listenerId>Cumulator</listenerId>
+    <listenerId>Status</listenerId>
+  </CSVIngestConfiguration>
+    
+  <SARWindActionConfiguration>
+    <!-- Listeners -->
+    <listenerId>ConsumerLogger0</listenerId>
+    <listenerId>Cumulator</listenerId>
+    <listenerId>Status</listenerId>
+
+    <workingDirectory>/opt/gb_data_dir/EGEOSWorkingDir/SARWind/</workingDirectory>
+    <crs>EPSG:4326</crs>
+    <envelope/>
+    <metocDictionaryPath>/opt/gb_data_dir/registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
+    <metocHarvesterXMLTemplatePath>/opt/gb_data_dir/registry_work/config/NURC-2010/Super-Ensemble/Nurc-Cim_Schema/2010_07_13/example/iso-models-template.xml</metocHarvesterXMLTemplatePath>
+    <id>EGEOSSARWind_a1</id>
+    <description>EGEOSSARWind</description>
+    <name>EGEOSSARWind_a1</name>
+  </SARWindActionConfiguration>
+    
+  <SARWaveActionConfiguration>
+    <!-- Listeners -->
+    <listenerId>ConsumerLogger0</listenerId>
+    <listenerId>Cumulator</listenerId>
+    <listenerId>Status</listenerId>
+
+    <workingDirectory>/opt/gb_data_dir/EGEOSWorkingDir/SARWave/</workingDirectory>
+    <crs>EPSG:4326</crs>
+    <envelope/>
+    <metocDictionaryPath>/opt/gb_data_dir/registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
+    <metocHarvesterXMLTemplatePath>/opt/gb_data_dir/registry_work/config/NURC-2010/Super-Ensemble/Nurc-Cim_Schema/2010_07_13/example/iso-models-template.xml</metocHarvesterXMLTemplatePath>
+    <id>EGEOSSARWave_a1</id>
+    <description>EGEOSSARWave</description>
+    <name>EGEOSSARWave_a1</name>
+  </SARWaveActionConfiguration>
+
+  <NetCDFCFGeodetic2GeoTIFFsConfiguration>
+    <!-- Listeners -->
+    <listenerId>ConsumerLogger0</listenerId>
+    <listenerId>Cumulator</listenerId>
+    <listenerId>Status</listenerId>
+    <workingDirectory>/opt/gb_data_dir/EGEOSWorkingDir/</workingDirectory>
+    <layerParentDirectory>/opt/gs_ext_data/</layerParentDirectory>
+
+    <crs>EPSG:4326</crs>
+    <envelope/>
+    <timeUnStampedOutputDir>true</timeUnStampedOutputDir>
+    <metocDictionaryPath>/opt/gb_data_dir/registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
+    <metocHarvesterXMLTemplatePath>/opt/gb_data_dir/registry_work/config/NURC-2010/Super-Ensemble/Nurc-Cim_Schema/2010_07_13/example/iso-models-template.xml</metocHarvesterXMLTemplatePath>
+    <!--serviceID>NetCDFCFGeodetic2GeoTIFFsGeneratorService</serviceID-->
+    <id>EGEOSSARWind_a2</id>
+    <description>EGEOSSARWind NetCDFCFGeodetic2GeoTIFFs</description>
+    <name>EGEOSSAR_a2</name>
+  </NetCDFCFGeodetic2GeoTIFFsConfiguration>
+
+  <CustomImageMosaicConfiguration>
+    <!-- Listeners -->
+    <listenerId>ConsumerLogger0</listenerId>
+    <listenerId>Cumulator</listenerId>
+    <listenerId>Status</listenerId>
+
+    <id>ImageMosaicService</id>
+    <description>ImageMosaicService for tiff ingestion</description>
+    <name>MARISS ImageMosaicService</name>
+    <COARDS>false</COARDS>
+    <NativeMinBoundingBoxX>-15</NativeMinBoundingBoxX>
+    <NativeMinBoundingBoxY>28</NativeMinBoundingBoxY>
+    <NativeMaxBoundingBoxX>38</NativeMaxBoundingBoxX>
+    <NativeMaxBoundingBoxY>46</NativeMaxBoundingBoxY>
+    <latLonMinBoundingBoxX>-15</latLonMinBoundingBoxX>
+    <latLonMinBoundingBoxY>28</latLonMinBoundingBoxY>
+    <latLonMaxBoundingBoxX>38</latLonMaxBoundingBoxX>
+    <latLonMaxBoundingBoxY>46</latLonMaxBoundingBoxY>
+    <crs>EPSG:4326</crs>
+    <envelope/>
+    <dataTransferMethod>EXTERNAL</dataTransferMethod>
+    <geoserverPWD>e-GEOS</geoserverPWD>
+    <geoserverUID>e-GEOS</geoserverUID>
+    <geoserverURL>http://localhost:10080/geoserver/</geoserverURL>
+    <wmsPath>/</wmsPath>
+    <defaultNamespace>mariss</defaultNamespace>
+    <defaultStyle>raster</defaultStyle>
+    
+    <backgroundValue>0</backgroundValue>
+    <allowMultithreading>true</allowMultithreading>
+    <useJaiImageRead>false</useJaiImageRead>
+    <tileSizeH>256</tileSizeH>
+    <tileSizeW>256</tileSizeW>
+    <timeDimEnabled>true</timeDimEnabled>
+    <!--                    <dirName>DIR</dirName>-->
+    <!-- LIST, CONTINUOUS_INTERVAL, DISCRETE_INTERVAL -->
+    <timePresentationMode>CONTINUOUS_INTERVAL</timePresentationMode>
+    <styles/>
+    <datastorePropertiesPath>/opt/gb_data_dir/EGEOSWorkingDir/config/datastore.properties</datastorePropertiesPath>
+    <timeRegex>[0-9]{8}T[0-9]{9}Z(\?!.\*[0-9]{8}T[0-9]{9}Z.\*)</timeRegex>
+    <DomainAttribute>
+      <dimensionName>time</dimensionName>
+      <regEx>[0-9]{8}T[0-9]{9}Z(\?!.\*[0-9]{8}T[0-9]{9}Z.\*)</regEx>
+    </DomainAttribute>
+  </CustomImageMosaicConfiguration>
 
     </EventConsumerConfiguration>
 
     <ListenerConfigurations>
         <LoggingProgressListener>
             <serviceID>loggingListenerService</serviceID>
-            <id>ConsumerLogger0</id>
+            <id>ConsumerLogger0</id>  
             <loggerName>it.geosolutions.ConsLogger</loggerName>
             <appendToListenerForwarder>true</appendToListenerForwarder>
         </LoggingProgressListener>
@@ -162,6 +415,11 @@
             <id>Cumulator</id>
             <appendToListenerForwarder>true</appendToListenerForwarder>
         </CumulatingProgressListener>
+        <StatusProgressListener>
+            <serviceID>statusListenerService</serviceID>
+            <id>Status</id>
+      <appendToListenerForwarder>true</appendToListenerForwarder>
+        </StatusProgressListener>
     </ListenerConfigurations>
 
 </FlowConfiguration>

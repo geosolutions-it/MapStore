@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:nurc="http://www.nurc.int/isoExtent" targetNamespace="http://www.nurc.int/isoExtent" elementFormDefault="qualified" version="0.1">
+	<!-- ================================= Annotation ================================ -->
+	<xs:annotation>
+		<xs:documentation>NURC ISO Profile Extent</xs:documentation>
+	</xs:annotation>
+	<!-- ================================== Imports ================================== -->
+	<xs:include schemaLocation="nurc/Nurc_Iso_Extent.xsd"/>
+	<xs:import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="iso/19139/20070417/gmd/metadataEntity.xsd"/>
+	<!-- ########################################################################### -->
+	<!-- ########################################################################### -->
+	<!-- ================================== Classes ================================= -->
+	
+	
+	<xs:complexType name="NURC_MD_Metadata_Type">
+		<xs:annotation>
+			<xs:documentation>Information about the metadata</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gmd:MD_Metadata_Type">
+				<xs:sequence>
+					<xs:element ref="nurc:nurcExtent" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+		
+	<!-- ........................................................................ -->
+	<xs:element name="MD_Metadata" type="nurc:NURC_MD_Metadata_Type"/>
+	<!-- ........................................................................ -->
+</xs:schema>
