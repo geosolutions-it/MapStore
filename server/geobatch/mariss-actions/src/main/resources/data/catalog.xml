@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CatalogConfiguration>
+	<!-- Optional filed, if not specified the catalogDAO will automatically set the workingDirecotory to value ${GEOBATCH_DATA_DIR} -->
+	<!-- workingDirectory>C:/tmp</workingDirectory -->
+	<id>catalog</id>
+	<description>descriptionFileBasedCatalogConfiguration</description>
+	<name>nameFileBasedCatalogConfiguration</name>
+</CatalogConfiguration>
