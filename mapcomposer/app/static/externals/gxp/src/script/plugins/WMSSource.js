@@ -344,6 +344,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     visibility: ("visibility" in config) ? config.visibility : true,
                     opacity: ("opacity" in config) ? config.opacity : 1,
                     buffer: ("buffer" in config) ? config.buffer : 0,
+		    dimensions: original.data.dimensions,
                     projection: layerProjection,
                     vendorParams: config.vendorParams,
 					transitionEffect: transitionEffect
@@ -387,6 +388,10 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 
             var Record = GeoExt.data.LayerRecord.create(fields);
             record = new Record(data, layer.id);
+        } else {
+            if (window.console && this.store.getCount() > 0) {
+                console.warn("Could not create layer record for layer '" + config.name + "'. Check if the layer is found in the WMS GetCapabilities response.");
+            }
         }
         
         return record;

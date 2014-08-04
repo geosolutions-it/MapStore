@@ -826,5 +826,48 @@ GeoExt.Lang.add("de", {
 
 	"gxp.plugins.AdvancedSnappingAgent.prototype":{
         tooltipText: "Aktivieren/Deaktivieren Snapping"
-    }  
+    },
+	
+    "gxp.PlaybackToolbar.prototype": {
+        playLabel: "Wiedergabe",
+        playTooltip: "Wiedergabe",
+        stopLabel: "Stopp",
+        stopTooltip: "Stopp",
+        fastforwardLabel: "FFWD",
+        fastforwardTooltip: "Double Speed​​-Wiedergabe",
+        backLabel:'Zurück',
+        backTooltip:'Zeichnen Sie ein Bild zurück',            
+        nextLabel: "Nächste",
+        nextTooltip: "Ein Bild vor",
+        loopLabel: "Schleife",
+        loopTooltip: "Stufenlos Schleife die Animation",
+        normalTooltip: "Rückkehr zur normalen Wiedergabe",
+        pauseLabel: "Pause",
+        pauseTooltip: "Pause"
+    },
+	
+    "gxp.PlaybackOptionsPanel.prototype": {
+        optionTitleText: "Datum & Zeit",
+        rangeFieldsetText: "Zeitbereich",
+        animationFieldsetText: "Animationsoptionen",
+        startText: "Starten",
+        endText: "Ende",
+        saveText: 'Sparen',
+        cancelText: 'Stornieren',         
+        listOnlyText: "Verwenden Sie Genaue Werte-Liste nur",
+        stepText: "Zeichentrick Schritt",
+        unitsText: "Zeichentrick-Einheiten",
+        frameRateText:'Zeichentrick-Verzögerung (s)',        
+        noUnitsText: "Snap To Zeitliste",
+        loopText: "Loop-Animation",
+        reverseText: "Reverse-Zeichentrick",
+        rangeChoiceText: "Wählen Sie den Bereich für die Zeitsteuerung",
+        rangedPlayChoiceText: "Wiedergabemodus",
+        secondsText: 'Sekunden', 
+        minutesText: 'Protokoll', 
+        hoursText: 'Stunden', 
+        daysText: 'Tage', 
+        monthsText: 'Monate', 
+        yearsText: 'Jahre'        
+    }   
 });

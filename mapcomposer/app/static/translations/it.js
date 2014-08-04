@@ -815,5 +815,50 @@ GeoExt.Lang.add("it", {
 
 	"gxp.plugins.AdvancedSnappingAgent.prototype":{
         tooltipText: "Abilita/Disabilita Aggancio"
-    }     
+    },
+	
+    "gxp.PlaybackToolbar.prototype": {
+        playLabel: "Play",
+        playTooltip: "Play",
+        stopLabel: "Stop",
+        stopTooltip: "Stop",
+        fastforwardLabel: "FFWD",
+        fastforwardTooltip: "Doppia velocità di animazione",
+        backLabel:'Indietro',
+        backTooltip:'Diminuisci di uno step',            
+        nextLabel: "Avanti",
+        nextTooltip: "Avanza di uno step",
+        resetLabel: "Reset",
+        resetTooltip: "Stazioni ultimo aggiornamento",
+        loopLabel: "Loop",
+        loopTooltip: "Animazione continua",
+        normalTooltip: "Ritorno alla riproduzione normale",
+        pauseLabel: "Pausa",
+        pauseTooltip: "Pausa"
+    },
+	
+    "gxp.PlaybackOptionsPanel.prototype": {
+        optionTitleText: "Opzioni Data e Tempo",
+        rangeFieldsetText: "Intervallo di tempo",
+        animationFieldsetText: "Opzioni di animazione",
+        startText: "Inizio",
+        endText: "Fine",
+        saveText: 'Salva',
+        cancelText: 'Cancella',        
+        listOnlyText: "Utilizzare solamente l'elenco dei valori esatti",
+        stepText: "Step animazione",
+        unitsText: "Unità animazione",
+        frameRateText:'Velocità animazione (s)',
+        noUnitsText: "Snap To Time List",
+        loopText: "Animazione continua",
+        reverseText: "Inverti animazione",
+        rangeChoiceText: "Choose the range for the time control",
+        rangedPlayChoiceText: "Playback Mode",
+        secondsText: 'Secondi', 
+        minutesText: 'Minuti', 
+        hoursText: 'Ore', 
+        daysText: 'Giorni', 
+        monthsText: 'Mesi', 
+        yearsText: 'Anni'
+    }  
 });
