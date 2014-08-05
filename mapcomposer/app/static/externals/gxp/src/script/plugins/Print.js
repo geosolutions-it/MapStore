@@ -35,22 +35,18 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
      *  URL of the print service.
      */
     printService: null,
-
     /** api: config[ignoreLayers]
      * ``boolean`` ignore layers for print 
      * for print alerts.
      */
     ignoreLayers:[],
-
     /** api: config[customParams]
      *  ``Object`` Key-value pairs of custom data to be sent to the print
      *  service. Optional. This is e.g. useful for complex layout definitions
      *  on the server side that require additional parameters.
      */
     customParams: null,
-	
     legendPanelId : null,
-	
     /** api: config[menuText]
      *  ``String``
      *  Text for print menu item (i18n).
@@ -155,6 +151,7 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                 defaultResolutionIndex:this.defaultResolutionIndex,
                 url: this.printService,
                 customParams: this.customParams,
+				printParams: this.printParams,
                 autoLoad: false,
                 listeners: {
                     beforeprint: function() {
@@ -195,7 +192,6 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                 }
                 return notIgnorable;
             }
-			
             var actions = gxp.plugins.Print.superclass.addActions.call(this, [{
                 menuText: this.menuText,
                 tooltip: this.tooltip,

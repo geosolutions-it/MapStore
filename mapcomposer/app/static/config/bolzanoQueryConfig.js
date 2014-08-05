@@ -231,6 +231,9 @@
 				"outputFilename":"mapstore-print",
 				"geodetic": true
 			},
+			"printParams":{
+				"scaleMethod": "accurate"
+			},
 			"ignoreLayers": "Google Hybrid,Bing Aerial,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
 			"printService":"http://sit.comune.bolzano.it/geoserver/pdf/",
 			"addGraticuleControl": false,
