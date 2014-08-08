@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nurc:MD_Metadata xmlns:nurc="http://www.nurc.int/isoExtent" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dct="http://purl.org/dc/terms/" xmlns:ows="http://www.opengis.net/ows" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:srv="http://www.isotc211.org/2005/srv" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gts="http://www.isotc211.org/2005/gts" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:wrs="http://www.opengis.net/cat/wrs/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.nurc.int/isoExtent ..\schema\NURC_Extent.xsd">
+	<gmd:fileIdentifier>
+		<gco:CharacterString>urn:uuid:3e31d431-fe30-4bb0-ba54-1f85f926cac4:ISO19139</gco:CharacterString>
+	</gmd:fileIdentifier>
+	<gmd:language>
+		<gmd:LanguageCode codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/ML_gmxCodelists.xml#LanguageCode" codeListValue="eng">eng</gmd:LanguageCode>
+	</gmd:language>
+	<gmd:characterSet>
+		<gmd:MD_CharacterSetCode codeList="resources/Codelist/gmxcodelists.xml#MD_CharacterSetCode" codeListValue="utf8"/>
+	</gmd:characterSet>
+	<gmd:hierarchyLevel>
+		<gmd:MD_ScopeCode codeListValue="dataset" codeList="http://www.isotc211.org/2005/resources/codeList.xml#MD_ScopeCode"/>
+	</gmd:hierarchyLevel>
+	<!-- Metadatada conctact Information -->
+	<gmd:contact/>
+	<gmd:dateStamp>
+		<gco:Date>2009-07-29</gco:Date>
+	</gmd:dateStamp>
+	<gmd:referenceSystemInfo>
+		<gmd:MD_ReferenceSystem>
+			<gmd:referenceSystemIdentifier>
+				<gmd:RS_Identifier>
+					<gmd:code>
+						<gco:CharacterString>4326</gco:CharacterString>
+					</gmd:code>
+					<gmd:codeSpace>
+						<gco:CharacterString>EPSG</gco:CharacterString>
+					</gmd:codeSpace>
+				</gmd:RS_Identifier>
+			</gmd:referenceSystemIdentifier>
+		</gmd:MD_ReferenceSystem>
+	</gmd:referenceSystemInfo>
+	<gmd:identificationInfo>
+		<gmd:MD_DataIdentification>
+			<gmd:citation>
+				<gmd:CI_Citation>
+					<gmd:title>
+						<!-- MAPPING NURC DATA : variable name -->
+						<gco:CharacterString>variable1</gco:CharacterString>
+					</gmd:title>
+					<gmd:alternateTitle>
+						<!-- MAPPING NURC DATA : Satellite Name-->
+						<gco:CharacterString>SatelliteName</gco:CharacterString>
+					</gmd:alternateTitle>
+					<gmd:date>
+						<!-- MAPPING NURC DATA : Metadata Creation Date -->
+						<gmd:CI_Date>
+							<gmd:date>
+								<gco:Date>2009-01-01</gco:Date>
+							</gmd:date>
+							<gmd:dateType>
+								<gmd:CI_DateTypeCode codeList="http://www.isotc211.org/2005/resources/codeList.xml#CI_DateTypeCode" codeListValue="creation"/>
+							</gmd:dateType>
+						</gmd:CI_Date>
+					</gmd:date>
+					<gmd:identifier>
+						<!-- MAPPING NURC DATA : Compesed Identifier . <Metadata Type>:<Cruise>:<other Information>   -->
+						<gmd:MD_Identifier>
+							<gmd:code>
+								<gco:CharacterString>remoteSensing:cruiseOrEperiment:variable:satelliteName:dataTime</gco:CharacterString>
+							</gmd:code>
+						</gmd:MD_Identifier>
+					</gmd:identifier>
+				</gmd:CI_Citation>
+			</gmd:citation>
+			<!-- MAPPING NURC DATA : Free Text Data description  -->
+			<gmd:abstract>
+				<gco:CharacterString/>
+			</gmd:abstract>
+			<gmd:pointOfContact>
+				<gmd:CI_ResponsibleParty>
+					<gmd:organisationName>
+						<!-- MAPPING NURC DATA : Organization Data Originator-->
+						<gco:CharacterString>NATO Undersea Research Centre (NURC)</gco:CharacterString>
+					</gmd:organisationName>
+					<gmd:role>
+						<gmd:CI_RoleCode codeList="" codeListValue="originator"/>
+					</gmd:role>
+				</gmd:CI_ResponsibleParty>
+			</gmd:pointOfContact>
+			<gmd:pointOfContact>
+				<gmd:CI_ResponsibleParty>
+					<gmd:organisationName>
+						<!-- MAPPING NURC DATA : Data Publisher-->
+						<gco:CharacterString>Giampaolo Cimino</gco:CharacterString>
+					</gmd:organisationName>
+					<gmd:role>
+						<gmd:CI_RoleCode codeList="" codeListValue="publisher"/>
+					</gmd:role>
+				</gmd:CI_ResponsibleParty>
+			</gmd:pointOfContact>
+			<gmd:pointOfContact>
+				<gmd:CI_ResponsibleParty>
+					<gmd:organisationName>
+						<!-- MAPPING NURC DATA : Data Author-->
+						<gco:CharacterString>Raffaele Grasso</gco:CharacterString>
+					</gmd:organisationName>
+					<gmd:role>
+						<gmd:CI_RoleCode codeList="" codeListValue="author"/>
+					</gmd:role>
+				</gmd:CI_ResponsibleParty>
+			</gmd:pointOfContact>
+			<!-- Keyword Example-->
+			<gmd:descriptiveKeywords>
+				<gmd:MD_Keywords>
+					<gmd:keyword>
+						<gco:CharacterString>Remote Sensing</gco:CharacterString>
+					</gmd:keyword>
+					<gmd:type>
+						<gmd:MD_KeywordTypeCode codeListValue="theme" codeList="http://www.isotc211.org/2005/resources/codeList.xml#MD_KeywordTypeCode"/>
+					</gmd:type>
+					<gmd:thesaurusName>
+						<gmd:CI_Citation>
+							<gmd:title>
+								<gco:CharacterString>NURC themes, version 1.0</gco:CharacterString>
+							</gmd:title>
+							<gmd:date>
+								<gmd:CI_Date>
+									<gmd:date>
+										<gco:Date>2009-06-01</gco:Date>
+									</gmd:date>
+									<gmd:dateType>
+										<gmd:CI_DateTypeCode codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/ML_gmxCodelists.xml#CI_DateTypeCode" codeListValue="publication">publication</gmd:CI_DateTypeCode>
+									</gmd:dateType>
+								</gmd:CI_Date>
+							</gmd:date>
+						</gmd:CI_Citation>
+					</gmd:thesaurusName>
+				</gmd:MD_Keywords>
+			</gmd:descriptiveKeywords>
+			<!-- MAPPING NURC DATA : Data Type -->
+			<gmd:spatialRepresentationType>
+				<gmd:MD_SpatialRepresentationTypeCode codeList="" codeListValue="grid"/>
+			</gmd:spatialRepresentationType>
+			<gmd:language>
+				<gco:CharacterString>English</gco:CharacterString>
+			</gmd:language>
+			<gmd:extent>
+				<gmd:EX_Extent>
+					<gmd:geographicElement>
+						<gmd:EX_GeographicDescription>
+							<gmd:geographicIdentifier>
+								<gmd:MD_Identifier>
+									<gmd:code>
+										<gco:CharacterString>it</gco:CharacterString>
+									</gmd:code>
+								</gmd:MD_Identifier>
+							</gmd:geographicIdentifier>
+						</gmd:EX_GeographicDescription>
+					</gmd:geographicElement>
+					<!-- MAPPING NURC DATA : Data Extent -->
+					<gmd:geographicElement>
+						<gmd:EX_GeographicBoundingBox>
+							<gmd:westBoundLongitude>
+								<gco:Decimal>-150</gco:Decimal>
+							</gmd:westBoundLongitude>
+							<gmd:eastBoundLongitude>
+								<gco:Decimal>-90</gco:Decimal>
+							</gmd:eastBoundLongitude>
+							<gmd:southBoundLatitude>
+								<gco:Decimal>-20</gco:Decimal>
+							</gmd:southBoundLatitude>
+							<gmd:northBoundLatitude>
+								<gco:Decimal>65</gco:Decimal>
+							</gmd:northBoundLatitude>
+						</gmd:EX_GeographicBoundingBox>
+					</gmd:geographicElement>
+					<gmd:temporalElement>
+						<gmd:EX_TemporalExtent>
+							<gmd:extent>
+								<!-- MAPPING NURC DATA : Remote Sensing Data date/time -->
+								<gml:TimeInstant gml:id="dataTime">
+									<gml:timePosition>2001-01-01T00:00:00Z</gml:timePosition>
+								</gml:TimeInstant>
+							</gmd:extent>
+						</gmd:EX_TemporalExtent>
+					</gmd:temporalElement>
+				</gmd:EX_Extent>
+			</gmd:extent>
+		</gmd:MD_DataIdentification>
+	</gmd:identificationInfo>
+	<gmd:distributionInfo>
+		<gmd:MD_Distribution>
+			<gmd:transferOptions>
+				<gmd:MD_DigitalTransferOptions>
+					<gmd:onLine>
+						<!-- MAPPING NURC DATA : Url to retrieve full data -->
+						<gmd:CI_OnlineResource>
+							<gmd:linkage>
+								<gmd:URL>http://</gmd:URL>
+							</gmd:linkage>
+						</gmd:CI_OnlineResource>
+					</gmd:onLine>
+				</gmd:MD_DigitalTransferOptions>
+			</gmd:transferOptions>
+		</gmd:MD_Distribution>
+	</gmd:distributionInfo>
+	<!-- DataQualityInfo Information Example -->
+	<gmd:dataQualityInfo>
+		<gmd:DQ_DataQuality>
+			<gmd:scope>
+				<gmd:DQ_Scope>
+					<gmd:level>
+						<gmd:MD_ScopeCode codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/ML_gmxCodelists.xml#MD_ScopeCode" codeListValue="series">series</gmd:MD_ScopeCode>
+					</gmd:level>
+				</gmd:DQ_Scope>
+			</gmd:scope>
+			<gmd:report>
+				<gmd:DQ_DomainConsistency>
+					<gmd:measureIdentification>
+						<gmd:RS_Identifier>
+							<gmd:code>
+								<gco:CharacterString>Conformity_001</gco:CharacterString>
+							</gmd:code>
+							<gmd:codeSpace>
+								<gco:CharacterString>INSPIRE</gco:CharacterString>
+							</gmd:codeSpace>
+						</gmd:RS_Identifier>
+					</gmd:measureIdentification>
+					<gmd:result>
+						<gmd:DQ_ConformanceResult>
+							<gmd:specification>
+								<gmd:CI_Citation>
+									<gmd:title>
+										<gco:CharacterString>INSPIRE Metadata Implementing rules
+													laying down technical
+													arrangements for the
+													interoperability</gco:CharacterString>
+									</gmd:title>
+									<gmd:date>
+										<gmd:CI_Date>
+											<gmd:date>
+												<gco:Date>2009-09-02</gco:Date>
+											</gmd:date>
+											<gmd:dateType>
+												<gmd:CI_DateTypeCode codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/ML_gmxCodelists.xml#CI_DateTypeCode" codeListValue="creation">creation</gmd:CI_DateTypeCode>
+											</gmd:dateType>
+										</gmd:CI_Date>
+									</gmd:date>
+								</gmd:CI_Citation>
+							</gmd:specification>
+							<gmd:explanation>
+								<gco:CharacterString>See INSPIRE Metadata regulation 12/04/08.</gco:CharacterString>
+							</gmd:explanation>
+							<gmd:pass>
+								<gco:Boolean>false</gco:Boolean>
+							</gmd:pass>
+						</gmd:DQ_ConformanceResult>
+					</gmd:result>
+				</gmd:DQ_DomainConsistency>
+			</gmd:report>
+			<gmd:lineage>
+				<gmd:LI_Lineage>
+					<gmd:statement>
+						<gco:CharacterString> The  Radar Altimeter (RA)  (more info  here  ) is one of the instruments aboard the European Remote Sensing Satellites  ERS-1  (more info  here  and  here  ) and  ERS-2  (more info  here  and  here  ). The information provided by the RA, in accordance with the objective of the ERS programme, is of significant importance to the commercial and scientific user communities, with marked benefits for ocean related activities, including ship routing and the design of offshore facilities. In fact the RA was designed to permit the following:  * Ice mapping and monitoring  * Weather and sea state forecast  * Sea surface topography and ocean currents  * Experimental altimetry over land    From this collection you may order products of the following types:  -  ERS-1/2 Radar Altimeter Ocean Product (ERS.ALT.OPR) </gco:CharacterString>
+					</gmd:statement>
+				</gmd:LI_Lineage>
+			</gmd:lineage>
+		</gmd:DQ_DataQuality>
+	</gmd:dataQualityInfo>
+	<nurcExtent xmlns="http://www.nurc.int/isoExtent">
+		<variablesList>
+			<variable>
+				<!-- Only one variable for the remote Sensing data-->
+				<variableName>variable1</variableName>
+				<variableUOM>variable1UOM</variableUOM>
+				<variableLongName>variable1 Description</variableLongName>
+			</variable>
+		</variablesList>
+		<temporalInformation>
+			<dataTime format="YYYY-MM-dd hh:mm:ss"/>
+			<!-- Remote Sensing Data date/time-->
+		</temporalInformation>
+		<dataInformation>
+			<experimentOrCruise>experimentOrCruise</experimentOrCruise>
+		</dataInformation>
+		<distribuitionInfo>
+			<wcsLayer>
+				<!-- Optional-->
+				<wcsURL>http://</wcsURL>
+				<wcsLayerName/>
+			</wcsLayer>
+			<wmsLayer>
+				<!-- Optional-->
+				<wmsURL>http://</wmsURL>
+				<wmsLayerName/>
+			</wmsLayer>
+		</distribuitionInfo>
+		<dataSpecs>
+			<remoteSensingData>
+				<satellite>satellite</satellite>
+				<sensorName>SensorName</sensorName>
+				<processingAlgorithm>processingAlgorithm</processingAlgorithm>
+				<!-- if vectorValue= true-->
+				<vectorDataInformation value="true">
+					<vectorDataType>cartesian</vectorDataType>
+					<!-- polar (theta, ro) or cartesian (u, v)  -->
+					<relatedData>isoID_vecotrDataInformation</relatedData>
+				</vectorDataInformation>
+				<originalGridInformation>
+					<referenceSystemIdentifier>EPSG:4326</referenceSystemIdentifier>
+					<pixelSize uom="m">
+						<resX>0.002</resX>
+						<resY>0.002</resY>
+					</pixelSize>
+					<gridSize>
+						<width>1024</width>
+						<height>768</height>
+					</gridSize>
+					<gridOrigin>-150 65</gridOrigin>	
+					<gridOffsets>10.0 0 0 -10.0</gridOffsets>
+					<noDataValue>-9999</noDataValue>
+				</originalGridInformation>
+			</remoteSensingData>
+		</dataSpecs>
+	</nurcExtent>
+</nurc:MD_Metadata>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-init-method="init" default-destroy-method="dispose">
+
+	<!-- Environment Initialization -->
+	
+	<!-- <bean id="NetCDFCFGeodetic2GeoTIFFsGeneratorService" class="it.geosolutions.geobatch.metocs.base.NetCDFCFGeodetic2GeoTIFFsGeneratorService">
+		<constructor-arg type="String"><value>NetCDFCFGeodetic2GeoTIFFsGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>NetCDFCFGeodetic2GeoTIFFsGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>NetCDFCFGeodetic2GeoTIFFsGeneratorService</value></constructor-arg>	
+	</bean> -->
+	
+	<!-- bean id="NetCDFCFGeodetic2GeoTIFFsGeneratorService" class="it.geosolutions.geobatch.metocs.base.NetCDFCFGeodetic2GeoTIFFsGeneratorService">
+		<constructor-arg type="String"><value>NetCDFCFGeodetic2GeoTIFFsGeneratorService</value></constructor-arg>
+	</bean-->
+	
+	<!--<bean id="HDF42GeoTIFFsGeneratorService" class="it.geosolutions.geobatch.metocs.remsens.HDF42GeoTIFFsGeneratorService">
+		<constructor-arg type="String"><value>HDF42GeoTIFFsGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>HDF42GeoTIFFsGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>HDF42GeoTIFFsGeneratorService</value></constructor-arg>	
+	</bean>-->
+	
+	<!-- Registry Harvesting -->
+	<bean id="RegistryHarvestingGeneratorService" class="it.geosolutions.geobatch.metocs.registry.harvest.RegistryHarvestingGeneratorService">
+		<constructor-arg type="String"><value>RegistryHarvestingGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>RegistryHarvestingGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>RegistryHarvestingGeneratorService</value></constructor-arg>
+	</bean>
+	
+	<!--<bean id="OSTIA2GeoTIFFsGeneratorService" class="it.geosolutions.geobatch.metocs.remsens.OSTIA2GeoTIFFsGeneratorService">
+		<constructor-arg type="String"><value>OSTIA2GeoTIFFsGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>OSTIA2GeoTIFFsGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>OSTIA2GeoTIFFsGeneratorService</value></constructor-arg>	
+	</bean>-->
+	
+	<!-- bean id="MetocActionsAliasRegistrar" class="it.geosolutions.geobatch.metocs.commons.MetocActionsAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+    
+    <bean id="NetcdfGeodetic2GeoTIFFAliasRegistrar" class="it.geosolutions.geobatch.metocs.base.NetCDFCFGeodetic2GeoTIFFsAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean-->
+
+</beans>

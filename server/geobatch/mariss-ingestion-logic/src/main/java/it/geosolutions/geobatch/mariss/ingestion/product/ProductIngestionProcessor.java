@@ -19,13 +19,15 @@
  */
 package it.geosolutions.geobatch.mariss.ingestion.product;
 
-import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.imagemosaic.ImageMosaicAction;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.imagemosaic.ImageMosaicCommand;
 import it.geosolutions.geobatch.imagemosaic.ImageMosaicConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,189 +54,220 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  * @author alejandro.diaz at geo-solutions.it
  * 
  */
-public abstract class ProductIngestionProcessor {
+public abstract class ProductIngestionProcessor extends BaseAction<EventObject> {
 
-	/** 
-	 * Working folder for the process
-	 */
-	protected String workingDir = System.getProperty("java.io.tmpdir");
+    /**
+     * Working folder for the process
+     */
+    protected String workingDir = System.getProperty("java.io.tmpdir");
 
-	protected final static Logger LOGGER = LoggerFactory
-			.getLogger(ProductIngestionProcessor.class);
+    protected final static Logger LOGGER = LoggerFactory.getLogger(ProductIngestionProcessor.class);
 
-	// Resources to do the ingestion
-	protected DataStore dataStore = null;
-	protected FeatureStore<SimpleFeatureType, SimpleFeature> source = null;
-	protected SimpleFeatureType schema = null;
-	protected String typeName = null;
-	protected String userName;
-	protected String serviceName;
-	protected int projection = 4326;
-	protected String targetTifFolder;
-	protected ImageMosaicConfiguration imageMosaicConfiguration = null;
+    // Resources to do the ingestion
+    protected DataStore dataStore = null;
 
-	/*
-	 * GeometryFactory will be used to create the geometry attribute of each
-	 * feature (a Point object for the location)
-	 */
-	protected GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
+    protected FeatureStore<SimpleFeatureType, SimpleFeature> source = null;
 
-	// constructors 
-	public ProductIngestionProcessor() {
-		super();
-	}
-	
-	@SuppressWarnings("unchecked")
-	public ProductIngestionProcessor(DataStore dataStore, String typeName){
-		this ();
-		this.typeName = typeName;
-		this.dataStore = dataStore;
-		try {
-			this.schema = dataStore.getSchema(this.typeName);
-			if(this.typeName != null){
-				this.source = ((FeatureStore<SimpleFeatureType, SimpleFeature>) this.dataStore.getFeatureSource(this.typeName));
-			}
-		} catch (IOException e) {
-			LOGGER.error("Error getting the schema", e);
-		}
-	}
-	
-	public ProductIngestionProcessor(DataStore dataStore, String typeName, int projection){
-		this(dataStore, typeName);
-		this.projection = projection;
-	}
-	
-	public ProductIngestionProcessor(DataStore dataStore, String typeName, int projection, String userName, String serviceName){
-		this(dataStore, typeName, projection);
-		this.userName = userName;
-		this.serviceName = serviceName;
-	}
-	
-	public ProductIngestionProcessor(DataStore dataStore, String typeName, String userName, String serviceName){
-		this(dataStore, typeName);
-		this.userName = userName;
-		this.serviceName = serviceName;
-	}
-	
-	public ProductIngestionProcessor(DataStore dataStore, String typeName, String userName, String serviceName, String targetTifFolder){
-		this(dataStore, typeName, userName, serviceName);
-		this.targetTifFolder = targetTifFolder;
-	}
-	
-	/**
-	 * Check if this processor can process the file
-	 * @param filePath
-	 * @return  
-	 */
-	public abstract boolean canProcess(String filePath);
-	
-	/**
-	 * Do process for a file path
-	 * 
-	 * @param filePath
-	 * 
-	 * @return message with the resume of the ingestion
-	 * @throws IOException
-	 */
-	public abstract String doProcess(String filePath) throws IOException;
+    protected SimpleFeatureType schema = null;
 
-	/**
-	 * Create a feature in the data store
-	 * 
-	 * @return new feature
-	 * @throws Exception
-	 */
-	protected SimpleFeature createFeature() throws Exception {
-		// Create feature
-		SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(schema);
+    protected String typeName = null;
 
-		return featureBuilder.buildFeature(null);
-	}
-	
-	/**
-	 * Persist a list of features
-	 * @param list
-	 */
-	protected void persist(List<SimpleFeature> list) {
-		try{
-	        /*
-	         * Write the feature to the current source
-	         */
-	        Transaction transaction = new DefaultTransaction("create");
+    protected String userName;
 
-	        if (source instanceof SimpleFeatureStore) {
-	            SimpleFeatureStore featureStore = (SimpleFeatureStore) source;
-	            SimpleFeatureCollection collection = new ListFeatureCollection(schema, list);
-	            featureStore.setTransaction(transaction);
-	            try {
-	                featureStore.addFeatures(collection);
-	                transaction.commit();
-	            } catch (Exception problem) {
-					LOGGER.error("Error on commit", problem);
-	                transaction.rollback();
-	            } finally {
-	                transaction.close();
-	            }
-	            if(LOGGER.isInfoEnabled()){
-					LOGGER.info("Success persisting "+list);
-	            }
-	        } else {
-				LOGGER.error(schema + " does not support read/write access");
-	        }
-		}catch (Exception e){
-			LOGGER.error("Error on persist", e);
-		}
-	}
+    protected String serviceName;
 
-	/**
-	 * @return the workingDir
-	 */
-	public String getWorkingDir() {
-		return workingDir;
-	}
+    protected int projection = 4326;
 
-	/**
-	 * @param workingDir the workingDir to set
-	 */
-	public void setWorkingDir(String workingDir) {
-		this.workingDir = workingDir;
-	}
+    protected String targetTifFolder;
 
-	/**
-	 * Insert a new image to the mosaic located on targetTifFolder
-	 * @param file
-	 */
-    protected void addImageMosaic(File file) {
-    	
-    	List<File> files = new LinkedList<File>();
-    	files.add(file);
-        
-    	ImageMosaicCommand imc = new ImageMosaicCommand(new File(targetTifFolder), files, null);
-        
-    	// execute the action
-		ImageMosaicAction tifIngestionAction = new ImageMosaicAction(imageMosaicConfiguration);
-		LinkedList<EventObject> evts = new LinkedList<EventObject>();
-		evts.add(new EventObject(imc));
-		try {
-			tifIngestionAction.execute(evts);
-		} catch (ActionException e) {
-			LOGGER.error("Could'nt insert the tif file", e);
-		}
+    protected ImageMosaicConfiguration imageMosaicConfiguration = null;
+
+    /*
+     * GeometryFactory will be used to create the geometry attribute of each feature (a Point object for the location)
+     */
+    protected GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
+
+    // constructors
+    public ProductIngestionProcessor() {
+        super(null, null, null);
     }
 
-	/**
-	 * @return the imageMosaicConfiguration
-	 */
-	public ImageMosaicConfiguration getImageMosaicConfiguration() {
-		return imageMosaicConfiguration;
-	}
+    public ProductIngestionProcessor(String id, String name, String description) {
+        super(id, name, description);
+    }
 
-	/**
-	 * @param imageMosaicConfiguration the imageMosaicConfiguration to set
-	 */
-	public void setImageMosaicConfiguration(
-			ImageMosaicConfiguration imageMosaicConfiguration) {
-		this.imageMosaicConfiguration = imageMosaicConfiguration;
-	}
+    public ProductIngestionProcessor(DataStore dataStore, String typeName) {
+        this();
+        prepare(dataStore, typeName);
+    }
+
+    /**
+     * Prepare the action to perform the process
+     * 
+     * @param dataStore
+     * @param typeName
+     */
+    @SuppressWarnings("unchecked")
+    protected void prepare(DataStore dataStore, String typeName) {
+        this.typeName = typeName;
+        this.dataStore = dataStore;
+        try {
+            this.schema = dataStore.getSchema(this.typeName);
+            if (this.typeName != null) {
+                this.source = ((FeatureStore<SimpleFeatureType, SimpleFeature>) this.dataStore
+                        .getFeatureSource(this.typeName));
+            }
+        } catch (IOException e) {
+            LOGGER.error("Error getting the schema", e);
+        }
+    }
+
+    public ProductIngestionProcessor(DataStore dataStore, String typeName, int projection) {
+        this(dataStore, typeName);
+        this.projection = projection;
+    }
+
+    public ProductIngestionProcessor(DataStore dataStore, String typeName, int projection,
+            String userName, String serviceName) {
+        this(dataStore, typeName, projection);
+        this.userName = userName;
+        this.serviceName = serviceName;
+    }
+
+    public ProductIngestionProcessor(DataStore dataStore, String typeName, String userName,
+            String serviceName) {
+        this(dataStore, typeName);
+        this.userName = userName;
+        this.serviceName = serviceName;
+    }
+
+    public ProductIngestionProcessor(DataStore dataStore, String typeName, String userName,
+            String serviceName, String targetTifFolder) {
+        this(dataStore, typeName, userName, serviceName);
+        this.targetTifFolder = targetTifFolder;
+    }
+
+    public ProductIngestionProcessor(DataPackageIngestionConfiguration configuration) {
+        super(configuration);
+    }
+
+    /**
+     * Check if this processor can process the file
+     * 
+     * @param filePath
+     * @return
+     */
+    public abstract boolean canProcess(String filePath);
+
+    /**
+     * Do process for a file path
+     * 
+     * @param filePath
+     * 
+     * @return message with the resume of the ingestion
+     * @throws IOException
+     */
+    public abstract Collection<? extends EventObject> doProcess(String filePath) throws IOException;
+
+    /**
+     * Create a feature in the data store
+     * 
+     * @return new feature
+     * @throws Exception
+     */
+    protected SimpleFeature createFeature() throws Exception {
+        // Create feature
+        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(schema);
+
+        return featureBuilder.buildFeature(null);
+    }
+
+    /**
+     * Persist a list of features
+     * 
+     * @param list
+     */
+    protected void persist(List<SimpleFeature> list) {
+        try {
+            /*
+             * Write the feature to the current source
+             */
+            Transaction transaction = new DefaultTransaction("create");
+
+            if (source instanceof SimpleFeatureStore) {
+                SimpleFeatureStore featureStore = (SimpleFeatureStore) source;
+                SimpleFeatureCollection collection = new ListFeatureCollection(schema, list);
+                featureStore.setTransaction(transaction);
+                try {
+                    featureStore.addFeatures(collection);
+                    transaction.commit();
+                } catch (Exception problem) {
+                    LOGGER.error("Error on commit", problem);
+                    transaction.rollback();
+                } finally {
+                    transaction.close();
+                }
+                if (LOGGER.isInfoEnabled()) {
+                    LOGGER.info("Success persisting " + list);
+                }
+            } else {
+                LOGGER.error(schema + " does not support read/write access");
+            }
+        } catch (Exception e) {
+            LOGGER.error("Error on persist", e);
+        }
+    }
+
+    /**
+     * @return the workingDir
+     */
+    public String getWorkingDir() {
+        return workingDir;
+    }
+
+    /**
+     * @param workingDir the workingDir to set
+     */
+    public void setWorkingDir(String workingDir) {
+        this.workingDir = workingDir;
+    }
+
+    /**
+     * Insert a new image to the mosaic located on targetTifFolder
+     * 
+     * @param file
+     * @return
+     */
+    protected EventObject addImageMosaic(File file) {
+        List<File> files = new LinkedList<File>();
+        files.add(file);
+        ImageMosaicCommand imc = new ImageMosaicCommand(new File(targetTifFolder), files, null);
+        return new EventObject(imc);
+    }
+
+    /**
+     * Add the NetCDF data
+     * 
+     * @param imageFile
+     * @return
+     */
+    protected EventObject addNetCDF(File imageFile) {
+        FileSystemEvent event = new FileSystemEvent(imageFile, FileSystemEventType.FILE_ADDED);
+        return event;
+    }
+
+    /**
+     * @return the imageMosaicConfiguration
+     */
+    public ImageMosaicConfiguration getImageMosaicConfiguration() {
+        return imageMosaicConfiguration;
+    }
+
+    /**
+     * @param imageMosaicConfiguration the imageMosaicConfiguration to set
+     */
+    public void setImageMosaicConfiguration(ImageMosaicConfiguration imageMosaicConfiguration) {
+        this.imageMosaicConfiguration = imageMosaicConfiguration;
+    }
 
 }

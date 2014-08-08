@@ -6,7 +6,7 @@
 
 	<appender name="rolling" class="org.apache.log4j.RollingFileAppender">
 		<!-- Default location -->
-		<param name="File" value="${catalina.base}/logs/geobatch.log" />
+		<param name="File" value="${webapp.root}/logs/geobatch.log" />
 		<!-- Geobatch logs dir -->
 		<!-- <param name="File" value="${GEOBATCH_LOG}/geobatch.log" /> -->
 		<!-- Tomcat Default logs dir -->
@@ -58,7 +58,7 @@
 	<root>
 		<level value="info" />
 		<appender-ref ref="rolling" />
-		<!-- appender-ref ref="console" / -->
+		<appender-ref ref="console" />
 	</root>
 
 </log4j:configuration>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<metocs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns="http://www.nurc.nato.int/metocs" 
+    xsi:schemaLocation="http://www.nurc.nato.int/metocs metoc-dictionary.xsd">
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::K" type="meteo">
+		<name>air temperature</name>
+		<brief>airtemp</brief>
+	</metoc>
+	<metoc defaultUom="dimensionless" type="meteo">
+		<name>land or sea</name>
+		<brief>mask</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::W.m2" type="meteo">
+		<name>longwave (ir) radiation</name>
+		<brief>longwavrad</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::%25" type="meteo">
+		<name>relative humidity</name>
+		<brief>relhum</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::K" type="meteo">
+		<name>sea surface temperature</name>
+		<brief>sst</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::W.m2" type="meteo">
+		<name>latent heat flux</name>
+		<brief>latentheatflux</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::W.m2" type="meteo">
+		<name>sensible heat flux</name>
+		<brief>sensibleheatflux</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::W.m2" type="meteo">
+		<name>net downward heat flux</name>
+		<brief>netdwnheatflux</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::Pa" type="meteo">
+		<name>mean sea level pressure</name>
+		<brief>meansealevpress</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::W.m2" type="meteo">
+		<name>solar radiation</name>
+		<brief>solarrad</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::W.m2" type="meteo">
+		<name>short wave radiation</name>
+		<brief>shortwavrad</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::N.m2" type="meteo">
+		<name>wind stress u-component</name>
+		<brief>windstress-u</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::N.m2" type="meteo">
+		<name>wind stress v-component</name>
+		<brief>windstress-v</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::N.m2" type="meteo">
+		<name>wind stress magnitude</name>
+		<brief>windstress-mag</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::deg" type="meteo">
+		<name>wind stress direction</name>
+		<brief>windstress-dir</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::m" type="meteo">
+		<name>terrain height</name>
+		<brief>terheight</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::W.m2" type="meteo">
+		<name>total heat flux</name>
+		<brief>totheatflux</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::kg/m2" type="meteo">
+		<name>total precipiation</name>
+		<brief>totprec</brief>
+	</metoc>
+	<metoc defaultUom="dimensionless" type="meteo">
+		<name>mixing ratio</name>
+		<brief>ratio</brief>
+	</metoc>
+	
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::m" type="wave">
+		<name>significant wave height</name>
+		<brief>sigwavheight</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::m" type="wave">
+		<name>maximun wave height</name>
+		<brief>maxwavheight</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::deg" type="wave">
+		<name>mean wave direction</name>
+		<brief>meanwavdir</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::deg" type="wave">
+		<name>peak wave direction</name>
+		<brief>peakwavdir</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::s" type="wave">
+		<name>mean wave period</name>
+		<brief>meanwavperiod</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::s" type="wave">
+		<name>peak wave period</name>
+		<brief>peakwavperiod</brief>
+	</metoc>
+	
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::psu" type="ocean">
+		<name>salinity</name>
+		<brief>salt</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::m" type="ocean">
+		<name>sea surface height</name>
+		<brief>seasurfheight</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::kg/m2/s" type="ocean">
+		<name>net upward water flux</name>
+		<brief>netupwatflux</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::m/s" type="ocean">
+		<name>water velocity u-component</name>
+		<brief>watvel-u</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::m/s" type="ocean">
+		<name>water velocity v-component</name>
+		<brief>watvel-v</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::m/s" type="ocean">
+		<name>water velocity magnitude</name>
+		<brief>watvel-mag</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::deg" type="ocean">
+		<name>water velocity direction</name>
+		<brief>watvel-dir</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::m/s" type="ocean">
+		<name>vertical water velocity</name>
+		<brief>watvelvert</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::cel" type="ocean">
+		<name>water temperature</name>
+		<brief>wattemp</brief>
+	</metoc>
+	
+</metocs>

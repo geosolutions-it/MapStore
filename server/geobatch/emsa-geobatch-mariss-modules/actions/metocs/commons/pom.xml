@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+  
+    <parent>
+        <groupId>it.geosolutions.mariss</groupId>
+  		<artifactId>emsa-geobatch-mariss-metocs</artifactId>
+        <version>1.4-SNAPSHOT</version>
+    </parent>
+    <!-- =========================================================== -->
+    <!--     Module Description                                      -->
+    <!-- =========================================================== -->
+
+    <groupId>it.geosolutions.mariss</groupId>
+    <artifactId>gb-mariss-action-metocs</artifactId>
+    <packaging>jar</packaging>
+
+    <name>GeoBatch MARISS - EMSA modules - METOCS Actions - Commons</name>
+    <description></description>
+
+	<properties>
+		<imageio-ext.version>1.1-SNAPSHOT</imageio-ext.version>
+	</properties>
+
+    <!-- =========================================================== -->
+    <!--     Dependency Management                                   -->
+    <!-- =========================================================== -->
+    <dependencies>
+
+        <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-core-model</artifactId>
+        </dependency>
+
+        <!-- import pack plugin definition -->
+        <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-actions</artifactId>
+            <type>pom</type>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+
+		<dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-tools</artifactId>
+        </dependency>
+		<dependency>
+			<groupId>it.geosolutions.tools</groupId>
+  			<artifactId>tools-commons</artifactId>
+			<version>${gb.version}</version>
+		</dependency>
+		<dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-action-tools</artifactId>
+        </dependency>
+	
+		<!-- GeoBatch CORE -->
+		<dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-core-impl</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-fs-catalog</artifactId>
+		</dependency>
+ 		
+		<dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-alias-registry</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-action-geotiff</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-action-imagemosaic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-netcdf</artifactId>
+			<version>${gt.version}</version>
+			<!-- Use the compiled library https://github.com/Unidata/thredds/tree/v4.3.21/cdm -->
+			<exclusions>
+				<exclusion>
+					<groupId>edu.ucar</groupId>
+					<artifactId>netcdf</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-coveragetools</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-shapefile</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-geotiff</artifactId>
+		</dependency>
+
+        <!-- Use the compiled library https://github.com/Unidata/thredds/tree/v4.3.21/cdm -->
+        <dependency>
+          <groupId>edu.ucar</groupId>
+          <artifactId>netcdf</artifactId>
+          <version>4.3.21-SNAPSHOT</version>
+        </dependency>
+
+
+		<!-- imageio-ext ================================================-->
+		<dependency>
+			<groupId>it.geosolutions.imageio-ext</groupId>
+			<artifactId>imageio-ext-tiff</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions.imageio-ext</groupId>
+			<artifactId>imageio-ext-utilities</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions.imageio-ext</groupId>
+			<artifactId>netcdf-converters</artifactId>
+			<version>${imageio-ext.version}</version>
+			<exclusions>
+				<!-- Use the compiled library https://github.com/Unidata/thredds/tree/v4.3.21/cdm -->
+				<exclusion>
+					<groupId>essi-unidata</groupId>
+					<artifactId>netcdf-java</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- RESTLET -->
+		<dependency>
+          <groupId>org.restlet.jee</groupId>
+          <artifactId>org.restlet</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.restlet.jee</groupId>
+          <artifactId>org.restlet.ext.spring</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.restlet.jee</groupId>
+          <artifactId>org.restlet.ext.servlet</artifactId>
+        </dependency>
+      	<dependency>
+          <groupId>org.codehaus.jettison</groupId>
+          <artifactId>jettison</artifactId>
+      	</dependency>
+
+		<!-- Utils -->
+		
+		<dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>COAMPSParser</artifactId>
+			<version>0.1-SNAPSHOT</version>
+		</dependency>
+
+		<!-- ============================== -->
+		<!--     Platform                   -->
+		<!-- ============================== -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<!-- The version number is specified in the parent POM. -->
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<!-- The version number is specified in the parent POM. -->
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<!-- The version number is specified in the parent POM. -->
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<!-- The version number is specified in the parent POM. -->
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<!-- The version number is specified in the parent POM. -->
+		</dependency>
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<!-- The version number is specified in the parent POM. -->
+		</dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+</project>

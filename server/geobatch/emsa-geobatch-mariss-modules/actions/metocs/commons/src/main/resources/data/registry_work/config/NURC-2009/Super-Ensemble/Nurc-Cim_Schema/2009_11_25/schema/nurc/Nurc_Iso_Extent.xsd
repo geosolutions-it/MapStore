@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:nurc="http://www.nurc.int/isoExtent" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml/3.2" targetNamespace="http://www.nurc.int/isoExtent">
+	<xs:import namespace="http://www.opengis.net/gml/3.2" schemaLocation="../gml/3.2.1/gml.xsd"/>
+	<xs:simpleType name="ST_startTime">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="ST_modelRunTime">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="ST_endTime">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="ST_dataTime">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:element name="zLevel">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:byte">
+					<xs:attribute name="uom" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string"/>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="orientation" use="optional" default="UP">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="UP"/>
+								<xs:enumeration value="DOWN"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="wmsURL" type="xs:anyURI"/>
+	<xs:element name="wmsLayerName">
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="wmsLayer">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nurc:wmsURL"/>
+				<xs:element ref="nurc:wmsLayerName"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="width" type="xs:short"/>
+	<xs:element name="wfsURL" type="xs:anyURI"/>
+	<xs:element name="wfsLayerName">
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="wfsLayer">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nurc:wfsURL"/>
+				<xs:element ref="nurc:wfsLayerName"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="wcsURL" type="xs:anyURI"/>
+	<xs:element name="wcsLayerName">
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="wcsLayer">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nurc:wcsURL"/>
+				<xs:element ref="nurc:wcsLayerName"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="vectorDataType">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="cartesian"/>
+				<xs:enumeration value="polar"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="relatedData">
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="vectorDataInformation">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nurc:vectorDataType"/>
+				<xs:element ref="nurc:relatedData" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="value" type="xs:boolean" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="variablesList">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nurc:variable" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="variableName">
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="variableUOM">
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="variableLongName">
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="variable">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nurc:variableName"/>
+				<xs:element ref="nurc:variableUOM"/>
+				<xs:element ref="nurc:variableLongName"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="type">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="ctd"/>
+				<xs:enumeration value="xbt"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="temporalInformation">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nurc:dataTime"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="startTime">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="nurc:ST_startTime">
+					<xs:attribute name="format" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string"/>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="sensorsList">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nurc:sensorName" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!--xs:element name="sensorTypes">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nurc:type" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element-->
+	<xs:element name="ship">
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="sensorName">
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="satellite">
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="resY" type="xs:decimal"/>
+	<xs:element name="resX" type="xs:decimal"/>
+	<xs:element name="remoteSensingData">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nurc:satellite"/>
+				<xs:element ref="nurc:sensorName"/>
+				<xs:element ref="nurc:processingAlgorithm"/>
+				<xs:element ref="nurc:vectorDataInformation"/>
+				<xs:element ref="nurc:originalGridInformation"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="referenceSystemIdentifier">
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="processingAlgorithm">
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="postProcessingFlag">
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="pixelSize">
+		<xs:complexType> 
+		<xs:sequence>
+				<xs:element ref="nurc:resX"/>
+				<xs:element ref="nurc:resY"/>
+			</xs:sequence>
+			<xs:attribute name="uom" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string"/>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="gridOrigin" type="gml:doubleList" default="0 0"/>
+	<xs:element name="gridOffsets" type="gml:doubleList"/>
+	<xs:element name="originalGridInformation">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nurc:referenceSystemIdentifier"/>
+				<xs:element ref="nurc:pixelSize"/>
+				<xs:element ref="nurc:gridSize"/>
+				<xs:element ref="nurc:gridOrigin" minOccurs="0"/>
+				<xs:element ref="nurc:gridOffsets" minOccurs="0"/>
+				<xs:element ref="nurc:noDataValue"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="oceanProfileData">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nurc:sensorsList"/>
+				<xs:element ref="nurc:ship"/>
+				<xs:element ref="nurc:observationsRangeTime"/>
+				<xs:element ref="nurc:observationsDepthRange"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="observationsRangeTime">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nurc:startTime"/>
+				<xs:element ref="nurc:endTime"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="observationsDepthRange">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nurc:minDepth"/>
+				<xs:element ref="nurc:maxDepth"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="nurcExtent">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nurc:variablesList"/>
+				<xs:element ref="nurc:temporalInformation" minOccurs="0"/>
+				<xs:element ref="nurc:dataInformation"/>
+				<xs:element ref="nurc:distribuitionInfo"/>
+				<xs:element ref="nurc:dataSpecs"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="noDataValue" type="xs:short"/>
+	<xs:element name="modelType">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="Forecast"/>
+				<xs:enumeration value="Analysis"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="modelRunTime">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="nurc:ST_modelRunTime">
+					<xs:attribute name="format" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string"/>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="modelTau">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:byte">
+					<xs:attribute name="uom" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string"/>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="modelName">
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="modelData">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nurc:modelName"/>
+				<xs:element ref="nurc:modelTau"/>
+				<xs:element ref="nurc:modelRunTime"/>
+				<xs:element ref="nurc:modelType"/>
+				<xs:element ref="nurc:postProcessingFlag"/>
+				<xs:element ref="nurc:zLevel"/>
+				<xs:element ref="nurc:vectorDataInformation"/>
+				<xs:element ref="nurc:originalGridInformation"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="minDepth" type="xs:decimal"/>
+	<xs:element name="maxDepth" type="xs:decimal"/>
+	<xs:element name="height" type="xs:short"/>
+	<xs:element name="gridSize">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nurc:width"/>
+				<xs:element ref="nurc:height"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="experimentOrCruise">
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="endTime">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="nurc:ST_endTime">
+					<xs:attribute name="format" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string"/>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="distribuitionInfo">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice>
+					<xs:element ref="nurc:wcsLayer"/>
+					<xs:element ref="nurc:wfsLayer"/>
+				</xs:choice>
+				<xs:element ref="nurc:wmsLayer"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="dataTime">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="nurc:ST_dataTime">
+					<xs:attribute name="format" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string"/>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="dataSpecs">
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="nurc:modelData"/>
+				<xs:element ref="nurc:oceanProfileData"/>
+				<xs:element ref="nurc:remoteSensingData"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="dataInformation">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nurc:experimentOrCruise"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

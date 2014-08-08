@@ -38,200 +38,194 @@ import au.com.bytecode.opencsv.CSVReader;
  * 
  * @author adiaz
  */
-public abstract class GenericCSVProcessor<T, ID extends Serializable> extends
-        CSVProcessor {
+public abstract class GenericCSVProcessor<T, ID extends Serializable> extends CSVProcessor {
 
-protected final static Logger LOGGER = LoggerFactory
-        .getLogger(GenericCSVProcessor.class);
+    protected final static Logger LOGGER = LoggerFactory.getLogger(GenericCSVProcessor.class);
 
-int insertCount;
-int updateCount;
-int removeCount;
-int failCount;
+    int insertCount;
 
-/**
- * Time format component
- */
-protected TimeFormat timeFormat;
+    int updateCount;
 
-/**
- * Flag indicates don't fail if one row fail
- */
-protected boolean rowByRow = true;
+    int removeCount;
 
-/**
- * @return the dao
- */
-public abstract GenericDAO<T, ID> getDao();
+    int failCount;
 
-/**
- * @return CSV headers matching with this processor
- */
-public abstract List<String> getHeaders();
+    /**
+     * Time format component
+     */
+    protected TimeFormat timeFormat;
 
-/**
- * @return properties known types for each row
- */
-public abstract List<CSVPropertyType> getTypes();
+    /**
+     * Flag indicates don't fail if one row fail
+     */
+    protected boolean rowByRow = true;
 
-/**
- * @return list with index of the pk properties for each row (you need be sure
- *         that the order it's the same that {@link GenericNRLDAO#getPKNames()})
- */
-public abstract List<Integer> getPkProperties();
+    /**
+     * @return the dao
+     */
+    public abstract GenericDAO<T, ID> getDao();
 
-/**
- * Obtain a merged entity to save or persist by the dao
- * 
- * @param old entity to be updated or null
- * @param properties to override on the old or new entity
- * @return overrided entity
- */
-public abstract T merge(T old, Object[] properties);
+    /**
+     * @return CSV headers matching with this processor
+     */
+    public abstract List<String> getHeaders();
 
-/**
- * Update the entity. This method it's needed just to evict class cast
- * exceptions.
- * 
- * @param entity
- * @throws IOException 
- */
-public abstract void save(T entity) throws IOException;
+    /**
+     * @return properties known types for each row
+     */
+    public abstract List<CSVPropertyType> getTypes();
 
-/**
- * Persists the entity. This method it's needed just to evict class cast
- * exceptions.
- * 
- * @param entity
- * @throws IOException 
- */
-public abstract void persist(T entity) throws IOException;
+    /**
+     * @return list with index of the pk properties for each row (you need be sure that the order it's the same that
+     *         {@link GenericNRLDAO#getPKNames()})
+     */
+    public abstract List<Integer> getPkProperties();
 
-/**
- * CSV default generic processor. It insert a new entity for each row that don't
- * exist in DB, update found records and remove if all not pk properties are
- * null
- */
-@Override
-public void process(CSVReader reader) throws CSVProcessException {
-    String nextLine[];
-    long ok = 0;
+    /**
+     * Obtain a merged entity to save or persist by the dao
+     * 
+     * @param old entity to be updated or null
+     * @param properties to override on the old or new entity
+     * @return overrided entity
+     */
+    public abstract T merge(T old, Object[] properties);
 
-    try {
-        int line = 1;
-        insertCount = 0;
-        updateCount = 0;
-        removeCount = 0;
-        failCount = 0;
-        while ((nextLine = reader.readNext()) != null) {
-            line++;
-            try {
-                Object[] properties = new Object[nextLine.length];
-                Serializable[] keys = new Serializable[getDao().getPKNames().length];
+    /**
+     * Update the entity. This method it's needed just to evict class cast exceptions.
+     * 
+     * @param entity
+     * @throws IOException
+     */
+    public abstract void save(T entity) throws IOException;
 
-                // Extract data from CSV
-                int idx = 0;
-                boolean isRemove = true;
-                // Iterate over known types (extra properties are ignored)
-                for (CSVPropertyType type : getTypes()) {
-                    String property = nextLine[idx];
-                    Object value = CSVIngestUtils.parse(property, type);
-                    // property save in properties
-                    properties[idx] = value;
-                    // save on correct index inside keys
-                    boolean itsKey = false;
-                    int keysIdx = 0;
-                    for (Integer pk : getPkProperties()) {
-                        if (pk.equals(idx)) {
-                            keys[keysIdx] = (Serializable) value;
-                            itsKey = true;
-                            break;
+    /**
+     * Persists the entity. This method it's needed just to evict class cast exceptions.
+     * 
+     * @param entity
+     * @throws IOException
+     */
+    public abstract void persist(T entity) throws IOException;
+
+    /**
+     * CSV default generic processor. It insert a new entity for each row that don't exist in DB, update found records and remove if all not pk
+     * properties are null
+     */
+    @Override
+    public void process(CSVReader reader) throws CSVProcessException {
+        String nextLine[];
+        long ok = 0;
+
+        try {
+            int line = 1;
+            insertCount = 0;
+            updateCount = 0;
+            removeCount = 0;
+            failCount = 0;
+            while ((nextLine = reader.readNext()) != null) {
+                line++;
+                try {
+                    Object[] properties = new Object[nextLine.length];
+                    Serializable[] keys = new Serializable[getDao().getPKNames().length];
+
+                    // Extract data from CSV
+                    int idx = 0;
+                    boolean isRemove = true;
+                    // Iterate over known types (extra properties are ignored)
+                    for (CSVPropertyType type : getTypes()) {
+                        String property = nextLine[idx];
+                        Object value = CSVIngestUtils.parse(property, type);
+                        // property save in properties
+                        properties[idx] = value;
+                        // save on correct index inside keys
+                        boolean itsKey = false;
+                        int keysIdx = 0;
+                        for (Integer pk : getPkProperties()) {
+                            if (pk.equals(idx)) {
+                                keys[keysIdx] = (Serializable) value;
+                                itsKey = true;
+                                break;
+                            }
+                            keysIdx++;
                         }
-                        keysIdx++;
+                        if (!itsKey && !CSVPropertyType.IGNORE.equals(getTypes().get(idx))) {
+                            // Remove only if all other values not ignored are null
+                            // or empty
+                            isRemove = isRemove ? value == null || "".equals(value) : false;
+                        }
+                        idx++;
                     }
-                    if (!itsKey
-                            && !CSVPropertyType.IGNORE.equals(getTypes().get(
-                                    idx))) {
-                        // Remove only if all other values not ignored are null
-                        // or empty
-                        isRemove = isRemove ? value == null || "".equals(value)
-                                : false;
-                    }
-                    idx++;
-                }
-                // Update model
-                if (isRemove) {
-                    getDao().removeByPK(keys);
-                    removeCount++;
-                } else {
-                    T old = getDao().searchByPK(keys);
-                    T updatedOrCreated = merge(old, properties);
-                    if (old != null) {
-                        save(updatedOrCreated);
-                        updateCount++;
+                    // Update model
+                    if (isRemove) {
+                        getDao().removeByPK(keys);
+                        removeCount++;
                     } else {
-                        persist(updatedOrCreated);
-                        insertCount++;
+                        T old = getDao().searchByPK(keys);
+                        T updatedOrCreated = merge(old, properties);
+                        if (old != null) {
+                            save(updatedOrCreated);
+                            updateCount++;
+                        } else {
+                            persist(updatedOrCreated);
+                            insertCount++;
+                        }
                     }
-                }
-            } catch (Exception e) {
-                failCount++;
-                LOGGER.error("Error parsing CSV in line " + line, e);
-                // Just break if rowByRow is disabled
-                if (!rowByRow) {
-                    throw new CSVProcessException("Could not persist #" + ok
-                            + " Entity", e);
+                } catch (Exception e) {
+                    failCount++;
+                    LOGGER.error("Error parsing CSV in line " + line, e);
+                    // Just break if rowByRow is disabled
+                    if (!rowByRow) {
+                        throw new CSVProcessException("Could not persist #" + ok + " Entity", e);
+                    }
                 }
             }
+
+        } catch (IOException e) {
+            throw new CSVProcessException("Error in reading CSV file", e);
         }
 
-    } catch (IOException e) {
-        throw new CSVProcessException("Error in reading CSV file", e);
+        LOGGER.info("CSV ingestion -- managed " + ok + " entities");
     }
 
-    LOGGER.info("CSV ingestion -- managed " + ok + " entities");
-}
+    /**
+     * @return the insertCount
+     */
+    public int getInsertCount() {
+        return insertCount;
+    }
 
-/**
- * @return the insertCount
- */
-public int getInsertCount() {
-    return insertCount;
-}
+    /**
+     * @return the updateCount
+     */
+    public int getUpdateCount() {
+        return updateCount;
+    }
 
-/**
- * @return the updateCount
- */
-public int getUpdateCount() {
-    return updateCount;
-}
+    /**
+     * @return the removeCount
+     */
+    public int getRemoveCount() {
+        return removeCount;
+    }
 
-/**
- * @return the removeCount
- */
-public int getRemoveCount() {
-    return removeCount;
-}
+    /**
+     * @return the failCount
+     */
+    public int getFailCount() {
+        return failCount;
+    }
 
-/**
- * @return the failCount
- */
-public int getFailCount() {
-    return failCount;
-}
+    /**
+     * @return the timeFormat
+     */
+    public TimeFormat getTimeFormat() {
+        return timeFormat;
+    }
 
-/**
- * @return the timeFormat
- */
-public TimeFormat getTimeFormat() {
-	return timeFormat;
-}
-
-/**
- * @param timeFormat the timeFormat to set
- */
-public void setTimeFormat(TimeFormat timeFormat) {
-	this.timeFormat = timeFormat;
-}
+    /**
+     * @param timeFormat the timeFormat to set
+     */
+    public void setTimeFormat(TimeFormat timeFormat) {
+        this.timeFormat = timeFormat;
+    }
 
 }
