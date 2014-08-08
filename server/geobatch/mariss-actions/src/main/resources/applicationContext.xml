@@ -10,10 +10,10 @@
         <property name="order" value="10"/>
         <property name="locations">
             <list>
-                <value>classpath*:opensdi-config-ovr.properties</value>
+                <value>classpath*:geobatch-config-ovr.properties</value>
                 <!-- used for externalized override -->
-                <value>${opensdi-ovr:dummy}</value>
-                <value>file:///${OPENSDI_CONFIG_FILE:dummy}</value>    
+                <value>${geobatch-ovr:dummy}</value>
+                <value>file:///${GEOBATCH_CONFIG_FILE:dummy}</value>    
             </list>
         </property>
     </bean>
