@@ -5,26 +5,25 @@
 
     <!--=====================================================================-->
     
-    <bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
+    <!-- NON VA bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="order" value="10"/>
         <property name="locations">
             <list>
                 <value>classpath*:geobatch-config-ovr.properties</value>
-                <!-- used for externalized override -->
                 <value>${geobatch-ovr:dummy}</value>
                 <value>file:///${GEOBATCH_CONFIG_FILE:dummy}</value>    
             </list>
         </property>
-    </bean>
+    </bean -->
         
     <!-- ====================================================================-->
 
     <bean id="geoBatchMARISSDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="org.postgresql.Driver" />
-		<property name="url" value="jdbc:postgresql://localhost:5432/opensdi" />
-		<property name="username" value="opensdi" />
-		<property name="password" value="password" />
+		<property name="url" value="jdbc:postgresql://localhost:5432/mariss" />
+		<property name="username" value="mariss" />
+		<property name="password" value="mariss" />
 	</bean>
 
     <!-- ====================================================================-->
