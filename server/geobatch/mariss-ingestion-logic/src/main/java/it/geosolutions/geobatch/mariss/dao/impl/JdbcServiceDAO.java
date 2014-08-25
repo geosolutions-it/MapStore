@@ -23,13 +23,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.sql.DataSource;
 
 /**
  * <pre>
  * {@code
- *  CREATE TYPE service_status AS ENUM ('NEW', 'AOI', 'ACQUISITIONLIST', 'ACQUISITIONPLAN', 'INGESTED');
+ *  CREATE TYPE service_status AS ENUM ('NEW', 'AOI', 'ACQUISITIONLIST', 'ACQUISITIONPLAN', 'PRODUCTS', 'INGESTED');
  *  CREATE TABLE service
  *    (
  *      "ID" serial NOT NULL,
@@ -119,6 +121,73 @@ public class JdbcServiceDAO implements ServiceDAO {
             }
         }
 
+    }
+
+    @Override
+    public List<Service> findByUser(String userId) {
+    
+        String sql = "SELECT * FROM SERVICE WHERE \"USER\" = ?";
+
+        Connection conn = null;
+
+        try {
+            conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, userId);
+            List<Service> services = new ArrayList<Service>();
+            ResultSet rs = ps.executeQuery();
+            Service service;
+            while (rs.next()) {
+                service = new Service(rs.getString("SERVICE_ID"), rs.getString("PARENT"),
+                                      rs.getString("USER"), rs.getString("STATUS"));
+                service.setId(rs.getInt("ID"));
+                
+                services.add(service);
+            }
+            rs.close();
+            ps.close();
+            return services;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public boolean updateServiceStatus(Service service, String status) {
+        boolean result = false;
+        
+        String sql = "UPDATE SERVICE SET \"STATUS\" = ? WHERE \"USER\" = ? AND \"SERVICE_ID\" = ?";
+
+        Connection conn = null;
+
+        try {
+            conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, status);
+            ps.setString(2, service.getUser());
+            ps.setString(3, service.getServiceId());
+            result = ps.execute() && ps.getUpdateCount() > 0;
+            ps.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+        return result;
     }
 
 }

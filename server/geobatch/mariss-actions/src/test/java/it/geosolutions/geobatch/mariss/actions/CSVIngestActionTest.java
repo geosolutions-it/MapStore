@@ -48,104 +48,91 @@ import org.slf4j.LoggerFactory;
  */
 public class CSVIngestActionTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CSVIngestAction.class);
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(CSVIngestAction.class);
 
-    public CSVIngestActionTest() {
-        super();
-    }
+	public CSVIngestActionTest() {
+		super();
+	}
+	
+	private Map<String, Serializable> getConnectionParameters(){
+		Map<String, Serializable> params = new HashMap<String, Serializable>();
+		params.put("dbtype", "postgis");
+		params.put("host", "localhost");
+		params.put("port", 5432);
+		params.put("schema", "public");
+		params.put("database", "mariss");
+		params.put("user", "mariss");
+		params.put("passwd", "mariss");
+		return params;
+	}
 
-    private Map<String, Serializable> getConnectionParameters() {
-        Map<String, Serializable> params = new HashMap<String, Serializable>();
-        params.put("dbtype", "postgis");
-        params.put("host", "localhost");
-        params.put("port", 5432);
-        params.put("schema", "public");
-        params.put("database", "mariss");
-        params.put("user", "mariss");
-        params.put("passwd", "mariss");
-        return params;
-    }
+	/**
+	 * Generate a CSVAcqListProcessor processor to test 
+	 * @return the processor
+	 */
+	private CSVAcqListProcessor getAcqProcessor() {
+		return (CSVAcqListProcessor) getProcessor("acq_list", "CLS", "CLS1");
+	}
 
-    /**
-     * Generate a CSVAcqListProcessor processor to test
-     * 
-     * @return the processor
-     */
-    private CSVAcqListProcessor getAcqProcessor() {
-        return (CSVAcqListProcessor) getProcessor("acq_list", "CLS", "CLS1");
-    }
+	/**
+	 * Generate a MarissCSVServiceProcessor processor to test 
+	 * @return the processor
+	 */
+	private MarissCSVServiceProcessor getProcessor(String typeName, String userName, String serviceName) {
+		MarissCSVServiceProcessor processor = null;
+		try {
+			if("acq_list".equals(typeName)){
+				processor = new CSVAcqListProcessor(getConnectionParameters(), typeName,
+						new TimeFormat(null, null, "Time format default",
+								new TimeFormatConfiguration(null, null,
+										"Time format configuration")));
+			}else if("products_1to3".equals(typeName)){
+				processor = new CSVProductTypes1To3Processor(getConnectionParameters(), typeName,
+						new TimeFormat(null, null, "Time format default",
+								new TimeFormatConfiguration(null, null,
+										"Time format configuration")));
+			}else if("products_5".equals(typeName)){
+				processor = new CSVProductTypes5Processor(getConnectionParameters(), typeName,
+						new TimeFormat(null, null, "Time format default",
+								new TimeFormatConfiguration(null, null,
+										"Time format configuration")));
+			}
+			processor.setUserName(userName);
+			processor.setServiceName(serviceName);
+		} catch (Exception e) {
+			LOGGER.error("Error getting the processor", e);
+		}
+		return processor;
+	}
 
-    /**
-     * Generate a MarissCSVServiceProcessor processor to test
-     * 
-     * @return the processor
-     */
-    private MarissCSVServiceProcessor getProcessor(String typeName, String userName,
-            String serviceName) {
-        MarissCSVServiceProcessor processor = null;
-        try {
-            if ("acq_list".equals(typeName)) {
-                processor = new CSVAcqListProcessor(
-                        getConnectionParameters(),
-                        typeName,
-                        new TimeFormat(
-                                null,
-                                null,
-                                "Time format default",
-                                new TimeFormatConfiguration(null, null, "Time format configuration")));
-            } else if ("products_1to3".equals(typeName)) {
-                processor = new CSVProductTypes1To3Processor(
-                        getConnectionParameters(),
-                        typeName,
-                        new TimeFormat(
-                                null,
-                                null,
-                                "Time format default",
-                                new TimeFormatConfiguration(null, null, "Time format configuration")));
-            } else if ("products_5".equals(typeName)) {
-                processor = new CSVProductTypes5Processor(
-                        getConnectionParameters(),
-                        typeName,
-                        new TimeFormat(
-                                null,
-                                null,
-                                "Time format default",
-                                new TimeFormatConfiguration(null, null, "Time format configuration")));
-            }
-            processor.setUserName(userName);
-            processor.setServiceName(serviceName);
-        } catch (Exception e) {
-            LOGGER.error("Error getting the processor", e);
-        }
-        return processor;
-    }
+	/**
+	 * Process CSV files with the default CSV ingest action
+	 * @throws Exception
+	 */
+	@Test
+	public void loadAllAsEvent() throws Exception {
+		CSVAcqListProcessor acqProcessor = getAcqProcessor();
 
-    /**
-     * Process CSV files with the default CSV ingest action
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void loadAllAsEvent() throws Exception {
-        CSVAcqListProcessor acqProcessor = getAcqProcessor();
+		if (acqProcessor != null) {
+			CSVIngestAction action = new CSVIngestAction(
+					new CSVIngestConfiguration(null, null, null));
+			action.addProcessor(acqProcessor);
+			action.addProcessor(getProcessor("products_1to3", "CLS", "CLS1"));
+			action.addProcessor(getProcessor("products_5", "CLS", "CLS1"));
+			Queue<EventObject> events = new LinkedList<EventObject>();
 
-        if (acqProcessor != null) {
-            CSVIngestAction action = new CSVIngestAction(new CSVIngestConfiguration(null, null,
-                    null));
-            action.addProcessor(acqProcessor);
-            action.addProcessor(getProcessor("products_1to3", "CLS", "CLS1"));
-            action.addProcessor(getProcessor("products_5", "CLS", "CLS1"));
-            Queue<EventObject> events = new LinkedList<EventObject>();
-
-            for (File file : FileUtils.listFiles(new File("."), new String[] { "csv" }, true)) {
-                LOGGER.info("Loading " + file);
-                FileSystemEvent event = new FileSystemEvent(file, FileSystemEventType.FILE_ADDED);
-                events.add(event);
-                @SuppressWarnings({ "unused", "rawtypes" })
-                Queue result = action.execute(events);
-            }
-        } else {
-            LOGGER.info("The local database is not available");
-        }
-    }
+			for (File file : FileUtils.listFiles(new File("."),
+					new String[] { "csv" }, true)) {
+				LOGGER.info("Loading " + file);
+				FileSystemEvent event = new FileSystemEvent(file,
+						FileSystemEventType.FILE_ADDED);
+				events.add(event);
+				@SuppressWarnings({ "unused", "rawtypes" })
+				Queue result = action.execute(events);
+			}
+		} else {
+			LOGGER.info("The local database is not available");
+		}
+	}
 }

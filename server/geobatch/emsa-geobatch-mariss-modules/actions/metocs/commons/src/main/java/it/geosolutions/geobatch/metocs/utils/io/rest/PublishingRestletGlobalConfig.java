@@ -63,7 +63,7 @@ public final class PublishingRestletGlobalConfig {
     public void init() throws Exception {
         File workingDir = null;
         try {
-            workingDir = Path.findLocation(rootDirectory,
+            workingDir = Path.findLocation(rootDirectory, 
                     ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
         } catch (Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE))

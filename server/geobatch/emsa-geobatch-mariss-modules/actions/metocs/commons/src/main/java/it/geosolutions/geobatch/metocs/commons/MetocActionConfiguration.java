@@ -34,18 +34,19 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
 
     public MetocActionConfiguration(String id, String name, String description) {
         super(id, name, description);
-
+        
+        
         // //
         // initialize params...
         // //
         sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-
+        
     }
 
     private boolean packComponents;
 
     private boolean timeUnStampedOutputDir;
-
+    
     private boolean flipY;
 
     private String workingDirectory;
@@ -55,18 +56,18 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
     private String envelope;
 
     private String storeFilePrefix;
-
+    
     private String metocDictionaryPath;
 
     private String metocHarvesterXMLTemplatePath;
-
+    
     private String cruiseName;
 
     /**
      * Default logger
      */
-    protected final static Logger LOGGER = Logger.getLogger(MetocActionConfiguration.class
-            .toString());
+    protected final static Logger LOGGER = 
+                            Logger.getLogger(MetocActionConfiguration.class.toString());
 
     protected final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddmm_HHH");
 
@@ -103,7 +104,8 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
     }
 
     /**
-     * @param metocDictionaryPath the metocDictionaryPath to set
+     * @param metocDictionaryPath
+     *            the metocDictionaryPath to set
      */
     public void setMetocDictionaryPath(String metocDictionaryPath) {
         this.metocDictionaryPath = metocDictionaryPath;
@@ -117,7 +119,8 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
     }
 
     /**
-     * @param metocHarvesterXMLTemplatePath the metocHarvesterXMLTemplatePath to set
+     * @param metocHarvesterXMLTemplatePath
+     *            the metocHarvesterXMLTemplatePath to set
      */
     public void setMetocHarvesterXMLTemplatePath(String metocHarvesterXMLTemplatePath) {
         this.metocHarvesterXMLTemplatePath = metocHarvesterXMLTemplatePath;
@@ -131,7 +134,8 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
     }
 
     /**
-     * @param workingDirectory the workingDirectory to set
+     * @param workingDirectory
+     *            the workingDirectory to set
      */
     public void setWorkingDirectory(String workingDirectory) {
         this.workingDirectory = workingDirectory;
@@ -144,18 +148,17 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
     public void setPackComponents(boolean packComponents) {
         this.packComponents = packComponents;
     }
-
+    
     /**
-     * Returns true if the image should be flip by Y
-     * 
+     * Returns true if the image should be flip by Y 
      * @return boolean
      */
-    public boolean isFlipY() {
+    public boolean isFlipY(){
         return flipY;
     }
-
-    public void setFlipY(boolean f) {
-        this.flipY = f;
+    
+    public void setFlipY(boolean f){
+        this.flipY=f;
     }
 
     public String getCrs() {
@@ -189,9 +192,9 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
     public void setCruiseName(String cruiseName) {
         this.cruiseName = cruiseName;
     }
-
     /**
-     * @param timeUnStampedOutputDir the timeUnStampedOutputDir to set
+     * @param timeUnStampedOutputDir
+     *            the timeUnStampedOutputDir to set
      */
     public void setTimeUnStampedOutputDir(boolean timeUnStampedOutputDir) {
         this.timeUnStampedOutputDir = timeUnStampedOutputDir;
@@ -208,15 +211,14 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
     public MetocActionConfiguration clone() {
         return copy(this);
     }
-
+    
     /**
      * copy into returned object src
-     * 
      * @param src
      * @return
      */
     protected MetocActionConfiguration copy(MetocActionConfiguration src) {
-
+        
         final MetocActionConfiguration configuration = new MetocActionConfiguration(super.getId(),
                 super.getName(), super.getDescription());
 

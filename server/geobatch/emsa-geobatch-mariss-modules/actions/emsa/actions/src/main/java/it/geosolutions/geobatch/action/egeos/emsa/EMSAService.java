@@ -49,8 +49,8 @@ public class EMSAService extends BaseService {
         try {
             return new EMSAAction(configuration);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE,
-                    "Error occurred creating EMSA Action... " + e.getLocalizedMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error occurred creating EMSA Action... "
+                    + e.getLocalizedMessage(), e);
         }
 
         return null;

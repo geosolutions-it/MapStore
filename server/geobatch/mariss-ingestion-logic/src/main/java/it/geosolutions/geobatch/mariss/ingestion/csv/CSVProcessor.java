@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import au.com.bytecode.opencsv.CSVReader;
 
 /**
- * 
+ *
  * @author ETj (etj at geo-solutions.it)
  * @author adiaz copied to MARISS project and some improvements
  */
@@ -41,26 +41,24 @@ public abstract class CSVProcessor {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CSVProcessor.class);
 
-    public abstract List<String> getHeaders();
-
-    /**
-     * Processor configuration
-     */
-    private CSVProcessorConfiguration configuration;
-
-    /**
-     * File in process name
-     */
-    protected String fileName;
+	public abstract List<String> getHeaders();
+	
+	/**
+	 * Processor configuration
+	 */
+	private CSVProcessorConfiguration configuration;
+	
+	/**
+	 * File in process name
+	 */
+	protected String fileName;
 
     public boolean canProcess(List<String> ingestHeaders) {
         if (ingestHeaders == null) {
             return false;
         }
         if (ingestHeaders.size() != getHeaders().size()) {
-            LOGGER.debug("Processor " + getClass().getSimpleName()
-                    + " skipped because of headers size [" + getHeaders().size() + "!="
-                    + ingestHeaders.size() + "]");
+            LOGGER.debug("Processor " + getClass().getSimpleName() + " skipped because of headers size ["+getHeaders().size()+"!="+ingestHeaders.size()+"]");
             return false;
         }
         for (int i = 0; i < getHeaders().size(); i++) {
@@ -69,8 +67,7 @@ public abstract class CSVProcessor {
                 continue;
             }
             if (!exp.equals(ingestHeaders.get(i))) {
-                LOGGER.debug("Processor " + getClass().getSimpleName() + " skipped because of ["
-                        + exp + "]!=[" + ingestHeaders.get(i) + "]");
+                LOGGER.debug("Processor " + getClass().getSimpleName() + " skipped because of ["+exp+"]!=["+ingestHeaders.get(i)+"]");
                 return false;
             }
         }
@@ -87,59 +84,57 @@ public abstract class CSVProcessor {
      * @throws IOException
      */
     public String processCSVFile(File file, char separator) throws IOException {
-        String successMsg = null;
+    	String successMsg = null;
         LOGGER.info("Processing input file " + file);
-
+        
         String[] headers = null;
         CSVReader reader = null;
 
-        try {
+        try{
             // check header list
-            try {
+        	try {
                 reader = new CSVReader(new FileReader(file), separator);
                 headers = reader.readNext(); // remove header
             } catch (IOException e) {
                 throw new IOException("Error in reading CSV file", e);
             }
             List<String> headersList;
-            try {
-                headersList = CSVIngestUtils.sanitizeHeaders(headers);
-            } catch (IOException e) {
-                throw new IOException("Error processing " + file.getName(), e);
-            }
+    		try {
+    			headersList = CSVIngestUtils.sanitizeHeaders(headers);
+    		} catch (IOException e) {
+            	throw new IOException("Error processing " + file.getName(), e);
+    		}
 
-            LOGGER.info("Processing CSV " + file.getName() + " with "
-                    + this.getClass().getSimpleName());
+            LOGGER.info("Processing CSV " + file.getName() + " with " + this.getClass().getSimpleName());
             try {
-                // process
-                if (canProcess(headersList)) {
-                    this.process(reader);
-                    successMsg = "\n***************************************************"
-                            + "\n********** SUCCESS: CSV ingestion resume **********"
-                            + "\n***************************************************"
-                            + "\n* Records inserted: " + this.getInsertCount()
-                            + "\n* Records updated: " + this.getUpdateCount()
-                            + "\n* Records removed: " + this.getRemoveCount()
-                            + "\n* Failed records: " + this.getFailCount()
-                            + "\n***************************************************\n";
+            	// process
+                if(canProcess(headersList)) {
+                	this.process(reader);
+                    successMsg =   
+                          "\n***************************************************" 
+                        + "\n********** SUCCESS: CSV ingestion resume **********" 
+                        + "\n***************************************************"
+                        + "\n* Records inserted: "+ this.getInsertCount()
+                        + "\n* Records updated: "+ this.getUpdateCount()
+                        + "\n* Records removed: "+ this.getRemoveCount()
+                        + "\n* Failed records: "+ this.getFailCount()
+                        + "\n***************************************************\n";
                     LOGGER.info(successMsg);
-                } else {
-                    LOGGER.warn("The file " + file.getName()
-                            + " could'nt be processed in this processor; headers: " + headersList);
-                    throw new IOException("Error processing " + file.getName()
-                            + ". It could'nt be processed in this processor");
+                }else{
+                    LOGGER.warn("The file " + file.getName() + " could'nt be processed in this processor; headers: " + headersList);
+                	throw new IOException("Error processing " + file.getName() + ". It could'nt be processed in this processor");
                 }
             } catch (CSVProcessException ex) {
                 throw new IOException("Error processing " + file.getName(), ex);
             }
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e1) {
-                    throw new IOException("Error processing " + file.getName(), e1);
-                }
-            }
+        }finally{
+        	if(reader != null){
+				try {
+					reader.close();
+				} catch (IOException e1) {
+					throw new IOException("Error processing " + file.getName(), e1);
+				}
+			}
         }
         return successMsg;
     }
@@ -147,39 +142,36 @@ public abstract class CSVProcessor {
     abstract public void process(CSVReader reader) throws CSVProcessException;
 
     public abstract int getInsertCount();
-
     public abstract int getFailCount();
-
     public abstract int getRemoveCount();
-
     public abstract int getUpdateCount();
 
-    /**
-     * @return the configuration
-     */
-    public CSVProcessorConfiguration getConfiguration() {
-        return configuration;
-    }
+	/**
+	 * @return the configuration
+	 */
+	public CSVProcessorConfiguration getConfiguration() {
+		return configuration;
+	}
 
-    /**
-     * @param configuration the configuration to set
-     */
-    public void setConfiguration(CSVProcessorConfiguration configuration) {
-        this.configuration = configuration;
-    }
+	/**
+	 * @param configuration the configuration to set
+	 */
+	public void setConfiguration(CSVProcessorConfiguration configuration) {
+		this.configuration = configuration;
+	}
 
-    /**
-     * @return the fileName
-     */
-    public String getFileName() {
-        return fileName;
-    }
+	/**
+	 * @return the fileName
+	 */
+	public String getFileName() {
+		return fileName;
+	}
 
-    /**
-     * @param fileName the fileName to set
-     */
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
+	/**
+	 * @param fileName the fileName to set
+	 */
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
 
 }

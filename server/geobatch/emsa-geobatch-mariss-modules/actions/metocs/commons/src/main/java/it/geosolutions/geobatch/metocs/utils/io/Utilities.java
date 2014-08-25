@@ -140,18 +140,16 @@ public class Utilities {
         if (Double.isNaN(inNoData)) {
             nan = new Category(Vocabulary.formatInternational(VocabularyKeys.NODATA), new Color(0,
                     0, 0, 0), 0);
-            values = new Category("values", new Color[] { new Color(255, 0, 0, 0) },
-                    NumberRange.create(1, 255), NumberRange.create(0, 9000));
+            values = new Category("values", new Color[] { new Color(255, 0, 0, 0) }, NumberRange
+                    .create(1, 255), NumberRange.create(0, 9000));
 
         } else {
             nan = new Category(Vocabulary.formatInternational(VocabularyKeys.NODATA),
-                    new Color[] { new Color(0, 0, 0, 0) }, NumberRange.create(0, 0),
-                    NumberRange.create(inNoData == 0 ? -0.000001 : inNoData,
-                            inNoData == 0 ? -0.000001 : inNoData));
-            values = new Category("values", new Color[] { new Color(255, 0, 0, 0) },
-                    NumberRange.create(1, 255), NumberRange.create(
-                            inNoData + Math.abs(inNoData == 0 ? -0.000001 : inNoData) * 0.1,
-                            inNoData + Math.abs(inNoData == 0 ? -0.000001 : inNoData) * 10));
+                    new Color[] { new Color(0, 0, 0, 0) }, NumberRange.create(0, 0), NumberRange
+                            .create(inNoData == 0 ? -0.000001 : inNoData, inNoData == 0 ? -0.000001 : inNoData));
+            values = new Category("values", new Color[] { new Color(255, 0, 0, 0) }, NumberRange
+                    .create(1, 255), NumberRange.create(inNoData + Math.abs(inNoData == 0 ? -0.000001 : inNoData) * 0.1,
+                    inNoData + Math.abs(inNoData == 0 ? -0.000001 : inNoData) * 10));
 
         }
 
@@ -181,8 +179,8 @@ public class Utilities {
 
         final AbstractGridCoverageWriter writer = (AbstractGridCoverageWriter) new GeoTiffWriter(
                 outFile);
-        writer.write(coverage,
-                (GeneralParameterValue[]) wparams.values().toArray(new GeneralParameterValue[1]));
+        writer.write(coverage, (GeneralParameterValue[]) wparams.values().toArray(
+                new GeneralParameterValue[1]));
 
         // /////////////////////////////////////////////////////////////////////
         //
@@ -243,8 +241,8 @@ public class Utilities {
         // final Hints hints = new Hints(Hints.TILE_ENCODING, "raw");
         final AbstractGridCoverageWriter writer = (AbstractGridCoverageWriter) new GeoTiffWriter(
                 outFile);
-        writer.write(coverage,
-                (GeneralParameterValue[]) wparams.values().toArray(new GeneralParameterValue[1]));
+        writer.write(coverage, (GeneralParameterValue[]) wparams.values().toArray(
+                new GeneralParameterValue[1]));
 
         // /////////////////////////////////////////////////////////////////////
         //
@@ -256,99 +254,99 @@ public class Utilities {
         return outFile;
     }
 
-    // /**
-    // *
-    // * @param tempFile
-    // * @return
-    // * @throws IOException
-    // */
-    // public static File decompress(final String prefix, final File inputFile, final File tempFile)
-    // throws IOException {
-    // final File tmpDestDir = createTodayPrefixedDirectory(prefix, new File(tempFile.getParent()));
-    //
-    // String ext = FilenameUtils.getExtension(inputFile.getName());
-    //
-    // if (ext.equalsIgnoreCase("tar")) {
-    // final TarInputStream stream = new TarInputStream(new FileInputStream(inputFile));
-    // final TarEntryEnumerator entryEnum = new TarEntryEnumerator(stream);
-    //
-    // if (stream == null) {
-    // throw new IOException("Not valid archive file type.");
-    // }
-    //
-    // TarEntry entry;
-    // while (entryEnum.hasMoreElements()) {
-    // entry = (TarEntry) entryEnum.nextElement();
-    // final String entryName = entry.getName();
-    //
-    // if (entry.isDirectory()) {
-    // // Assume directories are stored parents first then
-    // // children.
-    // (new File(tmpDestDir, entry.getName())).mkdir();
-    // continue;
-    // }
-    //
-    // byte[] buf = new byte[(int) entry.getSize()];
-    // stream.read(buf);
-    //
-    // File newFile = new File(tmpDestDir.getAbsolutePath(), entryName);
-    // FileOutputStream fos = new FileOutputStream(newFile);
-    // try {
-    // saveCompressedStream(buf, fos, buf.length);
-    // } catch (IOException e) {
-    // stream.close();
-    // IOException ioe = new IOException("Not valid archive file type.");
-    // ioe.initCause(e);
-    // throw ioe;
-    // } finally {
-    // fos.flush();
-    // fos.close();
-    // }
-    // }
-    // stream.close();
-    //
-    // } else if (ext.equalsIgnoreCase("zip")) {
-    // ZipFile zipFile = new ZipFile(inputFile);
-    //
-    // Enumeration<? extends ZipEntry> entries = zipFile.entries();
-    //
-    // while (entries.hasMoreElements()) {
-    // ZipEntry entry = (ZipEntry) entries.nextElement();
-    // InputStream stream = zipFile.getInputStream(entry);
-    //
-    // if (entry.isDirectory()) {
-    // // Assume directories are stored parents first then
-    // // children.
-    // (new File(tmpDestDir, entry.getName())).mkdir();
-    // continue;
-    // }
-    //
-    // File newFile = new File(tmpDestDir, entry.getName());
-    // FileOutputStream fos = new FileOutputStream(newFile);
-    // try {
-    // byte[] buf = new byte[1024];
-    // int len;
-    //
-    // while ((len = stream.read(buf)) >= 0)
-    // saveCompressedStream(buf, fos, len);
-    //
-    // } catch (IOException e) {
-    // zipFile.close();
-    // IOException ioe = new IOException("Not valid COAMPS archive file type.");
-    // ioe.initCause(e);
-    // throw ioe;
-    // } finally {
-    // fos.flush();
-    // fos.close();
-    //
-    // stream.close();
-    // }
-    // }
-    // zipFile.close();
-    // }
-    //
-    // return tmpDestDir;
-    // }
+//    /**
+//     * 
+//     * @param tempFile
+//     * @return
+//     * @throws IOException
+//     */
+//    public static File decompress(final String prefix, final File inputFile, final File tempFile)
+//            throws IOException {
+//        final File tmpDestDir = createTodayPrefixedDirectory(prefix, new File(tempFile.getParent()));
+//
+//        String ext = FilenameUtils.getExtension(inputFile.getName());
+//
+//        if (ext.equalsIgnoreCase("tar")) {
+//            final TarInputStream stream = new TarInputStream(new FileInputStream(inputFile));
+//            final TarEntryEnumerator entryEnum = new TarEntryEnumerator(stream);
+//
+//            if (stream == null) {
+//                throw new IOException("Not valid archive file type.");
+//            }
+//
+//            TarEntry entry;
+//            while (entryEnum.hasMoreElements()) {
+//                entry = (TarEntry) entryEnum.nextElement();
+//                final String entryName = entry.getName();
+//
+//                if (entry.isDirectory()) {
+//                    // Assume directories are stored parents first then
+//                    // children.
+//                    (new File(tmpDestDir, entry.getName())).mkdir();
+//                    continue;
+//                }
+//
+//                byte[] buf = new byte[(int) entry.getSize()];
+//                stream.read(buf);
+//
+//                File newFile = new File(tmpDestDir.getAbsolutePath(), entryName);
+//                FileOutputStream fos = new FileOutputStream(newFile);
+//                try {
+//                    saveCompressedStream(buf, fos, buf.length);
+//                } catch (IOException e) {
+//                    stream.close();
+//                    IOException ioe = new IOException("Not valid archive file type.");
+//                    ioe.initCause(e);
+//                    throw ioe;
+//                } finally {
+//                    fos.flush();
+//                    fos.close();
+//                }
+//            }
+//            stream.close();
+//
+//        } else if (ext.equalsIgnoreCase("zip")) {
+//            ZipFile zipFile = new ZipFile(inputFile);
+//
+//            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+//
+//            while (entries.hasMoreElements()) {
+//                ZipEntry entry = (ZipEntry) entries.nextElement();
+//                InputStream stream = zipFile.getInputStream(entry);
+//
+//                if (entry.isDirectory()) {
+//                    // Assume directories are stored parents first then
+//                    // children.
+//                    (new File(tmpDestDir, entry.getName())).mkdir();
+//                    continue;
+//                }
+//
+//                File newFile = new File(tmpDestDir, entry.getName());
+//                FileOutputStream fos = new FileOutputStream(newFile);
+//                try {
+//                    byte[] buf = new byte[1024];
+//                    int len;
+//
+//                    while ((len = stream.read(buf)) >= 0)
+//                        saveCompressedStream(buf, fos, len);
+//
+//                } catch (IOException e) {
+//                    zipFile.close();
+//                    IOException ioe = new IOException("Not valid COAMPS archive file type.");
+//                    ioe.initCause(e);
+//                    throw ioe;
+//                } finally {
+//                    fos.flush();
+//                    fos.close();
+//
+//                    stream.close();
+//                }
+//            }
+//            zipFile.close();
+//        }
+//
+//        return tmpDestDir;
+//    }
 
     /**
      * @param len
@@ -372,9 +370,11 @@ public class Utilities {
     }
 
     /**
-     * Create a subDirectory having the actual date as name, within a specified destination directory.
+     * Create a subDirectory having the actual date as name, within a specified destination
+     * directory.
      * 
-     * @param destDir the destination directory where to build the "today" directory.
+     * @param destDir
+     *            the destination directory where to build the "today" directory.
      * @param inputFileName
      * @return the created directory.
      */
@@ -383,9 +383,11 @@ public class Utilities {
     }
 
     /**
-     * Create a subDirectory having the actual date as name, within a specified destination directory.
+     * Create a subDirectory having the actual date as name, within a specified destination
+     * directory.
      * 
-     * @param destDir the destination directory where to build the "today" directory.
+     * @param destDir
+     *            the destination directory where to build the "today" directory.
      * @param inputFileName
      * @return the created directory.
      */
@@ -393,40 +395,44 @@ public class Utilities {
             final boolean withTime) {
         final SimpleDateFormat SDF = withTime ? new SimpleDateFormat("yyyy_MM_dd_hhmmssSSS")
                 : new SimpleDateFormat("yyyy_MM_dd");
-        final String newPath = (new StringBuffer(destDir.getAbsolutePath().trim())
-                .append(File.separatorChar).append(SDF.format(new Date())).append("_")
+        final String newPath = (new StringBuffer(destDir.getAbsolutePath().trim()).append(
+                File.separatorChar).append(SDF.format(new Date())).append("_")
                 .append(inputFileName)).toString();
         File dir = new File(newPath);
-        if (!dir.exists()) {
-            if (dir.mkdirs()) {
+        if (!dir.exists()){
+            if (dir.mkdirs()){
                 return dir;
-            } else
+            }
+            else
                 return null;
         }
         return dir;
     }
 
     /**
-     * Create a subDirectory having the actual date as name, within a specified destination directory.
+     * Create a subDirectory having the actual date as name, within a specified destination
+     * directory.
      * 
      * @param prefix
-     * @param parent the destination directory where to build the "today" directory.
+     * @param parent
+     *            the destination directory where to build the "today" directory.
      * @return the created directory.
      */
     public static File createTodayPrefixedDirectory(final String prefix, final File parent) {
         final SimpleDateFormat SDF_HMS = new SimpleDateFormat("yyyy_MM_dd_hhmmssSSS");
-        final String newPath = (new StringBuffer(parent.getAbsolutePath().trim())
-                .append(File.separatorChar).append(prefix).append(File.separatorChar)
-                .append(SDF_HMS.format(new Date()))).toString();
+        final String newPath = (new StringBuffer(parent.getAbsolutePath().trim()).append(
+                File.separatorChar).append(prefix).append(File.separatorChar).append(SDF_HMS
+                .format(new Date()))).toString();
         File dir = new File(newPath);
-        if (!dir.exists()) {
-            if (dir.mkdirs()) {
+        if (!dir.exists()){
+            if (dir.mkdirs()){
                 return dir;
-            } else
+            }
+            else
                 return null;
         }
         return dir;
-
+        
     }
 
     public static int getDataType(final DataType varDataType) {
@@ -460,45 +466,45 @@ public class Utilities {
      */
     public static File createDirectory(File workingDir, String inputFileName) {
         File newDir = new File(workingDir, inputFileName);
-        if (!newDir.exists()) {
-            if (newDir.mkdirs()) {
+        if (!newDir.exists()){
+            if (newDir.mkdirs()){
                 return newDir;
-            } else
+            }
+            else
                 return null;
         }
         return newDir;
     }
-
+    
     /**
      * Reverse the order of a String array.
-     * 
      * @param elements
      */
     public static void reverse(String[] elements) {
-        if (elements != null) {
-            final int length = elements.length;
-            final int half = length / 2;
-            String temp = "";
-            for (int i = 0; i < half; i++) {
-                temp = elements[i];
-                elements[i] = elements[length - 1 - i];
-                elements[length - 1 - i] = temp;
-            }
+    	if (elements != null){
+        	final int length = elements.length;
+        	final int half = length/2;
+        	String temp = "";
+        	for (int i=0;i<half;i++){
+        		temp = elements[i];
+        		elements[i] = elements[length-1-i];
+        		elements[length-1-i] = temp;
+        	}
         }
-    }
+	}
 
-    public static String chainValues(String[] timePositions) {
-        if (timePositions != null) {
-            final int size = timePositions.length;
-            StringBuilder sb = new StringBuilder();
-            int i = 0;
-            for (; i < size - 1; i++) {
-                sb.append(timePositions[i]).append(",");
-            }
-            sb.append(timePositions[i]);
-            return sb.toString();
-        }
-        return null;
-    }
+	public static String chainValues(String[] timePositions) {
+		if (timePositions != null){
+			final int size = timePositions.length;
+			StringBuilder sb = new StringBuilder();
+			int i = 0;
+			for (; i < size - 1; i++){
+				sb.append(timePositions[i]).append(",");
+			}
+			sb.append(timePositions[i]);
+			return sb.toString();
+		}
+		return null;
+	}
 
 }

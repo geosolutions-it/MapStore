@@ -50,13 +50,13 @@ public class EGEOSGeoServerDeployerService extends BaseService implements
     public EGEOSDeployerBaseAction createAction(EGEOSGeoServerDeployerConfiguration configuration) {
         try {
             // absolutize working dir
-            // String wd=Path.getAbsolutePath(configuration.getWorkingDirectory());
-            // if (wd!=null){
-            // configuration.setWorkingDirectory(wd);
-            return new EGEOSDeployerBaseAction(configuration);
-            // }
-            // else
-            // return null;
+//            String wd=Path.getAbsolutePath(configuration.getWorkingDirectory());
+//            if (wd!=null){
+//                configuration.setWorkingDirectory(wd);
+                return new EGEOSDeployerBaseAction(configuration);
+//            }
+//            else
+//                return null;
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error occurred creating EGEOSGeoServerDeployer Action... "
                     + e.getLocalizedMessage(), e);

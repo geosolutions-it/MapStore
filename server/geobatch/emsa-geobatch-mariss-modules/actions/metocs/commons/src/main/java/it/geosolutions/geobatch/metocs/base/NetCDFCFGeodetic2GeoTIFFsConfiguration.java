@@ -17,7 +17,8 @@ public class NetCDFCFGeodetic2GeoTIFFsConfiguration extends MetocActionConfigura
     }
 
     /**
-     * @param represents the base directory where to public layers
+     * @param represents
+     *            the base directory where to public layers
      */
     public void setLayerParentDirectory(String outputDirectory) {
         this.layerParentDirectory = outputDirectory;

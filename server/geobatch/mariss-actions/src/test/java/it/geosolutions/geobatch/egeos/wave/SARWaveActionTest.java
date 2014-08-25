@@ -46,43 +46,44 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author adiaz
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:test-context.xml" })
-public class SARWaveActionTest extends BaseNetCDFActionTest {
+@ContextConfiguration(locations={"classpath:test-context.xml"})
+public class SARWaveActionTest extends BaseNetCDFActionTest{
+	
+	protected final static Logger LOGGER = LoggerFactory
+			.getLogger(SARWaveActionTest.class);
 
-    protected final static Logger LOGGER = LoggerFactory.getLogger(SARWaveActionTest.class);
+	private String filePathTest = "src/test/resources/SAR_wave.nc";
 
-    private String filePathTest = "src/test/resources/SAR_wave.nc";
-
-    /**
-     * Test the SARWaveAction process
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void sarWaveTest() throws Exception {
-        try {
-            // configure
-            SARWaveActionConfiguration configuration = new SARWaveActionConfiguration(null, null,
-                    null);
-            prepareConfiguration(configuration);
-            SARWaveAction action = new SARWaveAction(configuration);
-            NetCDFCFGeodetic2GeoTIFFsFileAction netCDFToTiffAction = new NetCDFCFGeodetic2GeoTIFFsFileAction(
-                    getNetCDF2TiffConfig());
-            // launch
-            Queue<EventObject> events = new LinkedList<EventObject>();
-            File file = new File(filePathTest);
-            LOGGER.info("Loading " + file);
-            FileSystemEvent event = new FileSystemEvent(file, FileSystemEventType.FILE_ADDED);
-            events.add(event);
-            // first operation
-            Queue<EventObject> result = action.execute(events);
-            assertNotNull(result);
-            // second operation
-            result = netCDFToTiffAction.execute(result);
-            assertNotNull(result);
-        } catch (Exception e) {
-            LOGGER.error("Error on the file process", e);
-            fail();
-        }
-    }
+	/**
+	 * Test the SARWaveAction process
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void sarWaveTest() throws Exception {
+		try{
+			// configure
+			SARWaveActionConfiguration configuration = new SARWaveActionConfiguration(
+					null, null, null);
+			prepareConfiguration(configuration);
+			SARWaveAction action = new SARWaveAction(configuration);
+			NetCDFCFGeodetic2GeoTIFFsFileAction netCDFToTiffAction = new NetCDFCFGeodetic2GeoTIFFsFileAction(getNetCDF2TiffConfig());
+			// launch
+			Queue<EventObject> events = new LinkedList<EventObject>();
+			File file = new File(filePathTest);
+			LOGGER.info("Loading " + file);
+			FileSystemEvent event = new FileSystemEvent(file,
+					FileSystemEventType.FILE_ADDED);
+			events.add(event);
+			// first operation
+			Queue<EventObject> result = action.execute(events);
+			assertNotNull(result);
+			// second operation
+			result = netCDFToTiffAction.execute(result);
+			assertNotNull(result);
+		}catch (Exception e){
+			LOGGER.error("Error on the file process", e);
+			fail();
+		}
+	}
 }

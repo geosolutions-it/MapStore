@@ -54,220 +54,208 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  * @author alejandro.diaz at geo-solutions.it
  * 
  */
-public abstract class ProductIngestionProcessor extends BaseAction<EventObject> {
+public abstract class ProductIngestionProcessor extends BaseAction<EventObject>{
 
-    /**
-     * Working folder for the process
-     */
-    protected String workingDir = System.getProperty("java.io.tmpdir");
+	/** 
+	 * Working folder for the process
+	 */
+	protected String workingDir = System.getProperty("java.io.tmpdir");
 
-    protected final static Logger LOGGER = LoggerFactory.getLogger(ProductIngestionProcessor.class);
+	protected final static Logger LOGGER = LoggerFactory
+			.getLogger(ProductIngestionProcessor.class);
 
-    // Resources to do the ingestion
-    protected DataStore dataStore = null;
+	// Resources to do the ingestion
+	protected DataStore dataStore = null;
+	protected FeatureStore<SimpleFeatureType, SimpleFeature> source = null;
+	protected SimpleFeatureType schema = null;
+	protected String typeName = null;
+	protected String userName;
+	protected String serviceName;
+	protected int projection = 4326;
+	protected String targetTifFolder;
+	protected ImageMosaicConfiguration imageMosaicConfiguration = null;
 
-    protected FeatureStore<SimpleFeatureType, SimpleFeature> source = null;
+	/*
+	 * GeometryFactory will be used to create the geometry attribute of each
+	 * feature (a Point object for the location)
+	 */
+	protected GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
 
-    protected SimpleFeatureType schema = null;
+	// constructors 
+	public ProductIngestionProcessor() {
+		super(null, null, null);
+	}
 
-    protected String typeName = null;
+	public ProductIngestionProcessor(String id, String name, String description) {
+	    super(id, name, description);
+	}
+	
+	public ProductIngestionProcessor(DataStore dataStore, String typeName){
+		this ();
+		prepare(dataStore, typeName);
+	}
+	
+	/**
+	 * Prepare the action to perform the process
+	 * @param dataStore
+	 * @param typeName
+	 */
+	@SuppressWarnings("unchecked")
+	protected void prepare(DataStore dataStore, String typeName) {
+		this.typeName = typeName;
+		this.dataStore = dataStore;
+		try {
+			this.schema = dataStore.getSchema(this.typeName);
+			if(this.typeName != null){
+				this.source = ((FeatureStore<SimpleFeatureType, SimpleFeature>) this.dataStore.getFeatureSource(this.typeName));
+			}
+		} catch (IOException e) {
+			LOGGER.error("Error getting the schema", e);
+		}
+	}
 
-    protected String userName;
+	public ProductIngestionProcessor(DataStore dataStore, String typeName, int projection){
+		this(dataStore, typeName);
+		this.projection = projection;
+	}
+	
+	public ProductIngestionProcessor(DataStore dataStore, String typeName, int projection, String userName, String serviceName){
+		this(dataStore, typeName, projection);
+		this.userName = userName;
+		this.serviceName = serviceName;
+	}
+	
+	public ProductIngestionProcessor(DataStore dataStore, String typeName, String userName, String serviceName){
+		this(dataStore, typeName);
+		this.userName = userName;
+		this.serviceName = serviceName;
+	}
+	
+	public ProductIngestionProcessor(DataStore dataStore, String typeName, String userName, String serviceName, String targetTifFolder){
+		this(dataStore, typeName, userName, serviceName);
+		this.targetTifFolder = targetTifFolder;
+	}
+	
+	public ProductIngestionProcessor(
+			DataPackageIngestionConfiguration configuration) {
+		super(configuration);
+	}
 
-    protected String serviceName;
+	/**
+	 * Check if this processor can process the file
+	 * @param filePath
+	 * @return  
+	 */
+	public abstract boolean canProcess(String filePath);
+	
+	/**
+	 * Do process for a file path
+	 * 
+	 * @param filePath
+	 * 
+	 * @return message with the resume of the ingestion
+	 * @throws IOException
+	 */
+	public abstract Collection<? extends EventObject> doProcess(String filePath) throws IOException;
 
-    protected int projection = 4326;
+	/**
+	 * Create a feature in the data store
+	 * 
+	 * @return new feature
+	 * @throws Exception
+	 */
+	protected SimpleFeature createFeature() throws Exception {
+		// Create feature
+		SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(schema);
 
-    protected String targetTifFolder;
+		return featureBuilder.buildFeature(null);
+	}
+	
+	/**
+	 * Persist a list of features
+	 * @param list
+	 */
+	protected void persist(List<SimpleFeature> list) {
+		try{
+	        /*
+	         * Write the feature to the current source
+	         */
+	        Transaction transaction = new DefaultTransaction("create");
 
-    protected ImageMosaicConfiguration imageMosaicConfiguration = null;
+	        if (source instanceof SimpleFeatureStore) {
+	            SimpleFeatureStore featureStore = (SimpleFeatureStore) source;
+	            SimpleFeatureCollection collection = new ListFeatureCollection(schema, list);
+	            featureStore.setTransaction(transaction);
+	            try {
+	                featureStore.addFeatures(collection);
+	                transaction.commit();
+	            } catch (Exception problem) {
+					LOGGER.error("Error on commit", problem);
+	                transaction.rollback();
+	            } finally {
+	                transaction.close();
+	            }
+	            if(LOGGER.isInfoEnabled()){
+					LOGGER.info("Success persisting "+list);
+	            }
+	        } else {
+				LOGGER.error(schema + " does not support read/write access");
+	        }
+		}catch (Exception e){
+			LOGGER.error("Error on persist", e);
+		}
+	}
 
-    /*
-     * GeometryFactory will be used to create the geometry attribute of each feature (a Point object for the location)
-     */
-    protected GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
+	/**
+	 * @return the workingDir
+	 */
+	public String getWorkingDir() {
+		return workingDir;
+	}
 
-    // constructors
-    public ProductIngestionProcessor() {
-        super(null, null, null);
-    }
+	/**
+	 * @param workingDir the workingDir to set
+	 */
+	public void setWorkingDir(String workingDir) {
+		this.workingDir = workingDir;
+	}
 
-    public ProductIngestionProcessor(String id, String name, String description) {
-        super(id, name, description);
-    }
-
-    public ProductIngestionProcessor(DataStore dataStore, String typeName) {
-        this();
-        prepare(dataStore, typeName);
-    }
-
-    /**
-     * Prepare the action to perform the process
-     * 
-     * @param dataStore
-     * @param typeName
-     */
-    @SuppressWarnings("unchecked")
-    protected void prepare(DataStore dataStore, String typeName) {
-        this.typeName = typeName;
-        this.dataStore = dataStore;
-        try {
-            this.schema = dataStore.getSchema(this.typeName);
-            if (this.typeName != null) {
-                this.source = ((FeatureStore<SimpleFeatureType, SimpleFeature>) this.dataStore
-                        .getFeatureSource(this.typeName));
-            }
-        } catch (IOException e) {
-            LOGGER.error("Error getting the schema", e);
-        }
-    }
-
-    public ProductIngestionProcessor(DataStore dataStore, String typeName, int projection) {
-        this(dataStore, typeName);
-        this.projection = projection;
-    }
-
-    public ProductIngestionProcessor(DataStore dataStore, String typeName, int projection,
-            String userName, String serviceName) {
-        this(dataStore, typeName, projection);
-        this.userName = userName;
-        this.serviceName = serviceName;
-    }
-
-    public ProductIngestionProcessor(DataStore dataStore, String typeName, String userName,
-            String serviceName) {
-        this(dataStore, typeName);
-        this.userName = userName;
-        this.serviceName = serviceName;
-    }
-
-    public ProductIngestionProcessor(DataStore dataStore, String typeName, String userName,
-            String serviceName, String targetTifFolder) {
-        this(dataStore, typeName, userName, serviceName);
-        this.targetTifFolder = targetTifFolder;
-    }
-
-    public ProductIngestionProcessor(DataPackageIngestionConfiguration configuration) {
-        super(configuration);
-    }
-
-    /**
-     * Check if this processor can process the file
-     * 
-     * @param filePath
-     * @return
-     */
-    public abstract boolean canProcess(String filePath);
-
-    /**
-     * Do process for a file path
-     * 
-     * @param filePath
-     * 
-     * @return message with the resume of the ingestion
-     * @throws IOException
-     */
-    public abstract Collection<? extends EventObject> doProcess(String filePath) throws IOException;
-
-    /**
-     * Create a feature in the data store
-     * 
-     * @return new feature
-     * @throws Exception
-     */
-    protected SimpleFeature createFeature() throws Exception {
-        // Create feature
-        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(schema);
-
-        return featureBuilder.buildFeature(null);
-    }
-
-    /**
-     * Persist a list of features
-     * 
-     * @param list
-     */
-    protected void persist(List<SimpleFeature> list) {
-        try {
-            /*
-             * Write the feature to the current source
-             */
-            Transaction transaction = new DefaultTransaction("create");
-
-            if (source instanceof SimpleFeatureStore) {
-                SimpleFeatureStore featureStore = (SimpleFeatureStore) source;
-                SimpleFeatureCollection collection = new ListFeatureCollection(schema, list);
-                featureStore.setTransaction(transaction);
-                try {
-                    featureStore.addFeatures(collection);
-                    transaction.commit();
-                } catch (Exception problem) {
-                    LOGGER.error("Error on commit", problem);
-                    transaction.rollback();
-                } finally {
-                    transaction.close();
-                }
-                if (LOGGER.isInfoEnabled()) {
-                    LOGGER.info("Success persisting " + list);
-                }
-            } else {
-                LOGGER.error(schema + " does not support read/write access");
-            }
-        } catch (Exception e) {
-            LOGGER.error("Error on persist", e);
-        }
-    }
-
-    /**
-     * @return the workingDir
-     */
-    public String getWorkingDir() {
-        return workingDir;
-    }
-
-    /**
-     * @param workingDir the workingDir to set
-     */
-    public void setWorkingDir(String workingDir) {
-        this.workingDir = workingDir;
-    }
-
-    /**
-     * Insert a new image to the mosaic located on targetTifFolder
-     * 
-     * @param file
-     * @return
-     */
+	/**
+	 * Insert a new image to the mosaic located on targetTifFolder
+	 * @param file
+	 * @return 
+	 */
     protected EventObject addImageMosaic(File file) {
-        List<File> files = new LinkedList<File>();
-        files.add(file);
-        ImageMosaicCommand imc = new ImageMosaicCommand(new File(targetTifFolder), files, null);
-        return new EventObject(imc);
+    	List<File> files = new LinkedList<File>();
+    	files.add(file);
+    	ImageMosaicCommand imc = new ImageMosaicCommand(new File(targetTifFolder), files, null);
+    	return new EventObject(imc);
     }
 
     /**
      * Add the NetCDF data
-     * 
      * @param imageFile
-     * @return
+     * @return 
      */
-    protected EventObject addNetCDF(File imageFile) {
-        FileSystemEvent event = new FileSystemEvent(imageFile, FileSystemEventType.FILE_ADDED);
-        return event;
-    }
+	protected EventObject addNetCDF(File imageFile) {
+		FileSystemEvent event = new FileSystemEvent(imageFile,
+				FileSystemEventType.FILE_ADDED);
+		return event;
+	}
 
-    /**
-     * @return the imageMosaicConfiguration
-     */
-    public ImageMosaicConfiguration getImageMosaicConfiguration() {
-        return imageMosaicConfiguration;
-    }
+	/**
+	 * @return the imageMosaicConfiguration
+	 */
+	public ImageMosaicConfiguration getImageMosaicConfiguration() {
+		return imageMosaicConfiguration;
+	}
 
-    /**
-     * @param imageMosaicConfiguration the imageMosaicConfiguration to set
-     */
-    public void setImageMosaicConfiguration(ImageMosaicConfiguration imageMosaicConfiguration) {
-        this.imageMosaicConfiguration = imageMosaicConfiguration;
-    }
+	/**
+	 * @param imageMosaicConfiguration the imageMosaicConfiguration to set
+	 */
+	public void setImageMosaicConfiguration(
+			ImageMosaicConfiguration imageMosaicConfiguration) {
+		this.imageMosaicConfiguration = imageMosaicConfiguration;
+	}
 
 }

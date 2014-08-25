@@ -47,7 +47,8 @@ public class RegistryHarvestingGeneratorService extends
     /**
      * Action creator
      * 
-     * @param configuration The data base action configuration
+     * @param configuration
+     *            The data base action configuration
      * @return new JGSFLoDeSSSWANFileConfigurator()
      */
     public RegistryHarvestingConfiguratorAction createAction(

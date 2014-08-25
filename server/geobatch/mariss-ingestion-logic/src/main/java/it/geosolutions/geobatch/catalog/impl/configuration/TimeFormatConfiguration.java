@@ -22,7 +22,6 @@
 package it.geosolutions.geobatch.catalog.impl.configuration;
 
 import it.geosolutions.geobatch.catalog.impl.BaseDescriptableConfiguration;
-import it.geosolutions.geobatch.destination.common.utils.RemoteBrowserProtocol;
 
 import java.util.List;
 
@@ -34,24 +33,24 @@ import java.util.List;
  */
 public class TimeFormatConfiguration extends BaseDescriptableConfiguration {
 
-    private List<String> allowedTimeFormats;
+private List<String> allowedTimeFormats;
 
-    public TimeFormatConfiguration(String id, String name, String description) {
-        super(id, name, description);
-    }
+public TimeFormatConfiguration(String id, String name, String description) {
+    super(id, name, description);
+}
 
-    /**
-     * @return the allowedTimeFormats
-     */
-    public List<String> getAllowedTimeFormats() {
-        return allowedTimeFormats;
-    }
+/**
+ * @return the allowedTimeFormats
+ */
+public List<String> getAllowedTimeFormats() {
+    return allowedTimeFormats;
+}
 
-    /**
-     * @param allowedTimeFormats the allowedTimeFormats to set
-     */
-    public void setAllowedTimeFormats(List<String> allowedTimeFormats) {
-        this.allowedTimeFormats = allowedTimeFormats;
-    }
+/**
+ * @param allowedTimeFormats the allowedTimeFormats to set
+ */
+public void setAllowedTimeFormats(List<String> allowedTimeFormats) {
+    this.allowedTimeFormats = allowedTimeFormats;
+}
 
 }

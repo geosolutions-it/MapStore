@@ -1,0 +1,146 @@
+2014-08-20 11:13:48,840  INFO NativeMethodAccessorImpl:? - Initializing Spring root WebApplicationContext
+2014-08-20 11:13:48,841  INFO            ContextLoader:187 - Root WebApplicationContext: initialization started
+2014-08-20 11:13:48,909  INFO AbstractApplicationContext:456 - Refreshing Root WebApplicationContext: startup date [Wed Aug 20 11:13:48 CEST 2014]; root of context hierarchy
+2014-08-20 11:13:49,004  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-action-commons/1.4-SNAPSHOT/gb-action-commons-1.4-SNAPSHOT.jar!/applicationContext.xml]
+2014-08-20 11:13:49,247  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-action-ds2ds/1.4-SNAPSHOT/gb-action-ds2ds-1.4-SNAPSHOT.jar!/applicationContext.xml]
+2014-08-20 11:13:49,253  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-action-ftp/1.4-SNAPSHOT/gb-action-ftp-1.4-SNAPSHOT.jar!/applicationContext.xml]
+2014-08-20 11:13:49,259  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-action-geoserver/1.4-SNAPSHOT/gb-action-geoserver-1.4-SNAPSHOT.jar!/applicationContext.xml]
+2014-08-20 11:13:49,338  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-action-imagemosaic/1.4-SNAPSHOT/gb-action-imagemosaic-1.4-SNAPSHOT.jar!/applicationContext.xml]
+2014-08-20 11:13:49,344  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-action-shapefile/1.4-SNAPSHOT/gb-action-shapefile-1.4-SNAPSHOT.jar!/applicationContext.xml]
+2014-08-20 11:13:49,351  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-action-taskexecutor/1.4-SNAPSHOT/gb-action-taskexecutor-1.4-SNAPSHOT.jar!/applicationContext.xml]
+2014-08-20 11:13:49,358  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-alias-registry/1.4-SNAPSHOT/gb-alias-registry-1.4-SNAPSHOT.jar!/applicationContext.xml]
+2014-08-20 11:13:49,399  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-core-impl/1.4-SNAPSHOT/gb-core-impl-1.4-SNAPSHOT.jar!/applicationContext.xml]
+2014-08-20 11:13:49,416  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-core-impl/1.4-SNAPSHOT/gb-core-impl-1.4-SNAPSHOT.jar!/applicationContext-listeners.xml]
+2014-08-20 11:13:49,442  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-dao-xstream/1.4-SNAPSHOT/gb-dao-xstream-1.4-SNAPSHOT.jar!/applicationContext.xml]
+2014-08-20 11:13:49,487  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-fs-catalog/1.4-SNAPSHOT/gb-fs-catalog-1.4-SNAPSHOT.jar!/applicationContext.xml]
+2014-08-20 11:13:49,497  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-fsm-core/1.4-SNAPSHOT/gb-fsm-core-1.4-SNAPSHOT.jar!/applicationContext.xml]
+2014-08-20 11:13:49,505  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-fsm-quartz/1.4-SNAPSHOT/gb-fsm-quartz-1.4-SNAPSHOT.jar!/applicationContext.xml]
+2014-08-20 11:13:49,525  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-ftp-server/1.4-SNAPSHOT/gb-ftp-server-1.4-SNAPSHOT.jar!/applicationContext.xml]
+2014-08-20 11:13:49,559  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-ftp-server/1.4-SNAPSHOT/gb-ftp-server-1.4-SNAPSHOT.jar!/applicationContext-database.xml]
+2014-08-20 11:13:49,652  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-ftp-server/1.4-SNAPSHOT/gb-ftp-server-1.4-SNAPSHOT.jar!/applicationContext-DAO.xml]
+2014-08-20 11:13:49,686  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/mariss/gb-mariss-action-metocs/1.4-SNAPSHOT/gb-mariss-action-metocs-1.4-SNAPSHOT.jar!/applicationContext.xml]
+2014-08-20 11:13:49,696  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/C:/work/E-GEOS/geobatch.alej/mariss-actions/target/classes/applicationContext.xml]
+2014-08-20 11:13:49,729  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-rest-impl/1.4-SNAPSHOT/gb-rest-impl-1.4-SNAPSHOT.jar!/applicationContext.xml]
+2014-08-20 11:13:49,766  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/org/apache/cxf/cxf-rt-core/2.5.8/cxf-rt-core-2.5.8.jar!/META-INF/cxf/cxf.xml]
+2014-08-20 11:13:49,794  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/org/apache/cxf/cxf-rt-transports-http/2.5.8/cxf-rt-transports-http-2.5.8.jar!/META-INF/cxf/cxf-servlet.xml]
+2014-08-20 11:13:49,827  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/org/apache/cxf/cxf-rt-transports-http/2.5.8/cxf-rt-transports-http-2.5.8.jar!/META-INF/cxf/cxf-extension-http.xml]
+2014-08-20 11:13:50,303  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-users/1.4-SNAPSHOT/gb-users-1.4-SNAPSHOT.jar!/applicationContext.xml]
+2014-08-20 11:13:50,342  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-users/1.4-SNAPSHOT/gb-users-1.4-SNAPSHOT.jar!/applicationContext-database.xml]
+2014-08-20 11:13:50,433  INFO DefaultListableBeanFactory:612 - Overriding bean definition for bean 'transactionManager': replacing [Generic bean: class [org.springframework.orm.hibernate3.HibernateTransactionManager]; scope=; abstract=false; lazyInit=false; autowireMode=1; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null; defined in URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-ftp-server/1.4-SNAPSHOT/gb-ftp-server-1.4-SNAPSHOT.jar!/applicationContext-database.xml]] with [Generic bean: class [org.springframework.orm.hibernate3.HibernateTransactionManager]; scope=; abstract=false; lazyInit=false; autowireMode=1; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null; defined in URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-users/1.4-SNAPSHOT/gb-users-1.4-SNAPSHOT.jar!/applicationContext-database.xml]]
+2014-08-20 11:13:50,440  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-users/1.4-SNAPSHOT/gb-users-1.4-SNAPSHOT.jar!/applicationContext-DAO.xml]
+2014-08-20 11:13:50,507  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-web-core/1.4-SNAPSHOT/gb-web-core-1.4-SNAPSHOT-classes.jar!/applicationContext.xml]
+2014-08-20 11:13:50,517  INFO  XmlBeanDefinitionReader:315 - Loading XML bean definitions from class path resource [applicationContextGBSecurity.xml]
+2014-08-20 11:13:50,714  INFO HttpSecurityBeanDefinitionParser:187 - Checking sorted filter chain: [Root bean: class [org.springframework.security.web.context.SecurityContextPersistenceFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 300, Root bean: class [org.springframework.security.web.authentication.logout.LogoutFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 400, Root bean: class [org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 800, Root bean: class [org.springframework.security.web.savedrequest.RequestCacheAwareFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1300, Root bean: class [org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1400, Root bean: class [org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1500, Root bean: class [org.springframework.security.web.authentication.AnonymousAuthenticationFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1600, Root bean: class [org.springframework.security.web.session.SessionManagementFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1700, Root bean: class [org.springframework.security.web.access.ExceptionTranslationFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1800, <org.springframework.security.web.access.intercept.FilterSecurityInterceptor#0>, order = 1900]
+2014-08-20 11:13:51,403 ERROR           DataDirHandler:94 - No GEOBATCH_CONFIG_DIR configuration was found. Will try for older GEOBATCH_DATA_DIR
+2014-08-20 11:13:51,403 ERROR           DataDirHandler:100 - No GEOBATCH_DATA_DIR configuration was found. Will try to force a default one.
+2014-08-20 11:13:51,404 ERROR           DataDirHandler:184 - data dir automatically set inside webapp
+2014-08-20 11:13:51,406  INFO DefaultSingletonBeanRegistry:422 - Destroying singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@28cb43a9: defining beans [org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,org.springframework.context.annotation.internalPersistenceAnnotationProcessor,aliasRegistry,loggingListenerConfigRegistrar,cumulatingListenerConfigRegistrar,statusListenerConfigRegistrar,loggingListenerService,cumulatingListenerService,statusListenerService,it.geosolutions.geobatch.annotations.ActionServicePostProcessor#0,settingsCatalog,settingsProcessor,jaiSettingsListener,FlowSettingsListener,propertyConfigurer,alias,globalConfig,XStreamFlowConfigurationDAOService,settingsDAO,taskExecutor,dataDirHandler,catalog,fsEventGeneratorService,fsFlowManagerService,fsmSPIFinder,FSMSPI,dataSource-gb-ftp-server,sessionFactory-gb-ftp-server,org.springframework.aop.config.internalAutoProxyCreator,org.springframework.transaction.annotation.AnnotationTransactionAttributeSource#0,org.springframework.transaction.interceptor.TransactionInterceptor#0,org.springframework.transaction.config.internalTransactionAdvisor,transactionManager,ftpPropsDAO,ftpConfigDAO,ftpUserDAO,gbUserManager,geoBatchServer,RegistryHarvestingGeneratorService,org.springframework.beans.factory.config.PropertyOverrideConfigurer#0,geoBatchMARISSDataSource,geoBatchMARISSServiceDAO,cxf,org.apache.cxf.bus.spring.BusWiringBeanFactoryPostProcessor,org.apache.cxf.bus.spring.Jsr250BeanPostProcessor,org.apache.cxf.bus.spring.BusExtensionPostProcessor,org.apache.cxf.transport.http.ClientOnlyHTTPTransportFactory,restFlowService,geobatchRESTFlowService,jsonProvider,placeholderProperties-database,dataSource-gb-users,sessionFactory-gb-users,gbUserDAO,userFlowAccessDAO,logger,org.springframework.security.web.PortMapperImpl#0,org.springframework.security.web.context.HttpSessionSecurityContextRepository#0,org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy#0,org.springframework.security.authentication.ProviderManager#0,org.springframework.security.access.vote.AffirmativeBased#0,org.springframework.security.web.access.intercept.FilterSecurityInterceptor#0,org.springframework.security.web.access.DefaultWebInvocationPrivilegeEvaluator#0,org.springframework.security.authentication.AnonymousAuthenticationProvider#0,org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices#0,org.springframework.security.authentication.RememberMeAuthenticationProvider#0,org.springframework.security.web.savedrequest.HttpSessionRequestCache#0,org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter#0,org.springframework.security.config.http.UserDetailsServiceInjectionBeanPostProcessor#0,org.springframework.security.filterChainProxy,org.springframework.security.provisioning.JdbcUserDetailsManager#0,org.springframework.security.authentication.dao.DaoAuthenticationProvider#0,org.springframework.security.authentication.DefaultAuthenticationEventPublisher#0,org.springframework.security.authenticationManager]; root of factory hierarchy
+2014-08-20 11:13:51,408 ERROR            ContextLoader:220 - Context initialization failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataDirHandler' defined in URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-fs-catalog/1.4-SNAPSHOT/gb-fs-catalog-1.4-SNAPSHOT.jar!/applicationContext.xml]: Invocation of init method failed; nested exception is java.lang.IllegalStateException: Could not initialize Data Directory: The provided path does not exists (C:\work\E-GEOS\geobatch.alej\webapp\src\main\webapp\WEB-INF\data).
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1412)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:519)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:456)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:291)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:288)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:190)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:281)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:194)
+	at org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:626)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:407)
+	at org.springframework.web.context.ContextLoader.createWebApplicationContext(ContextLoader.java:276)
+	at org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:197)
+	at org.springframework.web.context.ContextLoaderListener.contextInitialized(ContextLoaderListener.java:47)
+	at org.mortbay.jetty.handler.ContextHandler.startContext(ContextHandler.java:548)
+	at org.mortbay.jetty.servlet.Context.startContext(Context.java:136)
+	at org.mortbay.jetty.webapp.WebAppContext.startContext(WebAppContext.java:1234)
+	at org.mortbay.jetty.handler.ContextHandler.doStart(ContextHandler.java:517)
+	at org.mortbay.jetty.webapp.WebAppContext.doStart(WebAppContext.java:460)
+	at org.mortbay.component.AbstractLifeCycle.start(AbstractLifeCycle.java:50)
+	at org.mortbay.jetty.handler.HandlerWrapper.doStart(HandlerWrapper.java:130)
+	at org.mortbay.jetty.Server.doStart(Server.java:222)
+	at org.mortbay.component.AbstractLifeCycle.start(AbstractLifeCycle.java:50)
+	at it.geosolutions.geobatch.jetty.Start.main(Start.java:79)
+Caused by: java.lang.IllegalStateException: Could not initialize Data Directory: The provided path does not exists (C:\work\E-GEOS\geobatch.alej\webapp\src\main\webapp\WEB-INF\data).
+	at it.geosolutions.geobatch.catalog.file.DataDirHandler.forceDataDir(DataDirHandler.java:199)
+	at it.geosolutions.geobatch.catalog.file.DataDirHandler.init(DataDirHandler.java:102)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeCustomInitMethod(AbstractAutowireCapableBeanFactory.java:1536)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1477)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1409)
+	... 23 more
+2014-08-20 11:13:51,413 ERROR NativeMethodAccessorImpl:? - Failed startup of context org.mortbay.jetty.webapp.WebAppContext@18b839ff{/geobatch,src/main/webapp}
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataDirHandler' defined in URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-fs-catalog/1.4-SNAPSHOT/gb-fs-catalog-1.4-SNAPSHOT.jar!/applicationContext.xml]: Invocation of init method failed; nested exception is java.lang.IllegalStateException: Could not initialize Data Directory: The provided path does not exists (C:\work\E-GEOS\geobatch.alej\webapp\src\main\webapp\WEB-INF\data).
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1412)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:519)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:456)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:291)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:288)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:190)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:281)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:194)
+	at org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:626)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:407)
+	at org.springframework.web.context.ContextLoader.createWebApplicationContext(ContextLoader.java:276)
+	at org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:197)
+	at org.springframework.web.context.ContextLoaderListener.contextInitialized(ContextLoaderListener.java:47)
+	at org.mortbay.jetty.handler.ContextHandler.startContext(ContextHandler.java:548)
+	at org.mortbay.jetty.servlet.Context.startContext(Context.java:136)
+	at org.mortbay.jetty.webapp.WebAppContext.startContext(WebAppContext.java:1234)
+	at org.mortbay.jetty.handler.ContextHandler.doStart(ContextHandler.java:517)
+	at org.mortbay.jetty.webapp.WebAppContext.doStart(WebAppContext.java:460)
+	at org.mortbay.component.AbstractLifeCycle.start(AbstractLifeCycle.java:50)
+	at org.mortbay.jetty.handler.HandlerWrapper.doStart(HandlerWrapper.java:130)
+	at org.mortbay.jetty.Server.doStart(Server.java:222)
+	at org.mortbay.component.AbstractLifeCycle.start(AbstractLifeCycle.java:50)
+	at it.geosolutions.geobatch.jetty.Start.main(Start.java:79)
+Caused by: java.lang.IllegalStateException: Could not initialize Data Directory: The provided path does not exists (C:\work\E-GEOS\geobatch.alej\webapp\src\main\webapp\WEB-INF\data).
+	at it.geosolutions.geobatch.catalog.file.DataDirHandler.forceDataDir(DataDirHandler.java:199)
+	at it.geosolutions.geobatch.catalog.file.DataDirHandler.init(DataDirHandler.java:102)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeCustomInitMethod(AbstractAutowireCapableBeanFactory.java:1536)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1477)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1409)
+	... 23 more
+2014-08-20 11:13:51,415 ERROR NativeMethodAccessorImpl:? - Nested in org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataDirHandler' defined in URL [jar:file:/C:/Users/Alessio/.m2/repository/it/geosolutions/geobatch/gb-fs-catalog/1.4-SNAPSHOT/gb-fs-catalog-1.4-SNAPSHOT.jar!/applicationContext.xml]: Invocation of init method failed; nested exception is java.lang.IllegalStateException: Could not initialize Data Directory: The provided path does not exists (C:\work\E-GEOS\geobatch.alej\webapp\src\main\webapp\WEB-INF\data).:
+java.lang.IllegalStateException: Could not initialize Data Directory: The provided path does not exists (C:\work\E-GEOS\geobatch.alej\webapp\src\main\webapp\WEB-INF\data).
+	at it.geosolutions.geobatch.catalog.file.DataDirHandler.forceDataDir(DataDirHandler.java:199)
+	at it.geosolutions.geobatch.catalog.file.DataDirHandler.init(DataDirHandler.java:102)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeCustomInitMethod(AbstractAutowireCapableBeanFactory.java:1536)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1477)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1409)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:519)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:456)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:291)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:288)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:190)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:281)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:194)
+	at org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:626)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:407)
+	at org.springframework.web.context.ContextLoader.createWebApplicationContext(ContextLoader.java:276)
+	at org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:197)
+	at org.springframework.web.context.ContextLoaderListener.contextInitialized(ContextLoaderListener.java:47)
+	at org.mortbay.jetty.handler.ContextHandler.startContext(ContextHandler.java:548)
+	at org.mortbay.jetty.servlet.Context.startContext(Context.java:136)
+	at org.mortbay.jetty.webapp.WebAppContext.startContext(WebAppContext.java:1234)
+	at org.mortbay.jetty.handler.ContextHandler.doStart(ContextHandler.java:517)
+	at org.mortbay.jetty.webapp.WebAppContext.doStart(WebAppContext.java:460)
+	at org.mortbay.component.AbstractLifeCycle.start(AbstractLifeCycle.java:50)
+	at org.mortbay.jetty.handler.HandlerWrapper.doStart(HandlerWrapper.java:130)
+	at org.mortbay.jetty.Server.doStart(Server.java:222)
+	at org.mortbay.component.AbstractLifeCycle.start(AbstractLifeCycle.java:50)
+	at it.geosolutions.geobatch.jetty.Start.main(Start.java:79)
+2014-08-20 11:13:51,424  INFO NativeMethodAccessorImpl:? - Started SocketConnector@0.0.0.0:8081

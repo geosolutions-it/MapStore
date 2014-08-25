@@ -39,9 +39,7 @@ public class EGEOSAliasRegistrar extends AliasRegistrar {
         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
         registry.putAlias("EGEOSBaseDeployerConfiguration", EGEOSBaseDeployerConfiguration.class);
         registry.putAlias("EGEOSWebDeployerConfiguration", EGEOSWebDeployerConfiguration.class);
-        registry.putAlias("EGEOSRegistryDeployerConfiguration",
-                EGEOSRegistryDeployerConfiguration.class);
-        registry.putAlias("EGEOSGeoServerDeployerConfiguration",
-                EGEOSGeoServerDeployerConfiguration.class);
+        registry.putAlias("EGEOSRegistryDeployerConfiguration", EGEOSRegistryDeployerConfiguration.class);
+        registry.putAlias("EGEOSGeoServerDeployerConfiguration", EGEOSGeoServerDeployerConfiguration.class);
     }
 }

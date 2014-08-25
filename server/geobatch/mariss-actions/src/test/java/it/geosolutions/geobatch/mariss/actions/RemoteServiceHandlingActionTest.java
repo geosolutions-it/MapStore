@@ -64,229 +64,209 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author adiaz
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:test-context.xml" })
+@ContextConfiguration(locations={"classpath:test-context.xml"})
 public class RemoteServiceHandlingActionTest extends BaseNetCDFActionTest {
 
-    @Override
-    protected void prepareConfiguration(MetocActionConfiguration config) {
-        // TODO Auto-generated method stub
-        super.prepareConfiguration(config);
-        config.setMetocDictionaryPath("/home/adiaz/apps/mariss-apache-tomcat-6.0.30/webapps/geobatch/WEB-INF/data/"
-                + METOC_DIRECTORY_PATH);
-        config.setMetocHarvesterXMLTemplatePath("/home/adiaz/apps/mariss-apache-tomcat-6.0.30/webapps/geobatch/WEB-INF/data/"
-                + METOC_HARVESTER_XML_TEMPLATE_PATH);
-    }
+	@Override
+	protected void prepareConfiguration(MetocActionConfiguration config) {
+		// TODO Auto-generated method stub
+		super.prepareConfiguration(config);		
+		config.setMetocDictionaryPath("/home/adiaz/apps/mariss-apache-tomcat-6.0.30/webapps/geobatch/WEB-INF/data/" + METOC_DIRECTORY_PATH);
+		config.setMetocHarvesterXMLTemplatePath("/home/adiaz/apps/mariss-apache-tomcat-6.0.30/webapps/geobatch/WEB-INF/data/" + METOC_HARVESTER_XML_TEMPLATE_PATH);
+	}
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(RemoteServiceHandlingActionTest.class);
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(RemoteServiceHandlingActionTest.class);
 
-    /**
-     * Simple test for the remote service action flow
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void testRemoteServiceHandling() throws Exception {
-        // configure
-        RemoteServiceHandlingConfiguration configuration = loadDefaultConfiguration();
-        RemoteServiceHandlingAction action = new RemoteServiceHandlingAction(configuration);
-        // launch
-        Queue<EventObject> events = new LinkedList<EventObject>();
-        File file = new File("/tmp/dummy");
-        LOGGER.info("Loading " + file);
-        FileSystemEvent event = new FileSystemEvent(file, FileSystemEventType.FILE_ADDED);
-        events.add(event);
-        // First process
-        Queue<EventObject> result = action.execute(events);
-        assertNotNull(result);
-        LOGGER.info("Result REMOTE: " + result);
-        // Data package process in the flow
-        DataPackageIngestionProcessor dataPackageAction = new DataPackageIngestionProcessor(
-                getDataPackageConfiguration());
-        result = dataPackageAction.execute(result);
-        assertNotNull(result);
-        LOGGER.info("Result DATA PACKAGE: " + result);
-        // CSV ingestion
-        CSVIngestAction csvAction = new CSVIngestAction(
-                new CSVIngestConfiguration(null, null, null));
-        csvAction.addProcessor(getProcessor("acq_list", "CLS", "CLS1"));
-        csvAction.addProcessor(getProcessor("products_1to3", "CLS", "CLS1"));
-        csvAction.addProcessor(getProcessor("products_5", "CLS", "CLS1"));
-        result = csvAction.execute(result);
-        assertNotNull(result);
-        LOGGER.info("Result CSV: " + result);
-        // NetCDF WAVE ingestion
-        SARWaveActionConfiguration sarWaveconfiguration = new SARWaveActionConfiguration(null,
-                null, null);
-        prepareConfiguration(sarWaveconfiguration);
-        SARWaveAction sarWaveAction = new SARWaveAction(sarWaveconfiguration);
-        result = sarWaveAction.execute(result);
-        assertNotNull(result);
-        LOGGER.info("Result WAVE: " + result);
-        // NetCDF WIND ingestion
-        SARWindActionConfiguration sarWindconfiguration = new SARWindActionConfiguration(null,
-                null, null);
-        prepareConfiguration(sarWindconfiguration);
-        SARWindAction sarWindAction = new SARWindAction(sarWindconfiguration);
-        result = sarWindAction.execute(result);
-        assertNotNull(result);
-        LOGGER.info("Result WIND: " + result);
-        // NetCDF to tiff
-        NetCDFCFGeodetic2GeoTIFFsFileAction netCDFToTiffAction = new NetCDFCFGeodetic2GeoTIFFsFileAction(
-                getNetCDF2TiffConfig());
-        result = netCDFToTiffAction.execute(result);
-        assertNotNull(result);
-        LOGGER.info("Result NetCDFCFGeodetic2GeoTIFFsFileAction: " + result);
-        CustomImageMosaicAction imcAction = new CustomImageMosaicAction(
-                getImageMosaicConfiguration());
-        result = imcAction.execute(result);
-        assertNotNull(result);
-        LOGGER.info("Result imcAction: " + result);
-    }
+	/**
+	 * Simple test for the remote service action flow
+	 * @throws Exception
+	 */
+	@Test
+	public void testRemoteServiceHandling() throws Exception {
+		// configure
+		RemoteServiceHandlingConfiguration configuration = loadDefaultConfiguration();
+		RemoteServiceHandlingAction action = new RemoteServiceHandlingAction(configuration);
+		// launch
+		Queue<EventObject> events = new LinkedList<EventObject>();
+		File file = new File("/tmp/dummy");
+		LOGGER.info("Loading " + file);
+		FileSystemEvent event = new FileSystemEvent(file,
+				FileSystemEventType.FILE_ADDED);
+		events.add(event);
+		// First process
+		Queue<EventObject> result = action.execute(events);
+		assertNotNull(result);
+		LOGGER.info("Result REMOTE: " + result);
+		// Data package process in the flow
+		DataPackageIngestionProcessor dataPackageAction = new DataPackageIngestionProcessor(getDataPackageConfiguration());
+		result = dataPackageAction.execute(result);
+		assertNotNull(result);
+		LOGGER.info("Result DATA PACKAGE: " + result);
+		// CSV ingestion
+		CSVIngestAction csvAction = new CSVIngestAction(
+				new CSVIngestConfiguration(null, null, null));
+		csvAction.addProcessor(getProcessor("acq_list", "CLS", "CLS1"));
+		csvAction.addProcessor(getProcessor("products_1to3", "CLS", "CLS1"));
+		csvAction.addProcessor(getProcessor("products_5", "CLS", "CLS1"));
+		result = csvAction.execute(result);
+		assertNotNull(result);
+		LOGGER.info("Result CSV: " + result);
+		// NetCDF WAVE ingestion
+		SARWaveActionConfiguration sarWaveconfiguration = new SARWaveActionConfiguration(null, null, null);
+		prepareConfiguration(sarWaveconfiguration);
+		SARWaveAction sarWaveAction = new SARWaveAction(sarWaveconfiguration);
+		result = sarWaveAction.execute(result);
+		assertNotNull(result);
+		LOGGER.info("Result WAVE: " + result);
+		// NetCDF WIND ingestion
+		SARWindActionConfiguration sarWindconfiguration = new SARWindActionConfiguration(null, null, null);
+		prepareConfiguration(sarWindconfiguration);
+		SARWindAction sarWindAction = new SARWindAction(sarWindconfiguration);
+		result = sarWindAction.execute(result);
+		assertNotNull(result);
+		LOGGER.info("Result WIND: " + result);
+		// NetCDF to tiff
+		NetCDFCFGeodetic2GeoTIFFsFileAction netCDFToTiffAction = new NetCDFCFGeodetic2GeoTIFFsFileAction(getNetCDF2TiffConfig());
+		result = netCDFToTiffAction.execute(result);
+		assertNotNull(result);
+		LOGGER.info("Result NetCDFCFGeodetic2GeoTIFFsFileAction: " + result);
+		CustomImageMosaicAction imcAction = new CustomImageMosaicAction(getImageMosaicConfiguration());
+		result = imcAction.execute(result);
+		assertNotNull(result);
+		LOGGER.info("Result imcAction: " + result);
+	}
+	
+	/**
+	 * @return connection parameters for the database
+	 */
+	private Map<String, Serializable> getConnectionParameters(){
+		Map<String, Serializable> params = new HashMap<String, Serializable>();
+		//TODO: load from properties
+		params.put("dbtype", "postgis");
+		params.put("host", "localhost");
+		params.put("port", 5432);
+		params.put("schema", "public");
+		params.put("database", "mariss");
+		params.put("user", "mariss");
+		params.put("passwd", "mariss");
+		return params;
+	}
+	
+	/**
+	 * Connection for the local geoserver for test
+	 * @return
+	 */
+	private CustomImageMosaicConfiguration getImageMosaicConfiguration(){
+		CustomImageMosaicConfiguration imConfig = new CustomImageMosaicConfiguration(null, null, null);
+		//TODO: load from properties
+		imConfig.setAllowMultithreading(true);
+		imConfig.setBackgroundValue("NaN");
+		imConfig.setUseJaiImageRead(true);
+		imConfig.setDefaultNamespace("mariss");
+		imConfig.setDefaultStyle("raster");
+		imConfig.setCrs("EPSG:4326");
+		imConfig.setDatastorePropertiesPath("EXTERNAL");
+		imConfig.setGeoserverUID("admin");
+		imConfig.setGeoserverPWD("geoserver");
+		imConfig.setGeoserverURL("http://localhost:8080/geoserver");
+		imConfig.setTileSizeH(512);
+		imConfig.setTileSizeW(512);
 
-    /**
-     * @return connection parameters for the database
-     */
-    private Map<String, Serializable> getConnectionParameters() {
-        Map<String, Serializable> params = new HashMap<String, Serializable>();
-        // TODO: load from properties
-        params.put("dbtype", "postgis");
-        params.put("host", "localhost");
-        params.put("port", 5432);
-        params.put("schema", "public");
-        params.put("database", "mariss");
-        params.put("user", "mariss");
-        params.put("passwd", "mariss");
-        return params;
-    }
+		DomainAttribute domainAttribute = new DomainAttribute();
+		domainAttribute.setDimensionName("time");
+		domainAttribute.setAttribName("time");
+		domainAttribute.setRegEx("<![CDATA[(?<=[a-Z])[0-9]{8}(?=_.*tif)]]>");
+		domainAttribute.setEndRangeAttribName("endtime");
+		domainAttribute.setEndRangeRegEx("<![CDATA[(?<=[a-Z][0-9]{8}_)[0-9]{8}(?=.*tif)]]>");
+		List<DomainAttribute> domainAttributes = new LinkedList<DomainAttribute>();
+		domainAttributes.add(domainAttribute);
+		imConfig.setDomainAttributes(domainAttributes);
+		
+		return imConfig;
+	}
+	
+	/**
+	 * @return DataPackageIngestionConfiguration for test
+	 */
+	private DataPackageIngestionConfiguration getDataPackageConfiguration(){
+		DataPackageIngestionConfiguration configuration = new DataPackageIngestionConfiguration(null, null, null);
+		configuration.setTargetTifFolder("target");
+		configuration.setTypeName("dlr_ships");
+		configuration.setCsvIngestionPath("");
+		FeatureConfiguration outputFeature = new FeatureConfiguration();
+		outputFeature.setDataStore(getConnectionParameters());
+		configuration.setOutputFeature(outputFeature);
+		configuration.setImageMosaicConfiguration(getImageMosaicConfiguration());
+		return configuration;
+	}
 
-    /**
-     * Connection for the local geoserver for test
-     * 
-     * @return
-     */
-    private CustomImageMosaicConfiguration getImageMosaicConfiguration() {
-        CustomImageMosaicConfiguration imConfig = new CustomImageMosaicConfiguration(null, null,
-                null);
-        // TODO: load from properties
-        imConfig.setAllowMultithreading(true);
-        imConfig.setBackgroundValue("NaN");
-        imConfig.setUseJaiImageRead(true);
-        imConfig.setDefaultNamespace("mariss");
-        imConfig.setDefaultStyle("raster");
-        imConfig.setCrs("EPSG:4326");
-        imConfig.setDatastorePropertiesPath("EXTERNAL");
-        imConfig.setGeoserverUID("admin");
-        imConfig.setGeoserverPWD("geoserver");
-        imConfig.setGeoserverURL("http://localhost:8080/geoserver");
-        imConfig.setTileSizeH(512);
-        imConfig.setTileSizeW(512);
+	/**
+	 * Generate a MarissCSVServiceProcessor processor to test 
+	 * @return the processor
+	 */
+	private MarissCSVServiceProcessor getProcessor(String typeName, String userName, String serviceName) {
+		MarissCSVServiceProcessor processor = null;
+		try {
+			if("acq_list".equals(typeName)){
+				processor = new CSVAcqListProcessor(getConnectionParameters(), typeName,
+						new TimeFormat(null, null, "Time format default",
+								new TimeFormatConfiguration(null, null,
+										"Time format configuration")));
+			}else if("products_1to3".equals(typeName)){
+				processor = new CSVProductTypes1To3Processor(getConnectionParameters(), typeName,
+						new TimeFormat(null, null, "Time format default",
+								new TimeFormatConfiguration(null, null,
+										"Time format configuration")));
+			}else if("products_5".equals(typeName)){
+				processor = new CSVProductTypes5Processor(getConnectionParameters(), typeName,
+						new TimeFormat(null, null, "Time format default",
+								new TimeFormatConfiguration(null, null,
+										"Time format configuration")));
+			}
+			processor.setUserName(userName);
+			processor.setServiceName(serviceName);
+		} catch (Exception e) {
+			LOGGER.error("Error getting the processor", e);
+		}
+		return processor;
+	}
 
-        DomainAttribute domainAttribute = new DomainAttribute();
-        domainAttribute.setDimensionName("time");
-        domainAttribute.setAttribName("time");
-        domainAttribute.setRegEx("<![CDATA[(?<=[a-Z])[0-9]{8}(?=_.*tif)]]>");
-        domainAttribute.setEndRangeAttribName("endtime");
-        domainAttribute.setEndRangeRegEx("<![CDATA[(?<=[a-Z][0-9]{8}_)[0-9]{8}(?=.*tif)]]>");
-        List<DomainAttribute> domainAttributes = new LinkedList<DomainAttribute>();
-        domainAttributes.add(domainAttribute);
-        imConfig.setDomainAttributes(domainAttributes);
-
-        return imConfig;
-    }
-
-    /**
-     * @return DataPackageIngestionConfiguration for test
-     */
-    private DataPackageIngestionConfiguration getDataPackageConfiguration() {
-        DataPackageIngestionConfiguration configuration = new DataPackageIngestionConfiguration(
-                null, null, null);
-        configuration.setTargetTifFolder("target");
-        configuration.setTypeName("dlr_ships");
-        configuration.setCsvIngestionPath("");
-        FeatureConfiguration outputFeature = new FeatureConfiguration();
-        outputFeature.setDataStore(getConnectionParameters());
-        configuration.setOutputFeature(outputFeature);
-        configuration.setImageMosaicConfiguration(getImageMosaicConfiguration());
-        return configuration;
-    }
-
-    /**
-     * Generate a MarissCSVServiceProcessor processor to test
-     * 
-     * @return the processor
-     */
-    private MarissCSVServiceProcessor getProcessor(String typeName, String userName,
-            String serviceName) {
-        MarissCSVServiceProcessor processor = null;
-        try {
-            if ("acq_list".equals(typeName)) {
-                processor = new CSVAcqListProcessor(
-                        getConnectionParameters(),
-                        typeName,
-                        new TimeFormat(
-                                null,
-                                null,
-                                "Time format default",
-                                new TimeFormatConfiguration(null, null, "Time format configuration")));
-            } else if ("products_1to3".equals(typeName)) {
-                processor = new CSVProductTypes1To3Processor(
-                        getConnectionParameters(),
-                        typeName,
-                        new TimeFormat(
-                                null,
-                                null,
-                                "Time format default",
-                                new TimeFormatConfiguration(null, null, "Time format configuration")));
-            } else if ("products_5".equals(typeName)) {
-                processor = new CSVProductTypes5Processor(
-                        getConnectionParameters(),
-                        typeName,
-                        new TimeFormat(
-                                null,
-                                null,
-                                "Time format default",
-                                new TimeFormatConfiguration(null, null, "Time format configuration")));
-            }
-            processor.setUserName(userName);
-            processor.setServiceName(serviceName);
-        } catch (Exception e) {
-            LOGGER.error("Error getting the processor", e);
-        }
-        return processor;
-    }
-
-    private RemoteServiceHandlingConfiguration loadDefaultConfiguration() {
-        // TODO: load from properties or use memory
-        RemoteServiceHandlingConfiguration configuration = new RemoteServiceHandlingConfiguration(
-                null, null, null);
-        FeatureConfiguration outputFeature = new FeatureConfiguration();
-        outputFeature.setDataStore(getConnectionParameters());
-        configuration.setOutputFeature(outputFeature);
-        RemoteBrowserConfiguration remoteBrowserConfiguration = new RemoteBrowserConfiguration(
-                null, null, null);
-        remoteBrowserConfiguration.setServerProtocol(RemoteBrowserProtocol.local);
-        configuration.setInputRemotePath("/share/ftp");
-        remoteBrowserConfiguration.setLocalTempDir("/tmp/ingestion");
-        /*
-         * uncomment this configuration to use remote browsing remoteBrowserConfiguration.setServerProtocol(RemoteBrowserProtocol.sftp);
-         * remoteBrowserConfiguration.setTimeout(5000); remoteBrowserConfiguration.setZipInput(false); remoteBrowserConfiguration.setZipFileName("");
-         * remoteBrowserConfiguration.setFtpserverUSR("user"); remoteBrowserConfiguration.setFtpserverPWD("pwd");
-         * remoteBrowserConfiguration.setFtpserverHost("mariss-server"); remoteBrowserConfiguration.setFtpserverPort(22);
-         * remoteBrowserConfiguration.setConnectMode(FTPConnectMode.ACTIVE); remoteBrowserConfiguration.setOperationId(Operation.Download);
-         */
-        configuration.setRemoteBrowserConfiguration(remoteBrowserConfiguration);
-        configuration.setInputPath("/tmp/ingestion/working");
-        configuration.setSuccesPath("/tmp/ingestion/out/ok");
-        configuration.setFailPath("/tmp/ingestion/out/fail");
-        configuration.setStoreLocal(true);
-        configuration.setDeleteDownloadedFiles(false);
-        configuration.setCheckIfExists(true);
-        configuration.setDlrProductsIMConfiguration(getImageMosaicConfiguration());
-        configuration.setDlrProductIngestionTypeName("dlr_ships");
-        configuration.setDlrProductsTiffFolder("/opt/gs_ext_data/TDX1_SAR__MGD_RE___SM_S_SRA");
-        configuration.setCsvIngestionPath("csvingestion/in");
-
-        return configuration;
-    }
+	private RemoteServiceHandlingConfiguration loadDefaultConfiguration() {
+		//TODO: load from properties or use memory
+		RemoteServiceHandlingConfiguration configuration = new RemoteServiceHandlingConfiguration(null, null, null);
+		FeatureConfiguration outputFeature = new FeatureConfiguration();
+		outputFeature.setDataStore(getConnectionParameters());
+		configuration.setOutputFeature(outputFeature);
+		RemoteBrowserConfiguration remoteBrowserConfiguration = new RemoteBrowserConfiguration(null, null, null);
+		remoteBrowserConfiguration.setServerProtocol(RemoteBrowserProtocol.local);
+		configuration.setInputRemotePath("/share/ftp");
+		remoteBrowserConfiguration.setLocalTempDir("/tmp/ingestion");
+		/*
+		 *  uncomment this configuration to use remote browsing 
+		 * remoteBrowserConfiguration.setServerProtocol(RemoteBrowserProtocol.sftp);
+		 * remoteBrowserConfiguration.setTimeout(5000);
+		 * remoteBrowserConfiguration.setZipInput(false);
+		 * remoteBrowserConfiguration.setZipFileName("");
+		 * remoteBrowserConfiguration.setFtpserverUSR("user");
+		 * remoteBrowserConfiguration.setFtpserverPWD("pwd");
+		 * remoteBrowserConfiguration.setFtpserverHost("mariss-server");
+		 * remoteBrowserConfiguration.setFtpserverPort(22);
+		 * remoteBrowserConfiguration.setConnectMode(FTPConnectMode.ACTIVE);
+		 * remoteBrowserConfiguration.setOperationId(Operation.Download);
+		 */
+		configuration.setRemoteBrowserConfiguration(remoteBrowserConfiguration);
+		configuration.setInputPath("/tmp/ingestion/working");
+		configuration.setSuccesPath("/tmp/ingestion/out/ok");
+		configuration.setFailPath("/tmp/ingestion/out/fail");
+		configuration.setStoreLocal(true);
+		configuration.setDeleteDownloadedFiles(false);
+		configuration.setCheckIfExists(true);
+		configuration.setDlrProductsIMConfiguration(getImageMosaicConfiguration());
+		configuration.setDlrProductIngestionTypeName("dlr_ships");
+		configuration.setDlrProductsTiffFolder("/opt/gs_ext_data/TDX1_SAR__MGD_RE___SM_S_SRA");
+		configuration.setCsvIngestionPath("csvingestion/in");
+		
+		return configuration;
+	}
 }

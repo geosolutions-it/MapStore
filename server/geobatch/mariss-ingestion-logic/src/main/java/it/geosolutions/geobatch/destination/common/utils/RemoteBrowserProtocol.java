@@ -22,17 +22,18 @@
 package it.geosolutions.geobatch.destination.common.utils;
 
 /**
- * Known protocols to be handled on a remote browser configuration <br />
- * <br />
+ * Known protocols to be handled on a remote browser configuration
+ * <br /><br />
  * Can be:
  * <ul>
- * <li>ftp</li>
- * <li>sftp</li>
+ *    <li>ftp</li>
+ *    <li>sftp</li>  
  * </ul>
  * 
  * @author adiaz
- * 
+ *
  */
-public enum RemoteBrowserProtocol {
+public enum RemoteBrowserProtocol{
     ftp, sftp, local
 }
+

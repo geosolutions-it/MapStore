@@ -200,6 +200,7 @@
 	      "actionTarget": "paneltbar"
 	    },{
             "ptype":"gxp_playback",
+         	"outputTarget": "paneltbar",
 	      	"wfsGridId": "featuregrid",
 			"id": "playback",
             "playbackMode": "range",
@@ -210,7 +211,6 @@
             "dynamicRange": false,
             "timeFormat": "l, F d, Y g:i:s A",
             "outputConfig": {
-            	"enableOverflow": true,
                 "controlConfig":{
                     "step": 15,
                     "units": "Minutes",

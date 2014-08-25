@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.metocs.registry.harvest;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
@@ -48,6 +49,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -100,7 +102,8 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
     /**
      * EXECUTE METHOD
      */
-    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
+            throws ActionException {
 
         if (LOGGER.isLoggable(Level.INFO))
             LOGGER.info("Starting with processing...");
@@ -128,8 +131,9 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                 // Initializing input variables
                 //
                 // ////////////////////////////////////////////////////////////////////
-                final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
-                        ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
+                final File workingDir = Path
+                        .findLocation(configuration.getWorkingDirectory(), 
+                                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
 
                 // ////////////////////////////////////////////////////////////////////
                 //
@@ -185,14 +189,14 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                 final String path = new File(inputFile.getParentFile(), props.getProperty("path"))
                         .getAbsolutePath();
 
-                final File metadataTemplate = Path.findLocation(
-                        configuration.getMetocHarvesterXMLTemplatePath(),
+                final File metadataTemplate = Path.findLocation(configuration
+                        .getMetocHarvesterXMLTemplatePath(), 
                         ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
 
                 boolean res = harvest(new File(PublishingRestletGlobalConfig.getRootDirectory()),
                         new File(path), metadataTemplate, driver, configuration.getGeoserverURL(),
-                        configuration.getRegistryURL(), configuration.getProviderURL(),
-                        new Date().getTime(), namespace, metocFields, layerid, "DOWN");
+                        configuration.getRegistryURL(), configuration.getProviderURL(), new Date()
+                                .getTime(), namespace, metocFields, layerid, "DOWN");
 
                 if (res) {
                     // forwarding to the next Action
@@ -257,8 +261,8 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
         final CoordinateReferenceSystem crs = reader.getCrs();
         final String srsId = CRS.lookupIdentifier(crs, false);
         final GeneralEnvelope envelope = reader.getOriginalEnvelope();
-        final GridGeometry originalGrid = new GridGeometry2D(reader.getOriginalGridRange(),
-                reader.getOriginalGridToWorld(PixelInCell.CELL_CENTER), reader.getCrs());
+        final GridGeometry originalGrid = new GridGeometry2D(reader.getOriginalGridRange(), reader
+                .getOriginalGridToWorld(PixelInCell.CELL_CENTER), reader.getCrs());
         final GridEnvelope2D range = (GridEnvelope2D) ((GridGeometry2D) originalGrid)
                 .getGridRange();
         final MathTransform gridToCRS = originalGrid.getGridToCRS();
@@ -312,8 +316,8 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
         // : null);
         final String fileName = coverageName
         // + (timePosition != null ? "-"
-        // + timePosition.replaceAll(":", "") : "")
-        // + (elevation != null ? "-" + elevation : "") + ".xml";
+                // + timePosition.replaceAll(":", "") : "")
+                // + (elevation != null ? "-" + elevation : "") + ".xml";
                 + ".xml";
 
         readWriteMetadata(outDir, fileName, metadataTemplate, timestamp, namespace, coverageName,
@@ -338,7 +342,9 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
         return res;
     }
 
-    /**
+    
+
+	/**
      * @param outDir
      * @param metadataTemplate
      * @param timestamp
@@ -398,8 +404,8 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                 }
 
                 if (inLine.contains("#CREATION_DATE#")) {
-                    inLine = inLine.replaceAll("#CREATION_DATE#",
-                            sdfMetadata.format(new Date(timestamp)));
+                    inLine = inLine.replaceAll("#CREATION_DATE#", sdfMetadata.format(new Date(
+                            timestamp)));
                 }
 
                 if (inLine.contains("#CRUISE_OR_EXP#")) {
@@ -412,13 +418,13 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
 
                 /** SRS **/
                 if (inLine.contains("#SRS_CODE#")) {
-                    inLine = inLine.replaceAll("#SRS_CODE#",
-                            srsId.substring(srsId.indexOf(":") + 1));
+                    inLine = inLine.replaceAll("#SRS_CODE#", srsId
+                            .substring(srsId.indexOf(":") + 1));
                 }
 
                 if (inLine.contains("#SRS_AUTORITY#")) {
-                    inLine = inLine.replaceAll("#SRS_AUTORITY#",
-                            srsId.substring(0, srsId.indexOf(":")));
+                    inLine = inLine.replaceAll("#SRS_AUTORITY#", srsId.substring(0, srsId
+                            .indexOf(":")));
                 }
 
                 /** OGC SERVICES **/
@@ -452,11 +458,11 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                             .getGeoserverURL());
                     wcsGetCoverage
                             .append("/ows?SERVICE=WCS&amp;VERSION=1.0.0&amp;REQUEST=GetCoverage");
-                    wcsGetCoverage.append("&amp;BBOX=")
-                            .append(envelope.getLowerCorner().getOrdinate(0)).append(",")
-                            .append(envelope.getLowerCorner().getOrdinate(1)).append(",")
-                            .append(envelope.getUpperCorner().getOrdinate(0)).append(",")
-                            .append(envelope.getUpperCorner().getOrdinate(1));
+                    wcsGetCoverage.append("&amp;BBOX=").append(
+                            envelope.getLowerCorner().getOrdinate(0)).append(",").append(
+                            envelope.getLowerCorner().getOrdinate(1)).append(",").append(
+                            envelope.getUpperCorner().getOrdinate(0)).append(",").append(
+                            envelope.getUpperCorner().getOrdinate(1));
                     wcsGetCoverage.append("&amp;FORMAT=geotiff");
                     wcsGetCoverage.append("&amp;COVERAGE=").append(namespace + ":" + coverageName);
                     wcsGetCoverage.append("&amp;WIDTH=").append(range.getSpan(0));
@@ -475,9 +481,9 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                             .getGeoserverURL());
                     wmsGetMap.append("/ows?SERVICE=WMS&amp;VERSION=1.1.1&amp;REQUEST=GetMap");
                     wmsGetMap.append("&amp;BBOX=").append(envelope.getLowerCorner().getOrdinate(0))
-                            .append(",").append(envelope.getLowerCorner().getOrdinate(1))
-                            .append(",").append(envelope.getUpperCorner().getOrdinate(0))
-                            .append(",").append(envelope.getUpperCorner().getOrdinate(1));
+                            .append(",").append(envelope.getLowerCorner().getOrdinate(1)).append(
+                                    ",").append(envelope.getUpperCorner().getOrdinate(0)).append(
+                                    ",").append(envelope.getUpperCorner().getOrdinate(1));
                     wmsGetMap.append("&amp;STYLES=");
                     wmsGetMap.append("&amp;FORMAT=image/png");
                     wmsGetMap.append("&amp;LAYERS=").append(namespace + ":" + coverageName);
@@ -500,10 +506,9 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                 if (inLine.contains("#VAR_UOM#")) {
                     for (MetocElementType m : metocDictionary.getMetoc()) {
                         if (m.getBrief().equals(metocFields[2]))
-                            inLine = inLine.replaceAll(
-                                    "#VAR_UOM#",
-                                    m.getDefaultUom().indexOf(":") > 0 ? URLDecoder.decode(
-                                            m.getDefaultUom().substring(
+                            inLine = inLine.replaceAll("#VAR_UOM#",
+                                    m.getDefaultUom().indexOf(":") > 0 ? URLDecoder.decode(m
+                                            .getDefaultUom().substring(
                                                     m.getDefaultUom().lastIndexOf(":") + 1),
                                             "UTF-8") : m.getDefaultUom());
                     }
@@ -542,43 +547,39 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                     if (metocFields[2].indexOf("-") > 0
                             && metocFields[2].substring(metocFields[2].lastIndexOf("-") + 1)
                                     .equals("u"))
-                        inLine = inLine.replaceAll(
-                                "#VECT_RELATED_DATA#",
-                                coverageName.replace(metocFields[2],
-                                        metocFields[2].substring(0, metocFields[2].indexOf("-"))
-                                                + "-v"));
+                        inLine = inLine.replaceAll("#VECT_RELATED_DATA#", coverageName.replace(
+                                metocFields[2], metocFields[2].substring(0, metocFields[2]
+                                        .indexOf("-"))
+                                        + "-v"));
                     else if (metocFields[2].indexOf("-") > 0
                             && metocFields[2].substring(metocFields[2].lastIndexOf("-") + 1)
                                     .equals("v"))
-                        inLine = inLine.replaceAll(
-                                "#VECT_RELATED_DATA#",
-                                coverageName.replace(metocFields[2],
-                                        metocFields[2].substring(0, metocFields[2].indexOf("-"))
-                                                + "-u"));
+                        inLine = inLine.replaceAll("#VECT_RELATED_DATA#", coverageName.replace(
+                                metocFields[2], metocFields[2].substring(0, metocFields[2]
+                                        .indexOf("-"))
+                                        + "-u"));
                     else if (metocFields[2].indexOf("-") > 0
                             && metocFields[2].substring(metocFields[2].lastIndexOf("-") + 1)
                                     .equals("mag"))
-                        inLine = inLine.replaceAll(
-                                "#VECT_RELATED_DATA#",
-                                coverageName.replace(metocFields[2],
-                                        metocFields[2].substring(0, metocFields[2].indexOf("-"))
-                                                + "-dir"));
+                        inLine = inLine.replaceAll("#VECT_RELATED_DATA#", coverageName.replace(
+                                metocFields[2], metocFields[2].substring(0, metocFields[2]
+                                        .indexOf("-"))
+                                        + "-dir"));
                     else if (metocFields[2].indexOf("-") > 0
                             && metocFields[2].substring(metocFields[2].lastIndexOf("-") + 1)
                                     .equals("dir"))
-                        inLine = inLine.replaceAll(
-                                "#VECT_RELATED_DATA#",
-                                coverageName.replace(metocFields[2],
-                                        metocFields[2].substring(0, metocFields[2].indexOf("-"))
-                                                + "-mag"));
+                        inLine = inLine.replaceAll("#VECT_RELATED_DATA#", coverageName.replace(
+                                metocFields[2], metocFields[2].substring(0, metocFields[2]
+                                        .indexOf("-"))
+                                        + "-mag"));
                     else
                         inLine = inLine.replaceAll("#VECT_RELATED_DATA#", "");
                 }
 
                 /** MODEL **/
                 if (inLine.contains("#SATELLITE_NAME#")) {
-                    final String satelliteName = metocFields[1].substring(0,
-                            metocFields[1].indexOf("-"));
+                    final String satelliteName = metocFields[1].substring(0, metocFields[1]
+                            .indexOf("-"));
                     inLine = inLine.replaceAll("#SATELLITE_NAME#", satelliteName);
                 }
 
@@ -589,17 +590,17 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                 }
 
                 if (inLine.contains("#ACQUISITION_TIME#"))
-                    inLine = inLine.replaceAll("#ACQUISITION_TIME#",
-                            sdfMetadata.format(sdfMetoc.parse(metocFields[5])));
+                    inLine = inLine.replaceAll("#ACQUISITION_TIME#", sdfMetadata.format(sdfMetoc
+                            .parse(metocFields[5])));
 
                 if (inLine.contains("#MODEL_NAME#")) {
-                    inLine = inLine.replaceAll("#MODEL_NAME#",
-                            metocFields[1].substring(0, metocFields[1].indexOf("-")));
+                    inLine = inLine.replaceAll("#MODEL_NAME#", metocFields[1].substring(0,
+                            metocFields[1].indexOf("-")));
                 }
 
                 if (inLine.contains("#MODEL_TYPE#")) {
-                    inLine = inLine.replaceAll("#MODEL_TYPE#",
-                            metocFields[1].substring(metocFields[1].indexOf("-") + 1));
+                    inLine = inLine.replaceAll("#MODEL_TYPE#", metocFields[1]
+                            .substring(metocFields[1].indexOf("-") + 1));
                 }
 
                 if (inLine.contains("#MODEL_TAU#")) {
@@ -611,13 +612,12 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                 }
 
                 if (inLine.contains("#MODEL_RUNTIME#")) {
-                    inLine = inLine.replaceAll("#MODEL_RUNTIME#",
-                            sdfMetadata.format(sdfMetoc.parse(metocFields[5])));
+                    inLine = inLine.replaceAll("#MODEL_RUNTIME#", sdfMetadata.format(sdfMetoc
+                            .parse(metocFields[5])));
                 }
 
                 if (inLine.contains("#FORECAST_TIME#")) {
-                    inLine = inLine.replaceAll(
-                            "#FORECAST_TIME#",
+                    inLine = inLine.replaceAll("#FORECAST_TIME#",
                             (timePosition != null ? timePosition : sdfMetadata.format(sdfMetoc
                                     .parse(metocFields[6]))));
                 }
@@ -650,23 +650,23 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
 
                 /** ENVELOPE/GRID-RANGE **/
                 if (inLine.contains("#LONLATBBOX_MINX#")) {
-                    inLine = inLine.replaceAll("#LONLATBBOX_MINX#",
-                            String.valueOf(envelope.getLowerCorner().getOrdinate(0)));
+                    inLine = inLine.replaceAll("#LONLATBBOX_MINX#", String.valueOf(envelope
+                            .getLowerCorner().getOrdinate(0)));
                 }
 
                 if (inLine.contains("#LONLATBBOX_MINY#")) {
-                    inLine = inLine.replaceAll("#LONLATBBOX_MINY#",
-                            String.valueOf(envelope.getLowerCorner().getOrdinate(1)));
+                    inLine = inLine.replaceAll("#LONLATBBOX_MINY#", String.valueOf(envelope
+                            .getLowerCorner().getOrdinate(1)));
                 }
 
                 if (inLine.contains("#LONLATBBOX_MAXX#")) {
-                    inLine = inLine.replaceAll("#LONLATBBOX_MAXX#",
-                            String.valueOf(envelope.getUpperCorner().getOrdinate(0)));
+                    inLine = inLine.replaceAll("#LONLATBBOX_MAXX#", String.valueOf(envelope
+                            .getUpperCorner().getOrdinate(0)));
                 }
 
                 if (inLine.contains("#LONLATBBOX_MAXY#")) {
-                    inLine = inLine.replaceAll("#LONLATBBOX_MAXY#",
-                            String.valueOf(envelope.getUpperCorner().getOrdinate(1)));
+                    inLine = inLine.replaceAll("#LONLATBBOX_MAXY#", String.valueOf(envelope
+                            .getUpperCorner().getOrdinate(1)));
                 }
 
                 if (inLine.contains("#POST_PROC_FLAG#")) {
@@ -692,8 +692,8 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                 }
 
                 if (inLine.contains("#Z_LEVEL_START#")) {
-                    inLine = inLine.replaceAll("#Z_LEVEL_START#",
-                            String.valueOf(Double.parseDouble(elevationLevels[0])));
+                    inLine = inLine.replaceAll("#Z_LEVEL_START#", String.valueOf(Double
+                            .parseDouble(elevationLevels[0])));
                 }
                 if (inLine.contains("#Z_LEVEL_END#")) {
                     inLine = inLine.replaceAll("#Z_LEVEL_END#", String.valueOf(Double
@@ -731,12 +731,13 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                 }
 
                 if (inLine.contains("#GRID_ORIGIN#")) {
-                    inLine = inLine.replaceAll(
-                            "#GRID_ORIGIN#",
-                            matrix.getElement(0, matrix.getNumCol() - 1) + " "
-                                    + matrix.getElement(1, matrix.getNumCol() - 1) + " "
-                                    + (zOrder.equals("DOWN") ? "-" : "")
-                                    + String.valueOf(Double.parseDouble(metocFields[3])));
+                    inLine = inLine.replaceAll("#GRID_ORIGIN#", matrix.getElement(0, matrix
+                            .getNumCol() - 1)
+                            + " "
+                            + matrix.getElement(1, matrix.getNumCol() - 1)
+                            + " "
+                            + (zOrder.equals("DOWN") ? "-" : "")
+                            + String.valueOf(Double.parseDouble(metocFields[3])));
                 }
 
                 if (inLine.contains("#GRID_OFFSETS#")) {
@@ -755,7 +756,8 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                     // offsetsY.append(" 0.0");
 
                     inLine = inLine.replaceAll("#GRID_OFFSETS#", offsetsX + "  " + offsetsY /*
-                                                                                             * + "  0.0 0.0 1.0"
+                                                                                             * +
+                                                                                             * "  0.0 0.0 1.0"
                                                                                              */);
                 }
 
@@ -800,9 +802,9 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
         }
     }
 
-    @Override
-    public boolean checkConfiguration() {
-        // TODO Auto-generated method stub
-        return true;
-    }
+	@Override
+	public boolean checkConfiguration() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }
