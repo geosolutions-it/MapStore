@@ -96,7 +96,7 @@ gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod = Ext.extend(gxp.wi
 		    decimalPrecision: this.bufferOptions.decimalPrecision,
 			outputSRS: this.target.mapPanel.map.projection,
 			selectStyle: this.selectStyle,
-			geodesic: this.geodesic,
+			geodesic: this.geodesic || true,
 			latitudeEmptyText: this.latitudeEmptyText,
 			longitudeEmptyText: this.longitudeEmptyText
 		});
