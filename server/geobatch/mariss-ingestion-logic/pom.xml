@@ -33,16 +33,17 @@
             <groupId>it.geosolutions.mariss</groupId>
             <artifactId>gb-mariss-schemas</artifactId>
         </dependency>
-        <!-- dependency>
+        
+        <dependency>
             <groupId>it.geosolutions</groupId>
-            <artifactId>gb-action-emsa-actions</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <artifactId>gb-action-emsa-common</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>it.geosolutions.mariss</groupId>
             <artifactId>gb-mariss-action-e-geos-metocs</artifactId>
-            <version>1.4-SNAPSHOT</version>
-        </dependency -->
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>net.sf.opencsv</groupId>
@@ -139,7 +140,7 @@
 		<dependency>
 			<groupId>org.geotools.jdbc</groupId>
 			<artifactId>gt-jdbc-postgis</artifactId>
-			<version>8-SNAPSHOT</version>
+			<version>${gt.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -204,10 +205,6 @@
 			<version>0.1.50</version>
 		</dependency>
 
-        <dependency>
-            <groupId>it.geosolutions.jaiext.scheduler</groupId>
-            <artifactId>jt-scheduler</artifactId>
-        </dependency>
 		<!-- =========================================================== -->
 		<!-- TEST -->
 		<!-- =========================================================== -->
@@ -222,6 +219,7 @@
 		<dependency>
 			<groupId>org.jaitools</groupId>
 			<artifactId>jt-vectorbinarize</artifactId>
+			<version>1.3.0</version>
 			<scope>test</scope>
 		</dependency>
 

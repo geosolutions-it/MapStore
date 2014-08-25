@@ -30,8 +30,9 @@ import it.geosolutions.geobatch.imagemosaic.ImageMosaicConfiguration;
  */
 public class CustomImageMosaicConfiguration extends ImageMosaicConfiguration {
 
-    public CustomImageMosaicConfiguration(String id, String name, String description) {
-        super(id, name, description);
-    }
+	public CustomImageMosaicConfiguration(String id, String name,
+			String description) {
+		super(id, name, description);
+	}
 
 }

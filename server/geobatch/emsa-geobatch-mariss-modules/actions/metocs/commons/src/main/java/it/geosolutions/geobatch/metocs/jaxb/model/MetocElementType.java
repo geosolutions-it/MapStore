@@ -74,7 +74,8 @@ public class MetocElementType {
     /**
      * Sets the value of the name property.
      * 
-     * @param value allowed object is {@link String }
+     * @param value
+     *            allowed object is {@link String }
      * 
      */
     public void setName(String value) {
@@ -94,7 +95,8 @@ public class MetocElementType {
     /**
      * Sets the value of the brief property.
      * 
-     * @param value allowed object is {@link String }
+     * @param value
+     *            allowed object is {@link String }
      * 
      */
     public void setBrief(String value) {
@@ -114,7 +116,8 @@ public class MetocElementType {
     /**
      * Sets the value of the defaultUom property.
      * 
-     * @param value allowed object is {@link String }
+     * @param value
+     *            allowed object is {@link String }
      * 
      */
     public void setDefaultUom(String value) {
@@ -134,7 +137,8 @@ public class MetocElementType {
     /**
      * Sets the value of the type property.
      * 
-     * @param value allowed object is {@link String }
+     * @param value
+     *            allowed object is {@link String }
      * 
      */
     public void setType(String value) {

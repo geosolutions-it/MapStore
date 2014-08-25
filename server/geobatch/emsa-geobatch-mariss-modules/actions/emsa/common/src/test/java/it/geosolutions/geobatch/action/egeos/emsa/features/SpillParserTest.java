@@ -44,7 +44,7 @@ public class SpillParserTest extends TestCase {
             // todo: separate warnings from notifications
             LOGGER.info("About to parse " + spillFile.toString());
             SpillParser spillParser = new SpillParser();
-            // FIXME: Unable to convert 2010-11-04T06:04:53 to java.sql.Timestamp
+            //FIXME: Unable to convert 2010-11-04T06:04:53 to java.sql.Timestamp
             // spillParser.parseOilSpill(store, SpillParser.xpath, spillFile);
         }
 
@@ -61,14 +61,15 @@ public class SpillParserTest extends TestCase {
         dsProps.load(new FileInputStream(dsParamsFile));
 
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put(JDBCDataStoreFactory.DATABASE.key,
-                dsProps.get(JDBCDataStoreFactory.DATABASE.key));
+        params.put(JDBCDataStoreFactory.DATABASE.key, dsProps
+                .get(JDBCDataStoreFactory.DATABASE.key));
         params.put(JDBCDataStoreFactory.DBTYPE.key, dsProps.get(JDBCDataStoreFactory.DBTYPE.key));
         params.put(JDBCDataStoreFactory.HOST.key, dsProps.get(JDBCDataStoreFactory.HOST.key));
-        params.put(
-                JDBCDataStoreFactory.PORT.key,
-                dsProps.get(JDBCDataStoreFactory.PORT.key) != null ? dsProps
-                        .get(JDBCDataStoreFactory.PORT.key) : PostgisNGDataStoreFactory.PORT.sample);
+        params
+                .put(JDBCDataStoreFactory.PORT.key,
+                        dsProps.get(JDBCDataStoreFactory.PORT.key) != null ? dsProps
+                                .get(JDBCDataStoreFactory.PORT.key)
+                                : PostgisNGDataStoreFactory.PORT.sample);
         params.put(JDBCDataStoreFactory.USER.key, dsProps.get(JDBCDataStoreFactory.USER.key));
         params.put(JDBCDataStoreFactory.PASSWD.key, dsProps.get(JDBCDataStoreFactory.PASSWD.key));
         // important as there are some chars that need escaping

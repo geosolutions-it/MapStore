@@ -78,16 +78,16 @@ public class SARWaveAction extends MetocBaseAction {
     private Attribute referenceTime;
 
     @Override
-    public boolean canProcess(FileSystemEvent event) {
-        File file = event.getSource();
-        if (file.getName().contains("wave")
-                && (file.getName().toLowerCase().endsWith(".nc") || file.getName().toLowerCase()
-                        .endsWith(".netcdf"))) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+	public boolean canProcess(FileSystemEvent event) {
+		File file = event.getSource();
+		if(file.getName().contains("wave")
+				&& (file.getName().toLowerCase().endsWith(".nc")
+						|| file.getName().toLowerCase().endsWith(".netcdf"))){
+			return true;
+		}else{
+			return false;
+		}
+	}
 
     public SARWaveAction(MetocActionConfiguration configuration) throws IOException {
         super(configuration);
@@ -98,14 +98,14 @@ public class SARWaveAction extends MetocBaseAction {
             InvalidRangeException, ParseException, JAXBException {
 
         File outputFile = null;
-
+        
         try {
             ncFileIn = NetcdfFile.open(inputFileName);
 
             // input dimensions
-            // final Dimension ra_size = ncFileIn.findDimension("ra_size");
-            // final Dimension az_size = ncFileIn.findDimension("az_size");
-            // use custom find. the default one is case sensible
+            //final Dimension ra_size = ncFileIn.findDimension("ra_size");
+            //final Dimension az_size = ncFileIn.findDimension("az_size");
+            // use custom find. the default one is case sensible 
             final Dimension ra_size = findDimension(ncFileIn, "ra_size");
             final Dimension az_size = findDimension(ncFileIn, "az_size");
 
@@ -113,11 +113,11 @@ public class SARWaveAction extends MetocBaseAction {
 
             // input VARIABLES
             // use custom find. the default one is case sensible
-            // final Variable lonOriginalVar = ncFileIn.findVariable("longitude");
+            //final Variable lonOriginalVar = ncFileIn.findVariable("longitude");
             final Variable lonOriginalVar = findVariable(ncFileIn, "longitude");
             final DataType lonDataType = lonOriginalVar.getDataType();
 
-            // final Variable latOriginalVar = ncFileIn.findVariable("latitude");
+            //final Variable latOriginalVar = ncFileIn.findVariable("latitude");
             final Variable latOriginalVar = findVariable(ncFileIn, "latitude");
             final DataType latDataType = latOriginalVar.getDataType();
 
@@ -135,8 +135,8 @@ public class SARWaveAction extends MetocBaseAction {
             ncFileOut = NetcdfFileWriteable.createNew(outputFile.getAbsolutePath());
 
             // copying NetCDF input file global attributes
-            NetCDFConverterUtilities
-                    .copyGlobalAttributes(ncFileOut, ncFileIn.getGlobalAttributes());
+            NetCDFConverterUtilities.copyGlobalAttributes(ncFileOut,
+                    ncFileIn.getGlobalAttributes());
 
             // Grabbing the Variables Dictionary
             getMetocsDictionary();
@@ -191,7 +191,7 @@ public class SARWaveAction extends MetocBaseAction {
         return outputFile;
     }
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////
     //
     // Utility and conversion specific methods implementations...
     //
@@ -250,9 +250,10 @@ public class SARWaveAction extends MetocBaseAction {
     private double definingOutputVariables(boolean hasDepth, int nLat, int nLon, int nTimes,
             int nDepths, String depthName) {
         /**
-         * createNetCDFCFGeodeticDimensions( NetcdfFileWriteable ncFileOut, final boolean hasTimeDim, final int tDimLength, final boolean hasZetaDim,
-         * final int zDimLength, final String zOrder, final boolean hasLatDim, final int latDimLength, final boolean hasLonDim, final int
-         * lonDimLength)
+         * createNetCDFCFGeodeticDimensions( NetcdfFileWriteable ncFileOut, final boolean
+         * hasTimeDim, final int tDimLength, final boolean hasZetaDim, final int zDimLength, final
+         * String zOrder, final boolean hasLatDim, final int latDimLength, final boolean hasLonDim,
+         * final int lonDimLength)
          */
         final List<Dimension> outDimensions = METOCSActionsIOUtils
                 .createNetCDFCFGeodeticDimensions(ncFileOut, true, 1, false, 0,
@@ -340,9 +341,9 @@ public class SARWaveAction extends MetocBaseAction {
                 envelope.getLowerCorner().getOrdinate(1), envelope.getUpperCorner().getOrdinate(0),
                 envelope.getUpperCorner().getOrdinate(1) };
 
-        // final Variable maskOriginalVar = ncFileIn.findVariable("valid");
+        //final Variable maskOriginalVar = ncFileIn.findVariable("valid");
         final Variable maskOriginalVar = findVariable(ncFileIn, "valid");
-
+        
         final Array maskOriginalData = maskOriginalVar.read();
 
         // writing bin data ...
@@ -427,14 +428,14 @@ public class SARWaveAction extends MetocBaseAction {
                 ncFileOut.write(foundVariableBriefNames.get(varName), outVarData);
             }
         }
-
+        
         if (LOGGER.isLoggable(Level.FINEST))
-            LOGGER.info("File Resampling completed in file: " + ncFileOut.getDetailInfo());
+        	LOGGER.info("File Resampling completed in file: "+ ncFileOut.getDetailInfo());
     }
 
-    @Override
-    public boolean checkConfiguration() {
-        // TODO Auto-generated method stub
-        return true;
-    }
+	@Override
+	public boolean checkConfiguration() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }

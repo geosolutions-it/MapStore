@@ -76,6 +76,7 @@ public class RegistryActionConfiguration extends ActionConfiguration implements 
 
     private String metocHarvesterXMLTemplatePath;
 
+
     /**
      * @return the workingDirectory
      */
@@ -84,7 +85,8 @@ public class RegistryActionConfiguration extends ActionConfiguration implements 
     }
 
     /**
-     * @param workingDirectory the workingDirectory to set
+     * @param workingDirectory
+     *            the workingDirectory to set
      */
     public void setWorkingDirectory(String workingDirectory) {
         this.workingDirectory = workingDirectory;
@@ -203,7 +205,8 @@ public class RegistryActionConfiguration extends ActionConfiguration implements 
     }
 
     /**
-     * @param metocDictionaryPath the metocDictionaryPath to set
+     * @param metocDictionaryPath
+     *            the metocDictionaryPath to set
      */
     public void setMetocDictionaryPath(String metocDictionaryPath) {
         this.metocDictionaryPath = metocDictionaryPath;
@@ -217,7 +220,8 @@ public class RegistryActionConfiguration extends ActionConfiguration implements 
     }
 
     /**
-     * @param metocHarvesterXMLTemplatePath the metocHarvesterXMLTemplatePath to set
+     * @param metocHarvesterXMLTemplatePath
+     *            the metocHarvesterXMLTemplatePath to set
      */
     public void setMetocHarvesterXMLTemplatePath(String metocHarvesterXMLTemplatePath) {
         this.metocHarvesterXMLTemplatePath = metocHarvesterXMLTemplatePath;
@@ -231,7 +235,8 @@ public class RegistryActionConfiguration extends ActionConfiguration implements 
     }
 
     /**
-     * @param registryURL the registryURL to set
+     * @param registryURL
+     *            the registryURL to set
      */
     public void setRegistryURL(String registryURL) {
         this.registryURL = registryURL;
@@ -245,7 +250,8 @@ public class RegistryActionConfiguration extends ActionConfiguration implements 
     }
 
     /**
-     * @param providerURL the providerURL to set
+     * @param providerURL
+     *            the providerURL to set
      */
     public void setProviderURL(String providerURL) {
         this.providerURL = providerURL;
@@ -260,8 +266,8 @@ public class RegistryActionConfiguration extends ActionConfiguration implements 
 
     @Override
     public RegistryActionConfiguration clone() {
-        final RegistryActionConfiguration configuration = new RegistryActionConfiguration(
-                super.getId(), super.getName(), super.getDescription());
+        final RegistryActionConfiguration configuration = new RegistryActionConfiguration(super
+                .getId(), super.getName(), super.getDescription());
         configuration.setCrs(crs);
         configuration.setDataTransferMethod(dataTransferMethod);
         configuration.setDatatype(datatype);

@@ -79,14 +79,14 @@
 			<artifactId>gb-web-core</artifactId>
 			<type>war</type>
 			<scope>runtime</scope>
-			<version>1.4-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-web-core</artifactId>
 			<classifier>classes</classifier>
-			<version>1.4-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- ============================== -->

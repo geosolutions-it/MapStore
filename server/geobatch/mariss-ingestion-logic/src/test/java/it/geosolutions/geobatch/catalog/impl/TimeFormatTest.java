@@ -32,48 +32,49 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test for {@link TimeFormat} utilities for specific CSV ingestion Date formatters
+ * JUnit test for {@link TimeFormat} utilities for specific CSV ingestion Date formatters 
  * 
  * @author adiaz
  */
 public class TimeFormatTest {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(TimeFormatTest.class);
-
-    /**
-     * Test the CSV ingestion dates formats
-     * 
-     * @throws Exception if some error occur
-     */
-    @Test
-    public void marissCSVTimeTest() throws Exception {
-
-        try {
-            TimeFormat timeFormat = new TimeFormat(null, null, "Time format default",
-                    new TimeFormatConfiguration(null, null, "Time format configuration"));
-            timeFormat.setParseLenient(true);
-            timeFormat.setCheckAllPatern(true);
-            // Check the CSV time format (for product1to3)
-            Timestamp time = timeFormat.getTimeStamp("2014-03-21 21:42:45");
-            assertNotNull(time);
-            assertEquals(time.toString(), "2014-03-21 21:42:45.0");
-            // Check the CSV time format (for product1to3) without 0
-            time = timeFormat.getTimeStamp("2014-3-21 21:42:45");
-            assertNotNull(time);
-            assertEquals(time.toString(), "2014-03-21 21:42:45.0");
-            // Check the CSV timemsg (for product5) without 0
-            time = timeFormat.getTimeStamp("3/21/2014 11:00:00 PM");
-            assertNotNull(time);
-            assertEquals(time.toString(), "2014-03-21 11:00:00.0");
-            // Check the CSV time (for product5) repeat with 0
-            time = timeFormat.getTimeStamp("03/21/2014 11:00:00 PM");
-            assertNotNull(time);
-            assertEquals(time.toString(), "2014-03-21 11:00:00.0");
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error("Error on test", e);
-            throw new Exception(e);
-        }
-    }
+	
+	/**
+	 * Test the CSV ingestion dates formats
+	 * 
+	 * @throws Exception if some error occur
+	 */
+	@Test
+	public void marissCSVTimeTest() throws Exception {
+		
+		try{
+			TimeFormat timeFormat = new TimeFormat(null, null,
+					"Time format default", new TimeFormatConfiguration(null, null,
+							"Time format configuration"));
+			timeFormat.setParseLenient(true);
+			timeFormat.setCheckAllPatern(true);
+			// Check the CSV time format (for product1to3)
+			Timestamp time = timeFormat.getTimeStamp("2014-03-21 21:42:45");
+			assertNotNull(time);
+			assertEquals(time.toString(), "2014-03-21 21:42:45.0");
+			// Check the CSV time format (for product1to3) without 0
+			time = timeFormat.getTimeStamp("2014-3-21 21:42:45");
+			assertNotNull(time);
+			assertEquals(time.toString(), "2014-03-21 21:42:45.0");
+			// Check the CSV timemsg (for product5) without 0
+			time = timeFormat.getTimeStamp("3/21/2014 11:00:00 PM");
+			assertNotNull(time);
+			assertEquals(time.toString(), "2014-03-21 11:00:00.0");
+			// Check the CSV time (for product5) repeat with 0
+			time = timeFormat.getTimeStamp("03/21/2014 11:00:00 PM");
+			assertNotNull(time);
+			assertEquals(time.toString(), "2014-03-21 11:00:00.0");
+		}catch(Exception e){
+			e.printStackTrace();
+			LOGGER.error("Error on test", e);
+			throw new Exception(e);
+		}
+	}
 
 }

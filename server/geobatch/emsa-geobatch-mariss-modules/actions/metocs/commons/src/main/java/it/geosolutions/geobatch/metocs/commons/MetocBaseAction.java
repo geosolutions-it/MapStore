@@ -67,18 +67,18 @@ import ucar.nc2.Variable;
  */
 public abstract class MetocBaseAction extends BaseAction<EventObject> {
     @Override
-    public boolean checkConfiguration() {
-        // TODO Auto-generated method stub
-        return false;
-    }
+	public boolean checkConfiguration() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-    @Override
-    public <T extends ActionConfiguration> T getConfiguration() {
-        // TODO Auto-generated method stub
-        return (T) configuration;
-    }
+	@Override
+	public <T extends ActionConfiguration> T getConfiguration() {
+		// TODO Auto-generated method stub
+		return (T) configuration;
+	}
 
-    private final static Logger LOGGER = Logger.getLogger(MetocBaseAction.class.toString());
+	private final static Logger LOGGER = Logger.getLogger(MetocBaseAction.class.toString());
 
     protected final MetocActionConfiguration configuration;
 
@@ -123,41 +123,40 @@ public abstract class MetocBaseAction extends BaseAction<EventObject> {
 	 * 
 	 */
     public Queue<EventObject> execute(Queue<EventObject> events) throws ActionException {
-        // return object
-        final Queue<EventObject> ret = new LinkedList<EventObject>();
-
+		// return object
+		final Queue<EventObject> ret = new LinkedList<EventObject>();
+		
         if (LOGGER.isLoggable(Level.INFO))
             LOGGER.info("MetocBaseAction:execute(): Starting with processing...");
         try {
-            // iterate in the queue and process each one we could process
-            while (!events.isEmpty()) {
-                EventObject event = events.poll();
-                if (event instanceof FileSystemEvent) {
-                    FileSystemEvent fse = (FileSystemEvent) event;
-                    // check if can't process
-                    if (canProcess(fse)) {
-                        ret.addAll(doProcess(fse));
-                    } else {
-                        // add the event to the return
-                        ret.add(fse);
-                    }
-                } else {
-                    // add the event to the return
-                    ret.add(event);
-                    // throw new ActionException(this, "EventObject not handled " + event);
-                }
-            }
-
+        	// iterate in the queue and process each one we could process
+    		while (!events.isEmpty()) {
+    			EventObject event = events.poll();
+    			if (event instanceof FileSystemEvent) {
+    				FileSystemEvent fse = (FileSystemEvent) event;
+    	            // check if can't process
+    	            if(canProcess(fse)){
+    	            	ret.addAll(doProcess(fse));
+    	            }else{
+    					// add the event to the return
+    					ret.add(fse);
+    				}
+    			} else {
+					// add the event to the return
+					ret.add(event);
+    				//throw new ActionException(this, "EventObject not handled " + event);
+    			}
+    		}
+    		
         } catch (Throwable t) {
             LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
         }
-
+        
         return ret;
     }
-
+    
     /**
      * Process the file we can process and add the event to ret for the next step
-     * 
      * @param event
      * @param ret
      * @throws IOException
@@ -165,13 +164,12 @@ public abstract class MetocBaseAction extends BaseAction<EventObject> {
      * @throws ParseException
      * @throws JAXBException
      */
-    private Queue<EventObject> doProcess(FileSystemEvent event) throws IOException,
-            InvalidRangeException, ParseException, JAXBException {
+    private Queue<EventObject> doProcess(FileSystemEvent event) throws IOException, InvalidRangeException, ParseException, JAXBException {
 
-        // return object
-        final Queue<EventObject> ret = new LinkedList<EventObject>();
-
-        @SuppressWarnings("unused")
+		// return object
+		final Queue<EventObject> ret = new LinkedList<EventObject>();
+    	
+    	@SuppressWarnings("unused")
         final String configId = getName();
 
         // ////////////////////////////////////////////////////////////////////
@@ -179,19 +177,19 @@ public abstract class MetocBaseAction extends BaseAction<EventObject> {
         // Initializing input variables
         //
         // ////////////////////////////////////////////////////////////////////
-
+        
         final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
-                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
-
+        		((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
+        
+        
         // final File workingDir = new File(configuration.getWorkingDirectory());
-
+        
         /*
          * 
          * Old code
-         * 
-         * final File workingDir = Path.findLocation(configuration.getWorkingDirectory(), new File(((FileBaseCatalog)
-         * CatalogHolder.getCatalog()).getBaseDirectory()));
-         */
+         *
+        final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
+                new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));*/
 
         // ////////////////////////////////////////////////////////////////////
         //
@@ -210,8 +208,8 @@ public abstract class MetocBaseAction extends BaseAction<EventObject> {
         String inputFileName = inputFile.getAbsolutePath();
         final String fileSuffix = FilenameUtils.getExtension(inputFileName);
         final String fileNameFilter = configuration.getStoreFilePrefix();
-
-        LOGGER.info("Working on " + inputFileName);
+        
+        LOGGER.info("Working on "+inputFileName);
 
         if (fileNameFilter != null) {
             if (!inputFile.getName().matches(fileNameFilter)) {
@@ -227,8 +225,7 @@ public abstract class MetocBaseAction extends BaseAction<EventObject> {
                 final String message = "MetocBaseAction:execute(): Unexpected file '"
                         + inputFileName
                         + "'.\n"
-                        + "This action expects 'one' NetCDF file using \'.nc\' or \'.netcdf\' extension. And is "
-                        + fileSuffix;
+                        + "This action expects 'one' NetCDF file using \'.nc\' or \'.netcdf\' extension. And is "+fileSuffix;
                 if (LOGGER.isLoggable(Level.SEVERE))
                     LOGGER.log(Level.SEVERE, message);
                 throw new IllegalStateException(message);
@@ -241,7 +238,7 @@ public abstract class MetocBaseAction extends BaseAction<EventObject> {
         if (inputFile.isFile() && inputFile.canRead()) {
             if (FilenameUtils.getExtension(inputFileName).equalsIgnoreCase("nc")
                     || FilenameUtils.getExtension(inputFileName).equalsIgnoreCase("netcdf")) {
-
+                
             }
             //
             LOGGER.info("Call writeDownNetCDF");
@@ -254,19 +251,18 @@ public abstract class MetocBaseAction extends BaseAction<EventObject> {
                 LOGGER.log(Level.SEVERE, "MetocBaseAction:execute(): "
                         + "the input file is not a non-directory file or it is not readable.");
         }
-
+        
         return ret;
-    }
+	}
 
-    /**
-     * Check if a file can be processed in this action. To override in actions
-     * 
+	/**
+     * Check if a file can be processed in this action. To override in actions 
      * @param event
      * @return
      */
     public boolean canProcess(FileSystemEvent event) {
-        return false;
-    }
+		return false;
+	}
 
     // ////////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -274,7 +270,7 @@ public abstract class MetocBaseAction extends BaseAction<EventObject> {
     //
     // ////////////////////////////////////////////////////////////////////////////////////////////
 
-    /**
+	/**
      * @param lon_dim
      * @param lat_dim
      * @param lonOriginalData
@@ -302,17 +298,17 @@ public abstract class MetocBaseAction extends BaseAction<EventObject> {
     protected void getMetocsDictionary() throws JAXBException, IOException, FileNotFoundException {
         JAXBContext context = JAXBContext.newInstance(Metocs.class);
         Unmarshaller um = context.createUnmarshaller();
-
+        
         File metocDictionaryFile = Path.findLocation(configuration.getMetocDictionaryPath(),
                 ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
         /*
          * Old code
-         * 
-         * File metocDictionaryFile = Path.findLocation(configuration.getMetocDictionaryPath(), new File(((FileBaseCatalog)
-         * CatalogHolder.getCatalog()).getBaseDirectory()));
-         */
+         *
+        File metocDictionaryFile = Path.findLocation(configuration.getMetocDictionaryPath(),
+                new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));*/
         metocDictionary = (Metocs) um.unmarshal(new FileReader(metocDictionaryFile));
     }
+    
 
     /**
      * @throws IOException
@@ -324,90 +320,87 @@ public abstract class MetocBaseAction extends BaseAction<EventObject> {
     protected abstract File writeDownNetCDF(File outDir, String inputFileName) throws IOException,
             InvalidRangeException, ParseException, JAXBException;
 
-    /**
+	/**
      * Find a variable in a ncFile. Ignore name case
-     * 
      * @param ncFile
      * @param name
      * @return
      */
-    protected Variable findVariable(NetcdfFile ncFile, String name) {
-        // Default search is with a lower name
-        return findVariable(ncFile, name, true);
-    }
+	protected Variable findVariable(NetcdfFile ncFile, String name) {
+    	// Default search is with a lower name
+		return findVariable(ncFile, name, true);
+	}
 
-    /**
+	/**
      * Find a variable in a ncFile
-     * 
      * @param ncFile
      * @param name
      * @param ignoreCase flag
      * @return
      */
     @SuppressWarnings("deprecation")
-    protected Variable findVariable(NetcdfFile ncFile, String name, boolean ignoreCase) {
-        // Default search
-        Variable variable = ncFile.findVariable(name);
-        if (variable != null) {
-            // found with default search
-            return variable;
-        } else {
-            // not found, try to iterate and look ignoring case
-            for (Variable var : ncFile.getVariables()) {
-                String nameCompare = var.getName();
-                // compare with ignore case or not
-                if (ignoreCase && nameCompare.toLowerCase().equals(name.toLowerCase())) {
-                    return var;
-                } else if (nameCompare.equals(name)) {
-                    return var;
-                }
-
+	protected Variable findVariable(NetcdfFile ncFile, String name, boolean ignoreCase) {
+    	// Default search
+    	Variable variable = ncFile.findVariable(name);
+    	if(variable != null){
+    		// found with default search
+    		return variable;
+    	}else{
+    		// not found, try to iterate and look ignoring case
+    		for(Variable var : ncFile.getVariables()){
+    			String nameCompare = var.getName(); 
+    			// compare with ignore case or not 
+            	if(ignoreCase && nameCompare.toLowerCase().equals(name.toLowerCase())){
+            		return var;
+            	}else if(nameCompare.equals(name)){
+            		return var;
+            	}
+            	
             }
-        }
-        // not found
-        return null;
-    }
+    	}
+    	// not found
+		return null;
+	}
 
     /**
      * Find a dimension in a ncFile. Ignore name case
-     * 
      * @param ncFile
      * @param name
      * @return
      */
     protected Dimension findDimension(NetcdfFile ncFile, String name) {
-        // Default search is with a lower name
-        return findDimension(ncFile, name, true);
-    }
+    	// Default search is with a lower name
+		return findDimension(ncFile, name, true);
+	}
 
     /**
      * Find a dimension in a ncFile. Ignore name case
-     * 
      * @param ncFile
      * @param name
      * @param lower flag to compare with: lower name (true), upper name (false) or exact name (null)
      * @return
      */
     protected Dimension findDimension(NetcdfFile ncFile, String name, boolean ignoreCase) {
-        // Default search
-        Dimension dimension = ncFile.findDimension(name);
-        if (dimension != null) {
-            // found with default search
-            return dimension;
-        } else {
-            // not found, try to iterate and look ignoring case
-            for (Dimension dim : ncFile.getDimensions()) {
-                String nameCompare = dim.getName();
-                // compare with ignore case or not
-                if (ignoreCase && nameCompare.toLowerCase().equals(name.toLowerCase())) {
-                    return dim;
-                } else if (nameCompare.equals(name)) {
-                    return dim;
-                }
+    	// Default search
+    	Dimension dimension = ncFile.findDimension(name);
+    	if(dimension != null){
+    		// found with default search
+    		return dimension;
+    	}else{
+    		// not found, try to iterate and look ignoring case
+    		for(Dimension dim : ncFile.getDimensions()){
+    			String nameCompare = dim.getName();
+    			// compare with ignore case or not 
+            	if(ignoreCase && nameCompare.toLowerCase().equals(name.toLowerCase())){
+            		return dim;
+            	}else if(nameCompare.equals(name)){
+            		return dim;
+            	}
             }
-        }
-        // not found
-        return null;
-    }
+    	}
+    	// not found
+		return null;
+	}
+    
 
 }

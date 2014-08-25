@@ -38,8 +38,8 @@ import java.util.logging.Logger;
  * @version $ GeoServerAction.java $ Revision: 0.1 $ 12/feb/07 12:07:06
  */
 
-public abstract class RegistryConfiguratorAction extends BaseAction<FileSystemEvent> implements
-        Action<FileSystemEvent> {
+public abstract class RegistryConfiguratorAction extends BaseAction<FileSystemEvent>
+        implements Action<FileSystemEvent> {
     /**
      * Default logger
      */
@@ -49,7 +49,8 @@ public abstract class RegistryConfiguratorAction extends BaseAction<FileSystemEv
     protected final RegistryActionConfiguration configuration;
 
     /**
-     * Constructs a producer. The operation name will be the same than the parameter descriptor name.
+     * Constructs a producer. The operation name will be the same than the parameter descriptor
+     * name.
      * 
      * @throws IOException
      */

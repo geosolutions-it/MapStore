@@ -16,6 +16,8 @@
  */
 package it.geosolutions.geobatch.mariss.dao;
 
+import java.util.List;
+
 import it.geosolutions.geobatch.mariss.model.Service;
 
 /**
@@ -28,4 +30,7 @@ public interface ServiceDAO {
 
     public Service findByServiceId(String serviceId);
     
+    public List<Service> findByUser(String userId);
+    
+    public boolean updateServiceStatus(Service servce, String status);
 }

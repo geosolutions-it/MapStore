@@ -46,105 +46,98 @@ import org.slf4j.LoggerFactory;
  */
 public class DataPackageIngestionProcessorTest {
 
-    protected final static Logger LOGGER = LoggerFactory
-            .getLogger(DataPackageIngestionProcessorTest.class);
+	protected final static Logger LOGGER = LoggerFactory
+			.getLogger(DataPackageIngestionProcessorTest.class);
+	
+	private String filePathTest = "target/test-classes/TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DER.zip";
+	private String targetTifFolder = "/opt/gs_ext_data/TDX1_SAR__MGD_RE___SM_S_SRA"; 
+	
+	DataStore dataStore = null;
+	DataPackageIngestionProcessor processor = null;
+	String typeName = "dlr_ships";
+	String userName = "userName";
+	String serviceName = "serviceName";
 
-    private String filePathTest = "target/test-classes/TDX1_SAR__MGD_RE___SM_S_SRA_20110901T175713_20110901T175721_DER.zip";
+	/**
+	 * Prepare connection for the database
+	 * 
+	 * @return
+	 */
+	private Map<String, Serializable> getConnectionParameters(){
+		Map<String, Serializable> params = new HashMap<String, Serializable>();
+		//TODO: load from properties
+		params.put("dbtype", "postgis");
+		params.put("host", "localhost");
+		params.put("port", 5432);
+		params.put("schema", "public");
+		params.put("database", "mariss");
+		params.put("user", "mariss");
+		params.put("passwd", "mariss");
+		return params;
+	}
+	
+	/**
+	 * Connection for the local geoserver for test
+	 * @return
+	 */
+	private ImageMosaicConfiguration getImageMosaicConfiguration(){
+		ImageMosaicConfiguration imConfig = new ImageMosaicConfiguration(null, null, null);
+		//TODO: load from properties
+		imConfig.setAllowMultithreading(true);
+		imConfig.setBackgroundValue("NaN");
+		imConfig.setUseJaiImageRead(true);
+		imConfig.setDefaultNamespace("mariss");
+		imConfig.setDefaultStyle("raster");
+		imConfig.setCrs("EPSG:4326");
+		imConfig.setDatastorePropertiesPath("EXTERNAL");
+		imConfig.setGeoserverUID("admin");
+		imConfig.setGeoserverPWD("geoserver");
+		imConfig.setGeoserverURL("http://localhost:8080/geoserver");
+		imConfig.setTileSizeH(512);
+		imConfig.setTileSizeW(512);
 
-    private String targetTifFolder = "/opt/gs_ext_data/TDX1_SAR__MGD_RE___SM_S_SRA";
+		DomainAttribute domainAttribute = new DomainAttribute();
+		domainAttribute.setDimensionName("time");
+		domainAttribute.setAttribName("time");
+		domainAttribute.setRegEx("<![CDATA[(?<=[a-Z])[0-9]{8}(?=_.*tif)]]>");
+		domainAttribute.setEndRangeAttribName("endtime");
+		domainAttribute.setEndRangeRegEx("<![CDATA[(?<=[a-Z][0-9]{8}_)[0-9]{8}(?=.*tif)]]>");
+		List<DomainAttribute> domainAttributes = new LinkedList<DomainAttribute>();
+		domainAttributes.add(domainAttribute);
+		imConfig.setDomainAttributes(domainAttributes);
+		
+		return imConfig;
+	}
 
-    DataStore dataStore = null;
+	/**
+	 * Create the processor
+	 */
+	@Before
+	public void generateProcessor(){
+		try {
+			dataStore = DataStoreFinder.getDataStore(getConnectionParameters());
+			processor = new DataPackageIngestionProcessor(dataStore, typeName, userName, serviceName, targetTifFolder);
+			processor.setImageMosaicConfiguration(getImageMosaicConfiguration());
+		} catch (IOException e) {
+			LOGGER.error("Error creating the store", e);
+		}
+	}
 
-    DataPackageIngestionProcessor processor = null;
-
-    String typeName = "dlr_ships";
-
-    String userName = "userName";
-
-    String serviceName = "serviceName";
-
-    /**
-     * Prepare connection for the database
-     * 
-     * @return
-     */
-    private Map<String, Serializable> getConnectionParameters() {
-        Map<String, Serializable> params = new HashMap<String, Serializable>();
-        // TODO: load from properties
-        params.put("dbtype", "postgis");
-        params.put("host", "localhost");
-        params.put("port", 5432);
-        params.put("schema", "public");
-        params.put("database", "mariss");
-        params.put("user", "mariss");
-        params.put("passwd", "mariss");
-        return params;
-    }
-
-    /**
-     * Connection for the local geoserver for test
-     * 
-     * @return
-     */
-    private ImageMosaicConfiguration getImageMosaicConfiguration() {
-        ImageMosaicConfiguration imConfig = new ImageMosaicConfiguration(null, null, null);
-        // TODO: load from properties
-        imConfig.setAllowMultithreading(true);
-        imConfig.setBackgroundValue("NaN");
-        imConfig.setUseJaiImageRead(true);
-        imConfig.setDefaultNamespace("mariss");
-        imConfig.setDefaultStyle("raster");
-        imConfig.setCrs("EPSG:4326");
-        imConfig.setDatastorePropertiesPath("EXTERNAL");
-        imConfig.setGeoserverUID("admin");
-        imConfig.setGeoserverPWD("geoserver");
-        imConfig.setGeoserverURL("http://localhost:8080/geoserver");
-        imConfig.setTileSizeH(512);
-        imConfig.setTileSizeW(512);
-
-        DomainAttribute domainAttribute = new DomainAttribute();
-        domainAttribute.setDimensionName("time");
-        domainAttribute.setAttribName("time");
-        domainAttribute.setRegEx("<![CDATA[(?<=[a-Z])[0-9]{8}(?=_.*tif)]]>");
-        domainAttribute.setEndRangeAttribName("endtime");
-        domainAttribute.setEndRangeRegEx("<![CDATA[(?<=[a-Z][0-9]{8}_)[0-9]{8}(?=.*tif)]]>");
-        List<DomainAttribute> domainAttributes = new LinkedList<DomainAttribute>();
-        domainAttributes.add(domainAttribute);
-        imConfig.setDomainAttributes(domainAttributes);
-
-        return imConfig;
-    }
-
-    /**
-     * Create the processor
-     */
-    @Before
-    public void generateProcessor() {
-        try {
-            dataStore = DataStoreFinder.getDataStore(getConnectionParameters());
-            processor = new DataPackageIngestionProcessor(dataStore, typeName, userName,
-                    serviceName, targetTifFolder);
-            processor.setImageMosaicConfiguration(getImageMosaicConfiguration());
-        } catch (IOException e) {
-            LOGGER.error("Error creating the store", e);
-        }
-    }
-
-    /**
-     * Test the DataPackageIngestionProcessor process
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void parseTest() throws Exception {
-        processor.doProcess(filePathTest);
-    }
-
-    /**
-     * Dispose datastore
-     */
-    @After
-    public void dispose() {
-        dataStore.dispose();
-    }
+	/**
+	 * Test the DataPackageIngestionProcessor process
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void parseTest() throws Exception {
+		processor.doProcess(filePathTest);
+	}
+	
+	/**
+	 * Dispose datastore
+	 */
+	@After
+	public void dispose(){
+		dataStore.dispose();
+	}
 }

@@ -69,7 +69,7 @@ import ucar.nc2.Variable;
 @Action(configurationClass = SARWindActionConfiguration.class)
 public class SARWindAction extends MetocBaseAction {
 
-    private final static Logger LOGGER = Logger.getLogger(SARWindAction.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(SARWindAction.class.getName());
 
     private NetcdfFileWriteable ncFileOut = null;
 
@@ -82,16 +82,17 @@ public class SARWindAction extends MetocBaseAction {
     }
 
     @Override
-    public boolean canProcess(FileSystemEvent event) {
-        File file = event.getSource();
-        if ((file.getName().contains("wind") || file.getName().contains("wnf"))
-                && (file.getName().toLowerCase().endsWith(".nc") || file.getName().toLowerCase()
-                        .endsWith(".netcdf"))) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+	public boolean canProcess(FileSystemEvent event) {
+		File file = event.getSource();
+		if((file.getName().contains("wind")
+				|| file.getName().contains("wnf"))
+				&& (file.getName().toLowerCase().endsWith(".nc")
+						|| file.getName().toLowerCase().endsWith(".netcdf"))){
+			return true;
+		}else{
+			return false;
+		}
+	}
 
     @Override
     protected File writeDownNetCDF(File outDir, String inputFileName) throws IOException,
@@ -100,8 +101,8 @@ public class SARWindAction extends MetocBaseAction {
         File outputFile = null;
 
         try {
-
-            LOGGER.info("opening " + inputFileName);
+        	
+        	LOGGER.info("opening "+ inputFileName);
 
             ncFileIn = NetcdfFile.open(inputFileName);
 
@@ -245,9 +246,10 @@ public class SARWindAction extends MetocBaseAction {
     private double definingOutputVariables(boolean hasDepth, int nLat, int nLon, int nTimes,
             int nDepths, String depthName) {
         /**
-         * createNetCDFCFGeodeticDimensions( NetcdfFileWriteable ncFileOut, final boolean hasTimeDim, final int tDimLength, final boolean hasZetaDim,
-         * final int zDimLength, final String zOrder, final boolean hasLatDim, final int latDimLength, final boolean hasLonDim, final int
-         * lonDimLength)
+         * createNetCDFCFGeodeticDimensions( NetcdfFileWriteable ncFileOut, final boolean
+         * hasTimeDim, final int tDimLength, final boolean hasZetaDim, final int zDimLength, final
+         * String zOrder, final boolean hasLatDim, final int latDimLength, final boolean hasLonDim,
+         * final int lonDimLength)
          */
         final List<Dimension> outDimensions = METOCSActionsIOUtils
                 .createNetCDFCFGeodeticDimensions(ncFileOut, true, 1, false, 0,
@@ -391,16 +393,16 @@ public class SARWindAction extends MetocBaseAction {
 
             ncFileOut.write(foundVariableBriefNames.get(varName), outVarData);
         }
-
+        
         if (LOGGER.isLoggable(Level.FINEST))
-            LOGGER.info("File Resampling completed in file: " + ncFileOut.getDetailInfo());
-
+        	LOGGER.info("File Resampling completed in file: "+ ncFileOut.getDetailInfo());
+        
     }
 
-    @Override
-    public boolean checkConfiguration() {
-        // TODO Auto-generated method stub
-        return true;
-    }
+	@Override
+	public boolean checkConfiguration() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 
 }

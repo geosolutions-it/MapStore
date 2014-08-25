@@ -23,8 +23,6 @@ package it.geosolutions.geobatch.mariss.ingestion.csv.configuration;
 
 import it.geosolutions.geobatch.actions.ds2ds.Ds2dsConfiguration;
 import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
-import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes1To3Processor;
-import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes5Processor;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
@@ -33,8 +31,10 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * 
  * TODO: Generalize this configuration
  * 
- * We need to improve this configuration to allow the dynamic composition of CSV ingestion without the class creation like
- * {@link CSVProductTypes1To3Processor} or {@link CSVProductTypes5Processor} we need:
+ * We need to improve this configuration to allow the dynamic composition of CSV
+ * ingestion without the class creation like
+ * {@link CSVProductTypes1To3Processor} or {@link CSVProductTypes5Processor} we
+ * need:
  * <ul>
  * <li>A method to add the headers by configuration</li>
  * <li>A method to add the column types by configuration</li>
@@ -47,89 +47,97 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("CSVProcessorConfiguration")
 public class CSVProcessorConfiguration extends Ds2dsConfiguration {
 
-    /**
-     * Type name for the feature creation
-     */
-    private String typeName;
+	/**
+	 * Type name for the feature creation
+	 */
+	private String typeName;
 
-    /**
-     * Complete class name of the processor. TODO: this configuration might disappear when the dynamic composition is ready
-     */
-    private String className;
+	/**
+	 * Complete class name of the processor. 
+	 * TODO: this configuration might
+	 * disappear when the dynamic composition is ready
+	 */
+	private String className;
 
-    /**
-     * Projection for the geometry creation
-     */
-    private int projection;
+	/**
+	 * Projection for the geometry creation
+	 */
+	private int projection;
 
-    /**
-     * Time format configuration for the ingestion
-     */
-    private TimeFormatConfiguration timeFormatConfiguration;
+	/**
+	 * Time format configuration for the ingestion
+	 */
+	private TimeFormatConfiguration timeFormatConfiguration;
 
-    public CSVProcessorConfiguration(String id, String name, String description) {
-        super(id, name, description);
-    }
+	public CSVProcessorConfiguration(String id, String name, String description) {
+		super(id, name, description);
+	}
 
-    @Override
-    public CSVProcessorConfiguration clone() {
-        final CSVProcessorConfiguration configuration = (CSVProcessorConfiguration) super.clone();
-        return configuration;
-    }
+	@Override
+	public CSVProcessorConfiguration clone() {
+		final CSVProcessorConfiguration configuration = (CSVProcessorConfiguration) super
+				.clone();
+		return configuration;
+	}
 
-    /**
-     * @return the typeName
-     */
-    public String getTypeName() {
-        return typeName;
-    }
+	/**
+	 * @return the typeName
+	 */
+	public String getTypeName() {
+		return typeName;
+	}
 
-    /**
-     * @param typeName the typeName to set
-     */
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
+	/**
+	 * @param typeName
+	 *            the typeName to set
+	 */
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
+	}
 
-    /**
-     * @return the className
-     */
-    public String getClassName() {
-        return className;
-    }
+	/**
+	 * @return the className
+	 */
+	public String getClassName() {
+		return className;
+	}
 
-    /**
-     * @param className the className to set
-     */
-    public void setClassName(String className) {
-        this.className = className;
-    }
+	/**
+	 * @param className
+	 *            the className to set
+	 */
+	public void setClassName(String className) {
+		this.className = className;
+	}
 
-    /**
-     * @return the timeFormatConfiguration
-     */
-    public TimeFormatConfiguration getTimeFormatConfiguration() {
-        return timeFormatConfiguration;
-    }
+	/**
+	 * @return the timeFormatConfiguration
+	 */
+	public TimeFormatConfiguration getTimeFormatConfiguration() {
+		return timeFormatConfiguration;
+	}
 
-    /**
-     * @param timeFormatConfiguration the timeFormatConfiguration to set
-     */
-    public void setTimeFormatConfiguration(TimeFormatConfiguration timeFormatConfiguration) {
-        this.timeFormatConfiguration = timeFormatConfiguration;
-    }
+	/**
+	 * @param timeFormatConfiguration
+	 *            the timeFormatConfiguration to set
+	 */
+	public void setTimeFormatConfiguration(
+			TimeFormatConfiguration timeFormatConfiguration) {
+		this.timeFormatConfiguration = timeFormatConfiguration;
+	}
 
-    /**
-     * @return the projection
-     */
-    public int getProjection() {
-        return projection;
-    }
+	/**
+	 * @return the projection
+	 */
+	public int getProjection() {
+		return projection;
+	}
 
-    /**
-     * @param projection the projection to set
-     */
-    public void setProjection(int projection) {
-        this.projection = projection;
-    }
+	/**
+	 * @param projection
+	 *            the projection to set
+	 */
+	public void setProjection(int projection) {
+		this.projection = projection;
+	}
 }

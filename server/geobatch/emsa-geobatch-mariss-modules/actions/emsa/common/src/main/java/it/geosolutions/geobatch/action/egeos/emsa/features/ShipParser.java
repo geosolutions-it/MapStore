@@ -1,5 +1,6 @@
 package it.geosolutions.geobatch.action.egeos.emsa.features;
 
+
 import java.io.File;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -32,11 +33,10 @@ import org.w3c.dom.Node;
 import com.vividsolutions.jts.geom.Point;
 
 public class ShipParser {
-    private final static Logger LOGGER = Logging.getLogger(ShipParser.class);
+    private final static  Logger LOGGER = Logging.getLogger(ShipParser.class);
 
     // build the xpath extractor
     public final static XPath xpath = XPathFactory.newInstance().newXPath();
-
     public final static SimpleNamespaceContext ctx = new SimpleNamespaceContext();
     static {
         ctx.setNamespace("gml", "http://www.opengis.net/gml");
@@ -44,7 +44,7 @@ public class ShipParser {
         ctx.setNamespace("ows", "http://www.opengis.net/ows/1.1");
         xpath.setNamespaceContext(ctx);
     }
-
+    
     @SuppressWarnings("unchecked")
     public void parseShip(DataStore store, XPath xpath, File fXmlFile) throws Exception {
         try {
@@ -54,7 +54,7 @@ public class ShipParser {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(fXmlFile);
             doc.getDocumentElement().normalize();
-
+        
             // build the ship and insert it
             SimpleFeatureType shipType = buildShipFeatureType();
             if (!Arrays.asList(store.getTypeNames()).contains(shipType.getTypeName())) {
@@ -62,32 +62,34 @@ public class ShipParser {
             }
             Node shipNode = (Node) xpath.evaluate("/csn:Ship", doc, XPathConstants.NODE);
             SimpleFeature ship = parseShip(shipType, xpath, shipNode);
-
-            Transaction t = new DefaultTransaction("ship_transaction"
-                    + Thread.currentThread().getId());
+            
+            Transaction t = new DefaultTransaction("ship_transaction"+Thread.currentThread().getId());
             FeatureStore fs = (FeatureStore) store.getFeatureSource(shipType.getTypeName());
             fs.setTransaction(t);
-            try {
+            try{
                 fs.addFeatures(DataUtilities.collection(ship));
                 t.commit();
             } catch (Exception e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+                if(LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);                
                 t.rollback();
             } finally {
-                if (t != null) {
-                    try {
+                if (t!=null){
+                    try{
                         t.close();
-                    } catch (Throwable tr) {
-                        if (LOGGER.isLoggable(Level.SEVERE))
-                            LOGGER.log(Level.SEVERE, tr.getLocalizedMessage(), tr);
+                    }
+                    catch (Throwable tr){
+                        if(LOGGER.isLoggable(Level.SEVERE))
+                            LOGGER.log(Level.SEVERE,tr.getLocalizedMessage(),tr);
                     }
                 }
             }
 
-        } catch (Exception e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            
+        }
+        catch(Exception e){
+            if(LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
         }
     }
 

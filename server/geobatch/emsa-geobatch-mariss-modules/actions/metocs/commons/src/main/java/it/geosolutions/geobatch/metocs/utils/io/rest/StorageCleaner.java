@@ -1,5 +1,8 @@
 package it.geosolutions.geobatch.metocs.utils.io.rest;
 
+
+
+import it.geosolutions.tools.commons.file.Path;
 import it.geosolutions.tools.io.file.IOUtils;
 
 import java.io.File;
@@ -67,7 +70,7 @@ public class StorageCleaner extends TimerTask {
                         lock = channel.lock();
                         // delete
                         f.delete();
-                        // Path.deleteFile(f);
+//                        Path.deleteFile(f);
                     } catch (Throwable e) {
                     } finally {
                         try {
@@ -103,7 +106,8 @@ public class StorageCleaner extends TimerTask {
     }
 
     /**
-     * The file expiration delay in seconds, a file will be deleted when it's been around more than expirationDelay
+     * The file expiration delay in seconds, a file will be deleted when it's been around more than
+     * expirationDelay
      * 
      * @return
      */

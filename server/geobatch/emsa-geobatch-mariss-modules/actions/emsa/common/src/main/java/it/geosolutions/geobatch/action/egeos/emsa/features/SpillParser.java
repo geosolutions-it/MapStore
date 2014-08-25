@@ -47,14 +47,14 @@ public class SpillParser {
         xpath.setNamespaceContext(ctx);
     }
 
-    private final static Logger LOGGER = Logging.getLogger(SpillParser.class);
+    private final static  Logger LOGGER = Logging.getLogger(SpillParser.class);
 
     @SuppressWarnings("unchecked")
     public void parseOilSpill(DataStore store, XPath xpath, File fXmlFile) throws Exception {
         // parse the document into a dom
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         dbFactory.setNamespaceAware(false);
-
+        
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(fXmlFile);
         doc.getDocumentElement().normalize();
@@ -79,45 +79,50 @@ public class SpillParser {
             if (!Arrays.asList(store.getTypeNames()).contains(oilSpillPolygonType.getTypeName())) {
                 store.createSchema(oilSpillPolygonType);
             }
-            final NodeList polygonNodes = (NodeList) xpath.evaluate("OilSpill/geometry/Polygon",
-                    doc, XPathConstants.NODESET);
+            final NodeList polygonNodes = (NodeList) xpath.evaluate(
+                    "OilSpill/geometry/Polygon", doc, XPathConstants.NODESET);
             List<SimpleFeature> oilSpillPolygons = parseOilSpillPolygons(oilSpillPolygonType,
                     xpath, polygonNodes, oilSpillId);
+            
 
-            Transaction t = new DefaultTransaction("OilSpill_transaction"
-                    + Thread.currentThread().getId());
+            Transaction t = new DefaultTransaction("OilSpill_transaction"+Thread.currentThread().getId());
             FeatureStore ospfs = (FeatureStore) store.getFeatureSource(oilSpillPolygonType
                     .getTypeName());
             ospfs.setTransaction(t);
-            try {
+            try{
                 ospfs.addFeatures(DataUtilities.collection(oilSpillPolygons));
                 t.commit();
             } catch (Exception e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-                if (t != null)
+                if(LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
+                if (t!=null)
                     t.rollback();
             } finally {
-                if (t != null) {
-                    try {
+                if (t!=null){
+                    try{
                         t.close();
-                    } catch (Throwable tr) {
-                        if (LOGGER.isLoggable(Level.SEVERE))
-                            LOGGER.log(Level.SEVERE, tr.getLocalizedMessage(), tr);
+                    }
+                    catch (Throwable tr){
+                        if(LOGGER.isLoggable(Level.SEVERE))
+                            LOGGER.log(Level.SEVERE,tr.getLocalizedMessage(),tr);
                     }
                 }
-            }
+            }    
         }
     }
 
     private List<SimpleFeature> parseOilSpillPolygons(SimpleFeatureType ft, XPath xpath,
             NodeList nodeList, long oilSpillId) throws XPathExpressionException {
         List<FeatureMapping> mappings = new ArrayList<FeatureMapping>();
-        mappings.add(new FeatureMapping("metaDataProperty/GenericMetaData/extension/area",
-                "extension_area"));
-        mappings.add(new FeatureMapping("metaDataProperty/GenericMetaData/extension/width",
+        mappings
+                .add(new FeatureMapping(
+                        "metaDataProperty/GenericMetaData/extension/area",
+                        "extension_area"));
+        mappings.add(new FeatureMapping(
+                "metaDataProperty/GenericMetaData/extension/width",
                 "extension_width"));
-        mappings.add(new FeatureMapping("metaDataProperty/GenericMetaData/extension/length",
+        mappings.add(new FeatureMapping(
+                "metaDataProperty/GenericMetaData/extension/length",
                 "extension_length"));
         mappings.add(new PolygonMapping(".", "spillpolygon"));
 
@@ -131,8 +136,8 @@ public class SpillParser {
         return result;
     }
 
-    private SimpleFeature parseOilSpill(SimpleFeatureType ft, XPath xpath, Node oilSpillNode,
-            boolean warning) throws XPathExpressionException {
+    private SimpleFeature parseOilSpill(SimpleFeatureType ft, XPath xpath,
+            Node oilSpillNode, boolean warning) throws XPathExpressionException {
         List<FeatureMapping> mappings = new ArrayList<FeatureMapping>();
         mappings.add(new FeatureMapping("id", "oilspillid"));
         mappings.add(new FeatureMapping("eventid", "eventid"));
@@ -142,7 +147,8 @@ public class SpillParser {
         mappings.add(new FeatureMapping("extension/area", "extension_area"));
         mappings.add(new FeatureMapping("extension/length", "extension_length"));
         mappings.add(new FeatureMapping("extension/width", "extension_width"));
-        mappings.add(new FeatureMapping("extension/alignedWithTrack", "extension_alignedwithtrack"));
+        mappings.add(new FeatureMapping("extension/alignedWithTrack",
+                "extension_alignedwithtrack"));
         mappings.add(new FeatureMapping("extension/orientation", "extension_orientation"));
         mappings.add(new FeatureMapping("extension/volume", "extension_volume"));
         mappings.add(new FeatureMapping("extension/thickness", "extension_thickness"));
@@ -150,7 +156,8 @@ public class SpillParser {
         mappings.add(new FeatureMapping("imageIdentifier", "imageid"));
         mappings.add(new FeatureMapping("classificationLevel", "classification_level"));
         mappings.add(new FeatureMapping("composition/oilType", "composition_oiltype"));
-        mappings.add(new FeatureMapping("composition/oilSubType", "composition_oilsubtype"));
+        mappings
+                .add(new FeatureMapping("composition/oilSubType", "composition_oilsubtype"));
         mappings.add(new FeatureMapping("composition/age", "composition_age"));
         mappings.add(new FeatureMapping("auxiliaryDataRef/auxiliaryData/dataKey",
                 "auxiliarydata_key"));
@@ -167,25 +174,34 @@ public class SpillParser {
                 "insituinformation_validation"));
         mappings.add(new FeatureMapping("inSituInformation/inSituValidationBody",
                 "insituinformation_body"));
-        mappings.add(new FeatureMapping("inSituInformation/notes", "insituinformation_notes"));
+        mappings.add(new FeatureMapping("inSituInformation/notes",
+                "insituinformation_notes"));
         mappings.add(new FeatureMapping("meteoConditions/meteoWind/dataSource",
                 "mc_wind_datasource"));
-        mappings.add(new FeatureMapping("meteoConditions/meteoWind/dataType", "mc_wind_datatype"));
+        mappings.add(new FeatureMapping("meteoConditions/meteoWind/dataType",
+                "mc_wind_datatype"));
         mappings.add(new FeatureMapping("meteoConditions/meteoWind/windIntensity",
                 "mc_wind_intensity"));
         mappings.add(new FeatureMapping("meteoConditions/meteoWind/windDirection",
                 "mc_wind_direction"));
-        mappings.add(new FeatureMapping("meteoConditions/SARWind/dataSource", "mc_swind_datasource"));
-        mappings.add(new FeatureMapping("meteoConditions/SARWind/dataType", "mc_swind_datatype"));
+        mappings.add(new FeatureMapping("meteoConditions/SARWind/dataSource",
+                "mc_swind_datasource"));
+        mappings.add(new FeatureMapping("meteoConditions/SARWind/dataType",
+                "mc_swind_datatype"));
         mappings.add(new FeatureMapping("meteoConditions/SARWind/windIntensity",
                 "mc_swind_intensity"));
         mappings.add(new FeatureMapping("meteoConditions/SARWind/windDirection",
                 "mc_swind_direction"));
-        mappings.add(new FeatureMapping("meteoConditions/sea/dataSource", "mc_sea_datasource"));
-        mappings.add(new FeatureMapping("meteoConditions/sea/dataType", "mc_sea_datatype"));
-        mappings.add(new FeatureMapping("meteoConditions/sea/waveLength", "mc_sea_wavelength"));
-        mappings.add(new FeatureMapping("meteoConditions/sea/waveHeight", "mc_sea_waveheight"));
-        mappings.add(new FeatureMapping("meteoConditions/sea/waveDirection", "mc_sea_wavedirection"));
+        mappings.add(new FeatureMapping("meteoConditions/sea/dataSource",
+                "mc_sea_datasource"));
+        mappings.add(new FeatureMapping("meteoConditions/sea/dataType",
+                "mc_sea_datatype"));
+        mappings.add(new FeatureMapping("meteoConditions/sea/waveLength",
+                "mc_sea_wavelength"));
+        mappings.add(new FeatureMapping("meteoConditions/sea/waveHeight",
+                "mc_sea_waveheight"));
+        mappings.add(new FeatureMapping("meteoConditions/sea/waveDirection",
+                "mc_sea_wavedirection"));
         mappings.add(new FeatureMapping("meteoConditions/sea/currentIntensity",
                 "mc_sea_currentintesity"));
         mappings.add(new FeatureMapping("meteoConditions/sea/currentDirection",

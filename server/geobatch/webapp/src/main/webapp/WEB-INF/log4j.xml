@@ -2,19 +2,19 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"
-	threshold="null" debug="false">
+	threshold="null" debug="true">
 
 	<appender name="rolling" class="org.apache.log4j.RollingFileAppender">
 		<!-- Default location -->
-		<param name="File" value="${webapp.root}/logs/geobatch.log" />
+		<!-- <param name="File" value="${webapp.root}/logs/geobatch.log" /> -->
 		<!-- Geobatch logs dir -->
 		<!-- <param name="File" value="${GEOBATCH_LOG}/geobatch.log" /> -->
 		<!-- Tomcat Default logs dir -->
-		<!-- <param name="File" value="${catalina.base}/logs/geobatch.log" /> -->
+		<param name="File" value="${catalina.base}/logs/geobatch.log" />
 
 		<param name="maxFileSize" value="100MB" />
 		<param name="maxBackupIndex" value="5" />
-		<param name="threshold" value="info" />
+		<param name="threshold" value="debug" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{ISO8601} %5p %24C{1}:%L - %m%n" />
 		</layout>
@@ -31,10 +31,10 @@
 	<!-- CAMEL -->
 	<logger name="org.apache.camel">
 		<!-- <level value="warning" /> -->
-		<level value="info" /><!-- DEBUG -->
+		<level value="debug" /><!-- DEBUG -->
 	</logger>
 	<logger name="it.geosolutions.geobatch">
-		<level value="info" /><!-- DEBUG -->
+		<level value="debug" /><!-- DEBUG -->
 	</logger>
 
 	<logger name="org.quartz">
@@ -56,7 +56,7 @@
 	</logger>
 
 	<root>
-		<level value="info" />
+		<level value="debug" />
 		<appender-ref ref="rolling" />
 		<appender-ref ref="console" />
 	</root>

@@ -30,6 +30,7 @@ public class EGEOSRegistryDeployerConfiguration extends EGEOSBaseDeployerConfigu
         super(id, name, description);
     }
 
+
     @Override
     public EGEOSRegistryDeployerConfiguration clone() {
         final EGEOSRegistryDeployerConfiguration configuration = (EGEOSRegistryDeployerConfiguration) super

@@ -41,171 +41,175 @@ import com.vividsolutions.jts.geom.Point;
  */
 public class CSVProductTypes1To3Processor extends MarissCSVServiceProcessor {
 
-    /**
-     * PK NAMES for the dao. the same that PK_PROPERTIES
-     */
-    private static final String[] PK_NAMES = { "message_type", "timestamp_sat", "timestamp_db",
-            "user_id", "latitude", "longitude" };
+	/**
+	 * PK NAMES for the dao. the same that PK_PROPERTIES
+	 */
+	private static final String[] PK_NAMES = { "message_type", "timestamp_sat",
+			"timestamp_db", "user_id", "latitude", "longitude" };
 
-    static List<Integer> PK_PROPERTIES;
-    static {
-        // ID : "message_type", "timestamp_sat", "timestamp_db", "user_id", "latitude", "longitude"
-        PK_PROPERTIES = new LinkedList<Integer>();
-        PK_PROPERTIES.add(0);
-        PK_PROPERTIES.add(1);
-        PK_PROPERTIES.add(2);
-        PK_PROPERTIES.add(3);
-        PK_PROPERTIES.add(4);
-        PK_PROPERTIES.add(5);
-    }
+	static List<Integer> PK_PROPERTIES;
+	static {
+		// ID : "message_type", "timestamp_sat", "timestamp_db", "user_id", "latitude", "longitude"
+		PK_PROPERTIES = new LinkedList<Integer>();
+		PK_PROPERTIES.add(0);
+		PK_PROPERTIES.add(1);
+		PK_PROPERTIES.add(2);
+		PK_PROPERTIES.add(3);
+		PK_PROPERTIES.add(4);
+		PK_PROPERTIES.add(5);
+	}
 
-    // constructors
-    public CSVProductTypes1To3Processor() {
-        super();
-    }
+	// constructors
+	public CSVProductTypes1To3Processor() {
+		super();
+	}
 
-    public CSVProductTypes1To3Processor(Map<String, Serializable> connectionParam, String typeName,
-            String[] pkNames) {
-        super(connectionParam, typeName, pkNames);
-    }
+	public CSVProductTypes1To3Processor(Map<String, Serializable> connectionParam,
+			String typeName, String[] pkNames) {
+		super(connectionParam, typeName, pkNames);
+	}
 
-    public CSVProductTypes1To3Processor(Map<String, Serializable> connectionParam, String typeName) {
-        super(connectionParam, typeName);
-    }
+	public CSVProductTypes1To3Processor(Map<String, Serializable> connectionParam,
+			String typeName) {
+		super(connectionParam, typeName);
+	}
 
-    public CSVProductTypes1To3Processor(Map<String, Serializable> connectionParam, String typeName,
-            String[] pkNames, TimeFormat timeFormat) {
-        super(connectionParam, typeName, pkNames, timeFormat);
-    }
+	public CSVProductTypes1To3Processor(Map<String, Serializable> connectionParam,
+			String typeName, String[] pkNames, TimeFormat timeFormat) {
+		super(connectionParam, typeName, pkNames, timeFormat);
+	}
 
-    public CSVProductTypes1To3Processor(Map<String, Serializable> connectionParam, String typeName,
-            TimeFormat timeFormat) {
-        super(connectionParam, typeName, timeFormat);
-    }
+	public CSVProductTypes1To3Processor(Map<String, Serializable> connectionParam,
+			String typeName, TimeFormat timeFormat) {
+		super(connectionParam, typeName, timeFormat);
+	}
 
-    // message_type timestamp_sat timestamp_db user_id latitude longitude repeat_indicator navigational_status rot_degrees_per_min
-    // sog_kt position_accuracy cog_degrees true_heading_degrees satellite_id source
+	
+	//	message_type	timestamp_sat	timestamp_db	user_id	latitude	longitude	repeat_indicator	navigational_status	rot_degrees_per_min	
+	// sog_kt	position_accuracy	cog_degrees	true_heading_degrees	satellite_id	source
 
-    private final static List<String> HEADERS = Collections.unmodifiableList(Arrays.asList(
-            "message_type", "timestamp_sat", "timestamp_db", "user_id", "latitude", "longitude",
-            "repeat_indicator", "navigational_status", "rot_degrees_per_min", "sog_kt",
-            "position_accuracy", "cog_degrees", "true_heading_degrees", "satellite_id", "source"));
+	private final static List<String> HEADERS = Collections
+			.unmodifiableList(Arrays.asList("message_type", "timestamp_sat", "timestamp_db", "user_id",
+					"latitude", "longitude", "repeat_indicator", "navigational_status", "rot_degrees_per_min", "sog_kt",
+					"position_accuracy", "cog_degrees", "true_heading_degrees", "satellite_id", "source"));
 
-    static List<CSVPropertyType> TYPES;
-    static {
-        TYPES = new LinkedList<CSVPropertyType>();
-        // message_type
-        TYPES.add(CSVPropertyType.INTEGER);
-        // timestamp_sat
-        TYPES.add(CSVPropertyType.DATE_TIME);
-        // timestamp_db
-        TYPES.add(CSVPropertyType.DATE_TIME);
-        // user_id
-        TYPES.add(CSVPropertyType.LONG);
-        // latitude
-        TYPES.add(CSVPropertyType.DOUBLE);
-        // longitude
-        TYPES.add(CSVPropertyType.DOUBLE);
-        // repeat_indicator
-        TYPES.add(CSVPropertyType.INTEGER);
-        // navigational_status
-        TYPES.add(CSVPropertyType.INTEGER);
-        // rot_degrees_per_min
-        TYPES.add(CSVPropertyType.DOUBLE);
-        // sog_kt
-        TYPES.add(CSVPropertyType.DOUBLE);
-        // position_accuracy
-        TYPES.add(CSVPropertyType.INTEGER);
-        // cog_degrees
-        TYPES.add(CSVPropertyType.DOUBLE);
-        // true_heading_degrees
-        TYPES.add(CSVPropertyType.INTEGER);
-        // satellite_id
-        TYPES.add(CSVPropertyType.INTEGER);
-        // source
-        TYPES.add(CSVPropertyType.STRING);
-    }
+	static List<CSVPropertyType> TYPES;
+	static {
+		TYPES = new LinkedList<CSVPropertyType>();
+		//	message_type
+		TYPES.add(CSVPropertyType.INTEGER);
+		// 	timestamp_sat
+		TYPES.add(CSVPropertyType.DATE_TIME);
+		// 	timestamp_db
+		TYPES.add(CSVPropertyType.DATE_TIME);
+		// user_id
+		TYPES.add(CSVPropertyType.LONG);
+		// latitude	
+		TYPES.add(CSVPropertyType.DOUBLE);
+		// longitude	 
+		TYPES.add(CSVPropertyType.DOUBLE);
+		// repeat_indicator	
+		TYPES.add(CSVPropertyType.INTEGER);
+		// navigational_status
+		TYPES.add(CSVPropertyType.INTEGER);
+		// rot_degrees_per_min 
+		TYPES.add(CSVPropertyType.DOUBLE);
+		// sog_kt
+		TYPES.add(CSVPropertyType.DOUBLE);
+		// position_accuracy 
+		TYPES.add(CSVPropertyType.INTEGER);
+		// 	cog_degrees
+		TYPES.add(CSVPropertyType.DOUBLE);
+		// 	true_heading_degrees
+		TYPES.add(CSVPropertyType.INTEGER);
+		// satellite_id
+		TYPES.add(CSVPropertyType.INTEGER);
+		// source
+		TYPES.add(CSVPropertyType.STRING);
+	}
 
-    @Override
-    public List<Integer> getPkProperties() {
-        return PK_PROPERTIES;
-    }
+	@Override
+	public List<Integer> getPkProperties() {
+		return PK_PROPERTIES;
+	}
 
-    @Override
-    public List<String> getHeaders() {
-        return HEADERS;
-    }
+	@Override
+	public List<String> getHeaders() {
+		return HEADERS;
+	}
 
-    @Override
-    public List<CSVPropertyType> getTypes() {
-        return TYPES;
-    }
+	@Override
+	public List<CSVPropertyType> getTypes() {
+		return TYPES;
+	}
 
-    @Override
-    public String[] getPkNames() {
-        return PK_NAMES;
-    }
+	@Override
+	public String[] getPkNames() {
+		return PK_NAMES;
+	}
 
-    public SimpleFeature merge(SimpleFeature old, Object[] properties) {
-        SimpleFeature feature = null;
-        try {
-            if (old != null) {
-                feature = (SimpleFeature) old;
-            } else {
-                feature = createFeature();
-            }
+	public SimpleFeature merge(SimpleFeature old, Object[] properties) {
+		SimpleFeature feature = null;
+		try {
+			if (old != null) {
+				feature = (SimpleFeature) old;
+			} else {
+				feature = createFeature();
+			}
 
-            // Remember the CSV headers
-            // message_type timestamp_sat timestamp_db user_id latitude longitude repeat_indicator navigational_status rot_degrees_per_min
-            // sog_kt position_accuracy cog_degrees true_heading_degrees satellite_id source
+			// Remember the CSV headers
+			// message_type	timestamp_sat	timestamp_db	user_id	latitude	longitude	repeat_indicator	navigational_status	rot_degrees_per_min	
+			// sog_kt	position_accuracy	cog_degrees	true_heading_degrees	satellite_id	source
 
-            int idx = 0;
-            // message_type
-            feature.setAttribute("message_type", properties[idx++]);
-            // timestamp_sat
-            feature.setAttribute("timestamp_sat", properties[idx++]);
-            // timestamp_db
-            feature.setAttribute("timestamp_db", properties[idx++]);
-            // user_id
-            feature.setAttribute("user_id", properties[idx++]);
-            // latitude
-            Double lat = (Double) properties[idx++];
-            feature.setAttribute("latitude", lat);
-            // longitude
-            Double lon = (Double) properties[idx++];
-            feature.setAttribute("longitude", lon);
-            // repeat_indicator
-            feature.setAttribute("repeat_indicator", properties[idx++]);
-            // navigational_status
-            feature.setAttribute("navigational_status", properties[idx++]);
-            // rot_degrees_per_min
-            feature.setAttribute("rot_degrees_per_min", properties[idx++]);
-            // sog_kt
-            feature.setAttribute("sog_kt", properties[idx++]);
-            // position_accuracy
-            feature.setAttribute("position_accuracy", properties[idx++]);
-            // cog_degrees
-            feature.setAttribute("cog_degrees", properties[idx++]);
-            // true_heading_degrees
-            feature.setAttribute("true_heading_degrees", properties[idx++]);
-            // satellite_id
-            feature.setAttribute("satellite_id", properties[idx++]);
-            // source
-            feature.setAttribute("source", properties[idx++]);
+			int idx = 0;
+			//	message_type
+			feature.setAttribute("message_type", properties[idx++]);
+			// 	timestamp_sat
+			feature.setAttribute("timestamp_sat", properties[idx++]);
+			// 	timestamp_db
+			feature.setAttribute("timestamp_db", properties[idx++]);
+			// user_id
+			feature.setAttribute("user_id", properties[idx++]);
+			// latitude
+			Double lat = (Double) properties[idx++];
+			feature.setAttribute("latitude", lat);
+			// longitude
+			Double lon = (Double) properties[idx++];
+			feature.setAttribute("longitude", lon);
+			// repeat_indicator	
+			feature.setAttribute("repeat_indicator", properties[idx++]);
+			// navigational_status
+			feature.setAttribute("navigational_status", properties[idx++]);
+			// rot_degrees_per_min 
+			feature.setAttribute("rot_degrees_per_min", properties[idx++]);
+			// sog_kt
+			feature.setAttribute("sog_kt", properties[idx++]);
+			// position_accuracy 
+			feature.setAttribute("position_accuracy", properties[idx++]);
+			// 	cog_degrees
+			feature.setAttribute("cog_degrees", properties[idx++]);
+			// 	true_heading_degrees
+			feature.setAttribute("true_heading_degrees", properties[idx++]);
+			// satellite_id
+			feature.setAttribute("satellite_id", properties[idx++]);
+			// source
+			feature.setAttribute("source", properties[idx++]);
+			
+			feature.setAttribute("service_name", getUserName() + "@"
+					+ getServiceName());
+			
+			// create the geometry
+			if (lon != null && lat != null) {
+				Point point = geometryFactory.createPoint(new Coordinate(lon,
+						lat));
+				point.setSRID(projection);
+				feature.setAttribute("the_geom", point);
+			}
 
-            feature.setAttribute("service_name", getUserName() + "@" + getServiceName());
-
-            // create the geometry
-            if (lon != null && lat != null) {
-                Point point = geometryFactory.createPoint(new Coordinate(lon, lat));
-                point.setSRID(projection);
-                feature.setAttribute("the_geom", point);
-            }
-
-        } catch (Exception e) {
-            LOGGER.error("Error creating feature", e);
-        }
-        return feature;
-    }
+		} catch (Exception e) {
+			LOGGER.error("Error creating feature", e);
+		}
+		return feature;
+	}
 
 }
