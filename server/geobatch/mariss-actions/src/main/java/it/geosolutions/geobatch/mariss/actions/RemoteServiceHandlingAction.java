@@ -697,12 +697,8 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                 msg = "Processed " + inputFile + ". Check the CSV ingestion related";
 
                 // update the service status
-                if (this.serviceDAO.updateServiceStatus(service, "ACQUISITIONLIST")) {
-                    resultList.add(event);
-                } else {
-                    msg = "Could not update service status to 'ACQUISITIONLIST' [" + service + "]";
-                    LOGGER.error(msg);
-                }
+                this.serviceDAO.updateServiceStatus(service, "ACQUISITIONLIST");
+                resultList.add(event);
             } catch (IOException e) {
                 msg = "Error processing acquisition list ingestion";
                 LOGGER.error(msg, e);
@@ -728,12 +724,8 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                     msg = "Processed " + inputFile + " in a data package action.";
 
                     // update the service status
-                    if (this.serviceDAO.updateServiceStatus(service, "PRODUCTS")) {
-                        resultList.add(event);
-                    } else {
-                        msg = "Could not update service status to 'PRODUCTS' [" + service + "]";
-                        LOGGER.error(msg);
-                    }
+                    this.serviceDAO.updateServiceStatus(service, "PRODUCTS");
+                    resultList.add(event);
                 } catch (IOException e) {
                     msg = "Error processing MARISS product ingestion";
                     LOGGER.error(msg, e);
