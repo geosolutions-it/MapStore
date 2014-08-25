@@ -188,7 +188,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         // generate backend urls based on this.target.config.adminUrl
         var adminUrl = this.target.config.adminUrl;
         // services available URL. 
-        this.servicesUrl = adminUrl + "mvc/serviceManager/extJSbrowser?action=get_folderlist&folder=";
+        this.servicesUrl = adminUrl + "mvc/serviceManager/extJSbrowser?action=get_serviceslist&folder=";
         // submit service.
         this.submitUrl = adminUrl + "mvc/serviceManager/confirmServiceAOI?url=";
         // submit service.
@@ -207,7 +207,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 width: 100,
                 store: new Ext.data.JsonStore({
                     url: this.getServicesUrl(),
-                    fields : ["id", "text", "leaf", "size", "iconCls", "loaded", "expanded", "mtime", "permission"]
+                    fields : ["id", "text", "status", "leaf", "size", "iconCls", "loaded", "expanded", "mtime", "permission"]
                 }),
                 listeners : {
                     select : function(c, record, index) {

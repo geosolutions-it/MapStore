@@ -703,7 +703,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                 msg = "Error processing acquisition list ingestion";
                 LOGGER.error(msg, e);
             }
-        } else if (PRODUCTS_FOLDER.equals(folder)) {
+        } else if ("ACQUISITIONPLAN".equals(service.getStatus()) && PRODUCTS_FOLDER.equals(folder)) {
             String filePath = inputFile.getAbsolutePath();
             if (filePath.endsWith(".csv")) {
                 pendingCSVFiles.add(filePath);
