@@ -1004,7 +1004,14 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         // write attributes
         this.draftFeatures.push(controlReturns.feature);
         // merge draft features to polygon layer
-        this.mergeDraftFeatures();
+        try
+        {
+            this.mergeDraftFeatures();
+        }
+        catch(err)
+        {
+            //console.log(err);
+        }
         // check node
         this.checkMode();
     },
@@ -1204,7 +1211,14 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                             // change status
                             me.currentStatus = me.STATUS.ACQ_LIST_SAVED;
                             // merge draft features to wfs layer
-                            me.mergeDraftFeatures();
+                            try
+                            {
+                                me.mergeDraftFeatures();
+                            }
+                            catch(err)
+                            {
+                                //console.log(err);
+                            }
 
                             // send WFS transaction
                             me.saveStrategy.save();
@@ -1421,8 +1435,14 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
             // change status
             me.currentStatus = newStatus ? newStatus : me.STATUS.COMMITED;
             // merge draft features to wfs layer
-            me.mergeDraftFeatures();
-
+            try
+            {
+                me.mergeDraftFeatures();
+            }
+            catch(err)
+            {
+                //console.log(err);
+            }
             // send WFS transaction
             me.saveStrategy.save();
 
@@ -1584,7 +1604,14 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         // only merge imported and remove the others. TODO: show message
         layer.removeFeatures(failFeatures);
         if(importedFeatures > 0 ){
-            this.mergeDraftFeatures();
+            try
+            {
+                this.mergeDraftFeatures();
+            }
+            catch(err)
+            {
+                //console.log(err);
+            }
             this.checkMode();
         }
     }
