@@ -392,6 +392,42 @@ div.map-overlay div.overlay-element {
     background-image: url(img/silk/table_multiple.png) !important;
 }
 
+.x-action-col-cell img.view
+{
+  background-image: url(img/silk/map.png) !important;
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+  margin-right: 3px;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.x-action-col-cell img.aoi
+{
+  background-image: url(img/silk/map_edit.png) !important;
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+  margin-right: 3px;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.x-action-col-cell img.plan
+{
+  background-image: url(img/silk/application_get.png) !important;
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+  margin-right: 3px;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 .x-action-col-cell  .zoomaction{
 	background-image: url(img/silk/magnifier.png) !important;
 	width:16px;

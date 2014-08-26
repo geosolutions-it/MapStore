@@ -267,8 +267,8 @@ OpenLayers.Strategy.BBOX = OpenLayers.Class(OpenLayers.Strategy, {
             var features = resp.features;
             if(features && features.length > 0) {
                 var remote = this.layer.projection;
-                var local = this.layer.map.getProjectionObject();
-                if(!local.equals(remote)) {
+                var local = (this.layer.map ? this.layer.map.getProjectionObject() : null);
+                if(!local || !local.equals(remote)) {
                     var geom;
                     for(var i=0, len=features.length; i<len; ++i) {
                         geom = features[i].geometry;

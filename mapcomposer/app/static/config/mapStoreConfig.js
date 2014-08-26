@@ -299,7 +299,7 @@
 			"id": "wpsSPM",
 			"url": "http://192.168.1.47/geoserver/wps",
 			"geostoreUrl": "http://192.168.1.47/opensdi2-manager/facade/geostore/rest",
-			"geostoreProxy": "/http_proxy/proxy?url=",
+			"geostoreProxy": "/proxy?url=",
 			"silentErrors": true,
 			"checkLocation": true,
 			"target": ""
