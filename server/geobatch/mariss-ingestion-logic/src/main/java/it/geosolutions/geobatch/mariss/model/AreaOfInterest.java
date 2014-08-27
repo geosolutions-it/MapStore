@@ -16,27 +16,29 @@
  */
 package it.geosolutions.geobatch.mariss.model;
 
+import java.sql.Date;
+
 /**
  * @author Alessio
  *
  */
-public class Service {
+public class AreaOfInterest {
     
     private int id;
     private String serviceId;
-    private String parent;
-    private String user;
+    private String theGeom;
+    private Date startTime;
+    private Date endTime;
     private String status;
-    
-    private AreaOfInterest aoi;
     
     /**
      * 
      */
-    public Service(String serviceId, String parent, String user, String status) {
+    public AreaOfInterest(String serviceId, String theGeom, Date startTime, Date endTime, String status) {
         this.serviceId = serviceId;
-        this.parent = parent;
-        this.user = user;
+        this.theGeom = theGeom;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.status = status;
     }
 
@@ -69,34 +71,6 @@ public class Service {
     }
 
     /**
-     * @return the parent
-     */
-    public String getParent() {
-        return parent;
-    }
-
-    /**
-     * @param parent the parent to set
-     */
-    public void setParent(String parent) {
-        this.parent = parent;
-    }
-
-    /**
-     * @return the user
-     */
-    public String getUser() {
-        return user;
-    }
-
-    /**
-     * @param user the user to set
-     */
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    /**
      * @return the status
      */
     public String getStatus() {
@@ -111,29 +85,57 @@ public class Service {
     }
 
     /**
-     * @return the aoi
+     * @return the theGeom
      */
-    public AreaOfInterest getAoi() {
-        return aoi;
+    public String getTheGeom() {
+        return theGeom;
     }
 
     /**
-     * @param aoi the aoi to set
+     * @param theGeom the theGeom to set
      */
-    public void setAoi(AreaOfInterest aoi) {
-        this.aoi = aoi;
+    public void setTheGeom(String theGeom) {
+        this.theGeom = theGeom;
+    }
+
+    /**
+     * @return the startTime
+     */
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    /**
+     * @param startTime the startTime to set
+     */
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    /**
+     * @return the endTime
+     */
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    /**
+     * @param endTime the endTime to set
+     */
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((aoi == null) ? 0 : aoi.hashCode());
+        result = prime * result + ((endTime == null) ? 0 : endTime.hashCode());
         result = prime * result + id;
-        result = prime * result + ((parent == null) ? 0 : parent.hashCode());
         result = prime * result + ((serviceId == null) ? 0 : serviceId.hashCode());
+        result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
         result = prime * result + ((status == null) ? 0 : status.hashCode());
-        result = prime * result + ((user == null) ? 0 : user.hashCode());
+        result = prime * result + ((theGeom == null) ? 0 : theGeom.hashCode());
         return result;
     }
 
@@ -145,25 +147,18 @@ public class Service {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof Service)) {
+        if (!(obj instanceof AreaOfInterest)) {
             return false;
         }
-        Service other = (Service) obj;
-        if (aoi == null) {
-            if (other.aoi != null) {
+        AreaOfInterest other = (AreaOfInterest) obj;
+        if (endTime == null) {
+            if (other.endTime != null) {
                 return false;
             }
-        } else if (!aoi.equals(other.aoi)) {
+        } else if (!endTime.equals(other.endTime)) {
             return false;
         }
         if (id != other.id) {
-            return false;
-        }
-        if (parent == null) {
-            if (other.parent != null) {
-                return false;
-            }
-        } else if (!parent.equals(other.parent)) {
             return false;
         }
         if (serviceId == null) {
@@ -173,6 +168,13 @@ public class Service {
         } else if (!serviceId.equals(other.serviceId)) {
             return false;
         }
+        if (startTime == null) {
+            if (other.startTime != null) {
+                return false;
+            }
+        } else if (!startTime.equals(other.startTime)) {
+            return false;
+        }
         if (status == null) {
             if (other.status != null) {
                 return false;
@@ -180,11 +182,11 @@ public class Service {
         } else if (!status.equals(other.status)) {
             return false;
         }
-        if (user == null) {
-            if (other.user != null) {
+        if (theGeom == null) {
+            if (other.theGeom != null) {
                 return false;
             }
-        } else if (!user.equals(other.user)) {
+        } else if (!theGeom.equals(other.theGeom)) {
             return false;
         }
         return true;
@@ -193,17 +195,17 @@ public class Service {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Service [id=").append(id).append(", ");
+        builder.append("AreaOfInterest [id=").append(id).append(", ");
         if (serviceId != null)
             builder.append("serviceId=").append(serviceId).append(", ");
-        if (parent != null)
-            builder.append("parent=").append(parent).append(", ");
-        if (user != null)
-            builder.append("user=").append(user).append(", ");
+        if (theGeom != null)
+            builder.append("theGeom=").append(theGeom).append(", ");
+        if (startTime != null)
+            builder.append("startTime=").append(startTime).append(", ");
+        if (endTime != null)
+            builder.append("endTime=").append(endTime).append(", ");
         if (status != null)
-            builder.append("status=").append(status).append(", ");
-        if (aoi != null)
-            builder.append("aoi=").append(aoi);
+            builder.append("status=").append(status);
         builder.append("]");
         return builder.toString();
     }

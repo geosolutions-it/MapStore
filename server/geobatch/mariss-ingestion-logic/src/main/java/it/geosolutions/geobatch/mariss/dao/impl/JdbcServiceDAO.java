@@ -17,6 +17,7 @@
 package it.geosolutions.geobatch.mariss.dao.impl;
 
 import it.geosolutions.geobatch.mariss.dao.ServiceDAO;
+import it.geosolutions.geobatch.mariss.model.AreaOfInterest;
 import it.geosolutions.geobatch.mariss.model.Service;
 
 import java.sql.Connection;
@@ -90,6 +91,64 @@ public class JdbcServiceDAO implements ServiceDAO {
     }
 
     @Override
+    public void insertOrUpdate(AreaOfInterest aoi) {
+
+        boolean result = false;
+        
+        String sql = "SELECT * FROM AOIS WHERE service_name = ?";
+        Connection conn = null;
+
+        try {
+            conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, aoi.getServiceId());
+            ResultSet rs = ps.executeQuery();
+            boolean performUpdate = rs.next();
+            rs.close();
+
+            if (performUpdate) 
+            {
+                // perform update
+                sql = "UPDATE aois SET the_geom=?, start=?, \"end\"=?, status=? WHERE service_name = ?";
+                if (!ps.isClosed()) ps.close();
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, aoi.getTheGeom());
+                ps.setDate(2, aoi.getStartTime());
+                ps.setDate(3, aoi.getEndTime());
+                ps.setString(4, aoi.getStatus());
+                ps.setString(5, aoi.getServiceId());
+                result = ps.execute() && ps.getUpdateCount() > 0;
+            }
+            else
+            {
+                // perform insert
+                sql = "INSERT INTO aois(service_name, the_geom, start, \"end\", status) VALUES (?, ?, ?, ?, ?)";
+                if (!ps.isClosed()) ps.close();
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, aoi.getServiceId());
+                ps.setString(2, aoi.getTheGeom());
+                ps.setDate(3, aoi.getStartTime());
+                ps.setDate(4, aoi.getEndTime());
+                ps.setString(5, aoi.getStatus());
+                result = ps.executeUpdate() > 0;
+            }
+            ps.close();
+                        
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+        
+    }
+
+    @Override
     public Service findByServiceId(String serviceId) {
 
         String sql = "SELECT * FROM SERVICE WHERE \"SERVICE_ID\" = ?";
@@ -109,6 +168,25 @@ public class JdbcServiceDAO implements ServiceDAO {
             }
             rs.close();
             ps.close();
+            
+            // Retrieve the AOI
+            sql = "SELECT fid, service_name, asewkt(the_geom) as thegeom, start, \"end\", status FROM AOIS WHERE service_name = ?";
+            
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, serviceId);
+            AreaOfInterest aoi = null;
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                aoi = new AreaOfInterest(serviceId, rs.getString("thegeom"), 
+                                                    rs.getDate("start"), 
+                                                    rs.getDate("end"), 
+                                                    rs.getString("status"));
+                aoi.setId(rs.getInt("fid"));
+                service.setAoi(aoi);
+            }
+            rs.close();
+            ps.close();
+            
             return service;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -146,6 +224,30 @@ public class JdbcServiceDAO implements ServiceDAO {
             }
             rs.close();
             ps.close();
+            
+            for (Service ss : services) 
+            {
+                String serviceId = ss.getServiceId();
+                
+                // Retrieve the AOI
+                sql = "SELECT fid, service_name, asewkt(the_geom) as thegeom, start, \"end\", status FROM AOIS WHERE service_name = ?";
+                
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, serviceId);
+                AreaOfInterest aoi = null;
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    aoi = new AreaOfInterest(serviceId, rs.getString("thegeom"), 
+                                                        rs.getDate("start"), 
+                                                        rs.getDate("end"), 
+                                                        rs.getString("status"));
+                    aoi.setId(rs.getInt("fid"));
+                    ss.setAoi(aoi);
+                }
+                rs.close();
+                ps.close();                
+            }
+            
             return services;
         } catch (SQLException e) {
             throw new RuntimeException(e);

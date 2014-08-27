@@ -18,6 +18,7 @@ package it.geosolutions.geobatch.mariss.dao;
 
 import java.util.List;
 
+import it.geosolutions.geobatch.mariss.model.AreaOfInterest;
 import it.geosolutions.geobatch.mariss.model.Service;
 
 /**
@@ -27,6 +28,8 @@ import it.geosolutions.geobatch.mariss.model.Service;
 public interface ServiceDAO {
     
     public void insert(Service service);
+
+    public void insertOrUpdate(AreaOfInterest aoi);
 
     public Service findByServiceId(String serviceId);
     
