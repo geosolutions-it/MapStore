@@ -223,8 +223,8 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
                     downloadGrid.grid.getStore().removeAll();
                     if(me.autoExpandPanel){
                         var autoExpandPanel = Ext.getCmp(me.autoExpandPanel);
-                        if(autoExpandPanel && !autoExpandPanel.collapsed)
-                            autoExpandPanel.collapse(true);
+                        /*if(autoExpandPanel && !autoExpandPanel.collapsed)
+                            autoExpandPanel.collapse(true);*/
                     }
                 }
             };

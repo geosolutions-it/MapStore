@@ -128,14 +128,14 @@
 	          "collapsible": true,
 	          "header": true
 	      },{
-            "xtype": "panel",
+            "xtype": "tabpanel",
 	        "border": false,
 	        "id":"east",
 	        "region": "east",
 	        "width": 475,
 	        "split": true,
 	        "collapsible": true,
-			"collapsed": true,
+			"collapsed": false,
 	        "collapseMode": "mini",
 			"activeTab":0,
 	        "header": false,

@@ -29,6 +29,7 @@ gxp.PlanEditorPanel = Ext.extend(Ext.FormPanel, {
     /** i18n **/
     aoiText: "AOI",
     nameText: "Name",
+    descriptionText: "Description",
     intervalText: "Interval",
     startText: "Start",
     endText: "End",
@@ -71,7 +72,16 @@ gxp.PlanEditorPanel = Ext.extend(Ext.FormPanel, {
         this.items = [{
             xtype: "fieldset",
             title: this.aoiText,
-            items:[{
+            items:[
+            {
+                xtype: "textfield",
+                name: "description",
+                autoWidth: true,
+                fieldLabel: this.descriptionText,
+                allowBlank: false,
+                width: 329
+            },
+            {
                 xtype: "fieldset",
                 title: this.intervalText,
                 layout: "form",
