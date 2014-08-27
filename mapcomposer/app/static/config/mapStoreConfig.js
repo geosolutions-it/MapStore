@@ -1,8 +1,8 @@
 {
    
    "scaleOverlayMode": "basic",
-   "adminUrl":"http://localhost/opensdi2-manager/",
-   "geoStoreBase":"http://localhost/opensdi2-manager/facade/geostore/rest/",
+   "adminUrl":"http://192.168.1.47/opensdi2-manager/",
+   "geoStoreBase":"http://192.168.1.47/opensdi2-manager/facade/geostore/rest/",
    "externalHeaders": true,
    "header":{
         "container": {
@@ -25,7 +25,7 @@
             "ptype": "gxp_wmssource",
             "title": "MARISS", 
             "version": "1.1.1",
-            "url": "http://localhost/geoserver/mariss/ows",
+            "url": "http://192.168.1.47/geoserver/mariss/ows",
 			"layerBaseParams": {
 				"TILED": true,
 				"TILESORIGIN": "-180,-90" 
@@ -226,7 +226,7 @@
 			"id": "featuregrid",
 			"container": "panel",
 			"outputTarget": "south",
-			"wfsURL": "http://localhost/geoserver/mariss/wfs",
+			"wfsURL": "http://192.168.1.47/geoserver/mariss/wfs",
 			"featureType": "TEM_QL__1P_mosaic_idx",
 			"zoomToTooltip": "zoom to AOI",
 			"srsName": "EPSG:4326",
@@ -297,9 +297,9 @@
 		},{                   
 			"ptype": "gxp_wpsmanager",
 			"id": "wpsSPM",
-			"url": "http://localhost/geoserver/wps",
-			"geostoreUrl": "http://localhost/opensdi2-manager/facade/geostore/rest",
-			"geostoreProxy": "/http_proxy/proxy?url=",
+			"url": "http://192.168.1.47/geoserver/wps",
+			"geostoreUrl": "http://192.168.1.47/opensdi2-manager/facade/geostore/rest",
+			"geostoreProxy": "/proxy?url=",
 			"silentErrors": true,
 			"checkLocation": true,
 			"target": ""
