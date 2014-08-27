@@ -173,7 +173,8 @@ public class JdbcServiceDAO implements ServiceDAO {
             sql = "SELECT fid, service_name, asewkt(the_geom) as thegeom, start, \"end\", status FROM AOIS WHERE service_name = ?";
             
             ps = conn.prepareStatement(sql);
-            ps.setString(1, serviceId);
+            String userId = service.getUser();
+            ps.setString(1, userId+"@"+serviceId);
             AreaOfInterest aoi = null;
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -227,7 +228,7 @@ public class JdbcServiceDAO implements ServiceDAO {
             
             for (Service ss : services) 
             {
-                String serviceId = ss.getServiceId();
+                String serviceId = userId+"@"+ss.getServiceId();
                 
                 // Retrieve the AOI
                 sql = "SELECT fid, service_name, asewkt(the_geom) as thegeom, start, \"end\", status FROM AOIS WHERE service_name = ?";
