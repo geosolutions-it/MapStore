@@ -26,6 +26,7 @@ public class AreaOfInterest {
     
     private int id;
     private String serviceId;
+    private String description;
     private String theGeom;
     private Date startTime;
     private Date endTime;
@@ -34,8 +35,9 @@ public class AreaOfInterest {
     /**
      * 
      */
-    public AreaOfInterest(String serviceId, String theGeom, Date startTime, Date endTime, String status) {
+    public AreaOfInterest(String serviceId, String description, String theGeom, Date startTime, Date endTime, String status) {
         this.serviceId = serviceId;
+        this.description = description;
         this.theGeom = theGeom;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -68,6 +70,20 @@ public class AreaOfInterest {
      */
     public void setServiceId(String serviceId) {
         this.serviceId = serviceId;
+    }
+
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
@@ -130,6 +146,7 @@ public class AreaOfInterest {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
         result = prime * result + ((endTime == null) ? 0 : endTime.hashCode());
         result = prime * result + id;
         result = prime * result + ((serviceId == null) ? 0 : serviceId.hashCode());
@@ -151,6 +168,13 @@ public class AreaOfInterest {
             return false;
         }
         AreaOfInterest other = (AreaOfInterest) obj;
+        if (description == null) {
+            if (other.description != null) {
+                return false;
+            }
+        } else if (!description.equals(other.description)) {
+            return false;
+        }
         if (endTime == null) {
             if (other.endTime != null) {
                 return false;
@@ -198,6 +222,8 @@ public class AreaOfInterest {
         builder.append("AreaOfInterest [id=").append(id).append(", ");
         if (serviceId != null)
             builder.append("serviceId=").append(serviceId).append(", ");
+        if (description != null)
+            builder.append("description=").append(description).append(", ");
         if (theGeom != null)
             builder.append("theGeom=").append(theGeom).append(", ");
         if (startTime != null)

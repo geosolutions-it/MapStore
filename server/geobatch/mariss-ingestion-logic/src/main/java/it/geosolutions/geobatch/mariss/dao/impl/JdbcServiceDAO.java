@@ -109,20 +109,21 @@ public class JdbcServiceDAO implements ServiceDAO {
             if (performUpdate) 
             {
                 // perform update
-                sql = "UPDATE aois SET the_geom=?, start=?, \"end\"=?, status=? WHERE service_name = ?";
+                sql = "UPDATE aois SET the_geom=?, start=?, \"end\"=?, status=?, \"desc\"=? WHERE service_name = ?";
                 if (!ps.isClosed()) ps.close();
                 ps = conn.prepareStatement(sql);
                 ps.setString(1, aoi.getTheGeom());
                 ps.setDate(2, aoi.getStartTime());
                 ps.setDate(3, aoi.getEndTime());
                 ps.setString(4, aoi.getStatus());
-                ps.setString(5, aoi.getServiceId());
+                ps.setString(5, aoi.getDescription());
+                ps.setString(6, aoi.getServiceId());
                 result = ps.execute() && ps.getUpdateCount() > 0;
             }
             else
             {
                 // perform insert
-                sql = "INSERT INTO aois(service_name, the_geom, start, \"end\", status) VALUES (?, ?, ?, ?, ?)";
+                sql = "INSERT INTO aois(service_name, the_geom, start, \"end\", status, \"desc\") VALUES (?, ?, ?, ?, ?, ?)";
                 if (!ps.isClosed()) ps.close();
                 ps = conn.prepareStatement(sql);
                 ps.setString(1, aoi.getServiceId());
@@ -130,6 +131,7 @@ public class JdbcServiceDAO implements ServiceDAO {
                 ps.setDate(3, aoi.getStartTime());
                 ps.setDate(4, aoi.getEndTime());
                 ps.setString(5, aoi.getStatus());
+                ps.setString(6, aoi.getDescription());
                 result = ps.executeUpdate() > 0;
             }
             ps.close();
@@ -170,7 +172,7 @@ public class JdbcServiceDAO implements ServiceDAO {
             ps.close();
             
             // Retrieve the AOI
-            sql = "SELECT fid, service_name, asewkt(the_geom) as thegeom, start, \"end\", status FROM AOIS WHERE service_name = ?";
+            sql = "SELECT fid, \"desc\", service_name, asewkt(the_geom) as thegeom, start, \"end\", status FROM AOIS WHERE service_name = ?";
             
             ps = conn.prepareStatement(sql);
             String userId = service.getUser();
@@ -178,10 +180,12 @@ public class JdbcServiceDAO implements ServiceDAO {
             AreaOfInterest aoi = null;
             rs = ps.executeQuery();
             if (rs.next()) {
-                aoi = new AreaOfInterest(serviceId, rs.getString("thegeom"), 
-                                                    rs.getDate("start"), 
-                                                    rs.getDate("end"), 
-                                                    rs.getString("status"));
+                aoi = new AreaOfInterest(serviceId,
+                                         rs.getString("desc"),
+                                         rs.getString("thegeom"), 
+                                         rs.getDate("start"), 
+                                         rs.getDate("end"), 
+                                         rs.getString("status"));
                 aoi.setId(rs.getInt("fid"));
                 service.setAoi(aoi);
             }
@@ -231,17 +235,19 @@ public class JdbcServiceDAO implements ServiceDAO {
                 String serviceId = userId+"@"+ss.getServiceId();
                 
                 // Retrieve the AOI
-                sql = "SELECT fid, service_name, asewkt(the_geom) as thegeom, start, \"end\", status FROM AOIS WHERE service_name = ?";
+                sql = "SELECT fid, \"desc\", service_name, asewkt(the_geom) as thegeom, start, \"end\", status FROM AOIS WHERE service_name = ?";
                 
                 ps = conn.prepareStatement(sql);
                 ps.setString(1, serviceId);
                 AreaOfInterest aoi = null;
                 rs = ps.executeQuery();
                 if (rs.next()) {
-                    aoi = new AreaOfInterest(serviceId, rs.getString("thegeom"), 
-                                                        rs.getDate("start"), 
-                                                        rs.getDate("end"), 
-                                                        rs.getString("status"));
+                    aoi = new AreaOfInterest(serviceId,
+                                            rs.getString("desc"),
+                                            rs.getString("thegeom"), 
+                                            rs.getDate("start"), 
+                                            rs.getDate("end"), 
+                                            rs.getString("status"));
                     aoi.setId(rs.getInt("fid"));
                     ss.setAoi(aoi);
                 }
