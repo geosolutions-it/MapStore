@@ -16,10 +16,12 @@
  */
 package it.geosolutions.geobatch.mariss.dao;
 
-import java.util.List;
-
 import it.geosolutions.geobatch.mariss.model.AreaOfInterest;
+import it.geosolutions.geobatch.mariss.model.Sensor;
+import it.geosolutions.geobatch.mariss.model.SensorMode;
 import it.geosolutions.geobatch.mariss.model.Service;
+
+import java.util.List;
 
 /**
  * @author Alessio
@@ -27,13 +29,27 @@ import it.geosolutions.geobatch.mariss.model.Service;
  */
 public interface ServiceDAO {
     
-    public void insert(Service service);
-
-    public void insertOrUpdate(AreaOfInterest aoi);
-
+    /**
+     * READ
+     */
+    
     public Service findByServiceId(String serviceId);
     
     public List<Service> findByUser(String userId);
     
+    public List<Sensor> getSensors();
+    
+    public List<SensorMode> getSensorModes();
+    
+    /**
+     * WRITE
+     */
+
+    public boolean insert(Service service);
+
+    public boolean insertOrUpdate(AreaOfInterest aoi);
+    
+    public boolean insertOrUpdate(String serviceId, List<Sensor> sensors);
+
     public boolean updateServiceStatus(Service servce, String status);
 }

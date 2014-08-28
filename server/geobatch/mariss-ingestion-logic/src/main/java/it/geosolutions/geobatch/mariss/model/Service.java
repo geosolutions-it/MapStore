@@ -16,6 +16,10 @@
  */
 package it.geosolutions.geobatch.mariss.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author Alessio
  *
@@ -29,6 +33,8 @@ public class Service {
     private String status;
     
     private AreaOfInterest aoi;
+    
+    private List<Sensor> sensors = Collections.synchronizedList(new ArrayList<Sensor>());
     
     /**
      * 
@@ -124,6 +130,20 @@ public class Service {
         this.aoi = aoi;
     }
 
+    /**
+     * @return the sensors
+     */
+    public List<Sensor> getSensors() {
+        return sensors;
+    }
+
+    /**
+     * @param sensors the sensors to set
+     */
+    public void setSensors(List<Sensor> sensors) {
+        this.sensors = sensors;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -131,6 +151,7 @@ public class Service {
         result = prime * result + ((aoi == null) ? 0 : aoi.hashCode());
         result = prime * result + id;
         result = prime * result + ((parent == null) ? 0 : parent.hashCode());
+        result = prime * result + ((sensors == null) ? 0 : sensors.hashCode());
         result = prime * result + ((serviceId == null) ? 0 : serviceId.hashCode());
         result = prime * result + ((status == null) ? 0 : status.hashCode());
         result = prime * result + ((user == null) ? 0 : user.hashCode());
@@ -166,6 +187,13 @@ public class Service {
         } else if (!parent.equals(other.parent)) {
             return false;
         }
+        if (sensors == null) {
+            if (other.sensors != null) {
+                return false;
+            }
+        } else if (!sensors.equals(other.sensors)) {
+            return false;
+        }
         if (serviceId == null) {
             if (other.serviceId != null) {
                 return false;
@@ -192,6 +220,7 @@ public class Service {
 
     @Override
     public String toString() {
+        final int maxLen = 10;
         StringBuilder builder = new StringBuilder();
         builder.append("Service [id=").append(id).append(", ");
         if (serviceId != null)
@@ -203,7 +232,9 @@ public class Service {
         if (status != null)
             builder.append("status=").append(status).append(", ");
         if (aoi != null)
-            builder.append("aoi=").append(aoi);
+            builder.append("aoi=").append(aoi).append(", ");
+        if (sensors != null)
+            builder.append("sensors=").append(sensors.subList(0, Math.min(sensors.size(), maxLen)));
         builder.append("]");
         return builder.toString();
     }

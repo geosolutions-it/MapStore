@@ -18,6 +18,8 @@ package it.geosolutions.geobatch.mariss.dao.impl;
 
 import it.geosolutions.geobatch.mariss.dao.ServiceDAO;
 import it.geosolutions.geobatch.mariss.model.AreaOfInterest;
+import it.geosolutions.geobatch.mariss.model.Sensor;
+import it.geosolutions.geobatch.mariss.model.SensorMode;
 import it.geosolutions.geobatch.mariss.model.Service;
 
 import java.sql.Connection;
@@ -61,8 +63,10 @@ public class JdbcServiceDAO implements ServiceDAO {
     }
 
     @Override
-    public void insert(Service service) {
+    public boolean insert(Service service) {
 
+        boolean result = false;
+        
         String sql = "INSERT INTO SERVICE (\"SERVICE_ID\", \"PARENT\", \"USER\", \"STATUS\") VALUES (?, ?, ?, ?)";
         Connection conn = null;
 
@@ -73,7 +77,7 @@ public class JdbcServiceDAO implements ServiceDAO {
             ps.setString(2, service.getParent());
             ps.setString(3, service.getUser());
             ps.setString(4, service.getStatus());
-            ps.executeUpdate();
+            result = ps.executeUpdate() > 0;
             ps.close();
 
         } catch (SQLException e) {
@@ -87,11 +91,13 @@ public class JdbcServiceDAO implements ServiceDAO {
                 }
             }
         }
+        
+        return result;
 
     }
 
     @Override
-    public void insertOrUpdate(AreaOfInterest aoi) {
+    public boolean insertOrUpdate(AreaOfInterest aoi) {
 
         boolean result = false;
         
@@ -147,6 +153,8 @@ public class JdbcServiceDAO implements ServiceDAO {
                 }
             }
         }
+        
+        return result;
         
     }
 
@@ -297,6 +305,120 @@ public class JdbcServiceDAO implements ServiceDAO {
         }
 
         return result;
+    }
+
+    @Override
+    public List<Sensor> getSensors() {
+        
+        String sql = "SELECT * FROM sensors";
+
+        Connection conn = null;
+
+        try {
+            conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            List<Sensor> sensors = new ArrayList<Sensor>();
+            ResultSet rs = ps.executeQuery();
+            Sensor sensor;
+            while (rs.next()) {
+                sensor = new Sensor(rs.getString("sensor"), null);
+                sensor.setId(rs.getInt("id"));
+                
+                sensors.add(sensor);
+            }
+            rs.close();
+            ps.close();
+            
+            return sensors;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+        
+    }
+
+    @Override
+    public List<SensorMode> getSensorModes() {
+
+        String sql = "SELECT * FROM sensor_modes";
+
+        Connection conn = null;
+
+        try {
+            conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            List<SensorMode> sensorModes = new ArrayList<SensorMode>();
+            ResultSet rs = ps.executeQuery();
+            SensorMode sensorMode;
+            while (rs.next()) {
+                sensorMode = new SensorMode(rs.getString("sensor_mode"));
+                sensorMode.setId(rs.getInt("id"));
+                
+                sensorModes.add(sensorMode);
+            }
+            rs.close();
+            ps.close();
+            
+            return sensorModes;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+        
+    }
+
+    @Override
+    public boolean insertOrUpdate(String serviceId, List<Sensor> sensors) {
+        
+        boolean result = false;
+        
+        String sql = "DELETE FROM sensor WHERE service_id = ?";
+        Connection conn = null;
+
+        try {
+            conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, serviceId);
+            ps.executeUpdate();
+            ps.close();
+            
+            sql = "INSERT INTO sensor(sensor_type, sensor_mode, service_id) VALUES (?, ?, ?)";
+            ps = conn.prepareStatement(sql);
+            
+            for(Sensor sensor : sensors) {
+                ps.setString(1, sensor.getSensor());
+                ps.setString(2, sensor.getSensorMode().getSensorMode());
+                ps.setString(3, serviceId);
+                ps.addBatch();
+            }
+            result = ps.executeBatch().length > 0;
+            ps.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+        
+        return result;
+        
     }
 
 }
