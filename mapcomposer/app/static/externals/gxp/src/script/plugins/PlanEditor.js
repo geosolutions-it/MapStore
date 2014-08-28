@@ -205,20 +205,15 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 url: this.getServicesUrl(),
                 pageSize: 10,
                 autoLoad: true,
-                fields : ["id", "text", "status", "leaf", "size", "iconCls", "loaded", "expanded", "mtime", "permission"]
+                fields : ["id", "text", "status", "leaf", "size", "iconCls", "loaded", "expanded", "mtime", "permission", "aoiDescription", "aoiStartTime", "aoiEndTime", "aoiGeometry", "aoiStatus"]
             });
             var servicesListgrid = new Ext.grid.GridPanel({
                 id: this.id + "_services_grid",
                 layout: 'fit',
-                autoHeight: true,
+                width: 300,
                 sm: new GeoExt.grid.FeatureSelectionModel(),
-                // viewConfig: {
-                //     emptyText: this.emptyAcqListText
-                // },
                 store: me.store,
                 columns: [
-                    {header: 'ServiceID', dataIndex: "text", sortable: true},
-                    {header: 'Status', dataIndex: "status", sortable: true},
                     {
                         text: 'Action',
                         header: undefined,
@@ -226,9 +221,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                         resizable:false,
                         xtype  :'actioncolumn',
                         align  :'center',
-                        width  : 50,
-                        //icon   : '../shared/icons/fam/delete.gif',  // Use a URL in the icon config
-                        //tooltip: 'Sell stock',
+                        width  : 30,
                         getClass: function(val, meta, rec) {
                             var service  = rec.data.text;
                             var status   = rec.data.status;
@@ -250,7 +243,6 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                             var rec      = grid.store.getAt(rowIndex);
                             var service  = rec.data.text;
                             var status   = rec.data.status;
-                            //alert("Service ["+service+"] : " + status);
                                                         
                             if (status === "NEW" || status === "AOI") {
                                 me.onSelectService(service, me.viewPanel, false);
@@ -298,7 +290,13 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                                 me.onSelectService(service, me.viewPanel, true);
                             }
                         }
-                    }
+                    },
+                    {header: 'ServiceID', dataIndex: "text", sortable: true},
+                    {header: 'Description', dataIndex: "aoiDescription", sortable: false},
+                    {header: 'Service Status', dataIndex: "status", sortable: true},
+                    {header: 'Aoi Status', dataIndex: "aoiStatus", sortable: true},
+                    {header: 'Start Time', dataIndex: "aoiStartTime", sortable: true},
+                    {header: 'End Time', dataIndex: "aoiEndTime", sortable: true},
                 ],
                 listeners:{
                     rowclick: function(grid, rowIndex, columnIndex, e) {
@@ -307,16 +305,9 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                         var status   = rec.data.status;
                         
                         this.onSelectService(service, this.viewPanel, false);
-                        
-                        /*if(selModel.getCount() == 0){
-                            Ext.getCmp(this.id + "_export_acq_button").disable();
-                        }else{
-                            Ext.getCmp(this.id + "_export_acq_button").enable();
-                        }*/
                     },
                     scope:this
                 },
-                tbar: [],
                 // paging bar on the bottom
                 bbar: new Ext.PagingToolbar({
                     store: me.store,
@@ -324,50 +315,6 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                     displayMsg: '{0}-{1} of {2}',
                     emptyMsg: "No service available"
                 })
-                /*bbar:["->",
-                {
-                    text: this.exportAcqListText,
-                    id: this.id + "_export_acq_button",
-                    disabled: true,
-                    iconCls: "icon-save",
-                    tooltip: this.exportAcqListTooltipText,
-                    handler: function() {
-                        var me = this;
-                        this.mode = "confirmAcqList";
-                        var submitStatusToWFS = function(){
-                            // change status
-                            me.currentStatus = me.STATUS.ACQ_LIST_SAVED;
-                            // merge draft features to wfs layer
-                            me.mergeDraftFeatures();
-
-                            // send WFS transaction
-                            me.saveStrategy.save();
-
-                            // update current form status
-                            me.checkMode();
-                        };
-
-                        // filter by selected features 
-                        var fids = "";
-                        var selModel = this.acqListgrid.getSelectionModel(); 
-                        var selectedRecords = selModel.getSelections();
-                        for(var i = 0; i < selectedRecords.length; i++){
-                            var record = selectedRecords[i];
-                            if(record
-                                && record.data
-                                && record.data.fid){
-                                fids += "'" + record.data.fid + "',";
-                            }
-                        }
-                        fids = fids.substring(0, fids.length -1);
-
-                        this.doExportAndSaveStatus("GML2", me.STATUS.ACQ_LIST_SAVED, this.layerAcqListName, this.submitAcqUrl, false, null, fids);
-
-                        // this.doExportLayer("GML2", this.layerAcqListName, this.submitAcqUrl, false, submitStatusToWFS, fids);
-                        // open the GML on a popup: this.doExportLayer("GML2", this.layerAcqListName, null, true, null, fids);
-                    },
-                    scope: this
-                }]*/
             });
             
         /*
@@ -541,11 +488,12 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
             }],*/
             autoScroll: true,
             style: {
-                "padding-top": "10px",
+                "padding-top": "2px",
             },
             items:[{
                 items: [servicesListgrid],
-                flex: 1
+                //height: 300,
+                width: 300
             }],
             listeners:{
                 activate: function(){
@@ -854,19 +802,19 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
 
         switch (this.mode){
             case 'save':{
-                Ext.getCmp(this.id + "_edit_button").enable();
-                Ext.getCmp(this.id + "_save_button").enable();
-                Ext.getCmp(this.id + "_draw_button").enable();
-                Ext.getCmp(this.id + "_reset_button").enable();
-                Ext.getCmp(this.id + "_confirm_button").enable();
+                if(Ext.getCmp(this.id + "_edit_button"))    Ext.getCmp(this.id + "_edit_button").enable();
+                if(Ext.getCmp(this.id + "_save_button"))    Ext.getCmp(this.id + "_save_button").enable();
+                if(Ext.getCmp(this.id + "_draw_button"))    Ext.getCmp(this.id + "_draw_button").enable();
+                if(Ext.getCmp(this.id + "_reset_button"))   Ext.getCmp(this.id + "_reset_button").enable();
+                if(Ext.getCmp(this.id + "_confirm_button")) Ext.getCmp(this.id + "_confirm_button").enable();
                 break;
             }
             case 'edit':{
-                Ext.getCmp(this.id + "_edit_button").enable();
-                Ext.getCmp(this.id + "_save_button").disable();
-                Ext.getCmp(this.id + "_draw_button").disable();
-                Ext.getCmp(this.id + "_reset_button").disable();
-                Ext.getCmp(this.id + "_confirm_button").disable();
+                if(Ext.getCmp(this.id + "_edit_button"))    Ext.getCmp(this.id + "_edit_button").enable();
+                if(Ext.getCmp(this.id + "_save_button"))    Ext.getCmp(this.id + "_save_button").disable();
+                if(Ext.getCmp(this.id + "_draw_button"))    Ext.getCmp(this.id + "_draw_button").disable();
+                if(Ext.getCmp(this.id + "_reset_button"))   Ext.getCmp(this.id + "_reset_button").disable();
+                if(Ext.getCmp(this.id + "_confirm_button")) Ext.getCmp(this.id + "_confirm_button").disable();
                 break;
             }
             case 'editComplete':{
@@ -874,11 +822,11 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
             case 'import':{
             }
             case 'draw':{
-                Ext.getCmp(this.id + "_edit_button").enable();
-                Ext.getCmp(this.id + "_save_button").enable();
-                Ext.getCmp(this.id + "_draw_button").enable();
-                Ext.getCmp(this.id + "_reset_button").enable();
-                Ext.getCmp(this.id + "_confirm_button").enable();
+                if(Ext.getCmp(this.id + "_edit_button"))    Ext.getCmp(this.id + "_edit_button").enable();
+                if(Ext.getCmp(this.id + "_save_button"))    Ext.getCmp(this.id + "_save_button").enable();
+                if(Ext.getCmp(this.id + "_draw_button"))    Ext.getCmp(this.id + "_draw_button").enable();
+                if(Ext.getCmp(this.id + "_reset_button"))   Ext.getCmp(this.id + "_reset_button").enable();
+                if(Ext.getCmp(this.id + "_confirm_button")) Ext.getCmp(this.id + "_confirm_button").enable();
                 break;
             }
             case 'confirmAcqList':{
@@ -1070,10 +1018,11 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
             state: currentAOI.fid ? OpenLayers.State.UPDATE : OpenLayers.State.INSERT,
             attributes:{
                 service_name: this.currentServiceName,
+                desc: values.description,
                 start: values.dateStart ? dateStart.toISOString(): currentAOI.attributes.start,
                 end: values.dateEnd ? dateEnd.toISOString(): currentAOI.attributes.end,
-                sensor: values.sensor ? values.sensor : currentAOI.attributes.sensor,
-                sensor_mode: values.sensorMode ? values.sensorMode : currentAOI.attributes.sensor_mode,
+                //sensor: values.sensor ? values.sensor : currentAOI.attributes.sensor,
+                //sensor_mode: values.sensorMode ? values.sensorMode : currentAOI.attributes.sensor_mode,
                 status: this.currentStatus
             }
         });
@@ -1397,10 +1346,11 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
             if (this.viewPanel)
             {
                 this.viewPanel.getForm().setValues({
+                    description: currentAOI.attributes.desc,
                     dateStart: new Date(currentAOI.attributes.start),
-                    dateEnd: new Date(currentAOI.attributes.end),
-                    sensor: currentAOI.attributes.sensor,
-                    sensorMode: currentAOI.attributes.sensor_mode
+                    dateEnd: new Date(currentAOI.attributes.end)
+                    //sensor: currentAOI.attributes.sensor,
+                    //sensorMode: currentAOI.attributes.sensor_mode
                 });
             }
             this.currentStatus = currentAOI.attributes.status;
