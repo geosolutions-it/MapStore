@@ -112,6 +112,12 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
      *  Format to show feature info ('grid' | 'html'). Default it's 'html'.
      */
     format: "html",
+     /** api: config[maxFeatures]
+     *  ``Integer``
+     *  The max number of results to show. It is used as attribute 'feature_count' of the WMS GetFeatureInfo Request
+     *  By default is 10.
+     */
+    maxFeatures: 10,
 
     /** api: config[defaultGroupTitleText]
      *  ``String``
@@ -266,6 +272,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                     queryVisible: true,
                     layers: [x.getLayer()],
                     infoFormat: infoFormat,
+                    maxFeatures:this.maxFeatures,
                     vendorParams: vendorParams,
                     eventListeners: {
                         beforegetfeatureinfo: function(evt) {
@@ -672,6 +679,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                 title: 'Identify features by clicking',
                 layers: [layer],
                 infoFormat: infoFormat,
+                maxFeatures:this.maxFeatures,
                 vendorParams: vendorParams,
                 hover: true,
                 queryVisible: true,
