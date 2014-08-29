@@ -1079,49 +1079,82 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
     *  Get acquisition list grid based on selected service
     */ 
     getAcqListGrid: function(){
+        var me = this;
         if(this.addFeatureTable /*&& !this.acqListgrid*/){
             // Feature grid
+            var acqListStore = new GeoExt.data.FeatureStore({
+                layer: this.acqListLayer,
+                fields: [
+                    {name: "service_name", type: "string"},
+                    {name: "ships", type: "number"},
+                    {name: "start", type: "string"},
+                    {name: "end", type: "string"},
+                    {name: "sensor", type: "string"},
+                    {name: "sensor_mode", type: "string"}
+                ],
+                proxy: new GeoExt.data.ProtocolProxy({
+                    url: this.layerURL,
+                    protocol: new OpenLayers.Protocol.WFS({
+                        version: this.wfsVersion,
+                        url: this.layerURL,
+                        featureType: this.layerAcqListName,
+                        geometryName: this.defaultGeometryName,
+                        featureNS: this.defaultFeatureNS,
+                        srsName: this.target.mapPanel.map.projection,
+                        filter: this.getCurrentFilter()
+                    })
+                }),
+                pageSize: 10,
+                autoLoad: true
+            });
+            
             this.acqListgrid = new Ext.grid.GridPanel({
-                height: 364,
-                width : 530,
+                height: 361,
+                width : 533,
                 sm: new GeoExt.grid.FeatureSelectionModel(),
                 // viewConfig: {
                 //     emptyText: this.emptyAcqListText
                 // },
-                store: new GeoExt.data.FeatureStore({
-                    layer: this.acqListLayer,
-                    fields: [
-                        {name: "service_name", type: "string"},
-                        {name: "ships", type: "number"},
-                        {name: "start", type: "string"},
-                        {name: "end", type: "string"},
-                        {name: "sensor", type: "string"},
-                        {name: "sensor_mode", type: "string"}
-                    ],
-                    proxy: new GeoExt.data.ProtocolProxy({
-                        url: this.layerURL,
-                        protocol: new OpenLayers.Protocol.WFS({
-                            version: this.wfsVersion,
-                            url: this.layerURL,
-                            featureType: this.layerAcqListName,
-                            geometryName: this.defaultGeometryName,
-                            featureNS: this.defaultFeatureNS,
-                            srsName: this.target.mapPanel.map.projection,
-                            filter: this.getCurrentFilter()
-                        })
-                    }),
-                    autoLoad: true
-                }),
+                store: acqListStore,
                 columns: [
                     // {header: this.columnsHeadersText["service_name"], dataIndex: "service_name"},
                     // {header: this.columnsHeadersText["ships"], dataIndex: "ships", sortable: true},
                     {header: this.columnsHeadersText["start"], dataIndex: "start", sortable: true},
                     {header: this.columnsHeadersText["end"], dataIndex: "end", sortable: true},
                     {header: this.columnsHeadersText["sensor"], dataIndex: "sensor", sortable: true},
-                    {header: this.columnsHeadersText["sensor_mode"], dataIndex: "sensor_mode", sortable: true}
+                    {header: this.columnsHeadersText["sensor_mode"], dataIndex: "sensor_mode", sortable: true},
+                    {
+                        text: 'Show',
+                        header: 'Show',
+                        menuDisabled:true,
+                        resizable:false,
+                        xtype  :'actioncolumn',
+                        align  :'center',
+                        width  : 50,
+                        getClass: function(val, meta, rec) {
+                            this.tooltip = 'Show/Hide on Map';
+                            return 'view';
+                        },
+                        handler: function(grid, rowIndex, colIndex) {
+                            var rec      = grid.store.getAt(rowIndex);
+                            var geometry = rec.data.feature.geometry;
+                            
+                            var feature = me.wfsLayer.features[0];
+                            Ext.apply(feature,{
+                                fid: '',
+                                geometry: geometry
+                            });
+                            // delete draftLayer
+                            if(me.wfsLayer){
+                                me.wfsLayer.removeAllFeatures();
+                                me.wfsLayer.addFeatures(feature);
+                            }
+                        }
+                    }
                 ],
                 listeners:{
                     rowclick: function(grid, rowIndex, columnIndex, e) {
+                        var rec      = grid.store.getAt(rowIndex);
                         var selModel = grid.getSelectionModel();
                         if(selModel.getCount() == 0){
                             Ext.getCmp(this.id + "_export_acq_button").disable();
@@ -1132,57 +1165,64 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                     scope:this
                 },
                 // tbar: [],
-                bbar:["->",
-                {
-                    text: this.exportAcqListText,
-                    id: this.id + "_export_acq_button",
-                    disabled: true,
-                    iconCls: "icon-save",
-                    tooltip: this.exportAcqListTooltipText,
-                    handler: function() {
-                        var me = this;
-                        this.mode = "confirmAcqList";
-                        var submitStatusToWFS = function(){
-                            // change status
-                            me.currentStatus = me.STATUS.ACQ_LIST_SAVED;
-                            // merge draft features to wfs layer
-                            try
-                            {
-                                me.mergeDraftFeatures();
+                bbar:[
+                    new Ext.PagingToolbar({
+                        store: acqListStore,
+                        displayInfo: true,
+                        displayMsg: '{0}-{1} of {2}',
+                        emptyMsg: "No service available"
+                    }),
+                    "->",
+                    {
+                        text: this.exportAcqListText,
+                        id: this.id + "_export_acq_button",
+                        disabled: true,
+                        iconCls: "icon-save",
+                        tooltip: this.exportAcqListTooltipText,
+                        handler: function() {
+                            var me = this;
+                            this.mode = "confirmAcqList";
+                            var submitStatusToWFS = function(){
+                                // change status
+                                me.currentStatus = me.STATUS.ACQ_LIST_SAVED;
+                                // merge draft features to wfs layer
+                                try
+                                {
+                                    me.mergeDraftFeatures();
+                                }
+                                catch(err)
+                                {
+                                    //console.log(err);
+                                }
+
+                                // send WFS transaction
+                                me.saveStrategy.save();
+
+                                // update current form status
+                                me.checkMode();
+                            };
+
+                            // filter by selected features 
+                            var fids = "";
+                            var selModel = this.acqListgrid.getSelectionModel(); 
+                            var selectedRecords = selModel.getSelections();
+                            for(var i = 0; i < selectedRecords.length; i++){
+                                var record = selectedRecords[i];
+                                if(record
+                                    && record.data
+                                    && record.data.fid){
+                                    fids += "'" + record.data.fid + "',";
+                                }
                             }
-                            catch(err)
-                            {
-                                //console.log(err);
-                            }
+                            fids = fids.substring(0, fids.length -1);
 
-                            // send WFS transaction
-                            me.saveStrategy.save();
+                            this.doExportAndSaveStatus("GML2", me.STATUS.ACQ_LIST_SAVED, this.layerAcqListName, this.submitAcqUrl, false, null, fids);
 
-                            // update current form status
-                            me.checkMode();
-                        };
-
-                        // filter by selected features 
-                        var fids = "";
-                        var selModel = this.acqListgrid.getSelectionModel(); 
-                        var selectedRecords = selModel.getSelections();
-                        for(var i = 0; i < selectedRecords.length; i++){
-                            var record = selectedRecords[i];
-                            if(record
-                                && record.data
-                                && record.data.fid){
-                                fids += "'" + record.data.fid + "',";
-                            }
-                        }
-                        fids = fids.substring(0, fids.length -1);
-
-                        this.doExportAndSaveStatus("GML2", me.STATUS.ACQ_LIST_SAVED, this.layerAcqListName, this.submitAcqUrl, false, null, fids);
-
-                        // this.doExportLayer("GML2", this.layerAcqListName, this.submitAcqUrl, false, submitStatusToWFS, fids);
-                        // open the GML on a popup: this.doExportLayer("GML2", this.layerAcqListName, null, true, null, fids);
-                    },
-                    scope: this
-                }]
+                            // this.doExportLayer("GML2", this.layerAcqListName, this.submitAcqUrl, false, submitStatusToWFS, fids);
+                            // open the GML on a popup: this.doExportLayer("GML2", this.layerAcqListName, null, true, null, fids);
+                        },
+                        scope: this
+                    }]
             });
         }
         return this.acqListgrid;
@@ -1280,9 +1320,8 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 srsName: this.defaultProjection
             }),
             filter: this.getCurrentFilter(),
-            projection: this.defaultProjection
-            // ,
-            // style: this.defaultLayerStyle
+            projection: this.defaultProjection,
+            style: this.defaultLayerStyle
         });
 
         var me = this;
@@ -1430,7 +1469,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 "&outputFormat="+ outputFormat;
 
         if(submitUrl){
-            url =  submitUrl + encodeURIComponent(exportUrl) + "&user="+user + "&service="+service;
+            url = submitUrl + encodeURIComponent(exportUrl) + "&user="+user + "&service="+service;
         }else{
             url = exportUrl;
         }
