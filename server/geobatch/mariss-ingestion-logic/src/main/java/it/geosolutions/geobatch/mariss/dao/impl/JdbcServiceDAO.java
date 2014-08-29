@@ -200,6 +200,23 @@ public class JdbcServiceDAO implements ServiceDAO {
             rs.close();
             ps.close();
             
+            // Retrieve the SENSORS
+            sql = "SELECT id, sensor_type, sensor_mode, service_id FROM sensor WHERE service_id = ?";
+            
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, service.getServiceId());
+            List<Sensor> sensors = new ArrayList<Sensor>();
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                Sensor sensor = new Sensor(rs.getString("sensor_type"), new SensorMode(rs.getString("sensor_mode")));
+                sensor.setId(rs.getInt("id"));
+                sensors.add(sensor);
+            }
+            rs.close();
+            ps.close();
+            
+            service.setSensors(sensors);
+            
             return service;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -260,7 +277,24 @@ public class JdbcServiceDAO implements ServiceDAO {
                     ss.setAoi(aoi);
                 }
                 rs.close();
-                ps.close();                
+                ps.close();
+                
+                // Retrieve the SENSORS
+                sql = "SELECT id, sensor_type, sensor_mode, service_id FROM sensor WHERE service_id = ?";
+                
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, ss.getServiceId());
+                List<Sensor> sensors = new ArrayList<Sensor>();
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    Sensor sensor = new Sensor(rs.getString("sensor_type"), new SensorMode(rs.getString("sensor_mode")));
+                    sensor.setId(rs.getInt("id"));
+                    sensors.add(sensor);
+                }
+                rs.close();
+                ps.close();
+                
+                ss.setSensors(sensors);
             }
             
             return services;
