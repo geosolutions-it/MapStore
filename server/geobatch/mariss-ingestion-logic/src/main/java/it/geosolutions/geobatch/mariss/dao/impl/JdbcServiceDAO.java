@@ -207,7 +207,7 @@ public class JdbcServiceDAO implements ServiceDAO {
             ps.setString(1, service.getServiceId());
             List<Sensor> sensors = new ArrayList<Sensor>();
             rs = ps.executeQuery();
-            if (rs.next()) {
+            while (rs.next()) {
                 Sensor sensor = new Sensor(rs.getString("sensor_type"), new SensorMode(rs.getString("sensor_mode")));
                 sensor.setId(rs.getInt("id"));
                 sensors.add(sensor);
@@ -286,7 +286,7 @@ public class JdbcServiceDAO implements ServiceDAO {
                 ps.setString(1, ss.getServiceId());
                 List<Sensor> sensors = new ArrayList<Sensor>();
                 rs = ps.executeQuery();
-                if (rs.next()) {
+                while (rs.next()) {
                     Sensor sensor = new Sensor(rs.getString("sensor_type"), new SensorMode(rs.getString("sensor_mode")));
                     sensor.setId(rs.getInt("id"));
                     sensors.add(sensor);
