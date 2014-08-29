@@ -252,7 +252,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                                     width  : 550,
                                     title: me.defaultPanelTitleText,
                                     id: me.id + "_editor",
-                                    items:[planFormPanelConfig]
+                                    items:[Ext.apply(planFormPanelConfig, {userId: me.target.user.name, serviceId: service})]
                                 });
                                 
                                 myWin.on("close", function() {
@@ -316,44 +316,11 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                     emptyMsg: "No service available"
                 })
             });
-            
-        /*
-        var serviceSelectorConfig = {
-            xtype: "compositefield",
-            items:[{
-                xtype: "combo",
-                fieldLabel: this.serviceText,
-                name: "service",
-                valueField: 'text',
-                displayField: 'text',
-                autoLoad : true,
-                triggerAction : 'all',
-                width: 100,
-                store: new Ext.data.JsonStore({
-                    url: this.getServicesUrl(),
-                    fields : ["id", "text", "status", "leaf", "size", "iconCls", "loaded", "expanded", "mtime", "permission"]
-                }),
-                listeners : {
-                    select : function(c, record, index) {
-                        var service = c.getValue();
-                        this.onSelectService(service, this.viewPanel);
-                    },
-                    scope : this
-                }
-
-            },{
-                id: this.id + "_message",
-                html: this.defaultMessage,
-                style: {
-                    "padding-top": "4px",
-                },
-                flex: 1 
-            }]
-        };
-        */
         
         var planFormPanelConfig = {
+            id: this.id + "_gxp_planeditorpanel",
             xtype: "gxp_planeditorpanel",
+            adminUrl: adminUrl,
             disabled: true,
             buttons:[{
                 text: this.importButtonText,
@@ -438,32 +405,6 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
             }
         };
 
-        /*
-        var accordionConfig = {
-            xtype: 'panel',
-            // title: this.titleText,
-            layout: "accordion",
-            id: this.id + "_accordion",
-            height: 500,
-            defaults:{
-                xtype: 'panel',
-                layout: "form"    
-            },
-            autoScroll: true,
-            items:[{
-                title: this.defaultPanelTitleText,
-                autoScroll: true,
-                id: this.id + "_editor",
-                items:[planFormPanelConfig]
-            },{
-                title: this.acquisitionPanelTitleText,
-                id: this.id + "_acqlist",
-                autoScroll: true,
-                items:[]
-            }]
-        };
-        */
-
         // configure output
         var outputConfig = {
             xtype: 'panel',
@@ -474,18 +415,6 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 layout: "fit"    
             },
             layout: "fit",
-            /*layout: {
-                type  : 'vbox',
-                align : 'stretch',  
-                pack  : 'start'
-            },*/
-            /*items:[{
-                items: [serviceSelectorConfig],
-                height: 30
-            },{
-                items:[accordionConfig],
-                flex: 1
-            }],*/
             autoScroll: true,
             style: {
                 "padding-top": "2px",
@@ -497,21 +426,6 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
             }],
             listeners:{
                 activate: function(){
-                    /*Ext.getCmp(this.id + "_message").getEl().dom.innerText = this.defaultMessage;
-                    this.checkMode();
-                    if(this.expandToWidth
-                        && this.output
-                        && this.output[0]
-                        && this.output[0].ownerCt
-                        && this.output[0].setWidth){
-                        var ownerPanel = this.output[0].ownerCt;
-                        if(ownerPanel.ownerCt){
-                            // ownerPanel could be west or east
-                            ownerPanel.setWidth(this.expandToWidth);
-                            ownerPanel.ownerCt.doLayout();
-                        }
-                    }
-                    this.fixPanelHeight();*/
                 },
                 scope:this
             }
@@ -560,7 +474,28 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 break;
             }
             case 'save':{
-                this.onSave();
+                var me = this;
+                debugger
+                var panel = Ext.getCmp(this.id + "_gxp_planeditorpanel");
+                OpenLayers.Request.POST({
+                    url: 'ALESSIO',
+                    data: this.xmlContext,
+                    callback: function(request) {
+
+                        if(request.status == 200){                            
+                            me.onSave();
+                        }else{
+                            Ext.Msg.show({
+                                title: this.failedUploadingTitle,
+                                msg: request.statusText,
+                                buttons: Ext.Msg.OK,
+                                icon: Ext.MessageBox.ERROR
+                            });
+                        }
+                    },
+                    scope: this
+                });
+
                 break;
             }
             case 'draw':{
