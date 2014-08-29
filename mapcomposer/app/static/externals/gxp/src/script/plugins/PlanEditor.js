@@ -475,14 +475,29 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
             }
             case 'save':{
                 var me = this;
-                debugger
+
                 var panel = Ext.getCmp(this.id + "_gxp_planeditorpanel");
+                var userId   = panel.userId;
+                var service  = panel.serviceId;
+                var sensors = panel.grid.store.data.items;
+                var jsonDataContext = [];
+                for (sensor in sensors) {
+                    if (sensors[sensor] && sensors[sensor].data)
+                        jsonDataContext.push(sensors[sensor].data);
+                }
+                
+                var jsonData = JSON.stringify(jsonDataContext);
+                
+                var adminUrl = this.target.config.adminUrl;
+                // services available URL. 
+                var servicesUrl = adminUrl + "mvc/serviceManager/putServiceSensorsList?user=" + userId + "&service=" + service;
+                
                 OpenLayers.Request.POST({
-                    url: 'ALESSIO',
-                    data: this.xmlContext,
+                    url: servicesUrl,
+                    data: jsonData,
                     callback: function(request) {
 
-                        if(request.status == 200){                            
+                        if(request.status == 200){
                             me.onSave();
                         }else{
                             Ext.Msg.show({
@@ -507,7 +522,43 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 break;
             }
             case 'confirm':{
-                this.onConfirm();
+                var me = this;
+
+                var panel = Ext.getCmp(this.id + "_gxp_planeditorpanel");
+                var userId   = panel.userId;
+                var service  = panel.serviceId;
+                var sensors = panel.grid.store.data.items;
+                var jsonDataContext = [];
+                for (sensor in sensors) {
+                    if (sensors[sensor] && sensors[sensor].data)
+                        jsonDataContext.push(sensors[sensor].data);
+                }
+                
+                var jsonData = JSON.stringify(jsonDataContext);
+                
+                var adminUrl = this.target.config.adminUrl;
+                // services available URL. 
+                var servicesUrl = adminUrl + "mvc/serviceManager/putServiceSensorsList?user=" + userId + "&service=" + service;
+                
+                OpenLayers.Request.POST({
+                    url: servicesUrl,
+                    data: jsonData,
+                    callback: function(request) {
+
+                        if(request.status == 200){
+                            me.onConfirm();
+                        }else{
+                            Ext.Msg.show({
+                                title: this.failedUploadingTitle,
+                                msg: request.statusText,
+                                buttons: Ext.Msg.OK,
+                                icon: Ext.MessageBox.ERROR
+                            });
+                        }
+                    },
+                    scope: this
+                });            
+                
                 break;
             }
             case 'import':{
