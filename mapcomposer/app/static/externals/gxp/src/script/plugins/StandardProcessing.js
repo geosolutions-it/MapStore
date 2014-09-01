@@ -168,14 +168,28 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         return processing;
     },
     
+	reproject: function(coll, sourceProjection, destProjection) {
+		// workaround to make transform consider towgs84 params
+		var epsg4326 = new OpenLayers.Projection('EPSG:4326');
+		coll = coll.transform(
+			sourceProjection,
+			epsg4326
+		);
+		return coll.transform(
+			epsg4326,
+			destProjection													
+		);	
+	},
+	
     getLayerGeometry: function(map, geometry, destSRS) {
         if(geometry && destSRS) {
             if(destSRS != map.getProjection()){
                 var coll=new OpenLayers.Geometry.Collection(new Array(geometry.clone()));
-                var targetColl=coll.transform(                    
-                    map.getProjectionObject(),
-                    new OpenLayers.Projection(destSRS)
-                );
+				var targetColl=this.reproject(
+					coll,
+					map.getProjectionObject(),
+					new OpenLayers.Projection(destSRS)
+				);
                 geometry = targetColl.components[0];   
                 delete targetColl;
             }
@@ -1630,10 +1644,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var mapPrj = map.getProjectionObject();
         var selectionPrj = new OpenLayers.Projection(this.selectionLayerProjection);
         if(!mapPrj.equals(selectionPrj)){
-            roi = roi.transform(
+            roi = this.reproject(
+				roi,
                 mapPrj,    
                 selectionPrj
-                );
+            );
         }
         
       
@@ -1825,6 +1840,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }
     },
     
+	updateAOI: function() {
+		this.aoiFieldset.setAOI(this.appTarget.mapPanel.map.getExtent());
+	},
+	
     /** private: method[setStatus]   
      *  :arg status: ``Object``        
      *     set current processing parameter when the form is open
@@ -1839,8 +1858,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         if(!this.loadUserElab){
             this.formula.fireEvent('select',this.formula, this.formula.getStore().getAt(this.formula.getStore().findExact("id_formula", this.status.formula)));
         }
-        
-        this.aoiFieldset.setAOI(this.appTarget.mapPanel.map.getExtent());
+        this.updateAOI();
                 
         store=this.macrobers.getStore(); 
         this.macrobers.setValue(this.status.macroTarget);
@@ -1856,12 +1874,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             this.bers.setValue(value);
             this.bers.fireEvent('select',this.bers, store.getAt(store.findExact("name", value)));
         }
-        /*Ext.getCmp('rischio_sociale_multislider').setValue(0, status.themas.sociale[0]);
-        Ext.getCmp('rischio_sociale_multislider').setValue(1, status.themas.sociale[1]);
-        Ext.getCmp('rischio_ambientale_multislider').setValue(0, status.themas.ambientale[0]);
-        Ext.getCmp('rischio_ambientale_multislider').setValue(1, status.themas.ambientale[1]);        */
-        
-        
+                
         //this.setComboStatus(this.weather, 'weather');
         this.setComboStatus(this.temporal, 'temporal', 'value');
         

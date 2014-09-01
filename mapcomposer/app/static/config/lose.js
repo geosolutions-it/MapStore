@@ -295,7 +295,7 @@
     },
     
     "proj4jsDefs": {
-        "EPSG:32632": "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+        "EPSG:3003": "+proj=tmerc +lat_0=0 +lon_0=9 +k=0.9996 +x_0=1500000 +y_0=0 +ellps=intl +a=6378388.0 +rf=297.0 +towgs84=-104.1,-49.1,-9.9,0.971,-2.917,0.714,-11.68 +units=m +no_defs",
         "EPSG:3857": "+title= Google Mercator EPSG:3857 +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs"
     },
     
@@ -555,7 +555,7 @@
         "bufferLayerNameNotHuman": "buffer_not_human",
 		"layerSourceName": "lose",
         "selectionLayerBaseURL": "http://localhost:8080/geoserver/lose/wms",
-        "selectionLayerProjection": "EPSG:32632",
+        "selectionLayerProjection": "EPSG:3003",
         "geometryName": "geometria",
         "accidentTipologyName": "tipologia",
         "wfsURL": "http://localhost:8080/geoserver/lose/wfs",
@@ -580,7 +580,7 @@
         "timeFeature": "gate_data",        
         "layerGates":"gate_geo",
         "layerGatesTitle":"Gate",
-        "nativeSrs": "EPSG:32632",
+        "nativeSrs": "EPSG:3003",
         "outputTarget": "east"
 	}, {
         "ptype": "gxp_featuremanager",
@@ -641,7 +641,7 @@
     {
         "ptype": "gxp_tabpanelwfsgrids",
         "outputTarget": "featurelist",
-        "srsName" : "EPSG:32632",
+        "srsName" : "EPSG:3003",
         "wfsURL": "http://localhost:8080/geoserver/lose/wfs",
         "panels": {
             "targets": {
@@ -698,11 +698,11 @@
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "zoom",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     }]
                 },
                 "Popolazione fluttuante turistica": {
@@ -1745,15 +1745,15 @@
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "zoom",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "startedit",
-                        "sourceSRS": "EPSG:32632",
+                        "sourceSRS": "EPSG:3003",
                         "width": 20
                     }]                    
                 },
@@ -1807,19 +1807,19 @@
                     "noPaging": true,
                     "allowEdit": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
-                    "sourceEditSRS": "EPSG:32632",                    
+                    "sourceEditSRS": "EPSG:3003",                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "zoom",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "remove_target",
-                        "sourceSRS": "EPSG:32632",
+                        "sourceSRS": "EPSG:3003",
                         "width": 20
                     }]
                 },
@@ -1881,20 +1881,20 @@
                     "type": "umano",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
-                    "sourceEditSRS": "EPSG:32632", 
+                    "sourceEditSRS": "EPSG:3003", 
                     "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "zoom",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "remove_target",
-                        "sourceSRS": "EPSG:32632",
+                        "sourceSRS": "EPSG:3003",
                         "width": 20
                     }]
                 },
@@ -1976,20 +1976,20 @@
                     "type": "umano",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
-                    "sourceEditSRS": "EPSG:32632", 
+                    "sourceEditSRS": "EPSG:3003", 
                     "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "zoom",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "remove_target",
-                        "sourceSRS": "EPSG:32632",
+                        "sourceSRS": "EPSG:3003",
                         "width": 20
                     }]
                 },
@@ -2090,20 +2090,20 @@
                     "type": "umano",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
-                    "sourceEditSRS": "EPSG:32632",  
+                    "sourceEditSRS": "EPSG:3003",  
                     "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "zoom",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "remove_target",
-                        "sourceSRS": "EPSG:32632",
+                        "sourceSRS": "EPSG:3003",
                         "width": 20
                     }]
                 },
@@ -2188,20 +2188,20 @@
                     "type": "umano",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
-                    "sourceEditSRS": "EPSG:32632",  
+                    "sourceEditSRS": "EPSG:3003",  
                     "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "zoom",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "remove_target",
-                        "sourceSRS": "EPSG:32632",
+                        "sourceSRS": "EPSG:3003",
                         "width": 20
                     }]
                 },
@@ -2294,20 +2294,20 @@
                     "type": "umano",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
-                    "sourceEditSRS": "EPSG:32632", 
+                    "sourceEditSRS": "EPSG:3003", 
                     "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "zoom",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "remove_target",
-                        "sourceSRS": "EPSG:32632",
+                        "sourceSRS": "EPSG:3003",
                         "width": 20
                     }]
                 },
@@ -2367,20 +2367,20 @@
                     "type": "ambientale",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
-                    "sourceEditSRS": "EPSG:32632", 
+                    "sourceEditSRS": "EPSG:3003", 
                     "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "zoom",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "remove_target",
-                        "sourceSRS": "EPSG:32632",
+                        "sourceSRS": "EPSG:3003",
                         "width": 20
                     }]
                 },
@@ -2440,20 +2440,20 @@
                     "type": "ambientale",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
-                    "sourceEditSRS": "EPSG:32632", 
+                    "sourceEditSRS": "EPSG:3003", 
                     "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "zoom",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "remove_target",
-                        "sourceSRS": "EPSG:32632",
+                        "sourceSRS": "EPSG:3003",
                         "width": 20
                     }]
                 },
@@ -2521,20 +2521,20 @@
                     "type": "ambientale",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
-                    "sourceEditSRS": "EPSG:32632",   
+                    "sourceEditSRS": "EPSG:3003",   
                     "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "zoom",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "remove_target",
-                        "sourceSRS": "EPSG:32632",
+                        "sourceSRS": "EPSG:3003",
                         "width": 20
                     }]
                 },
@@ -2594,20 +2594,20 @@
                     "type": "ambientale",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
-                    "sourceEditSRS": "EPSG:32632", 
+                    "sourceEditSRS": "EPSG:3003", 
                     "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "zoom",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "remove_target",
-                        "sourceSRS": "EPSG:32632",
+                        "sourceSRS": "EPSG:3003",
                         "width": 20
                     }]
                 },
@@ -2699,20 +2699,20 @@
                     "type": "ambientale",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
-                    "sourceEditSRS": "EPSG:32632",  
+                    "sourceEditSRS": "EPSG:3003",  
                     "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "zoom",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "remove_target",
-                        "sourceSRS": "EPSG:32632",
+                        "sourceSRS": "EPSG:3003",
                         "width": 20
                     }]
                 },
@@ -2780,20 +2780,20 @@
                     "type": "ambientale",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
-                    "sourceEditSRS": "EPSG:32632",  
+                    "sourceEditSRS": "EPSG:3003",  
                     "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "zoom",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "remove_target",
-                        "sourceSRS": "EPSG:32632",
+                        "sourceSRS": "EPSG:3003",
                         "width": 20
                     }]
                 },
@@ -2853,20 +2853,20 @@
                     "type": "ambientale",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
-                    "sourceEditSRS": "EPSG:32632", 
+                    "sourceEditSRS": "EPSG:3003", 
                     "allowEdit": true,                    
                     "actionColumns": [{
                         "type": "checkDisplay",
                         "layerName": "Bersaglio Selezionato",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "zoom",
-                        "sourceSRS": "EPSG:32632"
+                        "sourceSRS": "EPSG:3003"
                     },
                     {
                         "type": "remove_target",
-                        "sourceSRS": "EPSG:32632",
+                        "sourceSRS": "EPSG:3003",
                         "width": 20
                     }]
                 }
@@ -2915,11 +2915,11 @@
                     {
                       "type": "checkDisplay",
                       "layerName": "Bersaglio Selezionato",
-                      "sourceSRS": "EPSG:32632"
+                      "sourceSRS": "EPSG:3003"
         },
                     {
                      "type": "zoom",
-                     "sourceSRS": "EPSG:32632"
+                     "sourceSRS": "EPSG:3003"
                     }],
         "index": 29
     }

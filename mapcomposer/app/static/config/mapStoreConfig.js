@@ -33,7 +33,7 @@
             "ptype": "gxp_wmscsource",
             "title": "Destination GeoServer Tiled",
             "version":"1.1.1",
-            "url": "http://@@@@domain_url@@@@//geoserver/destination/wms",
+            "url": "http://@@@@domain_url@@@@/geoserver/destination/wms",
             "layerBaseParams": {
                 "TILED": true,                
                 "format": "image/png8"
@@ -43,7 +43,7 @@
             "ptype": "gxp_wmscsource",
             "title": "External WMS Tiled",
             "version":"1.1.1",
-            "url": "http://@@@@domain_url@@@@//geoserver/externals/wms",
+            "url": "http://@@@@domain_url@@@@/geoserver/externals/wms",
             "layerBaseParams": {
                 "TILED": true,                
                 "format": "image/png8"

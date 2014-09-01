@@ -1154,19 +1154,34 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         };
     }, */    
                 
-		
+	
+	transformCollection: function(coll, sourceProjection, destProjection) {
+		// workaround to make transform consider towgs84 params
+		var epsg4326 = new OpenLayers.Projection('EPSG:4326');
+		coll = coll.transform(
+			sourceProjection,
+			epsg4326
+		);
+		return coll.transform(
+			epsg4326,
+			destProjection													
+		);	
+	},
+	
     getGeometry: function(rec, sourceSRS){
         var map = this.target.mapPanel.map;
         var geometry = rec.data.feature.geometry;
         if(geometry && sourceSRS) {
             if(sourceSRS != map.getProjection()){
                 var coll=new OpenLayers.Geometry.Collection(new Array(geometry.clone()));
-                var targetColl=coll.transform(
-                    new OpenLayers.Projection(sourceSRS),
-                    map.getProjectionObject()													
-                    );	
+				
+                var targetColl = this.transformCollection(
+					coll, 
+					new OpenLayers.Projection(sourceSRS),
+					map.getProjectionObject()
+				);
+				
                 geometry = targetColl.components[0];   
-                delete targetColl;
             }
         }
         return geometry;
@@ -1179,10 +1194,12 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         if(sourceSRS)
             if(sourceSRS != map.getProjection()){
                 var coll=new OpenLayers.Geometry.Collection(new Array(geometry.clone()));
-                var targetColl=coll.transform(
-                    new OpenLayers.Projection(destSRS),
+                var targetColl = this.transformCollection(
+					coll, 
+					new OpenLayers.Projection(destSRS),
                     new OpenLayers.Projection(sourceSRS)
-                    );	
+				);
+				
                 geometry = targetColl.components[0];   
                 delete targetColl;
             }

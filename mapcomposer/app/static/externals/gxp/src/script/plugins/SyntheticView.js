@@ -2025,7 +2025,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 
                     if(this.status && !this.status.initial && !this.reset){
                         this.processingPane.setStatus(this.status);
-                    }                    
+                    } else {
+						this.processingPane.updateAOI();
+					}
                     
                     if(this.status && !this.status.initial && this.reset){
 
@@ -2557,7 +2559,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         var mapPrj = map.getProjectionObject();
         var selectionPrj = new OpenLayers.Projection(this.selectionLayerProjection);
         if(!mapPrj.equals(selectionPrj)){
-            bounds = bounds.transform(
+            bounds = this.reproject(
+				bounds,
                 mapPrj,    
                 selectionPrj
             );
@@ -2957,11 +2960,25 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }
     },
     
+	reproject: function(coll, sourceProjection, destProjection) {
+		// workaround to make transform consider towgs84 params
+		var epsg4326 = new OpenLayers.Projection('EPSG:4326');
+		coll = coll.transform(
+			sourceProjection,
+			epsg4326
+		);
+		return coll.transform(
+			epsg4326,
+			destProjection													
+		);	
+	},
+	
     getMapGeometry: function(map, geometry, sourceSRS){        
         if(geometry && sourceSRS) {
             if(sourceSRS != map.getProjection()){
                 var coll=new OpenLayers.Geometry.Collection(new Array(geometry.clone()));
-                var targetColl=coll.transform(
+                var targetColl=this.reproject(
+					coll,
                     new OpenLayers.Projection(sourceSRS),
                     map.getProjectionObject()
                     );
