@@ -1,5 +1,5 @@
     {
-    "geoStoreBase":"http://localhost:8082/geostore/rest/",
+    "geoStoreBase":"http://lose.geo-solutions.it/geostore/rest/",
     "proxy":"/http_proxy/proxy/?url=",
     "defaultLanguage": "it",
     "embedding": false,
@@ -435,10 +435,6 @@
     {
         "ptype":"gxp_wmsgetfeatureinfo",
         "useTabPanel": true,
-        "authentication": {
-            "user": "super",
-            "password": "super"
-        },
         "toggleGroup":"toolGroup",
         "actionTarget":{
             "target":"paneltbar",
@@ -564,10 +560,8 @@
         "wfsVersion" : "1.1.0",
         "destinationNS": "lose",
         "index": 28,
-        "geoStoreBase":"http://localhost:8082/geostore/rest/",
-        "proxy":"/proxy/?url=",
-        "geoStoreUser": "base",
-        "geoStorePassword": "base"
+        "geoStoreBase":"http://lose.geo-solutions.it/geostore/rest/",
+        "proxy":"/proxy/?url="
     },
 	{
 		"ptype": "gxp_gatetimeslidertab",
@@ -587,10 +581,6 @@
         "id": "featuremanager",
         "wfsUrl":"http://lose.geo-solutions.it/geoserver_lose/ows",
         "paging": false,
-        "authentication": {
-            "user": "super",
-            "password": "super"
-        },
         "layer": {
             "source": "lose",
             "name": "siig_gate_geo_gate"
