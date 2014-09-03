@@ -1468,7 +1468,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                         padr: padr,
                                         pis: pis,
                                         changedTargets: changedTargets,
-                                        changedTargetsInfo: changedTargetsInfo
+                                        changedTargetsInfo: changedTargetsInfo,
+										crs: new OpenLayers.WPSProcess.LiteralData({value:me.selectionLayerProjection.split(':')[1])
+										
                                     },
                                     outputs: [],                                    
                                     success: function(outputs) {
