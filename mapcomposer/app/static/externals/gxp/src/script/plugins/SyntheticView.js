@@ -2596,7 +2596,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         if(Ext.getCmp('targets_view').pressed) {
             Ext.getCmp('featuregrid').setCurrentPanel('targets');
-            this.loadTargetGrids(targetViewParams, extraTargets);
+			if(Ext.getCmp("south").collapsed) {
+				Ext.getCmp("south").on("expand", function() { this.loadTargetGrids(targetViewParams, extraTargets); }, this);
+			} else {
+				this.loadTargetGrids(targetViewParams, extraTargets);
+			}
         }   
             
     },
@@ -3037,7 +3041,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
     enableAnalyticView: function() {        
-        Ext.getCmp("south").expand();  
+        Ext.getCmp("south").expand(false);  
         if(Ext.getCmp("targets_view")) {
             Ext.getCmp("targets_view").enable();
         }

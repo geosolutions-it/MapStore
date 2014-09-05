@@ -1743,7 +1743,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     });
           
                 }
-                );	
+                );
             } else if(me.onEmpty){
                 me.isEmpty = true;
                 me.onEmpty.call(null, me);
@@ -2037,7 +2037,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             store: [], 
             id: this.id,
             layout: "fit",
-           
+            hideMode: "offsets",
             viewConfig : {
                 forceFit: true
             },
@@ -2054,7 +2054,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 columns: []
             }),
             tbar: this.tbar,
-            //bbar: bbar,
+            bbar: bbar,
             scope: this,
             listeners: {
                 afteredit : function(object) {
