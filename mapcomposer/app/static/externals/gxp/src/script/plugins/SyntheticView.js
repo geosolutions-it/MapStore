@@ -1451,6 +1451,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                             }
                                         }),
                                         store: new OpenLayers.WPSProcess.LiteralData({value:this.wpsStore}),
+                                        precision: new OpenLayers.WPSProcess.LiteralData({value:15}),
                                         processing: new OpenLayers.WPSProcess.LiteralData({value:status.processing}),
                                         formula: new OpenLayers.WPSProcess.LiteralData({value:status.formula}),
                                         target: new OpenLayers.WPSProcess.LiteralData({value:targetId}),
