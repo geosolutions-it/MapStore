@@ -98,7 +98,7 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
             width:400,
             ref:'uploader',
             collapsible:true,   
-            url: proxy + uploadUrl,
+            url: uploadUrl,
             multipart: true,
             auth: this.auth,
 			mediaContent: this.target.initialConfig.mediaContent,
