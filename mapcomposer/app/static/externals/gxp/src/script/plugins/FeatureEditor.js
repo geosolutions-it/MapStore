@@ -424,12 +424,16 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  :arg schema: ``GeoExt.data.AttributeStore``
      */
     onLayerChange: function(mgr, layer, schema) {
+        var snapId = this.snappingAgent;
+        if (snapId)
+            var snappingAgent = this.target.tools[snapId];        
         this.schema = schema;
         var disable = !schema || !this.target.isAuthorized();
         this.actions[0].setDisabled(disable);
         this.actions[1].setDisabled(disable);
         if (disable) {
             // not a wfs capable layer or not authorized
+            snappingAgent.actions[0].setDisabled(disable);
             return;
         }
 
