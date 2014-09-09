@@ -8,14 +8,6 @@
 			"SRS": "EPSG:900913",
 			"version":"1.1.1"
 		},
-		"local": {
-			"ptype": "gxp_wmssource",
-			"title": "Localhost",
-			"url": "http://localhost:8080/geoserver/ows",
-			"SRS": "EPSG:900913",
-			"version":"1.1.1",
-			"authParam": "authkey"
-		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
 		}, 
@@ -78,13 +70,6 @@
                 "group" : "Comune di Genova",
 				"title" : "Circoscrizioni",
 				"name"  : "CTC:circoscrizioni",
-				"tiled" : false,
-				"visibility": true
-            },{
-                "source": "local",
-                "group" : "Local",
-				"title" : "USA Population",
-				"name"  : "topp:states",
 				"tiled" : false,
 				"visibility": true
             }
