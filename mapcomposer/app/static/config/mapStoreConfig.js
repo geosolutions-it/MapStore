@@ -103,7 +103,7 @@
             "collapsible": true,
             "activeItem": 0,
             "header": true,
-			"hideMode": "offsets",
+            "hideMode": "offsets",
             "items": [
 				{
 					"xtype": "container",
