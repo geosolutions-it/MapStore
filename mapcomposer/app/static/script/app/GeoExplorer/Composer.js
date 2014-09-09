@@ -247,48 +247,41 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				scale: this.actionToolScale,
                 handler: function(button, evt){
                     if(button.pressed){
-                        var appVieport = Ext.getCmp('appVieport');
-                        
+
 						var south = Ext.getCmp('south');
-						if(south){
+						if(south && !south.collapsed){
 							south.collapse();
-                            var el = Ext.get('south-xcollapsed');
-                            el.setHeight(20);
-                            appVieport.doLayout();                            
 						}					
                         
 						var east = Ext.getCmp('east');
-						if(east){
+						if(east && !east.collapsed){
 							east.collapse();
-                            var el = Ext.get('east-xcollapsed');
-                            el.setWidth(20);                            
-                            appVieport.doLayout();                            
 						}
 
                         var tree = Ext.getCmp('tree');
                         if(tree){
                             var panel = tree.findParentByType('panel');
-                            if(panel){
+                            if(panel && !panel.collapsed){
                                 panel.collapse();
                             }							
                         }
 
                     } else {
-                    
-						var south = Ext.getCmp('south');
-						if(south){
+
+                        var south = Ext.getCmp('south');
+						if(south && south.collapsed){
 							south.expand();
 						}  					
                         
 						var east = Ext.getCmp('east');
-						if(east){
-							east.expand();
+						if(east && east.collapsed){
+							east.expand();                             
 						}
 
                         var tree = Ext.getCmp('tree');
 						if(tree){
 							var panel = tree.findParentByType('panel');
-							if(panel){
+							if(panel && panel.collapsed){
 								panel.expand();
 							}							
 						}
