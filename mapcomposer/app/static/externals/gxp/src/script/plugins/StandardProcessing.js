@@ -1853,10 +1853,14 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         this.status = status;
         this.elaborazione.setValue(this.status.processing);
-        this.formula.setValue(this.status.formula);
         
-        if(!this.loadUserElab){
-            this.formula.fireEvent('select',this.formula, this.formula.getStore().getAt(this.formula.getStore().findExact("id_formula", this.status.formula)));
+        var formulaPos = this.formula.getStore().findExact("id_formula", this.status.formula);
+        if(formulaPos !== -1) {
+            this.formula.setValue(this.status.formula);
+            
+            if(!this.loadUserElab){
+                this.formula.fireEvent('select',this.formula, this.formula.getStore().getAt(formulaPos));
+            }
         }
         this.updateAOI();
                 
