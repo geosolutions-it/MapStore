@@ -463,6 +463,11 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
             button.enable();
         } else {
             button.disable();
+            
+            //Temporary FIX about undefined geometryType on Comune Genova Oracle DB
+            this.actions[1].disable();
+            snappingAgent.actions[0].disable();
+            
         }
     },
     
