@@ -587,6 +587,9 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                         Ext.getCmp('rischio_sociale_panel_multislider').setValue(0, socialMin);
                         Ext.getCmp('rischio_sociale_panel_multislider').setValue(1, socialMedium);
                         Ext.getCmp('rischio_sociale_panel_multislider').maxValue = socialMax;
+                        
+                        Ext.getCmp('range_low_sociale_panel_value').setValue(socialMin);
+                        Ext.getCmp('range_medium_sociale_panel_value').setValue(socialMedium);
                         Ext.getCmp('rischio_sociale_panel_maxValue').setValue(socialMax);
                         
                         var ambMin = defaultEnvArray.length > 3 ? parseFloat(defaultEnvArray[3].split(":")[1]) : parseFloat(defaultEnvArray[0].split(":")[1]);
@@ -596,6 +599,9 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                         Ext.getCmp('rischio_ambientale_panel_multislider').setValue(0, ambMin);
                         Ext.getCmp('rischio_ambientale_panel_multislider').setValue(1, ambMedium);
                         Ext.getCmp('rischio_ambientale_panel_multislider').maxValue = ambMax;
+                        
+                        Ext.getCmp('range_low_ambientale_panel_value').setValue(ambMin);
+                        Ext.getCmp('range_medium_ambientale_panel_value').setValue(ambMedium);
                         Ext.getCmp('rischio_ambientale_panel_maxValue').setValue(ambMax);
 
                         layer.mergeNewParams({
@@ -610,7 +616,10 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                         Ext.getCmp('rischio_panel_multislider').setValue(0, min);
                         Ext.getCmp('rischio_panel_multislider').setValue(1, medium);
                         
-                        Ext.getCmp('rischio_panel_multislider').maxValue = max;                  
+                        Ext.getCmp('rischio_panel_multislider').maxValue = max;  
+
+                        Ext.getCmp('range_low_panel_value').setValue(min);
+                        Ext.getCmp('range_medium_panel_value').setValue(medium);
                         Ext.getCmp('rischio_panel_maxValue').setValue(max);
                         
                         layer.mergeNewParams({

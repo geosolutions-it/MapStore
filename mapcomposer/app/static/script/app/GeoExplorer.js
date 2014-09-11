@@ -471,10 +471,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                     if(layer.name.indexOf('sociale') !== -1) {
                         layer.env = "low:" + (rischioFormula.get('tema_low_soc') || rischioFormula.get('tema_low')) + ";medium:" + (rischioFormula.get('tema_medium_soc') || rischioFormula.get('tema_medium')) + ";max:" + (rischioFormula.get('tema_max_soc') || rischioFormula.get('tema_max'));
                     } else if(layer.name.indexOf('ambientale') !== -1) {
-                        layer.env = "low:" + (rischioFormula.get('tema_low_env') || rischioFormula.get('tema_low')) + ";medium:" + (rischioFormula.get('tema_medium_env') || rischioFormula.get('tema_medium')) + ";max:" + (rischioFormula.get('tema_max_env') || rischioFormula.get('tema_env'));
+                        layer.env = "low:" + (rischioFormula.get('tema_low_env') || rischioFormula.get('tema_low')) + ";medium:" + (rischioFormula.get('tema_medium_env') || rischioFormula.get('tema_medium')) + ";max:" + (rischioFormula.get('tema_max_env') || rischioFormula.get('tema_max'));
                     } else {
                         layer.env = "lowsociale:" + (rischioFormula.get('tema_low_soc') || rischioFormula.get('tema_low')) + ";mediumsociale:" + (rischioFormula.get('tema_medium_soc') || rischioFormula.get('tema_medium')) + ";maxsociale:" + (rischioFormula.get('tema_max_soc') || rischioFormula.get('tema_max')) +
-                            ";lowambientale:" + (rischioFormula.get('tema_low_env') || rischioFormula.get('tema_low')) + ";mediumambientale:" + (rischioFormula.get('tema_medium_env') || rischioFormula.get('tema_medium')) + ";maxambientale:" + (rischioFormula.get('tema_max_env') || rischioFormula.get('tema_env'));
+                            ";lowambientale:" + (rischioFormula.get('tema_low_env') || rischioFormula.get('tema_low')) + ";mediumambientale:" + (rischioFormula.get('tema_medium_env') || rischioFormula.get('tema_medium')) + ";maxambientale:" + (rischioFormula.get('tema_max_env') || rischioFormula.get('tema_max'));
                     }
                 }
             });
