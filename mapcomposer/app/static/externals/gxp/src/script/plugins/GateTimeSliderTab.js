@@ -608,8 +608,8 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
 
                         
                         if(start.dateValue && end.dateValue){
-                            var startToISO = OpenLayers.Date.toISOString(start.dateValue);
-                            var endToISO = OpenLayers.Date.toISOString(end.dateValue);        
+                            var startToISO = OpenLayers.Date.toISOString(new Date(start.dateValue.getTime() + 1000*60*60));
+                            var endToISO = OpenLayers.Date.toISOString(new Date(end.dateValue.getTime() + 1000*60*60));        
                             
                             this.loadGateTimeGrid(this.buildDateFilter(this.filter,startToISO,endToISO));
                         }else{
@@ -759,7 +759,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                         sortable: true,
                         dataIndex: 'data_rilevamento',
                         groupable: false,
-                        renderer: Ext.util.Format.dateRenderer('d-m-Y'),
+                        renderer: Ext.util.Format.dateRenderer('d-m-Y H:i:s'),
                         summaryType: 'gate',
                         summaryRenderer: function(v, params, data){
                             //return ((v === 0 || v > 1) ? '(Media Oraria: ' + v +')' : '(Media Oraria 1)');
@@ -782,9 +782,12 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                         width: 120,
                         sortable: true,
                         dataIndex: 'data_ricezione',
+                        //renderer: Ext.util.Format.dateRenderer('d-m-Y'),
                         renderer: function(date){
                             var newDate = OpenLayers.Date.parse(date);
-                            var d = Ext.util.Format.date(newDate,"d-m-Y H:i:s")
+                            newDate = new Date(newDate.getTime() + 24*60*60*1000)
+                            // hack: bug su Geoserver per le date
+                            var d = Ext.util.Format.date(newDate,"d-m-Y")
                             return d;
                         },
                         groupable: false
