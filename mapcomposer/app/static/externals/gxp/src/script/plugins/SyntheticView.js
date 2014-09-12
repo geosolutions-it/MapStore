@@ -350,7 +350,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
      *   :arg config: ``Object``
      *     creates a record for a new layer, with the given configuration
      */
-    createLayerRecord: function(config, singleTitle, dynamicBuffer, exclusive, group) {        
+    createLayerRecord: function(config, options) { //singleTitle, dynamicBuffer, exclusive, group, bounds) {        
+        options = options || {};
         var params = {
             layers: config.name, 
             transparent: true, 
@@ -366,19 +367,20 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             params,
             {
                 isBaseLayer: false,
-                singleTile: singleTitle,
+                singleTile: options.singleTile || false,
                 displayInLayerSwitcher: true,
-                exclusive: exclusive ? exclusive : undefined,
-                vendorParams: config.params
+                exclusive: options.exclusive ? options.exclusive : undefined,
+                vendorParams: config.params,
+                maxExtent: options.bounds
             }
         );
-        if(dynamicBuffer) {
+        if(options.dynamicBuffer) {
             var oldGetFullRequestString = layer.getFullRequestString;
             
             var me = this;
             
             layer.getFullRequestString = function(newParams, altUrl) {
-                this.params.BUFFER = me.getBufferSizeInPixels(dynamicBuffer);
+                this.params.BUFFER = me.getBufferSizeInPixels(options.dynamicBuffer);
                 this.vendorParams.buffer = this.params.BUFFER;
                 return oldGetFullRequestString.apply(this, arguments);
             };
@@ -396,7 +398,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 name: config.name,
                 layer: layer,
                 properties: 'gxp_wmslayerpanel',
-                group: group ? group : undefined
+                group: options.group
             }, layerRecord.data);
                         
             if(config.params.styles) {
@@ -433,7 +435,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return this.status.target.humans === null;
     },
     
-    addDamageBuffer: function(title, geometry) {
+    addDamageBuffer: function(title, geometry, roi) {
         this.analyticViewLayers.push(this.damageBufferLayer);
         
         return this.createLayerRecord({
@@ -442,7 +444,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             params: {                                
                 viewparams:'wkt:'+geometry.replace(/,/g, "\\\,")
             }
-        }, true);
+        }, {
+            singleTile: true,
+            bounds: roi
+        });
     },
     
     /** private: method[addHumanTargetBuffer]
@@ -450,7 +455,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
      *   :arg title: ``String``
      *     adds a new layer buffer for human targets
      */
-    addHumanTargetBuffer: function(distances, title, viewParams, buffer) {           
+    addHumanTargetBuffer: function(distances, title, viewParams, buffer, roi) {           
         this.analyticViewLayers.push(this.bufferLayerNameHuman);
         distances = this.normalizeRadius(distances, true);
         return this.createLayerRecord({
@@ -460,7 +465,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 env:'elevata:'+distances[0]+';inizio:'+distances[1]+';irreversibili:'+distances[2]+';reversibili:'+distances[3],
                 viewparams: viewParams
             }
-        }, true, buffer);                
+        }, {
+            singleTile: true, 
+            dynamicBuffer: buffer,
+            bounds: roi
+        });                
     },
     
     /** private: method[addNotHumanTargetBuffer]
@@ -468,7 +477,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
      *   :arg title: ``String``
      *     adds a new layer buffer for not human targets
      */
-    addNotHumanTargetBuffer: function(distance, title, viewParams, buffer) {                   
+    addNotHumanTargetBuffer: function(distance, title, viewParams, buffer, roi) {                   
         this.analyticViewLayers.push(this.bufferLayerNameNotHuman);
              
         return this.createLayerRecord({
@@ -478,7 +487,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 env:'distance:'+distance,
                 viewparams: viewParams
             }
-        }, true, buffer);        
+        }, {
+            singleTile: true, 
+            dynamicBuffer: buffer,
+            bounds: roi
+        });        
     },
     
     /** private: method[removeLayers]
@@ -2549,16 +2562,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     getBounds: function(status, map, buffer) {        
         // bounds: current map extent or roi saved in the status
-        var bounds;
-        if(status && status.roi) {
-            bounds = new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX());
-        } else {
-            bounds = map.getExtent();
-        }
-        if(buffer) {
-            bounds.extend(new OpenLayers.Geometry.Point(bounds.left - buffer, bounds.bottom - buffer));
-            bounds.extend(new OpenLayers.Geometry.Point(bounds.right + buffer, bounds.top + buffer));
-        }
+        var bounds = this.getRoi(status, map, buffer);
+        
         var mapPrj = map.getProjectionObject();
         var selectionPrj = new OpenLayers.Projection(this.selectionLayerProjection);
         if(!mapPrj.equals(selectionPrj)){
@@ -2572,7 +2577,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return bounds.toBBOX().replace(/,/g, "\\\,");
     },
     
-    addTargets: function(layers, bounds, radius, extraTargets) { 
+    addTargets: function(layers, bounds, radius, extraTargets, roi) { 
         
         var name = this.status.target ? this.status.target.layer : 'bersagli_all';
         var wkt;
@@ -2592,7 +2597,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             params: {                                                                
                 viewparams: targetViewParams
             }
-        }, true, undefined));
+        }, {
+            singleTile: true,
+            bounds: roi
+        }));
         
         if(Ext.getCmp('targets_view').pressed) {
             Ext.getCmp('featuregrid').setCurrentPanel('targets');
@@ -2656,27 +2664,29 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     addBuffers: function(layers, bounds, radius, bufferArea) {        
         var bufferLayerTitle =this.bufferLayerTitle[GeoExt.Lang.getLocaleIndex()];
+        var roi;
         if(bufferArea) {
-            layers.push(this.addDamageBuffer(bufferLayerTitle, bufferArea));
+            roi = this.getRoi();
+            layers.push(this.addDamageBuffer(bufferLayerTitle, bufferArea, roi));
         } else {
             var viewParams = "bounds:" + bounds;
             
             //var buffer = this.getBufferSizeInPixels(radius.max);
-            
+            roi = this.getRoi(null, null, radius.max)
             if(!this.status || this.isMixedTargets()) {
                 if(radius.radiusHum.length > 0) {
-                    layers.push(this.addHumanTargetBuffer(radius.radiusHum,bufferLayerTitle+' (' +this.humanTargets[GeoExt.Lang.getLocaleIndex()]+ ')', viewParams, radius.max));
+                    layers.push(this.addHumanTargetBuffer(radius.radiusHum,bufferLayerTitle+' (' +this.humanTargets[GeoExt.Lang.getLocaleIndex()]+ ')', viewParams, radius.max, roi));
                 }
                 if(radius.radiusNotHum > 0) {
-                    layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,bufferLayerTitle+' (' +this.notHumanTargets[GeoExt.Lang.getLocaleIndex()]+ ')', viewParams, radius.max));
+                    layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,bufferLayerTitle+' (' +this.notHumanTargets[GeoExt.Lang.getLocaleIndex()]+ ')', viewParams, radius.max, roi));
                 }
             } else if(this.isHumanTarget()) {
                 if(radius.radiusHum.length > 0) {
-                    layers.push(this.addHumanTargetBuffer(radius.radiusHum,bufferLayerTitle+' ('+this.status.target.name+')', viewParams, radius.max));                                
+                    layers.push(this.addHumanTargetBuffer(radius.radiusHum,bufferLayerTitle+' ('+this.status.target.name+')', viewParams, radius.max, roi));                                
                 }
             } else if(this.isNotHumanTarget()) {
                 if(radius.radiusNotHum > 0) {
-                    layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,bufferLayerTitle+' ('+this.status.target.name+')', viewParams, radius.max));
+                    layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,bufferLayerTitle+' ('+this.status.target.name+')', viewParams, radius.max, roi));
                 }
             }
         }
@@ -2685,6 +2695,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             Ext.getCmp('featuregrid').setCurrentPanel('damage');                        
             this.loadDamageGrid();
         }
+        return roi;
     },
     
     
@@ -2736,10 +2747,30 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }, true));
     },*/
 
+    getRoi: function(status, map, buffer) {
+        status = status || this.status;
+        map = map || this.target.mapPanel.map;
+        var roi;
+        if(status && status.roi) {
+            roi = new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX());
+        } else {
+            roi = map.getExtent();
+        }  
+        
+        if(buffer) {
+            roi.extend(new OpenLayers.Geometry.Point(roi.left - buffer, roi.bottom - buffer));
+            roi.extend(new OpenLayers.Geometry.Point(roi.right + buffer, roi.top + buffer));
+        }
+        return roi;
+    },
+    
     addVulnLayer: function(layers,layerName,title, group, hasThema) {
         if(this.vulnerabilityLayer) {
             this.removeLayersByName(this.target.mapPanel.map,[this.vulnerabilityLayer]);
         }
+        
+        var roi = this.getRoi();
+        
         this.vulnerabilityLayer = layerName;
         var env = "coverages:"+layers.join(',')+";low:3;medium:10;max:100";
         var record = this.createLayerRecord({
@@ -2751,12 +2782,16 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 defaultenv: env,
                 riskPanel: hasThema
             }
-        }, true, undefined, undefined, group);
+        }, {
+            singleTile: true, 
+            group: group,
+            bounds: roi
+        });
         
         this.target.mapPanel.layers.add([record]);
     },
     
-    addFormula: function(layers, bounds, status, targetId, layer, formulaDesc, formulaUdm, env) {
+    addFormula: function(layers, bounds, status, targetId, layer, formulaDesc, formulaUdm, env, roi) {
         this.currentRiskLayers.push(layer);
         var viewParams = "bounds:" + bounds 
             + ';residenti:' + (this.status.target.id.indexOf(1) === -1 ? 0 : 1) 
@@ -2780,6 +2815,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }
         var newEnv = this.getFormulaEnv(status, targetId);
         env = env ? env + ";" + newEnv : newEnv;
+                
         layers.push(this.createLayerRecord({
             name: layer,
             title: formulaDesc, 
@@ -2790,7 +2826,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 defaultenv: env,
                 riskPanel: true
             }
-        }, true, undefined, "SIIG"));
+        }, {
+            singleTile: true,
+            exclusive: true,
+            bounds: roi
+        }));
     },
     
     getFormulaEnv: function(status, targetId) {
@@ -2822,20 +2862,23 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         var formulaUdm = status.formulaUdm[0];
         var formulaUdmSoc = status.formulaUdm[1] || formulaUdm;
         var formulaUdmEnv = status.formulaUdm[2] || formulaUdm;
+        
+        var roi = this.getRoi();
+        
         if(status.formulaInfo.dependsOnTarget) {
             if(this.isSingleTarget()) {
-                this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc + ' ' + (this.isHumanTarget() ? this.humanTitle : this.notHumanTitle), this.isHumanTarget() ? formulaUdmSoc : formulaUdmEnv, env);                
+                this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc + ' ' + (this.isHumanTarget() ? this.humanTitle : this.notHumanTitle), this.isHumanTarget() ? formulaUdmSoc : formulaUdmEnv, env, roi);                
             } else if(this.isAllHumanTargets()) {
-                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, formulaUdmSoc, env);
+                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, formulaUdmSoc, env, roi);
             } else if(this.isAllNotHumanTargets()) {
-                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, formulaUdmEnv, env);
+                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, formulaUdmEnv, env, roi);
             } else {
-                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, formulaUdmSoc, envhum);
-                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, formulaUdmEnv, envamb);                    
-                this.addFormula(layers, bounds, status, 100, this.mixedFormulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle + ' - ' + this.notHumanTitle, formulaUdm, mixedenv);
+                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, formulaUdmSoc, envhum, roi);
+                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, formulaUdmEnv, envamb, roi);                    
+                this.addFormula(layers, bounds, status, 100, this.mixedFormulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle + ' - ' + this.notHumanTitle, formulaUdm, mixedenv, roi);
             }
         } else {
-            this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc, formulaUdm, env);   
+            this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc, formulaUdm, env, roi);   
         }         
     },
     
@@ -2926,10 +2969,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.removeAnalyticViewLayers(map);                                
         
         // add the buffers layers
-        this.addBuffers(newLayers, bounds, radius, status.processing === 4 ? status.damageArea : null);
+        var roi = this.addBuffers(newLayers, bounds, radius, status.processing === 4 ? status.damageArea : null);
         
         // add the target layer
-        this.addTargets(newLayers, bounds, radius, status.simulation.targetsInfo);                
+        this.addTargets(newLayers, bounds, radius, status.simulation.targetsInfo, roi);                
             
         if(Ext.getCmp('roadGraph_view').pressed) {
             Ext.getCmp('featuregrid').setCurrentPanel('roads');

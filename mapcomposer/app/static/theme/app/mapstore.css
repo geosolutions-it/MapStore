@@ -188,3 +188,8 @@ div#homelogos ul li a:hover {
     background-color: #ffffa8;
     border-color:#FA1505;
 } 
+
+.olImageLoadError { 
+    /* when OL encounters a 404, don't display the pink image */
+    display: none !important;
+} 

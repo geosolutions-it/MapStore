@@ -20,12 +20,30 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
      * {Integer} A counter for the number of layers loading
      */ 
     counter: 0,
+    
+    /**
+     * Property: height
+     * {Integer} A fixed height for the panel (-1 is the default, that means no fixed height)
+     */ 
+    height: -1,
+    
+    /**
+     * Property: width
+     * {Integer} A fixed width for the panel (-1 is the default, that means no fixed width)
+     */ 
+    width: -1,
 
     /**
      * Property: maximized
      * {Boolean} A boolean indicating whether or not the control is maximized
     */
     maximized: false,
+    
+    /**
+     * Property: center
+     * {Boolean} A boolean indicating whether or not the control should be centered on map
+    */
+    center: false,
 
     /**
      * Property: visible
@@ -119,6 +137,7 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
     setMap: function(map) {
         OpenLayers.Control.prototype.setMap.apply(this, arguments);
         this.map.events.register('preaddlayer', this, this.addLayer);
+        this.map.events.register('movestart', this, this.resetCounter);
         for (var i = 0; i < this.map.layers.length; i++) {
             var layer = this.map.layers[i];
             layer.events.register('loadstart', this, this.increaseCounter);
@@ -126,6 +145,18 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
         }
     },
 
+    /**
+     * Method: resetCounter
+     * Resets counter when a 
+    */
+    resetCounter: function() {
+        this.counter = 0;
+        if (this.maximized && this.visible) {
+            this.minimizeControl();
+        }
+        console.log('reset');
+    },
+    
     /**
      * Method: increaseCounter
      * Increase the counter and show control
@@ -190,11 +221,19 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
      */
     maximizeControl: function(evt) {
         var viewSize = this.map.getSize();
-        var msgW = viewSize.w;
-        var msgH = viewSize.h;
+        var msgW = this.width > 0 ? this.width : viewSize.w;
+        var msgH = this.height > 0 ? this.height : viewSize.h;
         this.div.style.width = msgW + "px";
         this.div.style.height = msgH + "px";
         this.div.style.display = "block";
+        if(this.center) {
+            if(this.width) {
+                this.div.style.left = ((viewSize.w - msgW) / 2.0) + "px";
+            }
+            if(this.height) {
+                this.div.style.top = ((viewSize.h - msgH) / 2.0) + "px";
+            }
+        }
         this.maximized = true;
     
         if (evt != null) {
