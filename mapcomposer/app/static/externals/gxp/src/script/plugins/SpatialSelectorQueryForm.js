@@ -182,6 +182,8 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                 handler: function() {                
                     this.resetFeatureManager();
                     this.spatialSelector.reset();
+                    
+                    this.spatialSelector.selectionMethodCombo.reset();
 					
                     var methodSelection = this.output[0].outputType;
 					
