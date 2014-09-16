@@ -81,7 +81,7 @@ gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod = Ext.extend(gxp.w
 				this.setCurrentGeometry(event.feature.geometry);               
                 if (this.draw) {
                     this.draw.deactivate();
-                    this.ownerCt.outputType.reset();
+                    //this.ownerCt.outputType.reset();
                 };
             },                                
             "beforefeatureadded": function(event) {
