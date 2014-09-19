@@ -716,6 +716,10 @@ GeoExt.Lang.add("it", {
 		tooltip: "Apri la guida"
 	},
 	
+	"gxp.plugins.ClrButton.prototype" :{
+		tooltip:"Pulisci risultati della ricerca"
+	},
+	
 	"gxp.plugins.EmbedMapDialog.prototype" :{
 		exportMapText: "Collega Mappa",		
 		toolsTitle: "Scegliere gli strumenti da includere nella barra:",		

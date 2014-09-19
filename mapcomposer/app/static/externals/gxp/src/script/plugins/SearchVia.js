@@ -39,6 +39,7 @@ gxp.plugins.SearchVia = Ext.extend(gxp.plugins.Tool, {
 	viaToolTip: 'Per esempio per Via Roma digitare "Roma"',
 
 	selectionProperties: null,
+	firstTb: false,
 		
 	constructor: function(config) {
         gxp.plugins.SearchVia.superclass.constructor.apply(this, arguments);
@@ -95,7 +96,7 @@ gxp.plugins.SearchVia = Ext.extend(gxp.plugins.Tool, {
 			title: this.viaTitle,
 			labelWidth: 80,
 			height: 300,
-			bodyStyle:'padding:5px 5px 0',  
+			bodyStyle:'padding:5px 5px 5px',  
 			items: [
 				{
 					xtype: 'combo',
@@ -120,10 +121,10 @@ gxp.plugins.SearchVia = Ext.extend(gxp.plugins.Tool, {
 							dsCivici.setBaseParam('idVia', combo.getValue());
 						},
 						render: function(c) {
-						  Ext.QuickTips.register({
+						  /*Ext.QuickTips.register({
 							target: c.getEl(),
 							text: me.viaToolTip
-						  });
+						  });*/
 						}
 					}
 				},
@@ -141,115 +142,124 @@ gxp.plugins.SearchVia = Ext.extend(gxp.plugins.Tool, {
 					id: 'civicoBox',
 					hideTrigger:true,
 					forceSelection: false
-				}, 
-				{
-					xtype: 'button',
-					text: this.cercaText,
-					scope: this,
-					handler: function(){
-						var url = '';
-						
-						var civico = Ext.getCmp('civicoBox').getValue();
-						var via = Ext.getCmp('vieBox').getValue();
-						
-						var selectionLayerName;
-						var filterAttribute;
-						var selectionStyle;
+				},
+			    //{
+			  	//xtype: 'compositefield',	
+				//id: 'cmpFld',
+				//	items: [
+						{
+							xtype: 'button',
+							id: 'srcBtn',
+							text: this.cercaText,
+							scope: this,
+							handler: function(){
+								var url = '';
+								
+								var civico = Ext.getCmp('civicoBox').getValue();
+								var via = Ext.getCmp('vieBox').getValue();
+								
+								var selectionLayerName;
+								var filterAttribute;
+								var selectionStyle;
 
-						
-						if (civico) {
-							url = this.serviceUrl + 'BoundsServlet?tipo=civico&codice=' + civico;
-							if(this.selectionProperties){
-								selectionLayerName = this.selectionProperties.selectionLayerCiviciName;
-								filterAttribute = this.selectionProperties.filterCiviciAttribute;
-								selectionStyle = this.selectionProperties.selectionCiviciStyle;
-							}
-						} else if (via) {
-							url = this.serviceUrl + 'BoundsServlet?tipo=via&codice=' + via;
-							if(this.selectionProperties){
-								selectionLayerName = this.selectionProperties.selectionLayerViaName;
-								filterAttribute = this.selectionProperties.filterViaAttribute;
-								selectionStyle = this.selectionProperties.selectionViaStyle;
-							}
-						}
-						
-						if (url != '') {
-						
-							var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
-							mask.show();
-						
-							Ext.Ajax.request({
-								url: url,
-								scope: this,
-								success: function(response, opts) {
-									mask.hide();
-									var obj = Ext.decode(response.responseText);
-									var bounds = obj.bounds;
-									var comProjection = new OpenLayers.Projection("EPSG:25832"); 
-									var googleProjection = new OpenLayers.Projection("EPSG:900913");
-									
-									var comBounds = new OpenLayers.Bounds(bounds.x1, bounds.y1, bounds.x2, bounds.y2);
-									var newBounds = comBounds.transform(comProjection, googleProjection);
-									
-									//
-									// Add the WMS layer
-									//
-									var addLayer = apptarget.tools["addlayer"];
-									if(selectionLayerName && this.selectionProperties && 
-										filterAttribute && selectionStyle && addLayer){
-									
-										var layer = apptarget.mapPanel.map.getLayersByName(this.selectionProperties.selectionLayerTitle)[0];
-										if(!layer){
-											var customParams = {
-												cql_filter: filterAttribute + "=" + bounds.codice,
-												styles: selectionStyle,
-												displayInLayerSwitcher: false,
-												enableLang: false
-											};
-											
-											var opts = {
-												msLayerTitle: this.selectionProperties.selectionLayerTitle,
-												msLayerName: selectionLayerName,
-												wmsURL: this.selectionProperties.wmsURL,
-												customParams: customParams
-											};
-											
-											addLayer.addLayer(opts);																					
-											
-											
-										}else{
-											layer.mergeNewParams({
-												"cql_filter": filterAttribute + "=" + bounds.codice,
-												"layers": selectionLayerName,
-												"styles": selectionStyle
-											});
-										}
+								
+								if (civico) {
+									url = this.serviceUrl + 'BoundsServlet?tipo=civico&codice=' + civico;
+									if(this.selectionProperties){
+										selectionLayerName = this.selectionProperties.selectionLayerCiviciName;
+										filterAttribute = this.selectionProperties.filterCiviciAttribute;
+										selectionStyle = this.selectionProperties.selectionCiviciStyle;
 									}
-									
-									apptarget.mapPanel.map.zoomToExtent(newBounds);
-								},
-								failure: function(response, opts) {
-									mask.hide();
-									
-									Ext.Msg.show({
-										  title: this.titleError,
-										  msg: response.responseText + " - " + response.status,
-										  width: 300,
-										  icon: Ext.MessageBox.WARNING
-									});
-									
-									console.log('server-side failure with status code ' + response.status);
+								} else if (via) {
+									url = this.serviceUrl + 'BoundsServlet?tipo=via&codice=' + via;
+									if(this.selectionProperties){
+										selectionLayerName = this.selectionProperties.selectionLayerViaName;
+										filterAttribute = this.selectionProperties.filterViaAttribute;
+										selectionStyle = this.selectionProperties.selectionViaStyle;
+									}
 								}
-							});
+								
+								if (url != '') {
+								
+									var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
+									mask.show();
+								
+									Ext.Ajax.request({
+										url: url,
+										scope: this,
+										success: function(response, opts) {
+											mask.hide();
+											var obj = Ext.decode(response.responseText);
+											var bounds = obj.bounds;
+											var comProjection = new OpenLayers.Projection("EPSG:25832"); 
+											var googleProjection = new OpenLayers.Projection("EPSG:900913");
+											
+											var comBounds = new OpenLayers.Bounds(bounds.x1, bounds.y1, bounds.x2, bounds.y2);
+											var newBounds = comBounds.transform(comProjection, googleProjection);
+											
+											//
+											// Add the WMS layer
+											//
+											var addLayer = apptarget.tools["addlayer"];
+											if(selectionLayerName && this.selectionProperties && 
+												filterAttribute && selectionStyle && addLayer){
+											
+												var layer = apptarget.mapPanel.map.getLayersByName(this.selectionProperties.selectionLayerTitle)[0];
+												if(!layer){
+													var customParams = {
+														cql_filter: filterAttribute + "=" + bounds.codice,
+														styles: selectionStyle,
+														displayInLayerSwitcher: false,
+														enableLang: false
+													};
+													
+													var opts = {
+														msLayerTitle: this.selectionProperties.selectionLayerTitle,
+														msLayerName: selectionLayerName,
+														wmsURL: this.selectionProperties.wmsURL,
+														customParams: customParams
+													};
+													
+													addLayer.addLayer(opts);																					
+													
+													
+												}else{
+													layer.mergeNewParams({
+														"cql_filter": filterAttribute + "=" + bounds.codice,
+														"layers": selectionLayerName,
+														"styles": selectionStyle
+													});
+												}
+											}
+											
+											apptarget.mapPanel.map.zoomToExtent(newBounds);
+										},
+										failure: function(response, opts) {
+											mask.hide();
+											
+											Ext.Msg.show({
+												  title: this.titleError,
+												  msg: response.responseText + " - " + response.status,
+												  width: 300,
+												  icon: Ext.MessageBox.WARNING
+											});
+											
+											console.log('server-side failure with status code ' + response.status);
+										}
+									});
+								}
+							}
 						}
-					}
-				}
+					//]
+				//}				
             ]
 		});	
-
-		
-        
-		var panel = gxp.plugins.SearchVia.superclass.addOutput.call(this, form);
+		   
+		if (this.firstTb){	
+			Ext.getCmp("west").setActiveTab(2);
+		}
+			
+		var panel = gxp.plugins.SearchVia.superclass.addOutput.call(this, form);		
         return panel;
     }
         

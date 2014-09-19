@@ -187,19 +187,27 @@ gxp.plugins.SearchCatasto = Ext.extend(gxp.plugins.Tool, {
 					hideTrigger:true,
 					forceSelection: false
 				},
-				{
-					xtype: 'button',
-					text: this.cercaText,
-					scope: this,
-					handler: function(){
-						var particella = Ext.getCmp('particellaBox').getValue();
-						var comCat = Ext.getCmp('ccBox').getValue();
-						var tipoPart = Ext.getCmp('tipoPartBox').getValue();
+				
+				//{
+				//	xtype: 'compositefield',					
+				//	items: [
+						{
+							xtype: 'button',
+							text: this.cercaText,
+							scope: this,
+							handler: function(){
+								var particella = Ext.getCmp('particellaBox').getValue();
+								var comCat = Ext.getCmp('ccBox').getValue();
+								var tipoPart = Ext.getCmp('tipoPartBox').getValue();
+								
+								
+								zoomCatasto(particella, comCat, tipoPart, this.serviceUrl, this.selectionProperties, this.waitMsg, this.titleError, apptarget);
+							}
+						}
 						
-						
-						zoomCatasto(particella, comCat, tipoPart, this.serviceUrl, this.selectionProperties, this.waitMsg, this.titleError, apptarget);
-					}
-				}
+					//]
+				//}					
+				
             ]
 		});			
 		
@@ -218,6 +226,10 @@ gxp.plugins.SearchCatasto = Ext.extend(gxp.plugins.Tool, {
 			}
 			
 		});
+		
+				
+		
+		
 		
 		var panel = gxp.plugins.SearchCatasto.superclass.addOutput.call(this, catastoForm);
         return panel;

@@ -316,7 +316,7 @@
 			    "wmsURL": "http://sit.comune.bolzano.it/geoserver",
 				"selectionLayerTitle": "Selection Layer",
 				"selectionLayerCiviciName": "Cartografia:civici",
-				"selectionLayerViaName": "Ambiente:grafo",
+				"selectionLayerViaName": "ctn_base:grafo_vie",
 				"filterCiviciAttribute": "ID",
 				"selectionCiviciStyle": "highlight_point",
 				"filterViaAttribute": "ID_STRASSE",

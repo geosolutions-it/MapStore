@@ -730,6 +730,10 @@ GeoExt.Lang.add("de", {
 		tooltip: "Hilfe öffnen"
 	},
 	
+	"gxp.plugins.ClrButton.prototype" :{
+		tooltip:"Suchergebnisse löschen"
+	},
+	
 	"gxp.plugins.EmbedMapDialog.prototype" :{
 		exportMapText: "Link Map",		
 		toolsTitle: "Werkzeuge auswählen die der Leiste hinzu zufügen sind:",		

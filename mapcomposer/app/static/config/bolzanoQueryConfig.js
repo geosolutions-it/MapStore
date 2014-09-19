@@ -248,11 +248,12 @@
 			"ptype": "gxp_searchvia",
 			"outputTarget": "searchpanel",
 			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
+			"firstTb": true,			
 			"selectionProperties": {
 				"wmsURL": "http://sit.comune.bolzano.it/geoserver/ows",
 				"selectionLayerTitle": "Selection Layer",
 				"selectionLayerCiviciName": "Cartografia:civici",
-				"selectionLayerViaName": "Ambiente:grafo",
+				"selectionLayerViaName": "ctn_base:grafo_vie",
 				"filterCiviciAttribute": "ID",
 				"selectionCiviciStyle": "highlight_point",
 				"filterViaAttribute": "ID_STRASSE",
@@ -407,6 +408,10 @@
 			"ptype": "gxp_help",
 			"link": "http://sit.comune.bolzano.it/GeoInfo/help/",
 			"actionTarget": {"target": "paneltbar", "index": 22}
+		}, {
+			"ptype": "gxp_clr",
+			"link": "http://sit.comune.bolzano.it/GeoInfo/help/",
+			"actionTarget": {"target": "paneltbar", "index": 23}
 		}, {
 			"ptype": "gxp_embedmapdialog",
 			"actionTarget": {"target": "paneltbar", "index": 2},
