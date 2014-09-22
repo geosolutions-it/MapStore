@@ -1,8 +1,6 @@
 {
-   "geoStoreBase": "",
-   "proxy":"/http_proxy/proxy/?url=",
-   "defaultLanguage": "it",
    "advancedScaleOverlay": true,
+   "actionToolScale": "large",
    "proj4jsDefs": {"EPSG:25832": "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs"},
    "gsSources":{ 
 		"bolzano": {
@@ -11,41 +9,42 @@
 			"title": "Bolzano GeoServer",
 			"SRS": "EPSG:900913",
 			"version":"1.1.1",
-		    "layersCachedExtent": [
+			"layersCachedExtent": [
 				-20037508.34,-20037508.34,
 				20037508.34,20037508.34
 			],
 			"layerBaseParams":{
-				"FORMAT":"image/png8",
-				"TILED":true
-			}
+				"FORMAT": "image/png8",
+				"TILED": true
+			},
+            "authParam":"authkey"
 		},
 		"mapquest": {
-			"ptype": "gxp_mapquestsource"
+				"ptype": "gxp_mapquestsource"
 		}, 
 		"osm": { 
-			"ptype": "gxp_osmsource"
+				"ptype": "gxp_osmsource"
 		},
 		"google": {
-			"ptype": "gxp_googlesource" 
+				"ptype": "gxp_googlesource" 
 		},
 		"bing": {
-			"ptype": "gxp_bingsource" 
+				"ptype": "gxp_bingsource" 
 		}, 
 		"ol": { 
-			"ptype": "gxp_olsource" 
-		}		
-	},
+				"ptype": "gxp_olsource" 
+		}                
+    },
 	"map": {
 		"projection": "EPSG:900913",
 		"units": "m",
 		"zoom": 5,
 		"numZoomLevels": 22,
 		"extent": [
-			1259091.229051,5855016.830973,
-			1268808.28627,5863434.458712
+				1259091.229051,5855016.830973,
+				1268808.28627,5863434.458712
 		],
-		"layers": [						
+		"layers": [                                                
 			{
 				"source": "bing",
 				"title": "Bing Aerial",
@@ -61,7 +60,7 @@
 				"args": [
 					"None", {"visibility": false}
 				]
-		    },{
+			},{
 				"source": "osm",
 				"title": "Open Street Map",
 				"name": "mapnik",
@@ -88,122 +87,57 @@
 				"group": "background"
 			},{
 				"source": "bolzano",
-				"title": "Ortofoto Bolzano/Bozen",
-				"name": "Cartografia:ortofoto_2010",
-			    "layersCachedExtent": [
+				"title": "Ortofoto 2013 Bolzano/Bozen",
+				"name": "Cartografia:ortofoto2013",
+				"layersCachedExtent": [
 					1252344.2712499984,5850795.892246094,1271912.1504882798,5870363.771484375
 				],
 				"group": "background",
 				"transparent": false,
 				"format": "image/jpeg"
-			}, {
-				"source":"bolzano",
-				"name":"Cartografia:particelle",
-				"title":"Parzellen",
-				"group":"Catasto_Kataster",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Cartografia:C_VESTIZIONI",
-				"title":"Zierlinien",
-				"group":"Catasto_Kataster",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Cartografia:C_SIMBOLI",
-				"title":"Symbole",
-				"group":"Catasto_Kataster",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Ambiente:Isolato",
-				"title":"Wohnblöcke",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Ambiente:Edifici",
-				"title":"Gebäude"
-			}, {
-				"source":"bolzano",
-				"name":"Cartografia:civici",
-				"title":"Hausnummern",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Cartografia:fiumi",
-				"title":"Flüsse",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Cartografia:ferrovia",
-				"title":"Eisenbahn",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Ambiente:grafo",
-				"title":"Strassennetz",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Cartografia:autostrada",
-				"title":"Autobahn",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Ambiente:quartieri",
-				"title":"Stadtviertel",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Ambiente:poi",
-				"title":"In der Umgebung",
+			},{
+				"source": "bolzano",
+				"title": "Ortofoto 2010 Bolzano/Bozen",
+				"name": "Cartografia:ortofoto_2010",
 				"layersCachedExtent": [
-					1252344.2712499984,5831228.013007812,1291480.0297265612,5870363.771484375
+					1252344.2712499984,5850795.892246094,1271912.1504882798,5870363.771484375
 				],
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Cartografia:Confine_comunale",
-				"title":"Gemeindegrenze",
-				"visibility": false
-			}, {
-				"source":"bolzano",
-				"name":"Cosap:occupazioni_concessioni",
-				"title":"occupazioni_concessioni"
-			}, {
-				"source":"bolzano",
-				"name":"Cosap:occupazioni_logo",
-				"title":"occupazioni_logo"
+				"group": "background",
+				"transparent": false,
+				"format": "image/jpeg"
 			}
 		]
 	},
-	"customPanels":[
-      {
-          "xtype": "panel",
-          "title": "FeatureGrid",      
-          "border": false,
-          "id": "south",
-          "region": "south",
-          "layout": "fit",
-          "height": 330,
-          "collapsed": true,
-          "collapsible": true,
-          "header": true
-      },{
-          "xtype": "panel",
-          "title": "Query Panel",         
-          "border": false,
-          "id": "east",
-          "width": 400,
-          "height": 500,
-          "region": "east",
-          "layout": "fit",
-          "collapsed": true,
-          "collapsible": true,
-          "header": true
-      }
-    ],	
-	"tools": [
+	
+    "customPanels":[
+		{
+			"xtype": "panel",
+			"title": "FeatureGrid",      
+			"border": false,
+			"id": "south",
+			"region": "south",
+			"layout": "fit",
+			"height": 330,
+			"collapsed": true,
+			"collapsible": true,
+			"header": true
+		},{
+			"xtype": "panel",
+			"title": "Query Panel",         
+			"border": false,
+			"id": "east",
+			"width": 400,
+			"height": 500,
+			"region": "east",
+			"layout": "fit",
+			"collapsed": false,
+			"split": true,
+			"collapsible": true,
+			"header": true
+        }
+    ],     
+	
+    "tools": [
 		{
 			"ptype": "gxp_layertree",
 			"outputConfig": {
@@ -211,8 +145,8 @@
 			},
 			"outputTarget": "tree",
 			"localIndexs":{
-					"it": 0,
-					"de": 1
+				"it": 0,
+				"de": 1
 			}
 		}, {
 			"ptype": "gxp_legend",
@@ -225,7 +159,7 @@
 				"defaults": {
 					"style": "padding:5px",                  
 					"baseParams": {
-						"LEGEND_OPTIONS": "dpi:150;forceLabels:on;fontSize:10;minSymbolSize:28"	
+							"LEGEND_OPTIONS": "dpi:150;forceLabels:on;fontSize:10;minSymbolSize:28"                                                
 					}
 				}
 			}
@@ -298,6 +232,9 @@
 				"outputFilename":"mapstore-print",
 				"geodetic": true
 			},
+			"printParams":{
+				"scaleMethod": "accurate"
+			},
 			"ignoreLayers": "Google Hybrid,Bing Aerial,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
 			"printService":"http://sit.comune.bolzano.it/geoserver/pdf/",
 			"addGraticuleControl": false,
@@ -331,48 +268,92 @@
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": false,
 			"id": "addlayer"
-		},  {
-		  "ptype": "gxp_featuremanager",
-		  "id": "featuremanager"
-	    }, {
-		  "ptype": "gxp_featuregrid",
-		  "featureManager": "featuremanager",
-		  "outputConfig": {
-			  "id": "featuregrid",
-			  "title": "Features"
-		  },
-		  "outputTarget": "south",
-		  "showExportCSV": true
-	    }, {
-		  "ptype": "gxp_bboxqueryform",
-		  "featureManager": "featuremanager",
-		  "featureGridContainer": "south",
-		  "outputTarget": "east",
-		  "showSelectionSummary": true,
-		  "actions": null,
-		  "id": "bboxquery",
-		  "outputConfig":{
-			  "outputSRS": "EPSG:900913",
-			  "selectStyle":{
-				  "strokeColor": "#ee9900",
-				  "fillColor": "#ee9900",
-				  "fillOpacity": 0.4,
-				  "strokeWidth": 1
-			  },
-			  "spatialFilterOptions": {	
-				  "lonMax": 20037508.34,   
-				  "lonMin": -20037508.34,
-				  "latMax": 20037508.34,   
-				  "latMin": -20037508.34  
-			  },
-			  "bufferOptions": {
-				"minValue": 1,
-				"maxValue": 1000,
-				"decimalPrecision": 2,
-				"distanceUnits": "m"
-			  }
-		  }
-	    }, {
+		}, {
+			"ptype": "gxp_featuremanager",
+			"id": "featuremanager",
+			"pagingType": 1
+		}, {
+			"ptype": "gxp_featuregrid",
+			"featureManager": "featuremanager",
+			"outputConfig": {
+				"id": "featuregrid",
+				"title": "Features"
+			},
+			"outputTarget": "south",
+			"showExportCSV": true
+		}, {
+		    "ptype": "gxp_spatialqueryform",
+		    "featureManager": "featuremanager",
+		    "featureGridContainer": "south",
+		    "outputTarget": "east",
+		    "showSelectionSummary": true,
+		    "actions": null,
+		    "id": "bboxquery",
+            "autoComplete": {
+				"sources": ["bolzano"],
+				"pageSize": 10
+			},      
+            "outputConfig":{
+                  "selectStyle":{
+                          "strokeColor": "#ee9900",
+                          "fillColor": "#ee9900",
+                          "fillOpacity": 0.4,
+                          "strokeWidth": 1
+                  }
+            },	
+			"spatialSelectorsConfig":{
+		        "bbox":{
+		            "xtype": "gxp_spatial_bbox_selector"
+		        },
+		        "buffer":{
+		            "xtype": "gxp_spatial_buffer_selector",
+                            "geodesic": true,
+					"bufferOptions": {
+						"minValue": 1,
+						"maxValue": 10000,
+						"decimalPrecision": 2
+					}
+		        },
+		        "circle":{
+		            "xtype": "gxp_spatial_circle_selector",
+		            "zoomToCurrentExtent": true
+		        },
+		        "polygon":{
+		            "xtype": "gxp_spatial_polygon_selector"
+		        },
+		        "geocoder":{
+		            "xtype": "gxp_spatial_geocoding_selector",
+		            "multipleSelection": false,
+		            "wfsBaseURL": "http://sit.comune.bolzano.it/geoserver/wfs?",
+		            "geocoderTypeName": "Ambiente:quartieri",
+		            "geocoderTypeRecordModel":[
+		                {
+		                    "name":"id",
+		                    "mapping":"id"
+		                },
+		                {
+		                    "name":"name",
+		                    "mapping":"properties.DESCRIZ"
+		                },
+		                {
+		                    "name":"custom",
+		                    "mapping":"properties.BOLZANO_CI"
+		                },
+		                {
+		                    "name":"geometry",
+		                    "mapping":"geometry"
+		                }
+		            ],
+		            "geocoderTypeSortBy": null,
+		            "geocoderTypeQueriableAttributes":[
+		                "DESCRIZ", "BOLZANO_CI"
+		            ],
+		            "spatialOutputCRS": "EPSG:4326",
+		            "geocoderTypePageSize": 10,
+		            "zoomToCurrentExtent": false
+		        }
+			}
+    	}, {
 		   "ptype": "gxp_mouseposition",
 		   "displayProjectionCode":"EPSG:25832",
 		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
@@ -426,10 +407,16 @@
 			"link": "http://sit.comune.bolzano.it/GeoInfo/help/",
 			"actionTarget": {"target": "paneltbar", "index": 22}
 		}, {
+			"ptype": "gxp_clr",			
+			"actionTarget": {"target": "paneltbar", "index": 23}
+		}, {
 			"ptype": "gxp_embedmapdialog",
 			"actionTarget": {"target": "paneltbar", "index": 2},
 			"embeddedTemplateName": "composer",
 			"showDirectURL": true
+		}, {
+			"ptype": "gxp_languageselector",
+			"actionTarget": {"target": "panelbbar", "index": 3}
 		}
-	]
+    ]
 }

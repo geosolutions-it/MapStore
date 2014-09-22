@@ -1,5 +1,6 @@
 {
    "advancedScaleOverlay": true,
+   "actionToolScale": "large",
    "proj4jsDefs": {"EPSG:25832": "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs"},
    "gsSources":{ 
 		"bolzano": {
@@ -310,6 +311,7 @@
 		        },
 		        "buffer":{
 		            "xtype": "gxp_spatial_buffer_selector",
+                            "geodesic": true,
 					"bufferOptions": {
 						"minValue": 1,
 						"maxValue": 10000,
@@ -327,7 +329,7 @@
 		            "xtype": "gxp_spatial_geocoding_selector",
 		            "multipleSelection": false,
 		            "wfsBaseURL": "http://sit.comune.bolzano.it/geoserver/wfs?",
-		            "geocoderTypeName": "Ambiente:grafo",
+		            "geocoderTypeName": "Ambiente:quartieri",
 		            "geocoderTypeRecordModel":[
 		                {
 		                    "name":"id",
@@ -335,11 +337,11 @@
 		                },
 		                {
 		                    "name":"name",
-		                    "mapping":"properties.TEXT_I"
+		                    "mapping":"properties.DESCRIZ"
 		                },
 		                {
 		                    "name":"custom",
-		                    "mapping":"properties.ID_STRASSE"
+		                    "mapping":"properties.BOLZANO_CI"
 		                },
 		                {
 		                    "name":"geometry",
@@ -348,7 +350,7 @@
 		            ],
 		            "geocoderTypeSortBy": null,
 		            "geocoderTypeQueriableAttributes":[
-		                "TEXT_I", "ID_STRASSE"
+		                "DESCRIZ", "BOLZANO_CI"
 		            ],
 		            "spatialOutputCRS": "EPSG:4326",
 		            "geocoderTypePageSize": 10,
@@ -409,8 +411,7 @@
 			"link": "http://sit.comune.bolzano.it/GeoInfo/help/",
 			"actionTarget": {"target": "paneltbar", "index": 22}
 		}, {
-			"ptype": "gxp_clr",
-			"link": "http://sit.comune.bolzano.it/GeoInfo/help/",
+			"ptype": "gxp_clr",			
 			"actionTarget": {"target": "paneltbar", "index": 23}
 		}, {
 			"ptype": "gxp_embedmapdialog",

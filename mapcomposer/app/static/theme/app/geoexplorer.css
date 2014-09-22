@@ -176,6 +176,10 @@ body {
     width:150px !important;
 }
 
+.x-btn .icon-clr {
+    background-image: url(img/clr.png);
+}
+
 .x-btn .x-icon-addimage {
      background-image: url(img/silk/image_add.png);
 }
