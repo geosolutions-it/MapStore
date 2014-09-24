@@ -108,7 +108,9 @@
             "tiled": false,
             "env":"low:100;medium:500;max:1000",
             "riskPanel":true,
-            "exclusive":"SIIG"
+            "exclusive":"SIIG",
+			"loadingProgress": true,
+			"forceOneVisible": false
         },{
             "source": "lose",
             "title": "Rischio Totale Sociale",
@@ -117,7 +119,9 @@
             "tiled": false,
             "env":"low:100;medium:500;max:1000",
             "riskPanel":true,
-            "exclusive":"SIIG"
+            "exclusive":"SIIG",
+			"loadingProgress": true,
+			"forceOneVisible": false
         },{
             "source": "lose",
             "title": "Rischio Totale Sociale - Ambientale",
@@ -126,7 +130,9 @@
             "tiled": false,
             "env":"lowsociale:100;mediumsociale:500;maxsociale:1000;lowambientale:100;mediumambientale:500;maxambientale:1000",
             "riskPanel":true,
-            "exclusive":"SIIG"
+            "exclusive":"SIIG",
+			"loadingProgress": true,
+			"forceOneVisible": false
         },
         {
             "source": "losetiled",

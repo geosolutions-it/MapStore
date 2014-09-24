@@ -371,7 +371,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 displayInLayerSwitcher: true,
                 exclusive: options.exclusive ? options.exclusive : undefined,
                 vendorParams: config.params,
-                maxExtent: options.bounds
+                maxExtent: options.bounds,
+				visibility: options.visibility,
+				loadingProgress: true,
+				forceOneVisible: false
             }
         );
         if(options.dynamicBuffer) {
@@ -446,7 +449,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }
         }, {
             singleTile: true,
-            bounds: roi
+            bounds: roi,
+			visibility: true
         });
     },
     
@@ -468,7 +472,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }, {
             singleTile: true, 
             dynamicBuffer: buffer,
-            bounds: roi
+            bounds: roi,
+			visibility: true
         });                
     },
     
@@ -490,7 +495,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }, {
             singleTile: true, 
             dynamicBuffer: buffer,
-            bounds: roi
+            bounds: roi,
+			visibility: true
         });        
     },
     
@@ -2599,7 +2605,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }
         }, {
             singleTile: true,
-            bounds: roi
+            bounds: roi,
+			visibility: true
         }));
         
         if(Ext.getCmp('targets_view').pressed) {
@@ -2785,13 +2792,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }, {
             singleTile: true, 
             group: group,
-            bounds: roi
+            bounds: roi,
+			visibility: true
         });
         
         this.target.mapPanel.layers.add([record]);
     },
     
-    addFormula: function(layers, bounds, status, targetId, layer, formulaDesc, formulaUdm, env, roi) {
+    addFormula: function(layers, bounds, status, targetId, layer, formulaDesc, formulaUdm, env, roi, visible) {
         this.currentRiskLayers.push(layer);
         var viewParams = "bounds:" + bounds 
             + ';residenti:' + (this.status.target.id.indexOf(1) === -1 ? 0 : 1) 
@@ -2829,7 +2837,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }, {
             singleTile: true,
             exclusive: true,
-            bounds: roi
+            bounds: roi,
+			visibility: visible
         }));
     },
     
@@ -2867,18 +2876,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         if(status.formulaInfo.dependsOnTarget) {
             if(this.isSingleTarget()) {
-                this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc + ' ' + (this.isHumanTarget() ? this.humanTitle : this.notHumanTitle), this.isHumanTarget() ? formulaUdmSoc : formulaUdmEnv, env, roi);                
+                this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc + ' ' + (this.isHumanTarget() ? this.humanTitle : this.notHumanTitle), this.isHumanTarget() ? formulaUdmSoc : formulaUdmEnv, env, roi, true);
             } else if(this.isAllHumanTargets()) {
-                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, formulaUdmSoc, env, roi);
+                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, formulaUdmSoc, env, roi, true);
             } else if(this.isAllNotHumanTargets()) {
-                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, formulaUdmEnv, env, roi);
+                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, formulaUdmEnv, env, roi, true);
             } else {
-                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, formulaUdmSoc, envhum, roi);
-                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, formulaUdmEnv, envamb, roi);                    
-                this.addFormula(layers, bounds, status, 100, this.mixedFormulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle + ' - ' + this.notHumanTitle, formulaUdm, mixedenv, roi);
+                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, formulaUdmSoc, envhum, roi, false);
+                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, formulaUdmEnv, envamb, roi, false);                    
+                this.addFormula(layers, bounds, status, 100, this.mixedFormulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle + ' - ' + this.notHumanTitle, formulaUdm, mixedenv, roi, true);
             }
         } else {
-            this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc, formulaUdm, env, roi);   
+            this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc, formulaUdm, env, roi, true);   
         }         
     },
     
