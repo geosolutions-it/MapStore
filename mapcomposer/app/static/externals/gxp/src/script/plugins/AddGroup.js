@@ -20,6 +20,7 @@
 
 /**
  * @requires plugins/Tool.js
+ * @requires widgets/tree/LayerNodeUI.js
  */
 
 /** api: (define)
@@ -137,7 +138,7 @@ gxp.plugins.AddGroup = Ext.extend(gxp.plugins.Tool, {
                                     if(textField.isDirty() && textField.isValid()){
                                         var group = textField.getValue();
                                 
-                                        var LayerNodeUI = Ext.extend(GeoExt.tree.LayerNodeUI,
+                                        var LayerNodeUI = Ext.extend(gxp.tree.LayerNodeUI,
                                             new GeoExt.tree.TreeNodeUIEventMixin());
                                     
                                         var groupConfig = typeof group == "string" ?

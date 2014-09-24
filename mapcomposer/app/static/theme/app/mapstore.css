@@ -189,6 +189,10 @@ div#homelogos ul li a:hover {
     border-color:#FA1505;
 } 
 
+.x-tree-node-error .x-tree-node-icon{
+	background-image:url(img/silk/cancel.png) !important;
+}
+
 .olImageLoadError { 
     /* when OL encounters a 404, don't display the pink image */
     display: none !important;

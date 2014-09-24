@@ -541,6 +541,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 } : {},
                 riskPanel: ("riskPanel" in config) ? config.riskPanel : false,                    
                 exclusive: config.exclusive || false,                
+                loadingProgress: config.loadingProgress || false,                
+                forceOneVisible: ("forceOneVisible" in config) ? config.forceOneVisible : true,                
                 minScale: config.minscale,
                 maxScale: config.maxscale,
                 displayOutsideMaxExtent:true,
