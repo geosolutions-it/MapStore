@@ -154,7 +154,6 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
         if (this.maximized && this.visible) {
             this.minimizeControl();
         }
-        console.log('reset');
     },
     
     /**
