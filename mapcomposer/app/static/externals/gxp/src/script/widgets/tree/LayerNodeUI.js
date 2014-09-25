@@ -58,8 +58,8 @@ gxp.tree.LayerNodeUI = Ext.extend(GeoExt.tree.LayerNodeUI, {
      */
 	render: function(bulkRender) {
 		if(this.node.layer.options.loadingProgress) {
-			this.node.layer.events.register('tileloadstart', this, this.loadStart);
-			this.node.layer.events.register('tileloaded', this, this.loadEnd);
+			this.node.layer.events.register('loadstart', this, this.loadStart);
+			this.node.layer.events.register('loadend', this, this.loadEnd);
 			this.node.layer.events.register('tileerror', this, this.loadError);
 			this.node.layer.events.register('visibilitychanged', this, this.visibilityChanged);
 		}

@@ -158,6 +158,11 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      *  complete layer configuration, in addition to ``name``.
      */
     requiredProperties: ["title", "bbox"],
+	
+	/** api: config[loadingProgress]
+     *  ``Boolean`` if true, loadingProgress property is applied to all the WMSSource layers.
+     */
+    loadingProgress: false,
     
     /** private: method[constructor]
      */
@@ -540,8 +545,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     viewparams: config.viewparams
                 } : {},
                 riskPanel: ("riskPanel" in config) ? config.riskPanel : false,                    
-                exclusive: config.exclusive || false,                
-                loadingProgress: config.loadingProgress || false,                
+                exclusive: config.exclusive || false,                 
+				loadingProgress: config.loadingProgress || this.loadingProgress || false,                
                 forceOneVisible: ("forceOneVisible" in config) ? config.forceOneVisible : true,                
                 minScale: config.minscale,
                 maxScale: config.maxscale,
