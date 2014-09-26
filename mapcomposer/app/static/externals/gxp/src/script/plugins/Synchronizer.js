@@ -201,7 +201,7 @@ gxp.plugins.Synchronizer = Ext.extend(gxp.plugins.Tool, {
 															        autoHide: false,
 															        closable: true,
 															        draggable:true,
-																	anchor: 'top'
+																	anchor: 'bottom'
 																});
 													// force show now
 													self.tooltip.showAt( [ Ext.getCmp('sync-button').getEl().getX() -50, Ext.getCmp('sync-button').getEl().getY() -50  ]);
@@ -221,7 +221,7 @@ gxp.plugins.Synchronizer = Ext.extend(gxp.plugins.Tool, {
                                             item.ownerCt.items.items[1].enable();
                                             
                                             // What do I do with this?
-                                            timeVisualization[0].div.style.visibility = "visible";     
+                                            //timeVisualization[0].div.style.visibility = "visible";     
                                             
                                             //call function in composer.js to enable al functionality
                                             //this.target.enableAllFunc();
