@@ -33,6 +33,24 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
     */
     visible: true,
 
+	/**
+     * Property: height
+     * {Integer} A fixed height for the panel (-1 is the default, that means no fixed height)
+     */ 
+    height: -1,
+    
+    /**
+     * Property: width
+     * {Integer} A fixed width for the panel (-1 is the default, that means no fixed width)
+     */ 
+    width: -1,
+	
+	/**
+     * Property: center
+     * {Boolean} A boolean indicating whether or not the control should be centered on map
+    */
+    center: false,
+	
     /**
      * Constructor: OpenLayers.Control.LoadingPanel
      * Display a panel across the map that says 'loading'. 
@@ -190,11 +208,17 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
      */
     maximizeControl: function(evt) {
         var viewSize = this.map.getSize();
-        var msgW = viewSize.w;
-        var msgH = viewSize.h;
+        var msgW = this.width > 0 ? this.width : viewSize.w;
+        var msgH = this.height > 0 ? this.height : viewSize.h;
         this.div.style.width = msgW + "px";
         this.div.style.height = msgH + "px";
         this.div.style.display = "block";
+		
+		if(this.center) {
+            this.div.style.left = ((viewSize.w - msgW) / 2.0) + "px";
+            this.div.style.top = ((viewSize.h - msgH) / 2.0) + "px";
+        }
+		
         this.maximized = true;
     
         if (evt != null) {
