@@ -65,5 +65,8 @@ gxp.tree.LayerNodeUI = Ext.extend(GeoExt.tree.LayerNodeUI, {
 			this.node.layer.events.register('visibilitychanged', this, this.visibilityChanged);
 		}
 		gxp.tree.LayerNodeUI.superclass.render.apply(this, arguments);
+		if(this.node.layer.options.loadingProgress && this.node.layer.loading) {
+			this.addClass("x-tree-node-loading");
+		}
     }
 });
