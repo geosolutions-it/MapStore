@@ -467,6 +467,14 @@ div.olMap div.gx-overlay-playback {
     background-image: url(img/silk/wrench.png);
 }
 
+.x-btn .gx-tree-synchlayer-icon, .x-menu-item .gx-tree-synchlayer-icon, .x-tree-node .gx-tree-synchlayer-icon, .x-menu-item-checked .x-menu-group-item .x-menu-item-icon.gx-tree-synchlayer-icon, .gx-tree-synchlayer-icon  {
+    background-image: url(img/silk/bullet_go.png);
+}
+
+.x-btn .gx-tree-synchlayer-loading-icon, .x-menu-item .gx-tree-synchlayer-loading-icon, .x-tree-node .gx-tree-synchlayer-loading-icon, .x-menu-item-checked .x-menu-group-item .x-menu-item-icon.gx-tree-synchlayer-loading-icon, .gx-tree-synchlayer-loading-icon  {
+    background-image: url(img/loading.gif);
+}
+
 /* csv_export */
 .x-btn .gxp-icon-csvexport, .x-menu-item .gxp-icon-csvexport {
     background-image: url(img/geosilk/disk.png) !important;

@@ -1,13 +1,6 @@
 {
    "scaleOverlayMode": "none",
-   "gsSources":{
-   		"lamma": {
-			"ptype": "gxp_wmssource",
-			"title": "Consorzio LaMMA",
-			"url": "http://geoportale.lamma.rete.toscana.it/geoserver/lamma_stazioni/ows",
-			"SRS": "EPSG:900913",
-			"version":"1.1.1"
-		},   
+   "gsSources":{  
    		"comunege": {
 			"ptype": "gxp_wmssource",
 			"title": "Comune Genova",
@@ -172,30 +165,17 @@
 		}, {
 			"actions": ["-"], 
 			"actionTarget": "paneltbar"
-		}, {	 
+		}, {
+            "ptype": "gxp_synchlayerenable",
+            "id": "synchlayerenable_plugin",
+            "actionTarget": ["layertree.contextMenu"]
+        }, {	 
             "ptype": "gxp_synchronizer",
+            "id": "synchronizer_plugin",
             "refreshTimeInterval": 5,
             "actionTarget": {"target": "paneltbar", "index": 17},
             "range": ["2014-09-24T06:00:00.000Z","2014-09-26T08:00:00.000Z"]
         }, {
-            "ptype":"gxp_playback",
-            "outputTarget": "map",
-            "playbackMode": "range",
-            "showIntervals": false,
-            "labelButtons": false,
-            "settingsButton": true,
-            "rateAdjuster": false,
-            "dynamicRange": false,
-            "timeFormat": "l, F d, Y g:i:s A",
-            "outputConfig": {
-                "controlConfig":{
-                    "step": 1,
-                    "units": "Hours",
-                    "range": ["2014-09-24T06:00:00.000Z","2014-09-26T08:00:00.000Z"],
-                    "frameRate": 5
-                }
-            }
-       }, {
             "ptype": "gxp_featuregrid",
             "featureManager": "featuremanager",
         	"layout": "form",

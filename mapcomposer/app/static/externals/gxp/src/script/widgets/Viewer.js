@@ -256,6 +256,9 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
             if(this.tools[tool].ptype == "gxp_zoomtolayerextent"){            
                 this.tools[tool].actions[0].show();
             }
+            if(this.tools[tool].ptype == "gxp_synchlayerenable"){            
+                this.tools[tool].actions[0].show();
+            }            
         }
         
         record = record || null;
@@ -292,9 +295,14 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
                 if(this.tools[tool].ptype == "gxp_geonetworksearch"){            
                     this.tools[tool].actions[0].hide();
                 }
+                
                 if(this.tools[tool].ptype == "gxp_zoomtolayerextent"){            
-                this.tools[tool].actions[0].hide();
-            }
+                    this.tools[tool].actions[0].hide();
+                }
+                
+                if(this.tools[tool].ptype == "gxp_synchlayerenable"){            
+                    this.tools[tool].actions[0].hide();
+                }                            
             }
             
             this.fireEvent("groupselectionChange", groupNode); 
