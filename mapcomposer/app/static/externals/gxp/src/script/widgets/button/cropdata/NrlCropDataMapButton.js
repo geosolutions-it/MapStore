@@ -44,7 +44,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 			var fieldValues = form.getFieldValues();
 			
 			var nextYr =parseInt(values.endYear)%100 +1;
-			var crop =values.crop;
+			var crop = fieldValues.crop; // fixes #66 issue
 			
 			var varparam ="";
 			switch(values.variable) {
@@ -69,7 +69,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
             }
             
             
-			var viewParams= "crop:" + values.crop.toLowerCase() + ";" +
+			var viewParams= "crop:" + crop + ";" +
 					"gran_type:" + areatype + ";" +
 					"start_year:" + values.endYear +";" + //same year for start and end.
 					"end_year:" + values.endYear +";" + 
@@ -79,7 +79,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 			   this.url,
 			   {
 				layers: "nrl:CropDataMap",
-				styles: areatype + "_" + values.crop.toLowerCase() + "_"+ varparam + "_style" ,
+				styles: areatype + "_" + crop + "_"+ varparam + "_style" ,
 				viewParams:viewParams,
 				transparent: "true",
                 cql_filter:cql_filter
@@ -107,7 +107,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 						propertyName: 'region,crop,year,production,area,yield',
                         cql_filter:cql_filter,
 						
-						viewParams: "crop:" + values.crop.toLowerCase() + ";" +
+						viewParams: "crop:" + crop + ";" +
 									"gran_type:" + areatype + ";" +
 									"start_year:" + values.startYear + ";" +
 									"end_year:" + values.endYear + ";" +//here startyear

@@ -76,7 +76,7 @@ gxp.plugins.printreport.MapGenerator = Ext.extend(gxp.plugins.printreport.Genera
         }
         
         var nextYr =parseInt(values.endYear)%100 +1;
-        var crop =values.crop;
+        var crop =fieldValues.crop;
         
         var varparam ="";
         switch(values.variable) {
@@ -104,13 +104,13 @@ gxp.plugins.printreport.MapGenerator = Ext.extend(gxp.plugins.printreport.Genera
         }
         
         
-        var viewParams= "crop:" + values.crop.toLowerCase() + ";" +
+        var viewParams= "crop:" + crop + ";" +
                 "gran_type:" + areatype + ";" +
                 "start_year:" + values.endYear +";" + //same year for start and end.
                 "end_year:" + values.endYear +";" + 
                 "yield_factor:" + yieldFactor
         
-        var style = areatype + "_" + values.crop.toLowerCase() + "_"+ varparam + "_style";
+        var style = areatype + "_" + crop + "_"+ varparam + "_style";
 
         
         var layerName = values.crop + " " + values.endYear + " - "+values.variable;
