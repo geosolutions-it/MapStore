@@ -1964,8 +1964,8 @@
   <!-- =========================================================== -->
   
   <modules>
+	<module>emsa-geobatch-mariss-modules</module>
     <module>mariss-tests</module>
-    <module>emsa-geobatch-mariss-modules</module>
     <module>mariss-schemas</module>
     <module>mariss-ingestion-logic</module>
     <module>mariss-actions</module>

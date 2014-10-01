@@ -15,7 +15,7 @@
   
     <parent>
         <groupId>it.geosolutions.mariss</groupId>
-        <artifactId>emsa-geobatch-mariss-modules</artifactId>   
+        <artifactId>emsa-geobatch-mariss-actions</artifactId>   
         <version>1.4-SNAPSHOT</version>
     </parent>
        
