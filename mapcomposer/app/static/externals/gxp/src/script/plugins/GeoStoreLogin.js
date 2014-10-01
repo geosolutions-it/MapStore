@@ -79,6 +79,19 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
      */
     passwordFieldText: "Password", 
 
+    
+    forgotPasswordText: "forgot password?",
+    /** api: config[closable]
+     *  ``boolean`` The Login window can be closed or not .
+     */
+    closable:true,
+    /** api: config[draggable]
+     *  ``boolean``
+     *   The Login window can be dragged or not.
+     */
+    draggable:true,
+
+
     loginAction: null,
 	
     logoutAction: null,
@@ -156,6 +169,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
      *  Action to show the admin GUI link
      **/ 
     adminLinkAction: null,
+    scale: 'small',
 
     /** 
      * api: method[addActions]
@@ -163,6 +177,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
     addActions: function() {
         if (this.loginService !== null) {
             var apptarget = this.target;
+//<<<<<<< HEAD
             var adminAppWindow;
             var adminGUIId = "adminGUILink";
 
@@ -275,6 +290,31 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                     anchor:'100%',
                     text: this.logoutTitle,
                     hidden: true,
+/* =======
+        
+            var actions = gxp.plugins.GeoStoreLogin.superclass.addActions.apply(this, [
+                [{
+                    menuText: this.loginText,
+                    iconCls: "login",
+                    text: this.loginText,
+                    disabled: false,
+                    hidden: false,
+                    scale: this.scale || 'small',
+                    tooltip: this.loginText,
+                    handler: function() {
+                        if(!this.logged){
+                            this.showLoginDialog();                            
+                        }	
+                    },
+                    scope: this
+                },{
+                    menuText: this.logoutTitle,
+                    iconCls: "logout",
+                    scale: this.scale || 'small',
+                    text: this.logoutTitle,
+                    hidden: true,
+                    
+>>>>>>> master */
                     disabled: true,
                     tooltip: this.logoutTitle,
                     handler: function() {
@@ -283,6 +323,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                         }
                     },
                     scope: this
+// <<<<<<< HEAD
                 });
             }
         
@@ -296,6 +337,14 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                 this.logoutAction= actions[1];
             }
 
+/* =======
+                }]
+            ]);
+            
+            this.loginAction = actions[0];
+            this.logoutAction= actions[1];
+            
+>>>>>>> master */
             return actions;
         }
     },
@@ -343,6 +392,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
             }],
             buttons: [{
                 text: this.loginText,
+                iconCls:'login',
                 formBind: true,
                 handler: this.submitLogin,
                 scope: this
@@ -353,13 +403,38 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                 scope: this
             }]
         });
-                
+       
+        if(this.forgotPasswordService){
+            this.panel.add({
+                  width: 100,
+                  xtype: 'box',
+                  autoEl: {
+                    children: [{
+                      tag: 'a',
+                      href: '#',
+                      cn: this.forgotPasswordText
+                    }]
+                  },
+              listeners: {
+                render: function(c){
+                  c.el.select('a').on('click', function(){
+                        //todo: show a input text for email
+                        Ext.Msg.alert("To be implemented","this feature is missing");
+                  });
+                }
+              }
+            });
+        }
+		
         this.win = new Ext.Window({
+            iconCls:'user-icon',
             title: this.loginText,
             layout: "fit",
             width: 275,
+            closable:this.closable,
+            draggable:this.draggable,
             closeAction: 'close',
-            height: 130,
+            height: 140,
             plain: true,
             border: false,
             modal: true,
@@ -424,10 +499,14 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                 // save auth info
                 this.token = auth;
                 if (user.User) {
+                    this.user= user.User;
                     this.userid = user.User.id;//TODO geostore don't return user id! in details request
                     this.username = user.User.name;
                     this.role = user.User.role;
+                    
+                    
                 }
+                this.loginSuccess();
             },
             failure: function(response, form, action) {
 			    this.mask.hide(); 
@@ -507,7 +586,10 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
         }
         this.logoutAction.show();
         this.logoutAction.enable();
-        //this.target.setIconClass("gxp-icon-logout");
+        //this.loginAction.disable();
+        //this.logoutAction.show();
+        //this.logoutAction.enable();
+        //this.target.setIconClass("logout");
         this.logged=true;
         this.win.close();
     },
@@ -531,19 +613,27 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                     if(this.target.tools[tool].ptype == "gxp_nrl"){  
                         this.target.tools[tool].disableData();
                     }                          
+
+            // Clear the sessionStorage
+            for(var i = 0; i < sessionStorage.length; i++) {
+                var key = sessionStorage.key(i);
+                if(key) {
+                    sessionStorage.removeItem(key);
                 }
-                this.loginAction.show();
-                this.loginAction.enable();
-                this.logoutAction.hide();
-                this.logoutAction.disable();
-                if(this.enableAdminGUILogin){
-                    this.adminLinkAction.hide();
-                    this.adminLinkAction.disable();
+                    }
+
+                    this.loginAction.show();
+                    this.loginAction.enable();
+                    this.logoutAction.hide();
+                    this.logoutAction.disable();
+                    if(this.enableAdminGUILogin){
+                        this.adminLinkAction.hide();
+                        this.adminLinkAction.disable();
+                    }
+                    this.logged=false;
                 }
-                this.logged=false;
             }
         }
-        
         Ext.Msg.show({
            title: this.logoutTitle,
            msg: this.logoutText,
@@ -553,82 +643,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
            scope: this
         });        
             
-            /*if(buttonId === 'ok'){                        
-                window.location.reload( false );
-            }else if(buttonId === 'no'){
-                window.location.reload( false );
-            }else if(buttonId === 'yes'){
-                var xmlContext;
-                var handleSave = function(){
-                    var xmlContext = this.xmlContext;            
-                    var mask = new Ext.LoadMask(Ext.getBody(), {msg:"Please wait..."});
-                    mask.show();
-                    var auth =  'Basic ' + this.encode(this.user+':'+this.pass);
-                    Ext.Ajax.request({
-                       url: proxy + server + "exist/rest/mapadmin/context.xml", //TODO parametrize
-                       //url: this.loginService,
-                       headers:{
-                            'Authorization' : auth
-                       },
-                       method: 'PUT',
-                       params: xmlContext,
-                       scope: this,
-                       success: function(response, opts){
-                          mask.hide();
-                          window.location.reload( false );
-                       },
-                       failure:  function(response, opts){
-                          mask.hide();
-                          Ext.Msg.show({
-                             title: this.contextSaveFailString,
-                             msg: response.statusText,
-                             buttons: Ext.Msg.OK,
-                             icon: Ext.MessageBox.ERROR
-                          });
-                       }
-                    });		
-                };
-                
-                var configStr = Ext.util.JSON.encode(app.getState());  
-                var saveUrl = app.xmlJsonTranslateService + "HTTPWebGISSave";		
-                
-                OpenLayers.Request.issue({
-                    method: 'POST',
-                    url: saveUrl,
-                    data: configStr,
-                    callback: function(request) {
-                        if (request.status == 200) {
-                            this.xmlContext = request.responseText;
-                            handleSave.call(this);
-                            this.logged=false;
-                        } else {
-                            throw request.responseText;
-                        }						
-                    },
-                    scope: this
-                });
-            }
-        };
-                        
-        if(modified || app.modified){
-            Ext.Msg.show({
-               title: this.logoutTitle,
-               msg: "Save changes before logout?",
-               buttons: Ext.Msg.YESNOCANCEL,
-               fn: logoutFunction,
-               icon: Ext.MessageBox.QUESTION,
-               scope: this
-            });
-        }else{
-            Ext.Msg.show({
-               title: this.logoutTitle,
-               msg: this.logoutText,
-               buttons: Ext.Msg.OKCANCEL,
-               fn: logoutFunction,
-               icon: Ext.MessageBox.QUESTION,
-               scope: this
-            });
-        }*/
+           
         
     },
     /** private: property[_keyStr]

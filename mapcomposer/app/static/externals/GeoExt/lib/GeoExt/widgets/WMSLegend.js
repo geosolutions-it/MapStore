@@ -48,6 +48,20 @@ GeoExt.WMSLegend = Ext.extend(GeoExt.LayerLegend, {
      *  GetLegendGraphic request? Defaults to true.
      */
     useScaleParameter: true,
+    
+    /** api: config[minScale]
+     *  ``Number``
+     *  If useScaleParameter is true, we can set the minimum SCALE
+     *  to use for SLD WMS to a fixed value. Defaults to -1 (no minimum).     
+     */    
+    minScale: -1,
+    
+    /** api: config[maxScale]
+     *  ``Number``
+     *  If useScaleParameter is true, we can set the maximum SCALE
+     *  to use for SLD WMS to a fixed value. Defaults to -1 (no maximum).     
+     */    
+    maxScale: -1,
 
     /** api: config[baseParams]
      * ``Object``
@@ -130,6 +144,7 @@ GeoExt.WMSLegend = Ext.extend(GeoExt.LayerLegend, {
         if(!url) {
             url = layer.getFullRequestString({
                 REQUEST: "GetLegendGraphic",
+				SERVICE: "WMS",
                 WIDTH: null,
                 HEIGHT: null,
                 EXCEPTIONS: "application/vnd.ogc.se_xml",
@@ -141,15 +156,30 @@ GeoExt.WMSLegend = Ext.extend(GeoExt.LayerLegend, {
                 FORMAT: null
             });
         }
+		
         // add scale parameter - also if we have the url from the record's
         // styles data field and it is actually a GetLegendGraphic request.
         if(this.useScaleParameter === true &&
                 url.toLowerCase().indexOf("request=getlegendgraphic") != -1) {
             var scale = layer.map.getScale();
+            if(this.minScale !== -1 && scale < this.minScale) {
+                scale = this.minScale;
+            }
+            if(this.maxScale !== -1 && scale > this.maxScale) {
+                scale = this.maxScale;
+            }
             url = Ext.urlAppend(url, "SCALE=" + scale);
         }
+		
+		var lowerUrl = url.toLowerCase();
+		if(lowerUrl.indexOf("request=getlegendgraphic") != -1 && 
+			lowerUrl.indexOf("service=wms") == -1){
+			url += "&SERVICE=WMS";
+		}
+		
         var params = this.baseParams || {};
         Ext.applyIf(params, {FORMAT: 'image/png'});
+		
         if (layer.params._OLSALT) {
             // update legend after a forced layer redraw
             params._OLSALT = layer.params._OLSALT;

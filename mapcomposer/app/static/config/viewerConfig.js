@@ -1,6 +1,7 @@
 {
-   "geoStoreBase":"http://localhost:8080/geostore/rest/",
-   "proxy":"/http_proxy/proxy/?url=",
+    "portalConfig":{
+		"header":false
+	},
     "gsSources": {
         "google": {
             "ptype": "gxp_googlesource"
@@ -22,18 +23,39 @@
         "center": [1250000.000000, 5370000.000000],
         "zoom": 5
     },
-	
+	"loadingPanel": {
+		"width": 100,
+		"height": 100,
+		"center": true
+	},
 	"customTools":[
 		{
-			"actions": ["->"], 
-			"actionTarget": "paneltbar"
+		   "ptype": "gxp_mouseposition",
+		   "displayProjectionCode":"EPSG:4326",
+		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
 		}, {
-			"ptype": "gxp_googlegeocoder",
-			"outputConfig": {
-				"emptyText": "Google GeoCoder"
-			},
-			"outputTarget":"paneltbar",
-			"index": 26
+			"ptype": "gxp_geolocationmenu",
+			"actionTarget": {"target": "paneltbar", "index": 23},
+			"toggleGroup": "toolGroup"
+		}, {
+			"ptype": "gxp_wmsgetfeatureinfo", 
+			"useTabPanel": true,
+			"toggleGroup": "toolGroup",
+			"actionTarget": {"target": "paneltbar", "index": 24}
+		}, {
+			"ptype": "gxp_addlayer",
+			"showCapabilitiesGrid": true,
+			"useEvents": false,
+			"showReport": "never",
+			"directAddLayer": false,
+			"id": "addlayer"
+		}, {
+			"ptype": "gxp_about",
+			"poweredbyURL": "http://www.geo-solutions.it/about/contacts/",
+			"actionTarget": {"target": "panelbbar", "index": 1}
+		}, {
+			"ptype": "gxp_languageselector",
+			"actionTarget": {"target": "panelbbar", "index": 3}
 		}
 	]
 }

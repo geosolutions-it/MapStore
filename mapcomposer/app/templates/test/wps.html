@@ -1,0 +1,395 @@
+<html>
+    <head>
+        <title>WPS Manager Example</title>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">       
+
+        <!-- Ext resources -->
+        <link rel="stylesheet" type="text/css" href="externals/ext/resources/css/ext-all.css">
+        <link rel="stylesheet" type="text/css" href="externals/ext/resources/css/xtheme-gray.css">
+        <script type="text/javascript" src="externals/ext/adapter/ext/ext-base.js"></script>
+        <script type="text/javascript" src="externals/ext/ext-all-debug.js"></script>
+
+		<!-- OpenLayers resources -->
+		<link rel="stylesheet" type="text/css" href="externals/openlayers/theme/default/style.css">
+
+		<!-- Basic OpenLayers libs -->
+		<script type="text/javascript" src="script/OpenLayers.js"></script>		
+		
+		<!-- Externatls OpenLayers libraries to manage other extensions -->
+		<script type="text/javascript" src="script/OpenLayersExt.js"></script> 
+		
+		<!-- colorpicker resources 
+		<link rel="stylesheet" type="text/css" href="externals/colorpicker/css/colorpicker.css">
+		<script type="text/javascript" src="script/colorpicker.js"></script> -->
+		
+		<!-- GeoExt resources -->
+		<link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/popup.css">
+		<link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/layerlegend.css">
+		<link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/gxtheme-gray.css">
+		<script type="text/javascript" src="script/GeoExt.js"></script> 
+
+		<!-- PrintPreview resources 
+		<link rel="stylesheet" type="text/css" href="externals/PrintPreview/resources/css/printpreview.css">
+		<script type="text/javascript" src="script/PrintPreview.js"></script> -->
+		
+		<!-- gxp resources -->
+		<link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
+
+		<script type="text/javascript" src="script/gxp.js"></script> 
+
+		<!--script type="text/javascript" src="script/proj4js.js"></script-->
+		<!--script type="text/javascript" src="script/projCodes.js"></script-->
+
+		<!-- GeoExplorer resources -->
+		<link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
+		<link rel="stylesheet" type="text/css" href="theme/app/mapstore.css" />
+		<!--[if IE]><link rel="stylesheet" type="text/css" href="theme/app/ie.css"/><![endif]-->        
+
+		<script type="text/javascript" src="script/GeoExplorer.js"></script>
+		<script type="text/javascript" src="script/ux.js"></script>
+	   
+		<!-- csw resources -->
+		<link rel="stylesheet" type="text/css" href="externals/csw/css/csw.css">
+		<script type="text/javascript" src="auth/base64.js"></script>
+		<script type="text/javascript" src="script/metadataexplorer.js"></script>
+		
+		<!-- geocoding data  -->
+		<script type="text/javascript" src="data/georeferences.js"></script>
+		
+		<!-- translation data  -->
+		<script type="text/javascript" src="translations/en.js"></script>
+		<script type="text/javascript" src="translations/fr.js"></script>
+		<script type="text/javascript" src="translations/it.js"></script>
+		<script type="text/javascript" src="translations/de.js"></script>
+
+        <script type="text/javascript">	 
+			/**
+			 *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+			 *  http://www.geo-solutions.it
+			 *
+			 *  GPLv3 + Classpath exception
+			 *
+			 *  This program is free software: you can redistribute it and/or modify
+			 *  it under the terms of the GNU General Public License as published by
+			 *  the Free Software Foundation, either version 3 of the License, or
+			 *  (at your option) any later version.
+			 *
+			 *  This program is distributed in the hope that it will be useful,
+			 *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+			 *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+			 *  GNU General Public License for more details.
+			 *
+			 *  You should have received a copy of the GNU General Public License
+			 *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+			 */
+
+
+			/*WPS Manager Example
+
+			In order to instance the WPSManger plugins you must provide the following information:
+
+				- WPS URL
+				- Proxy URL used for the WPS requests
+				- Geostore URL used to save the WPS execute instances
+				- Proxy URL used for the Geostore requests
+
+			The WPS requests are sent to the process JTS:isValid that comes with the GeoServer WPS plugin.
+			*/
+
+			var requestObject,wpsManager;
+			onReady=(function() {
+				var el;
+				
+				var wpsURL= prompt("WPS URL: ", "http://localhost:8080/geoserver/ows");
+				el=document.getElementById("wpsurl");
+				el.appendChild(document.createTextNode(wpsURL));
+				
+				var wpsProxy= prompt("WPS Proxy URL: ", "/http_proxy/proxy?url=");
+				el=document.getElementById("wpsproxy");
+				el.appendChild(document.createTextNode(wpsProxy));
+				
+				var geostoreURL= prompt("GeoStore URL: ", "http://localhost:8080/geostore/rest");
+				el=document.getElementById("geostoreurl");
+				el.appendChild(document.createTextNode(geostoreURL));
+				
+				var geostoreProxy= prompt("GeoStore Proxy URL: ", "/http_proxy/proxy?url=");
+				el=document.getElementById("geostoreproxy");
+				el.appendChild(document.createTextNode(geostoreProxy));
+				
+				wpsManager = new gxp.plugins.WPSManager({
+					id: "wpsTest",
+					url: wpsURL,
+					proxy: wpsProxy,
+					geoStoreClient: new gxp.plugins.GeoStoreClient({
+						url: geostoreURL,
+						user: "admin",
+						password: "admin",
+						proxy: geostoreProxy,
+						listeners: {
+							"geostorefailure": function(tool, msg){
+								Ext.Msg.show({
+									title: "Geostore Exception" ,
+									msg: msg,
+									buttons: Ext.Msg.OK,
+									icon: Ext.Msg.ERROR
+								});
+							}
+						}
+					})
+				});				
+			   
+				getInstances(false);
+			});
+
+			function executeCallback(instanceOrRawData){
+				Ext.Msg.show({
+					title: "Execute Response" ,
+					msg: JSON.stringify(instanceOrRawData),
+					buttons: Ext.Msg.OK,
+					icon: Ext.Msg.INFO
+				});
+				setTimeout("getInstances(false)", 1000);
+			}
+
+			function getSyncRequest(){
+
+				var type= null;
+				
+				if(document.getElementById("rawMod").value == "true")
+					type="raw";
+				
+				return {					
+					type: type,
+					inputs:{
+						geom: new OpenLayers.WPSProcess.ComplexData({
+							value: document.getElementById("geometry").value,
+							mimeType: "application/wkt"
+						})
+					},
+					outputs: [{
+						identifier: "result",
+						mimeType: "text/xml"
+				   
+					}]
+				};
+			}
+
+			function getAsyncRequest(){
+				return {
+					storeExecuteResponse: true,
+					lineage:  true,
+					status: true,
+					inputs:{
+						geom: new OpenLayers.WPSProcess.ComplexData({
+							value: document.getElementById("geometry").value,
+							mimeType: "application/wkt"
+						})
+					},
+					outputs: [{
+						identifier: "result",
+						mimeType: "text/xml"
+					
+					}]
+				};
+			}
+
+			function getInstances(update){
+				
+				wpsManager.getExecuteInstances("JTS:isValid", update, function(instances){
+					var tpl = new Ext.XTemplate(
+						'<table class="gridtable">',
+						'<tr><th>Name</th>',
+						'<th>Description</th>',
+						'<th></th><th></th>',
+						'<tpl for=".">',
+						'<tr><td>{name}</td>',		  
+						'<td>{description}</td>',
+						'<td><button onclick=\"getInstance(\'{id}\')\"> Get Instance </button></td>',
+						'<td><button onclick=\"removeInstance(\'{id}\')\"> Delete </button></td></tr>',
+						'</tpl>',
+						'</table>'
+					);
+						   
+					tpl.overwrite(Ext.get("instances"), instances);
+				});				 
+			}
+
+			function removeInstance(instanceID){
+				wpsManager.deleteExecuteInstance(instanceID, function(instances){
+					Ext.Msg.show({
+						title: "Remove Instance",
+						msg: "Instance " + instanceID+ " removed.",
+						buttons: Ext.Msg.OK,
+						icon: Ext.Msg.INFO
+					});
+					
+					setTimeout("getInstances(false)", 1000);
+				});
+			}
+
+			function getInstance(instanceID){
+				
+				wpsManager.getExecuteInstance(instanceID, false, function(instance){
+				   
+					var tpl = new Ext.XTemplate(
+						'<table class="gridtable">',
+						'<tr><th>ID</th>',
+						'<td>{id}</td></tr>',
+						'<tr><th>Name</th>',
+						'<td>{name}</td></tr>',
+						'<tr><th>Creation</th>',
+						'<td>{creation}</td></tr>',
+						'<tr><th>Description</th>',		  
+						'<td>{description}</td></tr>',
+						'<tr><th>Category</th>',		  
+						'<td>{category}</td></tr>',
+						'<tr><th>Metadata</th>',		  
+						'<td>{metadata}</td></tr>',
+						'<tr><th>Attributes</th>',		  
+						'<td>{attributes}</td></tr>',
+						'<tr><th>Data</th>',		  
+						'<td>{store}</td></tr>',
+						'</table>'
+					);
+				  
+					instance.Resource.store= JSON.stringify(instance.Resource.data);
+					instance.Resource.category= JSON.stringify(instance.Resource.category);
+				 
+				  
+					Ext.Msg.show({
+						title: "Instance " + instance.Resource.id ,
+						msg: tpl.applyTemplate(instance.Resource),
+						buttons: Ext.Msg.OK,
+						icon: Ext.Msg.INFO
+					});					
+			   });
+			}		
+        </script>
+
+        <!-- CSS goes in the document HEAD or added to your external stylesheet -->
+        <style type="text/css">
+            table.gridtable {
+                font-family: verdana,arial,sans-serif;
+                font-size:11px;
+                color:#333333;
+                border-width: 1px;
+                border-color: #666666;
+                border-collapse: collapse;
+            }
+            table.gridtable th {
+                border-width: 1px;
+                padding: 8px;
+                text-align: center;
+                text-decoration-style: dotted;
+                border-style: solid;
+                border-color: #666666;
+                background-color: #dedede;
+            }
+            table.gridtable td {
+                border-width: 1px;
+                padding: 8px;
+                border-style: solid;
+                border-color: #666666;
+                background-color: #ffffff;
+            }
+        </style>
+
+    </head>
+    <body onload="onReady()">
+        <h1>WPS Manager Example</h1>
+        <table>
+            <tr>
+                <td width="70%">
+                    <p>  In order to instance the WPSManger plugins you must provide the following information:</p>
+                    <ul>
+                        <li>- WPS URL</li>
+                        <li>- Proxy URL used for the WPS requests</li>
+                        <li>- Geostore URL used to save the WPS execute instances</li>
+                        <li>- Proxy URL used for the Geostore requests</li>
+                    </ul>
+                    <p>The WPS execute requests are sent to the process JTS:isValid that comes with the GeoServer WPS plugin.</p>
+                    <p><br>See <a href="wps.js">wps.js</a>.</p> 
+                </td>
+                <td> 
+                    <table class="gridtable">
+                        <tr>
+                            <th colspan="2">WPS Manager information</th>
+                        </tr>
+                        <tr>
+                            <th>WPS URL</th><td> <div id="wpsurl"></div></td>
+                        </tr>
+                        <tr>
+                            <th>WPS Proxy URL</th><td> <div id="wpsproxy"></div></td>
+                        </tr>
+                        <tr>
+                            <th>GeoStore URL</th><td> <div id="geostoreurl"></div></td>
+                        </tr>
+                        <tr>
+                            <th>GeoStore Proxy URL</th><td> <div id="geostoreproxy"></div></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <br>
+        <br>
+        <div id="container">
+
+            <table class="gridtable">
+                <tr>
+                    <th colspan="2">Test JTS:isValid WPS process</th>
+                </tr>
+
+                <tr>
+                    <th>
+                        WKT geometry Input
+                    </th>
+                    <td>
+                        <textarea id="geometry" cols="40" rows="4">POINT(6 40)</textarea>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        RAW Mode: <select id="rawMod"> 
+                            <option>true</option>
+                            <option>false</option>
+                        </select>
+                        <button onclick="wpsManager.execute('JTS:isValid', getSyncRequest(), executeCallback)"> Send Execute Synchronus</button>
+                    </td>
+                    <td>
+                       
+                        <button onclick="wpsManager.execute('JTS:isValid', getAsyncRequest(), executeCallback)"> Send Execute Asynchronus </button>
+                    </td>
+                </tr>
+            </table>
+
+            <br>
+            <br>
+            <br>
+            <br>
+
+            <table>
+                <tr>
+                    <td colspan="2">
+                        <h1> WPS Execute Instances</h1>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div id="instances"></div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button onclick="getInstances(true)"> Refresh Instances </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>

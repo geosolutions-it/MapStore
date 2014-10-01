@@ -508,6 +508,7 @@ layouts:
                 padding: 4
                 backgroundColor: white
                 vertAlign: bottom
+
           widths: [170]
           absoluteX: 642
           absoluteY: 495
@@ -542,6 +543,7 @@ layouts:
               nbColumns: 1
               items:
                 - !text
+
                   width: 300
                   text: '${comment}'  
                   fontEncoding: Cp1252
@@ -571,6 +573,7 @@ layouts:
   #===========================================================================
     mainPage:
       rotation: true
+
       pageSize: 842 595
       landscape: false
       items:

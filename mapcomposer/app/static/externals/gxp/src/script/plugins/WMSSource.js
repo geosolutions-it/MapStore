@@ -40,7 +40,7 @@
     };
     Ext.intercept(GeoExt.data.WMSCapabilitiesReader.prototype, "readRecords", keepRaw);
     GeoExt.data.AttributeReader &&
-        Ext.intercept(GeoExt.data.AttributeReader.prototype, "readRecords", keepRaw);
+    Ext.intercept(GeoExt.data.AttributeReader.prototype, "readRecords", keepRaw);
 })();
 
 /** api: (define)
@@ -137,11 +137,37 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             SERVICE: "WMS",
             REQUEST: "GetCapabilities"
         };
+		
         if (this.version) {
             baseParams.VERSION = this.version;
         }
         
-        this.store = new GeoExt.data.WMSCapabilitiesStore({
+	    // /////////////////////////////////////////////////////
+	    // Get the user's corrensponding authkey if present 
+	    // (see MSMLogin.getLoginInformation for more details)
+	    // /////////////////////////////////////////////////////
+		if(this.authParam && this.target.userDetails){
+			var userInfo = this.target.userDetails;
+			var authkey;
+			
+			if(userInfo.user.attribute instanceof Array){
+				for(var i = 0 ; i < userInfo.user.attribute.length ; i++ ){
+					if( userInfo.user.attribute[i].name == "UUID" ){
+						authkey = userInfo.user.attribute[i].value;
+					}
+				}
+			}else{
+				if(userInfo.user.attribute && userInfo.user.attribute.name == "UUID"){
+				   authkey = userInfo.user.attribute.value;
+				}
+			}
+
+			if(authkey){
+				baseParams[this.authParam] = authkey;
+			}
+		}
+        
+		this.store = new GeoExt.data.WMSCapabilitiesStore({
             // Since we want our parameters (e.g. VERSION) to override any in the 
             // given URL, we need to remove corresponding paramters from the 
             // provided URL.  Simply setting baseParams on the store is also not
@@ -209,7 +235,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
         return url.split("?").shift() + (keys ? 
             "?" + OpenLayers.Util.getParameterString(urlParams) :
             ""
-        );
+            );
     },
     
     /** api: method[createLayerRecord]
@@ -220,11 +246,13 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      */
     createLayerRecord: function(config) {
         var record;
+
         var index = this.store.findExact("name", config.name);
         if (index > -1) {
             var original = this.store.getAt(index);
 
             var layer = original.getLayer();
+            layer.url = layer.url.replace('SERVICE=WMS&', '');
 
             /**
              * TODO: The WMSCapabilitiesReader should allow for creation
@@ -232,71 +260,108 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
              */
             var projection = this.getMapProjection();
             
+            var defProp = this.getDefaultProps(original, config);            
+            
+            config = Ext.applyIf(defProp, config);
+            
             // If the layer is not available in the map projection, find a
             // compatible projection that equals the map projection. This helps
             // us in dealing with the different EPSG codes for web mercator.
             var layerProjection = this.getProjection(original);
-
+			if (layerProjection) {
+                layer.addOptions({projection: layerProjection});
+            }
+			
             var projCode = projection.getCode();
             var nativeExtent = original.get("bbox")[projCode];
-            var swapAxis = layer.params.VERSION >= "1.3" && !!layer.yx[projCode];
+
+            //var swapAxis = layer.params.VERSION >= "1.3" && !!layer.yx[projCode];
+			var swapAxis = layer.params.VERSION >= "1.3" && layer.reverseAxisOrder();
             var maxExtent = 
             (nativeExtent && OpenLayers.Bounds.fromArray(nativeExtent.bbox, swapAxis)) || 
             OpenLayers.Bounds.fromArray(original.get("llbbox")).transform(new OpenLayers.Projection("EPSG:4326"), projection);
-
+			
 			// ///////////////////////////////////////////////////////////////////////////////////////////
 			// 'layersCachedExtent' property can be defined for source and/or a single 
 			// layer configuration when we use GeoWebCache integration in GeoServer. 
-			// GeoServer getCapabilities request return only bounds in 4326 and natice CRS so, if the 
+			// GeoServer getCapabilities request return only bounds in 4326 and native CRS so, if the 
 			// map CRS is 900913 the transformed bounds is not aligned with the google standard 
 			// gridset defined in GeoServer.
 			// //////////////////////////////////////////////////////////////////////////////////////////
 			var maxCachedExtent = config.layersCachedExtent ? OpenLayers.Bounds.fromArray(config.layersCachedExtent) :
 				this.layersCachedExtent ? OpenLayers.Bounds.fromArray(this.layersCachedExtent) : maxExtent;
-
-            // make sure maxExtent is valid (transform does not succeed for all llbbox)
+			
+            // make sure maxExtent is valid (transfzorm does not succeed for all llbbox)
             if (!(1 / maxExtent.getHeight() > 0) || !(1 / maxExtent.getWidth() > 0)) {
                 // maxExtent has infinite or non-numeric width or height
                 // in this case, the map maxExtent must be specified in the config
                 maxExtent = undefined;
             }
             
+            var styles = this.getLayerStyle(config);
+        
             // use all params from sources layerBaseParams option
             var params = Ext.applyIf({
-                STYLES: config.styles,
+                STYLES: styles || "",
                 FORMAT: config.format,
-                TRANSPARENT: config.transparent
+                TRANSPARENT: config.transparent,
+                CQL_FILTER: config.cql_filter,
+                ELEVATION: config.elevation
             }, this.layerBaseParams);
             
             // use all params from original
             params = Ext.applyIf(params, layer.params);
 
-            layer = new OpenLayers.Layer.WMS(
+			// /////////////////////////////////////////////////////////
+			// Checking if the OpenLayers transition should be 
+			// disabled (transitionEffect: null).
+			//
+			// (see also 
+			// https://github.com/openlayers/openlayers/blob/master/notes/2.13.md#layergrid-resize-transitions-by-default).
+			//
+			// In this case also the zoomMethod must be setted to null 
+			// in Map configuration (see widgets/Viewer.js).
+			// /////////////////////////////////////////////////////////
+			var transitionEffect = null;
+			if(this.target.map.animatedZooming){
+				if(this.target.map.animatedZooming.transitionEffect == null){
+					transitionEffect = null;
+				}else{
+					transitionEffect = this.target.map.animatedZooming.transitionEffect;
+				}
+			}
+            
+			layer = new OpenLayers.Layer.WMS(
                 config.title || config.name, 
                 layer.url, 
                 params, {
                     attribution: layer.attribution,
-                     maxExtent: maxCachedExtent,
+                    maxExtent: maxCachedExtent,
                     restrictedExtent: maxExtent,
-					displayInLayerSwitcher: ("displayInLayerSwitcher" in config) ? config.displayInLayerSwitcher :true,
+                    displayInLayerSwitcher: ("displayInLayerSwitcher" in config) ? config.displayInLayerSwitcher :true,
                     singleTile: ("tiled" in config) ? !config.tiled : false,
                     ratio: config.ratio || 1,
                     visibility: ("visibility" in config) ? config.visibility : true,
                     opacity: ("opacity" in config) ? config.opacity : 1,
-                    buffer: ("buffer" in config) ? config.buffer : 1,
-                    projection: layerProjection
+                    buffer: ("buffer" in config) ? config.buffer : 0,
+		    dimensions: original.data.dimensions,
+                    projection: layerProjection,
+                    vendorParams: config.vendorParams,
+					transitionEffect: transitionEffect
                 }
-            );
+			);
 
             // data for the new record
             var data = Ext.applyIf({
                 title: config.title, 
                 name: config.name,
                 group: config.group,
-				        uuid: config.uuid,
-				        gnURL: config.gnURL,
+                uuid: config.uuid,
+                gnURL: config.gnURL,
                 source: config.source,
                 properties: "gxp_wmslayerpanel",
+                times: "times" in config ? config.times : null,
+                elevations: "elevations" in config ? config.elevations : null,
                 fixed: config.fixed,
                 selected: "selected" in config ? config.selected : false,
                 layer: layer
@@ -307,20 +372,26 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 {name: "source", type: "string"}, 
                 {name: "name", type: "string"}, 
                 {name: "group", type: "string"},
-				        {name: "uuid", type: "string"},
-				        {name: "gnURL", type: "string"},
-				        {name: "title", type: "string"},
+				{name: "uuid", type: "string"},
+				{name: "gnURL", type: "string"},
+				{name: "title", type: "string"},
                 {name: "properties", type: "string"},
                 {name: "fixed", type: "boolean"},
-                {name: "selected", type: "boolean"}
+                {name: "selected", type: "boolean"},
+                {name: "times", type: "string"},
+                {name: "elevations", type: "string"}
             ];
+
             original.fields.each(function(field) {
                 fields.push(field);
             });
 
             var Record = GeoExt.data.LayerRecord.create(fields);
             record = new Record(data, layer.id);
-
+        } else {
+            if (window.console && this.store.getCount() > 0) {
+                console.warn("Could not create layer record for layer '" + config.name + "'. Check if the layer is found in the WMS GetCapabilities response.");
+            }
         }
         
         return record;
@@ -427,7 +498,9 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
         if (!describedLayers[layerName]) {
             describedLayers[layerName] = cb;
             this.describeLayerStore.load({
-                params: {LAYERS: layerName},
+                params: {
+                    LAYERS: layerName
+                },
                 add: true,
                 callback: cb,
                 scope: this
@@ -463,7 +536,9 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     if (schema.getCount() == 0) {
                         schema.on("load", function() {
                             callback.call(scope, schema);
-                        }, this, {single: true});
+                        }, this, {
+                            single: true
+                        });
                     } else {
                         callback.call(scope, schema);
                     }
@@ -491,7 +566,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 callback.call(scope, false);
             }
         }, this);
-   },
+    },
     
     /** api: method[getConfigForRecord]
      *  :arg record: :class:`GeoExt.data.LayerRecord`
@@ -505,11 +580,194 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
         var params = layer.params;
         return Ext.apply(config, {
             format: params.FORMAT,
-            styles: params.STYLES,
-            transparent: params.TRANSPARENT
+            styles: params.STYLES, 
+            transparent: params.TRANSPARENT,
+            cql_filter: params.CQL_FILTER,
+            elevation: params.ELEVATION
         });
-    }
+    },    
     
+    /** api: method[getLayerStyle]
+     *  :config:  ``Object``  The application config for this layer.
+     *  :returns: ``String``
+     *
+     *  Return the loacalized styles parmater if defined or the default styles parmater for the layer.
+     */
+    getLayerStyle: function (config){
+        var styles = null;        
+        
+		var locCode = GeoExt.Lang.locale;	
+		
+		if(config.stylesAvail instanceof Array){
+			if(config.stylesAvail.length > 0){				
+				var defaultStyle = config.styles || config.stylesAvail[0].name;
+				for(var k=0; k<config.stylesAvail.length; k++){
+					var checkString = defaultStyle;
+					var langs = ["it","de", "en", "fr"]; // TODO: Fix this using the LanguageSelector tool. 
+					
+					for(var y=0; y<langs.length; y++){
+						if(checkString.indexOf("_" + langs[y]) != -1){
+							checkString = checkString.substring(0, checkString.indexOf("_" + langs[y]));
+						}
+					}
+					
+					if(config.stylesAvail[k].name == checkString + "_" + locCode)
+						styles = config.stylesAvail[k].name; 
+				}
+				
+				if(!styles){
+					styles = defaultStyle; 
+				}
+			} 
+		}
+
+		return styles;
+		
+		/*if(config.styles && config.styles.indexOf("_") == -1){
+			// /////////////////////////////////////////////////////
+			// If I've defined a style, I have to use it if 
+			// isnt localized (not contains the "_" character)
+			// /////////////////////////////////////////////////////
+			styles = config.styles;		
+		}else{		
+			// /////////////////////////////////////////////////////
+			// If I've not defined a style:
+            //    - I have to get the localized style from 
+			//      capabilities.
+			// If I've defined a localized style:
+			//    - MapStore assume that the localization is 
+			//		correctly defined and use this style.
+			// /////////////////////////////////////////////////////
+            var locCode = GeoExt.Lang.locale;	
+			
+			if(config.stylesAvail instanceof Array){
+				if(config.stylesAvail.length > 0){				
+					var defaultStyle = config.styles || config.stylesAvail[0].name;
+					for(var k=0; k<config.stylesAvail.length; k++){
+						if(config.stylesAvail[k].name == defaultStyle + "_" + locCode)
+							styles = config.stylesAvail[k].name; 
+					}
+					if(!styles){
+						styles = defaultStyle; 
+					}
+				} 
+			}
+		}        
+		return styles;*/
+		
+		/*if(config.styles){
+		    // //////////////////////////////////////////////////
+            // If the config.styles contains the 
+			// character "_" the style is already localized
+			// //////////////////////////////////////////////////
+            config.styles = config.styles.indexOf("_") == -1 ? config.styles : null;
+		}
+        
+        var locCode = GeoExt.Lang.locale;
+		
+        if(config.stylesAvail instanceof Array){
+            if(config.stylesAvail.length > 0){
+                var defaultStyle = config.styles || config.stylesAvail[0].name;
+                for(var k=0; k<config.stylesAvail.length; k++){
+                    if(config.stylesAvail[k].name == defaultStyle + "_" + locCode)
+                        styles = config.stylesAvail[k].name; 
+                }
+                if(! styles){
+					styles = defaultStyle; 
+				}
+            } 
+        }else{
+			if(config.styles){
+				styles = config.styles;
+			}				
+		}        
+		return styles;*/   
+    },    
+    
+    /** api: method[getDefaultProps]
+     *  :arg record: :class:`GeoExt.data.LayerRecord`
+     *  :returns: ``Object``
+     *
+     *  Create a config object with the capabilities information that can be used to recreate the given record.
+     */
+    getDefaultProps: function (record, config){
+        var locCode = GeoExt.Lang.locale;
+        var defaultProps = {
+            name: config.name || record.get("name"),
+            title: config.title || record.get("title")
+        };
+                
+        var keywords = record.get("keywords");
+        var dimensions = record.get("dimensions");
+        var identifiers = record.get("identifiers") || undefined;        
+        defaultProps.stylesAvail = record.get("styles");
+        
+        if(dimensions) {
+        	// ////////
+        	// looking for time dimension
+        	// ////////
+        	if (dimensions.time && dimensions.time.values) {
+        		if (dimensions.time.values.length>0) {
+        			var time=new Object();
+        			
+        			time.times=dimensions.time.values.join();
+        			
+        			defaultProps = Ext.applyIf(defaultProps, time);
+        		}
+        	}
+
+        	if (dimensions.elevation && dimensions.elevation.values) {
+        		if (dimensions.elevation.values.length>0) {
+        			var elevation=new Object();
+        			
+        			elevation.elevations=dimensions.time.values.join();
+        			
+        			defaultProps = Ext.applyIf(defaultProps, elevation);
+        		}
+        	}
+        }
+                
+        if(keywords.length>0 || !this.isEmptyObject(identifiers)){
+            var props=new Object();
+                    
+            for(var k=0; k<keywords.length; k++){
+                var keyword = keywords[k].value || keywords[k];
+                        
+                if(keyword.indexOf("uuid") != -1){
+                    props.uuid = keyword.substring(keyword.indexOf("uuid="));
+                    props.uuid = keyword.split("=")[1];
+                }  
+                
+				// ///////////////////////////////////////////////////////////////
+				// Use 'enableLang' set to 'true' in order to not enable i18n 
+				// for a specific layer
+				// ///////////////////////////////////////////////////////////////       
+                if(keyword.indexOf(locCode+"=") == 0 && config.enableLang != false){
+                    props.title = keyword.split("=")[1];
+                }     
+            }
+                    
+            for(var identifierKey in identifiers){
+                if(identifierKey === locCode && identifiers.hasOwnProperty(identifierKey)) {
+                    props.title = identifiers[identifierKey];
+                }
+            }
+                    
+            return Ext.applyIf(props, defaultProps);	
+		    
+        } else {
+            return {};   
+		}
+    },
+	
+    isEmptyObject: function(obj) {
+        for(var prop in obj){
+            if(obj.hasOwnProperty(prop)) {
+                return false;
+            }
+        }
+        return true;
+    }    
 });
 
 Ext.preg(gxp.plugins.WMSSource.prototype.ptype, gxp.plugins.WMSSource);

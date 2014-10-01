@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CategoryList>
+    <Category>
+        <name>MAP</name>
+    </Category>
+    <Category>
+        <name>TEMPLATE</name>
+    </Category>
+    <Category>
+        <name>ADMINCONFIG</name>
+    </Category>
+    <Category>
+        <name>MAPSTORECONFIG</name>
+    </Category>
+</CategoryList>

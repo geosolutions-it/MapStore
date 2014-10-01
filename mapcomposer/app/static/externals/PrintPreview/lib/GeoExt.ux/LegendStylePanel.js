@@ -36,6 +36,8 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
     /** api: ptype = gx_legendstyle */
     xtype: "gx_legendstyle",
     
+    bodyStyle: 'padding: 4px;',
+    
     /* begin i18n */
     /** api: config[iconsSizeText] ``String`` i18n */
     iconsSizeText: "Icons size",
@@ -61,6 +63,7 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
     /** api: config[fieldsetConfig]
      *  Default configuration for the fieldset.
      **/
+//<<<<<<< HEAD
     fieldsetConfig:{
         // Form parameters
         // anchor:'100%',
@@ -71,6 +74,16 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
         // collapsible:true,
         // collapsed:true
     },
+/*=======
+       fieldsetConfig:{
+        border: false,    
+        layout: "form",
+        cls: "x-form-item",
+        style:"text-align:left",
+        ref: 'fieldSet',
+        labelWidth: 120
+    },    
+>>>>>>> master */
 
     /** api: config[addFormParameters]
      *  Flag indicates that we need to add the form parameters fieldset or not
@@ -161,13 +174,13 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                 height: {
                     xtype: "numberfield",
                     fieldLabel: "Icons height",
-                    value: "6",
+                    value: "8",
                     hidden: true
                 },
                 width: {
                     xtype: "numberfield",
                     fieldLabel: "Icons width",
-                    value: "6",
+                    value: "8",
                     hidden : true
                 },
                 fontStyle:{
@@ -176,6 +189,7 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                     value: "normal",
                     hidden : true  
                 },
+//<<<<<<< HEAD
                 _ignore_fontEditor: {
                     cls: "x-html-editor-tb",
                     fieldLabel: "fontEditorText",
@@ -259,6 +273,22 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                                 scope:this
                             }
                         }]
+/*=======
+                _ignore_fontEditor:{
+                    xtype: "gxp_text_style_field",
+                    fieldLabel: "fontEditorText",
+                    elementSizes : [80, 20, 20, 20],
+                    listeners:{
+                        change: function(fieldSet, textStyle){
+                            if(!!textStyle){
+                                for(var key in textStyle){
+                                    this.setFieldsetValue(key, textStyle[key]);
+                                }
+                            }
+                        }, 
+                        scope:this
+                    }
+>>>>>>> master */
                 },
                 fontName: {
                     xtype: "textfield",
@@ -269,14 +299,15 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                 fontSize: {
                     xtype: "textfield",
                     fieldLabel: "fontSizeText",
-                    value: "5",
+                    value: "8",
                     hidden: true
                 },
                 _ignore_forceLabel: {
                     xtype: "checkbox",
                     fieldLabel: "forceLabelsText", 
                     name: "_ignore_forceLabel",
-                    checked: true,
+                    checked: false,
+                    
                     listeners:{
                         change: function (chk, value){
                             chk.ownerCt.fieldSet.items.keys.forEach(function(key){
@@ -297,7 +328,7 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                 minSymbolSize: {
                     xtype: "numberfield",
                     fieldLabel: "iconsSizeText",
-                    value: "6",
+                    value: "8",
                     listeners:{
                         change: function (numberField, value){
                             this.setFieldsetValue("height", value);
@@ -317,6 +348,7 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                     xtype: "numberfield",
                     fieldLabel: "dpiText",
                     value: "180"
+                    //value: "96"
                 }
             }
         });

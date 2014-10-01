@@ -57,9 +57,15 @@ gxp.plugins.ReverseGeocoder = Ext.extend(gxp.plugins.Tool, {
      *  message shown on map during reverse geocoding
      */
 	waitMsg: "Wait please...",
+	/** api: config[addressTitle]
+     *  ``String``
+     *  title of the popup box displayed on address found
+     */
+	addressTitle: "Address found",
 	
     init: function(target) {		
-		var me=this;
+		var me = this;
+		
 		// handles clicks on map when the geocoder is active
 		this.handler = new OpenLayers.Handler.Click( this,
 			{
@@ -76,7 +82,7 @@ gxp.plugins.ReverseGeocoder = Ext.extend(gxp.plugins.Tool, {
 		);
 		
 		// reverse geocoding toggle button
-		var cfg=this.buttonConfig || {};
+		var cfg = this.buttonConfig || {};
 		this.button=new Ext.Button(Ext.apply({
 			enableToggle:true,						
 			text:this.buttonText,
@@ -93,12 +99,10 @@ gxp.plugins.ReverseGeocoder = Ext.extend(gxp.plugins.Tool, {
 		},cfg));
 		
 		// address found viewer
-		cfg=this.outputConfig || {};		
-		this.textfield=new Ext.form.TextField(Ext.apply({
-			readOnly:true,
-			emptyText:this.emptyText
-		},cfg));
-		this.target=target;
+		cfg = this.outputConfig || {};		
+		
+		this.target = target; 
+		
 		// initialize geocoder on ready
 		target.on({
 			ready: function() {
@@ -109,14 +113,14 @@ gxp.plugins.ReverseGeocoder = Ext.extend(gxp.plugins.Tool, {
 		});
 	
         return gxp.plugins.ReverseGeocoder.superclass.init.apply(this, arguments);
-
     },
 
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-        return gxp.plugins.ReverseGeocoder.superclass.addOutput.call(this, ['-',this.button,this.textfield]);
+        return gxp.plugins.ReverseGeocoder.superclass.addOutput.call(this, ['-',this.button]);
     },
+	
 	/**private: method[updateGeocoderType]
      *  Updates the current geocoder type.	 
 	 */
@@ -140,6 +144,18 @@ gxp.plugins.ReverseGeocoder = Ext.extend(gxp.plugins.Tool, {
 		}
 	},
 	
+	/** private: method[displayAddress]
+	 * Show an address when it's found.
+     */
+	displayAddress: function(address) {
+		Ext.Msg.show({
+		   title: this.addressTitle,
+		   msg: address,
+		   buttons: Ext.Msg.OK,		   
+		   icon: Ext.MessageBox.INFO
+		});
+	},
+	
     /** private: method[reverseGeocode]
 	 * Gets the point coordinates and calls the reverse geocoding service.
      */
@@ -152,7 +168,7 @@ gxp.plugins.ReverseGeocoder = Ext.extend(gxp.plugins.Tool, {
 		gxp.plugins.ReverseGeocoder.Geocoders[this.currentGeocoderType].reverseGeocode({
 			latlon:latlon,
 			onSuccess: function(address) {
-				this.textfield.setValue(address);
+				this.displayAddress(address);				
 				if(callback) {
 					callback.call();
 				}
@@ -164,10 +180,8 @@ gxp.plugins.ReverseGeocoder = Ext.extend(gxp.plugins.Tool, {
 				}
 			},
 			scope:this
-		});
-			
+		});			
 	}
-
 });
 
 /**
@@ -178,10 +192,11 @@ gxp.plugins.ReverseGeocoder = Ext.extend(gxp.plugins.Tool, {
  *  - getRanking : gets the geocoder ranking in the "to be used" list 
  *                 given the current map configuration
  */
-gxp.plugins.ReverseGeocoder.Geocoders={
+gxp.plugins.ReverseGeocoder.Geocoders = {
+
 };
 
-gxp.plugins.ReverseGeocoder.Geocoders['google']={
+gxp.plugins.ReverseGeocoder.Geocoders['google'] = {
 	reverseGeocode: function(params) {
 		var googleCoords = new google.maps.LatLng(params.latlon.lat, params.latlon.lon);
 		var geocoder=new google.maps.Geocoder();		
@@ -208,7 +223,7 @@ gxp.plugins.ReverseGeocoder.Geocoders['google']={
 	}
 };
 
-gxp.plugins.ReverseGeocoder.Geocoders['nominatim']={
+gxp.plugins.ReverseGeocoder.Geocoders['nominatim'] = {
 	reverseGeocode: function(params) {
 		var proxy= new Ext.data.ScriptTagProxy({
 			api: {
@@ -235,9 +250,7 @@ gxp.plugins.ReverseGeocoder.Geocoders['nominatim']={
 			format:'json',
 			lon:params.latlon.lon,
 			lat:params.latlon.lat
-		},reader,function() {},this);
-		
-				
+		},reader,function() {},this);				
 	},
 	getRanking: function(map) {
 		return 0;

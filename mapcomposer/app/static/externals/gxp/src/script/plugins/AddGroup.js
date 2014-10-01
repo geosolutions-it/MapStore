@@ -36,6 +36,8 @@ Ext.namespace("gxp.plugins");
  *  .. class:: AddGroup(config)
  *
  *    Plugin for adding a new group on layer tree.
+ *
+ *  Author: Tobia Di Pisa at tobia.dipisa@geo-solutions.it
  */
 gxp.plugins.AddGroup = Ext.extend(gxp.plugins.Tool, {
     
@@ -129,22 +131,35 @@ gxp.plugins.AddGroup = Ext.extend(gxp.plugins.Tool, {
                                 scope: this,
                                 disabled: true,
                                 handler: function(){      
-                                    this.win.hide();     
-                                                             
-                                    var tree = Ext.getCmp("layertree");                                        
+                                    this.win.hide();                             
+                                    var tree = Ext.getCmp("layertree");      
                                     var textField = Ext.getCmp("diag-text-field");
-                                    
+                                    var groupNames;
+                                    var groupConfig;
                                     if(textField.isDirty() && textField.isValid()){
                                         var group = textField.getValue();
-                                
+                                        
                                         var LayerNodeUI = Ext.extend(GeoExt.tree.LayerNodeUI,
                                             new GeoExt.tree.TreeNodeUIEventMixin());
                                     
-                                        var groupConfig = typeof group == "string" ?
-                                            {title: group} : group;
+                                        var locIndex= tree.localIndexs[GeoExt.Lang.locale];
+                                        
+                                         if(typeof group == "string"){
+                                            groupNames=group.split(tree.localLabelSep);
+                                            groupConfig= new Object();
+                                        }else{
+                                            groupNames=group.title.split(tree.localLabelSep);
+                                            groupConfig= group;
+                                        }
+                                        if(groupNames.length > 0){
+                                            groupConfig.title= groupNames[locIndex] ? groupNames[locIndex] : groupNames[0];
+                                        }
+
+                                        /*var groupConfig = typeof group == "string" ?
+                                            {title: group} : group;*/
                                             
                                         var node = new GeoExt.tree.LayerContainer({
-                                            text: group,
+                                            text: groupConfig.title,
                                             iconCls: "gxp-folder",
                                             expanded: true,
                                             checked: false,

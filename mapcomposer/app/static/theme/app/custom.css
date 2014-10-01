@@ -1,0 +1,32 @@
+/* crop data table */
+.cropdatatooltip{
+    border-collapse: collapse;
+	
+	font-size:12px;
+	margin: 0 auto;
+	
+}
+.cropdatatooltip tr{
+	padding:2px;
+    
+	font-family: arial serif;
+	font-size: 11px;
+}
+.cropdatatooltip tr:hover{
+	background-color:#EEEEEE;
+}
+.cropdatatooltip th,.cropdatatooltip td{
+	padding:2px;
+    border: 1px solid gray;
+	
+}
+
+.cropdatatooltip  strong {
+	font-style:italic;
+	text-align:center;
+}
+.cropdatatooltip th{
+	font-weight:bold;
+	background-color:lightgrey;
+	text-align:center;
+}

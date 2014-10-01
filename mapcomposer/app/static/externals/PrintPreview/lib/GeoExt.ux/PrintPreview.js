@@ -38,13 +38,13 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
     /** api: config[emptyCommentText] ``String`` i18n */
     emptyCommentText: "Enter comments here.",
     /** api: config[creatingPdfText] ``String`` i18n */
-    creatingPdfText: "Creating PDF...",
+    creatingPdfText: "Rendering Layout...",
     /** api: config[defaultTabText] ``String`` i18n */
     defaultTabText: "Default",
     /** api: config[legendTabText] ``String`` i18n */
     legendTabText: "Legend",
-    /** api: config[graticuleFieldLabelText] ``String`` i18n */
-    graticuleFieldLabelText: 'Active graticule',
+    /** api: config[graticuleTabText] ``String`` i18n */
+    graticuleTabText: "Graticule",
     /** api: config[landscapeText] ``String`` i18n */
     landscapeText: 'Landscape',
     /* end i18n */
@@ -176,6 +176,21 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
      *  Print in landscape mode
      **/
     landscape: false,
+
+    /** api: config[bboxFit]
+     *  Flag indicates that the mapPanel is fixed by bbox (not by scale)
+     **/
+    bboxFit: false,
+
+    /** api: config[bboxFit]
+     *  Flag indicates that the printed map is fixed by bbox to the current preview (allow use scale, but really uses the preview extend)
+     **/
+    bboxPreviewFit: false,
+
+    /** api: config[graticuleOptions]
+     *  `Object` map with default parameters for the `OpenLayer.Control.Graticule` control when this.addGraticuleControl is enabled
+     **/
+    graticuleOptions: {},
     
     /** private: method[initComponent]
      */
@@ -183,6 +198,8 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         var printMapPanelOptions = {
             sourceMap: this.sourceMap,
             printProvider: this.printProvider,
+            bboxFit: this.bboxFit,
+            bboxPreviewFit: this.bboxPreviewFit,
             width : 400
         };
         if(this.printMapPanel) {
@@ -196,6 +213,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 printMapPanelOptions);
         }
         this.sourceMap = this.printMapPanel.sourceMap;
+
         this.printProvider = this.printMapPanel.printProvider;
         
         this.form = this.createForm();
@@ -418,13 +436,12 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 checkItems.push(landscapeCheckbox);
             }
 
-            this.addGraticuleControl && checkItems.push(this.getGraticuleCheckBox());  
-
             panelElements.push({
-                xtype: "container",
+                //xtype: "container",
                 layout: "form",
                 cls: "x-form-item",
-                        style:"text-align:left",
+                style:"text-align:left;padding:0px;",
+                bodyStyle: 'padding:4px',
                 items: checkItems
             });
         }
@@ -440,31 +457,11 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             })
         });
 
-        if(this.addFormParameters){
-            // use the flag
-            var tabItems = [];
-            tabItems.push(new Ext.form.FormPanel({
-                title: this.defaultTabText,
-                autoHeight: true,
-                border: false,
-                defaults: {
-                    anchor: "100%"
-                },
-                items: panelElements
-            }));
-            tabItems.push(new Ext.form.FormPanel({
-                title: this.legendTabText,
-                autoHeight: true,
-                border: false,
-                defaults: {
-                    anchor: "100%"
-                },
-                items: [this.getFormParamatersFieldset()]
-            }));
-            
+        // Tab it's active if we need to add style or graticule panel
+        if(this.addFormParameters || this.addGraticuleControl){
             return new Ext.TabPanel({
                 activeTab: 0,
-                items: tabItems
+                items: this.getTabItems(panelElements)
             });
         }else{
             return new Ext.form.FormPanel({
@@ -476,6 +473,61 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 items: panelElements
             });
         }
+    },
+    
+    /** api: method[getTabItems]
+     *  :`panelElements`: `Object` with elements for the default tab
+     *  :return: ``Array`` with tab items for the print preview 
+     */
+    getTabItems: function(panelElements){
+
+        var tabItems = [];
+        // Default tab
+        tabItems.push(new Ext.form.FormPanel({
+            title: this.defaultTabText,
+            autoHeight: true,
+            border: false,
+            defaults: {
+                anchor: "100%"
+            },
+            items: panelElements
+        }));
+
+        // Legend style tab
+        if(this.addFormParameters){
+            this.legendStylePanel = new GeoExt.ux.LegendStylePanel({
+                printMapPanel: this.printMapPanel
+            });
+            tabItems.push(new Ext.form.FormPanel({
+                title: this.legendTabText,
+                autoHeight: true,
+                border: false,
+                defaults: {
+                    anchor: "100%"
+                },
+                items: [this.legendStylePanel]
+            }));
+        }
+
+        // Graticule style tab
+        if(this.addGraticuleControl){
+            this.graticulePanel = new GeoExt.ux.GraticuleStylePanel({
+                sourceMap: this.sourceMap,
+                mapPanel: this.printMapPanel,
+                map: this.printMapPanel.map,
+                graticuleOptions: this.graticuleOptions
+            });
+            tabItems.push(new Ext.form.FormPanel({
+                title: this.graticuleTabText,
+                autoHeight: true,
+                border: false,
+                defaults: {
+                    anchor: "100%"
+                },
+                items: [this.graticulePanel]
+            }));
+        }
+        return tabItems;
     },
     
     /** api: method[getFormParamatersFieldset]
@@ -541,9 +593,59 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         var nr = this.printProvider.fullLayouts.find("name", newLayoutName);
         newLayout = this.printProvider.fullLayouts.getAt(nr);           
         this.printProvider.setLayout(newLayout);
+    },
+    /*
+    updateLayout: function() {
+        var currentLayout;
+        
+        if(!this.printProvider.layout) {
+            currentLayout = this.printProvider.layouts.getAt(this.printProvider.defaultLayoutIndex ||0).get('name').split("_")[0];
+        } else {
+            currentLayout = this.printProvider.layout.get('name').split("_")[0];
+        }
+        
+        var newLayoutName = '';
+        var newLayout = null;
+        /*
+            A4_legend
+            A4_compact_legend
+            A4_2_pages_legend           
+            A4_2_pages_compact_legend
+            
+            includeLegend: false,
+            compactLegend: false,
+            legendOnSeparatePage: false,
+            
+        / 
+        if(this.includeLegend){
+            newLayoutName = currentLayout;
+            
+            if(this.compactLegend && this.legendOnSeparatePage){
+                newLayoutName = currentLayout + '_2_pages_compact_legend';
+            } else if(this.compactLegend){
+                newLayoutName = currentLayout + '_compact_legend';
+            }else if(this.legendOnSeparatePage){
+                newLayoutName = currentLayout + '_2_pages_legend';
+            }           
+            
+        } else {
+            newLayoutName = currentLayout + '_no_legend';
+        }
+
+        /* Configure landscape layout: 
+         *   * _2_pages_compact_legend_landscape
+         *   * _2_pages_landscape
+        /
+        if(this.legendOnSeparatePage && this.landscape){
+            newLayoutName += "_landscape";
+        }
+        
+        var nr = this.printProvider.fullLayouts.find("name", newLayoutName);
+        newLayout = this.printProvider.fullLayouts.getAt(nr);           
+        this.printProvider.setLayout(newLayout);
 
     },
-    
+    */
     /** private: method[createMapOverlay]
      *  :return: ``Ext.Panel``
      */
@@ -557,7 +659,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 width: scaleLine.maxWidth
             }];
         if(!this.bboxFit){
-            // hide scale for bboxFit
+            // hide scale for not bboxFit
             items.push({
                 xtype: "container",
                 layout: "form",

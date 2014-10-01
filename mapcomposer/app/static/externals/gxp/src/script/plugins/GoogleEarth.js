@@ -93,6 +93,7 @@ gxp.plugins.GoogleEarth = Ext.extend(gxp.plugins.Tool, {
     addActions: function() {
         var actions = [{
             menuText: this.menuText,
+			//text: this.menuText,
             enableToggle: true,
             iconCls: "gxp-icon-googleearth",
             tooltip: this.tooltip,

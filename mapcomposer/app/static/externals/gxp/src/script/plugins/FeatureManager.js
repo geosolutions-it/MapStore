@@ -35,6 +35,18 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
     
     /** api: ptype = gxp_featuremanager */
     ptype: "gxp_featuremanager",
+
+    /** api: config[noValidWmsVersionMsgTitle]
+     *  ``String``
+     *  Title string for no valid WMS version (i18n).
+     */    
+    noValidWmsVersionMsgTitle: 'No valid WMS version',
+    
+    /** api: config[noValidWmsVersionMsgText]
+     *  ``String``
+     *  Text string for no valid WMS version (i18n).
+     */    
+    noValidWmsVersionMsgText: "The queryForm plugin doesn't work with WMS Source version: ",   
     
     /** api: config[maxFeatures]
      *  ``Number`` Default is 100
@@ -477,6 +489,10 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
      *  features and selected features, all features will be shown.
      */
     setLayerDisplay: function() {
+        var mapLayer = this.featureLayer && this.featureLayer.map;
+        if (mapLayer) {
+            mapLayer.setLayerIndex(this.featureLayer, mapLayer.layers.length);
+        }      
         var show = this.visible();
         var map = this.target.mapPanel.map;
         if (show) {
@@ -607,6 +623,18 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         if (source && source instanceof gxp.plugins.WMSSource) {
             source.getSchema(record, function(schema) {
                 if (schema === false) {
+                
+                    //information about why selected layers are not queriable.                
+                    var layer = record.get("layer");
+                    var wmsVersion = layer.params.VERSION;
+                    Ext.MessageBox.show({
+                        title: this.noValidWmsVersionMsgTitle,
+                        msg: this.noValidWmsVersionMsgText + wmsVersion,
+                        buttons: Ext.Msg.OK,
+                        animEl: 'elId',
+                        icon: Ext.MessageBox.INFO
+                    });
+                    
                     this.clearFeatureStore();
                 } else {
                     var fields = [], geometryName;
@@ -824,21 +852,64 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         var filter;
         if (this.filter instanceof OpenLayers.Filter.Spatial && this.filter.type === OpenLayers.Filter.Spatial.BBOX) {
             filter = this.filter;
-        } else if (this.filter instanceof OpenLayers.Filter.Logical && this.filter.type === OpenLayers.Filter.Logical.AND) {
+        }else if (this.filter instanceof OpenLayers.Filter.Spatial && this.filter.type === OpenLayers.Filter.Spatial.INTERSECTS) {
+			filter = this.filter;
+		}else if (this.filter instanceof OpenLayers.Filter.Spatial && this.filter.type === OpenLayers.Filter.Spatial.DWITHIN) {
+			filter = this.filter;
+		}else if (this.filter instanceof OpenLayers.Filter.Logical && this.filter.type === OpenLayers.Filter.Logical.AND) {
             for (var f, i=this.filter.filters.length-1; i>=0; --i) {
                 f = this.filter.filters[i];
                 if (f instanceof OpenLayers.Filter.Spatial && f.type === OpenLayers.Filter.Spatial.BBOX) {
                     filter = f;
                     break;
-                }
+                }else if (f instanceof OpenLayers.Filter.Spatial && f.type === OpenLayers.Filter.Spatial.INTERSECTS) {
+				    filter = f;
+                    break;
+				}else if (f instanceof OpenLayers.Filter.Spatial && f.type === OpenLayers.Filter.Spatial.DWITHIN) {
+				    filter = f;
+                    break;
+				}
             }
         }
-        var extent = filter ? filter.value : this.target.mapPanel.map[meth]();
+		
+		var extent;
+		if(filter){
+			if(filter.value instanceof OpenLayers.Geometry.Polygon){
+				extent = filter.value.bounds;
+			}else if(filter.value instanceof OpenLayers.Bounds){
+				extent = filter.value;
+			}else if(filter.value instanceof OpenLayers.Geometry.Point){
+			
+				var geodesicPolygon = OpenLayers.Geometry.Polygon.createGeodesicPolygon(
+					filter.value,
+					filter.distance,
+					100, 
+					0,
+					this.target.mapPanel.map.getProjectionObject()
+				);
+				
+				/*var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
+					filter.value,
+					filter.distance,
+					100, 
+					null
+				);*/
+				
+				extent = geodesicPolygon.getBounds();
+			}else{
+				extent = this.target.mapPanel.map[meth]();
+			}		
+		}
+		
+        //var extent = filter ? filter.value : this.target.mapPanel.map[meth]();
         if (extent && layer.maxExtent) {
             if (extent.containsBounds(layer.maxExtent)) {
                 // take the smaller one of the two
                 extent = layer.maxExtent;
             }
+        }else if (!extent && layer.maxExtent){
+            // Allow filter without specific extent
+            extent = layer.maxExtent;
         }
         return extent;
     },
@@ -980,6 +1051,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                     // choose a page on the top left
                     var extent = this.getPagingExtent("getExtent");
                     maxExtent = this.getPagingExtent("getMaxExtent");
+					
                     condition = {
                         lonLat: new OpenLayers.LonLat(
                             Math.max(maxExtent.left, extent.left),
@@ -993,6 +1065,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                     condition.index = this.pages.length - 1;
                     condition.next = this.pages[0];
                 }
+				
                 this.page = null;
                 if (!this.pages) {
                     var layer = this.layerRecord.getLayer();
