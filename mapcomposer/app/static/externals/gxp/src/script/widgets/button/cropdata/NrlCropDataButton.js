@@ -84,9 +84,10 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
             var region = attrs.district ? attrs.district + "," + attrs.province : attrs.province;
             numRegion.push(region.toLowerCase());
         }
-        
-        var data = this.form.output.getForm().getValues();
-        var data2 = this.form.output.getForm().getFieldValues();
+        var form = this.form.output.getForm();
+        var data = form.getValues();
+        var data2 = form.getFieldValues();
+        var units = this.form.output.units;
         
         var regionList = data.region_list.toLowerCase();
         var commodity = data.crop.toLowerCase();
@@ -95,9 +96,26 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
         var fromYear = data.startYear;
         var toYear = data.endYear;
         
+        //get unit of measure id
         var prodUnits = data2.production_unit;
+        var areaUnit = data2.area_unit;
+        var yieldUnit = data2.yield_unit;
+        //get the full record 
+        var getSelectedRecord = function(combo,uid){
+            var store = combo.getStore();
+            var i = store.findExact('uid',uid);
+            return store.getAt(i);
+        }
+        // get selected record for each combo
+        var prodRec = units.production.getUnitRecordById( prodUnits );
+        var areaRec = units.area.getUnitRecordById( areaUnit );
+        var yieldRec = units.yield.getUnitRecordById( yieldUnit );
+        // get coefficient for yield,area and production
+        var prodCoeffUnits = prodRec &&  prodRec.get('coefficient');
+        var areaCoeffUnits = areaRec && areaRec.get('coefficient');
+        var yeildCoeffUnits = yieldRec && yieldRec.get('coefficient');
         //var areaUnits = data2.area_unit == 1 ? 'Ha' : 'Sqr Km';
-        
+        /*
         switch(prodUnits)
         {
         case "000 tons":
@@ -110,10 +128,14 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
           this.chartOpt.series.prod.name = 'Production (000 kgs)';
           var prodCoeffUnits = '1000';
           break;
-        default:
+        case "000 bales":
           this.chartOpt.series.prod.unit = '(000 bales)';
           this.chartOpt.series.prod.name = 'Production (000 bales)';          
           var prodCoeffUnits = '170';
+        }*/
+        if(!(prodCoeffUnits && areaCoeffUnits && yeildCoeffUnits)){
+            //DEBUG
+            alert("prod "+prodCoeffUnits+"area "+ areaCoeffUnits+ "yield "+ yeildCoeffUnits)
         }
 
         var chartTitle = "";
@@ -156,6 +178,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                          (toYear         ? "end_year:" + toYear + ";" : "") +
                          (regionList     ? "region_list:" + regionList + ";" : "") +
                          (prodCoeffUnits ? "yield_factor:" + prodCoeffUnits : "");
+                         (areaCoeffUnits ? "prod_factor:" + areaCoeffUnits : "");
+                         (yeildCoeffUnits ? "yield_factor:" + yeildCoeffUnits : "");
 			
         Ext.Ajax.request({
             scope:this,

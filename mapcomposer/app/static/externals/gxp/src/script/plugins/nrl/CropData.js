@@ -57,8 +57,12 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
         fillOpacity:0.6,
         cursor: "pointer"
     },
+    /** URL for ranges **/
 	rangesUrl: "http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
+	/** base url for data **/ 
     dataUrl: null, //"http://84.33.2.24/geoserver/ows?",
+    /** Base URL for UOM **/
+    unitsUrl:"http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:measure_units_for_crop&outputFormat=json",
 	comboConfigs:{
         base:{
             anchor:'100%',
@@ -126,9 +130,32 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
             tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"                            
         }    
     },
-	
+    commodityFields:[
+            {name:'label',  mapping:'properties.label'},
+            {name:'season',mapping: 'properties.seasons'},
+            {name:'crop',   mapping:'properties.crop'},
+            {name:'max',    mapping:'properties.max' },
+            {name:'min',    mapping:'properties.min' },
+            {name:'prod_default_unit',    mapping:'properties.prod_default_unit' },
+            {name:'area_default_unit',    mapping:'properties.area_default_unit' },
+            {name:'yield_default_unit',    mapping:'properties.yield_default_unit' }
+    ],    
+    /** fields for unit of measure combo boxes **/
+	uomFields:[
+	        {name:'id',mapping:'properties.id'},
+            {name:'uid',mapping:'properties.id'},
+            {name:'name',mapping:'properties.name'},
+            {name:'label', mapping :'properties.name'},
+            {name:'coefficient', mapping:'properties.coefficient', type: Ext.data.Types.FLOAT},
+            {name:'shortname',  mapping: 'properties.shortname'},
+            {name:'description', mapping: 'properties.description'},
+            {name:'class',  mapping :'properties.class'},   
+            {name:'cid',   mapping: 'properties.cid'} //TODO this should be added statically somewhere
+    ],
     startCommodity:'Wheat',
-
+    startProdUom:'000_tons',
+    startAreaUom:'000_ha',
+    startYieldUom:'kg_ha',
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
@@ -140,8 +167,20 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
         //Override the comboconfig url;
         this.comboConfigs.base.url = this.dataUrl;
         var rangeData;
-        //download from WFS available year ranges for each crops.
+        //filter unit stores for selected crop
         
+        var  filterUnitByCrop =  function(units,crop){
+            units.area.filterByCrop(crop);
+            units.production.filterByCrop(crop);
+            units.yield.filterByCrop(crop);
+        };
+        //reset unit combobox to defaults for the selected crop
+        var resetUnitComboboxes = function(unitFieldset,selectedCommodity){
+                    unitFieldset.production.selectUnit(selectedCommodity.get('prod_default_unit'));
+                    unitFieldset.area.selectUnit(selectedCommodity.get('area_default_unit'));
+                    unitFieldset.yield.selectUnit(selectedCommodity.get('yield_default_unit'));
+        }
+        //download from WFS available year ranges for each crops.
         var cropData  = {
             xtype:'form',
             title: 'Crop Data',
@@ -163,7 +202,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     items:[
                         {boxLabel: 'Data' , name: 'outputtype', listeners: this.setRadioQtip(this.radioQtipTooltip), inputValue: 'data', disabled: true},
                         {boxLabel: 'Chart', name: 'outputtype', inputValue: 'chart', checked: true},
-                        {boxLabel: 'Map'  , name: 'outputtype', inputValue: 'map'}                        
+                        {boxLabel: 'Map'  , name: 'outputtype', inputValue: 'map'}
                     ],                 
                     listeners: {           
                         change: function(c, checked){
@@ -298,13 +337,14 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 var yrs= commodityCB.ownerCt.yearRangeSelector;
                                 yrs.setMaxValue(selectedCommodity.get('max'));
                                 yrs.setMinValue(selectedCommodity.get('min'));
-                                
+                                //TODO SET UNIT COMBO BOXES
+                                resetUnitComboboxes(commodityCB.refOwner.units,selectedCommodity);
                             }
-							
-                            var comboProd = Ext.getCmp('comboProd');
-                            comboProd.setValue('000 tons');
                         }
                     }
+                //
+                // AOI SELECTOR
+                //
                 },{
                     xtype: 'nrl_aoifieldset',
                     name:'region_list',
@@ -315,37 +355,33 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     target:this.target,
                     areaFilter:this.areaFilter, 
                     hilightLayerName:this.hilightLayerName,
-                    layers:this.layers                    
+                    layers:this.layers
                 },
+                
+                //COMMODITY
                 {
                     xtype: 'nrl_commoditycombobox',
                     forceSelection:true,
                     selectOnFocus:true,
                     store: new Ext.data.JsonStore({
-                        fields: [
-                            {name:'label',  mapping:'properties.label'},
-                            {name:'season',mapping: 'properties.seasons'},
-                            {name:'crop',   mapping:'properties.crop'},
-                            {name:'max',    mapping:'properties.max' },
-                            {name:'min',    mapping:'properties.min' }
-                        ],
+                        fields: this.commodityFields,
                         autoLoad: true,
                         url: this.rangesUrl,
                         root: 'features',
-                        idProperty:'crop'                        
+                        idProperty:'crop'
                     }),
                     allowBlank:false,
                     name:'crop',
                     anchor:'100%',
                     ref: 'Commodity',
-                    listeners: {                        
+                    listeners: {
                         expand: function( combo ){
                             var season = this.ownerCt.season;
                             var radio = season.getValue();
                             
                             if (radio && radio.getValue()){
                                this.seasonFilter(radio.inputValue);
-                            }                           
+                            }
                         },
                         select: function(cb,record,index){
                             //set year range for the selected crop
@@ -354,17 +390,18 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             yrs.setMaxValue(selectedCommodity.get('max'));
                             yrs.setMinValue(selectedCommodity.get('min'));
                             cb.ownerCt.referenceYear.setText(yrs.endValue.getValue());
-                            
-                            var comboProd = Ext.getCmp('comboProd');
-                            
                             var comValue = cb.getValue();
-                            if (comValue == 'cotton'){
-                                comboProd.setValue('000 bales');               
-                            }else{
-                                comboProd.setValue('000 tons');                                  
-                            }
+                            //filter and set unit of measures
+                            var units = this.refOwner.units;
+                            filterUnitByCrop(units,comValue);
+                            resetUnitComboboxes(this.refOwner.units,selectedCommodity);
+                            
+                            
                         }
                     }
+                //
+                //REFERENCE YEAR
+                //
                 },{
                     xtype: 'label',
                     anchor:'100%',
@@ -381,9 +418,12 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             this.output.referenceYear.setText(end);
                         },
                         afterrender: function(component) {
-                            if(this.output.yearRangeSelector!=component)return;           
+                            if(this.output.yearRangeSelector!=component)return;
                         }
-                    }         
+                    }
+                //
+                // VARIABLE
+                //
                 },{ 
                     fieldLabel: 'Variable',
                     xtype: 'radiogroup',
@@ -402,6 +442,9 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                         {boxLabel: 'Yield' , name: 'variable', inputValue: 'Yield'}
                         
                     ]
+                //
+                // UNIT OF MEASURE
+                //
                 },{
                     xtype: 'fieldset',
                     title:'Unit',
@@ -411,54 +454,54 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     forceLayout:true, //needed to force to read values from this fieldset
                     collapsed:false,
                     items:[{
-                            xtype: 'combo',
+                            //PRODUCTION UOM
+                            xtype: 'nrl_uom_combobox',
                             ref: 'production',
                             id: 'comboProd',
                             anchor:'100%',
                             fieldLabel: 'Production',
+                            mode: 'local',
                             typeAhead: true,
                             triggerAction: 'all',
                             lazyRender:false,
-                            mode: 'local',
                             name:'production_unit',
                             forceSelected:true,
                             allowBlank:false,
-                            autoLoad:true,
-                            displayField: 'label',
-                            valueField:'label',
-                            value:'000 tons',
-                            readOnly:true,
+                            value:this.startProdUom,
+                            displayField: 'name',
+                            valueField: 'uid',
+                            readOnly:false,
                             store: new Ext.data.JsonStore({
-                                fields:[
-                                        {name:'name',dataIndex:'name'},
-                                        {name:'label',dataIndex:'label'},
-                                        {name:'coeff',dataIndex:'coeff'},
-                                        {name:'shortName', dataindex: 'shortName'},
-                                        {name:'cid', dataindex: 'cid'}
-                                ],
-                                data:[
-                                    {label: '000 tons', coeff:1,	shortName:'(000 tons)', cid:'cotton,sugarcane,rice,maize'},//TODO set proper values for coef
-                                    {label: '000 kgs',    coeff:2,	shortName:'(000 kgs)', cid:'cotton,sugarcane,rice,maize'},//TODO set proper values for coef
-                                    {label: '000 bales', coeff:3,	shortName:'(000 bales)', cid:'cotton'} //TODO set proper values for coef
-                                ]
+                                 baseParams:{
+                                    viewParams: 'class:production'
+                                },
+                                fields:this.uomFields,
+                                autoLoad:true,
+                                url: this.unitsUrl,
+                                root: 'features',
+                                idProperty:'uid'
                             }),
+                            //filter by class the store of the combobox.
+                            //uses the 3rd parameter as additional filter for Crops (TODO)
+                           
                             listeners: {
                                 expand: function( combo ){
                                     
+                                     var commodity = this.ownerCt.ownerCt.Commodity;
+                                        var radio = commodity.getValue();
+                                    //enable before do filter
                                     if (combo.disabled == true){
                                         combo.enable();
-                                        var commodity = this.ownerCt.ownerCt.Commodity;
-                                        var radio = commodity.getValue();
-                                        
-                                        if(radio){
-                                            combo.store.filter('cid', radio.toLowerCase(),true,true); 
-                                        }
+                                        this.filterByCrop(radio);
                                         combo.disable();
+                                    }else{
+                                       this.filterByCrop(radio);
                                     }
-                                }                        
-                            }                      
+                                }
+                            }
 						},{
-                            xtype: 'combo',
+						    //AREA UOM
+                            xtype: 'nrl_uom_combobox',
                             ref: 'area',
                             anchor:'100%',
                             fieldLabel: 'Area',
@@ -471,23 +514,36 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             allowBlank:false,
                             name:'area_unit',
                             displayField: 'label',
-                            valueField:'label',
-                            value: '000 hectares',
-                            readOnly:true,
+                            valueField:'uid',
+                            value: this.startAreaUom,
+                            readOnly:false,
                             store: new Ext.data.JsonStore({
-                                fields:[
-                                        {name:'name',dataIndex:'name'},
-                                        {name:'label',dataIndex:'label'},
-                                        {name:'coeff',dataIndex:'coeff'},
-                                        {name:'shortName', dataindex: 'shortName'}
-                                ],
-                                data:[
-                                    {label: '000 hectares',		coeff:1,	shortName:'000 ha'        },//TODO set proper values for coef
-                                    {label: 'square kilometers',	coeff:2,	shortName:'Km<sup>2</sup>'} //TODO set proper values for coef
-                                ]
-                            })
+                                baseParams:{
+                                    viewParams: 'class:area'
+                                },
+                                fields:this.uomFields,
+                                autoLoad:true,
+                                url: this.unitsUrl,
+                                root: 'features',
+                                idProperty:'uid'
+                            }),
+                            listeners: {
+                                expand: function( combo ){
+                                    
+                                     var commodity = this.ownerCt.ownerCt.Commodity;
+                                        var radio = commodity.getValue();
+                                    //enable before do filter
+                                    if (combo.disabled == true){
+                                        combo.enable();
+                                        this.filterByCrop(radio);
+                                        combo.disable();
+                                    }else{
+                                    }
+                                }
+                            }
                         },{
-                            xtype: 'combo',
+                            //YIELD UOM
+                            xtype: 'nrl_uom_combobox',
                             ref: 'yield',
                             anchor:'100%',
                             fieldLabel: 'Yield',
@@ -500,20 +556,35 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             allowBlank:false,
                             name:'yield_unit',
                             displayField: 'label',
-                            valueField:'label',
-                            value: 'kg/ha',
-                            readOnly:true,
+                            valueField:'uid',
+                            value: this.startYieldUom,
+                            readOnly:false,
                             store: new Ext.data.JsonStore({
-                                fields:[
-                                        {name:'name',dataIndex:'name'},
-                                        {name:'label',dataIndex:'label'},
-                                        {name:'coeff',dataIndex:'coeff'},
-                                        {name:'shortName', dataindex: 'shortName'}
-                                ],
-                                data:[
-                                    {label: 'kg/ha', coeff:1, shortName:'kg/ha'}//TODO set proper values for coef
-                                ]
-                            })
+                                baseParams:{
+                                    viewParams: 'class:yield'
+                                },
+                                fields:this.uomFields,
+                                autoLoad:true,
+                                url: this.unitsUrl,
+                                root: 'features',
+                                idProperty:'uid'
+                                
+                            }),
+                            listeners: {
+                                expand: function( combo ){
+                                    
+                                     var commodity = this.ownerCt.ownerCt.Commodity;
+                                        var radio = commodity.getValue();
+                                    //enable before do filter
+                                    if (combo.disabled == true){
+                                        combo.enable();
+                                        this.filterByCrop(radio);
+                                        combo.disable();
+                                    }else{
+                                        this.filterByCrop(radio);
+                                    }
+                                }
+                            }
                     }]
                 }            
             ],	
@@ -565,6 +636,21 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
             
         },this);
         
+        
+        // initialize units of measure when finish loading
+        var pendingStores = 4;
+        var units = this.output.units;
+        var Commodity = this.output.Commodity;
+        var loadStoreTrigger =  function(){
+            pendingStores--
+            if(pendingStores == 0){
+                resetUnitComboboxes(units,Commodity.getStore().getAt(0));
+            }
+        }
+        this.output.units.production.getStore().on('load',loadStoreTrigger);
+        this.output.units.area.getStore().on('load',loadStoreTrigger);
+        this.output.units.yield.getStore().on('load',loadStoreTrigger);
+        Commodity.on('load',loadStoreTrigger);
         return this.output;
     },
 	

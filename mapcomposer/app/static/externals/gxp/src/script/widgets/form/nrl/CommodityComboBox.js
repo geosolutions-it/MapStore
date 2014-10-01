@@ -49,7 +49,9 @@ nrl.form.CommodityComboBox = Ext.extend(Ext.form.ComboBox,{
 	seasonFilter: function(season){
 		this.store.filter('season',season,true,true);
 	},
-    
+    getSelectedRecord: function(){
+        this.getStore().findExact(this.valueField,this.getValue());
+    },
     initComponent: function() {
         if(this.store){
             this.store.on('load', function(store,records,opt){
@@ -62,4 +64,59 @@ nrl.form.CommodityComboBox = Ext.extend(Ext.form.ComboBox,{
 		return nrl.form.CommodityComboBox.superclass.initComponent.apply(this, arguments);
 	}
 });
+
 Ext.reg('nrl_commoditycombobox',nrl.form.CommodityComboBox);
+
+
+nrl.form.UOMComboBox = Ext.extend(Ext.form.ComboBox,{
+
+
+    setValueAndFireSelect: function(v) {
+        this.setValue(v);
+        var r = this.findRecord(this.valueField, v);
+        if (!Ext.isEmpty(r)) {
+            var index = this.store.indexOf(r);
+            this.initSelect = true;
+            this.fireEvent("select", this, r, index);
+            this.initSelect = false;
+        }
+    },
+    filterByCrop: function(crop){
+        this.getStore().clearFilter(); 
+        this.getStore().filter([{
+            property     : 'cid',
+            value        : crop,
+            anyMatch     : true, //optional, defaults to true
+            caseSensitive: true  //optional, defaults to true
+          }])
+    },
+    getUnitRecordById : function(uid){
+            return this.store.getAt(this.getUnitIndex(uid));
+    },
+    getUnitIndex : function(uid){
+        var store = this.getStore();
+        var i = store.findExact(this.valueField,uid);
+        return i;
+    },
+    getSelectedRecord: function(){
+        return this.getStore().findExact(this.valueField,this.getValue());
+    },
+    selectUnit: function(uid){
+        var rec = this.getUnitRecordById(uid);
+        if(rec){
+            this.setValue(rec.get(this.valueField));
+        }
+    },
+    initComponent: function() {
+        if(this.store){
+            this.store.on('load', function(store,records,opt){
+                    if (records.length<1) return;
+                    var value =this.getStore().getAt(0).get(this.valueField);
+                    this.setValueAndFireSelect(value);
+                },this);
+        }
+        
+		return nrl.form.CommodityComboBox.superclass.initComponent.apply(this, arguments);
+	}
+});
+Ext.reg('nrl_uom_combobox',nrl.form.UOMComboBox);
