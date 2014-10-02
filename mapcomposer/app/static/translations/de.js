@@ -741,6 +741,7 @@ GeoExt.Lang.add("de", {
         realTimeSynchButtonTooltip: 'ungültige Wertec',
         synchMenuText: 'Sync',
         settingsMenuText: 'Einstellungen',
-        saveSettingsText: 'Speichern'
+        saveSettingsText: 'Speichern',
+        refreshTooltipTitle: 'Aktualisieren aktiv'
     }           
 });

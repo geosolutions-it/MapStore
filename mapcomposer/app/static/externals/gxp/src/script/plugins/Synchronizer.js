@@ -71,6 +71,7 @@ gxp.plugins.Synchronizer = Ext.extend(gxp.plugins.Tool, {
     synchMenuText: 'Sync',
     settingsMenuText: 'Settings',
     saveSettingsText: 'Save',
+    refreshTooltipTitle: 'Refresh attivo',
     // end i18n.
     
     /** private: method[constructor]
@@ -119,13 +120,16 @@ gxp.plugins.Synchronizer = Ext.extend(gxp.plugins.Tool, {
             anchor: '100%',
             checkboxToggle : true,
             collapsed : false,
-            disabled: true,
+            disabled: false,
+            monitorResize : true,
+            preventBodyReset : true,
             items: [{
                 id: "start-datefield",
                 xtype: "datefield",
                 fieldLabel: this.startTimeLabel,
                 allowBlank: false,
                 editable: false,
+                width: 105,
                 maxValue: self.range[1],
                 minValue: self.range[0],
                 format: "d/m/Y",
@@ -136,11 +140,18 @@ gxp.plugins.Synchronizer = Ext.extend(gxp.plugins.Tool, {
                 fieldLabel: this.endTimeLabel,
                 allowBlank: false,
                 editable: false,
+                width: 105,                
                 maxValue: self.range[1],
                 minValue: self.range[0],
                 format: "d/m/Y",
                 value: Ext.util.Format.date(self.endTime, "d/m/Y")
-            }]
+            }]/*,
+            listeners: {
+                afterlayout: function(field){
+                    field.syncSize();
+                    field.doLayout(false,true);
+                }
+            }*/
         });
         
         this.refreshIntervalSetting = new Ext.form.FieldSet({
@@ -174,8 +185,7 @@ gxp.plugins.Synchronizer = Ext.extend(gxp.plugins.Tool, {
             // height: 200,
             resizable: false,
             listeners: {
-                show: function(win){
-
+                afterlayout: function(win){
                 }
             },
             items: [new Ext.form.FormPanel({
@@ -328,18 +338,22 @@ gxp.plugins.Synchronizer = Ext.extend(gxp.plugins.Tool, {
                                     self.tooltip = new Ext.ToolTip({
                                         target: 'sync-button',
                                         html: interval / 1000 + ' seconds',
-                                        title: 'Working interval: ' + Ext.util.Format.date(self.startTime, "d/m/Y") + ' to ' + Ext.util.Format.date(self.endTime, "d/m/Y"),
+                                        title: '',
                                         autoHide: false,
                                         closable: true,
                                         draggable: true,
+                                        autoWidth: true,
                                         anchor: 'bottom'
                                     });
                                     // force show now
-                                    self.tooltip.showAt([Ext.getCmp('sync-button').getEl().getX() - 100, Ext.getCmp('sync-button').getEl().getY() + 30]);
+                                    self.tooltip.showAt([Ext.getCmp('sync-button').getEl().getX(), Ext.getCmp('sync-button').getEl().getY() + 30]);
+                                    //self.tooltip.showBy('sync-button');
 
                                     if(self.settingsWin.items.items[0].items.items[0].disabled === true){
-                                        self.tooltip.setTitle("");
-                                    }                                    
+                                        self.tooltip.setTitle(this.refreshTooltipTitle);
+                                    }else {
+                                        self.tooltip.setTitle(this.refreshTooltipTitle + '<BR/>Working interval: ' + Ext.util.Format.date(self.startTime, "d/m/Y") + ' to ' + Ext.util.Format.date(self.endTime, "d/m/Y"));                                       
+                                    }                                   
                                     
                                     tooltipInterval = setInterval(countDown, 1000);
 
@@ -448,10 +462,12 @@ gxp.plugins.Synchronizer = Ext.extend(gxp.plugins.Tool, {
         }        
         if(synchLayersTime.length !== 0){
             this.actions[0].enable();
-            this.settingsWin.items.items[0].items.items[0].enable();
+            this.timeIntervalSettingFieldset.enable();
+            this.timeIntervalSettingFieldset.show();
         }else if(synchLayersNoTime.length !== 0){
             this.actions[0].enable();
-            this.settingsWin.items.items[0].items.items[0].disable();
+            this.timeIntervalSettingFieldset.disable();
+            this.timeIntervalSettingFieldset.hide();
         }else{
             this.actions[0].disable();
         }

@@ -41,7 +41,7 @@ gxp.plugins.SynchLayerEnable = Ext.extend(gxp.plugins.Tool, {
     
     /** private: property[iconCls]
      */
-    iconCls: "gxp-icon-real-time",
+    iconCls: "gxp-icon-real-time-enable",
     
     /** api: method[addActions]
      */
@@ -60,6 +60,7 @@ gxp.plugins.SynchLayerEnable = Ext.extend(gxp.plugins.Tool, {
                 var map = this.target.mapPanel.map;
                 var timeManagers = map.getControlsByClass('OpenLayers.Control.TimeManager');
                 var layer = selectedLayer.getLayer();
+                var queryable = selectedLayer.get('queryable');
                 
                 if(this._enableSynch === false){
                 
@@ -70,6 +71,7 @@ gxp.plugins.SynchLayerEnable = Ext.extend(gxp.plugins.Tool, {
                     }
                     
                     this.actions[0].setText(this.synchDisableText);
+                    this.actions[0].setIconClass('gxp-icon-real-time-disable');
                     this._enableSynch = true;
                     layer.synch = true;
                     
@@ -78,10 +80,12 @@ gxp.plugins.SynchLayerEnable = Ext.extend(gxp.plugins.Tool, {
                     if(this.target.tools.layertree_plugin){
                         var selmodel = this.target.tools.layertree_plugin.output[0].selModel;
                         var node =selmodel.getSelectedNode();
-                        node.setIconCls('gx-tree-layer-icon');
+                        var layerIcon = queryable ? 'gx-tree-layer-icon' : 'gxp-tree-rasterlayer-icon';
+                        node.setIconCls(layerIcon);
                     }
                     
                     this.actions[0].setText(this.synchEnableText);
+                    this.actions[0].setIconClass('gxp-icon-real-time-enable');
                     this._enableSynch = false;
                     layer.synch = false;
                     
@@ -101,13 +105,16 @@ gxp.plugins.SynchLayerEnable = Ext.extend(gxp.plugins.Tool, {
                 if(selectedLayer.data.layer.synch){
                     if (selectedLayer.data.layer.synch === true){
                         synchLayerEnableAction.setText(this.synchDisableText);
+                        synchLayerEnableAction.setIconClass('gxp-icon-real-time-disable');
                         this._enableSynch = true;
                     }else{
                         synchLayerEnableAction.setText(this.synchEnableText);
+                        synchLayerEnableAction.setIconClass('gxp-icon-real-time-enable');
                         this._enableSynch = false;
                     }   
                 }else{
                     synchLayerEnableAction.setText(this.synchEnableText);
+                    synchLayerEnableAction.setIconClass('gxp-icon-real-time-enable');
                     this._enableSynch = false;
                 }
             }

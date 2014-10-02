@@ -832,6 +832,7 @@ GeoExt.Lang.add("en", {
         realTimeSynchButtonTooltip: 'Real time sync',
         synchMenuText: 'Sync',
         settingsMenuText: 'Settings',
-        saveSettingsText: 'Save'
+        saveSettingsText: 'Save',
+        refreshTooltipTitle: 'Refresh active'
     }         
 });
