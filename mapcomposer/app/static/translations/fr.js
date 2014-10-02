@@ -705,6 +705,12 @@ GeoExt.Lang.add("fr", {
         synchMenuText: 'Synchronisation',
         settingsMenuText: 'Paramètres',
         saveSettingsText: 'Enregistrer',
-        refreshTooltipTitle: 'Actualiser actif'
+        refreshTooltipTitle: 'Actualiser actif',
+        nextRefreshText: 'Prochaine actualisation de ',
+        timeIntervalUnitsText: ' secondes',
+        waitText : 'Attendez',
+        workingIntervalText : 'Intervalle de travail:',
+        workingIntervalToText : 'à'
+
     }         
 });

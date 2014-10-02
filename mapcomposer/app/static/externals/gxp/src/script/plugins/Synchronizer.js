@@ -72,6 +72,11 @@ gxp.plugins.Synchronizer = Ext.extend(gxp.plugins.Tool, {
     settingsMenuText: 'Settings',
     saveSettingsText: 'Save',
     refreshTooltipTitle: 'Refresh attivo',
+    nextRefreshText: 'Next refresh in ',
+    timeIntervalUnitsText: ' seconds',
+    waitText : 'Wait',
+    workingIntervalText : 'Working interval:',
+    workingIntervalToText : 'to',
     // end i18n.
     
     /** private: method[constructor]
@@ -314,7 +319,7 @@ gxp.plugins.Synchronizer = Ext.extend(gxp.plugins.Tool, {
 
                                     var countDown = function() {
                                         if (self.tooltip && self.tooltip.getEl()) {
-                                            self.tooltip.update('next refresh in ' + timeToRefresh / 1000 + ' secs');
+                                            self.tooltip.update(self.nextRefreshText + timeToRefresh / 1000 + ' secs');
                                         }
 
                                         timeToRefresh -= 1000;
@@ -337,7 +342,8 @@ gxp.plugins.Synchronizer = Ext.extend(gxp.plugins.Tool, {
 
                                     self.tooltip = new Ext.ToolTip({
                                         target: 'sync-button',
-                                        html: interval / 1000 + ' seconds',
+                                        html: this.waitText,
+                                        //html: interval / 1000 + this.timeIntervalUnitsText,
                                         title: '',
                                         autoHide: false,
                                         closable: true,
@@ -352,7 +358,7 @@ gxp.plugins.Synchronizer = Ext.extend(gxp.plugins.Tool, {
                                     if(self.settingsWin.items.items[0].items.items[0].disabled === true){
                                         self.tooltip.setTitle(this.refreshTooltipTitle);
                                     }else {
-                                        self.tooltip.setTitle(this.refreshTooltipTitle + '<BR/>Working interval: ' + Ext.util.Format.date(self.startTime, "d/m/Y") + ' to ' + Ext.util.Format.date(self.endTime, "d/m/Y"));                                       
+                                        self.tooltip.setTitle(this.refreshTooltipTitle + '<BR/>' + this.workingIntervalText + ' ' + Ext.util.Format.date(self.startTime, "d/m/Y") + ' ' + this.workingIntervalToText + ' ' + Ext.util.Format.date(self.endTime, "d/m/Y"));                                       
                                     }                                   
                                     
                                     tooltipInterval = setInterval(countDown, 1000);

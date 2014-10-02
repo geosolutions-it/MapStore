@@ -833,6 +833,12 @@ GeoExt.Lang.add("en", {
         synchMenuText: 'Sync',
         settingsMenuText: 'Settings',
         saveSettingsText: 'Save',
-        refreshTooltipTitle: 'Refresh active'
+        refreshTooltipTitle: 'Refresh active',
+        nextRefreshText: 'Next refresh in ',
+        timeIntervalUnitsText: ' seconds',
+        waitText : 'Wait',
+        workingIntervalText : 'Working interval:',
+        workingIntervalToText : 'to'
+
     }         
 });
