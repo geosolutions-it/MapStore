@@ -7,7 +7,7 @@
 			"url": "http://www502.regione.toscana.it/wmsraster/com.rt.wms.RTmap/wms?map=wmssfondo&map_resolution=91&language=ita",
 			"title": "Geoscopio basi",
 			"SRS": "EPSG:3003",
-			"version":"1.3.0",
+			"version":"1.1.1",
 			"layersCachedExtent": [
 				1547065, 4677785,
 				1803065, 4933785
@@ -22,7 +22,7 @@
 			"url": "http://web.regione.toscana.it/wmsraster/com.rt.wms.RTmap/wms?map=wmsofc",
 			"title": "Geoscopio ortofoto",
 			"SRS": "EPSG:3003",
-			"version":"1.3.0",
+			"version":"1.1.1",
 			"layersCachedExtent": [
 				1547065, 4677785,
 				1803065, 4933785
@@ -37,7 +37,7 @@
 			"url": "http://web.regione.toscana.it/wmsraster/com.rt.wms.RTmap/wms?map=wmsctr",
 			"title": "Geoscopio CTR",
 			"SRS": "EPSG:3003",
-			"version":"1.3.0",
+			"version":"1.1.1",
 			"layersCachedExtent": [
 				1547065, 4677785,
 				1803065, 4933785
@@ -52,7 +52,7 @@
 			"url": "http://web.regione.toscana.it/wmsraster/com.rt.wms.RTmap/wms?map=wmsidrogr&map_resolution=91&language=ita&",
 			"title": "Geoscopio idrografia",
 			"SRS": "EPSG:3003",
-			"version":"1.3.0",
+			"version":"1.1.1",
 			"layersCachedExtent": [
 				1547065, 4677785,
 				1803065, 4933785
@@ -67,7 +67,7 @@
 			"url": "http://www502.regione.toscana.it/wmsraster/com.rt.wms.RTmap/wms?map=wmsambamm&",
 			"title": "Geoscopio ambiti amministrativi",
 			"SRS": "EPSG:3003",
-			"version":"1.3.0",
+			"version":"1.1.1",
 			"layersCachedExtent": [
 				1547065, 4677785,
 				1803065, 4933785
