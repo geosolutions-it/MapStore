@@ -524,7 +524,11 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
                         for(var j=size-1; j>=0; j--){
                             if(layers[j].group){
                                 if(layers[j].group != "background" && layers[j].group != "default"){      
-                                    groups[layers[j].group]={title:layers[j].group};
+                                    groups[layers[j].group]={
+                                        title:layers[j].group,
+                                        expanded:layers[j].expanded,
+                                        checked:layers[j].checked
+                                    };
                                 }
                             }
                         }
@@ -741,8 +745,9 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
         // include all layer config (and add new sources)
         this.mapPanel.layers.each(function(record){
             var layer = record.getLayer();
+            var group = record.data.group;
             if(layer.CLASS_NAME != "OpenLayers.Layer.Vector")
-            if (layer.displayInLayerSwitcher) {
+            if ((layer.displayInLayerSwitcher) || (!layer.displayInLayerSwitcher && group === "background")) {
                 var id = record.get("source");
                 var source = this.layerSources[id];
                 if (!source) {

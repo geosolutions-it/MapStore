@@ -138,7 +138,11 @@ gxp.plugins.LayerSource = Ext.extend(Ext.util.Observable, {
 			uuid : record.get("uuid"),
 			gnURL: record.get("gnURL"),
             fixed: record.get("fixed"),
-            selected: record.get("selected")
+            selected: record.get("selected"),
+            expanded: record.get("expanded"),
+            checked: record.get("checked"),
+            tiled: record.get("tiled"),
+            displayInLayerSwitcher: record.get("displayInLayerSwitcher")
         };
     }
     
