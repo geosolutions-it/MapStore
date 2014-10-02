@@ -190,7 +190,11 @@
     },	
 	"proj4jsDefs": {
 		"EPSG:3003": "+proj=tmerc +lat_0=0 +lon_0=9 +k=0.9996 +x_0=1500000 +y_0=0 +ellps=intl +units=m +no_defs +towgs84 = -104.1,-49.1,-9.9,0.971,-2.917,0.714,-11.68"
-	},	
+	},
+    "removeTools": [
+        "gxp_wmsgetfeatureinfo_menu",
+        "googleearth_plugin"
+    ], 	
 	"customTools": [
 		{
 			"ptype": "gxp_embedmapdialog",
@@ -214,6 +218,21 @@
                 "target":"paneltbar",
                 "index":21
             }
+        }, {
+            "ptype":"gxp_print",
+            "customParams":{
+                "outputFilename":"mapstore-print"
+            },
+            "ignoreLayers": "Google Hybrid,Bing Aerial,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
+            "printService":"http://159.213.57.108/geoserver/pdf",
+            "legendPanelId":"legendPanel",
+            "actionTarget":{
+                "target":"paneltbar",
+                "index":24
+            },
+            "addLandscapeControl": true,
+            "appendLegendOptions": true,
+            "addGraticuleControl": true
         }, {
 		   "ptype": "gxp_mouseposition",
 		   "displayProjectionCode":"EPSG:3003",
