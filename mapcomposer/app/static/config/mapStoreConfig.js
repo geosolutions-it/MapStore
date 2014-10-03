@@ -1,6 +1,6 @@
 {
    "scaleOverlayMode": "none",
-   "gsSources":{ 
+   "gsSources":{  
    		"comunege": {
 			"ptype": "gxp_wmssource",
 			"title": "Comune Genova",
@@ -71,7 +71,7 @@
 				"title" : "Circoscrizioni",
 				"name"  : "CTC:circoscrizioni",
 				"tiled" : false,
-				"visibility": true
+				"visibility": false
             }
 		]
 	},
@@ -130,7 +130,7 @@
         "topOutUnits":"km"
     },
 	"customTools":[
-		{
+        {
 			"ptype": "gxp_embedmapdialog",
 			"actionTarget": {"target": "paneltbar", "index": 2},
 			"embeddedTemplateName": "viewer",
@@ -145,8 +145,7 @@
         }, {
 			"actions": ["-"], 
 			"actionTarget": "paneltbar"
-		},
-        {
+		}, {
             "ptype": "gxp_featureeditor",
             "featureManager": "featuremanager",
 			"toggleGroup": "toolGroup",
@@ -156,15 +155,27 @@
                 "index":24
             },
 			"snappingAgent": "snapping-agent"
-        },{
+        }, {
 			"ptype": "gxp_advancedsnappingagent",
 			"id": "snapping-agent",
 			"actionTarget":{
                 "target":"paneltbar",
                 "index":16
             }
-		},
-        {
+		}, {
+			"actions": ["-"], 
+			"actionTarget": "paneltbar"
+		}, {
+            "ptype": "gxp_synchlayerenable",
+            "id": "synchlayerenable_plugin",
+            "actionTarget": ["layertree.contextMenu"]
+        }, {	 
+            "ptype": "gxp_synchronizer",
+            "id": "synchronizer_plugin",
+            "refreshTimeInterval": 5,
+            "actionTarget": {"target": "paneltbar", "index": 17},
+            "range": ["2014-09-24T06:00:00.000Z","2014-09-26T08:00:00.000Z"]
+        }, {
             "ptype": "gxp_featuregrid",
             "featureManager": "featuremanager",
         	"layout": "form",

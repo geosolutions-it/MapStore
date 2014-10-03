@@ -640,5 +640,77 @@ GeoExt.Lang.add("fr", {
 
 	"gxp.plugins.AdvancedSnappingAgent.prototype":{
         tooltipText: "Activer/Désactiver Engagement"
-    }  
+    },
+	
+    "gxp.PlaybackToolbar.prototype": {
+        playLabel: "Jouer",
+        playTooltip: "Jouer",
+        stopLabel: "Stop",
+        stopTooltip: "Stop",
+        fastforwardLabel: "FFWD",
+        fastforwardTooltip: "Lecture à double vitesse",
+        backLabel:'Arrière',
+        backTooltip:"Reculer d'une image",            
+        nextLabel: "Suivant",
+        nextTooltip: "Avancer d'une image",
+        resetLabel: "Remettre",
+        resetTooltip: "Stations météo dernière mise à jour",
+        loopLabel: "Boucle",
+        loopTooltip: "Continuellement en boucle l'animation",
+        normalTooltip: "Retour à la normale playback",
+        pauseLabel: "Pause",
+        pauseTooltip: "Pause"
+    },
+	
+    "gxp.PlaybackOptionsPanel.prototype": {
+        optionTitleTextS: "Options de date et heure",
+        rangeFieldsetText: "Intervalle de temps",
+        animationFieldsetText: "Options d'Animation",
+        startText: "Commencer",
+        endText: "Fin",
+        saveText: 'Sauver',
+        cancelText: 'Annuler',         
+        listOnlyText: "Utilisez Liste des valeurs exact uniquement",
+        stepText: "Étape animation",
+        unitsText: "Unités d'animation",
+        frameRateText:'Retard Animation (s)',        
+        noUnitsText: "Aligner sur la Liste Temps",
+        loopText: "Animation en boucle",
+        reverseText: "Inverser animation",
+        rangeChoiceText: "Choisissez la gamme pour le contrôle du temps",
+        rangedPlayChoiceText: "Playback Mode",
+        secondsText: 'Secondes', 
+        minutesText: 'Minutes', 
+        hoursText: 'Heures', 
+        daysText: 'Journées', 
+        monthsText: 'Mois', 
+        yearsText: 'Ans'        
+    },
+	
+    "gxp.plugins.SynchLayerEnable.prototype": {
+        synchEnableText: "Activer la couche pour la Refresh",
+        synchDisableText: "Désactiver la couche pour la Refresh"
+    },
+	
+    "gxp.plugins.Synchronizer.prototype": {
+        timeIntervalSettingFieldsetTitle: 'Temps paramètres d\'intervalle',
+        startTimeLabel: 'date de début',
+        endTimeLabel: 'date de fin',
+        refreshIntervalSettingFieldsetTitle: 'Réglages rafraîchissement',
+        refreshIntervalLabel: 'Taux de rafraîchissementh (s)',
+        synchronizationSettingsTitle: 'Paramètres de synchronisation',
+        updateSynchErrorTitle: 'La configuration de synchronisation ne peut pas être mis à jour',
+        updateSynchErrorMsg: 'des valeurs non valides.',
+        realTimeSynchButtonTooltip: 'Synchronisation en temps réel',
+        synchMenuText: 'Synchronisation',
+        settingsMenuText: 'Paramètres',
+        saveSettingsText: 'Enregistrer',
+        refreshTooltipTitle: 'Actualiser actif',
+        nextRefreshText: 'Prochaine actualisation de ',
+        timeIntervalUnitsText: ' secondes',
+        waitText : 'Attendez',
+        workingIntervalText : 'Intervalle de travail:',
+        workingIntervalToText : 'à'
+
+    }         
 });
