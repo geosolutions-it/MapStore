@@ -35,6 +35,11 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
     ptype: "mxp_login",
 
     buttonText: "Login",
+    /**
+    * api: config[forceLogin]
+    * login is mandatory.
+    */
+    forceLogin: false,
 
     /** api: method[addActions]
      */
@@ -45,6 +50,7 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
         // ///////////////////////////////////
         this.login = new MSMLogin({
             // grid: this,
+            forceLogin: this.forceLogin,
             geoStoreBase : this.target.config.geoStoreBase,
             token: this.target.auth,
             defaultHeaders: this.target.defaultHeaders
