@@ -325,7 +325,9 @@ left: 80px !important;
 .gwc_ic{
     background-image: url(../img/gwc.png);
 }
-
+.geobatch_ic{
+    background-image: url(../img/geobatch.png);
+}
 
 /* mxp_categoryinitializer */
 .initCategoriesMessage{
@@ -349,4 +351,8 @@ left: 80px !important;
 background: #DFEDFF;
 border: 1px solid #6593cf;
 padding: 4px;
+}
+/* style for geobatch logs */
+.geobatch_log{
+    font-family: monospace;
 }
