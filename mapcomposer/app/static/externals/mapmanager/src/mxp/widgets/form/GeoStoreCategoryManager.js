@@ -27,7 +27,7 @@ Ext.ns("mxp.widgets");
  */
 mxp.widgets.GeoStoreCategoryManager = Ext.extend(Ext.Panel, {
 	 /** api: xtype = mxp_geostore_category_manger */
-    xtype: "mxp_geostore_category_manger",
+    xtype: "geostore_category_manger",
     loginManager: null,    
     setActiveOnOutput: true,
     /**

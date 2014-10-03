@@ -84,7 +84,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
     GWCButtonLabel: 'Tile Cache',
     /* end of i18n */
     //extjs grid specific config
-    autoload:true,
+    autoload: this.flowsgrid ? true : false,
     loadMask:true,
     viewConfig: {
         getRowClass: function(record, index) {
@@ -314,6 +314,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
                     items: [{
                         xtype:'textarea',
                         layout:'fit',
+                        cls:'geobatch_log',
                         readOnly:false,
                         ref:'log'
                         }
@@ -453,6 +454,17 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
             } 
         });
         w.show();
+    },
+    /**
+     * public: change flow id and load the new list
+     * [flowId] string: the id of the flow
+     * 
+     */
+    changeFlowId: function ( flowId ) {
+        var url = this.geoBatchRestURL + 'flows/' + flowId + '/consumers';
+		this.store.proxy.setUrl(url, true);
+        
+        this.store.load();
     }
     
 });
