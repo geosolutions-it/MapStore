@@ -206,7 +206,8 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
                 }
             }
         }
-        return mxp.plugins.GeoBatchFlows.superclass.addOutput.apply(this, arguments);
+        this.tab = mxp.plugins.GeoBatchFlows.superclass.addOutput.apply(this, arguments);
+        return this.tab;
     },
     showRunLocalForm: function(flowId,fileId){
         //apply local parameters to the configuration flor the selected flow
@@ -225,7 +226,7 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
                     success: function(flowId){
                         win.close();
                         setTimeout(function(){
-                            var consumers = me.output[0].consumers;
+                            var consumers = me.tab.consumers;
                             consumers.store.load()}
                         ,5000);
                     }
