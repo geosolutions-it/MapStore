@@ -74,6 +74,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     highRiskLabel: "Alto Rischio",
     notVisibleOnArcsMessage: "Formula non visibile a questa scala",
     notVisibleOnGridMessage: "Formula non visibile a questa scala",
+    areaTooBigMessage: "Area selezionata troppo grande per questa formula",
     
     loadUserElab: false,
     geostoreElab: null,
@@ -83,6 +84,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     // End i18n.
         
     cellViewScale: 500010,
+    maxProcessingArea: 10000000,
         
     // TODO: bbox piemonte    
     spatialFilterOptions: {
@@ -1627,13 +1629,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         var map = this.appTarget.mapPanel.map;
         var params = {};
-        var filters = [];
         
-        //
-        // Spatial filter
-        //       
         if(!roi){
-            return null;
+            return;
         }
         
         params.roi = new OpenLayers.Bounds.fromString(roi.toBBOX());
@@ -1650,42 +1648,6 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 selectionPrj
             );
         }
-        
-      
-    
-        filters.push(new OpenLayers.Filter.Spatial({
-            type: OpenLayers.Filter.Spatial.BBOX,
-            property: this.geometryName,
-            value: roi
-        }));
-    
-        //
-        // Accident Scenarios filter
-        //
-        var accidentValue = this.accident.getValue();
-        if(accidentValue != this.allScenOptions){
-            filters.push(new OpenLayers.Filter.Comparison({
-                type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                property: this.accidentTipologyName,
-                value: 'POOL FIRE DA LIQUIDO INFIAMMABILE' //this.accident.getValue()
-            }));
-        }
-        
-        //
-        // Target filter OpenLayers.Filter.Logical.NOT
-        //        
-        var targetRecord = this.getSelectedTarget();
-        if(targetRecord){
-            filters.push(new OpenLayers.Filter.Logical({
-                type: OpenLayers.Filter.Logical.NOT,
-                filters: [new OpenLayers.Filter.Comparison({
-                    type: OpenLayers.Filter.Comparison.IS_NULL,
-                    property: targetRecord.get('property')
-                })]
-            }));
-        }
-        
-        params.filters = filters;
         
         var formula = this.formula.getValue();
         var sostanza = parseInt(this.getComboRecord(this.sostanze).data.value, 10);
@@ -1721,6 +1683,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             } else if(scale > this.cellViewScale && !visibleOnGrid) {
                 error = this.notVisibleOnGridMessage;
             }
+			var ambitoTerritoriale = formulaRec.get('ambito_territoriale')
+			var area = (roi.right - roi.left) * (roi.top - roi.bottom);
+			
+			if(ambitoTerritoriale && area > this.maxProcessingArea && visibleOnArcs) {
+				error = this.areaTooBigMessage;
+			}
         }
         
         if(!error) {

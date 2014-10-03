@@ -27,7 +27,8 @@
             "layerBaseParams": {
                 "TILED": true,                
                 "format": "image/png8"
-            }
+            },
+			"loadingProgress": true
         },
         "losetiled": {
             "ptype": "gxp_wmscsource",
@@ -37,7 +38,8 @@
             "layerBaseParams": {
                 "TILED": true,                
                 "format": "image/png8"
-            }
+            },
+			"loadingProgress": true
         }
     },
     "map": {
@@ -108,7 +110,9 @@
             "tiled": false,
             "env":"low:100;medium:500;max:1000",
             "riskPanel":true,
-            "exclusive":"SIIG"
+            "exclusive":"SIIG",
+			
+			"forceOneVisible": false
         },{
             "source": "lose",
             "title": "Rischio Totale Sociale",
@@ -117,7 +121,9 @@
             "tiled": false,
             "env":"low:100;medium:500;max:1000",
             "riskPanel":true,
-            "exclusive":"SIIG"
+            "exclusive":"SIIG",
+			
+			"forceOneVisible": false
         },{
             "source": "lose",
             "title": "Rischio Totale Sociale - Ambientale",
@@ -126,7 +132,9 @@
             "tiled": false,
             "env":"lowsociale:100;mediumsociale:500;maxsociale:1000;lowambientale:100;mediumambientale:500;maxambientale:1000",
             "riskPanel":true,
-            "exclusive":"SIIG"
+            "exclusive":"SIIG",
+			
+			"forceOneVisible": false
         },
         {
             "source": "losetiled",
@@ -226,24 +234,6 @@
             "tiled": true,
             "group": ["Roads","Strade","Routes"," Straßen"],
             "visibility": false
-        },{
-			"source": "losetiled",
-			"title": "Gate",
-			"name": "gate_geo",
-			"displayInLayerSwitcher": true,
-			"tiled": true,
-            "group": ["Real time data","Dati in tempo reale","Données en temps réel","Echtzeitdaten"],
-			"visibility": false
-        },{
-			"source": "lose",
-			"title": "Obu",
-			"name": "siig_geo_obu",
-			"styles": "obu-point",
-			"displayInLayerSwitcher": true,
-			"tiled": false,
-            "time" : "2014-01-31T14:50:10.229Z",
-            "group": ["Real time data","Dati in tempo reale","Données en temps réel","Echtzeitdaten"],
-			"visibility": false
         }
         ]
     },
@@ -562,72 +552,12 @@
         "index": 28,
         "geoStoreBase":"http://lose.geo-solutions.it/geostore/rest/",
         "proxy":"/proxy/?url="
-    },
-	{
-		"ptype": "gxp_gatetimeslidertab",
-        "id": "gatetimeslidertab",
-        "wfsUrl":"http://lose.geo-solutions.it/geoserver_lose/ows",
-        "wfsVersion": "1.1.0",
-        "destinationNS": "lose",
-        "statisticFeature": "gate_stats",
-        "intervalsFeature": "siig_gate_d_intervalli",
-        "timeFeature": "gate_data",        
-        "layerGates":"gate_geo",
-        "layerGatesTitle":"Gate",
-        "nativeSrs": "EPSG:3003",
-        "outputTarget": "east"
-	}, {
-        "ptype": "gxp_featuremanager",
-        "id": "featuremanager",
-        "wfsUrl":"http://lose.geo-solutions.it/geoserver_lose/ows",
-        "paging": false,
-        "layer": {
-            "source": "lose",
-            "name": "siig_gate_geo_gate"
-        }
-    },
-    {
-		"ptype": "gxp_obu",
-        "id": "destinationobu",
-        "outputTarget": "east",
-		"layerToFilter": "OBU",
-		"layerTrackTitle": "obu_track",
-		"layerTrackName": "siig_geo_obu_line",
-		"layerTrackUrl": "http://lose.geo-solutions.it/geoserver_lose/lose/ows",
-        "wfsUrl": "http://lose.geo-solutions.it/geoserver_lose/ows?",
-        "styleRenamedStore": [
-            ["Obu points","Obu punti","Obu points","Obu punkte"],
-            ["Obu points speed","Obu punti velocità","Obu points vitesse","Obu punkte Geschwindigkeit"],
-            ["Obu points direction","Obu punti direzione","Obu point direction","Obu punkte Richtung"]
-        ]
-	},
+    },	
 	{
 		"ptype": "gxp_addlayer",
 		"showCapabilitiesGrid": true,
 		"id": "addlayer"
 	},
-    {
-        "ptype": "gxp_featureeditor",
-        "featureManager": "featuremanager",
-        "autoLoadFeatures": true,
-        "actionTarget":"editorfieldset.bbar",
-        "toggleGroup": "toolGroup",
-        "excludeFields": ["data_cancellazione"],
-        "renamedFields": {
-            "id_gate": ["Id","Id","Id","Id"],
-            "fk_partner": ["Partner","Partner","Partner","Partner"],
-            "fk_server": ["Server","Server","Server","Server"],
-            "concessionaria_sito": ["Concessionaria","Concessionaria","Concessionaria","Concessionaria"],
-            "nr_corsie_carreggiata": ["Corsie","Corsie","Corsie","Corsie"],
-            "descrizione": ["Description","Descrizione","Description","Beschreibung"],
-            "collocazione": ["Collocation","Collocazione","Collocation","Collocation"],
-            "data_inizio_validita": ["Start Validity","Inizio Validita","Lancer Validité","Starten Gültigkeit"],
-            "data_fine_validita": ["End Validity","Fine Validita","Validité de Fin","End Gültigkeit"]
-        },
-        "fidFields": {
-            "siig_gate_geo_gate": "id_gate"
-        }
-    },
     {
         "ptype": "gxp_tabpanelwfsgrids",
         "outputTarget": "featurelist",

@@ -179,10 +179,15 @@
 <!-- copy config resources -->
 <copyfile src="mapmanager/src/config.js" dest="${managerbuild}/mapstore/src/config.js"/>
 <copyfile src="mapmanager/src/init.js" dest="${managerbuild}/mapstore/src/init.js"/>
-
+	  
     </target>
 
-    <target name="war" depends="dist">
+	<target name="custom" if="custom">
+		<copyfile src="mapcomposer/app/templates/${custom}.html" dest="${composerbuild}/${ant.project.name}/WEB-INF/app/templates/composer.html"/>
+		<copyfile src="mapcomposer/app/static/config/${custom}online.js" dest="${composerbuild}/${ant.project.name}/WEB-INF/app/static/config/mapStoreConfig.js"/>
+	</target>
+	
+    <target name="war" depends="dist,custom">
 	    <echo message="make ${composerbuild}/${ant.project.name}.war and ${managerbuild}/${manager.war.name}.war" /> 
         <war destfile="${composerbuild}/${ant.project.name}.war">
             <fileset dir="${composerbuild}/${ant.project.name}"/>

@@ -295,10 +295,10 @@ GeoExt.Lang.add("it", {
     },
 
     "gxp.plugins.NavigationHistory.prototype": {
-        previousMenuText: "Zoom alla precedente estenzione",
-        nextMenuText: "Zoom alla prossima estenzione",
-        previousTooltip: "Zoom alla precedente estenzione",
-        nextTooltip: "Zoom alla prossima estenzione"
+        previousMenuText: "Zoom alla precedente estensione",
+        nextMenuText: "Zoom alla prossima estensione",
+        previousTooltip: "Zoom alla precedente estensione",
+        nextTooltip: "Zoom alla prossima estensione"
     },
 
     "gxp.plugins.OSMSource.prototype": {

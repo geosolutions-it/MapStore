@@ -11,8 +11,7 @@
             "ptype": "gxp_osmsource"
         },
         "google": {
-            "ptype": "gxp_googlesource",
-			"loadingProgress": true
+            "ptype": "gxp_googlesource"
         },
         "bing": {
             "ptype": "gxp_bingsource" 
