@@ -115,6 +115,13 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      * 
      */
     statelessSession: true,
+    /**
+     * Property: forceLogin
+     * {Boolean} If true, the login window is opened on tool add, not closable and mask the background.
+     *           in this way users must login. 
+     * 
+     */
+    forceLogin: false,
      
     /** private: method[constructor]
      */
@@ -193,9 +200,11 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
             this.getLoginInformation();   
         }else{
             this.showLogin();
+            
         }
         
         MSMLogin.superclass.initComponent.call(this, arguments);
+        
     },
 
     /**
@@ -232,10 +241,13 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 }else{
                     // invalid user state
                     this.showLogin();
+                    
                 }
             },
             failure: function(response, form, action) {        
                 this.showLogin();
+                
+                
             }
         });
     },
@@ -252,6 +264,8 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
             layout: "fit",
             width: 275,
 			closeAction: 'hide',
+            closable: !this.forceLogin,
+            draggable: !this.forceLogin,
             height: 130,
             plain: true,
             border: false,
@@ -398,6 +412,12 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
         var handler = this.showLoginForm;
         this.applyLoginState('login', text, userLabel, handler, this);
         this.fireEvent("logout");
+        //force show login window on startup
+        this.loginButton.on('afterrender',function(){
+            if(this.forceLogin){
+                this.showLoginForm();
+            }
+        },this);
     },
 
     /** private: method[showLogout]
