@@ -722,5 +722,32 @@ GeoExt.Lang.add("de", {
         daysText: 'Tage', 
         monthsText: 'Monate', 
         yearsText: 'Jahre'        
-    }   
+    },
+	
+    "gxp.plugins.SynchLayerEnable.prototype": {
+        synchEnableText: "Aktivieren Schicht für Refresh",
+        synchDisableText: "Deaktivieren Schicht für Refresh"
+    },
+	
+    "gxp.plugins.Synchronizer.prototype": {
+        timeIntervalSettingFieldsetTitle: 'Zeitintervall-Einstellungen',
+        startTimeLabel: 'Startzeit',
+        endTimeLabel: 'Endzeit',
+        refreshIntervalSettingFieldsetTitle: 'Aktualisieren Einstellungen',
+        refreshIntervalLabel: 'Aktualisierungsintervall(s)',
+        synchronizationSettingsTitle: 'Synchronisationseinstellungen',
+        updateSynchErrorTitle: 'Sync-Konfiguration kann nicht aktualisieren',
+        updateSynchErrorMsg: 'Invalid values.',
+        realTimeSynchButtonTooltip: 'ungültige Wertec',
+        synchMenuText: 'Sync',
+        settingsMenuText: 'Einstellungen',
+        saveSettingsText: 'Speichern',
+        refreshTooltipTitle: 'Aktualisieren aktiv',
+        nextRefreshText: 'Nächsten Aktualisierung in ',
+        timeIntervalUnitsText: ' sekunden',
+        waitText : 'Warten',
+        workingIntervalText : 'Arbeitsabstand:',
+        workingIntervalToText : 'zu'
+
+    }           
 });
