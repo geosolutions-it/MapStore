@@ -729,5 +729,77 @@ GeoExt.Lang.add("es", {
 
 	"gxp.plugins.AdvancedSnappingAgent.prototype":{
         tooltipText: "Activar/Desactivar Snapping"
-    }  
+    },
+	
+    "gxp.PlaybackToolbar.prototype": {
+        playLabel: "Play",
+        playTooltip: "Play",
+        stopLabel: "Stop",
+        stopTooltip: "Stop",
+        fastforwardLabel: "FFWD",
+        fastforwardTooltip: "Double Speed Playback",
+        backLabel:'Back',
+        backTooltip:'Draw back One Frame',            
+        nextLabel: "Next",
+        nextTooltip: "Advance One Frame",
+        resetLabel: "Reset",
+        resetTooltip: "Weather Stations last update",
+        loopLabel: "Loop",
+        loopTooltip: "Continously loop the animation",
+        normalTooltip: "Return to normal playback",
+        pauseLabel: "Pause",
+        pauseTooltip: "Pause"
+    },
+	
+    "gxp.PlaybackOptionsPanel.prototype": {
+        optionTitleText: "Date & Time Options",
+        rangeFieldsetText: "Time Range",
+        animationFieldsetText: "Animation Options",
+        startText: "Start",
+        endText: "End",
+        saveText: 'Save',
+        cancelText: 'Cancel',         
+        listOnlyText: "Use Exact List Values Only",
+        stepText: "Animation Step",
+        unitsText: "Animation Units",
+        frameRateText:'Animation Delay (s)',        
+        noUnitsText: "Snap To Time List",
+        loopText: "Loop Animation",
+        reverseText: "Reverse Animation",
+        rangeChoiceText: "Choose the range for the time control",
+        rangedPlayChoiceText: "Playback Mode",
+        secondsText: 'Seconds', 
+        minutesText: 'Minutes', 
+        hoursText: 'Hours', 
+        daysText: 'Days', 
+        monthsText: 'Months', 
+        yearsText: 'Years'        
+    },
+	
+    "gxp.plugins.SynchLayerEnable.prototype": {
+        synchEnableText: "Activar la capa de Refresh",
+        synchDisableText: "Deshabilitar capa para Refresh"
+    },
+	
+    "gxp.plugins.Synchronizer.prototype": {
+        timeIntervalSettingFieldsetTitle: 'Ajustes del intervalo de tiempo',
+        startTimeLabel: 'Fecha de inicio',
+        endTimeLabel: 'Fecha final',
+        refreshIntervalSettingFieldsetTitle: 'Configuración Actualizar',
+        refreshIntervalLabel: 'Frecuencia de actualización (s)',
+        synchronizationSettingsTitle: 'Ajustes de sincronización',
+        updateSynchErrorTitle: 'La configuración de la sincronización no puede ser actualizado',
+        updateSynchErrorMsg: 'valores no válidos.',
+        realTimeSynchButtonTooltip: 'Sincronización en tiempo real',
+        synchMenuText: 'Sincronización',
+        settingsMenuText: 'Ajustes',
+        saveSettingsText: 'Guardar',
+        refreshTooltipTitle: 'Actualizar activo',
+        nextRefreshText: 'Siguiente actualización en ',
+        timeIntervalUnitsText: ' segundos',
+        waitText : 'Espera',
+        workingIntervalText : 'Intervalo de trabajo:',
+        workingIntervalToText : 'a'
+
+    }              
 });

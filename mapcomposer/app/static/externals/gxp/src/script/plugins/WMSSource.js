@@ -137,13 +137,19 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             SERVICE: "WMS",
             REQUEST: "GetCapabilities"
         };
+		
         if (this.version) {
             baseParams.VERSION = this.version;
         }
-        if(this.authParam && this.target.userDetails){
+        
+	    // /////////////////////////////////////////////////////
+	    // Get the user's corrensponding authkey if present 
+	    // (see MSMLogin.getLoginInformation for more details)
+	    // /////////////////////////////////////////////////////
+		if(this.authParam && this.target.userDetails){
 			var userInfo = this.target.userDetails;
 			var authkey;
-
+			
 			if(userInfo.user.attribute instanceof Array){
 				for(var i = 0 ; i < userInfo.user.attribute.length ; i++ ){
 					if( userInfo.user.attribute[i].name == "UUID" ){
@@ -160,7 +166,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 				baseParams[this.authParam] = authkey;
 			}
 		}
-        this.store = new GeoExt.data.WMSCapabilitiesStore({
+        
+		this.store = new GeoExt.data.WMSCapabilitiesStore({
             // Since we want our parameters (e.g. VERSION) to override any in the 
             // given URL, we need to remove corresponding paramters from the 
             // provided URL.  Simply setting baseParams on the store is also not
@@ -261,10 +268,15 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             // compatible projection that equals the map projection. This helps
             // us in dealing with the different EPSG codes for web mercator.
             var layerProjection = this.getProjection(original);
-
+			if (layerProjection) {
+                layer.addOptions({projection: layerProjection});
+            }
+			
             var projCode = projection.getCode();
             var nativeExtent = original.get("bbox")[projCode];
-            var swapAxis = layer.params.VERSION >= "1.3" && !!layer.yx[projCode];
+
+            //var swapAxis = layer.params.VERSION >= "1.3" && !!layer.yx[projCode];
+			var swapAxis = layer.params.VERSION >= "1.3" && layer.reverseAxisOrder();
             var maxExtent = 
             (nativeExtent && OpenLayers.Bounds.fromArray(nativeExtent.bbox, swapAxis)) || 
             OpenLayers.Bounds.fromArray(original.get("llbbox")).transform(new OpenLayers.Projection("EPSG:4326"), projection);
@@ -272,7 +284,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 			// ///////////////////////////////////////////////////////////////////////////////////////////
 			// 'layersCachedExtent' property can be defined for source and/or a single 
 			// layer configuration when we use GeoWebCache integration in GeoServer. 
-			// GeoServer getCapabilities request return only bounds in 4326 and natice CRS so, if the 
+			// GeoServer getCapabilities request return only bounds in 4326 and native CRS so, if the 
 			// map CRS is 900913 the transformed bounds is not aligned with the google standard 
 			// gridset defined in GeoServer.
 			// //////////////////////////////////////////////////////////////////////////////////////////
@@ -310,7 +322,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 			// In this case also the zoomMethod must be setted to null 
 			// in Map configuration (see widgets/Viewer.js).
 			// /////////////////////////////////////////////////////////
-			var transitionEffect = "resize";
+			var transitionEffect = null;
 			if(this.target.map.animatedZooming){
 				if(this.target.map.animatedZooming.transitionEffect == null){
 					transitionEffect = null;
@@ -331,7 +343,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     ratio: config.ratio || 1,
                     visibility: ("visibility" in config) ? config.visibility : true,
                     opacity: ("opacity" in config) ? config.opacity : 1,
-                    buffer: ("buffer" in config) ? config.buffer : 1,
+                    buffer: ("buffer" in config) ? config.buffer : 0,
+		    dimensions: original.data.dimensions,
                     projection: layerProjection,
                     vendorParams: config.vendorParams,
 					transitionEffect: transitionEffect
@@ -375,6 +388,10 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 
             var Record = GeoExt.data.LayerRecord.create(fields);
             record = new Record(data, layer.id);
+        } else {
+            if (window.console && this.store.getCount() > 0) {
+                console.warn("Could not create layer record for layer '" + config.name + "'. Check if the layer is found in the WMS GetCapabilities response.");
+            }
         }
         
         return record;
