@@ -172,7 +172,8 @@
         }, {	 
             "ptype": "gxp_synchronizer",
             "id": "synchronizer_plugin",
-            "refreshTimeInterval": 5,
+            "refreshTimeInterval": 1,
+            "minRefreshTimeInterval": 1,
             "actionTarget": {"target": "paneltbar", "index": 17},
             "range": ["2014-09-24T06:00:00.000Z","2014-09-26T08:00:00.000Z"]
         }, {

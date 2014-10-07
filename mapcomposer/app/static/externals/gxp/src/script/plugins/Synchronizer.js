@@ -84,6 +84,7 @@ gxp.plugins.Synchronizer = Ext.extend(gxp.plugins.Tool, {
     constructor: function(config) {
         gxp.plugins.Synchronizer.superclass.constructor.apply(this, arguments);
         this.timeInterval = config.refreshTimeInterval * 1000;
+        this.minRefreshTimeInterval = config.minRefreshTimeInterval;
         this.range = config.range;
         this.startTime = Date.fromISO(this.range[0]);
         //
@@ -168,7 +169,7 @@ gxp.plugins.Synchronizer = Ext.extend(gxp.plugins.Tool, {
                     fieldLabel: this.refreshIntervalLabel,
                     allowDecimals: false,
                     maxValue: 60 * 15,
-                    minValue: 5,
+                    minValue: this.minRefreshTimeInterval,
                     value: self.timeInterval / 1000,
                     allowBlank: false,
                     width: 105
@@ -220,8 +221,8 @@ gxp.plugins.Synchronizer = Ext.extend(gxp.plugins.Tool, {
                             self.settingsWin.hide();
                         } else {
                             Ext.Msg.show({
-                                title: this.updateSynchErrorTitle,
-                                msg: this.updateSynchErrorMsg,
+                                title: self.updateSynchErrorTitle,
+                                msg: self.updateSynchErrorMsg,
                                 buttons: Ext.Msg.OK,
                                 icon: Ext.MessageBox.ERROR
                             });
@@ -323,8 +324,9 @@ gxp.plugins.Synchronizer = Ext.extend(gxp.plugins.Tool, {
                                         }
 
                                         timeToRefresh -= 1000;
-                                        if (timeToRefresh === 0) {
+                                        if (timeToRefresh < 0) {
                                             timeToRefresh = self.timeInterval;
+                                            refresh();
                                         }
                                     };
 
@@ -368,7 +370,7 @@ gxp.plugins.Synchronizer = Ext.extend(gxp.plugins.Tool, {
                                     //
                                     //this.target.fireEvent('refreshToolActivated');
 
-                                    interval = setInterval(refresh, self.timeInterval);
+                                    //interval = setInterval(refresh, self.timeInterval);
                                 } else {
                                     clearInterval(interval);
                                     var timeManager = self.getTimeManager();
