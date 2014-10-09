@@ -133,7 +133,9 @@ GeoExt.Lang.add("en", {
         highRiskLabel: "high Risk",
         notVisibleOnArcsMessage: "Formula not visible at this scale",
         notVisibleOnGridMessage: "Formula not visible at this scale",
-        selectionAreaLabel: "Selected Area"
+        selectionAreaLabel: "Selected Area",
+        alertSimGridReloadTitle: "Update Targets",
+        alertSimGridReloadMsg: "Do you want to update the targets? - All editing will be lost!"   
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Elements {0} - {1} of {2}",

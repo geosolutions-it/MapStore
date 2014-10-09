@@ -130,7 +130,9 @@ GeoExt.Lang.add("it", {
         highRiskLabel: "Alto Rischio",
         notVisibleOnArcsMessage: "Formula non visibile a questa scala",
         notVisibleOnGridMessage: "Formula non visibile a questa scala",
-        selectionAreaLabel: "Area Selezionata"
+        selectionAreaLabel: "Area Selezionata",
+        alertSimGridReloadTitle: "Aggiornamento Bersagli",
+        alertSimGridReloadMsg: "Vuoi aggiornare i Bersagli? - Tutte le modifica andranno perse!"        
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Elementi {0} - {1} di {2}",

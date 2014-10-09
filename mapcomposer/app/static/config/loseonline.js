@@ -1042,7 +1042,7 @@
                             "mapping": "id_tema"
                         },
                         {
-                            "name": "value",      
+                            "name": "superficie",      
                             "mapping": "superficie"
                         },
                         {
@@ -1069,7 +1069,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "value"
+                            "dataIndex": "superficie"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -1097,7 +1097,7 @@
                             "mapping": "id_tema"
                         },
                         {
-                            "name": "value",      
+                            "name": "superficie",      
                             "mapping": "superficie"
                         },
                         {
@@ -1124,7 +1124,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "value"
+                            "dataIndex": "superficie"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -1160,7 +1160,7 @@
                             "mapping": "denominazione_ente_${locale}"
                         },
                         {
-                            "name": "value",      
+                            "name": "superficie",      
                             "mapping": "superficie"
                         },
                         {
@@ -1187,7 +1187,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "value"
+                            "dataIndex": "superficie"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -1215,7 +1215,7 @@
                             "mapping": "id_tema"
                         },                    
                         {
-                            "name": "value",      
+                            "name": "superficie",      
                             "mapping": "superficie"
                         },
                         {
@@ -1242,7 +1242,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "value"
+                            "dataIndex": "superficie"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -1274,7 +1274,7 @@
                             "mapping": "denominazione_${locale}"
                         },
                         {
-                            "name": "value",      
+                            "name": "superficie",      
                             "mapping": "superficie"
                         },
                         {
@@ -1321,7 +1321,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "value"
+                            "dataIndex": "superficie"
                         },
                         {
                             "header": ["Maximum depth", "Profondità max", "Profondeur maximale", "Maximale Tiefe"],      
@@ -1361,7 +1361,7 @@
                             "mapping": "denominazione_${locale}"
                         },
                         {
-                            "name": "value",      
+                            "name": "superficie",      
                             "mapping": "superficie"
                         },
                         {
@@ -1392,7 +1392,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "value"
+                            "dataIndex": "superficie"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -1424,7 +1424,7 @@
                             "mapping": "denominazione_bene_${locale}"
                         },
                         {
-                            "name": "value",      
+                            "name": "superficie",      
                             "mapping": "superficie"
                         },
                         {
@@ -1447,7 +1447,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "value"
+                            "dataIndex": "superficie"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -2247,7 +2247,7 @@
                             "mapping": "id_tema"
                         },
                         {
-                            "name": "value",      
+                            "name": "superficie",      
                             "mapping": "superficie"
                         },
                         {
@@ -2274,7 +2274,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "value"
+                            "dataIndex": "superficie"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -2320,7 +2320,7 @@
                             "mapping": "id_tema"
                         },
                         {
-                            "name": "value",      
+                            "name": "superficie",      
                             "mapping": "superficie"
                         },
                         {
@@ -2347,7 +2347,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "value"
+                            "dataIndex": "superficie"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -2401,7 +2401,7 @@
                             "mapping": "denominazione_ente_${locale}"
                         },
                         {
-                            "name": "value",      
+                            "name": "superficie",      
                             "mapping": "superficie"
                         },
                         {
@@ -2428,7 +2428,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "value"
+                            "dataIndex": "superficie"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -2474,7 +2474,7 @@
                             "mapping": "id_tema"
                         },                    
                         {
-                            "name": "value",      
+                            "name": "superficie",      
                             "mapping": "superficie"
                         },
                         {
@@ -2501,7 +2501,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "value"
+                            "dataIndex": "superficie"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -2551,7 +2551,7 @@
                             "mapping": "denominazione_${locale}"
                         },
                         {
-                            "name": "value",      
+                            "name": "superficie",      
                             "mapping": "superficie"
                         },
                         {
@@ -2598,7 +2598,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "value"
+                            "dataIndex": "superficie"
                         },
                         {
                             "header": ["Maximum depth", "Profondità max", "Profondeur maximale", "Maximale Tiefe"],      
@@ -2656,7 +2656,7 @@
                             "mapping": "denominazione_${locale}"
                         },
                         {
-                            "name": "value",      
+                            "name": "superficie",      
                             "mapping": "superficie"
                         },
                         {
@@ -2687,7 +2687,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "value"
+                            "dataIndex": "superficie"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      
@@ -2737,7 +2737,7 @@
                             "mapping": "denominazione_bene_${locale}"
                         },
                         {
-                            "name": "value",      
+                            "name": "superficie",      
                             "mapping": "superficie"
                         },
                         {
@@ -2760,7 +2760,7 @@
                         },
                         {
                             "header": ["Area", "Superficie", "Superficie", "Fläche"],      
-                            "dataIndex": "value"
+                            "dataIndex": "superficie"
                         },
                         {
                             "header": ["Partner", "Partner", "Partner", "Partner"],      

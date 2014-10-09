@@ -819,12 +819,12 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         
         var record;
         
-        var removedStyle= {
+        /*var removedStyle= {
             strokeColor: "#FF0000",
             strokeWidth: 3,
             fillColor: "#FF0000",
             fillOpacity: 0.5
-        };
+        };*/
         
         return {
             xtype: 'actioncolumn',
@@ -853,7 +853,74 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                             currentRecord.removed = true;
                             
                             //me.persistEditGeometry("simulation_removed", record.get("fid"), me.getGeometry(record, sourceSRS), removedStyle);
-                            me.persistEditGeometry("Bersagli rimossi", record.get("fid"), me.getGeometry(record, sourceSRS), removedStyle);
+                            
+                            var removedStyle = (record.dirty === true) ? {
+                                stroke: false,
+                                fill: false
+                            } : {
+                                strokeColor: "#FF0000",
+                                strokeWidth: 3,
+                                fillColor: "#FF0000",
+                                fillOpacity: 0.5
+                            };
+                            
+                            var fid = record.get('fid');
+                            var map = app.mapPanel.map;
+                            var syntView = app.tools["syntheticview"];
+                            
+                            if (record.dirty && record.dirty === true){
+                            
+                                var selectedTargetLayer = map.getLayersByName(syntView.selectedTargetLayer)[0];
+                                var simulationAddedLayer = map.getLayersByName(syntView.simulationAddedLayer)[0];                             
+                                var selectedTargetLayerEditing = map.getLayersByName(syntView.selectedTargetLayerEditing)[0];
+                                var simulationChangedLayer = map.getLayersByName(syntView.simulationChangedLayer)[0];
+                                var simulationRemovedLayer = map.getLayersByName(syntView.simulationRemovedLayer)[0];        
+                                var simulationModLayer = map.getLayersByName(syntView.simulationModLayer)[0];   
+
+                                if (selectedTargetLayerEditing && selectedTargetLayerEditing.features.length !== 0){
+                                    //var feature = selectedTargetLayerEditing.getFeaturesByAttribute("id",fid);
+                                    //var feature = selectedTargetLayerEditing.getFeatureBy("state","Insert");
+                                    var feature = selectedTargetLayerEditing.features[0];
+                                    selectedTargetLayerEditing.destroyFeatures(feature);
+                                    selectedTargetLayerEditing.redraw();
+                                }  
+                                
+                                if (selectedTargetLayer && selectedTargetLayer.features.length !== 0){
+                                    var feature = selectedTargetLayer.getFeaturesByAttribute("id",fid);
+                                    selectedTargetLayer.destroyFeatures(feature);
+                                    selectedTargetLayer.redraw();
+                                }
+                                
+                                if (simulationAddedLayer && simulationAddedLayer.features.length !== 0){
+                                    var feature = simulationAddedLayer.getFeaturesByAttribute("id",fid);
+                                    simulationAddedLayer.destroyFeatures(feature);
+                                    simulationAddedLayer.redraw();
+                                }             
+
+                                if (simulationChangedLayer && simulationChangedLayer.features.length !== 0){
+                                    var feature = simulationChangedLayer.getFeaturesByAttribute("id",fid);
+                                    simulationChangedLayer.destroyFeatures(feature);
+                                    simulationChangedLayer.redraw();
+                                }    
+                                
+                                if (simulationRemovedLayer && simulationRemovedLayer.features.length !== 0){
+                                    var feature = simulationRemovedLayer.getFeaturesByAttribute("id",fid);
+                                    simulationRemovedLayer.destroyFeatures(feature);
+                                    simulationRemovedLayer.redraw();
+                                }          
+
+                                if (simulationModLayer && simulationModLayer.features.length !== 0){
+                                    var feature = simulationModLayer.getFeaturesByAttribute("id",fid);
+                                    simulationModLayer.destroyFeatures(feature);
+                                    simulationModLayer.redraw();
+                                }                                
+                                
+                            }
+                            
+                            //if(record.dirty === false){
+                            if(typeof(record.data.feature.newfeature) === 'undefined' || record.data.feature.newfeature === 'undefined' || record.data.feature.newfeature === false){
+                                me.persistEditGeometry("Bersagli rimossi", record.get("fid"), me.getGeometry(record, sourceSRS), removedStyle);
+                            }
                             grid.getStore().remove(record);
                         }
                     });
@@ -865,6 +932,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 
 
     enableTools: function(){
+        var me = this;
         var disabledItems = [];
         app.toolbar.items.each(function(item) {
             if (item.disabled) {
@@ -1003,7 +1071,35 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     me.tbar.items.items[0].toggle(false);
                     me.tbar.items.items[2].toggle(true);
                     selectionModel.unlock();                   
-                    me.enableTools();                    
+                    me.enableTools();   
+                   
+                    /*var ccc = me.wfsGrid.getSelectionModel();
+                    var bbb = ccc.grid.getSelectionModel();
+                    bbb.selectFirstRow();
+                    var xxx = bbb.getSelected();
+                    var store = xxx.store;
+
+                    var record = bbb.getSelected();
+                    //var pippo = record.get("superficie");
+                    //if(record.get("superficie")){
+                        if (record.data.new === true){
+                            var areaGeom = me.getArea(record.data.feature.geometry,'Km');
+                            record.set("superficie",areaGeom);
+                        }*/
+                            
+                    /*store.each(function(i){
+                        var sdf = 0;
+                        var originSelectionModel = me.wfsGrid.getSelectionModel();
+                        var record = originSelectionModel.getSelected();
+                        //var pippo = record.get("superficie");
+                        //if(record.get("superficie")){
+                            if (record.data.new === true){
+                                var areaGeom = me.getArea(record.data.feature.geometry,'Km');
+                                record.set("superficie",areaGeom);
+                            }
+                        //}
+                    });*/
+                    
                 },                                
                 "beforefeatureadded": function(event) {
                     //alert("beforefeatureadded");  
@@ -1920,7 +2016,6 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                             var selection = selectionModel.getSelected();
                             record = selection;
 
-
                             selectionModel.unlock();
                             var simulationStyleChanged= {
                                 strokeColor: "#FFFF00",
@@ -1980,10 +2075,18 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                             
                                             //perform geometry substitution
                                             record.setFeature(me.currentRecord);
-                                        }
-                                                                        
+
+                                            // update superficie
+                                            var areaGeom = me.getArea(record.data.feature.geometry);
+                                            record.set("superficie",areaGeom);
+                                            
+                                            var redrawLayer = map.getLayersByName(me.currentRecord.newfeature ? "Bersagli aggiunti" : "Bersagli modificati")[0];
+                                            redrawLayer.redraw();
+
+                                        }                        
                                         
                                         me.removeGeometry(actionConf.layerName, record.get("fid"));
+                                        
                                         if(me.oldExtent) {
                                             map.zoomToExtent(me.oldExtent);
                                         }
@@ -2134,7 +2237,33 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         
         store.loadData(new OpenLayers.Format.GeoJSON().read(this.data));
 
-    }
+    },
+
+	/**
+	 * Method: getArea
+	 *
+	 * Parameters:
+	 * geometry - {<OpenLayers.Geometry>}
+	 * units - {String} Unit abbreviation
+	 *
+	 * Returns:
+	 * {Float} The geometry area in the given units.
+	 */
+	getArea : function(geometry, units) {
+		var area, geomUnits;
+		area = geometry.getArea();
+		/*if(area > 0){
+			area = geometry.getGeodesicArea(this.target.mapPanel.map.getProjectionObject());
+			geomUnits = "m";
+
+			var inPerDisplayUnit = OpenLayers.INCHES_PER_UNIT[units];
+			if (inPerDisplayUnit) {
+				var inPerMapUnit = OpenLayers.INCHES_PER_UNIT[geomUnits];
+				area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
+			}
+		}*/
+		return area;
+	}
     
 });
 

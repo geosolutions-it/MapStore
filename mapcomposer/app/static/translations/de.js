@@ -130,7 +130,9 @@ GeoExt.Lang.add("de", {
         highRiskLabel: "hohes Risiko",
         notVisibleOnArcsMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein",
         notVisibleOnGridMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein",
-        selectionAreaLabel: "Gewählter Bereich"
+        selectionAreaLabel: "Gewählter Bereich",
+        alertSimGridReloadTitle: "Update Ziele",
+        alertSimGridReloadMsg: "Wollen Sie, um die Ziele zu aktualisieren? - Alle Bearbeitungs verloren!"   
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Bestandteil {0} - {1} von {2}",
