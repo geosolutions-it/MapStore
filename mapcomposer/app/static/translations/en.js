@@ -135,7 +135,7 @@ GeoExt.Lang.add("en", {
         notVisibleOnGridMessage: "Formula not visible at this scale",
         selectionAreaLabel: "Selected Area",
         alertSimGridReloadTitle: "Update Targets",
-        alertSimGridReloadMsg: "Do you want to update the targets? - All editing will be lost!"   
+        alertSimGridReloadMsg: "Do you want to update the simulation data? - All editing will be lost!"   
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Elements {0} - {1} of {2}",
@@ -163,7 +163,9 @@ GeoExt.Lang.add("en", {
         removeMessage: "Remove",
         removeTitle:"Are you sure you want to remove the element?",
         noEditElementSelectionTitle: "Select an item",
-        noEditElementSelectionMsg: "You must select an item!!!"
+        noEditElementSelectionMsg: "You must select an item!!!",
+        activeEditSessionMsgTitle: "Start Edit Session",
+        activeEditSessionMsgText: "You are in mode, adding / editing geometry. You can not delete the geometry!"
     },
     
     "GeoExplorer.prototype": {

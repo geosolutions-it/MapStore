@@ -136,7 +136,7 @@ GeoExt.Lang.add("fr", {
         notVisibleOnGridMessage: "Formula pas visible à cette échellee",
         selectionAreaLabel: "Zone sélectionnée",
         alertSimGridReloadTitle: "Mise à jour des objectifs",
-        alertSimGridReloadMsg: "Voulez-vous mettre à jour les objectifs? - Toutes les éditions sera perdu!"   
+        alertSimGridReloadMsg: "Voulez-vous mettre à jour les données de simulation? - Toutes les éditions sera perdu!"   
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Elements {0} - {1} of {2}",
@@ -164,7 +164,9 @@ GeoExt.Lang.add("fr", {
         removeMessage: "supprimer",
         removeTitle:"Êtes-vous sûr de vouloir supprimer cet élément?",
         noEditElementSelectionTitle: "Sélectionnez un élément",
-        noEditElementSelectionMsg: "Vous devez sélectionner un élément!!!"
+        noEditElementSelectionMsg: "Vous devez sélectionner un élément!!!",
+        activeEditSessionMsgTitle: "remplacez Enable",
+        activeEditSessionMsgText: "Vous êtes en mode, l'ajout / modification de la géométrie. Vous ne pouvez pas supprimer la géométrie!"
     },
     "GeoExplorer.prototype": {
         zoomSliderText: "<div> Niveau de zoom: {zoom}</div><div Echelle: 1:{scale}</div>",

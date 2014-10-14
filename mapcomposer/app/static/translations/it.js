@@ -132,7 +132,7 @@ GeoExt.Lang.add("it", {
         notVisibleOnGridMessage: "Formula non visibile a questa scala",
         selectionAreaLabel: "Area Selezionata",
         alertSimGridReloadTitle: "Aggiornamento Bersagli",
-        alertSimGridReloadMsg: "Vuoi aggiornare i Bersagli? - Tutte le modifica andranno perse!"        
+        alertSimGridReloadMsg: "Vuoi aggiornare i dati di simulazione? - Tutte le modifica andranno perse!"        
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Elementi {0} - {1} di {2}",
@@ -147,20 +147,22 @@ GeoExt.Lang.add("it", {
         addTooltip: "Aggiungi elemento",
         addLayerTooltip: "Aggiungi livello alla  mappa",
         detailsTooltip: "Visualizza dettagli",
-        deleteTooltip: "Elimina feature",
-        deleteConfirmMsg: "Sei sicuro di voler eliminare la feature?",
+        deleteTooltip: "Elimina geometria",
+        deleteConfirmMsg: "Sei sicuro di voler eliminare la geometria?",
         detailsHeaderName: "Property Name",
         detailsHeaderValue: "Property Value",
         detailsWinTitle: "Dettagli",
         zoomToTooltip: "Zoom al bersaglio",
         startEditToTooltip: "Inizia modifica riga",
-        startEditGeomToTooltip: "Inizia modifica Feature",
-        stopEditGeomToTooltip: "Termina modifica Feature",
-        resetEditGeomToTooltip: "Annulla modifica Feature",
+        startEditGeomToTooltip: "Inizia modifica geometria",
+        stopEditGeomToTooltip: "Termina modifica geometria",
+        resetEditGeomToTooltip: "Annulla modifica geometria",
         removeMessage: "Rimuovi",
-        removeTitle:"Sei sicuro di voler eliminare la feature?",
+        removeTitle:"Sei sicuro di voler eliminare la geometria?",
         noEditElementSelectionTitle: "Seleziona un elemento",
-        noEditElementSelectionMsg: "Devi selezionare un elemento!!!"
+        noEditElementSelectionMsg: "Devi selezionare un elemento!!!",
+        activeEditSessionMsgTitle: "Modifica Attiva",
+        activeEditSessionMsgText: "Sei in modalità aggiunta/modifica geometria. Non puoi eliminare la geometria!"
     },
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Livello di Zoom: {zoom}</div><div>Scala: 1:{scale}</div>",
