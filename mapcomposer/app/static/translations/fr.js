@@ -81,7 +81,10 @@ GeoExt.Lang.add("fr", {
         deleteDownloadError: 'Le téléchargement ne peut pas être supprimé. Retirez-le de toute façon?',
         meter100Text: '100 mètres',
         meter500Text: '500 mètres',
-        GrigliaText: 'Réseau'
+        GrigliaText: 'Réseau',
+		exportDisclaimerTitle: 'mise en garde',
+		agreeDisclaimerText: 'j\'accepte',
+		notAgreeDisclaimerText: 'je ne suis pas d\'accord'
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Traitement",

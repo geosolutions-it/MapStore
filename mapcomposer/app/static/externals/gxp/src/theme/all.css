@@ -382,6 +382,10 @@ div.map-overlay div.overlay-element {
     background-image: url(img/silk/table_refresh.png) !important;
 }
 
+.ok-button{
+    background-image: url(img/accept.png) !important;
+}
+
 .cancel-button{
     background-image: url(img/silk/delete.png) !important;
 }

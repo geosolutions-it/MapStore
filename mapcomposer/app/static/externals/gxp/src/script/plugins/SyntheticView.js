@@ -95,6 +95,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     meter100Text: '100 metri',
     meter500Text: '500 metri',
     GrigliaText: 'Griglia',
+	exportDisclaimerTitle: 'Disclaimer',
+	agreeDisclaimerText: 'Accetto',
+	notAgreeDisclaimerText: 'Non Accetto',
     // End i18n.
         
     id: "syntheticview",
@@ -168,6 +171,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     geoStorePassword: undefined,
     proxy:"/http_proxy/?url=",
     downloadBaseUrl: "http://localhost:8080/geoserver/www/downloads/",
+	
+	showDisclaimerBeforeExport: false,
     
     targetStyles: {
         "simulation_added": {
@@ -1393,318 +1398,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         scope: this,
                         disabled: true,
                         handler: function(){
-                        
-                            
-                            var me=this;
-                            
-                            this.downloadUserUUID = this.UUID.uuid4();
-                            
-                            var executeDownload = function() {
-                                var aggregation = Ext.getCmp('diag-combo-aggregation').getValue();
-                                var aggregationLayer = 'siig_geo_' + (aggregation < 3 ? 'ln' : 'pl') + '_arco_' + aggregation;
-                                var map = me.target.mapPanel.map;
-                                var status = me.status;
-                                var targetId = me.getChosenTarget(status);
-                                
-                                var distances=[];
-                                var distanceNames=[];
-                                var radius = me.getRadius();
-                                if(radius.radiusNotHum) {
-                                    distances.push(radius.radiusNotHum);
-                                    distanceNames.push('ambientale');
-                                }
-                                if(radius.radiusHum) {
-                                    for(var i=0; i<radius.radiusHum.length; i++) {
-                                        if(radius.radiusHum[i]) {
-                                            distances.push(radius.radiusHum[i]);
-                                            distanceNames.push('sociale' + i);
-                                        }
-                                    }
-                                }
-                                
-                                var downloadProcess = this.wpsClient.getProcess('destination', 'gs:DestinationDownload');  
-                                var bounds;
-                                if(status && status.roi) {
-                                    bounds = new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX());
-                                } else {
-                                    bounds = map.getExtent();
-                                }         
-                                var scale = me.getScaleFromBounds(bounds);
-                                var filter = new OpenLayers.Filter.Spatial({ 
-                                  type: OpenLayers.Filter.Spatial.BBOX,
-                                  property: 'geometria',
-                                  value: bounds, 
-                                  projection: map.getProjection() 
-                                });
-                                var cff;
-                                var padr;
-                                var pis;
-                                var changedTargets;
-                                var changedTargetsInfo;
-                                
-                                if(status.processing === 3) {
-                                    var simulation = status.simulation;            
-                                    pis = new OpenLayers.WPSProcess.LiteralData({value:simulation.pis.join('_')});
-                                    padr = new OpenLayers.WPSProcess.LiteralData({value:simulation.padr.join('_')});
-                                    cff = new OpenLayers.WPSProcess.LiteralData({value:simulation.cff.join('_')});
-                                    changedTargets = new OpenLayers.WPSProcess.LiteralData({value:simulation.targets.join('_')});
-                                    changedTargetsInfo = new OpenLayers.WPSProcess.LiteralData({value:Ext.encode(simulation.exportInfo)});
-                                }
-                                
-                                downloadProcess.execute({
-                                    headers: me.geoStoreUser ? {
-                                        "Authorization":  "Basic " + Base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
-                                    } : undefined,
-                                    // spatial input can be a feature or a geometry or an array of
-                                    // features or geometries
-                                    inputs: {
-                                        features: new OpenLayers.WPSProcess.ReferenceData({
-                                            href:'http://geoserver/wfs', 
-                                            method:'POST', mimeType: 'text/xml', 
-                                            body: {
-                                                wfs: {
-                                                    featureType: 'destination:'+aggregationLayer, 
-                                                    version: '1.1.0',
-                                                    filter: filter
-                                                }
-                                            }
-                                        }),
-                                        store: new OpenLayers.WPSProcess.LiteralData({value:this.wpsStore}),
-                                        precision: new OpenLayers.WPSProcess.LiteralData({value:15}),
-                                        processing: new OpenLayers.WPSProcess.LiteralData({value:status.processing}),
-                                        formula: new OpenLayers.WPSProcess.LiteralData({value:status.formula}),
-                                        target: new OpenLayers.WPSProcess.LiteralData({value:targetId}),
-                                        materials: new OpenLayers.WPSProcess.LiteralData({value:status.sostanza.id.join(',')}),
-                                        scenarios: new OpenLayers.WPSProcess.LiteralData({value:status.accident.id.join(',')}),
-                                        entities: new OpenLayers.WPSProcess.LiteralData({value:status.seriousness.id.join(',')}),
-                                        severeness: new OpenLayers.WPSProcess.LiteralData({value:status.formulaInfo.dependsOnTarget ? status.target.severeness : '0'}),
-                                        distances: new OpenLayers.WPSProcess.LiteralData({value: distances.join(',')}),
-                                        distanceNames: new OpenLayers.WPSProcess.LiteralData({value: distanceNames.join(',')}),
-                                        fp: new OpenLayers.WPSProcess.LiteralData({value:status.temporal.value}),
-                                        language: new OpenLayers.WPSProcess.LiteralData({value:GeoExt.Lang.locale}),
-                                        onlyarcs: new OpenLayers.WPSProcess.LiteralData({value:scale > me.analiticViewScale}),
-                                        damageArea: status.processing === 4 ? new OpenLayers.WPSProcess.LiteralData({value:status.damageArea}) : undefined,
-                                        cff: cff,
-                                        padr: padr,
-                                        pis: pis,
-                                        changedTargets: changedTargets,
-                                        changedTargetsInfo: changedTargetsInfo,
-										crs: new OpenLayers.WPSProcess.LiteralData({value:me.selectionLayerProjection.split(':')[1]})
-										
-                                    },
-                                    outputs: [],                                    
-                                    success: function(outputs) {
-                                        if(outputs.executeResponse.status.processSucceeded) {
-                                            var link = outputs.executeResponse.processOutputs[0].literalData.value;
-                                            var url = me.downloadBaseUrl + link;
-                                            submitElab.call(me, url);
-                                        } else {
-                                            var error = outputs.executeResponse.status.exception.exceptionReport.exceptions[0].texts[0]
-                                            Ext.Msg.show({
-                                                title: me.saveProcessingErrorTitle,
-                                                buttons: Ext.Msg.OK,
-                                                msg: error,
-                                                icon: Ext.MessageBox.ERROR,
-                                                scope: me
-                                            });  
-                                        }
-                                    }
-                                });
-                            };
-                            
-                            var submitElab = function(downloadUrl){                                
-                                var form = this.saveDownloadPanel.getForm();
-                                var fields = form.getValues();
-                                
-                                
-                                var updateResource = function(btn, text){
-                                    if (btn == 'yes'){
-                                        geostoreEntityResource.regName = geostoreEntityResource.name;
-                                        me.geoStore.getLikeName(geostoreEntityResource,successResUpdate,failureRes);
-                                    }
-                                };
-                                
-                                //Verifico se la categoria esiste. Se esiste chiedo all'utente se vuole sovrascrivere l'ìelaborazione
-                                var checkEntitiesResSucc = function(check){
-                                    if(!check){
-                                        me.geoStore.createEntity(geostoreEntityResource,successRes,failureRes);
-                                    }else{
-                                        Ext.Msg.show({
-                                            title: me.saveProcessingTitle,
-                                            buttons: Ext.Msg.YESNO,                
-                                            msg: me.saveProcessingMsg,
-                                            fn: updateResource,
-                                            icon: Ext.MessageBox.QUESTION,
-                                            scope: this
-                                        });                               
-                                    }
-                                };
-                                
-                                //Errore "existsEntity" function
-                                var checkEntitiesResFail = function(){
-                                    Ext.Msg.show({
-                                        title: me.saveProcessingErrorTitle,
-                                        buttons: Ext.Msg.OK,
-                                        msg: me.saveProcessingErrorMsg,
-                                        icon: Ext.MessageBox.ERROR,
-                                        scope: this
-                                    });                     
-                                };
-                                
-                                // Effettuo l'update della risorsa in seguito alla conferma dell'utente
-                                var successResUpdate = function(elabID){
-                                    var updateResource1 = geostoreEntityResource;
-                                    updateResource1.id = elabID[0].id;
-                                    me.geoStore.updateEntity(updateResource1,successRes,failureRes);
-                                        
-                                };                            
-                                
-                                var closeSaveWin = function(){
-                                    me.saveDownloadWin.close();
-                                };
-                                
-                                // Elaborazione salvata con successo
-                                var successRes = function(){
-                                    Ext.Msg.show({
-                                        title: me.saveProcessingSuccessTitle,
-                                        buttons: Ext.Msg.OK,
-                                        msg: '<a href="'+downloadUrl+'" target="_blank">' + me.downloadFileLabel + '</a>',
-                                        fn: closeSaveWin,
-                                        icon: Ext.MessageBox.INFO,
-                                        scope: this
-                                    });                                         
-                                };                    
-                                
-                                // Errore salvataggio elaborazione
-                                var failureRes = function(){
-                                    Ext.Msg.show({
-                                        title: me.saveProcessingErrorTitle,
-                                        buttons: Ext.Msg.OK,
-                                        msg: me.saveProcessingErrorMsg,
-                                        icon: Ext.MessageBox.ERROR,
-                                        scope: this
-                                    });                     
-                                };
-                                
-                                //Assegno il nome alla risorsa (elaborazione)
-                                var geostoreEntityResource = new OpenLayers.GeoStore.Resource({
-                                    type: "resource",
-                                    name: this.downloadUserUUID,
-                                    description: fields.elab_name,
-                                    attributes: [{
-                                        name: fields.elab_description,
-                                        type:"STRING",
-                                        value:fields.elab_description
-                                    },{
-                                        name: "valid",
-                                        type:"STRING",
-                                        value:"true"
-                                    }],                                    
-                                    category: 'download',
-                                    store: downloadUrl
-                                });
-                                
-                                //Verifico se la risorsa (elaborazione) esiste
-                                me.geoStore.createEntity(geostoreEntityResource,successRes,checkEntitiesResFail);
-
-                            };
-                            
-                            var enableBtnFunction = function(){
-                                if(this.getValue() != "")
-                                    Ext.getCmp("elab-savebutton").enable();
-                                else
-                                    Ext.getCmp("elab-savebutton").disable();
-                            };
-                            
-                            this.saveDownloadPanel = new Ext.form.FormPanel({
-                                frame: true,
-                                labelWidth: 80,
-                                width: 400,
-                                height: 150,
-                                layout: "form",
-                                defaultType: "textfield",
-                                items: [
-                                    {
-                                        xtype: 'fieldset',
-                                        id: 'name-field-set',
-                                        title: me.saveProcessingNameFieldsetTitle,
-                                        items: [
-                                            {
-                                                xtype: 'textfield',
-                                                width: 120,
-                                                fieldLabel: me.saveProcessingNameLabel,
-                                                id: 'diag-text-field',
-                                                anchor:'100%',
-                                                name: "elab_name",
-                                                listeners: {
-                                                    render: function(f){
-                                                        f.el.on('keydown', enableBtnFunction, f, {buffer: 350});
-                                                    }
-                                                }
-                                            },{
-                                                xtype: 'textarea',
-                                                width: 200,
-                                                id: 'diag-text-description',
-                                                fieldLabel: me.saveProcessingDescriptionLabel,
-                                                name: "elab_description",
-                                                readOnly: false,
-                                                hideLabel : false
-                                            },{
-                                                xtype: 'combo',
-                                                id: 'diag-combo-aggregation',
-                                                name: 'elab_aggregation',
-                                                fieldLabel: me.saveProcessingAggregationLabel,
-                                                typeAhead: true,
-                                                triggerAction: 'all',
-                                                lazyRender:true,
-                                                mode: 'local',
-                                                store: new Ext.data.ArrayStore({
-                                                    id: 0,
-                                                    fields: [
-                                                        'id',
-                                                        'text'
-                                                    ],
-                                                    data: [[1, me.meter100Text], [2, me.meter500Text],[3, me.GrigliaText]]
-                                                }),
-                                                value: 1,
-                                                valueField: 'id',
-                                                displayField: 'text'
-                                            }
-                                        ]
-                                    }
-                                ],
-                                buttons: [{
-                                    text: me.saveDownloadMenuButton,
-                                    iconCls: 'save-download-button',
-                                    id: "elab-savebutton",
-                                    disabled: true,
-                                    formBind: true,
-                                    handler: executeDownload,
-                                    scope: this
-                                }],
-                                keys: [{ 
-                                    key: [Ext.EventObject.ENTER], 
-                                    handler: executeDownload,
-                                    scope: this
-                                }]
-                            });
-                                    
-                            this.saveDownloadWin = new Ext.Window({
-                                title: me.saveProcessingWinTitle,
-                                iconCls: 'save-download-button',
-                                layout: "fit",
-                                width: 450,
-                                height: 250,
-                                closeAction: 'close',
-                                resizable: false,
-                                plain: true,
-                                border: false,
-                                modal: true,
-                                items: [
-                                    this.saveDownloadPanel
-                                ]
-                            });
-                            this.saveDownloadWin.show(); 
+							if(this.showDisclaimerBeforeExport) {
+								this.exportDisclaimer();
+							} else {
+								this.exportProcessing();
+							}                            
                         }
                     },{
                         text: this.loadDownloadButton,
@@ -2274,6 +1972,375 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
     },
     
+	exportDisclaimer: function() {
+		this.disclaimerWin = new Ext.Window({
+			title: this.exportDisclaimerTitle,
+			layout: "fit",
+			width: 600,
+			height: 500,
+			closeAction: 'close',
+			resizable: false,
+			plain: true,
+			border: false,
+			modal: true,
+			items: [
+				{
+					xtype:'box',
+					autoEl: {
+						tag: 'iframe',
+						width: 550,
+						height: 450,
+						src: 'Disclaimer_' + GeoExt.Lang.locale.toUpperCase() + '.pdf'
+					}
+				}
+			],
+			buttons: [{
+				text: this.agreeDisclaimerText,
+				iconCls: 'ok-button',
+				handler: function() {
+					this.disclaimerWin.close();
+					this.exportProcessing();
+				},
+				scope: this
+			},{
+				text: this.notAgreeDisclaimerText,
+				iconCls: 'cancel-button',
+				handler: function() {
+					this.disclaimerWin.close();
+				},
+				scope: this
+			}],
+			keys: [{ 
+				key: [Ext.EventObject.ENTER], 
+				handler: function() {
+					this.disclaimerWin.close();
+					this.exportProcessing();
+				},
+				scope: this
+			},{ 
+				key: [Ext.EventObject.ESC], 
+				handler: function() {
+					this.disclaimerWin.close();
+				},
+				scope: this
+			}]
+		});
+		this.disclaimerWin.show(); 
+	},
+	
+	exportProcessing: function() {
+		var me=this;
+                            
+		this.downloadUserUUID = this.UUID.uuid4();
+		
+		var executeDownload = function() {
+			var aggregation = Ext.getCmp('diag-combo-aggregation').getValue();
+			var aggregationLayer = 'siig_geo_' + (aggregation < 3 ? 'ln' : 'pl') + '_arco_' + aggregation;
+			var map = me.target.mapPanel.map;
+			var status = me.status;
+			var targetId = me.getChosenTarget(status);
+			
+			var distances=[];
+			var distanceNames=[];
+			var radius = me.getRadius();
+			if(radius.radiusNotHum) {
+				distances.push(radius.radiusNotHum);
+				distanceNames.push('ambientale');
+			}
+			if(radius.radiusHum) {
+				for(var i=0; i<radius.radiusHum.length; i++) {
+					if(radius.radiusHum[i]) {
+						distances.push(radius.radiusHum[i]);
+						distanceNames.push('sociale' + i);
+					}
+				}
+			}
+			
+			var downloadProcess = this.wpsClient.getProcess('destination', 'gs:DestinationDownload');  
+			var bounds;
+			if(status && status.roi) {
+				bounds = new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX());
+			} else {
+				bounds = map.getExtent();
+			}         
+			var scale = me.getScaleFromBounds(bounds);
+			var filter = new OpenLayers.Filter.Spatial({ 
+			  type: OpenLayers.Filter.Spatial.BBOX,
+			  property: 'geometria',
+			  value: bounds, 
+			  projection: map.getProjection() 
+			});
+			var cff;
+			var padr;
+			var pis;
+			var changedTargets;
+			var changedTargetsInfo;
+			
+			if(status.processing === 3) {
+				var simulation = status.simulation;            
+				pis = new OpenLayers.WPSProcess.LiteralData({value:simulation.pis.join('_')});
+				padr = new OpenLayers.WPSProcess.LiteralData({value:simulation.padr.join('_')});
+				cff = new OpenLayers.WPSProcess.LiteralData({value:simulation.cff.join('_')});
+				changedTargets = new OpenLayers.WPSProcess.LiteralData({value:simulation.targets.join('_')});
+				changedTargetsInfo = new OpenLayers.WPSProcess.LiteralData({value:Ext.encode(simulation.exportInfo)});
+			}
+			
+			downloadProcess.execute({
+				headers: me.geoStoreUser ? {
+					"Authorization":  "Basic " + Base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
+				} : undefined,
+				// spatial input can be a feature or a geometry or an array of
+				// features or geometries
+				inputs: {
+					features: new OpenLayers.WPSProcess.ReferenceData({
+						href:'http://geoserver/wfs', 
+						method:'POST', mimeType: 'text/xml', 
+						body: {
+							wfs: {
+								featureType: 'destination:'+aggregationLayer, 
+								version: '1.1.0',
+								filter: filter
+							}
+						}
+					}),
+					store: new OpenLayers.WPSProcess.LiteralData({value:this.wpsStore}),
+					precision: new OpenLayers.WPSProcess.LiteralData({value:15}),
+					processing: new OpenLayers.WPSProcess.LiteralData({value:status.processing}),
+					formula: new OpenLayers.WPSProcess.LiteralData({value:status.formula}),
+					target: new OpenLayers.WPSProcess.LiteralData({value:targetId}),
+					materials: new OpenLayers.WPSProcess.LiteralData({value:status.sostanza.id.join(',')}),
+					scenarios: new OpenLayers.WPSProcess.LiteralData({value:status.accident.id.join(',')}),
+					entities: new OpenLayers.WPSProcess.LiteralData({value:status.seriousness.id.join(',')}),
+					severeness: new OpenLayers.WPSProcess.LiteralData({value:status.formulaInfo.dependsOnTarget ? status.target.severeness : '0'}),
+					distances: new OpenLayers.WPSProcess.LiteralData({value: distances.join(',')}),
+					distanceNames: new OpenLayers.WPSProcess.LiteralData({value: distanceNames.join(',')}),
+					fp: new OpenLayers.WPSProcess.LiteralData({value:status.temporal.value}),
+					language: new OpenLayers.WPSProcess.LiteralData({value:GeoExt.Lang.locale}),
+					onlyarcs: new OpenLayers.WPSProcess.LiteralData({value:scale > me.analiticViewScale}),
+					damageArea: status.processing === 4 ? new OpenLayers.WPSProcess.LiteralData({value:status.damageArea}) : undefined,
+					cff: cff,
+					padr: padr,
+					pis: pis,
+					changedTargets: changedTargets,
+					changedTargetsInfo: changedTargetsInfo,
+					crs: new OpenLayers.WPSProcess.LiteralData({value:me.selectionLayerProjection.split(':')[1]})
+					
+				},
+				outputs: [],                                    
+				success: function(outputs) {
+					if(outputs.executeResponse.status.processSucceeded) {
+						var link = outputs.executeResponse.processOutputs[0].literalData.value;
+						var url = me.downloadBaseUrl + link;
+						submitElab.call(me, url);
+					} else {
+						var error = outputs.executeResponse.status.exception.exceptionReport.exceptions[0].texts[0]
+						Ext.Msg.show({
+							title: me.saveProcessingErrorTitle,
+							buttons: Ext.Msg.OK,
+							msg: error,
+							icon: Ext.MessageBox.ERROR,
+							scope: me
+						});  
+					}
+				}
+			});
+		};
+		
+		var submitElab = function(downloadUrl){                                
+			var form = this.saveDownloadPanel.getForm();
+			var fields = form.getValues();
+			
+			
+			var updateResource = function(btn, text){
+				if (btn == 'yes'){
+					geostoreEntityResource.regName = geostoreEntityResource.name;
+					me.geoStore.getLikeName(geostoreEntityResource,successResUpdate,failureRes);
+				}
+			};
+			
+			//Verifico se la categoria esiste. Se esiste chiedo all'utente se vuole sovrascrivere l'ìelaborazione
+			var checkEntitiesResSucc = function(check){
+				if(!check){
+					me.geoStore.createEntity(geostoreEntityResource,successRes,failureRes);
+				}else{
+					Ext.Msg.show({
+						title: me.saveProcessingTitle,
+						buttons: Ext.Msg.YESNO,                
+						msg: me.saveProcessingMsg,
+						fn: updateResource,
+						icon: Ext.MessageBox.QUESTION,
+						scope: this
+					});                               
+				}
+			};
+			
+			//Errore "existsEntity" function
+			var checkEntitiesResFail = function(){
+				Ext.Msg.show({
+					title: me.saveProcessingErrorTitle,
+					buttons: Ext.Msg.OK,
+					msg: me.saveProcessingErrorMsg,
+					icon: Ext.MessageBox.ERROR,
+					scope: this
+				});                     
+			};
+			
+			// Effettuo l'update della risorsa in seguito alla conferma dell'utente
+			var successResUpdate = function(elabID){
+				var updateResource1 = geostoreEntityResource;
+				updateResource1.id = elabID[0].id;
+				me.geoStore.updateEntity(updateResource1,successRes,failureRes);
+					
+			};                            
+			
+			var closeSaveWin = function(){
+				me.saveDownloadWin.close();
+			};
+			
+			// Elaborazione salvata con successo
+			var successRes = function(){
+				Ext.Msg.show({
+					title: me.saveProcessingSuccessTitle,
+					buttons: Ext.Msg.OK,
+					msg: '<a href="'+downloadUrl+'" target="_blank">' + me.downloadFileLabel + '</a>',
+					fn: closeSaveWin,
+					icon: Ext.MessageBox.INFO,
+					scope: this
+				});                                         
+			};                    
+			
+			// Errore salvataggio elaborazione
+			var failureRes = function(){
+				Ext.Msg.show({
+					title: me.saveProcessingErrorTitle,
+					buttons: Ext.Msg.OK,
+					msg: me.saveProcessingErrorMsg,
+					icon: Ext.MessageBox.ERROR,
+					scope: this
+				});                     
+			};
+			
+			//Assegno il nome alla risorsa (elaborazione)
+			var geostoreEntityResource = new OpenLayers.GeoStore.Resource({
+				type: "resource",
+				name: this.downloadUserUUID,
+				description: fields.elab_name,
+				attributes: [{
+					name: fields.elab_description,
+					type:"STRING",
+					value:fields.elab_description
+				},{
+					name: "valid",
+					type:"STRING",
+					value:"true"
+				}],                                    
+				category: 'download',
+				store: downloadUrl
+			});
+			
+			//Verifico se la risorsa (elaborazione) esiste
+			me.geoStore.createEntity(geostoreEntityResource,successRes,checkEntitiesResFail);
+
+		};
+		
+		var enableBtnFunction = function(){
+			if(this.getValue() != "")
+				Ext.getCmp("elab-savebutton").enable();
+			else
+				Ext.getCmp("elab-savebutton").disable();
+		};
+		
+		this.saveDownloadPanel = new Ext.form.FormPanel({
+			frame: true,
+			labelWidth: 80,
+			width: 400,
+			height: 150,
+			layout: "form",
+			defaultType: "textfield",
+			items: [
+				{
+					xtype: 'fieldset',
+					id: 'name-field-set',
+					title: me.saveProcessingNameFieldsetTitle,
+					items: [
+						{
+							xtype: 'textfield',
+							width: 120,
+							fieldLabel: me.saveProcessingNameLabel,
+							id: 'diag-text-field',
+							anchor:'100%',
+							name: "elab_name",
+							listeners: {
+								render: function(f){
+									f.el.on('keydown', enableBtnFunction, f, {buffer: 350});
+								}
+							}
+						},{
+							xtype: 'textarea',
+							width: 200,
+							id: 'diag-text-description',
+							fieldLabel: me.saveProcessingDescriptionLabel,
+							name: "elab_description",
+							readOnly: false,
+							hideLabel : false
+						},{
+							xtype: 'combo',
+							id: 'diag-combo-aggregation',
+							name: 'elab_aggregation',
+							fieldLabel: me.saveProcessingAggregationLabel,
+							typeAhead: true,
+							triggerAction: 'all',
+							lazyRender:true,
+							mode: 'local',
+							store: new Ext.data.ArrayStore({
+								id: 0,
+								fields: [
+									'id',
+									'text'
+								],
+								data: [[1, me.meter100Text], [2, me.meter500Text],[3, me.GrigliaText]]
+							}),
+							value: 1,
+							valueField: 'id',
+							displayField: 'text'
+						}
+					]
+				}
+			],
+			buttons: [{
+				text: me.saveDownloadMenuButton,
+				iconCls: 'save-download-button',
+				id: "elab-savebutton",
+				disabled: true,
+				formBind: true,
+				handler: executeDownload,
+				scope: this
+			}],
+			keys: [{ 
+				key: [Ext.EventObject.ENTER], 
+				handler: executeDownload,
+				scope: this
+			}]
+		});
+				
+		this.saveDownloadWin = new Ext.Window({
+			title: me.saveProcessingWinTitle,
+			iconCls: 'save-download-button',
+			layout: "fit",
+			width: 450,
+			height: 250,
+			closeAction: 'close',
+			resizable: false,
+			plain: true,
+			border: false,
+			modal: true,
+			items: [
+				this.saveDownloadPanel
+			]
+		});
+		this.saveDownloadWin.show(); 
+	},
+	
     loadRadiusData: function() {
         var radiusStore= new GeoExt.data.FeatureStore({ 
              id: "radiusStore",

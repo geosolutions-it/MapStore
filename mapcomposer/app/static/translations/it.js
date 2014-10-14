@@ -77,7 +77,10 @@ GeoExt.Lang.add("it", {
         deleteDownloadError: 'Il download non può essere cancellato. Rimuoverlo ugualmente?',
         meter100Text: '100 metri',
         meter500Text: '500 metri',
-        GrigliaText: 'Griglia'
+        GrigliaText: 'Griglia',
+		exportDisclaimerTitle: 'Disclaimer',
+		agreeDisclaimerText: 'Accetto',
+		notAgreeDisclaimerText: 'Non Accetto'
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Elaborazione",
