@@ -619,8 +619,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     simulationChangedLayer.removeAllFeatures();               
                 if (simulationRemovedLayer)
                     simulationRemovedLayer.removeAllFeatures();
-                if (simulationModLayer)
-                    simulationModLayer.removeAllFeatures();
+                /*if (simulationModLayer)
+                    simulationModLayer.removeAllFeatures();*/
 
                 this.updateSimulationTabPabelConfirm(wfsGrid,syntView,map,type,startValue);                  
                 
@@ -644,7 +644,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             (simulationAddedLayer && simulationAddedLayer.features.length !== 0) || 
             (simulationChangedLayer && simulationChangedLayer.features.length !== 0) || 
             (simulationRemovedLayer && simulationRemovedLayer.features.length !== 0) || 
-            (simulationModLayer && simulationModLayer.features.length !== 0) ||
+            //(simulationModLayer && simulationModLayer.features.length !== 0) ||
             !arcIsEmpty){
             
             Ext.Msg.show({

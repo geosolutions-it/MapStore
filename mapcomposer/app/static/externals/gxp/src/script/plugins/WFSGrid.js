@@ -894,7 +894,17 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                             var simulationModLayer = map.getLayersByName(syntView.simulationModLayer)[0];   
                                 
                             if (record.data.feature.newfeature){
-                            
+                                
+                                // remove added geometry from save object
+                                if (me.save){
+                                    for (save in me.save){
+                                        if(me.save.hasOwnProperty(save)){        
+                                            if (save === id)
+                                                delete me.save[save];
+                                        }
+                                    }
+                                }
+                                
                                 if (selectedTargetLayerEditing && selectedTargetLayerEditing.features.length !== 0){
                                     //var feature = selectedTargetLayerEditing.getFeaturesByAttribute("id",fid);
                                     //var feature = selectedTargetLayerEditing.getFeatureBy("state","Insert");
