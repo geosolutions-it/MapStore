@@ -43,6 +43,11 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
 
     loginManager: null,    
     setActiveOnOutput: true,
+    /**
+	 * Property: flowId
+	 * {string} the GeoBatch flow name to manage
+	 */	
+    flowId: 'ds2ds_zip2pg',
     
     /** api: method[addActions]
      */
@@ -138,6 +143,7 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
                     GWCRestURL: this.GWCRestURL,
                     layout:'fit',
                     autoScroll:true,
+                    flowId: this.flowId,
                     auth: this.auth,
                     autoWidth:true,
                     region:'center',

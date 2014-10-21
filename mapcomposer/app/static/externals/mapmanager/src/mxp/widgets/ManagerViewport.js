@@ -49,7 +49,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
      * {string} sets the type of layout
      * 
      */ 
-    layout:'fit',
+    layout:'border',
 
     /** api: config[tools]
      *  ``Array`` Custom tools to include by default
@@ -106,21 +106,23 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
         // this.geoSearchUrl = geoStoreBase + 'extjs/search/';
         this.geoSearchUsersUrl = geoStoreBase + 'extjs/search/users';
         this.geoSearchCategoriesUrl = geoStoreBase + 'extjs/search/category';
-
+        //this.items=[];
         var mergedItems = [];
-
+        
         // this component is the tool bar at top
-        var north = {
-            region: "north",
-            layout: "fit",
+        var center = {
+            region: "center",
+            layout:'fit',
             id: this.id + "_north",
             border: false,
             tbar: ["-", "->", "-"],
             items: this.items
         };
 
-        mergedItems.push(north);
-
+        
+        
+        mergedItems.push(center);
+        mergedItems.push(this.getDecoration());
         this.items = mergedItems;
         
         mxp.widgets.ManagerViewport.superclass.initComponent.call(this, arguments);
@@ -425,6 +427,60 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
       }
       return null;
         
+    },
+    getDecoration: function(){
+         //Manage Header and Footer
+        var header = this.config.header;
+        var footer = this.config.footer;
+        var panels = [];  
+
+        var parseKnowIntegers = function(section){
+            var knownInteger = {'height':true, 'maxHeight': true, 'minWidth':true};
+            for(var key in knownInteger){
+                if(section[key]){
+                    try{
+                        section[key] = parseInt(section[key]);	
+                    }catch (e){
+                        // unknown parameter value
+                    }
+                }	
+            }
+            return section;
+        }
+
+        if(header){
+            var north = {
+                header: false,
+                region: 'north',
+                id: 'msheader'
+            };
+            north = Ext.applyIf(north, (header.container ? parseKnowIntegers(header.container) : {}));
+            var html = header.html;
+            if(header.html instanceof Array){
+                html = header.html.join("");
+            }
+            north.html = (header.css || '') + (html || '');
+            panels.push(north);
+        }
+
+
+
+        if(footer){
+             var south = {
+                header: false,
+                region: 'south',
+                id: 'msfooter'
+            };
+            south = Ext.applyIf(south, (footer.container ? parseKnowIntegers(footer.container) : {}));
+            var html = footer.html;
+            if(footer.html instanceof Array){
+                html = footer.html.join("");
+            }
+            south.html = (footer.css || '') + (html || '');
+            panels.push(south);
+        }
+        return panels;
+
     }
 });
 

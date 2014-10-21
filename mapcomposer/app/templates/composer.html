@@ -328,7 +328,11 @@
 				
 				if(footer){
 					south = Ext.applyIf(south, (footer.container ? parseKnowIntegers(footer.container) : {}));
-					south.html = (footer.css || '') + (footer.html || '');
+                    var html = footer.html;
+                    if(footer.html instanceof Array){
+                        html = footer.html.join("");
+                    }
+					south.html = (footer.css || '') + (html || '');
 				}
 				
 				viewport.items = [{
