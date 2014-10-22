@@ -44,6 +44,7 @@ gxp.plugins.printreport.AgrometChartGenerator = Ext.extend(gxp.plugins.printrepo
         this.chartsSVG = [];
 
         this.agrometChartPanel = new gxp.charts.AgrometChartPanel({
+            chartOpt: this.chartOpt,
             url: this.url,
             ref: '../agrometChartPanel',
             targetTab: null,

@@ -50,6 +50,7 @@ gxp.plugins.printreport.CropDataChartGenerator = Ext.extend(gxp.plugins.printrep
             layout: 'fit',
             modal: false,
             items: [new gxp.charts.ChartPanel({
+                chartOpt: this.chartOpt,
                 url: this.url,
                 ref: '../chartPanel',
                 id:'cropReportData_tab',

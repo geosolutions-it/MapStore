@@ -481,14 +481,6 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                         cb.ownerCt.referenceYear.setText(yrs.endValue.getValue());
                     }
                     
-                    var comboProd = Ext.getCmp('comboProd');
-                    
-                    var comValue = cb.getValue();
-                    if (comValue == 'cotton'){
-                        comboProd.setValue('000 bales');               
-                    }else{
-                        comboProd.setValue('000 tons');                                  
-                    }
                 }
             }
         };

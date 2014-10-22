@@ -34,14 +34,14 @@ Ext.namespace('gxp.widgets.button');
  *    Base class to create chart and send to the print module
  *
  */
-gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(Ext.Button, {
+gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(Ext.SplitButton, {
 
     /** api: xtype = gxp_nrlReportCropStatusChartButton */
     xtype: 'gxp_nrlReportCropStatusChartButton',
     iconCls: "gxp-icon-nrl-chart", //TODO: Change
     text: 'Generate Report',
     disclaimerText: '',
-
+    
     firstSVGTitle: "AGGREGATED DATA -",
     targetLayerName:"hidden_hilight_layer",
     targetLayerStyle:{
@@ -49,7 +49,187 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(Ext.Button, {
         strokeWidth: 1,
         fillOpacity:0
     },
+    agrometchartOpt:{
+		series:{
+			current:{
+					color: '#FF0000',
+                    lcolor: 'rgb(207,235,148)',                    
+					type: 'line',
+					dataIndex: 'current',
+					unit:'(000 tons)',
+					xField:'s_dec'
 
+				},
+			previous:{
+					type: 'line',
+					color: '#4572A7',
+                    lcolor: 'rgb(139,184,237)',
+					dataIndex: 'previous',
+					unit:'(kg/ha)',
+					xField:'s_dec'
+
+				},
+			aggregated:{
+					color: '#808080',
+                    lcolor: 'rgb(240,140,137)', 
+                    dashStyle: 'dash',                    
+					type: 'line',
+					dataIndex: 'aggregated',
+					unit:'(000 ha)',
+					xField:'s_dec'
+			}
+		},
+        spacingBottom: 100,
+        height: 500,
+        width: 800
+	},
+    cropDatachartOpt:{
+		series:{
+			prod:{
+				name: 'Production (000 tons)',
+				color: '#89A54E',
+				lcolor: 'rgb(207,235,148)',                    
+				type: 'line',
+				yAxis: 1,
+				dataIndex: 'prod',
+				unit:'(000 tons)'
+			},
+			yield:{
+				name: 'Yield (kg/ha)',
+				dashStyle: 'shortdot',
+				type: 'line',
+				color: '#4572A7',
+				lcolor: 'rgb(139,184,237)',
+				yAxis: 2,
+				dataIndex: 'yield',
+				unit:'(kg/ha)'
+			},
+			area:{
+				name: 'Area (000 hectares)',
+				color: '#AA4643',
+				lcolor: 'rgb(240,140,137)',                    
+				type: 'line',
+				dataIndex: 'area',
+				unit:'(000 ha)'
+			}
+		},
+        spacingBottom: 145,
+        height: 500,
+        width: 800
+	},
+    
+     /**
+     * private method[createOptionsFildset]
+     * ``String`` title the title of the fieldset 
+     * ``Object`` opts the chartopts object to manage
+     * ``String`` prefix the prefix to use in radio names
+     */
+    createOptionsFildset: function(title,opts,prefix){
+        
+        var fieldSet = {
+                xtype:'fieldset',
+                title:title,
+                items:[{
+                    //type
+                    fieldLabel:"Type",
+                    xtype:"radiogroup", 
+                    columns:2,
+                     items:[
+                        {  boxLabel:"<span class=\"icon_span ic_chart-line\">Line</span>",name:prefix+"_chart_type",inputValue:"line", checked : opts.type == "line"},
+                        {  boxLabel:"<span class=\"icon_span ic_chart-spline\">Curve</span>",name:prefix+"_chart_type",inputValue:"spline", checked : opts.type == "spline"},
+                        {  boxLabel:"<span class=\"icon_span ic_chart-bar\">Bar</span>",name:prefix+"_chart_type", inputValue:"column",checked : opts.type == "column"},
+                        {  boxLabel:"<span class=\"icon_span ic_chart-area\">Area</span>",name:prefix+"_chart_type", inputValue:"area",checked : opts.type == "area"}
+                        
+                    ],
+                    listeners: {
+                        change: function(group,checked){
+                            if(checked){
+                                opts.type = checked.inputValue;
+                            }
+                        }
+                    },
+                    scope:this
+                },{ //color
+                    fieldLabel: 'Color', 
+                    xtype:'colorpickerfield',
+                    anchor:'100%',
+                    value : opts.color.slice(1),
+                     listeners: {
+                        select: function(comp,hex,a,b,c,d,e){
+                            if(hex){
+                                opts.color = '#' + hex;
+                                var rgb = comp.menu.picker.hexToRgb(hex);
+                                opts.lcolor = "rgb(" +rgb[0]+ "," +rgb[1]+ ","+rgb[2]+ ")";
+                            }
+                        }
+                    }
+                }]
+        }
+        return fieldSet;
+    },
+    menu : {
+        
+        items:[{
+            ref:'../chartoptions',
+            iconCls:'ic_wrench',
+            text: 'Options', 
+            handler: function(option){
+                //Main Button
+                var mainButton = this.refOwner;
+                var options = mainButton.cropDatachartOpt;
+                var prodOpt =  mainButton.createOptionsFildset("Production",options.series['prod'],'prod');
+                var areaOpt =  mainButton.createOptionsFildset("Area",options.series['area'],'area');
+                var yieldOpt =  mainButton.createOptionsFildset("Yield",options.series['yield'],'yield');
+                
+                var cropDataForm =  {
+                    title:'Crop Data',
+                    ref:'form',
+                    xtype:'form',
+                    frame:'true',
+                    layout:'form',
+                    items: [prodOpt,areaOpt,yieldOpt]
+                 };
+                
+                options = mainButton.agrometchartOpt;
+                var current =  mainButton.createOptionsFildset("Reference Year",options.series['current'],'current');
+                var previous =  mainButton.createOptionsFildset("Previous Year",options.series['previous'],'previous');
+                var aggregated =  mainButton.createOptionsFildset("Period Mean",options.series['aggregated'],'aggregated');
+                
+                
+                 var agrometForm =  {
+                    title:'Agromet',
+                    ref:'form',
+                    xtype:'form',
+                    frame:'true',
+                    layout:'form',
+                    items: [current,previous,aggregated]
+                 };
+                var win = new Ext.Window({
+                    iconCls:'ic_wrench',
+                    title:   mainButton.optionsTitle,
+                    height: 420,
+                    width:  350, 
+                    minWidth:250,
+                    minHeight:200,
+                    layout:'fit',
+                    autoScroll:false,
+                    maximizable: true, 
+                    modal:true,
+                    resizable:true,
+                    draggable:true,
+                    layout:'fit',
+                    items: {
+                        xtype:'tabpanel', 
+                        items:[cropDataForm,agrometForm],
+                        activeTab:0
+                   }
+                    
+                    
+                });
+                win.show();
+            }
+        }]
+    },
     /** config:[defaultAreaTypeMap]
      *  ``String`` for the area type for the map generation for Pakistan. Can be 'province' or 'district' .Default it's 'province'.
      **/
@@ -95,6 +275,7 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(Ext.Button, {
         });
         // CropData
         var cropDataChartGenerator = new gxp.plugins.printreport.CropDataChartGenerator({
+            chartOpt: this.cropDatachartOpt,
             form: this.form,
             target: this.target,
             printReportHelper: helper,
@@ -123,6 +304,7 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(Ext.Button, {
         })
         // Agromet
         var agrometChartGenerator = new gxp.plugins.printreport.AgrometChartGenerator({
+            chartOpt: this.agrometchartOpt,
             form: this.form,
             target: this.target,
             printReportHelper: helper,

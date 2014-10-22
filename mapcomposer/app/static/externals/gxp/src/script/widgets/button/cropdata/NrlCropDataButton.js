@@ -26,14 +26,104 @@ Ext.namespace('gxp.widgets.button');
  *    Base class to create chart
  *
  */
-gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
+gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 
     /** api: xtype = gxp_nrlchart */
     xtype: 'gxp_nrlCropDataButton',
     iconCls: "gxp-icon-nrl-chart",
 	text: 'Generate Chart',
+    optionsTitle: "Chart Options",
     form: null,
     url: null,
+    /**
+     * private method[createOptionsFildset]
+     * ``String`` title the title of the fieldset 
+     * ``Object`` opts the chartopts object to manage
+     * ``String`` prefix the prefix to use in radio names
+     */
+    createOptionsFildset: function(title,opts,prefix){
+        
+        var fieldSet = {
+                xtype:'fieldset',
+                title:title,
+                items:[{
+                    //type
+                    fieldLabel:"Type",
+                    xtype:"radiogroup", 
+                    columns:2,
+                     items:[
+                        {  boxLabel:"<span class=\"icon_span ic_chart-line\">Line</span>",name:prefix+"_chart_type",inputValue:"line", checked : opts.type == "line"},
+                        {  boxLabel:"<span class=\"icon_span ic_chart-spline\">Curve</span>",name:prefix+"_chart_type",inputValue:"spline", checked : opts.type == "spline"},
+                        {  boxLabel:"<span class=\"icon_span ic_chart-bar\">Bar</span>",name:prefix+"_chart_type", inputValue:"column",checked : opts.type == "column"},
+                        {  boxLabel:"<span class=\"icon_span ic_chart-area\">Area</span>",name:prefix+"_chart_type", inputValue:"area",checked : opts.type == "area"}
+                        
+                    ],
+                    listeners: {
+                        change: function(group,checked){
+                            if(checked){
+                                opts.type = checked.inputValue;
+                            }
+                        }
+                    },
+                    scope:this
+                },{ //color
+                    fieldLabel: 'Color', 
+                    xtype:'colorpickerfield',
+                    anchor:'100%',
+                    value : opts.color.slice(1),
+                     listeners: {
+                        select: function(comp,hex,a,b,c,d,e){
+                            if(hex){
+                                opts.color = '#' + hex;
+                                var rgb = comp.menu.picker.hexToRgb(hex);
+                                opts.lcolor = "rgb(" +rgb[0]+ "," +rgb[1]+ ","+rgb[2]+ ")";
+                            }
+                        }
+                    }
+                }]
+        }
+        return fieldSet;
+    },
+    menu : {
+        
+        items:[{
+            ref:'../chartoptions',
+            iconCls:'ic_wrench',
+            text: 'Options', handler: function(option){
+                //Main Button
+                var mainButton = this.refOwner;
+                var options = mainButton.chartOpt;
+                var prodOpt =  mainButton.createOptionsFildset("Production",options.series['prod'],'prod');
+                var areaOpt =  mainButton.createOptionsFildset("Area",options.series['area'],'area');
+                var yieldOpt =  mainButton.createOptionsFildset("Yield",options.series['yield'],'yield');
+                var win = new Ext.Window({
+                    iconCls:'ic_wrench',
+                    title:   mainButton.optionsTitle,
+                    height: 400,
+                    width:  350, 
+                    minWidth:250,
+                    minHeight:200,
+                    layout:'fit',
+                    autoScroll:false,
+                    maximizable: true, 
+                    modal:true,
+                    resizable:true,
+                    draggable:true,
+                    layout:'fit',
+                    items:  {
+                        ref:'form',
+                        xtype:'form',
+                        frame:'true',
+                        layout:'form',
+                        items: [prodOpt,areaOpt,yieldOpt]
+                    }
+                    
+                    
+                });
+                win.show();
+            }
+        }]
+    },
     chartOpt:{
 		series:{
 			prod:{
@@ -66,6 +156,10 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 		},
         height: 500
 	},
+    /**
+     * api method[handler]
+     * generate the chart
+     */
     handler: function () {   
     
         var today = new Date();
@@ -110,10 +204,29 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
         var prodRec = units.production.getUnitRecordById( prodUnits );
         var areaRec = units.area.getUnitRecordById( areaUnit );
         var yieldRec = units.yield.getUnitRecordById( yieldUnit );
+        
+        if(!(prodRec && areaRec && yieldRec)){
+            //DEBUG
+            console.log(prodRec);
+            console.log(areaRec);
+            console.log(yieldRec);
+            //alert("prod "+prodCoeffUnits+"area "+ areaCoeffUnits+ "yield "+ yieldCoeffUnits)
+        }
+        
         // get coefficient for yield,area and production
         var prodCoeffUnits = prodRec &&  prodRec.get('coefficient');
         var areaCoeffUnits = areaRec && areaRec.get('coefficient');
-        var yeildCoeffUnits = yieldRec && yieldRec.get('coefficient');
+        var yieldCoeffUnits = yieldRec && yieldRec.get('coefficient');
+        
+        //set labels for chart opts
+        this.chartOpt.series.prod.unit  = '('+prodRec.get('shortname')+')'
+        this.chartOpt.series.area.unit = '('+areaRec.get('shortname')+')'
+        this.chartOpt.series.yield.unit = '('+yieldRec.get('shortname')+')'
+        
+        //set labels for chart opts
+        this.chartOpt.series.prod.name  = 'Production ('+prodRec.get('name')+')'
+        this.chartOpt.series.area.name = 'Area ('+areaRec.get('name')+')'
+        this.chartOpt.series.yield.name = 'Yield ('+yieldRec.get('name')+')'
         //var areaUnits = data2.area_unit == 1 ? 'Ha' : 'Sqr Km';
         /*
         switch(prodUnits)
@@ -133,10 +246,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
           this.chartOpt.series.prod.name = 'Production (000 bales)';          
           var prodCoeffUnits = '170';
         }*/
-        if(!(prodCoeffUnits && areaCoeffUnits && yeildCoeffUnits)){
-            //DEBUG
-            alert("prod "+prodCoeffUnits+"area "+ areaCoeffUnits+ "yield "+ yeildCoeffUnits)
-        }
+        
+        
 
         var chartTitle = "";
         var splitRegion;
@@ -177,9 +288,9 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                          (fromYear       ? "start_year:" + fromYear + ";" : "") +
                          (toYear         ? "end_year:" + toYear + ";" : "") +
                          (regionList     ? "region_list:" + regionList + ";" : "") +
-                         (prodCoeffUnits ? "yield_factor:" + prodCoeffUnits : "");
-                         (areaCoeffUnits ? "prod_factor:" + areaCoeffUnits : "");
-                         (yeildCoeffUnits ? "yield_factor:" + yeildCoeffUnits : "");
+                         (prodCoeffUnits ? "prod_factor:" + prodCoeffUnits + ";" : "") +
+                         (areaCoeffUnits ? "area_factor:" + areaCoeffUnits + ";" : "") +
+                         (yieldCoeffUnits ? "yield_factor:" + yieldCoeffUnits + ";" : "");
 			
         Ext.Ajax.request({
             scope:this,
@@ -192,12 +303,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
                 typeName: "nrl:CropData",
                 outputFormat: "json",
                 propertyName: "region,crop,year,production,area,yield",
-                viewparams: viewparams /*"crop:" + commodity + ";" +
-                            "gran_type:" + granType + ";" +
-                            "start_year:" + fromYear + ";" +
-                            "end_year:" + toYear + ";" +
-                            "region_list:" + regionList + ";" +
-                            "yield_factor:" + prodCoeffUnits*/
+                viewparams: viewparams 
             },
             success: function ( result, request ) {
                 try{
@@ -381,7 +487,104 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
         
 		return chartData;
 	},
-	
+
+    /**
+     * private method[generateyAxisConfig]
+     * generates the yAxis config.
+     * opt: chartOpt 
+     * avg: average line value
+     */
+    generateyAxisConfig: function(opt,avg){
+        return { // AREA
+            title: {
+                text: opt.name,
+                rotation: 270,
+                style: {
+                    color: opt.color,
+                    backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
+                }
+            },                    
+            labels: {
+                formatter: function () {
+                    return this.value;
+                },
+                style: {
+                    color: opt.color
+                }
+            },
+            plotLines: [{ //mid values
+                value: avg,
+                color: opt.color,//opt.series.area.lcolor,
+                dashStyle: 'LongDash',
+                width: 1                       
+            }]
+
+        }
+    
+    },
+    /**
+     * private method[getOrderedChartConfigs]
+     * get chart configurations properly sorted 
+     * to place charts with line style on top and 
+     * area styles behind. The fields of the ExtJs store 
+     * needs and yAxis configuration needs to be sorted in the same way.
+     * ``Object`` opt chartOpts object
+     * data. data to use for the chart
+     * 
+     */
+	getOrderedChartConfigs:function(opt,avgs){
+        var ret = {};
+        ret.series = [opt.series.prod,
+					opt.series.yield,
+					opt.series.area		];
+        //sort series in an array (lines on top, than bars then areas)
+        ret.series.sort(function(a,b){
+            //area,bar,line,spline are aphabetically ordered as we want
+            return a.type < b.type ? -1 : 1;
+        });
+        ret.avgs = [];
+        //first element must be time, the other element 
+        // must have the same order of the opt and yAxis
+        ret.fields=  [{
+            name: 'time',
+            type: 'string'
+        }];
+        //sort avg objects
+        for (var k in opt.series){
+            for(var i = 0; i < ret.series.length; i++){
+                if(ret.series[i]===opt.series[k]){
+                    ret.avgs[i] = avgs[k];
+                    
+                }
+            }
+        }
+        
+        // generate yAxisConfig for each element
+        ret.yAxis = [];
+        for(var i = 0 ; i < ret.series.length; i++){
+            //TODO FIX THIS: THE SORTING MUST BE DIFFERENT
+            var yAxisIndex = i;
+            //invert last 2 axes.
+            switch(ret.series[i].dataIndex){
+                case "area": yAxisIndex=0 ; break;
+                case "prod": yAxisIndex=1 ; break;
+                case "yield": yAxisIndex=2 ; break;
+            } 
+                
+            ret.yAxis[yAxisIndex] = this.generateyAxisConfig(ret.series[i],ret.avgs[i]);
+            console.log("yAxis:"+  yAxisIndex + ",chartOpt:" + i + ret.yAxis[yAxisIndex].title.text + ";" + ret.series[i].name);
+            // add opposite option to the yAxis config (except the first)
+            if(yAxisIndex>0){
+                var yAxis = ret.yAxis[yAxisIndex];
+                yAxis.opposite = true;
+                //yAxis.rotation = 90;
+                
+            }
+        }
+        return ret;
+
+    
+    },
 	makeChart: function(data, opt, listVar, aggregatedDataOnly){
 		
 		var grafici = [];
@@ -394,30 +597,38 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 		};
 		
 		for (var r=0; r<data.length; r++){
-        
+            //calculate avg
+            var prodavg = getAvg(data[r].rows,'prod');
+			var yieldavg = getAvg(data[r].rows,'yield');
+			var areaavg = getAvg(data[r].rows,'area');
+			var avgs = {
+                prod :prodavg,
+                yield:yieldavg,
+                area:areaavg
+            }
+            //get chart configs (sorting them properly)
+            var chartConfig = this.getOrderedChartConfigs(opt,avgs);
+            console.log(chartConfig);
 			// Store for random data
 			var store = new Ext.data.JsonStore({
 				data: data[r],
-				fields: [{
-					name: 'time',
-					type: 'string'
-				}, {
-					name: 'area',
-					type: 'float'
-				}, {
-					name: 'prod',
-					type: 'float'
-				}, {
-					name: 'yield',
-					type: 'float'
-				}],
+				fields:  [{
+                        name: 'time',
+                        type: 'string'
+                    } , {
+                        name: 'area',
+                        type: 'float'
+                    }, {
+                        name: 'prod',
+                        type: 'float'
+                    }, {
+                        name: 'yield',
+                        type: 'float'
+                }],
 				root: 'rows'
 			});
 
 			var chart;
-			var prodavg = getAvg(data[r].rows,'prod');
-			var yieldavg = getAvg(data[r].rows,'yield');
-			var areaavg = getAvg(data[r].rows,'area');
 			
 			//
 			// Making Chart Title
@@ -426,7 +637,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 			var dataTitle = data[r].title.toUpperCase();
 			var commodity = listVar.commodity.toUpperCase();
 			var chartTitle = listVar.chartTitle.split(',')[r];
-				
+			
 			if(dataTitle){				
 				if(dataTitle == "AGGREGATED DATA"){
 					if(aggregatedDataOnly){
@@ -454,11 +665,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 			}
 			
 			chart = new Ext.ux.HighChart({
-				series: [
-					opt.series.prod,
-					opt.series.yield,
-					opt.series.area					
-				],
+				series: chartConfig.series,				
+				
 				height: opt.height,
 				//width: 900,
 				store: store,
@@ -500,85 +708,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 						tickWidth: 0,
 						gridLineWidth: 1
 					}],
-					yAxis: [{ // AREA
-						title: {
-							text: opt.series.area.name,
-                            rotation: 270,
-							style: {
-								color: opt.series.area.color,
-                                backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
-							}
-						},                    
-						labels: {
-							formatter: function () {
-								return this.value;
-							},
-							style: {
-								color: opt.series.area.color
-							}
-						},
-                        plotLines: [{ //mid values
-							value: areaavg,
-							color: opt.series.area.lcolor,
-							dashStyle: 'LongDash',
-							width: 1                       
-						}]
-
-					}, { // PRODUCTION yAxis
-						gridLineWidth: 0,
-						title: {
-							text: opt.series.prod.name,
-                            rotation: 270,
-							style: {
-								color: opt.series.prod.color,
-                                backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
-							}
-						},
-						labels: {
-							formatter: function () {
-								return this.value;
-							},
-							style: {
-								color: opt.series.prod.color
-							}
-						},
-						opposite: true,
-                        plotLines: [{ //NOTE all the mid values are overlapping in the middle of the chart
-						 //mid values
-							value: prodavg,
-							color: opt.series.prod.lcolor,
-							dashStyle: 'LongDash',
-							width: 1
-						}]
-
-					}, { // Tertiary yAxis
-						gridLineWidth: 0,
-						dashStyle: 'shortdot',
-						title: {
-							text: opt.series.yield.name,
-                            rotation: 270,
-							style: {
-								color: opt.series.yield.color,
-                                backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
-							},
-                            x: 6
-						},
-						labels: {
-							formatter: function () {
-								return this.value;
-							},
-							style: {
-								color: opt.series.yield.color
-							}
-						},
-						opposite: true,
-                        plotLines: [{ //mid values
-							value: yieldavg,
-							color: opt.series.yield.lcolor,
-							dashStyle: 'LongDash',
-							width: 1
-						}]
-					}],
+					yAxis: chartConfig.yAxis,
 					tooltip: {
                         formatter: function() {
                             var s = '<b>'+ this.x +'</b>';
@@ -609,7 +739,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.Button, {
 		}
 		
 		return grafici; 
-	}	
+	}
 });
+
 
 Ext.reg(gxp.widgets.button.NrlCropDataButton.prototype.xtype, gxp.widgets.button.NrlCropDataButton);

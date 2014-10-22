@@ -43,7 +43,6 @@ Ext.namespace("gxp.plugins.nrl");
 gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 	/** api: ptype = nrl_crop_data */
     ptype: "nrl_crop_data",
-
     outputTypeText:'Output Type',
     areaFilter: "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
     seasonText:'Season',
@@ -143,7 +142,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
     /** fields for unit of measure combo boxes **/
 	uomFields:[
 	        {name:'id',mapping:'properties.id'},
-            {name:'uid',mapping:'properties.id'},
+            {name:'uid',mapping:'properties.uid'},
             {name:'name',mapping:'properties.name'},
             {name:'label', mapping :'properties.name'},
             {name:'coefficient', mapping:'properties.coefficient', type: Ext.data.Types.FLOAT},
@@ -153,9 +152,9 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
             {name:'cid',   mapping: 'properties.cid'} //TODO this should be added statically somewhere
     ],
     startCommodity:'Wheat',
-    startProdUom:'000_tons',
-    startAreaUom:'000_ha',
-    startYieldUom:'kg_ha',
+   // startProdUom:'000_tons',
+   // startAreaUom:'000_ha',
+   //    startYieldUom:'kg_ha',
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
@@ -176,9 +175,18 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
         };
         //reset unit combobox to defaults for the selected crop
         var resetUnitComboboxes = function(unitFieldset,selectedCommodity){
-                    unitFieldset.production.selectUnit(selectedCommodity.get('prod_default_unit'));
+                    
+                    var prod_unit = unitFieldset.production.selectUnit(selectedCommodity.get('prod_default_unit'));
                     unitFieldset.area.selectUnit(selectedCommodity.get('area_default_unit'));
                     unitFieldset.yield.selectUnit(selectedCommodity.get('yield_default_unit'));
+            
+            
+        }
+        var loadStoreTrigger =  function(){
+            pendingStores--
+            if(pendingStores == 0){
+                resetUnitComboboxes(units,Commodity.getStore().getAt(0));
+            }
         }
         //download from WFS available year ranges for each crops.
         var cropData  = {
@@ -368,7 +376,11 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                         autoLoad: true,
                         url: this.rangesUrl,
                         root: 'features',
-                        idProperty:'crop'
+                        idProperty:'crop',
+                        listeners:{
+                            scope:this,
+                            load:loadStoreTrigger
+                        }
                     }),
                     allowBlank:false,
                     name:'crop',
@@ -464,7 +476,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             typeAhead: true,
                             triggerAction: 'all',
                             lazyRender:false,
-                            name:'production_unit',
+                            hiddenName:'production_unit',
                             forceSelected:true,
                             allowBlank:false,
                             value:this.startProdUom,
@@ -512,7 +524,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             autoLoad:true,
                             forceSelected:true,
                             allowBlank:false,
-                            name:'area_unit',
+                            hiddenName:'area_unit',
                             displayField: 'label',
                             valueField:'uid',
                             value: this.startAreaUom,
@@ -538,6 +550,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                         this.filterByCrop(radio);
                                         combo.disable();
                                     }else{
+                                       this.filterByCrop(radio);
                                     }
                                 }
                             }
@@ -554,7 +567,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             autoLoad:true,
                             forceSelected:true,
                             allowBlank:false,
-                            name:'yield_unit',
+                            hiddenName:'yield_unit',
                             displayField: 'label',
                             valueField:'uid',
                             value: this.startYieldUom,
@@ -601,6 +614,8 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
         config = Ext.apply(cropData,config || {});
         
         this.output = gxp.plugins.nrl.CropData.superclass.addOutput.call(this, config);
+        var U = this.output.units.production;
+		
 		
         //Enable Disable button when regions are selected
         this.output.on('update',function(store){
@@ -641,12 +656,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
         var pendingStores = 4;
         var units = this.output.units;
         var Commodity = this.output.Commodity;
-        var loadStoreTrigger =  function(){
-            pendingStores--
-            if(pendingStores == 0){
-                resetUnitComboboxes(units,Commodity.getStore().getAt(0));
-            }
-        }
+        
         this.output.units.production.getStore().on('load',loadStoreTrigger);
         this.output.units.area.getStore().on('load',loadStoreTrigger);
         this.output.units.yield.getStore().on('load',loadStoreTrigger);

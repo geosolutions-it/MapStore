@@ -326,22 +326,28 @@ Ext.namespace('gxp.charts');
                 regionText = this.generateChartTitle(regionText);
 				text += listVar.factorStore[i].get('label') + " - " + regionText;
 			}
-			
+			var chartOpts = {};
+            chartOpts.series = [
+					Ext.apply({
+                        //name:listVar.toYear -1
+                        name: listVar.season == 'rabi' ? (listVar.toYear -2) + "-" + (listVar.toYear -1) : listVar.toYear -1
+                    },this.chartOpt.series.previous),
+                Ext.apply({
+                        //name: ((listVar.season == 'rabi') &&  (new Date().getFullYear() == listVar.toYear)) ? listVar.toYear -1 + " - " + listVar.toYear : listVar.toYear
+                        name: listVar.season == 'rabi' ? (listVar.toYear -1) + "-" + listVar.toYear : listVar.toYear
+                    },this.chartOpt.series.current),
+                Ext.apply({
+                        name:"mean " + listVar.fromYear +"-"+ (listVar.toYear -1)
+                    },this.chartOpt.series.aggregated)					
+            ];
+            //SORT charts layers to follow the rule (area,bar,line)
+            chartOpts.series.sort(function(a,b){
+                //area,bar,line,spline are aphabetically ordered as we want
+                return a.type < b.type ? -1 : 1;
+            });
 			chart = new Ext.ux.HighChart({
 				animation:false,
-				series: [
-					Ext.apply({
-							//name:listVar.toYear -1
-                            name: listVar.season == 'rabi' ? (listVar.toYear -2) + "-" + (listVar.toYear -1) : listVar.toYear -1
-						},this.chartOpt.series.previous),
-					Ext.apply({
-							//name: ((listVar.season == 'rabi') &&  (new Date().getFullYear() == listVar.toYear)) ? listVar.toYear -1 + " - " + listVar.toYear : listVar.toYear
-                            name: listVar.season == 'rabi' ? (listVar.toYear -1) + "-" + listVar.toYear : listVar.toYear
-						},this.chartOpt.series.current),
-					Ext.apply({
-							name:"mean " + listVar.fromYear +"-"+ (listVar.toYear -1)
-						},this.chartOpt.series.aggregated)					
-				],
+				series: chartOpts.series,
 				height: this.chartOpt.height,
                 width: this.chartOpt.width,
 				//width: 900,

@@ -91,7 +91,10 @@ nrl.form.UOMComboBox = Ext.extend(Ext.form.ComboBox,{
           }])
     },
     getUnitRecordById : function(uid){
-            return this.store.getAt(this.getUnitIndex(uid));
+        var index = this.getUnitIndex(uid);
+        if(index>=0){
+            return this.store.getAt(index);
+        }    
     },
     getUnitIndex : function(uid){
         var store = this.getStore();
@@ -99,12 +102,13 @@ nrl.form.UOMComboBox = Ext.extend(Ext.form.ComboBox,{
         return i;
     },
     getSelectedRecord: function(){
-        return this.getStore().findExact(this.valueField,this.getValue());
+        return this.getStore().getAt(this.getStore().findExact(this.valueField,this.getValue()));
     },
     selectUnit: function(uid){
         var rec = this.getUnitRecordById(uid);
         if(rec){
-            this.setValue(rec.get(this.valueField));
+            this.setValueAndFireSelect(rec.get(this.valueField));
+            return rec;
         }
     },
     initComponent: function() {

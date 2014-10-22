@@ -171,18 +171,7 @@ div#homelogos ul li a:hover {
 	background-image: url(img/silk/delete.png);
 
 }
-/* gxp_nrlChartButton */
-.x-btn .gxp-icon-nrl-chart, .x-menu-item .gxp-icon-nrl-chart, .x-tree-node .gxp-icon-nrl-chart {
-    background-image: url(img/silk/chart_curve.png);
-}
-/* gxp_nrlMapButton */
-.x-btn  .gxp-icon-nrl-map,  .x-menu-item  .gxp-icon-nrl-map,.x-tree-node .gxp-icon-nrl-map {
-    background-image: url(img/silk/map_go.png);
-}
-/* gxp_nrlTabButton */
-.x-btn  .gxp-icon-nrl-tab,  .x-menu-item  .gxp-icon-nrl-tab,.x-tree-node .gxp-icon-nrl-tab {
-    background-image: url(img/silk/table.png);
-}
+
 /* gxp_login */
 .x-btn  .gxp-icon-logout,  .x-menu-item  .gxp-icon-logout,.x-tree-node .gxp-icon-logout {
     background-image: url(img/silk/door_out.png);

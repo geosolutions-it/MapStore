@@ -4,6 +4,7 @@
 @import url("filebrowser.css");
 @import url("filebrowser2.css");
 @import url("plupload.css");
+@import url("custom.css");
 
 a.button{
 background:url(img/button.gif);
@@ -343,7 +344,12 @@ left: 80px !important;
     background-image: url(../img/sheduled_task.png);
 }
 .clock_ic{
-    background-image: url(../img/clock.png) !important;;
+    background-image: url(../img/clock.png) !important;
+}
+
+/** generic **/
+.pencil_ic{
+    background-image: url(../img/pencil.png) !important;
 }
 
 /* style for geostore dataview */

@@ -26,7 +26,7 @@ Ext.namespace('gxp.widgets.button');
  *    Base class to create chart
  *
  */
-gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
+gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 
     /** api: xtype = gxp_nrlchart */
 	url: null,
@@ -34,6 +34,95 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
     iconCls: "gxp-icon-nrl-chart",
 	text: 'Generate Chart',
     form: null,
+    /**
+     * private method[createOptionsFildset]
+     * ``String`` title the title of the fieldset 
+     * ``Object`` opts the chartopts object to manage
+     * ``String`` prefix the prefix to use in radio names
+     */
+    createOptionsFildset: function(title,opts,prefix){
+        
+        var fieldSet = {
+                xtype:'fieldset',
+                title:title,
+                items:[{
+                    //type
+                    fieldLabel:"Type",
+                    xtype:"radiogroup", 
+                    columns:2,
+                     items:[
+                        {  boxLabel:"<span class=\"icon_span ic_chart-line\">Line</span>",name:prefix+"_chart_type",inputValue:"line", checked : opts.type == "line"},
+                        {  boxLabel:"<span class=\"icon_span ic_chart-spline\">Curve</span>",name:prefix+"_chart_type",inputValue:"spline", checked : opts.type == "spline"},
+                        {  boxLabel:"<span class=\"icon_span ic_chart-bar\">Bar</span>",name:prefix+"_chart_type", inputValue:"column",checked : opts.type == "column"},
+                        {  boxLabel:"<span class=\"icon_span ic_chart-area\">Area</span>",name:prefix+"_chart_type", inputValue:"area",checked : opts.type == "area"}
+                        
+                    ],
+                    listeners: {
+                        change: function(group,checked){
+                            if(checked){
+                                opts.type = checked.inputValue;
+                            }
+                        }
+                    },
+                    scope:this
+                },{ //color
+                    fieldLabel: 'Color', 
+                    xtype:'colorpickerfield',
+                    anchor:'100%',
+                    value : opts.color.slice(1),
+                     listeners: {
+                        select: function(comp,hex,a,b,c,d,e){
+                            if(hex){
+                                opts.color = '#' + hex;
+                                var rgb = comp.menu.picker.hexToRgb(hex);
+                                opts.lcolor = "rgb(" +rgb[0]+ "," +rgb[1]+ ","+rgb[2]+ ")";
+                            }
+                        }
+                    }
+                }]
+        }
+        return fieldSet;
+    },
+    menu : {
+        
+        items:[{
+            ref:'../chartoptions',
+            iconCls:'ic_wrench',
+            text: 'Options', handler: function(option){
+                //Main Button
+                var mainButton = this.refOwner;
+                var options = mainButton.chartOpt;
+                var current =  mainButton.createOptionsFildset("Reference Year",options.series['current'],'current');
+                var previous =  mainButton.createOptionsFildset("Previous Year",options.series['previous'],'previous');
+                var aggregated =  mainButton.createOptionsFildset("Period Mean",options.series['aggregated'],'aggregated');
+                var win = new Ext.Window({
+                    iconCls:'ic_wrench',
+                    title:   mainButton.optionsTitle,
+                    height: 400,
+                    width:  350, 
+                    minWidth:250,
+                    minHeight:200,
+                    layout:'fit',
+                    autoScroll:false,
+                    maximizable: true, 
+                    modal:true,
+                    resizable:true,
+                    draggable:true,
+                    layout:'fit',
+                    items:  {
+                        ref:'form',
+                        xtype:'form',
+                        frame:'true',
+                        layout:'form',
+                        items: [current,arpreviouseaOpt,aggregated]
+                    }
+                    
+                    
+                });
+                win.show();
+            }
+        }]
+    },
     chartOpt:{
 		series:{
 			current:{
@@ -318,10 +407,8 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 			}else{
 				text += listVar.factorStore[i].get('label') + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : "REGION");
 			}
-			
-			chart = new Ext.ux.HighChart({
-				animation:false,
-				series: [
+			var chartOpts = {
+                series :  [
 					Ext.apply({
 							//name:listVar.toYear -1
                             name: listVar.season == 'rabi' ? (listVar.toYear -2) + "-" + (listVar.toYear -1) : listVar.toYear -1
@@ -333,7 +420,16 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.Button, {
 					Ext.apply({
 							name:"mean " + listVar.fromYear +"-"+ (listVar.toYear -1)
 						},this.chartOpt.series.aggregated)					
-				],
+				]
+            };
+            //SORT charts layers to follow the rule (area,bar,line)
+            chartOpts.series.sort(function(a,b){
+                //area,bar,line,spline are aphabetically ordered as we want
+                return a.type < b.type ? -1 : 1;
+            });
+			chart = new Ext.ux.HighChart({
+				animation:false,
+				series: chartOpts.series,
 				height: this.chartOpt.height,
 				//width: 900,
 				store: factorStore[i],
