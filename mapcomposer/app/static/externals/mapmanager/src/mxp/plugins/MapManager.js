@@ -68,7 +68,7 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
 
         return mxp.plugins.MapManager.superclass.addActions.apply(this, [actions]);
 
-        this.addOutput(this);
+        
     },
     
     /** api: method[addOutput]
