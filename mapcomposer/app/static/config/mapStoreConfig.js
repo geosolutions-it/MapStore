@@ -248,6 +248,7 @@
 	   },
 	   {
 		  "ptype":"nrl_crop_data",
+           "id":"CropData",
 		"layerStyle":{"strokeColor":"red","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
           "dataUrl":"http://84.33.2.75/geoserver/ows",
 		  "rangesUrl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
@@ -289,6 +290,7 @@
 		  "outputTarget":"nrl"
 	  },{
 		  "ptype":"nrl_report_crop_data",
+          "cropPluginRef":"CropData",
 		 "factorsurl":"http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
          "rangesUrl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
 		 "dataUrl":"http://84.33.2.75/geoserver/ows",

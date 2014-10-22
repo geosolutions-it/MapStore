@@ -2,7 +2,9 @@
  *  that can be overridden by the serverConfig objects in templates */
 var localConfig = {
  geoStoreBase:"http://84.33.2.75/geostore/rest/",
+ adminUrl: "http://localhost:8080/opensdi2-web/",
    proxy:"/http_proxy/proxy/?url=",
+   loginDataStorage : sessionStorage,
    defaultLanguage: "en",
     header: {
     container: {
@@ -36,4 +38,6 @@ var localConfig = {
                         '<area shape="rect" coords="17,23,80,83" href="http://www.agripunjab.gov.pk/"  target="_blank" alt="PUNJAB Province" title="PUNJAB Province"    />',
                     '</map>']
   }
+
 };
+

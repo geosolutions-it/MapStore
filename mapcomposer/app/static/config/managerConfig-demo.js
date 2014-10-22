@@ -75,7 +75,7 @@
             "csvingestion":{
                 "xtype":"geobatch_run_local_form",
                 "baseDir": "/home/geosolutions/admin",
-                "fileBrowserUrl": "http://localhost:8080/opensdi2-web/mvc/fileManager/extJSbrowser",
+                "fileBrowserUrl": "/opensdi2-manger/mvc/fileManager/extJSbrowser",
                 "fileRegex": "\\.csv$",
                 "path":"/test_csv/"
             },
@@ -85,7 +85,14 @@
                 "baseDir": "/home/geosolutions/admin",
                 "fileRegex": "\\.ti[f]{1,2}$",
                 "path":" /ndvi/"
+            },
+	    "ndviingestion":{
+                "xtype": "geobatch_run_local_form",
+                "baseDir": "/home/geosolutions/admin",
+                "fileRegex": "\\.ti[f]{1,2}$",
+                "path":" /ndvi/"
             }
+
            
          },
          "actionTarget":{
@@ -93,9 +100,9 @@
            "index": 2
          }
     },{ 
-        "ptype": "mxp_filebrowser",
+        "ptype": "mxp_servicemanager",
         "buttonText": "File Manager",
-        "multitab":false,
+        "notDuplicateOutputs":true,
         "actionTarget":{
              "target": "north.tbar",
              "index": 3
@@ -108,7 +115,7 @@
              "target": "north.tbar",
              "index": 4
         },
-        "entities": [
+	"entities": [
             {
               "api": {
                 "destroy": {
