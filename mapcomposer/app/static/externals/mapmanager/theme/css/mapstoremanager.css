@@ -328,6 +328,9 @@ left: 80px !important;
 .geobatch_ic{
     background-image: url(../img/geobatch.png);
 }
+.nato_ic{
+    background-image: url(../img/nato.png);
+}
 
 /* mxp_categoryinitializer */
 .initCategoriesMessage{

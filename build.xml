@@ -20,7 +20,7 @@
 
     <property name="app.proxy.geoserver" value=""/>
 	<property name="app.debug.proxy" value="true"/>
-    <property name="app.port" value="8081"/>
+    <property name="app.port" value="9091"/>
     
     <path id="maven-ant-tasks.classpath" path="lib/maven-ant-tasks-2.1.3.jar" />
     <typedef resource="org/apache/maven/artifact/ant/antlib.xml"

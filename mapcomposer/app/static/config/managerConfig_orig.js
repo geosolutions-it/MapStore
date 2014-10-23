@@ -36,8 +36,11 @@
       ]
    ],
    "tools":[{
-        "ptype": "mxp_categoryinitializer",
-        "neededCategories": ["WPS_RUN_CONFIGS" ]
+        "ptype": "mxp_mapmanager",
+        "loginManager": "loginTool",
+        "actionTarget":null
+    },{
+        "ptype": "mxp_categoryinitializer"
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
@@ -53,36 +56,30 @@
         }
     }],
    "adminTools":[{
-         "ptype": "mxp_cmre_ondemand_services",
-         "geoBatchRestURL":"http://84.33.2.75/geobatch/rest/",
-         "runConfigs": {
-            "csvingestion":{
-                "xtype":"geobatch_run_local_form",
-                "baseDir": "/home/geosolutions/admin",
-                "fileBrowserUrl": "/opensdi2-manger/mvc/fileManager/extJSbrowser",
-                "fileRegex": "\\.csv$",
-                "path":"/test_csv/"
-            },
-            
-            "geotiff_publish":{
-                "xtype": "geobatch_run_local_form",
-                "baseDir": "/home/geosolutions/admin",
-                "fileRegex": "\\.ti[f]{1,2}$",
-                "path":" /ndvi/"
-            },
-	    "ndviingestion":{
-                "xtype": "geobatch_run_local_form",
-                "baseDir": "/home/geosolutions/admin",
-                "fileRegex": "\\.ti[f]{1,2}$",
-                "path":" /ndvi/"
-            }
-
-           
-         },
-         "actionTarget":{
-           "target": "north.tbar",
-           "index": 0
-         }
+        "ptype": "mxp_mapmanager",
+        "loginManager": "loginTool",
+        "actionTarget": null
+    },{
+        "ptype": "mxp_templatemanager",
+        "loginManager": "loginTool",
+        "actionTarget":{
+          "target": "north.tbar",
+          "index": 0
+        }
+    },{
+        "ptype": "mxp_myaccount",
+        "loginManager": "loginTool",
+        "actionTarget":{
+          "target": "north.tbar",
+          "index": 1
+        }
+    },{
+        "ptype": "mxp_usermanager",
+        "loginManager": "loginTool",
+        "actionTarget":{
+          "target": "north.tbar",
+          "index": 2
+        }
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
