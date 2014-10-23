@@ -36,7 +36,7 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
     /** api: ptype = mxp_geobatch_flows */
     ptype: "mxp_geobatch_flows",
 
-    buttonText: "GeoBatch Flows",
+    buttonText: "Workflows",
 	flowsListTitle:'Flows',
     runButtonText:'Run',
     consumersGridTitle: 'Consumers',

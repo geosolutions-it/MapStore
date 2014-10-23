@@ -13,6 +13,9 @@
 .inbox-upload_ic{
     background-image: url(../img/inbox-upload.png);
 }
+.inbox-download_ic{
+    background-image: url(../img/inbox-download.png);
+}
 .add_ic{
     background-image: url(../img/add.png);
 }
