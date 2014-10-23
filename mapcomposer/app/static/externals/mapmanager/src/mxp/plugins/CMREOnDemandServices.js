@@ -105,7 +105,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                  scope:this,
                   //update the right grid on select
                  rowselect: function(flowsgrid,rowIndex,record){
-                    var flowid = record.get('id');
+                    var flowid = record.get('serviceId');
                     flowsgrid.grid.refOwner.consumers.changeFlowId(flowid);
                     if(flowsgrid.grid.runBtn){
                         //TODO manage run local or other forms

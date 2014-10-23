@@ -53,12 +53,12 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 	 * Property: geoBatchRestURL
 	 * {string} the GeoBatch ReST Url
 	 */
-    geoBatchRestURL: 'http://localhost:8080/geobatch/rest/',
+    geoBatchRestURL: 'http://localhost:8180/opensdi2-manager/mvc/rest/geobatch/',
     autoload:true,
     /* i18n */
     nameText: 'Title',
-    descriptionText:'Description',
-    autoExpandColumn: 'description',
+    descriprionText:'descriprion',
+    autoExpandColumn: 'descriprion',
     loadingMessage: 'Loading...',
     /* end of i18n */
     //extjs grid specific config
@@ -68,9 +68,10 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
    
     initComponent : function() {
         //FIX FOR IE10 and responseXML TODO: port this as a global fix
-         var ie10XmlStore  = Ext.extend(Ext.data.XmlReader, {
+         var ie10XmlStore  = Ext.extend(Ext.data.JsonReader, {
             read : function(response){
-                        var data = response.responseXML;
+            	debugger
+                        var data = response.responseText;
                         if(!data || !data.documentElement) {
                             if(window.ActiveXObject) {
                                 var doc = new ActiveXObject("Microsoft.XMLDOM");
@@ -86,21 +87,29 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
         this.store = new Ext.data.Store({
             autoLoad: this.autoload,
             // load using HTTP
-            url: this.geoBatchRestURL + 'flows/',
-            record: 'flow',
-            idPath: 'id',
+            url: this.geoBatchRestURL + 'services/',
+            record: 'service',
+            idPath: 'serviceId',
             fields: [
-                   'id',
+                   'serviceId',
                    'name',
-                   'description'
+                   'descriprion'
            ],
-            reader:  new ie10XmlStore({
+            /*reader:  new ie10XmlStore({
                 record: 'flow',
                 idPath: 'uuid',
                 fields: [
                    'id',
                    'name',
-                   'description']
+                   'descriprion']
+            }),*/
+            reader: new Ext.data.JsonReader({
+            	root: 'data',
+            	idPath: 'serviceId',
+            	fields: [
+                   'serviceId',
+                   'name',
+                   'descriprion']
             }),
             listeners:{
                 beforeload: function(a,b,c){
@@ -109,9 +118,9 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
                         if(this.auth){
                             a.proxy.conn.headers['Authorization'] = this.auth;
                         }
-                        a.proxy.conn.headers['Accept'] = 'application/xml';
+                        a.proxy.conn.headers['Accept'] = 'application/json';
                     }else{
-                        a.proxy.conn.headers = {'Accept': 'application/xml'};
+                        a.proxy.conn.headers = {'Accept': 'application/json'};
                         if(this.auth){
                             a.proxy.conn.headers['Authorization'] = this.auth;
                         }
@@ -120,7 +129,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
                 }
             },
             sortInfo: {
-                field: 'id',
+                field: 'serviceId',
                 direction: 'ASC' // or 'DESC' (case sensitive for local sorting)
             }
         });
@@ -139,9 +148,9 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
         
         
         this.columns= [
-            {id: 'id', header: "ID", width: 100, dataIndex: 'id', sortable: true,hidden:true},
+            {id: 'id', header: "ID", width: 100, dataIndex: 'serviceId', sortable: true,hidden:true},
             {id: 'name', header: this.nameText, width: 200, dataIndex: 'name', sortable: true},
-            {id: 'description', header: this.descriptionText, dataIndex: 'description', sortable: true}
+            {id: 'descriprion', header: this.descriprionText, dataIndex: 'descriprion', sortable: true}
         ],
         mxp.widgets.CMREOnDemandServicesGrid.superclass.initComponent.call(this, arguments);
     }

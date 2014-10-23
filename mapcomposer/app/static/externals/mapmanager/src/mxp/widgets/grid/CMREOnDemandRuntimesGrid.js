@@ -58,7 +58,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 	 * Property: geoBatchRestURL
 	 * {string} the GeoBatch ReST Url
 	 */
-    geoBatchRestURL: 'http://localhost:8080/geobatch/rest/',
+    geoBatchRestURL: 'http://localhost:8180/opensdi2-manager/mvc/rest/geobatch/',
     /**
 	 * Property: GWCRestURL
 	 * {string} the GWC ReST Url. If present, a button
@@ -119,21 +119,33 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
         this.store = new Ext.data.Store({
             autoLoad: this.autoload,
             // load using HTTP
-            url: this.geoBatchRestURL + 'flows/' + this.flowId + '/consumers',
+            url: this.geoBatchRestURL + 'services/' + this.flowId + '/runtimes',
             record: 'consumer',
-            idPath: 'uuid',
+            idPath: 'id',
             fields: [{name: 'status', mapping: '@status'},
-                   'uuid',
+                   'id',
+                   'name',
+                   'status',
                    'startDate',
-                   'description'],
-            reader:  new ie10XmlStore({
+                   'descriprion'],
+            /*reader:  new ie10XmlStore({
                  record: 'consumer',
                 idPath: 'uuid',
                 fields: [{name: 'status', mapping: '@status'},
                    'uuid',
                    'startDate',
                    'description']
-            }),
+            }),*/
+            reader: new Ext.data.JsonReader({
+            	root: 'data',
+            	idPath: 'id',
+            	fields: [{name: 'status', mapping: '@status'},
+                   'id',
+                   'name',
+                   'status',
+                   'startDate',
+                   'descriprion']
+             }),
             listeners:{
                 beforeload: function(a,b,c){
                    
@@ -141,9 +153,9 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
                         if(this.auth){
                             a.proxy.conn.headers['Authorization'] = this.auth;
                         }
-                        a.proxy.conn.headers['Accept'] = 'application/xml';
+                        a.proxy.conn.headers['Accept'] = 'application/json';
                     }else{
-                        a.proxy.conn.headers = {'Accept': 'application/xml'};
+                        a.proxy.conn.headers = {'Accept': 'application/json'};
                         if(this.auth){
                             a.proxy.conn.headers['Authorization'] = this.auth;
                         }
@@ -196,18 +208,10 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
         ]
         }
         this.columns= [
-            {id: 'uuid', header: "ID", width: 220, dataIndex: 'uuid', sortable: true},
+            {id: 'id', header: "ID", width: 220, dataIndex: 'id', sortable: true},
             {id: 'status', header: this.statusText, width: 100, dataIndex: 'status', sortable: true},
             {id: 'startDate', header: this.startDateText, width: 180, dataIndex: 'startDate', sortable: true},
-            {id: 'file', header: this.startFileText, dataindex: 'description',width: 180, 
-                renderer: function(val){
-                    var index = val.indexOf('first event:');
-                    if( index > 0) {
-                        return val.substring(index + 12,val.length -1); 
-                    } 
-                } 
-            },
-            {id: 'description', header: this.descriptionText, dataIndex: 'description', sortable: true},
+            {id: 'description', header: this.descriptionText, dataIndex: 'descriprion', sortable: true},
             {
                     xtype:'actioncolumn',
                     width: 35,
@@ -252,7 +256,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
      */
     confirmCleanRow: function(grid, rowIndex, colIndex){
          var record =  grid.getStore().getAt(rowIndex);
-         var uuid = record.get('uuid');
+         var uuid = record.get('id');
          var me = this;
          var loadMask = new Ext.LoadMask(Ext.getBody(), {msg:me.loadingMessage});
          var errorCallback = function(response, form, action) {
@@ -270,7 +274,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
         };
         Ext.Msg.confirm(
             this.titleConfirmDeleteMsg,
-            this.textConfirmDeleteMsg.replace('{uuid}',uuid),
+            this.textConfirmDeleteMsg.replace('{id}',uuid),
             function(btn) {
                 if(btn=='yes') {
                     me.deleteConsumer(uuid,successCallback,errorCallback,me);
@@ -287,7 +291,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
      */
     checkLog: function(grid, rowIndex, colIndex){
         var record =  grid.getStore().getAt(rowIndex);
-        var uuid = record.get('uuid');
+        var uuid = record.get('id');
         var me = this;
         var url = this.geoBatchRestURL + "consumers/" + uuid + "/log";
         var win = new Ext.Window({
@@ -461,7 +465,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
      * 
      */
     changeFlowId: function ( flowId ) {
-        var url = this.geoBatchRestURL + 'flows/' + flowId + '/consumers';
+        var url = this.geoBatchRestURL + 'services/' + flowId + '/runtimes';
 		this.store.proxy.setUrl(url, true);
         
         this.store.load();
