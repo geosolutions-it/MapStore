@@ -53,12 +53,12 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 	 * Property: geoBatchRestURL
 	 * {string} the GeoBatch ReST Url
 	 */
-    geoBatchRestURL: 'http://localhost:8180/opensdi2-manager/mvc/rest/geobatch/',
+    geoBatchRestURL: 'http://localhost:8180/opensdi2-manager/mvc/process/geobatch/',
     autoload:true,
     /* i18n */
     nameText: 'Title',
-    descriprionText:'descriprion',
-    autoExpandColumn: 'descriprion',
+    descriptionText:'description',
+    autoExpandColumn: 'description',
     loadingMessage: 'Loading...',
     /* end of i18n */
     //extjs grid specific config
@@ -93,7 +93,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
             fields: [
                    'serviceId',
                    'name',
-                   'descriprion'
+                   'description'
            ],
             /*reader:  new ie10XmlStore({
                 record: 'flow',
@@ -101,7 +101,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
                 fields: [
                    'id',
                    'name',
-                   'descriprion']
+                   'description']
             }),*/
             reader: new Ext.data.JsonReader({
             	root: 'data',
@@ -109,7 +109,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
             	fields: [
                    'serviceId',
                    'name',
-                   'descriprion']
+                   'description']
             }),
             listeners:{
                 beforeload: function(a,b,c){
@@ -150,7 +150,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
         this.columns= [
             {id: 'id', header: "ID", width: 100, dataIndex: 'serviceId', sortable: true,hidden:true},
             {id: 'name', header: this.nameText, width: 200, dataIndex: 'name', sortable: true},
-            {id: 'descriprion', header: this.descriprionText, dataIndex: 'descriprion', sortable: true}
+            {id: 'description', header: this.descriptionText, dataIndex: 'description', sortable: true}
         ],
         mxp.widgets.CMREOnDemandServicesGrid.superclass.initComponent.call(this, arguments);
     }

@@ -3,5 +3,6 @@
 var localConfig = {
    geoStoreBase: "http://localhost:9191/geostore/rest/",
    proxy:"/http_proxy/proxy/?url=",
+   loginDataStorage : sessionStorage,
    defaultLanguage: "en"
 };

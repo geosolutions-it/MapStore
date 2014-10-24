@@ -58,7 +58,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 	 * Property: geoBatchRestURL
 	 * {string} the GeoBatch ReST Url
 	 */
-    geoBatchRestURL: 'http://localhost:8180/opensdi2-manager/mvc/rest/geobatch/',
+    geoBatchRestURL: 'http://localhost:8180/opensdi2-manager/mvc/process/geobatch/',
     /**
 	 * Property: GWCRestURL
 	 * {string} the GWC ReST Url. If present, a button
@@ -126,8 +126,10 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
                    'id',
                    'name',
                    'status',
+                   'progress',
                    'startDate',
-                   'descriprion'],
+                   'endDate',
+                   'description'],
             /*reader:  new ie10XmlStore({
                  record: 'consumer',
                 idPath: 'uuid',
@@ -143,8 +145,10 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
                    'id',
                    'name',
                    'status',
+                   'progress',
                    'startDate',
-                   'descriprion']
+                   'endDate',
+                   'description']
              }),
             listeners:{
                 beforeload: function(a,b,c){
@@ -169,8 +173,6 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
             }
         });
     
-    
-       
         this.tbar = [{
                 iconCls:'refresh_ic',
                 xtype:'button',
@@ -178,6 +180,22 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
                 scope:this,
                 handler:function(){
                     this.store.load();
+                }
+            },{
+                iconCls:'clock_ic',
+                xtype:'button',
+                text:"Auto-Refresh",
+                enableToggle:true,
+                scope:this,
+                handler:function(button){
+                	var me = this;
+                	if (button.pressed) {
+                		button.timer = setInterval(function(){
+                			me.store.load();
+                		}, 3000);
+                	} else {
+                		clearInterval(button.timer);
+                	}
                 }
             },"->",{
                 iconCls:'broom_ic',
@@ -208,11 +226,45 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
         ]
         }
         this.columns= [
-            {id: 'id', header: "ID", width: 220, dataIndex: 'id', sortable: true},
-            {id: 'status', header: this.statusText, width: 100, dataIndex: 'status', sortable: true},
-            {id: 'startDate', header: this.startDateText, width: 180, dataIndex: 'startDate', sortable: true},
-            {id: 'description', header: this.descriptionText, dataIndex: 'descriprion', sortable: true},
+            {id: 'name', header: "Name", width: 100, dataIndex: 'name', sortable: true},
+            {id: 'description', header: this.descriptionText, dataIndex: 'description', sortable: true},
             {
+		        id: 'progress', 
+		        header: 'Progress',
+		        //text: 'Progress',
+		        width: 120,
+		        dataIndex: 'progress',
+		         renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+		        	var id = Ext.id();
+				    (function(){
+				        new Ext.ProgressBar({
+				            renderTo: id,
+				            text: value + "%",
+				            value: (value/100)
+				        });
+				    }).defer(25);
+				    return '<span id="' + id + '"></span>';
+	        	}
+	        },
+            {id: 'startDate', header: this.startDateText, width: 180, dataIndex: 'startDate', sortable: true},
+            {id: 'endDate', header: "End Date", width: 180, dataIndex: 'endDate', sortable: true},
+			{
+                    xtype:'actioncolumn',
+                    width: 35,
+                    tooltip: this.tooltipLog,
+                    handler: this.checkLog,
+                    scope: this,
+                    items:[ {
+                        iconCls:'gx-map-go',
+                        width:25,
+                        tooltip: this.tooltipLog,
+                        scope:this,
+                        getClass: function(v, meta, rec) {
+                        	if(rec.get('status')=='RUNNING')return 'x-hide-display';
+                            return 'x-grid-center-icon action_column_btn';
+                        }
+                    }]
+            },{
                     xtype:'actioncolumn',
                     width: 35,
                     items:[{
@@ -222,26 +274,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
                         handler: this.confirmCleanRow,
                         scope:this,
                         getClass: function(v, meta, rec) {
-                           if(rec.get('status')=='RUNNING')return 'x-hide-display';
-                            return 'x-grid-center-icon action_column_btn';
-                          
-                        }
-                    }]
-            },{
-                    xtype:'actioncolumn',
-                    width: 35,
-                    tooltip: this.tooltipLog,
-                    handler: this.checkLog,
-                    scope: this,
-                    items:[ {
-                        iconCls:'information_ic',
-                        width:25,
-                        tooltip: this.tooltipLog,
-                        scope:this,
-                        getClass: function(v, meta, rec) {
-                          
-                            return 'x-grid-center-icon action_column_btn';
-                          
+                        	return 'x-grid-center-icon action_column_btn';
                         }
                     }]
             }
@@ -295,7 +328,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
         var me = this;
         var url = this.geoBatchRestURL + "consumers/" + uuid + "/log";
         var win = new Ext.Window({
-                    iconCls:'information_ic',
+                    iconCls:'gx-map-go',
                     title:this.tooltipLog,
                     width: 700,
                     height: 600, 
@@ -384,7 +417,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
         var me =this;
         var count = 0,error=false;
         var loadMask = new Ext.LoadMask(Ext.getBody(), {msg:me.cleanMaskMessage});
-        var finish =function(){
+        var finish = function(){
             loadMask.hide();
             if(error){
                 Ext.Msg.show({
@@ -394,9 +427,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
                 });
             }
             me.store.load();
-            
-            
-        }
+        };
         var successCallback = function(){
             count--;
             if(count == 0){
@@ -414,7 +445,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
         };
         this.store.each(function(rec){
         //count the records to delete
-        var status = rec.get('status')
+        var status = rec.get('status');
             if( status =='SUCCESS' || status =='FAIL' ){
                 count++;
             }
@@ -422,7 +453,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
         if(count == 0) return;
         loadMask.show();
         this.store.each(function(rec){
-            var status = rec.get('status')
+            var status = rec.get('status');
             if( status =='SUCCESS' || status =='FAIL' ){
                 me.deleteConsumer(rec.get('uuid'),successCallback,errorCallback,me);
             }
