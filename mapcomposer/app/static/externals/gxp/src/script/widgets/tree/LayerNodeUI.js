@@ -43,7 +43,9 @@ gxp.tree.LayerNodeUI = Ext.extend(GeoExt.tree.LayerNodeUI, {
      *  :param tile: ``Object``
      */
 	loadError: function(tile) {
-		this.addClass("x-tree-node-error");
+		if(event.object.visibility === true) {
+			this.addClass("x-tree-node-error");
+		}
 	},
 	/** private: method[visibilityChanged]
      *  :param event: ``Object``
