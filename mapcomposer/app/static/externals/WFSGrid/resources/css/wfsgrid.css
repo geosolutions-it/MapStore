@@ -1,0 +1,12 @@
+.action-add-layer{
+	background: #FFFFFF url('../img/add.png') no-repeat center;
+	cursor:pointer;
+	width: 20px;
+	border: 1px;
+}
+
+
+.no-action-add-layer{
+	width: 20px;
+	border: 1px;
+}

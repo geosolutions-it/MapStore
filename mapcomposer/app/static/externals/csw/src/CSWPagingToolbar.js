@@ -34,7 +34,7 @@
  */
 CSWPagingToolbar = Ext.extend(Ext.PagingToolbar, {
 	
-    autoWidth:true,
+    autoWidth:false,
     
 	/**
 	 * Method: initComponent

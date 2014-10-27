@@ -60,6 +60,10 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
      */
     displayField: "",
 	
+	/** api: config[mapPanel]
+     *  the mapPanel
+     */
+	mapPanel:  null,
 	/** api: config[url]
      *  url to perform requests
      */
@@ -78,6 +82,10 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 	 * the id of the record.
 	 */
 	recordId: 'fid',
+	
+	custom  : null,
+	
+	geometry: null,
 	
 	/** api: config[recordModel]
      *  ``Ext.Record | Array`` record model to create the store
@@ -132,20 +140,32 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
      *  ``Ext.XTemplate`` the template to show results.
      */
 	tpl: null,
-
+	
+	/** api: config[predicate]
+     *  ``String`` predicate to use for search (LIKE,ILIKE,=...).
+     */
+	predicate: 'ILIKE',
+	/** api: config[vendorParams]
+     *  ``String`` additional parameters object. cql_filters
+	 *  is used in AND the search params. (see listeners->beforequery)
+     */
+	vendorParams: '',
+	
+    clearOnFocus:true,
     /** private: method[initComponent]
      *  Override
      */
     initComponent: function() {
 		
         this.store = new Ext.data.JsonStore({
-			combo:this,
+			combo: this,
 			root: this.root,
 			messageProperty: 'crs',
 			autoLoad: false,
 			fields:this.recordModel,
+			mapPanel: this.mapPanel,
             url: this.url,
-			
+			vendorParams: this.vendorParams,
 			paramNames:{
 				start: "startindex",
 				limit: "maxfeatures",
@@ -156,14 +176,22 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 				version:'1.1.0',
 				request:'GetFeature',
 				typeName:this.typeName ,
-				outputFormat:'json',
+				outputFormat:'application/json',
 				sortBy: this.sortBy
 				
 			
 			},
 			listeners:{
 				beforeload: function(store){
-					store.setBaseParam( 'srsName',app.mapPanel.map.getProjection() );
+					var mapPanel = (this.mapPanel?this.mapPanel:this.combo.target.mapPanel);
+					store.setBaseParam( 'srsName', mapPanel.map.getProjection() );
+					for (var name in this.vendorParams ) {
+					    if(this.vendorParams.hasOwnProperty(name)){
+    						if(name!='cql_filter' && name != "startindex" && name != "maxfeatures" && name != 'outputFormat' ){
+    							store.setBaseParam(store, this.vendorParams[name]);
+    						}
+						}
+					}
 				}
 			},
 			
@@ -191,7 +219,7 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 						return 100000000000000000; 
 					}
 	
-				}
+				};
 				o.totalRecords = estimateTotal(o,options,this);
 				//end of custom total workaround
 				
@@ -228,22 +256,55 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
     },
 	listeners: {
 		focus: function() {
-			this.clearValue();
+			if(this.clearOnFocus) this.clearValue();
 		},
 		beforequery:function(queryEvent){
 			var queryString = queryEvent.query;
 			queryEvent.query = "";
 			for( var i = 0 ; i < this.queriableAttributes.length ; i++){
-				queryEvent.query +=  "(" + this.queriableAttributes[i] + " LIKE '%" + queryString + "%')";
+				queryEvent.query +=  "(" + this.queriableAttributes[i] + " "+this.predicate+" '%" + queryString + "%')";
 				if ( i < this.queriableAttributes.length -1) {
 					queryEvent.query += " OR ";
 				}
 			}
+			//add cql filter in and with the other condictions
+			if(this.vendorParams && this.vendorParams.cql_filter) {
+				queryEvent.query = "(" + queryEvent.query + ")AND(" +this.vendorParams.cql_filter +")";
+			}
 		
+		},
+		select : function(combo, record) {
+			if (record && record.data.custom) {
+				this.custom = record.data.custom;
+			} else {
+				this.custom = null;
+			}
+			if (record && record.data.geometry) {
+				var wkt_options = {};
+				var geojson_format = new OpenLayers.Format.GeoJSON();
+				var testFeature = geojson_format.read(record.data.geometry);
+				var wkt = new OpenLayers.Format.WKT(wkt_options);
+				var out = wkt.write(testFeature);
+				
+				var geomCollectionIndex = out.indexOf('GEOMETRYCOLLECTION(');
+				if (geomCollectionIndex == 0) {
+					out = out.substring(19,out.length-1);
+				}
+				this.geometry = out;
+			} else {
+				this.geometry = null;
+			}
 		}
 
 	},
 	
+	getCustom : function() {
+		return this.custom;
+	},
+	
+	getGeometry : function() {
+		return this.geometry;
+	},
 	
 	//custom initList to have custom toolbar.
 	

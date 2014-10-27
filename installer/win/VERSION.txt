@@ -1,0 +1,4 @@
+MapStore Version: 1.1.0
+GeoStore Version: 1.1.0
+HttpProxy Version: 1.0.2
+xmlJsonTranslate Version: 1.1.0

@@ -222,6 +222,18 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     */
     tooltipViewMap: 'View Map',
 	/**
+    * Property: textEmbedMap
+    * {string} string to add in EmbedMap button
+    * 
+    */
+    textEmbedMap: '', //'Embed Map',
+    /**
+    * Property: tooltipEmbedMap
+    * {string} string to add in EmbedMap tooltip
+    * 
+    */
+    tooltipEmbedMap: 'Embed Map',
+	/**
 	 * Property: textCopyMap
 	 * {string} string to add in CopyMap button
 	 * 
@@ -402,6 +414,13 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     langSelector: null,
 
     /**
+     * Property: mapManagerContainer
+     * {string} id of the mapmanager UI container
+     * 
+     */ 
+    mapManagerContainer: 'wrap',
+    
+    /**
      *  cache when we put short urls when they arrive from the async service
      */
 	shortUrls: new Object(),
@@ -415,14 +434,17 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
 
         var searchString = '*';
-
+		
+		var baseUrl = config.baseUrl || 'http://' + window.location.host;
+		
 		// /////////////////////////
 		// Init useful URLs
 		// /////////////////////////
-		this.murl = config.baseUrl + '/mapcomposer/';
-		this.geoBaseUsersUrl= config.baseUrl + '/geostore/rest/users';
-		this.geoBaseMapsUrl = config.baseUrl + '/geostore/rest/resources';
-		this.geoSearchUrl = config.baseUrl + '/geostore/rest/extjs/search/';
+		this.murl = baseUrl + '/mapcomposer/';
+		this.geoBaseUsersUrl= baseUrl + '/geostore/rest/users';
+		this.geoBaseMapsUrl = baseUrl + '/geostore/rest/resources';
+		this.geoSearchUrl = baseUrl + '/geostore/rest/extjs/search/';
+        this.geoSearchUsersUrl = baseUrl + '/geostore/rest/extjs/search/users';
         
 		// ///////////////////////////////////
         // Inizialization of MSMLogin class
@@ -737,28 +759,72 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
              * 
              */
 			openUserManager: function() {
-				   	
-				var win = new Ext.Window({
-				   title: grid.textUserManager,
-				   iconCls: "open_usermanager",
-				   width: 430, height: 215, resizable: true, modal: true,
-				   layout: "fit",
-				   items: new UserManagerView({
-				   			login: grid.login,
-							auth: grid.login.getToken(),
-							url: grid.geoBaseUsersUrl,
-							mapUrl: grid.geoBaseMapsUrl,
-							gridPanelBbar: grid.getBottomToolbar(),
-							autoWidth: true,
-							viewConfig: {
-								forceFit: true
-							}
-				   	})
-				});
+				if(this.grid.login.role === 'ADMIN') {                   
+					var win = new Ext.Window({
+					   title: grid.textUserManager,
+					   iconCls: "open_usermanager",
+					   width: 430, height: 215, resizable: true, modal: true,
+					   layout: "fit",
+					   items: new UserManagerView({
+					   			login: grid.login,
+								auth: grid.login.getToken(),
+								url: grid.geoBaseUsersUrl,
+                            searchUrl: grid.geoSearchUsersUrl,
+								mapUrl: grid.geoBaseMapsUrl,
+								gridPanelBbar: grid.getBottomToolbar(),
+								autoWidth: true,
+								viewConfig: {
+									forceFit: true
+								}
+					   	})
+					});
 
-				win.show();
+					win.show();
+                } else {
+                    new UserManagerView({
+                        login: grid.login,
+                        auth: grid.login.getToken(),
+                        url: grid.geoBaseUsersUrl,
+                        mapUrl: grid.geoBaseMapsUrl,
+                        gridPanelBbar: grid.getBottomToolbar(),
+                        autoWidth: true,
+                        viewConfig: {
+                            forceFit: true
+                        }
+                    });
+                    
+                }
 			},
 
+			/** private: method[showEmbedWindow]
+			 */
+			showEmbedWindow: function(mapId, mapDesc) {        							   
+				   
+			   var curLang = mapManagerLanguage || 'en';            
+			   
+			   var embedMap = new EmbedMapDialog({
+				   id: 'geobuilder-1',
+				   url: "viewer" + "?locale=" + curLang + "&mapId=" + mapId
+			   });
+
+			   var wizard = {
+				   id: 'geobuilder-wizard-panel',
+				   border: false,
+				   layout: 'card',
+				   activeItem: 0,
+				   defaults: {border: false, hideMode: 'offsets'},				   
+				   items: [embedMap]				   
+			   };
+
+			   new Ext.Window({
+					layout: 'fit',
+					width: 500, height: 300,
+					title: mapDesc,
+					items: [wizard]
+			   }).show();
+			},
+			
+			
             /**
              * Private: openMapComposer 
              * 
@@ -769,7 +835,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
              * 
              */
             openMapComposer : function(mapUrl, userProfile, idMap, desc) {
-	
+                    var scrollTop;
 					var src = mapUrl + '?locale=' + grid.lang + userProfile;
 					
 					if(idMap != -1){
@@ -802,6 +868,11 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 								
 								this.removeClass('x-window-maximized');
 								this.container.removeClass('x-window-maximized-ct');
+                                Ext.get(grid.mapManagerContainer).setDisplayed('block');
+                                if(document.documentElement) {
+                                    document.documentElement.scrollTop = scrollTop;
+                                }
+                                document.body.scrollTop = scrollTop;
 							},
                             afterRender: function(){
                                 function setAuth(){
@@ -850,6 +921,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             }
                         }
                     });
+                scrollTop = Ext.getBody().getScroll().top;
+                Ext.get(grid.mapManagerContainer).setDisplayed('none');
                 iframe.show();
             },
 			
@@ -860,7 +933,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 grid.createTemplate(grid.murl, grid.lang), 
 				{
 				
-					getSocialLinksId: function(mapid) {
+					getSocialLinksId: function(mapid,name,description) {
 					
 						var divid = mapid + '_social_div', longUrl = grid.murl + 'viewer?locale=' + grid.lang + '&mapId=' + mapid;
 							
@@ -942,8 +1015,12 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									tw.className = 'twitter-share-button';
 									tw.setAttribute('data-url', shortUrl);
 									tw.setAttribute('data-count', 'horizontal');
-									tw.setAttribute('data-via', 'geosolutions_it');
+									tw.setAttribute('data-via', config.twitter.via);
 									tw.setAttribute('data-lang', grid.lang);									
+                                    tw.setAttribute('data-text', name+'/'+description);	
+                                    if(config.twitter.hashtags) {
+                                        tw.setAttribute('data-hashtags', config.twitter.hashtags);	
+                                    }
 									
 									var twcell = document.createElement('td');
 									twcell.appendChild( tw );
@@ -1063,6 +1140,22 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         this.MapComposerVM.defer(1,this, [result,values,userProfile]);
                         return result;
                     },
+					/**
+                    * Private: getButtonEMId
+                    * 
+                    * values - {array} fields of the column grid
+                    * button - {string} name button
+                    * 
+                    */
+                    getButtonEMId: function(values,button) {
+                        var result = Ext.id()+button;
+						
+						// //////////////////////////////////////
+                        // Adds listener for embed map
+						// //////////////////////////////////////
+                        this.MapComposerEM.defer(1,this, [result,values]);
+                        return result;
+                    },
                     /**
                     * Private: getButtonDMId
                     * 
@@ -1128,6 +1221,22 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             var idMap = values.id,
                             	desc = values.name;
                             expander.openMapComposer(grid.murl, userProfile, idMap, desc);
+                        });
+                    },
+					
+					/**
+                    * Private: MapComposerEM 
+                    * 
+                    * id - {number} button id
+                    * values - {array} fields of the column grid                    
+                    * 
+                    */
+                    MapComposerEM : function(id, values) {
+                        Ext.get(id).on('click', function(e){							
+                            var idMap = values.id,
+                            	desc = values.name;
+							
+                            expander.showEmbedWindow(idMap, desc);
                         });
                     },
 					
@@ -1615,7 +1724,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     '</td>'+
                     '<td >'+
                         '<table class="x-btn x-btn-text-icon" style="width:30px" cellspacing="0" >'+
-                        '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonVMId(values,\'_viewBtn\',\'&auth=false&fullScreen=true\')]}\'>'+
+                        '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonVMId(values,\'_viewBtn\',\'&auth=false\')]}\'>'+
                         '<tr >'+
                         '<td class="x-btn-tl">' +
                         '<i>&nbsp;</i>' +
@@ -1632,6 +1741,44 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         '<td class="x-btn-mc">' +
                         '<em class="" unselectable="on">' +
                         '<button type="button" style="background-position:center;padding:10px;" class="x-btn-text icon-layers" title="' + this.tooltipViewMap + '">' + this.textViewMap + '</button>'+
+                        '</em>'+
+                        '</td>'+
+                        '<td class="x-btn-mr">'+
+                        '<i>&nbsp;</i>'+
+                        '</td>'+
+                        '</tr>'+
+                        '<tr>' +
+                        '<td class="x-btn-bl">' +
+                        '<i>&nbsp;</i>' +
+                        '</td>' +
+                        '<td class="x-btn-bc"></td>' +
+                        '<td class="x-btn-br">' +
+                        '<i>&nbsp;</i>' +
+                        '</td>' +
+                        '</tr>' +
+                        '</tbody>' +
+                        '</table>' +
+                    '</td>'
+					+
+                    '<td >'+
+                        '<table class="x-btn x-btn-text-icon" style="width:30px" cellspacing="0" >'+
+                        '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonEMId(values,\'_embedBtn\')]}\'>'+
+                        '<tr >'+
+                        '<td class="x-btn-tl">' +
+                        '<i>&nbsp;</i>' +
+                        '</td>' +
+                        '<td class="x-btn-tc"></td>' +
+                        '<td class="x-btn-tr">' +
+                        '<i>&nbsp;</i>' +
+                        '</td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td class="x-btn-ml">' +
+                        '<i>&nbsp;</i>' +
+                        '</td>' +
+                        '<td class="x-btn-mc">' +
+                        '<em class="" unselectable="on">' +
+                        '<button type="button" style="background-position:center;padding:10px;" class="x-btn-text icon-export" title="' + this.tooltipEmbedMap + '">' + this.textEmbedMap + '</button>'+
                         '</em>'+
                         '</td>'+
                         '<td class="x-btn-mr">'+
@@ -1697,7 +1844,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 		
 		tpl +=  '</tr></table></div><br/>';
 
-		tpl += '<div id=\'{[this.getSocialLinksId(values.id)]}\' style=\'float:left\'></div>';
+		tpl += '<div id=\'{[this.getSocialLinksId(values.id,values.name,values.description)]}\' style=\'float:left\'></div>';
         
 		return tpl;
 	}

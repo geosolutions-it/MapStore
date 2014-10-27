@@ -45,6 +45,9 @@ display:block;
 .icon-layers{
 	background-image:url(../img/layers.png) !important;
 }
+.icon-export{
+	background-image:url(../img/world_link.png) !important;
+}
 .add .x-btn-text {
     background-image: url(../img/add.png);
 }
@@ -216,4 +219,14 @@ display:block;
 .fb_edge_widget_with_comment span.fb_edge_comment_widget {
 left: 80px !important;
 
+}
+
+.embed-field-label {
+    font-weight: bold;
+    margin: 4px;
+    vertical-align: baseline;
+}
+.embed-export-section {
+    padding: 10px 10px 5px 10px;
+    margin-bottom: 0;
 }

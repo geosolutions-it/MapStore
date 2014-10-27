@@ -24,7 +24,7 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         var toolConfig;
 		
 		// /////////////////////////////////////////////////////////////////////////
-        // we need to start counting at 2 since there is the Layer Switcher and a 
+        // We need to start counting at 2 since there is the Layer Switcher and a 
         // split button already
 		// /////////////////////////////////////////////////////////////////////////
         var counter = 15;
@@ -47,6 +47,7 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
                 tools.push(toolConfig);
             }
         }
+		
         config.tools = tools;
         
 		if(config.customTools)
@@ -54,16 +55,34 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
 			for(var c=0; c < config.customTools.length; c++)
 			{
 				var toolIsDefined = false;
-				for(var t=0; t < config.tools.length; t++)
-				{
-					if( config.tools[t]['ptype'] && config.tools[t]['ptype'] == config.customTools[c]['ptype'] ) {	//plugin already defined
-						toolIsDefined = true;
-						break;
-					}
-				}
-			
-				if(!toolIsDefined)
-					config.tools.push(config.customTools[c]);
+				for(t=0; t < config.tools.length; t++){
+                    //plugin already defined
+                    if( config.tools[t]['ptype'] && config.tools[t]['ptype'] == config.customTools[c]['ptype'] ) {
+                        toolIsDefined = true;
+                        if(config.customTools[c].forceMultiple){
+                            config.tools.push(config.customTools[c])
+                        }else{
+                            config.tools[t]=config.customTools[c];
+                        }
+                        break;
+                    }
+                }
+            
+                if(!toolIsDefined){
+                    config.tools.push(config.customTools[c])
+                }
+			}
+		}
+		
+		// ///////////////////////////////////////////////////////////////////////////
+		// TODO: Fix this. The ImportExport plugin should not be added to the Viewer
+		//       We have to decide what are the configurations that are to be saved in 
+		//       the composer necessarily.
+		// ////////////////////////////////////////////////////////////////////////////
+		for(var y = 0; y < config.tools.length; y++){
+			if( config.tools[y]['ptype'] && config.tools[y]['ptype'] == "gxp_importexport" ) {	
+				config.tools.splice(y, 1);
+				break;
 			}
 		}
 		
@@ -78,6 +97,7 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         this.toolbar = new Ext.Toolbar({
             disabled: true,
             id: "paneltbar",
+			enableOverflow: true,
             items: this.createTools()
         });
         
@@ -106,14 +126,15 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
             ],
             activeItem: 0
         });
-
+        var portalItems =[this.mapPanelContainer];
+        if(this.customPanels){
+            portalItems=portalItems.concat(this.customPanels);
+        }
         this.portalItems = [{
             region: "center",
             layout: "border",
             tbar: this.toolbar,
-            items: [
-                this.mapPanelContainer
-            ]
+            items: portalItems
         }];
         
         GeoExplorer.superclass.initPortal.apply(this, arguments);        
@@ -125,17 +146,20 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
      * Create the various parts that compose the layout.
      */
     createTools: function() {
+		if(!this.disableLayerChooser){
         var tools = GeoExplorer.Viewer.superclass.createTools.apply(this, arguments);
+		
+			var layerChooser = new Ext.Button({
+				//tooltip: 'Layer Switcher',	//TODO uncomment in ExtJS >= 4.1, http://goo.gl/x1c5X
+				iconCls: 'icon-layer-switcher',
+				menu: new gxp.menu.LayerMenu({
+					layers: this.mapPanel.layers
+				})
+			});
+			tools.unshift(layerChooser);
+		}
 
-        var layerChooser = new Ext.Button({
-			//tooltip: 'Layer Switcher',	//TODO uncomment in ExtJS >= 4.1, http://goo.gl/x1c5X
-            iconCls: 'icon-layer-switcher',
-            menu: new gxp.menu.LayerMenu({
-                layers: this.mapPanel.layers
-            })
-        });
-
-        tools.unshift(layerChooser);
+        
 
         return tools;
     }

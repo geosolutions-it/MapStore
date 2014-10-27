@@ -51,17 +51,24 @@
 
 var config = {
 
-	baseUrl: 'http://localhost:8080',
-	proxyUrl: 'http://localhost:8080/http_proxy/proxy/',
+	baseUrl: '',
+	proxyUrl: '/http_proxy/proxy/',
 
-	googleApi: 'AIzaSyBFz0tyDgG_SmT8Qmw1UFmOJuHgW4Z8nEw',
+	//googleApi: 'AIzaSyBFz0tyDgG_SmT8Qmw1UFmOJuHgW4Z8nEw',
 	//update key here: https://code.google.com/apis/console/#project:385384104319:access
     
     start: 0,
 
-    limit: 10,
+    limit: 20,
     
-    msmTimeout: 30000
+    msmTimeout: 30000,
+    
+    twitter: {
+        via: 'geosolutions_it',
+        hashtags: ''
+    },
+	
+	locales: [['en', 'English'],['it','Italiano'],['fr','Français'],['de','Deutsch']]
 };
 
 

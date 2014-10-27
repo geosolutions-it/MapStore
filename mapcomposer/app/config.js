@@ -5,8 +5,12 @@ var urls = [
     [(/^\/(index(.html)?)?/), require("./root/index").app],
     //[(/^\/(login)/), require("./root/login").app],
     //[(/^\/(maps(\/\d+)?)/), require("./root/maps").app],
+	//[(/^\/(geonetwork)/), require("./root/geonetwork").app],  // Enable this only for the GeoNetwork integration
     [(/^\/(composer)/), require("./root/composer").app],
-    [(/^\/(viewer(.html)?)/), require("./root/viewer").app]
+	[(/^\/(wps)/), require("./root/wps").app],                // to test WPS plugin
+	[(/^\/(test)/), require("./root/test").app],              // to test the MapStore Viewport
+    [(/^\/(viewer(.html)?)/), require("./root/viewer").app],
+    [(/^\/(debug(.js)?)/), require("./root/debug").app]
 ];
 
 var debug_proxy = java.lang.System.getProperty("app.debug.proxy");

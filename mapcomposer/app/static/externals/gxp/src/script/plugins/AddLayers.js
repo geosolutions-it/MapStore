@@ -32,6 +32,8 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
     /** api: ptype = gxp_addlayers */
     ptype: "gxp_addlayers",
     
+	id: "addlayers",
+	
     /** api: config[addActionMenuText]
      *  ``String``
      *  Text for add menu item (i18n).
@@ -161,6 +163,8 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
      *  The currently selected layer source.
      */
     selectedSource: null,
+	
+	iconCls: "gxp-icon-addlayers",
 
     /** private: method[constructor]
      */
@@ -227,45 +231,25 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         var expander = this.createExpander();
         
         var addLayers = function() {
+            
             var apptarget = this.target;
-        
-            var key = sourceComboBox.getValue();
+           // var locCode= GeoExt.Lang.locale;
+            var key = this.sourceComboBox.getValue();
             var layerStore = this.target.mapPanel.layers;
             var source = this.target.layerSources[key];
             var records = capGridPanel.getSelectionModel().getSelections();
             var record;
-            for (var i=0, ii=records.length; i<ii; ++i) {
+            var defaultProps;
             
-                var keywords = records[i].get("keywords");
-                if(keywords){
-                    var uuidKey;
-                    for(var k=0; k<keywords.length; k++){
-                        var keyword = keywords[k].value;
-                        if(keyword.indexOf("uuid") != -1){
-                          uuidKey = keyword.substring(keyword.indexOf("uuid="));
-                          uuidKey = keyword.split("=")[1];
-                        }                      
-                    }
-                    
-                    if(uuidKey)
-                        record = source.createLayerRecord({
-                            name: records[i].get("name"),
-                            title: records[i].get("title"),
-                            source: key,
-                            uuid: uuidKey
-                        });
-                    else
-                        record = source.createLayerRecord({
-                            name: records[i].get("name"),
-                            title: records[i].get("title"),
-                            source: key
-                        });
-                }else
-                    record = source.createLayerRecord({
-                        name: records[i].get("name"),
-                        title: records[i].get("title"),
-                        source: key
-                    });
+            for (var i=0, ii=records.length; i<ii; ++i) {
+                
+                defaultProps = {
+				    name: records[i].get("name"),
+					title: records[i].get("title"),
+                    source: key
+                };
+
+                record = source.createLayerRecord(defaultProps); 
                   
                 if (record) {
                     if (record.get("group") === "background") {
@@ -274,29 +258,28 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                         layerStore.add([record]);
 
                         if(records.length == 1){
-				var layer = record.get('layer');
-				var extent = layer.restrictedExtent || layer.maxExtent || app.mapPanel.map.maxExtent;
-				var map = app.mapPanel.map;
+							var layer = record.get('layer');
+							var extent = layer.restrictedExtent || layer.maxExtent || this.target.mapPanel.map.maxExtent;
+							var map = this.target.mapPanel.map;
 
-				// respect map properties
-				var restricted = map.restrictedExtent || map.maxExtent;
-				if (restricted) {
-				    extent = new OpenLayers.Bounds(
-				        Math.max(extent.left, restricted.left),
-				        Math.max(extent.bottom, restricted.bottom),
-				        Math.min(extent.right, restricted.right),
-				        Math.min(extent.top, restricted.top)
-				    );
-				}
+							// respect map properties
+							var restricted = map.restrictedExtent || map.maxExtent;
+							if (restricted) {
+								extent = new OpenLayers.Bounds(
+									Math.max(extent.left, restricted.left),
+									Math.max(extent.bottom, restricted.bottom),
+									Math.min(extent.right, restricted.right),
+									Math.min(extent.top, restricted.top)
+								);
+							}
 
-				map.zoomToExtent(extent, true);
-			}
+							map.zoomToExtent(extent, true);
+						}
                     }
                 }
             }
             
             apptarget.modified = true;
-            //modified = true;
         };
 
         var idx = 0;
@@ -326,7 +309,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             }
         });
         
-        var sourceComboBox = new Ext.form.ComboBox({
+        this.sourceComboBox = new Ext.form.ComboBox({
             store: sources,
             valueField: "id",
             displayField: "title",
@@ -359,7 +342,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                 new Ext.Toolbar.TextItem({
                     text: this.layerSelectionText
                 }),
-                sourceComboBox
+                this.sourceComboBox
             ];
         }
         
@@ -387,7 +370,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                                 title: this.target.layerSources[id].title || this.untitledText
                             });
                             sources.insert(0, [record]);
-                            sourceComboBox.onSelect(record, 0);
+                            this.sourceComboBox.onSelect(record, 0);
                             newSourceWindow.hide();
                         },
                         fallback: function(source, msg) {
@@ -465,6 +448,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             }),
             new Ext.Button({
                 text: this.doneText,
+				iconCls: "save",
                 handler: function() {
                     this.capGrid.hide();
                 },
@@ -635,6 +619,10 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         return button;
     },
     
+	getSourceComboBox: function(){
+		return this.sourceComboBox;
+	},
+	
     /** private: method[isEligibleForUpload]
      *  :arg source: :class:`gxp.plugins.LayerSource`
      *  :returns: ``Boolean``

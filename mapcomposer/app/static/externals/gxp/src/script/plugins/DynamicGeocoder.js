@@ -1,9 +1,23 @@
 /**
-* Copyright (c) 2012
-*
-* Published under the GPL license.
-* 
-*/
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 
 /**
  * @requires plugins/Tool.js
@@ -49,7 +63,7 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
      *  ``String``
      *  tooltip for addMarker button
      */
-    markerName: "Marker",
+    markerName: "Marker_DYN_Geocoder",
 	pointRadiusMarkers: 14,
     externalGraphicMarkers: 'theme/app/img/markers/star_red.png',
     backgroundGraphicMarkers: 'theme/app/img/markers/markers_shadow.png',
@@ -63,7 +77,12 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
      *  type of geocoder to use (google, nominatim, dynamic); defaults to dynamic
      */
 	geocoderType: "dynamic",
-    
+	
+	/** api: delay for fadeOut marker
+	 *  duration in seconds
+	 */
+    markerFadeoutDelay: 5,  
+    fadeOut:true,
 	/** private: method[createCombo]
      *  Creates a new *GeocoderCombo, using the given geocoder type.
      */
@@ -79,9 +98,10 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
 	/**private: method[createOrUpdateCombo]
      *  Creates a new *GeocoderCombo or updates the existing one, using the current geocoder type.	 
 	 */
-	createOrUpdateCombo: function() {					
+	createOrUpdateCombo: function(force) {					
 		var newType;
-		var geocoders=gxp.plugins.DynamicGeocoder.Geocoders;
+		var geocoders = gxp.plugins.DynamicGeocoder.Geocoders;
+		
 		if(this.geocoderType === 'dynamic') {
 			var priority=-1;
 			// gets the best geocoder type given the current map configuration
@@ -99,8 +119,8 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
 			newType = this.geocoderType;
 		}
 		
-		if(newType && newType !== this.currentGeocoderType) {
-			this.currentGeocoderType=newType;			
+		if(force === true || (newType && newType !== this.currentGeocoderType)) {
+			this.currentGeocoderType = newType;			
 			var newCombo=this.createCombo(newType);
 			if(this.combo) {
 				this.comboContainer.remove(this.combo);
@@ -111,9 +131,8 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
 		}
 	},
 	
-    init: function(target) {
-		
-        // remove marker added by geocoder plugin
+    init: function(target) {		
+        /*/ remove marker added by geocoder plugin
         var removeMarkerBtn = new Ext.Button({
             tooltip: this.addMarkerTooltip,
             handler: function() {
@@ -125,11 +144,12 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
             },
             scope: this,
             iconCls: "icon-removemarkers"
-        });
-        this.target = target;
+        });*/
 		
-		this.comboContainer=new Ext.Container();        
-        this.removeMarkerBtn = removeMarkerBtn;
+        this.target = target;		
+		this.comboContainer = new Ext.Container();        
+        
+		//this.removeMarkerBtn = removeMarkerBtn;
         
 		// initialize combo on ready
 		target.on({
@@ -148,13 +168,12 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
 		});
 		
         return gxp.plugins.DynamicGeocoder.superclass.init.apply(this, arguments);
-
     },
 
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-        return gxp.plugins.DynamicGeocoder.superclass.addOutput.call(this, ['-',this.removeMarkerBtn,this.comboContainer]);
+        return gxp.plugins.DynamicGeocoder.superclass.addOutput.call(this, ['-',/*this.removeMarkerBtn,*/this.comboContainer]);
     },
     
     /** private: method[onComboSelect]
@@ -209,6 +228,13 @@ gxp.plugins.DynamicGeocoder = Ext.extend(gxp.plugins.Tool, {
 				markers.addFeatures(markers_feature);
 				map.zoomToExtent(location.bounds, true);
 			}
+			
+			//
+			// Fade out for the marker icon.
+			//
+            if(this.fadeOut){
+                Ext.get(markers.id).fadeOut({ endOpacity: 0.01, duration: this.markerFadeoutDelay});	//fadeout marker, no change 0.01
+            }
 		} else {
 			map.setCenter(location.bounds);
 		}        

@@ -41,10 +41,10 @@
     
     function test_read(t) {
         
-        t.plan(14);
+        t.plan(17);
         
         var obj = format.read(csw_response);
-        
+                
         var searchStatus = obj.SearchStatus;
         var searchResults = obj.SearchResults;
         var records = obj.records;
@@ -65,6 +65,9 @@
         t.eq(testRecord.type, "BriefRecord", "check value for record.type");
         t.eq(testRecord.title, [{value:"Sample title"}], "check value for record.title");
 
+        // test empty subject
+        t.eq(testRecord.subject, [], "Empty subject tags are ignored");
+
         //test bbox
         t.eq(testRecord.BoundingBox.length, 2, "object contains 2 BoundingBoxes");
         var bbox = testRecord.BoundingBox[0];
@@ -72,6 +75,10 @@
         t.eq(bbox.crs, "::Lambert Azimuthal Projection", "check value for BoundingBox.crs");
         t.eq(bbox.value, [156, -3, 37, 83], "check value for record.BoundingBox");
         
+        // test gninfo
+        testRecord = records[1];
+        t.ok(testRecord.gninfo, "object contains gninfo properties");
+        t.eq(testRecord.gninfo.schema, "iso19139", "check value for schema property in record.gninfo");
     }
     
     </script> 
