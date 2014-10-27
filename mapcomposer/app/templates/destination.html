@@ -1,0 +1,492 @@
+<% extends ./base.html %>
+<% subskin extrahead %>
+    <!-- OpenLayers resources -->
+    <link rel="stylesheet" type="text/css" href="externals/openlayers/theme/default/style.css">
+
+	<!-- Basic OpenLayers libs -->
+    <script type="text/javascript" src="script/OpenLayers.js"></script>
+    
+    <!-- Externals OpenLayers libraries to manage Time Manager -->
+    <script type="text/javascript" src="script/OpenLayersTimeManager.js"></script>
+	
+	<!-- colorpicker resources 
+    <link rel="stylesheet" type="text/css" href="externals/colorpicker/css/colorpicker.css">
+    <script type="text/javascript" src="script/colorpicker.js"></script> -->
+	
+    <!-- GeoExt resources -->
+    <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/popup.css">
+    <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/layerlegend.css">
+    <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/gxtheme-gray.css">
+    <script type="text/javascript" src="script/GeoExt.js"></script> 
+    
+	<!-- Externals OpenLayers libraries to manage WPS processes -->
+	<script type="text/javascript" src="script/OpenLayersExt.js"></script> 
+    
+    <script type="text/javascript" src="script/GeoExtExt.js"></script> 
+
+	<!-- PrintPreview resources -->
+    <link rel="stylesheet" type="text/css" href="externals/PrintPreview/resources/css/printpreview.css">
+    <script type="text/javascript" src="script/PrintPreview.js"></script>
+	
+    <!-- gxp resources -->
+    <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
+
+    <script type="text/javascript" src="script/gxp.js"></script> 
+
+    <script type="text/javascript" src="script/proj4js.js"></script>
+
+    <!-- GeoExplorer resources -->
+    <link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
+    <link rel="stylesheet" type="text/css" href="theme/app/mapstore.css" />
+    <!--[if IE]><link rel="stylesheet" type="text/css" href="theme/app/ie.css"/><![endif]-->        
+
+    <script type="text/javascript" src="script/GeoExplorer.js"></script>
+    <script type="text/javascript" src="script/ux.js"></script>
+   
+    <!-- csw resources -->
+    <link rel="stylesheet" type="text/css" href="externals/csw/css/csw.css">
+    <script type="text/javascript" src="auth/base64.js"></script>
+    <script type="text/javascript" src="script/metadataexplorer.js"></script>
+    
+    <!-- geocoding data  -->
+    <script type="text/javascript" src="data/georeferences.js"></script>
+    
+	<!-- translation data  -->
+    <script type="text/javascript" src="translations/en.js"></script>
+    <script type="text/javascript" src="translations/fr.js"></script>
+    <script type="text/javascript" src="translations/it.js"></script>
+    <script type="text/javascript" src="translations/de.js"></script>
+	
+	<link rel="stylesheet" type="text/css" href="externals/PrintPreview/resources/css/printpreview.css">
+	<script type="text/javascript" src="script/PrintPreview.js"></script> 
+	
+	<!-- uncomment to have  welcome screen
+	<script type="text/javascript">
+	 
+        Ext.onReady(function() {
+          setTimeout(function(){
+            Ext.get('loading').remove();
+            Ext.get('loading-mask').fadeOut({remove:true,duration:1});
+          }, 2000);
+        });
+   
+    </script>
+    
+    <div id="loading-mask"></div>
+    <div id="loading">
+      <div class="loading-indicator">
+      </div>
+    </div>
+	-->	
+    <script>
+
+    
+		// fix for IE7 and IE8
+		if (!Date.prototype.toISOString) {
+		    Date.prototype.toISOString = function() {
+		        function pad(n) { return n < 10 ? '0' + n : n }
+		        return this.getUTCFullYear() + '-'
+		            + pad(this.getUTCMonth() + 1) + '-'
+		            + pad(this.getUTCDate()) + 'T'
+		            + pad(this.getUTCHours()) + ':'
+		            + pad(this.getUTCMinutes()) + ':'
+		            + pad(this.getUTCSeconds()) + 'Z';
+		    };
+		}
+        
+		// see http://stackoverflow.com/questions/11020658/javascript-json-date-parse-in-ie7-ie8-returns-nan
+		var D= new Date('2011-06-02T09:34:29+02:00');
+	    if(!D || +D!== 1307000069000){
+	        Date.fromISO= function(s){
+	            var day, tz,
+	            rx=/^(\d{4}\-\d\d\-\d\d([tT][\d:\.]*)?)([zZ]|([+\-])(\d\d):(\d\d))?$/,
+	            p= rx.exec(s) || [];
+	            if(p[1]){
+	                day= p[1].split(/\D/);
+	                for(var i= 0, L= day.length; i<L; i++){
+	                    day[i]= parseInt(day[i], 10) || 0;
+	                };
+	                day[1]-= 1;
+	                day= new Date(Date.UTC.apply(Date, day));
+	                if(!day.getDate()) return NaN;
+	                if(p[5]){
+	                    tz= (parseInt(p[5], 10)*60);
+	                    if(p[6]) tz+= parseInt(p[6], 10);
+	                    if(p[4]== '+') tz*= -1;
+	                    if(tz) day.setUTCMinutes(day.getUTCMinutes()+ tz);
+	                }
+	                return day;
+	            }
+	            return NaN;
+	        }
+	    }
+	    else{
+	        Date.fromISO= function(s){
+	            return new Date(s);
+	        }
+	    }
+        
+        /**
+         * fix timezone handling for date picker
+         *
+         * The getValue function always returns 00:00:00 as time. So if a form
+         * got filled with a date like 2008-10-01T21:00:00 the form returns
+         * 2008-10-01T00:00:00 although the user did not change the fieled.
+         *
+         * In a multi timezone context this is fatal! When a user in a certain
+         * timezone set a date (just a date and no time information), this
+         * means in his timezone the time range from 2008-10-01T00:00:00
+         * to 2008-10-01T23:59:59. _BUT_ for an other user sitting in a
+         * different timezone it means e.g. the time range from
+         * 2008-10-01T02:00:00 to 2008-10-02T21:59:59.
+         *
+         * So on the one hand we need to make shure, that the date picker
+         * only returns changed datetime information when the user did a
+         * change.
+         */
+         
+        /**
+         * @private
+         */
+        Ext.form.DateField.prototype.setValue = function(date){
+            // preserv original datetime information
+            this.fullDateTime = date;
+            Ext.form.DateField.superclass.setValue.call(this,
+            this.formatDate(this.parseDate(date)));
+        };
+         
+        /**
+         * @private
+         */
+            Ext.form.DateField.prototype.getValue = function(){
+            //var value = this.parseDate(Ext.form.DateField.superclass.getValue.call(this));
+         
+            // return the value that was set (has time information when unchanged in client)
+            // and not just the date part!
+            value =  this.fullDateTime;
+            return value || "";
+        };      
+                
+        var app;        
+        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false;
+		
+        // ///////////////////////////////////////////////////////////////
+        // Custom variables from the mapStoreConfig user configuration file 
+        // ///////////////////////////////////////////////////////////////
+        var proxy; 
+        var geoStoreBaseURL;        
+        var customSources;
+        var serverConfig;
+        var customConfigName;
+		
+        // //////////////////////////////////////////////////
+        // Parsing the request to get the parameters
+        // //////////////////////////////////////////////////
+        var params = location.search.replace(/^\?/,'').replace(/&amp;/g,'&').split("&");
+        for (var j=0; j < params.length; j++) {
+			var param = params[j].split("=");
+			if(param[0]){
+				switch ( param[0] ) {
+					case "mapId": 
+									try{
+										mapIdentifier = parseInt(param[1]);
+									}catch(e){
+										mapIdentifier = -1;
+									} 
+									break;
+					case "auth" : 
+									if(param[1] == 'true') 
+										authorization = true; 
+									else 
+										authorization = false; 
+									break;
+					case "fullScreen" : 
+									if(param[1] == 'true') 
+										fullScreen = true; 
+									else 
+										fullScreen = false; 
+									break;
+					case "config":	
+									customConfigName = param[1];
+									break;
+					default :       
+									//mapIdentifier = -1;
+									//authorization = false;
+									//fullScreen = false; 
+				}
+			}
+        }		
+		
+        var onReady = function(){
+
+            Ext.BLANK_IMAGE_URL = (function() {
+                    if (Ext.isIE8 || Ext.isGecko || Ext.isOpera || Ext.isChrome) {
+                        return "data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
+                    } else {
+                        return "theme/app/img/blank.gif";
+                    }
+            })();
+
+            OpenLayers.ImgPath = "externals/openlayers/theme/default/img/";
+			
+			// ////////////////////////////////
+            // Get Proj4js configuration 
+			// ////////////////////////////////
+            if( typeof(Proj4js)!="undefined" && !(serverConfig.proj4jsDefs===undefined) ){
+                for(var name in serverConfig.proj4jsDefs){
+                    Proj4js.defs[name] = serverConfig.proj4jsDefs[name];               
+                }
+            }
+			    
+			// /////////////////////////////////////
+            // Get georeferences data to override
+			// /////////////////////////////////////
+            if (serverConfig.georeferences_data){
+                georeferences_data = serverConfig.georeferences_data;
+            }
+			
+            gxp.plugins.ZoomToExtent.prototype.closest = false;
+
+            Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
+                 onRender : function(ct, position){
+                      this.el = ct.createChild({
+                        tag: 'iframe',
+                        id: 'iframe-'+ this.id,
+                        frameBorder: 0, 
+                        src: this.url
+                      });
+                 }
+            });
+            
+			// //////////////////////////////////////////////////////            
+            // Setting the locale based on query string parameter
+            // //////////////////////////////////////////////////////
+			var query = location.search;        
+            if(query && query.substr(0,1) === "?"){
+                query = query.substring(1);
+            }
+            
+            var url = Ext.urlDecode(query);        
+            var code = url.locale || serverConfig.defaultLanguage || "en";			
+
+			// ////////////////////////////////////////////////////
+			// Setting the language code for the GeoExt tools
+			// ////////////////////////////////////////////////////
+			if (GeoExt.Lang) {
+                GeoExt.Lang.set(code);
+            }
+			
+			// ////////////////////////////////////////////////////
+			// Setting the language selector
+			// ////////////////////////////////////////////////////
+			var languageSelector = new gxp.form.LanguageSwitcher({
+				currentContext:code,
+				saveMessage:authorization
+			});
+			
+			var appTabs = new Ext.TabPanel({
+                region: 'center',
+                border : false,
+                id : 'appTabs',
+                enableTabScroll: true
+            });
+			
+            /*var appTabs = new Ext.Panel({
+			    layout: 'fit',
+                region: 'center',
+                border : false,
+                id : 'appTabs',
+                enableTabScroll: true
+            });*/
+
+			var iframe = "<iframe style='border: none; height: 100%; width: 100%' src='about.html' frameborder='0' border='0'>" + 
+						 "<a target='_blank' href='about.html'>" + GeoExplorer.prototype.aboutText + "</a> </iframe>";
+						 
+            var aboutButton = new Ext.Button({
+                text: GeoExplorer.prototype.appInfoText,
+                iconCls: "icon-geoexplorer",
+                handler: function(){
+                    var appInfo = new Ext.Panel({
+                        header: false,
+                        html: iframe
+                    });
+
+                    var win = new Ext.Window({
+                        title:  GeoExplorer.prototype.aboutThisMapText,
+                        modal: true,
+                        layout: "fit",
+                        width: 360,
+                        height: 360,
+                        items: [appInfo]
+                    });
+                    
+                    win.show();
+                }
+            });
+            
+            var csiLabel = new Ext.Toolbar.TextItem({                
+                cls: "icon-csi",
+                width : 50
+            });    
+			
+			var headerContent = [
+              //'<table >',
+              //'<td>',
+              //'<img src="theme/app/img/banner/left.png"/>',
+              //'</td>',
+              '<div align="center" style="background-image:url(theme/app/img/banner/Destination-bg.png);background-repeat: repeat;width:100%;height:100%">',
+              '<img src="theme/app/img/banner/BannerDestination.png" style="float:left"/>',
+			  '<img src="theme/app/img/banner/BannerDestination1.png" style="float:right;position:absolute;top:0px;right:0px;"/>',
+              '</div>',
+              //'<td>',
+              //'<img src="theme/app/img/logos/banner4.gif"/>',
+              //'</td>',
+              //'</table>'
+            ];
+			
+            var appViewport = new Ext.Viewport({
+                id: 'appVieport',
+                layout:'fit',
+                border:false,
+                items: [{
+                    region : 'center',
+                    layout : 'border',
+                    border : false,
+                    header : false,                    
+                    items : [{
+                      border: false,
+                      header: false,
+                      html:  headerContent,
+                      region: 'north',
+                      collapsible: true,
+					  collapsed: false,
+                      collapseMode:  'mini',
+                      hideCollapseTool: true,
+                      split: true,
+                      animCollapse : false,
+                      minHeight: 90,
+                      maxHeight: 90,
+                      height: 150,
+                      id : 'header'
+                    },appTabs],                          
+                    bbar : [
+                      csiLabel, ' ', aboutButton, '->',languageSelector
+                    ]
+                }]
+            });
+            
+            // /////////////////////////////////////////////////////////////
+            // Parsing WMS servers Sources for getCapabilities operation
+            // /////////////////////////////////////////////////////////////
+            try{
+                var sources = serverConfig.gsSources;
+            }catch(e){
+                sources = {
+                    mapquest: {
+                        ptype: "gxp_mapquestsource"
+                    },
+                    osm: {
+                        ptype: "gxp_osmsource"
+                    },
+                    google: {
+                        ptype: "gxp_googlesource"
+                    },
+                    bing: {
+                        ptype: "gxp_bingsource"
+                    },
+                    ol: {
+                        ptype: "gxp_olsource"
+                    }
+                };
+          
+                Ext.Msg.show({
+                      title: "Startup",
+                      msg: "An error occurred while parsing the CUSTOM GeoServer sources",
+                      buttons: Ext.Msg.OK,
+                      icon: Ext.MessageBox.ERROR
+                });
+            }
+ 
+			/*var auth = 'Basic ' + Base64.encode('admin:admin');
+			      Ext.Ajax.defaultHeaders = {
+                'Authorization' : auth
+            };*/
+
+            app = new GeoExplorer.Composer({
+                modified: false,
+                proxy: proxy,
+				tools: serverConfig.tools,
+                xmlJsonTranslateService: serverConfig.xmlJsonTranslateService,
+				embedding: serverConfig.embedding,
+				wfsBaseURL: serverConfig.wfsBaseURL,
+				wfsLayerName: serverConfig.wfsLayerName,
+                defaultSourceType: "gxp_wmssource",
+                renderToTab : 'appTabs',
+                about: {
+                    title: "Custom Map",
+                    'abstract': "Custom Map",
+                    contact: "<a href='#'>#</a>."
+                },
+                sources: sources,
+				scaleOverlayUnits: serverConfig.scaleOverlayUnits,
+				//showGraticule: false,  //Set showGraticule property to true only if the map projection is EPSG:4326 
+                georeferences: province,
+                cswconfig: serverConfig.cswconfig,
+                map: serverConfig.map,
+				customTools: serverConfig.customTools
+            }, mapIdentifier, authorization, fullScreen);   
+            
+            app.on({
+                'portalready' : function() {              	
+                    if(fullScreen) {
+                        var westPanel = Ext.getCmp('west');
+                        westPanel.setActiveTab('legend');
+                        westPanel.hideTabStripItem('tree');
+                    }
+                }, 
+                'ready' : function(){
+                    app.modified = false;
+					/*app.mapPanel.map.events.register( 'moveend', this, function(){
+						alert(app.mapPanel.map.getCenter());
+					});*/
+                }
+            });
+	    };
+
+	    Ext.Ajax.request({
+			  url: customConfigName ? "config/" + customConfigName + ".js"  : "config/mapStoreConfig.js",
+			  method: 'GET',
+			  success: function(response, opts){          
+				  
+				  try{
+					  serverConfig = Ext.util.JSON.decode(response.responseText);
+				  }catch(e){
+					  Ext.Msg.show({
+							title: "Startup",
+							msg: "An error occurred while parsing the external configuration: " + response.status,
+							buttons: Ext.Msg.OK,
+							icon: Ext.MessageBox.ERROR
+					  });
+				  }
+				  
+				  if(serverConfig){
+					  proxy = location.host.indexOf('localhost:8081') != -1 ? "/proxy/?url=" : serverConfig.proxy; 
+					  geoStoreBaseURL = serverConfig.geoStoreBase;                  
+					  customSources = serverConfig.gsSources;
+
+					  // ///////////////////////////////////////////////  
+					  // Run the application when browser is ready
+					  // ///////////////////////////////////////////////
+					  Ext.onReady(onReady);
+				  }
+			  },
+			  failure:  function(response, opts){
+				  Ext.Msg.show({
+						title: "Startup",
+						msg: "An error occurred while getting the external configuration: " + response.status,
+						buttons: Ext.Msg.OK,
+						icon: Ext.MessageBox.ERROR
+				  });
+		      }
+	    });        
+    </script>

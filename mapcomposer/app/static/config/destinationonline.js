@@ -584,13 +584,13 @@
 		"selectionLayerTitle": "Rischio Totale",
 		"bufferLayerNameHuman": "buffer_human",
 		"bufferLayerNameNotHuman": "buffer_not_human",
-		"selectionLayerBaseURL": "http://destination.geo-solutions.it/geoserver_test_2/destination/wms",
+		"selectionLayerBaseURL": "http://destination.geo-solutions.it/geoserver_destination/destination/wms",
 		"selectionLayerProjection": "EPSG:32632",
 		"geometryName": "geometria",
 		"accidentTipologyName": "tipologia",
-		"wfsURL": "http://destination.geo-solutions.it/geoserver_test_2/destination/wfs",
-		"wpsURL": "http://destination.geo-solutions.it/geoserver_test_2/wps",
-		"downloadBaseUrl": "http://destination.geo-solutions.it/geoserver_test_2/www/downloads/",
+		"wfsURL": "http://destination.geo-solutions.it/geoserver_destination/destination/wfs",
+		"wpsURL": "http://destination.geo-solutions.it/geoserver_destination/wps",
+		"downloadBaseUrl": "http://destination.geo-solutions.it/geoserver_destination/www/downloads/",
 		"wpsStore": "destination",
 		"wfsVersion": "1.1.0",
 		"destinationNS": "destination",
@@ -602,7 +602,7 @@
 	{
 		"ptype": "gxp_gatetimeslidertab",
         "id": "gatetimeslidertab",
-        "wfsUrl":"http://destination.geo-solutions.it/geoserver_test_2/ows",
+        "wfsUrl":"http://destination.geo-solutions.it/geoserver_destination/ows",
         "wfsVersion": "1.1.0",
         "destinationNS": "destination",
         "statisticFeature": "gate_stats",
@@ -615,7 +615,7 @@
 	}, {
         "ptype": "gxp_featuremanager",
         "id": "featuremanager",
-        "wfsUrl":"http://destination.geo-solutions.it/geoserver_test_2/ows",
+        "wfsUrl":"http://destination.geo-solutions.it/geoserver_destination/ows",
         "paging": false,
         "layer": {
             "source": "destination",
@@ -629,8 +629,8 @@
 		"layerToFilter": "OBU",
 		"layerTrackTitle": "obu_track",
 		"layerTrackName": "siig_geo_obu_line",
-		"layerTrackUrl": "http://destination.geo-solutions.it/geoserver_test_2/destination/ows",
-		"wfsUrl": "http://destination.geo-solutions.it/geoserver_test_2/ows?",
+		"layerTrackUrl": "http://destination.geo-solutions.it/geoserver_destination/destination/ows",
+		"wfsUrl": "http://destination.geo-solutions.it/geoserver_destination/ows?",
         "styleRenamedStore": [
             ["Obu points","Obu punti","Obu points","Obu punkte"],
             ["Obu points speed","Obu punti velocità","Obu points vitesse","Obu punkte Geschwindigkeit"],
@@ -668,7 +668,7 @@
 		"ptype": "gxp_tabpanelwfsgrids",
 		"outputTarget": "featurelist",
 		"srsName": "EPSG:32632",
-		"wfsURL": "http://destination.geo-solutions.it/geoserver_test_2/wfs",
+		"wfsURL": "http://destination.geo-solutions.it/geoserver_destination/wfs",
 		"panels": {
 			"targets": {
 				"Popolazione residente": {
