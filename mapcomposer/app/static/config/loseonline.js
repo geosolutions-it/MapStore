@@ -503,12 +503,6 @@
     },
     {
         "ptype":"gxp_print",
-        "providerOptions": {
-            "replaceURL": [{
-                "from": "http://lose.geo-solutions.it/geoserver_lose",
-                "to": "http://mbarto-geosol:8080/geoserver"
-            }]
-        },
         "customParams":{
             "outputFilename":"mapstore-print",
             "forwardHeaders":["Authorization", "Shib-Iride-IdentitaDigitale"]
