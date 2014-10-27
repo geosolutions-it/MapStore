@@ -64,8 +64,17 @@ GeoExt.Lang.add("it", {
         selectProcessingMsg: "Devi selezionare una elaborazione",
         loadProcessingWinTitle: "Carica Elaborazione",
         
-        saveDownloadMenuButton: "Scarica",            
-        saveDownloadProcessingTitle: "Esportazione",
+		saveDownloadMenuButton: "Scarica",    
+		saveDownloadTitle: "Esportazione",
+		saveDownloadNameFieldsetTitle: "Esportazione",
+		saveDownloadErrorTitle: "Esportazione Elaborazione",
+		saveDownloadWinTitle: "Nuova Esportazione",
+		saveDownloadErrorMsg: "Impossibile esportare l'elaborazione",
+		saveDownloadSuccessTitle: "Esportazione Elaborazione",
+		saveDownloadSuccessMsg: "Elaborazione esportata con successo",
+		
+		saveDownloadLoadingMsg: "Sto esportando... attendere prego",
+		
         loadDownloadButton: "Storico",
         loadDownloadProcessingWinTitle: "Download Elaborazione",
         loadDownloadProcessingButtonText: "Download Elaborazione",

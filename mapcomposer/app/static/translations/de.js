@@ -64,8 +64,17 @@ GeoExt.Lang.add("de", {
         selectProcessingMsg: "Sie müssen eine Verarbeitung",
         loadProcessingWinTitle: "Hochladen Verarbeitung",
         
-        saveDownloadMenuButton: "Herunterladen",            
-        saveDownloadProcessingTitle: "Exportieren",
+		saveDownloadMenuButton: "Entlastung",    
+		saveDownloadTitle: "Export",
+		saveDownloadNameFieldsetTitle: "Export",
+		saveDownloadErrorTitle: "Export Processing",
+		saveDownloadWinTitle: "neue Export",
+		saveDownloadErrorMsg: "Unfähig, Verarbeitung exportieren",
+		saveDownloadSuccessTitle: "Export Processing",
+		saveDownloadSuccessMsg: "Verarbeitung erfolgreich exportiert",
+		
+		saveDownloadLoadingMsg: "Exportieren ... Bitte warten",
+		
         loadDownloadButton: "Geschichtlich",
         loadDownloadProcessingWinTitle: "Herunterladen Verarbeitung",
         loadDownloadProcessingButtonText: "Herunterladen Verarbeitung",

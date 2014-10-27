@@ -50,6 +50,17 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     saveProcessingAggregationLabel: "Aggregazione",
     saveProcessingButtonText: "Salva Elaborazione",
     saveProcessingWinTitle: "Nuova Elaborazione",
+	
+	saveDownloadMenuButton: "Scarica",    
+    saveDownloadTitle: "Esportazione",
+	saveDownloadNameFieldsetTitle: "Esportazione",
+	saveDownloadErrorTitle: "Esportazione Elaborazione",
+	saveDownloadWinTitle: "Nuova Esportazione",
+	saveDownloadErrorMsg: "Impossibile esportare l'elaborazione",
+	saveDownloadSuccessTitle: "Esportazione Elaborazione",
+    saveDownloadSuccessMsg: "Elaborazione esportata con successo",
+	
+	saveDownloadLoadingMsg: "Sto esportando... attendere prego",
 
     loadButton: "Carica Elaborazione",
     loadProcessingNameHeader: 'Name',
@@ -64,8 +75,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     selectProcessingMsg: "Devi selezionare una elaborazione",
     loadProcessingWinTitle: "Carica Elaborazione",    
     
-    saveDownloadMenuButton: "Scarica",    
-    saveDownloadProcessingTitle: "Esportazione",
+    
     loadDownloadButton: "Storico",
     loadDownloadProcessingWinTitle: "Download Elaborazione",
     loadDownloadProcessingButtonText: "Download Elaborazione",
@@ -1387,7 +1397,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             },{
                 iconCls: 'save-download-button',
                 xtype: 'button',
-                text: this.saveDownloadProcessingTitle,
+                text: this.saveDownloadTitle,
                 menu:{
                     xtype: "menu",
                     showSeparator: true, 
@@ -2084,7 +2094,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 				changedTargets = new OpenLayers.WPSProcess.LiteralData({value:simulation.targets.join('_')});
 				changedTargetsInfo = new OpenLayers.WPSProcess.LiteralData({value:Ext.encode(simulation.exportInfo)});
 			}
-			
+			me.saveDownloadPanel.getEl().mask(this.saveDownloadLoadingMsg);
 			downloadProcess.execute({
 				headers: me.geoStoreUser ? {
 					"Authorization":  "Basic " + Base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
@@ -2133,6 +2143,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 						var url = me.downloadBaseUrl + link;
 						submitElab.call(me, url);
 					} else {
+						me.saveDownloadPanel.getEl().unmask();
 						var error = outputs.executeResponse.status.exception.exceptionReport.exceptions[0].texts[0]
 						Ext.Msg.show({
 							title: me.saveProcessingErrorTitle,
@@ -2164,7 +2175,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 					me.geoStore.createEntity(geostoreEntityResource,successRes,failureRes);
 				}else{
 					Ext.Msg.show({
-						title: me.saveProcessingTitle,
+						title: me.saveDownloadTitle,
 						buttons: Ext.Msg.YESNO,                
 						msg: me.saveProcessingMsg,
 						fn: updateResource,
@@ -2176,8 +2187,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			
 			//Errore "existsEntity" function
 			var checkEntitiesResFail = function(){
+				me.saveDownloadPanel.getEl().unmask();
 				Ext.Msg.show({
-					title: me.saveProcessingErrorTitle,
+					title: me.saveDownloadErrorTitle,
 					buttons: Ext.Msg.OK,
 					msg: me.saveProcessingErrorMsg,
 					icon: Ext.MessageBox.ERROR,
@@ -2199,8 +2211,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			
 			// Elaborazione salvata con successo
 			var successRes = function(){
+				me.saveDownloadPanel.getEl().unmask();
 				Ext.Msg.show({
-					title: me.saveProcessingSuccessTitle,
+					title: me.saveDownloadSuccessTitle,
 					buttons: Ext.Msg.OK,
 					msg: '<a href="'+downloadUrl+'" target="_blank">' + me.downloadFileLabel + '</a>',
 					fn: closeSaveWin,
@@ -2211,8 +2224,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			
 			// Errore salvataggio elaborazione
 			var failureRes = function(){
+				me.saveDownloadPanel.getEl().unmask();
 				Ext.Msg.show({
-					title: me.saveProcessingErrorTitle,
+					title: me.saveDownloadErrorTitle,
 					buttons: Ext.Msg.OK,
 					msg: me.saveProcessingErrorMsg,
 					icon: Ext.MessageBox.ERROR,
@@ -2261,7 +2275,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 				{
 					xtype: 'fieldset',
 					id: 'name-field-set',
-					title: me.saveProcessingNameFieldsetTitle,
+					title: me.saveDownloadNameFieldsetTitle,
 					items: [
 						{
 							xtype: 'textfield',
@@ -2324,7 +2338,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 		});
 				
 		this.saveDownloadWin = new Ext.Window({
-			title: me.saveProcessingWinTitle,
+			title: me.saveDownloadWinTitle,
 			iconCls: 'save-download-button',
 			layout: "fit",
 			width: 450,

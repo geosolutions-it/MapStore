@@ -66,9 +66,18 @@ GeoExt.Lang.add("en", {
         selectProcessingMsgTitle: "Select Processing",
         selectProcessingMsg: "You must select a processing",
         loadProcessingWinTitle: "Upload Processing",
+		
+		saveDownloadMenuButton: "Download",    
+		saveDownloadTitle: "Export",
+		saveDownloadNameFieldsetTitle: "Export",
+		saveDownloadErrorTitle: "Export Processing",
+		saveDownloadWinTitle: "New Download",
+		saveDownloadErrorMsg: "Error during export download",
+		saveDownloadSuccessTitle: "Export Processing",
+		saveDownloadSuccessMsg: "Exported succesfully",
         
-        saveDownloadMenuButton: "Download",            
-        saveDownloadProcessingTitle: "Export",
+		saveDownloadLoadingMsg: "Exporting... please wait",
+        
         loadDownloadButton: "Historical",
         loadDownloadProcessingWinTitle: "Download Processing",
         loadDownloadProcessingButtonText: "Download Processing",

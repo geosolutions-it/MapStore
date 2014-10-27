@@ -57,6 +57,16 @@ GeoExt.Lang.add("fr", {
         saveProcessingButtonText: "Enregistrer Processing",
         saveProcessingWinTitle: "Nouveau traitemente",
         saveProcessingAggregationLabel: "Agrégation",
+		saveDownloadTitle: "Exporter",
+		saveDownloadNameFieldsetTitle: "Exporter",
+		saveDownloadErrorTitle: "Export Processing",
+		saveDownloadWinTitle: "nouveau Export",
+		saveDownloadErrorMsg: "Impossible d'exporter traitement",
+		saveDownloadSuccessTitle: "Export Processing",
+		saveDownloadSuccessMsg: "Traitement exporté avec succès",
+		
+		saveDownloadLoadingMsg: "Exportation ... se il vous plaît attendre",
+		
         loadButton: "Téléchargez traitement",
         loadProcessingNameHeader: 'Nom',
         loadProcessingDescriptionHeader: 'Description',
@@ -67,9 +77,7 @@ GeoExt.Lang.add("fr", {
         selectProcessingMsgTitle: "Sélectionnez l'option Traitement",
         selectProcessingMsg: "Vous devez sélectionner un traitement",
         loadProcessingWinTitle: "Téléchargez traitement",
-        
-        saveDownloadMenuButton: "Téléchargez",            
-        saveDownloadProcessingTitle: "Exporter",
+                 
         loadDownloadButton: "Historique",
         loadDownloadProcessingWinTitle: "Téléchargez traitement",
         loadDownloadProcessingButtonText: "Téléchargez traitement",
