@@ -183,8 +183,8 @@
     </target>
 
 	<target name="custom" if="custom">
-		<copyfile src="mapcomposer/app/templates/${custom}.html" dest="${composerbuild}/${ant.project.name}/WEB-INF/app/templates/composer.html"/>
-		<copyfile src="mapcomposer/app/static/config/${custom}online.js" dest="${composerbuild}/${ant.project.name}/WEB-INF/app/static/config/mapStoreConfig.js"/>
+		<copy file="mapcomposer/app/templates/${custom}.html" tofile="${composerbuild}/${ant.project.name}/WEB-INF/app/templates/composer.html" overwrite="true" verbose="true"/>
+		<copy file="mapcomposer/app/static/config/${custom}online.js" tofile="${composerbuild}/${ant.project.name}/WEB-INF/app/static/config/mapStoreConfig.js" overwrite="true" verbose="true"/>
 	</target>
 	
     <target name="war" depends="dist,custom">
