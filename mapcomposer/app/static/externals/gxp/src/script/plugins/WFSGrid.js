@@ -1131,6 +1131,13 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     me.tbar.items.items[2].toggle(true);
                     selectionModel.unlock();                   
                     me.enableTools();   
+                    
+                    //remove selectedTargetLayerEditing and redraw simulationAddedLayer
+                    var syntView = app.tools["syntheticview"];
+                    var simulationAddedLayer = map.getLayersByName(syntView.simulationAddedLayer)[0];                             
+                    var selectedTargetLayerEditing = map.getLayersByName(syntView.selectedTargetLayerEditing)[0];
+                    selectedTargetLayerEditing.removeAllFeatures();
+                    simulationAddedLayer.redraw();
                 },                                
                 "beforefeatureadded": function(event) {
                     //alert("beforefeatureadded");  
