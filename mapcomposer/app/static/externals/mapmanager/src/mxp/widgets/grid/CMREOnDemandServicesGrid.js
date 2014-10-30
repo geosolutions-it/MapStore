@@ -57,7 +57,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
     autoload:true,
     /* i18n */
     nameText: 'Title',
-    descriptionText:'description',
+    descriptionText:'Description',
     autoExpandColumn: 'description',
     loadingMessage: 'Loading...',
     /* end of i18n */
@@ -70,7 +70,6 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
         //FIX FOR IE10 and responseXML TODO: port this as a global fix
          var ie10XmlStore  = Ext.extend(Ext.data.JsonReader, {
             read : function(response){
-            	debugger
                         var data = response.responseText;
                         if(!data || !data.documentElement) {
                             if(window.ActiveXObject) {
@@ -150,12 +149,177 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
         this.columns= [
             {id: 'id', header: "ID", width: 100, dataIndex: 'serviceId', sortable: true,hidden:true},
             {id: 'name', header: this.nameText, width: 200, dataIndex: 'name', sortable: true},
-            {id: 'description', header: this.descriptionText, dataIndex: 'description', sortable: true}
+            {id: 'description', header: this.descriptionText, dataIndex: 'description', sortable: true},
+            {
+                    xtype:'actioncolumn',
+                    width: 35,
+                    tooltip: "Issue a new run",
+                    handler: this.createNewProcessRun,
+                    scope: this,
+                    items:[ {
+                        iconCls:'add_ic',
+                        width:25,
+                        tooltip: this.tooltipLog,
+                        scope:this,
+                        getClass: function(v, meta, rec) {
+                            return 'x-grid-center-icon action_column_btn';
+                        }
+                    }]
+            }
         ],
         mxp.widgets.CMREOnDemandServicesGrid.superclass.initComponent.call(this, arguments);
-    }
+    },
    
-    
+    /**
+     *    private: method[checkLog] show the log of a consumer
+     *      * grid : the grid
+     *      * rowIndex: the index of the row 
+     *      * colIndex: the actioncolumn index
+     */
+    createNewProcessRun: function(grid, rowIndex, colIndex){
+        var record =  grid.getStore().getAt(rowIndex);
+        var serviceId = record.get('serviceId');
+        var serviceName = record.get('name');
+        var me = this;
+        //var url = this.geoBatchRestURL + "consumers/" + serviceId + "/log";
+
+        Ext.Msg.show({
+				title: "TODO",
+				msg: "Running a new service will drop all previous inputs. Continue with the definition of a new run?",
+				buttons: Ext.Msg.OKCANCEL,
+				fn: function(buttonId, text, opt){
+					if(buttonId === 'ok'){
+				        var mainPanel = Ext.getCmp("mainTabPanel");
+				        try{
+				            //mainPanel.removeAll();
+				            var serviceConfigurationPanel; 
+				            
+				            if ( mainPanel.items.containsKey("CMREOnDemandServiceInputPanel") ) {
+				           		serviceConfigurationPanel = mainPanel.items.get("CMREOnDemandServiceInputPanel");
+				            }
+
+				            if (serviceConfigurationPanel) {
+				            	mainPanel.remove(serviceConfigurationPanel);
+				            }
+
+				            var bounds = new OpenLayers.Bounds(
+						        /*143.835, -43.648,
+						        148.479, -39.574*/
+						       -20037508.34, -20037508.34,
+								20037508.34, 20037508.34
+						    );
+						    var mapPanel = new GeoExt.MapPanel({
+						        region: "center",
+						        map: {
+						        	controls: [
+						        		new OpenLayers.Control.Navigation(),
+				                        new OpenLayers.Control.ScaleLine(),
+				                        new OpenLayers.Control.MousePosition({
+						                    prefix: '<strong>EPSG:4326</strong> coordinates: ',
+						                    separator: ' | ',
+						                    numDigits: 4,
+						                    emptyString: 'Mouse is not over map.'
+						                })
+						        	],
+						            maxExtent: bounds,
+						            maxZoomLevel: 3,
+									zoom: 4,
+						            /*maxResolution: 0.018140625,
+						            projection: "EPSG:4326",
+						            units: 'degrees'*/
+						            displayProjection: "EPSG:4326",
+						            projection: "EPSG:900913",
+									units: "m",
+									center: [7697651.41, 751677.98] // Indian Ocean
+						        },
+						        layers: [
+						            /*new OpenLayers.Layer.WMS("Tasmania State Boundaries",
+						                "http://demo.opengeo.org/geoserver/wms",
+						                {layers: "topp:tasmania_state_boundaries"},
+						                {singleTile: true, numZoomLevels: 8}),
+						            new OpenLayers.Layer.WMS("Tasmania Water Bodies",
+						                "http://demo.opengeo.org/geoserver/wms",
+						                {layers: "topp:tasmania_water_bodies", transparent: true},
+						                {buffer: 0})*/
+						            new OpenLayers.Layer.OSM("OpenStreetMap",
+						                [
+						                    "http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+						                    "http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
+						                    "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png"
+						                ],
+						                OpenLayers.Util.applyDefaults({                
+						                    attribution: "&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors",
+						                    type: "mapnik"
+						                	}, 
+						                	//options
+						                	{
+									            projection: "EPSG:900913",
+									            maxExtent: bounds/*new OpenLayers.Bounds(
+									                -128 * 156543.0339, -128 * 156543.0339,
+									                128 * 156543.0339, 128 * 156543.0339
+									            )*/,
+									            //maxResolution: 19567.87923828125,//156543.03390625
+									            numZoomLevels: 19,
+									            units: "m",
+									            buffer: 1,
+									            transitionEffect: "resize",
+												tileOptions: {crossOriginKeyword: null}
+									        }
+						                )
+						            )
+						        ],
+						        extent: bounds,
+						        items: [{
+						            xtype: "gx_zoomslider",
+						            vertical: true,
+						            height: 100,
+						            x: 10,
+						            y: 20,
+						            plugins: new GeoExt.ZoomSliderTip()
+						        }]
+						    });
+						    
+			            	mainPanel.add({
+					            layout: 'border',
+								itemId:'CMREOnDemandServiceInputPanel',
+					            xtype:'panel',
+					            closable: true,
+					            closeAction: 'close',
+					            iconCls: 'nato_ic',  
+					            header: false,
+					            deferredReneder:false,
+					            viewConfig: {
+					                forceFit: true
+					            },
+					            title: "CMRE On Demand Service: " + serviceName,
+					            items:[
+					            	{
+							            xtype:'mxp_cmre_ondemand_services_input_form',
+							            tbar:null,
+							            geoBatchRestURL: this.geoBatchRestURL,
+							            mapPanel: mapPanel,
+							            region:'west',
+										iconCls:'nato_ic',
+										title: serviceName + " Inputs",
+							            autoScroll:true,
+							            width:600,
+							            ref:'list',
+							            collapsible:true,   
+							            auth: this.auth,
+							            sm: null
+							        },
+							        mapPanel
+					            ]
+					        }).show();
+				        }catch (e){
+				            // FIXME: some error here
+				            console.log(e);
+				        }
+					}
+				},
+			    icon: Ext.MessageBox.QUESTION
+			}); 
+    }
 });
 
 /** api: xtype = mxp_geobatch_consumer_grid */

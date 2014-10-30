@@ -446,7 +446,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
                 }	
             }
             return section;
-        }
+        };
 
         if(header){
             var north = {

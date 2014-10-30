@@ -69,8 +69,6 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
             tooltip: this.tooltipText,
             handler: function() { 
                 this.addOutput(); 
-
-               
             },
             scope: this
         });
@@ -123,9 +121,9 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
             }
         });
         //button for button runner
-        var buttons = []
+        var buttons = [];
         if(this.flowRunFormCategory){
-            buttons.push({
+            /*buttons.push({
                 iconCls:'update_manager_ic',
                 ref:'../runBtn',
                 text: this.runButtonText,
@@ -134,7 +132,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                 handler:function(btn){
                     this.showRunLocalForm(btn.flowId);
                 }
-            });
+            });*/
             buttons.push("->");
         }
        
@@ -153,11 +151,11 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
             collapsible:true,   
             auth: this.auth,
             sm: selectionModel
-        }
+        };
         
         Ext.apply(this.outputConfig,{
             layout: 'border',
-			itemId:'GBflows',
+			itemId:'CMREOnDemandServices',
             xtype:'panel',
             closable: true,
             closeAction: 'close',
@@ -197,7 +195,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                     for(var index = 0; index < this.output[i].ownerCt.items.items.length; index++){
                         var item = this.output[i].ownerCt.items.items[index];
                         // only check iconCls
-                        var isCurrentItem = "GBflows" == item.initialConfig["itemId"];
+                        var isCurrentItem = "CMREOnDemandServices" == item.initialConfig["itemId"];
                         if(isCurrentItem){
                             this.output[i].ownerCt.setActiveTab(index);
                             return;
@@ -227,13 +225,12 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                         win.close();
                         setTimeout(function(){
                             var consumers = me.tab.consumers;
-                            consumers.store.load()}
+                            consumers.store.load();}
                         ,5000);
                     }
                 }
             });
         }else if(this.defaultConfig){
-            
             //TODO manage default config
         }
         var win = new Ext.Window({

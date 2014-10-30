@@ -306,6 +306,11 @@ left: 80px !important;
 .delete_ic {
     background:url(../img/delete.png)
 }
+
+.add_ic{
+	background:url(../img/add.png);
+}
+
 .action_column_btn{
     background-repeat: no-repeat;
     width:20px;
@@ -321,6 +326,9 @@ left: 80px !important;
 }
 .row-yellow  {
     background-color: rgb(255, 255, 161);
+}
+.geolocation_ic{
+    background-image: url(../img/geolocation.png);
 }
 .gwc_ic{
     background-image: url(../img/gwc.png);
