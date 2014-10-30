@@ -26,48 +26,76 @@
 Ext.ns("mxp.plugins");
 
 /** api: constructor
- *  .. class:: Updater(config)
+ *  .. class:: FileBrowser(config)
  *
- *    Open a plugin to interact with GeoBatch 
- *    and OpenSDI Mangager to :
- *    * upload files
- *    * obtain information and clean consumers for a particular flow
+ *    Open a service manager
  */
-mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
+mxp.plugins.FileBrowser = Ext.extend(mxp.plugins.Tool, {
     
-    /** api: ptype = mxp_updater */
-    ptype: "mxp_updater",
-
-    buttonText: "Updater",
-	uploadFilesText:'Upload Files',
-
+    /** api: ptype = mxp_servicemanager */
+    ptype: "mxp_filebrowser",
+    /** api: configuration[browserItemId]
+     * identify the unique browser. You 
+     * can manage multiple plugins with 
+     * unique instances of the file browser 
+     * changing this parameter
+     */
+    browserItemId: "File Browser",
+    /** api: configuration[multiTab]
+     * allow multiple tab open on action press
+     */
+    multiTab: false,
+    
+    //i18n
+    buttonText: "File Browser",
+    tooltipText: "Open file manager",
+    
+    iconCls: "icon-folder-explore",
     loginManager: null,    
     setActiveOnOutput: true,
-    /**
-	 * Property: flowId
-	 * {string} the GeoBatch flow name to manage
-	 */	
-    flowId: 'ds2ds_zip2pg',
-    
+    actionURL: null,
+
     /** api: method[addActions]
      */
     addActions: function() {
         
         var thisButton = new Ext.Button({
-            iconCls:'update_manager_ic', 
+            // iconCls:'template_manger_ic', // TODO: icon,
+            iconCls: this.iconCls,
             text: this.buttonText,
             tooltip: this.tooltipText,
             handler: function() { 
                 this.addOutput(); 
 
-               
+                // Uncomment this code to see the alternative fb
+                // var actionURL = this.actionURL ? this.actionURL: // the action URL is configured in th plugin
+                //     this.target.adminUrl ? this.target.adminUrl + "mvc/fileManager/extJSbrowser" : // use relative path from adminUrl
+                //     "/opensdi2-manager/mvc/fileManager/extJSbrowser"; // by default search on root opensdi-manager2
+
+
+                // Ext.apply(this.outputConfig, {
+                //     xtype: "filebrowserpanel",
+                //     title: this.buttonText + " 2",
+                //     actionURL: actionURL,
+                //     layout: 'border',
+                //     closable: true,
+                //     closeAction: 'close',
+                //     autoWidth: true,
+                //     // iconCls: "template_manger_ic",  // TODO: icon
+                //     header: false,
+                //     viewConfig: {
+                //         forceFit: true
+                //     }
+                // });
+
+                // mxp.plugins.FileBrowser.superclass.addOutput.apply(this);
             },
             scope: this
         });
 
         var actions = [thisButton];
 
-        return mxp.plugins.Updater.superclass.addActions.apply(this, [actions]);
+        return mxp.plugins.FileBrowser.superclass.addActions.apply(this, [actions]);
     },
     
     /** api: method[addOutput]
@@ -85,76 +113,45 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
         var login = this.target.login ? this.target.login: 
                 this.loginManager && this.target.currentTools[this.loginManager] 
                 ? this.target.currentTools[this.loginManager] : null;
-        this.auth = this.target.auth;
-        
+
         this.outputConfig = this.outputConfig || {};
 
-        var uploadUrl = this.uploadUrl ? this.uploadUrl : // the upload URL is configured in th plugin
+        var actionURL = this.actionURL ? this.actionURL: // the action URL is configured in th plugin
+            this.target.adminUrl ? this.target.adminUrl + "mvc/fileManager/extJSbrowser" : // use relative path from adminUrl
+            "/opensdi2-manager/mvc/fileManager/extJSbrowser"; // by default search on root opensdi-manager2
+
+        var uploadUrl = this.uploadUrl ? this.uploadUrl: // the upload URL is configured in th plugin
             this.target.adminUrl ? this.target.adminUrl + "mvc/fileManager/upload" : // use relative path from adminUrl
             "/opensdi2-manager/mvc/fileManager/upload"; // by default search on root opensdi-manager2
-            
-        var me = this;
-        var pluploadPanel = {
-            xtype:'pluploadpanel',
-            region:'west',
-			iconCls:'inbox-upload_ic',
-			title:this.uploadFilesText,
-            autoScroll:true,
-            width:400,
-            ref:'uploader',
-            collapsible:true,   
-            url: uploadUrl,
-            multipart: true,
-            auth: this.auth,
-			mediaContent: this.target.initialConfig.mediaContent,
-            listeners:{
-                beforestart:function() {
-                    var multipart_params =  pluploadPanel.multipart_params || {};
-                    //TODO add multipart_params
-                    pluploadPanel.multipart_params = multipart_params;
-                },
-                fileUploaded:function(file) {
-                    var pan =this;
-                    setTimeout(function(){pan.refOwner.grid.store.load()},5000);
-                },
-                uploadcomplete:function() {
-                    var pan =this;
-                    setTimeout(function(){pan.refOwner.grid.store.load()},5000);
-                }
-            }
-        }
-        Ext.apply(this.outputConfig,{   
+
+        Ext.apply(this.outputConfig, {
+            xtype: "FileBrowser",
+            itemId: this.multiTab ? this.browserItemId: null,
             layout: 'border',
-			itemId:'Updater',
-            xtype:'panel',
+            iconCls: this.iconCls,
             closable: true,
             closeAction: 'close',
-            iconCls: "update_manager_ic",  
+            autoWidth: true,
+            // iconCls: "template_manger_ic",  // TODO: icon
             header: false,
-            deferredReneder:false,
             viewConfig: {
                 forceFit: true
             },
             title: this.buttonText,
-            items:[
-                {
-                    xtype:'mxp_geobatch_consumer_grid',
-                    geoBatchRestURL: this.geoBatchRestURL,
-                    GWCRestURL: this.GWCRestURL,
-                    layout:'fit',
-                    autoScroll:true,
-                    flowId: this.flowId,
-                    auth: this.auth,
-                    autoWidth:true,
-                    region:'center',
-                    ref:'grid'
-                },  
-                pluploadPanel
-            ]
+            rootText:"root",
+            // layout: "fit",
+            // path:"root",
+            readOnly:false,
+            enableBrowser:true,
+            enableUpload:true,
+            uploadUrl: uploadUrl,
+            mediaContent: this.target.initialConfig.mediaContent,
+            url: actionURL
         });
-		// In user information the output is generated in the component and we can't check the item.initialConfig.
-        if(this.output.length > 0
-            && this.outputTarget){
+        // In user information the output is generated in the component and we can't check the item.initialConfig.
+        if(
+            this.output.length > 0
+            && this.outputTarget && !this.multiTab){
             for(var i = 0; i < this.output.length; i++){
                 if(this.output[i].ownerCt
                     && this.output[i].ownerCt.xtype 
@@ -164,8 +161,7 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
                     // Not duplicate tabs
                     for(var index = 0; index < this.output[i].ownerCt.items.items.length; index++){
                         var item = this.output[i].ownerCt.items.items[index];
-                        // only check iconCls
-                        var isCurrentItem = "Updater" == item.initialConfig["itemId"];
+                        var isCurrentItem = this.browserItemId == item.initialConfig["itemId"];
                         if(isCurrentItem){
                             this.output[i].ownerCt.setActiveTab(index);
                             return;
@@ -174,8 +170,8 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
                 }
             }
         }
-        return mxp.plugins.Updater.superclass.addOutput.apply(this, arguments);
+        return mxp.plugins.FileBrowser.superclass.addOutput.apply(this, arguments);
     }
 });
 
-Ext.preg(mxp.plugins.Updater.prototype.ptype, mxp.plugins.Updater);
+Ext.preg(mxp.plugins.FileBrowser.prototype.ptype, mxp.plugins.FileBrowser);

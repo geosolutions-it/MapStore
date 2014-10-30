@@ -17,18 +17,18 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 Ext.ns("mxp.widgets");
 
 /**
  * Generic Category Manager for GeoStore
- * 
- * 
+ *
+ *
  */
 mxp.widgets.GeoStoreCategoryManager = Ext.extend(Ext.Panel, {
-	 /** api: xtype = mxp_geostore_category_manger */
-    xtype: "mxp_geostore_category_manger",
-    loginManager: null,    
+     /** api: xtype = mxp_geostore_category_manger */
+    xtype: "geostore_category_manger",
+    loginManager: null,
     setActiveOnOutput: true,
     /**
      * i18n
@@ -40,7 +40,7 @@ mxp.widgets.GeoStoreCategoryManager = Ext.extend(Ext.Panel, {
      *  ``String``
      *  The category to browse
      */
-    category:"MAP",
+    category: "MAP",
     /** api: config[leftPanelWidth]
      *  ``String``
      *  Width of the category list
@@ -52,118 +52,117 @@ mxp.widgets.GeoStoreCategoryManager = Ext.extend(Ext.Panel, {
      */
     iconCls: null,
     tpl : [
-    '<tpl for=".">',
-        '<div style="border-bottom:1px solid lightgray;margin: 2px">',
-            '<div class="dataview" style="min-height:40px">',
-                '<div float="right" style="text-align: right;color: gray;font-size: 15px;float: right;">Creation:{creation}<br>Last Update:{lastUpdate}</div>',
-                '<div style="font-weight:bold;">{name}</div>',
-                '<div>{[Ext.util.Format.ellipsis(values.description,25,false)]}</div>',
+        '<tpl for=".">',
+            '<div style="border-bottom:1px solid lightgray;margin: 2px">',
+                '<div class="dataview" style="min-height:40px">',
+                    '<div float="right" style="text-align: right;color: gray;font-size: 15px;float: right;">Creation:{creation}<br>Last Update:{lastUpdate}</div>',
+                    '<div style="font-weight:bold;">{name}</div>',
+                    '<div>{[Ext.util.Format.ellipsis(values.description,25,false)]}</div>',
+                '</div>',
             '</div>',
-        '</div>',
-    '</tpl>'],
-    
-	initComponent: function() {
-		var me = this;
-        
+        '</tpl>'],
+
+    initComponent: function() {
+        var me = this;
+
         var store = new MapStore.data.GeoStoreStore({
-            autoload:true,
-            categoryName:this.category,
-            geoStoreBase:this.geoStoreBase,
+            autoload: true,
+            categoryName: this.category,
+            geoStoreBase: this.geoStoreBase,
             auth: this.auth,
-            listeners:{
-                scope:this,
-                load:function(){
+            listeners: {
+                scope: this,
+                load: function() {
                     //restore last selected
-                    if(this.lastSelected){
+                    if(this.lastSelected) {
                          var newrec = me.store.getById(this.lastSelected);
-                         if(newrec){
+                         if(newrec) {
                             this.dataView.select(newrec);
-                        }else{
+                        } else {
                             this.dataView.clearSelections();
-                            
+
                         }
-                    
+
                     }
                 }
             }
         });
-        this.store =store;
+        this.store = store;
         var left =  new Ext.DataView({
-            border:false,
-            ref:'dataView',
-            cls:'chooser-view',
+            border: false,
+            ref: 'dataView',
+            cls: 'chooser-view',
             store: store,
             tpl: this.tpl,
-            autoHeight:true,
+            autoHeight: true,
             multiSelect: true,
-            overClass:'x-view-over',
-            itemSelector:'div.dataview',
+            overClass: 'x-view-over',
+            itemSelector: 'div.dataview',
             emptyText: this.emptyMessage,
             listeners: {
-                scope:this,
+                scope: this,
                 // load record in the editor
-                selectionchange: function(dv,selection){
-                    if(selection.length>0){
+                selectionchange: function(dv,selection) {
+                    if(selection.length > 0) {
                         dv.refOwner.deleteButton.setDisabled(false);
                         var records = dv.getSelectedRecords();
-                        if(records && records.length ==1){
+                        if(records && records.length == 1) {
                             //setup delete button
                             var record = records[0];
                             dv.refOwner.deleteButton.setDisabled(!record.get("canDelete"));
                             this.loadEditor(record);
                             return true;
                         }
-                    }else{
+                    } else {
                         //disable delete
                         dv.refOwner.deleteButton.setDisabled(true);
                     }
-                    
+
                 }
             }
-            
+
         });
         var leftPanel = {
-            xtype:'panel',
-            region:'west',
-            iconCls:this.iconCls,
-            title:this.resourceListTitle,
-            autoScroll:true, 
-            layout:'fit',
-            border:false,
-            width:this.leftPanelWidth,
-            ref:'leftPanel',
-            collapsible:true ,
+            xtype: 'panel',
+            region: 'west',
+            iconCls: this.iconCls,
+            title: this.resourceListTitle,
+            autoScroll: true,
+            layout: 'fit',
+            border: false,
+            width: this.leftPanelWidth,
+            ref: 'leftPanel',
+            collapsible: true,
             items: left,
             tbar: [{
-                xtype:'button',
-                iconCls:'add',
-                text:this.createText,
-                ref:'../addButton',
-                scope:this,
+                xtype: 'button',
+                iconCls: 'add',
+                text: this.createText,
+                ref: '../addButton',
+                scope: this,
                 //create a new editor
-                handler: function(){
-                   this.loadEditor(null,this.category);
-                    
+                handler: function() {
+                    this.loadEditor(null, this.category);
                 }
-            },{
-                xtype:'button',
-                iconCls:'delete',
-                text:this.deleteText,
-                ref:'../deleteButton',
-                disabled:true,
-                scope:this,
+            }, {
+                xtype: 'button',
+                iconCls: 'delete',
+                text: this.deleteText,
+                ref: '../deleteButton',
+                disabled: true,
+                scope: this,
                 //create a new editor
-                handler: function(b){
-                    //insert category in the recordType 
+                handler: function(b) {
+                    //insert category in the recordType
                     var dataView = b.refOwner.dataView;
                     var selection = dataView.getSelectedNodes();
-                    if(selection.length>0){
+                    if(selection.length > 0) {
                         var records = dataView.getSelectedRecords();
-                        if(records && records.length ==1){
+                        if(records && records.length == 1) {
                             this.deleteResource(records[0].get('id'));
                         }
                     }
-                    
+
                 }
             }],
             bbar: new Ext.PagingToolbar({
@@ -174,67 +173,66 @@ mxp.widgets.GeoStoreCategoryManager = Ext.extend(Ext.Panel, {
                 emptyMsg: this.emptyMessage
             })
 
-        }
+        };
+
         //The editor panel
         this.editor = new Ext.Panel({
-            autoWidth:true,
-            xtype:'panel',
-            layout:'fit',
-            autoScroll:true,
-            region:'center',
-            ref:'editor'
+            autoWidth: false,
+            xtype: 'panel',
+            layout: 'fit',
+            autoScroll: true,
+            region: 'center',
+            ref: 'editor'
         });
         this.dataView = left;
-        this.items=[this.editor,leftPanel]
+        this.items = [this.editor, leftPanel];
 
-		
-		mxp.widgets.GeoStoreCategoryManager.superclass.initComponent.call(this, arguments);
-	},
-   
+
+        mxp.widgets.GeoStoreCategoryManager.superclass.initComponent.call(this, arguments);
+    },
+
     /**
      * Load a resource in the editor
      */
-    loadEditor: function(values,cat){
-        var category =cat;
-        if(values){
-            var category = values.get('category');
+    loadEditor: function(values, cat) {
+        var category = cat;
+        if(values) {
+            category = values.get('category');
         }
-        var editor = this.editor
+        var editor = this.editor;
         //TODO check if dirty
         editor.removeAll();
         editor.add({
-                xtype:'mxp_geostoreresourceform',
-                layout:'fit',
-                ref:'resourceform',
-                border:false,
-                category: category,
-                geoStoreBase: this.geoStoreBase,
-                resourceEditor:this.resourceEditor,
-                attributeFields:this.attributeFields,
-                auth: this.auth
-            });
-         editor.doLayout();
-         var me = this;
-         editor.resourceform.on("save",function(id){
+            xtype: 'mxp_geostoreresourceform',
+            layout: 'fit',
+            ref: 'resourceform',
+            border: false,
+            category: category,
+            geoStoreBase: this.geoStoreBase,
+            resourceEditor: this.resourceEditor,
+            attributeFields: this.attributeFields,
+            auth: this.auth
+        });
+        editor.doLayout();
+        var me = this;
+        editor.resourceform.on("save", function(id) {
             //disable Delete
             //this.dataView.refOwner.deleteButton.setDisabled(false);
             //get selected
             me.lastSelected = id;
-                
-            
+
             //reload list
             me.store.reload();
-            
-            
-         });
-         editor.resourceform.on("delete",function(){
+
+        });
+        editor.resourceform.on("delete", function() {
             me.store.reload();
-            me.loadEditor(null,me.category);
-         });
-         editor.resourceform.loadResource(values);
+            me.loadEditor(null, me.category);
+        });
+        editor.resourceform.loadResource(values);
     },
-    deleteResource: function(id){
-        if(this.editor.resourceform){
+    deleteResource: function(id) {
+        if(this.editor.resourceform) {
             this.editor.resourceform.deleteResource(id);
         }
     }
