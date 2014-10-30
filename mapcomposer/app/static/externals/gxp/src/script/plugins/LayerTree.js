@@ -20,6 +20,7 @@
 
 /**
  * @requires plugins/Tool.js
+ * @requires widgets/tree/LayerNodeUI.js
  */
 
 /** api: (define)
@@ -162,7 +163,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
         //
         // create our own layer node UI class, using the TreeNodeUIEventMixin
         //
-        var LayerNodeUI = Ext.extend(GeoExt.tree.LayerNodeUI,
+        var LayerNodeUI = Ext.extend(gxp.tree.LayerNodeUI,
             new GeoExt.tree.TreeNodeUIEventMixin());
         
         var treeRoot = new Ext.tree.TreeNode({

@@ -224,3 +224,13 @@ div#homelogos ul li a:hover {
 .initCategoriesMessage{
     padding: 20px;
 }
+
+/* LayerNodeUI */
+.x-tree-node-error .x-tree-node-icon{
+	background-image:url(img/silk/cancel.png) !important;
+}
+/* when OL encounters a 404, don't display the pink image 
+.olImageLoadError { 
+    
+    display: none !important;
+} */
