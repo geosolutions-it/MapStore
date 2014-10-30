@@ -27,7 +27,8 @@
 			"layerBaseParams": {
                 "TILED": true,                
                 "format": "image/png8"
-            }
+            },
+			"loadingProgress": true
         },
         "destinationtiled": {
             "ptype": "gxp_wmscsource",
@@ -37,7 +38,8 @@
             "layerBaseParams": {
                 "TILED": true,                
                 "format": "image/png8"
-            }
+            },
+			"loadingProgress": true
         },
         "externalstiled": {
             "ptype": "gxp_wmscsource",
@@ -47,7 +49,8 @@
             "layerBaseParams": {
                 "TILED": true,                
                 "format": "image/png8"
-            }
+            },
+			"loadingProgress": true
         }
     },
     "map": {
@@ -145,7 +148,8 @@
             "tiled": false,
             "env":"low:100;medium:500;max:1000",
             "riskPanel":true,
-            "exclusive":"SIIG"
+            "exclusive":"SIIG",			
+			"forceOneVisible": false
         },{
             "source": "destination",
             "title": "Rischio Totale Sociale",
@@ -154,7 +158,9 @@
             "tiled": false,
             "env":"low:100;medium:500;max:1000",
             "riskPanel":true,
-            "exclusive":"SIIG"
+            "exclusive":"SIIG",
+			
+			"forceOneVisible": false
         },{
             "source": "destination",
             "title": "Rischio Totale Sociale - Ambientale",
@@ -163,7 +169,9 @@
             "tiled": false,
             "env":"lowsociale:100;mediumsociale:500;maxsociale:1000;lowambientale:100;mediumambientale:500;maxambientale:1000",
             "riskPanel":true,
-            "exclusive":"SIIG"
+            "exclusive":"SIIG",
+			
+			"forceOneVisible": false
         },
         {
             "source": "destinationtiled",
@@ -551,7 +559,7 @@
         "ptype":"gxp_print",
         "providerOptions": {
             "replaceURL": [{
-                "from": "http://destinationpa.csi.it/geoserver",
+                "from": "http://@@@@domain_url@@@@/geoserver",
                 "to": "http://localhost:8080/geoserver"
             }]
         },
@@ -596,7 +604,8 @@
         "destinationNS": "destination",
         "index": 28,
         "geoStoreBase":@@@@geostore_base_url@@@@,
-        "proxy":"/http_proxy/proxy/?url="
+        "proxy":"/http_proxy/proxy/?url=",
+		"showDisclaimerBeforeExport": true
     },
 	{
 		"ptype": "gxp_gatetimeslidertab",
