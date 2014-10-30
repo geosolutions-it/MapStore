@@ -4,9 +4,15 @@
    		"comunege": {
 			"ptype": "gxp_wmssource",
 			"title": "Comune Genova",
-			"url": "http://vm-gistest1/geoserver/ows",
+			"url": "http://vm-sitgeofe1.comune.genova.it/geoserver/ows",
 			"SRS": "EPSG:900913",
-			"version":"1.1.1"
+			"version":"1.1.1",
+			"layerBaseParams":{
+				"FORMAT": "image/png8",
+				"TILED": true,
+			   "TILESORIGIN": "-20037508.34, -20037508.34"
+			},
+            "authParam":"authkey"
 		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
@@ -28,7 +34,7 @@
 		"projection": "EPSG:900913",
 		"units": "m",
 		"zoom": 5,
-        "numZoomLevels":21,
+        "numZoomLevels": 21,
 		"extent": [
 			962337.0596294437, 5523110.328076044, 1014934.9764326633, 5547342.6306190565
 		],
@@ -69,9 +75,8 @@
                 "source": "comunege",
                 "group" : "Comune di Genova",
 				"title" : "Circoscrizioni",
-				"name"  : "CTC:circoscrizioni",
-				"tiled" : false,
-				"visibility": false
+				"name"  : "CTC:Circoscrizioni",
+				"visibility": true
             }
 		]
 	},
@@ -122,7 +127,7 @@
         }
         
     ],
-    "removeTools": ["googleearth_plugin", "googleearth_separator", "zoombox_plugin", "navigationhistory_plugin", "navigationhistory_separator"],
+    "removeTools": ["googleearth_plugin", "googleearth_separator", "zoombox_plugin", "navigationhistory_plugin", "navigationhistory_separator", "gxp_wmsgetfeatureinfo_menu"],
 	"scaleOverlayUnits":{
         "bottomOutUnits":"nmi",    
         "bottomInUnits":"nmi",    
@@ -130,6 +135,13 @@
         "topOutUnits":"km"
     },
 	"customTools":[
+		{
+			"ptype": "gxp_wmsgetfeatureinfo_menu", 
+			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
+			"useTabPanel": true,
+			"toggleGroup": "toolGroup",
+			"actionTarget": {"target": "paneltbar", "index": 20}
+		},
         {
 			"ptype": "gxp_embedmapdialog",
 			"actionTarget": {"target": "paneltbar", "index": 2},
@@ -172,8 +184,8 @@
         }, {	 
             "ptype": "gxp_synchronizer",
             "id": "synchronizer_plugin",
-            "refreshTimeInterval": 1,
-            "minRefreshTimeInterval": 1,
+            "refreshTimeInterval": 5,
+            "minRefreshTimeInterval": 3,
             "actionTarget": {"target": "paneltbar", "index": 17},
             "range": ["2014-09-24T06:00:00.000Z","2014-09-26T08:00:00.000Z"]
         }, {
@@ -200,7 +212,7 @@
 			"saveState": true,
             "cswconfig": {
                 "catalogs": [
-                        {"name": "Comune di Genova", "url": "http://vm-gistest1/geonetwork/srv/ita/csw", "description": "GeoPortale del Comune di Genova"}
+                        {"name": "Comune di Genova", "url": "http://vm-sitgeofe1.comune.genova.it/geonetwork/srv/ita/csw", "description": "GeoPortale del Comune di Genova"}
                     ],
                 "dcProperty": "title",
                 "initialBBox": {
@@ -247,7 +259,7 @@
 		  "id": "bboxquery",
           "autoComplete": {
             "sources": ["comunege"],
-            "url": "http://vm-gistest1/geoserver/wps",
+            "url": "http://vm-sitgeofe1.comune.genova.it/geoserver/wps",
             "pageSize": 10
           },          
 		  "outputConfig":{
@@ -291,7 +303,7 @@
 		            "name": "Municipi",
 		            "label": "Municipi",
 					"searchComboOutputFormat": "json",
-		            "wfsBaseURL": "http://vm-gistest1/geoserver/wfs",
+		            "wfsBaseURL": "http://vm-sitgeofe1.comune.genova.it/geoserver/wfs",
 		            "geocoderTypeName": "SITGEO:V_MUNICIPI",
 		            "geocoderTypeRecordModel":[
 		                {
@@ -321,7 +333,7 @@
 		            "name": "Unita Urbanistiche",
 		            "label": "Unita Urbanistiche",
 					"searchComboOutputFormat": "json",
-		            "wfsBaseURL": "http://vm-gistest1/geoserver/wfs",
+		            "wfsBaseURL": "http://vm-sitgeofe1.comune.genova.it/geoserver/wfs",
 		            "geocoderTypeName": "SITGEO:V_UNITA_URBANISTICHE",
 		            "geocoderTypeRecordModel":[
 		                {
@@ -352,7 +364,7 @@
             "outputFilename":"mapstore-print"
         },
         "ignoreLayers": "Google Hybrid,Bing Aerial,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
-        "printService":"http://vm-gistest1/geoserver/pdf/",
+        "printService":"http://vm-sitgeofe1.comune.genova.it/geoserver/pdf/",
         "legendPanelId":"legendPanel",
         "actionTarget":{
             "target":"paneltbar",
@@ -386,7 +398,7 @@
 	                    "showSelectionSummary": false,
 	                    "multipleSelection": false,
 	                    "searchComboOutputFormat": "json",
-	                    "wfsBaseURL": "http://vm-gistest1/geoserver/wfs",
+	                    "wfsBaseURL": "http://vm-sitgeofe1.comune.genova.it/geoserver/wfs",
 	                    "geocoderTypeName": "SITGEO:V_ASTE_STRADALI_TOPONIMO_SUB",
 	                    "geocoderTypeRecordModel":[
 	                        {
@@ -415,7 +427,7 @@
 	                    "showSelectionSummary": false,
 	                    "multipleSelection": false,
 	                    "searchComboOutputFormat": "json",
-	                    "wfsBaseURL": "http://vm-gistest1/geoserver/wfs",
+	                    "wfsBaseURL": "http://vm-sitgeofe1.comune.genova.it/geoserver/wfs",
 	                    "geocoderTypeName": "SITGEO:CIVICI_COD_TOPON",
 	                    "geocoderTypeRecordModel":[
 	                        {
@@ -442,7 +454,7 @@
 	            }
 	    	}, "reverse": {
 	            "ptype": "gxp_spatial_selector_reverse_geocoder",
-	            "url": "http://vm-gistest1/geoserver/wfs",
+	            "url": "http://vm-sitgeofe1.comune.genova.it/geoserver/wfs",
 			    "maxFeatures": 10,
 			    "streetfeatureNS": "SITGEO",
 			    "typeName": "CIVICI_CON_STRADE",
