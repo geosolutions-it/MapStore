@@ -142,7 +142,9 @@ GeoExt.Lang.add("de", {
         highRiskLabel: "hohes Risiko",
         notVisibleOnArcsMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein",
         notVisibleOnGridMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein",
-        selectionAreaLabel: "Gewählter Bereich"
+        selectionAreaLabel: "Gewählter Bereich",
+        alertSimGridReloadTitle: "Update Ziele",
+        alertSimGridReloadMsg: "Möchten Sie die Simulationsdaten aktualisieren? - Alle Bearbeitungs verloren!"   
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Bestandteil {0} - {1} von {2}",
@@ -170,7 +172,9 @@ GeoExt.Lang.add("de", {
         removeMessage: "Entfernen",
         removeTitle:"Sind Sie sicher, dass Sie dieses Element löschen?",
         noEditElementSelectionTitle: "Wählen Sie ein Element",
-        noEditElementSelectionMsg: "Sie müssen ein Element auswählen!!!"
+        noEditElementSelectionMsg: "Sie müssen ein Element auswählen!!!",
+        activeEditSessionMsgTitle: "Starten Sitzung bearbeiten",
+        activeEditSessionMsgText: "Sie sind im Modus, Hinzufügen / Bearbeiten von Geometrie. Sie können die Geometrie nicht löschen!"
     },
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Zoomlevel: {zoom}</div><div>Maßstab: 1:{scale}</div>",

@@ -137,6 +137,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
     removeTitle:"Are you sure you want to remove the element?",
     noEditElementSelectionTitle: "Seleziona un elemento",
     noEditElementSelectionMsg: "Devi selezionare un elemento!!!",    
+    activeEditSessionMsgTitle: "Modifica Attiva",
+    activeEditSessionMsgText: "Sei in modalità aggiunta/modifica geometria. Non puoi eliminare la geometria!",    
     // end i18n
     
 
@@ -396,7 +398,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 handler: function(grid, rowIndex, colIndex) {
                     var record = grid.store.getAt(rowIndex);
                     var map = this.target.mapPanel.map;
-                    var geometry = me.getGeometry(record,sourceSRS);
+                    var geometry = me.getGeometry(record.data.feature.geometry,sourceSRS);
                     map.zoomToExtent(geometry.getBounds());															
                 }
             }]  
@@ -428,7 +430,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                         }
                     }
                     
-                    var geom = me.getGeometry(record,actionConf.sourceSRS);
+                    var geom = me.getGeometry(record.data.feature.geometry,actionConf.sourceSRS);
                     me.displayGeometry(actionConf.layerName, 
                         record.get("fid"),
                         geom, actionConf.style);
@@ -836,6 +838,22 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 scope: this,
                 handler: function(grid, rowIndex, colIndex) {
                     record = grid.getStore().getAt(rowIndex);
+                    var grid = me.wfsGrid;
+                    var editToolbar = grid.getTopToolbar();   
+                    var addGeom = editToolbar.items.items[0].pressed;                    
+                    var editGeom = editToolbar.items.items[1].pressed;
+
+                    if (addGeom || editGeom){
+                        Ext.Msg.show({
+                            title: this.activeEditSessionMsgTitle,
+                            buttons: Ext.Msg.OK,                
+                            msg: this.activeEditSessionMsgText,
+                            icon: Ext.MessageBox.INFO,
+                            scope: this
+                        });              
+                        return;
+                    }
+                    
                     Ext.MessageBox.confirm(this.removeMessage, this.removeTitle, function(btn) {
                         if(btn === 'yes') {
                             var id = record.get("id");
@@ -853,7 +871,115 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                             currentRecord.removed = true;
                             
                             //me.persistEditGeometry("simulation_removed", record.get("fid"), me.getGeometry(record, sourceSRS), removedStyle);
-                            me.persistEditGeometry("Bersagli rimossi", record.get("fid"), me.getGeometry(record, sourceSRS), removedStyle);
+                            
+                            /*var removedStyle = (record.data.feature.newfeature) ? {
+                                stroke: false,
+                                fill: false
+                            } : {
+                                strokeColor: "#FF0000",
+                                strokeWidth: 3,
+                                fillColor: "#FF0000",
+                                fillOpacity: 0.5
+                            };*/
+                            
+                            var fid = record.get('fid');
+                            var map = app.mapPanel.map;
+                            var syntView = app.tools["syntheticview"];
+
+                            var selectedTargetLayer = map.getLayersByName(syntView.selectedTargetLayer)[0];
+                            var simulationAddedLayer = map.getLayersByName(syntView.simulationAddedLayer)[0];                             
+                            var selectedTargetLayerEditing = map.getLayersByName(syntView.selectedTargetLayerEditing)[0];
+                            var simulationChangedLayer = map.getLayersByName(syntView.simulationChangedLayer)[0];
+                            var simulationRemovedLayer = map.getLayersByName(syntView.simulationRemovedLayer)[0];        
+                            var simulationModLayer = map.getLayersByName(syntView.simulationModLayer)[0];   
+                                
+                            if (record.data.feature.newfeature){
+                                
+                                // remove added geometry from save object
+                                if (me.save){
+                                    for (save in me.save){
+                                        if(me.save.hasOwnProperty(save)){        
+                                            if (save === id)
+                                                delete me.save[save];
+                                        }
+                                    }
+                                }
+                                
+                                if (selectedTargetLayerEditing && selectedTargetLayerEditing.features.length !== 0){
+                                    //var feature = selectedTargetLayerEditing.getFeaturesByAttribute("id",fid);
+                                    //var feature = selectedTargetLayerEditing.getFeatureBy("state","Insert");
+                                    var feature = selectedTargetLayerEditing.features[0];
+                                    selectedTargetLayerEditing.destroyFeatures(feature);
+                                    selectedTargetLayerEditing.redraw();
+                                }  
+                                
+                                if (selectedTargetLayer && selectedTargetLayer.features.length !== 0){
+                                    var feature = selectedTargetLayer.getFeaturesByAttribute("id",fid);
+                                    selectedTargetLayer.destroyFeatures(feature);
+                                    selectedTargetLayer.redraw();
+                                }
+                                
+                                if (simulationAddedLayer && simulationAddedLayer.features.length !== 0){
+                                    var feature = simulationAddedLayer.getFeaturesByAttribute("id",fid);
+                                    simulationAddedLayer.destroyFeatures(feature);
+                                    simulationAddedLayer.redraw();
+                                }             
+
+                                if (simulationChangedLayer && simulationChangedLayer.features.length !== 0){
+                                    var feature = simulationChangedLayer.getFeaturesByAttribute("id",fid);
+                                    simulationChangedLayer.destroyFeatures(feature);
+                                    simulationChangedLayer.redraw();
+                                }    
+                                
+                                if (simulationRemovedLayer && simulationRemovedLayer.features.length !== 0){
+                                    var feature = simulationRemovedLayer.getFeaturesByAttribute("id",fid);
+                                    simulationRemovedLayer.destroyFeatures(feature);
+                                    simulationRemovedLayer.redraw();
+                                }          
+
+                                if (simulationModLayer && simulationModLayer.features.length !== 0){
+                                    var feature = simulationModLayer.getFeaturesByAttribute("id",fid);
+                                    simulationModLayer.destroyFeatures(feature);
+                                    simulationModLayer.redraw();
+                                }                                
+                                
+                            }
+                            
+                            if(!record.data.feature.newfeature){
+                                //me.persistEditGeometry("Bersagli rimossi", record.get("fid"), me.getGeometry(record.data.feature.geometry, sourceSRS), removedStyle);
+                                me.persistEditGeometry("Bersagli rimossi", record.get("fid"), me.getGeometry(currentRecord.oldgeometry, sourceSRS), removedStyle);
+                                if (selectedTargetLayerEditing && selectedTargetLayerEditing.features.length !== 0){
+                                    //var feature = selectedTargetLayerEditing.getFeaturesByAttribute("id",fid);
+                                    //var feature = selectedTargetLayerEditing.getFeatureBy("state","Insert");
+                                    var feature = selectedTargetLayerEditing.features[0];
+                                    selectedTargetLayerEditing.destroyFeatures(feature);
+                                    selectedTargetLayerEditing.redraw();
+                                }  
+                                
+                                if (selectedTargetLayer && selectedTargetLayer.features.length !== 0){
+                                    var feature = selectedTargetLayer.getFeaturesByAttribute("id",fid);
+                                    selectedTargetLayer.destroyFeatures(feature);
+                                    selectedTargetLayer.redraw();
+                                }
+                                
+                                if (simulationAddedLayer && simulationAddedLayer.features.length !== 0){
+                                    var feature = simulationAddedLayer.getFeaturesByAttribute("id",fid);
+                                    simulationAddedLayer.destroyFeatures(feature);
+                                    simulationAddedLayer.redraw();
+                                }             
+
+                                if (simulationChangedLayer && simulationChangedLayer.features.length !== 0){
+                                    var feature = simulationChangedLayer.getFeaturesByAttribute("id",fid);
+                                    simulationChangedLayer.destroyFeatures(feature);
+                                    simulationChangedLayer.redraw();
+                                }    
+                                
+                                if (simulationModLayer && simulationModLayer.features.length !== 0){
+                                    var feature = simulationModLayer.getFeaturesByAttribute("id",fid);
+                                    simulationModLayer.destroyFeatures(feature);
+                                    simulationModLayer.redraw();
+                                }                   
+                            }
                             grid.getStore().remove(record);
                         }
                     });
@@ -865,6 +991,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 
 
     enableTools: function(){
+        var me = this;
         var disabledItems = [];
         app.toolbar.items.each(function(item) {
             if (item.disabled) {
@@ -967,7 +1094,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             var map = this.target.mapPanel.map;
             
             //perform displayGeometry
-            var geom = me.getGeometry(record,actionConf.sourceSRS);
+            var geom = me.getGeometry(record.data.feature.geometry,actionConf.sourceSRS);
            
             var layerStyle= {
                 strokeColor: "#FF0000",
@@ -1003,7 +1130,14 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     me.tbar.items.items[0].toggle(false);
                     me.tbar.items.items[2].toggle(true);
                     selectionModel.unlock();                   
-                    me.enableTools();                    
+                    me.enableTools();   
+                    
+                    //remove selectedTargetLayerEditing and redraw simulationAddedLayer
+                    var syntView = app.tools["syntheticview"];
+                    var simulationAddedLayer = map.getLayersByName(syntView.simulationAddedLayer)[0];                             
+                    var selectedTargetLayerEditing = map.getLayersByName(syntView.selectedTargetLayerEditing)[0];
+                    selectedTargetLayerEditing.removeAllFeatures();
+                    simulationAddedLayer.redraw();
                 },                                
                 "beforefeatureadded": function(event) {
                     //alert("beforefeatureadded");  
@@ -1023,7 +1157,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 me.modifyControl.selectFeature(selectFeature[0]);                    
             
                 //perform ZoomAction
-                var geometry = me.getGeometry(record,actionConf.sourceSRS);
+                var geometry = me.getGeometry(record.data.feature.geometry,actionConf.sourceSRS);
                 me.oldExtent = map.getExtent();
                 map.zoomToExtent(geometry.getBounds());
             } else {
@@ -1170,7 +1304,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 	
     getGeometry: function(rec, sourceSRS){
         var map = this.target.mapPanel.map;
-        var geometry = rec.data.feature.geometry;
+        //var geometry = rec.data.feature.geometry;
+        var geometry = rec;
         if(geometry && sourceSRS) {
             if(sourceSRS != map.getProjection()){
                 var coll=new OpenLayers.Geometry.Collection(new Array(geometry.clone()));
@@ -1890,6 +2025,16 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                         var stopButton = Ext.getCmp("stopEditButtonId");                    
                         if (pressed) {
                             disableTools();
+                            
+                            var grid = me.wfsGrid;
+                            //grid.disable();
+                            var addGeom = grid.getTopToolbar().items.items[0];
+                            var editGeom = grid.getTopToolbar().items.items[1];
+                            
+                            //editToolbar.enable();
+               
+                            var removeGeometryColumn = me.wfsGrid.colModel.columns[2];
+                            
                             this.editTargetGeometry.createDelegate(this, [{layerName:this.layerEditName,sourceSRS:this.sourceEditSRS},button], 0).call();
                         }else{
                             this.enableTools();
@@ -1919,7 +2064,6 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                             var selectionModel = grid.getSelectionModel();
                             var selection = selectionModel.getSelected();
                             record = selection;
-
 
                             selectionModel.unlock();
                             var simulationStyleChanged= {
@@ -1980,10 +2124,23 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                             
                                             //perform geometry substitution
                                             record.setFeature(me.currentRecord);
-                                        }
-                                                                        
+                                            
+                                            //check targets type ambientale
+                                            var targetType = me.type;
+                                            
+                                            // update superficie
+                                            if (targetType === "ambientale"){
+                                                var areaGeom = me.getArea(record.data.feature.geometry);
+                                                record.set("value",Math.round10(areaGeom,-2));
+                                            }
+                                            
+                                            var redrawLayer = map.getLayersByName(me.currentRecord.newfeature ? "Bersagli aggiunti" : "Bersagli modificati")[0];
+                                            redrawLayer.redraw();
+
+                                        }                        
                                         
                                         me.removeGeometry(actionConf.layerName, record.get("fid"));
+                                        
                                         if(me.oldExtent) {
                                             map.zoomToExtent(me.oldExtent);
                                         }
@@ -2134,9 +2291,86 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         
         store.loadData(new OpenLayers.Format.GeoJSON().read(this.data));
 
-    }
+    },
+
+	/**
+	 * Method: getArea
+	 *
+	 * Parameters:
+	 * geometry - {<OpenLayers.Geometry>}
+	 * units - {String} Unit abbreviation
+	 *
+	 * Returns:
+	 * {Float} The geometry area in the given units.
+	 */
+	getArea : function(geometry, units) {
+		var area, geomUnits;
+		area = geometry.getArea();
+		/*if(area > 0){
+			area = geometry.getGeodesicArea(this.target.mapPanel.map.getProjectionObject());
+			geomUnits = "m";
+
+			var inPerDisplayUnit = OpenLayers.INCHES_PER_UNIT[units];
+			if (inPerDisplayUnit) {
+				var inPerMapUnit = OpenLayers.INCHES_PER_UNIT[geomUnits];
+				area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
+			}
+		}*/
+		return area;
+	}
     
 });
+
+// Closure
+(function () {
+
+    /**
+     * Decimal adjustment of a number.
+     *
+     * @param    {String}    type    The type of adjustment.
+     * @param    {Number}    value    The number.
+     * @param    {Integer}    exp        The exponent (the 10 logarithm of the adjustment base).
+     * @returns    {Number}            The adjusted value.
+     */
+    function decimalAdjust(type, value, exp) {
+        // If the exp is undefined or zero...
+        if (typeof exp === 'undefined' || +exp === 0) {
+            return Math[type](value);
+        }
+        value = +value;
+        exp = +exp;
+        // If the value is not a number or the exp is not an integer...
+        if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+            return NaN;
+        }
+        // Shift
+        value = value.toString().split('e');
+        value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+        // Shift back
+        value = value.toString().split('e');
+        return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+    }
+
+    // Decimal round
+    if (!Math.round10) {
+        Math.round10 = function (value, exp) {
+            return decimalAdjust('round', value, exp);
+        };
+    }
+    // Decimal floor
+    if (!Math.floor10) {
+        Math.floor10 = function (value, exp) {
+            return decimalAdjust('floor', value, exp);
+        };
+    }
+    // Decimal ceil
+    if (!Math.ceil10) {
+        Math.ceil10 = function (value, exp) {
+            return decimalAdjust('ceil', value, exp);
+        };
+    }
+
+})();
 
 Ext.preg(gxp.plugins.WFSGrid.prototype.ptype, gxp.plugins.WFSGrid);
 

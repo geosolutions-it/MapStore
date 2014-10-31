@@ -1817,7 +1817,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         var synthView = this;
                         var map = app.mapPanel.map;
                         
-                        this.processingPane.updateSimulationTabPabel(wfsGrid,synthView,map)
+                        this.processingPane.updateSimulationTabPabel(wfsGrid,synthView,map,'reload');
+
                     }
                 },{
                     xtype: 'button',
