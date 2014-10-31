@@ -188,6 +188,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	        this.updateAssetsPositionButton = new Ext.Button({
 	            text: "Update Assets Position",
 	            tooltip: "this.setAoiTooltip",
+	            disabled: true,
 	            //enableToggle: true,
 	            //toggleGroup: this.toggleGroup,
 	            iconCls: 'geolocation_ic',
@@ -341,35 +342,46 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 							var projection = me.mapPanel.map.projection; 				
 			                me.mapProjection = new OpenLayers.Projection(projection);
 					        
-					        /* **********************************************************
-					        me.coordinatePicker = new gxp.widgets.form.CoordinatePicker({
-								map: me.mapPanel.map,
-								outputSRS: 'EPSG:4326',
-								ref: "coordinatePicker",
-								listeners: {
-									scope: this,
-									update: function(){
-										debugger
-									    var cv = this.coordinatePicker.isValid();
-									    var bv = this.bufferField.isValid();
-										if(cv && bv ){                                 
-					                        var coords = this.coordinatePicker.getCoordinate();
-					                        var lonlat = new OpenLayers.LonLat(coords[0], coords[1]);
-					                        var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
-					                        
-					                        var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
-					                            point,
-					                            this.bufferField.getValue(),
-					                            100, 
-					                            null
-					                        );
-					                        
-					                        this.drawBuffer(regularPolygon);
-					                    }
-									}
-								}			
-							});
-							********************************************************** */
+					        //create the click control
+					        var ClickControl = OpenLayers.Class(OpenLayers.Control, {                
+					            defaultHandlerOptions: {
+					                'single': true,
+					                'double': false,
+					                'pixelTolerance': 0,
+					                'stopSingle': false,
+					                'stopDouble': false
+					            },
+					
+					            initialize: function(options) {
+					                this.handlerOptions = OpenLayers.Util.extend(
+					                    {}, this.defaultHandlerOptions
+					                );
+					                OpenLayers.Control.prototype.initialize.apply(
+					                    this, arguments
+					                ); 
+					                this.handler = new OpenLayers.Handler.Click(
+					                    this, {
+					                        'click': this.trigger
+					                    }, this.handlerOptions
+					                );
+					            }, 
+					            trigger: function(e){
+							        //get lon lat
+							        var map = this.map;
+							        var lonlat = map.getLonLatFromPixel(e.xy);
+							        //
+							        var geoJsonPoint = lonlat.clone();
+							        geoJsonPoint.transform(map.getProjectionObject(),new OpenLayers.Projection('EPSG:4326'));
+							        this.latitudeField.setValue(geoJsonPoint.lat);
+							        this.longitudeField.setValue(geoJsonPoint.lon);
+							        //update point on the map
+									this.lonLatButton.toggle();      
+							    },
+					            map:me.mapPanel.map
+					        });       
+					        
+					        me.selectLonLat = new ClickControl();
+					        me.mapPanel.map.addControl(me.selectLonLat);
 					        
 			                me.selectBBOX = new OpenLayers.Control.SetBox({      
 			                    map: me.mapPanel.map,
@@ -462,6 +474,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
                 anchor:'95%'
 			  },{
 			  	xtype: 'fieldset',
+			  	ref: 'assets',
 		  		style: 'padding:5px;',
 				border: true,
 				columnWidth: 0.8,
@@ -573,6 +586,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			var asset = {
 			  	xtype: 'fieldset',
 			  	itemId: "asset-"+id,
+			  	ref: "asset-"+id,
 		  		style: 'padding:5px;',
 				border: true,
 				//columnWidth: 0.8,
@@ -590,6 +604,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 						maxLength: 180,
 	                    anchor:'95%',
 						name: "id_"+id,
+						ref: 'assetId',
 						fieldLabel: "Id",
 						value: id,
 	                    allowBlank:false,
@@ -599,6 +614,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 						maxLength: 180,
 	                    anchor:'95%',
 						name: "name_"+id,
+						ref: 'assetName',
 						fieldLabel: "Name",
 						value: "Ship "+id,
 	                    allowBlank:false
@@ -606,6 +622,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 					  	xtype:'combo',
 				       	fieldLabel:'Type',
 				       	name:'type_'+id,
+				       	ref: 'assetType',
 				       	mode:'local',
 				       	store: new Ext.data.SimpleStore({
 					        fields: ['value', 'name'],
@@ -627,6 +644,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				  	xtype: 'container',
 				  	fieldLabel: "Asset Position",
 				  	name: "asset_pos_"+id,
+				  	ref: "assetPosition",
 				  	items:[{
 				  		xtype: 'fieldset',
 				  		name: "asset_pos_field_"+id,
@@ -650,10 +668,11 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				            items: [{
 							    xtype: 'numberfield',
 							    name: 'lon0_'+id,
+							    ref: '../../longitudeField',
 							    fieldLabel: 'Lon',
 							    allowBlank: false,
 							    //anchor: '95%',
-							    maxLength: 5,
+							    maxLength: 6,
 							    decimalPrecision : 3
 						    }]
 					       },{
@@ -666,6 +685,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				            items: [{
 							    xtype: 'button',
 							    name: 'lon0_lat0_btn_'+id,
+							    ref: '../../lonLatButton',
 							    enableToggle: true,
 					            iconCls: 'geolocation_ic',
 					            height: 32,
@@ -673,10 +693,14 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 					            listeners: {
 					                scope: this, 
 					                toggle: function(button, pressed) {
-					                    if(pressed){      
-					                        me.coordinatePicker.activate();
+					                    if(pressed){
+					                    	debugger
+					                    	me.selectLonLat.lonLatButton = this.resourceform.assets.assetsform.get("asset-"+id).assetPosition.lonLatButton;
+					                    	me.selectLonLat.latitudeField = this.resourceform.assets.assetsform.get("asset-"+id).assetPosition.latitudeField;
+							        		me.selectLonLat.longitudeField = this.resourceform.assets.assetsform.get("asset-"+id).assetPosition.longitudeField;
+					                        me.selectLonLat.activate();
 					                    }else{
-					                        me.coordinatePicker.deactivate();
+					                        me.selectLonLat.deactivate();
 					                    }
 					                }
 					            }
@@ -691,10 +715,11 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				            items: [{
 							    xtype: 'numberfield',
 							    name: 'lat0_'+id,
+							    ref: '../../latitudeField',
 							    fieldLabel: 'Lat',
 							    allowBlank: false,
 							    //anchor: '95%',
-							    maxLength: 5,
+							    maxLength: 6,
 							    decimalPrecision : 3
 						   }]
 					      }
@@ -712,7 +737,61 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				  	}]
 				  },{
 					    xtype: 'numberfield',
+					    name: 'obs_range_'+id,
+					    ref: 'assetObsRange',
+					    fieldLabel: 'Obs. Range',
+					    allowBlank: false,
+					    anchor: '95%',
+					    maxLength: 8,
+					    decimalPrecision : 3,
+				        minValue         : 0,
+					    // set maxlength to 5 on input field
+					    autoCreate: {tag: 'input', type: 'text', size: '20', autocomplete: 'off', maxlength: '6'},
+					    validator: function(val) {
+						     if (!Ext.isEmpty(val) && val>=0) {
+						        return true;
+						     } else {
+						         return "Value cannot be empty and must be a number equal or greater than 0";
+						     }
+					    },
+					    renderer: function(value, metaData, record, rowIndex,colIndex, store, view){
+						   Ext.util.Format.number(value,'0.000');
+						   return value;            
+						}
+				 },{
+					    xtype: 'numberfield',
+					    name: 'heading_'+id,
+					    ref: 'assetHeading',
+					    fieldLabel: 'Heading',
+					    allowBlank: false,
+					    anchor: '95%',
+					    maxLength: 6,
+					    decimalPrecision : 3,
+				        minValue         : 0,
+					    // set maxlength to 5 on input field
+					    autoCreate: {tag: 'input', type: 'text', size: '20', autocomplete: 'off', maxlength: '6'},
+					    validator: function(val) {
+						     if (!Ext.isEmpty(val) && 0<=val && val<=6.283) {
+						        return true;
+						     } else {
+						        return "Value cannot be empty and must be a number between [0 - 6.283]";
+						     }
+					    },
+					    renderer: function(value, metaData, record, rowIndex,colIndex, store, view){
+						   Ext.util.Format.number(value,'0.000');
+						   return value;            
+						}
+				 },{
+					    xtype: 'textfield',
+					    name: 'cost_'+id,
+					    ref: 'assetCost',
+					    fieldLabel: 'Cost',
+					    allowBlank: false,
+					    anchor: '95%'
+				 },{
+					    xtype: 'numberfield',
 					    name: 'pfa_'+id,
+					    ref: 'assetPfa',
 					    fieldLabel: 'Pfa',
 					    allowBlank: false,
 					    anchor: '95%',
@@ -733,9 +812,10 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 						   Ext.util.Format.number(value,'0.000');
 						   return value;            
 						}
-				   },{
+				 },{
 					    xtype: 'numberfield',
 					    name: 'pd_'+id,
+					    ref: 'assetPd',
 					    fieldLabel: 'Pd',
 					    allowBlank: false,
 					    anchor: '95%',
@@ -756,9 +836,101 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 						   Ext.util.Format.number(value,'0.000');
 						   return value;            
 						}
-				   }
-	            ]
-			  };
+				},{
+					    xtype: 'numberfield',
+					    name: 'min_speed_'+id,
+					    ref: 'assetMinSpeed',
+					    fieldLabel: 'Min Speed',
+					    allowBlank: false,
+					    anchor: '95%',
+					    maxLength: 6,
+					    decimalPrecision : 3,
+				        minValue         : 0,
+					    // set maxlength to 5 on input field
+					    autoCreate: {tag: 'input', type: 'text', size: '20', autocomplete: 'off', maxlength: '6'},
+					    validator: function(val) {
+						     if (!Ext.isEmpty(val) && 0<=val && val<=20) {
+						        return true;
+						     } else {
+						        return "Value cannot be empty and must be a number between [0 - 20]";
+						     }
+					    },
+					    renderer: function(value, metaData, record, rowIndex,colIndex, store, view){
+						   Ext.util.Format.number(value,'0.000');
+						   return value;            
+						}
+				},{
+					    xtype: 'numberfield',
+					    name: 'max_speed_'+id,
+					    ref: 'assetMaxSpeed',
+					    fieldLabel: 'Max Speed',
+					    allowBlank: false,
+					    anchor: '95%',
+					    maxLength: 6,
+					    decimalPrecision : 3,
+				        minValue         : 0,
+					    // set maxlength to 5 on input field
+					    autoCreate: {tag: 'input', type: 'text', size: '20', autocomplete: 'off', maxlength: '6'},
+					    validator: function(val) {
+						     if (!Ext.isEmpty(val) && 0<=val && val<=20) {
+						        return true;
+						     } else {
+						        return "Value cannot be empty and must be a number between [0 - 20]";
+						     }
+					    },
+					    renderer: function(value, metaData, record, rowIndex,colIndex, store, view){
+						   Ext.util.Format.number(value,'0.000');
+						   return value;            
+						}
+				},{
+					    xtype: 'numberfield',
+					    name: 'min_heading_'+id,
+					    ref: 'assetMinHeading',
+					    fieldLabel: 'Min Heading',
+					    allowBlank: false,
+					    anchor: '95%',
+					    maxLength: 6,
+					    decimalPrecision : 3,
+				        minValue         : 0,
+					    // set maxlength to 5 on input field
+					    autoCreate: {tag: 'input', type: 'text', size: '20', autocomplete: 'off', maxlength: '6'},
+					    validator: function(val) {
+						     if (!Ext.isEmpty(val) && -1.8<=val && val<=1.8) {
+						        return true;
+						     } else {
+						        return "Value cannot be empty and must be a number between [-1.8 - +1.8]";
+						     }
+					    },
+					    renderer: function(value, metaData, record, rowIndex,colIndex, store, view){
+						   Ext.util.Format.number(value,'0.000');
+						   return value;            
+						}
+				},{
+					    xtype: 'numberfield',
+					    name: 'max_heading_'+id,
+					    ref: 'assetMaxHeading',
+					    fieldLabel: 'Max Heading',
+					    allowBlank: false,
+					    anchor: '95%',
+					    maxLength: 6,
+					    decimalPrecision : 3,
+				        minValue         : 0,
+					    // set maxlength to 5 on input field
+					    autoCreate: {tag: 'input', type: 'text', size: '20', autocomplete: 'off', maxlength: '6'},
+					    validator: function(val) {
+						     if (!Ext.isEmpty(val) && -1.8<=val && val<=1.8) {
+						        return true;
+						     } else {
+						        return "Value cannot be empty and must be a number between [-1.8 - +1.8]";
+						     }
+					    },
+					    renderer: function(value, metaData, record, rowIndex,colIndex, store, view){
+						   Ext.util.Format.number(value,'0.000');
+						   return value;            
+						}
+				}
+	          ]
+			};
 			  
 			return asset;
 		},
