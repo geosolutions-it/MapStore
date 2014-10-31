@@ -404,12 +404,19 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             };
         
         }
+		var layerRecord;
+		
+		var index = this.layerSource.store.findExact("name", config.name);
+		if (index > -1) {
+			layerRecord = this.layerSource.store.getAt(index);
+		} else {
+			layerRecord = this.layerSource.createLayerRecord({name:config.name, queryable:true});
+		}
         // look for the base record for layer in layerSource and builds a new
         // record merging base configuration with given one
-        var index = this.layerSource.store.findExact("name", config.name);
-        if (index > -1) {
-            var layerRecord = this.layerSource.store.getAt(index);
         
+        if (layerRecord) {
+            
             // data for the new record
             var data = Ext.applyIf({
                 title: config.title, 
