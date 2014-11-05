@@ -320,7 +320,8 @@ gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.
 										var feature = OpenLayers.Geometry.fromWKT(record.data.geometry);
 
 										if(!me.geocoderDrawings) {
-											var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
+											//var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
+											var vector_style = this.defaultStyle;
 											Ext.applyIf(vector_style, this.labelStyle);
 
 									        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoder",
@@ -402,7 +403,8 @@ gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.
 														var feature = OpenLayers.Geometry.fromWKT(record.data.geometry);
 
 														if(!me.geocoderDrawings) {
-															var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
+															//var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
+															var vector_style = this.defaultStyle;
 															Ext.applyIf(vector_style, this.labelStyle);
 
 													        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoder",
@@ -610,7 +612,8 @@ gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.
 					this.selectedAreas = [];
 					var wktGeometry = data.geometry;
 					if(!this.geocoderDrawings) {
-						var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
+						//var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
+						var vector_style = this.defaultStyle;
 						Ext.applyIf(vector_style, this.labelStyle);
 
 				        this.geocoderDrawings = new OpenLayers.Layer.Vector("geocoder",
@@ -671,7 +674,8 @@ gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.
 					geometry = feature;
 
 					if(!me.geocoderDrawings) {
-						var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
+						//var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
+						var vector_style = this.defaultStyle;
 						Ext.applyIf(vector_style, this.labelStyle);
 
 				        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoder",
@@ -709,7 +713,8 @@ gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod = Ext.extend(gxp.
 						geoms.push(feature);
 
 						if(!me.geocoderDrawings) {
-							var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
+							//var vector_style = (JSON.parse(JSON.stringify(this.defaultStyle)));
+							var vector_style = this.defaultStyle;
 							Ext.applyIf(vector_style, this.labelStyle);
 
 					        me.geocoderDrawings = new OpenLayers.Layer.Vector("geocoder",

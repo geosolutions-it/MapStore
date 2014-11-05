@@ -127,12 +127,30 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      *  If specified, the version string will be included in WMS GetCapabilities
      *  requests.  By default, no version is set.
      */
-
+	
+	/** api: config[loadingProgress]
+     *  ``Boolean`` if true, loadingProgress property is applied to all the WMSSource layers.
+     */
+    loadingProgress: false,
+	
+	/** api: config[useCapabilities]
+     *  ``Boolean`` if false, no capabilities request is sent to the server to initialize the store.
+     */
+	useCapabilities: true,
+	
     /** api: method[createStore]
      *
      *  Creates a store of layer records.  Fires "ready" when store is loaded.
      */
-    createStore: function() {
+	createStore: function() {
+		if(this.useCapabilities) {
+			return this.createCapabilitiesStore();
+		}
+		this.fireEvent("ready", this);
+		return null;
+	},
+	
+    createCapabilitiesStore: function() {
         var baseParams = this.baseParams || {
             SERVICE: "WMS",
             REQUEST: "GetCapabilities"
@@ -244,150 +262,179 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      *
      *  Create a layer record given the config.
      */
-    createLayerRecord: function(config) {
+	createLayerRecord: function(config) {
+		if(this.useCapabilities) {
+			return this.createLayerRecordCapabilities(config);
+		}
+		var reader = new GeoExt.data.WMSCapabilitiesReader();
+		
+		var layerConfig = Ext.apply({
+			formats: ['image/png', 'image/jpeg', 'image/gif']
+		}, config);
+		
+		var records = reader.readRecords({
+			capability: {
+				request: {
+					getmap: {
+						href: this.url
+					}
+				},
+				layers: [layerConfig]
+			}
+		});
+		return this.createLayerRecordFromOriginal(records.records[0], config);
+	},
+	
+	createLayerRecordFromOriginal: function(original, config) {
+		var layer = original.getLayer();
+		layer.url = layer.url.replace('SERVICE=WMS&', '');
+
+		/**
+		 * TODO: The WMSCapabilitiesReader should allow for creation
+		 * of layers in different SRS.
+		 */
+		var projection = this.getMapProjection();
+		
+		var defProp = this.getDefaultProps(original, config);            
+		
+		config = Ext.applyIf(defProp, config);
+		
+		// If the layer is not available in the map projection, find a
+		// compatible projection that equals the map projection. This helps
+		// us in dealing with the different EPSG codes for web mercator.
+		var layerProjection = this.getProjection(original);
+		if (layerProjection) {
+			layer.addOptions({projection: layerProjection});
+		}
+		
+		var projCode = projection.getCode();
+		var nativeExtent = original.get("bbox")[projCode];
+
+		//var swapAxis = layer.params.VERSION >= "1.3" && !!layer.yx[projCode];
+		var swapAxis = layer.params.VERSION >= "1.3" && layer.reverseAxisOrder();
+		var maxExtent = 
+		(nativeExtent && OpenLayers.Bounds.fromArray(nativeExtent.bbox, swapAxis)) || 
+		(original.get("llbbox") && OpenLayers.Bounds.fromArray(original.get("llbbox")).transform(new OpenLayers.Projection("EPSG:4326"), projection)) || null;
+		
+		// ///////////////////////////////////////////////////////////////////////////////////////////
+		// 'layersCachedExtent' property can be defined for source and/or a single 
+		// layer configuration when we use GeoWebCache integration in GeoServer. 
+		// GeoServer getCapabilities request return only bounds in 4326 and native CRS so, if the 
+		// map CRS is 900913 the transformed bounds is not aligned with the google standard 
+		// gridset defined in GeoServer.
+		// //////////////////////////////////////////////////////////////////////////////////////////
+		var maxCachedExtent = config.layersCachedExtent ? OpenLayers.Bounds.fromArray(config.layersCachedExtent) :
+			this.layersCachedExtent ? OpenLayers.Bounds.fromArray(this.layersCachedExtent) : maxExtent;
+		if(maxExtent) {
+			// make sure maxExtent is valid (transfzorm does not succeed for all llbbox)
+			if (!(1 / maxExtent.getHeight() > 0) || !(1 / maxExtent.getWidth() > 0)) {
+				// maxExtent has infinite or non-numeric width or height
+				// in this case, the map maxExtent must be specified in the config
+				maxExtent = undefined;
+			}
+		}
+		
+		var styles = this.getLayerStyle(config);
+
+		// use all params from sources layerBaseParams option
+		var params = Ext.applyIf({
+			STYLES: styles || "",
+			FORMAT: config.format,
+			TRANSPARENT: config.transparent,
+			CQL_FILTER: config.cql_filter,
+			ELEVATION: config.elevation
+		}, this.layerBaseParams);
+		
+		// use all params from original
+		params = Ext.applyIf(params, layer.params);
+
+		// /////////////////////////////////////////////////////////
+		// Checking if the OpenLayers transition should be 
+		// disabled (transitionEffect: null).
+		//
+		// (see also 
+		// https://github.com/openlayers/openlayers/blob/master/notes/2.13.md#layergrid-resize-transitions-by-default).
+		//
+		// In this case also the zoomMethod must be setted to null 
+		// in Map configuration (see widgets/Viewer.js).
+		// /////////////////////////////////////////////////////////
+		var transitionEffect = null;
+		if(this.target.map.animatedZooming){
+			if(this.target.map.animatedZooming.transitionEffect == null){
+				transitionEffect = null;
+			}else{
+				transitionEffect = this.target.map.animatedZooming.transitionEffect;
+			}
+		}
+		
+		layer = new OpenLayers.Layer.WMS(
+			config.title || config.name, 
+			layer.url, 
+			params, {
+				attribution: layer.attribution,
+				maxExtent: maxCachedExtent,
+				restrictedExtent: maxExtent,
+				displayInLayerSwitcher: ("displayInLayerSwitcher" in config) ? config.displayInLayerSwitcher :true,
+				singleTile: ("tiled" in config) ? !config.tiled : false,
+				ratio: config.ratio || 1,
+				visibility: ("visibility" in config) ? config.visibility : true,
+				opacity: ("opacity" in config) ? config.opacity : 1,
+				buffer: ("buffer" in config) ? config.buffer : 0,
+				loadingProgress: config.loadingProgress || this.loadingProgress || false,
+		dimensions: original.data.dimensions,
+				projection: layerProjection,
+				vendorParams: config.vendorParams,
+				transitionEffect: transitionEffect
+			}
+		);
+
+		// data for the new record
+		var data = Ext.applyIf({
+			title: config.title, 
+			name: config.name,
+			group: config.group,
+			uuid: config.uuid,
+			gnURL: config.gnURL,
+			source: config.source,
+			properties: "gxp_wmslayerpanel",
+			times: "times" in config ? config.times : null,
+			elevations: "elevations" in config ? config.elevations : null,
+			fixed: config.fixed,
+			selected: "selected" in config ? config.selected : false,
+			layer: layer
+		}, original.data);
+		
+		// add additional fields
+		var fields = [
+			{name: "source", type: "string"}, 
+			{name: "name", type: "string"}, 
+			{name: "group", type: "string"},
+			{name: "uuid", type: "string"},
+			{name: "gnURL", type: "string"},
+			{name: "title", type: "string"},
+			{name: "properties", type: "string"},
+			{name: "fixed", type: "boolean"},
+			{name: "selected", type: "boolean"},
+			{name: "times", type: "string"},
+			{name: "elevations", type: "string"}
+		];
+
+		original.fields.each(function(field) {
+			fields.push(field);
+		});
+
+		var Record = GeoExt.data.LayerRecord.create(fields);
+		return new Record(data, layer.id);
+	},
+	
+    createLayerRecordCapabilities: function(config) {
         var record;
 
         var index = this.store.findExact("name", config.name);
         if (index > -1) {
             var original = this.store.getAt(index);
 
-            var layer = original.getLayer();
-            layer.url = layer.url.replace('SERVICE=WMS&', '');
-
-            /**
-             * TODO: The WMSCapabilitiesReader should allow for creation
-             * of layers in different SRS.
-             */
-            var projection = this.getMapProjection();
-            
-            var defProp = this.getDefaultProps(original, config);            
-            
-            config = Ext.applyIf(defProp, config);
-            
-            // If the layer is not available in the map projection, find a
-            // compatible projection that equals the map projection. This helps
-            // us in dealing with the different EPSG codes for web mercator.
-            var layerProjection = this.getProjection(original);
-			if (layerProjection) {
-                layer.addOptions({projection: layerProjection});
-            }
-			
-            var projCode = projection.getCode();
-            var nativeExtent = original.get("bbox")[projCode];
-
-            //var swapAxis = layer.params.VERSION >= "1.3" && !!layer.yx[projCode];
-			var swapAxis = layer.params.VERSION >= "1.3" && layer.reverseAxisOrder();
-            var maxExtent = 
-            (nativeExtent && OpenLayers.Bounds.fromArray(nativeExtent.bbox, swapAxis)) || 
-            OpenLayers.Bounds.fromArray(original.get("llbbox")).transform(new OpenLayers.Projection("EPSG:4326"), projection);
-			
-			// ///////////////////////////////////////////////////////////////////////////////////////////
-			// 'layersCachedExtent' property can be defined for source and/or a single 
-			// layer configuration when we use GeoWebCache integration in GeoServer. 
-			// GeoServer getCapabilities request return only bounds in 4326 and native CRS so, if the 
-			// map CRS is 900913 the transformed bounds is not aligned with the google standard 
-			// gridset defined in GeoServer.
-			// //////////////////////////////////////////////////////////////////////////////////////////
-			var maxCachedExtent = config.layersCachedExtent ? OpenLayers.Bounds.fromArray(config.layersCachedExtent) :
-				this.layersCachedExtent ? OpenLayers.Bounds.fromArray(this.layersCachedExtent) : maxExtent;
-			
-            // make sure maxExtent is valid (transfzorm does not succeed for all llbbox)
-            if (!(1 / maxExtent.getHeight() > 0) || !(1 / maxExtent.getWidth() > 0)) {
-                // maxExtent has infinite or non-numeric width or height
-                // in this case, the map maxExtent must be specified in the config
-                maxExtent = undefined;
-            }
-            
-            var styles = this.getLayerStyle(config);
-        
-            // use all params from sources layerBaseParams option
-            var params = Ext.applyIf({
-                STYLES: styles || "",
-                FORMAT: config.format,
-                TRANSPARENT: config.transparent,
-                CQL_FILTER: config.cql_filter,
-                ELEVATION: config.elevation
-            }, this.layerBaseParams);
-            
-            // use all params from original
-            params = Ext.applyIf(params, layer.params);
-
-			// /////////////////////////////////////////////////////////
-			// Checking if the OpenLayers transition should be 
-			// disabled (transitionEffect: null).
-			//
-			// (see also 
-			// https://github.com/openlayers/openlayers/blob/master/notes/2.13.md#layergrid-resize-transitions-by-default).
-			//
-			// In this case also the zoomMethod must be setted to null 
-			// in Map configuration (see widgets/Viewer.js).
-			// /////////////////////////////////////////////////////////
-			var transitionEffect = null;
-			if(this.target.map.animatedZooming){
-				if(this.target.map.animatedZooming.transitionEffect == null){
-					transitionEffect = null;
-				}else{
-					transitionEffect = this.target.map.animatedZooming.transitionEffect;
-				}
-			}
-            
-			layer = new OpenLayers.Layer.WMS(
-                config.title || config.name, 
-                layer.url, 
-                params, {
-                    attribution: layer.attribution,
-                    maxExtent: maxCachedExtent,
-                    restrictedExtent: maxExtent,
-                    displayInLayerSwitcher: ("displayInLayerSwitcher" in config) ? config.displayInLayerSwitcher :true,
-                    singleTile: ("tiled" in config) ? !config.tiled : false,
-                    ratio: config.ratio || 1,
-                    visibility: ("visibility" in config) ? config.visibility : true,
-                    opacity: ("opacity" in config) ? config.opacity : 1,
-                    buffer: ("buffer" in config) ? config.buffer : 0,
-		    dimensions: original.data.dimensions,
-                    projection: layerProjection,
-                    vendorParams: config.vendorParams,
-					transitionEffect: transitionEffect
-                }
-			);
-
-            // data for the new record
-            var data = Ext.applyIf({
-                title: config.title, 
-                name: config.name,
-                group: config.group,
-                uuid: config.uuid,
-                gnURL: config.gnURL,
-                source: config.source,
-                properties: "gxp_wmslayerpanel",
-                times: "times" in config ? config.times : null,
-                elevations: "elevations" in config ? config.elevations : null,
-                fixed: config.fixed,
-                selected: "selected" in config ? config.selected : false,
-                layer: layer
-            }, original.data);
-            
-            // add additional fields
-            var fields = [
-                {name: "source", type: "string"}, 
-                {name: "name", type: "string"}, 
-                {name: "group", type: "string"},
-				{name: "uuid", type: "string"},
-				{name: "gnURL", type: "string"},
-				{name: "title", type: "string"},
-                {name: "properties", type: "string"},
-                {name: "fixed", type: "boolean"},
-                {name: "selected", type: "boolean"},
-                {name: "times", type: "string"},
-                {name: "elevations", type: "string"}
-            ];
-
-            original.fields.each(function(field) {
-                fields.push(field);
-            });
-
-            var Record = GeoExt.data.LayerRecord.create(fields);
-            record = new Record(data, layer.id);
+            record = this.createLayerRecordFromOriginal(original, config);
         } else {
             if (window.console && this.store.getCount() > 0) {
                 console.warn("Could not create layer record for layer '" + config.name + "'. Check if the layer is found in the WMS GetCapabilities response.");
