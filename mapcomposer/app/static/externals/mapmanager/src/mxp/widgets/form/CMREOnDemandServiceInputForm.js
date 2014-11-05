@@ -29,7 +29,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 
 	/** api: xtype = mxp_cmre_ondemand_services_input_form */
 	xtype : 'mxp_cmre_ondemand_services_input_form',
-	category : 'MAP',
+	category : 'WPS_RUN_CONFIGS',
 	
 	//global variables
 	osdi2ManagerRestURL : null,
@@ -1024,10 +1024,12 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			};
 		}
 		
+		serviceRunInputs.category = me.category;
+		
 		var geoJsonInputs = JSON.stringify(serviceRunInputs, undefined, 2);
 
-		//send to [POST] osdi2ManagerRestURL + "services/" + serviceName
-		var runUrl = me.osdi2ManagerRestURL + "services/" + me.serviceName;
+		//send to [POST] osdi2ManagerRestURL + "services/" + serviceId
+		var runUrl = me.osdi2ManagerRestURL + "services/" + me.serviceId + "?category=" + me.category;
 		
 		debugger;
 		

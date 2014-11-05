@@ -58,6 +58,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 	/* end of i18n */
 	//extjs grid specific config
 	autoload : true,
+	autoExpandColumn : 'description',
 
 	//map panel configuration
 	bounds :
@@ -71,6 +72,19 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 	projection : "EPSG:900913",
 	units : "m",
 	center : [10416231.543771133, -1365528.5403454066], // Indian Ocean
+	
+	viewConfig : {
+		getRowClass : function(record, index) {
+			var c = record.json.activeStatus;
+			if (c == 'ENABLED') {
+				return 'row-green';
+			} else if (c == 'DISABLED') {
+				return 'row-red';
+			} else {
+				return 'row-yellow';
+			}
+		}
+	},
 
 	/**
 	 *
@@ -85,11 +99,17 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 			url : this.osdi2ManagerRestURL + 'services/',
 			record : 'service',
 			idPath : 'serviceId',
-			fields : ['serviceId', 'name', 'description'],
+			fields : [{
+						name : 'activeStatus',
+						mapping : '@activeStatus'
+					},'serviceId', 'name', 'description', 'activeStatus'],
 			reader : new Ext.data.JsonReader({
 				root : 'data',
 				idPath : 'serviceId',
-				fields : ['serviceId', 'name', 'description']
+				fields : [{
+						name : 'activeStatus',
+						mapping : '@activeStatus'
+					},'serviceId', 'name', 'description', 'activeStatus']
 			}),
 			listeners : {
 				beforeload : function(a, b, c) {
@@ -157,6 +177,8 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 				tooltip : this.tooltipLog,
 				scope : this,
 				getClass : function(v, meta, rec) {
+					if (rec.get('activeStatus') == 'DISABLED')
+						return 'x-hide-display';
 					return 'x-grid-center-icon action_column_btn';
 				}
 			}]
@@ -273,6 +295,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 								xtype : 'mxp_cmre_ondemand_services_input_form',
 								tbar : null,
 								osdi2ManagerRestURL : me.osdi2ManagerRestURL,
+								serviceId: serviceId,
 								serviceName: serviceName,
 								mapPanel : mapPanel,
 								region : 'west',
@@ -282,7 +305,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 								width : 600,
 								ref : 'list',
 								collapsible : true,
-								auth : this.auth,
+								auth : me.auth,
 								sm : null
 							}, mapPanel]
 						}).show();

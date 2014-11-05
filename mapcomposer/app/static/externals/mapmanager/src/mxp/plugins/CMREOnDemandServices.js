@@ -141,7 +141,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
         var flowsGrid = {
             xtype:'mxw_cmre_ondemand_services_grid',
             tbar:buttons,
-            geoBatchRestURL: this.geoBatchRestURL,
+            osdi2ManagerRestURL: this.osdi2ManagerRestURL,
             region:'west',
 			iconCls:'nato_ic',
 			title:this.flowsListTitle,
@@ -169,7 +169,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
             items:[
                 {
                     xtype:'mxp_cmre_ondemand_runtimes_grid',
-                    geoBatchRestURL: this.geoBatchRestURL,
+                    osdi2ManagerRestURL: this.osdi2ManagerRestURL,
                     title: this.consumersGridTitle,
                     layout:'fit',
                     autoScroll:true,
@@ -217,7 +217,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                 //layout:'fit',
                 flowId: flowId,
                 fileId:fileId,
-                geoBatchRestURL: this.geoBatchRestURL,
+                osdi2ManagerRestURL: this.osdi2ManagerRestURL,
                 //baseDir: this.baseDir,
                 //mediaContent: this.target.initialConfig.mediaContent
                 listeners:{

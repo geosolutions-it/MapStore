@@ -54,7 +54,7 @@
     }],
    "adminTools":[{
          "ptype": "mxp_cmre_ondemand_services",
-         "geoBatchRestURL":"http://localhost:8180/opensdi2-manager/mvc/process/geobatch/",
+         "osdi2ManagerRestURL":"http://localhost:8180/opensdi2-manager/mvc/process/wps/",
          "runConfigs": {
             "csvingestion":{
                 "xtype":"geobatch_run_local_form",
