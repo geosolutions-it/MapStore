@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="mapstore" default="dist" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+<project name="esa_demo" default="dist" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
     <description>
         MapStore Build File

@@ -53,7 +53,7 @@ gxp.plugins.About = Ext.extend(gxp.plugins.Tool, {
     /** api: method[addActions]
      */
     addActions: function() {
-		var poweredByGeoSol = new Ext.Button({
+		/*var poweredByGeoSol = new Ext.Button({
 			tooltip: 'Powered by GeoSolutions',
 			iconCls: "icon-geosol",
 			width : 150,
@@ -61,7 +61,7 @@ gxp.plugins.About = Ext.extend(gxp.plugins.Tool, {
 			handler: function(btn){
 				window.open(this.poweredbyURL, '_blank');
 			}
-		}); 
+		});*/ 
 			
 		var iframe = "<iframe style='border: none; height: 100%; width: 100%' src='about.html' frameborder='0' border='0'>" + 
 					 "<a target='_blank' href='about.html'>" + GeoExplorer.prototype.aboutText + "</a> </iframe>";
@@ -80,7 +80,7 @@ gxp.plugins.About = Ext.extend(gxp.plugins.Tool, {
 					modal: true,
 					layout: "fit",
 					width: 360,
-					height: 360,
+					height: 260,
 					items: [appInfo]
 				});
 				
@@ -88,7 +88,8 @@ gxp.plugins.About = Ext.extend(gxp.plugins.Tool, {
 			}
 		});
         
-        var actions = [poweredByGeoSol, '-', aboutButton];
+        //var actions = [poweredByGeoSol, '-', aboutButton];
+        var actions = [aboutButton];
         return gxp.plugins.About.superclass.addActions.apply(this, [actions]);
     }
         

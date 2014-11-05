@@ -236,7 +236,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
         else if(this.range) {
             if(!(this.range[0] instanceof Date)) {
                 this.range[0] = OpenLayers.Date.parse(this.range[0]);
-                //OpenLayers.Util.getElement('olTime').innerHTML = this.range[0];
+                OpenLayers.Util.getElement('olTime').innerHTML = OpenLayers.Date.toISOString(this.range[0]); //this.range[0];
             }
             if(!(this.range[1] instanceof Date)) {
                 this.range[1] = OpenLayers.Date.parse(this.range[1]);
@@ -643,7 +643,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
                                 closable: true
                             });
                             
-            this.toolbar.tooltip.showAt( [ this.toolbar.getEl().getX()-50,  this.toolbar.getEl().getY()+50 ]);
+            this.toolbar.tooltip.showAt( [ this.toolbar.getEl().getX(),  this.toolbar.getEl().getY()+50 ]);
             
             if(pressed){
                 this.timer = setInterval(OpenLayers.Function.bind(this.tick, this), (1000/2) * this.frameRate);
@@ -784,7 +784,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
         else {
             this.currentTime = time;
             this.curTime = curTime;
-            //OpenLayers.Util.getElement('olTime').innerHTML = time;
+            OpenLayers.Util.getElement('olTime').innerHTML =  OpenLayers.Date.toISOString(time); //time;
         }
         this.events.triggerEvent('tick', {
             'currentTime' : this.currentTime,

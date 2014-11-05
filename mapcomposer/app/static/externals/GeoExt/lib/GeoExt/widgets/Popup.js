@@ -8,6 +8,9 @@
 
 /**
  * @include GeoExt/widgets/MapPanel.js
+ * require OpenLayers/Feature/Vector.js
+ * require OpenLayers/Geometry.js
+ * require OpenLayers/BaseTypes/Pixel.js
  */
 
 /** api: (define)
@@ -79,6 +82,11 @@ GeoExt.Popup = Ext.extend(Ext.Window, {
      */
     location: null,
 
+    /** private: property[insideViewport]
+     *  ``Boolean`` Wether the popup is currently inside the map viewport.
+     */
+    insideViewport: null,
+
     /**
      * Some Ext.Window defaults need to be overriden here
      * because some Ext.Window behavior is not currently supported.
@@ -116,6 +124,15 @@ GeoExt.Popup = Ext.extend(Ext.Window, {
      */
     ancCls: null,
 
+    /** api: config[anchorPosition]
+     *  ``String``  Controls the anchor position for the popup. If set to
+     *  ``auto``, the anchor will be positioned on the top or the bottom of
+     *  the window, minimizing map movement. Supported values are ``bottom-left``,
+     *  ``bottom-right``, ``top-left``, ``top-right`` or ``auto``.
+     *  Defaults to ``auto``.
+     */
+    anchorPosition: "auto",
+
     /** private: method[initComponent]
      *  Initializes the popup.
      */
@@ -139,6 +156,11 @@ GeoExt.Popup = Ext.extend(Ext.Window, {
             this.location = this.map.getLonLatFromViewPortPx(this.location);
         }
 
+        var mapExtent =  this.map.getExtent();
+        if (mapExtent && this.location) {
+            this.insideViewport = mapExtent.containsLonLat(this.location);
+        }
+
         if(this.anchored) {
             this.addAnchorEvents();
         }
@@ -156,7 +178,6 @@ GeoExt.Popup = Ext.extend(Ext.Window, {
     onRender: function(ct, position) {
         GeoExt.Popup.superclass.onRender.call(this, ct, position);
         this.ancCls = this.popupCls + "-anc";
-
         //create anchor dom element.
         this.createElement("anc", this.el.dom);
     },
@@ -223,25 +244,45 @@ GeoExt.Popup = Ext.extend(Ext.Window, {
      */
     position: function() {
         if(this._mapMove === true) {
-            var visible = this.map.getExtent().containsLonLat(this.location);
-            if(visible !== this.isVisible()) {
-                this.setVisible(visible);
+            this.insideViewport = this.map.getExtent().containsLonLat(this.location);
+            if(this.insideViewport !== this.isVisible()) {
+                this.setVisible(this.insideViewport);
             }
         }
 
         if(this.isVisible()) {
-            var centerPx = this.map.getViewPortPxFromLonLat(this.location);
-            var mapBox = Ext.fly(this.map.div).getBox(); 
-    
-            //This works for positioning with the anchor on the bottom.
-            
-            var anc = this.anc;
-            var dx = anc.getLeft(true) + anc.getWidth() / 2;
-            var dy = this.el.getHeight();
-    
-            //Assuming for now that the map viewport takes up
-            //the entire area of the MapPanel
-            this.setPosition(centerPx.x + mapBox.x - dx, centerPx.y + mapBox.y - dy);
+            var locationPx = this.map.getPixelFromLonLat(this.location),
+                mapBox = Ext.fly(this.map.div).getBox(true),
+                top = locationPx.y + mapBox.y,
+                left = locationPx.x + mapBox.x,
+                elSize = this.el.getSize(),
+                ancSize = this.anc.getSize(),
+                ancPos = this.anchorPosition;
+
+            if (ancPos.indexOf("right") > -1 || locationPx.x > mapBox.width / 2) {
+                // right
+                this.anc.addClass("right");
+                var ancRight = this.el.getX(true) + elSize.width -
+                               this.anc.getX(true) - ancSize.width;
+                left -= elSize.width - ancRight - ancSize.width / 2;
+            } else {
+                // left
+                this.anc.removeClass("right");
+                var ancLeft = this.anc.getLeft(true);
+                left -= ancLeft + ancSize.width / 2;
+            }
+
+            if (ancPos.indexOf("bottom") > -1 || locationPx.y > mapBox.height / 2) {
+                // bottom
+                this.anc.removeClass("top");
+                top -= elSize.height + ancSize.height;
+            } else {
+                // top
+                this.anc.addClass("top");
+                top += ancSize.height; // ok
+            }
+
+            this.setPosition(left, top);
         }
     },
 
@@ -271,7 +312,7 @@ GeoExt.Popup = Ext.extend(Ext.Window, {
      *  padding.
      */ 
     panIntoView: function() {
-        var mapBox = Ext.fly(this.map.div).getBox(); 
+        var mapBox = Ext.fly(this.map.div).getBox(true); 
 
         //assumed viewport takes up whole body element of map panel
         var popupPos =  this.getPosition(true);
@@ -310,9 +351,11 @@ GeoExt.Popup = Ext.extend(Ext.Window, {
     /** private: method[onMapMove]
      */
     onMapMove: function() {
-        this._mapMove = true;
-        this.position();
-        delete this._mapMove;
+        if (!(this.hidden && this.insideViewport)){       
+            this._mapMove = true;
+            this.position();
+            delete this._mapMove;
+        }
     },
     
     /** private: method[addAnchorEvents]

@@ -225,7 +225,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 			plugins: new GeoExt.ZoomSliderTip({
 				template: this.zoomSliderText
 			})
-		});
+		},{
+	            xtype: "gxp_timevisualization",
+				position: "position:relative;left:120px;top:10px;background-color:#0055BB;color:#FFFFFF;font-size: 25px;font-weight: bold;"
+        });
         
 		// ///////////////////////////////////////////////////////////////////////////////////
         // both the Composer and the Viewer need to know about the viewerTools
@@ -473,7 +476,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             activeTab:0,
             id: 'west',
             region: "west",
-            width: 250,
+            width: 300,
             split: true,
             collapsible: true,
             collapseMode: "mini",
