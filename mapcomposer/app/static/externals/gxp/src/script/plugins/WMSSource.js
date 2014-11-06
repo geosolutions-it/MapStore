@@ -388,36 +388,46 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 			}
 		);
 
-		// data for the new record
-		var data = Ext.applyIf({
-			title: config.title, 
-			name: config.name,
-			group: config.group,
-			uuid: config.uuid,
-			gnURL: config.gnURL,
-			source: config.source,
-			properties: "gxp_wmslayerpanel",
-			times: "times" in config ? config.times : null,
-			elevations: "elevations" in config ? config.elevations : null,
-			fixed: config.fixed,
-			selected: "selected" in config ? config.selected : false,
-			layer: layer
-		}, original.data);
-		
-		// add additional fields
-		var fields = [
-			{name: "source", type: "string"}, 
-			{name: "name", type: "string"}, 
-			{name: "group", type: "string"},
-			{name: "uuid", type: "string"},
-			{name: "gnURL", type: "string"},
-			{name: "title", type: "string"},
-			{name: "properties", type: "string"},
-			{name: "fixed", type: "boolean"},
-			{name: "selected", type: "boolean"},
-			{name: "times", type: "string"},
-			{name: "elevations", type: "string"}
-		];
+        // data for the new record
+        var data = Ext.applyIf({
+            title: config.title, 
+            name: config.name,
+            group: config.group,
+            expanded: config.expanded,
+            checked: config.checked,
+            tiled: config.tiled,
+            displayInLayerSwitcher: config.displayInLayerSwitcher,
+            uuid: config.uuid,
+            gnURL: config.gnURL,
+            source: config.source,
+            properties: "gxp_wmslayerpanel",
+            times: "times" in config ? config.times : null,
+            elevations: "elevations" in config ? config.elevations : null,
+            fixed: config.fixed,
+            selected: "selected" in config ? config.selected : false,
+            layer: layer,
+            queryable: config.queryable
+        }, original.data);
+        
+        // add additional fields
+        var fields = [
+            {name: "source", type: "string"}, 
+            {name: "name", type: "string"}, 
+            {name: "group", type: "string"},
+            {name: "expanded", type: "boolean"},
+            {name: "checked", type: "boolean"},
+            {name: "tiled", type: "boolean"},
+            {name: "displayInLayerSwitcher", type: "boolean"},
+            {name: "uuid", type: "string"},
+            {name: "gnURL", type: "string"},
+            {name: "title", type: "string"},
+            {name: "properties", type: "string"},
+            {name: "fixed", type: "boolean"},
+            {name: "selected", type: "boolean"},
+            {name: "times", type: "string"},
+            {name: "elevations", type: "string"},
+            {name: "queryable", type: "boolean"}
+        ];
 
 		original.fields.each(function(field) {
 			fields.push(field);
