@@ -99,6 +99,12 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
      disableAfterClick: false,
 	 
 	 maxFeatures: 10,
+
+    /** api: config[layerParams]
+     *  ``Array`` List of param names that should be taken from the layer and
+     *  added to the GetFeatureInfo request (e.g. ["CQL_FILTER"]).
+     */
+     layerParams: ["CQL_FILTER","TIME","ELEVATION"],
      
     /** api: method[addActions]
      */
@@ -144,9 +150,16 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
             var atLeastOneResponse = false;
             this.masking = false;
             
-            queryableLayers.each(function(x){                
+            queryableLayers.each(function(x){   
+                var layer = x.getLayer();            
                 var vendorParams = {};
                 Ext.apply(vendorParams, x.getLayer().vendorParams || this.vendorParams || {});
+                if (this.layerParams) {
+                    for (var i=this.layerParams.length-1; i>=0; --i) {
+                        param = this.layerParams[i].toUpperCase();
+                        vendorParams[param] = layer.params[param];
+                    }
+                }                
                 if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
                     vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale  : 'locale:' + GeoExt.Lang.locale;
                 }

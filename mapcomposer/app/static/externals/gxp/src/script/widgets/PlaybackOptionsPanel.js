@@ -230,7 +230,15 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
         var units = record.get('field1');
         if(this.timeManager.units != units){
             this.timeManager.units = units;
-            if(this.playbackToolbar.playbackMode != 'track'){
+
+            // prende la data di inizio e la data di fine del pannello
+            // e invoca la funzione setRange di timeManager per ricalcolare i valori della slide
+            //this.timeManager.setRange([this.timeManager.range[0],this.timeManager.range[1]]);
+            this.timeManager.events.triggerEvent("rangemodified");
+            //this.playbackToolbar.slider.fireEvent('change',this.playbackToolbar.slider,this.playbackToolbar.slider.value,this.playbackToolbar.slider.thumbs[0],false,true);         
+            this.timeManager.fixedRange = true;
+
+            if (this.playbackToolbar.playbackMode != 'track') {
                 this.timeManager.incrementTime();
                 
                 // prende la data di inizio e la data di fine del pannello
@@ -244,16 +252,24 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
     setStep:function(cmp,newVal,oldVal){
         if(cmp.validate() && newVal){
             this.timeManager.step = newVal;
-            if(this.playbackToolbar.playbackMode == 'range' && 
-                this.timeManager.rangeInterval != newVal){
-                    this.timeManager.rangeInterval = newVal;
-                    this.timeManager.incrementTime(newVal);
-                    
-                    // prende la data di inizio e la data di fine del pannello
-                    // e invoca la funzione setRange di timeManager per ricalcolare i valori della slide
-                    this.timeManager.setRange([this.timeManager.range[0],this.timeManager.range[1]]);
-                    this.timeManager.fixedRange=true;                              
-                    
+
+            // prende la data di inizio e la data di fine del pannello
+            // e invoca la funzione setRange di timeManager per ricalcolare i valori della slide               
+            //this.timeManager.setRange([this.timeManager.range[0],this.timeManager.range[1]]);
+            this.timeManager.events.triggerEvent("rangemodified");
+            //this.playbackToolbar.slider.fireEvent('change',this.playbackToolbar.slider,this.playbackToolbar.slider.value,this.playbackToolbar.slider.thumbs[0],false,true);
+            this.timeManager.fixedRange = true;
+
+            if (this.playbackToolbar.playbackMode == 'range' &&
+                this.timeManager.rangeInterval != newVal) {
+                this.timeManager.rangeInterval = newVal;
+                this.timeManager.incrementTime(newVal);
+
+                // prende la data di inizio e la data di fine del pannello
+                // e invoca la funzione setRange di timeManager per ricalcolare i valori della slide
+                this.timeManager.setRange([this.timeManager.range[0], this.timeManager.range[1]]);
+                this.timeManager.fixedRange = true;
+
             }
         }
     },
