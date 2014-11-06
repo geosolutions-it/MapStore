@@ -69,6 +69,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	
 	aoiLabel: "Area of Interest",
 	durationFieldLabel: "Duration",
+	numberOfEvaluationsFieldLabel: "Num. of Evaluations",
 	startTimeFieldLabel: "Start Time",
 	riskMapTypeFieldLabel: 'Risk Map Type',
 	assetsFieldTitle: 'Assets',
@@ -179,8 +180,9 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			this.startTime = new Ext.form.DateField({
 				format : 'd/m/Y',
 				fieldLabel : '',
-				id : 'startTime',
-				name : 'startTime',
+				id : me.id + '_ReferenceDate',
+				name : 'referenceDate',
+				ref : 'referenceDate',
 				maxLength : 180,
 				anchor : '95%',
 				allowBlank : false,
@@ -210,18 +212,32 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 
 			this.durationField = new Ext.form.NumberField({
 				id : me.id + "_Duration",
-				decimalPrecision : 2,
+				decimalPrecision : 0,
 				allowDecimals : false,
 				hideLabel : false,
 				maxLength : 180,
 				anchor : '95%',
-				name : "duration",
-				ref : "duration",
+				name : "timeHorizon",
+				ref : "timeHorizon",
 				fieldLabel : this.durationFieldLabel,
 				value : "",
 				allowBlank : false
 			});
-
+			
+			this.evaluationsField = new Ext.form.NumberField({
+				id : me.id + "_NumEvaluations",
+				decimalPrecision : 0,
+				allowDecimals : false,
+				hideLabel : false,
+				maxLength : 180,
+				anchor : '95%',
+				name : "numberOfEvaluations",
+				ref : "numberOfEvaluations",
+				fieldLabel : this.numberOfEvaluationsFieldLabel,
+				value : "60000",
+				allowBlank : false
+			});
+			
 			this.assetFramePanel = new Ext.FormPanel({
 				frame : true,
 				layout : 'form',
@@ -440,7 +456,10 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				layout : 'table',
 				fieldLabel : this.startTimeFieldLabel,
 				items : [this.updateAssetsPositionButton, this.startTime]
-			}, this.durationField, {
+			}, 
+			this.durationField,
+			this.evaluationsField,
+			{
 				xtype : 'combo',
 				fieldLabel : this.riskMapTypeFieldLabel,
 				hiddenName : 'riskMapType',
@@ -1004,7 +1023,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			
 			serviceRunInputs.assets[i] = {
 				cost: asset.assetCost.getValue(),
-				heading: asset.assetHeading.getValue(),
 				id: asset.assetId.getValue(),
 				maxHeading: asset.assetMaxHeading.getValue(),
 				maxSpeed: asset.assetMaxSpeed.getValue(),
@@ -1012,14 +1030,17 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				minSpeed: asset.assetMinSpeed.getValue(),
 				name: asset.assetName.getValue(),
 				obsRange: asset.assetObsRange.getValue(),
-				pd: asset.assetPd.getValue(),
-				pfa: asset.assetPfa.getValue(),
-				position: {
+				Pd: asset.assetPd.getValue(),
+				Pfa: asset.assetPfa.getValue(),
+				/*position: {
 					lon: lonLat.x,
 					lat: lonLat.y,
 					x: geoJsonPoint.x,
 					y: geoJsonPoint.y
-				},
+				},*/
+				heading0: asset.assetHeading.getValue(),
+				lon0: lonLat.x,
+				lat0: lonLat.y,				
 				type: asset.assetType.getValue()
 			};
 		}
@@ -1030,8 +1051,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 
 		//send to [POST] osdi2ManagerRestURL + "services/" + serviceId
 		var runUrl = me.osdi2ManagerRestURL + "services/" + me.serviceId + "?category=" + me.category;
-		
-		debugger;
 		
 		var finish = function(response) {
 			me.setLoading(false);
@@ -1181,7 +1200,8 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	 *  Start a new Service Execution. 
 	 */
 	startServiceExecution : function(url, blob, successCallback, failureCallback) {
-
+		this.setLoading(true);
+		
 		var method = 'POST';
 		var contentType = 'application/json';
 
