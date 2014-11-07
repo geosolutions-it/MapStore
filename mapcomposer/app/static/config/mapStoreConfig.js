@@ -1,7 +1,19 @@
 {
    "scaleOverlayMode": "advanced",
    "tab": false,
+   "loadingProgress": true,
    "gsSources":{
+   		"aree_allerta": {
+			"ptype": "gxp_wmssource",
+			"url": "http://159.213.57.108/geoserver/ALLERTA/ows",
+			"title": "Aree Allerta",
+			"SRS": "EPSG:3003",
+			"version":"1.1.1",	
+			"layerBaseParams":{
+				"FORMAT":"image/png8",
+				"TILED":false
+			}
+		},   
    		"geoscopio": {
 			"ptype": "gxp_wmssource",
 			"url": "http://www502.regione.toscana.it/wmsraster/com.rt.wms.RTmap/wms?map=wmssfondo&map_resolution=91&language=ita",
@@ -138,12 +150,27 @@
 				"tiled": false,
 				"attribution": false
 			},{
+               "format":"image/png8",
+               "group":"Aree di allerta",
+               "name":"AREE_ALLERTA",
+               "opacity":0.5,
+               "selected":false,
+               "tiled":false,                       
+               "source":"aree_allerta", 
+               "styles":[],
+               "style":[],
+               "title":"Aree di allerta",
+               "transparent":true,
+               "visibility":true,
+               "ratio":1,
+               "queryable": true
+            },{
 				"source": "geoscopio_idrografia",
 				"group": "Idrografia",
 				"title": "Corsi d'acqua",
 				"name": "rt_idrogr.corsi.rt.line",
 				"displayInLayerSwitcher": true,
-				"visibility": true,
+				"visibility": false,
 				"tiled": false
 			},{
 				"source": "geoscopio_ctr",
@@ -169,7 +196,7 @@
 				"title": "Province",
 				"name": "rt_ambamm.idprovince.rt.poly",
 				"displayInLayerSwitcher": true,
-				"visibility": true,
+				"visibility": false,
 				"tiled": false
 			},{
 				"source": "geoscopio_amb_ammin",
@@ -192,8 +219,33 @@
 		"EPSG:3003": "+proj=tmerc +lat_0=0 +lon_0=9 +k=0.9996 +x_0=1500000 +y_0=0 +ellps=intl +units=m +no_defs +towgs84 = -104.1,-49.1,-9.9,0.971,-2.917,0.714,-11.68"
 	},
     "removeTools": [
-        "gxp_wmsgetfeatureinfo_menu",
-        "googleearth_plugin"
+        "wmsgetfeatureinfo_menu_plugin",
+        "googleearth_plugin",
+        "wmsgetfeatureinfo_menu_separator"
+    ],
+	"customPanels":[
+        {
+            "xtype": "tabpanel",
+            "border": false,
+            "activeTab": 0,
+            "id": "east",
+            "region": "east",
+            "width": 350,
+            "split": true,
+            "collapsible": true,
+            "header": false,
+            "items":[{
+                    "id": "aree_allerta_id",
+                    "xtype": "panel",
+                    "border": false,
+                    "layout": "form",
+                    "title": "Aree Allerta",
+                    "autoScroll": true,
+                    "closable": false,
+                    "labelWidth": "10px"
+                }            
+            ]
+        }
     ], 	
 	"customTools": [
 		{
@@ -216,8 +268,11 @@
 			"maxFeatures": 100,
             "actionTarget":{
                 "target":"paneltbar",
-                "index":21
+                "index":20
             }
+        }, {
+            "actions": ["-"], 
+            "actionTarget": "paneltbar"
         }, {
             "ptype":"gxp_print",
             "customParams":{
@@ -261,6 +316,22 @@
 			"ptype": "gxp_about",
 			"poweredbyURL": "http://www.geo-solutions.it/about/contacts/",
 			"actionTarget": {"target": "panelbbar", "index": 1}
-		}
+		}, {
+            "ptype":"gxp_areeallertadata",
+            "id":"areeallertadataToolId",
+            "dataUrl":"http://159.213.57.108/geoserver/ows",
+            "highChartExportUrl" :"http://84.33.2.75/highcharts-export/",
+            "outputConfig":{
+                "itemId":"areeallertadata",
+                "outputSRS": "EPSG:3003",
+                "geodesic": false,
+                "bufferOptions":{
+                    "minValue": 0,
+                    "maxValue":100000,
+                    "decimalPrecision" :2
+                }
+            },
+            "outputTarget" :"aree_allerta_id"
+        }
 	]
 }

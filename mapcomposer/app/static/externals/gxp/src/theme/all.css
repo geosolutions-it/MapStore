@@ -524,3 +524,21 @@ div.olMap div.gx-overlay-playback {
 .x-btn .gxp-icon-graph-wfs, .x-menu-item .gxp-icon-graph-wfs, .x-tree-node .gxp-icon-graph-wfs {
     background-image: url(img/silk/chart_curve.png);
 }
+
+/* areeallerta_icons */
+
+/*.x-btn .gxp-icon-areeallerta-chartmenu, .x-menu-item .gxp-icon-areeallerta-chartmenu {
+    background-image: url(img/silk/chart_organisation.png) !important;
+}*/
+
+.x-btn .gxp-icon-areeallerta-boxplot, .x-menu-item .gxp-icon-areeallerta-boxplot {
+    background-image: url(img/silk/boxplot.png) !important;
+}
+
+.x-btn .gxp-icon-areeallerta-barchart, .x-menu-item .gxp-icon-areeallerta-barchart {
+    background-image: url(img/silk/chart_bar.png) !important;
+}
+
+.x-btn .gxp-icon-areeallerta-curvacum, .x-menu-item .gxp-icon-areeallerta-curvacum {
+    background-image: url(img/silk/chart_line.png) !important;
+}
