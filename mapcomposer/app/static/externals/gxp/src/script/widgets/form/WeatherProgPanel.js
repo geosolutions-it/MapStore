@@ -42,6 +42,11 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 	xtype : "gxp_weatherprogpanel",
 
 	/** i18n **/
+    weatherProgClimateTitleText: 'Climate Variables',
+    basedOnCLCText: 'Based on CLC',
+    
+    weatherProgStatTitleText: 'Stat',
+    
 	clcLevelTitleText: 'CLC Levels / Urban Grids',
 	imperviousnessText: 'Imperviousness',
 
@@ -229,97 +234,75 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 			height: 400,
 	        items: this.getRoiItems(config)
 	    },{
-    		title: this.clcLevelTitleText,
-    		layout : 'fit',
-	        items: this.getCclLevelItems(config)
+    		title: this.weatherProgClimateTitleText,
+	        items: this.getWeatherProgClimateItems(config)
 	    },{
     		title: this.timeSelectionTitleText,
     		// layout : 'fit',
 	        items: this.getTimeSelectionItems(config)
 	    },{
-    		title: this.soilSealingIndexTitleText,
-	        items: this.getSealingIndexItems(config)
-	    },{
+    		title: this.weatherProgStatTitleText,
+    		//layout : 'fit',
+	        items: this.getWeatherProgStatItems(config)
+	    }/*,{
     		title: this.clcLegendBuilderTitleText,
 			layout : 'table',
 			columns: 1,
 	        items: this.getCclLegendItems(config)
-	    }];
+	    }*/];
 	},
 
-    /** api: method[getCclLevelItems]
-     *  :arg config: ``Object`` Configuration for this. Unused
-     *  :returns: ``Array`` items for the CLC level element.
-     *  Obtain CLC level elements.
+    /** api: method[getWeatherProgStatItems]
+     *  :arg config: ``String`` for this element. Unused
+     *  :returns: ``Array`` items for Weather Prog Climate.
+     *  Obtain Weather Prog Climate.
      */
-	getCclLevelItems: function(config){
+	getWeatherProgStatItems: function(config){
+
+        /*0	sum
+        1	min
+        2	max
+        3	mean
+        4	std*/
+    
 		var me = this;
 
-		// Divide in two fieldset
-	    this.layerStore.on('load', function (t, records, options) {
-            me.clcLevels.items = [];
-            me.imperviousness.items = [];
-            for (var i = 0; i < records.length; i++) {
-            	// delegate to getRasterItem
-            	var item = me.getRasterItem(records[i], true);
-            	if(item != null){
-            		if(item.filterFound == me.clcLevelsConfig[0]){
-            			me.imperviousness.items.push(item);
-            		}
-            		else {
-            			me.clcLevels.items.push(item);
-            		}
-            	}
-            }
-            me.clcLevels.doLayout();
-            me.imperviousness.doLayout();
-        });
-
-	    this.target.on('ready', function(){
-			me.reloadLayers(true);
-	    });
-
 		return [{
-			title : this.clcLevelTitleText,
+			title : this.weatherProgStatTitleText,
 			xtype : 'fieldset',
-			ref   : '/rasterComboBox',
-			id   : me.id + '_rasterComboBox',
 			autoWidth : true,
-			autoHeight : true,
 			collapsible : false,
 			layout : 'fit',
 			defaultType : 'radiogroup',
 			items : [{
-				ref   : '../../clcLevels',
-				id: me.id + "clcLevels",
+				ref   : '../../weatherProgStat',
+				id: me.id + "_weatherProgStat",
 	            cls: 'x-check-group-alt',
-				name : 'raster',
+				name : 'weatherProgStatVar',
             	columns: 1,
+            	items:[{
+                	boxLabel: "Sum", 
+                	name: 'weatherProgStatVar', 
+                	inputValue: 0
+                },{
+                	boxLabel: "Min", 
+                	name: 'weatherProgStatVar', 
+                	inputValue: 1
+                },{
+                	boxLabel: "Max", 
+                	name: 'weatherProgStatVar', 
+                	inputValue: 2
+                },{
+                	boxLabel: "Mean", 
+                	name: 'weatherProgStatVar', 
+                	inputValue: 3
+                },{
+                	boxLabel: "Std", 
+                	name: 'weatherProgStatVar', 
+                	inputValue: 4
+                }],
             	listeners:{
-            		change: me.onLayerSelect,
-            		scope: this
-            	}
-            }]
-        },{
-			title : this.imperviousnessText,
-			xtype : 'fieldset',
-			autoWidth : true,
-			autoHeight : true,
-			collapsible : false,
-			layout : 'fit',
-			defaultType : 'radiogroup',
-			items : [{
-				ref   : '../../imperviousness',
-				id: me.id + "imperviousness",
-	            cls: 'x-check-group-alt',
-				name : 'raster',
-            	columns: 1,
-			    defaults: {
-			        // applied to each contained panel
-			        bodyStyle: 'padding:15px'
-			    },
-            	listeners:{
-            		change: me.onLayerSelect,
+            		//change: this.sealingIndexSelect,
             		scope: this
             	}
             }]
@@ -376,129 +359,178 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 		gxp.widgets.form.WeatherProgPanel.superclass.onLayerSelect.call(this, el, selected, index);
 	},
 
-    /** api: method[getSealingIndexItems]
+    /** api: method[getWeatherProgClimateItems]
      *  :arg config: ``String`` for this element. Unused
-     *  :returns: ``Array`` items for the sealing index element.
-     *  Obtain sealing index elements.
+     *  :returns: ``Array`` items for Weather Prog Climate.
+     *  Obtain Weather Prog Climate.
      */
-	getSealingIndexItems: function(config){
+	getWeatherProgClimateItems: function(config){
 
 		var me = this;
 
 		return [{
-			title : this.basedOnCLCText,
+			title : this.weatherProgClimateTitleText,
 			xtype : 'fieldset',
 			autoWidth : true,
 			collapsible : false,
 			layout : 'fit',
 			defaultType : 'radiogroup',
 			items : [{
-				ref   : '../../sealingIndexCLC',
-				id: me.id + "_sealingIndexCLC",
+				ref   : '../../weatherProgClimate',
+				id: me.id + "_weatherProgClimate",
 	            cls: 'x-check-group-alt',
-				name : 'sealingIndex',
+				name : 'weatherProgClimateVar',
             	columns: 1,
             	items:[{
-                	boxLabel: this.coverText, 
-                	name: 'sealingIndex', 
-                	inputValue: 1
+                	boxLabel: "Precipitation", 
+                	name: 'weatherProgClimateVar', 
+                	inputValue: "rain_cum"
                 },{
-                	boxLabel: this.changingTaxText, 
-                	name: 'sealingIndex', 
-                	inputValue: 2
+                	boxLabel: "Min Temperature", 
+                	name: 'weatherProgClimateVar', 
+                	inputValue: "temp_min"
                 },{
-                	boxLabel: this.marginConsumeText, 
-                	name: 'sealingIndex', 
-                	inputValue: 3
+                	boxLabel: "Max Temperature", 
+                	name: 'weatherProgClimateVar', 
+                	inputValue: "temp_max"
                 },{
-                	boxLabel: this.sprawlText, 
-                	name: 'sealingIndex', 
-                	inputValue: 4
-                }],
-            	listeners:{
-            		change: this.sealingIndexSelect,
-            		scope: this
-            	}
-            }]
-        },{
-			title : this.basedOnImperviousnessText,
-			xtype : 'fieldset',
-			autoWidth : true,
-			collapsible : false,
-			layout : 'fit',
-			defaultType : 'radiogroup',
-			items : [{
-				ref   : '../../sealingIndexImpervious',
-				id: me.id + "_sealingIndexImpervious",
-	            cls: 'x-check-group-alt',
-				name : 'sealingIndex',
-            	columns: 1,
-			    defaults: {
-			        // applied to each contained panel
-			        bodyStyle: 'padding:15px'
-			    },
-            	items:[{
-                	boxLabel: this.urbanDispersionText, 
-                	name: 'sealingIndex', 
+                	boxLabel: "Mean Temperature", 
+                	name: 'weatherProgClimateVar', 
+                	inputValue: "temp_mean"
+                }/*,{
+                	boxLabel: "Plasmopara viticola", 
+                	name: 'weatherProgClimateVar', 
                 	inputValue: 5
-                },{
-                	boxLabel: this.edgeDensityText, 
-                	name: 'sealingIndex', 
-                	inputValue: 6
-                },
-                {
-                	title : this.urbanDiffusionText,
-					xtype : 'fieldset',
-					autoWidth : true,
-					collapsible : false,
-					layout : 'fit',
-					defaultType : 'radiogroup',
-					items : [{
-			            cls: 'x-check-group-alt',
-						name : 'sealingIndex',
-		            	columns: 1,
-					    defaults: {
-					        // applied to each contained panel
-					        bodyStyle: 'padding:1px'
-					    },
-					    items:
-		                [{
-		                	boxLabel: this.urbanDiffusionAText, 
-		                	name: 'sealingIndex', 
-		                	inputValue: 71
-		                },{
-		                	boxLabel: this.urbanDiffusionBText, 
-		                	name: 'sealingIndex', 
-		                	inputValue: 72
-		                },{
-		                	boxLabel: this.urbanDiffusionCText, 
-		                	name: 'sealingIndex', 
-		                	inputValue: 73
-		                }],
-		            	listeners:{
-		            		change: me.sealingIndexSelect,
-		            		scope: me
-		            	}
-		          	}]
-                },{
-                	boxLabel: this.framesText, 
-                	name: 'sealingIndex', 
-                	inputValue: 8
-                },{
-                	boxLabel: this.consumeOnlyText, 
-                	name: 'sealingIndex', 
-                	inputValue: 9
-                },{
-                	boxLabel: this.consumeOnlyConfText, 
-                	name: 'sealingIndex', 
-                	inputValue: 10
-                }],
+                }*/],
             	listeners:{
-            		change: this.sealingIndexSelect,
+            		//change: this.sealingIndexSelect,
             		scope: this
             	}
             }]
         }];
+	},
+
+    /** api: method[getTimeSelectionItems]
+     *  :arg config: ``String`` for this element. Unused
+     *  :returns: ``Array`` items for the timeSelection element.
+     *  Obtain time selection elements.
+     */
+	getTimeSelectionItems: function(config){
+		var me = this;
+		var onElementSelect = function(el, selected, index) {
+			// Disable or enable elements by me.enableOrDisableConfig
+			if(selected && selected.inputValue){
+				me.enableOrDisableElements(selected.inputValue);
+			}
+		};
+		return [{
+	            xtype: 'radiogroup',
+				ref   : '/yearsSelection',
+	            cls: 'x-check-group-alt',
+				id   : me.id + '_yearsSelection',
+				name : 'years',
+            	columns: 1,
+            	items:[{
+                	boxLabel: this.oneYearText, 
+                	name: 'years', 
+                	inputValue: 1
+                },{
+                	boxLabel: this.twoYearsText, 
+                	name: 'years', 
+                	inputValue: 2
+                }],
+            	listeners:{
+            		change: onElementSelect
+            	}
+	        },{
+                title : "Hours - Day Filter",
+                xtype : 'fieldset',
+                collapsible : false,
+                layout : 'fit',           
+                items:[{
+                    xtype: 'radiogroup',
+                    ref   : '/dayhours',
+                    cls: 'x-check-group-alt',
+                    id   : me.id + '_dayhours',
+                    name : 'dayhours',
+                    columns: 2,
+                    listeners:{
+                        //change: onElementSelect
+                    },
+                    items:[{
+                            boxLabel: "Hours", 
+                            name: 'dayhours', 
+                            inputValue: "_h1"
+                        },{
+                            boxLabel: "Day", 
+                            name: 'dayhours', 
+                            inputValue: "_h24"
+                        }]
+                    }
+                ]
+	        },{
+			title : this.timeFilterTitle,
+			xtype : 'fieldset',
+			autoWidth : true,
+			collapsible : false,
+			layout : 'form',
+			defaultType : 'datefield',
+			items : [{
+				xtype : "datefield",
+				ref   : '../../filterT0ComboBox',
+				id   : me.id + '_filterT0ComboBox',
+				name : 'filterT0',
+                format: "Y-m-d H:i",
+				fieldLabel : this.referenceTimeFieldLabel,
+				//lazyInit : true,
+				//mode : 'local',
+				//triggerAction : 'all',
+				//store : this.timeValuesStore,
+				emptyText : "Select one time instant ...",
+				labelSeparator : ':' + '<span style="color: #918E8F; padding-left: 2px;">*</span>',
+				editable : true,
+				resizable : true,
+				allowBlank : false,
+				readOnly : false,
+				displayField : 'time',
+				validator : function(value) {
+					if (Ext.isEmpty(value))
+						return me.changeMatrixEmptyFilter;
+					return true;
+				},
+				listeners : {
+					scope : this,
+					select : me.selectTimeIndex
+				}
+			}, {
+				xtype : "datefield",
+				ref   : '../../filterT1ComboBox',
+				id   : me.id + '_filterT1ComboBox',
+				name : 'filterT1',
+				fieldLabel : this.currentTimeFieldLabel,
+                format: "Y-m-d H:i",
+				//lazyInit : true,
+				//mode : 'local',
+				//triggerAction : 'all',
+				//store : this.timeValuesStore,
+				emptyText : "Select one time instant ...",
+				labelSeparator : ':' + '<span style="color: #918E8F; padding-left: 2px;">*</span>',
+				editable : true,
+				resizable : true,
+				allowBlank : false,
+				readOnly : false,
+				displayField : 'time',
+				validator : function(value) {
+					if (Ext.isEmpty(value))
+						return me.changeMatrixEmptyFilter;
+					return true;
+				},
+				listeners : {
+					scope : me,
+					select : me.selectTimeIndex
+				}
+			}]
+		}];
 	},
 
     /** api: method[selectTimeIndex]
@@ -557,21 +589,23 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
      *  Submit form. FIXME: include new functionalities
      */
 	submitForm: function() {
-		if(this.validate()){
+        // Commented for demo
+		//if(this.validate()){
 			//TODO: Get result from WPS process
 			// var responseData = this.getFakeResponse();
 			// var params = this.getWPSParams();
 			// this.showResult(responseData);
 			
-			var wfsGrid = Ext.getCmp(this.geocoderConfig.targetResultGridId);
+            // Commented for demo
+			/*var wfsGrid = Ext.getCmp(this.geocoderConfig.targetResultGridId);
 			if(wfsGrid) {
 				var lastOptions = wfsGrid.store.lastOptions;
 	         	wfsGrid.store.reload(lastOptions);
 	         	wfsGrid.getView().refresh();
-			}
+			}*/
 			
 			this.startWPSRequest(this.getForm().getValues());
-		}
+		//}
 	},
 
     /** api: method[validate]
@@ -742,7 +776,7 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 	startWPSRequest : function(params) {
 
 		// index and subindex for 7
-		var index = params.sealingIndex;
+		/*var index = params.sealingIndex;
 		var subIndex = null;
 		if(index > 70){
 			subIndex = index == 71 ? 'a' : index == 72 ? 'b' : 'c';
@@ -760,12 +794,19 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 			}else{
 				style = this.geocoderConfig.styleSelection[index];
 			}
-		}
+		}*/
 		
+        var raster = params.weatherProgClimateVar + params.dayhours;
+        var style = this.geocoderConfig.defaultProcessStyle;
+        var statistic = params.weatherProgClimateVar.split("_")[1];
+        var startDate = params.filterT0;
+        var endDate = params.filterT1;
+        
 		// get inputs
 		var inputs = {
 			name : new OpenLayers.WPSProcess.LiteralData({
-				value : params.raster
+				//value : params.raster
+				value : raster
 			}),
 			defaultStyle : new OpenLayers.WPSProcess.LiteralData({
 				value : style
@@ -776,31 +817,29 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 			typeName : new OpenLayers.WPSProcess.LiteralData({
 				value : this.geocoderConfig.typeName
 			}),
-			referenceFilter : new OpenLayers.WPSProcess.ComplexData({
-				value : params.filterT0,
-				mimeType : 'text/plain; subtype=cql'
+			statistic : new OpenLayers.WPSProcess.LiteralData({
+				value : statistic
+			}),                                   
+			startDate : new OpenLayers.WPSProcess.LiteralData({
+				value : startDate
 			}),
-			index: new OpenLayers.WPSProcess.LiteralData({
-				value : index
-			}),
+			endDate : new OpenLayers.WPSProcess.LiteralData({
+				value : endDate
+			}),            
 			geocoderLayer: new OpenLayers.WPSProcess.LiteralData({
 				value : this.geocoderConfig.geocoderLayer
 			}),
 			geocoderPopulationLayer: new OpenLayers.WPSProcess.LiteralData({
 				value : this.geocoderConfig.geocoderPopulationLayer
 			}),
+            
 			admUnits: new OpenLayers.WPSProcess.LiteralData({
 				value : this.roiFieldSet.getSelectedAreas()
-			}),
-			admUnitSelectionType: new OpenLayers.WPSProcess.LiteralData({
-				value : this.roiFieldSet.returnType != null 
-					&& this.roiFieldSet.returnType.getValue 
-					&& this.roiFieldSet.returnType.getValue() == 'subs' ? "AU_SUBS" : "AU_LIST"
 			})
 		};
 
 		// Subindex for 7
-		if(subIndex){
+		/*if(subIndex){
 			inputs.subindex = new OpenLayers.WPSProcess.LiteralData({
 				value : subIndex
 			});
@@ -838,8 +877,8 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 				value : this.geocoderConfig.imperviousnessLayer
 			});
 			processName = this.geocoderConfig.imperviousnessProccessName;
-		}
-		
+		}*/
+		var processName = this.geocoderConfig.wpsProcessName;
 
 		var requestObject = {
 			type : "raw",

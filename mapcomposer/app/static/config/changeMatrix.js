@@ -282,6 +282,45 @@
 	                    "sortable": true
 	                }
 	            ]
+            },{
+            	"title": "Weather Prog Runs",
+            	"featureType": "weatherprog",
+        		"featureTypeDetails": "weather",
+	            "columns" : [
+	            	{
+	                    "header": "Status", 
+	                    "dataIndex": "itemStatus",
+	                    "sortable": true
+	                },{
+	                    "header": "Reference Name", 
+	                    "dataIndex": "referenceName",
+	                    "sortable": true
+	                },{
+	                    "header": "Statistic", 
+	                    "dataIndex": "statistic",
+	                    "sortable": true
+	                },{
+	                    "header": "Clima Var", 
+	                    "dataIndex": "climavar",
+	                    "sortable": true
+	                },{
+	                    "header": "Start Date", 
+	                    "dataIndex": "runBegin",
+	                    "sortable": true
+	                },{
+	                    "header": "End Date", 
+	                    "dataIndex": "runEnd",
+	                    "sortable": true
+	                },{
+	                    "header": "Filter (reference)", 
+	                    "dataIndex": "referenceFilter",
+	                    "sortable": true
+	                },{
+	                    "header": "Filter (current)", 
+	                    "dataIndex": "nowFilter",
+	                    "sortable": true
+	                }
+	            ]
             }]
         },{
             "ptype": "gxp_addlayer",
@@ -521,19 +560,13 @@
             	"title": "Weather Prog",
             	"geocoderConfig": {
             		"selectReturnType": true,
-            		"wpsProcessName": "gs:SoilSealingCLC",
-            		"storeName": "unina_ds",
-            		"typeName": "soilsealing",
+            		"wpsProcessName": "gs:WeatherProg",
+            		"storeName": "unina_wp",
+            		"typeName": "weatherprog",
             		"geocoderLayer": "geocoder",
             		"geocoderPopulationLayer": "geocoder_population",
             		"defaultProcessStyle": "raster",
-            		"styleSelection": {
-            			"3": "sprawl",
-            			"4": "sprawl"
-            		},
-            		"imperviousnessProccessName": "gs:SoilSealingImperviousness",
-            		"imperviousnessLayer": "imperviousness",
-            		"targetResultGridId": "wfsChangeMatrisGridPanel_tab_1"
+            		"targetResultGridId": "wfsChangeMatrisGridPanel_tab_2"
             	},
             	"xtype": "gxp_weatherprogpanel"
             }]
