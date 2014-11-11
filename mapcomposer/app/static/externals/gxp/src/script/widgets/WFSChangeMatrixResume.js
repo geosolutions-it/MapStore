@@ -402,22 +402,22 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 											var total = data.substring(data.indexOf("> ")+2);
 											
 											/**
-											 * Search for the 'Now' total
+											 * Search for the 'Now' diagonal
 											 */
-											var total2;
+											var diagonalIndex;
 											var column = grid.getStore().getAt(0);
 											if (column.json[0] == '[Sum]') {
 												for (var c=1;c<column.json.length;c++) {
-													total2 = column.json[c]+"";
+													var total2 = column.json[c]+"";
 													if (total2.indexOf("> ") > 0 && total2.indexOf("'"+gridRowLabel+"'") > 0) {
-														total2 = parseFloat(total2.substring(total2.indexOf("> ")+2));
+														//total2 = parseFloat(total2.substring(total2.indexOf("> ")+2));
+														diagonalIndex = c;
 														break;
-													}
-													
+													}													
 												}
 											}
-											
-											var diff = total2 - total;
+											var diagonal = parseFloat(grid.getStore().getAt(diagonalIndex-1).json[diagonalIndex]);
+											var diff = diagonal - total;
 											var perc = (diff * 100)/total;
 											    perc = parseFloat(Math.round(perc * 100) / 100).toFixed(2);
 
@@ -450,21 +450,22 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 											var total = data.substring(data.indexOf("> ")+2);
 											
 											/**
-											 * Search for the 'Now' total
+											 * Search for the 'Reference' diagonal
 											 */
-											var total2;
+											var diagonalIndex;
 											for (var r=2;r<record.json.length;r++) {
 												var dataItem = [];
 												var row = grid.getStore().getAt(r-1);
-												total2 = row.json[1]+"";
+												var total2 = row.json[1]+"";
 												if (total2.indexOf("> ") > 0 && total2.indexOf("'"+gridColLabel+"'") > 0) {
-													total2 = parseFloat(total2.substring(total2.indexOf("> ")+2));
+													//total2 = parseFloat(total2.substring(total2.indexOf("> ")+2));
+													diagonalIndex = r;
 													break;
 												}
 											}
-											
-											var diff = total2 - total;
-											var perc = (diff * 100)/total;
+											var diagonal = parseFloat(grid.getStore().getAt(diagonalIndex-1).json[diagonalIndex]);
+											var diff = total - diagonal;
+											var perc = (diff * 100)/diagonal;
 											    perc = parseFloat(Math.round(perc * 100) / 100).toFixed(2);
 
 											/**

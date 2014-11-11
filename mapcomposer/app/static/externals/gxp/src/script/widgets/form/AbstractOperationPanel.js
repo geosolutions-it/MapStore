@@ -698,21 +698,15 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 
 		// Fieldset configuration
 		var roiFieldSetConfig = {
+				xtype:'gxp_spatial_selector_field',
 				ref: '/roiFieldSet',
 				id: this.id + '_roiFieldSet',
-				layout: 'table',
-				xtype:'gxp_spatial_selector_field',
+				layout : 'table',
+				column: 1,
 				loadingMaskId: this.id,
 				wpsManager: this.wpsManager,
-				autoHeight: true,
-				autoWidth: true,
-	            height: 400,
 				forceFit: true,
-	            autoScroll: true,
-				scrollable : {
-		          direction     : 'vertical',
-		          directionLock : true
-		        }
+	            autoScroll: true
 		};
 
 		// configuration for long screens
@@ -737,19 +731,16 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 
 		// Envelop in a panel to show scrollbar
 		//if($(window).height() < 1000){
-			roiFieldSetConfig.ref = '../../roiFieldSet';
+		roiFieldSetConfig.ref = '../../roiFieldSet';
 			return {
 	            xtype: 'panel',
-				autoHeight: false,
-				autoWidth: false,
-	            height: 320,
-				forceFit: true,
-	            autoScroll: true,
+	            layout : 'vBox',
+	            height: 600,
 	        	items:[roiFieldSetConfig]
 	        };
-		/*}else{
-			return [roiFieldSetConfig];
-		}*/
+		/*}else{*/
+			//return [roiFieldSetConfig];
+		/*}*/
 	},
 
     /** api: method[generateBbar]
