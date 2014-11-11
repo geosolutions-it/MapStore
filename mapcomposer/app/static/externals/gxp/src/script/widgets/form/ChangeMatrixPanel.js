@@ -129,7 +129,8 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(gxp.widgets.form.AbstractOperati
 	        items: this.getCclLegendItems(config)
 	    },{
     		title: this.roiTitleText,
-			layout : 'vBox',
+			layout : 'form',
+			autoScroll: true,
 	        items: this.getRoiItems(config)
 	    }];
 	},

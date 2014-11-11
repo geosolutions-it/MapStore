@@ -196,7 +196,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         this.westField = new Ext.form.NumberField({
             fieldLabel: this.westLabel,
             id: me.id+"_WestBBOX",
-            width: 70,
+            width: 60,
             allowBlank: false,
           /*  minValue: this.spatialFilterOptions.latMin,
             maxValue: this.spatialFilterOptions.latMax,*/
@@ -208,7 +208,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         this.eastField = new Ext.form.NumberField({
             fieldLabel: this.eastLabel,
             id: me.id+"_EastBBOX",
-            width: 70,
+            width: 60,
             allowBlank: false,
           /*  minValue: this.spatialFilterOptions.latMin,
             maxValue: this.spatialFilterOptions.latMax,*/

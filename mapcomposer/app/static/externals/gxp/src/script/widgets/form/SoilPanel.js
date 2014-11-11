@@ -240,9 +240,9 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	        items: this.getCclLegendItems(config)
 	    },{
     		title: this.roiTitleText,
-			layout : 'vBox',
-			scroll: true,
-			height: 400,
+    		layout : 'form',
+			//height: 400,
+			autoScroll: true,
 	        items: this.getRoiItems(config)
 	    }];
 	},

@@ -265,13 +265,14 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 	// //////////////////////////////////////////////////////////////
 
 	// Begin default FieldSet layout config.
-	autoHeight : true,
+	//autoHeight : true,
+	//autoWidth : true,
+	//autoScroll : true,
 	hidden : false,
-	autoWidth : true,
 	collapsed : false,
 	checkboxToggle : true,
-	autoHeight : true,
-	layout : 'table',
+	//layout : 'table',
+	layout : 'form',
 	bodyCssClass : 'aoi-fields',
 	layoutConfig : {
 		columns : 1
@@ -572,7 +573,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		// Return type options
 		this.returnTypeFieldSet = new Ext.form.FieldSet({
 			title : this.selectionReturnTypeLabel,
-			autoWidth : this.autoWidth,
+			//autoWidth : this.autoWidth,
 			layout : 'form',
 			hidden: true,
 			defaultType : 'numberfield',
@@ -900,6 +901,10 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 							 */
 							me.reset();
 						}
+						
+						//debugger
+						me.doLayout();
+						me.ownerCt.doLayout();
 					},
 					scope : this
 				}
@@ -910,7 +915,8 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		// ///////////////////////////////////////////
 		var confbbox = {
             map: this.map,
-			width : itemsWidth,
+			//width : itemsWidth,
+			heigth: 600,
             outputSRS : this.map.projection,
             spatialFilterOptions: this.spatialFilterOptions,
             checkboxToggle: false,
@@ -1209,6 +1215,10 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 	                }
 	            ],
 	            height: 300,
+	            autoHeight: false,
+	            autoWidth: true,
+	            forceFit: true,
+	            autoScroll: false,
 	            title: this.geocodingPanelTitle,
 	            scope: this
 	        });
@@ -1324,9 +1334,13 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		    //
 		    this.geocodingFieldSet = new Ext.form.FieldSet({
 	            title: this.geocodingFieldSetTitle,
-				// autoHeight: 342,
-				width : itemsWidth,
-				autoHeight: this.autoHeight,
+				//autoHeight: true,
+				heigth: 800,
+				autoWidth: true,
+				forceFit: false,
+				//width : itemsWidth,
+				//autoHeight: this.autoHeight,
+				autoScroll: true,
 				collapsed: false,
 				hidden: true,
 				layout: 'anchor',
