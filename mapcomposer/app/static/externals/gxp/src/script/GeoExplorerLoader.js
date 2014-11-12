@@ -207,6 +207,9 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
         }
         Ext.Ajax.request({
             method: 'GET',
+            headers:{
+                'Accept' : 'application/json'
+            },
             scope: this,
             url: url,
             success: function(response, opts){
