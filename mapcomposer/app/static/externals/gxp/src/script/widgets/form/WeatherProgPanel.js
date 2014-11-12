@@ -277,7 +277,8 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
             	items:[{
                 	boxLabel: "Sum", 
                 	name: 'weatherProgStatVar', 
-                	inputValue: "SUM"
+                	inputValue: "SUM",
+                    checked: true
                 },{
                 	boxLabel: "Min", 
                 	name: 'weatherProgStatVar', 
@@ -289,11 +290,13 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
                 },{
                 	boxLabel: "Mean", 
                 	name: 'weatherProgStatVar', 
-                	inputValue: "MEAN"
+                	inputValue: "MEAN",
+                    disabled: true
                 },{
                 	boxLabel: "Std", 
                 	name: 'weatherProgStatVar', 
-                	inputValue: "STD"
+                	inputValue: "STD",
+                    disabled: true
                 }],
             	listeners:{
             		//change: this.sealingIndexSelect,
@@ -378,7 +381,8 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
             	items:[{
                 	boxLabel: "Precipitation", 
                 	name: 'weatherProgClimateVar', 
-                	inputValue: "rain_cum"
+                	inputValue: "rain_cum",
+                    checked: true
                 },{
                 	boxLabel: "Min Temperature", 
                 	name: 'weatherProgClimateVar', 
@@ -435,7 +439,8 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
                 },{
                 	boxLabel: this.twoYearsText, 
                 	name: 'years', 
-                	inputValue: 2
+                	inputValue: 2,
+                    checked: true
                 }],
             	listeners:{
             		change: onElementSelect
@@ -463,7 +468,8 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
                         },{
                             boxLabel: "Day", 
                             name: 'dayhours', 
-                            inputValue: "_h24"
+                            inputValue: "_h24",
+                            checked: true
                         }]
                     }
                 ]
