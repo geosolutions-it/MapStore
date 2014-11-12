@@ -284,8 +284,8 @@
 	            ]
             },{
             	"title": "Weather Prog Runs",
-            	"featureType": "weatherprog",
-        		"featureTypeDetails": "weather",
+            	"featureType": "weatherstats",
+        		"featureTypeDetails": "stats",
 	            "columns" : [
 	            	{
 	                    "header": "Status", 
@@ -296,14 +296,6 @@
 	                    "dataIndex": "referenceName",
 	                    "sortable": true
 	                },{
-	                    "header": "Statistic", 
-	                    "dataIndex": "statistic",
-	                    "sortable": true
-	                },{
-	                    "header": "Clima Var", 
-	                    "dataIndex": "climavar",
-	                    "sortable": true
-	                },{
 	                    "header": "Start Date", 
 	                    "dataIndex": "runBegin",
 	                    "sortable": true
@@ -312,12 +304,12 @@
 	                    "dataIndex": "runEnd",
 	                    "sortable": true
 	                },{
-	                    "header": "Filter (reference)", 
-	                    "dataIndex": "referenceFilter",
+	                    "header": "Start Time", 
+	                    "dataIndex": "startTime",
 	                    "sortable": true
 	                },{
-	                    "header": "Filter (current)", 
-	                    "dataIndex": "nowFilter",
+	                    "header": "End Time", 
+	                    "dataIndex": "endTime",
 	                    "sortable": true
 	                }
 	            ]
@@ -560,11 +552,9 @@
             	"title": "Weather Prog",
             	"geocoderConfig": {
             		"selectReturnType": true,
-            		"wpsProcessName": "gs:WeatherProg",
-            		"storeName": "unina_wp",
-            		"typeName": "weatherprog",
-            		"geocoderLayer": "geocoder",
-            		"geocoderPopulationLayer": "geocoder_population",
+            		"wpsProcessName": "gs:WeatherStatistics",
+            		"storeName": "unina_ds",
+            		"typeName": "weatherstats",
             		"defaultProcessStyle": "raster",
             		"targetResultGridId": "wfsChangeMatrisGridPanel_tab_2"
             	},

@@ -229,9 +229,8 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 	generateItems: function(config){
 		return [{
     		title: this.roiTitleText,
-			layout : 'vBox',
-			scroll: true,
-			height: 400,
+			layout : 'form',
+			autoScroll: true,
 	        items: this.getRoiItems(config)
 	    },{
     		title: this.weatherProgClimateTitleText,
@@ -244,12 +243,7 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
     		title: this.weatherProgStatTitleText,
     		//layout : 'fit',
 	        items: this.getWeatherProgStatItems(config)
-	    }/*,{
-    		title: this.clcLegendBuilderTitleText,
-			layout : 'table',
-			columns: 1,
-	        items: this.getCclLegendItems(config)
-	    }*/];
+	    }];
 	},
 
     /** api: method[getWeatherProgStatItems]
@@ -283,23 +277,23 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
             	items:[{
                 	boxLabel: "Sum", 
                 	name: 'weatherProgStatVar', 
-                	inputValue: 0
+                	inputValue: "SUM"
                 },{
                 	boxLabel: "Min", 
                 	name: 'weatherProgStatVar', 
-                	inputValue: 1
+                	inputValue: "MIN"
                 },{
                 	boxLabel: "Max", 
                 	name: 'weatherProgStatVar', 
-                	inputValue: 2
+                	inputValue: "MAX"
                 },{
                 	boxLabel: "Mean", 
                 	name: 'weatherProgStatVar', 
-                	inputValue: 3
+                	inputValue: "MEAN"
                 },{
                 	boxLabel: "Std", 
                 	name: 'weatherProgStatVar', 
-                	inputValue: 4
+                	inputValue: "STD"
                 }],
             	listeners:{
             		//change: this.sealingIndexSelect,
@@ -388,15 +382,18 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
                 },{
                 	boxLabel: "Min Temperature", 
                 	name: 'weatherProgClimateVar', 
-                	inputValue: "temp_min"
+                	inputValue: "temp_min",
+                    disabled: true
                 },{
                 	boxLabel: "Max Temperature", 
                 	name: 'weatherProgClimateVar', 
-                	inputValue: "temp_max"
+                	inputValue: "temp_max",
+                    disabled: true
                 },{
                 	boxLabel: "Mean Temperature", 
                 	name: 'weatherProgClimateVar', 
-                	inputValue: "temp_mean"
+                	inputValue: "temp_mean",
+                    disabled: true
                 }/*,{
                 	boxLabel: "Plasmopara viticola", 
                 	name: 'weatherProgClimateVar', 
@@ -433,7 +430,8 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
             	items:[{
                 	boxLabel: this.oneYearText, 
                 	name: 'years', 
-                	inputValue: 1
+                	inputValue: 1,
+                    disabled: true
                 },{
                 	boxLabel: this.twoYearsText, 
                 	name: 'years', 
@@ -460,7 +458,8 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
                     items:[{
                             boxLabel: "Hours", 
                             name: 'dayhours', 
-                            inputValue: "_h1"
+                            inputValue: "_h1",
+                            disabled: true
                         },{
                             boxLabel: "Day", 
                             name: 'dayhours', 
@@ -481,15 +480,12 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 				id   : me.id + '_filterT0ComboBox',
 				name : 'filterT0',
                 format: "Y-m-d H:i",
-				fieldLabel : this.referenceTimeFieldLabel,
-				//lazyInit : true,
-				//mode : 'local',
-				//triggerAction : 'all',
-				//store : this.timeValuesStore,
-				emptyText : "Select one time instant ...",
+				fieldLabel : "Start Date",
+				emptyText : "Select Start Date ...",
 				labelSeparator : ':' + '<span style="color: #918E8F; padding-left: 2px;">*</span>',
 				editable : true,
 				resizable : true,
+                width : 150,
 				allowBlank : false,
 				readOnly : false,
 				displayField : 'time',
@@ -507,13 +503,14 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 				ref   : '../../filterT1ComboBox',
 				id   : me.id + '_filterT1ComboBox',
 				name : 'filterT1',
-				fieldLabel : this.currentTimeFieldLabel,
+				fieldLabel : "End Date",
                 format: "Y-m-d H:i",
+                width : 150,
 				//lazyInit : true,
 				//mode : 'local',
 				//triggerAction : 'all',
 				//store : this.timeValuesStore,
-				emptyText : "Select one time instant ...",
+				emptyText : "Select End Date ...",
 				labelSeparator : ':' + '<span style="color: #918E8F; padding-left: 2px;">*</span>',
 				editable : true,
 				resizable : true,
@@ -597,12 +594,12 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 			// this.showResult(responseData);
 			
             // Commented for demo
-			/*var wfsGrid = Ext.getCmp(this.geocoderConfig.targetResultGridId);
+			var wfsGrid = Ext.getCmp(this.geocoderConfig.targetResultGridId);
 			if(wfsGrid) {
 				var lastOptions = wfsGrid.store.lastOptions;
 	         	wfsGrid.store.reload(lastOptions);
 	         	wfsGrid.getView().refresh();
-			}*/
+			}
 			
 			this.startWPSRequest(this.getForm().getValues());
 		//}
@@ -617,6 +614,8 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 		var valid = true;
 		var msg = this.invalidFormDialogText;
 
+        
+        
 		// Time selection validation
 		if(values.years){
 			switch(parseInt(values.years)){
@@ -774,38 +773,61 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 	 *
 	 */
 	startWPSRequest : function(params) {
-
-		// index and subindex for 7
-		/*var index = params.sealingIndex;
-		var subIndex = null;
-		if(index > 70){
-			subIndex = index == 71 ? 'a' : index == 72 ? 'b' : 'c';
-			index = 7;
-		}
-
-		// default style
-		var style = this.geocoderConfig.defaultProcessStyle;
-		if(index 
-			&& this.geocoderConfig.styleSelection
-			&& this.geocoderConfig.styleSelection[index]){
-			if(subIndex
-				&& this.geocoderConfig.styleSelection[index][subIndex]){
-				style = this.geocoderConfig.styleSelection[index][subIndex];
-			}else{
-				style = this.geocoderConfig.styleSelection[index];
-			}
-		}*/
-		
+        var me = this;
+    
+        var start = this.filterT0ComboBox;
+        var end = this.filterT1ComboBox;
+        
+        var checkStartDate = start.getValue();
+        
+        if(checkStartDate !== ""){
+            var startDateISO = new Date(start.getValue());        
+            var startDateUTC = startDateISO.getFullYear() + '-'
+                        + this.pad(startDateISO.getMonth() + 1) + '-'
+                        + this.pad(startDateISO.getDate()) + 'T'
+                        + this.pad(startDateISO.getHours()) + ':'
+                        + this.pad(startDateISO.getMinutes()) + ':'
+                        + this.pad(startDateISO.getSeconds()) + 'Z';
+        }
+        
+        var checkEndDate = end.getValue();
+        
+        if (checkEndDate !== ""){
+            var endDateISO = new Date(end.getValue());
+            var endDateUTC = endDateISO.getFullYear() + '-'
+                        + this.pad(endDateISO.getMonth() + 1) + '-'
+                        + this.pad(endDateISO.getDate()) + 'T'
+                        + this.pad(endDateISO.getHours()) + ':'
+                        + this.pad(endDateISO.getMinutes()) + ':'
+                        + this.pad(endDateISO.getSeconds()) + 'Z';                    
+        }           
+            
+        var statistic = params.weatherProgStatVar;
         var raster = params.weatherProgClimateVar + params.dayhours;
         var style = this.geocoderConfig.defaultProcessStyle;
-        var statistic = params.weatherProgClimateVar.split("_")[1];
-        var startDate = params.filterT0;
-        var endDate = params.filterT1;
         
+		//get the current extent
+		var map = me.target.mapPanel.map;
+		var currentExtent = map.getExtent();
+		
+		//transform to a Geometry (instead of Bounds)
+		if (me.roiFieldSet && me.roiFieldSet.collapsed !== false && me.roiFieldSet.outputType.value) {
+			params.roi = me.roiFieldSet.currentExtent;
+		} else {
+			//currentExtent = map.getMaxExtent();
+			//change the extent projection if it differs from 4326
+			if (map.getProjection() != 'EPSG:4326') {
+				currentExtent.transform(map.getProjectionObject(), new OpenLayers.Projection('EPSG:4326'));
+			}
+			// set ROI parameter
+			params.roi = currentExtent.toGeometry();
+		}
+        
+        var cccc = params.roi.toString();
+
 		// get inputs
 		var inputs = {
 			name : new OpenLayers.WPSProcess.LiteralData({
-				//value : params.raster
 				value : raster
 			}),
 			defaultStyle : new OpenLayers.WPSProcess.LiteralData({
@@ -820,64 +842,18 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 			statistic : new OpenLayers.WPSProcess.LiteralData({
 				value : statistic
 			}),                                   
-			startDate : new OpenLayers.WPSProcess.LiteralData({
-				value : startDate
+			startTime : new OpenLayers.WPSProcess.LiteralData({
+				value : startDateUTC || " "
 			}),
-			endDate : new OpenLayers.WPSProcess.LiteralData({
-				value : endDate
-			}),            
-			geocoderLayer: new OpenLayers.WPSProcess.LiteralData({
-				value : this.geocoderConfig.geocoderLayer
+			endTime : new OpenLayers.WPSProcess.LiteralData({
+				value : endDateUTC || startDateUTC
 			}),
-			geocoderPopulationLayer: new OpenLayers.WPSProcess.LiteralData({
-				value : this.geocoderConfig.geocoderPopulationLayer
-			}),
-            
-			admUnits: new OpenLayers.WPSProcess.LiteralData({
-				value : this.roiFieldSet.getSelectedAreas()
+			ROI : new OpenLayers.WPSProcess.ComplexData({
+				value : params.roi.toString(),
+				mimeType : 'application/wkt'
 			})
 		};
 
-		// Subindex for 7
-		/*if(subIndex){
-			inputs.subindex = new OpenLayers.WPSProcess.LiteralData({
-				value : subIndex
-			});
-			// TODO: removeIt
-			this._subindex = subIndex;
-		}
-
-		// add curTime
-		if(params.filterT1){
-			inputs.nowFilter = new OpenLayers.WPSProcess.ComplexData({
-				value : params.filterT1,
-				mimeType : 'text/plain; subtype=cql'
-			});
-		}
-
-		
-		var processName;
-		if(index < 5){
-			// soil sealing
-			if(!this.classesselector.disabled && params.classesselector && params.classesselector.split){
-				// Generate classes elements
-				var classes = params.classesselector.split(",");
-				inputs.classes = [];
-				for (var i = 0; i < classes.length; i++) {
-					inputs.classes.push(new OpenLayers.WPSProcess.LiteralData({
-						value : classes[i]
-					}));
-				}	
-			}
-			processName = this.geocoderConfig.wpsProcessName;
-		}else{
-			// impervious
-			inputs.classes = null;
-			inputs.imperviousnessLayer = new OpenLayers.WPSProcess.LiteralData({
-				value : this.geocoderConfig.imperviousnessLayer
-			});
-			processName = this.geocoderConfig.imperviousnessProccessName;
-		}*/
 		var processName = this.geocoderConfig.wpsProcessName;
 
 		var requestObject = {
@@ -892,7 +868,10 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 		this.handleRequestStart();
 
 		this.wpsManager.execute(processName, requestObject, this.showResult, this);
-	}
+	},
+    pad: function (n) {
+        return n < 10 ? '0' + n : n
+    }
 
 });
 

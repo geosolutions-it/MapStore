@@ -51,7 +51,8 @@ gxp.widgets.WFSResume = Ext.extend(gxp.plugins.Tool, {
      */
 	resultMapping:{
 		'soilsealing': 'gxp_soilsealingresume',
-		'changematrix': 'gxp_changematrixresume'
+		'changematrix': 'gxp_changematrixresume',
+        'weatherstats': 'gxp_weatherprogresume'
 	},
 
     /** api: config[detaultPtype]
