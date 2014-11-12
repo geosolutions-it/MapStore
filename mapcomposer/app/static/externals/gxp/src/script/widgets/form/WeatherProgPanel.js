@@ -602,6 +602,8 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
             // Commented for demo
 			var wfsGrid = Ext.getCmp(this.geocoderConfig.targetResultGridId);
 			if(wfsGrid) {
+                var tab = wfsGrid.ownerCt.ownerCt;
+                tab.setActiveTab(2);
 				var lastOptions = wfsGrid.store.lastOptions;
 	         	wfsGrid.store.reload(lastOptions);
 	         	wfsGrid.getView().refresh();
