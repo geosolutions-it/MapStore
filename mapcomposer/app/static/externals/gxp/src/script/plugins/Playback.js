@@ -69,8 +69,12 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
     dynamicRange:false,
 	
     /**
-	  * api config[playbackMode]
-      * playback mode is one of: "track","cumulative","ranged",??"decay"??
+     * api config[playbackMode]
+	 * Playback mode is one of: "track","cumulative","ranged",??"decay"??
+     * from Openlayers.TimeAgent tool will be set as following: 
+     *      "ranged" - use a value range for time 
+     *      "cumulative" - use a range from the start time to the current time
+     *      "track": only use single value time parameters 
       */
 	playbackMode:"ranged",
     
