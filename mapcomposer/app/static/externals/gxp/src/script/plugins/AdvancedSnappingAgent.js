@@ -83,14 +83,15 @@ gxp.plugins.AdvancedSnappingAgent = Ext.extend(gxp.plugins.Tool, {
         snapTarget = Ext.apply({}, snapTarget);
 		var featureManager;
 		
+		var strategyBBOX = new OpenLayers.Strategy.BBOX({ratio: 1.5});
+		
 		var featureManagerConfig = {
             maxFeatures: null,
             paging: false,
             listeners: {
                 layerchange: function() {
-                
-                    if(featureManager.featureStore){
-                    
+					// FIX about undefined geometryType on DB
+                    if(featureManager.featureStore && featureManager.geometryType != "Geometry"){                    
                         var map = this.target.mapPanel.map;
                         
                         var featureLayer = map.getLayersByName(snapTarget.name || "snapping_target")[0];
@@ -125,7 +126,7 @@ gxp.plugins.AdvancedSnappingAgent = Ext.extend(gxp.plugins.Tool, {
             
                         var layer = new OpenLayers.Layer.Vector(snapTarget.name || "snapping_target", {
                             protocol: featureManager.featureStore.proxy.protocol,
-                            strategies: [new OpenLayers.Strategy.BBOX({ratio: 1.5})],
+                            strategies: [strategyBBOX],
                             displayInLayerSwitcher: false,
                             visibility: true,
                             styleMap: new OpenLayers.StyleMap(style["all"], {extendDefault: true}),    
@@ -152,15 +153,11 @@ gxp.plugins.AdvancedSnappingAgent = Ext.extend(gxp.plugins.Tool, {
                         for (var i=0, ii=this.controls.length; i<ii; ++i) {
                             this.controls[i].addTarget(snapTarget);
                         }
-                        
-                        //Temporary FIX about undefined geometryType on Comune Genova Oracle DB
-                        if(featureManager.geometryType != "Geometry")
-                            this.actions[0].enable();
-                        
+
+                        this.actions[0].enable();
+						
                     }else{
-                    
                         this.actions[0].disable();
-                        
                     }
                 },
                 scope: this
