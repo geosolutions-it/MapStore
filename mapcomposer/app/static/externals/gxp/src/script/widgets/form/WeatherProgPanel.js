@@ -40,132 +40,51 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 
 	/** api: xtype = gxp_weatherprogpanel */
 	xtype : "gxp_weatherprogpanel",
+    
+    forceLayout : true, 
 
 	/** i18n **/
     weatherProgClimateTitleText: 'Climate Variables',
-    basedOnCLCText: 'Based on CLC',
-    
-    weatherProgStatTitleText: 'Stat',
-    
-	clcLevelTitleText: 'CLC Levels / Urban Grids',
-	imperviousnessText: 'Imperviousness',
-
-	// LUC (land use/cover)
-	basedOnCLCText: 'Based on CLC',
-	coverText: 'Coefficiente Copertura',
-	changingTaxText: 'Tasso di Variazione',
-	marginConsumeText: 'Consumo Marginale del Suolo',
-	sprawlText: 'Sprawl Urbano',
-
-	// Second fieldset (impervious)
-	basedOnImperviousnessText: 'Based on Imperviousness',
-	urbanDispersionText: 'Dispersione Urbana',
-	edgeDensityText: 'Edge Density',
-	urbanDiffusionText: 'Diffusione Urbana',
-	urbanDiffusionAText: 'Urban Area',
-	urbanDiffusionBText: 'Highest Polygon Ratio',
-	urbanDiffusionCText: 'Other Polygons Ratio',
-	framesText: 'Frammentazione',
-	consumeOnlyText: 'Consumo Suolo',
-	consumeOnlyConfText: 'Coefficiente Ambientale Cons. Suolo',
+    weatherProgStatTitleText: 'Statistics',
+    climateVarPrecLabel: "Precipitation", 
+    climateVarMinTempLabel: "Min Temperature", 
+    climateVarMaxTempLabel: "Max Temperature", 
+    climateVarMeanTempLabel: "Mean Temperature",     
+    timeFieldsetTitle: "Hours - Day Filter",    
+    timeHoursLabel: "Hours", 
+    timeDayLabel: "Day",                 
+    startDateLabel: "Selection Begin",
+    startDateEmptyText: "Select Start Date ...",
+    endDateLabel: "Selection end",
+    endDateEmptyText: "Select End Date ...",                            
 
 	// Validation
 	invalidFormDialogText: "Please review the form fields:<ul>",
 	invalidFormTitleText: "Error",
-	invalidYearsFormDialogText: "Years range not selected",
-	invalidROIFormDialogText: "ROI not selected",
-	invalidCLCLevelFormDialogText: "CLC level not selected",
-	invalidClassesFormDialogText: "CLC Level builder not selected",
-	invalidSealingIndexFormDialogText: "Soil Sealing index not selected",
-	invalidRange0IndexFormDialogText: "Reference time not selected",
-	invalidRange1IndexFormDialogText: "Current time not selected",
+    dateMandatoryAlertText: "You must select at least the start date",
+    twoTimeMandatoryAlertText: "You have selected Two time, you must also select And Time",
+    startDateMandatoryAlertText: "You must select Start Time",
 	wpsError: "Error on WPS Process",
 
 	/** EoF i18n **/
 
 	// show result grid when done. Default is false
 	showResultOnDone: false,
-    
+
     /** api: config[defaultAction]
      *  ``Object`` Time selection set disable elements
      */
 	enableOrDisableConfig:{
 		1:{
-			sealingIndexCLC:{
-				0: false,
-				1: true,
-				2: true,
-				3: true
-			},
-			sealingIndexImpervious:{
-				0: false,
-				1: false,
-				2: false,
-				3: false,
-				4: false,
-				5: false,
-				6: true,
-				7: true
-			},
-			filterT1ComboBox: true,
-			classesselector: false
+			filterT1ComboBox: true
 		},
 		2:{
-			sealingIndexCLC:{
-				0: false,
-				1: false,
-				2: false,
-				3: false
-			},
-			sealingIndexImpervious:{
-				0: false,
-				1: false,
-				2: false,
-				3: false,
-				4: false,
-				5: false,
-				6: false,
-				7: false
-			},
 			filterT1ComboBox: false
 		},
-		'sealingIndexImpervious':{
-			classesselector: true
-		},
-		'sealingIndexCLC':{
-			rasterComboBox: false,
-			classesselector: false
-		},
 		'default':{
-			sealingIndexCLC:{
-				0: false,
-				1: false,
-				2: false,
-				3: false
-			},
-			sealingIndexImpervious:{
-				0: false,
-				1: false,
-				2: false,
-				3: false,
-				4: false,
-				5: false,
-				6: false,
-				7: false
-			},
-			rasterComboBox: false,
-			filterT1ComboBox: false,
-			classesselector: false
-		},
-		'clcLevels':{
-			sealingIndexCLC: false,
-			sealingIndexImpervious: true
-		},
-		'impervious':{
-			sealingIndexCLC: true,
-			sealingIndexImpervious: false
+			filterT1ComboBox: false
 		}
-	},
+	},    
     
     /** api: config[roiFieldSetConfig]
      *  ``Object`` Configuration to overwrite roifieldset config
@@ -210,17 +129,13 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 		}]
 	},
 
-    /** api: config[clcLevelsConfig]
-     *  ``Object`` CLC levels cconfiguration
-     */
-	clcLevelsConfig:[{
-		filter: 'corine_L',
-		decorator: 'Corine Land Cover Level {0}'
-	},{
-		filter: 'urban_grids',
-		decorator: 'Urban Grids'
-	}],
-
+	initComponent:function(config){
+		var wfsResumeTool = this.target.tools['gxp_wfsresume'];
+		this.wfsResumeTool = wfsResumeTool;
+		this.wfsResumeTool.addSupport(this.classesIndexes, this.classes, this.geocoderConfig);
+		gxp.widgets.form.WeatherProgPanel.superclass.initComponent.call(this, config);
+	},
+    
     /** api: method[generateItems]
      *  :arg config: ``String`` Configuration to be applied on this
      *  :returns: ``Array`` items for the form.
@@ -253,12 +168,6 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
      */
 	getWeatherProgStatItems: function(config){
 
-        /*0	sum
-        1	min
-        2	max
-        3	mean
-        4	std*/
-    
 		var me = this;
 
 		return [{
@@ -291,15 +200,14 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
                 	boxLabel: "Mean", 
                 	name: 'weatherProgStatVar', 
                 	inputValue: "MEAN",
-                    disabled: true
+                    disabled: false
                 },{
                 	boxLabel: "Std", 
                 	name: 'weatherProgStatVar', 
                 	inputValue: "STD",
-                    disabled: true
+                    disabled: false
                 }],
             	listeners:{
-            		//change: this.sealingIndexSelect,
             		scope: this
             	}
             }]
@@ -313,47 +221,8 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 		gxp.widgets.form.WeatherProgPanel.superclass.resetForm.call(this);
 		this.filterT0ComboBox.reset();
 		this.filterT1ComboBox.reset();
-		this.activeElementByTitle(this.clcLevelTitleText);
-	},
-
-    /** api: method[onLayerSelect]
-     *  :arg el: ``Object`` Component
-     *  :arg selected: ``Object`` Selected element
-     *  Select a layer record as CLC level and initialize needed items on the form
-     */
-	onLayerSelect: function(el, selected, index) {
-
-		// Reset another elements
-		this.yearsSelection.reset();
-		this.filterT0ComboBox.reset();
-		this.filterT1ComboBox.reset();
-		this.sealingIndexCLC.reset();
-		this.sealingIndexImpervious.reset();
-		this.classesselector.reset();
-		if(this.roiFieldSet && this.roiFieldSet.rendered){
-			this.roiFieldSet.removeFeatureSummary();
-			this.roiFieldSet.reset();
-		}
-
-		if(selected && selected.inputValue 
-			// the filter for clc levels is 0
-			&& selected.inputValue.indexOf(this.clcLevelsConfig[0].filter) > -1) {
-			// should be impervious index
-			this.enableOrDisableElements('impervious');
-			// disable clc levels
-			this.clcLevels.items.each(function(item){
-				item.checked = false;
-			});
-		} else if(selected) {
-			this.enableOrDisableElements('clcLevels');
-			// disable imperviousness items
-			this.imperviousness.items.each(function(item){
-				item.checked = false;
-			});
-			// for(var key in this.imperviousness.ite)
-		}
-
-		gxp.widgets.form.WeatherProgPanel.superclass.onLayerSelect.call(this, el, selected, index);
+		this.activeElementByTitle(this.roiTitleText);
+        this.roiFieldSet.ownerCt.doLayout();
 	},
 
     /** api: method[getWeatherProgClimateItems]
@@ -379,32 +248,27 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 				name : 'weatherProgClimateVar',
             	columns: 1,
             	items:[{
-                	boxLabel: "Precipitation", 
+                	boxLabel: this.climateVarPrecLabel, 
                 	name: 'weatherProgClimateVar', 
                 	inputValue: "rain_cum",
                     checked: true
                 },{
-                	boxLabel: "Min Temperature", 
+                	boxLabel: this.climateVarMinTempLabel, 
                 	name: 'weatherProgClimateVar', 
                 	inputValue: "temp_min",
-                    disabled: true
+                    disabled: false
                 },{
-                	boxLabel: "Max Temperature", 
+                	boxLabel: this.climateVarMaxTempLabel, 
                 	name: 'weatherProgClimateVar', 
                 	inputValue: "temp_max",
-                    disabled: true
+                    disabled: false
                 },{
-                	boxLabel: "Mean Temperature", 
+                	boxLabel: this.climateVarMeanTempLabel, 
                 	name: 'weatherProgClimateVar', 
                 	inputValue: "temp_mean",
-                    disabled: true
-                }/*,{
-                	boxLabel: "Plasmopara viticola", 
-                	name: 'weatherProgClimateVar', 
-                	inputValue: 5
-                }*/],
+                    disabled: false
+                }],
             	listeners:{
-            		//change: this.sealingIndexSelect,
             		scope: this
             	}
             }]
@@ -426,6 +290,7 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 		};
 		return [{
 	            xtype: 'radiogroup',
+                deferredRender: false,
 				ref   : '/yearsSelection',
 	            cls: 'x-check-group-alt',
 				id   : me.id + '_yearsSelection',
@@ -435,7 +300,7 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
                 	boxLabel: this.oneYearText, 
                 	name: 'years', 
                 	inputValue: 1,
-                    disabled: true
+                    disabled: false
                 },{
                 	boxLabel: this.twoYearsText, 
                 	name: 'years', 
@@ -446,7 +311,7 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
             		change: onElementSelect
             	}
 	        },{
-                title : "Hours - Day Filter",
+                title : this.timeFieldsetTitle,
                 xtype : 'fieldset',
                 collapsible : false,
                 layout : 'fit',           
@@ -461,12 +326,12 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
                         //change: onElementSelect
                     },
                     items:[{
-                            boxLabel: "Hours", 
+                            boxLabel: this.timeHoursLabel, 
                             name: 'dayhours', 
                             inputValue: "_h1",
-                            disabled: true
+                            disabled: false
                         },{
-                            boxLabel: "Day", 
+                            boxLabel: this.timeDayLabel, 
                             name: 'dayhours', 
                             inputValue: "_h24",
                             checked: true
@@ -486,106 +351,30 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 				id   : me.id + '_filterT0ComboBox',
 				name : 'filterT0',
                 format: "Y-m-d H:i",
-				fieldLabel : "Start Date",
-				emptyText : "Select Start Date ...",
+				fieldLabel : this.startDateLabel,
+				emptyText : this.startDateEmptyText,
 				labelSeparator : ':' + '<span style="color: #918E8F; padding-left: 2px;">*</span>',
 				editable : true,
 				resizable : true,
                 width : 150,
 				allowBlank : false,
-				readOnly : false,
-				displayField : 'time',
-				validator : function(value) {
-					if (Ext.isEmpty(value))
-						return me.changeMatrixEmptyFilter;
-					return true;
-				},
-				listeners : {
-					scope : this,
-					select : me.selectTimeIndex
-				}
+				readOnly : false
 			}, {
 				xtype : "datefield",
 				ref   : '../../filterT1ComboBox',
 				id   : me.id + '_filterT1ComboBox',
 				name : 'filterT1',
-				fieldLabel : "End Date",
+				fieldLabel : this.endDateLabel,
                 format: "Y-m-d H:i",
                 width : 150,
-				//lazyInit : true,
-				//mode : 'local',
-				//triggerAction : 'all',
-				//store : this.timeValuesStore,
-				emptyText : "Select End Date ...",
+				emptyText : this.endDateEmptyText,
 				labelSeparator : ':' + '<span style="color: #918E8F; padding-left: 2px;">*</span>',
 				editable : true,
 				resizable : true,
 				allowBlank : false,
-				readOnly : false,
-				displayField : 'time',
-				validator : function(value) {
-					if (Ext.isEmpty(value))
-						return me.changeMatrixEmptyFilter;
-					return true;
-				},
-				listeners : {
-					scope : me,
-					select : me.selectTimeIndex
-				}
+				readOnly : false
 			}]
 		}];
-	},
-
-    /** api: method[selectTimeIndex]
-     *  Callback when a time selection item is selected
-     */
-	selectTimeIndex: function(){
-		var filter0 = Ext.getCmp(this.id + '_filterT0ComboBox');
-		var filter1 = Ext.getCmp(this.id + '_filterT1ComboBox');
-		var yearsSelection = Ext.getCmp(this.id + '_yearsSelection');
-		if(filter0  && filter0.getValue() 
-			&& yearsSelection && yearsSelection.getValue()
-			&& yearsSelection.getValue().inputValue
-			&& (yearsSelection.getValue().inputValue == 1 
-				||  filter1 && filter1.getValue())){
-			this.activeElementByTitle(this.soilSealingIndexTitleText);
-		}
-	},
-
-    /** api: method[selectTimeIndex]
-     *  Callback when a time selection item is selected
-     */
-	sealingIndexSelect: function(parent, selected){
-		if(parent 
-			&& parent.ref){
-			// Enable or disable elements based on parent.ref
-			var selectedType = parent.ref.replace("../../", "");
-			this.enableOrDisableElements(selectedType);
-			// If is a sealingIndexImpervious, expand ROI
-			if(selectedType == 'sealingIndexImpervious'){
-				// disable check on the other radiogroup
-				this.sealingIndexCLC.items.each(function(item){
-					item.checked = false;
-				});
-				this.activeElementByTitle(this.roiTitleText);
-			}else{
-				// disable check on the other radiogroup
-				this.sealingIndexImpervious.items.each(function(item){
-					item.checked = false;
-				});
-				if(selected && selected.inputValue){
-					if(selected.inputValue == 3 || selected.inputValue == 4){
-						this.classesselector.setDisabled(true);
-						// Active next accordion: roiTitleText
-						this.activeElementByTitle(this.roiTitleText);
-					}else{
-						this.classesselector.setDisabled(false);
-						// Active next accordion: clcLevelBuilder
-						this.activeElementByTitle(this.clcLegendBuilderTitleText);
-					}	
-				}
-			}
-		}
 	},
 
     /** api: method[submitForm]
@@ -593,24 +382,27 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
      */
 	submitForm: function() {
         // Commented for demo
-		//if(this.validate()){
+		if(this.validate()){
 			//TODO: Get result from WPS process
 			// var responseData = this.getFakeResponse();
 			// var params = this.getWPSParams();
 			// this.showResult(responseData);
+
+            //activate tab
+            var changematrixTool = this.target.tools["changeMatrixTool"];            
+            var tab = Ext.getCmp(changematrixTool.wfsChangeMatrisGridPanelID);
+            tab.setActiveTab(this.geocoderConfig.targetResultGridId + "_panel");
 			
             // Commented for demo
 			var wfsGrid = Ext.getCmp(this.geocoderConfig.targetResultGridId);
 			if(wfsGrid) {
-                var tab = wfsGrid.ownerCt.ownerCt;
-                tab.setActiveTab(2);
 				var lastOptions = wfsGrid.store.lastOptions;
 	         	wfsGrid.store.reload(lastOptions);
 	         	wfsGrid.getView().refresh();
 			}
-			
+                
 			this.startWPSRequest(this.getForm().getValues());
-		//}
+		}
 	},
 
     /** api: method[validate]
@@ -621,64 +413,26 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 		var values = form.getValues();
 		var valid = true;
 		var msg = this.invalidFormDialogText;
-
         
+        var startTime = this.filterT0ComboBox.getValue();
+        var endTime = this.filterT1ComboBox.getValue();                    
+        var yearsSelection = this.yearsSelection;
         
-		// Time selection validation
-		if(values.years){
-			switch(parseInt(values.years)){
-				case 2:
-					if(values.filterT1){
-						valid = valid && true;
-					}else{
-						valid = false;
-						msg += "<li>" + this.invalidRange1IndexFormDialogText + "</li>";
-					}
-				default: 
-					if(values.filterT0){
-						valid = valid && true;
-					}else{
-						valid = false;
-						msg += "<li>" + this.invalidRange0IndexFormDialogText + "</li>";
-					}
-			}
-		}else{
-			msg += "<li>" + this.invalidYearsFormDialogText + "</li>";
-			valid = false;
-		}
-
-		// Soil Sealing index validation
-		if(values.sealingIndex){
-			valid = valid && true;
-		}else{
-			valid = false;
-			msg += "<li>" + this.invalidSealingIndexFormDialogText + "</li>";
-		}
-
-		// CLC Level  validation
-		if(this.rasterComboBox.disabled || values.raster){
-			valid = valid && true;
-		}else{
-			valid = false;
-			msg += "<li>" + this.invalidCLCLevelFormDialogText + "</li>";
-		}
-
-		// CLC Level builder validation
-		if(this.classesselector.disabled || values.classesselector){
-			valid = valid && true;
-		}else{
-			valid = false;
-			msg += "<li>" + this.invalidClassesFormDialogText + "</li>";
-		}
-
-		// ROI validation
-		if(this.roiFieldSet && this.roiFieldSet.getSelectedAreas()){
-			valid = valid && true;
-		}else{
-			valid = false;
-			msg += "<li>" + this.invalidROIFormDialogText + "</li>";
-		}
-
+        if (startTime === "" && endTime === ""){
+            valid = false;
+            msg = "<li>" + this.dateMandatoryAlertText + "</li>";
+        }else{
+            if(startTime !== ""){
+                if (yearsSelection.getValue().inputValue === 2 && endTime === ""){
+                    valid = false;
+                    msg = "<li>" + this.twoTimeMandatoryAlertText + "</li>";        
+                }
+            }else{
+                valid = false;
+                msg = "<li>" + this.startDateMandatoryAlertText + "</li>";            
+            }
+        }
+        
 		// Show message if is invalid
 		if(!valid){
 			msg += "</ul>";
@@ -785,6 +539,7 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
     
         var start = this.filterT0ComboBox;
         var end = this.filterT1ComboBox;
+        var checkEdnDateDisabled = end.disabled;
         
         var checkStartDate = start.getValue();
         
@@ -813,6 +568,8 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
         var statistic = params.weatherProgStatVar;
         var raster = params.weatherProgClimateVar + params.dayhours;
         var style = this.geocoderConfig.defaultProcessStyle;
+        
+        var yearsSelection = this.yearsSelection;
         
 		//get the current extent
 		var map = me.target.mapPanel.map;
@@ -854,7 +611,7 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 				value : startDateUTC || " "
 			}),
 			endTime : new OpenLayers.WPSProcess.LiteralData({
-				value : endDateUTC || startDateUTC
+				value : checkEdnDateDisabled ? startDateUTC : endDateUTC
 			}),
 			ROI : new OpenLayers.WPSProcess.ComplexData({
 				value : params.roi.toString(),

@@ -219,6 +219,11 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(gxp.widgets.form.AbstractOperati
 		var me = this;
 		var form = me.getForm();
 		var formIsValid = true;
+
+        //activate tab
+        var changematrixTool = this.target.tools["changeMatrixTool"];            
+        var tab = Ext.getCmp(changematrixTool.wfsChangeMatrisGridPanelID);
+        tab.setActiveTab(this.geocoderConfig.targetResultGridId + "_panel");
 		
 		for (var itm = 0; itm < form.items.items.length; itm++) {
 			switch (form.items.items[itm].ref) {
@@ -299,7 +304,7 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(gxp.widgets.form.AbstractOperati
 		if(this.clcLevelMode == 'radiogroup'){
 			params.raster = params.raster.inputValue;
 		}
-
+        
 		me.startWPSRequest(params);
 	},
 

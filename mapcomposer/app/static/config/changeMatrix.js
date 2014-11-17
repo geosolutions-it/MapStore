@@ -521,6 +521,7 @@
             	{"layer": "it.crisp:touring", "level": 4, "values": [0,1,2,3,4,5,6,7,8,9,10,11,12,13]}
             ],
             "splitPanels": true,
+            "wfsChangeMatrisGridPanelID": "wfsChangeMatrisGridPanel_tabpanel",
             "panelsConfig": [{
             	"title": "Land Cover",
             	"clcLevelMode": "combobox",
@@ -553,8 +554,10 @@
             	"geocoderConfig": {
             		"selectReturnType": true,
             		"wpsProcessName": "gs:WeatherStatistics",
-            		"storeName": "unina_ds",
+            		"storeName": "unina_ds",                  
             		"typeName": "weatherstats",
+            		"geocoderLayer": "geocoder",
+            		"geocoderPopulationLayer": "geocoder_population",                    
             		"defaultProcessStyle": "raster",
             		"targetResultGridId": "wfsChangeMatrisGridPanel_tab_2"
             	},
