@@ -59,6 +59,77 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
       * so the action can not be runned from this UI
       */
     defaultRunConfig: null,
+    /**
+     * Action Columns for the outcomes grid
+     */
+    actionColumns:[{
+        xtype : 'actioncolumn',
+        hideable: false,
+        width : 35,
+        renderMapToTab: "mainTabPanel",
+        detailsMapIdPath: "mapId",
+        resultField: "results",
+        baseMapUrl: "/?config=assetAllocatorResult",
+        titlePath:'title',
+        loadingMessage:'Loading...',
+        items : [{
+            iconCls : 'gx-map-go',
+            width : 25,
+            tooltip : "View Map",
+            getClass : function(v, meta, rec) {
+                var details = rec.get(this.resultField); 
+                var mapId = eval("details." + this.detailsMapIdPath);
+                var target = Ext.getCmp(this.renderMapToTab);
+                if (rec.get('status') != 'RUNNING' && mapId){
+                   return 'x-grid-center-icon action_column_btn';
+                }
+                 return 'x-hide-display';
+                
+            },
+            handler : function(grid, rowIndex, colIndex){
+                var rec = grid.store.getAt(rowIndex);
+                var details = rec.get(this.resultField); 
+                var mapId = eval("details." + this.detailsMapIdPath);
+                var target = Ext.getCmp(this.renderMapToTab);
+                var title = eval("details." + this.titlePath);
+                var src = this.baseMapUrl; //TODO '?locale=' + this.target.lang ;
+                var iframeTitle = title || "Map";
+                if(!(src.indexOf("?")>=0)){
+                   src+='?';
+                } 
+                if(mapId != -1){
+                    src += '&mapId=' + mapId;
+                }
+
+                var iframeTitle =  title ;
+                var iframeconfig = {
+                    waitMsg: this.loadingMessage,
+                    width:900,
+                    height:650,
+                    collapsible:false,
+                    maximizable: true,
+                    maximized: true,
+                    closable: true,
+                    modal: true,
+                    closeAction: 'close',
+                    constrainHeader: true,
+                    maskEmpty: true,
+                    title: iframeTitle,
+                    src: src,
+                    onEsc: Ext.emptyFn
+                };
+
+                var iframe = new Ext.IframeTab(iframeconfig);
+
+                if(target){
+                    target.add(iframe);
+                    if(target.xtype=='tabpanel'){
+                        target.setActiveTab(iframe);
+                    }
+                }
+            }
+        }]
+    }],
     /** api: method[addActions]
      */
     addActions: function() {
@@ -177,7 +248,8 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                     auth: this.auth,
                     autoWidth:true,
                     region:'center',
-                    ref:'consumers'
+                    ref:'consumers',
+                    actionColumns:this.actionColumns
                 },  
                 flowsGrid
             ]

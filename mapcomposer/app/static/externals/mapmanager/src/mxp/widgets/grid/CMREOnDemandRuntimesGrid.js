@@ -46,7 +46,12 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 	osdi2ManagerRestURL : 'http://localhost:8180/opensdi2-manager/mvc/process/geobatch/',
 	autoload : true,
 	autoExpandColumn : 'description',
-
+    /**
+     * api config[actionColumn]
+     * Actions to plug to the runtimes grid rows.
+     */
+    actionColumns : null,
+    
 	/* i18n */
 	statusText : 'Status',
 	startDateText : 'StartDate',
@@ -84,17 +89,11 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 			url : this.osdi2ManagerRestURL + 'services/' + this.flowId + '/runtimes',
 			record : 'consumer',
 			idPath : 'id',
-			fields : [{
-				name : 'status',
-				mapping : '@status'
-			}, 'id', 'name', 'status', 'progress', 'startDate', 'endDate', 'description'],
+			fields : ['id', 'name', 'status', 'progress', 'startDate', 'endDate', 'description','details','results'],
 			reader : new Ext.data.JsonReader({
 				root : 'data',
 				idPath : 'id',
-				fields : [{
-					name : 'status',
-					mapping : '@status'
-				}, 'id', 'name', 'status', 'progress', 'startDate', 'endDate', 'description']
+				fields : ['id', 'name', 'status', 'progress', 'startDate', 'endDate', 'description','details','results']
 			}),
 			listeners : {
 				beforeload : function(a, b, c) {
@@ -201,25 +200,15 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 			width : 180,
 			dataIndex : 'endDate',
 			sortable : true
-		}, {
+		}];
+        //add custom action columns
+        if(this.actionColumns){
+            this.columns = this.columns.concat(this.actionColumns);
+        }
+        //add delete column
+        this.columns.push({
 			xtype : 'actioncolumn',
-			width : 35,
-			tooltip : this.tooltipLog,
-			handler : this.checkLog,
-			scope : this,
-			items : [{
-				iconCls : 'gx-map-go',
-				width : 25,
-				tooltip : this.tooltipLog,
-				scope : this,
-				getClass : function(v, meta, rec) {
-					if (rec.get('status') == 'RUNNING')
-						return 'x-hide-display';
-					return 'x-grid-center-icon action_column_btn';
-				}
-			}]
-		}, {
-			xtype : 'actioncolumn',
+            hideable:false,
 			width : 35,
 			items : [{
 				iconCls : 'delete_ic',
@@ -231,7 +220,9 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 					return 'x-grid-center-icon action_column_btn';
 				}
 			}]
-		}], mxp.widgets.CMREOnDemandRuntimesGrid.superclass.initComponent.call(this, arguments);
+		});
+        
+        mxp.widgets.CMREOnDemandRuntimesGrid.superclass.initComponent.call(this, arguments);
 	},
 	/**
 	 *    private: method[confirmCleanRow] show the confirm message to remove a consumer
