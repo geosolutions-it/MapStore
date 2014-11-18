@@ -51,7 +51,8 @@ mxp.widgets.GeoStoreCategoryManager = Ext.extend(Ext.Panel, {
      *  Icon for the tool
      */
     iconCls: null,
-    tpl : [
+    pageSize:10,
+    defaultTpl : [
         '<tpl for=".">',
             '<div style="border-bottom:1px solid lightgray;margin: 2px">',
                 '<div class="dataview" style="min-height:40px">',
@@ -69,6 +70,7 @@ mxp.widgets.GeoStoreCategoryManager = Ext.extend(Ext.Panel, {
             autoload: true,
             categoryName: this.category,
             geoStoreBase: this.geoStoreBase,
+            pageSize:this.pageSize,
             auth: this.auth,
             listeners: {
                 scope: this,
@@ -93,7 +95,7 @@ mxp.widgets.GeoStoreCategoryManager = Ext.extend(Ext.Panel, {
             ref: 'dataView',
             cls: 'chooser-view',
             store: store,
-            tpl: this.tpl,
+            tpl: this.tpl || this.defaultTpl,
             autoHeight: true,
             multiSelect: true,
             overClass: 'x-view-over',
@@ -166,7 +168,7 @@ mxp.widgets.GeoStoreCategoryManager = Ext.extend(Ext.Panel, {
                 }
             }],
             bbar: new Ext.PagingToolbar({
-                pageSize: 10,
+                pageSize: this.pageSize,
                 store: store,
                 displayInfo: false,
                 displayMsg: this.displayMessage,
@@ -211,6 +213,7 @@ mxp.widgets.GeoStoreCategoryManager = Ext.extend(Ext.Panel, {
             geoStoreBase: this.geoStoreBase,
             resourceEditor: this.resourceEditor,
             attributeFields: this.attributeFields,
+            hideId:this.hideId,
             auth: this.auth
         });
         editor.doLayout();

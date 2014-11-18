@@ -1,14 +1,26 @@
 {
    "scaleOverlayMode": "advanced",
-   "tab": false,
-   "loadingProgress": true,
+   "tab": true,
    "gsSources":{
+   		"lamma_stazioni": {
+			"ptype": "gxp_wmssource",
+			"url": "http://geoportale.lamma.rete.toscana.it/geoserver/lamma_stazioni/ows",
+			"title": "LaMMA Stazioni",
+			"SRS": "EPSG:4326",
+			"version":"1.1.1",
+            "loadingProgress": true,        
+			"layerBaseParams":{
+				"FORMAT":"image/png8",
+				"TILED":false
+			}
+		},        
    		"aree_allerta": {
 			"ptype": "gxp_wmssource",
 			"url": "http://159.213.57.108/geoserver/ALLERTA/ows",
 			"title": "Aree Allerta",
 			"SRS": "EPSG:3003",
-			"version":"1.1.1",	
+			"version":"1.1.1",
+            "loadingProgress": true,
 			"layerBaseParams":{
 				"FORMAT":"image/png8",
 				"TILED":false
@@ -20,6 +32,7 @@
 			"title": "Geoscopio basi",
 			"SRS": "EPSG:3003",
 			"version":"1.1.1",
+            "loadingProgress": true,
 			"layersCachedExtent": [
 				1547065, 4677785,
 				1803065, 4933785
@@ -35,6 +48,7 @@
 			"title": "Geoscopio ortofoto",
 			"SRS": "EPSG:3003",
 			"version":"1.1.1",
+            "loadingProgress": true,
 			"layersCachedExtent": [
 				1547065, 4677785,
 				1803065, 4933785
@@ -50,6 +64,7 @@
 			"title": "Geoscopio CTR",
 			"SRS": "EPSG:3003",
 			"version":"1.1.1",
+            "loadingProgress": true,
 			"layersCachedExtent": [
 				1547065, 4677785,
 				1803065, 4933785
@@ -65,6 +80,7 @@
 			"title": "Geoscopio idrografia",
 			"SRS": "EPSG:3003",
 			"version":"1.1.1",
+            "loadingProgress": true,
 			"layersCachedExtent": [
 				1547065, 4677785,
 				1803065, 4933785
@@ -80,6 +96,7 @@
 			"title": "Geoscopio ambiti amministrativi",
 			"SRS": "EPSG:3003",
 			"version":"1.1.1",
+            "loadingProgress": true,
 			"layersCachedExtent": [
 				1547065, 4677785,
 				1803065, 4933785
@@ -206,7 +223,68 @@
 				"displayInLayerSwitcher": true,
 				"visibility": false,
 				"tiled": false
-			}
+			},{
+               "format":"image/png8",
+               "group":"Stazioni",
+               "name":"prec360_web",
+               "opacity":0.9,
+               "selected":false,
+               "tiled":false,                       
+               "source":"lamma_stazioni", 
+               "styles":["heatmap_pioggia"],
+               "style":["heatmap_pioggia"],
+               "title":"Pioggia cum. 6 h (mm)",
+               "transparent":true,
+               "visibility":false,
+               "ratio":1,
+               "getGraph": true,
+               "graphTable": "prec360_web",
+               "graphAttribute": "prec_mm",
+               "cumulative": true, 
+               "elevation":"0.0",                       
+               "displayOutsideMaxExtent": true
+            },{
+               "format":"image/png8",
+               "group":"Stazioni",
+               "name":"prec60_web",
+               "opacity":0.9,
+               "buffer": 2,
+               "selected":false,
+               "tiled":false,
+               "source":"lamma_stazioni", 
+               "styles":["heatmap_pioggia"],
+               "style":["heatmap_pioggia"],
+               "title":"Pioggia cum. 1 h (mm)",
+               "transparent":true,
+               "visibility":false,
+               "ratio":1,
+               "getGraph": true,
+               "graphTable": "prec60_web",
+               "graphAttribute": "prec_mm",
+               "cumulative": true,                        
+               "elevation":"0.0",                       
+               "displayOutsideMaxExtent": true
+            },{
+               "format":"image/png8",
+               "group":"Stazioni",
+               "name":"prec15_web",
+               "opacity":0.9,
+               "selected":false,
+               "tiled":false,                       
+               "source":"lamma_stazioni", 
+               "styles":["heatmap_pioggia"],
+               "style":["heatmap_pioggia"],
+               "title":"Pioggia cum. 15min (mm)",
+               "transparent":true,
+               "visibility":false,
+               "ratio":1,
+               "getGraph": true,
+               "graphTable": "prec15_web",
+               "graphAttribute": "prec_mm",
+               "cumulative": true, 
+               "elevation":"0.0",                       
+               "displayOutsideMaxExtent": true
+            }
 		]
 	},
 	"scaleOverlayUnits":{
@@ -273,21 +351,6 @@
         }, {
             "actions": ["-"], 
             "actionTarget": "paneltbar"
-        }, {
-            "ptype":"gxp_print",
-            "customParams":{
-                "outputFilename":"mapstore-print"
-            },
-            "ignoreLayers": "Google Hybrid,Bing Aerial,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
-            "printService":"http://159.213.57.108/geoserver/pdf",
-            "legendPanelId":"legendPanel",
-            "actionTarget":{
-                "target":"paneltbar",
-                "index":24
-            },
-            "addLandscapeControl": true,
-            "appendLegendOptions": true,
-            "addGraticuleControl": true
         }, {
 		   "ptype": "gxp_mouseposition",
 		   "displayProjectionCode":"EPSG:3003",
