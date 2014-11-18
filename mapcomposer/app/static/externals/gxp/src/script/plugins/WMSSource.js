@@ -384,7 +384,10 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		dimensions: original.data.dimensions,
 				projection: layerProjection,
 				vendorParams: config.vendorParams,
-				transitionEffect: transitionEffect
+				transitionEffect: transitionEffect,
+                minScale: config.minscale,
+                maxScale: config.maxscale,                
+                displayOutsideMaxExtent: ("displayOutsideMaxExtent" in config) ? config.displayOutsideMaxExtent : true
 			}
 		);
 
