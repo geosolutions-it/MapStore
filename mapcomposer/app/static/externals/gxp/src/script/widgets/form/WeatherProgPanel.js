@@ -64,6 +64,7 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
     dateMandatoryAlertText: "You must select at least the start date",
     twoTimeMandatoryAlertText: "You have selected Two time, you must also select And Time",
     startDateMandatoryAlertText: "You must select Start Time",
+    startTimeHigherEndTimeAlertText: "StartTime is higher than EndTime",
 	wpsError: "Error on WPS Process",
 
 	/** EoF i18n **/
@@ -426,6 +427,10 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
                 if (yearsSelection.getValue().inputValue === 2 && endTime === ""){
                     valid = false;
                     msg = "<li>" + this.twoTimeMandatoryAlertText + "</li>";        
+                }
+                if (startTime > endTime && endTime !== ""){
+                    valid = false;
+                    msg = "<li>" + this.startTimeHigherEndTimeAlertText + "</li>";   
                 }
             }else{
                 valid = false;

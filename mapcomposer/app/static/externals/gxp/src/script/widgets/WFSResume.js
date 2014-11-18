@@ -129,7 +129,46 @@ gxp.widgets.WFSResume = Ext.extend(gxp.plugins.Tool, {
 			showResumeWidget.initComponent();	
 		}
 		return showResumeWidget.createResultsGrid(data, rasterName, refYear, nowYear, referenceName, featureType);
-	}
+	},
+
+    /** api: method[addLayer]
+     *  :arg layerName: ``String`` Data with the wfs content
+     *  :arg title: ``String`` Name of the layer requested
+     *  :arg featureType: ``String`` Name featureType requested
+     *  :returns: ``Ext.Panel`` With the resume.
+     */    
+    addLayer: function(layerName, title, featureType){
+		// Create instance for the configured plugin
+		var ptype = this.detaultPtype;
+		if(featureType 
+			&& this.resultMapping 
+			&& this.resultMapping[featureType]){
+			ptype = this.resultMapping[featureType];
+		}
+		// Get or creat the plugin
+		var showResumeWidget = this.target.tools[ptype];
+		if(!showResumeWidget){
+			showResumeWidget = Ext.ComponentMgr.createPlugin({
+				ptype: ptype
+			});
+			this.target.tools[ptype] = showResumeWidget;
+		}
+		// Delegate configuration
+		Ext.apply(showResumeWidget, {
+			classesIndexes: this.classesIndexes,
+			classes: this.classes,
+			geocoderConfig: this.geocoderConfig,
+			url: this.url,
+			target: this.target
+		});
+		// init component
+		if(showResumeWidget.initComponent){
+			showResumeWidget.initComponent();	
+		}
+        
+		return showResumeWidget.addLayer(layerName, title, featureType);
+    
+    }
 
 });
 

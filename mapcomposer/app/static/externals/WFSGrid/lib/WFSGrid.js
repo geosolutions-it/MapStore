@@ -287,9 +287,27 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 						});
 						return;
 					}
-					var responseData = JSON.parse(record.get(me.featureTypeDetails));
 
 					var wfsResumeTool = me.target.tools[me.wfsResumeID];
+                    
+                    /*
+                     * Check if featureType is "weatherstats" and check if "featureTypeDetails" === "stats"
+                     * If so, if featureTypeDetails is not empty, the chart is add, otherwise the layers is added to the map
+                     */
+                    if (gpanel.featureType === "weatherstats" && me.featureTypeDetails === "stats"){
+                        if(record.get(me.featureTypeDetails) !== ""){
+                            var responseData = JSON.parse(record.get(me.featureTypeDetails));
+                        }else{
+                            if(wfsResumeTool){
+                                var layerName = record.get("layerName");
+                                wfsResumeTool.addLayer(layerName, "Raster", gpanel.featureType);
+                            }
+                            return;
+                        }
+                    }else{
+                        var responseData = JSON.parse(record.get(me.featureTypeDetails));
+                    }
+
                     if(wfsResumeTool){
                     	var grid = wfsResumeTool.createResultsGrid(responseData, responseData.rasterName, responseData.refYear, responseData.nowYear, record.data.referenceName, me.featureType);
 						/*

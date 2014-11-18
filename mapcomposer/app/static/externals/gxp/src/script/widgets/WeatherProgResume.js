@@ -325,20 +325,12 @@ gxp.widgets.WeatherProgResume = Ext.extend(gxp.widgets.WFSResume, {
 		var item1 = null, item0 = null;
         
 		if(config.rasterName){
-			item0 = this.generateBarItem(config.rasterName, config.rasterName, title);	
+			item0 = this.generateBarItem(config.rasterName, title);	
 		}
 
 		// push items
 		if(item0){
 			items.push(item0);
-		}
-		if(config.diffImageName){
-			var item = this.generateBarItem(config.diffImageName, 'Diff', title);
-			items.push(item);
-		}
-		if(item1){
-			//items.push("->");
-			items.push(item1);
 		}
 
 		// return toolbar if exist one add layer button
@@ -353,91 +345,18 @@ gxp.widgets.WeatherProgResume = Ext.extend(gxp.widgets.WFSResume, {
 
     /** api: method[generateButtom]
      *  :arg layerName: ``Object`` Configuration for the layer name
-     *  :arg timeName: ``String`` Name for the add layer buttom
      *  :arg title: ``String`` Title for the layer
      *  :returns: ``Ext.Toolbar`` for the buttom bar.
      *  Obtain bar item.
      */
-	generateBarItem: function(layerName, timeName, title){
-		var layerTitle = title && timeName ? title + " - " + timeName: layerName;
+	generateBarItem: function(layerName, title){
 		if(layerName && layerName != ""){
 			return {
-				text : String.format(this.addLayerButtonText, timeName),
+				text : String.format(this.addLayerButtonText, layerName),
 				iconCls : 'gxp-icon-addlayers',
 				handler : function(){
-					var src;				                            
-					for (var id in this.target.layerSources) {
-						  var s = this.target.layerSources[id];    
-						  
-						  // //////////////////////////////////////////
-						  // Checking if source URL aldready exists
-						  // //////////////////////////////////////////
-						  if(s != undefined && s.id == this.geocoderConfig.source){
-							  src = s;
-							  break;
-						  }
-					}
-					var group = "Weather Prog";
-                    var props ={
-                    			source: this.target.layerSources.jrc.id,
-                                name: this.geocoderConfig.nsPrefix + ":" + layerName,
-                                url: this.url,
-                                title: layerTitle,
-                                tiled:true,
-                                group: group,
-                                layers: layerName
-                        };
-												
-				    var index = src.store.findExact("name", this.geocoderConfig.nsPrefix + ":" + layerName);
-				    
-				    var tree = Ext.getCmp("layertree");
-				    var groupExists = false;
-				    for (var node=0; node<tree.root.childNodes.length; node++)
-				    	if (group == tree.root.childNodes[node].text)
-				    		groupExists = true;
-				    
-				    if (!groupExists) {
-				    	var node = new GeoExt.tree.LayerContainer({
-                            text: group,
-                            iconCls: "gxp-folder",
-                            expanded: true,
-                            checked: false,
-                            group: group == "default" ? undefined : group,
-                            loader: new GeoExt.tree.LayerLoader({
-                                baseAttrs: undefined,
-                                store: this.target.mapPanel.layers,
-                                filter: (function(group) {
-                                    return function(record) {
-                                        return (record.get("group") || "default") == group &&
-                                            record.getLayer().displayInLayerSwitcher == true;
-                                    };
-                                })(group)
-                            }),
-                            singleClickExpand: true,
-                            allowDrag: true,
-                            listeners: {
-                                append: function(tree, node) {
-                                    node.expand();
-                                }
-                            }
-                        });
-                        
-                        tree.root.insertBefore(node, tree.root.firstChild.nextSibling);
-
-				    }
-					
-					if (index < 0) {
-						src.on('ready', function(){
-							this.addLayerRecord(src, props);
-						}, this);
-						// ///////////////////////////////////////////////////////////////
-						// In this case is necessary reload the local store to refresh 
-						// the getCapabilities records 
-						// ///////////////////////////////////////////////////////////////
-						src.store.reload();
-					}else{
-						this.addLayerRecord(src, props);
-					}
+                
+                    this.addLayer(layerName, title);
 
 					/*
 					 * Check if tabs exists and if so switch to View Tab 
@@ -511,7 +430,88 @@ gxp.widgets.WeatherProgResume = Ext.extend(gxp.widgets.WFSResume, {
 
 			map.zoomToExtent(extent, true);
 		}
-	}
+	},
+    
+	/**  
+	 * api: method[addLayer]
+     */    
+    addLayer: function(layerName, title, featureType){
+        var layerTitle = title && layerName ? title + " - " + layerName: layerName;
+        var src;				                            
+        for (var id in this.target.layerSources) {
+              var s = this.target.layerSources[id];    
+              
+              // //////////////////////////////////////////
+              // Checking if source URL aldready exists
+              // //////////////////////////////////////////
+              if(s != undefined && s.id == this.geocoderConfig.source){
+                  src = s;
+                  break;
+              }
+        }
+        var group = "Weather Prog";
+        var props ={
+                    source: this.target.layerSources.jrc.id,
+                    name: this.geocoderConfig.nsPrefix + ":" + layerName,
+                    url: this.url,
+                    title: layerTitle,
+                    tiled:true,
+                    group: group,
+                    layers: layerName
+            };
+                                    
+        var index = src.store.findExact("name", this.geocoderConfig.nsPrefix + ":" + layerName);
+        
+        var tree = Ext.getCmp("layertree");
+        var groupExists = false;
+        for (var node=0; node<tree.root.childNodes.length; node++)
+            if (group == tree.root.childNodes[node].text)
+                groupExists = true;
+        
+        if (!groupExists) {
+            var node = new GeoExt.tree.LayerContainer({
+                text: group,
+                iconCls: "gxp-folder",
+                expanded: true,
+                checked: false,
+                group: group == "default" ? undefined : group,
+                loader: new GeoExt.tree.LayerLoader({
+                    baseAttrs: undefined,
+                    store: this.target.mapPanel.layers,
+                    filter: (function(group) {
+                        return function(record) {
+                            return (record.get("group") || "default") == group &&
+                                record.getLayer().displayInLayerSwitcher == true;
+                        };
+                    })(group)
+                }),
+                singleClickExpand: true,
+                allowDrag: true,
+                listeners: {
+                    append: function(tree, node) {
+                        node.expand();
+                    }
+                }
+            });
+            
+            tree.root.insertBefore(node, tree.root.firstChild.nextSibling);
+
+        }
+        
+        if (index < 0) {
+            src.on('ready', function(){
+                this.addLayerRecord(src, props);
+            }, this);
+            // ///////////////////////////////////////////////////////////////
+            // In this case is necessary reload the local store to refresh 
+            // the getCapabilities records 
+            // ///////////////////////////////////////////////////////////////
+            src.store.reload();
+        }else{
+            this.addLayerRecord(src, props);
+        }    
+    
+    }
 
 });
 

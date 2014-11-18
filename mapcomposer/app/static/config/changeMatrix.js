@@ -282,37 +282,6 @@
 	                    "sortable": true
 	                }
 	            ]
-            },{
-            	"title": "Weather Prog Runs",
-            	"featureType": "weatherstats",
-        		"featureTypeDetails": "stats",
-	            "columns" : [
-	            	{
-	                    "header": "Status", 
-	                    "dataIndex": "itemStatus",
-	                    "sortable": true
-	                },{
-	                    "header": "Reference Name", 
-	                    "dataIndex": "referenceName",
-	                    "sortable": true
-	                },{
-	                    "header": "Start Date", 
-	                    "dataIndex": "runBegin",
-	                    "sortable": true
-	                },{
-	                    "header": "End Date", 
-	                    "dataIndex": "runEnd",
-	                    "sortable": true
-	                },{
-	                    "header": "Start Time", 
-	                    "dataIndex": "startTime",
-	                    "sortable": true
-	                },{
-	                    "header": "End Time", 
-	                    "dataIndex": "endTime",
-	                    "sortable": true
-	                }
-	            ]
             }]
         },{
             "ptype": "gxp_addlayer",
@@ -549,19 +518,6 @@
             		"targetResultGridId": "wfsChangeMatrisGridPanel_tab_1"
             	},
             	"xtype": "gxp_soilpanel"
-            },{
-            	"title": "Weather Prog",
-            	"geocoderConfig": {
-            		"selectReturnType": true,
-            		"wpsProcessName": "gs:WeatherStatistics",
-            		"storeName": "unina_ds",                  
-            		"typeName": "weatherstats",
-            		"geocoderLayer": "geocoder",
-            		"geocoderPopulationLayer": "geocoder_population",                    
-            		"defaultProcessStyle": "raster",
-            		"targetResultGridId": "wfsChangeMatrisGridPanel_tab_2"
-            	},
-            	"xtype": "gxp_weatherprogpanel"
             }]
         },{
         	"ptype": "gxp_georeferences",
