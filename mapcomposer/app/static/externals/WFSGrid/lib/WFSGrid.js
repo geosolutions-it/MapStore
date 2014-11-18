@@ -557,6 +557,14 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 
 			var wfsStore = new GeoExt.data.FeatureStore({
 				wfsParam : me,
+            	listeners:{
+            		'load': function(store, records, options){
+                        if(wfsGrid.rendered){
+                            var selModel = wfsGrid.getSelectionModel();
+                            selModel.selectFirstRow();
+                        }
+                    }
+            	},                
 				sortInfo : {
 					field : "runEnd",
 					direction : "DESC"
