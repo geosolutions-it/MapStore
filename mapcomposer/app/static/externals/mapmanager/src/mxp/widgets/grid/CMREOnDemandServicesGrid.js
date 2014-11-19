@@ -55,6 +55,9 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 	descriptionText : 'Description',
 	newRunTitle : 'Create a new Service Process Run',
 	newRunMessage : 'Running a new service will drop all previous inputs. Continue with the definition of a new service process run?',
+    newServiceText: "CMRE On Demand Service: ",
+    inputsText:" Inputs",
+    issueANewRunText: "Issue a new run",
 	/* end of i18n */
 	//extjs grid specific config
 	autoload : true,
@@ -99,17 +102,11 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 			url : this.osdi2ManagerRestURL + 'services/',
 			record : 'service',
 			idPath : 'serviceId',
-			fields : [{
-						name : 'activeStatus',
-						mapping : '@activeStatus'
-					},'serviceId', 'name', 'description', 'activeStatus'],
+			fields : ['serviceId', 'name', 'description', 'activeStatus'],
 			reader : new Ext.data.JsonReader({
 				root : 'data',
 				idPath : 'serviceId',
-				fields : [{
-						name : 'activeStatus',
-						mapping : '@activeStatus'
-					},'serviceId', 'name', 'description', 'activeStatus']
+				fields : ['serviceId', 'name', 'description', 'activeStatus']
 			}),
 			listeners : {
 				beforeload : function(a, b, c) {
@@ -168,7 +165,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 		}, {
 			xtype : 'actioncolumn',
 			width : 35,
-			tooltip : "Issue a new run",
+			tooltip : this.issueANewRunText,
 			handler : this.createNewProcessRun,
 			scope : this,
 			items : [{
@@ -290,7 +287,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 							viewConfig : {
 								forceFit : true
 							},
-							title : "CMRE On Demand Service: " + serviceName,
+							title : me.newServiceText + serviceName,
 							items : [{
 								xtype : 'mxp_cmre_ondemand_services_input_form',
 								tbar : null,
@@ -300,7 +297,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 								mapPanel : mapPanel,
 								region : 'west',
 								iconCls : 'nato_ic',
-								title : serviceName + " Inputs",
+								title : serviceName + " " + me.inputsText,
 								autoScroll : true,
 								width : 600,
 								ref : 'list',

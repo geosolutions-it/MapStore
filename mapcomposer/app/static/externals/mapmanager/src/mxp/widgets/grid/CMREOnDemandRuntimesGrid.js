@@ -53,18 +53,27 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
     actionColumns : null,
     
 	/* i18n */
-	statusText : 'Status',
-	startDateText : 'StartDate',
-	refreshText : 'Refresh',
-	descriptionText : 'Description',
-	loadingMessage : 'Loading...',
-	textConfirmDeleteMsg : 'Do you confirm you want to delete event consumer with UUID:{uuid} ? ',
-	errorDeleteConsumerText : 'There was an error while deleting consumer',
-	confirmClearText : 'Do you really want to remove all consumers with SUCCESS or FAIL state?',
+    nameText: "Name",
+    descriptionText : "Description",
+    progressText: "Progress",
+	statusText : "Status",
+	startDateText : "Start Date",
+    endDateText : "End Date",
+	refreshText : "Refresh",
+    autoRefreshText: "Auto-Refresh",
+	loadingMessage : "Loading...",
+	textConfirmDeleteMsg : "Do you confirm you want to delete event consumer with UUID:{uuid} ? ",
+	errorDeleteConsumerText : "There was an error while deleting consumer",
+	confirmClearText : "Do you really want to remove all consumers with SUCCESS or FAIL state?",
 	/* end of i18n */
 	
 	//extjs grid specific config
 	loadMask : true,
+    /**
+     * api config[autoRefreshTime]
+     * auto-refresh interval
+     */
+    autoRefreshTime: 3000,
 	viewConfig : {
 		getRowClass : function(record, index) {
 			var c = record.get('status');
@@ -131,17 +140,23 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 		}, {
 			iconCls : 'clock_ic',
 			xtype : 'button',
-			text : "Auto-Refresh",
+			text : this.autoRefreshText,
 			enableToggle : true,
 			scope : this,
 			handler : function(button) {
 				var me = this;
 				if (button.pressed) {
+                    if(this.loadMask){
+                        this.loadMask.disable();
+                    }
 					button.timer = setInterval(function() {
 						me.store.load();
-					}, 3000);
+					}, this.autoRefreshTime);
 				} else {
 					clearInterval(button.timer);
+                    if(this.loadMask){
+                        this.loadMask.enable();
+                    }
 				}
 			}
 		}, "->", {
@@ -162,7 +177,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 
 		this.columns = [{
 			id : 'name',
-			header : "Name",
+			header : this.nameText,
 			width : 100,
 			dataIndex : 'name',
 			sortable : true
@@ -173,7 +188,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 			sortable : true
 		}, {
 			id : 'progress',
-			header : 'Progress',
+			header : this.progressText,
 			//text: 'Progress',
 			width : 120,
 			dataIndex : 'progress',
@@ -196,7 +211,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 			sortable : true
 		}, {
 			id : 'endDate',
-			header : "End Date",
+			header : this.endDateText,
 			width : 180,
 			dataIndex : 'endDate',
 			sortable : true
