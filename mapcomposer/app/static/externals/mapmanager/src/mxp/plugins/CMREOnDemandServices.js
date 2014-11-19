@@ -35,7 +35,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
     
     /** api: ptype = mxp_cmre_ondemand_services */
     ptype: "mxp_cmre_ondemand_services",
-
+    //i18n
     buttonText: "CMRE Services",
 	flowsListTitle:'Algorythms',
     runButtonText:'Run',
@@ -224,7 +224,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
             sm: selectionModel
         };
         
-        Ext.apply(this.outputConfig,{
+        this.outputConfig = Ext.apply({
             layout: 'border',
 			itemId:'CMREOnDemandServices',
             xtype:'panel',
@@ -253,7 +253,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                 },  
                 flowsGrid
             ]
-        });
+        },this.outputConfig);
 		// In user information the output is generated in the component and we can't check the item.initialConfig.
         if(this.output.length > 0
             && this.outputTarget){

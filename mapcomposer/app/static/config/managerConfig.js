@@ -46,6 +46,7 @@
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
+        "forceLogin":true,
         "actionTarget":{
           "target": "north.tbar",
           "index": 3
@@ -58,13 +59,10 @@
         }
     }],
    "adminTools":[{
-        "ptype": "mxp_static_page",
-        "loginManager": "loginTool",
-        "src":"home.html",
-        "actionTarget":null
-    },{
          "ptype": "mxp_cmre_ondemand_services",
          "osdi2ManagerRestURL":"http://localhost:8180/opensdi2-manager/mvc/process/wps/",
+         "autoOpen":true,
+         "outputConfig":{"closable":false},
          "actionTarget":{
            "target": "north.tbar",
            "index": 0
@@ -84,13 +82,10 @@
         }
     }],
     "loggedTools":[{
-        "ptype": "mxp_static_page",
-        "loginManager": "loginTool",
-        "src":"home.html",
-        "actionTarget":null
-    },{
          "ptype": "mxp_cmre_ondemand_services",
          "osdi2ManagerRestURL":"http://localhost:8180/opensdi2-manager/mvc/process/wps/",
+         "autoOpen":true,
+         "outputConfig":{"closable":false},
          "actionTarget":{
            "target": "north.tbar",
            "index": 0
