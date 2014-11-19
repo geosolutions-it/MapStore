@@ -279,5 +279,34 @@ GeoExt.Lang.add("it", {
         resourceListTitle: "Risorse",
         emptyMessage: "Nessuna risorsa da mostrare",
         displayMessage: "{0} - {1} risorse di {2}"
+    },
+    "mxp.plugins.CMREOnDemandServices.prototype":{
+        buttonText: "Servizi CMRE",
+        flowsListTitle:'Algoritmi',
+        runButtonText:'Avvia',
+        consumersGridTitle: 'Risultati'
+    },
+    "mxp.widgets.CMREOnDemandRuntimesGrid.prototype":{
+        nameText: "Nome",
+        descriptionText : "Descrizione",
+        progressText: "Progresso",
+        statusText : "Stato",
+        startDateText : "Data Inizio",
+        endDateText : "Data Fine",
+        refreshText : "Aggiorna",
+        autoRefreshText: "Auto-Aggiorna",
+        loadingMessage : "Caricamento...",
+        textConfirmDeleteMsg : "Vuoi cancellare il processo selezionato? ",
+        errorDeleteConsumerText : "Errore durante la cancellazione di un processo",
+        confirmClearText : "Voui cancellare davvero tutti i processi terminati.",
+    },
+    "mxp.widgets.CMREOnDemandServicesGrid.prototype":{
+        nameText : "Titolo",
+        descriptionText : "Descrizione",
+        newRunTitle : "Crea una nuova esecuzione del processo",
+        newRunMessage : "Avviare una nuova esecuzione cancellerà tutti gli input precendenti. Continuare con la definizione di una nuova esecuzione del processo",
+        newServiceText: "Servizio On Demand CMRE: ",
+        inputsText:" Inputs",
+        issueANewRunText: "Comincia una nuova esecuzione"
     }
 });

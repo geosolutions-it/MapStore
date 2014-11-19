@@ -280,5 +280,34 @@ GeoExt.Lang.add("en", {
         resourceListTitle: "Resources",
         emptyMessage: "No resource to display",
         displayMessage: "Displaying {0} - {1} of {2}"
+    },
+    "mxp.plugins.CMREOnDemandServices.prototype":{
+        buttonText: "CMRE Services",
+        flowsListTitle: "Algorythms",
+        runButtonText: "Run",
+        consumersGridTitle: "Outcomes"
+    },
+    "mxp.widgets.CMREOnDemandRuntimesGrid.prototype":{
+        nameText: "Name",
+        descriptionText : "Description",
+        progressText: "Progress",
+        statusText : "Status",
+        startDateText : "Start Date",
+        endDateText : "End Date",
+        refreshText : "Refresh",
+        autoRefreshText: "Auto-Refresh",
+        loadingMessage : "Loading...",
+        textConfirmDeleteMsg : "Do you confirm you want to delete event consumer with UUID:{uuid} ? ",
+        errorDeleteConsumerText : "There was an error while deleting consumer",
+        confirmClearText : "Do you really want to remove all consumers with SUCCESS or FAIL state?",
+    },
+    "mxp.widgets.CMREOnDemandServicesGrid.prototype":{
+        nameText : "Title",
+        descriptionText : "Description",
+        newRunTitle : "Create a new Service Process Run",
+        newRunMessage : "Running a new service will drop all previous inputs. Continue with the definition of a new service process run?",
+       newServiceText: "CMRE On Demand Service: ",
+       inputsText: " Inputs",
+       issueANewRunText: ""
     }
 });
