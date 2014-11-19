@@ -178,7 +178,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			});
 
 			this.startTime = new Ext.form.DateField({
-				format : 'd/m/Y',
+				format : 'Y-m-d',
 				fieldLabel : '',
 				id : me.id + '_ReferenceDate',
 				name : 'referenceDate',
@@ -933,7 +933,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				anchor : '95%',
 				maxLength : 6,
 				decimalPrecision : 3,
-				minValue : 0,
+				minValue : -1.8,
 				// set maxlength to 5 on input field
 				autoCreate : {
 					tag : 'input',
@@ -962,7 +962,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				anchor : '95%',
 				maxLength : 6,
 				decimalPrecision : 3,
-				minValue : 0,
+				minValue : -1.8,
 				// set maxlength to 5 on input field
 				autoCreate : {
 					tag : 'input',
@@ -1020,27 +1020,27 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			var lonLat = new OpenLayers.Geometry.Point(asset.assetPosition.longitudeField.getValue(), asset.assetPosition.latitudeField.getValue());
 			var geoJsonPoint = lonLat.clone();
 				geoJsonPoint.transform(new OpenLayers.Projection('EPSG:4326'), map.getProjectionObject());
-			
+
 			serviceRunInputs.assets[i] = {
-				cost: asset.assetCost.getValue(),
-				id: asset.assetId.getValue(),
-				maxHeading: asset.assetMaxHeading.getValue(),
-				maxSpeed: asset.assetMaxSpeed.getValue(),
-				minHeading: asset.assetMinHeading.getValue(),
-				minSpeed: asset.assetMinSpeed.getValue(),
+				cost: parseFloat(asset.assetCost.getValue()),
+				id: parseInt(asset.assetId.getValue()),
+				maxHeading: parseFloat(asset.assetMaxHeading.getValue()),
+				maxSpeed: parseFloat(asset.assetMaxSpeed.getValue()),
+				minHeading: parseFloat(asset.assetMinHeading.getValue()),
+				minSpeed: parseFloat(asset.assetMinSpeed.getValue()),
 				name: asset.assetName.getValue(),
-				obsRange: asset.assetObsRange.getValue(),
-				Pd: asset.assetPd.getValue(),
-				Pfa: asset.assetPfa.getValue(),
+				obsRange: parseFloat(asset.assetObsRange.getValue()),
+				Pd: parseFloat(asset.assetPd.getValue()),
+				Pfa: parseFloat(asset.assetPfa.getValue()),
 				/*position: {
 					lon: lonLat.x,
 					lat: lonLat.y,
 					x: geoJsonPoint.x,
 					y: geoJsonPoint.y
 				},*/
-				heading0: asset.assetHeading.getValue(),
-				lon0: lonLat.x,
-				lat0: lonLat.y,				
+				heading0: parseFloat(asset.assetHeading.getValue()),
+				lon0: parseFloat(lonLat.x),
+				lat0: parseFloat(lonLat.y),				
 				type: asset.assetType.getValue()
 			};
 		}
@@ -1056,7 +1056,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			me.setLoading(false);
 			me.saveSuccess();
 			me.fireEvent("save", response);
-
 		};
 		
 		var finishError = function(response) {
