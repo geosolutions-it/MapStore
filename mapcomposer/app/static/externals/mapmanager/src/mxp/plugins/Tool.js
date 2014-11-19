@@ -257,7 +257,10 @@ mxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
      */
     addActions: function(actions) {
         actions = actions || this.actions;
-		
+        // auto open
+	if(this.autoOpen) {
+		this.addOutput();
+	}	
         if (!actions || this.actionTarget === null) {
             // add output immediately if we have no actions to trigger it
             this.addOutput();
