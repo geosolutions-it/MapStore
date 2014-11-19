@@ -50,7 +50,7 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
      * udate service
      */
     forceUpdateStoredData:true,
-    
+    hideId: true,
     //Can Be everyone to load resource with visibility everyone
     defaultGroupVisibility:null,
     //i18n
@@ -152,8 +152,10 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
               {
 					xtype: "textfield",
 					name: "id",
+                    fieldLabel:"ID",
                     anchor:'95%',
-					hidden: true,
+                    readOnly:true,
+					hidden: this.hideId,
 					value: values.id
 			  },{
 					xtype: "textfield",
@@ -183,7 +185,7 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
 		
 		}
         if(!this.attributeFields){
-        this.attributesFields = [];
+        this.attributeFields = [];
         }
 		var mainPanel = {
 			xtype:'panel',
@@ -199,7 +201,7 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
 			  ref:'../general',
 			  border: false,
 			  collapsible:true,
-              height:140,
+              height:160,
               title:this.textGeneral,
               iconCls:'table_edit',
 			  items: [{
@@ -214,7 +216,7 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
                     autoScroll:true,
                     columnWidth:.5,
                     layout:'form',
-                    items:this.attributesFields
+                    items:this.attributeFields
               }]
 			},this.resourceEditorContainer
             ]
