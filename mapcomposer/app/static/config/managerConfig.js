@@ -1,4 +1,4 @@
-﻿{
+{
    "composerUrl":"",
    "socialUrl":"",
    "start":0,
@@ -36,6 +36,11 @@
       ]
    ],
    "tools":[{
+        "ptype": "mxp_static_page",
+        "loginManager": "loginTool",
+        "src":"home.html",
+        "actionTarget":null
+    },{
         "ptype": "mxp_categoryinitializer",
         "neededCategories": ["WPS_RUN_CONFIGS" ]
     },{
@@ -53,32 +58,13 @@
         }
     }],
    "adminTools":[{
+        "ptype": "mxp_static_page",
+        "loginManager": "loginTool",
+        "src":"home.html",
+        "actionTarget":null
+    },{
          "ptype": "mxp_cmre_ondemand_services",
          "osdi2ManagerRestURL":"http://localhost:8180/opensdi2-manager/mvc/process/wps/",
-         "runConfigs": {
-            "csvingestion":{
-                "xtype":"geobatch_run_local_form",
-                "baseDir": "/home/geosolutions/admin",
-                "fileBrowserUrl": "/opensdi2-manger/mvc/fileManager/extJSbrowser",
-                "fileRegex": "\\.csv$",
-                "path":"/test_csv/"
-            },
-            
-            "geotiff_publish":{
-                "xtype": "geobatch_run_local_form",
-                "baseDir": "/home/geosolutions/admin",
-                "fileRegex": "\\.ti[f]{1,2}$",
-                "path":" /ndvi/"
-            },
-	    "ndviingestion":{
-                "xtype": "geobatch_run_local_form",
-                "baseDir": "/home/geosolutions/admin",
-                "fileRegex": "\\.ti[f]{1,2}$",
-                "path":" /ndvi/"
-            }
-
-           
-         },
          "actionTarget":{
            "target": "north.tbar",
            "index": 0
@@ -98,16 +84,17 @@
         }
     }],
     "loggedTools":[{
-        "ptype": "mxp_mapmanager",
+        "ptype": "mxp_static_page",
         "loginManager": "loginTool",
-        "actionTarget": null
+        "src":"home.html",
+        "actionTarget":null
     },{
-        "ptype": "mxp_myaccount",
-        "loginManager": "loginTool",
-        "actionTarget":{
-          "target": "north.tbar",
-          "index": 1 
-        }
+         "ptype": "mxp_cmre_ondemand_services",
+         "osdi2ManagerRestURL":"http://localhost:8180/opensdi2-manager/mvc/process/wps/",
+         "actionTarget":{
+           "target": "north.tbar",
+           "index": 0
+         }
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
