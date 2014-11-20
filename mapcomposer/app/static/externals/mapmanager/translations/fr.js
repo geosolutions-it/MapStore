@@ -97,7 +97,8 @@ GeoExt.Lang.add("fr", {
         loginErrorTitle: "L'authentification a échoué",
         userFieldText: "Utilisateur",
         passwordFieldText: "Mot de passe",
-        loginFormTitle: "Veuillez vous connecter"
+        loginFormTitle: "Veuillez vous connecter",
+        loginWaitMessage: "Vous connecter.<br/>Se il vous plaît, attendez ..."
     },
     "UserManagerView.prototype":{
         textGeneral: "Général", 
