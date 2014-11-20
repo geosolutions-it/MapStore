@@ -62,74 +62,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
     /**
      * Action Columns for the outcomes grid
      */
-    actionColumns:[{
-        xtype : 'actioncolumn',
-        hideable: false,
-        width : 35,
-        renderMapToTab: "mainTabPanel",
-        detailsMapIdPath: "mapId",
-        resultField: "results",
-        baseMapUrl: "/?config=assetAllocatorResult",
-        titlePath:'title',
-        loadingMessage:'Loading...',
-        items : [{
-            iconCls : 'gx-map-go',
-            width : 25,
-            tooltip : "View Map",
-            getClass : function(v, meta, rec) {
-                var details = rec.get(this.resultField); 
-                var mapId = eval("details." + this.detailsMapIdPath);
-                var target = Ext.getCmp(this.renderMapToTab);
-                if (rec.get('status') != 'RUNNING' && mapId){
-                   return 'x-grid-center-icon action_column_btn';
-                }
-                 return 'x-hide-display';
-                
-            },
-            handler : function(grid, rowIndex, colIndex){
-                var rec = grid.store.getAt(rowIndex);
-                var details = rec.get(this.resultField); 
-                var mapId = eval("details." + this.detailsMapIdPath);
-                var target = Ext.getCmp(this.renderMapToTab);
-                var title = eval("details." + this.titlePath);
-                var src = this.baseMapUrl; //TODO '?locale=' + this.target.lang ;
-                var iframeTitle = title || "Map";
-                if(!(src.indexOf("?")>=0)){
-                   src+='?';
-                } 
-                if(mapId != -1){
-                    src += '&mapId=' + mapId;
-                }
-
-                var iframeTitle =  title ;
-                var iframeconfig = {
-                    waitMsg: this.loadingMessage,
-                    width:900,
-                    height:650,
-                    collapsible:false,
-                    maximizable: true,
-                    maximized: true,
-                    closable: true,
-                    modal: true,
-                    closeAction: 'close',
-                    constrainHeader: true,
-                    maskEmpty: true,
-                    title: iframeTitle,
-                    src: src,
-                    onEsc: Ext.emptyFn
-                };
-
-                var iframe = new Ext.IframeTab(iframeconfig);
-
-                if(target){
-                    target.add(iframe);
-                    if(target.xtype=='tabpanel'){
-                        target.setActiveTab(iframe);
-                    }
-                }
-            }
-        }]
-    }],
+    customRunColumns:[],
     /** api: method[addActions]
      */
     addActions: function() {
@@ -160,12 +93,18 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
      *  called and/or overridden by subclasses.
      */
     addOutput: function(config) {
-
+        this.setupCustomColumns();
         var login = this.target.login ? this.target.login: 
                 this.loginManager && this.target.currentTools[this.loginManager] 
                 ? this.target.currentTools[this.loginManager] : null;
         this.auth = this.target.auth;
-        
+        this.geoStoreBase = this.geoStoreBase || this.target.geoStoreBase;
+        //inject auth and geostore url in actionColumn
+        for(var i = 0 ; i < this.customRunColumns.length ; i++){
+             this.customRunColumns[i].geoStoreBase = this.geoStoreBase;
+             this.customRunColumns[i].auth = this.auth;
+             this.customRunColumns[i].target = this.target;
+        }
         this.outputConfig = this.outputConfig || {};
         // create the selection model
         var selectionModel = new Ext.grid.RowSelectionModel({
@@ -249,7 +188,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                     autoWidth:true,
                     region:'center',
                     ref:'consumers',
-                    actionColumns:this.actionColumns
+                    actionColumns:this.customRunColumns
                 },  
                 flowsGrid
             ]
@@ -324,6 +263,186 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                     items: [runFormConfig]
         });
         win.show();
+    },
+    // CUSTOMER SPECIFIC I18N
+    ownerText: "Owner",
+    viewMapText: "View Map",
+    editPermissionsText: "Edit Permissions",
+    loadingMessage:'Loading...',
+    
+    // CUSTOMER SPECIFIC configuration
+    renderMapToTab: "mainTabPanel",
+    mapIdPath: "results.mapId",
+    resultField: "results",
+    detailsField: "details",
+    baseMapUrl: "/?config=assetAllocatorResult",
+    ownerPath:"results.owner",
+    titlePath:'results.title',
+    resourcePermissionPath: "results.mapId",
+    /**
+     * setup action columns to add
+     */
+    setupCustomColumns: function(){
+      var me = this;
+      this.customRunColumns =  [{
+                id : 'owner',
+                header : "Owner",
+                width : 100,
+                dataIndex : 'results',
+                sortable : false,
+                renderer: function(value, metaData, rec, rowIndex, colIndex, store) {
+                  var results = rec.get(me.resultField); 
+                  var details = rec.get(me.detailsField);
+                  try{
+                    var owner = eval(me.ownerPath);
+                    return owner;
+                  }catch(E){
+                    return "(not available)";
+                  }
+
+                }
+        },{
+            xtype : 'actioncolumn',
+            hideable: false,
+            width : 45,
+            renderMapToTab: this.renderMapToTab,
+            mapIdPath: this.mapIdPath,
+            resultField: this.resultField,
+            baseMapUrl: this.baseMapUrl,
+            ownerPath:this.ownerPath,
+            titlePath:this.titlePath,
+            resourcePermissionPath: this.resourcePermissionPath,
+            loadingMessage:'Loading...',
+            items : [{
+                iconCls : 'gx-map-go',
+                width : 25,
+                tooltip : "View Map",
+                getClass : function(v, meta, rec) {
+                    
+                    var results = rec.get(this.resultField); 
+                    var details = rec.get(this.detailsField);
+                    
+                     try{
+                         var mapId = eval(this.mapIdPath);
+                         var target = Ext.getCmp(this.renderMapToTab);
+                         if (rec.get('status') != 'RUNNING' && mapId){
+                             return 'x-grid-center-icon action_column_btn';
+                         }
+                         return 'x-hide-display';
+                      }catch(E){
+                        return 'x-hide-display';
+                      }
+                },
+                handler : function(grid, rowIndex, colIndex){
+                    var rec = grid.store.getAt(rowIndex);
+                    var results = rec.get(me.resultField); 
+                    var details = rec.get(me.detailsField);
+                    try{
+                        var mapId = eval(this.mapIdPath);
+                    }catch(e){
+                        return ;
+                    }
+                    var target = Ext.getCmp(this.renderMapToTab);
+                    
+                    var title = "Map";
+                    try{
+                        title = eval(this.titlePath);
+                    }catch(e){
+                        //do nothing, use default
+                    }
+                    var src = this.baseMapUrl; //TODO '?locale=' + this.target.lang ;
+                    var iframeTitle = title ;
+                    if(!(src.indexOf("?")>=0)){
+                       src+='?';
+                    } 
+                    if(mapId != -1){
+                        src += '&mapId=' + mapId;
+                    }
+
+                    var iframeTitle =  title ;
+                    var iframeconfig = {
+                        waitMsg: this.loadingMessage,
+                        width:900,
+                        height:650,
+                        collapsible:false,
+                        maximizable: true,
+                        maximized: true,
+                        closable: true,
+                        modal: true,
+                        closeAction: 'close',
+                        constrainHeader: true,
+                        maskEmpty: true,
+                        title: iframeTitle,
+                        src: src,
+                        onEsc: Ext.emptyFn
+                    };
+
+                    var iframe = new Ext.IframeTab(iframeconfig);
+
+                    if(target){
+                        target.add(iframe);
+                        if(target.xtype=='tabpanel'){
+                            target.setActiveTab(iframe);
+                        }
+                    }
+                }
+            },{
+                iconCls : 'lock_ic',
+                width : 25,
+                tooltip : this.editPermissionsText,
+                getClass : function(v, meta, rec) {
+                    var results = rec.get(me.resultField); 
+                    var details = rec.get(this.resultField); 
+                    if(!details){
+                        return 'x-hide-display';
+                    }
+                    try{
+                        var mapId = eval(this.mapIdPath);
+                        var owner = eval(this.ownerPath);
+                        var target = Ext.getCmp(this.renderMapToTab);
+                        var display =rec.get('status') != 'RUNNING' && mapId;
+                        display = display && ( owner == (this.target && this.target.user && this.target.user.name) );
+                        if (display){
+                           return 'x-grid-center-icon action_column_btn';
+                        }
+                    }catch(e){
+                        return 'x-hide-display';
+                    }
+                    var target = Ext.getCmp(this.renderMapToTab);
+                    var display =rec.get('status') != 'RUNNING' && mapId;
+                    display = display && ( owner == (this.target && this.target.user && this.target.user.name) );
+                    if (display){
+                       return 'x-grid-center-icon action_column_btn';
+                    }
+                     return 'x-hide-display';
+
+                },
+                handler : function(grid, rowIndex, colIndex){
+                    var rec = grid.store.getAt(rowIndex);
+                    var results = rec.get(this.resultField); 
+                    var details = rec.get(this.details); 
+                    var mapId = eval(this.resourcePermissionPath);
+                    var title;
+                    try{
+                        title = eval(this.titlePath)
+                    }catch(e){
+                    title ="";
+                    }
+                    
+                    var  winPermission = new mxp.widgets.ResourceGroupPermissionWindow({
+                        resourceId: mapId,
+                        title: this.permissionTitleText,
+                        hideCanWrite:true,
+                        auth: this.auth,
+                        geostoreURL: this.geoStoreBase,
+                        target: this.target
+                    });
+                    winPermission.show();  
+                    return winPermission;
+                }
+            }]
+        }]
+    
     }
 });
 

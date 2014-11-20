@@ -65,6 +65,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 	textConfirmDeleteMsg : "Do you confirm you want to delete event consumer with UUID:{uuid} ? ",
 	errorDeleteConsumerText : "There was an error while deleting consumer",
 	confirmClearText : "Do you really want to remove all consumers with SUCCESS or FAIL state?",
+    legend:'Status Legend: <span style:="margin:5px" class="row-green">SUCCESSFUL</span> <span class="row-yellow">RUNNING</span> <span class="row-red">FAILED</span>',      
 	/* end of i18n */
 	
 	//extjs grid specific config
@@ -89,11 +90,19 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 
 	/*
 	 * 
+	 * 
 	 */
 	initComponent : function() {
 		// create the Data Store
+        var baseParams ={};
+        if(this.pageSize){
+            baseParams.start = 0;
+            baseParams.limit = this.pageSize;
+        }
 		this.store = new Ext.data.Store({
 			autoLoad : this.autoload,
+            method: 'GET',
+            
 			// load using HTTP
 			url : this.osdi2ManagerRestURL + 'services/' + this.flowId + '/runtimes',
 			record : 'consumer',
@@ -220,6 +229,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
         if(this.actionColumns){
             this.columns = this.columns.concat(this.actionColumns);
         }
+        
         //add delete column
         this.columns.push({
 			xtype : 'actioncolumn',
@@ -236,6 +246,17 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 				}
 			}]
 		});
+        
+        //pagination
+        this.bbar= {
+            store: this.store,       // grid and PagingToolbar using same store
+            displayInfo: false,
+            pageSize: this.pageSize || 2,
+            xtype: this.pageSize ? 'paging' : 'toolbar',
+            // prependButtons: true,
+            items: [ "->" ,this.legend
+            ]
+        }
         
         mxp.widgets.CMREOnDemandRuntimesGrid.superclass.initComponent.call(this, arguments);
 	},

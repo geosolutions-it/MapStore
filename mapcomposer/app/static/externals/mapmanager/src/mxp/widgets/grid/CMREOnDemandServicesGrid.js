@@ -97,6 +97,10 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 		
 		// create the Data Store
 		this.store = new Ext.data.Store({
+            paramNames:{
+                start: 'page',
+                limit: 'pagesize'
+            },
 			autoLoad : this.autoload,
 			// load using HTTP
 			url : this.osdi2ManagerRestURL + 'services/',
@@ -110,7 +114,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 			}),
 			listeners : {
 				beforeload : function(a, b, c) {
-
+                    
 					if (a.proxy.conn.headers) {
 						if (this.auth) {
 							a.proxy.conn.headers['Authorization'] = this.auth;

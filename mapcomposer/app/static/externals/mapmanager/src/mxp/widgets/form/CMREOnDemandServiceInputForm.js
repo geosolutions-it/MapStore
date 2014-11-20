@@ -101,7 +101,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			"delete"
 		);
 		
-		//set generic GeoStore Resource fields form
+		
 		if (!this.genericFields) {
 			// /////////////////////////////////////////
 			// -- defining form fields
@@ -160,6 +160,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				text : this.bboxButtonLabel,
 				tooltip : this.bboxButtonTooltip,
 				enableToggle : true,
+                toggleGroup: "mapControls",
 				height : 50,
 				width : 50,
 				listeners : {
@@ -697,6 +698,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 							name : 'lon0_lat0_btn_' + id,
 							ref : '../../lonLatButton',
 							enableToggle : true,
+                            toggleGroup: "mapControls",
 							iconCls : 'geolocation_ic',
 							height : 32,
 							width : 32,
