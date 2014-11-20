@@ -97,7 +97,8 @@ GeoExt.Lang.add("it", {
         loginErrorTitle: "Autenticazione fallita",
         userFieldText: "Utente",
         passwordFieldText: "Password",
-        loginFormTitle: "Effettua l'autenticazione"
+        loginFormTitle: "Effettua l'autenticazione",
+        loginWaitMessage: "Accesso in corso. Attendere..."
     },
     "UserManagerView.prototype":{
         textGeneral:"Generale",
