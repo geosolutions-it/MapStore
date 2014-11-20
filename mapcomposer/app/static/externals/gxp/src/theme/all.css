@@ -133,7 +133,7 @@
 
 /* gxp_wmsgetfeatureinfo */
 .x-btn .gxp-icon-getfeatureinfo, .x-menu-item .gxp-icon-getfeatureinfo, .x-tree-node .gxp-icon-getfeatureinfo {
-   background-image: url(img/silk/information.png) !important;
+   background-image: url(img/silk/information_big.png) !important;
 }
 
 /* gxp_importexport */
