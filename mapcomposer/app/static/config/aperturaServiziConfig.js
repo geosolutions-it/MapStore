@@ -105,7 +105,11 @@
 				"group": "background",
 				"transparent": false,
 				"format": "image/jpeg"
-			}
+			},{
+                "source": "bolzano",
+				"title": "servizi_apertura",
+				"name": "Cartografia:servizi_apertura"
+            }
 		]
 	},
 	

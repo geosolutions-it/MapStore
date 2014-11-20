@@ -291,18 +291,32 @@ gxp.plugins.SearchServizioApertura = Ext.extend(gxp.plugins.Tool, {
 		  
 		   var selectedServices = Ext.getCmp("serviziCheck").getValue();
 		   var inServices = "";
-			for(var i=0;i<selectedServices.length;i++){
+           /*for(var i=0;i<selectedServices.length;i++){
 				inServices = inServices + "'" + selectedServices[i].inputValue + "'";
 				if (i < (selectedServices.length - 1))
 				{
 					inServices = inServices + ',';
 				}
-			}
+			}*/
 			
+            // /////////////////////////////////////////////////////////////////
+            // Create a CQL OpenLayers WFS compliant
+            // ('IN' clause is not supported by OpenLayers.Format.CQL)
+            // /////////////////////////////////////////////////////////////////
+            for(var i=0; i<selectedServices.length; i++){
+                var inService = "CATE_ROOT_CODE='" + selectedServices[i].inputValue + "'";
+                inServices += inService;
+                
+                if(i+1 < selectedServices.length){
+                    inServices += " OR ";
+                }         
+            }
+            
 			var params = {
 			   "viewparams": "begin_datetime:" + aDate.format("Y-m-d") + " " + startTime + ":00;end_datetime:" + aDate.format("Y-m-d") + " " + endTime + ":00",
-			   "cql_filter": "CATE_ROOT_CODE IN (" + inServices + ")"
-		   };
+			   //"cql_filter": "CATE_ROOT_CODE IN (" + inServices + ")"
+                "cql_filter": inServices
+		    };
 		   
 		   
 		   serviziLayer.mergeNewParams(params);
