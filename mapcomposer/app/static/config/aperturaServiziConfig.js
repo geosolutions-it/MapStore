@@ -246,24 +246,8 @@
 				"index":4
 			}
 		}, {
-			"ptype": "gxp_searchcosap",			
-			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
-			"outputTarget": "searchpanel",
-			"selectionProperties": {
-			    "wmsURL": "http://sit.comune.bolzano.it/geoserver",
-				"selectionLayerTitle": "Selection Layer",
-				"selectionLayerCiviciName": "Cartografia:civici",
-				"selectionLayerViaName": "ctn_base:grafo_vie",
-				"filterCiviciAttribute": "ID",
-				"selectionCiviciStyle": "highlight_point",
-				"filterViaAttribute": "ID_STRASSE",
-				"selectionViaStyle": "highlight",
-				"wsCosapName": "Cosap",
-				"layerCosapName": "test_occup_pol",
-				"layerCosapLogoName": "test_occup",	
-				"layerCosapTitle": "Occupazioni Area",
-				"layerCosapLogoTitle": "Occupazioni Icone"
-			}
+			"ptype": "gxp_searchservizioapertura",
+			"outputTarget": "searchpanel"
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": false,
@@ -407,8 +391,13 @@
 			"link": "http://sit.comune.bolzano.it/GeoInfo/help/",
 			"actionTarget": {"target": "paneltbar", "index": 22}
 		}, {
-			"ptype": "gxp_clr",			
+			"ptype": "gxp_complain",
+			"link": "http://sit.comune.bolzano.it/GeoInfo/help/",
 			"actionTarget": {"target": "paneltbar", "index": 23}
+		
+		}, {
+			"ptype": "gxp_clr",			
+			"actionTarget": {"target": "paneltbar", "index": 24}
 		}, {
 			"ptype": "gxp_embedmapdialog",
 			"actionTarget": {"target": "paneltbar", "index": 2},

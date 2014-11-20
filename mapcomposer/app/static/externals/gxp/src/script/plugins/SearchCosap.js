@@ -204,12 +204,24 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 						   var cosapLayer = apptarget.mapPanel.map.getLayersByName(cosapLayers[i])[0];
 						   if(cosapLayer){
 								cosapLayer.vendorParams =  {
-									"cql_filter": "APER_DATA_INIZIO <= '"+ endDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + startDate.format('Y-m-d') + "'"
+									//"cql_filter": "APER_DATA_INIZIO <= '"+ endDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + startDate.format('Y-m-d') + "'"
+									"viewparams": "begin_datetime:" + startDate.format('Y-m-d') + ";end_datetime:" + endDate.format("Y-m-d") + ""
 								};
 								
 								cosapLayer.mergeNewParams({
-									"cql_filter": "APER_DATA_INIZIO <= '"+ endDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + startDate.format('Y-m-d') + "'"
-								});													
+									//"cql_filter": "APER_DATA_INIZIO <= '"+ endDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + startDate.format('Y-m-d') + "'"
+									"viewparams": "begin_datetime:" + startDate.format('Y-m-d') + ";end_datetime:" + endDate.format("Y-m-d") + ""
+								});						
+								
+								var params = {					   
+								   //"cql_filter": "APER_DATA_INIZIO <= '"+ endDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + startDate.format('Y-m-d') + "'"
+								   "viewparams": "begin_datetime:" + startDate.format('Y-m-d') + ";end_datetime:" + endDate.format("Y-m-d") + ""
+							   };
+								
+								var index = apptarget.mapPanel.layers.findExact('name', cosapLayer.params.LAYERS);
+								apptarget.mapPanel.layers.getAt(index).getLayer().vendorParams = params;
+								apptarget.mapPanel.layers.getAt(index).getLayer().mergeNewParams(params);
+								
 								
 									/*"vendorParams": {
 										"cql_filter": "APER_DATA_INIZIO BEFORE " + endDate.format('Y-m-d') + "T00:00:00Z AND APER_DATA_FINE AFTER " + startDate.format('Y-m-d') + "T00:00:00Z"
@@ -337,14 +349,25 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 				
 				//Impostazione di un filtro iniziale.
 				e.layer.vendorParams =  {
-					"cql_filter": "APER_DATA_INIZIO <= '"+ aDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + aDate.format('Y-m-d') + "'",
+					//"cql_filter": "APER_DATA_INIZIO <= '"+ aDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + aDate.format('Y-m-d') + "'",
+					"viewparams": "begin_datetime:" + aDate.format('Y-m-d') + ";end_datetime:" + aDate.format("Y-m-d") + "",
 					"buffer": 20
 				};
 				
 				e.layer.mergeNewParams({
-					"cql_filter": "APER_DATA_INIZIO <= '"+ aDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + aDate.format('Y-m-d') + "'",
+					//"cql_filter": "APER_DATA_INIZIO <= '"+ aDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + aDate.format('Y-m-d') + "'",
+					"viewparams": "begin_datetime:" + aDate.format('Y-m-d') + ";end_datetime:" + aDate.format("Y-m-d") + "",
 					"buffer": 20
 				});
+				
+				var params = {					   
+					   //"cql_filter": "APER_DATA_INIZIO <= '"+ aDate.format('Y-m-d') + "' AND APER_DATA_FINE >= '" + aDate.format('Y-m-d') + "'"
+					   "viewparams": "begin_datetime:" + aDate.format('Y-m-d') + ";end_datetime:" + aDate.format("Y-m-d") + ""
+				   };
+				
+				var index = apptarget.mapPanel.layers.findExact('name', e.layer.params.LAYERS);
+				apptarget.mapPanel.layers.getAt(index).getLayer().vendorParams = params;
+				apptarget.mapPanel.layers.getAt(index).getLayer().mergeNewParams(params);
 			}
 		});
 		

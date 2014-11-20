@@ -97,9 +97,10 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
 		var locCode = GeoExt.Lang.locale;
         var code = locCode || this.target.defaultLanguage;
 		
-		this.fileName = code == "it" ? this.fileName + "_it.pdf" : this.fileName + "_de.pdf";
+		var fName = code == "it" ? this.fileName + "_it.pdf" : this.fileName + "_de.pdf";
+		//this.fileName = code == "it" ? this.fileName + "_it.pdf" : this.fileName + "_de.pdf";
 		
-		if (this.fileName == 'help_de.pdf') {
+		if (fName == 'help_de.pdf') {
 			new Ext.Window(Ext.apply({
 			   layout:'fit',
 			   title: this.title,
@@ -110,7 +111,7 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
 			   height:300
 			},this.windowOptions)).show();
 		} else{
-			window.open(this.link + this.fileName);
+			window.open(this.link + fName);
 		}
     }    
 });
