@@ -314,7 +314,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		var swapAxis = layer.params.VERSION >= "1.3" && layer.reverseAxisOrder();
 		var maxExtent = 
 		(nativeExtent && OpenLayers.Bounds.fromArray(nativeExtent.bbox, swapAxis)) || 
-		(original.get("llbbox") && OpenLayers.Bounds.fromArray(original.get("llbbox")).transform(new OpenLayers.Projection("EPSG:4326"), projection)) || null;
+		OpenLayers.Bounds.fromArray(original.get("llbbox")).transform(new OpenLayers.Projection("EPSG:4326"), projection);
 		
 		// ///////////////////////////////////////////////////////////////////////////////////////////
 		// 'layersCachedExtent' property can be defined for source and/or a single 
@@ -325,28 +325,37 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		// //////////////////////////////////////////////////////////////////////////////////////////
 		var maxCachedExtent = config.layersCachedExtent ? OpenLayers.Bounds.fromArray(config.layersCachedExtent) :
 			this.layersCachedExtent ? OpenLayers.Bounds.fromArray(this.layersCachedExtent) : maxExtent;
-		if(maxExtent) {
-			// make sure maxExtent is valid (transfzorm does not succeed for all llbbox)
-			if (!(1 / maxExtent.getHeight() > 0) || !(1 / maxExtent.getWidth() > 0)) {
-				// maxExtent has infinite or non-numeric width or height
-				// in this case, the map maxExtent must be specified in the config
-				maxExtent = undefined;
-			}
+		
+		// make sure maxExtent is valid (transfzorm does not succeed for all llbbox)
+		if (!(1 / maxExtent.getHeight() > 0) || !(1 / maxExtent.getWidth() > 0)) {
+			// maxExtent has infinite or non-numeric width or height
+			// in this case, the map maxExtent must be specified in the config
+			maxExtent = undefined;
 		}
 		
 		var styles = this.getLayerStyle(config);
-
+	
 		// use all params from sources layerBaseParams option
 		var params = Ext.applyIf({
 			STYLES: styles || "",
 			FORMAT: config.format,
 			TRANSPARENT: config.transparent,
-			CQL_FILTER: config.cql_filter,
+			//CQL_FILTER: config.cql_filter,
+			TIME: config.time,
 			ELEVATION: config.elevation
 		}, this.layerBaseParams);
 		
+		// ///////////////////////////////////////////////////////
+		// Check for existing 'viewparams' in config and apply 
+		// them into the WMS params of the layer
+		// ///////////////////////////////////////////////////////
+		if(config.vendorParams){
+			params = Ext.applyIf(params, config.vendorParams);   
+		}
+		
 		// use all params from original
 		params = Ext.applyIf(params, layer.params);
+
 
 		// /////////////////////////////////////////////////////////
 		// Checking if the OpenLayers transition should be 
@@ -381,7 +390,6 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 				opacity: ("opacity" in config) ? config.opacity : 1,
 				buffer: ("buffer" in config) ? config.buffer : 0,
 				loadingProgress: config.loadingProgress || this.loadingProgress || false,
-		dimensions: original.data.dimensions,
 				projection: layerProjection,
 				vendorParams: config.vendorParams,
 				transitionEffect: transitionEffect
