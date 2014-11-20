@@ -146,7 +146,6 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             bbarButtons.push({
                 text: this.filterMapText,
                 iconCls: "gxp-icon-map-filter",
-                handler: function() {
                 handler: function() {					
                     // Collect all selected filters
                     var filters = new Array();
