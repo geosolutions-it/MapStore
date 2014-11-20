@@ -314,7 +314,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		var swapAxis = layer.params.VERSION >= "1.3" && layer.reverseAxisOrder();
 		var maxExtent = 
 		(nativeExtent && OpenLayers.Bounds.fromArray(nativeExtent.bbox, swapAxis)) || 
-		OpenLayers.Bounds.fromArray(original.get("llbbox")).transform(new OpenLayers.Projection("EPSG:4326"), projection);
+		(original.get("llbbox") && OpenLayers.Bounds.fromArray(original.get("llbbox")).transform(new OpenLayers.Projection("EPSG:4326"), projection)) || null;
 		
 		// ///////////////////////////////////////////////////////////////////////////////////////////
 		// 'layersCachedExtent' property can be defined for source and/or a single 
@@ -325,12 +325,13 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		// //////////////////////////////////////////////////////////////////////////////////////////
 		var maxCachedExtent = config.layersCachedExtent ? OpenLayers.Bounds.fromArray(config.layersCachedExtent) :
 			this.layersCachedExtent ? OpenLayers.Bounds.fromArray(this.layersCachedExtent) : maxExtent;
-		
-		// make sure maxExtent is valid (transfzorm does not succeed for all llbbox)
-		if (!(1 / maxExtent.getHeight() > 0) || !(1 / maxExtent.getWidth() > 0)) {
-			// maxExtent has infinite or non-numeric width or height
-			// in this case, the map maxExtent must be specified in the config
-			maxExtent = undefined;
+		if(maxExtent) {
+			// make sure maxExtent is valid (transfzorm does not succeed for all llbbox)
+			if (!(1 / maxExtent.getHeight() > 0) || !(1 / maxExtent.getWidth() > 0)) {
+				// maxExtent has infinite or non-numeric width or height
+				// in this case, the map maxExtent must be specified in the config
+				maxExtent = undefined;
+			}
 		}
 		
 		var styles = this.getLayerStyle(config);
