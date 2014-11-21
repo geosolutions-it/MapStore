@@ -563,6 +563,11 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			// var params = this.getWPSParams();
 			// this.showResult(responseData);
 			
+            //activate tab
+            var changematrixTool = this.target.tools["changeMatrixTool"];            
+            var tab = Ext.getCmp(changematrixTool.wfsChangeMatrisGridPanelID);
+            tab.setActiveTab(this.geocoderConfig.targetResultGridId + "_panel");
+            
 			var wfsGrid = Ext.getCmp(this.geocoderConfig.targetResultGridId);
 			if(wfsGrid) {
 				var lastOptions = wfsGrid.store.lastOptions;

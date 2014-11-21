@@ -115,6 +115,7 @@ gxp.plugins.TableableTool = Ext.extend(gxp.plugins.Tool, {
 
 			// The final configuration is a TabPanel
 			var tabPanel = new Ext.TabPanel({
+                id: this.id + "_tabpanel",
 			    // renderTo: this.outputTarget,
 			    // renderTo: Ext.getBody(),
 			    activeTab: 0,
