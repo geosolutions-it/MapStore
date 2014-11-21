@@ -130,7 +130,7 @@ gxp.plugins.areeallerta.AreeallertaData = Ext.extend(gxp.plugins.Tool, {
                         autoLoad: true,
                         displayField: 'label',
                         valueField: 'cum',
-                        value: "60",
+                        value: "180",
                         readOnly: false,
                         store: new Ext.data.JsonStore({
                             fields: [{

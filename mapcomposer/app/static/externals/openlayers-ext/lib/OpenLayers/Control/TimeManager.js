@@ -355,7 +355,8 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
 		}*/
 		
 		if(this.range && !this.currentTime) {
-			this.setTime(new Date(this.range[(this.step > 0) ? 0 : 1].getTime()));
+			//this.setTime(new Date(this.range[(this.step > 0) ? 0 : 1].getTime()));
+			this.setTime(new Date(this.range[(this.startEnd) ? 1 : 0].getTime()));
 		} else if(this.currentTime){
 			//force a tick call and maybe a tick event
 			this.setTime(this.currentTime);
@@ -867,7 +868,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
      * Returns:
      * {Date} the control's currentTime
      */ 
-     currenttime:function(looped) {
+     currenttime_old:function(looped) {
         this.clearTimer();
         this.clearTooltipTimer();
         
@@ -888,6 +889,36 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
             'looped' : !!looped
         });
         return this.currentTime;
+    },    
+    /**
+     * APIMethod:currenttime
+     * Set the time to the animation current UTC time. Fires the 'currenttime' event.
+     * 
+     * Parameters: {Boolean} looped - trigger reset event with looped = true
+     * Returns:
+     * {Date} the control's currentTime
+     */ 
+     currenttime:function(looped) {
+        this.clearTimer();
+        this.clearTooltipTimer();
+        
+        var d = new Date();        
+        var UTC = d.getUTCFullYear() + '-'
+		            + this.pad(d.getUTCMonth() + 1) + '-'
+		            + this.pad(d.getUTCDate()) + 'T'
+                    
+		            + this.pad(d.getUTCHours()) + ':'
+		            + this.pad(d.getUTCMinutes()) + ':'
+		            + this.pad(d.getUTCSeconds()) + 'Z';
+
+        currentTimeUTC = Date.fromISO( UTC ); 
+        
+        var newTime = new Date(currentTimeUTC.getTime());
+        this.setTime(this.range[1],"curTime");
+        this.events.triggerEvent('reset', {
+            'looped' : !!looped
+        });
+        //return this.currentTime;
     },
     pad: function (n){
         return n < 10 ? '0' + n : n 

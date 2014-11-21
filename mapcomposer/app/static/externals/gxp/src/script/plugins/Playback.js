@@ -166,6 +166,7 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
                 this.addOutput();
 				self.target.fireEvent("timemanager");
                 self.getTimeManager();
+                //this.playbackToolbar.control.currenttime();
             }
         }, this);
     },
