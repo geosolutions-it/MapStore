@@ -53,7 +53,7 @@ var patchedWFTSwriters = {
 					handle: options && options.handle,
 					outputFormat: options && options.outputFormat,
 					maxFeatures: options && options.maxFeatures,
-					viewparams: options && options.viewparams,
+					viewParams: options && options.viewparams,
 					"xsi:schemaLocation": this.schemaLocationAttr(options)
 				}
 			});
