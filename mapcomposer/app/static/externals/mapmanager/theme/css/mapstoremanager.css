@@ -367,3 +367,27 @@ padding: 4px;
 .geobatch_log{
     font-family: monospace;
 }
+
+/* visibility */
+.visibility_ic{
+    background-image: url(../img/lock.png);
+
+}
+
+.ic_edit{
+	background-image: url(../img/pencil.png);
+}
+.visibility_ic.SHARED{
+    background-image: url(../img/group.png);
+
+}
+
+.visibility_ic.PRIVATE{
+    background-image: url(../img/lock.png);
+
+}
+.visibility_ic.PUBLIC{
+    background-image: url(../img/world.png);
+
+}
+

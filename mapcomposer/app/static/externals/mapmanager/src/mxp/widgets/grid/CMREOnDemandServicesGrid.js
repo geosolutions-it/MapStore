@@ -106,6 +106,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 			url : this.osdi2ManagerRestURL + 'services/',
 			record : 'service',
 			idPath : 'serviceId',
+			auth:this.auth,
 			fields : ['serviceId', 'name', 'description', 'activeStatus'],
 			reader : new Ext.data.JsonReader({
 				root : 'data',

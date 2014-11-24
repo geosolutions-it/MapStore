@@ -17,22 +17,6 @@
       [
          "en",
          "English"
-      ],
-      [
-         "it",
-         "Italiano"
-      ],
-      [
-         "fr",
-         "Français"
-      ],
-      [
-         "de",
-         "Deutsch"
-      ],
-      [
-         "es",
-         "Español"
       ]
    ],
    "tools":[{
@@ -42,7 +26,7 @@
         "actionTarget":null
     },{
         "ptype": "mxp_categoryinitializer",
-        "neededCategories": ["WPS_RUN_CONFIGS" ]
+        "neededCategories": ["WPS_RUN_CONFIGS", "MAP", "MAPSTORECONFIG" ]
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
@@ -60,13 +44,33 @@
     }],
    "adminTools":[{
          "ptype": "mxp_cmre_ondemand_services",
-         "osdi2ManagerRestURL":"http://localhost:8180/opensdi2-manager/mvc/process/wps/",
+         "osdi2ManagerRestURL":"http://172.21.173.30:8282/opensdi2-manager/mvc/process/wps/",
+         "baseMapUrl": "./?config=assetAllocatorResult",
+         "autoRefreshTime": 60000,
          "autoOpen":true,
          "outputConfig":{"closable":false},
          "actionTarget":{
            "target": "north.tbar",
            "index": 0
          }
+    },{ 
+        "ptype": "mxp_geostore_resource_editor",
+        "category": "MAP",
+        "buttonText": "Maps",
+        "actionTarget":{
+             "target": "north.tbar",
+             "index": 1
+            }
+
+    },{ 
+        "ptype": "mxp_geostore_resource_editor",
+        "category": "WPS_RUN_CONFIGS",
+        "buttonText": "Runtimes",
+        "actionTarget":{
+             "target": "north.tbar",
+             "index": 2
+            }
+
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
@@ -83,7 +87,9 @@
     }],
     "loggedTools":[{
          "ptype": "mxp_cmre_ondemand_services",
-         "osdi2ManagerRestURL":"http://localhost:8180/opensdi2-manager/mvc/process/wps/",
+         "osdi2ManagerRestURL":"http://172.21.173.30:8282/opensdi2-manager/mvc/process/wps/",
+         "baseMapUrl": "./?config=assetAllocatorResult",
+         "autoRefreshTime": 60000,
          "autoOpen":true,
          "outputConfig":{"closable":false},
          "actionTarget":{

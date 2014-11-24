@@ -44,7 +44,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 	 * {string} the OpenSDI2-Manager REST Url
 	 */
 	osdi2ManagerRestURL : 'http://localhost:8180/opensdi2-manager/mvc/process/geobatch/',
-	autoload : true,
+	autoload : false,
 	autoExpandColumn : 'description',
     /**
      * api config[actionColumn]
@@ -74,7 +74,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
      * api config[autoRefreshTime]
      * auto-refresh interval
      */
-    autoRefreshTime: 3000,
+    autoRefreshTime: 60000,
 	viewConfig : {
 		getRowClass : function(record, index) {
 			var c = record.get('status');
@@ -102,7 +102,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 		this.store = new Ext.data.Store({
 			autoLoad : this.autoload,
             method: 'GET',
-            
+            auth:this.auth,
 			// load using HTTP
 			url : this.osdi2ManagerRestURL + 'services/' + this.flowId + '/runtimes',
 			record : 'consumer',

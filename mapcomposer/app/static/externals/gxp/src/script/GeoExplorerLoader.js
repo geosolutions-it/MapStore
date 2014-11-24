@@ -144,7 +144,7 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
                 'name'
             ],
             proxy: new Ext.data.HttpProxy({
-                url: url,
+                url: url.indexOf("http")>=0 ? proxy + encodeURIComponent(url) : url,
                 restful: true,
                 method : 'GET',
                 disableCaching: true,

@@ -43,6 +43,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
     flowRunFormCategory: 'WPS_RUN_CONFIGS',
     loginManager: null,    
     setActiveOnOutput: true,
+    autoRefreshTime: 60000,
     /* api configuration
     baseDir: '/home/geosolutions/admin/',
     
@@ -183,6 +184,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                     title: this.consumersGridTitle,
                     layout:'fit',
                     autoScroll:true,
+                    autoRefreshTime: this.autoRefreshTime,
                     flowId: this.flowId,
                     auth: this.auth,
                     autoWidth:true,
@@ -269,16 +271,17 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
     viewMapText: "View Map",
     editPermissionsText: "Edit Permissions",
     loadingMessage:'Loading...',
-    
+    visibilityHeaderText: "Visibility",
     // CUSTOMER SPECIFIC configuration
     renderMapToTab: "mainTabPanel",
     mapIdPath: "results.mapId",
-    resultField: "results",
+    resultsField: "results",
     detailsField: "details",
     baseMapUrl: "/?config=assetAllocatorResult",
-    ownerPath:"results.owner",
+    ownerPath:"details.owner",
     titlePath:'results.title',
-    resourcePermissionPath: "results.mapId",
+    visibilityPath: "details.resourceVisibility",
+    resourcePermissionPath: "details.resourceId",
     /**
      * setup action columns to add
      */
@@ -291,7 +294,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                 dataIndex : 'results',
                 sortable : false,
                 renderer: function(value, metaData, rec, rowIndex, colIndex, store) {
-                  var results = rec.get(me.resultField); 
+                  var results = rec.get(me.resultsField); 
                   var details = rec.get(me.detailsField);
                   try{
                     var owner = eval(me.ownerPath);
@@ -304,14 +307,125 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
         },{
             xtype : 'actioncolumn',
             hideable: false,
-            width : 45,
+            header: this.visibilityHeaderText,
+            width : 80,
             renderMapToTab: this.renderMapToTab,
             mapIdPath: this.mapIdPath,
-            resultField: this.resultField,
+            resultsField: this.resultsField,
             baseMapUrl: this.baseMapUrl,
             ownerPath:this.ownerPath,
             titlePath:this.titlePath,
             resourcePermissionPath: this.resourcePermissionPath,
+            visibilityPath: this.visibilityPath,
+            detailsField: this.detailsField,
+            loadingMessage:'Loading...',
+            items : [{
+                iconCls : 'visibility_ic',
+                width : 25,
+                getClass : function(v, meta, rec) {
+                    var results = rec.get(me.resultsField); 
+                    var details = rec.get(this.detailsField); 
+                    
+                    
+                    try{
+                        var resourceId = eval(this.resourcePermissionPath);
+                        var owner = eval(this.ownerPath);
+                        var visibility = eval(this.visibilityPath);
+                        var target = Ext.getCmp(this.renderMapToTab);
+                        var display =rec.get('status') != 'RUNNING' && resourceId;
+                        this.items[0].tooltip = visibility;
+                        if (display){
+                           return 'x-grid-center-icon action_column_btn ' + visibility;
+                        }
+                    }catch(e){
+                        return 'x-hide-display';
+                    }
+                    var target = Ext.getCmp(this.renderMapToTab);
+                    var display =rec.get('status') != 'RUNNING' && resourceId;
+                    display = display && ( owner == (this.target && this.target.user && this.target.user.name) );
+                    if (display){
+                       return 'x-grid-center-icon action_column_btn ' +  visibility;
+                    }
+                     return 'x-hide-display';
+
+                }
+            },{
+                iconCls : 'ic_edit',
+                width : 25,
+                tooltip : this.editPermissionsText,
+                getClass : function(v, meta, rec) {
+                    var results = rec.get(me.resultsField); 
+                    var details = rec.get(this.detailsField); 
+                    
+                    
+                    try{
+                        var resourceId = eval(this.resourcePermissionPath);
+                        var owner = eval(this.ownerPath);
+                        var visibility = eval(this.visibilityPath);
+                        var target = Ext.getCmp(this.renderMapToTab);
+                        var display =rec.get('status') != 'RUNNING' && resourceId;
+                        display = display && ( owner == (this.target && this.target.user && this.target.user.name) );
+                        if (display){
+                           return 'action_column_btn';
+                        }
+                    }catch(e){
+                        return 'x-hide-display';
+                    }
+                    var target = Ext.getCmp(this.renderMapToTab);
+                    var display =rec.get('status') != 'RUNNING' && resourceId;
+                    display = display && ( owner == (this.target && this.target.user && this.target.user.name) );
+                    if (display){
+                       return 'action_column_btn';
+                    }
+                     return 'x-hide-display';
+
+                },
+                handler : function(grid, rowIndex, colIndex){
+                    var rec = grid.store.getAt(rowIndex);
+                    var results = rec.get(this.resultsField); 
+                    var details = rec.get(this.detailsField); 
+                    
+                    var resourceId = eval(this.resourcePermissionPath);
+                    var title;
+                    try{
+                        title = eval(this.titlePath)
+                    }catch(e){
+                    	title = rec.get("name");
+                    }
+                    
+                    var  winPermission = new mxp.widgets.ResourceGroupPermissionWindow({
+                        resourceId: resourceId,
+                        title: this.permissionTitleText,
+                        hideCanWrite:true,
+                        auth: this.auth,
+                        closeAction:'close',
+                        geostoreURL: this.geoStoreBase,
+                        target: this.target,
+                        listeners: {
+                        	close: function(){
+                        		grid.store.load();
+                        		
+                        	}
+                        	
+                        }
+                    });
+                    winPermission.show();  
+                    return winPermission;
+                }
+            }]
+        },{
+            xtype : 'actioncolumn',
+            hideable: false,
+            width : 45,
+            renderMapToTab: this.renderMapToTab,
+            mapIdPath: this.mapIdPath,
+            resultsField: this.resultsField,
+            baseMapUrl: this.baseMapUrl,
+            ownerPath:this.ownerPath,
+            titlePath:this.titlePath,
+            resourcePermissionPath: this.resourcePermissionPath,
+            visibilityPath: this.visibilityPath,
+            detailsField: this.detailsField,
             loadingMessage:'Loading...',
             items : [{
                 iconCls : 'gx-map-go',
@@ -319,13 +433,13 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                 tooltip : "View Map",
                 getClass : function(v, meta, rec) {
                     
-                    var results = rec.get(this.resultField); 
+                    var results = rec.get(this.resultsField); 
                     var details = rec.get(this.detailsField);
-                    
+                     
                      try{
                          var mapId = eval(this.mapIdPath);
                          var target = Ext.getCmp(this.renderMapToTab);
-                         if (rec.get('status') != 'RUNNING' && mapId){
+                         if (rec.get('status') == 'SUCCESS' && mapId){
                              return 'x-grid-center-icon action_column_btn';
                          }
                          return 'x-hide-display';
@@ -335,7 +449,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                 },
                 handler : function(grid, rowIndex, colIndex){
                     var rec = grid.store.getAt(rowIndex);
-                    var results = rec.get(me.resultField); 
+                    var results = rec.get(me.resultsField); 
                     var details = rec.get(me.detailsField);
                     try{
                         var mapId = eval(this.mapIdPath);
@@ -344,12 +458,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                     }
                     var target = Ext.getCmp(this.renderMapToTab);
                     
-                    var title = "Map";
-                    try{
-                        title = eval(this.titlePath);
-                    }catch(e){
-                        //do nothing, use default
-                    }
+                    var title = rec.get('name');
                     var src = this.baseMapUrl; //TODO '?locale=' + this.target.lang ;
                     var iframeTitle = title ;
                     if(!(src.indexOf("?")>=0)){
@@ -385,60 +494,6 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                             target.setActiveTab(iframe);
                         }
                     }
-                }
-            },{
-                iconCls : 'lock_ic',
-                width : 25,
-                tooltip : this.editPermissionsText,
-                getClass : function(v, meta, rec) {
-                    var results = rec.get(me.resultField); 
-                    var details = rec.get(this.resultField); 
-                    if(!details){
-                        return 'x-hide-display';
-                    }
-                    try{
-                        var mapId = eval(this.mapIdPath);
-                        var owner = eval(this.ownerPath);
-                        var target = Ext.getCmp(this.renderMapToTab);
-                        var display =rec.get('status') != 'RUNNING' && mapId;
-                        display = display && ( owner == (this.target && this.target.user && this.target.user.name) );
-                        if (display){
-                           return 'x-grid-center-icon action_column_btn';
-                        }
-                    }catch(e){
-                        return 'x-hide-display';
-                    }
-                    var target = Ext.getCmp(this.renderMapToTab);
-                    var display =rec.get('status') != 'RUNNING' && mapId;
-                    display = display && ( owner == (this.target && this.target.user && this.target.user.name) );
-                    if (display){
-                       return 'x-grid-center-icon action_column_btn';
-                    }
-                     return 'x-hide-display';
-
-                },
-                handler : function(grid, rowIndex, colIndex){
-                    var rec = grid.store.getAt(rowIndex);
-                    var results = rec.get(this.resultField); 
-                    var details = rec.get(this.details); 
-                    var mapId = eval(this.resourcePermissionPath);
-                    var title;
-                    try{
-                        title = eval(this.titlePath)
-                    }catch(e){
-                    title ="";
-                    }
-                    
-                    var  winPermission = new mxp.widgets.ResourceGroupPermissionWindow({
-                        resourceId: mapId,
-                        title: this.permissionTitleText,
-                        hideCanWrite:true,
-                        auth: this.auth,
-                        geostoreURL: this.geoStoreBase,
-                        target: this.target
-                    });
-                    winPermission.show();  
-                    return winPermission;
                 }
             }]
         }]
