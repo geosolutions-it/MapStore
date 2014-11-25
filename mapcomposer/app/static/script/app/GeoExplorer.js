@@ -500,7 +500,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 featureType: featureName, 
                 readFormat: new OpenLayers.Format.GeoJSON(),
                 featureNS: namespc, 
-                filter: filterProtocol, 
+                //filter: filterProtocol, 
                 outputFormat: "application/json",
                 version: wfsVersion,
                 sortBy: sortBy || undefined
