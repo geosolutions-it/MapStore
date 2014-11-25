@@ -2553,9 +2553,30 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }   
             
             var radius = this.getRadius();
+			var unorderedDistances = [];
+			if(radius.radiusNotHum) {
+                unorderedDistances.push({distance: radius.radiusNotHum, type: 'ambientale'});
+            }
+            if(radius.radiusHum) {
+                for(var i=0; i<radius.radiusHum.length; i++) {
+                    if(radius.radiusHum[i]) {
+						unorderedDistances.push({distance: radius.radiusHum[i], type: 'sociale' + i});
+                    }
+                }
+            }
+			// distances must be sorted
+			unorderedDistances.sort(function(a,b)  {
+				return a.distance - b.distance;
+			});
+			
             var distances = [];
             var distanceNames = [];
-            if(radius.radiusNotHum) {
+			for(var i=0;i<unorderedDistances.length;i++) {
+				var dist = unorderedDistances[i];
+				distances.push(new OpenLayers.WPSProcess.LiteralData({value: dist.distance}));
+                distanceNames.push(new OpenLayers.WPSProcess.LiteralData({value: dist.type}));
+			}
+            /*if(radius.radiusNotHum) {
                 distances.push(new OpenLayers.WPSProcess.LiteralData({value: radius.radiusNotHum}));
                 distanceNames.push(new OpenLayers.WPSProcess.LiteralData({value: 'ambientale'}));
             }
@@ -2566,7 +2587,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         distanceNames.push(new OpenLayers.WPSProcess.LiteralData({value: 'sociale' + i}));
                     }
                 }
-            }
+            }*/
             
             var filter = new OpenLayers.Filter.Spatial({ 
               type: OpenLayers.Filter.Spatial.BBOX,
@@ -2574,6 +2595,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               value: bounds, 
               projection: map.getProjection() 
             });
+			wfsGrid.distances = unorderedDistances;
             wfsGrid.getEl().mask(this.loadMsg);
             //riskProcess.describe({callback: function() {
                 //riskProcess.setResponseForm([{}], {supportedFormats: {'application/json':true}});
@@ -2607,12 +2629,23 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     var json = Ext.decode(json);
                     var refactoredJson = {type: "FeatureCollection", features:[]};
                     var geomPos = 1;
+					
+					var searchGeometry = function(item, distances,type) {
+						for(var i = 0; i<distances.length; i++) {
+							if(distances[i].type === type) {
+								return i === 0 ? item.geometry : item.properties['geometria' + (i+1)];
+							}
+						}
+					};
+					
                     if(json.features.length > 0) {
+						
                         var item = json.features[0];
                         
                         if(item.properties.ambientale) {
+
                             refactoredJson.features.push({
-                                geometry: item.geometry,
+                                geometry: searchGeometry(item, wfsGrid.distances, 'ambientale'),
                                 id: "5",
                                 type: "Feature",
                                 properties: {
@@ -2625,8 +2658,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         for(var propName in item.properties) {
                             if(item.properties.hasOwnProperty(propName)) {
                                 if(propName.indexOf('sociale') === 0) {
-                                    var geometry = geomPos === 1 ? item.geometry : item.properties['geometria' + geomPos];
-                                    var humPos = parseInt(propName.substring(7), 10);
+									var humPos = parseInt(propName.substring(7), 10);
+                                    var geometry = searchGeometry(item, wfsGrid.distances, propName);//geomPos === 1 ? item.geometry : item.properties['geometria' + geomPos];
                                     refactoredJson.features.push({
                                         geometry: geometry,
                                         id: humPos + 1,
@@ -2701,7 +2734,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         if(Ext.getCmp('targets_view').pressed) {
             Ext.getCmp('featuregrid').setCurrentPanel('targets');
 			if(Ext.getCmp("south").collapsed) {
-				Ext.getCmp("south").on("expand", function() { this.loadTargetGrids(targetViewParams, extraTargets); }, this);
+				Ext.getCmp("south").on("expand", function() { this.loadTargetGrids(targetViewParams, extraTargets); }, this, {single: true});
 			} else {
 				this.loadTargetGrids(targetViewParams, extraTargets);
 			}
@@ -2788,8 +2821,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }
         
         if(Ext.getCmp('areaDamage_view').pressed) {
-            Ext.getCmp('featuregrid').setCurrentPanel('damage');                        
-            this.loadDamageGrid();
+            Ext.getCmp('featuregrid').setCurrentPanel('damage');
+			if(Ext.getCmp("south").collapsed) {
+				Ext.getCmp("south").on("expand", function() { this.loadDamageGrid(); }, this, {single: true});
+			} else {
+				this.loadDamageGrid();
+			}
         }
         return roi;
     },
@@ -3074,7 +3111,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             
         if(Ext.getCmp('roadGraph_view').pressed) {
             Ext.getCmp('featuregrid').setCurrentPanel('roads');
-            this.loadRoadsGrid();
+			if(Ext.getCmp("south").collapsed) {
+				Ext.getCmp("south").on("expand", function() { this.loadRoadsGrid(); }, this, {single: true});
+			} else {
+				this.loadRoadsGrid();
+			}
         }   
         if(status.processing === 3) {
             this.moveModifiedLayerToTop(newLayers);
