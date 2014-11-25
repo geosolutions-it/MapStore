@@ -578,6 +578,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         // check modify on grafo_simulazione 
         var arcIsEmpty = true;
+        var targetsAreEmpty = true;
         var isEmpty = function (obj) {
             for(var key in obj) {
                 if(obj.hasOwnProperty(key))
@@ -591,7 +592,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 if (wfsGrid.currentGrids[i].featureType === "grafo_simulazione"){
                     var save = wfsGrid.currentGrids[i].save;
                     arcIsEmpty = isEmpty(save);
-                }
+                } else {
+					var save = wfsGrid.currentGrids[i].save;
+                    if(!isEmpty(save)) {
+						targetsAreEmpty = false;
+					}
+				}
             }
         }
         
@@ -645,7 +651,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             (simulationChangedLayer && simulationChangedLayer.features.length !== 0) || 
             (simulationRemovedLayer && simulationRemovedLayer.features.length !== 0) || 
             //(simulationModLayer && simulationModLayer.features.length !== 0) ||
-            !arcIsEmpty){
+            !arcIsEmpty || !targetsAreEmpty){
             
             Ext.Msg.show({
                 title: this.alertSimGridReloadTitle,
@@ -1105,7 +1111,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 select: function(cb, record, index) {
                     var type = record.get('humans');
                     var startValue = cb.startValue;
-                    //this.updateTargetCombo(type);
+                    this.updateTargetCombo(type);
                     var processingCombo = this.elaborazione.getValue();
                     this.enableDisableSimulation(processingCombo === 3,type,startValue);
                 }
