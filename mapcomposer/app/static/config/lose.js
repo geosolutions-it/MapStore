@@ -554,7 +554,7 @@
         "providerOptions": {
             "replaceURL": [{
                 "from": "http://localhost:8080/geoserver",
-                "to": "http://mbarto-geosol:8080/geoserver"
+                "to": "http://Geo-HP:8080/geoserver"
             }]
         },
         "customParams":{
