@@ -73,7 +73,7 @@ mxp.widgets.ResourceGroupPermissionGrid = Ext.extend(Ext.grid.GridPanel, {
     autoload:true,
     loadMask:true,
     autoload:true,
-
+    hideCanWrite: false,
     // runtime parameters
     selectedGroup: null,
     selectedRecord: null,
@@ -363,6 +363,7 @@ mxp.widgets.ResourceGroupPermissionGrid = Ext.extend(Ext.grid.GridPanel, {
                     fieldLabel: this.textCanWrite,
                     checked: selectedGroup ? this.selectedRecord.get("canWrite") : false,
                     maxLength:200,
+                    hidden: me.hideCanWrite,
                     allowBlank:true
                 }]
             }]
@@ -500,12 +501,14 @@ mxp.widgets.ResourceGroupPermissionWindow = Ext.extend(Ext.Window,{
     border:false,
     plain:true,
     closeAction: 'hide',
+    hideCanWrite: false,
     initComponent : function() {
         this.items = [{
             xtype:'mxp_resource_gruop_permission',
             resourceId: this.resourceId,
             height: 200, 
             auth: this.auth,
+            hideCanWrite: this.hideCanWrite,
             geostoreURL: this.geostoreURL,
             target: this.target
         }];

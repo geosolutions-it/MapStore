@@ -335,18 +335,28 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		}
 		
 		var styles = this.getLayerStyle(config);
-
+	
 		// use all params from sources layerBaseParams option
 		var params = Ext.applyIf({
 			STYLES: styles || "",
 			FORMAT: config.format,
 			TRANSPARENT: config.transparent,
-			CQL_FILTER: config.cql_filter,
+			//CQL_FILTER: config.cql_filter,
+			TIME: config.time,
 			ELEVATION: config.elevation
 		}, this.layerBaseParams);
 		
+		// ///////////////////////////////////////////////////////
+		// Check for existing 'viewparams' in config and apply 
+		// them into the WMS params of the layer
+		// ///////////////////////////////////////////////////////
+		if(config.vendorParams){
+			params = Ext.applyIf(params, config.vendorParams);   
+		}
+		
 		// use all params from original
 		params = Ext.applyIf(params, layer.params);
+
 
 		// /////////////////////////////////////////////////////////
 		// Checking if the OpenLayers transition should be 
@@ -381,7 +391,6 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 				opacity: ("opacity" in config) ? config.opacity : 1,
 				buffer: ("buffer" in config) ? config.buffer : 0,
 				loadingProgress: config.loadingProgress || this.loadingProgress || false,
-		dimensions: original.data.dimensions,
 				projection: layerProjection,
 				vendorParams: config.vendorParams,
 				transitionEffect: transitionEffect,

@@ -97,7 +97,8 @@ GeoExt.Lang.add("es", {
         loginErrorTitle: "Error en el login.",
         userFieldText: "Usuario",
         passwordFieldText: "Contraseña",
-        loginFormTitle: "Por favor, lóguese"
+        loginFormTitle: "Por favor, lóguese",
+        loginWaitMessage: "Inicio de una sesión.<br/> Por favor espera ..."
     },
     "UserManagerView.prototype":{
         textGeneral: "General", 
