@@ -201,9 +201,10 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
 			  ref:'../general',
 			  border: false,
 			  collapsible:true,
-              height:160,
+              height:165,
               title:this.textGeneral,
               iconCls:'table_edit',
+                autoScroll:true,
 			  items: [{
                     xtype:'panel',
                     autoScroll:true,
@@ -213,7 +214,6 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
                 },{
                     xtype:'panel',
                     ref:'attributeColumn',
-                    autoScroll:true,
                     columnWidth:.5,
                     layout:'form',
                     items:this.attributeFields
