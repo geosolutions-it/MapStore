@@ -146,8 +146,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             bbarButtons.push({
                 text: this.filterMapText,
                 iconCls: "gxp-icon-map-filter",
-                handler: function() {
-					
+                handler: function() {					
                     // Collect all selected filters
                     var filters = new Array();
                     
@@ -158,22 +157,26 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                             //get native srs
                             var rec  = this.featureManagerTool.layerRecord;
                             var bbox = rec.get('bbox');
+                         
                             var nativeSRS;
-                            for(var c in bbox) {
-                                
+                            for(var c in bbox) {                                
                                 if(c && c.indexOf('EPSG')==0) nativeSRS = c;
                             }
+                            
                             currentFilter = currentFilter.clone();
                             currentFilter.value.transform(this.target.mapPanel.map.getProjectionObject(),new OpenLayers.Projection(nativeSRS));
+                            
                             filters.push(currentFilter);
                         }
                     }
 
                     if(queryForm.filterBuilder && !queryForm.filterBuilder.collapsed){
                         var attributeFilter = queryForm.filterBuilder.getFilter();
+                        
                         //TODO replace * with % in strings
                         if(attributeFilter){
                             var attributeFilter = attributeFilter.clone();
+                            
                             //inspect tree of filters
                             var replaceLikeStrings = function(node,oldc,newc){
                                 var oldc = oldc || '*';
@@ -188,25 +191,28 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                                     
                                 }
                             }
+                            
                             replaceLikeStrings(attributeFilter);
                             
                         }
+                        
                         attributeFilter && filters.push(attributeFilter);
                     }
 
-                    if(filters.length > 0){
-                         
+                    if(filters.length > 0){                         
                          var filter =  filters.length > 1 ? new OpenLayers.Filter.Logical({
                                 type: OpenLayers.Filter.Logical.AND,
                                 filters: filters
-                            }) :
-                            filters[0];
+                            }) : filters[0];
+                        
                             if(this.target.tools.layertree_plugin){
                                 var selmodel = this.target.tools.layertree_plugin.output[0].selModel;
                                 var node =selmodel.getSelectedNode();
                                 node.setIconCls('gx-tree-filterlayer-icon');
                             }
+                        
                             this.featureManagerTool.layerRecord.getLayer().mergeNewParams({cql_filter:filter.toString()}); 
+                            this.featureManagerTool.layerRecord.getLayer().vendorParams.cql_filter = filter.toString();
                     }else{
                         var layer = this.featureManagerTool.layerRecord.getLayer(); 
                         delete layer.params.CQL_FILTER;
@@ -219,123 +225,183 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         }
         
         bbarButtons.push("->");
-        bbarButtons.push({
-                scope: this,    
-                text: this.cancelButtonText,
-                iconCls: "cancel",
-                handler: function() {                
-                    this.resetFeatureManager();
-                    this.spatialSelector.reset();
-					
-                    var methodSelection = this.output[0].outputType;
-					
-                    if (me.draw) {me.draw.deactivate();};
-                    if (me.drawings) {me.drawings.destroyFeatures();};
-                    if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({});};
-                    if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({});};    
-					
-                    var ownerCt = this.outputTarget ? queryForm.ownerCt :
-                        queryForm.ownerCt.ownerCt;
-                    if (ownerCt && ownerCt instanceof Ext.Window) {
-                        ownerCt.hide();
-                    } else {
-                        this.addFilterBuilder(
-                            this.featureManagerTool, this.featureManagerTool.layerRecord,
-                            this.featureManagerTool.schema
-                        ); 
-                    }   
-                    if(me.filterLayer){
-                        var layer = this.featureManagerTool.layerRecord.getLayer(); 
-                         delete layer.params.CQL_FILTER;
-                         if(this.target.tools.layertree_plugin){
-                             var selmodel = this.target.tools.layertree_plugin.output[0].selModel;
-                             var node =selmodel.getSelectedNode();
-                             node.setIconCls('gx-tree-layer-icon');
-                         }
-                         layer.redraw();
+        bbarButtons.push({   
+            scope: this,    
+            text: this.cancelButtonText,
+            iconCls: "cancel",
+            handler: function() {                
+                this.resetFeatureManager();
+                this.spatialSelector.reset();
+
+                var methodSelection = this.output[0].outputType;
+
+                if (me.draw) {me.draw.deactivate();};
+                if (me.drawings) {me.drawings.destroyFeatures();};
+                if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({});};
+                if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({});};    
+
+                var ownerCt = this.outputTarget ? queryForm.ownerCt :
+                    queryForm.ownerCt.ownerCt;
+                if (ownerCt && ownerCt instanceof Ext.Window) {
+                    ownerCt.hide();
+                } else {
+                    this.addFilterBuilder(
+                        this.featureManagerTool, this.featureManagerTool.layerRecord,
+                        this.featureManagerTool.schema
+                    ); 
+                }      
+                
+                if(me.filterLayer){
+                    var layer = this.featureManagerTool.layerRecord.getLayer(); 
+                     delete layer.params.CQL_FILTER;
+                     delete layer.vendorParams.cql_filter;
+                    
+                     if(this.target.tools.layertree_plugin){
+                         var selmodel = this.target.tools.layertree_plugin.output[0].selModel;
+                         var node =selmodel.getSelectedNode();
+                         node.setIconCls('gx-tree-layer-icon');
                      }
-                     spatialSelector.filterGeometryName = this.featureStore
-                         && this.featureStore.geometryName
-                         ? this.featureManagerTool.featureStore.geometryName : this.featureManagerTool.featureStore.geometryName ;
-                         
+                    
+                     layer.redraw();
+                 }
+                
+                 spatialSelector.filterGeometryName = this.featureStore
+                     && this.featureStore.geometryName
+                     ? this.featureManagerTool.featureStore.geometryName : this.featureManagerTool.featureStore.geometryName;
+            }
+        });
+        bbarButtons.push({
+            text: this.queryActionText,
+            iconCls: "gxp-icon-find",
+            handler: function() {
+                var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
+                if(container){
+                    container.expand();
                 }
-            });
-            bbarButtons.push({
-                text: this.queryActionText,
-                iconCls: "gxp-icon-find",
-                handler: function() {
-                    var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
-                    if(container){
-                      container.expand();
-                  }
-                    // Collect all selected filters
-                    var filters = [];
-                    
-                    //START
-                    //Check if there are some invalid field according to validators regex config
-                    var filterFieldItems = queryForm.filterBuilder.childFilterContainer;
-                    var filterFieldItem = filterFieldItems.findByType("gxp_filterfield");
-                    
-                    var f = 0;
-                    var invalidItems = 0;
-                    while(filterFieldItem[f]){
-                    
-                        var formItems = filterFieldItem[f].innerCt.findBy(function(c) {
-                            return c.isFormField;
+                // Collect all selected filters
+                var filters = [];
+
+                //START
+                //Check if there are some invalid field according to validators regex config
+                var filterFieldItems = queryForm.filterBuilder.childFilterContainer;
+                var filterFieldItem = filterFieldItems.findByType("gxp_filterfield");
+
+                var f = 0;
+                var invalidItems = 0;
+                while(filterFieldItem[f]){
+
+                    var formItems = filterFieldItem[f].innerCt.findBy(function(c) {
+                        return c.isFormField;
+                    });
+
+                    for(var x = 0;x<formItems.length;x++){
+                        var validateItem = formItems[x];
+                        //if(!validateItem.isValid(true) && ( validateItem.vtype == "customValidationTextValue" || validateItem.vtype == "customValidationTextLowerBoundary" || validateItem.vtype == "customValidationTextUpperBundary")){
+                        if(!validateItem.isValid(true)){
+                            invalidItems++;
+                        }
+                    }                        
+                    f++;
+                }
+                //END
+
+                if(queryForm.spatialSelectorFieldset && !queryForm.spatialSelectorFieldset.collapsed){
+                    var currentFilter = this.spatialSelector.getQueryFilter();   
+                    if (currentFilter) {
+                        filters.push(currentFilter);
+                    }
+                }
+
+                if(queryForm.filterBuilder && !queryForm.filterBuilder.collapsed){
+                    var attributeFilter = queryForm.filterBuilder.getFilter();
+                    attributeFilter && filters.push(attributeFilter);
+                }
+
+                // //////////////////////////////////////////////
+                // Finally check for any other existing filters 
+                // (i.e. 'cql_filter') defined by other plugins. 
+                // //////////////////////////////////////////////
+                var layerRecord = this.featureManagerTool.layerRecord;
+                var layer = layerRecord.getLayer();
+
+                var pluginFilter;
+                if(layer && layer.vendorParams){        
+                    var pFilters = [];
+
+                    // Check for cql_filter
+                    var pluginCqlFilter = layer.vendorParams.cql_filter;
+                    if(pluginCqlFilter){
+                        var cqlFormat = new OpenLayers.Format.CQL();
+                        try{
+                            var cqlFilter = cqlFormat.read(pluginCqlFilter);
+                            pFilters.push(cqlFilter);
+                        }catch(e){
+                            invalidItems++;
+                        }
+                    }
+
+                    // Check for OGC XML filter
+                    var pluginXMLOGCFilter = layer.vendorParams.filter;
+                    if(pluginXMLOGCFilter){
+                        var ogcFormat = new OpenLayers.Format.Filter();
+                        try{
+                            var ogcFilter = ogcFormat.read(pluginXMLOGCFilter);
+                            pFilters.push(ogcFilter);
+                        }catch(e){
+                            invalidItems++;
+                        }
+                    }
+
+                    if(pFilters.length > 0){
+                        pluginFilter = new OpenLayers.Filter.Logical({
+                            type: OpenLayers.Filter.Logical.AND,
+                            filters: pFilters
                         });
+                    }
                     
-                        for(var x = 0;x<formItems.length;x++){
-                            var validateItem = formItems[x];
-                            //if(!validateItem.isValid(true) && ( validateItem.vtype == "customValidationTextValue" || validateItem.vtype == "customValidationTextLowerBoundary" || validateItem.vtype == "customValidationTextUpperBundary")){
-                            if(!validateItem.isValid(true)){
-                                invalidItems++;
-                            }
-                        }                        
-                        f++;
+                    // /////////////////////////////////////////////////
+                    // Set or refresh viewparams in featureManager 
+                    // /////////////////////////////////////////////////
+                    if(layer.vendorParams.viewparams){
+                        this.featureManagerTool.featureStore.setViewParams(layer.vendorParams.viewparams);
+                        this.featureManagerTool.hitCountProtocol.viewparams = layer.vendorParams.viewparams;
+                        this.featureManagerTool.hitCountProtocol.options.viewparams = layer.vendorParams.viewparams;
                     }
-                    //END
-                        
-                    if(queryForm.spatialSelectorFieldset && !queryForm.spatialSelectorFieldset.collapsed){
-                        var currentFilter = this.spatialSelector.getQueryFilter();   
-                        if (currentFilter) {
-                            filters.push(currentFilter);
-                        }
-                    }
+                }
 
-                    if(queryForm.filterBuilder && !queryForm.filterBuilder.collapsed){
-                        var attributeFilter = queryForm.filterBuilder.getFilter();
-                        attributeFilter && filters.push(attributeFilter);
-                    }
-
-                    if(invalidItems == 0){
-                        if(filters.length > 0){
-                            this.featureManagerTool.loadFeatures(filters.length > 1 ?
-                                new OpenLayers.Filter.Logical({
-                                    type: OpenLayers.Filter.Logical.AND,
-                                    filters: filters
-                                }) :
-                                filters[0]
-                            );    
-                        }else{
-                            Ext.Msg.show({
-                                title: this.noFilterSelectedMsgTitle,
-                                msg: this.noFilterSelectedMsgText,
-                                buttons: Ext.Msg.OK,
-                                icon: Ext.MessageBox.ERROR
-                            }); 
+                if(invalidItems == 0){
+                    if(filters.length > 0){
+                        if(pluginFilter){
+                            filters.push(pluginFilter);
                         }
+
+                        this.featureManagerTool.loadFeatures(filters.length > 1 ?
+                            new OpenLayers.Filter.Logical({
+                                type: OpenLayers.Filter.Logical.AND,
+                                filters: filters
+                            }) :
+                            filters[0]
+                        );    
                     }else{
                         Ext.Msg.show({
-                            title: this.invalidRegexFieldMsgTitle,
-                            msg: this.invalidRegexFieldMsgText,
+                            title: this.noFilterSelectedMsgTitle,
+                            msg: this.noFilterSelectedMsgText,
                             buttons: Ext.Msg.OK,
                             icon: Ext.MessageBox.ERROR
-                        });
+                        }); 
                     }
-                      
-                },
-                scope: this
-            });
+                }else{
+                    Ext.Msg.show({
+                        title: this.invalidRegexFieldMsgTitle,
+                        msg: this.invalidRegexFieldMsgText,
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.MessageBox.ERROR
+                    });
+                }
+
+            },
+            scope: this
+        });
         
         config = Ext.apply({
             border: false,
@@ -379,10 +445,10 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     }
 				}
             }],
-            bbar: bbarButtons 
+            bbar: bbarButtons
         }, config || {});
 		
-        var queryForm = gxp.plugins.QueryForm.superclass.addOutput.call(this, config);
+        var queryForm = gxp.plugins.QueryForm.superclass.addOutput.call(this, config);        
         var methodSelection = this.output[0].outputType;
         
         this.addFilterBuilder = function(mgr, rec, schema) {			
