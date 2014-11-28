@@ -41,6 +41,12 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 		right: 100.90,
 		top: 33.10
 	},
+	defaultAoi :{
+		bottom: -34.80,
+		left: 30.55,
+		right: 100.90,
+		top: 33.10
+	},
 	/**
 	 * config[dataId]
 	 * the id of the resource from whitch load data
@@ -255,7 +261,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				allowBlank : false
 			});
 			
-			this.assetFramePanel = new Ext.Panel({
+			this.assetFramePanel = new Ext.FormPanel({
 				frame : true,
 				layout : 'form',
 				autoScroll : true,
@@ -381,7 +387,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 									this.latitudeField.setValue(geoJsonPoint.lat);
 									this.longitudeField.setValue(geoJsonPoint.lon);
 									//update point on the map
-									this.lonLatButton.toggle();
+									this.lonLatButton.toggle(false);
 								},
 								map : me.mapPanel.map
 							});
@@ -450,7 +456,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 										me.fireEvent('select', this, bboxBounds);
 	
 										this.deactivate();
-										me.bboxButton.toggle();
+										me.bboxButton.toggle(false);
 	
 										me.fireEvent('onChangeAOI', bounds);
 									}
@@ -459,10 +465,18 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 
 							me.mapPanel.map.addControl(me.selectBBOX);
 							me.mapPanel.map.enebaleMapEvent = true;
-							
+							//load data(defaults)
 							if(me.data){
-								me.loadData(me.data);
+								var data = me.readData(me.data);
+								//TODO for some reason, we have to wait
+								//before loading data to have the map correctly 
+								// initialized
+								setTimeout(function(){me.loadData(data);},500);
+									
+								
+								
 							}
+							//load data from GeoStore resource
 							if(me.dataId){
 								me.loadDataFromGeoStore(me.dataId);
 							}
@@ -1020,7 +1034,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			
 			return;
 		}
-		
+		alert('exect');
 		//prepare and send inputs
 		var map = this.mapPanel.map;
 		var serviceRunInputs = this.resourceform.getForm().getValues();
@@ -1276,46 +1290,53 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 		//create missing assets
 		var nCurrent = this.resourceform.assets.items.length;
 		var assetsData = record.get('assets');
-		var nData = assetsData.length;
-		var nMissing = nData  - nCurrent;
-		if(nMissing > 0){
-			for(var i = nCurrent; i< nData; i++ ){
-				this.resourceform.assets.assetsform.add(this.createAsset(i+1));
+		if(assetsData){
+			var nData = assetsData.length;
+			var nMissing = nData  - nCurrent;
+			if(nMissing > 0){
+				for(var i = nCurrent; i< nData; i++ ){
+					this.resourceform.assets.assetsform.add(this.createAsset(i+1));
+				}
+			}
+			
+			//fill assets data
+			for(var i = 0; i< assetsData.length; i++ ){
+				var assetFieldSet = this.resourceform.assets.assetsform.items.get(i);
+					var asset = assetsData[i];
+				
+					assetFieldSet.assetCost.setValue(asset.cost);
+					assetFieldSet.assetId.setValue(asset.id);
+					assetFieldSet.assetMaxHeading.setValue(asset.maxHeading);
+					assetFieldSet.assetMaxSpeed.setValue(asset.maxSpeed);
+					assetFieldSet.assetMinHeading.setValue(asset.minHeading);
+					assetFieldSet.assetMinSpeed.setValue(asset.minSpeed);
+					assetFieldSet.assetName.setValue(asset.name);
+					assetFieldSet.assetObsRange.setValue(asset.obsRange);
+					assetFieldSet.assetPd.setValue(asset.Pd);
+					assetFieldSet.assetPfa.setValue(asset.Pfa);
+					assetFieldSet.assetHeading.setValue(asset.heading0);
+					assetFieldSet.assetType.setValue(asset.type);
+					assetFieldSet.assetPosition.longitudeField.setValue(asset.lon0);
+					assetFieldSet.assetPosition.latitudeField.setValue(asset.lat0);
+			
 			}
 		}
-		
-		//fill assets data
-		for(var i = 0; i< assetsData.length; i++ ){
-			var assetFieldSet = this.resourceform.assets.assetsform.items.get(i);
-				var asset = assetsData[i];
+		// Load Map
+		var bboxAvailable = record.get('East_BBOX') &&  record.get('North_BBOX') && record.get('West_BBOX')&& record.get('South_BBOX');
+		if(bboxAvailable){
+			var map = this.mapPanel.map;
+			var aoi= new OpenLayers.Bounds(
+				record.get('East_BBOX'),
+			    record.get('North_BBOX'),
+			    record.get('West_BBOX'),
+			    record.get('South_BBOX')
+			);
+			// note map projection object could not be initialized yet
+			// so lets create it's projection object
+			var mapPrj = new OpenLayers.Projection(map.projection);
+			this.selectBBOX.setAOI(aoi.transform(new OpenLayers.Projection('EPSG:4326'), mapPrj),true);
 			
-				assetFieldSet.assetCost.setValue(asset.cost);
-				assetFieldSet.assetId.setValue(asset.id);
-				assetFieldSet.assetMaxHeading.setValue(asset.maxHeading);
-				assetFieldSet.assetMaxSpeed.setValue(asset.maxSpeed);
-				assetFieldSet.assetMinHeading.setValue(asset.minHeading);
-				assetFieldSet.assetMinSpeed.setValue(asset.minSpeed);
-				assetFieldSet.assetName.setValue(asset.name);
-				assetFieldSet.assetObsRange.setValue(asset.obsRange);
-				assetFieldSet.assetPd.setValue(asset.Pd);
-				assetFieldSet.assetPfa.setValue(asset.Pfa);
-				assetFieldSet.assetHeading.setValue(asset.heading0);
-				assetFieldSet.assetType.setValue(asset.type);
-				assetFieldSet.assetPosition.longitudeField.setValue(asset.lon0);
-				assetFieldSet.assetPosition.latitudeField.setValue(asset.lat0);
-		
 		}
-		
-		var map = this.mapPanel.map;
-		var aoi= new OpenLayers.Bounds(
-			record.get('East_BBOX'),
-		    record.get('North_BBOX'),
-		    record.get('West_BBOX'),
-		    record.get('South_BBOX')
-		);
-		
-		this.selectBBOX.setAOI(aoi.transform(new OpenLayers.Projection('EPSG:4326'),map.getProjectionObject()),true);
-		//TODO load assets
 	},
 	
 	/** private: method[loadDataFromGeoStore]

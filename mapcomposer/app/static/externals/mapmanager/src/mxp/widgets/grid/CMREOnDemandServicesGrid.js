@@ -65,6 +65,13 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 
 	//map panel configuration
 	bounds : "-20037508.34, -20037508.34, 20037508.34, 20037508.34",
+	serviceAreaLimits : {
+		bottom: -34.80,
+		left: 30.55,
+		right: 100.90,
+		top: 33.10
+	},
+	
 	//if true, select the fist row on load
 	selectFirst: true,
 	numZoomLevels : 19,
@@ -176,7 +183,9 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 			width : 35,
 			tooltip : this.issueANewRunText,
 			handler : function(grid,rowIndex,colIndex){
-				this.createNewProcessRun(grid,rowIndex);
+				var record = grid.getStore().getAt(rowIndex);
+				var data =  record.get('defaultData') ||grid.defaultData || null;
+				this.createNewProcessRun(grid,rowIndex,data);
 				
 			},
 			scope : this,
@@ -239,6 +248,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 									})],
 								wrapDateLine: true,
 								maxExtent : me.bounds,
+								
 								maxZoomLevel : me.maxZoomLevel,
 								zoom : me.zoom,
 								displayProjection : me.displayProjection,
@@ -303,6 +313,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 							items : [{
 								xtype : 'mxp_cmre_ondemand_services_input_form',
 								geoStoreBase: me.geoStoreBase,
+								serviceAreaLimits: me.serviceAreaLimits,
 								auth: me.auth,
 								data: data,
 								dataId: dataId,
