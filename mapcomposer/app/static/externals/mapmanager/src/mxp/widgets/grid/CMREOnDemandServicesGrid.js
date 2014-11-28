@@ -64,10 +64,9 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 	autoExpandColumn : 'description',
 
 	//map panel configuration
-	bounds :
-		/* "143.835, -43.648, 148.479, -39.574" */
-		/* "-20037508.34, -20037508.34, 20037508.34, 20037508.34" */
-		"4702410.8061927, -4506173.1580895, 13742771.014279, 3144867.6240784",
+	bounds : "-20037508.34, -20037508.34, 20037508.34, 20037508.34",
+	//if true, select the fist row on load
+	selectFirst: true,
 	numZoomLevels : 19,
 	maxZoomLevel : 3,
 	zoom : 4,
@@ -94,7 +93,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 	 */
 	initComponent : function() {
 		this.bounds = new OpenLayers.Bounds.fromString(this.bounds);
-		
+		this.addEvents('needsrefresh');
 		// create the Data Store
 		this.store = new Ext.data.Store({
             paramNames:{
@@ -137,7 +136,12 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 				direction : 'ASC' // or 'DESC' (case sensitive for local sorting)
 			}
 		});
-
+		//select first 
+		if(this.selectFirst){
+			this.store.on('load',function(){this.getSelectionModel().selectFirstRow();},this);
+		}
+		
+		
 		this.tbar = this.tbar || [];
 		this.tbar.push({
 			iconCls : 'refresh_ic',
@@ -171,7 +175,10 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 			xtype : 'actioncolumn',
 			width : 35,
 			tooltip : this.issueANewRunText,
-			handler : this.createNewProcessRun,
+			handler : function(grid,rowIndex,colIndex){
+				this.createNewProcessRun(grid,rowIndex);
+				
+			},
 			scope : this,
 			items : [{
 				iconCls : 'add_ic',
@@ -193,7 +200,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 	 *      * rowIndex: the index of the row
 	 *      * colIndex: the actioncolumn index
 	 */
-	createNewProcessRun : function(grid, rowIndex, colIndex) {
+	createNewProcessRun : function(grid, rowIndex, data,dataId) {
 		var record = grid.getStore().getAt(rowIndex);
 		var serviceId = record.get('serviceId');
 		var serviceName = record.get('name');
@@ -279,10 +286,10 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 								plugins : new GeoExt.ZoomSliderTip()
 							}]
 						});
-
+						var itemId = 'CMREOnDemandServiceInputPanel';
 						mainPanel.add({
 							layout : 'border',
-							itemId : 'CMREOnDemandServiceInputPanel',
+							itemId : itemId,
 							xtype : 'panel',
 							closable : true,
 							closeAction : 'close',
@@ -295,6 +302,10 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 							title : me.newServiceText + serviceName,
 							items : [{
 								xtype : 'mxp_cmre_ondemand_services_input_form',
+								geoStoreBase: me.geoStoreBase,
+								auth: me.auth,
+								data: data,
+								dataId: dataId,
 								tbar : null,
 								osdi2ManagerRestURL : me.osdi2ManagerRestURL,
 								serviceId: serviceId,
@@ -308,7 +319,13 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 								ref : 'list',
 								collapsible : true,
 								auth : me.auth,
-								sm : null
+								sm : null,
+								listeners: {
+									execute: function(panel){
+										mainPanel.setActiveTab(0);
+										me.fireEvent('needsrefresh',this);
+									}
+								}
 							}, mapPanel]
 						}).show();
 					} catch (e) {

@@ -64,6 +64,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
      * Action Columns for the outcomes grid
      */
     customRunColumns:[],
+    
     /** api: method[addActions]
      */
     addActions: function() {
@@ -151,6 +152,8 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
         //configuration of the left grid of the flows 
         var flowsGrid = {
             xtype:'mxw_cmre_ondemand_services_grid',
+            selectFirst: true,
+            geoStoreBase: this.geoStoreBase,
             tbar:buttons,
             osdi2ManagerRestURL: this.osdi2ManagerRestURL,
             region:'west',
@@ -161,8 +164,26 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
             ref:'list',
             collapsible:true,   
             auth: this.auth,
-            sm: selectionModel
+            sm: selectionModel,
+            listeners: {
+            	needsrefresh: function (){
+            		this.refOwner.consumers.store.load();
+            	}
+            	
+            }
         };
+        
+        var menuHandler = function(grid, index, event) {
+		      event.stopEvent();
+		      var record = grid.getStore().getAt(index);
+		      var menu = new Ext.menu.Menu({
+		      	  record: record,
+		      	  grid: grid,
+		      	  index: index,
+		      	  event : event, 
+		          items: me.getRunContextMenuItems()
+		      }).showAt(event.xy);
+		};
         
         this.outputConfig = Ext.apply({
             layout: 'border',
@@ -190,7 +211,12 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                     autoWidth:true,
                     region:'center',
                     ref:'consumers',
-                    actionColumns:this.customRunColumns
+                    actionColumns:this.customRunColumns,
+                    listeners: {
+                    	rowcontextmenu: function(grid, index, event) {
+                    		menuHandler(grid, index, event);
+                    	}
+                    }
                 },  
                 flowsGrid
             ]
@@ -282,12 +308,13 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
     titlePath:'results.title',
     visibilityPath: "details.resourceVisibility",
     resourcePermissionPath: "details.resourceId",
+    startFromHereText:"Start from Here",
     /**
      * setup action columns to add
      */
     setupCustomColumns: function(){
       var me = this;
-      this.customRunColumns =  [{
+      this.customRunColumns = [{
                 id : 'owner',
                 header : "Owner",
                 width : 100,
@@ -388,7 +415,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                     var resourceId = eval(this.resourcePermissionPath);
                     var title;
                     try{
-                        title = eval(this.titlePath)
+                        title = eval(this.titlePath);
                     }catch(e){
                     	title = rec.get("name");
                     }
@@ -435,7 +462,6 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                     
                     var results = rec.get(this.resultsField); 
                     var details = rec.get(this.detailsField);
-                     
                      try{
                          var mapId = eval(this.mapIdPath);
                          var target = Ext.getCmp(this.renderMapToTab);
@@ -496,8 +522,31 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                     }
                 }
             }]
-        }]
+        }];
     
+    },
+    /* retrieve the contextual menu for run
+     * containers have record,grid,index,event
+     */
+    getRunContextMenuItems : function(){
+    	var me =this;
+    	return [{
+    		ref: 'starthere',
+    		
+    		text: this.startFromHereText,
+    		iconCls:'add_ic',
+    		handler: function(){
+    			var resourceId = this.refOwner.record.get('details').resourceId;
+    			var servicesGrid = me.output[0].list;
+    			var record = servicesGrid.getSelectionModel().getSelected();
+    			var rowIndex = servicesGrid.store.indexOf(record);
+    			if(record && rowIndex >= 0){
+    				servicesGrid.createNewProcessRun(servicesGrid,rowIndex,null,resourceId);
+    			}
+    		}	
+    		
+    	}];
+    	
     }
 });
 

@@ -36,12 +36,22 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	serviceName : null,
 	mapPanel : null,
 	serviceAreaLimits : {
-		bottom: -17.910552013949392,
-		left: 92.26202532348691,
-		right: 109.1941885620136,
-		top: -3.891573166571563
+		bottom: -34.80,
+		left: 30.55,
+		right: 100.90,
+		top: 33.10
 	},
-
+	/**
+	 * config[dataId]
+	 * the id of the resource from whitch load data
+	 */
+	dataId : null,
+	/**
+	 * config[data]
+	 * the data to load
+	 */
+	data : null,
+	
 	//i18n
 	nameLabel : 'Name',
 	descriptionLabel : 'Description',
@@ -98,7 +108,13 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			 * Fires after delete.
 			 * @param {Ext.DataView} this
 			 */
-			"delete"
+			"delete",
+			/**
+			 * @event execute
+			 * Fires after execute.
+			 * @param {Ext.DataView} this
+			 */
+			"execute"
 		);
 		
 		
@@ -239,7 +255,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				allowBlank : false
 			});
 			
-			this.assetFramePanel = new Ext.FormPanel({
+			this.assetFramePanel = new Ext.Panel({
 				frame : true,
 				layout : 'form',
 				autoScroll : true,
@@ -333,7 +349,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 						items : [me.southField]
 					}],
 					listeners : {
-						"afterlayout" : function() {
+						"afterrender" : function() {
 							var baseProj = me.mapPanel.map.getProjection();
 							var projection = me.mapPanel.map.projection;
 							me.mapProjection = new OpenLayers.Projection(projection);
@@ -443,6 +459,15 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 
 							me.mapPanel.map.addControl(me.selectBBOX);
 							me.mapPanel.map.enebaleMapEvent = true;
+							
+							if(me.data){
+								me.loadData(me.data);
+							}
+							if(me.dataId){
+								me.loadDataFromGeoStore(me.dataId);
+							}
+							me.doLayout();
+							
 						},
 						beforecollapse : function(p) {
 							var bboxLayer = me.mapPanel.map.getLayersByName("BBOX")[0];
@@ -561,6 +586,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			scope : this,
 			handler : function() {
 				this.executeRun();
+				
 			}
 		},
 		//RESET
@@ -572,7 +598,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			disabled : true,
 			id : "reset-btn",
 			scope : this,
-			handler : function() { debugger
+			handler : function() { 
 				/*var resource = this.getResource();
 				 if(resource.id){
 				 this.showPermissionPrompt(resource.id);
@@ -595,13 +621,13 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			ref : "asset-" + id,
 			style : 'padding:5px;',
 			border : true,
-			//columnWidth: 0.8,
+			columnWidth: 0.8,
 			title : 'Asset #' + id,
 			collapsible : true,
 			collapsed : false,
 			defaultType : 'textfield',
 			defaults : {
-				anchor : '100%'
+				anchor : '95%'
 			},
 			//layout: 'anchor',
 			autoHeight : true,
@@ -609,7 +635,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			items : [{
 				xtype : 'textfield',
 				maxLength : 180,
-				anchor : '95%',
 				name : "id_" + id,
 				ref : 'assetId',
 				fieldLabel : "Id",
@@ -619,7 +644,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			}, {
 				xtype : 'textfield',
 				maxLength : 180,
-				anchor : '95%',
 				name : "name_" + id,
 				ref : 'assetName',
 				fieldLabel : "Name",
@@ -643,8 +667,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				autoSelect : true,
 				forceSelection : true,
 				allowBlank : false,
-				maxLength : 180,
-				anchor : '95%'
+				maxLength : 180
 			}, {
 				xtype : 'container',
 				fieldLabel : "Asset Position",
@@ -657,9 +680,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 					border : false,
 					columnWidth : 0.8,
 					collapsible : false,
-					defaults : {
-						anchor : '100%'
-					},
 					autoHeight : true,
 					layout : 'table',
 					layoutConfig : {
@@ -682,7 +702,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 							allowBlank : false,
 							minValue : me.serviceAreaLimits.left,
 							maxValue : me.serviceAreaLimits.right,
-							//anchor: '95%',
 							maxLength : 7,
 							decimalPrecision : 3
 						}]
@@ -731,7 +750,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 							allowBlank : false,
 							minValue : me.serviceAreaLimits.bottom,
 							maxValue : me.serviceAreaLimits.top,
-							//anchor: '95%',
 							maxLength : 7,
 							decimalPrecision : 3
 						}]
@@ -749,7 +767,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				ref : 'assetObsRange',
 				fieldLabel : 'Obs. Range',
 				allowBlank : false,
-				anchor : '95%',
 				maxLength : 8,
 				decimalPrecision : 3,
 				minValue : 0,
@@ -806,15 +823,13 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				name : 'cost_' + id,
 				ref : 'assetCost',
 				fieldLabel : 'Cost',
-				allowBlank : false,
-				anchor : '95%'
+				allowBlank : false
 			}, {
 				xtype : 'numberfield',
 				name : 'pfa_' + id,
 				ref : 'assetPfa',
 				fieldLabel : 'Pfa',
 				allowBlank : false,
-				anchor : '95%',
 				maxLength : 5,
 				decimalPrecision : 3,
 				minValue : 0.000,
@@ -844,7 +859,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				ref : 'assetPd',
 				fieldLabel : 'Pd',
 				allowBlank : false,
-				anchor : '95%',
 				maxLength : 5,
 				decimalPrecision : 3,
 				minValue : 0.000,
@@ -874,7 +888,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				ref : 'assetMinSpeed',
 				fieldLabel : 'Min Speed',
 				allowBlank : false,
-				anchor : '95%',
 				maxLength : 6,
 				decimalPrecision : 3,
 				minValue : 0,
@@ -903,7 +916,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				ref : 'assetMaxSpeed',
 				fieldLabel : 'Max Speed',
 				allowBlank : false,
-				anchor : '95%',
 				maxLength : 6,
 				decimalPrecision : 3,
 				minValue : 0,
@@ -932,7 +944,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				ref : 'assetMinHeading',
 				fieldLabel : 'Min Heading',
 				allowBlank : false,
-				anchor : '95%',
 				maxLength : 6,
 				decimalPrecision : 3,
 				minValue : -1.8,
@@ -961,7 +972,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				ref : 'assetMaxHeading',
 				fieldLabel : 'Max Heading',
 				allowBlank : false,
-				anchor : '95%',
 				maxLength : 6,
 				decimalPrecision : 3,
 				minValue : -1.8,
@@ -1058,6 +1068,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			me.setLoading(false);
 			me.saveSuccess();
 			me.fireEvent("save", response);
+			me.fireEvent('execute',this);
 		};
 		
 		var finishError = function(response) {
@@ -1249,6 +1260,135 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 		});
 		winPermission.show();
 		return winPermission;
-	}
+	}, 
+	
+	/** private: method[loadData]
+	 *  Load data from a record
+	 */
+	loadData: function (record){
+		//load record
+		this.resourceform.getForm().loadRecord(record);
+		
+		//
+		//load assets
+		//
+		
+		//create missing assets
+		var nCurrent = this.resourceform.assets.items.length;
+		var assetsData = record.get('assets');
+		var nData = assetsData.length;
+		var nMissing = nData  - nCurrent;
+		if(nMissing > 0){
+			for(var i = nCurrent; i< nData; i++ ){
+				this.resourceform.assets.assetsform.add(this.createAsset(i+1));
+			}
+		}
+		
+		//fill assets data
+		for(var i = 0; i< assetsData.length; i++ ){
+			var assetFieldSet = this.resourceform.assets.assetsform.items.get(i);
+				var asset = assetsData[i];
+			
+				assetFieldSet.assetCost.setValue(asset.cost);
+				assetFieldSet.assetId.setValue(asset.id);
+				assetFieldSet.assetMaxHeading.setValue(asset.maxHeading);
+				assetFieldSet.assetMaxSpeed.setValue(asset.maxSpeed);
+				assetFieldSet.assetMinHeading.setValue(asset.minHeading);
+				assetFieldSet.assetMinSpeed.setValue(asset.minSpeed);
+				assetFieldSet.assetName.setValue(asset.name);
+				assetFieldSet.assetObsRange.setValue(asset.obsRange);
+				assetFieldSet.assetPd.setValue(asset.Pd);
+				assetFieldSet.assetPfa.setValue(asset.Pfa);
+				assetFieldSet.assetHeading.setValue(asset.heading0);
+				assetFieldSet.assetType.setValue(asset.type);
+				assetFieldSet.assetPosition.longitudeField.setValue(asset.lon0);
+				assetFieldSet.assetPosition.latitudeField.setValue(asset.lat0);
+		
+		}
+		
+		var map = this.mapPanel.map;
+		var aoi= new OpenLayers.Bounds(
+			record.get('East_BBOX'),
+		    record.get('North_BBOX'),
+		    record.get('West_BBOX'),
+		    record.get('South_BBOX')
+		);
+		
+		this.selectBBOX.setAOI(aoi.transform(new OpenLayers.Projection('EPSG:4326'),map.getProjectionObject()),true);
+		//TODO load assets
+	},
+	
+	/** private: method[loadDataFromGeoStore]
+	 *  Load data from GeoStore using the resource id
+	 */
+	loadDataFromGeoStore:function(dataId){
+		var mask = new Ext.LoadMask(Ext.getBody(), {msg:"Please wait..."});
+		mask.show();
+		var successHandler = function(response,opts){
+			 try{
+			 	var data = this.readData(Ext.decode(response.responseText));
+			 	this.loadData(data);
+			 	
+			 }catch(e){
+			 	
+			 	this.loadFail();
+			 }
+			 mask.hide();
+			 this.doLayout();
+			 
+			 
+		};
+		var failureHandler = function(){
+			 mask.hide();
+			 this.loadFail();
+		};
+		Ext.Ajax.request({
+		   url: this.geoStoreBase + '/data/' + dataId,
+		   
+		   success: successHandler,
+		   failure: failureHandler,
+		   scope: this,
+		   headers: {
+		       'Authorization':this.auth
+		   }
+		});
+		
+	},
+	
+	/** private: method[readData]
+	 *  read json data to provide a record to load
+	 */
+	readData : function(data){
+		 var FormRecord = Ext.data.Record.create([ // creates a subclass of Ext.data.Record
+		    'East_BBOX',
+		    'North_BBOX',
+		    'South_BBOX',
+		    'West_BBOX',
+		    'category',
+		    'description',
+		    'id',
+		    'name',
+		    'numberOfEvaluations',
+		    'referenceDate',
+		    'riskMapType',
+		    'timeHorizon',
+		    'assets'
+		    
+		]);
+		return new FormRecord(data);
+	},
+	
+	/** private: method[failLoad]
+	 *  show a message about fail loading data in the store
+	 */
+	loadFail : function(){
+		Ext.Msg.show({
+            title: "ERROR",
+            msg: "Unable to Load the previous Resource",//TODO i18n
+            width: 300,
+            buttons : Ext.Msg.OK,
+            icon: Ext.MessageBox.ERROR
+         });
+	},
 });
 Ext.reg(mxp.widgets.CMREOnDemandServiceInputForm.prototype.xtype, mxp.widgets.CMREOnDemandServiceInputForm); 

@@ -61,8 +61,9 @@ OpenLayers.Control.SetBox = OpenLayers.Class(OpenLayers.Control, {
      *
      * Parameters:
      * position - {<OpenLayers.Bounds>} or {<OpenLayers.Pixel>}
+     * isPixels - true means the bounds object have not to be converted
      */
-    setAOI: function (position) {
+    setAOI: function (position,isLonLat) {
 
         var control;
       
@@ -80,10 +81,17 @@ OpenLayers.Control.SetBox = OpenLayers.Class(OpenLayers.Control, {
             
             if (position instanceof OpenLayers.Bounds) {
                 if (!this.out) {
-                    var minXY = this.map.getLonLatFromPixel(
+                	var minXY,maxXY;
+                	if(isLonLat){
+                		minXY = new OpenLayers.LonLat(position.left, position.bottom);
+                    	maxXY = new OpenLayers.LonLat(position.right, position.top);
+                	}else{
+                		minXY = this.map.getLonLatFromPixel(
                         new OpenLayers.Pixel(position.left, position.bottom));
-                    var maxXY = this.map.getLonLatFromPixel(
+                    	maxXY = this.map.getLonLatFromPixel(
                         new OpenLayers.Pixel(position.right, position.top));
+                	}
+                    
                     bounds = new OpenLayers.Bounds(minXY.lon, minXY.lat,
                         maxXY.lon, maxXY.lat);
 
@@ -143,6 +151,5 @@ OpenLayers.Control.SetBox = OpenLayers.Class(OpenLayers.Control, {
             }
         }      
     },
-
     CLASS_NAME: "OpenLayers.Control.SetBox"
 });

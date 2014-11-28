@@ -26,7 +26,7 @@
         "actionTarget":null
     },{
         "ptype": "mxp_categoryinitializer",
-        "neededCategories": ["WPS_RUN_CONFIGS", "MAP", "MAPSTORECONFIG" ]
+        "neededCategories": ["WPS_RUN_CONFIGS", "MAPSTORECONFIG" ]
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
@@ -46,7 +46,7 @@
          "ptype": "mxp_cmre_ondemand_services",
          "osdi2ManagerRestURL":"http://172.21.173.30:8282/opensdi2-manager/mvc/process/wps/",
          "baseMapUrl": "./?config=assetAllocatorResult",
-         "autoRefreshTime": 60000,
+         "autoRefreshTime": 30000,
          "autoOpen":true,
          "outputConfig":{"closable":false},
          "actionTarget":{
@@ -55,7 +55,7 @@
          }
     },{ 
         "ptype": "mxp_geostore_resource_editor",
-        "category": "MAP",
+        "category": "MAPSTORECONFIG",
         "buttonText": "Maps",
         "actionTarget":{
              "target": "north.tbar",
@@ -89,7 +89,7 @@
          "ptype": "mxp_cmre_ondemand_services",
          "osdi2ManagerRestURL":"http://172.21.173.30:8282/opensdi2-manager/mvc/process/wps/",
          "baseMapUrl": "./?config=assetAllocatorResult",
-         "autoRefreshTime": 60000,
+         "autoRefreshTime": 30000,
          "autoOpen":true,
          "outputConfig":{"closable":false},
          "actionTarget":{

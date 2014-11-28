@@ -20,8 +20,8 @@
 		}
 	},
 	"loadingPanel": {
-		"width": 100,
-		"height": 100,
+		"width": 1,
+		"height": 1,
 		"center": true
 	},
 	"map": {
