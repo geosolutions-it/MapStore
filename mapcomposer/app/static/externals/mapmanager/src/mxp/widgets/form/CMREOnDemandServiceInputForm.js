@@ -1065,7 +1065,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			
 			return;
 		}
-		alert('exect');
+
 		//prepare and send inputs
 		var map = this.mapPanel.map;
 		var serviceRunInputs = this.resourceform.getForm().getValues();
