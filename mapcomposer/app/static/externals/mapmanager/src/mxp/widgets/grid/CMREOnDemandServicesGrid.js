@@ -65,6 +65,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 
 	//map panel configuration
 	bounds : "-20037508.34, -20037508.34, 20037508.34, 20037508.34",
+	serviceAreaLimitsTolerance : 0.01,
 	serviceAreaLimits : {
 		bottom: -34.80,
 		left: 30.55,
@@ -313,6 +314,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 							items : [{
 								xtype : 'mxp_cmre_ondemand_services_input_form',
 								geoStoreBase: me.geoStoreBase,
+								serviceAreaLimitsTolerance : me.serviceAreaLimitsTolerance,
 								serviceAreaLimits: me.serviceAreaLimits,
 								auth: me.auth,
 								data: data,

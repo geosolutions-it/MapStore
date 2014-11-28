@@ -64,6 +64,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
      * Action Columns for the outcomes grid
      */
     customRunColumns:[],
+    serviceAreaLimitsTolerance : 0.01,
     serviceAreaLimits : {
 		bottom: -34.80,
 		left: 30.55,
@@ -71,10 +72,10 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
 		top: 33.10
 	},
 	defaultData:{
-		East_BBOX: "61.5784",
-		North_BBOX: "20.1741",
-		South_BBOX: "18.0148",
-		West_BBOX: "59.469"
+		East_BBOX: "100.90",
+		North_BBOX: "33.10",
+		South_BBOX: "-34.80",
+		West_BBOX: "30.55"
 	},
     /** api: method[addActions]
      */
@@ -163,6 +164,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
         //configuration of the left grid of the flows 
         var flowsGrid = {
             xtype:'mxw_cmre_ondemand_services_grid',
+            serviceAreaLimitsTolerance : me.serviceAreaLimitsTolerance,
             serviceAreaLimits: this.serviceAreaLimits,
             defaultData: this.defaultData,
             selectFirst: true,

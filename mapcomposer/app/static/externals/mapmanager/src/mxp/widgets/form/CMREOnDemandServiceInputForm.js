@@ -35,6 +35,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	osdi2ManagerRestURL : null,
 	serviceName : null,
 	mapPanel : null,
+	serviceAreaLimitsTolerance : 0.01,
 	serviceAreaLimits : {
 		bottom: -34.80,
 		left: 30.55,
@@ -464,12 +465,12 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 									} else {
 										bboxBounds = bounds;
 									}
-									
+
 									if (
-										(bboxBounds.top    > me.serviceAreaLimits.top) ||
-										(bboxBounds.bottom < me.serviceAreaLimits.bottom) ||
-										(bboxBounds.left   < me.serviceAreaLimits.left) ||
-										(bboxBounds.right  > me.serviceAreaLimits.right)
+										(bboxBounds.top-me.serviceAreaLimits.top       >= me.serviceAreaLimitsTolerance) ||
+										(bboxBounds.bottom-me.serviceAreaLimits.bottom <= -me.serviceAreaLimitsTolerance) ||
+										(bboxBounds.left-me.serviceAreaLimits.left     <= -me.serviceAreaLimitsTolerance) ||
+										(bboxBounds.right-me.serviceAreaLimits.right   >= me.serviceAreaLimitsTolerance)
 									) {
 										Ext.Msg.show({
 				                            title: "ERROR",
