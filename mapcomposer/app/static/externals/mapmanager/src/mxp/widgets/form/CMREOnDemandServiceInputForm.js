@@ -129,7 +129,26 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			// -- defining form fields
 			// /////////////////////////////////////////
 			var me = this;
-
+			var updateBox = function(){
+				// Update area
+				var values = me.resourceform.getForm().getValues();
+				//TODO check valid
+				var record = me.readData(values);
+				var bboxAvailable = record.get('East_BBOX') &&  record.get('North_BBOX') && record.get('West_BBOX')&& record.get('South_BBOX');
+			    if(bboxAvailable){
+					var map = me.mapPanel.map;
+					var aoi= new OpenLayers.Bounds(
+						record.get('West_BBOX'),
+					    record.get('South_BBOX'),
+					    record.get('East_BBOX'),
+					    record.get('North_BBOX')
+					);
+					// note map projection object could not be initialized yet
+					// so lets create it's projection object
+					var mapPrj = new OpenLayers.Projection(map.projection);
+					me.selectBBOX.setAOI(aoi.transform(new OpenLayers.Projection('EPSG:4326'), mapPrj),true);
+			 	}
+		   };
 			this.northField = new Ext.form.NumberField({
 				fieldLabel : this.northFieldLabel,
 				id : this.northFieldLabel + "_BBOX",
@@ -139,7 +158,10 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				allowBlank : true,
 				decimalPrecision : 4,
 				allowDecimals : true,
-				hideLabel : false
+				hideLabel : false,
+				listeners: {
+					change:updateBox
+			    }
 			});
 
 			this.westField = new Ext.form.NumberField({
@@ -151,7 +173,10 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				allowBlank : true,
 				decimalPrecision : 4,
 				allowDecimals : true,
-				hideLabel : false
+				hideLabel : false,
+				listeners: {
+					change:updateBox
+			    }
 			});
 
 			this.eastField = new Ext.form.NumberField({
@@ -163,7 +188,10 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				allowBlank : true,
 				decimalPrecision : 4,
 				allowDecimals : true,
-				hideLabel : false
+				hideLabel : false,
+				listeners: {
+					change:updateBox
+			    }
 			});
 
 			this.southField = new Ext.form.NumberField({
@@ -175,7 +203,10 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				allowBlank : true,
 				decimalPrecision : 4,
 				allowDecimals : true,
-				hideLabel : false
+				hideLabel : false,
+				listeners: {
+					change:updateBox
+			    }
 			});
 
 			this.bboxButton = new Ext.Button({
@@ -400,12 +431,12 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 								bboxProjection : new OpenLayers.Projection('EPSG:4326'),
 								layerName : "BBOX",
 								displayInLayerSwitcher : false,
-								boxDivClassName : "olHandlerBoxZoomBox_" + me.id,
+								boxDivClassName : "olHandlerBoxZoomBox",
 								aoiStyle : new OpenLayers.StyleMap({
 									"default" : {
 										"fillColor" : "#FFFFFF",
 										"strokeColor" : "#FF0000",
-										"fillOpacity" : 0.5,
+										"fillOpacity" : 0.1,
 										"strokeWidth" : 1
 									},
 									"select" : {
@@ -1326,10 +1357,10 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 		if(bboxAvailable){
 			var map = this.mapPanel.map;
 			var aoi= new OpenLayers.Bounds(
-				record.get('East_BBOX'),
-			    record.get('North_BBOX'),
-			    record.get('West_BBOX'),
-			    record.get('South_BBOX')
+				record.get('West_BBOX'),
+			    record.get('South_BBOX'),
+			    record.get('East_BBOX'),
+			    record.get('North_BBOX')
 			);
 			// note map projection object could not be initialized yet
 			// so lets create it's projection object
