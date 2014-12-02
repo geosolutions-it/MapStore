@@ -504,7 +504,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
                     
                     Ext.MessageBox.show({
                         title: "Attention",
-                        msg: "Has reached the beginning of the cruise",
+                        msg: "Has reached the beginning",
                         buttons: Ext.Msg.OK,
                         icon: Ext.MessageBox.WARNING
                     });
