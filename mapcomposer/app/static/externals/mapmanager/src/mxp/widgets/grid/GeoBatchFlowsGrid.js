@@ -60,10 +60,13 @@ mxp.widgets.GeoBatchFlowsGrid = Ext.extend(Ext.grid.GridPanel, {
     descriptionText:'Description',
     autoExpandColumn: 'description',
     loadingMessage: 'Loading...',
+	errorContactingGeobatch: 'Error loading flows from GeoBatch',
     /* end of i18n */
     //extjs grid specific config
     autoload:true,
     loadMask:true,
+    
+	flows: null,
     
    
     initComponent : function() {
@@ -117,7 +120,22 @@ mxp.widgets.GeoBatchFlowsGrid = Ext.extend(Ext.grid.GridPanel, {
                         }
                     }
                    
-                }
+                },
+				load: function(store, records, options) {
+					if(this.flows) {
+						store.filterBy(function(record) {
+							return this.flows[record.get('id')];
+						}, this);
+					}
+				},
+				exception: function(proxy, type, action, options, response) {
+					Ext.Msg.show({
+					   msg: this.errorContactingGeobatch,
+					   buttons: Ext.Msg.OK,
+					   icon: Ext.MessageBox.ERROR
+					});
+				},
+				scope: this
             },
             sortInfo: {
                 field: 'id',

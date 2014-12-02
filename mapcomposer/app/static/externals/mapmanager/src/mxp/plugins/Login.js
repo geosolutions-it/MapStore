@@ -66,7 +66,7 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
             this.login.loginButton
 		];
 
-        return mxp.plugins.TemplateManager.superclass.addActions.apply(this, [actions]);
+        return mxp.plugins.Login.superclass.addActions.apply(this, [actions]);
     },
 
     /** private: method[onLogin]
