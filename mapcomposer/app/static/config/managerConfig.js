@@ -30,7 +30,8 @@
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
-        "forceLogin":true,
+        "forceLogin":false,
+        "statelessSession":true,
         "actionTarget":{
           "target": "north.tbar",
           "index": 3
@@ -74,6 +75,7 @@
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
+        "statelessSession":true,
         "actionTarget":{
           "target": "north.tbar",
           "index": 10
@@ -91,6 +93,7 @@
          "baseMapUrl": "./?config=assetAllocatorResult",
          "autoRefreshTime": 30000,
          "autoOpen":true,
+         "statelessSession":true,
          "outputConfig":{"closable":false},
          "actionTarget":{
            "target": "north.tbar",
