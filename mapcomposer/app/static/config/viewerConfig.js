@@ -3,80 +3,25 @@
 		"header":false
 	},
     "gsSources": {
-   		"comunege": {
-			"ptype": "gxp_wmssource",
-			"title": "Comune Genova",
-			"url": "http://vm-sitgeofe1.comune.genova.it/geoserver/ows",
-			"SRS": "EPSG:900913",
-			"version":"1.1.1",
-			"layerBaseParams":{
-				"FORMAT": "image/png8",
-				"TILED": true,
-			   "TILESORIGIN": "-20037508.34, -20037508.34"
-			},
-            "authParam":"authkey"
-		},
-		"mapquest": {
-			"ptype": "gxp_mapquestsource"
-		}, 
-		"osm": { 
-			"ptype": "gxp_osmsource"
-		},
 		"google": {
 			"ptype": "gxp_googlesource" 
-		},
-		"bing": {
-			"ptype": "gxp_bingsource" 
-		}, 
-		"ol": { 
-			"ptype": "gxp_olsource" 
 		}
     },
     "map":{
-		"projection": "EPSG:900913",
-		"units": "m",
-		"zoom": 5,
-        "numZoomLevels": 21,
-		"extent": [
-			962337.0596294437, 5523110.328076044, 1014934.9764326633, 5547342.6306190565
-		],
-		"restrictedExtent": [
-			962337.0596294437, 5523110.328076044, 1014934.9764326633, 5547342.6306190565
-		],
-		"layers": [
-			{
-				"source": "ol",
-				"group": "background",
-				"title": "Nessuno sfondo",
-				"fixed": true,
-				"type": "OpenLayers.Layer",
-				"visibility": false,
-				"args": [
-					"Nessuno sfondo", {
-					"visibility": false
-				}
-				]
-			},
-			{
-				"source": "bing",
-				"title": "Bing Aerial",
-				"name": "Aerial",
-				"group": "background",
-				"visibility": false
-			}, {
-				"source": "osm",
-				"title": "Open Street Map",
-				"name": "mapnik",
-				"group": "background",
-				"visibility": true
-			},{
-				"source": "mapquest",
-				"title": "MapQuest OpenStreetMap",
-				"name": "osm",
-				"group": "background",
-				"visibility": false
-			}
-		]
+        "projection": "EPSG:900913",
+        "units": "m",
+        "maxExtent": [
+            -20037508.34, -20037508.34,
+            20037508.34, 20037508.34
+        ],
+        "layers": [{
+            "source": "google",
+            "title": "Google Hybrid",
+            "name": "HYBRID",
+            "group": "background"
+        }],
+        "center": [1250000.000000, 5370000.000000],
+        "zoom": 5
     },
     "customPanels":[
         {
