@@ -93,6 +93,12 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
      */    
     autoComplete: null,
     
+    /** api: config[collapsedFirst]
+     * ``Boolean``
+     * Config to set default collapsed spatial query form on startup
+     */    
+    collapsedFirst: false,
+    
     init: function(target) {
         
         var me = this;
@@ -116,6 +122,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             target: target,
             layoutConfig: {
                 xtype: 'container',
+                
                 defaults:{
                     layout: "form"
                 }
@@ -153,7 +160,8 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                 ref: "spatialSelectorFieldset",
                 title: spatialSelectorOutput.title,
                 checkboxToggle: true,
-                collapsed : false,
+                collapsed : me.collapsedFirst,
+                forceLayout : true,
                 items: [spatialSelectorOutput],
                 listeners: {
                     scope: this,
@@ -183,8 +191,15 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     this.resetFeatureManager();
                     this.spatialSelector.reset();
                     
-                    this.spatialSelector.selectionMethodCombo.reset();
+                    var selectionMethodCombo = this.spatialSelector.selectionMethodCombo;
+                    selectionMethodCombo.reset();
 					
+                    var spatialSelectorFieldset = me.output[0].spatialSelectorFieldset;
+                    spatialSelectorFieldset.collapse();
+                    
+                    var attributeFieldset = me.output[0].attributeFieldset;
+                    attributeFieldset.collapse();
+                    
                     var methodSelection = this.output[0].outputType;
 					
                     if (me.draw) {me.draw.deactivate();};

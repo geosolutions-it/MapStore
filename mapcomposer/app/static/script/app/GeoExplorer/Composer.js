@@ -277,14 +277,18 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     } else {
 
                         var south = Ext.getCmp('south');
-						if(south && south.collapsed){
+						if(south && south.collapsed && !south.collapsedonfull){
 							south.expand();
-						}  					
+						}else if (south && !south.collapsed && south.collapsedonfull){
+                            south.collapse();
+                        }  					
                         
 						var east = Ext.getCmp('east');
-						if(east && east.collapsed){
+						if(east && east.collapsed && !south.collapsedonfull){
 							east.expand();                             
-						}
+						}else if (east && !east.collapsed && south.collapsedonfull){
+                            east.collapse();
+                        }
 
                         var tree = Ext.getCmp('tree');
 						if(tree){

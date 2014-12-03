@@ -59,7 +59,8 @@
 				"source": "bing",
 				"title": "Bing Aerial",
 				"name": "Aerial",
-				"group": "background"
+				"group": "background",
+				"visibility": true
 			}, {
 				"source": "osm",
 				"title": "Open Street Map",
@@ -70,14 +71,9 @@
 				"source": "mapquest",
 				"title": "MapQuest OpenStreetMap",
 				"name": "osm",
-				"group": "background"
-			},{
-                "source": "comunege",
-                "group" : "Comune di Genova",
-				"title" : "Circoscrizioni",
-				"name"  : "CTC:Circoscrizioni",
-				"visibility": true
-            }
+				"group": "background",
+				"visibility": false
+			}
 		]
 	},
     "customPanels":[
@@ -86,6 +82,7 @@
             "title": "Data Viewer",
             "border": false,
             "id": "south",
+            "collapsedonfull": true,
             "region": "south",
             "split":true,
             "height": 330,
@@ -97,13 +94,13 @@
             "items": [
 				{
 					"xtype": "container",
-					"title": "Feature Grid",
+					"title": "Griglia Risultati",
 					"border": false,
 					"layout": "fit",
 					"id": "featuregrid"
 				},{
 					"xtype": "container",
-					"title": "Metadata Explorer",
+					"title": "Metadati",
 					"iconCls": "csw-viewer",             
 					"border": false,
 					"layout": "fit",
@@ -113,17 +110,18 @@
         },
         {
               "xtype": "panel",
-              "title": "Query Panel",        
+              "title": "Pannello Ricerche",        
               "border": false,
               "id": "east",
               "width": 400,
               "height": 500,
               "region": "east",
               "layout": "fit",
-              "collapsed": false,
+              "collapsed": true,
               "split": true,
               "collapsible": true,
-              "header": true
+              "header": true,
+              "collapsedonfull": true
         }
         
     ],
@@ -257,6 +255,7 @@
 		  "showSelectionSummary": true,
 		  "actions": null,
 		  "id": "bboxquery",
+          "collapsedFirst" : true,
           "autoComplete": {
             "sources": ["comunege"],
             "url": "http://vm-sitgeofe1.comune.genova.it/geoserver/wps",
@@ -392,6 +391,7 @@
 	                    }
 	                }
 	            },
+                "zoomLevel": 18,
 	            "spatialSelectorsConfig":{
 	                "name":{
 	                    "xtype": "gxp_spatial_geocoding_selector",

@@ -92,6 +92,7 @@ gxp.plugins.spatialselector.Locator = Ext.extend(gxp.plugins.Tool, {
 	 * Init spatialSelectors .
 	 */
 	constructor : function(config) {
+    
 		// default layout configuration
 		this.layoutConfig = {
     		xtype: "panel",
@@ -105,7 +106,44 @@ gxp.plugins.spatialselector.Locator = Ext.extend(gxp.plugins.Tool, {
 		
 		return gxp.plugins.spatialselector.Locator.superclass.constructor.call(this, arguments);
 	},
+    /** api: method[addActions]
+     */
+    addActions: function (config) {
 
+        if (this.actionTarget.panelTarget) {
+            var actions = [{
+                    iconCls: "gxp-icon-geolocationmenu",
+                    tooltip: "Locator",
+                    enableToggle: true,
+                    allowDepress: true,
+                    scope: this, 
+                    listeners: {
+                        toggle: function(button, pressed) {
+                        
+                            if(!this.outputTarget){
+                                this.outputTarget = this.actionTarget.panelTarget;
+                                this.addOutput();                        
+                            }
+                            
+                            if(pressed){
+                                Ext.getCmp(this.outputTarget).show();                            
+                                Ext.getCmp(this.outputTarget).expand();                                
+                            }else{
+                                Ext.getCmp(this.outputTarget).hide();                            
+                                Ext.getCmp(this.outputTarget).collapse();
+                            } 
+                        },
+                        scope: this
+                    }
+                }
+            ];
+            return gxp.plugins.MetadataExplorer.superclass.addActions.apply(this, [actions]);
+        }else{
+            this.addOutput();
+            return;
+        }
+
+    },
     /** api: method[addOutput]
      */
     addOutput: function() {

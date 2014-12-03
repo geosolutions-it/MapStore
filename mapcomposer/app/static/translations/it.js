@@ -202,6 +202,7 @@ GeoExt.Lang.add("it", {
         opacityText: "Opacità",
         formatText: "Formato",
         transparentText: "Trasparenza",
+        singleTileText: "Use a Single Tile",
         cacheText: "Cache",
         cacheFieldText: "Usa versione in cache",
         stylesText: "Stile",
