@@ -31,9 +31,16 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
     /** api: xtype = gxp_nrlchart */
     xtype: 'gxp_nrlCropDataTabButton',
     iconCls: "gxp-icon-nrl-tab",
+    tabPanel:'id_mapTab',
+    targetTab: 'cropData_tab',  
     form: null,
     url: null,
 	text: 'Generate Table',
+    /**
+     * config [windowManagerOptions]
+     * Options for the window manager
+     */
+    windowManagerOptions:{title:"Crop Data"},
     handler: function () {
 		//Ext.Msg.alert("Generate Table","Not Yet Implemented");
 		var target = this.target;
@@ -219,6 +226,7 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 		var win = new Ext.Window({
 			title:'Pakistan - Crop Data - Commodity: ' + fieldValues.crop.toUpperCase() +  " - Season: " + values.season.toUpperCase() + " - Years: "+ values.startYear + "-"+ values.endYear,
 			collapsible: true,
+            iconCls: "gxp-icon-nrl-tab",
 			constrainHeader :true,
 			maximizable:true,
 			height:400,
@@ -262,48 +270,8 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
                 scope: this
             }]
 		});
-		var windowGroup ;
-			if(!tabs){	
-				windowGroup = new Ext.WindowGroup();
-				tabs = new Ext.Panel({
-					title: 'Crop Data Tables',
-					windowGroup:windowGroup,
-					id:'cropDataTable_tab',
-					itemId:'cropDataTable_tab',
-					border: true,
-					autoScroll: false,
-					tabTip: 'Crop Data',
-					closable: true,
-					items: win,
-					listeners:{
-						remove:function(tab){
-							if(tab.items.length <=0) {
-							tabPanel.remove(tab);
-							tabPanel.setActiveTab(0)
-						}
-						}
-					}
-				});
-				
-				tabPanel.add(tabs); 
-				
-				
-			   
-			}else{
-				
-				windowGroup =tabs.windowGroup ;
-				tabs.add(win);
-			}
-			//windowGroup.register(win);
-			
-			
-			Ext.getCmp('id_mapTab').setActiveTab('cropDataTable_tab');
-			Ext.getCmp('id_mapTab').doLayout();
-			
-			tabs.doLayout();
-			win.show();
-
-	}	
+		gxp.WindowManagerPanel.Util.showInWindowManager([win],this.tabPanel,this.targetTab, this.windowManagerOptions);
+    }
 });
 
 Ext.reg(gxp.widgets.button.NrlCropDataTabButton.prototype.xtype, gxp.widgets.button.NrlCropDataTabButton);

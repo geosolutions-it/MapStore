@@ -289,7 +289,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
         var outputValue = c.getValue().inputValue;
         var submitButton = this.output.submitButton;
         var areaSelector = this.output.singleFeatureSelector;
-        console.log("Radio change!!");  
+        //console.log("Radio change!!");  
 
         this.selectedProvince = null;
         
@@ -311,7 +311,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 form: this
             })
             var store = areaSelector.currentCombo.selectButton.store;
-            console.log(store);
+            //console.log(store);
             this.output.fireEvent('update',store);
             this.output.fireEvent('show');                                
             this.output.doLayout();

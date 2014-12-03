@@ -34,6 +34,13 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
     iconCls: "gxp-icon-nrl-chart",
     text: 'Generate Chart',
     form: null,
+    tabPanel: 'id_mapTab',
+    targetTab: 'cropstatus_tab',
+	/**
+     * config [windowManagerOptions]
+     * Options for the window manager
+     */
+    windowManagerOptions:{title:"Crop Status"},
     chartOpt:{
         series:{
             range:{
@@ -215,48 +222,8 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
 
         var tabs = Ext.getCmp('cropstatus_tab');
 		var charts  = this.makeChart(store,listVar);
-		var resultpanel = {
-			columnWidth: .95,
-			style:'padding:10px 10px 10px 10px',
-			xtype: 'gxp_controlpanel',
-			info: "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
-                            "<ol>" +
-                            
-                            "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
-                            "<li><p><em> Date: </em>" +  listVar.today +   "</p></li>" +
-                            "<li><p><em> AOI: </em>" + listVar.numRegion[0] +"</p></li>" +
-                            "<li><p><em> Commodity: </em>" +  listVar.crop +   "</p></li>" +
-							"<li><p><em> Season: </em>" + listVar.season.toUpperCase() + "</p></li>" +
-							"<li><p><em> Year: </em>" + listVar.year+"</p></li>" +
-						"</ol>" +                                        
-						"</div>",
-            title:"Pakistan - Crop Status - Season:" +listVar.season.toUpperCase() + " - Year:" + listVar.year, 
-			season: listVar.season,
-			province: listVar.numRegion,
-			year: listVar.year,
-			chart: charts,
-			chartHeight: this.chartOpt.height
-		};
-		if(!tabs){
-			var cropDataTab = new Ext.Panel({
-				title: 'Crop Status',
-				id:'cropstatus_tab',
-				itemId:'cropstatus_tab',
-				border: true,
-				layout: 'form',
-				autoScroll: true,
-				tabTip: 'Crop Status',
-				closable: true,
-				items: resultpanel
-			});
-			tabPanel.add(cropDataTab);  
-		   
-		}else{
-			tabs.items.each(function(a){a.collapse()});
-			tabs.add(resultpanel);
-		}
-		Ext.getCmp('id_mapTab').doLayout();
-		Ext.getCmp('id_mapTab').setActiveTab('cropstatus_tab');
+		var wins = gxp.WindowManagerPanel.Util.createChartWindows(charts,listVar);
+        gxp.WindowManagerPanel.Util.showInWindowManager(wins,this.tabPanel,this.targetTab,this.windowManagerOptions);
                     
 	
 	},

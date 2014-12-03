@@ -31,9 +31,16 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
     /** api: xtype = gxp_nrlchart */
 	url: null,
     xtype: 'gxp_nrlAgrometChartButton',
+    targetTab: 'agromet_tab',
+	tabPanel: 'id_mapTab',
     iconCls: "gxp-icon-nrl-chart",
 	text: 'Generate Chart',
     form: null,
+    /**
+     * config [windowManagerOptions]
+     * Options for the window manager
+     */
+    windowManagerOptions:{title:"Agromet"},
     /**
      * private method[createOptionsFildset]
      * ``String`` title the title of the fieldset 
@@ -114,7 +121,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
                         xtype:'form',
                         frame:'true',
                         layout:'form',
-                        items: [current,arpreviouseaOpt,aggregated]
+                        items: [current,previous,aggregated]
                     }
                     
                     
@@ -160,9 +167,10 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
         var today = new Date();
         var dd = today.getDate();
         var mm = today.getMonth()+1; //January is 0!
-
         var yyyy = today.getFullYear();
-        if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm} var today = mm+'/'+dd+'/'+yyyy;    
+        if(dd<10){dd='0'+dd} 
+        if(mm<10){mm='0'+mm} 
+        var today = mm+'/'+dd+'/'+yyyy;    
         
         var numRegion = [];
         var regStore = this.form.output.aoiFieldSet.AreaSelector.store
@@ -180,7 +188,10 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
         var granType = data.areatype;
         var fromYear = data.startYear;
         var toYear = data.endYear;
-
+        //get start and end dekads.
+        var months = this.form.output.monthRangeSelector.slider.getValues();
+        var start_dec = (months[0])*3;
+        var end_dec = (months[1]+1)*3; //the end month is included
         var factorStore = this.form.output.factors.getSelectionModel().getSelections();
         var factorValues = [];
         var factorList = "";
@@ -192,7 +203,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
                 var factor = factorStore[i].data;
                 var factorValue = factor.factor;
                 factorValues.push(factorValue);
-                if(i==factorStore.length-1){
+                if( i == factorStore.length - 1){
                     factorList += "'" + factorValue + "'";
                 }else{
                     factorList += "'" + factorValue.concat("'\\,");                    
@@ -238,7 +249,9 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
             fromYear: fromYear,
             toYear: toYear,
             factorValues: factorValues,
-			factorStore: factorStore
+			factorStore: factorStore,
+            startDec: start_dec,
+            endDec: end_dec
         };
         
         //loading mask
@@ -268,7 +281,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 				mapping: 'properties.dec'
 			},{
 				name: 's_dec',
-				mapping: 'properties.s_dec'
+				mapping: 'properties.order'
 			}, {
 				name: 'current',
 				mapping: 'properties.current'
@@ -286,9 +299,13 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
             (toYear     ? "end_year:"    + toYear + ";" : "") +
             (factorList ? "factor_list:" + factorList + ";" : "") +
             (regionList ? "region_list:" + regionList + ";" : "") +
-            (granType   ? (granType != "pakistan" ? "gran_type:" + granType + ";" : "gran_type:province;") : "");
+            (start_dec  ? "start_dec:"   + start_dec + ";" : "") +
+            (end_dec    ? "end_dec:"     + end_dec + ";" : "") +
+            (granType   ? (granType != "pakistan" ? "gran_type:" + granType + ";" : "gran_type:province;") : "") ;
+            
+            
 			
-		var viewparams = (season == 'rabi' ? params + ";season_flag:NOT" : params);
+		var viewparams = params;
 					
 		store.load({
 			callback:function(){
@@ -301,7 +318,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 				service: "WFS",
 				version: "1.0.0",
 				request: "GetFeature",
-				typeName: "nrl:agromet_aggregated",
+				typeName: "nrl:agromet_aggregated2",
 				outputFormat: "json",
 				viewparams: viewparams /*season == 'rabi' ? "start_year:"+ fromYear + ";" +
                     "end_year:"+ toYear + ";" +
@@ -319,10 +336,9 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
     },
 	
 	createResultPanel:function(store, listVar, allPakistanRegions){
-		var tabPanel = Ext.getCmp('id_mapTab');
-        var tabs = Ext.getCmp('agromet_tab');
+
 		var charts  = this.makeChart(store, listVar, allPakistanRegions);
-		
+		/*
 		var resultpanel = {
 			columnWidth: .95,
 			style: 'padding:10px 10px 10px 10px',
@@ -337,12 +353,13 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 			chart: charts,
 			chartHeight: this.chartOpt.height
 		};
+       
 		
 		if(!tabs){
 			var cropDataTab = new Ext.Panel({
 				title: 'AgroMet',
-				id:'agromet_tab',
-				itemId:'agromet_tab',
+				id:this.targetTab,
+				itemId:this.targetTab,
 				border: true,
 				layout: 'form',
 				autoScroll: true,
@@ -356,9 +373,9 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 			tabs.items.each(function(a){a.collapse()});
 			tabs.add(resultpanel);
 		}
-		
-		Ext.getCmp('id_mapTab').doLayout();
-		Ext.getCmp('id_mapTab').setActiveTab('agromet_tab');
+		 */
+        var wins = gxp.WindowManagerPanel.Util.createChartWindows(charts,listVar);
+        gxp.WindowManagerPanel.Util.showInWindowManager(wins,this.tabPanel,this.targetTab,this.windowManagerOptions);
 	},
 	
 	makeChart: function(store, listVar, allPakistanRegions){		
@@ -379,7 +396,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
                     mapping: 'properties.dec'
                 },{
                     name: 's_dec',
-                    mapping: 'properties.s_dec'
+                    mapping: 'properties.order'
                 }, {
                     name: 'current',
                     mapping: 'properties.current'
@@ -461,7 +478,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
                         y: -15
 					},					
 					xAxis: [{
-						type: 'datetime',
+						type: 'linear',
 						categories: ['s_dec'],
 						tickWidth: 0,
 						gridLineWidth: 1,
@@ -475,13 +492,12 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
                             rotation: 320,
                             y: +22,
 							formatter: function () {
-                                var months = ["Nov-1","Nov-2","Nov-3","Dec-1","Dec-2","Dec-3","Jan-1","Jan-2","Jan-3","Feb-1","Feb-2","Feb-3","Mar-1","Mar-2","Mar-3","Apr-1","Apr-2","Apr-3","May-1","May-2","May-3","Jun-1","Jun-2","Jun-3","Jul-1","Jul-2","Jul-3","Aug-1","Aug-2","Aug-3","Sep-1","Sep-2","Sep-3","Oct-1","Oct-2","Oct-3"];
-                                if (this.axis.dataMin == 1){
-                                    //return months[this.value-1] + "-" + this.value;
-                                    return months[this.value-1];
-                                }else{
-                                    return months[this.value-1];
-                                }								
+                               // var months = ["Nov-1","Nov-2","Nov-3","Dec-1","Dec-2","Dec-3","Jan-1","Jan-2","Jan-3","Feb-1","Feb-2","Feb-3","Mar-1","Mar-2","Mar-3","Apr-1","Apr-2","Apr-3","May-1","May-2","May-3","Jun-1","Jun-2","Jun-3","Jul-1","Jul-2","Jul-3","Aug-1","Aug-2","Aug-3","Sep-1","Sep-2","Sep-3","Oct-1","Oct-2","Oct-3"];
+                                var dek = (listVar.startDec + this.value -2) % 36 +1;
+                                var dek_in_mon = ((dek -1)% 3)+1;
+                                var mon =Math.floor((dek-1)/3);
+                                var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+                                return months[mon] + "-" + dek_in_mon + "(" + this.value +")" + dek;
 							}							
 						}                        
 					}],
@@ -500,12 +516,9 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 					}], 
 					tooltip: {
                         formatter: function() {
-                            var months = ["Nov-1","Nov-2","Nov-3","Dec-1","Dec-2","Dec-3","Jan-1","Jan-2","Jan-3","Feb-1","Feb-2","Feb-3","Mar-1","Mar-2","Mar-3","Apr-1","Apr-2","Apr-3","May-1","May-2","May-3","Jun-1","Jun-2","Jun-3","Jul-1","Jul-2","Jul-3","Aug-1","Aug-2","Aug-3","Sep-1","Sep-2","Sep-3","Oct-1","Oct-2","Oct-3"];
-                            if (this.x>=1 && this.x<=18){
-                                var s = '<b>'+ months[this.x-1] +'</b>';
-                            }else{
-                                var s = '<b>'+ months[this.x-1] +'</b>';
-                            }
+                            var data =  this.points[0].point.data;
+                            var s = '<b>'+data.month + "-" + data.dec+'</b>';
+                            
                             Ext.each(this.points, function(i, point) {
                                 s += '<br/><span style="color:'+i.series.color+'">' + ((i.key>=1&&i.key<=18) ? ((i.key>=1&&i.key<=6) && (i.series.index==1 || i.series.index==0) ? i.series.name : ((i.series.index==1 || i.series.index==0) ? i.series.name.split("-")[1].replace(/\s/g, "") : i.series.name)) :  i.series.name) + ': </span>'+
                                     '<span style="font-size:12px;">'+ i.y.toFixed(2)+'</span>';

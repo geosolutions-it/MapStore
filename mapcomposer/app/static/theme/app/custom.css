@@ -32,15 +32,15 @@
 }
 
 /* gxp_nrlChartButton */
-.x-btn .gxp-icon-nrl-chart, .x-menu-item .gxp-icon-nrl-chart, .x-tree-node .gxp-icon-nrl-chart {
+.x-btn .gxp-icon-nrl-chart, .x-menu-item .gxp-icon-nrl-chart, .x-tree-node .gxp-icon-nrl-chart,.x-panel-icon.gxp-icon-nrl-chart {
     background-image: url(img/silk/chart_curve.png);
 }
 /* gxp_nrlMapButton */
-.x-btn  .gxp-icon-nrl-map,  .x-menu-item  .gxp-icon-nrl-map,.x-tree-node .gxp-icon-nrl-map {
+.x-btn  .gxp-icon-nrl-map,  .x-menu-item  .gxp-icon-nrl-map,.x-tree-node .gxp-icon-nrl-map,.x-panel-icon.gxp-icon-nrl-map{
     background-image: url(img/silk/map_go.png);
 }
 /* gxp_nrlTabButton */
-.x-btn  .gxp-icon-nrl-tab,  .x-menu-item  .gxp-icon-nrl-tab,.x-tree-node .gxp-icon-nrl-tab {
+.x-btn  .gxp-icon-nrl-tab,  .x-menu-item  .gxp-icon-nrl-tab,.x-tree-node .gxp-icon-nrl-tab,.x-panel-icon.gxp-icon-nrl-tab {
     background-image: url(img/silk/table.png);
 }
 

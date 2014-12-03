@@ -148,20 +148,15 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
             {name:'coefficient', mapping:'properties.coefficient', type: Ext.data.Types.FLOAT},
             {name:'shortname',  mapping: 'properties.shortname'},
             {name:'description', mapping: 'properties.description'},
-            {name:'class',  mapping :'properties.class'},   
+            {name:'class',  mapping :'properties.cls'},   
             {name:'cid',   mapping: 'properties.cid'} //TODO this should be added statically somewhere
     ],
     startCommodity:'Wheat',
-   // startProdUom:'000_tons',
-   // startAreaUom:'000_ha',
-   //    startYieldUom:'kg_ha',
-    /** private: method[addOutput]
-     *  :arg config: ``Object``
-     */
+
     addOutput: function(config) {
         var conf = {
             //TODO year ranges (from available data)            
-        }
+        };
 		
         //Override the comboconfig url;
         this.comboConfigs.base.url = this.dataUrl;
@@ -176,18 +171,18 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
         //reset unit combobox to defaults for the selected crop
         var resetUnitComboboxes = function(unitFieldset,selectedCommodity){
                     
-                    var prod_unit = unitFieldset.production.selectUnit(selectedCommodity.get('prod_default_unit'));
+                    unitFieldset.production.selectUnit(selectedCommodity.get('prod_default_unit'));
                     unitFieldset.area.selectUnit(selectedCommodity.get('area_default_unit'));
                     unitFieldset.yield.selectUnit(selectedCommodity.get('yield_default_unit'));
             
             
-        }
+        };
         var loadStoreTrigger =  function(){
-            pendingStores--
-            if(pendingStores == 0){
+            this.pendingStores--;
+            if(this.pendingStores === 0){
                 resetUnitComboboxes(units,Commodity.getStore().getAt(0));
             }
-        }
+        };
         //download from WFS available year ranges for each crops.
         var cropData  = {
             xtype:'form',
@@ -205,7 +200,6 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     checkboxToggle:true,
                     name:'outputType',
                     ref:'outputType',
-                    autoHeight: true,
                     defaultType: 'radio', // each item will be a radio button
                     items:[
                         {boxLabel: 'Data' , name: 'outputtype', listeners: this.setRadioQtip(this.radioQtipTooltip), inputValue: 'data', disabled: true},
@@ -263,7 +257,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                     ref: '../submitButton',
                                     target:this.target,
                                     form: this
-                                })
+                                });
                                 var store = areaSelector.store;
                                 this.output.fireEvent('update',store);
                                 this.output.fireEvent('beforehide');
@@ -288,9 +282,9 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                     ref: '../submitButton',
                                     target:this.target,
                                     form: this
-                                })
-                                var store = areaSelector.store;
-                                this.output.fireEvent('update',store);
+                                });
+                                var st = areaSelector.store;
+                                this.output.fireEvent('update',st);
                                 this.output.fireEvent('show');
                                 this.output.doLayout();
                                 this.output.syncSize();
@@ -303,7 +297,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                     province:"Province (District)",
                                     district:"National (District)",
                                     pakistan:"National (Province)"
-                                }
+                                };
                                 //pakenabled=true;
 								pakenabled = outputValue != 'data';
                             }else{
@@ -311,7 +305,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                     province:"Province ",
                                     district:"District",
                                     pakistan:"Pakistan"
-                                }
+                                };
                                 //pakenabled=false;
 								pakenabled = outputValue != 'data';
                             }
@@ -430,7 +424,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             this.output.referenceYear.setText(end);
                         },
                         afterrender: function(component) {
-                            if(this.output.yearRangeSelector!=component)return;
+                            if(this.output.yearRangeSelector!=component) {return;}
                         }
                     }
                 //
@@ -444,7 +438,6 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     ref: 'variable',
                     //checkboxToggle:true,
                     title: this.outputTypeText,
-                    autoHeight: true,
                     defaultType: 'radio',
                     columns: 1,
                     disabled:true,
@@ -502,7 +495,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                      var commodity = this.ownerCt.ownerCt.Commodity;
                                         var radio = commodity.getValue();
                                     //enable before do filter
-                                    if (combo.disabled == true){
+                                    if (combo.disabled === true){
                                         combo.enable();
                                         this.filterByCrop(radio);
                                         combo.disable();
@@ -545,7 +538,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                      var commodity = this.ownerCt.ownerCt.Commodity;
                                         var radio = commodity.getValue();
                                     //enable before do filter
-                                    if (combo.disabled == true){
+                                    if (combo.disabled === true){
                                         combo.enable();
                                         this.filterByCrop(radio);
                                         combo.disable();
@@ -589,7 +582,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                      var commodity = this.ownerCt.ownerCt.Commodity;
                                         var radio = commodity.getValue();
                                     //enable before do filter
-                                    if (combo.disabled == true){
+                                    if (combo.disabled === true){
                                         combo.enable();
                                         this.filterByCrop(radio);
                                         combo.disable();
@@ -614,7 +607,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
         config = Ext.apply(cropData,config || {});
         
         this.output = gxp.plugins.nrl.CropData.superclass.addOutput.call(this, config);
-        var U = this.output.units.production;
+        
 		
 		
         //Enable Disable button when regions are selected
@@ -638,7 +631,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
             var button = this.output.aoiFieldSet.AreaSelector.selectButton;
             button.toggle(false);
             var lyr = button.hilightLayer;
-            if(!lyr) return;
+            if(!lyr) {return;}
             lyr.setVisibility(false);
             
         },this);
@@ -646,14 +639,14 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
             var button = this.output.aoiFieldSet.AreaSelector.selectButton;
             
             var lyr = button.hilightLayer;
-            if(!lyr) return;
+            if(!lyr) {return;}
             lyr.setVisibility(true);
             
         },this);
         
         
         // initialize units of measure when finish loading
-        var pendingStores = 4;
+        this.pendingStores = 4;
         var units = this.output.units;
         var Commodity = this.output.Commodity;
         
@@ -684,7 +677,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                 var id  = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
                 Ext.QuickTips.register({ target:  id.elements[id.elements.length-1].id, text: t});
             }
-        }        
+        };        
         return o;
     } 
  });

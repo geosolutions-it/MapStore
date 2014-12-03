@@ -231,7 +231,24 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 					xtype: 'nrl_seasonradiogroup',
 					anchor:'100%',
 					name:'season',
-					ref:'season'
+					ref:'season',
+                    listeners: {
+                        change: function(rgroup,checked){
+                            if(checked.inputValue == 'RABI'){
+                                //Nov-Apr
+                                this.refOwner.monthRangeSelector.setValue(0,10,true);
+                                this.refOwner.monthRangeSelector.setValue(1,15  ,true);
+                            }else{
+                                //May-Oct
+                                this.refOwner.monthRangeSelector.setValue(1,21,true);
+                                this.refOwner.monthRangeSelector.setValue(0,16,true);
+                            }
+                        }
+                    }
+				},{
+					ref: 'monthRangeSelector',
+					xtype: 'monthyearrangeselector',
+					anchor:'100%'
 				},{
 					xtype: 'nrl_aoifieldset',
 					name:'region_list',

@@ -202,14 +202,14 @@ Ext.namespace('gxp.charts');
         var yieldCoeffUnits = yieldRec && yieldRec.get('coefficient');
         
         //set labels for chart opts
-        this.chartOpt.series.prod.unit  = '('+prodRec.get('shortname')+')'
-        this.chartOpt.series.area.unit = '('+areaRec.get('shortname')+')'
-        this.chartOpt.series.yield.unit = '('+yieldRec.get('shortname')+')'
+        this.chartOpt.series.prod.unit  = '('+prodRec.get('shortname')+')';
+        this.chartOpt.series.area.unit = '('+areaRec.get('shortname')+')';
+        this.chartOpt.series.yield.unit = '('+yieldRec.get('shortname')+')';
         
         //set labels for chart opts
-        this.chartOpt.series.prod.name  = 'Production ('+prodRec.get('name')+')'
-        this.chartOpt.series.area.name = 'Area ('+areaRec.get('name')+')'
-        this.chartOpt.series.yield.name = 'Yield ('+yieldRec.get('name')+')'
+        this.chartOpt.series.prod.name  = 'Production ('+prodRec.get('name')+')';
+        this.chartOpt.series.area.name = 'Area ('+areaRec.get('name')+')';
+        this.chartOpt.series.yield.name = 'Yield ('+yieldRec.get('name')+')';
         //var areaUnits = data2.area_unit == 1 ? 'Ha' : 'Sqr Km';
         /*
         switch(prodUnits)
@@ -289,12 +289,7 @@ Ext.namespace('gxp.charts');
                 typeName: "nrl:CropData",
                 outputFormat: "json",
                 propertyName: "region,crop,year,production,area,yield",
-                viewparams: viewparams /*"crop:" + commodity + ";" +
-                            "gran_type:" + granType + ";" +
-                            "start_year:" + fromYear + ";" +
-                            "end_year:" + toYear + ";" +
-                            "region_list:" + regionList + ";" +
-                            "yield_factor:" + prodCoeffUnits*/
+                viewparams: viewparams 
             },
             success: function ( result, request ) {
                 try{
@@ -439,14 +434,7 @@ Ext.namespace('gxp.charts');
 					region:feature.properties.region,
 					title:feature.properties.region,
 					subtitle:feature.properties.crop,
-					rows: []/*,
-					avgs:{
-						area:0,
-						prod:0,
-						yield:0,
-						years:0
-					},
-					*/
+					rows: []
 				};
 				chartData.push(obj);
 			}
@@ -461,14 +449,8 @@ Ext.namespace('gxp.charts');
 				time: yr,
 				area: parseFloat(a.toFixed(2)),
 				prod: parseFloat(p.toFixed(2)),
-				yield: parseFloat(yi.toFixed(2))//,
-				//crop: feature.properties.crop
+				yield: parseFloat(yi.toFixed(2))
 			});
-			
-			//obj.avgs.area+=a;
-			//obj.avgs.prod+=p;
-			//obj.avgs.yield+=yi;
-			//obj.avgs.years+=1;
 		}
 	
 		//create mean chart if needed
@@ -478,13 +460,7 @@ Ext.namespace('gxp.charts');
 				region: "all",
 				title: "Aggregated data",
 				subtitle: json.features[0].properties.crop,
-				rows: []/*,
-				avgs:{
-					area:0,
-					prod:0,
-					yield:0,
-					years:0
-				}*/
+				rows: []
 			};
 
 			var meanareas = []

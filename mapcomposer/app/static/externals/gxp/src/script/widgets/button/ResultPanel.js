@@ -19,7 +19,7 @@
  */
  
 Ext.namespace("gxp");
-//deve prendere le configurazioni dei grafici
+// A panel that can contain many charts
 //
 gxp.ControlPanel = Ext.extend(Ext.Panel, {
     commodity: null,
@@ -201,3 +201,142 @@ gxp.ControlPanel = Ext.extend(Ext.Panel, {
 });
 /** api: xtype = gxp_controlpanel */
 Ext.reg('gxp_controlpanel', gxp.ControlPanel);
+/**
+ * A panel that contain many windows.
+ * provide utilities to create chart and grid windows and add them to it.
+ */
+gxp.WindowManagerPanel = Ext.extend(Ext.Panel, {
+    initComponent: function(){
+        this.windowGroup = new Ext.WindowGroup();
+        // autoremove this component from the tabPanel when empty
+        this.on("remove",function(tab){
+            var tabPanel = tab.ownerCt;
+            if(tab.items.length <=0) {
+                tabPanel.remove(tab);
+                if(tabPanel.setActiveTab){
+                    tabPanel.setActiveTab(0);
+                }
+            }
+        });
+        gxp.WindowManagerPanel.superclass.initComponent.call(this);
+	}
+    
+});
+/** api: xtype = gxp_controlpanel */
+Ext.reg('gxp_windowmanagerpanel', gxp.WindowManagerPanel);
+
+gxp.WindowManagerPanel.Util = {
+    /**
+     */
+    createChartWindows : function (charts,listVar){
+            var panels = [];
+        
+        for (var i = 0; i<charts.length;i++){
+            var info =charts[i].info,
+            panel = new Ext.Window({
+                iconCls: "gxp-icon-nrl-chart",
+                title: charts[i].chartConfig.title.text,
+                layout: 'fit',
+                width:700,
+                height:400,
+                //x: oldPosition[0] + 20*(i+1), 
+                //y: oldPosition[1] + 20*(i+1),
+                autoScroll: false,
+                collapsible: true,
+			    constrainHeader: true,
+			    maximizable: true,
+                border: true,   
+                items: [charts[i]],
+                tools: [{
+                    id: 'help',
+                    handler: function () {
+                        var iframe;
+                        if(info == undefined){ //TODO use only info for all modules
+                            iframe = 
+                                    "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+                                    "<ol>" +
+                                        "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
+                                        "<li><p><em> Date: </em>"+listVar.today+"</p></li>" +
+                                        "<li><p><em> AOI: </em>"+listVar.chartTitle+"</p></li>" +                                
+                                        (listVar.commodity ? "<li><p><em> Commodity: </em>" + listVar.commodity.toUpperCase() + "</p></li>" :"")+
+                                        "<li><p><em> Season: </em>" + listVar.season.toUpperCase() + "</p></li>" +
+                                        "<li><p><em> Years: </em>" + listVar.fromYear + "-" + listVar.toYear + "</p></li>" +
+                                    "</ol>" +
+                                    "</div>" ;                     
+                        }else{
+                            iframe=info;
+                        }
+                        var appInfo = new Ext.Panel({
+                            header: false,
+                            autoScroll: true,
+                            html: iframe
+                        });
+
+                        var win = new Ext.Window({
+                            title:  "Chart Info",
+                            modal: true,
+                            layout: "fit",
+                            width: 400,
+                            height: 180,
+                            items: [appInfo]
+                        });
+
+                        win.show(); 
+
+                    },
+                    scope: this
+                }],
+                
+                listeners: {
+                    removed: function(panel){
+                        if (this.ownerCt.items.length == 0 && this.ownerCt.ownerCt){
+                            var tabPanel = Ext.getCmp(this.ownerCt.ownerCt.id);
+                            if(tabPanel){
+                                tabPanel.remove(this.ownerCt);
+                            }
+                        }
+                    }
+                }         
+            });
+            panels.push(panel);
+        }
+        return panels;
+    },
+    /**
+     * Add a panel to a tab panel, if missing, and add the wins to a fixed position
+     * wins ``Array`` of windows
+     * tabPanelId ``String``
+     * tagetTab ``String`` the itemId of the window manager
+     * options "options to apply to the manager
+     */
+    showInWindowManager: function (wins,tabPanelId,targetTab,opts){
+        var config = opts || {title: "Window Manager"};
+        var tabPanel = Ext.getCmp(tabPanelId);
+        var tabs = tabPanel.getComponent(targetTab);
+        var oldPosition = (tabs && tabs.items && tabs.items.getCount() ? [tabs.items.getCount()*20,tabs.items.getCount()*20]:[0,0]);
+        for(var i = 0 ; i < wins.length ; i++){
+            wins[i].setPosition(oldPosition[0] + 20*(i+1) ,oldPosition[1] + 20*(i+1));
+        }
+        
+        if(!tabs){
+			var tabs = new gxp.WindowManagerPanel(Ext.apply(config,{
+				itemId:targetTab,
+				border: true,
+				layout: 'form',
+				autoScroll: true,
+				closable: true,
+				items: wins
+			}));
+			
+			tabPanel.add(tabs); 
+		}else{
+			tabs.add(wins);
+		}
+		tabPanel.doLayout();
+		tabPanel.setActiveTab(targetTab);
+        for(var i = 0; i < wins.length;i++){
+            var win =wins[i];
+            win.show();
+        }
+    }
+};

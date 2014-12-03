@@ -135,9 +135,10 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
                 tooltip: this.tooltipAdd,
 				iconCls:'icon-add',
 				handler:function(){
-					var selectCombo = new gxp.form.WFSSearchComboBox(Ext.apply({vendorParams:this.vendorParams},this.comboConfig));
+					var selectCombo = new gxp.form.WFSSearchComboBox(Ext.apply({vendorParams:this.vendorParams,target:this.target},this.comboConfig));
 					var window = new Ext.Window({
 						title:this.searchWindowTitle,
+                        
 						items:[selectCombo],
 						//layout:'form',
 						width:265,

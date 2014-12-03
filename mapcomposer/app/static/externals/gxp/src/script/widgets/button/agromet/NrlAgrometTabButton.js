@@ -32,11 +32,18 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
     xtype: 'gxp_nrlAgrometTabButton',
 	
     iconCls: "gxp-icon-nrl-tab",
-	
+    
+
     form: null,
 	
     url: null,
-	
+    targetTab: 'agromet_tab',
+	tabPanel: 'id_mapTab',
+	/**
+     * config [windowManagerOptions]
+     * Options for the window manager
+     */
+    windowManagerOptions:{title:"Agromet"},
 	text: 'Generate Table',
 	
     handler: function () {            
@@ -148,7 +155,7 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
     },
 	
 	createResultPanel: function(store, fieldValues, values, isProvince){
-		var tabPanel = Ext.getCmp('id_mapTab');
+		var tabPanel = Ext.getCmp(this.tabPanel);
         
         var region = values.region_list.split("\,");
 
@@ -172,7 +179,7 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
             }            
         }
             
-        var tabs = Ext.getCmp('agrometTable_tab');
+        var tabs = Ext.getCmp(this.targetTab);
 		var grid = new Ext.grid.GridPanel({
 			bbar:[
 				"->",
@@ -281,17 +288,15 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 			}]
 		});
 		
-		var oldPosition = (tabs && tabs.items && tabs.items.getCount() ? [tabs.items.getCount()*20,tabs.items.getCount()*20]:[0,0]);
 		
 		var win = new Ext.Window({
 			title:'Pakistan - AgroMet Variables - AOI: ' + (region.length == 1 ? region[0] : "REGION") + ' - Season: ' + values.season + ' - Years: '+values.startYear+'-'+values.endYear,
 			collapsible: true,
+            iconCls: this.iconCls,
 			constrainHeader: true,
 			maximizable: true,
 			height: 400,
 			width: 700,
-			x: oldPosition[0] + 20, 
-			y: oldPosition[1] + 20,
 			autoScroll: false,
 			header: true,			
 			layout: 'fit',
@@ -331,42 +336,8 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
             }]
 		});
 		
-		var windowGroup;
-		if(!tabs){	
-			windowGroup = new Ext.WindowGroup();
-			tabs = new Ext.Panel({
-				title: 'AgroMet Tables',
-				windowGroup:windowGroup,
-				id:'agrometTable_tab',
-				itemId:'agrometTable_tab',
-				border: true,
-				autoScroll: false,
-				tabTip: 'Crop Data',
-				closable: true,
-				items: win,
-				listeners:{
-					remove:function(tab){
-						if(tab.items.length <=0) {
-						tabPanel.remove(tab);
-						tabPanel.setActiveTab(0)
-					}
-					}
-				}
-			});
-			
-			tabPanel.add(tabs); 
-		}else{				
-			windowGroup =tabs.windowGroup ;
-			tabs.add(win);
-		}
 		
-		windowGroup.register(win);		
-		
-		Ext.getCmp('id_mapTab').setActiveTab('agrometTable_tab');
-		Ext.getCmp('id_mapTab').doLayout();
-		
-		tabs.doLayout();
-		win.show();
+		gxp.WindowManagerPanel.Util.showInWindowManager([win],this.tabPanel,this.targetTab,this.windowManagerOptions);
 	}	
 });
 

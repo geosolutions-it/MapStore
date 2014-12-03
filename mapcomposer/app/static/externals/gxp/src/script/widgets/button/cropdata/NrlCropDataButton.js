@@ -33,8 +33,15 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
     iconCls: "gxp-icon-nrl-chart",
 	text: 'Generate Chart',
     optionsTitle: "Chart Options",
+    tabPanel:'id_mapTab',
+    targetTab: 'cropData_tab',
     form: null,
     url: null,
+    /**
+     * config [windowManagerOptions]
+     * Options for the window manager
+     */
+    windowManagerOptions:{title:"Crop Data"},
     /**
      * private method[createOptionsFildset]
      * ``String`` title the title of the fieldset 
@@ -227,27 +234,6 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
         this.chartOpt.series.prod.name  = 'Production ('+prodRec.get('name')+')'
         this.chartOpt.series.area.name = 'Area ('+areaRec.get('name')+')'
         this.chartOpt.series.yield.name = 'Yield ('+yieldRec.get('name')+')'
-        //var areaUnits = data2.area_unit == 1 ? 'Ha' : 'Sqr Km';
-        /*
-        switch(prodUnits)
-        {
-        case "000 tons":
-          this.chartOpt.series.prod.unit = '(000 tons)';
-          this.chartOpt.series.prod.name = 'Production (000 tons)';
-          var prodCoeffUnits = '1000';
-          break;
-        case "000 kgs":
-          this.chartOpt.series.prod.unit = '(000 kgs)';
-          this.chartOpt.series.prod.name = 'Production (000 kgs)';
-          var prodCoeffUnits = '1000';
-          break;
-        case "000 bales":
-          this.chartOpt.series.prod.unit = '(000 bales)';
-          this.chartOpt.series.prod.name = 'Production (000 bales)';          
-          var prodCoeffUnits = '170';
-        }*/
-        
-        
 
         var chartTitle = "";
         var splitRegion;
@@ -321,42 +307,9 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                 var data = this.getData(jsonData, aggregatedDataOnly);
                 
                 var charts  = this.makeChart(data, this.chartOpt, listVar, aggregatedDataOnly);
-                var resultpanel = {
-                    columnWidth: .95,
-                    style:'padding:10px 10px 10px 10px',
-                    xtype: 'gxp_controlpanel',
-                    commodity: commodity,
-                    today: today,
-                    chartTitle: chartTitle,                        
-                    season: season,
-                    province: numRegion,
-                    fromYear: fromYear,
-                    toYear: toYear,
-                    chart: charts,
-                    chartHeight: this.chartOpt.height
-                };
-                if(!tabs){
-                    var cropDataTab = new Ext.Panel({
-                        title: 'Crop Data',
-                        id:'cropData_tab',
-                        itemId:'cropData_tab',
-                        border: true,
-                        layout: 'form',
-                        autoScroll: true,
-                        tabTip: 'Crop Data',
-                        closable: true,
-                        items: resultpanel
-                    });
-                    tabPanel.add(cropDataTab);  
-                   
-                }else{
-                    tabs.items.each(function(a){a.collapse()});
-                    tabs.add(resultpanel);
-                }
-                Ext.getCmp('id_mapTab').doLayout();
-                Ext.getCmp('id_mapTab').setActiveTab('cropData_tab');
-                
-                
+
+                var wins = gxp.WindowManagerPanel.Util.createChartWindows(charts,listVar);
+                gxp.WindowManagerPanel.Util.showInWindowManager(wins,this.tabPanel,this.targetTab, this.windowManagerOptions);
             },
             failure: function ( result, request ) {
                 Ext.Msg.alert("Error","Server response error");
@@ -587,7 +540,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
     },
 	makeChart: function(data, opt, listVar, aggregatedDataOnly){
 		
-		var grafici = [];
+		var charts = [];
 		var getAvg = function(arr,type) {
 			var sum = 0,len = arr.length;
 			for (var i=0;i<len;i++){
@@ -735,10 +688,10 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                     }            
 				}
 			});
-			grafici.push(chart);
+			charts.push(chart);
 		}
 		
-		return grafici; 
+		return charts; 
 	}
 });
 

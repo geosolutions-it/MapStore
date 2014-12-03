@@ -36,6 +36,13 @@ gxp.widgets.button.NrlCropStatusTabButton = Ext.extend(Ext.Button, {
     form: null,
 	
 	text: 'Generate Table',
+    tabPanel: 'id_mapTab',
+    targetTab: 'cropstatus_tab',
+	/**
+     * config [windowManagerOptions]
+     * Options for the window manager
+     */
+    windowManagerOptions:{title:"Crop Status"},
 	
     handler: function () {
 		//Ext.Msg.alert("Generate Table","Not Yet Implemented");
@@ -308,42 +315,7 @@ gxp.widgets.button.NrlCropStatusTabButton = Ext.extend(Ext.Button, {
             }]
 		});
 		
-		var windowGroup;
-		if(!tabs){
-			windowGroup = new Ext.WindowGroup();
-			tabs = new Ext.Panel({
-				title: 'Crop Status Tables',
-				windowGroup: windowGroup,
-				id: 'cropStatusTable_tab',
-				itemId: 'cropStatusTable_tab',
-				border: true,
-				autoScroll: false,
-				tabTip: 'Crop Data',
-				closable: true,
-				items: win,
-				listeners:{
-					remove:function(tab){
-						if(tab.items.length <= 0) {
-							tabPanel.remove(tab);
-							tabPanel.setActiveTab(0)
-						}
-					}
-				}
-			});
-			
-			tabPanel.add(tabs); 
-		}else{			
-			windowGroup = tabs.windowGroup ;
-			tabs.add(win);
-		}
-		
-		//windowGroup.register(win);
-
-		Ext.getCmp('id_mapTab').setActiveTab('cropStatusTable_tab');
-		Ext.getCmp('id_mapTab').doLayout();
-		
-		tabs.doLayout();
-		win.show();
+		gxp.WindowManagerPanel.Util.showInWindowManager([win],this.tabPanel,this.targetTab,this.windowManagerOptions);
 	}	
 });
 
