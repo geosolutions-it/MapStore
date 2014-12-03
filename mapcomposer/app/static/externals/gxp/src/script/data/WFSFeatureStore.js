@@ -39,6 +39,10 @@ gxp.data.WFSFeatureStore = Ext.extend(GeoExt.data.FeatureStore, {
         this.proxy.setFilter(ogcFilter);
     },
     
+    setViewParams: function(viewparams) {
+        this.proxy.setViewParams(viewparams);
+    },
+    
     /** private */
     constructor: function(config) {
         if(!(config.proxy && config.proxy instanceof GeoExt.data.ProtocolProxy)) {
@@ -50,7 +54,8 @@ gxp.data.WFSFeatureStore = Ext.extend(GeoExt.data.FeatureStore, {
                 geometryName: config.geometryName,
                 schema: config.schema,
                 filter: config.ogcFilter,
-                maxFeatures: config.maxFeatures
+                maxFeatures: config.maxFeatures,
+				viewparams: config.viewparams
             }, config.proxy));
         }
         if(!config.writer) {
