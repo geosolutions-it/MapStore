@@ -58,7 +58,9 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
 
 	embedURL: "Direct URL",
 	
-	urlLabel: "URL",
+	embedUrlLabel: "EMBED",
+	
+	composerUrlLabel: "FULL",
 	
 	showMapTooltip: "Show in a new Window",
 	
@@ -177,7 +179,7 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
 		   });
 		   
 		   var urlField = new Ext.form.TextField({
-				fieldLabel: this.urlLabel,
+				fieldLabel: this.embedUrlLabel,
 				labelStyle: 'font-weight:bold;',
 				width: 350,
 				value: gxp.util.getAbsoluteUrl(url),
