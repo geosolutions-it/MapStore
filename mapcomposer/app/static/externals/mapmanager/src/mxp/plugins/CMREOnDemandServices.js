@@ -316,6 +316,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
     // CUSTOMER SPECIFIC configuration
     renderMapToTab: "mainTabPanel",
     mapIdPath: "results.mapId",
+    errorPath: "details.error",
     resultsField: "results",
     detailsField: "details",
     baseMapUrl: "/?config=assetAllocatorResult",
@@ -462,6 +463,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
             renderMapToTab: this.renderMapToTab,
             mapIdPath: this.mapIdPath,
             resultsField: this.resultsField,
+            errorPath: this.errorPath,
             baseMapUrl: this.baseMapUrl,
             ownerPath:this.ownerPath,
             titlePath:this.titlePath,
@@ -535,6 +537,66 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                             target.setActiveTab(iframe);
                         }
                     }
+                }
+            },{
+                iconCls : 'information_ic',
+                width : 25,
+                tooltip : "View Map",
+                getClass : function(v, meta, rec) {
+                    
+                    var results = rec.get(this.resultsField); 
+                    var details = rec.get(this.detailsField);
+                     try{
+                         var mapId = eval(this.mapIdPath);
+                         var target = Ext.getCmp(this.renderMapToTab);
+                         if (rec.get('status') == 'FAIL' && mapId){
+                             return 'x-grid-center-icon action_column_btn';
+                         }
+                         return 'x-hide-display';
+                      }catch(E){
+                        return 'x-hide-display';
+                      }
+                },
+                handler : function(grid, rowIndex, colIndex){
+                    var rec = grid.store.getAt(rowIndex);
+                    var results = rec.get(me.resultsField); 
+                    var details = rec.get(me.detailsField);
+                    var error;
+                    try{
+                        error = eval(this.errorPath);
+                    }catch(e){
+                        return ;
+                    }
+
+                    var src = this.baseMapUrl; //TODO '?locale=' + this.target.lang ;
+                    var win = new Ext.Window({
+                                iconCls:'information_ic',
+                                title:this.tooltipLog,
+                                width: 700,
+                                height: 600, 
+                                minWidth:250,
+                                minHeight:200,
+                                layout:'fit',
+                                autoScroll:false,
+                                closeAction:'hide',
+                                maximizable: true, 
+                                modal:true,
+                                resizable:true,
+                                draggable:true,
+                                
+                                items: [{
+                                    xtype:'textarea',
+                                    layout:'fit',
+                                    cls:'geobatch_log',
+                                    readOnly:false,
+                                    ref:'log',
+                                    value: error
+                                    }
+                                ]
+                                
+                                
+                    });
+                    win.show();
                 }
             }]
         }];
