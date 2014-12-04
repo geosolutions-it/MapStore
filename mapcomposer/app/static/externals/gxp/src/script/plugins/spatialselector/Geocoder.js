@@ -58,6 +58,13 @@ gxp.plugins.spatialselector.Geocoder = Ext.extend(gxp.plugins.Tool, {
 	 */
     crossParameters:{},
 
+	/** api: config[zoomLevel]
+	 *  ``Integer``
+	 *  Configuration to set zoom level for zoomin
+	 *  
+	 */    
+    zoomLevel: null,
+
     /** api: config[searchBtnCls]
      * ``String``
      * Icon cls for the search button.
@@ -249,10 +256,16 @@ gxp.plugins.spatialselector.Geocoder = Ext.extend(gxp.plugins.Tool, {
     search: function(){
 
     	var geometry = this.geometry;
+        var zoomLevel = this.zoomLevel;
 
 		if (geometry && geometry.getBounds) {
 			var dataExtent = geometry.getBounds();
-			this.target.mapPanel.map.zoomToExtent(dataExtent, closest=false);
+            if (!zoomLevel){
+                this.target.mapPanel.map.zoomToExtent(dataExtent, closest=false);
+            }else{
+                var xy = dataExtent.getCenterLonLat();
+                this.target.mapPanel.map.setCenter(xy,zoomLevel);
+            }
 		}
     },
 
