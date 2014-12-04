@@ -41,11 +41,16 @@ mxp.widgets.GeoStoreCategoryManager = Ext.extend(Ext.Panel, {
      *  The category to browse
      */
     category: "MAP",
-    /** api: config[leftPanelWidth]
+    /** api: config[leftPanelWidth] 
      *  ``String``
      *  Width of the category list
      */
     leftPanelWidth: 430,
+    /** api: config[generalPanelHeight] generalPanelHeight
+     *  ``integer``
+     *  size of the panel of general
+     */
+    
     /** api: config[iconCls]
      *  ``String``
      *  Icon for the tool
@@ -213,6 +218,7 @@ mxp.widgets.GeoStoreCategoryManager = Ext.extend(Ext.Panel, {
             geoStoreBase: this.geoStoreBase,
             resourceEditor: this.resourceEditor,
             attributeFields: this.attributeFields,
+            generalPanelHeight: this.generalPanelHeight,
             hideId:this.hideId,
             auth: this.auth
         });
