@@ -48,6 +48,20 @@ gxp.plugins.LanguageSelector = Ext.extend(gxp.plugins.Tool, {
         gxp.plugins.LanguageSelector.superclass.constructor.apply(this, arguments);
     },
 
+	/** api: config[data]
+	 * eg. [["id","Default Viewer", "viewer","","descript"],
+	 * ["id","Custom Viewer", "viewer","config","descript"] ,
+	 * ["id","Custom Composer", "","config","descript"] ]
+	 */
+	data:[
+		['en','English','','en','English language'],
+		['fr','Français','','fr','Franch language'],
+		['it','Italiano','','it','Italian language'], 
+		['de','Deutsch','','de','Deutsch language'], 
+		['es','Español','','es','Spanish language']  
+	],
+		
+	
     /** api: method[addActions]
      */
     addActions: function() {
@@ -67,7 +81,8 @@ gxp.plugins.LanguageSelector = Ext.extend(gxp.plugins.Tool, {
 		// ////////////////////////////////////////////////////
 		var languageSelector = new gxp.form.LanguageSwitcher({
 			currentContext: code,
-			saveMessage: this.target.auth
+			saveMessage: this.target.auth,
+			data : this.data
 		});
         
         var actions = ['->', languageSelector];

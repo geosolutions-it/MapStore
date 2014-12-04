@@ -426,7 +426,7 @@
 	 * Return:
 	 * 
 	 */
-	ContentProvider.prototype.create = function(item, callback, failureCallback){
+	ContentProvider.prototype.create = function(item, callback, failureCallback, scope){
 		var uri = new Uri({'url':this.baseUrl_});
 		var data = this.beforeSave( item );
 
@@ -450,11 +450,11 @@
 	       params: data,
 	       scope: this,
 	       success: function(response, opts){
-				callback(response.responseText);
+				callback.call(scope, response.responseText);
 	       },
 	       failure:  function(response, opts){
 				if(typeof(failureCallback) === 'function') {
-                    failureCallback(response);
+                    failureCallback.call(scope, response);
                 } else {
 				// ////////////////////////////////////////////////// //
 				// TODO: Refactor this code externalize the           // 
