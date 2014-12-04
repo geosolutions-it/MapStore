@@ -30,7 +30,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	/** api: xtype = mxp_cmre_ondemand_services_input_form */
 	xtype : 'mxp_cmre_ondemand_services_input_form',
 	category : 'WPS_RUN_CONFIGS',
-	
+	layout: 'fit',
 	//global variables
 	osdi2ManagerRestURL : null,
 	serviceName : null,
@@ -76,7 +76,8 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	
 	updateAssetsPositionButtonText : "Update Assets Position",
 	updateAssetsPositionButtonTooltip : "When copying the parameters from an existing run, it's possible to try updating the position automatically accordingly to the selected date/time.",
-
+    errorGettingAssetTypesMessage: "Error while getting asset types from server. Please contact the administrator",
+    
 	northFieldLabel: 'North',
 	southFieldLabel: 'South',
 	eastFieldLabel: 'East',
@@ -92,6 +93,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	assetsFieldTitle: 'Assets',
 	assetsAddFieldTooltip: "Add a new Asset",
 	assetsDelFieldTooltip: "Remove an Asset",
+    cloneThisAssetText:'Clone this asset',
 	
 	/*
 	 * 
@@ -701,14 +703,59 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				name : 'type_' + id,
 				ref : 'assetType',
 				mode : 'local',
-				store : new Ext.data.SimpleStore({
-					fields : ['value', 'name'],
-					data : [["Frigate", "Frigate"]]
-				}),
-				displayField : 'name',
-				valueField : 'value',
+				store: new MapStore.data.GeoStoreStore({
+                    categoryName: "ASSETPRESETS",
+                    geoStoreBase: me.geoStoreBase,
+                    currentFilter: '*',
+                    includeAttributes:true,
+                    auth: me.auth,
+                    idProperty: 'id',
+                    fields: [
+                        'id',
+                        'name',
+                        'type',
+                        'minSpeed',
+                        "maxSpeed",
+                        "maxHeading",
+                        "minHeading",
+                        "lat0",
+                        "lon0",
+                        "heading0",
+                        "cost",
+                        "obsRange",
+                        "Pd",
+                        "Pfa"
+                    ],
+                    sortInfo: { field: "type", direction: "ASC" },
+                    listeners: {
+                        exception: function(proxy, type, action, options, response) {
+                            Ext.Msg.show({
+                               msg: this.errorGettingAssetTypesMessage,
+                               buttons: Ext.Msg.OK,
+                               icon: Ext.MessageBox.ERROR
+                            });
+                        },
+
+                        scope: this
+                    }
+                }),
+                listeners: {
+                    select: function(combo,record,index){
+                        var id = combo.refOwner.assetId.getValue();
+                        var name = record.get('name');
+                        name = name ? name + " " + id : "";
+                        var data = Ext.apply({},record.data);
+                        data.id = id;
+                        data.name = name;
+                        combo.refOwner.loadData(data);
+                    
+                    
+                    }
+                },
+				displayField : 'type',
+				valueField : 'type',
 				triggerAction : 'all',
-				value : 'Frigate',
+				value : '',
 				selectOnFocus : true,
 				autoSelect : true,
 				forceSelection : true,
@@ -865,7 +912,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 					return value;
 				}
 			}, {
-				xtype : 'textfield',
+				xtype : 'numberfield',
 				name : 'cost_' + id,
 				ref : 'assetCost',
 				fieldLabel : 'Cost',
@@ -1040,7 +1087,69 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 					Ext.util.Format.number(value, '0.000');
 					return value;
 				}
-			}]
+			}],
+            loadData: function(data){
+                    var asset = data;
+                    var assetFieldSet =this;
+                    assetFieldSet.assetCost.setValue(asset.cost);
+					assetFieldSet.assetId.setValue(asset.id);
+					assetFieldSet.assetMaxHeading.setValue(asset.maxHeading);
+					assetFieldSet.assetMaxSpeed.setValue(asset.maxSpeed);
+					assetFieldSet.assetMinHeading.setValue(asset.minHeading);
+					assetFieldSet.assetMinSpeed.setValue(asset.minSpeed);
+					assetFieldSet.assetName.setValue(asset.name);
+					assetFieldSet.assetObsRange.setValue(asset.obsRange);
+					assetFieldSet.assetPd.setValue(asset.Pd);
+					assetFieldSet.assetPfa.setValue(asset.Pfa);
+					assetFieldSet.assetHeading.setValue(asset.heading0);
+					assetFieldSet.assetType.setValue(asset.type);
+					assetFieldSet.assetPosition.longitudeField.setValue(asset.lon0);
+					assetFieldSet.assetPosition.latitudeField.setValue(asset.lat0);
+            },
+            getData: function(){
+                var asset = this;
+                var lonLat = new OpenLayers.Geometry.Point(asset.assetPosition.longitudeField.getValue(), asset.assetPosition.latitudeField.getValue());    
+                var data = {
+                    cost: parseFloat(asset.assetCost.getValue()),
+                    id: parseInt(asset.assetId.getValue()),
+                    maxHeading: parseFloat(asset.assetMaxHeading.getValue()),
+                    maxSpeed: parseFloat(asset.assetMaxSpeed.getValue()),
+                    minHeading: parseFloat(asset.assetMinHeading.getValue()),
+                    minSpeed: parseFloat(asset.assetMinSpeed.getValue()),
+                    name: asset.assetName.getValue(),
+                    obsRange: parseFloat(asset.assetObsRange.getValue()),
+                    Pd: parseFloat(asset.assetPd.getValue()),
+                    Pfa: parseFloat(asset.assetPfa.getValue()),
+                    /*position: {
+                        lon: lonLat.x,
+                        lat: lonLat.y,
+                        x: geoJsonPoint.x,
+                        y: geoJsonPoint.y
+                    },*/
+                    heading0: parseFloat(asset.assetHeading.getValue()),
+                    lon0: parseFloat(lonLat.x),
+                    lat0: parseFloat(lonLat.y),				
+                    type: asset.assetType.getValue()
+                };
+                return data;
+            },
+            buttons: [{
+                iconCls: 'clone_map',
+                tooltip: me.cloneThisAssetText,
+                ref:'../cloneBtn',
+                handler: function(){
+                    var asset = this.refOwner;
+                    var data = asset.getData();
+                    data.id = me.assetFramePanel.items.length + 1;  
+                    var newAsset = me.createAsset(data.id);
+                    var 
+                    newAsset = me.resourceform.assets.assetsform.add(newAsset);
+                    newAsset.loadData(data);
+                    me.resourceform.doLayout();
+                    
+                    
+                }
+            }]
 		};
 
 		return asset;
@@ -1129,38 +1238,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 		};
 
 		me.startServiceExecution(runUrl, geoJsonInputs, finish, finishError);
-	/*
-		var createFinish = function(response) {
-			console.log(response);
-			var win = me.showPermissionPrompt(response);
-			finish(response);
-		};
-		//CREATE resource
-		if (resource && !resource.id) {
-			//category must be indicated
-			if (!resource.category || resource.category == "") {
-				//assign the catgory
-				resource.category = this.category;
-			}
-			this.setLoading(true, this.savingMessage);
-			this.resourceManager.create(resource,
-			//SUCCESS
-			createFinish,
-			//FAIL
-			finishError);
-			//UPDATE resource
-		} else if (resource && resource.id) {
-			this.resourceManager.update(resource.id, resource,
-			//SUCCESS
-			function(response) {
-				if (me.startServiceExecutionStoredData) {
-					me.startServiceExecution(resource.id, resource.blob, finish, finishError);
-				} else {
-					finish(response);
-				}
-			}, finishError);
-		}
-	*/
+	
 
 	},
 	/**
@@ -1287,26 +1365,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			icon : Ext.MessageBox.INFO
 		});
 	},
-	/**
-	 * private: method[showPermissionPrompt]
-	 *  Show the permission prompt for the resource for witch
-	 *  the id is a parameter
-	 * Parameters:
-	 * id - long - the id of the resource
-	 * Returns:
-	 * the window
-	 */
-	showPermissionPrompt : function(id) {
-		var winPermission = new mxp.widgets.ResourceGroupPermissionWindow({
-			resourceId : id,
-			title : this.resetTitleText,
-			auth : this.auth,
-			geostoreURL : this.geoStoreBase,
-			target : this.target
-		});
-		winPermission.show();
-		return winPermission;
-	}, 
+	
 	
 	/** private: method[loadData]
 	 *  Load data from a record
@@ -1336,21 +1395,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				var assetFieldSet = this.resourceform.assets.assetsform.items.get(i);
 					var asset = assetsData[i];
 				
-					assetFieldSet.assetCost.setValue(asset.cost);
-					assetFieldSet.assetId.setValue(asset.id);
-					assetFieldSet.assetMaxHeading.setValue(asset.maxHeading);
-					assetFieldSet.assetMaxSpeed.setValue(asset.maxSpeed);
-					assetFieldSet.assetMinHeading.setValue(asset.minHeading);
-					assetFieldSet.assetMinSpeed.setValue(asset.minSpeed);
-					assetFieldSet.assetName.setValue(asset.name);
-					assetFieldSet.assetObsRange.setValue(asset.obsRange);
-					assetFieldSet.assetPd.setValue(asset.Pd);
-					assetFieldSet.assetPfa.setValue(asset.Pfa);
-					assetFieldSet.assetHeading.setValue(asset.heading0);
-					assetFieldSet.assetType.setValue(asset.type);
-					assetFieldSet.assetPosition.longitudeField.setValue(asset.lon0);
-					assetFieldSet.assetPosition.latitudeField.setValue(asset.lat0);
-			
+					assetFieldset.loadData(assetData[i]);
 			}
 		}
 		// Load Map

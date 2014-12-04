@@ -302,6 +302,12 @@ left: 80px !important;
 .refresh_ic{
     background-image: url(../img/arrow_refresh.png);
 }
+.auto_refresh_ic{
+    background-image: url(../img/clock_refresh.png);
+}
+.archive_ic{
+    background-image: url(../img/fb/disk.png);
+}
 
 .delete_ic {
     background:url(../img/delete.png)
@@ -389,5 +395,16 @@ padding: 4px;
 .visibility_ic.PUBLIC{
     background-image: url(../img/world.png);
 
+}
+
+.x-grid3-row-collapsed .x-grid3-row-body {
+display: block!important;
+position:absolute;
+top: -10000px;
+left: -10000px;
+}
+
+.geobatch-consumer-grid  .x-grid3-row-body {
+	margin-right: 70px;
 }
 

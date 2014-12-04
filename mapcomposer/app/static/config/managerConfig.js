@@ -26,7 +26,7 @@
         "actionTarget":null
     },{
         "ptype": "mxp_categoryinitializer",
-        "neededCategories": ["WPS_RUN_CONFIGS", "MAPSTORECONFIG" ]
+        "neededCategories": ["WPS_RUN_CONFIGS", "MAPSTORECONFIG", "MAP", "ASSETPRESETS"]
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
@@ -57,6 +57,7 @@
     },{ 
         "ptype": "mxp_geostore_resource_editor",
         "category": "MAPSTORECONFIG",
+        "outputItemId":"MAPSTORECONFIG_Editor",
         "buttonText": "Maps",
         "actionTarget":{
              "target": "north.tbar",
@@ -66,7 +67,98 @@
     },{ 
         "ptype": "mxp_geostore_resource_editor",
         "category": "WPS_RUN_CONFIGS",
+        "outputItemId":"WPS_RUN_CONFIGS_Editor",
         "buttonText": "Runtimes",
+        "actionTarget":{
+             "target": "north.tbar",
+             "index": 2
+            }
+
+    },{ 
+        "ptype": "mxp_geostore_resource_editor",
+        "category": "ASSETPRESETS",
+        "buttonText": "Asset Presets",
+        "outputItemId":"ASSETPRESETS_Editor",
+        "generalPanelHeight":420,
+        "attributeFields":[{
+                "xtype":"textfield",
+                "id":"attribute.name",
+                "anchor":'95%',
+                "fieldLabel": "Name",
+                "name":"attribute.name"
+            },{
+                "xtype":"textfield",
+                "id":"attribute.type",
+                "anchor":'95%',
+                "fieldLabel": "Type",
+                "name":"attribute.type"
+            },{
+                "xtype":"numberfield",
+                "id":"attribute.minSpeed",
+                "anchor":'95%',
+                "fieldLabel": "minSpeed",
+                "name":"attribute.minSpeed"
+            },{
+                "xtype":"textfield",
+                "id":"attribute.maxSpeed",
+                "anchor":'95%',
+                "fieldLabel": "maxSpeed",
+                "name":"attribute.maxSpeed"
+            },{
+                "xtype":"textfield",
+                "id":"attribute.maxHeading",
+                "anchor":'95%',
+                "fieldLabel": "maxHeading",
+                "name":"attribute.maxHeading"
+            },{
+                "xtype":"textfield",
+                "id":"attribute.minHeading",
+                "anchor":'95%',
+                "fieldLabel": "minHeading",
+                "name":"attribute.minHeading"
+            },{
+                "xtype":"textfield",
+                "id":"attribute.lat0",
+                "anchor":'95%',
+                "fieldLabel": "lat0",
+                "name":"attribute.lat0"
+            },{
+                "xtype":"textfield",
+                "id":"attribute.lon0",
+                "anchor":'95%',
+                "fieldLabel": "lon0",
+                "name":"attribute.lon0"
+            },{
+                "xtype":"textfield",
+                "id":"attribute.heading0",
+                "anchor":'95%',
+                "fieldLabel": "heading0",
+                "name":"attribute.heading0"
+            },{
+                "xtype":"textfield",
+                "id":"attribute.cost",
+                "anchor":'95%',
+                "fieldLabel": "cost",
+                "name":"attribute.cost"
+            },{
+                "xtype":"textfield",
+                "id":"attribute.obsRange",
+                "anchor":'95%',
+                "fieldLabel": "obsRange",
+                "name":"attribute.obsRange"
+            },{
+                "xtype":"textfield",
+                "id":"attribute.Pd",
+                "anchor":'95%',
+                "fieldLabel": "Pd",
+                "name":"attribute.Pd"
+            },{
+                "xtype":"textfield",
+                "id":"attribute.Pfa",
+                "anchor":'95%',
+                "fieldLabel": "Pfa",
+                "name":"attribute.Pfa"
+            }],
         "actionTarget":{
              "target": "north.tbar",
              "index": 2
