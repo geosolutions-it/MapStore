@@ -76,7 +76,8 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	
 	updateAssetsPositionButtonText : "Update Assets Position",
 	updateAssetsPositionButtonTooltip : "When copying the parameters from an existing run, it's possible to try updating the position automatically accordingly to the selected date/time.",
-
+    errorGettingAssetTypesMessage: "Error while getting asset types from server. Please contact the administrator",
+    
 	northFieldLabel: 'North',
 	southFieldLabel: 'South',
 	eastFieldLabel: 'East',
@@ -702,14 +703,59 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				name : 'type_' + id,
 				ref : 'assetType',
 				mode : 'local',
-				store : new Ext.data.SimpleStore({
-					fields : ['value', 'name'],
-					data : [["Frigate", "Frigate"]]
-				}),
-				displayField : 'name',
-				valueField : 'value',
+				store: new MapStore.data.GeoStoreStore({
+                    categoryName: "ASSETPRESETS",
+                    geoStoreBase: me.geoStoreBase,
+                    currentFilter: '*',
+                    includeAttributes:true,
+                    auth: me.auth,
+                    idProperty: 'id',
+                    fields: [
+                        'id',
+                        'name',
+                        'type',
+                        'minSpeed',
+                        "maxSpeed",
+                        "maxHeading",
+                        "minHeading",
+                        "lat0",
+                        "lon0",
+                        "heading0",
+                        "cost",
+                        "obsRange",
+                        "Pd",
+                        "Pfa"
+                    ],
+                    sortInfo: { field: "type", direction: "ASC" },
+                    listeners: {
+                        exception: function(proxy, type, action, options, response) {
+                            Ext.Msg.show({
+                               msg: this.errorGettingAssetTypesMessage,
+                               buttons: Ext.Msg.OK,
+                               icon: Ext.MessageBox.ERROR
+                            });
+                        },
+
+                        scope: this
+                    }
+                }),
+                listeners: {
+                    select: function(combo,record,index){
+                        var id = combo.refOwner.assetId.getValue();
+                        var name = record.get('name');
+                        name = name ? name + " " + id : "";
+                        var data = Ext.apply({},record.data);
+                        data.id = id;
+                        data.name = name;
+                        combo.refOwner.loadData(data);
+                    
+                    
+                    }
+                },
+				displayField : 'type',
+				valueField : 'type',
 				triggerAction : 'all',
-				value : 'Frigate',
+				value : '',
 				selectOnFocus : true,
 				autoSelect : true,
 				forceSelection : true,
@@ -1192,38 +1238,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 		};
 
 		me.startServiceExecution(runUrl, geoJsonInputs, finish, finishError);
-	/*
-		var createFinish = function(response) {
-			console.log(response);
-			var win = me.showPermissionPrompt(response);
-			finish(response);
-		};
-		//CREATE resource
-		if (resource && !resource.id) {
-			//category must be indicated
-			if (!resource.category || resource.category == "") {
-				//assign the catgory
-				resource.category = this.category;
-			}
-			this.setLoading(true, this.savingMessage);
-			this.resourceManager.create(resource,
-			//SUCCESS
-			createFinish,
-			//FAIL
-			finishError);
-			//UPDATE resource
-		} else if (resource && resource.id) {
-			this.resourceManager.update(resource.id, resource,
-			//SUCCESS
-			function(response) {
-				if (me.startServiceExecutionStoredData) {
-					me.startServiceExecution(resource.id, resource.blob, finish, finishError);
-				} else {
-					finish(response);
-				}
-			}, finishError);
-		}
-	*/
+	
 
 	},
 	/**
@@ -1350,26 +1365,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			icon : Ext.MessageBox.INFO
 		});
 	},
-	/**
-	 * private: method[showPermissionPrompt]
-	 *  Show the permission prompt for the resource for witch
-	 *  the id is a parameter
-	 * Parameters:
-	 * id - long - the id of the resource
-	 * Returns:
-	 * the window
-	 */
-	showPermissionPrompt : function(id) {
-		var winPermission = new mxp.widgets.ResourceGroupPermissionWindow({
-			resourceId : id,
-			title : this.resetTitleText,
-			auth : this.auth,
-			geostoreURL : this.geoStoreBase,
-			target : this.target
-		});
-		winPermission.show();
-		return winPermission;
-	}, 
+	
 	
 	/** private: method[loadData]
 	 *  Load data from a record
