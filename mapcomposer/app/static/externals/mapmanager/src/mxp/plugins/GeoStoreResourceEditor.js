@@ -37,8 +37,15 @@ mxp.plugins.GeostoreResourceEditor = Ext.extend(mxp.plugins.Tool, {
     ptype: "mxp_geostore_resource_editor",
     
     buttonText: "Resource Editor",
+    /** api: method[outputItemId]
+     * id Of the item. Using the same id means to open the same 
+     * tab for clicking on the button.
+     */
     outputItemId: "ResourceEditor",
-
+    /** api: method[generalPanelHeight]
+     *  height of the general panel of the form
+     */
+    
     loginManager: null,    
     setActiveOnOutput: true,
     category:"MAP",
@@ -47,7 +54,10 @@ mxp.plugins.GeostoreResourceEditor = Ext.extend(mxp.plugins.Tool, {
      */
     iconCls: 'resource_edit',
 
-
+    /** api: method[attributeFields]
+     * Add an array of Extjs fields. 
+     * Add by default this attributes to the attributes of a resource
+     */
     
     /** api: method[addActions]
      */
@@ -101,6 +111,7 @@ mxp.plugins.GeostoreResourceEditor = Ext.extend(mxp.plugins.Tool, {
             category:this.category,
             tpl : this.tpl,
             attributeFields:this.attributeFields,
+            generalPanelHeight: this.generalPanelHeight,
             iconCls: this.iconCls,
             geoStoreBase:this.target.config.geoStoreBase,
             auth:this.auth,
