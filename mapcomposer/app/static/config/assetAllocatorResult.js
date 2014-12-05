@@ -24,6 +24,36 @@
 		"height": 1,
 		"center": true
 	},
+	"customPanels":[
+        {
+            "xtype":"panel",
+            "id":"east", 
+            "layout":"fit",
+            "region": "east",
+            "width": 350,
+            "minWidth":350,
+			"activeTab": 1,
+            "activeItem":1,
+            "collapsed":false,
+			"collapsible":true,
+            "header":true,
+			"border":false,
+			"items":[
+                {
+                    "xtype":"panel",
+                    "iconCls":"gx-layer-visibility",
+                    "id":"optimization_tool",
+                    "layout":"fit",
+                    "title":"Optimization Tool",
+                    "items":{
+                        "xtype":"panel",
+                        "id":"filter",
+                        "layout":"fit",
+                        "target":"optimization_tool"
+                    }
+                }]
+            }
+    ],
 	"map": {
 		"projection": "EPSG:900913",
 		"units": "m",
@@ -139,6 +169,47 @@
 		}, {
 			"ptype": "gxp_languageselector",
 			"actionTarget": {"target": "panelbbar", "index": 3}
+		},{
+			"ptype": "gxp_cmre_optimization_tool",
+            "outputTarget":"filter",
+			"updateInfoTools":true,
+                "filterFieldsets":[
+                  
+                   {
+                      "ref":"other",
+                      "label":"Altri Filtri",
+                      "checked":true,
+                      "xtype":"container",
+                      "columns":1,
+                      "emptyFilter":"1=1",
+                      "items":[
+                         {
+                            "xtype":"numberfield",
+                            "fieldLabel":"Codice SAP",
+                            "anchor":"100%",
+                            "cql_filter":"CodiceSAP ILIKE '%${inputValue}%'"
+                         },
+                         {
+                            "xtype":"textfield",
+                            "fieldLabel":"Codice Sede Tecnica",
+                            "anchor":"100%",
+                            "cql_filter":"CodSedeTecnica ILIKE '%${inputValue}%'"
+                         }
+                      ],
+                      "customConfig":{
+                         "separator":"AND",
+                         "layout":"form",
+                         "defaults":{
+                            "hideLabel":false,
+                            "enableKeyEvents":true,
+                            "bubbleEvents":[
+                               "keyup",
+                               "change"
+                            ]
+                         }
+                      }
+                   }
+                ]
 		}
 	]
 }

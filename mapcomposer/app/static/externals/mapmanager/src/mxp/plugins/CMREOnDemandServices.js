@@ -72,10 +72,10 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
 		top: 33.10
 	},
 	defaultData:{
-		East_BBOX: "100.90",
-		North_BBOX: "33.10",
-		South_BBOX: "-34.80",
-		West_BBOX: "30.55"
+		maxlon: "100.90",
+		maxlat: "33.10",
+		minlat: "-34.80",
+		minlon: "30.55"
 	},
     /** api: method[addActions]
      */
@@ -316,7 +316,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
     // CUSTOMER SPECIFIC configuration
     renderMapToTab: "mainTabPanel",
     mapIdPath: "results.mapId",
-    errorPath: "details.error",
+    errorPath: "details.message",
     resultsField: "results",
     detailsField: "details",
     baseMapUrl: "/?config=assetAllocatorResult",
@@ -549,7 +549,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                      try{
                          var mapId = eval(this.mapIdPath);
                          var target = Ext.getCmp(this.renderMapToTab);
-                         if (rec.get('status') == 'FAIL' && mapId){
+                         if (rec.get('status') == 'FAIL'){
                              return 'x-grid-center-icon action_column_btn';
                          }
                          return 'x-hide-display';

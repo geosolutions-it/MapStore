@@ -86,7 +86,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	bboxButtonTooltip: 'Select Area of Interest. Must be equal or less than the service max extent.',
 	
 	aoiLabel: "Area of Interest",
-	durationFieldLabel: "Duration",
+	durationFieldLabel: "Duration (s)", //TODO in hours
 	numberOfEvaluationsFieldLabel: "Num. of Evaluations",
 	startTimeFieldLabel: "Start Time",
 	riskMapTypeFieldLabel: 'Risk Map Type',
@@ -137,14 +137,14 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				var values = me.resourceform.getForm().getValues();
 				//TODO check valid
 				var record = me.readData(values);
-				var bboxAvailable = record.get('East_BBOX') &&  record.get('North_BBOX') && record.get('West_BBOX')&& record.get('South_BBOX');
+				var bboxAvailable = record.get('maxlon') &&  record.get('maxlat') && record.get('minlon')&& record.get('minlat');
 			    if(bboxAvailable){
 					var map = me.mapPanel.map;
 					var aoi= new OpenLayers.Bounds(
-						record.get('West_BBOX'),
-					    record.get('South_BBOX'),
-					    record.get('East_BBOX'),
-					    record.get('North_BBOX')
+						record.get('minlon'),
+					    record.get('minlat'),
+					    record.get('maxlon'),
+					    record.get('maxlat')
 					);
 					// note map projection object could not be initialized yet
 					// so lets create it's projection object
@@ -154,7 +154,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 		   };
 			this.northField = new Ext.form.NumberField({
 				fieldLabel : this.northFieldLabel,
-				id : this.northFieldLabel + "_BBOX",
+				name: 'maxlat',
 				maxValue : me.serviceAreaLimits.top,
 				minValue : me.serviceAreaLimits.bottom,
 				width : 130,
@@ -169,7 +169,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 
 			this.westField = new Ext.form.NumberField({
 				fieldLabel : this.westFieldLabel,
-				id : this.westFieldLabel + "_BBOX",
+				name: 'minlon',
 				minValue : me.serviceAreaLimits.left,
 				maxValue : me.serviceAreaLimits.right,
 				width : 100,
@@ -184,7 +184,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 
 			this.eastField = new Ext.form.NumberField({
 				fieldLabel : this.eastFieldLabel,
-				id : this.eastFieldLabel+ "_BBOX",
+				name: 'maxlon',
 				maxValue : me.serviceAreaLimits.right,
 				minValue : me.serviceAreaLimits.left,
 				width : 100,
@@ -199,7 +199,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 
 			this.southField = new Ext.form.NumberField({
 				fieldLabel : this.southFieldLabel,
-				id : this.southFieldLabel + "_BBOX",
+				name: 'minlat',
 				minValue : me.serviceAreaLimits.bottom,
 				maxValue : me.serviceAreaLimits.top,
 				width : 130,
@@ -680,6 +680,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			//layout: 'anchor',
 			autoHeight : true,
 			bodyStyle : 'padding:5px;',
+			labelWidth:200,
 			items : [{
 				xtype : 'textfield',
 				maxLength : 180,
@@ -758,7 +759,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				value : '',
 				selectOnFocus : true,
 				autoSelect : true,
-				forceSelection : true,
+				//forceSelection : true,
 				allowBlank : false,
 				maxLength : 180
 			}, {
@@ -773,12 +774,13 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 					border : false,
 					columnWidth : 0.8,
 					collapsible : false,
+					
 					autoHeight : true,
 					layout : 'table',
 					layoutConfig : {
 						columns : 3
 					},
-					bodyStyle : 'padding:5px;',
+					//bodyStyle : 'padding:5px;',
 					bodyCssClass : 'aoi-fields',
 					items : [{
 						layout : "form",
@@ -792,6 +794,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 							name : 'lon0_' + id,
 							ref : '../../longitudeField',
 							fieldLabel : 'Lon',
+							width:110,
 							allowBlank : false,
 							minValue : me.serviceAreaLimits.left,
 							maxValue : me.serviceAreaLimits.right,
@@ -837,6 +840,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 						border : false,
 						items : [{
 							xtype : 'numberfield',
+							width:110,
 							name : 'lat0_' + id,
 							ref : '../../latitudeField',
 							fieldLabel : 'Lat',
@@ -858,7 +862,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				xtype : 'numberfield',
 				name : 'obs_range_' + id,
 				ref : 'assetObsRange',
-				fieldLabel : 'Obs. Range',
+				fieldLabel : 'Observation Range (m)',
 				allowBlank : false,
 				maxLength : 8,
 				decimalPrecision : 3,
@@ -882,11 +886,11 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 					Ext.util.Format.number(value, '0.000');
 					return value;
 				}
-			}, {
+			},{
 				xtype : 'numberfield',
 				name : 'heading_' + id,
 				ref : 'assetHeading',
-				fieldLabel : 'Heading',
+				fieldLabel : 'Heading (rad)',
 				allowBlank : false,
 				anchor : '95%',
 				maxLength : 6,
@@ -911,17 +915,17 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 					Ext.util.Format.number(value, '0.000');
 					return value;
 				}
-			}, {
+			},{
 				xtype : 'numberfield',
 				name : 'cost_' + id,
 				ref : 'assetCost',
-				fieldLabel : 'Cost',
+				fieldLabel : 'Avg. Mission cost by Km (USD)',
 				allowBlank : false
-			}, {
+			},{
 				xtype : 'numberfield',
 				name : 'pfa_' + id,
 				ref : 'assetPfa',
-				fieldLabel : 'Pfa',
+				fieldLabel : 'Probability of false alarm',
 				allowBlank : false,
 				maxLength : 5,
 				decimalPrecision : 3,
@@ -946,11 +950,11 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 					Ext.util.Format.number(value, '0.000');
 					return value;
 				}
-			}, {
+			},{
 				xtype : 'numberfield',
 				name : 'pd_' + id,
 				ref : 'assetPd',
-				fieldLabel : 'Pd',
+				fieldLabel : 'Probability of Detection',
 				allowBlank : false,
 				maxLength : 5,
 				decimalPrecision : 3,
@@ -975,11 +979,11 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 					Ext.util.Format.number(value, '0.000');
 					return value;
 				}
-			}, {
+			},  {
 				xtype : 'numberfield',
 				name : 'min_speed_' + id,
 				ref : 'assetMinSpeed',
-				fieldLabel : 'Min Speed',
+				fieldLabel : 'Min Speed (m/s)',
 				allowBlank : false,
 				maxLength : 6,
 				decimalPrecision : 3,
@@ -1007,7 +1011,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				xtype : 'numberfield',
 				name : 'max_speed_' + id,
 				ref : 'assetMaxSpeed',
-				fieldLabel : 'Max Speed',
+				fieldLabel : 'Max Speed (m/s)',
 				allowBlank : false,
 				maxLength : 6,
 				decimalPrecision : 3,
@@ -1035,11 +1039,11 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				xtype : 'numberfield',
 				name : 'min_heading_' + id,
 				ref : 'assetMinHeading',
-				fieldLabel : 'Min Heading',
+				fieldLabel : 'Min Heading (rad)',
 				allowBlank : false,
 				maxLength : 6,
 				decimalPrecision : 3,
-				minValue : -1.8,
+				minValue : -3,
 				// set maxlength to 5 on input field
 				autoCreate : {
 					tag : 'input',
@@ -1049,10 +1053,10 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 					maxlength : '6'
 				},
 				validator : function(val) {
-					if (!Ext.isEmpty(val) && -1.8 <= val && val <= 1.8) {
+					if (!Ext.isEmpty(val) && -3 <= val && val <= 3 ){
 						return true;
 					} else {
-						return "Value cannot be empty and must be a number between [-1.8 - +1.8]";
+						return "Value cannot be empty and must be a number between [-3 - +3]";
 					}
 				},
 				renderer : function(value, metaData, record, rowIndex, colIndex, store, view) {
@@ -1063,11 +1067,11 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				xtype : 'numberfield',
 				name : 'max_heading_' + id,
 				ref : 'assetMaxHeading',
-				fieldLabel : 'Max Heading',
+				fieldLabel : 'Max Heading (rad)',
 				allowBlank : false,
 				maxLength : 6,
 				decimalPrecision : 3,
-				minValue : -1.8,
+				minValue : -3,
 				// set maxlength to 5 on input field
 				autoCreate : {
 					tag : 'input',
@@ -1077,10 +1081,10 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 					maxlength : '6'
 				},
 				validator : function(val) {
-					if (!Ext.isEmpty(val) && -1.8 <= val && val <= 1.8) {
+					if (!Ext.isEmpty(val) && -3 <= val && val <= 3) {
 						return true;
 					} else {
-						return "Value cannot be empty and must be a number between [-1.8 - +1.8]";
+						return "Value cannot be empty and must be a number between [-3 - +3]";
 					}
 				},
 				renderer : function(value, metaData, record, rowIndex, colIndex, store, view) {
@@ -1399,14 +1403,14 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			}
 		}
 		// Load Map
-		var bboxAvailable = record.get('East_BBOX') &&  record.get('North_BBOX') && record.get('West_BBOX')&& record.get('South_BBOX');
+		var bboxAvailable = record.get('maxlon') &&  record.get('maxlat') && record.get('minlon')&& record.get('minlat');
 		if(bboxAvailable){
 			var map = this.mapPanel.map;
 			var aoi= new OpenLayers.Bounds(
-				record.get('West_BBOX'),
-			    record.get('South_BBOX'),
-			    record.get('East_BBOX'),
-			    record.get('North_BBOX')
+				record.get('minlon'),
+			    record.get('minlat'),
+			    record.get('maxlon'),
+			    record.get('maxlat')
 			);
 			// note map projection object could not be initialized yet
 			// so lets create it's projection object
@@ -1458,10 +1462,10 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	 */
 	readData : function(data){
 		 var FormRecord = Ext.data.Record.create([ // creates a subclass of Ext.data.Record
-		    'East_BBOX',
-		    'North_BBOX',
-		    'South_BBOX',
-		    'West_BBOX',
+		    'maxlon',
+		    'maxlat',
+		    'minlat',
+		    'minlon',
 		    'category',
 		    'description',
 		    'id',
