@@ -117,7 +117,7 @@ if(environment.applicationPath) {
 	// for debug
 	var applicationConfig = require(environment.applicationPath.toString() + '/config');
 	applicationConfig.config(urls, exports.middleware);
-} else {
+} else if(!java.lang.System.getProperty("app.debug")) {
 	// for deploy
 	var applicationsFolder = getRepository(module.resolve('./applications'));
 	
