@@ -30,9 +30,12 @@ mxp.widgets.GeoBatchRunLocal = Ext.extend(Ext.Component, {
      */
     xtype:'geobatch_run_local',
     
+    // i18n
     successText: "Success",
     errorText:"Error",
     runSuccessText: "The workflow has been started successfully<br/>",
+    // end i18n
+    
 	fileName: "geobatch.run",
 	
     initComponent: function() {

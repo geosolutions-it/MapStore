@@ -62,7 +62,7 @@ MapStore.data.GeoStoreStore = Ext.extend(Ext.data.JsonStore, {
 		var store = this;
         MapStore.data.GeoStoreStore.superclass.constructor.call(this, Ext.apply(config, {
 			autoDestroy: true,
-			autoLoad: true,
+			autoLoad: (typeof config.autoLoad === 'undefined') ? true : config.autoLoad,
 			autoSave: true,
 			root: 'results',
 			totalProperty: 'totalCount',

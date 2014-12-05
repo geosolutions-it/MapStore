@@ -281,5 +281,57 @@ GeoExt.Lang.add("it", {
         resourceListTitle: "Risorse",
         emptyMessage: "Nessuna risorsa da mostrare",
         displayMessage: "{0} - {1} risorse di {2}"
+    },
+    "mxp.plugins.GeoBatchFlows.prototype": {
+        buttonText: "Workflows",
+        flowsListTitle:'Flussi',
+        runButtonText:'Esegui',
+        consumersGridTitle: 'Attivi',
+        archivedGridTitle: 'Archiviati'
+    },
+    "mxp.widgets.GeoBatchFlowsGrid.prototype": {
+        nameText: 'Titolo',
+        descriptionText:'Descrizione',
+        loadingMessage: 'Caricamento...',
+        errorContactingGeobatch: 'Errore nel caricamento dei flussi da GeoBatch'
+    },
+    "mxp.widgets.GeoBatchConsumerGrid.prototype": {
+        statusText: 'Stato',
+        startDateText: 'Data Inizio',
+        fileText:'File',
+        actionText:'Azione',
+        taskText:'Task',
+        progressText:'Progresso',
+        refreshText:'Ricarica',
+        autoRefreshText:'Auto Ricarica',
+        descriptionText:'Descrizione',
+        tooltipDelete: 'Pulizia',
+        tooltipLog: 'Verifica Log',
+        clearFinishedText: 'Rimuovi Terminati',
+        archiveText: 'Archivia Selezionati',
+        loadingMessage: 'Caricamento...',
+        cleanMaskMessage:'Pulizia esecuzioni...',
+        textConfirmDeleteMsg: 'Confermi di voler cancellare questa esecuzione?',
+        errorDeleteConsumerText:'Errore durante la cancellazione dell\'esecuzione',
+        errorArchiveConsumerText:'Errore durante l\'archiviazione dell\'esecuzione',
+        confirmClearText: 'Vuoi rimuovere le esecuzioni con stato SUCCESS o FAIL?',
+        titleConfirmClearMsg: 'Conferma',
+        confirmArchiveText: 'Vuoi archiviare le esecuzioni selezionate?',
+        titleConfirmArchiveMsg: 'Conferma',
+        GWCButtonLabel: 'Tile Cache',
+        errorContactingGeobatch: 'Errore di caricamento esecuzioni da GeoBatch',
+        errorContactingGeostore: 'Errore di caricamento esecuzioni archiviate da GeoStore'
+    },
+    "mxp.widgets.GeoBatchRunLocal.prototype": {
+        successText: "Successo",
+        errorText:"Errore",
+        runSuccessText: "Il flusso è stato avviato correttamente<br/>"
+    },
+    "mxp.widgets.GeoBatchRunLocalForm.prototype": {
+        runButtonText: "Esecuzione",
+        uploadButtonText: "Upload",
+        successText: "Successo",
+        errorText:"Errore",
+        runSuccessText: "Il flusso è stato avviato correttamente<br/>"
     }
 });

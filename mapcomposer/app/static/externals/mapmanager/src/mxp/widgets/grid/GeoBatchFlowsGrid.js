@@ -55,10 +55,10 @@ mxp.widgets.GeoBatchFlowsGrid = Ext.extend(Ext.grid.GridPanel, {
 	 */
     geoBatchRestURL: 'http://localhost:8080/geobatch/rest/',
     autoload:true,
+    autoExpandColumn: 'description',
     /* i18n */
     nameText: 'Title',
     descriptionText:'Description',
-    autoExpandColumn: 'description',
     loadingMessage: 'Loading...',
 	errorContactingGeobatch: 'Error loading flows from GeoBatch',
     /* end of i18n */
