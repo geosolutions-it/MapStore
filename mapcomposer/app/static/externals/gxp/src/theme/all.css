@@ -481,6 +481,14 @@ div.olMap div.gx-overlay-playback {
     background-image:url('img/time/control_fastforward.png')
 }
 
+.playback-save{
+	background-image: url(img/accept.png) !important;
+}
+
+.playback-cancel{
+	background-image: url(img/decline.png) !important;
+}
+
 .gx_timeslider div.x-slider-thumb{
     background-position:1;
     cursor: pointer;

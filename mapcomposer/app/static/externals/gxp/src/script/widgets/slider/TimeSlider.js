@@ -292,6 +292,12 @@ gxp.slider.TimeSlider = Ext.extend(Ext.slider.MultiSlider, {
             sliderInfo.interval = Math.round((sliderInfo.maxValue - sliderInfo.minValue) / this.timeManager.intervals.length);
         }
         this.setTimeFormat(gxp.PlaybackToolbar.guessTimeFormat(sliderInfo.interval));
+        
+        for (var i = 0, len = slider.timeManager.timeAgents.length; i < len; i++) {
+            if(slider.timeManager.timeAgents[i].rangeMode == 'range'){
+                slider.timeManager.timeAgents[i].rangeInterval = 0;    
+            }
+        }
     },
 
     setThumbStyles : function() {
@@ -399,8 +405,9 @@ gxp.slider.TimeSlider = Ext.extend(Ext.slider.MultiSlider, {
                         break;
                 }
                 for (var i = 0, len = timeManager.timeAgents.length; i < len; i++) {
-                    if(timeManager.timeAgents[i].rangeMode == 'range'){    
-                        timeManager.timeAgents[i].rangeInterval = (slider.thumbs[0].value - value) / adj;    
+                    if(timeManager.timeAgents[i].rangeMode == 'range'){
+                        var range = (slider.thumbs[0].value - value) / adj;
+                        timeManager.timeAgents[i].rangeInterval = range;    
                     }
                 }
                 if(!silent){

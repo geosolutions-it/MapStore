@@ -237,6 +237,9 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
             if(!(this.range[0] instanceof Date)) {
                 this.range[0] = OpenLayers.Date.parse(this.range[0]);
                 OpenLayers.Util.getElement('olTime').innerHTML = OpenLayers.Date.toISOString(this.range[0]); //this.range[0];
+                var tabTimeVisualization = Ext.getCmp('timeVisualizationID');
+                tabTimeVisualization.body.update(OpenLayers.Date.toISOString(this.range[0]));
+                
             }
             if(!(this.range[1] instanceof Date)) {
                 this.range[1] = OpenLayers.Date.parse(this.range[1]);
@@ -355,6 +358,9 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
 		}*/
 		
 		if(this.range && !this.currentTime) {
+        
+            //CUSTOMIZATION TO SET END TIME TIMESLIDER
+            
 			//this.setTime(new Date(this.range[(this.step > 0) ? 0 : 1].getTime()));
 			this.setTime(new Date(this.range[(this.startEnd) ? 1 : 0].getTime()));
 		} else if(this.currentTime){
@@ -503,10 +509,10 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
                 if(this.currentTime <= this.range[0]) {
                     
                     Ext.MessageBox.show({
-                        title: "Attention",
-                        msg: "Has reached the beginning",
+                        title: "Attenzione",
+                        msg: "E' stato raggiunto l'inizio dell'intervallo di tempo disponibile per la consultazione online",
                         buttons: Ext.Msg.OK,
-                        icon: Ext.MessageBox.WARNING
+                        icon: Ext.MessageBox.INFO
                     });
                   
                 }else{
@@ -786,6 +792,8 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
             this.currentTime = time;
             this.curTime = curTime;
             OpenLayers.Util.getElement('olTime').innerHTML =  OpenLayers.Date.toISOString(time); //time;
+            var tabTimeVisualization = Ext.getCmp('timeVisualizationID');
+            tabTimeVisualization.body.update(OpenLayers.Date.toISOString(time));
         }
         this.events.triggerEvent('tick', {
             'currentTime' : this.currentTime,
@@ -962,7 +970,110 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
             this.currentTime['setUTC'+stepUnit](newTime);    
         }
     },
+    /**
+     * APIMethod:setNow
+     * Manually sets the currentTime used in the control's animation.
+     *
+     * Parameters: {Object} time
+     * time - {Date|String} UTC current animantion time/date using either a
+     *     Date object or ISO 8601 formatted string.
+     */ 
+     setNow:function(time,curTime) {
+        if(!( time instanceof Date)) {
+            time = OpenLayers.Date.parse(time);
+        }
+        if(this.snapToIntervals) {
+            var nearest = OpenLayers.TimeAgent.WMS.prototype.findNearestTimes.apply(this, [time, this.intervals]);
+            var index = this.lastTimeIndex;
+            if(nearest.exact > -1){
+                index = nearest.exact;
+            } else if(nearest.before > -1 &&  nearest.after > -1) {
+                //requested time is somewhere between 2 valid times
+                //find the actual closest one.
+                var bdiff = this.intervals[nearest.before] - this.currentTime;
+                var adiff = this.currentTime - this.intervals[nearest.after];
+                index = (adiff > bdiff) ? nearest.before : nearest.after;
+            } else if (nearest.before > -1){
+                index = nearest.before;
+            } else if (nearest.after >-1){
+                index = nearest.after;
+            }
+            this.currentTime = this.intervals[index];
+            this.lastTimeIndex = index;
+        }
+        else {
+            this.currentTime = time;
+            this.curTime = curTime;
+            //OpenLayers.Util.getElement('olTime').innerHTML = time;
+        }
+        this.events.triggerEvent('tick', {
+            'currentTime' : this.currentTime,
+            'curTime' : this.curTime
+        });
+    },
     
+    /**
+     * APIMethod:currenttime
+     * Set the time to the animation current UTC time. Fires the 'currenttime' event.
+     * 
+     * Parameters: {Boolean} looped - trigger reset event with looped = true
+     * Returns:
+     * {Date} the control's currentTime
+     */ 
+     nowtime:function(looped,newRange,start) {
+        this.clearTimer();
+        //this.clearTooltipTimer();
+        
+        var d = new Date();        
+        var UTC = d.getUTCFullYear() + '-'
+		            + this.pad(d.getUTCMonth() + 1) + '-'
+		            + this.pad(d.getUTCDate()) + 'T'
+                    
+		            + this.pad(d.getUTCHours()) + ':'
+		            + "00" + ':'
+		            + "00" + 'Z';
+		            //+ this.pad(d.getUTCMinutes()) + ':'
+		            //+ this.pad(d.getUTCSeconds()) + 'Z';
+
+        currentTimeUTC = Date.fromISO( start ); 
+        
+        var nowStaz = this.addRangeStep(currentTimeUTC, newRange);
+        
+        var newTime = new Date(nowStaz.getTime());
+        this.setNow(newTime,"curTime");
+        this.events.triggerEvent('reset', {
+            'looped' : !!looped
+        });
+        return this.currentTime;
+    },
+    pad: function (n){
+        return n < 10 ? '0' + n : n 
+    },     
+    addRangeStep: function(data, step) {
+        var multiplier = 1;
+        switch (this.units) {
+            case OpenLayers.TimeUnit.SECONDS:
+                multiplier = 1000;
+                break;
+            case OpenLayers.TimeUnit.MINUTES:
+                multiplier = 60000;
+                break;
+            case OpenLayers.TimeUnit.HOURS:
+                multiplier = 3600000;
+                break;
+            case OpenLayers.TimeUnit.DAYS:
+                multiplier = 86400000;
+                break;
+            case OpenLayers.TimeUnit.MONTHS:
+                multiplier = 2592000000;
+                break;
+            case OpenLayers.TimeUnit.YEARS:
+                multiplier = 31104000000;
+                break;
+        }
+        return new Date(data.getTime() + step * multiplier)
+    },
+        
 	/**
 	 * Method: buildTimeAgents
 	 * Creates the controls "managed" by this control.

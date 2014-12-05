@@ -844,7 +844,7 @@ GeoExt.Lang.add("it", {
         startText: "Inizio",
         endText: "Fine",
         saveText: 'Salva',
-        cancelText: 'Cancella',        
+        cancelText: 'Valori iniziali',        
         listOnlyText: "Utilizzare solamente l'elenco dei valori esatti",
         stepText: "Step animazione",
         unitsText: "Unità animazione",

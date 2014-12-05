@@ -90,8 +90,8 @@ gxp.widgets.button.AreeAllertaMaxRainfallButton = Ext.extend(Ext.Button, {
 
         var me = this;
 
-        var data = this.form.output.getForm().getValues();
-        var data2 = this.form.output.getForm().getFieldValues();
+        var data = this.form.output.items.items[0].getForm().getValues();
+        var data2 = this.form.output.items.items[0].getForm().getFieldValues();
 
         this.appMask = new Ext.LoadMask(Ext.getBody(), {
             msg: this.mainLoadingMask
@@ -118,15 +118,19 @@ gxp.widgets.button.AreeAllertaMaxRainfallButton = Ext.extend(Ext.Button, {
      */
     makeChart: function(dateFilter, data, data2) {
 
-        var fff = data.endDate.replace(/-/g, "/");
-        var ppp = new Date(fff);
+        var timeManagers = this.target.target.mapPanel.map.getControlsByClass('OpenLayers.Control.TimeManager');
+        
+
+        //var fff = data.endDate.replace(/-/g, "/");
+        var ppp = new Date(timeManagers[0].currentTime);
         var ccc = this.addMinutes(ppp, data2.tipocumulativeStep);
         var aaa = OpenLayers.Date.toISOString(ccc);
 
         var startDate = Ext.util.Format.date(aaa, 'Y-m-d H:i:s');
+        var endDate = Ext.util.Format.date(OpenLayers.Date.toISOString(ppp), 'Y-m-d H:i:s');
         
         this.startDate = startDate;
-        this.endDate = data.endDate;
+        this.endDate = endDate;
 
         Ext.Ajax.request({
             scope: this,
@@ -142,7 +146,7 @@ gxp.widgets.button.AreeAllertaMaxRainfallButton = Ext.extend(Ext.Button, {
                 propertyName: "PREC_MM,DATA_ORA,AREAALLERTA,POINT",
                 srsName: "EPSG:4326",
                 sortBy: "AREAALLERTA",
-                viewparams: 'startDate:' + startDate + ';endDate:' + data.endDate + ';cumulativeStep:' + data2.tipocumulativeStep
+                viewparams: 'startDate:' + this.startDate + ';endDate:' + this.endDate + ';cumulativeStep:' + data2.tipocumulativeStep
             },
             success: function(result, request) {
                 try {

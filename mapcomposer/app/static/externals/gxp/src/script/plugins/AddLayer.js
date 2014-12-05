@@ -260,7 +260,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			title: msLayerTitle,
 			source: source.id
 			// Currently the group setting is not supported for dynamic layer additions
-			/*,group: msGroupName*/
+			,group: msGroupName
 		};
 		
 		if(customParams){
@@ -315,8 +315,9 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 					Math.min(extent.top, restricted.top)
 				);
 			}
-
-			map.zoomToExtent(extent, true);
+            
+            if(customParams.zoomToExtent)
+                map.zoomToExtent(extent, true);
 			
 			var report = {
 				name: msLayerName,

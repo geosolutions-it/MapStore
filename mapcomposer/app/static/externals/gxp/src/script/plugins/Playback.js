@@ -111,8 +111,8 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
             rateAdjuster:this.rateAdjuster,
             dynamicRange:this.dynamicRange,
             looped:this.looped,
-            autoPlay:this.autoStart,
-            optionsWindow: new Ext.Window({
+            autoPlay:this.autoStart
+            /*optionsWindow: new Ext.Window({
                 title: gxp.PlaybackOptionsPanel.prototype.titleText,
                 width: 350,
                 height: 425,
@@ -131,7 +131,7 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
                         optsPanel.fireEvent('hide', optsPanel);
                     }
                 }
-            })
+            })*/
         });
         var toolbar = gxp.plugins.Playback.superclass.addOutput.call(this,config); 
         this.relayEvents(toolbar,['timechange','rangemodified']);
@@ -166,7 +166,14 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
                 this.addOutput();
 				self.target.fireEvent("timemanager");
                 self.getTimeManager();
-                //this.playbackToolbar.control.currenttime();
+                
+                this.formPanel = Ext.getCmp("realTimePanelID");
+                
+                //populate timeslider settings panel with values
+                this.formPanel.optionsPanel.timeManager = this.playbackToolbar.control;
+                this.formPanel.optionsPanel.playbackToolbar = this.playbackToolbar;
+                
+                this.formPanel.optionsPanel.populateForm();
             }
         }, this);
     },

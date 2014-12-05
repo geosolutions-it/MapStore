@@ -47,7 +47,21 @@ gxp.plugins.areeallerta.AreeallertaData = Ext.extend(gxp.plugins.Tool, {
     selElabMethod: 'Seleziona tipologia valori',
     dataUrl: null,
 
+	/** private: method[init]
+     *  :arg target: ``Object``
+	 * 
+	 *  Provide the initialization code defining necessary listeners and controls.
+     */
+	init: function(target) {
+		target.on({
+		    scope: this,
+			'ready' : function(){
 
+			}
+		});
+		return gxp.plugins.areeallerta.AreeallertaData.superclass.init.apply(this, arguments);
+	},
+    
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
@@ -64,20 +78,28 @@ gxp.plugins.areeallerta.AreeallertaData = Ext.extend(gxp.plugins.Tool, {
         this.areeallertaData = {
             xtype: 'form',
             id: "areeallertaDataForm",
-            layout: "form",
+            layout: "anchor",
             minWidth: 180,
             autoScroll: true,
-            frame: true,
+            frame: false,
             listeners: {
-                'afterlayout': this.populateForm,
+                //'afterlayout': this.populateForm,
                 scope: this
             },
             items: [{
                     xtype: 'fieldset',
-                    title: 'Seleziona Data',
-                    defaultType: 'datefield',
-                    labelWidth: 60,
+                    title: 'Inizio Calcolo',
+                    labelWidth: 40,
                     items: [{
+                        xtype: 'panel'
+                        ,ref: 'dataCalcolo'
+                        ,name: 'dataCalcolo'
+                        ,id: 'timeVisualizationID'
+                        ,header: false
+                        ,html: '<b></b>'
+                        ,labelWidth: 40
+                        ,fieldLabel: 'Data'
+                    }/*{
                         xtype: 'displayfield',
                         text: 'Seleziona Range'
                     }, new Ext.ux.form.DateTime({
@@ -99,13 +121,13 @@ gxp.plugins.areeallerta.AreeallertaData = Ext.extend(gxp.plugins.Tool, {
                                 allowBlank: true
                             },
                             listeners: {
-                                /*'select': this.setStartTime,
-                                'change': this.setStartTime,
-                                scope: this*/
+                                //'select': this.setStartTime,
+                                //'change': this.setStartTime,
+                                //scope: this
                             },
                             ref: 'rangeStartField'
                         
-                    })]
+                    })*/]
                 }, {
                     xtype: 'fieldset',
                     title: 'Seleziona tipo cumulata',
@@ -171,7 +193,7 @@ gxp.plugins.areeallerta.AreeallertaData = Ext.extend(gxp.plugins.Tool, {
                 /*,
                 					this.areaDamage*/
             ],
-            buttons: [{
+            bbar: [{
                     url: this.dataUrl,
                     chartID: "notAdded_boxPlot",
                     pagePosition: [10000, 0],
@@ -215,7 +237,21 @@ gxp.plugins.areeallerta.AreeallertaData = Ext.extend(gxp.plugins.Tool, {
             ]
         };
 
-        config = Ext.apply(this.areeallertaData, config || {});
+	    var realTimePanel = new Ext.Panel({
+            layout: 'anchor',
+            id: "realTimePanelID",
+            header: false,
+			items:[
+				this.areeallertaData,
+                {
+                    xtype: 'gxp_playbackoptions'
+                } 
+			]          
+		});
+        
+        this.formPanel = realTimePanel;
+        
+        config = Ext.apply(realTimePanel, config || {});
 
         this.output = gxp.plugins.areeallerta.AreeallertaData.superclass.addOutput.call(this, config);
 

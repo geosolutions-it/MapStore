@@ -391,13 +391,14 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 				opacity: ("opacity" in config) ? config.opacity : 1,
 				buffer: ("buffer" in config) ? config.buffer : 0,
 				loadingProgress: config.loadingProgress || this.loadingProgress || false,
-		dimensions: original.data.dimensions,
+                dimensions: original.data.dimensions,
 				projection: layerProjection,
 				vendorParams: config.vendorParams,
 				transitionEffect: transitionEffect,
                 minScale: config.minscale,
                 maxScale: config.maxscale,                
-                displayOutsideMaxExtent: ("displayOutsideMaxExtent" in config) ? config.displayOutsideMaxExtent : true
+                displayOutsideMaxExtent: ("displayOutsideMaxExtent" in config) ? config.displayOutsideMaxExtent : true,
+                toUpdate: config.toUpdate
 			}
 		);
 
@@ -424,8 +425,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             graphTable: config.graphTable,
             graphAttribute: config.graphAttribute, 
             cumulative: config.cumulative,
-            queryable: config.queryable,
-            tabCode: config.tabCode
+            queryable: config.queryable
         }, original.data);
         
         // add additional fields
@@ -451,7 +451,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             {name: "graphAttribute", type: "string"},
             {name: "cumulative", type: "boolean"},
             {name: "queryable", type: "boolean"},
-            {name: "tabCode", type: "string"}
+            {name: "tabCode", type: "string"},
+            {name: "toUpdate", type: "boolean"}
         ];
 
 		original.fields.each(function(field) {
