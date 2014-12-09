@@ -421,11 +421,9 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
                         resources
                     );
 
-                    var isotime = OpenLayers.Date.toISOString(timeManager.currentTime);
-
-                    lyr.mergeNewParams({
-                        time : isotime
-                    });
+                    timeManager.setNow(timeManager.currentTime);
+                    timeManager.events.triggerEvent("rangemodified");
+                    timeManager.fixedRange = true;
                     
                 }
             }
