@@ -1398,8 +1398,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			for(var i = 0; i< assetsData.length; i++ ){
 				var assetFieldSet = this.resourceform.assets.assetsform.items.get(i);
 					var asset = assetsData[i];
-				
-					assetFieldset.loadData(assetData[i]);
+					assetFieldSet.loadData(asset);
 			}
 		}
 		// Load Map
@@ -1445,7 +1444,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			 this.loadFail();
 		};
 		Ext.Ajax.request({
-		   url: this.geoStoreBase + '/data/' + dataId,
+		   url: this.geoStoreBase + 'data/' + dataId,
 		   
 		   success: successHandler,
 		   failure: failureHandler,
