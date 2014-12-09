@@ -1,0 +1,77 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="externals/mapmanager/theme/css/mapstoremanager.css">
+       <style type="text/css">
+        body { 
+           background: url(theme/app/img/cmre_logo_big.jpg) center center no-repeat;
+           background-size:  auto 80%;
+           margin:0 auto;
+            
+        }
+           html {
+            background: #1e5799; /* Old browsers */
+            background: -moz-linear-gradient(-45deg,  #1e5799 0%, #207cca 0%, #599ed6 27%, #89d2ff 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#1e5799), color-stop(0%,#207cca), color-stop(27%,#599ed6), color-stop(100%,#89d2ff)); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(-45deg,  #1e5799 0%,#207cca 0%,#599ed6 27%,#89d2ff 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(-45deg,  #1e5799 0%,#207cca 0%,#599ed6 27%,#89d2ff 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(-45deg,  #1e5799 0%,#207cca 0%,#599ed6 27%,#89d2ff 100%); /* IE10+ */
+            background: linear-gradient(135deg,  #1e5799 0%,#207cca 0%,#599ed6 27%,#89d2ff 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', endColorstr='#89d2ff',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+
+           }
+           .shadowCSS { box-shadow: 12px 12px 7px rgba(0,0,0,0.5); }
+           .shadowfilter { -webkit-filter: drop-shadow(12px 12px 7px rgba(0,0,0,0.5));
+            filter: url(shadow.svg#drop-shadow); }
+           
+           /*icons */
+           .guide_icon {
+                width:17px;
+                height:16px;
+                overflow:visible;
+                background-repeat:no-repeat;
+                display: inline-block;
+                patting: 0 5px;
+           }
+           .bg_guide{
+                padding:1%;
+                width:98%;
+                height:98%;
+                background-color:rgba(255,255,255,0.8);
+           }
+           </style>
+    </head>
+    <body>
+        <div class="bg_guide">
+        <H3>How to Start a new run</H3>
+        <p><ol>
+            <li>Click on the <span class="add_ic guide_icon" style=""></span> near the Row in the <strong>Algorithms</strong> table <br/> or <br/>
+                Right click on a run and click on <strong>"<span class="add_ic guide_icon" style=""></span> Start from Here"</strong>
+            </li>
+            <li>
+                Click on "Ok" button to start editing the execution input parameters
+            </li>
+            <li>
+                Edit the form fields and click on <strong>"<span class="accept guide_icon" style=""></span>Execute"</strong>
+            </li>
+            <li>
+                Wait for the process execution Ending
+            </li>
+        </ol></p>
+        <h3>See results</h3>
+            <p>A successful run execution row contains the link to the generated map. Click on the <span class="gx-map-go guide_icon" style=""></span> button to see the map of the results.</p>
+            <p>If the process failed, the <span class="information_ic guide_icon" style=""></span> button will show you details about the error occurred</p>
+       
+        <h3>Share your data</h3>
+            <p>the Visibility column show what users can see the results of the process. The visibility can be 
+                <ul>
+                    <li><span class="visibility_ic PRIVATE guide_icon" style=""></span><strong>Private:</strong>Only the owner can see the run execution information</li>
+                    <li><span class="visibility_ic SHARED guide_icon" style=""></span><strong>Shared:</strong>Only some selected groups can see the results</li>
+                     <li><span class="visibility_ic PUBLIC guide_icon" style=""></span><strong>Public:</strong>Everyone can see the results.</li>
+                </ul>
+    
+            </p>
+            <p>If you are the owner of the process, you can share with other people the results of your run. Click on the <span class="ic_edit guide_icon" style=""></span> To share the results with everyone or only with a group of users</p>
+     </div>
+    </body>
+</html>
