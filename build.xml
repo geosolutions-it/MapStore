@@ -48,7 +48,20 @@
         </copy>
     </target>
     
-    <target name="buildjs" depends="init">
+    <target name="buildjs" depends="buildjsdefault,buildjsapp">
+    </target>
+	
+	<target name="buildjsapp" depends="init" if="application">	
+	    <!-- mapcomposer -->
+        <mkdir dir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/script"/>
+        <java jar="${ringojs.run}" fork="true" failonerror="true">
+            <sysproperty key="ringo.home" path="${ringojs.dir}"/>
+            <arg path="externals/buildkit/lib/buildkit/build.js"/>
+            <arg line="-o ${composerbuild}/${ant.project.name}/WEB-INF/app/static/script mapcomposer/app/applications/${application}/buildjs.cfg"/>
+        </java>	
+    </target>
+	
+	<target name="buildjsdefault" depends="init">
 		<delete dir="${composerbuild}"/>
 		
 	    <!-- mapcomposer -->
@@ -60,7 +73,7 @@
         </java>	
     </target>
     
-    <target name="dist" depends="test, buildjs, redist"/>
+    <target name="dist" depends="test, buildjs, redist, redistapp"/>
 	
 	<!--  SITE START  -->	
 	<target name="site" depends="dist">
@@ -117,6 +130,14 @@
     </target>
     <!-- SITE END -->
 	
+	<target name="redistapp" if="application">
+		<copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/applications/${application}">
+            <fileset dir="mapcomposer/app/applications/${application}">
+            </fileset>
+			
+        </copy>
+	</target>
+	
     <target name="redist">
 
         <mkdir dir="${composerbuild}/${ant.project.name}"/>
@@ -132,6 +153,7 @@
             <fileset dir="mapcomposer/app">
                 <exclude name="**/externals/**"/>
                 <exclude name="**/script/**"/>
+				<exclude name="**/applications/**"/>
             </fileset>
         </copy>
 		
@@ -214,24 +236,54 @@
         </war>
     </target>
 
-    <target name="debug" depends="init">
+    <target name="debug" depends="debugdefault,debugapp">
+    </target>
+	
+	<target name="debugdefault" depends="init" unless="application">
         <java jar="${ringojs.run}" fork="true" classpath="${ringojs.dir}/lib">
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
 			<sysproperty key="app.debug.proxy" value="${app.debug.proxy}"/>
             <sysproperty key="ringo.home" path="${ringojs.dir}"/>                              
             <!-- <jvmarg value="-XX:+HeapDumpOnOutOfMemoryError"/> -->
             <arg path="mapcomposer/app/main.js"/>
-            <arg line="-p ${app.port}"/>
+			<arg line="-p ${app.port}"/>
         </java>
     </target>
 
-    <target name="debugall" depends="init">
+	<target name="debugapp" depends="init" if="application">
+        <java jar="${ringojs.run}" fork="true" classpath="${ringojs.dir}/lib">
+            <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
+			<sysproperty key="app.debug.proxy" value="${app.debug.proxy}"/>
+            <sysproperty key="ringo.home" path="${ringojs.dir}"/>                              
+            <!-- <jvmarg value="-XX:+HeapDumpOnOutOfMemoryError"/> -->
+            <arg path="mapcomposer/app/main.js"/>
+            <arg line="-a ${application}"/>
+			<arg line="-p ${app.port}"/>
+        </java>
+    </target>
+	
+    <target name="debugall" depends="debugalldefault,debugallapp">
+    </target>
+	
+	<target name="debugalldefault" depends="init" unless="application">
         <java jar="${ringojs.run}" fork="true">
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
 			<sysproperty key="app.debug.proxy" value="${app.debug.proxy}"/>
             <sysproperty key="ringo.home" path="${ringojs.dir}"/>
             <arg value="-d"/>
             <arg path="mapcomposer/app/main.js"/>
+            <arg line="-p ${app.port}"/>
+        </java>
+    </target>
+	
+	<target name="debugallapp" depends="init" if="application">
+        <java jar="${ringojs.run}" fork="true">
+            <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
+			<sysproperty key="app.debug.proxy" value="${app.debug.proxy}"/>
+            <sysproperty key="ringo.home" path="${ringojs.dir}"/>
+            <arg value="-d"/>
+            <arg path="mapcomposer/app/main.js"/>
+			<arg line="-a ${application}"/>
             <arg line="-p ${app.port}"/>
         </java>
     </target>
