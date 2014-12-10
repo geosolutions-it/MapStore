@@ -495,17 +495,17 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 
 							me.mapPanel.map.addControl(me.selectBBOX);
 							me.mapPanel.map.enebaleMapEvent = true;
-							//load data(defaults)
-							if(me.defaultData){
+
+							if(me.dataId){
+								//load data from GeoStore resource
+								me.loadDataFromGeoStore(me.dataId);
+							}else if(me.defaultData){
+								//load data(defaults)
 								var data = me.readData(me.defaultData);
 								//TODO for some reason, we have to wait
 								//before loading data to have the map correctly 
 								// initialized
 								setTimeout(function(){me.loadData(data);},500);
-							}
-							//load data from GeoStore resource
-							if(me.dataId){
-								me.loadDataFromGeoStore(me.dataId);
 							}
 							me.doLayout();
 							
