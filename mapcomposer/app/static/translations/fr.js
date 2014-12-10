@@ -816,7 +816,7 @@ GeoExt.Lang.add("fr", {
         nextLabel: "Suivant",
         nextTooltip: "Avancer d'une image",
         resetLabel: "Remettre",
-        resetTooltip: "Stations météo dernière mise à jour",
+        resetTooltip: "Réinitialiser",
         loopLabel: "Boucle",
         loopTooltip: "Continuellement en boucle l'animation",
         normalTooltip: "Retour à la normale playback",
