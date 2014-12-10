@@ -56,7 +56,8 @@ GeoExt.Lang.add("en", {
 		showMapTooltip: "Show in a new Window",
 		embedCodeTitle: "Embed Code",
 		embedURL: "Direct URL",	
-		urlLabel: "URL",
+		embedUrlLabel: "EMBED",
+		composerUrlLabel: "FULL",
 		exportMapText: "Link Map",
         mobileText:"Mobile",
         installApplicationText:"Install Android Application",
@@ -97,7 +98,8 @@ GeoExt.Lang.add("en", {
         loginErrorTitle: "Login failed.",
         userFieldText: "User",
         passwordFieldText: "Password",
-        loginFormTitle: "Please Login"
+        loginFormTitle: "Please Login",
+        loginWaitMessage: "Logging in. Please wait..."
     },
     "UserManagerView.prototype":{
         textGeneral:"General",
@@ -280,5 +282,57 @@ GeoExt.Lang.add("en", {
         resourceListTitle: "Resources",
         emptyMessage: "No resource to display",
         displayMessage: "Displaying {0} - {1} of {2}"
+    },
+    "mxp.plugins.GeoBatchFlows.prototype": {
+        buttonText: "Workflows",
+        flowsListTitle:'Flows',
+        runButtonText:'Run',
+        consumersGridTitle: 'Active',
+        archivedGridTitle: 'Archived'
+    },
+    "mxp.widgets.GeoBatchFlowsGrid.prototype": {
+        nameText: 'Title',
+        descriptionText:'Description',
+        loadingMessage: 'Loading...',
+        errorContactingGeobatch: 'Error loading flows from GeoBatch'
+    },
+    "mxp.widgets.GeoBatchConsumerGrid.prototype": {
+        statusText: 'Status',
+        startDateText: 'StartDate',
+        fileText:'File',
+        actionText:'Action',
+        taskText:'Task',
+        progressText:'Progress',
+        refreshText:'Refresh',
+        autoRefreshText:'Auto Refresh',
+        descriptionText:'Description',
+        tooltipDelete: 'Clear this',
+        tooltipLog: 'Check Log',
+        clearFinishedText: 'Clear Finished',
+        archiveText: 'Archive Selected',
+        loadingMessage: 'Loading...',
+        cleanMaskMessage:'Removing runs...',
+        textConfirmDeleteMsg: 'Do you confirm you want to delete this run? ',
+        errorDeleteConsumerText:'There was an error while deleting run',
+        errorArchiveConsumerText:'There was an error while archiving run',
+        confirmClearText: 'Do you really want to remove all runs with SUCCESS or FAIL status?',
+        titleConfirmClearMsg: 'Confirm',
+        confirmArchiveText: 'Do you want to archive the selected runs?',
+        titleConfirmArchiveMsg: 'Confirm',
+        GWCButtonLabel: 'Tile Cache',
+        errorContactingGeobatch: 'Error loading runs from GeoBatch',
+        errorContactingGeostore: 'Error loading archived runs from GeoStore'
+    },
+    "mxp.widgets.GeoBatchRunLocal.prototype": {
+        successText: "Success",
+        errorText:"Error",
+        runSuccessText: "The workflow has been started successfully<br/>"
+    },
+    "mxp.widgets.GeoBatchRunLocalForm.prototype": {
+        runButtonText: "Run",
+        uploadButtonText: "Upload",
+        successText: "Success",
+        errorText:"Error",
+        runSuccessText: "The workflow has been started successfully<br/>"
     }
 });

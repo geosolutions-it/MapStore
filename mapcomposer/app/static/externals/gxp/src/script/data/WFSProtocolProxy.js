@@ -26,6 +26,11 @@ gxp.data.WFSProtocolProxy = Ext.extend(GeoExt.data.ProtocolProxy, {
         this.protocol.options.filter = filter;
     },
     
+    setViewParams: function(viewparams){
+        this.protocol.viewparams = viewparams;
+        this.protocol.options.viewparams = viewparams;
+    },
+    
     /** api: constructor
      *  .. class:: WFSProtocolProxy
      *
@@ -64,7 +69,8 @@ gxp.data.WFSProtocolProxy = Ext.extend(GeoExt.data.ProtocolProxy, {
                 geometryName: config.geometryName,
                 schema: config.schema,
                 filter: config.filter,
-                maxFeatures: config.maxFeatures
+                maxFeatures: config.maxFeatures,
+				viewparams: config.viewparams
             }, config.protocol));
         }
 

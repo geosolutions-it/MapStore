@@ -33,7 +33,7 @@ mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
     /** api: config[fileBrowserUrl]
      * ``string`` the url for the file browser
      */
-    fileBrowserUrl: "/opensdi2-manager/mvc/fileManager/extJSbrowser",
+    fileBrowserUrl: "mvc/fileManager/extJSbrowser",
      /** api: config[flowId]
      * ``string`` the id of the flow to run
      */
@@ -79,9 +79,10 @@ mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
     autoScroll:false,
     // i18n
     runButtonText: "Run",
+    uploadButtonText: "Upload",
     successText: "Success",
     errorText:"Error",
-    runSuccessPreText: "A consumer was started for the selected flow with the followind ID<br/>",
+    runSuccessText: "The workflow has been started successfully<br/>",
     //end of i18n
     
     initComponent: function() {
@@ -107,10 +108,11 @@ mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
             // path:"root",
             readOnly:true,
             enableBrowser:false,
+			path:this.path,
             enableUpload:false,
             //uploadUrl: uploadUrl,
             mediaContent: this.mediaContent,
-            url: this.fileBrowserUrl,
+            url: this.adminUrl + this.fileBrowserUrl,
             listeners: {
                 scope:this,
                 afterrender: function(fb){
@@ -140,6 +142,45 @@ mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
             }
         }];
         this.buttons = [{
+            text:this.uploadButtonText,
+            ref:'../upload',
+            iconCls:'update_manager_ic',
+            handler: function(btn){
+				var filebrowser = btn.refOwner.fileBrowser;
+                var pluploadPanel = new Ext.ux.PluploadPanel({
+					autoScroll:true,
+					layout:'fit',
+					url: filebrowser.url.substring(0,filebrowser.url.lastIndexOf('/'))+'/upload',
+					multipart: true,
+					listeners:{
+						beforestart:function() {  
+							var multipart_params =  pluploadPanel.multipart_params || {};
+							Ext.apply(multipart_params, {
+								folder: this.path
+							})
+							pluploadPanel.multipart_params = multipart_params;
+						},
+						fileUploaded:function(file) {
+							this.fileBrowser.fileTreePanel.root.reload()
+						},
+						uploadcomplete:function() {
+							
+						},
+						scope: this
+					}
+				});
+				var win = new Ext.Window({
+					title: this.uploadButtonText,
+					width: 400,
+					height: 300,
+					layout:'fit',
+					resizable: true,
+					items: [pluploadPanel]
+				});
+				win.show();
+            },
+			scope: this
+        },{
             ref:'../run',
             text:this.runButtonText,
             disabled:true,
@@ -154,6 +195,10 @@ mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
        
     },
     
+	isForm: function() {
+		return true;
+	},
+	
     runLocal: function(flowId,node){
         Ext.Ajax.request({
 	       url: this.geoBatchRestURL + 'flows/' + flowId +'/runlocal', 
@@ -196,7 +241,8 @@ mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
     onSuccess : function(response){
         Ext.Msg.show({
             title: this.successText,
-            msg: this.runSuccessPreText + response.responseText,
+            //msg: this.runSuccessPreText + response.responseText,
+            msg: this.runSuccessText,
             buttons: Ext.Msg.OK,
             icon: Ext.MessageBox.INFO  
         });	

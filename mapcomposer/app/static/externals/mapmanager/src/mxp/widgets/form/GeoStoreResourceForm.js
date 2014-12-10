@@ -50,7 +50,7 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
      * udate service
      */
     forceUpdateStoredData:true,
-    
+    hideId: true,
     //Can Be everyone to load resource with visibility everyone
     defaultGroupVisibility:null,
     //i18n
@@ -69,7 +69,7 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
     resourceNotValid: "Resource not valid",
     deleteSuccessMessage: "Resource Deleted Successfully",
     permissionTitleText: "Permissions",
-   
+    generalPanelHeight: 165,
     
 	initComponent: function() {
 		var values = this.values ||{
@@ -152,8 +152,10 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
               {
 					xtype: "textfield",
 					name: "id",
+                    fieldLabel:"ID",
                     anchor:'95%',
-					hidden: true,
+                    readOnly:true,
+					hidden: this.hideId,
 					value: values.id
 			  },{
 					xtype: "textfield",
@@ -183,7 +185,7 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
 		
 		}
         if(!this.attributeFields){
-        this.attributesFields = [];
+        this.attributeFields = [];
         }
 		var mainPanel = {
 			xtype:'panel',
@@ -199,9 +201,10 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
 			  ref:'../general',
 			  border: false,
 			  collapsible:true,
-              height:140,
+              height:this.generalPanelHeight || 165,
               title:this.textGeneral,
               iconCls:'table_edit',
+                autoScroll:true,
 			  items: [{
                     xtype:'panel',
                     autoScroll:true,
@@ -211,10 +214,9 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
                 },{
                     xtype:'panel',
                     ref:'attributeColumn',
-                    autoScroll:true,
                     columnWidth:.5,
                     layout:'form',
-                    items:this.attributesFields
+                    items:this.attributeFields
               }]
 			},this.resourceEditorContainer
             ]
