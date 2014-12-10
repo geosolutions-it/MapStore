@@ -830,7 +830,7 @@ GeoExt.Lang.add("it", {
         nextLabel: "Avanti",
         nextTooltip: "Avanza di uno step",
         resetLabel: "Reset",
-        resetTooltip: "Stazioni ultimo aggiornamento",
+        resetTooltip: "Tutto l'intervallo",
         loopLabel: "Loop",
         loopTooltip: "Animazione continua",
         normalTooltip: "Ritorno alla riproduzione normale",

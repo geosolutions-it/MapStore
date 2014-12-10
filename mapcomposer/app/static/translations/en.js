@@ -815,7 +815,7 @@ GeoExt.Lang.add("en", {
         nextLabel: "Next",
         nextTooltip: "Advance One Frame",
         resetLabel: "Reset",
-        resetTooltip: "Weather Stations last update",
+        resetTooltip: "Whole interval",
         loopLabel: "Loop",
         loopTooltip: "Continously loop the animation",
         normalTooltip: "Return to normal playback",
