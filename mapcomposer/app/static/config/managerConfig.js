@@ -45,7 +45,7 @@
     }],
    "adminTools":[{
          "ptype": "mxp_cmre_ondemand_services",
-         "osdi2ManagerRestURL":"http://172.21.173.30:8282/opensdi2-manager/mvc/process/wps/",
+         "osdi2ManagerRestURL":"http://localhost:8180/opensdi2-manager/mvc/process/wps/",
          "baseMapUrl": "./?config=assetAllocatorResult",
          "autoRefreshTime": 30000,
          "autoOpen":true,
@@ -181,7 +181,7 @@
     }],
     "loggedTools":[{
          "ptype": "mxp_cmre_ondemand_services",
-         "osdi2ManagerRestURL":"http://172.21.173.30:8282/opensdi2-manager/mvc/process/wps/",
+         "osdi2ManagerRestURL":"http://localhost:8180/opensdi2-manager/mvc/process/wps/",
          "baseMapUrl": "./?config=assetAllocatorResult",
          "autoRefreshTime": 30000,
          "autoOpen":true,

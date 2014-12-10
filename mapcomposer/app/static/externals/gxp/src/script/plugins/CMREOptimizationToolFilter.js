@@ -249,21 +249,19 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
     },
     markValid: function(valid){
     	var fieldsets =this.form.filterFieldsets.items.getRange();
-    	for(var fieldsetIndex =0;fieldsetIndex<fieldsets.length;fieldsetIndex++){
+    	for(var fieldsetIndex =0;fieldsetIndex<fieldsets.length;fieldsetIndex++) {
             //if checkbox collapsed, no coefficient means no filter
             if(fieldsets[fieldsetIndex].collapsed) return [];
             var range = fieldsets[fieldsetIndex].items.getRange();
-        	for(var i = 0; i< range.length;i++){
+        	for(var i = 0; i< range.length;i++) {
                if(!valid) {
-               	range[i].markInvalid(this.validationErrorMessage);
+               		range[i].markInvalid(this.validationErrorMessage);
                }
-               else{
+               else {
                		range[i].clearInvalid();
-               	}
-               
+               }
             }
         }
-        
     }
 });
 
