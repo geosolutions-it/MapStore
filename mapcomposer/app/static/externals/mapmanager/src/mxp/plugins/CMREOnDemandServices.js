@@ -72,10 +72,10 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
 		top: 33.10
 	},
 	defaultData:{
-		maxlon: "100.90",
-		maxlat: "33.10",
-		minlat: "-34.80",
-		minlon: "30.55"
+		maxlon: "70",
+		maxlat: "20",
+		minlat: "0",
+		minlon: "50"
 	},
     /** api: method[addActions]
      */
@@ -324,7 +324,9 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
     titlePath:'results.title',
     visibilityPath: "details.resourceVisibility",
     resourcePermissionPath: "details.resourceId",
-    startFromHereText:"Start from Here",
+    startFromHereText:"Start from this run",
+    titleConfirmDeleteMsg:"Outcome delete confirm",
+    textConfirmDeleteMsg:"Are you sure to delete the outcome : {name}",
     /**
      * setup action columns to add
      */
@@ -361,7 +363,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
             resourcePermissionPath: this.resourcePermissionPath,
             visibilityPath: this.visibilityPath,
             detailsField: this.detailsField,
-            loadingMessage:'Loading...',
+            loadingMessage:this.loadingMessage,
             items : [{
                 iconCls : 'visibility_ic',
                 width : 25,
@@ -407,7 +409,8 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                         var visibility = eval(this.visibilityPath);
                         var target = Ext.getCmp(this.renderMapToTab);
                         var display =rec.get('status') != 'RUNNING' && resourceId;
-                        display = display && ( owner == (this.target && this.target.user && this.target.user.name) );
+                        var isAdmin  = (this.target && this.target.user && this.target.user.role == 'ADMIN');
+                        display = display && ( owner == (this.target && this.target.user && this.target.user.name) || isAdmin);
                         if (display){
                            return 'action_column_btn';
                         }
@@ -470,7 +473,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
             resourcePermissionPath: this.resourcePermissionPath,
             visibilityPath: this.visibilityPath,
             detailsField: this.detailsField,
-            loadingMessage:'Loading...',
+            loadingMessage:this.loadingMessage,
             items : [{
                 iconCls : 'gx-map-go',
                 width : 25,
@@ -599,7 +602,142 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
                     win.show();
                 }
             }]
-        }];
+        },{
+            xtype : 'actioncolumn',
+            hideable: false,
+            width : 30,
+            renderMapToTab: this.renderMapToTab,
+            mapIdPath: this.mapIdPath,
+            resultsField: this.resultsField,
+            errorPath: this.errorPath,
+            baseMapUrl: this.baseMapUrl,
+            ownerPath:this.ownerPath,
+            titlePath:this.titlePath,
+            resourcePermissionPath: this.resourcePermissionPath,
+            visibilityPath: this.visibilityPath,
+            detailsField: this.detailsField,
+            loadingMessage:this.loadingMessage,
+            items : [{
+	            tooltip: this.startFromHereText,
+	    		iconCls:'add_ic',
+	    		width : 25,
+                getClass : function(v, meta, rec) {
+                    
+                    return 'x-grid-center-icon action_column_btn';
+                },
+	    		handler: function(grid, rowIndex, colIndex){
+	    			var rec = grid.store.getAt(rowIndex);
+	    			var resourceId = rec.get('details').resourceId;
+	    			var servicesGrid = me.output[0].list;
+	    			var record = servicesGrid.getSelectionModel().getSelected();
+	    			var rowIndex = servicesGrid.store.indexOf(record);
+	    			if(record && rowIndex >= 0){
+	    				servicesGrid.createNewProcessRun(servicesGrid,rowIndex,me.defaultData,resourceId);
+	    			}
+	    		}
+    		}]
+	    		
+        },{
+			xtype : 'actioncolumn',
+            hideable:false,
+			width : 35,
+			renderMapToTab: this.renderMapToTab,
+            mapIdPath: this.mapIdPath,
+            resultsField: this.resultsField,
+            errorPath: this.errorPath,
+            baseMapUrl: this.baseMapUrl,
+            ownerPath:this.ownerPath,
+            titlePath:this.titlePath,
+            resourcePermissionPath: this.resourcePermissionPath,
+            visibilityPath: this.visibilityPath,
+            detailsField: this.detailsField,
+            loadingMessage: this.loadingMessage,
+            titleConfirmDeleteMsg:this.titleConfirmDeleteMsg,
+            textConfirmDeleteMsg:this.textConfirmDeleteMsg,
+			items : [{
+				iconCls : 'delete_ic',
+				width : 25,
+				tooltip : this.tooltipDelete,
+				handler : this.confirmCleanRow,
+				
+				getClass : function(v, meta, rec) {
+					var results = rec.get(me.resultsField); 
+                    var details = rec.get(this.detailsField); 
+                    
+                    
+                    try{
+                        var resourceId = eval(this.resourcePermissionPath);
+                        var owner = eval(this.ownerPath);
+                        var visibility = eval(this.visibilityPath);
+                        var target = Ext.getCmp(this.renderMapToTab);
+                        var display = (this.target && this.target.user && this.target.user.role == 'ADMIN');
+                        display = display || ( owner == (this.target && this.target.user && this.target.user.name) );
+                        
+                        if (display){
+                           return 'x-grid-center-icon action_column_btn ' ;
+                        }else{
+                        	return 'x-hide-display';
+                        }
+                    }catch(e){
+                        return 'x-hide-display';
+                    }
+				},
+				handler: function(grid, rowIndex, colIndex){
+	    			var rec = grid.store.getAt(rowIndex);
+	    			var id = rec.get('id');
+	    			var name = rec.get('name');
+	    			var servicesGrid = me.output[0].list;
+	    			var record = servicesGrid.getSelectionModel().getSelected();
+	    			var serviceId = record.get("serviceId");
+	    			Ext.Msg.confirm(this.titleConfirmDeleteMsg, this.textConfirmDeleteMsg.replace('{name}', name), function(btn) {
+						if (btn == 'yes') {
+							var loadMask = new Ext.LoadMask(Ext.getBody(), {
+								msg : me.loadingMessage
+							});
+							var errorCallback = function(response, form, action) {
+								Ext.Msg.show({
+									msg : this.errorDeleteConsumerText,
+									buttons : Ext.Msg.OK,
+									icon : Ext.MessageBox.ERROR
+								});
+								grid.store.load();
+								loadMask.hide();
+							};
+							var successCallback = function(response, form, action) {
+								grid.store.load();
+								loadMask.hide();
+							};
+							this.deleteRuntime(serviceId, id, successCallback, errorCallback, grid);
+							
+			
+						}
+					},this);
+	    		}
+			}],
+			/**
+			 *    private: method[deleteRuntime] deletes a consumer
+			 *      * serviceId : the serviceId of the runtime
+			 *      * name : the name of the runtime
+			 *      * successCallback: function to call in case of success
+			 *      * errorCallback: function to call in case of error
+			 *      * scope: the scope of the callbacks (optional)
+			 */
+			deleteRuntime : function(serviceId, id, successCallback, errorCallback, scope) {
+				
+				var url = scope.osdi2ManagerRestURL + "services/"+ serviceId +"/runtimes/" + id;
+				Ext.Ajax.request({
+					method : 'DELETE',
+					url : url,
+					headers : {
+						'Authorization' : scope.auth
+					},
+					scope : scope || this,
+					success : successCallback,
+					failure : errorCallback
+				});
+		
+			},
+		}];
     
     },
     /* retrieve the contextual menu for run
@@ -618,7 +756,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
     			var record = servicesGrid.getSelectionModel().getSelected();
     			var rowIndex = servicesGrid.store.indexOf(record);
     			if(record && rowIndex >= 0){
-    				servicesGrid.createNewProcessRun(servicesGrid,rowIndex,null,resourceId);
+    				servicesGrid.createNewProcessRun(servicesGrid,rowIndex,me.defaultData,resourceId);
     			}
     		}	
     		

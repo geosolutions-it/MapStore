@@ -54,8 +54,8 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 	nameText : 'Title',
 	descriptionText : 'Description',
 	newRunTitle : 'Create a new Service Process Run',
-	newRunMessage : 'Running a new service will drop all previous inputs. Continue with the definition of a new service process run?',
-    newServiceText: "CMRE On Demand Service: ",
+	newRunMessage : 'Running a new service will drop all previous inputs. Continue with the definition of a new process run?',
+    newServiceText: "Input values for process: ",
     inputsText:" Inputs",
     issueANewRunText: "Issue a new run",
 	/* end of i18n */
@@ -185,8 +185,8 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 			tooltip : this.issueANewRunText,
 			handler : function(grid,rowIndex,colIndex){
 				var record = grid.getStore().getAt(rowIndex);
-				var data =  record.get('defaultData') ||grid.defaultData || null;
-				this.createNewProcessRun(grid,rowIndex,data);
+				var defaultData =  record.get('defaultData') ||grid.defaultData || null;
+				this.createNewProcessRun(grid,rowIndex,defaultData);
 				
 			},
 			scope : this,
@@ -210,7 +210,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 	 *      * rowIndex: the index of the row
 	 *      * colIndex: the actioncolumn index
 	 */
-	createNewProcessRun : function(grid, rowIndex, data,dataId) {
+	createNewProcessRun : function(grid, rowIndex, defaultData,dataId) {
 		var record = grid.getStore().getAt(rowIndex);
 		var serviceId = record.get('serviceId');
 		var serviceName = record.get('name');
@@ -271,12 +271,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 									//options
 									{
 										projection : me.projection,
-										maxExtent : me.bounds
-										/*new OpenLayers.Bounds(
-										 -128 * 156543.0339,  -128 * 156543.0339,
-										128 * 156543.0339, 128 * 156543.0339
-										)*/,
-										//maxResolution: 19567.87923828125,//156543.03390625
+										maxExtent : me.bounds,
 										numZoomLevels : me.numZoomLevels,
 										units : me.units,
 										buffer : 1,
@@ -317,7 +312,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 								serviceAreaLimitsTolerance : me.serviceAreaLimitsTolerance,
 								serviceAreaLimits: me.serviceAreaLimits,
 								auth: me.auth,
-								data: data,
+								defaultData: defaultData,
 								dataId: dataId,
 								tbar : null,
 								osdi2ManagerRestURL : me.osdi2ManagerRestURL,

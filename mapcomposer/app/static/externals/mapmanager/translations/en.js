@@ -307,8 +307,8 @@ GeoExt.Lang.add("en", {
         nameText : "Title",
         descriptionText : "Description",
         newRunTitle : "Create a new Service Process Run",
-        newRunMessage : "Running a new service will drop all previous inputs. Continue with the definition of a new service process run?",
-       newServiceText: "CMRE On Demand Service: ",
+        newRunMessage : "Running a new service will drop all previous inputs. Continue with the definition of a new process run?",
+       newServiceText: "Input values for process: ",
        inputsText: " Inputs",
        issueANewRunText: ""
     },

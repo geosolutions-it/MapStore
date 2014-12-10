@@ -42,12 +42,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 		right: 100.90,
 		top: 33.10
 	},
-	defaultAoi :{
-		bottom: -34.80,
-		left: 30.55,
-		right: 100.90,
-		top: 33.10
-	},
+	
 	/**
 	 * config[dataId]
 	 * the id of the resource from whitch load data
@@ -68,7 +63,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	savingMessage : "Saving...",
 	loadingMessage : "Loading...",
 	saveSuccessTitle : "Saved",
-	saveSuccessMessage : "Resource saved succesfully",
+	saveSuccessMessage : "Process launched successfully.",
 	executeRunTitle : "Could not start the Execution",
 	executeRunMessage : "The provided inputs are not valid or not complete. Please, check carefully the provided values.",
 	resourceNotValid : "Resource not valid",
@@ -94,7 +89,8 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	assetsAddFieldTooltip: "Add a new Asset",
 	assetsDelFieldTooltip: "Remove an Asset",
     cloneThisAssetText:'Clone this asset',
-	
+	titleConfirmResetMsg:"Confirm form reset",
+	 textConfirmResetMsg:"Reset all form fields?",
 	/*
 	 * 
 	 */
@@ -500,15 +496,12 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 							me.mapPanel.map.addControl(me.selectBBOX);
 							me.mapPanel.map.enebaleMapEvent = true;
 							//load data(defaults)
-							if(me.data){
-								var data = me.readData(me.data);
+							if(me.defaultData){
+								var data = me.readData(me.defaultData);
 								//TODO for some reason, we have to wait
 								//before loading data to have the map correctly 
 								// initialized
 								setTimeout(function(){me.loadData(data);},500);
-									
-								
-								
 							}
 							//load data from GeoStore resource
 							if(me.dataId){
@@ -643,18 +636,34 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			tooltip : this.resetTitleText,
 			ref : '../reset',
 			iconCls : 'delete_ic',
-			disabled : true,
+			disabled : false,
 			id : "reset-btn",
 			scope : this,
-			handler : function() { 
-				/*var resource = this.getResource();
-				 if(resource.id){
-				 this.showPermissionPrompt(resource.id);
-				 }*/
+			handler : function() {  
+				Ext.Msg.confirm(this.titleConfirmResetMsg, this.textConfirmResetMsg, function(btn) {
+						if (btn == 'yes') {
+							this.resetForm();
+						}
+					},this);
+				
 			}
 		}];
 
 		mxp.widgets.CMREOnDemandServiceInputForm.superclass.initComponent.call(this, arguments);
+	},
+	resetForm: function(){
+		var resourceform = this.resourceform;
+		var assetsform = resourceform.assets.assetsform;
+		resourceform.getForm().reset();
+		assetsform.removeAll();
+		assetsform.add(this.createAsset(1));
+		if(this.defaultData){
+			var data = this.readData(this.defaultData);
+			this.loadData(data);
+		}
+		assetsform.doLayout();
+		
+		
 	},
 	
 	/*

@@ -168,20 +168,6 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
                     }
 				}
 			}
-		}, "->", {
-			iconCls : 'broom_ic',
-			xtype : 'button',
-			text : this.clearFinishedText,
-			scope : this,
-			handler : function() {
-				var me = this;
-				Ext.Msg.confirm(this.titleConfirmClearMsg, this.confirmClearText, function(btn) {
-					if (btn == 'yes') {
-						me.clearFinished();
-
-					}
-				});
-			}
 		}];
 
 		this.columns = [{
@@ -230,23 +216,6 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
             this.columns = this.columns.concat(this.actionColumns);
         }
         
-        //add delete column
-        this.columns.push({
-			xtype : 'actioncolumn',
-            hideable:false,
-			width : 35,
-			items : [{
-				iconCls : 'delete_ic',
-				width : 25,
-				tooltip : this.tooltipDelete,
-				handler : this.confirmCleanRow,
-				scope : this,
-				getClass : function(v, meta, rec) {
-					return 'x-grid-center-icon action_column_btn';
-				}
-			}]
-		});
-        
         //pagination
         this.bbar= {
             store: this.store,       // grid and PagingToolbar using same store
@@ -256,118 +225,11 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
             // prependButtons: true,
             items: [ "->" ,this.legend
             ]
-        }
+        };
         
         mxp.widgets.CMREOnDemandRuntimesGrid.superclass.initComponent.call(this, arguments);
 	},
-	/**
-	 *    private: method[confirmCleanRow] show the confirm message to remove a consumer
-	 *      * grid : the grid
-	 *      * rowIndex: the index of the row
-	 *      * colIndex: the actioncolumn index
-	 */
-	confirmCleanRow : function(grid, rowIndex, colIndex) {
-		var record = grid.getStore().getAt(rowIndex);
-		var uuid = record.get('id');
-		var me = this;
-		var loadMask = new Ext.LoadMask(Ext.getBody(), {
-			msg : me.loadingMessage
-		});
-		var errorCallback = function(response, form, action) {
-			Ext.Msg.show({
-				msg : this.errorDeleteConsumerText,
-				buttons : Ext.Msg.OK,
-				icon : Ext.MessageBox.ERROR
-			});
-			this.store.load();
-			loadMask.hide();
-		};
-		var successCallback = function(response, form, action) {
-			this.store.load();
-			loadMask.hide();
-		};
-		Ext.Msg.confirm(this.titleConfirmDeleteMsg, this.textConfirmDeleteMsg.replace('{id}', uuid), function(btn) {
-			if (btn == 'yes') {
-				me.deleteConsumer(uuid, successCallback, errorCallback, me);
-				loadMask.show();
-
-			}
-		});
-	},
-	/**
-	 *    private: method[deleteConsumer] deletes a consumer
-	 *      * uuid : the uuid of the consumer
-	 *      * successCallback: function to call in case of success
-	 *      * errorCallback: function to call in case of error
-	 *      * scope: the scope of the callbacks (optional)
-	 */
-	deleteConsumer : function(uuid, successCallback, errorCallback, scope) {
-
-		var url = this.osdi2ManagerRestURL + "consumers/" + uuid + "/clean";
-		Ext.Ajax.request({
-			method : 'PUT',
-			url : url,
-			headers : {
-				'Authorization' : this.auth
-			},
-			scope : scope || this,
-			success : successCallback,
-			failure : errorCallback
-		});
-
-	},
-	/**
-	 *    private: method[clearFinished] deletes all the consumers with SUCCESS or FAIL status
-	 */
-	clearFinished : function() {
-		var me = this;
-		var count = 0, error = false;
-		var loadMask = new Ext.LoadMask(Ext.getBody(), {
-			msg : me.cleanMaskMessage
-		});
-		var finish = function() {
-			loadMask.hide();
-			if (error) {
-				Ext.Msg.show({
-					msg : this.errorDeleteConsumerText,
-					buttons : Ext.Msg.OK,
-					icon : Ext.MessageBox.ERROR
-				});
-			}
-			me.store.load();
-		};
-		var successCallback = function() {
-			count--;
-			if (count == 0) {
-				finish();
-			} else {
-				loadMask.hide();
-			}
-		};
-		var errorCallback = function() {
-			count--;
-			error = true;
-			if (count == 0) {
-				finish();
-			}
-		};
-		this.store.each(function(rec) {
-			//count the records to delete
-			var status = rec.get('status');
-			if (status == 'SUCCESS' || status == 'FAIL') {
-				count++;
-			}
-		});
-		if (count == 0)
-			return;
-		loadMask.show();
-		this.store.each(function(rec) {
-			var status = rec.get('status');
-			if (status == 'SUCCESS' || status == 'FAIL') {
-				me.deleteConsumer(rec.get('uuid'), successCallback, errorCallback, me);
-			}
-		});
-	},
+	
 	/**
 	 * public: change flow id and load the new list
 	 * [flowId] string: the id of the flow

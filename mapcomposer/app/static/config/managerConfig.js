@@ -30,7 +30,7 @@
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
-        "forceLogin":false,
+        "forceLogin":true,
         "statelessSession":true,
         "actionTarget":{
           "target": "north.tbar",
@@ -171,7 +171,7 @@
         "iconCls":"information_ic",
         "showOnStartup":true,
         "windowHeight":700,
-        "windowHeight": 500,
+        "windowWidth": 610,
         "fileDocURL":"manual.html",
         "actionTarget":{
              "target": "north.tbar",

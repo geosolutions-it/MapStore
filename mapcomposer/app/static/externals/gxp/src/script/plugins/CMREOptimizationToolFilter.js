@@ -46,7 +46,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
     layer:'postgis_sw:avviso',//TODO setup real layer to identify
     validationErrorMessage:"The sum of the values must be 1",
     source:'gsacque',
-    costsTitle: "Costs",
+    costsTitle: "Objective Weighting Coefficients",
     updateEvents:['keyup','change','keydown'],
     globalSeparator: " OR ",
  	decimalPrecision: 3,
@@ -184,6 +184,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
             title: this.costsTitle,
             checkboxToggle: true,
             layout: "form",
+            ref: 'coefficients',
             collapsed: false,
 			labelWidth: 150,
     		
@@ -195,7 +196,10 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
             }               
         };
         var filterFieldsets =[];
+        
         filterFieldsets.push(fieldset);
+        filterFieldsets.push({xtype:'label',html: '<span style="color:red;font-size:11px;float:right;" >Sum of the three values must be 1</span>'});
+        
     	return {xtype:'container',ref:'filterFieldsets',items:filterFieldsets};
     	
     },
@@ -219,7 +223,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
     	return solutionId;
     },
     getCoefficients: function (){
-    	var fieldsets =this.form.filterFieldsets.items.getRange();
+    	var fieldsets = [this.form.filterFieldsets.coefficients];
     	var coeff = [];
     	for(var fieldsetIndex =0;fieldsetIndex<fieldsets.length;fieldsetIndex++){
             //if checkbox collapsed, no coefficient means no filter
@@ -248,7 +252,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
     	return cost;
     },
     markValid: function(valid){
-    	var fieldsets =this.form.filterFieldsets.items.getRange();
+    	var fieldsets = [this.form.filterFieldsets.coefficients];
     	for(var fieldsetIndex =0;fieldsetIndex<fieldsets.length;fieldsetIndex++) {
             //if checkbox collapsed, no coefficient means no filter
             if(fieldsets[fieldsetIndex].collapsed) return [];
