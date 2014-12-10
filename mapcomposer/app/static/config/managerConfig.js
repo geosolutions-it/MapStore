@@ -164,6 +164,20 @@
              "index": 2
             }
 
+    },{ 
+        "ptype": "mxp_help",
+        "showOnStartup":"true",
+        "buttonText": "Runtimes",
+        "iconCls":"information_ic",
+        "showOnStartup":true,
+        "windowHeight":700,
+        "windowHeight": 500,
+        "fileDocURL":"manual.html",
+        "actionTarget":{
+             "target": "north.tbar",
+             "index": 6
+            }
+
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",

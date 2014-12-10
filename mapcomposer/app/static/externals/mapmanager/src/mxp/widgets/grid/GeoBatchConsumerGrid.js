@@ -92,6 +92,8 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 	 */
     showDetails: false,
     
+    autoExpandColumn: 'task',
+    
     /* i18n */
     statusText: 'Status',
     startDateText: 'StartDate',
@@ -104,7 +106,6 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
     descriptionText:'Description',
     tooltipDelete: 'Clear this',
     tooltipLog: 'Check Log',
-    autoExpandColumn: 'task',
     clearFinishedText: 'Clear Finished',
     archiveText: 'Archive Selected',
     loadingMessage: 'Loading...',
@@ -120,9 +121,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 	errorContactingGeobatch: 'Error loading runs from GeoBatch',
 	errorContactingGeostore: 'Error loading archived runs from GeoStore',
     /* end of i18n */
-    //extjs grid specific config
-    //autoload: this.flowsgrid ? true : false,
-    //loadMask:true,
+    
 	cls:'geobatch-consumer-grid',
    
 	viewConfig: {
@@ -131,13 +130,15 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 				Ext.select('.action-progress', this.grid.el).each(function(progressContainer) {
 					var progress = Math.round(parseFloat(progressContainer.dom.innerHTML)*100)/100;
 					var progressBarEl = progressContainer.next();
-					progressBarEl.update('');
-					new Ext.ProgressBar({
-					  renderTo : progressBarEl,
-					  text : progress + "%",
-					  value : (progress / 100)
-					});
-				});
+                    if(progress < 100) {
+                        progressBarEl.update('');
+                        this.grid.progressBars.push(new Ext.ProgressBar({
+                          renderTo : progressBarEl,
+                          text : progress + "%",
+                          value : (progress / 100)
+                        }));
+                    }
+				}, this);
 			}
 		},
 		getRowClass : function(record, rowIndex, p, ds){
@@ -197,8 +198,8 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 				}),
 				listeners:{
 					beforeload: function(a,b,c){
-					   
-						if( a.proxy.conn.headers ){
+					   this.cleanProgressBars();
+					   if( a.proxy.conn.headers ){
 							if(this.auth){
 								a.proxy.conn.headers['Authorization'] = this.auth;
 							}
@@ -225,7 +226,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 				},
 				sortInfo: {
 					field: 'startDate',
-					direction: 'DESC' // or 'DESC' (case sensitive for local sorting)
+					direction: 'DESC' 
 				}
 			});
 		} else {
@@ -233,10 +234,10 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 				
 				categoryName: "ARCHIVEDRUNS",
 				geoStoreBase: this.geoStoreRestURL,
-				currentFilter: 'NOTHING',
 				fullResource: true,
 				auth: this.auth,
 				idProperty: 'id',
+                autoLoad: false,
 				fields: [
 					'id',
 					'status',
@@ -254,6 +255,9 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 				],
 				sortInfo: { field: "id", direction: "ASC" },
 				listeners: {
+                    beforeload: function(a,b,c){
+					   this.cleanProgressBars();
+					},
 					exception: function(proxy, type, action, options, response) {
 						Ext.Msg.show({
 						   msg: this.errorContactingGeostore,
@@ -267,6 +271,15 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 		}
     
 		var expander;
+        this.fakeProgress = [
+            '<div class="x-progress-wrap">',
+                '<div class="x-progress-inner">',
+                    '<div class="x-progress-bar" style="height: 16px; width: 167px;">',
+                    '<div class="x-progress-text" style="z-index: 99; width: 158px;"><div style="width: 168px; height: 18px;">100%</div></div>',
+                '</div>',
+                '<div class="x-progress-text x-progress-text-back"><div style="width: 168px; height: 18px;">100%</div></div>',
+                '</div>',
+            '</div>'].join('');
 		if(this.showDetails) {
 			expander = new Ext.ux.grid.RowExpander({
 				lazyRender : false,
@@ -293,12 +306,12 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 				},
 				tpl: new Ext.XTemplate(
 					'<table width="100%">',
-						'<tr><th width="200"><b>Action</b></th><th><b>Task</b></th><th width="172"><b>Progress</b></th></tr>',
+						'<tr><th width="200"><b>'+this.actionText+'</b></th><th><b>'+this.taskText+'</b></th><th width="172"><b>'+this.progressText+'</b></th></tr>',
 						'<tpl for="details.actions">',
 							'<tr>',
 								'<td>{name}</td>',
 								'<tpl for="progress">',
-									'<td>{task}</td><td><span style="display: none" class="action-progress">{progress}</span><span class="action-progress-bar"></span></td>',
+									'<td>{task}</td><td><span style="display: none" class="action-progress">{progress}</span><span class="action-progress-bar"><tpl if="progress &gt;= 100">' + this.fakeProgress + '</tpl></span></td>',
 								'</tpl>',
 							'</tr>',
 						'</tpl>',
@@ -403,6 +416,10 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
             }
         ]
         }
+        
+        this.progressBars = [];
+        
+        var me = this;
         this.columns= (this.showDetails ? [expander] : []).concat([
             {id: 'uuid', header: "ID", width: 220, dataIndex: 'uuid', sortable: true, hidden: true},
             {id: 'status', header: this.statusText, width: 100, dataIndex: 'status', sortable: true},
@@ -422,14 +439,17 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 					if(val && val.progress && val.progress.length > 0) {
 						var progress = Math.round((val.progress[0].progress || 0) * 100) / 100;
 						var id = Ext.id();
-						(function() {
-						 new Ext.ProgressBar({
-						  renderTo : 'progressbar-' + id,
-						  text : progress + "%",
-						  value : (progress / 100)
-						 });
-						}).defer(25);
-						return '<span style="display:none" id="' + id + '"></span><span id="progressbar-' + id + '"></span>';
+                        if(progress < 100) {
+                            (function() {
+                             var progressBar = new Ext.ProgressBar({
+                              renderTo : 'progressbar-' + id,
+                              text : progress + "%",
+                              value : (progress / 100)
+                             });
+                             me.progressBars.push(progressBar);
+                            }).defer(25);
+                        }
+						return '<span style="display:none" id="' + id + '"></span><span id="progressbar-' + id + '">' + ( progress >= 100 ? me.fakeProgress : '') + '</span>';
 					} else {
 						return '';
 					}
@@ -471,6 +491,12 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
         mxp.widgets.GeoBatchConsumerGrid.superclass.initComponent.call(this, arguments);
     },
 	
+    cleanProgressBars: function() {
+        Ext.each(this.progressBars, function(bar) {
+            bar.destroy();
+        }, this);
+    },
+    
 	checkCanArchive: function() {
 		var selections = this.getSelectionModel().getSelections();
 		var enable = false;
@@ -855,7 +881,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 			var url = this.geoBatchRestURL + 'flows/' + flowId + '/consumers?includeDetails=true';
 			this.store.proxy.setUrl(url, true);
 		}
-		
+		this.setDisabled(false);
 		this.flowId = flowId;
 		this.archive.setDisabled(true);
         this.store.load();
