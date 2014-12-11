@@ -124,7 +124,7 @@ var baseParams = this.baseParams || {
 	    // Get the user's corrensponding authkey if present 
 	    // (see MSMLogin.getLoginInformation for more details) TODO::DA sistemare deve accedere solo alle fonti di cui ha il permesso!!
 	    // /////////////////////////////////////////////////////
-
+		
 		if(this.authParam && this.target.userDetails){
 			var userInfo = this.target.userDetails;
 			var authkey;
@@ -327,7 +327,7 @@ this.sop_fieldStore = new GeoExt.data.AttributeStore({
      //Grid che mostra la lista dei campi disponibili dello schema segnalazioni
    var seg_schema_grid={
    		xtype:'grid',
-   	   	title: "Schema segnalazione",
+   	   	title: "Warning",
         store: this.seg_fieldStore,
      	flex:1,
      	autoScroll:true,
@@ -347,7 +347,7 @@ this.sop_fieldStore = new GeoExt.data.AttributeStore({
    var sop_schema_grid={
   
    		xtype:'grid',
-   	   	title: 'Schema sopralluogo' ,
+   	   	title: 'Survey' ,
         store: this.sop_fieldStore,
       	flex:1,
       	autoScroll:true,
@@ -366,7 +366,7 @@ this.sop_fieldStore = new GeoExt.data.AttributeStore({
 this.frame=true;
 this.layout='anchor',
 this.iconCls='resource_edit';
-this.title='Mission database';//i18n
+this.title='Data sources';//i18n
 this.border= false;
 this.autoScroll=true;
 		this.items = [
@@ -541,8 +541,7 @@ this.autoScroll=true;
                 
                 //expect il suo pezzo gia in oggetto se arriva oggetto parsato è gia solo il suo blocco
     loadResourceData: function(resource){
-    			console.log("load db");
-    			console.log( resource);	
+    		
     			s_seg=resource;
     			
     			//Se esiste schema recupero ed inizializzo

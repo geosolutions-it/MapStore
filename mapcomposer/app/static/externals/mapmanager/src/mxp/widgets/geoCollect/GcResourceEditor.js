@@ -144,15 +144,16 @@ getResourceData: function(){
   	 var	parent =this.findParentByType('mxp_geostore_mission_resource_form');
   		if(parent && parent.general  && parent.general.getForm()){
   					catField=parent.general.getForm().getFieldValues();
-  					console.log(catField);	
+  					
   					if(catField.name) tit= catField.name;
+					if(catField.id)id=catField.id;
  }
  
   					var pr=new  OpenLayers.Format.JSON();    
         
                  	dbRes=this.dbEdit.getResourceData();
                     mobRes=this.mobEdit.getResourceData();
-                  	a={title:tit};
+                  	a={id:""+id+"",title:tit};
                    	Ext.apply(a,dbRes);
                     Ext.apply(a,mobRes);
                     this.jsonP.loadResourceData(pr.write(a,true));

@@ -62,7 +62,6 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
 					},
  	border:false,
     frame:true,
-
     
 initComponent: function() {
 	
@@ -81,6 +80,7 @@ this.objXtype={
 					};
 
 this.xpanlForm=null;
+this.dirty=false;//determina se la pagina è stata modificata!!
 
 //Configuro lo store che conserva i widget creati e li mostra nella tabella il widget rimane nel dato raw
 this.wid_store=new Ext.data.JsonStore({fields:['xtype','label','value','fieldId',{name:'_created',type:'boolean'}],proxy:new Ext.data.MemoryProxy()});
@@ -105,7 +105,7 @@ this.items=[
 				 sm: new	 Ext.grid.RowSelectionModel({singleSelect:true,
 				 	listeners:{
 				 		rowselect:function(slm,idx,r){
-				 				
+				 				console.log('row select');
 				 				//Se è campo nuovo vado per costruzione filtri
 				 			if(r.get('_created')) {
 				 				if(this.setXtypeSelectorFilter()==0){ //Controllare se ho già un elemneto devo filtrare photo se ho già una action devo filtare action send	
@@ -116,7 +116,7 @@ this.items=[
 			                    					r.beginEdit();//Vado in editing sul widget
 				 									this.enableWidgetPanel();//Abiliti pannello editing
 				 									this.loadXtype(r.json); //carichi nel pannello
-			            							slm.lock();//blocchi la selezione 	
+			            							//slm.lock();//blocchi la selezione 	
 			                    			}
 			                    				
 			                    		}else{	
@@ -132,14 +132,56 @@ this.items=[
 			                    					r.beginEdit();//Vado in editing sul widget
 				 									this.enableWidgetPanel();//Abiliti pannello editing
 				 									this.loadXtype(r.json); //carichi nel pannello
-			            							slm.lock();//blocchi la selezione 	
+			            							//slm.lock();//blocchi la selezione 	
 			            					}
 			                    				
 			                    			}
 				 			
 				 			
 				 		
-				 		},scope:this
+				 		},
+				 		beforerowselect:function(sm,rowIndex,keepExisting,record){
+				 			
+				 			console.log('before select');
+				 			
+				 			if(this.xpanlForm.isDirty() && this.widList.getSelectionModel().getSelected()){
+				 				
+				 			
+			                    			Ext.Msg.show({
+  									 		title:'Save Widget?',
+   											msg: 'Would you like to save your widget?',
+  											 buttons: Ext.Msg.YESNOCANCEL,
+   									fn: function(res){
+   										
+   										if(res=='yes'){
+   											if(this.xpanlForm.isValid()===true){this.seveWidget();sm.selectRow(rowIndex)}
+   											 else Ext.Msg.alert('Status', 'Invalid widget properties');  
+   											
+   										}else if(res=='no'){
+   											rec = this.widList.getSelectionModel().getSelected();
+   											
+   											if(rec.get('_created')===true) this.wid_store.remove(rec);
+   											
+	   											
+	   											this.widList.getSelectionModel().clearSelections();
+	   											this.resetXpanel();
+	   											this.disableWidgetPanel();
+	   											sm.selectRow(rowIndex)
+   											
+   										}
+   									},
+   									scope:this,
+   									animEl: 'elId',
+  									icon: Ext.MessageBox.QUESTION
+									});
+			                    	
+				 				
+				 			}else return true;
+				 			return false;
+				 		}
+				 		
+				 		
+				 		,scope:this
 				 	}
 				 	}),
 			 	bbar:{
@@ -157,10 +199,51 @@ this.items=[
 			                    tooltip: 'Add widget',
 			                    iconCls: "add",
 			                    handler: function(btn){ 
-			                    //Se sono in editing il bottone è disabilitato|| 
-			             	
+			                    	
+			                    	if(this.xpanlForm.isDirty() && this.widList.getSelectionModel().getSelected()){
+				 				
+				 			
+			                    			Ext.Msg.show({
+  									 		title:'Save Widget?',
+   											msg: 'Would you like to save your widget?',
+  											 buttons: Ext.Msg.YESNOCANCEL,
+   									fn: function(res){
+   										
+   										if(res=='yes'){
+   											if(this.xpanlForm.isValid()===true){this.seveWidget();
+   											 this.dirty=true;
 			                    			 this.wid_store.loadData([{xtype:'New Widget','_created':true}],true);
-					                   	 	 this.widList.getSelectionModel().selectLastRow();  	 	
+					                   	 	 this.widList.getSelectionModel().selectLastRow();
+   												
+   												}
+   											 else Ext.Msg.alert('Status', 'Invalid widget properties');  
+   											
+   										}else if(res=='no'){
+   											rec = this.widList.getSelectionModel().getSelected();
+   											
+   											if(rec.get('_created')===true) this.wid_store.remove(rec);
+	   											this.widList.getSelectionModel().clearSelections();
+	   											this.resetXpanel();
+	   											this.disableWidgetPanel();
+	   												this.dirty=true;
+			                    			 this.wid_store.loadData([{xtype:'New Widget','_created':true}],true);
+					                   	 	 this.widList.getSelectionModel().selectLastRow();
+   											
+   										}
+   									},
+   									scope:this,
+   									animEl: 'elId',
+  									icon: Ext.MessageBox.QUESTION
+									});
+			                    	}else{
+			                    			this.dirty=true;
+			                    			 this.wid_store.loadData([{xtype:'New Widget','_created':true}],true);
+					                   	 	 this.widList.getSelectionModel().selectLastRow();
+			                    		
+			                    	}
+			                    	
+			                    //Se sono in editing il bottone è disabilitato|| 
+			             				  	 	
 			                    	 },scope:this
 			                    
 			                  		},{
@@ -177,6 +260,7 @@ this.items=[
    											fn: function(res){
    										
    										if(res=='yes'){
+   											this.dirty=true;
    											rec = this.widList.getSelectionModel().getSelected();
    											if(rec) this.deleteWidget(rec);	
    											this.disableWidgetPanel();
@@ -199,7 +283,7 @@ this.items=[
 			                    handler: function(btn){
 			                    			Ext.Msg.show({
   									 		title:'Save Widget?',
-   											msg: 'Would you like to save your whidget?',
+   											msg: 'Would you like to save your widget?',
   											 buttons: Ext.Msg.YESNOCANCEL,
    									fn: function(res){
    										if(res=='yes'){
@@ -619,7 +703,7 @@ disableWidgetPanel:function(){
 this.xtypeform.disable();
 	if(this.xpanlForm)this.xpanlForm.disable();
 	//quando esco da editing abilito add
-	this.addW.enable(true);
+	
 	this.delW.disable(true);
 	this.saveW.disable(true);
 	this.ckPage.enable(true);
@@ -628,7 +712,7 @@ enableWidgetPanel:function(){
 this.xtypeform.enable();
 	if(this.xpanlForm)this.xpanlForm.enable();
 	//quando vado in editing disabilito add
-	this.addW.disable(true);
+	
 	this.delW.enable(true);
 	this.saveW.enable(true);
 	this.ckPage.disable(true);
@@ -644,7 +728,8 @@ deleteWidget:function(rec){
 },
 //Aggiorna il widget corrente nella lista
 seveWidget:function(){
-		
+	this.dirty=true;
+
 	obj=this.getXtype();
 	r=this.widList.getSelectionModel().getSelected();
 	//Se è una actionsend defi creare action
@@ -689,15 +774,17 @@ actionPhoto:function(o){
 },
 //Crea action send
 actionSend:function(o){
-
+    
+    o.attributes.url=config.adminUrl+'mvc/geocollect/action/store';
+    o.attributes.mediaurl=config.adminUrl+'/mvc/geocollect/data';
    
 	a={	
    		
-   		'text':o.text,
-    	"type":o.type,
-    	"name":o.name,
+   		"type":'send',
+    	"name":'send',
+    	"iconCls":"ic_send",
     	"iconCls":o.iconCls,
-    	'attributes':o.attributes
+    	"attributes":o.attributes
   };
 	return a;
 	

@@ -55,7 +55,7 @@ mxp.widgets.GeoStoreMissionResourceForm = Ext.extend(Ext.Panel, {
     //Can Be everyone to load resource with visibility everyone
     defaultGroupVisibility:null,
     //i18n
-	dataFieldLabel: 'Mobile',
+	dataFieldLabel: 'Mission',
 	nameLabel: 'Name',
     textAttribute: 'Attributes',
     textGeneral: 'General',

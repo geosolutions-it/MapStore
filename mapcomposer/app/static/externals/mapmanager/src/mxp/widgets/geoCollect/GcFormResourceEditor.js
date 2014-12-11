@@ -39,6 +39,8 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
     pages_store:null,	
   	layout: 'border',
   	frame:true,
+  	destLabel:'Mission Fields',
+  	segHidden:false,
   	
 initComponent: function() {                    
 console.log('mxp_gc_form_resourcce_editor');
@@ -80,9 +82,37 @@ console.log('mxp_gc_form_resourcce_editor');
                 				iconCls: "add",
 			                    tooltip: 'Create a new Page',
 			                    handler: function(btn){ 
-			                    		     this.pages_store.loadData([{title:"New Page",_created:true}],true);
-					                   	 	 this.pageList.getSelectionModel().selectLastRow();;
-			                    	                 	
+			                    	
+			                    	if(this.pageWidget.dirty && this.pageList.getSelectionModel().getSelected()){
+				 				   	Ext.Msg.show({
+  									 		title:'Save Page?',
+   											msg: 'Would you like to save your page?',
+  											 buttons: Ext.Msg.YESNOCANCEL,
+   									fn: function(res){
+   										if(res=='yes'){
+
+   											if(this.pageWidget.isValid()){this.sevePage();
+											 this.pages_store.loadData([{title:"New Page",_created:true}],true);
+					                   	 	 this.pageList.getSelectionModel().selectLastRow();
+												}
+   											 else Ext.Msg.alert('Status', 'Invalid page properties');   
+   										}else if(res=='no'){
+   											//se è nuovo devo eliminarlo
+   											rec = this.pageList.getSelectionModel().getSelected();
+   											if(rec.get('_created')===true)this.pages_store.remove(rec);
+   											this.pageList.getSelectionModel().clearSelections();
+   											this.disableForm();
+   											 this.pages_store.loadData([{title:"New Page",_created:true}],true);
+					                   	 	 this.pageList.getSelectionModel().selectLastRow();
+   										}
+   									},
+   									scope:this,
+   									animEl: 'elId',
+  									icon: Ext.MessageBox.QUESTION
+									});
+			                    }else{       this.pages_store.loadData([{title:"New Page",_created:true}],true);
+					                   	 	 this.pageList.getSelectionModel().selectLastRow();
+			                    	                 	}
 			                    },scope:this
 			                    },
 				 			 {	
@@ -164,24 +194,62 @@ this.items=[
 				xtype:'grid',
 				width: 130,
 				collapsible:true,
-				title: "Page List",
+				title: "Pages",
 				store:this.pages_store,
 				autoScroll:true,
+				hideHeaders:true,
+//				enableDragDrop :true,
+				ddReorder: true,
 				style:{padding:'2px'},
 				frame:true,
 				cm: new Ext.grid.ColumnModel([
-					{id: "title", header: "Title", dataIndex: "title", sortable: false}
+					{id: "title", dataIndex: "title", sortable: false}
 				 ]),
 				 autoExpandColumn:'title',
 				 sm: new  Ext.grid.RowSelectionModel({singleSelect:true,
 				 	listeners:{
 				 		rowselect:function(slm,idx,r){
+				 			
+				 			 
+   							if(r.get('_created')===true)this.pageWidget.dirty=true;
+   							else this.pageWidget.dirty=false;
 				 			//abilito pannello per editing e blocco selezione!
 				 			r.beginEdit();
 				 			this.enableForm();
 				 			this.pageWidget.loadPage(r.json);
-			            	slm.lock();
-				 		},scope:this			
+				 		},
+				 		
+				 		beforerowselect:function(sm,rowIndex,keepExisting,record){
+				 			
+				 			if(this.pageWidget.dirty && this.pageList.getSelectionModel().getSelected()){
+				 				   	Ext.Msg.show({
+  									 		title:'Save Page?',
+   											msg: 'Would you like to save your page?',
+  											 buttons: Ext.Msg.YESNOCANCEL,
+   									fn: function(res){
+   										if(res=='yes'){
+
+   											if(this.pageWidget.isValid()){this.sevePage();sm.selectRow(rowIndex);}
+   											 else Ext.Msg.alert('Status', 'Invalid page properties');   
+   										}else if(res=='no'){
+   											//se è nuovo devo eliminarlo
+   											rec = this.pageList.getSelectionModel().getSelected();
+   											if(rec.get('_created')===true)this.pages_store.remove(rec);
+   											this.pageList.getSelectionModel().clearSelections();
+   											this.disableForm();
+   											sm.selectRow(rowIndex);
+   										}
+   									},
+   									scope:this,
+   									animEl: 'elId',
+  									icon: Ext.MessageBox.QUESTION
+									});
+			                    	
+				 				
+				 			}else return true;
+				 			return false;
+				 		}
+				 		,scope:this			
 				 	}
 				 	}),
 				 		bbar:{
@@ -210,6 +278,8 @@ this.items=[
   	ref:'pageWidget',
   	disabled:true,
   	border:false,
+  	destLabel:this.destLabel,
+  	segHidden:this.segHidden,
   	allowedTypes:this.allowedTypes,
   	}];
   	
@@ -290,10 +360,11 @@ getFieldsList:function(){
   
 //gestiece configurazione interfaccia qunado vado in editing
 enableForm:function(){
+		this.cleanWidegtPanl();
 		this.pageWidget.enable();
 		this.delP.enable(true);
 		this.saveP.enable(true);
-		this.addP.disable(true);
+		
 	    this.ckForm.disable(true);
 
 		
@@ -306,7 +377,7 @@ disableForm:function(){
 		this.pageWidget.disable();
 		this.delP.disable(true);
 		this.saveP.disable(true);
-		this.addP.enable(true);
+		
 	    this.ckForm.enable(true);
 	
 	
@@ -325,7 +396,6 @@ sevePage:function(){
 	rec.endEdit();
 	rec.commit();
 //	this.pages_store.fireEvent('datachanged',this.pages_store);
-	this.pageList.getSelectionModel().unlock();
 	this.pageList.getSelectionModel().clearSelections();
 		
 	this.disableForm();
@@ -336,7 +406,6 @@ updateStore:function(seg,sop){
 	this.resetMe();		
 },//ripulisce tutti i campi e gli store
 resetMe:function(){
-	this.pageList.getSelectionModel().unLock();
 	this.pages_store.removeAll();
 	this.formTitle.setValue('');
 	this.disableForm();

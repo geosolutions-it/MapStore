@@ -138,6 +138,15 @@ this.items=[ {
 		    }
 		    ]},{
             	xtype: 'spinnerfield',
+            	fieldLabel: 'Zoom level',
+            	name: 'Map Height',
+            	ref:'zoomLev',
+            	minValue: 1,
+            	maxValue: 30,
+				value:18
+           }
+		    ,{
+            	xtype: 'spinnerfield',
             	fieldLabel: 'Map Height',
             	name: 'Map Height',
             	ref:'heigthFild',
@@ -179,13 +188,15 @@ this.items=[ {
  * */
 loadXtype:function(o){
 	this.jObj=o;
+	console.log(o.attributes)
 	if(o.attributes){	
 		if(o.attributes.editable) this.editCk.setValue(o.attributes.editable);
 		if(o.attributes.disablePan) this.panCk.setValue(o.attributes.disablePan);
-		if(o.attributes.zoom) this.zoomCk.setValue(o.attributes.zoom);
+		if(o.attributes.disableZoom) this.zoomCk.setValue(o.attributes.disableZoom);
 		if(o.attributes.displayOriginalValue) this.origValCk.setValue(o.attributes.displayOriginalValue);
 		if(o.attributes.description)this.descriptionField.setValue(o.attributes.description);
 		if(o.attributes.height)this.heigthFild.setValue(o.attributes.height);
+		if(o.attributes.zoom)this.zoomLev.setValue(o.attributes.zoom);
 		if(o.localize){
 			this.localizeCk.setValue(o.localize);
 			this.localizeMsg.setValue(o.localizeMsg);
@@ -220,14 +231,15 @@ getXtype:function(){
    var attributes={
    	'editable':this.editCk.getValue(),
    	'disablePan':this.panCk.getValue(),
-   	'zoom':this.zoomCk.getValue(),
+   	'disableZoom':this.zoomCk.getValue(),
    	'displayOriginalValue':this.origValCk.getValue(),
    	'height':this.heigthFild.getValue(),
+   	'zoom':this.zoomLev.getValue()
    };
     if(this.descriptionField.getValue()) attributes.description=this.descriptionField.getValue();
    
    geom= this.getGeometryFields();
-   this.jObj={
+   var o={
     	"type":'geoPoint',
     	"value":(this.isSegActive())? "${origin."+geom.value+"}":'',
     	"fieldId":geom.fieldId,
@@ -236,15 +248,15 @@ getXtype:function(){
       	
    };
   if(this.localizeCk.getValue()){
-  	this.jObj.localize=this.localizeCk.getValue();
-  		this.jObj.localizeMsg=this.localizeMsg.getValue();
+  	o.localize=this.localizeCk.getValue();
+  		o.localizeMsg=this.localizeMsg.getValue();
   };
   if(this.centerCk.getValue()){
-  	this.jObj.center= this.centerCk.getValue();
-  	this.jObj.centerMsg= this.centerMsg.getValue();
+  	o.center= this.centerCk.getValue();
+  	o.centerMsg= this.centerMsg.getValue();
   	 }
    
-	return this.jObj;
+	return o;
 },
 /**
  * api: method[isValid]
@@ -300,7 +312,21 @@ isSegActive:function(){
 		parent= this.findParentByType('mxp_gc_mobile_widget_panel');
 		return !parent.fieldSelector.hidden;
 		
-		}
+	},
+		/**
+ * api method[isDirty]
+ * Check if the form has been modified
+ * Return boolean
+ */
+isDirty:function(){
+	console.log(Ext.encode(this.jObj));
+	console.log(Ext.encode(this.getXtype()));
+	a=Ext.encode(this.jObj);
+	b=Ext.encode(this.getXtype());
+	return (a==b)? false:true;		
+	
+	
+}
 
 });
 

@@ -71,10 +71,10 @@ this.items=[{
 	
 		this.enable();	
 		
-		this.tabbi.add({xtype:'mxp_gc_ml_resourcce_editor',title:'MainList',store:dbp.getSeg_Store(),ref:'/mList'});
-		this.tabbi.add({xtype:'mxp_gc_pview_resourcce_editor',title:'Preview',seg_store:dbp.getSeg_Store(),sop_store:dbp.getSop_Store(),ref:'/pView'});
-		this.tabbi.add({xtype:'mxp_gc_form_resourcce_editor',title:'Form sop',seg_store:dbp.getSeg_Store(),sop_store:dbp.getSop_Store(),ref:'/pForm'});
-		this.tabbi.add({xtype:'mxp_gc_formseg_resourcce_editor',title:'Form seg',seg_store:dbp.getSop_Store(),sop_store:dbp.getSeg_Store(),ref:'/pFormseg'});//GLi passo store invertiti!!
+		this.tabbi.add({xtype:'mxp_gc_ml_resourcce_editor',title:'Short Preview',store:dbp.getSeg_Store(),ref:'/mList'});
+		this.tabbi.add({xtype:'mxp_gc_pview_resourcce_editor',title:'Info',seg_store:dbp.getSeg_Store(),sop_store:dbp.getSop_Store(),ref:'/pView'});
+		this.tabbi.add({xtype:'mxp_gc_form_resourcce_editor',title:'Survey Form',seg_store:dbp.getSeg_Store(),sop_store:dbp.getSop_Store(),ref:'/pForm'});
+		this.tabbi.add({xtype:'mxp_gc_formseg_resourcce_editor',title:'Warning Form',seg_store:dbp.getSop_Store(),sop_store:dbp.getSeg_Store(),ref:'/pFormseg'});//GLi passo store invertiti!!
 		this.tabbi.doLayout();
 		this.tabbi.setActiveTab(0);		
 },
@@ -92,8 +92,8 @@ getResourceData: function(){
 	             frRes=this.pForm.getResourceData();
 	             frSeg=this.pFormseg.getResourceData();
              	 res=Ext.apply(mlRes,pvRes);
-             	 res.form_sop=frRes;
-             	 if(frSeg)res.form_seg=frSeg;
+             	 res.sop_form=frRes;
+             	 if(frSeg)res.seg_form=frSeg;
              	 return res;
                 },              
                     
@@ -101,8 +101,8 @@ loadResourceData: function(resource){
 	
 	this.mList.loadResourceData(resource);
 	if(resource.preview)this.pView.loadResourceData(resource.preview);
-	if(resource.form_sop)this.pForm.loadResourceData(resource.form_sop);
-	if(resource.form_seg)this.pFormseg.loadResourceData(resource.form_seg);
+	if(resource.sop_form)this.pForm.loadResourceData(resource.sop_form);
+	if(resource.seg_form)this.pFormseg.loadResourceData(resource.seg_form);
 	//Per caricare le risorse devi prima caricare il pannello db poi caricare il resto
 		
 	
