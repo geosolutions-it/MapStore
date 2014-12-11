@@ -1,0 +1,141 @@
+/*
+ *  Copyright (C) 2014 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+Ext.ns("mxp.widgets");
+
+/**
+ * GoeMobileWidgetPanel
+ * Allow to create mobile widget
+ * */
+mxp.widgets.XtypeSeparator = Ext.extend(Ext.FormPanel,{
+
+    /** api: xtype = mxp_gc_xtype_separator */
+	xtype:'mxp_gc_xtype_separator',
+	
+	//Utilizzat per ripulire i campi valori
+   clV:new RegExp("^(\\${origin.)(.*)(})$"),
+   jObj:null,
+   
+initComponent: function() {
+
+
+this.items=[ {
+   				xtype:'textfield', 
+				fieldLabel:'Label',
+				ref:'labField',
+				allowBlank:false,
+		    }
+    		 ];
+    
+ 
+             mxp.widgets.XtypeSeparator.superclass.initComponent.call(this, arguments);
+	
+	
+	
+	},
+
+/**
+ * api: method[loadXtype]
+ * Laad xtype mobile widget in form panel
+ * Parameters:
+ * xtype separator - obj
+ * {
+ * 	"type":null,
+ *	"xtype":"separator",
+ *	"label":"Data Rilevazione"
+ *	}
+ * 
+ * */
+loadXtype:function(o){
+	this.jObj=o;
+	this.labField.setValue(o.label);
+	
+},
+
+/**
+ * api: method[getXtype]
+ * Create xtype mobile widget from form panel
+ * Return:
+ * xtype separator - obj
+ * {
+ * 	"type":null,
+ *	"xtype":"separator",
+ *	"label":"Data Rilevazione"
+ *	}
+ * 
+ * */
+getXtype:function(){
+   
+   this.jObj={
+    	"type":null,
+    	"label":this.labField.getValue(),
+    	 "xtype":"separator"
+   };
+	return this.jObj;
+},
+/**
+ * api: method[isValid]
+ * Validate xtype separatorWithIcon obj
+ * Return:
+ * true or msg
+ * */
+isValid:function(){
+	
+	if(this.labField.isValid())return true;
+		return false;
+},
+
+/**
+ * api: method[fieldUpdated]
+ * Update the form on field change
+ * 
+ * */
+segUpdated:function(){
+	
+	this.setLabel();
+	
+},
+/**
+ * api: method[sopUpdated]
+ * Update the form on field change
+ * 
+ * */
+sopUpdated:function(){
+	
+	//this.setLabel();
+	
+},
+
+//Recupera il valore dal widget fields e lo setta!!
+setLabel:function(){
+	 	parent= this.findParentByType('mxp_gc_mobile_widget_panel');
+	    val = parent.fieldSelector.getValue();
+	    this.labField.setValue('${'+val+'}');
+},
+
+
+
+
+});
+
+
+Ext.reg(mxp.widgets.XtypeSeparator.prototype.xtype, mxp.widgets.XtypeSeparator);
+
+
