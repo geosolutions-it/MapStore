@@ -121,7 +121,7 @@ if(environment.applicationPath) {
 	// for deploy
 	var applicationsFolder = getRepository(module.resolve('./applications'));
 	
-	if(applicationsFolder) {
+	if(applicationsFolder && applicationsFolder.exists()) {
 		var application = null;
 		var files = applicationsFolder.getResources(true);
 		
