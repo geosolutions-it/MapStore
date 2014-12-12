@@ -96,7 +96,12 @@
              "target": "north.tbar",
              "index": 3
             },
-           "resourceEditor":"mxp_gc_resource_editor"
+           "resourceEditor":{
+			"xtype":"mxp_gc_resource_editor",
+			"ref":"/missionResEdit",
+			"authParam":"authkey"
+			},
+           
 
     },{ 
         "ptype": "mxp_filebrowser",

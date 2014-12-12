@@ -39,6 +39,7 @@ this.items=[{
    				xtype:'textfield', 
 				fieldLabel:'Field ',
 				ref:'idField',
+				name:'fieldId',
 				disabled:true,
 				hidden:!this.isFielIdActive(),
 				allowBlank:false
@@ -47,6 +48,7 @@ this.items=[{
    				xtype:'textfield', 
 				fieldLabel:'Value',
 				ref:'valueField',
+				name:'value',
 				disabled:!this.isFielIdActive(),
 				allowBlank:this.isFielIdActive()
 				
@@ -54,6 +56,7 @@ this.items=[{
    				xtype:'textfield', 
 				fieldLabel:'Label',
 				ref:'labField',
+				name:'label',
 				allowBlank:false,
 		    }
     		 ];
@@ -83,9 +86,11 @@ this.on('render',this.setidField,this)
  * */
 loadXtype:function(o){
 	this.jObj=o;
+	console.log(o);
 	this.labField.setValue(o.label);
 	if(o.value)this.valueField.setValue(o.value);
 	if(o.fieldId)this.setidField();
+
 },
 
 /**
@@ -103,15 +108,15 @@ loadXtype:function(o){
  * */
 getXtype:function(){
    
-   this.jObj={
+var o   ={
     	"type":null,
     	"value":this.valueField.getValue(),
     	"label":this.labField.getValue(),
     	 "xtype":"label"
    };
-   if(this.isFielIdActive())this.jObj.fieldId=this.idField.getValue();
-   	
-	return this.jObj;
+   if(this.isFielIdActive())o.fieldId=this.idField.getValue();
+
+	return o;
 },
 /**
  * api: method[isValid]
@@ -173,7 +178,21 @@ isSegActive:function(){
 		parent= this.findParentByType('mxp_gc_mobile_widget_panel');
 		return !parent.fieldSelector.hidden;
 		
-		}
+	},
+/**
+ * api method[isDirty]
+ * Check if the form has been modified
+ * Return boolean
+ */
+isDirty:function(){
+	console.log(Ext.encode(this.jObj));
+	console.log(Ext.encode(this.getXtype()));
+	a=Ext.encode(this.jObj);
+	b=Ext.encode(this.getXtype());
+	return (a==b)? false:true;		
+	
+	
+}
 });
 
 Ext.reg(mxp.widgets.XtypeLabel.prototype.xtype, mxp.widgets.XtypeLabel);

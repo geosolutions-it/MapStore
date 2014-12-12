@@ -100,21 +100,14 @@ loadXtype:function(o){
  * */
 getXtype:function(){
    
-   this.jObj={
-   		
-   		'id':1,
-   		'text':this.valueField.getValue(),
-    	"type":'send',
-    	"name":'send',
-    	"iconCls":"ic_send",
-    	"xtype":"actionsend",
+   o={
+		"xtype":"actionsend",
+   		'text':this.valueField.getValue(),	
     	'attributes':{
-    		"url":config.adminUrl+'mvc/geocollect/action/store',
-    		"mediaurl":config.adminUrl+'/mvc/geocollect/data',
     		"confirmMessage": this.labField.getValue()
     	}
    };
-	return this.jObj;
+	return o;
 },
 /**
  * api: method[isValid]
@@ -146,6 +139,20 @@ segUpdated:function(){
 sopUpdated:function(){
 	
 	//this.setLabel();
+	
+},
+/**
+ * api method[isDirty]
+ * Check if the form has been modified
+ * Return boolean
+ */
+isDirty:function(){
+	console.log(Ext.encode(this.jObj));
+	console.log(Ext.encode(this.getXtype()));
+	a=Ext.encode(this.jObj);
+	b=Ext.encode(this.getXtype());
+	return (a==b)? false:true;		
+	
 	
 }
 });

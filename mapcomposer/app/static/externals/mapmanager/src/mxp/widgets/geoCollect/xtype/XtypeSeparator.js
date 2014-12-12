@@ -83,12 +83,12 @@ loadXtype:function(o){
  * */
 getXtype:function(){
    
-   this.jObj={
+   o={
     	"type":null,
     	"label":this.labField.getValue(),
     	 "xtype":"separator"
    };
-	return this.jObj;
+	return o;
 },
 /**
  * api: method[isValid]
@@ -129,8 +129,20 @@ setLabel:function(){
 	    val = parent.fieldSelector.getValue();
 	    this.labField.setValue('${'+val+'}');
 },
-
-
+/**
+ * api method[isDirty]
+ * Check if the form has been modified
+ * Return boolean
+ */
+isDirty:function(){
+	console.log(Ext.encode(this.jObj));
+	console.log(Ext.encode(this.getXtype()));
+	a=Ext.encode(this.jObj);
+	b=Ext.encode(this.getXtype());
+	return (a==b)? false:true;		
+	
+	
+}
 
 
 });

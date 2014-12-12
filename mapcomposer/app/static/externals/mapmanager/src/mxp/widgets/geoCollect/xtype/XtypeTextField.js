@@ -120,7 +120,7 @@ loadXtype:function(o){
  *				 }
  * */
 getXtype:function(){
-   this.jObj={
+   o={
    		"fieldId":this.idField.getValue(),
     	"type":this.getType(),
     	"label":this.labField.getValue(),
@@ -128,11 +128,11 @@ getXtype:function(){
     	"mandatory":this.mandCk.getValue()
    };
    var opt=this.optField.getOptions();
-  if(opt.length)this.jObj.options=opt;
-   else if(this.valueField.getValue())this.jObj.value=this.valueField.getValue();
+  if(opt.length)o.options=opt;
+   else if(this.valueField.getValue())o.value=this.valueField.getValue();
 
 	
-	return this.jObj;
+	return o;
 },
 /**
  * api: method[isValid]
@@ -204,6 +204,20 @@ getType:function(){
 		parent= this.findParentByType('mxp_gc_mobile_widget_panel');
 	    return parent.xdatatypeSelector.getValue();
 	 
+},
+/**
+ * api method[isDirty]
+ * Check if the form has been modified
+ * Return boolean
+ */
+isDirty:function(){
+	console.log(Ext.encode(this.jObj));
+	console.log(Ext.encode(this.getXtype()));
+	a=Ext.encode(this.jObj);
+	b=Ext.encode(this.getXtype());
+	return (a==b)? false:true;		
+	
+	
 }
 });
 

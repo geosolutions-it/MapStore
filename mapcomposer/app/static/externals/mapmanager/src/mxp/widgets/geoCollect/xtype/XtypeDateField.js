@@ -107,15 +107,14 @@ loadXtype:function(o){
  */
 getXtype:function(){
    
-   this.jObj={
+   o={
    		"fieldId":this.idField.getValue(),
-    	
     	"label":this.labField.getValue(),
     	"xtype":"datefield",
     	"format":this.formatField.getValue()
    };
   
-	return this.jObj;
+	return o;
 },
 /**
  * api: method[isValid]
@@ -156,9 +155,20 @@ setidField:function(){
 	    val = parent.sopSelector.getValue();
 	    this.idField.setValue(val);
 },
-
-
-
+/**
+ * api method[isDirty]
+ * Check if the form has been modified
+ * Return boolean
+ */
+isDirty:function(){
+	console.log(Ext.encode(this.jObj));
+	console.log(Ext.encode(this.getXtype()));
+	a=Ext.encode(this.jObj);
+	b=Ext.encode(this.getXtype());
+	return (a==b)? false:true;		
+	
+	
+}
 });
 
 Ext.reg(mxp.widgets.XtypeDateField.prototype.xtype, mxp.widgets.XtypeDateField);

@@ -40,13 +40,13 @@ mxp.widgets.GcResourceEditor = Ext.extend(Ext.Panel, {
 	layout:'accordion',
 	border:false,
 	resource:null, // la risorsa caricata
+	authParam:null,
 	
 initComponent: function() {
-console.log("mxp_gc_resource_editor");
-	
 this.items=[{
 	xtype:'mxp_gc_db_resourcce_editor',
 	ref:'dbEdit',
+	'authParam':this.authParam,
 	listeners:{
 		ready:function(dbp){	
 		this.mobEdit.setStore(dbp);	

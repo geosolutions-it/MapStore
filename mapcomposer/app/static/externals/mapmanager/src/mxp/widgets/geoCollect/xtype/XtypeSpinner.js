@@ -105,7 +105,7 @@ loadXtype:function(o){
  *				 }
  * */
 getXtype:function(){
-   this.jObj={
+  o={
    		"fieldId":this.idField.getValue(),
     	"type":null,
     	"label":this.labField.getValue(),
@@ -113,10 +113,10 @@ getXtype:function(){
     	
    };
    var opt=this.optField.getOptions();
-  if(opt.length)this.jObj.options=opt;
-   else if(this.valueField.getValue())this.jObj.value=this.valueField.getValue();
+  if(opt.length)o.options=opt;
+   else if(this.valueField.getValue())o.value=this.valueField.getValue();
 
-	return this.jObj;
+	return o
 },
 /**
  * api: method[isValid]
@@ -156,8 +156,20 @@ setidField:function(){
 	 	parent= this.findParentByType('mxp_gc_mobile_widget_panel');
 	    val = parent.sopSelector.getValue();
 	    this.idField.setValue(val);
-},
-
+},/**
+ * api method[isDirty]
+ * Check if the form has been modified
+ * Return boolean
+ */
+isDirty:function(){
+	console.log(Ext.encode(this.jObj));
+	console.log(Ext.encode(this.getXtype()));
+	a=Ext.encode(this.jObj);
+	b=Ext.encode(this.getXtype());
+	return (a==b)? false:true;		
+	
+	
+}
 });
 
 Ext.reg(mxp.widgets.XtypeSpinner.prototype.xtype, mxp.widgets.XtypeSpinner);

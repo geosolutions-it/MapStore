@@ -76,7 +76,9 @@ mxp.widgets.GeoStoreMissionResourceForm = Ext.extend(Ext.Panel, {
 		var values = this.values ||{
             category:this.category
         };
-        
+        console.log(this.authParam);
+        console.log(this.target);
+        console.log(sessionStorage);
         this.addEvents(
             /**
              * @event save
@@ -115,11 +117,11 @@ mxp.widgets.GeoStoreMissionResourceForm = Ext.extend(Ext.Panel, {
               	return this.items.items[0];
               }
 			});
-			this.resourceEditor={
+		/*	this.resourceEditor={
 	xtype:'mxp_gc_resource_editor',
 	ref:'/missionResEdit'
 	
-	};
+	};*/
 						
         if(!this.resourceEditor){
         //you can override passing the resource editor, now is a tab
@@ -197,7 +199,7 @@ mxp.widgets.GeoStoreMissionResourceForm = Ext.extend(Ext.Panel, {
 
 
 //Nuovo editor
-this.missionResEdit=new mxp.widgets.GcResourceEditor();
+//this.missionResEdit=new mxp.widgets.GcResourceEditor();
 
 	//Pannello principale
 		var mainPanel = {
@@ -492,9 +494,7 @@ this.missionResEdit=new mxp.widgets.GcResourceEditor();
                     //method defined, call it to load the stored data 
                     // in the editor
                     me.resource.getResourceEditor().loadResourceData(r2.get('blob'));
-                    me.missionResEdit.loadResourceData(r2.get('blob'));
                    
-                    
                     
                     //parsare il json
                     //enable or disable save button

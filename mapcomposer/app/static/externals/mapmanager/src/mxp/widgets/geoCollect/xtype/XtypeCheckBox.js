@@ -94,13 +94,13 @@ loadXtype:function(o){
  * */
 getXtype:function(){
    
-   this.jObj={
+  o={
     	"type":null,
     	"value":this.idField.getValue(),
     	"label":this.labField.getValue(),
     	 "xtype":"checkbox"
    };
-	return this.jObj;
+	return o;
 },
 /**
  * api: method[isValid]
@@ -140,6 +140,20 @@ setfieldId:function(){
 	    val = parent.sopSelector.getValue();
 	    console.log(val.length);
 	    this.idField.setValue(val);
+},
+/**
+ * api method[isDirty]
+ * Check if the form has been modified
+ * Return boolean
+ */
+isDirty:function(){
+	console.log(Ext.encode(this.jObj));
+	console.log(Ext.encode(this.getXtype()));
+	a=Ext.encode(this.jObj);
+	b=Ext.encode(this.getXtype());
+	return (a==b)? false:true;		
+	
+	
 }
 });
 

@@ -74,8 +74,8 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
    
    
     //Contorllo per inizializzazione!
-   
-    
+    authkey:null,
+    authParam:null,
     //Campi utilizzati in attribute reader
     parseFields: ["name", "type", "restriction","localType","nillable"],
     
@@ -113,7 +113,7 @@ this.isLoaded=false;
 var baseParams = this.baseParams || {
             SERVICE: "WMS",
             REQUEST: "GetCapabilities",
-            VERSION: "1.1.0"
+            VERSION: "1.1.1"
         };
 		
         if (this.version) {
@@ -125,10 +125,11 @@ var baseParams = this.baseParams || {
 	    // (see MSMLogin.getLoginInformation for more details) TODO::DA sistemare deve accedere solo alle fonti di cui ha il permesso!!
 	    // /////////////////////////////////////////////////////
 		
-		if(this.authParam && this.target.userDetails){
-			var userInfo = this.target.userDetails;
+		//Modificata per usare sessionStorage
+		if(this.authParam && sessionStorage.userDetails){
+			var userInfo = Ext.decode(sessionStorage.userDetails);
+			console.log(userInfo);
 			var authkey;
-			console.log(this.authParam);
 			if(userInfo.user.attribute instanceof Array){
 				for(var i = 0 ; i < userInfo.user.attribute.length ; i++ ){
 					if( userInfo.user.attribute[i].name == "UUID" ){
@@ -144,6 +145,9 @@ var baseParams = this.baseParams || {
 				baseParams[this.authParam] = authkey;
 			}
 		}
+	
+		
+		
         //Creo lo store per recuperare le sorgenti dati
         this.dbstore = new GeoExt.data.WMSCapabilitiesStore({
             url: config.gcSource,//recupero url configurata in localconfig TODO:in fututo dovrà essere configurabile
@@ -274,16 +278,20 @@ this.comboSource = new Ext.form.ComboBox({
                scope:this
                }
                });
-               
+               //Set base params for wfs descibefeaturetype request
+         wfsBaseParams={
+         				VERSION:'1.0.0',
+                    	REQUEST:'DescribeFeatureType'
+                    	}  ;    
+           if(authkey && this.authParam){
+				wfsBaseParams[this.authParam] = authkey;
+			}    ;
               
   //CREAO GLI SOTRE PER RECUPERO ATTRIBUTI DELLA FONTE SEGNALAZIONE E SOPRALLUOGO
     //TODO::Aggiungere gestione errore se non carica non necessario in realtà a questo punto!!
    this.seg_fieldStore = new GeoExt.data.AttributeStore({
 					url:' ',	
-   					baseParams:{
-                    			VERSION:'1.0.0',
-                    			REQUEST:'DescribeFeatureType',
-                    			},
+   					baseParams:wfsBaseParams,
                     			fields:this.parseFields,
    					listeners:{
    								exception: function(proxy, type, action, options, response, arg) {
@@ -303,10 +311,7 @@ this.comboSource = new Ext.form.ComboBox({
    			});
 this.sop_fieldStore = new GeoExt.data.AttributeStore({
 					url:' ',	
-   					baseParams:{
-                    			VERSION:'1.0.0',
-                    			REQUEST:'DescribeFeatureType',
-                    			},
+   					baseParams:wfsBaseParams,
                     			fields:this.parseFields,
    					listeners:{
    								exception: function(proxy, type, action, options, response, arg) {
@@ -341,7 +346,7 @@ this.sop_fieldStore = new GeoExt.data.AttributeStore({
      
  
    	
-   }
+   };
    
  //Grid che mostra la lista dei campi disponibili dello schema sopralluoghi
    var sop_schema_grid={
@@ -358,7 +363,7 @@ this.sop_fieldStore = new GeoExt.data.AttributeStore({
         sm: new Ext.grid.RowSelectionModel({singleSelect:true}),
         autoExpandColumn: "name"
  	
-   }
+   };
 //Creo il pannello principale che contiene la mission db
 //TODO::sistmare layout delle grid con i parametri per ora sono una sopra l'altra
 
@@ -399,16 +404,19 @@ this.autoScroll=true;
 	
 	//Inizilizza il describelayer store per vedere se un layer wms  è  anche wfs!!
 	 initDescribeLayerStore: function() {
-	 	this.waitIdx++
+	 	this.waitIdx++;
+	 	
         var req = this.dbstore.reader.raw.capability.request.describelayer;
+        console.log(rec);
+        
+      	var  bParams=rec.store.baseParams;
+        bParams.REQUEST="DescribeLayer";
         if (req) {
             return  new GeoExt.data.WMSDescribeLayerStore({
                 url: req.href,
                 autoload:true,
-                baseParams: {
-                    VERSION: this.dbstore.reader.raw.version,
-                    REQUEST: "DescribeLayer"
-                },sortInfo : {
+                baseParams: bParams,
+                sortInfo : {
                 field : 'layerName',
                 direction : 'ASC'
             },
@@ -429,7 +437,7 @@ this.autoScroll=true;
                 						callback: this.getValidSegLayer,
                 						scope: this,
                 						id:rec.id //passo id che se non esiste il describe leayer lo elimino
-            					})
+            				});
             					
            },
            			
@@ -514,12 +522,12 @@ this.autoScroll=true;
    		 	    "localSourceStore":rec.get('name'),	// local device table name
    	 			"fields":this.getFieldsObj(this.seg_fieldStore)
 				//TODO::manca ordering field ma si prende ad altro panel
-			}
+			};
 			schema_sop=	{ 
    		 	    "localSourceStore":rec.get('name')+"_sop",	// local device table name
    	 			"fields":this.getFieldsObj(this.sop_fieldStore)
 				//TODO::manca ordering field ma si prende ad altro panel
-		}
+		};
                                   
                     return {"schema_seg":schema_seg,"schema_sop":schema_sop};
                 }},

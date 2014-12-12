@@ -95,13 +95,13 @@ loadXtype:function(o){
  * */
 getXtype:function(){
    
-   this.jObj={
+   o={
     	"type":null,
     	"value":"${origin."+this.getPriorityField()+"}",
     	"label":this.labField.getValue(),
     	 "xtype":"separatorWithIcon"
    };
-	return this.jObj;
+	return o;
 },
 /**
  * api: method[isValid]
@@ -153,8 +153,21 @@ getPriorityField:function(){
 	
 	if(Ext.getCmp('MainListResourceEditor') &&  Ext.getCmp('MainListResourceEditor').listIcon.getValue() ) return Ext.getCmp('MainListResourceEditor').listIcon.getValue();
 	else return undefined;
+},
+/**
+ * api method[isDirty]
+ * Check if the form has been modified
+ * Return boolean
+ */
+isDirty:function(){
+	console.log(Ext.encode(this.jObj));
+	console.log(Ext.encode(this.getXtype()));
+	a=Ext.encode(this.jObj);
+	b=Ext.encode(this.getXtype());
+	return (a==b)? false:true;		
+	
+	
 }
-
 });
 
 

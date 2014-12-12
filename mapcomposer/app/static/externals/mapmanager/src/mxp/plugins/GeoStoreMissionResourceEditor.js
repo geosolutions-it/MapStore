@@ -109,6 +109,7 @@ mxp.plugins.GeostoreMissionResourceEditor = Ext.extend(mxp.plugins.Tool, {
             closeAction: 'close',
             header: false,
             deferredReneder:false,
+            resourceEditor:this.resourceEditor,
             viewConfig: {
                 forceFit: true
             },
