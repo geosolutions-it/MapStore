@@ -145,14 +145,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     id: "measure_plugin",
                     toggleGroup: this.toggleGroup,
 		            actionTarget: {target: "paneltbar", index: 21}
-		        }, {
-                    id: "googleearth_separator",
-		            actions: ["-"], 
-                    actionTarget: "paneltbar"
-		        }, {
-		            ptype: "gxp_googleearth",
-                    id: "googleearth_plugin",
-		            actionTarget: {target: "paneltbar", index: 25}
 		        }
 		    ];
 

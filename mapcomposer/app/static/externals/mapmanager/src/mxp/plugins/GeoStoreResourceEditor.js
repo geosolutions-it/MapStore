@@ -37,8 +37,15 @@ mxp.plugins.GeostoreResourceEditor = Ext.extend(mxp.plugins.Tool, {
     ptype: "mxp_geostore_resource_editor",
     
     buttonText: "Resource Editor",
-    missionText:'Missions',
-
+    /** api: method[outputItemId]
+     * id Of the item. Using the same id means to open the same 
+     * tab for clicking on the button.
+     */
+    outputItemId: "ResourceEditor",
+    /** api: method[generalPanelHeight]
+     *  height of the general panel of the form
+     */
+    
     loginManager: null,    
     setActiveOnOutput: true,
     category:"MAP",
@@ -47,7 +54,10 @@ mxp.plugins.GeostoreResourceEditor = Ext.extend(mxp.plugins.Tool, {
      */
     iconCls: 'resource_edit',
 
-
+    /** api: method[attributeFields]
+     * Add an array of Extjs fields. 
+     * Add by default this attributes to the attributes of a resource
+     */
     
     /** api: method[addActions]
      */
@@ -96,14 +106,17 @@ mxp.plugins.GeostoreResourceEditor = Ext.extend(mxp.plugins.Tool, {
         var me = this;
         
        
-        Ext.apply(this.outputConfig,{
+        this.outputConfig = Ext.apply(this.outputConfig,{
             xtype:'geostore_category_manger',
             category:this.category,
+            tpl : this.tpl,
+            attributeFields:this.attributeFields,
+            generalPanelHeight: this.generalPanelHeight,
             iconCls: this.iconCls,
             geoStoreBase:this.target.config.geoStoreBase,
             auth:this.auth,
             layout: 'border',
-            itemId:'GeostoreResourceEditor',
+            itemId: this.outputItemId,
             closable: true,
             closeAction: 'close',
             header: false,
@@ -126,7 +139,7 @@ mxp.plugins.GeostoreResourceEditor = Ext.extend(mxp.plugins.Tool, {
                     // Not duplicate tabs
                     for(var index = 0; index < this.output[i].ownerCt.items.items.length; index++){
                         var item = this.output[i].ownerCt.items.items[index];
-                        var isCurrentItem = "GeostoreResourceEditor" == item.initialConfig["itemId"];
+                        var isCurrentItem = this.outputItemId == item.initialConfig["itemId"];
                         if(isCurrentItem){
                             this.output[i].ownerCt.setActiveTab(index);
                             return;

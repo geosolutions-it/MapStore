@@ -32,6 +32,14 @@ MapStore.data.GeoStoreStore = Ext.extend(Ext.data.JsonStore, {
 	 */
 	additionalAttribute: null,
 	/**
+	 * Include attributes in search responses
+	 */
+	includeAttributes: false,
+	/**
+	 * Include attributes and data in search responses
+	 */
+	fullResource: false,
+	/**
 	 * filter
 	 */
 	currentFilter: '***',
@@ -54,7 +62,7 @@ MapStore.data.GeoStoreStore = Ext.extend(Ext.data.JsonStore, {
 		var store = this;
         MapStore.data.GeoStoreStore.superclass.constructor.call(this, Ext.apply(config, {
 			autoDestroy: true,
-			autoLoad: true,
+			autoLoad: (typeof config.autoLoad === 'undefined') ? true : config.autoLoad,
 			autoSave: true,
 			root: 'results',
 			totalProperty: 'totalCount',
@@ -62,8 +70,8 @@ MapStore.data.GeoStoreStore = Ext.extend(Ext.data.JsonStore, {
 			idProperty: 'id',
 			remoteSort: false,
 			//get the additional attribute as record
-			fields: config.additionalAttribute ? this.fields.concat(config.additionalAttribute): this.fields,
-			sortInfo: { field: "name", direction: "ASC" },
+			fields: config.fields ? config.fields : (config.additionalAttribute ? this.fields.concat(config.additionalAttribute): this.fields),
+			sortInfo: config.sortInfo ? config.sortInfo : { field: "name", direction: "ASC" },
 			proxy : new Ext.data.HttpProxy({
 				api:{
 					read: this.getSearchUrl(config),
@@ -111,7 +119,10 @@ MapStore.data.GeoStoreStore = Ext.extend(Ext.data.JsonStore, {
         return config.geoStoreBase + 'extjs/search' 
 			+ (config.categoryName ? '/category/'+ config.categoryName : '') 
 			+ (config.currentFilter ?'/' + config.currentFilter:'')
-			+ (config.additionalAttribute ?'/' + config.additionalAttribute:'');
+			+ (config.additionalAttribute ?'/' + config.additionalAttribute:'')
+			+ (config.includeAttributes ?'?includeAttributes=true': '')
+			+ (config.fullResource ?'?includeAttributes=true&includeData=true': '')
+			;
     },
 	/**
 	 * Search url creation

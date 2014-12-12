@@ -30,7 +30,18 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
     ,uploadUrl:""
     ,swfUrl:"../js/Ext.ux.upload/examples/swf/swfupload.swf"
     ,browserDDGroup:null
-
+    
+    
+    // i18n
+    ,uploadText : "Upload"
+    // end i18n
+    
+    ,pluploadWindowWidth: 400
+    ,pluploadWindowHeigth: 300
+    ,pluploadWindowResizable: false
+    ,pluploadMultipart: true
+    ,isPluploadManager: true
+    
     ,initComponent:function() {
         /*
         ** FileTreePanel
@@ -109,35 +120,33 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
 
         if (!this.readOnly && this.enableUpload) {
 
-            this.queuePanel = new Ext.Panel({
-                region:"south"
-                ,layout:"fit"
-                ,border:false
-                ,height:100
-                ,collapsed:true
-                ,collapseMode:"mini"
-                ,split:true
-            });
+            this.queuePanel = null;
+            
 
             this.fileTreePanel.bodyStyle = "border-width:0 1px 1px 0";
 
+            var items = [this.fileTreePanel];
+            
+            if(!this.isPluploadManager) {
+                this.queuePanel = new Ext.Panel({
+                    region:"south"
+                    ,layout:"fit"
+                    ,border:false
+                    ,height:100
+                    ,collapsed:true
+                    ,collapseMode:"mini"
+                    ,split:true
+                });
+                items.push(this.queuePanel);
+            }
+            
             var panelConfig = [{
                 layout:"border"
                 ,border:false
-                ,items:[
-                  this.fileTreePanel
-                  ,this.queuePanel
-                ]
+                ,items: items
             }];
 
-            // Plupload params --> TODO: put as config
-            this.uploadText = "Upload";
-            this.pluploadWindowWidth = 400;
-            this.pluploadWindowHeigth = 300;
-            this.pluploadWindowResizable = false;
-            this.pluploadMultipart = true;
-            this.isPluploadManager = true;
-
+            
             if(this.isPluploadManager){
                 this.fileTreePanel.on({
                     scope:this,
@@ -157,7 +166,6 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
                                         mediaContent: this.mediaContent,
                                         listeners:{
                                             beforestart:function() {  
-                                                this.queuePanel.expand(false);
                                                 var node = this.fileTreePanel.getNodeById(this.historyCurrentId);
                                                 //TODO: this.uploadMgr.setPath(  this.getNodePath(node) );
                                                 var multipart_params =  pluploadPanel.multipart_params || {};
@@ -170,9 +178,6 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
                                                 var node = this.fileTreePanel.getNodeById(this.historyCurrentId);
                                                 if (node.isLeaf()) node = node.parentNode;
                                                 node.reload(this.load.createDelegate(this));
-                                            },
-                                            uploadcomplete:function() {
-                                                this.queuePanel.collapse.defer(2000, this.queuePanel);
                                             },
                                             scope: this
                                         }

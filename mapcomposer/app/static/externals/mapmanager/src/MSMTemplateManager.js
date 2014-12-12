@@ -177,7 +177,8 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
 			method: 'GET',
 			scope: this,
             headers:{
-                'Authorization' : this.auth
+                'Authorization' : this.auth,
+                'Accept' : 'application/json'
             },
 			success: function(response, opts){      
 			  

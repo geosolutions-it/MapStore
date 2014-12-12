@@ -56,7 +56,8 @@ GeoExt.Lang.add("es", {
 		showMapTooltip: "Mostrar en una nueva ventana",
 		embedCodeTitle: "Código Embebido",
 		embedURL: "URL directa",	
-		urlLabel: "URL",
+		embedUrlLabel: "EMBED",
+		composerUrlLabel: "FULL",
 		exportMapText: "Enlazar Mapa",
         mobileText: "Mobile", 
         installApplicationText: "Instalar aplicación Android", 
@@ -97,7 +98,8 @@ GeoExt.Lang.add("es", {
         loginErrorTitle: "Error en el login.",
         userFieldText: "Usuario",
         passwordFieldText: "Contraseña",
-        loginFormTitle: "Por favor, lóguese"
+        loginFormTitle: "Por favor, lóguese",
+        loginWaitMessage: "Inicio de una sesión.<br/> Por favor espera ..."
     },
     "UserManagerView.prototype":{
         textGeneral: "General", 
@@ -280,5 +282,57 @@ GeoExt.Lang.add("es", {
          resourceListTitle: "Recursos",
          emptyMessage: "Ningún recurso para mostrar", 
          mostrarMensaje: "Mostrando {0} - {1} de {2}" 
+    },
+     "mxp.plugins.GeoBatchFlows.prototype": {
+        buttonText: "Flujos de trabajo",
+        flowsListTitle:'Flujos',
+        runButtonText:'Realizar',
+        consumersGridTitle: 'Activa',
+        archivedGridTitle: 'Archivado'
+     },
+    "mxp.widgets.GeoBatchFlowsGrid.prototype": {
+        nameText: 'Título',
+        descriptionText:'Descripción',
+        loadingMessage: 'Cargando...',
+        errorContactingGeobatch: 'Error loading fluye de GeoBatch'
+    },
+    "mxp.widgets.GeoBatchConsumerGrid.prototype": {
+        statusText: 'Estado',
+        startDateText: 'StartDate',
+        fileText:'Archivo',
+        actionText:'Acción',
+        taskText:'tarea',
+        progressText:'Progreso',
+        refreshText:'Actualizar',
+        autoRefreshText:'Actualizazion automatica',
+        descriptionText:'Descripción',
+        tooltipDelete: 'Claro esta',
+        tooltipLog: 'Consultar Log',
+        clearFinishedText: 'Claro Terminado',
+        archiveText: 'Archivo seleccionado',
+        loadingMessage: 'Cargando...',
+        cleanMaskMessage:'Extracción de carreras...',
+        textConfirmDeleteMsg: 'Foro de confirmar que quiere eliminar esta carrera?',
+        errorDeleteConsumerText:'Hubo un error al eliminar run',
+        errorArchiveConsumerText:'Hubo un error al archivar run',
+        confirmClearText: '¿De verdad quiere eliminar todas las carreras con positivos o negativos de estado?',
+        titleConfirmClearMsg: 'Confirmar',
+        confirmArchiveText: '¿Quieres archivar las carreras seleccionadas?',
+        titleConfirmArchiveMsg: 'Confirmar',
+        GWCButtonLabel: 'Tile Cache',
+        errorContactingGeobatch: 'Error loading va desde GeoBatch',
+        errorContactingGeostore: 'Error loading archivada carreras de GeoStore'
+    },
+    "mxp.widgets.GeoBatchRunLocal.prototype": {
+        successText: "Éxito",
+        errorText:"Error",
+        runSuccessText: "El flujo de trabajo se ha iniciado con éxito<br/>"
+    },
+    "mxp.widgets.GeoBatchRunLocalForm.prototype": {
+        runButtonText: "Ejecutar",
+        uploadButtonText: "Subir",
+        successText: "Éxito",
+        errorText:"Error",
+        runSuccessText: "El flujo de trabajo se ha iniciado con éxito<br/>"
     }
 });

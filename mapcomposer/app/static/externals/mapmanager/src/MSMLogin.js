@@ -80,6 +80,12 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      */
     loginFormTitle: 'Please Login',
     /**
+     * Property: loginFormTitle
+     * {string} title of login form
+     * 
+     */
+    loginWaitMessage: "Please wait...",
+    /**
      * Property: grid
      * {object} property grid to access GridPanel
      * 
@@ -177,10 +183,18 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 scope: this,
                 handler: this.submitLogin
             }]
-        }),
+        });
         
         this.loginButton = new Ext.Button({
-            id: 'id_loginButton'            
+            id: 'id_loginButton',
+            listeners:{
+                scope:this,
+                afterrender: function(){
+                    if(this.forceLogin){
+                        this.showLoginForm();
+                    }
+                }
+            }
         });
         
         this.userLabel = new Ext.form.Label({
@@ -345,13 +359,13 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      * Submits the login.
      */ 
     submitLogin: function () {
-        
+        var mask = new Ext.LoadMask(this.getEl(),{msg:this.loginWaitMessage});
         var form = this.getForm();
         var fields = form.getValues();
         var pass = fields.loginPassword;
         var user = fields.loginUsername;
         var auth= 'Basic ' + Base64.encode(user+':'+pass);
-
+        mask.show();
         Ext.Ajax.request({
             method: 'GET',
             url: this.geoStoreBase + 'users/user/details/',
@@ -360,7 +374,8 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 'Accept': 'application/json',
                 'Authorization' : auth
             },
-            success: function(response, form, action) {            
+            success: function(response, form, action) {  
+                mask.hide();
                 this.win.hide();
                 this.getForm().reset();
                 
@@ -377,6 +392,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 this.fireEvent("login", this.username, auth, user.User);
             },
             failure: function(response, form, action) {
+                mask.hide();
                 Ext.MessageBox.show({
                     title: this.loginErrorTitle,
                     msg: this.loginErrorText,
@@ -413,11 +429,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
         this.applyLoginState('login', text, userLabel, handler, this);
         this.fireEvent("logout");
         //force show login window on startup
-        this.loginButton.on('afterrender',function(){
-            if(this.forceLogin){
-                this.showLoginForm();
-            }
-        },this);
+        
     },
 
     /** private: method[showLogout]
