@@ -401,6 +401,9 @@ mxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
         if (ref) {
             container = Ext.getCmp(ref) || this.target.portal[ref];
             Ext.apply(config, this.outputConfig);
+            if(container && container.xtype === 'tabpanel') {
+                Ext.applyIf(config, {hideMode: 'offsets'});
+            }
         } else {
             var outputConfig = this.outputConfig || {};
             container = new Ext.Window(Ext.apply({
