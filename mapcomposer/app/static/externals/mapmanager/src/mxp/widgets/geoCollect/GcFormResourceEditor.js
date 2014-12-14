@@ -79,7 +79,7 @@ console.log('mxp_gc_form_resourcce_editor');
 			                    },'-',{
 								ref:'//addP',
 			 					text:'New Page',
-                				iconCls: "add",
+                				iconCls: "addgc	",
 			                    tooltip: 'Create a new Page',
 			                    handler: function(btn){ 
 			                    	
@@ -118,7 +118,7 @@ console.log('mxp_gc_form_resourcce_editor');
 				 			 {	
 				 			 	ref:'//delP',
 			 					text:'Delete Page',
-                				iconCls: "delete",
+                				iconCls: "deletegc",
 			                    tooltip: 'Delete active Page',
 			                    handler: function(btn){ 
 			                    	
@@ -192,20 +192,20 @@ this.items=[
               	region:'west',
 				ref:'pageList',
 				xtype:'grid',
-				width: 130,
+				width: 150,
 				collapsible:true,
 				title: "Pages",
 				store:this.pages_store,
 				autoScroll:true,
+				autoExpandColumn:"tit",
 				hideHeaders:true,
-//				enableDragDrop :true,
-				ddReorder: true,
-				style:{padding:'2px'},
+			//	style:{padding:'2px'},
 				frame:true,
+				
 				cm: new Ext.grid.ColumnModel([
-					{id: "title", dataIndex: "title", sortable: false}
+					{id: "tit",title:'puppa', dataIndex: "title", sortable: false}
 				 ]),
-				 autoExpandColumn:'title',
+				
 				 sm: new  Ext.grid.RowSelectionModel({singleSelect:true,
 				 	listeners:{
 				 		rowselect:function(slm,idx,r){
@@ -256,7 +256,7 @@ this.items=[
 			 		
 			 		xtype:'toolbar',
 			 		items:[ {
-			 					text:'Check Form',
+			 					text:'Validate',
                					ref:'/../ckForm',
                 				iconCls: "accept",
 			                    tooltip: 'Check Preview Validity',
@@ -264,9 +264,52 @@ this.items=[
 			                    	this.getResourceData();
 			                    	Ext.Msg.alert('Status', 'Page valid:'+this.isValid()); 
 			                    		                    	
-			                    },scope:this}],
-				 	
-				 	
+			                    },scope:this},'-',{
+			                  	xtype:'button',
+			                  	iconCls: "m_up",
+			                  	  ref:'/../moveUp',
+			                  	  disabled:true,
+			                  	  handler:function(btn){
+			                  	  	var sm = this.pageList.getSelectionModel();
+			                  	  	var st=this.pageList.getStore();
+			                  	  	r=sm.getSelected();
+			             
+			                  	  	if(r){
+			                  	  		idx=st.indexOf(r);	
+			                  	  		st.remove(r);
+			                  	  		st.insert(idx-1,r);
+			                  	  		sm.suspendEvents(false);
+			                  	  		sm.selectRow(idx-1);
+			                  	  		sm.resumeEvents();
+			                  	  		this.enableUpDown();
+			                  	  	}			                  	  	
+			                  	  	
+			                  	  	
+			                  	  }
+			                  	  ,scope:this
+			                  },' ',{
+			                  	xtype:'button',
+			                  iconCls: "m_down",
+			                  	  ref:'/../moveDown',
+			                  	  disabled:true,
+			                  	   handler:function(btn){
+			                  	  		var sm = this.pageList.getSelectionModel();
+			                  	  	var st=this.pageList.getStore();
+			                  	  	r=sm.getSelected();
+			             
+			                  	  	if(r){
+			                  	  		idx=st.indexOf(r);	
+			                  	  		st.remove(r);
+			                  	  		st.insert(idx+1,r);
+			                  	  		sm.suspendEvents(false);
+			                  	  		sm.selectRow(idx+1);
+			                  	  		sm.resumeEvents();
+			                  	  		this.enableUpDown();
+			                  	  	}			                  	  	
+  }
+			                  	  ,scope:this}
+   ],
+
 				 	}
 				 	
 				 	}
@@ -364,12 +407,9 @@ enableForm:function(){
 		this.pageWidget.enable();
 		this.delP.enable(true);
 		this.saveP.enable(true);
-		
+		this.enableUpDown();
 	    this.ckForm.disable(true);
-
-		
-		
-		
+	
 },
 //gestiece configurazione interfaccia qunado termino editing
 disableForm:function(){
@@ -377,9 +417,9 @@ disableForm:function(){
 		this.pageWidget.disable();
 		this.delP.disable(true);
 		this.saveP.disable(true);
-		
+		this.moveUp.disable(true);
+		this.moveDown.disable(true);
 	    this.ckForm.enable(true);
-	
 	
 },
 
@@ -409,6 +449,30 @@ resetMe:function(){
 	this.pages_store.removeAll();
 	this.formTitle.setValue('');
 	this.disableForm();
+	
+},//If row is selected, check row positions and enble the arrow
+enableUpDown:function(){
+	var sm =this.pageList.getSelectionModel();
+	
+	if(sm){
+			if(sm.isSelected( 0 )){// è selezionato il primo
+				this.moveDown.enable();
+				this.moveUp.disable();
+				
+			}
+			else if(sm.isSelected( this.pageList.getStore().getCount()-1)){//selezionato ultimo
+				this.moveDown.disable();
+				this.moveUp.enable();
+				
+			}else{
+				
+				this.moveDown.enable();
+				this.moveUp.enable();
+			}
+		
+		
+	}
+	
 	
 }
 

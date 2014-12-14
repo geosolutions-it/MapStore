@@ -131,7 +131,7 @@ this.items=[ {
         			]},{
         				
         				xtype:'button',
-        				text:'Check Page',
+        				text:'Validate',
 			                    tooltip: 'Check Page Validity',
 			                    iconCls: "accept",
 			                    handler: function(btn){ 

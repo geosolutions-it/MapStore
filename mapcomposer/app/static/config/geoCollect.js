@@ -50,15 +50,6 @@
           "target": "north.tbar",
           "index": 3
         }
-    },{ 
-        "ptype": "mxp_geostore_mission_resource_editor",
-        "category": "GEOCOLLECT",
-        "buttonText": "Mission Configuration",
-             "actionTarget":{
-             "target": "north.tbar",
-             "index": 3
-            }
-
     },{
         "ptype": "mxp_languageselector",
         "actionTarget":{

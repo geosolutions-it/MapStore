@@ -91,7 +91,7 @@ this.items=[
 				ref:'widList',
 				xtype:'grid',
 				width: 340,
-				title: "Page widgets",
+				title: "Widgets",
 				store: this.wid_store,
 				autoScroll:true,
 				style:{padding:'5px'},
@@ -187,7 +187,7 @@ this.items=[
 			 	bbar:{
 			 		xtype:'toolbar',
 			 		items:[ {
-			 					text:'Check Page',
+			 					text:'Validate',
                					ref:'/../ckPage',
 			                    tooltip: 'Check Page Validity',
 			                    iconCls: "accept",
@@ -306,7 +306,51 @@ this.items=[
 									});
 			                    	 },scope:this
 			                    
-			                  }
+			                  },'-',{
+			                  	xtype:'button',
+			                  	iconCls: "m_up",
+			                  	  ref:'/../moveUp',
+			                  	  handler:function(btn){
+			                  	  	var sm = this.widList.getSelectionModel();
+			                  	  	var st=this.widList.getStore();
+			                  	  	r=sm.getSelected();
+			             
+			                  	  	if(r){
+			                  	  		idx=st.indexOf(r);	
+			                  	  		st.remove(r);
+			                  	  		st.insert(idx-1,r);
+			                  	  		sm.suspendEvents(false);
+			                  	  		sm.selectRow(idx-1);
+			                  	  		sm.resumeEvents();
+			                  	  		this.enableUpDown();
+			                  	  	}			                  	  	
+			                  	  	
+			                  	  	
+			                  	  }
+			                  	  ,scope:this
+			                  },' ',{
+			                  	xtype:'button',
+			                  iconCls: "m_down",
+			                  	  ref:'/../moveDown',
+			                  	   handler:function(btn){
+			                  	  		var sm = this.widList.getSelectionModel();
+			                  	  	var st=this.widList.getStore();
+			                  	  	r=sm.getSelected();
+			             
+			                  	  	if(r){
+			                  	  		idx=st.indexOf(r);	
+			                  	  		st.remove(r);
+			                  	  		st.insert(idx+1,r);
+			                  	  		sm.suspendEvents(false);
+			                  	  		sm.selectRow(idx+1);
+			                  	  		sm.resumeEvents();
+			                  	  		this.enableUpDown();
+			                  	  	}			                  	  	
+			                  	  			                  	  	
+			                  	  	
+			                  	  	
+			                  	  }
+			                  	  ,scope:this}
 			                  ]
 			 		
 			 	}
@@ -440,19 +484,7 @@ this.items=[
           
     							xtype:'mxp_mobilexdatatypecombobox',
     							ref:'//xdatatypeSelector',
-    						},
-    							 { 
-    							 xtype: "button",
-			                    tooltip: 'Add value',
-			                    iconCls: "add",
-			                    hidden:true,
-			                    handler: function(btn){
-			                    	console.log(this.xtypeSelector.getValue()); 
-			                    	this.loadXtype(this.objXtype[this.xtypeSelector.getValue()]);
-			                    	
-			                    	 },scope:this
-			                    
-			                    }
+    						}
     						]}
     					
 						]
@@ -703,7 +735,8 @@ disableWidgetPanel:function(){
 this.xtypeform.disable();
 	if(this.xpanlForm)this.xpanlForm.disable();
 	//quando esco da editing abilito add
-	
+	this.moveDown.disable(true);
+	this.moveUp.disable(true);
 	this.delW.disable(true);
 	this.saveW.disable(true);
 	this.ckPage.enable(true);
@@ -712,7 +745,7 @@ enableWidgetPanel:function(){
 this.xtypeform.enable();
 	if(this.xpanlForm)this.xpanlForm.enable();
 	//quando vado in editing disabilito add
-	
+	this.enableUpDown();
 	this.delW.enable(true);
 	this.saveW.enable(true);
 	this.ckPage.disable(true);
@@ -842,8 +875,34 @@ findAction:function(type){
 		if(this.actions_store[i].type==type)return i;
 	}
 	return -1;
+},
+//If row is selected, check row positions and enble the arrow
+enableUpDown:function(){
+	var sm =this.widList.getSelectionModel();
+	
+	if(sm){
+			if(sm.isSelected( 0 )){// è selezionato il primo
+				this.moveDown.enable();
+				this.moveUp.disable();
+				
+			}
+			else if(sm.isSelected( this.widList.getStore().getCount()-1)){//selezionato ultimo
+				
+				
+				this.moveDown.disable();
+				this.moveUp.enable();
+				
+			}else{
+				
+				this.moveDown.enable();
+				this.moveUp.enable();
+			}
+		
+		
+	}
+	
+	
 }
-
 });
 
 

@@ -159,7 +159,7 @@ gxp.plugins.FeatureEditorGrid = Ext.extend(Ext.grid.PropertyGrid, {
                                     if (typeof value == "string") {
                                         date = Date.parseDate(value.replace(/Z$/, ""), "c");
                                     }
-                                    return date ? date.format(format) : value;
+                                    return  value.format(format);//date ? date.format(format) : value;
                                 };
                             })();
                             break;

@@ -7,7 +7,7 @@
 			"ptype": "gxp_wmssource",
 			"url": "http://84.33.2.28:8081/geoserver/it.geosolutions/ows",
 			"title": "GeoSolutions GeoServer",
-			"SRS": "EPSG:900913",
+			"SRS": "EPSG:3003",
 			"version":"1.1.1",
 		    "layersCachedExtent": [
 				-20037508.34,-20037508.34,
@@ -102,17 +102,15 @@
     "customPanels":[
         {
             "xtype": "panel",
-            "title": "Metadata Explorer",
-            "iconCls": "csw-viewer",             
+            "title": "Features List",
             "border": false,
             "id": "south",
             "region": "south",
             "layout": "fit",
-            "split":true,
+            "split":false,
             "height": 330,
             "collapsed": true,
             "collapsible": true,
-            "ctCls": "south-panel",
             "header": true
         },{
           "xtype": "panel",
@@ -157,7 +155,9 @@
 	     {	
 		 	"ptype": "gxp_featureeditor",
     		"featureManager": "featuremanager",
-    		"autoLoadFeatures": "true"
+    		
+    		 "outputConfig":{
+                  "outputSRS": "EPSG:3003"}
 	    },{
 		  "ptype": "gxp_featuregrid",
 		  "featureManager": "featuremanager",
