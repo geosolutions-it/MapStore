@@ -136,7 +136,7 @@ loadResourceData: function(resource){
  
 canCommit :function(){
 	
-	if(this.mList.canCommit() && this.pView.canCommit() && this.pForm.canCommit() && this.pFormseg.canCommit())return true;
+	if(this.mList.canCommit() && this.pView.canCommit() && this.pForm.canCommit() && this.pFormseg.canCommit()) return true;
 	else return false;	
 },
 

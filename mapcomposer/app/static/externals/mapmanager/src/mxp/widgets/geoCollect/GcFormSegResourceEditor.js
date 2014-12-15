@@ -54,12 +54,12 @@ initComponent: function() {
 
 //Condizioni di validità per la form, 1) Deve avere tutti i campi del sopralluogo implementati altrimenti non è valida!!
 //Condizione pesante da valitare devi ciclare fra tutte le pagine e  tutti i campi e controllare che siano presenti
-//forse conviene fare un array dei campi e confrontarli uno ad uno bo :D
 isValid:function() {
-	//Se in editing non la valido
-	if(this.ckForm.disabled)return false;
+
 	//Se non ho nessuna pagina è valida vuol dire che non la vogliono mettere
 	if(this.pages_store.getCount()==0) return true;
+
+    if(!this.formTitle.isValid())return false;
 	//ho creato store con i nomi dei campi impostati nella form
 
 	fId_str=this.getFieldsList();
@@ -68,10 +68,10 @@ isValid:function() {
 	//recupero store dal pannello sotto rimuovo tutti i filtri se ce ne fossero
 	sop=this.pageWidget.sop_store;
 	sop.clearFilter();
-	if(!this.formTitle.isValid())return false;
+	
 	//primo controllo se numero differente non posso accettare
 	
-	if(fId_str.getCount()<sop.getCount()&& false)return false
+	if(fId_str.getCount()<sop.getCount()&& false)return false;
 		else {   //cicli per controllare validita
 			
 			for(i=0, ilen=sop.getCount();i<ilen;i++){
