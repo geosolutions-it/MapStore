@@ -62,8 +62,8 @@ this.items=[{
     		 ];
     
     
-this.on('render',this.setField,this)
-this.on('render',this.setidField,this)
+this.on('render',this.setField,this);
+this.on('render',this.setidField,this);
     
              mxp.widgets.XtypeLabel.superclass.initComponent.call(this, arguments);
 	
@@ -86,7 +86,6 @@ this.on('render',this.setidField,this)
  * */
 loadXtype:function(o){
 	this.jObj=o;
-	console.log(o);
 	this.labField.setValue(o.label);
 	if(o.value)this.valueField.setValue(o.value);
 	if(o.fieldId)this.setidField();
@@ -155,7 +154,7 @@ sopUpdated:function(){
 
 setField:function(){
 	 if(this.isSegActive())
-	 	{parent= this.findParentByType('mxp_gc_mobile_widget_panel');
+	 	{var parent= this.findParentByType('mxp_gc_mobile_widget_panel');
 	    val = parent.fieldSelector.getValue();
 	    this.valueField.setValue('${origin.'+val+'}');}
 	    
@@ -163,19 +162,20 @@ setField:function(){
 //Recupera il valore dal widget fields e lo setta!!
 setidField:function(){
 	 if(this.isFielIdActive())	
-	 	{parent= this.findParentByType('mxp_gc_mobile_widget_panel');
+	 	{ var parent= this.findParentByType('mxp_gc_mobile_widget_panel');
 	    val = parent.sopSelector.getValue();
 	    this.idField.setValue(val);}
 },
 isFielIdActive:function(){
 	
-		parent= this.findParentByType('mxp_gc_mobile_widget_panel');
+		var parent= this.findParentByType('mxp_gc_mobile_widget_panel');
+		console.log(parent);  
 		return !parent.sopSelector.hidden;
 		
 	},
 isSegActive:function(){
 	
-		parent= this.findParentByType('mxp_gc_mobile_widget_panel');
+		var parent= this.findParentByType('mxp_gc_mobile_widget_panel');
 		return !parent.fieldSelector.hidden;
 		
 	},
@@ -185,8 +185,6 @@ isSegActive:function(){
  * Return boolean
  */
 isDirty:function(){
-	console.log(Ext.encode(this.jObj));
-	console.log(Ext.encode(this.getXtype()));
 	a=Ext.encode(this.jObj);
 	b=Ext.encode(this.getXtype());
 	return (a==b)? false:true;		

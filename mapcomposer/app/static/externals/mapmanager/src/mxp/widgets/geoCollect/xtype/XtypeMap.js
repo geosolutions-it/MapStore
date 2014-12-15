@@ -188,7 +188,6 @@ this.items=[ {
  * */
 loadXtype:function(o){
 	this.jObj=o;
-	console.log(o.attributes)
 	if(o.attributes){	
 		if(o.attributes.editable) this.editCk.setValue(o.attributes.editable);
 		if(o.attributes.disablePan) this.panCk.setValue(o.attributes.disablePan);
@@ -309,7 +308,7 @@ getGeometryFields:function(){
 },
 isSegActive:function(){
 	
-		parent= this.findParentByType('mxp_gc_mobile_widget_panel');
+		var parent= this.findParentByType('mxp_gc_mobile_widget_panel');
 		return !parent.fieldSelector.hidden;
 		
 	},
@@ -319,8 +318,6 @@ isSegActive:function(){
  * Return boolean
  */
 isDirty:function(){
-	console.log(Ext.encode(this.jObj));
-	console.log(Ext.encode(this.getXtype()));
 	a=Ext.encode(this.jObj);
 	b=Ext.encode(this.getXtype());
 	return (a==b)? false:true;		

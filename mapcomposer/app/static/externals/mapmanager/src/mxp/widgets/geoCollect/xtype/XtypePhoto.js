@@ -127,8 +127,6 @@ sopUpdated:function(){
  * Return boolean
  */
 isDirty:function(){
-	console.log(Ext.encode(this.jObj));
-	console.log(Ext.encode(this.getXtype()));
 	a=Ext.encode(this.jObj);
 	b=Ext.encode(this.getXtype());
 	return (a==b)? false:true;		

@@ -169,7 +169,7 @@ sopUpdated:function(){
 },
 //Recupera il valore dal widget fields e lo setta!!
 setidField:function(){
-	 	parent= this.findParentByType('mxp_gc_mobile_widget_panel');
+	 var	parent= this.findParentByType('mxp_gc_mobile_widget_panel');
 	    val = parent.sopSelector.getValue();
 	    this.idField.setValue(val);
 },
@@ -184,13 +184,13 @@ setMandatory:function(){
 },
 //Recupera il valore dal widget fields e lo setta!!
 setField:function(){
-	 	parent= this.findParentByType('mxp_gc_mobile_widget_panel');
+	 var	parent= this.findParentByType('mxp_gc_mobile_widget_panel');
 	    val = parent.fieldSelector.getValue();
 	    this.valueField.setValue('${origin.'+val+'}');
 },
 getMandatory:function(){
 	
-		parent= this.findParentByType('mxp_gc_mobile_widget_panel');
+		var parent= this.findParentByType('mxp_gc_mobile_widget_panel');
 	    rec= parent.fieldSelector.getStore().query('name',parent.fieldSelector.getValue());
 	    nillable =rec.get(0).get('nillable');
 	    return nillable;
@@ -198,7 +198,7 @@ getMandatory:function(){
 },
 getType:function(){
 	
-		parent= this.findParentByType('mxp_gc_mobile_widget_panel');
+	var	parent= this.findParentByType('mxp_gc_mobile_widget_panel');
 	    return parent.xdatatypeSelector.getValue();
 	 
 },

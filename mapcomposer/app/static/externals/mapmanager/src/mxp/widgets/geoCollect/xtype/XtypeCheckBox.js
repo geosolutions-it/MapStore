@@ -136,9 +136,8 @@ this.setfieldId();
 },
 //Recupera il valore dal widget fields e lo setta!!
 setfieldId:function(){
-	 	parent= this.findParentByType('mxp_gc_mobile_widget_panel');
+	   var	parent= this.findParentByType('mxp_gc_mobile_widget_panel');
 	    val = parent.sopSelector.getValue();
-	    console.log(val.length);
 	    this.idField.setValue(val);
 },
 /**
@@ -147,8 +146,6 @@ setfieldId:function(){
  * Return boolean
  */
 isDirty:function(){
-	console.log(Ext.encode(this.jObj));
-	console.log(Ext.encode(this.getXtype()));
 	a=Ext.encode(this.jObj);
 	b=Ext.encode(this.getXtype());
 	return (a==b)? false:true;		
