@@ -39,7 +39,6 @@ mxp.widgets.GcMobileResourceEditor = Ext.extend(Ext.Panel, {
     
     
 initComponent: function() {
-console.log("mxp_gc_mobile_resourcce_editor");		
       
 //Setto le impostazioni di base del panel!!
 this.iconCls='resource_edit';
@@ -55,7 +54,35 @@ this.items=[{
 	ref:'tabbi',
 	xtype:'tabpanel',
 	autoDestroy: false,
-	items:[]
+	items:[],listeners:{
+	    beforetabchange:function( me, newTab, currentTab ){
+	        //Check is panel is dirty
+	       if(currentTab){
+	        if((currentTab.isXType( 'mxp_gc_form_resourcce_editor') || currentTab.isXType( 'mxp_gc_formseg_resourcce_editor'))&&currentTab.isDirty()){
+	             
+               currentTab.saveMe();
+               return false;
+	            
+	        }
+	        else if(currentTab.isXType( 'mxp_gc_pview_resourcce_editor') ){
+	           if(!currentTab.xpanlForm.disabled &&  currentTab.xpanlForm.isDirty()){
+	                currentTab.saveMe();
+                        return false;
+	               
+	           }
+                       
+	        }
+	        else  if(currentTab.isXType( 'mxp_gc_ml_resourcce_editor')&& !currentTab.canCommit() ){
+	               Ext.Msg.alert('Status', 'Page must be valid to continue '); 
+	               return false;
+
+	        }
+	        
+	        }
+	        
+	    },scope:this
+	    
+	},
 	}];
                          
 		mxp.widgets.GcMobileResourceEditor.superclass.initComponent.call(this, arguments);
@@ -88,7 +115,6 @@ updateStore:function(dbp){
 getResourceData: function(){
 	             mlRes= this.mList.getResourceData();
 	             pvRes= this.pView.getResourceData();
-	             console.log(pvRes);
 	             frRes=this.pForm.getResourceData();
 	             frSeg=this.pFormseg.getResourceData();
              	 res=Ext.apply(mlRes,pvRes);

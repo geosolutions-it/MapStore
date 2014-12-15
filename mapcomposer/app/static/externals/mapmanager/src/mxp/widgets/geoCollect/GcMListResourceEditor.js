@@ -38,7 +38,6 @@ mxp.widgets.GcMListResourceEditor = Ext.extend(Ext.Panel, {
     id:'MainListResourceEditor',
     
 initComponent: function() {
-console.log("creo mxp_gc_ml_resourcce_editor");   
      //Setto le impostazioni di base del panel!!
 this.frame=true;
 this.layout='form';
@@ -177,7 +176,6 @@ this.items=[ {
                     tooltip: 'Remove conditionns',
                     iconCls: "delete",
                     handler: function(btn){
-                    	console.log("removecondition");
                     	var grandParent=btn.findParentByType('container').findParentByType('container');
                        	grandParent.removeAll(true);
                        	grandParent.destroy();
@@ -227,7 +225,7 @@ loadResourceData: function(resource){
                    	this.setPriorityValuesColors(res);	
                     
                 },
-                canCommit :function(){//Condizioni per sapere se è committabile 
+    canCommit :function(){//Condizioni per sapere se è committabile 
                 	//Deve avere selezionato tutto e avere alemno un filtro
                 	
                 	if(this.listName.getValue()&&this.listDescription.getValue()&&this.listIcon.getValue()&&this.listOrdering.getValue()&& this.validatePriority())
@@ -243,10 +241,9 @@ loadResourceData: function(resource){
     	var filterArray=this.filterContainer.findByType('mxp_filterfield');	
 				    for(i=0;i<filterArray.length;i++){
 				    	filter=filterArray[i].filter;
-				    	//console.log(filter);
 				    	obj[filter.value]=(filter.color.indexOf('#')==0)?filter.color:'#'+filter.color;
 				}
-	return obj
+	return obj;
     }  ,     
     //genera le condizioni se esiste il campo   
     setPriorityValuesColors:function(res){

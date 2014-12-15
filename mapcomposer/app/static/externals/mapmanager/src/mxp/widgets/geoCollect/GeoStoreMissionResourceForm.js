@@ -76,9 +76,6 @@ mxp.widgets.GeoStoreMissionResourceForm = Ext.extend(Ext.Panel, {
 		var values = this.values ||{
             category:this.category
         };
-        console.log(this.authParam);
-        console.log(this.target);
-        console.log(sessionStorage);
         this.addEvents(
             /**
              * @event save
@@ -206,8 +203,6 @@ mxp.widgets.GeoStoreMissionResourceForm = Ext.extend(Ext.Panel, {
 			xtype:'panel',
             layout:'accordion',
 			border:false,
-			layoutConfig : {
-   			animate : true},
 			items:[{
 			  frame:true,
               xtype:'form',
@@ -399,7 +394,6 @@ mxp.widgets.GeoStoreMissionResourceForm = Ext.extend(Ext.Panel, {
             }); 
         };
         var createFinish = function(response){
-            console.log(response);  
             var win = me.showPermissionPrompt(response);
             finish(response);
         };
@@ -456,7 +450,6 @@ mxp.widgets.GeoStoreMissionResourceForm = Ext.extend(Ext.Panel, {
             this.resourceManager.findByPk(resourceId, 
                 //Full Resource Load Success
                 function(data){
-                	//console.log(data);
                     //fill the form
                     if(!data){
                          Ext.Msg.show({

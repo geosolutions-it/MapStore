@@ -81,7 +81,6 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
     
     
 	initComponent: function() {
-console.log("mxp_gc_db_resourcce_editor");		
         this.addEvents({
             /**
              * @event ready
@@ -128,7 +127,6 @@ var baseParams = this.baseParams || {
 		//Modificata per usare sessionStorage
 		if(this.authParam && sessionStorage.userDetails){
 			var userInfo = Ext.decode(sessionStorage.userDetails);
-			console.log(userInfo);
 			var authkey;
 			if(userInfo.user.attribute instanceof Array){
 				for(var i = 0 ; i < userInfo.user.attribute.length ; i++ ){
@@ -166,7 +164,6 @@ var baseParams = this.baseParams || {
                     // object and fire failure if found.
                     if (!this.dbstore.reader.raw || !this.dbstore.reader.raw.service) {
                         this.fireEvent("failure", this, "Invalid capabilities document.");
-                        console.log("capabilitie invalid");
                     } else {
                         if (!this.title) {
                             this.title = this.dbstore.reader.raw.service.title;                        
@@ -189,10 +186,8 @@ var baseParams = this.baseParams || {
                 dbready: function(){
                 	if(this.typeName)//Se mi hanno passato una fonte la setto
                 	this.setComboValue(this.typeName);    
-                	//console.log("Capability Ready");            	
                 },
                 exception: function(proxy, type, action, options, response, arg) {
-                    conosle.log("exception");
                   //  delete this.store;
                     var msg;
                     if (type === "response") {
@@ -304,7 +299,6 @@ this.comboSource = new Ext.form.ComboBox({
                     }
                     // TODO: decide on signature for failure listeners
                     this.fireEvent("failure", this, msg, Array.prototype.slice.call(arguments));
-                    console.log("fallito caricamento"+ msg);
                 },
                 scope: this
             	}
@@ -324,7 +318,6 @@ this.sop_fieldStore = new GeoExt.data.AttributeStore({
                     }
                     // TODO: decide on signature for failure listeners
                     this.fireEvent("failure", this, msg, Array.prototype.slice.call(arguments));
-                     console.log("fallito caricamento"+ msg);
                 },
                 scope: this
             	}
@@ -397,7 +390,7 @@ this.autoScroll=true;
 			  	 	items:[
 			  	 	seg_schema_grid,sop_schema_grid]
 			  	 }
-			  	 	]
+			  	 	];
 	
 		mxp.widgets.GcDbResourceEditor.superclass.initComponent.call(this, arguments);
 	},
@@ -407,7 +400,6 @@ this.autoScroll=true;
 	 	this.waitIdx++;
 	 	
         var req = this.dbstore.reader.raw.capability.request.describelayer;
-        console.log(rec);
         
       	var  bParams=rec.store.baseParams;
         bParams.REQUEST="DescribeLayer";
@@ -448,14 +440,12 @@ this.autoScroll=true;
 		var recs = Ext.isArray(arguments[1]) ? arguments[1] : arguments[0];
 		var obj = Ext.isObject(arguments[1]) ? arguments[1] : arguments[0];
 		if(arguments[2]){
-			//console.log(this.dbstore.getById(obj.id));
 			//recupera il layer e fondi informazioni
 			Ext.applyIf(this.dbstore.getById(obj.id).data,recs[0].data);	
                       
 		}else {
 			//non ha describ layer rimuovo dalla lista
 				this.dbstore.remove(this.dbstore.getById(obj.id));
-				console.log("Fallito describe layer"); //andrebbe eliminato il record		
 			}
 			this.fireDbReady(this);
 		
@@ -592,7 +582,7 @@ getSeg_Store:function(){
 new_seg=	new GeoExt.data.AttributeStore({
 	fields:this.parseFields,
 	proxy:new Ext.data.MemoryProxy(this.seg_fieldStore.reader.raw.featureTypes[0].properties)	
-})	
+});
 
 	return new_seg;
 	
@@ -602,7 +592,7 @@ getSop_Store:function(){
 	new_sop=	new GeoExt.data.AttributeStore({
 	fields:this.parseFields,
 	proxy:new Ext.data.MemoryProxy(this.sop_fieldStore.reader.raw.featureTypes[0].properties)	
-})	
+});
 
 return new_sop;
 

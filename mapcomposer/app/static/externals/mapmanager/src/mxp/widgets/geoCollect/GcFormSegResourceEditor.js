@@ -43,7 +43,6 @@ mxp.widgets.GcFormSegResourceEditor = Ext.extend(mxp.widgets.GcFormResourceEdito
   	segHidden:true,
   	
 initComponent: function() {                    
-			console.log('mxp_gc_form_resourcce_editor');
  	
  	
 		mxp.widgets.GcFormSegResourceEditor.superclass.initComponent.call(this, arguments);

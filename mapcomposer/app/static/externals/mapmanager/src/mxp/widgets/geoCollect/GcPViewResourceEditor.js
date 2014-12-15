@@ -35,7 +35,6 @@ mxp.widgets.GcPViewResourceEditor = Ext.extend(mxp.widgets.GcMobileWidgetPanel, 
 	xtype:'mxp_gc_pview_resourcce_editor',
     
 initComponent: function() {                    
-console.log('mxp_gc_mobile_resourcce_editor');	 
 
 //Nella preview ho solo questi widget!!
 	 this.allowedTypes= [

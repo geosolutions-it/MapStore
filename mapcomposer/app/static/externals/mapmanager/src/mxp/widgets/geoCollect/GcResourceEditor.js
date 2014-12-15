@@ -41,6 +41,13 @@ mxp.widgets.GcResourceEditor = Ext.extend(Ext.Panel, {
 	border:false,
 	resource:null, // la risorsa caricata
 	authParam:null,
+	layoutConfig: {
+        // layout-specific configs go here
+        titleCollapse: true,
+        hideCollapseTool:true,
+        fill:true,
+        activeOnTop: true
+    },
 	
 initComponent: function() {
 this.items=[{
@@ -56,7 +63,6 @@ this.items=[{
 			this.mobEdit.updateStore(dbp);	
 		},
 		resLoaded:function(){
-			console.log("event res loaded");
 			//caricare le risorse in tutti i pannelli :-D
 			
 			//Va ritardato
@@ -89,7 +95,8 @@ this.items=[{
 			                    //Se sono in editing il bottone è disabilitato|| 
 			             	
 			                    			 this.getResourceData();
-ù			                    	 },scope:this
+     			                    	 },
+                                scope:this
 			                    
 			                  		},'-',{
 		       					text:'Load',
@@ -173,7 +180,6 @@ getResourceData: function(){
                    dbV=this.dbEdit.canCommit();
                    moV=this.mobEdit.canCommit()
                     if(dbV===true && moV ===true)return true;
-                    console.log("DbEditor valid: "+dbV+" MobEditor valid: "+moV);
                     return false;
                 }
 

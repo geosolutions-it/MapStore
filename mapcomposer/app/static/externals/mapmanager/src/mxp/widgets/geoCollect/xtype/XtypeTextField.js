@@ -176,9 +176,6 @@ setidField:function(){
 //Recupera il valore dal widget fields e lo setta!!
 setMandatory:function(){
 	 	//Recupero il mandatory se il fild se è mandatory lo chekko e lo bolocco altrimenti la scelta è libera
-	 	
-	
-	    console.log(this.getMandatory());
 	    if(!this.getMandatory()){
 	    	this.mandCk.setValue(true);
 	    	this.mandCk.disable();
@@ -211,8 +208,6 @@ getType:function(){
  * Return boolean
  */
 isDirty:function(){
-	console.log(Ext.encode(this.jObj));
-	console.log(Ext.encode(this.getXtype()));
 	a=Ext.encode(this.jObj);
 	b=Ext.encode(this.getXtype());
 	return (a==b)? false:true;		
