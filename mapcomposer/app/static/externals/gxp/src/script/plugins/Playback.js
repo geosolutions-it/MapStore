@@ -166,17 +166,27 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
                 this.addOutput();
 				self.target.fireEvent("timemanager");
                 self.getTimeManager();
+                self.populateTimeOptionsPanel();
                 
-                this.formPanel = Ext.getCmp("realTimePanelID");
-                
-                //populate timeslider settings panel with values
-                this.formPanel.optionsPanel.timeManager = this.playbackToolbar.control;
-                this.formPanel.optionsPanel.playbackToolbar = this.playbackToolbar;
-                
-                this.formPanel.optionsPanel.populateForm();
+
             }
         }, this);
     },
+    /** private: method[populateTimeOptionsPanel]
+     *  
+     */    
+    populateTimeOptionsPanel: function(){
+    
+        var timeOptionsPanel = Ext.getCmp("realTimePanelID");
+        
+        //populate timeslider settings panel with values
+        timeOptionsPanel.optionsPanel.timeManager = this.playbackToolbar.control;
+        timeOptionsPanel.optionsPanel.playbackToolbar = this.playbackToolbar;
+        
+        timeOptionsPanel.optionsPanel.populateForm();    
+        
+    },
+    
     getTimeManager: function(){
 	    if ( ! this.timeManager ){ // if it is not initialized
 			var timeManagers = this.target.mapPanel.map.getControlsByClass('OpenLayers.Control.TimeManager');
