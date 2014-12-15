@@ -176,6 +176,7 @@ gxp.widgets.WeatherProgResume = Ext.extend(gxp.widgets.WFSResume, {
         // ///////////////////////////////////////
         var outcomeTabPanel = new Ext.TabPanel({
             title : "Weather Prog: " + referenceName,
+			rasterName: rasterName,
             // height : 300,
             // width : 300,
             closable : true,
