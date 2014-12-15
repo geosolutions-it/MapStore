@@ -318,6 +318,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
             var lyr = layers[i];
             if(lyr.dimensions && lyr.dimensions.time) {!lyr.metadata && (lyr.metadata = {});
                 lyr.metadata.timeInterval = this.timeExtentsToIntervals(lyr.dimensions.time.values);
+                lyr.metadata.allowRange = ("allowRange" in lyr) ? lyr.allowRange : false;
             }
             if((lyr.dimensions && lyr.dimensions.time) || (lyr.metadata.timeInterval && lyr.metadata.timeInterval.length)) {
                 this.layers.push(lyr);
@@ -378,6 +379,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
         var lyr = evt.layer;
         if(lyr.dimensions && lyr.dimensions.time) {
             lyr.metadata.timeInterval = this.timeExtentsToIntervals(lyr.dimensions.time.values);
+            lyr.metadata.allowRange = ("allowRange" in lyr) ? lyr.allowRange : false;
         }
         //don't do anything if layer is non-temporal
         if(!lyr.metadata.timeInterval) {
@@ -1030,10 +1032,8 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
 		            + this.pad(d.getUTCDate()) + 'T'
                     
 		            + this.pad(d.getUTCHours()) + ':'
-		            + "00" + ':'
-		            + "00" + 'Z';
-		            //+ this.pad(d.getUTCMinutes()) + ':'
-		            //+ this.pad(d.getUTCSeconds()) + 'Z';
+		            + this.pad(d.getUTCMinutes()) + ':'
+		            + this.pad(d.getUTCSeconds()) + 'Z';
 
         currentTimeUTC = Date.fromISO( start ); 
         
