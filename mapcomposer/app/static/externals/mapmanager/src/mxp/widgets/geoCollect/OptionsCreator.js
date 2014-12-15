@@ -39,10 +39,10 @@ initComponent: function() {
 
 Ext.apply(Ext.form.VTypes, {
                 GCOPT: function(v) {
-                    return  /[A-Za-z0-9_éèàì,]/i.test(v);
+                    return  new RegExp("[A-Za-z0-9_éèàì',]","i").test(v);
                 },
                 GCOPTText: "Must not contain spaces",
-                GCOPTMask: /[A-Za-z0-9_éèàì,]/i
+                GCOPTMask: new RegExp("[A-Za-z0-9_éèàì',]","i")
            });
 
 this.items=[ {
