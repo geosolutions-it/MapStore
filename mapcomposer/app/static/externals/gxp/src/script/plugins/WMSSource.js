@@ -391,6 +391,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 				opacity: ("opacity" in config) ? config.opacity : 1,
 				buffer: ("buffer" in config) ? config.buffer : 0,
 				loadingProgress: config.loadingProgress || this.loadingProgress || false,
+				dimensions: original.data.dimensions,
 				projection: layerProjection,
 				vendorParams: config.vendorParams,
 				transitionEffect: transitionEffect,
@@ -700,7 +701,11 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 					styles = defaultStyle; 
 				}
 			} 
-		}
+		}else{
+			if(config.styles){
+				styles = config.styles;
+			}				
+		}  
 
 		return styles;
 		

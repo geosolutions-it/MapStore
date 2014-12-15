@@ -69,7 +69,7 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
     resourceNotValid: "Resource not valid",
     deleteSuccessMessage: "Resource Deleted Successfully",
     permissionTitleText: "Permissions",
-   
+    generalPanelHeight: 165,
     
 	initComponent: function() {
 		var values = this.values ||{
@@ -201,9 +201,10 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
 			  ref:'../general',
 			  border: false,
 			  collapsible:true,
-              height:160,
+              height:this.generalPanelHeight || 165,
               title:this.textGeneral,
               iconCls:'table_edit',
+                autoScroll:true,
 			  items: [{
                     xtype:'panel',
                     autoScroll:true,
@@ -213,7 +214,6 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
                 },{
                     xtype:'panel',
                     ref:'attributeColumn',
-                    autoScroll:true,
                     columnWidth:.5,
                     layout:'form',
                     items:this.attributeFields
