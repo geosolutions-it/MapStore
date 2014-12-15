@@ -125,17 +125,29 @@ gxp.widgets.button.AreeAllertaAverageRainfallButton = Ext.extend(Ext.Button, {
     
         var timeManagers = this.target.target.mapPanel.map.getControlsByClass('OpenLayers.Control.TimeManager');
         
-
-        //var fff = data.endDate.replace(/-/g, "/");
-        var ppp = new Date(timeManagers[0].currentTime);
-        var ccc = this.addMinutes(ppp, data2.tipocumulativeStep);
-        var aaa = OpenLayers.Date.toISOString(ccc);
-
-        var startDate = Ext.util.Format.date(aaa, 'Y-m-d H:i:s');
-        var endDate = Ext.util.Format.date(OpenLayers.Date.toISOString(ppp), 'Y-m-d H:i:s');
+        this.animationStep = Ext.getCmp("animationStepID").getValue();
         
-        this.startDate = startDate;
-        this.endDate = endDate;
+
+        var endDateISO = new Date(timeManagers[0].currentTime);   
+        
+        var endDateUTC = endDateISO.getUTCFullYear() + '-'
+                    + this.pad(endDateISO.getUTCMonth() + 1) + '-'
+                    + this.pad(endDateISO.getUTCDate()) + ' '
+                    + this.pad(endDateISO.getUTCHours()) + ':'
+                    + this.pad(endDateISO.getUTCMinutes()) + ':'
+                    + this.pad(endDateISO.getUTCSeconds());        
+                    
+        var startDateISO = this.addMinutes(endDateISO, this.animationStep);
+        
+        var startDateUTC = startDateISO.getUTCFullYear() + '-'
+                    + this.pad(startDateISO.getUTCMonth() + 1) + '-'
+                    + this.pad(startDateISO.getUTCDate()) + ' '
+                    + this.pad(startDateISO.getUTCHours()) + ':'
+                    + this.pad(startDateISO.getUTCMinutes()) + ':'
+                    + this.pad(startDateISO.getUTCSeconds());         
+        
+        this.startDate = startDateUTC;
+        this.endDate = endDateUTC;
         
         Ext.Ajax.request({
             scope: this,
@@ -144,14 +156,14 @@ gxp.widgets.button.AreeAllertaAverageRainfallButton = Ext.extend(Ext.Button, {
             params: {
                 service: "WFS",
                 version: "1.1.0",
-                geometryName: "POINT",
+                geometryName: "geom",
                 request: "GetFeature",
-                typeName: 'pioggia_ora_buona',
+                typeName: 'pioggia_pg_buona',
                 outputFormat: "json",
-                propertyName: "PREC_MM,DATA_ORA,AREAALLERTA,POINT",
+                propertyName: "prec_mm,data_ora,areaallerta,geom",
                 srsName: "EPSG:4326",
-                sortBy: "AREAALLERTA",
-                viewparams: 'startDate:' + this.startDate + ';endDate:' + this.endDate + ';cumulativeStep:' + data2.tipocumulativeStep
+                sortBy: "areaallerta",
+                viewparams: 'startDate:' + this.startDate + ';endDate:' + this.endDate + ';cumulativeStep:' + this.animationStep
             },
             success: function(result, request) {
                 try {
@@ -175,8 +187,8 @@ gxp.widgets.button.AreeAllertaAverageRainfallButton = Ext.extend(Ext.Button, {
                     var pioggiaSum = 0;
                     var count = 0;
                     for (var m = 0, p = jsonData2.features.length; m < p; m++) {
-                        if (areeGeometry.features[i].attributes.SSIGLA === jsonData2.features[m].properties.AREAALLERTA) {
-                            pioggiaSum = pioggiaSum + parseFloat(jsonData2.features[m].properties.PREC_MM);
+                        if (areeGeometry.features[i].attributes.SSIGLA === jsonData2.features[m].properties.areaallerta) {
+                            pioggiaSum = pioggiaSum + parseFloat(jsonData2.features[m].properties.prec_mm);
                             count = count + 1;
                         }
                     }
@@ -334,8 +346,10 @@ gxp.widgets.button.AreeAllertaAverageRainfallButton = Ext.extend(Ext.Button, {
 
                 styleMap.styles['default'].addRules(rules);
                 styleMap.styles['select'].addRules(rules);
+                
+                var rawAnimationStep = Ext.getCmp("animationStepID").getRawValue();
 
-                var miolayer = new OpenLayers.Layer.Vector("Avg - " + data.tipocumulativeStep + ", Start: " + this.startDate + ", End: " + this.endDate, {
+                var miolayer = new OpenLayers.Layer.Vector("Avg - " + rawAnimationStep + ", Start: " + this.startDate + ", End: " + this.endDate, {
                     styleMap: styleMap,
                     renderers: renderer,
                     displayInLayerSwitcher: true
