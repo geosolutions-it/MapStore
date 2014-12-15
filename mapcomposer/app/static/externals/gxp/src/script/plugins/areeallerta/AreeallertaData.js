@@ -88,7 +88,7 @@ gxp.plugins.areeallerta.AreeallertaData = Ext.extend(gxp.plugins.Tool, {
             },
             items: [{
                     xtype: 'fieldset',
-                    title: 'Inizio Calcolo',
+                    title: 'Calcolo Aree di Allerta',
                     labelWidth: 40,
                     items: [{
                         xtype: 'panel'
@@ -136,6 +136,7 @@ gxp.plugins.areeallerta.AreeallertaData = Ext.extend(gxp.plugins.Tool, {
                     collapsible: false,
                     forceLayout: true, //needed to force to read values from this fieldset
                     collapsed: false,
+                    hidden: true,
                     items: [{
                         xtype: 'combo',
                         ref: '../cumulativeStep',
