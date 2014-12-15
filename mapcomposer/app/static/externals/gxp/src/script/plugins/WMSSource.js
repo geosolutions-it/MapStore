@@ -338,7 +338,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 	
 		// use all params from sources layerBaseParams option
 		var params = Ext.applyIf({
-			STYLES: styles || "",
+			STYLES: config.styles || styles || "",
 			FORMAT: config.format,
 			TRANSPARENT: config.transparent,
 			//CQL_FILTER: config.cql_filter,
@@ -398,7 +398,10 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 minScale: config.minscale,
                 maxScale: config.maxscale,                
                 displayOutsideMaxExtent: ("displayOutsideMaxExtent" in config) ? config.displayOutsideMaxExtent : true,
-                toUpdate: config.toUpdate
+                toUpdate: ("toUpdate" in config) ? config.toUpdate : false,
+                stationPrefix: ("stationPrefix" in config) ? config.stationPrefix : false,
+                isAreaAllerta: ("isAreaAllerta" in config) ? config.isAreaAllerta : false,
+                allowRange:  ("allowRange" in config) ? config.allowRange : false
 			}
 		);
 
