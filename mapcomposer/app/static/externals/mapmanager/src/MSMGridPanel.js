@@ -1055,7 +1055,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			    });
 		   
 			    var urlField = new Ext.form.TextField({
-					fieldLabel: grid.urlLabel,
+					fieldLabel: grid.embedUrlLabel,
 					labelStyle: 'font-weight:bold;',
 					width: 350,
 					value: embedMap.getAbsoluteUrl(url),
@@ -1088,7 +1088,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 				}
 				
 				var urlComposerField = new Ext.form.TextField({
-					fieldLabel: grid.urlLabel,
+					fieldLabel: grid.composerUrlLabel,
 					labelStyle: 'font-weight:bold;',
 					width: 350,
 					value: embedMap.getAbsoluteUrl(composerUrl),

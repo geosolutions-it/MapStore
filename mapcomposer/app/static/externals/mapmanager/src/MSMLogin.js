@@ -183,10 +183,18 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 scope: this,
                 handler: this.submitLogin
             }]
-        }),
+        });
         
         this.loginButton = new Ext.Button({
-            id: 'id_loginButton'            
+            id: 'id_loginButton',
+            listeners:{
+                scope:this,
+                afterrender: function(){
+                    if(this.forceLogin){
+                        this.showLoginForm();
+                    }
+                }
+            }
         });
         
         this.userLabel = new Ext.form.Label({
@@ -421,11 +429,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
         this.applyLoginState('login', text, userLabel, handler, this);
         this.fireEvent("logout");
         //force show login window on startup
-        this.loginButton.on('afterrender',function(){
-            if(this.forceLogin){
-                this.showLoginForm();
-            }
-        },this);
+        
     },
 
     /** private: method[showLogout]
