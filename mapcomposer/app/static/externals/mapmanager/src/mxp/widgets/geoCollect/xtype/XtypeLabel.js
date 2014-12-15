@@ -169,7 +169,6 @@ setidField:function(){
 isFielIdActive:function(){
 	
 		var parent= this.findParentByType('mxp_gc_mobile_widget_panel');
-		console.log(parent);  
 		return !parent.sopSelector.hidden;
 		
 	},
