@@ -106,7 +106,7 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
                 this.loginManager && this.target.currentTools[this.loginManager] 
                 ? this.target.currentTools[this.loginManager] : null;
         this.auth = this.target.auth;
-        
+        this.geoStoreRestURL = this.geoStoreRestURL || this.target.config.geoStoreBase || "/geostore/rest/";
         this.outputConfig = this.outputConfig || {};
         // create the selection model
         var selectionModel = new Ext.grid.RowSelectionModel({
