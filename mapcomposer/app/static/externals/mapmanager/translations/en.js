@@ -284,7 +284,7 @@ GeoExt.Lang.add("en", {
         displayMessage: "Displaying {0} - {1} of {2}"
     },
     "mxp.plugins.CMREOnDemandServices.prototype":{
-        buttonText: "CMRE Services",
+        buttonText: "Control Panel",
         flowsListTitle: "Algorythms",
         runButtonText: "Run",
         consumersGridTitle: "Outcomes"
@@ -294,8 +294,8 @@ GeoExt.Lang.add("en", {
         descriptionText : "Description",
         progressText: "Progress",
         statusText : "Status",
-        startDateText : "Start Date",
-        endDateText : "End Date",
+        startDateText : "Start Execution Date",
+        runDateText : "Run Date",
         refreshText : "Refresh",
         autoRefreshText: "Auto-Refresh",
         loadingMessage : "Loading...",

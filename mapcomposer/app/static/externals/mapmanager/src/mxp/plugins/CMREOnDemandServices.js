@@ -36,7 +36,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
     /** api: ptype = mxp_cmre_ondemand_services */
     ptype: "mxp_cmre_ondemand_services",
     //i18n
-    buttonText: "CMRE Services",
+    buttonText: "Control Panel",
 	flowsListTitle:'Algorythms',
     runButtonText:'Run',
     consumersGridTitle: 'Outcomes',
@@ -82,8 +82,8 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
     addActions: function() {
         
         var thisButton = new Ext.Button({
-            iconCls:'nato_ic', 
-            text: this.buttonText,
+            //iconCls:'nato_ic', 
+            //text: this.buttonText,
             tooltip: this.tooltipText,
             handler: function() { 
                 this.addOutput(); 

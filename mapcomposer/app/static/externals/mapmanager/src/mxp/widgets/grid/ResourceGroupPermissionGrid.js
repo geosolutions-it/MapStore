@@ -243,7 +243,8 @@ mxp.widgets.ResourceGroupPermissionGrid = Ext.extend(Ext.grid.GridPanel, {
                 falseText: this.falseBooleanText,
                 width: 70, 
                 dataIndex: 'canRead', 
-                sortable: true
+                sortable: true,
+                
             },{
                 id: 'canWrite', 
                 header: this.textCanWrite, 
@@ -353,7 +354,8 @@ mxp.widgets.ResourceGroupPermissionGrid = Ext.extend(Ext.grid.GridPanel, {
                     anchor:'90%',
                     name:'canRead',
                     fieldLabel: this.textCanRead,
-                    checked: selectedGroup ? this.selectedRecord.get("canRead") : false,
+                    //checked: selectedGroup ? this.selectedRecord.get("canRead") : false,
+                    checked: true,
                     maxLength:20,                            
                     allowBlank:false
                 },{

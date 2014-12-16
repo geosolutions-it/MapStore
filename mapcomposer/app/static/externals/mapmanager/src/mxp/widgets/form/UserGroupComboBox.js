@@ -96,6 +96,17 @@ mxp.form.UserGroupComboBox = Ext.extend(Ext.form.ComboBox, {
 	        ],
 	        listeners:{
 	        	load: function(store){
+	        		// only show rows with groupName (hide users' rows)
+                    var index = 0;
+                    store.each(function (record){
+                        if(record.get("name") == null || record.get("name") == "" || record.get("name") != "everyone"){
+                        	// console.log("Remove group[" + record.get("name") + "] @" + index);
+                            this.store.removeAt(index);
+                            index--;
+                        }
+                        index++;
+                    }, this);
+                    
 	        		this.fireEvent("storeload", store, this);
 	        		this.loadDefault(store);
 	        	},

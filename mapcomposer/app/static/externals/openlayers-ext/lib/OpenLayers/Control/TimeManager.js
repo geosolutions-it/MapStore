@@ -503,7 +503,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
                     
                     Ext.MessageBox.show({
                         title: "Attention",
-                        msg: "Has reached the beginning of the cruise",
+                        msg: "Has reached the beginning of the route",
                         buttons: Ext.Msg.OK,
                         icon: Ext.MessageBox.WARNING
                     });
@@ -535,7 +535,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
                 }else{
                     /*Ext.MessageBox.show({
                         title: "Attention",
-                        msg: "Has reached the beginning of the cruise",
+                        msg: "Has reached the beginning of the route",
                         buttons: Ext.MessageBox.CANCEL,
                         animEl: 'mb4',
                         icon: Ext.MessageBox.WARNING,
@@ -599,7 +599,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
                             
                         }
                     }
-                }, this), 1000 * (this.frameRate / 4)); //setta il tempo di attesa se il layer non si è ancora caricato prima di riaggiornare il tempo e fare una nuova MergeNewParameter
+                }, this), 1000 * (this.frameRate / 4)); //setta il tempo di attesa se il layer non si ï¿½ ancora caricato prima di riaggiornare il tempo e fare una nuova MergeNewParameter
             }
         }
     },
@@ -710,7 +710,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
             this.setTime(newTime);
         }
         //#######
-        //commentato l'if per consentire il settaggio dei valori dello slide cambiando lo step e le unità anche se i valore di range non sono cambiati
+        //commentato l'if per consentire il settaggio dei valori dello slide cambiando lo step e le unitï¿½ anche se i valore di range non sono cambiati
         //#######
         //if(this.range[0].getTime() != oldRange[0] || this.range[1].getTime() != oldRange[1]) {
             this.events.triggerEvent("rangemodified");
@@ -1101,7 +1101,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
                     return a.resolution.step - b.resolution.step;
                 }
             });
-            // Commentato perchè sovrascrive le impostazioni della configurazione
+            // Commentato perchï¿½ sovrascrive le impostazioni della configurazione
             //this.setRange([timeSpans[0].start, timeSpans[0].end]);
             //this.units = timeSpans[0].resolution.units;
             //this.step = timeSpans[0].resolution.step;

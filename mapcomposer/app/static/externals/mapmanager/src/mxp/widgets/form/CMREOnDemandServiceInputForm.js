@@ -81,7 +81,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	bboxButtonTooltip: 'Select Area of Interest. Must be equal or less than the service max extent.',
 	
 	aoiLabel: "Area of Interest",
-	durationFieldLabel: "Duration (s)", //TODO in hours
+	durationFieldLabel: "Duration (h)",
 	numberOfEvaluationsFieldLabel: "Num. of Evaluations",
 	startTimeFieldLabel: "Start Time",
 	riskMapTypeFieldLabel: 'Risk Map Type',
@@ -627,7 +627,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			scope : this,
 			handler : function() {
 				this.executeRun();
-				
 			}
 		},
 		//RESET

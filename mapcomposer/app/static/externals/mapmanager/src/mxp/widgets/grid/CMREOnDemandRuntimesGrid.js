@@ -57,8 +57,8 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
     descriptionText : "Description",
     progressText: "Progress",
 	statusText : "Status",
-	startDateText : "Start Date",
-    endDateText : "End Date",
+	startDateText : "Start Execution Date",
+    runDateText : "Run Date",
 	refreshText : "Refresh",
     autoRefreshText: "Auto-Refresh",
 	loadingMessage : "Loading...",
@@ -107,11 +107,11 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 			url : this.osdi2ManagerRestURL + 'services/' + this.flowId + '/runtimes',
 			record : 'consumer',
 			idPath : 'id',
-			fields : ['id', 'name', 'status', 'progress', 'startDate', 'endDate', 'description','details','results'],
+			fields : ['id', 'name', 'status', 'progress', 'startDate', 'endDate', 'refDate', 'description','details','results'],
 			reader : new Ext.data.JsonReader({
 				root : 'data',
 				idPath : 'id',
-				fields : ['id', 'name', 'status', 'progress', 'startDate', 'endDate', 'description','details','results']
+				fields : ['id', 'name', 'status', 'progress', 'startDate', 'endDate', 'refDate', 'description','details','results']
 			}),
 			listeners : {
 				beforeload : function(a, b, c) {
@@ -205,10 +205,10 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 			dataIndex : 'startDate',
 			sortable : true
 		}, {
-			id : 'endDate',
-			header : this.endDateText,
+			id : 'refDate',
+			header : this.runDateText,
 			width : 180,
-			dataIndex : 'endDate',
+			dataIndex : 'refDate',
 			sortable : true
 		}];
         //add custom action columns
