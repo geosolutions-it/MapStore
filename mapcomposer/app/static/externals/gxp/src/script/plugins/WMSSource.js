@@ -676,7 +676,11 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 					styles = defaultStyle; 
 				}
 			} 
-		}
+		}else{
+			if(config.styles){
+				styles = config.styles;
+			}				
+		}  
 
 		return styles;
 		

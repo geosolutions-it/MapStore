@@ -124,23 +124,22 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
     
 	cls:'geobatch-consumer-grid',
    
+    // for performance reasons, we don't use a real ExtJS progressbar, but emulate it with a bunch of html and css
+    // this is the basic ProgressBar template with some vars to be filled by code:
+    //  - progress: current progress (0 - 100)
+    //  - barwidth: current bar width in pixel (proportional to progress)
+    //  - textwidth: current highlighted text block width (proportional to progress)
+    fakeProgress : [
+        '<div class="x-progress-wrap">',
+            '<div class="x-progress-inner">',
+                '<div class="x-progress-bar" style="height: 16px; width: {barwidth}px;">',
+                '<div class="x-progress-text" style="z-index: 99; width: {textwidth}px;"><div style="width: 168px; height: 18px;">{progress}%</div></div>',
+            '</div>',
+            '<div class="x-progress-text x-progress-text-back"><div style="width: 168px; height: 18px;">{progress}%</div></div>',
+            '</div>',
+        '</div>'].join(''),
+   
 	viewConfig: {
-		listeners: {
-			refresh: function() {
-				Ext.select('.action-progress', this.grid.el).each(function(progressContainer) {
-					var progress = Math.round(parseFloat(progressContainer.dom.innerHTML)*100)/100;
-					var progressBarEl = progressContainer.next();
-                    if(progress < 100) {
-                        progressBarEl.update('');
-                        this.grid.progressBars.push(new Ext.ProgressBar({
-                          renderTo : progressBarEl,
-                          text : progress + "%",
-                          value : (progress / 100)
-                        }));
-                    }
-				}, this);
-			}
-		},
 		getRowClass : function(record, rowIndex, p, ds){
 			var c = record.get('status');
 			var colorClass;
@@ -156,189 +155,39 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 		}
 	},
    
+    
     initComponent : function() {
-        //FIX FOR IE10 and responseXML TODO: port this as a global fix
-         var ie10XmlStore  = Ext.extend(Ext.data.XmlReader, {
-            read : function(response){
-                        var data = response.responseXML;
-                        if(!data || !data.documentElement) {
-                            if(window.ActiveXObject) {
-                                var doc = new ActiveXObject("Microsoft.XMLDOM");
-                                if(doc.loadXML(response.responseText)){
-                                    data = doc;
-                                }
-                            }
-                        }
-                        return this.readRecords(data);
-                    }
-        });
-		
 		this.resourceManager = new GeoStore.Resource({
 			authorization: this.auth,
             url: this.geoStoreRestURL + 'resources'
 		});
 		
-        // create the Data Store
+        // create the Data Store, depending on mode (active -> GeoBatch, archived -> GeoStore)
 		if(this.mode === 'active') {
-
-			this.store = new Ext.data.Store({
-				// load using HTTP
-				url: this.geoBatchRestURL + 'flows/' + this.flowId + '/consumers?includeDetails=true',
-				record: 'consumer',
-				reader:  new ie10XmlStore({
-					record: 'consumer',
-					idProperty: 'uuid',
-					fields: [{name: 'status', mapping: '@status'},
-					   'uuid',
-					   'startDate',
-					   'description',
-					   {name:'details',convert: function(v) {
-							return v ? Ext.decode(v) : {actions:[]}
-					   }}]
-				}),
-				listeners:{
-					beforeload: function(a,b,c){
-					   this.cleanProgressBars();
-					   if( a.proxy.conn.headers ){
-							if(this.auth){
-								a.proxy.conn.headers['Authorization'] = this.auth;
-							}
-							a.proxy.conn.headers['Accept'] = 'application/xml';
-						}else{
-							a.proxy.conn.headers = {'Accept': 'application/xml'};
-							if(this.auth){
-								a.proxy.conn.headers['Authorization'] = this.auth;
-							}
-						}
-					   
-					},
-					load: function() {
-						this.checkCanArchive();
-					},
-					exception: function(proxy, type, action, options, response) {
-						Ext.Msg.show({
-						   msg: this.errorContactingGeobatch,
-						   buttons: Ext.Msg.OK,
-						   icon: Ext.MessageBox.ERROR
-						});
-					},
-					scope: this
-				},
-				sortInfo: {
-					field: 'startDate',
-					direction: 'DESC' 
-				}
-			});
-		} else {
-			this.store = new MapStore.data.GeoStoreStore({
-				
-				categoryName: "ARCHIVEDRUNS",
-				geoStoreBase: this.geoStoreRestURL,
-				fullResource: true,
-				auth: this.auth,
-				idProperty: 'id',
-                autoLoad: false,
-				fields: [
-					'id',
-					'status',
-					'uuid',
-					'startDate',
-					{name: 'description', mapping: 'data', convert: function(v) {
-						return v ? Ext.decode(v).description : ''
-					}},
-					{name: 'details', mapping: 'data', convert: function(v) {
-						return v ? Ext.decode(v).details : {actions:[]}
-					}},
-					{name: 'log', mapping: 'data', convert: function(v) {
-						return v ? Ext.decode(v).log : {}
-					}}
-				],
-				sortInfo: { field: "id", direction: "ASC" },
-				listeners: {
-                    beforeload: function(a,b,c){
-					   this.cleanProgressBars();
-					},
-					exception: function(proxy, type, action, options, response) {
-						Ext.Msg.show({
-						   msg: this.errorContactingGeostore,
-						   buttons: Ext.Msg.OK,
-						   icon: Ext.MessageBox.ERROR
-						});
-					},
-					scope: this
-				}
-			});
+			this.store = this.createGeoBatchConsumersStore();
+		} else if(this.mode === 'archived') {
+			this.store = this.createGeoStoreConsumersStore();
 		}
     
+        this.listeners = {
+            activate: function() {
+                this.store.load();
+            },
+            scope: this
+        };
+   
 		var expander;
-        this.fakeProgress = [
-            '<div class="x-progress-wrap">',
-                '<div class="x-progress-inner">',
-                    '<div class="x-progress-bar" style="height: 16px; width: 167px;">',
-                    '<div class="x-progress-text" style="z-index: 99; width: 158px;"><div style="width: 168px; height: 18px;">100%</div></div>',
-                '</div>',
-                '<div class="x-progress-text x-progress-text-back"><div style="width: 168px; height: 18px;">100%</div></div>',
-                '</div>',
-            '</div>'].join('');
+        
 		if(this.showDetails) {
-			expander = new Ext.ux.grid.RowExpander({
-				lazyRender : false,
-				getRowClass : function(record, rowIndex, p, ds){
-					var c = record.get('status');
-					var colorClass;
-					if (c == 'SUCCESS') {
-						colorClass =  'row-green';
-					} else if (c == 'RUNNING') {
-						colorClass =  'row-yellow';
-					}else if (c == 'FAIL'){
-						colorClass =  'row-red';
-					}
-					p.cols = p.cols-1;
-					var content = this.bodyContent[record.id];
-					if(!content && !this.lazyRender){
-						content = this.getBodyContent(record, rowIndex);
-					}
-					if(content){
-						p.body = content;
-					}
-					
-					return (this.state[record.id] ? 'x-grid3-row-expanded' : 'x-grid3-row-collapsed') + ' ' + colorClass;
-				},
-				tpl: new Ext.XTemplate(
-					'<table width="100%">',
-						'<tr><th width="200"><b>'+this.actionText+'</b></th><th><b>'+this.taskText+'</b></th><th width="172"><b>'+this.progressText+'</b></th></tr>',
-						'<tpl for="details.actions">',
-							'<tr>',
-								'<td>{name}</td>',
-								'<tpl for="progress">',
-									'<td>{task}</td><td><span style="display: none" class="action-progress">{progress}</span><span class="action-progress-bar"><tpl if="progress &gt;= 100">' + this.fakeProgress + '</tpl></span></td>',
-								'</tpl>',
-							'</tr>',
-						'</tpl>',
-					'</table>'
-				),
-				enableCaching: false
-			});
+			expander = this.createDetailsExpander();
 		}
-	
-		this.listeners = {
-			activate: function() {
-				this.store.load();
-			},
-			scope: this
-		};
 		
 		this.plugins = (this.plugins || []).concat(this.showDetails ? [expander] : []);
        
 		if(this.mode === 'active') {
 			this.getSelectionModel().on({
-				rowselect: function(selModel) {
-					this.checkCanArchive();
-					
-				},
-				rowdeselect: function(selModel) {
-					this.checkCanArchive();
-				},
+				rowselect: this.checkCanArchive,
+				rowdeselect: this.checkCanArchive,
 				scope: this
 			});
 		}
@@ -384,7 +233,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 						this
 					);
                 }
-        },{
+            },{
                 iconCls:'broom_ic',
                 xtype:'button',
                 text:this.clearFinishedText,
@@ -407,19 +256,14 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 		
 		
         if(this.GWCRestURL){
-            this.bbar =[
-            {
+            this.bbar =[{
                 text:this.GWCButtonLabel,
                 iconCls:'gwc_ic',
                 handler: this.showGWCGridWin,
                 scope:this
-            }
-        ]
+            }]
         }
         
-        this.progressBars = [];
-        
-        var me = this;
         this.columns= (this.showDetails ? [expander] : []).concat([
             {id: 'uuid', header: "ID", width: 220, dataIndex: 'uuid', sortable: true, hidden: true},
             {id: 'status', header: this.statusText, width: 100, dataIndex: 'status', sortable: true},
@@ -439,22 +283,19 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 					if(val && val.progress && val.progress.length > 0) {
 						var progress = Math.round((val.progress[0].progress || 0) * 100) / 100;
 						var id = Ext.id();
-                        if(progress < 100) {
-                            (function() {
-                             var progressBar = new Ext.ProgressBar({
-                              renderTo : 'progressbar-' + id,
-                              text : progress + "%",
-                              value : (progress / 100)
-                             });
-                             me.progressBars.push(progressBar);
-                            }).defer(25);
-                        }
-						return '<span style="display:none" id="' + id + '"></span><span id="progressbar-' + id + '">' + ( progress >= 100 ? me.fakeProgress : '') + '</span>';
+                        
+						return '<span id="progressbar-' + id + '">' + 
+                                this.fakeProgress
+                                    .replace(/\{progress\}/g,progress) 
+                                    .replace(/\{barwidth\}/g,(168.0 / 100.0 * progress))
+                                    .replace(/\{textwidth\}/g,Math.max((168.0 / 100.0 * progress) - 9,0))
+                            + '</span>';
 					} else {
 						return '';
 					}
 					
-				} 
+				}, 
+                scope: this
             },
             {
                     xtype:'actioncolumn',
@@ -466,7 +307,9 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
                         handler: this.confirmCleanRow,
                         scope:this,
                         getClass: function(v, meta, rec) {
-                           if(rec.get('status')=='RUNNING')return 'x-hide-display';
+                            if(rec.get('status')=='RUNNING') {
+                                return 'x-hide-display';
+                            }
                             return 'x-grid-center-icon action_column_btn';
                           
                         }
@@ -490,14 +333,161 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
         ]),
         mxp.widgets.GeoBatchConsumerGrid.superclass.initComponent.call(this, arguments);
     },
-	
-    cleanProgressBars: function() {
-        Ext.each(this.progressBars, function(bar) {
-            bar.destroy();
-        }, this);
+    
+    createDetailsExpander: function() {
+        return new Ext.ux.grid.RowExpander({
+            lazyRender : false,
+            getRowClass : function(record, rowIndex, p, ds){
+                var c = record.get('status');
+                var colorClass;
+                if (c == 'SUCCESS') {
+                    colorClass =  'row-green';
+                } else if (c == 'RUNNING') {
+                    colorClass =  'row-yellow';
+                }else if (c == 'FAIL'){
+                    colorClass =  'row-red';
+                }
+                p.cols = p.cols-1;
+                var content = this.bodyContent[record.id];
+                if(!content && !this.lazyRender){
+                    content = this.getBodyContent(record, rowIndex);
+                }
+                if(content){
+                    p.body = content;
+                }
+                
+                return (this.state[record.id] ? 'x-grid3-row-expanded' : 'x-grid3-row-collapsed') + ' ' + colorClass;
+            },
+            tpl: new Ext.XTemplate(
+                '<table width="100%">',
+                    '<tr><th width="200"><b>'+this.actionText+'</b></th><th><b>'+this.taskText+'</b></th><th width="172"><b>'+this.progressText+'</b></th></tr>',
+                    '<tpl for="details.actions">',
+                        '<tr>',
+                            '<td>{name}</td>',
+                            '<tpl for="progress">',
+                                '<td>{task}</td><td><span class="action-progress-bar">'+
+                                    // replace fake progressbar vars with actual values
+                                    // we assume a basic width of 168px for 100% and calculating all other values
+                                    // on this assumption
+                                    // TODO: make calculation more dynamic
+                                    this.fakeProgress
+                                        .replace(/\{progress\}/g,'{[Math.round((values.progress || 0) * 100) / 100]}')
+                                        .replace(/\{barwidth\}/g,'{[168.0 / 100.0 * values.progress]}')
+                                        .replace(/\{textwidth\}/g,'{[Math.max((168.0 / 100.0 * values.progress) - 9, 0)]}')
+                                 +'</span></td>',
+                            '</tpl>',
+                        '</tr>',
+                    '</tpl>',
+                '</table>'
+            ),
+            enableCaching: false
+        });
     },
     
-	checkCanArchive: function() {
+	createGeoStoreConsumersStore: function() {
+        return new MapStore.data.GeoStoreStore({
+            categoryName: "ARCHIVEDRUNS",
+            geoStoreBase: this.geoStoreRestURL,
+            fullResource: true,
+            auth: this.auth,
+            idProperty: 'id',
+            autoLoad: false,
+            fields: [
+                'id',
+                'status',
+                'uuid',
+                'startDate',
+                {name: 'description', mapping: 'data', convert: function(v) {
+                    return v ? Ext.decode(v).description : ''
+                }},
+                {name: 'details', mapping: 'data', convert: function(v) {
+                    return v ? Ext.decode(v).details : {actions:[]}
+                }},
+                {name: 'log', mapping: 'data', convert: function(v) {
+                    return v ? Ext.decode(v).log : {}
+                }}
+            ],
+            sortInfo: { field: "id", direction: "ASC" },
+            listeners: {
+                exception: function(proxy, type, action, options, response) {
+                    Ext.Msg.show({
+                       msg: this.errorContactingGeostore,
+                       buttons: Ext.Msg.OK,
+                       icon: Ext.MessageBox.ERROR
+                    });
+                },
+                scope: this
+            }
+        });
+    },
+    
+	createGeoBatchConsumersStore: function() {
+        //FIX FOR IE10 and responseXML TODO: port this as a global fix
+         var ie10XmlStore  = Ext.extend(Ext.data.XmlReader, {
+            read : function(response){
+                        var data = response.responseXML;
+                        if(!data || !data.documentElement) {
+                            if(window.ActiveXObject) {
+                                var doc = new ActiveXObject("Microsoft.XMLDOM");
+                                if(doc.loadXML(response.responseText)){
+                                    data = doc;
+                                }
+                            }
+                        }
+                        return this.readRecords(data);
+                    }
+        });
+        
+        return new Ext.data.Store({
+            // load using HTTP
+            url: this.geoBatchRestURL + 'flows/' + this.flowId + '/consumers?includeDetails=true',
+            record: 'consumer',
+            reader:  new ie10XmlStore({
+                record: 'consumer',
+                idProperty: 'uuid',
+                fields: [{name: 'status', mapping: '@status'},
+                   'uuid',
+                   'startDate',
+                   'description',
+                   {name:'details',convert: function(v) {
+                        return v ? Ext.decode(v) : {actions:[]}
+                   }}]
+            }),
+            listeners:{
+                beforeload: function(a,b,c){
+                   if( a.proxy.conn.headers ){
+                        if(this.auth){
+                            a.proxy.conn.headers['Authorization'] = this.auth;
+                        }
+                        a.proxy.conn.headers['Accept'] = 'application/xml';
+                    }else{
+                        a.proxy.conn.headers = {'Accept': 'application/xml'};
+                        if(this.auth){
+                            a.proxy.conn.headers['Authorization'] = this.auth;
+                        }
+                    }
+                   
+                },
+                load: function() {
+                    this.checkCanArchive();
+                },
+                exception: function(proxy, type, action, options, response) {
+                    Ext.Msg.show({
+                       msg: this.errorContactingGeobatch,
+                       buttons: Ext.Msg.OK,
+                       icon: Ext.MessageBox.ERROR
+                    });
+                },
+                scope: this
+            },
+            sortInfo: {
+                field: 'startDate',
+                direction: 'DESC' 
+            }
+        });
+    },
+    
+    checkCanArchive: function() {
 		var selections = this.getSelectionModel().getSelections();
 		var enable = false;
 		if(selections.length === 1) {
@@ -517,10 +507,9 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 		var loadMask = new Ext.LoadMask(Ext.getBody(), {msg:this.loadingMessage});
 		var workflow = this.getSelectionModel().getSelections()[0];
 		var uuid = workflow.get('uuid');
-		
-		this.getLog(uuid, null, function(log, form, action) {
-			this.doArchiveSelected(workflow, uuid, loadMask, log);
-		}, function() {
+		loadMask.show();
+        
+        var errorCallback = function() {
 			Ext.Msg.show({
 			   msg: this.errorArchiveConsumerText,
 			   buttons: Ext.Msg.OK,
@@ -528,17 +517,47 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 			});
 			this.store.load();
 			loadMask.hide();
-		}, this);
+		}
+        
+        // get log and then archive consumer info + log
+		this.getLog(uuid, '', null, function(log, form, action) {
+			this.doArchiveSelected(workflow, uuid, loadMask, log, errorCallback, this);
+		}, errorCallback , this);
 	},
 	
-	
+    /**
+     *    private: method[doArchiveLog] archive on GeoStore the currently selected row log
+     *      
+     */
+	doArchiveLog: function(workflow, uuid, loadMask, log, successCallback, errorCallback, scope) {
+        var resource = {
+			name: this.flowId + '_' + uuid + '_log',
+			description: this.flowId + '_' + uuid + '_log',
+			category: 'ARCHIVEDLOGS',
+			attributes: {
+				'uuid': {
+					name: 'uuid',
+					value: uuid
+				}
+			}
+			
+		};
+		
+		resource.blob = log;
+
+		this.resourceManager.create(resource,
+            successCallback,
+			errorCallback,
+            scope
+        );
+    },
 	
 	/**
      *    private: method[doArchiveSelected] archive on GeoStore the currently selected row
      *      
      */
-	doArchiveSelected: function(workflow, uuid, loadMask, log) {
-		
+	doArchiveSelected: function(workflow, uuid, loadMask, log, errorCallback, scope) {
+        // save all consumer info apart from log into a GeoStore resource
 		var resource = {
 			name: this.flowId + '_' + uuid,
 			description: this.flowId + '_' + uuid,
@@ -562,38 +581,23 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 		
 		resource.blob = Ext.encode({
 			description: workflow.get('description'),
-			details: workflow.get('details'),
-			log: log
+			details: workflow.get('details')
 		});
-		loadMask.show();
+
 		this.resourceManager.create(resource,
-			// archived resource created
 			function() {
-				// remove GeoBatch consumer
-				this.deleteGeoBatchConsumer(uuid, function() {
-					this.store.load();
-					loadMask.hide();
-				}, function() {
-					Ext.Msg.show({
-					   msg: this.errorArchiveConsumerText,
-					   buttons: Ext.Msg.OK,
-					   icon: Ext.MessageBox.ERROR
-					});
-					this.store.load();
-					loadMask.hide();
-				}, this)
+                // save the log into a separated resource
+                this.doArchiveLog(workflow, uuid, loadMask, log, function() {
+                    // remove GeoBatch consumer
+                    this.deleteGeoBatchConsumer(uuid, function() {
+                        this.store.load();
+                        loadMask.hide();
+                    }, errorCallback, scope);
+                }, errorCallback, scope);
+				
 			},
-			// error
-			function() {
-				Ext.Msg.show({
-				   msg: this.errorArchiveConsumerText,
-				   buttons: Ext.Msg.OK,
-				   icon: Ext.MessageBox.ERROR
-				});
-				this.store.load();
-				loadMask.hide();
-			},
-			this
+			errorCallback,
+            scope
 		);
 	},
 	
@@ -640,9 +644,10 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
             function(btn) {
                 if(btn=='yes') {
 					loadMask.show();
-                    me.deleteConsumer(record.id,successCallback,errorCallback,me);
+                    me.deleteConsumer(record.id,this.mode === 'archived' ? record.json.name : '',successCallback,errorCallback,me);
                 }
-            }
+            },
+            this
 		);
     },
     /**
@@ -654,6 +659,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
     checkLog: function(grid, rowIndex, colIndex){
         var record =  grid.getStore().getAt(rowIndex);
         var uuid = record.get('uuid');
+        var name = this.mode === 'archived' ? record.json.name : '';
         var me = this;
         
         var win = new Ext.Window({
@@ -695,7 +701,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
                     refreshLog: function(){
                         var loadMask = new Ext.LoadMask(win.getEl(), {msg:me.loadingMessage});
 						loadMask.show();
-						me.getLog(uuid, record, function(log, form, action) {
+						me.getLog(uuid, name, record, function(log, form, action) {
                                 win.log.setValue(log);
                                 loadMask.hide();
                             },function(response, form, action) {
@@ -708,9 +714,13 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
         win.show();
     },
 	
-	getLog: function(uuid, record, successCallback, failureCallback, scope) {
+	getLog: function(uuid, name, record, successCallback, failureCallback, scope) {
 		if(this.mode === 'archived') {
-			successCallback.call(scope, record.get('log'), null, null);
+            if(record.get('log')) {
+                successCallback.call(scope, record.get('log'), null, null);
+            } else {
+                this.getLogFromGeoStore(name, successCallback, failureCallback, scope, true);
+            }
 		} else {
 			var url = this.geoBatchRestURL + "consumers/" + uuid + "/log";
 			Ext.Ajax.request({
@@ -722,10 +732,10 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 				},
 				scope: this,
 				success: function(response, form, action) {
-					successCallback.call(scope, response.responseText, form, action);
+					successCallback.call(scope, response.responseText);
 				},
 				failure: function(response, form, action) {
-					failureCallback.call(scope, response, form, action);
+					failureCallback.call(scope, response);
 				}
 			});
 		}
@@ -737,24 +747,17 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
      *      * errorCallback: function to call in case of error
      *      * scope: the scope of the callbacks (optional)
      */
-    deleteConsumer: function(id,successCallback,errorCallback,scope){
+    deleteConsumer: function(id,name,successCallback,errorCallback,scope){
         if(this.mode === 'archived') {
-			this.deleteGeoStoreConsumer(id,successCallback,errorCallback,scope);
+			this.deleteGeoStoreConsumer(id,name,successCallback,errorCallback,scope);
 			
 		} else {
 			this.deleteGeoBatchConsumer(id,successCallback,errorCallback,scope);
         }
     },
 	
-	/**
-     *    private: method[deleteGeoStoreConsumer] deletes a consumer from GeoStore archived
-     *      * uuid : the uuid of the consumer
-     *      * successCallback: function to call in case of success 
-     *      * errorCallback: function to call in case of error
-     *      * scope: the scope of the callbacks (optional)
-     */
-	deleteGeoStoreConsumer: function(id,successCallback,errorCallback,scope){
-		var url = this.geoStoreRestURL + "resources/resource/" + id;
+    deleteGeoStoreResource: function(id,successCallback,errorCallback,scope) {
+        var url = this.geoStoreRestURL + "resources/resource/" + id;
 		Ext.Ajax.request({
 			method: 'DELETE',
 			url: url,
@@ -765,6 +768,79 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 			success: successCallback,
 			failure: errorCallback
 		});
+    },
+    
+    getLogContentFromGeoStore: function(id, successCallback, errorCallback, scope) {
+        var url = this.geoStoreRestURL + "data/" + id;
+		Ext.Ajax.request({
+			method: 'GET',
+			url: url,
+			headers: {
+				'Authorization' : this.auth
+			},
+			scope: scope || this,
+			success: function(xhr) {
+                successCallback.call(scope, xhr.responseText);
+            },
+			failure: errorCallback
+		});
+    },
+    
+    getLogFromGeoStore: function(name, successCallback, errorCallback, scope, content) {
+        var url = this.geoStoreRestURL + "resources/search/" + name + '_log';
+        var store = new Ext.data.XmlStore({
+            autoDestroy: true,
+            record: 'Resource',
+            idPath: 'id',
+			proxy : new Ext.data.HttpProxy({
+				api:{
+					read: url
+				},
+				restful: true,
+				method : 'GET',
+				disableCaching: true,
+				headers: {'Authorization' : this.auth}
+				
+			}),
+            fields: [{name: 'id', type: 'int'}]
+        });
+        store.on({
+            load: function(store, records) {
+                if(content) {
+                    if(records.length > 0) {
+                        this.getLogContentFromGeoStore(records[0].get('id'), successCallback, errorCallback, scope);
+                    } else {
+                        errorCallback.call(scope);
+                    }
+                } else {
+                    successCallback.call(scope, store, records);
+                }
+            },
+            exception: errorCallback,
+            scope: scope
+        }); 
+        store.load();
+    },
+   
+	/**
+     *    private: method[deleteGeoStoreConsumer] deletes a consumer from GeoStore archived
+     *      * id : the id of the resource
+     *      * name : the name of the resource
+     *      * successCallback: function to call in case of success 
+     *      * errorCallback: function to call in case of error
+     *      * scope: the scope of the callbacks (optional)
+     */
+	deleteGeoStoreConsumer: function(id,name, successCallback,errorCallback,scope){
+        this.getLogFromGeoStore(name , function(store, records) {
+            if(records.length > 0) {
+                this.deleteGeoStoreResource(records[0].get('id'), function() {
+                    this.deleteGeoStoreResource(id, successCallback,errorCallback,scope);
+                },errorCallback,scope);
+            } else {
+                this.deleteGeoStoreResource(id, successCallback, errorCallback, scope);
+            }
+        }, errorCallback, scope);
+        
 	},
 	/**
      *    private: method[deleteGeoStoreConsumer] deletes a consumer from GeoStore archived
@@ -822,18 +898,19 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
             }
         };
         this.store.each(function(rec){
-        //count the records to delete
-        var status = rec.get('status')
-            if( status =='SUCCESS' || status =='FAIL' ){
-                count++;
+            //count the records to delete
+            var status = rec.get('status')
+                if( status =='SUCCESS' || status =='FAIL' ){
+                    count++;
+                }
             }
-        });
+        );
         if(count == 0) return;
         loadMask.show();
         this.store.each(function(rec){
             var status = rec.get('status')
             if( status =='SUCCESS' || status =='FAIL' ){
-                me.deleteConsumer(rec.get('uuid'),successCallback,errorCallback,me);
+                me.deleteConsumer(rec.get('uuid'),'',successCallback,errorCallback,me);
             }
         });
     },
