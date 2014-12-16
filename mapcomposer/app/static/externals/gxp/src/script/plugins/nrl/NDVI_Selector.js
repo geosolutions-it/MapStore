@@ -86,9 +86,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
             }() );
         }  
         //get available data 
-        this.target.on('ready',this.loadDimensions,this);
-
-       
+        this.target.on('ready',this.loadDimensions,this);      
         
         var target = this.target, me = this;
 		
@@ -98,7 +96,6 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
             layout: "fit",
             items:[{
                 xtype:'form',
-                //title: 'Select Range',
                 layout: "form",
                 autoScroll:true,
                 ref:"form",
@@ -106,56 +103,9 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                 items:[{            
                     xtype: 'fieldset',
                     ref:'range',     
-                    //iconCls: 'user_edit',
                     anchor:'100%',
                     title: 'NDVI',
-                         items:[
-                        /*{
-                            xtype: 'datefield',
-                            name:'sel_month_years',
-                            ref:'sel_month_years',                            
-                            fieldLabel: "Select Date",
-                            anchor:'100%',
-                            format: 'm-Y', // or other format you'd like
-                            plugins: 'monthPickerPlugin',
-                            listeners:{
-                                
-                                scope:this,
-                                select:function(selector,date){
-                                    //get Allowed values
-                                    var submitButton = selector.refOwner.refOwner.submitButton;
-                                    var dekadCombo = selector.refOwner.decad;
-                                    var y = this.values[date.format('Y')];
-                                    if(!y){
-                                        submitButton.disable();
-                                        dekadCombo.disable();
-                                        return;
-                                    }
-                                    var deks =y[date.format('m')];
-                                    if(!deks){
-                                        submitButton.disable();
-                                        dekadCombo.disable();
-                                        return;
-                                    }
-                                    var decadCombo = selector.refOwner.decad;
-                                    var decStore = decadCombo.getStore();
-                                    decadCombo.filterByDekad(deks);
-                                    
-                                    
-                                    var count =decStore.getCount();
-                                    if(count>0){
-                                        decadCombo.setValue(decStore.getAt(0).get(decadCombo.valueField));
-                                        submitButton.enable();
-                                        dekadCombo.enable();
-                                    }else{
-                                        submitButton.disable();
-                                        dekadCombo.disable();
-                                    }
-                                    
-                                }
-                            }
-                        },*/
-                        {
+                        items:[{
                             xtype:'compositefield',
                             items:[{
                                 xtype: 'combo',

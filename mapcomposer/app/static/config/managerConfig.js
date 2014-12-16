@@ -75,18 +75,27 @@
             "csvingestion":{
                 "xtype":"geobatch_run_local_form",
                 "baseDir": "/home/geosolutions/admin",
-                "fileBrowserUrl": "http://localhost:8080/opensdi2-web/mvc/fileManager/extJSbrowser",
+                "fileBrowserUrl": "mvc/fileManager/extJSbrowser",
                 "fileRegex": "\\.csv$",
                 "path":"/test_csv/"
-            },
-            
+            },            
             "geotiff_publish":{
                 "xtype": "geobatch_run_local_form",
                 "baseDir": "/home/geosolutions/admin",
                 "fileRegex": "\\.ti[f]{1,2}$",
                 "path":" /ndvi/"
-            }
-           
+            },
+			"ndvistats":{
+                "xtype":"geobatch_run_form",
+                "baseDir": "/home/geosolutions/admin",
+                "fileBrowserUrl": "mvc/fileManager/extJSbrowser",
+                "fileRegex": "\\.shp$",
+                "path":"/crop_masks/",
+				"decadConfig": {
+				    "dataUrl": "http://84.33.2.75/geoserver/ndvi/ows",
+					"layer": "ndvi:ndvi"
+				}
+            }           
          },
          "actionTarget":{
            "target": "north.tbar",

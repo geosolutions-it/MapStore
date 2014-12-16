@@ -26,7 +26,7 @@ Ext.ns("mxp.widgets");
  * 
  */
 mxp.widgets.GeoBatchRunLocal = Ext.extend(Ext.Component, {
-    /** api: xtype[geobatch_run_local_form]
+    /** api: xtype[geobatch_run_local]
      */
     xtype:'geobatch_run_local',
     
