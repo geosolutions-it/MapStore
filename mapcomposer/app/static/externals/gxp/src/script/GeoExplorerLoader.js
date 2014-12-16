@@ -131,6 +131,7 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
         if(this.auth){
             h['Authorization'] = this.auth;
         }
+        url = OpenLayers.Request.makeSameOrigin(url,proxy);
         this.adminConfigStore = new Ext.data.JsonStore({
             root: 'results',
             autoLoad: false,
@@ -200,9 +201,7 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
      */
     loadData: function (url, dataId, eventListener){
         var url = (url ? url: this.geoStoreBaseURL + "data/" + dataId);
-        if(url.indexOf("http") == 0){
-            url = this.proxy + url;
-        }
+        url = OpenLayers.Request.makeSameOrigin(url,proxy);
          var h = {
             'Accept': 'application/json'
         };
