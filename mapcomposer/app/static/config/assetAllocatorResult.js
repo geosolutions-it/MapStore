@@ -122,8 +122,16 @@
 		{
 			"ptype": "gxp_embedmapdialog",
 			"actionTarget": {"target": "paneltbar", "index": 2},
-			"embeddedTemplateName": "viewer",
-			"showDirectURL": true
+            "showDirectURL":true,
+            "showQRCode":false,
+			"links":[{
+                "base":"",
+                "label":"link",
+                "params":{
+                    "config":"assetAllocatorResult"
+                }
+            }]
+			
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
@@ -149,7 +157,7 @@
         "outputTarget": "map",
         "outputConfig": {
             "controlConfig":{
-                    "step": 1,
+                    "step": 4,
                     "units": "Hours",
                     "frameRate": 1
                 }
