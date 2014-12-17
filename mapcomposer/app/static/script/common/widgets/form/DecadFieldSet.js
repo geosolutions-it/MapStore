@@ -477,16 +477,16 @@ MapStore.widgets.form.DecadFieldSet = Ext.extend(Ext.form.FieldSet,  {
 		// File name should be something like 
 		// that: dv_20130101_20130110.tiff
 		// ////////////////////////////////////
-		var month = this.monthShortNames[monthNumber - 1][0];		
+		var month = this.monthShortNames[monthNumber - 1][0];
 		var name = "";
 		
-		var m = month.length == 1 ? "0" + month : month;
+		var m = month < 10 ? "0" + month : month;
 		switch(decad){
 			case 1:				
-				name = "dv_" + year + m + "01_" + year + month + "10";
+				name = "dv_" + year + m + "01_" + year + m + "10";
 				break;
 			case 2: 
-				name = "dv_" + year + m + "11_" + year + month + "20";
+				name = "dv_" + year + m + "11_" + year + m + "20";
 				break;
 			case 3:
 				var date = new Date(year, month - 1, decad);
@@ -494,7 +494,7 @@ MapStore.widgets.form.DecadFieldSet = Ext.extend(Ext.form.FieldSet,  {
 				break;
 		}
 
-		return name + ".tiff";
+		return name + ".tif";
 	}
 	
 });

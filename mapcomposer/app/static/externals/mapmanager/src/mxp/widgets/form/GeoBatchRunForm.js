@@ -186,6 +186,7 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
 						xtype: "textfield",
 						ref: "../../selectedFile",
 						fieldLabel: "Selected SHP",
+                        anchor:'100%',
 						readOnly: true,
 						disabled: true,
 						listeners: {
