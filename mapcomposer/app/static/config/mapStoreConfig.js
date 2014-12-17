@@ -2,6 +2,25 @@
 
    "scaleOverlayMode": "basic",
    "gsSources":{ 
+   	"geosolutions":
+   	 {
+			"ptype": "gxp_wmssource",
+			"url": "http://84.33.2.28:8081/geoserver/it.geosolutions/ows",
+			"title": "GeoSolutions GeoServer",
+			"SRS": "EPSG:3003",
+			"version":"1.1.1",
+		    "layersCachedExtent": [
+				-20037508.34,-20037508.34,
+				20037508.34,20037508.34
+			],
+			"layerBaseParams":{
+				"FORMAT":"image/png8",
+				"TILED":true
+			}
+		},
+   	
+   	
+   	
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
 		}, 
@@ -87,7 +106,7 @@
             "id": "south",
             "region": "south",
             "layout": "fit",
-            "split":true,
+            "split":false,
             "height": 330,
             "collapsed": true,
             "collapsible": true,
@@ -105,7 +124,7 @@
           "collapsible": true,
           "header": true
       }
-	],	
+    ],	
 	"scaleOverlayUnits":{
         "bottomOutUnits":"mi",    
         "bottomInUnits":"ft",    

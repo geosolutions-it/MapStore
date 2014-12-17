@@ -39,9 +39,17 @@ background:url(../img/add.png) no-repeat 10px 8px;
 text-indent:30px;
 display:block;
 }
+.addgc{
+background:url(../img/add.png) no-repeat 10px 8px;
+display:block;
+}
 .delete{
 background:url(../img/delete.png) no-repeat 10px 8px;
 text-indent:30px;
+display:block;
+}
+.deletegc{
+background:url(../img/delete.png) no-repeat 10px 8px;
 display:block;
 }
 .user{
@@ -49,8 +57,11 @@ background:url(img/user.gif) no-repeat 10px 8px;
 text-indent:30px;
 display:block;
 }
-.icon-layers{
-	background-image:url(../img/layers.png) !important;
+.m_up{
+	background-image:url(../../../ext/ux/images/up2.gif) !important;
+}
+.m_down{
+	background-image:url(../../../ext/ux/images/down2.gif) !important;
 }
 .icon-export{
 	background-image:url(../img/world_link.png) !important;

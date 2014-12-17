@@ -67,7 +67,8 @@ mxp.widgets.GeoStoreCategoryManager = Ext.extend(Ext.Panel, {
                 '</div>',
             '</div>',
         '</tpl>'],
-
+	titleConfirmDeleteMsg: "Confirm delete mission",
+    textConfirmDeleteMsg: "Are you sure you want to delete this mission?",
     initComponent: function() {
         var me = this;
 
@@ -160,15 +161,21 @@ mxp.widgets.GeoStoreCategoryManager = Ext.extend(Ext.Panel, {
                 scope: this,
                 //create a new editor
                 handler: function(b) {
-                    //insert category in the recordType
-                    var dataView = b.refOwner.dataView;
-                    var selection = dataView.getSelectedNodes();
-                    if(selection.length > 0) {
-                        var records = dataView.getSelectedRecords();
-                        if(records && records.length == 1) {
-                            this.deleteResource(records[0].get('id'));
-                        }
-                    }
+        			Ext.Msg.confirm(
+                                        this.titleConfirmDeleteMsg,
+                                        this.textConfirmDeleteMsg,
+                                        function(btn) {
+                                            if(btn=='yes') {    //insert category in the recordType
+                    							var dataView = b.refOwner.dataView;
+    							               var selection = dataView.getSelectedNodes();
+    								               if(selection.length > 0) {
+        								               var records = dataView.getSelectedRecords();
+        								               if(records && records.length == 1) {
+          							                  this.deleteResource(records[0].get('id'));
+          								              }
+            							        }
+                                            }									
+                                        },this);
 
                 }
             }],
@@ -210,7 +217,7 @@ mxp.widgets.GeoStoreCategoryManager = Ext.extend(Ext.Panel, {
         //TODO check if dirty
         editor.removeAll();
         editor.add({
-            xtype: 'mxp_geostoreresourceform',
+           xtype: 'mxp_geostore_mission_resource_form',
             layout: 'fit',
             ref: 'resourceform',
             border: false,

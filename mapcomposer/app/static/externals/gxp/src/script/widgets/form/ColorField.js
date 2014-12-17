@@ -60,7 +60,7 @@ gxp.form.ColorField = Ext.extend(Ext.form.TextField,  {
         if (this.value) {
             this.value = this.hexToColor(this.value);
         }
-        gxp.form.ColorField.superclass.initComponent.call(this);
+        mxp.widgets.ColorField.superclass.initComponent.call(this);
         
         // Add the colorField listener to color the field.
         this.on({

@@ -58,6 +58,7 @@ Ext.extend(GeoExt.data.WFSCapabilitiesReader, Ext.data.DataReader, {
      *      as a cache of ``Ext.data.Record`` objects.
      */
     read: function(request) {
+    	console.log(request.responseXML);
         var data = request.responseXML;
         if(!data || !data.documentElement) {
             data = request.responseText;
@@ -77,24 +78,27 @@ Ext.extend(GeoExt.data.WFSCapabilitiesReader, Ext.data.DataReader, {
      *  Create a data block containing Ext.data.Records from an XML document.
      */
     readRecords: function(data) {
+    	//console.log(this.meta);
         if(typeof data === "string" || data.nodeType) {
             data = this.meta.format.read(data);
         }
-
+		console.log(data);
         var featureTypes = data.featureTypeList.featureTypes;
         var fields = this.recordType.prototype.fields;
-
+	 console.log(featureTypes);
         var featureType, values, field, v, parts, layer, values;
         var layerOptions, protocolOptions;
-
+			
         var protocolDefaults = {
             url: data.capability.request.getfeature.href.post
         };
-
+console.log(protocolDefaults)
         var records = [];
-
+console.log(lenI=featureTypes.length);
         for(var i=0, lenI=featureTypes.length; i<lenI; i++) {
+          console.log("ciclo");
             featureType = featureTypes[i];
+            console.log(featureType);
             if(featureType.name) {
                 values = {};
 
