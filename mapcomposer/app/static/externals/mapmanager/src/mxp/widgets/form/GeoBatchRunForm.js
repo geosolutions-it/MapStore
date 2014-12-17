@@ -23,6 +23,7 @@ Ext.ns("mxp.widgets");
 /**
  * Generic GeoBatch Form to manage GeoBatch process lauches.
  * 
+ * Author: Tobia Di Pisa at tobia.dipisa@geo-solutions.it
  */
 mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
 
@@ -97,6 +98,8 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
     uploadButtonText: "Upload",
 	
 	selectButtonText: "Select",
+	
+	cancelButtonText: "Cancel",
 	
     successText: "Success",
 	
@@ -312,10 +315,10 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
             } 
         }, {
             ref: '../select',
-            text: this.selectButtonText,
+            tooltip: this.selectButtonText,
             disabled: true,
 			hidden: true,
-            iconCls: 'update_manager_ic',
+            iconCls: 'accept',
 			scope: this,
             handler: function(btn){
                 var filebrowser = btn.refOwner.fileBrowser;
@@ -326,6 +329,16 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
 					this.selectedFile.setValue(node.id);
 					this.selectedFile.enable();
 				}				
+            } 
+        }, {
+            ref: '../cancel',
+            tooltip: this.cancelButtonText,
+            disabled: false,
+			hidden: true,
+            iconCls: 'close',
+			scope: this,
+            handler: function(btn){
+                this.enableFileBrowser(false);			
             } 
         }];
 		
@@ -349,12 +362,14 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
 			this.buttons[0].show();
 			this.buttons[1].hide();
 			this.buttons[2].show();
+			this.buttons[3].show();
 		}else{
 			this.layout.setActiveItem(0);
 			
 			this.buttons[0].hide();
 			this.buttons[1].show();
 			this.buttons[2].hide();
+			this.buttons[3].hide();
 		}
 
 	},

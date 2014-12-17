@@ -251,10 +251,10 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 				width:50
 			},{
 				sortable: true, 
-				header:'Dec',
+				header:'Ten Days Period',
 				name: 'dec',
 				dataIndex: 'dec',
-				width:40
+				width: 100
 			}/*,{
 				sortable: true, 
 				header:'Decad in Year',

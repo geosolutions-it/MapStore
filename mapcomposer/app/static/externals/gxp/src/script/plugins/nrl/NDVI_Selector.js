@@ -235,7 +235,7 @@ gxp.plugins.ndvi.NDVI = Ext.extend(gxp.plugins.Tool, {
                             name:'decad',
                             ref:'decad',      
                             width: 100,
-                            fieldLabel: "Dekad",
+                            fieldLabel: "Ten Days Period",
                             anchor:'100%',
                             typeAhead: true,
                             lazyRender:false,

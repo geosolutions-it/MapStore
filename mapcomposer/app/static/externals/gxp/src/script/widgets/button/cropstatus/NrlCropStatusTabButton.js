@@ -221,10 +221,10 @@ gxp.widgets.button.NrlCropStatusTabButton = Ext.extend(Ext.Button, {
 				width:50
 			},{
 				sortable: true, 
-				header:'Dekad',
+				header:'Ten Days Period',
 				name: 'dec',
 				dataIndex: 'dec',
-				width:50
+				width: 100
 			},{
 				sortable: true, 
 				header:'Value',

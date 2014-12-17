@@ -28,6 +28,8 @@ Ext.ns("MapStore.widgets.form");
  *  .. class:: DecadFieldSet(config)
  *   
  *    Decad fieldset
+ *
+ * 	Author: Tobia Di Pisa at tobia.dipisa@geo-solutions.it
  */
 MapStore.widgets.form.DecadFieldSet = Ext.extend(Ext.form.FieldSet,  {
 
@@ -149,7 +151,7 @@ MapStore.widgets.form.DecadFieldSet = Ext.extend(Ext.form.FieldSet,  {
 					autoLoad:true,                            
 					name: 'year',
 					ref: '../year',      
-					width: 55,
+					width: 72,
 					fieldLabel: "Year",
 					anchor: '100%',
 					typeAhead: false,
@@ -204,7 +206,7 @@ MapStore.widgets.form.DecadFieldSet = Ext.extend(Ext.form.FieldSet,  {
 					autoLoad:true,                            
 					name:'month',
 					ref:'../month',      
-					width: 50,
+					width: 70,
 					fieldLabel: "Month",
 					anchor:'100%',
 					typeAhead: true,
@@ -265,7 +267,7 @@ MapStore.widgets.form.DecadFieldSet = Ext.extend(Ext.form.FieldSet,  {
 				name:'decad',
 				ref:'decad',      
 				width: 100,
-				fieldLabel: "Dekad",
+				fieldLabel: "Ten Days Period",
 				anchor:'100%',
 				typeAhead: true,
 				lazyRender:false,
