@@ -378,7 +378,7 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
 				"<classifier>" + this.region.getValue().inputValue + "</classifier>" +
 				"<forestMask>" + this.mask.getValue().inputValue + "</forestMask>" +
 				"<ndviFileName>" + fileName + "</ndviFileName>" +
-				"<classifierFullPath>" + this.baseDir + this.selectedFile.getValue() + "</classifierFullPath>" +
+				"<forestMaskFullPath>"  + "file://" + this.baseDir + this.selectedFile.getValue() + "</forestMaskFullPath>" +
 			"</StatsBean>";
 		
         Ext.Ajax.request({
