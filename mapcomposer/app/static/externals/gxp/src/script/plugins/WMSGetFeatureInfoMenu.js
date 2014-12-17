@@ -775,7 +775,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             // We add the field.
             fields.push(fieldName);
         });
-
+		
         var featureGridConfig = {
             xtype: 'gxp_editorgrid',
             readOnly: true,
@@ -793,7 +793,73 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                 }
             }
         };
+		if(this.picturesBrowserConfig){
+			 featureGridConfig.title = null;
+			 var view = new Ext.DataView({
+				itemSelector: 'div.thumb-wrap',
+				style:'overflow:auto',
+				ref:'picview',
+				multiSelect: true,
+				title:'Pictures',
+				store: new Ext.data.JsonStore({
+					url: this.picturesBrowserConfig.baseUrl
+					     +'?action=get_filelist&folder='
+						 +this.picturesBrowserConfig.folder
+						 +feature.data[this.picturesBrowserConfig.featureProperty]+this.picturesBrowserConfig.urlSuffix,
+					//url: 'http://84.33.2.28/opensdi2-manager/mvc/fileManager/extJSbrowser?action=get_filelist&folder='+'/geocollect/media/punti_abbandono/'+feature.data["id"]+'/2',
+					autoLoad: true,
+					root: 'data',
+					id:'name',
+					fields:[
+						'name', 'web_path','mtime','size',
+						{name: 'shortName', mapping: 'name'}
+					],
+					listeners:{
+						load:function (store,records,req){
+							if(records.length <= 0 ){
+								view.refOwner.getBottomToolbar( ).hide();
+								view.refOwner.doLayout();
+							}
+						}
+					}
+				}),
 
+				tpl: new Ext.XTemplate(
+					'<tpl for=".">',
+					'<div class="thumb-wrap" id="{name}">',
+					'<div class="thumb"><img height="100px" width="100px" src="'+this.picturesBrowserConfig.baseUrl+'?action=get_image&file={web_path}" class="thumb-img"></div>',
+					'<span>{name}</span></div>',
+					'</tpl>'
+				),
+				listeners:{
+					dblclick:function (scope, index, node, e){
+						window.open(node.getElementsByTagName("img")[0].src);
+					}
+				}
+			});
+			var tpanel = {
+				xtype:'panel',
+				layout:'card',
+				activeItemIndex:0,
+				activeItem:0,
+				bbar: ['->', {
+					ref:'../switch',
+					//hidden:true,
+					iconCls: 'gxp-icon-printsnapshot',
+					text: 'Images',
+					handler: function(btn){
+						var layout = btn.refOwner.getLayout();
+						btn.refOwner.activeItemIndex = btn.refOwner.activeItemIndex == 0 ? 1 :0;
+						layout.setActiveItem(btn.refOwner.activeItemIndex);
+						btn.setText(btn.refOwner.activeItemIndex == 0 ? "Images" :"Attributes");
+						btn.setIconClass(btn.refOwner.activeItemIndex == 0 ? 'gxp-icon-printsnapshot' : 'gxp-icon-csvexport-single') ;
+					}
+				}],
+				title: title,
+				items: [featureGridConfig,view]
+			};
+			return tpanel;
+		}
         return featureGridConfig;
     },
     /** private: method[obtainFromText]

@@ -234,3 +234,28 @@ div#homelogos ul li a:hover {
     
     display: none !important;
 } */
+
+.thumb{
+	background: #dddddd;
+	padding:3px;
+}
+.thumb img{
+	border:1px solid white;
+	height: 60px;
+	width: 80px;
+}
+.thumb-wrap{
+	float: left;
+	margin: 4px;
+	margin-right: 0;
+	padding: 5px;
+}
+.thumb-wrap span{
+	display: block;
+	overflow: hidden;
+	text-align: center;
+}
+.x-view-selected .thumb{
+	background:#8db2e3;
+}
+

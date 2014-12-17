@@ -4,6 +4,7 @@
    "start":0,
    "limit":20,
    "msmTimeout":30000,
+   "adminUrl": "http://geocollect.geo-solutions.it/opensdi2-manager/",
    "twitter":{
       "via":"geosolutions_it",
       "hashtags":""
@@ -40,7 +41,8 @@
         "loginManager": "loginTool",
         "actionTarget":null
     },{
-        "ptype": "mxp_categoryinitializer"
+        "ptype": "mxp_categoryinitializer",
+        "neededCategories": ["GEOCOLLECT"]
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
@@ -62,7 +64,7 @@
     },{
         "ptype": "mxp_templatemanager",
         "loginManager": "loginTool",
-        "actionTarget":{
+		"actionTarget":{
           "target": "north.tbar",
           "index": 0
         }
@@ -80,6 +82,23 @@
           "target": "north.tbar",
           "index": 2
         }
+    },{ 
+        "ptype": "mxp_geostore_resource_editor",
+        "category": "MAP",
+        
+        "actionTarget":{
+             "target": "north.tbar",
+             "index": 3
+            }
+
+    },{ 
+        "ptype": "mxp_servicemanager",
+        "notDuplicateOutputs":true,
+        "actionTarget":{
+             "target": "north.tbar",
+             "index": 4
+            }
+
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
