@@ -1,5 +1,4 @@
 {
-
    "scaleOverlayMode": "basic",
    "gsSources":{ 
 		"mapquest": {
@@ -16,6 +15,10 @@
 		}, 
 		"ol": { 
 			"ptype": "gxp_olsource" 
+		},
+		"geoserver": {
+			"url":"http://84.33.2.28/geoserver/wms",
+			"ptype":"gxp_wmssource"
 		}
 	},
 	"loadingPanel": {
@@ -77,35 +80,20 @@
 				"args": [
 					"None", {"visibility": false}
 				]
+			},{
+				"source": "geoserver",
+				"infoFormat": "application/vnd.ogc.gml",
+				"name": "it.geosolutions:latest_rilievi",
+				"title": "Rilevamenti Effettuati",
+				"visibility": true,
+				"opacity": 1,
+				"selected": false,
+				"format": "image/png",
+				"styles": "rilievi",
+				"transparent": true
 			}
 		]
 	},
-    "customPanels":[ {
-            "xtype": "panel",
-            "title": "Features List",
-            "border": false,
-            "id": "south",
-            "region": "south",
-            "layout": "fit",
-            "split":true,
-            "height": 330,
-            "collapsed": true,
-            "collapsible": true,
-            "header": true
-        },{
-          "xtype": "panel",
-          "title": "Query Panel",         
-          "border": false,
-          "id": "east",
-          "width": 400,
-          "height": 500,
-          "region": "east",
-          "layout": "fit",
-          "collapsed": false,
-          "collapsible": true,
-          "header": true
-      }
-	],	
 	"scaleOverlayUnits":{
         "bottomOutUnits":"mi",    
         "bottomInUnits":"ft",    
@@ -120,79 +108,13 @@
 			"showDirectURL": true
 		}, {
 			"ptype": "gxp_categoryinitializer",
-            		"silentErrors": true,
+            "silentErrors": true,
 			"neededCategories": ["MAPSTORECONFIG", "GEOCOLLECT", "MAP"]
 		}, {
 		   "ptype": "gxp_mouseposition",
 		   "displayProjectionCode":"EPSG:4326",
 		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
 		}, {
-		  "ptype": "gxp_featuremanager",
-		  "id": "featuremanager",
-		  "autoLoadFeatures":true,
-		  "pagingType":1,
-			"maxFeatures":15
-	    }, 
-	     {	
-		 	"ptype": "gxp_featureeditor",
-    		"featureManager": "featuremanager",
-    		"autoLoadFeatures": "true"
-	    },{
-		  "ptype": "gxp_featuregrid",
-		  "featureManager": "featuremanager",
-		
-		  "outputConfig": {
-			  "id": "featuregrid",
-			  "title": "Features"
-				 		
-		  },
-		  "outputTarget": "south",
-		  "exportFormats": ["CSV","shape-zip"]
-	    }, {
-          "ptype": "gxp_spatialqueryform",
-          "featureManager": "featuremanager",
-          "featureGridContainer": "south",
-          "outputTarget": "east",
-          "showSelectionSummary": true,
-          "actions": null,
-          "id": "bboxquery",
-          "outputConfig":{
-                  "outputSRS": "EPSG:900913",
-                  "selectStyle":{
-                          "strokeColor": "#ee9900",
-                          "fillColor": "#ee9900",
-                          "fillOpacity": 0.4,
-                          "strokeWidth": 1
-                  },
-                  "spatialFilterOptions": {    
-                          "lonMax": 20037508.34,  
-                          "lonMin": -20037508.34,
-                          "latMax": 20037508.34,  
-                          "latMin": -20037508.34  
-                  },
-                  "bufferOptions": {
-                        "minValue": 1,
-                        "maxValue": 1000,
-                        "decimalPrecision": 2,
-                        "distanceUnits": "m"
-                  }
-          },
-          "spatialSelectorsConfig":{
-                "bbox":{
-                    "xtype": "gxp_spatial_bbox_selector"
-                },
-                "buffer":{
-                    "xtype": "gxp_spatial_buffer_selector"
-                },
-                "circle":{
-                    "xtype": "gxp_spatial_circle_selector",
-                    "zoomToCurrentExtent": true
-                },
-                "polygon":{
-                    "xtype": "gxp_spatial_polygon_selector"
-                }
-              }
-        }, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
 			"useEvents": false,
@@ -224,21 +146,114 @@
 		}, {
 			"ptype": "gxp_languageselector",
 			"actionTarget": {"target": "panelbbar", "index": 3}
-		}, 	{
+		}, {
+			"ptype": "gxp_wmsgetfeatureinfo_menu", 
+			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
+			"useTabPanel": true,
+			"toggleGroup": "toolGroup",
+			"actionTarget": {"target": "paneltbar", "index": 20}
+		}
+	],
+	"tools": [
+		{
+			"ptype": "gxp_layertree",
+			"outputConfig": {
+				"id": "layertree"
+			},
+			"outputTarget": "tree",
+			"localIndexs":{
+					"it": 0,
+					"de": 1,
+					"en": 2,
+					"fr": 3
+			}
+		}, {
+			"ptype": "gxp_legend",
+			"outputTarget": "legend",
+			"outputConfig": {
+				"autoScroll": true
+			},
+			"legendConfig" : {
+				"legendPanelId" : "legendPanel",
+				"defaults": {
+					"style": "padding:5px",                  
+					"baseParams": {
+						"FORMAT": "image/jpeg",
+						"LEGEND_OPTIONS": "forceLabels:on;fontSize:10",
+						"WIDTH": 20, "HEIGHT": 20
+					}
+				}
+			}
+		}, {
+			"ptype": "gxp_addlayers",
+			"actionTarget": "tree.tbar",
+			"id": "addlayers"
+		}, {
+			"ptype": "gxp_removelayer",
+			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
+		}, {
+			"ptype": "gxp_removeoverlays",
+			"actionTarget": "tree.tbar"
+		}, {
+			"ptype": "gxp_addgroup",
+			"actionTarget": "tree.tbar"
+		}, {
+			"ptype": "gxp_removegroup",
+			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
+		}, {
+			"ptype": "gxp_groupproperties",
+			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
+		}, {
+			"ptype": "gxp_layerproperties",
+			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
+		}, {
+			"ptype": "gxp_zoomtolayerextent",
+			"actionTarget": {"target": "layertree.contextMenu", "index": 0}
+		}, {
+			"ptype":"gxp_geonetworksearch",
+			"actionTarget": ["layertree.contextMenu"]
+		}, {
+			"ptype": "gxp_zoomtoextent",
+			"actionTarget": {"target": "paneltbar", "index": 15}
+		}, {
+			"ptype": "gxp_navigation", "toggleGroup": "toolGroup",
+			"actionTarget": {"target": "paneltbar", "index": 16}
+		}, {
+			"actions": ["-"], "actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_zoombox", "toggleGroup": "toolGroup",
+			"actionTarget": {"target": "paneltbar", "index": 17}
+		}, {
+			"ptype": "gxp_zoom",
+			"actionTarget": {"target": "paneltbar", "index": 18}
+		}, {
+			"actions": ["-"], "actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_navigationhistory",
+			"actionTarget": {"target": "paneltbar", "index": 19}
+		}, {
+			"actions": ["-"], "actionTarget": "paneltbar"
+		}, {
 			"ptype": "gxp_wmsgetfeatureinfo_menu", 
 			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
 			"picturesBrowserConfig": {
-				"baseUrl": "http://geocollect.geo-solutions.it/opensdi2-manager/mvc/fileManager/extJSbrowser",
+				"baseUrl": "http://84.33.2.28/opensdi2-manager/mvc/fileManager/extJSbrowser",
 				"folder": "/geocollect/media/punti_abbandono/",
-				"featureProperty": "MY_ORIG_ID",
+				"featureProperty": "id",
 				"urlSuffix":"/2"
 			},
 			"useTabPanel": true,
 			"toggleGroup": "toolGroup",
 			"actionTarget": {"target": "paneltbar", "index": 20}
+		}, {
+			"ptype": "gxp_addlayer",
+			"showCapabilitiesGrid": false,
+			"id": "addlayer"
+		}, {
+			"actions": ["-"], "actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_measure", "toggleGroup": "toolGroup",
+			"actionTarget": {"target": "paneltbar", "index": 21}
 		}
-
 	]
-	
-
 }
