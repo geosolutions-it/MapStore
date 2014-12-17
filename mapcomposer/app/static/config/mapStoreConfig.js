@@ -2,6 +2,7 @@
    "geoStoreBase":"http://84.33.2.75/geostore/rest/",
    "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
+   "tab": true,
    "gsSources":{ 
 		"nrl":{
 			"ptype": "gxp_wmssource",
@@ -210,6 +211,11 @@
 	
 	"customTools":[
 		{
+			"ptype": "gxp_staticpage",
+			"url": "http://dwms.fao.org/~test/geo_magis_en.asp",
+			"tabPosition": 0,
+			"tabTitle": "Portal"
+		},{
 			"ptype": "gxp_zoomtoextent",
 			"extent": [	6770799.251963,2705604.806669,8826743.330978,4442826.247111 ],
 			"actionTarget": {"target": "paneltbar", "index": 2}

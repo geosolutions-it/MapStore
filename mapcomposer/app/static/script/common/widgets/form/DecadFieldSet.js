@@ -28,6 +28,8 @@ Ext.ns("MapStore.widgets.form");
  *  .. class:: DecadFieldSet(config)
  *   
  *    Decad fieldset
+ *
+ * 	Author: Tobia Di Pisa at tobia.dipisa@geo-solutions.it
  */
 MapStore.widgets.form.DecadFieldSet = Ext.extend(Ext.form.FieldSet,  {
 

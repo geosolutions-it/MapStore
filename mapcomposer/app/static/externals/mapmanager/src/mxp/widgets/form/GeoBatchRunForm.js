@@ -23,6 +23,7 @@ Ext.ns("mxp.widgets");
 /**
  * Generic GeoBatch Form to manage GeoBatch process lauches.
  * 
+ * Author: Tobia Di Pisa at tobia.dipisa@geo-solutions.it
  */
 mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
 
