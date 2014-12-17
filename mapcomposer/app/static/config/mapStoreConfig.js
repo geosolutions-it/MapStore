@@ -155,7 +155,7 @@
 	     {	
 		 	"ptype": "gxp_featureeditor",
     		"featureManager": "featuremanager",
-    		
+    		 "autoLoadFeatures": true,
     		 "outputConfig":{
                   "outputSRS": "EPSG:3003"}
 	    },{

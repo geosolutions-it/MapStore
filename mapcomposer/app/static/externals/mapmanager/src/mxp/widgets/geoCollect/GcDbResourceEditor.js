@@ -514,9 +514,8 @@ this.autoScroll=true;
 				//TODO::manca ordering field ma si prende ad altro panel
 			};
 			schema_sop=	{ 
-   		 	    "localSourceStore":rec.get('name')+"_sop",	// local device table name
+   		 	    "localFormStore":rec.get('name')+"_sop",	// local device table name
    	 			"fields":this.getFieldsObj(this.sop_fieldStore)
-				//TODO::manca ordering field ma si prende ad altro panel
 		};
                                   
                     return {"schema_seg":schema_seg,"schema_sop":schema_sop};
