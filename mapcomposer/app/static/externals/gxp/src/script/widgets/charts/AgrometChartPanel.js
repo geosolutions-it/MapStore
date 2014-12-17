@@ -111,7 +111,12 @@ Ext.namespace('gxp.charts');
         var granType = data.areatype.toLowerCase();
         var fromYear = data.startYear;
         var toYear = data.endYear;
-
+	
+        //get start and end dekads.
+        var months = this.form.output.monthRangeSelector.slider.getValues();
+        var start_dec = (months[0])*3;
+        var end_dec = (months[1]+1)*3; //the end month is included
+	
         var factorStore = this.form.output.factors.getSelectionModel().getSelections();
         var factorValues = [];
         var factorList = "";
@@ -151,7 +156,9 @@ Ext.namespace('gxp.charts');
             fromYear: fromYear,
             toYear: toYear,
             factorValues: factorValues,
-			factorStore: factorStore
+			factorStore: factorStore,
+            startDec: start_dec,
+            endDec: end_dec
         };
         
         //loading mask
@@ -178,7 +185,8 @@ Ext.namespace('gxp.charts');
 				mapping: 'properties.dec'
 			},{
 				name: 's_dec',
-				mapping: 'properties.s_dec'
+				mapping: 'properties.order'
+				//mapping: 'properties.s_dec'
 			}, {
 				name: 'current',
 				mapping: 'properties.current'
@@ -200,9 +208,15 @@ Ext.namespace('gxp.charts');
             (toYear     ? "end_year:"    + toYear + ";" : "") +
             (factorList ? "factor_list:" + factorList + ";" : "") +
             (regionList ? "region_list:" + regionList + ";" : "") +
-            (granType   ? (granType != "pakistan" ? "gran_type:" + granType + ";" : "gran_type:province;") : "");
+            (start_dec  ? "start_dec:"   + start_dec + ";" : "") +
+            (end_dec    ? "end_dec:"     + end_dec + ";" : "") +
+            (granType   ? (granType != "pakistan" ? "gran_type:" + granType + ";" : "gran_type:province;") : "") ;
+            
+            
 			
-		var viewparams = (season == 'rabi' ? params + ";season_flag:NOT" : params);
+		var viewparams = params;		
+		
+		//var viewparams = (season == 'rabi' ? params + ";season_flag:NOT" : params);
         
         var tabPanel = Ext.getCmp(this.targetTab);
 
@@ -258,7 +272,7 @@ Ext.namespace('gxp.charts');
 				service: "WFS",
 				version: "1.0.0",
 				request: "GetFeature",
-				typeName: "nrl:agromet_aggregated",
+				typeName: "nrl:agromet_aggregated2",
 				outputFormat: "json",
 				viewparams: viewparams /*season == 'rabi' ? "start_year:"+ fromYear + ";" +
                     "end_year:"+ toYear + ";" +
@@ -296,7 +310,8 @@ Ext.namespace('gxp.charts');
                     mapping: 'properties.dec'
                 },{
                     name: 's_dec',
-                    mapping: 'properties.s_dec'
+		    mapping: 'properties.order'
+                    //mapping: 'properties.s_dec'
                 }, {
                     name: 'current',
                     mapping: 'properties.current'
