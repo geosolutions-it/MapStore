@@ -870,5 +870,9 @@ GeoExt.Lang.add("de", {
         daysText: 'Tage', 
         monthsText: 'Monate', 
         yearsText: 'Jahre'        
-    }   
+    },
+	
+	"gxp.plugins.StaticPage.prototype": {
+        tabTitle: "Statische Seite"
+    }  
 });
