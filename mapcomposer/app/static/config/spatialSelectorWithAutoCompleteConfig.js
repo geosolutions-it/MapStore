@@ -4,7 +4,7 @@
    		"default": {
 			"ptype": "gxp_wmssource",
 			"title": "Default GeoServer",
-			"url": "http://84.33.2.28:8081/geoserver/it.geosolutions/ows",
+			"url": "http://localhost:8080/geoserver/ows",
 			"SRS": "EPSG:900913",
 			"version":"1.1.1"
 		},

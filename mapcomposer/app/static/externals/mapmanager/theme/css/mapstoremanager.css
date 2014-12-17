@@ -57,6 +57,9 @@ background:url(img/user.gif) no-repeat 10px 8px;
 text-indent:30px;
 display:block;
 }
+.icon-layers{
+	background-image:url(../img/layers.png) !important;
+}
 .m_up{
 	background-image:url(../../../ext/ux/images/up2.gif) !important;
 }

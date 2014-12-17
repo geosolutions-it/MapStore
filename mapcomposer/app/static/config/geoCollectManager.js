@@ -4,7 +4,7 @@
    "start":0,
    "limit":20,
    "msmTimeout":30000,
-   "adminUrl": "http://geocollect.geo-solutions.it/opensdi2-manager/",
+   "adminUrl": "http://84.33.2.28/opensdi2-manager/",
    "twitter":{
       "via":"geosolutions_it",
       "hashtags":""
@@ -25,7 +25,7 @@
       ],
       [
          "fr",
-         "Français"
+         "Fran̤ais"
       ],
       [
          "de",
@@ -33,7 +33,7 @@
       ],
       [
          "es",
-         "Español"
+         "Espa̱ol"
       ]
    ],
    "tools":[{
@@ -56,18 +56,14 @@
           "target": "north.tbar",
           "index": 7
         }
-    }],
+    }
+    
+    
+    ],
    "adminTools":[{
         "ptype": "mxp_mapmanager",
         "loginManager": "loginTool",
         "actionTarget": null
-    },{
-        "ptype": "mxp_templatemanager",
-        "loginManager": "loginTool",
-		"actionTarget":{
-          "target": "north.tbar",
-          "index": 0
-        }
     },{
         "ptype": "mxp_myaccount",
         "loginManager": "loginTool",
@@ -83,39 +79,23 @@
           "index": 2
         }
     },{ 
-        "ptype": "mxp_geostore_resource_editor",
-        "category": "GEOCOLLECT",
-        "buttonText": "Mission Templates",
-        "actionTarget":{
-             "target": "north.tbar",
-             "index": 3
-            }
-
-    },{ 
-        "ptype": "mxp_geostore_resource_editor",
-        "category": "MAP",
-        "buttonText": "Maps",
-        "actionTarget":{
-             "target": "north.tbar",
-             "index": 5
-            }
-
-    },{ 
         "ptype": "mxp_geostore_mission_resource_editor",
         "category": "GEOCOLLECT",
          "loginManager": "loginTool",
         "buttonText": "Mission Configuration",
-        "actionTarget":{
-         "target": "north.tbar",
-         "index": 6
-        },
-         "resourceEditor":{
-		"xtype":"mxp_gc_resource_editor",
-		"ref":"/missionResEdit",
-		"authParam":"authkey"
-		},
+             "actionTarget":{
+             "target": "north.tbar",
+             "index": 3
+            },
+           "resourceEditor":{
+			"xtype":"mxp_gc_resource_editor",
+			"ref":"/missionResEdit",
+			"authParam":"authkey"
+			},
+           
+
     },{ 
-        "ptype": "mxp_servicemanager",
+        "ptype": "mxp_filebrowser",
         "notDuplicateOutputs":true,
         "actionTarget":{
              "target": "north.tbar",
@@ -147,7 +127,8 @@
           "target": "north.tbar",
           "index": 1 
         }
-    },{
+    },
+    {
         "ptype": "mxp_login",
         "pluginId": "loginTool",
         "actionTarget":{
