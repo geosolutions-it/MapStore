@@ -647,7 +647,7 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 		var currentExtent = map.getExtent();
 		
 		//transform to a Geometry (instead of Bounds)
-		if (me.roiFieldSet && me.roiFieldSet.collapsed !== false && me.roiFieldSet.outputType.value) {
+		if (me.roiFieldSet && me.roiFieldSet.geocodingPanel.getStore().getCount() > 0 && me.roiFieldSet.outputType.value) {
 			params.roi = me.roiFieldSet.currentExtent;
 		} else {
 			//currentExtent = map.getMaxExtent();
