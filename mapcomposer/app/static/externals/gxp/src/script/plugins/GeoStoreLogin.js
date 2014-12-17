@@ -108,7 +108,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
      *  ``String``
      *  Text for the password field in login window(i18n).
      */
-    adminTitle: "Admin GUI",
+    adminTitle: "Administration Page",
     
     /** api: config[adminIconCls]
      *  ``String``
@@ -177,7 +177,6 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
     addActions: function() {
         if (this.loginService !== null) {
             var apptarget = this.target;
-//<<<<<<< HEAD
             var adminAppWindow;
             var adminGUIId = "adminGUILink";
 
@@ -224,10 +223,28 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                     disabled: true,
                     tooltip: this.adminTitle,
                     handler: function() {
+                        var adminUrl =this.adminGUIUrl +  this.adminGUIHome;
                         if(this.logged){
-                            if(!this.enableAdminAppWindowFocus){
+                            if(this.renderAdminToTab){
+                                var tabPanel = Ext.getCmp(this.target.renderToTab);
+                                if(!this.adminPanel){
+                                    this.adminPanel = new Ext.Panel({
+                                        id: 'staticPanel',
+                                        title: this.adminTitle,
+                                        layout: 'fit', 
+                                        items: [ 
+                                            new Ext.ux.IFrameComponent({ 
+                                                id: 'static-panel',
+                                                url: adminUrl 
+                                            }) 
+                                        ]
+                                    });
+                                    tabPanel.add(this.adminPanel);
+                                }
+                                tabPanel.setActiveTab(this.adminPanel);
+                            }else if(!this.enableAdminAppWindowFocus){
                                 // We open always a new window
-                                window.open(this.adminGUIUrl +  this.adminGUIHome);
+                                window.open(adminUrl);
                             }else{
                                 /*
                                  * TODO: Repair this option. Now it's different for each browser:
@@ -263,12 +280,13 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                     },
                     scope: this
                 });
+                var details = this.getUserDetails();
+                var label =details && details.user && details.user.name || this.logoutTitle;
                 actionsArray.push({
                     xtype: 'menu',
-                    menuText: this.logoutTitle,
                     iconCls: this.logoutDropMenuIconCls,
                     anchor:'100%',
-                    text: this.logoutTitle,
+                    text: label,
                     hidden: true,
                     disabled: true,
                     tooltip: this.logoutTitle,
@@ -290,31 +308,6 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                     anchor:'100%',
                     text: this.logoutTitle,
                     hidden: true,
-/* =======
-        
-            var actions = gxp.plugins.GeoStoreLogin.superclass.addActions.apply(this, [
-                [{
-                    menuText: this.loginText,
-                    iconCls: "login",
-                    text: this.loginText,
-                    disabled: false,
-                    hidden: false,
-                    scale: this.scale || 'small',
-                    tooltip: this.loginText,
-                    handler: function() {
-                        if(!this.logged){
-                            this.showLoginDialog();                            
-                        }	
-                    },
-                    scope: this
-                },{
-                    menuText: this.logoutTitle,
-                    iconCls: "logout",
-                    scale: this.scale || 'small',
-                    text: this.logoutTitle,
-                    hidden: true,
-                    
->>>>>>> master */
                     disabled: true,
                     tooltip: this.logoutTitle,
                     handler: function() {
@@ -323,7 +316,6 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                         }
                     },
                     scope: this
-// <<<<<<< HEAD
                 });
             }
         
@@ -336,15 +328,12 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
             }else{
                 this.logoutAction= actions[1];
             }
-
-/* =======
-                }]
-            ]);
             
-            this.loginAction = actions[0];
-            this.logoutAction= actions[1];
-            
->>>>>>> master */
+            if(this.autoLogin && this.getUserDetails()){
+                this.target.on('ready',function(){
+                    this.submitLogin();
+                },this);
+            }
             return actions;
         }
     },
@@ -447,15 +436,29 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
      * Submits the login.
      */ 
     submitLogin: function () {        
-        var form = this.panel.getForm();
-        var fields = form.getValues();
+        var auth;
+        if(this.panel == null && this.autoLogin){
+            var userDetails = this.getUserDetails();
+            if(userDetails){      
+                auth = userDetails.token;
+            }
+        }else{
+            var form = this.panel.getForm();
+            var fields = form.getValues();
+            var pass = fields.password;
+            var user = fields.username;
+            auth = 'Basic ' + Base64.encode(user + ':' + pass);
+        }
+       
         
-        var pass = fields.password;
-        var user = fields.username;
+        
         if (this.isDummy) return this.dummyLogin(user, pass);
-        var auth = 'Basic ' + Base64.encode(user + ':' + pass);
-		
-		this.mask = new Ext.LoadMask(this.panel.getEl(), {msg: this.loginLoadingMask});
+        
+		if(this.panel){
+          this.mask = new Ext.LoadMask(this.panel.getEl(), {msg: this.loginLoadingMask});
+        }else{
+            this.mask = new Ext.LoadMask(Ext.getBody(), {msg: this.loginLoadingMask});
+        }
 		this.mask.show();
 		
         Ext.Ajax.request({
@@ -467,16 +470,14 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                 'Authorization' : auth
             },
             success: function(response, form, action) {
-				this.mask.hide();            
-                this.win.hide();
-
-                // obatain again the usernaem and pass before reset
-                var fields = this.panel.getForm().getValues();
-                var password = fields.password;
-                var username = fields.username;
-				
-                this.panel.getForm().reset();
-				
+				this.mask.hide();
+                if(this.win){
+                    this.win.hide();
+                }
+                
+				if(this.panel){
+                    this.panel.getForm().reset();
+                }
                 try{
                     var user = Ext.util.JSON.decode(response.responseText);
                 }catch(e){
@@ -489,13 +490,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                     });
                     return;
                 }
-				
-                if(this.enableAdminGUILogin){
-                    this.adminGUILogin(username, password);
-                }else{
-                    this.loginSuccess(false);
-                }
-				
+
                 // save auth info
                 this.token = auth;
                 if (user.User) {
@@ -506,7 +501,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                     
                     
                 }
-                this.loginSuccess();
+                this.loginSuccess(true);
             },
             failure: function(response, form, action) {
 			    this.mask.hide(); 
@@ -517,41 +512,15 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                     animEl: 'mb4',
                     icon: Ext.MessageBox.WARNING
                 });
-				
-				this.panel.uname.markInvalid({
-                    "loginUsername": this.loginErrorText
-                });
-				
-				this.panel.pwd.markInvalid({
-                    "loginPassword": this.loginErrorText
-                });
-            }
-        });
-    },
+				if(this.panel){
+                    this.panel.uname.markInvalid({
+                        "loginUsername": this.loginErrorText
+                    });
 
-    // try to login with the Admin GUI
-    adminGUILogin: function(username, password){
-        var adminLoginService = this.adminGUIUrl + "/j_spring_security_check";
-
-        this.logoutAction.setText(username);
-        Ext.Ajax.request({
-            url: adminLoginService,
-            scope: this,
-            params : {
-                j_username: username,
-                j_password: password
-            },
-            headers : {
-                "Content-Type" : "application/x-www-form-urlencoded"
-            },
-            success: function(response, form, action) {
-                // we check if the response include the 'adminLoginInvalidResponseValidator' string
-                this.loginSuccess(response.responseText 
-                    && response.responseText.indexOf(this.adminLoginInvalidResponseValidator) < 0);
-            },
-            failure: function(response, form, action) {
-                // maybe is not admin!!
-                this.loginSuccess(false);
+                    this.panel.pwd.markInvalid({
+                        "loginPassword": this.loginErrorText
+                    });
+                }
             }
         });
     },
@@ -567,7 +536,12 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                 tool.enable();	
             }           
         },this);
-        
+        var uDetails = {
+            token: this.token,
+            user: this.user
+        };
+
+        sessionStorage["userDetails"] = Ext.util.JSON.encode(uDetails);	
         for(var tool in this.target.tools){            
             if(this.target.tools[tool].ptype == "gxp_nrl"){  
                 this.target.tools[tool].enableData();
@@ -591,7 +565,9 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
         //this.logoutAction.enable();
         //this.target.setIconClass("logout");
         this.logged=true;
-        this.win.close();
+        if(this.win){
+            this.win.close();
+        }
     },
 
     loginFailure: function(request) {
@@ -784,6 +760,19 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
             this.loginSuccess();
         }else{
             this.loginFailure();
+        }
+    },
+    getUserDetails: function(){
+    
+        if(sessionStorage["userDetails"]){
+            try{
+                var userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
+                return userDetails;
+            }catch(e){
+                console.error("unable to parse user details");
+            }
+            return;
+            
         }
     }
         

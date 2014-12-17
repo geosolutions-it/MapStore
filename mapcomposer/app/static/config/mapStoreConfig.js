@@ -329,8 +329,10 @@
 			"ptype":"gxp_geostore_login",
 			"loginService":"http://84.33.2.75/geostore/rest/users/user/details/",     
 			"enableAdminGUILogin": true,
-    		"adminGUIUrl": "/admin", 
-    		"adminGUIHome": "/users",
+            "renderAdminToTab":true,
+            "autoLogin": true,
+    		"adminGUIUrl": "/manager", 
+    		"adminGUIHome": "",
     		"adminLoginInvalidResponseValidator": "No AuthenticationProvider found",
 
 			"isDummy":false,

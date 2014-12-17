@@ -4,6 +4,7 @@
    "start":0,
    "limit":20,
    "msmTimeout":30000,
+   "header":{},
    
    "twitter":{
       "via":"geosolutions_it",
@@ -49,27 +50,9 @@
         }
     }],
    "adminTools":[{
-        "ptype": "mxp_usermanager",
-       "setActiveOnOutput":true,
-        "addManageGroupsButton": false,
-        "loginManager": "loginTool",
-        "showOnStartup":true,
-        "closable":false,
-        "actionTarget":null,
-        "outputConfig": {
-            "closable": false,
-            "closeAction": 'close',
-            "autoWidth": true,
-            "viewConfig": {
-                "forceFit": true
-            }       
-        },
-       "actionTarget":{
-           "target": "north.tbar",
-           "index": 1
-         }
-    },{
          "ptype": "mxp_geobatch_flows",
+         "autoOpen":true,
+         "closable":false,
          "geoBatchRestURL":"http://84.33.2.75/geobatch/rest/",
          "runConfigs": {
             "csvingestion":{
@@ -79,18 +62,19 @@
                 "fileRegex": "\\.csv$",
                 "path":"/test_csv/"
             },            
-            "geotiff_publish":{
+            "ndviingestion":{
                 "xtype": "geobatch_run_local_form",
                 "baseDir": "/home/geosolutions/admin",
+                "fileBrowserUrl": "mvc/fileManager/extJSbrowser",
                 "fileRegex": "\\.ti[f]{1,2}$",
-                "path":" /ndvi/"
+                "path":"/NDVI/NDVI/"
             },
 			"ndvistats":{
                 "xtype":"geobatch_run_form",
                 "baseDir": "/home/geosolutions/admin",
                 "fileBrowserUrl": "mvc/fileManager/extJSbrowser",
                 "fileRegex": "\\.shp$",
-                "path":"/crop_masks/",
+                "path":"/crop_masks",
 				"decadConfig": {
 				    "dataUrl": "http://84.33.2.75/geoserver/ndvi/ows",
 					"layer": "ndvi:ndvi"
@@ -98,6 +82,25 @@
             }           
          },
          "actionTarget":{
+           "target": "north.tbar",
+           "index": 1
+         }
+    },{
+        "ptype": "mxp_usermanager",
+       "setActiveOnOutput":true,
+        "addManageGroupsButton": false,
+        "loginManager": "loginTool",
+        "showOnStartup":true,
+        "actionTarget":null,
+        "outputConfig": {
+            "closable":true,
+            "closeAction": 'close',
+            "autoWidth": true,
+            "viewConfig": {
+                "forceFit": true
+            }       
+        },
+       "actionTarget":{
            "target": "north.tbar",
            "index": 2
          }
