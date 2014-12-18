@@ -42,7 +42,7 @@ initComponent: function() {
 this.frame=true;
 this.layout='form';
 this.border= false;
-
+this.autoScroll=true;
 defaultComboList={
 		                 	clearFilterOnReset:false,
 		                 	displayField: 'name',
