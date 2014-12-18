@@ -852,7 +852,7 @@ GeoExt.Lang.add("fr", {
 	
 	"gxp.plugins.StaticPage.prototype": {
         tabTitle: "Page Statique"
-    }
+    } 
 });
 
 

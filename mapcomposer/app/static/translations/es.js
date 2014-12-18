@@ -806,5 +806,5 @@ GeoExt.Lang.add("es", {
 	
 	"gxp.plugins.StaticPage.prototype": {
         tabTitle: "Página estática"
-    }
+    }  
 });
