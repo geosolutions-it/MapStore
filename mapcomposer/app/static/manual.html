@@ -44,39 +44,43 @@
 				font-style:italic;
 				color:#23238e;
            }
-           </style>
+          </style>
     </head>
+    
     <body>
         <div class="bg_guide">
-        <H3>How to Start a new run</H3>
+        <H3>How to start a new execution</H3>
+        <p>Once this splash screen disappears the system <strong>Control Panel</strong> window will show up. At the Moment, December 2014, only CMRE <strong>Optimal Asset Allocator</strong> algorithm is available (look to the left side of the <strong>Control Panel</strong> window under <strong>“Algorithms”</strong>), in future other algorithms might appear in this section. In order to start a new Optimal Asset Allocator execution, do the followings:</p>
         <p><ol>
-            <li>Click on the <span class="add_ic guide_icon" style=""></span> near the Row in the <strong>Algorithms</strong> table <br/> or <br/>
-                Right click on a run and click on <strong>"<span class="add_ic guide_icon" style=""></span> Start from Here"</strong>
+            <li>Click on the <span class="add_ic guide_icon" style=""></span> at end of the row <strong>“Optimal Asset Allocator”</strong> in the <strong>“Algorithms”</strong> section in the left side of the <strong>“Control Panel”</strong> tab or Right click on <span class="add_ic guide_icon" style=""></span> at the end of the green lines in the <strong>“Outcomes”</strong> section (right side) and select <strong>"Start from this run"</strong> to reuse parameters of a previous successful run
             </li>
             <li>
-                Click on "Ok" button to start editing the execution input parameters
+                Click on <strong>"Ok"</strong> button to on the dialog box “Create a new Process Run”, then the data entry form should appear
             </li>
             <li>
-                Edit the form fields and click on <strong>"<span class="accept guide_icon" style=""></span>Execute"</strong>
+                 Start entering or editing the execution input parameters in the data entry form
             </li>
             <li>
-                Wait for the process execution Ending
+                 Click on <strong>"Execute"</strong> button in the bottom part of the data entry form
+            </li>
+            <li>
+                 Go back to the control panel tab to monitor the process execution progress
             </li>
         </ol></p>
-        <h3>See results</h3>
-            <p>A successful run execution row contains the link to the generated map. Click on the <span class="gx-map-go guide_icon" style=""></span> button to see the map of the results.</p>
-            <p>If the process failed, the <span class="information_ic guide_icon" style=""></span> button will show you details about the error occurred</p>
+        
+        <h3>How to visualize the results</h3>
+            <p>In the <strong>“Outcomes”</strong> section of the <strong>“Control Panel”</strong> the list of executed run is presented. The color of the row reports the status of the execution: yellow in progress, green terminated with success, red terminated with errors. </p>
+            <p>The user can visualize the result of the execution clicking on the map icon <span class="gx-map-go guide_icon" style=""></span> on the green lines. This will open a new tab containing a GIS-like viewer with all the input and output layers of the Optimal Asset Allocator.</p> 
+            <p>If the process failed, the button <span class="information_ic guide_icon" style=""></span> will show details about the error occurred.</p>
        
-        <h3>Share your data</h3>
-            <p>the Visibility column show what users can see the results of the process. The visibility can be 
+        <h3>How to share data</h3>
+            <p>The Visibility column shows, in the <strong>“Outcomes”</strong> section can be one of the followings:
                 <ul>
-                    <li><span class="visibility_ic PRIVATE guide_icon" style=""></span><strong>Private:</strong>Only the owner can see the run execution information</li>
-                    <li><span class="visibility_ic SHARED guide_icon" style=""></span><strong>Shared:</strong>Only some selected groups can see the results</li>
-                     <li><span class="visibility_ic PUBLIC guide_icon" style=""></span><strong>Public:</strong>Everyone can see the results.</li>
+                    <li>A lock icon <span class="visibility_ic PRIVATE guide_icon" style=""></span> when the execution results are private: only the creator (owner) can visualize them</li>
+                    <li>A world icon <span class="visibility_ic SHARED guide_icon" style=""></span> if the execution results are public, which means that are visible to every authenticated user</li>
                 </ul>
-    
             </p>
-            <p>If you are the owner of the process, you can share with other people the results of your run. Click on the <span class="ic_edit guide_icon" style=""></span> To share the results with everyone or only with a group of users</p>
+            <p>Clicking on the pen icon <span class="ic_edit guide_icon" style=""></span> the user can change the visibility of the results of a run, e.g. from private to public or vice versa.</p>
      </div>
     </body>
 </html>

@@ -49,6 +49,11 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
     setActiveOnOutput: true,
     showConsumersDetails: false,
     /* api configuration
+        closable: if true the output element is closable
+    */
+    closable: true,
+	
+    /* api configuration
     baseDir: '/home/geosolutions/admin/',
     
      /** api: configuration[runConfigs]
@@ -175,7 +180,7 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
             layout: 'border',
             itemId:'GBflows',
             xtype:'panel',
-            closable: true,
+            closable: this.closable,
             closeAction: 'close',
             iconCls: 'geobatch_ic',  
             header: false,

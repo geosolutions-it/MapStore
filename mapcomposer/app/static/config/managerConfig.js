@@ -45,7 +45,7 @@
     }],
    "adminTools":[{
          "ptype": "mxp_cmre_ondemand_services",
-         "osdi2ManagerRestURL":"http://localhost:8180/opensdi2-manager/mvc/process/wps/",
+         "osdi2ManagerRestURL":"https://geos3.cmre.nato.int/opensdi2-manager/mvc/process/wps/",         
          "baseMapUrl": "./?config=assetAllocatorResult",
          "autoRefreshTime": 30000,
          "autoOpen":true,
@@ -170,7 +170,7 @@
         "buttonText": "Runtimes",
         "iconCls":"information_ic",
         "showOnStartup":true,
-        "windowHeight":700,
+        "windowHeight":626,
         "windowWidth": 610,
         "fileDocURL":"manual.html",
         "actionTarget":{
@@ -195,7 +195,7 @@
     }],
     "loggedTools":[{
          "ptype": "mxp_cmre_ondemand_services",
-         "osdi2ManagerRestURL":"http://localhost:8180/opensdi2-manager/mvc/process/wps/",
+         "osdi2ManagerRestURL":"https://geos3.cmre.nato.int/opensdi2-manager/mvc/process/wps/",
          "baseMapUrl": "./?config=assetAllocatorResult",
          "autoRefreshTime": 30000,
          "autoOpen":true,

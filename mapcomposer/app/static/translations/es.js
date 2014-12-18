@@ -802,5 +802,9 @@ GeoExt.Lang.add("es", {
 	
 	"gxp.plugins.AdvancedSnappingAgent.prototype":{
         tooltipText: "Activar/Desactivar Snapping"
+    },
+	
+	"gxp.plugins.StaticPage.prototype": {
+        tabTitle: "Página estática"
     }  
 });

@@ -1005,10 +1005,10 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 					maxlength : '6'
 				},
 				validator : function(val) {
-					if (!Ext.isEmpty(val) && 0 <= val && val <= 20) {
+					if (!Ext.isEmpty(val) && 0 <= val && val <= 30) {
 						return true;
 					} else {
-						return "Value cannot be empty and must be a number between [0 - 20]";
+						return "Value cannot be empty and must be a number between [0 - 30]";
 					}
 				},
 				renderer : function(value, metaData, record, rowIndex, colIndex, store, view) {
@@ -1033,10 +1033,10 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 					maxlength : '6'
 				},
 				validator : function(val) {
-					if (!Ext.isEmpty(val) && 0 <= val && val <= 20) {
+					if (!Ext.isEmpty(val) && 0 <= val && val <= 30) {
 						return true;
 					} else {
-						return "Value cannot be empty and must be a number between [0 - 20]";
+						return "Value cannot be empty and must be a number between [0 - 30]";
 					}
 				},
 				renderer : function(value, metaData, record, rowIndex, colIndex, store, view) {
@@ -1176,7 +1176,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 		var me = this;
 
 		//check forms validity
-		if(!this.resourceform.getForm().isValid() && 
+		if(!this.resourceform.getForm().isValid() || 
 		   !this.assetFramePanel.getForm().isValid()) {
 		   	Ext.Msg.show({
 				title : me.executeRunTitle,

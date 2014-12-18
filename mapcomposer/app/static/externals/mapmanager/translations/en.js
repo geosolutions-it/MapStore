@@ -285,7 +285,7 @@ GeoExt.Lang.add("en", {
     },
     "mxp.plugins.CMREOnDemandServices.prototype":{
         buttonText: "Control Panel",
-        flowsListTitle: "Algorythms",
+        flowsListTitle: "Algorithms",
         runButtonText: "Run",
         consumersGridTitle: "Outcomes"
     },

@@ -37,7 +37,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
     ptype: "mxp_cmre_ondemand_services",
     //i18n
     buttonText: "Control Panel",
-	flowsListTitle:'Algorythms',
+	flowsListTitle:'Algorithms',
     runButtonText:'Run',
     consumersGridTitle: 'Outcomes',
     flowRunFormCategory: 'WPS_RUN_CONFIGS',
