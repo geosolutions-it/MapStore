@@ -229,12 +229,10 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                                 var tabPanel = Ext.getCmp(this.target.renderToTab);
                                 if(!this.adminPanel){
                                     this.adminPanel = new Ext.Panel({
-                                        id: 'staticPanel',
                                         title: this.adminTitle,
                                         layout: 'fit', 
                                         items: [ 
                                             new Ext.ux.IFrameComponent({ 
-                                                id: 'static-panel',
                                                 url: adminUrl 
                                             }) 
                                         ]
@@ -553,8 +551,10 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
         if(allLoginSuccess && this.enableAdminGUILogin){
             this.logoutAction.setIconClass(this.logoutDropMenuAdminIconCls);
             this.adminLinkAction.setIconClass(this.adminIconCls);
-            this.adminLinkAction.show();
-            this.adminLinkAction.enable();
+            if(this.user.role =="ADMIN"){
+                this.adminLinkAction.show();
+                this.adminLinkAction.enable();
+            }
         }else if(this.enableAdminGUILogin){
             this.logoutAction.setIconClass(this.logoutDropMenuIconCls);
         }
@@ -589,7 +589,12 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                     if(this.target.tools[tool].ptype == "gxp_nrl"){  
                         this.target.tools[tool].disableData();
                     }                          
-
+            if(this.adminPanel){
+                var tabPanel = Ext.getCmp(this.target.renderToTab);
+                tabPanel.remove(this.adminPanel);
+                this.adminPanel.destroy();
+                delete this.adminPanel;
+            }
             // Clear the sessionStorage
             for(var i = 0; i < sessionStorage.length; i++) {
                 var key = sessionStorage.key(i);

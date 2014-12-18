@@ -590,7 +590,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         this.portaltree = [{
             region: "center",
             layout: "border",
-            title: 'View',            
+            iconCls:"ic_map",
+            title: 'Map',            
             items: [
                 eastPanel,
                 this.mapPanelContainer

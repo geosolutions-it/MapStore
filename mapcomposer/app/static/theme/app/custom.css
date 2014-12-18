@@ -65,3 +65,6 @@ span.icon_span{
 .ic_chart-area{
     background-image: url(img/silk/chart_area.png);
 }
+.ic_map{
+    background-image: url(img/geosilk/map.png);
+}
