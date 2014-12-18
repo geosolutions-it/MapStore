@@ -413,13 +413,12 @@ Ext.namespace('gxp.charts');
                             rotation: 320,
                             y: +22,
 							formatter: function () {
-                                var months = ["Nov-1","Nov-2","Nov-3","Dec-1","Dec-2","Dec-3","Jan-1","Jan-2","Jan-3","Feb-1","Feb-2","Feb-3","Mar-1","Mar-2","Mar-3","Apr-1","Apr-2","Apr-3","May-1","May-2","May-3","Jun-1","Jun-2","Jun-3","Jul-1","Jul-2","Jul-3","Aug-1","Aug-2","Aug-3","Sep-1","Sep-2","Sep-3","Oct-1","Oct-2","Oct-3"];
-                                if (this.axis.dataMin == 1){
-                                    //return months[this.value-1] + "-" + this.value;
-                                    return months[this.value-1];
-                                }else{
-                                    return months[this.value-1];
-                                }								
+                               // var months = ["Nov-1","Nov-2","Nov-3","Dec-1","Dec-2","Dec-3","Jan-1","Jan-2","Jan-3","Feb-1","Feb-2","Feb-3","Mar-1","Mar-2","Mar-3","Apr-1","Apr-2","Apr-3","May-1","May-2","May-3","Jun-1","Jun-2","Jun-3","Jul-1","Jul-2","Jul-3","Aug-1","Aug-2","Aug-3","Sep-1","Sep-2","Sep-3","Oct-1","Oct-2","Oct-3"];
+                                var dek = (listVar.startDec + this.value -2) % 36 +1;
+                                var dek_in_mon = ((dek -1)% 3)+1;
+                                var mon =Math.floor((dek-1)/3);
+                                var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+                                return months[mon] + "-" + dek_in_mon + "(" + this.value +")" + dek;                            
 							}							
 						}                        
 					}],
