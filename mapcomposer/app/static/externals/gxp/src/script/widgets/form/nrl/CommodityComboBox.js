@@ -50,7 +50,7 @@ nrl.form.CommodityComboBox = Ext.extend(Ext.form.ComboBox,{
 		this.store.filter('season',season,true,true);
 	},
     getSelectedRecord: function(){
-        this.getStore().findExact(this.valueField,this.getValue());
+        return this.getStore().getAt(this.getStore().findExact(this.valueField,this.getValue()));
     },
     initComponent: function() {
         if(this.store){

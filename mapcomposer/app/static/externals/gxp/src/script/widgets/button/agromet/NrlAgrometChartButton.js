@@ -497,7 +497,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
                                 var dek_in_mon = ((dek -1)% 3)+1;
                                 var mon =Math.floor((dek-1)/3);
                                 var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-                                return months[mon] + "-" + dek_in_mon + "(" + this.value +")" + dek;
+                                return months[mon] + "-" + dek_in_mon ;//+ "(" + this.value +")" + dek;
 							}							
 						}                        
 					}],
