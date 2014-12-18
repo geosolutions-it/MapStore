@@ -192,7 +192,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
                 hilightLayerName:this.hilightLayerName,
 				ref:'AreaSelector',
                 comboConfig:this.currentComboConfig,
-				displayField:'province',
+				displayField: 'fname',
 				layerStyle:this.layerStyle,
 				listeners: {
 					update: function(store){
