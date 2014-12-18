@@ -33,6 +33,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
     iconCls: "gxp-icon-nrl-map",
     form: null,
 	text: 'Generate Map',
+    layerName:"nrl:CropDataMap2",
 	url: null,
 	controlToggleGroup: 'toolGroup',
 	infoActionTip: 'Crop Data info on selected layer',
@@ -48,18 +49,30 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 			
 			var varparam ="";
 			switch(values.variable) {
-				case "Area" : varparam='area';break;
-				case  "Production" : varparam ='prod';break;
-				case "Yield" : varparam= 'yield';break;
+				case "Area" : 
+                        varparam='area';
+                        break;
+				case  "Production" : 
+                        varparam ='prod';
+                        break;
+				case "Yield" : 
+                        varparam= 'yield';
+                        break;
 			}
+            var variable = values.variable;
+            var units = this.form.output.units;
             var region_list=values.region_list.replace(/\\,/g   ,',');
-			var yieldFactor = fieldValues.production_unit == "000 bales" ? 170 : 1000;
+			uoms = units.getSelectedUnits();
+            
+        
+           
             //set up cql_filter
 			var cql_filter="1=1";
             if(values.areatype=='province' &&region_list.length>0 ){
                 cql_filter="province IN (" +region_list+ ")";
             
             }
+        
 			//set up the area type
             var areatype = values.areatype.toLowerCase();
             if(values.areatype=='pakistan'){
@@ -67,25 +80,61 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
             }else{
                 areatype='district';
             }
+        
+            //Customize title,style and available styles
+            var titleTrail ="";
             
+           
             
+            var uom = uoms[varparam].get("shortname");
+        
+            if(values.type == "difference"){
+                variable = varparam + "_diff_percent" ; 
+                titleTrail = " - Diff";
+            }else if(values.type == "average"){
+                variable = varparam + "_avg";
+                titleTrail = " - Avg (" + uom +")";
+                
+            }else{
+                titleTrail = "(" + uom +")";
+            }
+            //NOTE: start_list = end_year to get only the values from
+            // the end_year. to get get feature info with multiple values
+            // use isntead start_list_year = startYear
+            //build layer 
 			var viewParams= "crop:" + crop + ";" +
 					"gran_type:" + areatype + ";" +
-					"start_year:" + values.endYear +";" + //same year for start and end.
+					"start_year:" + values.startYear +";" +  
+                    "start_list_year:" + values.endYear + ";" + 
+                    "variable:" + variable + ";" +
 					"end_year:" + values.endYear +";" + 
-					"yield_factor:" + yieldFactor
-			
-			var wms = new OpenLayers.Layer.WMS(values.crop + " " + values.endYear + " - "+values.variable,//todo: choice the style for the needed variable
-			   this.url,
-			   {
-				layers: "nrl:CropDataMap",
-				styles: areatype + "_" + crop + "_"+ varparam + "_style" ,
-				viewParams:viewParams,
+					"yield_factor:" + uoms.yield_factor + ";" +
+                    "area_factor:" + uoms.area_factor + ";" +
+                    "prod_factor:" + uoms.prod_factor ;
+             //GET PROPER STYLES 
+            var style = this.getProperStyle(values,areatype,varparam,crop);
+            
+			var layerProps = {
+                title: values.crop + " " + values.endYear + " - "+values.variable + titleTrail,
+                name: this.layerName,
+				layers: this.layerName,
+				styles: style ,
 				transparent: "true",
-                cql_filter:cql_filter
-				
-			});
-			
+                querible:true,
+                vendorParams: {
+                    cql_filter:cql_filter,
+                    viewParams: viewParams
+                    //TODO env: parameters for style if needed
+                }
+			};
+            
+            
+            var source = this.target.tools.addlayer.checkLayerSource(this.url);
+            var record = source.createLayerRecord(layerProps);
+            this.filterStyles(values,areatype,varparam,crop,viewParams,record);
+            var wms = record.getLayer();
+            
+			//record.set("styles",styles);
             var tooltip;
 			var cleanup = function() {
 				if (tooltip) {
@@ -93,6 +142,8 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 				}  
 			};
 			var button = this;
+        
+            //create gfi control
 			var control = new OpenLayers.Control.WMSGetFeatureInfo({
 					infoFormat:  "application/vnd.ogc.gml" ,
 					title: 'Identify features by clicking',
@@ -106,12 +157,16 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 					vendorParams:{
 						propertyName: 'region,crop,year,production,area,yield',
                         cql_filter:cql_filter,
-						
+						layers: "nrl:CropDataMap",
 						viewParams: "crop:" + crop + ";" +
 									"gran_type:" + areatype + ";" +
 									"start_year:" + values.startYear + ";" +
-									"end_year:" + values.endYear + ";" +//here startyear
-									"yield_factor:" + yieldFactor
+                                    "variable:" + values.variable + ";" +
+									"end_year:" + values.endYear + ";" +
+                                    "start_list_year:" + values.startYear + ";" +//
+									"yield_factor:" + uoms.yield_factor + ";" +
+                                    "area_factor:" + uoms.area_factor + ";" +
+                                    "prod_factor:" + uoms.prod_factor 
 						
 					},
 					generateYearlyRow:function (attrs){
@@ -140,9 +195,9 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 						var short_area_unit = values.area_unit.replace('hectares','ha');
 						var result = "<table class='cropdatatooltip'>"+
 							"<tr><th>Region</th><th>Year</th>"+
-							"<th>Production</br><strong>("+values.production_unit+")</strong></th>"+ //TODO unit
-							"<th>Area</br><strong>("+short_area_unit+")</strong></th>" +
-							"<th>Yield</br><strong>("+values.yield_unit+")</strong></th>" +
+							"<th>Production</br><strong>("+uoms.prod.get("shortname")+")</strong></th>"+ //TODO unit
+							"<th>Area</br><strong>("+uoms.area.get("shortname")+")</strong></th>" +
+							"<th>Yield</br><strong>("+uoms.yield.get("shortname")+")</strong></th>" +
 						"</tr>";
 						//cycle data
 						for (var i= 0 in regions){	
@@ -173,10 +228,11 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 							}
 							
 							//avgs
-							
-							tot.production /=  f.length;
+							//TODO refactor
+                        
+							tot.production /=  f.length; //TODO use yield factors
 							tot.area /=  f.length;
-							tot.yield = yieldFactor * tot.production / tot.area;
+							tot.yield = uoms.yield_factor * tot.production / tot.area; //TODO do not multiply anymore
 							tot.year = values.startYear + "-"+values.endYear;
 							var avg = this.generateYearlyRow(tot);
 							//generate block
@@ -279,13 +335,13 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 				{name: "querible", type: "boolean"}
             ];
 			var Record = GeoExt.data.LayerRecord.create(fields);
-            var record = new Record(data);
+            //var record = new Record(data);
 			
-			target.mapPanel.map.addLayers([wms]);
+			//target.mapPanel.map.addLayers([wms]);
 			Ext.getCmp('id_mapTab').setActiveTab(0);
 			target.mapPanel.map.addControl(control);
 			//add to list of layers and controls 
-			//target.mapPanel.layers.add([record]);
+			target.mapPanel.layers.add([record]);
 			
 			
 			
@@ -313,7 +369,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 						}
 					 },scope:this
 				});
-				Ext.getCmp('paneltbar').insertButton(19,action);
+				Ext.getCmp('paneltbar').insertButton(17,action);
 				Ext.getCmp('paneltbar').doLayout();
 			}
 			
@@ -336,6 +392,27 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 			},this);
 			
         
+    },
+    getProperStyle: function(values,areatype,varparam,crop){
+        if(values.type == "difference"){
+                return "difference_style";
+        }
+        return areatype + "_" + crop + "_"+ varparam + "_style" ;
+    },
+    //gets the styles array that match properly with the generated layer
+    filterStyles: function(values,areatype,varparam,crop,viewparams,record){
+            var name = this.getProperStyle(values,areatype,varparam,crop);
+            var styles = record.get("styles");
+            var newStyles = [];
+            for(var i = 0 ; i < styles.length; i++){
+                var s = styles[i];
+                if( s.name.indexOf(name) >= 0 ){
+                    newStyles.push(s);
+                }
+            }
+            record.set("styles",newStyles);
+            
+            return styles;
     }
 });
 

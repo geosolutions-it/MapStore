@@ -258,6 +258,10 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                     target:this.target,
                                     form: this
                                 });
+                               
+                                var selectedCommodity = this.output.Commodity.getSelectedRecord();
+                                resetUnitComboboxes(this.output.units,selectedCommodity );
+                                this.output.units.setDisabled(true);
                                 var store = areaSelector.store;
                                 this.output.fireEvent('update',store);
                                 this.output.fireEvent('beforehide');
@@ -265,6 +269,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 this.output.syncSize();
                                 
                             }else{
+                                this.output.units.setDisabled(false);
                                 variable.disable();
                                 
                                 //set area selector constraints and status
@@ -439,12 +444,16 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     //checkboxToggle:true,
                     title: this.outputTypeText,
                     defaultType: 'radio',
-                    columns: 1,
+                    columns: 2,
                     disabled:true,
                     items:[
                         {boxLabel: 'Area' , name: 'variable', inputValue: 'Area'},
+                        {boxLabel: 'Reference Year', name: 'type', inputValue: 'total', checked: true},
                         {boxLabel: 'Production', name: 'variable', inputValue: 'Production', checked: true},
-                        {boxLabel: 'Yield' , name: 'variable', inputValue: 'Yield'}
+                        {boxLabel: 'Difference' , name: 'type', inputValue: 'difference'},
+                        {boxLabel: 'Yield' , name: 'variable', inputValue: 'Yield'},
+                        
+                        {boxLabel: 'Average' , name: 'type', inputValue: 'average'}
                         
                     ]
                 //
@@ -458,6 +467,22 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     collapsible:true,
                     forceLayout:true, //needed to force to read values from this fieldset
                     collapsed:false,
+                    getSelectedUnits: function(){
+                        // get selected record for each combo
+                        var units = this;
+                        var prodRec = units.production.getUnitRecordById( units.production.getValue() );
+                        var areaRec = units.area.getUnitRecordById( units.area.getValue() );
+                        var yieldRec = units.yield.getUnitRecordById( units.yield.getValue() );
+                        return {
+                                prod: prodRec,
+                                area:areaRec,
+                                yield:yieldRec,
+                                prod_factor: prodRec.get('coefficient'),
+                                area_factor: areaRec.get("coefficient"),
+                                yield_factor: yieldRec.get("coefficient")
+                        };
+                        
+                    },
                     items:[{
                             //PRODUCTION UOM
                             xtype: 'nrl_uom_combobox',
