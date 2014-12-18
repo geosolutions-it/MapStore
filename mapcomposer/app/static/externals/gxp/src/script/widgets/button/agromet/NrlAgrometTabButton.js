@@ -52,8 +52,16 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 		var values =  this.form.output.getForm().getValues();
 		var fieldValues = form.getFieldValues();
 		
-		var nextYr = parseInt(values.endYear)%100 +1;
-		var crop = values.crop;
+        //this is still necessary ???
+		//var nextYr = parseInt(values.endYear)%100 +1;
+        
+        //this is still necessary ???
+		//var crop = values.crop;
+
+        //get start and end dekads.
+        var months = this.form.output.monthRangeSelector.slider.getValues();
+        var start_dec = (months[0])*3;
+        var end_dec = (months[1]+1)*3; //the end month is included
 		
 		var varparam = "";
 		switch(values.variable) {
@@ -99,11 +107,13 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 				(values.startYear   ? "start_year:" + values.startYear +";" : "") + //same year for start and end.
 				(values.endYear     ? "end_year:" + values.endYear +";" : "") + 
 				(factorList         ? "factor_list:" + factorList + ";" : "") +
+                (start_dec          ? "start_dec:"   + start_dec + ";" : "") +
+                (end_dec            ? "end_dec:"     + end_dec + ";" : "") +                
 				(values.region_list ? "region_list:" + values.region_list.toLowerCase() + ";" : "");
 				
-		if(values.season == "RABI"){
+		/*if(values.season == "RABI"){
 			viewParams += 'season_flag:NOT;'
-		}
+		}*/
 		
 		var store = new Ext.data.JsonStore({
 			url: this.url,
@@ -147,7 +157,7 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 				service: "WFS",
 				version: "1.0.0",
 				request: "GetFeature",
-				typeName: "nrl:agromet_aggregated",
+				typeName: "nrl:agromet_aggregated2",
 				outputFormat: "json",
 				viewparams: viewParams
 			}
@@ -242,7 +252,8 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 				header:'Year',
 				name: 'year',
 				dataIndex: 'year',
-				width:50
+				width:50,
+                hidden: true
 			},{
 				sortable: true, 
 				header:'Month',

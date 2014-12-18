@@ -290,11 +290,23 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                 new Ext.ux.grid.CheckboxSelectionGrid({
                     title: 'Factors',
                     enableHdMenu:false,
-                    hideHeaders:true,
+                    hideHeaders:false,
                     autoHeight:true,
                     ref: 'factors',
                     viewConfig: {forceFit: true},
-                    columns: [{id:'name',dataIndex:'label',header:'Factor'},{id:'unit',dataIndex:'unit',header:'Unit'}],
+                    columns: [{
+                        id:'name',
+                        dataIndex:'label',
+                        header:'Factor'
+                    },{
+                        id:'unit',
+                        dataIndex:'unit',
+                        header:'Unit'
+                    },{
+                        id:'aggregation',
+                        dataIndex:'aggregation',
+                        header:'Aggregation'
+                    }],
                     autoScroll:true,
                     store: new Ext.data.JsonStore({
                        

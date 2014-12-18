@@ -111,7 +111,12 @@ Ext.namespace('gxp.charts');
         var granType = data.areatype.toLowerCase();
         var fromYear = data.startYear;
         var toYear = data.endYear;
-
+	
+        //get start and end dekads.
+        var months = this.form.output.monthRangeSelector.slider.getValues();
+        var start_dec = (months[0])*3;
+        var end_dec = (months[1]+1)*3; //the end month is included
+	
         var factorStore = this.form.output.factors.getSelectionModel().getSelections();
         var factorValues = [];
         var factorList = "";
@@ -151,7 +156,9 @@ Ext.namespace('gxp.charts');
             fromYear: fromYear,
             toYear: toYear,
             factorValues: factorValues,
-			factorStore: factorStore
+			factorStore: factorStore,
+            startDec: start_dec,
+            endDec: end_dec
         };
         
         //loading mask
@@ -178,7 +185,8 @@ Ext.namespace('gxp.charts');
 				mapping: 'properties.dec'
 			},{
 				name: 's_dec',
-				mapping: 'properties.s_dec'
+				mapping: 'properties.order'
+				//mapping: 'properties.s_dec'
 			}, {
 				name: 'current',
 				mapping: 'properties.current'
@@ -200,9 +208,15 @@ Ext.namespace('gxp.charts');
             (toYear     ? "end_year:"    + toYear + ";" : "") +
             (factorList ? "factor_list:" + factorList + ";" : "") +
             (regionList ? "region_list:" + regionList + ";" : "") +
-            (granType   ? (granType != "pakistan" ? "gran_type:" + granType + ";" : "gran_type:province;") : "");
+            (start_dec  ? "start_dec:"   + start_dec + ";" : "") +
+            (end_dec    ? "end_dec:"     + end_dec + ";" : "") +
+            (granType   ? (granType != "pakistan" ? "gran_type:" + granType + ";" : "gran_type:province;") : "") ;
+            
+            
 			
-		var viewparams = (season == 'rabi' ? params + ";season_flag:NOT" : params);
+		var viewparams = params;		
+		
+		//var viewparams = (season == 'rabi' ? params + ";season_flag:NOT" : params);
         
         var tabPanel = Ext.getCmp(this.targetTab);
 
@@ -258,7 +272,7 @@ Ext.namespace('gxp.charts');
 				service: "WFS",
 				version: "1.0.0",
 				request: "GetFeature",
-				typeName: "nrl:agromet_aggregated",
+				typeName: "nrl:agromet_aggregated2",
 				outputFormat: "json",
 				viewparams: viewparams /*season == 'rabi' ? "start_year:"+ fromYear + ";" +
                     "end_year:"+ toYear + ";" +
@@ -296,7 +310,8 @@ Ext.namespace('gxp.charts');
                     mapping: 'properties.dec'
                 },{
                     name: 's_dec',
-                    mapping: 'properties.s_dec'
+		    mapping: 'properties.order'
+                    //mapping: 'properties.s_dec'
                 }, {
                     name: 'current',
                     mapping: 'properties.current'
@@ -398,13 +413,12 @@ Ext.namespace('gxp.charts');
                             rotation: 320,
                             y: +22,
 							formatter: function () {
-                                var months = ["Nov-1","Nov-2","Nov-3","Dec-1","Dec-2","Dec-3","Jan-1","Jan-2","Jan-3","Feb-1","Feb-2","Feb-3","Mar-1","Mar-2","Mar-3","Apr-1","Apr-2","Apr-3","May-1","May-2","May-3","Jun-1","Jun-2","Jun-3","Jul-1","Jul-2","Jul-3","Aug-1","Aug-2","Aug-3","Sep-1","Sep-2","Sep-3","Oct-1","Oct-2","Oct-3"];
-                                if (this.axis.dataMin == 1){
-                                    //return months[this.value-1] + "-" + this.value;
-                                    return months[this.value-1];
-                                }else{
-                                    return months[this.value-1];
-                                }								
+                               // var months = ["Nov-1","Nov-2","Nov-3","Dec-1","Dec-2","Dec-3","Jan-1","Jan-2","Jan-3","Feb-1","Feb-2","Feb-3","Mar-1","Mar-2","Mar-3","Apr-1","Apr-2","Apr-3","May-1","May-2","May-3","Jun-1","Jun-2","Jun-3","Jul-1","Jul-2","Jul-3","Aug-1","Aug-2","Aug-3","Sep-1","Sep-2","Sep-3","Oct-1","Oct-2","Oct-3"];
+                                var dek = (listVar.startDec + this.value -2) % 36 +1;
+                                var dek_in_mon = ((dek -1)% 3)+1;
+                                var mon =Math.floor((dek-1)/3);
+                                var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+                                return months[mon] + "-" + dek_in_mon + "(" + this.value +")" + dek;                            
 							}							
 						}                        
 					}],
