@@ -39,7 +39,7 @@ gxp.widgets.SelectFeatureGrid = Ext.extend(Ext.grid.GridPanel,{
 	/**  api: config[displayField]
 	 *the feature name to display, as returned by WMS getFeatureInfo 
 	 */
-	displayField:"fname",
+	displayField: "fname",
 	
     searchWindowTitle:  "Seach for a region typing the text below",
 	
