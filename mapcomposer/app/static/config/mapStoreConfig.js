@@ -212,7 +212,7 @@
 	"customTools":[
 		{
 			"ptype": "gxp_staticpage",
-			"url": "http://dwms.fao.org/~test/geo_magis_en.asp",
+			"url": "http://dwms.fao.org/~test/home_en.asp",
 			"tabPosition": 0,
 			"tabTitle": "Portal"
 		},{
