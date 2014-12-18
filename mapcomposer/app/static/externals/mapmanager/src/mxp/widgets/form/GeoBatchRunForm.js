@@ -338,7 +338,12 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
             iconCls: 'close',
 			scope: this,
             handler: function(btn){
-                this.enableFileBrowser(false);			
+                this.enableFileBrowser(false);
+				if(!this.selectedFile.getValue()){
+					this.mask.items.items[0].setValue(true);
+				}else{
+					this.selectedFile.enable();
+				}
             } 
         }];
 		
