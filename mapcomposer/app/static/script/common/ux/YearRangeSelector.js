@@ -234,21 +234,21 @@ Ext.ux.MonthYearRangeSelector = Ext.extend(Ext.form.CompositeField,{
 						var endVal =slider.thumbs[1].value;
                         //avoid size >12 month 
                         var diff = endVal - startVal;
-                        if (diff > 11){
+                        if (diff > 10){
                             var index = thumb.index;
                             if( index === 0 ){
-                                me.setValue(1,startVal + 11,true );
+                                me.setValue(1,startVal + 10,true );
                             }else{
-                                me.setValue(0,endVal - 11,true );
+                                me.setValue(0,endVal - 10,true );
                             }
                             return;
                         //not empty interval
-                        } else if (diff < 1){   
+                        } else if (diff < 0){   
                             var index = thumb.index;
                             if( index === 0 ){
-                                me.setValue(1,startVal + 1,true );
+                                me.setValue(1,startVal ,true );
                             }else{
-                                me.setValue(0,endVal - 1,true );
+                                me.setValue(0,endVal ,true );
                             }
                             
                         
