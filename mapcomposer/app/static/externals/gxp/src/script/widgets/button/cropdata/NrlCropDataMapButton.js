@@ -120,7 +120,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 				layers: this.layerName,
 				styles: style ,
 				transparent: "true",
-                querible:true,
+                querible:false,
                 vendorParams: {
                     cql_filter:cql_filter,
                     viewParams: viewParams
@@ -155,7 +155,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 						hover: {delay: 200,pixelTolerance:2}
 					},
 					vendorParams:{
-						propertyName: 'region,crop,year,production,area,yield',
+						propertyName: 'region,crop,year,production,area,yield,variable,prod_diff,area_diff,yield_diff,prod_avg,area_avg,yield_avg',
                         cql_filter:cql_filter,
 						layers: "nrl:CropDataMap",
 						viewParams: "crop:" + crop + ";" +
@@ -180,6 +180,29 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 							"<td style='text-align:right'>"+yield+"</td>";
 						
 					},
+                    generateDiffRow:function (attrs){
+						//manage NaN
+						var prod = isNaN(parseFloat(attrs.production))?"N/A":parseFloat(attrs.prod_diff).toFixed(2);
+						var area = isNaN(parseFloat(attrs.production))?"N/A":parseFloat(attrs.area_diff).toFixed(2);
+						var yield = isNaN(parseFloat(attrs.production))?"N/A":parseFloat(attrs.yield_diff).toFixed(2);
+						return "<td><strong>Difference<strong></td>"+
+							"<td style='text-align:right'>"+prod+"</td>"+
+							"<td style='text-align:right'>"+area+"</td>"+
+							"<td style='text-align:right'>"+yield+"</td>";
+						
+					},
+                    generateAvgRow:function (attrs){
+                        //manage NaN
+						var prod = isNaN(parseFloat(attrs.production))?"N/A":parseFloat(attrs.prod_avg).toFixed(2);
+						var area = isNaN(parseFloat(attrs.production))?"N/A":parseFloat(attrs.area_avg).toFixed(2);
+						var yield = isNaN(parseFloat(attrs.production))?"N/A":parseFloat(attrs.yield_avg).toFixed(2);
+                        var year = values.startYear + "-"+values.endYear;
+						return "<td><strong>"+year+"<strong></td>"+
+							"<td style='text-align:right'>"+prod+"</td>"+
+							"<td style='text-align:right'>"+area+"</td>"+
+							"<td style='text-align:right'>"+yield+"</td>";
+                    
+                    },
 					showResults: function(features){
 						
 						var n=features.length;
@@ -216,11 +239,13 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 								
 							}
 							//get current and previous year 
-							var curr,prev;
+							var curr,prev,diffrow;
 							for (var j =0; j<f.length;j++){
 								var attrs =f[j].attributes;
 								if(attrs.year == values.endYear){
-									var curr = this.generateYearlyRow(attrs);
+									curr = this.generateYearlyRow(attrs);
+                                    diffrow = this.generateDiffRow(attrs);
+                                    var avg = this.generateAvgRow(attrs);
 								}
 								if(parseInt(attrs.year) == parseInt(values.endYear)-1){
 									prev =this.generateYearlyRow(attrs);
@@ -234,16 +259,22 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 							tot.area /=  f.length;
 							tot.yield = uoms.yield_factor * tot.production / tot.area; //TODO do not multiply anymore
 							tot.year = values.startYear + "-"+values.endYear;
-							var avg = this.generateYearlyRow(tot);
+							
 							//generate block
 							
 							curr = curr || this.generateYearlyRow({year:values.endYear});
 							prev = prev || this.generateYearlyRow({year:parseInt(values.endYear)-1});
-							
-							//
+                            if(values.type =="difference"){
+                                result += "<tr class='regionblock'><th rowspan=3>"+i+"</th>"+ curr + "</tr>"+
+								"<tr>" + avg + "</tr>" ;
+                                
+                                result += "<tr>" + diffrow + "</tr>" ;
+                            }else{
+							     
 							result += "<tr class='regionblock'><th rowspan=3>"+i+"</th>"+ curr + "</tr>"+
 								"<tr>" + prev + "</tr>"+
 								"<tr>" + avg + "</tr>" ;
+                            }
 							
 						}	 
 						result +='</table>';	 
