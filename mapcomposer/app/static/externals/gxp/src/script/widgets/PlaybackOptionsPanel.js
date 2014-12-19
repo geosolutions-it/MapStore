@@ -189,10 +189,12 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
             listeners:{'show':this.populateForm,scope:this},
             bbar: [{
                 text: 'Save',
+                iconCls:'save',
                 handler: this.saveValues,
                 scope: this
             }, {
                 text: 'Cancel',
+                iconCls:'cancel',
                 handler: this.cancelChanges,
                 scope: this
             }]
