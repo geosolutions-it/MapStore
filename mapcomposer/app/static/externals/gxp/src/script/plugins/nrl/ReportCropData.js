@@ -143,6 +143,28 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
      **/
     defaultAreaTypeMap: 'province',
 
+     commodityFields:[
+            {name:'label',  mapping:'properties.label'},
+            {name:'season',mapping: 'properties.seasons'},
+            {name:'crop',   mapping:'properties.crop'},
+            {name:'max',    mapping:'properties.max' },
+            {name:'min',    mapping:'properties.min' },
+            {name:'prod_default_unit',    mapping:'properties.prod_default_unit' },
+            {name:'area_default_unit',    mapping:'properties.area_default_unit' },
+            {name:'yield_default_unit',    mapping:'properties.yield_default_unit' }
+    ],    
+    /** fields for unit of measure combo boxes **/
+	uomFields:[
+	        {name:'id',mapping:'properties.id'},
+            {name:'uid',mapping:'properties.uid'},
+            {name:'name',mapping:'properties.name'},
+            {name:'label', mapping :'properties.name'},
+            {name:'coefficient', mapping:'properties.coefficient', type: Ext.data.Types.FLOAT},
+            {name:'shortname',  mapping: 'properties.shortname'},
+            {name:'description', mapping: 'properties.description'},
+            {name:'class',  mapping :'properties.cls'},   
+            {name:'cid',   mapping: 'properties.cid'}
+    ],
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
@@ -202,7 +224,37 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
             },this);
         }
         
-        
+        this.prodUnitStore = new Ext.data.JsonStore({
+             baseParams:{
+                viewParams: 'class:production'
+            },
+            fields:this.uomFields,
+            autoLoad:true,
+            url: this.unitsUrl,
+            root: 'features',
+            idProperty:'uid'
+        });
+            
+        this.areaUnitStore = new Ext.data.JsonStore({
+             baseParams:{
+                viewParams: 'class:area'
+            },
+            fields:this.uomFields,
+            autoLoad:true,
+            url: this.unitsUrl,
+            root: 'features',
+            idProperty:'uid'
+        });
+        this.yieldUnitStore = new Ext.data.JsonStore({
+             baseParams:{
+                viewParams: 'class:yield'
+            },
+            fields:this.uomFields,
+            autoLoad:true,
+            url: this.unitsUrl,
+            root: 'features',
+            idProperty:'uid'
+        });
         return this.output;
         
     },
@@ -235,6 +287,37 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 defaultAreaTypeMap: this.defaultAreaTypeMap,
                 disclaimerText: this.disclaimerText,
                 url:this.dataUrl,
+                prodUnitStore : new Ext.data.JsonStore({
+                     baseParams:{
+                        viewParams: 'class:production'
+                    },
+                    fields:this.uomFields,
+                    autoLoad:true,
+                    url: this.unitsUrl,
+                    root: 'features',
+                    idProperty:'uid'
+                }),
+            
+                areaUnitStore : new Ext.data.JsonStore({
+                     baseParams:{
+                        viewParams: 'class:area'
+                    },
+                    fields:this.uomFields,
+                    autoLoad:true,
+                    url: this.unitsUrl,
+                    root: 'features',
+                    idProperty:'uid'
+                }),
+                yieldUnitStore : new Ext.data.JsonStore({
+                     baseParams:{
+                        viewParams: 'class:yield'
+                    },
+                    fields:this.uomFields,
+                    autoLoad:true,
+                    url: this.unitsUrl,
+                    root: 'features',
+                    idProperty:'uid'
+                }),
                 target:this.target,
                 form: this,
                 disabled:true
@@ -468,13 +551,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
             anchor:'100%',
             ref: 'Commodity',
             store:new Ext.data.JsonStore({
-                fields: [
-                    {name:'label',  mapping:'properties.label'},
-                    {name:'season', mapping:'properties.seasons'},
-                    {name:'crop',   mapping:'properties.crop'},
-                    {name:'max',    mapping:'properties.max' },
-                    {name:'min',    mapping:'properties.min' }
-                ],
+                fields:this.commodityFields,
                 autoLoad: true,
                 url: this.rangesUrl,
                 root: 'features',

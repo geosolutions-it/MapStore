@@ -223,8 +223,6 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(Ext.SplitButton, 
                         items:[cropDataForm,agrometForm],
                         activeTab:0
                    }
-                    
-                    
                 });
                 win.show();
             }
@@ -239,7 +237,7 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(Ext.SplitButton, 
     myMask: null,
 
     handler: function () {
-        
+        var units = this.getUnits();
         //loading mask
         var loadingMsg ="Please wait...";
         var myMask = new Ext.LoadMask(this.findParentByType('form').getEl(),
@@ -251,11 +249,12 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(Ext.SplitButton, 
         var helper = this.target.tools["printreporthelper"];
 
         helper.form = this.form;
-
+        
         // Data generators:
         // Map
         var mapGenerator = new gxp.plugins.printreport.MapGenerator({
             form: this.form,
+            units: units,
             target: this.target,
             printReportHelper: helper,
             defaultRegionList: helper.defaultRegionList,
@@ -275,6 +274,7 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(Ext.SplitButton, 
         });
         // CropData
         var cropDataChartGenerator = new gxp.plugins.printreport.CropDataChartGenerator({
+            units: units,
             chartOpt: this.cropDatachartOpt,
             form: this.form,
             target: this.target,
@@ -305,6 +305,7 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(Ext.SplitButton, 
         // Agromet
         var agrometChartGenerator = new gxp.plugins.printreport.AgrometChartGenerator({
             chartOpt: this.agrometchartOpt,
+            untis: units,
             form: this.form,
             target: this.target,
             printReportHelper: helper,
@@ -415,7 +416,20 @@ gxp.widgets.button.NrlReportCropStatusChartButton = Ext.extend(Ext.SplitButton, 
         //Print
         helper.print();
     },
-
+    getUnits : function(){
+        var commodityRecord = this.form.output.Commodity.getSelectedRecord();
+        var pu = commodityRecord.get("prod_default_unit");
+        var au = commodityRecord.get("area_default_unit");
+        var yu = commodityRecord.get("yield_default_unit");
+        
+        var units = {
+            prod:  this.prodUnitStore.getAt(this.prodUnitStore.findExact('uid',pu)),
+            area:  this.areaUnitStore.getAt(this.areaUnitStore.findExact('uid',au)),
+            yield: this.yieldUnitStore.getAt(this.yieldUnitStore.findExact('uid',yu))
+        };
+        
+        return units;
+    },
     onError: function(name, cause){
         this.myMask.hide();
         Ext.Msg.alert(name, cause);

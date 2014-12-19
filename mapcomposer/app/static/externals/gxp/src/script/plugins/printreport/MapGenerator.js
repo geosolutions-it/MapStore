@@ -102,13 +102,18 @@ gxp.plugins.printreport.MapGenerator = Ext.extend(gxp.plugins.printreport.Genera
         }else{
             areatype='district';
         }
+        var uoms = this.units;
         
         
         var viewParams= "crop:" + crop + ";" +
                 "gran_type:" + areatype + ";" +
                 "start_year:" + values.endYear +";" + //same year for start and end.
                 "end_year:" + values.endYear +";" + 
-                "yield_factor:" + yieldFactor
+                "start_list_year:" + values.endYear + ";" +
+                "variable:" + variable + ";" +
+                "yield_factor:" + uoms.yield.get("coefficient") + ";" +
+                "area_factor:" + uoms.area.get("coefficient") + ";" +
+                "prod_factor:" + uoms.prod.get("coefficient") ;
         
         var style = areatype + "_" + crop + "_"+ varparam + "_style";
 
@@ -124,7 +129,7 @@ gxp.plugins.printreport.MapGenerator = Ext.extend(gxp.plugins.printreport.Genera
         var wms = new OpenLayers.Layer.WMS(layerName,
            this.url,
            {
-            layers: "nrl:CropDataMap",
+            layers: "nrl:CropDataMap2",
             styles: style,
             viewParams:viewParams,
             transparent: "true",

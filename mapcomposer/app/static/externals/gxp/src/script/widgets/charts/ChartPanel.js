@@ -183,9 +183,9 @@ Ext.namespace('gxp.charts');
             return store.getAt(i);
         }
        // get selected record for each combo
-        var prodRec = units.production.getSelectedRecord();
-        var areaRec = units.area.getSelectedRecord();
-        var yieldRec = units.yield.getSelectedRecord();
+        var prodRec = this.units.prod
+        var areaRec = this.units.area
+        var yieldRec = this.units.yield
         
         
         if(!(prodRec && areaRec && yieldRec)){
