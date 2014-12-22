@@ -98,7 +98,14 @@
         "actionTarget":{
              "target": "north.tbar",
              "index": 5
-            }
+            },
+		"attributeFields":[{
+			"xtype":"textfield",
+			"id":"attribute.owner",
+			"anchor":'95%',
+			"fieldLabel": "Owner",
+			"name":"attribute.owner"
+		}]
 
     },{ 
         "ptype": "mxp_geostore_mission_resource_editor",
