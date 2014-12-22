@@ -67,8 +67,8 @@ mxp.widgets.GeoStoreCategoryManager = Ext.extend(Ext.Panel, {
                 '</div>',
             '</div>',
         '</tpl>'],
-	titleConfirmDeleteMsg: "Confirm delete mission",
-    textConfirmDeleteMsg: "Are you sure you want to delete this mission?",
+	titleConfirmDeleteMsg: "Confirm delete resource",
+    textConfirmDeleteMsg: "Are you sure you want to delete this resource?",
     initComponent: function() {
         var me = this;
 
@@ -217,7 +217,7 @@ mxp.widgets.GeoStoreCategoryManager = Ext.extend(Ext.Panel, {
         //TODO check if dirty
         editor.removeAll();
         editor.add({
-           xtype: 'mxp_geostore_mission_resource_form',
+           xtype: 'mxp_geostoreresourceform',
             layout: 'fit',
             ref: 'resourceform',
             border: false,

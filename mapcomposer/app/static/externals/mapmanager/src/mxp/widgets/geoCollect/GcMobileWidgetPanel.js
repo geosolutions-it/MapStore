@@ -52,13 +52,13 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
     actions_store : null,
     sourceLabel : 'Origin Fields',
     destLabel : 'Mission Fields',
-
+    autoScroll:true,
     //Utilizzat per ripulire i campi valori
     clV : new RegExp("^(\\${origin.)(.*)(})$"),
 
     layout : {
-        type : 'hbox',
-        align : 'stretch'
+        type : 'border',
+       // align : 'stretch'
     },
     border : false,
     frame : true,
@@ -82,7 +82,8 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
         this.items = [{
             ref : 'widList',
             xtype : 'grid',
-            width : 340,
+           region:'west',
+           width : 340,
             title : "Widgets",
             store : this.wid_store,
             autoScroll : true,
@@ -316,14 +317,17 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
             }
         }, {
             xtype : 'panel',
-            flex : 1,
+            //anchor:'80%, 100%',
+            region: 'center',
+            //flex : 1,
             frame : true,
             disabled : false,
             collapsible : false,
             border : false,
+            autoScroll:true,
             layout : {
-                type : 'vbox',
-                align : 'stretch'
+                type : 'anchor',
+               // align : 'stretch'
             },
             style : {
                 padding : '5px'
@@ -362,11 +366,12 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
                     width : '100px'
                 }]
             }, {
-                xtype : 'compositefield',
+                xtype : 'panel',
                 ref : '/xtypeform',
                 border : false,
-                labelWidth : 120,
-
+                width : 900,
+                layout:'column',
+                autoScroll:true,
                 items : [{
                     xtype : 'label',
                     text : 'Widget type',
@@ -660,6 +665,7 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
                 xtype : 'mxp_gc_xtype_' + xtype,
                 ref : '/xpanlForm',
                 border : false,
+                autoScroll:true,
                 disabledClass : 'x-item-disabled',
                 style : {
                     marginTop : '30px'

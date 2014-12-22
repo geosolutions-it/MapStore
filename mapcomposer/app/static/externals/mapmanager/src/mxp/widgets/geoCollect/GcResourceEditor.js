@@ -46,7 +46,7 @@ mxp.widgets.GcResourceEditor = Ext.extend(Ext.Panel, {
         titleCollapse: true,
         hideCollapseTool:true,
         fill:true,
-        activeOnTop: true
+      
     },
 	
 initComponent: function() {
