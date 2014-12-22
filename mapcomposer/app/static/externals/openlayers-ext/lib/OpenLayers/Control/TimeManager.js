@@ -532,7 +532,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
             if(this.loop) {
                 this.clearTimer();
                 this.clearTooltipTimer();
-                this.reset(true);                
+                this.reset(true);       
                 this.play();
             }
             //stop in normal mode
@@ -540,7 +540,18 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
                 if(this.stepType !== "back"){                    
                     this.clearTimer();
                     this.clearTooltipTimer();
-                    this.reset(true);                
+                    this.reset(false);
+
+                    Ext.MessageBox.show({
+                        title: "Attenzione",
+                        msg: "E' stata raggiunta la fine dell'intervallo di tempo disponibile, secondo il range impostato",
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.MessageBox.INFO
+                    });
+                    
+                    this.events.triggerEvent("rangemodified");
+                    this.fixedRange = true;                    
+                    
                 }else{
                     /*Ext.MessageBox.show({
                         title: "Attention",
@@ -862,8 +873,17 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
      */ 
      reset:function(looped) {
         this.clearTimer();
-        this.clearTooltipTimer();
-        var newTime = new Date(this.range[(this.step > 0) ? 0 : 1].getTime());
+        this.clearTooltipTimer();      
+        
+        //var newTime = new Date(this.range[(this.step > 0) ? 0 : 1].getTime());
+        
+        // Check if loop == true. In this case the start is not end
+        if(looped){
+            var newTime = new Date(this.range[(this.step > 0) ? 0 : 1].getTime());
+        }else{
+            var newTime = new Date(this.range[(this.startEnd) ? 1 : 0].getTime());
+        }
+        
         this.setTime(newTime);
         this.events.triggerEvent('reset', {
             'looped' : !!looped

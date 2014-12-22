@@ -428,7 +428,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             graphTable: config.graphTable,
             graphAttribute: config.graphAttribute, 
             cumulative: config.cumulative,
-            queryable: config.queryable
+            tabCode: config.tabCode
         }, original.data);
         
         // add additional fields

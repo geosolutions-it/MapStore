@@ -840,14 +840,14 @@ GeoExt.Lang.add("it", {
 	
     "gxp.PlaybackOptionsPanel.prototype": {
         optionTitleText: "Opzioni Data e Tempo",
-        rangeFieldsetText: "Intervallo di tempo",
+        rangeFieldsetText: "Intervallo di tempo disponibile per la consultazione",
         animationFieldsetText: "Opzioni di animazione",
         startText: "Inizio",
         endText: "Fine",
         saveText: 'Salva',
         cancelText: 'Valori iniziali',        
         listOnlyText: "Utilizzare solamente l'elenco dei valori esatti",
-        stepText: "Step animazione",
+        stepText: "Range di visualizzazione",
         unitsText: "Unità animazione",
         frameRateText:'Velocità animazione (s)',
         noUnitsText: "Snap To Time List",

@@ -185,7 +185,7 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
                                 autoSelect: false,
                                 editable: false,
                                 hidden: false,
-                                value: 15,
+                                value: 60,
                                 triggerAction: 'all',
                                 listeners: {
                                     'select': function(cmp, record, index) {
@@ -366,16 +366,18 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
         if (this.playbackToolbar.playbackMode == 'range' &&
             this.timeManager.rangeInterval != newVal) {
             this.timeManager.rangeInterval = newVal;
-            this.timeManager.incrementTime(newVal);
+            //this.timeManager.incrementTime(newVal);
 
             // prende la data di inizio e la data di fine del pannello
             // e invoca la funzione setRange di timeManager per ricalcolare i valori della slide
 
-            //this.timeManager.events.triggerEvent("rangemodified");
+            this.timeManager.events.triggerEvent("rangemodified");      
 
-            this.timeManager.nowtime(false, newVal, OpenLayers.Date.toISOString(this.timeManager.range[0]));
+            //this.timeManager.nowtime(false, newVal, OpenLayers.Date.toISOString(this.timeManager.range[1]));
+            this.timeManager.nowtime(false, newVal, OpenLayers.Date.toISOString(new Date(this.playbackToolbar.slider.thumbs[1].value)));
+      
             //this.timeManager.setRange([this.timeManager.range[0],this.timeManager.range[1]]);
-            //this.timeManager.fixedRange = true;
+            this.timeManager.fixedRange = true;
 
         }
         //}
@@ -389,7 +391,11 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
 
         var statioGroup = app.tools["layertree_plugin"];
 
-        var updatableLayers = app.mapPanel.map.getLayersBy("toUpdate", true);
+        var updatableLayers = app.mapPanel.map.getLayersBy("toUpdate", true);        
+        
+        var chartsLayers = app.mapPanel.layers.queryBy(function(x){
+            return x.get("getGraph");
+        });        
 
         var timeManager = this.timeManager;
 
@@ -422,7 +428,13 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
                             tiled: false,
                             zoomToExtent: false,
                             visibility: lyr.visibility,
-                            allowRange: ("allowRange" in lyr) ? lyr.allowRange : false
+                            allowRange: ("allowRange" in lyr) ? lyr.allowRange : false,
+                            getGraph: lyr.options.stationPrefix === "raf" ? false : true,
+                            graphTable: newLayer,
+                            graphAttribute: ["prec_mm"],
+                            cumulative: true,
+                            tabCode: "id"
+                            
                         }
                     });
 
@@ -581,7 +593,7 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
             field.setValue(field.originalValue);
         });
 
-        this.timeManager.step = 15;
+        this.timeManager.step = 60;
 
         this.timeManager.events.triggerEvent("rangemodified");
 
