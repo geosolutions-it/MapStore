@@ -281,7 +281,9 @@ GeoExt.Lang.add("en", {
     "mxp.widgets.GeoStoreCategoryManager.prototype":{
         resourceListTitle: "Resources",
         emptyMessage: "No resource to display",
-        displayMessage: "Displaying {0} - {1} of {2}"
+        displayMessage: "Displaying {0} - {1} of {2}",
+		titleConfirmDeleteMsg: "Confirm delete resource",
+		textConfirmDeleteMsg: "Are you sure you want to delete this resource?"
     },
     "mxp.plugins.GeoBatchFlows.prototype": {
         buttonText: "Workflows",
