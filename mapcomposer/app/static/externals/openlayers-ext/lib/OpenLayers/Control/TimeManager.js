@@ -236,9 +236,15 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
         else if(this.range) {
             if(!(this.range[0] instanceof Date)) {
                 this.range[0] = OpenLayers.Date.parse(this.range[0]);
-                OpenLayers.Util.getElement('olTime').innerHTML = OpenLayers.Date.toISOString(this.range[0]); //this.range[0];
+                OpenLayers.Util.getElement('olTime').innerHTML = this.range[0].toGMTString().replace('GMT','UTC'); //OpenLayers.Date.toISOString(this.range[0]); //this.range[0];
                 var tabTimeVisualization = Ext.getCmp('timeVisualizationID');
-                tabTimeVisualization.body.update(OpenLayers.Date.toISOString(this.range[0]));
+
+                tabTimeVisualization.on('afterlayout',function(e){
+                    tabTimeVisualization.body.update(this.range[0].toGMTString().replace('GMT','UTC'));
+                });
+                            
+                if(tabTimeVisualization.body)
+                    tabTimeVisualization.body.update(this.range[0].toGMTString().replace('GMT','UTC'));                
                 
             }
             if(!(this.range[1] instanceof Date)) {
@@ -804,9 +810,15 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
         else {
             this.currentTime = time;
             this.curTime = curTime;
-            OpenLayers.Util.getElement('olTime').innerHTML =  OpenLayers.Date.toISOString(time); //time;
+            OpenLayers.Util.getElement('olTime').innerHTML =  time.toGMTString().replace('GMT','UTC'); //OpenLayers.Date.toISOString(time); //time;
             var tabTimeVisualization = Ext.getCmp('timeVisualizationID');
-            tabTimeVisualization.body.update(OpenLayers.Date.toISOString(time));
+
+            tabTimeVisualization.on('afterlayout',function(e){
+                tabTimeVisualization.body.update(time.toGMTString().replace('GMT','UTC'));
+            });
+                        
+            if(tabTimeVisualization.body)
+                tabTimeVisualization.body.update(time.toGMTString().replace('GMT','UTC'));
         }
         this.events.triggerEvent('tick', {
             'currentTime' : this.currentTime,

@@ -88,46 +88,9 @@ gxp.plugins.areeallerta.AreeallertaData = Ext.extend(gxp.plugins.Tool, {
             },
             items: [{
                     xtype: 'fieldset',
+                    id: 'timeVisualizationID',
                     title: 'Calcolo Aree di Allerta',
-                    labelWidth: 40,
-                    items: [{
-                        xtype: 'panel'
-                        ,ref: 'dataCalcolo'
-                        ,name: 'dataCalcolo'
-                        ,id: 'timeVisualizationID'
-                        ,header: false
-                        ,html: '<b></b>'
-                        ,labelWidth: 40
-                        ,fieldLabel: 'Data'
-                    }/*{
-                        xtype: 'displayfield',
-                        text: 'Seleziona Range'
-                    }, new Ext.ux.form.DateTime({
-                            //fieldLabel: this.startText,
-                            //format: "Y-m-d",
-                            xtype: 'xdatetime',
-                            id: 'endDate',
-                            fieldLabel: 'Start',
-                            //width:360,
-                            anchor: '-18',
-                            timeFormat: 'H:i:s',
-                            timeConfig: {
-                                altFormats: 'H:i:s',
-                                allowBlank: true
-                            },
-                            dateFormat: 'd-m-Y',
-                            dateConfig: {
-                                altFormats: 'd-m-Y|Y-n-d',
-                                allowBlank: true
-                            },
-                            listeners: {
-                                //'select': this.setStartTime,
-                                //'change': this.setStartTime,
-                                //scope: this
-                            },
-                            ref: 'rangeStartField'
-                        
-                    })*/]
+                    cls: 'selected-query-layer'
                 }, {
                     xtype: 'fieldset',
                     title: 'Seleziona tipo cumulata',
