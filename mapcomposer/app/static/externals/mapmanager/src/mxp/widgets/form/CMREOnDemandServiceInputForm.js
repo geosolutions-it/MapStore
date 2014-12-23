@@ -30,11 +30,14 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	/** api: xtype = mxp_cmre_ondemand_services_input_form */
 	xtype : 'mxp_cmre_ondemand_services_input_form',
 	category : 'WPS_RUN_CONFIGS',
+	optToolCategory: "OPT_TOOL_CONFIGS",
 	layout: 'fit',
 	//global variables
 	osdi2ManagerRestURL : null,
 	serviceName : null,
 	mapPanel : null,
+	vectorLayer : null,
+	maxAllowedTimeHorizon : 72,
 	serviceAreaLimitsTolerance : 0.01,
 	serviceAreaLimits : {
 		bottom: -34.80,
@@ -71,6 +74,8 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	
 	updateAssetsPositionButtonText : "Update Assets Position",
 	updateAssetsPositionButtonTooltip : "When copying the parameters from an existing run, it's possible to try updating the position automatically accordingly to the selected date/time.",
+	updateAssetsPositionButtonConfirm : "Retrieve initial assets positions from previous run, using the following weights for the costs: ",
+	updateAssetsPositionButtonWarning : "No asset position available for the selected data. Please select a valid date inside the run time horizon!",
     errorGettingAssetTypesMessage: "Error while getting asset types from server. Please contact the administrator",
     
 	northFieldLabel: 'North',
@@ -90,7 +95,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	assetsDelFieldTooltip: "Remove an Asset",
     cloneThisAssetText:'Clone this asset',
 	titleConfirmResetMsg:"Confirm form reset",
-	 textConfirmResetMsg:"Reset all form fields?",
+	textConfirmResetMsg:"Reset all form fields?",
 	/*
 	 * 
 	 */
@@ -250,14 +255,21 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				width : 150,
 				listeners : {
 					scope : me,
-					toggle : function(button, pressed) {
-						if (pressed) {
-							//
-							// Activating the new control
-							//
-							this.selectBBOX.activate();
+					click : function(button, evt) {
+						if (this.startTime.value == null) {
+							Ext.Msg.show({
+	                            title: "ERROR",
+	                            msg: "Please select a valid Start Time.",
+	                            width: 300,
+	                            buttons : Ext.Msg.OK,
+	                            icon: Ext.MessageBox.ERROR
+	                        });
 						} else {
-							this.selectBBOX.deactivate();
+							if (this.resourceMapId) {
+								this.updatePosition(this.resourceMapId);
+							} else {
+								this.loadResourceFromGeoStore(this.dataId);
+							}
 						}
 					}
 				}
@@ -273,7 +285,9 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				name : "timeHorizon",
 				ref : "timeHorizon",
 				fieldLabel : this.durationFieldLabel,
-				value : "",
+				value : this.maxAllowedTimeHorizon,
+				minValue : 0,
+				maxValue : this.maxAllowedTimeHorizon,
 				allowBlank : false
 			});
 			
@@ -418,6 +432,22 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 									this.longitudeField.setValue(geoJsonPoint.lon);
 									//update point on the map
 									this.lonLatButton.toggle(false);
+									//add point feature to the map
+									var mapPrj = new OpenLayers.Projection(map.projection);
+									var point = new OpenLayers.Geometry.Point(geoJsonPoint.lon, geoJsonPoint.lat);
+									    point.transform(new OpenLayers.Projection('EPSG:4326'), mapPrj);
+									var pointFeature = new OpenLayers.Feature.Vector(point);
+									//set order for label.
+									var asset_id = (this.lonLatButton.name.substring(this.lonLatButton.name.lastIndexOf("_")+1));
+									pointFeature.attributes.order = parseInt(asset_id);
+									
+									for (var f=0; f<me.vectorLayer.features.length; f++) {
+										if (me.vectorLayer.features[f].attributes.order === parseInt(asset_id)) {
+											me.vectorLayer.removeFeatures([me.vectorLayer.features[f]],true);
+										}
+									}
+									
+									me.vectorLayer.addFeatures([pointFeature]);
 								},
 								map : me.mapPanel.map
 							});
@@ -592,6 +622,13 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 						var numItems = me.assetFramePanel.items.length;
 						if (numItems > 1) {
 							me.assetFramePanel.remove(me.assetFramePanel.items.get(numItems - 1));
+							
+							for (var f=0; f<me.vectorLayer.features.length; f++) {
+								if (me.vectorLayer.features[f].attributes.order === parseInt(numItems)) {
+									me.vectorLayer.removeFeatures([me.vectorLayer.features[f]],true);
+								}
+							}
+							
 							me.assetFramePanel.doLayout();
 						}
 					}
@@ -643,8 +680,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 						if (btn == 'yes') {
 							this.resetForm();
 						}
-					},this);
-				
+				},this);
 			}
 		}];
 
@@ -661,8 +697,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			this.loadData(data);
 		}
 		assetsform.doLayout();
-		
-		
 	},
 	
 	/*
@@ -744,6 +778,11 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
                                icon: Ext.MessageBox.ERROR
                             });
                         },
+                        load: function(store) {
+                        	if (!this.assetFramePanel.get(parseInt(id)-1).assetType.getValue()) {
+                        		this.assetFramePanel.get(parseInt(id)-1).assetType.setValue(store.getAt(0).get('type'));
+                        	}
+                        },
 
                         scope: this
                     }
@@ -752,13 +791,11 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
                     select: function(combo,record,index){
                         var id = combo.refOwner.assetId.getValue();
                         var name = record.get('name');
-                        name = name ? name + " " + id : "";
+                        name = name ? name + (name.indexOf('(') == 0 ? "" : " " + id) : "";
                         var data = Ext.apply({},record.data);
                         data.id = id;
                         data.name = name;
                         combo.refOwner.loadData(data);
-                    
-                    
                     }
                 },
 				displayField : 'type',
@@ -767,7 +804,7 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				value : '',
 				selectOnFocus : true,
 				autoSelect : true,
-				//forceSelection : true,
+				forceSelection : true,
 				allowBlank : false,
 				maxLength : 180
 			}, {
@@ -782,7 +819,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 					border : false,
 					columnWidth : 0.8,
 					collapsible : false,
-					
 					autoHeight : true,
 					layout : 'table',
 					layoutConfig : {
@@ -1117,6 +1153,21 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 					assetFieldSet.assetType.setValue(asset.type);
 					assetFieldSet.assetPosition.longitudeField.setValue(asset.lon0);
 					assetFieldSet.assetPosition.latitudeField.setValue(asset.lat0);
+					//add point feature to the map
+					var mapPrj = new OpenLayers.Projection(me.mapPanel.map.projection);
+					var point = new OpenLayers.Geometry.Point(asset.lon0, asset.lat0);
+						point.transform(new OpenLayers.Projection('EPSG:4326'), mapPrj);
+					var pointFeature = new OpenLayers.Feature.Vector(point);
+					//set order for label.
+            		pointFeature.attributes.order = parseInt(asset.id);
+            		
+            		for (var f=0; f<me.vectorLayer.features.length; f++) {
+						if (me.vectorLayer.features[f].attributes.order === parseInt(asset.id)) {
+							me.vectorLayer.removeFeatures([me.vectorLayer.features[f]],true);
+						}
+					}
+					            		
+					me.vectorLayer.addFeatures([pointFeature]);
             },
             getData: function(){
                 var asset = this;
@@ -1158,8 +1209,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
                     newAsset = me.resourceform.assets.assetsform.add(newAsset);
                     newAsset.loadData(data);
                     me.resourceform.doLayout();
-                    
-                    
                 }
             }]
 		};
@@ -1423,7 +1472,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 			// so lets create it's projection object
 			var mapPrj = new OpenLayers.Projection(map.projection);
 			this.selectBBOX.setAOI(aoi.transform(new OpenLayers.Projection('EPSG:4326'), mapPrj),true);
-			
 		}
 	},
 	
@@ -1433,27 +1481,26 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	loadDataFromGeoStore:function(dataId){
 		var mask = new Ext.LoadMask(Ext.getBody(), {msg:"Please wait..."});
 		mask.show();
+		
 		var successHandler = function(response,opts){
 			 try{
 			 	var data = this.readData(Ext.decode(response.responseText));
 			 	this.loadData(data);
-			 	
+			 	this.updateAssetsPositionButton.enable();
 			 }catch(e){
-			 	
 			 	this.loadFail();
 			 }
 			 mask.hide();
 			 this.doLayout();
-			 
-			 
 		};
+		
 		var failureHandler = function(){
 			 mask.hide();
 			 this.loadFail();
 		};
+		
 		Ext.Ajax.request({
 		   url: this.geoStoreBase + 'data/' + dataId,
-		   
 		   success: successHandler,
 		   failure: failureHandler,
 		   scope: this,
@@ -1493,11 +1540,259 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	loadFail : function(){
 		Ext.Msg.show({
             title: "ERROR",
-            msg: "Unable to Load the previous Resource",//TODO i18n
+            msg: "Unable to Load the Remote Resource",//TODO i18n
             width: 300,
             buttons : Ext.Msg.OK,
             icon: Ext.MessageBox.ERROR
          });
 	},
+
+	/** private: method[loadResourceFromGeoStore]
+	 *  Load data from GeoStore using the resource name (WPS execution ID)
+	 */
+	loadResourceFromGeoStore:function(dataId){
+		var mask = new Ext.LoadMask(Ext.getBody(), {msg:"Please wait..."});
+		mask.show();
+		
+		var successHandler = function(response,opts){
+			 try{
+			 	var dq = Ext.DomQuery;
+      			var xml = response.responseXML;
+      			this.resourceId = dq.selectValue('Resource/name', xml);
+      			this.resourceStatus = xml.evaluate('//Resource/Attributes/attribute[name="status"]/value', xml, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null ).singleNodeValue.textContent;
+      			if (this.resourceStatus == "SUCCESS") {
+	      			this.resourceMapID = xml.evaluate('//Resource/Attributes/attribute[name="mapId"]/value', xml, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null ).singleNodeValue.textContent;
+	      			mask.hide();
+	      			this.updatePosition(this.resourceMapID);
+      			} else {
+      				this.loadFail();
+      			}
+			 }catch(e){
+			 	this.loadFail();
+			 }
+			 mask.hide();
+			 this.doLayout();
+		};
+		
+		var failureHandler = function(){
+			 mask.hide();
+			 this.loadFail();
+		};
+		
+		Ext.Ajax.request({
+		   url: this.geoStoreBase + 'resources/resource/' + dataId,
+		   success: successHandler,
+		   failure: failureHandler,
+		   scope: this,
+		   headers: {
+		       'Authorization':this.auth
+		   }
+		});
+		
+	},
+	
+	/** private: method[updatePosition]
+	 *  Load map data and costs from GeoStore
+	 */
+	updatePosition:function(resourceMapId){
+		var mask = new Ext.LoadMask(Ext.getBody(), {msg:"Please wait..."});
+		mask.show();
+
+		var successHandler = function(response,opts){
+			 try{
+			 	var dq = Ext.DomQuery; 
+      			var xml = response.responseXML;
+      			//this.mapConfigData = response.responseText;
+      			var mapResourceId = dq.selectValue('Resource/id', xml);
+      			var mapConfigJson = Ext.decode(dq.selectValue('Resource/data/data', xml));
+      			
+      			if(mapConfigJson) {
+      				this.searchOptimizationToolValuesOnGeoStore(mapResourceId, mapConfigJson);
+      			} else {
+      				this.loadFail();
+      			}
+			 }catch(e){
+			 	this.loadFail();
+			 }
+			 mask.hide();
+			 this.doLayout();
+		};
+		
+		var failureHandler = function(){
+			 mask.hide();
+			 this.loadFail();
+		};
+		
+		Ext.Ajax.request({
+		   url: this.geoStoreBase + 'resources/resource/' + resourceMapId + '?full=true',
+		   success: successHandler,
+		   failure: failureHandler,
+		   scope: this,
+		   headers: {
+		       'Authorization':this.auth
+		   }
+		});
+		
+	},
+	
+	/** private: method[retrieveAssetsLocations]
+	 *  Retrieve the SolutionID and ask to the WFS the Assets position
+	 */
+	searchOptimizationToolValuesOnGeoStore:function(mapId, mapConfigJson) {
+		var user = Ext.decode(sessionStorage['userDetails']).user.name;
+
+        var categoryName = this.optToolCategory;
+        var resourceName = user+"_"+mapId;
+
+		var successHandler = function(response,opts){
+			 try{
+			 	if(response.responseXML) {
+			 		var dq = Ext.DomQuery;
+	      			var xml = response.responseXML;
+	      			var optToolValues = Ext.decode(dq.selectValue('Resource/data/data', xml));
+			 		
+					Ext.Msg.confirm(
+						this.updateAssetsPositionButtonText, 
+						this.updateAssetsPositionButtonConfirm + "{" + mapConfigJson.customData.optimizationTool.costs_descr + "} -> {" + optToolValues.optimizationToolValues + "}", 
+						function(btn) {
+							if (btn == 'yes') {
+								this.retrieveAssetsLocations(mapConfigJson);
+							}
+						}, this);
+			 	}
+			 }catch(e){
+			 	this.loadFail();
+			 }
+		};
+		
+		var failureHandler = function(){
+			Ext.Msg.confirm(
+				this.updateAssetsPositionButtonText, 
+				this.updateAssetsPositionButtonConfirm + "{" + mapConfigJson.customData.optimizationTool.costs_descr + "} -> {" + mapConfigJson.customData.optimizationToolValues + "}", 
+				function(btn) {
+					if (btn == 'yes') {
+						this.retrieveAssetsLocations(mapConfigJson);
+					}
+				},this);
+		};
+		
+		Ext.Ajax.request({
+		   url: this.geoStoreBase + 'misc/category/name/'+categoryName+'/resource/name/'+resourceName,
+		   success: successHandler,
+		   failure: failureHandler,
+		   scope: this,
+		   headers: {
+		       'Authorization':this.auth
+		   }
+		});
+	},
+	
+	/** private: method[retrieveAssetsLocations]
+	 *  Retrieve the SolutionID and ask to the WFS the Assets position
+	 */
+	retrieveAssetsLocations:function(mapJson){
+		var geoserverBase = mapJson.sources.geoserver.url;
+		    //geoserverBase = "http://172.21.173.30:8080/geoserver/ows";
+		    
+		var tracksLayer;
+		for (var t=0; t<mapJson.customData.optimizationToolLayers.length; t++) {
+			if(mapJson.customData.optimizationToolLayers[t].indexOf("tracks")>0) {
+				tracksLayer = mapJson.customData.optimizationToolLayers[t];
+				break;
+			}
+		}
+		
+		if(tracksLayer) {
+			var findOptimalSolutions = function(costs, coeff){
+		    	if(!costs){
+		    		return [];
+		    	}
+		    	var solutionId;
+		    	var minValue = Number.MAX_VALUE;
+		    	for(var i = 0; i < costs.length ; i++){
+		    		var totCost = calculateCost(costs[i],coeff);
+		    		if(minValue > totCost){
+		    			minValue = totCost;
+		    			solutionId = [costs[i].solutionId];
+		    		}
+		    	}
+		    	return solutionId;
+		    };
+		    
+		    var calculateCost = function (costObj, coeff){
+		    	var cost = 0;
+		    	for(var i = 0; i< coeff.length;i++){
+		    		cost += costObj.cost[i]*coeff[i];
+		    	}
+		    	return cost;
+		    };
+		    
+			var successHandler = function(response,opts){
+				 try{
+				 	//var data = Ext.decode('{"type":"FeatureCollection","totalFeatures":3,"features":[{"type":"Feature","id":"oaa_tracks_97f81105e81594d.1","geometry":{"type":"Point","coordinates":[53.492,16.673]},"geometry_name":"location","properties":{"SolutionID":1,"AssetID":1,"Time":"2014-12-15T00:00:00Z","Range":110000}},{"type":"Feature","id":"oaa_tracks_97f81105e81594d.145","geometry":{"type":"Point","coordinates":[58.414,12.934]},"geometry_name":"location","properties":{"SolutionID":1,"AssetID":2,"Time":"2014-12-15T00:00:00Z","Range":25000}},{"type":"Feature","id":"oaa_tracks_97f81105e81594d.289","geometry":{"type":"Point","coordinates":[51.383,10.698]},"geometry_name":"location","properties":{"SolutionID":1,"AssetID":3,"Time":"2014-12-15T00:00:00Z","Range":25000}}],"crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}}}');
+	      			var data = Ext.decode(response.responseText);
+	      			//console.log(data);
+	      			if (data.features.length > 0) {
+					 	for (var f=0; f<data.features.length; f++) {
+					 		var assetCoords = data.features[f].geometry.coordinates; 
+					 		this.assetFramePanel.get("asset-"+(f+1)).assetPosition.longitudeField.setValue(assetCoords[0]);
+					 		this.assetFramePanel.get("asset-"+(f+1)).assetPosition.latitudeField.setValue(assetCoords[1]);
+					 		//add point feature to the map
+					 		var mapPrj = new OpenLayers.Projection(this.mapPanel.map.projection);
+							var point = new OpenLayers.Geometry.Point(assetCoords[0], assetCoords[1]);
+								point.transform(new OpenLayers.Projection('EPSG:4326'), mapPrj);
+							var pointFeature = new OpenLayers.Feature.Vector(point);
+							//set order for label.
+	            			pointFeature.attributes.order = parseInt((f+1));
+	            			
+	            			for (var ff=0; ff<this.vectorLayer.features.length; ff++) {
+								if (this.vectorLayer.features[ff].attributes.order === parseInt((f+1))) {
+									this.vectorLayer.removeFeatures([this.vectorLayer.features[ff]],true);
+								}
+							}
+	            			
+							this.vectorLayer.addFeatures([pointFeature]);
+					 	}
+	      			} else {
+	      				Ext.Msg.show({
+                            title: this.updateAssetsPositionButtonText,
+                            msg: this.updateAssetsPositionButtonWarning,
+                            width: 300,
+                            icon: Ext.MessageBox.WARNING
+                        });
+	      			}
+				 }catch(e){
+				 	this.loadFail();
+				 	throw e;
+				 }
+			};
+			
+			var failureHandler = function(){
+				this.loadFail();
+				throw new Error("Failed to load Tracks!");
+			};
+			
+			var solutionId = findOptimalSolutions(mapJson.customData.optimizationTool.costs, mapJson.customData.optimizationToolValues);
+			//console.log(solutionId);
+			
+			var geoServerURL = geoserverBase + "/?service=WFS&version=1.0.0&request=GetFeature&typeName="+tracksLayer+"&outputFormat=application%2Fjson&cql_filter=(Time=%27"+this.startTime.value+"T00:00:00Z%27 and SolutionID="+solutionId+")";
+			//console.log(geoServerURL);
+
+			Ext.Ajax.request({
+			   url: geoServerURL,
+			   success: successHandler,
+			   failure: failureHandler,
+			   scope: this,
+			   headers: {
+			       'Authorization':this.auth
+			   }
+			});
+
+		} else {
+			this.loadFail();
+			throw new Error('Could not find the Tracks layer on server!');
+		}
+	}
+	
 });
 Ext.reg(mxp.widgets.CMREOnDemandServiceInputForm.prototype.xtype, mxp.widgets.CMREOnDemandServiceInputForm); 

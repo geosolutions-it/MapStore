@@ -26,7 +26,7 @@
         "actionTarget":null
     },{
         "ptype": "mxp_categoryinitializer",
-        "neededCategories": ["WPS_RUN_CONFIGS", "MAPSTORECONFIG", "MAP", "ASSETPRESETS"]
+        "neededCategories": ["WPS_RUN_CONFIGS", "MAPSTORECONFIG", "MAP", "ASSETPRESETS", "OPT_TOOL_CONFIGS"]
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",

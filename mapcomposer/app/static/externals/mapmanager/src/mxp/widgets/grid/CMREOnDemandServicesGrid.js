@@ -235,6 +235,34 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 							mainPanel.remove(serviceConfigurationPanel);
 						}
 
+						var vectorLayer = new OpenLayers.Layer.Vector("Simple Geometry", {
+			                styleMap: new OpenLayers.StyleMap(
+			                     { 'default': 
+			                        {
+			                        strokeColor: "#00FF00",
+			                        strokeOpacity: 0.7,
+			                        strokeWidth: 1.5,
+			                        fillColor: "#FF5500",
+			                        fillOpacity: 0.7,
+			                        pointRadius: 6,
+			                        pointerEvents: "visiblePainted",
+			                        //Supported values include “circle”, “square”, “star”, “x”, “cross”, and “triangle”.
+			                        graphicName: "circle",
+			                        label: "${order}",
+			                        fontColor: "#000000",
+			                        fontSize: "11px",
+			                        fontFamily: "Courier New, monospace",
+			                        fontWeight: "bold",
+			                        //Valid values for horizontal alignment: “l”=left, “c”=center, “r”=right.  
+			                        //Valid values for vertical alignment: “t”=top, “m”=middle, “b”=bottom.  
+			                        //Example values: “lt”, “cm”, “rb”
+			                        labelAlign: "cm",
+			                        labelXOffset: "0",
+			                        labelYOffset: "0"
+			                    }
+			                })
+			            });
+			            
 						var mapPanel = new GeoExt.MapPanel({
 							region : "center",
 							map : {
@@ -280,7 +308,8 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 											crossOriginKeyword : null
 										}
 									})
-								)
+								),
+								vectorLayer
 							],
 							extent : me.bounds,
 							items : [{
@@ -292,6 +321,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 								plugins : new GeoExt.ZoomSliderTip()
 							}]
 						});
+						
 						var itemId = 'CMREOnDemandServiceInputPanel';
 						mainPanel.add({
 							layout : 'border',
@@ -319,6 +349,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 								serviceId: serviceId,
 								serviceName: serviceName,
 								mapPanel : mapPanel,
+								vectorLayer : vectorLayer,
 								region : 'west',
 								iconCls : 'nato_ic',
 								title : serviceName + " " + me.inputsText,
