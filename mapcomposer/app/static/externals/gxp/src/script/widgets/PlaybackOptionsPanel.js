@@ -420,7 +420,7 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
                         msLayerTitle: lyr.name,
                         msLayerName: newLayer,
                         msGroupName: "<b>Stazioni Meteorologiche</b>",
-                        wmsURL: "http://159.213.57.108/geoserver/ALLERTA/ows",
+                        wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/lamma_stazioni/ows",
                         format: "image/png8",
                         customParams: {
                             toUpdate: lyr.toUpdate,
@@ -475,7 +475,7 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
                         msLayerTitle: lyr.name,
                         msLayerName: newLayer,
                         msGroupName: "<b>Elaborazioni Aree di Allerta</b>",
-                        wmsURL: "http://159.213.57.108/geoserver/ALLERTA/ows",
+                        wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/lamma_stazioni/ows",
                         format: "image/png8",
                         customParams: {
                             style: [lyr.params.STYLES],

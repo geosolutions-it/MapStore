@@ -146,7 +146,7 @@ gxp.widgets.button.AreeAllertaMaxRainfallButton = Ext.extend(Ext.Button, {
 
         Ext.Ajax.request({
             scope: this,
-            url: "http://159.213.57.108/geoserver/ows",
+            url: "http://geoportale.lamma.rete.toscana.it/geoserver/lamma_stazioni/ows",
             method: 'POST',
             params: {
                 service: "WFS",
@@ -391,7 +391,7 @@ gxp.widgets.button.AreeAllertaMaxRainfallButton = Ext.extend(Ext.Button, {
             }
 
             var protocol = new OpenLayers.Protocol.WFS({
-                url: "http://159.213.57.108/geoserver/wfs",
+                url: "http://geoportale.lamma.rete.toscana.it/geoserver/ALLERTA/wfs",
                 version: "1.1.0",
                 featureType: "aree_allerta_gen",
                 featureNS: "http://ALLERTA",
