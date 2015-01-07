@@ -435,16 +435,42 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
      */
     setLayer: function(layerRecord) {
         var change = this.fireEvent("beforelayerchange", this, layerRecord);
+        
+        //if true the layer is enable to query
+        var queryPanel = layerRecord.data.queryPanel;
+        var selectedLayerToQueryId = Ext.getCmp('selectedLayerToQueryId');
+        
         if (change !== false) {
             if (layerRecord !== this.layerRecord) {
                 this.clearFeatureStore();
                 this.layerRecord = layerRecord;
-                if (layerRecord) {
+                if (layerRecord && queryPanel) {
+                    
+                    //expand query panel
+                    var east = Ext.getCmp('east');
+                    if(east && east.collapsed){
+                        east.expand();                             
+                    }                   
+                    
+                    if(selectedLayerToQueryId){
+                        var layerTitle = layerRecord.data.title;
+                        
+                        selectedLayerToQueryId.on('afterlayout',function(e){
+                            selectedLayerToQueryId.body.update(layerTitle);
+                        });
+                        
+                        if(selectedLayerToQueryId.body)
+                            selectedLayerToQueryId.body.update(layerTitle);
+                    }
+                    
                     this.autoLoadFeatures === true ?
                         this.loadFeatures() :
                         this.setFeatureStore();
                 } else {
                     this.fireEvent("layerchange", this, null);
+                    
+                    if(selectedLayerToQueryId)
+                        selectedLayerToQueryId.body.update('');
                 }
             }
         }

@@ -292,3 +292,8 @@ div#homelogos ul li a:hover {
     padding:0;
     background-color:transparent;
 }
+
+.selected-query-layer {
+    color:#C53430;
+    font-weight: bold;
+}

@@ -247,41 +247,49 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				scale: this.actionToolScale,
                 handler: function(button, evt){
                     if(button.pressed){
-                       var tree = Ext.getCmp('tree');
-						if(tree){
-							var panel = tree.findParentByType('panel');
-							if(panel){
-								panel.collapse();
-							}							
-						}	
-						
+
+						var south = Ext.getCmp('south');
+						if(south && !south.collapsed){
+							south.collapse();
+						}					
+                        
 						var east = Ext.getCmp('east');
-						if(east){
+						if(east && !east.collapsed){
 							east.collapse();
 						}
-						
-						var south = Ext.getCmp('south');
-						if(south){
-							south.collapse();
-						}
+
+                        var tree = Ext.getCmp('tree');
+                        if(tree){
+                            var panel = tree.findParentByType('panel');
+                            if(panel && !panel.collapsed){
+                                panel.collapse();
+                            }							
+                        }
+
                     } else {
+
+                        var south = Ext.getCmp('south');
+						if(south && south.collapsed && !south.collapsedonfull){
+							south.expand();
+						}else if (south && !south.collapsed){
+                            south.collapse();
+                        }  					
+                        
+						var east = Ext.getCmp('east');
+						if(east && east.collapsed && !east.collapsedonfull){
+							east.expand();                             
+						}else if (east && !east.collapsed){
+                            east.collapse();
+                        }
+
                         var tree = Ext.getCmp('tree');
 						if(tree){
 							var panel = tree.findParentByType('panel');
-							if(panel){
+							if(panel && panel.collapsed){
 								panel.expand();
 							}							
-						}						
-						
-						var east = Ext.getCmp('east');
-						if(east){
-							east.expand();
 						}
-						
-						var south = Ext.getCmp('south');
-						if(south){
-							south.expand();
-						}
+                        
                     }
                 }
             });

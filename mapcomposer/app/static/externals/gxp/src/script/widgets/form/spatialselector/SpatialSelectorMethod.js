@@ -545,6 +545,7 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 	getGeometryOperationCombo : function() {
 		var geometryOperationMethodCombo = {
 			xtype : 'combo',
+            width : 100,
 			ref : '../geometryOperation',
 			fieldLabel : this.geometryOperationText,
 			typeAhead : true,
