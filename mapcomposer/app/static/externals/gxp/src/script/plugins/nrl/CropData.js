@@ -255,6 +255,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                     url: this.dataUrl,
                                     xtype: 'gxp_nrlCropDataMapButton',
                                     ref: '../submitButton',
+                                    mapToolPosition: this.mapToolPosition,
                                     target:this.target,
                                     form: this
                                 });

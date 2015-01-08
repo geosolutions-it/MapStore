@@ -37,6 +37,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 	url: null,
 	controlToggleGroup: 'toolGroup',
 	infoActionTip: 'Crop Data info on selected layer',
+    mapToolPosition: 17,
 	controls:[],layers:[],
     handler: function () {    
 			var target = this.target;
@@ -400,7 +401,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 						}
 					 },scope:this
 				});
-				Ext.getCmp('paneltbar').insertButton(17,action);
+				Ext.getCmp('paneltbar').insertButton(this.mapToolPosition,action);
 				Ext.getCmp('paneltbar').doLayout();
 			}
 			

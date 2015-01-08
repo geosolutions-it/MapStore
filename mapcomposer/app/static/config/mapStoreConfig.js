@@ -232,7 +232,15 @@
 			 "target":"paneltbar",
 			 "index":4
 		  }
-	       },{
+	      },
+              {
+			"ptype": "gxp_geolocationmenu",
+			
+			 "actionTarget":{
+                 "target":"paneltbar",
+                 "index":16
+              }
+		},{
            "ptype":"gxp_ndvi",
             "dataUrl":"http://84.33.2.75/geoserver/ows",
             "layer":"ndvi:ndvi",
@@ -255,6 +263,7 @@
 	   {
 		  "ptype":"nrl_crop_data",
            "id":"CropData",
+           "mapToolPosition":18,
 		"layerStyle":{"strokeColor":"red","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
           "dataUrl":"http://84.33.2.75/geoserver/ows",
 		  "rangesUrl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
@@ -299,6 +308,7 @@
           "cropPluginRef":"CropData",
 		 "factorsurl":"http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
          "rangesUrl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
+          "unitsUrl":"http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:measure_units_for_crop&outputFormat=json",
 		 "dataUrl":"http://84.33.2.75/geoserver/ows",
 		 "highChartExportUrl" :"http://84.33.2.75/highcharts-export/",
 		  "outputConfig":{
