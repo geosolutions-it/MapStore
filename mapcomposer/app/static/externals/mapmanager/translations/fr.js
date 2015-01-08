@@ -280,7 +280,9 @@ GeoExt.Lang.add("fr", {
      "mxp.widgets.GeoStoreCategoryManager.prototype": {
          resourceListTitle: "Ressources",
          emptyMessage: "Aucune ressource à afficher", 
-         displayMessage: "Affichage {0} - {1} {2}"
+         displayMessage: "Affichage {0} - {1} {2}",
+		 titleConfirmDeleteMsg: "Confirmez ressources supprimer",
+		 textConfirmDeleteMsg: "Êtes-vous sûr de vouloir supprimer cette ressource?"
      },
      "mxp.plugins.GeoBatchFlows.prototype": {
         buttonText: "workflows",
