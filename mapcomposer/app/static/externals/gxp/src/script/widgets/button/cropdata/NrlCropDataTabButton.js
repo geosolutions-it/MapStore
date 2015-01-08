@@ -47,7 +47,8 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 		var form = this.form.output.getForm();
 		var values =  this.form.output.getForm().getValues();
 		var fieldValues = form.getFieldValues();
-		
+		var units = this.form.output.units;
+        var uoms = units.getSelectedUnits();
 		var nextYr = parseInt(values.endYear)%100 +1;
 		var crop = values.crop;
 		
@@ -58,14 +59,17 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 			case "Yield" : varparam= 'yield';break;
 		}
 		
-		var yieldFactor = fieldValues.production_unit == "000 bales" ? 170 : 1000;			
+		
 			
 		var viewParams = 
 			(values.crop        ? "crop:" + values.crop.toLowerCase() + ";" : "" ) +
 			(values.areatype    ? "gran_type:" + values.areatype.toLowerCase() + ";" : "" ) +
 			(values.startYear   ? "start_year:" + values.startYear +";" : "" ) + //same year for start and end.
 			(values.endYear     ? "end_year:" + values.endYear +";" : "" ) + 
-			(yieldFactor        ? "yield_factor:" + yieldFactor +";" : "" ) +
+			
+            "yield_factor:" + uoms.yield_factor + ";" +
+            "area_factor:" + uoms.area_factor + ";" +
+            "prod_factor:" + uoms.prod_factor + ";" +
 			(values.region_list ? "region_list:" + values.region_list.toLowerCase() + ";" : "" );
 					
 		var store = new Ext.data.JsonStore({
