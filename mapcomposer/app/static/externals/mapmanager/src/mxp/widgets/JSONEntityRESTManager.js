@@ -617,7 +617,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                                 text: entity.dumpText || this.dumpText,
                                 iconCls:'inbox-download_ic',
                                 ref:'../refresh',
-                                visibility: entity.api.dump,
+                                hidden: !entity.api.dump,
                                 scope:this,
                                 handler : function(btn){
                                    this.dumpData(btn.refOwner.entity); 
@@ -627,7 +627,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                                 text: entity.restoreText || this.restoreText,
                                 iconCls:'inbox-upload_ic',
                                 ref:'../refresh',
-                                visibility: entity.api.restore,
+                                hidden: !entity.api.restore,
                                 scope:this,
                                 handler : function(btn){
                                    this.restoreData(btn.refOwner.entity); 
