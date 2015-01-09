@@ -288,6 +288,7 @@ GeoExt.Lang.add("fr", {
         buttonText: "workflows",
         flowsListTitle:'flux',
         consumersGridTitle: 'actif',
+        runButtonText: "Exécuter",
         archivedGridTitle: 'archivée'
      },
     "mxp.widgets.GeoBatchFlowsGrid.prototype": {
