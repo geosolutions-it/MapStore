@@ -38,9 +38,6 @@
       ]
    ],
    "tools":[{
-        "ptype": "mxp_categoryinitializer",
-        "neededCategories": ["GEOBATCH_RUN_CONFIGS" ],
-    },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
         "forceLogin":true,
