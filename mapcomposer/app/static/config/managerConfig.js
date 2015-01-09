@@ -38,8 +38,9 @@
       ]
    ],
    "tools":[{
+
         "ptype": "mxp_categoryinitializer",
-        "neededCategories": ["GEOBATCH_RUN_CONFIGS" ],
+        "neededCategories": ["GEOBATCH_RUN_CONFIGS","ARCHIVEDLOGS" ],
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
@@ -54,7 +55,9 @@
          "autoOpen":true,
          "closable":false,
          "geoBatchRestURL":"http://84.33.2.75/geobatch/rest/",
+         "skipFlowsNotInRunConfigs": true,
          "runConfigs": {
+
             "csvingestion":{
                 "xtype":"geobatch_run_local_form",
                 "baseDir": "/home/geosolutions/admin",
@@ -734,7 +737,7 @@
                     "displayField": "label", 
                     "fieldLabel": "Class", 
                     "mode": "local", 
-                    "name": "cls", 
+                    "hiddenName": "cls", 
                     "store": {
                       "fields": [
                         "name", 

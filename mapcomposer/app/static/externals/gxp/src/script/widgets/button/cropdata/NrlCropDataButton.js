@@ -561,7 +561,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
             }
             //get chart configs (sorting them properly)
             var chartConfig = this.getOrderedChartConfigs(opt,avgs);
-            console.log(chartConfig);
+            //console.log(chartConfig);
 			// Store for random data
 			var store = new Ext.data.JsonStore({
 				data: data[r],
