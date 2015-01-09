@@ -287,6 +287,7 @@ GeoExt.Lang.add("it", {
     "mxp.plugins.GeoBatchFlows.prototype": {
         buttonText: "Workflows",
         flowsListTitle:'Flussi',
+        runButtonText: "Esecuzione",
         consumersGridTitle: 'Attivi',
         archivedGridTitle: 'Archiviati'
     },

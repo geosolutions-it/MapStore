@@ -56,6 +56,7 @@ mxp.widgets.GeoBatchFlowsGrid = Ext.extend(Ext.grid.GridPanel, {
     geoBatchRestURL: 'http://localhost:8080/geobatch/rest/',
     autoload:true,
     autoExpandColumn: 'description',
+    forceOrder: false,
     /* i18n */
     nameText: 'Title',
     descriptionText:'Description',
@@ -96,7 +97,8 @@ mxp.widgets.GeoBatchFlowsGrid = Ext.extend(Ext.grid.GridPanel, {
             fields: [
                    'id',
                    'name',
-                   'description'
+                   'description',
+                    {name: 'order', defaultValue: 1000000}
            ],
             reader:  new ie10XmlStore({
                 record: 'flow',
@@ -104,7 +106,9 @@ mxp.widgets.GeoBatchFlowsGrid = Ext.extend(Ext.grid.GridPanel, {
                 fields: [
                    'id',
                    'name',
-                   'description']
+                   'description',
+                    {name: 'order', defaultValue: 1000000}
+                ]
             }),
             listeners:{
                 beforeload: function(a,b,c){
@@ -127,7 +131,14 @@ mxp.widgets.GeoBatchFlowsGrid = Ext.extend(Ext.grid.GridPanel, {
 						store.filterBy(function(record) {
 							return this.flows[record.get('id')];
 						}, this);
+                        if(this.forceOrder) {
+                            store.each(function(record) {
+                                record.set('order', this.flows[record.get('id')].order || 1000000);
+                            }, this);
+                            store.sort("order");
+                        }
 					}
+                    
 				},
 				exception: function(proxy, type, action, options, response) {
 					Ext.Msg.show({
@@ -163,6 +174,7 @@ mxp.widgets.GeoBatchFlowsGrid = Ext.extend(Ext.grid.GridPanel, {
             {id: 'description', header: this.descriptionText, dataIndex: 'description', sortable: true},
             {   
                 xtype:'actioncolumn',
+                dataIndex: 'id',
                 width: 35,
                 tooltip: this.runButtonTooltip,
                 scope:this,
