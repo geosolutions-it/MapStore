@@ -61,6 +61,7 @@ mxp.widgets.GeoBatchFlowsGrid = Ext.extend(Ext.grid.GridPanel, {
     descriptionText:'Description',
     loadingMessage: 'Loading...',
 	errorContactingGeobatch: 'Error loading flows from GeoBatch',
+    runButtonTooltip: 'Run',
     /* end of i18n */
     //extjs grid specific config
     autoload:true,
@@ -159,7 +160,25 @@ mxp.widgets.GeoBatchFlowsGrid = Ext.extend(Ext.grid.GridPanel, {
         this.columns= [
             {id: 'id', header: "ID", width: 100, dataIndex: 'id', sortable: true,hidden:true},
             {id: 'name', header: this.nameText, width: 200, dataIndex: 'name', sortable: true},
-            {id: 'description', header: this.descriptionText, dataIndex: 'description', sortable: true}
+            {id: 'description', header: this.descriptionText, dataIndex: 'description', sortable: true},
+            {   
+                xtype:'actioncolumn',
+                width: 35,
+                tooltip: this.runButtonTooltip,
+                scope:this,
+                handler: function(grid, rowIndex, colIndex){
+                    var record =  grid.getStore().getAt(rowIndex);
+                    this.runHandler.call(this.scope, record.get('id'), record.get('name'));
+                },
+                items:[{
+                    iconCls:'update_manager_ic',
+                    tooltip: this.runButtonTooltip,
+                    width:25,
+                    getClass: function(v, meta, rec) {
+                        return 'x-grid-center-icon action_column_btn';
+                    }
+                }]
+            }
         ],
         mxp.widgets.GeoBatchFlowsGrid.superclass.initComponent.call(this, arguments);
     }

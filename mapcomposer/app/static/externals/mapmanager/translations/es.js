@@ -286,7 +286,6 @@ GeoExt.Lang.add("es", {
      "mxp.plugins.GeoBatchFlows.prototype": {
         buttonText: "Flujos de trabajo",
         flowsListTitle:'Flujos',
-        runButtonText:'Realizar',
         consumersGridTitle: 'Activa',
         archivedGridTitle: 'Archivado'
      },
@@ -294,6 +293,7 @@ GeoExt.Lang.add("es", {
         nameText: 'Título',
         descriptionText:'Descripción',
         loadingMessage: 'Cargando...',
+        runButtonTooltip:'Realizar',
         errorContactingGeobatch: 'Error loading fluye de GeoBatch'
     },
     "mxp.widgets.GeoBatchConsumerGrid.prototype": {
