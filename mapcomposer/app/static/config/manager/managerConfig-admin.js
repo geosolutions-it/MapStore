@@ -115,6 +115,48 @@
               ],
               
              
+            }, {   "api":{},
+              
+              "autoExpandColumn": "path", 
+              "autoload": true, 
+              "basePath": "mvc/OpenSDIInfo/facade/", 
+              "canCreate": false, 
+              "canDelete": false, 
+              "canEdit": false, 
+              "iconCls": "icon-export", 
+              "id": "Facade", 
+              "idProperty": "path", 
+              "name": "Facade", 
+              "pluralName": "Facades", 
+              "restful": false, 
+              "root": "data",
+              "columns": [
+                {
+                  "header": "Path", 
+                  "mapping": "path", 
+                  "name": "path"
+                },{
+                  "header": "Url",
+                  "name": "urlWrapped",
+                  "mapping":"urlWrapped"
+
+                }
+              ], 
+              "displayField": "label", 
+              "editHeight": 270,
+              "fields": [
+                {
+                  "mapping": "path", 
+                  "name": "path"
+                },{
+                  "mapping":"urlWrapped",
+                  "name":"urlWrapped",
+                  "type":"string"
+                },{
+                  "mapping": "proxy", 
+                  "name": "proxy"
+                }
+              ]
             }
            
           ]

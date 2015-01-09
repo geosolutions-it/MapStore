@@ -56,6 +56,7 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
 	
     showConsumersDetails: false,
 	
+    forceOrder: false,
     /* api configuration
         closable: if true the output element is closable
     */
@@ -152,21 +153,8 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
         });
 		
         //button for button runner
-        var buttons = []
-        if(this.flowRunFormCategory){
-            buttons.push({
-                iconCls:'update_manager_ic',
-                ref:'../runBtn',
-                text: this.runButtonText,
-                disabled:true,
-                scope:this,
-                handler:function(btn){
-                    this.runWorkflow(btn.flowId, btn.flowName);
-                }
-            });
-            buttons.push("->");
-        }
-       
+        var buttons = ['->'];
+        
         var me = this;
 		
         //configuration of the left grid of the flows 
@@ -183,7 +171,12 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
             collapsible:true,   
             auth: this.auth,
             sm: selectionModel,
-            flows: this.skipFlowsNotInRunConfigs ? this.runConfigs : null
+            forceOrder: this.forceOrder,
+            flows: this.skipFlowsNotInRunConfigs ? this.runConfigs : null,
+            runHandler: function(flowId, flowName) {
+                this.runWorkflow(flowId, flowName);
+            },
+            scope: this
         }
         
         Ext.apply(this.outputConfig,{
