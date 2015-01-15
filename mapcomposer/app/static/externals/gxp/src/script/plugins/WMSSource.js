@@ -150,6 +150,29 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		return null;
 	},
 	
+   /**
+	* Get the user's corrensponding authkey if present 
+	* (see MSMLogin.getLoginInformation for more details)
+	*/
+	getAuthParam: function(){
+		var userInfo = this.target.userDetails;
+		var authkey;
+		
+		if(userInfo.user.attribute instanceof Array){
+			for(var i = 0 ; i < userInfo.user.attribute.length ; i++ ){
+				if( userInfo.user.attribute[i].name == "UUID" ){
+					authkey = userInfo.user.attribute[i].value;
+				}
+			}
+		}else{
+			if(userInfo.user.attribute && userInfo.user.attribute.name == "UUID"){
+			   authkey = userInfo.user.attribute.value;
+			}
+		}
+
+		return authkey;
+	},
+	
     createCapabilitiesStore: function() {
         var baseParams = this.baseParams || {
             SERVICE: "WMS",
@@ -165,21 +188,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 	    // (see MSMLogin.getLoginInformation for more details)
 	    // /////////////////////////////////////////////////////
 		if(this.authParam && this.target.userDetails){
-			var userInfo = this.target.userDetails;
-			var authkey;
-			
-			if(userInfo.user.attribute instanceof Array){
-				for(var i = 0 ; i < userInfo.user.attribute.length ; i++ ){
-					if( userInfo.user.attribute[i].name == "UUID" ){
-						authkey = userInfo.user.attribute[i].value;
-					}
-				}
-			}else{
-				if(userInfo.user.attribute && userInfo.user.attribute.name == "UUID"){
-				   authkey = userInfo.user.attribute.value;
-				}
-			}
-
+			var authkey = this.getAuthParam();
 			if(authkey){
 				baseParams[this.authParam] = authkey;
 			}
@@ -356,7 +365,6 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		
 		// use all params from original
 		params = Ext.applyIf(params, layer.params);
-
 
 		// /////////////////////////////////////////////////////////
 		// Checking if the OpenLayers transition should be 
