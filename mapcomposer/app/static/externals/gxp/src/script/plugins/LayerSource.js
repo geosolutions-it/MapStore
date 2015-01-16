@@ -139,6 +139,7 @@ gxp.plugins.LayerSource = Ext.extend(Ext.util.Observable, {
 			gnURL: record.get("gnURL"),
 			wcs: record.get("wcs"),
             fixed: record.get("fixed"),
+			tiled: record.get("tiled"),
             selected: record.get("selected")
         };
     }
