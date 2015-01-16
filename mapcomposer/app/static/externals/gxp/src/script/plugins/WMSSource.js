@@ -647,8 +647,9 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             format: params.FORMAT,
             styles: params.STYLES, 
             transparent: params.TRANSPARENT,
-            cql_filter: params.CQL_FILTER,
-            elevation: params.ELEVATION
+            //cql_filter: params.CQL_FILTER,
+            tiled: layer.singleTile,
+			elevation: params.ELEVATION
         });
     },    
     
