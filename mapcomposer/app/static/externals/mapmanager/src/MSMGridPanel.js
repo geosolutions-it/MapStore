@@ -978,7 +978,28 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 					copy.name = prefixName + data.name;
 					copy.description = data.description;
 					copy.blob = data.blob;
-					copy.owner = grid.login.getCurrentUser();
+					if(data.attributes){
+						copy.attributes = data.attributes;
+						
+						var ownerIndexElement;
+						for(var i=0; i<copy.attributes.length; i++){
+							if(copy.attributes[i].name == "owner"){
+								// ////////////////////////////////////////////////
+								// Due to backward compatibility we manage 
+								// temporarily the owner attribute separately.
+								// ////////////////////////////////////////////////
+								copy.owner = grid.login.getCurrentUser();
+								ownerIndexElement = i;
+							}
+						}
+						
+						if(ownerIndexElement != undefined){
+							copy.attributes.splice(ownerIndexElement, 1);
+						}
+					}else{
+						copy.owner = grid.login.getCurrentUser();
+					}					
+					
 					geostore.create(copy, function(data) {
 						reload();
 					});

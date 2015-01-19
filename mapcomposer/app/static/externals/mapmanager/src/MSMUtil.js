@@ -699,11 +699,37 @@
 			// ///////////////////////////////////////
 			// Wrap new map within an xml envelop
 			// ///////////////////////////////////////
-			var addedAttributes = false;
+			//var addedAttributes = false;
 			var xml = '<Resource>';
 			
+			if(data.owner || data.attributes){
+				xml += 	'<Attributes>';
+				
+				if(data.owner){
+					xml += 
+						'<attribute>' +
+							'<name>owner</name>' +
+							'<type>STRING</type>' +
+							'<value>' + data.owner + '</value>' +
+						'</attribute>';
+				}
+				
+				if(data.attributes){
+					for(var i=0; i<data.attributes.length; i++){
+						xml += 
+							'<attribute>' +
+								'<name>' + data.attributes[i].name + '</name>' +
+								'<type>' + data.attributes[i]["@type"] + '</type>' +
+								'<value>' + data.attributes[i].value + '</value>' +
+							'</attribute>';
+					}
+				}
+				
+				xml += '</Attributes>';
+			}
+			
 			/** This can remove all the attributes if present !!! do it in a better way as soon as possible **/
-			if (data.owner){
+			/*if (data.owner){
 				xml += 
 				'<Attributes>' +
 					'<attribute>' +
@@ -712,13 +738,12 @@
 						'<value>' + data.owner + '</value>' +
 					'</attribute>';
 				addedAttributes = true;
-			}
-			
+			}			
 
 			// close attributes
 			if(addedAttributes){
 				xml += '</Attributes>';
-			}
+			}*/
 				
 			xml +=
 				'<description>' + data.description + '</description>' +
@@ -740,7 +765,18 @@
 			
 			if ( json.Resource ){
 				var data = new Object;
-				data.owner = json.Resource.Attributes.attribute.value;
+				
+				data.attributes = [];
+				if(json.Resource.Attributes.attribute instanceof Array){
+					var array = json.Resource.Attributes.attribute;
+					for(var i=0; i<array.length; i++){
+						data.attributes.push(array[i]);
+					}
+				}else{
+					data.attributes.push(json.Resource.Attributes.attribute);
+				}
+				
+				//data.owner = json.Resource.Attributes.attribute.value;
 				data.description = json.Resource.description;
 				data.name = json.Resource.name;
 				data.blob = json.Resource.data.data;
