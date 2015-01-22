@@ -120,9 +120,10 @@ gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod = Ext.extend(gxp.wi
 		gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.superclass.activate.call(this);
 		if(this.output){
 			this.output.enable();
-			if(Ext.isIE){
+            
+			//if(Ext.isIE){
 				this.output.doLayout();
-			}
+			//}
 		}
 	},
 

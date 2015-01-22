@@ -58,6 +58,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
     progressText: "Progress",
 	statusText : "Status",
 	startDateText : "Start Execution Date",
+	endDateText : "End Execution Date",
     runDateText : "Run Date",
 	refreshText : "Refresh",
     autoRefreshText: "Auto-Refresh",
@@ -133,7 +134,7 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 				}
 			},
 			sortInfo : {
-				field : 'startDate',
+				field : 'endDate',
 				direction : 'DESC' // or 'DESC' (case sensitive for local sorting)
 			}
 		});
@@ -203,6 +204,12 @@ mxp.widgets.CMREOnDemandRuntimesGrid = Ext.extend(Ext.grid.GridPanel, {
 			header : this.startDateText,
 			width : 180,
 			dataIndex : 'startDate',
+			sortable : true
+		}, {
+			id : 'endDate',
+			header : this.endDateText,
+			width : 180,
+			dataIndex : 'endDate',
 			sortable : true
 		}, {
 			id : 'refDate',

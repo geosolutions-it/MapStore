@@ -297,6 +297,7 @@ GeoExt.Lang.add("en", {
         progressText: "Progress",
         statusText : "Status",
         startDateText : "Start Execution Date",
+        endDateText : "End Execution Date",
         runDateText : "Run Date",
         refreshText : "Refresh",
         autoRefreshText: "Auto-Refresh",
