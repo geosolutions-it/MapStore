@@ -103,7 +103,7 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
             width:400,
             ref:'uploader',
             collapsible:true,   
-            url: uploadUrl,
+            url: OpenLayers.Request.makeSameOrigin(uploadUrl,proxy),
             multipart: true,
             auth: this.auth,
 			mediaContent: this.target.initialConfig.mediaContent,
