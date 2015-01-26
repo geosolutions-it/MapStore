@@ -210,7 +210,9 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                                 var node =selmodel.getSelectedNode();
                                 node.setIconCls('gx-tree-filterlayer-icon');
                             }
-                        
+                            if(!this.featureManagerTool.layerRecord.getLayer().vendorParams){
+                                this.featureManagerTool.layerRecord.getLayer().vendorParams = {};
+                            }
                             this.featureManagerTool.layerRecord.getLayer().mergeNewParams({cql_filter:filter.toString()}); 
                             this.featureManagerTool.layerRecord.getLayer().vendorParams.cql_filter = filter.toString();
                     }else{
